@@ -342,7 +342,7 @@
                 case ErrorCode.WRN_MissingWithStatement:
                 case ErrorCode.WRN_String2PszMustBeAssignedToLocal:
                 case ErrorCode.WRN_XPPSuperIVarsAlwaysShared:
-                case ErrorCode.WRN_XPPFrozedNotSupported:
+                case ErrorCode.WRN_XPPFreezeNotSupported:
                 case ErrorCode.WRN_XPPVarIsInNotSupported:
                 case ErrorCode.WRN_XPPSharedIsDefault:
                 case ErrorCode.WRN_XPPAssignmentClause:

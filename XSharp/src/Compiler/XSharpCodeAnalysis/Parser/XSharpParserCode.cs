@@ -202,7 +202,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
         }
 
-        internal interface IBodyWithLocalFunctions
+        public interface IBodyWithLocalFunctions
         {
             IList<object> LocalFunctions { get; set; }
         }
@@ -233,13 +233,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             string Name { get; }
             string ShortName { get; }
         }
-        internal interface IXPPMemberContext : IMemberWithBodyContext, IBodyWithLocalFunctions
+
+
+
+        public interface IXPPMemberContext : IMemberWithBodyContext, IBodyWithLocalFunctions
         {
-            XppmemberModifiersContext Mods { get; }
-            AttributesContext Atts { get; }
 #if !VSPARSER
             InternalSyntax.XppDeclaredMethodInfo Info { get; }
 #endif
+            AttributesContext Atts { get; }
+            XppmemberModifiersContext Mods { get; }
             ParameterListContext Parameters { get; }
             void SetStatements(StatementBlockContext stmts);
             ExpressionContext ExprBody { get; }
@@ -965,7 +968,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+            public InternalSyntax.XppDeclaredMethodInfo Info { get; set; }
 #endif
+            public AttributesContext Atts => this.Attributes;
+            public XppmemberModifiersContext Mods => this.Modifiers;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public string ShortName => this.Id.GetText();
@@ -977,11 +983,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return ParentName + name;
                 }
             }
-#if !VSPARSER
-    public InternalSyntax.XppDeclaredMethodInfo Info { get; set; }
-#endif
-            public XppmemberModifiersContext Mods => this.Modifiers;
-            public AttributesContext Atts => this.Attributes;
             public StatementBlockContext Statements => StmtBlk;
             public void SetStatements(StatementBlockContext stmts) => this.StmtBlk = stmts;
             public ParameterListContext Parameters => this.ParamList;
@@ -993,7 +994,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+            public InternalSyntax.XppDeclaredMethodInfo Info { get; set; }
 #endif
+            public AttributesContext Atts => this.Attributes;
+            public XppmemberModifiersContext Mods => this.Modifiers;
+
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public string ShortName => this.Id.GetText();
@@ -1005,11 +1010,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return ParentName + name;
                 }
             }
-#if !VSPARSER
-            public InternalSyntax.XppDeclaredMethodInfo Info { get; set; }
-#endif
-            public XppmemberModifiersContext Mods => this.Modifiers;
-            public AttributesContext Atts => this.Attributes;
             public StatementBlockContext Statements => StmtBlk;
             public void SetStatements(StatementBlockContext stmts) => this.StmtBlk = stmts;
             public ParameterListContext Parameters => this.ParamList;
@@ -1025,12 +1025,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public bool XSharpRuntime;
         }
+
+
         public partial class XpppropertyContext : IMemberContext
         {
 #if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
 #endif
+            public AttributesContext Atts => Attributes;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Type;
             public string ShortName => this.Id.GetText();

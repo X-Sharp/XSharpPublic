@@ -6,10 +6,8 @@
 
 #nullable disable
 
-using System;
-using System.Linq;
 using System.Collections.Generic;
-using Roslyn.Utilities; 
+using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
@@ -18,8 +16,8 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
     using System.Diagnostics;
+    using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
     [DebuggerDisplay("{Name}")]
     public class XppClassInfo
@@ -37,11 +35,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             Properties = new List<string>();
             CurrentVisibility = XP.HIDDEN;
         }
-        internal XppDeclaredMethodInfo FindMethod( string name)
+        internal XppDeclaredMethodInfo FindMethod(string name)
         {
             foreach (var decl in Methods)
             {
-                if (! decl.IsProperty)
+                if (!decl.IsProperty)
                 {
                     if (XSharpString.Equals(name, decl.Name))
                         return decl;
@@ -82,36 +80,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     [DebuggerDisplay("{Name}")]
     public class XppDeclaredMethodInfo
     {
-        internal string Name { get; set; }
-        internal int Visibility { get; set; }
+        internal string Name { get; set; } = null;
+        internal int Visibility { get; set; } = XP.HIDDEN;
         internal bool IsImplemented => Entity != null;
-        internal XP.IEntityContext Entity { get; set; }
-        internal XP.IEntityContext SetEntity { get; set; }
-        internal XppClassInfo Parent = null;
-        internal bool Inline { get; set; }
-        internal bool IsProperty { get; set; }
-        internal bool HasVarName { get; set; }
-        internal string AccessMethod { get; set; }
-        internal string AssignMethod { get; set; }
-        internal XSharpParserRuleContext Declaration { get; set; }
+        internal XP.IEntityContext Entity { get; set; } = null;
+        internal XP.IEntityContext SetEntity { get; set; } = null;
+        internal XP.DatatypeContext DeclaredType { get; set; } = null;
+        internal XppClassInfo Parent { get; set; } = null;
+        internal bool Inline { get; set; } = false;
+        internal bool IsProperty { get; set; } = false;
+        internal bool HasVarName { get; set; } = false;
+        internal string AccessMethod { get; set; } = null;
+        internal string AssignMethod { get; set; } = null;
+        internal XSharpParserRuleContext Declaration { get; set; } = null;
+        internal IList<IToken> ModifierTokens { get; set; } = null;
+        internal XP.AttributesContext Attributes { get; set; } = null;
 
         internal XppDeclaredMethodInfo()
         {
-            Name = null;
-            Visibility = XP.HIDDEN;
-            Entity = null;
-            Parent = null;
-            Inline = false;
-            HasVarName = false;
-            IsProperty = false;
-            AccessMethod = null;
-            AssignMethod = null;
         }
         internal bool IsSync
         {
             get
             {
-                if  (Declaration is XP.XppdeclareMethodContext declmeth)
+                if (Declaration is XP.XppdeclareMethodContext declmeth)
                 {
                     var tokens = declmeth.Modifiers?._Tokens;
                     return tokens != null && tokens.Any(x => x.Type == XP.SYNC);
@@ -142,7 +134,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _entryPoint = "Main";
         }
         private SyntaxToken DecodeVisibility(int vis)
-        { 
+        {
             switch (vis)
             {
                 case XP.EXPORTED:
@@ -244,8 +236,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(baseTypes);
             context.Put(m);
             _currentClass = null;
-            
-    }
+        }
         public override void EnterXppdeclareMethod([NotNull] XP.XppdeclareMethodContext context)
         {
             // add method to list of declared methods in the class
@@ -258,10 +249,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             foreach (var name in context._Methods)
             {
-                var declInfo = new XppDeclaredMethodInfo() { Name = name.GetText(), Parent = _currentClass, Declaration = context };
+                var declInfo = new XppDeclaredMethodInfo()
+                {
+                    Name = name.GetText(),
+                    Parent = _currentClass,
+                    Declaration = context,
+                    DeclaredType = null,
+                    Attributes = context.Attributes,
+                    ModifierTokens = context.Modifiers?._Tokens
+                };
                 declInfo.Visibility = _currentClass.CurrentVisibility;
                 _currentClass.Methods.Add(declInfo);
-             }
+            }
         }
 
         public override void EnterXppclassvars([NotNull] XP.XppclassvarsContext context)
@@ -310,19 +309,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var declInfo = _currentClass.Methods.Where(x => x.Name == name && x.IsProperty).FirstOrDefault();
             if (declInfo == null)
             {
-                declInfo = new XppDeclaredMethodInfo() { Name = name, Declaration = context, IsProperty = true, Visibility = _currentClass.CurrentVisibility };
+                declInfo = new XppDeclaredMethodInfo()
+                {
+                    Name = name,
+                    Declaration = context,
+                    IsProperty = true,
+                    Visibility = _currentClass.CurrentVisibility,
+                    DeclaredType = context.Type,
+                    Attributes = context.Attributes,
+                    ModifierTokens = context.Modifiers?._Tokens
+                };
                 _currentClass.Methods.Add(declInfo);
             }
             declInfo.HasVarName = hasVarName;
-            // check to see if we have a declaration
-            if (context.Access != null)
-            {
-                declInfo.AccessMethod = context.Id.GetText();
-            }
-            if (context.Assign != null)
-            {
-                declInfo.AssignMethod = context.Id.GetText();
-            }
+            CheckAccessors(context.Accessors, declInfo, context.Id.GetText());
         }
         public override void ExitXppproperty([NotNull] XP.XpppropertyContext context)
         {
@@ -369,7 +369,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var id in context._Vars)
             {
                 varList.Clear();
-                var name = id.GetText();
                 var variable = GenerateVariable(id.Get<SyntaxToken>());
                 varList.Add(variable);
                 // calculate modifiers
@@ -425,6 +424,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Data.HasClipperCallingConvention = false;
             }
         }
+
+        private void CheckAccessors(XP.XppaccessorsContext context, XppDeclaredMethodInfo decl, string Id)
+        {
+            if (context != null && context._Tokens.Any((t) => t.Type == XSharpLexer.ACCESS))
+            {
+                decl.AccessMethod = Id;
+                decl.IsProperty = true;
+            }
+            if (context != null && context._Tokens.Any((t) => t.Type == XSharpLexer.ASSIGN))
+            {
+                decl.AssignMethod = Id;
+                decl.IsProperty = true;
+            }
+
+        }
+
         public override void EnterXppinlineMethod([NotNull] XP.XppinlineMethodContext context)
         {
             // should do the same as the 'normal' methods in VO Class
@@ -432,7 +447,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // method initClass becomes Class constructor
             Check4ClipperCC(context, context.ParamList?._Params, null, context.Type);
             CheckInitMethods(context);
-            var decl = new XppDeclaredMethodInfo() { Name = context.ShortName, Parent = _currentClass, Visibility = _currentClass.CurrentVisibility, Declaration = context, Entity = context , Inline = true};
+            var decl = new XppDeclaredMethodInfo()
+            {
+                Name = context.ShortName,
+                Parent = _currentClass,
+                Visibility = _currentClass.CurrentVisibility,
+                Declaration = context,
+                Entity = context,
+                Inline = true,
+                DeclaredType = context.Type,
+                Attributes = context.Attributes,
+                ModifierTokens = context.Modifiers?._Tokens
+            };
+            
+            CheckAccessors(context.Accessors, decl, context.Id.GetText());
             context.Info = decl;
             _currentClass.Methods.Add(decl);
         }
@@ -446,7 +474,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.AddError(new ParseErrorData(context, ErrorCode.WRN_XPPMethodNotDeclared, context.ShortName));
                 // setup dummy declaration
-                context.Info = new XppDeclaredMethodInfo() { Name = context.ShortName, Parent = _currentClass, Declaration = context, Entity = context, Visibility = XP.HIDDEN, Inline = true};
+                context.Info = new XppDeclaredMethodInfo()
+                {
+                    Name = context.ShortName,
+                    Parent = _currentClass,
+                    Declaration = context,
+                    Entity = context,
+                    Visibility = XP.HIDDEN,
+                    Inline = true,
+                    DeclaredType = context.Type,
+                    Attributes = context.Attributes,
+                    ModifierTokens = context.Modifiers?._Tokens
+                };
             }
 
             if (context.Data.IsInitAxit)
@@ -456,9 +495,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var attributes = getAttributes(context.Attributes);
             var modifiers = decodeXppMemberModifiers(context.Info.Visibility, false, context.Modifiers?._Tokens);
+            if (context.Info.IsProperty)
+            {
+                // the backing method becomes private
+                modifiers = decodeXppMemberModifiers(XP.PRIVATE, false, context.Modifiers?._Tokens);
+            }
             TypeSyntax returnType = getReturnType(context);
             var parameters = getParameters(context.ParamList);
-            var method = XppCreateMethod(context, context.Id.Get<SyntaxToken>(), attributes, modifiers, parameters, returnType );
+            var name = context.Id.Get<SyntaxToken>();
+            if (context.Info.IsProperty && !context.Info.HasVarName)
+            {
+                // rename method because the property has the same name as the method
+                name = SyntaxFactory.MakeIdentifier(context.Id.GetText() + XSharpSpecialNames.PropertySuffix);
+            }
+            var method = XppCreateMethod(context, name, attributes, modifiers, parameters, returnType);
             context.Put(method);
         }
         public override void EnterXppmethod([NotNull] XP.XppmethodContext context)
@@ -466,8 +516,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             CheckVirtualOverride(context, context.Modifiers?._Tokens);
             Check4ClipperCC(context, context.ParamList?._Params, null, context.Type);
             CheckInitMethods(context);
-            string name ;
-            XppClassInfo current = null;
+            string name;
+            XppClassInfo current;
             if (context.ClassId == null)
             {
                 current = _classes.LastOrDefault();
@@ -484,7 +534,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 current = _classes.LastOrDefault();
             }
             current.ExternalMethods.Add(context);
-            if ( current != null)
+            if (current != null)
             {
                 // link to method
                 name = context.Id.GetText();
@@ -493,25 +543,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     decl = current.FindPropertyMethod(name);
                 }
-                if (decl != null)
+                if (decl == null)
                 {
-                    if (decl.IsProperty)
+                    decl = new XppDeclaredMethodInfo()
                     {
-                        if (XSharpString.Equals(decl.AccessMethod, name))
-                        { 
-                            decl.Entity = context;
-                        }
-                        if (XSharpString.Equals(decl.AssignMethod, name))
-                        {
-                            decl.SetEntity = context;
-                        }
-                    }
-                    else
-                    { 
+                        Name = name,
+                        Declaration = context,
+                        Parent = current,
+                        Entity = context,
+                        Visibility = XP.PUBLIC,
+                        Inline = false,
+                        DeclaredType = context.Type,
+                        Attributes = context.Attributes,
+                        ModifierTokens = context.Modifiers?._Tokens
+                    };
+                    current.Methods.Add(decl);
+                }
+                CheckAccessors(context.Accessors, decl, name);
+                if (decl.IsProperty)
+                {
+                    if (XSharpString.Equals(decl.AccessMethod, name))
+                    {
                         decl.Entity = context;
                     }
-                    context.Info = decl;
+                    if (XSharpString.Equals(decl.AssignMethod, name))
+                    {
+                        decl.SetEntity = context;
+                    }
                 }
+                else
+                {
+                    decl.Entity = context;
+                }
+                context.Info = decl;
             }
         }
         private void implementConstructor([NotNull] XP.IXPPMemberContext context)
@@ -520,11 +584,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var classCtor = XSharpString.Compare(idName, XSharpIntrinsicNames.InitClassMethod) == 0;
             // find method in the declarations and find the visibility
             var mods = decodeXppMemberModifiers(context.Info.Visibility, classCtor, classCtor ? null : context.Mods?._Tokens);
-            if (mods.Any((int) SyntaxKind.StaticKeyword))
+            if (mods.Any((int)SyntaxKind.StaticKeyword))
             {
                 context.Data.HasClipperCallingConvention = false;
             }
-            var ctor = createConstructor(context, mods, context.Atts, context.Parameters, context.Statements, (XSharpParserRuleContext) context);
+            var ctor = createConstructor(context, mods, context.Atts, context.Parameters, context.Statements, (XSharpParserRuleContext)context);
             if (ctor != null)
             {
                 context.Put(ctor);
@@ -546,7 +610,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.AddError(new ParseErrorData(context, ErrorCode.WRN_XPPMethodNotDeclared, context.ShortName));
                 // setup dummy declaration
-                context.Info = new XppDeclaredMethodInfo() { Name = context.ShortName, Declaration = context, Entity = context, Visibility = XP.HIDDEN };
+                context.Info = new XppDeclaredMethodInfo()
+                {
+                    Name = context.ShortName,
+                    Declaration = context,
+                    Entity = context,
+                    Visibility = XP.HIDDEN,
+                    DeclaredType = context.Type,
+                    Attributes = context.Attributes,
+                    ModifierTokens = context.Modifiers?._Tokens
+                };
             }
             if (context.Data.IsInitAxit)
             {
@@ -554,15 +627,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 implementConstructor(context);
                 return;
             }
-            SyntaxList<SyntaxToken> modifiers;
+            var modifiers = decodeXppMemberModifiers(context.Info.Visibility, false, context.Modifiers?._Tokens);
             if (context.Info.IsProperty)
             {
                 // the backing method becomes private
                 modifiers = decodeXppMemberModifiers(XP.PRIVATE, false, context.Modifiers?._Tokens);
-            }
-            else
-            { 
-                modifiers = decodeXppMemberModifiers(context.Info.Visibility, false, context.Modifiers?._Tokens);
             }
             TypeSyntax returnType = getDataType(context.Type);
             var attributes = getAttributes(context.Attributes);
@@ -571,11 +640,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Info.IsProperty && !context.Info.HasVarName)
             {
                 // rename method because the property has the same name as the method
-                name = SyntaxFactory.MakeIdentifier(context.Id.GetText()+ XSharpSpecialNames.PropertySuffix);
+                name = SyntaxFactory.MakeIdentifier(context.Id.GetText() + XSharpSpecialNames.PropertySuffix);
             }
             var method = XppCreateMethod(context, name, attributes, modifiers, parameters, returnType);
             context.Put(method);
         }
+
         MemberDeclarationSyntax XppCreateMethod(XP.IXPPMemberContext context, SyntaxToken idName, SyntaxList<AttributeListSyntax> attributes,
             SyntaxList<SyntaxToken> modifiers, ParameterListSyntax parameters, TypeSyntax returnType)
         {
@@ -592,10 +662,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 body = MakeBlock(MakeLock(GenerateSelf(), body));
             }
-            if (context.Info.IsProperty)
-            {
-
-            }
             MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
                   attributeLists: attributes,
                   modifiers: modifiers,
@@ -606,7 +672,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                   parameterList: parameters,
                   constraintClauses: null,
                   body: body,
-                  expressionBody: expressionBody, 
+                  expressionBody: expressionBody,
                   semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             return m;
         }
@@ -617,7 +683,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         // here because their names and parameters are generated differently
         public override void ExitEntity([NotNull] XP.EntityContext context)
         {
-            if (context.GetChild(0) is XP.XppclassContext )
+            if (context.GetChild(0) is XP.XppclassContext)
             {
                 // classes are handled separately because we need to add the external methods to their members
                 // so suppress call to base implementation. We will bind them later from ExitSource by calling bindClasses
@@ -626,34 +692,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitEntity(context);
         }
 
-        private PropertyDeclarationSyntax XppCreateProperty (XppDeclaredMethodInfo propDecl)
+        private PropertyDeclarationSyntax XppCreateProperty(XppDeclaredMethodInfo propDecl)
         {
-            var propctxt = (XP.XpppropertyContext)propDecl.Declaration;
             string propName = propDecl.Name;
-            string accName = propDecl.AccessMethod; 
+            string accName = propDecl.AccessMethod;
             string assName = propDecl.AssignMethod;
             if (accName != null && !propDecl.HasVarName)
                 accName = accName + XSharpSpecialNames.PropertySuffix;
             if (assName != null && !propDecl.HasVarName)
                 assName = assName + XSharpSpecialNames.PropertySuffix;
-            var propType = getDataType(propctxt.Type);
-
-            var method = propDecl.Entity as XP.XppmethodContext;
-            var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
-            var modifiers = decodeXppMemberModifiers(propDecl.Visibility, false, method.Modifiers?._Tokens);
-            bool isStatic = false;
-            if (method.Modifiers != null)
+            var method = propDecl.Entity as XP.IXPPMemberContext;
+            var propType = getDataType(propDecl.DeclaredType);
+            var methType = getDataType(method.ReturnType);
+            if (propDecl.DeclaredType == null)
             {
-                isStatic = method.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.CLASS);
+                propType = methType;
+            }
+            var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
+            var modifiers = decodeXppMemberModifiers(propDecl.Visibility, false, propDecl.ModifierTokens);
+            bool isStatic = false;
+            if (method.Mods != null)
+            {
+                isStatic = method.Mods._Tokens.Any(t => t.Type == XSharpLexer.CLASS);
             }
             SyntaxList<AttributeListSyntax> attributes = default;
-            if (method.Attributes != null && propctxt.Attributes == null)
+            if (method.Atts != null && propDecl.Attributes == null)
             {
-                attributes = getAttributes(method.Attributes);
+                attributes = getAttributes(method.Atts);
             }
-            else if (method.Attributes == null && propctxt.Attributes != null)
+            else if (method.Atts == null && propDecl.Attributes != null)
             {
-                attributes = getAttributes(propctxt.Attributes);
+                attributes = getAttributes(propDecl.Attributes);
             }
 
             #region Accessor
@@ -662,7 +731,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ExpressionSyntax methodCall;
                 if (isStatic)
                 {
-                    methodCall = GenerateMethodCall(accName, EmptyArgumentList(),true);
+                    methodCall = GenerateMethodCall(accName, EmptyArgumentList(), true);
                 }
                 else
                 {
@@ -694,7 +763,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     methodCall = GenerateThisMethodCall(accName, args, true);
                 }
-                var stmt = GenerateExpressionStatement(methodCall,method);
+                var stmt = GenerateExpressionStatement(methodCall, (XSharpParserRuleContext)method);
                 var block = MakeBlock(stmt);
                 block.XGenerated = true;
                 var accessor = _syntaxFactory.AccessorDeclaration(
@@ -718,7 +787,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expressionBody: null,
                     initializer: null,
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            prop.XNode = (IXParseTree)propDecl.Declaration;
             _pool.Free(accessors);
+            if (methType.ToFullString() != propType.ToFullString())
+            {
+                prop = prop.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_XPPPropertyDeclarationTypeMismatch, propName));
+            }
+
             return prop;
         }
         private void bindXPPClasses()
@@ -750,7 +825,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var entity = method.Entity;
                     if (entity == null)
                     {
-                        current.Entity.AddError(new ParseErrorData(method.Declaration, ErrorCode.WRN_XPPMethodNotImplemented, method.Name));
+                        current.Entity.AddError(new ParseErrorData((IErrorNode)(method.Declaration), ErrorCode.WRN_XPPMethodNotImplemented, method.Name));
                     }
                     else
                     {
@@ -772,7 +847,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var entity = method.Entity;
                     if (entity == null)
                     {
-                        current.Entity.AddError(new ParseErrorData(method.Declaration, ErrorCode.WRN_XPPMethodNotImplemented, method.Name));
+                        current.Entity.AddError(new ParseErrorData((IErrorNode)(method.Declaration), ErrorCode.WRN_XPPMethodNotImplemented, method.Name));
                     }
                     else
                     {
@@ -792,14 +867,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // by binding the classdecl to the EntityContext it will be generated later
                 var ent = xnode.Parent as XP.EntityContext;
                 ent.Put(classdecl);
-                   
+
                 // check to see if this is a static class. In that case we must add it to the static global members
                 if (xnode.Data.HasStatic)
                 {
                     addGlobalEntity(classdecl, true);
                 }
             }
-            return ;
+            return;
         }
         public override void ExitSource([NotNull] XP.SourceContext context)
         {
@@ -828,8 +903,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             entities.AddRange(context._Entities.Where(e => !(e.GetChild(0) is XP.XppmethodContext)));
             _exitNamespace(context, context.Name.GetText(), entities);
         }
-        #endregion
-        #region Modifiers
+        #endregion 
+        #region Modifiers 
         public override void ExitXppclassModifiers([NotNull] XP.XppclassModifiersContext context)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
@@ -843,7 +918,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // todo place in unique namespace
                         break;
                     case XP.FINAL:
+                    case XP.SEALED:
                         kw = SyntaxFactory.MakeToken(SyntaxKind.SealedKeyword, m.Text);
+                        break;
+                    case XP.ABSTRACT:
+                        kw = SyntaxFactory.MakeToken(SyntaxKind.AbstractKeyword, m.Text);
                         break;
                     default:
                         break;
@@ -868,12 +947,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 switch (m.Type)
                 {
                     case XP.DEFERRED: // DEFERRED METHOD becomes ABSTRACT METHOD
+                    case XP.ABSTRACT: // 
                         kw = SyntaxFactory.MakeToken(SyntaxKind.AbstractKeyword, m.Text);
                         break;
                     case XP.FINAL: // FINAL METHOD will generate non virtual method, even when the Default Virtual is on
                         hasFinal = true;
                         break;
                     case XP.INTRODUCE: //  INTRODUCE METHOD will generate NEW METHOD
+                    case XP.NEW:
                         kw = SyntaxFactory.MakeToken(SyntaxKind.NewKeyword, m.Text);
                         noOverRide = true;
                         break;
@@ -881,6 +962,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         kw = SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword, m.Text);
                         break;
                     case XP.CLASS:
+                    case XP.STATIC:
                         kw = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword, m.Text);
                         break;
                     case XP.SYNC:   // Handled later
@@ -906,7 +988,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(modifiers);
 
         }
-         #endregion
+        #endregion
 
         private SyntaxList<SyntaxToken> decodeXppMemberModifiers(int visibility, bool isStatic, IList<IToken> tokens = null)
         {
@@ -961,7 +1043,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-            var result = modifiers.ToList<SyntaxToken>();  
+            var result = modifiers.ToList<SyntaxToken>();
             _pool.Free(modifiers);
             return result;
         }

@@ -2084,7 +2084,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,
         WRN_XPPSuperIVarsAlwaysShared = 9201,
-        WRN_XPPFrozedNotSupported = 9202,
+        WRN_XPPFreezeNotSupported = 9202,
         WRN_XPPVarIsInNotSupported = 9203,
         WRN_XPPSharedIsDefault = 9204,
         WRN_XPPAssignmentClause = 9205,
@@ -2092,6 +2092,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_XPPMethodNotImplemented = 9207,
         WRN_XPPMethodNotDeclared = 9208,
         ERR_XPPClassNotFound = 9209,
+        ERR_XPPAccessorCount = 9210,
+        ERR_XPPPropertyDeclarationTypeMismatch = 9211,
 
         WRN_FoxUnsupportedClause = 9230,
         ERR_FoxAsClauseMandatory = 9231,

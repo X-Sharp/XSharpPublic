@@ -7481,8 +7481,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_XPPSuperIVarsAlwaysShared" xml:space="preserve">
     <value>XPP The 'FROM' clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime.</value>
   </data>
-  <data name="WRN_XPPFrozedNotSupported" xml:space="preserve">
-    <value>The XPP 'FROZEN' method modifier is not supported and ignored.</value>
+  <data name="WRN_XPPFreezeNotSupported" xml:space="preserve">
+    <value>The XPP 'FREEZE' method modifier is not supported and ignored.</value>
   </data>
   <data name="WRN_XPPVarIsInNotSupported" xml:space="preserve">
     <value>The XPP 'VAR .. IS .. IN ..'  clause is not supported. There is no multiple inheritance, so this is no longer needed.</value>
@@ -7497,14 +7497,24 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>The XPP 'READONLY' clause for instance variables is not supported (yet) and ignored.</value>
   </data>
   <data name="WRN_XPPMethodNotImplemented" xml:space="preserve">
-    <value>XPP: Method {0} has been declared but has not been implemented.</value>
+    <value>XPP: Method '{0}' has been declared but has not been implemented.</value>
   </data>
   <data name="WRN_XPPMethodNotDeclared" xml:space="preserve">
-    <value>XPP: Method {0} has NOT been declared.</value>
+    <value>XPP: Method '{0}' has NOT been declared.</value>
   </data>
   <data name="ERR_XPPClassNotFound" xml:space="preserve">
-    <value>XPP: Class {0} has not been declared.</value>
+    <value>XPP: Class '{0}' has not been declared.</value>
   </data>
+  
+  <data name="ERR_XPPAccessorCount" xml:space="preserve">
+    <value>XPP: Accessor '{0}' should not be declared more than once.</value>
+  </data>
+  <data name="ERR_XPPPropertyDeclarationTypeMismatch" xml:space="preserve">
+    <value>XPP: The type for the '{0}' property declaration does not match the returntype of the method that implemens the property.</value>
+  </data>
+
+  
+
   <data name="ERR_FeatureNotAvailableInDialect" xml:space="preserve">
     <value>Feature '{0}' is not available in the selected dialect {1}</value>
   </data>

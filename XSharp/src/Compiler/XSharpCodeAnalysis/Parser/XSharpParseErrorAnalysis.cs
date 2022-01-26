@@ -306,7 +306,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (Op != null && Op.Type != XSharpParser.ASSIGN_OP && _options.Dialect != XSharpDialect.FoxPro)
             {
-                context.AddError(new ParseErrorData(context, ErrorCode.WRN_AssignmentOperatorExpected));
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_AssignmentOperatorExpected));
             }
         }
         public override void ExitForeachStmt([NotNull] XSharpParser.ForeachStmtContext context)
@@ -886,10 +886,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // no type parameters on access and assign
                 if (context.Sig != null && (context.Sig.TypeParameters != null || context.Sig._ConstraintsClauses?.Count > 0))
                 {
-                    context.AddError(new ParseErrorData(context, ErrorCode.Err_TypeParametersAccessAssign));
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.Err_TypeParametersAccessAssign));
                 }
             }
 
+        }
+
+        public override void ExitXppaccessors([NotNull] XSharpParser.XppaccessorsContext context)
+        {
+            if (_options.Dialect == XSharpDialect.XPP)
+            {
+                var tokens = context._Tokens.Where((t) => t.Type == XSharpParser.ACCESS);
+                if (tokens.Count() > 1)
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_XPPAccessorCount, tokens.First().Text));
+                }
+                tokens = context._Tokens.Where((t) => t.Type == XSharpParser.ASSIGN);
+                if (tokens.Count() > 1)
+                {
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_XPPAccessorCount, tokens.First().Text));
+                }
+            }
         }
 
         public override void ExitXppclass([NotNull] XSharpParser.XppclassContext context)
@@ -902,13 +919,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 if (context._BaseTypes.Count > 1)
                 {
-                    context.AddError(new ParseErrorData(context, ErrorCode.ERR_XPPMultipleInheritance));
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_XPPMultipleInheritance));
                 }
 
             }
             else
             {
-				// Should not happen, the XPP Class syntax only exists in the Xbase++ dialect
+                // Should not happen, the XPP Class syntax only exists in the Xbase++ dialect
                 NotInDialect(context, "Xbase++ CLASS Syntax");
             }
         }
@@ -969,7 +986,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (m.Type == XSharpParser.FREEZE)
                     {
-                        _parseErrors.Add(new ParseErrorData(m, ErrorCode.WRN_XPPFrozedNotSupported));
+                        _parseErrors.Add(new ParseErrorData(m, ErrorCode.WRN_XPPFreezeNotSupported));
                     }
                 }
             }

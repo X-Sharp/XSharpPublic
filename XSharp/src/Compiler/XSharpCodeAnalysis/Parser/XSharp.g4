@@ -1229,7 +1229,7 @@ xppclass           :  (Attributes=attributes)?                                //
                       eos
                     ;
 
-xppclassModifiers   : ( Tokens+=(STATIC | FREEZE | FINAL) )+
+xppclassModifiers   : ( Tokens+=(STATIC | FREEZE | FINAL | SEALED | ABSTRACT) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 xppclassMember      : Member=xppmethodvis                           #xppclsvisibility
@@ -1246,13 +1246,22 @@ xppmethodvis        : Vis=xppvisibility COLON eos
 xppvisibility       : Token=(HIDDEN | PROTECTED | EXPORTED | INTERNAL | PUBLIC | PRIVATE )         
                     ;
 
-xppdeclareMethod    : (Modifiers=xppdeclareModifiers)?                            // [DEFERRED |FINAL | INTRODUCE | OVERRIDE] [CLASS] 
+xppdeclareMethod    : (Attributes=attributes)?                                // NEW Optional Attributes
+                      (Modifiers=xppdeclareModifiers)?                            // [DEFERRED |FINAL | INTRODUCE | OVERRIDE] [CLASS] 
                       METHOD Methods+=identifier                                   // METHOD <MethodName,...> 
                       (
                         xppisin                                                   //  [IS <Name>] [IN <SuperClass>] 
                         | (COMMA Methods+=identifier)*                             // or an optional comma seperated list of other names
                       )
+                    | METHOD Methods+=identifier xppdeclmethodparams?             // METHOD <MethodName,...> 
+                      (
+                        
+                        (COMMA Methods+=identifier xppdeclmethodparams? )*        // or an optional comma seperated list of other names
+                      )
                       eos
+                    ;
+
+xppdeclmethodparams : LPAREN (identifier  (COMMA identifier)*)? RPAREN
                     ;
 
 
@@ -1262,7 +1271,7 @@ xppisin             : IS Id=identifier (IN SuperClass=identifier)?              
 
                     
 
-xppdeclareModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLASS | SYNC ) )+
+xppdeclareModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLASS | SYNC | ABSTRACT | NEW | STATIC) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
@@ -1284,25 +1293,26 @@ xppclassvars        : (Modifiers=xppmemberModifiers)?                           
 
 xppvarassignment    : ASSIGNMENT xppvisibility                                    // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] 
                     ;
-
 xppproperty         : (Attributes=attributes)?                                    // NEW Optional Attributes
-                      (   Access=ACCESS Assign=ASSIGN?                            // ACCESS | ASSIGN  | ACCESS ASSIGN | ASSIGN ACCESS
-                        | Assign=ASSIGN Access=ACCESS?
-                      ) 
+                      Accessors=xppaccessors?                                     // [ACCESS | ASSIGN]
                       Modifiers=xppmemberModifiers?                               // [CLASS]
-                      M=METHOD Id=identifier                                        // METHOD <MethodName>
+                      M=METHOD Id=identifier                                      // METHOD <MethodName>
                       (VAR VarName=identifier)?                                   // [VAR <VarName>]
                       (AS Type=datatype)?                                         // NEW Optional data type
                       end=eos
                     ;
 
 
+xppaccessors        : ( Tokens+=(ACCESS | ASSIGN ) )+
+                    ;
+
+
 xppmethod           : (Attributes=attributes)?                              // NEW Optional Attributes
-                      (MethodType=(ACCESS|ASSIGN))?                         // Optional Access or Assign
-                      (Modifiers=xppmemberModifiers)?                       // [CLASS]
+                      Accessors=xppaccessors?                               // [ACCESS | ASSIGN]
+                      Modifiers=xppmemberModifiers?                         // [CLASS]
                       M=METHOD (ClassId=identifier COLON)? Id=identifier    // [<ClassName>:] <MethodName>
                       // no type parameters 
-                      (ParamList=parameterList)?                            // Optional Parameters
+                      ParamList=parameterList?                            // Optional Parameters
                       (AS Type=datatype)?                                   // NEW Optional return type
                       // no type constraints
                       // no calling convention
@@ -1313,15 +1323,16 @@ xppmethod           : (Attributes=attributes)?                              // N
                     ;
 
 xppinlineMethod     : (Attributes=attributes)?                               // NEW Optional Attributes
-                      I=INLINE  
-                      (Modifiers=xppmemberModifiers)?                        // [CLASS]
+                      I=INLINE
+                      Accessors=xppaccessors?                                // [ACCESS | ASSIGN]
+                      Modifiers=xppmemberModifiers?                          // [CLASS]
                       METHOD  Id=identifier                                  // METHOD <MethodName>
                       // no type parameters 
-                      (ParamList=parameterList)?                            // Optional Parameters
-                      (AS Type=datatype)?                                   // NEW Optional return type
+                      (ParamList=parameterList)?                             // Optional Parameters
+                      (AS Type=datatype)?                                    // NEW Optional return type
                       // no type constraints
                       // no calling convention
-                      (UDCSEP ExpressionBody=expression)?                   // New: Expression Body
+                      (UDCSEP ExpressionBody=expression)?                    // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
                       (END METHOD eos)?

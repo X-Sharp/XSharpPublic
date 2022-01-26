@@ -102853,7 +102853,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R824 - New compiler option for compatible BEGIN SEQUENCE
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 084FC9A2-9274-4770-AE44-6D078B06BA37
 ; ************** APPLICATION R825 - XPP tests for ACCESS - ASSIGN and INLINE ACCESS-ASSIGN *************
 Application = R825 - XPP tests for ACCESS - ASSIGN and INLINE ACCESS-ASSIGN
 IDEVersion = 1.06

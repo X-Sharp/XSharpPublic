@@ -5,6 +5,10 @@ FUNCTION Start( ) AS VOID
     LOCAL uValue AS USUAL
     LOCAL lError AS LOGIC
     lError := TRUE
+    FOR VAR i := 1 TO 2
+        lError := i == 1
+        ? "Iteration", i, "Generate error", lError
+        
 	BEGIN SEQUENCE
 	    IF lError
 	        ? 1 /n
@@ -37,20 +41,31 @@ FUNCTION Start( ) AS VOID
 	    ENDIF
 	END
 	? "After BEGIN SEQUENCE END 3"
+	?
+    NEXT
 
 
-	WAIT
 RETURN
 
 
 
 FUNCTION _SequenceError(e AS Exception) AS USUAL
-    Eval(Errorblock(), Error{e})
-    RETURN "Exception caught: "+e:Message
+    ? __FUNCTION__
+    xAssert(e IS DivideByZeroException)
+    ? "Exception caught: "+e:Message
+    RETURN  e:Message
 
 FUNCTION _SequenceRecover(uBreakValue AS USUAL) AS USUAL
     ? __FUNCTION__
-    ? uBreakValue
+    xAssert(uBreakValue == 42)
     RETURN uBreakValue
 
 
+
+PROC xAssert(l AS LOGIC)
+IF l
+	? "Assertion passed"
+ELSE
+	THROW Exception{"Incorrect result"}
+END IF  
+RETURN 

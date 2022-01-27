@@ -319,6 +319,8 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                     oDbParam:DbType:= DbType.AnsiString
                 endif
                 oDbParam:Value:= oValue
+            elseif oValue=null
+                oDbParam:Value:= DBNull.Value
             else
                 // Can't get value
                 RETURN FALSE
@@ -749,11 +751,8 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
         LOCAL aParams    := List<SQLParameter>{} AS List<SQLParameter>
         LOCAL sb       := StringBuilder{cCommand:Length} AS StringBuilder
-        LOCAL sbParam  := StringBuilder{cCommand:Length} AS StringBuilder
-        LOCAL lParamByRef := FALSE AS LOGIC
         local sCmd := cCommand.Split( SELF:Connection:Factory:ParameterPrefix) as STRING[]
         IF sCmd.Length>0
-           local lparamIndex:=-1 as int
            sb:= StringBuilder{}
            local lsPartIndex:= 0 as int
 
@@ -805,7 +804,6 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                        endif
                     endfor
                     local sVarName:= sbVarName:ToString().ToUpper() as string
-                    local lParameterFound:= false
                     sb.Append(SELF:Connection:Factory:ParameterPrefix)
                     var lParam:= SQLParameter {sVarName, lIsByRef}
                     aParams:Add(lParam)

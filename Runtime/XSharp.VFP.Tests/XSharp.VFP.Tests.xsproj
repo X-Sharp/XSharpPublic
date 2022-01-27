@@ -46,7 +46,7 @@
     <VO15>true</VO15>
     <VO16>false</VO16>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.10.0.3</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>false</NamedArgs>
@@ -56,6 +56,7 @@
     <InitLocals>false</InitLocals>
     <NoWin32Manifest>False</NoWin32Manifest>
     <Allowdot>True</Allowdot>
+    <Fox2>True</Fox2>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -162,6 +163,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TypeTests.prg" />
     <Compile Include="EmptyTests.prg" />
     <Compile Include="FoxArraytests.prg" />
     <Compile Include="MiscTests.prg" />

@@ -1215,8 +1215,8 @@ keywordxpp         : Token=(SHARING| SHARED| ASSIGNMENT| EXPORTED| READONLY| NOS
 
 
 
-xppclass           :  (Attributes=attributes)?                                // NEW Optional Attributes
-                      (Modifiers=xppclassModifiers)?                          // [STATIC|FREEZE|FINAL] 
+xppclass           :  Attributes=attributes?                                // NEW Optional Attributes
+                      Modifiers=xppclassModifiers?                          // [STATIC|FREEZE|FINAL] 
                        C=CLASS (Namespace=nameDot)? Id=identifier               // CLASS <ClassName>
                        (
                           From=(FROM| SHARING) BaseTypes+=datatype (COMMA BaseTypes+=datatype)*  // [FROM <SuperClass,...>] ; 
@@ -1224,7 +1224,7 @@ xppclass           :  (Attributes=attributes)?                                //
                        (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)? // NEW Implements
                        // No type parameters and type parameter constraints
                       e=eos
-                      (Members+=xppclassMember)*
+                      Members+=xppclassMember*
                       ENDCLASS 
                       eos
                     ;
@@ -1246,27 +1246,21 @@ xppmethodvis        : Vis=xppvisibility COLON eos
 xppvisibility       : Token=(HIDDEN | PROTECTED | EXPORTED | INTERNAL | PUBLIC | PRIVATE )         
                     ;
 
-xppdeclareMethod    : (Attributes=attributes)?                                // NEW Optional Attributes
-                      (Modifiers=xppdeclareModifiers)?                            // [DEFERRED |FINAL | INTRODUCE | OVERRIDE] [CLASS] 
-                      METHOD Methods+=identifier                                   // METHOD <MethodName,...> 
+xppdeclareMethod    : Attributes=attributes?                                  // NEW Optional Attributes
+                      Modifiers=xppdeclareModifiers?                          // [DEFERRED |FINAL | INTRODUCE | OVERRIDE] [CLASS] 
+                      METHOD Methods+=identifier xppdeclmethodparams?         // METHOD <MethodName,...> 
                       (
-                        xppisin                                                   //  [IS <Name>] [IN <SuperClass>] 
-                        | (COMMA Methods+=identifier)*                             // or an optional comma seperated list of other names
-                      )
-                    | METHOD Methods+=identifier xppdeclmethodparams?             // METHOD <MethodName,...> 
-                      (
-                        
-                        (COMMA Methods+=identifier xppdeclmethodparams? )*        // or an optional comma seperated list of other names
+                          Is=xppisin                                           //  [IS <Name>] [IN <SuperClass>] 
+                          | (COMMA Methods+=identifier xppdeclmethodparams?)* // or an optional comma seperated list of other names
                       )
                       eos
                     ;
 
-xppdeclmethodparams : LPAREN (identifier  (COMMA identifier)*)? RPAREN
+xppdeclmethodparams : LPAREN (identifier  (COMMA identifier)*)? RPAREN      // ( id, ..)  THis clause is recognized but ignored
                     ;
 
 
-xppisin             : IS Id=identifier (IN SuperClass=identifier)?                //  IS <Name> [IN <SuperClass>] 
-                    | IN SuperClass=identifier								                    //  IN <SuperClass> without IS clause
+xppisin             : (IS identifier)? (IN identifier)?                     //  IS <Name> [IN <SuperClass>] = ignored
                     ;
 
                     
@@ -1275,7 +1269,7 @@ xppdeclareModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLAS
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
-xppclassvars        : (Modifiers=xppmemberModifiers)?                             // [CLASS] 
+xppclassvars        : Modifiers=xppmemberModifiers?                               // [CLASS | STATIC] 
                       VAR Vars+=identifier                                        // VAR <VarName> 
                       (
                         Is=xppisin                                                // [IS <Name>] [IN <SuperClass>] 
@@ -1283,19 +1277,19 @@ xppclassvars        : (Modifiers=xppmemberModifiers)?                           
                         (AS DataType=datatype)?  )                                // Optional data type
 
                       )
-                      (Shared=SHARED)?                                            // [SHARED]
-                      (ReadOnly=READONLY)?                                        // [READONLY] 
-                      (Assignment=xppvarassignment)?                              // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] 
-                      (Nosave= NOSAVE)?                                           // [NOSAVE] 
+                      Shared=SHARED?                                            // [SHARED]
+                      ReadOnly=READONLY?                                        // [READONLY] 
+                      Assignment=xppvarassignment?                              // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] 
+                      Nosave= NOSAVE?                                           // [NOSAVE] 
                       eos
                     ;
 
 
 xppvarassignment    : ASSIGNMENT xppvisibility                                    // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] 
                     ;
-xppproperty         : (Attributes=attributes)?                                    // NEW Optional Attributes
+xppproperty         : Attributes=attributes?                                      // NEW Optional Attributes
                       Accessors=xppaccessors?                                     // [ACCESS | ASSIGN]
-                      Modifiers=xppmemberModifiers?                               // [CLASS]
+                      Modifiers=xppmemberModifiers?                               // [CLASS | STATIC]
                       M=METHOD Id=identifier                                      // METHOD <MethodName>
                       (VAR VarName=identifier)?                                   // [VAR <VarName>]
                       (AS Type=datatype)?                                         // NEW Optional data type
@@ -1307,7 +1301,7 @@ xppaccessors        : ( Tokens+=(ACCESS | ASSIGN ) )+
                     ;
 
 
-xppmethod           : (Attributes=attributes)?                              // NEW Optional Attributes
+xppmethod           : Attributes=attributes?                                // NEW Optional Attributes
                       Accessors=xppaccessors?                               // [ACCESS | ASSIGN]
                       Modifiers=xppmemberModifiers?                         // [CLASS]
                       M=METHOD (ClassId=identifier COLON)? Id=identifier    // [<ClassName>:] <MethodName>
@@ -1322,7 +1316,7 @@ xppmethod           : (Attributes=attributes)?                              // N
                       (END METHOD eos)?
                     ;
 
-xppinlineMethod     : (Attributes=attributes)?                               // NEW Optional Attributes
+xppinlineMethod     : Attributes=attributes?                                 // NEW Optional Attributes
                       I=INLINE
                       Accessors=xppaccessors?                                // [ACCESS | ASSIGN]
                       Modifiers=xppmemberModifiers?                          // [CLASS]
@@ -1346,7 +1340,7 @@ xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
 /// FoxPro Parser definities
 keywordfox          :  Token=( OLEPUBLIC | EACH | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR | THEN | FOX_M)
                       // These tokens are already marked as 'only valid in a certain context ' in the lexer
-                              // ENDDEFINE | TEXT| ENDTEXT | DIMENSION | LPARAMETERS | NOSHOW | TEXTMERGE | PRETEXT | FLAGS | ADDITIVE
+                      // ENDDEFINE | TEXT| ENDTEXT | DIMENSION | LPARAMETERS | NOSHOW | TEXTMERGE | PRETEXT | FLAGS | ADDITIVE
                     ;
 // class declaration
 // text ... endtext

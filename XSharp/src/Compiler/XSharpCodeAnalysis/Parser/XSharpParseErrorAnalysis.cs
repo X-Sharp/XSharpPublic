@@ -960,11 +960,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
+        public override void ExitXppdeclareMethod([NotNull] XSharpParser.XppdeclareMethodContext context)
+        {
+            base.ExitXppdeclareMethod(context);
+            if (_options.Dialect == XSharpDialect.XPP)
+            {
+                if (context.Is?.ChildCount > 0)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Is, ErrorCode.WRN_XPPVarIsInNotSupported));
+                }
+            }
+        }
         public override void ExitXppclassvars([NotNull] XSharpParser.XppclassvarsContext context)
         {
             if (_options.Dialect == XSharpDialect.XPP)
             {
-                if (context.Is != null)
+                if (context.Is?.ChildCount > 0)
                 {
                     _parseErrors.Add(new ParseErrorData(context.Is, ErrorCode.WRN_XPPVarIsInNotSupported));
                 }

@@ -7485,7 +7485,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>The XPP 'FREEZE' method modifier is not supported and ignored.</value>
   </data>
   <data name="WRN_XPPVarIsInNotSupported" xml:space="preserve">
-    <value>The XPP 'VAR .. IS .. IN ..'  clause is not supported. There is no multiple inheritance, so this is no longer needed.</value>
+    <value>The XPP ' IS .. IN ..'  clause is not supported. There is no multiple inheritance, so this is no longer needed.</value>
   </data>
   <data name="WRN_XPPSharedIsDefault" xml:space="preserve">
     <value>XPP Variables are SHARED by default in .Net</value>

@@ -92,8 +92,13 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
                 foreach (KeyValuePair<string, List<IXMemberSymbol>> intfaces in _members)
                 {
-                    var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range);
+                    // "Simple" Name
+                    var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range, false);
                     suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
+                    // "Fully Qualified Name"
+                    ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range, true);
+                    suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
+
                 }
 
                 return suggest.ToArray();
@@ -190,11 +195,29 @@ namespace XSharp.LanguageService.Editors.LightBulb
                             // Is it already in classEntity ?
                             foreach (IXMemberSymbol entityMbr in _classEntity.Members)
                             {
-                                if (String.Compare(this.GetDescription(mbr), this.GetDescription(entityMbr), true) == 0)
+                                if ( mbr.Kind == entityMbr.Kind)
                                 {
-                                    found = true;
-                                    break;
+                                    if (String.Compare(this.GetModVis(mbr), this.GetModVis(entityMbr), true) == 0)
+                                    {
+                                        // Just the "simple" Name
+                                        if (String.Compare(mbr.Prototype, entityMbr.Prototype, true) == 0)
+                                        {
+                                            found = true;
+                                            break;
+                                        }
+                                        // Or it could be the Fully Qualified Name
+                                        else if (String.Compare(iftype.Name+"."+mbr.Prototype, entityMbr.Prototype, true) == 0)
+                                        {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
                                 }
+                                //if (String.Compare(this.GetDescription(mbr), this.GetDescription(entityMbr), true) == 0)
+                                //{
+                                //    found = true;
+                                //    break;
+                                //}
                             }
                             // No, Add 
                             if (!found)
@@ -304,9 +327,9 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return lineNumber;
         }
 
-        private string GetDescription(IXMemberSymbol mbr)
+        private string GetModVis(IXMemberSymbol mbr)
         {
-            string desc = mbr.Description;
+            string desc = mbr.ModVis;
             if ((mbr is XPEMethodSymbol) || (mbr is XPEPropertySymbol))
             {
                 desc = desc.Replace(" ABSTRACT ", "");

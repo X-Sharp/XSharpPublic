@@ -70,6 +70,14 @@
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
     <Compile Include="Classifier\LineState.cs" />
+    <Compile Include="LightBulb\ConstructorAction.cs" />
+    <Compile Include="LightBulb\ConstructorProvider.cs" />
+    <Compile Include="LightBulb\CtorParamsDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LightBulb\CtorParamsDlg.Designer.cs">
+      <DependentUpon>CtorParamsDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="LightBulb\PropertyAction.cs" />
     <Compile Include="LightBulb\PropertyProvider.cs" />
     <Compile Include="LineSeparators\GraphicsResult.cs" />
@@ -178,6 +186,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
@@ -224,6 +233,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="LightBulb\CtorParamsDlg.resx">
+      <DependentUpon>CtorParamsDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\IndentingOptionsControl.resx">
       <DependentUpon>IndentingOptionsControl.cs</DependentUpon>
     </EmbeddedResource>

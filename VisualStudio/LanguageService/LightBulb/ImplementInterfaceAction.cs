@@ -27,8 +27,9 @@ namespace XSharp.Project.Editors.LightBulb
         private IXTypeSymbol _classEntity;
         private List<IXMemberSymbol> _members;
         private XSharpModel.TextRange _range;
+        private bool _explicitly;
 
-        public ImplementInterfaceSuggestedAction(ITextView textView, ITextBuffer m_textBuffer, string intface, IXTypeSymbol entity, List<IXMemberSymbol> memberstoAdd, XSharpModel.TextRange range)
+        public ImplementInterfaceSuggestedAction(ITextView textView, ITextBuffer m_textBuffer, string intface, IXTypeSymbol entity, List<IXMemberSymbol> memberstoAdd, XSharpModel.TextRange range, bool fqn)
         {
             m_snapshot = m_textBuffer.CurrentSnapshot;
             m_interface = intface;
@@ -36,6 +37,7 @@ namespace XSharp.Project.Editors.LightBulb
             _classEntity = entity;
             _members = memberstoAdd;
             _range = range;
+            _explicitly = fqn;
         }
 
         public Task<object> GetPreviewAsync(CancellationToken cancellationToken)
@@ -45,14 +47,19 @@ namespace XSharp.Project.Editors.LightBulb
             int max = _members.Count;
             foreach (IXMemberSymbol mbr in _members)
             {
-                Run temp = new Run(this.GetDescription(mbr) + Environment.NewLine);
+                string desc = this.GetModVis(mbr);
+                if (_explicitly)
+                    desc += m_interface + ".";
+                desc += mbr.Prototype;
+                //
+                Run temp = new Run( desc + Environment.NewLine);
                 content.Add(temp);
                 count++;
                 if ((count >= 3) && (max > 3))
                 {
                     temp = new Run("..." + Environment.NewLine);
                     content.Add(temp);
-                    temp = new Run(max.ToString() + " total members." + Environment.NewLine);
+                    temp = new Run(max.ToString() + " members." + Environment.NewLine);
                     content.Add(temp);
                     break;
                 }
@@ -64,9 +71,9 @@ namespace XSharp.Project.Editors.LightBulb
             return Task.FromResult<object>(textBlock);
         }
 
-        private string GetDescription(IXMemberSymbol mbr)
+        private string GetModVis(IXMemberSymbol mbr)
         {
-            string desc = mbr.Description;
+            string desc = mbr.ModVis;
             if ((mbr is XPEMethodSymbol) || (mbr is XPEPropertySymbol))
             {
                 desc = desc.Replace(" ABSTRACT ", "");
@@ -87,7 +94,17 @@ namespace XSharp.Project.Editors.LightBulb
         }
         public string DisplayText
         {
-            get { return "Implement " + m_interface; }
+            get
+            {
+                if (!_explicitly)
+                {
+                    return "Implement " + m_interface;
+                }
+                else
+                {
+                    return "Implement explicitly " + m_interface;
+                }
+            }
         }
         public ImageMoniker IconMoniker
         {
@@ -154,7 +171,11 @@ namespace XSharp.Project.Editors.LightBulb
                 // Add a return with default value ? <- Could be a Setting ?
                 // Add a THROW NotImplementedException ? <- Could be a Setting ?
                 //
-                string desc = this.GetDescription(mbr);
+                string desc = this.GetModVis(mbr);
+                if (_explicitly)
+                    desc += m_interface + ".";
+                desc += mbr.Prototype;
+                //
                 if (mbr.Kind.IsMethod())
                 {
                     insertText.Append(prefix);
@@ -190,6 +211,8 @@ namespace XSharp.Project.Editors.LightBulb
                     if (hasAuto)
                     {
                         insertText.Append(mbr.ModVis);
+                        if (_explicitly)
+                            insertText.Append(m_interface + ".");
                         insertText.AppendLine(propDef);
                     }
                     else
@@ -229,7 +252,7 @@ namespace XSharp.Project.Editors.LightBulb
                         }
                         insertText.Append(prefix);
                         insertText.Append(indent);
-                        insertText.Append("END PROPERTY");
+                        insertText.AppendLine("END PROPERTY");
                     }
                 }
                 insertText.AppendLine();

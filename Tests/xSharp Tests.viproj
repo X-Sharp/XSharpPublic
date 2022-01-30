@@ -102790,7 +102790,7 @@ ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
 [R824 - New compiler option for compatible BEGIN SEQUENCE Native Resources]
 [R824 - New compiler option for compatible BEGIN SEQUENCE License files]
 [R824 - New compiler option for compatible BEGIN SEQUENCE General Options]
-Switches=/vo17
+Switches=
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0

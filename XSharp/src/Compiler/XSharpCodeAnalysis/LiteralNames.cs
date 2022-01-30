@@ -257,6 +257,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FoxGetWithExpression = "__FoxGetWithExpression";
         internal const string SequenceRecover = "_SequenceRecover";
         internal const string SequenceError = "_SequenceError";
+        internal const string ExecStatement = "_ExecStatement";
+        internal const string ExecExpression = "_ExecExpression";
     }
     internal static class VulcanQualifiedFunctionNames
     {

@@ -271,12 +271,12 @@ BEGIN NAMESPACE XSharpModel
                         // CurrentEntity should be a type: Class, Structure, Interface, Enum, VoStruct, Union
                         IF entity IS XSourceMemberSymbol VAR xMember .AND. xMember:Parent == NULL
                             xEnt:AddMember( xMember )
-                        ENDIF
-                     ELSEIF canAddChildren .and. xEnt != NULL .and. entity IS XSourceTypeSymbol VAR xChild .AND.  ;
-                        ! XSourceTypeSymbol.IsGlobalType(xEnt) .and. xEnt:Kind:HasChildren()
-                        // Namespace, class, structure, interface can have children (nested types)
-                        xEnt:AddChild( xChild )
-                        xChild:Namespace := xEnt:FullName
+                         ELSEIF canAddChildren .and. xEnt != NULL .and. entity IS XSourceTypeSymbol VAR xChild .AND.  ;
+                            ! XSourceTypeSymbol.IsGlobalType(xEnt) .and. xEnt:Kind:HasChildren()
+                            // Namespace, class, structure, interface can have children (nested types)
+                            xEnt:AddChild( xChild )
+                            xChild:Namespace := xEnt:FullName
+                         ENDIF
                      ENDIF
                      IF ! entity:SingleLine
                         _EntityStack:Push(entity)

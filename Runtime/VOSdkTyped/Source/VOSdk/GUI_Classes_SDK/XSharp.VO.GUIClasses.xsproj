@@ -41,7 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>XSharp.VO.GUIClasses.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.VOGUIClasses.Xml</DocumentationFile>
 	<DisabledWarnings>165, 168, 1591,649,414,169,67,9015</DisabledWarnings>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />

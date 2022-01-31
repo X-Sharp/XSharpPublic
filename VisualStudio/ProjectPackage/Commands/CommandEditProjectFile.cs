@@ -29,7 +29,7 @@ namespace XSharp.Project
             {
                 await VS.Documents.OpenAsync(project.FullPath);
             }
-            catch (COMException ex) when (ex.ErrorCode == -2147467259)
+            catch (COMException ex) when (ex.ErrorCode == unchecked((int) 0x80004005))
             {
                 // The project needs to be unloaded before it
                 // can be opened. Get the GUID of the project.

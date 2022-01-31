@@ -12,7 +12,7 @@ BEGIN NAMESPACE XSharp
     /// <seealso cref='INamedIndexer' />
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
     INTERFACE IIndexedProperties
-    	/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+    	/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         PROPERTY SELF[index AS INT   ] AS USUAL GET SET
         /// <summary>Get/Set array elements with a name.</summary>
@@ -25,13 +25,13 @@ BEGIN NAMESPACE XSharp
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
     /// <seealso cref='T:XSharp.__Array' />
     INTERFACE IIndexer
-  		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+  		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         PUBLIC PROPERTY SELF[index PARAMS INT[]] AS USUAL GET SET
-  		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+  		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         PUBLIC PROPERTY SELF[index AS INT] AS USUAL GET SET
-  		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+  		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="index1"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <param name="index2"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         PUBLIC PROPERTY SELF[index1 AS INT, index2 AS INT] AS USUAL GET SET
@@ -44,9 +44,9 @@ BEGIN NAMESPACE XSharp
     /// <seealso cref='T:XSharp.IIndexedProperties' />
     /// <seealso cref='T:XSharp.__ArrayBase`1' />
     INTERFACE INamedIndexer
-  		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+  		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-        /// <param name="name"><include file="RTComments.xml" path="Comments/NameBasedIndexParam/*" /></param> 
+        /// <param name="name"><include file="RTComments.xml" path="Comments/NameBasedIndexParam/*" /></param>
         PUBLIC PROPERTY SELF[index AS INT, name AS STRING] AS USUAL GET SET
     END INTERFACE
 
@@ -60,13 +60,13 @@ BEGIN NAMESPACE XSharp
         /// <param name="cName">Property Name</param>
         /// <returns>The current value of the property </returns>
         /// <remarks>Accessing a property that does not exist will result in a runtime error.</remarks>
-        PUBLIC METHOD NoIvarGet(cName AS STRING) AS USUAL 
+        PUBLIC METHOD NoIvarGet(cName AS STRING) AS USUAL
         /// <summary>Update the value of a property by name.</summary>
         /// <param name="cName">Property Name</param>
         /// <param name="uValue">New value of the property</param>
         /// <remarks>Assigning a property that does not exist may result in a runtime error. <br/>
         /// However the class may also decide to "silently" add the property.</remarks>
-        PUBLIC METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID 
+        PUBLIC METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
     END INTERFACE
 
     /// <summary>
@@ -74,7 +74,7 @@ BEGIN NAMESPACE XSharp
     /// </summary>
     /// <seealso cref="T:XSharp.IMacroCompiler"/>
     /// <seealso cref="T:XSharp.IMacroCompiler2"/>
-    INTERFACE IMacroCompilerUsual 
+    INTERFACE IMacroCompilerUsual
         /// <summary>Compile a string into a runtime codeblock.</summary>
         /// <param name="macro">String to compile</param>
         /// <param name="lAllowSingleQuotes">Should single quotes be allowed</param>
@@ -91,15 +91,16 @@ BEGIN NAMESPACE XSharp
         /// <seealso cref="T:XSharp._Codeblock"/>
         /// <remarks>This overload of the CompileCodeBlock assumes that single quotes are allowed, and that no memvars are used.</remarks>
         PUBLIC METHOD CompileCodeblock(macro AS STRING ) AS XSharp._Codeblock
-       
+
     END INTERFACE
 
     /// <summary>
-    /// This interface Extended the ICodeblock interface and adds support for usual parameters and return values
+    /// This interface Extended the ICodeblock interface and adds support for usual
+    /// parameters and return values
     /// </summary>
     /// <seealso cref="T:XSharp.ICodeblock"/>
-    INTERFACE IRtCodeblock INHERIT ICodeblock
-        /// <summary>Was the codeblock created from a string that started with "{|" </summary>  
+    INTERFACE IRtCodeblock INHERIT ICodeblock2
+        /// <summary>Was the codeblock created from a string that started with "{|" </summary>
         PROPERTY IsBlock AS LOGIC GET
         /// <summary>
         /// Executes the codeblock.</summary>
@@ -107,4 +108,4 @@ BEGIN NAMESPACE XSharp
         /// <returns>The value of the last expression in the codeblock.</returns>
         METHOD Eval(args PARAMS USUAL[]) AS USUAL
     END INTERFACE
-END NAMESPACE    
+END NAMESPACE

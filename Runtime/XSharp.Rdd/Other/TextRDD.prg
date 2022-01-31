@@ -179,12 +179,12 @@ BEGIN NAMESPACE XSharp.RDD
 
 
             /// <inheritdoc />
-        METHOD GoBottom() AS LOGIC
+        OVERRIDE METHOD GoBottom() AS LOGIC
             RETURN FALSE
 
 
             /// <inheritdoc />
-        METHOD GoTop() AS LOGIC
+        OVERRIDE METHOD GoTop() AS LOGIC
             IF SELF:IsOpen
                 BEGIN LOCK SELF
                     FSeek3(SELF:_hFile, 0, FS_SET)
@@ -199,7 +199,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
             /// <inheritdoc />
-        METHOD Skip(nToSkip AS INT) AS LOGIC
+        OVERRIDE METHOD Skip(nToSkip AS INT) AS LOGIC
             IF SELF:_Recno <= SELF:_Reccount
                 SELF:_Recno += 1
                 SELF:_BufferValid := FALSE
@@ -212,7 +212,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
             /// <inheritdoc />
-        METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
+        OVERRIDE METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
             LOCAL isOK as LOGIC
             isOK := SELF:GoCold()
             IF isOK
@@ -222,7 +222,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
 
-        METHOD Close() 			AS LOGIC
+        OVERRIDE METHOD Close() 			AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
             IF SELF:IsOpen
                 isOk := SELF:GoCold()
@@ -262,7 +262,7 @@ BEGIN NAMESPACE XSharp.RDD
             return TRUE
 
         /// <inheritdoc />
-        METHOD Create(info AS DbOpenInfo) AS LOGIC
+        OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
             LOCAL isOK AS LOGIC
             isOK := FALSE
             IF SELF:_Fields:Length == 0
@@ -279,6 +279,7 @@ BEGIN NAMESPACE XSharp.RDD
             //
             SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
             IF SELF:IsOpen
+                SELF:_FileName := FGetFileName(SELF:_hFile)
                 isOK := SELF:_DetermineCodePage()
                 SELF:_prepareFields()
             ELSE
@@ -290,22 +291,19 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOK
 
             /// <inheritdoc />
-        METHOD Open(info AS DbOpenInfo) AS LOGIC
+        OVERRIDE METHOD Open(info AS DbOpenInfo) AS LOGIC
             LOCAL isOK AS LOGIC
             //
             isOK := FALSE
             SELF:_OpenInfo := info
             SELF:_Hot := FALSE
             SELF:_FileName := SELF:_OpenInfo:FullName
-            IF File(SELF:_FileName)
-                SELF:_FileName := FPathName()
-                SELF:_OpenInfo:FullName := SELF:_FileName
-            ENDIF
             SELF:_Alias := SELF:_OpenInfo:Alias
             SELF:_Shared := SELF:_OpenInfo:Shared
             SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
             SELF:_hFile    := FOpen(SELF:_FileName, SELF:_OpenInfo:FileMode)
             IF SELF:IsOpen
+                SELF:_FileName := FGetFileName(SELF:_hFile)
                 isOK := SELF:_DetermineCodePage()
                 IF FSize(SELF:_hFile) < Int32.MaxValue
                     FConvertToMemoryStream(SELF:_hFile)
@@ -322,11 +320,11 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOK
 
             /// <inheritdoc />
-        METHOD Flush() 			AS LOGIC
+        OVERRIDE METHOD Flush() 			AS LOGIC
             RETURN FFlush(SELF:_hFile)
 
             /// <inheritdoc />
-        METHOD GoCold()			AS LOGIC
+        OVERRIDE METHOD GoCold()			AS LOGIC
             IF SELF:_Hot
                 SELF:_writeRecord()
                 SELF:_Hot := FALSE
@@ -334,7 +332,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN TRUE
 
             /// <inheritdoc />
-        METHOD GetValue(nFldPos AS INT) AS OBJECT
+        OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
             // Subclass fills the _fieldData list
             IF SELF:_readRecord()
                 if nFldPos <= _fieldData:Length
@@ -344,7 +342,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN NULL
 
             /// <inheritdoc />
-        METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+        OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             // Subclass persists the _fieldData list
             IF nFldPos <= _fieldData:Length
                 SELF:_fieldData[nFldPos-1] := oValue
@@ -353,7 +351,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN TRUE
 
             /// <inheritdoc />
-        METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+        OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
             SWITCH nOrdinal
                 CASE DBI_ISDBF
                     return FALSE
@@ -386,15 +384,15 @@ BEGIN NAMESPACE XSharp.RDD
             // Properties
 
             /// <inheritdoc />
-        PROPERTY Deleted 	AS LOGIC GET 	FALSE
+        OVERRIDE PROPERTY Deleted 	AS LOGIC GET 	FALSE
         /// <inheritdoc />
-        PROPERTY RecCount	AS LONG GET _Reccount
+        OVERRIDE PROPERTY RecCount	AS LONG GET _Reccount
         /// <inheritdoc />
-        PROPERTY RecId		AS OBJECT GET  _Recno
+        OVERRIDE PROPERTY RecId		AS OBJECT GET  _Recno
         /// <inheritdoc />
-        PROPERTY RecNo		AS LONG 	GET _Recno
+        OVERRIDE PROPERTY RecNo		AS LONG 	GET _Recno
         /// <inheritdoc />
-        VIRTUAL PROPERTY Driver AS STRING GET "TEXTRDD"
+        OVERRIDE PROPERTY Driver AS STRING GET "TEXTRDD"
 
 
         INTERNAL METHOD _txtError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD) AS VOID

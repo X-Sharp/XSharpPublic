@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -753,6 +753,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         LOCAL sb       := StringBuilder{cCommand:Length} AS StringBuilder
         local sCmd := cCommand.Split( SELF:Connection:Factory:ParameterPrefix) as STRING[]
         IF sCmd.Length>0
+           local lparamIndex:=-1 as int
            sb:= StringBuilder{}
            local lsPartIndex:= 0 as int
 

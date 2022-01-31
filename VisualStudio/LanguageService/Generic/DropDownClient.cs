@@ -692,6 +692,7 @@ namespace XSharp.LanguageService
 
         private async Task<IVsTextView> GetActiveTextViewAsync( )
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             IVsTextManager textManager = await ServiceProvider.GetGlobalServiceAsync<SVsTextManager, IVsTextManager>();
             ErrorHandler.ThrowOnFailure(textManager.GetActiveView(1, null, out IVsTextView activeView));
             return activeView;

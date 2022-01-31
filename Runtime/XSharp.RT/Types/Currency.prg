@@ -272,7 +272,13 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR-(lhs AS USUAL, rhs AS CURRENCY) AS CURRENCY
             // set decimals for LHS to 0, so max decmals is decimals right
-            RETURN CURRENCY{lhs}:Subtract(rhs)
+            local lCurr AS Currency
+            IF lhs:IsCurrency
+                lCurr := lhs:_currencyValue
+            ELSE
+                lCurr := lhs
+            ENDIF
+            RETURN lCurr:Subtract(rhs)
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR*(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
@@ -321,11 +327,11 @@ BEGIN NAMESPACE XSharp
             ELSEIF rhs:IsDecimal
                 result := SELF:Add ( (System.Decimal) rhs)
             ELSEIF rhs:IsCurrency
-                result := SELF:Add ( (CURRENCY) rhs)
+                result := SELF:Add ( rhs:_currencyValue)
             ELSEIF  rhs:IsLong
                 result := CURRENCY{ SELF:_value + (LONG) rhs}
             ELSE
-                THROW Error.ArgumentError(__ENTITY__,Nameof(rhs), "Argument is not numeric")
+                THROW Error.ArgumentError(__FUNCTION__,Nameof(rhs), "Argument is not numeric")
             ENDIF
             RETURN result
 
@@ -342,11 +348,11 @@ BEGIN NAMESPACE XSharp
             ELSEIF rhs:IsDecimal
                 result := SELF:Subtract( (System.Decimal) rhs)
             ELSEIF rhs:IsCurrency
-                result := SELF:Subtract( (CURRENCY) rhs)
+                result := SELF:Subtract( rhs:_currencyValue)
             ELSEIF  rhs:IsLong
                 result := CURRENCY{ SELF:_value - (LONG) rhs}
             ELSE
-                THROW Error.ArgumentError(__ENTITY__,Nameof(rhs), "Argument is not numeric")
+                THROW Error.ArgumentError(__FUNCTION__,Nameof(rhs), "Argument is not numeric")
             ENDIF
             RETURN result
 

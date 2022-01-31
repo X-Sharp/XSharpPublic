@@ -332,7 +332,7 @@ namespace XSharp.LanguageService
             XSharpModuleId found = FindFileByFileName(task.FileName);
             if (found != null)
             {
-                //XSettings.DisplayOutputMessage("Library scanning: "+task.FileName);
+                //XSettings.LogMessage("Library scanning: "+task.FileName);
                 // Doesn't it have the same members?
                 // if (found.ContentHashCode == task.ModuleID.ContentHashCode)
                 //    continue;
@@ -401,7 +401,7 @@ namespace XSharp.LanguageService
                     {
                         //if (requests.Count % 25 == 0)
                         //{
-                        //    XSettings.DisplayOutputMessage("Remaining requests " + requests.Count.ToString());
+                        //    XSettings.LogMessage("Remaining requests " + requests.Count.ToString());
                         //}
                         task = requests.Dequeue();
                         if (tasks.ContainsKey(task.FileName))
@@ -513,7 +513,7 @@ namespace XSharp.LanguageService
 
             if (!file.HasCode)
                 return;
-            //XSettings.DisplayOutputMessage("CreateModuleTree " + file.FullPath);
+            //XSettings.LogMessage("CreateModuleTree " + file.FullPath);
             //
             XSharpLibraryNode newNode;
             LibraryNode nsNode;
@@ -640,7 +640,7 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-            //XSettings.DisplayOutputMessage("OnFileWalkComplete " + xfile.FullPath);
+            //XSettings.LogMessage("OnFileWalkComplete " + xfile.FullPath);
             if (filedict.TryGetValue(xfile.FullPath, out var module))
             {
                 CreateUpdateTreeRequest(xfile.SourcePath, module.Hierarchy, module.ItemID);
@@ -707,7 +707,7 @@ namespace XSharp.LanguageService
             {
                 if (! tasks.ContainsKey(file))
                 {
-                    //XSettings.DisplayOutputMessage("CreateUpdateTreeRequest Library Enqueue " + file);
+                    //XSettings.LogMessage("CreateUpdateTreeRequest Library Enqueue " + file);
                     var id = new XSharpModuleId(owner, itemId, file);
                     LibraryTask task = new LibraryTask(file, id);
                     requests.Enqueue(task);
@@ -791,7 +791,7 @@ namespace XSharp.LanguageService
                     return;
                 }
                 XSharpModuleId id = new XSharpModuleId(hierarchy, args.ItemID, args.CanonicalName);
-                XSettings.DisplayOutputMessage("OnDeleteFile " + args.ItemID.ToString() + " " + args.CanonicalName);
+                XSettings.LogMessage("OnDeleteFile " + args.ItemID.ToString() + " " + args.CanonicalName);
                 // Ok, now remove ALL nodes for that key
                 lock (files)
                 {

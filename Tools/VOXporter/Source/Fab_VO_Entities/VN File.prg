@@ -29,7 +29,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 	    SELF:Close()
     RETURN
 
-    METHOD Close() AS VOID
+    OVERRIDE METHOD Close() AS VOID
 	    //
 	    SELF:oSource:Clear()
 	    //
@@ -37,7 +37,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 	    //
     RETURN
 
-    METHOD EntityFind( cEntity AS STRING, nType AS DWORD ) AS OBJECT
+    OVERRIDE METHOD EntityFind( cEntity AS STRING, nType AS DWORD ) AS OBJECT
 	    LOCAL nCpt		AS	DWORD
 	    LOCAL oEnt		AS	FabPRGEntity
 	    LOCAL lFound	AS	LOGIC
@@ -60,7 +60,7 @@ BEGIN NAMESPACE Fab_VO_Entities
     RETURN SELF:aEnt*/
 
 
-    METHOD ExportModule( cFileName AS STRING ) AS LOGIC
+    OVERRIDE METHOD ExportModule( cFileName AS STRING ) AS LOGIC
 	    LOCAL oFile	AS	StreamWriter
 	    LOCAL dwMax	AS	LONG
 	    LOCAL nCpt	AS	LONG
@@ -100,7 +100,7 @@ BEGIN NAMESPACE Fab_VO_Entities
     RETURN SELF:cName
 
 
-    ACCESS FullPath AS STRING
+    OVERRIDE ACCESS FullPath AS STRING
     RETURN SELF:cFilePath
 
     CONSTRUCTOR( cFile AS STRING  )
@@ -184,11 +184,11 @@ BEGIN NAMESPACE Fab_VO_Entities
 	    SELF:SortByName()
     RETURN
 
-    ACCESS IsMef AS LOGIC
+    OVERRIDE ACCESS IsMef AS LOGIC
     RETURN FALSE
 
 
-    ACCESS IsPrg AS LOGIC
+    OVERRIDE ACCESS IsPrg AS LOGIC
     RETURN TRUE
 
 
@@ -305,7 +305,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 
     PROTECT x AS STRING
 
-    PROTECT METHOD Scan() AS VOID
+    OVERRIDE PROTECT METHOD Scan() AS VOID
 	    LOCAL nCpt		AS	LONG
 	    LOCAL nCpt2		AS	LONG
 	    LOCAL dwMax		AS	LONG
@@ -454,7 +454,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 
         RETURN
 
-    PUBLIC METHOD	SortByName( ) AS VOID
+    OVERRIDE PUBLIC METHOD	SortByName( ) AS VOID
         LOCAL lOk   AS LOGIC
         LOCAL nCpt  AS LONG
         LOCAL nMax  AS LONG
@@ -482,7 +482,7 @@ BEGIN NAMESPACE Fab_VO_Entities
         //
         RETURN
 
-    ACCESS Success AS LOGIC
+    OVERRIDE ACCESS Success AS LOGIC
     RETURN SELF:lSuccess
 
 

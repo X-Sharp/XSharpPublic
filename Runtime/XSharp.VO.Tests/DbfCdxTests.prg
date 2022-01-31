@@ -771,6 +771,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBError_test() AS VOID
 			LOCAL cDbf AS STRING
 
+			LOCAL FUNCTION _Throw(oError AS Exception) AS VOID
+				THROW oError
+			END FUNCTION
+
 			RddSetDefault("DBFCDX")
 
 			cDbf := GetTempFileName()
@@ -780,6 +784,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbUseArea(,,cDbf,,TRUE)
 			Assert.True( DbAppend() )
 			Assert.True( DbUnLock() )
+			LOCAL oErrorBlock AS CODEBLOCK
+			oErrorBlock := ErrorBlock({|oError|_Throw(oError)})
 			TRY
 				? FieldPut ( 1 , "ABC") // record not locked
 			CATCH e AS XSharp.Error
@@ -789,6 +795,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				? e:OSCodeText
 				? e:ToString() // exception here
 			FINALLY
+				ErrorBlock(oErrorBlock)
 				Assert.True( DbCloseArea() )
 			END TRY
 		RETURN
@@ -4966,7 +4973,8 @@ RETURN
 			RddSetDefault("DBFCDX")
 
 			cDbf := GetTempFileName()
-			DbCreate(cDbf, {{"FLD1","C",10,0},{"MEMO1","M",10,0}})
+            FErase(cDbf + ".cdx")
+			DbCreate(cDbf, {{"FLD1","C",5,0},{"MEMO1","M",10,0}})
 
 			DbUseArea(,,cDbf)
 			DbAppend()
@@ -5012,6 +5020,7 @@ RETURN
 			RddSetDefault("DBFCDX")
 
 			cDbf := GetTempFileName()
+            FErase(cDbf + ".cdx")
 			DbCreate(cDbf, {{"FLD1","C",3,0} , {"FLD2","C",3,0}})
 
 			DbUseArea(,,cDbf)
@@ -5043,12 +5052,40 @@ RETURN
 
 			DbCloseArea()
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD BlobGetTest() AS VOID // https://github.com/X-Sharp/XSharpPublic/issues/681
+		    LOCAL cDbf AS STRING
+
+			RddSetDefault("DBFCDX")
+
+			cDbf := GetTempFileName()
+			DbCreate(cDbf, { { "DATA", "M", 10, 0, "DATA" } })
+
+			DbUseArea(,,cDbf)
+            VAR cData := "The quick brown fox jumps over the lazy dog"
+            DbAppend()
+            FieldPut(1, cData)
+            VAR result := BLOBGet(1, 10, 10)
+            Assert.Equal( result, cData:Substring(9,10))
+            result := BLOBGet(1)
+            Assert.Equal( result, cData)
+            DbAppend()
+            VAR data := BYTE[]{ 10 }
+            data[4] := 42
+            FieldPut(1, data)
+            result := BLOBGet(1)
+            VAR bResult := (BYTE[]) result
+            Assert.Equal( bResult:Length, data:Length)
+            FOR VAR nByte := 1 TO bResult:Length
+                Assert.Equal( bResult[nByte], data[nByte])
+            NEXT
+            DbCloseArea()
 
 
+//#warning Disabled BLOBDirectPut_Test, as it seems to cause some corruption
 		[Fact, Trait("Category", "DBF")];
 		METHOD BLOBDirectPut_Test() AS VOID // https://github.com/X-Sharp/XSharpPublic/issues/832
 			LOCAL cDbf AS STRING
-			LOCAL aStruct AS ARRAY
 			LOCAL nRecSize, nBlockNo AS INT
 			LOCAL pRecord, pField AS BYTE PTR
 			LOCAL aRecordBuf AS BYTE[]
@@ -5110,6 +5147,137 @@ RETURN
 
 
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD VariousFptTests() AS VOID
+			LOCAL wBlockSize AS WORD
+			DoFptTest(100)
+			wBlockSize := RuntimeState.MemoBlockSize
+			RuntimeState.MemoBlockSize := 64
+			DoFptTest(10)
+			RuntimeState.MemoBlockSize := 20
+			DoFptTest(10)
+			RuntimeState.MemoBlockSize := 10
+			DoFptTest(10)
+			RuntimeState.MemoBlockSize := wBlockSize
+
+		METHOD DoFptTest(nRecords AS DWORD) AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aSizes := <DWORD>{1,5,20,2000,500,100,200,30,20,10,5000,1,500,5,5,700,700,150,2000,15000,1000,10,20} AS DWORD[]
+			LOCAL aValues AS ARRAY
+			aValues := ArrayCreate(nRecords)
+			FOR LOCAL n := 1 AS DWORD UPTO nRecords
+				aValues[n] := Replicate(Left(n:ToString(),1) , aSizes[n % aSizes:Length + 1])
+			NEXT
+
+			LOCAL FUNCTION CheckValues() AS VOID
+				fpt1->DbGoTop()
+				FOR LOCAL n := 1 AS DWORD UPTO nRecords
+					Assert.Equal( (STRING) aValues[n], (STRING) fpt1->FieldGet(2) )
+					fpt1->DbSkip()
+				NEXT
+			END FUNCTION
+
+			RddSetDefault("DBFCDX")
+
+			cDbf := GetTempFileName()
+            FErase(cDbf + ".cdx")
+			DbCreate(cDbf, {{"FLD1","C",3,0} , {"MEMOFLD2","M",10,0}})
+
+			DbUseArea(TRUE,,cDbf,"fpt1",TRUE)
+			DbUseArea(TRUE,,cDbf,"fpt2",TRUE)
+			FOR LOCAL n := 1 AS INT UPTO nRecords
+				IF n % 2 == 1
+					fpt1->DbAppend()
+					fpt1->FieldPut(2, aValues[n])
+				ELSE
+					fpt2->DbAppend()
+					fpt2->FieldPut(2, aValues[n])
+				END IF
+			NEXT
+			fpt1->DbGoTop()
+			fpt2->DbGoTop()
+
+			CheckValues()
+
+			FOR LOCAL i := 1 AS INT UPTO 20
+				// shift memo sizes
+				AAdd(aValues, aValues[1])
+				ADel(aValues, 1)
+				ASize(aValues , nRecords)
+				FOR LOCAL n := 1 AS INT UPTO nRecords
+					IF n % 2 == 1
+						fpt1->DbGoto(n)
+						fpt1->RLock()
+						fpt1->FieldPut(2, aValues[n])
+					ELSE
+						fpt2->DbGoto(n)
+						fpt2->RLock()
+						fpt2->FieldPut(2, aValues[n])
+					END IF
+					fpt1->DbUnLock()
+					fpt2->DbUnLock()
+				NEXT
+				fpt1->DbGoTop()
+				fpt2->DbGoTop()
+
+				CheckValues()
+			NEXT
+
+			fpt1->DbCloseArea()
+			fpt2->DbCloseArea()
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestOrdScopeReturnValue() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf, {{"CFIELD","C",1,0}} , {"S","S","N"})
+			DbCreateIndex(cDbf , "CFIELD")
+			DbCloseArea()
+
+			DbUseArea( TRUE ,,cDBF )
+			Assert.True(OrdScope(TOPSCOPE, "S") == NIL)
+			Assert.True(OrdScope(BOTTOMSCOPE, "S") == NIL)
+			Assert.Equal("S", OrdScope(TOPSCOPE, "N"))
+			Assert.Equal("S", OrdScope(BOTTOMSCOPE, "N"))
+			DbCloseArea()
+		RETURN
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestSoftSeek() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/905
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf, {{"CFIELD","C",5,0}} , {"A","B","B","C"})
+			DbCreateIndex(cDbf , "CFIELD")
+			DbCloseArea()
+
+			DbUseArea( TRUE ,,cDBF )
+
+			OrdScope(TOPSCOPE, "B")
+			OrdScope(BOTTOMSCOPE, "B")
+
+			DbGoTop()
+			Assert.Equal(2U, RecNo())
+			Assert.False(DbSeek("BB",FALSE))
+			Assert.True(Eof())
+			Assert.Equal(5U, RecNo())
+			
+			DbGoTop()
+			Assert.Equal(2U, RecNo())
+			Assert.False(DbSeek("BB",TRUE))
+			Assert.True(Eof())
+			Assert.Equal(5U, RecNo())
+			
+			DbCloseArea()
+		RETURN
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
@@ -5118,7 +5286,21 @@ RETURN
 
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING
 			// we may want to put them to a specific folder etc
-		RETURN cFileName
-
+            IF File(cFileName+".DBF")
+                FErase(FPathName())
+            ENDIF
+            IF File(cFileName+".DBT")
+                FErase(FPathName())
+            ENDIF
+            IF File(cFileName+".FPT")
+                FErase(FPathName())
+            ENDIF
+            IF File(cFileName+".CDX")
+                FErase(FPathName())
+            ENDIF
+            IF File(cFileName+".NTX")
+                FErase(FPathName())
+            ENDIF
+		    RETURN cFileName
 	END CLASS
 END NAMESPACE

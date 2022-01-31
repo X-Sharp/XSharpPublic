@@ -60,7 +60,11 @@ PUBLIC STATIC PARTIAL CLASS Funcs
    RETURN cInstallTemplatesFolder
 
    STATIC CONSTRUCTOR
-        var node := "HKEY_LOCAL_MACHINE\Software\XSharpBV\XSharp"
+        var node := Constants.RegistryKey
+        if IntPtr.Size == 8
+            node := Constants.RegistryKey64
+        endif
+        node := "HKEY_LOCAL_MACHINE\"+node
         var InstallPath := (string)Microsoft.Win32.Registry.GetValue(node, "XSharpPath", "")
         cInstallTemplatesFolder := InstallPath+"\Templates"
 

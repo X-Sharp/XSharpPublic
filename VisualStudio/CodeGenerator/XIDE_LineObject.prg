@@ -194,7 +194,7 @@ RETURN SELF:oEntity != NULL
 	RETURN cLine:Contains("##USER##") .or. cLine:Contains("{{%UC%}}") .or. cLine:Contains("USER CODE STARTS")
 
 
-	VIRTUAL METHOD ToString() AS STRING
+	OVERRIDE METHOD ToString() AS STRING
 	RETURN "Line: " + SELF:LineText
 
 END CLASS

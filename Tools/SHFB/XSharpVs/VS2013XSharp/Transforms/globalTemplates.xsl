@@ -281,7 +281,7 @@
 			<xsl:when test="$p_syntaxKeyword">
 				<span class="keyword">
 					<span class="languageSpecificText">
-n						<span class="vb">Async</span>
+						<span class="vb">Async</span>
 						<span class="nu">async</span>
 					</span>
 				</span>
@@ -354,8 +354,8 @@ n						<span class="vb">Async</span>
 	============================================================================================= -->
 
 	<xsl:template name="t_pageTitle">
-		<xsl:variable name="placementLC" select="translate($logoPlacement, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>
-		<xsl:variable name="alignmentLC" select="translate($logoAlignment, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>
+		<xsl:variable name="placementLC" select="translate($logoPlacement, $g_allUpperCaseLetters, $g_allLowerCaseLetters)"/>
+		<xsl:variable name="alignmentLC" select="translate($logoAlignment, $g_allUpperCaseLetters, $g_allLowerCaseLetters)"/>
 		<table class="titleTable">
 			<xsl:if test="normalize-space($logoFile) and $placementLC = 'above'">
 				<tr>

@@ -302,18 +302,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:Stack:Empty
                 RETURN 0
             ENDIF
-            VAR topStack := SELF:CurrentStack
-            page    := topStack:Page
-            node    := page[topStack:Pos]
+            page    := SELF:CurrentStack:Page
+            node    := page[SELF:CurrentStack:Pos]
 
             IF moveDirection == SkipDirection.Forward
-                topStack:Pos++
-                node:Pos := topStack:Pos
+                SELF:CurrentStack:Pos++
+                node:Pos := SELF:CurrentStack:Pos
                 IF node:Pos < page:NumKeys .AND. node:ChildPageNo != 0
                     RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:ChildPageNo,0)
                 ENDIF
                 // Once we are at the bottom level then we simply skip forward using the Right Pointers
-                IF topStack:Pos == page:NumKeys
+                IF SELF:CurrentStack:Pos == page:NumKeys
 #ifdef TESTCDX
                     IF ! page:ValidateSiblings()
                         SELF:ThrowException(Subcodes.ERDD_INVALID_ORDER,Gencode.EG_CORRUPTION,  "CdxTag._getNextKey","Incorrect link between sibling pages for page: "+page:PageNoX)
@@ -353,7 +352,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF node:ChildPageNo != 0
                 RETURN SELF:_locate(NULL, 0, SearchMode.Bottom, node:ChildPageNo,0)
             ENDIF
-            IF topStack:Pos == 0
+            IF SELF:CurrentStack:Pos == 0
                 IF page:HasLeft
                     VAR leftPtr := page:LeftPtr
                     VAR newpage   := SELF:GetPage(leftPtr)
@@ -365,8 +364,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 RETURN SELF:_getNextKey(SkipDirection.Backward)
             ENDIF
-            topStack:Pos--
-            node:Pos := topStack:Pos
+            SELF:CurrentStack:Pos--
+            node:Pos := SELF:CurrentStack:Pos
             SELF:_saveCurrentRecord(node)
             RETURN node:Recno
 
@@ -378,10 +377,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             // this assumes the top of the stack has the leaf page where our key is.
             // we count the # of keys to the right of that page and add the pos on the top of the stack
-            VAR topStack := SELF:Stack:Top
-            LOCAL page  := (CdxTreePage) topStack:Page AS CdxTreePage
+            LOCAL page  := (CdxTreePage) SELF:CurrentStack:Page AS CdxTreePage
             LOCAL pos AS LONG
-            pos := topStack:Pos
+            pos := SELF:CurrentStack:Pos
             DO WHILE page:HasLeft
                 VAR nextPage := page:LeftPtr
                 page := SELF:GetPage(nextPage)
@@ -765,11 +763,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                      _DebOut32("DBFCDX Fixed by moving last key from Left Sibling "+ oLeft:PageNoX)
                   ENDIF
                 ENDIF
-#ifdef TESTCDX                
+#ifdef TESTCDX
                IF isFixed
                   branch:ValidateLevel()
                 ENDIF
-#endif                
+#endif
                RETURN isFixed
 
 
@@ -790,7 +788,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:ClearStack()
                 RETURN 0
             ENDIF
-            VAR topStack      := SELF:CurrentStack
             // How many Items in that page ?
             nodeCount := page:NumKeys
             IF nodeCount == 0
@@ -903,8 +900,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         RETURN 0
                 END SWITCH
             ELSEIF searchMode == SearchMode.SoftSeek
-                DO WHILE ! SELF:Stack:Empty .AND. topStack:Pos == topStack:Page:NumKeys
-                    topStack := SELF:PopPage()
+                DO WHILE ! SELF:Stack:Empty .AND. SELF:CurrentStack:Pos == SELF:CurrentStack:Page:NumKeys
+                    SELF:PopPage()
                 ENDDO
                 IF ! SELF:Stack:Empty
                     page := SELF:Stack:Top:Page
@@ -912,7 +909,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:ClearStack()
                         RETURN 0
                     ENDIF
-                    node := page[topStack:Pos]
+                    node := page[SELF:CurrentStack:Pos]
                     SELF:_saveCurrentRecord(node)
                     RETURN node:Recno
                 ENDIF
@@ -964,7 +961,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _Seek(seekInfo AS DbSeekInfo , bSearchKey AS BYTE[] ) AS LOGIC
             LOCAL recno := 0 AS LONG
             LOCAL result := FALSE  AS LOGIC
-            LOCAL fSoft := FALSE AS LOGIC
+            LOCAL fOriginalSoftSeekValue AS LOGIC
             LOCAL recnoOk := 0 AS LONG
             LOCAL locked := FALSE AS LOGIC
             LOCAL strCmp AS INT
@@ -979,6 +976,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL activeFilter AS LOGIC
             oldDescend   := SELF:Descending
             activeFilter := XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:FilterInfo:Active
+            fOriginalSoftSeekValue := seekInfo:SoftSeek
             TRY
                 SELF:Descending := FALSE
                 IF oldDescend
@@ -1008,7 +1006,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         needPadStr := TRUE
                         bSearchKey[len] := 1
                         padLen := len + 1
-                        fSoft := seekInfo:SoftSeek
                         seekInfo:SoftSeek := TRUE
                     ENDIF
                 ELSE
@@ -1018,7 +1015,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 recno  := SELF:_locateKey(bSearchKey, padLen, IIF(seekInfo:SoftSeek , SearchMode.SoftSeek , SearchMode.Left),recno)
                 result := SELF:_oRdd:__Goto(recno)
                 IF activeFilter
-                    SELF:Descending := oldDescend   
+                    SELF:Descending := oldDescend
                     SELF:_oRdd:SkipFilter(1)
                     SELF:Descending := FALSE
                     recno := SELF:_RecNo
@@ -1051,7 +1048,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             ENDIF
                             SELF:_newvalue:Key[len] := 0
                             currentKeyBuffer[len] := temp
-                            seekInfo:SoftSeek := fSoft
+                            seekInfo:SoftSeek := fOriginalSoftSeekValue
                         ENDIF
                         IF found
                             // we are on the first matching key. When we seek Last then we
@@ -1083,7 +1080,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 ENDIF
                             ENDIF
                         ELSE
-                            // Not found, why are we doing this ?
+                            // This code gets executed when doing a GoBottom in a scoped index when the bottom scope does not exist
                             IF seekInfo:Last
                                 diff := strCmp
                                 recno := SELF:_nextKey(-1)
@@ -1092,7 +1089,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 IF found
                                     result := SELF:_oRdd:__Goto(recno)
                                 ELSE
-                                    IF diff == -strCmp
+                                    IF diff == -strCmp .and. fOriginalSoftSeekValue
                                         found := TRUE
                                         result := SELF:_GoToRecno(recno)
                                     ELSE

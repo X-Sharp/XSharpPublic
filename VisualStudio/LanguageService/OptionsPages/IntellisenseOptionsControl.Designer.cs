@@ -104,7 +104,7 @@
             this.chkKeywordsInAll.Name = "chkKeywordsInAll";
             this.chkKeywordsInAll.Size = new System.Drawing.Size(168, 17);
             this.chkKeywordsInAll.TabIndex = 3;
-            this.chkKeywordsInAll.Text = "Add Keywords to the mainTab";
+            this.chkKeywordsInAll.Text = "Add &Keywords to the mainTab";
             this.toolTip1.SetToolTip(this.chkKeywordsInAll, "If you organize the Completion lists in tabs, this controls if keywords are added" +
         " to the main tab");
             this.chkKeywordsInAll.UseVisualStyleBackColor = true;
@@ -114,11 +114,10 @@
             this.chkAutoPairs.AutoSize = true;
             this.chkAutoPairs.Location = new System.Drawing.Point(13, 104);
             this.chkAutoPairs.Name = "chkAutoPairs";
-            this.chkAutoPairs.Size = new System.Drawing.Size(316, 17);
+            this.chkAutoPairs.Size = new System.Drawing.Size(145, 17);
             this.chkAutoPairs.TabIndex = 8;
-            this.chkAutoPairs.Text = "Auto Insert right parenthesis/bracket/curly after selecting item";
-            this.toolTip1.SetToolTip(this.chkAutoPairs, "After selecting a function, method or type from the completionlist this will auto" +
-        "matically inser a closing token");
+            this.chkAutoPairs.Text = "Enable &Brace Completion";
+            this.toolTip1.SetToolTip(this.chkAutoPairs, "Type closing brace after typing \'(\', \'{\', \'[\' and quotes");
             this.chkAutoPairs.UseVisualStyleBackColor = true;
             // 
             // chkCompletionListtabs
@@ -128,7 +127,7 @@
             this.chkCompletionListtabs.Name = "chkCompletionListtabs";
             this.chkCompletionListtabs.Size = new System.Drawing.Size(334, 17);
             this.chkCompletionListtabs.TabIndex = 0;
-            this.chkCompletionListtabs.Text = "Organize in tabs with different item types (properties, methods etc)";
+            this.chkCompletionListtabs.Text = "Organize in &tabs with different item types (properties, methods etc)";
             this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your comletionlists in tabs, to make it easier to find a method or" +
         " property in long completionlists");
             this.chkCompletionListtabs.UseVisualStyleBackColor = true;

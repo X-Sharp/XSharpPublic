@@ -266,7 +266,7 @@ namespace Microsoft.VisualStudio.Project
                     VS.MessageBox.ShowError(title, e.Message);
                 }
 
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "OpenChildren");
                 throw;
             }
             finally
@@ -674,7 +674,6 @@ namespace Microsoft.VisualStudio.Project
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                
 
                 RegisteredProjectType registeredProjectType = RegisteredProjectType.CreateRegisteredProjectType(projectFactoryGuid);
                 Debug.Assert(registeredProjectType != null, "Could not read the registry setting associated to this project.");

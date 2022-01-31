@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
-
+using System.IO;
 namespace XSharp.Project
 {
     [Command(PackageIds.idRebuildIntellisense)]
@@ -21,14 +21,9 @@ namespace XSharp.Project
         }
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
-            await VS.StatusBar.ShowMessageAsync("Reloading the project to rebuild the XSharp intellisense database");
-            var fileName = XDatabase.FileName;
+            await VS.StatusBar.ShowMessageAsync("Restarting Visual Studio to rebuild the XSharp intellisense database");
             XDatabase.DeleteOnClose = true;
-            var sol = await VS.Solutions.GetCurrentSolutionAsync();
-            var path = sol.FullPath;
-            await VS.Commands.ExecuteAsync(KnownCommands.File_CloseProject, path);
-            await VS.Commands.ExecuteAsync(KnownCommands.File_OpenProject, path);
-            await VS.StatusBar.ClearAsync();
+            await VS.Shell.RestartAsync(false);
         }
     }
 }

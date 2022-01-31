@@ -982,7 +982,7 @@ CLASS MenuAccelerator
 	ACCESS IsEmpty AS LOGIC
 	RETURN SELF:cKey:Trim():Length == 0
 
-	VIRTUAL METHOD ToString() AS STRING
+	OVERRIDE METHOD ToString() AS STRING
 		LOCAL cRet AS STRING
 		IF SELF:IsEmpty
 			RETURN "None"

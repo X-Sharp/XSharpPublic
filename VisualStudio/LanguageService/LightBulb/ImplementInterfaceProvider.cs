@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.Text.Formatting;
 using XSharpModel;
 using System.Reflection;
 using XSharp.Project.Editors.LightBulb;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
@@ -47,6 +48,12 @@ namespace XSharp.LanguageService.Editors.LightBulb
         private ITextBuffer m_textBuffer;
         private ITextView m_textView;
 
+        private IXTypeSymbol _classEntity;
+        private Dictionary<string, List<IXMemberSymbol>> _members;
+        private XFile _xfile;
+        private TextRange _range;
+
+
 #pragma warning disable CS0067
         public event EventHandler<EventArgs> SuggestedActionsChanged;
 
@@ -56,29 +63,9 @@ namespace XSharp.LanguageService.Editors.LightBulb
             this.m_textView = textView;
             this.m_textBuffer = textBuffer;
             //
+            _classEntity = null;
         }
 
-        private bool TryGetWordUnderCaret(out TextExtent wordExtent)
-        {
-            ITextCaret caret = m_textView.Caret;
-            SnapshotPoint point;
-
-            if (caret.Position.BufferPosition > 0)
-            {
-                point = caret.Position.BufferPosition - 1;
-            }
-            else
-            {
-                wordExtent = default(TextExtent);
-                return false;
-            }
-
-            ITextStructureNavigator navigator = m_factory.NavigatorService.GetTextStructureNavigator(m_textBuffer);
-
-            wordExtent = navigator.GetExtentOfWord(point);
-            return true;
-        }
-#pragma warning disable VSTHRD105
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
             //return Task.Factory.StartNew(() =>
@@ -92,19 +79,24 @@ namespace XSharp.LanguageService.Editors.LightBulb
             //    return false;
             //});
 
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
-                return SearchImplement();
+                return SearchMissingMembers();
             });
         }
-#pragma warning restore VSTHRD105
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            if (SearchImplement())
+            // Do we have members to Add ?
+            if (SearchMissingMembers())
             {
-                ITrackingSpan trackingSpan = range.Snapshot.CreateTrackingSpan(range, SpanTrackingMode.EdgeInclusive);
-                var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(trackingSpan, this.m_textView );
-                return new SuggestedActionSet[] { new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }) };
+                List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
+                foreach (KeyValuePair<string, List<IXMemberSymbol>> intfaces in _members)
+                {
+                    var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range);
+                    suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
+                }
+
+                return suggest.ToArray();
             }
             return Enumerable.Empty<SuggestedActionSet>();
         }
@@ -121,60 +113,208 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return false;
         }
 
-        public bool SearchImplement()
+        /// <summary>
+        /// Retrieve the Entity, and check if it has an Interface and if some members are missing
+        /// </summary>
+        /// <returns></returns>
+        public bool SearchMissingMembers()
         {
-#if NOTIMPLEMENTED
-            // Try to retrieve an already parsed list of Tags
-            XSharpClassifier xsClassifier = null;
-            if (m_textBuffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+            // Reset
+            _classEntity = null;
+            _members = null;
+            // Sorry, we are lost...
+            _xfile = m_textBuffer.GetFile();
+            if (_xfile == null)
+                return false;
+            //
+            int caretLine = SearchRealStartLine();
+            if (caretLine < 0)
+                return false;
+            //
+            foreach (var entity in _xfile.EntityList)
             {
-                xsClassifier = m_textBuffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
-            }
-
-            ITextCaret caret = m_textView.Caret;
-            if (xsClassifier != null && xsClassifier.Snapshot.Version == caret.Position.BufferPosition.Snapshot.Version)
-            {
-                //
-                ITextSnapshot snapshot = xsClassifier.Snapshot;
-                // Note we should use the same snapshot everywhere in this code.
-                // the snapshot in the classifier may be older than the current snapshot
-                if (snapshot.Length == 0)
-                    return false; // Should not happen : This means that the buffer is empty !!!
-                //
-                ITextViewLine iLine = caret.ContainingTextViewLine;
-                SnapshotSpan Span = new SnapshotSpan(snapshot, iLine.Start.Position, iLine.Length);
-                //
-                IList<ClassificationSpan> classifications = xsClassifier.GetClassificationSpans(Span);
-                //
-                foreach (var classification in classifications)
+                if (entity is XSourceTypeSymbol typeEntity)
                 {
-
-                    if (!classification.Span.Contains(caret.Position.BufferPosition))
-                        continue;
-
-                    var name = classification.ClassificationType.Classification.ToLower();
-                    //
-                    if (name.Contains("keyword"))
+                    if (typeEntity.Range.StartLine == caretLine)
                     {
-                        SnapshotSpan cspan = classification.Span;
-                        string Keyword = snapshot.GetText(cspan);
-                        Keyword = Keyword.ToLower();
-                        // Search for Implements
-                        if (Keyword.Equals("implements"))
+                        // Got it !
+                        _classEntity = _xfile.FindType(typeEntity.FullName);
+                        if (_classEntity != null)
                         {
-                            // Disable LightBulb
-                            return false;
-                            //return true;
+                            _range = typeEntity.Range;
+                            break;
                         }
                     }
                 }
             }
-#endif
+            // Ok, we know the class, now does it have an Interface..and does it need it ?
+            if (_classEntity != null)
+            {
+                _members = BuildMissingMembers();
+                if (_members != null)
+                    return true;
+            }
             return false;
         }
 
 
+        internal void WriteOutputMessage(string strMessage)
+        {
+            if (XSettings.EnableParameterLog && XSettings.EnableLogging)
+            {
+                XSettings.LogMessage("XSharp.LightBulb:" + strMessage);
+            }
+        }
+
+        private Dictionary<string, List<IXMemberSymbol>> BuildMissingMembers()
+        {
+            Dictionary<string, List<IXMemberSymbol>> toAdd = new Dictionary<string, List<IXMemberSymbol>>();
+            //
+            if (_classEntity.Interfaces.Count == 0)
+                return null;
+            //
+            foreach (string iface in _classEntity.Interfaces)
+            {
+                // Search The interface
+                // --> Default NameSpace
+                var iftype = _xfile.FindType(iface.Trim());
+                if (iftype != null)
+                {
+                    if (iftype.Kind == Kind.Interface)
+                    {
+                        List<IXMemberSymbol> elementsToAdd = new List<IXMemberSymbol>();
+                        // Search all Interface Members
+                        foreach (IXMemberSymbol mbr in iftype.Members)
+                        {
+                            bool found = false;
+                            // Is it already in classEntity ?
+                            foreach (IXMemberSymbol entityMbr in _classEntity.Members)
+                            {
+                                if (String.Compare(this.GetDescription(mbr), this.GetDescription(entityMbr), true) == 0)
+                                {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            // No, Add 
+                            if (!found)
+                            {
+                                // No
+                                elementsToAdd.Add(mbr);
+                            }
+                        }
+                        if ((elementsToAdd.Count > 0) && !toAdd.ContainsKey(iftype.Name))
+                        {
+                            toAdd.Add(iftype.Name, elementsToAdd);
+                        }
+                    }
+                }
+            }
+            //
+            if (toAdd.Count == 0)
+                return null;
+            return toAdd;
+        }
+
+        private bool SearchImplement()
+        {
+            if (m_textBuffer.Properties == null)
+                return false;
+            //
+            XSharpLineState linesState = null;
+            if (!m_textBuffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
+            {
+                return false;
+            }
+            //
+            XSharpTokens xTokens;
+            if (!m_textBuffer.Properties.TryGetProperty(typeof(XSharpTokens), out xTokens))
+            {
+                return false;
+            }
+            if (!xTokens.Complete)
+                return false;
+            //
+            var xLines = xTokens.Lines;
+            //
+            IList<XSharpToken> lineTokens = null;
+            List<XSharpToken> fulllineTokens = new List<XSharpToken>();
+            var lineNumber = SearchRealStartLine();
+            var lineState = linesState.GetFlags(lineNumber);
+            // It must be a EntityStart
+            if (lineState != LineFlags.EntityStart)
+                return false;
+            if (!xLines.TryGetValue(lineNumber, out lineTokens))
+                return false;
+            //
+            fulllineTokens.AddRange(lineTokens);
+            // Check if the following line is continuing this one
+            do
+            {
+                lineNumber++;
+                lineState = linesState.GetFlags(lineNumber);
+                if (lineState == LineFlags.Continued)
+                {
+                    xLines.TryGetValue(lineNumber, out lineTokens);
+                    if (lineTokens != null)
+                    {
+                        fulllineTokens.AddRange(lineTokens);
+                        continue;
+                    }
+                }
+            } while (lineState == LineFlags.Continued);
+            // Now, search for IMPLEMENT
+            bool found = false;
+            foreach( var token in fulllineTokens)
+            {
+                if ( token.Type == XSharpLexer.IMPLEMENTS )
+                {
+                    found = true;
+                    break;
+                }
+            }
+            return found;
+        }
+
+        /// <summary>
+        /// Based on the Caret line position, check if this is a continuig line
+        /// </summary>
+        /// <returns></returns>
+        private int SearchRealStartLine()
+        {
+            //
+            XSharpLineState linesState = null;
+            if (!m_textBuffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
+            {
+                return -1;
+            }
+            //
+            SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
+            ITextSnapshotLine line = caret.GetContainingLine();
+            //
+            var lineNumber = line.LineNumber;
+            var lineState = linesState.GetFlags(lineNumber);
+            // Search the first line
+            while (lineState == LineFlags.Continued)
+            {
+                // Move back
+                lineNumber--;
+                lineState = linesState.GetFlags(lineNumber);
+            }
+            return lineNumber;
+        }
+
+        private string GetDescription(IXMemberSymbol mbr)
+        {
+            string desc = mbr.Description;
+            if ((mbr is XPEMethodSymbol) || (mbr is XPEPropertySymbol))
+            {
+                desc = desc.Replace(" ABSTRACT ", "");
+                desc = desc.Replace(" NEW ", "");
+                desc = desc.Replace(" OVERRIDE ", "");
+            }
+            return desc;
+        }
+
     }
-
-
 }

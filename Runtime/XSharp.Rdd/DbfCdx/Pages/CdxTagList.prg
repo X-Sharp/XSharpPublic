@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     oError := RuntimeState.LastRddError
                 ENDIF
             NEXT
-            // default sort for tags in an orderbag is on pageno. 
+            // default sort for tags in an orderbag is on pageno.
             _tags:Sort( { tagX, tagY => tagX:Page - tagY:Page} )
             if oError != NULL
                 RuntimeState.LastRddError := oError
@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tags
 
-        INTERNAL METHOD Initialize(keyLength AS WORD) AS VOID
+        INTERNAL OVERRIDE METHOD Initialize(keyLength AS WORD) AS VOID
             SUPER:Initialize(keyLength)
             _tags := List<CdxTag>{}
             SELF:PageType := CdxPageType.Leaf + CdxPageType.Root
@@ -80,14 +80,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF aTags:Length > 1
                 System.Array.Sort(aTags,  { x,y => IIF (x:OrderName < y:OrderName , -1, 1)})
             ENDIF
-            VAR dbytes := SELF:DataBytes  
-            VAR rbits  := SELF:RecordBits 
-            VAR mask   := SELF:RecnoMask  
+            VAR dbytes := SELF:DataBytes
+            VAR rbits  := SELF:RecordBits
+            VAR mask   := SELF:RecnoMask
             SELF:Initialize(KeyLength)
             SELF:TrailByte  := 0
-            SELF:DataBytes  := dbytes 
-            SELF:RecordBits := rbits  
-            SELF:RecnoMask  := mask   
+            SELF:DataBytes  := dbytes
+            SELF:RecordBits := rbits
+            SELF:RecnoMask  := mask
             FOREACH VAR tag IN aTags
                 VAR bytes := BYTE[]{ SELF:KeyLength}
                 VAR name := tag:OrderName
@@ -122,4 +122,4 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_WriteTags(_tags)
             RETURN TRUE
     END CLASS
-END NAMESPACE 
+END NAMESPACE

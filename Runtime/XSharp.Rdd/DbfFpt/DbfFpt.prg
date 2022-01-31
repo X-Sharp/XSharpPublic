@@ -21,32 +21,22 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_oFptMemo:ExportMode := BLOB_EXPORT_APPEND
 
             /// <inheritdoc />
-        PROPERTY Driver AS STRING GET "DBFFPT"
+        OVERRIDE PROPERTY Driver AS STRING GET nameof(DBFFPT)
 
-
-
-        METHOD GetValue(nFldPos AS LONG) AS OBJECT
+        OVERRIDE METHOD GetValue(nFldPos AS LONG) AS OBJECT
             IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
-                VAR rawData := (BYTE[])SUPER:GetValue(nFldPos)
-                var column  := SELF:_GetColumn(nFldPos)
-                IF column:IsBinary
-                    if rawData != NULL
-                        return rawData
-                    else
-                        return <byte>{}
-                    endif
-                ENDIF
-                IF rawData != NULL
-                    // So, extract the "real" Data
-                    RETURN SELF:_oFptMemo:DecodeValue(rawData)
-                ELSE
-                    RETURN String.Empty
+                VAR rawData := _oFptMemo:GetRawValueWithHeader(nFldPos)
+                if rawData != NULL
+                     RETURN SELF:_oFptMemo:DecodeValue(rawData)
+                else
+                    var column  := SELF:_GetColumn(nFldPos)
+                    return column:BlankValue()
                 ENDIF
             ENDIF
             RETURN SUPER:GetValue(nFldPos)
 
-        METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
+        OVERRIDE METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
             IF SELF:_ReadOnly
                 SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
             ENDIF
@@ -90,7 +80,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
             /// <inheritdoc />
-        VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+        OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult := NULL AS OBJECT
             SWITCH nOrdinal
             CASE DbInfo.DBI_MEMOHANDLE
@@ -144,34 +134,10 @@ BEGIN NAMESPACE XSharp.RDD
             CASE DbInfo.DBI_MEMOVERSION
                 oResult := DB_MEMOVER_STD
             CASE DbInfo.BLOB_GET
-                // oNewValue should be object[] with 3 elements
-                TRY
-                    IF oNewValue IS OBJECT[] VAR oArray
-                        IF oArray:Length >= 3
-                            VAR nFld    := Convert.ToInt32(oArray[0])
-                            VAR nOffset := Convert.ToInt32(oArray[1])
-                            VAR nLen    := Convert.ToInt32(oArray[2])
-                            VAR rawData := (BYTE[])SUPER:GetValue(nFld)
-                            IF rawData != NULL .AND. rawData:Length > 8 // 1st 8 bytes are the header
-                                VAR nDataLen := rawData:Length -8
-                                nOffset += 8
-                                IF nOffset <= rawData:Length
-                                    VAR nToCopy := nLen
-                                    IF nToCopy == 0
-                                        nToCopy := nDataLen
-                                    ELSEIF nToCopy > nDataLen - nOffset + 1
-                                        nToCopy := nDataLen - nOffset + 1
-                                    ENDIF
-                                    VAR result  := BYTE[]{nToCopy}
-                                    System.Array.Copy(rawData, nOffset, result,0, nToCopy)
-                                    oResult := SELF:_Encoding:GetString(result,0, nToCopy)
-                                ENDIF
-                            ENDIF
-                        ENDIF
-                    ENDIF
-                CATCH ex AS Exception
-                    SELF:_dbfError(ex, Subcodes.ERDD_READ, Gencode.EG_CORRUPTION, "DBFFPT.BlobGet")
-                END TRY
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := _oFptMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+
             CASE DbInfo.BLOB_NMODE
                 IF oNewValue IS LONG VAR iExportMode
                     SELF:_oFptMemo:ExportMode := iExportMode
@@ -221,7 +187,7 @@ BEGIN NAMESPACE XSharp.RDD
             END SWITCH
             RETURN oResult
 
-        VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+        OVERRIDE METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
            IF SELF:_ReadOnly
                 SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
             ENDIF

@@ -19,7 +19,7 @@
 
 // rule for Fields, used in several other rules
 
-#translate FIELDS <f1> [,<fn> ]   => ;
+#translate __DBFIELDS__ <f1> [,<fn> ]   => ;
            __DBFIELDLIST__  {<(f1)>[, <(fn)> ]}
 
 
@@ -29,6 +29,7 @@
 
 #command SELECT <whatever>              => DbSelectArea( <(whatever)> )
 #command SELECT <f>([<list,...>])       => DbSelectArea( <f>(<list>) )
+#command SELECT &<whatever>             => DbSelectArea( <whatever> )
 
 #command USE                            => DbCloseArea()
 
@@ -209,6 +210,7 @@
                         <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>  ;
                       )
 
+
 #command COPY TO <(file)> SDF                                           ;
          [__DBFIELDLIST__ <fields>]                                     ;
          [FOR <lfor>]                                                    ;
@@ -287,6 +289,10 @@
                   <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <rdd>    ;
                 )
 
+#command <cmd:COPY,APPEND>  <*clauses*> FIELDS <*moreclauses*> => ;
+         <cmd> <clauses>   __DBFIELDS__ <moreclauses>
+
+
 #endif
 
 #command SORT  TO <(file)>  [ON <fields,...>]                           ;
@@ -303,6 +309,7 @@
                    <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> ;
                  )
 
+
 #command TOTAL TO <(file)> ON <key>                                     ;
          [__DBFIELDLIST__ <fields>]                                     ;
          [FOR <lfor>]                                                    ;
@@ -317,6 +324,11 @@
                     <(file)>, <{key}>, <fields>,                        ;
                     <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>       ;
                   )
+
+#command TOTAL <*clauses*> FIELDS <*moreclauses*> => ;
+         TOTAL <clauses> __DBFIELDS__ <moreclauses>
+
+
 
 
 #command UPDATE  FROM <(alias)>  [ON <key>]                             ;
@@ -336,6 +348,9 @@
                                                                         ;
       => DbJoin( <(alias)>, <(file)>, <fields>, <{lfor}>,<.noopt.> )
 
+
+#command JOIN <*clauses*> FIELDS <*moreclauses*> => ;
+         JOIN <clauses> __DBFIELDS__ <moreclauses>
 
 #command COUNT TO <xvar>                                                ;
          [FOR <lfor>]                                                   ;
@@ -389,6 +404,7 @@
 
 // NOTE:  CLOSE <alias> must precede the others
 #command CLOSE <alias>              => <alias>->( DbCloseArea() )
+#command CLOSE &<alias>             => (<alias>)->( DbCloseArea() )
 
 #command CLOSE                      => DbCloseArea()
 #command CLOSE [al: DATABASES,ALL>] => DbCloseAll()

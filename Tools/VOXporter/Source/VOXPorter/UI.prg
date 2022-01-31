@@ -555,7 +555,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:Close()
 	RETURN
 
-	PROTECTED METHOD OnClosing(e AS System.ComponentModel.CancelEventArgs) AS VOID
+	PROTECTED OVERRIDE METHOD OnClosing(e AS System.ComponentModel.CancelEventArgs) AS VOID
 		SUPER:OnClosing(e)
 		IF SELF:lExporting
 			e:Cancel := TRUE

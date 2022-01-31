@@ -28,6 +28,8 @@ namespace XSharp.LanguageService
                     return;
                 }
                 var fileName = Path.GetFileName(this.peekableItem._gotoElement.File.FullPath);
+                if (string.IsNullOrEmpty(fileName))
+                    return;
                 var label = this.peekableItem._gotoElement.Name;
                 var title = string.Format("{0} - ({1}, {2})", fileName, this.peekableItem._gotoElement.Range.StartLine, this.peekableItem._gotoElement.Range.StartColumn+1);
 
@@ -56,8 +58,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.DisplayOutputMessage("XSharpResultSource.FindResults failed : " );
-                XSettings.DisplayException(ex);
+                XSettings.LogException(ex, "XSharpResultSource.FindResults failed : ");
             }
         }
 

@@ -31,14 +31,10 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.Label label1;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormattingOptionsControl));
-            this.label2 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.chkAlignMethod = new System.Windows.Forms.CheckBox();
-            this.chkAlignDoCase = new System.Windows.Forms.CheckBox();
             this.chkTrimTrailngWhiteSpace = new System.Windows.Forms.CheckBox();
             this.chkInsertFinalNewLine = new System.Windows.Forms.CheckBox();
             this.chkSynchronizeUDCKeywords = new System.Windows.Forms.CheckBox();
-            this.multiFactor = new System.Windows.Forms.TextBox();
             this.chkIdentifierCase = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.grpCase = new System.Windows.Forms.GroupBox();
@@ -61,46 +57,10 @@
             label1.Size = new System.Drawing.Size(100, 23);
             label1.TabIndex = 0;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 147);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(192, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "MultiLine Statement Indentation factor :";
-            this.toolTip1.SetToolTip(this.label2, "Specify the number of tab stops the editor should indent for multiline statements" +
-        "");
-            // 
-            // chkAlignMethod
-            // 
-            this.chkAlignMethod.AutoSize = true;
-            this.chkAlignMethod.Location = new System.Drawing.Point(13, 125);
-            this.chkAlignMethod.Name = "chkAlignMethod";
-            this.chkAlignMethod.Size = new System.Drawing.Size(316, 17);
-            this.chkAlignMethod.TabIndex = 4;
-            this.chkAlignMethod.Text = "Align inner content in METHOD, FUNCTION && PROCEDURE";
-            this.toolTip1.SetToolTip(this.chkAlignMethod, "When you select this option then the statement lines inside a method or function " +
-        "will have the same indent level as the method. Otherwise they will be indented o" +
-        "ne level more.");
-            this.chkAlignMethod.UseVisualStyleBackColor = true;
-            // 
-            // chkAlignDoCase
-            // 
-            this.chkAlignDoCase.AutoSize = true;
-            this.chkAlignDoCase.Location = new System.Drawing.Point(13, 103);
-            this.chkAlignDoCase.Name = "chkAlignDoCase";
-            this.chkAlignDoCase.Size = new System.Drawing.Size(241, 17);
-            this.chkAlignDoCase.TabIndex = 3;
-            this.chkAlignDoCase.Text = "Align inner content in DO CASE ... ENDCASE";
-            this.toolTip1.SetToolTip(this.chkAlignDoCase, "When you select this then the CASE keywords will line up with the DO keyword from" +
-        " a DO CASE statement or the SWITCH keyword from a SWITCH statement");
-            this.chkAlignDoCase.UseVisualStyleBackColor = true;
-            // 
             // chkTrimTrailngWhiteSpace
             // 
             this.chkTrimTrailngWhiteSpace.AutoSize = true;
-            this.chkTrimTrailngWhiteSpace.Location = new System.Drawing.Point(13, 168);
+            this.chkTrimTrailngWhiteSpace.Location = new System.Drawing.Point(13, 105);
             this.chkTrimTrailngWhiteSpace.Name = "chkTrimTrailngWhiteSpace";
             this.chkTrimTrailngWhiteSpace.Size = new System.Drawing.Size(143, 17);
             this.chkTrimTrailngWhiteSpace.TabIndex = 7;
@@ -112,7 +72,7 @@
             // chkInsertFinalNewLine
             // 
             this.chkInsertFinalNewLine.AutoSize = true;
-            this.chkInsertFinalNewLine.Location = new System.Drawing.Point(13, 191);
+            this.chkInsertFinalNewLine.Location = new System.Drawing.Point(13, 128);
             this.chkInsertFinalNewLine.Name = "chkInsertFinalNewLine";
             this.chkInsertFinalNewLine.Size = new System.Drawing.Size(122, 17);
             this.chkInsertFinalNewLine.TabIndex = 8;
@@ -132,17 +92,6 @@
             this.toolTip1.SetToolTip(this.chkSynchronizeUDCKeywords, "When you enable this option then User Defined keywords inside UDCs will follow th" +
         "e capitalization rules for the built-in keywords");
             this.chkSynchronizeUDCKeywords.UseVisualStyleBackColor = true;
-            // 
-            // multiFactor
-            // 
-            this.multiFactor.Location = new System.Drawing.Point(220, 143);
-            this.multiFactor.Margin = new System.Windows.Forms.Padding(2);
-            this.multiFactor.Name = "multiFactor";
-            this.multiFactor.Size = new System.Drawing.Size(27, 20);
-            this.multiFactor.TabIndex = 6;
-            this.multiFactor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.multiFactor, "Specify the number of tab stops the editor should indent for multiline statements" +
-        "");
             // 
             // chkIdentifierCase
             // 
@@ -170,10 +119,6 @@
             this.grpCase.Controls.Add(this.chkSynchronizeUDCKeywords);
             this.grpCase.Controls.Add(this.chkInsertFinalNewLine);
             this.grpCase.Controls.Add(this.chkTrimTrailngWhiteSpace);
-            this.grpCase.Controls.Add(this.label2);
-            this.grpCase.Controls.Add(this.multiFactor);
-            this.grpCase.Controls.Add(this.chkAlignMethod);
-            this.grpCase.Controls.Add(this.chkAlignDoCase);
             this.grpCase.Controls.Add(this.grpKeywordCase);
             this.grpCase.Controls.Add(this.chkIdentifierCase);
             this.grpCase.Location = new System.Drawing.Point(3, 14);
@@ -278,16 +223,12 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox grpCase;
-        private System.Windows.Forms.TextBox multiFactor;
-        private System.Windows.Forms.CheckBox chkAlignMethod;
-        private System.Windows.Forms.CheckBox chkAlignDoCase;
         private System.Windows.Forms.GroupBox grpKeywordCase;
         private System.Windows.Forms.RadioButton rbTitle;
         private System.Windows.Forms.RadioButton rbNone;
         private System.Windows.Forms.RadioButton rbUpper;
         private System.Windows.Forms.RadioButton rbLower;
         private System.Windows.Forms.CheckBox chkIdentifierCase;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox chkInsertFinalNewLine;
         private System.Windows.Forms.CheckBox chkTrimTrailngWhiteSpace;
         private System.Windows.Forms.CheckBox chkSynchronizeUDCKeywords;

@@ -61,11 +61,11 @@
       </Group>
       <!--Group for the items in the Help Menu-->
       <Group guid="guidProjectPackage" id="idHelpMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_HELP" />
+        <Parent guid="VSMainMenu" id="Help" />
       </Group>
       <!--Menu group for the Show Grid and Test-->
       <Group guid="guidProjectPackage" id="idViewMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_VIEW" />
+        <Parent guid="VSMainMenu" id="View" />
       </Group>
       <!--Group for the Show Grid and Test on the toolbar -->
       <Group guid="guidVOFormEditorCmdSet" id="VOFormEditorToolbarGroup" priority="0x0600">
@@ -76,10 +76,10 @@
       </Group>
       <!--Menu groups for items Solution Explorer -->
       <Group guid="guidProjectPackage" id="idProjectContextMenuGroup" priority="0x0200">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
+        <Parent guid="VSMainMenu" id="ProjectNode"/>
       </Group>
       <Group guid="guidProjectPackage" id="idFileContextMenuGroup" priority="0x0200">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
+        <Parent guid="VSMainMenu" id="ItemNode"/>
       </Group>
 
     </Groups>
@@ -463,6 +463,7 @@
       <IDSymbol name="bmpDanglingReference" value="12" />
       <IDSymbol name="bmpTabOrder" value="13" />
       <IDSymbol name="bmpFoxPro" value="14" />
+      <IDSymbol name="bmpNuGet" value="15" />
     </GuidSymbol>
 
     <GuidSymbol name="guidWinformsMenuGroup" value="{74D21312-2AEE-11D1-8BFB-00A0C90F26F7}">

@@ -40,7 +40,7 @@ DEFINE FO_WRITE       := 1
 /// <summary>FOpen() Open Mode: Open for reading or writing</summary>
 DEFINE FO_READWRITE   := 2
 ///  <summary>FOpen() Open Mode: UnBuffered. Added to FO_READ, FO_WRITE and FO_READWRITE</summary>
-DEFINE FO_UNBUFFERED  := 10
+DEFINE FO_UNBUFFERED  := 8
 
 // FOPEN() sharing modes (combine with open mode using +)
 /// <summary>FOpen() Sharing Mode: Compatibility mode (default)</summary>
@@ -1039,6 +1039,17 @@ FUNCTION FGetStream(pFile AS IntPtr) AS FileStream
     RETURN XSharp.IO.File.findStream(pFile)
 
 
+/// <summary>Return the filename for a file handle</summary>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param>
+FUNCTION FGetFileName(pFile AS IntPtr) AS STRING
+    LOCAL oStream AS FileStream
+    oStream := XSharp.IO.File.findStream(pFile)
+    IF oStream != NULL_OBJECT
+        RETURN oStream:Name
+    ENDIF
+    RETURN String.Empty
+
+
 /// <summary>Returns the size in bytes of a specified file. </summary>
 /// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param>
 /// <returns>The size of the file or -1 when the file handle is not valid.</returns>
@@ -1061,3 +1072,4 @@ FUNCTION FSize(cFileName AS STRING) AS INT64
         RETURN fileInfo:Length
     ENDIF
     RETURN 0
+

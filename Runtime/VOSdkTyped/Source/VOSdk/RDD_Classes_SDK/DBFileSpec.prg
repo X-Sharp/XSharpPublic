@@ -123,8 +123,11 @@ METHOD Copy( oDBFSTarget AS USUAL, lIDX := NIL AS USUAL, lName := NIL AS USUAL) 
 		lName := FALSE
 	ENDIF
 
-
-	lRetCode := SUPER:Copy( oDBFSTarget, lName )
+    IF oDBFSTarget IS FileSpec var fs
+	    lRetCode := SUPER:Copy( fs, lName )
+    ELSE
+	    lRetCode := SUPER:Copy( (STRING) oDBFSTarget, lName )
+    ENDIF
 
 
 	IF lRetCode
@@ -1104,8 +1107,11 @@ METHOD Move( oDBFSTarget := NIL AS USUAL, lIDX := NIL AS USUAL, lName := NIL  AS
 		cSourcePath := SELF:cFSDrive + SELF:cFSPath + "\"
 	ENDIF
 
-
-	lRetCode := SUPER:Move( oDBFSTarget, lName )
+    IF oDBFSTarget is FileSpec var fs
+    	lRetCode := SUPER:Move( fs, lName )
+    ELSE
+        lRetCode := SUPER:Move( (string) oDBFSTarget, lName )
+    ENDIF
 
 
 	IF lRetCode
@@ -1397,8 +1403,11 @@ METHOD Rename( oDBFSNewName:= NIL  AS USUAL, lName := NIL  AS USUAL) AS LOGIC
 		lName := FALSE
 	ENDIF
 
-
-	lRetCode := SUPER:Rename( oDBFSNewName, lName )
+    IF oDBFSNewName IS FileSpec var fs
+	    lRetCode := SUPER:Rename( fs, lName )
+    ELSE
+        lRetCode := SUPER:Rename( (STRING)oDBFSNewName , lName )
+    ENDIF
 
 
 	cbOldErr := ErrorBlock( { | oErr | _Break( oErr ) } )

@@ -18,14 +18,14 @@ BEGIN NAMESPACE XSharpModel
     [DebuggerDisplay("{FullPath,nq}")];
     CLASS XFile
         #region Fields
-        PROPERTY Id           AS INT64          AUTO      GET INTERNAL SET
+        PROPERTY Id             AS INT64          AUTO      GET INTERNAL SET
         PRIVATE _globalType 	AS XSourceTypeSymbol
         PRIVATE _type			AS XFileType
-        PRIVATE _typeList		AS Dictionary<STRING, XSourceTypeSymbol>
-        PRIVATE _entityList	AS List<XSourceEntity>
-        PRIVATE _usings			AS List<STRING>
-        PRIVATE _usingStatics	AS List<STRING>
-        PRIVATE _project      AS XProject
+        PRIVATE _typeList		AS XDictionary<STRING, XSourceTypeSymbol>
+        PRIVATE _entityList	    AS SynchronizedCollection<XSourceEntity>
+        PRIVATE _usings			AS SynchronizedCollection<STRING>
+        PRIVATE _usingStatics	AS SynchronizedCollection<STRING>
+        PRIVATE _project        AS XProject
         #endregion
         // Methods
         CONSTRUCTOR(fullPath AS STRING, project AS XProject)
@@ -35,9 +35,27 @@ BEGIN NAMESPACE XSharpModel
             SELF:LastChanged := System.DateTime.MinValue
             SELF:_type := GetFileType(fullPath)
             SELF:_project := project
+            SELF:_usings		:= SynchronizedCollection<STRING>{}
+            SELF:AddDefaultUsings()
+            SELF:_usingStatics	:= SynchronizedCollection<STRING>{}
+            SELF:_entityList    := SynchronizedCollection<XSourceEntity>{}
+            SELF:_typeList		:= XDictionary<STRING, XSourceTypeSymbol>{System.StringComparer.InvariantCultureIgnoreCase}
+            SELF:Clear()
+            IF SELF:HasCode
+                SELF:_globalType	:= XSourceTypeSymbol.CreateGlobalType(SELF)
+                SELF:_typeList:Add(SELF:_globalType:Name, SELF:_globalType)
+            ENDIF
+
 
         PROPERTY CommentTasks AS IList<XCommentTask> AUTO
-        PROPERTY EntityList   AS 	List<XSourceEntity> GET _entityList
+        PROPERTY EntityList   AS IList<XSourceEntity>
+            GET
+                IF _entityList != null
+                    RETURN _entityList
+                ENDIF
+                RETURN List<XSourceEntity>{}
+            END GET
+        END PROPERTY
         PROPERTY Dialect AS XSharpDialect GET _project:Dialect
         PROPERTY Virtual AS LOGIC AUTO
 
@@ -55,13 +73,11 @@ BEGIN NAMESPACE XSharpModel
             IF (! SELF:HasCode)
                 RETURN NULL
             ENDIF
-            IF (SELF:TypeList == NULL .OR. SELF:TypeList:Count == 0)
+            IF SELF:_typeList?:Count == 0
                 RETURN NULL
             ENDIF
-            BEGIN LOCK SELF
-                VAR element := SELF:TypeList:FirstOrDefault()
-                RETURN element:Value:Members:FirstOrDefault()
-            END
+            VAR element := SELF:_typeList:FirstOrDefault()
+            RETURN element:Value:Members:FirstOrDefault()
             ///
             /// <Summary>Find member in file based on 0 based line number</Summary>
             ///
@@ -76,12 +92,14 @@ BEGIN NAMESPACE XSharpModel
             IF (_entityList == NULL_OBJECT)
                 RETURN NULL_OBJECT
             ENDIF
-            VAR top := _entityList:Count
-            oLast := _entityList:FirstOrDefault()
+            LOCAL entities  AS IList<XSourceEntity>
+            entities := SELF:_entityList:ToArray()
+            VAR top := entities:Count
+            oLast := entities:FirstOrDefault()
             DO WHILE top - bottom > 1
                 // determine middle
                 current := (bottom + top) / 2
-                VAR oElement := _entityList[current]
+                VAR oElement := entities[current]
                 VAR result := oDel(oElement, nValue)
                 IF result == 0 .and. oElement:Kind != Kind.Namespace
                     // found
@@ -149,38 +167,28 @@ BEGIN NAMESPACE XSharpModel
             RETURN SELF:FindMember(CompareByPosition, nPos)
 
 
-        METHOD InitTypeList() AS VOID
-            SELF:_usings		   := List<STRING>{}
-            SELF:_usingStatics	:= List<STRING>{}
-            SELF:_entityList     := List<XSourceEntity>{}
-            SELF:_typeList		   := Dictionary<STRING, XSourceTypeSymbol>{System.StringComparer.InvariantCultureIgnoreCase}
+        METHOD Clear() AS VOID
+            SELF:_usings:Clear()
+            SELF:_usingStatics:Clear()
+            SELF:_entityList:Clear()
+            SELF:_typeList:Clear()
             SELF:AddDefaultUsings()
-            IF SELF:HasCode
-                SELF:_globalType	:= XSourceTypeSymbol.CreateGlobalType(SELF)
-                SELF:_typeList:Add(SELF:_globalType:Name, SELF:_globalType)
-            ENDIF
 
         METHOD SetTypes(types AS IDictionary<STRING, XSourceTypeSymbol>, usings AS IList<STRING>, ;
             staticUsings AS IList<STRING>, aEntities AS IList<XSourceEntity>) AS VOID
             IF SELF:HasCode
-                //WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
-                BEGIN LOCK SELF
-                    SELF:_typeList:Clear()
-                    SELF:_usings:Clear()
-                    SELF:_usingStatics:Clear()
-                    FOREACH type AS KeyValuePair<STRING, XSourceTypeSymbol> IN types
-                        SELF:_typeList:Add(type:Key, type:Value)
-                        IF (XSourceTypeSymbol.IsGlobalType(type:Value))
-                            SELF:_globalType := type:Value
-                        ENDIF
-                    NEXT
-                    SELF:_usings:AddRange(usings)
-                    SELF:AddDefaultUsings()
-                    SELF:_usingStatics:AddRange(staticUsings)
-                    SELF:_entityList:Clear()
-                    SELF:_entityList:AddRange(aEntities)
-                END LOCK
-                //WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
+                WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
+                LOCAL globalType 	  AS XSourceTypeSymbol
+                globalType := types:Values:Where( { x => XSourceTypeSymbol.IsGlobalType(x)} ).FirstOrDefault()
+                SELF:Clear()
+                SELF:_usings:AddRange(usings)
+                SELF:_usingStatics:AddRange(staticUsings)
+                SELF:_entityList:AddRange(aEntities)
+                SELF:_typeList:Append(types)
+                IF globalType != NULL
+                    SELF:_globalType := globalType
+                ENDIF
+                WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
                 IF ContentsChanged != NULL
                     ContentsChanged()
                 ENDIF
@@ -198,7 +206,7 @@ BEGIN NAMESPACE XSharpModel
                XDatabase.Update(SELF)
                SELF:Project:ClearCache(SELF)
                IF ! SELF:Interactive
-                  SELF:InitTypeList()
+                  SELF:Clear()
                ENDIF
             ENDIF
 
@@ -206,23 +214,20 @@ BEGIN NAMESPACE XSharpModel
             //
             IF SELF:HasCode
 
-                //WriteOutputMessage("-->> ParseContents()")
-                BEGIN LOCK SELF
+                WriteOutputMessage("-->> ParseContents()")
+                BEGIN USING VAR walker := SourceWalker{SELF}
+                    TRY
+                        if String.IsNullOrEmpty(cSource)
+                            walker:Parse(FALSE)
+                        else
+                            walker:Parse(cSource, FALSE)
+                        endif
 
-                    BEGIN USING VAR walker := SourceWalker{SELF}
-                        TRY
-                            if String.IsNullOrEmpty(cSource)
-                                walker:Parse(FALSE)
-                            else
-                                walker:Parse(cSource, FALSE)
-                            endif
-
-                        CATCH exception AS System.Exception
-                            XSolution.WriteException(exception)
-                        END TRY
-                    END USING
-                END LOCK
-                //WriteOutputMessage("<<-- ParseContents()")
+                    CATCH exception AS System.Exception
+                        XSolution.WriteException(exception,__FUNCTION__)
+                    END TRY
+                END USING
+                WriteOutputMessage("<<-- ParseContents()")
             ENDIF
 
        METHOD WriteOutputMessage(message AS STRING) AS VOID
@@ -239,21 +244,18 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 //WriteOutputMessage("-->> AllUsingStatics")
                 VAR statics := List<STRING>{}
-                BEGIN LOCK SELF
+                statics:AddRange(SELF:_usingStatics)
+                IF SELF:Project != NULL .AND. SELF:Project:ProjectNode != NULL .AND. SELF:Project:ProjectNode:ParseOptions:HasRuntime
 
-                    statics:AddRange(SELF:_usingStatics)
-                    IF SELF:Project != NULL .AND. SELF:Project:ProjectNode != NULL .AND. SELF:Project:ProjectNode:ParseOptions:HasRuntime
+                    FOREACH asm AS XAssembly IN SELF:Project:AssemblyReferences
 
-                        FOREACH asm AS XAssembly IN SELF:Project:AssemblyReferences
+                        VAR globalclass := asm:GlobalClassName
+                        IF (! String.IsNullOrEmpty(globalclass))
 
-                            VAR globalclass := asm:GlobalClassName
-                            IF (! String.IsNullOrEmpty(globalclass))
-
-                                statics:AddUnique(globalclass)
-                            ENDIF
-                        NEXT
-                    ENDIF
-                END LOCK
+                            statics:AddUnique(globalclass)
+                        ENDIF
+                    NEXT
+                ENDIF
                 //WriteOutputMessage("<<-- AllUsingStatics")
                 RETURN statics
             END GET
@@ -261,23 +263,21 @@ BEGIN NAMESPACE XSharpModel
 
         PROPERTY ContentHashCode AS DWORD
             GET
-                IF ! SELF:HasCode .OR. SELF:TypeList == NULL
+                IF ! SELF:HasCode .OR. SELF:_typeList == NULL
                     RETURN 0
                 ENDIF
-                BEGIN LOCK SELF
-                    VAR hash := 0U
-                    TRY
-                        FOREACH VAR entity IN SELF:EntityList
-                            BEGIN UNCHECKED
-                                hash += (DWORD) entity:Prototype:GetHashCode()
-                                hash += (DWORD) entity:Range:StartLine
-                            END UNCHECKED
-                        NEXT
-                    CATCH
-                        NOP
-                    END TRY
-                    RETURN hash
-                END LOCK
+                VAR hash := 0U
+                TRY
+                    FOREACH VAR entity IN SELF:EntityList:ToArray()
+                        BEGIN UNCHECKED
+                            hash += (DWORD) entity:Prototype:GetHashCode()
+                            hash += (DWORD) entity:Range:StartLine
+                        END UNCHECKED
+                    NEXT
+                CATCH
+                    NOP
+                END TRY
+                RETURN hash
             END GET
         END PROPERTY
 
@@ -308,6 +308,9 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 RETURN SELF:_project
             END GET
+            INTERNAL SET
+                SELF:_project := value
+            END SET
         END PROPERTY
 
         PROPERTY SourcePath AS STRING
@@ -324,9 +327,7 @@ BEGIN NAMESPACE XSharpModel
                 IF ! SELF:HasCode .OR. SELF:_typeList==NULL
                     RETURN NULL
                 ENDIF
-                BEGIN LOCK SELF
-                    RETURN ReadOnlyDictionary<STRING, XSourceTypeSymbol>{SELF:_typeList}
-                END LOCK
+                RETURN SELF:_typeList:ToReadOnlyDictionary()
             END GET
         END PROPERTY
 
@@ -362,7 +363,7 @@ BEGIN NAMESPACE XSharpModel
                RETURN sb:ToString()
             END GET
             SET
-               SELF:_usings		   := List<STRING>{}
+               SELF:_usings:Clear()
                if ! String.IsNullOrEmpty(value)
                   self:_usings:AddRange(value:Split( <CHAR>{'\r','\n'},StringSplitOptions.RemoveEmptyEntries))
                endif
@@ -384,18 +385,12 @@ BEGIN NAMESPACE XSharpModel
                RETURN sb:ToString()
             END GET
             SET
-               SELF:_usingStatics		   := List<STRING>{}
+               SELF:_usingStatics:Clear()
                if ! String.IsNullOrEmpty(value)
                   self:_usingStatics:AddRange(value:Split( <CHAR>{'\r','\n'},StringSplitOptions.RemoveEmptyEntries))
                endif
             END SET
         END PROPERTY
-
-        METHOD LoadCurrentContents() AS VOID
-            LOCAL lIsOpen := FALSE AS LOGIC
-            var source := SELF:Project:ProjectNode:DocumentGetText(SELF:FullPath, REF lIsOpen)
-            SELF:ParseContents(source)
-            SELF:Interactive := TRUE
 
 
         PROPERTY XamlCodeBehindFile AS STRING

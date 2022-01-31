@@ -747,7 +747,6 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.SmartFilter
         CASE Set.NullValue
         CASE Set.Lexical
-        CASE Set.HardCommit
         // FoxPro
         CASE Set.Asserts
         CASE Set.Lock
@@ -755,7 +754,7 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.SqlAnsi
         CASE Set.SqlBuffering
         CASE Set.VarCharMapping
-            RETURN FALSE
+		    RETURN FALSE
 
         CASE Set.Ansi
         CASE Set.Bell
@@ -772,7 +771,8 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.Safety
         CASE Set.Space
         CASE Set.TextMerge
-			RETURN TRUE
+        CASE Set.HardCommit
+        	RETURN TRUE
 
        CASE Set.DirCase
        CASE Set.FileCase

@@ -550,7 +550,7 @@ namespace Microsoft.VisualStudio.Project
             catch (Exception e)
             {
                 // Just re-throw the exception so we don't get duplicate message boxes.
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "");
                 this.RecoverFromRenameFailure(newName, oldrelPath, oldLinkPath);
                 returnValue = Marshal.GetHRForException(e);
                 throw;
@@ -637,8 +637,7 @@ namespace Microsoft.VisualStudio.Project
                             }
                             catch (Exception e)
                             {
-                                XSettings.DisplayOutputMessage("Running Custom Tool failed : ");
-                                XSettings.DisplayException(e);
+                                XSettings.LogException(e, "Running Custom Tool failed");
                                 throw;
                             }
                         }
@@ -835,7 +834,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "AfterSaveItemAs");
                 this.RecoverFromRenameFailure(newFilePath, oldrelPath, oldLinkPath);
                 throw;
             }

@@ -52,7 +52,7 @@ CLASS WordObject
 	RETURN SELF:cWord:Length==1 .and. !SELF:cWord==" " .and. !SELF:cWord == e"\t" .and. SELF:eStatus == WordStatus.Text
 	ACCESS IsWhiteSpace AS LOGIC
 	RETURN (SELF:cWord==" " .or. SELF:cWord == e"\t") .and. SELF:eStatus == WordStatus.Text
-	VIRTUAL METHOD ToString() AS STRING
+	OVERRIDE METHOD ToString() AS STRING
 	RETURN "Word:" + iif(SELF:cWord != NULL , SELF:cWord , "")
 
 END CLASS
@@ -162,7 +162,7 @@ CLASS WordInfo
 		SELF:eType := WordType.Member
 		SELF:eSubType := WordSubType.Event
 	RETURN
-	
+
 END CLASS
 
 END NAMESPACE

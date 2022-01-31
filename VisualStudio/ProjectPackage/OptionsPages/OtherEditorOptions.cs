@@ -37,6 +37,8 @@ namespace XSharp.Project.Options
         [Description("The full path to the disassembler path to use.")]
         public string Disassembler { get; set; } = "";
 
+
+
     }
 }
 

@@ -257,19 +257,22 @@ namespace Microsoft.VisualStudio.Project
     public struct BuildResult
     {
         private MSBuildResult buildResult;
-        public static readonly BuildResult FAILED = new BuildResult(MSBuildResult.Failed, null);
+        private BuildSubmission submission;
+        public static readonly BuildResult FAILED = new BuildResult(MSBuildResult.Failed, null, null);
         ProjectInstance projectInstance;
-        public BuildResult(MSBuildResult buildResult, ProjectInstance projectInstance)
+        public BuildResult(MSBuildResult buildResult, ProjectInstance projectInstance, BuildSubmission submission)
         {
             this.buildResult = buildResult;
             this.projectInstance = projectInstance;
-            Debug.Assert(!this.IsSuccessful || this.ProjectInstance != null, "All successfull build results should have project instances");
+            this.submission = submission;
+            Debug.Assert(!this.IsSuccessful || this.ProjectInstance != null, "All successful build results should have project instances");
         }
         public BuildResult(BuildSubmission submission, ProjectInstance projectInstance) :
-                this(submission.BuildResult.OverallResult == BuildResultCode.Success ? MSBuildResult.Successful : MSBuildResult.Failed, projectInstance)
+                this(submission.BuildResult.OverallResult == BuildResultCode.Success ? MSBuildResult.Successful : MSBuildResult.Failed, projectInstance, submission)
         {
         }
-        public ProjectInstance ProjectInstance { get { return this.projectInstance; } }
+        public ProjectInstance ProjectInstance => this.projectInstance;
+        public BuildSubmission Submission => this.submission;
         public bool Equals(BuildResult other)
         {
             return this.buildResult == other.buildResult && this.projectInstance == other.ProjectInstance;
@@ -392,8 +395,8 @@ namespace Microsoft.VisualStudio.Project
             PFX = 50,
             [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "SNK")]
             SNK = 51,
-
-            ImageLast = 51
+            Nuget=52,
+            ImageLast = 52
         }
 
         /// <summary>
@@ -2254,7 +2257,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (COMException e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "AddProjectReferences");
                 return e.ErrorCode;
             }
             finally
@@ -2456,19 +2459,19 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (IOException e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "AddFileFromTemplate");
             }
             catch (UnauthorizedAccessException e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "AddFileFromTemplate");
             }
             catch (ArgumentException e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "AddFileFromTemplate");
             }
             catch (NotSupportedException e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "AddFileFromTemplate");
             }
         }
 
@@ -2625,7 +2628,7 @@ namespace Microsoft.VisualStudio.Project
             string cTarget = target;
             if (String.IsNullOrEmpty(cTarget))
                 cTarget = "null";
-            XSettings.DisplayOutputMessage("<<-- ProjectNode.Build("+cTarget+")");
+            XSettings.LogMessage("<<-- ProjectNode.Build("+cTarget+")");
             BuildResult result = BuildResult.FAILED;
             lock (ProjectNode.BuildLock)
             {
@@ -2634,7 +2637,7 @@ namespace Microsoft.VisualStudio.Project
                 result = this.InvokeMsBuild(target);
 
             }
-            XSettings.DisplayOutputMessage("-->> ProjectNode.Build()");
+            XSettings.LogMessage("-->> ProjectNode.Build()");
             return result;
         }
 
@@ -2749,7 +2752,7 @@ namespace Microsoft.VisualStudio.Project
                     }
                     catch (ArgumentException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                 }
 
@@ -2817,19 +2820,19 @@ namespace Microsoft.VisualStudio.Project
                     }
                     catch (ArgumentNullException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                     catch (ArgumentException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                     catch (FormatException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                     catch (OverflowException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                 }
 
@@ -2864,19 +2867,19 @@ namespace Microsoft.VisualStudio.Project
                     }
                     catch (ArgumentNullException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                     catch (ArgumentException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                     catch (FormatException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                     catch (OverflowException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                 }
 
@@ -2911,19 +2914,19 @@ namespace Microsoft.VisualStudio.Project
                     }
                     catch (ArgumentNullException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                     catch (ArgumentException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                     catch (FormatException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                     catch (OverflowException e)
                     {
-                        XSettings.DisplayException(e);
+                        XSettings.LogException(e, "GetProjectOptions");
                     }
                 }
 
@@ -3357,6 +3360,7 @@ namespace Microsoft.VisualStudio.Project
                 this.InitSccInfo();
 
                 this.RegisterSccProject();
+
             }
 	         catch (Exception ex)
 	         {
@@ -3603,12 +3607,12 @@ namespace Microsoft.VisualStudio.Project
                 MSBuildResult result = (submission.BuildResult.OverallResult == BuildResultCode.Success) ? MSBuildResult.Successful : MSBuildResult.Failed;
 
                 projectInstance = refProjectInstance;
-                return new BuildResult(MSBuildResult.Successful, projectInstance);
+                return new BuildResult(MSBuildResult.Successful, projectInstance, submission);
             }
             else
             {
                 projectInstance = null;
-                return new BuildResult(MSBuildResult.Failed, null);
+                return new BuildResult(MSBuildResult.Failed, null, submission);
             }
         }
 
@@ -4242,7 +4246,7 @@ namespace Microsoft.VisualStudio.Project
                 container = referencesFolder;
             }
 
-            // Load the referernces.
+            // Load the references.
             container.LoadReferencesFromBuildProject(buildProject);
         }
 
@@ -4591,7 +4595,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 // remember to invoke MSBuild
                 this.invokeMSBuildWhenResumed = true;
-                return new BuildResult(MSBuildResult.Suspended, null);
+                return new BuildResult(MSBuildResult.Suspended, null,null);
             }
             else
             {

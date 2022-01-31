@@ -59,7 +59,6 @@
     <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <PPO>false</PPO>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>

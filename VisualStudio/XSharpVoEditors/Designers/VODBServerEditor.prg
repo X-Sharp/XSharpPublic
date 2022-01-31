@@ -8,6 +8,7 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.Drawing
 using System.IO
+using XSharpModel
 using File := System.IO.File
 
 PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
@@ -216,7 +217,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	METHOD ImportDbfClicked(o AS OBJECT , ee AS EventArgs) AS VOID
 		TRY
 			SELF:ImportDbf()
-		CATCH e AS Exception
+        CATCH e AS Exception
+            XSettings.LogException(e, __FUNCTION__)
 			Funcs.ErrorBox("Error importing from dbf: " + e:Message , "DBServer Editor")
 		END TRY
 	RETURN
@@ -341,7 +343,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		lOldAnsi := DBHelpers.DBH_SetAnsi()
 		TRY
 			SELF:ExportDbf()
-		CATCH e AS Exception
+        CATCH e AS Exception
+            XSettings.LogException(e, __FUNCTION__)
 			Funcs.ErrorBox(e:Message , "Error Exporting to dbf")
 		END TRY
 		DBHelpers.DBH_SetAnsi(lOldAnsi)
@@ -456,7 +459,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
          CATCH
             NOP
 			END TRY
-		CATCH e AS Exception
+         CATCH e AS Exception
+            XSettings.LogException(e, __FUNCTION__)
 			Funcs.ErrorBox(e:Message , "Export to dbf failed.")
 		END TRY
 
@@ -559,7 +563,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			oDesign := (DBEDesignDBServer)aDesign[n]
 			TRY
 				lSuccess := lSuccess .and. SELF:ExportIndex(oDesign , cDbfFileName , cDriver)
-			CATCH e AS Exception
+            CATCH e AS Exception
+                XSettings.LogException(e, __FUNCTION__)
 				Funcs.ErrorBox("An error occured while exporting index file " + oDesign:GetProperty("filename"):TextValue + e"\r\n\r\n" + e:Message , "DBServer Editor")
 				lSuccess := FALSE
 			END TRY
@@ -581,7 +586,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		END IF
 		TRY
 			lSuccess := SELF:ExportIndex(oDesign , cDbfFileName , cDriver)
-		CATCH e AS Exception
+        CATCH e AS Exception
+            XSettings.LogException(e, __FUNCTION__)
 			Funcs.ErrorBox("An error occured while exporting index file " + oDesign:GetProperty("filename"):TextValue + e"\r\n\r\n" + e:Message , "DBServer Editor")
 			lSuccess := FALSE
 		END TRY
@@ -638,7 +644,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			END IF
 
 		CATCH e AS Exception
-
+            XSettings.LogException(e, __FUNCTION__)
 			Funcs.ErrorBox("An error occured while exporting index file " + oDesign:GetProperty("filename"):TextValue + e"\r\n\r\n" + e:Message , "DBServer Editor")
 
 		FINALLY
@@ -1831,7 +1837,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			END IF
 
 		CATCH e AS Exception
-
+            XSettings.LogException(e, __FUNCTION__)
 			MessageBox.Show(e:Message , "Error saving DBServer" , MessageBoxButtons.OK , MessageBoxIcon.Exclamation)
 			lSuccess := FALSE
 

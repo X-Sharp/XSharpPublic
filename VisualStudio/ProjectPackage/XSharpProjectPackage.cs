@@ -10,22 +10,14 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Package;
-using Microsoft.VisualStudio.TextManager.Interop;
 
 using XSharp.LanguageService;
 using XSharp.Project.WPF;
 using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Globalization;
 using static XSharp.XSharpConstants;
-using XSharp.VOEditors;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Microsoft;
-using Microsoft.VisualStudio.ComponentModelHost;
 using XSharpModel;
 using Community.VisualStudio.Toolkit;
 /*
@@ -61,16 +53,19 @@ $WINDIR$	The Windows folder.
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
-#if DEV2020
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider2020.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
+#if DEV17
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider2022.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
 #else
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
 #endif
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser", CodeBase = "XSharp.VsParser.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpMonoCecil", CodeBase = "XSharpMonoCecil.dll", Culture = "neutral", PublicKeyToken = "50cebf1cceb9d05e", Version = "0.11.3.0")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharpModel")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharpMonoCecil")]
 [assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite")]
 [assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
+[assembly: ProvideCodeBase(AssemblyName = "Serilog")]
+[assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.Debug")]
+[assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.File")]
 
 namespace XSharp.Project
 {
@@ -165,7 +160,7 @@ namespace XSharp.Project
 #endif
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents,IVsDebuggerEvents
+    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents,IVsDebuggerEvents, IDisposable
     {
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
@@ -210,12 +205,12 @@ namespace XSharp.Project
             this.RegisterToolWindows();
 
             XSharpProjectPackage.instance = this;
+            this.SolutionListeners.Add(new SolutionEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             // The project selector helps to choose between MPF and CPS projects
             //_projectSelector = new XSharpProjectSelector();
             //await _projectSelector.InitAsync(this);
-
 
             this.settings = new XPackageSettings(this);
             VS.Events.BuildEvents.ProjectConfigurationChanged += BuildEvents_ProjectConfigurationChanged;
@@ -241,6 +236,7 @@ namespace XSharp.Project
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
             _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
+            
             await this.RegisterCommandsAsync();
             await GetEditorOptionsAsync();
 
@@ -256,6 +252,7 @@ namespace XSharp.Project
                 if (string.Compare(project.Url, prj?.FullPath, true) == 0)
                 {
                     project.CreateProjectOptions();
+                    
                 }
             }
         }
@@ -278,7 +275,24 @@ namespace XSharp.Project
             XEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
             XEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
             XEditorSettings.Disassembler = options.Disassembler;
+
+            StartLogging();
             return true;
+        }
+
+        private void StartLogging()
+        {
+            int FileLogging = (int) Constants.GetSetting("Log2File", 0);
+            int DebugLogging = (int) Constants.GetSetting("Log2Debug", 0);
+
+
+            XSettings.EnableFileLogging = FileLogging != 0;
+            XSettings.EnableDebugLogging = DebugLogging != 0;
+            if (XSettings.EnableFileLogging || XSettings.EnableDebugLogging)
+                Logger.Start();
+            else
+                Logger.Stop();
+
         }
         /// <summary>
         /// Read the comment tokens from the Tools/Options dialog and pass them to the CodeModel assembly
@@ -286,13 +300,13 @@ namespace XSharp.Project
         public void SetCommentTokens()
         {
             var commentTokens = _taskList.CommentTokens;
-            var tokens = new List<XSharpModel.XCommentToken>();
+            var tokens = new List<XCommentToken>();
             foreach (var token in commentTokens)
             {
-                var cmttoken = new XSharpModel.XCommentToken(token.Text, (int)token.Priority);
+                var cmttoken = new XCommentToken(token.Text, (int)token.Priority);
                 tokens.Add(cmttoken);
             }
-            XSharpModel.XSolution.SetCommentTokens(tokens);
+            XSolution.SetCommentTokens(tokens);
         }
 
 
@@ -312,6 +326,7 @@ namespace XSharp.Project
                 if (!(bool)var)
                 {
                     SetCommentTokens();
+                    StartLogging();
                     GetEditorOptionsAsync().FireAndForget();
                 }
             }
@@ -321,6 +336,11 @@ namespace XSharp.Project
         public int OnModeChange(DBGMODE dbgmodeNew)
         {
             throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            Logger.Stop();
         }
     }
 

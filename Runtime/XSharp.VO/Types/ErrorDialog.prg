@@ -189,7 +189,7 @@ CLASS XSharp.ErrorDialog INHERIT System.Windows.Forms.Form
         SELF:ResumeLayout(FALSE)
         SELF:PerformLayout()
 
-    PROTECTED VIRTUAL METHOD OnClosing( e AS System.ComponentModel.CancelEventArgs ) AS VOID
+    PROTECTED OVERRIDE METHOD OnClosing( e AS System.ComponentModel.CancelEventArgs ) AS VOID
        IF SELF:lAbortRetryIgnoreMode .AND. SELF:DialogResult == DialogResult.Cancel // Alt+F4
            e:Cancel := TRUE
        ENDIF

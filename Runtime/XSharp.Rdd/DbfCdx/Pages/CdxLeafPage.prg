@@ -114,7 +114,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         // Other fields
         PRIVATE _leaves    AS List<CdxLeaf>
-
+        INTERNAL aClear     as BYTE[]
 
 #endregion
 #region constants
@@ -149,6 +149,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _leaves     := NULL
             TrailByte   := 0
             SELF:_getValues()
+            SELF:InitTrailKey()
 
             RETURN
 
@@ -167,7 +168,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER:Clear()
             SELF:_clear()
 
-        INTERNAL METHOD InitBlank(oTag AS CdxTag) AS VOID
+        INTERNAL METHOD InitTrailKey() AS VOID
+            SELF:aClear := BYTE[]{SELF:KeyLength}
+            IF TrailByte != 0
+                FOR VAR nI := 0 to KeyLength-1
+                    aClear[nI] := TrailByte
+                NEXT
+            ENDIF
+
+        INTERNAL OVERRIDE METHOD InitBlank(oTag AS CdxTag) AS VOID
             SELF:Tag    := oTag
             SELF:Initialize(KeyLength)
             IF SELF IS CdxTagList
@@ -181,8 +190,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                 TrailByte := 32
             ENDIF
+            SELF:InitTrailKey()
 
-        INTERNAL VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
+        INTERNAL OVERRIDE METHOD _setTag(newTag AS CdxTag) AS VOID
             SUPER:_setTag(newTag)
             IF SELF IS CdxTagList
                 TrailByte := 0
@@ -193,6 +203,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     TrailByte := (BYTE) (IIF(_tag:KeyType == __UsualType.String, 32, 0) )
                 ENDIF
             ENDIF
+            SELF:InitTrailKey()
 
         INTERNAL VIRTUAL METHOD Initialize(nKeyLength AS WORD) AS VOID
             VAR wasRoot := SELF:IsRoot
@@ -207,6 +218,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:SetProperties()
             ENDIF
             SELF:LenShift      := (nKeyLength << 8 ) | (8 - SELF:DuplicateBits)
+            SELF:InitTrailKey()
             RETURN
 
         PRIVATE METHOD SetProperties() AS VOID
@@ -227,7 +239,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             MemSet(SELF:Buffer,CDXLEAF_HEADERLEN,CDXLEAF_BYTESFREE,0)
             RETURN
 
-        INTERNAL VIRTUAL METHOD Read() AS LOGIC
+        INTERNAL OVERRIDE METHOD Read() AS LOGIC
 			VAR Ok := SUPER:Read()
             System.Diagnostics.Debug.Assert (SELF:PageType:HasFlag(CdxPageType.Leaf))
             IF Ok
@@ -238,7 +250,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY ValidKeys AS LOGIC GET _leaves != NULL .AND. _leaves:Count == SELF:NumKeys
 #region ICdxKeyValue
 
-        INTERNAL METHOD GetRecno(nPos AS Int32) AS Int32
+        INTERNAL OVERRIDE METHOD GetRecno(nPos AS Int32) AS Int32
             IF SELF:ValidKeys
                 RETURN _leaves[nPos]:Recno
             ENDIF
@@ -254,13 +266,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             nRecno      := _AND( nRecno , SELF:RecnoMask)
             RETURN nRecno
 
-        INTERNAL METHOD GetChildPage(nPos AS Int32) AS Int32
+        INTERNAL OVERRIDE METHOD GetChildPage(nPos AS Int32) AS Int32
             RETURN 0
 
-        INTERNAL METHOD GetChildren as IList<LONG>
+        INTERNAL OVERRIDE METHOD GetChildren as IList<LONG>
             RETURN List<LONG>{}
 
-        INTERNAL METHOD GetKey(nPos AS Int32) AS BYTE[]
+        INTERNAL OVERRIDE METHOD GetKey(nPos AS Int32) AS BYTE[]
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             IF nPos >= 0 .AND. nPos < SELF:NumKeys
                 SELF:_ExpandKeys(FALSE)
@@ -277,26 +289,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             LOCAL nOffSet   AS Int32
             LOCAL aBytes := BYTE[]{KeyLength} AS BYTE[]
-            local aClear := BYTE[]{KeyLength} AS BYTE[]
             LOCAL nRecno    AS Int32
             LOCAL nDup, nTrail AS BYTE
             LOCAL nCopy     AS Int32
             LOCAL nStart    AS Int32
             LOCAL nStep     AS Int32
             LOCAL nLast     AS Int32
-            LOCAL trailchar  AS BYTE
 
             // First key starts at end of page
             nStart := CDXPAGE_SIZE
             _leaves := List<CdxLeaf>{}
-            IF SELF:Tag != NULL
-                trailchar :=  (BYTE) IIF (Tag:KeyType == __UsualType.String, 32, 0)
-            ELSEIF SELF IS CdxTagList
-                trailchar := 0
-            ELSE
-                trailchar := 32
+            IF SELF IS CdxTagList
+                SELF:aClear := BYTE[]{KeyLength}
             ENDIF
-            MemSet(aClear, 0, SELF:KeyLength, trailchar)
             nOffSet := CDXLEAF_HEADERLEN
             nStep := SELF:DataBytes
             IF SELF:NumKeys > 0
@@ -394,7 +399,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
 
-        INTERNAL PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[(WORD) (SELF:NumKeys-1)])
+        INTERNAL OVERRIDE PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[(WORD) (SELF:NumKeys-1)])
         INTERNAL PROPERTY Keys    AS IList<CdxLeaf>
             GET
                 SELF:_ExpandKeys(FALSE)
@@ -403,7 +408,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         END PROPERTY
 #endregion
         INTERNAL METHOD SetRecordBits(numRecs AS LONG) AS VOID
-            VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
+            VAR bits    := CdxHelpers.GetBits(SELF:KeyLength)
             VAR totbits := bits * 2
 
 
@@ -910,23 +915,40 @@ BEGIN NAMESPACE XSharp.RDD.CDX
            ENDIF
            RETURN (WORD) (SELF:NumKeys+1)
 
-       INTERNAL METHOD Dump AS STRING
+       INTERNAL OVERRIDE METHOD Dump AS STRING
             LOCAL sb AS StringBuilder
-            VAR iLen := SELF:Tag:KeyLength
+            LOCAL iLen AS WORD
+            VAR lTagList := SELF IS CdxTagList
+            IF lTagList
+                iLen := 10
+            ELSE
+                iLen := SELF:Tag:KeyLength
+            ENDIF
             sb := StringBuilder{}
+            sb:AppendLine("")
             sb:AppendLine("--------------------------")
-            sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}, Free Bytes {3}", SELF:PageType, SELF:PageNo, SELF:NumKeys, SELF:Freespace))
-            sb:AppendLine(String.Format("                 DataBytes: {0}, RecordBits: {1}, DuplicateBits: {2}, TrailBit: {3}", SELF:DataBytes, SELF:RecordBits, SELF:DuplicateBits, SELF:TrailingBits))
+            if lTagList
+                sb:AppendLine(String.Format("{0} Page {1:X6}, # of tags: {2}, Free Bytes {3}", "TagList", SELF:PageNo, SELF:NumKeys, SELF:Freespace))
+            else
+                sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}, Free Bytes {3}", SELF:PageType, SELF:PageNo, SELF:NumKeys, SELF:Freespace))
+            endif
+            sb:AppendLine(String.Format("     RecnoMask: 0x{0:X}, DuplicateMask: 0x{1:X}, TrailingMask: 0x{2:X}",SELF:RecnoMask, SELF:DuplicateMask, SELF:TrailingMask))
+            sb:AppendLine(String.Format("     DataBytes: {0}, RecordBits: {1}, DuplicateBits: {2}, TrailBit: {3}", SELF:DataBytes, SELF:RecordBits, SELF:DuplicateBits, SELF:TrailingBits))
             sb:AppendLine(String.Format("Left page reference {0:X6}", SELF:LeftPtr))
             IF SELF:NumKeys > 0
                SELF:_ExpandKeys(FALSE)
                VAR nPos := 0
                FOREACH VAR leaf IN _leaves
-                    sb:AppendLine(String.Format("Item {0,2}, Record {1,5}, Data {2,3}, Dup {3,3}, Trail {4,3} : {5} ", nPos,  leaf:Recno, iLen-leaf:Dup-leaf:Trail, leaf:Dup, leaf:Trail, leaf:KeyText))
+                    IF lTagList
+                        sb:AppendLine(String.Format("Item {0,2}, Page {1:X8}, Data {2,3}, Dup {3,3}, Trail {4,3} : {5} ", nPos,  leaf:Recno, iLen-leaf:Dup-leaf:Trail, leaf:Dup, leaf:Trail, leaf:KeyText))
+                    ELSE
+                        sb:AppendLine(String.Format("Item {0,2}, Record {1,5}, Data {2,3}, Dup {3,3}, Trail {4,3} : {5} ", nPos,  leaf:Recno, iLen-leaf:Dup-leaf:Trail, leaf:Dup, leaf:Trail, leaf:KeyText))
+                    ENDIF
                     nPos++
                 NEXT
             ENDIF
             sb:AppendLine(String.Format("Right page reference {0:X6}", SELF:RightPtr))
+            sb:AppendLine("")
             RETURN sb:ToString()
 
         METHOD DumpKeys AS VOID

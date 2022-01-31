@@ -64,12 +64,12 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region Events
-        internal event EventHandler<HierarchyNodeEventArgs> OnChildAdded
+        public event EventHandler<HierarchyNodeEventArgs> OnChildAdded
         {
             add { onChildAdded += value; }
             remove { onChildAdded -= value; }
         }
-        internal event EventHandler<HierarchyNodeEventArgs> OnChildRemoved
+        public event EventHandler<HierarchyNodeEventArgs> OnChildRemoved
         {
             add { onChildRemoved += value; }
             remove { onChildRemoved -= value; }
@@ -1241,8 +1241,7 @@ namespace Microsoft.VisualStudio.Project
             catch (COMException e)
             {
 
-                XSettings.DisplayOutputMessage("COM Exception : " );
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "COM Exception");
                 return e.ErrorCode;
             }
 
@@ -1724,7 +1723,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch(COMException e)
                 {
-                    XSettings.DisplayException(e);
+                    XSettings.LogException(e, "InternalExecCommand");
                     returnValue = e.ErrorCode;
                 }
                 if(returnValue != VSConstants.S_OK)
@@ -2687,9 +2686,63 @@ namespace Microsoft.VisualStudio.Project
         }
 
 
+        private string PropIdString(int ivalue)
+        {
+            if ((ivalue >= (int) __VSHPROPID.VSHPROPID_FIRST) &&
+                ((int) ivalue <= (int)  __VSHPROPID.VSHPROPID_LAST))
+            {
+                var value = (__VSHPROPID)ivalue;
+                return value.ToString();
+            }
+            if ((ivalue >= (int)__VSHPROPID2.VSHPROPID_FIRST2) )
+            {
+                var value = (__VSHPROPID2)ivalue;
+                return value.ToString();
+            }
+            if ((ivalue >= (int)__VSHPROPID3.VSHPROPID_FIRST3) )
+            {
+                var value = (__VSHPROPID3)ivalue;
+                return value.ToString();
+            }
+            if ((ivalue >= (int)__VSHPROPID4.VSHPROPID_FIRST4) )
+            {
+                var value = (__VSHPROPID4)ivalue;
+                return value.ToString();
+            }
+            if ((ivalue >= (int)__VSHPROPID5.VSHPROPID_FIRST5))
+            {
+                var value = (__VSHPROPID5)ivalue;
+                return value.ToString();
+            }
+            if ((ivalue >= (int)__VSHPROPID6.VSHPROPID_FIRST6))
+            {
+                var value = (__VSHPROPID6)ivalue;
+                return value.ToString();
+            }
+            if ((ivalue >= (int)__VSHPROPID7.VSHPROPID_FIRST7))
+            {
+                var value = (__VSHPROPID7)ivalue;
+                return value.ToString();
+            }
+            if ((ivalue >= (int)__VSHPROPID8.VSHPROPID_FIRST8))
+            {
+                var value = (__VSHPROPID8)ivalue;
+                return value.ToString();
+            }
+            if ((ivalue >= (int)__VSHPROPID9.VSHPROPID_FIRST9))
+            {
+                var value = (__VSHPROPID9)ivalue;
+                return value.ToString();
+            }
+            return ivalue.ToString();
+        }
+
         public virtual int GetProperty(uint itemId, int propId, out object propVal)
         {
             propVal = null;
+#if DEBUG
+            //XSettings.LogMessage("GetProperty " + PropIdString(propId));
+#endif
             if(itemId != VSConstants.VSITEMID_ROOT && propId == (int)__VSHPROPID.VSHPROPID_IconImgList)
             {
                 return VSConstants.DISP_E_MEMBERNOTFOUND;
@@ -3006,7 +3059,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "SaveItem");
                 returnCode = e.ErrorCode;
 
             	// Try to recover

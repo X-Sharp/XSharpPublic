@@ -372,7 +372,13 @@ FUNCTION DbEval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRe
     lRest               := IIF(lRest:IsNil, .F., lRest)
     VAR lOldOpt := __DbPushOptimize(lNoOpt)
     TRY
-        RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Eval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRest) )
+        // Do not throw error when VoDb.Eval was aborted because of a FALSE condition returned
+        // by the cbExecute block
+        VAR lOk := VoDb.Eval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
+        IF ! lOk .and. RuntimeState.LastRddError != NULL
+            DoError(__FUNCTION__)
+        ENDIF
+        RETURN lOk
     FINALLY
         __DbPopOptimize(lNoOpt, lOldOpt)
     END TRY

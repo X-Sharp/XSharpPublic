@@ -16,6 +16,8 @@ USING System.Globalization
 USING System.Collections.Generic
 USING System.Diagnostics
 
+#define INPUTBUFFER
+
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBF RDD. Usually not used 'stand alone'</summary>
 [DebuggerDisplay("DBF ({Alias,nq})")];
@@ -76,6 +78,11 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     PROTECT PROPERTY HasMemo AS LOGIC GET SELF:_HasMemo
     NEW PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
     INTERNAL PROPERTY Stream AS FileStream GET SELF:_oStream
+
+#ifdef INPUTBUFFER
+    INTERNAL _inBuffer AS InputBuffer
+#endif
+
 /*
 PROTECTED METHOD ConvertToMemory() AS LOGIC
      IF !SELF:_OpenInfo:Shared
@@ -93,6 +100,8 @@ INTERNAL METHOD _CheckEofBof() AS VOID
     IF SELF:RecCount == 0
         SELF:_SetEOF(TRUE)
         SELF:_SetBOF(TRUE)
+    ELSEIF SELF:RecNo > SELF:RecCount
+        SELF:_SetEOF(TRUE)
     ENDIF
 
 
@@ -122,6 +131,9 @@ PRIVATE METHOD _AllocateBuffers() AS VOID
 			column:InitValue(SELF:_BlankBuffer)
 		ENDIF
 	NEXT
+#ifdef INPUTBUFFER
+	_inBuffer := InputBuffer{SELF:_oStream, SELF:_HeaderLength, SELF:_RecordLength, SELF:Shared}
+#endif
 
 CONSTRUCTOR()
 	SELF:_hFile     := F_ERROR
@@ -134,7 +146,7 @@ CONSTRUCTOR()
 	SELF:_AllowedFieldTypes := "CDLMN"
 
             /// <inheritdoc />
-METHOD GoTop() AS LOGIC
+OVERRIDE METHOD GoTop() AS LOGIC
 	IF SELF:IsOpen
 		BEGIN LOCK SELF
 			SELF:GoTo( 1 )
@@ -150,7 +162,7 @@ METHOD GoTop() AS LOGIC
 RETURN FALSE
 
     /// <inheritdoc />
-METHOD GoBottom() AS LOGIC
+OVERRIDE METHOD GoBottom() AS LOGIC
 	IF SELF:IsOpen
 		BEGIN LOCK SELF
 			SELF:GoTo( SELF:RecCount )
@@ -166,7 +178,7 @@ METHOD GoBottom() AS LOGIC
 RETURN FALSE
 
 /// <inheritdoc />
-METHOD GoTo(nRec AS LONG) AS LOGIC
+OVERRIDE METHOD GoTo(nRec AS LONG) AS LOGIC
 	IF SELF:IsOpen
 		BEGIN LOCK SELF
         // Validate any pending change
@@ -209,7 +221,7 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
 RETURN FALSE
 
 /// <inheritdoc />
-METHOD GoToId(oRec AS OBJECT) AS LOGIC
+OVERRIDE METHOD GoToId(oRec AS OBJECT) AS LOGIC
 	LOCAL result AS LOGIC
 	BEGIN LOCK SELF
 		TRY
@@ -224,17 +236,19 @@ METHOD GoToId(oRec AS OBJECT) AS LOGIC
 RETURN result
 
 /// <inheritdoc />
-METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
+OVERRIDE METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
 	SELF:ForceRel()
 RETURN SUPER:SetFilter(info)
 
     /// <inheritdoc />
-METHOD Skip(nToSkip AS INT) AS LOGIC
+OVERRIDE METHOD Skip(nToSkip AS INT) AS LOGIC
 	LOCAL result := FALSE AS LOGIC
 	SELF:ForceRel()
 	IF SELF:IsOpen
-		SELF:_Top := FALSE
-		SELF:_Bottom := FALSE
+        IF nToSkip != 0 .OR. !( SELF:_fLocked .OR. SELF:_Locks:Contains( SELF:RecNo ) ) .OR. !SELF:_BufferValid
+		    SELF:_Top := FALSE
+		    SELF:_Bottom := FALSE
+        ENDIF
 		LOCAL delState := XSharp.RuntimeState.Deleted AS LOGIC
         //
 		IF nToSkip == 0  .OR. delState .OR. ( SELF:_FilterInfo != NULL .AND. SELF:_FilterInfo:Active )
@@ -247,8 +261,9 @@ METHOD Skip(nToSkip AS INT) AS LOGIC
                 IF ( nToSkip < 0 ) .AND. SELF:_BoF
 				    SELF:GoTop()
 				    SELF:BoF := TRUE
-			    ENDIF
-			    IF nToSkip < 0
+                ENDIF
+                // when we land at EOF then do not reset the EOF flag
+			    IF nToSkip < 0 .and. SELF:RecNo < SELF:RecCount
 				    SELF:_SetEOF(FALSE)
 			    ELSEIF nToSkip > 0
 				    SELF:BoF := FALSE
@@ -261,7 +276,7 @@ RETURN result
 
 
     /// <inheritdoc />
-METHOD SkipRaw(nToSkip AS INT) AS LOGIC
+OVERRIDE METHOD SkipRaw(nToSkip AS INT) AS LOGIC
 	LOCAL isOK := TRUE AS LOGIC
     LOCAL nNewRec as INT
     //
@@ -287,7 +302,7 @@ RETURN isOK
 
     // Append and Delete
 /// <inheritdoc />
-METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
+OVERRIDE METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 	LOCAL isOK := FALSE AS LOGIC
 	IF SELF:IsOpen
 		BEGIN LOCK SELF
@@ -346,7 +361,6 @@ RETURN isOK
 
 PRIVATE METHOD _UpdateRecCount(nCount AS LONG) as LOGIC
 	SELF:_RecCount          := nCount
-	SELF:_Header:isHot      := TRUE
     SELF:_Header:RecCount   := nCount
     SELF:_wasChanged        := TRUE
     SELF:_writeHeader()
@@ -354,7 +368,7 @@ RETURN TRUE
 
 
 /// <inheritdoc />
-METHOD AppendLock( lockMode AS DbLockMode ) AS LOGIC
+OVERRIDE METHOD AppendLock( lockMode AS DbLockMode ) AS LOGIC
 	LOCAL isOK := FALSE AS LOGIC
 	BEGIN LOCK SELF
 		IF lockMode == DbLockMode.Lock
@@ -395,7 +409,7 @@ RETURN isOK
     // LockMethod.Exclusive : Unlock all records and lock the indicated record
     // LockMethod.Multiple  : Loc the indicated record
     /// <inheritdoc />
-METHOD Lock( lockInfo REF DbLockInfo ) AS LOGIC
+OVERRIDE METHOD Lock( lockInfo REF DbLockInfo ) AS LOGIC
 	LOCAL isOK AS LOGIC
 	SELF:ForceRel()
 	BEGIN LOCK SELF
@@ -413,7 +427,7 @@ RETURN isOK
 
     // Place a lock on the Header. The "real" offset locked depends on the Lock Scheme, defined by the DBF Type
     /// <inheritdoc />
-METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
+OVERRIDE METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
     //
 	IF lockMode == DbLockMode.Lock
         //? CurrentThreadId, "Start Header Lock", ProcName(1)
@@ -427,7 +441,7 @@ METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
                 IF timer:TimeOut(SELF:FullPath, SELF:_lockScheme:Offset, 1)
                     RETURN FALSE
                 ENDIF
-                System.Threading.Thread.Sleep(100)
+                System.Threading.Thread.Sleep(1)
 
             ELSE
                 EXIT
@@ -455,7 +469,7 @@ METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
     // Unlock a indicated record number. If 0, Unlock ALL records
     // Then unlock the File if needed
 /// <inheritdoc />
-METHOD UnLock(oRecId AS OBJECT) AS LOGIC
+OVERRIDE METHOD UnLock(oRecId AS OBJECT) AS LOGIC
 	LOCAL recordNbr AS LONG
 	LOCAL isOK AS LOGIC
     //
@@ -595,6 +609,9 @@ PROTECTED METHOD _lockDBFFile() AS LOGIC
 			SELF:_Locks:Clear()
 		ENDIF
 		SELF:_fLocked := SELF:_lockFile()
+#ifdef INPUTBUFFER
+		_inBuffer:Invalidate()
+#endif
         // Invalidate Buffer
 		SELF:GoTo( SELF:RecNo )
 		isOK := SELF:_fLocked
@@ -671,7 +688,7 @@ RETURN isOK
 
     // Un Delete the curretn Record
 /// <inheritdoc />
-METHOD Recall() AS LOGIC
+OVERRIDE METHOD Recall() AS LOGIC
 	LOCAL isOK AS LOGIC
 	SELF:ForceRel()
 	isOK := SELF:_readRecord()
@@ -688,7 +705,7 @@ RETURN isOK
 
     // Mark the current record as DELETED
 /// <inheritdoc />
-METHOD Delete() AS LOGIC
+OVERRIDE METHOD Delete() AS LOGIC
 	LOCAL isOK AS LOGIC
 	SELF:ForceRel()
 	BEGIN LOCK SELF
@@ -711,7 +728,7 @@ RETURN isOK
 
     // Retrieve the raw content of a record
 /// <inheritdoc />
-METHOD GetRec() AS BYTE[]
+OVERRIDE METHOD GetRec() AS BYTE[]
 	LOCAL records := NULL AS BYTE[]
 	SELF:ForceRel()
     // Read Record to Buffer
@@ -726,7 +743,7 @@ RETURN records
 
     // Put the content of a record as raw data
 /// <inheritdoc />
-METHOD PutRec(aRec AS BYTE[]) AS LOGIC
+OVERRIDE METHOD PutRec(aRec AS BYTE[]) AS LOGIC
 	LOCAL isOK := FALSE AS LOGIC
     // First, Check the Size
 	IF aRec:Length == SELF:_RecordLength
@@ -745,7 +762,7 @@ RETURN isOK
 
     // Suppress all DELETED record
 /// <inheritdoc />
-METHOD Pack() AS LOGIC
+OVERRIDE METHOD Pack() AS LOGIC
 	LOCAL isOK AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
@@ -805,7 +822,7 @@ RETURN isOK
 
     // Remove all records
 /// <inheritdoc />
-METHOD Zap() AS LOGIC
+OVERRIDE METHOD Zap() AS LOGIC
 	LOCAL isOK AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
@@ -841,7 +858,7 @@ RETURN isOK
 
     // Open and Close
     /// <inheritdoc />
-METHOD Close() 			AS LOGIC
+OVERRIDE METHOD Close() 			AS LOGIC
 	LOCAL isOK := FALSE AS LOGIC
 	IF SELF:IsOpen
     // Validate
@@ -884,7 +901,7 @@ PROTECTED METHOD _putEndOfFileMarker() AS LOGIC
 
     // Create a DBF File, based on the DbOpenInfo Structure
     // Write the File Header, and the Fields Header; Create the Memo File if needed
-METHOD Create(info AS DbOpenInfo) AS LOGIC
+OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
 	LOCAL isOK AS LOGIC
     //
 	isOK := FALSE
@@ -904,9 +921,15 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
 	SELF:_Shared := SELF:_OpenInfo:Shared
 	SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
     //
+#ifdef INPUTBUFFER
+	SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE | FO_UNBUFFERED)
+#else
 	SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
+#endif
+    // Adjust path to be sure we handle DOS 8 name chars correctly
 	IF SELF:IsOpen
         SELF:_oStream    := (FileStream) FGetStream(SELF:_hFile)
+        SELF:_FileName   := _oStream:Name
 		LOCAL fieldCount :=  SELF:_Fields:Length AS INT
 		LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
 		LOCAL codePage AS LONG
@@ -1038,7 +1061,7 @@ PROTECTED VIRTUAL METHOD _writeFieldsHeader() AS LOGIC
 RETURN isOK
 
     /// <inheritdoc />
-METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
+OVERRIDE METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
 	LOCAL isOK AS LOGIC
     //
 	isOK := FALSE
@@ -1056,7 +1079,11 @@ METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
 	SELF:_Alias := SELF:_OpenInfo:Alias
 	SELF:_Shared := SELF:_OpenInfo:Shared
 	SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
+#ifdef INPUTBUFFER
+	SELF:_hFile    := FOpen(SELF:_FileName, SELF:_OpenInfo:FileMode | FO_UNBUFFERED)
+#else
 	SELF:_hFile    := FOpen(SELF:_FileName, SELF:_OpenInfo:FileMode)
+#endif
 
 	IF SELF:IsOpen
 		SELF:_oStream    := (FileStream) FGetStream(SELF:_hFile)
@@ -1160,7 +1187,7 @@ RETURN isOK
 
 INTERNAL METHOD _readField(nOffSet as LONG, oField as DbfField) AS LOGIC
     // Read single field. Called from AutoIncrement code to read the counter value
-    RETURN  _oStream:SafeReadAt(nOffSet,oField:Buffer,DbfField.SIZE)
+    RETURN _oStream:SafeReadAt(nOffSet,oField:Buffer,DbfField.SIZE)
 
 INTERNAL METHOD _writeField(nOffSet as LONG, oField as DbfField) AS LOGIC
     // Write single field in header. Called from AutoIncrement code to update the counter value
@@ -1195,14 +1222,14 @@ RETURN ret
 
     // Fields
 /// <inheritdoc />
-METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
+OVERRIDE METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
 	SELF:_HasMemo := FALSE
 RETURN SUPER:SetFieldExtent(fieldCount)
 
 
     // Add a Field to the _Fields List. Fields are added in the order of method call
     /// <inheritdoc />
-METHOD AddField(info AS RddFieldInfo) AS LOGIC
+OVERRIDE METHOD AddField(info AS RddFieldInfo) AS LOGIC
 	LOCAL isOK AS LOGIC
     // convert RddFieldInfo to DBFColumn
 	IF ! (info IS DbfColumn)
@@ -1236,7 +1263,7 @@ RETURN TRUE
 
 
 /// <inheritdoc />
-METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+OVERRIDE METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 	LOCAL oResult := NULL AS OBJECT
 	IF SELF:_FieldIndexValidate(nFldPos)
 		BEGIN LOCK SELF
@@ -1311,7 +1338,7 @@ RETURN oResult
 VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
 	LOCAL isOK AS LOGIC
     // Buffer is supposed to be correct
-	IF SELF:_BufferValid == TRUE .OR. SELF:EoF
+	IF SELF:_BufferValid == TRUE .OR. SELF:EoF .OR. SELF:RecNo > SELF:RecCount
 		RETURN TRUE
 	ENDIF
     // File Ok ?
@@ -1320,7 +1347,12 @@ VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
 	IF  isOK
         // Record pos is One-Based
 		LOCAL lOffset := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength AS LONG
+#ifdef INPUTBUFFER
+		isOK := _inBuffer:Read(lOffset, SELF:_RecordBuffer, SELF:_RecordLength)
+#else
 		isOK := _oStream:SafeReadAt(lOffset, SELF:_RecordBuffer, SELF:_RecordLength)
+#endif
+
 		IF isOK
 			// Read Record
 			SELF:_BufferValid := TRUE
@@ -1348,15 +1380,17 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
             // Record pos is One-Based
 			LOCAL recordPos AS LONG
 			recordPos := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength
+#ifdef INPUTBUFFER
+            isOK := _inBuffer:Write(recordPos, SELF:_RecordBuffer, SELF:_RecordLength)
+#else
             isOK :=  _oStream:SafeWriteAt(recordPos, SELF:_RecordBuffer)
+#endif
 			IF isOK
 			   // Write Record
 				TRY
-	                // Don't forget to Update Header
-    				SELF:_Header:isHot := TRUE
+	                // Don't forget to Update Header (nkok: only if changed!)
 			        IF SELF:Shared
 				        SELF:_writeHeader()
-                        _oStream:Flush(TRUE)
 					ENDIF
 				CATCH ex AS Exception
 					SELF:_dbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
@@ -1489,7 +1523,7 @@ OVERRIDE METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
 RETURN blockNbr
 
     /// <inheritdoc />
-METHOD GetValue(nFldPos AS LONG) AS OBJECT
+OVERRIDE METHOD GetValue(nFldPos AS LONG) AS OBJECT
 	LOCAL ret := NULL AS OBJECT
 	SELF:ForceRel()
     // Read Record to Buffer
@@ -1521,7 +1555,7 @@ METHOD GetValue(nFldPos AS LONG) AS OBJECT
 RETURN ret
 
     /// <inheritdoc />
-METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
+OVERRIDE METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
 	SELF:ForceRel()
 	IF SELF:HasMemo
 		RETURN _Memo:GetValueFile(nFldPos, fileName)
@@ -1530,7 +1564,7 @@ METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
 	ENDIF
 
     /// <inheritdoc />
-METHOD GetValueLength(nFldPos AS LONG) AS LONG
+OVERRIDE METHOD GetValueLength(nFldPos AS LONG) AS LONG
 	SELF:ForceRel()
 	IF SELF:HasMemo
 		RETURN _Memo:GetValueLength(nFldPos)
@@ -1539,7 +1573,7 @@ METHOD GetValueLength(nFldPos AS LONG) AS LONG
 	ENDIF
 
     /// <inheritdoc />
-METHOD Flush() 			AS LOGIC
+OVERRIDE METHOD Flush() 			AS LOGIC
 	LOCAL isOK AS LOGIC
     LOCAL locked := FALSE AS LOGIC
 	IF ! SELF:IsOpen
@@ -1548,17 +1582,25 @@ METHOD Flush() 			AS LOGIC
 	isOK := SELF:GoCold()
 
 	IF isOK .and. SELF:_wasChanged
-		IF SELF:Shared
+		IF SELF:Shared .AND. SELF:Header:isHot
 			locked := SELF:HeaderLock( DbLockMode.Lock )
             // Another workstation may have added another record, so make sure we update the reccount
             SELF:_RecCount := SELF:_calculateRecCount()
             //? SELF:CurrentThreadId, "After CalcReccount"
         ENDIF
-		SELF:_putEndOfFileMarker()
+        IF ! SELF:_Shared
+		    SELF:_putEndOfFileMarker()
+        ENDIF
         //? SELF:CurrentThreadId, "After EOF"
-		SELF:_writeHeader()
+        IF SELF:Header:isHot
+		    SELF:_writeHeader()
+        ENDIF
         //? SELF:CurrentThreadId, "After writeHeader"
-        _oStream:Flush(TRUE)
+        IF XSharp.RuntimeState.GetValue<LOGIC>(Set.HardCommit)
+            _oStream:Flush(TRUE)
+        ELSE
+            _oStream:Flush(FALSE)
+        ENDIF
         //? SELF:CurrentThreadId, "After FFlush"
 	ENDIF
 	IF SELF:Shared .AND. locked
@@ -1571,7 +1613,7 @@ METHOD Flush() 			AS LOGIC
 RETURN isOK
 
     /// <inheritdoc />
-METHOD Refresh() 			AS LOGIC
+OVERRIDE METHOD Refresh() 			AS LOGIC
 	LOCAL isOK AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
@@ -1593,7 +1635,7 @@ METHOD Refresh() 			AS LOGIC
 RETURN isOK
     // Save any Pending Change
     /// <inheritdoc />
-METHOD GoCold()			AS LOGIC
+OVERRIDE METHOD GoCold()			AS LOGIC
 	LOCAL ret AS LOGIC
     //
 	ret := TRUE
@@ -1609,7 +1651,7 @@ RETURN ret
 
     // Indicate that the content of the current buffer needs to be saved
     /// <inheritdoc />
-METHOD GoHot()			AS LOGIC
+OVERRIDE METHOD GoHot()			AS LOGIC
 	LOCAL ret AS LOGIC
     //
 	ret := TRUE
@@ -1636,7 +1678,7 @@ PROPERTY IsHot AS LOGIC GET SELF:_Hot
 PROPERTY IsNewRecord AS LOGIC GET SELF:_NewRecord
 
 /// <inheritdoc />
-METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
+OVERRIDE METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
     LOCAL ret := FALSE AS LOGIC
     IF SELF:_ReadOnly
         SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
@@ -1676,7 +1718,7 @@ METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
 RETURN ret
 
     /// <inheritdoc />
-METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
+OVERRIDE METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
     IF SELF:_ReadOnly
         SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
     ENDIF
@@ -1698,14 +1740,14 @@ METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
 
     // Memo File Access
     /// <inheritdoc />
-METHOD CloseMemFile() 	AS LOGIC
+OVERRIDE METHOD CloseMemFile() 	AS LOGIC
 	IF SELF:HasMemo
 		RETURN _Memo:CloseMemFile()
 	ELSE
 		RETURN SUPER:CloseMemFile()
 	ENDIF
     /// <inheritdoc />
-METHOD CreateMemFile(info AS DbOpenInfo) 	AS LOGIC
+OVERRIDE METHOD CreateMemFile(info AS DbOpenInfo) 	AS LOGIC
 	IF SELF:HasMemo
 		RETURN _Memo:CreateMemFile(info)
 	ELSE
@@ -1713,7 +1755,7 @@ METHOD CreateMemFile(info AS DbOpenInfo) 	AS LOGIC
 	ENDIF
 
     /// <inheritdoc />
-METHOD OpenMemFile(info AS DbOpenInfo) 	AS LOGIC
+OVERRIDE METHOD OpenMemFile(info AS DbOpenInfo) 	AS LOGIC
 	IF SELF:HasMemo
 		RETURN _Memo:OpenMemFile(info)
 	ELSE
@@ -1723,7 +1765,7 @@ METHOD OpenMemFile(info AS DbOpenInfo) 	AS LOGIC
     // Indexes
 
     /// <inheritdoc />
-METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
+OVERRIDE METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
 	IF _oIndex != NULL
 		RETURN _oIndex:OrderCreate(info)
 	ELSE
@@ -1731,7 +1773,7 @@ METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
 	ENDIF
 
     /// <inheritdoc />
-METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
+OVERRIDE METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 	IF _oIndex != NULL
 		RETURN _oIndex:OrderDestroy(info)
 	ELSE
@@ -1739,7 +1781,7 @@ METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 	ENDIF
 
     /// <inheritdoc />
-METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
+OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
 	IF _oIndex != NULL
 		RETURN _oIndex:OrderInfo(nOrdinal,info )
 	ELSE
@@ -1747,7 +1789,7 @@ METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
 	ENDIF
 
     /// <inheritdoc />
-METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
+OVERRIDE METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 	IF _oIndex != NULL
 		RETURN _oIndex:OrderListAdd(info)
 	ELSE
@@ -1755,28 +1797,28 @@ METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 	ENDIF
 
     /// <inheritdoc />
-METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
+OVERRIDE METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 	IF _oIndex != NULL
 		RETURN _oIndex:OrderListDelete(info)
 	ELSE
 		RETURN SUPER:OrderListDelete(info)
 	ENDIF
     /// <inheritdoc />
-METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
+OVERRIDE METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 	IF _oIndex != NULL
 		RETURN _oIndex:OrderListFocus(info)
 	ELSE
 		RETURN SUPER:OrderListFocus(info)
 	ENDIF
     /// <inheritdoc />
-METHOD OrderListRebuild() AS LOGIC
+OVERRIDE METHOD OrderListRebuild() AS LOGIC
 	IF _oIndex != NULL
 		RETURN _oIndex:OrderListRebuild()
 	ELSE
 		RETURN SUPER:OrderListRebuild()
 	ENDIF
     /// <inheritdoc />
-METHOD Seek(info AS DbSeekInfo) AS LOGIC
+OVERRIDE METHOD Seek(info AS DbSeekInfo) AS LOGIC
     LOCAL result as LOGIC
 	IF _oIndex != NULL
 		result := _oIndex:Seek(info)
@@ -1788,24 +1830,24 @@ METHOD Seek(info AS DbSeekInfo) AS LOGIC
 
     // Relations
     /// <inheritdoc />
-METHOD ChildEnd(info AS DbRelInfo) AS LOGIC
+OVERRIDE METHOD ChildEnd(info AS DbRelInfo) AS LOGIC
 	SELF:ForceRel()
 RETURN SUPER:ChildEnd( info )
 
     /// <inheritdoc />
-METHOD ChildStart(info AS DbRelInfo) AS LOGIC
+OVERRIDE METHOD ChildStart(info AS DbRelInfo) AS LOGIC
 	SELF:ChildSync( info )
 RETURN SUPER:ChildStart( info )
 
     /// <inheritdoc />
-METHOD ChildSync(info AS DbRelInfo) AS LOGIC
+OVERRIDE METHOD ChildSync(info AS DbRelInfo) AS LOGIC
 	SELF:GoCold()
 	SELF:_RelInfoPending := info
 	SELF:SyncChildren()
 RETURN TRUE
 
     /// <inheritdoc />
-METHOD ForceRel() AS LOGIC
+OVERRIDE METHOD ForceRel() AS LOGIC
 	LOCAL isOK    := TRUE AS LOGIC
 	LOCAL gotoRec := 0 AS LONG
 	IF SELF:_RelInfoPending != NULL
@@ -1831,11 +1873,11 @@ RETURN isOK
 
 
     /// <inheritdoc />
-METHOD RelArea(nRelNum AS DWORD) AS DWORD
+OVERRIDE METHOD RelArea(nRelNum AS DWORD) AS DWORD
 RETURN SUPER:RelArea(nRelNum)
 
     /// <inheritdoc />
-METHOD SyncChildren() AS LOGIC
+OVERRIDE METHOD SyncChildren() AS LOGIC
 	LOCAL isOK AS LOGIC
     //
 	isOK := TRUE
@@ -1851,7 +1893,7 @@ RETURN isOK
 
     // Codeblock Support
 /// <inheritdoc />
-VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
+OVERRIDE METHOD Compile(sBlock AS STRING) AS ICodeblock
 	LOCAL result AS ICodeblock
 	result := SUPER:Compile(sBlock)
 	IF result == NULL
@@ -1865,7 +1907,7 @@ VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
 RETURN result
 
 /// <inheritdoc />
-VIRTUAL METHOD EvalBlock( cbBlock AS ICodeblock ) AS OBJECT
+OVERRIDE METHOD EvalBlock( cbBlock AS ICodeblock ) AS OBJECT
 	LOCAL result := NULL AS OBJECT
 	TRY
 		result := SUPER:EvalBlock(cbBlock)
@@ -1876,14 +1918,14 @@ RETURN result
 
     // Other
     /// <inheritdoc />
-VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	LOCAL oResult AS OBJECT
 	oResult := NULL
 	SWITCH nOrdinal
 	CASE DbInfo.DBI_ISDBF
 		oResult := TRUE
 	CASE DbInfo.DBI_CANPUTREC
-		oResult := IIF(SELF:HasMemo, FALSE , TRUE)
+		oResult := TRUE // IIF(SELF:HasMemo, FALSE , TRUE)
 	CASE DbInfo.DBI_GETRECSIZE
 		oResult := SELF:_RecordLength
 	CASE DbInfo.DBI_LASTUPDATE
@@ -2020,7 +2062,7 @@ RETURN oResult
 
 
 /// <inheritdoc />
-VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
+OVERRIDE METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
 	LOCAL nNewRec := 0 AS LONG
 	LOCAL oResult AS OBJECT
 	LOCAL nOld := 0 AS LONG
@@ -2097,7 +2139,7 @@ VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) 
 RETURN oResult
 
 /// <inheritdoc />
-METHOD Sort(info AS DbSortInfo) AS LOGIC
+OVERRIDE METHOD Sort(info AS DbSortInfo) AS LOGIC
 	LOCAL recordNumber AS LONG
 	LOCAL trInfo AS DbTransInfo
 	LOCAL hasWhile AS LOGIC
@@ -2202,7 +2244,7 @@ RETURN SELF:TransRec(sortInfo:TransInfo)
 
 
 /// <inheritdoc />
-VIRTUAL METHOD TransRec(info AS DbTransInfo) AS LOGIC
+OVERRIDE METHOD TransRec(info AS DbTransInfo) AS LOGIC
 LOCAL result AS LOGIC
 IF FALSE .AND. info:Destination IS DBF VAR oDest
     LOCAL oValue AS OBJECT
@@ -2252,7 +2294,7 @@ INTERNAL METHOD Validate() AS VOID
     // Properties
     //	PROPERTY Alias 		AS STRING GET
     /// <inheritdoc />
-PROPERTY BoF 		AS LOGIC
+OVERRIDE PROPERTY BoF 		AS LOGIC
 	GET
 		SELF:ForceRel()
 		RETURN SUPER:BoF
@@ -2260,7 +2302,7 @@ PROPERTY BoF 		AS LOGIC
 END PROPERTY
 
 /// <inheritdoc />
-PROPERTY Deleted 	AS LOGIC
+OVERRIDE PROPERTY Deleted 	AS LOGIC
 	GET
 		SELF:ForceRel()
 		SELF:_readRecord()
@@ -2269,7 +2311,7 @@ PROPERTY Deleted 	AS LOGIC
 END PROPERTY
 
 /// <inheritdoc />
-PROPERTY EoF 		AS LOGIC
+OVERRIDE PROPERTY EoF 		AS LOGIC
 	GET
 		SELF:ForceRel()
 		RETURN SUPER:EoF
@@ -2279,10 +2321,10 @@ END PROPERTY
 //PROPERTY Exclusive	AS LOGIC GET
 
 /// <inheritdoc />
-PROPERTY FieldCount AS LONG GET SELF:_Fields:Length
+OVERRIDE PROPERTY FieldCount AS LONG GET SELF:_Fields:Length
 
 //	PROPERTY FilterText	AS STRING GET
-PROPERTY Found		AS LOGIC
+OVERRIDE PROPERTY Found		AS LOGIC
 	GET
 		SELF:ForceRel()
 		RETURN SUPER:Found
@@ -2290,7 +2332,7 @@ PROPERTY Found		AS LOGIC
 END PROPERTY
 
 /// <inheritdoc />
-PROPERTY RecCount	AS LONG
+OVERRIDE PROPERTY RecCount	AS LONG
 	GET
 		IF SELF:Shared
 			SELF:_RecCount := SELF:_calculateRecCount()
@@ -2311,7 +2353,7 @@ PRIVATE METHOD _calculateRecCount()	AS LONG
 RETURN reccount
 
     /// <inheritdoc />
-PROPERTY RecNo		AS INT
+OVERRIDE PROPERTY RecNo		AS INT
 	GET
 		SELF:ForceRel()
 		RETURN SELF:_RecNo
@@ -2319,7 +2361,7 @@ PROPERTY RecNo		AS INT
 END PROPERTY
 
 /// <inheritdoc />
-VIRTUAL PROPERTY Driver AS STRING GET "DBF"
+OVERRIDE PROPERTY Driver AS STRING GET "DBF"
 
 
 
@@ -2328,6 +2370,9 @@ END CLASS
 
 
 END NAMESPACE
+
+
+
 
 
 

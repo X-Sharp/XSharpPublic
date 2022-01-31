@@ -25,8 +25,8 @@ using Community.VisualStudio.Toolkit;
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
 [assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser", CodeBase = "XSharp.VsParser.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharpModel")]
 namespace XSharp.LanguageService
 {
 
@@ -86,7 +86,8 @@ namespace XSharp.LanguageService
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
     [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), LanguageName, null, "Intellisense", pageNameResourceId: "205")]  
     //[ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), LanguageName, null, "Settings Completion", pageNameResourceId: "204")]   
-    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202")]       
+    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202")]
+    [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), LanguageName, null, "Indentation", pageNameResourceId: "206")]
     [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Other", pageNameResourceId: "203")]       
     public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
@@ -115,9 +116,10 @@ namespace XSharp.LanguageService
 
         IntellisenseOptionsPage _intellisensePage;
         FormattingOptionsPage _formattingPage;
+        IndentingOptionsPage _indentingPage;
         OtherOptionsPage _otherOptionsPage;
         //CompletionOptionsPage _completionOptionsPage;
-        internal void GetIntellisenseSettings()
+        public void GetIntellisenseSettings()
         {
             if (_intellisensePage == null)
             {
@@ -126,6 +128,10 @@ namespace XSharp.LanguageService
             if (_formattingPage == null)
             {
                 _formattingPage = (FormattingOptionsPage)GetDialogPage(typeof(FormattingOptionsPage));
+            }
+            if (_indentingPage == null)
+            {
+                _indentingPage = (IndentingOptionsPage)GetDialogPage(typeof(IndentingOptionsPage));
             }
             if (_otherOptionsPage == null)
             {
@@ -136,7 +142,7 @@ namespace XSharp.LanguageService
             //    _completionOptionsPage = (CompletionOptionsPage)GetDialogPage(typeof(CompletionOptionsPage));
             //}
             // Intellisense
-            XSettings.EnableLogging = _intellisensePage.EnableOutputPane;
+            XSettings.EnableOutputWindowLogging = _intellisensePage.EnableOutputPane;
             XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
             XSettings.EnableCodeCompletionLog = _intellisensePage.EnableCodeCompletionLog;
             XSettings.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
@@ -145,6 +151,7 @@ namespace XSharp.LanguageService
             XSettings.EnableQuickInfoLog = _intellisensePage.EnableQuickInfoLog;
             XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
             XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
+            
 
             XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
             XSettings.DisableBraceMatching = _intellisensePage.DisableBraceMatching;
@@ -193,13 +200,17 @@ namespace XSharp.LanguageService
             }
             // Formatting
             XSettings.EditorIndentFactor = _formattingPage.MultiFactor;
-            XSettings.EditorFormatAlignDoCase = _formattingPage.AlignDoCase;
-            XSettings.EditorFormatAlignMethod = _formattingPage.AlignMethod;
             XSettings.IdentifierCase = _formattingPage.IdentifierCase;
             XSettings.UDCKeywordCase = _formattingPage.UdcCase;
             XSettings.EditorTrimTrailingWhiteSpace = _formattingPage.TrimTrailingWhiteSpace;
             XSettings.EditorInsertFinalNewline = _formattingPage.InsertFinalNewLine;
             XSettings.KeywordCase = _formattingPage.KeywordCase;
+            // Indentation
+            XSettings.IndentEntityContent = _indentingPage.IndentEntityContent;
+            XSettings.IndentBlockContent = _indentingPage.IndentBlockContent;
+            XSettings.IndentCaseContent = _indentingPage.IndentCaseContent;
+            XSettings.IndentCaseLabel = _indentingPage.IndentCaseLabel;
+            XSettings.IndentMultiLines = _indentingPage.IndentMultiLines;
 
             // Completion
             //XSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
@@ -224,6 +235,7 @@ namespace XSharp.LanguageService
             XSettings.CodeGeneratorPrivateStyle = (PrivateStyle)_otherOptionsPage.PrivateStyle;
             XSettings.CodeGeneratorPublicStyle = (PublicStyle)_otherOptionsPage.PublicStyle;
             XSettings.FormEditorMakeBackupFiles = _otherOptionsPage.FormEditorMakeBackupFiles;
+            XSettings.EnableFileLogging = _otherOptionsPage.LanguageServiceLogging;
 
             // Persist in registry for CodeDomProvider code generation
             Constants.WriteSetting(Constants.RegistryKeywordCase, (int)XSettings.KeywordCase);
@@ -290,6 +302,7 @@ namespace XSharp.LanguageService
             }
             GetIntellisenseSettings();
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            XSettings.LanguageService = this;
         }
 
 
@@ -358,10 +371,31 @@ namespace XSharp.LanguageService
                 if (!lValue && optionWasChanged)
                 {
                     GetIntellisenseSettings();
+                    RefreshDocumentSettingsAsync().FireAndForget();
                 }
             }
             return VSConstants.S_OK;
         }
+
+        /// <summary>
+        /// Reload the source code editor settings for all open X# editor windows
+        /// </summary>
+        /// <returns></returns>
+        private async System.Threading.Tasks.Task RefreshDocumentSettingsAsync()
+        {
+            var docs = await VS.Windows.GetAllDocumentWindowsAsync();
+            foreach (var doc in docs)
+            {
+                var view = await doc.GetDocumentViewAsync();
+                var buffer = view.TextBuffer;
+                if (buffer.GetClassifier() != null)
+                {
+                    EditorConfigReader.ReadSettings(buffer, view.FilePath);
+                }
+            }
+            return;
+        }
+
         #region IVSDebuggerEvents
         private void RegisterDebuggerEvents()
         {

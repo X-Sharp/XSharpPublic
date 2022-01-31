@@ -597,7 +597,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "usual mixed numeric types")];
 		METHOD UsualMixedLong() AS VOID
-            LOCAL u1, u2 as USUAL
+            LOCAL u1, u2 AS USUAL
             // LHS LONG
             u1 := 1
             u2 := 2
@@ -606,7 +606,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.True(IsLong(u1*u2))
             Assert.True(IsLong(u1%u2))
             Assert.True(IsFloat(u1/u2))
-            u2 := (Int64) 2
+            u2 := (INT64) 2
             Assert.True(IsInt64(u1+u2))
             Assert.True(IsInt64(u1-u2))
             Assert.True(IsInt64(u1*u2))
@@ -635,16 +635,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "usual mixed numeric types")];
 		METHOD UsualMixedInt64() AS VOID
-            LOCAL u1, u2 as USUAL
+            LOCAL u1, u2 AS USUAL
             // LHS INT64
-            u1 := (int64) 1
+            u1 := (INT64) 1
             u2 := 2
             Assert.True(IsInt64(u1+u2))
             Assert.True(IsInt64(u1-u2))
             Assert.True(IsInt64(u1*u2))
             Assert.True(IsInt64(u1%u2))
             Assert.True(IsFloat(u1/u2))
-            u2 := (Int64) 2
+            u2 := (INT64) 2
             Assert.True(IsInt64(u1+u2))
             Assert.True(IsInt64(u1-u2))
             Assert.True(IsInt64(u1*u2))
@@ -674,7 +674,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "usual mixed numeric types")];
 		METHOD UsualMixedFloat() AS VOID
-            LOCAL u1, u2 as USUAL
+            LOCAL u1, u2 AS USUAL
             // LHS FLOAT
             u1 := 1.0
             u2 := 2
@@ -683,7 +683,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.True(IsFloat(u1*u2))
             Assert.True(IsFloat(u1%u2))
             Assert.True(IsFloat(u1/u2))
-            u2 := (Int64) 2
+            u2 := (INT64) 2
             Assert.True(IsFloat(u1+u2))
             Assert.True(IsFloat(u1-u2))
             Assert.True(IsFloat(u1*u2))
@@ -712,7 +712,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "usual mixed numeric types")];
 		METHOD UsualMixedCurrency() AS VOID
-            LOCAL u1, u2 as USUAL
+            LOCAL u1, u2 AS USUAL
 
             // LHS Currency
             u1 := $1.0
@@ -722,7 +722,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.True(IsCurrency(u1*u2))
             Assert.True(IsCurrency(u1%u2))
             Assert.True(IsCurrency(u1/u2))
-            u2 := (Int64) 2
+            u2 := (INT64) 2
             Assert.True(IsCurrency(u1+u2))
             Assert.True(IsCurrency(u1-u2))
             Assert.True(IsCurrency(u1*u2))
@@ -750,7 +750,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.True(IsCurrency(u1/u2))
 		[Fact, Trait("Category", "usual mixed numeric types")];
 		METHOD UsualMixedDecimal() AS VOID
-            LOCAL u1, u2 as USUAL
+            LOCAL u1, u2 AS USUAL
             // LHS Decimal
             u1 := 1.0m
             u2 := 2
@@ -759,7 +759,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.True(IsDecimal(u1*u2))
             Assert.True(IsDecimal(u1%u2))
             Assert.True(IsDecimal(u1/u2))
-            u2 := (Int64) 2
+            u2 := (INT64) 2
             Assert.True(IsDecimal(u1+u2))
             Assert.True(IsDecimal(u1-u2))
             Assert.True(IsDecimal(u1*u2))
@@ -785,6 +785,27 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.True(IsDecimal(u1*u2))
             Assert.True(IsDecimal(u1%u2))
             Assert.True(IsDecimal(u1/u2))
+
+
+		[Fact, Trait("Category", "usual mixed numeric types")];
+		METHOD NetArrayUsualConversions() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/876
+			LOCAL u AS USUAL
+			LOCAL a1 AS INT[]
+			LOCAL a2 AS STRING[]
+			
+			a1 := <INT>{ 1,2,3 }
+			u := a1 // OK
+			a1 := u
+			Assert.Equal(3, a1:Length)
+			Assert.Equal(2, a1[2])
+			
+			a2 := <STRING>{ "abc","def" }
+			u := a2
+			a2 := u
+			Assert.Equal(2, a2:Length)
+			Assert.Equal("abc", a2[1])
+
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

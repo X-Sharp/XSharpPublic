@@ -518,10 +518,58 @@ BEGIN NAMESPACE XSharp.RT.Tests
             Assert.True(  aValues[3,3] == "c")
             RuntimeState.Dialect := eDialect
 
+        [Fact, Trait("Category", "Enumerator")];
+        METHOD EnumeratorTest AS VOID
+            LOCAL a as Array
+            a := Array{ SELF:Enumerator1()}
+            Assert.True(ALen(a) == 5)
+            Assert.True(a[1] == 1)
+            Assert.True(a[2] == 2)
+            Assert.True(a[3] == 3)
+            Assert.True(a[4] == 4)
+            Assert.True(a[5] == 5)
+            a := Array{ SELF:Enumerator2()}
+            Assert.True(ALen(a) == 5)
+            Assert.True(a[1] == 1)
+            Assert.True(a[2] == 2)
+            Assert.True(a[3] == 3)
+            Assert.True(a[4] == 4)
+            Assert.True(a[5] == 5)
+
+            a := Array{ SELF:Enumerator3()}
+            Assert.True(ALen(a) == 3)
+            Assert.True(a[1] IS MyTestClass VAR tc1 .and. tc1:Number == 1)
+            Assert.True(a[2] IS MyTestClass VAR tc2 .and. tc2:Number == 2)
+            Assert.True(a[3] IS MyTestClass VAR tc3 .and. tc3:Number == 3)
+
+        METHOD Enumerator1() AS IEnumerable<OBJECT>
+            VAR oObjects := <OBJECT>{1,2,3,4,5}
+            FOREACH var o in oObjects
+                YIELD RETURN o
+            NEXT
+            YIELD BREAK
+
+        METHOD Enumerator2() AS IEnumerable<USUAL>
+            VAR oObjects := <USUAL>{1,2,3,4,5}
+            FOREACH var o in oObjects
+                YIELD RETURN o
+            NEXT
+            YIELD BREAK
+        METHOD Enumerator3() AS IEnumerable<MyTestClass>
+            VAR oObjects := <MyTestClass>{MyTestClass{1},MyTestClass{2},MyTestClass{3}}
+            FOREACH var o in oObjects
+                YIELD RETURN o
+            NEXT
+            YIELD BREAK
 	END CLASS
     CLASS IntegerSorter
         METHOD Eval(a,b)
             RETURN a <= b
 
+    END CLASS
+    Class MyTestClass
+        PUBLIC Number as INT
+        CONSTRUCTOR (nNumber as INT)
+            SELF:Number := nNumber
     END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

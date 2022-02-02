@@ -68,6 +68,16 @@ BEGIN NAMESPACE XSharp
             NEXT
             RETURN
 
+        /// <inheritdoc />
+        CONSTRUCTOR( collection AS IEnumerable<USUAL>)
+            SUPER(collection)
+            RETURN
+
+        /// <inheritdoc />
+        CONSTRUCTOR( collection AS IEnumerable<OBJECT>)
+            SELF(collection:ToArray())
+            RETURN
+
         #region ISerializable
         /// <inheritdoc/>
         PUBLIC OVERRIDE METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID

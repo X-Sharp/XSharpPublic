@@ -176,18 +176,24 @@ FUNCTION Type(cString AS STRING) AS STRING
 FUNCTION Type(cString AS STRING, nArray as LONG) AS STRING
     LOCAL uValue AS USUAL
     LOCAL cRet	 AS STRING
+    uValue := NIL
     IF String.IsNullOrEmpty(cString)
         cRet := "UE"
     ELSE
         TRY
             // do not use the macro compiler to find "simple" memvar or local names
             IF _IsIdentifier(cString) .AND. MemVarTryGet(cString, OUT uValue)
-                cRet   := ValType(uValue)
+                NOP
             ELSE
                 // Ok, this is not a memvar or local name. Let's evaluate it
                 uValue := Evaluate(cString)
-                cRet   := ValType(uValue)
             ENDIF
+            IF RuntimeState:Dialect == XSharpDialect.FoxPro .and. uValue == NULL
+                cRet := "L"
+            else
+                cRet   := ValType(uValue)
+            endif
+
         CATCH  AS Exception
             cRet  := "UE"
         END TRY
@@ -207,6 +213,11 @@ FUNCTION Type(cString AS STRING, nArray as LONG) AS STRING
                     local aValue as ARRAY
                     aValue := uValue
                     cRet := ValType(aValue[1])
+                    if cRet == "A"
+                        aValue := aValue[1]
+                        cRet := ValType(aValue[1])
+                    ENDIF
+
                 ENDIF
             CASE "UE"
                 cRet := "U"

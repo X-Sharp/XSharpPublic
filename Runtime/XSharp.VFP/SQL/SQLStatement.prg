@@ -286,6 +286,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 VAR uType := typeof(USUAL)
                 VAR mi    := uType:GetMethod("ToObject")
                 oValue    := mi:Invoke(NULL,<OBJECT>{oValue})
+                oDbParam:Value:= oValue
             elseif oValue is Int32
                 oDbParam:Value:= oValue
             elseif oValue is Int64
@@ -319,6 +320,8 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                     oDbParam:DbType:= DbType.AnsiString
                 endif
                 oDbParam:Value:= oValue
+            elseif oValue=null
+                oDbParam:Value:= DBNull.Value
             else
                 // Can't get value
                 RETURN FALSE
@@ -632,7 +635,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         VAR cTemp := System.IO.Path.GetTempFileName()
         DbCreate(cTemp, aStruct, "DBFVFP")
         SELF:CloseArea(cCursorName)
-        VoDbUseArea(TRUE, "DBFVFP",cTemp,cCursorName,FALSE,FALSE)
+        VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
         FOREACH VAR oT IN oTables
@@ -665,7 +668,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         aStruct[4] := {"FIELD_DEC", "N", 3,0}
         VAR cTemp := System.IO.Path.GetTempFileName()
         DbCreate(cTemp, aStruct, "DBFVFP")
-        VoDbUseArea(TRUE, "DBFVFP",cTemp,cCursorName,FALSE,FALSE)
+        VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
         FOREACH schemaRow AS DataRow IN oSchema:Rows
@@ -712,7 +715,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         VAR cTemp := System.IO.Path.GetTempFileName()
         DbCreate(cTemp, aStruct, "DBFVFP")
         SELF:CloseArea(cCursorName)
-        VoDbUseArea(TRUE, "DBFVFP",cTemp,cCursorName,FALSE,FALSE)
+        VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
         FOREACH oRow AS DataRow IN oTable:Rows
@@ -749,11 +752,8 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
         LOCAL aParams    := List<SQLParameter>{} AS List<SQLParameter>
         LOCAL sb       := StringBuilder{cCommand:Length} AS StringBuilder
-        //LOCAL sbParam  := StringBuilder{cCommand:Length} AS StringBuilder
-        //LOCAL lParamByRef := FALSE AS LOGIC
         local sCmd := cCommand.Split( SELF:Connection:Factory:ParameterPrefix) as STRING[]
         IF sCmd.Length>0
-           //local lparamIndex:=-1 as int
            sb:= StringBuilder{}
            local lsPartIndex:= 0 as int
 
@@ -805,7 +805,6 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                        endif
                     endfor
                     local sVarName:= sbVarName:ToString().ToUpper() as string
-                    //local lParameterFound:= false
                     sb.Append(SELF:Connection:Factory:ParameterPrefix)
                     var lParam:= SQLParameter {sVarName, lIsByRef}
                     aParams:Add(lParam)

@@ -98,11 +98,13 @@ BEGIN NAMESPACE XSharp.RDD
 
          OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             // nFldPos is 1 based, the RDD compiles with /az+
+            var result := FALSE 
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
                 var row := _table:Rows[SELF:_RecNo -1]
                 row[nFldPos-1] := oValue
+                result := TRUE
             ENDIF
-            RETURN SUPER:PutValue(nFldPos, oValue)
+            RETURN result
 
 
         PROPERTY DataTable as DataTable

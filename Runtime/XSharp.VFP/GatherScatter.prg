@@ -90,9 +90,11 @@ FUNCTION __GatherMemVar(aFieldList) AS LOGIC CLIPPER
 
 FUNCTION __ScatterArray(aFieldList, lBlank) AS ARRAY CLIPPER
     VAR aFields := __GetFieldValues(aFieldList, FALSE, lBlank)
-    VAR aResult := {}
-    FOREACH var oField in aFields
-        AAdd(aResult, oField:Value)
+    VAR nLen    := aFields:Length
+    VAR aResult := __FoxArray{(DWORD) nLen}
+    FOR VAR nI := 0 to nLen-1
+        VAR oField := aFields[nI]
+        aResult[nI] := oField:Value
     NEXT
     RETURN aResult
 

@@ -302,7 +302,7 @@ namespace Microsoft.VisualStudio.Project
                 this.CloseDocumentWindow(this);
 
                 XProjectNode projectNode = this.ProjectMgr as XProjectNode;
-                projectNode.RemoveURL(this.Url);
+                var name = this.Url;
                 ThreadHelper.ThrowIfNotOnUIThread();
                 if (projectNode != null && projectNode.ShowAllFilesEnabled && File.Exists(this.Url))
                 {
@@ -328,6 +328,7 @@ namespace Microsoft.VisualStudio.Project
                     this.Parent.RemoveChild(this);
                     this.ItemNode.RemoveFromProjectFile();
                 }
+                projectNode.RemoveURL(name);
 
                 this.ResetProperties();
 

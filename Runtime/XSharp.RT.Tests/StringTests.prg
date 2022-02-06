@@ -13,7 +13,7 @@ USING XUnit
 #pragma warnings(219, off)  // assigned but not used
 
 // Array tests are not working correctly yet with the current build
-BEGIN NAMESPACE XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS StringTests
 

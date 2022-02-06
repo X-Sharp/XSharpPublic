@@ -171,7 +171,7 @@ BEGIN NAMESPACE XSharp
          ENDIF
     ELSE
         SELF:Description := ex:Message
-        SELF:Gencode     := EG_EXCEPTION
+        SELF:GetGenCodeFromException(ex)
         IF ! String.IsNullOrEmpty(ex:Source)
             SELF:SubSystem := ex:Source
         ENDIF
@@ -180,15 +180,40 @@ BEGIN NAMESPACE XSharp
             SELF:_StackTrace := sStack + SELF:_StackTrace
         ENDIF
     ENDIF
+
     IF String.IsNullOrEmpty(SELF:StackTrace)
         SELF:StackTrace  := ErrorStack(2)
     ENDIF
+    PRIVATE METHOD GetGenCodeFromException(ex as Exception) AS VOID
+        if ex IS DivideByZeroException
+            SELF:Gencode := EG_ZERODIV
+        ELSEIF ex IS OverflowException
+            SELF:Gencode := EG_NUMOVERFLOW
+        ELSEIF ex IS OutOfMemoryException
+            SELF:Gencode := EG_MEM
+        ELSEIF ex IS RankException
+            SELF:Gencode := EG_BOUND
+        ELSEIF ex IS IndexOutOfRangeException
+            SELF:Gencode := EG_BOUND
+        ELSEIF ex IS ArgumentException
+            SELF:Gencode := EG_ARG
+        ELSEIF ex IS InvalidCastException
+            SELF:Gencode := EG_WRONGCLASS
+        ELSEIF ex IS NullReferenceException
+            SELF:Gencode := EG_NULLVAR
+        ELSEIF ex IS StackOverflowException
+            SELF:Gencode := EG_STACK
+        ELSEIF ex IS AccessViolationException
+            SELF:Gencode := EG_CORRUPTION
+        ELSE
+            SELF:Gencode     := EG_EXCEPTION
+        ENDIF
 
     /// <summary>Create an Error Object with the Innner Exception and other parameters</summary>
     CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[])
     SUPER(ex.Message,ex)
     SELF:setDefaultValues()
-    SELF:Gencode     := EG_EXCEPTION
+    SELF:GetGenCodeFromException(ex)
     SELF:FuncSym     := cFuncName
     SELF:Arg         := cArgName
     SELF:ArgNum      := iArgNum

@@ -14,7 +14,7 @@ USING LanguageService.CodeAnalysis.XSharp
 USING System.Collections.Concurrent
 USING System.Diagnostics
 USING System.Reflection
-USING EnvDTE
+
 
 #pragma options ("az", ON)
 BEGIN NAMESPACE XSharpModel
@@ -305,15 +305,23 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN
 
+         PROPERTY RefCheckTimeOut as LOGIC
+            GET
+                var now := DateTime.Now
+                LOCAL diff := now - SELF:_lastRefCheck as TimeSpan
+                if diff:Seconds < 15
+                    RETURN FALSE
+                ENDIF
+                SELF:_lastRefCheck := now
+                RETURN TRUE
+            END GET
+         END PROPERTY
 
          METHOD ResolveReferences() AS VOID
             IF SELF:hasUnprocessedReferences
-                var now := DateTime.Now
-                LOCAL diff := now - SELF:_lastRefCheck as TimeSpan
-                if diff:Seconds < 5
+                IF ! SELF:RefCheckTimeOut
                     RETURN
                 ENDIF
-                SELF:_lastRefCheck := now
                SELF:LogReferenceMessage("<<-- ResolveReferences()")
                XSolution.SetStatusBarText(String.Format("Loading referenced types for project {0}", SELF:Name))
 
@@ -461,37 +469,18 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN FALSE
 
-      PRIVATE METHOD saveGetProperty(props AS EnvDTE.Properties, name AS STRING) AS EnvDTE.Property
-         LOCAL p AS EnvDTE.Property
-         TRY
-            p := props:Item(name)
-         CATCH
-            p := NULL
-         END TRY
-         RETURN p
-
-      PRIVATE METHOD IVarGet(oValue AS OBJECT, cProperty AS STRING) AS OBJECT
-         IF oValue == NULL
-            RETURN NULL
-         ENDIF
-         VAR props  := TypeDescriptor.GetProperties(oValue,FALSE)
-         VAR prop   := props[cProperty]
-         IF prop != NULL
-            RETURN prop:GetValue(oValue)
-         ENDIF
-         RETURN NULL
-
       PRIVATE METHOD GetStrangerOutputDLL(sProject AS STRING, p AS Dynamic) AS STRING
          VAR outputFile := ""
          TRY
-            VAR propType := saveGetProperty(p:Properties, "OutputType")
-            VAR propName := saveGetProperty(p:Properties, "AssemblyName")
-            VAR propPath := saveGetProperty(p:ConfigurationManager:ActiveConfiguration:Properties, "OutputPath")
+            VAR properties := p:Properties
+            VAR propType := properties:Item("OutputType")
+            VAR propName := properties:Item("AssemblyName")
+            VAR propPath := p:ConfigurationManager:ActiveConfiguration:Properties:Item( "OutputPath")
             IF propName != NULL .AND. propPath != NULL .AND. propType != NULL
 
-               VAR path    := (STRING) IVarGet(propPath,"Value")
-               VAR type    := (INT)    IVarGet(propType,"Value")
-               outputFile	:= (STRING) IVarGet(propName, "Value")
+               VAR path    := (STRING) propPath:Value
+               VAR type    := (INT)    propType:Value
+               outputFile  := (STRING) propName:Value
                IF type == 2 // __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_LIBRARY, in Microsoft.VisualStudio.Shell.Interop.11.0.dll
                   outputFile	+= ".dll"
                ELSE
@@ -535,10 +524,10 @@ BEGIN NAMESPACE XSharpModel
          RETURN FALSE
 
         METHOD RefreshStrangerProjectDLLOutputFiles_Worker AS VOID
-            FOREACH p AS EnvDTE.Project IN SELF:_StrangerProjects:ToArray()
-                VAR  sProjectURL := p:FullName
+            FOREACH proj as Dynamic IN SELF:_StrangerProjects:ToArray()
+                LOCAL sProjectURL := proj:FullName AS STRING
                 VAR mustAdd     := FALSE
-                VAR outputFile  := SELF:GetStrangerOutputDLL(sProjectURL, p)
+                LOCAL outputFile  := SELF:GetStrangerOutputDLL(sProjectURL, proj) AS STRING
                 IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
                     // when the output file name of the referenced project has changed
                     // then remove the old name
@@ -559,7 +548,7 @@ BEGIN NAMESPACE XSharpModel
 
       PRIVATE METHOD RefreshStrangerProjectDLLOutputFiles() AS VOID
          // Check if any DLL has changed
-         IF SELF:_StrangerProjects:Count > 0 .AND. ! XSettings.DisableForeignProjectReferences
+         IF SELF:_StrangerProjects:Count > 0 .AND. ! XSettings.DisableForeignProjectReferences .and. SELF:RefCheckTimeOut
             SELF:LogReferenceMessage("--> RefreshStrangerProjectDLLOutputFiles() "+SELF:_StrangerProjects:Count():ToString())
             _projectNode:RunInForeGroundThread ( { => SELF:RefreshStrangerProjectDLLOutputFiles_Worker() })
             SELF:LogReferenceMessage("<-- RefreshStrangerProjectDLLOutputFiles()")

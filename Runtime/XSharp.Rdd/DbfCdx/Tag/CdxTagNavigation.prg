@@ -79,6 +79,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         result := SELF:_oRdd:SkipFilter(-1)
                     ENDIF
                 ENDIF
+                SELF:ValidateScopes()
                 RETURN result
             FINALLY
                 IF locked
@@ -130,6 +131,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         result := TRUE
                     ENDIF
                 ENDIF
+                SELF:ValidateScopes()
                 RETURN result
             FINALLY
                 IF locked
@@ -178,9 +180,73 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN SELF:_oRdd:__Goto(0)
                 ENDIF
             ENDIF
-            RETURN SELF:_Seek(seekInfo, byteArray)
+            var result := SELF:_Seek(seekInfo, byteArray)
+            SELF:ValidateScopes()
+            RETURN result
+        INTERNAL METHOD ValidateScopes() AS LOGIC
+            LOCAL nLen, nDiff as LONG
+            LOCAL nScopeTop AS LONG
+            LOCAL nScopeBottom AS LONG
+            LOCAL lTopOk := TRUE as LOGIC
+            LOCAL lBotOk := TRUE as LOGIC
 
+            nScopeTop    := SELF:TopScopeNo
+            nScopeBottom := SELF:BottomScopeNo
 
+            IF SELF:_Scopes[nScopeTop]:IsSet .and. SELF:_Scopes[nScopeBottom]:IsSet
+                LOCAL lEmpty := FALSE AS LOGIC
+                nLen := Math.Min(SELF:_Scopes[nScopeTop]:Size, SELF:_Scopes[nScopeBottom]:Size)
+                nDiff := SELF:__ScopeCompare(SELF:_Scopes[nScopeTop]:Buffer, nScopeBottom, nLen)
+                if nDiff != 0 // not equal
+                    IF SELF:Descending
+                        // top should be bigger than bottom
+                        lEmpty := nDiff < 0
+                    ELSE
+                        // top should be smaller than bottom
+                        lEmpty := nDiff > 0
+                    ENDIF
+                endif
+                IF lEmpty
+                    SELF:_oRdd:__Goto(0)
+                    SELF:_oRdd:_SetBOF(TRUE)
+
+                    RETURN FALSE
+                ENDIF
+            endif
+            IF SELF:_Scopes[nScopeTop]:IsSet
+                nLen := SELF:_Scopes[nScopeTop]:Size
+                nDiff := SELF:__ScopeCompare(SELF:_currentvalue:Key, nScopeTop, nLen)
+                IF SELF:Descending  // B - A, so larger value is before top
+                    IF nDiff > 0
+                        lTopOk := FALSE
+                    ENDIF
+                ELSE   // A - B , so smaller value is before top
+                    IF nDiff < 0
+                        lTopOk := FALSE
+                    ENDIF
+                ENDIF
+            ENDIF
+            IF SELF:_Scopes[nScopeBottom]:IsSet
+                nLen := SELF:_Scopes[nScopeBottom]:Size
+                nDiff := SELF:__ScopeCompare(SELF:_currentvalue:Key, nScopeBottom, nLen)
+                IF SELF:Descending  // B - A, so smaller value is after bottom
+                    IF nDiff < 0
+                        lBotOk := FALSE
+                    ENDIF
+                ELSE   // A - B , so larger value is after bottom
+                    IF nDiff > 0
+                        lBotOk := FALSE
+                    ENDIF
+                ENDIF
+            ENDIF
+            if !(lTopOk .and. lBotOk)
+                SELF:_oRdd:__Goto(0)
+                SELF:_oRdd:_SetEOF(TRUE)
+                if ! lTopOk
+                    SELF:_oRdd:_SetBOF(TRUE)
+                ENDIF
+            ENDIF
+            RETURN TRUE
         INTERNAL METHOD SkipRaw(nToSkip AS LONG ) AS LOGIC
             LOCAL recno AS LONG
             LOCAL isBof AS LOGIC
@@ -1108,6 +1174,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ELSE
                     found := FALSE
                 ENDIF
+                // if
+
+
                 IF !SELF:_oRdd:_isValid
                     SELF:ClearStack()
                 ENDIF

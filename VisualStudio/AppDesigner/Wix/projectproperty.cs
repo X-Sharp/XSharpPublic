@@ -44,10 +44,16 @@ namespace Microsoft.VisualStudio.Project
             XSharpProjectFileConstants.DefineConstants,
             XSharpProjectFileConstants.IntermediateOutputPath,
             XSharpProjectFileConstants.OutputPath,
+            XSharpProjectFileConstants.IncludePaths,
+            XSharpProjectFileConstants.StandardDefs,
+            XSharpProjectFileConstants.DocumentationFile,
             XSharpProjectFileConstants.PostBuildEvent,
             XSharpProjectFileConstants.PreBuildEvent,
+            XSharpProjectFileConstants.AssemblyOriginatorKeyFile,
             XSharpProjectFileConstants.DebuggerWorkingDirectory,
             XSharpProjectFileConstants.DebuggerCommand,
+            XSharpProjectFileConstants.DebuggerWorkingDirectory
+
         };
 
         private static readonly ICollection<string> ListProperties = new string[]

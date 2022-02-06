@@ -750,8 +750,9 @@ namespace XSharp.Project
         {
             // Remove here because later the URL is gone
             var project = (XSharpProjectNode)this.ProjectMgr;
-            project.RemoveURL(this.GetMkDocument());
+            var name = this.GetMkDocument();
             base.Remove(removeFromStorage);
+            project.RemoveURL(name);
         }
         protected override bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
         {

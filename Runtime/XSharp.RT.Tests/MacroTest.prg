@@ -10,8 +10,8 @@ USING System.Text
 USING XUnit
 
 
-// WinBool test
-BEGIN NAMESPACE XSharp.VO.Tests
+
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS MacroTests
 

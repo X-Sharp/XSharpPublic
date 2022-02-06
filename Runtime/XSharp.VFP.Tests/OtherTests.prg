@@ -23,6 +23,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 		METHOD IOTests() AS VOID
             // In the VO Dialect this is allowed with a non existing path
             XSharp.RuntimeState.Dialect := XSharpDialect.VO
+            SetDefault(WorkDir())
             VAR cOld := SetDefault()
             VAR cNew := "C:\NonExistingFolder"
             Assert.Equal(cOld, SetDefault(cNew))

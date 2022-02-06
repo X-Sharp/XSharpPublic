@@ -123,7 +123,11 @@ CLASS XSharp.CoreDb
                     LOCAL dstFld AS RddFieldInfo
                     srcFld := src:GetField(uiSrc)
                     dstFld := dst:GetField(uiDst)
-                    fMatch := uiSrc == uiDst && srcFld:SameType( dstFld )
+                    if srcFld:IsMemo .or. dstFld:IsMemo
+                        fMatch := FALSE
+                    else
+                        fMatch := uiSrc == uiDst && srcFld:SameType( dstFld )
+                    endif
                 ENDIF
             ENDIF
         NEXT
@@ -146,8 +150,8 @@ CLASS XSharp.CoreDb
             LOCAL oCanPutRecTarget AS OBJECT
             oCanPutRecSource := oRdd:Info(DbInfo.DBI_CANPUTREC, NULL)
             oCanPutRecTarget := oDest:Info(DbInfo.DBI_CANPUTREC, NULL)
-            IF oCanPutRecSource IS LOGIC .AND. oCanPutRecTarget IS LOGIC
-                IF (LOGIC) oCanPutRecSource .and. (LOGIC) oCanPutRecTarget
+            IF oCanPutRecSource IS LOGIC VAR lPutSource .AND. oCanPutRecTarget IS LOGIC var lPutTarget
+                IF lPutSource .and. lPutTarget
                     info:Flags |= DbTransInfoFlags.CanPutRec
                 ENDIF
             ENDIF

@@ -1,30 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\xunit.runner.visualstudio.2.4.3\build\net452\xunit.runner.visualstudio.props" Condition="Exists('..\..\packages\xunit.runner.visualstudio.2.4.3\build\net452\xunit.runner.visualstudio.props')" />
   <Import Project="..\..\packages\xunit.core.2.4.1\build\xunit.core.props" Condition="Exists('..\..\packages\xunit.core.2.4.1\build\xunit.core.props')" />
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <ProjectGuid>1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D</ProjectGuid>
+    <ProjectGuid>16d523f2-b871-4bdc-94ef-33b3db7ae617</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XSharp.Runtime.VFP.Tests</RootNamespace>
-    <AssemblyName>XSharp.Runtime.VFP.Tests</AssemblyName>
+    <RootNamespace>XSharp.Runtime.RT.Tests</RootNamespace>
+    <AssemblyName>XSharp.Runtime.RT.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>XSharp.VFP.Tests</Name>
+    <Name>XSharp.RT.Tests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>FoxPro</Dialect>
-    <OutputName>XSharp.Runtime.VFP.Tests</OutputName>
+    <Dialect>Vulcan</Dialect>
+    <OutputName>XSharp.Runtime.RT.Tests</OutputName>
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <AZ>false</AZ>
     <CS>false</CS>
-    <LB>true</LB>
+    <LB>false</LB>
     <OVF>false</OVF>
     <Unsafe>true</Unsafe>
     <INS>false</INS>
@@ -49,14 +46,8 @@
     <XSharpProjectversion>2.10.0.3</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>true</Nostandarddefs>
-    <NamedArgs>false</NamedArgs>
-    <StandardDefs />
-    <MemVar>true</MemVar>
-    <Undeclared>false</Undeclared>
-    <InitLocals>false</InitLocals>
-    <NoWin32Manifest>False</NoWin32Manifest>
-    <Allowdot>True</Allowdot>
-    <Fox2>True</Fox2>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -71,15 +62,16 @@
     <DebuggerCommand>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\xunit.console.exe</DebuggerCommand>
     <DebuggerCommandArguments>$(TargetPath)</DebuggerCommandArguments>
     <DebuggerWorkingDirectory>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\</DebuggerWorkingDirectory>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings />
+    <DisabledWarnings>165,169,219,618,168</DisabledWarnings>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
     <Prefer32Bit>False</Prefer32Bit>
+    <RegisterForComInterop>False</RegisterForComInterop>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -109,40 +101,88 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="XSharp.MacroCompiler, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.MacroCompiler</Name>
+      <AssemblyName>XSharp.MacroCompiler.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.abstractions</Name>
       <AssemblyName>xunit.abstractions.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>
+      </HintPath>
     </Reference>
     <Reference Include="xunit.assert, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.assert</Name>
       <AssemblyName>xunit.assert.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>
+      </HintPath>
     </Reference>
     <Reference Include="xunit.core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.core</Name>
       <AssemblyName>xunit.core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>
+      </HintPath>
     </Reference>
     <Reference Include="xunit.execution.desktop, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.execution.desktop</Name>
       <AssemblyName>xunit.execution.desktop.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>
+      </HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\XSharp.Core.Tests\Support.prg">
+      <Link>Support.prg</Link>
+    </Compile>
+    <Compile Include="ArrayTests.prg" />
+    <Compile Include="BinaryTests.prg" />
+    <Compile Include="ConversionTests.prg" />
+    <Compile Include="CodeBlockTest.prg" />
+    <Compile Include="ClipperCallingTests.prg" />
+    <Compile Include="ArrayBaseTests.prg" />
+    <Compile Include="DbfNtxTests.prg" />
+    <Compile Include="DbfBlobTests.prg" />
+    <Compile Include="EmptyTests.prg" />
+    <Compile Include="CurrencyTests.prg" />
+    <Compile Include="DbfCdxTests.prg" />
+    <Compile Include="FileIOTests.prg" />
+    <Compile Include="MacroTest.prg" />
+    <Compile Include="OemTests.prg" />
+    <Compile Include="DateTests.prg" />
+    <Compile Include="DbfTests.prg" />
+    <Compile Include="Serializing.prg" />
+    <Compile Include="StringTests.prg" />
+    <Compile Include="ErrorTests.prg" />
+    <Compile Include="FloatTests.prg" />
+    <Compile Include="MemoryTests.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TransformTests.prg" />
+    <Compile Include="UsualTests.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
-      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
-      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
-      <Private>True</Private>
-    </ProjectReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="XUnit">
+      <Version>2.4.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
@@ -153,25 +193,9 @@
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.xsproj">
-      <Name>XSharp.VFP</Name>
-      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="TypeTests.prg" />
-    <Compile Include="EmptyTests.prg" />
-    <Compile Include="FoxArraytests.prg" />
-    <Compile Include="MiscTests.prg" />
-    <Compile Include="DateTests.prg" />
-    <Compile Include="NumericTests.prg" />
-    <Compile Include="OtherTests.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="StringTests.prg" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>
@@ -209,7 +233,6 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\xunit.core.2.4.1\build\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.core.2.4.1\build\xunit.core.props'))" />
     <Error Condition="!Exists('..\..\packages\xunit.core.2.4.1\build\xunit.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.core.2.4.1\build\xunit.core.targets'))" />
-    <Error Condition="!Exists('..\..\packages\xunit.runner.visualstudio.2.4.3\build\net452\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.runner.visualstudio.2.4.3\build\net452\xunit.runner.visualstudio.props'))" />
   </Target>
   <Import Project="..\..\packages\xunit.core.2.4.1\build\xunit.core.targets" Condition="Exists('..\..\packages\xunit.core.2.4.1\build\xunit.core.targets')" />
 </Project>

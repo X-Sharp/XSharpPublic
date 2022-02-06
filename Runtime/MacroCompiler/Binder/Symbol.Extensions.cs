@@ -23,16 +23,17 @@ namespace XSharp.MacroCompiler
                 return true;
             if (s is SymbolList)
             {
-                bool methods = true;
-                foreach(var m in (s as SymbolList).Symbols)
+                // we can have both types and methods in a list
+                // for example when we search for Type
+                //
+                var list = s as SymbolList;
+                foreach (var m in list.Symbols)
                 {
-                    if (!(m is MethodBaseSymbol))
+                    if (m is MethodBaseSymbol)
                     {
-                        methods = false;
-                        break;
+                        return true;
                     }
                 }
-                return methods;
             }
             return false;
         }

@@ -51,6 +51,8 @@ PARTIAL CLASS UnitForm INHERIT System.Windows.Forms.Form
 		XideUnitTest.CurrentTest := oTest
 		oTest:Reset()
 		
+		? "running test", oTest:Test:ToString()
+		
 		oInstance := oTest:Type:GetConstructors()[1]:Invoke(NULL)
 
 		LOCAL oExpected := NULL AS OBJECT

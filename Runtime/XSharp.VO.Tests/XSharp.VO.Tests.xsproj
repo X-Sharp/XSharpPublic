@@ -1,14 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\xunit.runner.visualstudio.2.4.3\build\net452\xunit.runner.visualstudio.props" Condition="Exists('..\..\packages\xunit.runner.visualstudio.2.4.3\build\net452\xunit.runner.visualstudio.props')" />
   <Import Project="..\..\packages\xunit.core.2.4.1\build\xunit.core.props" Condition="Exists('..\..\packages\xunit.core.2.4.1\build\xunit.core.props')" />
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <ProjectGuid>16d523f2-b871-4bdc-94ef-33b3db7ae617</ProjectGuid>
+    <ProjectGuid>16d523f2-b871-4bdc-94ef-33b3db7ae618</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.Runtime.VO.Tests</RootNamespace>
@@ -46,9 +43,11 @@
     <VO15>true</VO15>
     <VO16>false</VO16>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.9.1.1</XSharpProjectversion>
+    <XSharpProjectversion>2.10.0.3</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>true</Nostandarddefs>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -101,13 +100,6 @@
       <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <Name>Newtonsoft.Json</Name>
-      <AssemblyName>Newtonsoft.Json.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="XSharp.MacroCompiler, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.MacroCompiler</Name>
@@ -120,66 +112,52 @@
       <AssemblyName>xunit.abstractions.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>..\..\packages\xunit.abstractions.2.0.3\lib\net35\xunit.abstractions.dll</HintPath>
     </Reference>
     <Reference Include="xunit.assert, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.assert</Name>
       <AssemblyName>xunit.assert.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>..\..\packages\xunit.assert.2.4.1\lib\netstandard1.1\xunit.assert.dll</HintPath>
     </Reference>
     <Reference Include="xunit.core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.core</Name>
       <AssemblyName>xunit.core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>..\..\packages\xunit.extensibility.core.2.4.1\lib\net452\xunit.core.dll</HintPath>
     </Reference>
     <Reference Include="xunit.execution.desktop, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c">
       <Name>xunit.execution.desktop</Name>
       <AssemblyName>xunit.execution.desktop.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
+      <HintPath>..\..\packages\xunit.extensibility.execution.2.4.1\lib\net452\xunit.execution.desktop.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\XSharp.Core.Tests\Support.prg">
       <Link>Support.prg</Link>
     </Compile>
-    <Compile Include="ArrayTests.prg" />
-    <Compile Include="BinaryTests.prg" />
-    <Compile Include="ConversionTests.prg" />
-    <Compile Include="CodeBlockTest.prg" />
-    <Compile Include="ClipperCallingTests.prg" />
-    <Compile Include="ArrayBaseTests.prg" />
-    <Compile Include="DbfNtxTests.prg" />
-    <Compile Include="DbfBlobTests.prg" />
-    <Compile Include="EmptyTests.prg" />
-    <Compile Include="WinDateTest.prg" />
-    <Compile Include="CurrencyTests.prg" />
-    <Compile Include="DbfCdxTests.prg" />
-    <Compile Include="FileIOTests.prg" />
-    <Compile Include="MacroTest.prg" />
-    <Compile Include="OemTests.prg" />
-    <Compile Include="DateTests.prg" />
-    <Compile Include="DbfTests.prg" />
-    <Compile Include="OOPTests.prg" />
-    <Compile Include="Serializing.prg" />
-    <Compile Include="StringTests.prg" />
     <Compile Include="MiscTests.prg" />
-    <Compile Include="ErrorTests.prg" />
-    <Compile Include="FloatTests.prg" />
-    <Compile Include="MemoryTests.prg" />
+    <Compile Include="OOPTests.prg" />
+    <Compile Include="WinDateTest.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PszTests.prg" />
     <Compile Include="RegistryChecks.prg" />
     <Compile Include="SymbolTests.prg" />
-    <Compile Include="TransformTests.prg" />
-    <Compile Include="UsualTests.prg" />
     <Compile Include="WinBoolTest.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="XUnit">
+      <Version>2.4.1</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
@@ -237,7 +215,6 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\xunit.core.2.4.1\build\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.core.2.4.1\build\xunit.core.props'))" />
     <Error Condition="!Exists('..\..\packages\xunit.core.2.4.1\build\xunit.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.core.2.4.1\build\xunit.core.targets'))" />
-    <Error Condition="!Exists('..\..\packages\xunit.runner.visualstudio.2.4.3\build\net452\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.runner.visualstudio.2.4.3\build\net452\xunit.runner.visualstudio.props'))" />
   </Target>
   <Import Project="..\..\packages\xunit.core.2.4.1\build\xunit.core.targets" Condition="Exists('..\..\packages\xunit.core.2.4.1\build\xunit.core.targets')" />
 </Project>

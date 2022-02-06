@@ -1515,7 +1515,7 @@ OVERRIDE METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
 	IF oColumn != NULL .AND. oColumn:IsMemo
 		IF SELF:_readRecord()
             VAR blockNo := oColumn:GetValue(SELF:_RecordBuffer)
-            IF blockNo != NULL
+            IF blockNo != NULL .and. blockNo != DBNull.Value
 			    blockNbr := (LONG) blockNo
             ENDIF
 		ENDIF
@@ -1925,7 +1925,7 @@ OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	CASE DbInfo.DBI_ISDBF
 		oResult := TRUE
 	CASE DbInfo.DBI_CANPUTREC
-		oResult := TRUE // IIF(SELF:HasMemo, FALSE , TRUE)
+		oResult := IIF(SELF:HasMemo, FALSE , TRUE)
 	CASE DbInfo.DBI_GETRECSIZE
 		oResult := SELF:_RecordLength
 	CASE DbInfo.DBI_LASTUPDATE

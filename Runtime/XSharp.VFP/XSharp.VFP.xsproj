@@ -73,6 +73,7 @@
     <Compile Include="GetWord.prg" />
     <Compile Include="Keyboard.prg" />
     <Compile Include="NotSupported.prg" />
+    <Compile Include="PrinterFunctions.prg" />
     <Compile Include="SQL\SQLReflection.prg" />
     <Compile Include="SQL\SQLStatement.prg" />
     <Compile Include="SQL\SQLSupport.prg" />

@@ -197,7 +197,7 @@ FUNCTION FTime() AS STRING
 // Worker function with normal file search worker
 INTERNAL FUNCTION FileSearchWorker(cFile AS STRING) AS STRING
     LOCAL lFirst AS LOGIC
-    IF System.IO.File.Exists(cFile)
+    IF cFile:IndexOf("\") >= 0  .and. System.IO.File.Exists(cFile)
         RETURN Path.GetFullPath( cFile )
     ENDIF
     LOCAL aPaths AS STRING[]
@@ -336,6 +336,9 @@ ENDIF
 IF !String.IsNullOrEmpty(cPath)
     VAR aElements := cPath:Split(<CHAR>{ ';' }, StringSplitOptions.RemoveEmptyEntries )
     aPaths:AddRange(aElements)
+ENDIF
+IF ! aPaths:Contains(System.Environment.CurrentDirectory)
+    aPaths:Add(System.Environment.CurrentDirectory)
 ENDIF
 aDefault := aPaths:ToArray()
 SetPathArray(aDefault)

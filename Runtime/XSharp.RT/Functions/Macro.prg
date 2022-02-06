@@ -12,14 +12,14 @@ USING XSharp.Internal
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
-    FUNCTION Evaluate(cString AS STRING) AS USUAL
-RETURN Evaluate(cString, TRUE)
+FUNCTION Evaluate(cString AS STRING) AS USUAL
+    RETURN Evaluate(cString, TRUE)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters.</param>
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
-    FUNCTION Evaluate(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
+FUNCTION Evaluate(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
     LOCAL oMacro AS XSharp._Codeblock
     LOCAL uRes   AS USUAL
     oMacro := MCompile(cString, lAllowSingleQuotes)
@@ -29,7 +29,7 @@ RETURN Evaluate(cString, TRUE)
         // strange but evaluate on a codeblock returns the block in stead of evaluating it
         uRes := oMacro
     ENDIF
-RETURN uRes
+    RETURN uRes
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mcompile/*" />
 /// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
@@ -64,33 +64,33 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
     ENDIF
     RETURN NULL_OBJECT
 
-//INTERNAL GLOBAL macroTokens AS Dictionary<STRING, STRING>
-//
-//INTERNAL FUNCTION MPrepare(cMacro AS STRING) AS STRING
-//    // Replace ".or." and other strings when they are part of the macro
-//    VAR pos := cMacro:IndexOf(c'.')
-//    IF pos < 0
-//        RETURN cMacro
-//    ENDIF
-//    // This is probably too much but it works
-//    // and it does not fix MiXeD cased NaMeS
-//    IF macroTokens == NULL
-//        macroTokens := Dictionary<STRING, STRING>{}
-//        macroTokens:Add("\.or\.", " .or. ")
-//        macroTokens:Add("\.and\.", " .and. ")
-//        macroTokens:Add("\.not\.", " .not. ")
-//        macroTokens:Add("\.xor\.", " .xor. ")
-//        macroTokens:Add("\.t\.", " .t. ")
-//        macroTokens:Add("\.f\.", " .f. ")
-//        macroTokens:Add("\.n\.", " .n. ")
-//        macroTokens:Add("\.y\.", " .y. ")
-//    ENDIF
-//    VAR result := cMacro
-//
-//    FOREACH VAR replace IN macroTokens
-//        result := Regex.Replace(result,replace:Key, replace:Value, RegexOptions.IgnoreCase)
-//    NEXT
-//    RETURN result
+    //INTERNAL GLOBAL macroTokens AS Dictionary<STRING, STRING>
+    //
+    //INTERNAL FUNCTION MPrepare(cMacro AS STRING) AS STRING
+    //    // Replace ".or." and other strings when they are part of the macro
+    //    VAR pos := cMacro:IndexOf(c'.')
+    //    IF pos < 0
+    //        RETURN cMacro
+    //    ENDIF
+    //    // This is probably too much but it works
+    //    // and it does not fix MiXeD cased NaMeS
+    //    IF macroTokens == NULL
+    //        macroTokens := Dictionary<STRING, STRING>{}
+    //        macroTokens:Add("\.or\.", " .or. ")
+    //        macroTokens:Add("\.and\.", " .and. ")
+    //        macroTokens:Add("\.not\.", " .not. ")
+    //        macroTokens:Add("\.xor\.", " .xor. ")
+    //        macroTokens:Add("\.t\.", " .t. ")
+    //        macroTokens:Add("\.f\.", " .f. ")
+    //        macroTokens:Add("\.n\.", " .n. ")
+    //        macroTokens:Add("\.y\.", " .y. ")
+    //    ENDIF
+    //    VAR result := cMacro
+    //
+    //    FOREACH VAR replace IN macroTokens
+    //        result := Regex.Replace(result,replace:Key, replace:Value, RegexOptions.IgnoreCase)
+    //    NEXT
+    //    RETURN result
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mexec/*" />
@@ -101,15 +101,15 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
 FUNCTION MExec(oBlock AS CODEBLOCK) AS USUAL
-IF oBlock IS XSharp._Codeblock VAR cb .AND. cb:IsBlock
-    RETURN oBlock
-ENDIF
-RETURN Eval(oBlock)
+    IF oBlock IS XSharp._Codeblock VAR cb .AND. cb:IsBlock
+        RETURN oBlock
+    ENDIF
+    RETURN Eval(oBlock)
 
 
 
 
-// Copied from the Roslyn Lexer and Macro Lexer
+    // Copied from the Roslyn Lexer and Macro Lexer
 INTERNAL FUNCTION _IsIdentifierStartChar(cChar AS CHAR) AS LOGIC
     IF cChar >= c'A' .AND. cChar <= c'Z'
         RETURN TRUE
@@ -134,7 +134,7 @@ INTERNAL FUNCTION _IsIdentifierStartChar(cChar AS CHAR) AS LOGIC
         CASE UnicodeCategory.LetterNumber
             RETURN TRUE
     END SWITCH
-RETURN FALSE
+    RETURN FALSE
 
 INTERNAL FUNCTION _IsIdentifierPartChar(cChar AS CHAR) AS LOGIC
     IF _IsIdentifierStartChar(cChar)
@@ -150,7 +150,7 @@ INTERNAL FUNCTION _IsIdentifierPartChar(cChar AS CHAR) AS LOGIC
         CASE UnicodeCategory.Format
             RETURN cChar > 127
     END SWITCH
-RETURN FALSE
+    RETURN FALSE
 
 INTERNAL FUNCTION _IsIdentifier(cName AS STRING) AS LOGIC
     IF cName:Length=0 .OR. ! _IsIdentifierStartChar(cName[0])
@@ -161,42 +161,80 @@ INTERNAL FUNCTION _IsIdentifier(cName AS STRING) AS LOGIC
             RETURN FALSE
         ENDIF
     NEXT
-RETURN TRUE
+    RETURN TRUE
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/type/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(FALSE)];
-    FUNCTION Type(cString AS STRING) AS STRING
+FUNCTION Type(cString AS STRING) AS STRING
+    RETURN Type(cString, 0)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/type/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
+[NeedsAccessToLocals(FALSE)];
+FUNCTION Type(cString AS STRING, nArray as LONG) AS STRING
     LOCAL uValue AS USUAL
     LOCAL cRet	 AS STRING
+    uValue := NIL
     IF String.IsNullOrEmpty(cString)
         cRet := "UE"
     ELSE
         TRY
-                // do not use the macro compiler to find "simple" memvar or local names
-                IF _IsIdentifier(cString) .AND. MemVarTryGet(cString, OUT uValue)
-                    cRet   := ValType(uValue)
-                ELSE
-                    // Ok, this is not a memvar or local name. Let's evaluate it
-                    uValue := Evaluate(cString)
-                    cRet   := ValType(uValue)
+            // do not use the macro compiler to find "simple" memvar or local names
+            IF _IsIdentifier(cString) .AND. MemVarTryGet(cString, OUT uValue)
+                NOP
+            ELSE
+                // Ok, this is not a memvar or local name. Let's evaluate it
+                uValue := Evaluate(cString)
             ENDIF
+            IF RuntimeState:Dialect == XSharpDialect.FoxPro .and. uValue == NULL
+                cRet := "L"
+            else
+                cRet   := ValType(uValue)
+            endif
+
         CATCH  AS Exception
             cRet  := "UE"
         END TRY
     ENDIF
-    IF RuntimeState.Dialect == XSharpDialect.FoxPro .and. cRet == "UE"
-        cRet := "U"
+    IF RuntimeState.Dialect == XSharpDialect.FoxPro
+        IF nArray == 1
+            IF IsArray(uValue)
+                cRet := "A"
+            else
+                cRet := "U"
+            ENDIF
+        ELSE
+            SWITCH cRet
+            CASE "A"
+                // FoxPro returns the type of the first element
+                IF IsArray(uValue)
+                    local aValue as ARRAY
+                    aValue := uValue
+                    cRet := ValType(aValue[1])
+                    if cRet == "A"
+                        aValue := aValue[1]
+                        cRet := ValType(aValue[1])
+                    ENDIF
+
+                ENDIF
+            CASE "UE"
+                cRet := "U"
+            END SWITCH
+        ENDIF
     ENDIF
 
-RETURN cRet
+    RETURN cRet
+
+
 
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strevaluate/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(FALSE)];
-    FUNCTION StrEvaluate( cString AS STRING ) AS STRING
+FUNCTION StrEvaluate( cString AS STRING ) AS STRING
     IF cString:IndexOf("&") > 0
         LOCAL cVariableName AS STRING
         LOCAL lInVariable   AS LOGIC
@@ -227,7 +265,7 @@ RETURN cRet
                 OTHERWISE
                     IF lInVariable
                         IF Char.IsLetterOrDigit(cChar)
-                                cVariableName += cChar:ToString()
+                            cVariableName += cChar:ToString()
                             lAddChar     := FALSE
                         ELSE
                             lInVariable := FALSE
@@ -250,22 +288,22 @@ RETURN cRet
         ENDIF
         cString := sb:ToString()
     ENDIF
-RETURN cString
+    RETURN cString
 
 
 INTERNAL FUNCTION StrEvaluateMemVarGet(cVariableName AS STRING) AS STRING
     TRY
-            VAR oMemVar := XSharp.MemVar.PrivateFind(cVariableName)
-            IF oMemVar == NULL
-                oMemVar := XSharp.MemVar.PublicFind(cVariableName)
-            ENDIF
-            IF oMemVar != NULL
-                RETURN oMemVar:Value:ToString()
+        VAR oMemVar := XSharp.MemVar.PrivateFind(cVariableName)
+        IF oMemVar == NULL
+            oMemVar := XSharp.MemVar.PublicFind(cVariableName)
+        ENDIF
+        IF oMemVar != NULL
+            RETURN oMemVar:Value:ToString()
         ENDIF
     CATCH
         // Memvar not found ?
     END TRY
-RETURN cVariableName
+    RETURN cVariableName
 
 INTERNAL FUNCTION DefaultMacroAmbigousMatchResolver(m1 AS MemberInfo, m2 AS MemberInfo, args AS System.Type[]) AS LONG
     LOCAL comp1 := GetCompany(m1:Module:Assembly) AS STRING
@@ -281,7 +319,7 @@ INTERNAL FUNCTION DefaultMacroAmbigousMatchResolver(m1 AS MemberInfo, m2 AS Memb
         ENDIF
     ENDIF
 
-RETURN 0
+    RETURN 0
 
 INTERNAL FUNCTION GetCompany(asm AS System.Reflection.Assembly) AS STRING
     FOREACH attr AS CustomAttributeData IN asm:CustomAttributes
@@ -289,10 +327,10 @@ INTERNAL FUNCTION GetCompany(asm AS System.Reflection.Assembly) AS STRING
             RETURN (STRING) attr:ConstructorArguments[0]:Value
         ENDIF
     NEXT
-RETURN NULL
+    RETURN NULL
 
 
-INTERNAL GLOBAL _fullMacroCompiler AS Assembly
+    INTERNAL GLOBAL _fullMacroCompiler AS Assembly
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/execscript/*" />
 FUNCTION ExecScript( cExpression, eParameter1, eParameter2, eParameterN ) AS USUAL CLIPPER

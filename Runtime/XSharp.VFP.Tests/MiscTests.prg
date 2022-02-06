@@ -9,6 +9,7 @@ USING System.Linq
 USING System.Text
 USING XUnit
 
+using System.Diagnostics
 
 // Array tests are not working correctly yet with the current build
 BEGIN NAMESPACE XSharp.VFP.Tests
@@ -21,6 +22,16 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 		METHOD Various() AS VOID
             Assert.Equal(TRUE, IsMouse())
             Assert.Equal(TRUE, IsColor())
+
+
+		[Fact, Trait("Category", "String")];
+		METHOD ProgramTests() AS VOID
+            Assert.Equal((int) Program(-1), StackTrace{ FALSE }:FrameCount)
+            Assert.Equal(Program(), "MISCTESTS:PROGRAMTESTS")
+            Assert.Equal(Program(0), "MISCTESTS:PROGRAMTESTS")
+            Assert.Equal(Program(1), "MISCTESTS:PROGRAMTESTS")
+
+
 
 	END CLASS
 

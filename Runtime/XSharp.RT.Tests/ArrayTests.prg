@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -12,16 +12,16 @@ USING XUnit
 #pragma warnings(165, off)  // unassigned variables
 
 // Array tests are not working correctly yet with the current build
-BEGIN NAMESPACE XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS ArrayTests
-	 
+
  		[Trait("Category", "Array")];
-		[Fact]; 
+		[Fact];
 		METHOD ArrayCreateTest() AS VOID
-			LOCAL testArray := ArrayNew(2,3) AS ARRAY 
+			LOCAL testArray := ArrayNew(2,3) AS ARRAY
 			Assert.NotEqual(NULL,testArray)
-			Assert.Equal((DWORD)2, ALen(testArray)) 
+			Assert.Equal((DWORD)2, ALen(testArray))
 			Assert.Equal((DWORD)3,(ALen(testArray[1])))
 		RETURN
  		[Trait("Category", "Array")];
@@ -42,7 +42,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( 2 , (INT) oldValue)
 			Assert.Equal( 4 , (INT) testArray[2])
 		RETURN
-		
+
  		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArrayDeleteTest() AS VOID
@@ -52,7 +52,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( NIL ,  testArray[3])
 
 		RETURN
-		
+
  		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArraySizeTest() AS VOID
@@ -83,7 +83,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( NIL , testArray[10])
 		RETURN
 
-		
+
  		[Trait("Category", "Array")];
 		[Fact];
 		METHOD ArrayDimTest() AS VOID
@@ -94,7 +94,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			AAdd(mainArray,TRUE)
 			AAdd(mainArray,"test")
 			AAdd(mainArray,subArray)
-			VAR u := mainArray[5][2] 
+			VAR u := mainArray[5][2]
 			Assert.Equal( 4, (INT) u)
 			mainArray[5][2] := "anothertest"
 			u := mainArray[5][2]
@@ -136,7 +136,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( 4, (INT) a[5])
 			Assert.Equal( 0, (INT) a[6])
 			//? a[1],a[2],a[3],a[4],a[5]
-			
+
 			a := {}
 			ASort(a)
 			ASort(a , 0)
@@ -241,7 +241,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( 0, (INT) AScan(a, 1 , 3 , -2) )
 			Assert.Equal( 1, (INT) AScan(a, 1 , 3 , -3) )
 			Assert.Equal( 1, (INT) AScan(a, 1 , 3 , -4) )
-			
+
 			LOCAL aUninitialized AS ARRAY
 			Assert.Equal( 0, (INT) AScan(aUninitialized, 123) )
 			Assert.Equal( 0, (INT) AScanExact(aUninitialized, 123) )
@@ -253,7 +253,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			aUninitialized := NULL_ARRAY
 			Assert.Equal( 0, (INT) AScan(aUninitialized, 123) )
 			Assert.Equal( 0, (INT) AScanExact(aUninitialized, "aaa") )
-			
+
 
 		[Trait("Category", "Array")];
 		[Fact];
@@ -290,7 +290,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( 1, (INT) aDest[1])
 			Assert.Equal( 2, (INT) aDest[2])
 			Assert.Equal( 3, (INT) aDest[3])
-			aDest   := ArrayNew(2) 
+			aDest   := ArrayNew(2)
 			ACopy(aValues, aDest)
 			Assert.Equal( 1, (INT) aDest[1])
 			Assert.Equal( 2, (INT) aDest[2])
@@ -303,7 +303,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aDest   AS ARRAY
 
 			aValues := {1,2}
-			
+
 			aDest   := {NIL,NIL,NIL}
 			ACopy(aValues, aDest)
 			Assert.True( aDest[1] == 1)
@@ -375,7 +375,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( arr[1] == 1)
 			Assert.True( arr[2] == NIL)
 			Assert.True( arr[3] == 2)
-			
+
 			ADel(arr , 2)
 			Assert.True( ALen(arr) == 3)
 			Assert.True( arr[1] == 1)
@@ -386,7 +386,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact];
 		METHOD AFillTests() AS VOID
 			LOCAL arr := {1,2,3,4} AS ARRAY
-			
+
 			//#warning AFill(arr , val , , count) is not supported due to AFill() being strongly typed
 			AFill(arr , "a" , , 3)
 			AFill(arr , "a" , 1 , 3)
@@ -400,13 +400,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( arr[2] == NIL)
 			Assert.True( arr[3] == NIL)
 			Assert.True( arr[4] == NIL)
-			
+
 			AFill(arr , #abc , 3 , 10)
 			Assert.True( arr[1] == NIL)
 			Assert.True( arr[2] == NIL)
 			Assert.True( arr[3] == #abc)
 			Assert.True( arr[4] == #abc)
-			
+
 //			AFill(arr , 0 , , 1)
 			AFill(arr , 0 , 1 , 1)
 			Assert.True( arr[1] == 0)
@@ -450,7 +450,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			a := NULL
 			AEval(a, {||TRUE})
 		RETURN
-	
+
 		[Fact, Trait("Category", "AClone")];
 		METHOD AClone_Tests() AS VOID
 			Assert.True(ALen(AClone({1}))==1)
@@ -458,14 +458,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True(  AClone({1,2})[2] ==2  )
 			Assert.True(  AClone({1,{2,3},4})[2,2] == 3  )
 			Assert.True(  AClone({1,{},4})[3] == 4  )
-	
+
 			Assert.True(AClone(NULL_ARRAY)==NULL_ARRAY)
 			LOCAL aNull := NULL_ARRAY AS ARRAY
 			Assert.True(AClone(aNull)==NULL_ARRAY)
 			Assert.True(ALen(AClone({}))==0)
 			Assert.True(ALen(AClone({{}}))==1)
-	
-	
+
+
 		[Fact, Trait("Category", "ACloneShallow")];
 		METHOD ACloneShallow_Tests() AS VOID
 			Assert.True(ALen(ACloneShallow({1}))==1)
@@ -473,26 +473,26 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True(  ACloneShallow({1,2})[2] ==2  )
 			Assert.True(  ACloneShallow({1,{2,3},4})[2,2] == 3  )
 			Assert.True(  ACloneShallow({1,{},4})[3] == 4  )
-			
+
 			LOCAL aSub AS ARRAY
 			aSub := {1,2}
 			Assert.True(  ACloneShallow({1,aSub,3})[2] == aSub  )
-	
+
 			Assert.True(ACloneShallow(NULL_ARRAY)==NULL_ARRAY)
 			LOCAL aNull AS ARRAY
 			aNull := NULL_ARRAY
 			Assert.True(ACloneShallow(aNull)==NULL_ARRAY)
 			Assert.True(ALen(ACloneShallow({}))==0)
 			Assert.True(ALen(ACloneShallow({{}}))==1)
-	
+
 		[Fact, Trait("Category", "AClone")];
 		METHOD ACloneWith_NULL_ARRAY_as_Elements() AS VOID
 			Assert.True(  ALen(  AClone({NULL_ARRAY,NULL_ARRAY}) ) == 2  )
 			Assert.True(  AClone({NULL_ARRAY})[1] == NULL_ARRAY  )
-	
+
 			Assert.True(  ALen(  ACloneShallow({NULL_ARRAY,NULL_ARRAY}) ) == 2  )
 			Assert.True(  ACloneShallow({NULL_ARRAY})[1] == NULL_ARRAY  )
-	
+
 
 		[Fact, Trait("Category", "Hacks")];
 		METHOD ArrayVOSpecialHandling() AS VOID
@@ -505,23 +505,71 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Hacks")];
 		METHOD ArrayXPPSpecialHandling() AS VOID
-            LOCAL aValues := {1,2,4} AS ARRAY        
+            LOCAL aValues := {1,2,4} AS ARRAY
             LOCAL eDialect AS XSharp.XSharpDialect
             eDialect := RuntimeState.Dialect
             RuntimeState.Dialect := XSharpDialect.XPP
             Assert.True(  aValues[1,1] == TRUE)
             Assert.True(  aValues[2,2] == TRUE)
             Assert.True(  aValues[3,3] == TRUE)
-            aValues := {"a","bb","ccc"} 
+            aValues := {"a","bb","ccc"}
             Assert.True(  aValues[1,1] == "a")
             Assert.True(  aValues[2,2] == "b")
             Assert.True(  aValues[3,3] == "c")
             RuntimeState.Dialect := eDialect
 
+        [Fact, Trait("Category", "Enumerator")];
+        METHOD EnumeratorTest AS VOID
+            LOCAL a as Array
+            a := Array{ SELF:Enumerator1()}
+            Assert.True(ALen(a) == 5)
+            Assert.True(a[1] == 1)
+            Assert.True(a[2] == 2)
+            Assert.True(a[3] == 3)
+            Assert.True(a[4] == 4)
+            Assert.True(a[5] == 5)
+            a := Array{ SELF:Enumerator2()}
+            Assert.True(ALen(a) == 5)
+            Assert.True(a[1] == 1)
+            Assert.True(a[2] == 2)
+            Assert.True(a[3] == 3)
+            Assert.True(a[4] == 4)
+            Assert.True(a[5] == 5)
+
+            a := Array{ SELF:Enumerator3()}
+            Assert.True(ALen(a) == 3)
+            Assert.True(a[1] IS MyTestClass VAR tc1 .and. tc1:Number == 1)
+            Assert.True(a[2] IS MyTestClass VAR tc2 .and. tc2:Number == 2)
+            Assert.True(a[3] IS MyTestClass VAR tc3 .and. tc3:Number == 3)
+
+        METHOD Enumerator1() AS IEnumerable<OBJECT>
+            VAR oObjects := <OBJECT>{1,2,3,4,5}
+            FOREACH var o in oObjects
+                YIELD RETURN o
+            NEXT
+            YIELD BREAK
+
+        METHOD Enumerator2() AS IEnumerable<USUAL>
+            VAR oObjects := <USUAL>{1,2,3,4,5}
+            FOREACH var o in oObjects
+                YIELD RETURN o
+            NEXT
+            YIELD BREAK
+        METHOD Enumerator3() AS IEnumerable<MyTestClass>
+            VAR oObjects := <MyTestClass>{MyTestClass{1},MyTestClass{2},MyTestClass{3}}
+            FOREACH var o in oObjects
+                YIELD RETURN o
+            NEXT
+            YIELD BREAK
 	END CLASS
     CLASS IntegerSorter
         METHOD Eval(a,b)
             RETURN a <= b
 
+    END CLASS
+    Class MyTestClass
+        PUBLIC Number as INT
+        CONSTRUCTOR (nNumber as INT)
+            SELF:Number := nNumber
     END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

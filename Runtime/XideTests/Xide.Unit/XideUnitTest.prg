@@ -233,6 +233,8 @@ CLASS Xide.Unit.Assert
 			XideUnitTest.TestRun(FALSE , "NotEqual() returned: " + o1:ToString() + " , " + o2:ToString() , ProcFile(1) , ProcLine(1))
 		END IF
 	RETURN
+	STATIC METHOD @@True(l AS LOGIC, cLine AS STRING) AS VOID
+	Assert.True(l)
 	STATIC METHOD @@True(l AS LOGIC) AS VOID
 		IF l
 			Passed ++
@@ -261,6 +263,16 @@ CLASS Xide.Unit.Assert
 
 	STATIC METHOD Ignore() AS VOID
 	STATIC METHOD Fail() AS VOID
+
+	STATIC METHOD NotEmpty(c AS STRING) AS VOID
+		IF .not. String.IsNullOrEmpty(c)
+			Passed ++
+			XideUnitTest.TestRun(TRUE , "" , "" , 0)
+		ELSE
+			Failed ++
+			? "failed in ", __ENTITY__, GetFileName(ProcFile(1)) , ProcLine(1)
+			XideUnitTest.TestRun(FALSE , "NotEmpty() returned: FALSE", ProcFile(1) , ProcLine(1))
+		END IF
 
 	STATIC METHOD GetFileName(cFile AS STRING) AS STRING
 		TRY

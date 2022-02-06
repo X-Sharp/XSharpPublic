@@ -53,12 +53,6 @@ FUNCTION Primary( nIndexNumber, uArea) AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/program/*" />
-
-FUNCTION Program( nLevel ) AS USUAL
-    THROW NotImplementedException{}
-    // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/prow/*" />

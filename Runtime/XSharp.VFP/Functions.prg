@@ -5,6 +5,7 @@
 //
 USING System.Collections.Generic
 USING XSharp.RDD.Support
+USING XSharp.Internal
 
 /// <summary>Creates an object from a class definition or an Automation-enabled application.</summary>
 /// <param name="cClassName">Specifies the class or OLE object from which the new object is created.</param>
@@ -115,8 +116,29 @@ FUNCTION VarType( eExpression AS USUAL) AS STRING
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/vartype/*" />
 FUNCTION VarType( eExpression AS USUAL, lNullDataType AS LOGIC) AS STRING
-    IF IsNil(eExpression) .AND. ! lNullDataType
-        RETURN "X"
+    IF IsNil(eExpression)
+        IF ! lNullDataType
+            RETURN "L"
+        ELSE
+            RETURN "U"
+        ENDIF
     ENDIF
-    RETURN ValType(eExpression)
+    local result as string
+    if eExpression IS __FoxArray VAR aFoxArray
+        if ALen(aFoxArray) > 0
+            eExpression := aFoxArray[1]
+            IF IsNil(eExpression)
+                result := "L"
+            ELSE
+                result := ValType(eExpression)
+            ENDIF
+        else
+            result := "U"
+        endif
+    else
+
+        result := ValType(eExpression)
+    endif
+    RETURN result
+
 

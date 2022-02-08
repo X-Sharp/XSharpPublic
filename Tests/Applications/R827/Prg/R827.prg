@@ -8,13 +8,12 @@ PUBLIC CLASS TestClass
 
     PUBLIC METHOD Test() AS VOID STRICT
 
-        VAR a := ClassA{ClassB{"asdf"}}
+        VAR a := ClassA{ClassB{"X#rules"}}
 
         LOCAL b := a?:B AS ClassB // without the question mark (i.e. "local b := a.B as ClassB") no exception is thrown
-
-        Console.WriteLine("A: " + b:S) // b.S throws System.AccessViolationException
-        Console.ReadLine()
-
+        xAssert(b:S == "X#rules")
+        b := a:B 
+        xAssert(b:S == "X#rules")
         RETURN
 
 END CLASS
@@ -38,4 +37,12 @@ PUBLIC CLASS ClassB
         RETURN
 
 END CLASS
+
+
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
+RETURN 
 

@@ -457,6 +457,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             // where VO see this as
             // a #b
             // These dialects however SHOULD support #ifdef etc and VFP also #null
+
+            switch (_lastToken.Type)
+            {
+                case ID:
+                case RPAREN:
+                case RCURLY:
+                case RBRKT:
+                    if (_lastToken.StopIndex == _startCharIndex - 1)
+                        return;
+                    break;
+            }
+
+
+
             var c = La(1);
             if (c > 0 && IsIdentifierStartCharacter((char)c))
             {

@@ -6345,17 +6345,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Id.SetSequencePoint();
             context.Container.SetSequencePoint();
             var foreachKwd = context.f.SyntaxKeyword();
+            var dt = _impliedType;
+            bool declareslocal = true;
+            if (context.Type != null)
+            {
+                dt = context.Type?.Get<TypeSyntax>();
+            }
+            else if (context.V == null)
+            {
+                declareslocal = false;
+                dt = DefaultType();
+            }
+            var block = context.StmtBlk.Get<BlockSyntax>();
+            var id = context.Id.Get<SyntaxToken>();
+            if (!declareslocal)
+            {
+                // if there is not a new local for the block then we generate a temp local for the iterator
+                // and assign that iterator to the local that was declared outside of the loop
+                var lhs = GenerateSimpleName(id.GetValueText());
+                var name = XSharpSpecialNames.LocalPrefix + context.Start.StartIndex.ToString();
+                id = SyntaxFactory.MakeIdentifier(name);
+                var rhs = GenerateSimpleName(name);
+                var stmt = GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs), context, true);
+                var list = new List<StatementSyntax>() { stmt };
+                list.Add(block);
+                block = MakeBlock(list);
+            }
             StatementSyntax forStmt = _syntaxFactory.ForEachStatement(
                 attributeLists: default,
                 awaitKeyword: null,
                 foreachKwd,
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                context.Type?.Get<TypeSyntax>() ?? _impliedType,
-                context.Id.Get<SyntaxToken>(),
+                dt,
+                id,
                 SyntaxFactory.MakeToken(SyntaxKind.InKeyword),
                 context.Container.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                context.StmtBlk.Get<BlockSyntax>());
+                block);
             context.Put(forStmt);
 
         }

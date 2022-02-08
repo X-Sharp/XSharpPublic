@@ -2483,6 +2483,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"#WARNING", PP_WARNING},		// #warning [warningMessage]
                 {"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
                 {"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
+                {"#IF", PP_IF},	                // #if <expression> 
+                {"#STDOUT", PP_STDOUT },        // #stdout [Message]
             };
             if (Dialect == XSharpDialect.XPP)
             {

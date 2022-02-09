@@ -157,6 +157,7 @@
     <Compile Include="DbfCdxTests.prg" />
     <Compile Include="FileIOTests.prg" />
     <Compile Include="MacroTest.prg" />
+    <Compile Include="NullTests.prg" />
     <Compile Include="OemTests.prg" />
     <Compile Include="DateTests.prg" />
     <Compile Include="DbfTests.prg" />

@@ -60,8 +60,12 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
         ENDIF
         var result := SELF:Eval(uArgs)
         SELF:ResultType := result:Type
-        IF IsNil(result) .and. RuntimeState.Dialect == XSharpDialect.FoxPro
-            result := FALSE
+        IF RuntimeState.Dialect == XSharpDialect.FoxPro
+            if result:IsNull
+                result := DBNull.Value
+            ELSEIF IsNil(result)
+                result := FALSE
+            ENDIF
         ENDIF
         RETURN result
 

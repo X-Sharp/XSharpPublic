@@ -810,8 +810,8 @@ CLASS XSharp.CoreDb
         VAR lResult :=  CoreDb.Do( { =>
              LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
              IF oRdd IS Workarea VAR oWa
-                var oCanPut := oWa:Info(DBI_CANPUTREC, NULL)
-                IF oCanPut IS LOGIC VAR lCanPut .and. lCanPut
+                // var oCanPut := oWa:Info(DBI_CANPUTREC, NULL)
+                //IF oCanPut IS LOGIC VAR lCanPut .and. lCanPut
                     LOCAL oFld AS RddFieldInfo
                     oFld := oWa:GetField((LONG) nPos)
                     IF oFld != NULL
@@ -833,10 +833,10 @@ CLASS XSharp.CoreDb
                             ENDIF
                         ENDIF
                     ENDIF
-                ELSE
-                    VAR oError := Error{EG_UNSUPPORTED, __FUNCTION__, "RDD does not support PutRec" }
-                    THROW oError
-                ENDIF
+                //ELSE
+                //    VAR oError := Error{EG_UNSUPPORTED, __FUNCTION__, "RDD does not support PutRec" }
+                //    THROW oError
+                //ENDIF
             ENDIF
             RETURN FALSE
         })

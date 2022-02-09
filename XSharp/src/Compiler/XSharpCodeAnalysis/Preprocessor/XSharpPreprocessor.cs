@@ -1658,7 +1658,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            expandedTokens.Add(new XSharpToken(token) { Channel = TokenConstants.DefaultChannel });
+                            // undefined tokens get the value FALSE
+                            var newtoken = new XSharpToken(token);
+                            newtoken.Type = XSharpLexer.FALSE_CONST;
+                            expandedTokens.Add(newtoken);
                         }
                     }
                     else if (token.Channel != TokenConstants.HiddenChannel)

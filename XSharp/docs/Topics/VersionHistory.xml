@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Runtime chapter</keyword>
@@ -21,11 +21,12 @@
       <li styleclass="Body Text">[XBase++ dialect] Fixed a problem with parsing method declarations with parentheses (#927)</li>
       <li styleclass="Body Text">[XBase++ dialect] Fixed a problem with parsing the (obsolete in X#) ANNOUNCE and REQUEST statements (#929)</li>
       <li styleclass="Body Text">[XBase++ dialect] Fixed a problem with parsing INLINE ACCESS and ACCESS ASSIGN statements (#926)</li>
-      <li styleclass="Body Text">[VFP dialect] Fixed a problem with parsing FOREACH statements containing &quot;M.&quot; variables usage (#911)</li>
+      <li styleclass="Body Text">[VFP dialect] Fixed a problem with parsing FOR EACH statements containing &quot;M.&quot; variables usage where the variable was not typed in the FOR EACH line (#911) .</li>
     </list>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Added compiler option /noinit to not generate $Init calls for libraries without INIT procedures for the sake of postponed loading (#854)</li>
+      <li styleclass="Body Text">Added compiler option /noinit to not generate $Init calls for libraries without INIT procedures for the sake of postponed loading (#854) </li>
+      <li styleclass="Body Text">Added preprocessor support for <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Stdout">#stdout</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-If">#if</link>. (#912)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
@@ -38,6 +39,8 @@
       <li styleclass="Body Text">The VO-style editors now retain existing &quot;CLIPPER&quot; clause to methods/constructors when generating code (#913)</li>
       <li styleclass="Body Text">Fixed incorrect parsing of classes as nested to each other (#939)</li>
       <li styleclass="Body Text">Fixed a problem with using embedded variables in the form of $(SomeName) in the project settings (#928)</li>
+      <li styleclass="Body Text">Fixed a problem where deleting items from a project would fail.</li>
+      <li styleclass="Body Text">Fixed a problem resolving the DLL produced by project files from other development languages, in particular SDK style C# projects.</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
@@ -50,11 +53,12 @@
       <li styleclass="Body Text">Fixed a problem with soft Seek not respecting order scope when to strict key is found (#905)</li>
       <li styleclass="Body Text">Fixed DBUseArea() search logic for files in various folders. Also SetDefault() is no longer initialized with the current directory (for VO compatibility) (#908)</li>
       <li styleclass="Body Text">Fixed problem with creating dbfs with character fields with length &gt; 255 (#917)</li>
-      <li styleclass="Body Text">Fixed a problem with db append, copy etc, when both source and destination files have the same structure and include a memo file (#945)</li>
+      <li styleclass="Body Text">[RDD] Fixed a problem with db append, copy etc, when both source and destination files have the same structure and include a memo file (#945)</li>
       <li styleclass="Body Text">[VFP dialect] Added optional parameter to Program( [,lShowSignature default=.f.] ) (#712)</li>
       <li styleclass="Body Text">[VFP dialect] Fixed several issues with the Type() function (#747, #942)</li>
       <li styleclass="Body Text">[VFP dialect] Fixed a problem with ExecScriptFast() (#823)</li>
       <li styleclass="Body Text">[VFP dialect] Fixed a problem with SQLExec() not putting the record pointer on the first record (#864)</li>
+      <li styleclass="Body Text">[VFP dialect] Fixed a problem with SQLExec() with null values (#941)</li>
     </list>
     <para styleclass="Heading3">Typed SDK</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

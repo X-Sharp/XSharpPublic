@@ -184,7 +184,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                 }
             }
-            else if (lhs is double || rhs is double)
+            else if (lhs is double || rhs is double || lhs is decimal || rhs is decimal)
             {
                 var dblLhs = AsDouble(lhs);
                 var dblRhs = AsDouble(rhs);
@@ -358,7 +358,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _evalStack.Push(intLhs % intRhs);
                         break;
                     case XSharpLexer.EXP:
-                        _evalStack.Push( (int) Math.Pow(intLhs, intRhs));
+                        _evalStack.Push((int)Math.Pow(intLhs, intRhs));
+                        break;
+                    case XSharpLexer.PIPE:
+                        _evalStack.Push(intLhs | intRhs);
+                        break;
+                    case XSharpLexer.AMP:
+                        _evalStack.Push(intLhs & intRhs);
                         break;
                     case XSharpLexer.LSHIFT:
                         if (intRhs < int.MaxValue)
@@ -459,10 +465,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpLexer.MOD:
                     case XSharpLexer.LSHIFT:
                     case XSharpLexer.RSHIFT:
+                    case XSharpLexer.PIPE:
+                    case XSharpLexer.AMP:
                         doCalc(context, lhs, rhs);
                         break;
 
-                    case XSharpLexer.AMP:
                     case XSharpLexer.LOGIC_AND:
                     case XSharpLexer.AND:
                     case XSharpLexer.FOX_AND:

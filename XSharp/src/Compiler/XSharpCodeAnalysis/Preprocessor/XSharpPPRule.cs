@@ -1795,21 +1795,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-
-        void regularResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
+        void regularResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset = 0)
         {
             // write input text to the result text without no changes
             // for example:
             // #command SET CENTURY (<x>) => __SetCentury( <x> )
             // the output written is the literal text for x, so the token(s) x
             var range = matchInfo[resultToken.MatchMarker.Index];
-            if (!range.Empty)
+            if (resultToken.MatchMarker.RuleTokenType == PPTokenType.MatchList)
             {
-                // No special handling for List markers. Everything is copied including commas etc.
-                if (range.MatchCount > 1)
+                processMatchList(resultToken, tokens, range, result, regularSingleResult);
+            }
+            else
+            {
+                if (!range.Empty && range.MatchCount > 1)
                 {
                     range = range.Children[offset];
                 }
+                regularSingleResult(resultToken, tokens, range, result);
+            }
+            return;
+        }
+
+        void regularSingleResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result)
+        {
+            if (!range.Empty)
+            {
                 for (int i = range.Start; i <= range.End && i < tokens.Count; i++)
                 {
                     var token = tokens[i];
@@ -1821,9 +1832,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var NilToken = new XSharpToken(XSharpLexer.NIL, "NIL");
                 result.Add(NilToken);
             }
-            return;
         }
-
         void blockifySingleResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result)
         {
             int start = range.Start;
@@ -1880,7 +1889,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        delegate void processMethod(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result);
+        void processMatchList(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result, processMethod action)
+        {
+            var list = new List<PPMatchRange>();
+            if (range.IsList)
+            {
+                list.AddRange(range.Children);
+            }
+            else
+            {
+                // find commas in the list
+                list = splitCommaSeparatedRange(range, tokens);
+            }
+            bool first = true;
+            foreach (var element in list)
+            {
+                if (!first)
+                    result.Add(new XSharpToken(XSharpLexer.COMMA, ","));
+                else
+                    first = false;
+                action(resultToken, tokens, element, result);
+            }
 
+        }
         void blockifyResult(PPResultToken resultToken, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
             // write output text as codeblock
@@ -1895,12 +1927,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     range = range.Children[offset];
                 }
-                if (resultToken.MatchMarker.RuleTokenType == PPTokenType.MatchList && range.IsList)
+                if (resultToken.MatchMarker.RuleTokenType == PPTokenType.MatchList)
                 {
-                    foreach (var element in range.Children)
-                    {
-                        blockifySingleResult(resultToken, tokens, element, result);
-                    }
+                    processMatchList(resultToken, tokens, range, result, blockifySingleResult);
                 }
                 else
                 {
@@ -1932,7 +1961,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var t1 = tokens[start];
             var t2 = tokens[start + 1];
             var t3 = tokens[start + 2];
-            if (t1.Type == XSharpLexer.ID && t2.Type == XSharpLexer.COLON && t2.Position == t1.Position + 1)          // C: .....
+            if (t1.IsName() && t2.Type == XSharpLexer.COLON && t2.Position == t1.Position + 1)          // C: .....
             {
                 current = start + 2;
             }
@@ -1945,14 +1974,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 current = start + 3;
             }
-            else if (t1.Type == XSharpLexer.BACKSLASH && t2.Type == XSharpLexer.BACKSLASH && t3.Type == XSharpLexer.ID
+            else if (t1.Type == XSharpLexer.BACKSLASH && t2.Type == XSharpLexer.BACKSLASH && t3.IsName()
                 && t2.Position == t1.Position + 1 && t3.Position == t2.Position + 1)    // \\Computer\ID .....
             {
                 if (start < tokens.Count - 5)
                 {
                     var t4 = tokens[start + 3];
                     var t5 = tokens[start + 4];
-                    if (t4.Type == XSharpLexer.BACKSLASH && t5.Type == XSharpLexer.ID || t5.IsKeyword())
+                    if (t4.Type == XSharpLexer.BACKSLASH && t5.IsName())
                     {
                         current = start + 5;
                     }
@@ -1962,11 +1991,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
+            else if (t1.IsName() && t2.Type == XSharpLexer.DOT) // aa.
+            {
+                current = start + 2;
+            }
             else
             {
                 return false;
             }
-            bool hasdot = false;
             bool done = false;
             XSharpToken last = tokens[current - 1];
             while (current < tokens.Count && !done)
@@ -1977,31 +2009,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 }
                 bool ok;
+                ok = true;
                 switch (tokens[current].Type)
                 {
                     case XSharpLexer.BACKSLASH:
-                        ok = true;
-                        break;
-                    case XSharpLexer.ID:
-                        ok = true;
-                        if (hasdot)
-                            done = true;
-                        break;
                     case XSharpLexer.DOT:
-                        if (hasdot)
-                            ok = false;
-                        else
-                            ok = true;
-                        hasdot = true;
+                    case XSharpLexer.ID:
                         break;
                     default:        // Part of the path may match a keyword, such as C:\Date\String\FileName.Dbf
-                        if (tokens[current].IsKeyword())
-                        {
-                            ok = true;
-                            if (hasdot)
-                                done = true;
-                        }
-                        else
+                        if (!tokens[current].IsName())
                         {
                             ok = false;
                         }
@@ -2151,7 +2167,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
 
         }
+        List<PPMatchRange> splitCommaSeparatedRange(PPMatchRange range, IList<XSharpToken> tokens)
+        {
+            var list = new List<PPMatchRange>();
+            var start = range.Start;
+            for (var i = range.Start; i <= range.End; i++)
+            {
+                var token = tokens[i];
+                if (token.Type == XSharpLexer.COMMA)
+                {
+                    var item = new PPMatchRange();
+                    item.SetPos(start, i - 1);
+                    list.Add(item);
+                    start = i + 1;
+                }
+            }
+            var element = new PPMatchRange();
+            element.SetPos(start, range.End);
+            list.Add(element);
+            return list;
 
+        }
         void stringifyResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result, int offset)
         {
             var range = matchInfo[rule.MatchMarker.Index];
@@ -2165,17 +2201,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     range = range.Children[offset];
                 }
-                if (rule.MatchMarker.RuleTokenType == PPTokenType.MatchList && range.IsList)
+                if (rule.MatchMarker.RuleTokenType == PPTokenType.MatchList)
                 {
-                    bool first = true;
-                    foreach (var element in range.Children)
-                    {
-                        if (!first)
-                            result.Add(new XSharpToken(XSharpLexer.COMMA, ","));
-                        stringifySingleResult(rule, tokens, element, result);
-                        first = false;
-
-                    }
+                    processMatchList(rule, tokens, range, result, stringifySingleResult);
                 }
                 else
                 {
@@ -2202,12 +2230,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // In this case no .F. is written, to make sure that the global SetUnique() setting is used
 
             var range = matchInfo[rule.MatchMarker.Index];
-            if (!range.Empty)
+            if (rule.MatchMarker.RuleTokenType == PPTokenType.MatchList)
             {
-                if (range.MatchCount > 1)
+                processMatchList(rule, tokens, range, result, logifySingleResult);
+            }
+            else
+            {
+                if (!range.Empty && range.MatchCount > 1)
                 {
                     range = range.Children[offset];
                 }
+                logifySingleResult(rule, tokens, range, result);
+            }
+            return;
+        }
+        void logifySingleResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result)
+        {
+            if (!range.Empty)
+            {
                 XSharpToken t = tokens[range.Start];
                 t = new XSharpToken(t, XSharpLexer.TRUE_CONST, ".T.")
                 {
@@ -2220,9 +2260,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // No token to read the line/column from
                 result.Add(new XSharpToken(XSharpLexer.FALSE_CONST, ".F."));
             }
-            return;
         }
-
         bool tokenCanStartExpression(int pos, IList<XSharpToken> tokens)
         {
             XSharpToken token = tokens[pos];

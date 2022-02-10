@@ -224,7 +224,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldSetWa = "__FieldSetWa";
         internal const string FieldGetWaUndeclared = "__FieldGetWa2";
         internal const string FieldSetWaUndeclared = "__FieldSetWa2";
-        internal const string PushWorkarea ="__pushWorkarea";
+        internal const string PushWorkarea = "__pushWorkarea";
         internal const string PopWorkarea = "__popWorkarea";
         internal const string String2Psz = "String2Psz";
         internal const string String2PszRelease = "String2PszRelease";
@@ -396,7 +396,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Void2 = "global::System.Void";
         internal const string CollectionsGeneric = "global::System.Collections.Generic";
         internal const string NonSerialized = "global::System.NonSerializedAttribute";
-    }
+        internal const string DBNull = "global::System.DBNull";
+        internal const string DBNullValue = "global::System.DBNull.Value";
+    } 
 }
 
 

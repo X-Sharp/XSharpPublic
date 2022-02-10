@@ -2606,6 +2606,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.NULL_SYMBOL:
                     case XP.SYMBOL_CONST:
                         return _symbolType;
+                    case XP.NULL_FOX:
+                        return GenerateQualifiedName(SystemQualifiedNames.DBNull);
                 }
             }
             return base.GetExpressionType(expr, ref isConst);
@@ -2677,6 +2679,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             return MakeDefaultParameter(GenerateLiteralNull(), zero);                          // 0 = regular .Net Value
                         }
+
+                    case XP.NULL_FOX:
+                        return MakeDefaultParameter(GenerateQualifiedName(SystemQualifiedNames.DBNullValue), zero);
+
                     case XP.NULL_ARRAY:
                     case XP.NULL_OBJECT:
                     case XP.NULL_CODEBLOCK:
@@ -3999,6 +4005,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XP.NULL_ARRAY:
                     expr = MakeDefault(_arrayType);
+                    break;
+                case XP.NULL_FOX:
+                    expr = GenerateQualifiedName(SystemQualifiedNames.DBNullValue);
                     break;
                 case XP.NULL_CODEBLOCK:
                     expr = MakeDefault(_codeblockType);

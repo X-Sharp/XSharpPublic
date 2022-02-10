@@ -507,6 +507,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             break;
                     }
                     break;
+                case XSharpParser.NULL_FOX:
+                    r = SyntaxFactory.MakeIdentifier(SystemQualifiedNames.DBNullValue);
+                    break;
                 case XSharpParser.NIL:
                 case XSharpParser.NULL_ARRAY:
                 case XSharpParser.NULL_CODEBLOCK:

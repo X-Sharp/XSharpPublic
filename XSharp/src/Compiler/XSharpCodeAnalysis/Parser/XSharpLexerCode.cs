@@ -1183,11 +1183,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         }
                         else if (La(5) == '.' && !_inDottedIdentifier && Dialect == XSharpDialect.FoxPro)
                         {
-                            // map .NULL. => NULL
-                            // or should we do this in a UDC ?
+                            // map .NULL. => NULL_FOX => DBNull.Value
                             if (ExpectLower("null"))
                             {
-                                parseType(NULL, 5);
+                                parseType(NULL_FOX, 5);
                                 _inDottedIdentifier = false;
                             }
                         }

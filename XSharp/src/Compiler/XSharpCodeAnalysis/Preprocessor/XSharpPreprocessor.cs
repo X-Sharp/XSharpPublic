@@ -1659,7 +1659,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         else
                         {
                             // undefined tokens get the value FALSE
-                            var newtoken = new XSharpToken(token);
+                            var newtoken = new XSharpToken(token) { Channel = TokenConstants.DefaultChannel };
                             newtoken.Type = XSharpLexer.FALSE_CONST;
                             expandedTokens.Add(newtoken);
                         }

@@ -102514,7 +102514,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R822 - FoxPro type of untyped variable in macro compiler
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C822 - Internal Compiler Error with CLIPPER delegate *************
 Application = C822 - Internal Compiler Error with CLIPPER delegate
 IDEVersion = 1.06
@@ -103802,8 +103802,8 @@ FileType = Code
 CopyToBin = 0
 [C829 - Various UDC issues References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
 [C829 - Various UDC issues Resources]
 [C829 - Various UDC issues Native Resources]
 [C829 - Various UDC issues License files]

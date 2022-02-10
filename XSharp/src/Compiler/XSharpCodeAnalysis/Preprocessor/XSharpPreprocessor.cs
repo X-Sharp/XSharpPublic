@@ -618,7 +618,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Consume();
                 if (line.Count > 0)
                 {
-                    line = ProcessLine(line);
+                    line = ProcessLine(line, this._preprocessorOutput);
                     if (line != null && line.Count > 0)
                     {
                         result.AddRange(line);
@@ -653,7 +653,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return XSharpLexer.Eof;
         }
-        IList<XSharpToken> ProcessLine(IList<XSharpToken> line)
+        IList<XSharpToken> ProcessLine(IList<XSharpToken> line, bool write2ppo)
         {
             Debug.Assert(line.Count > 0);
             var nextType = getFirstTokenType(line);
@@ -719,7 +719,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     line = null;
                     break;
                 default:
-                    line = doNormalLine(line);
+                    line = doNormalLine(line, write2ppo);
                     break;
             }
             return line;
@@ -2185,7 +2185,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         if (cmds[i].Count > 0)
                         {
-                            var res = ProcessLine(cmds[i]);
+                            var res = ProcessLine(cmds[i], false);
                             if (res == null)
                                 cmds[i].Clear();
                             else
@@ -2209,7 +2209,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 result.TrimLeadingSpaces();
                 if (result.Count > 0 && result[0].Channel == XSharpLexer.PREPROCESSORCHANNEL)
                 {
-                    result = ProcessLine(result);
+                    result = ProcessLine(result, false);
                     if (result == null)
                     {
                         result = new List<XSharpToken>();

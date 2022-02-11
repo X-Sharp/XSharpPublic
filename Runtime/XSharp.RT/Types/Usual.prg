@@ -27,7 +27,7 @@ BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the XBase Compatible USUAL type.<br/>
     /// This type has many operators and implicit converters that normally are never directly called from user code.
     /// </summary>
-    [DebuggerDisplay("{ToDebuggerString(),nq}", Type := "USUAL")];
+    [DebuggerDisplay("{ToDebuggerString(),nq}", Type := STR_USUAL)];
     [AllowLateBinding];
     [StructLayout(LayoutKind.Sequential, Pack := 4)];
     [Serializable];
@@ -53,6 +53,16 @@ BEGIN NAMESPACE XSharp
     PRIVATE INITONLY _valueData	AS _UsualData		// for non GC data
     [HIDDEN];
     PRIVATE INITONLY _refData  	AS OBJECT			// for GC data
+    #endregion
+
+    #region constants
+        PRIVATE CONST STR_NIL  := "NIL" AS STRING
+        PRIVATE CONST STR_NULL := "Null" AS STRING
+        PRIVATE CONST STR_NULL_STRING := "NULL_STRING" AS STRING
+        PRIVATE CONST STR_NULL_ARRAY := "NULL_ARRAY" AS STRING
+        PRIVATE CONST STR_NULL_CODEBLOCK := "NULL_CODEBLOCK" AS STRING
+        PRIVATE CONST STR_USUAL := "USUAL" AS STRING
+
     #endregion
 
     #region constructors
@@ -600,7 +610,7 @@ BEGIN NAMESPACE XSharp
         [NODEBUG] ;
         GET
         IF _usualType == __UsualType.Void
-            RETURN "NIL"
+            RETURN STR_NIL
         ELSE
             RETURN __Usual.ToObject(SELF)
         ENDIF
@@ -750,12 +760,10 @@ BEGIN NAMESPACE XSharp
         IF !lhs:_initialized
             RETURN FALSE
         ENDIF
-        IF lhs:IsNull
-            // null is never >
+        IF lhs:IsNull .or. rhs:IsNull
+            // comparison with Null always returns FALSE
+            // In FoxPro this returns .NULL.
             RETURN FALSE
-        ELSEIF rhs:IsNull
-            // All values are  > Null
-            RETURN TRUE
         ENDIF
 
         SWITCH lhs:_usualType
@@ -870,11 +878,10 @@ BEGIN NAMESPACE XSharp
         IF !lhs:_initialized
             RETURN lhs:_initialized == rhs:_initialized
         ENDIF
-        IF lhs:IsNull
-            RETURN rhs:IsNull
-        ELSEIF rhs:IsNull
-            // All values are  > Null
-            RETURN TRUE
+        IF lhs:IsNull .or. rhs:IsNull
+            // comparison with Null always returns FALSE
+            // In FoxPro this returns .NULL.
+            RETURN FALSE
         ENDIF
         SWITCH lhs:_usualType
             CASE __UsualType.Long
@@ -988,11 +995,9 @@ BEGIN NAMESPACE XSharp
         IF !lhs:_initialized
             RETURN FALSE
         ENDIF
-        IF lhs:IsNull
-            // null is never >
-            RETURN ! rhs:IsNull
-        ELSEIF rhs:IsNull
-            // All values are  > Null
+        IF lhs:IsNull .or. rhs:IsNull
+            // comparison with Null always returns FALSE
+            // In FoxPro this returns .NULL.
             RETURN FALSE
         ENDIF
         SWITCH lhs:_usualType
@@ -1103,11 +1108,9 @@ BEGIN NAMESPACE XSharp
         IF !lhs:_initialized
             RETURN lhs:_initialized == rhs:_initialized
         ENDIF
-        IF lhs:IsNull
-            // null can be equal to NULL
-            RETURN TRUE
-        ELSEIF rhs:IsNull
-            // All values are  > Null
+        IF lhs:IsNull .or. rhs:IsNull
+            // comparison with Null always returns FALSE
+            // In FoxPro this returns .NULL.
             RETURN FALSE
         ENDIF
 
@@ -1223,11 +1226,10 @@ BEGIN NAMESPACE XSharp
         /// <inheritdoc />
         [NODEBUG];
         PUBLIC METHOD Equals(u AS __Usual) AS LOGIC
-        IF u:IsNull
-            RETURN SELF:IsNull
-        ENDIF
-        IF u:IsNil
-            RETURN SELF:IsNil
+        IF u:IsNull .or. SELF:IsNull
+            // comparison with Null always returns FALSE
+            // In FoxPro this returns .NULL.
+            RETURN FALSE
         ENDIF
         RETURN SELF:UsualEquals(u, "Usual.Equals()")
 
@@ -1236,8 +1238,10 @@ BEGIN NAMESPACE XSharp
         /// <inheritdoc />
         [NODEBUG];
         PUBLIC OVERRIDE METHOD Equals(obj AS OBJECT) AS LOGIC
-        IF obj is DBNull
-            RETURN SELF:IsNull
+        IF obj is DBNull .or. SELF:IsNull
+            // comparison with Null always returns FALSE
+            // In FoxPro this returns .NULL.
+            RETURN FALSE
         ENDIF
         IF obj == NULL
             RETURN SELF:IsNil
@@ -1263,6 +1267,11 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [NODEBUG];
         STATIC OPERATOR !=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+        IF lhs:IsNull .or. rhs:IsNull
+            // comparison with Null always returns FALSE
+            // In FoxPro this returns .NULL.
+            return FALSE
+        ENDIF
         IF lhs:_usualType == __UsualType.String .AND. rhs:_usualType == __UsualType.String
             RETURN ! __StringEquals(  lhs:_stringValue, rhs:_stringValue)
         ELSE
@@ -1272,11 +1281,9 @@ BEGIN NAMESPACE XSharp
 
         [NODEBUG];
         INTERNAL METHOD UsualEquals( rhs AS __Usual, op AS STRING) AS LOGIC
-        IF SELF:IsNull
-            // null can be equal to NULL
-            RETURN rhs:IsNull
-        ELSEIF rhs:IsNull
-            // All other values are  != Null
+        IF SELF:IsNull .or. rhs:IsNull
+            // comparison with Null always returns FALSE
+            // In FoxPro this returns .NULL.
             RETURN FALSE
         ENDIF
         IF SELF:IsNil .OR. rhs:IsNil
@@ -2095,7 +2102,7 @@ BEGIN NAMESPACE XSharp
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS DATE
         IF u:IsNull  .or. !u:_initialized
-            RETURN DATE{0}
+            RETURN NULL_DATE
         ENDIF
 
         SWITCH u:_usualType
@@ -2165,12 +2172,12 @@ BEGIN NAMESPACE XSharp
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS STRING
         IF u:IsNull  .or. !u:_initialized
-            RETURN ""
+            RETURN String.Empty
         ENDIF
         SWITCH u:_usualType
             CASE __UsualType.String
                 IF u:_refData == NULL
-                    RETURN ""
+                    RETURN String.Empty
                 ELSE
                     RETURN u:ToString()
                 END IF
@@ -2957,9 +2964,9 @@ BEGIN NAMESPACE XSharp
 
         SWITCH (SELF:_usualType)
 
-            CASE __UsualType.Array		; strResult := IIF (SELF:_refData == NULL, "NULL_ARRAY", SELF:_arrayValue:ToString())
+            CASE __UsualType.Array		; strResult := IIF (SELF:_refData == NULL, STR_NULL_ARRAY, SELF:_arrayValue:ToString())
             CASE __UsualType.Binary		; strResult := SELF:_binaryValue:ToString()
-            CASE __UsualType.Codeblock  ; strResult := IIF (SELF:_refData == NULL, "NULL_CODEBLOCK", SELF:_codeblockValue:ToString())
+            CASE __UsualType.Codeblock  ; strResult := IIF (SELF:_refData == NULL, STR_NULL_CODEBLOCK, SELF:_codeblockValue:ToString())
             CASE __UsualType.Currency	; strResult := IIF (SELF:_refData == NULL, "0", SELF:_currencyValue:ToString())
             CASE __UsualType.Object		; strResult := XSharp.RT.Functions.AsString(SELF)
             CASE __UsualType.Date		; strResult := SELF:_dateValue:ToString()
@@ -2970,10 +2977,10 @@ BEGIN NAMESPACE XSharp
             CASE __UsualType.Int64		; strResult := SELF:_i64Value:ToString()
             CASE __UsualType.Logic		; strResult := IIF(!SELF:_logicValue , ".F." , ".T.")
             CASE __UsualType.Ptr		; strResult := SELF:_ptrValue:ToString()
-            CASE __UsualType.String		; strResult := IIF (SELF:_refData == NULL, "NULL_STRING", SELF:_stringValue:ToString())
+            CASE __UsualType.String		; strResult := IIF (SELF:_refData == NULL, STR_NULL_STRING, SELF:_stringValue:ToString())
             CASE __UsualType.Symbol		; strResult := SELF:_symValue:ToString()
-            CASE __UsualType.Void		; strResult := "NIL"
-            CASE __UsualType.Null		; strResult := "Null"
+            CASE __UsualType.Void		; strResult := STR_NIL
+            CASE __UsualType.Null		; strResult := STR_NULL
             OTHERWISE					; strResult := ""
         END SWITCH
         RETURN strResult
@@ -3086,30 +3093,30 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
     STATIC INTERNAL METHOD ConversionError(toTypeString AS STRING, toType AS System.Type, u AS __Usual) AS Error
         VAR	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(u:Type), toTypeString)
-        VAR err			:= Error{Gencode.EG_DATATYPE,"USUAL", cMessage}
+        VAR err			:= Error{Gencode.EG_DATATYPE,STR_USUAL, cMessage}
         err:ArgTypeReqType:= toType
         err:ArgNum		:= 1
         err:ArgType     := u:Type
-        err:FuncSym		:= "USUAL => "+toTypeString
+        err:FuncSym		:= STR_USUAL+" => "+toTypeString
         err:Args        := <OBJECT>{u}
         RETURN err
 
     STATIC INTERNAL METHOD ConversionError(typeNum AS DWORD, toType AS System.Type, u AS __Usual) AS Error
         VAR	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(u:Type), TypeString(DWORD(typeNum)))
-        VAR err			:= Error{Gencode.EG_DATATYPE,"USUAL", cMessage}
+        VAR err			:= Error{Gencode.EG_DATATYPE,STR_USUAL, cMessage}
         err:ArgTypeReqType:= toType
         err:ArgNum		:= 1
-        err:FuncSym		:= "USUAL => "+TypeString((DWORD) typeNum)
+        err:FuncSym		:= STR_USUAL+" => "+TypeString((DWORD) typeNum)
         err:ArgType		:= typeNum
         err:Args        := <OBJECT>{u}
         RETURN err
 
     STATIC INTERNAL METHOD OverflowError(ex AS OverflowException, toTypeString AS STRING, toType AS System.Type, u AS __Usual) AS Error
         VAR message      := VO_Sprintf(VOErrors.USUALOVERFLOWERR, TypeString(u:Type), toTypeString)
-        VAR err			 := Error{Gencode.EG_NUMOVERFLOW, "USUAL", message}
+        VAR err			 := Error{Gencode.EG_NUMOVERFLOW, STR_USUAL, message}
         err:ArgTypeReqType := toType
         err:ArgNum		 := 1
-        err:FuncSym		 := "USUAL => "+toTypeString
+        err:FuncSym		 := STR_USUAL+" => "+toTypeString
         err:Args		 := <OBJECT>{u}
         RETURN err
 
@@ -3129,7 +3136,7 @@ BEGIN NAMESPACE XSharp
         err:ArgNum		 := 1
         err:FuncSym		 := cOperator
         err:Description  := __CavoStr(VOErrors.INVALIDARGTYPE)
-        err:Arg			 := "USUAL"
+        err:Arg			 := STR_USUAL
         err:Args         := <OBJECT> {u}
         RETURN err
 
@@ -3344,6 +3351,10 @@ BEGIN NAMESPACE XSharp
     STATIC METHOD __InexactEquals( lhs AS __Usual, rhs AS STRING ) AS LOGIC
     IF lhs:IsString
         RETURN __StringEquals( lhs:_stringValue, rhs)
+    ELSEIF lhs:IsNull
+        // comparison with Null always returns FALSE
+        // In FoxPro this returns .NULL.
+        RETURN FALSE
     ELSEIF lhs:IsNil
         IF RuntimeState.Dialect  == XSharpDialect.FoxPro
             // Fox throws an error
@@ -3358,6 +3369,11 @@ BEGIN NAMESPACE XSharp
     /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
     [NODEBUG];
     STATIC METHOD __InexactNotEquals( lhs AS __Usual, rhs AS __Usual ) AS LOGIC
+    IF lhs:IsNull .or. rhs:IsNull
+        // comparison with Null always returns FALSE
+        // In FoxPro this returns .NULL.
+        RETURN FALSE
+    ENDIF
     IF lhs:IsNil .OR. rhs:IsNil
         IF lhs:IsNil .AND. rhs:IsNil
             RETURN FALSE        // When both are NIL then NotEquals returns FALSE
@@ -3375,6 +3391,10 @@ BEGIN NAMESPACE XSharp
     /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
     [NODEBUG];
     STATIC METHOD __InexactNotEquals( lhs AS __Usual, rhs AS STRING ) AS LOGIC
+    IF lhs:IsNull
+        // In FoxPro this returns .NULL.
+        RETURN FALSE
+    ENDIF
     IF lhs:IsNil
         IF RuntimeState.Dialect  == XSharpDialect.FoxPro
             THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
@@ -3392,8 +3412,10 @@ BEGIN NAMESPACE XSharp
     [NODEBUG];
     INTERNAL METHOD ToDebuggerString AS STRING
     LOCAL strValue AS STRING
-    IF SELF:IsNil
-        strValue := "(NIL)"
+    IF SELF:IsNull
+        strValue := STR_NULL
+    ELSEIF SELF:IsNil
+        strValue := "("+STR_NIL+")"
     ELSE
         strValue := SELF:Value:ToString() +" ( "
         IF SELF:IsByRef

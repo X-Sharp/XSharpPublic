@@ -392,7 +392,6 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
 INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS ARRAY) AS ARRAY
 
 	LOCAL aNew      AS ARRAY
-	LOCAL cobScan   AS CODEBLOCK
 	LOCAL cName     AS STRING
 	LOCAL n, i, j   AS DWORD
 	LOCAL lMatch	AS LOGIC
@@ -402,7 +401,6 @@ INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS A
 		RETURN (aStruct)
 	ENDIF
 
-	//	UH 11/30/1998
 	IF Empty(aMatch)
 		lMatch := .F.
 	ELSE
@@ -419,13 +417,17 @@ INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS A
 	aNames  := aNew
 	cName   := ""
 	aNew    := {}
-	cobScan := {|aFld| aFld[DBS_NAME] == cName}
+    // Convert AStruct to List<String>
+    VAR aFields := Dictionary<String, DWORD>{StringComparer.OrdinalIgnoreCase}
+    FOR i := 1 to ALen(aStruct)
+        local aFld := aStruct[i] AS ARRAY
+        aFields:Add(Trim(aFld[DBS_NAME]), i )
+    NEXT
 
 	FOR i := 1 TO n
-		cName := aNames[i]
-		j := AScan(aStruct, cobScan)
-
-		IF j > 0
+		cName := Trim(aNames[i])
+        IF aFields:ContainsKey(cName)
+            j := aFields[cName]
 			IF lMatch
 				IF aMatch[i, DBS_TYPE] == aStruct[j, DBS_TYPE]
 					AAdd(aNew, aStruct[j])

@@ -44,7 +44,7 @@
 
 // scatter to array
 #command SCATTER [__FOXLIST__ <fldlist>] [__FOXWILD__ <fldwild> ] [<blank: BLANK>] TO <arrayName> ;
-          => <arrayName> := __ScatterArray( iif( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.blank.> )
+          => <arrayName> := __ScatterArray( <arrayName>, iif( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.blank.> )
 
 // Note that the objectName parameter is passed as a string because objectName may not have been created yet (when it is a MEMVAR).
 // For SCATTER NAME to work with LOCALS and the ADDITIVE clause we have marked __ScatterObject with the
@@ -264,7 +264,7 @@
          [<noopt: NOOPTIMIZE>]       ;
          [ALL]                       ;
                                      ;
-      => <arrayName> := DbCopyToArray( ;
+      => <arrayName> := DbCopyToArray( <arrayName>, ;
                         iif( <.fldlist.>, <!fldlist!>, <!fldwild!>),    ;
                         <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>,    ;
                         <.noopt.>                                       ;

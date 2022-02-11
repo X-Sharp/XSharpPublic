@@ -521,7 +521,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // create one syntax token per error
             // and one syntax token for the main file
             // these tokens will get as many errors as needed.
-            // We are only includin 1 syntax error per file (1003) and one parse error (9002)
+            // We are only including 1 syntax error per file (1003) and one parse error (9002)
             var textNode = SyntaxFactory.BadToken(null, _text.ToString(), null);
             var builder = new SyntaxListBuilder(parseErrors.Count+1);
             if (!parseErrors.IsEmpty())
@@ -551,35 +551,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var key = node.SourceFileName;
                         int pos = node.Position;
                         int len = node.FullWidth;
-                        if (node.SourceSymbol != null)
-                        {
-                            var sym = node.SourceSymbol as XSharpToken;
-                            key = sym.SourceName;
-                            pos = sym.Position;
-                            len = sym.FullWidth;
-                        }
-                        if (len <= 0 || pos < 0)
-                        {
-                            if (e.Node.Parent != null)
-                            {
-                                var xNode = e.Node as IXParseTree;
-                                pos = xNode.Position;
-                                len = xNode.FullWidth;
-                            }
-                            if (pos < 0)
-                                pos = 0;
-                            if (len <= 0)
-                                len = 1;
-                        }
+                        adjustLenPos(ref len, ref pos, e);
                         SourceText inc = null;
-                        if (key != null && includes.ContainsKey(key))
-                        {
-                            inc  = includes[key];
-                            if (pos - 1 + len > inc.Length)
-                            {
-                                len = inc.Length - pos + 1;
-                            }
-                        }
+                        adjustlen(key, pos, ref len, out inc, includes);
                         var diag = new SyntaxDiagnosticInfo(pos, len, e.Code, e.Args);
                         if (inc != null)
                         {
@@ -591,6 +565,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         else
                         {
                             textNode = textNode.WithAdditionalDiagnostics(diag);
+                        }
+                        if (node.SourceSymbol != null)
+                        {
+                            // an error for a define could be on another location
+                            var sym = node.SourceSymbol as XSharpToken;
+                            key = sym.SourceName;
+                            pos = sym.Position;
+                            len = sym.FullWidth;
+                            adjustLenPos(ref len, ref pos, e);
+                            adjustlen(key, pos, ref len, out inc, includes);
+                            var diagDefine = new SyntaxDiagnosticInfo(pos, len, ErrorCode.ERR_DefineIncorrectValue, sym.Text);
+                            SourceText source = inc;
+                            if (source == null)
+                            {
+                                source = _text;
+                            }
+                            var defnode = SyntaxFactory.BadToken(null, source.ToString(), null);
+                            defnode = defnode.WithAdditionalDiagnostics(diagDefine);
+                            defnode.XNode = new XTerminalNodeImpl(sym);
+                            builder.Add(defnode);
                         }
                     }
                     else
@@ -608,6 +602,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             builder.Add(textNode);
             return _syntaxFactory.SkippedTokensTrivia(builder.ToList<SyntaxToken>());
+        }
+
+        void adjustLenPos(ref int len, ref int pos, ParseErrorData e)
+        {
+
+            if (len <= 0 || pos < 0)
+            {
+                if (e.Node.Parent != null)
+                {
+                    var xNode = e.Node as IXParseTree;
+                    pos = xNode.Position;
+                    len = xNode.FullWidth;
+                }
+                if (pos < 0)
+                    pos = 0;
+                if (len <= 0)
+                    len = 1;
+            }
+        }
+
+        void adjustlen(string key,  int pos, ref int len, out SourceText inc, IDictionary<string, SourceText> includes)
+        {
+            inc = null;
+            if (key != null && includes.ContainsKey(key))
+            {
+                inc = includes[key];
+                if (pos - 1 + len > inc.Length)
+                {
+                    len = inc.Length - pos + 1;
+                }
+            }
         }
 
         private TNode CreateForGlobalFailure<TNode>(int position, TNode node) where TNode : CSharpSyntaxNode

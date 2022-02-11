@@ -162,38 +162,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #endregion
 
+        [DebuggerDisplay("{SourceFileName}")]
         class InputState
         {
             internal ITokenStream Tokens;
             internal int Index;
             internal string SourceFileName;
-            internal int MappedLineDiff;
-            internal bool isSymbol;
-            internal string SymbolName;
-            internal XSharpToken Symbol;
-            internal InputState parent;
 
-            internal InputState(ITokenStream tokens)
+            internal InputState(ITokenStream tokens, string fileName)
             {
                 Tokens = tokens;
+                SourceFileName = fileName;
                 Index = 0;
-                MappedLineDiff = 0;
-                SourceFileName = null;
-                parent = null;
-                isSymbol = false;
             }
 
             internal TokenType La()
             {
-                if (Eof() && parent != null)
-                    return parent.La();
                 return Tokens.Get(Index).Type;
             }
 
             internal XSharpToken Lt()
             {
-                if (Eof() && parent != null)
-                    return parent.Lt();
                 return (XSharpToken)Tokens.Get(Index);
             }
 
@@ -234,6 +223,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         readonly Stack<XSharpToken> _regions = new();
         readonly string _fileName = null;
         InputState inputs;
+        readonly Stack<InputState> _files = new Stack<InputState>();
         IToken lastToken = null;
 
         readonly PPRuleDictionary _cmdRules = new();
@@ -241,11 +231,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         bool _hasCommandrules = false;
         bool _hasTransrules = false;
         int _rulesApplied = 0;
-        readonly HashSet<string> _activeSymbols = new();
 #if FULLCOMPILER
         readonly int _defsApplied = 0;
         readonly bool _preprocessorOutput = false;
-        Stream _ppoStream;
+        StreamWriter _ppoWriter;
 #endif
         internal Dictionary<string, SourceText> IncludedFiles = new(CaseInsensitiveComparison.Comparer);
 
@@ -413,19 +402,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // do not call t.Text when not needed.
             if (_preprocessorOutput)
             {
-                var buffer = _encoding.GetBytes(text);
-                _ppoStream.Write(buffer, 0, buffer.Length);
+                _ppoWriter.Write(text);
                 if (addCRLF)
                 {
-                    buffer = _encoding.GetBytes("\r\n");
-                    _ppoStream.Write(buffer, 0, buffer.Length);
+                    _ppoWriter.WriteLine();
                 }
             }
         }
 
         private bool mustWriteToPPO()
         {
-            return _preprocessorOutput && _ppoStream != null && inputs.parent == null;
+            return _preprocessorOutput && _ppoWriter != null;
         }
 
         internal void writeToPPO(string text, bool addCRLF = true)
@@ -473,12 +460,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal void Close()
         {
-            if (_ppoStream != null)
+            if (_ppoWriter != null)
             {
-                _ppoStream.Flush();
-                _ppoStream.Dispose();
+                _ppoWriter.Flush();
+                _ppoWriter.Close();
             }
-            _ppoStream = null;
+            _ppoWriter = null;
         }
         internal void Error(XSharpToken token, ErrorCode error, params object[] args)
         {
@@ -531,7 +518,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var ppoFile = FileNameUtilities.ChangeExtension(fileName, ".ppo");
                 try
                 {
-                    _ppoStream = null;
+                    _ppoWriter = null;
                     _preprocessorOutput = _options.PreprocessorOutput;
                     if (FileNameUtilities.GetExtension(fileName).ToLower() == ".ppo")
                     {
@@ -541,7 +528,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         if (_preprocessorOutput)
                         {
-                            _ppoStream = FileUtilities.CreateFileStreamChecked(File.Create, ppoFile, "PPO file");
+                            var ppoStream = new FileStream(ppoFile, FileMode.Create, FileAccess.Write, FileShare.None);
+                            _ppoWriter = new StreamWriter(ppoStream, this._encoding);
                         }
                         else if (File.Exists(ppoFile))
                         {
@@ -567,7 +555,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-            inputs = new InputState(lexerStream);
+            inputs = new InputState(lexerStream, fileName);
             // Add defines from the command line.
             if (options.PreprocessorSymbols != null)
             {
@@ -766,44 +754,55 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        XSharpToken GetSourceSymbol()
-        {
-            XSharpToken s = null;
-            if (inputs.isSymbol)
-            {
-                var baseInputState = inputs;
-                while (baseInputState.parent?.isSymbol == true)
-                    baseInputState = baseInputState.parent;
-                s = baseInputState.Symbol;
-            }
-            return s;
-        }
+        //XSharpToken GetSourceSymbol()
+        //{
+        //    XSharpToken s = null;
+        //    if (inputs.isSymbol)
+        //    {
+        //        var baseInputState = inputs;
+        //        //while (baseInputState.parent?.isSymbol == true)
+        //        //    baseInputState = baseInputState.parent;
+        //        s = baseInputState.Symbol;
+        //    }
+        //    return s;
+        //}
 
         XSharpToken FixToken(XSharpToken token)
         {
-#if !MACROCOMPILER
-            if (inputs.MappedLineDiff != 0)
-                token.MappedLine = token.Line + inputs.MappedLineDiff;
-#endif
-            if (inputs.isSymbol)
-            {
-                token.SourceSymbol = GetSourceSymbol();
-            }
+            //if (inputs.isSymbol)
+            //{
+            //    token.SourceSymbol = GetSourceSymbol();
+            //}
             return token;
+        }
+
+        void checkForEof()
+        {
+
+            if (inputs.Eof())
+            {
+                if (_files.Count > 0)
+                {
+                    inputs = _files.Pop();
+                    var token = inputs.Lt();
+                    _writeToPPO($"#line {token.Line} \"{token.SourceName}\"" , true);
+                }
+            }
         }
 
         XSharpToken Lt()
         {
+            checkForEof();
             return inputs.Lt();
         }
 
         void Consume()
         {
-            while (!inputs.Consume() && inputs.parent != null)
+            while (!inputs.Consume())
             {
-                if (inputs.isSymbol)
-                    _activeSymbols.Remove(inputs.SymbolName);
-                inputs = inputs.parent;
+                checkForEof();
+                if (inputs.Eof())
+                    break;
             }
         }
 
@@ -830,29 +829,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             // Detect recursion
-            var x = inputs;
-            while (x != null)
+            foreach (var x in _files)
             {
-                if (string.Compare(x.SourceFileName, filename, true) == 0)
+                if (string.Compare(x.SourceFileName, filename, true) == 0 || string.Compare(this._fileName, filename, true) == 0)
                 {
                     Error(symbol, ErrorCode.ERR_PreProcessorError, "Recursive include file (" + filename + ") detected", filename);
                     return;
                 }
-                x = x.parent;
             }
-            InputState s = new InputState(input)
+            InputState s = new InputState(input, filename)
             {
-                parent = inputs,
-                SourceFileName = filename,
-                SymbolName = symbol?.Text,
-                Symbol = symbol,
-                isSymbol = symbol != null
+                //SymbolName = symbol?.Text,
+                //Symbol = symbol,
+                //isSymbol = symbol != null
             };
-            if (s.isSymbol)
-            {
-                _activeSymbols.Add(s.SymbolName);
-                s.MappedLineDiff = inputs.MappedLineDiff;
-            }
+            _files.Push(inputs);
             inputs = s;
         }
 
@@ -861,30 +852,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _defStates.Count == 0 || _defStates.Peek();
         }
 
-        int IncludeDepth()
-        {
-            int d = 1;
-            var o = inputs;
-            while (o.parent != null)
-            {
-                if (!o.isSymbol)
-                    d += 1;
-                o = o.parent;
-            }
-            return d;
-        }
-
-        int SymbolDepth()
-        {
-            int d = 0;
-            var o = inputs;
-            while (o.parent != null && o.isSymbol)
-            {
-                d += 1;
-                o = o.parent;
-            }
-            return d;
-        }
 
         bool IsDefinedMacro(XSharpToken t)
         {
@@ -954,13 +921,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 _duplicateFile = true;
                                 var includeName = newToken.SourceName;
                                 var defText = def.Text;
-                                if (inputs.Symbol != null)
-                                {
-                                    def = new XSharpToken(inputs.Symbol)
-                                    {
-                                        SourceSymbol = null
-                                    };
-                                }
+                                //if (inputs.Symbol != null)
+                                //{
+                                //    def = new XSharpToken(inputs.Symbol)
+                                //    {
+                                //        SourceSymbol = null
+                                //    };
+                                //}
                                 Error(def, ErrorCode.WRN_PreProcessorWarning, "Duplicate define (" + defText + ") found because include file \"" + includeName + "\" was included twice");
                             }
                         }
@@ -1279,6 +1246,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
+                _writeToPPO("#line 1 \"" + resolvedIncludeFileName + "\"", true);
                 if (!IncludedFiles.ContainsKey(resolvedIncludeFileName))
                 {
                     IncludedFiles.Add(resolvedIncludeFileName, text);
@@ -1324,7 +1292,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 #endif
                 bool newFile = false;
-                var tokens = removeIncludeFileComments(ct.GetTokens());
+                //var tokens = removeIncludeFileComments(ct.GetTokens());
+                var tokens = ct.GetTokens();
                 includeFile = PPIncludeFile.Add(resolvedIncludeFileName, tokens, text, lexer.MustBeProcessed, ref newFile);
 #if FULLCOMPILER
                 if (_options.Verbose)
@@ -1822,7 +1791,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (IsActive())
             {
                 writeToPPO(original, true);
-                if (IncludeDepth() == MaxIncludeDepth)
+                if (_files.Count == MaxIncludeDepth)
                 {
                     Error(line[0], ErrorCode.ERR_PreProcessorError, "Reached max include depth: " + MaxIncludeDepth);
                 }
@@ -1858,14 +1827,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var ln = line[1];
                 if (ln.Type == XSharpLexer.INT_CONST)
                 {
-#if !VSPARSER
-                    inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options, null, null).Value - (ln.Line + 1);
-#else
-                    if (Int32.TryParse(ln.Text, out var temp))
-                    { 
-                        inputs.MappedLineDiff = temp- (ln.Line + 1);
-                    }
-#endif
                     if (line.Count > 2)
                     {
                         ln = line[2];

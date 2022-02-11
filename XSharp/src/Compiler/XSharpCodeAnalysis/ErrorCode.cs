@@ -2080,6 +2080,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_MissingWithStatement = 9108,
         ERR_BadAddressOfArg = 9109,
         WRN_String2PszMustBeAssignedToLocal = 9110,
+        ERR_DefineIncorrectValue = 9111,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

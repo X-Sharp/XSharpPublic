@@ -12,7 +12,6 @@ namespace XSharp.MacroCompiler.Preprocessor
 {
     using XSharpLexer = TokenType;
     using XSharpToken = Token;
-
     /// <summary>
     /// Base class for rule tokens
     /// </summary>
@@ -97,7 +96,11 @@ namespace XSharp.MacroCompiler.Preprocessor
                     case PPTokenType.ResultLogify:
                         sResult = "<." + Key + ".>";
                         break;
-                   default:
+                    case PPTokenType.ResultNotEmpty:
+                        sResult = "<!" + Key + "!>";
+                        break;
+
+                    default:
                         sResult = "<" + Key + ">";
                         break;
                 }

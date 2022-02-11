@@ -271,12 +271,62 @@ FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, aFields,  ;
 
 
 
-FUNCTION DbCopyToArray(aFieldList, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize) AS ARRAY CLIPPER
+FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize) AS ARRAY CLIPPER
     VAR aFields := __BuildFieldList(aFieldList, FALSE)
     LOCAL aResult := {} AS ARRAY
-
-    DbEval( {|| AAdd(aResult, DbCopyToArraySingleRecord(aFields)) }, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize )
-
+    LOCAL lMulti   AS LOGIC
+    LOCAL nRows    AS DWORD
+    LOCAL nColumns AS DWORD
+    LOCAL aSource := NULL_ARRAY as ARRAY
+    IF IsArray(uSource) .and. ALen(uSource) > 0
+        aSource   := uSource
+        if aSource IS __FoxArray VAR aFox
+            lMulti := aFox:MultiDimensional
+            IF lMulti
+                nRows    := (DWORD) aFox:Rows
+                nColumns := (DWORD) aFox:Columns
+            ELSE
+                nRows    := 1
+                nColumns := (DWORD) aFox:Length
+            ENDIF
+        ELSE
+            lMulti := IsArray(aSource[1])
+            if lMulti
+                nRows    := ALen(aSource)
+                nColumns := ALen(aSource[1])
+            ELSE
+                nRows    := 1
+                nColumns := ALen(aSource)
+            ENDIF
+        ENDIF
+    ELSE
+        lMulti    := TRUE
+        nColumns  := FCount()
+        nRows     := (DWORD) RecCount()
+    ENDIF
+    LOCAL cbAction AS CodeBlock
+    DO WHILE aFields:Count > nColumns
+        aFields:RemoveAt(aFields:Count-1)
+    ENDDO
+    cbAction :=  {|| AAdd(aResult, DbCopyToArraySingleRecord(aFields)), ALen(aResult) < nRows }
+    DbEval( cbAction, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize )
+    IF aSource != NULL_ARRAY
+        if lMulti
+            nRows := Min(ALen(aResult), nRows)
+            FOR VAR nRow := 1 to nRows
+                FOR VAR nCol := 1 to nColumns
+                    aSource[nRow, nCol] := aResult[nRow, nCol]
+                NEXT
+            NEXT
+        ELSE
+            aResult := aResult[1]
+            FOR VAR nCol := 1 to nColumns
+                aSource[nCol] := aResult[nCol]
+            NEXT
+        ENDIF
+        aResult := aSource
+    ELSE
+    ENDIF
     RETURN aResult
 
 INTERNAL FUNCTION DbCopyToArraySingleRecord(aFields as IList<string> ) AS ARRAY
@@ -299,12 +349,16 @@ FUNCTION DbAppendFromArray(aValues, aFieldList, cbForCondition) AS LOGIC CLIPPER
     ENDIF
     // Check to see if the array is multi dimensional and if the # of fields matches.
     IF ALen(aValues) > 0
+        IF !IsArray(aValues[1])
+            var aNewArray := {aValues}
+            aValues := aNewArray
+        ENDIF
         FOREACH var u in (ARRAY) aValues
             IF !IsArray(u)
                 THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.MULTI_DIM_EXPECTED,nameof(aValues)), 1, {aValues})
             ENDIF
             local aElement := u as ARRAY
-            IF ALen(aElement) < aFields:Count
+            IF aElement:Length < aFields:Count
                 THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.SUBARRAY_TOO_SMALL ) , 1, {u})
             ENDIF
             DbAppend()

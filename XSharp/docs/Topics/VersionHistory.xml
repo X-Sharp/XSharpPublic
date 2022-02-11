@@ -22,11 +22,15 @@
       <li styleclass="Body Text">[XBase++ dialect] Fixed a problem with parsing the (obsolete in X#) ANNOUNCE and REQUEST statements (#929)</li>
       <li styleclass="Body Text">[XBase++ dialect] Fixed a problem with parsing INLINE ACCESS and ACCESS ASSIGN statements (#926)</li>
       <li styleclass="Body Text">[VFP dialect] Fixed a problem with parsing FOR EACH statements containing &quot;M.&quot; variables usage where the variable was not typed in the FOR EACH line (#911) .</li>
+      <li styleclass="Body Text">Fixed a problem where the PPO files contains some output twice, when a single UDC was producing several statements.</li>
     </list>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added compiler option /noinit to not generate $Init calls for libraries without INIT procedures for the sake of postponed loading (#854) </li>
       <li styleclass="Body Text">Added preprocessor support for <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Stdout">#stdout</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-If">#if</link>. (#912)</li>
+      <li styleclass="Body Text">The full contents of #include files is now written to the ppo file (#920)</li>
+      <li styleclass="Body Text">When a parser error occurs because an identifier was replaced by a define with the same name, then the compiler will now generate a second warning.</li>
+      <li styleclass="Body Text">If a header file contains actual code and this code is called during debugging then the debugger will now step into the header file when debugging this code. <br/>Previously all statements were linked to the #include line from the place where the header was included.</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>

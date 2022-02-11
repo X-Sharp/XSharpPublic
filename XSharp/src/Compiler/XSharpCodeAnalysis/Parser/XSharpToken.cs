@@ -25,6 +25,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         internal int MappedLine = -1;
         internal XSharpToken SourceSymbol;
         private XSharpToken _original = null;
+        #region Wrappers for compatibility with Macro compiler
+        internal string Value
+
+        {
+            get => Text;
+            set => Text = value;
+        }
+        internal int Start => Position;
+        internal int end => Position + Text.Length;
+        #endregion
         public string XmlComments
         {
             get

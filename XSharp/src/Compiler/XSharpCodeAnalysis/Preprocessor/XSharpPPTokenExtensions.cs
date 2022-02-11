@@ -10,7 +10,8 @@ using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Roslyn.Utilities;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
-{
+{ 
+    using TokenType = System.Int32;
     internal static class XSharpPPTokenExtensions
     {
         internal static void AddRange<T>(this IList<T> tokens, IList<T> toadd)
@@ -20,7 +21,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 tokens.Add(token);
             }
         }
-        internal static int La(this XSharpToken[] tokens, int pos)
+        internal static TokenType La(this XSharpToken[] tokens, int pos)
         {
             if (pos >= 0 && pos < tokens.Length)
                 return tokens[pos].Type;
@@ -50,7 +51,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal static void TrimLeadingSpaces(this IList<XSharpToken> tokens)
         {
             while (tokens.Count > 0 &&
-                tokens[0].Channel == TokenConstants.HiddenChannel)
+                tokens[0].Channel == Channel.Hidden)
             {
                 tokens.RemoveAt(0);
             }
@@ -61,7 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int i = 0;
             foreach (var token in tokens)
             {
-                if (token.Channel != TokenConstants.HiddenChannel)
+                if (token.Channel != Channel.Hidden)
                 {
                     sb.Append(i);
                     sb.Append(" ");
@@ -214,24 +215,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (token == null)
                 return false;
-            return XSharpLexer.IsLiteral(token.Type);
+            return token.Type > XSharpLexer.FIRST_CONSTANT && token.Type < XSharpLexer.LAST_CONSTANT;
         }
 
         public static bool IsOperator(this XSharpToken token)
         {
-            return XSharpLexer.IsOperator(token.Type);
+            if (token == null)
+                return false;
+            return (token.Type > XSharpLexer.FIRST_OPERATOR && token.Type < XSharpLexer.LAST_OPERATOR);
         }
-		public static bool IsComment(this XSharpToken token)
+
+        public static bool IsComment(this XSharpToken token)
         {
             if (token == null)
                 return false;
-            return XSharpLexer.IsComment(token.Type);
+            return (token.Type == XSharpLexer.SL_COMMENT ||
+                token.Type == XSharpLexer.ML_COMMENT ||
+                token.Type == XSharpLexer.DOC_COMMENT);
         }
         public static bool IsKeyword(this XSharpToken token)
         {
             if (token == null)
                 return false;
-            return XSharpLexer.IsKeyword(token.Type);
+            return (token.Type > XSharpLexer.FIRST_KEYWORD && token.Type < XSharpLexer.LAST_KEYWORD)
+                || (token.Type > XSharpLexer.FIRST_NULL && token.Type < XSharpLexer.LAST_NULL);
 
         }
         public static bool IsIdentifier(this XSharpToken token)
@@ -243,9 +250,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static bool IsString(this XSharpToken token)
         {
-            if (token == null)
-                return false;
-            return XSharpLexer.IsString(token.Type);
+            switch (token.Type)
+            {
+                case XSharpLexer.CHAR_CONST:
+                case XSharpLexer.STRING_CONST:
+                case XSharpLexer.ESCAPED_STRING_CONST:
+                case XSharpLexer.INTERPOLATED_STRING_CONST:
+                case XSharpLexer.INCOMPLETE_STRING_CONST:
+                case XSharpLexer.TEXT_STRING_CONST:
+                case XSharpLexer.BRACKETED_STRING_CONST:
+                    return true;
+            }
+            return false;
         }
 
         internal static bool NeedsLeft(this XSharpToken token)
@@ -365,7 +381,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-        internal static bool IsOpen(this XSharpToken token, ref int closeType)
+        internal static bool IsOpen(this XSharpToken token, ref TokenType closeType)
         {
             if (token == null)
                 return false;
@@ -415,8 +431,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return false;
 
         }
-
-
 
         internal static bool CanJoin(this XSharpToken token, XSharpToken nextToken)
         {

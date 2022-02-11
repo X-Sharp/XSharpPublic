@@ -76,7 +76,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Other options have flags, for the preprocessor macros, such as __VO1__
         const LanguageVersion defaultLanguageVersion = LanguageVersion.CSharp9;
         #region private fields (need to be access with HasOption)
-        private bool ArrayZero = false;
         private bool FoxInheritUnknown = false;
         private bool InitLocals = false;
         private bool VOAllowMissingReturns = false;
@@ -93,6 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool LateBinding = false;
 
         #endregion
+        public bool ArrayZero { get; private set; } = false;
         public bool AllowDotForInstanceMembers { get; private set; }
         public bool AllowUnsafe { get; private set; }
         public bool CaseSensitive { get; private set; }

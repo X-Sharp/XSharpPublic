@@ -7,12 +7,22 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
 
+    // These constants make synchronizing with the macro compiler easier
+    // (Channel is an Enum there)
+    internal class Channel
+    {
+        internal const int PreProcessor = XSharpLexer.PREPROCESSORCHANNEL;
+        internal const int Default = XSharpLexer.DefaultTokenChannel;
+        internal const int Hidden = TokenConstants.HiddenChannel;
+        internal const int XmlDoc = XSharpLexer.XMLDOCCHANNEL;
+        internal const int DefOut = XSharpLexer.DEFOUTCHANNEL;
+    }
     enum PPUDCType : byte
     {
         None,

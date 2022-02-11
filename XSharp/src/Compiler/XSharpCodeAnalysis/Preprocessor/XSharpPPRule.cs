@@ -12,6 +12,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+    using TokenType = System.Int32;
     [Flags]
     internal enum PPRuleFlags : byte
     {
@@ -460,7 +461,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             // <#idMarker>
                             // duplicate so we can change the name
                             name = new XSharpToken(matchTokens[i + 1]);
-                            name.Text = name.Text.Substring(1);
+                            name.Value = name.Text.Substring(1);
                             element = new PPMatchToken(name, PPTokenType.MatchSingle);
                             result.Add(element);
                             addToDict(markers, element);
@@ -792,7 +793,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // whitespace tokens have been skipped
                     var ppWs = new XSharpToken(token, XSharpLexer.WS, " ");
-                    ppWs.Channel = ppWs.OriginalChannel = TokenConstants.HiddenChannel;
+                    ppWs.Channel = ppWs.OriginalChannel = Channel.Hidden;
                     result.Add(new PPResultToken(ppWs, PPTokenType.Token));
                 }
                 lastTokenIndex = token.TokenIndex;
@@ -1531,7 +1532,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         int trimHiddenTokens(IList<XSharpToken> tokens, int start, int end)
         {
-            while (tokens[end].Channel == TokenConstants.HiddenChannel && start < end)
+            while (tokens[end].Channel == Channel.Hidden && start < end)
             {
                 end--;
             }
@@ -1699,12 +1700,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 foreach (var t in result)
                 {
-                    if (t.Channel == XSharpLexer.PREPROCESSORCHANNEL)
+                    if (t.Channel == Channel.PreProcessor)
                     {
                         // Leave PP commands alone so we can redirect input to #error or #warning
                         if (t.Type < XSharpLexer.PP_FIRST || t.Type > XSharpLexer.PP_LAST)
                         {
-                            t.Channel = t.OriginalChannel = XSharpLexer.DefaultTokenChannel;
+                            t.Channel = Channel.Default;
                         }
                     }
                     t.SourceSymbol = source;
@@ -1863,12 +1864,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 t = tokens[start];
                 nt = new XSharpToken(t, XSharpLexer.LCURLY, "{")
                 {
-                    Channel = XSharpLexer.DefaultTokenChannel
+                    Channel = Channel.Default
                 };
                 result.Add(nt);
                 nt = new XSharpToken(t, XSharpLexer.OR, "||")
                 {
-                    Channel = XSharpLexer.DefaultTokenChannel
+                    Channel = Channel.Default
                 };
                 result.Add(nt);
             }
@@ -1882,7 +1883,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 t = tokens[end];
                 nt = new XSharpToken(t, XSharpLexer.RCURLY, "}")
                 {
-                    Channel = XSharpLexer.DefaultTokenChannel
+                    Channel = Channel.Default
                 };
                 result.Add(nt);
             }
@@ -1960,21 +1961,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var t1 = tokens[start];
             var t2 = tokens[start + 1];
             var t3 = tokens[start + 2];
-            if (t1.IsName() && t2.Type == XSharpLexer.COLON && t2.Position == t1.Position + 1)          // C: .....
+            if (t1.IsName() && t2.Type == XSharpLexer.COLON && t2.Start == t1.Start + 1)          // C: .....
             {
                 current = start + 2;
             }
-            else if (t1.Type == XSharpLexer.DOT && t2.Type == XSharpLexer.BACKSLASH && t2.Position == t1.Position + 1)    // .\ .... 
+            else if (t1.Type == XSharpLexer.DOT && t2.Type == XSharpLexer.BACKSLASH && t2.Start == t1.Start + 1)    // .\ .... 
             {
                 current = start + 2;
             }
             else if (t1.Type == XSharpLexer.DOT && t2.Type == XSharpLexer.DOT && t3.Type == XSharpLexer.BACKSLASH
-                && t2.Position == t1.Position + 1 && t3.Position == t2.Position + 1)    // ..\ .....
+                && t2.Start == t1.Start + 1 && t3.Start == t2.Start + 1)    // ..\ .....
             {
                 current = start + 3;
             }
             else if (t1.Type == XSharpLexer.BACKSLASH && t2.Type == XSharpLexer.BACKSLASH && t3.IsName()
-                && t2.Position == t1.Position + 1 && t3.Position == t2.Position + 1)    // \\Computer\ID .....
+                && t2.Start == t1.Start + 1 && t3.Start == t2.Start + 1)    // \\Computer\ID .....
             {
                 if (start < tokens.Count - 5)
                 {
@@ -2003,7 +2004,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             while (current < tokens.Count && !done)
             {
                 // embedded whitespace exits the loop
-                if (tokens[current].Position > (last.Position + last.Text.Length))
+                if (tokens[current].Start > last.end)
                 {
                     break;
                 }
@@ -2069,7 +2070,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 sb.Append('"');
                 var t = new XSharpToken(toks[s], XSharpLexer.STRING_CONST, sb.ToString())
                 {
-                    Channel = XSharpLexer.DefaultTokenChannel
+                    Channel = Channel.Default
                 };
                 return t;
             }
@@ -2105,7 +2106,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // no match, then dumb stringify write an empty string
                         var nt = new XSharpToken(tokens[0], XSharpLexer.NULL_STRING, "NULL_STRING")
                         {
-                            Channel = XSharpLexer.DefaultTokenChannel
+                            Channel = Channel.Default
                         };
                         result.Add(nt);
                     }
@@ -2250,7 +2251,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 XSharpToken t = tokens[range.Start];
                 t = new XSharpToken(t, XSharpLexer.TRUE_CONST, ".T.")
                 {
-                    Channel = XSharpLexer.DefaultTokenChannel
+                    Channel = Channel.Default
                 };
                 result.Add(t);
             }
@@ -2279,8 +2280,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int current = start;
             int braceLevel = 0;
             int count = tokens.Count;
-            int openBrace = 0;
-            int closeBrace = 0;
+            TokenType openBrace = 0;
+            TokenType closeBrace = 0;
             XSharpToken token;
             XSharpToken lastToken = null;
             while (current < count)

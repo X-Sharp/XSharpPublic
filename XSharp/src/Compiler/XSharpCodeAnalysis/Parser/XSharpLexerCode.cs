@@ -27,6 +27,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     {
         #region Static Helper Methods
         // Several Help methods that can be used for colorizing in an editor
+        public const int EOF = IntStreamConstants.Eof;
         public static bool IsKeyword(int iToken)
         {
             return iToken > FIRST_KEYWORD && iToken < LAST_KEYWORD;

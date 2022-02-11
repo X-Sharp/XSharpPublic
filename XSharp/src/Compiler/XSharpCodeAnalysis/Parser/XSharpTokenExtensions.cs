@@ -28,14 +28,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static class TokenExtensions
     {
-        private static bool IsHexDigit(char c) => (c >= '0' && c<= '9') || (c >= 'A' && c<= 'F') || (c >= 'a' && c<= 'f');
+        private static bool IsHexDigit(char c) => (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');
 
         private static char EscapedChar(string s, ref int pos)
         {
-            if (s[pos] != '\\' || pos == s.Length-1)
+            if (s[pos] != '\\' || pos == s.Length - 1)
                 return s[pos++];
-            else {
-                switch (s[++pos]) {
+            else
+            {
+                switch (s[++pos])
+                {
                     case '\\':
                     case '\'':
                     case '"':
@@ -76,28 +78,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             int l = 0;
                             pos++;
-                            while (l < 4 && pos+l < s.Length && IsHexDigit(s[pos+l]))
+                            while (l < 4 && pos + l < s.Length && IsHexDigit(s[pos + l]))
                                 l++;
-                            if (l > 0) {
+                            if (l > 0)
+                            {
                                 pos += l;
-                                return (char)HexValue(s.Substring(pos-l,l));
+                                return (char)HexValue(s.Substring(pos - l, l));
                             }
                             else
-                                return s[pos-1];
+                                return s[pos - 1];
                         }
                     case 'U':
                     case 'u':
                         {
                             int l = 0;
                             pos++;
-                            while (l < 8 && pos+l < s.Length && IsHexDigit(s[pos+l]))
+                            while (l < 8 && pos + l < s.Length && IsHexDigit(s[pos + l]))
                                 l++;
-                            if (l == 4 || l == 8) {
+                            if (l == 4 || l == 8)
+                            {
                                 pos += l;
-                                return (char)HexValue(s.Substring(pos-l,l));
+                                return (char)HexValue(s.Substring(pos - l, l));
                             }
                             else
-                                return s[pos-1];
+                                return s[pos - 1];
                         }
                     default:
                         return s[pos++];
@@ -122,7 +126,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return "";
             StringBuilder sb = new StringBuilder();
             int p = 2;
-            while (p < text.Length-1)
+            while (p < text.Length - 1)
                 sb.Append(EscapedChar(text, ref p));
             return sb.ToString();
         }
@@ -203,7 +207,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.BYTE:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword);
                     break;
-               case XSharpParser.DWORD:
+                case XSharpParser.DWORD:
                     r = SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword);
                     break;
                 case XSharpParser.SHORTINT:
@@ -233,7 +237,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.STRING:
                     r = SyntaxFactory.MakeToken(SyntaxKind.StringKeyword);
                     break;
-                 case XSharpParser.UINT64:
+                case XSharpParser.UINT64:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ULongKeyword);
                     break;
                 case XSharpParser.WORD:
@@ -276,8 +280,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.CHAR_CONST:
                     if (text.StartsWith("c", StringComparison.OrdinalIgnoreCase))
                     {
-                         text = text.Substring(1);
-                         r = SyntaxFactory.Literal(SyntaxFactory.WS, text, CharValue(text), SyntaxFactory.WS);
+                        text = text.Substring(1);
+                        r = SyntaxFactory.Literal(SyntaxFactory.WS, text, CharValue(text), SyntaxFactory.WS);
                         if (text[1] != '\\' && text.Length > 3)     // c'\n' is allowed but not c'nn'
                         {
                             r = r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TooManyCharsInConst));
@@ -294,7 +298,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.BRACKETED_STRING_CONST:
                 case XSharpParser.INCOMPLETE_STRING_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, text, StringValue(text), SyntaxFactory.WS);
-                    if (text.StartsWith("'") && ! options.Dialect.AllowStringsWithSingleQuotes())
+                    if (text.StartsWith("'") && !options.Dialect.AllowStringsWithSingleQuotes())
                     {
                         r = r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "Single Quoted Strings", options.Dialect.ToString()));
                     }
@@ -315,17 +319,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     break;
                 case XSharpParser.HEX_CONST:
-                    switch (token.Text.Last()) {
+                    switch (token.Text.Last())
+                    {
                         case 'U':
                         case 'u':
-                            if (text.Length > 8+3)
+                            if (text.Length > 8 + 3)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, text, unchecked((ulong)HexValue(text.Substring(2))), SyntaxFactory.WS);
                             else
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, text, unchecked((uint)HexValue(text.Substring(2))), SyntaxFactory.WS);
                             break;
                         case 'L':
                         case 'l':
-                            if (text.Length > 8+3)
+                            if (text.Length > 8 + 3)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, text, HexValue(text.Substring(2)), SyntaxFactory.WS);
                             else
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, text, unchecked((int)HexValue(text.Substring(2))), SyntaxFactory.WS);
@@ -346,17 +351,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     break;
                 case XSharpParser.BIN_CONST:
-                    switch (text.Last()) {
+                    switch (text.Last())
+                    {
                         case 'U':
                         case 'u':
-                            if (text.Length > 32+3)
+                            if (text.Length > 32 + 3)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, text, unchecked((ulong)BinValue(text.Substring(2))), SyntaxFactory.WS);
                             else
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, text, unchecked((uint)BinValue(text.Substring(2))), SyntaxFactory.WS);
                             break;
                         case 'L':
                         case 'l':
-                            if (text.Length > 32+3)
+                            if (text.Length > 32 + 3)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, text, BinValue(text.Substring(2)), SyntaxFactory.WS);
                             else
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, text, unchecked((int)BinValue(text.Substring(2))), SyntaxFactory.WS);
@@ -381,7 +387,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         decimal value = decimal.Parse(text.Substring(1, text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
                         value = Math.Round(value, 4);
-                        r = SyntaxFactory.Literal(SyntaxFactory.WS, text, value , SyntaxFactory.WS);
+                        r = SyntaxFactory.Literal(SyntaxFactory.WS, text, value, SyntaxFactory.WS);
                     }
                     else
                     {
@@ -406,7 +412,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     break;
                 case XSharpParser.INT_CONST:
-                    switch (text.Last()) {
+                    switch (text.Last())
+                    {
                         case 'U':
                         case 'u':
                             try
@@ -477,7 +484,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.DATE_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, text, text, SyntaxFactory.WS)
-                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "DATE constant ("+text+")", options.Dialect.ToString()));
+                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "DATE constant (" + text + ")", options.Dialect.ToString()));
                     break;
                 case XSharpParser.NULL_STRING:
                     switch (options.Dialect)
@@ -1084,7 +1091,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
- 
+
 
         public static SyntaxKind ConstraintKind(this IToken token)
         {
@@ -1148,7 +1155,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-   
+
 
         public static SyntaxKind ExpressionKindLiteral(this IToken token)
         {
@@ -1499,8 +1506,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static void AddCheckUnique(this SyntaxListBuilder list, SyntaxToken t)
         {
-            if (t.Kind != SyntaxKind.None) {
-                if(list.Any((int)t.Kind)) {
+            if (t.Kind != SyntaxKind.None)
+            {
+                if (list.Any((int)t.Kind))
+                {
                     t = t.WithAdditionalDiagnostics(
                         new SyntaxDiagnosticInfo(t.GetLeadingTriviaWidth(), t.Width, ErrorCode.ERR_DuplicateModifier, t.Text));
                 }
@@ -1524,7 +1533,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public static void FixDefaultVisibility(this SyntaxListBuilder list)
         {
-            for (int i = 0; i < list.Count; i++) {
+            for (int i = 0; i < list.Count; i++)
+            {
                 var item = list[i];
                 if (SyntaxFacts.IsAccessibilityModifier((SyntaxKind)item.RawKind))
                     return;
@@ -1563,7 +1573,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public static void FixOverride(this SyntaxListBuilder list, bool enforceOverride)
         {
             if (enforceOverride ||
-                !list.CanBeVirtual()||
+                !list.CanBeVirtual() ||
                 list.Any((int)SyntaxKind.OverrideKeyword) ||
                 list.Any((int)SyntaxKind.NewKeyword))
                 return;
@@ -1609,7 +1619,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return null;
         }
 
-         public static bool IsLiteralString(this IParseTree expr)
+        public static bool IsLiteralString(this IParseTree expr)
         {
             var token = expr.GetLiteralToken();
             if (token != null)
@@ -1618,7 +1628,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
- 
+
         public static bool IsIdentifier(this ParserRuleContext context)
         {
             return context.Start == context.Stop && context.Start.Type == XSharpParser.ID;
@@ -1635,6 +1645,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-        
+
     }
 }

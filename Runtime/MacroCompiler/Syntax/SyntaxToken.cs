@@ -709,7 +709,7 @@ namespace XSharp.MacroCompiler.Syntax
                 { "#ENDIF", TokenType.PP_ENDIF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
                 { "#ENDREGION", TokenType.PP_ENDREGION},	// #region [description]sourceCode#endregion
                 { "#ERROR", TokenType.PP_ERROR},			// #error [errorMessage]
-                { "#IF", TokenType.PP_IF},			        // #ifdef <condition>   <statements>...[#else]   <statements>...#endif
+                //{ "#IF", TokenType.PP_IF},			        // #if <condition>   <statements>...[#else]   <statements>...#endif
                 { "#IFDEF", TokenType.PP_IFDEF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
                 { "#IFNDEF", TokenType.PP_IFNDEF},			// #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
                 { "#INCLUDE", TokenType.PP_INCLUDE},		// #include "<headerfilename>"

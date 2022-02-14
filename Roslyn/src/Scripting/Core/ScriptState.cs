@@ -35,6 +35,23 @@ namespace Microsoft.CodeAnalysis.Scripting
         public Exception Exception { get; }
 
         internal ScriptExecutionState ExecutionState { get; }
+        
+        
+         /// <summary>
+        /// get the compile in memory assembly for easier reflection
+        /// </summary>
+        /// <remarks>
+        /// if compilation failed null is returned
+        /// </remarks>
+       public Assembly GetCompiledAssembly()
+        {
+            if( ExecutionState != null)
+            {
+                var submission = ExecutionState.GetSubmissionState(ExecutionState.SubmissionStateCount - 1);
+                return submission.GetType().Assembly;
+            }
+            return null;
+        }
 
         private ImmutableArray<ScriptVariable> _lazyVariables;
         private IReadOnlyDictionary<string, int> _lazyVariableMap;

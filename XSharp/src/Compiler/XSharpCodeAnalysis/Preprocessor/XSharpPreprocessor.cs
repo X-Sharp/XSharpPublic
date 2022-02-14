@@ -1589,6 +1589,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool startOfExpression = false;
             bool afterIf = false;
             XSharpToken ifToken = null;
+            writeToPPO(original, true);
             foreach (var token in original)
             {
                 bool include = startOfExpression;

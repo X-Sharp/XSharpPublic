@@ -1,5 +1,7 @@
+#define TEST 10
+#if TEST == 10
 #include "R834.xh"    
-
+#endif
 
 
 FUNCTION Start( ) AS VOID  

@@ -103126,7 +103126,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = XSharp.RT,1,0,2.6.0.0
-ReferenceProject = AECCF862-57FF-4B53-A93B-8A686F7A3F5B,1,0,C827_library
+ReferenceProject = AECCF862-57FF-4B53-A93B-8A686F7A3F5B,1,0,C827_helper
 [C827 - Test for /noinit compiler option Resources]
 [C827 - Test for /noinit compiler option Native Resources]
 [C827 - Test for /noinit compiler option License files]
@@ -103195,8 +103195,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C827 - Test for /noinit compiler option
 
 ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
-; ************** APPLICATION C827_library *************
-Application = C827_library
+; ************** APPLICATION C827_helper *************
+Application = C827_helper
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -103229,19 +103229,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C827_library FileGroups]
-[C827_library Files]
+[C827_helper FileGroups]
+[C827_helper Files]
 File = %AppPath%\Prg\C827_library.prg
 FileGUID = 5DA1D5E9-A345-4520-8945-946CFDBF6791
 FileType = Code
 CopyToBin = 0
-[C827_library References]
+[C827_helper References]
 ReferenceGAC = XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = XSharp.RT,1,0,2.6.0.0
-[C827_library Resources]
-[C827_library Native Resources]
-[C827_library License files]
-[C827_library General Options]
+[C827_helper Resources]
+[C827_helper Native Resources]
+[C827_helper License files]
+[C827_helper General Options]
 Switches=/noinit
 ZeroArrays=0
 CaseSensitive=0
@@ -103274,7 +103274,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C827_library Configurations]
+[C827_helper Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -103303,7 +103303,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = C827_library
+ENDApplication = C827_helper
 
 ApplicationGroup = 084FC9A2-9274-4770-AE44-6D078B06BA37
 ; ************** APPLICATION R827 Null Conditional Usual problem *************

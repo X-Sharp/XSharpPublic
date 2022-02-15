@@ -134,7 +134,7 @@ namespace XSharp.MacroCompiler
             IList<Token> tokens = lexer.AllTokens();
             if (options.PreProcessor && options.ParseStatements)
             {
-                var pp = new Preprocessor.XSharpPreprocessor(lexer, options, null, Encoding.Default);
+                var pp = new Preprocessor.XSharpPreprocessor(lexer, options, "Macro", Encoding.Default);
                 tokens = pp.PreProcess();
             }
             var parser = new Parser(tokens, options);

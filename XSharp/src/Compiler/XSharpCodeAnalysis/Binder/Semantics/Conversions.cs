@@ -296,6 +296,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool voCast = false;
             bool voConvert = false;
             bool typeCast = false;
+            if (srcType.Equals(dstType))
+            {
+                return Conversion.NoConversion;
+            }
             bool vo7 = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, sourceExpression.Syntax);
             if (sourceExpression.Syntax != null)
             {
@@ -471,8 +475,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (destination.IsReferenceType && !IsClipperArgsType(destination))
                     {
                         // Convert Object -> Reference allowed with /lb and with /vo7
-                        // except when converting to array of usuals
-                        return Conversion.ImplicitReference;
+                        // Inside XsHandleExplicitConversion we will add a cast to take care of the
+                        // real converstion
+                        return Conversion.ExplicitReference;
                     }
                     if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPszType())
                     {

@@ -280,6 +280,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return result;
                     }
                 }
+                if (Compilation.Options.LateBindingOrFox(expression.Syntax) || Compilation.Options.HasOption(CompilerOption.Vo7, expression.Syntax))
+                {
+                    if (expression.Type.IsObjectType() || expression.Type.IsUsualType())
+                    {
+                        return CreateXsConversion(expression, conversion, targetType, diagnostics);
+                    }
+                }
             }
             return null;
         }

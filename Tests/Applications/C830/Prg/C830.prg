@@ -10,7 +10,8 @@ FUNCTION Start() AS VOID STRICT
     x := BaseClass1{}
     
     TRY
-	    y := (BaseClass2)x
+	    //y := (BaseClass2)x
+	    y := x
 	    lNoException := TRUE
     END TRY
 

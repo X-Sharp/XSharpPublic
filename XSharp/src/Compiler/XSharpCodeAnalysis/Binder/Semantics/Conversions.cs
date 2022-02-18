@@ -296,10 +296,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool voCast = false;
             bool voConvert = false;
             bool typeCast = false;
-            if (srcType.Equals(dstType))
-            {
-                return Conversion.NoConversion;
-            }
             bool vo7 = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, sourceExpression.Syntax);
             if (sourceExpression.Syntax != null)
             {
@@ -470,13 +466,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (Compilation.Options.LateBindingOrFox(sourceExpression.Syntax) || vo7)                // lb or vo7
             {
-                if (srcType == SpecialType.System_Object)
+                if (srcType == SpecialType.System_Object && dstType != SpecialType.System_Object)
                 {
                     if (destination.IsReferenceType && !IsClipperArgsType(destination))
                     {
                         // Convert Object -> Reference allowed with /lb and with /vo7
                         // Inside XsHandleExplicitConversion we will add a cast to take care of the
-                        // real converstion
+                        // real conversion
                         return Conversion.ExplicitReference;
                     }
                     if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPszType())

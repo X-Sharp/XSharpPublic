@@ -650,6 +650,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         marker.StopTokens = stopTokens.ToArray();
                     }
+                    if (marker.RuleTokenType.HasSingleStopToken())
+                    {
+                        if (i < tokenCount - 1)
+                        {
+                            var next = _matchTokensFlattened[i + 1];
+                            if (!next.IsOptional)
+                            {
+                                var stopTokens = new List<XSharpToken>();
+                                stopTokens.Add(next.Token);
+                                marker.StopTokens = stopTokens.ToArray();
+                            }
+                        }
+                    }
                     if (marker.IsOptional && !marker.IsWholeUDC)
                     {
                         foreach (var child in marker.Children)
@@ -1202,7 +1215,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var consumed = 0;
             var iend = -1;
             bool found = false;
-            if (matchAmpersandToken(tokens, iStart, ref iend))
+            if (matchAmpersandToken(mToken, tokens, iStart, ref iend))
             {
                 matchInfo[mToken.Index].SetPos(iStart, iend);
                 iSource = iend + 1;
@@ -1374,7 +1387,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
                 // after matchExpresssion iLastUsed points to the last token of the expression
-                if (matchExpression(iSource, tokens, null, out int iLastUsed))
+                if (matchExpression(iSource, tokens, mToken.StopToken, out int iLastUsed))
                 {
                     matches.Add(new Tuple<int, int>(iSource, iLastUsed));
                     iSource = iLastUsed + 1;
@@ -1442,7 +1455,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Matches an expression
                     // use Expression method to find the end of the list
                     // iLastUsed indicates the last token that is part of the expression
-                    found = matchExpression(iSource, tokens, null, out int iLastUsed);
+                    found = matchExpression(iSource, tokens, mToken.StopToken, out int iLastUsed);
                     if (found)
                     {
                         // truncate spaces at the end
@@ -1940,12 +1953,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        bool matchAmpersandToken(IList<XSharpToken> tokens, int start, ref int end)
+        bool matchAmpersandToken(PPMatchToken mToken, IList<XSharpToken> tokens, int start, ref int end)
         {
             end = -1;
             if (tokens.Count >= start + 1 && tokens[start].Type == XSharpLexer.AMP)
             {
-                if (matchExpression(start + 1, tokens, null, out end))
+                if (matchExpression(start + 1, tokens, mToken.StopToken, out end))
                 {
                     return true;
                 }
@@ -2315,6 +2328,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // so exit the loop
                     break;
                 }
+                else if (stopToken != null && tokenEquals(stopToken, token))
+                {
+                    break;
+                }
                 // if Open brace, scan for close brace
                 else if (token.IsOpen(ref closeBrace))
                 {
@@ -2325,7 +2342,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // otherwise exit
                 else if (token.IsClose()
                           || (lastToken.NeedsRight() && !token.IsPrimaryOrPrefix())
-                          || (stopToken != null && tokenEquals(stopToken, token))
                         )
                 {
                     break;

@@ -47,7 +47,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-
+        internal static bool HasSingleStopToken(this PPTokenType value)
+        {
+            switch (value)
+            {
+                case PPTokenType.MatchRegular:
+                case PPTokenType.MatchExtended:
+                    return true; ;
+            }
+            return false;
+        }
         internal static void TrimLeadingSpaces(this IList<XSharpToken> tokens)
         {
             while (tokens.Count > 0 &&

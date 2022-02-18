@@ -143,10 +143,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
        // Restricted and Optional Markers may have more than one token
         // For restricted tokens this contains the list of possible match values
         internal XSharpToken[] Tokens { get; set; }
-		// StopTokens is an alias for Tokens.
+        // StopTokens is an alias for Tokens.
         // For List and Repeated match markers the Tokens list contains the list of 
         // tokens that may the end of the list
         internal XSharpToken[] StopTokens { get => Tokens; set => Tokens = value; }
+        internal XSharpToken StopToken => Tokens?.Length > 0 ? Tokens[0] : null;
         // For optional tokens this contains the list of tokens inside the option block
         internal PPMatchToken[] Children { get; set; }
         #endregion

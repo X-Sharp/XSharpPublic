@@ -51,6 +51,13 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyFoxMemVarPut")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarPut, "MyFoxVarPut")
 
+        // Check .NULL.
+        //        TestMacro(mc, e"{|a| a > DBNull.Value }", Args(8), False, typeof(LOGIC))
+        //        TestMacro(mc, e"{|a| a = .NULL. }", Args(8), False, typeof(LOGIC))
+        //        TestMacro(mc, e"{|a| a < .NULL. }", Args(8), False, typeof(LOGIC))
+        //        TestMacro(mc, e"{|a| a + .NULL. }", Args(8), DbNull.Value, typeof(USUAL))
+        //        TestMacro(mc, e"{|a| a * .NULL. }", Args(8), DbNull.Value, typeof(USUAL))
+
         // USUAL defaults to FALSE for FoxPro
         TestMacro(mc, e"{|a| a := default(usual) }", Args(8), FALSE, typeof(LOGIC))
         TestMacro(mc, e"{|a| a := NIL }", Args(8), FALSE, typeof(LOGIC))

@@ -90,6 +90,7 @@
     <Compile Include="Diagnostic\Error.cs" />
     <Compile Include="Diagnostic\Location.cs" />
     <Compile Include="Diagnostic\Symbol.Name.cs" />
+    <Compile Include="Preprocessor\XSharpPPExpressionEvaluator.cs" />
     <Compile Include="Preprocessor\XSharpPPHelpers.cs" />
     <Compile Include="Preprocessor\XSharpPPRule.cs" />
     <Compile Include="Preprocessor\XSharpPPRuleTokens.cs" />

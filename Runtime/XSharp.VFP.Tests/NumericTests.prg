@@ -43,8 +43,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True(Integer(-c1) == 123)
             Assert.True(Integer($10.25) == 10)
 
-            LOCAL u AS USUAL
-            u := Val("$12345")
+            LOCAL u := Val("$12345") AS USUAL
             Assert.Equal((DWORD) __UsualType.Currency, UsualType(u))
 
 

@@ -504,7 +504,7 @@ namespace XSharp.LanguageService
                         {
                             completion.InsertionText += "{";
                         }
-                        if (kind.HasParameters() && !completion.InsertionText.EndsWith("("))
+                        else if (kind.HasParameters() && !completion.InsertionText.EndsWith("("))
                         {
                             completion.InsertionText += "(";
                         }

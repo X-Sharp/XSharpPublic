@@ -741,7 +741,6 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
         }
 
-
         XSharpToken FixToken(XSharpToken token)
         {
             return token;
@@ -1010,7 +1009,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
         }
 #if !VSPARSER
-        private Exception readFileContents( string fp, out string nfp, out SourceText text)
+        private Exception readFileContents(string fp, out string nfp, out SourceText text)
         {
             Exception ex = null;
             nfp = null;
@@ -1286,7 +1285,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             resolvedIncludeFileName = includeFile.FileName;
             if (includeFile.MustBeProcessed || _lexer.HasPPIfdefs)
             {
-                // Clone the array becayse we may be changing things, changing the channel for example
+                // Clone the array because we may be changing things, changing the channel for example
                 // This does not only clone the array but also clones every token.
                 var clone = includeFile.Tokens.CloneArray();
                 var tokenSource = new TokenSource(null);

@@ -11,6 +11,18 @@ USING System.Diagnostics
 USING System.Runtime.CompilerServices
 USING System.Runtime.Serialization
 
+
+#define USEATTRIB
+#ifdef USEATTRIB
+    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
+    #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
+#else
+    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[INLINE\] =>
+    #XTRANSLATE \[NODEBUG\] =>
+#endif
+
 BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the XBase Compatible SYMBOL type.<br/>
     /// This type has many operators and implicit converters that normally are never directly called from user code.<br/>
@@ -30,9 +42,9 @@ BEGIN NAMESPACE XSharp
         ISerializable
 
         #region fields
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         PRIVATE INITONLY _index		AS DWORD
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         PRIVATE STATIC _PszDict		AS Dictionary<DWORD, PSZ>
         #endregion
 
@@ -42,12 +54,12 @@ BEGIN NAMESPACE XSharp
             SymbolTable.Initialize()
 
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [INLINE];
         CONSTRUCTOR(sValue AS STRING)
             SELF(sValue, TRUE)
 
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [INLINE];
         CONSTRUCTOR(sValue AS STRING,  upperCase AS LOGIC)
             IF sValue != NULL
                 IF (upperCase)
@@ -59,7 +71,7 @@ BEGIN NAMESPACE XSharp
             ENDIF
             RETURN
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [INLINE];
         PRIVATE CONSTRUCTOR (dwValue AS DWORD)
             SELF:_index := dwValue
 
@@ -71,13 +83,13 @@ BEGIN NAMESPACE XSharp
             ENDIF
             RETURN __Symbol{0}
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         INTERNAL PROPERTY _value AS STRING
             GET
                 RETURN SymbolTable.GetString(SELF:_index)
             END GET
         END PROPERTY
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         INTERNAL STATIC PROPERTY PszDict AS Dictionary<DWORD, PSZ>
             GET
                 IF _PszDict == NULL
@@ -372,7 +384,7 @@ BEGIN NAMESPACE XSharp
 					RETURN _value
 				ENDIF
 				RETURN ((IConvertible)_value):ToType(conversionType, provider)
-        
+
             /// <inheritdoc />
                 METHOD IConvertible.ToUInt16( provider AS IFormatProvider ) AS UInt16
                 RETURN ((IConvertible)_value):ToUInt16( provider )
@@ -401,7 +413,7 @@ BEGIN NAMESPACE XSharp
             ENDIF
             info:AddValue("Value", SymbolTable.GetString(SELF:_index))
             RETURN
-            
+
         /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
         CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
             IF info == NULL

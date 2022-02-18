@@ -53,20 +53,8 @@ LEAF Page
 
 */
 
-
-
-#define USEATTRIB
-#ifdef USEATTRIB
-#XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
-#XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
-#XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
-#else
-#XTRANSLATE \[HIDDEN\] =>
-#XTRANSLATE \[INLINE\] =>
-#XTRANSLATE \[NODEBUG\] =>
-#endif
-
 #include "CdxDebug.xh"
+
 USING System.Runtime.CompilerServices
 USING System.Runtime.InteropServices
 USING System
@@ -461,8 +449,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nDupCount   AS BYTE
             //System.Diagnostics.Trace.WriteLine(i"CdxLeafPage:Add({recno})")
             IF _AND( recno, SELF:RecnoMask) != recno
-                DUMP("rec",recno:ToString("X"), "keys", SELF:NumKeys, "free before", SELF:Freespace)
-                DUMP( "triggers ExpandRecnos", "Rec", recno)
+                //DUMP("rec",recno:ToString("X"), "keys", SELF:NumKeys, "free before", SELF:Freespace)
+               // DUMP( "triggers ExpandRecnos", "Rec", recno)
                 SELF:Write()
                 RETURN CdxAction.ExpandRecnos(SELF, recno, key, -1)
             ENDIF
@@ -476,8 +464,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             LOCAL nBytesNeeded := SELF:KeyLength - nDupCount - nTrailCount  + SELF:DataBytes  AS WORD
             IF SELF:Freespace < nBytesNeeded
-                DUMP("rec",recno:ToString("X"), "keys", SELF:NumKeys, "free before", SELF:Freespace)
-                DUMP( "triggers SplitLeaf", "Rec", recno)
+                //DUMP("rec",recno:ToString("X"), "keys", SELF:NumKeys, "free before", SELF:Freespace)
+                //DUMP( "triggers SplitLeaf", "Rec", recno)
                 SELF:Write()
                 RETURN CdxAction.AddLeaf(SELF, recno, key)
             ENDIF

@@ -239,6 +239,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             result.WasCompilerGenerated = true;
             return result;
         }
+
+        BoundExpression XsHandleImplicitReference(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
+        {
+            if (conversion.Kind == ConversionKind.ImplicitReference && !Equals(expression.Type, targetType))
+            {
+                if (Compilation.Options.LateBindingOrFox(expression.Syntax) || Compilation.Options.HasOption(CompilerOption.Vo7, expression.Syntax))
+                {
+                    if (expression.Type is { } && (expression.Type.IsObjectType() || expression.Type.IsUsualType()))
+                    {
+                        return CreateXsConversion(expression, Conversion.ExplicitReference, targetType, diagnostics);
+                    }
+                }
+            }
+            return null;
+        }
         BoundExpression XsHandleExplicitConversion(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
             if (conversion.IsExplicit && !TypeSymbol.Equals(expression.Type, targetType))
@@ -278,13 +293,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         result = XsCreateConversionNonIntegralNumeric(targetType, expression, diagnostics, conversion);
                         result.WasCompilerGenerated = true;
                         return result;
-                    }
-                }
-                if (Compilation.Options.LateBindingOrFox(expression.Syntax) || Compilation.Options.HasOption(CompilerOption.Vo7, expression.Syntax))
-                {
-                    if (expression.Type.IsObjectType() || expression.Type.IsUsualType())
-                    {
-                        return CreateXsConversion(expression, conversion, targetType, diagnostics);
                     }
                 }
             }

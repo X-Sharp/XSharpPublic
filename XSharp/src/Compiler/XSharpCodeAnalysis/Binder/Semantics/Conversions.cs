@@ -471,9 +471,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (destination.IsReferenceType && !IsClipperArgsType(destination))
                     {
                         // Convert Object -> Reference allowed with /lb and with /vo7
-                        // Inside XsHandleExplicitConversion we will add a cast to take care of the
+                        // Inside XsHandleImplicitReference we will add a cast to take care of the
                         // real conversion
-                        return Conversion.ExplicitReference;
+                        return Conversion.ImplicitReference;
                     }
                     if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPszType())
                     {

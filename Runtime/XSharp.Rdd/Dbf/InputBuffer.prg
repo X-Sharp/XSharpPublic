@@ -16,7 +16,7 @@ USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD
 
-	CLASS InputBuffer
+    CLASS InputBuffer
         CONST INBUFFER_MAX_SIZE := 16384 AS INT
 
         PROTECT _stream        AS Stream
@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE _weakBuffer    AS WeakBuffer
 
         CLASS WeakBuffer
-            INTERNAL RefCount := 1      AS WORD
+            INTERNAL RefCount := 1      AS LONG
             INTERNAL Buffer             AS BYTE[]
             INTERNAL InBufferOfs := 0   AS LONG
             INTERNAL InBufferLen := 0   AS LONG
@@ -87,18 +87,23 @@ BEGIN NAMESPACE XSharp.RDD
 
             RETURN
 
-        DESTRUCTOR()
-                IF _name != NULL
-                    BEGIN LOCK BufferCache
-                        LOCAL t AS WeakBuffer
-                        IF BufferCache:TryGetValue(_name, OUT t)
-                            t:RefCount -= 1
-                            IF t:RefCount < 1
-                                BufferCache:Remove(_name)
-                            ENDIF
+        METHOD Close() AS VOID
+            IF _name != NULL
+                BEGIN LOCK BufferCache
+                    LOCAL t AS WeakBuffer
+                    IF BufferCache:TryGetValue(_name, OUT t)
+                        t:RefCount -= 1
+                        IF t:RefCount < 1 .or. ! _shared
+                            BufferCache:Remove(_name)
                         ENDIF
-                    END LOCK
-                ENDIF
+                    ENDIF
+                END LOCK
+                _name := NULL
+                GC.SuppressFinalize( SELF )
+            ENDIF
+
+        DESTRUCTOR()
+            SELF:Close()
             RETURN
 
         PRIVATE METHOD ReadAt(position AS LONG, buffer AS BYTE[], offset AS LONG, length AS LONG) AS LONG
@@ -210,6 +215,7 @@ BEGIN NAMESPACE XSharp.RDD
                 _inBufferLen := 0
             END LOCK
             RETURN
+
     END CLASS
 
 END NAMESPACE // XSharp.RDD

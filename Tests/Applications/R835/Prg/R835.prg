@@ -22,24 +22,23 @@ endclass
 procedure main()
     testEpsilon()
     local o := new Example(2)       
-    ? o                
-    ? ISOBJECT(o)
+    xassert(ISOBJECT(o))
     o := NIL
-    ? ISNIL(o)
+    xassert(ISNIL(o))
     o := {1,2,3}
-    ? ISARRAY(o)
+    xassert(ISARRAY(o))
     o := {||TRUE}
-    ? ISBLOCK(o) 
+    xassert( ISBLOCK(o) )
     o := "abc"
-    ? ISCHARACTER(o)
+    xassert( ISCHARACTER(o))
     o := 2022.01.01
-    ? ISDATE(o) 
+    xassert( ISDATE(o) )
     o := TRUE
-    ? ISLOGICAL(o)
+    xassert( ISLOGICAL(o))
     o := 10
-    ? ISNUMBER(o)
+    xassert( ISNUMBER(o) )
     local r := {1 .. 5}     
-    ? r
+    xassert( r != null)
     datetest()
 return
 
@@ -57,11 +56,11 @@ END CLASS
 
 function datetest  as void
 local d := $ 18/02/2022 
-? d          
+xassert(d == 2022.02.18)
 
 
 function ntod(nNumber)
-    return nNumber
+    return STOD(STR(nNumber,8,0))
 
 #translate (<n1>.EQ.<n2>) =>    (IsZero((<n1>)-(<n2>)))
 
@@ -72,7 +71,7 @@ function testEpsilon
     a := 10.0001
     b := 20.0002
     c := 10.000
-    ? (a.eq.b-c)
+    xAssert((a.eq.b-c) == true)
     return nil
     
 #define EPSILON 0.005
@@ -80,3 +79,11 @@ function isZero(n)
 return (n <= EPSILON .and. n >= -EPSILON)
 
     
+    
+    
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
+RETURN      

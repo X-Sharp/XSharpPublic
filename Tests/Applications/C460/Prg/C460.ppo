@@ -8,6 +8,164 @@
 //PP #translate ARRAY(<x>) => ArrayCreate(<x>)
 
 //PP #include "C460.CH"
+#line 1 "C:\XSharp\Dev\Tests\Applications\C460\Prg\C460.CH"
+//PP #xtranslate :Messages    =>  :cargo\[2\]
+//PP #xtranslate :GetType     =>  :cargo\[3\]
+//PP #xtranslate :GetPostEval =>  :cargo\[4\]
+//PP #define CARGO_ELEMENTS 4
+
+
+/***
+*  @..SAY
+*/
+
+//PP #command @ <row>, <col> zSAY <xpr>                                       ;
+//PP                         [PICTURE <pic>]                                 ;
+//PP                         [COLOR <color>]                                 ;
+//PP                                                                         ;
+//PP       => DevPos( <row>, <col> )                                         ;
+//PP        ; DevOutPict(<xpr>, <pic> [, <color>] )
+
+
+//PP #command @ <row>, <col> zSAY <xpr>                                       ;
+//PP                         [COLOR <color>]                                 ;
+//PP                                                                         ;
+//PP       => DevPos( <row>, <col> )                                         ;
+//PP        ; DevOut( <xpr> [, <color>] )
+
+
+/***
+*  @..GET
+*/
+
+//PP #command @ <row>, <col> zGET <var>                                      ;
+//PP                         [PICTURE <pic>]                                 ;
+//PP                         [VALID <valid>]                                 ;
+//PP                         [WHEN <when>]                                   ;
+//PP                         [SEND <msg>]                                    ;
+//PP                                                                         ;
+//PP       => SetPos( <row>, <col> )                                         ;
+//PP        ; AAdd(                                                          ;
+//PP            GetList,                                                     ;
+//PP            _GET_( <var>, <"var">, <pic>, <{valid}>, <{when}> ):display();
+//PP              )                                                          ;
+//PP        ;atail(Getlist):reader := {|x| zGEReader(x) } ;
+//PP        ;atail(Getlist):cargo := ARRAY(CARGO_ELEMENTS) ;
+//PP       [; ATail(GetList):<msg>]
+
+
+
+
+/***
+*   @..SAY..GET
+*/
+
+//PP #command @ <row>, <col> zSAY <sayxpr>                                    ;
+//PP                         [<sayClauses,...>]                              ;
+//PP                         zGET <var>                                       ;
+//PP                         [<getClauses,...>]                              ;
+//PP                                                                         ;
+//PP       => @ <row>, <col> SAY <sayxpr> [<sayClauses>]                     ;
+//PP        ; @ Row(), Col()+1 zGET <var> [<getClauses>]
+
+/***
+*   fancy GETs...
+*/
+
+
+// @..GET COLOR
+//PP #command @ <row>, <col> zGET <var>                                       ;
+//PP                         [<clauses,...>]                                 ;
+//PP                         COLOR <color>                                   ;
+//PP                         [<moreClauses,...>]                             ;
+//PP                                                                         ;
+//PP       => @ <row>, <col> zGET <var>                                       ;
+//PP                         [<clauses>]                                     ;
+//PP                         SEND colorDisp(<color>)                         ;
+//PP                         [<moreClauses>]
+
+
+
+// MESSAGE DISPLAY
+//PP #command @ <row>, <col> zGET <var> ;
+//PP                   		[<clauses,...>]  ;
+//PP                   		MESSAGE <msg> ;
+//PP                   		[<moreClauses,...>]  ;
+//PP      =>  @ <row>, <col> zGET <var> ;
+//PP 	                  	[<clauses>] ;
+//PP                                 [<moreClauses>] ;
+//PP                                 ;atail(getlist):Messages := <msg> 
+
+
+// DATABASE COMBO BOX
+//PP #xcommand @ <row>, <col> zGET <var> COMBO                         ;
+//PP                         BROWSE < aBrowse_ >                       ;
+//PP                         [COLOR <color> ]                          ;
+//PP                         [ALIAS <cAlias>]                          ;
+//PP                         [RETURN_FIELD < xRetFld>]                 ;
+//PP                         [DISPLAY_TAG <cTag>]                      ; 
+//PP                         [VALID <valid>]                           ;
+//PP                         [WHEN <when>]                             ;
+//PP                         [<lDropOnEnter: ALWAYS>]                  ;
+//PP                         [XTOP <xTop> ]                            ;
+//PP                         [XBOTTOM <xBottom> ]                      ;
+//PP                         [FOR <for> ]                              ;
+//PP                         [WHILE <while> ]                          ;
+//PP                         [BASE_FILTER <cBaseFilter> ]              ;
+//PP                         [DISPLAY_FIELD <xDispFld> ]               ;
+//PP                         [RETURN_TAG <cKeyTag>  ]                  ;
+//PP                         [STRICT <lStrict> ]                       ;
+//PP                         [EMPTY_ALLOWED <lEmptyAllowed> ]          ;
+//PP                         [HOT_KEYS <aHotKeys_> ]                   ;
+//PP                         [PICTURE <cPicture>]                      ;
+//PP                         [WIDTH <nWidth>]                          ;
+//PP                         [HEIGHT <nHeight> ]                       ;
+//PP                         [POST_EVAL <bPostEval>]                   ;
+//PP       =>                                                          ;
+//PP          SetPos(<row>, <col>)                                     ;
+//PP          ; Aadd(GetList,                                          ;
+//PP               zGEDBComboNew( <(var)>, <var>,;
+//PP                             {|x| iif(x == nil, <var>, <var> := x) };
+//PP                             , <{when}>, <{valid}>,  <.lDropOnEnter.>,;
+//PP                             <cAlias>, <cTag>, <xTop>, <xBottom>, ;
+//PP                             <{for}>, <{while}>, <cBaseFilter>, ;
+//PP                             <xRetFld>, < aBrowse_>,<xDispFld>,;
+//PP                             <cKeyTag>, <lStrict>,;
+//PP                             <aHotKeys_>, <cPicture>, <nWidth>,;
+//PP                             <nHeight>, <color>,[<{bPostEval}>], <lEmptyAllowed> ) ) 
+
+
+// GET & SAY
+//PP #command @ <row>, <col> zSAY <sayxpr>                                    ;
+//PP                         [<sayClauses,...>]                              ;
+//PP                         zGET <var>                                       ;
+//PP                         [<getClauses,...>]                              ;
+//PP                                                                         ;
+//PP       => @ <row>, <col> zSAY <sayxpr> [<sayClauses>]                     ;
+//PP        ; @ Row(), Col()+1 zGET <var> [<getClauses>]
+
+
+// CHECK BOX
+//PP #command @ <row>, <col> zGET <var> CHECKBOX <cStr>                   ;
+//PP                         [<lRight: RIGHT>]                            ;
+//PP                         [ON <xOn>]                                   ;
+//PP                         [OFF <xOff>]                                 ;
+//PP                         [BOX <cBox>]                                 ;
+//PP                         [CHECK <cCheck>]                             ;
+//PP                         [WHEN  <bWhen> ]                             ;
+//PP                         [VALID <bValid>]                             ;
+//PP                         [POST_EVAL <bPostEval>]                      ;
+//PP                                                                      ;
+//PP       =>                                                             ;
+//PP          SetPos(<row>, <col>)                                        ;
+//PP          ; Aadd(GetList,                                             ;
+//PP                 zGECheckNew({|x| iif(x == nil, <var>, <var> := x) }, ;
+//PP                      <(var)>, <cStr>,<.lRight.>,<cBox>,<xOn>,        ;
+//PP                      <xOff>,<cCheck>, <{bWhen}>, <{bValid}>,         ;
+//PP                      [<{bPostEval}>]) )
+
+
+#line 11 "C:\XSharp\Dev\Tests\Applications\C460\Prg\C460.prg"
 FUNCTION Start( ) AS VOID
 LOCAL oFiller := FillerClass{} AS FillerClass
 LOCAL aFiller := ArrayCreate(2) AS ARRAY
@@ -16,21 +174,7 @@ LOCAL GetList := {} AS ARRAY
 aFiller[ 1 ] := "Field1"
 aFiller[ 2 ] := "Field2"
 
-DevPos( 1 , 2 ) 
- DevOut( "Filler             "  )
-DevPos( 1 , 2 ) ; DevOut( "Filler             "  )
-SetPos( Row() , Col()+1 ) 
-AAdd( GetList, _GET_( aFiller[1] , "aFiller[1]" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) 
-atail(Getlist):reader := {|x| zGEReader(x) } 
-atail(Getlist):cargo := ArrayCreate(4 ) 
-SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( aFiller[1] , "aFiller[1]" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) 
-atail(getlist):cargo[ 2] := "Enter the filler"
-SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( aFiller[1] , "aFiller[1]" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the filler"
 DevPos( 1 , 2 ) ; DevOut( "Filler             "  );SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( aFiller[1] , "aFiller[1]" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the filler"
-SetPos(1976 , 2 ) 
- Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[2] , aFiller[2] := x) }, "aFiller[2]" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) )
-SetPos(1976 , 2 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[2] , aFiller[2] := x) }, "aFiller[2]" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) )
-atail(getlist):cargo[ 2] := "Is this an active filler?"
 SetPos(1976 , 2 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[2] , aFiller[2] := x) }, "aFiller[2]" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) );atail(getlist):cargo[ 2] := "Is this an active filler?"
 
 xAssert(Row() == 1976)
@@ -40,25 +184,11 @@ xAssert(ALen(GetList) == 2)
 ASize(GetList , 0)
 
 // this one is ok:
-DevPos( 1 , 2 ) 
- DevOut( "Filler             "  )
-DevPos( 1 , 2 ) ; DevOut( "Filler             "  )
-SetPos( Row() , Col()+1 ) 
-AAdd( GetList, _GET_( oFiller:Filler , "oFiller:Filler" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) 
-atail(Getlist):reader := {|x| zGEReader(x) } 
-atail(Getlist):cargo := ArrayCreate(4 ) 
-SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( oFiller:Filler , "oFiller:Filler" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) 
-atail(getlist):cargo[ 2] := "Enter the filler"
-SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( oFiller:Filler , "oFiller:Filler" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the filler"
 DevPos( 1 , 2 ) ; DevOut( "Filler             "  );SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( oFiller:Filler , "oFiller:Filler" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the filler"
 
 xAssert(Row() == 1)
 
 // error XS9002: Parser: unexpected input '@'
-SetPos(1976 , 2 ) 
- Aadd(GetList, zGECheckNew({|x| iif(x == nil, oFiller:Active , oFiller:Active := x) }, "oFiller:Active" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) )
-SetPos(1976 , 2 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, oFiller:Active , oFiller:Active := x) }, "oFiller:Active" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) )
-atail(getlist):cargo[ 2] := "Is this an active filler?"
 SetPos(1976 , 2 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, oFiller:Active , oFiller:Active := x) }, "oFiller:Active" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) );atail(getlist):cargo[ 2] := "Is this an active filler?"
 
 xAssert(Row() == 1976)

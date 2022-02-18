@@ -1,3 +1,638 @@
+#line 1 "C:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"
+///////////////////////////////////////////////////////////////////////////
+// XSharpDefs.xh
+//
+// XSharp Standard Preprocessor Directives
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+// This file is automatically included in every source file unless /nostddefs is used.
+//
+// Caution: do not modify this file. It will be overwritten during product updates
+//
+//PP #ifndef XSHARPDEFS_XH
+//PP #define XSHARPDEFS_XH
+
+//PP #xcommand QUIT                   		=> _Quit()
+
+// The following UDCs require the xBase Runtime
+//PP #ifndef __DIALECT_CORE__
+//PP #command ACCEPT [<msg>] TO <v>         	=> <v> := _accept( <msg> ) 
+//PP #xcommand WAIT [<msg>]                  => _wait( <msg> )
+//PP #xcommand WAIT [<msg>] TO <v>           => <v> := _wait( <msg> )
+
+//PP #xcommand DEFAULT <v1> TO <x1> [, <vn> TO <xn> ]  => ;
+//PP           IF <v1> == NIL ; <v1> := <x1> ; END        ;
+//PP           [; IF <vn> == NIL ; <vn> := <xn> ; END ]
+
+//PP #xcommand STORE <value> TO <var1> [, <varN> ]   => ;
+//PP 				<var1> := [ <varN> := ] <value>
+
+// Allow "garbage" after END <id> 
+// Statements
+//PP #xcommand END <kw:IF,DO,WHILE,FOR,CASE,SEQUENCE,TRY,LOCK,SCOPE,SWITCH,USING,UNSAFE,CHECKED,UNCHECKED,FIXED,WITH> <*any*> => END <kw>
+//  Type keywords 
+//PP #xcommand END <kw:NAMESPACE,CLASS,INTERFACE,ENUM,STRUCTURE,UNION,VOSTRUCT,DEFINE> <*any*> => END <kw>
+//  Member keywords 
+//PP #xcommand END <kw:METHOD,ASSIGN,ACCESS,PROPERTY,EVENT,OPERATOR,FUNCTION,PROCEDURE,CONSTRUCTOR,DESTRUCTOR> <*any*> => END <kw>
+// END accessor keywords followed by "garbage"
+//PP #xcommand END <kw:ADD,REMOVE,GET,SET> <*any*> => END <kw>
+// Specific end keywords  
+//PP #xcommand ENDIF <*any*> => ENDIF 
+//PP #xcommand ENDCASE <*any*> => ENDCASE 
+//PP #xcommand ENDDO <*any*> => ENDDO 
+//PP #xcommand NEXT <*any*> => NEXT
+//PP #xcommand ENDDEFINE <*any*> => ENDDEFINE 
+//PP #xcommand ENDCLASS <*any*> => ENDCLASS 
+
+//PP #endif
+
+//PP #ifdef __DIALECT_XBASEPP__
+
+//PP #endif
+
+//PP #ifdef __DIALECT_FOXPRO__
+
+//PP #endif
+
+// Various SET commands
+//PP #include "set.xh"
+#line 1 "C:\Program Files (x86)\XSharp\Include\set.xh"
+///////////////////////////////////////////////////////////////////////////
+// XSharp Standard Preprocessor Directives
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+// Caution: do not modify this file. It will be overwritten during product updates
+///////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////
+//
+// This header file contains the SET commands for various global settings 
+// We map to the typed Set..() functions and not to the SET(_SET_<somedefine> ) because
+// that will produce slightly better code.
+//
+///////////////////////////////////////////////////////////////////////////
+
+//PP #ifndef SET_XH
+
+//PP #define SET_XH
+
+///////////////////////////////////////////////////////////////////////////
+// SET commands for directories
+///////////////////////////////////////////////////////////////////////////
+
+//PP #command  SET DEFAULT TO <*path*>   =>  Set( Set.Default, <(path)> )
+//PP #command  SET DEFAULT TO            =>  Set( Set.Default, "" )
+
+//PP #command  SET PATH TO <*path*>      =>  Set( Set.Path, <(path)> )
+//PP #command  SET PATH TO               =>  Set( Set.Path, "" )
+
+///////////////////////////////////////////////////////////////////////////
+// SET commands for string comparison, date and numeric formats
+///////////////////////////////////////////////////////////////////////////
+
+//PP #command  SET EXACT <x:ON,OFF,&>    =>  Set( Set.Exact, <(x)> )
+//PP #command  SET EXACT (<x>)           =>  Set( Set.Exact, <x> )
+
+//PP #command  SET FIXED <x:ON,OFF,&>    =>  Set( Set.Fixed, <(x)> )
+//PP #command  SET FIXED (<x>)           =>  Set( Set.Fixed, <x> )
+
+//PP #command  SET DECIMALS TO <x>       =>  Set( Set.Decimals, <x> )
+//PP #command  SET DECIMALS TO           =>  Set( Set.Decimals, 0 )
+
+//PP #command  SET DATE [TO] <x:AMERICAN,MDY>        =>  SetDateCountry(DateCountry.American)
+//PP #command  SET DATE [TO] ANSI                    =>  SetDateCountry(DateCountry.Ansi)
+//PP #command  SET DATE [TO] <x:BRITISH,FRENCH,DMY>  =>  SetDateCountry(DateCountry.British)
+//PP #command  SET DATE [TO] GERMAN                  =>  SetDateCountry(DateCountry.German)
+//PP #command  SET DATE [TO] <x:ITALIAN,DUTCH>       =>  SetDateCountry(DateCountry.Italian)
+//PP #command  SET DATE [TO] <x:JAPANESE,TAIWAN,YMD> =>  SetDateCountry(DateCountry.Japanese)
+//PP #command  SET DATE [TO] USA                     =>  SetDateCountry(DateCountry.USA)
+//PP #command  SET DATE [TO] <x:SYSTEM,WINDOWS>      =>  SetDateCountry(DateCountry.System)
+
+// The next settings calls a runtime function because they set more than just the format.
+// Date format also sets the DateCountry
+// Time format also sets the AmPm extension and the Time Separator
+//PP #command  SET DATE FORMAT [TO] <c>  =>  SetDateFormat( <c> )
+//PP #command  SET TIME TO <*x*>         =>  SetTimeFormat( <(x)> )
+//PP #command  SET TIME TO SYSTEM        =>  SetTimeFormat( "" )
+
+//PP #command  SET CENTURY <x:ON,OFF,&>  =>  Set(Set.Century, <(x)> )
+//PP #command  SET CENTURY (<x>)         =>  Set(Set.Century,  <x> )
+
+//PP #command  SET EPOCH TO <year>       =>  Set(Set.Epoch, <year> )
+
+///////////////////////////////////////////////////////////////////////////
+//  DB SETs
+///////////////////////////////////////////////////////////////////////////
+
+//PP #ifndef __DIALECT_FOXPRO__
+  // FoxPro maps SET ANSI to Set.SqlAnsi
+//PP   #command SET ANSI <x:ON,OFF,&>          =>  Set(Set.Ansi, <(x)> ) 
+//PP   #command SET ANSI (<x>)                 =>  Set(Set.Ansi, <x> )
+
+//PP #endif
+
+//PP #command SET EXCLUSIVE <x:ON,OFF,&>     =>  Set(Set.Exclusive, <(x)> ) 
+//PP #command SET EXCLUSIVE (<x>)            =>  Set(Set.Exclusive, <x> )
+
+//PP #command SET SOFTSEEK <x:ON,OFF,&>      =>  Set(Set.SoftSeek, <(x)> ) 
+//PP #command SET SOFTSEEK (<x>)             =>  Set(Set.SoftSeek, <x> )
+
+//PP #command SET UNIQUE <x:ON,OFF,&>        =>  Set(Set.Unique, <(x)> ) 
+//PP #command SET UNIQUE (<x>)               =>  Set(Set.Unique, <x> )
+
+//PP #command SET DELETED <x:ON,OFF,&>       =>  Set(Set.Deleted, <(x)> ) 
+//PP #command SET DELETED (<x>)              =>  Set(Set.Deleted, <x> )
+
+///////////////////////////////////////////////////////////////////////////
+//  Console SETs
+///////////////////////////////////////////////////////////////////////////
+
+//PP #command  SET CONSOLE <x:ON,OFF,&>                    =>  Set( Set.Console, <(x)> )
+//PP #command  SET CONSOLE (<x>)                           =>  Set( Set.Console, <x> )
+
+//PP #command  SET ALTERNATE <x:ON,OFF,&>                  =>  Set( Set.Alternate, <(x)> )
+//PP #command  SET ALTERNATE (<x>)                         =>  Set( Set.Alternate, <x> )
+//PP #command  SET ALTERNATE TO                            =>  SetAltfile( "" , FALSE)
+//PP #command  SET ALTERNATE TO <(file)> [<add: ADDITIVE>] =>  SetAltfile( <(file)>, <.add.> )
+//PP #command  CLOSE ALTERNATE                             =>  SetAltfile( "" , FALSE)
+
+//PP #command  SET PRINTER <x:ON,OFF,&>                    =>  Set( Set.Printer, <(x)> )
+//PP #command  SET PRINTER (<x>)                           =>  Set( Set.Printer, <x> )
+
+// SET PRINTER TO is not supported yet.
+//#command  SET PRINTER TO                              =>  SetPrintfile( "" , FALSE)
+//#command  SET PRINTER TO <(file)> [<add: ADDITIVE>]   =>  SetPrintfile( <(file)>, <.add.> )
+
+//PP #command  SET MARGIN TO <x>                           =>  Set( Set.Margin, <(x)> )
+//PP #command  SET MARGIN TO                               =>  Set( Set.Margin, 0 )
+
+//PP #command  SET COLOR TO [<*spec*>]                     =>  SetColor( #<spec> )
+//PP #command  SET COLOR TO ( <c> )                        =>  SetColor( <c> )
+//PP #command  SET COLOUR TO [<*spec*>]                    =>  SET COLOR TO [<spec>]
+
+//PP #command CLEAR SCREEN                                 =>  Cls(); SetPos(0,0)
+
+//PP #ifdef __DIALECT_FOXPRO__
+
+//PP #endif
+
+//PP #endif
+#line 60 "C:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"
+
+// Various DBF related commands
+//PP #include "dbcmd.xh"
+#line 1 "C:\Program Files (x86)\XSharp\Include\dbcmd.xh"
+///////////////////////////////////////////////////////////////////////////
+// DbCmds.xh
+//
+// XSharp Database commands
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+// IMPORTANT:  Functions beginning with an underscore
+//             character are reserved, version-dependent functions.
+//             These functions should not be called directly.
+//
+// Caution: do not modify this file. It will be overwritten during product updates
+//
+
+//PP #ifndef DBCMD_XH
+
+//PP #define DBCMD_XH
+
+// rule for Fields, used in several other rules
+
+//PP #translate __DBFIELDS__ <f1> [,<fn> ]   => ;
+//PP            __DBFIELDLIST__  {<(f1)>[, <(fn)> ]}
+
+
+****
+*  DB
+*
+
+//PP #command SELECT <whatever>              => DbSelectArea( <(whatever)> )
+//PP #command SELECT <f>([<list,...>])       => DbSelectArea( <f>(<list>) )
+//PP #command SELECT &<whatever>             => DbSelectArea( <whatever> )
+
+//PP #command USE                            => DbCloseArea()
+
+//PP #command USE <(db)>                                                     ;
+//PP              [VIA <rdd>]                                                ;
+//PP              [ALIAS <a>]                                                ;
+//PP              [<new: NEW>]                                               ;
+//PP              [<ex: EXCLUSIVE>]                                          ;
+//PP              [<sh: SHARED>]                                             ;
+//PP              [<ro: READONLY,NOUPDATE>]                                  ;
+//PP              [INDEX <(index1)> [, <(indexn)>]]                          ;
+//PP                                                                         ;
+//PP       => DbUseArea(                                                     ;
+//PP                     <.new.>, <rdd>, <(db)>, <(a)>,                      ;
+//PP                     if(<.sh.> .or. <.ex.>, !<.ex.>, NIL), <.ro.>        ;
+//PP                   )                                                     ;
+//PP                                                                         ;
+//PP       [; DbSetIndex( <(index1)> )]                                      ;
+//PP       [; DbSetIndex( <(indexn)> )]
+
+
+//PP #command SET INDEX TO [ <(index1)> [, <(indexn)>]]                      ;
+//PP                                                                         ;
+//PP       => DbClearIndex()                                                 ;
+//PP                                                                         ;
+//PP       [; DbSetIndex( <(index1)> )]                                      ;
+//PP       [; DbSetIndex( <(indexn)> )]
+
+
+//PP #command INDEX ON <key> TO <(file)> [<u: UNIQUE>]                       ;
+//PP       => dbCreateIndex(                                                 ;
+//PP                         <(file)>, <"key">, <{key}>,                     ;
+//PP                         IIF( <.u.>, TRUE, NIL )                           ;
+//PP                       )
+
+//PP #command REINDEX                => DbReindex()
+//PP #command SET ORDER TO <n>       => DbSetOrder( <n> )
+//PP #command SET ORDER TO           => DbSetOrder(0)
+
+//PP #command APPEND BLANK           				=> DbAppend()
+//PP #command PACK                   				=> DbPack()
+//PP #command ZAP                    				=> DbZap()
+//PP #command UNLOCK [RECORD <rcd>]  				=> DbUnlock(<rcd>)
+//PP #command UNLOCK ALL             				=> DbUnlockAll()
+//PP #command COMMIT                 				=> DbCommitAll()
+
+//PP #command GOTO <n>               => DbGoto(<n>)
+//PP #command GO <n>                 => DbGoto(<n>)
+//PP #command GOTO TOP               => DbGoTop()
+//PP #command GO TOP                 => DbGoTop()
+//PP #command GOTO BOTTOM            => DbGoBottom()
+//PP #command GO BOTTOM              => DbGoBottom()
+
+//PP #command SKIP                   => DbSkip(1)
+//PP #command SKIP <n>               => DbSkip( <n> )
+
+//PP #command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>]  => dbSeek( <xpr> , <.soft.>, <.lst.>)
+
+//PP #command SET FILTER TO          => dbClearFilter()
+//PP #command SET FILTER TO <xpr>    => dbSetFilter( <{xpr}>, <"xpr"> )
+
+//PP #command SET FILTER TO <x:&>                                            ;
+//PP       => IF ( Empty(<(x)>) )                                            ;
+//PP        ;    DbClearFilter()                                             ;
+//PP        ; ELSE                                                           ;
+//PP        ;    DbSetFilter( <{x}>, <(x)> )                                 ;
+//PP        ; END
+
+//PP #command REPLACE [ <f1> WITH <x1> [, <fn> WITH <xn>] ]                  ;
+//PP          [FOR <lfor>]                                                    ;
+//PP          [WHILE <lwhile>]                                                ;
+//PP          [NEXT <nnext>]                                                  ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => DbEval(                                                        ;
+//PP                  {||DbAutoLock(), _FIELD-><f1> := <x1> [, _FIELD-><fn> := <xn>], DbAutoUnLock()},    ;
+//PP                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+//PP                )
+
+
+//PP #command REPLACE <f1> WITH <v1> [, <fN> WITH <vN> ]                     ;
+//PP       => DbAutoLock(); _FIELD-><f1> := <v1> [; _FIELD-><fN> := <vN>]; DbAutoUnLock()
+
+//PP #command DELETE                                                         ;
+//PP          [FOR <lfor>]                                                    ;
+//PP          [WHILE <lwhile>]                                                ;
+//PP          [NEXT <nnext>]                                                  ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => DbEval(                                                        ;
+//PP                  {|| DbAutoLock(), DbDelete(), DbAutoUnLock()},                                       ;
+//PP                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+//PP                )
+
+//PP #command DELETE                 =>  DbAutoLock(); DbDelete(); DbAutoUnLock()
+
+//PP #command RECALL                                                         ;
+//PP          [FOR <lfor>]                                                   ;
+//PP          [WHILE <lwhile>]                                               ;
+//PP          [NEXT <nnext>]                                                 ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => DBEval(                                                        ;
+//PP                  {|| DbAutoLock(), DbRecall(), DbAutoUnLock()},                                       ;
+//PP                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+//PP                )
+
+
+//PP #command RECALL                 =>  DbAutoLock(); DbRecall(); DbAutoUnLock()
+
+//PP #command FIND <*text*>          => DbSeek( <(text)> )
+//PP #command FIND := <xpr>          => ( find := <xpr> )
+//PP #command FIND = <xpr>           => ( find := <xpr> )
+
+//PP #command CONTINUE               => DbContinue()
+
+//PP #command LOCATE                                                         ;
+//PP          [FOR <lfor>]                                                   ;
+//PP          [WHILE <lwhile>]                                               ;
+//PP          [NEXT <nnext>]                                                 ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => DbLocate( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> )
+
+//PP #command SET RELATION TO        => DbClearRelation()
+
+//PP #command SET RELATION                                                   ;
+//PP          [<add:ADDITIVE>]                                               ;
+//PP          [TO <key1> INTO <(alias1)> [, [TO] <keyn> INTO <(aliasn)>]]    ;
+//PP                                                                         ;
+//PP       => if ( !<.add.> )                                                ;
+//PP        ;    DbClearRelation()                                           ;
+//PP        ; END                                                            ;
+//PP                                                                         ;
+//PP        ; DbSetRelation( <(alias1)>, <{key1}>, <"key1"> )                ;
+//PP       [; DbSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> )]
+
+//PP #command CREATE <(file1)>           ;
+//PP             [FROM <(file2)>]        ;
+//PP             [ALIAS <a>]             ;
+//PP             [VIA <rdd>]             ;
+//PP             [<NEW: NEW>]            ;
+//PP             => _DbCreate( <(file1)>, <(file2)> , <rdd>, <.new.>, <(a)> )
+
+
+//PP #command COPY STRUCTURE EXTENDED TO <(file)>                      		;
+//PP       => DbCopyXStruct( <(file)> )
+
+
+//PP #command COPY STRUCTURE TO <(file)> [__DBFIELDLIST__ <fields>]          ;
+//PP       => DbCopyStruct( <(file)>, <fields> )
+
+
+//PP #ifndef __DIALECT_FOXPRO__
+
+//PP #command COPY TO <(file)>   DELIMITED [WITH <*delim*>]                  ;
+//PP          [__DBFIELDLIST__ <fields>]                                     ;
+//PP          [FOR <lfor>]                                                   ;
+//PP          [WHILE <lwhile>]                                               ;
+//PP          [NEXT <nnext>]                                                 ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => DbCopyDelim(                                                   ;
+//PP                         <(file)>, <(delim)>, <fields> ,                 ;
+//PP                         <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>  ;
+//PP                       )
+
+
+//PP #command COPY TO <(file)> SDF                                           ;
+//PP          [__DBFIELDLIST__ <fields>]                                     ;
+//PP          [FOR <lfor>]                                                    ;
+//PP          [WHILE <lwhile>]                                                ;
+//PP          [NEXT <nnext>]                                                  ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => DbCopySDF(                                                     ;
+//PP                       <(file)>, <fields>,                               ;
+//PP                       <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>    ;
+//PP                     )
+
+//PP #command COPY TO <(file)>                                               ;
+//PP          [__DBFIELDLIST__ <fields>]                                     ;
+//PP          [FOR <lfor>]                                                    ;
+//PP          [WHILE <lwhile>]                                                ;
+//PP          [NEXT <nnext>]                                                  ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [ALL]                                                          ;
+//PP          [VIA <rdd>]                                                    ;
+//PP          [INHERIT <hdnlist,...>]                                        ;
+//PP                                                                         ;
+//PP       => DbCopy(                                                        ;
+//PP                    <(file)>, <fields>,                                  ;
+//PP                    <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>       ;
+//PP 		   <rdd>, { <(hdnlist)> }, <.noopt.>)
+
+
+//PP #command APPEND FROM <(file)> DELIMITED [WITH <*delim*>]                ;
+//PP          [__DBFIELDLIST__ <fields>]                                     ;
+//PP          [FOR <lfor>]                                                   ;
+//PP          [WHILE <lwhile>]                                               ;
+//PP          [NEXT <nnext>]                                                 ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => DbAppDelim(                                                    ;
+//PP                        <(file)>, <(delim)>, <fields>,                   ;
+//PP                        <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>   ;
+//PP                      )
+
+
+//PP #command APPEND FROM <(file)> SDF                                       ;
+//PP          [__DBFIELDLIST__ <fields>]                                     ;
+//PP          [FOR <lfor>]                                                   ;
+//PP          [WHILE <lwhile>]                                               ;
+//PP          [NEXT <nnext>]                                                 ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => DbAppSDF(                                                      ;
+//PP                      <(file)>, <fields>,                                ;
+//PP                      <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>     ;
+//PP                    )
+
+
+//PP #command APPEND FROM <(file)>                                          ;
+//PP          [__DBFIELDLIST__ <fields>]                                     ;
+//PP          [FOR <lfor>]                                                    ;
+//PP          [WHILE <lwhile>]                                                ;
+//PP          [NEXT <nnext>]                                                  ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [ALL]                                                          ;
+//PP          [VIA <rdd>]                                                    ;
+//PP                                                                         ;
+//PP       => DbApp(                                                         ;
+//PP                   <(file)>, <fields>,                                   ;
+//PP                   <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <rdd>    ;
+//PP                 )
+
+//PP #command <cmd:COPY,APPEND>  <*clauses*> FIELDS <*moreclauses*> => ;
+//PP          <cmd> <clauses>   __DBFIELDS__ <moreclauses>
+
+
+//PP #endif
+
+//PP #command SORT  TO <(file)>  [ON <fields,...>]                           ;
+//PP          [FOR <lfor>]                                                    ;
+//PP          [WHILE <lwhile>]                                                ;
+//PP          [NEXT <nnext>]                                                  ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => DbSort(                                                        ;
+//PP                    <(file)>, <fields>,                                  ;
+//PP                    <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> ;
+//PP                  )
+
+
+//PP #command TOTAL TO <(file)> ON <key>                                     ;
+//PP          [__DBFIELDLIST__ <fields>]                                     ;
+//PP          [FOR <lfor>]                                                    ;
+//PP          [WHILE <lwhile>]                                                ;
+//PP          [NEXT <nnext>]                                                  ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => DbTotal(                                                       ;
+//PP                     <(file)>, <{key}>, <fields>,                        ;
+//PP                     <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>       ;
+//PP                   )
+
+//PP #command TOTAL <*clauses*> FIELDS <*moreclauses*> => ;
+//PP          TOTAL <clauses> __DBFIELDS__ <moreclauses>
+
+
+
+
+//PP #command UPDATE  FROM <(alias)>  [ON <key>]                             ;
+//PP          [REPLACE <f1> WITH <x1> [, <fn> WITH <xn>]]                    ;
+//PP          [<rand:RANDOM>]                                                ;
+//PP                                                                         ;
+//PP       => DbUpdate(                                                      ;
+//PP                      <(alias)>, <{key}>, <.rand.>,                      ;
+//PP                      {|| _FIELD-><f1> := <x1> [, _FIELD-><fn> := <xn>]} ;
+//PP                    )
+
+
+//PP #command JOIN  WITH <(alias)>  [TO <file>]                              ;
+//PP          [__DBFIELDLIST__ <fields>]                                     ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [FOR <lfor>]                                                   ;
+//PP                                                                         ;
+//PP       => DbJoin( <(alias)>, <(file)>, <fields>, <{lfor}>,<.noopt.> )
+
+
+//PP #command JOIN <*clauses*> FIELDS <*moreclauses*> => ;
+//PP          JOIN <clauses> __DBFIELDS__ <moreclauses>
+
+//PP #command COUNT TO <xvar>                                                ;
+//PP          [FOR <lfor>]                                                   ;
+//PP          [WHILE <lwhile>]                                               ;
+//PP          [NEXT <nnext>]                                                 ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => <xvar> := 0                                                    ;
+//PP        ; DbEval(                                                        ;
+//PP                {|| <xvar> += 1},                                        ;
+//PP                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+//PP                )
+
+//PP #command SUM  [<x1> [, <xn>]  TO  <v1> [, <vn>] ]                       ;
+//PP          [FOR <lfor>]                                                   ;
+//PP          [WHILE <lwhile>]                                               ;
+//PP          [NEXT <nnext>]                                                 ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => <v1> := [ <vn> := ] 0                                          ;
+//PP        ; DbEval(                                                        ;
+//PP                {|| <v1> += <x1> [, <vn> += <xn> ]},                     ;
+//PP                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+//PP                )
+
+//PP #command AVERAGE   <x1> [, <xn>]  TO  <v1> [, <vn>]                     ;
+//PP          [FOR <lfor>]                                                   ;
+//PP          [WHILE <lwhile>]                                               ;
+//PP          [NEXT <nnext>]                                                 ;
+//PP          [RECORD <rec>]                                                 ;
+//PP          [<rest:REST>]                                                  ;
+//PP          [<noopt: NOOPTIMIZE>]                                          ;
+//PP          [ALL]                                                          ;
+//PP                                                                         ;
+//PP       => M->__Avg := <v1> := [ <vn> := ] 0                              ;
+//PP                                                                         ;
+//PP        ; DbEval(                                                        ;
+//PP                {|| M->__Avg += 1,                                       ;
+//PP                <v1> += <x1> [, <vn> += <xn>] },                         ;
+//PP                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
+//PP                )                                                        ;
+//PP                                                                         ;
+//PP        ; <v1> /= M->__Avg [; <vn> /= M->__Avg ]
+
+
+// NOTE:  CLOSE <alias> must precede the others
+//PP #command CLOSE <alias>              => <alias>->( DbCloseArea() )
+//PP #command CLOSE &<alias>             => (<alias>)->( DbCloseArea() )
+
+//PP #command CLOSE                      => DbCloseArea()
+//PP #command CLOSE [al: DATABASES,ALL>] => DbCloseAll()
+//PP #command CLOSE INDEXES              => DbClearIndex()
+
+//PP #endif
+
+** EOF
+#line 63 "C:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"
+// Include (optional) custom UDCs
+//PP #include "CustomDefs.xh"
+#line 1 "C:\Program Files (x86)\XSharp\Include\CustomDefs.xh"
+///////////////////////////////////////////////////////////////////////////
+// CustomDefs.xh
+//
+// XSharp Customizable Preprocessor Directives
+//
+///////////////////////////////////////////////////////////////////////////
+// 
+//  This file can be used to add custom UDC directives to X#.
+//  (UDC = User Defined Command)
+//  The file will NOT be overwritten by the installer
+//  You can choose to put the custom UDC directives in this file
+//  Or you can add your own version of CustomDefs.xh in your project 
+//  directory or in an include folder that you have defined in your project
+//  The file XSharpDefs.xh will automatically include CustomDefs.xh
+//
+//  Please see the XSharp documentation for the syntax for User Defined Commands
+//  You can see examples of UDCs in the header files in the folder 
+// "c:\Program Files (x86)\XSharp\Include" 
+///////////////////////////////////////////////////////////////////////////
+
+//PP #ifndef CUSTOMDEFS_XH
+//PP #define CUSTOMDEFS_XH
+//PP #endif
+#line 65 "C:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"
+//PP #endif
+#line 1 "C:\XSharp\Dev\Tests\Applications\C457\Prg\C457.prg"
 // error XS9003: Pre-processor: repeated match/result markers are not (yet) supported 
 // Bogus error?
 

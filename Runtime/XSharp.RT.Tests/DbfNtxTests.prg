@@ -1315,7 +1315,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
         // test based on corrupted index example from Remco (Descartes)
         [Fact, Trait("Category", "DBF")];
             METHOD TestCorruptedIndex() AS VOID
-            LOCAL aStruct as ARRAY
+            LOCAL aStruct AS ARRAY
             aStruct := {;
                 {"MSGREF","C",14,0},;
                 {"REFNR","C",12,0},;
@@ -1325,7 +1325,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
                 {"TYPE","C",10,0}}
             DbCreate("PCI", aStruct)
             DbUseArea(TRUE, "DBFNTX", "PCI",,FALSE)
-            VAR aValues := List<String>{}
+            VAR aValues := List<STRING>{}
 
             aValues:Add( "T202122302;;9306532/2;;;PK")  // 1
             aValues:Add( "T202122302;;9306532/2;;;PK")  // 2
@@ -1424,21 +1424,21 @@ BEGIN NAMESPACE XSharp.RT.Tests
             aValues:Add( "T202122302;;9307161/2;;;PK")  // 95
             aValues:Add( "T202122302;;9307161/2;;;PK")  // 96
             aValues:Add( "T202122302;;9307161/2;;;PK")  // 97
-        FOREACH var line in aValues
-            var elements := line:Split(<char>{';'})
+        FOREACH VAR line IN aValues
+            VAR elements := line:Split(<char>{';'})
             DbAppend()
-            for var i := 1 to elements:Length
+            FOR VAR i := 1 TO elements:Length
                 FieldPut(i, elements[i])
-            next
+            NEXT
         NEXT
         DbCloseArea()
-        DBUSEAREA(TRUE, "DBFNTX", "pci.DBF","PCI")
+        DbUseArea(TRUE, "DBFNTX", "pci.DBF","PCI")
 	    OrdCreate("pci1","pci1","msgref+consref+qual",{||_FIeld->msgref+_FIELD->consref+_FIELD->qual})
         OrdCreate("pci2","pci2","msgref+zendnr+type",{||_FIeld->MsgRef+_FIELD->zendnr+_FIELD->type})
-        ORDLISTCLEAR()
-        ORDLISTADD("pci1")
-        ORDLISTADD("pci2")
-        ORDSETFOCUS("PCI2")
+        OrdListClear()
+        OrdListAdd("pci1")
+        OrdListAdd("pci2")
+        OrdSetFocus("PCI2")
         VAR aKeys := { ;
          {"T202122302    9306547/2", "0003157522"},;
          {"T202122302    9306541/2", "0003158882"},;
@@ -1505,20 +1505,22 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
          */
          FOR VAR i := 1 TO ALen(aKeys)
-			     var cKey   := aKeys[i,1]
-                 var cValue := aKeys[i,2]
-                 var lFound := pci->DbSeek(cKey,FALSE,FALSE)
+			     VAR cKey   := aKeys[i,1]
+                 VAR cValue := aKeys[i,2]
+                 VAR lFound := pci->DbSeek(cKey,FALSE,FALSE)
                  Assert.True(lFound .AND. ! Empty(cValue))
                  IF lFound .AND. ! Empty(cValue)
                      DO WHILE pci->msgref + pci->zendnr == cKey
                          pci->consref := cValue
-                         ? cKey, "Recno", pci->Recno()
-                         pci->(dbskip())
+                         ? cKey, "Recno", pci->RecNo()
+                         pci->(DbSkip())
                      ENDDO
                  ENDIF
              NEXT
 
         DbCloseArea()
+
+
         [Fact, Trait("Category", "DBF")];
 		METHOD TestSoftSeekWithScope() AS VOID
 			// https://github.com/X-Sharp/XSharpPublic/issues/905
@@ -1549,6 +1551,57 @@ BEGIN NAMESPACE XSharp.RT.Tests
             // but this now matches the results for DBFCDX
 			Assert.True(Eof())
 			Assert.Equal(5U, RecNo())
+
+			DbCloseArea()
+		RETURN
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD TestDBSetIndex() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/958
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+
+			RddSetDefault("DBFNTX")
+
+			DbfTests.CreateDatabase(cDbf, {{"FLD","N",5,0}} , {1,3,2})
+			DbCreateIndex(cDbf + "1", "FLD")
+			DbCreateIndex(cDbf + "2", "-FLD")
+			DbCloseArea()
+
+			DbUseArea(TRUE,,cDbf)
+
+			DbSetIndex(cDbf + "1")
+			DbGoTop()
+			Assert.Equal(1, (INT)FieldGet(1))
+			DbGoBottom()
+			Assert.Equal(3, (INT)FieldGet(1))
+			
+			DbSetIndex(cDbf + "2")
+			DbGoTop()
+			Assert.Equal(1, (INT)FieldGet(1))
+			DbGoBottom()
+			Assert.Equal(3, (INT)FieldGet(1))
+
+			DbCloseArea()
+
+
+
+			DbUseArea(TRUE,,cDbf)
+
+			DbSetIndex(cDbf + "1")
+			DbGoTop()
+			Assert.Equal(1, (INT)FieldGet(1))
+			DbGoBottom()
+			Assert.Equal(3, (INT)FieldGet(1))
+			
+			DbSetOrder(0) // when using this, VO now keeps the natural order active even after the following SetIndex() !!!
+
+			DbSetIndex(cDbf + "2")
+			DbGoTop()
+			Assert.Equal(1, (INT)FieldGet(1))
+			DbGoBottom()
+			Assert.Equal(2, (INT)FieldGet(1))
 
 			DbCloseArea()
 		RETURN

@@ -68,6 +68,7 @@
     <Compile Include="DebugFunctions.prg" />
     <Compile Include="Defines.prg" />
     <Compile Include="FileFunctions.prg" />
+    <Compile Include="FinancialFunctions.prg" />
     <Compile Include="FoxCompilerSupport.prg" />
     <Compile Include="GatherScatter.prg" />
     <Compile Include="GetWord.prg" />

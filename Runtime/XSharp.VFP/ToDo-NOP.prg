@@ -33,13 +33,6 @@ FUNCTION OldVal( cExpression , uArea ) AS USUAL
 
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/payment/*" />
-
-FUNCTION Payment(nPrincipal, nInterestRate, nPayments ) AS FLOAT
-    THROW NotImplementedException{}
-    // RETURN 0.0
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/pcol/*" />
 
 FUNCTION PCol( ) AS LONG
@@ -75,9 +68,3 @@ FUNCTION PutFile( cCustomText , cFileName, cFileExtensions) AS STRING
     THROW NotImplementedException{}
     // RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/pv/*" />
-
-FUNCTION PV( nPayment, nInterestRate, nTotalPayments ) AS FLOAT
-    THROW NotImplementedException{}
-    // RETURN 0

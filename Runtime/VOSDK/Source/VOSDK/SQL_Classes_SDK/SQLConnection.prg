@@ -1936,7 +1936,7 @@ STATIC FUNCTION __GetMyDefConn() AS SQLConnection
 	LOCAL nIndex       AS DWORD
 	LOCAL hTask        AS PTR
 	LOCAL nCount       AS DWORD
-	LOCAL oRet         AS OBJECT
+	LOCAL oRet         AS SQLConnection
 
 
 	#IFDEF __DEBUG__

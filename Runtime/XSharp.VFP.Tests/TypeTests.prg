@@ -59,12 +59,20 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             && VFP L C
             Assert.Equal("L", VarType ( b ))
             Assert.Equal("C", VarType ( b [3,1]))
+            b := DBNull.Value
+            Assert.Equal("X", VarType ( b ))
+            PRIVATE c
+            c := .NULL.
+            #warning .NULL. Should be converted to DBNull.Value
+            //Assert.Equal("X", VarType ( c ))
+
+
             DO CheckParams WITH "TestString" , 5 , 3
 
 
 
 		[Fact, Trait("Category", "Types")];
-		METHOD TypeTests() AS VOID
+		METHOD xTypeTests() AS VOID
 
             DIMENSION arr[3]
             private c, n

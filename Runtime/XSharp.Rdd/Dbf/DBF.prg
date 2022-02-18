@@ -132,6 +132,9 @@ PRIVATE METHOD _AllocateBuffers() AS VOID
 		ENDIF
 	NEXT
 #ifdef INPUTBUFFER
+    if (_inBuffer != null)
+        _inBuffer:Close()
+    endif
 	_inBuffer := InputBuffer{SELF:_oStream, SELF:_HeaderLength, SELF:_RecordLength, SELF:Shared}
 #endif
 
@@ -884,7 +887,10 @@ OVERRIDE METHOD Close() 			AS LOGIC
 			isOK := FALSE
 			SELF:_dbfError(ex, Subcodes.ERDD_CLOSE_FILE,Gencode.EG_CLOSE,  "DBF.Close")
 
-		END TRY
+        END TRY
+        #ifdef INPUTBUFFER
+            SELF:_inBuffer:Close()
+        #endif
 		SELF:_hFile := F_ERROR
         SELF:_oStream := NULL
 	ENDIF

@@ -9,6 +9,18 @@ USING System.Linq
 USING System.Diagnostics
 
 USING System.Runtime.CompilerServices
+
+#define USEATTRIB
+#ifdef USEATTRIB
+    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
+    #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
+#else
+    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[INLINE\] =>
+    #XTRANSLATE \[NODEBUG\] =>
+#endif
+
 /// <summary>Internal type that implements the VO Compatible CODEBLOCK type<br/>
 /// This type has methods that normally are never directly called from user code.
 /// </summary>
@@ -17,7 +29,7 @@ USING System.Runtime.CompilerServices
 ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
 	PRIVATE INITONLY _pcount AS INT
 
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+    [HIDDEN];
     PRIVATE STATIC nullArgs AS USUAL[]
 
     STATIC CONSTRUCTOR
@@ -30,7 +42,7 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
 
 	/// <summary>This constructor is used by the Compiler for compile time codeblocks.</summary>
 	/// <param name="pCount">Number of parameters defined in the compile time codeblock.</param>
-	[DebuggerStepThrough] ;
+	[NODEBUG] ;
 	PROTECTED CONSTRUCTOR (pCount AS INT)
 		_pcount := pCount
 
@@ -60,8 +72,12 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
         ENDIF
         var result := SELF:Eval(uArgs)
         SELF:ResultType := result:Type
-        IF IsNil(result) .and. RuntimeState.Dialect == XSharpDialect.FoxPro
-            result := FALSE
+        IF RuntimeState.Dialect == XSharpDialect.FoxPro
+            if result:IsNull
+                result := DBNull.Value
+            ELSEIF IsNil(result)
+                result := FALSE
+            ENDIF
         ENDIF
         RETURN result
 
@@ -96,7 +112,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 	/// <exclude />
 	INITONLY PROTECT _addsMemVars AS LOGIC
 
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+    [HIDDEN];
     STATIC PRIVATE nullArgs AS OBJECT[]
 
     STATIC CONSTRUCTOR

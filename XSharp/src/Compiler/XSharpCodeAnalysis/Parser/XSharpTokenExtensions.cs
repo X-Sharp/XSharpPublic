@@ -5,22 +5,14 @@
 //
 #nullable disable
 using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+#if !VSPARSER
 using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
-using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
-using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
-using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+#endif
 using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
@@ -28,6 +20,203 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static class TokenExtensions
     {
+        /// <summary>
+        /// Return the literal as a normal .Net value for the preprocessor #if expressions
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        internal static object GetValue(XSharpParser.LiteralValueContext context)
+        {
+            string text;
+            text = context.Token.Text;
+            switch (context.Token.Type)
+            {
+                case XSharpParser.TRUE_CONST:
+                    return true;
+                case XSharpParser.FALSE_CONST:
+                    return false;
+                case XSharpParser.CHAR_CONST:
+                    if (text.StartsWith("c", StringComparison.OrdinalIgnoreCase))
+                    {
+                        text = text.Substring(1);
+                        return CharValue(text);
+                    }
+                    else
+                    {
+                        return CharValue(text);
+                    }
+                case XSharpParser.STRING_CONST:
+                case XSharpParser.INTERPOLATED_STRING_CONST:
+                case XSharpParser.BRACKETED_STRING_CONST:
+                case XSharpParser.INCOMPLETE_STRING_CONST:
+                    return StringValue(text);
+                case XSharpParser.ESCAPED_STRING_CONST:
+                    return EscapedStringValue(text);
+                case XSharpParser.SYMBOL_CONST:
+                    return text.Substring(1).ToUpperInvariant();
+                case XSharpParser.HEX_CONST:
+                    switch (text.Last())
+                    {
+                        case 'U':
+                        case 'u':
+                            if (text.Length > 8 + 3)
+                                return unchecked((ulong)HexValue(text.Substring(2)));
+                            else
+                                return unchecked((uint)HexValue(text.Substring(2)));
+                        case 'L':
+                        case 'l':
+                            if (text.Length > 8 + 3)
+                                return HexValue(text.Substring(2));
+                            else
+                                return unchecked((int)HexValue(text.Substring(2)));
+                        default:
+                            {
+                                long l = HexValue(text.Substring(2));
+                                if (l < 0)
+                                    return unchecked((ulong)l);
+                                else if (l > uint.MaxValue)
+                                    return l;
+                                else if (l > int.MaxValue)
+                                    return unchecked((uint)l);
+                                else
+                                    return unchecked((int)l);
+                            }
+                    }
+                case XSharpParser.BIN_CONST:
+                    switch (text.Last())
+                    {
+                        case 'U':
+                        case 'u':
+                            if (text.Length > 32 + 3)
+                                return unchecked((ulong)BinValue(text.Substring(2)));
+                            else
+                                return unchecked((uint)BinValue(text.Substring(2)));
+
+                        case 'L':
+                        case 'l':
+                            if (text.Length > 32 + 3)
+                                return BinValue(text.Substring(2));
+                            else
+                                return unchecked((int)BinValue(text.Substring(2)));
+                        default:
+                            {
+                                long l = BinValue(text.Substring(2));
+                                if (l < 0)
+                                    return unchecked((ulong)l);
+                                else if (l > uint.MaxValue)
+                                    return l;
+                                else if (l > int.MaxValue)
+                                    return unchecked((uint)l);
+                                else
+                                    return unchecked((int)l);
+                            }
+                    }
+                case XSharpParser.REAL_CONST:
+                    if (text[0] == '$')
+                    {
+                        decimal value = decimal.Parse(text.Substring(1, text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                        value = Math.Round(value, 4);
+                        return value;
+                    }
+                    else
+                    {
+                        switch (text.Last())
+                        {
+                            case 'M':
+                            case 'm':
+                                return decimal.Parse(text.Substring(0, text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                            case 'S':
+                            case 's':
+                                return float.Parse(text.Substring(0, text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                            case 'D':
+                            case 'd':
+                                return double.Parse(text.Substring(0, text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                            default:
+                                return double.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
+                        }
+                    }
+                case XSharpParser.INT_CONST:
+                    switch (text.Last())
+                    {
+                        case 'U':
+                        case 'u':
+                            try
+                            {
+                                ulong ul = ulong.Parse(text.Substring(0, text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                                if (ul > uint.MaxValue)
+                                    return ul;
+                                else
+                                    return unchecked((uint)ul);
+                            }
+                            catch (OverflowException)
+                            {
+                                return 0;
+                            }
+                        case 'L':
+                        case 'l':
+                            try
+                            {
+                                long l = long.Parse(text.Substring(0, text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                                if (l > int.MaxValue)
+                                    return l;
+                                else
+                                    return unchecked((int)l);
+                            }
+                            catch (OverflowException)
+                            {
+                                return 0;
+                            }
+                        default:
+                            try
+                            {
+                                ulong un = 0;
+                                long n = 0;
+                                if (text.First() != '-')
+                                {
+                                    un = ulong.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
+                                    if (un <= long.MaxValue)
+                                        n = unchecked((long)un);
+                                }
+                                else
+                                {
+                                    n = long.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
+                                }
+                                if (un > long.MaxValue)
+                                    return un;
+                                else if (n > uint.MaxValue)
+                                    return n;
+                                else if (n > int.MaxValue)
+                                    return unchecked((uint)n);
+                                else
+                                    return unchecked((int)n);
+                            }
+                            catch (OverflowException)
+                            {
+                                return 0;
+                            }
+                    }
+                case XSharpParser.NULL:
+                case XSharpParser.NULL_OBJECT:
+                    return null;
+                case XSharpParser.DATE_CONST:
+                    return text;
+                case XSharpParser.NULL_STRING:
+                    return "";
+                case XSharpParser.NULL_SYMBOL:
+                    return "";
+                case XSharpParser.NULL_FOX:
+                    return DBNull.Value;
+                case XSharpParser.NIL:
+                case XSharpParser.NULL_ARRAY:
+                case XSharpParser.NULL_CODEBLOCK:
+                case XSharpParser.NULL_DATE:
+                case XSharpParser.NULL_PSZ:
+                case XSharpParser.NULL_PTR:
+                    return null;
+                default: 
+                    return text;
+            }
+        }
         private static bool IsHexDigit(char c) => (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');
 
         private static char EscapedChar(string s, ref int pos)
@@ -164,7 +353,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return r;
         }
-
+#if !VSPARSER
         public static SyntaxToken SyntaxIdentifier(this IToken token)
         {
             string text = token.Text;
@@ -543,7 +732,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             r.XNode = new XTerminalNodeImpl(token);
             return r;
         }
-
         public static bool IsZeroLiteral(this IToken token)
         {
             return (token.Type == XSharpParser.INT_CONST || token.Type == XSharpParser.HEX_CONST || token.Type == XSharpParser.BIN_CONST)
@@ -1645,6 +1833,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
+#endif
 
     }
 }

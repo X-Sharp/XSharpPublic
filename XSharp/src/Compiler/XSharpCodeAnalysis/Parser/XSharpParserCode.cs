@@ -23,6 +23,36 @@ using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 #endif 
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
+    internal class XSharpErrorListener : IAntlrErrorListener<IToken>
+    {
+        readonly String _fileName;
+        readonly IList<ParseErrorData> _parseErrors;
+        internal XSharpErrorListener(String FileName, IList<ParseErrorData> parseErrors) : base()
+        {
+            _fileName = FileName;
+            _parseErrors = parseErrors;
+        }
+
+        public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+        {
+            if (e?.OffendingToken != null)
+            {
+                //Debug.WriteLine(_fileName+"(" + e.OffendingToken.Line + "," + e.OffendingToken.Column + "): error: " + msg);
+                _parseErrors.Add(new ParseErrorData(e.OffendingToken, ErrorCode.ERR_ParserError, msg));
+            }
+            else if (offendingSymbol != null)
+            {
+                //Debug.WriteLine(_fileName + "(" + offendingSymbol.Line + "," + offendingSymbol.Column + "): error: " + msg);
+                _parseErrors.Add(new ParseErrorData(offendingSymbol, ErrorCode.ERR_ParserError, msg));
+            }
+            else
+            {
+                //Debug.WriteLine(_fileName + "(" + line + 1 + "," + charPositionInLine + 1 + "): error: " + msg);
+                _parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_ParserError, msg));
+            }
+        }
+    }
+
     public partial class XSharpParser
     {
 

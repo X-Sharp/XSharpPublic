@@ -22,8 +22,9 @@ using System.Linq;
 using System.Collections;
 using System.Threading;
 using Antlr4.Runtime.Misc;
+#if !VSPARSER
 using static Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax.XSharpLanguageParser;
-
+#endif
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using TokenType = System.Int32;

@@ -551,8 +551,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitLiteralValue([NotNull] XSharpParser.LiteralValueContext context)
         {
-            SyntaxToken val = context.Token.SyntaxLiteralValue(_preprocessor.Options);
-            _evalStack.Push(val.Value);
+            _evalStack.Push(TokenExtensions.GetValue(context));
         }
         public override void ExitParenExpression([NotNull] XSharpParser.ParenExpressionContext context)
         {

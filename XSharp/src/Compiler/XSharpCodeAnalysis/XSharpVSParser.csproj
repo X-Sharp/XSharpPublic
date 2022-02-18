@@ -62,7 +62,6 @@
     <Compile Remove="Parser\XSharpLanguageParser.cs" />
     <Compile Remove="Parser\XSharpParseErrorAnalysis.cs" />
     <Compile Remove="Parser\XSharpClearSequences.cs" />
-    <Compile Remove="Parser\XSharpTokenExtensions.cs" />
     <Compile Remove="Parser\XSharpSyntaxTree.cs" />
     <Compile Remove="Properties\AssemblyInfo.cs" />
     <Compile Remove="Properties\AssemblyInfoPortable.cs" />

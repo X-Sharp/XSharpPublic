@@ -1,3 +1,5 @@
+// 831. Various preprocessor issues
+// https://github.com/X-Sharp/XSharpPublic/issues/931
 FUNCTION Start() AS VOID 
 	IF FALSE
 		LOCAL cPfad AS STRING 	

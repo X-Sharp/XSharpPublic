@@ -6344,6 +6344,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             context.Id.SetSequencePoint();
             context.Container.SetSequencePoint();
+            if (context.f is XSharpToken t && t.Type == XSharpLexer.FOR)
+            {
+                t.Type = XSharpLexer.FOREACH;
+            }
             var foreachKwd = context.f.SyntaxKeyword();
             var dt = _impliedType;
             bool declareslocal = true;

@@ -2426,7 +2426,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
             Conversion conversion = this.Conversions.ClassifyConversionFromExpression(operand, targetType, ref useSiteDiagnostics, forCast: true);
             diagnostics.Add(node, useSiteDiagnostics);
-
+#if XSHARP
+            if (conversion.Kind == ConversionKind.ImplicitReference && operand.Syntax.XNeedsCast)
+            {
+                conversion = Conversion.ExplicitReference;
+            }
+#endif
             var conversionGroup = new ConversionGroup(conversion, targetTypeWithAnnotations);
             bool suppressErrors = operand.HasAnyErrors || targetType.IsErrorType();
             bool hasErrors = !conversion.IsValid || targetType.IsStatic;

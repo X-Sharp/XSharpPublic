@@ -63,6 +63,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         XIsChr = 1 << 7,
         XDefaultTree = 1 << 8,
         XIsString2Psz = 1 << 9,
+        // This is used to tell the backend that an implicit reference requires a cast
+        XNeedsCast = 1 << 10,
     }
 
     internal abstract partial class CSharpSyntaxNode
@@ -109,6 +111,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             get => xflags.HasFlag(XNodeFlags.XIsString2Psz);
             set => xflags = xflags.SetFlag(XNodeFlags.XIsString2Psz, value);
+        }
+        public bool XNeedsCast
+        {
+            get => xflags.HasFlag(XNodeFlags.XNeedsCast);
+            set => xflags = xflags.SetFlag(XNodeFlags.XNeedsCast, value);
         }
     }
 
@@ -200,6 +207,11 @@ namespace Microsoft.CodeAnalysis
     {
         internal CSharp.CSharpSyntaxNode CsNode => (CSharp.CSharpSyntaxNode)this;
         internal IXParseTree XNode => CsNode.CsGreen.XNode ?? CsNode.Parent?.XNode;
+        internal bool XNeedsCast
+        {
+            get => CsNode.CsGreen.XNeedsCast;
+            set => CsNode.CsGreen.XNeedsCast = value;
+        }
         internal bool XIsVoCast
         {
             get

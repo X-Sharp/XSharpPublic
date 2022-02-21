@@ -473,6 +473,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // Convert Object -> Reference allowed with /lb and with /vo7
                         // Inside XsHandleImplicitReference we will add a cast to take care of the
                         // real conversion
+                        sourceExpression.Syntax.XNeedsCast = true;
                         return Conversion.ImplicitReference;
                     }
                     if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPszType())
@@ -527,7 +528,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (srcType.SizeInBytes() < dstType.SizeInBytes()
                     || sourceExpression is BoundConditionalOperator)
-					// IIF expressions with literals are always seen as Int, even when the values are asmall
+                    // IIF expressions with literals are always seen as Int, even when the values are asmall
                 {
                     return Conversion.ImplicitNumeric;
                 }

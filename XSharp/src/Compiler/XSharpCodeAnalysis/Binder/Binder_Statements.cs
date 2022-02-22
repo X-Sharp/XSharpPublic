@@ -242,15 +242,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         BoundExpression XsHandleImplicitReference(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
-            if (conversion.Kind == ConversionKind.ImplicitReference && !Equals(expression.Type, targetType))
+            if (conversion.Kind == ConversionKind.ImplicitReference && expression.Syntax.XNeedsCast)
             {
-                if (Compilation.Options.LateBindingOrFox(expression.Syntax) || Compilation.Options.HasOption(CompilerOption.Vo7, expression.Syntax))
-                {
-                    if (expression.Type is { } && (expression.Type.IsObjectType() || expression.Type.IsUsualType()))
-                    {
-                        return CreateXsConversion(expression, Conversion.ExplicitReference, targetType, diagnostics);
-                    }
-                }
+                return CreateXsConversion(expression, Conversion.ExplicitReference, targetType, diagnostics);
             }
             return null;
         }

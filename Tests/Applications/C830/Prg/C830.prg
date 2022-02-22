@@ -5,13 +5,17 @@
 FUNCTION Start() AS VOID STRICT
 	LOCAL x AS OBJECT
     LOCAL y AS BaseClass2
-    LOCAL lNoException := FALSE
+    LOCAL lNoException := FALSE  AS LOGIC
 
     x := BaseClass1{}
     
     TRY
-	    //y := (BaseClass2)x
 	    y := x
+	    lNoException := TRUE
+    END TRY
+
+    TRY
+	    y := (BaseClass2)x
 	    lNoException := TRUE
     END TRY
 

@@ -1,38 +1,76 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/951
 FUNCTION Start( ) AS VOID
     LOCAL f := -1343.345 AS FLOAT  // "AS DOUBLE" throws an compile error
+    LOCAL c := -1343.345 AS CURRENCY  // "AS DOUBLE" throws an compile error
     
     try
-        TestFloat ( (BYTE)  f ) 
+        Test (f )
         xAssert(FALSE)
-    catch  
+    catch e as Exception
+        ? "This exception was expected:"
+        ? e:Message
     // this is expected
-    xAssert(TRUE)
-    end try        
+        xAssert(TRUE)
+    end try
+    
+    try
+        Test (c )
+        xAssert(FALSE)
+    catch e as Exception
+        ? "This exception was expected:"
+        ? e:Message
+    // this is expected
+        xAssert(TRUE)
+    end try
+    
     
     try
         f := 12345673.89
-        xAssert(FALSE)
-        
-        TestFloat ( (BYTE) f ) 
-    catch  
+        Test (  f )
+    catch e as Exception
+        ? "This exception was expected:"
+        ? e:Message
     // this is expected
-    xAssert(TRUE)
-    end try        
-
+        xAssert(TRUE)
+    end try
+    
+    try    
+        c := $12345673.89
+        Test (c )
+        xAssert(FALSE)
+    catch e as Exception
+        ? "This exception was expected:"
+        ? e:Message
+    // this is expected
+        xAssert(TRUE)
+    end try
+    
     try
         f := 42
         xAssert(TRUE)
         
-        TestFloat ( (BYTE) f ) 
-    catch  
+        Test (  f )
+    catch e as Exception
+        ? "This exception should not happen"
+        ? e:Message
     // this is expected
-    xAssert(FALSE)
-    end try      
+        xAssert(FALSE)
+    end try   
+    try
+        c := 42
+        xAssert(TRUE)
+        
+        Test (  c )
+    catch e as Exception
+        ? e:Message
+        ? e:ToString()
+    // this is expected
+        xAssert(FALSE)
+    end try    
 RETURN
 
 
-FUNCTION TestFloat ( n AS WORD ) AS INT  
+FUNCTION Test ( n AS BYTE ) AS INT
     ? n   // shows 193 and 73
 RETURN 0
 
@@ -41,4 +79,4 @@ PROC xAssert(l AS LOGIC)
         THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
     END IF
     ? "Assertion passed"
-RETURN    	
+RETURN

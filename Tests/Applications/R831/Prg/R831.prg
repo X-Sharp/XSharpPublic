@@ -4,19 +4,23 @@ FUNCTION Start( ) AS VOID
     u1 := 42
     u2 := .NULL.
     ? u1     
-    ? u2         
-    xAssert(u1 + u2 == DBNull.Value)
-    xAssert(u1 - u2 == DBNull.Value)
-    xAssert(u1 * u2 == DBNull.Value)
-    xAssert(u1 / u2 == DBNull.Value)
-    xAssert(u2 + u1 == DBNull.Value)
-    xAssert(u2 - u1 == DBNull.Value)
-    xAssert(u2 * u1 == DBNull.Value)
-    xAssert(u2 / u1 == DBNull.Value)
+    ? u2            
+    xAssert(IsDbNull(u1 + u2 ))
+    xAssert(IsDbNull(u1 - u2 ))
+    xAssert(IsDbNull(u1 * u2 ))
+    xAssert(IsDbNull(u1 / u2 ))
+    xAssert(IsDbNull(u2 + u1 ))
+    xAssert(IsDbNull(u2 - u1 ))
+    xAssert(IsDbNull(u2 * u1 ))
+    xAssert(IsDbNull(u2 / u1 ))
 
 RETURN
 
 
+
+FUNCTION IsDbNull(u as usual) AS LOGIC
+    local o := u as object
+    return o:Equals(DBNull.Value)
 
 
 

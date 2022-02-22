@@ -28,6 +28,7 @@ namespace XSharp.LanguageService.Formatting
         VoStruct = XSharpLexer.VOSTRUCT,
         Union = XSharpLexer.UNION,
         Enum = XSharpLexer.ENUM,
+        Member = XSharpLexer.MEMBER,
         Define = XSharpLexer.DEFINE, // foxpro define class
         Enddefine = XSharpLexer.ENDDEFINE, // foxpro define class
         // other (single line) types are not needed for indenting the code
@@ -78,6 +79,7 @@ namespace XSharp.LanguageService.Formatting
         PP_else = XSharpLexer.PP_ELSE,
         PP_endif = XSharpLexer.PP_ENDIF,
         PP_endregion = XSharpLexer.PP_ENDREGION,
+        PP_if = XSharpLexer.PP_IF,
         PP_ifdef = XSharpLexer.PP_IFDEF,
         PP_ifndef = XSharpLexer.PP_IFNDEF,
         PP_region = XSharpLexer.PP_REGION,

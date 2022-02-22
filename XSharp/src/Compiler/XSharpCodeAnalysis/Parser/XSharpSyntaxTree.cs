@@ -63,7 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         XIsChr = 1 << 7,
         XDefaultTree = 1 << 8,
         XIsString2Psz = 1 << 9,
-        // This is used to tell the backend that an implicit reference requires a cast
+        // This is used to tell the backend that a conversion needs special work
         XNeedsCast = 1 << 10,
     }
 

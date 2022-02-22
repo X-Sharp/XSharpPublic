@@ -5,11 +5,11 @@
 //
 #nullable disable
 
-using Microsoft.CodeAnalysis.CSharp.Symbols;
 using System.Collections.Generic;
 using System.Linq;
-using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using Microsoft.CodeAnalysis.CSharp.Symbols;
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -52,14 +52,13 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal sealed partial class Conversions
     {
-        override public bool HasBoxingConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        public override bool HasBoxingConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
 
-            if (!result && _binder.Compilation.Options.HasRuntime && destination  is { } && source is NamedTypeSymbol)
+            if (!result && _binder.Compilation.Options.HasRuntime && destination is { } && source is NamedTypeSymbol)
             {
-                var nts = source as NamedTypeSymbol;
-                if (nts.ConstructedFrom.IsUsualType())
+                if (source.IsUsualType())
                 {
                     var destFrom = (destination as NamedTypeSymbol)?.ConstructedFrom;
                     if (destination.IsReferenceType)
@@ -92,13 +91,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                             && !Equals(destFrom, _binder.Compilation.DateType());
                     }
                 }
-                else if (Equals(nts.ConstructedFrom, _binder.Compilation.FloatType()))
-                {
-                    if (destination is {}  && destination.SpecialType.IsNumericType())
-                    {
-                        result = true;
-                    }
-                }
             }
             // Ticket C575: Assign Interface to USUAL
             // Implementation in LocalRewriter_Conversion.cs
@@ -116,15 +108,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (_binder.Compilation.Options.HasRuntime && destination is NamedTypeSymbol)
             {
-                var usualType = _binder.Compilation.UsualType();
-                var nts = destination as NamedTypeSymbol;
-                if ( nts.ConstructedFrom.IsUsualType())
+                if (destination.IsUsualType())
                 {
+                    var usualType = _binder.Compilation.UsualType();
                     var op = usualType.GetOperators(WellKnownMemberNames.ImplicitConversionName)
-                        .WhereAsArray(o => o.ParameterCount == 1 
+                        .WhereAsArray(o => o.ParameterCount == 1
                         && o.Parameters[0].Type.IsObjectType()
                         && o.ReturnType.IsUsualType())
-                        .First() as MethodSymbol;
+                        .First();
                     if (op != null)
                     {
                         var sourceType = _binder.Compilation.GetSpecialType(SpecialType.System_Object);
@@ -147,7 +138,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (type.IsCodeblockType() || type.IsUsualType() || type.IsObjectType())
                 {
-                    return LambdaConversionResult.Success; 
+                    return LambdaConversionResult.Success;
                 }
             }
 
@@ -207,7 +198,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (Compilation.Options.Dialect.AllowPointerMagic())
                     {
-                        // not really boxing, but this is handled in UnBoxXSharpType where the pointer is converted to an IntPtr
+                        // not really boxing but we'll handle the actual conversion later
+                        // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
                         return Conversion.Boxing;
                     }
                 }
@@ -230,7 +222,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // This compiler option only applies to numeric types
                 if (srcType.IsNumericType() && dstType.IsNumericType())
                 {
-                    if (srcType.IsIntegralType() &&  dstType.IsIntegralType())
+                    if (srcType.IsIntegralType() && dstType.IsIntegralType())
                     {
                         // when both same # of bits and integral, use Identity conversion
                         if (srcType.SizeInBytes() == dstType.SizeInBytes())
@@ -245,12 +237,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return Conversion.ImplicitNumeric;
                     }
                 }
+                if (source.IsFloatType() || source.IsCurrencyType())
+                {
+                    if (destination is { } && destination.SpecialType.IsNumericType())
+                    {
+                        // not really boxing but we'll handle the actual conversion later
+                        // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                        return Conversion.Boxing;
+                    }
+                }
 
             }
-            if (XsIsImplicitBinaryOperator(sourceExpression, destination,null))
+            if (XsIsImplicitBinaryOperator(sourceExpression, destination, null))
             {
                 return Conversion.ImplicitNumeric;
-            }    
+            }
 
             return Conversion.NoConversion;
 
@@ -260,7 +261,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (expression is BoundBinaryOperator binop && targetType.SpecialType.IsIntegralType())
             {
-                var sourceType = binop.LargestOperand(this.Compilation,false);
+                var sourceType = binop.LargestOperand(this.Compilation, false);
                 if (TypeSymbol.Equals(sourceType, targetType))
                 {
                     return true;
@@ -346,7 +347,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 // Allow cast -> INTEGRAL
                 // except from NullableTypes and Reference Types
-                if (dstType.IsIntegralType() && ! source.IsNullableType() &&! source.IsReferenceType)
+                if (dstType.IsIntegralType() && !source.IsNullableType() && !source.IsReferenceType)
                 {
                     if (srcType.IsNumericType())
                     {
@@ -391,7 +392,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         return Conversion.IntegerToPointer;
                     }
-                    if (source.IsPointerType() || source.IsVoidPointer() )
+                    if (source.IsPointerType() || source.IsVoidPointer())
                     {
                         if (Compilation.Options.Dialect.AllowPointerMagic())
                         {
@@ -430,8 +431,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (destination.IsUsualType())
                     return Conversion.NoConversion;
                 if (dstType == SpecialType.System_Decimal)
-                    // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
+                // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
+                {
                     return Conversion.Boxing;
+                }
                 // Usual -> OBJECT. Get the object out of the Usual 
                 // Our special call will call in UnBoxXSharpType will
                 // convert the Unbox operation to a call to __Usual.ToObject()
@@ -442,14 +445,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // All Objects are boxed in a usual
                     return Conversion.Boxing;
                 }
-                else if (destination.IsReferenceType && !IsClipperArgsType(destination) && ! destination.IsStringType() && !destination.IsIFormatProvider())
+                else if (destination.IsReferenceType && !IsClipperArgsType(destination) && !destination.IsStringType() && !destination.IsIFormatProvider())
                 {
                     // all user reference types are boxed. But not the Usual[] args and not string
                     return Conversion.Boxing;
                 }
                 else if (destination.IsPointerType())
                 {
-                    // not really boxing, but this is handled in UnBoxXSharpType 
+                    // not really boxing but we'll handle the actual conversion later
+                    // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
                     return Conversion.Boxing;
                 }
             }
@@ -459,8 +463,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (xnode.IsCastClass() && destination.IsUsualType())
                 {
                     // __CASTCLASS(USUAL, OBJECT)
-                    // not really boxing, but this is handled in UnBoxXSharpType 
-                    return Conversion.Boxing; 
+                    // not really boxing but we'll handle the actual conversion later
+                    // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                    return Conversion.Boxing;
                 }
             }
 
@@ -473,14 +478,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // Convert Object -> Reference allowed with /lb and with /vo7
                         // Inside XsHandleImplicitReference we will add a cast to take care of the
                         // real conversion
-                        sourceExpression.Syntax.XNeedsCast = true;
                         return Conversion.ImplicitReference;
                     }
                     if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPszType())
                     {
                         if (Compilation.Options.Dialect.AllowPointerMagic())
                         {
-                            // not really boxing, but this is handled in UnBoxXSharpType 
+                            // not really boxing but we'll handle the actual conversion later
+                            // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
                             return Conversion.Boxing;
                         }
                     }
@@ -517,7 +522,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // When unsafe we always allow to cast void * to typed *
             // Is this OK ?
             // See ticket C425
-            
+
             if (source.IsVoidPointer() && destination.IsPointerType() &&
                 Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, sourceExpression.Syntax) &&
                 Compilation.Options.Dialect.AllowPointerMagic())
@@ -528,7 +533,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (srcType.SizeInBytes() < dstType.SizeInBytes()
                     || sourceExpression is BoundConditionalOperator)
-                    // IIF expressions with literals are always seen as Int, even when the values are asmall
+                // IIF expressions with literals are always seen as Int, even when the values are asmall
                 {
                     return Conversion.ImplicitNumeric;
                 }
@@ -558,7 +563,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         protected override Conversion ClassifyXSImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
-            if (source is null || destination is null )
+            if (source is null || destination is null)
             {
                 return ClassifyNullConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
             }

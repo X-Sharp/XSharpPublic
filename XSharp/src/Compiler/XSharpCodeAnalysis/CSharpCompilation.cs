@@ -20,6 +20,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         NamedTypeSymbol? _dateType = null;
         NamedTypeSymbol? _symbolType = null;
         NamedTypeSymbol? _floatType = null;
+        NamedTypeSymbol? _currencyType = null;
         NamedTypeSymbol? _arrayType = null;
         NamedTypeSymbol? _rtFuncsType = null;
         NamedTypeSymbol? _codeblockType = null;
@@ -71,6 +72,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return _floatType;
         }
+
+        internal NamedTypeSymbol CurrrencyType()
+        {
+            if (_currencyType is null)
+            {
+                _currencyType = GetWellKnownType(WellKnownType.XSharp___Currency);
+            }
+            return _currencyType;
+        }
+
         internal NamedTypeSymbol ArrayType()
         {
             if (_arrayType is null)

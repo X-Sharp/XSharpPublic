@@ -2629,6 +2629,8 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                      CASE XSharpLexer.BEGIN
                      CASE XSharpLexer.USING
                         kind := ImpliedKind.Using
+                     CASE XSharpLexer.IF
+                        kind := ImpliedKind.TypeCheck
                      END SWITCH
                      Consume()
                      // get the text after IN or the expression after the assignment operator
@@ -2640,7 +2642,6 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                   xVar:ImpliedKind := kind
                   xVar:TypeName    := TokensAsString(expr):Trim()
                   SELF:_locals:Add(xVar)
-                  SELF:ReadLine()
                ENDIF
             ELSEIF SELF:IsId(SELF:La1) .AND. SELF:La2 == XSharpLexer.AS
                VAR start := SELF:Lt1
@@ -2672,9 +2673,21 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                ENDIF
                xVar:Expression := expression
                SELF:_locals:Add(xVar)
-
+           ELSEIF SELF:La1 == XSharpLexer.IS
+               Consume()
+               VAR start := SELF:Lt1
+               LOCAL type := "" AS STRING
+               type  := SELF:ParseTypeName()
+               IF SELF:La1 == XSharpLexer.VAR
+                    Consume()
+                    VAR id    := SELF:ParseIdentifier()
+                    SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
+                    VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type }
+                    SELF:_locals:Add(xVar)
+                ENDIF
+            ELSE
+                Consume()
             ENDIF
-            Consume()
          ENDDO
          RETURN TRUE
 
@@ -2706,11 +2719,11 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                   SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
                   VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, iif(type == "", _missingType, type)}
                   SELF:_locals:Add(xVar)
-               ELSEIF SELF:La2 == XSharpLexer.VAR
+               ELSEIF SELF:La1 == XSharpLexer.VAR
                   // OUT VAR Id, when Id = '_' then discard and do not create a local
                   Consume()   // Var
                   VAR id         := SELF:ParseIdentifier()
-                  IF id          == "_"
+                  IF id          != "_"
                      SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
                      VAR xVar           := XSourceImpliedVariableSymbol{SELF:CurrentEntity, id, range, interval}
                      xVar:ImpliedKind := ImpliedKind.OutParam

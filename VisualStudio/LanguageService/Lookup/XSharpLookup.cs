@@ -858,7 +858,7 @@ namespace XSharp.LanguageService
                         notProcessed = namespacePrefix + currentName;
                         var sym = new XSourceUndeclaredVariableSymbol(location.Member, notProcessed, location.Member.Range, location.Member.Interval);
                         result.Add(sym);
-                        break;
+                        //break;
                     }
                     // id found ?
                     if (result.Count > 0)

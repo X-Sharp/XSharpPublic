@@ -965,6 +965,7 @@ namespace XSharp.LanguageService
                                  ((current.Item1 == XSharpLexer.WHILE) && (openKeyword.Type == XSharpLexer.ENDDO)) ||
                                  ((current.Item1 == XSharpLexer.CASE) && (openKeyword.Type == XSharpLexer.ENDCASE)) ||
                                  ((current.Item1 == XSharpLexer.REPEAT) && (openKeyword.Type == XSharpLexer.UNTIL)) ||
+                                 ((current.Item1 == XSharpLexer.PP_IF) && (openKeyword.Type == XSharpLexer.PP_ENDIF)) ||
                                  ((current.Item1 == XSharpLexer.PP_IFDEF) && (openKeyword.Type == XSharpLexer.PP_ENDIF)) ||
                                  ((current.Item1 == XSharpLexer.PP_IFNDEF) && (openKeyword.Type == XSharpLexer.PP_ENDIF))
                                  )
@@ -1272,6 +1273,7 @@ namespace XSharp.LanguageService
                                  ((current.Item1 == XSharpLexer.WHILE) && (openKeyword.Type == XSharpLexer.ENDDO)) ||
                                  ((current.Item1 == XSharpLexer.CASE) && (openKeyword.Type == XSharpLexer.ENDCASE)) ||
                                  ((current.Item1 == XSharpLexer.REPEAT) && (openKeyword.Type == XSharpLexer.UNTIL)) ||
+                                 ((current.Item1 == XSharpLexer.PP_IF) && (openKeyword.Type == XSharpLexer.PP_ENDIF)) ||
                                  ((current.Item1 == XSharpLexer.PP_IFDEF) && (openKeyword.Type == XSharpLexer.PP_ENDIF)) ||
                                  ((current.Item1 == XSharpLexer.PP_IFNDEF) && (openKeyword.Type == XSharpLexer.PP_ENDIF))
                                  )
@@ -1463,6 +1465,7 @@ namespace XSharp.LanguageService
                 case XSharpLexer.WHILE:
                 case XSharpLexer.SWITCH:
                 case XSharpLexer.REPEAT:
+                case XSharpLexer.PP_IF:
                 case XSharpLexer.PP_IFDEF:
                 case XSharpLexer.PP_IFNDEF:
                 case XSharpLexer.WITH:
@@ -1823,7 +1826,7 @@ namespace XSharp.LanguageService
                             token = tokens[index];
                         }
                         //
-                        if (XSharpLexer.IsKeyword(token.Type))
+                        if (XSharpLexer.IsKeyword(token.Type) || IsPPKeyword(token.Type))
                         {
                             currentKeyword = new XToken(token.Type);
                         }
@@ -2064,18 +2067,8 @@ namespace XSharp.LanguageService
         }
         private bool IsPPKeyword(int kw)
         {
-            switch (kw)
-            {
-                case XSharpLexer.PP_IFDEF:
-                case XSharpLexer.PP_IFNDEF:
-                case XSharpLexer.PP_ELSE:
-                case XSharpLexer.PP_ENDIF:
-                case XSharpLexer.PP_REGION:
-                case XSharpLexer.PP_ENDREGION:
-                    return true;
-            }
-            return false;
-    }
+            return kw >= XSharpLexer.PP_FIRST && kw <= XSharpLexer.PP_LAST;    
+        }
         #endregion
 
         #region New Formatting process

@@ -277,6 +277,7 @@ namespace XSharp.LanguageService.Formatting
 
 
         // preprocessor
+        static readonly XToken PP_If = new XToken(XKeyword.PP_if);
         static readonly XToken PP_Ifdef = new XToken(XKeyword.PP_ifdef);
         static readonly XToken PP_Ifndef = new XToken(XKeyword.PP_ifndef);
         static readonly XToken PP_Else = new XToken(XKeyword.PP_else);
@@ -366,6 +367,7 @@ namespace XSharp.LanguageService.Formatting
                 {End_While, Enddo },
                 {End_Case, Endcase },
                 {PP_Ifndef, PP_Ifdef},
+                {PP_If, PP_Ifdef},
                 {End_Text, Endtext },
                 {End_Define, Enddefine},
             };

@@ -33,6 +33,20 @@ BEGIN NAMESPACE XSharp.RT.Tests
             i := Integer(c2)
             Assert.Equal(4, (INT) i)
 
+[Fact, Trait("Category", "Numeric")];
+        METHOD Collection_Tests() AS VOID
+
+			local aValuesC := List<CURRENCY>{} as List<CURRENCY>
+            aValuesC:Add($1.0)
+            aValuesC:Add($2.0)
+            aValuesC:Add($3.0)
+            aValuesC:Add($4.0)
+            var sumC := aValuesC:Sum()
+            var minC := aValuesC:Min()
+            var maxC := aValuesC:Max()
+            Assert.True (sumC == $10.0)
+            Assert.True (minC == $1.0)
+            Assert.True (maxC == $4.0)
 
 END CLASS
 END NAMESPACE

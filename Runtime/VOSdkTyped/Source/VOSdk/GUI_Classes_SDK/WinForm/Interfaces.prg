@@ -4,8 +4,8 @@
 USING VOSDK := XSharp.VO.SDK
 USING SWF   := System.Windows.Forms
 USING SD    := System.Drawing
-USING System.Collections.Generic
 USING System.Collections
+USING System.Collections.Generic
 
 INTERFACE IVOUIObject
     PROPERTY ClientRectangle AS SD.Rectangle GET
@@ -374,7 +374,7 @@ END INTERFACE
 
 
 INTERFACE IVOListControl INHERIT IVOControl, IVOControlProperties
-    PROPERTY Items AS IList<OBJECT> GET
+    PROPERTY Items AS IList GET
     PROPERTY SelectedIndex AS LONG GET SET
     METHOD BeginUpdate() AS VOID STRICT
     METHOD EndUpdate() AS VOID STRICT
@@ -384,8 +384,8 @@ END INTERFACE
 
 INTERFACE IVOListBox INHERIT IVOListControl
     PROPERTY SelectionMode AS System.Windows.Forms.SelectionMode GET SET
-    PROPERTY SelectedIndices AS IList<LONG> GET
-    PROPERTY SelectedItems AS IList<OBJECT> GET
+    PROPERTY SelectedIndices AS IList GET
+    PROPERTY SelectedItems AS IList GET
     PROPERTY TopIndex AS LONG GET SET
 
 END INTERFACE

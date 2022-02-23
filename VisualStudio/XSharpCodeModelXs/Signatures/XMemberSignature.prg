@@ -11,11 +11,11 @@ USING System.Linq
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
    CLASS XMemberSignature  INHERIT XBaseSignature
-      PROPERTY Id                       AS STRING                   AUTO GET INTERNAL SET
-      PROPERTY Parameters               AS List<IXParameterSymbol>  AUTO GET INTERNAL SET
-      PROPERTY CallingConvention        AS CallingConvention        AUTO GET INTERNAL SET
-      PROPERTY DataType                 AS STRING                   AUTO GET INTERNAL SET
-      PROPERTY IsExtension              AS LOGIC                    AUTO GET INTERNAL SET
+      PROPERTY Id                       AS STRING                   AUTO
+      PROPERTY Parameters               AS List<IXParameterSymbol>  AUTO
+      PROPERTY CallingConvention        AS CallingConvention        AUTO
+      PROPERTY DataType                 AS STRING                   AUTO
+      PROPERTY IsExtension              AS LOGIC                    AUTO
 
       PROPERTY HasParameters AS LOGIC GET SELF:Parameters:Count > 0
       PROPERTY ParameterCount  AS INT GET SELF:Parameters:Count

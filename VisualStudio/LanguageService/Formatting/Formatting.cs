@@ -104,9 +104,9 @@ namespace XSharp.LanguageService
             }
         }
 
-        private bool GetBufferedTokens(out XSharpTokens xTokens)
+        private bool GetBufferedTokens(out XDocument xTokens)
         {
-            if (_buffer.Properties != null && _buffer.Properties.TryGetProperty(typeof(XSharpTokens), out xTokens))
+            if (_buffer.Properties != null && _buffer.Properties.TryGetProperty(typeof(XDocument), out xTokens))
             {
                 return xTokens != null && xTokens.Complete;
             }
@@ -274,7 +274,7 @@ namespace XSharp.LanguageService
                 stopWatch.Start();
 #endif
                 //
-                _classifier.ClassifyWhenNeeded();
+                _ = _classifier.ClassifyWhenNeededAsync();
 
                 //
                 // wait until we can work
@@ -317,17 +317,14 @@ namespace XSharp.LanguageService
         private void FormatSpan_Next(IEnumerable<ITextSnapshotLine> lines, int startLine, int endLine, int startIndent)
         {
 
-            XSharpTokens xTokens = null;
             // Already been lexed ?
-            if (_buffer.Properties != null && _buffer.Properties.TryGetProperty(typeof(XSharpTokens), out xTokens))
+            var xDocument = _buffer.GetDocument();
+            if (xDocument == null)
             {
-                if ((xTokens == null) || !xTokens.Complete)
-                {
-                    WriteOutputMessage("FormatSpan : no Tokens in the current buffer.");
-                    return;
-                }
+                WriteOutputMessage("FormatSpan : no Tokens in the current buffer.");
+                return;
             }
-            var xLines = xTokens.Lines;
+            var xLines = xDocument.Lines;
             // Retrieve the current settings
             SourceCodeEditorSettings settings = null;
             if (!_buffer.Properties.TryGetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings), out settings))
@@ -335,12 +332,7 @@ namespace XSharp.LanguageService
                 WriteOutputMessage("FormatSpan : no Settings in the current buffer.");
                 return;
             }
-            XSharpLineState linesState = null;
-            if (!_buffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
-            {
-                WriteOutputMessage("FormatSpan : no LineState in the current buffer.");
-                return;
-            }
+            var linesState = xDocument.LineState;
             // Create an Edit Session
             var editSession = _buffer.CreateEdit();
             try
@@ -517,12 +509,8 @@ namespace XSharp.LanguageService
                 context = new FormattingContext(this, _buffer.CurrentSnapshot);
             // Retrieve the current settings
             var settings = _buffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
-            XSharpLineState linesState = null;
-            if (!_buffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
-            {
-                WriteOutputMessage("FormatSpan : no LineState in the current buffer.");
-                return;
-            }
+            var doc = _buffer.GetDocument();
+            var linesState = doc.LineState;
             // Create an Edit Session
             var editSession = _buffer.CreateEdit();
             try

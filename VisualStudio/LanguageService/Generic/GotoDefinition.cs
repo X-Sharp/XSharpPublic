@@ -28,7 +28,7 @@ namespace XSharp.LanguageService
 
                 // We don't want to lex the buffer. So get the tokens from the last lex run
                 // and when these are too old, then simply bail out
-                var tokens = TextView.TextBuffer.GetTokens();
+                var tokens = TextView.TextBuffer.GetDocument();
                 if (tokens != null)
                 {
                     if (tokens.SnapShot.Version != snapshot.Version)

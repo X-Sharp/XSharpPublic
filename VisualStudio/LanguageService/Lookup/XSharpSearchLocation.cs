@@ -91,7 +91,12 @@ namespace XSharp.LanguageService
             }
             return null;
         }
-
+        internal XDocument GetDocument()
+        {
+            if (Snapshot != null)
+                return Snapshot.TextBuffer.GetDocument();
+            return null;
+        }
         private List<string> GetUsings()
         {
             IXSymbol scope;

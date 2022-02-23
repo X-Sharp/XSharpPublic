@@ -644,7 +644,7 @@ namespace XSharp.LanguageService
                 */
                 if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out XSharpClassifier classify))
                 {
-                    classify.ClassifyWhenNeeded();
+                    _ = classify.ClassifyWhenNeededAsync();
                 }
                 WriteOutputMessage("<-- CommandFilter.formatCaseForBuffer()");
             }

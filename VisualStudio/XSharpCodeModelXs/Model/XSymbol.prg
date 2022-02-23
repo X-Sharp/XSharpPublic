@@ -13,9 +13,9 @@ BEGIN NAMESPACE XSharpModel
      // an entity in the source code
     [DebuggerDisplay("{Kind}, {Name,nq}")];
     CLASS XSymbol IMPLEMENTS IXSymbol
-      PROPERTY Kind        AS Kind         AUTO GET INTERNAL SET
-      PROPERTY Name        AS STRING       AUTO GET INTERNAL SET
-      PROPERTY Attributes  AS Modifiers    AUTO GET INTERNAL SET
+      PROPERTY Kind        AS Kind         AUTO
+      PROPERTY Name        AS STRING       AUTO
+      PROPERTY Attributes  AS Modifiers    AUTO
       PROPERTY Modifiers   AS Modifiers    GET _AND(Attributes, ~Modifiers.VisibilityMask)
       PROPERTY Visibility  AS Modifiers    GET _AND(Attributes, Modifiers.VisibilityMask)
       PROPERTY ModVis      AS STRING

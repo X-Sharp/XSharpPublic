@@ -289,8 +289,11 @@ namespace XSharp.LanguageService
                     {
                         // force buffer to be classified to see if we are on a line before a comment
                         var classifier = _textView.TextBuffer.GetClassifier();
-                        classifier.ClassifyWhenNeeded();
-                        var lines = _textView.TextBuffer.GetLineState();
+                        _ = classifier.ClassifyWhenNeededAsync();
+                        var doc = _textView.TextBuffer.GetDocument();
+                        if (doc == null)
+                            return;
+                        var lines = doc.LineState;
                         // Make sure that the entity list matches the contents of the buffer
                         // Parse the entities
                         classifier.Parse();
@@ -738,9 +741,9 @@ namespace XSharp.LanguageService
         }
 
         #region Token Helpers for XMLDoc generation
-        private bool getBufferedTokens(out XSharpTokens xTokens, ITextBuffer textBuffer)
+        private bool getBufferedTokens(out XDocument xTokens, ITextBuffer textBuffer)
         {
-            if (textBuffer.Properties != null && textBuffer.Properties.TryGetProperty(typeof(XSharpTokens), out xTokens))
+            if (textBuffer.Properties != null && textBuffer.Properties.TryGetProperty(typeof(XDocument), out xTokens))
             {
                 return xTokens != null && xTokens.Complete;
             }

@@ -97,9 +97,12 @@ namespace XSharp.LanguageService
             // if they have switched of the dividers then abort
             if (!XSettings.EditorShowDividers)
                 return;
-            var lineState = _buffer.GetLineState();
             var snapshot = _textView.TextSnapshot;
-            if (lineState == null || lineState.Snapshot.Version != snapshot.Version)
+            var doc = snapshot.TextBuffer.GetDocument();
+            if (doc == null)
+                return;
+            var lineState = doc.LineState;
+            if (lineState.Snapshot.Version != snapshot.Version)
                 return;
             var viewLines = _textView.TextViewLines;
 

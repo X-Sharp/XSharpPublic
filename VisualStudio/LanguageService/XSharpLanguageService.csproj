@@ -70,6 +70,8 @@
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
     <Compile Include="Classifier\LineState.cs" />
+    <Compile Include="LightBulb\CommonAction.cs" />
+    <Compile Include="LightBulb\CommonActionProvider.cs" />
     <Compile Include="LightBulb\ConstructorAction.cs" />
     <Compile Include="LightBulb\ConstructorProvider.cs" />
     <Compile Include="LightBulb\CtorParamsDlg.cs">
@@ -166,6 +168,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Parameter Info\SignatureCommandHandler.cs" />
+    <Compile Include="Tokenizer\XDocument.cs" />
     <Compile Include="XSharpLanguagePackage.cs" />
     <Compile Include="Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Parameter Info\SignatureHelpSourceProvider.cs" />
@@ -181,7 +184,6 @@
     <Compile Include="Classifier\XSharpClassifier.cs" />
     <Compile Include="Classifier\XSharpClassifierProvider.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
-    <Compile Include="Tokenizer\XSharpTokens.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

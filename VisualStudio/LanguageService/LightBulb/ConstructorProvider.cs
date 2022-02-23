@@ -4,28 +4,21 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using static XSharp.XSharpConstants;
-using XSharp.LanguageService;
-using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Operations;
 using System.Threading.Tasks;
 using System.Threading;
-using System.Collections.Immutable;
-using Microsoft.VisualStudio.Text.Formatting;
 using XSharpModel;
-using System.Reflection;
 using XSharp.Project.Editors.LightBulb;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
     [Export(typeof(ISuggestedActionsSourceProvider))]
     [Name("Constructor Suggested Action")]
     [ContentType(LanguageName)]
-    internal class ConstructorSuggestedActionsSourceProvider : ISuggestedActionsSourceProvider
+    internal class ConstructorSuggestedActionsSourceProvider : CommonActionProvider, ISuggestedActionsSourceProvider
     {
         [Import(typeof(ITextStructureNavigatorSelectorService))]
         internal ITextStructureNavigatorSelectorService NavigatorService { get; set; }
@@ -42,27 +35,22 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
     }
 
-    internal class ConstructorSuggestedActionsSource : ISuggestedActionsSource
+    internal class ConstructorSuggestedActionsSource : CommonActionsSource, ISuggestedActionsSource
     {
         private ConstructorSuggestedActionsSourceProvider m_factory;
-        private ITextBuffer m_textBuffer;
-        private ITextView m_textView;
 
         private IXTypeSymbol _classEntity;
         private List<IXMemberSymbol> _fieldNProps;
         private List<String> _existingCtor;
-        private XFile _xfile;
         private TextRange _range;
         private bool _hasDefault;
 
 #pragma warning disable CS0067
         public event EventHandler<EventArgs> SuggestedActionsChanged;
 
-        public ConstructorSuggestedActionsSource(ConstructorSuggestedActionsSourceProvider ctorSuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer)
+        public ConstructorSuggestedActionsSource(ConstructorSuggestedActionsSourceProvider ctorSuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer) : base(textView, textBuffer)
         {
             this.m_factory = ctorSuggestedActionsSourceProvider;
-            this.m_textView = textView;
-            this.m_textBuffer = textBuffer;
             //
             _classEntity = null;
             _existingCtor = new List<string>();
@@ -109,25 +97,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
 
 
-        public void Dispose()
-        {
-        }
-
-        public bool TryGetTelemetryId(out Guid telemetryId)
-        {
-            // This is a sample provider and doesn't participate in LightBulb telemetry  
-            telemetryId = Guid.Empty;
-            return false;
-        }
-
-        internal void WriteOutputMessage(string strMessage)
-        {
-            if (XSettings.EnableParameterLog && XSettings.EnableLogging)
-            {
-                XSettings.LogMessage("XSharp.LightBulb:" + strMessage);
-            }
-        }
-
         /// <summary>
         /// Retrieve the Entity, and check if it has an Interface and if some members are missing
         /// </summary>
@@ -139,8 +108,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             _fieldNProps = null;
             _existingCtor = new List<string>();
             // Sorry, we are lost...
-            _xfile = m_textBuffer.GetFile();
-            if (_xfile == null)
+            if (! GetFile())
                 return false;
             //
             int caretLine = SearchRealStartLine();
@@ -173,33 +141,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return false;
         }
 
-        /// <summary>
-        /// Based on the Caret line position, check if this is a continuing line
-        /// </summary>
-        /// <returns></returns>
-        private int SearchRealStartLine()
-        {
-            //
-            XSharpLineState linesState = null;
-            if (!m_textBuffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
-            {
-                return -1;
-            }
-            //
-            SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
-            ITextSnapshotLine line = caret.GetContainingLine();
-            //
-            var lineNumber = line.LineNumber;
-            var lineState = linesState.GetFlags(lineNumber);
-            // Search the first line
-            while (lineState == LineFlags.Continued)
-            {
-                // Move back
-                lineNumber--;
-                lineState = linesState.GetFlags(lineNumber);
-            }
-            return lineNumber;
-        }
 
         private List<IXMemberSymbol> BuildMissingCtor()
         {

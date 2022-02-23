@@ -2,45 +2,38 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Imaging.Interop;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using Microsoft.VisualStudio.Text;
 using System.Threading;
 using XSharpModel;
-using System.Reflection;
 using Microsoft.VisualStudio.Text.Editor;
-using XSharp.LanguageService;
 using System.Collections.Immutable;
-using Microsoft.VisualStudio.Text.Adornments;
 using System.Text;
 using System.Linq;
 
 namespace XSharp.Project.Editors.LightBulb
 {
-    internal class ImplementInterfaceSuggestedAction : ISuggestedAction
+    internal class ImplementInterfaceSuggestedAction : CommonAction, ISuggestedAction
     {
         private string m_interface;
-        private ITextSnapshot m_snapshot;
-        private ITextView m_textView;
         private IXTypeSymbol _classEntity;
         private List<IXMemberSymbol> _members;
         private XSharpModel.TextRange _range;
         private bool _explicitly;
 
         public ImplementInterfaceSuggestedAction(ITextView textView, ITextBuffer m_textBuffer, string intface, IXTypeSymbol entity, List<IXMemberSymbol> memberstoAdd, XSharpModel.TextRange range, bool fqn)
+            : base(textView)
         {
-            m_snapshot = m_textBuffer.CurrentSnapshot;
             m_interface = intface;
-            m_textView = textView;
             _classEntity = entity;
             _members = memberstoAdd;
             _range = range;
             _explicitly = fqn;
         }
 
-        public Task<object> GetPreviewAsync(CancellationToken cancellationToken)
+        public override Task<object> GetPreviewAsync(CancellationToken cancellationToken)
         {
             int count = 0;
             List<Inline> content = new List<Inline>();
@@ -83,16 +76,8 @@ namespace XSharp.Project.Editors.LightBulb
             return desc;
         }
 
-        public Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken)
-        {
-            return Task.FromResult<IEnumerable<SuggestedActionSet>>(null);
-        }
-
-        public bool HasActionSets
-        {
-            get { return false; }
-        }
-        public string DisplayText
+ 
+          public override string DisplayText
         {
             get
             {
@@ -106,42 +91,10 @@ namespace XSharp.Project.Editors.LightBulb
                 }
             }
         }
-        public ImageMoniker IconMoniker
-        {
-            get { return default(ImageMoniker); }
-        }
-        public string IconAutomationText
-        {
-            get
-            {
-                return null;
-            }
-        }
-        public string InputGestureText
-        {
-            get
-            {
-                return null;
-            }
-        }
-        public bool HasPreview
-        {
-            get { return true; }
-        }
-
-        public void Dispose()
-        {
-        }
-
-        public bool TryGetTelemetryId(out Guid telemetryId)
-        {
-            // This is a sample action and doesn't participate in LightBulb telemetry  
-            telemetryId = Guid.Empty;
-            return false;
-        }
-
+  
+   
         // The job is done here !!
-        public void Invoke(CancellationToken cancellationToken)
+        public override void Invoke(CancellationToken cancellationToken)
         {
             var settings = m_textView.TextBuffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
             //m_span.TextBuffer.Replace(m_span.GetSpan(m_snapshot), ");
@@ -287,21 +240,6 @@ namespace XSharp.Project.Editors.LightBulb
             }
         }
 
-
-        internal void WriteOutputMessage(string strMessage)
-        {
-            if (XSettings.EnableParameterLog && XSettings.EnableLogging)
-            {
-                XSettings.LogMessage("ImplementInterfaceSuggestedAction:" + strMessage);
-            }
-        }
-
-
     }
-
-
-
-
-
 
 }

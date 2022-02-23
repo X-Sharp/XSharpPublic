@@ -425,6 +425,10 @@ namespace XSharp.LanguageService
                             result.Add(token);
                         break;
                     default:
+                        if (XSharpLexer.IsType(token.Type))
+                        {
+                            hasId = true;
+                        }
                         if (level == 0)
                             result.Add(token);
                         break;
@@ -598,8 +602,14 @@ namespace XSharp.LanguageService
                                 var top = symbols.Peek();
                                 var typeName = top.FullName + "[]";
                                 var type = SearchType(location, typeName).FirstOrDefault();
+                                if (type == null)
+                                {
+                                    type = SearchType(location, "System.Array").FirstOrDefault();
+                                }
                                 if (type != null)
+                                {
                                     symbols.Push(type);
+                                }
                                 state = CompletionState.Constructors;
                                 resetState = false;
                             }
@@ -1156,6 +1166,7 @@ namespace XSharp.LanguageService
             return typeName;
         }
 
+        private static List<IXMemberSymbol> _arrayConstructors = null;
         /// <summary>
         /// Search for the Constructor in the corresponding Type,
         /// no return value, the constructor is returned by foundElement
@@ -1168,10 +1179,32 @@ namespace XSharp.LanguageService
             var result = new List<IXMemberSymbol>();
             if (type != null)
             {
+                // The System.Array type does not have a constructor
                 WriteOutputMessage($"--> SearchConstructorIn {type?.FullName}");
                 //
-                var ctors = type.Members.Where(x => x.Kind == Kind.Constructor && x.IsVisible(minVisibility));
-                result.AddRange(ctors);
+                if (type.FullName == "System.Array")
+                {
+                    if (_arrayConstructors == null)
+                    {
+                        var methods = type.Members.Where(x => x.Name == "CreateInstance");
+                        _arrayConstructors = new List<IXMemberSymbol>();
+                        foreach (var method in methods)
+                        {
+                            var newmethod = method.Clone() as XPEMemberSymbol;
+                            // remove first parameter
+                            var pars = newmethod.Parameters.Where(p => p.Name != "Type");
+                            newmethod.Signature.Parameters = pars.ToList();
+                            newmethod.Kind = Kind.Constructor;
+                            _arrayConstructors.Add(newmethod);
+                        }
+                    }
+                    result.AddRange(_arrayConstructors);
+                }
+                else
+                {
+                    var ctors = type.Members.Where(x => x.Kind == Kind.Constructor && x.IsVisible(minVisibility));
+                    result.AddRange(ctors);
+                }
                 DumpResults(result, $"--> SearchConstructorIn {type?.FullName}");
             }
             return result;

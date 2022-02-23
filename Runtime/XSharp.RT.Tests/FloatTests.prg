@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
             o := 1234L
             f := Object2Float(o)
             Assert.Equal ( (REAL8) 1234, (REAL8) f)
-             
+
         [Fact, Trait("Category", "Numeric")];
         METHOD FloatComparisons AS VOID
 			LOCAL f1,f2 AS FLOAT
@@ -44,7 +44,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			fDelta := SetFloatDelta()
 
 			SetFloatDelta(0.0000000001)
-			
+
 			f1 := 0.00001
 			f2 := 0.00001
 			Assert.False( f1 < f2  )
@@ -118,7 +118,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			LOCAL fDelta AS FLOAT
 			fDelta := SetFloatDelta()
 			SetFloatDelta(0.0000000001)
-			
+
 			Assert.True( Round( 65.305, 2 ) == 65.31 )
 			Assert.True( Round( 65.315, 2 ) == 65.32 )
 			Assert.True( Round( 65.325, 2 ) == 65.33 )
@@ -131,7 +131,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.True( Round( 65.395, 2 ) == 65.40 )
 			Assert.True( Round( 65.475, 2 ) == 65.48 )
 			Assert.True( Round( 77.445, 2 ) == 77.45 )
-			
+
 			Assert.True( Round( -65.305, 2 ) == -65.31 )
 			Assert.True( Round( -65.315, 2 ) == -65.32 )
 			Assert.True( Round( -65.325, 2 ) == -65.33 )
@@ -144,7 +144,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.True( Round( -65.395, 2 ) == -65.40 )
 			Assert.True( Round( -65.475, 2 ) == -65.48 )
 			Assert.True( Round( -77.445, 2 ) == -77.45 )
-			
+
 			Assert.True( Round( 65.0305, 3 ) == 65.031 )
 			Assert.True( Round( 65.0315, 3 ) == 65.032 )
 			Assert.True( Round( 65.0325, 3 ) == 65.033 )
@@ -157,10 +157,26 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.True( Round( 65.0395, 3 ) == 65.040 )
 			Assert.True( Round( 65.0475, 3 ) == 65.048 )
 			Assert.True( Round( 77.0445, 3 ) == 77.045 )
-			
+
 			SetFloatDelta(fDelta)
 		RETURN
-		
+
+		[Fact, Trait("Category", "Numeric")];
+        METHOD Collection_Tests() AS VOID
+			local aValuesF := List<FLOAT>{} as List<FLOAT>
+            aValuesF:Add(1.0)
+            aValuesF:Add(2.0)
+            aValuesF:Add(3.0)
+            aValuesF:Add(4.0)
+            var sumF := aValuesF:Sum()
+            var minF := aValuesF:Min()
+            var maxF := aValuesF:Max()
+            Assert.True (sumF == 10.0)
+            Assert.True (minF == 1.0)
+            Assert.True (maxF == 4.0)
+
+
+
     END CLASS
-            
+
 END NAMESPACE

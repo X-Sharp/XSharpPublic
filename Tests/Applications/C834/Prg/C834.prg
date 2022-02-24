@@ -1,5 +1,7 @@
 // 834. Compiler error with the += and -= operators between INT/FLOAT
-// /vo4+
+// /vo11+  
+#pragma options("vo11", on)     // conversions between different sizes and from fractional to integral
+
 FUNCTION Start( ) AS VOID
 	LOCAL n := 1 AS INT
 	LOCAL d := 2 AS DWORD

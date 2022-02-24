@@ -674,6 +674,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             CheckUnsafeType(node.Operand);
             CheckUnsafeType(node);
+#if XSHARP
+            XsCheckConversion(node);
+#endif
             bool wasInExpressionLambda = _inExpressionLambda;
             bool oldReportedUnsafe = _reportedUnsafe;
             switch (node.ConversionKind)
@@ -709,15 +712,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         Error(ErrorCode.ERR_ExpressionTreeContainsTupleConversion, node);
                     }
                     break;
-#if XSHARP
-                case ConversionKind.ExplicitIntegerToPointer:
-                    VOCheckIntegerToPointer(node);
-                    break;
-#endif
                 default:
                     break;
             }
-
             var result = base.VisitConversion(node);
             _inExpressionLambda = wasInExpressionLambda;
             _reportedUnsafe = oldReportedUnsafe;

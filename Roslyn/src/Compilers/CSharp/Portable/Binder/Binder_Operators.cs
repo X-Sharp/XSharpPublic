@@ -187,6 +187,18 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             bool isPredefinedOperator = !bestSignature.Kind.IsUserDefined();
 
+#if XSHARP
+            if (finalConversion.IsValid)
+            {
+                if (!isPredefinedOperator && leftType.SpecialType.IsNumericType())
+                {
+                    if (right.Type.IsFloatType() || right.Type.IsCurrencyType())
+                    {
+                        isPredefinedOperator = true;
+                    }
+                }
+            }
+#endif
             if (!finalConversion.IsValid || finalConversion.IsExplicit && !isPredefinedOperator)
             {
                 hasError = true;

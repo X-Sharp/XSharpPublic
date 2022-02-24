@@ -105011,9 +105011,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C833 - Parser errors with VFP code
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION R837 *************
-Application = R837
+ApplicationGroup = 084FC9A2-9274-4770-AE44-6D078B06BA37
+; ************** APPLICATION R837 - Warnings for conversions *************
+Application = R837 - Warnings for conversions
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -105046,21 +105046,21 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R837 FileGroups]
-[R837 Files]
+[R837 - Warnings for conversions FileGroups]
+[R837 - Warnings for conversions Files]
 File = %AppPath%\Prg\R837.prg
 FileGUID = 6771BCEF-68FC-49B4-AA1B-4225F381D484
 FileType = Code
 CopyToBin = 0
-[R837 References]
+[R837 - Warnings for conversions References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
-[R837 Resources]
-[R837 Native Resources]
-[R837 License files]
-[R837 General Options]
+[R837 - Warnings for conversions Resources]
+[R837 - Warnings for conversions Native Resources]
+[R837 - Warnings for conversions License files]
+[R837 - Warnings for conversions General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -105071,7 +105071,7 @@ VO3=0
 VO4=0
 VO5=0
 VO6=0
-VO7=1
+VO7=0
 VO8=0
 VO9=0
 VO10=0
@@ -105093,7 +105093,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[R837 Configurations]
+[R837 - Warnings for conversions Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -105104,7 +105104,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   DefineDebug=1
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=1
+  WarningsErrors=0
   ForceConsole=0
   ForceX86=0
   Optimize=0
@@ -105122,9 +105122,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R837
+ENDApplication = R837 - Warnings for conversions
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
 ; ************** APPLICATION C834 - Compiler error with the += and -= operators between INT/FLOAT *************
 Application = C834 - Compiler error with the += and -= operators between INT/FLOAT
 IDEVersion = 1.06
@@ -105187,7 +105187,7 @@ VO7=0
 VO8=0
 VO9=0
 VO10=0
-VO11=1
+VO11=0
 VO12=0
 VO13=0
 VO14=0
@@ -105236,7 +105236,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C834 - Compiler error with the += and -= operators between INT/FLOAT
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
 ; ************** APPLICATION C835 - Missing warnings for signed/unsigned conversions *************
 Application = C835 - Missing warnings for signed/unsigned conversions
 IDEVersion = 1.06
@@ -105292,7 +105292,7 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=1
+VO4=0
 VO5=0
 VO6=0
 VO7=0
@@ -105328,7 +105328,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   DefineDebug=1
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=1
+  WarningsErrors=0
   ForceConsole=0
   ForceX86=0
   Optimize=0

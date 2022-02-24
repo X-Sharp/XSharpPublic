@@ -2,7 +2,7 @@
 FUNCTION Start( ) AS VOID
     LOCAL f := -1343.345 AS FLOAT  // "AS DOUBLE" throws an compile error
     LOCAL c := -1343.345 AS CURRENCY  // "AS DOUBLE" throws an compile error
-    
+
     try
         Test (f )
         xAssert(FALSE)

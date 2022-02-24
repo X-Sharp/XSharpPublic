@@ -17,6 +17,44 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     internal sealed partial class DiagnosticsPass 
     {
+
+        private void XsCheckConversion(BoundConversion node)
+        {
+            if (node.ConversionKind == ConversionKind.ExplicitIntegerToPointer)
+            {
+                VOCheckIntegerToPointer(node);
+            }
+            if (node.ConstantValue != null || node.Syntax.XIsExplicitTypeCastInCode)
+                return;
+            var sourceType = node.Operand.Type;
+            var targetType = node.Type;
+            if (node.Syntax != null! && !TypeSymbol.Equals(sourceType, targetType))
+            {
+                var vo4 = _compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, node.Syntax);
+                var vo11 = _compilation.Options.HasOption(CompilerOption.ArithmeticConversions, node.Syntax);
+                if (targetType.IsIntegralType() && sourceType.IsIntegralType())
+                {
+                    var srcsize = sourceType.SpecialType.SizeInBytes();
+                    var trgsize = targetType.SpecialType.SizeInBytes();
+                    if (vo4 && srcsize == trgsize)
+                    {
+                        Error(ErrorCode.WRN_SignedUnSignedConversion, node, sourceType, targetType);
+                    }
+                    else if (vo11 && srcsize > trgsize)
+                    {
+                        Error(ErrorCode.WRN_ConversionMayLeadToLossOfData, node, sourceType, targetType);
+                    }
+                }
+                else if (vo11 && sourceType.IsNumericType() && targetType.IsNumericType())
+                {
+                    if (sourceType.IsFractionalType() && !targetType.IsFractionalType())
+                    {
+                        Error(ErrorCode.WRN_ConversionMayLeadToLossOfData, node, sourceType, targetType);
+                    }
+                }
+            }
+        }
+
         private void VOCheckIntegerToPointer(BoundConversion node)
         {
             var destType = node.Type;

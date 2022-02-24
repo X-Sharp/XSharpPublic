@@ -1,4 +1,4 @@
-R834#pragma options("vo17", on)
+#pragma options("vo17", on)
 
 FUNCTION Start( ) AS VOID
     LOCAL n := 0 AS INT

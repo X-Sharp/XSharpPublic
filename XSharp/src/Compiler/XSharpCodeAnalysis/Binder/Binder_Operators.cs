@@ -667,6 +667,54 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return opType;
         }
+        private bool XsConstantFitsInType(ConstantValue constant, TypeSymbol type)
+        {
+            if (constant.IsUnsigned)
+            {
+                switch (type.SpecialType)
+                {
+                    case SpecialType.System_Int32:
+                        return constant.UInt64Value <= Int32.MaxValue;
+                    case SpecialType.System_Int16:
+                        return constant.UInt64Value <= (ulong)Int16.MaxValue;
+                    case SpecialType.System_Int64:
+                        return constant.UInt64Value <= Int64.MaxValue;
+                    case SpecialType.System_UInt32:
+                        return constant.UInt64Value <= UInt32.MaxValue;
+                    case SpecialType.System_UInt16:
+                        return constant.UInt64Value <= UInt16.MaxValue;
+                    case SpecialType.System_UInt64:
+                        return true;
+                    case SpecialType.System_Byte:
+                        return constant.UInt64Value <= Byte.MaxValue;
+                    case SpecialType.System_SByte:
+                        return constant.UInt64Value <= (ulong)SByte.MaxValue;
+                    default:
+                        return false;
+                }
+            }
+            switch (type.SpecialType)
+            {
+                case SpecialType.System_Int32:
+                    return constant.Int64Value >= Int32.MinValue && constant.Int64Value <= Int32.MaxValue;
+                case SpecialType.System_Int16:
+                    return constant.Int64Value >= Int16.MinValue && constant.Int64Value <= Int16.MaxValue;
+                case SpecialType.System_Int64:
+                    return true;
+                case SpecialType.System_UInt32:
+                    return constant.Int64Value >= 0 && constant.Int64Value <= UInt32.MaxValue;
+                case SpecialType.System_UInt16:
+                    return constant.Int64Value >= 0 && constant.Int64Value <= UInt16.MaxValue;
+                case SpecialType.System_UInt64:
+                    return constant.Int64Value >= 0;
+                case SpecialType.System_Byte:
+                    return constant.Int64Value >= 0 && constant.Int64Value <= Byte.MaxValue;
+                case SpecialType.System_SByte:
+                    return constant.Int64Value >= SByte.MinValue && constant.Int64Value <= SByte.MaxValue;
+                default:
+                    return false;
+            }
+        }
         private void AdjustVOUsualLogicOperands(BinaryExpressionSyntax node, ref BoundExpression left, ref BoundExpression right, DiagnosticBag diagnostics)
         {
             if (!Compilation.Options.HasRuntime)

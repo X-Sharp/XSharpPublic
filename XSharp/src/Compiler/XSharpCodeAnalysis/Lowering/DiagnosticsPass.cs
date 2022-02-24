@@ -15,7 +15,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// This pass detects and reports diagnostics that do not affect lambda convertibility.
     /// This part of the partial class focuses on expression and operator warnings.
     /// </summary>
-    internal sealed partial class DiagnosticsPass 
+    internal sealed partial class DiagnosticsPass
     {
 
         private void XsCheckConversion(BoundConversion node)
@@ -24,7 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 VOCheckIntegerToPointer(node);
             }
-            if (node.ConstantValue != null || node.Syntax.XIsExplicitTypeCastInCode)
+            if (node.ConstantValue != null || node.WasCompilerGenerated || node.Syntax.XIsExplicitTypeCastInCode)
                 return;
             var sourceType = node.Operand.Type;
             var targetType = node.Type;

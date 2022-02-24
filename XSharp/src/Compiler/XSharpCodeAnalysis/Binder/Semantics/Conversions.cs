@@ -271,7 +271,36 @@ namespace Microsoft.CodeAnalysis.CSharp
             var vo11 = Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax);
             if (expression is BoundBinaryOperator binop && targetType.SpecialType.IsIntegralType())
             {
+                if (Compilation.Options.Dialect != XSharpDialect.Core)
+                {
+                    // bitwise operators: all implicit
+                    if (binop.OperatorKind.HasFlag(BinaryOperatorKind.And))
+                        return true;
+                    if (binop.OperatorKind.HasFlag(BinaryOperatorKind.Or))
+                        return true;
+                    if (binop.OperatorKind.HasFlag(BinaryOperatorKind.Xor))
+                        return true;
+                }
+
                 var sourceType = binop.LargestOperand(this.Compilation, false);
+                if (binop.Right.ConstantValue != null)
+                {
+                    if (binop.Left is BoundConversion bcv)
+                    {
+                        sourceType = bcv.Operand.Type;
+                    }
+                    else
+                        sourceType = binop.Left.Type;
+                }
+                else if (binop.Left.ConstantValue != null)
+                {
+                    if (binop.Right is BoundConversion bcv)
+                    {
+                        sourceType = bcv.Operand.Type;
+                    }
+                    else
+                        sourceType = binop.Right.Type;
+                }
                 if (Equals(sourceType, targetType))
                 {
                     return true;

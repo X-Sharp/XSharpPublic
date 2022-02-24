@@ -585,6 +585,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                 leftType = left.Type;
                 rightType = right.Type;
             }
+            else if (kind == BinaryOperatorKind.Addition || kind == BinaryOperatorKind.Subtraction)
+            {
+                // operation involving literal and non literal
+                if (right.ConstantValue != null && left.ConstantValue == null)
+                {
+                    if (XsConstantFitsInType(right.ConstantValue, leftType))
+                    {
+                        rightType = leftType;
+                    }
+                }
+                else if (left.ConstantValue != null)
+                {
+                    if (XsConstantFitsInType(left.ConstantValue, rightType))
+                    {
+                        leftType = rightType;
+                    }
+                }
+            }
 #endif
             LookupResultKind resultKind;
             ImmutableArray<MethodSymbol> originalUserDefinedOperators;

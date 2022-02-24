@@ -9,14 +9,13 @@ FUNCTION Start( ) AS VOID
 	Console.WriteLine(FromHeader())      
 	//Console.WriteLine(INCORRECT_DEFINE)
 	Console.WriteLine(Foo{}:ToString())
-	Console.WriteLine(Bar{}:ToString())
+	Console.WriteLine(Bar{}:ToString())             
 	Console.ReadLine()     
 RETURN 
 
      
 /*
-
-Multi line comments
+    Multi line comments from the PRG file should be included
 */
      
 CLASS Foo

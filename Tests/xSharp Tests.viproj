@@ -104261,6 +104261,10 @@ File = %AppPath%\Prg\R824a.xh
 FileGUID = 024131A1-BB1A-4685-A137-491F829BADB9
 FileType = Text
 CopyToBin = 0
+File = %AppPath%\Prg\R824.ppo
+FileGUID = 606E9091-896A-4AE6-8D84-D1743B5E7381
+FileType = Text
+CopyToBin = 0
 [R834 - PPO file should contain the source of the included files. Also fixed stepping into header files References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
@@ -104296,7 +104300,7 @@ Undeclared=0
 EnforceSelf=0
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=1
+IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
@@ -105163,8 +105167,8 @@ FileType = Code
 CopyToBin = 0
 [C834 - Compiler error with the += and -= operators between INT/FLOAT References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
 [C834 - Compiler error with the += and -= operators between INT/FLOAT Resources]
 [C834 - Compiler error with the += and -= operators between INT/FLOAT Native Resources]
 [C834 - Compiler error with the += and -= operators between INT/FLOAT License files]
@@ -105176,14 +105180,14 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=1
+VO4=0
 VO5=0
 VO6=0
 VO7=0
 VO8=0
 VO9=0
 VO10=0
-VO11=0
+VO11=1
 VO12=0
 VO13=0
 VO14=0
@@ -105275,8 +105279,8 @@ FileType = Code
 CopyToBin = 0
 [C835 - Missing warnings for signed/unsigned conversions References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C835 - Missing warnings for signed/unsigned conversions Resources]
 [C835 - Missing warnings for signed/unsigned conversions Native Resources]
 [C835 - Missing warnings for signed/unsigned conversions License files]

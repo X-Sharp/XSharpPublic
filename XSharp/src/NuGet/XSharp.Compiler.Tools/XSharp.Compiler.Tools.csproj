@@ -15,8 +15,7 @@
     <!-- Many of the properties below are used by the microsoft.dotnet.arcade.sdk  to build the nuget package -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
-    <TargetFrameworks Condition="'$(Configuration)' == 'Release' ">netcoreapp3.1;net472</TargetFrameworks>
-    <TargetFrameworks Condition="'$(Configuration)' != 'Release' ">net472</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <PackageTags>XSharp;Compiler;Build</PackageTags>
     <IsPackable>true</IsPackable>
     <NuspecPackageId>XSharp.Compiler.Tools</NuspecPackageId>

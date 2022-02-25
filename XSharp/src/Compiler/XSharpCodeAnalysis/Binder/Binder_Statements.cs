@@ -164,7 +164,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         BoundExpression XsCreateConversionNonIntegralNumeric(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
             if (Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax)
-                && expression.Type.SpecialType.IsNumericType() && targetType.SpecialType.IsNumericType())
+                && expression.Type.IsNumericType() && targetType.IsNumericType())
             {
                 // call Convert.To..() to round the result
                 var mem = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Convert__ToInt32Double);
@@ -266,7 +266,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return CreateXsConversion(expression, conversion, targetType, diagnostics);
                     }
-                    if (Compilation.Options.HasRuntime && targetType.SpecialType.IsNumericType() && sourceType.IsObjectType() )
+                    if (Compilation.Options.HasRuntime && targetType.IsNumericType() && sourceType.IsObjectType() )
                     {
                         // To "silently" convert an object to a numeric we create a usual first and then rely
                         // on the conversion routines for the USUAL type
@@ -278,11 +278,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         return CreateXsConversion(expression, conversion, targetType, diagnostics);
                     }
-                    if (targetType.SpecialType.IsNumericType() && sourceType.IsUsualType() && Compilation.Options.HasRuntime)
+                    if (targetType.IsNumericType() && sourceType.IsUsualType() && Compilation.Options.HasRuntime)
                     {
                         return CreateXsConversion(expression, conversion, targetType, diagnostics);
                     }
-                    else if (sourceType.SpecialType.IsNumericType())
+                    else if (sourceType.IsNumericType())
                     {
                         result = XsCreateConversionNonIntegralNumeric(targetType, expression, diagnostics, conversion);
                         result.WasCompilerGenerated = true;
@@ -358,10 +358,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+            var sourceType = expression.Type;
+            if (expression.ConstantValue == null && sourceType is { } && targetType is { })
+            {
 
-            if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax) || //vo4
-                Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax)) //vo11
-                return;
+                if (sourceType.IsNumericType() && targetType.IsNumericType())
+                 {
+                    if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax) || //vo4
+                        Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax)) //vo11
+                      {
+                        return;
+                      }
+                    }
+                }
 
             var rhsType = expression.Type;
             if (rhsType is { } && Equals(targetType, rhsType) &&
@@ -380,7 +389,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (!ok)
                 {
-                    var sourceType = expression.Type;
                     var sourceSize = sourceType.SpecialType.SizeInBytes();
                     var targetSize = targetType.SpecialType.SizeInBytes();
 

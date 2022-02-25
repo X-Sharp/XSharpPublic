@@ -212,15 +212,25 @@ namespace Microsoft.CodeAnalysis
             get => CsNode.CsGreen.XNeedsCast;
             set => CsNode.CsGreen.XNeedsCast = value;
         }
-        internal bool XIsVoCast
+        internal bool XIsExplicitTypeCastInCode
         {
             get
             {
                 var node = XNode as XSharpParserRuleContext;
-                if (node is XSharpParser.PrimaryExpressionContext prim)
-                    return prim.Expr is XSharpParser.VoCastExpressionContext;
-                else
-                    return node is XSharpParser.VoCastExpressionContext;
+                switch (node)
+                {
+                    case XSharpParser.VoCastExpressionContext:
+                        return true;
+                    case XSharpParser.VoConversionExpressionContext:
+                        return true;
+                    case XSharpParser.TypeCastContext:
+                        return true;
+                    case XSharpParser.PrimaryExpressionContext prim:
+                        return prim.Expr is XSharpParser.VoCastExpressionContext ||
+                            prim.Expr is XSharpParser.VoConversionExpressionContext;
+
+                }
+                return false;
             }
         }
         internal bool XIsMissingArgument

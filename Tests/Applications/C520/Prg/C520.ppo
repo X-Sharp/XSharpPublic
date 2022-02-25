@@ -2,64 +2,6 @@
 
 //PP #include "C520.ch"
 #line 1 "C:\XSharp\Dev\Tests\Applications\C520\Prg\C520.ch"
-// DATABASE COMBO BOX
-//PP #xcommand @ <row>, <col> zGET <var> COMBO                         ;
-//PP                         BROWSE < aBrowse_ >                       ;
-//PP                         [COLOR <color> ]                          ;
-//PP                         [ALIAS <cAlias>]                          ;
-//PP                         [RETURN_FIELD < xRetFld>]                 ;
-//PP                         [DISPLAY_TAG <cTag>]                      ; 
-//PP                         [VALID <valid>]                           ;
-//PP                         [WHEN <when>]                             ;
-//PP                         [<lDropOnEnter: ALWAYS>]                  ;
-//PP                         [XTOP <xTop> ]                            ;
-//PP                         [XBOTTOM <xBottom> ]                      ;
-//PP                         [FOR <for> ]                              ;
-//PP                         [WHILE <while> ]                          ;
-//PP                         [BASE_FILTER <cBaseFilter> ]              ;
-//PP                         [DISPLAY_FIELD <xDispFld> ]               ;
-//PP                         [RETURN_TAG <cKeyTag>  ]                  ;
-//PP                         [STRICT <lStrict> ]                       ;
-//PP                         [EMPTY_ALLOWED <lEmptyAllowed> ]          ;
-//PP                         [HOT_KEYS <aHotKeys_> ]                   ;
-//PP                         [PICTURE <cPicture>]                      ;
-//PP                         [WIDTH <nWidth>]                          ;
-//PP                         [HEIGHT <nHeight> ]                       ;
-//PP                         [POST_EVAL <bPostEval>]                   ;
-//PP       =>                                                          ;
-//PP               zGEDBComboNew( ;
-//PP                             <.lDropOnEnter.>,;
-//PP                             <cAlias>, <cTag>, ;
-//PP                             <xRetFld>, < aBrowse_>,<xDispFld>,;
-//PP                             <cKeyTag>, <lStrict>)
-
-// SSUsers
-//PP #Command @<Row>,<Col> zGet <cVar> COMBO_USER [STRICT <lStrict>]           ;
-//PP                                              [COLOR <Color>]              ;
-//PP                                              [FOR   <bFor>]               ;
-//PP                                              [VALID <bValid>]             ;
-//PP                                              [EMPTY_ALLOWED <lEmpty>]     ;
-//PP                                              [WHEN <bWhen>] =>            ;
-//PP          @<Row>,<Col> zGet <cVar>                                         ;
-//PP          COMBO BROWSE   NIL            ;
-//PP          ALIAS          "SSUsers"                                         ;
-//PP          RETURN_FIELD   "UserId"                                          ;
-//PP          RETURN_TAG     "SSUserSU"                                        ;
-//PP          DISPLAY_FIELD  "UserId"                                          ;
-//PP          DISPLAY_TAG    "SSUserSU"                                        ;
-//PP          XTOP           zGetSysId()                                       ;
-//PP          XBOTTOM        zGetSysId()                                       ;
-//PP          BASE_FILTER    zGetSysId()                                       ;
-//PP          WHILE          nil                ;
-//PP          WIDTH          36                                                ;
-//PP          HEIGHT         10                                                ;
-//PP          [EMPTY_ALLOWED <lEmpty>]                                         ;
-//PP          [STRICT        <lStrict>]                                        ;
-//PP          [COLOR         <Color>  ]                                        ;
-//PP          [FOR           <bFor>   ]                                        ;
-//PP          [VALID         <bValid>]                                         ;
-//PP          [WHEN          <bWhen>]
-
 #line 4 "C:\XSharp\Dev\Tests\Applications\C520\Prg\C520.prg"
 
 FUNCTION Start() AS VOID

@@ -674,6 +674,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             CheckUnsafeType(node.Operand);
             CheckUnsafeType(node);
+#if XSHARP
+            XsCheckConversion(node);
+#endif
             bool wasInExpressionLambda = _inExpressionLambda;
             bool oldReportedUnsafe = _reportedUnsafe;
             switch (node.ConversionKind)

@@ -488,6 +488,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (token.Type == XSharpParser.STRING_CONST && opt.StartsWith("\"") && opt.EndsWith("\"") && opt.Length > 2)
                     {
                         opt = opt.Substring(1, opt.Length - 2);
+                    }
+                    if (opt.Length > 0)
+                    {
                         var compopt = CompilerOptionDecoder.Decode(opt);
                         if (compopt.NeedsRuntime() && !_options.HasRuntime)
                         {

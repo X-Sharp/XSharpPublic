@@ -4,7 +4,6 @@
 
 #nullable disable
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -601,48 +600,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private static string GetSpecialTypeName(INamedTypeSymbol symbol)
         {
+#if XSHARP
+            return XsHelpers.GetSpecialTypeName(symbol);
+#else
             switch (symbol.SpecialType)
             {
-#if XSHARP
-                case SpecialType.System_Void:
-                    return "void";
-                case SpecialType.System_SByte:
-                    return "sbyte";
-                case SpecialType.System_Int16:
-                    return "short";
-                case SpecialType.System_Int32:
-                    return "int";
-                case SpecialType.System_Int64:
-                    return "int64";
-                case SpecialType.System_IntPtr when symbol.IsNativeIntegerType:
-                    return "nint";
-                case SpecialType.System_UIntPtr when symbol.IsNativeIntegerType:
-                    return "nuint";
-                case SpecialType.System_Byte:
-                    return "byte";
-                case SpecialType.System_UInt16:
-                    return "word";
-                case SpecialType.System_UInt32:
-                    return "dword";
-                case SpecialType.System_UInt64:
-                    return "uint64";
-                case SpecialType.System_Single:
-                    return "real4";
-                case SpecialType.System_Double:
-                    return "real8";
-                case SpecialType.System_Decimal:
-                    return "decimal";
-                case SpecialType.System_Char:
-                    return "char";
-                case SpecialType.System_Boolean:
-                    return "logic";
-                case SpecialType.System_String:
-                    return "string";
-                case SpecialType.System_Object:
-                    return "object";
-                default:
-                    return null;
-#else
                 case SpecialType.System_Void:
                     return "void";
                 case SpecialType.System_SByte:
@@ -681,8 +643,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return "object";
                 default:
                     return null;
-#endif
             }
+#endif
         }
 
         private void AddTypeKind(INamedTypeSymbol symbol)

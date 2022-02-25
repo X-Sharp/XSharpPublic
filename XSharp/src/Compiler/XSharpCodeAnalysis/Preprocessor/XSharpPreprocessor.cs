@@ -225,6 +225,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         readonly string _fileName = null;
         InputState inputs;
         readonly Stack<InputState> _files = new Stack<InputState>();
+        
         IToken lastToken = null;
 
         readonly PPRuleDictionary _cmdRules = new();
@@ -244,7 +245,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         //public int MaxSymbolDepth { get; set; } = 16;
 
         public int MaxUDCDepth { get; set; } = 256;
-
+        bool ProcessingIncludeFile => _files.Count > 0;
         public string StdDefs { get; set; } = string.Empty;
         private void initStdDefines(string fileName)
         {
@@ -400,8 +401,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private void _writeToPPO(string text, bool addCRLF)
         {
-            // do not call t.Text when not needed.
-            if (_preprocessorOutput)
+            var write = _preprocessorOutput;
+            if (write)
+            {
+                // when we are in a header file then do not output
+                // comment lines and blank lines
+                if (ProcessingIncludeFile)
+                {
+                    var temp = text.Trim();
+                    if (temp.Length == 0)
+                        write = false;
+                    else if (temp.StartsWith("//"))
+                    {
+                        write = false;
+                    }
+                }
+            }
+            if (write)
             {
                 _ppoWriter.Write(text);
                 if (addCRLF)
@@ -443,6 +459,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 bool first = !prefix;
                 foreach (var t in tokens)
                 {
+                    // Exclude comments from header files
+                    if (ProcessingIncludeFile && t.IsComment())
+                        continue;
                     // Copy the trivia from the original first symbol on the line so the UDC has the proper indent level
                     if (first && t.SourceSymbol != null && t.SourceSymbol.HasTrivia && t.SourceSymbol.Type == XSharpLexer.UDC_KEYWORD)
                     {

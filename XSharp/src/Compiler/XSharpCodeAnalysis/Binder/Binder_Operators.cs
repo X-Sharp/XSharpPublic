@@ -66,7 +66,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // implicit casts are allowed when the compiler option is enabled
                 return Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, syntax);
             }
-            if (sourceType.IsObjectType() && targetType.SpecialType.IsNumericType())
+            if (sourceType.IsObjectType() && targetType.IsNumericType())
             {
                 return Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, syntax);
             }

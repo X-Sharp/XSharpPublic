@@ -5,13 +5,13 @@
 //
 #nullable disable
 using System;
-using System.Collections.Immutable;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class Binder
@@ -667,54 +667,54 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return opType;
         }
-        private bool XsConstantFitsInType(ConstantValue constant, TypeSymbol type)
-        {
-            if (constant.IsUnsigned)
-            {
-                switch (type.SpecialType)
-                {
-                    case SpecialType.System_Int32:
-                        return constant.UInt64Value <= Int32.MaxValue;
-                    case SpecialType.System_Int16:
-                        return constant.UInt64Value <= (ulong)Int16.MaxValue;
-                    case SpecialType.System_Int64:
-                        return constant.UInt64Value <= Int64.MaxValue;
-                    case SpecialType.System_UInt32:
-                        return constant.UInt64Value <= UInt32.MaxValue;
-                    case SpecialType.System_UInt16:
-                        return constant.UInt64Value <= UInt16.MaxValue;
-                    case SpecialType.System_UInt64:
-                        return true;
-                    case SpecialType.System_Byte:
-                        return constant.UInt64Value <= Byte.MaxValue;
-                    case SpecialType.System_SByte:
-                        return constant.UInt64Value <= (ulong)SByte.MaxValue;
-                    default:
-                        return false;
-                }
-            }
-            switch (type.SpecialType)
-            {
-                case SpecialType.System_Int32:
-                    return constant.Int64Value >= Int32.MinValue && constant.Int64Value <= Int32.MaxValue;
-                case SpecialType.System_Int16:
-                    return constant.Int64Value >= Int16.MinValue && constant.Int64Value <= Int16.MaxValue;
-                case SpecialType.System_Int64:
-                    return true;
-                case SpecialType.System_UInt32:
-                    return constant.Int64Value >= 0 && constant.Int64Value <= UInt32.MaxValue;
-                case SpecialType.System_UInt16:
-                    return constant.Int64Value >= 0 && constant.Int64Value <= UInt16.MaxValue;
-                case SpecialType.System_UInt64:
-                    return constant.Int64Value >= 0;
-                case SpecialType.System_Byte:
-                    return constant.Int64Value >= 0 && constant.Int64Value <= Byte.MaxValue;
-                case SpecialType.System_SByte:
-                    return constant.Int64Value >= SByte.MinValue && constant.Int64Value <= SByte.MaxValue;
-                default:
-                    return false;
-            }
-        }
+        //private bool XsConstantFitsInType(ConstantValue constant, TypeSymbol type)
+        //{
+        //    if (constant.IsUnsigned)
+        //    {
+        //        switch (type.SpecialType)
+        //        {
+        //            case SpecialType.System_Int32:
+        //                return constant.UInt64Value <= Int32.MaxValue;
+        //            case SpecialType.System_Int16:
+        //                return constant.UInt64Value <= (ulong)Int16.MaxValue;
+        //            case SpecialType.System_Int64:
+        //                return constant.UInt64Value <= Int64.MaxValue;
+        //            case SpecialType.System_UInt32:
+        //                return constant.UInt64Value <= UInt32.MaxValue;
+        //            case SpecialType.System_UInt16:
+        //                return constant.UInt64Value <= UInt16.MaxValue;
+        //            case SpecialType.System_UInt64:
+        //                return true;
+        //            case SpecialType.System_Byte:
+        //                return constant.UInt64Value <= Byte.MaxValue;
+        //            case SpecialType.System_SByte:
+        //                return constant.UInt64Value <= (ulong)SByte.MaxValue;
+        //            default:
+        //                return false;
+        //        }
+        //    }
+        //    switch (type.SpecialType)
+        //    {
+        //        case SpecialType.System_Int32:
+        //            return constant.Int64Value >= Int32.MinValue && constant.Int64Value <= Int32.MaxValue;
+        //        case SpecialType.System_Int16:
+        //            return constant.Int64Value >= Int16.MinValue && constant.Int64Value <= Int16.MaxValue;
+        //        case SpecialType.System_Int64:
+        //            return true;
+        //        case SpecialType.System_UInt32:
+        //            return constant.Int64Value >= 0 && constant.Int64Value <= UInt32.MaxValue;
+        //        case SpecialType.System_UInt16:
+        //            return constant.Int64Value >= 0 && constant.Int64Value <= UInt16.MaxValue;
+        //        case SpecialType.System_UInt64:
+        //            return constant.Int64Value >= 0;
+        //        case SpecialType.System_Byte:
+        //            return constant.Int64Value >= 0 && constant.Int64Value <= Byte.MaxValue;
+        //        case SpecialType.System_SByte:
+        //            return constant.Int64Value >= SByte.MinValue && constant.Int64Value <= SByte.MaxValue;
+        //        default:
+        //            return false;
+        //    }
+        //}
         private void AdjustVOUsualLogicOperands(BinaryExpressionSyntax node, ref BoundExpression left, ref BoundExpression right, DiagnosticBag diagnostics)
         {
             if (!Compilation.Options.HasRuntime)
@@ -788,7 +788,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return index;
         }
-
 
         public TypeSymbol VOGetType(BoundExpression expr)
         {
@@ -877,7 +876,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (node.Operand is InvocationExpressionSyntax)
             {
                 bool lAliasedExpression = false;
-                if (node.Operand.XNode is XSharpParser.PrimaryExpressionContext pec && 
+                if (node.Operand.XNode is XSharpParser.PrimaryExpressionContext pec &&
                    pec.Expr is XSharpParser.AliasedExpressionContext)
                 {
                     lAliasedExpression = true;
@@ -1237,7 +1236,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // SHORT(_CAST, expression) has been converted to a _AND() operation. In that case we want the type of the RHS of the operation.
                 // the same is true for (WORD) -1
                 var preferredType = leftType;
-                if (binaryOperator.Left.ConstantValue != null )
+                if (binaryOperator.Left.ConstantValue != null)
                 {
                     preferredType = rightType;
                 }
@@ -1257,14 +1256,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     { WasCompilerGenerated = true };
                 }
             }
-            return result;
-        }
+                return result;
+            }
         bool XsConstantFitsInType(BoundExpression result, TypeSymbol preferredType)
         {
             bool fits = true;
             var constant = result.ConstantValue;
             var resultType = result.Type;
-            if (constant != null && ! constant.IsBad)
+            if (constant != null && !constant.IsBad)
             {
                 if (resultType.SpecialType.IsSignedIntegralType())
                 {

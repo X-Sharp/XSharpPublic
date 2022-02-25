@@ -39,6 +39,8 @@
     <BinariesDir>$(Solutiondir)Artifacts\bin\</BinariesDir>
 	<AntlrDir>$(Solutiondir)eng\</AntlrDir>
     <ZipsDir>$(Solutiondir)Artifacts\Zips</ZipsDir>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
+
     <GeneratedCompilerPath>$(BinariesDir)csc\$(Configuration)\net472\</GeneratedCompilerPath>
     <XscToolPath Condition="'$(XscToolPath)' == '' ">$(BinariesDir)xsc\$(Configuration)\net472</XscToolPath>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>

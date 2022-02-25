@@ -22,7 +22,7 @@ RETURN
 CLASS ValueClass
     PROPERTY valueFloat AS FLOAT AUTO
     PROPERTY valueReal8 AS REAL8 AUTO
-    PROPERTY valueCurrency AS REAL8 AUTO
+    PROPERTY valueCurrency AS CURRENCY AUTO
 END CLASS
 
 PROC xAssert(l AS LOGIC) 
@@ -31,4 +31,3 @@ IF .NOT. l
 END IF
 ? "Assertion passed"   
 RETURN   
-

@@ -15,15 +15,11 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// This pass detects and reports diagnostics that do not affect lambda convertibility.
     /// This part of the partial class focuses on expression and operator warnings.
     /// </summary>
-    internal sealed partial class DiagnosticsPass
+    internal sealed partial class DiagnosticsPass 
     {
 
         private void XsCheckConversion(BoundConversion node)
         {
-            if (node.ConversionKind == ConversionKind.ExplicitIntegerToPointer)
-            {
-                VOCheckIntegerToPointer(node);
-            }
             if (node.ConstantValue != null || node.WasCompilerGenerated || node.Syntax.XIsExplicitTypeCastInCode)
                 return;
             var sourceType = node.Operand.Type;
@@ -38,7 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var trgsize = targetType.SpecialType.SizeInBytes();
                     if (vo4 && srcsize == trgsize)
                     {
-                        Error(ErrorCode.WRN_SignedUnSignedConversion, node, sourceType, targetType);
+                        ;// Error(ErrorCode.WRN_SignedUnSignedConversion, node, sourceType, targetType);
                     }
                     else if (vo11 && srcsize > trgsize)
                     {

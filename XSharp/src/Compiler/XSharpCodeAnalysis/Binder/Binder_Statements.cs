@@ -361,19 +361,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             var sourceType = expression.Type;
             if (expression.ConstantValue == null && sourceType is { } && targetType is { })
             {
-                // Do not check for type conversions for literals here. That is done later
 
-                var sourceNumeric = sourceType.IsIntegralType() || sourceType.IsFractionalType();
-                var targetNumeric = targetType.IsIntegralType() || targetType.IsFractionalType();
-                if (sourceNumeric && targetNumeric)
-                {
+                if (sourceType.IsNumericType() && targetType.IsNumericType())
+                 {
                     if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax) || //vo4
                         Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax)) //vo11
-                    {
+                      {
                         return;
+                      }
                     }
                 }
-            }
 
             var rhsType = expression.Type;
             if (rhsType is { } && Equals(targetType, rhsType) &&

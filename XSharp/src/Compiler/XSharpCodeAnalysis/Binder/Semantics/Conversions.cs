@@ -154,7 +154,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             // From and to CHAR
             var vo4 = Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, sourceExpression.Syntax);
             var vo11 = Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, sourceExpression.Syntax);
-
             if (srcType == SpecialType.System_Char)
             {
                 if (dstType == SpecialType.System_UInt16)
@@ -222,36 +221,35 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (vo4 || vo11)
                 {
-                    // This compiler option only applies to numeric types
-                    if (srcType.IsNumericType() && dstType.IsNumericType())
+                // This compiler option only applies to numeric types
+                if (srcType.IsNumericType() && dstType.IsNumericType())
+                {
+                    if (srcType.IsIntegralType() && dstType.IsIntegralType())
                     {
-                        if (srcType.IsIntegralType() && dstType.IsIntegralType())
-                        {
-                            // when both same # of bits and integral, use Identity conversion
-                            if (srcType.SizeInBytes() == dstType.SizeInBytes())
+                        // when both same # of bits and integral, use Identity conversion
+                        if (srcType.SizeInBytes() == dstType.SizeInBytes())
                             {
                                 return Conversion.Identity;
                             }
-                            else if (vo11)
+                         else if (vo11)
                             {
-                                // otherwise implicit conversion
-                                return Conversion.ImplicitNumeric;
-                            }
+                             // otherwise implicit conversion
+                             return Conversion.ImplicitNumeric;
+                    }
                         }
                         // VO/Vulcan also allows to convert floating point types <-> integral types
                         else if (vo11 && dstType.IsIntegralType() && sourceExpression.ConstantValue == null)
-                        {
-                            return Conversion.ImplicitNumeric;
-                        }
-                    }
-                    if (source.IsFloatType() || source.IsCurrencyType())
                     {
-                        if (destination is { } && destination.SpecialType.IsNumericType())
-                        {
-                            // not really boxing but we'll handle the actual conversion later
-                            // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
-                            sourceExpression.Syntax.XNeedsCast = true;
-                            return Conversion.Boxing;
+                        return Conversion.ImplicitNumeric;
+                    }
+                }
+                if (source.IsFloatType() || source.IsCurrencyType())
+                {
+                    if (destination is { } && destination.SpecialType.IsNumericType())
+                    {
+                        // not really boxing but we'll handle the actual conversion later
+                        // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                        return Conversion.Boxing;
                         }
                     }
                 }
@@ -271,37 +269,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             var vo11 = Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax);
             if (expression is BoundBinaryOperator binop && targetType.SpecialType.IsIntegralType())
             {
-                if (Compilation.Options.Dialect != XSharpDialect.Core)
-                {
-                    // bitwise operators: all implicit
-                    if (binop.OperatorKind.HasFlag(BinaryOperatorKind.And))
-                        return true;
-                    if (binop.OperatorKind.HasFlag(BinaryOperatorKind.Or))
-                        return true;
-                    if (binop.OperatorKind.HasFlag(BinaryOperatorKind.Xor))
-                        return true;
-                }
-
                 var sourceType = binop.LargestOperand(this.Compilation, false);
-                if (binop.Right.ConstantValue != null)
-                {
-                    if (binop.Left is BoundConversion bcv)
-                    {
-                        sourceType = bcv.Operand.Type;
-                    }
-                    else
-                        sourceType = binop.Left.Type;
-                }
-                else if (binop.Left.ConstantValue != null)
-                {
-                    if (binop.Right is BoundConversion bcv)
-                    {
-                        sourceType = bcv.Operand.Type;
-                    }
-                    else
-                        sourceType = binop.Right.Type;
-                }
-                if (Equals(sourceType, targetType))
+                if (TypeSymbol.Equals(sourceType, targetType))
                 {
                     return true;
                 }
@@ -452,7 +421,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.Identity;
                 }
             }
-            if (voConvert || typeCast)
+            if (voConvert)
             {
                 // we need to convert BYTE(<p>) to dereferencing the <p>
                 // This is done else where in Binder.BindVOPointerDereference()

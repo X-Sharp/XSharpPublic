@@ -104032,6 +104032,13 @@ File = %AppPath%\Prg\R832.prg
 FileGUID = 63C90B91-3EEA-4B97-BBD0-7586A8E9E8F4
 FileType = Code
 CopyToBin = 0
+<<<<<<< HEAD
+=======
+File = %AppPath%\Prg\R832.ppo
+FileGUID = D9C21EA6-CC47-420A-AD0E-F06BAC2BB196
+FileType = Text
+CopyToBin = 0
+>>>>>>> main
 [R832 - XPP Preprocessor References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
@@ -104145,6 +104152,13 @@ File = %AppPath%\Prg\R833.prg
 FileGUID = E1EF4586-53C8-4357-AD6B-00263E1B89CB
 FileType = Code
 CopyToBin = 0
+<<<<<<< HEAD
+=======
+File = %AppPath%\Prg\R833.ppo
+FileGUID = DE667937-4726-421F-8071-27750244E541
+FileType = Text
+CopyToBin = 0
+>>>>>>> main
 [R833 - Preprocessor ppo output double lines References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
@@ -105016,7 +105030,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C833 - Parser errors with VFP code
 
+<<<<<<< HEAD
 ApplicationGroup = 084FC9A2-9274-4770-AE44-6D078B06BA37
+=======
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+>>>>>>> main
 ; ************** APPLICATION R837 - Warnings for conversions *************
 Application = R837 - Warnings for conversions
 IDEVersion = 1.06
@@ -105241,7 +105259,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C834 - Compiler error with the += and -= operators between INT/FLOAT
 
+<<<<<<< HEAD
 ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
+=======
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+>>>>>>> main
 ; ************** APPLICATION C835 - Missing warnings for signed/unsigned conversions *************
 Application = C835 - Missing warnings for signed/unsigned conversions
 IDEVersion = 1.06
@@ -105284,8 +105306,13 @@ FileType = Code
 CopyToBin = 0
 [C835 - Missing warnings for signed/unsigned conversions References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
+<<<<<<< HEAD
 ReferenceGAC = XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+=======
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
+>>>>>>> main
 [C835 - Missing warnings for signed/unsigned conversions Resources]
 [C835 - Missing warnings for signed/unsigned conversions Native Resources]
 [C835 - Missing warnings for signed/unsigned conversions License files]
@@ -105396,8 +105423,13 @@ FileType = Code
 CopyToBin = 0
 [C836 - Float And Currency in Linq operations References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
+<<<<<<< HEAD
 ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+=======
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+>>>>>>> main
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 [C836 - Float And Currency in Linq operations Resources]
 [C836 - Float And Currency in Linq operations Native Resources]

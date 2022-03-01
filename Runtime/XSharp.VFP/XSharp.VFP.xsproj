@@ -107,6 +107,7 @@
     <Compile Include="UI\Assert.prg" />
     <Compile Include="UI\AssertDialog.prg" />
     <Compile Include="UI\AutoCloseMessageBox.prg" />
+    <Compile Include="UI\Dialogs.prg" />
     <Compile Include="Win32.prg" />
   </ItemGroup>
   <ItemGroup>

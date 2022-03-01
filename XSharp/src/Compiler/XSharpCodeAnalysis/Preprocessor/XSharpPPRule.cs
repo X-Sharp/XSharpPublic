@@ -1966,7 +1966,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return false;
         }
 
-        bool matchFileName(IList<XSharpToken> tokens, int start, ref int end)
+        static bool IsFilenameSeparator(XSharpToken token)
+        {
+            switch (token.Type)
+            {
+                case XSharpLexer.BACKSLASH:
+                case XSharpLexer.DOT:
+                    return true;
+            }
+            return false;
+        }
+
+        static bool IsFilenamePart(XSharpToken token)
+        {
+            switch (token.Type)
+            {
+                case XSharpLexer.ID:
+                case XSharpLexer.INT_CONST:         // file or folder may be a number
+                case XSharpLexer.DATE_CONST:         // file or folder may be 2020.01.01
+                case XSharpLexer.REAL_CONST:         // file or folder may be 1.2
+                case XSharpLexer.SYMBOL_CONST:
+                    return true;
+                default:
+                    return token.IsName();
+            }
+        }
+
+        static bool matchFileName(IList<XSharpToken> tokens, int start, ref int end)
         {
             if (start >= tokens.Count - 2)
                 return false;
@@ -1977,6 +2003,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (t1.IsName() && t2.Type == XSharpLexer.COLON && t2.Start == t1.Start + 1)          // C: .....
             {
                 current = start + 2;
+                if (IsFilenameSeparator(t3))
+                {
+                    current += 1;
+                }
             }
             else if (t1.Type == XSharpLexer.DOT && t2.Type == XSharpLexer.BACKSLASH && t2.Start == t1.Start + 1)    // .\ .... 
             {
@@ -1987,16 +2017,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 current = start + 3;
             }
-            else if (t1.Type == XSharpLexer.BACKSLASH && t2.Type == XSharpLexer.BACKSLASH && t3.IsName()
+            else if (t1.Type == XSharpLexer.BACKSLASH && t2.Type == XSharpLexer.BACKSLASH && IsFilenamePart(t3)
                 && t2.Start == t1.Start + 1 && t3.Start == t2.Start + 1)    // \\Computer\ID .....
             {
-                if (start < tokens.Count - 5)
+                if (start < tokens.Count - 4)
                 {
                     var t4 = tokens[start + 3];
-                    var t5 = tokens[start + 4];
-                    if (t4.Type == XSharpLexer.BACKSLASH && t5.IsName())
+                    if (t4.Type == XSharpLexer.BACKSLASH )
                     {
-                        current = start + 5;
+                        current = start + 4;
                     }
                     else
                     {
@@ -2004,7 +2033,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-            else if (t1.IsName() && t2.Type == XSharpLexer.DOT) // aa.
+            else if (IsFilenamePart(t1) && IsFilenameSeparator(t2))     // a\ or b\
             {
                 current = start + 2;
             }
@@ -2012,40 +2041,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 return false;
             }
-            bool done = false;
+            end = current-1;
+            bool expectName = true;
             XSharpToken last = tokens[current - 1];
-            while (current < tokens.Count && !done)
+            while (current < tokens.Count)
             {
                 // embedded whitespace exits the loop
-                if (tokens[current].Start > last.end)
+                var token = tokens[current];
+                if (token.Start > last.End)
                 {
                     break;
                 }
-                bool ok;
-                ok = true;
-                switch (tokens[current].Type)
+                if (expectName)
                 {
-                    case XSharpLexer.BACKSLASH:
-                    case XSharpLexer.DOT:
-                    case XSharpLexer.ID:
+                    if (IsFilenamePart(token))
+                    {
+                        end = current;
+                        current++;
+                    }
+                    else
+                    {
                         break;
-                    default:        // Part of the path may match a keyword, such as C:\Date\String\FileName.Dbf
-                        if (!tokens[current].IsName())
-                        {
-                            ok = false;
-                        }
-                        break;
-                }
-                if (ok)
-                {
-                    end = current;
-                    last = tokens[current];
-                    current++;
+                    }
                 }
                 else
                 {
-                    done = true;
+                    if (IsFilenameSeparator(token))
+                    {
+                        end = current;
+                        current++;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
+                last = token;
+                expectName = !expectName;
             }
             return true;
         }

@@ -2,7 +2,8 @@
 // vulcan dialect, no matter if /vo4 is enabled or not
 // note that all the following appear many times in user/SDK code and 
 // compile in vulcan without warnings on conversions (which makes sense I think)
-// Also vulcan does not require /vo4 for the following to compile
+// Also vulcan does not require /vo4 for the following to compile       
+#pragma options("vo11", on)
 FUNCTION Start() AS VOID
 LOCAL d AS DWORD
 LOCAL w AS WORD

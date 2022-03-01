@@ -908,7 +908,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var first = line[2];
                 if (first.Type == XSharpLexer.LPAREN
-                    && first.Start == def.end)
+                    && first.Start == def.End)
                 {
                     doUDCDirective(original, false);
                     return;

@@ -33,7 +33,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             set => Text = value;
         }
         internal int Start => Position;
-        internal int end => Position + Text.Length;
+        internal int End => Position + Text.Length;
         #endregion
         public string XmlComments
         {

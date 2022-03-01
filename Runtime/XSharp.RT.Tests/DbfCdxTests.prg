@@ -237,7 +237,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			DbCloseArea()
 
 			DbUseArea( , , cFileName)
-			FieldPut(1 , FLOAT{46.11}) // ! a float isn/t stored !
+			FieldPut(1 , (FLOAT) 46.11) // ! a float isn/t stored !
 			DbCommit()
 			Assert.Equal(46.11 , (FLOAT) FieldGet(1)) // runtime exception
 			DbCloseArea()
@@ -3620,7 +3620,8 @@ RETURN
 			LOCAL cDbf AS STRING
 
 			RddSetDefault("DBFCDX")
-			SetCollation(#CLIPPER)
+			LOCAL uCollation AS USUAL
+			uCollation := SetCollation(#CLIPPER)
 
 			cDBF := GetTempFileName()
 			FErase ( cDbf + IndexExt() )
@@ -3665,6 +3666,7 @@ RETURN
 			NEXT
 
 			DbCloseArea()
+			SetCollation(uCollation)
 		END METHOD
 
 
@@ -3674,7 +3676,8 @@ RETURN
 			LOCAL nCount AS INT
 
 			RddSetDefault("DBFCDX")
-			SetCollation(#CLIPPER)
+			LOCAL uCollation AS USUAL
+			uCollation := SetCollation(#CLIPPER)
 
 			cDBF := GetTempFileName()
 
@@ -3720,6 +3723,7 @@ RETURN
 			END DO
 			Assert.Equal(TRUE , (LOGIC)DbOrderInfo(DBOI_UNIQUE))
 			DbCloseArea()
+			SetCollation(uCollation)
 		END METHOD
 
 
@@ -3734,7 +3738,8 @@ RETURN
 			LOCAL cDbf AS STRING
 
 			RddSetDefault("DBFCDX")
-			SetCollation(#CLIPPER)
+			LOCAL uCollation AS USUAL
+			uCollation := SetCollation(#CLIPPER)
 
 			cDBF := GetTempFileName()
 
@@ -3792,6 +3797,7 @@ RETURN
 			Assert.True((LOGIC) DbOrderInfo(DBOI_UNIQUE))
 
 			DbCloseArea()
+			SetCollation(uCollation)
 		END METHOD
 
         [Fact, Trait("Category", "DBF")];

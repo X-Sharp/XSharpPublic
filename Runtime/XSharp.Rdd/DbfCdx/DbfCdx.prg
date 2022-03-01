@@ -148,9 +148,11 @@ BEGIN NAMESPACE XSharp.RDD
                 LOCAL result AS LONG
                 LOCAL isOk := FALSE AS LOGIC
                 LOCAL oBag := NULL AS CdxOrderBag
+                LOCAL hasBagName := FALSE AS LOGIC
                 result := 0
                 SELF:_indexList:FindOrder(info, OUT VAR workOrder)
                 IF ! String.IsNullOrEmpty(info:BagName)
+                     hasBagName := TRUE
                      oBag := SELF:_indexList:FindOrderBag(info:BagName)
                 ENDIF
 
@@ -175,7 +177,11 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 CASE DBOI_ORDERCOUNT
                     IF oBag == NULL
-                        info:Result := SELF:_indexList:Count
+                        if hasBagName
+                            info:Result := 0
+                        else
+                            info:Result := SELF:_indexList:Count
+                        endif
                     ELSE
                         info:Result := oBag:Tags:Count
                     ENDIF

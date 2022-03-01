@@ -46,6 +46,35 @@ BEGIN NAMESPACE XSharp.RT.Tests
 		RETURN
 
 		[Fact, Trait("Category", "DBFFuncs")];
+		METHOD testInputBufferDeletedWhenClosed AS VOID
+            LOCAL cDbf AS STRING
+            local cCopy as STRING
+            cDbf := "test.dbf"
+            cCopy := System.IO.Path.ChangeExtension(cDbf, "TMP")
+            RddSetDefault("DBFNTX")
+
+            DbCreate(cDbf,{{"FLD","N",5,0}})
+
+            DbUseArea(TRUE,,cDbf)
+            DbAppend()
+            FieldPut(1,1)
+            DbAppend()
+            FieldPut(1,2)
+            DbCloseArea()
+            System.IO.File.Copy(cDbf, cCopy, true)
+            DbUseArea(TRUE,,cDbf)
+            Assert.Equal(1, (int) FieldGet(1))
+            FieldPut(1,3)
+            Assert.Equal(3, (int) FieldGet(1))
+            DbCloseArea()
+            System.IO.File.Copy(cCopy, cDbf, true)
+            DbUseArea(TRUE,,cDbf)
+            // field 1 should be 1 and not 3
+            Assert.Equal(1, (int) FieldGet(1))
+            DbCloseArea()
+
+
+		[Fact, Trait("Category", "DBFFuncs")];
 		METHOD DBAppend_Exclusive() AS VOID
 			LOCAL aFields AS ARRAY
 			LOCAL cFileName AS STRING

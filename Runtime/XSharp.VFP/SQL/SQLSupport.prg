@@ -63,7 +63,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         ENDIF
         RETURN DEFAULT (T)
 
-    STATIC METHOD FindStatement(nId AS LONG) AS OBJECT
+    STATIC METHOD FindStatement(nId AS LONG) AS SQLStatement
         IF Cache:ContainsKey(nId)
             VAR element := Cache[nId]
             RETURN element:Value

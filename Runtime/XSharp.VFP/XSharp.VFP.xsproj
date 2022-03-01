@@ -63,16 +63,19 @@
     <Compile Include="Classes\FoxArray.prg" />
     <Compile Include="ClassFunctions.prg" />
     <Compile Include="BitFunctions.prg" />
+    <Compile Include="Commands.prg" />
     <Compile Include="Cursors\DbFunctions.prg" />
     <Compile Include="Database\DbFunctions.prg" />
     <Compile Include="DebugFunctions.prg" />
     <Compile Include="Defines.prg" />
     <Compile Include="FileFunctions.prg" />
+    <Compile Include="FinancialFunctions.prg" />
     <Compile Include="FoxCompilerSupport.prg" />
     <Compile Include="GatherScatter.prg" />
     <Compile Include="GetWord.prg" />
     <Compile Include="Keyboard.prg" />
     <Compile Include="NotSupported.prg" />
+    <Compile Include="PrinterFunctions.prg" />
     <Compile Include="SQL\SQLReflection.prg" />
     <Compile Include="SQL\SQLStatement.prg" />
     <Compile Include="SQL\SQLSupport.prg" />
@@ -105,6 +108,7 @@
     <Compile Include="UI\Assert.prg" />
     <Compile Include="UI\AssertDialog.prg" />
     <Compile Include="UI\AutoCloseMessageBox.prg" />
+    <Compile Include="UI\Dialogs.prg" />
     <Compile Include="Win32.prg" />
   </ItemGroup>
   <ItemGroup>

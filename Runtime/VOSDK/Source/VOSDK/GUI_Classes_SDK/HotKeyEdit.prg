@@ -8,63 +8,63 @@ CLASS HotKey INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/HotKey.AltKey/*" />
-ACCESS AltKey 
-	
-	
+ACCESS AltKey
+
+
 
 
 	RETURN lAltKey
 
 
 /// <include file="Gui.xml" path="doc/HotKey.AltKey/*" />
-ASSIGN AltKey(lEnable) 
-	
-	
+ASSIGN AltKey(lEnable)
+
+
 
 
 	RETURN lAltKey := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKey.CtrlKey/*" />
-ACCESS CtrlKey 
-	
-	
+ACCESS CtrlKey
+
+
 
 
 	RETURN lCtrlKey
 
 
 /// <include file="Gui.xml" path="doc/HotKey.CtrlKey/*" />
-ASSIGN CtrlKey(lEnable) 
-	
-	
+ASSIGN CtrlKey(lEnable)
+
+
 
 
 	RETURN lCtrlKey := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKey.ExtendedKey/*" />
-ACCESS ExtendedKey 
-	
-	
+ACCESS ExtendedKey
+
+
 
 
 	RETURN lExtKey
 
 
 /// <include file="Gui.xml" path="doc/HotKey.ExtendedKey/*" />
-ASSIGN ExtendedKey(lEnable) 
-	
-	
+ASSIGN ExtendedKey(lEnable)
+
+
 
 
 	RETURN lExtKey := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKey.ctor/*" />
-CONSTRUCTOR(bKey, lAlt, lCtl, lShift, lExt) 
-	
-	
+CONSTRUCTOR(bKey, lAlt, lCtl, lShift, lExt)
+
+
 
 
 	IF IsNumeric(bKey)
@@ -84,42 +84,42 @@ CONSTRUCTOR(bKey, lAlt, lCtl, lShift, lExt)
 	IF IsLogic(lExt)
 		SELF:lExtKey := lExt
 	ENDIF
-	RETURN 
+	RETURN
 
 
 
 
 /// <include file="Gui.xml" path="doc/HotKey.Key/*" />
-ACCESS Key 
-	
-	
+ACCESS Key
+
+
 
 
 	RETURN bKey
 
 
 /// <include file="Gui.xml" path="doc/HotKey.Key/*" />
-ASSIGN Key(bNewKey) 
-	
-	
+ASSIGN Key(bNewKey)
+
+
 
 
 	RETURN bKey := bNewKey
 
 
 /// <include file="Gui.xml" path="doc/HotKey.ShiftKey/*" />
-ACCESS ShiftKey 
-	
-	
+ACCESS ShiftKey
+
+
 
 
 	RETURN lShiftKey
 
 
 /// <include file="Gui.xml" path="doc/HotKey.ShiftKey/*" />
-ASSIGN ShiftKey(lEnable) 
-	
-	
+ASSIGN ShiftKey(lEnable)
+
+
 
 
 	RETURN lShiftKey := lEnable
@@ -135,14 +135,14 @@ CLASS HotKeyEdit INHERIT TextControl
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __SetRule(oNewRule AS HotKeyRule) AS VOID STRICT 
+	METHOD __SetRule(oNewRule AS HotKeyRule) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL dwInvalidCombinations	AS DWORD
 	LOCAL wInvalidModifiers			AS WORD
 
 
-	
-	
+
+
 
 
 	IF oNewRule:AltKeyInvalid
@@ -172,16 +172,16 @@ CLASS HotKeyEdit INHERIT TextControl
 
 
 	IF oNewRule:UseAltKeyOnInvalid
-		wInvalidModifiers := _OR(wInvalidModifiers, HOTKEYF_ALT)
+		wInvalidModifiers := (WORD) _OR(wInvalidModifiers, HOTKEYF_ALT)
 	ENDIF
 	IF oNewRule:UseCtrlKeyOnInvalid
-		wInvalidModifiers := _OR(wInvalidModifiers, HOTKEYF_CONTROL)
+		wInvalidModifiers := (WORD) _OR(wInvalidModifiers, HOTKEYF_CONTROL)
 	ENDIF
 	IF oNewRule:UseExtendedKeyOnInvalid
-		wInvalidModifiers := _OR(wInvalidModifiers, HOTKEYF_EXT)
+		wInvalidModifiers := (WORD) _OR(wInvalidModifiers, HOTKEYF_EXT)
 	ENDIF
 	IF oNewRule:UseShiftKeyOnInvalid
-		wInvalidModifiers := _OR(wInvalidModifiers, HOTKEYF_SHIFT)
+		wInvalidModifiers := (WORD) _OR(wInvalidModifiers, HOTKEYF_SHIFT)
 	ENDIF
 
 
@@ -190,12 +190,12 @@ CLASS HotKeyEdit INHERIT TextControl
 
 
 /// <include file="Gui.xml" path="doc/HotKeyEdit.ApplyHotKey/*" />
-METHOD ApplyHotKey(oWindow) 
+METHOD ApplyHotKey(oWindow)
 	LOCAL dwHotKey			AS DWORD
 
 
-	
-	
+
+
 
 
 	Default(@oWindow, SELF:Owner)
@@ -208,9 +208,9 @@ METHOD ApplyHotKey(oWindow)
 
 
 /// <include file="Gui.xml" path="doc/HotKeyEdit.Create/*" />
-METHOD Create() 
-	
-	
+METHOD Create()
+
+
 
 
 	IF (SUPER:Create() != NULL_PTR)
@@ -224,12 +224,12 @@ METHOD Create()
 
 
 /// <include file="Gui.xml" path="doc/HotKeyEdit.HotKey/*" />
-ACCESS HotKey 
+ACCESS HotKey
 	LOCAL oHotKeyRet AS HotKey
 	LOCAL wRet AS WORD
 
 
-	wRet := _AND(0xFFFF,SendMessage(SELF:Handle(), DWORD(HKM_GETHOTKEY), 0U, 0L))
+	wRet := (WORD) _AND(0xFFFF,SendMessage(SELF:Handle(), DWORD(HKM_GETHOTKEY), 0U, 0L))
 
 
 	oHotKeyRet := HotKey{LoByte(wRet)}
@@ -243,40 +243,40 @@ ACCESS HotKey
 
 
 /// <include file="Gui.xml" path="doc/HotKeyEdit.HotKey/*" />
-ASSIGN HotKey(oNewHotKey) 
+ASSIGN HotKey(oNewHotKey)
 	LOCAL bModifierFlags AS BYTE
 
 
-	
-	
+
+
 
 
 	IF oNewHotKey:AltKey
-		bModifierFlags := _OR(bModifierFlags, HOTKEYF_ALT)
+		bModifierFlags := (BYTE) _OR(bModifierFlags, HOTKEYF_ALT)
 	ENDIF
 	IF oNewHotKey:CtrlKey
-		bModifierFlags := _OR(bModifierFlags, HOTKEYF_CONTROL)
+		bModifierFlags := (BYTE) _OR(bModifierFlags, HOTKEYF_CONTROL)
 	ENDIF
 	IF oNewHotKey:ExtendedKey
-		bModifierFlags := _OR(bModifierFlags, HOTKEYF_EXT)
+		bModifierFlags := (BYTE) _OR(bModifierFlags, HOTKEYF_EXT)
 	ENDIF
 	IF oNewHotKey:ShiftKey
-		bModifierFlags := _OR(bModifierFlags, HOTKEYF_SHIFT)
+		bModifierFlags := (BYTE) _OR(bModifierFlags, HOTKEYF_SHIFT)
 	ENDIF
 
 
 	SendMessage(SELF:Handle(), HKM_SETHOTKEY, MakeWord(oNewHotKey:Key, bModifierFlags), 0)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/HotKeyEdit.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 
 
-	
-	
+
+
 
 
 	IF !IsNil(kStyle)
@@ -294,29 +294,29 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	SELF:__ClassName := HOTKEY_CLASS
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/HotKeyEdit.Rule/*" />
-ACCESS Rule 
-	
-	
+ACCESS Rule
+
+
 
 
 	RETURN oHotKeyRule
 
 
 /// <include file="Gui.xml" path="doc/HotKeyEdit.Rule/*" />
-ASSIGN Rule(oNewRule) 
-	
-	
+ASSIGN Rule(oNewRule)
+
+
 
 
 	oHotKeyRule := oNewRule
 	SELF:__SetRule(oNewRule)
 
 
-	RETURN 
+	RETURN
 END CLASS
 
 
@@ -337,232 +337,232 @@ CLASS HotKeyRule INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.AltKeyInvalid/*" />
-ACCESS AltKeyInvalid 
-	
-	
+ACCESS AltKeyInvalid
+
+
 
 
 	RETURN lAltKeyInvalid
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.AltKeyInvalid/*" />
-ASSIGN AltKeyInvalid(lEnable) 
-	
-	
+ASSIGN AltKeyInvalid(lEnable)
+
+
 
 
 	RETURN lAltKeyInvalid := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.CtrlAltKeysInvalid/*" />
-ACCESS CtrlAltKeysInvalid 
-	
-	
+ACCESS CtrlAltKeysInvalid
+
+
 
 
 	RETURN lCtrlAltKeysInvalid
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.CtrlAltKeysInvalid/*" />
-ASSIGN CtrlAltKeysInvalid(lEnable) 
-	
-	
+ASSIGN CtrlAltKeysInvalid(lEnable)
+
+
 
 
 	RETURN lCtrlAltKeysInvalid := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.CtrlKeyInvalid/*" />
-ACCESS CtrlKeyInvalid 
-	
-	
+ACCESS CtrlKeyInvalid
+
+
 
 
 	RETURN lCtrlKeyInvalid
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.CtrlKeyInvalid/*" />
-ASSIGN CtrlKeyInvalid(lEnable) 
-	
-	
+ASSIGN CtrlKeyInvalid(lEnable)
+
+
 
 
 	RETURN lCtrlKeyInvalid := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.ctor/*" />
-CONSTRUCTOR() 
-    
-    
+CONSTRUCTOR()
+
+
     SUPER()
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.ShiftAltKeysInvalid/*" />
-ACCESS ShiftAltKeysInvalid 
-	
-	
+ACCESS ShiftAltKeysInvalid
+
+
 
 
 	RETURN lShiftAltKeysInvalid
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.ShiftAltKeysInvalid/*" />
-ASSIGN ShiftAltKeysInvalid(lEnable) 
+ASSIGN ShiftAltKeysInvalid(lEnable)
 
 
-	
-	
+
+
 
 
 	RETURN lShiftAltKeysInvalid := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.ShiftCtrlAltKeysInvalid/*" />
-ACCESS ShiftCtrlAltKeysInvalid 
-	
-	
+ACCESS ShiftCtrlAltKeysInvalid
+
+
 
 
 	RETURN lShiftCtrlAltKeysInvalid
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.ShiftCtrlAltKeysInvalid/*" />
-ASSIGN ShiftCtrlAltKeysInvalid(lEnable) 
-	
-	
+ASSIGN ShiftCtrlAltKeysInvalid(lEnable)
+
+
 
 
 	RETURN lShiftCtrlAltKeysInvalid := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.ShiftCtrlKeysInvalid/*" />
-ACCESS ShiftCtrlKeysInvalid 
-	
-	
+ACCESS ShiftCtrlKeysInvalid
+
+
 
 
 	RETURN lShiftCtrlKeysInvalid
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.ShiftCtrlKeysInvalid/*" />
-ASSIGN ShiftCtrlKeysInvalid(lEnable) 
-	
-	
+ASSIGN ShiftCtrlKeysInvalid(lEnable)
+
+
 
 
 	RETURN lShiftCtrlKeysInvalid := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.ShiftKeyInvalid/*" />
-ACCESS ShiftKeyInvalid 
-	
-	
+ACCESS ShiftKeyInvalid
+
+
 
 
 	RETURN lShiftKeyInvalid
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.ShiftKeyInvalid/*" />
-ASSIGN ShiftKeyInvalid(lEnable) 
-	
-	
+ASSIGN ShiftKeyInvalid(lEnable)
+
+
 
 
 	RETURN lShiftKeyInvalid := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.UnmodifiedKeysInvalid/*" />
-ACCESS UnmodifiedKeysInvalid 
-	
-	
+ACCESS UnmodifiedKeysInvalid
+
+
 
 
 	RETURN lUnmodKeysInvalid
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.UnmodifiedKeysInvalid/*" />
-ASSIGN UnmodifiedKeysInvalid(lEnable) 
-	
-	
+ASSIGN UnmodifiedKeysInvalid(lEnable)
+
+
 
 
 	RETURN lUnmodKeysInvalid := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.UseAltKeyOnInvalid/*" />
-ACCESS UseAltKeyOnInvalid 
-	
-	
+ACCESS UseAltKeyOnInvalid
+
+
 
 
 	RETURN lInvalidAltKey
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.UseAltKeyOnInvalid/*" />
-ASSIGN UseAltKeyOnInvalid(lEnable) 
+ASSIGN UseAltKeyOnInvalid(lEnable)
 
 
-	
-	
+
+
 
 
 	RETURN lInvalidAltKey := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.UseCtrlKeyOnInvalid/*" />
-ACCESS UseCtrlKeyOnInvalid 
-	
-	
+ACCESS UseCtrlKeyOnInvalid
+
+
 
 
 	RETURN lInvalidCtrlKey
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.UseCtrlKeyOnInvalid/*" />
-ASSIGN UseCtrlKeyOnInvalid(lEnable) 
-	
-	
+ASSIGN UseCtrlKeyOnInvalid(lEnable)
+
+
 
 
 	RETURN lInvalidCtrlKey := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.UseExtendedKeyOnInvalid/*" />
-ACCESS UseExtendedKeyOnInvalid 
-	
-	
+ACCESS UseExtendedKeyOnInvalid
+
+
 
 
 	RETURN lInvalidExtKey
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.UseExtendedKeyOnInvalid/*" />
-ASSIGN UseExtendedKeyOnInvalid(lEnable) 
-	
-	
+ASSIGN UseExtendedKeyOnInvalid(lEnable)
+
+
 
 
 	RETURN lInvalidExtKey := lEnable
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.UseShiftKeyOnInvalid/*" />
-ACCESS UseShiftKeyOnInvalid 
-	
-	
+ACCESS UseShiftKeyOnInvalid
+
+
 
 
 	RETURN lInvalidShiftKey
 
 
 /// <include file="Gui.xml" path="doc/HotKeyRule.UseShiftKeyOnInvalid/*" />
-ASSIGN UseShiftKeyOnInvalid(lEnable) 
-	
-	
+ASSIGN UseShiftKeyOnInvalid(lEnable)
+
+
 
 
 	RETURN lInvalidShiftKey := lEnable

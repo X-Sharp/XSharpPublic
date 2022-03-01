@@ -13,7 +13,7 @@
     <Unsafe>true</Unsafe>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.8.4.1</XSharpProjectversion>
+    <XSharpProjectversion>2.10.0.3</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -47,6 +47,7 @@
     <Compile Include="Functions\Codeblock.prg" />
     <Compile Include="Functions\CompilerSupport.prg" />
     <Compile Include="Functions\Conversions.prg" />
+    <Compile Include="Functions\ExtensionMethods.prg" />
     <Compile Include="Functions\MemVarSave.prg" />
     <Compile Include="Functions\Debugging.prg" />
     <Compile Include="Functions\DiskIO.prg" />

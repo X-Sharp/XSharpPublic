@@ -179,6 +179,33 @@ PUBLIC CLASS XSharp.MemVar
 	PRIVATE STATIC _PrivatesEnum AS IEnumerator<STRING>
 	PRIVATE STATIC _PublicsEnum  AS IEnumerator<STRING>
 
+
+    #region Debugger Functions
+        // These names are used by the Debugger MemVar window
+        // if you change them then also change them in MemvarsWindow.prg
+
+        /// <exclude />
+        STATIC METHOD DbgPublicsFirst() AS STRING
+            RETURN PublicsFirst()
+        /// <exclude />
+        STATIC METHOD DbgPublicsNext() AS STRING
+            RETURN PublicsNext()
+
+
+        /// <exclude />
+        STATIC METHOD DbgPrivatesFirst() AS STRING
+            RETURN PrivatesFirst()
+        /// <exclude />
+        STATIC METHOD DbgPrivatesNext() AS STRING
+            RETURN PrivatesNext()
+
+
+        /// <exclude />
+        STATIC METHOD DbgGetVar(cName as STRING) AS USUAL
+            RETURN GetSafe(cName)
+
+    #endregion
+
     STATIC CONSTRUCTOR()
         MemVar.Get      := _Get
         MemVar.Put      := _Put

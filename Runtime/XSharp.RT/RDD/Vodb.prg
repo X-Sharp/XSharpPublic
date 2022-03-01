@@ -13,12 +13,21 @@ USING System.Linq
 /// <summary>The VoDb class extends the CoreDb class with methods that take usual parameters or return usual values.<br/>
 /// All other methods are identical and inherited from the CoreDb class.</summary>
 PARTIAL CLASS XSharp.VoDb INHERIT XSharp.CoreDb
+PRIVATE STATIC METHOD DecodeResult(oValue as OBJECT) AS USUAL
+    IF oValue == DBNull.Value
+        RETURN NIL
+    ENDIF
+    RETURN oValue
+
 /// <inheritdoc cref='CoreDb.BlobInfo'/>
+
+
+
 STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
     LOCAL oRet := ptrRet AS OBJECT
     LOCAL result AS LOGIC
     result := CoreDb.BlobInfo(nOrdinal, nPos, REF oRet)
-    ptrRet := oRet
+    ptrRet := DecodeResult(oRet)
     RETURN result
 
 /// <inheritdoc cref='CoreDb.BlobInfo'/>
@@ -30,7 +39,7 @@ STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oValue REF USUAL) AS 
     LOCAL oRet := oValue AS OBJECT
     LOCAL result AS LOGIC
     result := CoreDb.FieldInfo(nOrdinal, nFldPos, REF oRet)
-    oValue := oRet
+    oValue := DecodeResult(oRet)
     RETURN result
 
 /// <inheritdoc cref="CoreDb.FieldInfo"/>
@@ -42,6 +51,7 @@ STATIC METHOD FieldGet(nPos AS DWORD,uRet REF USUAL) AS LOGIC
     LOCAL lResult AS LOGIC
     LOCAL oValue := uRet AS OBJECT
     lResult := CoreDb.FieldGet(nPos, REF oValue)
+    // Note: FieldGet SHOULD return DBNull.Value when needed
     uRet := oValue
     RETURN lResult
 
@@ -56,7 +66,7 @@ STATIC METHOD Info(nOrdinal AS DWORD,oValue REF USUAL) AS LOGIC
         oRet := (OBJECT[]) aValue
     ENDIF
     result := CoreDb.Info(nOrdinal, REF oRet)
-    oValue := oRet
+    oValue := DecodeResult(oRet)
     RETURN result
 
 /// <inheritdoc cref='CoreDb.Info'/>
@@ -80,7 +90,7 @@ STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,oV
     IF oRet == NULL
         oValue := NIL
     ELSE
-        oValue := oRet
+        oValue := DecodeResult(oRet)
     ENDIF
     RETURN result
 
@@ -97,7 +107,7 @@ STATIC METHOD RddInfo(nOrdinal AS DWORD,uRet REF USUAL) AS LOGIC
     LOCAL oValue AS OBJECT
     oValue := uRet
     LOCAL result := CoreDb.RddInfo(nOrdinal, REF oValue) AS LOGIC
-    uRet := oValue
+    uRet := DecodeResult(oValue)
     RETURN result
 
 /// <inheritdoc cref='CoreDb.RddInfo'/>
@@ -113,7 +123,7 @@ STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS USUAL,oValue REF USUAL) AS 
     LOCAL oRet := oValue AS OBJECT
     LOCAL lResult AS LOGIC
     lResult := CoreDb.RecordInfo(nOrdinal, oRecID, REF oRet)
-    oValue := oRet
+    oValue := DecodeResult(oRet)
     RETURN lResult
 
 /// <inheritdoc cref='CoreDb.RecordInfo'/>
@@ -382,7 +392,6 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
 INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS ARRAY) AS ARRAY
 
 	LOCAL aNew      AS ARRAY
-	LOCAL cobScan   AS CODEBLOCK
 	LOCAL cName     AS STRING
 	LOCAL n, i, j   AS DWORD
 	LOCAL lMatch	AS LOGIC
@@ -392,7 +401,6 @@ INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS A
 		RETURN (aStruct)
 	ENDIF
 
-	//	UH 11/30/1998
 	IF Empty(aMatch)
 		lMatch := .F.
 	ELSE
@@ -409,13 +417,17 @@ INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS A
 	aNames  := aNew
 	cName   := ""
 	aNew    := {}
-	cobScan := {|aFld| aFld[DBS_NAME] == cName}
+    // Convert AStruct to List<String>
+    VAR aFields := Dictionary<String, DWORD>{StringComparer.OrdinalIgnoreCase}
+    FOR i := 1 to ALen(aStruct)
+        local aFld := aStruct[i] AS ARRAY
+        aFields:Add(Trim(aFld[DBS_NAME]), i )
+    NEXT
 
 	FOR i := 1 TO n
-		cName := aNames[i]
-		j := AScan(aStruct, cobScan)
-
-		IF j > 0
+		cName := Trim(aNames[i])
+        IF aFields:ContainsKey(cName)
+            j := aFields[cName]
 			IF lMatch
 				IF aMatch[i, DBS_TYPE] == aStruct[j, DBS_TYPE]
 					AAdd(aNew, aStruct[j])

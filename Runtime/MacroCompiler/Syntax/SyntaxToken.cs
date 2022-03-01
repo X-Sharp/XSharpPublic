@@ -145,7 +145,7 @@ namespace XSharp.MacroCompiler.Syntax
 
         // Pre processor symbols [entity]
         PP_FIRST,
-        PP_COMMAND, PP_DEFINE, PP_ELSE, PP_ENDIF, PP_ENDREGION, PP_ERROR, PP_IFDEF, PP_IFNDEF, PP_INCLUDE, PP_LINE, PP_REGION, PP_TRANSLATE,
+        PP_COMMAND, PP_DEFINE, PP_ELSE, PP_ENDIF, PP_ENDREGION, PP_ERROR, PP_IF, PP_IFDEF, PP_IFNDEF, PP_INCLUDE, PP_LINE, PP_REGION, PP_STDOUT, PP_TRANSLATE,
         PP_UNDEF, PP_WARNING,
         PP_LAST,
 
@@ -709,11 +709,13 @@ namespace XSharp.MacroCompiler.Syntax
                 { "#ENDIF", TokenType.PP_ENDIF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
                 { "#ENDREGION", TokenType.PP_ENDREGION},	// #region [description]sourceCode#endregion
                 { "#ERROR", TokenType.PP_ERROR},			// #error [errorMessage]
+                //{ "#IF", TokenType.PP_IF},			        // #if <condition>   <statements>...[#else]   <statements>...#endif
                 { "#IFDEF", TokenType.PP_IFDEF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
                 { "#IFNDEF", TokenType.PP_IFNDEF},			// #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
                 { "#INCLUDE", TokenType.PP_INCLUDE},		// #include "<headerfilename>"
                 { "#LINE", TokenType.PP_LINE},				// #line <number> [FileName] or #line default
                 { "#REGION", TokenType.PP_REGION},			// #region [description]sourceCode#endregion
+                { "#STDOUT", TokenType.PP_STDOUT},			// #stdout [<message>]
                 { "#TRANSLATE", TokenType.PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern>
                 { "#UNDEF", TokenType.PP_UNDEF},			// #undef <identifier>
                 { "#WARNING", TokenType.PP_WARNING},		// #warning [warningMessage]

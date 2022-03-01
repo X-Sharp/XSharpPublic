@@ -11,6 +11,17 @@ USING System.Diagnostics
 USING System.Reflection
 USING XSharp
 USING System.Runtime.Serialization
+
+#define USEATTRIB
+#ifdef USEATTRIB
+    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
+    #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
+#else
+    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[INLINE\] =>
+    #XTRANSLATE \[NODEBUG\] =>
+#endif
 BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the new TYPED ARRAY type.<br/>
     /// This type has methods and properties that normally are never directly called from user code.
@@ -21,9 +32,9 @@ BEGIN NAMESPACE XSharp
     PUBLIC CLASS __ArrayBase<T> ;
         IMPLEMENTS INamedIndexer, IEnumerable<T>, ISerializable
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         PROTECTED INTERNAL _internalList AS List<T>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         PRIVATE _islocked AS LOGIC
         #region constructors
         /// <summary>Create an empty array</summary>
@@ -75,16 +86,16 @@ BEGIN NAMESPACE XSharp
 
         #region properties
         /// <summary>Is the array empty.</summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         PUBLIC PROPERTY IsEmpty AS LOGIC GET _internalList:Count == 0
         /// <summary>Length of the array.</summary>
         PUBLIC PROPERTY Length AS DWORD GET (DWORD) _internalList:Count
         /// <summary>Length of the array as integer.</summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         PUBLIC PROPERTY Count AS INT GET _internalList:Count
 
         /// <summary>Returns the default value for array elements when arrays are resized or initialized.</summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         PUBLIC VIRTUAL PROPERTY DefaultValue AS T GET DEFAULT(T)
         #endregion
 
@@ -389,7 +400,7 @@ BEGIN NAMESPACE XSharp
             SELF:_islocked := lLocked
             RETURN wasLocked
             /// <summary>Is the array locked?</summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         PROPERTY Locked AS LOGIC GET _islocked
 
         INTERNAL METHOD CheckLock AS LOGIC

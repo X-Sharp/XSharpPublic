@@ -30,54 +30,54 @@ CLASS Font INHERIT VObject
 
 	//PP-030828 Strong typing
  /// <exclude />
-ACCESS __FontCharSet AS INT STRICT 
+ACCESS __FontCharSet AS BYTE STRICT
 	//PP-030828 Strong typing
 	RETURN lfCharSet
 
 
  /// <exclude />
-ACCESS __FontFaceName AS STRING STRICT 
+ACCESS __FontFaceName AS STRING STRICT
 	//PP-030828 Strong typing
 	RETURN sFaceName
 
 
  /// <exclude />
-ACCESS __FontHeight AS INT STRICT 
+ACCESS __FontHeight AS INT STRICT
 	//PP-030828 Strong typing
 	RETURN lfHeight
 
 
  /// <exclude />
-ACCESS __FontPitchAndFamily AS INT STRICT 
+ACCESS __FontPitchAndFamily AS BYTE STRICT
 	//PP-030828 Strong typing
 	RETURN lfPitchAndFamily
 
 
  /// <exclude />
-ACCESS __PointSize AS INT STRICT 
+ACCESS __PointSize AS INT STRICT
 	//PP-030828 Strong typing
 	RETURN iPointSize
 
 
 /// <include file="Gui.xml" path="doc/Font.PointSize/*" />
-ACCESS PointSize AS INT STRICT 
+ACCESS PointSize AS INT STRICT
 	//PP-030828 Strong typing
 	RETURN iPointSize
 
 
  /// <exclude />
-ASSIGN __PointSize(x AS INT)  STRICT 
+ASSIGN __PointSize(x AS INT)  STRICT
 	//PP-030828 Strong typing
 	RETURN iPointSize := x
 
 
 /// <include file="Gui.xml" path="doc/Font.Bold/*" />
-ACCESS Bold 
+ACCESS Bold
 	RETURN lfWeight == __WCHeavyWeight
 
 
 /// <include file="Gui.xml" path="doc/Font.Bold/*" />
-ASSIGN Bold(lfState) 
+ASSIGN Bold(lfState)
 	LOCAL lfNewWeight AS WORD
 
 
@@ -94,21 +94,21 @@ ASSIGN Bold(lfState)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Font.CharSet/*" />
-ACCESS CharSet 
+ACCESS CharSet
    RETURN SELF:lfCharSet
 
 
 /// <include file="Gui.xml" path="doc/Font.ClipPrecision/*" />
-ACCESS ClipPrecision 
+ACCESS ClipPrecision
    RETURN SELF:lfClipPrecision
 
 
 /// <include file="Gui.xml" path="doc/Font.ClipPrecision/*" />
-ASSIGN ClipPrecision(nNewClipPrecision) 
+ASSIGN ClipPrecision(nNewClipPrecision)
 	// DHer: 18/12/2008
 	IF SELF:lfClipPrecision<>nNewClipPrecision
 		SELF:lfClipPrecision := nNewClipPrecision
@@ -116,13 +116,13 @@ ASSIGN ClipPrecision(nNewClipPrecision)
 	ENDIF
 
 
-   RETURN 
+   RETURN
 
 
 
 
 /// <include file="Gui.xml" path="doc/Font.ConvPntToDim/*" />
-METHOD ConvPntToDim(nPntSize, hDCConv) 
+METHOD ConvPntToDim(nPntSize, hDCConv)
 	LOCAL hDC AS PTR
 	LOCAL wDim AS Dimension
 
@@ -142,7 +142,7 @@ METHOD ConvPntToDim(nPntSize, hDCConv)
 
 
 /// <include file="Gui.xml" path="doc/Font.Create/*" />
-METHOD Create(lPrinter, hdc) 
+METHOD Create(lPrinter, hdc)
 	LOCAL logFont IS _winLOGFONT
 	LOCAL i, len AS INT
 	LOCAL oDim AS Dimension
@@ -202,7 +202,7 @@ METHOD Create(lPrinter, hdc)
 		ELSE
 			len := INT(_CAST, SLen(sFaceName))
 			FOR i := 1 UPTO len
-				logFont:lfFaceName[i] := Asc(SubStr(sFaceName, i, 1))
+				logFont:lfFaceName[i] := (BYTE) Asc(SubStr(sFaceName, i, 1))
 			NEXT  // i
 			logFont:lfFaceName[i] := 0
 		ENDIF
@@ -218,8 +218,8 @@ METHOD Create(lPrinter, hdc)
 
 /// <include file="Gui.xml" path="doc/Font.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 	SUPER:Destroy()
 
 
@@ -233,13 +233,13 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/Font.Escapement/*" />
-ACCESS Escapement 
+ACCESS Escapement
 	// DHer: 18/12/2008
    RETURN SELF:lfEscapement
 
 
 /// <include file="Gui.xml" path="doc/Font.FaceName/*" />
-ACCESS FaceName 
+ACCESS FaceName
    RETURN SELF:sFaceName
 
 
@@ -254,21 +254,21 @@ METHOD Handle() AS PTR
 
 
 /// <include file="Gui.xml" path="doc/Font.Height/*" />
-ACCESS Height 
+ACCESS Height
    RETURN SELF:lfHeight
 
 
 /// <include file="Gui.xml" path="doc/Font.Height/*" />
-ASSIGN Height( liHeight ) 
+ASSIGN Height( liHeight )
    IF SELF:lfHeight != liHeight
 	   SELF:bFontChanged := TRUE
 	   SELF:lfHeight:= liHeight
    ENDIF
-   RETURN 
+   RETURN
 
 
 /// <include file="Gui.xml" path="doc/Font.ctor/*" />
-CONSTRUCTOR(kFont, oDimension, sTypeFace) 
+CONSTRUCTOR(kFont, oDimension, sTypeFace)
 	SUPER()
 
 
@@ -293,7 +293,7 @@ CONSTRUCTOR(kFont, oDimension, sTypeFace)
 		lfWidth := 0
 
 
-		lfPitchAndFamily := _OR(lfPitchAndFamily, (WORD) __WCStdFontFamily[iStdFontType + 1])
+		lfPitchAndFamily := (BYTE) _OR(lfPitchAndFamily, (WORD) __WCStdFontFamily[iStdFontType + 1])
 	ELSE
 		IF IsNumeric(oDimension)
 			//oDimension := self:ConvPntToDim(oDimension)
@@ -313,7 +313,7 @@ CONSTRUCTOR(kFont, oDimension, sTypeFace)
 		ENDIF
 
 
-		lfPitchAndFamily := _OR(lfPitchAndFamily, __WCConvertFont(kFont))
+		lfPitchAndFamily := (BYTE) _OR(lfPitchAndFamily, __WCConvertFont(kFont))
 
 
 		IF kFont == FontScript
@@ -326,36 +326,36 @@ CONSTRUCTOR(kFont, oDimension, sTypeFace)
 	bFontChanged := TRUE
 
 
-	
-	
 
 
-	RETURN 
+
+
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Font.Italic/*" />
-ACCESS Italic 
+ACCESS Italic
 	RETURN lfItalic == 1
 
 
 /// <include file="Gui.xml" path="doc/Font.Italic/*" />
-ASSIGN Italic(lfState) 
+ASSIGN Italic(lfState)
 	IF lfItalic != lfState
 		lfItalic := lfState
 		bFontChanged := TRUE
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Font.Light/*" />
-ACCESS Light 
+ACCESS Light
 	RETURN lfWeight == __WCLightWeight
 
 
 /// <include file="Gui.xml" path="doc/Font.Light/*" />
-ASSIGN Light(lfState) 
+ASSIGN Light(lfState)
 	LOCAL lfNewWeight AS WORD
 
 
@@ -372,16 +372,16 @@ ASSIGN Light(lfState)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Font.Normal/*" />
-ACCESS Normal 
+ACCESS Normal
 	RETURN lfWeight == __WCNormalWeight
 
 
 /// <include file="Gui.xml" path="doc/Font.Normal/*" />
-ASSIGN Normal(lfState) 
+ASSIGN Normal(lfState)
 	LOCAL lfNewWeight AS WORD
 
 
@@ -398,22 +398,22 @@ ASSIGN Normal(lfState)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Font.Orientation/*" />
-ACCESS Orientation 
+ACCESS Orientation
 	// DHer: 18/12/2008
    RETURN SELF:lfOrientation
 
 
 /// <include file="Gui.xml" path="doc/Font.OutPrecision/*" />
-ACCESS OutPrecision 
+ACCESS OutPrecision
    RETURN SELF:lfOutPrecision
 
 
 /// <include file="Gui.xml" path="doc/Font.OutPrecision/*" />
-ASSIGN OutPrecision(nNewOutPrecision) 
+ASSIGN OutPrecision(nNewOutPrecision)
 	// DHer: 18/12/2008
 	IF SELF:lfOutPrecision<>nNewOutPrecision
 		SELF:lfOutPrecision := nNewOutPrecision
@@ -421,11 +421,11 @@ ASSIGN OutPrecision(nNewOutPrecision)
 	ENDIF
 
 
-   RETURN 
-   
-   
+   RETURN
+
+
 /// <include file="Gui.xml" path="doc/Font.PitchAndFamily/*" />
-ACCESS PitchAndFamily 
+ACCESS PitchAndFamily
    RETURN SELF:lfPitchAndFamily
 
 
@@ -437,7 +437,7 @@ ASSIGN Family(nFamily)
 
 	   // DHer: 18/12/2008
 	   lfFamily := nFamily
-	   lfNewPitchAndFamily := _OR(_AND(SELF:lfPitchAndFamily,0x0F),lfFamily)
+	   lfNewPitchAndFamily := (BYTE) _OR(_AND(SELF:lfPitchAndFamily,0x0F),lfFamily)
 
 
 	   IF lfNewPitchAndFamily<>SELF:lfPitchAndFamily
@@ -446,25 +446,25 @@ ASSIGN Family(nFamily)
 	   ENDIF
 
 
-   RETURN 
+   RETURN
 
 
 
 
 /// <include file="Gui.xml" path="doc/Font.PitchFixed/*" />
-ACCESS PitchFixed 
+ACCESS PitchFixed
 	RETURN _AND(lfPitchAndFamily, 0x03) == 1
 
 
 /// <include file="Gui.xml" path="doc/Font.PitchFixed/*" />
-ASSIGN PitchFixed(lfState) 
+ASSIGN PitchFixed(lfState)
 	LOCAL lfNewPitchAndFamily AS BYTE
 
 
 	IF lfState == TRUE
-		lfNewPitchAndFamily := _OR(_AND(lfPitchAndFamily, 0xFC), __WCFixedPitch)
+		lfNewPitchAndFamily := (BYTE) _OR(_AND(lfPitchAndFamily, 0xFC), __WCFixedPitch)
 	ELSE
-		lfNewPitchAndFamily := _OR(_AND(lfPitchAndFamily, 0xFC), __WCVariablePitch)
+		lfNewPitchAndFamily := (BYTE) _OR(_AND(lfPitchAndFamily, 0xFC), __WCVariablePitch)
 	ENDIF
 
 
@@ -474,23 +474,23 @@ ASSIGN PitchFixed(lfState)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Font.PitchVariable/*" />
-ACCESS PitchVariable 
+ACCESS PitchVariable
 	RETURN _AND(lfPitchAndFamily, 0x03) == 2
 
 
 /// <include file="Gui.xml" path="doc/Font.PitchVariable/*" />
-ASSIGN PitchVariable(lfState) 
+ASSIGN PitchVariable(lfState)
 	LOCAL lfNewPitchAndFamily AS BYTE
 
 
 	IF lfState == TRUE
-		lfNewPitchAndFamily := _OR(_AND(lfPitchAndFamily, 0xFC), __WCVariablePitch)
+		lfNewPitchAndFamily := (BYTE) _OR(_AND(lfPitchAndFamily, 0xFC), __WCVariablePitch)
 	ELSE
-		lfNewPitchAndFamily := _OR(_AND(lfPitchAndFamily, 0xFC), __WCFixedPitch)
+		lfNewPitchAndFamily := (BYTE) _OR(_AND(lfPitchAndFamily, 0xFC), __WCFixedPitch)
 	ENDIF
 
 
@@ -500,21 +500,21 @@ ASSIGN PitchVariable(lfState)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Font.Quality/*" />
-ACCESS Quality 
+ACCESS Quality
 RETURN SELF:lfQuality
 
 
 /// <include file="Gui.xml" path="doc/Font.Size/*" />
-ACCESS Size 
+ACCESS Size
 RETURN SELF:iPointSize
 
 
 /// <include file="Gui.xml" path="doc/Font.SizeText/*" />
-METHOD SizeText(cString ) 
+METHOD SizeText(cString )
    LOCAL oDimension AS Dimension
    LOCAL oWinRect IS _WinRect
    LOCAL hDC AS PTR
@@ -526,7 +526,7 @@ METHOD SizeText(cString )
 	   SetRect(@oWinRect,0,0,0,0)
 	   SelectObject(hDC,SELF:Handle())
 	   DrawText(hDc,String2Psz(cString),-1,@oWinRect,_OR(DT_LEFT,DT_NOPREFIX,DT_EXPANDTABS,DT_CALCRECT))
-	   DeleteDC(hDc)			
+	   DeleteDC(hDc)
 	   oDimension := Dimension{oWinRect:Right,oWinRect:bottom}
 
 
@@ -536,44 +536,44 @@ METHOD SizeText(cString )
 
 
 /// <include file="Gui.xml" path="doc/Font.Strikethru/*" />
-ACCESS Strikethru 
+ACCESS Strikethru
 	RETURN lfStrikeOut == 1
 
 
 /// <include file="Gui.xml" path="doc/Font.Strikethru/*" />
-ASSIGN Strikethru(lfState) 
+ASSIGN Strikethru(lfState)
 	IF lfStrikeOut != lfState
 		lfStrikeOut := lfState
 		bFontChanged := TRUE
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Font.Underline/*" />
-ACCESS Underline 
+ACCESS Underline
 	RETURN lfUnderline == 1
 
 
 /// <include file="Gui.xml" path="doc/Font.Underline/*" />
-ASSIGN Underline(lfState) 
+ASSIGN Underline(lfState)
 	IF lfUnderline != lfState
 		lfUnderline := lfState
 		bFontChanged := TRUE
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Font.Weight/*" />
-ACCESS Weight 
+ACCESS Weight
 RETURN SELF:lfWeight
 
 
 /// <include file="Gui.xml" path="doc/Font.Width/*" />
-ACCESS Width 
+ACCESS Width
 RETURN SELF:lfWidth
 END CLASS
 

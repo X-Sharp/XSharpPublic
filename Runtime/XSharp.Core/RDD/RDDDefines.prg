@@ -613,14 +613,36 @@ DEFINE DBRMI_RESULT             := 5
 DEFINE DBRMI_SIZE               := 5
 
 /* Numeric DBF TYPES */
+/// <summary>
+/// Standard table
+/// </summary>
 DEFINE DB_DBF_STD              := 1
+/// <summary>
+/// FoxPro table
+/// </summary>
 DEFINE DB_DBF_VFP              := 2
 
 
 /* Numeric MEMO TYPES */
+/// <summary>
+/// No Memo
+/// </summary>
+/// <seealso cref="RDDI_MEMOTYPE" />
 DEFINE DB_MEMO_NONE            := 0
+/// <summary>
+/// DBT Memo
+/// </summary>
+/// <seealso cref="RDDI_MEMOTYPE" />
 DEFINE DB_MEMO_DBT             := 1
+/// <summary>
+/// FPT Memo
+/// </summary>
+/// <seealso cref="RDDI_MEMOTYPE" />
 DEFINE DB_MEMO_FPT             := 2
+/// <summary>
+/// SMT Memo
+/// </summary>
+/// <seealso cref="RDDI_MEMOTYPE" />
 DEFINE DB_MEMO_SMT             := 3
 
 /* MEMO EXTENDED TYPES */
@@ -631,20 +653,34 @@ DEFINE DB_MEMOVER_CLIP         := 4
 
 
 /* LOCK SCHEMES */
-/// <exclude />
+/// <summary>
+/// Default Harbour Locking scheme
+/// </summary>
 DEFINE DB_DBFLOCK_DEFAULT      := 0
-/// <exclude />
-DEFINE DB_DBFLOCK_CLIPPER      := 1   /* default Cl*pper locking scheme */
-/// <exclude />
-DEFINE DB_DBFLOCK_COMIX        := 2   /* COMIX and CL53 DBFCDX hyper locking scheme */
-/// <exclude />
-DEFINE DB_DBFLOCK_VFP          := 3   /* [V]FP, CL52 DBFCDX, SIx3 SIXCDX, CDXLOCK.OBJ */
-/// <exclude />
-DEFINE DB_DBFLOCK_HB32         := 4   /* Harbour hyper locking scheme for 32bit file API */
-/// <exclude />
-DEFINE DB_DBFLOCK_HB64         := 5   /* Harbour hyper locking scheme for 64bit file API */
-/// <exclude />
-DEFINE DB_DBFLOCK_CLIPPER2     := 6   /* extended Cl*pper locking scheme NTXLOCK2.OBJ */
+/// <summary>
+/// default Clipper locking scheme
+/// </summary>
+DEFINE DB_DBFLOCK_CLIPPER      := 1
+/// <summary>
+/// COMIX and CL53 DBFCDX hyper locking scheme
+/// </summary>
+DEFINE DB_DBFLOCK_COMIX        := 2
+/// <summary>
+/// [V]FP, CL52 DBFCDX, SIx3 SIXCDX, CDXLOCK.OBJ
+/// </summary>
+DEFINE DB_DBFLOCK_VFP          := 3
+/// <summary>
+/// Harbour hyper locking scheme for 32bit file API
+/// </summary>
+DEFINE DB_DBFLOCK_HB32         := 4
+/// <summary>
+/// Harbour hyper locking scheme for 64bit file API
+/// </summary>
+DEFINE DB_DBFLOCK_HB64         := 5
+/// <summary>
+/// extended Clipper locking scheme NTXLOCK2.OBJ
+/// </summary>
+DEFINE DB_DBFLOCK_CLIPPER2     := 6
 
 
 // File Extensions
@@ -654,11 +690,17 @@ DEFINE SMT_MEMOEXT             := ".SMT"
 DEFINE DBV_MEMOEXT             := ".DBV"
 
 // Blocks
-/// <exclude />
+/// <summary>
+/// Default DBT BlockSize
+/// </summary>
 DEFINE DBT_DEFBLOCKSIZE        := 512
-/// <exclude />
+/// <summary>
+/// Default FPT BlockSize
+/// </summary>
 DEFINE FPT_DEFBLOCKSIZE        := 64
-/// <exclude />
+/// <summary>
+/// Default SMT Blocksize
+/// </summary>
 DEFINE SMT_DEFBLOCKSIZE        := 32
 
 // Locks

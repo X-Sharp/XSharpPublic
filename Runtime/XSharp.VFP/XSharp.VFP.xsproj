@@ -63,6 +63,7 @@
     <Compile Include="Classes\FoxArray.prg" />
     <Compile Include="ClassFunctions.prg" />
     <Compile Include="BitFunctions.prg" />
+    <Compile Include="Commands.prg" />
     <Compile Include="Cursors\DbFunctions.prg" />
     <Compile Include="Database\DbFunctions.prg" />
     <Compile Include="DebugFunctions.prg" />

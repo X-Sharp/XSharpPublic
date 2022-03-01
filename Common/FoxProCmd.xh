@@ -441,7 +441,12 @@
          <*optionalclauses*> <clause:LIKE,EXCEPT>  <*otherclause*> =>  ;
         #error You cannot combine Fields List and Wildcards in a command
 
-
+#command MD <(dir)>    => _cmdDirMake (<(dir)>) 
+#command MKDIR <(dir)> => _cmdDirMake (<(dir)>) 
+#command CD <(dir)>    => _cmdDirChange (<(dir)>) 
+#command CHDIR <(dir)> => _cmdDirChange (<(dir)>) 
+#command RD <(dir)>    => _cmdDirRemove (<(dir)>) 
+#command RMDIR <(dir)> => _cmdDirRemove (<(dir)>) 
 
 #include "FoxProSql.xh"
 #endif

@@ -210,7 +210,7 @@ METHOD Exec(kExecType, uObject)
                             IF __HandleClipperKeys(msg:wParam, msg:hWnd, oDialog)
                                 IF (msg:wParam == VK_UP)
                                     GetKeyboardState(@KbState)
-                                    KbState[VK_SHIFT+1] := _OR(KbState[VK_SHIFT+1], 0x80)
+                                    KbState[VK_SHIFT+1] := (BYTE) _OR(KbState[VK_SHIFT+1], 0x80)
                                     SetKeyboardState(@KbState)
                                     lResetKB := TRUE
                                 ENDIF
@@ -221,7 +221,7 @@ METHOD Exec(kExecType, uObject)
                             IsDialogMessage(oDialog:Handle(), @msg)
                             IF (lResetKB)
                                 lResetKB := FALSE
-                                KbState[VK_SHIFT+1] := _AND(KbState[VK_SHIFT+1], 0x7F)
+                                KbState[VK_SHIFT+1] := (BYTE) _AND(KbState[VK_SHIFT+1], 0x7F)
                                 SetKeyboardState(@KbState)
                             ENDIF
                         ELSEIF (hDialogWnd == NULL_PTR) .OR. !IsDialogMessage(hDialogWnd, @msg)

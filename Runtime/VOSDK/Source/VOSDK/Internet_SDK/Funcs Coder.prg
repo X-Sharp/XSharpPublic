@@ -8,13 +8,13 @@ INTERNAL FUNCTION __B64DecChar(bByte AS BYTE) AS BYTE STRICT
 
    IF bByte >= 48    // '0'
       IF bByte <= 57 // '9'
-         RETURN bByte + 4
+         RETURN (BYTE)(bByte + 4)
       ELSEIF bByte >= 65 // 'A'
          IF bByte <= 90  // 'Z'
-            RETURN bByte - 65
+            RETURN (BYTE)(bByte - 65)
          ELSEIF bByte >= 97 // 'a'
             IF bByte <= 122 // 'z'
-               RETURN bByte - 71
+               RETURN (BYTE) (bByte - 71)
             ENDIF
          ENDIF
       ENDIF
@@ -36,13 +36,12 @@ INTERNAL FUNCTION __B64Enc6Bits(dwCode AS DWORD) AS BYTE STRICT
 
    dwCode := _AND(dwCode, 63u)
 
-
    IF dwCode < 26
-      RETURN dwCode + 65 //A
+      RETURN (BYTE)(dwCode + 65) //A
    ELSEIF dwCode < 52
-      RETURN dwCode + 71 //a
+      RETURN (BYTE)(dwCode + 71) //a
    ELSEIF dwCode < 62
-      RETURN dwCode - 4  //0
+      RETURN (BYTE)(dwCode - 4)  //0
    ELSEIF dwCode = 62
       RETURN 43 //+
    ENDIF
@@ -53,43 +52,43 @@ INTERNAL FUNCTION __CheckQPEncodeWord(cText AS STRING, dwMaxChars REF DWORD, dwP
    LOCAL dwEnd   AS DWORD
    LOCAL dwLineLen AS DWORD
    LOCAL dwInc   AS DWORD
-   LOCAL lEncoded AS LOGIC 
-	
-	
+   LOCAL lEncoded AS LOGIC
+
+
 	dwEnd     := SLen(cText)
    dwPos     := 1
    dwLineLen := 0
 	lEncoded  := FALSE
 	pChar     := String2Psz(cText)
-	
-	
+
+
 	// Length calculation
-	DO WHILE dwPos <= dwEnd 
+	DO WHILE dwPos <= dwEnd
       bChar := pChar[dwPos]
       IF bChar = 61 .OR. bChar = 63 .OR. bChar > 126 .OR. bChar < 32 .OR. bChar = 95
          dwInc := 3
          lEncoded := TRUE
       ELSE
-         dwInc := 1       
-         IF bChar = 32 
+         dwInc := 1
+         IF bChar = 32
             lEncoded := TRUE
-         ENDIF   
+         ENDIF
       ENDIF
 
 
       IF dwLineLen + dwInc > dwMaxChars
          EXIT
-      ENDIF 
-      
-      
+      ENDIF
+
+
       dwLineLen += dwInc
       dwPos++
-	ENDDO 
-	
-	
-	dwMaxChars := dwLineLen 
-	
-	
+	ENDDO
+
+
+	dwMaxChars := dwLineLen
+
+
 	dwPos--
 
 
@@ -101,28 +100,28 @@ FUNCTION __DecodeAtom(cValue AS STRING, lDecoded REF LOGIC) AS STRING STRICT
 
 
    cCharSet := Lower(Left(cValue, 15))
-   lDecoded := FALSE 
+   lDecoded := FALSE
    IF (dwPos := At2("?q?", cCharSet)) > 0
-      cValue := QPDecode(SubStr2(cValue, dwPos+3), TRUE) 
+      cValue := QPDecode(SubStr2(cValue, dwPos+3), TRUE)
       lDecoded := TRUE
    ELSEIF (dwPos := At2("?b?", cCharSet)) > 0
       cValue := B64DecodeString(SubStr2(cValue, dwPos+3))
       lDecoded := TRUE
    ENDIF
-   
-   
+
+
    IF cCharSet = CHARSET_ISO .OR. cCharSet = CHARSET_USASCII
       RETURN cValue
-   ELSEIF cCharSet = CHARSET_UTF8 
+   ELSEIF cCharSet = CHARSET_UTF8
       RETURN ConvertFromCodePageToCodePage(cValue, CP_UTF8, CP_ACP)
    ENDIF
-   
-   
+
+
    IF lDecoded
       RETURN "<" + SubStr3(cValue, 1, dwPos-1) + "> " + cValue
    ENDIF
-      
-      
+
+
    RETURN cValue
 
 
@@ -139,7 +138,7 @@ FUNCTION __DecodeField(cValue AS STRING, lFoldedEncode REF LOGIC) AS STRING STRI
 
    dwStart := 1
    dwPos   := 0
-   dwEnd   := SLen(cValue) 
+   dwEnd   := SLen(cValue)
 
 
    DO WHILE dwStart <= dwEnd // changed from < to <= because of wrong decoding of 1 byte long fields.
@@ -155,7 +154,7 @@ FUNCTION __DecodeField(cValue AS STRING, lFoldedEncode REF LOGIC) AS STRING STRI
             cTemp := __DecodeAtom(SubStr3(cValue, dwStart, dwPos - dwStart), @lDecoded)
             IF lDecoded
                cRet += cTemp
-            ELSE 
+            ELSE
                cRet += "=?" + cTemp + "?="
             ENDIF
             cTemp := NULL_STRING
@@ -176,8 +175,8 @@ FUNCTION __DecodeField(cValue AS STRING, lFoldedEncode REF LOGIC) AS STRING STRI
    RETURN cRet
  /// <exclude />
 FUNCTION __EncodeField(cValue AS STRING, dwCurrentLineLen AS DWORD) AS STRING STRICT
-   //see RFC 2047 
-   LOCAL dwMaxlength    AS DWORD 
+   //see RFC 2047
+   LOCAL dwMaxlength    AS DWORD
    LOCAL dwLen          AS DWORD
    LOCAL dwLength       AS DWORD
    LOCAL dwDelimiterLen AS DWORD
@@ -185,43 +184,43 @@ FUNCTION __EncodeField(cValue AS STRING, dwCurrentLineLen AS DWORD) AS STRING ST
    LOCAL cResult        AS STRING
    LOCAL cCharset       AS STRING
    LOCAL lEncodeIt      AS LOGIC
-   
-   
-   dwMaxlength := 1000 
-   
-   
+
+
+   dwMaxlength := 1000
+
+
    lEncodeIt := __CheckQPEncodeWord(cValue, @dwMaxlength, @dwLen)
-   
-   
-   dwMaxlength := MAXLINELENGTH - dwCurrentLineLen 
-   
-   
+
+
+   dwMaxlength := MAXLINELENGTH - dwCurrentLineLen
+
+
    IF ! lEncodeIt .AND. dwMaxlength >= SLen(cValue)
-      RETURN cValue  
-   ENDIF                        
-   
-   
-   cCharset       := "=?"+CHARSET_ISO+"1?Q?" 
+      RETURN cValue
+   ENDIF
+
+
+   cCharset       := "=?"+CHARSET_ISO+"1?Q?"
    dwDelimiterLen := SLen(cCharset) + 2 // + 2 is for the ending "?="
-   
-   
+
+
    IF MAXLINELENGTH <= dwDelimiterLen + dwCurrentLineLen
       RETURN CRLF + " " + __EncodeField(cValue, 1)
    ENDIF
-         
-         
+
+
    dwMaxlength := MAXLINELENGTH - dwCurrentLineLen - dwDelimiterLen
-   
-   
-   cResult := NULL_STRING 
+
+
+   cResult := NULL_STRING
    DO WHILE TRUE
       dwLength  := SLen(cValue)
       lEncodeIt := __CheckQPEncodeWord(cValue, @dwMaxlength, @dwLen)
       IF dwLen = dwLength
          cText := cValue
-      ELSE    
+      ELSE
          cText := SubStr3(cValue, 1, dwLen)
-      ENDIF   
+      ENDIF
       IF lEncodeIt
          cText := __QPEncodeWord(cText, dwMaxlength)
       ENDIF
@@ -230,16 +229,16 @@ FUNCTION __EncodeField(cValue AS STRING, dwCurrentLineLen AS DWORD) AS STRING ST
          EXIT
       ENDIF
       cResult += CRLF + " "
-      dwMaxlength := MAXLINELENGTH - dwDelimiterLen - 1 
+      dwMaxlength := MAXLINELENGTH - dwDelimiterLen - 1
       cValue := SubStr2(cValue, dwLen+1)
    ENDDO
-   
-   
-   RETURN cResult 
-   
-   
-   
-   
+
+
+   RETURN cResult
+
+
+
+
  /// <exclude />
 FUNCTION __FormatAddress(cAddress AS STRING, cName AS STRING) AS STRING STRICT
    cAddress := "<" + cAddress + ">"
@@ -290,8 +289,8 @@ FUNCTION __GetMailInfo(cSection AS STRING, cToken AS STRING, lRemoveSpace AS LOG
 	LOCAL bChar  AS BYTE
 	LOCAL pChar  AS BYTE PTR
 	LOCAL lFoldedEncode AS LOGIC
-	
-	
+
+
 	IF Lower(Left(cSection, SLen(cToken))) == Lower(cToken)
       dwPos := 1
    ELSE
@@ -303,7 +302,7 @@ FUNCTION __GetMailInfo(cSection AS STRING, cToken AS STRING, lRemoveSpace AS LOG
 	IF dwPos > 0
 	   dwEnd := SLen(cSection)
 	   dwPos += SLen(cToken)
-	   // skip leading spaces 
+	   // skip leading spaces
 	   pChar := String2Psz( cSection)
 	   DO WHILE dwPos <= dwEnd
 	      bChar := pChar[dwPos]
@@ -311,14 +310,14 @@ FUNCTION __GetMailInfo(cSection AS STRING, cToken AS STRING, lRemoveSpace AS LOG
                   dwPos++
 	      ELSE
 	         EXIT
-	      ENDIF   
+	      ENDIF
 	   ENDDO
-	   // unfold lines 
+	   // unfold lines
 	   lFoldedEncode := FALSE
 	   DO WHILE TRUE
          IF (dwStop := At3(CRLF, cSection, dwPos-1)) > 0
             cRet  += __DecodeField(SubStr3(cSection, dwPos, dwStop - dwPos), @lFoldedEncode)
-            dwPos := dwStop + 2 
+            dwPos := dwStop + 2
             pChar := String2Psz( cSection)
             DO WHILE dwPos <= dwEnd
       	      bChar := pChar[dwPos]
@@ -326,9 +325,9 @@ FUNCTION __GetMailInfo(cSection AS STRING, cToken AS STRING, lRemoveSpace AS LOG
                   dwPos++
       	      ELSE
       	         EXIT
-      	      ENDIF   
+      	      ENDIF
             ENDDO
-            IF dwPos > dwStop + 2 //This is a folded line 
+            IF dwPos > dwStop + 2 //This is a folded line
                dwPos-- // one space back
             ELSE
                EXIT
@@ -338,16 +337,16 @@ FUNCTION __GetMailInfo(cSection AS STRING, cToken AS STRING, lRemoveSpace AS LOG
             EXIT
          ENDIF
       ENDDO
-	
-	
+
+
 		IF lRemoveSpace
 		   cRet := StrTran(cRet, " ", "")
 			cRet := StrTran(cRet, TAB, "")
 			//cRet := StrTran(cRet, CRLF, " ")
 		ENDIF
 	ENDIF
-   
-   
+
+
 	RETURN cRet //AllTrim(cRet)
 
 
@@ -363,16 +362,16 @@ FUNCTION __GetNextAddress(cBuffer AS STRING, dwPosition REF DWORD) AS STRING STR
     LOCAL dwEnd          AS DWORD
     LOCAL pBuffer        AS BYTE PTR
     LOCAL bChar          AS BYTE
-   
-   
+
+
 	dwPos   := dwPosition
-	dwEnd   := SLen(cBuffer) 
+	dwEnd   := SLen(cBuffer)
 	pBuffer := String2Psz(cBuffer)
 
 
 	DO WHILE dwPos <= dwEnd .AND. IsSpace(PSZ(_CAST, pBuffer + dwPos - 1))
 		++dwPos
-	ENDDO	
+	ENDDO
 
 
 	dwStart := dwPos
@@ -410,7 +409,7 @@ FUNCTION __GetNextAddress(cBuffer AS STRING, dwPosition REF DWORD) AS STRING STR
                             IF lIsGroup
                                 IF dwPos < dwEnd .AND. pBuffer[dwPos + 1] = 44 // ','
                                     ++dwPos
-                                ENDIF	
+                                ENDIF
                             ENDIF
                             done := TRUE
                         CASE 58 // ':'
@@ -427,22 +426,22 @@ FUNCTION __GetNextAddress(cBuffer AS STRING, dwPosition REF DWORD) AS STRING STR
             EXIT
         ENDIF
 		++dwPos
-   ENDDO	
+   ENDDO
 
 
    IF dwPos >= dwEnd
 		dwPosition := 0
 	ELSE
 		dwPosition := dwPos + 1  // ',' or ';'
-	ENDIF	
-	
-	
+	ENDIF
+
+
 	// Parse extracted address (mailbox or group)
 	IF dwPos > dwStart
 	   RETURN SubStr3(cBuffer, dwStart, dwPos - dwStart)
    ENDIF
-	
-	
+
+
 	RETURN NULL_STRING
 
 
@@ -473,7 +472,7 @@ FUNCTION __ParseAddress(cBuffer AS STRING, cName OUT STRING) AS STRING STRICT
    LOCAL lDecoded       AS LOGIC
 
 
-   pBuffer := String2Psz(cBuffer) 
+   pBuffer := String2Psz(cBuffer)
 	dwPos   := 1
 	dwEnd   := SLen(cBuffer)
 	cName   := NULL_STRING
@@ -483,8 +482,8 @@ FUNCTION __ParseAddress(cBuffer AS STRING, cName OUT STRING) AS STRING STRICT
 
 
 	DO WHILE dwPos <= dwEnd
-	
-	
+
+
 		IF lEscaped
 			lEscaped := FALSE
 			dwLast := dwPos
@@ -494,7 +493,7 @@ FUNCTION __ParseAddress(cBuffer AS STRING, cName OUT STRING) AS STRING STRICT
    			CASE bChar = 92 // '\'
    				  lEscaped := TRUE
    			CASE bChar = 64 // '@'
-                 lAddress := TRUE	
+                 lAddress := TRUE
    			CASE lQuoted
 	              IF bChar = bQuoteEnd
 	                 dwLast := dwPos
@@ -543,8 +542,8 @@ FUNCTION __ParseAddress(cBuffer AS STRING, cName OUT STRING) AS STRING STRICT
                     --dwPos
                 ENDIF
 			ENDCASE
-		
-		
+
+
       ENDIF
 
 
@@ -576,35 +575,35 @@ FUNCTION __ParseAddress(cBuffer AS STRING, cName OUT STRING) AS STRING STRICT
 
 		++dwPos
    ENDDO
-	
-	
+
+
 	RETURN cAddress
 INTERNAL FUNCTION __QPEncodeWord(cText AS STRING, dwResultlen AS DWORD) AS STRING STRICT
    //RFC-2047 page 6
-   STATIC LOCAL cTab := "0123456789ABCDEF" AS STRING 
+   STATIC LOCAL cTab := "0123456789ABCDEF" AS STRING
    LOCAL cResult AS STRING
    LOCAL pResult AS BYTE PTR
-   LOCAL pTab    AS BYTE PTR 
+   LOCAL pTab    AS BYTE PTR
    LOCAL pChar   AS BYTE PTR
    LOCAL bChar   AS BYTE
    LOCAL dwChar  AS DWORD
 	LOCAL dwPos   AS DWORD
    LOCAL dwRPos  AS DWORD
    LOCAL dwEnd   AS DWORD
-	
-	
+
+
 	IF (dwEnd := SLen(cText)) = 0
       RETURN cText
-	ENDIF  
-	
-	
+	ENDIF
+
+
 	IF (pResult := MemAlloc(dwResultlen)) != NULL_PTR
 
 
       pTab  := String2Psz( cTab)
       pChar := String2Psz( cText)
-   
-   
+
+
       dwRPos := dwPos := 1
    	DO WHILE dwPos <= dwEnd
          bChar := pChar[dwPos]
@@ -622,17 +621,17 @@ INTERNAL FUNCTION __QPEncodeWord(cText AS STRING, dwResultlen AS DWORD) AS STRIN
             pResult[dwRPos] := bChar
             dwRPos += 1
          ENDIF
-   
-   
+
+
          dwPos++
-   	ENDDO  
-   	
-   	
+   	ENDDO
+
+
    	cResult := Mem2String(pResult, dwResultlen)
    	MemFree(pResult)
-   	
-   	
-	ENDIF	
+
+
+	ENDIF
 
 
 	RETURN cResult
@@ -649,8 +648,8 @@ FUNCTION B64Decode(pSrc AS PTR, pTarget AS PTR, dwLength AS DWORD, dwCharCount R
 
    pS    := pSrc
    pT    := pTarget
-   
-   
+
+
    pByte := (BYTE PTR) @dwChunk
 
 
@@ -672,7 +671,7 @@ FUNCTION B64Decode(pSrc AS PTR, pTarget AS PTR, dwLength AS DWORD, dwCharCount R
           ENDIF
           bByte := BYTE(pS++)
           IF bByte = 13 .OR. bByte = 10 .OR. bByte = 61 // '='
-             IF bByte = 61 // '=' 
+             IF bByte = 61 // '='
                 IF dwJ < 2
                    BREAK
                 ELSE
@@ -696,16 +695,16 @@ FUNCTION B64Decode(pSrc AS PTR, pTarget AS PTR, dwLength AS DWORD, dwCharCount R
           ENDIF
           IF (bByte := __B64DecChar(bByte)) = 0x80
              LOOP
-          ENDIF   
+          ENDIF
           dwChunk  := _OR(dwChunk << 6, bByte)
           dwJ+=1
-       ENDDO 
-       
-       
+       ENDDO
+
+
        IF dwJ>1
           BYTE(pT++) := pByte[3]
           IF dwJ > 2
-             BYTE(pT++) := pByte[2] 
+             BYTE(pT++) := pByte[2]
              IF dwJ > 3
                 BYTE(pT++) := pByte[1]
              ENDIF
@@ -718,9 +717,9 @@ FUNCTION B64Decode(pSrc AS PTR, pTarget AS PTR, dwLength AS DWORD, dwCharCount R
     dwLength := 0
 
 
-   END 
-   
-   
+   END
+
+
    dwLength    := DWORD(_CAST, pS) - DWORD(_CAST, pSrc)
    dwCharCount += DWORD(_CAST, pT) - DWORD(_CAST, pTarget)
 
@@ -755,8 +754,8 @@ FUNCTION B64DecodeString(cValue AS STRING) AS STRING STRICT
 
 
     RETURN cRet
-    
-    
+
+
 /// <include file="Internet.xml" path="doc/B64Encode/*" />
 FUNCTION B64Encode(pSrc AS PTR, pTarget AS PTR, dwLength AS DWORD, dwCharCount REF DWORD) AS VOID STRICT
 	LOCAL pS AS BYTE PTR
@@ -833,8 +832,8 @@ FUNCTION B64Encode(pSrc AS PTR, pTarget AS PTR, dwLength AS DWORD, dwCharCount R
 	RETURN
 
 
-	
-	
+
+
 /// <include file="Internet.xml" path="doc/B64EncodeStream/*" />
 FUNCTION B64EncodeStream(cValue AS STRING, dwCharCount REF DWORD) AS STRING STRICT
     LOCAL dwSize AS DWORD
@@ -844,9 +843,9 @@ FUNCTION B64EncodeStream(cValue AS STRING, dwCharCount REF DWORD) AS STRING STRI
 
 
     dwSize    := SLen(cValue)
-    IF dwSize > 0 
-       
-       
+    IF dwSize > 0
+
+
        dwBufSize := ((dwSize + 2) / 3) * 4
        dwBufSize := dwBufSize + ((dwCharCount + dwBufSize) / 76) * 2
 
@@ -855,19 +854,19 @@ FUNCTION B64EncodeStream(cValue AS STRING, dwCharCount REF DWORD) AS STRING STRI
 
 
           B64Encode(String2Psz(cValue), pBuffer, dwSize, @dwCharCount)
-       
-       
+
+
           cRet := Mem2String(pBuffer, dwBufSize)
-          
-          
+
+
           MemFree(pBuffer)
-       ENDIF   
+       ENDIF
     ENDIF
 
 
     RETURN cRet
-	
-	
+
+
 /// <include file="Internet.xml" path="doc/B64EncodeString/*" />
 FUNCTION B64EncodeString(cValue AS STRING) AS STRING STRICT
     LOCAL dwSize AS DWORD
@@ -887,19 +886,19 @@ FUNCTION B64EncodeString(cValue AS STRING) AS STRING STRICT
 
 
           B64Encode(String2Psz(cValue), pBuffer, dwSize, @dwCharCount)
-       
-       
+
+
           cRet := Mem2String(pBuffer, dwBufSize)
-          
-          
+
+
           MemFree(pBuffer)
-       ENDIF   
+       ENDIF
     ENDIF
 
 
     RETURN cRet
-	
-	
+
+
 /// <include file="Internet.xml" path="doc/QPDecode/*" />
 FUNCTION QPDecode(cText AS STRING, lDecodeSpace := FALSE AS LOGIC) AS STRING STRICT
    LOCAL pText  AS BYTE PTR
@@ -908,8 +907,8 @@ FUNCTION QPDecode(cText AS STRING, lDecodeSpace := FALSE AS LOGIC) AS STRING STR
 	LOCAL dwPos  AS DWORD
    LOCAL dwRPos AS DWORD
    LOCAL dwEnd  AS DWORD
-	
-	
+
+
 	pText := String2Psz(cText)
    dwEnd := SLen(cText)
    dwPos := 1
@@ -957,8 +956,8 @@ FUNCTION QPDecode(cText AS STRING, lDecodeSpace := FALSE AS LOGIC) AS STRING STR
    IF dwRPos > dwEnd
       dwRPos := dwEnd
    ENDIF
-   
-   
+
+
    cText := Mem2String(pText, dwRPos)
 
 
@@ -966,8 +965,8 @@ FUNCTION QPDecode(cText AS STRING, lDecodeSpace := FALSE AS LOGIC) AS STRING STR
 
 
 /// <include file="Internet.xml" path="doc/QPEncode/*" />
-FUNCTION QPEncode(cText AS STRING, lEncodeSpace := FALSE AS LOGIC) AS STRING STRICT 
-    STATIC LOCAL cTab := "0123456789ABCDEF" AS STRING 
+FUNCTION QPEncode(cText AS STRING, lEncodeSpace := FALSE AS LOGIC) AS STRING STRICT
+    STATIC LOCAL cTab := "0123456789ABCDEF" AS STRING
     LOCAL cResult AS STRING
     LOCAL pChar   AS BYTE PTR
     LOCAL pResult AS BYTE PTR
@@ -979,20 +978,20 @@ FUNCTION QPEncode(cText AS STRING, lEncodeSpace := FALSE AS LOGIC) AS STRING STR
     LOCAL dwEnd   AS DWORD
     LOCAL dwLineLen AS DWORD
     LOCAL dwInc   AS DWORD
-    
-    
+
+
     IF (dwEnd := SLen(cText)) = 0
         RETURN cText
-    ENDIF  
-    
-    
+    ENDIF
+
+
     cResult   := NULL_STRING
     dwRPos    := 0
     dwPos     := 1
     dwLineLen := 0
-    pChar     := Cast2Psz( cText)  
-    
-    
+    pChar     := Cast2Psz( cText)
+
+
     // Length calculation
     DO WHILE dwPos <= dwEnd
         bChar := pChar[dwPos]
@@ -1008,16 +1007,16 @@ FUNCTION QPEncode(cText AS STRING, lEncodeSpace := FALSE AS LOGIC) AS STRING STR
             dwRPos    += 2
             LOOP
         ELSEIF bChar = 61 .OR. bChar > 126 .OR. bChar < 33 .OR. (lEncodeSpace .AND. bChar = 95)
-            dwInc := 3 
+            dwInc := 3
         ENDIF
 
 
         IF dwLineLen + dwInc > 75
             dwLineLen := 0
             dwRPos    += 3
-        ENDIF 
-        
-        
+        ENDIF
+
+
         dwRPos    += dwInc
         dwLineLen += dwInc
         dwPos++
@@ -1026,20 +1025,20 @@ FUNCTION QPEncode(cText AS STRING, lEncodeSpace := FALSE AS LOGIC) AS STRING STR
 
     IF dwRPos = dwEnd //no encoding needed
         RETURN cText
-    ENDIF    
-    
-    
+    ENDIF
+
+
     IF (pResult := MemAlloc(dwRPos)) != NULL_PTR
-        
-        
+
+
         pTab      := Cast2Psz(cTab)
-        
-        
+
+
         dwRPos    := 1 //have to be decremented at the end
         dwLineLen := 0
         dwPos     := 1
-        
-        
+
+
         DO WHILE dwPos <= dwEnd
             bChar := pChar[dwPos]
             dwInc := 1
@@ -1056,19 +1055,19 @@ FUNCTION QPEncode(cText AS STRING, lEncodeSpace := FALSE AS LOGIC) AS STRING STR
                 dwRPos    += 2
                 LOOP
             ELSEIF bChar = 61 .OR. bChar > 126 .OR. bChar < 33 .OR. (lEncodeSpace .AND. bChar = 95)
-                dwInc := 3 
+                dwInc := 3
             ENDIF
-            
-            
+
+
             IF dwLineLen + dwInc > 75
                 pResult[dwRPos]   := 0x3D // '='
                 pResult[dwRPos+1] := 0x0D // CR
                 pResult[dwRPos+2] := 0x0A // LF
                 dwLineLen := 0
-                dwRPos    += 3 
-            ENDIF 
-            
-            
+                dwRPos    += 3
+            ENDIF
+
+
             IF dwInc = 3
                 pResult[dwRPos]   := 0x3D // '='
                 dwChar := bChar
@@ -1081,19 +1080,19 @@ FUNCTION QPEncode(cText AS STRING, lEncodeSpace := FALSE AS LOGIC) AS STRING STR
                 ENDIF
                 pResult[dwRPos] := bChar
             ENDIF
-            
-            
+
+
             dwRPos    += dwInc
             dwLineLen += dwInc
             dwPos++
         ENDDO
-        
-        
+
+
         cResult := Mem2String(pResult, dwRPos-1)
-        MemFree(pResult)    
-        
-        
-    ENDIF	
+        MemFree(pResult)
+
+
+    ENDIF
 
 
     RETURN cResult
@@ -1105,9 +1104,9 @@ FUNCTION __CreateAddressList(cSection AS STRING, aList AS ARRAY, lSectionAlways 
    LOCAL dwCount   AS DWORD
    LOCAL cList     AS STRING
    LOCAL cAddress  AS STRING
-   LOCAL dwLineNen AS DWORD 
-   
-   
+   LOCAL dwLineNen AS DWORD
+
+
    dwLineNen := SLen(cSection) + 1
 
 
@@ -1115,7 +1114,7 @@ FUNCTION __CreateAddressList(cSection AS STRING, aList AS ARRAY, lSectionAlways 
    FOR dwI := 1 UPTO dwCount
        cAddress := __ParseAddress(aList[dwI],  OUT VAR cName)
        IF ! cAddress == NULL_STRING
-          cAddress := "<" + cAddress + ">" 
+          cAddress := "<" + cAddress + ">"
           dwLineNen += SLen(cAddress) + 1
           cName := __EncodeField(cName, dwLineNen)
           IF ! cName == NULL_STRING
@@ -1129,16 +1128,16 @@ FUNCTION __CreateAddressList(cSection AS STRING, aList AS ARRAY, lSectionAlways 
           ENDIF
        ENDIF
    NEXT  // dwI
-   
-   
+
+
    IF SLen(cList) > 0
       RETURN cSection + " " + cList
    ENDIF
-   
-   
+
+
    IF lSectionAlways
       RETURN cSection
-   ENDIF    
+   ENDIF
 
 
    RETURN cList

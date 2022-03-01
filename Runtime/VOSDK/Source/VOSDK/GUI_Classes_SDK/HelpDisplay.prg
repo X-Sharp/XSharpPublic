@@ -243,7 +243,7 @@ METHOD Show(cKeyword, symLookupType)
 		wMK :=  _SIZEOF(_winMULTIKEYHELP) + wLen
 		strucMKH := MemAlloc(wMK)
 		strucMKH:mkSize := wMK
-		strucMKH:mkKeyList := Asc(SubStr3(cKey,2,1))
+		strucMKH:mkKeyList := (BYTE) Asc(SubStr3(cKey,2,1))
 		pszKey := StringAlloc(SubStr3(cKey,3, wLen-3))
 		MemCopy(@strucMKH:szKeyPhrase,pszKey,wLen-3)
 		MemFree(pszKey)

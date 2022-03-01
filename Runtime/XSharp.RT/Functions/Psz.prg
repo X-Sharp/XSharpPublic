@@ -123,7 +123,7 @@ FUNCTION String2Mem(s AS STRING) AS IntPtr
         Marshal.WriteByte(result, len, 0)	 // end of string
 	ENDIF
 	RETURN result
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mem2string/*" />
 FUNCTION Mem2String(ptrSource AS IntPtr, dwCount AS DWORD) AS STRING
 	IF ptrSource == IntPtr.Zero .OR. dwCount == 0
@@ -178,8 +178,8 @@ FUNCTION __Mem2StringRaw( p AS PSZ, len AS DWORD ) AS STRING
 
 // parameters are 0 based
 /// <exclude/>
-FUNCTION _NGet( p AS PSZ, dwOffset AS DWORD ) AS DWORD
-   LOCAL ret := 0 AS DWORD
+FUNCTION _NGet( p AS PSZ, dwOffset AS DWORD ) AS BYTE
+   LOCAL ret := 0 AS BYTE
    IF p != NULL_PSZ
       ret := ((BYTE PTR)p)[dwOffset+1]
    ENDIF

@@ -9,11 +9,11 @@
  *
  * ***************************************************************************/
 
+using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using EnvDTE;
-using Microsoft.VisualStudio.Shell;
 using VSLangProj;
 
 namespace Microsoft.VisualStudio.Project.Automation
@@ -49,7 +49,8 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual ProjectItem ProjectItem
         {
-            get {
+            get
+            {
                 ThreadHelper.ThrowIfNotOnUIThread();
                 return fileNode.GetAutomationObject() as ProjectItem;
             }

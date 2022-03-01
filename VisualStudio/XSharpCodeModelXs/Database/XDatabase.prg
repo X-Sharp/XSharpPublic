@@ -129,19 +129,14 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             BEGIN LOCK oConn
                 TRY
-                    //XSolution.SetStatusBarText("Backing up intellisense database...")
-                    //XSolution.SetStatusBarAnimation(TRUE, 2)
                     Log("Starting backup to "+currentFile)
                     SaveToDisk(oConn, currentFile )
                 CATCH e AS Exception
                     XSettings.LogException(e, __FUNCTION__)
                 FINALLY
-                    //XSolution.SetStatusBarText("")
-                    //XSolution.SetStatusBarAnimation(FALSE, 2)
-                    NOP
+                    Log("Completed backup to "+currentFile)
                 END TRY
             END LOCK
-            Log("Completed backup to "+currentFile)
             RETURN
 
         STATIC METHOD CreateSchema(connection AS SQLiteConnection) AS VOID

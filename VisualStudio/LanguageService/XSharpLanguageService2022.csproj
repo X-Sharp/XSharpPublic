@@ -74,6 +74,16 @@
     <Compile Include="Completion\XSharpGlyphTools.cs" />
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
+    <Compile Include="LightBulb\CommonAction.cs" />
+    <Compile Include="LightBulb\CommonActionProvider.cs" />
+    <Compile Include="LightBulb\ConstructorAction.cs" />
+    <Compile Include="LightBulb\ConstructorProvider.cs" />
+    <Compile Include="LightBulb\CtorParamsDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LightBulb\CtorParamsDlg.Designer.cs">
+      <DependentUpon>CtorParamsDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="LightBulb\PropertyAction.cs" />
     <Compile Include="LightBulb\PropertyProvider.cs" />
     <Compile Include="LineSeparators\GraphicsResult.cs" />
@@ -173,7 +183,7 @@
     <Compile Include="Generic\EditorCommandProvider.cs" />
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
-    <Compile Include="Tokenizer\XSharpTokens.cs" />
+    <Compile Include="Tokenizer\XDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -197,7 +207,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.402</Version>
+      <Version>17.0.416</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>
@@ -216,6 +226,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="LightBulb\CtorParamsDlg.resx">
+      <DependentUpon>CtorParamsDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\IndentingOptionsControl.resx">
       <DependentUpon>IndentingOptionsControl.cs</DependentUpon>
     </EmbeddedResource>

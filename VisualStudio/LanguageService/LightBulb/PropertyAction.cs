@@ -2,44 +2,33 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Imaging.Interop;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using Microsoft.VisualStudio.Text;
 using System.Threading;
 using XSharpModel;
-using System.Reflection;
 using Microsoft.VisualStudio.Text.Editor;
-using XSharp.LanguageService;
-using System.Collections.Immutable;
-using Microsoft.VisualStudio.Text.Adornments;
 using System.Text;
 using System.Linq;
 
 namespace XSharp.Project.Editors.LightBulb
 {
-    internal class PropertySuggestedAction : ISuggestedAction
+    internal class PropertySuggestedAction : CommonAction, ISuggestedAction
     {
-        private readonly ITextSnapshot m_snapshot;
 
-        public PropertySuggestedAction(ITextSnapshot snapshot)
+        public PropertySuggestedAction(ITextSnapshot snapshot) : base(snapshot)
         {
-            m_snapshot = snapshot;
         }
 
-        private readonly ITextView m_textView;
         private readonly XSourceMemberSymbol _fieldEntity;
         private readonly XSharpModel.TextRange _range;
         private readonly bool _full;
         private readonly string _generateName;
         private readonly bool _renameField;
 
-        public PropertySuggestedAction(ITextView textView, ITextBuffer m_textBuffer, XSourceMemberSymbol fieldToPropertize, XSharpModel.TextRange range, bool fullProperty, string genName, bool renField)
+        public PropertySuggestedAction(ITextView textView, ITextBuffer m_textBuffer, XSourceMemberSymbol fieldToPropertize, XSharpModel.TextRange range, bool fullProperty, string genName, bool renField) : base(textView)
         {
-            m_snapshot = m_textBuffer.CurrentSnapshot;
-            m_textView = textView;
-            //
             _fieldEntity = fieldToPropertize;
             _range = range;
             _full = fullProperty;
@@ -47,7 +36,7 @@ namespace XSharp.Project.Editors.LightBulb
             _generateName = genName;
         }
 
-        public Task<object> GetPreviewAsync(CancellationToken cancellationToken)
+        public override Task<object> GetPreviewAsync(CancellationToken cancellationToken)
         {
             List<Inline> content = new List<Inline>();
             //
@@ -65,55 +54,13 @@ namespace XSharp.Project.Editors.LightBulb
             return Task.FromResult<object>(textBlock);
         }
 
-        public Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken)
-        {
-            return Task.FromResult<IEnumerable<SuggestedActionSet>>(null);
-        }
-
-        public bool HasActionSets
-        {
-            get { return false; }
-        }
-        public string DisplayText
+        public override string DisplayText
         {
             get { return "Encapsulate field:" + (_full ? "(full) " : " ") + _fieldEntity.Name.Replace("_", "__") + (_renameField ? "(and rename field) " : " "); }
         }
-        public ImageMoniker IconMoniker
-        {
-            get { return default; }
-        }
-        public string IconAutomationText
-        {
-            get
-            {
-                return null;
-            }
-        }
-        public string InputGestureText
-        {
-            get
-            {
-                return null;
-            }
-        }
-        public bool HasPreview
-        {
-            get { return true; }
-        }
-
-        public void Dispose()
-        {
-        }
-
-        public bool TryGetTelemetryId(out Guid telemetryId)
-        {
-            // This is a sample action and doesn't participate in LightBulb telemetry
-            telemetryId = Guid.Empty;
-            return false;
-        }
-
+        
         // The job is done here !!
-        public void Invoke(CancellationToken cancellationToken)
+        public override void Invoke(CancellationToken cancellationToken)
         {
             var settings = m_textView.TextBuffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
             //m_span.TextBuffer.Replace(m_span.GetSpan(m_snapshot), ");
@@ -253,15 +200,6 @@ namespace XSharp.Project.Editors.LightBulb
             result.Add(insertText.ToString());
             return result;
         }
-
-        internal void WriteOutputMessage(string strMessage)
-        {
-            if (XSettings.EnableParameterLog && XSettings.EnableLogging)
-            {
-                XSettings.LogMessage("ImplementInterfaceSuggestedAction:" + strMessage);
-            }
-        }
-
 
     }
 

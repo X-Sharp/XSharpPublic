@@ -1,3 +1,4 @@
+USING System.Runtime.CompilerServices
 VOSTRUCT _winXFORM
 	MEMBER eM11 AS REAL4
 	MEMBER eM12 AS REAL4
@@ -104,7 +105,7 @@ VOSTRUCT _WINBITMAPV4HEADER
 	MEMBER		   bV4GammaGreen AS DWORD
 	MEMBER		   bV4GammaBlue AS DWORD
 
-VOSTRUCT _WINBITMAPV5HEADER  
+VOSTRUCT _WINBITMAPV5HEADER
 	MEMBER		   bV5Size AS DWORD
 	MEMBER		   bV5Width AS LONGINT
 	MEMBER		   bV5Height AS LONGINT
@@ -442,7 +443,7 @@ VOSTRUCT _WINDEVMODE
 	MEMBER   dmDitherType AS DWORD
 	MEMBER   dmReserved1 AS DWORD
 	MEMBER   dmReserved2 AS DWORD
-	//RvdH 070412 Added  
+	//RvdH 070412 Added
 	MEMBER dmPanningWidth AS DWORD
    MEMBER dmPanningHeight AS DWORD
 
@@ -670,7 +671,7 @@ VOSTRUCT _winEMRTEXT
 
 
 
-VOSTRUCT _winEMRABORTPATH       // RvdH 070411 changed name (added EMR) 
+VOSTRUCT _winEMRABORTPATH       // RvdH 070411 changed name (added EMR)
 	MEMBER  emr IS _winEMR
 
 VOSTRUCT _winEMRSELECTCLIPPATH
@@ -741,7 +742,7 @@ VOSTRUCT _winEMRSETPALETTEENTRIES
 VOSTRUCT _winEMRSETCOLORADJUSTMENT
 	MEMBER emr 				  IS _winEMR
 	MEMBER ColorAdjustment IS _winCOLORADJUSTMENT	//RvdH 070412 changed from AS to IS
-                          	
+
 VOSTRUCT _winEMRGDICOMMENT
 	MEMBER  emr IS _winEMR
 	MEMBER  cbData AS DWORD
@@ -971,7 +972,7 @@ VOSTRUCT _winEMRBITBLT
 	MEMBER cbBmiSrc AS DWORD
 	MEMBER offBitsSrc AS DWORD
 	MEMBER cbBitsSrc AS DWORD
-   
+
 
 
 VOSTRUCT _winEMRSTRETCHBLT
@@ -1171,66 +1172,39 @@ VOSTRUCT _winGLYPHMETRICSFLOAT
 	MEMBER gmfCellIncY AS REAL4
 
 
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION MAKEROP4(fore AS WORD, back AS WORD) AS DWORD
-	LOCAL val1 AS WORD
-	LOCAL val2 AS DWORD
-	LOCAL val3 AS DWORD
-
-	val1 := WORD(back) << 8
-	val2 := DWORD(_And(val1, 0xFF000000))
-	val3 := DWORD(fore)
-	RETURN (DWORD(_Or(val2, val3)))
+	RETURN XSharp.RT.Functions.MAKEROP4(fore, back)
 
 
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION GetCValue(cmyk AS DWORD) AS BYTE STRICT
-	RETURN (BYTE(cmyk))
+	RETURN XSharp.RT.Functions.GetCValue(cmyk)
 
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION GetMValue(cmyk AS DWORD) AS BYTE
-	RETURN (BYTE( WORD(cmyk) >> 8))
+	RETURN XSharp.RT.Functions.GetMValue(cmyk)
 
-FUNCTION GetYValue(cmyk) AS BYTE
-	RETURN(BYTE(DWORD(cmyk) >>16))
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION GetYValue(cmyk AS DWORD) AS BYTE
+    RETURN XSharp.RT.Functions.GetYValue(cmyk)
 
 
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION CMYK(c AS DWORD, m AS DWORD, y AS DWORD, k AS DWORD)  AS DWORD
-	LOCAL val0 AS WORD
-	LOCAL val1 AS DWORD
-	LOCAL val2 AS DWORD
-	LOCAL val3 AS DWORD
-	LOCAL val4 AS DWORD
+    RETURN XSharp.RT.Functions.CMYK(c,m,y,k)
 
-	val0	  := WORD(BYTE(M)) << 8
-	val1 := (DWORD (BYTE(y))) << 16
-	val2 := val1
-	val3 := DWORD(_Or(BYTE(C), val0))
-	val4 := DWORD(_Or(val1, val2))
-	RETURN (_Or(val3, val4))
-
-
-
-
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION GetRValue(rgb AS DWORD) AS BYTE
-	LOCAL val AS BYTE
+	RETURN XSharp.RT.Functions.GetRValue(rgb)
 
-	val:=BYTE(_CAST,rgb)
-	RETURN val
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION GetGValue(rgb AS DWORD) AS BYTE
-	LOCAL val AS WORD
-	LOCAL retval AS BYTE
+    RETURN XSharp.RT.Functions.GetGValue(rgb)
 
-	val := (WORD(_CAST,rgb))>>8
-	retval := BYTE(_CAST,val)
-	RETURN retval
-
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION GetBValue(rgb AS DWORD) AS BYTE
-	LOCAL val AS DWORD
-	LOCAL retval AS BYTE
-
-	val := rgb>>16
-	retval := BYTE(_CAST,val)
-	RETURN retval
-
-
+	RETURN XSharp.RT.Functions.GetBValue(rgb)
 
 _DLL FUNC AddFontResource(lpFontResource AS PSZ) AS INT PASCAL:GDI32.AddFontResourceA
 
@@ -2311,39 +2285,39 @@ FUNCTION PALETTEINDEX(i) AS DWORD
 
 
 #region defines
-DEFINE R2_BLACK 	   := 1                /*  0       */   
-DEFINE R2_NOTMERGEPEN	   := 2          /* DPon     */   
-DEFINE R2_MASKNOTPEN	   := 3             /* DPna     */   
-DEFINE R2_NOTCOPYPEN	   := 4             /* PN       */   
-DEFINE R2_MASKPENNOT	   := 5             /* PDna     */   
-DEFINE R2_NOT		   := 6                /* Dn       */   
-DEFINE R2_XORPEN	   := 7                /* DPx      */   
-DEFINE R2_NOTMASKPEN	   := 8             /* DPan     */   
-DEFINE R2_MASKPEN	   := 9                /* DPa      */   
-DEFINE R2_NOTXORPEN 	   := 10            /* DPxn     */   
-DEFINE R2_NOP		   := 11               /* D        */   
-DEFINE R2_MERGENOTPEN	   := 12         /* DPno     */   
-DEFINE R2_COPYPEN	   := 13               /* P        */   
-DEFINE R2_MERGEPENNOT	   := 14         /* PDno     */   
-DEFINE R2_MERGEPEN	   := 15            /* DPo      */   
-DEFINE R2_WHITE 	   := 16               /*  1       */   
+DEFINE R2_BLACK 	   := 1                /*  0       */
+DEFINE R2_NOTMERGEPEN	   := 2          /* DPon     */
+DEFINE R2_MASKNOTPEN	   := 3             /* DPna     */
+DEFINE R2_NOTCOPYPEN	   := 4             /* PN       */
+DEFINE R2_MASKPENNOT	   := 5             /* PDna     */
+DEFINE R2_NOT		   := 6                /* Dn       */
+DEFINE R2_XORPEN	   := 7                /* DPx      */
+DEFINE R2_NOTMASKPEN	   := 8             /* DPan     */
+DEFINE R2_MASKPEN	   := 9                /* DPa      */
+DEFINE R2_NOTXORPEN 	   := 10            /* DPxn     */
+DEFINE R2_NOP		   := 11               /* D        */
+DEFINE R2_MERGENOTPEN	   := 12         /* DPno     */
+DEFINE R2_COPYPEN	   := 13               /* P        */
+DEFINE R2_MERGEPENNOT	   := 14         /* PDno     */
+DEFINE R2_MERGEPEN	   := 15            /* DPo      */
+DEFINE R2_WHITE 	   := 16               /*  1       */
 DEFINE R2_LAST		   := 16
 /* Ternary raster operations */
-DEFINE SRCCOPY		   :=  0x00CC0020U      /* dest = source                   */  
-DEFINE SRCPAINT 	   :=  0x00EE0086U      /* dest = source OR dest           */  
-DEFINE SRCAND		   :=  0x008800C6U      /* dest = source AND dest          */  
-DEFINE SRCINVERT	   :=  0x00660046U      /* dest = source XOR dest          */  
-DEFINE SRCERASE 	   :=  0x00440328U      /* dest = source AND (NOT dest )   */  
-DEFINE NOTSRCCOPY	   :=  0x00330008U      /* dest = (NOT source)             */  
-DEFINE NOTSRCERASE	:=  0x001100A6U      /* dest = (NOT src) AND (NOT dest) */  
-DEFINE MERGECOPY	   :=  0x00C000CAU      /* dest = (source AND pattern)     */  
-DEFINE MERGEPAINT	   :=  0x00BB0226U      /* dest = (NOT source) OR dest     */  
-DEFINE PATCOPY		   :=  0x00F00021U      /* dest = pattern                  */  
-DEFINE PATPAINT 	   :=  0x00FB0A09U      /* dest = DPSnoo                   */  
-DEFINE PATINVERT	   :=  0x005A0049U      /* dest = pattern XOR dest         */  
-DEFINE DSTINVERT	   :=  0x00550009U      /* dest = (NOT dest)               */  
-DEFINE BLACKNESS	   :=  0x00000042U      /* dest = BLACK                    */  
-DEFINE WHITENESS	   :=  0x00FF0062U      /* dest = WHITE                    */  
+DEFINE SRCCOPY		   :=  0x00CC0020U      /* dest = source                   */
+DEFINE SRCPAINT 	   :=  0x00EE0086U      /* dest = source OR dest           */
+DEFINE SRCAND		   :=  0x008800C6U      /* dest = source AND dest          */
+DEFINE SRCINVERT	   :=  0x00660046U      /* dest = source XOR dest          */
+DEFINE SRCERASE 	   :=  0x00440328U      /* dest = source AND (NOT dest )   */
+DEFINE NOTSRCCOPY	   :=  0x00330008U      /* dest = (NOT source)             */
+DEFINE NOTSRCERASE	:=  0x001100A6U      /* dest = (NOT src) AND (NOT dest) */
+DEFINE MERGECOPY	   :=  0x00C000CAU      /* dest = (source AND pattern)     */
+DEFINE MERGEPAINT	   :=  0x00BB0226U      /* dest = (NOT source) OR dest     */
+DEFINE PATCOPY		   :=  0x00F00021U      /* dest = pattern                  */
+DEFINE PATPAINT 	   :=  0x00FB0A09U      /* dest = DPSnoo                   */
+DEFINE PATINVERT	   :=  0x005A0049U      /* dest = pattern XOR dest         */
+DEFINE DSTINVERT	   :=  0x00550009U      /* dest = (NOT dest)               */
+DEFINE BLACKNESS	   :=  0x00000042U      /* dest = BLACK                    */
+DEFINE WHITENESS	   :=  0x00FF0062U      /* dest = WHITE                    */
 DEFINE NOMIRRORBITMAP  := 0x80000000U /* Do not Mirror the bitmap in this call */
 DEFINE CAPTUREBLT      := 0x40000000U /* Include layered windows */
 DEFINE GDI_ERROR   := 0xFFFFFFFFL
@@ -3360,8 +3334,8 @@ DEFINE DISPLAY_DEVICE_MIRRORING_DRIVER    := 0x00000008
 DEFINE DISPLAY_DEVICE_VGA_COMPATIBLE      := 0x00000010
 DEFINE DISPLAY_DEVICE_REMOVABLE           := 0x00000020
 DEFINE DISPLAY_DEVICE_MODESPRUNED         := 0x08000000
-DEFINE DISPLAY_DEVICE_REMOTE              := 0x04000000  
-DEFINE DISPLAY_DEVICE_DISCONNECT          := 0x02000000  
+DEFINE DISPLAY_DEVICE_REMOTE              := 0x04000000
+DEFINE DISPLAY_DEVICE_DISCONNECT          := 0x02000000
 /* Child device state */
 DEFINE DISPLAY_DEVICE_ACTIVE             :=  0x00000001
 DEFINE DISPLAY_DEVICE_ATTACHED           :=  0x00000002

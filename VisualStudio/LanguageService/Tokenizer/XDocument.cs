@@ -19,7 +19,7 @@ namespace XSharp.LanguageService
     /// This type stores tokens and the snapshot that they are based on in the TextBuffer of an open editor window
     /// It also stores (after parsing) the list of Entities in the buffer
     /// </summary>
-    public class XSharpTokens
+    public class XDocument
     {
         /// <summary>
         /// Result from the Lexer
@@ -30,7 +30,7 @@ namespace XSharp.LanguageService
         /// </summary>
         public ITextSnapshot SnapShot { get; private set; }
         public IList<string> IncludeFiles { get; private set; }
-        public XSharpTokens(BufferedTokenStream tokenstream, ITextSnapshot snapshot, IList<string> includeFiles)
+        public XDocument(BufferedTokenStream tokenstream, ITextSnapshot snapshot, IList<string> includeFiles)
         {
             TokenStream = tokenstream;
             SnapShot = snapshot;
@@ -47,6 +47,7 @@ namespace XSharp.LanguageService
         /// Collection of tokens per line on the default channel
         /// </summary>
         public Dictionary<int, IList<XSharpToken>> Lines;
+        public XSharpLineState LineState { get; set; }
 
     }
 }

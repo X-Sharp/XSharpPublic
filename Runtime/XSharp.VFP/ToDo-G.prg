@@ -10,12 +10,9 @@ FUNCTION GetAutoIncValue( nDataSessionNumber )
     THROW NotImplementedException{}
     // RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getcolor/*" />
 
-FUNCTION GetColor( nDefaultColorNumber )
-    THROW NotImplementedException{}
-    // RETURN 0
+
+
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getcp/*" />
@@ -44,7 +41,7 @@ FUNCTION GetDir( cDirectory , cText , cCaption , nFlags , lRootOnly) AS STRING
 FUNCTION GetFile( cFileExtensions , cText , cOpenButtonCaption,nButtonType, cTitleBarCaption ) AS STRING
     THROW NotImplementedException{}
     // RETURN ""
-    
+
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getfldstate/*" />
 
@@ -93,5 +90,5 @@ FUNCTION GetPrinter( ) AS STRING
 FUNCTION GetResultSet( ) AS LONG
     THROW NotImplementedException{}
     // RETURN 0
-    
+
 

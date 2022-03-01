@@ -2519,11 +2519,11 @@ BEGIN NAMESPACE XSharp.ADS
         ENDIF
 
         PUBLIC STATIC METHOD AdsGetFTSIndexInfo(hIndex as IntPtr, [@@In] [@@Out] pucOutput AS CHAR[], pulBufLen REF DWORD, ppucField OUT BYTE,pulMinWordLen OUT DWORD , pulMaxWordLen OUT DWORD, ;
-            [@@Out] ppucDelimiters OUT CHAR PTR, [@@Out] ppucNoiseWords OUT CHAR PTR, [@@Out] ppucDropChars OUT CHAR PTR, [@@Out] ppucConditionalChars OUT CHAR PTR, [@@Out] ppucReserved1 AS CHAR[], [@@Out] ppucReserved2 AS CHAR[], pulOptions OUT DWORD)  AS DWORD
+            [@@Out] ppucDelimiters OUT BYTE PTR, [@@Out] ppucNoiseWords OUT BYTE PTR, [@@Out] ppucDropChars OUT BYTE PTR, [@@Out] ppucConditionalChars OUT BYTE PTR, [@@Out] ppucReserved1 AS CHAR[], [@@Out] ppucReserved2 AS CHAR[], pulOptions OUT DWORD)  AS DWORD
         IF Is32Bits
             RETURN ACE32.AdsGetFTSIndexInfo(hIndex, pucOutput, REF pulBufLen, OUT ppucField, OUT pulMinWordLen, OUT pulMaxWordLen, OUT ppucDelimiters, OUT ppucNoiseWords, OUT ppucDropChars, OUT ppucConditionalChars, ppucReserved1, ppucReserved2, OUT pulOptions)
         ELSE
-            RETURN ACE32.AdsGetFTSIndexInfo(hIndex, pucOutput, REF pulBufLen, OUT ppucField, OUT pulMinWordLen, OUT pulMaxWordLen, OUT ppucDelimiters, OUT ppucNoiseWords, OUT ppucDropChars, OUT ppucConditionalChars, ppucReserved1, ppucReserved2, OUT pulOptions)
+            RETURN ACE64.AdsGetFTSIndexInfo(hIndex, pucOutput, REF pulBufLen, OUT ppucField, OUT pulMinWordLen, OUT pulMaxWordLen, OUT ppucDelimiters, OUT ppucNoiseWords, OUT ppucDropChars, OUT ppucConditionalChars, ppucReserved1, ppucReserved2, OUT pulOptions)
         ENDIF
 
     PUBLIC STATIC METHOD AdsIsEmpty(hTable AS IntPtr, lFieldOrdinal AS DWORD, pbEmpty OUT WORD ) AS DWORD

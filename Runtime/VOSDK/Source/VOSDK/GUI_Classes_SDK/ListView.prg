@@ -2172,7 +2172,7 @@ METHOD SetPixWidth(dwPixWidth AS LONG)  AS LOGIC
 	LOCAL iCol 	as dword
 	LOCAL lSet	AS LOGIC
 	iCol := oOwner:__GetColumnIndexFromSymbol(SELF:NameSym)
-	lSet := ListView_SetColumnWidth( oOwner:Handle(), int(_cast,iCol)-1 , dwPixWidth)
+	lSet := ListView_SetColumnWidth( oOwner:Handle(), int(_cast,iCol)-1 , (SHORT) dwPixWidth)
 	RETURN lSet
 
 

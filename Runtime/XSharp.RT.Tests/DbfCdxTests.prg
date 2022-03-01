@@ -237,7 +237,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			DbCloseArea()
 
 			DbUseArea( , , cFileName)
-			FieldPut(1 , FLOAT{46.11}) // ! a float isn/t stored !
+			FieldPut(1 , (FLOAT) 46.11) // ! a float isn/t stored !
 			DbCommit()
 			Assert.Equal(46.11 , (FLOAT) FieldGet(1)) // runtime exception
 			DbCloseArea()

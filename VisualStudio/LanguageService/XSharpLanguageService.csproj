@@ -70,6 +70,16 @@
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
     <Compile Include="Classifier\LineState.cs" />
+    <Compile Include="LightBulb\CommonAction.cs" />
+    <Compile Include="LightBulb\CommonActionProvider.cs" />
+    <Compile Include="LightBulb\ConstructorAction.cs" />
+    <Compile Include="LightBulb\ConstructorProvider.cs" />
+    <Compile Include="LightBulb\CtorParamsDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LightBulb\CtorParamsDlg.Designer.cs">
+      <DependentUpon>CtorParamsDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="LightBulb\PropertyAction.cs" />
     <Compile Include="LightBulb\PropertyProvider.cs" />
     <Compile Include="LineSeparators\GraphicsResult.cs" />
@@ -158,6 +168,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Parameter Info\SignatureCommandHandler.cs" />
+    <Compile Include="Tokenizer\XDocument.cs" />
     <Compile Include="XSharpLanguagePackage.cs" />
     <Compile Include="Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Parameter Info\SignatureHelpSourceProvider.cs" />
@@ -173,12 +184,13 @@
     <Compile Include="Classifier\XSharpClassifier.cs" />
     <Compile Include="Classifier\XSharpClassifierProvider.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
-    <Compile Include="Tokenizer\XSharpTokens.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
@@ -198,7 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.402</Version>
+      <Version>15.0.416</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>
@@ -219,10 +231,13 @@
       <Version>4.3.1</Version>
     </PackageReference>
     <PackageReference Include="VSLangProj150">
-      <Version>15.0.26229</Version>
+      <Version>16.7.30328.74</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="LightBulb\CtorParamsDlg.resx">
+      <DependentUpon>CtorParamsDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\IndentingOptionsControl.resx">
       <DependentUpon>IndentingOptionsControl.cs</DependentUpon>
     </EmbeddedResource>

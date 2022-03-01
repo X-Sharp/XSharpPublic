@@ -24,7 +24,7 @@ namespace XSharp.LanguageService
     /// <summary>
     /// This class keeps the state for 0 based line numbers
     /// </summary>
-    internal class XSharpLineState
+    public class XSharpLineState
     {
         private Dictionary<int, LineFlags> dict;
         internal ITextSnapshot Snapshot { get; set; }
@@ -56,20 +56,29 @@ namespace XSharp.LanguageService
         }
         internal void RemoveFlags(int line, LineFlags flags)
         {
-            if (dict.ContainsKey(line))
+            lock(dict)
             {
-                dict[line] &= ~flags;
+                if (dict.ContainsKey(line))
+                {
+                    dict[line] &= ~flags;
+                }
             }
         }
         internal void Clear()
         {
-            dict = new Dictionary<int, LineFlags>();
+            lock (dict)
+            {
+                dict.Clear();
+            }
         }
         internal LineFlags GetFlags(int line)
         {
-            if (dict.TryGetValue(line, out var flags))
+            lock (dict)
             {
-                return flags;
+                if (dict.TryGetValue(line, out var flags))
+                {
+                    return flags;
+                }
             }
             return LineFlags.None;
         }
@@ -80,15 +89,10 @@ namespace XSharp.LanguageService
         {
             get
             {
-                var result = new Dictionary<int, LineFlags>();
                 lock (dict)
                 {
-                    foreach (var item in dict)
-                    {
-                        result.Add(item.Key, item.Value);
-                    }
+                    return dict.ToDictionary(entry => entry.Key, entry => entry.Value);
                 }
-                return result;
             }
         }
     }

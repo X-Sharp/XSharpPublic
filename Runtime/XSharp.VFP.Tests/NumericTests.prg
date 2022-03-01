@@ -50,15 +50,15 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 		[Fact, Trait("Category", "Numeric")];
 		METHOD BitTests() AS VOID
             Assert.Equal(0h0000,      BitAnd(0h, 0hFFFF) )
-            Assert.Equal(6,           BitAnd(318, 7.5) )
+            Assert.Equal(6,           (int) BitAnd(318, 7.5) )
             Assert.Equal(160,         BitAnd(-838, 0x06AC, 873445) )
             Assert.Equal(0h0000,      BitAnd(0h, 0hFFFF) )
             Assert.Equal(0h01234567,  BitAnd(0h01234567, 0h89abcdef) )
-            Assert.Equal(319,         BitOr(318, 7.5) )
+            Assert.Equal(319,         (int) BitOr(318, 7.5) )
             Assert.Equal(-1,          BitOr(-838, 0x06AC, 873445) )
             Assert.Equal(0hffff,      BitOr(0h, 0hFFFF) )
             Assert.Equal(0h89abcdef,  BitOr(0h01234567, 0h89abcdef) )
-            Assert.Equal(313,         BitXOr(318, 7.5) )
+            Assert.Equal(313,         (int) BitXOr(318, 7.5) )
             Assert.Equal(-873997,     BitXOr(-838, 0x06AC, 873445) )
             Assert.Equal(0hffff,      BitXOr(0h, 0hFFFF) )
             Assert.Equal(0h88888888,  BitXOr(0h01234567, 0h89abcdef) )

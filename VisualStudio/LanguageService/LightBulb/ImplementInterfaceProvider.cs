@@ -4,19 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using static XSharp.XSharpConstants;
-using XSharp.LanguageService;
-using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Operations;
 using System.Threading.Tasks;
 using System.Threading;
-using System.Collections.Immutable;
-using Microsoft.VisualStudio.Text.Formatting;
 using XSharpModel;
-using System.Reflection;
 using XSharp.Project.Editors.LightBulb;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
@@ -42,15 +36,12 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
     }
 
-    internal class ImplementInterfaceSuggestedActionsSource : ISuggestedActionsSource
+    internal class ImplementInterfaceSuggestedActionsSource : CommonActionsSource, ISuggestedActionsSource
     {
         private ImplementInterfaceSuggestedActionsSourceProvider m_factory;
-        private ITextBuffer m_textBuffer;
-        private ITextView m_textView;
 
         private IXTypeSymbol _classEntity;
         private Dictionary<string, List<IXMemberSymbol>> _members;
-        private XFile _xfile;
         private TextRange _range;
 
 
@@ -58,10 +49,9 @@ namespace XSharp.LanguageService.Editors.LightBulb
         public event EventHandler<EventArgs> SuggestedActionsChanged;
 
         public ImplementInterfaceSuggestedActionsSource(ImplementInterfaceSuggestedActionsSourceProvider ImplementInterfaceSuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer)
+            : base(textView, textBuffer)
         {
             this.m_factory = ImplementInterfaceSuggestedActionsSourceProvider;
-            this.m_textView = textView;
-            this.m_textBuffer = textBuffer;
             //
             _classEntity = null;
         }
@@ -92,8 +82,13 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
                 foreach (KeyValuePair<string, List<IXMemberSymbol>> intfaces in _members)
                 {
-                    var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range);
+                    // "Simple" Name
+                    var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range, false);
                     suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
+                    // "Fully Qualified Name"
+                    ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range, true);
+                    suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
+
                 }
 
                 return suggest.ToArray();
@@ -102,16 +97,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
 
 
-        public void Dispose()
-        {
-        }
-
-        public bool TryGetTelemetryId(out Guid telemetryId)
-        {
-            // This is a sample provider and doesn't participate in LightBulb telemetry  
-            telemetryId = Guid.Empty;
-            return false;
-        }
 
         /// <summary>
         /// Retrieve the Entity, and check if it has an Interface and if some members are missing
@@ -122,9 +107,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             // Reset
             _classEntity = null;
             _members = null;
-            // Sorry, we are lost...
-            _xfile = m_textBuffer.GetFile();
-            if (_xfile == null)
+            if (!GetFile())
                 return false;
             //
             int caretLine = SearchRealStartLine();
@@ -158,13 +141,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
 
 
-        internal void WriteOutputMessage(string strMessage)
-        {
-            if (XSettings.EnableParameterLog && XSettings.EnableLogging)
-            {
-                XSettings.LogMessage("XSharp.LightBulb:" + strMessage);
-            }
-        }
+  
 
         private Dictionary<string, List<IXMemberSymbol>> BuildMissingMembers()
         {
@@ -190,11 +167,29 @@ namespace XSharp.LanguageService.Editors.LightBulb
                             // Is it already in classEntity ?
                             foreach (IXMemberSymbol entityMbr in _classEntity.Members)
                             {
-                                if (String.Compare(this.GetDescription(mbr), this.GetDescription(entityMbr), true) == 0)
+                                if ( mbr.Kind == entityMbr.Kind)
                                 {
-                                    found = true;
-                                    break;
+                                    if (String.Compare(this.GetModVis(mbr), this.GetModVis(entityMbr), true) == 0)
+                                    {
+                                        // Just the "simple" Name
+                                        if (String.Compare(mbr.Prototype, entityMbr.Prototype, true) == 0)
+                                        {
+                                            found = true;
+                                            break;
+                                        }
+                                        // Or it could be the Fully Qualified Name
+                                        else if (String.Compare(iftype.Name+"."+mbr.Prototype, entityMbr.Prototype, true) == 0)
+                                        {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
                                 }
+                                //if (String.Compare(this.GetDescription(mbr), this.GetDescription(entityMbr), true) == 0)
+                                //{
+                                //    found = true;
+                                //    break;
+                                //}
                             }
                             // No, Add 
                             if (!found)
@@ -221,21 +216,14 @@ namespace XSharp.LanguageService.Editors.LightBulb
             if (m_textBuffer.Properties == null)
                 return false;
             //
-            XSharpLineState linesState = null;
-            if (!m_textBuffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
+            var xDocument = m_textBuffer.GetDocument();
+            if (xDocument == null)
             {
                 return false;
             }
+            var linesState = xDocument.LineState;
             //
-            XSharpTokens xTokens;
-            if (!m_textBuffer.Properties.TryGetProperty(typeof(XSharpTokens), out xTokens))
-            {
-                return false;
-            }
-            if (!xTokens.Complete)
-                return false;
-            //
-            var xLines = xTokens.Lines;
+            var xLines = xDocument.Lines;
             //
             IList<XSharpToken> lineTokens = null;
             List<XSharpToken> fulllineTokens = new List<XSharpToken>();
@@ -276,37 +264,9 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return found;
         }
 
-        /// <summary>
-        /// Based on the Caret line position, check if this is a continuig line
-        /// </summary>
-        /// <returns></returns>
-        private int SearchRealStartLine()
+        private string GetModVis(IXMemberSymbol mbr)
         {
-            //
-            XSharpLineState linesState = null;
-            if (!m_textBuffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
-            {
-                return -1;
-            }
-            //
-            SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
-            ITextSnapshotLine line = caret.GetContainingLine();
-            //
-            var lineNumber = line.LineNumber;
-            var lineState = linesState.GetFlags(lineNumber);
-            // Search the first line
-            while (lineState == LineFlags.Continued)
-            {
-                // Move back
-                lineNumber--;
-                lineState = linesState.GetFlags(lineNumber);
-            }
-            return lineNumber;
-        }
-
-        private string GetDescription(IXMemberSymbol mbr)
-        {
-            string desc = mbr.Description;
+            string desc = mbr.ModVis;
             if ((mbr is XPEMethodSymbol) || (mbr is XPEPropertySymbol))
             {
                 desc = desc.Replace(" ABSTRACT ", "");

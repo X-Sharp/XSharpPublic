@@ -55,7 +55,7 @@ METHOD AddAccelerator(oAccelerator)
 /// <include file="Gui.xml" path="doc/Accelerator.AddKey/*" />
 METHOD AddKey(nMenuItemId, xKeyId, lCtrl, lAlt, lShift) 
 	//SE-060525
-   LOCAL fVirt AS BYTE
+   LOCAL fVirt AS LONGINT
    LOCAL wKey  AS LONGINT
    LOCAL wCmd  AS LONGINT
 

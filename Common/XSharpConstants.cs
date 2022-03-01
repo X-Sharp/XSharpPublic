@@ -148,7 +148,7 @@ namespace XSharp
         public const string DisabledWarnings = nameof(DisabledWarnings);
         public const string DocumentationFile = nameof(DocumentationFile);
         public const string EnforceSelf = nameof(EnforceSelf);
-        public const string EnforceVirtual = nameof(EnforceVirtual);
+        public const string EnforceOverride = nameof(EnforceOverride);
         public const string Fox1 = nameof(Fox1);
         public const string Fox2 = nameof(Fox2);
         public const string GetTargetPath = nameof(GetTargetPath);

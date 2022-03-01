@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharpModel
 
         METHOD Lex(cSource AS STRING) AS ITokenStream
             LOCAL lOk := FALSE AS LOGIC
-            WriteOutputMessage("-->> Lex() "+SourcePath)
+            WriteOutputMessage("-->> Lex() "+SourcePath+" ("+cSource:Length:ToString()+")")
             SELF:_errors := List<XError>{}
             LOCAL stream := NULL AS ITokenStream
             TRY

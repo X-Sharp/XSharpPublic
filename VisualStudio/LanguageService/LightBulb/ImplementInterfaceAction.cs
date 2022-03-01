@@ -2,57 +2,57 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Imaging.Interop;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using Microsoft.VisualStudio.Text;
 using System.Threading;
 using XSharpModel;
-using System.Reflection;
 using Microsoft.VisualStudio.Text.Editor;
-using XSharp.LanguageService;
 using System.Collections.Immutable;
-using Microsoft.VisualStudio.Text.Adornments;
 using System.Text;
 using System.Linq;
 
 namespace XSharp.Project.Editors.LightBulb
 {
-    internal class ImplementInterfaceSuggestedAction : ISuggestedAction
+    internal class ImplementInterfaceSuggestedAction : CommonAction, ISuggestedAction
     {
         private string m_interface;
-        private ITextSnapshot m_snapshot;
-        private ITextView m_textView;
         private IXTypeSymbol _classEntity;
         private List<IXMemberSymbol> _members;
         private XSharpModel.TextRange _range;
+        private bool _explicitly;
 
-        public ImplementInterfaceSuggestedAction(ITextView textView, ITextBuffer m_textBuffer, string intface, IXTypeSymbol entity, List<IXMemberSymbol> memberstoAdd, XSharpModel.TextRange range)
+        public ImplementInterfaceSuggestedAction(ITextView textView, ITextBuffer m_textBuffer, string intface, IXTypeSymbol entity, List<IXMemberSymbol> memberstoAdd, XSharpModel.TextRange range, bool fqn)
+            : base(textView)
         {
-            m_snapshot = m_textBuffer.CurrentSnapshot;
             m_interface = intface;
-            m_textView = textView;
             _classEntity = entity;
             _members = memberstoAdd;
             _range = range;
+            _explicitly = fqn;
         }
 
-        public Task<object> GetPreviewAsync(CancellationToken cancellationToken)
+        public override Task<object> GetPreviewAsync(CancellationToken cancellationToken)
         {
             int count = 0;
             List<Inline> content = new List<Inline>();
             int max = _members.Count;
             foreach (IXMemberSymbol mbr in _members)
             {
-                Run temp = new Run(this.GetDescription(mbr) + Environment.NewLine);
+                string desc = this.GetModVis(mbr);
+                if (_explicitly)
+                    desc += m_interface + ".";
+                desc += mbr.Prototype;
+                //
+                Run temp = new Run( desc + Environment.NewLine);
                 content.Add(temp);
                 count++;
                 if ((count >= 3) && (max > 3))
                 {
                     temp = new Run("..." + Environment.NewLine);
                     content.Add(temp);
-                    temp = new Run(max.ToString() + " total members." + Environment.NewLine);
+                    temp = new Run(max.ToString() + " members." + Environment.NewLine);
                     content.Add(temp);
                     break;
                 }
@@ -64,9 +64,9 @@ namespace XSharp.Project.Editors.LightBulb
             return Task.FromResult<object>(textBlock);
         }
 
-        private string GetDescription(IXMemberSymbol mbr)
+        private string GetModVis(IXMemberSymbol mbr)
         {
-            string desc = mbr.Description;
+            string desc = mbr.ModVis;
             if ((mbr is XPEMethodSymbol) || (mbr is XPEPropertySymbol))
             {
                 desc = desc.Replace(" ABSTRACT ", "");
@@ -76,55 +76,25 @@ namespace XSharp.Project.Editors.LightBulb
             return desc;
         }
 
-        public Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken)
-        {
-            return Task.FromResult<IEnumerable<SuggestedActionSet>>(null);
-        }
-
-        public bool HasActionSets
-        {
-            get { return false; }
-        }
-        public string DisplayText
-        {
-            get { return "Implement " + m_interface; }
-        }
-        public ImageMoniker IconMoniker
-        {
-            get { return default(ImageMoniker); }
-        }
-        public string IconAutomationText
+ 
+          public override string DisplayText
         {
             get
             {
-                return null;
+                if (!_explicitly)
+                {
+                    return "Implement " + m_interface;
+                }
+                else
+                {
+                    return "Implement explicitly " + m_interface;
+                }
             }
         }
-        public string InputGestureText
-        {
-            get
-            {
-                return null;
-            }
-        }
-        public bool HasPreview
-        {
-            get { return true; }
-        }
-
-        public void Dispose()
-        {
-        }
-
-        public bool TryGetTelemetryId(out Guid telemetryId)
-        {
-            // This is a sample action and doesn't participate in LightBulb telemetry  
-            telemetryId = Guid.Empty;
-            return false;
-        }
-
+  
+   
         // The job is done here !!
-        public void Invoke(CancellationToken cancellationToken)
+        public override void Invoke(CancellationToken cancellationToken)
         {
             var settings = m_textView.TextBuffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
             //m_span.TextBuffer.Replace(m_span.GetSpan(m_snapshot), ");
@@ -154,7 +124,11 @@ namespace XSharp.Project.Editors.LightBulb
                 // Add a return with default value ? <- Could be a Setting ?
                 // Add a THROW NotImplementedException ? <- Could be a Setting ?
                 //
-                string desc = this.GetDescription(mbr);
+                string desc = this.GetModVis(mbr);
+                if (_explicitly)
+                    desc += m_interface + ".";
+                desc += mbr.Prototype;
+                //
                 if (mbr.Kind.IsMethod())
                 {
                     insertText.Append(prefix);
@@ -190,6 +164,8 @@ namespace XSharp.Project.Editors.LightBulb
                     if (hasAuto)
                     {
                         insertText.Append(mbr.ModVis);
+                        if (_explicitly)
+                            insertText.Append(m_interface + ".");
                         insertText.AppendLine(propDef);
                     }
                     else
@@ -229,7 +205,7 @@ namespace XSharp.Project.Editors.LightBulb
                         }
                         insertText.Append(prefix);
                         insertText.Append(indent);
-                        insertText.Append("END PROPERTY");
+                        insertText.AppendLine("END PROPERTY");
                     }
                 }
                 insertText.AppendLine();
@@ -264,21 +240,6 @@ namespace XSharp.Project.Editors.LightBulb
             }
         }
 
-
-        internal void WriteOutputMessage(string strMessage)
-        {
-            if (XSettings.EnableParameterLog && XSettings.EnableLogging)
-            {
-                XSettings.LogMessage("ImplementInterfaceSuggestedAction:" + strMessage);
-            }
-        }
-
-
     }
-
-
-
-
-
 
 }

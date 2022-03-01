@@ -39,7 +39,7 @@ namespace XSharp.Project
         internal const string UndeclaredCaption = "Enable Undeclared variables support";
         internal const string InitLocalsCaption = "Initialize Local variables";
         internal const string enforceSelfCaption = "Enforce SELF";
-        internal const string EnforceVirtualCaption = "Enforce VIRTUAL / OVERRIDE";
+        internal const string EnforceOverrideCaption = "Enforce VIRTUAL / OVERRIDE";
         internal const string allowDotCaption = "Allow DOT for instance members";
 
         internal const string CSDescription = "Enable/Disable case sensitivity (/cs)";
@@ -62,7 +62,7 @@ namespace XSharp.Project
         internal const string UndeclaredDescription = "Enable support for undeclared variables (these are resolved to MEMVARs). (/undeclared)\rPlease note that this requires /memvar to be enabled as well.";
 
         internal const string EnforceSelfDescription = "Enforce the use of SELF inside members of a class. This helps to prevent ambiguity in your code (/enforceself)";
-        internal const string EnforceVirtualDescription = "Enforce the use of VIRTUAL and OVERRIDE for members of a class. (/enforcevirtual)";
+        internal const string EnforceOverrideDescription = "Enforce the use of VIRTUAL and OVERRIDE for members of a class. (/enforceoverride)";
         internal const string allowDotDescription = "Allow the DOT operator to access instance fields, properties and methods (/allowdot)";
 
         internal const string CatGeneral = "General";
@@ -136,9 +136,9 @@ namespace XSharp.Project
             chkEnforceSelf.Tag = XSharpProjectFileConstants.EnforceSelf;
             toolTip1.SetToolTip(chkEnforceSelf, EnforceSelfDescription);
 
-            chkEnforceVirtual.Text = EnforceVirtualCaption;
-            chkEnforceVirtual.Tag = XSharpProjectFileConstants.EnforceVirtual;
-            toolTip1.SetToolTip(chkEnforceVirtual, EnforceVirtualDescription);
+            chkEnforceOverride.Text = EnforceOverrideCaption;
+            chkEnforceOverride.Tag = XSharpProjectFileConstants.EnforceOverride;
+            toolTip1.SetToolTip(chkEnforceOverride, EnforceOverrideDescription);
 
             chkAllowDot.Text = allowDotCaption;
             chkAllowDot.Tag = XSharpProjectFileConstants.Allowdot;

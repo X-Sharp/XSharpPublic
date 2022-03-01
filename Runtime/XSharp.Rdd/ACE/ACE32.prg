@@ -184,7 +184,7 @@ BEGIN NAMESPACE XSharp.ADS
         */
     [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
     PUBLIC STATIC EXTERN METHOD AdsGetFTSIndexInfo(hIndex as IntPtr, [@@In] [@@Out] pucOutput AS CHAR[], pulBufLen REF DWORD, ppucField OUT BYTE,pulMinWordLen OUT DWORD , pulMaxWordLen OUT DWORD, ;
-            [@@Out] ppucDelimiters OUT CHAR PTR, [@@Out] ppucNoiseWords OUT CHAR PTR, [@@Out] ppucDropChars OUT CHAR PTR, [@@Out] ppucConditionalChars OUT CHAR PTR, [@@Out] ppucReserved1 AS CHAR[], [@@Out] ppucReserved2 AS CHAR[], pulOptions OUT DWORD)  AS DWORD
+            [@@Out] ppucDelimiters OUT BYTE PTR, [@@Out] ppucNoiseWords OUT BYTE PTR, [@@Out] ppucDropChars OUT BYTE PTR, [@@Out] ppucConditionalChars OUT BYTE PTR, [@@Out] ppucReserved1 AS CHAR[], [@@Out] ppucReserved2 AS CHAR[], pulOptions OUT DWORD)  AS DWORD
 
 
     [DllImport("ace32.dll", CharSet := CharSet.Ansi)];

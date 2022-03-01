@@ -16,7 +16,7 @@ CLASS BaseListBox INHERIT TextControl
 	ACCESS __List AS IVOListBox
 		RETURN (IVOListBox) oCtrl
 	
-	ACCESS __Items AS IList<OBJECT>
+	ACCESS __Items AS IList
 		IF oCtrl != NULL
 			IF SELF:lIsComboBox
 				RETURN ((IVOComboBox) oCtrl):Items

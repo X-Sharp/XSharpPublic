@@ -1555,7 +1555,7 @@ BEGIN NAMESPACE XSharp
                     CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value + Convert.ToDouble(rhs:_intValue), lhs:_width, lhs:_decimals}
                     CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value + Convert.ToDouble(rhs:_i64Value), lhs:_width, lhs:_decimals}
                     CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value + rhs:_r8Value, Math.Max(lhs:_width, rhs:_width), Math.Max(lhs:_decimals,rhs:_decimals) }
-                    CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value + Convert.ToDouble(rhs:_currencyValue), lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value + Convert.ToDouble((Decimal) rhs:_currencyValue), lhs:_width, lhs:_decimals}
                     CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value + Convert.ToDouble(rhs:_decimalValue), lhs:_width, lhs:_decimals}
                     OTHERWISE					; NOP // error below
                 END SWITCH
@@ -1659,7 +1659,7 @@ BEGIN NAMESPACE XSharp
                     CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value - Convert.ToDouble(rhs:_intValue) ,lhs:_width, lhs:_decimals}
                     CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value - Convert.ToDouble(rhs:_i64Value) ,lhs:_width, lhs:_decimals}
                     CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value - Convert.ToDouble(rhs:_r8Value), Math.Max(lhs:_width, rhs:_width), Math.Max(lhs:_decimals,rhs:_decimals) }
-                    CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value - Convert.ToDouble(rhs:_currencyValue),lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value - Convert.ToDouble((Decimal) rhs:_currencyValue),lhs:_width, lhs:_decimals}
                     CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value - Convert.ToDouble(rhs:_decimalValue) ,lhs:_width, lhs:_decimals}
                     OTHERWISE					; NOP // error below
                 END SWITCH

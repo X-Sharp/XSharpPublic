@@ -164,7 +164,11 @@ namespace XSharp.Project
                     view = await VS.Documents.OpenAsync(file);
                 }
             }
-            var textView = await view.TextView.ToIVsTextViewAsync();
+            IVsTextView textView = null;
+            if (view != null)
+            {
+                 textView = await view.TextView.ToIVsTextViewAsync();
+            }
             if (textView != null)
             {
                 //

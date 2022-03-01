@@ -10,8 +10,8 @@
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aclass/*" />
 FUNCTION AClass(ArrayName, oExpression)
     THROW NotImplementedException{}
-    //RETURN 0 
-     
+    //RETURN 0
+
 
 
 /// <summary>-- todo --</summary>
@@ -46,11 +46,6 @@ FUNCTION ANetResources (ArrayName, cNetworkName, nResourceType)
     //RETURN 0
 
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/aprinters/*" />
-FUNCTION APrinters (ArrayName , nValue)
-    THROW NotImplementedException{}
-    //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/asessions/*" />

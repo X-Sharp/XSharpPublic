@@ -7,8 +7,8 @@ CLASS Spinner INHERIT Control
 	PROTECT oClient as Control
 	PROPERTY Client AS Control GET oClient SET oClient := VALUE
     ACCESS __UpDown AS System.Windows.Forms.NumericUpDown
-		RETURN (System.Windows.Forms.NumericUpDown) oCtrl        
-	PROPERTY Position AS INT GET __UpDown:Value SET __UpDown:Value := VALUE
+		RETURN (System.Windows.Forms.NumericUpDown) oCtrl
+	PROPERTY Position AS INT GET (INT) __UpDown:Value SET __UpDown:Value := VALUE
 
     PROPERTY Range AS Range
         GET
@@ -19,8 +19,8 @@ CLASS Spinner INHERIT Control
             __UpDown:Maximum := VALUE:Max
         END SET
     END PROPERTY
-    PROPERTY ThumbPosition AS LONG GET __UpDown:Value SET __UpDown:Value := VALUE
-    PROPERTY UnitSize AS LONG GET __UpDown:Increment SET __UpDown:Increment := Value
+    PROPERTY ThumbPosition AS LONG GET (INT) __UpDown:Value SET __UpDown:Value := VALUE
+    PROPERTY UnitSize AS LONG GET (INT) __UpDown:Increment SET __UpDown:Increment := Value
 
     CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware) CLIPPER
 	   SUPER(oOwner,xID,oPoint,oDimension,lDataAware)
@@ -30,12 +30,12 @@ CLASS HorizontalSpinner INHERIT Spinner
     PROPERTY ControlType AS ControlType GET ControlType.HorizontalSpinner
     CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware) CLIPPER
 	   SUPER(oOwner,xID,oPoint,oDimension,lDataAware)
-        
+
 END CLASS
 
 CLASS VerticalSpinner INHERIT Spinner
     PROPERTY ControlType AS ControlType GET ControlType.VerticalSpinner
     CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware) CLIPPER
-	   SUPER(oOwner,xID,oPoint,oDimension,lDataAware) 
+	   SUPER(oOwner,xID,oPoint,oDimension,lDataAware)
 
 END CLASS

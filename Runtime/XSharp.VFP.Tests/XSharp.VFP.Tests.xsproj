@@ -163,6 +163,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FinancialTests.prg" />
     <Compile Include="TypeTests.prg" />
     <Compile Include="EmptyTests.prg" />
     <Compile Include="FoxArraytests.prg" />

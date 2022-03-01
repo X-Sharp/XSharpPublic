@@ -31,11 +31,5 @@ FUNCTION FullPath( cFileName1 , uPath) AS STRING
     THROW NotImplementedException{}
     // RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/fv/*" />
-
-FUNCTION FV( nPayment, nInterestRate, nPeriods ) AS FLOAT
-    THROW NotImplementedException{}
-    // RETURN 0.0
 
 

@@ -9,6 +9,19 @@ USING System.Runtime.CompilerServices
 USING System.Diagnostics
 USING System.Runtime.Serialization
 
+
+#define USEATTRIB
+#ifdef USEATTRIB
+    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
+    #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
+#else
+    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[INLINE\] =>
+    #XTRANSLATE \[NODEBUG\] =>
+#endif
+
+
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
     // Type is Immutable, so has no settable properties
@@ -27,29 +40,29 @@ BEGIN NAMESPACE XSharp
         IComparable,            ;
         ISerializable
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         PRIVATE INITONLY _value AS System.Decimal
 
         #region constructors
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
         /// <param name="r8">Real8 value to convert to a FLOAT</param>
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [NODEBUG] [INLINE];
         CONSTRUCTOR (r8 AS REAL8)
             SELF:_value    := Math.Round((Decimal)r8,4)
 
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [INLINE];
         CONSTRUCTOR (d AS System.Decimal)
             SELF:_value    := Math.Round(d,4)
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [NODEBUG] [INLINE];
         CONSTRUCTOR (f AS IFloat)
             SELF:_value		:= Math.Round((Decimal)f:Value,4)
 
         #endregion
         #region Properties
         /// <summary>Decimal (System.Decimal) value</summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         PROPERTY @@Value    AS System.Decimal	GET _value
         #endregion
 
@@ -108,135 +121,147 @@ BEGIN NAMESPACE XSharp
 
         #region Implicit Converters
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(b AS BYTE) AS CURRENCY
             RETURN CURRENCY{(Decimal) b}
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(sb AS SByte) AS CURRENCY
             RETURN CURRENCY{(Decimal) sb}
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(si AS SHORT) AS CURRENCY
             RETURN CURRENCY{(Decimal)si}
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(w AS WORD) AS CURRENCY
             RETURN CURRENCY{(Decimal)w}
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
 
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(i AS INT) AS CURRENCY
             RETURN CURRENCY{(Decimal)i}
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(dw AS DWORD) AS CURRENCY
             RETURN CURRENCY{(Decimal)dw}
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(i64 AS INT64) AS CURRENCY
             RETURN CURRENCY{(Decimal)i64}
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(ui64 AS UINT64) AS CURRENCY
             RETURN CURRENCY{(Decimal)ui64}
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(r4 AS REAL4) AS CURRENCY
             RETURN CURRENCY{(REAL8)r4}
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(r8 AS REAL8) AS CURRENCY
             RETURN CURRENCY{r8}
 
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(fl AS FLOAT) AS CURRENCY
             RETURN CURRENCY{fl:Value}
 
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(val AS System.Decimal) AS CURRENCY
             RETURN CURRENCY{val}
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS REAL8
-            RETURN (REAL8) c:_value
+            RETURN CHECKED((REAL8) c:_value)
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS REAL4
-            RETURN (REAL4) c:_value
+            RETURN CHECKED((REAL4) c:_value)
 
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS FLOAT
-            RETURN FLOAT{ (REAL8) c:_value, -1, 4}
+            RETURN CHECKED(FLOAT{ (REAL8) c:_value, -1, 4})
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS System.Decimal
             RETURN c:_value
 
         #endregion
         #region Explicit Converters
         /// <include file="RTComments.xml" path="Comments/Converter/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS BYTE
             IF RuntimeState.CompilerOptionVO11
                 RETURN Convert.ToByte(c:_value)
             ENDIF
-            RETURN (BYTE) c:_value
+            RETURN CHECKED((BYTE) c:_value)
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR EXPLICIT(c AS CURRENCY) AS SByte
-            RETURN (SByte) c:_value
+            IF RuntimeState.CompilerOptionVO11
+                RETURN Convert.ToSByte(c:_value)
+            ENDIF
+            RETURN CHECKED((SByte) c:_value)
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
 
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS SHORT
             IF RuntimeState.CompilerOptionVO11
                 RETURN Convert.ToInt16(c:_value)
             ENDIF
-            RETURN (SHORT)c:_value
+            RETURN CHECKED((SHORT)c:_value)
 
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS WORD
-            RETURN (WORD) c:_value
+            IF RuntimeState.CompilerOptionVO11
+                RETURN Convert.ToUInt16(c:_value)
+            ENDIF
+            RETURN CHECKED((WORD) c:_value)
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS LONG
             IF RuntimeState.CompilerOptionVO11
                 RETURN Convert.ToInt32(c:_value)
             ENDIF
-            RETURN (LONG) c:_value
+            RETURN CHECKED((LONG) c:_value)
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS DWORD
+            IF RuntimeState.CompilerOptionVO11
+                RETURN Convert.ToUInt32(c:_value)
+            ENDIF
             RETURN (DWORD) c:_value
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS INT64
             IF RuntimeState.CompilerOptionVO11
                 RETURN Convert.ToInt64(c:_value)
             ENDIF
-            RETURN (INT64) c:_value
+            RETURN CHECKED((INT64) c:_value)
 
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS UINT64
-            RETURN (UINT64) c:_value
+            IF RuntimeState.CompilerOptionVO11
+                RETURN Convert.ToUInt64(c:_value)
+            ENDIF
+            RETURN CHECKED((UINT64) c:_value)
 
             #endregion
 
@@ -307,11 +332,11 @@ BEGIN NAMESPACE XSharp
         #region Explicit casts. Used inside Transform
         /// <exclude />
         METHOD CastToInt() AS INT
-            RETURN (INT)(SELF:_value)
+            RETURN CHECKED((INT)(SELF:_value))
 
             /// <exclude />
         METHOD CastToInt64() AS INT64
-            RETURN (INT64)(SELF:_value)
+            RETURN CHECKED((INT64)(SELF:_value))
 
             #endregion
         #region Add and Subtract

@@ -88,11 +88,27 @@ FUNCTION __GatherMemVar(aFieldList) AS LOGIC CLIPPER
     RETURN TRUE
     #pragma options ("az", on)
 
-FUNCTION __ScatterArray(aFieldList, lBlank) AS ARRAY CLIPPER
+FUNCTION __ScatterArray(uSource, aFieldList, lBlank) AS ARRAY CLIPPER
     VAR aFields := __GetFieldValues(aFieldList, FALSE, lBlank)
-    VAR aResult := {}
-    FOREACH var oField in aFields
-        AAdd(aResult, oField:Value)
+    VAR nLen    := aFields:Length
+
+    LOCAL aResult AS ARRAY
+    LOCAL aSource := NULL_ARRAY as ARRAY
+    IF IsArray(uSource)
+        aSource := uSource
+        if aSource IS __FoxArray VAR aFox
+            nLen := Min(ALen(aFox, 0), nLen)
+        ELSE
+            nLen := Min(ALen(aSource), nLen)
+        ENDIF
+        aResult := aSource
+    ELSE
+        aResult := __FoxArray{(DWORD) nLen}
+    ENDIF
+
+    FOR VAR nI := 0 to nLen-1
+        VAR oField := aFields[nI]
+        aResult[nI] := oField:Value
     NEXT
     RETURN aResult
 

@@ -50,7 +50,7 @@ CLASS StatusBar INHERIT Control
 
 	//PP-030828 Strong typing
  /// <exclude />
-METHOD __AutoSize() AS VOID STRICT 
+METHOD __AutoSize() AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL dwStart AS DWORD
 	LOCAL dwCount AS DWORD
@@ -70,14 +70,14 @@ METHOD __AutoSize() AS VOID STRICT
 	ENDIF
 
 
-	// Calculate adjustment             
-	oItem := aItems[dwItemCount] 
+	// Calculate adjustment
+	oItem := aItems[dwItemCount]
 	nAdjustment := SELF:Size:Width - (SBGRIPSIZE + SELF:HorizontalBorder + oItem:__Edge)
 	// IF nAdjustment > 0
 	dwStart := SELF:__GetItemFromSymbol(#MessageArea)
 	IF dwStart != 0
 		// Adjust the width of the message area
-		oItem := aItems[dwStart] 
+		oItem := aItems[dwStart]
 		oItem:Width := oItem:Width + nAdjustment
 
 
@@ -91,14 +91,14 @@ METHOD __AutoSize() AS VOID STRICT
 
 
  /// <exclude />
-METHOD __BuildItems() AS StatusBar STRICT 
+METHOD __BuildItems() AS StatusBar STRICT
 	//PP-030828 Strong typing
 	//SE-060525
 	LOCAL dwCount       AS DWORD
 	LOCAL dwItemCount   AS DWORD
 	LOCAL dwIntegerSize AS DWORD
 	LOCAL ptrItemArray  AS INT PTR
-	LOCAL oIcon         AS Icon 
+	LOCAL oIcon         AS Icon
 	LOCAL oItem         AS StatusBarItem
 
 
@@ -116,30 +116,30 @@ METHOD __BuildItems() AS StatusBar STRICT
 
 	// Allocate a static array and fill it with StatusBarItem information
 	// 070309 DCaton . no need to do this.
-	IF dwItemCount >0 
+	IF dwItemCount >0
 		ptrItemArray := MemCAlloc(dwItemCount, dwIntegerSize)
 		IF (ptrItemArray != NULL_PTR)
 			// Set the right edge coordinate for each StatusBarItem
 			FOR dwCount := 1 UPTO dwItemCount
-			    oItem := aItems[dwCount] 
+			    oItem := aItems[dwCount]
 				ptrItemArray[dwCount] := oItem:__Edge
 			NEXT // dwCount
-	
-	
+
+
 			// Set the edge of the last StatusBarItem to -1 to stretch it to the edge
 			// of the StatusBar
 			ptrItemArray[dwItemCount] := -1
-	
-	
+
+
 			// Draw the StatusBarItems
 			SendMessage(hwnd, SB_SETPARTS, dwItemCount, LONG(_CAST, ptrItemArray))
-	
-	
+
+
 			// Free the static array
 			MemFree(ptrItemArray)
 		ENDIF
 	   FOR dwCount := 1 UPTO dwItemCount
-            oItem := aItems[dwCount] 
+            oItem := aItems[dwCount]
 		    oIcon := oItem:Icon
 	        IF oIcon = NULL_OBJECT
 	       	    SendMessage(hwnd, SB_SETICON, dwCount-1u, 0l)
@@ -154,7 +154,7 @@ METHOD __BuildItems() AS StatusBar STRICT
 
 
  /// <exclude />
-METHOD __GetBorderWidths() AS StatusBar STRICT 
+METHOD __GetBorderWidths() AS StatusBar STRICT
 	//PP-030828 Strong typing
 	LOCAL dwIntegerSize AS DWORD
 	LOCAL ptrBorderArray AS DWORD PTR
@@ -184,15 +184,15 @@ METHOD __GetBorderWidths() AS StatusBar STRICT
 
 
  /// <exclude />
-METHOD __GetItemFromSymbol(symItemName AS SYMBOL) AS DWORD STRICT 
+METHOD __GetItemFromSymbol(symItemName AS SYMBOL) AS DWORD STRICT
 	//PP-030828 Strong typing
 	LOCAL i, iLen AS DWORD
     LOCAL oItem AS StatusBarItem
 
 
 	iLen := ALen(aItems)
-	FOR i:= 1 TO iLen              
-	    oItem := aItems[i] 
+	FOR i:= 1 TO iLen
+	    oItem := aItems[i]
 		IF oItem:NameSym == symItemName
 			RETURN i
 		ENDIF
@@ -201,7 +201,7 @@ METHOD __GetItemFromSymbol(symItemName AS SYMBOL) AS DWORD STRICT
 
 
  /// <exclude />
-METHOD __GetItemWidth(symItemName AS SYMBOL) AS DWORD STRICT 
+METHOD __GetItemWidth(symItemName AS SYMBOL) AS DWORD STRICT
 	//PP-030828 Strong typing
 	LOCAL _hDC AS PTR
 	LOCAL strucSize1 IS _WinSize
@@ -210,8 +210,8 @@ METHOD __GetItemWidth(symItemName AS SYMBOL) AS DWORD STRICT
 	LOCAL sTime AS STRING
 
 
-	
-	
+
+
 
 
 	IF hWnd != 0
@@ -280,7 +280,7 @@ METHOD __GetItemWidth(symItemName AS SYMBOL) AS DWORD STRICT
 
 
  /// <exclude />
-METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT 
+METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT
 	//PP-030828 Strong typing
 	LOCAL DIM aKeyStates[256] AS BYTE
 
@@ -295,15 +295,15 @@ METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __GetSymbolFromItem(dwIndex AS DWORD) AS SYMBOL STRICT 
+METHOD __GetSymbolFromItem(dwIndex AS DWORD) AS SYMBOL STRICT
     LOCAL oItem AS StatusBarItem
     IF dwIndex <= ALen(aItems)
-        oItem :=aItems[dwIndex] 	
+        oItem :=aItems[dwIndex]
     	RETURN oItem:NameSym
     ENDIF
     RETURN NULL_SYMBOL
  /// <exclude />
-METHOD __GetText(symItemName := NIL AS USUAL) AS STRING STRICT 
+METHOD __GetText(symItemName := NIL AS USUAL) AS STRING STRICT
 	//PP-030828 Strong typing
 	LOCAL cText AS STRING
 	LOCAL pszText AS PSZ
@@ -311,8 +311,8 @@ METHOD __GetText(symItemName := NIL AS USUAL) AS STRING STRICT
 	LOCAL DIM aBuf[SBMAXMESSAGE+1] AS BYTE
 
 
-	
-	
+
+
 
 
 	// Lookup message area index by default
@@ -331,7 +331,7 @@ METHOD __GetText(symItemName := NIL AS USUAL) AS STRING STRICT
 
 
  /// <exclude />
-METHOD __InitItems() AS StatusBar STRICT 
+METHOD __InitItems() AS StatusBar STRICT
 	//PP-030828 Strong typing
 	LOCAL nVBorder AS INT
 	//LOCAL nHBorder AS INT
@@ -342,8 +342,8 @@ METHOD __InitItems() AS StatusBar STRICT
 	LOCAL oPrevStatusBarItem AS StatusBarItem
 
 
-	
-	
+
+
 
 
 	// Get border information for use in calculations
@@ -380,10 +380,10 @@ METHOD __InitItems() AS StatusBar STRICT
 
 
  /// <exclude />
-ACCESS __IsTopAligned AS LOGIC STRICT 
+ACCESS __IsTopAligned AS LOGIC STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	IF (hWnd != NULL_PTR)
@@ -397,13 +397,13 @@ ACCESS __IsTopAligned AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __SetKeyState(bKey AS BYTE, lTurnOn AS LOGIC) AS VOID STRICT 
+METHOD __SetKeyState(bKey AS BYTE, lTurnOn AS LOGIC) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL lCurrentlyOn AS LOGIC
 
 
-	
-	
+
+
 
 
 	lCurrentlyOn := SELF:__GetKeyState(bKey)
@@ -416,15 +416,15 @@ METHOD __SetKeyState(bKey AS BYTE, lTurnOn AS LOGIC) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __SetSystemItemWidths() AS VOID STRICT 
+METHOD __SetSystemItemWidths() AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL oStatusBarItem AS StatusBarItem
 	LOCAL symItemName AS SYMBOL
 	LOCAL dwIndex AS DWORD
 
 
-	
-	
+
+
 
 
 	FOR dwIndex := 1 UPTO ALen(aItems)
@@ -443,20 +443,20 @@ METHOD __SetSystemItemWidths() AS VOID STRICT
 
 
  /// <exclude />
-METHOD __ToggleKeyState(bKey AS BYTE) AS VOID STRICT 
+METHOD __ToggleKeyState(bKey AS BYTE) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL DIM aKeyStates[256] AS BYTE
 
 
-	
-	
+
+
 
 
 	GetKeyboardState(@aKeyStates)
 	IF (_AND(aKeyStates[INT(bKey)+1], 1) > 0) // Is Key on
-		aKeyStates[bKey+1] := _AND(aKeyStates[bKey+1], 0xFE) // Turn Key off
+		aKeyStates[bKey+1] := (BYTE) _AND(aKeyStates[bKey+1], 0xFE) // Turn Key off
 	ELSE
-		aKeyStates[bKey+1] := _OR(aKeyStates[bKey+1], 0x01) // Turn Key on
+		aKeyStates[bKey+1] := (BYTE) _OR(aKeyStates[bKey+1], 0x01) // Turn Key on
 	ENDIF
 
 
@@ -470,14 +470,14 @@ METHOD __ToggleKeyState(bKey AS BYTE) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __UpdateKeyStates() AS VOID STRICT 
+METHOD __UpdateKeyStates() AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL DIM aKeyStates[256] AS BYTE
 	LOCAL iSet AS LONGINT
 
 
-	
-	
+
+
 
 
 	IF lKeyboardArea
@@ -513,11 +513,11 @@ METHOD __UpdateKeyStates() AS VOID STRICT
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.AddItem/*" />
-METHOD AddItem(oStatusBarItem) 
+METHOD AddItem(oStatusBarItem)
 
 
-	
-	
+
+
 
 
 	AAdd(aItems, oStatusBarItem)
@@ -529,21 +529,21 @@ NEW PROPERTY AsString AS STRING
     GET
 	    RETURN cLastPermanentMessage
     END GET
-    SET 
+    SET
     	SELF:setmessage(cLastPermanentMessage := value, MESSAGEPERMANENT)
     END SET
 END PROPERTY
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.ClearItems/*" />
-METHOD ClearItems() 
+METHOD ClearItems()
 	LOCAL dwCount AS DWORD
 	LOCAL dwItemStyle AS DWORD
 	LOCAL oStatusBarItem AS StatusBarItem
 
 
-	
-	
+
+
 
 
 	FOR dwCount := 1 UPTO ALen(aItems)
@@ -557,28 +557,28 @@ METHOD ClearItems()
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.ControlText/*" />
-ACCESS ControlText 
-	
-	
+ACCESS ControlText
+
+
 
 
 	RETURN cLastControlMessage
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.ControlText/*" />
-ASSIGN ControlText(cMessage) 
-	
-	
+ASSIGN ControlText(cMessage)
+
+
 
 
 	SELF:setmessage(cLastControlMessage := cMessage, MESSAGECONTROL)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.Create/*" />
-METHOD Create() 
-	
-	
+METHOD Create()
+
+
 
 
 	SELF:SetStyle(_OR(SBT_TOOLTIPS, SBARS_SIZEGRIP), TRUE)
@@ -610,8 +610,8 @@ METHOD Create()
 
 /// <include file="Gui.xml" path="doc/StatusBar.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF !InCollect()
@@ -624,34 +624,34 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.DisabledKeyIndicatorColor/*" />
-ACCESS DisabledKeyIndicatorColor 
-	
-	
+ACCESS DisabledKeyIndicatorColor
+
+
 
 
 	RETURN oDisabledColor
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.DisabledKeyIndicatorColor/*" />
-ASSIGN DisabledKeyIndicatorColor(oColor) 
-	
-	
+ASSIGN DisabledKeyIndicatorColor(oColor)
+
+
 
 
 	oDisabledColor := oColor
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.Dispatch/*" />
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent)
 	LOCAL dwMessage AS DWORD
 	LOCAL strucPoint IS _winPoint
-	LOCAL strucRect IS _winRect   
+	LOCAL strucRect IS _winRect
 	LOCAL oEvt := oEvent AS @@Event
 
 
-	
-	
+
+
 
 
 	dwMessage := oEvt:Message
@@ -694,15 +694,15 @@ METHOD Dispatch(oEvent)
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.DisplayKeyboard/*" />
-METHOD DisplayKeyboard() 
+METHOD DisplayKeyboard()
 	LOCAL dwCount AS DWORD
 	LOCAL dwItemCount AS DWORD
 	LOCAL oStatusBarItem AS StatusBarKeyItem
 	LOCAL aKeys AS ARRAY
 
 
-	
-	
+
+
 
 
 	// Make sure this section hasn't already been added
@@ -734,13 +734,13 @@ METHOD DisplayKeyboard()
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.DisplayMemory/*" />
-METHOD DisplayMemory() 
+METHOD DisplayMemory()
 	LOCAL dwItemCount AS DWORD
 	LOCAL oStatusBarItem AS StatusBarItem
 
 
-	
-	
+
+
 
 
 	// Make sure this section hasn't already been added
@@ -767,12 +767,12 @@ METHOD DisplayMemory()
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.DisplayMessage/*" />
-METHOD DisplayMessage() 
+METHOD DisplayMessage()
 	LOCAL dwItemCount AS DWORD
 
 
-	
-	
+
+
 
 
 	// Make sure this section hasn't already been added
@@ -799,13 +799,13 @@ METHOD DisplayMessage()
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.DisplayPosition/*" />
-METHOD DisplayPosition() 
+METHOD DisplayPosition()
 	LOCAL dwItemCount AS DWORD
 	LOCAL oStatusBarItem AS StatusBarItem
 
 
-	
-	
+
+
 
 
 	// Make sure this section hasn't already been added
@@ -832,13 +832,13 @@ METHOD DisplayPosition()
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.DisplayTime/*" />
-METHOD DisplayTime() 
+METHOD DisplayTime()
 	LOCAL dwItemCount AS DWORD
 	LOCAL oStatusBarItem AS StatusBarItem
 
 
-	
-	
+
+
 
 
 	// Make sure this section hasn't already been added
@@ -865,50 +865,50 @@ METHOD DisplayTime()
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.ErrorMessageBeep/*" />
-ACCESS ErrorMessageBeep 
-	
-	
+ACCESS ErrorMessageBeep
+
+
 
 
 	RETURN lErrorMessageBeep
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.ErrorMessageBeep/*" />
-ASSIGN ErrorMessageBeep(lEnable) 
-	
-	
+ASSIGN ErrorMessageBeep(lEnable)
+
+
 
 
 	RETURN lErrorMessageBeep := lEnable
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.ErrorText/*" />
-ACCESS ErrorText() 
-	
-	
+ACCESS ErrorText()
+
+
 
 
 	RETURN cLastErrorMessage
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.ErrorText/*" />
-ASSIGN ErrorText(cMessage) 
-	
-	
+ASSIGN ErrorText(cMessage)
+
+
 
 
 	SELF:setmessage(cLastErrorMessage := cMessage, MESSAGEERROR)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.GetItem/*" />
 METHOD GetItem(symItemName AS Symbol) AS OBJECT
 	LOCAL dwIndex as DWORD
 	LOCAL oItem as OBJECT
-	
-	
+
+
 	dwIndex := self:__GetItemFromSymbol(symItemName)
 	IF (dwIndex != 0)
 		oItem := self:aItems[dwIndex]
@@ -916,18 +916,18 @@ METHOD GetItem(symItemName AS Symbol) AS OBJECT
 
 
 	RETURN oItem
-	
-	
+
+
 /// <include file="Gui.xml" path="doc/StatusBar.GetItemBoundingBox/*" />
-METHOD GetItemBoundingBox(symItemName) 
+METHOD GetItemBoundingBox(symItemName)
 	LOCAL dwIndex AS DWORD
 	LOCAL strucRect IS _winRECT
 	LOCAL oPoint AS Point
 	LOCAL oDimension AS Dimension
 
 
-	
-	
+
+
 
 
 	DEFAULT(@symItemName, #MessageArea)
@@ -948,14 +948,14 @@ METHOD GetItemBoundingBox(symItemName)
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.GetTipText/*" />
-METHOD GetTipText(symItemName) 
+METHOD GetTipText(symItemName)
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 	LOCAL symName AS SYMBOL
 
 
-	
-	
+
+
 
 
 	DEFAULT(@symItemName, #MessageArea)
@@ -980,9 +980,9 @@ METHOD GetTipText(symItemName)
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.Hide/*" />
-METHOD Hide() 
-	
-	
+METHOD Hide()
+
+
 
 
 	SUPER:Hide()
@@ -999,9 +999,9 @@ METHOD Hide()
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.HorizontalBorder/*" />
-ACCESS HorizontalBorder 
-	
-	
+ACCESS HorizontalBorder
+
+
 
 
 	SELF:__GetBorderWidths()
@@ -1011,12 +1011,12 @@ ACCESS HorizontalBorder
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 	LOCAL dwStyle AS DWORD
 
 
-	
-	
+
+
 
 
 	aMessages := ArrayNew(4)
@@ -1040,22 +1040,22 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.InsertMode/*" />
-ACCESS InsertMode 
-	
-	
+ACCESS InsertMode
+
+
 
 
 	RETURN SELF:__GetKeyState(VK_INSERT)
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.InsertMode/*" />
-ASSIGN InsertMode(lEnable) 
-	
-	
+ASSIGN InsertMode(lEnable)
+
+
 
 
 	DEFAULT(@lEnable, TRUE)
@@ -1064,13 +1064,13 @@ ASSIGN InsertMode(lEnable)
 	SELF:__SetKeyState(VK_INSERT, lEnable)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.ItemBorder/*" />
-ACCESS ItemBorder 
-	
-	
+ACCESS ItemBorder
+
+
 
 
 	SELF:__GetBorderWidths()
@@ -1078,31 +1078,31 @@ ACCESS ItemBorder
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.KeyIndicatorColor/*" />
-ACCESS KeyIndicatorColor 
-	
-	
+ACCESS KeyIndicatorColor
+
+
 
 
 	RETURN oKeyColor
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.KeyIndicatorColor/*" />
-ASSIGN KeyIndicatorColor(oColor) 
-	
-	
+ASSIGN KeyIndicatorColor(oColor)
+
+
 
 
 	oKeyColor := oColor
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.Length/*" />
-ACCESS Length 
+ACCESS Length
 	LOCAL dwIndex AS DWORD
 
 
-	
-	
+
+
 
 
 	dwIndex := SELF:__GetItemFromSymbol(#MessageArea)
@@ -1115,28 +1115,28 @@ ACCESS Length
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.MenuText/*" />
-ACCESS MenuText 
-	
-	
+ACCESS MenuText
+
+
 
 
 	RETURN cLastMenuMessage
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.MenuText/*" />
-ASSIGN MenuText(cMessage) 
-	
-	
+ASSIGN MenuText(cMessage)
+
+
 
 
 	SELF:setmessage(cLastMenuMessage := cMessage, MESSAGEMENU)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.ODDrawItem/*" />
-METHOD ODDrawItem(oEvent) 
+METHOD ODDrawItem(oEvent)
 	LOCAL oEvt AS @@Event
 	LOCAL p1   AS _winDRAWITEMSTRUCT
 	LOCAL oStatusBarItem AS StatusBarItem
@@ -1160,42 +1160,42 @@ METHOD ODDrawItem(oEvent)
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.PermanentText/*" />
-ACCESS PermanentText 
-	
-	
+ACCESS PermanentText
+
+
 
 
 	RETURN cLastPermanentMessage
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.PermanentText/*" />
-ASSIGN PermanentText(cMessage) 
-	
-	
+ASSIGN PermanentText(cMessage)
+
+
 
 
 	SELF:setmessage(cLastPermanentMessage := cMessage, MESSAGEPERMANENT)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.Position/*" />
-ASSIGN Position(oPoint) 
-	
-	
+ASSIGN Position(oPoint)
+
+
 
 
 	SELF:SetPair(oPoint)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.RefreshMemoryDisplay/*" />
-METHOD RefreshMemoryDisplay(kMemoryType) 
-	
-	
+METHOD RefreshMemoryDisplay(kMemoryType)
+
+
 
 
 #ifndef __VULCAN__  // Memory() not supported in Vulcan
@@ -1209,7 +1209,7 @@ METHOD RefreshMemoryDisplay(kMemoryType)
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.SetIcon/*" />
-METHOD SetIcon(oIcon, symItemName) 
+METHOD SetIcon(oIcon, symItemName)
 	//SE-060525
 	LOCAL oStatusBarItem AS StatusBarItem
 	LOCAL dwIndex        AS DWORD
@@ -1235,13 +1235,13 @@ METHOD SetIcon(oIcon, symItemName)
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.setmessage/*" />
-METHOD setmessage(cMessage, nMode) 
+METHOD setmessage(cMessage, nMode)
 	LOCAL lValidMessage AS LOGIC
 	LOCAL dwCount AS DWORD
 
 
-	
-	
+
+
 
 
 	IF IsNil(cMessage) .OR. (aMessages == NULL_ARRAY)
@@ -1310,12 +1310,12 @@ METHOD setmessage(cMessage, nMode)
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.SetPair/*" />
-METHOD SetPair(oPoint) 
+METHOD SetPair(oPoint)
 	LOCAL cText AS STRING
 
 
-	
-	
+
+
 
 
 	cText := AllTrim(AsString(oPoint:X)) + ", " + AllTrim(AsString(oPoint:Y))
@@ -1328,14 +1328,14 @@ METHOD SetPair(oPoint)
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.SetText/*" />
-METHOD SetText(cText, symItemName) 
+METHOD SetText(cText, symItemName)
 	LOCAL oStatusBarItem AS StatusBarItem
 	LOCAL dwIndex AS DWORD
 	LOCAL dwParam AS DWORD
 
 
-	
-	
+
+
 
 
 	// Lookup message area index by default
@@ -1358,14 +1358,14 @@ METHOD SetText(cText, symItemName)
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.SetTipText/*" />
-METHOD SetTipText(cTipText, symItemName) 
+METHOD SetTipText(cTipText, symItemName)
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 	LOCAL symName AS SYMBOL
 
 
-	
-	
+
+
 
 
 	DEFAULT(@symItemName, #MessageArea)
@@ -1393,13 +1393,13 @@ METHOD SetTipText(cTipText, symItemName)
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.SetValue/*" />
-METHOD SetValue(uValue, symItemName) 
+METHOD SetValue(uValue, symItemName)
 	LOCAL oStatusBarItem AS StatusBarItem
 	LOCAL dwIndex AS DWORD
 
 
-	
-	
+
+
 
 
 	// Lookup message area index by default
@@ -1418,9 +1418,9 @@ METHOD SetValue(uValue, symItemName)
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.Show/*" />
-METHOD Show() 
-	
-	
+METHOD Show()
+
+
 
 
 	SUPER:Show()
@@ -1437,39 +1437,39 @@ METHOD Show()
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.TextValue/*" />
-ACCESS TextValue 
-	
-	
+ACCESS TextValue
+
+
 
 
 	RETURN SELF:__GetText()
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.TextValue/*" />
-ASSIGN TextValue(cText) 
+ASSIGN TextValue(cText)
 
 
-	
-	
+
+
 
 
 	SELF:SetText(cText)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.TimeOut/*" />
-ACCESS TimeOut 
-	
-	
+ACCESS TimeOut
+
+
 
 
 	RETURN nTimeOut
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.TimeOut/*" />
-ASSIGN TimeOut(nNewTimeOut) 
-	
-	
+ASSIGN TimeOut(nNewTimeOut)
+
+
 
 
 	IF nNewTimeOut < 0
@@ -1478,13 +1478,13 @@ ASSIGN TimeOut(nNewTimeOut)
 	nTimeOut := nNewTimeOut
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.Timer/*" />
-METHOD Timer 
-	
-	
+METHOD Timer
+
+
 
 
 	SUPER:Timer()
@@ -1508,28 +1508,28 @@ METHOD Timer
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.Transient/*" />
-ACCESS Transient 
-	
-	
+ACCESS Transient
+
+
 
 
 	RETURN cLastErrorMessage
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.Transient/*" />
-ASSIGN Transient(cMessage) 
-	
-	
+ASSIGN Transient(cMessage)
+
+
 
 
 	SELF:setmessage(cLastErrorMessage := cMessage, MESSAGEERROR)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBar.VerticalBorder/*" />
-ACCESS VerticalBorder 
-	
-	
+ACCESS VerticalBorder
+
+
 
 
 	SELF:__GetBorderWidths()
@@ -1551,22 +1551,22 @@ CLASS StatusBarItem INHERIT VObject
 
 	//PP-030828 Strong typing
  /// <exclude />
-	ACCESS __Edge AS INT STRICT 
+	ACCESS __Edge AS INT STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN nEdge
 
 
  /// <exclude />
-ASSIGN __Edge(nNewEdge AS INT)  STRICT 
+ASSIGN __Edge(nNewEdge AS INT)  STRICT
 	//PP-030828 Strong typing
 
 
-	
-	
+
+
 
 
 	//PP-030828 Strong typing
@@ -1577,29 +1577,29 @@ ASSIGN __Edge(nNewEdge AS INT)  STRICT
 
 
  /// <exclude />
-ASSIGN __Icon(oIcon AS Icon)  STRICT 
+ASSIGN __Icon(oIcon AS Icon)  STRICT
 	//SE-060525
-	
-	
+
+
 
 
 	RETURN oSBIcon := oIcon
 
 
 /// <include file="Gui.xml" path="doc/StatusBarItem.Icon/*" />
-ACCESS Icon 
+ACCESS Icon
 	//SE-060525
-	
-	
+
+
 
 
 	RETURN oSBIcon
 
 
 /// <include file="Gui.xml" path="doc/StatusBarItem.ctor/*" />
-CONSTRUCTOR(symName, nWidth, kStyle, oIcon) 
-	
-	
+CONSTRUCTOR(symName, nWidth, kStyle, oIcon)
+
+
 
 
 	SELF:NameSym := symName
@@ -1613,24 +1613,24 @@ CONSTRUCTOR(symName, nWidth, kStyle, oIcon)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBarItem.NameSym/*" />
-ACCESS NameSym 
-	
-	
+ACCESS NameSym
+
+
 
 
 	RETURN symItemName
 
 
 /// <include file="Gui.xml" path="doc/StatusBarItem.NameSym/*" />
-ASSIGN NameSym(symNewItemName) 
+ASSIGN NameSym(symNewItemName)
 
 
-	
-	
+
+
 
 
 	IF IsString(symNewItemName)
@@ -1644,20 +1644,20 @@ ASSIGN NameSym(symNewItemName)
 
 
 /// <include file="Gui.xml" path="doc/StatusBarItem.Style/*" />
-ACCESS Style 
-	
-	
+ACCESS Style
+
+
 
 
 	RETURN dwStyle
 
 
 /// <include file="Gui.xml" path="doc/StatusBarItem.Style/*" />
-ASSIGN Style(kStyle) 
+ASSIGN Style(kStyle)
 
 
-	
-	
+
+
 
 
 	IF !IsLong(kStyle)
@@ -1669,36 +1669,36 @@ ASSIGN Style(kStyle)
 
 
 /// <include file="Gui.xml" path="doc/StatusBarItem.Value/*" />
-ACCESS Value 
-	
-	
+ACCESS Value
+
+
 
 
 	RETURN uValue
 
 
 /// <include file="Gui.xml" path="doc/StatusBarItem.Value/*" />
-ASSIGN Value(uNewValue) 
-	
-	
+ASSIGN Value(uNewValue)
+
+
 
 
 	RETURN (uValue := uNewValue)
 
 
 /// <include file="Gui.xml" path="doc/StatusBarItem.Width/*" />
-ACCESS Width 
-	
-	
+ACCESS Width
+
+
 
 
 	RETURN nWidth
 
 
 /// <include file="Gui.xml" path="doc/StatusBarItem.Width/*" />
-ASSIGN Width(nNewWidth) 
-	
-	
+ASSIGN Width(nNewWidth)
+
+
 
 
 	IF !IsLong(nNewWidth)
@@ -1718,24 +1718,24 @@ CLASS StatusBarKeyItem INHERIT StatusBarItem
 
 
 /// <include file="Gui.xml" path="doc/StatusBarKeyItem.ctor/*" />
-CONSTRUCTOR(symName, nWidth, kStyle, oIcon) 
-    
-    
+CONSTRUCTOR(symName, nWidth, kStyle, oIcon)
+
+
     SUPER(symName, nWidth, kStyle, oIcon)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/StatusBarKeyItem.KeyText/*" />
-ASSIGN KeyText (cValue) 
+ASSIGN KeyText (cValue)
 	RETURN cKeyText := cValue
 
 
 /// <include file="Gui.xml" path="doc/StatusBarKeyItem.ODDrawItem/*" />
-METHOD ODDrawItem(oEvent, oStatusBar) 
+METHOD ODDrawItem(oEvent, oStatusBar)
 	//PP-20040428 Owner draw, from S Ebert
 	LOCAL oEvt          AS @@Event
 	LOCAL strucDrawItem AS _WINDrawItemStruct

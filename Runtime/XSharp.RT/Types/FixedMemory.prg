@@ -344,11 +344,11 @@ STRUCTURE	 XSharp.FixedMemBlockStart
         RETURN SELF:dwMagic == MAGIC
 
 
-END         STRUCTURE
+END STRUCTURE
 
 /// <summary>Guard Block following MemAlloc return value</summary>
 [StructLayout(LayoutKind.Explicit)];
-STRUCTURE	 XSharp.FixedMemBlockEnd
+STRUCTURE XSharp.FixedMemBlockEnd
     /// <summary>Zero terminator</summary>
     [FieldOffset(00)] EXPORT dwZero  AS DWORD			// Give them 1 extra DWORD to protect against overflows
     /// <summary>Checksum</summary>

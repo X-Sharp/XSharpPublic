@@ -11,7 +11,6 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
-    <para styleclass="Heading1"></para>
     <para styleclass="Heading1">Changes in 2.11.0.0 </para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Body Text"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug fixes</text></para>
@@ -26,16 +25,17 @@
     </list>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Added compiler option /noinit to not generate $Init calls for libraries without INIT procedures for the sake of postponed loading (#854) </li>
+      <li styleclass="Body Text">Added compiler option<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-noinit"> /noinit</link> to not generate $Init calls for libraries without INIT procedures for the sake of postponed loading (#854) </li>
       <li styleclass="Body Text">Added preprocessor support for <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Stdout">#stdout</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-If">#if</link>. (#912)</li>
       <li styleclass="Body Text">The full contents of #include files is now written to the ppo file (#920)</li>
       <li styleclass="Body Text">When a parser error occurs because an identifier was replaced by a define with the same name, then the compiler will now generate a second warning.</li>
       <li styleclass="Body Text">If a header file contains actual code and this code is called during debugging then the debugger will now step into the header file when debugging this code. <br/>Previously all statements were linked to the #include line from the place where the header was included.</li>
+      <li styleclass="Body Text">When you are suppressing compiler errors with the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo11">/vo11</link> (Compatible numeric conversion) compiler option you will now see a <link displaytype="text" defaultstyle="true" type="topiclink" href="XS9020">XS9020</link> &quot;narrowing&quot; warning indicating that a runtime error may happen or that data may be lost.</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text"></li>
+      <li styleclass="Body Text">The source code editor now also supports the new #if and #stdout preprocessor commands &#160;(#912)</li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -44,13 +44,14 @@
       <li styleclass="Body Text">Fixed incorrect parsing of classes as nested to each other (#939)</li>
       <li styleclass="Body Text">Fixed a problem with using embedded variables in the form of $(SomeName) in the project settings (#928)</li>
       <li styleclass="Body Text">Fixed a problem where deleting items from a project would fail.</li>
-      <li styleclass="Body Text">Fixed a problem resolving the DLL produced by project files from other development languages, in particular SDK style C# projects.</li>
+      <li styleclass="Body Text">Fixed a problem resolving the DLL produced by project files from other development languages, in particular SDK style C# projects.(#950)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added a constructor with IEnumerable to the array class (#943)</li>
       <li styleclass="Body Text">[VFP dialect] Added APrinters() function (#952)</li>
+      <li styleclass="Body Text">[VFP dialect] Added GetColor() function (#973)</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

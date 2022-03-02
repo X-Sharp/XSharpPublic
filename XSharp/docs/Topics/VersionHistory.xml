@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Runtime chapter</keyword>
@@ -16,13 +16,18 @@
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Body Text"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug fixes</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Fixed an ICE with CLIPPER calling convention delegates (#932)</li>
+      <li styleclass="Body Text">Fixed an internal compiler error with CLIPPER calling convention delegates (#932)</li>
       <li styleclass="Body Text">Fixed an AccessViolationException at runtime with the Null-conditional operator ?. on a usual property (#770)</li>
       <li styleclass="Body Text">[XBase++ dialect] Fixed a problem with parsing method declarations with parentheses (#927)</li>
       <li styleclass="Body Text">[XBase++ dialect] Fixed a problem with parsing the (obsolete in X#) ANNOUNCE and REQUEST statements (#929)</li>
       <li styleclass="Body Text">[XBase++ dialect] Fixed a problem with parsing INLINE ACCESS and ACCESS ASSIGN statements (#926)</li>
       <li styleclass="Body Text">[VFP dialect] Fixed a problem with parsing FOR EACH statements containing &quot;M.&quot; variables usage where the variable was not typed in the FOR EACH line (#911) .</li>
-      <li styleclass="Body Text">Fixed a problem where the PPO files contains some output twice, when a single UDC was producing several statements.</li>
+      <li styleclass="Body Text">Fixed a problem where the PPO files contains some output twice, when a single UDC was producing several statements (#933)</li>
+      <li styleclass="Body Text">Fixed some issues with the &quot;FIELDS&quot; clause in several UDCs (#931, #795)</li>
+      <li styleclass="Body Text">Fixed a problem in the preprocessor with parentheses in #xtranslate directives (#963)</li>
+      <li styleclass="Body Text">Fixed several more issues with #command and #translate directives (#915)</li>
+      <li styleclass="Body Text">In some cases, the compiler would emit code that does not throw a runtime exception, when casting/converting from one type to an incompatible one. This has been fixed (#961)</li>
+      <li styleclass="Body Text">The compiler was not reporting narrowing conversion warnings in several cases, this has been fixed (#951)</li>
     </list>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -30,13 +35,9 @@
       <li styleclass="Body Text">Added preprocessor support for <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Stdout">#stdout</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-If">#if</link>. (#912)</li>
       <li styleclass="Body Text">The full contents of #include files is now written to the ppo file (#920)</li>
       <li styleclass="Body Text">When a parser error occurs because an identifier was replaced by a define with the same name, then the compiler will now generate a second warning.</li>
-      <li styleclass="Body Text">If a header file contains actual code and this code is called during debugging then the debugger will now step into the header file when debugging this code. <br/>Previously all statements were linked to the #include line from the place where the header was included.</li>
+      <li styleclass="Body Text">If a header file contains actual code and this code is called during debugging then the debugger will now step into the header file when debugging this code. <br/>Previously all statements were linked to the #include line from the place where the header was included. (#967)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text></para>
-    <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
-    <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text"></li>
-    </list>
     <para styleclass="Heading3">Bug Fixes</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed a problem with specifying custom preprocessor defines in the project properties (#909)</li>
@@ -44,25 +45,43 @@
       <li styleclass="Body Text">Fixed incorrect parsing of classes as nested to each other (#939)</li>
       <li styleclass="Body Text">Fixed a problem with using embedded variables in the form of $(SomeName) in the project settings (#928)</li>
       <li styleclass="Body Text">Fixed a problem where deleting items from a project would fail.</li>
-      <li styleclass="Body Text">Fixed a problem resolving the DLL produced by project files from other development languages, in particular SDK style C# projects.</li>
+      <li styleclass="Body Text">Fixed a problem resolving the DLL produced by project files from other development languages, in particular SDK style C# projects (#950)</li>
+      <li styleclass="Body Text">Fixed a problem with quick info tooltip after an unrecognized identifier (#894)</li>
+      <li styleclass="Body Text">Fixed a problem with the editor incorrectly adding parentheses after auto typing a property (#974)</li>
+      <li styleclass="Body Text">Fixed extremely slow editor response when creating a new line after an #endif directive (#970)</li>
+      <li styleclass="Body Text">Fixed some intellisense issues with .Net array types (#569)</li>
+      <li styleclass="Body Text">Fixed a problem with the DevExpress DocumentManager control at design time (#976)</li>
+      <li styleclass="Body Text">Fixed an ArgumentNullException in the Output window when &quot;Show output from&quot; is set to &quot;Extension&quot; (#940)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added a constructor with IEnumerable to the array class (#943)</li>
-      <li styleclass="Body Text">[VFP dialect] Added APrinters() function (#952)</li>
+      <li styleclass="Body Text">Implemented missing functions AdsSetTableTransactionFree() and AdsGetFTSIndexInfo() (#966)</li>
+      <li styleclass="Body Text">Moved functions GetRValue(), GetGValue() and GetBValue() from the Win32API library to XSharp.RT, so they can be used by AnyCPU code (#972)</li>
+      <li styleclass="Body Text">[VFP dialect] Implemented function APrinters() (#952)</li>
+      <li styleclass="Body Text">[VFP dialect] Implemented function GetColor() (#973)</li>
+      <li styleclass="Body Text">[VFP dialect] Implemented functions Payment(), FV() and PV() (#964)</li>
+      <li styleclass="Body Text">[VFP dialect] Implemented commands MKDIR, RMDIR and CHDIR (#614)</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed a problem with the ListView TextColor and TextBackgroundColor ACCESSes in the SDK (#896)</li>
       <li styleclass="Body Text">Fixed a problem with soft Seek not respecting order scope when to strict key is found (#905)</li>
       <li styleclass="Body Text">Fixed DBUseArea() search logic for files in various folders. Also SetDefault() is no longer initialized with the current directory (for VO compatibility) (#908)</li>
       <li styleclass="Body Text">Fixed problem with creating dbfs with character fields with length &gt; 255 (#917)</li>
-      <li styleclass="Body Text">[RDD] Fixed a problem with db append, copy etc, when both source and destination files have the same structure and include a memo file (#945)</li>
+      <li styleclass="Body Text">Fixed a problem with the buffered read system in some cases when a dbf was being read, closed, overwritten and then reopened (#968)</li>
+      <li styleclass="Body Text">Fixed a VO compatibility problem with how DBSetIndex() changes the active order when opening index files (#958)</li>
+      <li styleclass="Body Text">Fixed a problem with db append, copy etc, when both source and destination files have the same structure and include a memo file (#945)</li>
+      <li styleclass="Body Text">Fixed an incorrect result of DBOrderInfo(DBOI_ORDERCOUNT) with a non existing or not open index file (#954)</li>
       <li styleclass="Body Text">[VFP dialect] Added optional parameter to Program( [,lShowSignature default=.f.] ) (#712)</li>
       <li styleclass="Body Text">[VFP dialect] Fixed several issues with the Type() function (#747, #942)</li>
       <li styleclass="Body Text">[VFP dialect] Fixed a problem with ExecScriptFast() (#823)</li>
       <li styleclass="Body Text">[VFP dialect] Fixed a problem with SQLExec() not putting the record pointer on the first record (#864)</li>
       <li styleclass="Body Text">[VFP dialect] Fixed a problem with SQLExec() with null values (#941)</li>
+      <li styleclass="Body Text">[VFP dialect] Fixed a write error in the buffer returned from SqlExec() (#948)</li>
+      <li styleclass="Body Text">[VFP dialect] Fixed a problem with the DBFVFP RDD and null columns (#953)</li>
+      <li styleclass="Body Text">[VFP dialect] Fixed a problem with SCATTER TO and APPEND FROM ARRAY (#821)</li>
     </list>
     <para styleclass="Heading3">Typed SDK</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

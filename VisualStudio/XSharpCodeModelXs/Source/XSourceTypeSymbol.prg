@@ -131,7 +131,9 @@ BEGIN NAMESPACE XSharpModel
 
         PROPERTY XMembers AS IList<XSourceMemberSymbol>
             GET
-                RETURN SELF:_members:ToArray()
+                BEGIN LOCK SELF:_members
+                    RETURN SELF:_members:ToArray()
+                END LOCK
             END GET
         END PROPERTY
 
@@ -146,7 +148,7 @@ BEGIN NAMESPACE XSharpModel
             END LOCK
          END GET
       END PROPERTY
-      
+
       INTERNAL METHOD SetMembers( list AS  IList<XSourceMemberSymbol>) AS VOID
         SELF:_members:Clear()
         SELF:_members:AddRange(list)

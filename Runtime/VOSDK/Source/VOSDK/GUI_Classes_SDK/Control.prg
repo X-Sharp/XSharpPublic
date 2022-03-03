@@ -1843,7 +1843,7 @@ METHOD SetFocus()
 
 /// <include file="Gui.xml" path="doc/Control.HasStyle/*" />
 METHOD HasStyle(kStyle AS LONG)
-   LOCAL liStyle	AS DWORD
+   LOCAL liStyle	AS LONG
 	// DHer: 18/12/2008
 
 

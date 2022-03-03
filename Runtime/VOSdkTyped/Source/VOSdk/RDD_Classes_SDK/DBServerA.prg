@@ -636,7 +636,7 @@ PARTIAL CLASS DbServer
 /// <include file="Rdd.xml" path="doc/DbServer.RecCount/*" />
     PROPERTY RecCount  AS LONG
         GET
-        LOCAL nCurrentRecord            AS LONGINT
+        LOCAL nCurrentRecord            AS DWORD
         LOCAL siCurrentSelectionStatus  AS SHORTINT
         LOCAL iRetVal                   AS INT
         LOCAL dwCurrentWorkArea := 0    AS DWORD
@@ -687,7 +687,7 @@ PARTIAL CLASS DbServer
 /// <include file="Rdd.xml" path="doc/DbServer.RecNo/*" />
     ACCESS RecNo AS LONG
         LOCAL dwCurrentWorkArea := 0 AS DWORD
-        LOCAL wRetCode      AS LONGINT
+        LOCAL wRetCode      AS DWORD
         LOCAL oError        AS USUAL
 
 
@@ -705,7 +705,7 @@ PARTIAL CLASS DbServer
 
 
 
-        RETURN wRetCode
+        RETURN (LONG) wRetCode
 
 
 

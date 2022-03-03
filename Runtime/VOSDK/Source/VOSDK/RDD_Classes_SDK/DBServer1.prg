@@ -903,7 +903,7 @@ METHOD BLOBImport( uField, oFSSource )
 	LOCAL wPos AS DWORD
 	LOCAL symFieldName AS SYMBOL
 	LOCAL dwCurrentWorkArea AS DWORD
-	LOCAL nCurRec AS LONGINT
+	LOCAL nCurRec AS DWORD
 	LOCAL xNewVal AS USUAL
 
 
@@ -1483,7 +1483,7 @@ METHOD ConstructUniqueAlias( cFileName )
 /// <include file="Rdd.xml" path="doc/DbServer.Continue/*" />
 METHOD Continue( )
 	LOCAL lRetCode AS LOGIC
-	LOCAL nValue AS LONGINT
+	LOCAL nValue AS DWORD
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL oHLTemp AS OBJECT
@@ -1510,7 +1510,7 @@ METHOD Continue( )
 					siSelectionStatus := DBSELECTIONFOUND
 				ELSE
 					siSelectionStatus := DBSELECTIONEOF
-					wLastSelectionRec := nValue
+					wLastSelectionRec := (LONG) nValue
 					IF ! VODBGoBottom( )
 						BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 					ENDIF

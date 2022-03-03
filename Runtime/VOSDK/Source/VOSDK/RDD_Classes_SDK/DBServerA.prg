@@ -894,7 +894,7 @@ ACCESS ReadOnly
 
 /// <include file="Rdd.xml" path="doc/DbServer.RecCount/*" />
 ACCESS RecCount
-	LOCAL nCurrentRecord            AS LONGINT
+	LOCAL nCurrentRecord            AS DWORD
 	LOCAL siCurrentSelectionStatus  AS SHORTINT
 	LOCAL iRetVal                   AS INT
 	LOCAL dwCurrentWorkArea          AS DWORD
@@ -947,7 +947,7 @@ ACCESS RecCount
 ACCESS RecNo
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
-	LOCAL wRetCode      AS LONGINT
+	LOCAL wRetCode      AS DWORD
 	LOCAL oError        AS USUAL
 
 

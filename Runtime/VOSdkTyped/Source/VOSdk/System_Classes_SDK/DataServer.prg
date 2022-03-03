@@ -53,7 +53,7 @@ METHOD __SetupLocks( ) AS VOID STRICT
         NOP
     CASE ccStable
     CASE ccRepeatable
-        nLastLock := SELF:RecNo
+        nLastLock := (DWORD) SELF:RecNo
         // Do not free locks in case user has other locks
         IF ! SELF:RLock( nLastLock )
             nLastLock := 0

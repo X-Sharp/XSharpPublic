@@ -1,5 +1,5 @@
 CLASS Customer_ADDRESS INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
 
     LOCAL   oHlTemp                 AS OBJECT
     LOCAL   cPict                   AS STRING
@@ -109,7 +109,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Customer_CITY INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
 
     LOCAL   oHlTemp                 AS OBJECT
     LOCAL   cPict                   AS STRING
@@ -219,7 +219,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Customer_CUSTNUM INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
 
     LOCAL   oHlTemp                 AS OBJECT
     LOCAL   cPict                   AS STRING
@@ -329,7 +329,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Customer_FAX INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
 
     LOCAL   oHlTemp                 AS OBJECT
     LOCAL   cPict                   AS STRING
@@ -439,7 +439,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Customer_FIRSTNAME INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
 
     LOCAL   oHlTemp                 AS OBJECT
     LOCAL   cPict                   AS STRING
@@ -549,7 +549,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Customer_LASTNAME INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
 
     LOCAL   oHlTemp                 AS OBJECT
     LOCAL   cPict                   AS STRING
@@ -659,7 +659,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Customer_PHONE INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
 
     LOCAL   oHlTemp                 AS OBJECT
     LOCAL   cPict                   AS STRING
@@ -769,7 +769,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Customer_STATE INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
 
     LOCAL   oHlTemp                 AS OBJECT
     LOCAL   cPict                   AS STRING
@@ -879,7 +879,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Customer_ZIP INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
 
     LOCAL   oHlTemp                 AS OBJECT
     LOCAL   cPict                   AS STRING
@@ -997,34 +997,34 @@ CLASS CustomerServer INHERIT DBSERVER
     INSTANCE nOrder       := 1     AS INT
 
 
-    
+
 //USER CODE STARTS HERE (do NOT remove this line)
 
-ACCESS  ADDRESS  
+ACCESS  ADDRESS
 
     RETURN SELF:FieldGet(#ADDRESS)
-ASSIGN  ADDRESS(uValue)  
+ASSIGN  ADDRESS(uValue)
 
     RETURN SELF:FieldPut(#ADDRESS, uValue)
 
-ACCESS  CITY  
+ACCESS  CITY
 
     RETURN SELF:FieldGet(#CITY)
-ASSIGN  CITY(uValue)  
+ASSIGN  CITY(uValue)
 
     RETURN SELF:FieldPut(#CITY, uValue)
 
-ACCESS  CUSTNUM  
+ACCESS  CUSTNUM
 
     RETURN SELF:FieldGet(#CUSTNUM)
-ASSIGN  CUSTNUM(uValue)  
+ASSIGN  CUSTNUM(uValue)
 
     RETURN SELF:FieldPut(#CUSTNUM, uValue)
 
-ACCESS  FAX  
+ACCESS  FAX
 
     RETURN SELF:FieldGet(#FAX)
-ASSIGN  FAX(uValue)  
+ASSIGN  FAX(uValue)
 
     RETURN SELF:FieldPut(#FAX, uValue)
 
@@ -1054,7 +1054,7 @@ ACCESS FieldDesc AS ARRAY
         //  DBC_NAME
         //  DBC_FIELDSPEC
         //
-        
+
         aRet[1] := {#CUSTNUM, "CUSTNUM", Customer_CUSTNUM{} }
         aRet[2] := {#FIRSTNAME, "FIRSTNAME", Customer_FIRSTNAME{} }
         aRet[3] := {#LASTNAME, "LASTNAME", Customer_LASTNAME{} }
@@ -1071,10 +1071,10 @@ ACCESS FieldDesc AS ARRAY
 
 
     RETURN aRet
-ACCESS  FIRSTNAME  
+ACCESS  FIRSTNAME
 
     RETURN SELF:FieldGet(#FIRSTNAME)
-ASSIGN  FIRSTNAME(uValue)  
+ASSIGN  FIRSTNAME(uValue)
 
     RETURN SELF:FieldPut(#FIRSTNAME, uValue)
 
@@ -1120,8 +1120,8 @@ ACCESS IndexList  AS ARRAY
         //  DBC_KEYEXP
         //  DBC_FOREXP
         //
-        
-        aRet[1] := {"Custname.ntx", "",; 
+
+        aRet[1] := {"Custname.ntx", "",;
                     {{"Custname", .T., .T., e"", e""} }}
 
     ELSE
@@ -1129,7 +1129,7 @@ ACCESS IndexList  AS ARRAY
     ENDIF
 
     RETURN aRet
-CONSTRUCTOR(cDBF, lShare, lRO, xRdd) 
+CONSTRUCTOR(cDBF, lShare, lRO, xRdd)
     LOCAL oFileSpec   AS FILESPEC
     LOCAL i           AS DWORD
     LOCAL nFields     AS DWORD
@@ -1137,7 +1137,7 @@ CONSTRUCTOR(cDBF, lShare, lRO, xRdd)
     LOCAL aIndex      AS ARRAY
     LOCAL nIndexCount AS DWORD
     LOCAL oFSIndex    AS FILESPEC
-    LOCAL nPos        AS INT
+    LOCAL nPos        AS DWORD
 
     IF IsLogic(lShare)
         SELF:lSharedMode := lShare
@@ -1207,37 +1207,37 @@ CONSTRUCTOR(cDBF, lShare, lRO, xRdd)
     SELF:PostInit()
 
     RETURN SELF
-ACCESS  LASTNAME  
+ACCESS  LASTNAME
 
     RETURN SELF:FieldGet(#LASTNAME)
-ASSIGN  LASTNAME(uValue)  
+ASSIGN  LASTNAME(uValue)
 
     RETURN SELF:FieldPut(#LASTNAME, uValue)
 
-ACCESS  PHONE  
+ACCESS  PHONE
 
     RETURN SELF:FieldGet(#PHONE)
-ASSIGN  PHONE(uValue)  
+ASSIGN  PHONE(uValue)
 
     RETURN SELF:FieldPut(#PHONE, uValue)
 
-ACCESS  STATE  
+ACCESS  STATE
 
     RETURN SELF:FieldGet(#STATE)
-ASSIGN  STATE(uValue)  
+ASSIGN  STATE(uValue)
 
     RETURN SELF:FieldPut(#STATE, uValue)
 
-ACCESS  ZIP  
+ACCESS  ZIP
 
     RETURN SELF:FieldGet(#ZIP)
-ASSIGN  ZIP(uValue)  
+ASSIGN  ZIP(uValue)
 
     RETURN SELF:FieldPut(#ZIP, uValue)
 
 END CLASS
 CLASS Orders_CUSTNUM INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
     LOCAL   cPict                   AS STRING
 
     SUPER( HyperLabel{#CUSTNUM, "Custnum", "", "Orders_CUSTNUM" },  "N", 5, 0 )
@@ -1249,7 +1249,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Orders_ORDER_DATE INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
     LOCAL   cPict                   AS STRING
 
     SUPER( HyperLabel{#ORDER_DATE, "Order Date", "", "Orders_ORDER_DATE" },  "D", 8, 0 )
@@ -1261,7 +1261,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Orders_ORDERNUM INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
     LOCAL   cPict                   AS STRING
 
     SUPER( HyperLabel{#ORDERNUM, "Ordernum", "", "Orders_ORDERNUM" },  "N", 5, 0 )
@@ -1273,7 +1273,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Orders_ORDERPRICE INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
     LOCAL   cPict                   AS STRING
 
     SUPER( HyperLabel{#ORDERPRICE, "Orderprice", "", "Orders_ORDERPRICE" },  "N", 10, 2 )
@@ -1285,7 +1285,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Orders_SELLER_ID INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
     LOCAL   cPict                   AS STRING
 
     SUPER( HyperLabel{#SELLER_ID, "Seller Id", "", "Orders_SELLER_ID" },  "C", 5, 0 )
@@ -1297,7 +1297,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Orders_SHIP_ADDRS INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
     LOCAL   cPict                   AS STRING
 
     SUPER( HyperLabel{#SHIP_ADDRS, "Ship Addrs", "", "Orders_SHIP_ADDRS" },  "C", 25, 0 )
@@ -1309,7 +1309,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Orders_SHIP_CITY INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
     LOCAL   cPict                   AS STRING
 
     SUPER( HyperLabel{#SHIP_CITY, "Ship City", "", "Orders_SHIP_CITY" },  "C", 15, 0 )
@@ -1321,7 +1321,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Orders_SHIP_DATE INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
     LOCAL   cPict                   AS STRING
 
     SUPER( HyperLabel{#SHIP_DATE, "Ship Date", "", "Orders_SHIP_DATE" },  "D", 8, 0 )
@@ -1333,7 +1333,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Orders_SHIP_STATE INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
     LOCAL   cPict                   AS STRING
 
     SUPER( HyperLabel{#SHIP_STATE, "Ship State", "", "Orders_SHIP_STATE" },  "C", 2, 0 )
@@ -1345,7 +1345,7 @@ CONSTRUCTOR()
     RETURN SELF
 END CLASS
 CLASS Orders_SHIP_ZIP INHERIT FIELDSPEC
-CONSTRUCTOR() 
+CONSTRUCTOR()
     LOCAL   cPict                   AS STRING
 
     SUPER( HyperLabel{#SHIP_ZIP, "Ship Zip", "", "Orders_SHIP_ZIP" },  "C", 5, 0 )
@@ -1365,13 +1365,13 @@ CLASS OrdersServer INHERIT DBSERVER
     INSTANCE nOrder 	  := 1	 AS INT
 
 
-    
+
 //USER CODE STARTS HERE (do NOT remove this line)
 
-ACCESS  CUSTNUM  
+ACCESS  CUSTNUM
 
     RETURN SELF:FieldGet(#CUSTNUM)
-ASSIGN  CUSTNUM(uValue)  
+ASSIGN  CUSTNUM(uValue)
 
     RETURN SELF:FieldPut(#CUSTNUM, uValue)
 
@@ -1402,7 +1402,7 @@ ACCESS FieldDesc  AS ARRAY
         //	DBC_NAME
         //	DBC_FIELDSPEC
         //
-        
+
         aRet[1] := { #CUSTNUM, "CUSTNUM",  Orders_CUSTNUM{}}
         aRet[2] := { #ORDERNUM, "ORDERNUM",  Orders_ORDERNUM{}}
         aRet[3] := { #ORDER_DATE, "ORDER_DATE",  Orders_ORDER_DATE{}}
@@ -1462,8 +1462,8 @@ ACCESS IndexList  AS ARRAY
         //	DBC_KEYEXP
         //	DBC_FOREXP
         //
-        
-        aRet[1] := { "OrdCust.ntx", "",; 
+
+        aRet[1] := { "OrdCust.ntx", "",;
                     {{ "OrdCust", .T., .T., e"", e"" } } }
 
     ELSE
@@ -1471,7 +1471,7 @@ ACCESS IndexList  AS ARRAY
     ENDIF
 
     RETURN aRet
-CONSTRUCTOR(cDBF, lShare, lRO, xRdd) 
+CONSTRUCTOR(cDBF, lShare, lRO, xRdd)
     LOCAL oFS		  AS FILESPEC
     LOCAL i 		  AS DWORD
     LOCAL nFields	  AS DWORD
@@ -1524,7 +1524,7 @@ CONSTRUCTOR(cDBF, lShare, lRO, xRdd)
            IF Left(cDBF, 2) =='\\'  // Unc path, for example \\Server\Share\FileName.DBF
                 SELF:cDBFPath := oFS:Path
            ELSE
-                SELF:cDBFPath := oFS:Drive + oFS:Path    
+                SELF:cDBFPath := oFS:Drive + oFS:Path
            ENDIF
                 SELF:cName := oFS:FileName + oFS:Extension
                 oFS := FileSpec{SELF:cDBFPath + SELF:cName}
@@ -1579,74 +1579,74 @@ CONSTRUCTOR(cDBF, lShare, lRO, xRdd)
     SELF:PostInit()
 
     RETURN SELF
-ACCESS  ORDER_DATE  
+ACCESS  ORDER_DATE
 
     RETURN SELF:FieldGet(#ORDER_DATE)
-ASSIGN  ORDER_DATE(uValue)  
+ASSIGN  ORDER_DATE(uValue)
 
     RETURN SELF:FieldPut(#ORDER_DATE, uValue)
 
 
-ACCESS  ORDERNUM  
+ACCESS  ORDERNUM
 
     RETURN SELF:FieldGet(#ORDERNUM)
-ASSIGN  ORDERNUM(uValue)  
+ASSIGN  ORDERNUM(uValue)
 
     RETURN SELF:FieldPut(#ORDERNUM, uValue)
 
 
-ACCESS  ORDERPRICE  
+ACCESS  ORDERPRICE
 
     RETURN SELF:FieldGet(#ORDERPRICE)
-ASSIGN  ORDERPRICE(uValue)  
+ASSIGN  ORDERPRICE(uValue)
 
     RETURN SELF:FieldPut(#ORDERPRICE, uValue)
 
 
-ACCESS  SELLER_ID  
+ACCESS  SELLER_ID
 
     RETURN SELF:FieldGet(#SELLER_ID)
-ASSIGN  SELLER_ID(uValue)  
+ASSIGN  SELLER_ID(uValue)
 
     RETURN SELF:FieldPut(#SELLER_ID, uValue)
 
 
-ACCESS  SHIP_ADDRS  
+ACCESS  SHIP_ADDRS
 
     RETURN SELF:FieldGet(#SHIP_ADDRS)
-ASSIGN  SHIP_ADDRS(uValue)  
+ASSIGN  SHIP_ADDRS(uValue)
 
     RETURN SELF:FieldPut(#SHIP_ADDRS, uValue)
 
 
-ACCESS  SHIP_CITY  
+ACCESS  SHIP_CITY
 
     RETURN SELF:FieldGet(#SHIP_CITY)
-ASSIGN  SHIP_CITY(uValue)  
+ASSIGN  SHIP_CITY(uValue)
 
     RETURN SELF:FieldPut(#SHIP_CITY, uValue)
 
 
-ACCESS  SHIP_DATE  
+ACCESS  SHIP_DATE
 
     RETURN SELF:FieldGet(#SHIP_DATE)
-ASSIGN  SHIP_DATE(uValue)  
+ASSIGN  SHIP_DATE(uValue)
 
     RETURN SELF:FieldPut(#SHIP_DATE, uValue)
 
 
-ACCESS  SHIP_STATE  
+ACCESS  SHIP_STATE
 
     RETURN SELF:FieldGet(#SHIP_STATE)
-ASSIGN  SHIP_STATE(uValue)  
+ASSIGN  SHIP_STATE(uValue)
 
     RETURN SELF:FieldPut(#SHIP_STATE, uValue)
 
 
-ACCESS  SHIP_ZIP  
+ACCESS  SHIP_ZIP
 
     RETURN SELF:FieldGet(#SHIP_ZIP)
-ASSIGN  SHIP_ZIP(uValue)  
+ASSIGN  SHIP_ZIP(uValue)
 
     RETURN SELF:FieldPut(#SHIP_ZIP, uValue)
 

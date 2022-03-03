@@ -52,7 +52,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         private List<IXMemberSymbol> _fieldNProps;
         private List<String> _existingCtor;
         private XFile _xfile;
-        private TextRange _range;
+        private int _insertionLine;
         private bool _hasDefault;
 
 #pragma warning disable CS0067
@@ -88,13 +88,13 @@ namespace XSharp.LanguageService.Editors.LightBulb
                     {
                         if (!_hasDefault)
                         {
-                            var ctorAction = new ConstructorSuggestedAction(this.m_textView, this.m_textBuffer, this._classEntity, this._range, null);
+                            var ctorAction = new ConstructorSuggestedAction(this.m_textView, this.m_textBuffer, this._classEntity, this._insertionLine, null);
                             suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ctorAction }));
                         }
 
                         if (_fieldNProps?.Count > 0)
                         {
-                            var ctorAction = new ConstructorSuggestedAction(this.m_textView, this.m_textBuffer, this._classEntity, this._range, _fieldNProps, _existingCtor);
+                            var ctorAction = new ConstructorSuggestedAction(this.m_textView, this.m_textBuffer, this._classEntity, this._insertionLine, _fieldNProps, _existingCtor);
                             suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ctorAction }));
                         }
                         return suggest.ToArray();
@@ -151,13 +151,13 @@ namespace XSharp.LanguageService.Editors.LightBulb
             {
                 if (entity is XSourceTypeSymbol typeEntity)
                 {
-                    if ((typeEntity.Range.StartLine <= caretLine) || (typeEntity.Range.EndLine >= caretLine))
+                    if ((typeEntity.Range.StartLine <= caretLine) && (typeEntity.Range.EndLine >= caretLine) && ( typeEntity.Kind == Kind.Class ))
                     {
                         // Got it !
                         _classEntity = _xfile.FindType(typeEntity.FullName);
                         if (_classEntity != null)
                         {
-                            _range = typeEntity.Range;
+                            _insertionLine = this.SearchInsertionPoint(typeEntity);
                             break;
                         }
                     }
@@ -171,6 +171,20 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 return ((!_hasDefault) || (_fieldNProps != null));
             }
             return false;
+        }
+
+        private int SearchInsertionPoint(XSourceTypeSymbol typeEntity)
+        {
+            int insertAt = Math.Min(typeEntity.Range.EndLine, this.m_textView.TextSnapshot.LineCount - 1);
+            foreach ( XSourceMemberSymbol mbr in typeEntity.XMembers )
+            {
+                if ( (mbr.Kind == Kind.Constructor) || (mbr.Kind == Kind.Method) || (mbr.Kind == Kind.Property))
+                {
+                    insertAt = mbr.Range.StartLine;
+                    break;
+                }
+            }
+            return insertAt;
         }
 
         /// <summary>

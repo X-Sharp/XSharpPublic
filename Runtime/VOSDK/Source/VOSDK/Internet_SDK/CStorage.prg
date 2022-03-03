@@ -217,9 +217,9 @@ METHOD AttachmentSave(cAttachID AS STRING, cToFile AS STRING) AS LOGIC
 /// <include file="Internet.xml" path="doc/CStorage.AttachmentSize/*" />
 ACCESS AttachmentSize AS DWORD STRICT
    //Calculates the size of the current opened attachment file
-   LOCAL dwPos, dwSize AS LONGINT
+   LOCAL dwPos , dwSize AS LONGINT
 	IF _hAttFile != NULL_PTR
-      dwPos  := FTell(_hAttFile)
+      dwPos  := (LONG) FTell(_hAttFile)
       dwSize := FSeek3(_hAttFile, 0, FS_END)
       FSeek3(_hAttFile, LONGINT(_CAST,dwPos), FS_SET)
    ENDIF

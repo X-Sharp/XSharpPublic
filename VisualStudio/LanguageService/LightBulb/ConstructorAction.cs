@@ -30,24 +30,25 @@ namespace XSharp.Project.Editors.LightBulb
         }
 
         private readonly ITextView m_textView;
-        private readonly XSharpModel.TextRange _range;
+        private int _insertionLine;
         private ITextBuffer _textBuffer;
         private IXTypeSymbol _classEntity;
         private List<IXMemberSymbol> _fieldsNProps;
         private List<string> _existingCtor;
+        private int insertionPoint;
 
-        public ConstructorSuggestedAction(ITextView textView, ITextBuffer textBuffer, IXTypeSymbol classEntity, XSharpModel.TextRange range, List<IXMemberSymbol> members)
+        public ConstructorSuggestedAction(ITextView textView, ITextBuffer textBuffer, IXTypeSymbol classEntity, int insertionLine, List<IXMemberSymbol> members)
         {
             this.m_textView = textView;
             this.m_snapshot = this.m_textView.TextSnapshot;
             this._textBuffer = textBuffer;
             this._classEntity = classEntity;
-            this._range = range;
+            this._insertionLine = insertionLine;
             this._fieldsNProps = members;
         }
 
-        public ConstructorSuggestedAction(ITextView textView, ITextBuffer textBuffer, IXTypeSymbol classEntity, XSharpModel.TextRange range, List<IXMemberSymbol> members, List<string> existingCtor) :
-            this(textView, textBuffer, classEntity, range, members)
+        public ConstructorSuggestedAction(ITextView textView, ITextBuffer textBuffer, IXTypeSymbol classEntity, int insertionLine, List<IXMemberSymbol> members, List<string> existingCtor) :
+            this(textView, textBuffer, classEntity, insertionLine, members)
         {
             this._existingCtor = existingCtor;
         }
@@ -145,8 +146,8 @@ namespace XSharp.Project.Editors.LightBulb
                 var settings = m_textView.TextBuffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
                 //m_span.TextBuffer.Replace(m_span.GetSpan(m_snapshot), ");
                 StringBuilder insertText;
-                // Last line of the Entity
-                int lineNumber = Math.Min(_range.EndLine, m_snapshot.LineCount - 1);
+                // Insertion line in the Entity
+                int lineNumber = this._insertionLine;
                 ITextSnapshotLine lastLine = m_snapshot.GetLineFromLineNumber(lineNumber);
                 // Retrieve the text
                 string lineText = lastLine.GetText();
@@ -178,7 +179,7 @@ namespace XSharp.Project.Editors.LightBulb
                     if (editSession.HasEffectiveChanges)
                     {
                         editSession.Apply();
-
+                        m_textView.Caret.MoveTo(lastLine.Start);
                     }
                     else
                     {
@@ -227,13 +228,28 @@ namespace XSharp.Project.Editors.LightBulb
                         insertText.Append("CONSTRUCTOR(");
                         //
                         StringBuilder insertCode = new StringBuilder();
+                        List<String> usedParams = new List<string>();
                         string ctorDef = "";
                         int max = dlg.FieldsNProps.Count;
                         foreach ( var mbr in dlg.FieldsNProps)
                         {
                             insertText.Append(" ");
+                            // xxx AS xsType
                             string paramDef = mbr.Prototype.Trim( new char[] { '_' });
+                            // xxx
                             string paramName = paramDef.Substring(0,paramDef.IndexOf(' '));
+                            // AS xsType
+                            paramDef = paramDef.Substring(paramName.Length);
+                            string candidate = paramName;
+                            while ( usedParams.Contains(candidate.ToLower()))
+                            {
+                                int seq = 1;
+                                candidate = paramName + "_" + seq.ToString();
+                            }
+                            paramName = candidate;
+                            usedParams.Add(paramName.ToLower());
+                            //
+                            insertText.Append(paramName);
                             insertText.Append(paramDef);
                             max--;
                             if ( max > 0)

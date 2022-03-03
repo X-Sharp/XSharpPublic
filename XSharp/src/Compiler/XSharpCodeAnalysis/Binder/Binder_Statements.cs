@@ -227,7 +227,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
-        BoundExpression CreateXsConversion(BoundExpression expression, Conversion conversion, TypeSymbol targetType, DiagnosticBag diagnostics )
+        BoundExpression CreateXsConversion(BoundExpression expression, Conversion conversion, TypeSymbol targetType, DiagnosticBag diagnostics)
         {
             var result = CreateConversion(syntax: expression.Syntax,
                                             source: expression,
@@ -242,7 +242,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         BoundExpression XsHandleImplicitReference(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
-            if (conversion.Kind == ConversionKind.ImplicitReference && expression.Syntax.XNeedsCast)
+            if (conversion.Kind == ConversionKind.ImplicitReference && expression.Syntax.XSpecial)
             {
                 return CreateXsConversion(expression, Conversion.ExplicitReference, targetType, diagnostics);
             }
@@ -266,7 +266,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return CreateXsConversion(expression, conversion, targetType, diagnostics);
                     }
-                    if (Compilation.Options.HasRuntime && targetType.IsNumericType() && sourceType.IsObjectType() )
+                    if (Compilation.Options.HasRuntime && targetType.IsNumericType() && sourceType.IsObjectType())
                     {
                         // To "silently" convert an object to a numeric we create a usual first and then rely
                         // on the conversion routines for the USUAL type
@@ -363,15 +363,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
 
                 if (sourceType.IsNumericType() && targetType.IsNumericType())
-                 {
+                {
                     if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax) || //vo4
                         Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax)) //vo11
-                      {
+                    {
                         return;
-                      }
                     }
                 }
-
+            }
             var rhsType = expression.Type;
             if (rhsType is { } && Equals(targetType, rhsType) &&
                 targetType.SpecialType.IsIntegralType() &&
@@ -385,7 +384,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (!ok)
                 {
-                    ok = Conversions.XsIsImplicitBinaryOperator(expression, targetType,this);
+                    ok = Conversions.XsIsImplicitBinaryOperator(expression, targetType, this);
                 }
                 if (!ok)
                 {
@@ -398,7 +397,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         sourceType = binop.LargestOperand(this.Compilation);
                         sourceSize = sourceType.SpecialType.SizeInBytes();
                     }
-                    if (!Equals(sourceType,targetType) && !expression.Syntax.HasErrors)
+                    if (!Equals(sourceType, targetType) && !expression.Syntax.HasErrors)
                     {
                         // Find sources that do not fit in the target
                         if (expression is BoundConditionalOperator bco && XsLiteralIIfFitsInTarget(bco, targetType))
@@ -413,7 +412,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         else if (sourceSize == targetSize)
                         {
                             //Signed/unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
-                             Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
+                            Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
                         }
                         // lhs.Size < rhs.Size, only a problem when lhs is Signed and rhs is Unsiged
                         else if (sourceSize < targetSize && sourceType.SpecialType.IsSignedIntegralType() && !targetType.SpecialType.IsSignedIntegralType())

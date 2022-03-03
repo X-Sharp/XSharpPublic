@@ -20,21 +20,23 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private void XsCheckConversion(BoundConversion node)
         {
-            if (node.ConstantValue != null || node.WasCompilerGenerated || node.Syntax.XIsExplicitTypeCastInCode)
+            var syntax = node.Syntax;
+            if (syntax == null || node.ConstantValue != null || node.WasCompilerGenerated ||
+                syntax.XIsExplicitTypeCastInCode || syntax.XGenerated)
                 return;
             var sourceType = node.Operand.Type;
             var targetType = node.Type;
-            if (node.Syntax != null! && !TypeSymbol.Equals(sourceType, targetType))
+            if (syntax != null! && !Equals(sourceType, targetType) && syntax.XWarning)
             {
-                var vo4 = _compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, node.Syntax);
-                var vo11 = _compilation.Options.HasOption(CompilerOption.ArithmeticConversions, node.Syntax);
+                var vo4 = _compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, syntax);
+                var vo11 = _compilation.Options.HasOption(CompilerOption.ArithmeticConversions, syntax);
                 if (targetType.IsIntegralType() && sourceType.IsIntegralType())
                 {
                     var srcsize = sourceType.SpecialType.SizeInBytes();
                     var trgsize = targetType.SpecialType.SizeInBytes();
-                    if (vo4 && srcsize == trgsize)
+                    if ((vo4 || vo11) && srcsize == trgsize)
                     {
-                        ;// Error(ErrorCode.WRN_SignedUnSignedConversion, node, sourceType, targetType);
+                        Error(ErrorCode.WRN_SignedUnSignedConversion, node, sourceType, targetType);
                     }
                     else if (vo11 && srcsize > trgsize)
                     {

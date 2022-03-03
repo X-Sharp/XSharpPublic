@@ -2427,7 +2427,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Conversion conversion = this.Conversions.ClassifyConversionFromExpression(operand, targetType, ref useSiteDiagnostics, forCast: true);
             diagnostics.Add(node, useSiteDiagnostics);
 #if XSHARP
-            if (conversion.Kind == ConversionKind.ImplicitReference && operand.Syntax.XNeedsCast)
+            if (conversion.Kind == ConversionKind.ImplicitReference && operand.Syntax.XSpecial)
             {
                 conversion = Conversion.ExplicitReference;
             }

@@ -59,9 +59,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private ConversionKind UnBoxXSharpType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
         {
+            // If the XSpecial flag is set then this not really unboxing but some special operation
 
-            if ((rewrittenType.IsPointerType() || rewrittenType.IsPszType())
-                && rewrittenOperand.Type.IsObjectType() && _compilation.Options.Dialect.AllowPointerMagic())
+            var special = rewrittenOperand.Syntax.XSpecial;
+            if ((rewrittenType.IsPointerType() || rewrittenType.IsPszType()) && rewrittenOperand.Type.IsObjectType() && special)
             {
                 rewrittenOperand = _factory.Convert(_compilation.GetSpecialType(SpecialType.System_IntPtr), rewrittenOperand, Conversion.Unboxing);
                 conversionKind = ConversionKind.Identity;
@@ -82,11 +83,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // Implementation here
                 if (nts is { } && nts.IsInterface && rewrittenType.IsUsualType())
                 {
-
                     var m = getImplicitOperatorByParameterType(usualType, _compilation.GetSpecialType(SpecialType.System_Object));
                     if (m != null)
                     {
-                        rewrittenOperand = _factory.StaticCall(rewrittenType, (MethodSymbol)m, rewrittenOperand);
+                        rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
                         rewrittenOperand.WasCompilerGenerated = true;
                         return ConversionKind.Identity;
                     }
@@ -142,7 +142,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     else // System.Decimals, Objects and reference types, but not String
                     {
 
-                        // check to see if we are casting to an interface that the usualtype supports
+                        // check to see if we are casting to an interface that the usual type supports
                         if (rewrittenType.IsInterfaceType())
                         {
                             foreach (var interf in usualType.AllInterfacesNoUseSiteDiagnostics)
@@ -182,7 +182,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                 }
-                if (nts.IsFloatType() && rewrittenType is NamedTypeSymbol)
+                if (nts.IsFloatType() && rewrittenType is NamedTypeSymbol && special)
                 {
                     var floatType = _compilation.FloatType();
                     MethodSymbol m = getExplicitOperator(floatType, rewrittenType as NamedTypeSymbol);
@@ -223,10 +223,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     }
                 }
-                if (nts.IsCurrencyType() && rewrittenType is NamedTypeSymbol)
+                if (nts.IsCurrencyType() && rewrittenType is NamedTypeSymbol && special)
                 {
                     var currencyType = _compilation.CurrrencyType();
-                    MethodSymbol m = getExplicitOperator(currencyType, rewrittenType as NamedTypeSymbol);
+                    var m = getExplicitOperator(currencyType, rewrittenType as NamedTypeSymbol);
                     if (m != null)
                     {
                         rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
@@ -247,7 +247,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     }
                     // what else, any other numeric type Convert to Double first and then to destination type
-                    m = getImplicitOperatorByReturnType(currencyType, _compilation.GetSpecialType(SpecialType.System_Double));
+                    m = getImplicitOperatorByReturnType(currencyType, _compilation.GetSpecialType(SpecialType.System_Decimal));
                     if (m != null)  // this should never happen. This is an implicit converter
                     {
                         rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
@@ -264,13 +264,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     }
                 }
-                if ((rewrittenOperand.Type.IsPointerType() || rewrittenOperand.Type.IsPszType())
-                    && _compilation.Options.Dialect.AllowPointerMagic())
+                if ((rewrittenOperand.Type.IsPointerType() || rewrittenOperand.Type.IsPszType()) && special)
                 {
                     rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
                         Conversion.Identity, false, false,
-                        conversionGroupOpt: default,
-                        constantValueOpt: default,
+                        conversionGroupOpt: null,
+                        constantValueOpt: null,
                         type: _compilation.GetSpecialType(SpecialType.System_IntPtr));
                 }
             }

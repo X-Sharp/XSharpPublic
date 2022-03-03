@@ -1746,6 +1746,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // _And , _OR, _XOR, _NOT should be unchecked to be VO/Vulcan compatible
             base.ExitIntrinsicExpression(context);
             var expr = MakeChecked(context.Get<ExpressionSyntax>(), false);
+            expr.XGenerated = true;
             context.Put(expr);
         }
         public override void ExitJumpStmt([NotNull] XP.JumpStmtContext context)
@@ -2125,8 +2126,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // cast result of sizeof to DWORD to be compatible
             base.ExitSizeOfExpression(context);
-            context.Put(MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)),
-                context.Get<ExpressionSyntax>()));
+            var expr = context.Get<ExpressionSyntax>();
+            expr = MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)), expr);
+            expr.XGenerated = true;
+            context.Put(expr);
         }
 
         #endregion
@@ -3678,6 +3681,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
             // XS$PCount > ..
             BinaryExpressionSyntax cond;
+            expr.XGenerated = true;
             if (CurrentMember != null)
                 CurrentMember.Data.UsesPCount = true;
             // no changes to expr for length comparison, even with /az
@@ -3691,6 +3695,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // adjust array offset when compiling with /az
                 expr = GenerateSubtractOne(expr);
+                expr.XGenerated = true;
             }
             var indices = _pool.AllocateSeparated<ArgumentSyntax>();
             indices.Add(MakeArgument(expr));
@@ -3702,6 +3707,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
 
             var result = MakeConditional(cond, left, GenerateNIL());
+            result.XGenerated = true;
             _pool.Free(indices);
             return result;
         }
@@ -3841,6 +3847,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
                     }
+                    expr.XGenerated = true;
                     context.Put(expr);
                 }
                 return true;

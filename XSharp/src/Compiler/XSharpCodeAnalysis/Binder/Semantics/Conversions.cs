@@ -151,9 +151,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             // The following conversion Rules are for all dialects 
             var srcType = source.SpecialType;
             var dstType = destination.SpecialType;
+            var syntax = sourceExpression.Syntax;
             // From and to CHAR
-            var vo4 = Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, sourceExpression.Syntax);
-            var vo11 = Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, sourceExpression.Syntax);
+            var vo4 = Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, syntax);
+            var vo11 = Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, syntax);
             if (srcType == SpecialType.System_Char)
             {
                 if (dstType == SpecialType.System_UInt16)
@@ -190,6 +191,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (destination.SpecialType == SpecialType.System_Object)
                 {
+                    syntax.XSpecial = true;
                     return Conversion.Boxing;
                 }
             }
@@ -201,6 +203,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // not really boxing but we'll handle the actual conversion later
                         // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                        syntax.XSpecial = true;
                         return Conversion.Boxing;
                     }
                 }
@@ -217,45 +220,56 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.Identity;
                 }
             }
-            if (!srcType.Equals(dstType))
+            if (!srcType.Equals(dstType) )
             {
                 if (vo4 || vo11)
                 {
-                // This compiler option only applies to numeric types
-                if (srcType.IsNumericType() && dstType.IsNumericType())
-                {
-                    if (srcType.IsIntegralType() && dstType.IsIntegralType())
+                    // This compiler option only applies to numeric types
+                    if (srcType.IsNumericType() && dstType.IsNumericType())
                     {
-                        // when both same # of bits and integral, use Identity conversion
-                        if (srcType.SizeInBytes() == dstType.SizeInBytes())
+                        if (srcType.IsIntegralType() && dstType.IsIntegralType())
+                        {
+                            // when both same # of bits and integral, use Identity conversion
+                            if (srcType.SizeInBytes() == dstType.SizeInBytes())
                             {
+                                var constant = false;
+                                if (sourceExpression is BoundBinaryOperator bop)
+                                {
+                                    constant = bop.Left.ConstantValue != null || bop.Right.ConstantValue != null;
+                                }
+                                syntax.XWarning = !constant && !syntax.XGenerated;
                                 return Conversion.Identity;
                             }
-                         else if (vo11)
+                            else if (vo11)
                             {
-                             // otherwise implicit conversion
-                             return Conversion.ImplicitNumeric;
-                    }
+                                // otherwise implicit conversion
+                                syntax.XWarning = !syntax.XGenerated;
+                                return Conversion.ImplicitNumeric;
+                            }
                         }
-                        // VO/Vulcan also allows to convert floating point types <-> integral types
                         else if (vo11 && dstType.IsIntegralType() && sourceExpression.ConstantValue == null)
-                    {
-                        return Conversion.ImplicitNumeric;
+                        {
+                            syntax.XWarning = !syntax.XGenerated;
+                            return Conversion.ImplicitNumeric;
+                        }
                     }
-                }
-                if (source.IsFloatType() || source.IsCurrencyType())
-                {
-                    if (destination is { } && destination.SpecialType.IsNumericType())
+                    // VO/Vulcan also allows to convert floating point types <-> integral types
+                    if (source.IsFloatType() || source.IsCurrencyType())
                     {
-                        // not really boxing but we'll handle the actual conversion later
-                        // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
-                        return Conversion.Boxing;
+                        if (destination is { } && destination.SpecialType.IsNumericType())
+                        {
+                            // not really boxing but we'll handle the actual conversion later
+                            // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                            syntax.XSpecial = true;
+                            syntax.XWarning = !syntax.XGenerated;
+                            return Conversion.Boxing;
                         }
                     }
                 }
             }
             if (XsIsImplicitBinaryOperator(sourceExpression, destination, null))
             {
+                syntax.XWarning = !syntax.XGenerated;
                 return Conversion.ImplicitNumeric;
             }
 
@@ -265,12 +279,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal bool XsIsImplicitBinaryOperator(BoundExpression expression, TypeSymbol targetType, Binder binder)
         {
-            var vo4 = Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax);
-            var vo11 = Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax);
             if (expression is BoundBinaryOperator binop && targetType.SpecialType.IsIntegralType())
             {
                 var sourceType = binop.LargestOperand(this.Compilation, false);
-                if (TypeSymbol.Equals(sourceType, targetType))
+                if (Equals(sourceType, targetType))
                 {
                     return true;
                 }
@@ -282,12 +294,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return true;
                     }
-                    else if (sourceSize > targetSize)
+                    if (sourceSize > targetSize)
                     {
                         return false;
                     }
                     // same size, but different type. Only allowed when SignedUnsignedConversion is active
-                    else if (vo4 || vo11)
+                    var vo4 = Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax);
+                    var vo11 = Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax);
+                    if (vo4 || vo11)
                     {
                         return true;
                     }
@@ -440,6 +454,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (dstType == SpecialType.System_Decimal)
                 // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
                 {
+                    sourceExpression.Syntax.XSpecial = true;
                     return Conversion.Boxing;
                 }
                 // Usual -> OBJECT. Get the object out of the Usual 
@@ -450,17 +465,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else if (dstType == SpecialType.System_Object)
                 {
                     // All Objects are boxed in a usual
+                    sourceExpression.Syntax.XSpecial = true;
                     return Conversion.Boxing;
                 }
                 else if (destination.IsReferenceType && !IsClipperArgsType(destination) && !destination.IsStringType() && !destination.IsIFormatProvider())
                 {
                     // all user reference types are boxed. But not the Usual[] args and not string
+                    sourceExpression.Syntax.XSpecial = true;
                     return Conversion.Boxing;
                 }
                 else if (destination.IsPointerType())
                 {
                     // not really boxing but we'll handle the actual conversion later
                     // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                    sourceExpression.Syntax.XSpecial = true;
                     return Conversion.Boxing;
                 }
             }
@@ -472,6 +490,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // __CASTCLASS(USUAL, OBJECT)
                     // not really boxing but we'll handle the actual conversion later
                     // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                    sourceExpression.Syntax.XSpecial = true;
                     return Conversion.Boxing;
                 }
             }
@@ -485,7 +504,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // Convert Object -> Reference allowed with /lb and with /vo7
                         // Inside XsHandleImplicitReference we will add a cast to take care of the
                         // real conversion
-                        sourceExpression.Syntax.XNeedsCast = true;
+                        sourceExpression.Syntax.XSpecial = true;
                         return Conversion.ImplicitReference;
                     }
                     if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPszType())
@@ -494,6 +513,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             // not really boxing but we'll handle the actual conversion later
                             // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                            sourceExpression.Syntax.XSpecial = true;
                             return Conversion.Boxing;
                         }
                     }

@@ -7748,6 +7748,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var right = MakeSimpleMemberAccess(expr, GenerateSimpleName("Length"));
             expr = MakeConditional(cond, left, right);
             expr = MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)), expr);
+            expr.XGenerated = true;
             context.Put(expr);
             return true;
         }
@@ -8278,12 +8279,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitSizeOfExpression([NotNull] XP.SizeOfExpressionContext context)
         {
-            context.Put(
-                _syntaxFactory.SizeOfExpression(
+            var expr = _syntaxFactory.SizeOfExpression(
                 SyntaxFactory.MakeToken(SyntaxKind.SizeOfKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 context.Type.Get<TypeSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            expr.XGenerated = true;
+            context.Put(expr);
         }
 
         public override void ExitTypeOfExpression([NotNull] XP.TypeOfExpressionContext context)

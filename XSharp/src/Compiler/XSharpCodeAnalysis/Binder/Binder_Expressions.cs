@@ -221,7 +221,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         bool mustBeNumeric = false;
                         ++argno;
                         mustBeNumeric = true;
-                        if (Compilation.Options.XSharpRuntime  && TypeSymbol.Equals(cf, namedIndexerType))
+                        if (Compilation.Options.XSharpRuntime && Equals(cf, namedIndexerType))
                         {
                             mustBeNumeric = argno == 1;
                         }
@@ -232,6 +232,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (arg.Type.SpecialType != specialType)
                             {
                                 newarg = CreateConversion(arg, Compilation.GetSpecialType(specialType), diagnostics);
+                                newarg.WasCompilerGenerated = true;
                                 if (newarg.HasErrors)
                                 {
                                     Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
@@ -240,6 +241,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (!Compilation.Options.HasOption(CompilerOption.ArrayZero, node))
                             {
                                 newarg = SubtractIndex(newarg, diagnostics, specialType);
+                                newarg.WasCompilerGenerated = true;
                             }
                         }
                         else
@@ -253,7 +255,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         analyzedArguments = AnalyzedArguments.GetInstance();
                         analyzedArguments.Arguments.AddRange(args);
-                        return BindIndexerAccess(node, expr, analyzedArguments, diagnostics);
+                        var res = BindIndexerAccess(node, expr, analyzedArguments, diagnostics);
+                        res.WasCompilerGenerated = true;
+                        return res;
                     }
                     else
                     {
@@ -297,10 +301,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                             receiverOpt: expr,
                             indexer: indexer,
                             arguments: args,
-                            argumentNamesOpt: default(ImmutableArray<string>),
-                            argumentRefKindsOpt: default(ImmutableArray<RefKind>),
+                            argumentNamesOpt: default,
+                            argumentRefKindsOpt: default,
                             expanded: false,
-                            argsToParamsOpt: default(ImmutableArray<int>),
+                            argsToParamsOpt: default,
                             defaultArguments: default,
                             type: usualType,
                             hasErrors: false)

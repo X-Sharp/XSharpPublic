@@ -64,7 +64,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         XDefaultTree = 1 << 8,
         XIsString2Psz = 1 << 9,
         // This is used to tell the backend that a conversion needs special work
-        XNeedsCast = 1 << 10,
+        XSpecial = 1 << 10,
+        XWarning = 1 << 11,
+
     }
 
     internal abstract partial class CSharpSyntaxNode
@@ -112,10 +114,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             get => xflags.HasFlag(XNodeFlags.XIsString2Psz);
             set => xflags = xflags.SetFlag(XNodeFlags.XIsString2Psz, value);
         }
-        public bool XNeedsCast
+        public bool XSpecial
         {
-            get => xflags.HasFlag(XNodeFlags.XNeedsCast);
-            set => xflags = xflags.SetFlag(XNodeFlags.XNeedsCast, value);
+            get => xflags.HasFlag(XNodeFlags.XSpecial);
+            set => xflags = xflags.SetFlag(XNodeFlags.XSpecial, value);
+        }
+        public bool XWarning
+        {
+            get => xflags.HasFlag(XNodeFlags.XWarning);
+            set => xflags = xflags.SetFlag(XNodeFlags.XWarning, value);
         }
     }
 
@@ -192,7 +199,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal bool XVoDecl => CsGreen.XVoDecl;
         internal bool XVoIsDecl => CsGreen.XVoIsDecl;
         internal bool XPCall => CsGreen.XPCall;
-        internal bool XGenerated => CsGreen.XGenerated;
         internal bool XVoIsDim => CsGreen.XVoIsDim;
         internal bool XIsChr => CsGreen.XIsChr;
         internal bool XIsString2Psz => CsGreen.XIsString2Psz;
@@ -207,10 +213,20 @@ namespace Microsoft.CodeAnalysis
     {
         internal CSharp.CSharpSyntaxNode CsNode => (CSharp.CSharpSyntaxNode)this;
         internal IXParseTree XNode => CsNode.CsGreen.XNode ?? CsNode.Parent?.XNode;
-        internal bool XNeedsCast
+        internal bool XGenerated
         {
-            get => CsNode.CsGreen.XNeedsCast;
-            set => CsNode.CsGreen.XNeedsCast = value;
+            get => CsNode.CsGreen.XGenerated;
+            set => CsNode.CsGreen.XGenerated = value;
+        }
+        internal bool XSpecial
+        {
+            get => CsNode.CsGreen.XSpecial;
+            set => CsNode.CsGreen.XSpecial = value;
+        }
+        internal bool XWarning
+        {
+            get => CsNode.CsGreen.XWarning;
+            set => CsNode.CsGreen.XWarning = value;
         }
         internal bool XIsExplicitTypeCastInCode
         {

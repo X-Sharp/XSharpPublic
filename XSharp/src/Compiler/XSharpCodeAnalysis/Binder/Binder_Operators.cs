@@ -766,6 +766,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var syntax = (CSharpSyntaxNode)index.Syntax;
             if (!index.HasAnyErrors && !this.Compilation.Options.HasOption(CompilerOption.ArrayZero, syntax))
             {
+                syntax.XGenerated = true;
                 var kind = BinaryOperatorKind.Subtraction;
                 var left = index;
                 var right = new BoundLiteral(syntax, ConstantValue.Create(1), index.Type) { WasCompilerGenerated = true };

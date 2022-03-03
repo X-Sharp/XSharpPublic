@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp
         /// <summary>The usual contains a FLOAT value</summary>
         MEMBER Float	:=3
         /// <summary>This value is NEVER used for USUALs (this was also defined in VO but never used).</summary>
-        MEMBER Fixed    := 4 
+        MEMBER Fixed    := 4
         /// <summary>The usual contains an ARRAY value</summary>
         MEMBER Array	:=5
         /// <summary>The usual contains an OBJECT value</summary>
@@ -57,7 +57,7 @@ BEGIN NAMESPACE XSharp
         MEMBER Psz		:=17
         /// <summary>The usual contains an PTR value</summary>
         MEMBER Ptr		:=18
-        /// <exclude/>	
+        /// <exclude/>
         MEMBER Usual	:=19	// USUAL by Ref, not implemented in Vulcan
 
         // 20 and 21 not used
@@ -78,6 +78,8 @@ BEGIN NAMESPACE XSharp
         MEMBER Currency	:=28
         /// <summary>The usual contains a Binary value (new in X#).</summary>
         MEMBER Binary	:=29
+        /// <summary>The usual contains a DBNull.Value value (new in X#).</summary>
+        MEMBER Null	    := 30
         /// <summary>The usual contains an Memo value. This value is there for compatibility with VO but never used.</summary>
         MEMBER Memo		:=32	// Used in RDD system in VO
         /// <summary>Invalid Usual Type.</summary>

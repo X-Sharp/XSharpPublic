@@ -9,17 +9,19 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.CodeAnalysis.XSharp;
 using System.Collections.Immutable;
 using static XSharp.Parser.VsParser;
+using Microsoft.VisualStudio.Threading;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.LanguageService
 {
 
-     /// <summary>
+    /// <summary>
     /// Static class Tools. Offer services to get TokenList, Search members, ...
     /// </summary>
     ///
     public static class XSharpTokenTools
     {
-       
+
         public static bool StringEquals(string lhs, string rhs)
         {
             return XSharpCompletionSource.StringEquals(lhs, rhs);
@@ -37,15 +39,28 @@ namespace XSharp.LanguageService
             return result;
         }
 
-       
+        /// <summary>
+        /// Call the classifier to classify the buffer. This fills the linestate and lines array
+        /// </summary>
+        /// <param name="location"></param>
+        static void ClassifyBuffer(XSharpSearchLocation location)
+        {
+            var classifier = location.Snapshot.TextBuffer.GetClassifier();
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await classifier.ClassifyWhenNeededAsync();
+            });
+        }
+
         static List<XSharpToken> getLineFromBuffer(XSharpSearchLocation location)
         {
             var result = new List<XSharpToken>();
-            var xtokens = location.Snapshot.TextBuffer.GetTokens();
+            ClassifyBuffer(location);
+            var xdocument = location.GetDocument();
             var lastLine = location.Snapshot.LineCount;
-            if (xtokens != null)
+            if (xdocument != null)
             {
-                var lines = xtokens.Lines;
+                var lines = xdocument.Lines;
                 var lineNumber = location.LineNumber;
                 while (result.Count == 0 || result.Last().Type != XSharpLexer.EOS)
                 {
@@ -62,11 +77,10 @@ namespace XSharp.LanguageService
 
         private static XSharpSearchLocation AdjustStartLineNumber(XSharpSearchLocation location)
         {
+            ClassifyBuffer(location);
             var line = location.LineNumber;
-            var classifier = location.Snapshot.TextBuffer.GetClassifier();
-            classifier.ClassifyWhenNeeded();
-
-            var lineFlags = location.Snapshot.TextBuffer.GetLineState();
+            var doc = location.GetDocument();
+            var lineFlags = doc.LineState;
             while (line >= 0 && lineFlags.GetFlags(line).HasFlag(LineFlags.Continued))
             {
                 line--;
@@ -79,13 +93,13 @@ namespace XSharp.LanguageService
         internal static IList<XSharpToken> GetTokensUnderCursor(XSharpSearchLocation location, out CompletionState state)
         {
 
-            var tokens = GetTokenList(location, out state, true, true).Where( (t) => t.Channel == XSharpLexer.DefaultTokenChannel).ToList();
+            var tokens = GetTokenList(location, out state, true, true).Where((t) => t.Channel == XSharpLexer.DefaultTokenChannel).ToList();
             // Find "current" token
-            
+
             if (tokens.Count > 0)
             {
-                var tokenUnderCursor = tokens.Count-1;
-                for (int i = tokens.Count -1; i >= 0; i--)
+                var tokenUnderCursor = tokens.Count - 1;
+                for (int i = tokens.Count - 1; i >= 0; i--)
                 {
                     var token = tokens[i];
                     if (token.StartIndex <= location.Position && token.StopIndex >= location.Position)
@@ -95,7 +109,7 @@ namespace XSharp.LanguageService
                     }
                 }
                 var selectedToken = tokens[tokenUnderCursor];
-                var nextToken = tokenUnderCursor < tokens.Count-1 ? tokens[tokenUnderCursor+1] : null;
+                var nextToken = tokenUnderCursor < tokens.Count - 1 ? tokens[tokenUnderCursor + 1] : null;
                 bool done = false;
                 switch (selectedToken.Type)
                 {
@@ -131,7 +145,7 @@ namespace XSharp.LanguageService
                 // Then strip everything until the matching LCURLY, LBRKT or LPAREN is found
                 var list = new XSharpTokenList(tokens);
                 tokens = new List<XSharpToken>();
-                while (! list.Eoi())
+                while (!list.Eoi())
                 {
                     var token = list.ConsumeAndGet();
                     switch (token.Type)
@@ -231,9 +245,9 @@ namespace XSharp.LanguageService
             }
             // check for extra lparen, lcurly at the end
             int count = tokens.Count;
-            if (count > 2 && count < tokens.Count -2)
+            if (count > 2 && count < tokens.Count - 2)
             {
-                if (tokens[count-2].Type == XSharpLexer.LPAREN)
+                if (tokens[count - 2].Type == XSharpLexer.LPAREN)
                 {
                     switch (tokens[count - 1].Type)
                     {
@@ -277,7 +291,7 @@ namespace XSharp.LanguageService
             var cursorPos = location.Position;
             var done = false;
             var list = new XSharpTokenList(line);
-            while (!done && ! list.Eoi() )
+            while (!done && !list.Eoi())
             {
                 var token = list.ConsumeAndGet();
                 int openToken = 0;
@@ -329,7 +343,7 @@ namespace XSharp.LanguageService
                 {
                     // after these tokens we "restart" the list
                     case XSharpLexer.EOS:
-                        if (token.Position < cursorPos)
+                        if (token.Position < cursorPos && token != line.Last())
                         {
                             // an EOS inside a line before the cursor
                             // so there are 2 or more statements on the same line
@@ -350,7 +364,7 @@ namespace XSharp.LanguageService
                     case XSharpLexer.UPTO:
                     case XSharpLexer.DOWNTO:
                     case XSharpLexer.IN:
-                        if (! isHit)
+                        if (!isHit)
                         {
                             result.Clear();
                             if (isNotLast) // there has to be a space after the token
@@ -470,7 +484,7 @@ namespace XSharp.LanguageService
                             state = CompletionState.Namespaces | CompletionState.Interfaces;
                         else
                             state = CompletionState.None;
-                        
+
                         break;
                     case XSharpLexer.COLON:
                         state = CompletionState.InstanceMembers;
@@ -541,7 +555,7 @@ namespace XSharp.LanguageService
                     int count = 0;
                     while (iLast >= 0 && result[iLast] != closeToken)
                     {
-                       iLast--;
+                        iLast--;
                     }
                     int closeType = closeToken.Type;
                     while (iLast >= 0)
@@ -551,7 +565,7 @@ namespace XSharp.LanguageService
                         {
                             count += 1;
                         }
-                        else if ( type == openToken )
+                        else if (type == openToken)
                         {
                             count -= 1;
                             if (count == 0)
@@ -567,7 +581,7 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            
+
             // when the list ends with a comma, drop the ending comma. Why ?
             if (result.Count > 0)
             {
@@ -577,9 +591,9 @@ namespace XSharp.LanguageService
                     result.RemoveAt(result.Count - 1);
                 }
             }
-           return result;
+            return result;
         }
- 
+
         public static XSourceTypeSymbol FindNamespace(int position, XFile file)
         {
             if (file == null)

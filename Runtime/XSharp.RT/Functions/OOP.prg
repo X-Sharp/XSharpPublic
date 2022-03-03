@@ -59,7 +59,9 @@ INTERNAL STATIC CLASS OOPHelpers
 					    aMI := oType:GetMethods(bf)
 					    FOREACH oM AS MethodInfo IN aMI
 						    IF ! oM:IsSpecialName .AND. String.Compare(oM:Name, cFunction, TRUE) == 0
-							    list:Add( oM )
+                                IF ! list:Contains(oM)
+							        list:Add( oM )
+                                endif
 						    ENDIF
                         NEXT
                         IF list:Count > 0
@@ -1540,19 +1542,25 @@ FUNCTION _CallClipFunc(symFunction AS STRING,aArgs AS ARRAY) AS USUAL
 /// <remarks>Note that you can't call functions that are overloaded.</remarks>
 FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 	LOCAL aFuncs AS MethodInfo[]
+    LOCAL oMI AS MethodInfo
 
 	aFuncs := OOPHelpers.FindClipperFunctions(symFunction)
 	// CLipper functions can't and shouldn't have overloads
 	IF aFuncs != NULL
 		IF aFuncs:Length == 1
-			LOCAL oMI AS MethodInfo
 			oMI		:= aFuncs:First()
 			IF OOPHelpers.SendHelper(NULL, oMI, uArgs, OUT VAR result)
 				RETURN result
 			ENDIF
 		ELSEIF aFuncs:Length == 0
 			RETURN NIL
-		ELSE
+        ELSE
+            oMI  := OOPHelpers.FindBestOverLoad(aFuncs, symFunction, uArgs)
+            IF oMI != NULL
+			    IF OOPHelpers.SendHelper(NULL, oMI, uArgs, OUT VAR result)
+				    RETURN result
+			    ENDIF
+            ENDIF
 			THROW Error.VOError( EG_AMBIGUOUSMETHOD,  "_CallClipFunc", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 		ENDIF
 	ELSE

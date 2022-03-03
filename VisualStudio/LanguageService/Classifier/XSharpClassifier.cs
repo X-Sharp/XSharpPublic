@@ -68,9 +68,9 @@ namespace XSharp.LanguageService
         {
             get
             {
-                var xtokens = GetTokens();
-                if (xtokens != null)
-                    return xtokens.SnapShot;
+                var xdoc = GetDocument();
+                if (xdoc != null)
+                    return xdoc.SnapShot;
                 return null;
             }
         }
@@ -99,7 +99,6 @@ namespace XSharp.LanguageService
 
             //
             lineState = new XSharpLineState(buffer.CurrentSnapshot);
-            buffer.Properties.AddProperty(typeof(XSharpLineState), lineState);
             xtraKeywords = new List<string>();
             // Initialize our background workers
             _buffer.Changed += Buffer_Changed;
@@ -145,22 +144,22 @@ namespace XSharp.LanguageService
 
         }
 
-        private XSharpTokens GetTokens()
+        private XDocument GetDocument()
         {
-            XSharpTokens xTokens;
+            XDocument xDocument;
             lock (gate)
             {
-                xTokens = _buffer.GetTokens();
+                xDocument = _buffer.GetDocument();
             }
-            return xTokens;
+            return xDocument;
         }
 
-        public void ClassifyWhenNeeded()
+        public async Task ClassifyWhenNeededAsync()
         {
-            XSharpTokens xTokens = GetTokens();
-            if (xTokens == null || xTokens.SnapShot.Version != _buffer.CurrentSnapshot.Version)
+            XDocument xDocument = GetDocument();
+            if (xDocument == null || xDocument.SnapShot.Version != _buffer.CurrentSnapshot.Version)
             {
-                LexAsync().FireAndForget();
+                await LexAsync();
             }
         }
         private async Task LexAsync()
@@ -188,8 +187,8 @@ namespace XSharp.LanguageService
         }
         public void Parse()
         {
-            XSharpTokens xTokens = GetTokens();
-            if (xTokens.Entities == null)
+            XDocument xDocument = GetDocument();
+            if (xDocument.Entities == null)
                 ParseAsync().FireAndForget(); ;
         }
 
@@ -198,18 +197,18 @@ namespace XSharp.LanguageService
             if (XSettings.DisableSyntaxHighlighting)
                 return;
             var snapshot = _buffer.CurrentSnapshot;
-            XSharpTokens xTokens = GetTokens();
+            XDocument xDocument = GetDocument();
 
-            if (xTokens == null || xTokens.SnapShot.Version != snapshot.Version)
+            if (xDocument == null || xDocument.SnapShot.Version != snapshot.Version)
             {
                 lineState.Clear();
                 Debug("Starting classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-                ITokenStream tokens = _sourceWalker.Lex(snapshot.GetText());
+                ITokenStream tokenstream = _sourceWalker.Lex(snapshot.GetText());
                 lock (gate)
                 {
-                    xTokens = new XSharpTokens((BufferedTokenStream)tokens, snapshot, _sourceWalker.IncludeFiles);
-
-                    _buffer.Properties[typeof(XSharpTokens)] = xTokens;
+                    xDocument = new XDocument((BufferedTokenStream)tokenstream, snapshot, _sourceWalker.IncludeFiles);
+                    xDocument.LineState = lineState;
+                    _buffer.Properties[typeof(XDocument)] = xDocument;
                 }
             }
             BuildColorClassifications();
@@ -247,10 +246,10 @@ namespace XSharp.LanguageService
                 return;
 
             var snapshot = _buffer.CurrentSnapshot;
-            var xTokens = GetTokens();
-            if (xTokens.SnapShot != snapshot)
+            var xDocument = GetDocument();
+            if (xDocument.SnapShot != snapshot)
             {
-                XSettings.LogMessage($"XSharpClassifier.ParseAsync() aborted because snapshot is version {xTokens.SnapShot.Version} and buffer has version {snapshot.Version}");
+                XSettings.LogMessage($"XSharpClassifier.ParseAsync() aborted because snapshot is version {xDocument.SnapShot.Version} and buffer has version {snapshot.Version}");
                 return;
             }
 
@@ -261,7 +260,7 @@ namespace XSharp.LanguageService
             // and get a reference to the tokenstream
             // do we need to create a new tree
             // this happens the first time in the buffer only
-            var tokens = xTokens.TokenStream;
+            var tokens = xDocument.TokenStream;
             if (tokens != null)
             {
                 Debug("Starting model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
@@ -287,10 +286,10 @@ namespace XSharp.LanguageService
         private void RegisterEntityBoundaries()
         {
             // Register the entity boundaries for the line separators
-            XSharpTokens xTokens = GetTokens();
-            if (xTokens == null)
+            XDocument xDocument = GetDocument();
+            if (xDocument == null)
                 return;
-            xTokens.Entities = _sourceWalker.EntityList;
+            xDocument.Entities = _sourceWalker.EntityList;
             foreach (var entity in _sourceWalker.EntityList)
             {
                 var line = entity.Range.StartLine;
@@ -788,7 +787,7 @@ namespace XSharp.LanguageService
 
         private void BuildColorClassifications()
         {
-            var tokens = GetTokens();
+            var tokens = GetDocument();
             if (tokens == null)
                 return;
             var snapshot = tokens.SnapShot;

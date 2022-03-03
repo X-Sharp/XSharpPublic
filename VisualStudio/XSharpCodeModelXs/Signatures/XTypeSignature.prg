@@ -11,8 +11,8 @@ USING System.Linq
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{ToString(),nq}")];
    CLASS XTypeSignature INHERIT XBaseSignature
-      PROPERTY Interfaces               AS List<STRING>  AUTO GET INTERNAL SET
-      PROPERTY BaseType                 AS STRING        AUTO GET INTERNAL SET
+      PROPERTY Interfaces               AS List<STRING>  AUTO
+      PROPERTY BaseType                 AS STRING        AUTO
       PROPERTY InterfaceList            AS STRING        GET ToList(SELF:Interfaces)
 
       CONSTRUCTOR(cBaseType AS STRING)

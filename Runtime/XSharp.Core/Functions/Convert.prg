@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Text
@@ -140,12 +140,12 @@ FUNCTION Bin2W(cUnsignedInt AS STRING) AS WORD
 /// <seealso cref='Logic2Bin' >Logic2Bin</seealso>
 
 FUNCTION CTOL(c AS STRING) AS LOGIC
-    IF c != NULL 
+    IF c != NULL
         IF c[0] == 'T' .OR. c[0] == 't' .OR. c[0] == 'Y' .OR. c[0] =='y'
-            RETURN TRUE	
+            RETURN TRUE
         ENDIF
     ENDIF
-    RETURN FALSE 
+    RETURN FALSE
 
 /// <summary>Convert a string value to a hexadecimal string.</summary>
 /// <param name="cSource">String to convert</param>
@@ -198,13 +198,11 @@ FUNCTION DW2Bin(dwValue AS DWORD) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/hibyte/*" />
 FUNCTION HiByte(wValue AS WORD) AS BYTE
-    LOCAL upper := Convert.ToByte(wValue >> 8) AS BYTE
-    RETURN (BYTE) upper   
+    RETURN (BYTE) (wValue >> 8)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/hiword/*" />
 FUNCTION HiWord(dwValue AS DWORD) AS WORD
-    LOCAL upper := Convert.ToUInt16(dwValue >> 16) AS WORD
-    RETURN (WORD) upper
+    RETURN (WORD) (dwValue >> 16)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/i2bin/*" />
@@ -223,11 +221,11 @@ FUNCTION L2Bin(liValue AS LONG) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lobyte/*" />
 FUNCTION LoByte(wValue AS WORD) AS BYTE
-    RETURN (BYTE) (wValue & 0x00FF)
+    RETURN (BYTE) _AND(wValue, 0x00FF)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/loword/*" />
 FUNCTION LoWord(dwValue AS DWORD) AS WORD
-    RETURN (WORD) (dwValue & 0xFFFF) 
+    RETURN (WORD) _AND(dwValue , 0xFFFF)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/logic2bin/*" />
@@ -280,7 +278,7 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
     VAR hasdec := FALSE
     VAR hasexp := FALSE
     VAR cDec := (CHAR) RuntimeState.DecimalSep
-    
+
     IF cDec != '.'
         cNumber := cNumber:Replace('.', cDec) // VO behavior...
         cNumber := cNumber:Replace(cDec, '.')
@@ -382,7 +380,7 @@ FUNCTION GetPartialEnumName(cName as STRING, oType as System.Type) AS STRING
     LOCAL aFields   := oType:GetFields() AS FieldInfo[]
     LOCAL aNames    := List<STRING>{} AS List<STRING>
     FOREACH VAR oFld IN aFields
-        IF oFld:IsLiteral .AND. oFld:Name:StartsWith(cName, StringComparison.OrdinalIgnoreCase) 
+        IF oFld:IsLiteral .AND. oFld:Name:StartsWith(cName, StringComparison.OrdinalIgnoreCase)
             aNames:Add(oFld:Name)
         ENDIF
     NEXT

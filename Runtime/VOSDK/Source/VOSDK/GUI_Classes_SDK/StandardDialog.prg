@@ -1277,16 +1277,16 @@ METHOD Show()
 	oColor := Color{nRed, nGreen, nBlue} // uk
 
 
-	sLogFont:lfPitchAndFamily := _AND(sLogFont:lfPitchAndFamily, 0B11)
+	sLogFont:lfPitchAndFamily := (BYTE) _AND(sLogFont:lfPitchAndFamily, 0B11)
 
 
 	DO CASE
 	CASE sLogFont:lfPitchAndFamily == FIXED_PITCH
-		oFont : @@PitchFixed := TRUE
+		oFont:PitchFixed := TRUE
 
 
 	CASE sLogFont:lfPitchAndFamily == VARIABLE_PITCH
-		oFont : @@PitchVariable := TRUE
+		oFont:PitchVariable := TRUE
 
 
 		// CASE pLogFont.lfPitchAndFamily == DEFAULT_PITCH

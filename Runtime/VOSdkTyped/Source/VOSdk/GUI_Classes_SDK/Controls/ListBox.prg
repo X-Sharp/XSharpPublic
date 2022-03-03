@@ -330,7 +330,7 @@ CLASS ListBox INHERIT BaseListBox
 					IF __ListBox:SelectedIndex >= 0 
 						wSelectNum := 1
 						IF wSelectNum <= __ListBox:SelectedIndices:Count
-							iResult := __ListBox:SelectedIndices[wSelectNum-1]+1
+							iResult := (INT) __ListBox:SelectedIndices[wSelectNum-1]+1
 						ENDIF
 					ENDIF
 				ENDIF
@@ -417,7 +417,7 @@ CLASS ListBox INHERIT BaseListBox
 			ELSE
 				wSelectNum 	:= wSelectNum + 1
 				IF SELF:ValidateControl() .AND. wSelectNum <= SELF:__ListBox:SelectedIndices:Count
-					iResult 	:= SELF:__ListBox:SelectedIndices[wSelectNum-1] +1
+					iResult 	:= (INT) SELF:__ListBox:SelectedIndices[wSelectNum-1] +1
 				ENDIF
 			ENDIF
 		ENDIF

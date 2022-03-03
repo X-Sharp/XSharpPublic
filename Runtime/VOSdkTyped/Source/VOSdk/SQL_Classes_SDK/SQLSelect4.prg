@@ -213,7 +213,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		// override method in DataServer class because it does not allow
 		// to change size/decimals for numeric columns
 		LOCAL lRetVal := FALSE AS LOGIC
-		LOCAL wFieldPosition := nFieldPosition AS WORD
+		LOCAL wFieldPosition := nFieldPosition AS DWORD
 		LOCAL oField := oDataField AS DataField
 		LOCAL oDF   AS DataField
 		LOCAL oFS   AS FieldSpec

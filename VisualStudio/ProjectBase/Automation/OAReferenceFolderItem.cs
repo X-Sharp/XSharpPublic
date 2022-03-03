@@ -30,41 +30,5 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         #endregion
 
-        #region overridden methods
-        /// <summary>
-        /// Returns the project items collection of all the references defined for this project.
-        /// </summary>
-        public override ProjectItems ProjectItems
-        {
-            get
-            {
-                return new OANavigableProjectItems(this.Project, this.GetListOfProjectItems(), this.Node);
-            }
-        }
-
-
-        #endregion
-
-        #region Helper methods
-        private List<ProjectItem> GetListOfProjectItems()
-        {
-            List<ProjectItem> list = new List<ProjectItem>();
-            for(HierarchyNode child = this.Node.FirstChild; child != null; child = child.NextSibling)
-            {
-                ReferenceNode node = child as ReferenceNode;
-
-                if(node != null)
-                {
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
-                    {
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        list.Add(node.Object as ProjectItem);
-                    });
-                }
-            }
-
-            return list;
-        }
-        #endregion
     }
 }

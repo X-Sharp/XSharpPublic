@@ -303,7 +303,7 @@ FUNCTION SqlDeleteWhiteSpace( cString AS STRING ) AS STRING STRICT
             pTWalk += 1
             lWhiteSpace := FALSE
          CASE !lWhiteSpace .AND. At2(cChar,cWhitespace ) > 0  // erster Whitespace, als Space kopieren !
-            BYTE(pTWalk) := Asc(" ")
+            BYTE(pTWalk) := (BYTE) Asc(" ")
             pWalk  += 1
             pTWalk += 1
             lWhiteSpace := TRUE

@@ -4,19 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using static XSharp.XSharpConstants;
-using XSharp.LanguageService;
-using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Operations;
 using System.Threading.Tasks;
 using System.Threading;
-using System.Collections.Immutable;
-using Microsoft.VisualStudio.Text.Formatting;
 using XSharpModel;
-using System.Reflection;
 using XSharp.Project.Editors.LightBulb;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
@@ -42,11 +36,9 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
     }
 
-    internal class PropertySuggestedActionsSource : ISuggestedActionsSource
+    internal class PropertySuggestedActionsSource : CommonActionsSource,  ISuggestedActionsSource
     {
         private PropertySuggestedActionsSourceProvider m_factory;
-        private ITextBuffer m_textBuffer;
-        private ITextView m_textView;
 
         private XSourceMemberSymbol _memberEntity;
         private TextRange _range;
@@ -54,11 +46,10 @@ namespace XSharp.LanguageService.Editors.LightBulb
 #pragma warning disable CS0067
         public event EventHandler<EventArgs> SuggestedActionsChanged;
 
-        public PropertySuggestedActionsSource(PropertySuggestedActionsSourceProvider propertySuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer)
+        public PropertySuggestedActionsSource(PropertySuggestedActionsSourceProvider propertySuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer) :
+            base(textView, textBuffer)  
         {
             this.m_factory = propertySuggestedActionsSourceProvider;
-            this.m_textView = textView;
-            this.m_textBuffer = textBuffer;
             //
             _memberEntity = null;
         }
@@ -99,18 +90,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 }
             }
             return Enumerable.Empty<SuggestedActionSet>();
-        }
-
-
-        public void Dispose()
-        {
-        }
-
-        public bool TryGetTelemetryId(out Guid telemetryId)
-        {
-            // This is a sample provider and doesn't participate in LightBulb telemetry  
-            telemetryId = Guid.Empty;
-            return false;
         }
 
         /// <summary>
@@ -171,15 +150,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return false;
         }
 
-
-        internal void WriteOutputMessage(string strMessage)
-        {
-            if (XSettings.EnableParameterLog && XSettings.EnableLogging)
-            {
-                XSettings.LogMessage("XSharp.LightBulb:" + strMessage);
-            }
-        }
-
         /// <summary>
         /// Search a potential field-ID
         /// </summary>
@@ -189,21 +159,17 @@ namespace XSharp.LanguageService.Editors.LightBulb
             if (m_textBuffer.Properties == null)
                 return false;
             //
-            XSharpLineState linesState = null;
-            if (!m_textBuffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
+            var xDocument = m_textBuffer.GetDocument();
+            if (xDocument == null)
             {
                 return false;
             }
+            var linesState = xDocument.LineState;
             //
-            XSharpTokens xTokens;
-            if (!m_textBuffer.Properties.TryGetProperty(typeof(XSharpTokens), out xTokens))
-            {
-                return false;
-            }
-            if (!xTokens.Complete)
+            if (!xDocument.Complete)
                 return false;
             //
-            var xLines = xTokens.Lines;
+            var xLines = xDocument.Lines;
             //
             SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
@@ -279,7 +245,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         /// Search the item under the caret.
         /// If a Field, it is stored in _memberentity
         /// </summary>
-        /// <returns>True if the caret is placed ona Field</returns>
+        /// <returns>True if the caret is placed on a Field</returns>
         private bool SearchField()
         {
             _memberEntity = null;
@@ -305,34 +271,5 @@ namespace XSharp.LanguageService.Editors.LightBulb
             }
             return false;
         }
-
-        /// <summary>
-        /// Based on the Caret line position, check if this is a continuing line
-        /// </summary>
-        /// <returns></returns>
-        private int SearchRealStartLine()
-        {
-            //
-            XSharpLineState linesState = null;
-            if (!m_textBuffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
-            {
-                return -1;
-            }
-            //
-            SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
-            ITextSnapshotLine line = caret.GetContainingLine();
-            //
-            var lineNumber = line.LineNumber;
-            var lineState = linesState.GetFlags(lineNumber);
-            // Search the first line
-            while (lineState == LineFlags.Continued)
-            {
-                // Move back
-                lineNumber--;
-                lineState = linesState.GetFlags(lineNumber);
-            }
-            return lineNumber;
-        }
-
     }
 }

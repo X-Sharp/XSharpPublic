@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -26,17 +26,17 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         RETURN _Orders[index]
                     ENDIF
                     RETURN NULL
-                    
+
                 END GET
             END PROPERTY
-            
+
             INTERNAL CONSTRUCTOR(area AS DBFNTX )
                 SELF:_focusNtx := 0
                 SELF:_Orders := List<NtxOrder>{}
                 SELF:_oRdd := area
                 SELF:_currentOrder := NULL
-                
-                
+
+
             INTERNAL METHOD Add(oi AS DbOrderInfo , filePath AS STRING ) AS LOGIC
                 LOCAL isOk AS LOGIC
                 LOCAL ntxIndex := NULL AS NtxOrder
@@ -59,14 +59,16 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                             SELF:_Orders:Add(ntxIndex)
                             isOk := ntxIndex:Open(oi)
                             IF isOk
-                                SELF:_focusNtx := SELF:_Orders:Count
-                                SELF:_currentOrder := ntxIndex
+                                if SELF:_Orders:Count == 1
+                                    SELF:_focusNtx      := 1
+                                    SELF:_currentOrder  := ntxIndex
+                                endif
                                 oi:BagName := ntxIndex:FileName
                             ELSE
                                 SELF:_Orders:Remove(ntxIndex)
                             ENDIF
                         ENDIF
-                    
+
                     CATCH e AS Exception
                         XSharp.RuntimeState.LastRddError := e
                         isOk := FALSE
@@ -80,8 +82,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     ENDIF
                 ENDIF
                 RETURN isOk
-                
-                
+
+
             INTERNAL METHOD Create(dboci AS DbOrderCreateInfo ) AS LOGIC
                 LOCAL ntxIndex AS NtxOrder
                 LOCAL isOk AS LOGIC
@@ -97,12 +99,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     SELF:_currentOrder := ntxIndex
                     ntxIndex:GoTop()
                     RETURN isOk
-                    
+
                 CATCH e AS Exception
                     System.Diagnostics.Debug.WriteLine(e:Message)
                     RETURN FALSE
                 END TRY
-                
+
             INTERNAL METHOD Delete( orderInfo AS DbOrderInfo) AS LOGIC
                 LOCAL ntxIndex AS NtxOrder
                 LOCAL found AS LOGIC
@@ -129,9 +131,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         EXIT
                     ENDIF
                 ENDDO
-                IF ( found ) 
+                IF ( found )
                     IF ( SELF:_Orders:Count > 0 ) .AND. ( ( pos >= SELF:_focusNtx ) .AND. (pos < SELF:_Orders:Count ) )
-                        SELF:_focusNtx :=- 1
+                        SELF:_focusNtx -= 1
                         SELF:_currentOrder := SELF:_Orders[pos - 1]
                     ELSE
                         SELF:_focusNtx := 0
@@ -139,7 +141,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     ENDIF
                 ENDIF
                 RETURN TRUE
-                
+
             INTERNAL METHOD CloseAll() AS LOGIC
                 LOCAL ntxIndex AS NtxOrder
                 //
@@ -157,8 +159,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_focusNtx := 0
                 SELF:_currentOrder := NULL
                 RETURN TRUE
-                
-                
+
+
             INTERNAL METHOD SetFocus(oi AS DbOrderInfo ) AS LOGIC
                 LOCAL currentOrder AS NtxOrder
                 LOCAL isOk AS LOGIC
@@ -191,7 +193,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     SELF:_oRdd:_dbfError(Subcodes.ERDD_INVALID_ORDER, Gencode.EG_NOORDER,  NULL)
                 ENDIF
                 RETURN isOk
-                
+
           METHOD OrderPos(oToFind AS NtxOrder) AS LONG
                 LOCAL nPos := 0 AS LONG
                 IF oToFind != NULL
@@ -202,7 +204,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         ENDIF
                     NEXT
                 ENDIF
-                RETURN 0                
+                RETURN 0
             INTERNAL METHOD Rebuild() AS LOGIC
                 LOCAL ordCondInfo AS DbOrderCondInfo
                 LOCAL isOk AS LOGIC
@@ -213,7 +215,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     RETURN FALSE
                 ENDIF
                 //
-                FOREACH order AS NtxOrder IN SELF:_Orders 
+                FOREACH order AS NtxOrder IN SELF:_Orders
                     isOk := order:Truncate()
                     IF isOk
                         IF !order:Unique .AND. !order:Conditional .AND. !order:Descending .AND. !ordCondInfo:Scoped
@@ -231,7 +233,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     isOk := SELF:_oRdd:GoTop()
                 ENDIF
                 RETURN isOk
-                
+
             INTERNAL METHOD FindOrder(info AS DbOrderInfo ) AS LONG
                 LOCAL result AS LONG
                 LOCAL num AS LONG
@@ -257,8 +259,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     result := -1
                 END SWITCH
             RETURN result
-            
-            
+
+
         INTERNAL METHOD Flush() AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL i AS LONG
@@ -273,8 +275,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             NEXT
             RETURN isOk
-            
-            
+
+
         INTERNAL METHOD GoCold() AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL i AS LONG
@@ -289,8 +291,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             NEXT
             RETURN isOk
-            
-            
+
+
         INTERNAL METHOD GoHot() AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL i AS LONG
@@ -305,8 +307,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             NEXT
             RETURN isOk
-            
-            
+
+
         PRIVATE METHOD __GetNamePos(orderName AS STRING ) AS LONG
             LOCAL i AS LONG
             LOCAL ntxIndex AS NtxOrder
@@ -320,9 +322,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 NEXT
             ENDIF
             RETURN 0
-            
-            
+
+
     END CLASS
-    
-    
+
+
 END NAMESPACE

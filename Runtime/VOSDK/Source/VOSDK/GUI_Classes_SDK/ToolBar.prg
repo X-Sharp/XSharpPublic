@@ -1,5 +1,5 @@
- 
- 
+
+
  /// <exclude />
 CLASS __VOToolBarChild  INHERIT VObject
 	//RvdH 0702056 Added to replace Child Toolbar Subarray items
@@ -11,16 +11,16 @@ CLASS __VOToolBarChild  INHERIT VObject
 
 
  /// <exclude />
-CONSTRUCTOR() 
+CONSTRUCTOR()
     SUPER()
     RETURN
-    
-    
+
+
 END CLASS
 
 
  /// <exclude />
-CLASS __VOToolBarExtraBitmap INHERIT VObject                     
+CLASS __VOToolBarExtraBitmap INHERIT VObject
 	//RvdH 0702056 Added to replace Toolbar ExtraBitmap subarray items
 	EXPORT Bitmap				AS OBJECT
 	EXPORT ImageCount			AS LONGINT
@@ -29,16 +29,16 @@ CLASS __VOToolBarExtraBitmap INHERIT VObject
 
 
  /// <exclude />
-CONSTRUCTOR() 
+CONSTRUCTOR()
     SUPER()
-    RETURN 
+    RETURN
 
 
 END CLASS
 
 
  /// <exclude />
-CLASS __VOToolBarTipText	INHERIT VObject                                  
+CLASS __VOToolBarTipText	INHERIT VObject
 	//RvdH 0702056 Added to replace Toolbar Tiptext subarray Items
 	EXPORT ButtonID 	AS LONGINT
 	EXPORT MenuItemID	AS LONGINT
@@ -46,16 +46,16 @@ CLASS __VOToolBarTipText	INHERIT VObject
 
 
  /// <exclude />
-CONSTRUCTOR() 
+CONSTRUCTOR()
     SUPER()
-    RETURN 
+    RETURN
 
 
 END CLASS
 
 
  /// <exclude />
-CLASS __VOToolBarUpdate  INHERIT VObject 
+CLASS __VOToolBarUpdate  INHERIT VObject
 	//RvdH 0702056 Added to replace Toolbar ptrUpdate structure elements
 	EXPORT symAction	 	AS SYMBOL
 	EXPORT nButtonID	 	AS LONGINT
@@ -72,15 +72,15 @@ CLASS __VOToolBarUpdate  INHERIT VObject
 
 
  /// <exclude />
-CONSTRUCTOR() 
-    
-    
+CONSTRUCTOR()
+
+
     SUPER()
 
 
 
 
-RETURN 
+RETURN
 END CLASS
 
 
@@ -108,24 +108,24 @@ CLASS ToolBar INHERIT Control
 
 	//PP-030828 Strong typing
  /// <exclude />
-	ACCESS __ButtonStyle AS DWORD STRICT 
+	ACCESS __ButtonStyle AS DWORD STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN nButtonStyle
 
 
  /// <exclude />
-METHOD __CreateToolBar(symTB AS SYMBOL, hwndParent AS PTR, dwID AS DWORD, dwTBStyle AS DWORD) AS PTR STRICT 
+METHOD __CreateToolBar(symTB AS SYMBOL, hwndParent AS PTR, dwID AS DWORD, dwTBStyle AS DWORD) AS PTR STRICT
 	//PP-040914 from S Ebert
 	//SE-050729
 	//RvdH 0702056 Changed to use __VOToolBarChild
 	LOCAL oImagelist   AS ImageList
 	LOCAL hWndTB       AS PTR
 	LOCAL oTB          AS __VOToolBarChild
-	LOCAL sTBAddBitmap IS _winTBAddBitmap          
+	LOCAL sTBAddBitmap IS _winTBAddBitmap
 	LOCAL liTbStyle		 AS LONGINT
 
 
@@ -149,7 +149,7 @@ METHOD __CreateToolBar(symTB AS SYMBOL, hwndParent AS PTR, dwID AS DWORD, dwTBSt
 		IF oTB == NULL_OBJECT
 			oTB			:= __VOToolBarChild{}
 			oTB:NameSym := symTB
-			oTB:Handle 	:= hWndTB 
+			oTB:Handle 	:= hWndTB
 			AAdd(aChildren, oTB)
 		ELSE
 			oTB:Handle:= hWndTB
@@ -189,11 +189,11 @@ METHOD __CreateToolBar(symTB AS SYMBOL, hwndParent AS PTR, dwID AS DWORD, dwTBSt
 	ENDIF
 
 
-	RETURN hWndTB             
+	RETURN hWndTB
 
 
  /// <exclude />
-METHOD __FindExtraBitMap(oBmp AS OBJECT, symTB AS SYMBOL)  AS DWORD STRICT 
+METHOD __FindExtraBitMap(oBmp AS OBJECT, symTB AS SYMBOL)  AS DWORD STRICT
 	//RvdH 070206 Added to centralize location of Extra Bitmaps
 	LOCAL dwIndex, dwCount AS DWORD
 	LOCAL dwResult	AS DWORD
@@ -201,16 +201,16 @@ METHOD __FindExtraBitMap(oBmp AS OBJECT, symTB AS SYMBOL)  AS DWORD STRICT
 	dwCount := ALen(aExtraBitmaps)
 	FOR dwIndex := 1 UPTO dwCount
 		oExtraBitMap	:= aExtraBitmaps[dwIndex]
-		IF oExtraBitMap:Bitmap == oBmp .AND. oExtraBitMap:NameSym == symTB 
+		IF oExtraBitMap:Bitmap == oBmp .AND. oExtraBitMap:NameSym == symTB
 			dwResult := dwIndex
-			EXIT	   	
+			EXIT
 		ENDIF
 	NEXT //dwIndex
-	RETURN dwResult	
+	RETURN dwResult
 
 
  /// <exclude />
-METHOD __FindTipText(nID AS LONGINT, symLookUp AS SYMBOL)  AS DWORD STRICT 
+METHOD __FindTipText(nID AS LONGINT, symLookUp AS SYMBOL)  AS DWORD STRICT
 	//RvdH 070206 Added to centralize location of TipTexts
 	LOCAL dwIndex, dwCount AS DWORD
 	LOCAL dwResult	AS DWORD
@@ -221,7 +221,7 @@ METHOD __FindTipText(nID AS LONGINT, symLookUp AS SYMBOL)  AS DWORD STRICT
 			oText	:= aTipsText[dwIndex]
 			IF oText:ButtonID == nID
 				dwResult := dwIndex
-				EXIT	   	
+				EXIT
 			ENDIF
 		NEXT //dwIndex
 	ELSE
@@ -229,25 +229,25 @@ METHOD __FindTipText(nID AS LONGINT, symLookUp AS SYMBOL)  AS DWORD STRICT
 			oText	:= aTipsText[dwIndex]
 			IF oText:MenuItemID == nID
 				dwResult := dwIndex
-				EXIT	   	
+				EXIT
 			ENDIF
 		NEXT //dwIndex
-	ENDIF		
+	ENDIF
 	RETURN dwResult
 
 
  /// <exclude />
-METHOD __FindToolBar(symTB AS SYMBOL) AS OBJECT STRICT 
+METHOD __FindToolBar(symTB AS SYMBOL) AS OBJECT STRICT
 	//PP-040417 from S Ebert
 	//RvdH 0702056 Changed to use __VOToolBarChild
 	LOCAL idx, iLen AS DWORD
 	LOCAL oChild	AS __VOToolBarChild
-	
-	
+
+
 
 
 	iLen := ALen(aChildren)
-	FOR idx := 1 UPTO iLen        
+	FOR idx := 1 UPTO iLen
 		oChild := aChildren[idx]
 		IF oChild:NameSym == symTB
 			RETURN oChild
@@ -259,7 +259,7 @@ METHOD __FindToolBar(symTB AS SYMBOL) AS OBJECT STRICT
 
 
  /// <exclude />
-METHOD __FindToolBarHandle(symTB AS SYMBOL) AS PTR STRICT 
+METHOD __FindToolBarHandle(symTB AS SYMBOL) AS PTR STRICT
 	//PP-030828 Strong typing
 	//PP-040417 Update from S Ebert
 	//RvdH 0702056 Changed to use __VOToolBarChild
@@ -277,20 +277,20 @@ METHOD __FindToolBarHandle(symTB AS SYMBOL) AS PTR STRICT
 
 
  /// <exclude />
-ACCESS __IsRebar AS LOGIC STRICT 
+ACCESS __IsRebar AS LOGIC STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN (gpfnInitCommonControlsEx != NULL_PTR) .AND. !lOldStyle
 
 
  /// <exclude />
-ACCESS __IsTopAligned AS LOGIC STRICT 
+ACCESS __IsTopAligned AS LOGIC STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	IF (hWnd != NULL_PTR)
@@ -304,10 +304,10 @@ ACCESS __IsTopAligned AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __SetParent(oObject AS OBJECT) AS VOID STRICT 
+METHOD __SetParent(oObject AS OBJECT) AS VOID STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	IF (oObject != NULL_OBJECT)
@@ -326,7 +326,7 @@ METHOD __SetParent(oObject AS OBJECT) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __TryDeferAction(symAction AS SYMBOL, nMenuItemID AS LONGINT, symTB AS SYMBOL) AS __VOToolBarUpdate STRICT 
+METHOD __TryDeferAction(symAction AS SYMBOL, nMenuItemID AS LONGINT, symTB AS SYMBOL) AS __VOToolBarUpdate STRICT
 	//PP-030828 Strong typing
 	//PP-040421 Update from S Ebert
 	//RvdH 070206 Changed to use __VOToolBarUpdate class
@@ -358,7 +358,7 @@ METHOD __TryDeferAction(symAction AS SYMBOL, nMenuItemID AS LONGINT, symTB AS SY
 
 /// <include file="Gui.xml" path="doc/ToolBar.AddBand/*" />
 METHOD AddBand(sBandName, oControl, iPos, iMinWidth, iMinHeight, sText, oForeColor, ;
-		oBackColor, iImageIndex, oBackBitmap) 
+		oBackColor, iImageIndex, oBackBitmap)
 	//PP-040511 Update from S Ebert
 	LOCAL rbBand 			IS _winREBARBANDINFO
 	LOCAL lRet := FALSE 	AS LOGIC
@@ -422,7 +422,7 @@ METHOD AddBand(sBandName, oControl, iPos, iMinWidth, iMinHeight, sText, oForeCol
 	//RvdH 070427 	oControl MUST be a Control (according to docs)
 	//					but we also accept other objects that has a handle (a window)
 	rbBand:hwndChild := oControl:Handle()
-	IF IsAccess(oControl, #ControlID) 
+	IF IsAccess(oControl, #ControlID)
 		rbBand:wID := oControl:ControlID
 	ELSE
 		rbBand:wID := DWORD(100+SendMessage(hWnd, RB_GETBANDCOUNT, 0, 0))
@@ -453,7 +453,7 @@ METHOD AddBand(sBandName, oControl, iPos, iMinWidth, iMinHeight, sText, oForeCol
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.AddSubToolBarBand/*" />
-METHOD AddSubToolBarBand(symToolBar, iPos, iMinWidth, lFlat_dwStyle) 
+METHOD AddSubToolBarBand(symToolBar, iPos, iMinWidth, lFlat_dwStyle)
 	//PP-040505 Update from S Ebert
 	//RvdH 070206 Changed to use __VOToolBarUpdate class
 	LOCAL hwndNewTB   AS PTR
@@ -466,8 +466,8 @@ METHOD AddSubToolBarBand(symToolBar, iPos, iMinWidth, lFlat_dwStyle)
 	LOCAL hFont       AS PTR
 
 
-	
-	
+
+
 
 
 	IF !SELF:__IsRebar
@@ -521,7 +521,7 @@ METHOD AddSubToolBarBand(symToolBar, iPos, iMinWidth, lFlat_dwStyle)
 		rbBand:wID        := 1042U + dwBandCount
 		rbBand:cx         := iMinWidth
 		rbBand:cxMinChild := iMinWidth
-		rbBand:cyMinChild := HiWord(DWORD(_CAST, SendMessage(hWndNewTB, TB_GETBUTTONSIZE, 0, 0))) + IIF(_AND(dwSubStyle, TBSTYLE_FLAT) = TBSTYLE_FLAT,2, 6)
+		rbBand:cyMinChild := HiWord(SendMessage(hWndNewTB, TB_GETBUTTONSIZE, 0, 0)) + (DWORD) IIF(_AND(dwSubStyle, TBSTYLE_FLAT) = TBSTYLE_FLAT,2, 6)
 
 
 		IF SELF:__ButtonStyle != TB_ICONONLY
@@ -557,16 +557,16 @@ METHOD AddSubToolBarBand(symToolBar, iPos, iMinWidth, lFlat_dwStyle)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.AddTipText/*" />
-METHOD AddTipText(nButtonID, nMenuItemID, cText) 
+METHOD AddTipText(nButtonID, nMenuItemID, cText)
 	//RvdH 070206 Changerd to use new __VOToolBarTipText objects
-#ifndef __VULCAN__	
-	LOCAL pszText AS PSZ 
-#endif	
+#ifndef __VULCAN__
+	LOCAL pszText AS PSZ
+#endif
 	LOCAL oTipText AS __VOToolBarTipText
 
 
-	
-	
+
+
 	EnforceNumeric(@nButtonID)
 	EnforceNumeric(@nMenuItemID)
 	EnforceType(@cText,STRING)
@@ -578,18 +578,18 @@ METHOD AddTipText(nButtonID, nMenuItemID, cText)
 		IF nButtonID <= 132
 #ifdef __VULCAN__
          cText := __CavoStr( __WCToolTipOffset + nButtonID )
-#else   
+#else
 			pszText := PSZ(_CAST, MemAlloc(80))
 			IF LoadString(GetNatDllHandle(), __WCToolTipOffset + nButtonID, pszText, 80) != 0
 				cText := Psz2String(pszText)
 			ENDIF
 			MemFree(PTR(_CAST, pszText))
-#endif			
+#endif
 		ENDIF
-	ENDIF                               
+	ENDIF
 	oTipText 				:= __VOToolBarTipText{}
 	oTipText:ButtonID 	:= nButtonID
-	oTipText:MenuItemID 	:= nMenuItemID 
+	oTipText:MenuItemID 	:= nMenuItemID
 	oTipText:TipText		:= cText
 	AAdd(aTipsText, oTipText)
 
@@ -598,9 +598,9 @@ METHOD AddTipText(nButtonID, nMenuItemID, cText)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.AppendItem/*" />
-METHOD AppendItem(nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bState, bStyle, symTB) 
+METHOD AppendItem(nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bState, bStyle, symTB)
 	//PP-040505 Update from S Ebert
-	//SE-050929           
+	//SE-050929
 	//RvdH 070206 Changed to use new __VoToolBarExtraBitmap objects
 	//RvdH 070206 Changed to use __VOToolBarUpdate class
 	LOCAL strucButton 	IS _winTBBUTTON
@@ -612,8 +612,8 @@ METHOD AppendItem(nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bS
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -654,14 +654,14 @@ METHOD AppendItem(nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bS
 						oExtraBitMap:ImageCount := nPosition
 						AAdd(aExtraBitmaps, oExtraBitMap)
 					ELSE
-						oExtraBitMap := aExtraBitmaps[dwIndex]               	
-					ENDIF                        
+						oExtraBitMap := aExtraBitmaps[dwIndex]
+					ENDIF
 					IF oExtraBitMap:NameSym == NULL_SYMBOL
 						strucAddBitmap:hInst 	:= NULL_PTR
 						strucAddBitmap:nID 		:= DWORD(_CAST, oBmp:Handle())
 						nImgCount := Max(nImgCount, oExtraBitMap:ImageCount)
 						oExtraBitMap:FirstImageIndex:= SendMessage(hWndTB, TB_ADDBITMAP, nImgCount, LONGINT(_CAST, @strucAddBitmap))
-						oExtraBitMap:NameSym	:= symTB      
+						oExtraBitMap:NameSym	:= symTB
 					ENDIF
 
 
@@ -701,14 +701,14 @@ METHOD AppendItem(nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bS
                   LOCAL cText AS STRING
                   cText := __CavoStr( __WCToolBarOffset + nButtonID )
 						strucButton:iString := SendMessage(hWndTB, TB_ADDSTRING, 0, LONGINT(_CAST, String2Psz( cText ) ) )
-#else   
+#else
 						pszTitle := PSZ(_CAST, MemAlloc(80))
 						MemSet(pszTitle, 0, 80)
 						IF LoadString(GetNatDllHandle(), __WCToolBarOffset + nButtonID, pszTitle, 80) != 0
 							strucButton:iString := SendMessage(hWndTB, TB_ADDSTRING, 0, LONGINT(_CAST, pszTitle))
 						ENDIF
 						MemFree(pszTitle)
-#endif						
+#endif
 					ENDIF
 				ENDIF
 
@@ -779,17 +779,17 @@ METHOD AppendItem(nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bS
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.AppendSubItem/*" />
-METHOD AppendSubItem(symTB, nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bState, bStyle) 
-	
-	
+METHOD AppendSubItem(symTB, nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bState, bStyle)
+
+
 	// This is only a shortcut for AppendItem
 	RETURN SELF:AppendItem(nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bState, bStyle, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.BandCount/*" />
-ACCESS BandCount 
-	
-	
+ACCESS BandCount
+
+
 
 
 	IF !SELF:__IsRebar
@@ -801,21 +801,21 @@ ACCESS BandCount
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.BandImageList/*" />
-ACCESS BandImageList 
-	
-	
+ACCESS BandImageList
+
+
 
 
 	RETURN oBandImageList
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.BandImageList/*" />
-ASSIGN BandImageList(oImageList) 
+ASSIGN BandImageList(oImageList)
 	LOCAL rbi IS _winREBARINFO
 
 
-	
-	
+
+
 
 
 	IF SELF:__IsRebar
@@ -833,26 +833,26 @@ ASSIGN BandImageList(oImageList)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.Bitmap/*" />
-ACCESS Bitmap 
-	
-	
+ACCESS Bitmap
+
+
 
 
 	RETURN oBitmap
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.Bitmap/*" />
-ASSIGN Bitmap(oNewBitmap) 
+ASSIGN Bitmap(oNewBitmap)
 	//SE-050929
 	LOCAL oBMPSize AS Dimension
 
 
-	
-	
+
+
 
 
 	// Only allow the assign if the control has not yet been created
@@ -876,28 +876,28 @@ ASSIGN Bitmap(oNewBitmap)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.BorderStyle/*" />
-ASSIGN BorderStyle(kBorderStyle) 
+ASSIGN BorderStyle(kBorderStyle)
 	// For CA-Visual Objects 1.0 compatibility only
-	
-	
 
 
-	RETURN 
+
+
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.BoundingBox/*" />
-ACCESS BoundingBox 
+ACCESS BoundingBox
 	LOCAL oBoundingBox AS BoundingBox
 
 
-	
-	
+
+
 
 
 	IF hWnd != NULL_PTR
@@ -917,8 +917,8 @@ METHOD GetButtonCount(symTB)  // dcaton 070215 changed from ACCESS to METHOD, Vu
 	LOCAL symToolBar AS SYMBOL
 
 
-	
-	
+
+
 
 
 	IF (PCount() != 1) .OR. !IsSymbol(symTB)
@@ -940,18 +940,18 @@ METHOD GetButtonCount(symTB)  // dcaton 070215 changed from ACCESS to METHOD, Vu
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.ButtonSize/*" />
-ACCESS ButtonSize 
-	
-	
+ACCESS ButtonSize
+
+
 
 
 	RETURN oButtonSize
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.ButtonSize/*" />
-ASSIGN ButtonSize(oNewButtonSize) 
-	
-	
+ASSIGN ButtonSize(oNewButtonSize)
+
+
 
 
 	// Only allow the assign if the control has not yet been created
@@ -964,17 +964,17 @@ ASSIGN ButtonSize(oNewButtonSize)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.ButtonStyle/*" />
-ASSIGN ButtonStyle(kButtonStyle) 
+ASSIGN ButtonStyle(kButtonStyle)
 
 
-	
-	
+
+
 
 
 	IF (kButtonStyle == TB_ICONONLY) .OR. (kButtonStyle == TB_TEXTONLY) .OR. (kButtonStyle == TB_TEXTANDICON)
@@ -992,37 +992,37 @@ ASSIGN ButtonStyle(kButtonStyle)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.ChangeTipText/*" />
-METHOD ChangeTipText(nID, cText, symLookUp) 
-	//SE-060526       
+METHOD ChangeTipText(nID, cText, symLookUp)
+	//SE-060526
 	//RvdH 070206 Changerd to use new __VOToolBarTipText objects
 	LOCAL dwIndex 	AS DWORD
 	LOCAL oTipText AS __VOToolBarTipText
-	
-	
+
+
 
 
 	Default(@symLookUp, #ButtonID)
 
 
 	dwIndex := SELF:__FindTipText(nID, symLookUp)
-	IF dwIndex > 0    
-		oTipText := aTipsText[dwIndex] 
+	IF dwIndex > 0
+		oTipText := aTipsText[dwIndex]
 		oTipText:TipText := cText
 	ENDIF
 	RETURN dwIndex > 0
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.ClickItem/*" />
-METHOD ClickItem(nMenuItemID, symTB) 
+METHOD ClickItem(nMenuItemID, symTB)
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -1040,13 +1040,13 @@ METHOD ClickItem(nMenuItemID, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.ClientArea/*" />
-ACCESS ClientArea 
+ACCESS ClientArea
 	LOCAL oOwnerArea AS BoundingBox
 	LOCAL oToolBarArea AS BoundingBox
 
 
-	
-	
+
+
 
 
 	IF (hWnd != NULL_PTR) .AND. SELF:IsVisible()
@@ -1067,11 +1067,11 @@ ACCESS ClientArea
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.Configure/*" />
-METHOD Configure() 
+METHOD Configure()
 
 
-	
-	
+
+
 
 
 	/*
@@ -1086,7 +1086,7 @@ METHOD Configure()
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.Create/*" />
-METHOD Create() 
+METHOD Create()
 	//PP-040505 Update from S Ebert
 	//SE-050929
 	//RvdH 070206 Changed to use __VOToolBarUpdate class
@@ -1115,8 +1115,8 @@ METHOD Create()
 				nImageCount := 132
 			ENDIF
 		ENDIF
-		
-		
+
+
 		IF SELF:__IsRebar
 			SELF:SetStyle(_OR(CCS_NORESIZE, CCS_NOPARENTALIGN, CCS_NODIVIDER))
 
@@ -1185,10 +1185,10 @@ METHOD Create()
 
 
 				IF dwUpdateCount > 0
-					
-					
+
+
 					// Apply all buffered changes and reset dwUpdateCount
-					FOR dwCount := 1 UPTO dwUpdateCount 
+					FOR dwCount := 1 UPTO dwUpdateCount
 						oUpdate := SELF:aUpdates[dwCount]
 						DO CASE
 						CASE oUpdate:symAction == #AppendItem
@@ -1205,7 +1205,7 @@ METHOD Create()
 
 
 						CASE oUpdate:symAction == #Rows
-							// SELF:Rows[ oUpdate:symToolBar] := oUpdate:nMenuItemID   dcaton 070316 changed to call new SetRows() method 
+							// SELF:Rows[ oUpdate:symToolBar] := oUpdate:nMenuItemID   dcaton 070316 changed to call new SetRows() method
 							SELF:SetRows( oUpdate:nMenuItemID, oUpdate:symToolBar )
 
 
@@ -1279,13 +1279,13 @@ METHOD Create()
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.DeleteItem/*" />
-METHOD DeleteItem(nMenuItemID, symTB) 
+METHOD DeleteItem(nMenuItemID, symTB)
 	LOCAL liIndex AS LONGINT
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -1322,8 +1322,8 @@ METHOD Destroy()  AS USUAL CLIPPER
 	LOCAL oChild		AS __VOToolBarChild
 
 
-	
-	
+
+
 	// RvdH-030323 Add check for empty toolbar
 
 
@@ -1359,12 +1359,12 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.DimItem/*" />
-METHOD DimItem(nMenuItemID, symTB) 
+METHOD DimItem(nMenuItemID, symTB)
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -1382,7 +1382,7 @@ METHOD DimItem(nMenuItemID, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.DisableItem/*" />
-METHOD DisableItem(nMenuItemID, symTB) 
+METHOD DisableItem(nMenuItemID, symTB)
 	//PP-040421 Update from S Ebert
 	//SE-060520
 	//RvdH 0702056 Changed to use __VOToolBarChild
@@ -1391,8 +1391,8 @@ METHOD DisableItem(nMenuItemID, symTB)
 	LOCAL oChild	AS __VOToolBarChild
 
 
-	
-	
+
+
 
 
 	IF IsSymbol(symTB) .AND. symTB != NULL_SYMBOL
@@ -1407,8 +1407,8 @@ METHOD DisableItem(nMenuItemID, symTB)
 	ELSE
 		IF hWnd != NULL_PTR
 			dwLen := ALen(aChildren)
-			FOR i := 1 UPTO dwLen  
-				oChild :=aChildren[i] 
+			FOR i := 1 UPTO dwLen
+				oChild :=aChildren[i]
 				//SE-070427
 				IF oChild:Handle != NULL_PTR .AND. oChild:oCargo = NULL_OBJECT
 					SendMessage(oChild:Handle, TB_ENABLEBUTTON, nMenuItemID, 0)
@@ -1424,7 +1424,7 @@ METHOD DisableItem(nMenuItemID, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.EnableBands/*" />
-METHOD EnableBands(lEnable) 
+METHOD EnableBands(lEnable)
 
 
 	Default(@lEnable, TRUE)
@@ -1437,17 +1437,17 @@ METHOD EnableBands(lEnable)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.EnableDrag/*" />
-METHOD EnableDrag(lEnable) 
+METHOD EnableDrag(lEnable)
 	// Defer while feature is unavailable
-	
-	
+
+
 
 
 	RETURN NIL
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.EnableItem/*" />
-METHOD EnableItem(nMenuItemID, symTB) 
+METHOD EnableItem(nMenuItemID, symTB)
 	//PP-040421 Update from S Ebert
 	//SE-060520
 	//RvdH 0702056 Changed to use __VOToolBarChild
@@ -1485,18 +1485,18 @@ METHOD EnableItem(nMenuItemID, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.Flat/*" />
-ACCESS Flat 
-	
-	
+ACCESS Flat
+
+
 
 
 	RETURN lFlat
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.Flat/*" />
-ASSIGN Flat(lNewVal) 
-	
-	
+ASSIGN Flat(lNewVal)
+
+
 
 
 	lFlat := lNewVal
@@ -1512,21 +1512,21 @@ ASSIGN Flat(lNewVal)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.GapSize/*" />
-ASSIGN GapSize(nGapSize) 
+ASSIGN GapSize(nGapSize)
 	// For CA-Visual Objects 1.0 compatibility only
-	
-	
+
+
 
 
 	RETURN 0
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.GetButtonDescription/*" />
-METHOD GetButtonDescription(nButtonID, symTB) 
+METHOD GetButtonDescription(nButtonID, symTB)
 	//SE-041015 Fix from S Ebert
 	LOCAL pszText AS PSZ
 	LOCAL cDescription AS STRING
@@ -1534,8 +1534,8 @@ METHOD GetButtonDescription(nButtonID, symTB)
 	LOCAL liLength AS LONGINT
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -1557,7 +1557,7 @@ METHOD GetButtonDescription(nButtonID, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.GetImageList/*" />
-METHOD GetImageList(symType, symTB) 
+METHOD GetImageList(symType, symTB)
 	//PP-040417 from S Ebert
 	//RvdH 0702056 Changed to use __VOToolBarChild
 	LOCAL oTB	  	  AS __VOToolBarChild
@@ -1582,11 +1582,11 @@ METHOD GetImageList(symType, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.GetState/*" />
-METHOD GetState(nMenuItemID, symTB) 
+METHOD GetState(nMenuItemID, symTB)
 	//SE-050701
 	LOCAL hwndTB AS PTR
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -1604,23 +1604,23 @@ METHOD GetState(nMenuItemID, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.GetTipText/*" />
-METHOD GetTipText(nButtonID, symLookUp) 
-	//SE-060526       
+METHOD GetTipText(nButtonID, symLookUp)
+	//SE-060526
 	//RvdH 070206 Changerd to use new __VOToolBarTipText objects
 	LOCAL dwIndex 	AS DWORD
 	LOCAL oTipText AS __VOToolBarTipText
 	LOCAL cResult	AS STRING
-	
-	
+
+
 
 
 	Default(@symLookUp, #ButtonID)
 
 
 	dwIndex := SELF:__FindTipText(nButtonID, symLookUp)
-	IF dwIndex > 0    
-		oTipText := aTipsText[dwIndex] 
-		cResult := oTipText:TipText 
+	IF dwIndex > 0
+		oTipText := aTipsText[dwIndex]
+		cResult := oTipText:TipText
 	ENDIF
 
 
@@ -1628,11 +1628,11 @@ METHOD GetTipText(nButtonID, symLookUp)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.Hide/*" />
-METHOD Hide() 
+METHOD Hide()
 
 
-	
-	
+
+
 
 
 	SUPER:Hide()
@@ -1649,12 +1649,12 @@ METHOD Hide()
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.HideItem/*" />
-METHOD HideItem(nMenuItemID, symTB) 
+METHOD HideItem(nMenuItemID, symTB)
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -1672,10 +1672,10 @@ METHOD HideItem(nMenuItemID, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.ImageCount/*" />
-ACCESS ImageCount 
+ACCESS ImageCount
 	//SE-050729
-	
-	
+
+
 
 
 	IF nImageCount < 0
@@ -1689,10 +1689,10 @@ ACCESS ImageCount
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.ImageCount/*" />
-ASSIGN ImageCount(nNewImageCount) 
+ASSIGN ImageCount(nNewImageCount)
 	//SE-050729
-	
-	
+
+
 
 
 	// Only allow the assign if the control has not yet been created
@@ -1701,11 +1701,11 @@ ASSIGN ImageCount(nNewImageCount)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lEnableBands) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lEnableBands)
 	//SE-050729
 	Default(@xID, 0)
 	Default(@oPoint, Point{})
@@ -1715,7 +1715,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lEnableBands)
 
 	IF IsNil(oOwner)
 		// ToolBar is being created without a parent; don't call super:Init()
-		RegisterAxit(SELF) // TODO: Conditional call to RegisterAxit() should be replaced with call to GC.SuppressFinalize() for opposite condition 
+		RegisterAxit(SELF) // TODO: Conditional call to RegisterAxit() should be replaced with call to GC.SuppressFinalize() for opposite condition
 		oOrigin 	:= Point{oPoint:X, oPoint:Y}
 		oSize 	:= Dimension{oDimension:Width, oDimension:Height}
 		SELF:__ClassName := TOOLBARCLASSNAME
@@ -1759,11 +1759,11 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lEnableBands)
 	aBackBitmaps := {}
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.InsertItem/*" />
-METHOD InsertItem(nButtonID, nMenuItemID, nBeforeID, bState, bStyle, symTB) 
+METHOD InsertItem(nButtonID, nMenuItemID, nBeforeID, bState, bStyle, symTB)
 	//PP-040421 Update from S Ebert
 	//RvdH 070206 Changed to use __VOToolBarUpdate class
 	LOCAL strucButton IS _winTBBUTTON
@@ -1771,8 +1771,8 @@ METHOD InsertItem(nButtonID, nMenuItemID, nBeforeID, bState, bStyle, symTB)
 	LOCAL hWndTB 		AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -1838,14 +1838,14 @@ METHOD InsertItem(nButtonID, nMenuItemID, nBeforeID, bState, bStyle, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.IsClicked/*" />
-METHOD IsClicked(nID, symIDType, symTB) 
+METHOD IsClicked(nID, symIDType, symTB)
 	LOCAL strucButton IS _winTBButton
 	LOCAL dwID AS DWORD
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -1870,14 +1870,14 @@ METHOD IsClicked(nID, symIDType, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.IsDimmed/*" />
-METHOD IsDimmed(nID, symIDType, symTB) 
+METHOD IsDimmed(nID, symIDType, symTB)
 	LOCAL strucButton IS _winTBButton
 	LOCAL dwID AS DWORD
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -1902,14 +1902,14 @@ METHOD IsDimmed(nID, symIDType, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.IsEnabled/*" />
-METHOD IsEnabled(nID, symIDType, symTB) 
+METHOD IsEnabled(nID, symIDType, symTB)
 	LOCAL strucButton IS _winTBButton
 	LOCAL dwID AS DWORD
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -1934,7 +1934,7 @@ METHOD IsEnabled(nID, symIDType, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.IsHidden/*" />
-METHOD IsHidden(nID, symIDType, symTB) 
+METHOD IsHidden(nID, symIDType, symTB)
 	LOCAL strucButton IS _winTBButton
 	LOCAL dwID AS DWORD
 	LOCAL hwndTB AS PTR
@@ -1962,14 +1962,14 @@ METHOD IsHidden(nID, symIDType, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.IsPressed/*" />
-METHOD IsPressed(nID, symIDType, symTB) 
+METHOD IsPressed(nID, symIDType, symTB)
 	LOCAL strucButton IS _winTBButton
 	LOCAL dwID AS DWORD
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -1994,22 +1994,22 @@ METHOD IsPressed(nID, symIDType, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.Location/*" />
-ASSIGN Location(kLocation) 
+ASSIGN Location(kLocation)
 	// Defer while feature is unavailable
-	
-	
 
 
-	RETURN 
+
+
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.PressItem/*" />
-METHOD PressItem(nMenuItemID, symTB) 
+METHOD PressItem(nMenuItemID, symTB)
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -2027,18 +2027,18 @@ METHOD PressItem(nMenuItemID, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.RemoveTipText/*" />
-METHOD RemoveTipText(nButtonID, symLookUp) 
-	//SE-060526      
+METHOD RemoveTipText(nButtonID, symLookUp)
+	//SE-060526
 	LOCAL dwIndex 	AS DWORD
-	
-	
+
+
 
 
 	Default(@symLookUp, #ButtonID)
 
 
 	dwIndex := SELF:__FindTipText(nButtonID, symLookUp)
-	IF dwIndex > 0    
+	IF dwIndex > 0
 		ADel(aTipsText, dwIndex)
 		ASize(aTipsText, ALen(aTipsText) - 1)
 	ENDIF
@@ -2047,7 +2047,7 @@ METHOD RemoveTipText(nButtonID, symLookUp)
 	RETURN dwIndex > 0
 /// <include file="Gui.xml" path="doc/ToolBar.Rows/*" />
 ACCESS Rows             // dcaton 070215 was ACCESS Rows(nRows)
-   RETURN SELF:GetRows()	
+   RETURN SELF:GetRows()
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.GetRows/*" />
@@ -2056,8 +2056,8 @@ METHOD GetRows(symTB)   // dcaton changed from ACCESS to METHOD, Vulcan doesn't 
 	LOCAL symToolBar AS SYMBOL
 
 
-	
-	
+
+
 
 
 	IF (PCount() != 1) .OR. !IsSymbol(symTB)
@@ -2114,17 +2114,17 @@ METHOD SetRows(nRows, symTB)   // dcaton 070215 changed from ASSIGN to METHOD, V
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.SeparatorSize/*" />
-ASSIGN SeparatorSize(nSeparatorSize) 
+ASSIGN SeparatorSize(nSeparatorSize)
 	// For CA-Visual Objects 1.0 compatibility only
-	
-	
+
+
 
 
 	RETURN 0
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.SetImageList/*" />
-METHOD SetImageList(uImageList, symType, symTB) 
+METHOD SetImageList(uImageList, symType, symTB)
 	//PP-040417 from S Ebert
 	//SE-050729
 	//RvdH 0702056 Changed to use __VOToolBarChild
@@ -2168,7 +2168,7 @@ METHOD SetImageList(uImageList, symType, symTB)
 
 		Default(@symTB, #MAINTOOLBAR)
 		oTB := SELF:__FindToolBar(symTB)
-		IF oTB == NULL_OBJECT  
+		IF oTB == NULL_OBJECT
 			oTB	:= __VOToolBarChild{}
 			oTB:NameSym := symTB
 			AAdd(aChildren, oTB)
@@ -2184,10 +2184,10 @@ METHOD SetImageList(uImageList, symType, symTB)
 				oTB:DisabledImageList := oImagelist
 				dwMsg  := TB_SETDISABLEDIMAGELIST
 			ELSE
-				oTB:ImageList := oImagelist				
+				oTB:ImageList := oImagelist
 			ENDIF
 		ELSE
-			oTB:ImageList := oImagelist							
+			oTB:ImageList := oImagelist
 		ENDIF
 
 
@@ -2205,12 +2205,12 @@ METHOD SetImageList(uImageList, symType, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.SetState/*" />
-METHOD SetState(nMenuItemID, nState, symTB) 
+METHOD SetState(nMenuItemID, nState, symTB)
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -2226,9 +2226,9 @@ METHOD SetState(nMenuItemID, nState, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.Show/*" />
-METHOD Show() 
-	
-	
+METHOD Show()
+
+
 
 
 	SUPER:Show()
@@ -2245,9 +2245,9 @@ METHOD Show()
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.ShowBand/*" />
-METHOD ShowBand(iPos, lShow) 
-	
-	
+METHOD ShowBand(iPos, lShow)
+
+
 
 
 	IF !SELF:__IsRebar
@@ -2260,12 +2260,12 @@ METHOD ShowBand(iPos, lShow)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.ShowItem/*" />
-METHOD ShowItem(nMenuItemID, symTB) 
+METHOD ShowItem(nMenuItemID, symTB)
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -2283,12 +2283,12 @@ METHOD ShowItem(nMenuItemID, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.UnClickItem/*" />
-METHOD UnClickItem(nMenuItemID, symTB) 
+METHOD UnClickItem(nMenuItemID, symTB)
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -2306,13 +2306,13 @@ METHOD UnClickItem(nMenuItemID, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.UnDimItem/*" />
-METHOD UnDimItem(nMenuItemID, symTB) 
+METHOD UnDimItem(nMenuItemID, symTB)
 	//PP-040421 Update from S Ebert
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -2330,12 +2330,12 @@ METHOD UnDimItem(nMenuItemID, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.UnPressItem/*" />
-METHOD UnPressItem(nMenuItemID, symTB) 
+METHOD UnPressItem(nMenuItemID, symTB)
 	LOCAL hwndTB AS PTR
 
 
-	
-	
+
+
 
 
 	Default(@symTB, #MAINTOOLBAR)
@@ -2353,10 +2353,10 @@ METHOD UnPressItem(nMenuItemID, symTB)
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.Update/*" />
-METHOD Update() 
+METHOD Update()
 	// Dummy - for CA-Visual Objects 1.0 compatibility only
-	
-	
+
+
 
 
 	RETURN NIL

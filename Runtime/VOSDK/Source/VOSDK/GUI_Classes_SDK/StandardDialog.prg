@@ -1223,7 +1223,7 @@ METHOD Show()
 
 
 	sChooseFont:lpLogFont := @sLogFont
-	sChooseFont:Flags := _OR(lFlags, lTTyFlag, lEffectFlag, lAnsiFlag, lFixPitchFlag)
+	sChooseFont:Flags := (DWORD) _OR(lFlags, lTTyFlag, lEffectFlag, lAnsiFlag, lFixPitchFlag)
 
 
 

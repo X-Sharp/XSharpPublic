@@ -43,7 +43,7 @@ METHOD Recall( cbForBlock := NIL AS USUAL, cbWhileBlock := NIL AS USUAL, uScope 
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL nCurrRec AS LONGINT
+	LOCAL nCurrRec AS DWORD
 	LOCAL lFLock AS LOGIC
 	LOCAL uVoRet AS USUAL
 
@@ -255,7 +255,7 @@ METHOD Refresh() AS LOGIC STRICT
 	LOCAL n AS DWORD
 	LOCAL uInfo AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL nRec AS LONGINT
+	LOCAL nRec AS DWORD
 	LOCAL lRelease AS LOGIC
 
 

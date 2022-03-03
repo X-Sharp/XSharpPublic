@@ -718,7 +718,7 @@ METHOD BLOBExport( uField AS USUAL, cTarget AS STRING, kMode := BLOB_EXPORT_OVER
 	LOCAL wPos AS DWORD
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 
- 
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -798,7 +798,7 @@ METHOD BLOBImport( uField, oFSSource ) AS LOGIC CLIPPER
 	LOCAL wPos AS DWORD
 	LOCAL symFieldName AS SYMBOL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
-	LOCAL nCurRec AS LONGINT
+	LOCAL nCurRec AS DWORD
 	LOCAL xNewVal AS USUAL
 
 
@@ -1262,7 +1262,7 @@ METHOD ConstructUniqueAlias( cFileName := "" AS STRING ) AS STRING
 /// <include file="Rdd.xml" path="doc/DbServer.Continue/*" />
 METHOD Continue( ) AS LOGIC STRICT
 	LOCAL lRetCode AS LOGIC
-	LOCAL nValue AS LONGINT
+	LOCAL nValue AS DWORD
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL oHLTemp AS HyperLabel

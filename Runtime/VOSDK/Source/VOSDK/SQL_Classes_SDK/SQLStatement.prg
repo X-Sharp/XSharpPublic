@@ -923,7 +923,7 @@ METHOD SetStatementOption( fOption, uValue, lUser )
 	//  Sets current setting for a statement option; returns TRUE if successful
 	//
 	LOCAL nRetCode AS INT
-	LOCAL nExist   AS INT
+	LOCAL nExist   AS DWORD
 	LOCAL lRet     AS LOGIC
    LOCAL nOption  AS DWORD
 	

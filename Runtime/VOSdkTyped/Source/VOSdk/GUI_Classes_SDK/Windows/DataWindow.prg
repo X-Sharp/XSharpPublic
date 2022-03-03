@@ -543,7 +543,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	METHOD __RegisterFieldLinks(oDataServer AS DataServer) AS LOGIC STRICT
 		LOCAL oDC AS Control
 		LOCAL dwIndex, dwControls AS DWORD
-		LOCAL siDF AS LONG
+		LOCAL siDF AS DWORD
 
 
 		dwControls := ALen(aControls)
@@ -1383,7 +1383,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN lRetCode
 
 
-	METHOD Destroy() AS USUAL 
+	METHOD Destroy() AS USUAL
 		LOCAL oSubForm AS Window
 
 		IF oAttachedServer != NULL_OBJECT

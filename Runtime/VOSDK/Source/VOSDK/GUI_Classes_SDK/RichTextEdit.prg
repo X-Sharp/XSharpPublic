@@ -12,22 +12,22 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 	//PP-030828 Strong typing
  /// <exclude />
-	ACCESS __StreamPos AS PTR STRICT 
+	ACCESS __StreamPos AS PTR STRICT
 	//PP-030828 Strong typing
 	RETURN pStreamPos
 
 
  /// <exclude />
-ASSIGN __StreamPos(pNewPos AS PTR)  STRICT 
+ASSIGN __StreamPos(pNewPos AS PTR)  STRICT
 	//PP-030828 Strong typing
 	pStreamPos := pNewPos
 
 
-	RETURN 
+	RETURN
 
 
  /// <exclude />
-ASSIGN __Value(uNewVal AS USUAL)  STRICT 
+ASSIGN __Value(uNewVal AS USUAL)  STRICT
 	//PP-030828 Strong typing
 	LOCAL pBufStart AS BYTE PTR
 	LOCAL strucEditStream IS _WinEDITSTREAM
@@ -44,14 +44,14 @@ ASSIGN __Value(uNewVal AS USUAL)  STRICT
 	sVal := uNewVal
 	pBufStart := PTR(_CAST, StringAlloc(sVal))
 	pStreamPos := pBufStart
-	dwType := IIF((Lower(Left(sVal, 5)) == "{\rtf"), SF_RTF, SF_TEXT)
+	dwType := (DWORD) IIF((Lower(Left(sVal, 5)) == "{\rtf"), SF_RTF, SF_TEXT)
 
 
 #ifdef __VULCAN__
    LOCAL gch AS GCHandle
    LOCAL del AS RichEditCallback
-   
-   
+
+
    gch := GCHandle.Alloc( SELF )
 	strucEditStream:dwCookie := (DWORD) GCHandle.ToIntPtr( gch )
 	del := RichEditCallback{ NULL, @__SetRTFValue() }
@@ -60,7 +60,7 @@ ASSIGN __Value(uNewVal AS USUAL)  STRICT
 	RegisterKid(@strucEditStream:dwCookie, 1, FALSE)
 	strucEditStream:dwCookie := DWORD(_CAST, SELF)
 	strucEditStream:pfnCallBack := @__SetRTFValue()
-#endif	
+#endif
 	strucEditStream:dwError := 0
 
 
@@ -68,25 +68,25 @@ ASSIGN __Value(uNewVal AS USUAL)  STRICT
 
 
 	MemFree(pBufStart)
-#ifdef __VULCAN__	
+#ifdef __VULCAN__
    gch:Free()
    GC.KeepAlive( del )
 #else
 	UnRegisterKid(@strucEditStream:dwCookie)
-#endif	
+#endif
 	pStreamPos := 0
 	//RvdH 080212 Make sure uValue is set  (this is used by other methods, such as __Update)
 	SUPER:__Value := uNewVal
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Alignment/*" />
-ACCESS Alignment 
+ACCESS Alignment
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_ALIGNMENT
 	SendMessage(SELF:Handle(), EM_GETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
@@ -96,12 +96,12 @@ ACCESS Alignment
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Alignment/*" />
-ASSIGN Alignment(kAlignment) 
+ASSIGN Alignment(kAlignment)
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -110,16 +110,16 @@ ASSIGN Alignment(kAlignment)
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.BackgroundColor/*" />
-ACCESS BackgroundColor 
+ACCESS BackgroundColor
 	RETURN oBackgroundColor
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Background/*" />
-ASSIGN Background(oBrush) 
+ASSIGN Background(oBrush)
 	LOCAL dwColor AS DWORD
 	dwColor:=__WCGetBrushColor(oBrush)
 	SELF:BackgroundColor:=Color{dwColor,-1}
@@ -128,21 +128,21 @@ ASSIGN Background(oBrush)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.BackgroundColor/*" />
-ASSIGN BackgroundColor(oColor) 
+ASSIGN BackgroundColor(oColor)
 
 
 	oBackgroundColor := oColor
 	SendMessage(SELF:Handle(), EM_SETBKGNDCOLOR, 0, oColor:ColorRef)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.CanPaste/*" />
-METHOD CanPaste(dwClipboardFormat) 
+METHOD CanPaste(dwClipboardFormat)
 	LOCAL dwFormat AS DWORD
-	
-	
+
+
 
 
 	// EM_CANPASTE can be used to test for specific clipboard formats,
@@ -158,7 +158,7 @@ METHOD CanPaste(dwClipboardFormat)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.EnableAdvancedTypography/*" />
-METHOD EnableAdvancedTypography(lEnable) 
+METHOD EnableAdvancedTypography(lEnable)
 	//PP-030910 from S Ebert
 	LOCAL dwOption AS DWORD
 
@@ -173,15 +173,15 @@ METHOD EnableAdvancedTypography(lEnable)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.ControlFont/*" />
-ACCESS ControlFont 
+ACCESS ControlFont
 	//PP-040322 Update from S Ebert
 	LOCAL oFont AS Font
 	LOCAL strucCharFormat IS _winCHARFORMAT
 	LOCAL wFamily AS WORD
 
 
-	
-	
+
+
 
 
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
@@ -226,7 +226,7 @@ ACCESS ControlFont
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.ControlFont/*" />
-ASSIGN ControlFont (oNewFont) 
+ASSIGN ControlFont (oNewFont)
 	LOCAL strucCharFormat IS _winCHARFORMAT
 	LOCAL cFaceName AS STRING
 
@@ -269,13 +269,13 @@ ASSIGN ControlFont (oNewFont)
 	SendMessage(SELF:Handle(), EM_SETCHARFORMAT, SCF_SELECTION, LONGINT(_CAST, @strucCharFormat))
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.GetOption/*" />
-METHOD GetOption(kOption) 
-	
-	
+METHOD GetOption(kOption)
+
+
 
 
 	// check to see if the specified option is set
@@ -283,7 +283,7 @@ METHOD GetOption(kOption)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.GetTabStops/*" />
-METHOD GetTabStops() 
+METHOD GetTabStops()
 	//PP-030910 from S Ebert
 	LOCAL strucParaFormat IS _winPARAFORMAT
 	LOCAL dwTabCount AS DWORD
@@ -322,13 +322,13 @@ METHOD GetTabStops()
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.GetTextRange/*" />
-METHOD GetTextRange(oRange) 
+METHOD GetTextRange(oRange)
 	LOCAL strucTextRange IS _winTextRange
 	LOCAL sRet AS STRING
 
 
-	
-	
+
+
 
 
 	strucTextRange:chrg:cpMin := oRange:Min - 1
@@ -347,9 +347,9 @@ METHOD GetTextRange(oRange)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.GetWordBreak/*" />
-METHOD GetWordBreak(nCharPos, kWordBreakType) 
-	
-	
+METHOD GetWordBreak(nCharPos, kWordBreakType)
+
+
 
 
 	IF kWordBreakType == REGWB_ISDELIMITER
@@ -361,9 +361,9 @@ METHOD GetWordBreak(nCharPos, kWordBreakType)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.HideSelection/*" />
-METHOD HideSelection(lTemporary) 
-	
-	
+METHOD HideSelection(lTemporary)
+
+
 
 
 	DEFAULT(@lTemporary, TRUE)
@@ -376,10 +376,10 @@ METHOD HideSelection(lTemporary)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	//PP-040508 Update S.Ebert
-	
-	
+
+
 
 
 	LoadLibrary(String2Psz("RICHED20.DLL"))
@@ -397,7 +397,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	SendMessage(SELF:Handle(), EM_SETEVENTMASK, 0, LONGINT(_CAST, _OR(ENM_CHANGE, ENM_PROTECTED, ENM_SCROLL, ENM_SELCHANGE, ENM_UPDATE)))
 
 
-	RETURN 
+	RETURN
 	/*
 	Rich Edit version DLL
 	1.0 Riched32.dll
@@ -420,16 +420,16 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.LineFromCharacter/*" />
-METHOD LineFromCharacter(nCharacterPos) 
-	
-	
+METHOD LineFromCharacter(nCharacterPos)
+
+
 
 
 	RETURN SendMessage(SELF:Handle(), EM_EXLINEFROMCHAR, 0, nCharacterPos - 1) + 1
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.LoadFromFile/*" />
-METHOD LoadFromFile(cFileName, dwFormat) 
+METHOD LoadFromFile(cFileName, dwFormat)
 	LOCAL es IS _WINEDITSTREAM
 	LOCAL hFile AS PTR
 	LOCAL dwFmt AS DWORD
@@ -449,15 +449,15 @@ METHOD LoadFromFile(cFileName, dwFormat)
 	IF hFile != F_ERROR
 		es:dwCookie := DWORD(_CAST, hFile)
 		es:dwError := 0
-		
-		
+
+
 #ifdef __VULCAN__
       LOCAL del AS RichEditCallback
 	   del := RichEditCallback{ NULL, @__LoadCallBack() }
       es:pfnCallback := Marshal.GetFunctionPointerForDelegate( (System.Delegate) del )
 #else
 		es:pfnCallback := @__LoadCallback()
-#endif	
+#endif
 
 
 		SendMessage(SELF:handle(), EM_STREAMIN, dwFmt, LONGINT(_CAST, @es)) // tk changed
@@ -479,12 +479,12 @@ METHOD LoadFromFile(cFileName, dwFormat)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Margin/*" />
-METHOD Margin(nStart, nRight, nOffset) 
+METHOD Margin(nStart, nRight, nOffset)
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -499,12 +499,12 @@ METHOD Margin(nStart, nRight, nOffset)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Numbering/*" />
-ACCESS Numbering 
+ACCESS Numbering
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -516,12 +516,12 @@ ACCESS Numbering
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Numbering/*" />
-ASSIGN Numbering(kNumbering) 
+ASSIGN Numbering(kNumbering)
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -530,13 +530,13 @@ ASSIGN Numbering(kNumbering)
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.PasteSpecial/*" />
-METHOD PasteSpecial(dwClipboardFormat) 
-	
-	
+METHOD PasteSpecial(dwClipboardFormat)
+
+
 
 
 	SendMessage(SELF:Handle(), EM_PASTESPECIAL, dwClipboardFormat, 0)
@@ -544,12 +544,12 @@ METHOD PasteSpecial(dwClipboardFormat)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.PrimaryIndent/*" />
-ACCESS PrimaryIndent 
+ACCESS PrimaryIndent
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -563,12 +563,12 @@ ACCESS PrimaryIndent
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.PrimaryIndent/*" />
-ASSIGN PrimaryIndent(nIndent) 
+ASSIGN PrimaryIndent(nIndent)
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -577,11 +577,11 @@ ASSIGN PrimaryIndent(nIndent)
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Print/*" />
-METHOD Print(oPrintingDevice, oRange) 
+METHOD Print(oPrintingDevice, oRange)
 	//PP-040322 Update from S Ebert
 	LOCAL strucFormatRange IS _winFormatRange
 	LOCAL strucPrintDlg IS _winPrintDlg
@@ -593,9 +593,9 @@ METHOD Print(oPrintingDevice, oRange)
 	LOCAL cDeviceName AS STRING
 	LOCAL pszDevice AS PSZ
 	LOCAL pszClassName AS PSZ
-	LOCAL lBanding AS LOGIC 
+	LOCAL lBanding AS LOGIC
 	LOCAL rc1 IS _WINRECT
-	LOCAL rc2 IS _WINRECT      
+	LOCAL rc2 IS _WINRECT
 	LOCAL DIM strucTextLength[2] AS DWORD
 
 
@@ -706,7 +706,7 @@ METHOD Print(oPrintingDevice, oRange)
 	SendMessage(SELF:Handle(), EM_FORMATRANGE, 0, 0L)
 	SetMapMode(hDC, MM_TEXT)
 	WHILE (liTextOut < liTextAmt)
-	   StartPage(hDC)                                              
+	   StartPage(hDC)
 	   //RvdH 070717 Restore rects. They are changed by the RTF control !
 		CopyRect(@strucFormatRange:rc		, @rc1)
 		CopyRect(@strucFormatRange:rcPage, @rc2)
@@ -747,12 +747,12 @@ METHOD Print(oPrintingDevice, oRange)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Protected/*" />
-ACCESS Protected 
+ACCESS Protected
 	LOCAL strucCharFormat IS _winCHARFORMAT
 
 
-	
-	
+
+
 
 
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
@@ -764,7 +764,7 @@ ACCESS Protected
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Protected/*" />
-ASSIGN Protected(lEnable) 
+ASSIGN Protected(lEnable)
 	LOCAL strucCharFormat IS _winCHARFORMAT
 
 
@@ -778,16 +778,16 @@ ASSIGN Protected(lEnable)
 	SendMessage(SELF:Handle(), EM_SETCHARFORMAT, _OR(SCF_SELECTION, SCF_WORD), LONGINT(_CAST, @strucCharFormat))
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.RightMargin/*" />
-ACCESS RightMargin 
+ACCESS RightMargin
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -799,12 +799,12 @@ ACCESS RightMargin
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.RightMargin/*" />
-ASSIGN RightMargin(nRightMargin) 
+ASSIGN RightMargin(nRightMargin)
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -813,11 +813,11 @@ ASSIGN RightMargin(nRightMargin)
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.SaveToFile/*" />
-METHOD SaveToFile(cFileName, dwFormat) 
+METHOD SaveToFile(cFileName, dwFormat)
 	LOCAL hFile AS PTR
 	LOCAL es IS _WINEDITSTREAM
 	LOCAL dwFmt AS DWORD
@@ -849,7 +849,7 @@ METHOD SaveToFile(cFileName, dwFormat)
       es:pfnCallback := Marshal.GetFunctionPointerForDelegate( (System.Delegate) del )
 #else
 		es:pfnCallback := @__SaveCallBack()
-#endif	
+#endif
 
 
 		SendMessage(SELF:handle(), EM_STREAMOUT, dwFmt, LONGINT(_CAST, @es)) // tk changed
@@ -871,12 +871,12 @@ METHOD SaveToFile(cFileName, dwFormat)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.SecondaryIndent/*" />
-ACCESS SecondaryIndent 
+ACCESS SecondaryIndent
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -888,12 +888,12 @@ ACCESS SecondaryIndent
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.SecondaryIndent/*" />
-ASSIGN SecondaryIndent(nIndent) 
+ASSIGN SecondaryIndent(nIndent)
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -902,11 +902,11 @@ ASSIGN SecondaryIndent(nIndent)
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Seek/*" />
-METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp) 
+METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp)
 	//SE-060522
 	LOCAL strucFindTextEx IS _winFindTextEx
 	LOCAL pszText AS PSZ
@@ -914,8 +914,8 @@ METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp)
 	LOCAL liRet   AS LONGINT
 
 
-	
-	
+
+
 
 
    DEFAULT(@lMatchCase,   FALSE)
@@ -961,7 +961,7 @@ METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.SelectedText/*" />
-ACCESS SelectedText 
+ACCESS SelectedText
 	//PP-040508 Update S.Ebert
 	LOCAL strucCharRange IS _winCharRange
 	LOCAL liLength       AS LONGINT
@@ -969,8 +969,8 @@ ACCESS SelectedText
 	LOCAL cText          AS STRING
 
 
-	
-	
+
+
 
 
 	SendMessage(SELF:Handle(), EM_EXGETSEL, 0, LONGINT(_CAST, @strucCharRange))
@@ -1010,12 +1010,12 @@ ACCESS SelectedText
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Selection/*" />
-ACCESS Selection 
+ACCESS Selection
 	LOCAL strucCharRange IS _winCharRange
 
 
-	
-	
+
+
 
 
 	SendMessage(SELF:Handle(), EM_EXGETSEL, 0, LONGINT(_CAST, @strucCharRange))
@@ -1023,7 +1023,7 @@ ACCESS Selection
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Selection/*" />
-ASSIGN Selection(oSelection) 
+ASSIGN Selection(oSelection)
 	LOCAL strucCharRange IS _winCharRange
 
 
@@ -1032,25 +1032,25 @@ ASSIGN Selection(oSelection)
 	SendMessage(SELF:Handle(), EM_EXSETSEL, 0, LONGINT(_CAST, @strucCharRange))
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.SelectionType/*" />
-ACCESS SelectionType 
-	
-	
+ACCESS SelectionType
+
+
 
 
 	RETURN SendMessage(SELF:Handle(), EM_SELECTIONTYPE, 0, 0)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.SetOption/*" />
-METHOD SetOption(kOption, symOperation) 
+METHOD SetOption(kOption, symOperation)
 	LOCAL dwOperation AS DWORD
 
 
-	
-	
+
+
 
 
 	DEFAULT(@symOperation, #Add)
@@ -1081,7 +1081,7 @@ METHOD SetOption(kOption, symOperation)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.SetTabStops/*" />
-METHOD SetTabStops(aTabStops) 
+METHOD SetTabStops(aTabStops)
 	//PP-030910 from S Ebert
 	LOCAL strucParaFormat IS _winPARAFORMAT
 	LOCAL dwTabCount AS DWORD
@@ -1130,9 +1130,9 @@ METHOD SetTabStops(aTabStops)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.ShowSelection/*" />
-METHOD ShowSelection(lTemporary) 
-	
-	
+METHOD ShowSelection(lTemporary)
+
+
 
 
 	DEFAULT(@lTemporary, TRUE)
@@ -1145,12 +1145,12 @@ METHOD ShowSelection(lTemporary)
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.TabStopCount/*" />
-ACCESS TabStopCount 
+ACCESS TabStopCount
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -1162,12 +1162,12 @@ ACCESS TabStopCount
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.TabStopCount/*" />
-ASSIGN TabStopCount(nTabStops) 
+ASSIGN TabStopCount(nTabStops)
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
 
-	
-	
+
+
 
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -1176,17 +1176,17 @@ ASSIGN TabStopCount(nTabStops)
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.TextColor/*" />
-ACCESS TextColor 
+ACCESS TextColor
 	LOCAL strucCharFormat IS _winCHARFORMAT
 	LOCAL oColor AS Color
 
 
-	
-	
+
+
 
 
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
@@ -1203,7 +1203,7 @@ ACCESS TextColor
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.TextColor/*" />
-ASSIGN TextColor(oColor) 
+ASSIGN TextColor(oColor)
 	LOCAL strucCharFormat IS _winCHARFORMAT
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	strucCharFormat:dwMask := CFM_COLOR
@@ -1211,17 +1211,17 @@ ASSIGN TextColor(oColor)
 	SendMessage(SELF:Handle(), EM_SETCHARFORMAT, _OR(SCF_SELECTION, SCF_WORD), LONGINT(_CAST, @strucCharFormat))
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.TextLimit/*" />
-ASSIGN TextLimit(dwTextLimit) 
-	
-	
+ASSIGN TextLimit(dwTextLimit)
+
+
 
 
 	SendMessage(SELF:Handle(), EM_EXLIMITTEXT, 0, dwTextLimit)
-	RETURN 
+	RETURN
 
 
  /// <exclude />
@@ -1253,8 +1253,8 @@ METHOD __GetValue(dwType AS DWORD) AS STRING
 #ifdef __VULCAN__
    LOCAL gch AS System.Runtime.InteropServices.GCHandle
    LOCAL del AS RichEditCallback
-   
-   
+
+
    gch := GCHandle.Alloc( SELF )
 	strucEditStream:dwCookie := (DWORD) GCHandle.ToIntPtr( gch )
 	del := RichEditCallback{ NULL, @__GetRTFValue() }
@@ -1263,7 +1263,7 @@ METHOD __GetValue(dwType AS DWORD) AS STRING
 	RegisterKid(@strucEditStream:dwCookie, 1, FALSE)
 	strucEditStream:dwCookie := DWORD(_CAST, SELF)
 	strucEditStream:pfnCallBack := @__GetRTFValue()
-#endif	
+#endif
 	strucEditStream:dwError := 0
 
 
@@ -1272,12 +1272,12 @@ METHOD __GetValue(dwType AS DWORD) AS STRING
 
 	sReturn := Psz2String(PSZ(_CAST, pBufStart))
 	MemFree(pBufStart)
-#ifdef __VULCAN__	
+#ifdef __VULCAN__
    gch:Free()
    GC.KeepAlive( del )
 #else
 	UnRegisterKid(@strucEditStream:dwCookie)
-#endif	
+#endif
 	pStreamPos := NULL_PTR
 
 
@@ -1285,17 +1285,17 @@ METHOD __GetValue(dwType AS DWORD) AS STRING
 
 
 /// <include file="Gui.xml" path="doc/RichEdit.Value/*" />
-ACCESS Value 
+ACCESS Value
    RETURN SELF:__GetValue(SF_RTF)
-   
-   
+
+
 /// <include file="Gui.xml" path="doc/RichEdit.ValueAsText/*" />
 ACCESS ValueAsText
    RETURN SELF:__GetValue(SF_TEXT)
-   
-   
+
+
 /// <include file="Gui.xml" path="doc/RichEdit.Value/*" />
-ASSIGN Value(uNewValue) 
+ASSIGN Value(uNewValue)
 	RETURN SELF:__Value := uNewValue
 END CLASS
 
@@ -1311,7 +1311,7 @@ FUNCTION __GetRTFValue(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb
    oRTFEdit := (RichEdit) gch:Target
 #else
 	oRTFEdit := OBJECT(_CAST, dwCookie)
-#endif	
+#endif
 	pStreamPos := oRTFEdit:__StreamPos
 
 
@@ -1361,7 +1361,7 @@ FUNCTION __SetRTFValue(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb
    oRTFEdit := (RichEdit) gch:Target
 #else
 	oRTFEdit := OBJECT(_CAST, dwCookie)
-#endif	
+#endif
 	pStreamPos := oRTFEdit:__StreamPos
 
 

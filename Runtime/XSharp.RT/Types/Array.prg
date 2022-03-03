@@ -11,6 +11,18 @@ USING System.Reflection
 USING System.Text
 USING System.Runtime.Serialization
 USING XSharp
+
+#define USEATTRIB
+#ifdef USEATTRIB
+    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
+    #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
+#else
+    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[INLINE\] =>
+    #XTRANSLATE \[NODEBUG\] =>
+#endif
+
 BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the VO Compatible ARRAY type.<br/>
     /// This type has methods and properties that normally are never directly called from user code.
@@ -24,7 +36,7 @@ BEGIN NAMESPACE XSharp
         PRIVATE CONST FoxArrayName := "XSharp.__FoxArray" AS STRING
         INTERNAL PROPERTY __IsFoxArray AS LOGIC GET SELF:GetType():FullName == FoxArrayName
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         INTERNAL STATIC SuppressArrayIndexErrors := FALSE AS LOGIC  // used for Get_Element to emulate strange VO behaviour
 
         /// <inheritdoc />
@@ -66,6 +78,16 @@ BEGIN NAMESPACE XSharp
                     _internalList:Add( USUAL{ element})
                 ENDIF
             NEXT
+            RETURN
+
+        /// <inheritdoc />
+        CONSTRUCTOR( collection AS IEnumerable<USUAL>)
+            SUPER(collection)
+            RETURN
+
+        /// <inheritdoc />
+        CONSTRUCTOR( collection AS IEnumerable<OBJECT>)
+            SELF(collection:ToArray())
             RETURN
 
         #region ISerializable
@@ -192,7 +214,7 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
 
         /// <summary>Returns the default value for array elements when arrays are resized or initialized. This is NIL.</summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+        [HIDDEN];
         PUBLIC OVERRIDE PROPERTY DefaultValue AS USUAL GET NIL
 
         NEW INTERNAL METHOD Swap(position AS INT, element AS USUAL) AS USUAL

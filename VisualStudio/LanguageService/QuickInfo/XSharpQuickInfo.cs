@@ -71,7 +71,7 @@ namespace XSharp.LanguageService
                 // Map the trigger point down to our buffer.
                 ITextSnapshot currentSnapshot = ssp.Snapshot;
                 bool abort = false;
-                var tokens = _textBuffer.GetTokens();
+                var tokens = _textBuffer.GetDocument();
                 if (tokens == null)
                     return null;
                 if (cancellationToken.IsCancellationRequested)
@@ -282,7 +282,7 @@ namespace XSharp.LanguageService
                         list.addPair(xsvs.LocalTypeDesc + " ", var.TypeName.GetXSharpTypeName());
                     }
                 }
-                if (var.IsArray)
+                if (var.IsArray && ! var.TypeName.EndsWith("]"))
                 {
                     list.addText("[] ");
                 }

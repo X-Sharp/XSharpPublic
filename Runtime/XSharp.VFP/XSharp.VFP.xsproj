@@ -14,7 +14,7 @@
     <NS>true</NS>
     <vo15>true</vo15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.9.0.1</XSharpProjectversion>
+    <XSharpProjectversion>2.10.0.3</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -49,8 +49,12 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg" />
-    <Compile Include="..\..\Common\constants.prg" />
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
+      <Link>commonAssemblyInfo.prg</Link>
+    </Compile>
+    <Compile Include="..\..\Common\constants.prg">
+      <Link>constants.prg</Link>
+    </Compile>
     <Compile Include="ArrayFunctions.prg" />
     <Compile Include="Classes\Collection.prg" />
     <Compile Include="Classes\Empty.prg" />
@@ -59,15 +63,19 @@
     <Compile Include="Classes\FoxArray.prg" />
     <Compile Include="ClassFunctions.prg" />
     <Compile Include="BitFunctions.prg" />
+    <Compile Include="Commands.prg" />
     <Compile Include="Cursors\DbFunctions.prg" />
     <Compile Include="Database\DbFunctions.prg" />
+    <Compile Include="DebugFunctions.prg" />
     <Compile Include="Defines.prg" />
     <Compile Include="FileFunctions.prg" />
+    <Compile Include="FinancialFunctions.prg" />
     <Compile Include="FoxCompilerSupport.prg" />
     <Compile Include="GatherScatter.prg" />
     <Compile Include="GetWord.prg" />
     <Compile Include="Keyboard.prg" />
     <Compile Include="NotSupported.prg" />
+    <Compile Include="PrinterFunctions.prg" />
     <Compile Include="SQL\SQLReflection.prg" />
     <Compile Include="SQL\SQLStatement.prg" />
     <Compile Include="SQL\SQLSupport.prg" />
@@ -100,6 +108,7 @@
     <Compile Include="UI\Assert.prg" />
     <Compile Include="UI\AssertDialog.prg" />
     <Compile Include="UI\AutoCloseMessageBox.prg" />
+    <Compile Include="UI\Dialogs.prg" />
     <Compile Include="Win32.prg" />
   </ItemGroup>
   <ItemGroup>

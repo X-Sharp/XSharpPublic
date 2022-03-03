@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -10,6 +10,18 @@ USING System.Runtime.CompilerServices
 USING System.Diagnostics
 USING System.Runtime.Serialization
 #pragma options ("az", ON)
+
+#define USEATTRIB
+#ifdef USEATTRIB
+    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
+    #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
+#else
+    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[INLINE\] =>
+    #XTRANSLATE \[NODEBUG\] =>
+#endif
+
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
     // Type is Immutable, so has no settable properties
@@ -25,25 +37,25 @@ BEGIN NAMESPACE XSharp
         IEquatable<__Binary>, ;
         IComparable,           ;
         ISerializable
-    
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+
+        [HIDDEN];
         PRIVATE INITONLY _value AS BYTE[]
 
         #region constructors
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
         /// <param name="b">Byte[] value that has the bytes that define the binary</param>
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [NODEBUG] [INLINE];
         CONSTRUCTOR (b AS BYTE[])
             IF b == NULL
                 THROW NullError()
             ENDIF
             SELF:_value    := b
-        
+
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
         /// <param name="s">STRING that will be converted to bytes using the current windows codepage.</param>
         /// <remarks>Accented characters and characters outside the current windows codepage may be replaced with a question mark.
         /// and when the current codepage is a so called multi byte codepage than one character may be mapped to more than one byte in the result</remarks>
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [NODEBUG] [INLINE];
         CONSTRUCTOR (s AS STRING)
             IF s == NULL
                 THROW NullError()
@@ -59,21 +71,21 @@ BEGIN NAMESPACE XSharp
             err:Args         := <OBJECT> {NULL}
             RETURN err
 
-        PRIVATE CONSTRUCTOR( lhs AS BYTE[], rhs AS BYTE[]) 
+        PRIVATE CONSTRUCTOR( lhs AS BYTE[], rhs AS BYTE[])
             VAR len := lhs:Length + rhs:Length
             VAR result := BYTE[]{len}
             System.Array.Copy(lhs, result, lhs:Length)
             System.Array.Copy(rhs, 0, result,lhs:Length, rhs:Length)
             _value := result
-            
-            
+
+
         #endregion
         #region Properties
         /// <summary>Binary value as array of Bytes</summary>
         PROPERTY @@Value    AS BYTE[]	GET  IIF (_value == NULL, NULL, (BYTE[]) _value:Clone())
         PROPERTY Length     AS LONG GET iif(_value == NULL, 0, _value:Length)
         #endregion
-        
+
         #region Equality Operators
         /// <inheritdoc />
         OVERRIDE METHOD Equals(rhs AS OBJECT  ) AS LOGIC
@@ -84,7 +96,7 @@ BEGIN NAMESPACE XSharp
                 result := FALSE
             ENDIF
             RETURN result
-            
+
         /// <inheritdoc />
         METHOD Equals(rhs AS __Binary ) AS LOGIC
             IF SELF:Length != rhs:Length
@@ -96,25 +108,25 @@ BEGIN NAMESPACE XSharp
                 ENDIF
             NEXT
             RETURN TRUE
-            
+
             /// <inheritdoc />
         OVERRIDE METHOD GetHashCode() AS INT
             RETURN SELF:_value:GetHashCode()
-            
-            /// <exclude />	
+
+            /// <exclude />
         METHOD GetTypeCode() AS TypeCode
             RETURN TypeCode.Object
-            
-            
+
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR ==(lhs AS __Binary, rhs AS __Binary) AS LOGIC
             RETURN lhs:Equals(rhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR !=(lhs AS __Binary, rhs AS __Binary) AS LOGIC
             RETURN ! lhs:Equals(rhs)
             #endregion
-            
+
         #region Comparison Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR >(lhs AS __Binary, rhs AS __Binary) AS LOGIC
@@ -126,8 +138,8 @@ BEGIN NAMESPACE XSharp
                 RETURN FALSE
             ENDIF
             RETURN lhs:Length > rhs:Length
-            
-            
+
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR <(lhs AS __Binary, rhs AS __Binary) AS LOGIC
             VAR len := Math.Min(lhs:Length,rhs:Length)
@@ -138,7 +150,7 @@ BEGIN NAMESPACE XSharp
                 RETURN FALSE
             ENDIF
             RETURN lhs:Length < rhs:Length
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR >=(lhs AS __Binary, rhs AS __Binary) AS LOGIC
             VAR len := Math.Min(lhs:Length,rhs:Length)
@@ -149,7 +161,7 @@ BEGIN NAMESPACE XSharp
                 RETURN FALSE
             ENDIF
             RETURN lhs:Length >= rhs:Length
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR <=(lhs AS __Binary, rhs AS __Binary) AS LOGIC
             VAR len := Math.Min(lhs:Length,rhs:Length)
@@ -160,40 +172,40 @@ BEGIN NAMESPACE XSharp
                 RETURN FALSE
             ENDIF
             RETURN lhs:Length <= rhs:Length
-            
+
             #endregion
-            
+
         #region Implicit Converters
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(b AS BYTE[]) AS __Binary
             RETURN __Binary{(BYTE[])b:Clone()}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(b AS __Binary) AS BYTE[]
             RETURN b:Value
-            
+
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(bytes AS __Binary) AS STRING
             RETURN RuntimeState.WinEncoding:GetString(bytes:_value)
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        [DebuggerStepThroughAttribute];
+        [NODEBUG];
         STATIC OPERATOR IMPLICIT(s AS STRING) AS __Binary
             RETURN __Binary{ s }
 
             #endregion
-            
+
         #region Numeric Operators
 
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR+(lhs AS __Binary, rhs AS __Binary) AS __Binary
             RETURN __Binary{lhs:_value, rhs:_value}
-            
+
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR+(lhs AS __Binary, rhs AS STRING) AS __Binary
             RETURN __Binary{lhs:_value, RuntimeState.WinEncoding:GetBytes(rhs)}
@@ -207,13 +219,13 @@ BEGIN NAMESPACE XSharp
 
         #endregion
         #region Unary Operators
-            
+
             #endregion
         #region Add and Subtract
-        /// <exclude />	
+        /// <exclude />
         METHOD Add(rhs AS __Binary) AS __Binary
             RETURN SELF + rhs
-            
+
         /// <inheritdoc />
         PUBLIC METHOD CompareTo(rhs AS __Binary) AS INT
             VAR len := Math.Min(SELF:Length,rhs:Length)
@@ -239,7 +251,7 @@ BEGIN NAMESPACE XSharp
         /// <inheritdoc />
         PUBLIC OVERRIDE METHOD ToString() AS STRING
             RETURN SELF:ToString("")
-            
+
         /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
             IF sFormat == "G"
@@ -256,15 +268,15 @@ BEGIN NAMESPACE XSharp
             RETURN SELF:ToString(format)
             #endregion
 
-        INTERNAL METHOD ToDebugString() AS STRING 
+        INTERNAL METHOD ToDebugString() AS STRING
             IF _value == NULL
                RETURN "<uninitialized>"
             ENDIF
             RETURN SELF:ToString("")
- 
+
         #region ISerializable
         /// <inheritdoc/>
-        
+
         PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
             IF info == NULL
                 THROW System.ArgumentException{"info"}
@@ -354,12 +366,12 @@ BEGIN NAMESPACE XSharp
 					RETURN SELF:ToString("")
 				ENDIF
 				THROW NotImplementedException{}
-                
+
 		    METHOD IConvertible.ToString(provider AS System.IFormatProvider) AS STRING
 			    RETURN SELF:ToString("")
-        
+
         #endregion
         */
     END STRUCTURE
-    
+
 END NAMESPACE

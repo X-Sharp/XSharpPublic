@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
+using System.Collections.Generic;
 
 namespace Microsoft.VisualStudio.Project.Automation
 {
@@ -139,8 +140,29 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return null;
+                return new OANavigableProjectItems(this.Project, this.GetListOfProjectItems(), this.Node);
             }
+        }
+
+        #endregion
+
+        #region Helper methods
+        private List<ProjectItem> GetListOfProjectItems()
+        {
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                List<ProjectItem> list = new List<ProjectItem>();
+                for (HierarchyNode child = this.Node.FirstChild; child != null; child = child.NextSibling)
+                {
+                    if (child.Object is ProjectItem prjitem)
+                    {
+                        list.Add(prjitem);
+                    }
+                }
+
+                return list;
+            });
         }
 
         /// <summary>

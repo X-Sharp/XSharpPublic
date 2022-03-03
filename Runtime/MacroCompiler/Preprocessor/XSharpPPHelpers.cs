@@ -12,7 +12,7 @@ namespace XSharp.MacroCompiler.Preprocessor
 {
     using XSharpLexer = TokenType;
     using XSharpToken = Token;
-
+    
 
     enum PPUDCType : byte
     {
@@ -46,14 +46,15 @@ namespace XSharp.MacroCompiler.Preprocessor
         ResultSmartStringify = 0x84,         // <(idMarker)>         
         ResultBlockify = 0x85,               // <{idMarker}>         
         ResultLogify = 0x86,                 // <.idMarker.>
-        ResultOptional = 0x87,               // [....]               
+        ResultNotEmpty = 0x87,               // <!idMarker!>
+        ResultOptional = 0x88,               // [....]               
 
     }
     internal class PPErrorMessages : List<PPErrorMessage>
     {
 
     }
-  
+
     internal class PPErrorMessage
     {
         internal XSharpToken Token { get; private set; }
@@ -70,7 +71,7 @@ namespace XSharp.MacroCompiler.Preprocessor
     internal class PPRules : List<PPRule>
     {
         internal string Key { get; private set; }
-        internal PPRules(string key): base()
+        internal PPRules(string key) : base()
         {
             Key = key;
         }
@@ -105,7 +106,22 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             // find element that matches the first token and insert at the front of the list
             // so rules defined later override rules defined first
-            string key = rule.LookupKey;
+            if (rule.hasMultiKeys)
+            {
+                foreach (var key in rule.Keys)
+                {
+                    addrule(key, rule);
+                }
+            }
+            else
+            {
+                string key = rule.LookupKey;
+                addrule(key, rule);
+            }
+        }
+
+        private void addrule(string key, PPRule rule)
+        {
             PPRules list;
             if (_rules.ContainsKey(key))
             {
@@ -118,7 +134,8 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             list.Insert(0, rule);
         }
-  
+
+
         internal PPRule FindMatchingRule(IList<XSharpToken> tokens, out PPMatchRange[] matchInfo)
         {
             matchInfo = null;
@@ -153,19 +170,14 @@ namespace XSharp.MacroCompiler.Preprocessor
     /// <summary>
     /// This struct holds the start and end location of the tokens in the source 
     /// that match a match marker in a UDC
-    /// Some special meanings are for:
-    /// _start = 0 : Empty
-    /// _start = -1: Missing optional token
-    /// _start = -2: Token
     /// It may also hold a list of MatchRanges, which is the case for List markers
     /// or Repeated markers
     /// </summary>
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal struct PPMatchRange
     {
-
         #region Fields
-        private IList<PPMatchRange> _children ;
+        private IList<PPMatchRange> _children;
         #endregion
         #region Properties
         internal bool IsList { get { return _children != null; } }
@@ -215,7 +227,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 if (start == this.End + 1)
                 {
-                    Length += (end-start)+1;
+                    Length += (end - start) + 1;
                 }
                 else
                 {
@@ -249,7 +261,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 _children.Add(Token(pos));
             }
         }
-        internal void  SetSkipped()
+        internal void SetSkipped()
         {
             Start = -1;
             Length = 0;
@@ -263,9 +275,9 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             return new PPMatchRange() { IsToken = true, Start = pos, Length = 1, _children = null };
         }
-        private static PPMatchRange Create( int start, int end)
+        private static PPMatchRange Create(int start, int end)
         {
-            return new PPMatchRange() { Start = start, Length = end - start +1, _children = null};
+            return new PPMatchRange() { Start = start, Length = end - start + 1, _children = null };
         }
         #endregion
         internal string GetDebuggerDisplay()
@@ -279,12 +291,12 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             if (Start == 0 && Length == 0)
                 return "Empty";
-            if (Start == -1 && Length == 0 )
+            if (Start == -1 && Length == 0)
                 return "Skipped Optional marker";
             if (_children != null)
                 return $"List ({Children.Count}) {Start},{End}";
             else
-                return $"{Start},{End}"; 
+                return $"{Start},{End}";
         }
     }
     /// <summary>
@@ -294,8 +306,8 @@ namespace XSharp.MacroCompiler.Preprocessor
     {
         class PPUsedRule
         {
-            PPRule _rule;
-            IList<XSharpToken> _tokens;
+            readonly PPRule _rule;
+            readonly IList<XSharpToken> _tokens;
             internal PPUsedRule(PPRule rule, IList<XSharpToken> tokens)
             {
                 _rule = rule;
@@ -319,9 +331,10 @@ namespace XSharp.MacroCompiler.Preprocessor
                 return false;
             }
         }
-        List<PPUsedRule> _list;
-        XSharpPreprocessor _pp;
-        int _maxDepth;
+
+        readonly List<PPUsedRule> _list;
+        readonly XSharpPreprocessor _pp;
+        readonly int _maxDepth;
         internal PPUsedRules(XSharpPreprocessor pp, int maxDepth)
         {
             _list = new List<PPUsedRule>();

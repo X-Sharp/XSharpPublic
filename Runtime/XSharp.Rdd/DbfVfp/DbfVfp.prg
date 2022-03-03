@@ -31,6 +31,10 @@ CLASS DBFVFP INHERIT DBFCDX
         IF isOk
             SELF:_SetFoxHeader()
         ENDIF
+        // read fields again so the field flags are correct, since these depend on the FoxPro version in the header
+        // that was just written
+        SELF:_readFieldsHeader()
+
         SELF:_ReadDbcInfo()
         RETURN isOk
 
@@ -95,6 +99,7 @@ CLASS DBFVFP INHERIT DBFCDX
         SELF:_HeaderLength   += VFP_BACKLINKSIZE
         SELF:_writeHeader()
         // Adjust the file size to accomodate the backlink data
+        SELF:_putEndOfFileMarker()
         _oStream:SafeSetLength(SELF:_HeaderLength)
         RETURN
 

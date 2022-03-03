@@ -1,17 +1,17 @@
 // ListBox.prg
 // This file contains subclasses Windows.Forms controls that are used in the VO Compatible
 // Unicode GUI Classes, in particular several TextBox subclasses
-//  
+//
 // Also some On..() methods have been implemented that call the event handlers on the VO Window
 // class that owns the control
 
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
-USING System.Collections.Generic
+USING System.Collections
 
 CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 
-#region fields    
+#region fields
 	PROTECTED lBusy AS LOGIC
 	PROTECTED _lNoVerticalScrollBar:= FALSE AS LOGIC
 	PROTECTED searchString := STRING.Empty AS STRING
@@ -19,15 +19,15 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 #endregion
 
 #region properties
-	PROPERTY ListBox AS VOSDK.ListBox 
-		GET 
-    		RETURN (VOSDK.ListBox) SELF:Control 
+	PROPERTY ListBox AS VOSDK.ListBox
+		GET
+    		RETURN (VOSDK.ListBox) SELF:Control
 		END GET
     END PROPERTY
 
-    NEW PROPERTY Items           AS IList<OBJECT> GET (IList<OBJECT>) SUPER:Items
-    NEW PROPERTY SelectedIndices AS IList<LONG> GET (IList<LONG>) SUPER:SelectedIndices
-    NEW PROPERTY SelectedItems   AS IList<OBJECT> GET (IList<OBJECT>) SUPER:SelectedItems
+    NEW PROPERTY Items           AS IList GET SUPER:Items
+    NEW PROPERTY SelectedIndices AS IList GET SUPER:SelectedIndices
+    NEW PROPERTY SelectedItems   AS IList GET SUPER:SelectedItems
 
 #endregion
 	#include "PropControl.vh"
@@ -42,7 +42,7 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
         SELF:oProperties:OnWndProc += OnWndProc
 
 		RETURN
-		
+
 	METHOD IncrementalSearch( ch AS CHAR) AS LOGIC
 		LOCAL nItem AS INT
 		IF (DateTime.Now - lastKeyPressTime > TimeSpan{0, 0, 1})
@@ -63,12 +63,12 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 			searchString := STRING.Empty
 			lastKeyPressTime := DateTime.MinValue
 			RETURN FALSE
-		ENDIF		
+		ENDIF
 
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SELF(Owner, dwStyle, dwExStyle, FALSE)
-				
+
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG, lHideVerticalScrollBars AS LOGIC)
 		LOCAL lSorted AS LOGIC
 		IF _AND(dwStyle, LBS_SORT) == LBS_SORT
@@ -77,11 +77,11 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 		ENDIF
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
-		SELF:_lNoVerticalScrollBar := lHideVerticalScrollBars 
+		SELF:_lNoVerticalScrollBar := lHideVerticalScrollBars
 		SELF:Sorted:= lSorted
 		SELF:Initialize()
 		SELF:SetVisualStyle()
-		
+
 	VIRTUAL METHOD SetVisualStyle AS VOID STRICT
 		IF oProperties != NULL_OBJECT
 			LOCAL dwStyle AS LONG
@@ -105,9 +105,9 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 
 #endregion
 
-#region Windows Forms Method and Property overrides    
+#region Windows Forms Method and Property overrides
 
-    VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams 
+    VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 
@@ -132,7 +132,7 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 		CATCH
 			RETURN String.Empty
 		END TRY
-		RETURN cRetVal 
+		RETURN cRetVal
 	END GET
 	SET
 		SUPER:Text := Value
@@ -146,7 +146,7 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 		RETURN
 
 
-	PROTECT METHOD OnMouseDoubleClick(e AS MouseEventArgs) AS VOID	
+	PROTECT METHOD OnMouseDoubleClick(e AS MouseEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		LOCAL oEvent AS ControlEvent
 		SUPER:OnMouseDoubleClick(e)
@@ -184,27 +184,27 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 
 
     // This gets called from the WndProc event handler
-	VIRTUAL METHOD OnWndProc(msg REF Message) AS VOID	
+	VIRTUAL METHOD OnWndProc(msg REF Message) AS VOID
 		// Windows forms does not raise a mouse double click event for the right mouse button
 		IF SELF:Control == NULL_OBJECT
 			// do nothing
-		ELSEIF (msg:Msg == WM_RBUTTONDBLCLK) 
+		ELSEIF (msg:Msg == WM_RBUTTONDBLCLK)
 			LOCAL me AS MouseEventArgs
 			me := MouseEventArgs{MouseButtons.Right, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
-			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})				
-		ELSEIF (msg:Msg == WM_MBUTTONDBLCLK) 
+			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})
+		ELSEIF (msg:Msg == WM_MBUTTONDBLCLK)
 			LOCAL me AS MouseEventArgs
 			me := MouseEventArgs{MouseButtons.Middle, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
-			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})				
-		ELSEIF (msg:Msg == WM_XBUTTONDBLCLK) 
+			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})
+		ELSEIF (msg:Msg == WM_XBUTTONDBLCLK)
 			LOCAL me AS MouseEventArgs
 			me := MouseEventArgs{MouseButtons.XButton1, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
-			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})				
+			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})
 		ENDIF
 		RETURN
-	
 
-	
+
+
 END CLASS
 
 CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
@@ -223,7 +223,7 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 		RETURN
 
     NEW PROPERTY AutoCompleteSource AS DWORD GET (DWORD) SUPER:AutoCompleteSource SET SUPER:AutoCompleteSource := (System.Windows.Forms.AutoCompleteSource) VALUE
-    NEW PROPERTY Items           AS IList<OBJECT> GET (IList<OBJECT>) SUPER:Items
+    NEW PROPERTY Items           AS IList GET SUPER:Items
 
 	PROPERTY Text AS STRING
 		GET
@@ -237,16 +237,16 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 						IF SELF:SelectedIndex >= 0 .and. SELF:Items:Count > 0
 							cResult := SUPER:Text
 						ELSE
-							cResult := STRING.Empty				
+							cResult := STRING.Empty
 						ENDIF
 					ELSE
 						cResult := SUPER:Text
 					ENDIF
 				CATCH
-					cResult := STRING.Empty	
+					cResult := STRING.Empty
 				END TRY
 				RETURN cResult
-				
+
 			ENDIF
 		END GET
 		SET
@@ -262,18 +262,18 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 		ENDIF
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
-		SELF:Sorted:= lSorted 
+		SELF:Sorted:= lSorted
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 		SELF:DrawMode := DrawMode.OwnerDrawFixed
 		//SELF:DrawItem += SupportFunctions.comboBox_DrawItem
 
-	
+
 	METHOD SetVisualStyle	 AS VOID STRICT
 		IF SELF:oProperties != NULL_OBJECT
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
 		ENDIF
-	
+
 
 
 
@@ -334,7 +334,7 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 			ENDIF
 		ENDIF
 		RETURN
-		
+
 	VIRTUAL PROTECT METHOD OnGotFocus(e AS EventArgs) AS VOID
 		LOCAL oWindow AS Window
 		LOCAL oEvent AS EditFocusChangeEvent
@@ -365,9 +365,9 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 		ENDIF
 			SUPER:OnSelectedIndexChanged(e)	// This also triggers the Event Handlers
 		RETURN
-	
-	
-	VIRTUAL PROTECT METHOD OnMouseDoubleClick(e AS MouseEventArgs) AS VOID	
+
+
+	VIRTUAL PROTECT METHOD OnMouseDoubleClick(e AS MouseEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		LOCAL oEvent AS ControlEvent
 		SUPER:OnMouseDoubleClick(e)
@@ -376,9 +376,9 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 			oEvent := ControlEvent{SELF:Control}
 			oWindow:ListBoxClick(oEvent)
 		ENDIF
-		RETURN		
+		RETURN
 
-	VIRTUAL PROTECT METHOD OnTextChanged(e AS EventArgs) AS VOID	
+	VIRTUAL PROTECT METHOD OnTextChanged(e AS EventArgs) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnTextChanged(e)
 		IF ! SELF:lBusy .and. oProperties != NULL_OBJECT .and. SELF:ComboBox != NULL_OBJECT .and. !SELF:ComboBox:IsBusy
@@ -386,7 +386,7 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 			TRY
 				SELF:ComboBox:__EditChange()
 				oWindow := (Window) SELF:Control:Owner
-				
+
 				IF oWindow != NULL_OBJECT
 					oWindow:EditChange(ControlEvent{SELF:Control})
 				ENDIF
@@ -394,5 +394,5 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 				SELF:lBusy := FALSE
 			END TRY
 		ENDIF
-		
+
 END CLASS

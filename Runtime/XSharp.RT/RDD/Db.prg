@@ -943,6 +943,7 @@ FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
                 aField := aStruct[i]
                 IF aField[ DBS_TYPE] == "C" .AND. aField[DBS_DEC] != 0
                     aField[DBS_LEN] += aField[DBS_DEC] * 256
+                    aField[DBS_DEC] := 0
                 ENDIF
             NEXT
             DbCreate(cFile1, aStruct, cDriver, lNew, cAlias )

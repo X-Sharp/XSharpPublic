@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -11,19 +11,19 @@ USING XUnit
 USING System.Globalization
 
 
-BEGIN NAMESPACE XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS DateTests
 
 		[Fact, Trait("Category", "Date")];
-		METHOD CTODTest() AS VOID 
+		METHOD CTODTest() AS VOID
 			SetEpoch(1900)
 			SetDateFormat("dd/mm/yyyy")
 			Assert.Equal(2016.01.01 ,CToD("01/01/2016"))
 			Assert.Equal(2016.02.13 ,CToD("13/02/2016"))
 			Assert.Equal(0001.01.02 ,CToD("02/01/0001"))
 			Assert.Equal(1901.01.01 ,CToD("01/01/01"))
-			SetDateFormat("mm/dd/yyyy")	
+			SetDateFormat("mm/dd/yyyy")
 			Assert.Equal(2016.01.01 ,CToD("01/01/2016"))
 			Assert.Equal(2016.02.13 ,CToD("02/13/2016"))
 			Assert.Equal(2016.03.13 ,CToD("03/13/2016"))
@@ -41,11 +41,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True(CToD(Chr(9) + "5 12 2016") == NULL_DATE)
 			Assert.True(CToD("5  12 2016") == NULL_DATE)
 			Assert.True(CToD("5 12  2016") == NULL_DATE)
-			SetDateFormat("mm/dd/yyyy")	
-			
+			SetDateFormat("mm/dd/yyyy")
+
 		RETURN
 
- 		
+
 
 		[Fact, Trait("Category", "Date")];
 		METHOD STODTest() AS VOID
@@ -161,7 +161,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		Assert.True(d2 >= d1)
 		Assert.False(d2 < d1)
 		Assert.False(d2 <= d1)
-		
+
 		VAR d3 := d1
 		Assert.False(d3 > d1)
 		Assert.True(d3 >= d1)
@@ -177,7 +177,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("Freitag",NToCDoW(DoW(CToD("27/05/2016"))))
 			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"nl-NL"}
 			Assert.Equal("vrijdag",NToCDoW(DoW(CToD("27/05/2016"))))
-		
+
 		RETURN
 
 		[Fact, Trait("Category", "Numeric")];
@@ -188,9 +188,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("Juni",NToCMonth((DWORD)6))
 			System.Threading.Thread.CurrentThread:CurrentCulture := CultureInfo{"nl-NL"}
 			Assert.Equal("juni",NToCMonth((DWORD)6))
-		
-		RETURN		
-		
+
+		RETURN
+
 		[Fact, Trait("Category", "Date")];
 		METHOD CoNDateTest() AS VOID
 			LOCAL d1918 AS DATE
@@ -216,7 +216,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			SetEpoch(1919)
 			Assert.Equal(d2018, dtest)
 			SetEpoch(nEpoch)
-		RETURN		
+		RETURN
 		[Fact, Trait("Category", "Date")];
 		METHOD Date2BinTest() AS VOID
 			LOCAL dwDate AS STRING
@@ -232,7 +232,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "Date")];
 		METHOD TStringTest() AS VOID
 		//local r8 as real8
-		//r8 := 12.0 * 60.0*60.0 
+		//r8 := 12.0 * 60.0*60.0
 		//Assert.Equal("12:00:00", Tstring( r8))
 		RETURN
 
@@ -252,57 +252,57 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "Date")];
 		METHOD SetDateCountryTests() AS VOID
 			LOCAL dDate AS DATE
-			
+
 			LOCAL nOld AS DWORD
 			nOld := SetDateCountry()
 
 			dDate := 2000.01.31
-			
+
 			SetCentury(TRUE)
 
 			SetDateCountry(0)
 			Assert.Equal("01/31/2000", DToC(dDate))
-			SetDateCountry(DateCountry.American) 
+			SetDateCountry(DateCountry.American)
 			Assert.Equal("01/31/2000", DToC(dDate))
-			SetDateCountry(DateCountry.Ansi) 
+			SetDateCountry(DateCountry.Ansi)
 			Assert.Equal("2000.01.31", DToC(dDate))
-			SetDateCountry(DateCountry.British) 
+			SetDateCountry(DateCountry.British)
 			Assert.Equal("31/01/2000", DToC(dDate))
-			SetDateCountry(DateCountry.French) 
+			SetDateCountry(DateCountry.French)
 			Assert.Equal("31/01/2000", DToC(dDate))
-			SetDateCountry(DateCountry.German) 
+			SetDateCountry(DateCountry.German)
 			Assert.Equal("31.01.2000", DToC(dDate))
-			SetDateCountry(DateCountry.Italian) 
+			SetDateCountry(DateCountry.Italian)
 			Assert.Equal("31-01-2000", DToC(dDate))
-			SetDateCountry(DateCountry.Japanese) 
+			SetDateCountry(DateCountry.Japanese)
 			Assert.Equal("2000/01/31", DToC(dDate))
-			SetDateCountry(DateCountry.USA) 
+			SetDateCountry(DateCountry.USA)
 			Assert.Equal("01-31-2000", DToC(dDate))
-				 
+
 			SetCentury(FALSE)
 
 			SetDateCountry(0)
 			Assert.Equal("01/31/00", DToC(dDate))
-			SetDateCountry(DateCountry.American) 
+			SetDateCountry(DateCountry.American)
 			Assert.Equal("01/31/00", DToC(dDate))
-			SetDateCountry(DateCountry.Ansi) 
+			SetDateCountry(DateCountry.Ansi)
 			Assert.Equal("00.01.31", DToC(dDate))
-			SetDateCountry(DateCountry.British) 
+			SetDateCountry(DateCountry.British)
 			Assert.Equal("31/01/00", DToC(dDate))
-			SetDateCountry(DateCountry.French) 
+			SetDateCountry(DateCountry.French)
 			Assert.Equal("31/01/00", DToC(dDate))
-			SetDateCountry(DateCountry.German) 
+			SetDateCountry(DateCountry.German)
 			Assert.Equal("31.01.00", DToC(dDate))
-			SetDateCountry(DateCountry.Italian) 
+			SetDateCountry(DateCountry.Italian)
 			Assert.Equal("31-01-00", DToC(dDate))
-			SetDateCountry(DateCountry.Japanese) 
+			SetDateCountry(DateCountry.Japanese)
 			Assert.Equal("00/01/31", DToC(dDate))
-			SetDateCountry(DateCountry.USA) 
+			SetDateCountry(DateCountry.USA)
 			Assert.Equal("01-31-00", DToC(dDate))
-			
+
 			SetDateCountry(nOld)
 			Assert.Equal(nOld, (DWORD)SetDateCountry())
-				 
+
 		[Fact, Trait("Category", "Time")];
 		METHOD ConTimeTest() AS VOID
 			Assert.Equal("13:34:54",ConTime(13,34,54))
@@ -356,26 +356,26 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL n AS INT
 			LOCAL uw AS UInt64
 			LOCAL u AS USUAL
-			
+
             d := 2020.11.10
             dw := 1
             d := d + dw
             Assert.Equal(2020.11.11, d)
             d := d - dw
             Assert.Equal(2020.11.10, d)
-            
+
             n := 2
             d := d + n
             Assert.Equal(2020.11.12, d)
             d := d - n
             Assert.Equal(2020.11.10, d)
-            
+
             uw := 3
             d := d + uw
             Assert.Equal(2020.11.13, d)
             d := d - uw
             Assert.Equal(2020.11.10, d)
-            
+
             u := 4
             d := d + u
             Assert.Equal(2020.11.14, d)

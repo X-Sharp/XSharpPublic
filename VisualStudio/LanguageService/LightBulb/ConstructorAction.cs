@@ -2,31 +2,24 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Imaging.Interop;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using Microsoft.VisualStudio.Text;
 using System.Threading;
 using XSharpModel;
-using System.Reflection;
 using Microsoft.VisualStudio.Text.Editor;
-using XSharp.LanguageService;
-using System.Collections.Immutable;
-using Microsoft.VisualStudio.Text.Adornments;
 using System.Text;
 using System.Linq;
 using XSharp.LanguageService.LightBulb;
 
 namespace XSharp.Project.Editors.LightBulb
 {
-    internal class ConstructorSuggestedAction : ISuggestedAction
+    internal class ConstructorSuggestedAction : CommonAction, ISuggestedAction
     {
-        private readonly ITextSnapshot m_snapshot;
 
-        public ConstructorSuggestedAction(ITextSnapshot snapshot)
+        public ConstructorSuggestedAction(ITextSnapshot snapshot) : base(snapshot)
         {
-            m_snapshot = snapshot;
         }
 
         private readonly ITextView m_textView;
@@ -35,12 +28,9 @@ namespace XSharp.Project.Editors.LightBulb
         private IXTypeSymbol _classEntity;
         private List<IXMemberSymbol> _fieldsNProps;
         private List<string> _existingCtor;
-        private int insertionPoint;
 
-        public ConstructorSuggestedAction(ITextView textView, ITextBuffer textBuffer, IXTypeSymbol classEntity, int insertionLine, List<IXMemberSymbol> members)
+        public ConstructorSuggestedAction(ITextView textView, ITextBuffer textBuffer, IXTypeSymbol classEntity, int insertionLine, List<IXMemberSymbol> members) : base(textView.TextSnapshot)
         {
-            this.m_textView = textView;
-            this.m_snapshot = this.m_textView.TextSnapshot;
             this._textBuffer = textBuffer;
             this._classEntity = classEntity;
             this._insertionLine = insertionLine;
@@ -53,7 +43,7 @@ namespace XSharp.Project.Editors.LightBulb
             this._existingCtor = existingCtor;
         }
 
-        public Task<object> GetPreviewAsync(CancellationToken cancellationToken)
+        public override Task<object> GetPreviewAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -83,16 +73,8 @@ namespace XSharp.Project.Editors.LightBulb
             return Task.FromResult<object>(null);
         }
 
-        public Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken)
-        {
-            return Task.FromResult<IEnumerable<SuggestedActionSet>>(null);
-        }
-
-        public bool HasActionSets
-        {
-            get { return false; }
-        }
-        public string DisplayText
+      
+        public override string DisplayText
         {
             get
             {
@@ -104,42 +86,8 @@ namespace XSharp.Project.Editors.LightBulb
         }
 
 
-        public ImageMoniker IconMoniker
-        {
-            get { return default; }
-        }
-        public string IconAutomationText
-        {
-            get
-            {
-                return null;
-            }
-        }
-        public string InputGestureText
-        {
-            get
-            {
-                return null;
-            }
-        }
-        public bool HasPreview
-        {
-            get { return true; }
-        }
-
-        public void Dispose()
-        {
-        }
-
-        public bool TryGetTelemetryId(out Guid telemetryId)
-        {
-            // This is a sample action and doesn't participate in LightBulb telemetry
-            telemetryId = Guid.Empty;
-            return false;
-        }
-
         // The job is done here !!
-        public void Invoke(CancellationToken cancellationToken)
+        public override void Invoke(CancellationToken cancellationToken)
         {
             try
             {
@@ -179,7 +127,7 @@ namespace XSharp.Project.Editors.LightBulb
                     if (editSession.HasEffectiveChanges)
                     {
                         editSession.Apply();
-                        m_textView.Caret.MoveTo(lastLine.Start);
+                        //m_textView.Caret.MoveTo(lastLine.Start);
                     }
                     else
                     {
@@ -294,20 +242,5 @@ namespace XSharp.Project.Editors.LightBulb
             return result;
         }
 
-        internal void WriteOutputMessage(string strMessage)
-        {
-            if (XSettings.EnableParameterLog && XSettings.EnableLogging)
-            {
-                XSettings.LogMessage("ConstructorSuggestedAction:" + strMessage);
-            }
-        }
-
-
     }
-
-
-
-
-
-
 }

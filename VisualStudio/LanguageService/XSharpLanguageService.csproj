@@ -70,6 +70,8 @@
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
     <Compile Include="Classifier\LineState.cs" />
+    <Compile Include="LightBulb\CommonAction.cs" />
+    <Compile Include="LightBulb\CommonActionProvider.cs" />
     <Compile Include="LightBulb\ConstructorAction.cs" />
     <Compile Include="LightBulb\ConstructorProvider.cs" />
     <Compile Include="LightBulb\CtorParamsDlg.cs">
@@ -166,6 +168,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Parameter Info\SignatureCommandHandler.cs" />
+    <Compile Include="Tokenizer\XDocument.cs" />
     <Compile Include="XSharpLanguagePackage.cs" />
     <Compile Include="Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Parameter Info\SignatureHelpSourceProvider.cs" />
@@ -181,7 +184,6 @@
     <Compile Include="Classifier\XSharpClassifier.cs" />
     <Compile Include="Classifier\XSharpClassifierProvider.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
-    <Compile Include="Tokenizer\XSharpTokens.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -208,7 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.402</Version>
+      <Version>15.0.416</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>
@@ -229,7 +231,7 @@
       <Version>4.3.1</Version>
     </PackageReference>
     <PackageReference Include="VSLangProj150">
-      <Version>15.0.26229</Version>
+      <Version>16.7.30328.74</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

@@ -13,7 +13,7 @@ USING System.Globalization
 DEFINE GLOBAL_FLD := 123
 GLOBAL DEFINE_FLD := "abc"
 
-BEGIN NAMESPACE XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS DbfCdxTests
 
@@ -237,7 +237,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCloseArea()
 
 			DbUseArea( , , cFileName)
-			FieldPut(1 , FLOAT{46.11}) // ! a float isn/t stored !
+			FieldPut(1 , (FLOAT) 46.11) // ! a float isn/t stored !
 			DbCommit()
 			Assert.Equal(46.11 , (FLOAT) FieldGet(1)) // runtime exception
 			DbCloseArea()
@@ -3620,7 +3620,8 @@ RETURN
 			LOCAL cDbf AS STRING
 
 			RddSetDefault("DBFCDX")
-			SetCollation(#CLIPPER)
+			LOCAL uCollation AS USUAL
+			uCollation := SetCollation(#CLIPPER)
 
 			cDBF := GetTempFileName()
 			FErase ( cDbf + IndexExt() )
@@ -3665,6 +3666,7 @@ RETURN
 			NEXT
 
 			DbCloseArea()
+			SetCollation(uCollation)
 		END METHOD
 
 
@@ -3674,7 +3676,8 @@ RETURN
 			LOCAL nCount AS INT
 
 			RddSetDefault("DBFCDX")
-			SetCollation(#CLIPPER)
+			LOCAL uCollation AS USUAL
+			uCollation := SetCollation(#CLIPPER)
 
 			cDBF := GetTempFileName()
 
@@ -3720,6 +3723,7 @@ RETURN
 			END DO
 			Assert.Equal(TRUE , (LOGIC)DbOrderInfo(DBOI_UNIQUE))
 			DbCloseArea()
+			SetCollation(uCollation)
 		END METHOD
 
 
@@ -3734,7 +3738,8 @@ RETURN
 			LOCAL cDbf AS STRING
 
 			RddSetDefault("DBFCDX")
-			SetCollation(#CLIPPER)
+			LOCAL uCollation AS USUAL
+			uCollation := SetCollation(#CLIPPER)
 
 			cDBF := GetTempFileName()
 
@@ -3792,6 +3797,7 @@ RETURN
 			Assert.True((LOGIC) DbOrderInfo(DBOI_UNIQUE))
 
 			DbCloseArea()
+			SetCollation(uCollation)
 		END METHOD
 
         [Fact, Trait("Category", "DBF")];
@@ -5247,7 +5253,7 @@ RETURN
 
 
 		[Fact, Trait("Category", "DBF")];
-		METHOD TestSoftSeek() AS VOID
+		METHOD TestSoftSeekWithScope() AS VOID
 			// https://github.com/X-Sharp/XSharpPublic/issues/905
 			LOCAL cDbf AS STRING
 			cDbf := DbfTests.GetTempFileName()
@@ -5267,13 +5273,13 @@ RETURN
 			Assert.False(DbSeek("BB",FALSE))
 			Assert.True(Eof())
 			Assert.Equal(5U, RecNo())
-			
+
 			DbGoTop()
 			Assert.Equal(2U, RecNo())
 			Assert.False(DbSeek("BB",TRUE))
 			Assert.True(Eof())
 			Assert.Equal(5U, RecNo())
-			
+
 			DbCloseArea()
 		RETURN
 

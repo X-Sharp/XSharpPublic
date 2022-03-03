@@ -36,7 +36,7 @@ namespace XSharp.Project
         {
             this.components = new System.ComponentModel.Container();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.chkEnforceVirtual = new System.Windows.Forms.CheckBox();
+            this.chkEnforceOverride = new System.Windows.Forms.CheckBox();
             this.chkUndefined = new System.Windows.Forms.CheckBox();
             this.chkMemVar = new System.Windows.Forms.CheckBox();
             this.lblMemVar = new System.Windows.Forms.Label();
@@ -72,7 +72,7 @@ namespace XSharp.Project
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.chkEnforceVirtual, 0, 11);
+            this.tableLayoutPanel1.Controls.Add(this.chkEnforceOverride, 0, 11);
             this.tableLayoutPanel1.Controls.Add(this.chkUndefined, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.chkMemVar, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblMemVar, 1, 0);
@@ -98,7 +98,7 @@ namespace XSharp.Project
             this.tableLayoutPanel1.Controls.Add(this.tbStandardDefs, 2, 12);
             this.tableLayoutPanel1.Controls.Add(this.btnStandardHeader, 3, 12);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.tableLayoutPanel1.ForeColor = System.Drawing.Color.Black;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 15;
@@ -120,22 +120,22 @@ namespace XSharp.Project
             this.tableLayoutPanel1.Size = new System.Drawing.Size(699, 457);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // chkEnforceVirtual
+            // chkEnforceOverride
             // 
-            this.chkEnforceVirtual.AutoSize = true;
-            this.chkEnforceVirtual.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.chkEnforceVirtual.Location = new System.Drawing.Point(5, 199);
-            this.chkEnforceVirtual.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
-            this.chkEnforceVirtual.Name = "chkEnforceVirtual";
-            this.chkEnforceVirtual.Size = new System.Drawing.Size(179, 17);
-            this.chkEnforceVirtual.TabIndex = 10;
-            this.chkEnforceVirtual.Text = "Enforce VIRTUAL / OVERRIDE";
-            this.chkEnforceVirtual.UseVisualStyleBackColor = true;
+            this.chkEnforceOverride.AutoSize = true;
+            this.chkEnforceOverride.ForeColor = System.Drawing.Color.Black;
+            this.chkEnforceOverride.Location = new System.Drawing.Point(5, 199);
+            this.chkEnforceOverride.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.chkEnforceOverride.Name = "chkEnforceOverride";
+            this.chkEnforceOverride.Size = new System.Drawing.Size(179, 17);
+            this.chkEnforceOverride.TabIndex = 10;
+            this.chkEnforceOverride.Text = "Enforce VIRTUAL / OVERRIDE";
+            this.chkEnforceOverride.UseVisualStyleBackColor = true;
             // 
             // chkUndefined
             // 
             this.chkUndefined.AutoSize = true;
-            this.chkUndefined.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkUndefined.ForeColor = System.Drawing.Color.Black;
             this.chkUndefined.Location = new System.Drawing.Point(193, 39);
             this.chkUndefined.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkUndefined.Name = "chkUndefined";
@@ -147,7 +147,7 @@ namespace XSharp.Project
             // chkMemVar
             // 
             this.chkMemVar.AutoSize = true;
-            this.chkMemVar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkMemVar.ForeColor = System.Drawing.Color.Black;
             this.chkMemVar.Location = new System.Drawing.Point(193, 19);
             this.chkMemVar.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkMemVar.Name = "chkMemVar";
@@ -160,7 +160,7 @@ namespace XSharp.Project
             // 
             this.lblMemVar.AutoSize = true;
             this.lblMemVar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMemVar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.lblMemVar.ForeColor = System.Drawing.Color.Black;
             this.lblMemVar.Location = new System.Drawing.Point(193, 3);
             this.lblMemVar.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblMemVar.Name = "lblMemVar";
@@ -172,7 +172,7 @@ namespace XSharp.Project
             // 
             this.lblGeneral.AutoSize = true;
             this.lblGeneral.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblGeneral.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.lblGeneral.ForeColor = System.Drawing.Color.Black;
             this.lblGeneral.Location = new System.Drawing.Point(5, 3);
             this.lblGeneral.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblGeneral.Name = "lblGeneral";
@@ -183,7 +183,7 @@ namespace XSharp.Project
             // chkLB
             // 
             this.chkLB.AutoSize = true;
-            this.chkLB.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkLB.ForeColor = System.Drawing.Color.Black;
             this.chkLB.Location = new System.Drawing.Point(5, 19);
             this.chkLB.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkLB.Name = "chkLB";
@@ -195,7 +195,7 @@ namespace XSharp.Project
             // chkUnsafe
             // 
             this.chkUnsafe.AutoSize = true;
-            this.chkUnsafe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkUnsafe.ForeColor = System.Drawing.Color.Black;
             this.chkUnsafe.Location = new System.Drawing.Point(5, 59);
             this.chkUnsafe.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkUnsafe.Name = "chkUnsafe";
@@ -207,7 +207,7 @@ namespace XSharp.Project
             // chkNamedArgs
             // 
             this.chkNamedArgs.AutoSize = true;
-            this.chkNamedArgs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkNamedArgs.ForeColor = System.Drawing.Color.Black;
             this.chkNamedArgs.Location = new System.Drawing.Point(5, 39);
             this.chkNamedArgs.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkNamedArgs.Name = "chkNamedArgs";
@@ -219,7 +219,7 @@ namespace XSharp.Project
             // chkCS
             // 
             this.chkCS.AutoSize = true;
-            this.chkCS.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkCS.ForeColor = System.Drawing.Color.Black;
             this.chkCS.Location = new System.Drawing.Point(5, 79);
             this.chkCS.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkCS.Name = "chkCS";
@@ -231,7 +231,7 @@ namespace XSharp.Project
             // chkInitLocals
             // 
             this.chkInitLocals.AutoSize = true;
-            this.chkInitLocals.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkInitLocals.ForeColor = System.Drawing.Color.Black;
             this.chkInitLocals.Location = new System.Drawing.Point(5, 99);
             this.chkInitLocals.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkInitLocals.Name = "chkInitLocals";
@@ -243,7 +243,7 @@ namespace XSharp.Project
             // chkOvf
             // 
             this.chkOvf.AutoSize = true;
-            this.chkOvf.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkOvf.ForeColor = System.Drawing.Color.Black;
             this.chkOvf.Location = new System.Drawing.Point(5, 119);
             this.chkOvf.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkOvf.Name = "chkOvf";
@@ -255,7 +255,7 @@ namespace XSharp.Project
             // chkAZ
             // 
             this.chkAZ.AutoSize = true;
-            this.chkAZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkAZ.ForeColor = System.Drawing.Color.Black;
             this.chkAZ.Location = new System.Drawing.Point(5, 139);
             this.chkAZ.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkAZ.Name = "chkAZ";
@@ -267,7 +267,7 @@ namespace XSharp.Project
             // chkEnforceSelf
             // 
             this.chkEnforceSelf.AutoSize = true;
-            this.chkEnforceSelf.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkEnforceSelf.ForeColor = System.Drawing.Color.Black;
             this.chkEnforceSelf.Location = new System.Drawing.Point(5, 159);
             this.chkEnforceSelf.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkEnforceSelf.Name = "chkEnforceSelf";
@@ -279,7 +279,7 @@ namespace XSharp.Project
             // chkAllowDot
             // 
             this.chkAllowDot.AutoSize = true;
-            this.chkAllowDot.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkAllowDot.ForeColor = System.Drawing.Color.Black;
             this.chkAllowDot.Location = new System.Drawing.Point(5, 179);
             this.chkAllowDot.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkAllowDot.Name = "chkAllowDot";
@@ -290,8 +290,8 @@ namespace XSharp.Project
             // 
             // tbIncludePath
             // 
-            this.tbIncludePath.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.tbIncludePath.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.tbIncludePath.BackColor = System.Drawing.Color.White;
+            this.tbIncludePath.ForeColor = System.Drawing.Color.Black;
             this.tbIncludePath.Location = new System.Drawing.Point(400, 199);
             this.tbIncludePath.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.tbIncludePath.Name = "tbIncludePath";
@@ -302,7 +302,7 @@ namespace XSharp.Project
             // 
             this.lblIncludePaths.AutoSize = true;
             this.lblIncludePaths.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.lblIncludePaths.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.lblIncludePaths.ForeColor = System.Drawing.Color.Black;
             this.lblIncludePaths.Location = new System.Drawing.Point(193, 199);
             this.lblIncludePaths.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblIncludePaths.Name = "lblIncludePaths";
@@ -312,7 +312,7 @@ namespace XSharp.Project
             // 
             // btnIncludePaths
             // 
-            this.btnIncludePaths.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.btnIncludePaths.ForeColor = System.Drawing.Color.Black;
             this.btnIncludePaths.Location = new System.Drawing.Point(656, 199);
             this.btnIncludePaths.Name = "btnIncludePaths";
             this.btnIncludePaths.Size = new System.Drawing.Size(23, 23);
@@ -324,7 +324,7 @@ namespace XSharp.Project
             // chkNS
             // 
             this.chkNS.AutoSize = true;
-            this.chkNS.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkNS.ForeColor = System.Drawing.Color.Black;
             this.chkNS.Location = new System.Drawing.Point(193, 119);
             this.chkNS.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkNS.Name = "chkNS";
@@ -336,7 +336,7 @@ namespace XSharp.Project
             // chkIns
             // 
             this.chkIns.AutoSize = true;
-            this.chkIns.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkIns.ForeColor = System.Drawing.Color.Black;
             this.chkIns.Location = new System.Drawing.Point(193, 99);
             this.chkIns.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkIns.Name = "chkIns";
@@ -349,7 +349,7 @@ namespace XSharp.Project
             // 
             this.lblNamespaces.AutoSize = true;
             this.lblNamespaces.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNamespaces.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.lblNamespaces.ForeColor = System.Drawing.Color.Black;
             this.lblNamespaces.Location = new System.Drawing.Point(193, 79);
             this.lblNamespaces.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblNamespaces.Name = "lblNamespaces";
@@ -361,7 +361,7 @@ namespace XSharp.Project
             // 
             this.lblPreprocessor.AutoSize = true;
             this.lblPreprocessor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPreprocessor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.lblPreprocessor.ForeColor = System.Drawing.Color.Black;
             this.lblPreprocessor.Location = new System.Drawing.Point(193, 159);
             this.lblPreprocessor.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblPreprocessor.Name = "lblPreprocessor";
@@ -372,7 +372,7 @@ namespace XSharp.Project
             // chkNoStandardDefs
             // 
             this.chkNoStandardDefs.AutoSize = true;
-            this.chkNoStandardDefs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkNoStandardDefs.ForeColor = System.Drawing.Color.Black;
             this.chkNoStandardDefs.Location = new System.Drawing.Point(193, 179);
             this.chkNoStandardDefs.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.chkNoStandardDefs.Name = "chkNoStandardDefs";
@@ -386,7 +386,7 @@ namespace XSharp.Project
             // 
             this.lblStandardDefs.AutoSize = true;
             this.lblStandardDefs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.lblStandardDefs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.lblStandardDefs.ForeColor = System.Drawing.Color.Black;
             this.lblStandardDefs.Location = new System.Drawing.Point(193, 228);
             this.lblStandardDefs.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblStandardDefs.Name = "lblStandardDefs";
@@ -396,8 +396,8 @@ namespace XSharp.Project
             // 
             // tbStandardDefs
             // 
-            this.tbStandardDefs.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.tbStandardDefs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.tbStandardDefs.BackColor = System.Drawing.Color.White;
+            this.tbStandardDefs.ForeColor = System.Drawing.Color.Black;
             this.tbStandardDefs.Location = new System.Drawing.Point(400, 228);
             this.tbStandardDefs.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.tbStandardDefs.Name = "tbStandardDefs";
@@ -406,7 +406,7 @@ namespace XSharp.Project
             // 
             // btnStandardHeader
             // 
-            this.btnStandardHeader.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.btnStandardHeader.ForeColor = System.Drawing.Color.Black;
             this.btnStandardHeader.Location = new System.Drawing.Point(656, 228);
             this.btnStandardHeader.Name = "btnStandardHeader";
             this.btnStandardHeader.Size = new System.Drawing.Size(23, 23);
@@ -457,6 +457,6 @@ namespace XSharp.Project
         private System.Windows.Forms.CheckBox chkAllowDot;
         private System.Windows.Forms.Button btnStandardHeader;
         private System.Windows.Forms.Button btnIncludePaths;
-        private System.Windows.Forms.CheckBox chkEnforceVirtual;
+        private System.Windows.Forms.CheckBox chkEnforceOverride;
     }
 }

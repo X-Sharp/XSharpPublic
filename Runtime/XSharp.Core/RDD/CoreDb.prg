@@ -123,7 +123,11 @@ CLASS XSharp.CoreDb
                     LOCAL dstFld AS RddFieldInfo
                     srcFld := src:GetField(uiSrc)
                     dstFld := dst:GetField(uiDst)
-                    fMatch := uiSrc == uiDst && srcFld:SameType( dstFld )
+                    if srcFld:IsMemo .or. dstFld:IsMemo
+                        fMatch := FALSE
+                    else
+                        fMatch := uiSrc == uiDst && srcFld:SameType( dstFld )
+                    endif
                 ENDIF
             ENDIF
         NEXT
@@ -146,8 +150,8 @@ CLASS XSharp.CoreDb
             LOCAL oCanPutRecTarget AS OBJECT
             oCanPutRecSource := oRdd:Info(DbInfo.DBI_CANPUTREC, NULL)
             oCanPutRecTarget := oDest:Info(DbInfo.DBI_CANPUTREC, NULL)
-            IF oCanPutRecSource IS LOGIC .AND. oCanPutRecTarget IS LOGIC
-                IF (LOGIC) oCanPutRecSource .and. (LOGIC) oCanPutRecTarget
+            IF oCanPutRecSource IS LOGIC VAR lPutSource .AND. oCanPutRecTarget IS LOGIC var lPutTarget
+                IF lPutSource .and. lPutTarget
                     info:Flags |= DbTransInfoFlags.CanPutRec
                 ENDIF
             ENDIF
@@ -806,8 +810,8 @@ CLASS XSharp.CoreDb
         VAR lResult :=  CoreDb.Do( { =>
              LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
              IF oRdd IS Workarea VAR oWa
-                var oCanPut := oWa:Info(DBI_CANPUTREC, NULL)
-                IF oCanPut IS LOGIC VAR lCanPut .and. lCanPut
+                // var oCanPut := oWa:Info(DBI_CANPUTREC, NULL)
+                //IF oCanPut IS LOGIC VAR lCanPut .and. lCanPut
                     LOCAL oFld AS RddFieldInfo
                     oFld := oWa:GetField((LONG) nPos)
                     IF oFld != NULL
@@ -829,10 +833,10 @@ CLASS XSharp.CoreDb
                             ENDIF
                         ENDIF
                     ENDIF
-                ELSE
-                    VAR oError := Error{EG_UNSUPPORTED, __FUNCTION__, "RDD does not support PutRec" }
-                    THROW oError
-                ENDIF
+                //ELSE
+                //    VAR oError := Error{EG_UNSUPPORTED, __FUNCTION__, "RDD does not support PutRec" }
+                //    THROW oError
+                //ENDIF
             ENDIF
             RETURN FALSE
         })

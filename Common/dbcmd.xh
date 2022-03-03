@@ -190,8 +190,10 @@
 #command COPY STRUCTURE EXTENDED TO <(file)>                      		;
       => DbCopyXStruct( <(file)> )
 
-#command COPY STRUCTURE TO <(file)> [FIELDS <fields,...>]           ;
-      => DbCopyStruct( <(file)>, { <(fields)> } )
+
+#command COPY STRUCTURE TO <(file)> [__DBFIELDLIST__ <fields>]          ;
+      => DbCopyStruct( <(file)>, <fields> )
+
 
 #ifndef __DIALECT_FOXPRO__
 

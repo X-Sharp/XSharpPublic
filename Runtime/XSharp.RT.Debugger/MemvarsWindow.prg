@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -20,9 +20,9 @@ BEGIN NAMESPACE XSharp.Debugger
 	/// It uses the public API in the XSharp Runtime to list these variables.
     /// </remarks>
 	/// <seealso cref='M:XSharp.RT.Debugger.Functions.DbgShowMemvars' />
-	
+
 	CLASS MemVarsWindow INHERIT VariablesWindow
- 
+
     CONSTRUCTOR()
          SELF:Text := "XSharp Runtime State - Dynamic Memory Variables for Current Thread"
          RETURN
@@ -47,14 +47,14 @@ BEGIN NAMESPACE XSharp.Debugger
             LOCAL oMIFirst AS MethodInfo
             LOCAL oMINext  AS MethodInfo
             LOCAL oMIGetValue AS MethodInfo
-            LOCAL oType    AS System.Type
+            LOCAL oType     AS System.Type
             oType := oRT:GetType("XSharp.MemVar")
             IF oType != NULL_OBJECT
-                oMIFirst := (MethodInfo) oType:GetMember("PublicsFirst"):First()
-                oMINext := (MethodInfo) oType:GetMember("PublicsNext"):First()
-                oMIGetValue := (MethodInfo) oType:GetMember("Get"):First()
+                oMIFirst    := (MethodInfo) oType:GetMember("DbgPublicsFirst"):First()
+                oMINext     := (MethodInfo) oType:GetMember("DbgPublicsNext"):First()
+                oMIGetValue := (MethodInfo) oType:GetMember("DbgGetVar"):First()
                 IF oMIFirst != NULL .AND. oMINext != NULL .AND. oMIGetValue != NULL
-                    varName := (STRING) oMIFirst:Invoke(NULL,NULL)
+                    varName :=  (STRING) oMIFirst:Invoke(NULL,NULL)
                     DO WHILE ! String.IsNullOrEmpty(varName)
                         VAR oValue := oMIGetValue:Invoke(NULL, <OBJECT>{varName})
                         LOCAL sValue AS STRING
@@ -67,14 +67,14 @@ BEGIN NAMESPACE XSharp.Debugger
                         oItem:Text := varName
                         oItem:SubItems:Add(sValue)
                         oItem:Group := oGroupPublics
-                        varName := (STRING) oMINext:Invoke(NULL,NULL)
+                        varName :=  (STRING) oMINext:Invoke(NULL,NULL)
                         SELF:variablesListView:Items:Add(oItem)
                     ENDDO
                 ENDIF
-                oMIFirst := (MethodInfo) oType:GetMember("PrivatesFirst"):First()
-                oMINext := (MethodInfo) oType:GetMember("PrivatesNext"):First()
+                oMIFirst := (MethodInfo) oType:GetMember("DbgPrivatesFirst"):First()
+                oMINext  := (MethodInfo) oType:GetMember("DbgPrivatesNext"):First()
                 IF oMIFirst != NULL .AND. oMINext != NULL .AND. oMIGetValue != NULL
-                    varName := (STRING) oMIFirst:Invoke(NULL,<OBJECT>{FALSE})
+                    varName := (STRING) oMIFirst:Invoke(NULL,NULL)
                     DO WHILE ! String.IsNullOrEmpty(varName)
                         VAR oValue := oMIGetValue:Invoke(NULL, <OBJECT>{varName})
                         LOCAL sValue AS STRING
@@ -103,7 +103,7 @@ BEGIN NAMESPACE XSharp.Debugger
         SELF:variablesListView:Sort()
         SELF:variablesListView:AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
         SELF:variablesListView:AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
-        
+
         RETURN
 
 	END CLASS

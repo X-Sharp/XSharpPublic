@@ -849,7 +849,7 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
             RETURN String.Empty
         CASE Set.Default
         CASE Set.DefaultDir
-            RETURN System.Environment.CurrentDirectory
+            RETURN ""
 
         CASE Set.DirSeparator
             RETURN System.IO.Path.DirectorySeparatorChar:ToString()

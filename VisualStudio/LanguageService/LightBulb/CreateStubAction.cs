@@ -12,7 +12,7 @@ using System.Windows.Media;
 using Microsoft.VisualStudio.Text;
 using System.Threading;
 
-namespace XSharp.LanguageService.Editors.LightBulb
+namespace XSharp.Project.Editors.LightBulb
 {
     internal class CreateStubSuggestedAction : ISuggestedAction
     {
@@ -21,8 +21,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         private string m_display;
         private ITextSnapshot m_snapshot;
 
-        public CreateStubSuggestedAction(ITrackingSpan span)
-        {
+        public CreateStubSuggestedAction(ITrackingSpan span)         {
             m_span = span;
             m_snapshot = span.TextBuffer.CurrentSnapshot;
             m_upper = span.GetText(m_snapshot).ToUpper();

@@ -12,7 +12,7 @@ USING System.Globalization
 USING System.Threading
 USING System.IO
 
-BEGIN NAMESPACE XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS DbfTests
 
@@ -44,6 +44,35 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True(  DbCreate(cFileName_WithExt , aFields , "DBFNTX")  )
 			Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
 		RETURN
+
+		[Fact, Trait("Category", "DBFFuncs")];
+		METHOD testInputBufferDeletedWhenClosed AS VOID
+            LOCAL cDbf AS STRING
+            local cCopy as STRING
+            cDbf := "test.dbf"
+            cCopy := System.IO.Path.ChangeExtension(cDbf, "TMP")
+            RddSetDefault("DBFNTX")
+
+            DbCreate(cDbf,{{"FLD","N",5,0}})
+
+            DbUseArea(TRUE,,cDbf)
+            DbAppend()
+            FieldPut(1,1)
+            DbAppend()
+            FieldPut(1,2)
+            DbCloseArea()
+            System.IO.File.Copy(cDbf, cCopy, true)
+            DbUseArea(TRUE,,cDbf)
+            Assert.Equal(1, (int) FieldGet(1))
+            FieldPut(1,3)
+            Assert.Equal(3, (int) FieldGet(1))
+            DbCloseArea()
+            System.IO.File.Copy(cCopy, cDbf, true)
+            DbUseArea(TRUE,,cDbf)
+            // field 1 should be 1 and not 3
+            Assert.Equal(1, (int) FieldGet(1))
+            DbCloseArea()
+
 
 		[Fact, Trait("Category", "DBFFuncs")];
 		METHOD DBAppend_Exclusive() AS VOID
@@ -563,7 +592,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBError_test() AS VOID
 			LOCAL cDbf AS STRING
-			
+
 			LOCAL FUNCTION _Throw(oError AS Exception) AS VOID
 				THROW oError
 			END FUNCTION
@@ -1412,6 +1441,63 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			dbt1->DbCloseArea()
 			dbt2->DbCloseArea()
 
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD CreateFromTestsDBFNTX() AS VOID
+         // https://github.com/X-Sharp/XSharpPublic/issues/917
+            RddSetDefault ( "DBFNTX" ) // DBFNTX
+            _CreateFromTests()
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD CreateFromTestsDBFCDX() AS VOID
+         // https://github.com/X-Sharp/XSharpPublic/issues/917
+            RddSetDefault ( "DBFCDX" ) // DBFNTX
+            _CreateFromTests()
+        METHOD _CreateFromTests() AS VOID
+            LOCAL cDbf, cDbf2, cDbf3 as STRING
+            LOCAL aStruct as ARRAY
+	        cDbf := GetTempFileName()
+            cDbf2 := GetTempFileName()
+            cDbf3 := GetTempFileName()
+
+	        Assert.True(DbCreate( cDBF , { { "LAST" , "C" , 1025 , 0 }}))
+	        Assert.True(DbUseArea( ,, cDbf ))
+            aStruct := DbStruct()
+	        Assert.True(1 == aStruct:Length)
+            Assert.True("LAST" == aStruct[1,1])
+            Assert.True("C" == aStruct[1,2])
+            Assert.True(1025 == aStruct[1,3])
+            Assert.True(0 == aStruct[1,4])
+	        ?
+//	        // same as COPY STRUCTURE EXTENDED TO
+	        Assert.True(DbCopyXStruct( cDbf2 ))
+
+	        Assert.True(DbCloseArea())
+
+            Assert.True(DbUseArea( ,, cDbf2 ))
+
+	        Assert.True(1 == LastRec())
+            Assert.True("LAST" == Trim(FieldGet(1)))
+            Assert.True("C" == FieldGet(2))
+            Assert.True(1 == FieldGet(3))
+            Assert.True(4 == FieldGet(4))
+            Assert.True(DbCloseArea())
+
+ 	        Assert.True(_DbCreate( cDbf3 , cDbf2 )) // -> falls back to DBCreate() etc.
+	        DbCloseArea()
+
+            DbUseArea( ,, cDbf3 )
+            aStruct := DbStruct()
+	        Assert.True(1 == aStruct:Length)
+            Assert.True("LAST" == aStruct[1,1])
+            Assert.True("C" == aStruct[1,2])
+            Assert.True(1025 == aStruct[1,3])
+            Assert.True(0 == aStruct[1,4])
+
+
+	        DbCloseArea()
+
+	        RETURN
 
 
 		STATIC INTERNAL METHOD GetTempFileName() AS STRING

@@ -12,14 +12,14 @@ CLASS ListView INHERIT TextControl
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __CreateDragImageList(nItem AS DWORD) AS OBJECT STRICT 
+	METHOD __CreateDragImageList(nItem AS DWORD) AS OBJECT STRICT
 	//PP-030828 Strong typing
 	LOCAL hImageList AS PTR
 	LOCAL strucPoint IS _winPoint
 
 
-	
-	
+
+
 
 
 	// create an ImageList handle from a ListView item
@@ -34,13 +34,13 @@ CLASS ListView INHERIT TextControl
 
 
  /// <exclude />
-METHOD __GetColumnFromIndex(nColumn AS DWORD) AS ListViewColumn 
+METHOD __GetColumnFromIndex(nColumn AS DWORD) AS ListViewColumn
 	//PP-030828 Strong typing
 	RETURN aColumns[nColumn]
 
 
  /// <exclude />
-METHOD __GetColumnIndexFromSymbol(symColumnName AS SYMBOL) AS DWORD STRICT 
+METHOD __GetColumnIndexFromSymbol(symColumnName AS SYMBOL) AS DWORD STRICT
 	//PP-030828 Strong typing
 	LOCAL dwIndex, iLen AS DWORD
 	LOCAL oColumn AS ListViewColumn
@@ -61,7 +61,7 @@ METHOD __GetColumnIndexFromSymbol(symColumnName AS SYMBOL) AS DWORD STRICT
 
 
  /// <exclude />
-METHOD __SetItem(strucItem AS _winLV_Item, oLVItem AS ListViewItem) AS VOID STRICT 
+METHOD __SetItem(strucItem AS _winLV_Item, oLVItem AS ListViewItem) AS VOID STRICT
 	//SE-060523
 	LOCAL nIndex AS INT
 	LOCAL dwIndex AS DWORD
@@ -135,8 +135,8 @@ METHOD __SetItem(strucItem AS _winLV_Item, oLVItem AS ListViewItem) AS VOID STRI
 			ENDIF
 		ENDIF
 	NEXT  // dwIndex
-   
-   
+
+
    dwIndex := DWORD(nIndex)
 	// set the state and overlay images
 	ListView_SetItemState(hHandle, dwIndex, INDEXTOSTATEIMAGEMASK(oLVItem:StateImageIndex), LVIS_STATEIMAGEMASK)
@@ -154,26 +154,26 @@ METHOD __SetItem(strucItem AS _winLV_Item, oLVItem AS ListViewItem) AS VOID STRI
 
 
  /// <exclude />
-ACCESS __SortRoutineName AS SYMBOL STRICT 
+ACCESS __SortRoutineName AS SYMBOL STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN symSortRoutineName
 
 
 /// <include file="Gui.xml" path="doc/ListView.AddColumn/*" />
-METHOD AddColumn(oListViewColumn) 
-	
-	
+METHOD AddColumn(oListViewColumn)
+
+
 
 
 	RETURN SELF:InsertColumn(oListViewColumn)
 
 
 /// <include file="Gui.xml" path="doc/ListView.AddGroup/*" />
-METHOD AddGroup(iGroupId,cGroupName,dwAlign) 
+METHOD AddGroup(iGroupId,cGroupName,dwAlign)
 	//PP-030909
 	// Listview groups require XP visual styles
 	LOCAL pLVGroup IS _WinLVGroup
@@ -201,24 +201,24 @@ METHOD AddGroup(iGroupId,cGroupName,dwAlign)
 
 
 /// <include file="Gui.xml" path="doc/ListView.AddItem/*" />
-METHOD AddItem(oListViewItem) 
-	
-	
+METHOD AddItem(oListViewItem)
+
+
 
 
 	RETURN SELF:InsertItem(oListViewItem)
 
 
 /// <include file="Gui.xml" path="doc/ListView.Arrange/*" />
-METHOD Arrange(kAlignment) 
+METHOD Arrange(kAlignment)
 	RETURN LOGIC(_CAST, SendMessage(SELF:Handle(), LVM_ARRANGE, DWORD(kAlignment), 0))
 
 
 /// <include file="Gui.xml" path="doc/ListView.BackgroundColor/*" />
-ACCESS BackgroundColor 
+ACCESS BackgroundColor
 	LOCAL oColor AS Color
-	
-	
+
+
 	//PP-031001: Fix color assignment
 	oColor := Color{}
 	oColor:ColorRef := ListView_GetBkColor(SELF:Handle())
@@ -226,36 +226,36 @@ ACCESS BackgroundColor
 
 
 /// <include file="Gui.xml" path="doc/ListView.BackgroundColor/*" />
-ASSIGN BackgroundColor(oBackgroundColor) 
+ASSIGN BackgroundColor(oBackgroundColor)
 	ListView_SetBkColor(SELF:Handle(), oBackgroundColor:ColorRef)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListView.CheckBoxes/*" />
-ACCESS CheckBoxes 
+ACCESS CheckBoxes
 	RETURN SELF:GetExLVStyle(LVS_EX_CHECKBOXES)
 
 
 /// <include file="Gui.xml" path="doc/ListView.CheckBoxes/*" />
-ASSIGN CheckBoxes(lNewVal) 
+ASSIGN CheckBoxes(lNewVal)
 	RETURN SELF:SetExLVStyle(LVS_EX_CHECKBOXES, lNewVal)
 
 
 /// <include file="Gui.xml" path="doc/ListView.ColumnCount/*" />
-ACCESS ColumnCount 
+ACCESS ColumnCount
 	RETURN ALen(aColumns)
 
 
 /// <include file="Gui.xml" path="doc/ListView.ColumnOrderArray/*" />
-ACCESS ColumnOrderArray 
+ACCESS ColumnOrderArray
 	LOCAL iLen, i AS INT
 	LOCAL _pi, pt AS INT PTR
 	LOCAL aRet := {} AS ARRAY
 	LOCAL oColumn   AS ListViewColumn
 
 
-	
-	
+
+
 
 
 	iLen := INT(_CAST, ALen(aColumns))
@@ -278,7 +278,7 @@ ACCESS ColumnOrderArray
 
 
 /// <include file="Gui.xml" path="doc/ListView.ColumnOrderArray/*" />
-ASSIGN ColumnOrderArray(aNew) 
+ASSIGN ColumnOrderArray(aNew)
 	//SE-060526
 	LOCAL dwJ AS DWORD
 	LOCAL _pi, pt AS INT PTR
@@ -286,8 +286,8 @@ ASSIGN ColumnOrderArray(aNew)
 	LOCAL dwCount AS DWORD
 
 
-	
-	
+
+
 
 
 	dwCount := ALen(aColumns)
@@ -317,17 +317,17 @@ ASSIGN ColumnOrderArray(aNew)
 	InvalidateRect(hWnd, NULL_PTR, TRUE)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListView.CurrentView/*" />
-ACCESS CurrentView 
+ACCESS CurrentView
 	LOCAL dwView AS DWORD
 	LOCAL dwStyles AS DWORD
 
 
-	
-	
+
+
 
 
 	// get the current style
@@ -357,12 +357,12 @@ ACCESS CurrentView
 
 
 /// <include file="Gui.xml" path="doc/ListView.DeleteAll/*" />
-METHOD DeleteAll() 
+METHOD DeleteAll()
 	LOCAL dwIndex AS DWORD
 
 
-	
-	
+
+
 
 
 	// for each column, re-initialize the value array
@@ -378,11 +378,11 @@ METHOD DeleteAll()
 
 
 /// <include file="Gui.xml" path="doc/ListView.DeleteAllColumns/*" />
-METHOD DeleteAllColumns() 
+METHOD DeleteAllColumns()
 	//SE-060526
 	LOCAL lRet := TRUE AS LOGIC
-	
-	
+
+
 
 
 	WHILE (ALen(aColumns) > 0)
@@ -394,13 +394,13 @@ METHOD DeleteAllColumns()
 
 
 /// <include file="Gui.xml" path="doc/ListView.DeleteColumn/*" />
-METHOD DeleteColumn(oListViewColumn) 
+METHOD DeleteColumn(oListViewColumn)
 	//SE-060526
 	LOCAL dwIndex AS DWORD
 	LOCAL dwCount AS DWORD
 
 
-	// RvdH 070312 Bug report Markus Feser 	
+	// RvdH 070312 Bug report Markus Feser
 	dwCount := ALen(aColumns)
 
 
@@ -433,15 +433,15 @@ METHOD DeleteColumn(oListViewColumn)
 
 
 /// <include file="Gui.xml" path="doc/ListView.DeleteItem/*" />
-METHOD DeleteItem(nItem) 
+METHOD DeleteItem(nItem)
 	LOCAL strucItem IS _winLV_Item
 	LOCAL dwIndex AS DWORD
 	LOCAL lparam AS LONGINT
 	LOCAL oListViewColumn AS ListViewColumn
 
 
-	
-	
+
+
 
 
 	strucItem:iItem := nItem - 1
@@ -491,8 +491,8 @@ METHOD DeleteItem(nItem)
 
 /// <include file="Gui.xml" path="doc/ListView.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF !InCollect()
@@ -513,36 +513,36 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/ListView.DragDropEnabled/*" />
-ACCESS DragDropEnabled 
-	
-	
+ACCESS DragDropEnabled
+
+
 
 
 	RETURN lDragDropEnabled
 
 
 /// <include file="Gui.xml" path="doc/ListView.DragImageList/*" />
-ACCESS DragImageList 
-	
-	
+ACCESS DragImageList
+
+
 
 
 	RETURN oDragImageList
 
 
 /// <include file="Gui.xml" path="doc/ListView.DragImageList/*" />
-ASSIGN DragImageList(oNewDragImageList) 
-	
-	
+ASSIGN DragImageList(oNewDragImageList)
+
+
 
 
 	RETURN oDragImageList := oNewDragImageList
 
 
 /// <include file="Gui.xml" path="doc/ListView.EditItemLabel/*" />
-METHOD EditItemLabel(nItem) 
-	
-	
+METHOD EditItemLabel(nItem)
+
+
 
 
 	SELF:SetFocus()
@@ -551,9 +551,9 @@ METHOD EditItemLabel(nItem)
 
 
 /// <include file="Gui.xml" path="doc/ListView.EnableDragDrop/*" />
-METHOD EnableDragDrop(lEnable) 
-	
-	
+METHOD EnableDragDrop(lEnable)
+
+
 
 
 	DEFAULT(@lEnable, TRUE)
@@ -566,7 +566,7 @@ METHOD EnableDragDrop(lEnable)
 
 
 /// <include file="Gui.xml" path="doc/ListView.EnableGroupView/*" />
-METHOD EnableGroupView(lSetting) 
+METHOD EnableGroupView(lSetting)
 	//PP-030909
 	// Listview groups require XP visual styles
 	DEFAULT(@lSetting,TRUE)
@@ -575,9 +575,9 @@ METHOD EnableGroupView(lSetting)
 
 
 /// <include file="Gui.xml" path="doc/ListView.EnableSort/*" />
-METHOD EnableSort(symMethodName) 
-	
-	
+METHOD EnableSort(symMethodName)
+
+
 
 
 	RETURN symSortRoutineName := symMethodName
@@ -585,24 +585,24 @@ METHOD EnableSort(symMethodName)
 
 /// <include file="Gui.xml" path="doc/ListView.EnsureVisible/*" />
 METHOD EnsureVisible(nItem, lPartiallyVisible)
-	
-	
+
+
 	Default(@lPartiallyVisible , FALSE)
 	RETURN LOGIC(_CAST, ListView_EnsureVisible(SELF:Handle(), INT(nItem - 1), iif(lPartiallyVisible , 1 , 0) ))
 
 
 /// <include file="Gui.xml" path="doc/ListView.FullRowSelect/*" />
-ACCESS FullRowSelect 
+ACCESS FullRowSelect
 	RETURN SELF:GetExLVStyle(LVS_EX_FULLROWSELECT)
 
 
 /// <include file="Gui.xml" path="doc/ListView.FullRowSelect/*" />
-ASSIGN FullRowSelect(lNewVal) 
+ASSIGN FullRowSelect(lNewVal)
 	RETURN SELF:SetExLVStyle(LVS_EX_FULLROWSELECT, lNewVal)
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetAllItems/*" />
-METHOD GetAllItems( ) 
+METHOD GetAllItems( )
 	LOCAL oLVI AS ListViewItem
 	LOCAL aSelected AS ARRAY
 	LOCAL i AS DWORD
@@ -624,7 +624,7 @@ METHOD GetAllItems( )
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetAllSelectedItems/*" />
-METHOD GetAllSelectedItems( ) 
+METHOD GetAllSelectedItems( )
 	LOCAL oLVI AS ListViewItem
 	LOCAL aSelected AS ARRAY
 	//PP-030319 added mmethod
@@ -645,13 +645,13 @@ METHOD GetAllSelectedItems( )
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetColumn/*" />
-METHOD GetColumn(xColumnID) 
+METHOD GetColumn(xColumnID)
 	//SE-060526
 	LOCAL dwIndex AS DWORD
 
 
-	
-	
+
+
 
 
 	IF IsLong(xColumnID)
@@ -667,7 +667,7 @@ METHOD GetColumn(xColumnID)
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetExLVStyle/*" />
-METHOD GetExLVStyle(kExStyle) 
+METHOD GetExLVStyle(kExStyle)
 	//SE-060519
 	// 2.5b renaming of method - was conflicting with Control:SetExStyle
 	LOCAL dwExStyle AS DWORD
@@ -685,7 +685,7 @@ METHOD GetExLVStyle(kExStyle)
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetGroupTextColor/*" />
-METHOD GetGroupTextColor() 
+METHOD GetGroupTextColor()
 	//PP-030909
 	// Listview groups require XP visual styles
 	LOCAL oColor AS Color
@@ -709,13 +709,13 @@ METHOD GetGroupTextColor()
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetItemAtPosition/*" />
-METHOD GetItemAtPosition(oPoint) 
+METHOD GetItemAtPosition(oPoint)
 	LOCAL strucHitTestInfo IS _winLV_HitTestInfo
 	LOCAL nItem AS INT
 
 
-	
-	
+
+
 
 
 	oPoint := __WCConvertPoint(SELF, oPoint)
@@ -731,7 +731,7 @@ METHOD GetItemAtPosition(oPoint)
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetItemAttributes/*" />
-METHOD GetItemAttributes(nItem) 
+METHOD GetItemAttributes(nItem)
 	LOCAL strucItem IS _winLV_Item
 	LOCAL oListViewItem AS ListViewItem
 	LOCAL oListViewColumn AS ListViewColumn
@@ -744,8 +744,8 @@ METHOD GetItemAttributes(nItem)
 	LOCAL liItemLParam AS LONGINT
 
 
-	
-	
+
+
 
 
 	hHandle := SELF:Handle()
@@ -813,14 +813,14 @@ METHOD GetItemAttributes(nItem)
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetItemBoundingBox/*" />
-METHOD GetItemBoundingBox(nItem) 
+METHOD GetItemBoundingBox(nItem)
 	LOCAL strucRect IS _winRect
 	LOCAL oOrigin AS Point
 	LOCAL oSize AS Dimension
 
 
-	
-	
+
+
 
 
 	IF LOGIC(_CAST, SendMessage(SELF:Handle(), LVM_GETITEMRECT, DWORD(nItem - 1), LONGINT(_CAST, @strucRect)))
@@ -836,13 +836,13 @@ METHOD GetItemBoundingBox(nItem)
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetItemPosition/*" />
-METHOD GetItemPosition(nItem) 
+METHOD GetItemPosition(nItem)
 	LOCAL strucPoint IS _winPoint
 	LOCAL oBoundingBox AS BoundingBox
 
 
-	
-	
+
+
 
 
 	oBoundingBox := SELF:GetItemBoundingBox(nItem)
@@ -853,11 +853,11 @@ METHOD GetItemPosition(nItem)
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetItemSpacing/*" />
-METHOD GetItemSpacing(symView) 
+METHOD GetItemSpacing(symView)
 
 
-	
-	
+
+
 
 
 	DEFAULT(@symView, #IconView)
@@ -875,14 +875,14 @@ METHOD GetItemSpacing(symView)
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetNextItem/*" />
-METHOD GetNextItem(kRelationship, lDisabled, lDropTarget, lFocused, lSelected, nItemStart) 
+METHOD GetNextItem(kRelationship, lDisabled, lDropTarget, lFocused, lSelected, nItemStart)
 	LOCAL dwState AS DWORD
 	LOCAL nFoundItem AS INT
 	LOCAL oListViewItem AS ListViewItem
 
 
-	
-	
+
+
 
 
 	// handle default values
@@ -928,7 +928,7 @@ METHOD GetNextItem(kRelationship, lDisabled, lDropTarget, lFocused, lSelected, n
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetSelectedColumn/*" />
-METHOD GetSelectedColumn() 
+METHOD GetSelectedColumn()
 	//PP-030909
 	// Requires XP visual styles
 	RETURN SendMessage(SELF:handle(), LVM_GETSELECTEDCOLUMN, 0, 0) + 1
@@ -937,48 +937,48 @@ METHOD GetSelectedColumn()
 
 
 /// <include file="Gui.xml" path="doc/ListView.GetSelectedItem/*" />
-METHOD GetSelectedItem() 
-	
-	
+METHOD GetSelectedItem()
+
+
 
 
 	RETURN SELF:GetNextItem(LV_GNIBYITEM, FALSE, FALSE, FALSE, TRUE)
 
 
 /// <include file="Gui.xml" path="doc/ListView.GridLines/*" />
-ACCESS GridLines 
+ACCESS GridLines
 	RETURN SELF:GetExLVStyle(LVS_EX_GRIDLINES)
 
 
 /// <include file="Gui.xml" path="doc/ListView.GridLines/*" />
-ASSIGN GridLines(lNewVal) 
+ASSIGN GridLines(lNewVal)
 	RETURN SELF:SetExLVStyle(LVS_EX_GRIDLINES, lNewVal)
 
 
 /// <include file="Gui.xml" path="doc/ListView.HasGroup/*" />
-METHOD HasGroup(iGroupId) 
+METHOD HasGroup(iGroupId)
 	//PP-030909
 	// Listview groups require XP visual styles
 	RETURN LOGIC(_CAST,SendMessage(SELF:handle(),LVM_HASGROUP,DWORD(_CAST,iGroupId),0))
 
 
 /// <include file="Gui.xml" path="doc/ListView.HeaderDragDrop/*" />
-ACCESS HeaderDragDrop 
+ACCESS HeaderDragDrop
 	RETURN SELF:GetExLVStyle(LVS_EX_HEADERDRAGDROP)
 
 
 /// <include file="Gui.xml" path="doc/ListView.HeaderDragDrop/*" />
-ASSIGN HeaderDragDrop(lNewVal) 
+ASSIGN HeaderDragDrop(lNewVal)
 	RETURN SELF:SetExLVStyle(LVS_EX_HEADERDRAGDROP, lNewVal)
 
 
 /// <include file="Gui.xml" path="doc/ListView.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	LOCAL dwStyle AS DWORD
 
 
-	
-	
+
+
 
 
 	IF IsNil(kStyle)
@@ -1001,19 +1001,19 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	aDeleted := {}
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListView.InsertColumn/*" />
-METHOD InsertColumn(oListViewColumn, nInsertAfter) 
+METHOD InsertColumn(oListViewColumn, nInsertAfter)
 	LOCAL strucListColumn IS _winLV_Column
 	LOCAL pszCaption AS PSZ
 	LOCAL pszStringSize AS PSZ
 	LOCAL lReturnValue AS LONGINT
 
 
-	
-	
+
+
 
 
 	DEFAULT(@nInsertAfter, SELF:ColumnCount)
@@ -1064,7 +1064,7 @@ METHOD InsertColumn(oListViewColumn, nInsertAfter)
 
 
 /// <include file="Gui.xml" path="doc/ListView.InsertItem/*" />
-METHOD InsertItem(oListViewItem, nInsertAfter) 
+METHOD InsertItem(oListViewItem, nInsertAfter)
 	//SE-060523
 	LOCAL strucListItem IS _winLV_Item
 	LOCAL dwIndex AS DWORD
@@ -1075,8 +1075,8 @@ METHOD InsertItem(oListViewItem, nInsertAfter)
 	LOCAL idx AS INT
 
 
-	
-	
+
+
 
 
 	oLVItem := oListViewItem
@@ -1146,63 +1146,63 @@ METHOD InsertItem(oListViewItem, nInsertAfter)
 
 
 /// <include file="Gui.xml" path="doc/ListView.IsGroupViewEnabled/*" />
-ACCESS IsGroupViewEnabled 
+ACCESS IsGroupViewEnabled
 	//PP-030909
 	// Listview groups require XP visual styles
 	RETURN LOGIC(_CAST,SendMessage(SELF:handle(),LVM_ISGROUPVIEWENABLED,0,0))
 
 
 /// <include file="Gui.xml" path="doc/ListView.ItemCount/*" />
-ACCESS ItemCount 
-	
-	
+ACCESS ItemCount
+
+
 
 
 	RETURN ListView_GetItemCount(SELF:Handle())
 
 
 /// <include file="Gui.xml" path="doc/ListView.ItemsPerPage/*" />
-ACCESS ItemsPerPage 
-	
-	
+ACCESS ItemsPerPage
+
+
 
 
 	RETURN SendMessage(SELF:Handle(), LVM_GETCOUNTPERPAGE, 0, 0)
 
 
 /// <include file="Gui.xml" path="doc/ListView.LargeImageList/*" />
-ACCESS LargeImageList 
-	
-	
+ACCESS LargeImageList
+
+
 
 
 	RETURN oLargeImageList
 
 
 /// <include file="Gui.xml" path="doc/ListView.LargeImageList/*" />
-ASSIGN LargeImageList(oNewImageList) 
-	
-	
+ASSIGN LargeImageList(oNewImageList)
+
+
 
 
 	ListView_SetImageList(SELF:Handle(), oNewImageList:Handle(), LVSIL_NORMAL)
 	oLargeImageList := oNewImageList
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListView.RedrawRange/*" />
-METHOD RedrawRange(oRange) 
-	
-	
+METHOD RedrawRange(oRange)
+
+
 
 
 	RETURN LOGIC(_CAST, ListView_RedrawItems(SELF:Handle(), oRange:Min, oRange:Max))
 
 
 /// <include file="Gui.xml" path="doc/ListView.RemoveAllGroups/*" />
-METHOD RemoveAllGroups() 
+METHOD RemoveAllGroups()
 	//PP-030909
 	// Listview groups require XP visual styles
 	SendMessage(SELF:handle(),LVM_REMOVEALLGROUPS,0,0)
@@ -1210,30 +1210,30 @@ METHOD RemoveAllGroups()
 
 
 /// <include file="Gui.xml" path="doc/ListView.RemoveGroup/*" />
-METHOD RemoveGroup(iGroupId) 
+METHOD RemoveGroup(iGroupId)
 	//PP-030909
 	// Listview groups require XP visual styles
 	RETURN SendMessage(SELF:handle(),LVM_REMOVEGROUP,DWORD(_CAST,iGroupId),0) >= 0
 
 
 /// <include file="Gui.xml" path="doc/ListView.Scroll/*" />
-METHOD Scroll(oDimension) 
-	
-	
+METHOD Scroll(oDimension)
+
+
 
 
 	RETURN LOGIC(_CAST, ListView_Scroll(SELF:Handle(), oDimension:Width, -oDimension:Height))
 
 
 /// <include file="Gui.xml" path="doc/ListView.SearchString/*" />
-ACCESS SearchString 
+ACCESS SearchString
 	LOCAL pszSearchString AS PSZ
 	LOCAL cSearchString AS STRING
 	LOCAL DIM aBuf[257] AS BYTE
 
 
-	
-	
+
+
 
 
 	pszSearchString:= @aBuf[1]
@@ -1245,7 +1245,7 @@ ACCESS SearchString
 
 
 /// <include file="Gui.xml" path="doc/ListView.Seek/*" />
-METHOD Seek(uValue, kSeekType, nStart, lWrap, lPartial) 
+METHOD Seek(uValue, kSeekType, nStart, lWrap, lPartial)
 	//SE-060526
 	LOCAL strucFindInfo IS _winLV_FindInfo
 	LOCAL oPoint AS Point
@@ -1256,8 +1256,8 @@ METHOD Seek(uValue, kSeekType, nStart, lWrap, lPartial)
 	LOCAL aValList AS ARRAY
 
 
-	
-	
+
+
 
 
 	// start the seek at the beginning by default
@@ -1349,16 +1349,16 @@ METHOD Seek(uValue, kSeekType, nStart, lWrap, lPartial)
 
 
 /// <include file="Gui.xml" path="doc/ListView.SelectedCount/*" />
-ACCESS SelectedCount 
-	
-	
+ACCESS SelectedCount
+
+
 
 
 	RETURN ListView_GetSelectedCount(SELF:Handle())
 
 
 /// <include file="Gui.xml" path="doc/ListView.SelectItem/*" />
-METHOD SelectItem(nItem, lSelect) 
+METHOD SelectItem(nItem, lSelect)
 	LOCAL oLVI AS ListViewItem
 
 
@@ -1375,7 +1375,7 @@ METHOD SelectItem(nItem, lSelect)
 
 
 /// <include file="Gui.xml" path="doc/ListView.SelectNextItem/*" />
-METHOD SelectNextItem() 
+METHOD SelectNextItem()
 	LOCAL oLVI AS ListViewItem
 
 
@@ -1397,7 +1397,7 @@ METHOD SelectNextItem()
 
 
 /// <include file="Gui.xml" path="doc/ListView.SetBackgroundImage/*" />
-METHOD SetBackgroundImage(uImage,dwFlags,xOffSet,yOffSet) 
+METHOD SetBackgroundImage(uImage,dwFlags,xOffSet,yOffSet)
 	//PP-030909
 	// Requires a call to CoInitialize() or the OLE library linked in. If CoInitialize() call CoUnitialize() later.
 	LOCAL pLVBKI IS _WINLVBKIMAGE
@@ -1444,7 +1444,7 @@ METHOD SetBackgroundImage(uImage,dwFlags,xOffSet,yOffSet)
 
 
 /// <include file="Gui.xml" path="doc/ListView.SetColumnFormat/*" />
-METHOD SetColumnFormat(nCol,dwFlag,nImage) 
+METHOD SetColumnFormat(nCol,dwFlag,nImage)
 	//PP-030909
 	LOCAL pHeader AS PTR
 	LOCAL pItem IS _WINHDITEM
@@ -1476,13 +1476,13 @@ METHOD SetColumnFormat(nCol,dwFlag,nImage)
 
 
 /// <include file="Gui.xml" path="doc/ListView.SetExLVStyle/*" />
-METHOD SetExLVStyle(kExStyle, lEnable) 
+METHOD SetExLVStyle(kExStyle, lEnable)
 	//SE-060519
 	// 2.5b renaming of method - was conflicting with Control:SetExStyle
 
 
-	
-	
+
+
 
 
 	IF !IsLong(kExStyle)
@@ -1502,7 +1502,7 @@ METHOD SetExLVStyle(kExStyle, lEnable)
 
 
 /// <include file="Gui.xml" path="doc/ListView.SetGroupName/*" />
-METHOD SetGroupName(iGroupId,cGroupName,dwAlign) 
+METHOD SetGroupName(iGroupId,cGroupName,dwAlign)
 	//PP-030909
 	// Listview groups require XP visual styles
 	LOCAL pLVGroup IS _WinLVGroup
@@ -1534,7 +1534,7 @@ METHOD SetGroupName(iGroupId,cGroupName,dwAlign)
 
 
 /// <include file="Gui.xml" path="doc/ListView.SetGroupTextColor/*" />
-METHOD SetGroupTextColor(oColor) 
+METHOD SetGroupTextColor(oColor)
 	//PP-030909
 	// Listview groups require XP visual styles
 	LOCAL pLVGroupMetric IS _WINLVGROUPMETRICS
@@ -1554,7 +1554,7 @@ METHOD SetGroupTextColor(oColor)
 
 
 /// <include file="Gui.xml" path="doc/ListView.SetItemAttributes/*" />
-METHOD SetItemAttributes(oListViewItem) 
+METHOD SetItemAttributes(oListViewItem)
 	//SE-060523
 	LOCAL strucItem IS _winLV_Item
 	LOCAL nIndex AS INT
@@ -1567,8 +1567,8 @@ METHOD SetItemAttributes(oListViewItem)
    //LOCAL liSubImage AS LONG
 
 
-	
-	
+
+
 
 
 	oLVItem := oListViewItem
@@ -1596,7 +1596,7 @@ METHOD SetItemAttributes(oListViewItem)
 
 
 /// <include file="Gui.xml" path="doc/ListView.SetItemGroupId/*" />
-METHOD SetItemGroupId(uLVI,nId) 
+METHOD SetItemGroupId(uLVI,nId)
 	//PP-030909
 	// Listview groups require XP visual styles
 	LOCAL pLVItem IS _winLVItem6
@@ -1624,12 +1624,12 @@ METHOD SetItemGroupId(uLVI,nId)
 
 
 /// <include file="Gui.xml" path="doc/ListView.SetItemPosition/*" />
-METHOD SetItemPosition(nItem, oPoint) 
+METHOD SetItemPosition(nItem, oPoint)
 	LOCAL oBoundingBox AS BoundingBox
 
 
-	
-	
+
+
 
 
 	oBoundingBox := SELF:GetItemBoundingBox(nItem)
@@ -1641,7 +1641,7 @@ METHOD SetItemPosition(nItem, oPoint)
 
 
 /// <include file="Gui.xml" path="doc/ListView.SetSelectedColumn/*" />
-METHOD SetSelectedColumn(nIndex) 
+METHOD SetSelectedColumn(nIndex)
 	//PP-030909
 	// Requires XP visual styles
 	SendMessage(SELF:handle(), LVM_SETSELECTEDCOLUMN, nIndex-1, 0)
@@ -1653,29 +1653,29 @@ METHOD SetSelectedColumn(nIndex)
 
 
 /// <include file="Gui.xml" path="doc/ListView.SmallImageList/*" />
-ACCESS SmallImageList 
-	
-	
+ACCESS SmallImageList
+
+
 
 
 	RETURN oSmallImageList
 
 
 /// <include file="Gui.xml" path="doc/ListView.SmallImageList/*" />
-ASSIGN SmallImageList(oNewImageList) 
-	
-	
+ASSIGN SmallImageList(oNewImageList)
+
+
 
 
 	ListView_SetImageList(SELF:Handle(), oNewImageList:Handle(), LVSIL_SMALL)
 	oSmallImageList := oNewImageList
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListView.SortItems/*" />
-METHOD SortItems() 
+METHOD SortItems()
 	LOCAL hListView AS PTR
 
 
@@ -1687,107 +1687,103 @@ METHOD SortItems()
 
 
 /// <include file="Gui.xml" path="doc/ListView.StateImageList/*" />
-ACCESS StateImageList 
-	
-	
+ACCESS StateImageList
+
+
 
 
 	RETURN oStateImageList
 
 
 /// <include file="Gui.xml" path="doc/ListView.StateImageList/*" />
-ASSIGN StateImageList(oNewImageList) 
-	
-	
+ASSIGN StateImageList(oNewImageList)
+
+
 
 
 	ListView_SetImageList(SELF:Handle(), oNewImageList:Handle(), LVSIL_STATE)
 	oStateImageList := oNewImageList
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListView.TextBackgroundColor/*" />
-ACCESS TextBackgroundColor 
+ACCESS TextBackgroundColor
 	LOCAL dwCR AS DWORD
-	
-	
 
+ 	IF ( dwCR := ListView_GetTextBkColor(SELF:Handle()) ) == 0xFF000000
+ 		RETURN Color { GetSysColor ( COLOR_WINDOW ) }
+ 	ENDIF
 
-	dwCR := ListView_GetTextBkColor(SELF:Handle())
-
-
-	RETURN Color{_AND(dwCR, 0x000000FF), _AND((dwCR >> 8), 0x000000FF), _AND((dwCR >> 16), 0x000000FF)}
+ 	RETURN Color { dwCR }
 
 
 /// <include file="Gui.xml" path="doc/ListView.TextBackgroundColor/*" />
-ASSIGN TextBackgroundColor(oTextBackgroundColor) 
-	
-	
+ASSIGN TextBackgroundColor(oTextBackgroundColor)
+
+
 
 
 	ListView_SetTextBkColor(SELF:Handle(), oTextBackgroundColor:ColorRef)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListView.TextColor/*" />
-ACCESS TextColor 
+ACCESS TextColor
 	LOCAL dwCR AS DWORD
-	
-	
 
+ 	IF ( dwCR := ListView_GetTextColor(SELF:Handle()) ) == 0xFF000000
+ 		RETURN Color { GetSysColor ( COLOR_WINDOWTEXT ) }
+ 	ENDIF
 
-	dwCR := ListView_GetTextColor(SELF:Handle())
-
-
-	RETURN Color{_AND(dwCR, 0x000000FF), _AND((dwCR >> 8), 0x000000FF), _AND((dwCR >> 16), 0x000000FF)}
+ 	RETURN Color { dwCR }
 
 
 /// <include file="Gui.xml" path="doc/ListView.TextColor/*" />
-ASSIGN TextColor(oNewTextColor) 
-	
-	
+ASSIGN TextColor(oNewTextColor)
+
+
 
 
 
 
 	ListView_SetTextColor(SELF:Handle(), oNewTextColor:ColorRef)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListView.TopItem/*" />
-ACCESS TopItem 
-	
-	
+ACCESS TopItem
+
+
 
 
 	RETURN SendMessage(SELF:Handle(), LVM_GETTOPINDEX, 0, 0) + 1
 
 
 /// <include file="Gui.xml" path="doc/ListView.TrackSelection/*" />
-ACCESS TrackSelection 
+ACCESS TrackSelection
 	RETURN SELF:GetExLVStyle(LVS_EX_TRACKSELECT)
 
 
 /// <include file="Gui.xml" path="doc/ListView.TrackSelection/*" />
-ASSIGN TrackSelection(lNewVal) 
+ASSIGN TrackSelection(lNewVal)
 	RETURN SELF:SetExLVStyle(LVS_EX_TRACKSELECT, lNewVal)
 
 
 /// <include file="Gui.xml" path="doc/ListView.Update/*" />
-METHOD Update(nItem) 
-	
-	
+METHOD Update(nItem)
+
+
 
 
 	RETURN LOGIC(_CAST, ListView_Update(SELF:Handle(), nItem - 1))
 
 
 /// <include file="Gui.xml" path="doc/ListView.ViewAs/*" />
-METHOD ViewAs(symView) 
+METHOD ViewAs(symView)
 	//PP-030909 #TileView
 	LOCAL hListView AS PTR
 	LOCAL dwView AS DWORD
@@ -1837,14 +1833,14 @@ METHOD ViewAs(symView)
 
 
 /// <include file="Gui.xml" path="doc/ListView.ViewBoundingBox/*" />
-ACCESS ViewBoundingBox 
+ACCESS ViewBoundingBox
 	LOCAL strucRect IS _winRect
 	LOCAL oOrigin AS Point
 	LOCAL oSize AS Dimension
 
 
-	
-	
+
+
 
 
 	IF LOGIC(_CAST, ListView_GetViewRect(SELF:Handle(),  @strucRect))
@@ -1861,12 +1857,12 @@ ACCESS ViewBoundingBox
 
 
 /// <include file="Gui.xml" path="doc/ListView.ViewOrigin/*" />
-ACCESS ViewOrigin 
+ACCESS ViewOrigin
 	LOCAL strucPoint IS _winPoint
 
 
-	
-	
+
+
 
 
 	// this call is only meaningful if the current view is list or report
@@ -1892,64 +1888,64 @@ CLASS ListViewColumn INHERIT VObject
 
 	//PP-030828 Strong typing
  /// <exclude />
-	ASSIGN __Owner(oListView AS ListView)  STRICT 
+	ASSIGN __Owner(oListView AS ListView)  STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN oOwner := oListView
 
 
  /// <exclude />
-ACCESS __ValueList AS ARRAY STRICT 
+ACCESS __ValueList AS ARRAY STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN aValues
 
 
  /// <exclude />
-ASSIGN __ValueList(aValueList AS ARRAY)  STRICT 
+ASSIGN __ValueList(aValueList AS ARRAY)  STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN aValues := aValueList
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.Alignment/*" />
-ACCESS Alignment 
-	
-	
+ACCESS Alignment
+
+
 
 
 	RETURN nAlignment
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.Alignment/*" />
-ASSIGN Alignment(nNewAlignment) 
-	
-	
+ASSIGN Alignment(nNewAlignment)
+
+
 
 
 	RETURN nAlignment := nNewAlignment
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.Caption/*" />
-ACCESS Caption 
-	
-	
+ACCESS Caption
+
+
 
 
 	RETURN oHyperLabel:Caption
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.Caption/*" />
-ASSIGN Caption(cNewCaption) 
+ASSIGN Caption(cNewCaption)
 	LOCAL hOwner AS PTR
 	LOCAL hChild AS PTR
 	LOCAL pszCaption AS PSZ
@@ -1961,8 +1957,8 @@ ASSIGN Caption(cNewCaption)
 	LOCAL DIM aBuf[257] AS BYTE
 
 
-	
-	
+
+
 
 
 	// if this column has already been added to a control, attempt
@@ -2001,13 +1997,13 @@ ASSIGN Caption(cNewCaption)
 
 	oOldHL := oHyperLabel
 	oHyperLabel := HyperLabel{oOldHL:NameSym, cNewCaption, oOldHL:Description, oOldHL:HelpContext}
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF !InCollect()
@@ -2021,18 +2017,18 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.FieldSpec/*" />
-ACCESS FieldSpec 
-	
-	
+ACCESS FieldSpec
+
+
 
 
 	RETURN oFieldSpec
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.FieldSpec/*" />
-ASSIGN FieldSpec(oNewFieldSpec) 
-	
-	
+ASSIGN FieldSpec(oNewFieldSpec)
+
+
 
 
 	IF !IsInstanceOfUsual(oNewFieldSpec, #FieldSpec)
@@ -2062,7 +2058,7 @@ ASSIGN FieldSpec(oNewFieldSpec)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.GetPixWidth/*" />
@@ -2077,27 +2073,27 @@ METHOD GetPixWidth() AS LONG
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.HyperLabel/*" />
-ACCESS HyperLabel 
-	
-	
+ACCESS HyperLabel
+
+
 
 
 	RETURN oHyperLabel
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.HyperLabel/*" />
-ASSIGN HyperLabel(oNewHyperLabel) 
-	
-	
+ASSIGN HyperLabel(oNewHyperLabel)
+
+
 
 
 	RETURN oHyperLabel := oNewHyperLabel
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.ctor/*" />
-CONSTRUCTOR(nWidth, xColumnID, kAlignment) 
-	
-	
+CONSTRUCTOR(nWidth, xColumnID, kAlignment)
+
+
 
 
 	SUPER()
@@ -2135,36 +2131,36 @@ CONSTRUCTOR(nWidth, xColumnID, kAlignment)
 	aValues := {}
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.NameSym/*" />
-ACCESS NameSym 
-	
-	
+ACCESS NameSym
+
+
 
 
 	RETURN oHyperLabel:NameSym
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.NameSym/*" />
-ASSIGN NameSym(symNewNameSym) 
+ASSIGN NameSym(symNewNameSym)
 	LOCAL oOldHL AS HyperLabel
 
 
-	
-	
+
+
 
 
 	oOldHL := oHyperLabel
 
 
 	oHyperLabel := HyperLabel{symNewNameSym, oOldHL:Caption, oOldHL:Description, oOldHL:HelpContext}
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.Owner/*" />
-ACCESS Owner 
+ACCESS Owner
 	// DHer: 18/12/2008
 RETURN SELF:oOwner
 
@@ -2176,20 +2172,20 @@ METHOD SetPixWidth(dwPixWidth AS LONG)  AS LOGIC
 	LOCAL iCol 	as dword
 	LOCAL lSet	AS LOGIC
 	iCol := oOwner:__GetColumnIndexFromSymbol(SELF:NameSym)
-	lSet := ListView_SetColumnWidth( oOwner:Handle(), int(_cast,iCol)-1 , dwPixWidth)
+	lSet := ListView_SetColumnWidth( oOwner:Handle(), int(_cast,iCol)-1 , (SHORT) dwPixWidth)
 	RETURN lSet
-	
-	
+
+
 /// <include file="Gui.xml" path="doc/ListViewColumn.Width/*" />
-ACCESS Width 
+ACCESS Width
 	LOCAL dwIndex AS DWORD
 	LOCAL nPixelWidth AS INT
 	LOCAL nCharWidth AS INT
 	LOCAL pszChar AS PSZ
 
 
-	
-	
+
+
 
 
 	// if this column is already attached to a ListView control, it may have been
@@ -2214,15 +2210,15 @@ ACCESS Width
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumn.Width/*" />
-ASSIGN Width(nNewWidth) 
+ASSIGN Width(nNewWidth)
 	LOCAL dwIndex AS DWORD
 	LOCAL cStringSize AS STRING
 	LOCAL pszStringSize AS PSZ
 	LOCAL nPixelWidth AS SHORTINT
 
 
-	
-	
+
+
 
 
 	// if this column is already attached to a ListView control, and the view is report view,
@@ -2280,68 +2276,68 @@ CLASS ListViewItem INHERIT VObject
 
 	//PP-030828 Strong typing
  /// <exclude />
-	ACCESS __ColumnTextList AS ARRAY STRICT 
+	ACCESS __ColumnTextList AS ARRAY STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN aColumnText
 
 
  /// <exclude />
-ACCESS __ColumnValueList AS ARRAY STRICT 
+ACCESS __ColumnValueList AS ARRAY STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN aColumnValue
 
 
  /// <exclude />
-ACCESS __lParam AS LONGINT STRICT 
+ACCESS __lParam AS LONGINT STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN lParam
 
 
  /// <exclude />
-ASSIGN __lParam(uNewVal AS LONGINT)  STRICT 
+ASSIGN __lParam(uNewVal AS LONGINT)  STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN (lParam := uNewVal)
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.Checked/*" />
-ACCESS Checked 
-	
-	
+ACCESS Checked
+
+
 
 
 	RETURN ((nStateImage-1) > 0)
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.Checked/*" />
-ASSIGN Checked(lNewVal) 
-	
-	
+ASSIGN Checked(lNewVal)
+
+
 
 
 	nStateImage := IIF(lNewVal, 2, 1)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF !InCollect()
@@ -2356,67 +2352,67 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.Disabled/*" />
-ACCESS Disabled 
-	
-	
+ACCESS Disabled
+
+
 
 
 	RETURN lDisabled
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.Disabled/*" />
-ASSIGN Disabled(lEnabled) 
-	
-	
+ASSIGN Disabled(lEnabled)
+
+
 
 
 	RETURN lDisabled := lEnabled
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.DropTarget/*" />
-ACCESS DropTarget 
-	
-	
+ACCESS DropTarget
+
+
 
 
 	RETURN lDropTarget
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.DropTarget/*" />
-ASSIGN DropTarget(lEnabled) 
-	
-	
+ASSIGN DropTarget(lEnabled)
+
+
 
 
 	RETURN lDropTarget := lEnabled
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.Focused/*" />
-ACCESS Focused 
-	
-	
+ACCESS Focused
+
+
 
 
 	RETURN lFocused
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.Focused/*" />
-ASSIGN Focused(lEnabled) 
-	
-	
+ASSIGN Focused(lEnabled)
+
+
 
 
 	RETURN lFocused := lEnabled
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.GetText/*" />
-METHOD GetText(symColumnName, nRefImageIndex) 
+METHOD GetText(symColumnName, nRefImageIndex)
 	LOCAL dwIndex, iLen AS DWORD
 	LOCAL aColumn AS ARRAY
 
 
-	
-	
+
+
 
 
 	// search the column's text value array
@@ -2448,12 +2444,12 @@ METHOD GetText(symColumnName, nRefImageIndex)
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.GetValue/*" />
-METHOD GetValue(symColumnName) 
+METHOD GetValue(symColumnName)
 	LOCAL dwIndex, iLen AS DWORD
 
 
-	
-	
+
+
 
 
 	// search the column's value array
@@ -2475,18 +2471,18 @@ METHOD GetValue(symColumnName)
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.ImageIndex/*" />
-ACCESS ImageIndex 
-	
-	
+ACCESS ImageIndex
+
+
 
 
 	RETURN nImageIndex
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.ImageIndex/*" />
-ASSIGN ImageIndex(nNewImage) 
-	
-	
+ASSIGN ImageIndex(nNewImage)
+
+
 
 
 	RETURN nImageIndex := nNewImage
@@ -2495,27 +2491,27 @@ ASSIGN ImageIndex(nNewImage)
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.Indent/*" />
-ACCESS Indent 
-	
-	
+ACCESS Indent
+
+
 
 
 	RETURN iIndent
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.Indent/*" />
-ASSIGN Indent(iNewIndent) 
-	
-	
+ASSIGN Indent(iNewIndent)
+
+
 
 
 	RETURN (iIndent := iNewIndent)
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.ctor/*" />
-CONSTRUCTOR() 
-	
-	
+CONSTRUCTOR()
+
+
 
 
 	SUPER()
@@ -2526,51 +2522,51 @@ CONSTRUCTOR()
 	aColumnValue := {}
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.ItemIndex/*" />
-ACCESS ItemIndex 
-	
-	
+ACCESS ItemIndex
+
+
 
 
 	RETURN nItem
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.ItemIndex/*" />
-ASSIGN ItemIndex(nNewItemIndex) 
+ASSIGN ItemIndex(nNewItemIndex)
 	RETURN nItem := nNewItemIndex
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.OverlayImageIndex/*" />
-ACCESS OverlayImageIndex 
+ACCESS OverlayImageIndex
 	RETURN nOverlayImage
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.OverlayImageIndex/*" />
-ASSIGN OverlayImageIndex(nNewOverlayImage) 
+ASSIGN OverlayImageIndex(nNewOverlayImage)
 	RETURN nOverlayImage := nNewOverlayImage
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.Selected/*" />
-ACCESS Selected 
+ACCESS Selected
 	RETURN lSelected
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.Selected/*" />
-ASSIGN Selected(lEnabled) 
+ASSIGN Selected(lEnabled)
 	RETURN lSelected := lEnabled
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.SetText/*" />
-METHOD SetText(cNewText, symColumnName, nImageIndex) 
+METHOD SetText(cNewText, symColumnName, nImageIndex)
 	LOCAL dwIndex, iLen AS DWORD
 	LOCAL aColumn AS ARRAY
 
 
-	
-	
+
+
 
 
 	// first attempt to find the entry and replace it
@@ -2602,7 +2598,7 @@ METHOD SetText(cNewText, symColumnName, nImageIndex)
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.SetValue/*" />
-METHOD SetValue(uNewValue, symColumnName) 
+METHOD SetValue(uNewValue, symColumnName)
 	LOCAL dwIndex, iLen AS DWORD
 	// first attempt to find the entry and replace it
 	//dwIndex := AScan(aColumnValue, {|x| x[1] == symColumnName})
@@ -2626,12 +2622,12 @@ METHOD SetValue(uNewValue, symColumnName)
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.StateImageIndex/*" />
-ACCESS StateImageIndex 
+ACCESS StateImageIndex
 	RETURN nStateImage
 
 
 /// <include file="Gui.xml" path="doc/ListViewItem.StateImageIndex/*" />
-ASSIGN StateImageIndex(nNewStateImage) 
+ASSIGN StateImageIndex(nNewStateImage)
 	RETURN nStateImage := nNewStateImage
 
 
@@ -2641,17 +2637,17 @@ END CLASS
 
 
 #ifdef __VULCAN__
-   INTERNAL DELEGATE ListView_CompareDelegate( lParam1 AS LONGINT, lParam2 AS LONGINT, lHandle AS LONGINT) AS INT 
-   
-   
+   INTERNAL DELEGATE ListView_CompareDelegate( lParam1 AS LONGINT, lParam2 AS LONGINT, lHandle AS LONGINT) AS INT
+
+
    STATIC FUNCTION Get_ListView_ComparePtr() AS PTR
       STATIC LOCAL delListView_CompareDelegate AS ListView_CompareDelegate
       IF delListView_CompareDelegate == NULL
          delListView_CompareDelegate := ListView_CompareDelegate{ NULL, @ListView_Compare() }
       ENDIF
       RETURN System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) delListView_CompareDelegate )
-         
-         
+
+
 #else
    STATIC FUNCTION Get_ListView_ComparePtr() AS PTR
       RETURN @ListView_Compare()

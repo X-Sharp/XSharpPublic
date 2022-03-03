@@ -27,7 +27,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
                 VAR rawData := _oFptMemo:GetRawValueWithHeader(nFldPos)
-                if rawData != NULL
+                if rawData != NULL 
                      RETURN SELF:_oFptMemo:DecodeValue(rawData)
                 else
                     var column  := SELF:_GetColumn(nFldPos)
@@ -52,7 +52,7 @@ BEGIN NAMESPACE XSharp.RDD
                         IF SELF:HasMemo
                             IF oValue == NULL .OR. oValue IS STRING VAR cValue .AND. cValue:Length == 0
                                 VAR oldValue := oColumn:GetValue(SELF:_RecordBuffer)
-                                IF oldValue != NULL
+                                IF oldValue != NULL .and. oldValue != DBNull.Value
                                     SELF:_oFptMemo:DeleteBlock((INT) oldValue)
                                 ENDIF
                                 RETURN oColumn:PutValue(NULL, SELF:_RecordBuffer)

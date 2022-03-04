@@ -1058,7 +1058,7 @@ ACCESS MemName AS STRING
 
 /// <include file="Rdd.xml" path="doc/DbFileSpec.MemSize/*" />
 ACCESS MemSize  AS LONG
-	LOCAL DW AS DWORD
+	LOCAL DW AS LONG
 
 
 	IF ALen( SELF:Memo ) > 0

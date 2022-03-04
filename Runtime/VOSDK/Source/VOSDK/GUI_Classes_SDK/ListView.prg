@@ -1113,7 +1113,7 @@ METHOD InsertItem(oListViewItem, nInsertAfter)
 
 
 	// set the lparam, which will identify the index of the associated usual value
-	strucListItem:lparam := IIF((idx == 0), ALen(aColumnValues), idx)
+	strucListItem:lparam := IIF((idx == 0), (LONG) ALen(aColumnValues), idx)
 
 
 	// insert the item into the control

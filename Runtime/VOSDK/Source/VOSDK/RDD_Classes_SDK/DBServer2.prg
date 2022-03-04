@@ -1009,7 +1009,7 @@ METHOD Delete( cbForBlock, cbWhileBlock, uScope )
 	LOCAL lRetCode AS LOGIC
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError AS USUAL
-	LOCAL nCurrRec AS LONGINT
+	LOCAL nCurrRec AS DWORD
 	LOCAL uFLock AS USUAL
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)

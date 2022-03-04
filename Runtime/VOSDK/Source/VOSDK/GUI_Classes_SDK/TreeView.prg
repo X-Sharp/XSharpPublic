@@ -15,15 +15,15 @@ CLASS TreeView INHERIT TextControl
 
 
  /// <exclude />
-METHOD __CreateDragImageList(symItem AS USUAL) AS OBJECT STRICT 
+METHOD __CreateDragImageList(symItem AS USUAL) AS OBJECT STRICT
 	//PP-030828 Strong typing
 	//PP-040101 Corrected data type of symItem - note SELF:__GetHandleFromSymbol takes a symbol or a treeviewitem
 	LOCAL hThisItem AS PTR
 	LOCAL hImageList AS PTR
 
 
-	
-	
+
+
 
 
 	hThisItem := SELF:__GetHandleFromSymbol(symItem)
@@ -41,7 +41,7 @@ METHOD __CreateDragImageList(symItem AS USUAL) AS OBJECT STRICT
 
 
  /// <exclude />
-METHOD __Expand(hItem AS PTR, dwMode AS DWORD, lAll AS LOGIC, lForceNotify AS LOGIC) AS LOGIC 
+METHOD __Expand(hItem AS PTR, dwMode AS DWORD, lAll AS LOGIC, lForceNotify AS LOGIC) AS LOGIC
 	//SE-060523
    LOCAL hChild  AS PTR
    LOCAL hOwner  AS PTR
@@ -113,7 +113,7 @@ METHOD __Expand(hItem AS PTR, dwMode AS DWORD, lAll AS LOGIC, lForceNotify AS LO
 
 
  /// <exclude />
-METHOD __GetHandleFromSymbol(symItem AS USUAL) AS PTR STRICT 
+METHOD __GetHandleFromSymbol(symItem AS USUAL) AS PTR STRICT
 	//PP-030828 Strong typing
 	//SE-060525
 	LOCAL symToLookUp AS SYMBOL
@@ -144,7 +144,7 @@ METHOD __GetHandleFromSymbol(symItem AS USUAL) AS PTR STRICT
 
 
  /// <exclude />
-METHOD __GetSymbolFromHandle(hLookUp AS PTR) AS SYMBOL STRICT 
+METHOD __GetSymbolFromHandle(hLookUp AS PTR) AS SYMBOL STRICT
 	//PP-030828 Strong typing
 	//SE-060525
 	LOCAL dwI, dwCount AS DWORD
@@ -163,7 +163,7 @@ METHOD __GetSymbolFromHandle(hLookUp AS PTR) AS SYMBOL STRICT
 
 
  /// <exclude />
-METHOD __GetValueFromSymbol(symItem AS USUAL) AS USUAL STRICT 
+METHOD __GetValueFromSymbol(symItem AS USUAL) AS USUAL STRICT
 	//PP-030828 Strong typing
 	//SE-060525
 	LOCAL symToLookUp  AS SYMBOL
@@ -192,7 +192,7 @@ METHOD __GetValueFromSymbol(symItem AS USUAL) AS USUAL STRICT
 
 
  /// <exclude />
-METHOD __RemoveByHandle(hLookUp AS PTR ) AS LOGIC STRICT 
+METHOD __RemoveByHandle(hLookUp AS PTR ) AS LOGIC STRICT
 	//PP-030828 Strong typing
 	//SE-060525
 	LOCAL dwI     AS DWORD
@@ -251,7 +251,7 @@ METHOD __RemoveByHandle(hLookUp AS PTR ) AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __RemoveBySymbol(symLookUp AS SYMBOL) AS LOGIC STRICT 
+METHOD __RemoveBySymbol(symLookUp AS SYMBOL) AS LOGIC STRICT
 	//PP-030828 Strong typing
 	//SE-060525
 	LOCAL dwI     AS DWORD
@@ -308,17 +308,17 @@ METHOD __RemoveBySymbol(symLookUp AS SYMBOL) AS LOGIC STRICT
 
 
  /// <exclude />
-ACCESS __SortRoutineName AS SYMBOL STRICT 
+ACCESS __SortRoutineName AS SYMBOL STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN symSortRoutineName
 
 
  /// <exclude />
-METHOD __UpdateValue(symItem AS USUAL, uNewValue AS USUAL) AS USUAL STRICT 
+METHOD __UpdateValue(symItem AS USUAL, uNewValue AS USUAL) AS USUAL STRICT
 	//PP-030828 Strong typing
 	//SE-060525
 	LOCAL symToLookUp AS SYMBOL
@@ -346,11 +346,11 @@ METHOD __UpdateValue(symItem AS USUAL, uNewValue AS USUAL) AS USUAL STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeView.AddItem/*" />
-METHOD AddItem(symParentName, oTreeViewItem) 
+METHOD AddItem(symParentName, oTreeViewItem)
 
 
-	
-	
+
+
 
 
 	// insert this item as the last item in the parent item's list
@@ -358,14 +358,14 @@ METHOD AddItem(symParentName, oTreeViewItem)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.Collapse/*" />
-METHOD Collapse(symName, lRemoveChildItems, lAll, lForceNotify) 
+METHOD Collapse(symName, lRemoveChildItems, lAll, lForceNotify)
 	//SE-060523
 	LOCAL hThisItem AS PTR
 	LOCAL dwFlag AS DWORD
 
 
-	
-	
+
+
 
 
 	DEFAULT(@lRemoveChildItems, FALSE)
@@ -391,9 +391,9 @@ METHOD Collapse(symName, lRemoveChildItems, lAll, lForceNotify)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.DeleteAll/*" />
-METHOD DeleteAll() 
-	
-	
+METHOD DeleteAll()
+
+
 
 
 	IF TreeView_DeleteAllItems(SELF:Handle())
@@ -404,13 +404,13 @@ METHOD DeleteAll()
 
 
 /// <include file="Gui.xml" path="doc/TreeView.DeleteItem/*" />
-METHOD DeleteItem(symName, lChildsOnly) 
+METHOD DeleteItem(symName, lChildsOnly)
 	LOCAL hThisItem AS PTR
 	LOCAL hChild    AS PTR
 
 
-	
-	
+
+
 
 
 	hThisItem := SELF:__GetHandleFromSymbol(symName)
@@ -436,8 +436,8 @@ METHOD DeleteItem(symName, lChildsOnly)
 
 /// <include file="Gui.xml" path="doc/TreeView.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF !InCollect()
@@ -472,39 +472,39 @@ TEXTBLOCK METHOD dispatch(oE) CLASS TreeView
 ENDTEXT
 */
 /// <include file="Gui.xml" path="doc/TreeView.DragDropEnabled/*" />
-ACCESS DragDropEnabled 
-	
-	
+ACCESS DragDropEnabled
+
+
 
 
 	RETURN lDragDropEnabled
 
 
 /// <include file="Gui.xml" path="doc/TreeView.DragImageList/*" />
-ACCESS DragImageList 
-	
-	
+ACCESS DragImageList
+
+
 
 
 	RETURN oDragImageList
 
 
 /// <include file="Gui.xml" path="doc/TreeView.DragImageList/*" />
-ASSIGN DragImageList(oNewDragImageList) 
-	
-	
+ASSIGN DragImageList(oNewDragImageList)
+
+
 
 
 	RETURN oDragImageList := oNewDragImageList
 
 
 /// <include file="Gui.xml" path="doc/TreeView.EditItemLabel/*" />
-METHOD EditItemLabel(symName) 
+METHOD EditItemLabel(symName)
 	LOCAL hThisItem AS PTR
 
 
-	
-	
+
+
 
 
 	hThisItem := SELF:__GetHandleFromSymbol(symName)
@@ -519,9 +519,9 @@ METHOD EditItemLabel(symName)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.EnableDragDrop/*" />
-METHOD EnableDragDrop(lEnable) 
-	
-	
+METHOD EnableDragDrop(lEnable)
+
+
 
 
 	DEFAULT(@lEnable, TRUE)
@@ -534,21 +534,21 @@ METHOD EnableDragDrop(lEnable)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.EnableSort/*" />
-METHOD EnableSort(symMethodName) 
-	
-	
+METHOD EnableSort(symMethodName)
+
+
 
 
 	RETURN symSortRoutineName := symMethodName
 
 
 /// <include file="Gui.xml" path="doc/TreeView.EnsureVisible/*" />
-METHOD EnsureVisible(symName) 
+METHOD EnsureVisible(symName)
 	LOCAL hThisItem AS PTR
 
 
-	
-	
+
+
 
 
 	hThisItem := SELF:__GetHandleFromSymbol(symName)
@@ -561,13 +561,13 @@ METHOD EnsureVisible(symName)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.Expand/*" />
-METHOD Expand(symName, lAll, lForceNotify) 
+METHOD Expand(symName, lAll, lForceNotify)
 	//SE-060523
 	LOCAL hThisItem AS PTR
 
 
-	
-	
+
+
 
 
 	hThisItem := SELF:__GetHandleFromSymbol(symName)
@@ -582,23 +582,23 @@ METHOD Expand(symName, lAll, lForceNotify)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetDropHighlight/*" />
-METHOD GetDropHighlight() 
+METHOD GetDropHighlight()
 	//SE-060523
-	
-	
+
+
 
 
 	RETURN SELF:GetItemAttributes(TreeView_GetDropHilight(SELF:Handle()))
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetFirstChildItem/*" />
-METHOD GetFirstChildItem(symItem) 
+METHOD GetFirstChildItem(symItem)
 	//SE-060524
 	LOCAL hStartItem AS PTR
 
 
-	
-	
+
+
 
 
 	IF ! IsNil(symItem)
@@ -610,23 +610,23 @@ METHOD GetFirstChildItem(symItem)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetFirstVisibleItem/*" />
-METHOD GetFirstVisibleItem() 
+METHOD GetFirstVisibleItem()
 //SE-060524
-	
-	
+
+
 
 
 	RETURN SELF:GetItemAttributes(TreeView_GetNextItem(SELF:Handle(), NULL_PTR, TVGN_FIRSTVISIBLE))
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetItemAtPosition/*" />
-METHOD GetItemAtPosition(oPoint) 
+METHOD GetItemAtPosition(oPoint)
 	LOCAL hItem AS PTR
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	oPoint := __WCConvertPoint(SELF, oPoint)
@@ -644,7 +644,7 @@ METHOD GetItemAtPosition(oPoint)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetItemAttributes/*" />
-METHOD GetItemAttributes(symItem) 
+METHOD GetItemAttributes(symItem)
 	LOCAL strucItem IS _winTV_Item
 	LOCAL oTreeViewItem AS TreeViewItem
 	LOCAL pszItemText AS PSZ
@@ -653,8 +653,8 @@ METHOD GetItemAttributes(symItem)
 	LOCAL symTemp AS SYMBOL
 
 
-	
-	
+
+
 	// set up the structure to receive item attributes
     IF IsSymbol(symItem)
         strucItem:hItem := SELF:__GetHandleFromSymbol(symItem)
@@ -670,7 +670,7 @@ METHOD GetItemAttributes(symItem)
 	// create the TreeViewItem object from the structure
 	IF TreeView_GetItem(SELF:Handle(),  @strucItem)
 		oTreeViewItem := TreeViewItem{}
-      symTemp := SELF:__GetSymbolFromHandle(strucItem:hItem) 
+      symTemp := SELF:__GetSymbolFromHandle(strucItem:hItem)
 		oTreeViewItem:NameSym := symTemp
 		oTreeViewItem:TextValue := Psz2String(strucItem:pszText)
 		oTreeViewItem:Value := SELF:__GetValueFromSymbol(symTemp)
@@ -704,15 +704,15 @@ METHOD GetItemAttributes(symItem)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetItemBoundingBox/*" />
-METHOD GetItemBoundingBox(symItem, lTextOnly) 
+METHOD GetItemBoundingBox(symItem, lTextOnly)
 	LOCAL hItem AS PTR
 	LOCAL strucRect IS _winRect
 	LOCAL oOrigin AS Point
 	LOCAL oSize AS Dimension
 
 
-	
-	
+
+
 
 
 	DEFAULT(@lTextOnly, FALSE)
@@ -735,13 +735,13 @@ METHOD GetItemBoundingBox(symItem, lTextOnly)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetNextSiblingItem/*" />
-METHOD GetNextSiblingItem(symItem) 
+METHOD GetNextSiblingItem(symItem)
 	//SE-060524
 	LOCAL hItem AS PTR
 
 
-	
-	
+
+
 
 
 	hItem := SELF:__GetHandleFromSymbol(symItem)
@@ -751,13 +751,13 @@ METHOD GetNextSiblingItem(symItem)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetNextVisibleItem/*" />
-METHOD GetNextVisibleItem(symItem) 
+METHOD GetNextVisibleItem(symItem)
 	//SE-060524
 	LOCAL hItem AS PTR
 
 
-	
-	
+
+
 
 
 	hItem := SELF:__GetHandleFromSymbol(symItem)
@@ -767,13 +767,13 @@ METHOD GetNextVisibleItem(symItem)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetParentItem/*" />
-METHOD GetParentItem(symItem) 
+METHOD GetParentItem(symItem)
 	//SE-060524
 	LOCAL hItem AS PTR
 
 
-	
-	
+
+
 
 
 	hItem := SELF:__GetHandleFromSymbol(symItem)
@@ -783,13 +783,13 @@ METHOD GetParentItem(symItem)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetPreviousSiblingItem/*" />
-METHOD GetPreviousSiblingItem(symItem) 
+METHOD GetPreviousSiblingItem(symItem)
 	//SE-060524
 	LOCAL hItem AS PTR
 
 
-	
-	
+
+
 
 
 	hItem := SELF:__GetHandleFromSymbol(symItem)
@@ -799,13 +799,13 @@ METHOD GetPreviousSiblingItem(symItem)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetPreviousVisibleItem/*" />
-METHOD GetPreviousVisibleItem(symItem) 
+METHOD GetPreviousVisibleItem(symItem)
 	//SE-060524
 	LOCAL hItem AS PTR
 
 
-	
-	
+
+
 
 
 	hItem := SELF:__GetHandleFromSymbol(symItem)
@@ -815,73 +815,73 @@ METHOD GetPreviousVisibleItem(symItem)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetRootItem/*" />
-METHOD GetRootItem() 
+METHOD GetRootItem()
    //SE-060524
-	
-	
+
+
 
 
 	RETURN SELF:GetItemAttributes(TreeView_GetRoot(SELF:Handle()))
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetSelectedItem/*" />
-METHOD GetSelectedItem() 
+METHOD GetSelectedItem()
 	//SE-060524
-	
-	
+
+
 
 
 	RETURN SELF:GetItemAttributes(TreeView_GetSelection(SELF:Handle()))
 
 
 /// <include file="Gui.xml" path="doc/TreeView.ImageList/*" />
-ACCESS ImageList 
-	
-	
+ACCESS ImageList
+
+
 
 
 	RETURN oImageList
 
 
 /// <include file="Gui.xml" path="doc/TreeView.ImageList/*" />
-ASSIGN ImageList(oNewImageList) 
+ASSIGN ImageList(oNewImageList)
    //SE-060524
-	
-	
+
+
 
 
 	oImageList := oNewImageList
 	TreeView_SetImageList(SELF:Handle(), oImageList:Handle(), TVSIL_NORMAL)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeView.Indent/*" />
-ACCESS Indent 
-	
-	
+ACCESS Indent
+
+
 
 
 	RETURN TreeView_GetIndent(SELF:Handle())
 
 
 /// <include file="Gui.xml" path="doc/TreeView.Indent/*" />
-ASSIGN Indent(dwIndent) 
-	
-	
+ASSIGN Indent(dwIndent)
+
+
 
 
 	RETURN TreeView_SetIndent(SELF:Handle(), dwIndent)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	LOCAL dwStyle AS DWORD
 
 
-	
-	
+
+
 
 
 	IF IsNil(kStyle)
@@ -907,11 +907,11 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	AAdd(aTreeItems, {#Sort, TVI_SORT})
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeView.InsertItem/*" />
-METHOD InsertItem(symParentName, symInsertAfter, oTreeViewItem) 
+METHOD InsertItem(symParentName, symInsertAfter, oTreeViewItem)
 	//SE-060525
 	LOCAL hParentItem AS PTR
 	LOCAL hInsertAfter AS PTR
@@ -926,8 +926,8 @@ METHOD InsertItem(symParentName, symInsertAfter, oTreeViewItem)
 	LOCAL uValue					AS USUAL
 
 
-	
-	
+
+
 
 
 	// translate symbols into item handles
@@ -1018,12 +1018,12 @@ METHOD InsertItem(symParentName, symInsertAfter, oTreeViewItem)
 
 
 		// set up the insert structure
-		strucInsertItem:u:item:mask := _OR(TVIF_TEXT, TVIF_IMAGE, TVIF_SELECTEDIMAGE, dwMask) //, TVIF_PARAM
+		strucInsertItem:u:item:mask := _OR(TVIF_TEXT, TVIF_IMAGE, TVIF_SELECTEDIMAGE, (INT) dwMask) //, TVIF_PARAM
 		//strucInsertItem.u.item.lparam := LONG(_CAST, oTreeViewItem:NameSym)
 		strucInsertItem:u:item:statemask := dwStateMask
-		strucInsertItem:u:item:state := dwState
+		strucInsertItem:u:item:state := dwState 
 		strucInsertItem:hParent := hParentItem
-		strucInsertItem:hInsertAfter := hInsertAfter
+		strucInsertItem:hInsertAfter := hInsertAfter  
 
 
 		// insert the item into the tree view and add the new item handle to the list
@@ -1081,23 +1081,23 @@ METHOD InsertItem(symParentName, symInsertAfter, oTreeViewItem)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.ItemCount/*" />
-ACCESS ItemCount 
-	
-	
+ACCESS ItemCount
+
+
 
 
 	RETURN TreeView_GetCount(SELF:Handle())
 
 
 /// <include file="Gui.xml" path="doc/TreeView.SearchString/*" />
-ACCESS SearchString 
+ACCESS SearchString
 	LOCAL pszSearchString AS PSZ
 	LOCAL cSearchString AS STRING
 	LOCAL DIM aBuf[257] AS BYTE
 
 
-	
-	
+
+
 
 
 	pszSearchString:= @aBuf[1]
@@ -1109,12 +1109,12 @@ ACCESS SearchString
 
 
 /// <include file="Gui.xml" path="doc/TreeView.SelectItem/*" />
-METHOD SelectItem(symItem, symCode, lSelect) 
+METHOD SelectItem(symItem, symCode, lSelect)
 	LOCAL hThisItem AS PTR
 
 
-	
-	
+
+
 
 
 	IF (SELF:ItemCount == 0)
@@ -1145,14 +1145,14 @@ METHOD SelectItem(symItem, symCode, lSelect)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.SetItemAttributes/*" />
-METHOD SetItemAttributes(oTreeViewItem) 
+METHOD SetItemAttributes(oTreeViewItem)
 	LOCAL strucItem IS _winTV_ITEM
 	LOCAL pszItemText AS PSZ
 	LOCAL dwMask := 0 AS DWORD
 
 
-	
-	
+
+
 
 
 	IF (NULL_STRING != oTreeViewItem:TextValue)
@@ -1242,7 +1242,7 @@ METHOD SetItemAttributes(oTreeViewItem)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.SortChildren/*" />
-METHOD SortChildren(symParentName) 
+METHOD SortChildren(symParentName)
 	LOCAL hTreeView AS PTR
 	LOCAL hParent AS PTR
 	LOCAL strucSort IS _winTV_SORTCB
@@ -1260,25 +1260,25 @@ METHOD SortChildren(symParentName)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.StateImageList/*" />
-ACCESS StateImageList 
+ACCESS StateImageList
 	RETURN oStateImageList
 
 
 /// <include file="Gui.xml" path="doc/TreeView.StateImageList/*" />
-ASSIGN StateImageList(oNewImageList) 
-	
-	
+ASSIGN StateImageList(oNewImageList)
+
+
 
 
 	oStateImageList := oNewImageList
 	TreeView_SetImageList(SELF:Handle(), oNewImageList:Handle(), TVSIL_STATE)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeView.Toggle/*" />
-METHOD Toggle(symName, lAll, lForceNotify) 
+METHOD Toggle(symName, lAll, lForceNotify)
 	//SE-060524
 	LOCAL hThisItem AS PTR
 
@@ -1292,9 +1292,9 @@ METHOD Toggle(symName, lAll, lForceNotify)
 
 
 /// <include file="Gui.xml" path="doc/TreeView.VisibleCount/*" />
-ACCESS VisibleCount 
-	
-	
+ACCESS VisibleCount
+
+
 
 
 	RETURN TreeView_GetVisibleCount(SELF:Handle())
@@ -1323,40 +1323,40 @@ CLASS TreeViewItem INHERIT VObject
 
 	//PP-030828 Strong typing
  /// <exclude />
-	ASSIGN __TreeViewControl(oNewTVCtl AS TreeView)  STRICT 
+	ASSIGN __TreeViewControl(oNewTVCtl AS TreeView)  STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	oTVControl := oNewTVCtl
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Bold/*" />
-ACCESS Bold 
-	
-	
+ACCESS Bold
+
+
 
 
 	RETURN lBold
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Bold/*" />
-ASSIGN Bold(lEnabled) 
-	
-	
+ASSIGN Bold(lEnabled)
+
+
 
 
 	RETURN lBold := lEnabled
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Collapse/*" />
-METHOD Collapse(lAll, lForceNotify) 
-	
-	
+METHOD Collapse(lAll, lForceNotify)
+
+
 
 
 	IF (oTVControl != NULL_OBJECT)
@@ -1366,9 +1366,9 @@ METHOD Collapse(lAll, lForceNotify)
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Delete/*" />
-METHOD Delete(lChildsOnly) 
-	
-	
+METHOD Delete(lChildsOnly)
+
+
 	IF (oTVControl != NULL_OBJECT)
 		RETURN oTVControl:DeleteItem(symName, lChildsOnly)
 	ENDIF
@@ -1376,39 +1376,39 @@ METHOD Delete(lChildsOnly)
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Disabled/*" />
-ACCESS Disabled 
-	
-	
+ACCESS Disabled
+
+
 	RETURN lDisabled
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Disabled/*" />
-ASSIGN Disabled(lEnabled) 
-	
-	
+ASSIGN Disabled(lEnabled)
+
+
 	RETURN lDisabled := lEnabled
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.DropTarget/*" />
-ACCESS DropTarget 
-	
-	
+ACCESS DropTarget
+
+
 	RETURN lDropTarget
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.DropTarget/*" />
-ASSIGN DropTarget(lEnabled) 
-	
-	
+ASSIGN DropTarget(lEnabled)
+
+
 
 
 	RETURN lDropTarget := lEnabled
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Expand/*" />
-METHOD Expand(lAll, lForceNotify) 
-	
-	
+METHOD Expand(lAll, lForceNotify)
+
+
 
 
 	IF (oTVControl != NULL_OBJECT)
@@ -1418,27 +1418,27 @@ METHOD Expand(lAll, lForceNotify)
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Expanded/*" />
-ACCESS Expanded 
-	
-	
+ACCESS Expanded
+
+
 
 
 	RETURN lExpanded
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Expanded/*" />
-ASSIGN Expanded(lEnabled) 
-	
-	
+ASSIGN Expanded(lEnabled)
+
+
 
 
 	RETURN lExpanded := lEnabled
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.FirstChild/*" />
-ACCESS FirstChild 
-	
-	
+ACCESS FirstChild
+
+
 
 
 	IF (oTVControl != NULL_OBJECT)
@@ -1448,45 +1448,45 @@ ACCESS FirstChild
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Focused/*" />
-ACCESS Focused 
-	
-	
+ACCESS Focused
+
+
 
 
 	RETURN lFocused
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Focused/*" />
-ASSIGN Focused(lEnabled) 
-	
-	
+ASSIGN Focused(lEnabled)
+
+
 
 
 	RETURN lFocused := lEnabled
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.ImageIndex/*" />
-ACCESS ImageIndex 
-	
-	
+ACCESS ImageIndex
+
+
 
 
 	RETURN nImage
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.ImageIndex/*" />
-ASSIGN ImageIndex(nNewImage) 
-	
-	
+ASSIGN ImageIndex(nNewImage)
+
+
 
 
 	RETURN nImage := nNewImage
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.ctor/*" />
-CONSTRUCTOR(sName, cTextVal, uVal, iImage, iSelImage) 
-	
-	
+CONSTRUCTOR(sName, cTextVal, uVal, iImage, iSelImage)
+
+
 
 
 	IF IsSymbol(sName)
@@ -1516,31 +1516,31 @@ CONSTRUCTOR(sName, cTextVal, uVal, iImage, iSelImage)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.NameSym/*" />
-ACCESS NameSym 
-	
-	
+ACCESS NameSym
+
+
 
 
 	RETURN symName
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.NameSym/*" />
-ASSIGN NameSym(symNewName) 
-	
-	
+ASSIGN NameSym(symNewName)
+
+
 
 
 	RETURN symName := symNewName
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.NextSibling/*" />
-ACCESS NextSibling 
-	
-	
+ACCESS NextSibling
+
+
 
 
 	IF (oTVControl != NULL_OBJECT)
@@ -1550,27 +1550,27 @@ ACCESS NextSibling
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.OverlayImageIndex/*" />
-ACCESS OverlayImageIndex 
-	
-	
+ACCESS OverlayImageIndex
+
+
 
 
 	RETURN nOverlayImage
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.OverlayImageIndex/*" />
-ASSIGN OverlayImageIndex(nNewOverlayImage) 
-	
-	
+ASSIGN OverlayImageIndex(nNewOverlayImage)
+
+
 
 
 	RETURN nOverlayImage := nNewOverlayImage
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Parent/*" />
-ACCESS Parent 
-	
-	
+ACCESS Parent
+
+
 
 
 	IF (oTVControl != NULL_OBJECT)
@@ -1580,9 +1580,9 @@ ACCESS Parent
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.PreviousSibling/*" />
-ACCESS PreviousSibling 
-	
-	
+ACCESS PreviousSibling
+
+
 
 
 	IF (oTVControl != NULL_OBJECT)
@@ -1592,54 +1592,54 @@ ACCESS PreviousSibling
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Selected/*" />
-ACCESS Selected 
-	
-	
+ACCESS Selected
+
+
 
 
 	RETURN lSelected
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Selected/*" />
-ASSIGN Selected(lEnabled) 
-	
-	
+ASSIGN Selected(lEnabled)
+
+
 
 
 	RETURN lSelected := lEnabled
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.SelectedImageIndex/*" />
-ACCESS SelectedImageIndex 
-	
-	
+ACCESS SelectedImageIndex
+
+
 
 
 	RETURN nSelectedImage
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.SelectedImageIndex/*" />
-ASSIGN SelectedImageIndex(nNewSelectedImage) 
-	
-	
+ASSIGN SelectedImageIndex(nNewSelectedImage)
+
+
 
 
 	RETURN nSelectedImage := nNewSelectedImage
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.StateImageIndex/*" />
-ACCESS StateImageIndex 
-	
-	
+ACCESS StateImageIndex
+
+
 
 
 	RETURN nStateImage
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.StateImageIndex/*" />
-ASSIGN StateImageIndex(nNewStateImage) 
-	
-	
+ASSIGN StateImageIndex(nNewStateImage)
+
+
 
 
 	RETURN nStateImage := nNewStateImage
@@ -1648,45 +1648,45 @@ ASSIGN StateImageIndex(nNewStateImage)
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.TextValue/*" />
-ACCESS TextValue 
-	
-	
+ACCESS TextValue
+
+
 
 
 	RETURN cText
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.TextValue/*" />
-ASSIGN TextValue(cNewText) 
-	
-	
+ASSIGN TextValue(cNewText)
+
+
 
 
 	RETURN cText := cNewText
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.TreeViewControl/*" />
-ACCESS TreeViewControl 
-	
-	
+ACCESS TreeViewControl
+
+
 
 
 	RETURN oTVControl
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Value/*" />
-ACCESS Value 
-	
-	
+ACCESS Value
+
+
 
 
 	RETURN uValue
 
 
 /// <include file="Gui.xml" path="doc/TreeViewItem.Value/*" />
-ASSIGN Value(uNewValue) 
-	
-	
+ASSIGN Value(uNewValue)
+
+
 
 
 	RETURN uValue := uNewValue
@@ -1696,17 +1696,17 @@ END CLASS
 
 
 #ifdef __VULCAN__
-   INTERNAL DELEGATE TreeView_CompareDelegate( lParam1 AS LONGINT, lParam2 AS LONGINT, lHandle AS LONGINT) AS INT 
-   
-   
+   INTERNAL DELEGATE TreeView_CompareDelegate( lParam1 AS LONGINT, lParam2 AS LONGINT, lHandle AS LONGINT) AS INT
+
+
    STATIC FUNCTION Get_TreeView_ComparePtr() AS PTR
       STATIC LOCAL delTreeView_CompareDelegate AS TreeView_CompareDelegate
       IF delTreeView_CompareDelegate == NULL
          delTreeView_CompareDelegate := TreeView_CompareDelegate{ NULL, @TreeView_Compare() }
       ENDIF
       RETURN System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) delTreeView_CompareDelegate )
-         
-         
+
+
 #else
    STATIC FUNCTION Get_TreeView_ComparePtr() AS PTR
       RETURN @TreeView_Compare()

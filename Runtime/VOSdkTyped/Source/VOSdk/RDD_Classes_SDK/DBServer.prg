@@ -34,7 +34,7 @@ PARTIAL CLASS DbServer INHERIT DataServer
 	PROTECT nStoredNextCount AS LONGINT
 	PROTECT lStoredAllRecords AS USUAL
 	PROTECT lStoredRestOfFile AS LOGIC
-	PROTECT wLastSelectionRec AS LONGINT
+	PROTECT wLastSelectionRec AS DWORD
 	PROTECT oErrorInfo AS Error
 	PROTECT lErrorFlag AS LOGIC
 	PROTECT nEffectiveCCMode AS DWORD
@@ -547,7 +547,7 @@ METHOD __ProcessConcurrency( lBreak AS LOGIC) AS LOGIC STRICT
  /// <exclude />
 METHOD __RLockVerify( ) AS LOGIC STRICT
 	LOCAL w AS DWORD
-	LOCAL siCurrentRec AS LONGINT
+	LOCAL siCurrentRec AS DWORD
 	LOCAL uWasLocked AS USUAL
 	LOCAL uVOVal AS USUAL
 	LOCAL lRetCode AS LOGIC
@@ -692,7 +692,7 @@ METHOD __SetupLocks( )  AS VOID STRICT
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
 		IF ! uFlock
-			nLastLock := SELF:RecNo
+			nLastLock := (DWORD) SELF:RecNo
 			IF ! SELF:RLock( nLastLock )
 				nLastLock := 0
 				oHLStatus := SELF:Status

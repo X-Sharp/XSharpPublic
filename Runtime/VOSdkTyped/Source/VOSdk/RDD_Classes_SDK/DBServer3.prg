@@ -14,7 +14,7 @@ METHOD GetArray( nMaxRows:= 100 AS LONG, uField1 := 1 AS USUAL, uSearchValue := 
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL aResult := { } AS ARRAY
-	LOCAL wRows := 32767 AS DWORD
+	LOCAL wRows := 32767 AS LONG
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp AS HyperLabel
@@ -169,7 +169,7 @@ METHOD GetLookupTable( nMaxRows:= 100 AS LONG, uField1 := 1 AS USUAL, uField2 :=
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL aResult := { } AS ARRAY
-	LOCAL wRows := 32767 AS DWORD
+	LOCAL wRows := 32767 AS LONG
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp AS HyperLabel
@@ -379,7 +379,7 @@ METHOD GoBottom( )   AS LOGIC
 
 /// <include file="Rdd.xml" path="doc/DbServer.GoTo/*" />
 METHOD GoTo( nRecordNumber AS LONG) AS LOGIC
-	LOCAL nCurrentRecord AS LONGINT
+	LOCAL nCurrentRecord AS DWORD
 	LOCAL lRetCode := FALSE AS LOGIC
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL

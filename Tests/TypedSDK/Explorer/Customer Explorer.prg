@@ -17,7 +17,7 @@ method BuildListViewColumns()
 		oListViewColumn			:= ListViewColumn{}
 		oListViewColumn:NameSym	:= oOrdersServer:FieldSym(dwCount)
 		oListViewColumn:Caption	:= oOrdersServer:FieldName(dwCount)
-		oListViewColumn:Width	:= oOrdersServer:FieldSpec(dwCount):Length
+		oListViewColumn:Width	:= (LONG) oOrdersServer:FieldSpec(dwCount):Length
 		oListView:AddColumn(oListViewColumn)
 	NEXT dwCount
 

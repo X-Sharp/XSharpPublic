@@ -80,7 +80,7 @@ CONSTRUCTOR(oOwner, lClientEdge)
 
 
 
-	dwExStyle := IIF(lClientEdge, WS_EX_STATICEDGE, 0) //WS_EX_CONTROLPARENT)
+	dwExStyle := (DWORD) IIF(lClientEdge, WS_EX_STATICEDGE, 0) //WS_EX_CONTROLPARENT)
 
 
 	// needed (for now) since we end up in an infinite

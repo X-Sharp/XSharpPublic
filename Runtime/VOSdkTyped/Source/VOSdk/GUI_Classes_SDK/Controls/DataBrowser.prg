@@ -1365,7 +1365,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 		RETURN 
 
 	METHOD __RegisterFieldLinks(oDS AS DataServer) AS LOGIC STRICT 
-		LOCAL iDF AS INT
+		LOCAL iDF AS DWORD
 		
 
 		// Link in columns depending on two conditions.

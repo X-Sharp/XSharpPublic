@@ -105702,7 +105702,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R838 - Type conversions throw errors
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 084FC9A2-9274-4770-AE44-6D078B06BA37
 ; ************** APPLICATION R839 - Add Cast to code to get right exception *************
 Application = R839 - Add Cast to code to get right exception
 IDEVersion = 1.06
@@ -105762,7 +105762,7 @@ VO3=0
 VO4=0
 VO5=0
 VO6=0
-VO7=1
+VO7=0
 VO8=0
 VO9=0
 VO10=0

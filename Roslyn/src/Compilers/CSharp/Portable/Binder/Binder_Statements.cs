@@ -1855,17 +1855,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return expression;
                 }
             }
-#if XSHARP
-            else if (conversion.Kind == ConversionKind.ImplicitReference)
-            {
-                xsresult = XsHandleImplicitReference(targetType, expression, diagnostics, conversion);
-                if (xsresult != null)
-                {
-                    return xsresult;
-                }
-
-            }
-#endif
             else if (!conversion.IsImplicit || !conversion.IsValid)
             {
                 // We suppress conversion errors on default parameters; eg,

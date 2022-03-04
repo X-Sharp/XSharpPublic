@@ -240,14 +240,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result;
         }
 
-        BoundExpression XsHandleImplicitReference(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
-        {
-            if (conversion.Kind == ConversionKind.ImplicitReference && expression.Syntax.XSpecial)
-            {
-                return CreateXsConversion(expression, Conversion.ExplicitReference, targetType, diagnostics);
-            }
-            return null;
-        }
         BoundExpression XsHandleExplicitConversion(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
             if (conversion.IsExplicit && !TypeSymbol.Equals(expression.Type, targetType))

@@ -63,11 +63,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var destFrom = (destination as NamedTypeSymbol)?.ConstructedFrom;
                     if (destination.IsReferenceType)
                     {
-                        // do not box string, array, codeblock  and clipperargs
+                        // do not box string, array, codeblock and clipperargs
                         result = !destination.IsStringType()
                             && destFrom is { }
-                            && !Equals(destFrom, _binder.Compilation.ArrayType())
-                            && !Equals(destFrom, _binder.Compilation.CodeBlockType())
+                            && !destFrom.IsArrayType()
+                            && !destFrom.IsCodeblockType()
                             && !destination.IsIFormatProvider()
                             && destFrom.IsDerivedFrom(_binder.Compilation.CodeBlockType(), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteDiagnostics) != true
                             && !IsClipperArgsType(destination);
@@ -85,10 +85,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // do not box symbol, psz, vofloat, vodate
                         result = destination.SpecialType == SpecialType.None
                             && destFrom is { }
-                            && !Equals(destFrom, _binder.Compilation.SymbolType())
-                            && !Equals(destFrom, _binder.Compilation.PszType())
-                            && !Equals(destFrom, _binder.Compilation.FloatType())
-                            && !Equals(destFrom, _binder.Compilation.DateType());
+                            && !destFrom.IsSymbolType()
+                            && !destFrom.IsPszType()
+                            && !destFrom.IsFloatType()
+                            && !destFrom.IsCurrencyType()
+                            && !destFrom.IsDateType();
                     }
                 }
             }
@@ -502,10 +503,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (destination.IsReferenceType && !IsClipperArgsType(destination))
                     {
                         // Convert Object -> Reference allowed with /lb and with /vo7
-                        // Inside XsHandleImplicitReference we will add a cast to take care of the
-                        // real conversion
+                        // not really boxing but we'll handle generating the castclass later
+                        // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
                         sourceExpression.Syntax.XSpecial = true;
-                        return Conversion.ImplicitReference;
+                        return Conversion.Boxing;
                     }
                     if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPszType())
                     {

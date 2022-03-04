@@ -25,8 +25,9 @@
       <li styleclass="Body Text">Fixed some issues with the &quot;FIELDS&quot; clause in several UDCs (#931, #795)</li>
       <li styleclass="Body Text">Fixed a problem in the preprocessor with parentheses in #xtranslate directives (#963)</li>
       <li styleclass="Body Text">Fixed several more issues with #command and #translate directives (#915)</li>
-      <li styleclass="Body Text">In some cases, the compiler would emit code that does not throw a runtime exception, when casting/converting from one type to an incompatible one. This has been fixed (#961)</li>
+      <li styleclass="Body Text">In some cases, the compiler would emit code that does not throw a runtime exception, when casting/converting from one type to an incompatible one. This has been fixed (#961, #984)</li>
       <li styleclass="Body Text">The compiler was not reporting narrowing conversion warnings in several cases, this has been fixed (#951)</li>
+      <li styleclass="Body Text">The compiler was not reporting signed/unsigned conversion warnings. This has been fixed (#971)</li>
     </list>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -36,11 +37,13 @@
       <li styleclass="Body Text">When a parser error occurs because an identifier was replaced by a define with the same name, then the compiler will now generate a second warning.</li>
       <li styleclass="Body Text">If a header file contains actual code and this code is called during debugging then the debugger will now step into the header file when debugging this code. <br/>Previously all statements were linked to the #include line from the place where the header was included. (#967)</li>
       <li styleclass="Body Text">When you are suppressing compiler errors with the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo11">/vo11</link> (Compatible numeric conversion) compiler option you will now see a <link displaytype="text" defaultstyle="true" type="topiclink" href="XS9020">XS9020</link> &quot;narrowing&quot; warning indicating that a runtime error may happen or that data may be lost.</li>
+      <li styleclass="Body Text">When you are suppressing conversion errors between signed and unsigned integers with <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo4">/vo4</link> then you will now see as <link displaytype="text" defaultstyle="true" type="topiclink" href="XS9021">XS9021</link> warning indicating that data may be lost or an overflow error may occur.</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The source code editor now also supports the new #if and #stdout preprocessor commands &#160;(#912)</li>
+      <li styleclass="Body Text">There is new &quot;Lightbulb&quot; option to generate constructors for classes.</li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

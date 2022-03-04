@@ -3,7 +3,7 @@
     "xsc": {
       "commandName": "Project",
       "commandLineArgs": "@app.rsp",
-      "workingDirectory": "c:\\XSharp\\Dev\\Tests",
+      "workingDirectory": "c:\\XSharp\\Dev\\tests",
       "nativeDebugging": false
     }
   }

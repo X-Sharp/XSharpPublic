@@ -693,7 +693,7 @@ _DLL FUNC GetThreadSelectorEntry(hThread AS PTR, dwSelector AS DWORD,;
 
 #ifdef __VULCAN__
 FUNCTION GetLastError() AS DWORD
-   RETURN System.Runtime.InteropServices.Marshal.GetLastWin32Error()
+   RETURN (DWORD) System.Runtime.InteropServices.Marshal.GetLastWin32Error()
 #else
    _DLL FUNC GetLastError() AS DWORD PASCAL:KERNEL32.GetLastError
 #endif

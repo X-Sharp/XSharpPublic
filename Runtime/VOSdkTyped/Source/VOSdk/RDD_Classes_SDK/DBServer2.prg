@@ -966,7 +966,7 @@ METHOD Delete( cbForBlock, cbWhileBlock, uScope ) AS LOGIC CLIPPER
 	LOCAL lRetCode AS LOGIC
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
-	LOCAL nCurrRec AS LONGINT
+	LOCAL nCurrRec AS DWORD
 	LOCAL uFlock AS USUAL
 
 

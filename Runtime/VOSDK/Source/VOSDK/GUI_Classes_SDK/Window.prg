@@ -2870,7 +2870,7 @@ METHOD Handle() AS PTR
 
 /// <include file="Gui.xml" path="doc/Window.HasExStyle/*" />
 METHOD HasExStyle(kStyle AS LONG)
-    LOCAL liStyle	AS DWORD
+    LOCAL liStyle	AS LONG
     // DHer: 18/12/2008
     liStyle := GetWindowLong(SELF:hWnd,GWL_EXSTYLE)
     RETURN _AND(liStyle,kStyle) != 0
@@ -2878,7 +2878,7 @@ METHOD HasExStyle(kStyle AS LONG)
 
 /// <include file="Gui.xml" path="doc/Window.HasStyle/*" />
 METHOD HasStyle(kStyle AS LONG)
-    LOCAL liStyle	AS DWORD
+    LOCAL liStyle	AS LONG
     // DHer: 18/12/2008
     liStyle := GetWindowLong(SELF:hWnd,GWL_STYLE)
     RETURN _AND(liStyle,kStyle) != 0

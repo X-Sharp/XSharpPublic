@@ -404,7 +404,7 @@ METHOD GoBottom( )
 
 /// <include file="Rdd.xml" path="doc/DbServer.GoTo/*" />
 METHOD GoTo( nRecordNumber )
-	LOCAL nCurrentRecord AS LONGINT
+	LOCAL nCurrentRecord AS DWORD
 	LOCAL lRetCode AS LOGIC
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError AS USUAL

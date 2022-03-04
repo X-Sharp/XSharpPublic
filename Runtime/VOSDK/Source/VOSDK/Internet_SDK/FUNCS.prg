@@ -483,23 +483,23 @@ FUNCTION __GoodFileName(cAttachName AS STRING) AS STRING STRICT
     FOREACH VAR ch IN cAttachName
         LOCAL c AS CHAR
 		SWITCH ch
-        CASE c'/'    
+        CASE c'/'
             c := c'['
-        CASE c'\\'   
+        CASE c'\\'
             c := c']'
-        CASE c'?'   
+        CASE c'?'
             c := c'$'
-        CASE c':'   
+        CASE c':'
             c := c'='
-        CASE c'*'   
+        CASE c'*'
             c := c'+'
-        CASE c'"'   
+        CASE c'"'
             c := c'^'
-        CASE c'>'  
+        CASE c'>'
             c := ')'
-        CASE c'<'  
+        CASE c'<'
             c := c'('
-        CASE c'|' 
+        CASE c'|'
             c := c'!'
         OTHERWISE
             c := ch
@@ -833,7 +833,7 @@ FUNCTION	GetMailTimeStamp(lForceUK AS LOGIC)	AS	STRING STRICT
 
 	IF lForceUK
 		nTmp := DoW(d)
-		cRet := SubStr("SunMonTueWedThuFriSat",(3*nTmp)-2,3)
+		cRet := SubStr("SunMonTueWedThuFriSat",(3u*nTmp)-2,3)
 	ELSE
 		cRet := SubStr3( CDoW(d), 1, 3)
 	ENDIF
@@ -846,7 +846,7 @@ FUNCTION	GetMailTimeStamp(lForceUK AS LOGIC)	AS	STRING STRICT
 	cRet += " "
 	IF lForceUk
 		nTmp := Month(d)
-		cRet += SubStr("JanFebMarAprMayJunJulAugSepOctNovDec",(3*nTmp)-2,3)
+		cRet += SubStr("JanFebMarAprMayJunJulAugSepOctNovDec",(3u*nTmp)-2,3)
 	ELSE
 		cRet += AllTrim(SubStr(CMonth(d),1,3))
 	ENDIF

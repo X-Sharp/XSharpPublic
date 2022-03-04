@@ -44,7 +44,7 @@ PARTIAL CLASS DbServer INHERIT DataServer
 
  /// <exclude />
 METHOD __AcceptSelectiveRelation( oDBParent AS DbServer, wParentWorkArea AS DWORD, ;
-	cbSelection AS USUAL) AS VOID STRICT 
+	cbSelection AS USUAL) AS VOID STRICT
 	//SE-060601
 	LOCAL cIndexExt AS STRING
 	LOCAL dwCurrentWorkArea AS DWORD
@@ -85,7 +85,7 @@ METHOD __AcceptSelectiveRelation( oDBParent AS DbServer, wParentWorkArea AS DWOR
 
 
  /// <exclude />
-METHOD __BuildDataField( a AS ARRAY ) AS DataField STRICT 
+METHOD __BuildDataField( a AS ARRAY ) AS DataField STRICT
 	LOCAL oRet AS DataField
 
 
@@ -105,7 +105,7 @@ METHOD __BuildDataField( a AS ARRAY ) AS DataField STRICT
 
 
  /// <exclude />
-METHOD __ClearChildRelation( oChild AS DbServer ) AS VOID STRICT 
+METHOD __ClearChildRelation( oChild AS DbServer ) AS VOID STRICT
 	LOCAL w AS DWORD
 	LOCAL wLen AS DWORD
 
@@ -132,7 +132,7 @@ METHOD __ClearChildRelation( oChild AS DbServer ) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __ClearLocks( )  AS VOID STRICT 
+METHOD __ClearLocks( )  AS VOID STRICT
 	LOCAL uVOVal AS USUAL
 
 
@@ -175,7 +175,7 @@ METHOD __ClearLocks( )  AS VOID STRICT
 
  /// <exclude />
 METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
-	nNext AS USUAL, nRecno AS USUAL, lRest AS LOGIC, lCC AS LOGIC, lCCUpdate AS LOGIC ) AS LOGIC STRICT 
+	nNext AS USUAL, nRecno AS USUAL, lRest AS LOGIC, lCC AS LOGIC, lCCUpdate AS LOGIC ) AS LOGIC STRICT
 	LOCAL lRetCode := TRUE AS LOGIC
 	LOCAL lLimit AS LOGIC
 	LOCAL lBlock AS LOGIC
@@ -194,7 +194,7 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
 	#ENDIF
    //RvdH 070711 Make sure we restore the workarea
    //				  The codeblocks may select another workarea
-	lRestore	:= DbSetRestoreWorkarea(TRUE)      
+	lRestore	:= DbSetRestoreWorkarea(TRUE)
 
 
 	VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -310,7 +310,7 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
 
 
  /// <exclude />
-METHOD __GenerateStatusHL( oError AS  Error) AS HyperLabel STRICT 
+METHOD __GenerateStatusHL( oError AS  Error) AS HyperLabel STRICT
 	LOCAL oRet AS HyperLabel // OBJECT  dcaton 070428 changed from OBJECT
 	LOCAL cDesc AS STRING
     IF oError == NULL_OBJECT
@@ -328,8 +328,8 @@ METHOD __GenerateStatusHL( oError AS  Error) AS HyperLabel STRICT
 	IF Len( oError:Description ) > 0
 		cDesc += oError:Description
 	ELSE
-		cDesc += ErrString( oError:gencode ) 
-	ENDIF                                   
+		cDesc += ErrString( oError:gencode )
+	ENDIF
 	IF  SLen(oError:SubCodeText) > 0
 		cDesc += " ("+oError:SubCodeText+")"
 	ENDIF
@@ -350,7 +350,7 @@ METHOD __GenerateStatusHL( oError AS  Error) AS HyperLabel STRICT
 
 
  /// <exclude />
-METHOD __InitRecordBuf( ) AS VOID STRICT 
+METHOD __InitRecordBuf( ) AS VOID STRICT
 	LOCAL i AS DWORD
 	LOCAL x AS USUAL
 
@@ -363,10 +363,10 @@ METHOD __InitRecordBuf( ) AS VOID STRICT
 	FOR i := 1 TO SELF:wFieldCount
 		IF VODBFieldGet( i, REF x )
 			//RvdH 060928 Mark as BLOB when fieldtype = 'M' and not string
-			aOriginalBuffer[BUFFER_VALUE, i] 			:= x                                                       
-			IF ! IsString(x) .AND. SELF:aStruct[i,DBS_TYPE] == "M"  
-				aOriginalBuffer[BUFFER_IS_BLOB, i] 		:= TRUE    
-			ELSE                                           
+			aOriginalBuffer[BUFFER_VALUE, i] 			:= x
+			IF ! IsString(x) .AND. SELF:aStruct[i,DBS_TYPE] == "M"
+				aOriginalBuffer[BUFFER_IS_BLOB, i] 		:= TRUE
+			ELSE
 				aOriginalBuffer[BUFFER_IS_BLOB, i] 	:= FALSE
 			ENDIF
 		ELSE
@@ -389,7 +389,7 @@ METHOD __InitRecordBuf( ) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __Notify( kNotification, uDescription ) 
+METHOD __Notify( kNotification, uDescription )
    LOCAL uRetValue AS USUAL
    LOCAL oError AS USUAL
 
@@ -406,7 +406,7 @@ METHOD __Notify( kNotification, uDescription )
 
 
  /// <exclude />
-METHOD __NotifyBufferFlush( ) AS VOID STRICT  
+METHOD __NotifyBufferFlush( ) AS VOID STRICT
 	LOCAL dwCurrentWorkArea  AS DWORD
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
@@ -428,7 +428,7 @@ METHOD __NotifyBufferFlush( ) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __OptimisticFlush() AS VOID STRICT 
+METHOD __OptimisticFlush() AS VOID STRICT
 	LOCAL w AS DWORD
 	LOCAL uFLock AS USUAL
 	LOCAL uValue AS USUAL
@@ -502,7 +502,7 @@ METHOD __OptimisticFlush() AS VOID STRICT
 
 
  /// <exclude />
-METHOD __OptimisticFlushNoLock( ) AS VOID STRICT 
+METHOD __OptimisticFlushNoLock( ) AS VOID STRICT
 	LOCAL w AS DWORD
 	LOCAL uValue AS USUAL
 	// LOCAL nCurRec AS DWORD         dcaton 070430 never used
@@ -534,7 +534,7 @@ METHOD __OptimisticFlushNoLock( ) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __ProcessConcurrency( lBreak AS LOGIC) AS LOGIC STRICT 
+METHOD __ProcessConcurrency( lBreak AS LOGIC) AS LOGIC STRICT
 	LOCAL uVOVal AS USUAL
 	LOCAL lError AS LOGIC
 	LOCAL lRetCode AS LOGIC
@@ -573,7 +573,7 @@ METHOD __ProcessConcurrency( lBreak AS LOGIC) AS LOGIC STRICT
 			ELSE
 				lError := TRUE
 			ENDIF
-		ENDIF 
+		ENDIF
 	ELSE
 		lRetCode := TRUE
 	ENDIF
@@ -591,9 +591,9 @@ METHOD __ProcessConcurrency( lBreak AS LOGIC) AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __RLockVerify( ) AS LOGIC STRICT 
+METHOD __RLockVerify( ) AS LOGIC STRICT
 	LOCAL w AS DWORD
-	LOCAL siCurrentRec AS LONGINT
+	LOCAL siCurrentRec AS DWORD
 	LOCAL uWasLocked AS USUAL
 	LOCAL uVOVal AS USUAL
 	LOCAL lRetCode AS LOGIC
@@ -619,25 +619,25 @@ METHOD __RLockVerify( ) AS LOGIC STRICT
 	ENDIF
 	IF ! lRetCode
 		BREAK ErrorBuild( _VODBErrInfoPtr( ) )
-	ELSE    
-		// Store our 'current record' 
+	ELSE
+		// Store our 'current record'
  		aRLockVerifyBuffer := ArrayNew( wFieldCount )
  		FOR w := 1 UPTO wFieldCount
  			aRLockVerifyBuffer[w] := __DBSFieldGet(w)
- 		NEXT                            
+ 		NEXT
 		// Get the current record buffer from disk and compare the fields
 		// in the current buffer with our values.
 		VODBBuffRefresh( )
 		FOR w := 1 UPTO wFieldCount
-			uValue := __DBSFieldGet( w )           
-			//                                                        
+			uValue := __DBSFieldGet( w )
+			//
 			IF aOriginalBuffer[BUFFER_IS_BLOB, w]
 				// Field was a blob. Compare field types
 				IF UsualType(aOriginalBuffer[BUFFER_VALUE, w]) != UsualType(uValue)
 					lRetCode := FALSE
 				ENDIF
 			ELSEIF ! ( aOriginalBuffer[BUFFER_VALUE, w] == uValue )
-				// Field has changed. 
+				// Field has changed.
 				// Test for float fields with non-relevant differences
 				IF IsFloat(uValue)
 				   nDiff := 10 ^ -(aStruct[w, DBS_DEC])
@@ -648,7 +648,7 @@ METHOD __RLockVerify( ) AS LOGIC STRICT
 				   lRetCode := FALSE
 				ENDIF
 			//ELSE
-				// The field has not changed 
+				// The field has not changed
 			ENDIF
 			IF ! lRetCode
 				oHLStatus := HyperLabel{ #RECORDCHANGED,  ;
@@ -680,7 +680,7 @@ METHOD __RLockVerify( ) AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __SetAlias( cName AS STRING, aField AS ARRAY, nField AS DWORD) AS VOID STRICT 
+METHOD __SetAlias( cName AS STRING, aField AS ARRAY, nField AS DWORD) AS VOID STRICT
 	LOCAL cAlias AS STRING
 	LOCAL oFSpec AS FieldSpec
 
@@ -700,7 +700,7 @@ METHOD __SetAlias( cName AS STRING, aField AS ARRAY, nField AS DWORD) AS VOID ST
 
 
  /// <exclude />
-METHOD __SetStatusHL( uFuncSym AS USUAL, uGenCode AS USUAL, uMessage AS USUAL ) AS VOID STRICT 
+METHOD __SetStatusHL( uFuncSym AS USUAL, uGenCode AS USUAL, uMessage AS USUAL ) AS VOID STRICT
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
@@ -717,7 +717,7 @@ METHOD __SetStatusHL( uFuncSym AS USUAL, uGenCode AS USUAL, uMessage AS USUAL ) 
 
 
  /// <exclude />
-METHOD __SetupLocks( )  AS VOID STRICT 
+METHOD __SetupLocks( )  AS VOID STRICT
 	LOCAL w AS DWORD
 	LOCAL uFlock AS USUAL
 
@@ -775,7 +775,7 @@ METHOD __SetupLocks( )  AS VOID STRICT
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
-CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD ) 
+CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL cFileName AS STRING
 	LOCAL w AS DWORD
@@ -961,8 +961,8 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
 		aOriginalBuffer := ArrayNew( 2, wFieldCount )
 		aCurrentBuffer  := ArrayNew( 2, wFieldCount )
 		SELF:__InitRecordBuf( )
-		
-		
+
+
 
 
 		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
@@ -985,7 +985,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__)
 	#ENDIF
-	RETURN 
+	RETURN
 
 
 

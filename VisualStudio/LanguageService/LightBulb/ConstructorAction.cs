@@ -21,8 +21,6 @@ namespace XSharp.Project.Editors.LightBulb
         public ConstructorSuggestedAction(ITextSnapshot snapshot) : base(snapshot)
         {
         }
-
-        private readonly ITextView m_textView;
         private int _insertionLine;
         private ITextBuffer _textBuffer;
         private IXTypeSymbol _classEntity;

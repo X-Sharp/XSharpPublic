@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -221,61 +222,69 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.Identity;
                 }
             }
-            if (!srcType.Equals(dstType) )
+            if (!srcType.Equals(dstType) && (vo4 || vo11))
             {
-                if (vo4 || vo11)
+                // These compiler options only applies to numeric types
+                Conversion result = Conversion.NoConversion;
+                if (srcType.IsNumericType() && dstType.IsNumericType())
                 {
-                    // This compiler option only applies to numeric types
-                    if (srcType.IsNumericType() && dstType.IsNumericType())
+                    if (srcType.IsIntegralType() && dstType.IsIntegralType())
                     {
-                        if (srcType.IsIntegralType() && dstType.IsIntegralType())
+                        // when both same # of bits and integral, use Identity conversion
+                        if (srcType.SizeInBytes() == dstType.SizeInBytes())
                         {
-                            // when both same # of bits and integral, use Identity conversion
-                            if (srcType.SizeInBytes() == dstType.SizeInBytes())
+                            var constant = false;
+                            if (sourceExpression is BoundBinaryOperator bop)
                             {
-                                var constant = false;
-                                if (sourceExpression is BoundBinaryOperator bop)
-                                {
-                                    constant = bop.Left.ConstantValue != null || bop.Right.ConstantValue != null;
-                                }
-                                syntax.XWarning = !constant && !syntax.XGenerated;
-                                return Conversion.Identity;
+                                constant = bop.Left.ConstantValue != null || bop.Right.ConstantValue != null;
                             }
-                            else if (vo11)
-                            {
-                                // otherwise implicit conversion
-                                syntax.XWarning = !syntax.XGenerated;
-                                return Conversion.ImplicitNumeric;
-                            }
+                            syntax.XWarning = !constant && !syntax.XGenerated;
+                            result = Conversion.Identity;
                         }
-                        else if (vo11 && dstType.IsIntegralType() && sourceExpression.ConstantValue == null)
+                        else if (vo11)
                         {
+                            // otherwise implicit conversion
                             syntax.XWarning = !syntax.XGenerated;
-                            return Conversion.ImplicitNumeric;
+                            result = Conversion.ImplicitNumeric;
                         }
                     }
-                    // VO/Vulcan also allows to convert floating point types <-> integral types
-                    if (source.IsFloatType() || source.IsCurrencyType())
+                    else if (vo11 && dstType.IsIntegralType() && sourceExpression.ConstantValue == null)
                     {
-                        if (destination is { } && destination.SpecialType.IsNumericType())
-                        {
-                            // not really boxing but we'll handle the actual conversion later
-                            // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
-                            syntax.XSpecial = true;
-                            syntax.XWarning = !syntax.XGenerated;
-                            return Conversion.Boxing;
-                        }
+                        syntax.XWarning = !syntax.XGenerated;
+                        result = Conversion.ImplicitNumeric;
                     }
+                }
+                // VO/Vulcan also allows to convert floating point types <-> integral types
+                if (result == Conversion.NoConversion && (source.IsFloatType() || source.IsCurrencyType()))
+                {
+                    if (destination is { } && destination.SpecialType.IsNumericType())
+                    {
+                        // not really boxing but we'll handle the actual conversion later
+                        // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                        syntax.XSpecial = true;
+                        syntax.XWarning = !syntax.XGenerated;
+                        result = Conversion.Boxing;
+                    }
+                }
+                if (result != Conversion.NoConversion)
+                {
+                    if (syntax.Parent is AssignmentExpressionSyntax)
+                    {
+                        syntax.Parent.XWarning = syntax.XWarning;
+                    }
+                    return result;
                 }
             }
             if (XsIsImplicitBinaryOperator(sourceExpression, destination, null))
             {
                 syntax.XWarning = !syntax.XGenerated;
+                if (syntax.Parent is AssignmentExpressionSyntax)
+                {
+                    syntax.Parent.XWarning = syntax.XWarning;
+                }
                 return Conversion.ImplicitNumeric;
             }
-
             return Conversion.NoConversion;
-
         }
 
         internal bool XsIsImplicitBinaryOperator(BoundExpression expression, TypeSymbol targetType, Binder binder)

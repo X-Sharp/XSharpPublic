@@ -17,16 +17,20 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     internal sealed partial class DiagnosticsPass 
     {
-
-        private void XsCheckConversion(BoundConversion node)
+        private void XsCheckCompoundAssignmentOperator(BoundCompoundAssignmentOperator node)
         {
             var syntax = node.Syntax;
-            if (syntax == null || node.ConstantValue != null || node.WasCompilerGenerated ||
-                syntax.XIsExplicitTypeCastInCode || syntax.XGenerated)
+            if (syntax == null || node.ConstantValue != null || node.WasCompilerGenerated || syntax.XGenerated)
                 return;
-            var sourceType = node.Operand.Type;
-            var targetType = node.Type;
-            if (syntax != null! && !Equals(sourceType, targetType) && syntax.XWarning)
+            var leftType = node.Left.Type;
+            var rightType = node.Right.Type;
+            GenerateWarning(rightType, leftType, node);
+        }
+
+        private void GenerateWarning(TypeSymbol sourceType, TypeSymbol targetType, BoundNode node)
+        {
+            var syntax = node.Syntax;
+            if (syntax.XWarning && !Equals(sourceType, targetType))
             {
                 var vo4 = _compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, syntax);
                 var vo11 = _compilation.Options.HasOption(CompilerOption.ArithmeticConversions, syntax);
@@ -51,6 +55,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+        }
+
+        private void XsCheckConversion(BoundConversion node)
+        {
+            var syntax = node.Syntax;
+            if (syntax == null || node.ConstantValue != null || node.WasCompilerGenerated ||
+                syntax.XIsExplicitTypeCastInCode || syntax.XGenerated)
+                return;
+            var sourceType = node.Operand.Type;
+            var targetType = node.Type;
+            GenerateWarning(sourceType, targetType, node);
         }
 
         private void VOCheckIntegerToPointer(BoundConversion node)

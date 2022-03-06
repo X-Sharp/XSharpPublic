@@ -284,7 +284,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public override BoundNode VisitCompoundAssignmentOperator(BoundCompoundAssignmentOperator node)
         {
             CheckCompoundAssignmentOperator(node);
-
+#if XSHARP
+            XsCheckCompoundAssignmentOperator(node);
+#endif
             return base.VisitCompoundAssignmentOperator(node);
         }
 

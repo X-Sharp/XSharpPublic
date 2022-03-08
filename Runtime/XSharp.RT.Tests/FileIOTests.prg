@@ -52,7 +52,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			LOCAL hFile AS PTR
 			LOCAL cFileName AS STRING
 			LOCAL nResult AS DWORD
-			LOCAL cBuffer AS STRING
+			LOCAL cBuffer := "" AS STRING
 
 			cFileName := TempFile("txt")
 			hFile := FCreate(cFileName , FC_NORMAL)

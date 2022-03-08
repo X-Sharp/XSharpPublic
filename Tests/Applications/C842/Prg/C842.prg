@@ -17,6 +17,12 @@ b := 1 - b
 d := 1 - d // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
 d := d + 1
 d := 1 + d // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
+d := 1 + d - 2 // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
+
+d += 100 + d // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
+
+d := d - 1
+d := d - (16 + 8 * d)  // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
 
 LOCAL u AS USUAL
 u := n + INT( d )// warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
@@ -24,4 +30,11 @@ u := n + (INT) d // warning XS9021: Signed/unsigned conversions from 'dword' to 
 
 u := d + DWORD( n )// warning XS9021: Signed/unsigned conversions from 'int' to 'dword'
 u := d + (DWORD) n // warning XS9021: Signed/unsigned conversions from 'int' to 'dword'
+
+u := 123 * d // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
+u := 123 + d // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
+u := 123 * n
+
+u := (10*d)-9 // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
+
 ? u

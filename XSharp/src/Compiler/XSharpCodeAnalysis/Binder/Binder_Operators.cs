@@ -1213,11 +1213,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             return constant;
         }
 
-        BoundExpression XsHandleIntegralTypes(BoundBinaryOperator binaryOperator, TypeSymbol leftType, TypeSymbol rightType)
+        BoundExpression XsHandleIntegralTypes(BinaryExpressionSyntax node, BoundBinaryOperator binaryOperator, TypeSymbol leftType, TypeSymbol rightType)
         {
             // This is the place where we will handle VO specific conversion
             // when the left and right types are equal we want a result of the same type.
             // also shift operations should return the left type: C277 ByteValue >> 2 should not return int but byte.
+
+            if (!Equals(binaryOperator.Right.Type, rightType) || !Equals(binaryOperator.Left.Type, leftType))
+            {
+                node.XWarning = true;
+            }
+
             BoundExpression result = binaryOperator;
             var kind = binaryOperator.OperatorKind;
             if (kind.IsComparison())
@@ -1257,8 +1263,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     { WasCompilerGenerated = true };
                 }
             }
-                return result;
-            }
+            return result;
+        }
         bool XsConstantFitsInType(BoundExpression result, TypeSymbol preferredType)
         {
             bool fits = true;

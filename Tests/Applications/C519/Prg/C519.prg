@@ -7,7 +7,8 @@ p := 1 //ok
 p := 2 //ok
 p := iif(l , 3 , 4) // error XS0266
 ? p
-xAssert(p == 3)
+xAssert(p == 3)    
+
 
 
 // code from bBrowser:

@@ -1,4 +1,5 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/951
+
 FUNCTION Start( ) AS VOID
     LOCAL f := -1343.345 AS FLOAT  // "AS DOUBLE" throws an compile error
     LOCAL c := -1343.345 AS CURRENCY  // "AS DOUBLE" throws an compile error

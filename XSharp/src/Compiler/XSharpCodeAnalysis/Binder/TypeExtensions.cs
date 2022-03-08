@@ -14,6 +14,31 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     internal static class TypeExtensions
     {
+        /// <summary>
+        /// Walk a an expression tree to detect if a constant element is involved.
+        /// NOTE: this may not be complete !
+        /// </summary>
+        /// <param name="expr"></param>
+        /// <returns></returns>
+        internal static bool HasConstant(this BoundExpression expr)
+        {
+            if (expr.ConstantValue != null)
+                return true;
+            switch (expr)
+            {
+                case BoundUnaryOperator unop:
+                    return unop.Operand.HasConstant();
+                case BoundBinaryOperatorBase binop:
+                    return binop.Left.HasConstant() || binop.Right.HasConstant();
+                case BoundConversion conv:
+                    return conv.Operand.HasConstant();
+                case BoundCompoundAssignmentOperator bao:
+                    return bao.Left.HasConstant() || bao.Right.HasConstant();
+
+            }
+            return false;
+
+        }
 
         internal static bool IsXsCompilerGenerated(this Symbol symbol) 
         {

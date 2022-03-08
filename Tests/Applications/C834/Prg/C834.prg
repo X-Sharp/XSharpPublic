@@ -1,6 +1,7 @@
 // 834. Compiler error with the += and -= operators between INT/FLOAT
 // /vo11+  
 #pragma options("vo11", on)     // conversions between different sizes and from fractional to integral
+#pragma options("vo4", on)     // conversions between different sizes and from fractional to integral
 
 FUNCTION Start( ) AS VOID
 	LOCAL n := 1 AS INT
@@ -8,7 +9,7 @@ FUNCTION Start( ) AS VOID
 	LOCAL f := 3.0 AS FLOAT
 	LOCAL r := 3.0 AS REAL8
 	
-	n := f
+	n := f   
 	n := n + f // OK
 	n += f     // error XS0266: Cannot implicitly convert type 'FLOAT' to 'int'. An explicit conversion exists (are you missing a cast?)
 	xAssert(n == 9)
@@ -36,7 +37,23 @@ FUNCTION Start( ) AS VOID
 	d -= r
 	xAssert(d == 6)
 
+    d := d + 1
+    d += 1
+    d -= 1
+    d /= 1
+    d *= 1
+
+    d >>= 1       
+    n := d             
+    n := n + d
+    n += d
+    n -= d
+    n *= d
+    n >>= d
+    
+    
 RETURN
+             
 
 PROC xAssert(l AS LOGIC) 
 IF .NOT. l

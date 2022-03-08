@@ -233,12 +233,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // when both same # of bits and integral, use Identity conversion
                         if (srcType.SizeInBytes() == dstType.SizeInBytes())
                         {
-                            var constant = false;
-                            if (sourceExpression is BoundBinaryOperator bop)
-                            {
-                                constant = bop.Left.ConstantValue != null || bop.Right.ConstantValue != null;
-                            }
-                            syntax.XWarning = !constant && !syntax.XGenerated;
+                            syntax.XWarning = !syntax.XGenerated;
                             result = Conversion.Identity;
                         }
                         else if (vo11)
@@ -248,14 +243,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                             result = Conversion.ImplicitNumeric;
                         }
                     }
-                    else if (vo11 && dstType.IsIntegralType() && sourceExpression.ConstantValue == null)
+                    else if (vo11 && dstType.IsIntegralType())
                     {
                         syntax.XWarning = !syntax.XGenerated;
                         result = Conversion.ImplicitNumeric;
                     }
                 }
                 // VO/Vulcan also allows to convert floating point types <-> integral types
-                if (result == Conversion.NoConversion && (source.IsFloatType() || source.IsCurrencyType()))
+                if (result == Conversion.NoConversion && vo11 && (source.IsFloatType() || source.IsCurrencyType()))
                 {
                     if (destination is { } && destination.SpecialType.IsNumericType())
                     {

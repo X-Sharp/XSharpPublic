@@ -703,7 +703,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (integralTypes && Compilation.Options.Dialect != XSharpDialect.Core)
             {
-                return XsHandleIntegralTypes(result,leftType, rightType);
+                return XsHandleIntegralTypes(node, result, leftType, rightType);
             }
             return result;
 #endif

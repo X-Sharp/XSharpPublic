@@ -5,9 +5,8 @@
 //
 #nullable disable
 
-using System.Collections.Immutable;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -20,17 +19,25 @@ namespace Microsoft.CodeAnalysis.CSharp
         private void XsCheckCompoundAssignmentOperator(BoundCompoundAssignmentOperator node)
         {
             var syntax = node.Syntax;
-            if (syntax == null || node.ConstantValue != null || node.WasCompilerGenerated || syntax.XGenerated)
+            if (syntax == null || node.WasCompilerGenerated)
                 return;
             var leftType = node.Left.Type;
             var rightType = node.Right.Type;
+            if (node.Right is BoundConversion bcv)
+            {
+                rightType = bcv.Operand.Type;
+            }
             GenerateWarning(rightType, leftType, node);
         }
 
         private void GenerateWarning(TypeSymbol sourceType, TypeSymbol targetType, BoundNode node)
         {
             var syntax = node.Syntax;
-            if (syntax.XWarning && !Equals(sourceType, targetType))
+            if (node is BoundExpression expr && expr.HasConstant())
+            {
+                return;
+            }
+            if (syntax.XWarning && !Equals(sourceType, targetType) && !syntax.XContainsGeneratedExpression)
             {
                 var vo4 = _compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, syntax);
                 var vo11 = _compilation.Options.HasOption(CompilerOption.ArithmeticConversions, syntax);
@@ -42,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         Error(ErrorCode.WRN_SignedUnSignedConversion, node, sourceType, targetType);
                     }
-                    else if (vo11 && srcsize > trgsize)
+                    else if (srcsize > trgsize)
                     {
                         Error(ErrorCode.WRN_ConversionMayLeadToLossOfData, node, sourceType, targetType);
                     }
@@ -60,31 +67,59 @@ namespace Microsoft.CodeAnalysis.CSharp
         private void XsCheckConversion(BoundConversion node)
         {
             var syntax = node.Syntax;
-            if (syntax == null || node.ConstantValue != null || node.WasCompilerGenerated ||
-                syntax.XIsExplicitTypeCastInCode || syntax.XGenerated)
-                return;
             var sourceType = node.Operand.Type;
             var targetType = node.Type;
+
+            if (syntax is BinaryExpressionSyntax binexp)
+            {
+                // determine original expression type
+                // Roslyn will change a Int32 + UIn32
+                // to an addition of 2 Int64 values
+                // but we want the original UInt32 value for the warning message
+                if (node.Operand is BoundBinaryOperator binop)
+                {
+                    var right = binop.Right;
+                    if (right is BoundConversion bcv)
+                    {
+                        right = bcv.Operand;
+                    }
+                    sourceType = right.Type;
+                }
+            }
+            if (sourceType is null || targetType is null)
+                return;
+            if (sourceType.IsIntegralType() && targetType.IsPointerType())
+            {
+                VOCheckIntegerToPointer(node);
+            }
+            if (syntax == null || syntax.XIsExplicitTypeCastInCode || node.WasCompilerGenerated)
+                return;
             GenerateWarning(sourceType, targetType, node);
         }
-
         private void VOCheckIntegerToPointer(BoundConversion node)
         {
-            var destType = node.Type;
             var srcType = node.Operand.Type;
             var platform = _compilation.Options.Platform;
             switch (platform)
             {
                 case Platform.X86:
-                    if (srcType.SpecialType.SizeInBytes() != 4)
+                    if (srcType.SpecialType.SizeInBytes() > 4)
                     {
-                        Error(ErrorCode.ERR_CantCastPtrInPlatform, node,srcType.ToDisplayString(),"x86");
+                        Error(ErrorCode.ERR_CantCastPtrInPlatform, node,srcType.ToDisplayString(), "x86");
+                    }
+                    else if (node.Syntax.XIsExplicitTypeCastInCode && srcType.SpecialType.SizeInBytes() != 4)
+                    {
+                        Error(ErrorCode.ERR_CantCastPtrInPlatform, node, srcType.ToDisplayString(), "x86");
                     }
                     break;
                 case Platform.X64:
-                    if (srcType.SpecialType.SizeInBytes() != 8)
+                    if (srcType.SpecialType.SizeInBytes() > 8)
                     {
                         Error(ErrorCode.ERR_CantCastPtrInPlatform, node, srcType.ToDisplayString(), "x64");
+                    }
+                    else if (node.Syntax.XIsExplicitTypeCastInCode && srcType.SpecialType.SizeInBytes() != 8)
+                    {
+                        Error(ErrorCode.ERR_CantCastPtrInPlatform, node, srcType.ToDisplayString(), "x86");
                     }
                     break;
                 default:

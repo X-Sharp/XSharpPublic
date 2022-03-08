@@ -13,6 +13,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Collections.Concurrent;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using MCA = Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -134,18 +135,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal ITokenStream XTokens { get; set; } = null;
         internal ITokenStream XPPTokens { get; set; } = null;
         internal IList<Tuple<int, string>> InitProcedures { get; set; } = new List<Tuple<int, string>>();
-        internal IList< MemVarFieldInfo> FileWidePublics { get; set; } = new List<MemVarFieldInfo>();
+        internal IList<MemVarFieldInfo> FileWidePublics { get; set; } = new List<MemVarFieldInfo>();
         internal IList<FieldDeclarationSyntax> Globals { get; set; } = new List<FieldDeclarationSyntax>();
         internal IList<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings { get; set; } = null;
         internal IList<PragmaOption> PragmaOptions { get; set; } = null;
 
-        private ConcurrentDictionary<MCA.CSharpSyntaxNode, (bool, List<LocalSymbol>) > functionsThatNeedAccessToLocals ;
+        private ConcurrentDictionary<MCA.CSharpSyntaxNode, (bool, List<LocalSymbol>)> functionsThatNeedAccessToLocals;
 
         internal bool RegisterFunctionThatNeedsAccessToLocals(MCA.CSharpSyntaxNode node, bool writeAccess, List<LocalSymbol> locals)
         {
             if (functionsThatNeedAccessToLocals == null)
-                functionsThatNeedAccessToLocals = new ConcurrentDictionary<MCA.CSharpSyntaxNode, (bool, List<LocalSymbol>) >();
-            return functionsThatNeedAccessToLocals.TryAdd(node, new (writeAccess, locals));
+                functionsThatNeedAccessToLocals = new ConcurrentDictionary<MCA.CSharpSyntaxNode, (bool, List<LocalSymbol>)>();
+            return functionsThatNeedAccessToLocals.TryAdd(node, new(writeAccess, locals));
         }
         internal bool GetLocalsForFunction(MCA.CSharpSyntaxNode node, out bool writeAccess, out List<LocalSymbol> locals, bool remove = true)
         {
@@ -288,6 +289,31 @@ namespace Microsoft.CodeAnalysis
                 return null;
             }
         }
+        /// <summary>
+        /// Walk a an Syntax tree to detect if a generated element is involved.
+        /// NOTE: this may not be complete !
+        /// </summary>
+        internal bool XContainsGeneratedExpression
+        {
+            get
+            {
+                if (this.XGenerated)
+                    return true;
+                switch (this)
+                {
+                    case BinaryExpressionSyntax binexp:
+                        return binexp.Left.XContainsGeneratedExpression || binexp.Right.XContainsGeneratedExpression;
+                    case PrefixUnaryExpressionSyntax prefun:
+                        return prefun.Operand.XContainsGeneratedExpression;
+                    case CastExpressionSyntax cast:
+                        return cast.Expression.XContainsGeneratedExpression;
+                    case LiteralExpressionSyntax lit:
+                        return false;
+                    default:
+                        return false;
+                }
+            }
+        }
     }
 }
 
@@ -300,7 +326,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
     }
     public sealed partial class CompilationUnitSyntax
     {
-        private InternalSyntax.CompilationUnitSyntax internalUnit => (InternalSyntax.CompilationUnitSyntax) this.CsGreen;
+        private InternalSyntax.CompilationUnitSyntax internalUnit => (InternalSyntax.CompilationUnitSyntax)this.CsGreen;
         public XSharpParser.SourceContext XSource => internalUnit.XSource;
         public ITokenStream XTokens => internalUnit.XTokens;
         public ITokenStream XPPTokens => internalUnit.XPPTokens;
@@ -308,7 +334,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         public bool NeedsProcessing => internalUnit.NeedsProcessing;
         public bool HasDocComments => internalUnit.HasDocComments;
         internal Dictionary<String, InternalSyntax.FieldDeclarationSyntax> LiteralSymbols => internalUnit.LiteralSymbols;
-        internal Dictionary<String, Tuple<string, InternalSyntax.FieldDeclarationSyntax> > LiteralPSZs => internalUnit.LiteralPSZs;
+        internal Dictionary<String, Tuple<string, InternalSyntax.FieldDeclarationSyntax>> LiteralPSZs => internalUnit.LiteralPSZs;
         internal IList<InternalSyntax.PragmaWarningDirectiveTriviaSyntax> PragmaWarnings => internalUnit.PragmaWarnings;
         internal IList<PragmaOption> PragmaOptions => internalUnit.PragmaOptions;
         internal bool RegisterFunctionThatNeedsAccessToLocals(MCA.CSharpSyntaxNode node, bool writeAccess, List<LocalSymbol> locals)

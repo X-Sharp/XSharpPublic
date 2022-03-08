@@ -5,6 +5,7 @@ FUNCTION Start( ) AS VOID
 LOCAL d := 1 AS DWORD
 LOCAL w := 1 AS WORD
 LOCAL b := 1 AS BYTE
+LOCAL n := 1 AS INT
 
 w := 1 + w 
 w := 1 - w 
@@ -17,3 +18,10 @@ d := 1 - d // warning XS9021: Signed/unsigned conversions from 'dword' to 'int'
 d := d + 1
 d := 1 + d // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
 
+LOCAL u AS USUAL
+u := n + INT( d )// warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
+u := n + (INT) d // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
+
+u := d + DWORD( n )// warning XS9021: Signed/unsigned conversions from 'int' to 'dword'
+u := d + (DWORD) n // warning XS9021: Signed/unsigned conversions from 'int' to 'dword'
+? u

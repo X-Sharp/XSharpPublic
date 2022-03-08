@@ -1068,7 +1068,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         ENDDO
                     ENDIF
                     padLen := len
-                    IF len < SELF:_sourcekeySize
+                    IF len < SELF:_keySize
                         needPadStr := TRUE
                         bSearchKey[len] := 1
                         padLen := len + 1

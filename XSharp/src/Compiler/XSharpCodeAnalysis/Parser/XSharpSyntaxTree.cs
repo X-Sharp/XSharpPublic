@@ -229,23 +229,16 @@ namespace Microsoft.CodeAnalysis
             get => CsNode.CsGreen.XWarning;
             set => CsNode.CsGreen.XWarning = value;
         }
+        /// <summary>
+        /// Walk the X# parse tree to detect if the expression or one of its children is a "cast" in code.
+        /// </summary>
         internal bool XIsExplicitTypeCastInCode
         {
             get
             {
-                var node = XNode as XSharpParserRuleContext;
-                switch (node)
+                if (XNode is XSharpParserRuleContext node)
                 {
-                    case XSharpParser.VoCastExpressionContext:
-                        return true;
-                    case XSharpParser.VoConversionExpressionContext:
-                        return true;
-                    case XSharpParser.TypeCastContext:
-                        return true;
-                    case XSharpParser.PrimaryExpressionContext prim:
-                        return prim.Expr is XSharpParser.VoCastExpressionContext ||
-                            prim.Expr is XSharpParser.VoConversionExpressionContext;
-
+                    return node.ContainsCast;
                 }
                 return false;
             }
@@ -307,7 +300,9 @@ namespace Microsoft.CodeAnalysis
                         return prefun.Operand.XContainsGeneratedExpression;
                     case CastExpressionSyntax cast:
                         return cast.Expression.XContainsGeneratedExpression;
-                    case LiteralExpressionSyntax lit:
+                    case ParenthesizedExpressionSyntax paren:
+                        return paren.XContainsGeneratedExpression;
+                    case LiteralExpressionSyntax:
                         return false;
                     default:
                         return false;

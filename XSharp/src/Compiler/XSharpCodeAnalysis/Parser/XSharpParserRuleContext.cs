@@ -116,6 +116,29 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
 #if !VSPARSER
 
+        internal bool ContainsCast
+        {
+            get
+            {
+                switch (this)
+                {
+                    case XSharpParser.VoCastExpressionContext:
+                    case XSharpParser.VoConversionExpressionContext:
+                    case XSharpParser.TypeCastContext:
+                        return true;
+                    default:
+                        foreach (var child in this.children)
+                        {
+                            if (child is XSharpParserRuleContext rule)
+                            {
+                                if (rule.ContainsCast)
+                                    return true;
+                            }
+                        }
+                        return false;
+                }
+            }
+        }
         internal InternalSyntax.CSharpSyntaxNode CSharpSyntaxNode
         {
             get

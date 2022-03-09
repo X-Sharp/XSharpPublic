@@ -72,6 +72,19 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (syntax is BinaryExpressionSyntax binexp)
             {
+
+                if (node.HasConstant())
+                {
+                    binexp.XWarning = false;
+                    binexp.Left.XWarning = false;
+                    binexp.Right.XWarning = false;
+                }
+                else if (binexp.XIsExplicitTypeCastInCode)
+                {
+                    binexp.XWarning = false;
+                    binexp.Left.XWarning = false;
+                    binexp.Right.XWarning = false;
+                }
                 // determine original expression type
                 // Roslyn will change a Int32 + UIn32
                 // to an addition of 2 Int64 values

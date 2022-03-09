@@ -37,7 +37,31 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             }
             return false;
+        }
 
+        internal static void DisableWarning(this BoundExpression expr)
+        {
+            expr.Syntax.XWarning = false;
+            switch (expr)
+            {
+                case BoundUnaryOperator unop:
+                    unop.Operand.DisableWarning();
+                    break;
+                case BoundBinaryOperatorBase binop:
+                    binop.Left.DisableWarning();
+                    binop.Right.DisableWarning();
+                    break;
+                case BoundConversion conv:
+                    conv.Operand.DisableWarning();
+                    break;
+                case BoundCompoundAssignmentOperator bao:
+                    bao.Left.DisableWarning();
+                    bao.Right.DisableWarning();
+                    break;
+                default:
+                    break;
+            }
+            return;
         }
 
         internal static bool IsXsCompilerGenerated(this Symbol symbol) 

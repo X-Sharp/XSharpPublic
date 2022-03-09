@@ -38,3 +38,8 @@ u := 123 * n
 u := (10*d)-9 // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
 
 ? u
+
+? Str(d)
+? Str(d + 1)
+? Str(1 + d) // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
+

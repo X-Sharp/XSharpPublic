@@ -43,3 +43,13 @@ u := (10*d)-9 // warning XS9021: Signed/unsigned conversions from 'dword' to 'in
 ? Str(d + 1)
 ? Str(1 + d) // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
 
+u := (d + n) + 123
+u := 100 + (d + n) + 123
+u := 100 + (n + d) + 123
+u := 100 + (n + n) + 123
+u := 100 + (w + w) + 123
+u := 100 + (b + b) + 123
+
+u := (d + d) + 123
+u := 123 + (d + d) // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 
+u := 123 + (d * d) // warning XS9021: Signed/unsigned conversions from 'dword' to 'int' 

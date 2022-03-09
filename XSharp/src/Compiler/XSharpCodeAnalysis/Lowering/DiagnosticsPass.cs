@@ -75,15 +75,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 if (node.HasConstant())
                 {
-                    binexp.XWarning = false;
-                    binexp.Left.XWarning = false;
-                    binexp.Right.XWarning = false;
+                    node.DisableWarning();
                 }
                 else if (binexp.XIsExplicitTypeCastInCode)
                 {
-                    binexp.XWarning = false;
-                    binexp.Left.XWarning = false;
-                    binexp.Right.XWarning = false;
+                    node.DisableWarning();
                 }
                 // determine original expression type
                 // Roslyn will change a Int32 + UIn32

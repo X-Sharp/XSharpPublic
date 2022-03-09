@@ -301,7 +301,7 @@ namespace Microsoft.CodeAnalysis
                     case CastExpressionSyntax cast:
                         return cast.Expression.XContainsGeneratedExpression;
                     case ParenthesizedExpressionSyntax paren:
-                        return paren.XContainsGeneratedExpression;
+                        return paren.Expression.XContainsGeneratedExpression;
                     case LiteralExpressionSyntax:
                         return false;
                     default:

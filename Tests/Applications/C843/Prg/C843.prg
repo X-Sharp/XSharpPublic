@@ -6,7 +6,8 @@ FUNCTION Start() AS VOID
 LOCAL nBetrag AS USUAL
 LOCAL nRet AS FLOAT
 LOCAL nKurs AS FLOAT
-LOCAL nBasis AS FLOAT
+LOCAL nBasis AS FLOAT    
+nKurs := 1
 nRet := Round( (nBetrag * nBasis ) / nKurs, 2 )
 
 LOCAL _dwHPointUp AS INT

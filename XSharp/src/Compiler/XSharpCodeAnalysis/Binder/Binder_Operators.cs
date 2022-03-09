@@ -1003,19 +1003,30 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (expr.Kind == BoundKind.Literal && xsValueFitsIn(expr.ConstantValue, type.SpecialType))
             {
                 expr = CreateConversion(expr, type, diagnostics);
+                expr.WasCompilerGenerated = true;
             }
             return expr;
         }
         public void VODetermineIIFTypes(ConditionalExpressionSyntax node, DiagnosticBag diagnostics,
             ref BoundExpression trueExpr, ref BoundExpression falseExpr)
         {
-            if (trueExpr.Type is null || falseExpr.Type is null)
-                return;
-            TypeSymbol trueType = trueExpr.Type;
-            TypeSymbol falseType = falseExpr.Type;
+            if (trueExpr is null || trueExpr.Type is null)
+            {
+                if (Compilation.Options.HasRuntime)
+                    trueExpr = new BoundDefaultExpression(trueExpr.Syntax, Compilation.UsualType());
+                else
+                    trueExpr = new BoundDefaultExpression(trueExpr.Syntax, Compilation.ObjectType);
+            }
+            if (falseExpr is null || falseExpr.Type is null)
+            {
+                if (Compilation.Options.HasRuntime)
+                    falseExpr = new BoundDefaultExpression(falseExpr.Syntax, Compilation.UsualType());
+                else
+                    falseExpr = new BoundDefaultExpression(falseExpr.Syntax, Compilation.ObjectType);
+            }
             // Determine underlying types. For literal numbers this may be Byte, Short, Int or Long
-            trueType = VOGetType(trueExpr);
-            falseType = VOGetType(falseExpr);
+            TypeSymbol trueType = VOGetType(trueExpr);
+            TypeSymbol falseType = VOGetType(falseExpr);
             if (!Equals(trueType, falseType) && trueType.IsIntegralType() && falseType.IsIntegralType())
             {
                 // when one side is a literal and the other is not then try to cast to the non literal type

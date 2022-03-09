@@ -127,12 +127,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case XSharpParser.TypeCastContext:
                         return true;
                     default:
-                        foreach (var child in this.children)
+                        if (this.children != null)
                         {
-                            if (child is XSharpParserRuleContext rule)
+                            foreach (var child in this.children)
                             {
-                                if (rule.ContainsCast)
-                                    return true;
+                                if (child is XSharpParserRuleContext rule)
+                                {
+                                    if (rule.ContainsCast)
+                                        return true;
+                                }
                             }
                         }
                         return false;

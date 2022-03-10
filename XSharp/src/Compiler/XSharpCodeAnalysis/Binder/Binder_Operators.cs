@@ -1010,19 +1010,34 @@ namespace Microsoft.CodeAnalysis.CSharp
         public void VODetermineIIFTypes(ConditionalExpressionSyntax node, DiagnosticBag diagnostics,
             ref BoundExpression trueExpr, ref BoundExpression falseExpr)
         {
-            if (trueExpr is null || trueExpr.Type is null)
+            // a combination of null and a value type is not allowed
+            // in that case we replace the null with a default value.
+            var trueNull = trueExpr?.Type is null;
+            var falseNull = falseExpr?.Type is null;
+            if (trueNull && falseNull)
             {
-                if (Compilation.Options.HasRuntime)
-                    trueExpr = new BoundDefaultExpression(trueExpr.Syntax, Compilation.UsualType());
-                else
-                    trueExpr = new BoundDefaultExpression(trueExpr.Syntax, Compilation.ObjectType);
+                return;
             }
-            if (falseExpr is null || falseExpr.Type is null)
+            else if (trueNull && !falseExpr.Type.IsReferenceType)
             {
                 if (Compilation.Options.HasRuntime)
+                {
+                    trueExpr = new BoundDefaultExpression(trueExpr.Syntax, Compilation.UsualType());
+                    trueNull = false;
+                }
+            }
+            else if (falseNull && !trueExpr.Type.IsReferenceType)
+            {
+                if (Compilation.Options.HasRuntime)
+                {
                     falseExpr = new BoundDefaultExpression(falseExpr.Syntax, Compilation.UsualType());
-                else
-                    falseExpr = new BoundDefaultExpression(falseExpr.Syntax, Compilation.ObjectType);
+                    falseNull = false;
+                }
+            }
+            if (trueNull || falseNull)
+            {
+                // this happens with the combination of a null and a reference type.
+                return;
             }
             // Determine underlying types. For literal numbers this may be Byte, Short, Int or Long
             TypeSymbol trueType = VOGetType(trueExpr);

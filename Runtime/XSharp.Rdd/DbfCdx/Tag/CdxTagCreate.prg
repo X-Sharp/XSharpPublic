@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_ForExpr := String.Empty
             ENDIF
             SELF:_oRdd:__Goto(1)
-            IF ! SELF:EvaluateExpressions()
+            IF ! SELF:EvaluateExpressions(TRUE)
                 RETURN FALSE
             ENDIF
 
@@ -206,24 +206,26 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Header.Options := options
             RETURN SELF:_Header:Write()
 
-        INTERNAL METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
+        INTERNAL METHOD _determineSize(toConvert AS OBJECT ) AS LONG
 
             VAR type := SELF:_oRdd:_getUsualType(toConvert)
+            LOCAL nKeySize as LONG
             SWITCH type
             CASE __UsualType.String
-                SELF:_sourcekeySize := SELF:_keySize := (WORD) ((STRING)toConvert):Length
+                nKeySize  := ((STRING)toConvert):Length
             CASE __UsualType.Long
             CASE __UsualType.Float
             CASE __UsualType.Date
-                SELF:_sourcekeySize := SELF:_keySize := 8      // all stored as numeric
+                nKeySize := 8      // all stored as numeric
+            CASE __UsualType.DateTime
+                nKeySize := 8     // stored as 2 numbers
             CASE __UsualType.Logic
-                SELF:_sourcekeySize := SELF:_keySize := 1
+                nKeySize := 1
             OTHERWISE
-                SELF:_sourcekeySize := SELF:_keySize := 0
-                RETURN FALSE
+                nKeySize := -1
             END SWITCH
 
-            RETURN TRUE
+            RETURN nKeySize
 
         PRIVATE METHOD _CondCreate(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
             LOCAL leadingOrder  := NULL AS CdxTag

@@ -57,7 +57,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_ForExpr := String.Empty
             ENDIF
             SELF:_oRdd:__Goto(1)
-            IF ! SELF:EvaluateExpressions()
+            IF ! SELF:EvaluateExpressions(TRUE)
                 RETURN FALSE
             ENDIF
             SELF:_orderName := (STRING)createInfo:Order

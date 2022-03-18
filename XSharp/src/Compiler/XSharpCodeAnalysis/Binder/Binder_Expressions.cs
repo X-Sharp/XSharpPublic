@@ -680,6 +680,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // simple-name refers to that type parameter.
 
             BoundExpression expression = null;
+            BoundExpression skippedExpression = null;
 
             // It's possible that the argument list is malformed; if so, do not attempt to bind it;
             // just use the null array.
@@ -824,20 +825,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (symbol is null)
                     {
                         Debug.Assert(members.Count > 0);
-                        if (bindMethod)
+                        var receiver = SynthesizeMethodGroupReceiver(node, members);
+                        expression = ConstructBoundMemberGroupAndReportOmittedTypeArguments(
+                            node,
+                            typeArgumentList,
+                            typeArguments,
+                            receiver,
+                            name,
+                            members,
+                            lookupResult,
+                            receiver != null ? BoundMethodGroupFlags.HasImplicitReceiver : BoundMethodGroupFlags.None,
+                            isError,
+                            diagnostics);
+                        if (! bindMethod)
                         {
-                            var receiver = SynthesizeMethodGroupReceiver(node, members);
-                            expression = ConstructBoundMemberGroupAndReportOmittedTypeArguments(
-                                node,
-                                typeArgumentList,
-                                typeArguments,
-                                receiver,
-                                name,
-                                members,
-                                lookupResult,
-                                receiver != null ? BoundMethodGroupFlags.HasImplicitReceiver : BoundMethodGroupFlags.None,
-                                isError,
-                                diagnostics);
+                            skippedExpression = expression;
+                            expression = null;
                         }
                     }
                     else
@@ -1016,6 +1019,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     }
                 }
+            }
+            if (expression == null)
+            {
+                expression = skippedExpression;
             }
             if (expression == null)
             {

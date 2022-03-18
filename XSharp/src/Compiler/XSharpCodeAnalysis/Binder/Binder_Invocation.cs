@@ -216,11 +216,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return null;
                 }
             }
+            var expression = BindExpression(node.Expression, diagnostics);
             if (node.Parent is AssignmentExpressionSyntax aes && aes.Left == node)
             {
                 // a(1,2) := something
                 // this cannot be function call, so must be an array assignment
-                var expression = BindExpression(node.Expression, diagnostics);
                 if (expression.Kind != BoundKind.BadExpression)
                 {
                     var type = expression.Type;
@@ -283,6 +283,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // or Generate __FoxArrayAccess(name, value, dim1, dim2)
                 var type = new BoundTypeExpression(node, null, Compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions));
                 return MakeInvocationExpression(node, type, ReservedNames.FoxArrayAccess, args.ToImmutableArray(), diagnostics);
+            }
+            // we may get here for expressions such as Foo.Bar(10)
+            if (expression.Kind != BoundKind.BadExpression)
+            {
+                var type = expression.Type;
+                if (type.IsArrayType() || type.IsUsualType() || type.IsFoxArrayType())
+                {
+                    return BindIndexerOrVOArrayAccess(node.Expression, expression, analyzedArguments, diagnostics);
+                }
             }
             return null;
         }

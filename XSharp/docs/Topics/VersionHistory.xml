@@ -28,6 +28,7 @@
       <li styleclass="Body Text">In some cases, the compiler would emit code that does not throw a runtime exception, when casting/converting from one type to an incompatible one. This has been fixed (#961, #984)</li>
       <li styleclass="Body Text">The compiler was not reporting narrowing conversion warnings in several cases, this has been fixed (#951)</li>
       <li styleclass="Body Text">The compiler was not reporting signed/unsigned conversion warnings. This has been fixed (#971)</li>
+      <li styleclass="Body Text">Fixed a problem that could lead to the &quot;Could not emit module&quot; error message, caused by NULL values inside IIF() expressions(#989)</li>
     </list>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

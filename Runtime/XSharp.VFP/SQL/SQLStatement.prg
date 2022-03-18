@@ -763,7 +763,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                  if lsPartIndex=1
                     sb.Append(sPart)
                  elseif Left(sPart,1) ='('
-                    local levelOpen:=0
+                    local levelOpen:=0 as long
                     local lExpression:= StringBuilder{} as StringBuilder
                     foreach var ch in sPart
                         if ch=c'('

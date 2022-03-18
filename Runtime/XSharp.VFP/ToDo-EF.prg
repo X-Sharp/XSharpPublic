@@ -17,7 +17,7 @@ FUNCTION FldList( ) AS USUAL
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fontmetric/*" />
 
-FUNCTION FontMetric( nAttribute , cFontName, nFontSize , cFontStyle) AS LONG
+FUNCTION FontMetric( nAttribute , cFontName, nFontSize , cFontStyle) AS LONG CLIPPER
     THROW NotImplementedException{}
     // RETURN 0
 
@@ -27,7 +27,7 @@ FUNCTION FontMetric( nAttribute , cFontName, nFontSize , cFontStyle) AS LONG
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fullpath/*" />
 
-FUNCTION FullPath( cFileName1 , uPath) AS STRING
+FUNCTION FullPath( cFileName1 , uPath) AS STRING CLIPPER
     THROW NotImplementedException{}
     // RETURN ""
 

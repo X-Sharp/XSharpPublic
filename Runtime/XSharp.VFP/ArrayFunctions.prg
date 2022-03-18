@@ -57,7 +57,7 @@ FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD, nColumnSubscr
     THROW ArgumentException { __VfpStr(VFPErrors.ONE_DIM_NO_COLUMNS)}
 
 /// <exclude/>
-FUNCTION __FoxADel(foxArray AS __FoxArray, nElementNumber AS LONG, nDeleteType := 2 AS LONG)
+FUNCTION __FoxADel(foxArray AS __FoxArray, nElementNumber AS LONG, nDeleteType := 2 AS LONG) AS DWORD
     IF ! foxArray:MultiDimensional
         foxArray:Delete((LONG) nElementNumber)
     ELSE

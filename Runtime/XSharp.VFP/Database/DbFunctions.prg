@@ -43,7 +43,7 @@ FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS U
 /// <seealso cref="DbcView" />
 /// <seealso cref="DbcConnection" />
 /// <seealso cref="DbcField" />
-FUNCTION DbSetProp(cName AS STRING, cType AS STRING, cProperty AS STRING, ePropertyValue AS USUAL)
+FUNCTION DbSetProp(cName AS STRING, cType AS STRING, cProperty AS STRING, ePropertyValue AS USUAL) AS USUAL
     IF ! Dbc.IsValidObjectType(cType)
         THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.INVALID_DB_OBJECT, cType))
     ENDIF
@@ -104,7 +104,7 @@ FUNCTION ADatabases(ArrayName REF __FoxArray)
 #endif
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/lock/*" />
-FUNCTION Lock( cRecordNumberList, uArea) AS LOGIC
+FUNCTION Lock( cRecordNumberList, uArea) AS LOGIC CLIPPER
     RETURN RLock(cRecordNumberList, uArea)
 
 
@@ -116,7 +116,7 @@ FUNCTION __DbFieldList(aFields AS ARRAY, lIncludeMemo AS LOGIC) AS ARRAY
     NEXT
     RETURN acFields
 
-FUNCTION __DbFieldWild(includedFields, excludedFields, lIncludeMemo) AS ARRAY
+FUNCTION __DbFieldWild(includedFields, excludedFields, lIncludeMemo) AS ARRAY CLIPPER
     var fields := __DbFieldListHelper({}, includedFields, excludedFields, lIncludeMemo)
     LOCAL acFields := {} AS ARRAY
     foreach var cField in fields

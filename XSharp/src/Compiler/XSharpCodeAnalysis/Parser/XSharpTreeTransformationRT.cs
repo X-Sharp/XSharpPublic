@@ -917,7 +917,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 MemVarFieldInfo fieldInfo = findMemVar(Name);
                 if (fieldInfo != null)
                 {
-                    expr = MakeMemVarField(fieldInfo);
+                    // for code that looks like this we do not want to change the expression
+                    // Foo(1,2)
+                    // even when Foo is a private because this can never be a assignment
+                    if (!fieldInfo.IsField)
+                    {
+                        if (context.Parent is XP.PrimaryExpressionContext pec &&
+                            pec.Parent is XP.MethodCallContext mcc &&
+                            mcc.Parent is XP.ExpressionStmtContext)
+                        {
+                            fieldInfo = null;
+                        }
+
+                    }
+                    if (fieldInfo != null)
+                    {
+                        expr = MakeMemVarField(fieldInfo);
+                    }
                 }
             }
             context.Put(expr);

@@ -680,6 +680,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // simple-name refers to that type parameter.
 
             BoundExpression expression = null;
+            BoundExpression skippedExpression = null;
 
             // It's possible that the argument list is malformed; if so, do not attempt to bind it;
             // just use the null array.
@@ -824,7 +825,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (symbol is null)
                     {
                         Debug.Assert(members.Count > 0);
-
                         var receiver = SynthesizeMethodGroupReceiver(node, members);
                         expression = ConstructBoundMemberGroupAndReportOmittedTypeArguments(
                             node,
@@ -837,6 +837,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             receiver != null ? BoundMethodGroupFlags.HasImplicitReceiver : BoundMethodGroupFlags.None,
                             isError,
                             diagnostics);
+                        if (! bindMethod)
+                        {
+                            skippedExpression = expression;
+                            expression = null;
+                        }
                     }
                     else
                     {
@@ -1014,6 +1019,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     }
                 }
+            }
+            if (expression == null)
+            {
+                expression = skippedExpression;
             }
             if (expression == null)
             {

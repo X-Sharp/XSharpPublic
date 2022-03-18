@@ -190,12 +190,17 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BoundExpression BindFoxProArrayPossibleAccess(InvocationExpressionSyntax node, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
         {
+
             if (node.XGenerated)
                 return null;
-            var xnode = node.XNode as XSharpParserRuleContext;
-
+            if (node.Parent is ExpressionStatementSyntax)
+            {
+                //SomeFunc(1,2) is never a FoxPro array access
+                return null;
+            }
+            // We only resolve Foo(1,2) to array access for 1 or 2 arguments that have (possible) numeric indices
+            // when a different number of arguments or not numeric arguments this must be a function / method call
             var argCount = analyzedArguments.Arguments.Count;
-            // Only array access for 1 or 2 arguments that have (possible) numeric indices
             if (argCount == 0 || argCount > 2)
                 return null;
             var arg = analyzedArguments.Arguments[0];
@@ -211,39 +216,75 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return null;
                 }
             }
-            bool lhsOfAssignment = node.Parent is AssignmentExpressionSyntax aes && aes.Left == node;
-            if (node.Expression is SimpleNameSyntax simple && !lhsOfAssignment)
+            var expression = BindExpression(node.Expression, diagnostics);
+            if (node.Parent is AssignmentExpressionSyntax aes && aes.Left == node)
             {
-                // If the invocationExpression binds to a method or function in the runtime
-                // then we NEVER see this as a parenthesized array access
-                var idMethod = BindXSIdentifier(simple, invoked: true, indexed: false, diagnostics: diagnostics, bindMethod: true,
-                        bindSafe: false);
+                // a(1,2) := something
+                // this cannot be function call, so must be an array assignment
+                if (expression.Kind != BoundKind.BadExpression)
+                {
+                    var type = expression.Type;
+                    if (type.IsArrayType() || type.IsUsualType() || type.IsFoxArrayType())
+                    {
+                        return BindIndexerOrVOArrayAccess(node.Expression, expression, analyzedArguments, diagnostics);
+                    }
+                }
+                // when undeclared variables are allowed then this will never happen
+                // without undeclared variable this means that the variable has not been declared
+                // In that case the diagnostics are OK
+                return null;
+            }
+            if (node.Expression is SimpleNameSyntax simple)
+            {
+                var bag = DiagnosticBag.GetInstance();
+                var idVar = BindXSIdentifier(simple, invoked: false, indexed: true, diagnostics: bag, bindMethod: false,
+                    bindSafe: Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, node));
+                if (idVar != null && (idVar.Type.IsFoxArrayType() || idVar.Type.IsArrayType()))
+                {
+                    // if we find a local variable of Array Type or FoxPro Array Type then resolve to Array Access
+                    // in that case NEVER a function call.
+                    return BindIndexerOrVOArrayAccess(node, idVar, analyzedArguments, diagnostics);
+                }
+                if (idVar.Kind is BoundKind.BadExpression)
+                {
+                    // this happens when undeclared variables are not allowed and the ID cannot be found
+                    // return null, so the normal Binding for function / method calls can be used
+                    return null;
+                }
+                bag.Clear();
+                var idMethod = BindXSIdentifier(simple, invoked: true, indexed: false, diagnostics: bag, bindMethod: true, bindSafe: false);
                 if (idMethod != null && idMethod is BoundMethodGroup bmg)
                 {
+                    // If the invocationExpression binds to a method or function in the runtime
+                    // then we NEVER see this as a parenthesized array access
                     if (bmg.Methods.Length > 0 && bmg.Methods[0].ContainingAssembly.IsRT())
                         return null;
+                    if (!bmg.Methods[0].IsStatic)
+                    {
+                        // instance method calls should have this. or self: prefix to distinguish from array access
+                        idMethod = null;
+                    }
                 }
-                var id1 = BindXSIdentifier(simple, invoked:false, indexed: true, diagnostics: diagnostics, bindMethod: false,
-                    bindSafe: Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, node));
-                // id1 will be either bound to a declared local, public or private
-                // if undeclared locals are supported then Id1 may also find an undeclared local
-                if (id1 == null)
-                    return null;
-
-                var args = new List<BoundExpression>();
+                if (idMethod == null)
+                {
+                    // so we have an id and we cannot find a static method call. 
+                    return BindIndexerOrVOArrayAccess(node, idVar, analyzedArguments, diagnostics);
+                }
+                // when we get here then we have found both a function and a (undeclared) variable
                 string strName = simple.Identifier.Text;
-                if (id1 is BoundPropertyAccess bpa)
+                if (idVar is BoundPropertyAccess bpa)
                     strName = bpa.PropertySymbol.Name;
                 var name = ConstantValue.Create(strName);
+                var args = new List<BoundExpression>();
                 args.Add(new BoundLiteral(node, name, Compilation.GetSpecialType(SpecialType.System_String)));
-                args.Add(id1);
+                args.Add(idVar);
                 args.AddRange(analyzedArguments.Arguments);
                 // Generate __FoxArrayAccess(name, value, dim1)
                 // or Generate __FoxArrayAccess(name, value, dim1, dim2)
                 var type = new BoundTypeExpression(node, null, Compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions));
                 return MakeInvocationExpression(node, type, ReservedNames.FoxArrayAccess, args.ToImmutableArray(), diagnostics);
             }
-            var expression = BindExpression(node.Expression, diagnostics);
+            // we may get here for expressions such as Foo.Bar(10)
             if (expression.Kind != BoundKind.BadExpression)
             {
                 var type = expression.Type;

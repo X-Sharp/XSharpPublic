@@ -1063,6 +1063,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return;
             }
+#if XSHARP
+            if (symbol is LocalSymbol local1 && local1.DeclaringSyntaxReferences.First().GetSyntax().CsNode.XVoIsDecl)
+            {
+                // variables declared with IS are automatically initialized
+                return;
+            }
+#endif
 
             // If this is a constant, constants are always definitely assigned
             // so we should skip reporting. This can happen in a local function

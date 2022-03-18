@@ -2,7 +2,7 @@
 //See https://github.com/X-Sharp/XSharpPublic/issues/988
 
 FUNCTION Start( ) AS VOID 
-PRIVATE xxxx
+//PRIVATE xxxx
 
 xxxx = 12 
 

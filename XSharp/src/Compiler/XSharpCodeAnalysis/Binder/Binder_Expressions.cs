@@ -824,19 +824,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (symbol is null)
                     {
                         Debug.Assert(members.Count > 0);
-
-                        var receiver = SynthesizeMethodGroupReceiver(node, members);
-                        expression = ConstructBoundMemberGroupAndReportOmittedTypeArguments(
-                            node,
-                            typeArgumentList,
-                            typeArguments,
-                            receiver,
-                            name,
-                            members,
-                            lookupResult,
-                            receiver != null ? BoundMethodGroupFlags.HasImplicitReceiver : BoundMethodGroupFlags.None,
-                            isError,
-                            diagnostics);
+                        if (bindMethod)
+                        {
+                            var receiver = SynthesizeMethodGroupReceiver(node, members);
+                            expression = ConstructBoundMemberGroupAndReportOmittedTypeArguments(
+                                node,
+                                typeArgumentList,
+                                typeArguments,
+                                receiver,
+                                name,
+                                members,
+                                lookupResult,
+                                receiver != null ? BoundMethodGroupFlags.HasImplicitReceiver : BoundMethodGroupFlags.None,
+                                isError,
+                                diagnostics);
+                        }
                     }
                     else
                     {

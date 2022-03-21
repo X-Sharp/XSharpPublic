@@ -7,6 +7,7 @@
 USING System.Collections.Generic
 USING System.Threading
 USING System.Diagnostics
+USING System.Reflection
 USING XSharp.RDD
 USING XSharp.RDD.Enums
 
@@ -52,7 +53,7 @@ CLASS XSharp.RuntimeState
         detectDialect()
 
     PRIVATE STATIC METHOD detectDialect() AS VOID
-        LOCAL asm := System.Reflection.Assembly.GetEntryAssembly() AS System.Reflection.Assembly
+        LOCAL asm := Assembly.GetEntryAssembly() AS Assembly
         VAR att := TYPEOF( XSharp.Internal.CompilerVersionAttribute )
         IF asm != NULL .AND. asm:IsDefined(att, FALSE)
             FOREACH VAR attr IN asm:GetCustomAttributes(att, FALSE)
@@ -251,7 +252,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The System.Reflection.Module for the main application.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    STATIC PROPERTY AppModule AS  System.Reflection.Module AUTO
+    STATIC PROPERTY AppModule AS  Module AUTO
 	#endregion
 
 	/// <summary>The last file found with File(). This is the name that FPathName() returns.</summary>
@@ -931,6 +932,14 @@ CLASS XSharp.RuntimeState
             _macrocompiler := value
         END SET
     END PROPERTY
+
+    /// <summary>
+    /// This property allows you to override the mechanism that decided if the types in an assembly should be cached
+    /// The default behavior is that every assembly that is found is cached.
+    /// </summary>
+    /// <value></value>
+    PUBLIC STATIC PROPERTY MacroCompilerIncludeAssemblyInCache as MacroCompilerIncludeAssemblyInCache AUTO := { a AS Assembly => TRUE}
+
 
     /// <summary>Active Macro compiler</summary>
     /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>

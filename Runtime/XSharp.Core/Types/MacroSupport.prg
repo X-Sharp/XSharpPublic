@@ -34,6 +34,13 @@ BEGIN NAMESPACE XSharp
 
 
     /// <summary>
+    /// This delegate is used to decide if an assembly should be included in the type cache
+    /// </summary>
+    /// <param name="ass">Assembly object of the assembly being inspected</param>
+    /// <returns>TRUE when the types in the assembly need to be cached.</returns>
+    DELEGATE MacroCompilerIncludeAssemblyInCache(ass as Assembly) AS LOGIC
+
+    /// <summary>
 	/// This delegate is used to decide between 2 ambigous methods, functions or constructors
 	/// </summary>
     /// <param name="m1">MethodInfo of the first symbol</param>

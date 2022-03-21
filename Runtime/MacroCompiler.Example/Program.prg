@@ -11,6 +11,8 @@ BEGIN NAMESPACE MacroCompilerTest
         SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
         // test conflict between field name and global/define
 
+        XSharp.RuntimeState.MacroCompilerIncludeAssemblyInCache := { a  =>  true}
+
         ReportMemory("initial")
         VAR mc := CreateMacroCompiler()
         VAR fmc := CreateFoxMacroCompiler()

@@ -90,6 +90,10 @@ namespace XSharp.MacroCompiler
 
         static void UpdateTypeCache(NamespaceSymbol global, Dictionary<Type, TypeSymbol> typeCache, Assembly a)
         {
+            if (!XSharp.RuntimeState.MacroCompilerIncludeAssemblyInCache(a))
+            {
+                return;
+            }
             var most_visible = a == System.Reflection.Assembly.GetEntryAssembly();
             try
             {
@@ -161,6 +165,10 @@ namespace XSharp.MacroCompiler
         }
         static void UpdateUsings(List<ContainerSymbol> usings, List<ContainerSymbol> rtFuncs, Assembly a, HashSet<ContainerSymbol> usedSymbols = null)
         {
+            if (!XSharp.RuntimeState.MacroCompilerIncludeAssemblyInCache(a))
+            {
+                return;
+            }
             if (usedSymbols == null)
             {
                 usedSymbols = new HashSet<ContainerSymbol>();

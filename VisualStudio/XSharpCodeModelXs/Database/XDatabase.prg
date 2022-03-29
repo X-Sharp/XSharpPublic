@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharpModel
         STATIC PRIVATE currentFile AS STRING
         STATIC PROPERTY FileName as STRING GET currentFile
         STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-        PRIVATE CONST CurrentDbVersion := 1.2 AS System.Double
+        PRIVATE CONST CurrentDbVersion := 1.3 AS System.Double
 
         STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
             LOCAL lValid := FALSE AS LOGIC
@@ -242,7 +242,7 @@ BEGIN NAMESPACE XSharpModel
                 #region Table ReferencedTypes
                 stmt  	:= "CREATE TABLE ReferencedTypes ("
                 stmt	+= " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
-                stmt    += " FullName text NOT NULL, Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
+                stmt    += " FullName text NOT NULL COLLATE NOCASE, Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
                 stmt    += " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"
                 stmt	+= ") ;"
                 stmt	+= "CREATE UNIQUE INDEX ReferencedTypes_Pk      ON ReferencedTypes (Id); "
@@ -259,7 +259,7 @@ BEGIN NAMESPACE XSharpModel
                 #region Table ReferencedGlobals
                 stmt  	:= "CREATE TABLE ReferencedGlobals ("
                 stmt	+= " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, "
-                stmt    += " FullName text NOT NULL, Kind integer NOT NULL, Attributes integer NOT NULL, Sourcecode text, ReturnType text, "
+                stmt    += " FullName text NOT NULL COLLATE NOCASE, Kind integer NOT NULL, Attributes integer NOT NULL, Sourcecode text, ReturnType text, "
                 stmt    += " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"
                 stmt	+= ") ;"
                 stmt	+= "CREATE UNIQUE INDEX ReferencedGlobals_Pk      ON ReferencedGlobals (Id); "

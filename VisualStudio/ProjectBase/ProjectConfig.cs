@@ -634,7 +634,7 @@ namespace Microsoft.VisualStudio.Project
 
         #region IVsSpecifyProjectDesignerPages
         /// <summary>
-        /// Implementation of the IVsSpecifyProjectDesignerPages. It will retun the pages that are configuration dependent.
+        /// Implementation of the IVsSpecifyProjectDesignerPages. It will return the pages that are configuration dependent.
         /// </summary>
         /// <param name="pages">The pages to return.</param>
         /// <returns>VSConstants.S_OK</returns>
@@ -955,11 +955,9 @@ namespace Microsoft.VisualStudio.Project
 
             // Retrieve the list of guids from hierarchy properties.
             // Because a flavor could modify that list we must make sure we are calling the outer most implementation of IVsHierarchy
-            string guidsList = String.Empty;
-            IVsHierarchy hierarchy = this.project;
-            object variant = null;
-            ErrorHandler.ThrowOnFailure(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID2.VSHPROPID_CfgPropertyPagesCLSIDList, out variant), new int[] { VSConstants.DISP_E_MEMBERNOTFOUND, VSConstants.E_NOTIMPL });
-            guidsList = (string)variant;
+            IVsHierarchy hierarchy = HierarchyNode.GetOuterHierarchy(this.project);
+            ErrorHandler.ThrowOnFailure(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID2.VSHPROPID_CfgPropertyPagesCLSIDList, out var variant), new int[] { VSConstants.DISP_E_MEMBERNOTFOUND, VSConstants.E_NOTIMPL });
+            var guidsList = (string)variant;
 
             Guid[] guids = Utilities.GuidsArrayFromSemicolonDelimitedStringOfGuids(guidsList);
             if(guids == null || guids.Length == 0)

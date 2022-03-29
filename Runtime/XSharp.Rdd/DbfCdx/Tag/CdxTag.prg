@@ -48,8 +48,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _indexedFields AS IList<INT>
         PRIVATE _newKeyLen     AS LONG
         PRIVATE _KeyExprType   AS LONG
-        PRIVATE _keySize       AS WORD
-        PRIVATE _sourcekeySize AS WORD
+        PRIVATE _keySize       AS WORD      // Key size. May include an extra byte for nullable keys
         PRIVATE _rootPage      AS LONG
         PRIVATE _ordCondInfo   AS DbOrderCondInfo
         PRIVATE _keyBuffer     AS BYTE[]
@@ -177,7 +176,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             SELF:_oRdd:__Goto(0)
-            IF ! SELF:EvaluateExpressions()
+            IF ! SELF:EvaluateExpressions(FALSE)
                 RETURN FALSE
             ENDIF
             SELF:AllocateBuffers()
@@ -210,10 +209,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_oRdd:_dbfError(ex, Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions", FALSE)
             RETURN
 
-        INTERNAL METHOD EvaluateExpressions() AS LOGIC
+        INTERNAL METHOD EvaluateExpressions(lCalculateKeySize as LOGIC) AS LOGIC
             LOCAL evalOk AS LOGIC
             LOCAL oKey := NULL AS OBJECT
             LOCAL fields := NULL AS List<INT>
+            LOCAL nKeySize    as LONG       // calculated key size
             evalOk := TRUE
             SELF:_Valid := TRUE
             TRY
@@ -260,20 +260,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR fType           := fld:FieldType
                 SWITCH fType
                 CASE DbFieldType.Number
-                    SELF:_sourcekeySize := SELF:_keySize   := 8
+                    nKeySize := 8
                     SELF:getKeyValue := _getNumFieldValue
                     SELF:Binary      := TRUE
                 CASE DbFieldType.Date
                     // CDX converts the Date to a Julian Number and stores that as a Real8 in the index
-                    SELF:_sourcekeySize := 8
+                    nKeySize  := 8
                     SELF:getKeyValue := _getDateFieldValue
                     SELF:Binary      := TRUE
                 CASE DbFieldType.Integer
-                    SELF:_sourcekeySize := 4
+                    nKeySize  := 4
                     SELF:getKeyValue := _getIntFieldValue
                     SELF:Binary      := TRUE
                 OTHERWISE
-                    SELF:_sourcekeySize := (WORD) fld:Length
+                    nKeySize         := fld:Length
                     SELF:getKeyValue := _getFieldValue
                     SELF:Binary      := FALSE
                     IF SELF:_Collation != NULL
@@ -282,11 +282,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 END SWITCH
                 SELF:_NullableKey := fld:Flags:HasFlag(DBFFieldFlags.Nullable)
-                IF SELF:_keySize == 0
-                    SELF:_keySize := SELF:_sourcekeySize
-                ENDIF
                 IF SELF:_NullableKey
-                    SELF:_keySize += 1
+                    nKeySize += 1
                 ENDIF
                 isOk := TRUE
             ELSE
@@ -297,21 +294,25 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         EXIT
                     ENDIF
                 NEXT
-                SELF:_sourcekeySize := SELF:_keySize    := 0
+                nKeySize := 0
                 SELF:getKeyValue := _getExpressionValue
-                isOk             := SELF:_determineSize(oKey)
+                nKeySize         := SELF:_determineSize(oKey)
+                isOk := nKeySize > 0
                 IF SELF:_NullableKey
-                    SELF:_keySize += 1
+                    nKeySize += 1
                 ENDIF
-                IF SELF:Header != NULL .AND. SELF:Header:KeySize != SELF:_keySize
+                IF SELF:Header != NULL .AND. SELF:Header:KeySize != nKeySize
                     IF SELF:_Collation != NULL
-                        SELF:_keySize := SELF:Header:KeySize
+                        nKeySize := SELF:Header:KeySize
                     ELSE
                         VAR ex := Exception{"Expression length in index does not match calculated expression length"}
                         SELF:SetSyntaxError(ex)
                     ENDIF
                 ENDIF
              ENDIF
+            IF lCalculateKeySize
+                SELF:_keySize := (WORD) nKeySize
+            ENDIF
             IF SELF:_KeyExprType == __UsualType.String
                 IF SELF:_Collation != NULL
                     IF SELF:_NullableKey

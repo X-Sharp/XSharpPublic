@@ -186,7 +186,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_ForExpr := SELF:_Header:ForExpression
 
             SELF:_oRdd:GoTo(1)
-            IF ! SELF:EvaluateExpressions()
+            IF ! SELF:EvaluateExpressions(FALSE)
                 RETURN FALSE
             ENDIF
             // For Condition
@@ -252,7 +252,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN
 
 
-        PRIVATE METHOD EvaluateExpressions() AS LOGIC
+        PRIVATE METHOD EvaluateExpressions(lCalculateSize as LOGIC) AS LOGIC
             LOCAL evalOk AS LOGIC
             LOCAL oKey AS OBJECT
             evalOk := TRUE
@@ -282,8 +282,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_SourceIndex := 0
             LOCAL isOk AS LOGIC
             IF SELF:_SingleField >= 0
-                SELF:_keySize       := (WORD) SELF:_oRdd:_Fields[_SingleField]:Length
-                SELF:_keyDecimals   := (WORD) SELF:_oRdd:_Fields[_SingleField]:Decimals
+                IF lCalculateSize
+                    SELF:_keySize       := (WORD) SELF:_oRdd:_Fields[_SingleField]:Length
+                    SELF:_keyDecimals   := (WORD) SELF:_oRdd:_Fields[_SingleField]:Decimals
+                ENDIF
                 SELF:_SourceIndex   := (WORD) SELF:_oRdd:_Fields[_SingleField]:Offset
                 VAR fType           := SELF:_oRdd:_Fields[_SingleField]:FieldType
                 IF fType ==  DbFieldType.Number
@@ -292,11 +294,17 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     SELF:getKeyValue := _getFieldValue
                 ENDIF
                 isOk := TRUE
-            ELSE
-                SELF:_keyDecimals := 0
-                SELF:_keySize := 0
+             ELSE
+                IF lCalculateSize
+                    SELF:_keyDecimals := 0
+                    SELF:_keySize := 0
+                ENDIF
                 SELF:getKeyValue := _getExpressionValue
-                isOk := SELF:_determineSize(oKey)
+                IF lCalculateSize
+                    isOk := SELF:_determineSize(oKey)
+                ELSE
+                    isOk := TRUE
+                ENDIF
             ENDIF
             IF ! isOk
                 RETURN FALSE

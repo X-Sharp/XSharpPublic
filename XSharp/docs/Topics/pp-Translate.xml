@@ -4,6 +4,7 @@
   <title>#translate and #xtranslate</title>
   <keywords>
     <keyword>#translate</keyword>
+    <keyword>#xtranslate</keyword>
     <keyword>Preprocessor</keyword>
   </keywords>
   <body>
@@ -13,7 +14,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Specify a user-defined translation directive</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; #translate &#160; &#160;&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; #xtranslate &#160; &lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; #translate &#160; &#160;&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</text><tab />// can be abbreviated to 4 characters<br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; #xtranslate &#160; &lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</text><tab />// cannot be abbreviated to 4 characters</para>
     <para styleclass="Normal"><snippet src="Command-translate" inline="false"/></para>
   </body>
 </topic>

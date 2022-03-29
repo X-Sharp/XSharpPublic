@@ -11,6 +11,14 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading1">Changes in 2.12</para>
+    <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
+    <para styleclass="Body Text"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
+    <list id="228" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">We have added support for the TEXT .. ENDTEXT command in all dialects. Please note that there are several variations of this command. One variation work in ALL dialects (TEXT TO varName). Other variations depend on the dialect chosen. We have moved the support for TEXT .. ENDTEXT now also from the compiler to the preprocessor. This means that there are also 2 new preprocessor directives, <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endtext">#endtext</link></li>
+    </list>
+    <para styleclass="Body Text"></para>
     <para styleclass="Heading1">Changes in 2.11.0.1</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Body Text"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug fixes</text></para>

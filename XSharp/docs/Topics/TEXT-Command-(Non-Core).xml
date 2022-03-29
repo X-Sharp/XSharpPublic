@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>TEXT Command (Non-Core)</title>
+  <keywords>
+    <keyword>ENDTEXT</keyword>
+    <keyword>TEXT</keyword>
+    <keyword>TRIMMED</keyword>
+    <keyword>WRAP</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">TEXT Command (Non-Core)</para>
+    </header>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INTO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;VariableName&gt; [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRIMMED</text><text style="font-weight:normal; font-style:normal; color:#000000;">]] | </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">[</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INTO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;VariableName&gt; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WRAP</text><text style="font-weight:normal; font-style:normal; color:#000000;">] | </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">[</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INTO</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;VariableName&gt; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WRAP</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;cLineBreak&gt; [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TRIMMED</text><text style="font-weight:normal; font-style:normal; color:#000000;">]] </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; TextLines</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDTEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Body Text">or </para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">TEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRINTER</text><text style="font-weight:normal; font-style:normal; color:#000000;">] | [</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">FILE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;cFilename&gt;] </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; TextLines</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDTEXT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">TextLines <tab /><text styleclass="Normal">Specifies text to assign to the variable VarName</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">INTO &lt;VariableName&gt;<tab />Specifies the variable name to use for passing the contents of the TEXT...ENDTEXT. This variable should be of type string, or should allow that a string can be added to it. It does not have to be a local variable, it can also be a field in the current class or an expression (someVar:SomeField)</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">WRAP &lt;cLineBreak&gt;<tab />The optional parameter &lt;cLineBreak&gt; specifies a character string that is used to wrap lines. <br/>The default value is CHR(13)+CHR(10) (carriage return and line feed). If WRAP is not specified, no line breaks will be inserted. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TRIMMED<tab />This optional parameter tells the preprocessor to remove all spaces from the beginning of the line if TEXT INTO .. is used. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO FILE &lt;cFilename&gt;<tab />&lt;cFilename&gt; indicates the name of a file where the text &lt;Text&gt; is optionally written. The name must contain the drive and path, if necessary. The file name can be specified either as a literal file name or as a character expression in parentheses. When the file name is specified without file extension, &quot;.TXT&quot; is used by default. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List">TO PRINTER<tab />Indicates that the text should be sent to the printer instead to a file. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal">&#32;</para>
+    <para styleclass="Heading1">See also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text directive</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endtext">#endtext directive</link></para>
+  </body>
+</topic>

@@ -766,6 +766,7 @@ CLASS ApplicationDescriptor
 
 	PROTECT _lOptionOverflow AS LOGIC
 	PROTECT _lOptionIntDiv AS LOGIC
+	PROTECT _lOptionUndeclared AS LOGIC
 
 	PROTECT _oProject AS VOProjectDescriptor
 
@@ -821,6 +822,7 @@ CLASS ApplicationDescriptor
 
 	PROPERTY OptionOverflow AS LOGIC GET SELF:_lOptionOverflow
 	PROPERTY OptionIntDiv AS LOGIC GET SELF:_lOptionIntDiv
+	PROPERTY OptionUndeclared AS LOGIC GET SELF:_lOptionUndeclared
 
 	PROPERTY Type AS ApplicationType GET SELF:_eType
 	PROPERTY Project AS VOProjectDescriptor GET SELF:_oProject
@@ -955,6 +957,7 @@ CLASS ApplicationDescriptor
 
 		oApp:_lOptionOverflow := oAef:lOptionOverflow
 		oApp:_lOptionIntDiv := oAef:lOptionIntegerDivisions
+		oApp:_lOptionUndeclared := oAef:lOptionUndeclaredVariables
 
 //		LOCAL lGUI,lWin32API,lAnySDK AS LOGIC
 		LOCAL lWin32API :=FALSE AS LOGIC
@@ -1713,9 +1716,10 @@ CLASS ApplicationDescriptor
 				cTemplate := cTemplate:Replace("%rootnamespace%", SELF:PathValidName:Replace(" ",""))
 				cTemplate := cTemplate:Replace("%apptype%" , cAppTypeTag)
 
-				IF cTemplate:Contains("%option_overflow%") .OR. cTemplate:Contains("%option_intdiv%")
-					cTemplate := cTemplate:Replace("%option_overflow%" , IIF(SELF:OptionOverflow , IIF(lXide , "1" , "true") , IIF(lXide , "0" , "false") ) )
-					cTemplate := cTemplate:Replace("%option_intdiv%" , IIF(SELF:OptionIntDiv , IIF(lXide , "1" , "true") , IIF(lXide , "0" , "false") ) )
+				IF cTemplate:Contains("%option_overflow%") .or. cTemplate:Contains("%option_intdiv%") .or. cTemplate:Contains("%option_undeclared%")
+					cTemplate := cTemplate:Replace("%option_overflow%" , iif(SELF:OptionOverflow , iif(lXide , "1" , "true") , iif(lXide , "0" , "false") ) )
+					cTemplate := cTemplate:Replace("%option_intdiv%" , iif(SELF:OptionIntDiv , iif(lXide , "1" , "true") , iif(lXide , "0" , "false") ) )
+					cTemplate := cTemplate:Replace("%option_undeclared%" , iif(SELF:OptionUndeclared , iif(lXide , "1" , "true") , iif(lXide , "0" , "false") ) )
 				END IF
 
 //				#warning make path relative

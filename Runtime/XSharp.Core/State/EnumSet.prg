@@ -333,13 +333,13 @@ BEGIN NAMESPACE XSharp
         //
         /// <summary>FoxPro: Is Textmerge enabled.</summary>
         MEMBER TextMerge        := 142      // Logic
-        // MEMBER TextMergeDelimiters
+        MEMBER VarCharMapping   := 143    // Logic
+        MEMBER TextMergeDelimiters := 146 // string[]
         // MEMBER Topic
         // MEMBER TopicID
         // MEMBER TrBetween
         // MEMBER UdfParams
         /// <summary>Specifies how character data expressions are mapped to query result sets.</summary>
-        MEMBER VarCharMapping   := 143    // Logic
         MEMBER WithStack        := 145
 
         // Xbase++ defines
@@ -773,6 +773,9 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.TextMerge
         CASE Set.HardCommit
         	RETURN TRUE
+
+        CASE Set.TextMergeDelimiters
+            return <string>{"<<",">>"}
 
        CASE Set.DirCase
        CASE Set.FileCase

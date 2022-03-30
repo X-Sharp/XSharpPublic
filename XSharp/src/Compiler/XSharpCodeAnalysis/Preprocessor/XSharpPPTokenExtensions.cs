@@ -21,6 +21,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 tokens.Add(token);
             }
         }
+        internal static IList<T> GetRange<T>(this IList<T> tokens, int start, int end)
+        {
+            List<T> result = new List<T>();
+            for (int i = start; i <= end; i++)
+            {
+                var t = tokens[i];
+                if (t is XSharpToken token)
+                {
+                    token.Channel = TokenConstants.DefaultChannel;
+                }
+                result.Add(t);
+            }
+            return result.ToArray();
+        }
+
+
         internal static TokenType La(this XSharpToken[] tokens, int pos)
         {
             if (pos >= 0 && pos < tokens.Length)

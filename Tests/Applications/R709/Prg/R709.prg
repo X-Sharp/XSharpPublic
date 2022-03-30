@@ -30,7 +30,7 @@ Define Class TestClass As Custom
 		Local lcSql
 
 		Text To lcSql Textmerge Noshow
-			Select * From <<This.cTable>> Where <<This.PkField>> = <<uValue>>
+			Select * From <<This.cTable>> Where <<This.cPkField>> = <<uValue>>
 		Endtext
   
 		? lcSql

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////
 // XSharp Standard Preprocessor Directives
 //
-// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 // Caution: do not modify this file. It will be overwritten during product updates
@@ -9,7 +9,7 @@
 
 ///////////////////////////////////////////////////////////////////////////
 //
-// This header file contains the SET commands for various global settings 
+// This header file contains the SET commands for various global settings
 // We map to the typed Set..() functions and not to the SET(_SET_<somedefine> ) because
 // that will produce slightly better code.
 //
@@ -34,10 +34,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 #command  SET EXACT <x:ON,OFF,&>    =>  Set( Set.Exact, <(x)> )
-#command  SET EXACT (<x>)           =>  Set( Set.Exact, <x> )
-
 #command  SET FIXED <x:ON,OFF,&>    =>  Set( Set.Fixed, <(x)> )
-#command  SET FIXED (<x>)           =>  Set( Set.Fixed, <x> )
 
 #command  SET DECIMALS TO <x>       =>  Set( Set.Decimals, <x> )
 #command  SET DECIMALS TO           =>  Set( Set.Decimals, 0 )
@@ -59,8 +56,6 @@
 #command  SET TIME TO SYSTEM        =>  SetTimeFormat( "" )
 
 #command  SET CENTURY <x:ON,OFF,&>  =>  Set(Set.Century, <(x)> )
-#command  SET CENTURY (<x>)         =>  Set(Set.Century,  <x> )
-
 #command  SET EPOCH TO <year>       =>  Set(Set.Epoch, <year> )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -69,38 +64,26 @@
 
 #ifndef __DIALECT_FOXPRO__
   // FoxPro maps SET ANSI to Set.SqlAnsi
-  #command SET ANSI <x:ON,OFF,&>          =>  Set(Set.Ansi, <(x)> ) 
+  #command SET ANSI <x:ON,OFF,&>          =>  Set(Set.Ansi, <(x)> )
   #command SET ANSI (<x>)                 =>  Set(Set.Ansi, <x> )
 
 #endif
 
-#command SET EXCLUSIVE <x:ON,OFF,&>     =>  Set(Set.Exclusive, <(x)> ) 
-#command SET EXCLUSIVE (<x>)            =>  Set(Set.Exclusive, <x> )
-
-#command SET SOFTSEEK <x:ON,OFF,&>      =>  Set(Set.SoftSeek, <(x)> ) 
-#command SET SOFTSEEK (<x>)             =>  Set(Set.SoftSeek, <x> )
-
-#command SET UNIQUE <x:ON,OFF,&>        =>  Set(Set.Unique, <(x)> ) 
-#command SET UNIQUE (<x>)               =>  Set(Set.Unique, <x> )
-
-#command SET DELETED <x:ON,OFF,&>       =>  Set(Set.Deleted, <(x)> ) 
-#command SET DELETED (<x>)              =>  Set(Set.Deleted, <x> )
+#command SET EXCLUSIVE <x:ON,OFF,&>     =>  Set(Set.Exclusive, <(x)> )
+#command SET SOFTSEEK <x:ON,OFF,&>      =>  Set(Set.SoftSeek, <(x)> )
+#command SET UNIQUE <x:ON,OFF,&>        =>  Set(Set.Unique, <(x)> )
+#command SET DELETED <x:ON,OFF,&>       =>  Set(Set.Deleted, <(x)> )
 
 ///////////////////////////////////////////////////////////////////////////
 //  Console SETs
 ///////////////////////////////////////////////////////////////////////////
 
 #command  SET CONSOLE <x:ON,OFF,&>                    =>  Set( Set.Console, <(x)> )
-#command  SET CONSOLE (<x>)                           =>  Set( Set.Console, <x> )
-
 #command  SET ALTERNATE <x:ON,OFF,&>                  =>  Set( Set.Alternate, <(x)> )
-#command  SET ALTERNATE (<x>)                         =>  Set( Set.Alternate, <x> )
 #command  SET ALTERNATE TO                            =>  SetAltfile( "" , FALSE)
 #command  SET ALTERNATE TO <(file)> [<add: ADDITIVE>] =>  SetAltfile( <(file)>, <.add.> )
 #command  CLOSE ALTERNATE                             =>  SetAltfile( "" , FALSE)
-
 #command  SET PRINTER <x:ON,OFF,&>                    =>  Set( Set.Printer, <(x)> )
-#command  SET PRINTER (<x>)                           =>  Set( Set.Printer, <x> )
 
 // SET PRINTER TO is not supported yet.
 //#command  SET PRINTER TO                              =>  SetPrintfile( "" , FALSE)

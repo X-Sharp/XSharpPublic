@@ -574,15 +574,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(errdata);
             }
         }
-        public override void ExitFoxtextStmt(XSharpParser.FoxtextStmtContext context)
-        {
-            // Should not happen, the TEXT keyword only exists in the FoxPro dialect
-            if (_options.Dialect != XSharpDialect.FoxPro)
-            {
-                NotInDialect(context, "TEXT .. ENDTEXT statement");
-            }
-            return;
-        }
         public override void ExitFoxtextoutStmt(XSharpParser.FoxtextoutStmtContext context)
         {
             if (_options.Dialect != XSharpDialect.FoxPro)

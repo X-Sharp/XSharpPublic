@@ -12,7 +12,7 @@
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">#text := &lt;varname&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">First Line</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">Second Line</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">#endtext</text></para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Body Text">The language supports the TEXT .. ENDTEXT construct. These commands are converted by the preprocessor into a #text .. #endtext constract.</para>
-    <para styleclass="Body Text">#endtext always appears &quot;alone&quot; on a line of code and will be replaced by a call to the (optional) endfunction that is declared with the #text directive</para>
+    <para styleclass="Body Text">#endtext always appears &quot;alone&quot; on a line of code and will be replaced by a call to the (optional) endfunction that is declared with the #text directive and when the block is assigned to a variable then the assignment will be performed on the #endtext line.</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading1">Example</para>
     <para styleclass="Body Text">Please note that the 2 UDCs below are already defined in XSharpDefs.xh</para>

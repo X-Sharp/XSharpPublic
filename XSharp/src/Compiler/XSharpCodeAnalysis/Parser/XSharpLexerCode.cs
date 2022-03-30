@@ -241,14 +241,25 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return false;
 
         }
-        bool ExpectLower(string s)
+        bool ExpectLower(string s, bool skipWs = false)
         {
-            if (char.ToLower((char)La(1)) == s[0])
+            var j = 1;
+            // Skip leading Whitespace
+            if (skipWs)
+            {
+                var c = La(j);
+                while (c != IntStreamConstants.Eof && (c == 32 || c == 9))
+                {
+                    j++;
+                    c = La(j);
+                }
+            }
+            if (char.ToLower((char)La(j)) == s[0])
             {
                 // char 2 etc.
                 for (var i = 1; i < s.Length; i++)
                 {
-                    var c = La(i + 1);
+                    var c = La(i + j);
                     if (c == IntStreamConstants.Eof)
                     {
                         // this could happen when parsing a interpolated string with the contents "i"
@@ -330,7 +341,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     parseType(DATETIME_CONST, 1);
                 }
-                else if (ExpectLower("am") || ExpectLower("pm"))
+                else if (ExpectLower("am",true) || ExpectLower("pm",true))
                 {
                     parseType(DATETIME_CONST, 2);
                 }
@@ -367,6 +378,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (la1 == '\r' && La(2) == '\n')
                 {
+                    parseType(NL);
                     parseOne();
                 }
                 parseOne();
@@ -374,13 +386,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 Interpreter.Column = 0;
                 if (_onStartOfTextBlock)
                 {
-                    // this happens in FoxPro dialect only, because only there the TEXT keyword is available
                     _inTextBlock = true;
                     _onStartOfTextBlock = false;
                 }
                 return true;
             }
-            return la1 == TokenConstants.Eof;
+            if (la1 == IntStreamConstants.Eof)
+            {
+                parseType(EOF);
+                return true;
+            }
+            return false;
         }
 
         void parseWhitespace()
@@ -691,7 +707,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        private IToken parseTextLine()
+        private XSharpToken parseTextLine()
         {
             // parse a complete line into a TEST_STRING_CONST after \ or \\
             while (La(1) != TokenConstants.Eof && !ExpectAny('\r', '\n'))
@@ -703,42 +719,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             _onTextLine = false;
             return t;
 
-        }
-
-        // this happens in FoxPro dialect only, because only there the TEXT keyword is available
-        private IToken parseTextEndText()
-        {
-            // continue to collect tokens until end of line
-            // until the line starts with ENDTEXT
-
-            while (La(1) != Eof)
-            {
-                if (ExpectAny(' ', '\t'))
-                {
-                    parseOne();
-                    continue;
-                }
-
-                if (ExpectLower("endtext"))
-                {
-                    // end of text mode
-                    break;
-                }
-                parseToEol();
-                if (!tryParseNewLine())
-                    break;
-            }
-            bool unmatched = (La(1) == Eof);
-            parseType(TEXT_STRING_CONST);
-            _inTextBlock = false;
-            Interpreter.Column += (InputStream.Index - _startCharIndex);
-            XSharpToken t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
-            Emit(t);
-            if (unmatched)
-            {
-                _lexErrors.Add(new ParseErrorData(t, ErrorCode.ERR_MissingEndText));
-            }
-            return t;
         }
 
         private XSharpToken parseSemiColon()
@@ -853,14 +833,21 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             XSharpToken t;
             {
                 parseInit();
-                // this happens in FoxPro dialect only, because only there the TEXT keyword is available
-                if (_inTextBlock)
+                if (_inTextBlock && !ExpectLower("endtext",true) && !ExpectLower("#endtext", true))
                 {
-                    return parseTextEndText();
+                    if (tryParseNewLine())
+                    {
+                        if (_tokenType == NL)
+                            _tokenType = EOS;
+                        t = (XSharpToken) TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn);
+                        return t;
+                    }
+                    t = parseTextLine();
+                    return t;
                 }
                 if (_onTextLine)
                 {
-                    return parseTextLine();
+                   return parseTextLine();
                 }
                 int la1;
                 if (La(1) == '\uFEFF')
@@ -1339,9 +1326,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 type = t.Type;
                 // this happens in FoxPro dialect only, because only there the TEXT keyword is available
                 // and this should only happen when TEXT is the first non ws token on a line
-                if (type == TEXT && StartOfLine(LastToken))
+                if (type == TEXT && StartOfLine(LastToken)) 
                 {
                     _onStartOfTextBlock = true;
+                }
+                if (type == ENDTEXT)
+                {
+                    _inTextBlock = false;
                 }
             }
             else if (type == REAL_CONST || type == INT_CONST || type == HEX_CONST || type == BIN_CONST)
@@ -1381,6 +1372,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             break;
                         case PP_DEFINE:
                         case PP_UNDEF:
+                        case PP_TEXT:
+                        case PP_ENDTEXT:
                             HasPPDefines = true;
                             break;
                         case PP_LINE:
@@ -1686,17 +1679,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     if (!AllowXBaseVariables)
                         return ID;
                     if (!(StartOfLine(lastToken)))
-                    {
-                        return ID;
-                    }
-                    break;
-                // Next token only on the line after TEXT
-                case ADDITIVE:
-                case TEXTMERGE:
-                case PRETEXT:
-                case FLAGS:
-                case NOSHOW:
-                    if (!_onStartOfTextBlock)
                     {
                         return ID;
                     }
@@ -2190,14 +2172,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"EXCLUDE", EXCLUDE },
                     {"OLEPUBLIC", OLEPUBLIC },
                     {"NOINIT", NOINIT },
-                    // text end text
-                    {"TEXT",      TEXT },           // TEXT .. ENDTEXT is declared here because the Lexer needs to do some special magic
-                    {"ENDTEXT",   ENDTEXT },        // it could also be implemented as UDC but we need the lexer support
-                    {"ADDITIVE",  ADDITIVE } ,      // the various options are recognized in the parser and result in a special function call to
-                    {"FLAGS",     FLAGS} ,          // process the literal string before it gets assigned.
-                    {"PRETEXT",   PRETEXT},
-                    {"NOSHOW",    NOSHOW},
-                    {"TEXTMERGE", TEXTMERGE},
                 };
                 foreach (var kw in vfpKeywords)
                 {
@@ -2427,6 +2401,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__XPP2__", MACRO},
                     { "__FOX1__", MACRO},
                     { "__FOX2__", MACRO},
+                    {"TEXT",     TEXT },      // text
+                    {"ENDTEXT",  ENDTEXT },   // endtext
                 };
 
             }
@@ -2485,6 +2461,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
                 {"#IF", PP_IF},	                // #if <expression> 
                 {"#STDOUT", PP_STDOUT },        // #stdout [Message]
+                {"#TEXT", PP_TEXT },            // #text const [, optionalfunc] or #text linefunc, endfunc
+                {"#ENDTEXT",  PP_ENDTEXT },      // endtext
             };
             if (Dialect == XSharpDialect.XPP)
             {

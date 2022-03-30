@@ -22,6 +22,26 @@
 
 #xcommand STORE <value> TO ARRAY <VAR> => __FoxFillArray( <VAR>, <value> )
 
+// FoxPro specific TEXT rules
+// These rules store the settings in the runtime state and __TextEnd is responsible
+// for the textmerge (when needed) and for applying the noshow, flags and pretext
+// __TextLine only adds a CRLF at this moment. That is why the Text Delimiter is empty in the #text directive
+// __TextEnd has to be marked with NeedsAccessToLocals() to make sure it can
+// expand LOCAL variables.
+
+#xcommand  TEXT TO <varname> [<tm:TEXTMERGE>] [<noshow:NOSHOW>] [FLAGS <flags>] [PRETEXT <expression> ]      ;
+      =>  __TextInit( iif(<.tm.>,TRUE, SetTextMerge()), <.noshow.>, iif(<.flags.>, <!flags!>, 0), <!expression!>  ) ;;
+        #text := <varname>,  ,__TextLine , __TextEnd
+
+#xcommand  TEXT TO <varname> ADDITIVE [<tm:TEXTMERGE>] [<noshow:NOSHOW>] [FLAGS <flags>] [PRETEXT <expression> ]   ;
+      =>  __TextInit(iif(<.tm.>,TRUE, SetTextMerge()), <.noshow.>, iif(<.flags.>, <!flags!>, 0), <!expression!>  ) ;;
+        #text += <varname>, ,__TextLine  , __TextEnd
+
+// todo
+// SET TEXTMERGE [TO [FileName] MEMVAR VarName [ADDITIVE]]
+
+
+
 // Rules for FIELD matches that are used in several other commands
 // Note that the FoxPro fields rule is different from the generic rule in dbcmd.xh because of the memo clause
 // and because we also have to support LIKE and EXCEPT
@@ -441,12 +461,12 @@
          <*optionalclauses*> <clause:LIKE,EXCEPT>  <*otherclause*> =>  ;
         #error You cannot combine Fields List and Wildcards in a command
 
-#command MD <(dir)>    => _cmdDirMake (<(dir)>) 
-#command MKDIR <(dir)> => _cmdDirMake (<(dir)>) 
-#command CD <(dir)>    => _cmdDirChange (<(dir)>) 
-#command CHDIR <(dir)> => _cmdDirChange (<(dir)>) 
-#command RD <(dir)>    => _cmdDirRemove (<(dir)>) 
-#command RMDIR <(dir)> => _cmdDirRemove (<(dir)>) 
+#command MD <(dir)>    => _cmdDirMake (<(dir)>)
+#command MKDIR <(dir)> => _cmdDirMake (<(dir)>)
+#command CD <(dir)>    => _cmdDirChange (<(dir)>)
+#command CHDIR <(dir)> => _cmdDirChange (<(dir)>)
+#command RD <(dir)>    => _cmdDirRemove (<(dir)>)
+#command RMDIR <(dir)> => _cmdDirRemove (<(dir)>)
 
 #include "FoxProSql.xh"
 #endif

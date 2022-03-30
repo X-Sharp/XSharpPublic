@@ -26,7 +26,7 @@
 #command  SET DEFAULT TO <*path*>   =>  Set( Set.Default, <(path)> )
 #command  SET DEFAULT TO            =>  Set( Set.Default, "" )
 
-#command  SET PATH TO <*path*>      =>  Set( Set.Path, <(path)> )
+#command  SET PATH TO <*path*>      =>  Set( Set.Path, iif(<.path.>, <(path)> ,""))
 #command  SET PATH TO               =>  Set( Set.Path, "" )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -35,9 +35,8 @@
 
 #command  SET EXACT <x:ON,OFF,&>    =>  Set( Set.Exact, <(x)> )
 #command  SET FIXED <x:ON,OFF,&>    =>  Set( Set.Fixed, <(x)> )
+#command  SET DECIMALS TO [<x>]     =>  Set( Set.Decimals, iif( <.x.>, <!x!>, 0) )
 
-#command  SET DECIMALS TO <x>       =>  Set( Set.Decimals, <x> )
-#command  SET DECIMALS TO           =>  Set( Set.Decimals, 0 )
 
 #command  SET DATE [TO] <x:AMERICAN,MDY>        =>  SetDateCountry(DateCountry.American)
 #command  SET DATE [TO] ANSI                    =>  SetDateCountry(DateCountry.Ansi)
@@ -65,8 +64,6 @@
 #ifndef __DIALECT_FOXPRO__
   // FoxPro maps SET ANSI to Set.SqlAnsi
   #command SET ANSI <x:ON,OFF,&>          =>  Set(Set.Ansi, <(x)> )
-  #command SET ANSI (<x>)                 =>  Set(Set.Ansi, <x> )
-
 #endif
 
 #command SET EXCLUSIVE <x:ON,OFF,&>     =>  Set(Set.Exclusive, <(x)> )
@@ -89,8 +86,7 @@
 //#command  SET PRINTER TO                              =>  SetPrintfile( "" , FALSE)
 //#command  SET PRINTER TO <(file)> [<add: ADDITIVE>]   =>  SetPrintfile( <(file)>, <.add.> )
 
-#command  SET MARGIN TO <x>                           =>  Set( Set.Margin, <(x)> )
-#command  SET MARGIN TO                               =>  Set( Set.Margin, 0 )
+#command  SET MARGIN TO [<x>]                         =>   Set( Set.Margin, iif( <.x.>, <!x!>, 0) )
 
 #command  SET COLOR TO [<*spec*>]                     =>  SetColor( #<spec> )
 #command  SET COLOR TO ( <c> )                        =>  SetColor( <c> )

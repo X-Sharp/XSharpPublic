@@ -285,5 +285,55 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			SetDigitFixed(digitfixed)
 		RETURN
 
+		[Fact, Trait("Category", "VariousConversions")];
+		METHOD SystemDecimalConversions() AS VOID
+			LOCAL deci,thou,decimal AS USUAL
+			deci := SetDecimalSep(Asc(","))
+			thou := SetThousandSep(Asc("."))
+			decimal := SetDecimal(2)
+
+			LOCAL d AS System.Decimal
+			LOCAL u AS USUAL
+			LOCAL f AS FLOAT
+			f := 123.456
+			Assert.Equal( 3, f:Decimals )
+			Assert.Equal( "123,456", Str(f,-1) )
+
+			u := 123.456
+			f := u
+			Assert.Equal( 3, f:Decimals )
+			Assert.Equal( "123,456", Str(f,-1) )
+
+			d := 123.456m
+			f := d
+			Assert.Equal( 2, f:Decimals )
+			Assert.Equal( "123,46", Str(f,-1) )
+
+			u := d
+			f := u
+			Assert.Equal( 2, f:Decimals )
+			Assert.Equal( "123,46", Str(f,-1) )
+
+			SetDecimal(4)
+			f := d
+			Assert.Equal( 4, f:Decimals )
+			Assert.Equal( "123,4560", Str(f,-1) )
+
+			u := d
+			f := u
+			Assert.Equal( 4, f:Decimals )
+			Assert.Equal( "123,4560", Str(f,-1) )
+
+			SetDecimalSep(deci)
+			SetThousandSep(thou)
+			SetDecimal(decimal)
+
+			// picture is invalid, but make sure no exception is thrown
+			LOCAL val := 1 AS decimal
+			LOCAL uVal := val AS USUAL
+			? Transform(val, "@R{9999}") // -> no exception
+			? Transform(uVal, "@R{9999}") // -> exception
+		RETURN
+
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

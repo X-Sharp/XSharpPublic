@@ -1040,161 +1040,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(attributeLists);
             return ctor;
         }
-        #region TextMergeSupport
-        private bool checkTextMergeDelimiters(string sourceText)
-        {
-            var open = sourceText.Contains("<<");
-            var close = sourceText.Contains(">>");
-            bool unbalanced = false;
-            if (open && close)
-            {
-                var numOpen = sourceText.Length - sourceText.Replace("<<", "").Length;
-                var numClose = sourceText.Length - sourceText.Replace(">>", "").Length;
-                if (numOpen == numClose)    // balanced, may still be incorrect, such as >> aaa <<
-                {
-                    sourceText = sourceText.Replace("<<", "{");
-                    sourceText = sourceText.Replace(">>", "}");
-                    // check to see if open is before close
-                    string worker = sourceText;
-                    numOpen = worker.IndexOf("{");
-                    numClose = worker.IndexOf("}");
-                    while (numClose > numOpen && numClose != -1)
-                    {
-                        worker = worker.Substring(numClose + 1);
-                        numOpen = worker.IndexOf("{");
-                        numClose = worker.IndexOf("}");
-                    }
-                    if (numOpen > numClose)
-                        unbalanced = true;
-                }
-                else
-                {
-                    unbalanced = true;
-                }
-            }
-            else if (open || close)
-            {
-                unbalanced = true;
-            }
-            return !unbalanced;
-        }
-
-        private string ReplaceFoxTextDelimiters(string source)
-        {
-            var sb = new StringBuilder(source.Length);
-            bool extended = false;
-            char last = '\0';
-            for (int i = 0; i < source.Length; i++)
-            {
-                var c = source[i];
-                switch (c)
-                {
-                    case '<':
-                        if (i < source.Length-1 && source[i+1] == '<')
-                        {
-                            c = '{';
-                            i++;
-                        }
-                        break;
-                    case '>':
-                        if (i < source.Length - 1 && source[i + 1] == '>')
-                        {
-                            c = '}';
-                            i++;
-
-                        }
-                        break;
-                    case '"':
-                        break;
-                    case '\n':
-                        extended = true;
-                        sb.Append('\\');
-                        c = 'n';
-                        break;
-                    case '\t':
-                        extended = true;
-                        sb.Append('\\');
-                        c = 't';
-                        break;
-                    case '\r':
-                        extended = true;
-                        sb.Append('\\');
-                        c = 'r';
-                        break;
-                    default:
-                        break;
-                }
-                sb.Append(c);
-                last = c;
-            }
-            source = sb.ToString();
-            if (extended)
-                source  = "ei\"" + source + "\"";
-            else
-                source = "i\"" + source + "\"";
-            return source;
-        }
-
-        public override void ExitFoxtextStmt([NotNull] XP.FoxtextStmtContext context)
-        {
-            var sourceText = context.String.Text;
-            ExpressionSyntax stringExpr;
-            bool delimitersOk = checkTextMergeDelimiters(sourceText);
-            bool hasDelim = sourceText.IndexOf("<<") >= 0 && sourceText.IndexOf(">>") >= 2;
-            if (delimitersOk && hasDelim)
-            {
-                sourceText = ReplaceFoxTextDelimiters(sourceText);
-                var token = new XSharpToken(XSharpParser.TEXT, sourceText);
-                token.Line = context.Start.Line;
-                token.Column = context.Start.Column;
-                stringExpr = CreateInterPolatedStringExpression(token, context);
-            }
-            else
-            {
-                stringExpr = GenerateLiteral(sourceText);
-            }
-            if (hasDelim && context.Merge == null)
-            {
-                var txtmerge = GenerateMethodCall(XSharpQualifiedFunctionNames.TextMergeCheck, true);
-                stringExpr = MakeConditional(txtmerge, stringExpr, GenerateLiteral(context.String.Text));
-            }
-
-            var arg1 = MakeArgument(stringExpr);
-            var arg2 = MakeArgument(GenerateLiteral(context.NoShow != null));
-            var arg3 = MakeArgument(context.Flags != null ? context.Flags.Get<ExpressionSyntax>() : GenerateLiteral(0));
-            var arg4 = MakeArgument(context.Pretext != null ? context.Pretext.Get<ExpressionSyntax>() : GenerateNIL());
-            var args = MakeArgumentList(arg1, arg2, arg3, arg4);
-            var call = GenerateMethodCall(XSharpQualifiedFunctionNames.TextSupport, args);
-
-            if (context.Id != null)
-            {
-                // Call TextSupport  Function and generate assign expression
-                AssignmentExpressionSyntax assignExpr;
-                var id = GenerateSimpleName(context.Id.GetText());
-                if (context.Add != null)
-                {
-                    assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression, id, SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken), call);
-                }
-                else
-                {
-                    assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, id, SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), call);
-                }
-                context.Put(GenerateExpressionStatement(assignExpr, context));
-            }
-            else
-            {
-                // no assignment, simply call the TextSupport function
-                context.Put(GenerateExpressionStatement(call, context));
-            }
-            if (!delimitersOk)
-            {
-                var stmt = context.Get<StatementSyntax>();
-                stmt = stmt.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_UnbalancedTextMergeOperators));
-                context.Put(stmt);
-            }
-            return;
-        }
-
         public override void EnterFoxdll([NotNull] XP.FoxdllContext context)
         {
             if (context._Params?.Count > 0)
@@ -1327,9 +1172,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
 
                     var par = paramCtx.Get<ParameterSyntax>();
- 
                     @params.Add(par);
-                    
                 }
                 parameters = _syntaxFactory.ParameterList(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
@@ -1360,40 +1203,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expressionBody: null,
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
+
+ 
         public override void ExitFoxtextoutStmt([NotNull] XP.FoxtextoutStmtContext context)
         {
             var sourceText = context.String.Text;
-            ExpressionSyntax expr;
-            bool hasDelim = sourceText.IndexOf("<<") >= 0 && sourceText.IndexOf(">>") >= 2;
-            bool delimitersOk = checkTextMergeDelimiters(sourceText);
-            if (delimitersOk)
-            {
-                sourceText = ReplaceFoxTextDelimiters(sourceText);
-                var token = new XSharpToken(XSharpParser.TEXT, sourceText);
-                token.Line = context.Start.Line;
-                token.Column = context.Start.Column;
-                expr = CreateInterPolatedStringExpression(token, context);
-            }
-            else
-            {
-                expr = GenerateLiteral(sourceText);
-            }
             var arg2 = GenerateLiteral(context.B.Type != XP.BACKBACKSLASH);
-            var cond = GenerateMethodCall(XSharpQualifiedFunctionNames.TextMergeCheck, true);  
-            if (! hasDelim)
-            {
-                cond = GenerateLiteral(false);
-            }
-            var arg1 = MakeConditional(cond, expr, GenerateLiteral(context.String.Text));
+            var arg1 = GenerateLiteral(sourceText);
             var args = MakeArgumentList(MakeArgument(arg1), MakeArgument(arg2));
             var call = GenerateMethodCall(XSharpQualifiedFunctionNames.TextOut, args, true); 
             var stmt = GenerateExpressionStatement(call, context);
-            if (!delimitersOk)
-                stmt = stmt.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_UnbalancedTextMergeOperators));
             context.Put(stmt);
             return;
         }
-        #endregion
 
         public override void ExitStatementBlock([NotNull] XP.StatementBlockContext context)
         {

@@ -30,10 +30,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">In general, a command definition provides a way to specify an English language statement that is, in fact, a complicated expression or function call, thereby improving the readability of source code. &#160;You can use a command in place of an expression or function call to impose order of keywords, required arguments, combinations of arguments that must be specified together, and mutually exclusive &#160;arguments at compile time rather than at runtime. &#160;This can be important since procedures and user-defined functions can now be called with any number of arguments, forcing any argument checking to occur at runtime. &#160;With command definitions, the preprocessor handles some of this.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">When defining a command, there are several prerequisites to properly specifying the command definition. &#160;Many preprocessor commands require more than one #command directive because mutually exclusive clauses contain a keyword or argument. &#160;For example, the @...GET command has mutually exclusive VALID and RANGE clauses and is defined with a different #command rule to implement each clause.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">This also occurs when a result pattern contains different expressions, functions, or parameter structures for different clauses specified for the same command (e.g., the @...SAY command). &#160;In Std.ch, there is a #command rule for @...SAY specified with the PICTURE clause and another for @...SAY specified without the PICTURE clause. &#160;Each formulation of the command is translated into a different expression. &#160;</para>
-    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">Because directives are processed in stack order, when defining more than one rule for a command, place the most general case first, followed by the more specific ones. This ensures that the proper rule will match the command specified in the program (.prg) file.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading2">Match Markers</text></para>
@@ -44,7 +40,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Command">See the topic about Result Markers for a detailed discussion</link></para>
     <para styleclass="Heading2"> Notes</para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text style="font-weight:bold;">Less than operator</text>: If you specify the less than operator (&lt;) in the &lt;resultPattern&gt; expression, you must precede it with the escape character (\).</li>
       <li styleclass="Normal"><text style="font-weight:bold;">Multistatement lines</text>: You can specify more than one statement as a part of the result pattern by separating each statement with a semicolon. &#160;If you specify adjacent statements on two separate lines, the first statement must be followed by two semicolons.</li>
     </list>

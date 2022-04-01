@@ -608,12 +608,8 @@ statement           : Decl=localdecl                        #declarationStmt
                       StmtBlk=statementBlock
                       (e=END WITH? eos)?                                  #withBlock
 
-
                     // some statements that are only valid in FoxPro dialect
-                    | TEXT (TO Id=varidentifier (Add=ADDITIVE)? (Merge=TEXTMERGE)? (NoShow=NOSHOW)? (FLAGS Flags=expression)? (PRETEXT Pretext=expression)? )? end=EOS
-                       String=TEXT_STRING_CONST
-                       ENDTEXT e=eos                                                  #foxtextStmt   
-                    | Eq=EQ Exprs+=expression  end=eos		                            #foxexpressionStmt
+                    | Eq=EQ Exprs+=expression  end=eos		                          #foxexpressionStmt
                     | B=(BACKSLASH | BACKBACKSLASH) String=TEXT_STRING_CONST end=EOS  #foxtextoutStmt
                     | D=DO Id=identifier (WITH ArgList=argumentList)?    end=eos      #doStmt
 
@@ -1206,7 +1202,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     // but when they code event->(DoSomething()) we still need them in this rule...
                     | DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FIELD | FOREACH | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP 
                     | PARTIAL | SEALED | ABSTRACT | UNSAFE | SCOPE | NAMESPACE | LOCK | IMPLICIT | IMPLIED | INITONLY | PROPERTY | INTERFACE
-                    | VOSTRUCT | UNION | DECLARE | OPERATOR	
+                    | VOSTRUCT | UNION | DECLARE | OPERATOR	| TEXT | ENDTEXT
                     )
                     ;
 					

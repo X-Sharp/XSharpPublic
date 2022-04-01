@@ -18,5 +18,7 @@
     <para styleclass="Heading3">Note</para>
     <para styleclass="Body Text">The <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8">/vo8</link> compiler option will change this behavior:</para>
     <para styleclass="Body Text">when /vo8 is active then any symbol defined with TRUE or a non-0 numeric value will be seen as &quot;defined&quot;, symbols defined with FALSE or a 0 numeric value will be seen as &quot;undefined&quot;.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">See also</para>
   </body>
 </topic>

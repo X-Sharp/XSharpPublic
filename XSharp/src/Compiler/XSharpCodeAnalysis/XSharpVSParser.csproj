@@ -111,13 +111,13 @@ $(MSBuildThisFileDirectory)TouchFiles.exe $(AntlrInputdir)XSharp.g4      $(Antlr
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="Exists('$(DevPublicDir)binaries\$(Configuration)\XSharpProject.dll') ">
+  <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll') ">
     <MakeDir Directories="$(DevPublicDir)external\$(ConfigurationName)" /> 
     <MakeDir Directories="$(ZipsDir)" /> 
   </Target>
-  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(DevPublicDir)binaries\$(Configuration)\XSharpProject.dll')">
+  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll')">
     <ItemGroup>
-      <VsparserFiles Include="$(OutputPath)\*.*" />
+      <VsparserFiles Include="$(OutputPath)\*.*" /> 
     </ItemGroup> 
     <Copy SourceFiles="@(VsparserFiles)" DestinationFolder="$(DevPublicDir)external\$(ConfigurationName)" />
   </Target>
@@ -131,8 +131,7 @@ $(MSBuildThisFileDirectory)TouchFiles.exe $(AntlrInputdir)XSharp.g4      $(Antlr
      <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
     </Target>
   <PropertyGroup>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <PostBuildEvent></PostBuildEvent>
-  </PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup> 
 
 </Project> 

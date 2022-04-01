@@ -7132,7 +7132,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(GenerateExpressionStatement(expr, context));
             }
         }
-
         public override void ExitBlockStmt([NotNull] XP.BlockStmtContext context)
         {
             context.SetSequencePoint(context.end);

@@ -231,9 +231,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string StringArrayInit = "StringArrayInit";
         internal const string BeginSequenceEnter = "EnterBeginSequence";
         internal const string BeginSequenceExit = "ExitBeginSequence";
-        internal const string TextSupport = "__TextSupport";
         internal const string TextOut = "__TextOut";
-        internal const string TextMergeCheck = "SetTextMerge";
         internal const string Chr = "Chr";
         internal const string Instr = "Instr";
         internal const string AreaEval = "__AreaEval";
@@ -332,9 +330,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string LocalsUpdated = GlobalRT + ReservedNames.LocalsUpdated;
         internal const string LocalsClear = GlobalRT + ReservedNames.LocalsClear;
         internal const string FoxRedim = GlobalVFP + ReservedNames.FoxRedim;
-        internal const string TextSupport = GlobalVFP + ReservedNames.TextSupport;
         internal const string TextOut = GlobalVFP + ReservedNames.TextOut;
-        internal const string TextMergeCheck = GlobalVFP + ReservedNames.TextMergeCheck;
     }
 
     internal static class VulcanAssemblyNames

@@ -154,9 +154,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
         #region Helper Methods
+        new bool Eof()
+        {
+            return La(1) == EOF;
+        }
         bool Expect(char c)
         {
             return La(1) == c;
+        }
+        bool Expect(char c1, char c2)
+        {
+            return La(1) == c1 && La(2) == c2;
         }
         static bool InRange(int c, int first, int last) => c >= first && c <= last;
         static bool InList(int c, int c1, int c2)
@@ -248,7 +256,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (skipWs)
             {
                 var c = La(j);
-                while (c != IntStreamConstants.Eof && (c == 32 || c == 9))
+                while (c != EOF && (c == 32 || c == 9))
                 {
                     j++;
                     c = La(j);
@@ -260,7 +268,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 for (var i = 1; i < s.Length; i++)
                 {
                     var c = La(i + j);
-                    if (c == IntStreamConstants.Eof)
+                    if (c == EOF)
                     {
                         // this could happen when parsing a interpolated string with the contents "i"
                         return false;
@@ -300,7 +308,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             InputStream.Consume();
         }
-
         void parseOne(int type)
         {
             parseType(type);
@@ -341,7 +348,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     parseType(DATETIME_CONST, 1);
                 }
-                else if (ExpectLower("am",true) || ExpectLower("pm",true))
+                else if (ExpectLower("am", true) || ExpectLower("pm", true))
                 {
                     parseType(DATETIME_CONST, 2);
                 }
@@ -364,7 +371,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         void parseToEol()
         {
             var la1 = La(1);
-            while (la1 != TokenConstants.Eof && la1 != '\r' && la1 != '\n')
+            while (la1 != EOF && la1 != '\r' && la1 != '\n')
             {
                 parseOne();
                 la1 = La(1);
@@ -373,10 +380,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         bool tryParseNewLine()
         {
-            var la1 = La(1);
-            if (la1 == '\n' || la1 == '\r')
+            if (ExpectAny('\n','\r'))
             {
-                if (la1 == '\r' && La(2) == '\n')
+                if (Expect('\r', '\n'))
                 {
                     parseType(NL);
                     parseOne();
@@ -391,7 +397,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
                 return true;
             }
-            if (la1 == IntStreamConstants.Eof)
+            if (Eof())
             {
                 parseType(EOF);
                 return true;
@@ -425,14 +431,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         void parseMlComment()
         {
             _tokenChannel = TokenConstants.HiddenChannel;
-            while (La(1) != TokenConstants.Eof)
+            while (!Eof())
             {
-                if (Expect("*/"))
+                if (Expect('*', '/'))
                     break;
                 if (!tryParseNewLine())
                     parseOne();
             }
-            if (La(1) != TokenConstants.Eof)
+            parseType(ML_COMMENT);
+            if (!Eof())
             {
                 // Eat the */
                 parseTwo();
@@ -527,14 +534,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             parseType(La(1) == '.' ? REAL_CONST : INT_CONST);
             bool invalid = false;
             bool currency = false;
-            if (La(1) == '$')
+            if (Expect('$'))
             {
                 parseOne();
                 currency = true;
             }
             if (ExpectAny('.', '$'))
                 parseOne();
-            else if (La(1) == '0')
+            else if (Expect('0'))
             {
                 parseOne();
                 if (ExpectAny('X', 'x'))
@@ -583,7 +590,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         parseType(INVALID_NUMBER);
                     return;
                 }
-                if (La(1) == '.' && (!ExpectLower(".and.") && !ExpectLower(".or.")))
+                if (Expect('.') && (!ExpectLower(".and.") && !ExpectLower(".or.")))
                 {
                     // The '.' should not be the start of .and. or .or.
                     parseOne(REAL_CONST);
@@ -598,7 +605,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             if (parseType() == REAL_CONST)
             {
-                if (La(1) == '.' && InRange(La(2), '0', '9') &&
+                if (Expect('.') && InRange(La(2), '0', '9') &&
                     (!InRange(La(3), '0', '9') ||
                     !InRange(La(4), '0', '9')))
                 {
@@ -642,7 +649,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         void parseString()
         {
             parseType(STRING_CONST);
-            if (!AllowSingleQuotedStrings && La(1) == '\'')
+            if (!AllowSingleQuotedStrings && Expect('\''))
             {
                 parseType(CHAR_CONST);
             }
@@ -650,7 +657,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 parseOne(CHAR_CONST);
             }
-            else if (La(1) == '[')
+            else if (Expect('['))
             {
                 parseType(BRACKETED_STRING_CONST);
             }
@@ -681,7 +688,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 switch (La(1))
                 {
-                    case TokenConstants.Eof:
+                    case EOF:
                     case 10:        // \n 
                     case 13:        // \r
                         eos = true;
@@ -710,7 +717,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         private XSharpToken parseTextLine()
         {
             // parse a complete line into a TEST_STRING_CONST after \ or \\
-            while (La(1) != TokenConstants.Eof && !ExpectAny('\r', '\n'))
+            while (!Eof() && !ExpectAny('\r', '\n'))
                 parseOne();
             parseType(TEXT_STRING_CONST);
             Interpreter.Column += (InputStream.Index - _startCharIndex);
@@ -833,13 +840,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             XSharpToken t;
             {
                 parseInit();
-                if (_inTextBlock && !ExpectLower("endtext",true) && !ExpectLower("#endtext", true))
+                if (_inTextBlock && !ExpectLower("endtext", true) && !ExpectLower("#endtext", true))
                 {
                     if (tryParseNewLine())
                     {
                         if (_tokenType == NL)
                             _tokenType = EOS;
-                        t = (XSharpToken) TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn);
+                        t = (XSharpToken)TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn);
                         return t;
                     }
                     t = parseTextLine();
@@ -847,9 +854,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
                 if (_onTextLine)
                 {
-                   return parseTextLine();
+                    return parseTextLine();
                 }
-                int la1;
                 if (La(1) == '\uFEFF')
                     parseSkip();
                 switch (La(1))
@@ -869,7 +875,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 ExpectDelimited("{..}"))
                             {
                                 parseType(NULL_DATE);
-                                while (La(1) != '}')
+                                while (!Expect('}'))
                                 {
                                     parseOne();
                                 }
@@ -929,10 +935,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case ':':
                         parseOne(COLON);
-                        la1 = La(1);
-                        if (la1 == ':')
+                        if (_lastToken.Type == TEXT)        // text := 
+                        {
+                            _onStartOfTextBlock = false;
+                            _lastToken.Type = ID;
+                        }
+                        if (Expect(':'))
                             parseOne(COLONCOLON);
-                        else if (la1 == '=')
+                        else if (Expect('='))
                             parseOne(ASSIGN_OP);
                         break;
                     case ',':
@@ -942,26 +952,23 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         parseOne(BACKSLASH);
                         if (StartOfLine(LastToken) && Options.Dialect == XSharpDialect.FoxPro)
                         {
-                            if (La(1) == '\\')
+                            if (Expect('\\'))
                                 parseOne(BACKBACKSLASH);
                             _onTextLine = true;
                         }
                         break;
                     case '|':
                         parseOne(PIPE);
-                        la1 = La(1);
-                        if (la1 == '|')
-                            parseOne(OR);
-                        else if (la1 == '=')
-                            parseOne(ASSIGN_BITOR);
+                        if (Expect('|')) parseOne(OR);
+                        else if (Expect('=')) parseOne(ASSIGN_BITOR);
                         break;
                     case '&':
                         parseOne(AMP);
-                        if (Dialect.AllowOldStyleComments() && La(1) == '&')
+                        if (Dialect.AllowOldStyleComments() && Expect('&'))
                             parseSlComment();
-                        else if (La(1) == '&')
+                        else if (Expect('&'))
                             parseOne(AND);
-                        else if (La(1) == '=')
+                        else if (Expect('='))
                             parseOne(ASSIGN_BITAND);
                         break;
                     case '@':
@@ -971,64 +978,60 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '-':
                         parseOne(MINUS);
-                        la1 = La(1);
-                        if (la1 == '>')
+                        if (Expect('>'))
                             parseOne(ALIAS);
-                        else if (la1 == '-')
+                        else if (Expect('-'))
                             parseOne(DEC);
-                        else if (la1 == '=')
+                        else if (Expect('='))
                             parseOne(ASSIGN_SUB);
                         break;
                     case '+':
                         parseOne(PLUS);
-                        la1 = La(1);
-                        if (la1 == '+')
+                        if (Expect('+'))
                             parseOne(INC);
-                        else if (la1 == '=')
+                        else if (Expect('='))
                             parseOne(ASSIGN_ADD);
                         break;
                     case '/':
                         parseOne(DIV);
-                        la1 = La(1);
-                        if (la1 == '*')
+                        if (Expect('/'))
+                        {
+                            parseOne(SL_COMMENT);
+                            if (Expect('/'))
+                                parseDocComment();
+                            else
+                                parseSlComment();
+                        }
+                        else if (Expect('*'))
                         {
                             parseOne(ML_COMMENT);
                             parseMlComment();
                             break;
                         }
-                        else if (la1 == '/')
-                        {
-                            parseOne(SL_COMMENT);
-                            if (La(1) == '/')
-                                parseDocComment();
-                            else
-                                parseSlComment();
-                        }
-                        else if (la1 == '=')
+                        else if (Expect('='))
                             parseOne(ASSIGN_DIV);
                         break;
                     case '%':
                         parseOne(MOD);
-                        if (La(1) == '=')
+                        if (Expect('='))
                             parseOne(ASSIGN_MOD);
                         break;
                     case '^':
                         parseOne(EXP);
-                        if (La(1) == '=')
+                        if (Expect('='))
                             parseOne(ASSIGN_EXP);
                         break;
                     case '<':
                         parseOne(LT);
-                        la1 = La(1);
-                        if (la1 == '<')
+                        if (Expect('<'))
                         {
                             parseOne(LSHIFT);
-                            if (La(1) == '=')
+                            if (Expect('='))
                                 parseOne(ASSIGN_LSHIFT);
                         }
-                        else if (la1 == '=')
+                        else if (Expect('='))
                             parseOne(LTE);
-                        else if (la1 == '>')
+                        else if (Expect('>'))
                             parseOne(NEQ);
                         break;
                     case '>':
@@ -1039,56 +1042,51 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             parseOne(); // >
                             parseOne(ASSIGN_RSHIFT); // =
                         }
-                        else if (La(1) == '=')
+                        else if (Expect('='))
                             parseOne(GTE);
                         break;
                     case '~':
                         parseOne(TILDE);
-                        la1 = La(1);
-                        if (la1 == '=')
+                        if (Expect('='))
                             parseOne(ASSIGN_XOR);
-                        else if (la1 == '"')           // Old Style Pragma like ~"ONLYEARLY+", treat it as whitespace
+                        else if (Expect('"'))           // Old Style Pragma like ~"ONLYEARLY+", treat it as whitespace
                         {
                             parseOne(WS);
                             _tokenChannel = TokenConstants.HiddenChannel;
-                            while (La(1) != TokenConstants.Eof && La(1) != '"')
+                            while (!Eof() && !Expect('"'))
                                 parseOne();
-                            if (La(1) != TokenConstants.Eof)
+                            if (!Eof())
                                 parseOne();
                         }
                         break;
                     case '*':
                         parseOne(MULT);
-                        la1 = La(1);
                         if (StartOfLine(LastToken))
                             parseSlComment();
-                        else if (la1 == '=')
+                        else if (Expect('='))
                             parseOne(ASSIGN_MUL);
-                        else if (la1 == '*')
+                        else if (Expect('*'))
                         {
                             parseOne(EXP);
-                            if (La(1) == '=')
+                            if (Expect('='))
                                 parseOne(ASSIGN_EXP);
                         }
                         break;
                     case '?':
                         parseOne(QMARK);
-                        if (La(1) == '?')
+                        if (Expect('?'))
                         {
                             parseOne(QQMARK);
-                            if (La(1) == '=')
-                            {
+                            if (Expect('='))
                                 parseOne(ASSIGN_QQMARK);
-                            }
                         }
                         break;
 
                     case '=':
                         parseOne(EQ);
-                        la1 = La(1);
-                        if (la1 == '=')
+                        if (Expect('='))
                             parseOne(EEQ);
-                        else if (la1 == '>')
+                        else if (Expect('>'))
                             parseOne(UDCSEP);
                         break;
                     case '$':
@@ -1114,7 +1112,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '!':
                         parseOne(NOT);
-                        if (La(1) == '=')
+                        if (Expect('='))
                             parseOne(NEQ);
                         break;
                     case ';':
@@ -1304,8 +1302,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
                 if (parsingFailed())
                 {
-                    if (La(1) == TokenConstants.Eof)
-                        parseType(Eof);
+                    if (Eof())
+                        parseType(EOF);
                     else
                         parseOne(UNRECOGNIZED);
                 }
@@ -1326,7 +1324,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 type = t.Type;
                 // this happens in FoxPro dialect only, because only there the TEXT keyword is available
                 // and this should only happen when TEXT is the first non ws token on a line
-                if (type == TEXT && StartOfLine(LastToken)) 
+                if (type == TEXT && StartOfLine(LastToken))
                 {
                     _onStartOfTextBlock = true;
                 }
@@ -1394,16 +1392,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-            if (type != Eof)
+            if (type != EOF)
             {
                 if (!_inDottedIdentifier)
                 {
                     // Check if the current token is a valid Identifier (starts with A..Z or _) and is followed by a DOT
                     // In that case we change the type from Keyword to ID
-                    if (_isValidIdentifier(t) && La(1) == (int)'.')
+                    if (_isValidIdentifier(t) && Expect('.'))
                     {
                         if (t.Type != SELF && t.Type != SUPER && t.Type != FOX_M)
                         {
+                            if (t.Type == TEXT)
+                            {
+                                _onStartOfTextBlock = false;
+                            }
                             t.Type = ID;
                         }
                         _inDottedIdentifier = true;
@@ -1443,7 +1445,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 _beginOfStatement = false;
             }
-            else if (!_beginOfStatement && type == TokenConstants.Eof)
+            else if (!_beginOfStatement && type == EOF)
             {
                 t.Type = EOS;
                 _beginOfStatement = true;
@@ -1469,7 +1471,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (t.Channel == TokenConstants.DefaultChannel)
                 {
                     t.Channel = t.OriginalChannel = PREPROCESSORCHANNEL;
-                    if (type == NL || type == Eof)
+                    if (type == NL || type == EOF)
                     {
                         // end of line ends the preprocessor definition
                         _currentLineIsPreprocessorDefinition = false;
@@ -1852,7 +1854,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         private bool _isValidIdentifier(IToken t)
         {
-            if (t == null || t.Text?.Length == 0 || t.Type == Eof)
+            if (t == null || t.Text?.Length == 0 || t.Type == EOF)
                 return false;
 
             switch (t.Channel)

@@ -789,10 +789,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         XSharpToken FixToken(XSharpToken token)
         {
-            //if (inputs.isSymbol)
-            //{
-            //    token.SourceSymbol = GetSourceSymbol();
-            //}
             return token;
         }
 

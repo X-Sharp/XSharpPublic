@@ -71,7 +71,7 @@ namespace XSharp.MacroCompiler.Syntax
         AWAIT, ASYNC, ASTYPE, CHECKED, UNCHECKED,
 
         // Fox kws
-        M, TEXT, ENDTEXT, ADDITIVE, TEXTMERGE, PRETEXT, FLAGS, NOSHOW,
+        M, TEXT, ENDTEXT, 
 
         LAST_POSITIONAL_KEYWORD,
 
@@ -97,7 +97,7 @@ namespace XSharp.MacroCompiler.Syntax
         // Null values
         FIRST_NULL,
 
-        NIL, NULL, NULL_ARRAY, NULL_CODEBLOCK, NULL_DATE, NULL_OBJECT, NULL_PSZ, NULL_PTR, NULL_STRING, NULL_SYMBOL,
+        NIL, NULL, NULL_ARRAY, NULL_CODEBLOCK, NULL_DATE, NULL_OBJECT, NULL_PSZ, NULL_PTR, NULL_STRING, NULL_SYMBOL,NULL_FOX,
 
         LAST_NULL,
 
@@ -120,7 +120,7 @@ namespace XSharp.MacroCompiler.Syntax
         // Assignments
         ASSIGN_OP, ASSIGN_ADD, ASSIGN_SUB, ASSIGN_EXP, ASSIGN_MUL, ASSIGN_DIV,
         ASSIGN_MOD, ASSIGN_BITAND, ASSIGN_BITOR, ASSIGN_LSHIFT, ASSIGN_RSHIFT,
-        ASSIGN_XOR,
+        ASSIGN_XOR,ASSIGN_QQMARK,
 
 
         // Operators
@@ -147,6 +147,9 @@ namespace XSharp.MacroCompiler.Syntax
         PP_FIRST,
         PP_COMMAND, PP_DEFINE, PP_ELSE, PP_ENDIF, PP_ENDREGION, PP_ERROR, PP_IF, PP_IFDEF, PP_IFNDEF, PP_INCLUDE, PP_LINE, PP_REGION, PP_STDOUT, PP_TRANSLATE,
         PP_UNDEF, PP_WARNING,
+		// Text .. endText
+        PP_TEXT, PP_ENDTEXT,
+
         PP_LAST,
 
         // PP constant [entity]
@@ -579,11 +582,6 @@ namespace XSharp.MacroCompiler.Syntax
                 {"LPARAMETERS", TokenType.LPARAMETERS},
                 {"TEXT", TokenType.TEXT},
                 {"ENDTEXT", TokenType.ENDTEXT},
-                {"ADDITIVE", TokenType.ADDITIVE},
-                {"TEXTMERGE", TokenType.TEXTMERGE},
-                {"PRETEXT", TokenType.PRETEXT},
-                {"FLAGS", TokenType.FLAGS},
-                {"NOSHOW", TokenType.NOSHOW},
             };
 
             var Keywords = new Dictionary<string, TokenType>
@@ -718,6 +716,8 @@ namespace XSharp.MacroCompiler.Syntax
                 { "#STDOUT", TokenType.PP_STDOUT},			// #stdout [<message>]
                 { "#TRANSLATE", TokenType.PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern>
                 { "#UNDEF", TokenType.PP_UNDEF},			// #undef <identifier>
+                { "#TEXT", TokenType.PP_TEXT},			    // 
+                { "#ENDTEXT", TokenType.PP_ENDTEXT},		// 
                 { "#WARNING", TokenType.PP_WARNING},		// #warning [warningMessage]
                 { "#XCOMMAND", TokenType.PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
                 { "#XTRANSLATE", TokenType.PP_TRANSLATE},    // #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev

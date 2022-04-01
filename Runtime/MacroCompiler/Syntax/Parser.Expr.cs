@@ -48,6 +48,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL_PTR:
                 case TokenType.NULL_STRING:
                 case TokenType.NULL_SYMBOL:
+                case TokenType.NULL_FOX:
                 case TokenType.INCOMPLETE_STRING_CONST:
                 case TokenType.INVALID_NUMBER:
                 case TokenType.ARRAY:
@@ -166,6 +167,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL_PTR:
                 case TokenType.NULL_STRING:
                 case TokenType.NULL_SYMBOL:
+                case TokenType.NULL_FOX:
                     return new LiteralExpr(ConsumeAndGet());
                 case TokenType.INCOMPLETE_STRING_CONST:
                     throw Error(Lt(), ErrorCode.UnterminatedString);

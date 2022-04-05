@@ -244,7 +244,18 @@ namespace XSharp.MacroCompiler
         static internal void BuildIndex()
         {
             if (Global != null && Usings != null && TypeCache != null)
+            {
+                // HACK 
+                // We have seen occasions where there is a new assembly that is not handled by the event handler
+                var asm = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (var a in asm)
+                {
+                    if (a.IsDynamic || LoadedAssemblies.Contains(a))
+                        continue;
+                    UpdateTypeCache(Global, TypeCache, a);
+                }
                 return;
+            }
 
             var global = new NamespaceSymbol();
             var usings = new List<ContainerSymbol>();

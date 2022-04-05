@@ -21,6 +21,12 @@ PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
     XSharp.MemVar.Put := __FoxMemVarPut
     XSharp.RuntimeState.AutoLock    := __FoxAutoLock
     XSharp.RuntimeState.AutoUnLock  := __FoxAutoUnLock
+
+    XSharp.__Array.FoxArrayHelpers.ADel         := {|a, nEl, nDel| XSharp.VFP.Functions.ADel(a, nEl, nDel)}
+    XSharp.__Array.FoxArrayHelpers.ALen         := {|a, nAtt     | XSharp.VFP.Functions.ALen(a, nAtt)}
+    XSharp.__Array.FoxArrayHelpers.AIns         := {| a, nEl, nType| XSharp.VFP.Functions.AIns(a, nEl, nType)}
+    XSharp.__Array.FoxArrayHelpers.ShowArray    := {|a, cPrefix  | XSharp.VFP.Functions.ShowFoxArray(a, cPrefix)}
+
 RETURN
 
 

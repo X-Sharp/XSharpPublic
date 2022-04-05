@@ -116,7 +116,7 @@ BEGIN NAMESPACE XSharp
     /// <summary>A value of any data type unused by the Error system.  It is provided as a user-definable slot, allowing arbitrary information to be attached to an Error object and retrieved later</summary>
     VIRTUAL PROPERTY Cargo              AS OBJECT AUTO
     /// <summary>Call stack from the moment where the error object was created</summary>
-    VIRTUAL PROPERTY Stack              AS STRING GET SELF:StackTrace SET SELF:StackTrace := Value
+    VIRTUAL PROPERTY Stack              AS STRING GET SELF:StackTrace SET SELF:SetStackTrace(VALUE)
 
 	PRIVATE _StackTrace AS STRING
     OVERRIDE PROPERTY StackTrace         AS STRING
@@ -126,10 +126,9 @@ BEGIN NAMESPACE XSharp
     		END IF
     		RETURN SELF:_StackTrace
     	END GET
-    	SET
-    		SELF:_StackTrace := value
-    	END SET
     END PROPERTY
+    METHOD SetStackTrace(cTrace AS STRING) AS VOID
+ 		SELF:_StackTrace := cTrace
 
 
     PRIVATE METHOD setDefaultValues() AS VOID
@@ -182,7 +181,7 @@ BEGIN NAMESPACE XSharp
     ENDIF
 
     IF String.IsNullOrEmpty(SELF:StackTrace)
-        SELF:StackTrace  := ErrorStack(2)
+        SELF:SetStackTrace(ErrorStack(2))
     ENDIF
     PRIVATE METHOD GetGenCodeFromException(ex as Exception) AS VOID
         if ex IS DivideByZeroException

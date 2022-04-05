@@ -433,7 +433,21 @@ namespace XSharp.MacroCompiler
         {
             if (_tokenSource == null)
             {
-                var source = new TokenSource(_Source);
+                var src = _Source;
+                if (_options.Dialect == XSharpDialect.FoxPro)
+                {
+
+                    var pos = src.IndexOf(".null.", StringComparison.OrdinalIgnoreCase);
+                    while (pos >= 0)
+                    {
+                        var left = src.Substring(0, pos);
+                        var right = src.Substring(pos + ".null.".Length);
+                        src = left + "DbNull.Value" + right;
+                        pos = src.IndexOf(".null.", StringComparison.OrdinalIgnoreCase);
+                    }
+                    _Source = src;
+                }
+                var source = new TokenSource(src);
                 Token t;
                 while ((t = NextToken()) != null)
                 {
@@ -665,10 +679,10 @@ namespace XSharp.MacroCompiler
                                     else if (ExpectLower("not")) { Consume(); t = TokenType.LOGIC_NOT; }
                                     else if (ExpectLower("xor")) { Consume(); t = TokenType.LOGIC_XOR; }
                                 }
-                                else if (La(5) == '.' && _options.Dialect == XSharpDialect.FoxPro)
-                                {
-                                    if (ExpectLower("null")) { Consume(); t = TokenType.NULL_FOX; }
-                                }
+                                //else if (La(5) == '.' && _options.Dialect == XSharpDialect.FoxPro)
+                                //{
+                                //    if (ExpectLower("null")) { Consume(); t = TokenType.NULL_FOX; }
+                                //}
                             }
                             break;
                         case TokenType.NL:

@@ -1825,7 +1825,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected void RegisterParamAssign(string name)
         {
-            if (CurrentEntity != null)
+            if (CurrentMember != null)
             {
                 var info = CurrentMember.Data.GetField(name);
                 if (info != null && info.IsParameter)

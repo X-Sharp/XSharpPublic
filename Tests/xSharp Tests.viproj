@@ -105932,7 +105932,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C837 - SCATTER TO and APPEND FROM ARRAY
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C838 - Missing compiler errors on incorrect usa of OVERRIDE on ACCESSes *************
 Application = C838 - Missing compiler errors on incorrect usa of OVERRIDE on ACCESSes
 IDEVersion = 1.06
@@ -107560,9 +107560,9 @@ FileType = Code
 CopyToBin = 0
 [C846 - Usage of System.Drawing.Size in Macro expressions give errors References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VO,1,0,2.6.0.0
 ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
 [C846 - Usage of System.Drawing.Size in Macro expressions give errors Resources]

@@ -417,11 +417,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     if ((object)overriddenMethod != null)
                     {
-                        this.DeclarationModifiers &= ~DeclarationModifiers.Virtual;
+                        this.RemoveModifier(DeclarationModifiers.Virtual);
                     }
                     else
                     {
-                        this.DeclarationModifiers &= ~DeclarationModifiers.Override;
+                        this.RemoveModifier(DeclarationModifiers.Override);
                     }
 
                     flags = new Flags(flags.MethodKind, this.DeclarationModifiers , this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual(true));

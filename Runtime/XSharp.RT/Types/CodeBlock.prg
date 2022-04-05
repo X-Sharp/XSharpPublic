@@ -63,6 +63,7 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
 	/// Eval method that can be called from code that does not "know" about the USUAL type.
     /// such as the code in the RDD classes.
 	/// </summary>
+    [DebuggerStepThrough()];
 	PUBLIC VIRTUAL METHOD EvalBlock(args PARAMS OBJECT[] ) AS OBJECT
         LOCAL uArgs as USUAL[]
         if args:Length == 0
@@ -91,6 +92,7 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
 	// This method is used in the compiled codeblocks to get the arguments
 	// from the parameter list
 	/// <exclude />
+    [DebuggerStepThrough()];
 	PROTECTED STATIC METHOD _BlockArg( args AS CONST USUAL[], index AS CONST INT ) AS USUAL
 		RETURN IIF( index < args:Length, args[index + 1], NIL )
 		END CLASS

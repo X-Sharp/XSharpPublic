@@ -6,6 +6,7 @@
 
 USING System.Runtime.InteropServices
 USING System.Reflection
+USING System.Diagnostics
 #pragma options ("az", ON)
 /// <summary>
 /// Evaluate a code block
@@ -13,6 +14,7 @@ USING System.Reflection
 /// <param name="block">Block to evaluate</param>
 /// <param name="args">List of arguments</param>
 /// <returns>Result of the evaluation</returns>
+[DebuggerStepThrough()];
 FUNCTION Eval(block AS ICodeblock, args PARAMS USUAL[]) AS USUAL
 	LOCAL result AS USUAL
 	IF block == NULL

@@ -456,7 +456,7 @@ namespace XSharp.LanguageService
                         if (endToken?.Type == XSharpLexer.LINE_CONT)
                         {
                             lineContinue = 1;
-                            if (settings.IndentMultiLines)
+                            if (settings.IndentContinuedLines)
                                 multiIndentSize = indentSize + moveContinuingLine;
                             else
                                 multiIndentSize = indentSize;
@@ -627,7 +627,7 @@ namespace XSharp.LanguageService
                         if (endToken?.Type == XSharpLexer.LINE_CONT)
                         {
                             lineContinue = 1;
-                            if (settings.IndentMultiLines)
+                            if (settings.IndentContinuedLines)
                                 multiIndentSize = indentSize + moveContinuingLine;
                             else
                                 multiIndentSize = indentSize;
@@ -757,7 +757,7 @@ namespace XSharp.LanguageService
                             }
                         }
                         // Does this line continue ?
-                        if (settings.IndentMultiLines)
+                        if (settings.IndentContinuedLines)
                         {
                             var endToken = context.GetLastToken(true);
                             if (endToken.Type == XSharpLexer.LINE_CONT)
@@ -766,7 +766,7 @@ namespace XSharp.LanguageService
                             }
                         }
                         // Move inside this opening Keyword for the next line
-                        if (settings.IndentBlockContent)
+                        if (settings.IndentEntityContent)
                             moveAfterFormatting++;
                         nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
                     }
@@ -846,7 +846,7 @@ namespace XSharp.LanguageService
                         {
                             moveAfterFormatting++;
                             // Does this line continue ?
-                            if (settings.IndentMultiLines)
+                            if (settings.IndentContinuedLines)
                             {
                                 var endToken = context.GetLastToken(true);
                                 if (endToken.Type == XSharpLexer.LINE_CONT)
@@ -1067,7 +1067,7 @@ namespace XSharp.LanguageService
                             }
                         }
                         // Does this line continue ?
-                        if (settings.IndentMultiLines)
+                        if (settings.IndentContinuedLines)
                         {
                             var endToken = context.GetLastToken(true);
                             if (endToken.Type == XSharpLexer.LINE_CONT)
@@ -1156,7 +1156,7 @@ namespace XSharp.LanguageService
                         {
                             moveAfterFormatting++;
                             // Does this line continue ?
-                            if (settings.IndentMultiLines)
+                            if (settings.IndentContinuedLines)
                             {
                                 var endToken = context.GetLastToken(true);
                                 if (endToken.Type == XSharpLexer.LINE_CONT)

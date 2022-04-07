@@ -113,6 +113,9 @@ BEGIN NAMESPACE XSharpModel
 
 
     STATIC METHOD GetXSharpTypeName( SELF typeName AS STRING) AS STRING
+        if typeName:IndexOf("/") >= 0
+            typeName := typeName:Replace('/','.')
+        endif
         VAR pos := typeName:IndexOf("<")
         IF pos > 0
             VAR lhs := typeName:Substring(0, pos)

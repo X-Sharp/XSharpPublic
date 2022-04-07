@@ -698,7 +698,7 @@ namespace XSharp.LanguageService
                 if (isId)
                 {
                     qualifiedName = list.La1 == XSharpLexer.DOT;
-                    findMethod = list.La1 == XSharpLexer.LPAREN;
+                    findMethod = list.La1 == XSharpLexer.LPAREN && ! isType;        // DWORD( is a cast and not a method call
                     findConstructor = list.La1 == XSharpLexer.LCURLY;
                     if (state.HasFlag(CompletionState.StaticMembers) && !findMethod && result.Count == 0)
                     {

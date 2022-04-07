@@ -105,6 +105,7 @@ namespace XSharp.LanguageService
             if (File != null)
             {
                 scopes.AddRange(File.Usings);
+                scopes.AddRange(File.StaticUsings);
             }
             while (scope != null)
             {

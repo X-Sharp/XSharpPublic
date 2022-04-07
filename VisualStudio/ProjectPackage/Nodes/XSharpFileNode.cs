@@ -195,6 +195,7 @@ namespace XSharp.Project
                             if (xfile != null)
                             {
                                 usings.AddRange(xfile.Usings);
+                                usings.AddRange(xfile.StaticUsings);
                             }
                             var mgr = this.ProjectMgr as XSharpProjectNode;
                             var type = mgr.ResolveExternalType(parentclass, usings);

@@ -237,26 +237,15 @@ BEGIN NAMESPACE XSharpModel
             // Properties
         PROPERTY AllUsingStatics AS IList<STRING>
             GET
-
                 IF (! SELF:HasCode)
-
                     RETURN NULL
                 ENDIF
                 //WriteOutputMessage("-->> AllUsingStatics")
                 VAR statics := List<STRING>{}
                 statics:AddRange(SELF:_usingStatics)
-                IF SELF:Project != NULL .AND. SELF:Project:ProjectNode != NULL .AND. SELF:Project:ProjectNode:ParseOptions:HasRuntime
-
-                    FOREACH asm AS XAssembly IN SELF:Project:AssemblyReferences
-
-                        VAR globalclass := asm:GlobalClassName
-                        IF (! String.IsNullOrEmpty(globalclass))
-
-                            statics:AddUnique(globalclass)
-                        ENDIF
-                    NEXT
+                IF SELF:Project != NULL
+                    statics:AddRange(SELF:Project:AllUsingStatics)
                 ENDIF
-                //WriteOutputMessage("<<-- AllUsingStatics")
                 RETURN statics
             END GET
         END PROPERTY

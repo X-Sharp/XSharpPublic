@@ -79,7 +79,7 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY IndentBlockContent                AS LOGIC AUTO
         PUBLIC STATIC PROPERTY IndentCaseContent                 AS LOGIC AUTO
         PUBLIC STATIC PROPERTY IndentCaseLabel                   AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY IndentMultiLines                  AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentContinuedLines              AS LOGIC AUTO
 
         PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO := Int32.MaxValue
         PUBLIC STATIC PROPERTY ShellLink                        AS IXVsShellLink AUTO

@@ -48,18 +48,19 @@ namespace XSharp.LanguageService
 
         static readonly  ImageList _imageList = new ImageList();
         private IVsDropdownBar _dropDownBar;
-        Dictionary<ITextView, ITextView> _textViews;
+        readonly Dictionary<ITextView, ITextView> _textViews;
         ITextView _activeView = null;
-        IVsDropdownBarManager _manager;
+        readonly IVsDropdownBarManager _manager;
         XSourceEntity _lastSelected = null;
         XSourceEntity _lastType = null;
 
-        List<XDropDownMember> _members = null;
-        Dictionary<string, int> _membersDict = null;	// to speed up the lookup of members
-        List<XDropDownMember> _types = null;
-        XFile _file = null;
+        readonly List<XDropDownMember> _members = null;
+        readonly Dictionary<string, int> _membersDict = null;	// to speed up the lookup of members
+        readonly List<XDropDownMember> _types = null;
+        readonly XFile _file = null;
         uint _lastHashCode = 0;
         private int _lastLine;
+        private int _startUpLine = -1;          // remember line number so we can set the combo after loading our members
         private int _selectedMemberIndex = -1;
         private int _selectedTypeIndex = -1;
         private DropdownSettings _settings;
@@ -142,7 +143,6 @@ namespace XSharp.LanguageService
                 _activeView = textView;
                 Caret_PositionChanged(textView, new CaretPositionChangedEventArgs(textView, textView.Caret.Position, textView.Caret.Position));
             }
-
         }
 
         private void _file_ContentsChanged()
@@ -156,17 +156,23 @@ namespace XSharp.LanguageService
         private void Caret_PositionChanged(object sender, CaretPositionChangedEventArgs e)
         {
             int newLine = e.NewPosition.BufferPosition.GetContainingLine().LineNumber;
-            if (newLine != _lastLine && _dropDownBar != null)
+            if (newLine != _lastLine && _dropDownBar != null && _members.Count > 0)
             {
                 SelectContainingMember(newLine);
                 _lastLine = newLine;
-
+            }
+            else if (_members.Count == 0)
+            {
+                _startUpLine = newLine;
             }
 #if DEBUG
             XSettings.LogMessage($"Caret_PositionChanged {newLine} Types: {_types.Count} Members: {_members.Count}");
             XSettings.LogMessage($"Caret_PositionChanged {newLine} Entity: {_lastSelected} Type: {_selectedTypeIndex}, Member: {_selectedMemberIndex} ");
 #endif
-            refreshCombos();
+            if (_lastLine != -1)
+            {
+                refreshCombos();
+            }
         }
 
 
@@ -424,7 +430,9 @@ namespace XSharp.LanguageService
                 return member.ParentName + member.ComboPrototype;
             if (entity is XSourceTypeSymbol type)
                 return type.FullName;
-            return entity.ToString();
+            if (entity != null)
+                return entity.ToString();
+            return "";
         }
         private void _addToDict(XSourceEntity entity)
         {
@@ -542,9 +550,14 @@ namespace XSharp.LanguageService
                     var nSelect = _members.Count;
                     _members.Add(elt);
                     _addToDict(member);
+                    if (_startUpLine != -1 && member.IncludesLine(_startUpLine))
+                    {
+                        _selectedMemberIndex = _members.Count - 1;
+                    }
                 }
             }
-
+            // after loading forget startup line
+            _startUpLine = -1;
         }
         private void refreshCombos()
         {
@@ -552,8 +565,13 @@ namespace XSharp.LanguageService
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                _dropDownBar.RefreshCombo(0, _selectedTypeIndex);
-                _dropDownBar.RefreshCombo(1, _selectedMemberIndex);
+                if (_dropDownBar != null)
+                {
+                    if (_selectedTypeIndex != -1)
+                        _dropDownBar.RefreshCombo(0, _selectedTypeIndex);
+                    if (_selectedMemberIndex != -1)
+                        _dropDownBar.RefreshCombo(1, _selectedMemberIndex);
+                }
             });
         }
 
@@ -780,14 +798,17 @@ namespace XSharp.LanguageService
 
         public int SetDropdownBar(IVsDropdownBar dropdownBar)
         {
-            _dropDownBar = dropdownBar;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            if (dropdownBar != null)
             {
-                await RefreshDropDownAsync(needsUI: false);
-            });
-            if (_dropDownBar != null)
-            {
-                refreshCombos();
+                _dropDownBar = dropdownBar;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await RefreshDropDownAsync(needsUI: false);
+                });
+                if (_dropDownBar != null)
+                {
+                    refreshCombos();
+                }
             }
             return VSConstants.S_OK;
         }

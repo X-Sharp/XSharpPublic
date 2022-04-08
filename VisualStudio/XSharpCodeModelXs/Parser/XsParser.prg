@@ -177,7 +177,7 @@ BEGIN NAMESPACE XSharpModel
             IF SELF:ParseUsing()
                LOOP
             ENDIF
-            LOCAL startOfTrivia := -1 as LONG
+            LOCAL firstDocCommentToken := NULL AS XSharpToken
             SELF:ParseUdcTokens()
             aAttribs := SELF:ParseAttributes()
             VAR mods := SELF:ParseVisibilityAndModifiers()
@@ -188,7 +188,7 @@ BEGIN NAMESPACE XSharpModel
                   if first:HasTrivia
                      foreach Var triv in first:Trivia
                         if triv:Type == XSharpLexer.DOC_COMMENT
-                            startOfTrivia := triv:Line -1
+                            firstDocCommentToken := triv
                             EXIT
                         ENDIF
                      NEXT
@@ -210,7 +210,15 @@ BEGIN NAMESPACE XSharpModel
                SELF:_start := first
                VAR entities := SELF:ParseEntity(entityKind)
                IF entities != NULL
-
+                   if first:HasTrivia
+                        foreach t as XSharpToken in first:Trivia
+                            if firstDocCommentToken == NULL .or. t:Line < firstDocCommentToken:Line
+                                tokenBefore := t
+                            endif
+                        next
+                   elseif first:OriginalTokenIndex > 0
+                        tokenBefore := (XSharpToken)_tokens[first:OriginalTokenIndex-1]
+                   endif
                   FOREACH VAR entity IN entities
                      IF entity == NULL
                         LOOP
@@ -218,12 +226,18 @@ BEGIN NAMESPACE XSharpModel
                      entity:File := _file
                      IF _hasXmlDoc
                         entity:XmlComments   := cXmlDoc
-                        entity:StartOfXmlComments := startOfTrivia
-                         if entity:Kind == Kind.Delegate .and. entity is XSourceTypeSymbol var xtype
+                        if firstDocCommentToken != null
+                            entity:StartOfXmlComments := firstDocCommentToken:Line
+                            entity:Range := entity:Range:WithStart(firstDocCommentToken)
+                        endif
+                        if entity:Kind == Kind.Delegate .and. entity is XSourceTypeSymbol var xtype
                             var invoke := xtype:XMembers:First()
                             invoke:XmlComments := cXmlDoc
-                            invoke:StartOfXmlComments :=startOfTrivia
-                         endif
+                            if firstDocCommentToken != null
+                                invoke:StartOfXmlComments := firstDocCommentToken:Line
+                                invoke:Range := invoke:Range:WithStart(firstDocCommentToken)
+                            endif
+                        endif
                      ENDIF
                      IF aAttribs?:Count > 0
                         entity:CustomAttributes := TokensAsString(aAttribs)
@@ -258,7 +272,7 @@ BEGIN NAMESPACE XSharpModel
                         ELSE
                             mustPop := TRUE
                         ENDIF
-                     ELSEIF CurrentEntityKind:HasBody() 
+                     ELSEIF CurrentEntityKind:HasBody()
                         mustPop := FALSE
                      ELSE
                         mustPop := TRUE

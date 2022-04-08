@@ -230,6 +230,9 @@ BEGIN NAMESPACE XSharpModel
                      ENDIF
                      VAR lastEntity := _EntityList:LastOrDefault()
                      IF lastEntity != NULL
+                        if lastEntity:Kind:IsLocal()
+                            lastEntity := lastEntity:Parent astype XSourceEntity
+                        endif
                         lastEntity:Range       := lastEntity:Range:WithEnd(tokenBefore)
                         lastEntity:Interval    := lastEntity:Interval:WithEnd(tokenBefore)
                      ENDIF
@@ -246,14 +249,16 @@ BEGIN NAMESPACE XSharpModel
                             mustPop := FALSE
                          ELSE
                             mustPop := TRUE
-                         ENDIF
+                            ENDIF
+                     ELSEIF entity:Kind:IsLocal()
+                        mustPop := FALSE
                      ELSEIF isMember
                         IF canAddMembers
                             mustPop := FALSE
                         ELSE
                             mustPop := TRUE
                         ENDIF
-                     ELSEIF CurrentEntityKind:HasBody() .and. entity:Kind:IsLocal()
+                     ELSEIF CurrentEntityKind:HasBody() 
                         mustPop := FALSE
                      ELSE
                         mustPop := TRUE

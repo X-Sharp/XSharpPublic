@@ -43,7 +43,11 @@
       <li styleclass="Body Text">Fixed the handling for project property pages for flavoured projects (#992)</li>
       <li styleclass="Body Text">When trying to start the debugger with a non existing working directory or program file name an error is displaid (#996)</li>
       <li styleclass="Body Text">Type lookups on full names were sometimes failing because the fullname was defined as case sensitive (#978)</li>
-      <li styleclass="Body Text"></li>
+      <li styleclass="Body Text">Nested type lookup was sometimes failing. This has been fixed.</li>
+      <li styleclass="Body Text">The indenting options can now also be overridden in the <link displaytype="text" defaultstyle="true" type="topiclink" href="_EditorConfig-files">.editorconfig</link> file (#995)</li>
+      <li styleclass="Body Text">When a source file was loaded in the editor then the combo boxes with types and members were not activated until the caret was moved in the buffer (#995)</li>
+      <li styleclass="Body Text">The member combobox in the editor was getting confused for code that contains local functions or local procedures.</li>
+      <li styleclass="Body Text">Fixed a lookup problem for expressions inside a conversion or cast with a keyword, such as DWORD( SomeExpression). There were no quick info tips for the expression inside the parentheses for the conversion (#997)</li>
     </list>
     <para styleclass="Heading1">Changes in 2.11.0.1</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>

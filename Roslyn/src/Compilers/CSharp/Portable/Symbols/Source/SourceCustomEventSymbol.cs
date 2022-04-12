@@ -69,7 +69,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                     else if (this.IsVirtual)
                     {
-                        _modifiers &= ~DeclarationModifiers.Override;
+                        var ent = this.GetEntity();
+                        if (ent == null || ! ent.Data.HasExplicitOverride)
+                        {
+                            _modifiers &= ~DeclarationModifiers.Override;
+                        }
                     }
 #endif
                 }

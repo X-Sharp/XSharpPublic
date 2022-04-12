@@ -41,12 +41,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             _changedParameters = newparameters.ToImmutableAndFree();
             _signatureChanged = true;
             this.DeclarationModifiers |= DeclarationModifiers.Override;
-            this.flags = new Flags(flags.MethodKind, this.DeclarationModifiers , this.ReturnsVoid,flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual());
+            this.flags = new Flags(flags.MethodKind, this.DeclarationModifiers, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual());
 
         }
-        internal void RemoveModifier(DeclarationModifiers mod)
+        internal bool RemoveModifier(DeclarationModifiers mod)
         {
-            this.DeclarationModifiers &= ~mod;
+            var ent = this._property.GetEntity();
+            bool Ok = true;
+            if (ent != null)
+            {
+                if (mod == DeclarationModifiers.Override && ent.Data.HasExplicitOverride)
+                    Ok = false;
+                if (mod == DeclarationModifiers.Virtual && ent.Data.HasExplicitVirtual)
+                    Ok = false;
+            }
+            if (Ok)
+            {
+                this.DeclarationModifiers &= ~mod;
+            }
+            return Ok;
         }
         internal void SetOverriddenMethod(MethodSymbol m)
         {
@@ -64,37 +77,62 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
     }
 
-    internal partial class SourcePropertySymbolBase
+    internal static class SourceExtensions
     {
-        internal XP.IMemberContext? GetEntity()
+        internal static XP.IMemberContext? GetEntity(this SourcePropertySymbolBase prop)
         {
             XP.IMemberContext? result = null;
-            var node = this.CSharpSyntaxNode.XNode;
+            var node = prop.CSharpSyntaxNode.XNode;
             if (node is XP.IMemberContext ent)
                 result = ent;
             else if (node.GetChild(0) is XP.IMemberContext entchild)
                 result = entchild;
             return result;
+        }
+        internal static XP.IMemberContext? GetEntity(this SourceEventSymbol evt)
+        {
+            XP.IMemberContext? result = null;
+            var node = evt.CSharpSyntaxNode.XNode;
+            if (node is XP.IMemberContext ent)
+                result = ent;
+            else if (node.GetChild(0) is XP.IMemberContext entchild)
+                result = entchild;
+            return result;
+        }
+    }
 
+    internal abstract partial class SourcePropertySymbolBase
+    {
+        internal bool RemoveModifier(DeclarationModifiers mod)
+        {
+            var ent = this.GetEntity();
+            bool Ok = true;
+            if (ent != null)
+            {
+                if (mod == DeclarationModifiers.Override && ent.Data.HasExplicitOverride)
+                    Ok = false;
+                if (mod == DeclarationModifiers.Virtual && ent.Data.HasExplicitVirtual)
+                    Ok = false;
+            }
+            if (Ok)
+            {
+                this._modifiers &= ~mod;
+                if (this.GetMethod is SourcePropertyAccessorSymbol gm)
+                {
+                    gm.RemoveModifier(mod);
+                }
+                if (this.SetMethod is SourcePropertyAccessorSymbol sm)
+                {
+                    sm.RemoveModifier(mod);
+                }
+            }
+            return Ok;
         }
     }
     internal sealed partial class SourcePropertySymbol
     {
         private TypeWithAnnotations _newPropertyType = default;
-
-
-        internal void RemoveModifier(DeclarationModifiers mod)
-        {
-            this._modifiers &= ~mod;
-            if (this.GetMethod is SourcePropertyAccessorSymbol gm)
-            {
-                gm.RemoveModifier(mod);
-            }
-            if (this.SetMethod is SourcePropertyAccessorSymbol sm)
-            {
-                sm.RemoveModifier(mod);
-            }
-        }
+        
         public override bool IsIndexer
         {
             get { return base.IsIndexer && !_isIndexedProperty; }
@@ -107,7 +145,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // check if we have a base type and if the base type has a method with the same name but different casing
                 var baseType = this.ContainingType.BaseTypeNoUseSiteDiagnostics;
                 var members = baseType.GetMembersUnordered().Where(
-                        member => member.Kind == SymbolKind.Property && member.IsVirtual && string.Equals(member.Name, this.Name, StringComparison.OrdinalIgnoreCase) );
+                        member => member.Kind == SymbolKind.Property && member.IsVirtual && string.Equals(member.Name, this.Name, StringComparison.OrdinalIgnoreCase));
                 if (members.Count() > 0)
                 {
                     foreach (var member in members)

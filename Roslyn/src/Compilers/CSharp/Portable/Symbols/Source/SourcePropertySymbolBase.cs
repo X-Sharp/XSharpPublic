@@ -278,9 +278,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     _lazyParameters = CustomModifierUtils.CopyParameterCustomModifiers(overriddenOrImplementedProperty.Parameters, _lazyParameters, alsoCopyParamsModifier: isOverride);
                 }
 #if XSHARP
-                else /*if (this.IsVirtual)*/
+                else
                 {
-                    _modifiers &= ~DeclarationModifiers.Override;
+                    this.RemoveModifier(DeclarationModifiers.Override);
                 }
 #endif
             }

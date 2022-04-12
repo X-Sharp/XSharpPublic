@@ -23,14 +23,14 @@
     <para styleclass="Normal">Since X# 2.8 we now support the use of .editorconfig files. These files can be used in your solution or project to control the source code editor settings for several options, such as:</para>
     <para styleclass="Body Text">This allows you to synchronize the editor settings for a team and ignore individual differences between team members.</para>
     <para styleclass="Normal"></para>
-    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">use tab or space</li>
       <li styleclass="Normal">tab with</li>
       <li styleclass="Normal">encoding for the source files</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">We are supporting the default tokens for .editorconfig as listed on <link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank">https://editorconfig.org/</link>:</para>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">indent_style (tab or space)</li>
       <li styleclass="Body Text">indent_size (number)</li>
       <li styleclass="Body Text">tab_width (number)</li>
@@ -47,6 +47,15 @@
       <li styleclass="Body Text">align_do_case (true or false)</li>
       <li styleclass="Body Text">align_method (true or false)</li>
     </list>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">indent_entity_content (true or false)</li>
+      <li styleclass="Body Text">indent_block_content (true or false)</li>
+      <li styleclass="Body Text">indent_case_content (true or false)</li>
+      <li styleclass="Body Text">indent_case_label (true or false)</li>
+      <li styleclass="Body Text">indent_continued_lines (true or false)</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">More settings will follow.</para>
     <para styleclass="Body Text"></para>

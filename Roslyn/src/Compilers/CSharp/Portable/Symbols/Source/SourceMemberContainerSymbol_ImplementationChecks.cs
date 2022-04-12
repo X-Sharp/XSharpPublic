@@ -772,9 +772,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         bool suppressError = false;
 #if XSHARP
-                        suppressError = true;
                         if (overridingMember is SourcePropertySymbol sps)
-                            sps.RemoveModifier(DeclarationModifiers.Override);
+                        {
+                            suppressError = sps.RemoveModifier(DeclarationModifiers.Override);
+                        }
 #endif
                         if (overridingMemberIsMethod || overridingMember.IsIndexer())
                         {

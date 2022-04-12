@@ -46,7 +46,7 @@ namespace XSharp.MacroCompiler
         static List<ContainerSymbol> Usings = null;
         static List<ContainerSymbol> RuntimeFunctions = null;
         static Dictionary<Type, TypeSymbol> TypeCache = null;
-        static HashSet<Assembly> LoadedAssemblies = null;
+        static HashSet<Assembly> LoadedAssemblies = new HashSet<Assembly>();
 
         internal static StringComparer LookupComparer = StringComparer.OrdinalIgnoreCase;
 
@@ -63,11 +63,20 @@ namespace XSharp.MacroCompiler
         internal Stack<int> ScopeStack = new Stack<int>();
         internal Node Entity = null;
 
+        static Binder()
+        {
+            AppDomain.CurrentDomain.AssemblyLoad += AssemblyLoadEventHandler;
+        }
+
         protected Binder(Type objectType, Type delegateType, MacroOptions options)
         {
             Debug.Assert(delegateType.IsSubclassOf(typeof(Delegate)));
-            BuildIndex();
-            AppDomain.CurrentDomain.AssemblyLoad += AssemblyLoadEventHandler;
+            if (TypeCache == null)
+            {
+                lock (LoadedAssemblies)
+                    if (TypeCache == null)
+                        BuildIndex();
+            }
             ObjectType = FindType(objectType);
             DelegateType = delegateType;
             Options = options;
@@ -81,10 +90,13 @@ namespace XSharp.MacroCompiler
 
         private static void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)
         {
-            if (!args.LoadedAssembly.IsDynamic && !LoadedAssemblies.Contains(args.LoadedAssembly))
+            lock (LoadedAssemblies)
             {
-                LoadedAssemblies.Add(args.LoadedAssembly);
-                UpdateIndex(args.LoadedAssembly);
+                if (TypeCache != null && !args.LoadedAssembly.IsDynamic && !LoadedAssemblies.Contains(args.LoadedAssembly))
+                {
+                    LoadedAssemblies.Add(args.LoadedAssembly);
+                    UpdateIndex(args.LoadedAssembly);
+                }
             }
         }
 
@@ -243,20 +255,6 @@ namespace XSharp.MacroCompiler
         }
         static internal void BuildIndex()
         {
-            if (Global != null && Usings != null && TypeCache != null)
-            {
-                // HACK 
-                // We have seen occasions where there is a new assembly that is not handled by the event handler
-                var asm = AppDomain.CurrentDomain.GetAssemblies();
-                foreach (var a in asm)
-                {
-                    if (a.IsDynamic || LoadedAssemblies.Contains(a))
-                        continue;
-                    UpdateTypeCache(Global, TypeCache, a);
-                }
-                return;
-            }
-
             var global = new NamespaceSymbol();
             var usings = new List<ContainerSymbol>();
             var rtFuncs = new List<ContainerSymbol>();
@@ -264,19 +262,26 @@ namespace XSharp.MacroCompiler
 
             var usedSymbols = new HashSet<ContainerSymbol>();
 
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var loadedAssemblies = new HashSet<Assembly>(assemblies);
+            var assemblies = new List<Assembly>();
+            var loadedAssemblies = new HashSet<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
+            loadedAssemblies.RemoveWhere(a => a.IsDynamic);
 
-            foreach (var a in assemblies)
+            do
             {
-                if (a.IsDynamic)
-                    continue;
-                UpdateTypeCache(global, typeCache, a);
-            }
+                foreach (var a in loadedAssemblies)
+                {
+                    assemblies.Add(a);
+                    UpdateTypeCache(global, typeCache, a);
+                }
+                LoadedAssemblies.UnionWith(loadedAssemblies);
+
+                loadedAssemblies = new HashSet<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
+                loadedAssemblies.RemoveWhere(a => a.IsDynamic);
+                loadedAssemblies.ExceptWith(LoadedAssemblies);
+            } while (loadedAssemblies.Count > 0);
 
             System.Threading.Interlocked.CompareExchange(ref Global, global, null);
             System.Threading.Interlocked.CompareExchange(ref TypeCache, typeCache, null);
-            System.Threading.Interlocked.CompareExchange(ref LoadedAssemblies, loadedAssemblies, null);
 
             Compilation.InitializeNativeTypes();
             Compilation.InitializeWellKnownTypes();

@@ -262,7 +262,6 @@ namespace XSharp.MacroCompiler
 
             var usedSymbols = new HashSet<ContainerSymbol>();
 
-            var assemblies = new List<Assembly>();
             var loadedAssemblies = new HashSet<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
             loadedAssemblies.RemoveWhere(a => a.IsDynamic);
 
@@ -270,7 +269,6 @@ namespace XSharp.MacroCompiler
             {
                 foreach (var a in loadedAssemblies)
                 {
-                    assemblies.Add(a);
                     UpdateTypeCache(global, typeCache, a);
                 }
                 LoadedAssemblies.UnionWith(loadedAssemblies);
@@ -301,10 +299,8 @@ namespace XSharp.MacroCompiler
             var ina = Compilation.Get(WellKnownTypes.ImplicitNamespaceAttribute);
             if (cla != null && ina != null)
             {
-                foreach (var a in assemblies)
+                foreach (var a in LoadedAssemblies)
                 {
-                    if (a.IsDynamic)
-                        continue;
                     UpdateUsings(usings, rtFuncs, a, usedSymbols);
                 }
             }
@@ -315,7 +311,8 @@ namespace XSharp.MacroCompiler
         static void UpdateIndex(Assembly a)
         {
             UpdateTypeCache(Global, TypeCache, a);
-            UpdateUsings(Usings, RuntimeFunctions, a);
+            if (Usings != null)
+                UpdateUsings(Usings, RuntimeFunctions, a);
         }
 
         internal static TypeSymbol FindType(Type t)

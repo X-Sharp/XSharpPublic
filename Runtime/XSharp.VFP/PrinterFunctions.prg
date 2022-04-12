@@ -7,7 +7,6 @@ USING System.Management
 USING System.Drawing.Printing
 USING System.Windows.Forms
 
-#pragma options ("vo10", ON)    // Compatible IIF
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aprinters/*" />
 FUNCTION APrinters ( ArrayName , nValue ) AS INT CLIPPER
@@ -18,7 +17,7 @@ LOCAL iCount AS INT
 
 	IF ( iCount := PrinterSettings:InstalledPrinters:Count ) > 0
 
-		IF ! IsArray( ArrayName ) .OR. ( IsArray ( ArrayName ) .AND. ! ArrayName IS __FoxArray )
+		IF ! IsArray( ArrayName ) .or. ( IsArray ( ArrayName ) .and. ! ArrayName IS __FoxArray )
 			THROW ArgumentException {"parameter must be a Fox Array", nameof ( ArrayName ) }
 		ELSEIF ! IsNumeric ( nValue )
 			THROW ArgumentException {"wrong parameter type, must be numeric", nameof ( nValue ) }
@@ -55,4 +54,3 @@ LOCAL iCount AS INT
 	ENDIF
 
 	RETURN iCount
-#pragma options ("vo10", default)    // Compatible IIF

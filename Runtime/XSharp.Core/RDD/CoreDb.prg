@@ -1697,7 +1697,7 @@ CLASS XSharp.CoreDb
             lockInfo:Method  := DbLockInfo.LockMethod.Multiple
         ENDIF
         VAR result := oRdd:Lock(lockInfo)
-        RAISE RecordLocked IIF(uRecId == NULL, oRdd:RecNo, uRecId)
+        RAISE RecordLocked IIF(uRecId == NULL, (OBJECT) oRdd:RecNo, uRecId)
         RETURN result
         })
         /// <summary>
@@ -2076,7 +2076,7 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         VAR result := oRdd:UnLock(uRecno)
-        RAISE RecordUnLocked IIF(uRecno == NULL, oRdd:RecNo, uRecno)
+        RAISE RecordUnLocked IIF(uRecno == NULL, (object) oRdd:RecNo, uRecno)
         RETURN result
         })
 

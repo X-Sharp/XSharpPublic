@@ -108,7 +108,7 @@ CLASS XSharp.Data.OleDbFactory INHERIT XSharp.Data.AbstractSqlFactory
         result[1] := oRow["TABLE_CATALOG"]
         result[2] := oRow["TABLE_SCHEMA"]
         result[3] := oRow["TABLE_NAME"]
-        result[4] := IIF(oRow:Table:Columns:IndexOf("TABLE_TYPE") > 0, (STRING) oRow["TABLE_TYPE"],"VIEW")
+        result[4] := IIF(oRow:Table:Columns:IndexOf("TABLE_TYPE") > 0, oRow["TABLE_TYPE"],"VIEW")
         result[5] := oRow["DESCRIPTION"]
         RETURN result
 

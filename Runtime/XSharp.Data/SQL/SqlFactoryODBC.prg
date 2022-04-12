@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Data
@@ -12,7 +12,7 @@ USING System.Runtime.InteropServices
 
 
    /// <summary>This is the class that implements a Factory to access data through the Ado.Net ODBC Classes.</summary>
- 
+
 
 CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
 
@@ -74,7 +74,7 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
         IF hWindow == IntPtr.Zero
             hWindow := Win32.GetParentWindow()
         ENDIF
-        
+
         IF cConnectionString IS STRING
             cConnect  := (STRING) cConnectionString
             nSize     := (SHORT) (SLen( cConnect ) + 1 )
@@ -82,8 +82,8 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
             cConnect  := ""
             nSize     := 0
         ENDIF
-        
-        nRetCode := Win32.SQLAllocEnv( OUT hEnv ) 
+
+        nRetCode := Win32.SQLAllocEnv( OUT hEnv )
         nRetCode := Win32.SQLAllocConnect( hEnv, OUT hDBc )
         nRetCode := Win32.SQLDriverConnect( 	hDBc,                    ;
                                         hWindow,                    ;
@@ -98,7 +98,7 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
         ELSE
             cResult := ""
         ENDIF
-        
+
         nRetCode := Win32.SQLDisconnect( hDBc )
         nRetCode := Win32.SQLFreeConnect(hDBc)
         nRetCode := Win32.SQLFreeEnv( hEnv )
@@ -107,7 +107,7 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
       /// <inheritdoc />
     OVERRIDE METHOD GetMetaDataColumnValues(oRow AS DataRow) AS OBJECT[]
 
-        VAR result := OBJECT[]{19}                      // 
+        VAR result := OBJECT[]{19}                      //
         result[01] := oRow["TABLE_CAT"]                 // aStruct[1] := {"TABLE_CAT","C:0",128,0}
         result[02] := oRow["TABLE_SCHEM"]               // aStruct[2] := {"TABLE_SCHE","C:0",128,0}
         result[03] := oRow["TABLE_NAME"]                // aStruct[3] := {"TABLE_NAME","C",128,0}
@@ -135,7 +135,7 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
         result[1] := oRow["TABLE_CAT"]
         result[2] := oRow["TABLE_SCHEM"]
         result[3] := oRow["TABLE_NAME"]
-        result[4] := result[4] := IIF(oRow:Table:Columns:IndexOf("TABLE_TYPE") > 0, oRow["TABLE_TYPE"],"VIEW")
+        result[4] := result[4] := IIF(oRow:Table:Columns:IndexOf("TABLE_TYPE") > 0, (STRING) oRow["TABLE_TYPE"],"VIEW")
         result[5] := oRow["REMARKS"]
         RETURN result
 

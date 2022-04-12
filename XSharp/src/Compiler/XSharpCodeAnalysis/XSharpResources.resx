@@ -1491,10 +1491,10 @@
     <value>Fields of a struct must be fully assigned in a constructor before control is returned to the caller</value>
   </data>
   <data name="ERR_AmbigQM" xml:space="preserve">
-    <value>Type of conditional expression cannot be determined because '{0}' and '{1}' implicitly convert to one another</value>
+    <value>Type of IIF expression cannot be determined because '{0}' and '{1}' implicitly convert to one another</value>
   </data>
   <data name="ERR_InvalidQM" xml:space="preserve">
-    <value>Type of conditional expression cannot be determined because there is no implicit conversion between '{0}' and '{1}'</value>
+    <value>Type of IIF expression cannot be determined because there is no implicit conversion between '{0}' and '{1}'</value>
   </data>
   <data name="ERR_NoBaseClass" xml:space="preserve">
     <value>A base class is required for a 'SUPER' reference</value>
@@ -2564,10 +2564,10 @@ If such a class is used as a base class and if the deriving class defines a dest
     <value>Literal of type double cannot be implicitly converted to type '{1}'; use an '{0}' suffix to create a literal of this type</value>
   </data>
   <data name="WRN_IncorrectBooleanAssg" xml:space="preserve">
-    <value>Assignment in conditional expression is always constant; did you mean to use == instead of = ?</value>
+    <value>Assignment in IIF expression is always constant; did you mean to use == instead of = ?</value>
   </data>
   <data name="WRN_IncorrectBooleanAssg_Title" xml:space="preserve">
-    <value>Assignment in conditional expression is always constant</value>
+    <value>Assignment in IIF expression is always constant</value>
   </data>
   <data name="ERR_ProtectedInStruct" xml:space="preserve">
     <value>'{0}': new protected member declared in struct</value>

@@ -1116,7 +1116,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // convert to object when Compatible IIF is activated
                     // this will not happen for VO Dialect because that is handled above
-                    trueType = falseType = Compilation.GetSpecialType(SpecialType.System_Object); ;
+                    trueType = falseType = Compilation.GetSpecialType(SpecialType.System_Object); 
+                }
+                else
+                {
+                    Error(diagnostics, ErrorCode.ERR_InvalidQM, node, trueType, falseType);
+                    trueType = falseType = Compilation.GetSpecialType(SpecialType.System_Object); 
                 }
             }
             if (!Equals(trueExpr.Type, trueType))

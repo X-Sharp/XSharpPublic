@@ -909,6 +909,8 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          LOCAL nEnd    := 0 AS LONG
          SELF:ParseUdcTokens()  // Read UDC tokens on the current line
          SWITCH SELF:La1
+         CASE XSharpLexer.WHILE
+            nStart := 1
          CASE XSharpLexer.BEGIN
             SWITCH SELF:La2
             // tokens in the same order as the rules inside xsharp.g4
@@ -983,6 +985,13 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                CASE XSharpLexer.SET
                CASE XSharpLexer.ADD
                CASE XSharpLexer.REMOVE
+
+               CASE XSharpLexer.IF
+               CASE XSharpLexer.CASE
+               CASE XSharpLexer.DO
+               CASE XSharpLexer.WHILE
+               CASE XSharpLexer.FOR
+
                      nEnd := 2
 
                CASE XSharpLexer.EOS        // End without following keyword is usually also allowed

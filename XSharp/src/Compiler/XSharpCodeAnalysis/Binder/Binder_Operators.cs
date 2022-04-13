@@ -1078,21 +1078,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     trueType = falseType;
                 }
             }
-
+            bool compatibleIIF = Compilation.Options.HasOption(CompilerOption.CompatibleIIF, node);
             if (!Equals(trueType, falseType) && Compilation.Options.HasRuntime)
             {
                 // convert to usual when one of the two is a usual
-                if (trueType.IsUsualType())
-                {
-                    falseType = trueType;
-                }
-                else if (falseType.IsUsualType())
-                {
-                    trueType = falseType;
-                }
-                else if (Compilation.Options.HasOption(CompilerOption.CompatibleIIF, node))
+                if (trueType.IsUsualType() || falseType.IsUsualType() || compatibleIIF)
                 {
                     // convert to usual when Compatible IIF is activated
+                    // or when one of the two types is USUAL
                     trueType = falseType = Compilation.UsualType();
                 }
             }
@@ -1112,16 +1105,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                         falseType = trueType;
                     }
                 }
-                else if (Compilation.Options.HasOption(CompilerOption.CompatibleIIF, node))
+                else if (trueType.IsObjectType() || falseType.IsObjectType() || compatibleIIF)
                 {
                     // convert to object when Compatible IIF is activated
+                    // or when one of the two is object
                     // this will not happen for VO Dialect because that is handled above
-                    trueType = falseType = Compilation.GetSpecialType(SpecialType.System_Object); 
+                    trueType = falseType = Compilation.GetSpecialType(SpecialType.System_Object);
                 }
                 else
                 {
                     Error(diagnostics, ErrorCode.ERR_InvalidQM, node, trueType, falseType);
-                    trueType = falseType = Compilation.GetSpecialType(SpecialType.System_Object); 
+                    trueType = falseType = Compilation.GetSpecialType(SpecialType.System_Object);
                 }
             }
             if (!Equals(trueExpr.Type, trueType))

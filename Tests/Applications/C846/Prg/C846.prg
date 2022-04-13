@@ -1,4 +1,5 @@
 // 846. Usage of System.Drawing.Size in Macro expressions give errors
+// https://github.com/X-Sharp/XSharpPublic/issues/1003
 FUNCTION Start() AS VOID
 // make sure assemblies are loaded
 ? System.Drawing.Size.Empty
@@ -6,15 +7,31 @@ FUNCTION Start() AS VOID
 
 // all the following run with no errors
 ? MCompile("System.Int32.MaxValue")
+xAssert(MExec(MCompile("System.Int32.MaxValue")) == System.Int32.MaxValue)
 ? MCompile("System.Windows.Forms.AnchorStyles.Left")
+xAssert( MExec(MCompile("System.Windows.Forms.AnchorStyles.Left")) == System.Windows.Forms.AnchorStyles.Left)
 ? MCompile("System.Windows.Forms.Form{}")
-? MExec(MCompile("System.Collections.ArrayList{}"))
-? MExec(MCompile("System.Collections.ArrayList{123}"))
+
+LOCAL oArrayList AS System.Collections.ArrayList
+
+oArrayList := MExec(MCompile("System.Collections.ArrayList{}"))
+oArrayList := MExec(MCompile("System.Collections.ArrayList{123}"))
+xAssert(oArrayList:Capacity == 123)
 ? MExec(MCompile("System.Collections.BitArray{1,FALSE}"))
 
 // those throw a System.NullReferenceException
-? MCompile("System.Drawing.Size.Empty")
-? MCompile("System.Drawing.Size{1,2}")
+LOCAL oSize AS System.Drawing.Size
+oSize := MExec(MCompile("System.Drawing.Size.Empty"))
+xAssert(oSize:Width == 0 .and. oSize:Height == 0)
+oSize := MExec(MCompile("System.Drawing.Size{1,2}"))
+xAssert(oSize:Width == 1 .and. oSize:Height == 2)
+
+PROC xAssert(l AS LOGIC) 
+IF .NOT. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"   
+RETURN 	
 
 /*
 System.NullReferenceException

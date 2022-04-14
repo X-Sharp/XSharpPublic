@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using XSharpModel;
 using System.Collections.Immutable;
 using Microsoft.VisualStudio.Text;
+using System.Collections.Concurrent;
 
 namespace XSharp.LanguageService
 {
@@ -20,17 +21,18 @@ namespace XSharp.LanguageService
         DocComments = 1 << 4,
         Inactive = 1 << 5,
         SingleLineEntity = 1 << 6,
+
     }
     /// <summary>
     /// This class keeps the state for 0 based line numbers
     /// </summary>
     public class XSharpLineState
     {
-        private Dictionary<int, LineFlags> dict;
+        private ConcurrentDictionary<int, LineFlags> dict;
         internal ITextSnapshot Snapshot { get; set; }
         internal XSharpLineState(ITextSnapshot snapshot )
         {
-            dict = new Dictionary<int, LineFlags>();
+            dict = new ConcurrentDictionary<int, LineFlags>();
             Snapshot = snapshot;
         }
         internal void SetFlags(int line, LineFlags flags)
@@ -43,10 +45,11 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
-                    dict.Add(line, flags);
+                    dict.TryAdd(line, flags);
                 }
             }
         }
+    
         internal bool IsComment(int line)
         {
             var flags = GetFlags(line);

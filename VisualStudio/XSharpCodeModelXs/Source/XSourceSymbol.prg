@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY File AS XFile                AUTO
         PROPERTY Range AS TextRange           AUTO
         PROPERTY Interval AS TextInterval     AUTO
-        PROPERTY FileUsings AS IList<STRING>  GET IIF(SELF:File != NULL, SELF:File:Usings, <STRING>{})
+        PROPERTY FileUsings AS IList<STRING>  GET  IIF(SELF:File != NULL, SELF:File:Usings, (IList<STRING>) STRING[]{0})
 
         CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers)
             SUPER(name, kind, attributes)

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using XSharpModel;
 using static XSharp.Parser.VsParser;
-using XSharp.LanguageService.Formatting;
 
 namespace XSharp.LanguageService
 {
@@ -30,18 +29,19 @@ namespace XSharp.LanguageService
 
         private static void GetKeywords()
         {
-            _memberKeywords = FormattingRule.MemberKeywords();
-            _middleKeywords = FormattingRule.MiddleKeywords();
-            _specialKeywords = FormattingRule.SpecialMiddleKeywords();
-            _endKeywords = FormattingRule.EndKeywords();
-            _allowEndToken = FormattingRule.AllowEndKeywords();
-            _indentKeywords = FormattingRule.IndentKeywords();
+            _memberKeywords = XFormattingRule.MemberKeywords();
+            _middleKeywords = XFormattingRule.MiddleKeywords();
+            _specialKeywords = XFormattingRule.SpecialMiddleKeywords();
+            _endKeywords = XFormattingRule.EndKeywords();
+            _allowEndToken = XFormattingRule.AllowEndKeywords();
+            _indentKeywords = XFormattingRule.IndentKeywords();
         }
+
 
 
         private static XToken SearchMiddleKeyword(XToken keyword, out bool isMiddle)
         {
-            keyword = FormattingRule.TranslateToken(keyword);
+            keyword = XFormattingRule.TranslateToken(keyword);
             isMiddle = false;
             if (_middleKeywords.ContainsKey(keyword))
             {
@@ -60,12 +60,12 @@ namespace XSharp.LanguageService
 
         private IList<XToken> SearchSpecialMiddleKeyword(XToken keyword)
         {
-            keyword = FormattingRule.TranslateToken(keyword);
+            keyword = XFormattingRule.TranslateToken(keyword);
             if (_specialKeywords.ContainsKey(keyword))
             {
                 return _specialKeywords[keyword];
             }
-            if (keyword.isEnd)
+            if (keyword.IsEnd)
             {
                 return _allowEndToken;
             }
@@ -531,14 +531,7 @@ namespace XSharp.LanguageService
                 // We are more forward, line per line
                 foreach (var snapLine in lines)
                 {
-                    // The current Line Number (from 0 to LineCount-1)
                     lineNumber++;
-                    ///// used by FormatSelection
-                    //if (lineNumber < startLine)
-                    //    continue;
-                    //if (lineNumber > endLine)
-                    //    break;
-                    /////
                     // Ignore Empty lines
                     if (snapLine.Length > 0)
                     {
@@ -718,11 +711,11 @@ namespace XSharp.LanguageService
                 }
                 if (!IsIgnored(openKeyword.Type))
                 {
-                    FormattingRule rule = default;
+                    XFormattingRule rule = default;
                     if (XSharpLexer.IsKeyword(openKeyword.Type))
                     {
                         var xToken = new XToken(openKeyword.Type);
-                        rule = FormattingRule.GetStartRule(xToken);
+                        rule = XFormattingRule.GetStartRule(xToken);
                     }
                     if (IsTypeStart(openKeyword.Type))
                     {
@@ -1686,7 +1679,7 @@ namespace XSharp.LanguageService
                         return _lastIndentValue;
                     // ok, now check what we have, starting the previous line
                     bool indentNextLine = false;
-                    if (!keyword.isEmpty)// && !doSkipped)
+                    if (!keyword.IsEmpty)// && !doSkipped)
                     {
                         // Start of a block of code ?
                         if (_memberKeywords.Contains(keyword))
@@ -1706,7 +1699,7 @@ namespace XSharp.LanguageService
                             // isMiddle indicates if the next line needs to be indented or not
                             XToken startToken = SearchMiddleKeyword(keyword, out var isMiddle);
                             int outdentValue = -1;
-                            if (!startToken.isEmpty)
+                            if (!startToken.IsEmpty)
                             {
                                 // Retrieve the Indentation for the previous line
                                 outdentValue = AlignToSpecificTokens(line, new List<XToken> { startToken }, out var _);
@@ -1719,15 +1712,16 @@ namespace XSharp.LanguageService
                                 if (startTokens != null)
                                 {
                                     // The startToken is a list of possible tokens
+
                                     outdentValue = AlignToSpecificTokens(line, startTokens, out var firstKeyword);
 
                                     // Special handling for CASE and OTHERWISE
                                     // The SWITCH and DOCASE rules have the FormattingClags.Case set
 
-                                    var rule = FormattingRule.GetStartRule(firstKeyword);
-                                    if (!keyword.isEnd && !firstKeyword.isEmpty && rule.isEmpty)
+                                    var rule = XFormattingRule.GetStartRule(firstKeyword);
+                                    if (!keyword.IsEnd && !firstKeyword.IsEmpty )
                                     {
-                                        if (rule.Flags.HasFlag(FormattingFlags.Case))
+                                        if (rule.Flags.HasFlag(XFormattingFlags.Case))
                                         {
                                             if (_settings.IndentCaseLabel)
                                             {
@@ -1837,9 +1831,17 @@ namespace XSharp.LanguageService
                                     currentKeyword = new XToken(token.Type, token2.Type);
                                 }
                             }
+                            else if (token.Type == XSharpLexer.LOCAL)
+                            {
+                                // must be followed by whitespace and another token
+                                if (tokens.Count > index && (token2.Type == XSharpLexer.FUNCTION || token2.Type == XSharpLexer.PROCEDURE))
+                                {
+                                    currentKeyword = new XToken(token.Type, token2.Type);
+                                }
+                            }
                         }
-                        currentKeyword = FormattingRule.TranslateToken(currentKeyword);
-                        if (tokenList.Contains(currentKeyword))
+                        var translatedKeyword = XFormattingRule.TranslateToken(currentKeyword);
+                        if (tokenList.Contains(translatedKeyword))
                         {
                             if (context.Count == 0)
                             {
@@ -2051,7 +2053,7 @@ namespace XSharp.LanguageService
                     break;
                 }
             }
-            return FormattingRule.TranslateToken(keyword);
+            return XFormattingRule.TranslateToken(keyword);
         }
         private bool IsPPKeyword(int kw)
         {

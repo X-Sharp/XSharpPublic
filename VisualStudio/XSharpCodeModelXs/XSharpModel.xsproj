@@ -17,7 +17,7 @@
     <TargetFrameworkProfile />
     <CS>true</CS>
     <VO3>true</VO3>
-    <XSharpProjectversion>2.10.0.3</XSharpProjectversion>
+    <XSharpProjectversion>2.11.0.0</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -78,6 +78,8 @@
     <Compile Include="MetaData\BuiltInFunctions.prg" />
     <Compile Include="Model\ClassGenerator.prg" />
     <Compile Include="Model\CommentTask.prg" />
+    <Compile Include="Model\XKeyword.prg" />
+    <Compile Include="Model\XFormattingRule.prg" />
     <Compile Include="Parser\XSharpTokenList.prg" />
     <Compile Include="PE\XPEMemberSymbol.prg" />
     <Compile Include="PE\XPEParameterSymbol.prg" />

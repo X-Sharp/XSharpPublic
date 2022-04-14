@@ -156,7 +156,7 @@ namespace XSharp.LanguageService
                 // We might be here due to a COMPLETEWORD command, so we have no typedChar
                 // but we "may" have a incomplete word like System.String.To
                 // Try to Guess what TypedChar could be
-                if (typedChar == '\0' && autoType)
+                if (typedChar == '\0' && (autoType || nCmdId == VSConstants.VSStd2KCmdID.COMPLETEWORD))
                 {
                     if (tokenList.Count > 0)
                     {
@@ -370,11 +370,15 @@ namespace XSharp.LanguageService
                             helpers.AddTypeNames(compList, location, filterText,onlyInterfaces: true, afterDot: false);
                             break;
                         default:
-                            //if (state.HasFlag(CompletionState.General))
-                            //{
-                            //    filterText = notProcessed;
-                            //    helpers.AddGenericCompletion(compList, location, filterText);
-                            //}
+                            if (state.HasFlag(CompletionState.General))
+                            {
+                                if (tokenList.Count == 1 && XSharpLexer.IsKeyword(tokenList[0].Type))
+                                {
+                                    notProcessed = tokenList[0].Text;
+                                }
+                                filterText = notProcessed;
+                                helpers.AddGenericCompletion(compList, location, filterText);
+                            }
                             break;
                     }
                 }

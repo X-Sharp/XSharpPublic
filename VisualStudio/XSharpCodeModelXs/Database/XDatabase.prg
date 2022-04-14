@@ -1199,9 +1199,9 @@ BEGIN NAMESPACE XSharpModel
             Log(i"GetAssemblyTypes '{sName}' returns {result.Count} matches")
             RETURN result
         STATIC METHOD GetAssemblyTypesLike(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
-            VAR stmt := "Select * from AssemblyTypes where name like $name AND IdAssembly in ("+sAssemblyIds+")"
+            VAR stmt := "Select * from AssemblyTypes where name like $name or fullname like $name AND IdAssembly in ("+sAssemblyIds+")"
             VAR result := List<XDbResult>{}
-            var sLike := sName + "%"
+            var sLike := "%"+sName + "%"
             IF IsDbOpen
                 BEGIN LOCK oConn
                     TRY

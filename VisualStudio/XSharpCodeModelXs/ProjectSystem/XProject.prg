@@ -802,11 +802,17 @@ BEGIN NAMESPACE XSharpModel
          // convert the database objects to the SourceTypeSymbols
          return GetSourceTypes(result)
 
+
       METHOD GetAssemblyTypesInNamespace(namespace AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
          if namespace.EndsWith(".")
             namespace := namespace.Substring(0, namespace.Length-1)
          ENDIF
          VAR result := XDatabase.GetAssemblyTypesInNamespace(namespace, SELF:DependentAssemblyList )
+         // convert the database objects to the PeTypeSymbols
+         RETURN GetPETypes(result)
+
+     METHOD GetAssemblyTypes(startWith AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
+         VAR result := XDatabase.GetAssemblyTypesLike(startWith, SELF:DependentAssemblyList )
          // convert the database objects to the PeTypeSymbols
          RETURN GetPETypes(result)
 

@@ -923,26 +923,63 @@ internal static class OOPHelpers
             endif
         next
 
+    static method FindOperator(srcType as System.Type,toType as System.Type) as MethodInfo
+        foreach oMember as MethodInfo in srcType:GetMember("op_Implicit")
+            if oMember:ReturnType == toType
+                return oMember
+            endif
+        next
+        foreach oMember as MethodInfo in srcType:GetMember("op_Explicit")
+            if oMember:ReturnType == toType
+                return oMember
+            endif
+        next
+        return null_object
+
+
     static method VOConvert(uValue as usual,toType as System.Type) as object
+        local oValue := null as object
         if toType == TYPEOF(float)
             return (float) uValue
         else
             if toType == TYPEOF(usual)
-                // box the usual
+                // return a boxed usual
                 return __castclass(object, uValue)
             elseif toType == typeof(date) .and. uValue:IsDateTime
                 return (date)(DateTime) uValue
             elseif uValue:IsArray .and. toType == typeof(array)
                 return (array) uValue
+            elseif uValue:IsString .and. toType == typeof(symbol)
+                return (symbol) uValue
+            elseif uValue:IsSymbol .and. toType == typeof(string)
+                return (string) uValue
             elseif uValue:IsObject .or. uValue:IsCodeblock
                 return (object) uValue
             elseif uValue:IsPtr .and. toType == typeof(ptr)
                 return IntPtr{(ptr) uValue}
+            else
+                // check to see if the source type contains an implicit converter
+                local oRealValue := uValue as object
+                var oOperator := FindOperator(oRealValue:GetType(), toType)
+                if oOperator != null_object
+                    oValue := oRealValue
+                else
+                    oOperator := FindOperator(typeof(usual), toType)
+                    if oOperator != null_object
+                        // box the usual
+                        oValue := __castclass(object, uValue)
+                    endif
+                endif
+                if oOperator != null_object
+                    // oValue is either a boxed USUAL (for operators of the USUAL type)
+                    // or the real thing, depending on the operator that was chosen
+                    return oOperator:Invoke(null, <object>{oValue})
+                endif
             endif
 
             local oRet as object
             try
-                oRet := Convert.ChangeType(uValue, toType)
+                oRet := Convert.ChangeType(oValue, toType)
             catch
                 oRet := uValue
             end try

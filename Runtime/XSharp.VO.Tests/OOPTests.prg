@@ -668,11 +668,11 @@ CLASS NilTestClass
 
 	METHOD NoMethod(c)
 		? c
-		IF AsString(c) == "DOESNOTEXISTMETHOD"
-			RETURN 2
-		END IF
-	RETURN NIL
-	METHOD NoIVarGet(c)
+		if AsString(c) == "DOESNOTEXISTMETHOD"
+			return 2
+		end if
+	return nil
+	METHOD NoIVarGet(c as symbol) as usual
 		? c
 		IF AsString(c) == "DOESNOTEXISTACCESS"
 			RETURN 2

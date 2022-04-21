@@ -109,6 +109,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var srcType = node.Operand.Type;
             var platform = _compilation.Options.Platform;
+            if (srcType.IsPointerType())
+                return;
             switch (platform)
             {
                 case Platform.X86:
@@ -135,7 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     string name = platform.ToString();
                     if (platform == Platform.AnyCpu32BitPreferred)
                         name = "AnyCpu";
-                    Error(ErrorCode.ERR_CantCastPtrInAnyCpu, node, srcType.ToDisplayString(),name);
+                    Error(ErrorCode.ERR_CantCastPtrInAnyCpu, node, srcType.ToDisplayString(), name);
                     break;
             }
         }

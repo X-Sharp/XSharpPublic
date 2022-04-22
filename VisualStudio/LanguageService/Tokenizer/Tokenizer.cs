@@ -81,7 +81,7 @@ namespace XSharp.LanguageService
             var line = location.LineNumber;
             var doc = location.GetDocument();
             var lineFlags = doc.LineState;
-            while (line >= 0 && lineFlags.GetFlags(line).HasFlag(LineFlags.Continued))
+            while (line >= 0 && lineFlags.Get(line).HasFlag(LineFlags.Continued))
             {
                 line--;
             }

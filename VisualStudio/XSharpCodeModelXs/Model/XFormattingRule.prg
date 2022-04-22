@@ -67,158 +67,158 @@ BEGIN NAMESPACE XSharpModel
     CLASS XFormattingRule
         #region Static Fields
         // types
-        static initonly @@Begin_Namespace := XToken{XKeyword.Begin, XKeyword.Namespace} as XToken
-        static initonly @@End_Namespace := XToken{XKeyword.End, XKeyword.Namespace}as XToken
+        static initonly @@Begin_Namespace := XKeyword{XTokenType.Begin, XTokenType.Namespace} as XKeyword
+        static initonly @@End_Namespace := XKeyword{XTokenType.End, XTokenType.Namespace}as XKeyword
 
-        static initonly @@Class := XToken{XKeyword.Class} as XToken
-        static initonly @@End_Class := XToken{XKeyword.End, XKeyword.Class} as XToken
-        static initonly @@Define_Class := XToken{XKeyword.Define, XKeyword.Class} as XToken
-        static initonly @@Enddefine := XToken{XKeyword.Enddefine} as XToken
-        static initonly @@End_Define := XToken{XKeyword.End, XKeyword.Define} as XToken
-        static initonly @@Structure := XToken{XKeyword.Structure} as XToken
-        static initonly @@End_Structure := XToken{XKeyword.End, XKeyword.Structure} as XToken
-        static initonly @@Interface := XToken{XKeyword.Interface} as XToken
-        static initonly @@End_Interface := XToken{XKeyword.End, XKeyword.Interface} as XToken
-        static initonly @@Enum := XToken{XKeyword.Enum} as XToken
-        static initonly @@End_Enum := XToken{XKeyword.End, XKeyword.Enum} as XToken
-        static initonly @@VoStruct := XToken{XKeyword.Vostruct} as XToken
-        static initonly @@End_VoStruct := XToken{XKeyword.End, XKeyword.Vostruct} as XToken
-        static initonly @@Union := XToken{XKeyword.Union} as XToken
-        static initonly @@End_Union := XToken{XKeyword.End, XKeyword.Union} as XToken
+        static initonly @@Class := XKeyword{XTokenType.Class} as XKeyword
+        static initonly @@End_Class := XKeyword{XTokenType.End, XTokenType.Class} as XKeyword
+        static initonly @@Define_Class := XKeyword{XTokenType.Define, XTokenType.Class} as XKeyword
+        static initonly @@Enddefine := XKeyword{XTokenType.Enddefine} as XKeyword
+        static initonly @@End_Define := XKeyword{XTokenType.End, XTokenType.Define} as XKeyword
+        static initonly @@Structure := XKeyword{XTokenType.Structure} as XKeyword
+        static initonly @@End_Structure := XKeyword{XTokenType.End, XTokenType.Structure} as XKeyword
+        static initonly @@Interface := XKeyword{XTokenType.Interface} as XKeyword
+        static initonly @@End_Interface := XKeyword{XTokenType.End, XTokenType.Interface} as XKeyword
+        static initonly @@Enum := XKeyword{XTokenType.Enum} as XKeyword
+        static initonly @@End_Enum := XKeyword{XTokenType.End, XTokenType.Enum} as XKeyword
+        static initonly @@VoStruct := XKeyword{XTokenType.Vostruct} as XKeyword
+        static initonly @@End_VoStruct := XKeyword{XTokenType.End, XTokenType.Vostruct} as XKeyword
+        static initonly @@Union := XKeyword{XTokenType.Union} as XKeyword
+        static initonly @@End_Union := XKeyword{XTokenType.End, XTokenType.Union} as XKeyword
 
 
         // members
 
 
-        static initonly @@Local_Function := XToken{XKeyword.Local, XKeyword.Function} as XToken
-        static initonly @@Function := XToken{XKeyword.Function} as XToken
-        static initonly @@End_Function := XToken{XKeyword.End, XKeyword.Function} as XToken
+        static initonly @@Local_Function := XKeyword{XTokenType.Local, XTokenType.Function} as XKeyword
+        static initonly @@Function := XKeyword{XTokenType.Function} as XKeyword
+        static initonly @@End_Function := XKeyword{XTokenType.End, XTokenType.Function} as XKeyword
 
-        static initonly @@Local_Procedure := XToken{XKeyword.Local, XKeyword.Procedure} as XToken
-        static initonly @@Procedure := XToken{XKeyword.Procedure} as XToken
-        static initonly @@End_Procedure := XToken{XKeyword.End, XKeyword.Procedure} as XToken
+        static initonly @@Local_Procedure := XKeyword{XTokenType.Local, XTokenType.Procedure} as XKeyword
+        static initonly @@Procedure := XKeyword{XTokenType.Procedure} as XKeyword
+        static initonly @@End_Procedure := XKeyword{XTokenType.End, XTokenType.Procedure} as XKeyword
 
-        static initonly @@Access := XToken{XKeyword.Access} as XToken
-        static initonly @@End_Access := XToken{XKeyword.End, XKeyword.Access} as XToken
+        static initonly @@Access := XKeyword{XTokenType.Access} as XKeyword
+        static initonly @@End_Access := XKeyword{XTokenType.End, XTokenType.Access} as XKeyword
 
-        static initonly @@Assign := XToken{XKeyword.Assign} as XToken
-        static initonly @@End_Assign := XToken{XKeyword.End, XKeyword.Assign} as XToken
+        static initonly @@Assign := XKeyword{XTokenType.Assign} as XKeyword
+        static initonly @@End_Assign := XKeyword{XTokenType.End, XTokenType.Assign} as XKeyword
 
-        static initonly @@Method := XToken{XKeyword.Method} as XToken
-        static initonly @@End_Method := XToken{XKeyword.End, XKeyword.Method} as XToken
+        static initonly @@Method := XKeyword{XTokenType.Method} as XKeyword
+        static initonly @@End_Method := XKeyword{XTokenType.End, XTokenType.Method} as XKeyword
 
-        static initonly @@Property := XToken{XKeyword.Property} as XToken
-        static initonly @@End_Property := XToken{XKeyword.End, XKeyword.Property} as XToken
+        static initonly @@Property := XKeyword{XTokenType.Property} as XKeyword
+        static initonly @@End_Property := XKeyword{XTokenType.End, XTokenType.Property} as XKeyword
 
-        static initonly @@Constructor := XToken{XKeyword.Constructor} as XToken
-        static initonly @@End_Constructor := XToken{XKeyword.End, XKeyword.Constructor} as XToken
+        static initonly @@Constructor := XKeyword{XTokenType.Constructor} as XKeyword
+        static initonly @@End_Constructor := XKeyword{XTokenType.End, XTokenType.Constructor} as XKeyword
 
-        static initonly @@Destructor := XToken{XKeyword.Destructor} as XToken
-        static initonly @@End_Destructor := XToken{XKeyword.End, XKeyword.Destructor} as XToken
+        static initonly @@Destructor := XKeyword{XTokenType.Destructor} as XKeyword
+        static initonly @@End_Destructor := XKeyword{XTokenType.End, XTokenType.Destructor} as XKeyword
 
-        static initonly @@Operator := XToken{XKeyword.Operator} as XToken
-        static initonly @@End_Operator := XToken{XKeyword.End, XKeyword.Operator} as XToken
+        static initonly @@Operator := XKeyword{XTokenType.Operator} as XKeyword
+        static initonly @@End_Operator := XKeyword{XTokenType.End, XTokenType.Operator} as XKeyword
 
-        static initonly @@Event := XToken{XKeyword.Event} as XToken
-        static initonly @@End_Event := XToken{XKeyword.End, XKeyword.Event} as XToken
+        static initonly @@Event := XKeyword{XTokenType.Event} as XKeyword
+        static initonly @@End_Event := XKeyword{XTokenType.End, XTokenType.Event} as XKeyword
 
-        static initonly @@Get := XToken{XKeyword.Get} as XToken
-        static initonly @@End_Get := XToken{XKeyword.End, XKeyword.Get} as XToken
+        static initonly @@Get := XKeyword{XTokenType.Get} as XKeyword
+        static initonly @@End_Get := XKeyword{XTokenType.End, XTokenType.Get} as XKeyword
 
-        static initonly @@Set := XToken{XKeyword.Set} as XToken
-        static initonly @@End_Set := XToken{XKeyword.End, XKeyword.Set} as XToken
+        static initonly @@Set := XKeyword{XTokenType.Set} as XKeyword
+        static initonly @@End_Set := XKeyword{XTokenType.End, XTokenType.Set} as XKeyword
 
-        static initonly @@Init := XToken{XKeyword.Init} as XToken
-        static initonly @@End_Init := XToken{XKeyword.End, XKeyword.Init} as XToken
+        static initonly @@Init := XKeyword{XTokenType.Init} as XKeyword
+        static initonly @@End_Init := XKeyword{XTokenType.End, XTokenType.Init} as XKeyword
 
-        static initonly @@Add := XToken{XKeyword.Add} as XToken
-        static initonly @@End_Add := XToken{XKeyword.End, XKeyword.Add} as XToken
+        static initonly @@Add := XKeyword{XTokenType.Add} as XKeyword
+        static initonly @@End_Add := XKeyword{XTokenType.End, XTokenType.Add} as XKeyword
 
-        static initonly @@Remove := XToken{XKeyword.Remove} as XToken
-        static initonly @@End_Remove := XToken{XKeyword.End, XKeyword.Remove} as XToken
+        static initonly @@Remove := XKeyword{XTokenType.Remove} as XKeyword
+        static initonly @@End_Remove := XKeyword{XTokenType.End, XTokenType.Remove} as XKeyword
 
         // statements
-        static initonly @@Do_Case := XToken{XKeyword.Do, XKeyword.Case} as XToken
-        static initonly @@Case := XToken{XKeyword.Case} as XToken
-        static initonly @@Otherwise := XToken{XKeyword.Otherwise} as XToken
-        static initonly @@Endcase := XToken{XKeyword.Endcase} as XToken
-        static initonly @@End_Case := XToken{XKeyword.End, XKeyword.Case} as XToken
-        static initonly @@For := XToken{XKeyword.For} as XToken
-        static initonly @@ForEach := XToken{XKeyword.Foreach} as XToken
-        static initonly @@Next := XToken{XKeyword.Next} as XToken
-        static initonly @@End_For := XToken{XKeyword.End, XKeyword.For} as XToken
-        static initonly @@While := XToken{XKeyword.While} as XToken
-        static initonly @@Do_While := XToken{XKeyword.Do, XKeyword.While} as XToken
-        static initonly @@Enddo := XToken{XKeyword.Enddo} as XToken
-        static initonly @@End_Do := XToken{XKeyword.End, XKeyword.Do} as XToken
-        static initonly @@End_While := XToken{XKeyword.End, XKeyword.While} as XToken
-        static initonly @@If := XToken{XKeyword.If} as XToken
-        static initonly @@Else := XToken{XKeyword.Else} as XToken
-        static initonly @@Elseif := XToken{XKeyword.Elseif} as XToken
-        static initonly @@Endif := XToken{XKeyword.Endif} as XToken
-        static initonly @@End_If := XToken{XKeyword.End, XKeyword.If} as XToken
-        static initonly @@Repeat := XToken{XKeyword.Repeat} as XToken
-        static initonly @@Until := XToken{XKeyword.Until} as XToken
-        static initonly @@Try := XToken{XKeyword.Try} as XToken
-        static initonly @@Catch := XToken{XKeyword.Catch} as XToken
-        static initonly @@Finally := XToken{XKeyword.Finally} as XToken
-        static initonly @@End_Try := XToken{XKeyword.End, XKeyword.Try} as XToken
+        static initonly @@Do_Case := XKeyword{XTokenType.Do, XTokenType.Case} as XKeyword
+        static initonly @@Case := XKeyword{XTokenType.Case} as XKeyword
+        static initonly @@Otherwise := XKeyword{XTokenType.Otherwise} as XKeyword
+        static initonly @@Endcase := XKeyword{XTokenType.Endcase} as XKeyword
+        static initonly @@End_Case := XKeyword{XTokenType.End, XTokenType.Case} as XKeyword
+        static initonly @@For := XKeyword{XTokenType.For} as XKeyword
+        static initonly @@ForEach := XKeyword{XTokenType.Foreach} as XKeyword
+        static initonly @@Next := XKeyword{XTokenType.Next} as XKeyword
+        static initonly @@End_For := XKeyword{XTokenType.End, XTokenType.For} as XKeyword
+        static initonly @@While := XKeyword{XTokenType.While} as XKeyword
+        static initonly @@Do_While := XKeyword{XTokenType.Do, XTokenType.While} as XKeyword
+        static initonly @@Enddo := XKeyword{XTokenType.Enddo} as XKeyword
+        static initonly @@End_Do := XKeyword{XTokenType.End, XTokenType.Do} as XKeyword
+        static initonly @@End_While := XKeyword{XTokenType.End, XTokenType.While} as XKeyword
+        static initonly @@If := XKeyword{XTokenType.If} as XKeyword
+        static initonly @@Else := XKeyword{XTokenType.Else} as XKeyword
+        static initonly @@Elseif := XKeyword{XTokenType.Elseif} as XKeyword
+        static initonly @@Endif := XKeyword{XTokenType.Endif} as XKeyword
+        static initonly @@End_If := XKeyword{XTokenType.End, XTokenType.If} as XKeyword
+        static initonly @@Repeat := XKeyword{XTokenType.Repeat} as XKeyword
+        static initonly @@Until := XKeyword{XTokenType.Until} as XKeyword
+        static initonly @@Try := XKeyword{XTokenType.Try} as XKeyword
+        static initonly @@Catch := XKeyword{XTokenType.Catch} as XKeyword
+        static initonly @@Finally := XKeyword{XTokenType.Finally} as XKeyword
+        static initonly @@End_Try := XKeyword{XTokenType.End, XTokenType.Try} as XKeyword
 
-        static initonly @@Text := XToken{XKeyword.Text} as XToken
-        static initonly @@Endtext := XToken{XKeyword.Endtext} as XToken
-        static initonly @@End_Text := XToken{XKeyword.End, XKeyword.Text} as XToken
-        static initonly @@Begin_Sequence := XToken{XKeyword.Begin, XKeyword.Sequence} as XToken
-        static initonly @@Recover := XToken{XKeyword.Recover} as XToken
-        static initonly @@End_Sequence := XToken{XKeyword.End, XKeyword.Sequence} as XToken
-        static initonly @@Switch := XToken{XKeyword.Switch} as XToken
-        static initonly @@Do_Switch := XToken{XKeyword.Do, XKeyword.Switch} as XToken
-        static initonly @@Begin_Switch := XToken{XKeyword.Begin, XKeyword.Switch} as XToken
-        static initonly @@End_Switch := XToken{XKeyword.End, XKeyword.Switch} as XToken
-        static initonly @@With := XToken{XKeyword.With} as XToken
-        static initonly @@End_With := XToken{XKeyword.End, XKeyword.With} as XToken
+        static initonly @@Text := XKeyword{XTokenType.Text} as XKeyword
+        static initonly @@Endtext := XKeyword{XTokenType.Endtext} as XKeyword
+        static initonly @@End_Text := XKeyword{XTokenType.End, XTokenType.Text} as XKeyword
+        static initonly @@Begin_Sequence := XKeyword{XTokenType.Begin, XTokenType.Sequence} as XKeyword
+        static initonly @@Recover := XKeyword{XTokenType.Recover} as XKeyword
+        static initonly @@End_Sequence := XKeyword{XTokenType.End, XTokenType.Sequence} as XKeyword
+        static initonly @@Switch := XKeyword{XTokenType.Switch} as XKeyword
+        static initonly @@Do_Switch := XKeyword{XTokenType.Do, XTokenType.Switch} as XKeyword
+        static initonly @@Begin_Switch := XKeyword{XTokenType.Begin, XTokenType.Switch} as XKeyword
+        static initonly @@End_Switch := XKeyword{XTokenType.End, XTokenType.Switch} as XKeyword
+        static initonly @@With := XKeyword{XTokenType.With} as XKeyword
+        static initonly @@End_With := XKeyword{XTokenType.End, XTokenType.With} as XKeyword
 
 
         // Blocks
-        static initonly @@Begin_Fixed := XToken{XKeyword.Begin, XKeyword.Fixed} as XToken
-        static initonly @@End_Fixed := XToken{XKeyword.End, XKeyword.Fixed} as XToken
-        static initonly @@Begin_Using := XToken{XKeyword.Begin, XKeyword.Using} as XToken
-        static initonly @@End_Using := XToken{XKeyword.End, XKeyword.Using} as XToken
-        static initonly @@Begin_Scope := XToken{XKeyword.Begin, XKeyword.Scope} as XToken
-        static initonly @@End_Scope := XToken{XKeyword.End, XKeyword.Scope} as XToken
-        static initonly @@Begin_Checked := XToken{XKeyword.Begin, XKeyword.Checked} as XToken
-        static initonly @@End_Checked := XToken{XKeyword.End, XKeyword.Checked} as XToken
-        static initonly @@Begin_Unchecked := XToken{XKeyword.Begin, XKeyword.Unchecked} as XToken
-        static initonly @@End_Unchecked := XToken{XKeyword.End, XKeyword.Unchecked} as XToken
-        static initonly @@Begin_Lock := XToken{XKeyword.Begin, XKeyword.Lock} as XToken
-        static initonly @@End_Lock := XToken{XKeyword.End, XKeyword.Lock} as XToken
+        static initonly @@Begin_Fixed := XKeyword{XTokenType.Begin, XTokenType.Fixed} as XKeyword
+        static initonly @@End_Fixed := XKeyword{XTokenType.End, XTokenType.Fixed} as XKeyword
+        static initonly @@Begin_Using := XKeyword{XTokenType.Begin, XTokenType.Using} as XKeyword
+        static initonly @@End_Using := XKeyword{XTokenType.End, XTokenType.Using} as XKeyword
+        static initonly @@Begin_Scope := XKeyword{XTokenType.Begin, XTokenType.Scope} as XKeyword
+        static initonly @@End_Scope := XKeyword{XTokenType.End, XTokenType.Scope} as XKeyword
+        static initonly @@Begin_Checked := XKeyword{XTokenType.Begin, XTokenType.Checked} as XKeyword
+        static initonly @@End_Checked := XKeyword{XTokenType.End, XTokenType.Checked} as XKeyword
+        static initonly @@Begin_Unchecked := XKeyword{XTokenType.Begin, XTokenType.Unchecked} as XKeyword
+        static initonly @@End_Unchecked := XKeyword{XTokenType.End, XTokenType.Unchecked} as XKeyword
+        static initonly @@Begin_Lock := XKeyword{XTokenType.Begin, XTokenType.Lock} as XKeyword
+        static initonly @@End_Lock := XKeyword{XTokenType.End, XTokenType.Lock} as XKeyword
 
 
         // preprocessor
-        static initonly @@PP_If := XToken{XKeyword.PP_if} as XToken
-        static initonly @@PP_Ifdef := XToken{XKeyword.PP_ifdef} as XToken
-        static initonly @@PP_Ifndef := XToken{XKeyword.PP_ifndef} as XToken
-        static initonly @@PP_Else := XToken{XKeyword.PP_else} as XToken
-        static initonly @@PP_Endif := XToken{XKeyword.PP_endif} as XToken
-        static initonly @@PP_Region := XToken{XKeyword.PP_region} as XToken
-        static initonly @@PP_Endregion := XToken{XKeyword.PP_endregion} as XToken
-        static initonly @@PP_Text  := XToken{XKeyword.PP_text} as XToken
-        static initonly @@PP_EndText := XToken{XKeyword.PP_endtext} as XToken
+        static initonly @@PP_If := XKeyword{XTokenType.PP_if} as XKeyword
+        static initonly @@PP_Ifdef := XKeyword{XTokenType.PP_ifdef} as XKeyword
+        static initonly @@PP_Ifndef := XKeyword{XTokenType.PP_ifndef} as XKeyword
+        static initonly @@PP_Else := XKeyword{XTokenType.PP_else} as XKeyword
+        static initonly @@PP_Endif := XKeyword{XTokenType.PP_endif} as XKeyword
+        static initonly @@PP_Region := XKeyword{XTokenType.PP_region} as XKeyword
+        static initonly @@PP_Endregion := XKeyword{XTokenType.PP_endregion} as XKeyword
+        static initonly @@PP_Text  := XKeyword{XTokenType.PP_text} as XKeyword
+        static initonly @@PP_EndText := XKeyword{XTokenType.PP_endtext} as XKeyword
 
 
-        static initonly _aliases        as IDictionary<XToken, XToken>
-        static initonly _middleKeywords as IDictionary<XToken, List<XToken>>
-        static initonly _rulesByStart   as IDictionary<XToken, XFormattingRule>
-        static initonly _endKeywords    as IDictionary<XToken, XFormattingRule>
+        static initonly _aliases        as IDictionary<XKeyword, XKeyword>
+        static initonly _middleKeywords as IDictionary<XKeyword, List<XKeyword>>
+        static initonly _rulesByStart   as IDictionary<XKeyword, XFormattingRule>
+        static initonly _endKeywords    as IDictionary<XKeyword, XFormattingRule>
 
         #endregion
 
-        public PROPERTY Start as XToken GET PRIVATE SET
-        public PROPERTY Stop  as XToken GET PRIVATE SET
+        public PROPERTY Start as XKeyword GET PRIVATE SET
+        public PROPERTY Stop  as XKeyword GET PRIVATE SET
         public property Flags as XFormattingFlags GET PRIVATE SET
 
 
 
-        PRIVATE CONSTRUCTOR(start as XToken, stop as XToken, flags as XFormattingFlags)
+        PRIVATE CONSTRUCTOR(start as XKeyword, stop as XKeyword, flags as XFormattingFlags)
             Start := start
             Stop  := stop
             Flags := flags
@@ -287,7 +287,7 @@ BEGIN NAMESPACE XSharpModel
                 // tokens that are remapped to other tokens For example END IF is mapped to ENDIF and FOREACH is mapped to FOR
                 // The second value in the table must be present in the Rules table as Start or Stop rule
                 // ValidateToken (which is only called in debug mode) checks this.
-                _aliases := Dictionary<XToken, XToken>{} {;
+                _aliases := Dictionary<XKeyword, XKeyword>{} {;
                     {@@End_If, @@Endif},;
                     {@@End_For, @@Next},;
                     {@@ForEach, @@For},;
@@ -307,21 +307,21 @@ BEGIN NAMESPACE XSharpModel
 
             // Keywords that are 'middle' parts of a statement, with the start tokens they need to be aligned with
             // this has to be the start token in the rules table, so not an alias
-             _middleKeywords := Dictionary<XToken, List<XToken>> {} {;
-                { @@Catch, List<XToken>{} { @@Begin_Sequence, @@Try } }, ;
-                { @@Finally, List<XToken>{} { @@Begin_Sequence, @@Try } },;
-                { @@Case, List<XToken>{} { @@Do_Case, @@Switch } },;
-                { @@Otherwise, List<XToken>{} { @@Do_Case, @@Switch } },;
-                { @@Else, List<XToken>{} { @@If } },;
-                { @@Elseif, List<XToken>{} { @@If } },;
-                { @@PP_Else, List<XToken>{} { @@PP_Ifdef } },;
-                { @@Recover, List<XToken>{} { @@Begin_Sequence} } ;
+             _middleKeywords := Dictionary<XKeyword, List<XKeyword>> {} {;
+                { @@Catch, List<XKeyword>{} { @@Begin_Sequence, @@Try } }, ;
+                { @@Finally, List<XKeyword>{} { @@Begin_Sequence, @@Try } },;
+                { @@Case, List<XKeyword>{} { @@Do_Case, @@Switch } },;
+                { @@Otherwise, List<XKeyword>{} { @@Do_Case, @@Switch } },;
+                { @@Else, List<XKeyword>{} { @@If } },;
+                { @@Elseif, List<XKeyword>{} { @@If } },;
+                { @@PP_Else, List<XKeyword>{} { @@PP_Ifdef } },;
+                { @@Recover, List<XKeyword>{} { @@Begin_Sequence} } ;
                 }
 
             ValidateRules(rules)
 
-            _rulesByStart := Dictionary<XToken, XFormattingRule>{}
-            _endKeywords  := Dictionary<XToken, XFormattingRule>{}
+            _rulesByStart := Dictionary<XKeyword, XFormattingRule>{}
+            _endKeywords  := Dictionary<XKeyword, XFormattingRule>{}
             foreach var item in rules
                 _rulesByStart:Add(item:Start, item)
                 _endKeywords:Add(item:Stop, item)
@@ -336,8 +336,8 @@ BEGIN NAMESPACE XSharpModel
 
         [Conditional("DEBUG")];
         PRIVATE STATIC METHOD ValidateRules(rules as List<XFormattingRule>) AS VOID
-            var startKeywords := Dictionary<XToken, XFormattingRule>{}
-            var endKeywords := Dictionary<XToken, XFormattingRule>{}
+            var startKeywords := Dictionary<XKeyword, XFormattingRule>{}
+            var endKeywords := Dictionary<XKeyword, XFormattingRule>{}
             foreach var rule in rules
                 if (!startKeywords:ContainsKey(rule:Start))
                     startKeywords[rule:Start] := rule
@@ -376,7 +376,7 @@ BEGIN NAMESPACE XSharpModel
                         XSettings.ShowMessageBox(i"Opening keyword {first} for middle keyword {item.Key} not defined as start keyword")
                     endif
                     var rule := startKeywords[first]
-                    if (! rule.Flags.HasFlag(XFormattingFlags.HasMiddle))
+                    if (! rule:Flags:HasFlag(XFormattingFlags.HasMiddle))
                         XSettings.ShowMessageBox(i"Formatting rule {first} for middle keyword {item.Key} does not have the Middle Flag set")
                     endif
                 next
@@ -389,13 +389,13 @@ BEGIN NAMESPACE XSharpModel
         OVERRIDE METHOD ToString() AS STRING
             RETURN SELF:Start:ToString() + " "+SELF:Stop:ToString()
 
-        PUBLIC STATIC METHOD TranslateToken(token as XToken ) AS XToken
+        PUBLIC STATIC METHOD TranslateToken(token as XKeyword ) AS XKeyword
             if _aliases:ContainsKey(token)
                 return _aliases[token]
             endif
             return token
 
-        PUBLIC STATIC METHOD GetStartRule( token as XToken) AS XFormattingRule
+        PUBLIC STATIC METHOD GetStartRule( token as XKeyword) AS XFormattingRule
             if _aliases:ContainsKey(token)
                 token := _aliases[token]
             endif
@@ -404,10 +404,37 @@ BEGIN NAMESPACE XSharpModel
             endif
             return DEFAULT(XFormattingRule)
 
-        PUBLIC STATIC METHOD IsMiddleKeyword(token as XToken) AS LOGIC
+        PUBLIC STATIC METHOD IsStartKeyword(token as XKeyword) AS LOGIC
+            if _aliases:ContainsKey(token)
+                token := _aliases[token]
+            endif
+            return _rulesByStart.ContainsKey(token)
+        PUBLIC STATIC METHOD IsStartKeyword(token as XKeyword, withFlags as XFormattingFlags) AS LOGIC
+            if _aliases:ContainsKey(token)
+                token := _aliases[token]
+            endif
+            if _rulesByStart.ContainsKey(token)
+                var rule := _rulesByStart[token]
+                return rule:Flags:HasFlag(XFormattingFlags.Statement)
+            endif
+            return false
+
+        PUBLIC STATIC METHOD IsEntityKeyword(token as XKeyword) AS LOGIC
+            if _aliases:ContainsKey(token)
+                token := _aliases[token]
+            endif
+            if _rulesByStart.ContainsKey(token)
+                var rule := _rulesByStart[token]
+                return rule:Flags:HasFlag(XFormattingFlags.Member) .or. rule:Flags:HasFlag(XFormattingFlags.Type)
+            endif
+            return false
+
+
+
+        PUBLIC STATIC METHOD IsMiddleKeyword(token as XKeyword) AS LOGIC
             RETURN _middleKeywords:ContainsKey(token)
 
-        PUBLIC STATIC METHOD IsEndKeyword(token as XToken) AS LOGIC
+        PUBLIC STATIC METHOD IsEndKeyword(token as XKeyword) AS LOGIC
             RETURN _endKeywords:ContainsKey(token)
 
 
@@ -415,9 +442,9 @@ BEGIN NAMESPACE XSharpModel
         /// Return all the middle tokens that can map a single start token
         /// </summary>
         /// <returns>List of tokens</returns>
-        PUBLIC STATIC METHOD MiddleKeywords() as IReadOnlyDictionary<XToken, XToken>
+        PUBLIC STATIC METHOD MiddleKeywords() as IReadOnlyDictionary<XKeyword, XKeyword>
 
-            var tokens := Dictionary<XToken, XToken>{}
+            var tokens := Dictionary<XKeyword, XKeyword>{}
             foreach var item in _middleKeywords
                 if item.Value.Count == 1
                     tokens.Add(item.Key, item.Value[0])
@@ -428,8 +455,8 @@ BEGIN NAMESPACE XSharpModel
         /// Return all start tokens from the rules list
         /// </summary>
         /// <returns>List of tokens</returns>
-        PUBLIC STATIC METHOD IndentKeywords()  AS IList<XToken>
-            var tokens := List<XToken>{}
+        PUBLIC STATIC METHOD IndentKeywords()  AS IList<XKeyword>
+            var tokens := List<XKeyword>{}
             foreach var item in _rulesByStart
                 tokens:Add(item:Key)
             next
@@ -441,8 +468,8 @@ BEGIN NAMESPACE XSharpModel
         /// Return all tokens that are the start of a Member
         /// </summary>
         /// <returns>List of tokens</returns>
-        PUBLIC static METHOD MemberKeywords() as IList<XToken>
-            var tokens := List<XToken>{}
+        PUBLIC static METHOD MemberKeywords() as IList<XKeyword>
+            var tokens := List<XKeyword>{}
             // Entities
             foreach var item in _rulesByStart
                 if (item:Value:Flags:HasFlag(XFormattingFlags.Member))
@@ -463,8 +490,8 @@ BEGIN NAMESPACE XSharpModel
         /// Return all tokens that can be closed with "just" an END
         /// </summary>
         /// <returns>List of tokens</returns>
-        public static method AllowEndKeywords() as IList<XToken>
-            var tokens := List<XToken>{}
+        public static method AllowEndKeywords() as IList<XKeyword>
+            var tokens := List<XKeyword>{}
             foreach var item in _rulesByStart
                 if item.Value.Flags.HasFlag(XFormattingFlags.End)
                     tokens.Add(item:Key)
@@ -477,8 +504,8 @@ BEGIN NAMESPACE XSharpModel
         /// Return end keywords that can match more than one start keyword
         /// </summary>
         /// <returns></returns>
-        public static method EndKeywords() as IReadOnlyDictionary<XToken, XToken>
-            var tokens := Dictionary<XToken, XToken>{}
+        public static method EndKeywords() as IReadOnlyDictionary<XKeyword, XKeyword>
+            var tokens := Dictionary<XKeyword, XKeyword>{}
             foreach var item in _rulesByStart
                 tokens:Add(item:Value:Stop, item:Key)
             next
@@ -490,8 +517,8 @@ BEGIN NAMESPACE XSharpModel
         /// Return all the middle tokens that can map more than one start token
         /// </summary>
         /// <returns>List of tokens</returns>
-        public static  method SpecialMiddleKeywords() as IReadOnlyDictionary<XToken, IList<XToken>>
-            var tokens := Dictionary<XToken, IList<XToken>>{}
+        public static method SpecialMiddleKeywords() as IReadOnlyDictionary<XKeyword, IList<XKeyword>>
+            var tokens := Dictionary<XKeyword, IList<XKeyword>>{}
             foreach var item in _middleKeywords
                 if (item:Value:Count >= 1)
 

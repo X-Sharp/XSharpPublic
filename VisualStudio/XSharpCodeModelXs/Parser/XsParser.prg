@@ -414,7 +414,7 @@ BEGIN NAMESPACE XSharpModel
              SELF:_globalType:AddMember(xmember)
          ENDIF
          IF ! lLocals
-	         _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
+             _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
              IF SELF:SaveToDisk
                 _file:SaveToDatabase()
              ENDIF
@@ -450,7 +450,7 @@ BEGIN NAMESPACE XSharpModel
          CASE XSharpLexer.PP_IFNDEF
          CASE XSharpLexer.PP_IF
          CASE XSharpLexer.PP_TEXT
-            VAR block := XSourceBlock{ XToken{SELF:La1}, SELF:Lt1}
+            VAR block := XSourceBlock{ XKeyword{SELF:La1}, SELF:Lt1}
             _BlockList:Add(block)
             _PPBlockStack:Push(block)
          CASE XSharpLexer.PP_ENDREGION
@@ -458,13 +458,13 @@ BEGIN NAMESPACE XSharpModel
          CASE XSharpLexer.PP_ENDIF
                // end
             IF _PPBlockStack:Count > 0
-               _PPBlockStack:Peek():Children:Add( XSourceBlock{XToken{SELF:La1}, SELF:Lt1})
+               _PPBlockStack:Peek():Children:Add( XSourceBlock{XKeyword{SELF:La1}, SELF:Lt1})
                _PPBlockStack:Pop()
             ENDIF
          CASE XSharpLexer.PP_ELSE
                // middle
             IF _PPBlockStack:Count > 0
-               _PPBlockStack:Peek():Children:Add( XSourceBlock{XToken{SELF:La1}, SELF:Lt1})
+               _PPBlockStack:Peek():Children:Add( XSourceBlock{XKeyword{SELF:La1}, SELF:Lt1})
             ENDIF
          CASE XSharpLexer.PP_INCLUDE
              var sb := StringBuilder{}
@@ -880,12 +880,12 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          if !XSharpLexer.IsKeyword(La1)
                 return FALSE
          endif
-            local xt as XToken
+            local xt as XKeyword
             LOCAL rule as XFormattingRule
             if XSharpLexer.IsKeyword(La2)
-                xt := XToken{SELF:La1, SELF:La2}
+                xt := XKeyword{SELF:La1, SELF:La2}
             else
-                xt := XToken{SELF:La1}
+                xt := XKeyword{SELF:La1}
             endif
             rule := XFormattingRule.GetStartRule(xt)
             if rule != null .and. rule:Flags:HasFlag(XFormattingFlags.Statement)
@@ -895,16 +895,16 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                    // or ADD/REMOVE blocks on a single line
                    if (_BlockStack:Count > 0)
                         var currentblock := _BlockStack:Peek()
-                        if xt:Kw1 == XKeyword.Set .or. xt:Kw1 == XKeyword.Get .or. xt:Kw1 == XKeyword.Init
+                        if xt:Kw1 == XTokenType.Set .or. xt:Kw1 == XTokenType.Get .or. xt:Kw1 == XTokenType.Init
 
-                            if currentblock:XToken:Kw1 == XKeyword.Set .or. ;
-                                currentblock:XToken:Kw1 == XKeyword.Get .or.;
-                                currentblock:XToken:Kw1 == XKeyword.Init
+                            if currentblock:XKeyword:Kw1 == XTokenType.Set .or. ;
+                                currentblock:XKeyword:Kw1 == XTokenType.Get .or.;
+                                currentblock:XKeyword:Kw1 == XTokenType.Init
                                 _BlockStack:Pop()
                             endif
-                        elseif xt:Kw1 == XKeyword.Add .or. xt:Kw1 == XKeyword.Remove
-                            if currentblock:XToken:Kw1 == XKeyword.Add .or. ;
-                                currentblock:XToken:Kw1 == XKeyword.Remove
+                        elseif xt:Kw1 == XTokenType.Add .or. xt:Kw1 == XTokenType.Remove
+                            if currentblock:XKeyword:Kw1 == XTokenType.Add .or. ;
+                                currentblock:XKeyword:Kw1 == XTokenType.Remove
                                 _BlockStack:Pop()
                             endif
                         endif
@@ -969,10 +969,10 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             ENDIF
             SELF:ReadLine()
             RETURN TRUE
-         elseif xt:Kw1 == XKeyword.End
+         elseif xt:Kw1 == XTokenType.End
              IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
                 var block := CurrentBlock
-                var start := block:XToken
+                var start := block:XKeyword
                 rule := XFormattingRule.GetStartRule(start)
                 if (rule != null .and. rule:Flags:HasFlag(XFormattingFlags.End))
                    CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})

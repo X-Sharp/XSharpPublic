@@ -14,7 +14,7 @@ USING System.Runtime.InteropServices
 // imported from XSharpLexer.tokens
 // Keep in Sync !
 BEGIN NAMESPACE XSharpModel
-    ENUM XKeyword AS SHORT
+    ENUM XTokenType AS SHORT
         MEMBER None := 0
         MEMBER @@First_keyword:= XSharpLexer.FIRST_KEYWORD
         MEMBER @@Access:= XSharpLexer.ACCESS
@@ -369,11 +369,6 @@ BEGIN NAMESPACE XSharpModel
         MEMBER @@Last:= XSharpLexer.LAST
     END ENUM
 
-    [Flags];
-    ENUM XKeywordType
-        MEMBER BlockStart := 1 << 0
-        MEMBER BlockEnd   := 1 << 1
-    END ENUM
 
     /// <summary>
     /// This structure with the size of an Int is used to store
@@ -381,43 +376,43 @@ BEGIN NAMESPACE XSharpModel
     /// for the formatting code
     /// </summary>
     [StructLayout(LayoutKind.Explicit, Size := 4)];
-    STRUCTURE XToken IMPLEMENTS IEquatable<XToken>, IEqualityComparer<XToken>
+    STRUCTURE XKeyword IMPLEMENTS IEquatable<XKeyword>, IEqualityComparer<XKeyword>
         [FieldOffset(0)];
-        PUBLIC INITONLY Kw1 as XKeyword
+        PUBLIC INITONLY Kw1 as XTokenType
         [FieldOffset(2)];
-        PUBLIC INITONLY Kw2 as XKeyword
+        PUBLIC INITONLY Kw2 as XTokenType
         [FieldOffset(0)];
         PRIVATE INITONLY _code as int
         PROPERTY IsEmpty  as LOGIC => _code == 0
-        PROPERTY IsBegin  as LOGIC => Kw1 == XKeyword.Begin
-        PROPERTY IsEnd    as LOGIC => Kw1 == XKeyword.End
-        PROPERTY IsSingle as LOGIC => Kw2 == XKeyword.None
+        PROPERTY IsBegin  as LOGIC => Kw1 == XTokenType.Begin
+        PROPERTY IsEnd    as LOGIC => Kw1 == XTokenType.End
+        PROPERTY IsSingle as LOGIC => Kw2 == XTokenType.None
 
         CONSTRUCTOR(kw1 as LONG, kw2 as LONG)
-            SELF( (XKeyword) kw1, (XKeyword) kw2)
-        CONSTRUCTOR(kw1 as XKeyword, kw2 as XKeyword)
+            SELF( (XTokenType) kw1, (XTokenType) kw2)
+        CONSTRUCTOR(kw1 as XTokenType, kw2 as XTokenType)
             _code := 0
             Kw1 := kw1
-            if kw2 == XKeyword.Var
-                kw2 := XKeyword.None
+            if kw2 == XTokenType.Var
+                kw2 := XTokenType.None
             endif
             Kw2 := kw2
         CONSTRUCTOR(kw1 as LONG)
-            SELF((XKeyword) kw1, XKeyword.None)
-        CONSTRUCTOR(kw1 as XKeyword)
-            SELF(kw1, XKeyword.None)
+            SELF((XTokenType) kw1, XTokenType.None)
+        CONSTRUCTOR(kw1 as XTokenType)
+            SELF(kw1, XTokenType.None)
         OVERRIDE METHOD ToString() AS STRING
-            IF Kw2 == XKeyword.None
+            IF Kw2 == XTokenType.None
                 RETURN Kw1:ToString()
             ENDIF
-            RETURN Kw1:ToString()+" "+Kw2:ToString()
-         METHOD Equals(x as XToken , y as XToken ) AS LOGIC
+            RETURN Kw1:ToString()+"_"+Kw2:ToString()
+         METHOD Equals(x as XKeyword , y as XKeyword ) AS LOGIC
              RETURN x:Equals(y)
 
-         METHOD Equals(other as XToken ) AS LOGIC
+         METHOD Equals(other as XKeyword ) AS LOGIC
              RETURN _code == other._code
 
-         METHOD GetHashCode(obj as XToken ) AS INT
+         METHOD GetHashCode(obj as XKeyword ) AS INT
               RETURN obj:_code
 
     END STRUCTURE
@@ -425,17 +420,4 @@ BEGIN NAMESPACE XSharpModel
 
 END NAMESPACE
 
-
-STATIC CLASS XKeywords
-
-    STATIC AllKeywords as IList<XToken>
-
-    STATIC CONSTRUCTOR()
-        var blockBegin := List<XToken>{};
-            { XToken{XKeyword.Begin, XKeyword.Sequence} , ;
-              XToken{XKeyword.Begin, XKeyword.Using}  }
-
-
-
-END CLASS
 

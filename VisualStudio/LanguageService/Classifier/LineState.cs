@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using XSharpModel;
-using System.Collections.Immutable;
 using Microsoft.VisualStudio.Text;
-using System.Collections.Concurrent;
 
 namespace XSharp.LanguageService
 {
@@ -26,77 +19,43 @@ namespace XSharp.LanguageService
     /// <summary>
     /// This class keeps the state for 0 based line numbers
     /// </summary>
-    public class XSharpLineState
+    internal class XSharpLineState: XSharpLineInfo<LineFlags>
     {
-        private ConcurrentDictionary<int, LineFlags> dict;
-        internal ITextSnapshot Snapshot { get; set; }
-        internal XSharpLineState(ITextSnapshot snapshot )
+        
+        internal XSharpLineState(ITextSnapshot snapshot) : base(snapshot)
         {
-            dict = new ConcurrentDictionary<int, LineFlags>();
-            Snapshot = snapshot;
+            
         }
         internal void SetFlags(int line, LineFlags flags)
         {
             lock (dict)
             {
-                if (dict.ContainsKey(line))
-                {
-                    dict[line] |= flags;
-                }
-                else
-                {
-                    dict.TryAdd(line, flags);
-                }
+                Set(line, Get(line) | flags);
             }
         }
-    
+
         internal bool IsComment(int line)
         {
-            var flags = GetFlags(line);
+            var flags = Get(line);
             return flags.HasFlag(LineFlags.SingleLineComments) ||
                 flags.HasFlag(LineFlags.MultiLineComments) ||
                 flags.HasFlag(LineFlags.DocComments);
         }
         internal void RemoveFlags(int line, LineFlags flags)
         {
-            lock(dict)
+            lock (dict)
             {
                 if (dict.ContainsKey(line))
                 {
-                    dict[line] &= ~flags;
+                    var oldflags = this.Get(line);
+                    Set(line, oldflags &= ~flags);
                 }
             }
         }
-        internal void Clear()
-        {
-            lock (dict)
-            {
-                dict.Clear();
-            }
-        }
-        internal LineFlags GetFlags(int line)
-        {
-            lock (dict)
-            {
-                if (dict.TryGetValue(line, out var flags))
-                {
-                    return flags;
-                }
-            }
-            return LineFlags.None;
-        }
-        /// <summary>
-        /// Return a clone of the Lines array.
-        /// </summary>
-        internal IDictionary<int, LineFlags> Lines
-        {
-            get
-            {
-                lock (dict)
-                {
-                    return dict.ToDictionary(entry => entry.Key, entry => entry.Value);
-                }
-            }
-        }
+
     }
+
+   
+
+   
 }

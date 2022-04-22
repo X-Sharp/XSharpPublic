@@ -52,6 +52,8 @@
     </Compile>
     <Compile Include="BraceCompletion\BraceCompletion.cs" />
     <Compile Include="BraceMatching\BraceMatching.cs" />
+    <Compile Include="Classifier\LineKeywords.cs" />
+    <Compile Include="Classifier\LineState.cs" />
     <Compile Include="Completion\CompletionHelpers.cs" />
     <Compile Include="Completion\CompletionState.cs" />
     <Compile Include="Completion\CompletionCommandHandler.cs" />
@@ -66,7 +68,7 @@
     <Compile Include="Completion\XSharpGlyphTools.cs" />
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
-    <Compile Include="Classifier\LineState.cs" />
+    <Compile Include="Classifier\LineInfo.cs" />
     <Compile Include="LightBulb\CommonAction.cs" />
     <Compile Include="LightBulb\CommonActionProvider.cs" />
     <Compile Include="LightBulb\ConstructorAction.cs" />

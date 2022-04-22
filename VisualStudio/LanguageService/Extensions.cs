@@ -58,7 +58,7 @@ namespace XSharp.LanguageService
             return file;
         }
 
-        public static XDocument GetDocument(this ITextBuffer buffer)
+        internal static XDocument GetDocument(this ITextBuffer buffer)
         {
             XDocument tokens;
             if (buffer.Properties.TryGetProperty(typeof(XDocument), out tokens))

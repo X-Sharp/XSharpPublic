@@ -8,7 +8,7 @@
 
 
 using XSharp.Internal
-using System.Reflection
+using System.Reflection 
 using System.Collections.Generic
 using System.Linq
 using System.Runtime.CompilerServices
@@ -955,7 +955,7 @@ internal static class OOPHelpers
                 return (string) uValue
             elseif uValue:IsObject .or. uValue:IsCodeblock
                 return (object) uValue
-            elseif uValue:IsPtr .and. toType == typeof(ptr)
+            elseif uValue:IsPtr .and. (toType == typeof(ptr) .or. toType:IsPointer)
                 return IntPtr{(ptr) uValue}
             else
                 // check to see if the source type contains an implicit converter

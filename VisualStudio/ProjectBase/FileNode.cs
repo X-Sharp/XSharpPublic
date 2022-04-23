@@ -420,9 +420,10 @@ namespace Microsoft.VisualStudio.Project
             }
 
             string fileName = Path.GetFileNameWithoutExtension(label);
-
+            string fileExt = Path.GetExtension(label);
             // If there is no filename or it starts with a leading dot issue an error message and quit.
-            if (String.IsNullOrEmpty(fileName) || fileName[0] == '.')
+
+            if ((string.IsNullOrEmpty(fileName) || fileName[0] == '.' ) && string.IsNullOrEmpty(fileExt))
             {
                 throw new InvalidOperationException(SR.GetString(SR.FileNameCannotContainALeadingPeriod, CultureInfo.CurrentUICulture));
             }

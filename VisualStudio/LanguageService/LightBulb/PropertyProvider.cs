@@ -177,13 +177,13 @@ namespace XSharp.LanguageService.Editors.LightBulb
             IList<XSharpToken> lineTokens = null;
             List<XSharpToken> fulllineTokens = new List<XSharpToken>();
             var lineNumber = line.LineNumber;
-            var lineState = linesState.GetFlags(lineNumber);
+            var lineState = linesState.Get(lineNumber);
             // Search the first line
             while (lineState == LineFlags.Continued)
             {
                 // Move back
                 lineNumber--;
-                lineState = linesState.GetFlags(lineNumber);
+                lineState = linesState.Get(lineNumber);
             }
             // It must be a SingleLineEntity
             if (lineState != LineFlags.SingleLineEntity)
@@ -196,7 +196,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             do
             {
                 lineNumber++;
-                lineState = linesState.GetFlags(lineNumber);
+                lineState = linesState.Get(lineNumber);
                 if (lineState == LineFlags.Continued)
                 {
                     xLines.TryGetValue(lineNumber, out lineTokens);

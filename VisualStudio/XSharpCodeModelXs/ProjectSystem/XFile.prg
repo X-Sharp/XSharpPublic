@@ -13,7 +13,7 @@ USING XSharpModel
 USING LanguageService.CodeAnalysis.XSharp
 USING STATIC XSharpModel.XFileTypeHelpers
 BEGIN NAMESPACE XSharpModel
-    DELEGATE FindMemberComparer (oElement AS XSourceEntity, nValue AS LONG ) AS LONG
+    //DELEGATE FindMemberComparer (oElement AS XSourceEntity, nValue AS LONG ) AS LONG
 
     [DebuggerDisplay("{FullPath,nq}")];
     CLASS XFile
@@ -23,6 +23,9 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _type			AS XFileType
         PRIVATE _typeList		AS XDictionary<STRING, XSourceTypeSymbol>
         PRIVATE _entityList	    AS SynchronizedCollection<XSourceEntity>
+        PRIVATE _lastEntity     as XSourceEntity
+        PRIVATE _lastLine       as LONG
+        PRIVATE _lastPos        as LONG
         PRIVATE _usings			AS SynchronizedCollection<STRING>
         PRIVATE _usingStatics	AS SynchronizedCollection<STRING>
         PRIVATE _project        AS XProject
@@ -83,94 +86,78 @@ BEGIN NAMESPACE XSharpModel
             ///
             ///
 
-        METHOD FindMember(oDel AS FindMemberComparer, nValue AS LONG) AS XSourceEntity
-            LOCAL oResult := NULL_OBJECT AS XSourceEntity
-            LOCAL oLast AS XSourceEntity
-            // perform binary search to speed up things
-            VAR current := 0
-            VAR bottom := 0
+
+        METHOD FindMemberAtRow(nLine AS LONG) AS XSourceEntity
             IF (_entityList == NULL_OBJECT)
                 RETURN NULL_OBJECT
             ENDIF
-            LOCAL entities  AS IList<XSourceEntity>
-            entities := SELF:_entityList:ToArray()
-            VAR top := entities:Count
-            oLast := entities:FirstOrDefault()
-            DO WHILE top - bottom > 1
-                // determine middle
-                current := (bottom + top) / 2
-                VAR oElement := entities[current]
-                VAR result := oDel(oElement, nValue)
-                IF result == 0 .and. oElement:Kind != Kind.Namespace
-                    // found
-                    RETURN oElement
-                ELSEIF result = 1 // element is after the search point
-                    top := current
-                ELSE		// element is before the search point
-                    oLast := oElement
-                    bottom := current
-                ENDIF
-            ENDDO
-            IF oResult == NULL
-                oResult := oLast	// the last entity we saw before the selected line
+            IF SELF:_lastEntity != NULL .and. SELF:_lastLine == nLine
+                //WriteOutputMessage(i"FindMemberAtRow {nLine} {_lastEntity}")
+                RETURN SELF:_lastEntity
             ENDIF
-            RETURN oResult
+            var entities := SELF:_entityList:Where( { e => e:IncludesLine(nLine)})
+            var result := entities:LastOrDefault()
+            if result == null_object .and. _entityList:Count > 0
+                var temp := _entityList:First()
+                if nLine < temp:Range:StartLine
+                    result := temp
+                else
+                    temp := _entityList:Last()
+                    if nLine > temp:Range:EndLine
+                        result := temp
+                        do while result:Parent is XSourceEntity var source .and. source:Range:EndLine >result:Range:EndLine
+                            result := source
+                        enddo
 
-        PRIVATE METHOD CompareByLine(oElement AS XSourceEntity, nLine AS LONG) AS LONG
-            LOCAL nResult AS LONG
-            LOCAL nStart, nEnd AS LONG
-            nStart := oElement:Range:StartLine
-            nEnd   := oElement:Range:EndLine
-            IF oElement IS XSourceTypeSymbol
-                VAR oType := oElement ASTYPE XSourceTypeSymbol
-                IF oType:Members:Count > 0 .AND. oType:Members[0] IS XSourceMemberSymbol VAR xmember
-                    nEnd := xmember:Range:StartLine-1
-                ENDIF
-            ENDIF
-            IF nStart <= nLine .AND. nEnd>= nLine
-                nResult := 0
-            ELSEIF nStart > nLine
-                nResult := 1
-            ELSE
-                nResult := -1
-            ENDIF
-            RETURN nResult
-
-        METHOD FindMemberAtRow(nLine AS LONG) AS XSourceEntity
-            RETURN SELF:FindMember(CompareByLine, nLine)
+                    endif
+                endif
+            endif
+            SELF:_lastEntity := result
+            SELF:_lastLine   := nLine
+            SELF:_lastPos    := -1
+            //WriteOutputMessage(i"FindMemberAtRow {nLine} {result}")
+            return result
 
             ///
             /// <Summary>Find member in file based on 0 based position</Summary>
             ///
             ///
-        PRIVATE METHOD CompareByPosition(oElement AS XSourceEntity, nPos AS LONG) AS LONG
-            LOCAL nResult AS LONG
-            LOCAL nStart, nEnd AS LONG
-            nStart := oElement:Interval:Start
-            nEnd   := oElement:Interval:Stop
-            IF oElement IS XSourceTypeSymbol
-                VAR oType := oElement ASTYPE XSourceTypeSymbol
-                IF oType:Members:Count > 0 .AND. oType:Members[0] IS XSourceMemberSymbol VAR xmember
-                    nEnd := xmember:Interval:Start-2
-                ENDIF
-            ENDIF
-            IF nStart <= nPos .AND. nEnd >= nPos
-                nResult := 0
-            ELSEIF nStart > nPos
-                nResult := 1
-            ELSE
-                nResult := -1
-            ENDIF
-            RETURN nResult
 
         METHOD FindMemberAtPosition(nPos AS LONG) AS XSourceEntity
-            RETURN SELF:FindMember(CompareByPosition, nPos)
+            IF (_entityList == NULL_OBJECT)
+                RETURN NULL_OBJECT
+            ENDIF
+            IF SELF:_lastEntity != NULL .and. nPos == SELF:_lastPos
+                RETURN SELF:_lastEntity
+            ENDIF
+
+            var entities := SELF:_entityList:Where( { e => e:IncludesPosition(nPos)})
+            var result := entities:LastOrDefault()
+            if result == null_object .and. _entityList:Count > 0
+                var temp := _entityList:First()
+                if nPos < temp:Interval:Start
+                    result := temp
+                else
+                    temp := _entityList:Last()
+                    if nPos > temp:Interval:Stop
+                        result := temp
+                        do while result:Parent is XSourceEntity var source .and. source:Interval:Stop >result:Interval:Stop
+                            result := source
+                        enddo
+                    endif
+                endif
+            endif
+            SELF:_lastEntity := result
+            SELF:_lastLine   := -1
+            SELF:_lastPos    := nPos
+            return result
 
 
         METHOD Clear() AS VOID
             SELF:_usings:Clear()
             SELF:_usingStatics:Clear()
             SELF:_entityList:Clear()
+            SELF:_lastEntity := NULL
             SELF:_typeList:Clear()
             SELF:AddDefaultUsings()
 
@@ -237,26 +224,15 @@ BEGIN NAMESPACE XSharpModel
             // Properties
         PROPERTY AllUsingStatics AS IList<STRING>
             GET
-
                 IF (! SELF:HasCode)
-
                     RETURN NULL
                 ENDIF
                 //WriteOutputMessage("-->> AllUsingStatics")
                 VAR statics := List<STRING>{}
                 statics:AddRange(SELF:_usingStatics)
-                IF SELF:Project != NULL .AND. SELF:Project:ProjectNode != NULL .AND. SELF:Project:ProjectNode:ParseOptions:HasRuntime
-
-                    FOREACH asm AS XAssembly IN SELF:Project:AssemblyReferences
-
-                        VAR globalclass := asm:GlobalClassName
-                        IF (! String.IsNullOrEmpty(globalclass))
-
-                            statics:AddUnique(globalclass)
-                        ENDIF
-                    NEXT
+                IF SELF:Project != NULL
+                    statics:AddRange(SELF:Project:AllUsingStatics)
                 ENDIF
-                //WriteOutputMessage("<<-- AllUsingStatics")
                 RETURN statics
             END GET
         END PROPERTY

@@ -177,7 +177,7 @@ BEGIN NAMESPACE XSharpModel
             IF SELF:ParseUsing()
                LOOP
             ENDIF
-            LOCAL startOfTrivia := -1 as LONG
+            LOCAL firstDocCommentToken := NULL AS XSharpToken
             SELF:ParseUdcTokens()
             aAttribs := SELF:ParseAttributes()
             VAR mods := SELF:ParseVisibilityAndModifiers()
@@ -188,7 +188,7 @@ BEGIN NAMESPACE XSharpModel
                   if first:HasTrivia
                      foreach Var triv in first:Trivia
                         if triv:Type == XSharpLexer.DOC_COMMENT
-                            startOfTrivia := triv:Line -1
+                            firstDocCommentToken := triv
                             EXIT
                         ENDIF
                      NEXT
@@ -210,7 +210,15 @@ BEGIN NAMESPACE XSharpModel
                SELF:_start := first
                VAR entities := SELF:ParseEntity(entityKind)
                IF entities != NULL
-
+                   if first:HasTrivia
+                        foreach t as XSharpToken in first:Trivia
+                            if firstDocCommentToken == NULL .or. t:Line < firstDocCommentToken:Line
+                                tokenBefore := t
+                            endif
+                        next
+                   elseif first:OriginalTokenIndex > 0
+                        tokenBefore := (XSharpToken)_tokens[first:OriginalTokenIndex-1]
+                   endif
                   FOREACH VAR entity IN entities
                      IF entity == NULL
                         LOOP
@@ -218,18 +226,27 @@ BEGIN NAMESPACE XSharpModel
                      entity:File := _file
                      IF _hasXmlDoc
                         entity:XmlComments   := cXmlDoc
-                        entity:StartOfXmlComments := startOfTrivia
-                         if entity:Kind == Kind.Delegate .and. entity is XSourceTypeSymbol var xtype
+                        if firstDocCommentToken != null
+                            entity:StartOfXmlComments := firstDocCommentToken:Line
+                            entity:Range := entity:Range:WithStart(firstDocCommentToken)
+                        endif
+                        if entity:Kind == Kind.Delegate .and. entity is XSourceTypeSymbol var xtype
                             var invoke := xtype:XMembers:First()
                             invoke:XmlComments := cXmlDoc
-                            invoke:StartOfXmlComments :=startOfTrivia
-                         endif
+                            if firstDocCommentToken != null
+                                invoke:StartOfXmlComments := firstDocCommentToken:Line
+                                invoke:Range := invoke:Range:WithStart(firstDocCommentToken)
+                            endif
+                        endif
                      ENDIF
                      IF aAttribs?:Count > 0
                         entity:CustomAttributes := TokensAsString(aAttribs)
                      ENDIF
                      VAR lastEntity := _EntityList:LastOrDefault()
                      IF lastEntity != NULL
+                        if lastEntity:Kind:IsLocal()
+                            lastEntity := lastEntity:Parent astype XSourceEntity
+                        endif
                         lastEntity:Range       := lastEntity:Range:WithEnd(tokenBefore)
                         lastEntity:Interval    := lastEntity:Interval:WithEnd(tokenBefore)
                      ENDIF
@@ -246,14 +263,16 @@ BEGIN NAMESPACE XSharpModel
                             mustPop := FALSE
                          ELSE
                             mustPop := TRUE
-                         ENDIF
+                            ENDIF
+                     ELSEIF entity:Kind:IsLocal()
+                        mustPop := FALSE
                      ELSEIF isMember
                         IF canAddMembers
                             mustPop := FALSE
                         ELSE
                             mustPop := TRUE
                         ENDIF
-                     ELSEIF CurrentEntityKind:HasBody() .and. entity:Kind:IsLocal()
+                     ELSEIF CurrentEntityKind:HasBody()
                         mustPop := FALSE
                      ELSE
                         mustPop := TRUE
@@ -304,7 +323,9 @@ BEGIN NAMESPACE XSharpModel
                   top:Range       := top:Range:WithEnd(SELF:Lt2)
                   top:Interval    := top:Interval:WithEnd(SELF:Lt2)
                   EXIT
-               ENDDO
+                ENDDO
+                // CLear all blocks at the end of the entity
+                _BlockStack:Clear()
                SELF:ReadLine()
             ELSEIF aAttribs:Count > 0 .AND. La1 == XSharpLexer.EOS
                 // Add Attribute
@@ -393,7 +414,7 @@ BEGIN NAMESPACE XSharpModel
              SELF:_globalType:AddMember(xmember)
          ENDIF
          IF ! lLocals
-	         _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
+             _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
              IF SELF:SaveToDisk
                 _file:SaveToDatabase()
              ENDIF
@@ -427,20 +448,23 @@ BEGIN NAMESPACE XSharpModel
          CASE XSharpLexer.PP_REGION
          CASE XSharpLexer.PP_IFDEF
          CASE XSharpLexer.PP_IFNDEF
-            VAR block := XSourceBlock{ SELF:Lt1, SELF:Lt2}
+         CASE XSharpLexer.PP_IF
+         CASE XSharpLexer.PP_TEXT
+            VAR block := XSourceBlock{ XKeyword{SELF:La1}, SELF:Lt1}
             _BlockList:Add(block)
             _PPBlockStack:Push(block)
          CASE XSharpLexer.PP_ENDREGION
+         CASE XSharpLexer.PP_ENDTEXT
          CASE XSharpLexer.PP_ENDIF
                // end
             IF _PPBlockStack:Count > 0
-               _PPBlockStack:Peek():Children:Add( XSourceBlock{SELF:Lt1,SELF:Lt2})
+               _PPBlockStack:Peek():Children:Add( XSourceBlock{XKeyword{SELF:La1}, SELF:Lt1})
                _PPBlockStack:Pop()
             ENDIF
          CASE XSharpLexer.PP_ELSE
                // middle
             IF _PPBlockStack:Count > 0
-               _PPBlockStack:Peek():Children:Add( XSourceBlock{SELF:Lt1,SELF:Lt2})
+               _PPBlockStack:Peek():Children:Add( XSourceBlock{XKeyword{SELF:La1}, SELF:Lt1})
             ENDIF
          CASE XSharpLexer.PP_INCLUDE
              var sb := StringBuilder{}
@@ -590,41 +614,6 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          RETURN tokens
 
 
-      PRIVATE METHOD IsModifier(num AS LONG) AS LOGIC
-            SWITCH num
-               // Visibility Alphabetical
-            CASE XSharpLexer.EXPORT
-            CASE XSharpLexer.HIDDEN
-            CASE XSharpLexer.INTERNAL
-            CASE XSharpLexer.PRIVATE
-            CASE XSharpLexer.PROTECTED
-            CASE XSharpLexer.PUBLIC
-
-            // Real modifiers Alphabetical
-            CASE XSharpLexer.ABSTRACT
-            CASE XSharpLexer.ASYNC
-            CASE XSharpLexer.CONST
-            CASE XSharpLexer.EXTERN
-            CASE XSharpLexer.INITONLY
-            CASE XSharpLexer.INSTANCE
-            CASE XSharpLexer.NEW
-            CASE XSharpLexer.OVERRIDE
-            CASE XSharpLexer.PARTIAL
-            CASE XSharpLexer.SEALED
-            CASE XSharpLexer.STATIC
-            CASE XSharpLexer.UNSAFE
-            CASE XSharpLexer.VIRTUAL
-            CASE XSharpLexer.VOLATILE
-
-            // XPP modifiers
-            CASE XSharpLexer.DEFERRED
-            CASE XSharpLexer.FINAL
-            CASE XSharpLexer.FREEZE
-            CASE XSharpLexer.INTRODUCE
-            CASE XSharpLexer.SYNC
-               RETURN TRUE
-            END SWITCH
-         RETURN FALSE
       PRIVATE METHOD ParseVisibilityAndModifiers() AS   Modifiers
          VAR result := Modifiers.None
          DO WHILE ! SELF:Eos()
@@ -711,7 +700,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             ENDIF
          CASE XSharpLexer.CLASS
             IF SELF:InXppClass
-               IF SELF:La2 == XSharpLexer.METHOD  .OR. SELF:IsModifier(SELF:La2)   // XPP has CLASS METHOD = a static method
+               IF SELF:La2 == XSharpLexer.METHOD  .OR. XSharpLexer.IsModifier(SELF:La2)   // XPP has CLASS METHOD = a static method
                   entityKind := Kind.Method
                ELSEIF SELF:La2 == XSharpLexer.VAR                                  // CLASS VAR for XPP
                   entityKind := Kind.Field
@@ -885,156 +874,114 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
       PRIVATE METHOD ParseBlock() AS LOGIC
          // Adds, updates or removes block token on the block tokens stack
          // Start of block is also added to the _BlockList
-         LOCAL nStart  := 0 AS LONG
-         LOCAL nMiddle := 0 AS LONG
-         LOCAL nEnd    := 0 AS LONG
          SELF:ParseUdcTokens()  // Read UDC tokens on the current line
-         SWITCH SELF:La1
-         CASE XSharpLexer.BEGIN
-            SWITCH SELF:La2
-            // tokens in the same order as the rules inside xsharp.g4
-            CASE XSharpLexer.SEQUENCE
-            CASE XSharpLexer.LOCK
-            CASE XSharpLexer.SCOPE
-            CASE XSharpLexer.SWITCH
-            CASE XSharpLexer.USING
-            CASE XSharpLexer.UNSAFE
-            CASE XSharpLexer.CHECKED
-            CASE XSharpLexer.UNCHECKED
-            CASE XSharpLexer.FIXED
-               nStart := 2
-            END SWITCH
 
-         CASE XSharpLexer.DO
-            SWITCH SELF:La2
-               CASE XSharpLexer.WHILE
-               CASE XSharpLexer.CASE
-               CASE XSharpLexer.SWITCH
-               nStart := 2
-            END SWITCH
 
-            CASE XSharpLexer.IF
-            CASE XSharpLexer.FOR
-            CASE XSharpLexer.FOREACH
-            CASE XSharpLexer.REPEAT
-            CASE XSharpLexer.TRY
-            CASE XSharpLexer.WITH
-            CASE XSharpLexer.TEXT
-            CASE XSharpLexer.SWITCH
-            CASE XSharpLexer.GET
-            CASE XSharpLexer.SET
-            CASE XSharpLexer.ADD
-            CASE XSharpLexer.REMOVE
-               nStart := 1
-            // Middle of a block
-         CASE XSharpLexer.CASE
-         CASE XSharpLexer.OTHERWISE
-         CASE XSharpLexer.ELSEIF
-         CASE XSharpLexer.ELSE
-         CASE XSharpLexer.CATCH
-         CASE XSharpLexer.FINALLY
-            nMiddle := 1
-         CASE XSharpLexer.RECOVER
-            IF SELF:La2 == XSharpLexer.USING
-               nMiddle := 2
-            ENDIF
-            // End of a block
-         CASE XSharpLexer.ENDCASE
-         CASE XSharpLexer.ENDDO
-         CASE XSharpLexer.ENDIF
-         CASE XSharpLexer.NEXT      // Also covers ENDFOR
-         CASE XSharpLexer.UNTIL
-            nEnd := 1
-         CASE XSharpLexer.END
-               SWITCH SELF:La2
-               // tokens in the same order as the rules inside xsharp.g4
-               CASE XSharpLexer.SEQUENCE
-               CASE XSharpLexer.LOCK
-               CASE XSharpLexer.SCOPE
-               CASE XSharpLexer.SWITCH
-               CASE XSharpLexer.USING
-               CASE XSharpLexer.UNSAFE
-               CASE XSharpLexer.CHECKED
-               CASE XSharpLexer.UNCHECKED
-               CASE XSharpLexer.FIXED
-               CASE XSharpLexer.TRY
-               CASE XSharpLexer.WITH
+         if !XSharpLexer.IsKeyword(La1)
+                return FALSE
+         endif
+            local xt as XKeyword
+            LOCAL rule as XFormattingRule
+            if XSharpLexer.IsKeyword(La2)
+                xt := XKeyword{SELF:La1, SELF:La2}
+            else
+                xt := XKeyword{SELF:La1}
+            endif
+            rule := XFormattingRule.GetStartRule(xt)
+            if rule != null .and. rule:Flags:HasFlag(XFormattingFlags.Statement)
+               IF SELF:_collectBlocks
+                   VAR block := XSourceBlock{ xt, SELF:Lt1}
+                   // check for GET SET INIT blocks on a single line
+                   // or ADD/REMOVE blocks on a single line
+                   if (_BlockStack:Count > 0)
+                        var currentblock := _BlockStack:Peek()
+                        if xt:Kw1 == XTokenType.Set .or. xt:Kw1 == XTokenType.Get .or. xt:Kw1 == XTokenType.Init
 
-               CASE XSharpLexer.GET        // Accessors
-               CASE XSharpLexer.SET
-               CASE XSharpLexer.ADD
-               CASE XSharpLexer.REMOVE
-                     nEnd := 2
-
-               CASE XSharpLexer.EOS        // End without following keyword is usually also allowed
-                  nEnd := 1
-                END SWITCH
-         END SWITCH
-         IF nStart > 0
-            IF SELF:_collectBlocks
-               VAR block := XSourceBlock{ SELF:Lt1, IIF(nStart == 1, SELF:Lt1, SELF:Lt2)}
-               _BlockList:Add(block)
-               _BlockStack:Push(block)
-            ENDIF
-            IF SELF:_collectLocals
-              IF SELF:La1 == XSharpLexer.SET .OR. SELF:La1 == XSharpLexer.REMOVE .OR. SELF:La1 == XSharpLexer.ADD
-                  // Add value token inside accessors
-                  VAR id := "Value"
-                  VAR strType := SELF:CurrentEntity:TypeName
-                  VAR start := SELF:Lt1
-                  VAR stop  := SELF:Lt2
-                  SELF:GetSourceInfo(start, stop, OUT VAR range, OUT VAR interval, OUT VAR _)
-                  VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
-
-                  SELF:_locals:Add(xVar)
-               ENDIF
-               IF SELF:La1 == XSharpLexer.IF
-                  SELF:ParseForLocals()
-               ELSE
-                  SELF:ParseForLocalDeclaration()
-               ENDIF
-            ELSE
-               SELF:ReadLine()
-            ENDIF
-            RETURN TRUE
-         ELSEIF nMiddle > 0
-            // Do something
-            IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
-               CurrentBlock:Children:Add( XSourceBlock{SELF:Lt1,IIF(nMiddle == 1, SELF:Lt1, SELF:Lt2)})
-            ENDIF
-            SWITCH SELF:La1
-            CASE XSharpLexer.CATCH
-               IF SELF:_collectLocals
-                  IF SELF:IsId(SELF:La2)
-                     SELF:Consume()
-                     VAR start   := SELF:Lt1
-                     VAR id      := SELF:ParseIdentifier()
-                     VAR strType := "System.Exception"
-                     IF SELF:La1 == XSharpLexer.AS
-                         strType := SELF:ParseDataType(FALSE)
-                     ENDIF
-
-                     SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
-                     VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
-                     SELF:_locals:Add(xVar)
-                  ENDIF
-               ENDIF
-            CASE XSharpLexer.ELSEIF
-            CASE XSharpLexer.CASE
-                IF SELF:_collectLocals
-                     SELF:ParseForLocals()
+                            if currentblock:XKeyword:Kw1 == XTokenType.Set .or. ;
+                                currentblock:XKeyword:Kw1 == XTokenType.Get .or.;
+                                currentblock:XKeyword:Kw1 == XTokenType.Init
+                                _BlockStack:Pop()
+                            endif
+                        elseif xt:Kw1 == XTokenType.Add .or. xt:Kw1 == XTokenType.Remove
+                            if currentblock:XKeyword:Kw1 == XTokenType.Add .or. ;
+                                currentblock:XKeyword:Kw1 == XTokenType.Remove
+                                _BlockStack:Pop()
+                            endif
+                        endif
+                   endif
+                   _BlockList:Add(block)
+                   _BlockStack:Push(block)
                 ENDIF
-            END SWITCH
-            SELF:ReadLine()
-            RETURN TRUE
-         ELSEIF nEnd > 0
+                IF SELF:_collectLocals
+                    IF SELF:La1 == XSharpLexer.SET .OR. SELF:La1 == XSharpLexer.REMOVE .OR. SELF:La1 == XSharpLexer.ADD
+                      // Add value token inside accessors
+                      VAR id := "Value"
+                      VAR strType := SELF:CurrentEntity:TypeName
+                      VAR start := SELF:Lt1
+                      VAR stop  := SELF:Lt2
+                      SELF:GetSourceInfo(start, stop, OUT VAR range, OUT VAR interval, OUT VAR _)
+                      VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
+
+                      SELF:_locals:Add(xVar)
+                   ENDIF
+                   IF SELF:La1 == XSharpLexer.IF
+                      SELF:ParseForLocals()
+                   ELSE
+                      SELF:ParseForLocalDeclaration()
+                   ENDIF
+                ELSE
+                   SELF:ReadLine()
+                ENDIF
+                RETURN TRUE
+            elseif XFormattingRule.IsMiddleKeyword(xt)
+               IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
+                   CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
+               ENDIF
+               SWITCH SELF:La1
+                CASE XSharpLexer.CATCH
+                   IF SELF:_collectLocals
+                      IF SELF:IsId(SELF:La2)
+                         SELF:Consume()
+                         VAR start   := SELF:Lt1
+                         VAR id      := SELF:ParseIdentifier()
+                         VAR strType := "System.Exception"
+                         IF SELF:La1 == XSharpLexer.AS
+                             strType := SELF:ParseDataType(FALSE)
+                         ENDIF
+
+                         SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
+                         VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
+                         SELF:_locals:Add(xVar)
+                      ENDIF
+                   ENDIF
+                CASE XSharpLexer.ELSEIF
+                CASE XSharpLexer.CASE
+                    IF SELF:_collectLocals
+                         SELF:ParseForLocals()
+                    ENDIF
+                END SWITCH
+                SELF:ReadLine()
+                return TRUE
+          elseif XFormattingRule.IsEndKeyword(xt)
             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
-               CurrentBlock:Children:Add( XSourceBlock{SELF:Lt1,IIF(nEnd == 1, SELF:Lt1, SELF:Lt2)})
+               CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
                _BlockStack:Pop()
             ENDIF
             SELF:ReadLine()
             RETURN TRUE
-         ENDIF
+         elseif xt:Kw1 == XTokenType.End
+             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
+                var block := CurrentBlock
+                var start := block:XKeyword
+                rule := XFormattingRule.GetStartRule(start)
+                if (rule != null .and. rule:Flags:HasFlag(XFormattingFlags.End))
+                   CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
+                   _BlockStack:Pop()
+                endif
+            ENDIF
+            SELF:ReadLine()
+         endif
+
          RETURN FALSE
 
 
@@ -1354,7 +1301,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                   RETURN TRUE
                ELSEIF iLa == XSharpLexer.INLINE // Does not occurs in normal class definition
                   RETURN TRUE
-               ELSEIF SELF:IsModifier(iLa) .AND. SELF:La(iCurrent+1) == XSharpLexer.COLON
+               ELSEIF XSharpLexer.IsModifier(iLa) .AND. SELF:La(iCurrent+1) == XSharpLexer.COLON
                   // visibility clause
                   RETURN TRUE
                ELSEIF iLa == XSharpLexer.END .AND. SELF:La(iCurrent+1) == XSharpLexer.CLASS

@@ -17,6 +17,7 @@ using MSBuildExecution = Microsoft.Build.Execution;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using XSharpModel;
+using Community.VisualStudio.Toolkit;
 
 namespace XSharp.Project
 {
@@ -139,6 +140,20 @@ namespace XSharp.Project
                 else
                 {
                     info.fSendStdoutToOutputWindow = 0;
+                }
+
+                if (String.IsNullOrEmpty(info.bstrRemoteMachine))
+                {
+                    if (!File.Exists(info.bstrExe))
+                    {
+                        VS.MessageBox.ShowError($"The program does not exist: '{info.bstrExe}'.");
+                        return VSConstants.S_FALSE;
+                    }
+                    if (!Directory.Exists(info.bstrCurDir))
+                    {
+                        VS.MessageBox.ShowError($"The working directory does not exist: '{info.bstrCurDir}'.");
+                        return VSConstants.S_FALSE;
+                    }
                 }
 
 

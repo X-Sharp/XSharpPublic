@@ -372,14 +372,20 @@ namespace XSharp.LanguageService
             if (type.HasEnumerator())
             {
                 var member = type.GetMembers("GetEnumerator").FirstOrDefault();
-                var enumtype = SearchType(location, member.OriginalTypeName).FirstOrDefault();
-                var current = enumtype.GetProperties("Current").FirstOrDefault();
-                elementType = current?.OriginalTypeName;
-                if (type.IsGeneric)
+                if (member != null)
                 {
-                    var p = location.FindType(elementType);
-                    if (p != null)
-                        return p;
+                    var enumtype = SearchType(location, member.OriginalTypeName).FirstOrDefault();
+                    if (enumtype != null)
+                    {
+                        var current = enumtype.GetProperties("Current").FirstOrDefault();
+                        elementType = current?.OriginalTypeName;
+                        if (type.IsGeneric)
+                        {
+                            var p = location.FindType(elementType);
+                            if (p != null)
+                                return p;
+                        }
+                    }
                 }
             }
             return null;
@@ -692,7 +698,7 @@ namespace XSharp.LanguageService
                 if (isId)
                 {
                     qualifiedName = list.La1 == XSharpLexer.DOT;
-                    findMethod = list.La1 == XSharpLexer.LPAREN;
+                    findMethod = list.La1 == XSharpLexer.LPAREN && ! isType;        // DWORD( is a cast and not a method call
                     findConstructor = list.La1 == XSharpLexer.LCURLY;
                     if (state.HasFlag(CompletionState.StaticMembers) && !findMethod && result.Count == 0)
                     {

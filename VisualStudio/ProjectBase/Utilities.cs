@@ -1024,9 +1024,10 @@ namespace Microsoft.VisualStudio.Project
                 // We cannot use GetFileNameWithoutExtension because it might be that for example (..\\filename.txt) is passed in asnd that should fail, since that is not a valid filename.
                 fileNameToVerify = filePart.Substring(0, filePart.Length - extension.Length);
 
-                if (String.IsNullOrEmpty(fileNameToVerify))
+                if (string.IsNullOrEmpty(fileNameToVerify) )
                 {
-                    return true;
+                    // file names like .editorconfig are only an extension and no name
+                    return false;
                 }
             }
 

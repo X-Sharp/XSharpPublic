@@ -1,6 +1,6 @@
 ﻿begin namespace $safeprojectname$
 
-    partial class Form1 
+    partial class Form1
 
         /// <summary>
         /// Required designer variable.
@@ -11,7 +11,7 @@
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected method Dispose(disposing as logic) as void  STRICT
+        protected override method Dispose(disposing as logic) as void  STRICT
 
             if (disposing .AND. (components != null))
                 components:Dispose()

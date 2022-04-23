@@ -27,7 +27,7 @@ begin namespace $rootnamespace$
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected method Dispose(disposing as logic) as void strict
+        protected override method Dispose(disposing as logic) as void strict
 
             if (disposing .and. (components != null))
                 components:Dispose()

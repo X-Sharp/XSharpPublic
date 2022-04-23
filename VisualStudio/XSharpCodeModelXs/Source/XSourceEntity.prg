@@ -44,6 +44,12 @@ BEGIN NAMESPACE XSharpModel
          SUPER(name, kind, attributes, range, interval)
          SELF:Dialect := XSharpDialect.Core
 
+      METHOD IncludesLine(nLine as LONG ) AS LOGIC
+        RETURN SELF:Range:StartLine <= nLine .and. SELF:Range:EndLine >= nLine
+
+      METHOD IncludesPosition(nPos as LONG ) AS LOGIC
+        RETURN SELF:Interval:Start <= nPos .and. SELF:Interval:Stop >= nPos
+
       METHOD ForceComplete() AS VOID
          LOCAL parentName AS STRING
          LOCAL thisName AS STRING
@@ -70,7 +76,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
 
 
-         #region Complexer properties
+#region Complexer properties
          // Properties
 
          PROPERTY Description AS STRING

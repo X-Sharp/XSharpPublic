@@ -228,7 +228,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             IList<XSharpToken> lineTokens = null;
             List<XSharpToken> fulllineTokens = new List<XSharpToken>();
             var lineNumber = SearchRealStartLine();
-            var lineState = linesState.GetFlags(lineNumber);
+            var lineState = linesState.Get(lineNumber);
             // It must be a EntityStart
             if (lineState != LineFlags.EntityStart)
                 return false;
@@ -240,7 +240,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             do
             {
                 lineNumber++;
-                lineState = linesState.GetFlags(lineNumber);
+                lineState = linesState.Get(lineNumber);
                 if (lineState == LineFlags.Continued)
                 {
                     xLines.TryGetValue(lineNumber, out lineTokens);

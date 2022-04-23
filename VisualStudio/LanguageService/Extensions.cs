@@ -58,7 +58,7 @@ namespace XSharp.LanguageService
             return file;
         }
 
-        public static XDocument GetDocument(this ITextBuffer buffer)
+        internal static XDocument GetDocument(this ITextBuffer buffer)
         {
             XDocument tokens;
             if (buffer.Properties.TryGetProperty(typeof(XDocument), out tokens))
@@ -166,7 +166,7 @@ namespace XSharp.LanguageService
             string currentNS = "";
             if (ns != null)
                 currentNS = ns.FullName;
-            var location = new XSharpSearchLocation(file, member, snapshot, line, point, currentNS);
+            var location = new XSharpSearchLocation(buffer.GetDocument(), file, member, snapshot, line, point, currentNS);
             return location;
         }
 

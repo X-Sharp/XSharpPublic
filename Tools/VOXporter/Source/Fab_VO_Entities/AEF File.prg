@@ -5,7 +5,7 @@
 //
 
 USING System.IO
-using FabToolsNS
+USING FabToolsNS
 
 BEGIN NAMESPACE Fab_VO_Entities
 
@@ -40,6 +40,7 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 
 	EXPORT lOptionIntegerDivisions AS LOGIC
 	EXPORT lOptionOverflow AS LOGIC
+	EXPORT lOptionUndeclaredVariables AS LOGIC
 
 
     DESTRUCTOR()
@@ -346,13 +347,13 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 				    	br:ReadInt32()
 				    	br:ReadInt32()
 				    	br:ReadInt32()
-				    	/*? "typeinfer" , */br:ReadInt32()
+				    	br:ReadInt32() // typeinfer
 				    	br:ReadInt32()
 				    	br:ReadInt32()
-				    	br:ReadInt32()
-				    	/*? */SELF:lOptionIntegerDivisions := br:ReadInt32() == 1
-				    	/*? "range" , */br:ReadInt32()
-				    	/*? "overflow" , */SELF:lOptionOverflow := br:ReadInt32() == 1
+				    	SELF:lOptionUndeclaredVariables := br:ReadInt32() == 1
+				    	SELF:lOptionIntegerDivisions := br:ReadInt32() == 1
+				    	br:ReadInt32() // range check
+				    	SELF:lOptionOverflow := br:ReadInt32() == 1
 					ENDIF
 
 			    CASE SELF:oRecHeader:uiType == FabVODefinitions.APPNAME

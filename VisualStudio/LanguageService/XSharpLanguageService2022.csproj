@@ -55,6 +55,8 @@
     <Compile Include="Classifier\ClassificationDefinitions.cs" />
     <Compile Include="Classifier\ColorizerConstants.cs" />
     <Compile Include="Classifier\EditorFormats.cs" />
+    <Compile Include="Classifier\LineInfo.cs" />
+    <Compile Include="Classifier\LineKeywords.cs" />
     <Compile Include="Classifier\LineState.cs" />
     <Compile Include="Classifier\XSharpClassifier.cs" />
     <Compile Include="Classifier\XSharpClassifierProvider.cs" />
@@ -66,9 +68,6 @@
     <Compile Include="Completion\XSharpCompletionSourceProvider.cs" />
     <Compile Include="Completion\XSharpAsyncCompletionSource.cs" />
     <Compile Include="Completion\XSharpAsyncCompletionSourceProvider.cs" />
-    <Compile Include="Formatting\FormattingRule.cs" />
-    <Compile Include="Formatting\XToken.cs" />
-    <Compile Include="Formatting\FormattingKeywords.cs" />
     <Compile Include="Formatting\EditorConfigSettings.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
@@ -121,6 +120,15 @@
     <Compile Include="LightBulb\CreateStubProvider.cs" />
     <Compile Include="LightBulb\ImplementInterfaceAction.cs" />
     <Compile Include="LightBulb\ImplementInterfaceProvider.cs" />
+    <Compile Include="OptionsPages\CompletionOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\CompletionOptionsControl.Designer.cs">
+      <DependentUpon>CompletionOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionsPages\CompletionOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="OptionsPages\IndentingOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -228,6 +236,9 @@
   <ItemGroup>
     <EmbeddedResource Include="LightBulb\CtorParamsDlg.resx">
       <DependentUpon>CtorParamsDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsPages\CompletionOptionsControl.resx">
+      <DependentUpon>CompletionOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\IndentingOptionsControl.resx">
       <DependentUpon>IndentingOptionsControl.cs</DependentUpon>

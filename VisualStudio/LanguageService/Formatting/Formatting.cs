@@ -20,10 +20,10 @@ namespace XSharp.LanguageService
 
         private static IList<XKeyword> _indentKeywords;
         private static IList<XKeyword> _memberKeywords;
-        private static IReadOnlyDictionary<XKeyword, XKeyword> _middleKeywords;
+        private static IReadOnlyDictionary<XKeyword, XKeyword> _singleMiddleKeywords;
         private static IList<XKeyword> _allowEndToken;
         private static IReadOnlyDictionary<XKeyword, XKeyword> _endKeywords;
-        private static IReadOnlyDictionary<XKeyword, IList<XKeyword>> _specialKeywords;
+        private static IReadOnlyDictionary<XKeyword, IList<XKeyword>> _multiMiddleKeywords;
         //private static string[] _xtraKeywords;
         #endregion
         
@@ -31,8 +31,8 @@ namespace XSharp.LanguageService
         private static void GetKeywords()
         {
             _memberKeywords = XFormattingRule.MemberKeywords();
-            _middleKeywords = XFormattingRule.MiddleKeywords();
-            _specialKeywords = XFormattingRule.SpecialMiddleKeywords();
+            _singleMiddleKeywords = XFormattingRule.SingleMiddleKeywords();
+            _multiMiddleKeywords = XFormattingRule.MultiMiddleKeywords();
             _endKeywords = XFormattingRule.EndKeywords();
             _allowEndToken = XFormattingRule.AllowEndKeywords();
             _indentKeywords = XFormattingRule.IndentKeywords();
@@ -40,14 +40,14 @@ namespace XSharp.LanguageService
 
 
 
-        private static XKeyword SearchMiddleKeyword(XKeyword keyword, out bool isMiddle)
+        private static XKeyword SearchMiddleOrEndKeyword(XKeyword keyword, out bool isMiddle)
         {
             keyword = XFormattingRule.TranslateToken(keyword);
             isMiddle = false;
-            if (_middleKeywords.ContainsKey(keyword))
+            if (_singleMiddleKeywords.ContainsKey(keyword))
             {
                 isMiddle = true;
-                return _middleKeywords[keyword];
+                return _singleMiddleKeywords[keyword];
             }
             if (_endKeywords.ContainsKey(keyword))
             {
@@ -62,9 +62,9 @@ namespace XSharp.LanguageService
         private IList<XKeyword> SearchSpecialMiddleKeyword(XKeyword keyword)
         {
             keyword = XFormattingRule.TranslateToken(keyword);
-            if (_specialKeywords.ContainsKey(keyword))
+            if (_multiMiddleKeywords.ContainsKey(keyword))
             {
-                return _specialKeywords[keyword];
+                return _multiMiddleKeywords[keyword];
             }
             if (keyword.IsEnd)
             {
@@ -1692,7 +1692,7 @@ namespace XSharp.LanguageService
                         {
                             // this matches ELSE with IF but also ENDIF with IF and END IF with IF
                             // isMiddle indicates if the next line needs to be indented or not
-                            XKeyword startToken = SearchMiddleKeyword(keyword, out var isMiddle);
+                            XKeyword startToken = SearchMiddleOrEndKeyword(keyword, out var isMiddle);
                             int outdentValue = -1;
                             if (!startToken.IsEmpty)
                             {
@@ -1703,6 +1703,7 @@ namespace XSharp.LanguageService
                             else
                             {
                                 // This is a keyword that has multiple possible first keywords
+                                // such as CASE, OTHERWISE, CATCH, FINALLY
                                 var startTokens = SearchSpecialMiddleKeyword(keyword);
                                 if (startTokens != null)
                                 {
@@ -1797,9 +1798,19 @@ namespace XSharp.LanguageService
                         {
                             indentValue = GetIndentTokenLength(token);
                             index++;
+                            if (index < tokens.Count)
+                            {
+                                token = tokens[index];
+                            }
+                            else
+                            {
+                                return -1;
+                            }
+
                         }
-                        if (tokens.Count > index)
+                        while (XSharpLexer.IsModifier(token.Type) && index < tokens.Count-2)
                         {
+                            index+=2;
                             token = tokens[index];
                         }
                         //
@@ -1810,15 +1821,9 @@ namespace XSharp.LanguageService
                         if (index < tokens.Count - 2)
                         {
                             var token2 = tokens[index + 2];
-                            if (token.Type == XSharpLexer.DO)
-                            {
-                                // must be followed by whitespace and another token
-                                if (tokens.Count > index && XSharpLexer.IsKeyword(token2.Type))
-                                {
-                                    currentKeyword = new XKeyword(token.Type, token2.Type);
-                                }
-                            }
-                            else if (token.Type == XSharpLexer.BEGIN)
+                            // we are looking for start tokens
+                            // so END is not included here
+                            if (token.Type == XSharpLexer.DO || token.Type == XSharpLexer.BEGIN )
                             {
                                 // must be followed by whitespace and another token
                                 if (tokens.Count > index && XSharpLexer.IsKeyword(token2.Type))

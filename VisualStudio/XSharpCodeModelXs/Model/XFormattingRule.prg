@@ -212,9 +212,9 @@ BEGIN NAMESPACE XSharpModel
 
         #endregion
 
-        public PROPERTY Start as XKeyword GET PRIVATE SET
-        public PROPERTY Stop  as XKeyword GET PRIVATE SET
-        public property Flags as XFormattingFlags GET PRIVATE SET
+        public PROPERTY Start as XKeyword AUTO GET PRIVATE SET
+        public PROPERTY Stop  as XKeyword AUTO GET PRIVATE SET
+        public property Flags as XFormattingFlags AUTO GET PRIVATE SET
 
 
 
@@ -442,7 +442,7 @@ BEGIN NAMESPACE XSharpModel
         /// Return all the middle tokens that can map a single start token
         /// </summary>
         /// <returns>List of tokens</returns>
-        PUBLIC STATIC METHOD MiddleKeywords() as IReadOnlyDictionary<XKeyword, XKeyword>
+        PUBLIC STATIC METHOD SingleMiddleKeywords() as IReadOnlyDictionary<XKeyword, XKeyword>
 
             var tokens := Dictionary<XKeyword, XKeyword>{}
             foreach var item in _middleKeywords
@@ -517,7 +517,7 @@ BEGIN NAMESPACE XSharpModel
         /// Return all the middle tokens that can map more than one start token
         /// </summary>
         /// <returns>List of tokens</returns>
-        public static method SpecialMiddleKeywords() as IReadOnlyDictionary<XKeyword, IList<XKeyword>>
+        public static method MultiMiddleKeywords() as IReadOnlyDictionary<XKeyword, IList<XKeyword>>
             var tokens := Dictionary<XKeyword, IList<XKeyword>>{}
             foreach var item in _middleKeywords
                 if (item:Value:Count >= 1)

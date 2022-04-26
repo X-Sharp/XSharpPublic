@@ -894,17 +894,16 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                    // check for GET SET INIT blocks on a single line
                    // or ADD/REMOVE blocks on a single line
                    if (_BlockStack:Count > 0)
-                        var currentblock := _BlockStack:Peek()
+                        var curblock := CurrentBlock
                         if xt:Kw1 == XTokenType.Set .or. xt:Kw1 == XTokenType.Get .or. xt:Kw1 == XTokenType.Init
-
-                            if currentblock:XKeyword:Kw1 == XTokenType.Set .or. ;
-                                currentblock:XKeyword:Kw1 == XTokenType.Get .or.;
-                                currentblock:XKeyword:Kw1 == XTokenType.Init
+                            if curblock:XKeyword:Kw1 == XTokenType.Set .or. ;
+                                curblock:XKeyword:Kw1 == XTokenType.Get .or.;
+                                curblock:XKeyword:Kw1 == XTokenType.Init
                                 _BlockStack:Pop()
                             endif
                         elseif xt:Kw1 == XTokenType.Add .or. xt:Kw1 == XTokenType.Remove
-                            if currentblock:XKeyword:Kw1 == XTokenType.Add .or. ;
-                                currentblock:XKeyword:Kw1 == XTokenType.Remove
+                            if curblock:XKeyword:Kw1 == XTokenType.Add .or. ;
+                                curblock:XKeyword:Kw1 == XTokenType.Remove
                                 _BlockStack:Pop()
                             endif
                         endif
@@ -977,6 +976,9 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                 if (rule != null .and. rule:Flags:HasFlag(XFormattingFlags.End))
                    CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
                    _BlockStack:Pop()
+                   SELF:ReadLine()
+                   return TRUE
+
                 endif
             ENDIF
             SELF:ReadLine()

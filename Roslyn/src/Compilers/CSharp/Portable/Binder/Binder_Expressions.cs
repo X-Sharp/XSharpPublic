@@ -7942,6 +7942,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             var properties = ArrayBuilder<PropertySymbol>.GetInstance();
             properties.AddRange(propertyGroup);
             var result = BindIndexerOrIndexedPropertyAccess(syntax, receiverOpt, properties, arguments, diagnostics);
+#if XSHARP
+            //X# allows default values for properties, including callermembername
+            if (result is BoundIndexerAccess indexer)
+            {
+                result = BindIndexerDefaultArguments(indexer, BindValueKind.RValue, diagnostics);
+            }
+#endif
             properties.Free();
             return result;
         }

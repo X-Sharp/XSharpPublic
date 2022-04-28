@@ -6,18 +6,18 @@
 
 /// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/addproperty/*" />
 FUNCTION AddProperty (oObjectName AS OBJECT, cPropertyName AS STRING, eNewValue := NIL AS USUAL) AS LOGIC
-    if (object) oObjectName IS XSharp.VFP.Empty VAR oEmpty
-        oEmpty:__AddProperty(cPropertyName, eNewValue)
-    ELSE
+    if (object) oObjectName is XSharp.IDynamicProperties2 var oDynamic
+        oDynamic:_AddProperty(cPropertyName, eNewValue,1,"")
+    else
         Send(oObjectName,#AddProperty,cPropertyName, eNewValue)
-    ENDIF
-    RETURN TRUE
+    endi
+    return true
 
 
 /// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/removeproperty/*" />
-FUNCTION RemoveProperty( oObjectName AS OBJECT, cPropertyName AS STRING) AS LOGIC
-    if (object) oObjectName IS XSharp.VFP.Empty VAR oEmpty
-        oEmpty:__RemoveProperty(cPropertyName)
+function RemoveProperty( oObjectName as object, cPropertyName as string) as logic
+    if (object) oObjectName is XSharp.IDynamicProperties2 var oDynamic
+        oDynamic:_RemoveProperty(cPropertyName)
     ELSE
         Send(oObjectName,#RemoveProperty,cPropertyName)
     ENDIF

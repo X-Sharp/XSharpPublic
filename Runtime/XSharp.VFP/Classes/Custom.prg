@@ -5,104 +5,96 @@
 //
 
 
-USING System
-USING System.Collections.Generic
-USING System.Text
-USING System.Diagnostics
-#command VFPPROP <cName> <cType> => PROPERTY <cName> AS <cType> GET SELF:_GetProperty(<"cName">) SET SELF:_SetProperty(<"cName">, value)
+using System
+using System.Collections.Generic
+using System.Text
+using System.Diagnostics
 
-BEGIN NAMESPACE XSharp.VFP
+begin namespace XSharp.VFP
 
-    CLASS Custom INHERIT Abstract
-        PROTECTED _Controls as VFP.Collection
-        
-        VFPPROP Top    LONG
-        VFPPROP Left   LONG
-        VFPPROP Height LONG
-        VFPPROP Width  LONG
-        
-        PROTECTED VIRTUAL METHOD _InitProperties AS VOID
-            SELF:Top := 0
-            SELF:Left := 0
-            SELF:Height := 0
-            SELF:Width := 0
-        RETURN
-        
-        CONSTRUCTOR() CLIPPER
-            SUPER()
+    class Custom inherit Abstract
+        protected _Controls as VFP.Collection
+        property Top    as long auto := 0
+        property Left   as long auto := 0
+        property Height as long auto := 0
+        property Width  as long auto := 0
+        property Controls as VFP.Collection GET _Controls
+
+
+        constructor() clipper
+            super()
             _Controls    := VFP.Collection{}
-            SELF:_InitProperties()
-            SELF:Init(_Args())
-            RETURN
-            
-        DESTRUCTOR()
-            SELF:Destroy()
-            RETURN
-        
+            self:Init(_Args())
+            return
+
+        destructor()
+            self:Destroy()
+            return
+
         // Events defined in FoxPro
-        VIRTUAL METHOD Init() AS USUAL CLIPPER
-        RETURN TRUE
-        
-        VIRTUAL METHOD Destroy() AS USUAL
-        RETURN TRUE
-        
-        VIRTUAL METHOD Error(nErrpr, cMethod, nLine) AS USUAL CLIPPER
-            RETURN TRUE
-            
+        virtual method Init() as usual clipper
+        return true
+
+        virtual method Destroy() as usual
+        return true
+
+        virtual method Error(nErrpr, cMethod, nLine) as usual clipper
+            return true
+
         #region Nested Items
-        
-        METHOD AddObject(cName as string , oObject as object) AS LOGIC
-            SELF:_SetProperty(cName, oObject)
-            SELF:_Controls:AddObject(oObject, cName)
-            RETURN TRUE
-        
 
-        METHOD AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC CLIPPER
-            RETURN SUPER:__AddProperty(cPropertyName, uValue, nVisibility, cDescription)
-
-        METHOD RemoveProperty(cPropertyName) AS LOGIC CLIPPER
-            RETURN SUPER:__RemoveProperty(cPropertyName)
+        method AddObject(cName as string , oObject as object) as logic
+            self:NoIvarPut(cName, oObject)
+            self:_Controls:AddObject(oObject, cName)
+            return true
 
 
-        METHOD NewObject(cObjectName, cClassName, cModule, cInApplication, aParams) AS OBJECT CLIPPER
-            RETURN NULL_OBJECT
-            
-        METHOD RemoveObject(cName) AS LOGIC CLIPPER
-            RETURN FALSE
+        method AddProperty(cPropertyName, uValue, nVisibility, cDescription) as logic clipper
+            return super:_AddProperty(cPropertyName, uValue, nVisibility, cDescription)
+
+        method RemoveProperty(cPropertyName as string) as logic
+            return super:_RemoveProperty(cPropertyName)
+
+
+        method NewObject(cObjectName, cClassName, cModule, cInApplication, aParams) as object clipper
+            return null_object
+
+        method RemoveObject(cName) as logic clipper
+            return false
             #endregion
-            
-        
-        
+
+
+
         #region Designer Related and Other
-        
+
         [Obsolete("This method is not supported in X#")];
         METHOD ResetToDefault(cName) AS VOID CLIPPER
             RETURN
        [Obsolete("This method is not supported in X#")];
-        VIRTUAL METHOD ReadExpression(cPropertyName) AS STRING CLIPPER
+        virtual method ReadExpression(cPropertyName) as string clipper
             RETURN ""
-        
+
         [Obsolete("This method is not supported in X#")];
-        VIRTUAL METHOD WriteExpression(cPropertyName, uValue ) AS LOGIC CLIPPER
+        virtual method WriteExpression(cPropertyName, uValue ) as logic clipper
             RETURN FALSE
-        
+
         [Obsolete("This method is not supported in X#")];
-        VIRTUAL METHOD ReadMethod() AS STRING STRICT
+        virtual method ReadMethod() as string strict
             RETURN ""
-        
+
         [Obsolete("This method is not supported in X#")];
-        VIRTUAL METHOD SaveAsClass(cClassLib, cClass, cDescription) AS LOGIC CLIPPER
+        virtual method SaveAsClass(cClassLib, cClass, cDescription) as logic clipper
             RETURN FALSE
-        
+
         [Obsolete("This method is not supported in X#")];
-        VIRTUAL METHOD WriteMethod(cMethodName, cMethodText, lCreateMethod, nVisibility, cDescription) AS STRING  CLIPPER
-            RETURN ""        
-        
+        virtual method WriteMethod(cMethodName, cMethodText, lCreateMethod, nVisibility, cDescription) as string  clipper
+            return ""
+
         [Obsolete("This method is not supported in X#")];
         METHOD ShowWhatsThis() AS LOGIC
-            RETURN FALSE
+            return false
         #endregion
-        
-        
+
+
         END CLASS
-END NAMESPACE 
+end namespace

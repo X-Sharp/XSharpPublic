@@ -6,23 +6,21 @@
 
 USING System
 USING System.Collections.Generic
-USING System.Text
+using System.Text
 
 
-#command VFPPROP <cName> <cType> => PROPERTY <cName> AS <cType> GET SELF:_GetProperty(<"cName">) SET SELF:_SetProperty(<"cName">, value)
-#command VFPPROP <cName> <cType> <cLit> => PROPERTY <cName> AS <cType> GET SELF:_GetProperty(<(cLit)>) SET SELF:_SetProperty(<(cLit)>, value)
 
 /// <summary>
 /// The Abstract class.
 /// </summary>
-ABSTRACT CLASS XSharp.VFP.Abstract INHERIT XSharp.VFP.Empty
-    VFPPROP Name STRING 
-    VFPPROP BaseClass STRING 
-    VFPPROP @@Class STRING "Class"
-    VFPPROP ClassLibrary STRING 
-    VFPPROP Comment STRING 
-    VFPPROP Parent OBJECT
-    VFPPROP ParentClass STRING 
+abstract class XSharp.VFP.Abstract inherit XSharp.VFP.Empty
+    property Name as string auto
+    property BaseClass as string auto
+    property @@Class as string  auto := "Class"
+    property ClassLibrary as string auto
+    property Comment as string auto
+    property Parent as object auto
+    property ParentClass as string auto
 
 
     CONSTRUCTOR()
@@ -34,6 +32,6 @@ ABSTRACT CLASS XSharp.VFP.Abstract INHERIT XSharp.VFP.Empty
         SELF:Comment        := ""
         SELF:BaseClass      := ""
         RETURN
-        
-END CLASS
+
+end class
 

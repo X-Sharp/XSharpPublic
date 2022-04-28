@@ -62,6 +62,7 @@
     <Compile Include="Classes\Custom.prg" />
     <Compile Include="Classes\Abstract.prg" />
     <Compile Include="Classes\FoxArray.prg" />
+    <Compile Include="Classes\PropertyContainer.prg" />
     <Compile Include="ClassFunctions.prg" />
     <Compile Include="BitFunctions.prg" />
     <Compile Include="Commands.prg" />

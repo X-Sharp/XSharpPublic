@@ -8,7 +8,7 @@
 
 
 using XSharp.Internal
-using System.Reflection 
+using System.Reflection
 using System.Collections.Generic
 using System.Linq
 using System.Runtime.CompilerServices
@@ -941,6 +941,8 @@ internal static class OOPHelpers
         local oValue := null as object
         if toType == TYPEOF(float)
             return (float) uValue
+        elseif uValue:SystemType == toType
+            return uValue
         else
             if toType == TYPEOF(usual)
                 // return a boxed usual

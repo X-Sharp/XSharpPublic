@@ -534,6 +534,36 @@ BEGIN NAMESPACE XSharp.VO.Tests
             EXPORT cbWhen AS CODEBLOCK
 
         END CLASS
+
+        [Fact, Trait("Category", "OOP")];
+		METHOD SymbolLateBound() AS VOID
+			LOCAL u AS USUAL
+			u := SymbolTest{}
+			Assert.True(u:sym == #sym)
+			Assert.True(u:sym == #SYM)
+			Assert.True(u:symEmpty == NULL_SYMBOL)
+			Assert.False(Empty(u:sym))
+			Assert.True(Empty(u:symEmpty))
+			Assert.True(u:symUsual == #SymUsual)
+
+			u:sym := #test
+			Assert.True(u:sym == #TEST)
+			u:symUsual := #test
+			Assert.True(u:symUsual == #TEST)
+
+			u:sym := NULL_SYMBOL
+			Assert.True(u:sym == NULL_SYMBOL)
+			u:symUsual := NULL_SYMBOL
+			Assert.True(u:symUsual == NULL_SYMBOL)
+		RETURN
+		
+		INTERNAL CLASS SymbolTest
+			EXPORT sym := "sym" AS SYMBOL
+			EXPORT symEmpty AS SYMBOL
+			EXPORT symUsual := #SymUsual AS USUAL
+		END CLASS
+
+
 	END CLASS
 
 
@@ -668,11 +698,11 @@ CLASS NilTestClass
 
 	METHOD NoMethod(c)
 		? c
-		if AsString(c) == "DOESNOTEXISTMETHOD"
-			return 2
-		end if
-	return nil
-	METHOD NoIVarGet(c as symbol) as usual
+		IF AsString(c) == "DOESNOTEXISTMETHOD"
+			RETURN 2
+		END IF
+	RETURN NIL
+	METHOD NoIVarGet(c AS SYMBOL) AS USUAL
 		? c
 		IF AsString(c) == "DOESNOTEXISTACCESS"
 			RETURN 2

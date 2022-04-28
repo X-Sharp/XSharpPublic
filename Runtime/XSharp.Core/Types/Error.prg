@@ -477,137 +477,140 @@ BEGIN NAMESPACE XSharp
     e:Arg         := cArgName
     e:ArgNum      := iArgNum
     e:Args        := aArgs
-    RETURN e
+    return e
 
 
     #endregion
     /// <exclude />
-    STATIC METHOD TypeToUsualType(oType AS System.Type) AS DWORD
-    SWITCH Type.GetTypeCode(oType)
-    CASE TypeCode.Boolean
-      RETURN __UsualType.Logic
-    CASE TypeCode.Byte
-      RETURN __UsualType.Byte
-    CASE TypeCode.Char
-      RETURN __UsualType.Char
-    CASE TypeCode.DateTime
-      RETURN __UsualType.DateTime
-    CASE TypeCode.DBNull
-      RETURN __UsualType.Object
-    CASE TypeCode.Decimal
-      RETURN __UsualType.Decimal
-    CASE TypeCode.Double
-      RETURN __UsualType.Real8
-    CASE TypeCode.Empty
-      RETURN __UsualType.Void
-    CASE TypeCode.Int16
-      RETURN __UsualType.ShortInt
-    CASE TypeCode.Int32
-      RETURN __UsualType.Long
-    CASE TypeCode.Int64
-      RETURN __UsualType.Int64
-    CASE TypeCode.SByte
-      RETURN __UsualType.Byte
-    CASE TypeCode.Single
-      RETURN __UsualType.Real4
-    CASE TypeCode.UInt16
-      RETURN __UsualType.Word
-    CASE TypeCode.UInt32
-      RETURN __UsualType.DWord
-    CASE TypeCode.UInt64
-      RETURN __UsualType.UInt64
-    OTHERWISE
-        SWITCH oType:FullName:ToLower()
-        CASE "xsharp.__array"
-          RETURN __UsualType.Array
-        CASE "xsharp.__binary"
-          RETURN __UsualType.Binary
-        CASE "xsharp.__codeblock"
-          RETURN __UsualType.Codeblock
-        CASE "xsharp.__currency"
-          RETURN __UsualType.Currency
-        CASE "xsharp.__date"
-          RETURN __UsualType.Date
-        CASE "xsharp.__float"
-          RETURN __UsualType.Float
-        CASE "xsharp.__psz"
-          RETURN __UsualType.Psz
-        CASE "xsharp.__symbol"
-          RETURN __UsualType.Symbol
-        CASE "xsharp.__usual"
-          RETURN __UsualType.Usual
-        CASE "system.intptr"
-          RETURN __UsualType.Ptr
+    static method TypeToUsualType(oType as System.Type) as dword
+    switch Type.GetTypeCode(oType)
+    case TypeCode.Boolean
+      return __UsualType.Logic
+    case TypeCode.Byte
+      return __UsualType.Byte
+    case TypeCode.Char
+      return __UsualType.Char
+    case TypeCode.DateTime
+      return __UsualType.DateTime
+    case TypeCode.DBNull
+      return __UsualType.Object
+    case TypeCode.Decimal
+      return __UsualType.Decimal
+    case TypeCode.Double
+      return __UsualType.Real8
+    case TypeCode.Empty
+      return __UsualType.Void
+    case TypeCode.Int16
+      return __UsualType.ShortInt
+    case TypeCode.Int32
+      return __UsualType.Long
+    case TypeCode.Int64
+      return __UsualType.Int64
+    case TypeCode.SByte
+      return __UsualType.Byte
+    case TypeCode.Single
+      return __UsualType.Real4
+    case TypeCode.UInt16
+      return __UsualType.Word
+    case TypeCode.UInt32
+      return __UsualType.DWord
+    case TypeCode.UInt64
+      return __UsualType.UInt64
+    otherwise
+        // use the type names because we do not know the types at this moment
+        switch oType:FullName:ToLower()
+        case "xsharp.__array"
+          return __UsualType.Array
+        case "xsharp.__binary"
+          return __UsualType.Binary
+        case "xsharp.__codeblock"
+          return __UsualType.Codeblock
+        case "xsharp.__currency"
+          return __UsualType.Currency
+        case "xsharp.__date"
+          return __UsualType.Date
+        case "xsharp.__float"
+          return __UsualType.Float
+        case "xsharp.__psz"
+          return __UsualType.Psz
+        case "xsharp.__symbol"
+          return __UsualType.Symbol
+        case "xsharp.__usual"
+          return __UsualType.Usual
+        case "system.intptr"
+          return __UsualType.Ptr
 
-      END SWITCH
-    END SWITCH
-    RETURN __UsualType.Void
+      end switch
+    end switch
+    return __UsualType.Void
 
     /// <exclude />
-    STATIC METHOD UsualTypeToType(dwType AS DWORD) AS System.Type
-    LOCAL typeName := NULL AS STRING
-    SWITCH dwType
-    CASE __UsualType.Array
+    static method UsualTypeToType(dwType as dword) as System.Type
+    local typeName := null as string
+    switch dwType
+    case __UsualType.Array
       typeName := "XSharp.__Array"
-    CASE __UsualType.Byte
-      RETURN typeof(System.Byte)
-    CASE __UsualType.Binary
+    case __UsualType.Byte
+      return typeof(System.Byte)
+    case __UsualType.Binary
        typeName := "XSharp.__Binary"
-    CASE __UsualType.Char
-      RETURN typeof(System.Char)
-    CASE __UsualType.Codeblock
+    case __UsualType.Char
+      return typeof(System.Char)
+    case __UsualType.Codeblock
       typeName := "XSharp.__CodeBlock"
-    CASE __UsualType.Currency
+    case __UsualType.Currency
       typeName := "XSharp.__Currency"
-    CASE __UsualType.Date
+    case __UsualType.Date
       typeName := "XSharp.__Date"
-    CASE __UsualType.DWord
-      RETURN typeof(System.UInt32)
-    CASE __UsualType.Int64
-      RETURN typeof(System.Int64)
-    CASE __UsualType.Float
+    case __UsualType.DWord
+      return typeof(System.UInt32)
+    case __UsualType.Int64
+      return typeof(System.Int64)
+    case __UsualType.Float
       typeName := "XSharp.__Float"
-    CASE __UsualType.Logic
-      RETURN typeof(System.Boolean)
-    CASE __UsualType.Long
-      RETURN typeof(System.Int32)
-    CASE __UsualType.Object
-      RETURN typeof(System.Object)
-    CASE __UsualType.Psz
+    case __UsualType.Logic
+      return typeof(System.Boolean)
+    case __UsualType.Long
+      return typeof(System.Int32)
+    case __UsualType.Object
+      return typeof(System.Object)
+    case __UsualType.Psz
       typeName := "XSharp.__Psz"
-    CASE __UsualType.Ptr
-      RETURN typeof(System.IntPtr)
-    CASE __UsualType.Real4
-      RETURN typeof(System.Single)
-    CASE __UsualType.Real8
-      RETURN typeof(System.Double)
-    CASE __UsualType.ShortInt
-      RETURN typeof(System.Int16)
-    CASE __UsualType.String
-      RETURN typeof(System.String)
-    CASE __UsualType.Symbol
+    case __UsualType.Ptr
+      return typeof(System.IntPtr)
+    case __UsualType.Real4
+      return typeof(System.Single)
+    case __UsualType.Real8
+      return typeof(System.Double)
+    case __UsualType.ShortInt
+      return typeof(System.Int16)
+    case __UsualType.String
+      return typeof(System.String)
+    case __UsualType.Symbol
       typeName := "XSharp.__Symbol"
-    CASE __UsualType.UInt64
-      RETURN typeof(System.Int64)
-    CASE __UsualType.Usual
+    case __UsualType.UInt64
+      return typeof(System.Int64)
+    case __UsualType.Usual
       typeName := "XSharp.__Usual"
-    CASE __UsualType.Void
-      RETURN typeof(System.Void)
-    CASE __UsualType.Word
-      RETURN typeof(System.UInt16)
-    END SWITCH
+    case __UsualType.Void
+      return typeof(System.Void)
+    case __UsualType.Word
+      return typeof(System.UInt16)
+    case __UsualType.Null
+      return typeof(System.DBNull)
+    end switch
     // lookup types in XSharp.VO
-    IF typeName != NULL
-        FOREACH asm AS Assembly IN AppDomain.CurrentDomain:GetAssemblies()
-          IF asm:GetName():Name:ToLower() == "xsharp.vo"
-            VAR type := asm:GetType(typeName, FALSE, TRUE)
-            IF type != NULL
-              RETURN type
-            ENDIF
-          ENDIF
-        NEXT
-    ENDIF
-    RETURN NULL
+    if typeName != null
+        foreach asm as Assembly in AppDomain.CurrentDomain:GetAssemblies()
+          if asm:GetName():Name:ToLower() == "xsharp.vo"
+            var type := asm:GetType(typeName, false, true)
+            if type != null
+              return type
+            endif
+          endif
+        next
+    endif
+    return null
 
 
   STATIC METHOD GetInnerException( SELF e as Exception) AS Exception

@@ -254,6 +254,19 @@ namespace XSharp.LanguageService
             for (int i = 0; i < tokenList.Count; i++)
             {
                 var token = tokenList[i];
+                // comma right before closing token should still trigger the parameter tips
+                // so skip the closing token
+                // the comma itself is usually not in the list yet because the tokens are from the previous
+                // snapshot.
+                if (token.Position == props.Location.Position && comma)
+                {
+                    if (token.Type == XSharpLexer.RPAREN ||
+                        token.Type == XSharpLexer.RBRKT ||
+                        token.Type == XSharpLexer.RCURLY)
+                    { 
+                        break;
+                    }
+                }
                 switch (token.Type)
                 {
                     case XSharpLexer.LPAREN:

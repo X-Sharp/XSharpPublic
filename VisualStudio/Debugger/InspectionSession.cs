@@ -27,6 +27,7 @@ namespace XSharpDebugger
 
         public InspectionSession()
         {
+            XSharpType.CheckCase();
             _scopes = new Dictionary<DkmClrInstructionAddress, InspectionScope>(AddressComparer.Instance);
         }
 

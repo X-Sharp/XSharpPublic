@@ -155,7 +155,8 @@ namespace XSharp.LanguageService
 
         private void LineChanged()
         {
-            Caret_PositionChanged(_activeView, new CaretPositionChangedEventArgs(_activeView, _activeView.Caret.Position, _activeView.Caret.Position));
+            if (_activeView != null)
+                Caret_PositionChanged(_activeView, new CaretPositionChangedEventArgs(_activeView, _activeView.Caret.Position, _activeView.Caret.Position));
         }
 
         private void Caret_PositionChanged(object sender, CaretPositionChangedEventArgs e)

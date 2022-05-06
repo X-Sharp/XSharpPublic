@@ -1653,6 +1653,13 @@ RETURN
 		SELF:SelectMainItem()
 	RETURN
 
+	METHOD DoDummyChange() AS VOID
+		LOCAL cCaption AS STRING
+		cCaption := SELF:oWindowDesign:GetProperty("Caption"):TextValue
+		SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:oWindowDesign:cGuid , "Caption" , "<dummy>"})
+		SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:oWindowDesign:cGuid , "Caption" , cCaption})
+	RETURN
+
 	METHOD SelectMainItem() AS VOID
 		SELF:DoAction(DesignerActionType.Select , SELF:oWindowDesign:cGuid)
 	RETURN
@@ -3615,10 +3622,17 @@ RETURN
 	PROTECTED VIRTUAL METHOD DoContextAction(eAction AS DesignerActionType) AS VOID
 		LOCAL oTabControl AS DesignTabControl
 		DO CASE
-		CASE eAction == DesignerActionType.AddPage
+		CASE eAction == DesignerActionType.AddPage .or. eAction == DesignerActionType.InsertPage
 			oTabControl := (DesignTabControl) ((DesignWindowItem)SELF:aSelected[0]):Control
-			oTabControl:AddPage()
+			oTabControl:AddOrInsertPage( iif(eAction == DesignerActionType.AddPage , TRUE , FALSE) )
 			SELF:BeginAction()
+			SELF:DoDummyChange()
+			SELF:EndAction()
+		CASE eAction == DesignerActionType.MovePageLeft .or. eAction == DesignerActionType.MovePageRight
+			oTabControl := (DesignTabControl) ((DesignWindowItem)SELF:aSelected[0]):Control
+			oTabControl:MovePage(eAction == DesignerActionType.MovePageLeft)
+			SELF:BeginAction()
+			SELF:DoDummyChange()
 			SELF:EndAction()
 		CASE eAction == DesignerActionType.DeletePage
 			oTabControl := (DesignTabControl) ((DesignWindowItem)SELF:aSelected[0]):Control

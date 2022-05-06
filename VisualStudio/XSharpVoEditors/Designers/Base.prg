@@ -30,7 +30,7 @@ ENUM WEDAction
 END ENUM
 
 ENUM DesignerActionType
-	
+
 	MEMBER Select
 	MEMBER SelectAdd
 	MEMBER SelectAll
@@ -39,7 +39,7 @@ ENUM DesignerActionType
 	MEMBER DeSelect
 	MEMBER DeSelectAll
 	MEMBER RemoveSelected
-	
+
 	MEMBER AlignLeft
 	MEMBER AlignRight
 	MEMBER AlignTop
@@ -66,7 +66,7 @@ ENUM DesignerActionType
 	MEMBER SpacingHorzDec
 	MEMBER SpacingHorzRem
 	MEMBER SpacingHorzEqual
-	
+
 	MEMBER Cut
 	MEMBER Copy
 	MEMBER Paste
@@ -79,13 +79,16 @@ ENUM DesignerActionType
 	MEMBER SendToBack
 
 	MEMBER AddPage
+	MEMBER InsertPage
 	MEMBER DeletePage
+	MEMBER MovePageLeft
+	MEMBER MovePageRight
 	MEMBER AddColumn
-	
+
 	MEMBER Properties
 	MEMBER AttachToolStripDesigner
 	MEMBER AttachDataGridViewDesigner
-	
+
 	MEMBER TestDesigner
 
 	MEMBER Promote
@@ -107,7 +110,7 @@ ENUM DesignerActionType
 	MEMBER ComponentBindingNavigator
 
 	MEMBER ComponentImageList
-	
+
 END ENUM
 
 ENUM DesignerBasicActionType
@@ -161,7 +164,7 @@ CLASS DesignerBase
 	EXPORT IsDirtyChanged AS EventHandler
 	EXPORT TriggerSave AS EventHandler
 	EXPORT StatusBarMessage AS StatusBarMessageDelegate
-	
+
 	PROTECT aActions AS ArrayList
 	PROTECT nAction , nActionDepth , nActionSaved AS INT
 	PROTECT lDidAction AS LOGIC
@@ -203,7 +206,7 @@ CLASS DesignerBase
 	RETURN
 	ACCESS StandAlone AS LOGIC
 	RETURN SELF:lStandalone
-			
+
     VIRTUAL METHOD ShowHideTools(lShow AS LOGIC) AS VOID
     	LOCAL oGridForm AS Form
     	LOCAL oToolForm AS Form
@@ -231,7 +234,7 @@ CLASS DesignerBase
     RETURN
 
 	VIRTUAL METHOD GiveFocus() AS VOID
-	
+
 	VIRTUAL METHOD BeginAction() AS VOID
 	VIRTUAL METHOD EndAction() AS VOID
 	VIRTUAL METHOD DoBasicAction(oAction AS DesignerBasicAction , eAction AS DesignerBasicActionType , uData AS ActionData) AS OBJECT
@@ -244,7 +247,7 @@ CLASS DesignerBase
 	VIRTUAL METHOD StartAction(eAction AS DesignerBasicActionType , uData AS ActionData) AS OBJECT
 		LOCAL oAction AS DesignerBasicAction
 		LOCAL oRet AS OBJECT
-		
+
 		oAction := DesignerBasicAction{eAction , FALSE}
 		SELF:BeginAction()
 		oRet := SELF:DoBasicAction(oAction , eAction , uData)
@@ -288,7 +291,7 @@ CLASS DesignerBase
 			SELF:EndAction()
 		ENDIF
 	RETURN
-	
+
 	VIRTUAL METHOD Redo() AS VOID
 		LOCAL oAction,oRedoAction AS DesignerBasicAction
 		LOCAL n AS INT
@@ -404,7 +407,7 @@ CLASS WindowDesignerBase INHERIT DesignerBase
 		SUPER(_oSurface)
 		SELF:oOptions := _oOptions
 		SELF:eCurrent := WEDAction.None
-		
+
 		SELF:oSurface:MouseMove += MouseEventHandler{ SELF , @SurfaceMouseMove() }
 		SELF:oSurface:MouseUp += MouseEventHandler{ SELF , @SurfaceMouseUp() }
 	RETURN
@@ -473,7 +476,7 @@ CLASS WindowDesignerBase INHERIT DesignerBase
 
 	STATIC METHOD HandleWndProc(oDesign AS DesignWindowItem , m REF Message) AS LOGIC
 	LOCAL oPoint AS Point
-	
+
 	SWITCH m:Msg
 	CASE WM_SETFOCUS
 		RETURN TRUE
@@ -489,7 +492,7 @@ CLASS WindowDesignerBase INHERIT DesignerBase
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseMove(oDesign,MouseButtons.None,oPoint)
 		RETURN TRUE
-	
+
 	CASE WM_NCLBUTTONDOWN
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseDown(oDesign,MouseButtons.Left,oPoint)
@@ -498,7 +501,7 @@ CLASS WindowDesignerBase INHERIT DesignerBase
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseUp(oDesign,MouseButtons.Left,oPoint)
 		RETURN TRUE
-	
+
 	CASE WM_NCRBUTTONDOWN
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseDown(oDesign,MouseButtons.Right,oPoint)
@@ -512,7 +515,7 @@ CLASS WindowDesignerBase INHERIT DesignerBase
 		RETURN TRUE
 
 	END SWITCH
-	
+
 	RETURN FALSE
 
 // make sure overflow checks are off. On a multi monitor system we may get negative screen

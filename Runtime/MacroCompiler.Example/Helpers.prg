@@ -261,7 +261,8 @@ BEGIN NAMESPACE MacroCompilerTest
             END
 
             IF (compile)
-                VAR o := MCompile(source)
+                var o := MCompile(source)
+                //VAR cr := mc:GetObjectCompiler(TRUE):Bind(source)
                 //var o := mc:Compile(source)
                 //o:Eval()
             ELSE

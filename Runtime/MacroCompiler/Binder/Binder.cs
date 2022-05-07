@@ -63,6 +63,8 @@ namespace XSharp.MacroCompiler
         internal Stack<int> ScopeStack = new Stack<int>();
         internal Node Entity = null;
 
+        internal TypeSymbol ResultType => Binder.FindType(DelegateType.GetMethod("Invoke").ReturnType);
+
         static Binder()
         {
             AppDomain.CurrentDomain.AssemblyLoad += AssemblyLoadEventHandler;
@@ -85,6 +87,8 @@ namespace XSharp.MacroCompiler
 
         internal static Binder<T, R> Create<T,R>(MacroOptions options) where R: Delegate
         {
+            if (options?.StrictTypedSignature == true)
+                return new TypedBinder<T, R>(options);
             return new Binder<T, R>(options);
         }
 
@@ -622,8 +626,6 @@ namespace XSharp.MacroCompiler
     {
         internal Binder(MacroOptions options) : base(typeof(T),typeof(R), options) { }
 
-        internal delegate T MacroDelegate(params T[] args);
-
         internal class NestedWrapper
         {
             internal delegate T EvalDelegate(XSharp.Codeblock[] cbs, params T[] args);
@@ -670,6 +672,18 @@ namespace XSharp.MacroCompiler
             }
             else
                 return dm.CreateDelegate(typeof(R));
+        }
+    }
+    internal class TypedBinder<T, R> : Binder<T, R> where R : Delegate
+    {
+        internal TypedBinder(MacroOptions options) : base(options) { }
+        internal override DynamicMethod CreateMethod(string source)
+        {
+            var mi = typeof(R).GetMethod("Invoke");
+            var par = mi.GetParameters().Select(p => p.ParameterType).ToList();
+            if (HasNestedCodeblocks)
+                par.Insert(0, typeof(XSharp.Codeblock[]));
+            return new DynamicMethod(source, mi.ReturnType, par.ToArray());
         }
     }
 }

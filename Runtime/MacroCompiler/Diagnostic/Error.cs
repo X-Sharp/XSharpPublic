@@ -81,7 +81,6 @@ namespace XSharp.MacroCompiler
         ERR_MissingEndText = 9086,
 
 
-
         Internal = 9999,
         Warning = 10000,
     }

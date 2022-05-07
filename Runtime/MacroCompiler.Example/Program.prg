@@ -1,5 +1,5 @@
-USING System
-USING System.Collections.Generic
+using System
+using System.Collections.Generic
 USING System.Linq
 USING System.Text
 USING XSharp.Runtime
@@ -7,7 +7,7 @@ USING XSharp.MacroCompiler
 
 BEGIN NAMESPACE MacroCompilerTest
 
-    FUNCTION Start() AS VOID
+    function Start() as void
         SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))
         // test conflict between field name and global/define
 
@@ -43,6 +43,20 @@ BEGIN NAMESPACE MacroCompilerTest
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         TestMacro(mc, "TestI := {10,20}, TestI(1)", Args(), 1, typeof(INT))
         wait*/
+
+#if 0
+        //var tc := TypedCompilation<object, XSharp.MacroCompiler.ObjectMacro.MacroCodeblockDelegate>{}
+        var o := XSharp.MacroCompiler.MacroOptions.Default
+        o:StrictTypedSignature := true
+        var tc := Compilation.Create<object, Func<int,int, int>>(o)
+        var m := tc:Compile("Console.WriteLine(arg1+arg2), arg1+arg2")
+        if m:Diagnostic != null
+            ? m:Diagnostic:ErrorMessage
+            wait
+        endif
+        ? m:Macro(123,456)
+        wait
+#endif
 
         TestByRefPriv()
         ParserTestsFox(CreateFoxScriptCompiler())

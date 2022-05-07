@@ -10,7 +10,7 @@ using System.Diagnostics
 using System.Linq
 using System.Reflection
 
-class XSharp.VFP.PropertyContainer implements XSharp.IDynamicProperties
+class XSharp.VFP.PropertyContainer
 
     static _PropertyCache as Dictionary<System.Type, IList<PropertyDescriptor> >
 
@@ -18,11 +18,13 @@ class XSharp.VFP.PropertyContainer implements XSharp.IDynamicProperties
         _PropertyCache :=  Dictionary<System.Type, IList<PropertyDescriptor> > {}
 
     protected _Properties as Dictionary<string, PropertyDescriptor>
-    protected _Owner as object
+    protected _Values     as Dictionary<string, usual>
+    protected _Owner      as object
 
     property Count as long get _Properties:Count
     constructor(oOwner as object)
         _Properties := Dictionary<string, PropertyDescriptor>{StringComparer.OrdinalIgnoreCase}
+        _Values     := Dictionary<string, usual>{StringComparer.OrdinalIgnoreCase}
         _Owner := oOwner
         self:InitCompileTimeProperties()
 
@@ -43,6 +45,9 @@ class XSharp.VFP.PropertyContainer implements XSharp.IDynamicProperties
             if met != null
                 var nVis := iif(met:IsPublic,1 ,iif(met:IsPrivate,3,2))
                 var desc := self:Add(oProp:Name, nil, nVis,nil)
+                if _Values:ContainsKey(oProp:Name)
+                    _Values:Remove(oProp:Name)
+                endif
                 list:Add(desc)
                 _Properties[oProp:Name]:PropInfo := oProp
             endif
@@ -91,17 +96,24 @@ class XSharp.VFP.PropertyContainer implements XSharp.IDynamicProperties
                 endif
              endif
              var desc := PropertyDescriptor{cName, nPropVis, cPropDesc}
-             desc:Value := uValue
              _Properties[cName]:= desc
+             _Values[cName] := uValue
              return desc
         endif
         return null
 
-    internal method Remove(cPropertyName) as logic clipper
+    internal method Remove(cPropertyName as string) as logic
         // FoxPro does not throw an error when non existing properties are removed
         // FoxPro does not require the dimensions when deleting an array property
+        if _Values:ContainsKey(cPropertyName)
+            _Values:Remove(cPropertyName)
+        endif
         if _Properties:ContainsKey(cPropertyName)
-            _Properties:Remove(cPropertyName)
+            local desc := _Properties[cPropertyName] as PropertyDescriptor
+            // you cannot remove builtin properties, only dynamic properties
+            if desc:PropInfo == null
+                _Properties:Remove(cPropertyName)
+            endif
             return true
         endif
         return false
@@ -112,49 +124,43 @@ class XSharp.VFP.PropertyContainer implements XSharp.IDynamicProperties
     virtual method NoIvarPut(cName as string, uValue as usual) as void
         if _Properties:ContainsKey( cName)
             var desc := _Properties[cName]
-            desc:SetValue(_Owner, uValue)
-        else
-            throw PropertyNotFoundException{cName}
+            if desc:PropInfo != null
+                desc:PropInfo:SetValue(_Owner, uValue)
+                return
+            elseif self:_Values:ContainsKey(cName)
+                self:_Values[cName] := uValue
+                return
+            endif
         endif
-        return
+        throw PropertyNotFoundException{cName}
+
 
     virtual method NoIvarGet(cName as string) as usual
         if _Properties:ContainsKey(cName)
             var desc := _Properties[cName]
-            return desc:GetValue(_Owner)
-        else
-            throw PropertyNotFoundException{cName}
+            if desc:PropInfo != null
+                return desc:PropInfo:GetValue(_Owner)
+            elseif self:_Values:ContainsKey(cName)
+                return self:_Values[cName]
+            endif
         endif
+        throw PropertyNotFoundException{cName}
 
     virtual method GetPropertyNames() as string[]
         return _Properties:Keys:ToArray()
 
     #endregion
 
-    #region Implementations
-    public method Get(cName as string) as usual
-        if _Properties:ContainsKey(cName)
-            return _Properties[cName]:Value
-        else
-            throw PropertyNotFoundException{cName}
-        endif
-
-    public method Set(cName as string, uValue as usual) as void
-        if _Properties:ContainsKey(cName)
-            _Properties[cName]:Value := uValue
-        else
-            throw PropertyNotFoundException{cName}
-        endif
-
-    #endregion
 
      internal method GetProperties() as List<NameValuePair>
         var result := List<NameValuePair>{}
         foreach var item in _Properties
             local desc as PropertyDescriptor
+            var uValue := self:NoIvarGet(item:Key)
             desc := item:Value
             if desc:PropInfo == null .or. desc:PropInfo:PropertyType != typeof(PropertyContainer)
-                result:Add( NameValuePair{}{Name := item:Key, @@Value := desc:GetValue(_Owner)})
+
+                result:Add( NameValuePair{}{Name := item:Key, @@Value := uValue})
             endif
         next
         return result
@@ -165,24 +171,11 @@ public class XSharp.VFP.PropertyDescriptor
     public Name           as string
     public Visibility     as PropertyVisibility
     public Description    as string
-    public @@Value        as object
     public PropInfo       as PropertyInfo
     public constructor(cName as string, nVis as PropertyVisibility, cDesc as string)
         Name        := cName
         Visibility  := nVis
         Description := cDesc
-        @@Value     := nil
-    public method GetValue(oObject as object) as object
-        if PropInfo != null
-            return PropInfo:GetValue(oObject)
-        endif
-        return self:@@Value
-    public method SetValue(oObject as object, oValue as object) as void
-        if PropInfo != null
-            PropInfo:SetValue(oObject, oValue)
-        else
-            self:@@Value  := oValue
-        endif
 
 end class
 

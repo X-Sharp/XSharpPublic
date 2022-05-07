@@ -681,13 +681,15 @@ internal static class OOPHelpers
         t := oObject:GetType()
         try
             var propInfo := OOPHelpers.FindProperty(t, cIVar, true, lSelf)
-            if propInfo != null_object
+            if propInfo != null_object .and. propInfo:CanRead
                 if propInfo:GetIndexParameters():Length == 0
-                    result := propInfo:GetValue(oObject, null)
-                    if result == null .and. propInfo:PropertyType == TYPEOF(System.String)
-                        result := String.Empty
+                    if lSelf .or. propInfo:GetMethod:IsPublic
+                        result := propInfo:GetValue(oObject, null)
+                        if result == null .and. propInfo:PropertyType == TYPEOF(System.String)
+                            result := String.Empty
+                        endif
+                        return result
                     endif
-                    return result
                 else
                     return nil
                 endif
@@ -735,10 +737,12 @@ internal static class OOPHelpers
         t := oObject:GetType()
         try
             var propInfo := OOPHelpers.FindProperty(t, cIVar, false, lSelf)
-            if propInfo != null_object
-                oValue := OOPHelpers.VOConvert(oValue, propInfo:PropertyType)
-                propInfo:SetValue(oObject,oValue , null)
-                return
+            if propInfo != null_object .and. propInfo:CanWrite
+                if lSelf .or. propInfo:SetMethod:IsPublic
+                    oValue := OOPHelpers.VOConvert(oValue, propInfo:PropertyType)
+                    propInfo:SetValue(oObject,oValue , null)
+                    return
+                endif
             endif
             var fldInfo := OOPHelpers.FindField(t, cIVar, false, lSelf)
             if fldInfo != null_object
@@ -981,7 +985,8 @@ internal static class OOPHelpers
 
             local oRet as object
             try
-                oRet := Convert.ChangeType(oValue, toType)
+                oRet := uValue
+                oRet := Convert.ChangeType(oRet, toType)
             catch
                 oRet := uValue
             end try

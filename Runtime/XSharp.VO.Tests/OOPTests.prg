@@ -338,21 +338,32 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 
         [Fact, Trait("Category", "OOP")];
-        METHOD IVarPutGetSet_tests() AS VOID
-        	LOCAL o AS GeneralLBTestClass
+        method IVarPutGetSet_tests() as void
+        	local o as GeneralLBTestClass
         	o := GeneralLBTestClass{}
 
         	IVarPut(o , #fld_exp , 1)
-        	Assert.Equal(1 , (INT) IVarGet(o , #fld_exp))
+        	Assert.Equal(1 , (int) IVarGet(o , #fld_exp))
 
         	IVarPutSelf(o , #fld_prot , 2)
-        	Assert.Equal(2 , (INT) IVarGetSelf(o , #fld_prot))
+        	Assert.Equal(2 , (int) IVarGetSelf(o , #fld_prot))
 
         	Assert.ThrowsAny<Exception>( { => IVarPut(o , #fld_prot , 3) })
-        	Assert.Equal(2 , (INT) IVarGetSelf(o , #fld_prot))
+        	Assert.Equal(2 , (int) IVarGetSelf(o , #fld_prot))
 
         	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_prot) })
         	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_priv) })
+
+
+        [Fact, Trait("Category", "OOP")];
+        method IVarPutVisibilitytests() as void
+        	local o as OOpVisTestClass
+            o := OOpVisTestClass{}
+            Assert.ThrowsAny<Exception>( { => IVarGet(o , #PrivateDummy) })
+            Assert.ThrowsAny<Exception>( { => IVarPut(o , #PrivateDummy,10) })
+            Assert.Equal( (int) IVarGet(o , #PrivateSetDummy) ,42)
+            Assert.ThrowsAny<Exception>( { => IVarPut(o , #PrivateSetDummy,10) })
+
 
         [Fact, Trait("Category", "OOP")];
         METHOD PtrAndIntPtrMethodCalls() AS VOID
@@ -382,7 +393,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	pIntPtr := u:MethodPtr()
         	? pIntPtr
         	Assert.NotEqual((INT)pIntPtr , 0)
-        	Assert.NotEqual((INT)pPtr , 0)
+        	Assert.NotEqual((int)pPtr , 0)
 
         	pPtr := u:MethodIntPtr()
         	? pPtr
@@ -412,7 +423,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	Assert.Equal(#MYSYMBOL , (SYMBOL)o:DefaultParams4())
 
         	Assert.Equal(TRUE, (LOGIC)o:DefaultParams5())
-        	Assert.Equal(TRUE, (LOGIC)o:DefaultParams6())
+        	Assert.Equal(true, (logic)o:DefaultParams6())
 
 		// TECH-6YD882O372, Runtime exception with inexact equals operator and NIL values
 		[Fact, Trait("Category", "StringUsual")];
@@ -529,7 +540,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			RETURN
 		END CLASS
 
-        CLASS AzControl
+        class AzControl
 
             EXPORT cbWhen AS CODEBLOCK
 
@@ -556,9 +567,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u:symUsual := NULL_SYMBOL
 			Assert.True(u:symUsual == NULL_SYMBOL)
 		RETURN
-		
+
 		INTERNAL CLASS SymbolTest
-			EXPORT sym := "sym" AS SYMBOL
+			export sym := "sym" as symbol
 			EXPORT symEmpty AS SYMBOL
 			EXPORT symUsual := #SymUsual AS USUAL
 		END CLASS
@@ -617,7 +628,7 @@ CLASS AnotherClass
 	METHOD TestOther2C(n)
 	RETURN "2" + ((INT)n):ToString()
 
-	METHOD DefaultParams1(n1 AS INT, n2 := 2 AS INT, n3 := 3 AS INT) AS INT
+	method DefaultParams1(n1 as int, n2 := 2 as int, n3 := 3 as int) as int
 	RETURN n1 + n2 + n3
 	METHOD DefaultParams2(cValue := "abc" AS STRING, lValue := TRUE AS LOGIC) AS STRING
 	RETURN cValue + lValue:ToString():ToUpper()
@@ -646,7 +657,7 @@ CLASS GeneralLBTestClass
 
 	ASSIGN asn_exp(n AS INT)
 	PROTECT ASSIGN asn_prot(n AS INT)
-	PROTECT ASSIGN asn_priv(n AS INT)
+	protect assign asn_priv(n as int)
 
 	METHOD meth_exp(a,b,c,d)
 	RETURN NIL
@@ -733,3 +744,10 @@ CLASS LBTestClass
 
 END CLASS
 
+class OOpVisTestClass
+
+    private property PrivateDummy as int auto get set
+    public property PrivateSetDummy as int auto get private set := 42
+
+
+end class

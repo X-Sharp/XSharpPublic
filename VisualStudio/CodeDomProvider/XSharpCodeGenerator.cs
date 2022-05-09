@@ -1105,7 +1105,8 @@ namespace XSharp.CodeDom
                 var l2 = new List<string>();
                 foreach (var l in l1)
                 {
-                    if (!l.Trim().StartsWith("//"))
+                    var lTemp = l.Trim();
+                    if (! lTemp.StartsWith("//") && ! lTemp.StartsWith("#"))
                         l2.Add(l);
                 }
                 lastTrivia = String.Join("\r\n", l2);

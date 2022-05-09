@@ -660,6 +660,10 @@ namespace XSharp.LanguageService
                         startOfExpression = true;
                         state = CompletionState.General;
                         break;
+                    case XSharpLexer.VAR:
+                        startOfExpression = true;
+                        state = CompletionState.General;
+                        break;
                     default:
                         hasBracket = false;
                         if (XSharpLexer.IsOperator(currentToken.Type))

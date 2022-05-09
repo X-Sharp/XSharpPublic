@@ -108080,7 +108080,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C848 - Problem with casting string to PTR syntax
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 084FC9A2-9274-4770-AE44-6D078B06BA37
 ; ************** APPLICATION R848 - PCount() when clipper function called with NULL argument *************
 Application = R848 - PCount() when clipper function called with NULL argument
 IDEVersion = 1.06

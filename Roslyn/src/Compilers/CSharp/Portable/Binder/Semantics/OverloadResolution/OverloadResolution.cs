@@ -974,18 +974,27 @@ outerDefault:
                 }
 
                 // If params arg is USUAL prefer the expanded form
-                if (paramsArg != null & paramsArg.Type.IsUsualType())
+                if (paramsArg != null)
                 {
-                    if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
+                    if (paramsArg.Type.IsUsualType())
                     {
-                        // We have seen an example where the customer is mixing different versions of the Vulcan runtime.
-                        // when we set allowUnexpandedForm to false then strange errors will happen later.
-                        if (!member.HasUseSiteError)
+                        if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
                         {
-                            normalResult = default(MemberResolutionResult<TMember>);
+                            // We have seen an example where the customer is mixing different versions of the Vulcan runtime.
+                            // when we set allowUnexpandedForm to false then strange errors will happen later.
+                            if (!member.HasUseSiteError)
+                            {
+                                normalResult = default(MemberResolutionResult<TMember>);
+                            }
                         }
                     }
+                    else if (paramsArg.IsLiteralNull())
+                    {
+                        arguments.Arguments[0] = new BoundLiteral(paramsArg.Syntax, ConstantValue.Null, Compilation.GetSpecialType(SpecialType.System_IntPtr)));
+                        normalResult = default(MemberResolutionResult<TMember>);
+                    }
                 }
+
             }
 #endif
             var result = normalResult;

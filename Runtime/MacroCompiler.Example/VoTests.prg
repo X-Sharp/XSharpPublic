@@ -81,6 +81,11 @@ BEGIN NAMESPACE MacroCompilerTest
         ? TestMacro(mc, "IIF(lExpr,'abc' ,&(cExpr))", Args(), "123", typeof(string) )
         TestMacro(mc, e"{|| &('1+2') }", Args(), 3, TYPEOF(LONG))
 
+        TestMacro(mc, "1 + (INT) +1", Args(), 2, TYPEOF(int))
+        TestMacro(mc, "1 + (INT) -1", Args(), 0, TYPEOF(int))
+        TestMacro(mc, "1 + (USUAL) +1", Args(), 2, TYPEOF(int))
+        TestMacro(mc, "1 + (USUAL) -1", Args(), 0, TYPEOF(int))
+
         // Test dotted AND and OR in combination with numbers
         TestMacro(mc, e"{|| 1>2.and.3<4}", Args(), FALSE, TYPEOF(LOGIC))
         TestMacro(mc, e"{|| 1>2.or.3<4}", Args(), TRUE, TYPEOF(LOGIC))

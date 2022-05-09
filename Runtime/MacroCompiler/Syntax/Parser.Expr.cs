@@ -467,6 +467,10 @@ namespace XSharp.MacroCompiler
             return Opers[(int)La()].IsBinary;
         }
 
+        bool CanParsePrefixOper()
+        {
+            return PrefixOpers[(int)La()] != Oper.Empty;
+        }
         bool CanParsePrefixOnlyOper()
         {
             return !CanParseBinaryOper() && PrefixOpers[(int)La()] != Oper.Empty;
@@ -487,10 +491,13 @@ namespace XSharp.MacroCompiler
 
                 e = ParseTerm();
 
-                if (isCast && e is TypeExpr && (CanParsePrefixOnlyOper() || CanParseTerm()))
+                if (isCast && (
+                    (e is NativeTypeExpr && CanParsePrefixOper()) ||
+                    (e is TypeExpr && (CanParsePrefixOnlyOper() || CanParseTerm()))
+                    ))
                 {
                     var p = Mark();
-                    while (ParsePrefixOnlyOper(out n) != null) { }
+                    while (ParsePrefixOper(out n) != null) { }
                     isCast = CanParseTerm();
                     Rewind(p);
                 }

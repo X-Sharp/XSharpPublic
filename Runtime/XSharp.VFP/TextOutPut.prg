@@ -168,8 +168,11 @@ internal static class FoxTextOut
                 FWrite(hFile, cText)
             endif
         endif
+        if lNewLine
+            result:AppendLine()
+            cText := result:ToString()
+        endif
         return cText
-
 
     static method MergeLine(cText as string) as string
         var aDelim := SetTextMergeDelimiters()
@@ -189,11 +192,28 @@ internal static class FoxTextOut
                     if aElements[i+2] != aDelim[2]
                         valid := false
                     endif
-                    var cMacro := aElements[i+1]
+                    local cMacro := aElements[i+1] as string
                     local uResult as usual
                     aElements[i]   := ""
                     aElements[i+2] := ""
                     try
+                        // the macro compiler does not accept SELF and THIS
+                        // we replace this with _THIS
+                        // when merging the compiler adds a local _THIS with the value of SELF/This
+                        if cMacro:IndexOfAny(<char>{c'.',c':'}) >= 0
+                            var pattern2 := "(:)|(\.)"
+                            var aTokens := System.Text.RegularExpressions.Regex.Split(cMacro, pattern2)
+                            for var j := 1 to aTokens:Length
+                                if aTokens[j]:Length == 4
+                                    switch aTokens[j]:ToLower()
+                                    case "self"
+                                    case "this"
+                                         aTokens[j] := "_THIS"
+                                    end switch
+                                endif
+                            next
+                            cMacro := String.Concat(aTokens)
+                        endif
                         uResult := &(cMacro)
                     catch
                         uResult := "** Error in expression (" +cMacro+") **"
@@ -210,15 +230,15 @@ internal static class FoxTextOut
         return cText
 
     static method TextMerge(cText as string) as string
-        var lines := cText:Split(<char>{c'\r'})
+        var lines := cText:Split(<string>{e"\r\n"},StringSplitOptions.None)
         var result := List<string>{}
-        foreach var line in lines
-            if (!lTextMerge)
-                result:Add(line)
-                loop
-            endif
-            result:Add(MergeLine(line))
-        next
+        if ! lTextMerge
+            result:AddRange(lines)
+        else
+            foreach var line in lines
+                result:Add(MergeLine(line))
+            next
+        endif
         var sb := System.Text.StringBuilder{cText:Length}
         foreach var line in result
             sb:Append(WriteLine(line))

@@ -266,7 +266,7 @@ namespace XSharp.LanguageService
                 stopWatch.Start();
 #endif
                 //
-                _classifier.ClassifyWhenNeededAsync().ConfigureAwait(true); 
+                var _ = _classifier.ClassifyWhenNeededAsync().ConfigureAwait(true); 
 
                 //
                 // wait until we can work

@@ -516,7 +516,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var name = context.Id.GetText();
             var prop = createProperty(name, datatype, context, context.Modifiers);
             context.Put(prop);
-          }
+        }
 
         public ExpressionSyntax createAddObject(XP.FoxaddobjectclauseContext context)
         {
@@ -863,32 +863,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private MemberDeclarationSyntax createProperty(string fldName, TypeSyntax type, XSharpParserRuleContext context, XP.ClassvarModifiersContext modifiers)
         {
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
-            BlockSyntax body = null;
-            if (_options.fox1)
-            {
-                var call = GenerateThisMethodCall(XSharpSpecialNames.GetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName))), true);
-                body = MakeBlock(GenerateReturn(call, true));
-                body.XGenerated = true;
-            }
             var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
                     default, default,
                     SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
-                    body,
+                    null,
                     null,
                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             accessor.XNode = context;
             accessor.XGenerated = true;
             accessors.Add(accessor);
-            if (_options.fox1)
-            {
-                var call = GenerateThisMethodCall(XSharpSpecialNames.SetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName)), MakeArgument(GenerateSimpleName("value"))), true);
-                body = MakeBlock(GenerateExpressionStatement(call, context));
-                body.XGenerated = true;
-            }
             accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration,
                     default, default,
                     SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
-                    body,
+                    null,
                     null,
                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             accessor.XNode = context;

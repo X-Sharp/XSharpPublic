@@ -539,19 +539,7 @@ namespace XSharp.LanguageService
                 return false;
             return canIndentLine(line);
         }
-        private bool IsCommentOrString(string classification)
-        {
-            if (string.IsNullOrEmpty(classification))
-                return false;
-            switch (classification.ToLower())
-            {
-                case "comment":
-                case "string":
-                case "xsharp.text":
-                    return true;
-            }
-            return false;
-        }
+        
 
         private void FormatLineCase(ITextEdit editSession, ITextSnapshotLine line)
         {

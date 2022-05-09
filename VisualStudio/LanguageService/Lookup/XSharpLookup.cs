@@ -563,7 +563,7 @@ namespace XSharp.LanguageService
                     if (top != null)
                         top.ResolvedType = currentType;
                     count = symbols.Count;
-                    if (top.Kind == Kind.Namespace)
+                    if (top != null && top.Kind == Kind.Namespace)
                     {
                         namespacePrefix = top.Name+".";
                     }

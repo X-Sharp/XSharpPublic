@@ -31,7 +31,8 @@ namespace XSharp.LanguageService
         private XFile _file;
         private bool _showTabs;
         private bool _keywordsInAll;
-        private IBufferTagAggregatorFactoryService aggregator;
+        private readonly ITagAggregator<IClassificationTag> _tagAggregator;
+
         private XSharpDialect _dialect;
         private CompletionHelpers helpers ;
         internal static bool StringEquals(string lhs, string rhs)
@@ -49,8 +50,8 @@ namespace XSharp.LanguageService
             var prj = _file.Project.ProjectNode;
             _dialect = _file.Project.Dialect;
             helpers = new CompletionHelpers(_dialect, provider.GlyphService, file, !prj.ParseOptions.CaseSensitive);
-            
-            this.aggregator = aggregator;
+            this._tagAggregator = aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
+
         }
 
         internal static void WriteOutputMessage(string strMessage)
@@ -80,10 +81,6 @@ namespace XSharp.LanguageService
                     return;
                 // What is the character were it starts ?
                 var line = triggerPoint.GetContainingLine();
-                //var triggerposinline = triggerPoint.Position - 2 - line.Start;
-                //var afterChar = line.GetText()[triggerposinline];
-                //if (afterChar == ' ' || afterChar == '\t')
-                //    return;
 
                 // The "parameters" coming from CommandFilter
                 uint cmd = 0;
@@ -99,8 +96,7 @@ namespace XSharp.LanguageService
                 //
                 SnapshotSpan lineSpan = new SnapshotSpan(line.Start, line.Length);
                 SnapshotPoint caret = triggerPoint;
-                var tagAggregator = aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
-                var tags = tagAggregator.GetTags(lineSpan);
+                var tags = _tagAggregator.GetTags(lineSpan);
                 IMappingTagSpan<IClassificationTag> lastTag = null;
                 foreach (var tag in tags)
                 {
@@ -119,7 +115,7 @@ namespace XSharp.LanguageService
                 {
                     var name = lastTag.Tag.ClassificationType.Classification.ToLower();
                     // No Intellisense in Comment
-                    if (name == "comment" || name == "xsharp.text")
+                    if (name.IsClassificationCommentOrString())
                         return;
                 }
                 ////////////////////////////////////////////

@@ -16,6 +16,20 @@ namespace XSharp.LanguageService
 {
     public static class Extensions
     {
+        
+        public static bool IsClassificationCommentOrString(this string classification)
+        {
+            if (string.IsNullOrEmpty(classification))
+                return false;
+            switch (classification.ToLower())
+            {
+                case "comment":
+                case "string":
+                case "xsharp.text":
+                    return true;
+            }
+            return false;
+        }
         public static string CleanText(this IToken token)
         {
             string result = token.Text;

@@ -988,9 +988,9 @@ outerDefault:
                             }
                         }
                     }
-                    else if (paramsArg.IsLiteralNull())
+                    else if (paramsArg.IsLiteralNull() && member.HasClipperCallingConvention())
                     {
-                        arguments.Arguments[0] = new BoundLiteral(paramsArg.Syntax, ConstantValue.Null, Compilation.GetSpecialType(SpecialType.System_IntPtr)));
+                        arguments.Arguments[0] = new BoundLiteral(paramsArg.Syntax, ConstantValue.Null, Compilation.GetSpecialType(SpecialType.System_IntPtr));
                         normalResult = default(MemberResolutionResult<TMember>);
                     }
                 }

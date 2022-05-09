@@ -1,3 +1,4 @@
+// https://github.com/X-Sharp/XSharpPublic/issues/1013
 // 848. Problem with casting string to PTR syntax
 FUNCTION Start() AS VOID
 	LOCAL cTest AS STRING

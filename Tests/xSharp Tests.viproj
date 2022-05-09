@@ -83373,6 +83373,7 @@ ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
 ReferenceGAC = CLR4,Microsoft.CSharp,1,0,4.0.0.0
 ReferenceGAC = CLR4,mscorlib,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.MacroCompiler.dll,1,1
 [R709 TEXT ENDText and MessageBox() Resources]
 [R709 TEXT ENDText and MessageBox() Native Resources]
 [R709 TEXT ENDText and MessageBox() License files]
@@ -83404,7 +83405,7 @@ Unsafe=0
 Undeclared=0
 EnforceSelf=0
 UseNativeVersion=0
-MemVar=0
+MemVar=1
 IgnoreStdDefs=0
 Ovf=0
 FOvf=0

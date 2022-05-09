@@ -3587,10 +3587,14 @@ RETURN
 				oConMenu:MenuItems:Add("-")
 			ENDIF*/
 			IF oDesign:IsTabControl
+				oConMenu:MenuItems:Add(SELF:MakeMenuItem("Insert Page",DesignerActionType.InsertPage))
 				oConMenu:MenuItems:Add(SELF:MakeMenuItem("Add Page",DesignerActionType.AddPage))
 				IF ((DesignTabControl)oDesign:Control):TabPages:Count != 0
 					oConMenu:MenuItems:Add(SELF:MakeMenuItem("Delete Page",DesignerActionType.DeletePage))
 				END IF
+				oConMenu:MenuItems:Add("-")
+				oConMenu:MenuItems:Add(SELF:MakeMenuItem("Move Page Left",DesignerActionType.MovePageLeft))
+				oConMenu:MenuItems:Add(SELF:MakeMenuItem("Move Page Right",DesignerActionType.MovePageRight))
 				oConMenu:MenuItems:Add("-")
 			ENDIF
 

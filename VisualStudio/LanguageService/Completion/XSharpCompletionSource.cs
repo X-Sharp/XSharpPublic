@@ -221,8 +221,16 @@ namespace XSharp.LanguageService
                         if (xvar is XSourceUndeclaredVariableSymbol)
                         {
                             type = null;
-                            state = CompletionState.General;
-                            filterText = xvar.Name;
+                            if (typedChar == ':' || typedChar == '.')
+                            {
+                                state = CompletionState.None;
+                                filterText = "";
+                            }
+                            else
+                            {
+                                state = CompletionState.General;
+                                filterText = xvar.Name;
+                            }
                         }
                         else if (xvar is XSourceVariableSymbol sourcevar)
                         {

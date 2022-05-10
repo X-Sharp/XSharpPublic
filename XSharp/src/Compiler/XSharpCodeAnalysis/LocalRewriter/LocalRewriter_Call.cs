@@ -25,6 +25,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             var root = expression.SyntaxTree.GetRoot() as CompilationUnitSyntax;
             if (root is null)
                 return expression;
+
+            // find the current member to see if we have a local SELF or THIS
+            var parent = expression.Syntax.Parent;
+            while (parent != null && !(parent is MemberDeclarationSyntax))
+            {
+                parent = parent.Parent;
+            }
+            bool isStatic = false;
+            if (parent is MemberDeclarationSyntax mds)
+            {
+
+                var mods = mds.Modifiers;
+                isStatic = mods.Any(SyntaxKind.StaticKeyword);
+            }
             // check if MethodSymbol has the NeedAccessToLocals attribute combined with /fox2
             // if that is the case then the node is registered  in the FunctionsThatNeedAccessToLocals dictionary
             if (root.GetLocalsForFunction(expression.Syntax.CsNode, out var writeAccess,
@@ -36,7 +50,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (localsym.Name.IndexOf("$") == -1)
                         count++;
                 }
-                if (count == 0)
+                if (count == 0 && isStatic)
                     return expression;
                 // write prelude and after code
                 // prelude code should register the locals
@@ -63,6 +77,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var block = ImmutableArray.CreateBuilder<BoundExpression>();
                 var usual = _compilation.UsualType();
                 _factory.Syntax = expression.Syntax;
+
+                if (!isStatic)
+                {
+                    BoundExpression value = new BoundThisReference(expression.Syntax, _compilation.GetSpecialType(SpecialType.System_Object));
+                    value = MakeConversionNode(value, usual, false);
+                    var localname = _factory.Literal("_THIS");
+                    var mcall = _factory.StaticCall(rtType, ReservedNames.LocalPut, localname, value);
+                    mcall.WasCompilerGenerated = true;
+                    exprs.Add(mcall);
+                }
 
                 foreach (var localsym in localsymbols)
                 {

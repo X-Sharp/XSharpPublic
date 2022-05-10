@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>General</title>
+  <title>Application</title>
   <keywords>
     <keyword>Application Icon</keyword>
     <keyword>Assembly Name</keyword>
@@ -26,9 +26,9 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">General</para>
+      <para styleclass="Heading1">Application</para>
     </header>
-    <para styleclass="Body Text">The General page contains the most important settings for your Visual Studio project</para>
+    <para styleclass="Body Text">The Application page contains the most important settings for your Visual Studio project</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Normal"><image src="ProjectPropertiesGeneral.png" scale="100.00%" styleclass="Image Caption"></image></para>
     <para styleclass="Normal"></para>

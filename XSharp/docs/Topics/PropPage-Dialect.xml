@@ -31,7 +31,7 @@
     <para styleclass="Body Text"></para>
     <para styleclass="Normal"><image src="ProjectPropertiesDialect.png" scale="100.00%" styleclass="Image Caption"></image></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="20" colcount="3">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="21" colcount="3">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal">Item</para>
@@ -223,6 +223,17 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
+          <para styleclass="Normal">Compatible BEGIN SEQUENCE .. END</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Generate code to fully implement the VO compatible BEGIN SEQUENCE .. END SEQUENCE. The compiler generates calls to the runtime functions _SequenceError and _SequenceRecover that you may override in your own code.</para>
+        </td>
+        <td>
+          <para styleclass="Normal">-vo17</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal">Inherit from Custom class</para>
         </td>
         <td>
@@ -234,10 +245,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Locals visible to macrocompiler.</para>
+          <para styleclass="Normal">Compatible Array Handling</para>
         </td>
         <td>
-          <para styleclass="Normal">Make local variables visible to the macro compiler. This may be needed for SQL queries with embedded parameters or the ampersand (&amp;) operator. Use with care because this will generate quite some extra code.</para>
+          <para styleclass="Body Text">FoxPro compatible array handling (Allows parenthesized arrays and assigning a single value to an array to fill all elements). <br/>WARNING Allowing parenthesized arrays may slow down the execution of your program !(/fox2)</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">-fox2</link></para>

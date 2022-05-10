@@ -598,7 +598,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return expr;
 
         }
-        private bool BindStringToPsz(CSharpSyntaxNode syntax, ref BoundExpression source, TypeSymbol destination,DiagnosticBag diagnostics)
+        private bool BindStringToPsz(CSharpSyntaxNode syntax, ref BoundExpression source, TypeSymbol destination, ref Conversion conversion, DiagnosticBag diagnostics)
         {
             NamedTypeSymbol psz = Compilation.PszType();
             if (source.Type is { } && source.Type.IsStringType() &&
@@ -613,6 +613,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, syntax.Location);
                     source = new BoundObjectCreationExpression(syntax, stringctor, new BoundExpression[] { source });
+                    if (destination.IsVoidPointer())
+                    {
+                        conversion = Conversion.Identity;
+                    }
                     return true;
                 }
             }

@@ -338,30 +338,30 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 
         [Fact, Trait("Category", "OOP")];
-        method IVarPutGetSet_tests() as void
-        	local o as GeneralLBTestClass
+        METHOD IVarPutGetSet_tests() AS VOID
+        	LOCAL o AS GeneralLBTestClass
         	o := GeneralLBTestClass{}
 
         	IVarPut(o , #fld_exp , 1)
-        	Assert.Equal(1 , (int) IVarGet(o , #fld_exp))
+        	Assert.Equal(1 , (INT) IVarGet(o , #fld_exp))
 
         	IVarPutSelf(o , #fld_prot , 2)
-        	Assert.Equal(2 , (int) IVarGetSelf(o , #fld_prot))
+        	Assert.Equal(2 , (INT) IVarGetSelf(o , #fld_prot))
 
         	Assert.ThrowsAny<Exception>( { => IVarPut(o , #fld_prot , 3) })
-        	Assert.Equal(2 , (int) IVarGetSelf(o , #fld_prot))
+        	Assert.Equal(2 , (INT) IVarGetSelf(o , #fld_prot))
 
         	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_prot) })
         	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_priv) })
 
 
         [Fact, Trait("Category", "OOP")];
-        method IVarPutVisibilitytests() as void
-        	local o as OOpVisTestClass
+        METHOD IVarPutVisibilitytests() AS VOID
+        	LOCAL o AS OOpVisTestClass
             o := OOpVisTestClass{}
             Assert.ThrowsAny<Exception>( { => IVarGet(o , #PrivateDummy) })
             Assert.ThrowsAny<Exception>( { => IVarPut(o , #PrivateDummy,10) })
-            Assert.Equal( (int) IVarGet(o , #PrivateSetDummy) ,42)
+            Assert.Equal( (INT) IVarGet(o , #PrivateSetDummy) ,42)
             Assert.ThrowsAny<Exception>( { => IVarPut(o , #PrivateSetDummy,10) })
 
 
@@ -393,7 +393,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	pIntPtr := u:MethodPtr()
         	? pIntPtr
         	Assert.NotEqual((INT)pIntPtr , 0)
-        	Assert.NotEqual((int)pPtr , 0)
+        	Assert.NotEqual((INT)pPtr , 0)
 
         	pPtr := u:MethodIntPtr()
         	? pPtr
@@ -423,7 +423,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	Assert.Equal(#MYSYMBOL , (SYMBOL)o:DefaultParams4())
 
         	Assert.Equal(TRUE, (LOGIC)o:DefaultParams5())
-        	Assert.Equal(true, (logic)o:DefaultParams6())
+        	Assert.Equal(TRUE, (LOGIC)o:DefaultParams6())
 
 		// TECH-6YD882O372, Runtime exception with inexact equals operator and NIL values
 		[Fact, Trait("Category", "StringUsual")];
@@ -540,7 +540,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			RETURN
 		END CLASS
 
-        class AzControl
+        CLASS AzControl
 
             EXPORT cbWhen AS CODEBLOCK
 
@@ -569,11 +569,53 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 		INTERNAL CLASS SymbolTest
-			export sym := "sym" as symbol
+			EXPORT sym := "sym" AS SYMBOL
 			EXPORT symEmpty AS SYMBOL
 			EXPORT symUsual := #SymUsual AS USUAL
 		END CLASS
 
+
+        [Fact, Trait("Category", "OOP")];
+		METHOD IVarsLateBound() AS VOID
+			LOCAL u AS USUAL
+			u := TestIVars{}
+
+			u:InternalGet := "abc"
+			Assert.True( IVarGetSelf(u , "InternalGet") == "abc" )
+			Assert.True( u:InternalGet == "abc" )
+			
+			u:ProtectedGet := "123"
+			Assert.True( IVarGetSelf(u , "ProtectedGet") == "123" )
+			
+			u:PrivateGet := "456"
+			Assert.True( IVarGetSelf(u , "PrivateGet") == "456" )
+			
+			
+			u:InternalSET := "abc123"
+			Assert.True( IVarGet(u , "InternalSET") == "abc123" )
+
+			IVarPutSelf( u , "InternalSET" , "set")
+			Assert.True( IVarGetSelf(u , "InternalSET") == "set" )
+			Assert.True( u:InternalSET == "set" )
+			
+			IVarPutSelf( u , "ProtectedSET" , "SET")
+			Assert.True( IVarGet(u , "ProtectedSET") == "SET" )
+			Assert.True( u:ProtectedSET == "SET" )
+			
+			IVarPutSelf( u , "PrivateSET" , "abc")
+			Assert.True( u:PrivateSET == "abc" )
+			Assert.True( IVarGetSelf(u , "PrivateSET") == "abc" )
+		RETURN
+
+		INTERNAL CLASS TestIVars
+			PROPERTY InternalGet AS STRING AUTO INTERNAL GET SET
+			PROPERTY ProtectedGet AS STRING AUTO PROTECTED GET SET
+			PROPERTY PrivateGet AS STRING AUTO PRIVATE GET SET
+		
+			PROPERTY InternalSET AS STRING AUTO GET INTERNAL SET
+			PROPERTY ProtectedSET AS STRING AUTO GET PROTECTED SET
+			PROPERTY PrivateSET AS STRING AUTO GET PRIVATE SET
+		END CLASS
 
 	END CLASS
 
@@ -628,7 +670,7 @@ CLASS AnotherClass
 	METHOD TestOther2C(n)
 	RETURN "2" + ((INT)n):ToString()
 
-	method DefaultParams1(n1 as int, n2 := 2 as int, n3 := 3 as int) as int
+	METHOD DefaultParams1(n1 AS INT, n2 := 2 AS INT, n3 := 3 AS INT) AS INT
 	RETURN n1 + n2 + n3
 	METHOD DefaultParams2(cValue := "abc" AS STRING, lValue := TRUE AS LOGIC) AS STRING
 	RETURN cValue + lValue:ToString():ToUpper()
@@ -657,7 +699,7 @@ CLASS GeneralLBTestClass
 
 	ASSIGN asn_exp(n AS INT)
 	PROTECT ASSIGN asn_prot(n AS INT)
-	protect assign asn_priv(n as int)
+	PROTECT ASSIGN asn_priv(n AS INT)
 
 	METHOD meth_exp(a,b,c,d)
 	RETURN NIL
@@ -744,10 +786,10 @@ CLASS LBTestClass
 
 END CLASS
 
-class OOpVisTestClass
+CLASS OOpVisTestClass
 
-    private property PrivateDummy as int auto get set
-    public property PrivateSetDummy as int auto get private set := 42
+    PRIVATE PROPERTY PrivateDummy AS INT AUTO GET SET
+    PUBLIC PROPERTY PrivateSetDummy AS INT AUTO GET PRIVATE SET := 42
 
 
-end class
+END CLASS

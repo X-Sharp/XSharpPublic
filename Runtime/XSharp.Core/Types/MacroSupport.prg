@@ -25,11 +25,11 @@ BEGIN NAMESPACE XSharp
     /// customizations are done to the value (for example for Foxpro where NIL gets converted to FALSE)
     /// </summary>
     INTERFACE ICodeblock2 INHERIT ICodeblock
-        /// <summary
+        /// <summary>
         /// Returns the real /original return type of the EvalBlock() method
         /// </summary>
-        /// <value></value>
-        PROPERTY ResultType as __UsualType GET
+        /// <value>A value of the __UsualType enum</value>
+        property ResultType as __UsualType get
     END INTERFACE
 
 

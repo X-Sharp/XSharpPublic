@@ -299,7 +299,6 @@ FUNCTION _SequenceRecover(u as USUAL) AS VOID
 /// <code language="X#">
 /// FUNCTION _SequenceError(e as Exception) AS VOID
 /// </code>
-/// The default error handler installed in ErrorBlock(). This will show an error message and write the error to a LOG file.
 /// </remarks>
 /// <returns>The result of the call to the error handler installed in the ErrorBlock</returns>
 /// <seelso cref='O:XSharp.RT.Functions._Break'>Break Function</seealso>

@@ -12,7 +12,7 @@ using System.Reflection
 using System.Collections.Generic
 using System.Linq
 using System.Runtime.CompilerServices
-
+using System.Diagnostics
 
 internal static class OOPHelpers
     static internal EnableOptimizations as logic
@@ -664,6 +664,26 @@ internal static class OOPHelpers
         endif
         return false
 
+    /// <summary>
+    /// This method returns TRUE when the assembly from which an IVarGet()
+    /// or IVarPut() was called is the same assembly in which a property was defined.
+    /// </summary>
+    /// <param name="propInfo">Property that we are checking</param>
+    /// <returns>TRUE when the first stackframe outside of XSharp.RT is in the same assembly as <paramref name="propInfo"/></returns>
+    static method IsInternalVisible(propInfo as PropertyInfo) as logic
+        local asm       := propInfo:DeclaringType:Assembly  as Assembly
+        local frames    := StackTrace{false} :GetFrames()   as StackFrame[]
+        local thisasm   := typeof(__Usual):Assembly         as Assembly         // XSharp.RT
+        foreach frame as StackFrame in frames
+            var frameAsm := frame:GetMethod():DeclaringType:Assembly
+            if frameAsm != thisasm
+                if frameAsm == asm
+                    return true
+                endif
+                exit
+            endif
+        next
+        return false
 
     static method IVarGet(oObject as object, cIVar as string, lSelf as logic) as usual
         local t as Type
@@ -674,7 +694,7 @@ internal static class OOPHelpers
         if String.IsNullOrEmpty(cIVar)
             throw Error.NullArgumentError(__function__, nameof(cIVar),2)
         endif
-        // VFP Empty and XPP DataObject
+        // VFP Empty and XPP DataObject and other objects that implement IDynamicProperties
         if oObject is IDynamicProperties var oDynamic
             return oDynamic:NoIvarGet(cIVar)
         endif
@@ -682,8 +702,12 @@ internal static class OOPHelpers
         try
             var propInfo := OOPHelpers.FindProperty(t, cIVar, true, lSelf)
             if propInfo != null_object .and. propInfo:CanRead
+                var visible := lSelf .or. propInfo:GetMethod:IsPublic
+                if (! visible .and. propInfo:GetMethod:IsAssembly)
+                    visible := IsInternalVisible(propInfo)
+                endif
                 if propInfo:GetIndexParameters():Length == 0
-                    if lSelf .or. propInfo:GetMethod:IsPublic
+                    if visible
                         result := propInfo:GetValue(oObject, null)
                         if result == null .and. propInfo:PropertyType == TYPEOF(System.String)
                             result := String.Empty
@@ -729,7 +753,7 @@ internal static class OOPHelpers
         if String.IsNullOrEmpty(cIVar)
             throw Error.NullArgumentError(__function__, nameof(cIVar),2)
         endif
-        // VFP Empty and XPP DataObject
+        // VFP Empty and XPP DataObject and other objects that implement IDynamicProperties
         if oObject is IDynamicProperties var oDynamic
             oDynamic:NoIvarPut(cIVar, oValue)
             return
@@ -738,7 +762,11 @@ internal static class OOPHelpers
         try
             var propInfo := OOPHelpers.FindProperty(t, cIVar, false, lSelf)
             if propInfo != null_object .and. propInfo:CanWrite
-                if lSelf .or. propInfo:SetMethod:IsPublic
+                var visible := lSelf .or. propInfo:SetMethod:IsPublic
+                if (! visible .and. propInfo:SetMethod:IsAssembly)
+                    visible := IsInternalVisible(propInfo)
+                endif
+                if visible
                     oValue := OOPHelpers.VOConvert(oValue, propInfo:PropertyType)
                     propInfo:SetValue(oObject,oValue , null)
                     return

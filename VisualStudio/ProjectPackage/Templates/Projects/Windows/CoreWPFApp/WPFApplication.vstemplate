@@ -19,14 +19,14 @@
    </TemplateData>
    <TemplateContent>
       <Project File="WPFApplication.xsproj" ReplaceParameters="true">
-         <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.prg">AssemblyInfo.prg</ProjectItem>
-         <ProjectItem ReplaceParameters="false" TargetFileName="Properties\Resources.resx">Resources.resx</ProjectItem>
-         <ProjectItem ReplaceParameters="false" TargetFileName="Properties\Settings.settings">Settings.settings</ProjectItem>
-        <ProjectItem ReplaceParameters="true" OpenInEditor="true" SubType="Code">WPFWindow1.xaml.prg</ProjectItem>
-        <ProjectItem ReplaceParameters="true" OpenInEditor="true">WPFWindow1.xaml</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.prg">AssemblyInfo.prg</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="Properties\Resources.resx">Resources.resx</ProjectItem>
+        <ProjectItem ReplaceParameters="false" TargetFileName="Properties\Settings.settings">Settings.settings</ProjectItem>
+        <ProjectItem ReplaceParameters="true" OpenInEditor="true" SubType="Code">MainWindow.xaml.prg</ProjectItem>
+        <ProjectItem ReplaceParameters="true" OpenInEditor="true">MainWindow.xaml</ProjectItem>
         <ProjectItem ReplaceParameters="true">App.xaml</ProjectItem>
-         <ProjectItem ReplaceParameters="true" SubType="Code">App.xaml.prg</ProjectItem>
-		    <ProjectItem ReplaceParameters="true">App.config</ProjectItem>
+        <ProjectItem ReplaceParameters="true" SubType="Code">App.xaml.prg</ProjectItem>
+		<ProjectItem ReplaceParameters="true">App.config</ProjectItem>
       </Project>
    </TemplateContent>
 </VSTemplate>

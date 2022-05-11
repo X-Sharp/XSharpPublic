@@ -282,7 +282,7 @@ INTERNAL DEFINE IDCONTINUE      := 11
 /// FUNCTION _SequenceRecover(u as USUAL) AS VOID
 /// </code>
 /// </remarks>
-/// <seelso cref='O:XSharp.RT.Functions._Break'>Break Function</seealso>
+/// <seealso cref='O:XSharp.RT.Functions._Break'>Break Function</seealso>
 FUNCTION _SequenceRecover(u as USUAL) AS VOID
     RETURN
 
@@ -301,8 +301,8 @@ FUNCTION _SequenceRecover(u as USUAL) AS VOID
 /// </code>
 /// </remarks>
 /// <returns>The result of the call to the error handler installed in the ErrorBlock</returns>
-/// <seelso cref='O:XSharp.RT.Functions._Break'>Break Function</seealso>
-/// <seelso cref='O:XSharp.RT.Functions.ErrorBlock'>Break Function</seealso>
+/// <seealso cref='O:XSharp.RT.Functions._Break'>Break Function</seealso>
+/// <seealso cref='O:XSharp.RT.Functions.ErrorBlock'>Break Function</seealso>
 FUNCTION _SequenceError(e as Exception) AS USUAL
     LOCAL error as XSharp.Error
     IF e IS XSharp.Error VAR err

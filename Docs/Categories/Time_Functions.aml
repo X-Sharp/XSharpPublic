@@ -50,18 +50,18 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Hour(System.DateTime)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the hour portion from a DateTime expression.
-    </para></entry></row>
+            Returns the hour portion from a DateTime expression.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Minute(System.DateTime)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the minute portion from a DateTime expression.
-    </para></entry></row>
+            Returns the minute portion from a DateTime expression.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sec(System.DateTime)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the seconds portion from a DateTime expression.
-    </para></entry></row>
+            Returns the seconds portion from a DateTime expression.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Seconds</codeEntityReference></para></entry>
 <entry><para>

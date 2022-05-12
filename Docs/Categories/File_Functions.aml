@@ -171,8 +171,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FileToStr(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the contents of a file as a character string.
-    </para></entry></row>
+            Returns the contents of a file as a character string.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FName</codeEntityReference></para></entry>
 <entry><para>
@@ -196,16 +196,18 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ForceExt(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a string with the old file name extension replaced by a new extension.
-    </para></entry></row>
+            Returns a string with the old file name extension replaced by a new extension.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ForcePath(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a file name with a new path name substituted for the old one.
-    </para></entry></row>
+            Returns a file name with a new path name substituted for the old one.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FPathName</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Return the name and path of the file that was used by File().
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FPutS(System.IntPtr,System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -387,8 +389,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrToFile(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Writes the contents of a character string to a file.
-    </para></entry></row>
+            Writes the contents of a character string to a file.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.TruePath(System.String)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>

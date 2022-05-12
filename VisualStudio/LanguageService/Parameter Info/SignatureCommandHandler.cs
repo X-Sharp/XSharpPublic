@@ -148,7 +148,7 @@ namespace XSharp.LanguageService
                                     }
                                     break;
                                 case ',':
-                                     StartSignatureSession(true, triggerchar: typedChar);
+                                    StartSignatureSession(true, triggerchar: typedChar);
                                     //MoveSignature();
                                     break;
                                 case ':':
@@ -439,12 +439,15 @@ namespace XSharp.LanguageService
             }
             _signatureSession.Dismissed += OnSignatureSessionDismiss;
             props.Element = currentElement;
+            props.Start = ssp.Position;
+            props.Length = _textView.Caret.Position.BufferPosition.Position - ssp.Position;
             if (comma)
             {
                 var tokenList = XSharpTokenTools.GetTokenListBeforeCaret(location, out var state);
                 bool done = false;
                 int nested = 0;
-                for (int i = tokenList.Count-1; i >= 0 && ! done; i--)
+                var last = tokenList.Count - 1;
+                for (int i = last; i >= 0 && ! done; i--)
                 {
                     var token = tokenList[i];
                     switch (token.Type)
@@ -463,18 +466,15 @@ namespace XSharp.LanguageService
                         case XSharpLexer.RPAREN:
                         case XSharpLexer.RCURLY:
                         case XSharpLexer.RBRKT:
-                            nested += 1;
+                            if (last != i)
+                            {
+                                nested += 1;
+                            }
                             break;
                     }
                 }
 
             }
-            else
-            {
-                props.Start = ssp.Position;
-                props.Length = _textView.Caret.Position.BufferPosition.Position - ssp.Position;
-            }
-            
 
             try
             {

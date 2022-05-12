@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Runtime chapter</keyword>
@@ -23,12 +23,14 @@
       <li styleclass="Body Text">Fixed some &quot;failed to emit module&quot; issues with iif() statements in some cases (#989)</li>
       <li styleclass="Body Text">Fixed a problem with compiling X# code scripts (#1002)</li>
       <li styleclass="Body Text">Fixed a problem with using classes for some specific assemblies in the macro compiler (#1003)</li>
-      <li styleclass="Body Text">Fix incorrect error message when adding an INT to a pointer in AnyCPU mode (#1007)</li>
+      <li styleclass="Body Text">Fix an incorrect error message when adding an INT to a pointer in AnyCPU mode (#1007)</li>
+      <li styleclass="Body Text">Fixed a problem with casting STRING to PTR syntax (#1013)</li>
+      <li styleclass="Body Text">Fixed a problem with PCount() when passing a single NULL argument to a CLIPPER function/method (#1016)</li>
     </list>
     <para styleclass="Heading3">New Features</para>
     <list id="118" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">We have added support for the TEXT .. ENDTEXT command in all dialects. Please note that there are several variations of this command. One variation work in ALL dialects (TEXT TO varName). Other variations depend on the dialect chosen. We have moved the support for TEXT .. ENDTEXT now also from the compiler to the preprocessor. This means that there are also 2 new preprocessor directives, <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endtext">#endtext</link> (#977)</li>
-      <li styleclass="Body Text">Implemented new compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo17">/vo17</link>, which implements a more compatible to VO behavior for the BEGIN SEQUENCE..RECOVER command (#882, #916):</li>
+      <li styleclass="Body Text">Implemented new compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo17">/vo17</link>, which implements a more compatible to VO behavior for the BEGIN SEQUENCE..RECOVER command (#111, #881, #916):</li>
       <li styleclass="Body Text">For code that contains a RECOVER USING, a check is made for wrapped exceptions. When the exception is not a wrapped exception then a function in the runtime is called (<text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> _SequenceError(e </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> Exception) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text>) that can process the error. It can for example call the error handler, or throw the error</li>
       <li styleclass="Body Text">When there is no RECOVER USING clause , then the compiler generates one and from within this generated clause detects if the RECOVER was reached with a wrapped exception or a normal exception. For wrapped exceptions it gets the value and calls a special function in the runtime (<text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> _SequenceRecover(uBreakValue </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text>). When the generated recover is called with a &apos;normal&apos; exception then _SequenceError function from the previous bullet is called</li>
     </list>
@@ -42,6 +44,9 @@
       <li styleclass="Body Text">Fixed an inconsistency with handling values provided by BREAK commands inside surrounding BEGIN...RECOVER statements, depending on if early or late bound call is used (#883)</li>
       <li styleclass="Body Text">Fixed a problem with floating point format when assigning a System.Decimal value to a USUAL var (#1001)</li>
       <li styleclass="Body Text">Fixed a runtime error with DbCopyToArray() when copying to an array that has more columns than the table, in the FoxPro dialect (#993)</li>
+      <li styleclass="Body Text">Fixed a problem with the typecast expression and numeric literals with the +/- sign in the macro compiler (#1025)</li>
+      <li styleclass="Body Text">Fixed problem in the Late binding code where a string was sometimes passed in and not properly converted to symbol</li>
+      <li styleclass="Body Text">IVarPut()/IVarGet() now throw an appropriate exception when trying to use an inaccessible (due to limiting visibility modifiers) property getter/setter (ACCESS/ASSIGN) (#1023)</li>
     </list>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
     <list id="117" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Code Example" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -50,20 +55,31 @@
     <para styleclass="Heading2">Visual Studio Integration</para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug fixes</text></para>
     <list id="117" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Fixed the handling for project property pages for flavoured projects (#992)</li>
-      <li styleclass="Body Text">When trying to start the debugger with a non existing working directory or program file name an error is displaid (#996)</li>
+      <li styleclass="Body Text">Fixed the handling for project property pages for flavored projects (#992)</li>
+      <li styleclass="Body Text">When trying to start the debugger with a non existing working directory or program file name, now an appropriate error is displayed (#996)</li>
+      <li styleclass="Body Text">Fixed a problem with the form designer generating sometimes invalid code with #regions (1020)</li>
+      <li styleclass="Body Text">The WinForms designer now by default adds the OVERRIDE keyword modifier to the generated Dispose() method (was added in the template) (#1004)</li>
+    </list>
+    <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Editor</text></para>
+    <list id="117" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Type lookups on full names were sometimes failing because the fullname was defined as case sensitive (#978)</li>
       <li styleclass="Body Text">Nested type lookup was sometimes failing. This has been fixed.</li>
-      <li styleclass="Body Text">The indenting options can now also be overridden in the <link displaytype="text" defaultstyle="true" type="topiclink" href="_EditorConfig-files">.editorconfig</link> file (#995)</li>
+      <li styleclass="Body Text">The indenting options can now also be overridden in the <link displaytype="text" defaultstyle="true" type="topiclink" href="_EditorConfig-files">.editorconfig</link> file (#999)</li>
       <li styleclass="Body Text">When a source file was loaded in the editor then the combo boxes with types and members were not activated until the caret was moved in the buffer (#995)</li>
       <li styleclass="Body Text">The member combobox in the editor was getting confused for code that contains local functions or local procedures.</li>
       <li styleclass="Body Text">Fixed a lookup problem for expressions inside a conversion or cast with a keyword, such as DWORD( SomeExpression). There were no quick info tips for the expression inside the parentheses for the conversion (#997)</li>
-      <li styleclass="Body Text">The WinForms designer now by default adds the OVERRIDE keyword modifier to the generated Dispose() method (was added in the template) (#1004)</li>
       <li styleclass="Body Text">Fixed an intellisense problem with DATATYPE(&lt;expression&gt;) conversion expressions (#997)</li>
-      <li styleclass="Body Text">Fixed several issues with the editor Navigation Bar contents (#995, #1008)</li>
+      <li styleclass="Body Text">Fixed a problem with properties declared with the =&gt; symbol in their implementation causing Navigation Bar contents to be incomplete (#1008)</li>
+      <li styleclass="Body Text">Fixed several issues with code folding and formatting (#975)</li>
+      <li styleclass="Body Text">Fixed problem with typing a comma inside an argument list did not invoke the Parameters Tooltip (#1019)</li>
+      <li styleclass="Body Text">Fixed some issues with the detection of variable types for the VAR keyword (#903)</li>
+      <li styleclass="Body Text">Fixed an Intellisense problem with typing &quot;:&quot; or &quot;.&quot; inside a string literal (#1021)</li>
+      <li styleclass="Body Text">Fixed a problem with unknown identifiers sometimes causing bogus member completion list to show (#1022)</li>
+      <li styleclass="Body Text">Pressing CTRL+SPACE in the editor now always invokes a code completion list (#957)</li>
     </list>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
     <list id="117" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Added options to insert page and reorder pages in a tabcontrol, in the VOWED (#1024)</li>
       <li styleclass="Body Text">Added the following new settings to the .editorconfig file to set indentation options ( #999).</li>
     </list>
     <list id="119" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="text-indent:-13px; margin-left:40px; line-height:1.00; tabstops:2880px left,3600px left ; font-family:Symbol; font-size:12pt; color:#000000;">
@@ -78,6 +94,7 @@
     <list id="120" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The VOXporter now correctly enabled or disables the Allow MEMVAR/Undeclared vars compiler options, if they were enabled in the VO app (#1000)</li>
     </list>
+    <para styleclass="Heading1"></para>
     <para styleclass="Heading1">Changes in 2.11.0.1</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Body Text"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug fixes</text></para>

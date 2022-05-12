@@ -331,6 +331,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     xNode = pex.Expr;
                 while (xNode != null)
                 {
+                    if (xNode is XP.AssignmentExpressionContext)
+                        break;
                     voCast = xNode is XP.VoCastExpressionContext;
                     if (voCast)
                         break;
@@ -429,9 +431,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return Conversion.Identity;
                     }
+                    // PSZ -> Pointer: No implicit conversion. There is a user defined conversion in the PSZ type
                     if (source.IsPszType())
                     {
-                        return Conversion.Identity;
+                        return Conversion.NoConversion;
                     }
                 }
                 // Allow cast -> PSZ
@@ -570,12 +573,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ImplicitNumeric;
                 }
             }
-            if (destination.IsPszType() || destination.IsVoidPointer())
+            if (destination.IsPszType() && source.IsStringType())
             {
-                if (source.IsStringType())
-                {
-                    return Conversion.ImplicitReference;
-                }
+                 return Conversion.ImplicitReference;
             }
             // when nothing else, then use the Core rules
             return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);

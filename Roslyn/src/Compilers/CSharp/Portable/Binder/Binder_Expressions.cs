@@ -515,7 +515,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 // Allow @ operator as alternative to REF
                 if (expr is BoundAddressOfOperator && Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node))
-                { 
+                {
                     return;
                 }
 #endif
@@ -2231,42 +2231,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return BindExplicitNullableCastFromNonNullable(node, operand, targetTypeWithAnnotations, diagnostics);
             }
 #if XSHARP
-            var pe = node.XNode as XSharpParser.PrimaryExpressionContext;
-            if (pe.IsVoCast())
+            var result = BindXsCast(node, targetType, ref operand, diagnostics);
+            if (result != null)
             {
-                if (targetType.SpecialType == SpecialType.System_Object && !operand.Type.IsReferenceType && !pe.IsCastClass())
-                {
-                    diagnostics.Add(ErrorCode.ERR_NoExplicitCast, node.Location, operand.Type, targetType);
-                }
-                // LOGIC(_CAST, numeric)  => change conversion to <numeric> != 0
-                if (targetType.SpecialType == SpecialType.System_Boolean && operand.Type.IsIntegralType())
-                {
-                    if (operand is BoundLiteral)
-                    {
-                        bool result = operand.ConstantValue.Int64Value != 0;
-                        return new BoundLiteral(node, ConstantValue.Create(result), targetType);
-                    }
-                    var right = new BoundLiteral(node, ConstantValue.Create(0), Compilation.GetSpecialType(SpecialType.System_Int32));
-                    return new BoundBinaryOperator(
-                        syntax: node,
-                        operatorKind: BinaryOperatorKind.NotEqual,
-                        left: operand,
-                        right: right,
-                        constantValueOpt: default,
-                        methodOpt: default,
-                        resultKind: LookupResultKind.Viable,
-                        type: targetType);
-                }
-            }
-            BoundExpression expression;
-            if (BindVOPointerDereference(node, TypeWithAnnotations.Create(targetType), operand, diagnostics, out expression))
-            {
-                return expression;
-            }
-            // WE do not want (USUAL) <object> to unbox the object !
-            if (operand.Type?.SpecialType == SpecialType.System_Object && targetType.IsUsualType())
-            {
-                return operand;
+                return result;
             }
 #endif
             return BindCastCore(node, operand, targetTypeWithAnnotations, wasCompilerGenerated: operand.WasCompilerGenerated, diagnostics: diagnostics);

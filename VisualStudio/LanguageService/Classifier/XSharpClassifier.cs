@@ -376,6 +376,10 @@ namespace XSharp.LanguageService
             {
                 TextSpan tokenSpan;
                 ClassificationSpan span;
+                if (endPos > snapshot.Length)
+                {
+                    endPos = snapshot.Length;
+                }
                 int nLineLength = snapshot.GetLineFromPosition(startPos).Length;
                 tokenSpan = new TextSpan(startPos, nLineLength);
                 span = tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart);

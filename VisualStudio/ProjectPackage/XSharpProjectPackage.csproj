@@ -532,7 +532,7 @@
     <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\App.xaml.prg" />
     <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFApplication.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFWindow1.xaml.prg" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\MainWindow.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\WPFPage.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\WPFUserControl.vstemplate">
     </ZipItem>
@@ -692,9 +692,7 @@
     <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\App.xaml">
       <SubType>Designer</SubType>
     </ZipProject>
-    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFWindow1.xaml">
-      <SubType>Designer</SubType>
-    </ZipProject>
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\MainWindow.xaml"/>
   </ItemGroup>
   <ItemGroup>
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\Page1.xaml">

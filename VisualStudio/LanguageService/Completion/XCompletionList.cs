@@ -45,9 +45,13 @@ namespace XSharp.LanguageService
             _file = startLocation;
         }
         internal XFile File => _file;
-        public bool Add(XSCompletion item)
+        public bool Add(XSCompletion item, bool overwrite = false)
         {
 
+            if (overwrite && ContainsKey(item.DisplayText))
+            {
+                Remove(item.DisplayText);
+            }
             if (ContainsKey(item.DisplayText))
             {
                 // only methods have overloads
@@ -196,7 +200,7 @@ namespace XSharp.LanguageService
     {
         static IList<IXSymbol> _keywords;
         static IList<IXSymbol> _types;
-        static IDictionary<string,string> _keywordNames;
+        static IDictionary<string, string> _keywordNames;
         static XSharpSyntax()
         {
             // Dummy call to a Lexer; just to copy the Keywords, Types, ...

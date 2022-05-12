@@ -387,10 +387,13 @@ namespace XSharp.LanguageService
             foreach (var doc in docs)
             {
                 var view = await doc.GetDocumentViewAsync();
-                var buffer = view.TextBuffer;
-                if (buffer.GetClassifier() != null)
+                if (view != null)
                 {
-                    EditorConfigReader.ReadSettings(buffer, view.FilePath);
+                    var buffer = view.TextBuffer;
+                    if (buffer.GetClassifier() != null)
+                    {
+                        EditorConfigReader.ReadSettings(buffer, view.FilePath);
+                    }
                 }
             }
             return;

@@ -1385,7 +1385,7 @@ namespace XSharp.LanguageService
             var namespaces = location.Project.AllNamespaces;
             foreach (var ns in namespaces)
             {
-                if (ns.StartsWith(name, StringComparison.OrdinalIgnoreCase))
+                if (ns.StartsWith(name+".", StringComparison.OrdinalIgnoreCase))
                 {
                     result.Add(new XSymbol(name, Kind.Namespace, Modifiers.Public));
                     break;

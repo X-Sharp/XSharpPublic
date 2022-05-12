@@ -807,9 +807,11 @@ BEGIN NAMESPACE XSharpModel
          if namespace.EndsWith(".")
             namespace := namespace.Substring(0, namespace.Length-1)
          ENDIF
+         var myUsings := usings.ToList()
+         myUsings:Add(namespace)
          VAR result := XDatabase.GetAssemblyTypesInNamespace(namespace, SELF:DependentAssemblyList )
          // convert the database objects to the PeTypeSymbols
-         result := FilterUsings(result, usings,"",false)
+         result := FilterUsings(result, myUsings,"",false)
          RETURN GetPETypes(result)
 
      METHOD GetAssemblyTypes(startWith AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>

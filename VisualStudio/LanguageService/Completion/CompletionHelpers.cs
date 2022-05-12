@@ -128,7 +128,7 @@ namespace XSharp.LanguageService
                 return true;
             if (realTypeName.IndexOf('$') >= 0)
                 return true;
-            if (realTypeName.IndexOf('<') >= 0)
+            if (realTypeName.StartsWith("<") )
                 return true;
             return false;
         }

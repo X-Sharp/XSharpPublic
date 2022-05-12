@@ -224,7 +224,8 @@ namespace XSharp.LanguageService
                             }
                             else
                             {
-                                state = CompletionState.General;
+                                if (state == CompletionState.None)
+                                    state = CompletionState.General;
                                 filterText = xvar.Name;
                             }
                         }
@@ -287,12 +288,11 @@ namespace XSharp.LanguageService
                     }
                     if (type == null && state.HasFlag(CompletionState.Interfaces))
                     {
-                        helpers.AddTypeNames(compList, location, filterText,  afterDot:true, onlyInterfaces: true);
-                        helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
+                        helpers.AddTypeNames(compList, location, filterText,  afterDot: typedChar == '.', onlyInterfaces: true);
                     }
                     if (type == null && state.HasFlag(CompletionState.Types) )
                     {
-                        helpers.AddTypeNames(compList, location, filterText, afterDot: true, onlyInterfaces: false);
+                        helpers.AddTypeNames(compList, location, filterText, afterDot: typedChar == '.', onlyInterfaces: false);
                         helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
                     }
                     if (state.HasFlag(CompletionState.StaticMembers))
@@ -390,7 +390,7 @@ namespace XSharp.LanguageService
                 if ((kwdList.Count > 0) && _keywordsInAll /*&& XSettings.CompleteKeywords*/)
                 {
                     foreach (var item in kwdList.Values)
-                        compList.Add(item);
+                        compList.Add(item,true);
                 }
                 // Sort in alphabetical order
                 // and put in the SelectionList

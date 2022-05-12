@@ -473,7 +473,7 @@ namespace XSharp.LanguageService
                             result.Add(token);
                         }
                         if (isNotLast) // there has to be a space after the token
-                            state = CompletionState.Namespaces | CompletionState.Types;
+                           state = CompletionState.Namespaces | CompletionState.Types;
                         else
                             state = CompletionState.None;
                         break;
@@ -527,7 +527,8 @@ namespace XSharp.LanguageService
                         result.Add(token);
                         break;
                     default:
-                        state = CompletionState.General;
+                        if (state == CompletionState.None)
+                            state = CompletionState.General;
                         if (XSharpLexer.IsOperator(token.Type))
                         {
                             result.Add(token);

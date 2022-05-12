@@ -17,7 +17,7 @@
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Menu</codeEntityReference></para></entry>
 <entry><para>
-            Create a menu.  Menus consist of items which the user selects for execution; a menu item can be a string, a bitmap, or another menu.
+            Create a menu. Menus consist of items which the user selects for execution; a menu item can be a string, a bitmap, or another menu.
         </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MenuCommandEvent</codeEntityReference></para></entry>

@@ -17,7 +17,7 @@
 <entry><para></para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.ApplicationExec(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>**Missing documentation **</para></entry></row>
+<entry><para></para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.CAPaintIsLoaded</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -116,7 +116,7 @@
         </para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.GetFrameWidth(System.Void*)</codeEntityReference></para></entry>
-<entry><para>**Missing documentation **</para></entry></row>
+<entry><para></para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.GetObjectByHandle(System.Void*)</codeEntityReference></para></entry>
 <entry><para>

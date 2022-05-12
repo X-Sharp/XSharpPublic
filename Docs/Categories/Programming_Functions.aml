@@ -21,8 +21,8 @@
             Branch out of a BEGIN SEQUENCE...END construct.
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._CallClipFunc(System.String,XSharp.__Array)</codeEntityReference></para></entry>
-<entry><para>Call a clipper function by name</para></entry></row>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._CallClipFunc(System.String,XSharp.__Usual[])</codeEntityReference></para></entry>
+<entry><para>Call a function by name</para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._GetCmdLine</codeEntityReference></para></entry>
 <entry><para>
@@ -54,10 +54,10 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AddProperty(System.Object,System.String,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Adds a new property to an object at run time.
-      You can use AddProperty( ) to add properties and their values to valid X# objects,
-      including those created from X# classes, COM classes, and the SCATTER...NAME command.
-    </para></entry></row>
+            Adds a new property to an object at run time.
+            You can use AddProperty( ) to add properties and their values to valid X# objects,
+            including those created from X# classes, COM classes, and the SCATTER...NAME command.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AGetFileVersion(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
@@ -86,7 +86,7 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.CanBreak</codeEntityReference></para></entry>
 <entry><para>
-            Check whether a break occurs within the BEGIN SEQUENCE...END construct.
+            Check if a BEGIN SEQUENCE...END construct is active.
             </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CapsLock</codeEntityReference></para></entry>
@@ -151,8 +151,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CreateObjectEx(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Creates an instance of a registered COM object (such as a X# Automation server) on a remote computer.
-    </para></entry></row>
+            Creates an instance of a registered COM object (such as a X# Automation server) on a remote computer.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.CSend(System.Object,System.String,XSharp.__Usual[])</codeEntityReference></para></entry>
 <entry><para>
@@ -213,7 +213,9 @@
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Eval(XSharp.ICodeblock,XSharp.__Usual[])</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Evaluate a code block
+            </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Evaluate(System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -221,13 +223,20 @@
         </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.EVL(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Returns a non-empty value from two expressions.
+            You can use the EVL( ) function to return an appropriate substitute value instead of an empty value, such as False (.F.) or 0, from two expressions.
+            You can also use this functionality to remove empty values from calculations or operations where empty values are not supported or relevant.
+            The X# Logical value, False (.F.), and the Numeric value of 0 also evaluate to empty.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ExecName(System.Boolean)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ExecScript(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Enables you to run multiple lines of code from variables, tables, and other text at runtime.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FindClass(System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -239,13 +248,13 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ForceExt(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a string with the old file name extension replaced by a new extension.
-    </para></entry></row>
+            Returns a string with the old file name extension replaced by a new extension.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ForcePath(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a file name with a new path name substituted for the old one.
-    </para></entry></row>
+            Returns a file name with a new path name substituted for the old one.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FParamCount(System.String)</codeEntityReference></para></entry>
 <entry><para>Return the number of local arguments that a function is expecting.</para></entry></row>
@@ -255,18 +264,18 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetWordCount(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Counts the words in a string.
-    </para></entry></row>
+            Counts the words in a string.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetWordNum(System.String,System.Int32)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a specified word from a string.
-    </para></entry></row>
+            Returns a specified word from a string.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ICase(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Evaluates the results from a list of conditions (upto 100 pairs are supported).
-    </para></entry></row>
+            Evaluates the results from a list of conditions (upto 100 pairs are supported).
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ImeStatus(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
@@ -349,8 +358,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsColor</codeEntityReference></para></entry>
 <entry><para>
-      Determines whether a computer can display color.
-    </para></entry></row>
+            Determines whether a computer can display color.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsCurrency(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -387,8 +396,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsFlocked(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the table lock status.
-    </para></entry></row>
+            Returns the table lock status.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsFractional(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -453,8 +462,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsMouse</codeEntityReference></para></entry>
 <entry><para>
-      Returns true (.T.) if mouse hardware is present.
-    </para></entry></row>
+            Returns true (.T.) if mouse hardware is present.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsNil(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -484,13 +493,13 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsReadOnly(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Determines whether a table or database is opened read-only.
-    </para></entry></row>
+            Determines whether a table or database is opened read-only.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IsRlocked(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the record lock status.
-    </para></entry></row>
+            Returns the record lock status.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.IsRunningOnWindows</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -590,8 +599,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MessageBox(XSharp.__Usual,System.Int32,System.String,System.Int32)</codeEntityReference></para></entry>
 <entry><para>
-      Displays a user-defined dialog box.
-    </para></entry></row>
+            Displays a user-defined dialog box.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MethodList(System.Object)</codeEntityReference></para></entry>
 <entry><para>
@@ -690,8 +699,11 @@
             Return the name of an activated entity.
         </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Program(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>-- todo --</para></entry></row>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Program(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para>
+            Returns the name of the program at a specified program level, the name of the currently executing program, the current program level,
+            or the name of the program executing when an error occurred.
+        </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.PtrLen(System.IntPtr)</codeEntityReference></para></entry>
 <entry><para>
@@ -713,8 +725,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RemoveProperty(System.Object,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Removes a property from an object at run time.
-    </para></entry></row>
+            Removes a property from an object at run time.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.RGB(System.Byte,System.Byte,System.Byte)</codeEntityReference></para></entry>
 <entry><para>
@@ -734,8 +746,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sign(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a numeric value of 1, –1, or 0 if the specified numeric expression evaluates to a positive, negative, or 0 value.
-    </para></entry></row>
+            Returns a numeric value of 1, –1, or 0 if the specified numeric expression evaluates to a positive, negative, or 0 value.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sys(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
@@ -744,7 +756,9 @@
 <entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TextMerge(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>-- todo --</para></entry></row>
+<entry><para>
+            Provides evaluation of a character expression.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.TruePath(System.String)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -755,7 +769,7 @@
         </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.TypeString(System.UInt32)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>Return a descriptive name (in upper case) for a X# (Usual) Type</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.UnRegisterAxit(System.Object)</codeEntityReference></para></entry>
 <entry><para>
@@ -780,7 +794,7 @@
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.VarType(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
             Returns the data type of an expression.
-            VARTYPE( ) is similar to the TYPE( ) function, but VARTYPE( ) is faster and does not require quotation
+            VARTYPE( ) is similar to the TYPE( ) function, but VARTYPE( ) is faster and does not require quotation
                 marks to enclose the expression for which the data type is returned.
             </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>

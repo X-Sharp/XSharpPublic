@@ -32,7 +32,7 @@
         </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ErrorBuild(System.Exception)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>Create an error object from an exception.</para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.ErrorDialog(XSharp.Error)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>

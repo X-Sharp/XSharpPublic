@@ -52,7 +52,7 @@
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbClearScope</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>Clear the active locate condition.</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbCloseAll</codeEntityReference></para></entry>
 <entry><para>

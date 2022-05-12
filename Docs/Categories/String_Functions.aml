@@ -192,13 +192,13 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ChrTran(System.String,System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Replaces each character in a character expression that matches a character in a second character expression with the corresponding character in a third character expression.
-    </para></entry></row>
+            Replaces each character in a character expression that matches a character in a second character expression with the corresponding character in a third character expression.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ChrTranC(System.String,System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Replaces each character in a character expression that matches a character in a second character expression with the corresponding character in a third character expression.
-    </para></entry></row>
+            Replaces each character in a character expression that matches a character in a second character expression with the corresponding character in a third character expression.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ChrW(System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
@@ -248,8 +248,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(System.DateTime)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
-    </para></entry></row>
+            Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToC(XSharp.__Date)</codeEntityReference></para></entry>
 <entry><para>
@@ -288,24 +288,26 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FileToStr(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the contents of a file as a character string.
-    </para></entry></row>
+            Returns the contents of a file as a character string.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FPathName</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Return the name and path of the file that was used by File().
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FullPath(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetWordCount(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Counts the words in a string.
-    </para></entry></row>
+            Counts the words in a string.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetWordNum(System.String,System.Int32)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a specified word from a string.
-    </para></entry></row>
+            Returns a specified word from a string.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Hex2C(System.String)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -365,8 +367,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LeftC(System.String,System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a specified number of characters from a character expression, starting with the leftmost character.
-    </para></entry></row>
+            Returns a specified number of characters from a character expression, starting with the leftmost character.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Len(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -375,16 +377,16 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LenC(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the number of characters in a character expression or memo field.
-    </para></entry></row>
+            Returns the number of characters in a character expression or memo field.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Like(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>Determine if a string matches a wildcard pattern (like the wildcard pattern for the DIR command in the OS).</para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.LikeC(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Determines whether a character expression matches another character expression.
-    </para></entry></row>
+            Determines whether a character expression matches another character expression.
+        </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.LoadResString(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -413,42 +415,42 @@
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAllTrim(System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Remove leading and trailing spaces — including double-byte spaces — from a string.
+            Remove leading and trailing spaces — including double-byte spaces — from a string.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAt(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
+            Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAt2(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
+            Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAt3(System.String,System.String,System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
-            Return the position of the first occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
+            Return the position of the first occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAtC(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Return the position of the first occurrence of a sub string within a string, without regard for case — both the substring and the string can contain double-byte characters.
+            Return the position of the first occurrence of a sub string within a string, without regard for case — both the substring and the string can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAtC2(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Return the position of the first occurrence of a substring within a string, without regard for case — both the substring and the string can contain double-byte characters.
+            Return the position of the first occurrence of a substring within a string, without regard for case — both the substring and the string can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAtLine(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
+            Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBAtLine2(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
+            Return the line number of the first occurrence of a substring within a multiple line string — both the substring and the string can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBLEFT(System.String,System.UInt32)</codeEntityReference></para></entry>
@@ -463,22 +465,22 @@
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBLTrim(System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Remove leading spaces — including double-byte spaces — from a string.
+            Remove leading spaces — including double-byte spaces — from a string.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBRat(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
+            Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBRat2(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
+            Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBRat3(System.String,System.String,System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
-            Return the position of the last occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
+            Return the position of the last occurrence of a substring within a string, starting at a specific position — both the substring and the string can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBRight(System.String,System.UInt32)</codeEntityReference></para></entry>
@@ -488,7 +490,7 @@
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBRTrim(System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Remove trailing spaces — including double-byte spaces — from a string.
+            Remove trailing spaces — including double-byte spaces — from a string.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBSLen(System.String)</codeEntityReference></para></entry>
@@ -498,33 +500,33 @@
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBStuff(System.String,System.UInt32,System.UInt32,System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Insert a string into another string, optionally deleting a specified number of characters from the original string — both strings can contain double-byte characters.
+            Insert a string into another string, optionally deleting a specified number of characters from the original string — both strings can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBSubstr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-            Extract a substring from a string — both the substring and the string can contain double-byte characters.
+            Extract a substring from a string — both the substring and the string can contain double-byte characters.
             </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBSubstr2(System.String,System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
-            Extract a substring from a string, using strong typing and only two arguments — both the substring and the string can contain double-byte characters.
+            Extract a substring from a string, using strong typing and only two arguments — both the substring and the string can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBSubstr3(System.String,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
-            Extract a substring from a string, using strong typing and three required arguments — both the substring and the string can contain double-byte characters.
+            Extract a substring from a string, using strong typing and three required arguments — both the substring and the string can contain double-byte characters.
         </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.MBTrim(System.String)</codeEntityReference></para></entry>
 <entry><para>
-            Remove trailing spaces — including double-byte spaces — from a string.
+            Remove trailing spaces — including double-byte spaces — from a string.
         </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MDY(System.DateTime)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
-    </para></entry></row>
+            Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Mem2String(System.IntPtr,System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
@@ -642,8 +644,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RAt(System.String,System.String,System.Int32)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the numeric position of the last occurrence of a character expression or memo field within another character expression or memo field.
-    </para></entry></row>
+            Returns the numeric position of the last occurrence of a character expression or memo field within another character expression or memo field.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.RAt2(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -657,8 +659,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RAtC(System.String,System.String,System.Int32)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the numeric position of the last occurrence of a character expression or memo field within another character expression or memo field.
-    </para></entry></row>
+            Returns the numeric position of the last occurrence of a character expression or memo field within another character expression or memo field.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.RAtLine(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -687,8 +689,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RightC(System.String,System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the specified number of rightmost characters from a character string.
-    </para></entry></row>
+            Returns the specified number of rightmost characters from a character string.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.RTrim(System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -804,8 +806,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StrToFile(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Writes the contents of a character string to a file.
-    </para></entry></row>
+            Writes the contents of a character string to a file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.StrToFloat(System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -829,8 +831,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.StuffC(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a character string created by replacing a specified number of characters in a character expression with another character expression.
-    </para></entry></row>
+            Returns a character string created by replacing a specified number of characters in a character expression with another character expression.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SubS(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -854,15 +856,15 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SubStrC(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a character string from the given character expression or memo field.
-    </para></entry></row>
+            Returns a character string from the given character expression or memo field.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Symbol2String(XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
             Convert a symbol to string
             </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Transform(XSharp.__Date,System.String)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Transform(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
             Convert any value into a formatted string.
         </para></entry></row>
@@ -895,8 +897,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TToD(System.DateTime)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a Date value from a DateTime expression.
-    </para></entry></row>
+            Returns a Date value from a DateTime expression.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TxtWidth(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>

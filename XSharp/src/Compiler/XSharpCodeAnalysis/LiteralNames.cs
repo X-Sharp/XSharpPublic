@@ -160,6 +160,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string XSharpDataFunctionsClass = "XSharp.Data.Functions";
         internal const string XSharpRDDFunctionsClass = "XSharp.RDD.Functions";
         internal const string XSharpRTFunctionsClass = "XSharp.RT.Functions";
+        internal const string XSharpRTDebuggerFunctionsClass = "XSharp.RT.Debugger.Functions";
         internal const string XSharpVOFunctionsClass = "XSharp.VO.Functions";
         internal const string XSharpXPPFunctionsClass = "XSharp.XPP.Functions";
         internal const string XSharpVFPFunctionsClass = "XSharp.VFP.Functions";
@@ -345,7 +346,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string XSharpCore = "xsharp.core";
         internal const string XSharpData = "xsharp.data";
         internal const string XSharpRT = "xsharp.rt";
+        internal const string XSharpRTDebugger = "xsharp.rt.debugger";
         internal const string XSharpVO = "xsharp.vo";
+        internal const string XSharpRDD = "xsharp.rdd";
         internal const string XSharpXPP = "xsharp.xpp";
         internal const string XSharpVFP = "xsharp.vfp";
         internal const string SdkDefines = "sdkdefines";

@@ -202,12 +202,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region SyntaxTree
-        private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int, String>> initprocs, bool isApp, bool hasPCall, List<MemVarFieldInfo> filewidepublics)
+        private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int, String>> initprocs, bool hasPCall, List<MemVarFieldInfo> filewidepublics)
         {
 
             // Create Global Functions class with the Members to call the Init procedures
             // Vulcan only does this for DLLs. We do it for EXE too to make things more consistent
             // Methods $Init1() and $Exit() are always created.
+            var isApp = _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication();
             var members = CreateInitMembers(initprocs, isApp, hasPCall, filewidepublics);
             var modulemembers = new List<MemberDeclarationSyntax>();
             if (isApp)
@@ -252,12 +253,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     GlobalEntities.Members, eof);
             cu.XGenerated = true;
             var red = (Syntax.CompilationUnitSyntax)cu.CreateRed();
-            return CSharpSyntaxTree.Create(red);
+            return CSharpSyntaxTree.Create(red, _options, "CompileGeneratedCode.prg", System.Text.Encoding.UTF8);
         }
-        public static SyntaxTree DefaultRTSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp)
+        public static SyntaxTree DefaultRTSyntaxTree(IEnumerable<SyntaxTree> trees, CSharpParseOptions options)
         {
+            var isApp = options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication();
             // Trees is NEVER empty !
-            CSharpParseOptions options = (CSharpParseOptions)trees.First().Options;
             // Collect Init procedures in all trees
             var initprocs = new List<Tuple<int, string>>();
             var filewidepublics = new List<MemVarFieldInfo>();
@@ -284,7 +285,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             var t = getTransform(options);
-            return t.GenerateDefaultSyntaxTree(initprocs, isApp, hasPCall, filewidepublics);
+            return t.GenerateDefaultSyntaxTree(initprocs, hasPCall, filewidepublics);
         }
 
         public static string VOGlobalClassName(CSharpParseOptions options)

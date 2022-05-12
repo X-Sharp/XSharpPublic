@@ -150,17 +150,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.Stop, ErrorCode.ERR_TypeExpected));
             }
-            foreach (var param in context.ParamList._Params)
+            if (context.ParamList != null)
             {
-                // parameters for local functions should have type
-                if (param.Type == null)
+                foreach (var param in context.ParamList._Params)
                 {
-                    _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_TypeExpected));
-
+                    // parameters for delegate should have type
+                    if (param.Type == null)
+                    {
+                        _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_TypeExpected));
+                    }
                 }
             }
         }
-
 
         public override void ExitLocalfuncproc([NotNull] XSharpParser.LocalfuncprocContext context)
         {

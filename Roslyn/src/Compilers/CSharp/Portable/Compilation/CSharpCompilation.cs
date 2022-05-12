@@ -864,25 +864,27 @@ namespace Microsoft.CodeAnalysis.CSharp
                 i++;
             }
 #if XSHARP
-            if (!trees.IsEmpty() && ! Options.HasDefaultTree && !this.IsSubmission)
+            if (!trees.IsEmpty() && !Options.HasDefaultTree && !this.IsSubmission)
             {
                 SyntaxTree? def = null ;
-                bool isApp = Options.OutputKind.IsApplication();
+                var parseOptions = (CSharpParseOptions)trees.First().Options;
+                var isApp = Options.OutputKind.IsApplication();
+                var noMain = isApp && string.IsNullOrEmpty(Options.MainTypeName);
                 if (Options.HasRuntime)
                 {
-                    if (isApp && String.IsNullOrEmpty(Options.MainTypeName))
+                    if (noMain)
                     {
-                        Options.MainTypeName = InternalSyntax.XSharpTreeTransformationRT.VOGlobalClassName((CSharpParseOptions)trees.First().Options);
+                        Options.MainTypeName = InternalSyntax.XSharpTreeTransformationRT.VOGlobalClassName(parseOptions);
                     }
-                    def = InternalSyntax.XSharpTreeTransformationRT.DefaultRTSyntaxTree(trees, isApp);
+                    def = InternalSyntax.XSharpTreeTransformationRT.DefaultRTSyntaxTree(trees, parseOptions);
                 }
                 else /* core dialect */
                 {
-                    if (isApp && String.IsNullOrEmpty(Options.MainTypeName))
+                    if (noMain)
                     {
                         Options.MainTypeName = XSharpSpecialNames.FunctionsClass;
                     }
-                    def = InternalSyntax.XSharpTreeTransformationCore.DefaultXSharpSyntaxTree(trees, isApp, Options.TargetDLL);
+                    def = InternalSyntax.XSharpTreeTransformationCore.DefaultXSharpSyntaxTree(trees, parseOptions);
                 }
                 syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
                 Options.HasDefaultTree = true;

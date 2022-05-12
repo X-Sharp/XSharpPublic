@@ -66,6 +66,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         VOGuiClasses = 14,
         VOInternetClasses = 15,
         VOConsoleClasses = 16,
+        RTDebugger = 17,
+        VOReportClasses = 18,
     }
 
     public sealed partial class CSharpParseOptions

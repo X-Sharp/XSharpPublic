@@ -8,8 +8,9 @@ BEGIN NAMESPACE XSharp
     /// <summary>
     /// This interface defines Compile time and runtime codeblocks
     /// </summary>
-    /// <seealso cref="Codeblock"/>
-    INTERFACE ICodeblock
+    /// <seealso cref="T:XSharp.Codeblock"/>
+    /// <seealso cref="T:XSharp.ICodeblock2"/>
+    interface ICodeblock
         /// <summary>Evaluate the codeblock</summary>
         METHOD	EvalBlock( args PARAMS OBJECT[]) AS OBJECT
         /// <summary>
@@ -24,6 +25,8 @@ BEGIN NAMESPACE XSharp
     /// that returns the 'real' returntype of the codeblock, before
     /// customizations are done to the value (for example for Foxpro where NIL gets converted to FALSE)
     /// </summary>
+    /// <seealso cref="T:XSharp.Codeblock"/>
+    /// <seealso cref="T:XSharp.ICodeblock"/>
     INTERFACE ICodeblock2 INHERIT ICodeblock
         /// <summary>
         /// Returns the real /original return type of the EvalBlock() method
@@ -57,6 +60,7 @@ BEGIN NAMESPACE XSharp
 	/// </summary>
 	/// <seealso cref="SetMacroDuplicatesResolver"/>
 	/// <seealso cref="MacroCompilerResolveAmbiguousMatch"/>
+    /// <seealso cref="IMacroCompiler"/>
 	INTERFACE IMacroCompiler2 INHERIT IMacroCompiler
         /// <summary>This property allows to set a delegate that may be used to resolve ambigous references</summary>
         PROPERTY Resolver AS MacroCompilerResolveAmbiguousMatch GET SET
@@ -68,6 +72,7 @@ BEGIN NAMESPACE XSharp
 	/// <seealso cref="SetMacroCompiler"/>
 	/// <seealso cref="GetMacroCompiler"/>
 	/// <seealso cref="ICodeblock"/>
+    /// <seealso cref="IMacroCompiler2"/>
 	INTERFACE IMacroCompiler
 		/// <summary>Compile a string into a runtime codeblock.</summary>
 		/// <param name="macro">String to compile</param>

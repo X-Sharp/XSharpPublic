@@ -1355,10 +1355,10 @@
         <seealso cref='O:XSharp.RT.Functions.AScan'>AScan</seealso>
         <seealso cref='O:XSharp.RT.Functions.ASize'>ASize</seealso>
         <seealso cref='O:XSharp.RT.Functions.ASort'>ASort</seealso>
-        <seealso>LOCAL</seealso>
-        <seealso>PRIVATE</seealso>
-        <seealso>PUBLIC</seealso>
-        <seealso>STATIC</seealso>
+        <seealsocmd>LOCAL</seealsocmd>
+        <seealsocmd>PRIVATE</seealsocmd>
+        <seealsocmd>PUBLIC</seealsocmd>
+        <seealsocmd>STATIC</seealsocmd>
     </arraynew>
     <arrayprotect>
         <summary>
@@ -3374,7 +3374,7 @@
                 &#0009;ErrorBlock(cbSaveHandler)
             </code>
         </example>
-        <seealso>BEGIN SEQUENCE</seealso>
+        <seealsocmd>BEGIN SEQUENCE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.CanBreak'>CanBreak</seealso>
     </break>
     <buffer>
@@ -3418,9 +3418,9 @@
                 END SEQUENCE? CanBreak()&#0009;&#0009;// FALSE
             </code>
         </example>
-        <seealso>BEGIN SEQUENCE</seealso>
+        <seealsocmd>BEGIN SEQUENCE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions._Break'>_Break</seealso>
-        <seealso>QUIT</seealso>
+        <seealsocmd>QUIT</seealsocmd>
     </canbreak>
     <cast2psz>
         <summary>
@@ -4775,7 +4775,7 @@
             The following example adds records from the OLD.DBF file:
             <code language="X#">DBApp("old.dbf")</code>
         </example>
-        <seealso>APPEND FROM</seealso>
+        <seealsocmd>APPEND FROM</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbAppDelim'>DBAppDelim</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbAppSdf'>DBAppSDF</seealso>
         <seealso cref='O:VO.DbServer.AppendDB'>DBServer:AppendDB method</seealso>
@@ -4827,7 +4827,7 @@
                 DBAppDelim("srcdelim.txt")
             </code>
         </example>
-        <seealso>APPEND FROM</seealso>
+        <seealsocmd>APPEND FROM</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbApp'>DBApp</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbAppSdf'>DBAppSDF</seealso>
         <seealso cref='O:VO.DbServer.AppendDelimited'>DBServer:AppendDelimited</seealso>
@@ -4894,7 +4894,7 @@
                 ENDIF
             </code>
         </example>
-        <seealso>APPEND BLANK</seealso>
+        <seealsocmd>APPEND BLANK</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbAppend'>VODBAppend</seealso>
         <seealso cref='O:VO.DbServer.Append'>DBServer:Append</seealso>
     </dbappend>
@@ -4936,7 +4936,7 @@
                 DBAppSDF("srcsdf")
             </code>
         </example>
-        <seealso>APPEND FROM</seealso>
+        <seealsocmd>APPEND FROM</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbApp'>DBApp</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbAppDelim'>DBAppDelim</seealso>
         <seealso cref='O:VO.DbServer.AppendSDF'>DBServer:AppendSDF</seealso>
@@ -4973,7 +4973,7 @@
         </example>
         <seealso cref='O:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetFilter'>DBSetFilter</seealso>
-        <seealso>SET FILTER</seealso>
+        <seealsocmd>SET FILTER</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbClearFilter'>VODBClearFilter</seealso>
         <seealso cref='O:VO.DbServer.ClearFilter'>DBServer:ClearFilter</seealso>
     </dbclearfilter>
@@ -5024,7 +5024,7 @@
                 COPY TO temp SDF
             </code>
         </example>
-        <seealso>CLOSE</seealso>
+        <seealsocmd>CLOSE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbCreateIndex'>DBCreateIndex</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbCreateOrder'>DBCreateOrder</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetIndex'>DBSetIndex</seealso>
@@ -5074,7 +5074,7 @@
         </example>
         <seealso cref='O:VO.DbServer.ClearRelation'>DBServer:ClearRelation</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetRelation'>DBSetRelation</seealso>
-        <seealso>SET RELATION</seealso>
+        <seealsocmd>SET RELATION</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbClearRelation'>VODBClearRelation</seealso>
     </dbclearrelation>
     <dbcloseall>
@@ -5114,7 +5114,7 @@
                 DBCloseAll()&#0009;&#0009;&#0009;&#0009;// Close all work areas
             </code>
         </example>
-        <seealso>CLOSE</seealso>
+        <seealsocmd>CLOSE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbCloseArea'>DBCloseArea</seealso>
         <seealso cref='O:VO.DbServer.Close'>DBServer:Close</seealso>
         <seealso cref='O:XSharp.RT.Functions.VoDbCloseAll'>VODBCloseAll</seealso>
@@ -5157,12 +5157,12 @@
                 ENDIF
             </code>
         </example>
-        <seealso>CLOSE</seealso>
+        <seealsocmd>CLOSE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbCloseAll'>DBCloseAll</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbCommit'>DBCommit</seealso>
         <seealso cref='O:VO.DbServer.Close'>DBServer:Close</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbUseArea'>DBUseArea</seealso>
-        <seealso>USE</seealso>
+        <seealsocmd>USE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbCloseArea'>VODBCloseArea</seealso>
     </dbclosearea>
     <dbcommit>
@@ -5288,7 +5288,7 @@
                 ENDDO
             </code>
         </example>
-        <seealso>CONTINUE</seealso>
+        <seealsocmd>CONTINUE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbLocate'>DBLocate</seealso>
         <seealso cref='O:VO.DbServer.Continue'>DBServer:Continue</seealso>
         <seealso cref='O:XSharp.RT.Functions.VoDbContinue'>VODBContinue</seealso>
@@ -5337,7 +5337,7 @@
                 DBCopy("newdb.dbf")
             </code>
         </example>
-        <seealso>COPY TO</seealso>
+        <seealsocmd>COPY TO</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbCopyDelim'>DBCopyDelim</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbCopySDF'>DBCopySDF</seealso>
         <seealso cref='O:VO.DbServer.CopyDB'>DBServer:CopyDB</seealso>
@@ -5383,7 +5383,7 @@
                 ENDIF
             </code>
         </example>
-        <seealso>COPY TO</seealso>
+        <seealsocmd>COPY TO</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbCopy'>DBCopy</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbCopySDF'>DBCopySDF</seealso>
         <seealso cref='O:VO.DbServer.CopyDelimited'>DBServer:CopyDelimited</seealso>
@@ -5424,7 +5424,7 @@
                 ENDIF
             </code>
         </example>
-        <seealso>COPY TO</seealso>
+        <seealsocmd>COPY TO</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbCopy'>DBCopy</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbCopyDelim'>DBCopyDelim</seealso>
         <seealso cref='O:VO.DbServer.CopySDF'>DBServer:CopySDF</seealso>
@@ -5464,7 +5464,7 @@
                 ENDIF
             </code>
         </example>
-        <seealso>COPY STRUCTURE</seealso>
+        <seealsocmd>COPY STRUCTURE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbCopyXStruct'>DBCopyXStruct</seealso>
         <seealso cref='O:VO.DbServer.CopyStructure'>DBServer:CopyStructure</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbStruct'>DBStruct</seealso>
@@ -5520,7 +5520,7 @@
                 ENDIF
             </code>
         </example>
-        <seealso>COPY STRUCTURE EXTENDED</seealso>
+        <seealsocmd>COPY STRUCTURE EXTENDED</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbCopyStruct'>DBCopyStruct</seealso>
         <seealso cref='O:VO.DbServer.CopyStructure'>DBServer:CopyStructure</seealso>
         <seealso cref='O:XSharp.Core.Functions.SetAnsi'>SetAnsi</seealso>
@@ -5608,8 +5608,8 @@
                 DBCreate("Name", aDBF, "DBFMDX")
             </code>
         </example>
-        <seealso>COPY STRUCTURE EXTENDED</seealso>
-        <seealso>CREATE FROM</seealso>
+        <seealsocmd>COPY STRUCTURE EXTENDED</seealsocmd>
+        <seealsocmd>CREATE FROM</seealsocmd>
         <seealso cref='O:VO.DbServer.CopyStructure'>DBServer:CopyStructure</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbStruct'>DBStruct</seealso>
         <seealso cref='O:XSharp.Core.Functions.SetAnsi'>SetAnsi</seealso>
@@ -5684,7 +5684,7 @@
         <seealso cref='O:XSharp.RT.Functions.DbSetIndex'>DBSetIndex</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetOrder'>DBSetOrder</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetOrderCondition'>DBSetOrderCondition</seealso>
-        <seealso>INDEX</seealso>
+        <seealsocmd>INDEX</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.NetErr'>NetErr</seealso>
         <seealso cref='O:XSharp.RT.Functions.RddSetDefault'>RDDSetDefault</seealso>
     </dbcreateindex>
@@ -5762,7 +5762,7 @@
         <seealso cref='O:XSharp.RT.Functions.DbSetIndex'>DBSetIndex</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetOrder'>DBSetOrder</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetOrderCondition'>DBSetOrderCondition</seealso>
-        <seealso>INDEX</seealso>
+        <seealsocmd>INDEX</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.RddSetDefault'>RDDSetDefault</seealso>
     </dbcreateorder>
     <dbdelete>
@@ -5802,9 +5802,9 @@
         </example>
         <seealso cref='O:XSharp.RT.Functions.DbRecall'>DBRecall</seealso>
         <seealso cref='O:VO.DbServer.Delete'>DBServer:Delete</seealso>
-        <seealso>DELETE</seealso>
+        <seealsocmd>DELETE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.Deleted'>Deleted</seealso>
-        <seealso>RECALL</seealso>
+        <seealsocmd>RECALL</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbDelete'>VODBDelete</seealso>
     </dbdelete>
     <dbdeleteorder>
@@ -6105,7 +6105,7 @@
         <seealso cref='O:XSharp.RT.Functions.DbRelation'>DBRelation</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbRSelect'>DBRSelect</seealso>
         <seealso cref='P:VO.DbServer.Filter'>DBServer:Filter</seealso>
-        <seealso>SET FILTER</seealso>
+        <seealsocmd>SET FILTER</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbFilter'>VODBFilter</seealso>
     </dbfilter>
     <dbgetselect>
@@ -6175,7 +6175,7 @@
         <seealso cref='O:VO.DbServer.GoBottom'>DBServer:GoBottom</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSkip'>DBSkip</seealso>
         <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
-        <seealso>GO</seealso>
+        <seealsocmd>GO</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbGoBottom'>VODBGoBottom</seealso>
     </dbgobottom>
     <dbgoto>
@@ -6220,7 +6220,7 @@
         <seealso cref='O:VO.DbServer.GoTo'>DBServer:GoTo</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSkip'>DBSkip</seealso>
         <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
-        <seealso>GO</seealso>
+        <seealsocmd>GO</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbGoto'>VODBGoTo</seealso>
     </dbgoto>
     <dbgotop>
@@ -6259,7 +6259,7 @@
         <seealso cref='O:VO.DbServer.GoTop'>DBServer:GoTop</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSkip'>DBSkip</seealso>
         <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
-        <seealso>GO</seealso>
+        <seealsocmd>GO</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbGoTop'>VODBGoTop</seealso>
     </dbgotop>
     <dbinfo>
@@ -6439,7 +6439,7 @@
             </code>
         </example>
         <seealso cref='O:VO.DbServer.Join'>DBServer:Join</seealso>
-        <seealso>JOIN</seealso>
+        <seealsocmd>JOIN</seealsocmd>
     </dbjoin>
     <dblocate>
         <summary>
@@ -6482,7 +6482,7 @@
         <seealso cref='O:XSharp.RT.Functions.DbContinue'>DBContinue</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSeek'>DBSeek</seealso>
         <seealso cref='O:VO.DbServer.Locate'>DBServer:Locate</seealso>
-        <seealso>LOCATE</seealso>
+        <seealsocmd>LOCATE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbLocate'>VODBLocate</seealso>
     </dblocate>
     <dbmemoext>
@@ -6774,9 +6774,9 @@
         </example>
         <seealso cref='O:XSharp.RT.Functions.DbDelete'>DBDelete</seealso>
         <seealso cref='O:VO.DbServer.Recall'>DBServer:Recall</seealso>
-        <seealso>DELETE</seealso>
+        <seealsocmd>DELETE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.Deleted'>Deleted</seealso>
-        <seealso>RECALL</seealso>
+        <seealsocmd>RECALL</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbRecall'>VODBRecall</seealso>
     </dbrecall>
     <dbrecordinfo>
@@ -6876,9 +6876,9 @@
         <seealso cref='O:VO.DbServer.SetIndex'>DBServer:SetIndex DBServer:SetOrderCondition</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetIndex'>DBSetIndex</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetOrderCondition'>DBSetOrderCondition</seealso>
-        <seealso>REINDEX</seealso>
+        <seealsocmd>REINDEX</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.SetExclusive'>SetExclusive</seealso>
-        <seealso>USE</seealso>
+        <seealsocmd>USE</seealsocmd>
     </dbreindex>
     <dbrelation>
         <summary>
@@ -6929,7 +6929,7 @@
         <seealso cref='O:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbRSelect'>DBRSelect</seealso>
         <seealso cref='O:VO.DbServer.Relation'>DBServer:Relation</seealso>
-        <seealso>SET RELATION</seealso>
+        <seealsocmd>SET RELATION</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbRelation'>VODBRelation</seealso>
     </dbrelation>
     <dbrlock>
@@ -6994,8 +6994,8 @@
         <seealso cref='O:XSharp.RT.Functions.NewIndexLock'>NewIndexLock</seealso>
         <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
         <seealso cref='O:XSharp.Core.Functions.SetExclusive'>SetExclusive</seealso>
-        <seealso>UNLOCK</seealso>
-        <seealso>USE</seealso>
+        <seealsocmd>UNLOCK</seealsocmd>
+        <seealsocmd>USE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbRlock'>VODBRLock</seealso>
     </dbrlock>
     <dbrlocklist>
@@ -7072,7 +7072,7 @@
         </example>
         <seealso cref='O:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbRelation'>DBRelation</seealso>
-        <seealso>SET RELATION</seealso>
+        <seealsocmd>SET RELATION</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbRSelect'>VODBRSelect</seealso>
     </dbrselect>
     <dbrunlock>
@@ -7145,7 +7145,7 @@
         <seealso cref='O:XSharp.RT.Functions.DbSkip'>DBSkip</seealso>
         <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
         <seealso cref='O:XSharp.RT.Functions.Found'>Found</seealso>
-        <seealso>SEEK</seealso>
+        <seealsocmd>SEEK</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.SetSoftSeek'>SetSoftSeek</seealso>
         <seealso cref='O:XSharp.RT.Functions.VoDbSeek'>VODBSeek</seealso>
     </dbseek>
@@ -7213,7 +7213,7 @@
         <seealso cref='O:XSharp.RT.Functions.DbUseArea'>DBUseArea</seealso>
         <seealso cref='O:XSharp.RT.Functions.Select'>SELECT</seealso>
         <seealso cref='O:XSharp.RT.Functions.Select'>Select</seealso>
-        <seealso>USE</seealso>
+        <seealsocmd>USE</seealsocmd>
     </dbselectarea>
     <dbsetdriver>
         <summary>
@@ -7287,8 +7287,8 @@
         <seealso cref='O:XSharp.RT.Functions.DbClearFilter'>DBClearFilter</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
         <seealso cref='O:VO.DbServer.SetFilter'>DBServer:SetFilter</seealso>
-        <seealso>SET FILTER</seealso>
-        <seealso>SET OPTIMIZE</seealso>
+        <seealsocmd>SET FILTER</seealsocmd>
+        <seealsocmd>SET OPTIMIZE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbSetFilter'>VODBSetFilter</seealso>
     </dbsetfilter>
     <dbsetfound>
@@ -7378,8 +7378,8 @@
         <seealso cref='O:VO.DbServer.SetIndex'>DBServer:SetIndex</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetOrder'>DBSetOrder</seealso>
         <seealso cref='O:XSharp.Core.Functions.NetErr'>NetErr</seealso>
-        <seealso>SET INDEX</seealso>
-        <seealso>USE</seealso>
+        <seealsocmd>SET INDEX</seealsocmd>
+        <seealsocmd>USE</seealsocmd>
     </dbsetindex>
     <dbsetorder>
         <summary>
@@ -7423,7 +7423,7 @@
         <seealso cref='O:VO.DbServer.SetIndex'>DBServer:SetIndex</seealso>
         <seealso cref='O:VO.DbServer.SetOrder'>DBServer:SetOrder</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetIndex'>DBSetIndex</seealso>
-        <seealso>SET ORDER</seealso>
+        <seealsocmd>SET ORDER</seealsocmd>
     </dbsetorder>
     <dbsetordercondition>
         <summary>
@@ -7550,7 +7550,7 @@
         <seealso cref='O:VO.DbServer.OrderKeyDel'>DBServer:OrderKeyDel</seealso>
         <seealso cref='O:VO.DbServer.SetOrderCondition'>DBServer:SetOrderCondition</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbOrderInfo'>DBOrderInfo</seealso>
-        <seealso>INDEX</seealso>
+        <seealsocmd>INDEX</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.OrdKeyAdd'>OrdKeyAdd</seealso>
         <seealso cref='O:XSharp.RT.Functions.OrdKeyDel'>OrdKeyDel</seealso>
         <seealso cref='O:XSharp.RT.Functions.OrdScope'>OrdScope</seealso>
@@ -7606,7 +7606,7 @@
         <seealso cref='O:VO.DbServer.Relation'>DBServer:Relation</seealso>
         <seealso cref='O:VO.DbServer.SetRelation'>DBServer:SetRelation</seealso>
         <seealso cref='O:XSharp.RT.Functions.Found'>Found</seealso>
-        <seealso>SET RELATION</seealso>
+        <seealsocmd>SET RELATION</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbSetRelation'>VODBSetRelation</seealso>
     </dbsetrelation>
     <dbsetrestoreworkarea>
@@ -7690,7 +7690,7 @@
         <seealso cref='O:VO.DbServer.Seek'>DBServer:Seek</seealso>
         <seealso cref='O:VO.DbServer.Skip'>DBServer:Skip</seealso>
         <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
-        <seealso>SKIP</seealso>
+        <seealsocmd>SKIP</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbSkip'>VODBSkip</seealso>
     </dbskip>
     <dbsort>
@@ -7750,7 +7750,7 @@
             </code>
         </example>
         <seealso cref='O:VO.DbServer.Sort'>DBServer:Sort</seealso>
-        <seealso>SORT</seealso>
+        <seealsocmd>SORT</seealsocmd>
     </dbsort>
     <dbstruct>
         <summary>
@@ -7795,7 +7795,7 @@
                 QOut(aField[DBS_DEC]), QOut(aField[DBS_ALIAS])})
             </code>
         </example>
-        <seealso>COPY STRUCTURE EXTENDED</seealso>
+        <seealsocmd>COPY STRUCTURE EXTENDED</seealsocmd>
         <seealso cref='O:VO.DbServer.CopyStructure'>DBServer:CopyStructure</seealso>
     </dbstruct>
     <dbsymselect>
@@ -7870,7 +7870,7 @@
             </code>
         </example>
         <seealso cref='O:VO.DbServer.Total'>DBServer:Total</seealso>
-        <seealso>TOTAL</seealso>
+        <seealsocmd>TOTAL</seealsocmd>
     </dbtotal>
     <dbtrans>
         <summary>
@@ -7920,7 +7920,7 @@
         </example>
         <seealso cref='O:XSharp.RT.Functions.DbCopy'>DBCopy</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbStruct'>DBStructFunction</seealso>
-        <seealso>SORT</seealso>
+        <seealsocmd>SORT</seealsocmd>
     </dbtrans>
     <dbunlock>
         <summary>
@@ -8048,7 +8048,7 @@
         <seealso cref='O:VO.DbServer.Update'>DBServer:Update</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbUpdate'>DBUpdate</seealso>
         <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
-        <seealso>UPDATE</seealso>
+        <seealsocmd>UPDATE</seealsocmd>
     </dbupdate>
     <dbusearea>
         <summary>
@@ -8118,7 +8118,7 @@
         <seealso cref='O:XSharp.Core.Functions.NetErr'>NetErr</seealso>
         <seealso cref='O:XSharp.RT.Functions.RddSetDefault'>RDDSetDefault</seealso>
         <seealso cref='O:XSharp.RT.Functions.Select'>Select</seealso>
-        <seealso>USE</seealso>
+        <seealsocmd>USE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbUseArea'>VODBUseArea</seealso>
     </dbusearea>
     <dbzap>
@@ -8161,8 +8161,8 @@
         <seealso cref='O:XSharp.RT.Functions.DbPack'>DBPack</seealso>
         <seealso cref='O:VO.DbServer.Delete'>DBServer:Delete</seealso>
         <seealso cref='O:VO.DbServer.Zap'>DBServer:Zap</seealso>
-        <seealso>DELETE</seealso>
-        <seealso>PACK</seealso>
+        <seealsocmd>DELETE</seealsocmd>
+        <seealsocmd>PACK</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.SetExclusive'>SetExclusive</seealso>
     </dbzap>
     <debout>
@@ -8322,7 +8322,7 @@
         <example>
         </example>
         <seealso cref='T:XSharp.Error'>Error Class</seealso>
-        <seealso>ErrorGen</seealso>
+        <seealsocmd>ErrorGen</seealsocmd>
     </deferrorgen>
     <deleted>
         <summary>
@@ -8369,7 +8369,7 @@
         </remarks>
         <example>
         </example>
-        <seealso>GetStorageNames</seealso>
+        <seealsocmd>GetStorageNames</seealsocmd>
     </deletestorage>
     <descend>
         <summary>
@@ -8415,8 +8415,8 @@
         <seealso cref='O:XSharp.RT.Functions.DbCreateOrder'>DBCreateOrder</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSeek'>DBSeek</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetOrderCondition'>DBSetOrderCondition</seealso>
-        <seealso>INDEX</seealso>
-        <seealso>SEEK</seealso>
+        <seealsocmd>INDEX</seealsocmd>
+        <seealsocmd>SEEK</seealsocmd>
     </descend>
 
 
@@ -8555,8 +8555,8 @@
                 &#0009;RETURN TRUE
             </code>
         </example>
-        <seealso>_Or</seealso>
-        <seealso>operator__OrADir</seealso>
+        <seealsocmd>_Or</seealsocmd>
+        <seealsocmd>operator__OrADir</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.AEval'>AEval</seealso>
         <seealso cref='O:XSharp.Core.Functions.CurDir'>CurDir</seealso>
     </directory>
@@ -9266,9 +9266,9 @@
             </code>
             For a more complete example of EncodeBase64(), see the Mime Encoding sample application (CAVOxx\SAMPLES\INTERNET\MIME\MENCODE.AEF).
         </example>
-        <seealso>CLASS CEmail</seealso>
-        <seealso>CLASS CMailAbstract</seealso>
-        <seealso>CLASS CSmtp</seealso>
+        <seealsocmd>CLASS CEmail</seealsocmd>
+        <seealsocmd>CLASS CMailAbstract</seealsocmd>
+        <seealsocmd>CLASS CSmtp</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.DecodeBase64'>DecodeBase64</seealso>
     </encodebase64>
     <enforcenumeric>
@@ -9426,12 +9426,12 @@
             </code>
         </example>
         <seealso cref='O:XSharp.RT.Functions.Bof'>BOF</seealso>
-        <seealso>DO WHILE</seealso>
+        <seealsocmd>DO WHILE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.Found'>Found</seealso>
         <seealso cref='O:XSharp.RT.Functions.LastRec'>LastRec</seealso>
-        <seealso>LOCATE</seealso>
+        <seealsocmd>LOCATE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.RecNo'>RecNo</seealso>
-        <seealso>SEEK</seealso>
+        <seealsocmd>SEEK</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbEof'>VODBEOF</seealso>
         <seealso cref='P:VO.DbServer.EoF'>DBServer:EoF</seealso>
     </eof>
@@ -9499,8 +9499,8 @@
             This example improves on the previous example.  Instead of setting up ErrorBlock({|oError| _Break(oError)}) which just does a BREAK without taking advantage of the facilities of
             the error system (for example, VOERROR.LOG), you could set up an Init method for the Error class as follows:
         </example>
-        <seealso>BEGIN SEQUENCE</seealso>
-        <seealso>ErrorSys</seealso>
+        <seealsocmd>BEGIN SEQUENCE</seealsocmd>
+        <seealsocmd>ErrorSys</seealsocmd>
     </errorblock>
     <errorcount>
         <summary>
@@ -9541,9 +9541,9 @@
         </remarks>
         <example>
         </example>
-        <seealso>DefErrorGen</seealso>
+        <seealsocmd>DefErrorGen</seealsocmd>
         <seealso cref='O:XSharp.VO.Functions.ErrorFunc'>ErrorFunc</seealso>
-        <seealso>ErrorSys</seealso>
+        <seealsocmd>ErrorSys</seealsocmd>
     </errorgen>
     <errorlevel>
         <summary>
@@ -9626,7 +9626,7 @@
         <example>
         </example>
         <seealso cref='O:XSharp.RT.Functions.ErrorBlock'>ErrorBlock</seealso>
-        <seealso>ErrorGen</seealso>
+        <seealsocmd>ErrorGen</seealsocmd>
     </errorsys>
     <errstring>
         <summary>
@@ -10291,8 +10291,8 @@
                 ENDIF
             </code>
         </example>
-        <seealso>CLOSE</seealso>
-        <seealso>ERASE</seealso>
+        <seealsocmd>CLOSE</seealsocmd>
+        <seealsocmd>ERASE</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.FError'>FError</seealso>
         <seealso cref='O:XSharp.Core.Functions.FRename'>FRename</seealso>
     </ferase>
@@ -10401,7 +10401,7 @@
                 NEXT
             </code>
         </example>
-        <seealso>_Or</seealso>
+        <seealsocmd>_Or</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.FAttrib'>FAttrib</seealso>
         <seealso cref='O:XSharp.RT.Functions.FCount'>FCount</seealso>
         <seealso cref='O:XSharp.Core.Functions.FDate'>FDate</seealso>
@@ -10470,7 +10470,7 @@
                 ENDIF
             </code>
         </example>
-        <seealso>_Or</seealso>
+        <seealsocmd>_Or</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.FAttrib'>FAttrib</seealso>
         <seealso cref='O:XSharp.Core.Functions.FDate'>FDate</seealso>
         <seealso cref='O:XSharp.Core.Functions.FFCount'>FFCount</seealso>
@@ -11698,12 +11698,12 @@
                 ENDDO
             </code>
         </example>
-        <seealso>CONTINUE</seealso>
+        <seealsocmd>CONTINUE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbSetFound'>DBSetFound</seealso>
         <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
-        <seealso>LOCATE</seealso>
-        <seealso>SEEK</seealso>
-        <seealso>SET RELATION</seealso>
+        <seealsocmd>LOCATE</seealsocmd>
+        <seealsocmd>SEEK</seealsocmd>
+        <seealsocmd>SET RELATION</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.VoDbFound'>VODBFound</seealso>
     </found>
     <fparamcount>
@@ -12290,7 +12290,7 @@
         <seealso cref='O:XSharp.Core.Functions.FErase'>FErase</seealso>
         <seealso cref='O:XSharp.Core.Functions.FError'>FError</seealso>
         <seealso cref='O:XSharp.Core.Functions.File'>File</seealso>
-        <seealso>RENAME</seealso>
+        <seealsocmd>RENAME</seealsocmd>
     </frename>
     <frewind>
         <summary>
@@ -12913,7 +12913,7 @@
         </remarks>
         <example>
         </example>
-        <seealso>GetShellMajorVersion Function</seealso>
+        <seealsocmd>GetShellMajorVersion Function</seealsocmd>
     </getdllmajorversion>
     <getdoserror>
         <summary>
@@ -13021,7 +13021,7 @@
                 ? FFirst("*.txt", GetFAttr("H"))
             </code>
         </example>
-        <seealso>_Or</seealso>
+        <seealsocmd>_Or</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.FAttrib'>FAttrib</seealso>
     </getfattr>
     <getfmask>
@@ -13151,7 +13151,7 @@
         </remarks>
         <example>
         </example>
-        <seealso>GetDLLMajorVersion Function</seealso>
+        <seealsocmd>GetDLLMajorVersion Function</seealsocmd>
     </getshellmajorversion>
     <getstoragenames>
         <summary>
@@ -13197,7 +13197,7 @@
 
             OLE Library
         </example>
-        <seealso>DeleteStorage</seealso>
+        <seealsocmd>DeleteStorage</seealsocmd>
     </getstoragenames>
     <getsystemmessage>
         <summary>
@@ -15113,7 +15113,7 @@
                 QOut(LastRec(), Sales-&gt;LastRec())
             </code>
         </example>
-        <seealso>COUNT</seealso>
+        <seealsocmd>COUNT</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbInfo'>DBInfo</seealso>
         <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
         <seealso cref='O:XSharp.RT.Functions.VoDbLastRec'>VODBLastRec</seealso>
@@ -15273,7 +15273,7 @@
                 END
             </code>
         </example>
-        <seealso>RESOURCE</seealso>
+        <seealsocmd>RESOURCE</seealsocmd>
     </loadresstring>
     <lobyte>
         <summary>
@@ -15474,7 +15474,7 @@
                 &#0009;RETURN 0
             </code>
         </example>
-        <seealso>SetJmp</seealso>
+        <seealsocmd>SetJmp</seealsocmd>
     </longjmp>
     <lower>
         <summary>
@@ -15681,7 +15681,7 @@
             </code>
         </example>
         <seealso cref='O:XSharp.Core.Functions.MakeLong'>MakeLong</seealso>
-        <seealso>MakeShort</seealso>
+        <seealsocmd>MakeShort</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.MakeWord'>MakeWord</seealso>
     </makedword>
     <makelong>
@@ -15702,7 +15702,7 @@
             </code>
         </example>
         <seealso cref='O:XSharp.Core.Functions.MakeDWord'>MakeDword</seealso>
-        <seealso>MakeShort</seealso>
+        <seealsocmd>MakeShort</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.MakeWord'>MakeWord</seealso>
     </makelong>
     <makeshort>
@@ -15745,7 +15745,7 @@
         </example>
         <seealso cref='O:XSharp.Core.Functions.MakeDWord'>MakeDword</seealso>
         <seealso cref='O:XSharp.Core.Functions.MakeLong'>MakeLong</seealso>
-        <seealso>MakeShort</seealso>
+        <seealsocmd>MakeShort</seealsocmd>
     </makeword>
     <massign>
         <summary>
@@ -18109,11 +18109,11 @@
                 ENDIF
             </code>
         </example>
-        <seealso>APPEND BLANK</seealso>
+        <seealsocmd>APPEND BLANK</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbRLock'>DBRLock</seealso>
         <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
         <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
-        <seealso>USE</seealso>
+        <seealsocmd>USE</seealsocmd>
     </neterr>
     <netname>
         <summary>
@@ -18531,7 +18531,7 @@
         </remarks>
         <example>
         </example>
-        <seealso>OleDateTime Class</seealso>
+        <seealsocmd>OleDateTime Class</seealsocmd>
     </oledatetimeasdate>
     <ooptree>
         <summary>
@@ -18849,7 +18849,7 @@
                 // First will now be processed in ascending order
             </code>
         </example>
-        <seealso>INDEX</seealso>
+        <seealsocmd>INDEX</seealsocmd>
     </orddescend>
     <orddestroy>
         <summary>
@@ -19432,9 +19432,9 @@
             </code>
         </example>
         <seealso cref='O:XSharp.RT.Functions.DbOrderInfo'>DBOrderInfo</seealso>
-        <seealso>SET SCOPE</seealso>
-        <seealso>SET SCOPEBOTTOM</seealso>
-        <seealso>SET SCOPETOP</seealso>
+        <seealsocmd>SET SCOPE</seealsocmd>
+        <seealsocmd>SET SCOPEBOTTOM</seealsocmd>
+        <seealsocmd>SET SCOPETOP</seealsocmd>
     </ordscope>
     <ordsetfocus>
         <summary>
@@ -19498,7 +19498,7 @@
         <seealso cref='O:XSharp.RT.Functions.DbRSelect'>DBRSelect</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetRelation'>DBSetRelation</seealso>
         <seealso cref='O:XSharp.RT.Functions.Found'>Found</seealso>
-        <seealso>SET RELATION</seealso>
+        <seealsocmd>SET RELATION</seealsocmd>
     </ordsetrelation>
     <ordskipunique>
         <summary>
@@ -19533,7 +19533,7 @@
                 &#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// unique J names
             </code>
         </example>
-        <seealso>INDEX</seealso>
+        <seealsocmd>INDEX</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.OrdIsUnique'>OrdIsUnique</seealso>
         <seealso cref='O:XSharp.Core.Functions.SetUnique'>SetUnique</seealso>
     </ordskipunique>
@@ -19703,7 +19703,7 @@
         </remarks>
         <example>
         </example>
-        <seealso>ASSERT</seealso>
+        <seealsocmd>ASSERT</seealsocmd>
     </pause>
     <pcount>
         <summary>
@@ -19832,8 +19832,8 @@
         </example>
         <seealso cref='O:XSharp.Core.Functions.ProcFile'>ProcFile</seealso>
         <seealso cref='O:XSharp.Core.Functions.ProcName'>ProcName</seealso>
-        <seealso>SET PROCLINE</seealso>
-        <seealso>SET PROCNAME</seealso>
+        <seealsocmd>SET PROCLINE</seealsocmd>
+        <seealsocmd>SET PROCNAME</seealsocmd>
     </procline>
     <procname>
         <summary>
@@ -19876,8 +19876,8 @@
         </example>
         <seealso cref='O:XSharp.Core.Functions.ProcFile'>ProcFile</seealso>
         <seealso cref='O:XSharp.Core.Functions.ProcLine'>ProcLine</seealso>
-        <seealso>SET PROCLINE</seealso>
-        <seealso>SET PROCNAME</seealso>
+        <seealsocmd>SET PROCLINE</seealsocmd>
+        <seealsocmd>SET PROCNAME</seealsocmd>
     </procname>
     <proper>
         <summary>
@@ -20112,7 +20112,7 @@
                 AEval(aElements, {|element| QOut(element)})
             </code>
         </example>
-        <seealso>?</seealso>
+        <seealsocmd>?</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.QQOut'>QQOut</seealso>
 
     </qout>
@@ -20143,7 +20143,7 @@
                 AEval(aElements, {|element| QQOut(element)})
             </code>
         </example>
-        <seealso>??</seealso>
+        <seealsocmd>??</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.QOut'>QOut</seealso>
     </qqout>
     <queryrtregint>
@@ -20973,7 +20973,7 @@
                 // Don't forget to free the allocated memory when you're done
             </code>
         </example>
-        <seealso>_DynCheck</seealso>
+        <seealsocmd>_DynCheck</seealsocmd>
         <seealso cref='O:XSharp.VO.Functions.DynCheckError'>DynCheckError</seealso>
         <seealso cref='O:XSharp.VO.Functions.Memory'>Memory</seealso>
         <seealso cref='O:XSharp.RT.Functions.RegisterAxit'>RegisterAxit</seealso>
@@ -21009,9 +21009,9 @@
         </remarks>
         <example>
         </example>
-        <seealso>CLASS AutoServer</seealso>
-        <seealso>UnRegisterOLEAutomationObject</seealso>
-        <seealso>Window:Automated</seealso>
+        <seealsocmd>CLASS AutoServer</seealsocmd>
+        <seealsocmd>UnRegisterOLEAutomationObject</seealsocmd>
+        <seealsocmd>Window:Automated</seealsocmd>
     </registeroleautomation>
     <replicate>
         <summary>
@@ -21700,7 +21700,7 @@
                 &#0009;ENDIF
             </code>
         </example>
-        <seealso>SET COLLATION</seealso>
+        <seealsocmd>SET COLLATION</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.SetInternational'>SetInternational</seealso>
     </setcollation>
     <setcolor>
@@ -21863,7 +21863,7 @@
         </example>
         <seealso cref='O:XSharp.RT.Functions.CToD'>CToD</seealso>
         <seealso cref='O:XSharp.RT.Functions.DToC'>DToC</seealso>
-        <seealso>SET DATE</seealso>
+        <seealsocmd>SET DATE</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.SetDateFormat'>SetDateFormat</seealso>
 
     </setdatecountry>
@@ -21911,7 +21911,7 @@
         </example>
         <seealso cref='O:XSharp.RT.Functions.CToD'>CToD</seealso>
         <seealso cref='O:XSharp.RT.Functions.DToC'>DToC</seealso>
-        <seealso>SET DATE FORMAT</seealso>
+        <seealsocmd>SET DATE FORMAT</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.SetDateCountry'>SetDateCountry</seealso>
     </setdateformat>
     <setdecimal>
@@ -22090,9 +22090,9 @@
             </code>
         </example>
         <seealso cref='O:XSharp.RT.Functions.DbSetFilter'>DBSetFilter</seealso>
-        <seealso>DELETE</seealso>
+        <seealsocmd>DELETE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.Deleted'>Deleted</seealso>
-        <seealso>RECALL</seealso>
+        <seealsocmd>RECALL</seealsocmd>
     </setdeleted>
     <setdigit>
         <summary>
@@ -22281,7 +22281,7 @@
                 SetErrorLog(lSaveErrorLog)
             </code>
         </example>
-        <seealso>SetDefaultDir</seealso>
+        <seealsocmd>SetDefaultDir</seealsocmd>
     </seterrorlog>
     <setexact>
         <summary>
@@ -22303,7 +22303,7 @@
         </remarks>
         <example>
         </example>
-        <seealso>SET EXACT</seealso>
+        <seealsocmd>SET EXACT</seealsocmd>
     </setexact>
     <setexclusive>
         <summary>
@@ -22338,7 +22338,7 @@
         <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
         <seealso cref='O:XSharp.Core.Functions.NetErr'>NetErr</seealso>
         <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
-        <seealso>USE</seealso>
+        <seealsocmd>USE</seealsocmd>
     </setexclusive>
     <setfdatetime>
         <summary>
@@ -22405,7 +22405,7 @@
             </code>
         </example>
         <seealso cref='O:XSharp.RT.Functions.Alias'>Alias</seealso>
-        <seealso>REPLACE</seealso>
+        <seealsocmd>REPLACE</seealsocmd>
     </setfieldstore>
     <setfixed>
         <summary>
@@ -22510,7 +22510,7 @@
                 &#0009;...
             </code>
         </example>
-        <seealso>SET INTERNATIONAL</seealso>
+        <seealsocmd>SET INTERNATIONAL</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.SetCollation'>SetCollation</seealso>
     </setinternational>
     <setjmp>
@@ -22930,7 +22930,7 @@
         <seealso cref='O:XSharp.RT.Functions.DbSetOrder'>DBSetOrder</seealso>
         <seealso cref='O:XSharp.RT.Functions.DbSetRelation'>DBSetRelation</seealso>
         <seealso cref='O:XSharp.RT.Functions.Found'>Found</seealso>
-        <seealso>SEEK</seealso>
+        <seealsocmd>SEEK</seealsocmd>
     </setsoftseek>
     <setthousandsep>
         <summary>
@@ -23016,9 +23016,9 @@
             </code>
         </example>
         <seealso cref='O:XSharp.RT.Functions.DbCreateIndex'>DBCreateIndex</seealso>
-        <seealso>INDEX</seealso>
-        <seealso>PACK</seealso>
-        <seealso>REINDEX</seealso>
+        <seealsocmd>INDEX</seealsocmd>
+        <seealsocmd>PACK</seealsocmd>
+        <seealsocmd>REINDEX</seealsocmd>
     </setunique>
     <setwipedynspace>
         <summary>
@@ -23161,7 +23161,7 @@
         </remarks>
         <example>
         </example>
-        <seealso>[****]</seealso>
+        <seealsocmd>[****]</seealsocmd>
     </shellautocomplete>
     <showbitmap>
         <summary>
@@ -23261,8 +23261,8 @@
             </code>
         </example>
         <seealso cref='O:XSharp.RT.Functions.DbSeek'>DBSeek</seealso>
-        <seealso>INDEX</seealso>
-        <seealso>LOCATE</seealso>
+        <seealsocmd>INDEX</seealsocmd>
+        <seealsocmd>LOCATE</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.SetSoftSeek'>SetSoftSeek</seealso>
     </soundex>
     <space>
@@ -24571,7 +24571,7 @@
         <seealso cref='O:XSharp.RT.Functions.CToD'>CToD</seealso>
         <seealso cref='O:XSharp.RT.Functions.DToC'>DToC</seealso>
         <seealso cref='O:XSharp.RT.Functions.DToS'>DToS</seealso>
-        <seealso>SET DATE</seealso>
+        <seealsocmd>SET DATE</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.SetDateCountry'>SetDateCountry</seealso>
         <seealso cref='O:XSharp.Core.Functions.SetDateFormat'>SetDateFormat</seealso>
     </today>
@@ -25040,9 +25040,9 @@
         </remarks>
         <example>
         </example>
-        <seealso>CLASS AutoServer</seealso>
-        <seealso>RegisterOLEAutomationObject</seealso>
-        <seealso>Window:Automated</seealso>
+        <seealsocmd>CLASS AutoServer</seealsocmd>
+        <seealsocmd>RegisterOLEAutomationObject</seealsocmd>
+        <seealsocmd>Window:Automated</seealsocmd>
     </unregisteroleautomati>
     <upper>
         <summary>
@@ -25131,7 +25131,7 @@
         </example>
         <seealso cref='O:XSharp.RT.Functions.Alias'>Alias</seealso>
         <seealso cref='O:XSharp.RT.Functions.Select'>Select</seealso>
-        <seealso>USE</seealso>
+        <seealsocmd>USE</seealsocmd>
     </used>
     <usualtype>
         <summary>
@@ -25779,7 +25779,7 @@
         </remarks>
         <example>
         </example>
-        <seealso>CONTINUE</seealso>
+        <seealsocmd>CONTINUE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.DbContinue'>DBContinue</seealso>
         <seealso cref='O:XSharp.RT.Functions.VoDbLocate'>VODBLocate</seealso>
     </vodbcontinue>
@@ -27331,9 +27331,9 @@
         </example>
         <seealso cref='O:XSharp.RT.Functions.Day'>Day</seealso>
         <seealso cref='O:XSharp.RT.Functions.Month'>Month</seealso>
-        <seealso>SET CENTURY</seealso>
-        <seealso>SET DATE</seealso>
-        <seealso>SET EPOCH</seealso>
+        <seealsocmd>SET CENTURY</seealsocmd>
+        <seealsocmd>SET DATE</seealsocmd>
+        <seealsocmd>SET EPOCH</seealsocmd>
         <seealso cref='O:XSharp.Core.Functions.SetCentury'>SetCentury</seealso>
         <seealso cref='O:XSharp.Core.Functions.SetDateCountry'>SetDateCountry</seealso>
         <seealso cref='O:XSharp.Core.Functions.SetDateFormat'>SetDateFormat</seealso>
@@ -27496,7 +27496,7 @@
                 &#0009;CFunc(,3, "How ", "are ", "you ")
             </code>
         </example>
-        <seealso>_GetNextParam</seealso>
+        <seealsocmd>_GetNextParam</seealsocmd>
     </_getfirstparam>
     <_getinst>
         <summary>
@@ -27546,7 +27546,7 @@
         <example>
             See the _GetFirstParam() example.
         </example>
-        <seealso>_GetFirstParam</seealso>
+        <seealsocmd>_GetFirstParam</seealsocmd>
     </_getnextparam>
     <_getprevinst>
         <summary>
@@ -27598,7 +27598,7 @@
                 &#0009;MessageBox(0, "App over", "Exit", MB_OK)
             </code>
         </example>
-        <seealso>PROCEDURE</seealso>
+        <seealsocmd>PROCEDURE</seealsocmd>
         <seealso cref='O:XSharp.RT.Functions.RegisterAxit'>RegisterAxit</seealso>
     </_registerexit>
     <_voloadlibrary>
@@ -27642,7 +27642,7 @@
         </remarks>
         <example>
         </example>
-        <seealso>ACCEPT</seealso>
+        <seealsocmd>ACCEPT</seealsocmd>
     </_wait>
     <uAreaValue>
         <span>

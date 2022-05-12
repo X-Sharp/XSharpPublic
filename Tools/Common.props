@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <VSTarget Condition=" '$(VSTarget)' == '' ">2019</VSTarget>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <!-- Note: All directories in this list end with a back slash -->
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <DelaySign>false</DelaySign>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(Solutiondir)common\XSharp.snk</AssemblyOriginatorKeyFile>
+    <Langversion>7.3</Langversion>
+    <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
+    <Includepaths>$(SolutionDir)\Common</Includepaths>
+    <Nostandarddefs>true</Nostandarddefs>
+    <BinariesDir>$(SolutionDir)Binaries\$(VSTarget)\</BinariesDir>
+    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
+    <GenerateFullPaths>true</GenerateFullPaths>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Nologo>true</Nologo>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile />
+  </PropertyGroup>
+</Project>

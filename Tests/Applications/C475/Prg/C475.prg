@@ -20,9 +20,10 @@ while x#:
 
 In any case, I think it should be an error comparing SYMBOL (a structure) to NULL/NULL_OBJECT, but unfortunately vulcan does allow it..
 */
+   s := NULL_SYMBOL                                                  
 	l := s == NULL // vulcan returns true, x# crashes
 	? l
-	l := s == NULL_OBJECT // vulcan returns true, x# crashes
+	l :=  s == NULL_OBJECT // vulcan returns true, x# crashes
 	? l
 
 	s := #ABC
@@ -35,19 +36,19 @@ In any case, I think it should be an error comparing SYMBOL (a structure) to NUL
 	// vulcan reports error VN4159: operator '==' is not defined for types 'DATE' and 'OBJECT'
 	// I think x# should report an error, too.
 	LOCAL d AS DATE
-	? d == NULL_OBJECT
+	?  d == NULL_OBJECT
 	? d == NULL
 	d := Today()
 	? d == NULL_OBJECT
 	? d == NULL
-
+//
 
 	// Both x# and vulcan correcty report an error on those:
-/*	
+	
 	LOCAL sss AS TestStruct
 	? sss == NULL
 	? sss == NULL_OBJECT
-*/
+
 RETURN
 
 STRUCTURE TestStruct

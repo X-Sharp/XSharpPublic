@@ -120,7 +120,7 @@
           <para styleclass="Normal"><text style="font-weight:bold;">Chr(), _Chr()</text></para>
         </td>
         <td>
-          <para styleclass="Body Text">When the numeric parameter of this function is a literal number between 0 and 127 then the compiler replaces the function call with a literal character of that value. Larger values are not supported because these numbers are codepage dependent.</para>
+          <para styleclass="Body Text">When the numeric parameter of this function is a literal number between 0 and 127 then the compiler replaces the function call with a literal string with a character of that value. Larger values are not converted at compile time but at runtime because these numbers are codepage dependent.<br/>So an expression like <br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&quot;Hello world&quot;+Chr(13)+Chr(10)</text>&#32;<br/>will be translated into a literal string containing &quot;Hello world&quot; followed by the <text style="font-weight:bold;">CRLF</text> characters (the compiler concatenates the strings at compile time).</para>
         </td>
       </tr>
     </table></para>

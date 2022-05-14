@@ -8,7 +8,7 @@
     <RootNamespace>SqlTest</RootNamespace>
     <AssemblyName>SqlTest</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>SqlTest</Name>
+    <Name>TypedSqlTest</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>VO</Dialect>

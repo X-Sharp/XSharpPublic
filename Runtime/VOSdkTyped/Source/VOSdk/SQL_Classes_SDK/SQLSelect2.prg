@@ -72,7 +72,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 /// <include file="Sql.xml" path="doc/SQLSelect.Append/*" />
 	METHOD Append(lReleaseLocks AS LOGIC)  AS LOGIC
 		LOCAL oRow AS DataRow
-		LOCAL lOk := FALSE AS LOGIC
+        LOCAL lOk := FALSE AS LOGIC
+        self:__CheckReadOnly()
 		IF SELF:__PrepareForRecordMovement()
 			SELF:lChanges := TRUE
 			oRow := oTable:NewRow()
@@ -90,6 +91,9 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 /// <include file="Sql.xml" path="doc/SQLSelect.AppendRow/*" />
 	METHOD AppendRow( lForce )
+        if self:lBatchUpdates
+            return true
+        endif
 		RETURN SELF:Update(lForce)
 
 
@@ -184,7 +188,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		LOCAL lOk AS LOGIC
 		SELF:lErrorFlag := FALSE
 		TRY
-			lOk := SELF:__GoCold()
+			lOk := SELF:__GoCold(TRUE)
 			// Notify the clients that we closed down
 			SELF:__Notify( NOTIFYCLOSE )
 			IF lOk
@@ -309,10 +313,11 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 /// <include file="Sql.xml" path="doc/SQLSelect.Delete/*" />
 	METHOD Delete() AS LOGIC CLIPPER
 		LOCAL lOk := FALSE AS LOGIC
+        SELF:__CheckReadOnly()
 		IF SELF:__PrepareForRecordMovement()
 			IF oCurrentRow != NULL
 				SELF:lChanges := TRUE
-				oTable:Rows:Remove(oCurrentRow)
+				oCurrentRow:Delete()
 				nRowCount	:= oTable:Rows:Count-1
 				IF nCurrentRow >= nRowCount
 					nCurrentRow := nRowCount-1

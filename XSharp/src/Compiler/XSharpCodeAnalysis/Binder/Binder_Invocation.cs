@@ -245,7 +245,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // in that case NEVER a function call.
                     return BindIndexerOrVOArrayAccess(node, idVar, analyzedArguments, diagnostics);
                 }
-                if (idVar.Kind is BoundKind.BadExpression)
+                if (idVar.Kind is BoundKind.BadExpression || idVar.Kind is BoundKind.MethodGroup)
                 {
                     // this happens when undeclared variables are not allowed and the ID cannot be found
                     // return null, so the normal Binding for function / method calls can be used

@@ -127,7 +127,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal const string DelegateNameSpace = "Xs$Delegates";
         internal const string PCallPrefix = "$PCall";
-        internal const string PCallNativePrefix = "$PCallNative";
+        internal const string CCallPrefix = "$CCall";
+        internal const string NativePrefix = "$Native";
+        internal const string PCallNativePrefix = PCallPrefix + NativePrefix;
+        internal const string CCallNativePrefix = CCallPrefix + NativePrefix;
         internal const string AppInit = "$AppInit";
         internal const string AppExit = "$AppExit";
         internal const string InitProc1 = "$Init1";
@@ -374,6 +377,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ThisCall = "global::System.Runtime.InteropServices.CallingConvention.ThisCall";
         internal const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
         internal const string CompilerGlobalScope = "global::System.Runtime.CompilerServices.CompilerGlobalScope";
+        internal const string UnmanagedFunctionPointer = "global::System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute";
         internal const string IntPtr = "global::System.IntPtr";
         internal const string DllImport = "global::System.Runtime.InteropServices.DllImportAttribute";
         internal const string CharSet = "global::System.Runtime.InteropServices.CharSet";

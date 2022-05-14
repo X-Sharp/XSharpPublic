@@ -302,14 +302,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var gns = node.Expression as GenericNameSyntax;
                 var arg = gns.TypeArgumentList.Arguments[0];
                 var method = arg.ToFullString();
-                bool pcallnative = method.IndexOf(XSharpSpecialNames.PCallNativePrefix, XSharpString.Comparison) >= 0;
-                if (pcallnative)
+                bool native = method.IndexOf(XSharpSpecialNames.NativePrefix, XSharpString.Comparison) >= 0;
+                bool pcall = method.IndexOf(XSharpSpecialNames.PCallPrefix) >= 0;
+                if (native)
                 {
-                    BindPCallNativeAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);
+                    BindCallNativeAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg, pcall);
                 }
                 else
                 {
-                    BindPCallAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);
+                    BindCallAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg, pcall);
                 }
 
             }
@@ -341,13 +342,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
-        private void BindPCallAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
-                DiagnosticBag diagnostics, TypeSyntax type)
+        private void BindCallAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
+                DiagnosticBag diagnostics, TypeSyntax type, bool pcall)
         {
             var XNode = node.XNode as XP.MethodCallContext;
             string method = XNode?.Expr.GetText();
             if (string.IsNullOrEmpty(method))
-                method = "PCALL";
+                method = pcall ? "PCALL" : "CCALL";
             if (!ValidatePCallArguments(node, args, diagnostics, method))
                 return;
             var kind = args[0].Kind;
@@ -488,13 +489,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             return ok;
         }
 
-        private void BindPCallNativeAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
-                DiagnosticBag diagnostics, TypeSyntax type)
+        private void BindCallNativeAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
+                DiagnosticBag diagnostics, TypeSyntax type, bool pcall)
         {
             var XNode = node.XNode as XP.MethodCallContext;
             string method = XNode?.Expr.GetText();
             if (string.IsNullOrEmpty(method))
-                method = "PCALLNATIVE";
+                method = pcall ? "PCALLNATIVE" : "CCALLNATIVE";
             if (!ValidatePCallArguments(node, args, diagnostics, method))
                 return;
             // Our parent is the invocation expression of the delegate

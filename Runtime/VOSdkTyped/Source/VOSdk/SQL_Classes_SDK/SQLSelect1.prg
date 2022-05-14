@@ -39,6 +39,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	PROTECT aLastArgs         AS ARRAY
 
 
+    protect lReadOnly        as logic       // is the result set readonly
+    protect lBatchUpdates    as logic       // does the result set support batch updates
 
 
 	// Dummy Properties
@@ -67,6 +69,13 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 	#region Internal Methods
 
+
+    method __CheckReadOnly as void
+        if self:lReadOnly
+            var error := Error{EG_READONLY}
+            error:FuncSym := ProcName(2)
+            throw error
+        endif
 
  /// <exclude />
 	METHOD __getDataTable() AS DataTable
@@ -209,12 +218,29 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
  /// <exclude />
-	METHOD __GoCold AS LOGIC STRICT
-		LOCAL lOk AS LOGIC
-		IF SELF:lChanges
+	METHOD __GoCold(lUpdateBatch AS LOGIC) AS LOGIC STRICT
+		local lOk as logic
+        local lWriteBatch as logic
+        lWriteBatch := lUpdateBatch .or. ! self:lBatchUpdates
+		if self:lChanges .and. lWriteBatch
 			// Todo: Check Writing back changes to server.
-            nRowCount := SELF:oAdapter:Update(oTable)
-			oTable:AcceptChanges()
+            //nRowCount := self:oAdapter:Update(oTable)
+            local oChanges as DataTable
+
+            oChanges := self:oTable:GetChanges()
+            if oChanges != null .and. oChanges:Rows:Count > 0
+                if self:oAdapter == null_object
+                    self:oAdapter := self:oConn:Factory:CreateDataAdapter()
+                    self:oAdapter:SelectCommand := self:oStmt:StatementHandle
+                    var builder := self:oConn:Factory:CreateCommandBuilder()
+                    builder:DataAdapter := self:oAdapter
+                    self:oAdapter:InsertCommand := builder:GetInsertCommand()
+                    self:oAdapter:UpdateCommand := builder:GetUpdateCommand()
+                    self:oAdapter:DeleteCommand := builder:GetDeleteCommand()
+                endif
+                nRowCount := self:oAdapter:Update(self:oTable)
+			    self:oTable:AcceptChanges()
+            endif
 			SELF:lChanges := FALSE
 			lOk := TRUE
 		ELSE
@@ -300,15 +326,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	METHOD __Open(Table AS DataTable, Schema AS DataTable) AS LOGIC
 		LOCAL cName AS STRING
 		LOCAL lRet AS LOGIC
-		lRet := FALSE
+		lRet := false
 		oTable      := Table
-        SELF:oAdapter := SELF:oConn:Factory:CreateDataAdapter()
-        SELF:oAdapter:SelectCommand := SELF:oStmt:StatementHandle
-        VAR builder := SELF:oConn:Factory:CreateCommandBuilder()
-        builder:DataAdapter := SELF:oAdapter
-        SELF:oAdapter:InsertCommand := builder:GetInsertCommand()
-        SELF:oAdapter:UpdateCommand := builder:GetUpdateCommand()
-        SELF:oAdapter:DeleteCommand := builder:GetDeleteCommand()
 		oSchema     := Schema
 		nRowCount	:= oTable:Rows:Count
 		nCurrentRow := 0

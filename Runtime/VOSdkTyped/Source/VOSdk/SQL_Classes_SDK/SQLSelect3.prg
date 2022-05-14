@@ -136,6 +136,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		LOCAL oError AS Error
 		LOCAL oColumn AS DataColumn
 		LOCAL oDf AS DataField
+        SELF:__CheckReadOnly()
+
 		 TRY
 			IF ! SELF:EoF .and. oCurrentRow != NULL_OBJECT
 				wField := (INT) SELF:__GetColIndex( uFieldID ,TRUE)
@@ -171,10 +173,24 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 //					ELSE
 						oCurrentRow:Item[wField-1]	:= oDT
 //					ENDIF
-				ELSE
-					oCurrentRow:Item[wField-1]	:= uValue
+                else
+                    var old := oCurrentRow:Item[wField-1]
+                    var newType := UsualType(uValue)
+                    var nullType := (dword) __UsualType.Null
+                    local changed as logic
+                    // you can't compare DBNull.Value !
+                    if old == DBNull.Value
+                        changed := newType != nullType
+                    elseif newType ==nullType
+                        changed := true
+                    else
+                        changed := old != uValue
+                    endif
+                    if changed
+					    oCurrentRow:Item[wField-1]	:= uValue
+                    endif
 				ENDIF
-				SELF:lChanges := TRUE
+                SELF:lChanges := TRUE
 				oDf := SELF:aDataFields[ wField ]
 				SELF:Notify( NOTIFYFIELDCHANGE, oDf:NameSym )
 			ENDIF

@@ -31,11 +31,17 @@
 
 #xcommand  TEXT TO <varname> [<tm:TEXTMERGE>] [<noshow:NOSHOW>] [FLAGS <flags>] [PRETEXT <expression> ]      ;
       =>  __TextInit( iif(<.tm.>,TRUE, SetTextMerge()), <.noshow.>, iif(<.flags.>, <!flags!>, 0), <!expression!>  ) ;;
-        #text := <varname>,  ,__TextLine , __TextEnd
+      #if <.tm.> .and. ! __MEMVAR__  ;;
+      #error TEXTMERGE support requires the /memvar compiler option ;;
+      #endif ;;
+      #text := <varname>,  ,__TextLine , __TextEnd
 
 #xcommand  TEXT TO <varname> ADDITIVE [<tm:TEXTMERGE>] [<noshow:NOSHOW>] [FLAGS <flags>] [PRETEXT <expression> ]   ;
       =>  __TextInit(iif(<.tm.>,TRUE, SetTextMerge()), <.noshow.>, iif(<.flags.>, <!flags!>, 0), <!expression!>  ) ;;
-        #text += <varname>, ,__TextLine  , __TextEnd
+      #if <.tm.> .and. ! __MEMVAR__  ;;
+      #error TEXTMERGE support requires the /memvar compiler option ;;
+      #endif ;;
+      #text += <varname>, ,__TextLine  , __TextEnd
 
 // todo
 // SET TEXTMERGE [TO [FileName] MEMVAR VarName [ADDITIVE]]

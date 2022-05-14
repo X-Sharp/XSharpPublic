@@ -134,6 +134,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ImplicitNamespace { get; private set; }
         public bool HasRuntime { get { return this.Dialect.NeedsRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars() && MemVars; } }
+        public bool SupportsUndeclaredMemVars { get { return this.Dialect.SupportsMemvars() && UndeclaredMemVars; } }
         public bool SuppressInit1 { get; set; } = false;
 #if !VSPARSER
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();

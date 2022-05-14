@@ -954,48 +954,8 @@ outerDefault:
                 : default(MemberResolutionResult<TMember>);
 
 #if XSHARP
-            // when calling a USUAL[] function we allow 1 usual param and wrap it as params as well
-            // REF USUAL is not allowed
-            if (allowUnexpandedForm && normalResult.Result.IsValid && IsValidParams(leastOverriddenMember) && Compilation.Options.HasRuntime)
-            {
-                // Find Params argument
-                BoundExpression paramsArg = null;
-                var parameters = member.GetParameters();
-                for (int arg = 0; arg < arguments.Arguments.Count; ++arg)
-                {
-                    int parm = normalResult.Result.ParameterFromArgument(arg);
-                    if (parm >= parameters.Length)
-                        continue;
-                    var parameter = parameters[parm];
-                    if (parameter.IsParams)
-                    {
-                        paramsArg = arguments.Argument(arg);
-                    }
-                }
-
-                // If params arg is USUAL prefer the expanded form
-                if (paramsArg != null)
-                {
-                    if (paramsArg.Type.IsUsualType())
-                    {
-                        if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
-                        {
-                            // We have seen an example where the customer is mixing different versions of the Vulcan runtime.
-                            // when we set allowUnexpandedForm to false then strange errors will happen later.
-                            if (!member.HasUseSiteError)
-                            {
-                                normalResult = default(MemberResolutionResult<TMember>);
-                            }
-                        }
-                    }
-                    else if (paramsArg.IsLiteralNull() && member.HasClipperCallingConvention())
-                    {
-                        arguments.Arguments[0] = new BoundLiteral(paramsArg.Syntax, ConstantValue.Null, Compilation.GetSpecialType(SpecialType.System_IntPtr));
-                        normalResult = default(MemberResolutionResult<TMember>);
-                    }
-                }
-
-            }
+            // Check for Clipper calling convention and other things
+            normalResult = XsCheckMemberResolution(allowUnexpandedForm, normalResult, leastOverriddenMember, member, arguments);
 #endif
             var result = normalResult;
             if (!normalResult.Result.IsValid)

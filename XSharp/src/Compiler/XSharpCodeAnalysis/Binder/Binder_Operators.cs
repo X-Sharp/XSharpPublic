@@ -28,7 +28,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             Bitwise,
             PSZCompare,
             SymbolCompare,
-            LogicCompare
+            LogicCompare,
+            DateCompare,
         }
 
         private bool XsHasImplicitCast(BoundExpression expression, TypeSymbol targetType, DiagnosticBag diagnostics)
@@ -240,6 +241,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ref BoundExpression left, ref BoundExpression right)
         {
             var symType = Compilation.SymbolType();
+            if (left.Type.IsObjectType() || right.Type.IsObjectType())
+            {
+                if (right.Type.IsSymbolType())
+                {
+                    right = CreateConversion(right, Compilation.GetSpecialType(SpecialType.System_Object), diagnostics);
+                }
+                if (left.Type.IsSymbolType())
+                {
+                    left = CreateConversion(left, Compilation.GetSpecialType(SpecialType.System_Object), diagnostics);
+                }
+                return null;
+            }
             if (right.Type.IsNotSymbolType())
             {
                 right = CreateConversion(right, symType, diagnostics);
@@ -250,6 +263,26 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
+
+        private BoundExpression BindVODateCompare(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
+        ref BoundExpression left, ref BoundExpression right)
+        {
+            var objType = Compilation.GetSpecialType(SpecialType.System_Object);
+            var lhs = left.Type;
+            var rhs = right.Type;
+            if (lhs is null || lhs.IsObjectType())
+            {
+                Error(diagnostics, ErrorCode.ERR_BadBinaryOps, node, node.OperatorToken.Text, left.Display, right.Display);
+                right = new BoundLiteral(right.Syntax, ConstantValue.Null, objType);
+            }
+            if (rhs is null || rhs.IsObjectType())
+            {
+                Error(diagnostics, ErrorCode.ERR_BadBinaryOps, node, node.OperatorToken.Text, left.Display, right.Display);
+                left = new BoundLiteral(left.Syntax, ConstantValue.Null, objType);
+            }
+            return null;
+        }
+
 
         private BoundExpression BindVOLogicCompare(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
                 ref BoundExpression left, ref BoundExpression right)
@@ -405,6 +438,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindVOSymbolCompare(node, diagnostics, ref left, ref right);
                 case VOOperatorType.LogicCompare:
                     return BindVOLogicCompare(node, diagnostics, ref left, ref right);
+                case VOOperatorType.DateCompare:
+                    return BindVODateCompare(node, diagnostics, ref left, ref right);
                 case VOOperatorType.Bitwise:
                     break;
 
@@ -480,6 +515,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (Compilation.Options.HasRuntime && xnode != null)
             {
+                var leftObject = leftType is { } && leftType.IsObjectType();
+                var rightObject = rightType is { } && rightType.IsObjectType();
                 var leftUsual = leftType.IsUsualType();
                 var rightUsual = rightType.IsUsualType();
                 var leftSym = leftType.IsSymbolType();
@@ -522,6 +559,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                             opType = VOOperatorType.SymbolCompare;
                             break;
                         }
+                        if ((leftObject || rightObject) && (leftSym || rightSym))
+                        {
+                            opType = VOOperatorType.SymbolCompare;
+                            break;
+                        }
+
                         break;
                     case XSharpParser.NEQ:
                     case XSharpParser.NEQ2:
@@ -615,6 +658,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 switch (node.Kind())
                 {
+                    case SyntaxKind.EqualsExpression:
+                        if (leftType.IsDateType() || rightType.IsDateType())
+                        {
+                            if (leftType is null || rightType is null || leftType.IsObjectType() || rightType.IsObjectType())
+                            {
+                                opType = VOOperatorType.DateCompare;
+                            }
+                        }
+                        break;
                     case SyntaxKind.GreaterThanExpression:
                     case SyntaxKind.GreaterThanOrEqualExpression:
                     case SyntaxKind.LessThanExpression:

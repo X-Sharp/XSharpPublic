@@ -110,6 +110,7 @@ internal static class FoxTextOut
 
     static method WriteLine(cText as string) as string
         return Write(cText, true)
+
     static method Write(cText as string, lNewLine as logic) as string
         var result := System.Text.StringBuilder{cText:Length}
         local lStartOfLine as logic
@@ -260,6 +261,9 @@ function __TextLine(cText as string) as string
 [NeedsAccessToLocals(FALSE)];
 function __TextEnd(cString as string) as string
     cString := FoxTextOut.TextMerge(cString)
+    if cString:EndsWith(e"\r\n\r\n")
+        cString := cString:Substring(0, cString:Length-2)
+    endif
     return cString
 
 

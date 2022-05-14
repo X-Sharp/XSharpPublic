@@ -130,7 +130,7 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "GeneralTests", "Tests\Gener
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "RddTests", "Tests\RddTests\RddTests.xsproj", "{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "SqlTest", "Tests\SqlTest\SqlTest.xsproj", "{21B3548E-ADA0-4137-ABC2-4FC256598E14}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "TypedSqlTest", "Tests\SqlTest\TypedSqlTest.xsproj", "{21B3548E-ADA0-4137-ABC2-4FC256598E14}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOMDITest", "Tests\VOMDITest\VOMDITest.xsproj", "{5AA2D0DE-06F3-4E9F-82B3-575A8B4006BF}"
 EndProject

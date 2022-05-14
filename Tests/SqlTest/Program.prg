@@ -1,49 +1,79 @@
-USING System
-USING System.Collections.Generic
-USING System.Linq
-USING System.Text
-USING XSharp.Data
-
+using System
+using System.Collections.Generic
+using System.Linq
+using System.Text
+using XSharp.Data
+using XSharp.VO
 
 FUNCTION Start() AS VOID STRICT
     LOCAL oConn AS SqlConnection
-    LOCAL oSel AS SqlSelect
+    local oSel as MySqlSelect
+    try
     //SetSqlFactory(SqlServerFactory{})
     //oConn := SqlOpenConnection()
-    //SetSqlFactory(SqlServerFactory{})
-    oConn := SqlConnection{"CURSADM","cursbeheer","cursbeheer"}
-    //oConn := SqlConnection{"Server=(local);Database=Cursadm;User Id=cursbeheer;Password=cursbeheer"}
-    oConn:DriverConnect()
+    SetSqlFactory(SqlServerFactory{})
+    //oConn := SqlConnection{"CURSADM","cursbeheer","cursbeheer"}
+    oConn := SqlConnection{"Server=(local);Database=Cursadm;User Id=cursbeheer;Password=cursbeheer"}
+    //Conn:DriverConnect()
     ? oConn:ConnectString
-    IF ! oConn:Connected
+    if ! oConn:Connected
         ? oConn:Connect()
     ENDIF
     ? oConn:Connected
     IF oConn:COnnected
-        oSel := SqlSelect{"Select * from Bedrijven",oConn}
+        oSel := MySqlSelect{"Select * from Bedrijven",oConn}
+        //oSel:ReadOnly := TRUE
+        //oSel:BatchUpdates := true
         oSel:Execute()
         ? "Count", oSel:NumSuccessfulRows
-        VAR cName := oSel:FieldGet(2 )
+
+        TestFieldPut(oSel)
+        TestAppend(oSel)
+        TestDelete(oSel)
+        oSel:Update(true)
+        oSel:Close()
+        ? oConn:Disconnect()
+    endif
+    catch e as Exception
+        ? e:ToString()
+    end try
+    WAIT
+    return
+
+class MySqlSelect inherit SqlSelect
+    constructor( cSQLSelect, oSQLConnection )
+        super(cSQLSelect, oSQLConnection )
+    method PreExecute(cSqlString as string) as string
+        ? cSqlString
+        return super:PreExecute(cSqlString)
+end class
+
+
+function TestFieldPut(oSel as SQLSelect) as void
+        var cName := oSel:FieldGet(2 )
         oSel:FIELDPUT(2, "ABC")
         oSel:Skip(0)
         oSel:FIELDPUT(2, cName)
-        oSel:Skip(0)
-        oSel:Append(TRUE)
-        oSel:FIELDPUT(2, "ZZZ")
-        oSel:AppendRow()
-        oSel:Close()        
-        ? oConn:Disconnect()
-    ENDIF
-    WAIT
-    RETURN	
-    
-    
-FUNCTION DumpTable(oSel AS SqlSelect) AS VOID
-    ? 
+
+function TestAppend(oSel as SQLSelect) as void
+        ? oSel:Append(true)
+        ? oSel:FieldGet(1)
+        ? oSel:FIELDPUT(2, "ZZZ")
+        ? oSel:AppendRow()
+        return
+function TestDelete(oSel as SQLSelect) as void
+        ? oSel:Delete()
+        return
+
+
+
+
+function DumpTable(oSel as SqlSelect) as void
+    ?
     FOR VAR i := 1 TO oSel:FCount
         ?? oSel:FieldName(i),""
     NEXT
-    ? 
+    ?
     DO WHILE ! oSel:EOF
         FOR VAR i := 1 TO oSel:FCount
             ?? Trim(AsString(oSel:FIELDGET(i))),""

@@ -214,6 +214,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpTargetDLL.RT:
                     className = XSharpSpecialNames.XSharpRTFunctionsClass;
                     break;
+                case XSharpTargetDLL.RTDebugger:
+                    className = XSharpSpecialNames.XSharpRTDebuggerFunctionsClass;
+                    break;
                 case XSharpTargetDLL.VO:
                     className = XSharpSpecialNames.XSharpVOFunctionsClass;
                     break;
@@ -267,16 +270,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             PragmaWarnings = new List<PragmaWarningDirectiveTriviaSyntax>();
         }
 
-        public static SyntaxTree DefaultXSharpSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp, XSharpTargetDLL targetDLL)
+        public static SyntaxTree DefaultXSharpSyntaxTree(IEnumerable<SyntaxTree> trees, CSharpParseOptions options)
         {
             // trees is NOT used here, but it IS used in the VOTreeTransForm
-            var opt = CSharpParseOptions.Default;
-            XSharpSpecificCompilationOptions xopt = new XSharpSpecificCompilationOptions();
-            xopt.TargetDLL = targetDLL;
-            opt = opt.WithXSharpSpecificOptions(xopt);
-            var t = new XSharpTreeTransformationCore(null, opt, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+            var t = new XSharpTreeTransformationCore(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
-            string globalClassName = t.GetGlobalClassName(targetDLL);
+            string globalClassName = t.GetGlobalClassName(options.TargetDLL);
 
             t.GlobalEntities.Members.Add(t.GenerateGlobalClass(globalClassName, false, true));
             var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
@@ -287,7 +286,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     t.GlobalEntities.Members, eof);
             cu.XGenerated = true;
             var red = (Syntax.CompilationUnitSyntax)cu.CreateRed();
-            return CSharpSyntaxTree.Create(red);
+            return CSharpSyntaxTree.Create(red, options, "CompileGeneratedCode.prg", System.Text.Encoding.UTF8);
         }
         internal T NotInDialect<T>(T node, string feature, string additional = "") where T : CSharpSyntaxNode
         {
@@ -3445,6 +3444,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers: mods,
                     declaration: vardecl,
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                fielddecl.XNode = context;
                 var currentClass = ClassEntities.Peek();
                 currentClass.Members.Add(fielddecl);
             }

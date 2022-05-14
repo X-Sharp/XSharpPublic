@@ -66,6 +66,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         VOGuiClasses = 14,
         VOInternetClasses = 15,
         VOConsoleClasses = 16,
+        RTDebugger = 17,
+        VOReportClasses = 18,
     }
 
     public sealed partial class CSharpParseOptions
@@ -132,6 +134,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ImplicitNamespace { get; private set; }
         public bool HasRuntime { get { return this.Dialect.NeedsRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars() && MemVars; } }
+        public bool SupportsUndeclaredMemVars { get { return this.Dialect.SupportsMemvars() && UndeclaredMemVars; } }
         public bool SuppressInit1 { get; set; } = false;
 #if !VSPARSER
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();

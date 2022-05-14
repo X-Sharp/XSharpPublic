@@ -17,6 +17,7 @@ FUNCTION Start() AS VOID
    hStr2   := System.Runtime.InteropServices.Marshal.StringToHGlobalUni( "pcall() From XSharp" )
    
    ? "MessageBox() returns with PCall()", PCall( hFuncTyped, IntPtr.Zero, hStr1, hStr2, 3 )
+   ? "MessageBox() returns with PCall()", CCall( hFuncTyped, IntPtr.Zero, hStr1, hStr2, 3 )
    System.Runtime.InteropServices.Marshal.FreeHGlobal( hStr2 )               
    
    hStr2   := System.Runtime.InteropServices.Marshal.StringToHGlobalUni( "pcallnative() From XSharp" )
@@ -27,11 +28,14 @@ FUNCTION Start() AS VOID
    LOCAL hLocalTyped AS MessageBox PTR
    hLocalTyped := GetProcAddress( hModule, "MessageBoxW" )
    ? "MessageBox() returns with PCallNative() and LOCAL FUNC PTR", PCallNative<INT>(hLocalTyped, IntPtr.Zero, hStr1, hStr2, 3 )	
+   ? "MessageBox() returns with PCallNative() and LOCAL FUNC PTR", CCallNative<INT>(hLocalTyped, IntPtr.Zero, hStr1, hStr2, 3 )	
    #endregion
 
    System.Runtime.InteropServices.Marshal.FreeHGlobal( hStr1 )
    System.Runtime.InteropServices.Marshal.FreeHGlobal( hStr2 )
    FreeLibrary( hModule )
+   
+   Foo{}:Bar()
    RETURN
    
 FUNCTION MessageBox(pParent AS PTR, pCaption AS PTR, pText AS PTR, nType AS INT) AS INT PASCAL   
@@ -50,12 +54,14 @@ CLASS FOo
 	   hStr1   := System.Runtime.InteropServices.Marshal.StringToHGlobalUni( "Hello from XSharp")
 	   hStr2   := System.Runtime.InteropServices.Marshal.StringToHGlobalUni( "pcall() From XSharp" )
 	   
-	   ? "MessageBox() returns with PCall()", PCall( hFuncTyped, IntPtr.Zero, hStr1, hStr2, 3 )
+	   ? "MessageBox() returns with PCall()", PCall( hFuncTyped, IntPtr.Zero, hStr1, hStr2, 3 )     
+	   ? "MessageBox() returns with PCall()", CCall( hFuncTyped, IntPtr.Zero, hStr1, hStr2, 3 )
 	   System.Runtime.InteropServices.Marshal.FreeHGlobal( hStr2 )               
 	   
 	   hStr2   := System.Runtime.InteropServices.Marshal.StringToHGlobalUni( "pcallnative() From XSharp" )
 	   
 	   ? "MessageBox() returns with PCallNative()", PCallNative<INT>(hFuncUntyped, IntPtr.Zero, hStr1, hStr2, 3 )	
+	   ? "MessageBox() returns with PCallNative()", CCallNative<INT>(hFuncUntyped, IntPtr.Zero, hStr1, hStr2, 3 )		   
 	   System.Runtime.InteropServices.Marshal.FreeHGlobal( hStr1 )
 	   System.Runtime.InteropServices.Marshal.FreeHGlobal( hStr2 )
 	   FreeLibrary( hModule )

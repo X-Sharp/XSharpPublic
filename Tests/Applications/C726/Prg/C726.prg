@@ -1,6 +1,8 @@
 // 726. warning XS9085: Unbalanced textmerge delimiters '<<' and '>>'.
 FUNCTION Start() AS VOID
-LOCAL lcBatch AS STRING
+LOCAL lcBatch AS STRING                      
+LOCAL lcOutputPath as STRING
+lcOutputPath := "C:\Tmp"
 TEXT TO lcBatch TEXTMERGE NOSHOW PRETEXT 1+2
 	@echo off
 
@@ -34,4 +36,11 @@ TEXT TO lcBatch TEXTMERGE NOSHOW PRETEXT 1+2
 ENDTEXT 
 
 ? lcBatch
+
+
+FUNCTION FullPath(cFilename as string) AS STRING
+    if file(cFilename)
+        return FPathName()
+    endif
+    return "C:\SomePath\"+cFileName
 

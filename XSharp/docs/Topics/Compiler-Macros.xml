@@ -23,11 +23,14 @@
     <keyword>__FOX2__</keyword>
     <keyword>__FUNCTION__</keyword>
     <keyword>__LINE__</keyword>
+    <keyword>__MEMVAR__</keyword>
     <keyword>__MODULE__</keyword>
     <keyword>__SIG__</keyword>
     <keyword>__SRCLOC__</keyword>
     <keyword>__SYSDIR__</keyword>
     <keyword>__TIME__</keyword>
+    <keyword>__UNDECLARED__</keyword>
+    <keyword>__UNSAFE__</keyword>
     <keyword>__UTCTIME__</keyword>
     <keyword>__VERSION__</keyword>
     <keyword>__VO1__</keyword>
@@ -37,6 +40,8 @@
     <keyword>__VO13__</keyword>
     <keyword>__VO14__</keyword>
     <keyword>__VO15__</keyword>
+    <keyword>__VO16__</keyword>
+    <keyword>__VO17__</keyword>
     <keyword>__VO2__</keyword>
     <keyword>__VO3__</keyword>
     <keyword>__VO4__</keyword>
@@ -60,7 +65,7 @@
       <para styleclass="Heading1">Compiler Macros</para>
     </header>
     <para styleclass="Normal">The following defines can be used in your code and will be replaced by the compiler with a literal value:</para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="38" colcount="3" style="width:auto;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="41" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal">Name</para>
@@ -256,7 +261,7 @@
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Current value of the matching FoxPro compatibility compiler option</para>
+          <para styleclass="Normal">Current value of the FoxPro compatibility compiler options <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">/fox1</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -301,6 +306,17 @@
         </td>
         <td>
           <para styleclass="Normal">Current source line number</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__MEMVAR__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logical</para>
+        </td>
+        <td>
+          <para styleclass="Normal">TRUE when the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">/memvar</link> compiler option is used</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -360,6 +376,28 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
+          <para styleclass="Normal">__UNDECLARED__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logical Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">TRUE when the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">/undeclared</link> compiler option is used</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__UNSAFE__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logical Literal</para>
+        </td>
+        <td>
+          <para styleclass="Normal">TRUE when the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-unsafe">/unsafe</link> compiler option is used</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal">__UTCTIME__</para>
         </td>
         <td>
@@ -393,13 +431,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">__VO1__ , __VO2__ ... __VO16__</para>
+          <para styleclass="Normal">__VO1__ , __VO2__ ... __VO17__</para>
         </td>
         <td>
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Current value of the matching VO compatibility compiler option</para>
+          <para styleclass="Normal">Current value of the matching VO compatibility compiler option, <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo1">/vo1</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">/vo2</link> ... <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo17">/vo17</link></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -454,7 +492,7 @@
           <para styleclass="Normal">Logical</para>
         </td>
         <td>
-          <para styleclass="Normal">Current value of the matching XPP compatibility compiler option. Only defined in the Xbase++ dialect.</para>
+          <para styleclass="Normal">Current value of the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-xpp1">/xpp1</link> compiler option. Only defined in the Xbase++ dialect.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

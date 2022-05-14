@@ -178,49 +178,56 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (value.StartsWith("\"") && value.EndsWith("\""))
                             value = value.Substring(1, value.Length - 2);
                         string fn = System.IO.Path.GetFileName(value).ToLower();
+                        fn = System.IO.Path.GetFileNameWithoutExtension(fn);
                         switch (fn)
                         {
-                            case "xsharp.core.dll":
+                            case XSharpAssemblyNames.XSharpCore:
                                 options.TargetDLL = XSharpTargetDLL.Core;
                                 break;
-                            case "xsharp.data.dll":
+                            case XSharpAssemblyNames.XSharpData:
                                 options.TargetDLL = XSharpTargetDLL.Data;
                                 break;
-                            case "xsharp.rt.dll":
+                            case XSharpAssemblyNames.XSharpRT:
                                 options.TargetDLL = XSharpTargetDLL.RT;
                                 break;
-                            case "xsharp.vo.dll":
+                            case XSharpAssemblyNames.XSharpRTDebugger:
+                                options.TargetDLL = XSharpTargetDLL.RTDebugger;
+                                break;
+                            case XSharpAssemblyNames.XSharpVO:
                                 options.TargetDLL = XSharpTargetDLL.VO;
                                 break;
-                            case "xsharp.rdd.dll":
+                            case XSharpAssemblyNames.XSharpRDD:
                                 options.TargetDLL = XSharpTargetDLL.RDD;
                                 break;
-                            case "xsharp.xpp.dll":
+                            case XSharpAssemblyNames.XSharpXPP:
                                 options.TargetDLL = XSharpTargetDLL.XPP;
                                 break;
-                            case "xsharp.vfp.dll":
+                            case XSharpAssemblyNames.XSharpVFP:
                                 options.TargetDLL = XSharpTargetDLL.VFP;
                                 break;
-                            case "vowin32apilibrary.dll":
+                            case XSharpAssemblyNames.VoWin32:
                                 options.TargetDLL = XSharpTargetDLL.VOWin32Api;
                                 break;
-                            case "vosystemclasses.dll":
+                            case XSharpAssemblyNames.VoSystem:
                                 options.TargetDLL = XSharpTargetDLL.VOSystemClasses;
                                 break;
-                            case "vorddclasses.dll":
+                            case XSharpAssemblyNames.VoRdd:
                                 options.TargetDLL = XSharpTargetDLL.VORDDClasses;
                                 break;
-                            case "vosqlclasses.dll":
+                            case XSharpAssemblyNames.VoSql:
                                 options.TargetDLL = XSharpTargetDLL.VOSQLClasses;
                                 break;
-                            case "voguiclasses.dll":
+                            case XSharpAssemblyNames.VoGui:
                                 options.TargetDLL = XSharpTargetDLL.VOGuiClasses;
                                 break;
-                            case "vointernetclasses.dll":
+                            case XSharpAssemblyNames.VoInet:
                                 options.TargetDLL = XSharpTargetDLL.VOInternetClasses;
                                 break;
-                            case "voconsoleclasses.dll":
+                            case XSharpAssemblyNames.VoConsole:
                                 options.TargetDLL = XSharpTargetDLL.VOConsoleClasses;
+                                break;
+                            case XSharpAssemblyNames.VoReport:
+                                options.TargetDLL = XSharpTargetDLL.VOReportClasses;
                                 break;
                             default:
                                 options.TargetDLL = XSharpTargetDLL.Other;

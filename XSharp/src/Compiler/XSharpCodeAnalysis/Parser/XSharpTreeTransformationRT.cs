@@ -202,12 +202,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region SyntaxTree
-        private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int, String>> initprocs, bool isApp, bool hasPCall, List<MemVarFieldInfo> filewidepublics)
+        private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int, String>> initprocs, bool hasPCall, List<MemVarFieldInfo> filewidepublics)
         {
 
             // Create Global Functions class with the Members to call the Init procedures
             // Vulcan only does this for DLLs. We do it for EXE too to make things more consistent
             // Methods $Init1() and $Exit() are always created.
+            var isApp = _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication();
             var members = CreateInitMembers(initprocs, isApp, hasPCall, filewidepublics);
             var modulemembers = new List<MemberDeclarationSyntax>();
             if (isApp)
@@ -252,12 +253,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     GlobalEntities.Members, eof);
             cu.XGenerated = true;
             var red = (Syntax.CompilationUnitSyntax)cu.CreateRed();
-            return CSharpSyntaxTree.Create(red);
+            return CSharpSyntaxTree.Create(red, _options, "CompileGeneratedCode.prg", System.Text.Encoding.UTF8);
         }
-        public static SyntaxTree DefaultRTSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp)
+        public static SyntaxTree DefaultRTSyntaxTree(IEnumerable<SyntaxTree> trees, CSharpParseOptions options)
         {
+            var isApp = options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication();
             // Trees is NEVER empty !
-            CSharpParseOptions options = (CSharpParseOptions)trees.First().Options;
             // Collect Init procedures in all trees
             var initprocs = new List<Tuple<int, string>>();
             var filewidepublics = new List<MemVarFieldInfo>();
@@ -284,7 +285,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             var t = getTransform(options);
-            return t.GenerateDefaultSyntaxTree(initprocs, isApp, hasPCall, filewidepublics);
+            return t.GenerateDefaultSyntaxTree(initprocs, hasPCall, filewidepublics);
         }
 
         public static string VOGlobalClassName(CSharpParseOptions options)
@@ -2921,7 +2922,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return m;
         }
 
-        private bool AddPCallDelegate(XP.MethodCallContext context, string prefix, TypeSyntax type)
+        private bool AddPCCallDelegate(XP.MethodCallContext context, string prefix, TypeSyntax type, bool pcall)
         {
             // This method generates a delegate and adds it to the current class
             // the XNode for the delegate points back to the PCALL or PCALLNATIVE in the ANtlr Parse Tree
@@ -2951,8 +2952,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var paramList = MakeParameterList(@params);
             var id = SyntaxFactory.Identifier(name);
             var mods = TokenList(SyntaxKind.InternalKeyword);
+            SeparatedSyntaxListBuilder<AttributeSyntax> attributes = _pool.AllocateSeparated<AttributeSyntax>();
+            attributes.Add(_syntaxFactory.Attribute(
+                    name: GenerateQualifiedName(SystemQualifiedNames.CompilerGenerated),
+                    argumentList: null));
+            if (!pcall)
+            {
+                attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                var arg = _syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName(SystemQualifiedNames.Cdecl));
+                var args = MakeSeparatedList(arg);
+                var argList = _syntaxFactory.AttributeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken), args, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                attributes.Add(_syntaxFactory.Attribute(
+                        name: GenerateQualifiedName(SystemQualifiedNames.UnmanagedFunctionPointer),
+                        argumentList: argList));
+            }
+            var delegateAttributes = MakeAttributeList(null, attributes.ToList());
             MemberDeclarationSyntax m = _syntaxFactory.DelegateDeclaration(
-               MakeCompilerGeneratedAttribute(),
+               delegateAttributes,
                mods,
                delegateKeyword: SyntaxFactory.MakeToken(SyntaxKind.DelegateKeyword),
                returnType: type,
@@ -2964,11 +2980,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             m.XNode = context; // link the Delegate to the calling code
             ClassEntities.Peek().Members.Add(m);    // add to current class
             // Now change the context and create the call to the delegate
-            return GeneratePCallDelegateCall(context, name);
+            return GeneratePCCallDelegateCall(context, name);
         }
-        private bool GeneratePCallDelegateCall(XP.MethodCallContext context, string name)
+        private bool GeneratePCCallDelegateCall(XP.MethodCallContext context, string name)
         {
-            // This method changes the PCALL(hFunc, a,b,c) call
+            // This method changes the PCALL(hFunc, a,b,c) call or CCALL(hFunc, a,b,c)
             // and converts it to a delegate call
             // hFunc = 1st argument
             // a,b,c etc are rest of the arguments
@@ -3067,14 +3083,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return true;
         }
 
-        private bool GeneratePCall(XP.MethodCallContext context)
+        private bool GeneratePCCall(XP.MethodCallContext context, bool pcall)
         {
             // Return type and parameters should match the method prototype that the first parameter
             // For now we default to a return type of _objectType
             // points to. This is resolved in the binder and rewriter
-            return AddPCallDelegate(context, XSharpSpecialNames.PCallPrefix, objectType);
+            return AddPCCallDelegate(context, pcall ? XSharpSpecialNames.PCallPrefix : XSharpSpecialNames.CCallPrefix, objectType, pcall);
         }
-        private bool GeneratePCallNative(XP.MethodCallContext context)
+        private bool GeneratePCallNative(XP.MethodCallContext context, bool pcall)
         {
             // return type is specified in 1st generic parameter
             // other parameters are derived from the types of the actual parameters
@@ -3090,7 +3106,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return true;
             }
             TypeSyntax arg = gns.TypeArgumentList.Arguments[0];
-            return AddPCallDelegate(context, XSharpSpecialNames.PCallNativePrefix, arg);
+            return AddPCCallDelegate(context, pcall ? XSharpSpecialNames.PCallNativePrefix : XSharpSpecialNames.CCallNativePrefix, arg, pcall);
         }
         #endregion
 
@@ -3125,7 +3141,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     case XSharpIntrinsicNames.PCall:
                     case XSharpIntrinsicNames.CCall:
-                        if (GeneratePCall(context))
+                        if (GeneratePCCall(context, name == XSharpIntrinsicNames.PCall))
                             return;
                         break;
                     case XSharpIntrinsicNames.PCallNative:
@@ -3183,7 +3199,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 switch (name)
                 {
                     case XSharpIntrinsicNames.PCallNative:
-                        if (GeneratePCallNative(context))
+                    case XSharpIntrinsicNames.CCallNative:
+                        if (GeneratePCallNative(context, name == XSharpIntrinsicNames.PCallNative))
                             return;
                         break;
                 }

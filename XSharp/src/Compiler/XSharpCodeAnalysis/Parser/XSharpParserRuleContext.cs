@@ -36,13 +36,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
 
         }
-        public SyntaxTriviaList GetFunctionDoc(CSharpSyntaxNode node)
+        public SyntaxTriviaList GetFunctionDoc(CSharpSyntaxNode node, CompilationUnitSyntax cu)
         {
             // We only generate the function doc for the default tree to avoid generating an empty line for every prg file.
-            if (node is ClassDeclarationSyntax &&
-                node.XDefaultTree)
+            if (node is ClassDeclarationSyntax && node.XDefaultTree)
             {
-                return ParseTrivia("/// <summary></summary>");
+                var options = (CSharpParseOptions) cu.SyntaxTree.Options;
+                var modName = options.CommandLineArguments.CompilationOptions.ModuleName;
+                return ParseTrivia($"/// <summary>This compiler generated class contains all the functions, globals and defines that are defined in the {modName} assembly. </summary>");
             }
             return default;
         }
@@ -54,18 +55,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             if (cu != null)
             {
-                var options = ((CSharpParseOptions)cu.SyntaxTree.Options);
+                var options = (CSharpParseOptions)cu.SyntaxTree.Options;
                 if (cu.HasDocComments || options.TargetDLL != XSharpTargetDLL.Other)
                 {
-                    XSharpToken start = this.Start as XSharpToken;
-                    // we have stored the XML comments of an entity in the first token of the ContextNode
-                    if (start.HasXmlComments)
+                    var xnode = parent.XNode as XSharpParserRuleContext;
+                    var start = xnode.Start as XSharpToken;
+                    if (start != null)
                     {
-                        return ParseTrivia(start.XmlComments);
-                    }
-                    if (start.SourceSymbol != null && start.SourceSymbol.HasXmlComments)
-                    {
-                        return ParseTrivia(start.SourceSymbol.XmlComments);
+                        // we have stored the XML comments of an entity in the first token of the ContextNode
+                        if (start.HasXmlComments)
+                        {
+                            return ParseTrivia(start.XmlComments);
+                        }
+                        if (start.SourceSymbol != null && start.SourceSymbol.HasXmlComments)
+                        {
+                            return ParseTrivia(start.SourceSymbol.XmlComments);
+                        }
                     }
                 }
                 if (parent is PropertyDeclarationSyntax propdecl)

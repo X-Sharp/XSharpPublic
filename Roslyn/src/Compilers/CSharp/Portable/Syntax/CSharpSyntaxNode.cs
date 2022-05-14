@@ -167,17 +167,18 @@ namespace Microsoft.CodeAnalysis.CSharp
         public new SyntaxTriviaList GetLeadingTrivia()
         {
 #if XSHARP
-            if (this.XNode is XSharpParserRuleContext node )
+            if (this.XNode is XSharpParserRuleContext node)
             {
+                var cu = this.SyntaxTree.GetRoot() as CompilationUnitSyntax;
                 if (!this.XGenerated)
-                { 
-                    var result = node.GetLeadingTrivia(this, this.SyntaxTree.GetRoot() as CompilationUnitSyntax);
+                {
+                    var result = node.GetLeadingTrivia(this, cu);
                     return result;
                 }
                 else
                 {
                     // Generate trivia for generated functions class
-                    var list = node.GetFunctionDoc(this);
+                    var list = node.GetFunctionDoc(this, cu);
                     if (!list.IsEmpty())
                         return list;
 

@@ -127,7 +127,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal const string DelegateNameSpace = "Xs$Delegates";
         internal const string PCallPrefix = "$PCall";
-        internal const string PCallNativePrefix = "$PCallNative";
+        internal const string CCallPrefix = "$CCall";
+        internal const string NativePrefix = "$Native";
+        internal const string PCallNativePrefix = PCallPrefix + NativePrefix;
+        internal const string CCallNativePrefix = CCallPrefix + NativePrefix;
         internal const string AppInit = "$AppInit";
         internal const string AppExit = "$AppExit";
         internal const string InitProc1 = "$Init1";
@@ -160,6 +163,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string XSharpDataFunctionsClass = "XSharp.Data.Functions";
         internal const string XSharpRDDFunctionsClass = "XSharp.RDD.Functions";
         internal const string XSharpRTFunctionsClass = "XSharp.RT.Functions";
+        internal const string XSharpRTDebuggerFunctionsClass = "XSharp.RT.Debugger.Functions";
         internal const string XSharpVOFunctionsClass = "XSharp.VO.Functions";
         internal const string XSharpXPPFunctionsClass = "XSharp.XPP.Functions";
         internal const string XSharpVFPFunctionsClass = "XSharp.VFP.Functions";
@@ -345,7 +349,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string XSharpCore = "xsharp.core";
         internal const string XSharpData = "xsharp.data";
         internal const string XSharpRT = "xsharp.rt";
+        internal const string XSharpRTDebugger = "xsharp.rt.debugger";
         internal const string XSharpVO = "xsharp.vo";
+        internal const string XSharpRDD = "xsharp.rdd";
         internal const string XSharpXPP = "xsharp.xpp";
         internal const string XSharpVFP = "xsharp.vfp";
         internal const string SdkDefines = "sdkdefines";
@@ -371,6 +377,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ThisCall = "global::System.Runtime.InteropServices.CallingConvention.ThisCall";
         internal const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
         internal const string CompilerGlobalScope = "global::System.Runtime.CompilerServices.CompilerGlobalScope";
+        internal const string UnmanagedFunctionPointer = "global::System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute";
         internal const string IntPtr = "global::System.IntPtr";
         internal const string DllImport = "global::System.Runtime.InteropServices.DllImportAttribute";
         internal const string CharSet = "global::System.Runtime.InteropServices.CharSet";

@@ -598,12 +598,72 @@ namespace Microsoft.CodeAnalysis.CSharp
             return expr;
 
         }
+
+        private BoundExpression BindXsCast(CastExpressionSyntax node, TypeSymbol targetType, ref BoundExpression operand,  DiagnosticBag diagnostics)
+        {
+            var pe = node.XNode as XSharpParser.PrimaryExpressionContext;
+            if (pe.IsVoCast())
+            {
+                if (targetType.SpecialType == SpecialType.System_Object && !operand.Type.IsReferenceType && !pe.IsCastClass())
+                {
+                    diagnostics.Add(ErrorCode.ERR_NoExplicitCast, node.Location, operand.Type, targetType);
+                }
+                // LOGIC(_CAST, numeric)  => change conversion to <numeric> != 0
+                if (targetType.SpecialType == SpecialType.System_Boolean && operand.Type.IsIntegralType())
+                {
+                    if (operand is BoundLiteral)
+                    {
+                        bool result = operand.ConstantValue.Int64Value != 0;
+                        return new BoundLiteral(node, ConstantValue.Create(result), targetType);
+                    }
+                    var right = new BoundLiteral(node, ConstantValue.Create(0), Compilation.GetSpecialType(SpecialType.System_Int32));
+                    return new BoundBinaryOperator(
+                        syntax: node,
+                        operatorKind: BinaryOperatorKind.NotEqual,
+                        left: operand,
+                        right: right,
+                        constantValueOpt: null,
+                        methodOpt: null,
+                        resultKind: LookupResultKind.Viable,
+                        type: targetType);
+                }
+            }
+            if (targetType.IsVoidPointer() && operand.Type.IsStringType())
+            {
+                if (pe.IsVoCast() || pe.IsVoConvert())
+                {
+
+                    // PTR(_Cast, SomeString) or PTR(SomeString)
+                    // Convert to 
+                    // PTR(_Cast, PSZ(_Cast, SomeString))
+                    var pszType = Compilation.PszType();
+                    HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+                    var conversion = Conversions.ClassifyConversionFromExpression(operand, pszType, ref useSiteDiagnostics, true);
+                    diagnostics.Add(node, useSiteDiagnostics);
+                    diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, node.Location);
+                    operand = new BoundConversion(node, operand, conversion, @checked: false, explicitCastInCode: true, null, null, pszType);
+                    return null;
+                }
+            }
+            BoundExpression expression;
+            if (BindVOPointerDereference(node, TypeWithAnnotations.Create(targetType), operand, diagnostics, out expression))
+            {
+                return expression;
+            }
+            // WE do not want (USUAL) <object> to unbox the object !
+            if (operand.Type?.SpecialType == SpecialType.System_Object && targetType.IsUsualType())
+            {
+                return operand;
+            }
+            return null;
+        }
+
         private bool BindStringToPsz(CSharpSyntaxNode syntax, ref BoundExpression source, TypeSymbol destination, ref Conversion conversion, DiagnosticBag diagnostics)
         {
             NamedTypeSymbol psz = Compilation.PszType();
             if (source.Type is { } && source.Type.IsStringType() &&
                 Compilation.Options.HasRuntime &&
-                (destination.IsPszType() || destination.IsVoidPointer()))
+                destination.IsPszType())
             {
                 // Note this calls the constructor for __PSZ with a string.
                 // The allocated pointer inside the PSZ is never freed by Vulcan and X# !
@@ -613,10 +673,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, syntax.Location);
                     source = new BoundObjectCreationExpression(syntax, stringctor, new BoundExpression[] { source });
-                    if (destination.IsVoidPointer())
-                    {
-                        conversion = Conversion.Identity;
-                    }
                     return true;
                 }
             }

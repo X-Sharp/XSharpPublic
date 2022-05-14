@@ -7,7 +7,9 @@ Unhandled Exception: System.FormatException: Input string was not in a correct f
    at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
    at System.String.Format(String format, Object arg0, Object arg1)
    at C728.Exe.Functions.Start() in C:\xSharp\Dev\Tests\Applications\C728\Prg\C728.prg:line 7
-*/
+*/     
+
+// note that TextMerge requires /memvar in X# 2.12 and later
 FUNCTION Start() AS VOID
 LOCAL cSubstitute
 LOCAL cText
@@ -16,7 +18,12 @@ TEXT TO cText TEXTMERGE NOSHOW
 <<cSubstitute>>
 '<<cSubstitute>>'
 "<<cSubstitute>>"
-ENDTEXT                                                                                       
+ENDTEXT    
+LOCAL cTest := cText as string
+xAssert( cTest[cTest:Length-4] == 101) // e
+xAssert( cTest[cTest:Length-3] == 34)  // "
+xAssert( cTest[cTest:Length-2] == 13) // \r
+xAssert( cTest[cTest:Length-1] == 10) // \n
 xAssert(cText == e"substitute here\r\n'substitute here'\r\n\"substitute here\"\r\n")
 
 

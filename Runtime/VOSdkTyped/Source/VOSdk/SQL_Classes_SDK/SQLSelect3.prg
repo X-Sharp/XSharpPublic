@@ -136,9 +136,12 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		LOCAL oError AS Error
 		LOCAL oColumn AS DataColumn
 		LOCAL oDf AS DataField
-        SELF:__CheckReadOnly()
-
-		 TRY
+        TRY
+        	SELF:__CheckReadOnly()
+        CATCH e as Exception
+            SELF:ShowSQLError(e:Message, #FieldPut,e )
+        END TRY
+        TRY
 			IF ! SELF:EoF .and. oCurrentRow != NULL_OBJECT
 				wField := (INT) SELF:__GetColIndex( uFieldID ,TRUE)
 				IF wField <= 0 .OR. wField > SELF:nNumCols
@@ -297,7 +300,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			wField := (INT) SELF:__GetColIndex( uFieldID ,TRUE)
 			IF wField <= 0 .OR. wField > SELF:nNumCols
 				oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADCOL ), #GetData )
-				SELF:Error( oStmt:ErrInfo )
+				SELF:Error( oStmt:ErrInfo ,#GetData)
 				RETURN NIL
 			ENDIF
 			IF SELF:lEof .OR. SELF:lBof
@@ -378,14 +381,14 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF ( nIndex = 0 .OR. nIndex > nNumCols )
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #GetTimeStamp )
-			SELF:Error( oStmt:ErrInfo )
+			SELF:Error( oStmt:ErrInfo , #GetTimeStamp )
 			RETURN NIL
 		ENDIF
 		oColumn   := aSQLColumns[nIndex]
 		oType    := oColumn:Type
 		IF ( oType != typeof(System.DateTime))
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #GetTimeStamp )
-			SELF:Error( oStmt:ErrInfo )
+			SELF:Error( oStmt:ErrInfo , #GetTimeStamp )
 			RETURN NIL
 		ENDIF
 		oDT := (DateTime) oCurrentRow:Item[(INT)nIndex-1]

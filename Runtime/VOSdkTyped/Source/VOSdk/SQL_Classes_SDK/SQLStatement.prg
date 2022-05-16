@@ -386,7 +386,7 @@ CLASS SQLStatement
                 lRet := TRUE
             ENDIF
         CATCH e AS Exception
-            SELF:__GenerateSQLError( "Beim Ausf�hren eines SQL-Statements ist ein Fehler aufgetreten. " + chr(13) + chr(10)  + chr(13) + chr(10) + e:Message  + chr(13) + chr(10)  + chr(13) + chr(10) + e:StackTrace, #AllocStmt, e )
+            SELF:__GenerateSQLError( "Error allocating statement:"+e:Message, #AllocStmt)
             lRet := FALSE
         END TRY
         RETURN lRet

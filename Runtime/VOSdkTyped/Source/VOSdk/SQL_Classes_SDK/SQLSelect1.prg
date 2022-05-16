@@ -153,10 +153,10 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 					nPos := uFieldID
 				ENDIF
 			ELSEIF IsSymbol( uFieldID )
-				LOCAL symField AS SYMBOL
-				symField := uFieldID
-				IF (oFieldHash:ContainsKey(symField))
-					nPos := (DWORD) oFieldHash[symField]
+				LOCAL cField AS STRING
+				cField := uFieldID
+				IF (oFieldHash:ContainsKey(cField))
+					nPos := (DWORD) oFieldHash[cField]
 				ENDIF
 			ELSEIF IsString( uFieldID )
 				LOCAL cField AS STRING
@@ -241,11 +241,17 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
                 if self:oAdapter == null_object
                     SELF:__CreateDataAdapter()
                 endif
-                SELF:nRowCount := self:oAdapter:Update(self:oTable)
-			    SELF:oTable:AcceptChanges()
+                TRY
+                    SELF:nRowCount := self:oAdapter:Update(self:oTable)
+                    SELF:oTable:AcceptChanges()
+                    SELF:lChanges := FALSE
+			        lOk := TRUE
+                CATCH e as Exception
+                    oStmt:__GenerateSQLError( e:Message, #__GoCold )
+                    lOk := FALSE
+                END TRY
             ENDIF
-			SELF:lChanges := FALSE
-			lOk := TRUE
+
 		ELSE
 			lOk := TRUE
 		ENDIF
@@ -284,7 +290,6 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
                 oFS         := DotNetType2VOType(oSchema, oColumn,cFldName)
 				oHL    		:= oFS:HyperLabel
 				oDF    		:= DataField{ oHL, oFS }
-				oFieldHash:Add(oDF:NameSym, i)
 				oFieldHash:Add(Upper(oDF:Name), i)
 				TRY
 					IF oSchema != NULL

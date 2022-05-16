@@ -34,7 +34,7 @@
     </NuGetPackageImportStamp>
     <VsixType>v3</VsixType>
     <DeployExtension Condition=" '$(Configuration)' == 'Release' ">false</DeployExtension>
-    <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+    <ContentSQLiteInteropFiles>false</ContentSQLiteInteropFiles>
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>

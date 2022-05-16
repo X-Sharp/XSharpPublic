@@ -15,7 +15,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.ctor/*" />
-    CONSTRUCTOR( cSQLSelect, oSQLConnection )
+    CONSTRUCTOR( cSQLSelect, oSQLConnection ) CLIPPER
 
 
         SUPER()
@@ -166,7 +166,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.ResetCursor/*" />
-    METHOD ResetCursor( nUpdateType ) AS LOGIC
+    METHOD ResetCursor( nUpdateType ) AS LOGIC  CLIPPER
         SELF:oTable:RejectChanges()
         SELF:GoTo( SELF:RecNo )
         RETURN TRUE
@@ -251,12 +251,12 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 /// <include file="Sql.xml" path="doc/SQLSelect.SetPos/*" />
     [Obsolete];
-    METHOD SetPos( nPos, nOption, nLock )
+    METHOD SetPos( nPos, nOption, nLock ) AS LOGIC CLIPPER
         RETURN TRUE
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.SetPrimaryKey/*" />
-    METHOD SetPrimaryKey( uFieldPos ) AS LOGIC
+    METHOD SetPrimaryKey( uFieldPos ) AS LOGIC CLIPPER
         LOCAL nIndex    AS DWORD
         LOCAL lRet      := FALSE AS LOGIC
 
@@ -282,7 +282,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 /// <include file="Sql.xml" path="doc/SQLSelect.SetStatementOption/*" />
     [Obsolete];
-    METHOD SetStatementOption( fOption, uValue ) AS LOGIC
+    METHOD SetStatementOption( fOption, uValue ) AS LOGIC  CLIPPER
         //RETURN oStmt:SetStatementOption( fOption, uValue, TRUE )
         RETURN TRUE
 

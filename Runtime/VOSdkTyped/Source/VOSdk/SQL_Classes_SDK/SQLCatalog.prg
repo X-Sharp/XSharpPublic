@@ -37,7 +37,7 @@ CLASS SQLCatalogQuery INHERIT SQLSelect
 
 
  /// <exclude />
-    METHOD __GoCold AS LOGIC STRICT
+    METHOD __GoCold(lUpdateBatch AS LOGIC) AS LOGIC STRICT
         RETURN TRUE
 
 

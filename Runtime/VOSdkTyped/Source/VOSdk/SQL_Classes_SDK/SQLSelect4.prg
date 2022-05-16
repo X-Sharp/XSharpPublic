@@ -9,6 +9,7 @@
 
 USING System.Data.Common
 USING System.Data
+USING System.Linq
 using System.Collections.Generic
 
 PARTIAL CLASS SQLSelect INHERIT DataServer
@@ -200,7 +201,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
         nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
         IF ( nIndex = 0 .OR. nIndex > nNumCols )
             oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #SetColumnAttributes )
-            SELF:Error( oStmt:ErrInfo )
+            SELF:Error( oStmt:ErrInfo ,#SetColumnAttributes)
             lOk := FALSE
         ELSE
             SELF:aSQLColumns[nIndex] 		:= oColAttributes
@@ -271,6 +272,12 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
                 oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #SetPrimaryKey )
             ELSE
                 aIndexCol:Add( (INT) nIndex )
+                var cols := List<DataColumn>{}
+                foreach var num in aIndexCol
+                    cols:Add( SELF:oTable:Columns[num-1])
+                next
+                self:oTable:PrimaryKey := cols:ToArray()
+
                 oStmt:ErrInfo:ErrorFlag := FALSE
                 lRet := TRUE
             ENDIF
@@ -300,7 +307,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
             oErr := oStmt:ErrInfo
             oErr:ArgNum := 1
             oErr:Args := {uFieldPos, cTimeStamp}
-            SELF:Error( oErr )
+            SELF:Error( oErr , #SetTimeStamp)
             RETURN
         ENDIF
 
@@ -311,7 +318,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
             oErr := oStmt:ErrInfo
             oErr:ArgNum := 1
             oErr:Args := {uFieldPos, cTimeStamp}
-            SELF:Error( oErr )
+            SELF:Error( oErr , #SetTimeStamp)
             RETURN
         ENDIF
 
@@ -321,7 +328,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
             oErr := oStmt:ErrInfo
             oErr:ArgNum := 2
             oErr:Args := {uFieldPos, cTimeStamp}
-            SELF:Error( oErr )
+            SELF:Error( oErr , #SetTimeStamp)
             RETURN
         ENDIF
 

@@ -73,7 +73,12 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	METHOD Append(lReleaseLocks AS LOGIC)  AS LOGIC
 		LOCAL oRow AS DataRow
         LOCAL lOk := FALSE AS LOGIC
-        self:__CheckReadOnly()
+        TRY
+            self:__CheckReadOnly()
+        CATCH e as Exception
+            SELF:ShowSQLError(e:Message, #Append, e)
+            return FALSE
+        END TRY
 		IF SELF:__PrepareForRecordMovement()
 			SELF:lChanges := TRUE
 			oRow := oTable:NewRow()
@@ -100,7 +105,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.Error/*" />
-	METHOD Error( oError ) AS USUAL CLIPPER
+	METHOD Error( oError as Error, symMethod as Symbol) AS VOID
 	//  Method for handling error conditions raised during database processing
 	//
 	//  The standard Error handling method passes the problem to its clients
@@ -130,7 +135,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		lErrorProcessingSemaphor := FALSE
 	ENDIF
-	RETURN NIL
+	RETURN
 
 
 /*
@@ -313,7 +318,13 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 /// <include file="Sql.xml" path="doc/SQLSelect.Delete/*" />
 	METHOD Delete() AS LOGIC CLIPPER
 		LOCAL lOk := FALSE AS LOGIC
-        SELF:__CheckReadOnly()
+        TRY
+            SELF:__CheckReadOnly()
+        CATCH e as Exception
+            SELF:ShowSQLError(e:Message, #Delete, e)
+            return FALSE
+        END TRY
+
 		IF SELF:__PrepareForRecordMovement()
 			IF oCurrentRow != NULL
 				SELF:lChanges := TRUE
@@ -461,7 +472,7 @@ METHOD Execute( uParam ) AS LOGIC CLIPPER
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldGetFormatted )
-			SELF:Error( oStmt:ErrInfo )
+			SELF:Error( oStmt:ErrInfo , #FieldGetFormatted)
 		ELSE
 			xRet := SELF:FieldGet( nIndex )
 			oStmt:ErrInfo:ErrorFlag := FALSE

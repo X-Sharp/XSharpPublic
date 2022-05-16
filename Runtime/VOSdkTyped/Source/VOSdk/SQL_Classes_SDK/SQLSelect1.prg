@@ -186,7 +186,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		IF lOk .AND. ! SELF:__Notify( NOTIFYINTENTTOMOVE )
 			lOk := FALSE
 		ENDIF
-		IF lOk .AND. ! SELF:__GoCold()
+		IF lOk .AND. ! SELF:__GoCold(FALSE)
 			lOk := FALSE
 		ENDIF
 		RETURN lOk
@@ -217,30 +217,33 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN cRet
 
 
+    METHOD __CreateDataAdapter AS VOID
+
+        self:oAdapter := self:oConn:Factory:CreateDataAdapter()
+        self:oAdapter:SelectCommand := self:oStmt:StatementHandle
+        var builder := self:oConn:Factory:CreateCommandBuilder()
+        builder:DataAdapter := self:oAdapter
+        self:oAdapter:InsertCommand := builder:GetInsertCommand()
+        self:oAdapter:UpdateCommand := builder:GetUpdateCommand()
+        self:oAdapter:DeleteCommand := builder:GetDeleteCommand()
+
  /// <exclude />
 	METHOD __GoCold(lUpdateBatch AS LOGIC) AS LOGIC STRICT
 		local lOk as logic
         local lWriteBatch as logic
         lWriteBatch := lUpdateBatch .or. ! self:lBatchUpdates
+        SELF:nRowCount := 0
 		if self:lChanges .and. lWriteBatch
-			// Todo: Check Writing back changes to server.
-            //nRowCount := self:oAdapter:Update(oTable)
             local oChanges as DataTable
 
             oChanges := self:oTable:GetChanges()
             if oChanges != null .and. oChanges:Rows:Count > 0
                 if self:oAdapter == null_object
-                    self:oAdapter := self:oConn:Factory:CreateDataAdapter()
-                    self:oAdapter:SelectCommand := self:oStmt:StatementHandle
-                    var builder := self:oConn:Factory:CreateCommandBuilder()
-                    builder:DataAdapter := self:oAdapter
-                    self:oAdapter:InsertCommand := builder:GetInsertCommand()
-                    self:oAdapter:UpdateCommand := builder:GetUpdateCommand()
-                    self:oAdapter:DeleteCommand := builder:GetDeleteCommand()
+                    SELF:__CreateDataAdapter()
                 endif
-                nRowCount := self:oAdapter:Update(self:oTable)
-			    self:oTable:AcceptChanges()
-            endif
+                SELF:nRowCount := self:oAdapter:Update(self:oTable)
+			    SELF:oTable:AcceptChanges()
+            ENDIF
 			SELF:lChanges := FALSE
 			lOk := TRUE
 		ELSE

@@ -90,7 +90,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.AppendRow/*" />
-	METHOD AppendRow( lForce )
+	METHOD AppendRow( lForce ) AS LOGIC CLIPPER
         if self:lBatchUpdates
             return true
         endif
@@ -100,7 +100,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.Error/*" />
-	METHOD Error( oError ) AS USUAL
+	METHOD Error( oError ) AS USUAL CLIPPER
 	//  Method for handling error conditions raised during database processing
 	//
 	//  The standard Error handling method passes the problem to its clients
@@ -179,7 +179,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 /// <include file="Sql.xml" path="doc/SQLSelect.BindColumn/*" />
 	[Obsolete];
-	METHOD BindColumn( i ) AS LOGIC
+	METHOD BindColumn( i ) AS LOGIC CLIPPER
 		RETURN TRUE
 
 
@@ -329,12 +329,12 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.DirectSkip/*" />
-METHOD DirectSkip( nSkip )
+METHOD DirectSkip( nSkip ) AS LOGIC CLIPPER
 	RETURN SELF:Skip(nSkip)
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.Execute/*" />
-METHOD Execute( uParam ) AS LOGIC
+METHOD Execute( uParam ) AS LOGIC CLIPPER
 	LOCAL nCount        AS DWORD
 	LOCAL lRet          AS LOGIC
 	LOCAL i             AS DWORD
@@ -377,7 +377,7 @@ METHOD Execute( uParam ) AS LOGIC
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.ExtendedFetch/*" />
-	METHOD ExtendedFetch( nFetchType, nRow ) AS LOGIC
+	METHOD ExtendedFetch( nFetchType, nRow ) AS LOGIC CLIPPER
 		LOCAL lResult AS LOGIC
 		EnforceType(REF nFetchType, LONG)
 		@@Default ( REF nRow, 0)
@@ -453,7 +453,7 @@ METHOD Execute( uParam ) AS LOGIC
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.FieldGetFormatted/*" />
-	METHOD FieldGetFormatted( uFieldPos AS USUAL ) STRICT
+	METHOD FieldGetFormatted( uFieldPos AS USUAL ) AS USUAL
 		LOCAL nIndex    AS DWORD
 		LOCAL xRet     := NIL  AS USUAL
 		LOCAL oFs      AS FieldSpec

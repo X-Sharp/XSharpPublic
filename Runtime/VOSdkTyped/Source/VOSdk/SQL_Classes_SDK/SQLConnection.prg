@@ -61,7 +61,7 @@ CLASS SQLConnection
 
 	#region Constructors and Destructors
 /// <include file="Sql.xml" path="doc/SQLConnection.ctor/*" />
-	CONSTRUCTOR ( cConnStr, cUserID, cPassword )
+	CONSTRUCTOR ( cConnStr, cUserID, cPassword ) CLIPPER
         SELF:oFactory := XSharp.Data.Functions.GetSqlFactory()
 		aStmts := List<SQLStatement>{}
 		oErrInfo := SQLErrorInfo{}
@@ -93,7 +93,7 @@ CLASS SQLConnection
 
 
 /// <include file="Sql.xml" path="doc/SQLConnection.BeginTransaction/*" />
-	METHOD BeginTransaction()
+	METHOD BeginTransaction() AS LOGIC
 		LOCAL lOk AS LOGIC
 		TRY
 			lOk := FALSE
@@ -108,7 +108,7 @@ CLASS SQLConnection
 
 
 /// <include file="Sql.xml" path="doc/SQLConnection.EndTransaction/*" />
-	METHOD EndTransaction()
+	METHOD EndTransaction() AS LOGIC
 		LOCAL lOk AS LOGIC
 		TRY
 			lOk := FALSE
@@ -129,7 +129,7 @@ CLASS SQLConnection
 
 
 /// <include file="Sql.xml" path="doc/SQLConnection.Commit/*" />
-	METHOD Commit()
+	METHOD Commit() AS LOGIC
 		LOCAL lOk AS LOGIC
 		TRY
 			lOk := FALSE
@@ -150,7 +150,7 @@ CLASS SQLConnection
 
 
 /// <include file="Sql.xml" path="doc/SQLConnection.Rollback/*" />
-	METHOD Rollback()
+	METHOD Rollback() AS LOGIC
 		LOCAL lOk AS LOGIC
 		TRY
 			lOk := FALSE
@@ -173,7 +173,7 @@ CLASS SQLConnection
 
 
 /// <include file="Sql.xml" path="doc/SQLConnection.Connect/*" />
-	METHOD Connect( uConnStr, uUserID, uPassword )
+	METHOD Connect( uConnStr, uUserID, uPassword ) AS LOGIC CLIPPER
 
 
 		LOCAL lRet    := FALSE   AS LOGIC
@@ -246,7 +246,7 @@ CLASS SQLConnection
 
 
 /// <include file="Sql.xml" path="doc/SQLConnection.Disconnect/*" />
-	METHOD Disconnect()
+	METHOD Disconnect() AS LOGIC
 		LOCAL lRet      AS LOGIC
 
 
@@ -290,7 +290,7 @@ CLASS SQLConnection
 
 
 /// <include file="Sql.xml" path="doc/SQLConnection.DriverConnect/*" />
-	METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
+	METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn ) AS LOGIC CLIPPER
         LOCAL cResult AS STRING
         LOCAL lRet    := FALSE AS LOGIC
         IF IsNil(cConnStrIn)
@@ -346,7 +346,7 @@ CLASS SQLConnection
 
 
 /// <include file="Sql.xml" path="doc/SQLConnection.Reconnect/*" />
-	METHOD Reconnect()
+	METHOD Reconnect() AS LOGIC
 		IF SELF:Connected
 			SELF:Disconnect()
 		ENDIF
@@ -576,7 +576,7 @@ CLASS SQLConnection
 
 /// <include file="Sql.xml" path="doc/SQLConnection.GetConnectOption/*" />
 	[Obsolete];
-	METHOD GetConnectOption( nOption AS DWORD )
+	METHOD GetConnectOption( nOption AS DWORD ) AS USUAL
 		//LOCAL oHandle AS OBJECT
 		//LOCAL oMethodInfo AS MethodInfo
 		//LOCAL oType       AS System.Type
@@ -613,7 +613,7 @@ CLASS SQLConnection
 
 
 /// <include file="Sql.xml" path="doc/SQLConnection.Info/*" />
-	METHOD Info( nInfoType AS WORD)
+	METHOD Info( nInfoType AS WORD) AS USUAL
 		SWITCH nInfoType
         CASE SQL_DRIVER_NAME	// 6
             RETURN oFactory:GetName(oNetConn)
@@ -645,7 +645,7 @@ CLASS SQLConnection
 
 /// <include file="Sql.xml" path="doc/SQLConnection.isFunction/*" />
 	[Obsolete];
-	METHOD isFunction( nFunction AS WORD )
+	METHOD isFunction( nFunction AS WORD ) AS LOGIC
 		//LOCAL oHandle AS OBJECT
 		//LOCAL oMethodInfo AS MethodInfo
 		//LOCAL oType       AS System.Type
@@ -665,7 +665,7 @@ CLASS SQLConnection
 
 /// <include file="Sql.xml" path="doc/SQLConnection.SetConnectOption/*" />
 	[Obsolete];
-	METHOD SetConnectOption( nOption AS WORD, uValue AS USUAL)
+	METHOD SetConnectOption( nOption AS WORD, uValue AS USUAL) AS LOGIC
 		//LOCAL oHandle AS OBJECT
 		//LOCAL oMethodInfo AS MethodInfo
 		//LOCAL oType       AS System.Type
@@ -1251,13 +1251,13 @@ END CLASS
 
 /// <include file="Sql.xml" path="doc/SQLDropMyConnection/*" />
 [Obsolete];
-FUNCTION SQLDropMyConnection( cMySourceName, cMyUserID, cMyPassword ) AS LOGIC
+FUNCTION SQLDropMyConnection( cMySourceName, cMyUserID, cMyPassword ) AS LOGIC CLIPPER
 	RETURN TRUE
 
 
 /// <include file="Sql.xml" path="doc/GetMyConnection/*" />
 [Obsolete];
-FUNCTION GetMyConnection( cMySourceName, cMyUserID, cMyPassword )
+FUNCTION GetMyConnection( cMySourceName, cMyUserID, cMyPassword ) AS OBJECT CLIPPER
 	RETURN NULL_OBJECT
 
 
@@ -1274,7 +1274,7 @@ FUNCTION SQLOpenConnection()  AS SQLConnection
 
 
 /// <include file="Sql.xml" path="doc/SQLSetConnection/*" />
-FUNCTION SQLSetConnection( oSQLConnection ) AS SQLConnection
+FUNCTION SQLSetConnection( oSQLConnection ) AS SQLConnection CLIPPER
 	RETURN SQLConnection.SetConnection(oSQLConnection)
 
 
@@ -1286,7 +1286,7 @@ FUNCTION SQLGetDataSources() AS ARRAY
 
 
 /// <include file="Sql.xml" path="doc/SQLConnectErrorMsg/*" />
-FUNCTION SQLConnectErrorMsg( lValue ) AS LOGIC
+FUNCTION SQLConnectErrorMsg( lValue ) AS LOGIC CLIPPER
 	@@Default( REF lValue, FALSE )
 	SQLConnection.lConnErrMsg := lValue
 	RETURN SQLConnection.lConnErrMsg

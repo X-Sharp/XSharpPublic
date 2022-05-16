@@ -32,7 +32,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.FieldInfo/*" />
-	METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal ) AS USUAL
+	METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal ) AS USUAL CLIPPER
 		//
 		//  Retrieves information about fields
 		//  uFieldPos is numeric, symbol or string
@@ -336,7 +336,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.GetLookupTable/*" />
-	METHOD GetLookupTable(nMaxRows,uField1,uField2) AS ARRAY
+	METHOD GetLookupTable(nMaxRows,uField1,uField2) AS ARRAY CLIPPER
 		LOCAL aResult 	:= {}         AS ARRAY
 		LOCAL nRows 	:= 32767      AS DWORD
 		IF IsNil(nMaxRows)
@@ -363,7 +363,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 /// <include file="Sql.xml" path="doc/SQLSelect.GetStatementOption/*" />
 	[Obsolete];
-	METHOD GetStatementOption( fOption )
+	METHOD GetStatementOption( fOption ) AS USUAL CLIPPER
 		//RETURN oStmt:GetStatementOption( fOption )
 		RETURN NIL
 

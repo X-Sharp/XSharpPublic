@@ -622,6 +622,7 @@ namespace XSharp.LanguageService
             _completionSession.Properties[XsCompletionProperties.AutoType] = autoType;
             _completionSession.Properties[XsCompletionProperties.Type] = null;
             _completionSession.Properties[XsCompletionProperties.IncludeKeywords] = includeKeywords;
+            _completionSession.Properties[XsCompletionProperties.Filter] = "";
             try
             {
                 _completionSession.Start();

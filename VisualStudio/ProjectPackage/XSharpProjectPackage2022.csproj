@@ -33,7 +33,7 @@
     </NuGetPackageImportStamp>
     <VsixType>v3</VsixType>
     <DeployExtension Condition=" '$(Configuration)' == 'Release' ">false</DeployExtension>
-    <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+    <ContentSQLiteInteropFiles>false</ContentSQLiteInteropFiles>
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
@@ -193,8 +193,8 @@
     </Content>
     <Content Include="..\..\External\Debug\x86\SQLite.Interop.dll">
       <Link>x86\SQLite.Interop.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Designers.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -342,16 +342,6 @@
       <LastGenOutput>TextTemplate.cs</LastGenOutput>
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.vstemplate" />
-    <Content Include="C:\XSharp\DevPublic\Binaries\2022\Release\\x64\SQLite.Interop.dll">
-      <Link>x64\SQLite.Interop.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="C:\XSharp\DevPublic\Binaries\2022\Release\\x86\SQLite.Interop.dll">
-      <Link>x86\SQLite.Interop.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -701,9 +691,7 @@
     <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\App.xaml">
       <SubType>Designer</SubType>
     </ZipProject>
-    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\MainWindow.xaml">
-      <SubType>Designer</SubType>
-    </ZipProject>
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\MainWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\Page1.xaml">

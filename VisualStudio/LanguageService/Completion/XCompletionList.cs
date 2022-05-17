@@ -47,23 +47,25 @@ namespace XSharp.LanguageService
         internal XFile File => _file;
         public bool Add(XSCompletion item, bool overwrite = false)
         {
+            if (item.KeyText.StartsWith("("))
+                return false;
 
-            if (overwrite && ContainsKey(item.DisplayText))
+            if (overwrite && ContainsKey(item.KeyText))
             {
-                Remove(item.DisplayText);
+                Remove(item.KeyText);
             }
-            if (ContainsKey(item.DisplayText))
+            if (ContainsKey(item.KeyText))
             {
                 // only methods have overloads
                 // we do not want to the overloads message for partial classes that appear in more than 1 file
                 // and if a method in a subclass has the same params we also do not want to show that there are overloads
-                var found = this[item.DisplayText];
+                var found = this[item.KeyText];
                 if (!string.Equals(found.Description, item.Description, StringComparison.OrdinalIgnoreCase))
                 {
                     int overloads = 0;
                     // Already exists in the List !!
                     // First Overload ?
-                    XSCompletion comp = this[item.DisplayText];
+                    XSCompletion comp = this[item.KeyText];
                     if (!comp.Properties.TryGetProperty(XsCompletionProperties.Overloads, out overloads))
                     {
                         comp.Properties.AddProperty(XsCompletionProperties.Overloads, overloads);
@@ -77,7 +79,7 @@ namespace XSharp.LanguageService
                 return true;
 
             }
-            if (!string.IsNullOrEmpty(item.DisplayText))
+            if (!string.IsNullOrEmpty(item.KeyText))
             {
                 switch (item.Kind)
                 {
@@ -125,7 +127,7 @@ namespace XSharp.LanguageService
                             HasTypes = true;
                         break;
                 }
-                base.Add(item.DisplayText, item);
+                base.Add(item.KeyText, item);
             }
             return true;
         }
@@ -140,6 +142,7 @@ namespace XSharp.LanguageService
         public const string Command = nameof(Command);
         public const string Overloads = nameof(Overloads);
         public const string AutoType = nameof(AutoType);
+        public const string Filter = nameof(Filter);
 
     }
 
@@ -159,6 +162,20 @@ namespace XSharp.LanguageService
         {
             Kind = kind;
             Value = value;
+        }
+
+        public virtual string KeyText
+        {
+            get
+            {
+                var text = this.DisplayText;
+                var pos = text.IndexOf("<");
+                if ( pos> 0)
+                {
+                    text = text.Substring(0, pos - 1);
+                }
+                return text;
+            }
         }
 
         public override string Description

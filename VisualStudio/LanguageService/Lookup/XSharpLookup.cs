@@ -475,8 +475,6 @@ namespace XSharp.LanguageService
         }
 
 
-        
-
         /// <summary>
         /// Retrieve the CompletionType based on :
         ///  The Token list returned by GetTokenList()
@@ -491,8 +489,25 @@ namespace XSharp.LanguageService
         public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> xtokenList,
             CompletionState state, out string notProcessed, bool forQuickinfo = false )
         {
+            return RetrieveElement(location, xtokenList, state, out notProcessed, out _,forQuickinfo);
+        }
+
+        /// <summary>
+        /// Retrieve the CompletionType based on :
+        ///  The Token list returned by GetTokenList()
+        ///  The Token that stops the building of the Token List.
+        /// </summary>
+        /// <param name="location"></param>
+        /// <param name="tokenList"></param>
+        /// <param name="state"></param>
+        /// <param name="foundElement"></param>
+        /// <returns></returns>
+        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> xtokenList,
+            CompletionState state, out string notProcessed, out IXSymbol lastFound, bool forQuickinfo = false )
+        {
             //
             notProcessed = "";
+            lastFound = null;
             var result = new List<IXSymbol>();
             if (xtokenList == null || xtokenList.Count == 0)
                 return result;
@@ -547,7 +562,7 @@ namespace XSharp.LanguageService
             int count = -1;
             startType = currentType;
             bool resetState = false;
-           while (! list.Eoi())
+            while (! list.Eoi())
             {
                 // after LPAREN, LCURLY and LBRKT we skip until we see the closing token
                 currentToken = list.ConsumeAndGet();
@@ -559,6 +574,7 @@ namespace XSharp.LanguageService
                 if (symbols.Count > 0 && symbols.Count != count)
                 {
                     var top = symbols.Peek();
+                    lastFound = top;
                     currentType = GetTypeFromSymbol(location, top);
                     if (top != null)
                         top.ResolvedType = currentType;

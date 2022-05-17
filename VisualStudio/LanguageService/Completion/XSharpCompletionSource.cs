@@ -147,7 +147,7 @@ namespace XSharp.LanguageService
                 if (location == null)
                     return;
                 var tokenList = XSharpTokenTools.GetTokenList(location, out state, includeKeywords);
-
+                var lastToken = tokenList.LastOrDefault();
 
                 // We might be here due to a COMPLETEWORD command, so we have no typedChar
                 // but we "may" have a incomplete word like System.String.To
@@ -186,10 +186,24 @@ namespace XSharp.LanguageService
                 }
                 bool dotSelector = (typedChar == '.');
 
-                // TODO: Based on the Project.Settings, we should add the Vulcan.VO namespace
                 int tokenType = XSharpLexer.UNRECOGNIZED;
 
-                var symbol = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General, out var notProcessed).FirstOrDefault();
+                var symbol = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General, out var notProcessed, out var lastProcessed).FirstOrDefault();
+                if (symbol != null)
+                {
+                   
+                    switch (lastToken.Type)
+                    {
+                        case XSharpLexer.COLON:
+                        case XSharpLexer.DOT:
+                            break;
+                        default:
+                            filterText = symbol.Name;
+                            symbol = lastProcessed;
+                            break;
+                    }
+
+                }
                 var memberName = "";
                 // Check for members, locals etc and convert the type of these to IXTypeSymbol
                 if (symbol != null)
@@ -254,10 +268,7 @@ namespace XSharp.LanguageService
                     {
                         filterText = symbol.Name;
                     }
-                    else if (symbol.Kind == Kind.Namespace)
-                    {
-                        filterText = symbol.Name+".";
-                    }
+                    
                     if (type != null)
                     {
                         switch (type.FullName)
@@ -300,8 +311,9 @@ namespace XSharp.LanguageService
                         if (type != null && symbol is IXTypeSymbol)
                         {
                             // First we need to keep only the text AFTER the last dot
-                            int dotPos = filterText.LastIndexOf('.');
-                            filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
+                           int dotPos = filterText.LastIndexOf('.');
+                            if (dotPos > 0)
+                                filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
                             helpers.BuildCompletionListMembers(location, compList, type, Modifiers.Public, true, filterText);
                         }
                     }
@@ -314,7 +326,8 @@ namespace XSharp.LanguageService
                     if (state.HasFlag(CompletionState.InstanceMembers) )
                     {
                         showInstanceMembers = true;
-                        filterText = "";
+                        if (typedChar == '.' || typedChar == ':')
+                            filterText = "";
                     }
                 }
                 if (showInstanceMembers )
@@ -348,6 +361,7 @@ namespace XSharp.LanguageService
                     }
                 }
                 //
+
                 if (!dotSelector && !showInstanceMembers)
                 {
                     switch (tokenType)
@@ -386,7 +400,7 @@ namespace XSharp.LanguageService
                             break;
                     }
                 }
-
+                session.Properties[XsCompletionProperties.Filter] = filterText;
                 if ((kwdList.Count > 0) && _keywordsInAll /*&& XSettings.CompleteKeywords*/)
                 {
                     foreach (var item in kwdList.Values)

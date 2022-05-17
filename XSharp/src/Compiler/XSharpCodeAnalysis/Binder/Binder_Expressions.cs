@@ -628,7 +628,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         type: targetType);
                 }
             }
-            if (targetType.IsVoidPointer() && operand.Type.IsStringType())
+            if (targetType.IsVoidPointer() && operand.Type is { } && operand.Type.IsStringType())
             {
                 if (pe.IsVoCast() || pe.IsVoConvert())
                 {

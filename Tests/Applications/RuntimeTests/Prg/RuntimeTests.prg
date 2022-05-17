@@ -6,6 +6,7 @@ USING System.Linq
 FUNCTION Start() AS INT
 	LOCAL aTests AS List<STRING>
 	LOCAL nSuccess := 0, nFail := 0, nTotal AS INT
+	LOCAL cFailed := "" AS STRING
 	aTests := List<STRING>{};
 	{;
 	 "C008", "C091", "C114", "C142", "C147", "C151", "C152", "C159", "C160", "C164", ;
@@ -25,8 +26,9 @@ FUNCTION Start() AS INT
 	 "C689", "C697", "C698", "C699", "C707", "C709", "C710", "C711", "C712", "C714", ;
 	 "C717", "C718", /*"C719",*/ "C323", "C728", "C739", "C740", "C741", "C742", "C743",;
 	 "C724", "C703", "C729", "C737", "C750", "C751", "C759", "C765", "C770","C780",;
-     "C781", "C795", "C800", "C804","C806", "C807", "C808", "C810", "C811", "C812","C813", "C814",;
-     "C815", "C820", "C830", "C832", "C837", "C840", "C846", "C847",;
+     "C781", "C795", "C800", "C802", "C804", "C805", "C806", "C807", "C808", "C810", ;
+     "C811", "C812", "C813", "C814", "C815", "C820", /*"C827", */"C830", "C832", "C834", ;
+     "C837", "C840", "C846", "C847", "C848", "C849", ;
 	 "R678", "R681", "R690", "R698", "R699", "R700" ,"R701", "R702", "R710",;
 	 "R711", "R712", "R725", "R729", "R730", "R732","R735", "R736","R741","R742","R743",;
 	 "R750", "R751", "R752", "R753", "R754", "R755","R756", "R757","R759","R763", "R765",;
@@ -58,6 +60,7 @@ FUNCTION Start() AS INT
 			ELSE
 				? "Failed Runtime Test", cTest
 				nFail ++
+				cFailed += iif(cFailed:Length != 0, ", ", e" :\r\n\r\n") + cTest
 			ENDIF
 		CATCH e AS Exception
 			? e:ToString()
@@ -72,7 +75,7 @@ FUNCTION Start() AS INT
 	? i"Run {nTotal} tests: {nSuccess} succeeded, {nFail} failed"
 	?
 	#ifdef GUI
-	MessageBox.Show(i"Run {nTotal} tests: {nSuccess} succeeded, {nFail} failed" , "Runtime Tests")
+	MessageBox.Show(i"Run {nTotal} tests: {nSuccess} succeeded, {nFail} failed{cFailed}" , "Runtime Tests")
 	WAIT
 	#endif
 RETURN nFail

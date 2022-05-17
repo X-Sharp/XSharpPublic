@@ -36,6 +36,10 @@ FUNCTION Start() AS VOID
 
 	pPsz := PTR(_CAST, cTest) // System.InvalidCastException
 	xAssert( Psz2String(pPsz) == "test" )
+
+	xAssert( Psz2String(PTR(_CAST, cTest)) == "test" )
+
+
 RETURN
 
 PROC xAssert(l AS LOGIC)

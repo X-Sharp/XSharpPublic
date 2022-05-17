@@ -358,6 +358,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+            if (Equals(source, destination))
+            {
+                return Conversion.Identity;
+            }
             // TYPE(_CAST, expr) allows almost everything
             // source must be PTR, Integral, IntPtr, UIntPtr
             // this is handled in CanVOCast
@@ -437,10 +441,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return Conversion.NoConversion;
                     }
                 }
-                // Allow cast -> PSZ
-                if (destination.IsPszType())
+                if (destination.IsPszType() && source is PointerTypeSymbol)
                 {
-                    return Conversion.Identity;
+                    // pointer -> PSZ: No implicit conversion. There is a user defined conversion in the PSZ type
+                    return Conversion.NoConversion;
                 }
             }
             if (voConvert)

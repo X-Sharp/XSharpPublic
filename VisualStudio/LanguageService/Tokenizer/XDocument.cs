@@ -24,12 +24,12 @@ namespace XSharp.LanguageService
         /// <summary>
         /// Result from the Lexer
         /// </summary>
-        public BufferedTokenStream TokenStream { get; private set; }
+        public BufferedTokenStream TokenStream { get; internal set; }
         /// <summary>
         /// Snapshot on which the info is based
         /// </summary>
-        public ITextSnapshot SnapShot { get; private set; }
-        public IList<string> IncludeFiles { get; private set; }
+        public ITextSnapshot SnapShot { get; internal set; }
+        public IList<string> IncludeFiles { get; internal set; }
         public XDocument(BufferedTokenStream tokenstream, ITextSnapshot snapshot, IList<string> includeFiles)
         {
             TokenStream = tokenstream;

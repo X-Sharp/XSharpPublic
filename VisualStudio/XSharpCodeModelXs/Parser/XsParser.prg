@@ -166,7 +166,6 @@ BEGIN NAMESPACE XSharpModel
          _file:CommentTasks := _commentTasks
          _list :=XSharpTokenList{_input}
 
-
          DO WHILE ! SELF:Eoi()
             VAR tokenBefore := LastToken
             _firstTokenOnLine := SELF:Lt1
@@ -244,6 +243,13 @@ BEGIN NAMESPACE XSharpModel
                      ENDIF
                      VAR lastEntity := _EntityList:LastOrDefault()
                      IF lastEntity != NULL
+                        if tokenBefore.Type == XSharpLexer.WS
+                            var index := _tokens:IndexOf(tokenBefore)
+                            repeat
+                              tokenBefore := (XSharpToken) _tokens[index]
+                              index -= 1
+                            until index == 0 .or. tokenBefore.Type != XSharpLexer.WS
+                        endif
                         if lastEntity:Kind:IsLocal()
                             lastEntity := lastEntity:Parent astype XSourceEntity
                         endif

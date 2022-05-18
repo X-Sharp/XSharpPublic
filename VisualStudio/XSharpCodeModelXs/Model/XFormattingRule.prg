@@ -7,9 +7,10 @@
 
 USING System
 USING System.Collections.Generic
+USING System.Collections
 USING System.Text
 using System.Diagnostics
-
+USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 BEGIN NAMESPACE XSharpModel
 
     /// <summary>
@@ -209,6 +210,7 @@ BEGIN NAMESPACE XSharpModel
         static initonly _middleKeywords as IDictionary<XKeyword, List<XKeyword>>
         static initonly _rulesByStart   as IDictionary<XKeyword, XFormattingRule>
         static initonly _endKeywords    as IDictionary<XKeyword, XFormattingRule>
+        static initonly _singleKeywords as BitArray
 
         #endregion
 
@@ -226,7 +228,8 @@ BEGIN NAMESPACE XSharpModel
 
         #region Static Constructor that builds the tables
             STATIC CONSTRUCTOR()
-            var rules := List<XFormattingRule>{}
+                var rules := List<XFormattingRule>{}
+                _singleKeywords := BitArray{XSharpLexer.LAST}
                 rules:Add(XFormattingRule{@@Begin_Namespace,  @@End_Namespace, XFormattingFlags.Namespace })
                 // Types
                 rules:Add(XFormattingRule{@@Class, @@End_Class, XFormattingFlags.Type  })
@@ -331,6 +334,30 @@ BEGIN NAMESPACE XSharpModel
                     _endKeywords:Add(item:Key, _endKeywords[item:Value])
                 endif
             next
+            foreach var rule in rules
+                AddSingleKeyword(rule:Start)
+                AddSingleKeyword(rule:Stop)
+            next
+            foreach var alias in _aliases
+                AddSingleKeyword(alias:Key)
+                AddSingleKeyword(alias:Value)
+            next
+            foreach var kw in _middleKeywords
+                AddSingleKeyword(kw:Key)
+                foreach var val in kw:Value
+                    AddSingleKeyword(val)
+                next
+            next
+
+
+
+
+        private static method AddSingleKeyword(kw as XKeyword) as void
+            if kw:Kw2 == XTokenType.None
+                _singleKeywords:Set( (int) kw:Kw1, TRUE)
+            Else
+                _singleKeywords:Set( (int) kw:Kw1, FALSE)
+            endif
 
         #endregion
 
@@ -384,6 +411,10 @@ BEGIN NAMESPACE XSharpModel
 
 
         #region public methods
+
+
+        PUBLIC STATIC METHOD IsSingleKeyword(token as long) AS LOGIC
+            return _singleKeywords:Get( token)
 
 
         OVERRIDE METHOD ToString() AS STRING

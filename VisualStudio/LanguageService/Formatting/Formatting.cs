@@ -135,6 +135,7 @@ namespace XSharp.LanguageService
                 {
                     System.Threading.Thread.Sleep(100);
                 }
+                var _ = _classifier.ClassifyWhenNeededAsync();
                 var editSession = _buffer.CreateEdit();
                 // This will calculate the desired indentation of the current line, based on the previous one
                 // and may de-Indent the previous line if needed
@@ -2009,23 +2010,11 @@ namespace XSharp.LanguageService
                         }
                         keyword = new XKeyword(token.Type);
                         // check for 2 keyword tokens
-                        if (index < tokens.Count - 2)
+                        if (index < tokens.Count - 2 && !XFormattingRule.IsSingleKeyword(token.Type))
                         { 
                             var token2 = tokens[index+2];
-
-                            if (token.Type == XSharpLexer.END && XSharpLexer.IsKeyword(token2.Type))
-                            {
-                                keyword = new XKeyword(token.Type, token2.Type);
-                            }
-                            else if (token.Type == XSharpLexer.DO && XSharpLexer.IsKeyword(token2.Type))
-                            {
-                                keyword = new XKeyword(token.Type, token2.Type);
-                            }
-                            else if (token.Type == XSharpLexer.BEGIN && XSharpLexer.IsKeyword(token2.Type))
-                            {
-                                keyword = new XKeyword(token.Type, token2.Type);
-                            }
-                            else if (token.Type == XSharpLexer.LOCAL 
+                            keyword = new XKeyword(token.Type, token2.Type);
+                            if (token.Type == XSharpLexer.LOCAL 
                                 && (token2.Type == XSharpLexer.PROCEDURE || token2.Type == XSharpLexer.FUNCTION))
                             {
                                 keyword = new XKeyword(token2.Type);

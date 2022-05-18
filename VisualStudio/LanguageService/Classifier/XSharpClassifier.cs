@@ -59,8 +59,8 @@ namespace XSharp.LanguageService
         private readonly bool _first = true;
         
         private readonly List<String> xtraKeywords;
-        private readonly XSharpLineState lineState;
-        private readonly XSharpLineKeywords lineKeywords;
+        private XSharpLineState lineState;
+        private XSharpLineKeywords lineKeywords;
         private bool IsLexing = false;
         #endregion
 
@@ -200,20 +200,28 @@ namespace XSharp.LanguageService
                 return;
             var snapshot = _buffer.CurrentSnapshot;
             XDocument xDocument = GetDocument();
-
             if (xDocument == null || xDocument.SnapShot.Version != snapshot.Version)
             {
-                lineState.Clear();
-                lineKeywords.Clear();
+                lineState = new XSharpLineState(snapshot);
+                lineKeywords = new XSharpLineKeywords(snapshot);
                 Debug("Starting classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
                 ITokenStream tokenstream = _sourceWalker.Lex(snapshot.GetText());
                 lock (gate)
                 {
-                    xDocument = new XDocument((BufferedTokenStream)tokenstream, snapshot, _sourceWalker.IncludeFiles);
+                    if (xDocument == null)
+                    {
+                        xDocument = new XDocument((BufferedTokenStream)tokenstream, snapshot, _sourceWalker.IncludeFiles);
+                        _buffer.Properties[typeof(XDocument)] = xDocument;
+                    }
+                    else
+                    {
+                        xDocument.SnapShot = snapshot;
+                        xDocument.IncludeFiles = _sourceWalker.IncludeFiles;
+                        xDocument.TokenStream = (BufferedTokenStream)tokenstream;
+                    }
                     xDocument.LineState = lineState;
                     xDocument.LineKeywords = lineKeywords;
 
-                    _buffer.Properties[typeof(XDocument)] = xDocument;
                 }
             }
             BuildColorClassifications(xDocument);
@@ -798,10 +806,18 @@ namespace XSharp.LanguageService
         private void addKw(XSharpToken firstkw, XSharpToken secondkw, int iLastLine)
         {
             XKeyword kw;
-            if (secondkw != null)
-                kw = new XKeyword(firstkw.Type, secondkw.Type);
-            else
+            if (XFormattingRule.IsSingleKeyword(firstkw.Type))
+            {
                 kw = new XKeyword(firstkw.Type);
+            }
+            else if (secondkw != null)
+            {
+                kw = new XKeyword(firstkw.Type, secondkw.Type);
+            }
+            else
+            {
+                kw = new XKeyword(firstkw.Type);
+            }
             if (XFormattingRule.IsEndKeyword(kw) || XFormattingRule.IsMiddleKeyword(kw) ||
                 XFormattingRule.IsStartKeyword(kw) || kw.Kw1 == XTokenType.End)
             {

@@ -841,7 +841,7 @@ function FoxToShort(b as byte[], pos as int) as Short
     result := b[pos+1]
     result := result << 8
     result += b[pos]
-    return result
+    return (short) result
 
 #pragma options ("az", default)
 FUNCTION TestChrisCorrupt2() AS VOID
@@ -1173,7 +1173,7 @@ CLASS DbfTest1
             LOCAL nGoto AS LONG
 			IF n % 31 == 0
 				DbAppend()
-                nGoto := LastRec()
+                nGoto := VoDbLastRec()
             ELSE
                 nGoto := oRand:@@Next() % (INT)LastRec() + 1
 				DbGoto(nGoto)
@@ -2041,11 +2041,11 @@ FOR VAR nRepeat := 1 TO 1000
      //? "Written"
      DbCreateIndex ( cDBF , "LAST" , {||_FIELD->LAST})
      FOR i := 1 TO RecCount()
-         VAR nChar := Rand()*32 + ASC("A")
-         VAR nRec := Rand()*RecCount()
+         var nChar := (char) (Rand()*32 + ASC("A"))
+         var nRec  := (long) (Rand()*RecCount())
          nRec := System.Math.Min(nRec+1, RecCount())
          DbGoto(nRec)
-         VAR len := Rand() * 50
+         local len := (dword) (Rand() * 50) as dword
          FieldPut(1, repl(chr(nChar),len))
          //DbCommit()
         //XSharp.RDD.DBFCDX.ValidateTree()
@@ -2272,7 +2272,7 @@ FUNCTION DoWork( oParam AS OBJECT ) AS VOID
     DbUseArea( TRUE, "DBFCDX", "c:\temp\test.dbf", "TEST", TRUE, FALSE )
     DbCargo(Error{})
     FOR nI := 1 UPTO 1000
-        nSleep                          := Rand(0) * 100
+        nSleep                          := (int) Rand(0) * 100
         System.Console.WriteLine( NTrim(nParam) + " -> " + NTrim(nI) + " Sleep: " + NTrim( nSleep ) )
         TEST->DbAppend()
         TEST->FIELD1 := nI
@@ -2297,7 +2297,7 @@ FUNCTION DoWork2( oParam AS OBJECT ) AS VOID
             nSleep            := 10 * nParam
             oDBServer         := DBServer{ "c:\temp\test.dbf", TRUE, FALSE, "DBFCDX" }
             FOR nI := 1 UPTO 1000
-                nSleep        :=  Rand(0) * 25
+                nSleep        :=  (int) Rand(0) * 25
                 System.Console.WriteLine( NTrim(nParam) + " -> " + NTrim(nI) + " Sleep: " + NTrim( nSleep ) )
                 IF ! oDBServer:Append()
                     System.Console.WriteLine( NTrim(nParam) +" Append Failed" )

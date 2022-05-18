@@ -35,7 +35,7 @@
     <initlocals>true</initlocals>
     <fox1>true</fox1>
     <OutputName>ConsoleApplication1</OutputName>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.12.0.0</XSharpProjectversion>
     <CS>false</CS>
     <NamedArgs>false</NamedArgs>
     <OVF>false</OVF>
@@ -98,13 +98,6 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="XSharp.MacroCompiler, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.MacroCompiler</Name>
-      <AssemblyName>XSharp.MacroCompiler.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\Binaries\Debug\XSharp.MacroCompiler.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.prg">
@@ -118,6 +111,11 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Runtime\MacroCompiler\MacroCompiler.csproj">
+      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
+      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>

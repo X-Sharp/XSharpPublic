@@ -21,6 +21,12 @@ PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
     XSharp.MemVar.Put := __FoxMemVarPut
     XSharp.RuntimeState.AutoLock    := __FoxAutoLock
     XSharp.RuntimeState.AutoUnLock  := __FoxAutoUnLock
+
+    XSharp.__Array.FoxArrayHelpers.ADel         := {|a, nEl, nDel| XSharp.VFP.Functions.ADel(a, nEl, nDel)}
+    XSharp.__Array.FoxArrayHelpers.ALen         := {|a, nAtt     | XSharp.VFP.Functions.ALen(a, nAtt)}
+    XSharp.__Array.FoxArrayHelpers.AIns         := {| a, nEl, nType| XSharp.VFP.Functions.AIns(a, nEl, nType)}
+    XSharp.__Array.FoxArrayHelpers.ShowArray    := {|a, cPrefix  | XSharp.VFP.Functions.ShowFoxArray(a, cPrefix)}
+
 RETURN
 
 
@@ -149,16 +155,16 @@ FUNCTION __FoxPopWithBlock() AS OBJECT
     var error := Error{__VfpStr(VFPErrors.WITH_STACK_EMPTY)}
     error:Gencode := EG_NULLVAR
     error:FuncSym := ProcName(1)
-    error:StackTrace := ErrorStack(1)
+    error:SetStackTrace(ErrorStack(1))
     THROW error
 
 FUNCTION __FoxGetWithExpression() AS OBJECT
-    LOCAL stack := __GetFoxWithStack() as Stack<OBJECT>
-    if stack:Count > 0
-        return stack:Peek()
+    LOCAL stack := __GetFoxWithStack() AS Stack<OBJECT>
+    IF stack:Count > 0
+        RETURN stack:Peek()
     ENDIF
-    var error := Error{__VfpStr(VFPErrors.WITH_STACK_EMPTY)}
+    VAR error := Error{__VfpStr(VFPErrors.WITH_STACK_EMPTY)}
     error:Gencode := EG_NULLVAR
     error:FuncSym := ProcName(1)
-    error:StackTrace := ErrorStack(1)
+    error:SetStackTrace(ErrorStack(1))
     THROW error

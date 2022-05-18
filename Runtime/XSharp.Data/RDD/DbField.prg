@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -16,14 +16,14 @@ CLASS XSharp.DbField
     /// <param name="info">Column info on which this field is based.</param>
     CONSTRUCTOR( info AS DbColumnInfo)
         SELF:Info       := info
-        
+
     #region properties
     /// <summary>Dotnet datatype for the field</summary>
     PROPERTY DataType   AS System.Type GET SELF:Info:DotNetType
     /// <summary>Name of the field</summary>
     PROPERTY Name       AS STRING GET SELF:Info:ColumnName
     /// <summary>Caption for the field</summary>
-    PROPERTY Caption    AS STRING GET SELF:Info:Caption 
+    PROPERTY Caption    AS STRING GET SELF:Info:Caption
     /// <summary>Ordinal position of the field</summary>
     PROPERTY Ordinal     AS INT GET SELF:Info:Ordinal
     /// <summary>Is the field Readonly ?</summary>
@@ -42,22 +42,22 @@ INTERNAL CLASS XSharp.DbFieldDescriptor INHERIT PropertyDescriptor
 
     #region constructors
     CONSTRUCTOR( dbField AS DbField )
-    
+
     SUPER( dbField:Name , Attribute[]{0} )
-    _dbField := dbField   
+    _dbField := dbField
     RETURN
-    #endregion   
+    #endregion
     #region methods
-    
+
     OVERRIDE METHOD CanResetValue(component AS OBJECT) AS LOGIC
         RETURN TRUE
-        
+
     OVERRIDE METHOD GetValue(component AS OBJECT) AS OBJECT
         LOCAL record AS DbRecord
         LOCAL returnValue AS OBJECT
         /// cast to strongy typed variable first
-        record := (DbRecord) component 
-        
+        record := (DbRecord) component
+
         IF record:Item[SELF:_dbField:Ordinal] != NULL
             returnValue := record:Item[SELF:_dbField:Ordinal]
         ELSE
@@ -68,26 +68,26 @@ INTERNAL CLASS XSharp.DbFieldDescriptor INHERIT PropertyDescriptor
             ENDIF
         ENDIF
         RETURN returnValue
-        
+
     OVERRIDE METHOD ResetValue(component AS OBJECT) AS VOID
         SELF:SetValue(component, DBNull.Value)
-        
+
     OVERRIDE METHOD SetValue(component AS OBJECT, value AS OBJECT) AS VOID
         LOCAL record AS DbRecord
-        record := (DbRecord)component 
+        record := (DbRecord)component
         record:Item[SELF:_dbField:Ordinal] := value
         RETURN
-        
+
     /// Must be overwritten as the the base class declares this method as abstract.
     OVERRIDE METHOD ShouldSerializeValue(component AS OBJECT) AS LOGIC
         RETURN FALSE
     #endregion
-    
+
     #region properties
     OVERRIDE PROPERTY ComponentType  AS System.Type  GET typeof(DbRecord)
-    OVERRIDE PROPERTY DbField        AS DbField      GET SELF:_dbField SET SELF:_dbField := value
+    VIRTUAL  PROPERTY DbField        AS DbField      GET SELF:_dbField SET SELF:_dbField := value
     OVERRIDE PROPERTY IsReadOnly     AS LOGIC        GET SELF:_dbField:ReadOnly
     OVERRIDE PROPERTY PropertyType   AS System.Type  GET SELF:_dbField:DataType
     #endregion
-    
+
 END CLASS

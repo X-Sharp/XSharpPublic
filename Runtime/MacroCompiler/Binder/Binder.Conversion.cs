@@ -312,6 +312,17 @@ namespace XSharp.MacroCompiler
                         return ConversionSymbol.Create(outer, inner);
                 }
             }
+            else if (type.NativeType == NativeType.Usual )  // Value Type
+            {
+                // RvdH should we do something special for Value Types, or is boxing in an object enough ?
+                var inner = Conversion(expr, Compilation.Get(NativeType.Object), options | BindOptions.Explicit);
+                if (inner.Exists)
+                {
+                    var outer = Conversion(TypeConversion.Bound(expr, Compilation.Get(NativeType.Object), inner), type, options);
+                    if (outer.Exists)
+                        return ConversionSymbol.Create(outer, inner);
+                }
+            }
             return null;
         }
 

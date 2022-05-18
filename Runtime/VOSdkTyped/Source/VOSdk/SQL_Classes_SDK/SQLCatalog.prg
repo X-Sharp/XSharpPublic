@@ -14,7 +14,7 @@ CLASS SQLCatalogQuery INHERIT SQLSelect
     PROTECT oCatalog    AS DataTable
     PROTECT cCollection AS STRING
 /// <include file="Sql.xml" path="doc/SQLCatalogQuery.ctor/*" />
-    CONSTRUCTOR( oSQLConnection )
+    CONSTRUCTOR( oSQLConnection ) CLIPPER
         SUPER( NIL, oSQLConnection )
         RETURN
 
@@ -37,7 +37,7 @@ CLASS SQLCatalogQuery INHERIT SQLSelect
 
 
  /// <exclude />
-    METHOD __GoCold AS LOGIC STRICT
+    METHOD __GoCold(lUpdateBatch AS LOGIC) AS LOGIC STRICT
         RETURN TRUE
 
 

@@ -6,6 +6,7 @@ XSharp.RDD.DLL,Advantage,AXSQLADT,ADS,
 XSharp.RDD.DLL,Advantage,AXSQLCDX,ADS,
 XSharp.RDD.DLL,Advantage,AXSQLNTX,ADS,
 XSharp.RDD.DLL,Advantage,AXSQLVFP,ADS,
+XSharp.RT.DLL,System.Linq,ExtensionMethods
 VOGUIClasses.DLL,VO,Accelerator,Menu,
 VORDDClasses.DLL,VO,AdsSQLServer,ADS,
 VOGUIClasses.DLL,VO,AnimationControl,Control,
@@ -188,7 +189,7 @@ VOSQLClasses.DLL,VO,SQLColumn,SQL,
 VOSQLClasses.DLL,VO,SQLColumnAttributes,SQL,
 VOSQLClasses.DLL,VO,SQLConnection,SQL,
 VOSQLClasses.DLL,VO,SQLData,SQL,
-VOSQLClasses.DLL,VO,SqlData_Union,SQL,
+VOSQLClasses.DLL,VO,SqlData_Union
 VOSQLClasses.DLL,VO,SQLErrorInfo,SQL,
 VOSQLClasses.DLL,VO,SQLListColumnPrivileges,SQL,
 VOSQLClasses.DLL,VO,SQLListColumns,SQL,
@@ -243,11 +244,12 @@ VOGUIClasses.DLL,VO,Window,Window,
 VOGUIClasses.DLL,VO,WindowHorizontalScrollBar,Control,
 VOGUIClasses.DLL,VO,WindowScrollBar,Control,
 VOGUIClasses.DLL,VO,WindowVerticalScrollBar,Control,
+XSharp.RT.DLL,XSharp,BlobData
 VOGUIClasses.DLL,XSharp,ChildWinForm,Window,
 XSharp.RT.DLL,XSharp,Codeblock,Application,
 XSharp.Core.DLL,XSharp,CollationMode,Support,International
 XSharp.Core.DLL,XSharp,Collations,Support,International
-XSharp.Core.DLL,XSharp,Conversions,Support,
+XSharp.Core.DLL,XSharp,Conversions
 XSharp.Core.DLL,XSharp,CoreDb,Support,
 XSharp.Core.DLL,XSharp,DateCountry,Support,
 XSharp.Data.DLL,XSharp,DbDataColumn,Data,
@@ -264,12 +266,16 @@ XSharp.Core.DLL,XSharp,FileSearcher,File,
 XSharp.Core.DLL,XSharp,FileStreamExensions,File,
 XSharp.RT.DLL,XSharp,FixedMemBlockEnd,Support,
 XSharp.RT.DLL,XSharp,FixedMemBlockStart,Support,
+XSharp.RT.DLL,XSharp,FoxArrayHelpers
 XSharp.VFP.DLL,XSharp,FoxCollations,VFP,
 XSharp.Core.DLL,XSharp,Gencode,Error,
+XSharp.Core.DLL,XSharp,IClosedRDD
 XSharp.Core.DLL,XSharp,ICodeblock,Support,
+XSharp.Core.DLL,XSharp,ICodeblock2
 XSharp.Core.DLL,XSharp,IDate,Support,
 XSharp.Core.DLL,XSharp,IDbNotify,Support,
 XSharp.RT.DLL,XSharp,IDynamicProperties,Support,
+XSharp.RT.DLL,XSharp,IDynamicProperties2
 XSharp.Core.DLL,XSharp,IFloat,Support,
 XSharp.RT.DLL,XSharp,IIndexedProperties,Support,
 XSharp.RT.DLL,XSharp,IIndexer,Support,
@@ -279,6 +285,7 @@ XSharp.RT.DLL,XSharp,IMacroCompilerUsual,Support,
 XSharp.Core.DLL,XSharp,ImplicitNamespaceAttribute,Attributes,
 XSharp.RT.DLL,XSharp,INamedIndexer,Support,
 XSharp.RT.DLL,XSharp,IRtCodeblock,Support,
+XSharp.Core.DLL,XSharp,MacroCompilerIncludeAssemblyInCache
 XSharp.Core.DLL,XSharp,MacroCompilerResolveAmbiguousMatch,Macro,
 XSharp.RT.DLL,XSharp,MemVar,Support,
 XSharp.VO.DLL,XSharp,NamedArg,OLE,
@@ -288,6 +295,8 @@ XSharp.VO.DLL,XSharp,OleDateTime,OLE,
 XSharp.Core.DLL,XSharp,RuntimeState,State,
 XSharp.Core.DLL,XSharp,Set,State,
 XSharp.Core.DLL,XSharp,Severity,Error,
+XSharp.Core.DLL,XSharp,StateChanged
+XSharp.Core.DLL,XSharp,StateChangedEventArgs
 XSharp.Core.DLL,XSharp,Subcodes,Error,
 XSharp.VFP.DLL,XSharp,VFPErrors,Error,
 XSharp.VO.DLL,XSharp,VObject,Support,
@@ -411,8 +420,10 @@ XSharp.RDD.DLL,XSharp.RDD,DBFVFP,RDD,
 XSharp.RDD.DLL,XSharp.RDD,DBFVFPSQL,RDD,
 XSharp.RDD.DLL,XSharp.RDD,DELIM,RDD,
 XSharp.RDD.DLL,XSharp.RDD,ERDD,RDD,Error
+XSharp.Core.DLL,XSharp.RDD,IBlobData
 XSharp.Core.DLL,XSharp.RDD,IDbRow,Support,
 XSharp.Core.DLL,XSharp.RDD,IMemo,Support,
+XSharp.RDD.DLL,XSharp.RDD,InputBuffer
 XSharp.Core.DLL,XSharp.RDD,IOrder,Support,
 XSharp.Core.DLL,XSharp.RDD,IRdd,Support,
 XSharp.RDD.DLL,XSharp.RDD,LockTimer
@@ -462,6 +473,8 @@ XSharp.VFP.DLL,XSharp.VFP,AssertResult,VFP,
 XSharp.VFP.DLL,XSharp.VFP,Collection,VFP,
 XSharp.VFP.DLL,XSharp.VFP,Custom,VFP,
 XSharp.VFP.DLL,XSharp.VFP,Empty,VFP,
+XSharp.VFP.DLL,XSharp.VFP,PropertyContainer
+XSharp.VFP.DLL,XSharp.VFP,PropertyDescriptor
 XSharp.VFP.DLL,XSharp.VFP,PropertyNotFoundException,VFP,Error
 XSharp.VORDDClasses.DLL,XSharp.VO.SDK,AdsSQLServer,ADS,
 XSharp.VOSystemClasses.DLL,XSharp.VO.SDK,Concurrency,Data,

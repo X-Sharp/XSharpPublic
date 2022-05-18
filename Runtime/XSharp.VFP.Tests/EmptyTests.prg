@@ -17,9 +17,29 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 	    STATIC CONSTRUCTOR
             XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
 
+
+        [Fact, Trait("Category", "Custom Class")];
+		method CustomClasstests() as void
+            local o as Custom
+            o := Custom{}
+            o:Width := 42
+            o:Height := 24
+            o:Top := 1
+            o:Left := 2
+            Assert.True(o:Width == 42)
+            Assert.True(o:Height == 24)
+            Assert.True(o:Top == 1)
+            Assert.True(o:Left == 2)
+            Assert.True(o:Class == "CUSTOM")
+            o:AddProperty("Foo",42)
+            Assert.True(o:Foo == 42)
+            o := Custom{}
+            o:AddProperty("test",123)
+
+
         [Fact, Trait("Category", "Empty Class")];
-		METHOD EmptyClasstests() AS VOID
-            local o as Object
+		method EmptyClasstests() as void
+            local o as object
             o := XSharp.VFP.Empty{}
             Assert.Throws( typeof(XSharp.VFP.PropertyNotFoundException), { => o:NonExistingProperty := 123 })
             try
@@ -31,7 +51,10 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True( (Int) o:SomeProperty  == 42)
             AddProperty(o, "BestLanguage","X#")
             Assert.True( (string) o:BestLanguage  == "X#")
+            o:BestLanguage := true
+            Assert.True(  o:BestLanguage  == true)
             RemoveProperty(o, "BestLanguage")
-            Assert.Throws( typeof(XSharp.VFP.PropertyNotFoundException), { => o:BestLanguage  := FALSE})
+            RemoveProperty(o, "BestLanguage") // FoxPro does not throw an exception
+            Assert.Throws( typeof(XSharp.VFP.PropertyNotFoundException), { => o:BestLanguage  := false})
     END CLASS
 END NAMESPACE

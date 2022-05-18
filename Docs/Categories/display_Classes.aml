@@ -12,12 +12,12 @@
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Bitmap</codeEntityReference></para></entry>
 <entry><para>
-            Create a bitmap, which is a bit pattern entity — that is, a two-dimensional array of pixels, each pixel having color attributes (monochrome or color).
+            Create a bitmap, which is a bit pattern entity—that is, a two-dimensional array of pixels, each pixel having color attributes (monochrome or color).
         </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.BoundingBox</codeEntityReference></para></entry>
 <entry><para>
-            Create a bounding box, which is a set of four numbers that represent the bottom-left and top-right corners of a rectangle.  
+            Create a bounding box, which is a set of four numbers that represent the bottom-left and top-right corners of a rectangle.
         </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Brush</codeEntityReference></para></entry>
@@ -67,12 +67,12 @@
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Pen</codeEntityReference></para></entry>
 <entry><para>
-            Create a pen, which can be used to draw lines in a particular color, style, and width.  Pens are used by the Window:LineTo() method and the DrawObject hierarchy.
+            Create a pen, which can be used to draw lines in a particular color, style, and width. Pens are used by the Window:LineTo() method and the DrawObject hierarchy.
         </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Pointer</codeEntityReference></para></entry>
 <entry><para>
-            Create a mouse cursor, which is used to visually represent the  mouse in a window.
+            Create a mouse cursor, which is used to visually represent the mouse in a window.
         </para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.Console</codeEntityReference></para></entry>

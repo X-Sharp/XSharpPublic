@@ -22,12 +22,7 @@ FUNCTION TableUpdate( nRows , lForce , uArea , cErrorArray) AS LOGIC
 
 
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/textmerge/*" />
 
-FUNCTION TextMerge( cExpression , lRecursive , cLeftDelim , cRightDelim) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ttoc/*" />

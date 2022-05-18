@@ -62,8 +62,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DMY(System.DateTime)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
-    </para></entry></row>
+            Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DoW(XSharp.__Date)</codeEntityReference></para></entry>
 <entry><para>
@@ -82,13 +82,13 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToT(XSharp.__Date)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a DateTime value from a Date expression.
-    </para></entry></row>
+            Returns a DateTime value from a Date expression.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GoMonth(XSharp.__Date,System.Int32)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the date that is a specified number of months before or after a given Date or Date/Time expression.
-    </para></entry></row>
+            Returns the date that is a specified number of months before or after a given Date or Date/Time expression.
+        </para></entry></row>
 <row><entry><para>XSharp.XPP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.InitDateCountry</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -100,8 +100,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.MDY(System.DateTime)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
-    </para></entry></row>
+            Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Min(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -128,8 +128,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Quarter(XSharp.__Date,System.Int32)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the quarter of the year in which a date or datetime expression occurs.
-    </para></entry></row>
+            Returns the quarter of the year in which a date or datetime expression occurs.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SToD(System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -153,8 +153,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Week(XSharp.__Date,System.Int32,System.Int32)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a number representing the week of the year from a Date or DateTime expression.
-    </para></entry></row>
+            Returns a number representing the week of the year from a Date or DateTime expression.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Year(XSharp.__Date)</codeEntityReference></para></entry>
 <entry><para>

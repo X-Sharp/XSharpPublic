@@ -34,6 +34,7 @@ BEGIN NAMESPACE XSharp
     [Serializable];
     PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializable
         PRIVATE CONST FoxArrayName := "XSharp.__FoxArray" AS STRING
+        STATIC FoxArrayHelpers := FoxArrayHelpers {} AS FoxArrayHelpers
         INTERNAL PROPERTY __IsFoxArray AS LOGIC GET SELF:GetType():FullName == FoxArrayName
 
         [HIDDEN];
@@ -495,6 +496,14 @@ BEGIN NAMESPACE XSharp
 
     END	CLASS
 
+
+
+    CLASS FoxArrayHelpers
+        EXPORT ALen AS CODEBLOCK
+        EXPORT AIns AS CODEBLOCK
+        EXPORT ADel AS CODEBLOCK
+        EXPORT ShowArray AS CodeBlock
+    END CLASS
 
 END NAMESPACE
 

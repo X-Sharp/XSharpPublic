@@ -89,7 +89,9 @@ FUNCTION TypeString( nType AS DWORD ) AS STRING
       ret := "MEMO"
    CASE  __UsualType.Invalid
       ret := "INVALID"
-   OTHERWISE
+   case  __UsualType.Null
+      ret := "NULL"
+   otherwise
       ret := "UNKNOWN"
    END SWITCH
    RETURN ret

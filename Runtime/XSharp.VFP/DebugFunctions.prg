@@ -10,7 +10,7 @@ USING System.Text
 using System.Diagnostics
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/program/*" />
-FUNCTION Program( nLevel, lShowSignature) AS USUAL
+FUNCTION Program( nLevel, lShowSignature) AS USUAL CLIPPER
     local frameCount as LONG
     local iLevel as LONG
     local result as string

@@ -712,6 +712,15 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Ret);
         }
     }
+    internal partial class TypedCodeblock : Codeblock
+    {
+        internal override void Emit(ILGenerator ilg)
+        {
+            Body.Emit(ilg);
+            if (Symbol != null) Symbol.EmitGet(ilg);
+            ilg.Emit(OpCodes.Ret);
+        }
+    }
     internal partial class CodeblockExpr : Expr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)

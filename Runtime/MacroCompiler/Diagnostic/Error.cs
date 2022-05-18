@@ -78,7 +78,7 @@ namespace XSharp.MacroCompiler
         WRN_ObsoleteInclude = Warning + 9008,
         ERR_EndOfPPLineExpected = 9009,
         ERR_PreProcessorRecursiveRule = 9010,
-
+        ERR_MissingEndText = 9086,
 
 
         Internal = 9999,
@@ -155,6 +155,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.WRN_ObsoleteInclude, "Include '{0}' obsoleted by '{1}'" },
             { ErrorCode.ERR_EndOfPPLineExpected, "End of line expected" },
             { ErrorCode.ERR_PreProcessorRecursiveRule, "Recursive pre-processor rule '{0}'" },
+            { ErrorCode.ERR_MissingEndText, "TEXT statement found without matching ENDTEXT" },
 
             { ErrorCode.Internal, "Internal error" },
             { ErrorCode.Warning, "Warning base" },
@@ -216,9 +217,13 @@ namespace XSharp.MacroCompiler
         internal static CompilationError Error(SourceLocation loc, ErrorCode e, params object[] args) { return new CompilationError(loc, e, args); }
         internal static CompilationError Error(Syntax.Token t, ErrorCode e, params object[] args)
         {
-            if (t.Source?.SourceText != null)
-                return new CompilationError(new SourceLocation(t.Source?.SourceText, t.Start) { FileName = t.Source.SourceName }, e, args);
-            return new CompilationError(t.Start, e, args);
+            if (t != null)
+            {
+                if (t?.Source?.SourceText != null)
+                    return new CompilationError(new SourceLocation(t.Source?.SourceText, t.Start) { FileName = t.Source.SourceName }, e, args);
+                return new CompilationError(t.Start, e, args);
+            }
+            return new CompilationError(0, e, args);
         }
     }
 }

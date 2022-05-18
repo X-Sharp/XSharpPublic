@@ -21,6 +21,21 @@ namespace XSharp.MacroCompiler.Preprocessor
                 tokens.Add(token);
             }
         }
+        internal static IList<T> GetRange<T>(this IList<T> tokens, int start, int end)
+        {
+            List<T> result = new List<T>();
+            for (int i = start; i <= end; i++)
+            {
+                var t = tokens[i];
+                if (t is XSharpToken token)
+                {
+                    token.Channel = Channel.Default;
+                }
+                result.Add(t);
+            }
+            return result.ToArray();
+        }
+
         internal static TokenType La(this XSharpToken[] tokens, int pos)
         {
             if (pos >= 0 && pos < tokens.Length)
@@ -286,6 +301,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 case XSharpLexer.ASSIGN_RSHIFT:
                 case XSharpLexer.ASSIGN_SUB:
                 case XSharpLexer.ASSIGN_XOR:
+                case XSharpLexer.ASSIGN_QQMARK: //Todo: Complete
                     return true;
                 case XSharpLexer.COLON:
                 case XSharpLexer.DOT:

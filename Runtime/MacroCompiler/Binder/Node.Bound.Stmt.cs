@@ -56,17 +56,20 @@ namespace XSharp.MacroCompiler.Syntax
             if (Expr != null)
             {
                 b.Bind(ref Expr);
-                if (Expr.Datatype.NativeType != NativeType.Void)
+                if (!b.ResultType.IsVoid && !Expr.Datatype.IsVoid)
                 {
-                    b.Convert(ref Expr, b.ObjectType);
+                    b.Convert(ref Expr, b.ResultType);
                 }
             }
-            Symbol = b.ObjectType;
-            if (RequireExceptionHandling || !(b.Entity is Codeblock))
+            if (!b.ResultType.IsVoid)
             {
-                if (b.Entity == null)
-                    throw Error(ErrorCode.NoBindTarget);
-                TargetEntity = b.Entity;
+                Symbol = b.ResultType;
+                if (RequireExceptionHandling || !(b.Entity is Codeblock))
+                {
+                    if (b.Entity == null)
+                        throw Error(ErrorCode.NoBindTarget);
+                    TargetEntity = b.Entity;
+                }
             }
             return null;
         }

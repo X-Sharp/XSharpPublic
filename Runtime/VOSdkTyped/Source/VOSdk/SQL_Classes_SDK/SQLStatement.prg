@@ -39,7 +39,7 @@ CLASS SQLStatement
 
     #region Constructors & Destructors
 /// <include file="Sql.xml" path="doc/SQLStatement.ctor/*" />
-    CONSTRUCTOR( cSQLStatement, oSQLConnection )
+    CONSTRUCTOR( cSQLStatement, oSQLConnection )  CLIPPER
         SELF:PrepFlag := FALSE
         oErrInfo  := SQLErrorInfo{}
         IF IsString( cSQLStatement ) .AND. SLen( cSQLStatement ) > 0
@@ -98,7 +98,7 @@ CLASS SQLStatement
 
     #region Methods
 /// <include file="Sql.xml" path="doc/SQLStatement.Commit/*" />
-    METHOD Commit()
+    METHOD Commit() AS LOGIC
         RETURN SELF:Connection:Commit()
 
 
@@ -109,7 +109,7 @@ CLASS SQLStatement
 
     // Hier ist der Einsprungpunkt f�r den Translator
 /// <include file="Sql.xml" path="doc/SQLStatement.Execute/*" />
-    METHOD Execute( uParm )
+    METHOD Execute( uParm ) AS LOGIC  CLIPPER
         LOCAL nCount     AS DWORD
         LOCAL aArg       := NULL_ARRAY AS ARRAY
         LOCAL lRet       AS LOGIC
@@ -296,13 +296,13 @@ CLASS SQLStatement
 
 
 /// <include file="Sql.xml" path="doc/SQLStatement.MakeErrorInfo/*" />
-        METHOD MakeErrorInfo(oObject, symMethod, e)
+        METHOD MakeErrorInfo(oObject, symMethod, e) AS SQLErrorInfo CLIPPER
             SELF:oErrInfo := SQLErrorInfo{  oObject, symMethod, e}
             RETURN SELF:oErrInfo
 
 
 /// <include file="Sql.xml" path="doc/SQLStatement.Prepare/*" />
-        METHOD Prepare()
+        METHOD Prepare() AS LOGIC
             LOCAL lRet     := FALSE AS LOGIC
             LOCAL nPar     AS DWORD
 
@@ -363,13 +363,13 @@ CLASS SQLStatement
 
 /// <include file="Sql.xml" path="doc/SQLStatement.GetStatementOption/*" />
     [Obsolete];
-        METHOD GetStatementOption( fOption )
+        METHOD GetStatementOption( fOption ) AS USUAL CLIPPER
     RETURN NIL
 
 
 /// <include file="Sql.xml" path="doc/SQLStatement.SetStatementOption/*" />
     [Obsolete];
-        METHOD SetStatementOption( fOption, uValue, lUser )
+        METHOD SetStatementOption( fOption, uValue, lUser ) AS USUAL CLIPPER
         RETURN TRUE
     #endregion
 
@@ -386,7 +386,7 @@ CLASS SQLStatement
                 lRet := TRUE
             ENDIF
         CATCH e AS Exception
-            SELF:__GenerateSQLError( "Beim Ausf�hren eines SQL-Statements ist ein Fehler aufgetreten. " + chr(13) + chr(10)  + chr(13) + chr(10) + e:Message  + chr(13) + chr(10)  + chr(13) + chr(10) + e:StackTrace, #AllocStmt, e )
+            SELF:__GenerateSQLError( "Error allocating statement:"+e:Message, #AllocStmt)
             lRet := FALSE
         END TRY
         RETURN lRet

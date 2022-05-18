@@ -97,6 +97,8 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY IndentContinuedLines              AS LOGIC AUTO
 
         PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO := Int32.MaxValue
+        PUBLIC STATIC PROPERTY CompleteNumChars               AS LONG AUTO := 4
+
         PUBLIC STATIC PROPERTY ShellLink                        AS IXVsShellLink AUTO
         PUBLIC STATIC PROPERTY LanguageService                  AS OBJECT AUTO
 

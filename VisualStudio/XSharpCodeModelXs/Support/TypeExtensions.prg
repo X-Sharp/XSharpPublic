@@ -94,16 +94,19 @@ BEGIN NAMESPACE XSharpModel
                 endif
             ENDIF
             var index := typename:IndexOf("<")
-            if index > 0
+            if index > 0 && index < typename:Length
                 var left     := typename:Substring(0, index)
                 var right    := typename:Substring(index+1)
-                right        := right:Substring(0, right:Length-1)
-                if right.Contains(",")
-                    var elements := right:Split( <char>{','}, StringSplitOptions.RemoveEmptyEntries)
-                    typename     := left+elements:Length:ToString()
-                else
-                    typename     := left+"`1"
-                endif
+                if (right.Length > 0)
+                    right        := right:Substring(0, right:Length-1)
+                    left += "`"
+                    if right.Contains(",")
+                        var elements := right:Split( <char>{','}, StringSplitOptions.RemoveEmptyEntries)
+                        typename     := left+elements:Length:ToString()
+                    else
+                        typename     := left+"1"
+                    endif
+                 endif
             endif
             // In case of a nested type, replace the forward slash with a dot
             if typename:Contains("/")

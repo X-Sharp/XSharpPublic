@@ -1653,6 +1653,13 @@ RETURN
 		SELF:SelectMainItem()
 	RETURN
 
+	METHOD DoDummyChange() AS VOID
+		LOCAL cCaption AS STRING
+		cCaption := SELF:oWindowDesign:GetProperty("Caption"):TextValue
+		SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:oWindowDesign:cGuid , "Caption" , "<dummy>"})
+		SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:oWindowDesign:cGuid , "Caption" , cCaption})
+	RETURN
+
 	METHOD SelectMainItem() AS VOID
 		SELF:DoAction(DesignerActionType.Select , SELF:oWindowDesign:cGuid)
 	RETURN
@@ -3580,10 +3587,14 @@ RETURN
 				oConMenu:MenuItems:Add("-")
 			ENDIF*/
 			IF oDesign:IsTabControl
+				oConMenu:MenuItems:Add(SELF:MakeMenuItem("Insert Page",DesignerActionType.InsertPage))
 				oConMenu:MenuItems:Add(SELF:MakeMenuItem("Add Page",DesignerActionType.AddPage))
 				IF ((DesignTabControl)oDesign:Control):TabPages:Count != 0
 					oConMenu:MenuItems:Add(SELF:MakeMenuItem("Delete Page",DesignerActionType.DeletePage))
 				END IF
+				oConMenu:MenuItems:Add("-")
+				oConMenu:MenuItems:Add(SELF:MakeMenuItem("Move Page Left",DesignerActionType.MovePageLeft))
+				oConMenu:MenuItems:Add(SELF:MakeMenuItem("Move Page Right",DesignerActionType.MovePageRight))
 				oConMenu:MenuItems:Add("-")
 			ENDIF
 
@@ -3615,10 +3626,17 @@ RETURN
 	PROTECTED VIRTUAL METHOD DoContextAction(eAction AS DesignerActionType) AS VOID
 		LOCAL oTabControl AS DesignTabControl
 		DO CASE
-		CASE eAction == DesignerActionType.AddPage
+		CASE eAction == DesignerActionType.AddPage .or. eAction == DesignerActionType.InsertPage
 			oTabControl := (DesignTabControl) ((DesignWindowItem)SELF:aSelected[0]):Control
-			oTabControl:AddPage()
+			oTabControl:AddOrInsertPage( iif(eAction == DesignerActionType.AddPage , TRUE , FALSE) )
 			SELF:BeginAction()
+			SELF:DoDummyChange()
+			SELF:EndAction()
+		CASE eAction == DesignerActionType.MovePageLeft .or. eAction == DesignerActionType.MovePageRight
+			oTabControl := (DesignTabControl) ((DesignWindowItem)SELF:aSelected[0]):Control
+			oTabControl:MovePage(eAction == DesignerActionType.MovePageLeft)
+			SELF:BeginAction()
+			SELF:DoDummyChange()
 			SELF:EndAction()
 		CASE eAction == DesignerActionType.DeletePage
 			oTabControl := (DesignTabControl) ((DesignWindowItem)SELF:aSelected[0]):Control

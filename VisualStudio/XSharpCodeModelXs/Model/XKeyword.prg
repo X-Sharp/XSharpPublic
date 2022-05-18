@@ -392,11 +392,13 @@ BEGIN NAMESPACE XSharpModel
             SELF( (XTokenType) kw1, (XTokenType) kw2)
         CONSTRUCTOR(kw1 as XTokenType, kw2 as XTokenType)
             _code := 0
-            Kw1 := kw1
+            SELF:Kw1 := kw1
             if kw2 == XTokenType.Var
-                kw2 := XTokenType.None
+                SELF:Kw2 := XTokenType.None
+            else
+                SELF:Kw2 := kw2
             endif
-            Kw2 := kw2
+
         CONSTRUCTOR(kw1 as LONG)
             SELF((XTokenType) kw1, XTokenType.None)
         CONSTRUCTOR(kw1 as XTokenType)

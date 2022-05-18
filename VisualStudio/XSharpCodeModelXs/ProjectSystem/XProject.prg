@@ -807,8 +807,17 @@ BEGIN NAMESPACE XSharpModel
          if namespace.EndsWith(".")
             namespace := namespace.Substring(0, namespace.Length-1)
          ENDIF
+         var myUsings := usings.ToList()
+         myUsings:Add(namespace)
          VAR result := XDatabase.GetAssemblyTypesInNamespace(namespace, SELF:DependentAssemblyList )
          // convert the database objects to the PeTypeSymbols
+         result := FilterUsings(result, myUsings,"",false)
+         RETURN GetPETypes(result)
+
+     METHOD GetAssemblyTypes(startWith AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
+         VAR result := XDatabase.GetAssemblyTypesLike(startWith, SELF:DependentAssemblyList )
+         // convert the database objects to the PeTypeSymbols
+         result := FilterUsings(result, usings,startWith,true)
          RETURN GetPETypes(result)
 
      METHOD GetAssemblyTypes(startWith AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
@@ -835,6 +844,10 @@ BEGIN NAMESPACE XSharpModel
                 fullTypeName := element:TypeName
             else
                 fullTypeName := element:Namespace+"."+element:TypeName
+            endif
+            IF SELF:GetTypeFromCache(fullTypeName, OUT VAR peTypeFound)
+                result:Add(peTypeFound)
+                LOOP
             endif
             IdAssembly   := element:IdAssembly
             if (lastAsm == null .or. lastAsm:Id != IdAssembly)
@@ -1196,10 +1209,12 @@ BEGIN NAMESPACE XSharpModel
                LOOP
             ENDIF
             VAR file       := XSolution.FindFullPath(element:FileName)
-            file:Virtual   := TRUE
-            file:Id        := element:IdFile
-            VAR xtype := XSourceTypeSymbol{element, file}
-            result:Add(xtype)
+            if (file != null)
+                file:Virtual   := TRUE
+                file:Id        := element:IdFile
+                VAR xtype := XSourceTypeSymbol{element, file}
+                result:Add(xtype)
+            endif
          NEXT
          RETURN result
 

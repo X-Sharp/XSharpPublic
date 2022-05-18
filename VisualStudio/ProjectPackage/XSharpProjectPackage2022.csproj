@@ -33,7 +33,7 @@
     </NuGetPackageImportStamp>
     <VsixType>v3</VsixType>
     <DeployExtension Condition=" '$(Configuration)' == 'Release' ">false</DeployExtension>
-    <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+    <ContentSQLiteInteropFiles>false</ContentSQLiteInteropFiles>
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
@@ -80,6 +80,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\..\External\Debug\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -183,13 +186,22 @@
       <Link>System.Reflection.Metadata.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="..\..\External\Debug\x64\SQLite.Interop.dll">
+      <Link>x64\SQLite.Interop.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\External\Debug\x86\SQLite.Interop.dll">
+      <Link>x86\SQLite.Interop.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Designers.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Editors\Todo.txt" />
     <Content Include="Snippets\SnippetsIndex.xml" />
-    <Content Include="source.extension.2019.vsixmanifest" />
     <Content Include="source.extension.2022.vsixmanifest" />
     <Content Include="Template.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -330,16 +342,6 @@
       <LastGenOutput>TextTemplate.cs</LastGenOutput>
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.vstemplate" />
-    <Content Include="$(OutDir)\x64\SQLite.Interop.dll">
-      <Link>x64\SQLite.Interop.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="$(OutDir)\x86\SQLite.Interop.dll">
-      <Link>x86\SQLite.Interop.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -529,7 +531,7 @@
     <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\App.xaml.prg" />
     <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFApplication.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFWindow1.xaml.prg" />
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\MainWindow.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\WPFPage.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\WPFUserControl.vstemplate">
     </ZipItem>
@@ -689,9 +691,7 @@
     <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\App.xaml">
       <SubType>Designer</SubType>
     </ZipProject>
-    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\WPFWindow1.xaml">
-      <SubType>Designer</SubType>
-    </ZipProject>
+    <ZipProject Include="Templates\Projects\Windows\CoreWPFApp\MainWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\Page1.xaml">
@@ -717,7 +717,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.428</Version>
+      <Version>17.0.445</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>
@@ -729,9 +729,6 @@
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.File">
       <Version>5.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Data.SQLite.Core">
-      <Version>1.0.115.5</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

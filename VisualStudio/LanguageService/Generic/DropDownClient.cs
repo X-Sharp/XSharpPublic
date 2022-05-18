@@ -60,7 +60,6 @@ namespace XSharp.LanguageService
         readonly XFile _file = null;
         uint _lastHashCode = 0;
         private int _lastLine;
-        private int _startUpLine = -1;          // remember line number so we can set the combo after loading our members
         private int _selectedMemberIndex = -1;
         private int _selectedTypeIndex = -1;
         private DropdownSettings _settings;
@@ -141,7 +140,7 @@ namespace XSharp.LanguageService
             if (sender is ITextView textView && _textViews.ContainsKey(textView))
             {
                 _activeView = textView;
-                Caret_PositionChanged(textView, new CaretPositionChangedEventArgs(textView, textView.Caret.Position, textView.Caret.Position));
+                LineChanged();
             }
         }
 
@@ -150,7 +149,14 @@ namespace XSharp.LanguageService
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await RefreshDropDownAsync(needsUI: true);
+                LineChanged();
             });
+        }
+
+        private void LineChanged()
+        {
+            if (_activeView != null)
+                Caret_PositionChanged(_activeView, new CaretPositionChangedEventArgs(_activeView, _activeView.Caret.Position, _activeView.Caret.Position));
         }
 
         private void Caret_PositionChanged(object sender, CaretPositionChangedEventArgs e)
@@ -160,10 +166,6 @@ namespace XSharp.LanguageService
             {
                 SelectContainingMember(newLine);
                 _lastLine = newLine;
-            }
-            else if (_members.Count == 0)
-            {
-                _startUpLine = newLine;
             }
 #if DEBUG
             XSettings.LogMessage($"Caret_PositionChanged {newLine} Types: {_types.Count} Members: {_members.Count}");
@@ -550,14 +552,8 @@ namespace XSharp.LanguageService
                     var nSelect = _members.Count;
                     _members.Add(elt);
                     _addToDict(member);
-                    if (_startUpLine != -1 && member.IncludesLine(_startUpLine))
-                    {
-                        _selectedMemberIndex = _members.Count - 1;
-                    }
                 }
             }
-            // after loading forget startup line
-            _startUpLine = -1;
         }
         private void refreshCombos()
         {

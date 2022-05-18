@@ -58,47 +58,64 @@ namespace XSharpDebugger
         private static readonly Dictionary<String, XSharpType> s_types = new  Dictionary<String, XSharpType>();
         private readonly string _name;
 
-        private static readonly KeywordCase KeywordCase;
+        private static KeywordCase KeywordCase;
 
-        static XSharpType()
+
+        static KeywordCase CurrentKeywordCase()
         {
             try
             {
-                KeywordCase = (KeywordCase)Constants.GetSetting(Constants.RegistryKeywordCase, (int) KeywordCase.None);
+                return (KeywordCase)Constants.GetSetting(Constants.RegistryKeywordCase, (int)KeywordCase.None);
+            }
+            catch
+            {
+                return KeywordCase.None;
+            }
+            
+        }
+        static void InitTypes()
+        {
+            try
+            {
+                KeywordCase = (KeywordCase)Constants.GetSetting(Constants.RegistryKeywordCase, (int)KeywordCase.None);
             }
             catch
             {
                 KeywordCase = KeywordCase.None;
             }
 
-            Byte = new XSharpType("Byte");
-            Char = new XSharpType("Char");
-            DWord = new XSharpType("Dword");
-            Integer = new XSharpType("Int");
-            Int64 = new XSharpType("Int64");
-            Logic = new XSharpType("Logic");
-            Object = new XSharpType("Object");
-            Ptr = new XSharpType("Ptr");
-            Real4 = new XSharpType("Real4");
-            Real8 = new XSharpType("Real8");
-            SByte = new XSharpType("Sbyte");
-            Short = new XSharpType("Short");
-            String = new XSharpType("String");
-            UInt64 = new XSharpType("Uint64");
-            Void = new XSharpType("Void");
-            Word = new XSharpType("Word");
 
-            Array = new XSharpType("Array");
-            ArrayBase = new XSharpType("Array Of");
-            Binary = new XSharpType("Binary");
-            Currency = new XSharpType("Currency");
-            Date = new XSharpType("Date");
-            Float = new XSharpType("Float");
-            FoxArray = new XSharpType("Foxarray");
+            s_arrayTypes.Clear();
+            s_byRefTypes.Clear();
+            s_types.Clear();
+            Byte = new XSharpType("Byte", true);
+            Char = new XSharpType("Char", true);
+            DWord = new XSharpType("Dword", true);
+            Integer = new XSharpType("Int", true);
+            Int64 = new XSharpType("Int64", true);
+            Logic = new XSharpType("Logic", true);
+            Object = new XSharpType("Object", true);
+            Ptr = new XSharpType("Ptr", true);
+            Real4 = new XSharpType("Real4", true);
+            Real8 = new XSharpType("Real8", true);
+            SByte = new XSharpType("Sbyte", true);
+            Short = new XSharpType("Short", true);
+            String = new XSharpType("String", true);
+            UInt64 = new XSharpType("Uint64", true);
+            Void = new XSharpType("Void", true);
+            Word = new XSharpType("Word", true);
+
+            Array = new XSharpType("Array", true);
+            ArrayBase = new XSharpType("Array Of", true);
+            Binary = new XSharpType("Binary", true);
+            Currency = new XSharpType("Currency", true);
+            Date = new XSharpType("Date", true);
+            Float = new XSharpType("Float", true);
+            FoxArray = new XSharpType("Foxarray", true);
             Invalid = new XSharpType("Invalid");
-            Psz = new XSharpType("Psz");
-            Symbol = new XSharpType("Symbol");
-            Usual = new XSharpType("Usual");
+            Psz = new XSharpType("Psz", true);
+            Symbol = new XSharpType("Symbol", true);
+            Usual = new XSharpType("Usual", true);
             // types below are sorted by name
             s_types.Add("System.Boolean", XSharpType.Logic);
             s_types.Add("System.Byte", XSharpType.Byte);
@@ -138,6 +155,11 @@ namespace XSharpDebugger
             s_types.Add("XSharp.__VOFloat", XSharpType.Float);
         }
 
+        static XSharpType()
+        {
+            InitTypes();
+        }
+
         internal static string FormatKeyword(string keyword)
         {
             switch (KeywordCase)
@@ -153,10 +175,25 @@ namespace XSharpDebugger
                     return keyword;
             }
         }
-        internal string Name => _name;
-        protected XSharpType(string name)
+        internal static void CheckCase()
         {
-            _name = FormatKeyword(name);
+            if (KeywordCase != CurrentKeywordCase())
+            {
+                InitTypes();
+            }
+        }
+        internal string Name => _name;
+        protected XSharpType(string name, bool casesync = false)
+        {
+            
+            if (casesync)
+            {
+                _name = FormatKeyword(name);
+            }
+            else
+            {
+                _name = name;
+            }
         }
 
         internal static XSharpType Create (Meta.Type gentype, Meta.Type[] args)

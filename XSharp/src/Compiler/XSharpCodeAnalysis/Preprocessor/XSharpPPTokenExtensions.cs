@@ -99,10 +99,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return sb.ToString();
         }
 
-        internal static string AsTokenString(this IList<XSharpToken> tokens)
-        {
-            return ((IList<IToken>)tokens).AsTokenString();
-        }
         internal static string TrailingWs(this IToken token)
         {
             if (token == null || token.TokenSource == null)

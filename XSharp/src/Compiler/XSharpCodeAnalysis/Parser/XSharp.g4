@@ -1202,7 +1202,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     // but when they code event->(DoSomething()) we still need them in this rule...
                     | DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FIELD | FOREACH | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP 
                     | PARTIAL | SEALED | ABSTRACT | UNSAFE | SCOPE | NAMESPACE | LOCK | IMPLICIT | IMPLIED | INITONLY | PROPERTY | INTERFACE
-                    | VOSTRUCT | UNION | DECLARE | OPERATOR	| TEXT | ENDTEXT
+                    | VOSTRUCT | UNION | DECLARE | OPERATOR	
                     )
                     ;
 					
@@ -1340,7 +1340,7 @@ xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
 /// FoxPro Parser definities
 keywordfox          :  Token=( OLEPUBLIC | EACH | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR | THEN | FOX_M)
                       // These tokens are already marked as 'only valid in a certain context ' in the lexer
-                      // ENDDEFINE | TEXT| ENDTEXT | DIMENSION | LPARAMETERS | NOSHOW | TEXTMERGE | PRETEXT | FLAGS | ADDITIVE
+                      // ENDDEFINE | DIMENSION | LPARAMETERS 
                     ;
 // class declaration
 // text ... endtext

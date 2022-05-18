@@ -494,7 +494,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             addParseError(new ParseErrorData(token, error, args));
         }
- 
+
         private void addParseError(ParseErrorData error)
         {
 #if !VSPARSER
@@ -737,9 +737,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     line = doEndTextDirective(line, write2ppo);
                     break;
                 default:
-                    if (_textProps != null && line.Count > 0 && line[0].Type == XSharpLexer.TEXT_STRING_CONST)
+                    if (_textProps != null && line.Count > 0)
                     {
-                        line = doTextLine(line, write2ppo);
+                        var sb = new StringBuilder();
+                        foreach (var token in line)
+                        {
+                            if (token.Type != XSharpLexer.WS)
+                            {
+                                sb.Append(token.Text);
+                            }
+                        }
+                        var sLine = sb.ToString().Trim();
+                        if (sLine.ToUpper().StartsWith("ENDTEXT"))
+                        {
+                            var temp = line.Where(t => t.Type != XSharpLexer.WS).ToList();
+                            line = doNormalLine(temp, write2ppo);
+                        }
+                        else
+                        {
+                            line = doTextLine(line, write2ppo);
+                        }
                     }
                     else
                     {
@@ -1283,7 +1300,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    // Most likely the Standard Header file. 
+                    // Most likely the Standard Header file.
                     DebugOutput("{0} Include Standard Header file {1}", fname, resolvedIncludeFileName);
                 }
             }
@@ -1618,6 +1635,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal IList<XSharpToken> textEndFunc = null;
             internal TextProperties (XSharpToken token)
             {
+                if (token != token.SourceSymbol)
+                    token = token.SourceSymbol;
                 Start = token;
                 LParen = new XSharpToken(XSharpLexer.LPAREN, "(", token);
                 RParen = new XSharpToken(XSharpLexer.RPAREN, ")", token);
@@ -1638,7 +1657,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // UniqueName:Add( "    " )
                     // or
-                    // UniqueName:Add( LTrim( 
+                    // UniqueName:Add( LTrim(
                     result.AddRange(_textProps.textLineFunc);
                 }
                 var sb = new StringBuilder();
@@ -1647,6 +1666,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var token in original)
                 {
                     sb.Append(token.Text);
+#if VSPARSER
+                    //mark tokens with new type to give them a different color in the editor
+                    token.Type = XSharpLexer.TEXT_STRING_CONST;
+#endif
                 }
                 sb.Append("`");
                 result.Add(new XSharpToken(XSharpLexer.STRING_CONST, sb.ToString(), original[0]));
@@ -1741,7 +1764,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result.Add(new XSharpToken(XSharpLexer.LCURLY, "{", _textProps.Start));
                     result.Add(new XSharpToken(XSharpLexer.RCURLY, "}", _textProps.Start));
 
-                    // UniqueName:Add( .....( 
+                    // UniqueName:Add( .....(
                     temp.Add(_textProps.List);
                     temp.Add(new XSharpToken(XSharpLexer.COLON, ":", _textProps.Start));
                     temp.Add(new XSharpToken(XSharpLexer.ID, "Append", _textProps.Start));
@@ -2435,7 +2458,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (usedRules.Count > 0)
             {
-                // somerule => #Error 
+                // somerule => #Error
                 result.TrimLeadingSpaces();
                 if (result.Count > 0 && result[0].Channel == Channel.PreProcessor)
                 {
@@ -2472,7 +2495,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        #endregion
+#endregion
 
         private List<XSharpToken> doReplace(IList<XSharpToken> line, PPRule rule, PPMatchRange[] matchInfo)
         {

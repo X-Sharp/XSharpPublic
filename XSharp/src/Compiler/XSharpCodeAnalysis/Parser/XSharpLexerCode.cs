@@ -113,7 +113,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _inDottedIdentifier = false;
         bool _currentLineIsPreprocessorDefinition = false;
         bool _beginOfStatement = true;
-        bool _onStartOfTextBlock = false;
         bool _inTextBlock = false;
         bool _onTextLine = false;
         XSharpToken _lastToken = new(NL);
@@ -154,6 +153,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
         #region Helper Methods
+
         new bool Eof()
         {
             return La(1) == EOF;
@@ -390,11 +390,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 parseOne();
                 Interpreter.Line += 1;
                 Interpreter.Column = 0;
-                if (_onStartOfTextBlock)
-                {
-                    _inTextBlock = true;
-                    _onStartOfTextBlock = false;
-                }
                 return true;
             }
             if (Eof())
@@ -935,11 +930,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case ':':
                         parseOne(COLON);
-                        if (_lastToken.Type == TEXT)        // text := 
-                        {
-                            _onStartOfTextBlock = false;
-                            _lastToken.Type = ID;
-                        }
                         if (Expect(':'))
                             parseOne(COLONCOLON);
                         else if (Expect('='))
@@ -1322,16 +1312,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (findKeyWord(t, LastToken))
             {
                 type = t.Type;
-                // this happens in FoxPro dialect only, because only there the TEXT keyword is available
-                // and this should only happen when TEXT is the first non ws token on a line
-                if (type == TEXT && StartOfLine(LastToken))
-                {
-                    _onStartOfTextBlock = true;
-                }
-                if (type == ENDTEXT)
-                {
-                    _inTextBlock = false;
-                }
             }
             else if (type == REAL_CONST || type == INT_CONST || type == HEX_CONST || type == BIN_CONST)
             {
@@ -1402,10 +1382,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {
                         if (t.Type != SELF && t.Type != SUPER && t.Type != FOX_M)
                         {
-                            if (t.Type == TEXT)
-                            {
-                                _onStartOfTextBlock = false;
-                            }
                             t.Type = ID;
                         }
                         _inDottedIdentifier = true;
@@ -1595,8 +1571,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case YIELD:
                 case ENDDEFINE:
                 case ENDCLASS:
-                case TEXT:
-                case ENDTEXT:
                 case DIMENSION:
                 case DECLARE:
                 case LPARAMETERS:
@@ -2410,8 +2384,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__XPP2__", MACRO},
                     { "__FOX1__", MACRO},
                     { "__FOX2__", MACRO},
-                    {"TEXT",     TEXT },      // text
-                    {"ENDTEXT",  ENDTEXT },   // endtext
                 };
 
             }

@@ -1127,8 +1127,8 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class Codeblock : Node
     {
-        LocalSymbol PCount;
-        ArgumentSymbol ParamArray;
+        LocalSymbol PCount = null;
+        ArgumentSymbol ParamArray = null;
         internal override Node Bind(Binder b)
         {
             b.Entity = this;
@@ -1148,6 +1148,30 @@ namespace XSharp.MacroCompiler.Syntax
                 b.BindStmt(ref Body);
             }
             return null;
+        }
+    }
+    internal partial class TypedCodeblock : Codeblock
+    {
+        internal override Node Bind(Binder b)
+        {
+            b.Entity = this;
+            if (Body != null)
+            {
+                b.BindStmt(ref Body);
+            }
+            return null;
+        }
+        internal static TypedCodeblock Bound(Codeblock cb, Binder b)
+        {
+            var tcb = new TypedCodeblock(cb);
+            int a = 0;
+            foreach(var p in b.DelegateType.GetMethod("Invoke").GetParameters())
+            {
+                ++a;
+                b.AddParam(p.Name ?? ("__arg"+a), Binder.FindType(p.ParameterType));
+            }
+            tcb.Bind(b);
+            return tcb;
         }
     }
     internal partial class CodeblockExpr : Expr

@@ -162,6 +162,9 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class Codeblock : Node
     {
     }
+    internal partial class TypedCodeblock : Codeblock
+    {
+    }
     internal partial class CodeblockExpr : Expr
     {
     }

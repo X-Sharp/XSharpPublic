@@ -34,6 +34,11 @@
 <entry><para>
             Delete an array element.
         </para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ADel(XSharp.__FoxArray,System.Int32,System.Int32)</codeEntityReference></para></entry>
+<entry><para>
+            Deletes an element from a one-dimensional array, or a row or column from a two-dimensional array.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ADim(XSharp.__Array)</codeEntityReference></para></entry>
 <entry><para>Calculate the # of dimensions in an array</para></entry></row>
@@ -49,8 +54,10 @@
             It is superseded by the Directory() function, which returns all file information in a multidimensional array.
         </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AElement(XSharp.__FoxArray,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AElement(XSharp.__FoxArray,System.UInt32)</codeEntityReference></para></entry>
+<entry><para>
+            Returns the number of an array element from the element's subscripts.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AEval(XSharp.__Array,XSharp.ICodeblock)</codeEntityReference></para></entry>
 <entry><para>
@@ -95,7 +102,7 @@
             Return the number of elements in an array.
         </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ALen(XSharp.__FoxArray,System.Int32)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ALen(XSharp.__FoxArray)</codeEntityReference></para></entry>
 <entry><para>
             Returns the number of elements, rows, or columns in an array.
         </para></entry></row>
@@ -187,6 +194,9 @@
 <entry><para>
             Grow or shrink an array.
         </para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASize(XSharp.__Array,System.UInt32)</codeEntityReference></para></entry>
+<entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASort(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -194,7 +204,9 @@
         </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASubScript(XSharp.__FoxArray,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Returns the row or column subscript of an element from the element's number.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ATagInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>

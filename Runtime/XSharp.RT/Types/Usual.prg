@@ -944,7 +944,7 @@ BEGIN NAMESPACE XSharp
             CASE __UsualType.String
                 IF rhs:_usualType == __UsualType.String
                     RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) >= 0
-                else
+                ELSE
                     NOP // error below
                 ENDIF
 
@@ -1238,7 +1238,7 @@ BEGIN NAMESPACE XSharp
         /// <inheritdoc />
         [NODEBUG];
         PUBLIC OVERRIDE METHOD Equals(obj AS OBJECT) AS LOGIC
-        IF obj is DBNull .or. SELF:IsNull
+        IF obj IS DBNull .or. SELF:IsNull
             // comparison with Null always returns FALSE
             // In FoxPro this returns .NULL.
             RETURN FALSE
@@ -1270,7 +1270,7 @@ BEGIN NAMESPACE XSharp
         IF lhs:IsNull .or. rhs:IsNull
             // comparison with Null always returns FALSE
             // In FoxPro this returns .NULL.
-            return FALSE
+            RETURN FALSE
         ENDIF
         IF lhs:_usualType == __UsualType.String .AND. rhs:_usualType == __UsualType.String
             RETURN ! __StringEquals(  lhs:_stringValue, rhs:_stringValue)
@@ -1526,9 +1526,9 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [NODEBUG];
         STATIC OPERATOR +(lhs AS __Usual, rhs AS __Usual) AS __Usual
-        if lhs:IsNull .or. rhs:IsNull
-            return DBNull.Value
-        endif
+        IF lhs:IsNull .or. rhs:IsNull
+            RETURN DBNull.Value
+        ENDIF
         SWITCH lhs:_usualType
             CASE __UsualType.Long
                 SWITCH rhs:_usualType
@@ -1632,9 +1632,9 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [NODEBUG];
         STATIC OPERATOR -(lhs AS __Usual, rhs AS __Usual) AS __Usual
-        if lhs:IsNull .or. rhs:IsNull
-            return DBNull.Value
-        endif
+        IF lhs:IsNull .or. rhs:IsNull
+            RETURN DBNull.Value
+        ENDIF
         SWITCH lhs:_usualType
             CASE __UsualType.Long
                 SWITCH rhs:_usualType
@@ -1719,9 +1719,9 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [NODEBUG];
         STATIC OPERATOR /(lhs AS __Usual, rhs AS __Usual) AS __Usual
-        if lhs:IsNull .or. rhs:IsNull
-            return DBNull.Value
-        endif
+        IF lhs:IsNull .or. rhs:IsNull
+            RETURN DBNull.Value
+        ENDIF
 
         SWITCH lhs:_usualType
 
@@ -1840,9 +1840,9 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [NODEBUG];
         STATIC OPERATOR %(lhs AS __Usual, rhs AS __Usual) AS __Usual
-        if lhs:IsNull .or. rhs:IsNull
-            return DBNull.Value
-        endif
+        IF lhs:IsNull .or. rhs:IsNull
+            RETURN DBNull.Value
+        ENDIF
         SWITCH lhs:_usualType
             CASE __UsualType.Long
                 SWITCH rhs:_usualType
@@ -1902,9 +1902,9 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [NODEBUG];
         STATIC OPERATOR *(lhs AS __Usual, rhs AS __Usual) AS __Usual
-        if lhs:IsNull .or. rhs:IsNull
-            return DBNull.Value
-        endif
+        IF lhs:IsNull .or. rhs:IsNull
+            RETURN DBNull.Value
+        ENDIF
         SWITCH lhs:_usualType
             CASE __UsualType.Long
                 SWITCH rhs:_usualType
@@ -1964,9 +1964,9 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [NODEBUG];
         STATIC OPERATOR >>(lhs AS __Usual, rhs AS INT) AS __Usual
-        if lhs:IsNull
-            return DBNull.Value
-        endif
+        IF lhs:IsNull
+            RETURN DBNull.Value
+        ENDIF
         // Right shift
         SWITCH lhs:_usualType
             CASE __UsualType.Long	; RETURN lhs:_intValue >> rhs
@@ -1979,9 +1979,9 @@ BEGIN NAMESPACE XSharp
         [NODEBUG];
         STATIC OPERATOR <<(lhs AS __Usual, rhs AS LONG) AS __Usual
         // Left shift
-        if lhs:IsNull
-            return DBNull.Value
-        endif
+        IF lhs:IsNull
+            RETURN DBNull.Value
+        ENDIF
 
         SWITCH (lhs:_usualType)
             CASE __UsualType.Long	; RETURN lhs:_intValue << rhs
@@ -1995,9 +1995,9 @@ BEGIN NAMESPACE XSharp
         [NODEBUG];
         STATIC OPERATOR &(lhs AS __Usual, rhs AS __Usual) AS __Usual
         // Bitwise And
-        if lhs:IsNull .or. rhs:IsNull
-            return DBNull.Value
-        endif
+        IF lhs:IsNull .or. rhs:IsNull
+            RETURN DBNull.Value
+        ENDIF
 
         SWITCH (lhs:_usualType)
             CASE __UsualType.Long
@@ -2021,9 +2021,9 @@ BEGIN NAMESPACE XSharp
         [NODEBUG];
         STATIC OPERATOR |(lhs AS __Usual, rhs AS __Usual) AS __Usual
         // Bitwise or
-        if lhs:IsNull .or. rhs:IsNull
-            return DBNull.Value
-        endif
+        IF lhs:IsNull .or. rhs:IsNull
+            RETURN DBNull.Value
+        ENDIF
 
         SWITCH (lhs:_usualType)
             CASE __UsualType.Long
@@ -2664,8 +2664,8 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long	; RETURN FLOAT{Convert.ToDouble(u:_intValue),0}
                 CASE __UsualType.Int64	; RETURN FLOAT{Convert.ToDouble(u:_i64Value),0}
                 CASE __UsualType.Float	; RETURN u:_floatValue
-                CASE __UsualType.Currency; RETURN FLOAT{Convert.ToDouble(u:_currencyValue:Value), -1}
-                CASE __UsualType.Decimal; RETURN FLOAT{Convert.ToDouble(u:_decimalValue), -1}
+                CASE __UsualType.Currency; RETURN FLOAT{Convert.ToDouble(u:_currencyValue:Value), 4}
+                CASE __UsualType.Decimal; RETURN FLOAT{Convert.ToDouble(u:_decimalValue), RuntimeState.Decimals}
                 CASE __UsualType.Logic	; RETURN FLOAT{IIF(u:_logicValue, 1, 0),0}
                 OTHERWISE
                     THROW ConversionError(FLOAT, TYPEOF(FLOAT), u)
@@ -2681,7 +2681,7 @@ BEGIN NAMESPACE XSharp
                 RETURN Currency{0.0}
             ENDIF
             IF u:IsNumeric
-                RETURN (Currency) (FLoat) u
+                RETURN (Currency) (FLOAT) u
             ENDIF
             THROW ConversionError(__UsualType.Currency, TYPEOF(Currency), u)
         CATCH ex AS OverflowException
@@ -2856,7 +2856,7 @@ BEGIN NAMESPACE XSharp
         [NODEBUG];
         PUBLIC METHOD IConvertible.ToChar(provider AS System.IFormatProvider) AS CHAR
         VAR o := __Usual.ToObject(SELF)
-        IF o IS IConvertible var ic
+        IF o IS IConvertible VAR ic
             RETURN ic:ToChar(provider)
         ENDIF
         THROW InvalidCastException{}
@@ -2894,7 +2894,7 @@ BEGIN NAMESPACE XSharp
         /// <exclude />
         [NODEBUG];
         STATIC METHOD ToObject(u AS __Usual) AS OBJECT
-        if u:IsNull
+        IF u:IsNull
             RETURN DBNull.Value
         ELSEIF !u:_initialized
             // Empty usuals are considered to be FALSE in the FoxPro dialect
@@ -3265,7 +3265,7 @@ BEGIN NAMESPACE XSharp
 
         VAR indexer := _refData ASTYPE IIndexedProperties
         IF indexer == NULL
-            var error := Error{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+            VAR error := Error{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
             THROW error
         ENDIF
         RETURN indexer[index]

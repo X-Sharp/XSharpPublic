@@ -8,7 +8,7 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-STATIC CLASS XSharp.RT.Debugger.Functions
+PARTIAL STATIC CLASS XSharp.RT.Debugger.Functions
 /// <summary>Open a window to display the open workareas/cursors for the current thread.</summary>
 /// <remarks>You can add this function behind a (hidden) menu option in your appliction to display
 /// the open areas for you as developer </remarks>

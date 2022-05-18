@@ -1,0 +1,46 @@
+///////////////////////////////////////////////////////////////////////////
+// VFPProperties.xh
+//
+// Include this file in a class that wants to add VFP Property support
+// Additionally add IMPLEMENTS XSharp.IDynamicProperties to the class definition
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+
+    protected _Properties as PropertyContainer
+    public property Properties as PropertyContainer
+      get
+         self:__InitProperties()
+         return self:_Properties
+      end get
+    end property
+
+    private method __InitProperties as void
+      if _Properties == null
+         _Properties := PropertyContainer{self}
+      endif
+
+    method _AddProperty(cPropertyName as string, uValue as usual, nVisibility := 1 /*PropertyVisibility.Public*/ as long, cDescription := "" as string) as logic
+        self:__InitProperties()
+        return _Properties:Add(cPropertyName, uValue, nVisibility, cDescription) != null
+
+    method _RemoveProperty(cPropertyName as string) as logic
+        self:__InitProperties()
+        return _Properties:Remove(cPropertyName)
+
+    #region IDynamicProperties
+    virtual method NoIvarPut(cName as string, uValue as usual) as void
+        self:__InitProperties()
+        _Properties:NoIvarPut(cName, uValue)
+
+    virtual method NoIvarGet(cName as string) as usual
+        self:__InitProperties()
+        return _Properties:NoIvarGet(cName)
+
+    virtual method GetPropertyNames() as string[]
+        self:__InitProperties()
+        return _Properties:GetPropertyNames()
+    #endregion
+

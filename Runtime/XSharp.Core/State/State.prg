@@ -7,6 +7,7 @@
 USING System.Collections.Generic
 USING System.Threading
 USING System.Diagnostics
+USING System.Reflection
 USING XSharp.RDD
 USING XSharp.RDD.Enums
 
@@ -52,7 +53,7 @@ CLASS XSharp.RuntimeState
         detectDialect()
 
     PRIVATE STATIC METHOD detectDialect() AS VOID
-        LOCAL asm := System.Reflection.Assembly.GetEntryAssembly() AS System.Reflection.Assembly
+        LOCAL asm := Assembly.GetEntryAssembly() AS Assembly
         VAR att := TYPEOF( XSharp.Internal.CompilerVersionAttribute )
         IF asm != NULL .AND. asm:IsDefined(att, FALSE)
             FOREACH VAR attr IN asm:GetCustomAttributes(att, FALSE)
@@ -114,7 +115,7 @@ CLASS XSharp.RuntimeState
                 SELF:_SetThreadValue<LONG>(Set.DosCodepage, Win32.GetDosCodePage())
                 SELF:_SetThreadValue<LONG>(Set.WinCodepage, Win32.GetWinCodePage())
             ELSE
-                SELF:_SetThreadValue(Set.CollationMode, CollationMode.Unicode )
+                self:_SetThreadValue(Set.CollationMode, CollationMode.Unicode )
             ENDIF
 			// Date and time settings
 			SELF:_SetInternationalWindows()
@@ -251,7 +252,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The System.Reflection.Module for the main application.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    STATIC PROPERTY AppModule AS  System.Reflection.Module AUTO
+    STATIC PROPERTY AppModule AS  Module AUTO
 	#endregion
 
 	/// <summary>The last file found with File(). This is the name that FPathName() returns.</summary>
@@ -278,7 +279,7 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="O:XSharp.RT.Functions.SetAlternate" />
     /// <seealso cref="O:XSharp.RT.Functions.SetAltFile" />
     /// <seealso cref="Set.Alternate" />
-   STATIC PROPERTY Alternate AS LOGIC ;
+   static property Alternate as logic ;
         GET GetValue<LOGIC>(Set.Alternate);
         SET SetValue<LOGIC>(Set.Alternate, value)
 
@@ -357,13 +358,13 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="Set.CollationMode" />
     /// <seealso cref="OnCollationChanged" />
     /// <remarks>Send an OnCollationChanged event when changed.</remarks>
-   STATIC PROPERTY CollationMode AS CollationMode
-        GET
-			RETURN GetValue<CollationMode>(Set.CollationMode)
+   static property CollationMode as CollationMode
+        get
+			return GetValue<CollationMode>(Set.CollationMode)
 		END GET
         SET
 			SetValue<CollationMode>(Set.CollationMode, value)
-			IF OnCollationChanged != NULL
+			if OnCollationChanged != null
 				OnCollationChanged(GetInstance(), EventArgs{})
 			ENDIF
 		END SET
@@ -417,7 +418,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The default RDD.</summary>
     /// <remarks><note>This value is 'per thread' </note></remarks>
-    /// <seealso cref="RddSetDefault" />
+    /// <seealso cref="O:XSharp.RT.Functions.RddSetDefault" />
     STATIC PROPERTY DefaultRDD AS STRING ;
         GET GetValue<STRING>(Set.DefaultRdd);
         SET SetValue<STRING>(Set.DefaultRdd, value)
@@ -527,9 +528,9 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="SetExact" />
     /// <seealso cref="Set.Exact" />
-    STATIC PROPERTY Exact AS LOGIC ;
-        GET GetValue<LOGIC>(Set.Exact);
-        SET SetValue<LOGIC>(Set.Exact, value)
+    static property Exact as logic ;
+        get GetValue<logic>(Set.Exact);
+        set SetValue<logic>(Set.Exact, value)
 
     /// <summary>Logical setting that fixes the number of decimal digits used to display numbers.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -879,17 +880,16 @@ CLASS XSharp.RuntimeState
     [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE _collationTable AS BYTE[]
 
-
     /// <summary>Delegate that gets called to automatically lock a record in the FoxPro dialect.</summary>
-    STATIC AutoLock   AS AutoLockMethod
+    static AutoLock   as AutoLockMethod
     /// <summary>Delegate that gets called to automatically unlock a record in the FoxPro dialect.</summary>
-    STATIC AutoUnLock AS AutoLockMethod
-    /// <exclude />
-    DELEGATE AutoLockMethod() as Void
+    static AutoUnLock as AutoLockMethod
+    /// <summary>Delegate that describes the signature of the AutoLock methods </summary>
+    delegate AutoLockMethod() as void
 
     /// <exclude />
     STATIC METHOD DoNothing() AS VOID
-        RETURN
+        return
 
     /// <summary>Current collation table.</summary>
 	PUBLIC STATIC PROPERTY CollationTable AS BYTE[]
@@ -905,7 +905,7 @@ CLASS XSharp.RuntimeState
 	SET
 		GetInstance():_collationTable  := value
 		SetValue(Set.CollationTable, value)
-		IF OnCollationChanged != NULL
+		if OnCollationChanged != null
 			OnCollationChanged(GetInstance(), EventArgs{})
 		ENDIF
 	END SET
@@ -931,6 +931,14 @@ CLASS XSharp.RuntimeState
             _macrocompiler := value
         END SET
     END PROPERTY
+
+    /// <summary>
+    /// This property allows you to override the mechanism that decided if the types in an assembly should be cached
+    /// The default behavior is that every assembly that is found is cached.
+    /// </summary>
+    /// <value></value>
+    PUBLIC STATIC PROPERTY MacroCompilerIncludeAssemblyInCache as MacroCompilerIncludeAssemblyInCache AUTO := { a AS Assembly => TRUE}
+
 
     /// <summary>Active Macro compiler</summary>
     /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
@@ -959,7 +967,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>This event is thrown when the collation of the runtimestate is changed</summary>
     /// <remarks>Clients can refresh cached information by registering to this event</remarks>
     /// <seealso cref="CollationMode" />
-	PUBLIC STATIC EVENT OnCollationChanged AS EventHandler
+	public static event OnCollationChanged as EventHandler
 
     PRIVATE STATIC METHOD _LoadMacroCompiler() AS VOID
         IF _macrocompilerType == NULL_OBJECT
@@ -986,7 +994,7 @@ CLASS XSharp.RuntimeState
             _macrocompiler := Activator:CreateInstance(_macrocompilerType) ASTYPE IMacroCompiler
             IF _macrocompiler IS IMacroCompiler2 VAR mc
                 mc:Resolver := _macroresolver
-            ENDIF
+            endif
 		ENDIF
 		RETURN
 
@@ -1007,9 +1015,9 @@ CLASS XSharp.RuntimeState
     /// The Clipper collation uses the current DOS codepage and the Windows collation the current Windows codepage.<br/>
     /// - When the current collationmode is Unicode or Ordinal then the original strings will be compared.
     /// </remarks>
-    /// <seealso cref="CompilerOptionVO13" />
-    /// <seealso cref="Exact" />
-    /// <seealso cref="StringCompareCollation" />
+    /// <seealso cref="P:CompilerOptionVO13" />
+    /// <seealso cref="P:Exact" />
+    /// <seealso cref="M:StringCompareCollation" />
     STATIC METHOD StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
        LOCAL ret AS INT
         // Only when vo13 is off and SetExact = TRUE
@@ -1051,8 +1059,8 @@ CLASS XSharp.RuntimeState
     /// This method only checks for SetCollation and does not check fot SetExact() or the VO13 setting
     /// </remarks>
     /// <seealso cref="O:StringCompare" />
-    /// <seealso cref="CollationMode" />
-    STATIC METHOD StringCompareCollation(strLHS AS STRING, strRHS AS STRING) AS INT
+    /// <seealso cref="P:CollationMode" />
+    static method StringCompareCollation(strLHS as string, strRHS as string) as int
        LOCAL ret AS INT
         // either exact or RHS longer than LHS
         VAR mode := RuntimeState.CollationMode

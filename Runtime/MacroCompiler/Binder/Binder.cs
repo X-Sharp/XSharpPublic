@@ -46,7 +46,7 @@ namespace XSharp.MacroCompiler
         static List<ContainerSymbol> Usings = null;
         static List<ContainerSymbol> RuntimeFunctions = null;
         static Dictionary<Type, TypeSymbol> TypeCache = null;
-        static HashSet<Assembly> LoadedAssemblies = null;
+        static HashSet<Assembly> LoadedAssemblies = new HashSet<Assembly>();
 
         internal static StringComparer LookupComparer = StringComparer.OrdinalIgnoreCase;
 
@@ -63,11 +63,22 @@ namespace XSharp.MacroCompiler
         internal Stack<int> ScopeStack = new Stack<int>();
         internal Node Entity = null;
 
+        internal TypeSymbol ResultType => Binder.FindType(DelegateType.GetMethod("Invoke").ReturnType);
+
+        static Binder()
+        {
+            AppDomain.CurrentDomain.AssemblyLoad += AssemblyLoadEventHandler;
+        }
+
         protected Binder(Type objectType, Type delegateType, MacroOptions options)
         {
             Debug.Assert(delegateType.IsSubclassOf(typeof(Delegate)));
-            BuildIndex();
-            AppDomain.CurrentDomain.AssemblyLoad += AssemblyLoadEventHandler;
+            if (TypeCache == null)
+            {
+                lock (LoadedAssemblies)
+                    if (TypeCache == null)
+                        BuildIndex();
+            }
             ObjectType = FindType(objectType);
             DelegateType = delegateType;
             Options = options;
@@ -76,20 +87,29 @@ namespace XSharp.MacroCompiler
 
         internal static Binder<T, R> Create<T,R>(MacroOptions options) where R: Delegate
         {
+            if (options?.StrictTypedSignature == true)
+                return new TypedBinder<T, R>(options);
             return new Binder<T, R>(options);
         }
 
         private static void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)
         {
-            if (!args.LoadedAssembly.IsDynamic && !LoadedAssemblies.Contains(args.LoadedAssembly))
+            lock (LoadedAssemblies)
             {
-                LoadedAssemblies.Add(args.LoadedAssembly);
-                UpdateIndex(args.LoadedAssembly);
+                if (TypeCache != null && !args.LoadedAssembly.IsDynamic && !LoadedAssemblies.Contains(args.LoadedAssembly))
+                {
+                    LoadedAssemblies.Add(args.LoadedAssembly);
+                    UpdateIndex(args.LoadedAssembly);
+                }
             }
         }
 
         static void UpdateTypeCache(NamespaceSymbol global, Dictionary<Type, TypeSymbol> typeCache, Assembly a)
         {
+            if (!XSharp.RuntimeState.MacroCompilerIncludeAssemblyInCache(a))
+            {
+                return;
+            }
             var most_visible = a == System.Reflection.Assembly.GetEntryAssembly();
             try
             {
@@ -161,6 +181,10 @@ namespace XSharp.MacroCompiler
         }
         static void UpdateUsings(List<ContainerSymbol> usings, List<ContainerSymbol> rtFuncs, Assembly a, HashSet<ContainerSymbol> usedSymbols = null)
         {
+            if (!XSharp.RuntimeState.MacroCompilerIncludeAssemblyInCache(a))
+            {
+                return;
+            }
             if (usedSymbols == null)
             {
                 usedSymbols = new HashSet<ContainerSymbol>();
@@ -235,9 +259,6 @@ namespace XSharp.MacroCompiler
         }
         static internal void BuildIndex()
         {
-            if (Global != null && Usings != null && TypeCache != null)
-                return;
-
             var global = new NamespaceSymbol();
             var usings = new List<ContainerSymbol>();
             var rtFuncs = new List<ContainerSymbol>();
@@ -245,19 +266,24 @@ namespace XSharp.MacroCompiler
 
             var usedSymbols = new HashSet<ContainerSymbol>();
 
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var loadedAssemblies = new HashSet<Assembly>(assemblies);
+            var loadedAssemblies = new HashSet<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
+            loadedAssemblies.RemoveWhere(a => a.IsDynamic);
 
-            foreach (var a in assemblies)
+            do
             {
-                if (a.IsDynamic)
-                    continue;
-                UpdateTypeCache(global, typeCache, a);
-            }
+                foreach (var a in loadedAssemblies)
+                {
+                    UpdateTypeCache(global, typeCache, a);
+                }
+                LoadedAssemblies.UnionWith(loadedAssemblies);
+
+                loadedAssemblies = new HashSet<Assembly>(AppDomain.CurrentDomain.GetAssemblies());
+                loadedAssemblies.RemoveWhere(a => a.IsDynamic);
+                loadedAssemblies.ExceptWith(LoadedAssemblies);
+            } while (loadedAssemblies.Count > 0);
 
             System.Threading.Interlocked.CompareExchange(ref Global, global, null);
             System.Threading.Interlocked.CompareExchange(ref TypeCache, typeCache, null);
-            System.Threading.Interlocked.CompareExchange(ref LoadedAssemblies, loadedAssemblies, null);
 
             Compilation.InitializeNativeTypes();
             Compilation.InitializeWellKnownTypes();
@@ -277,10 +303,8 @@ namespace XSharp.MacroCompiler
             var ina = Compilation.Get(WellKnownTypes.ImplicitNamespaceAttribute);
             if (cla != null && ina != null)
             {
-                foreach (var a in assemblies)
+                foreach (var a in LoadedAssemblies)
                 {
-                    if (a.IsDynamic)
-                        continue;
                     UpdateUsings(usings, rtFuncs, a, usedSymbols);
                 }
             }
@@ -291,7 +315,8 @@ namespace XSharp.MacroCompiler
         static void UpdateIndex(Assembly a)
         {
             UpdateTypeCache(Global, TypeCache, a);
-            UpdateUsings(Usings, RuntimeFunctions, a);
+            if (Usings != null)
+                UpdateUsings(Usings, RuntimeFunctions, a);
         }
 
         internal static TypeSymbol FindType(Type t)
@@ -601,8 +626,6 @@ namespace XSharp.MacroCompiler
     {
         internal Binder(MacroOptions options) : base(typeof(T),typeof(R), options) { }
 
-        internal delegate T MacroDelegate(params T[] args);
-
         internal class NestedWrapper
         {
             internal delegate T EvalDelegate(XSharp.Codeblock[] cbs, params T[] args);
@@ -649,6 +672,18 @@ namespace XSharp.MacroCompiler
             }
             else
                 return dm.CreateDelegate(typeof(R));
+        }
+    }
+    internal class TypedBinder<T, R> : Binder<T, R> where R : Delegate
+    {
+        internal TypedBinder(MacroOptions options) : base(options) { }
+        internal override DynamicMethod CreateMethod(string source)
+        {
+            var mi = typeof(R).GetMethod("Invoke");
+            var par = mi.GetParameters().Select(p => p.ParameterType).ToList();
+            if (HasNestedCodeblocks)
+                par.Insert(0, typeof(XSharp.Codeblock[]));
+            return new DynamicMethod(source, mi.ReturnType, par.ToArray());
         }
     }
 }

@@ -26,10 +26,12 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___popWorkarea)
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet)
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut)
-
     FUNCTION TestByRefPriv() AS VOID
         PRIVATE x
         VAR mc := CreateMacroCompiler()
+
+        TestMacro(mc, "{|| System.Drawing.Size{1,2}}", Args(),System.Drawing.Size{1,2}, typeof(System.Drawing.Size))
+        TestMacro(mc, "{|| System.Drawing.Size.Empty}", Args(),System.Drawing.Size.Empty, typeof(System.Drawing.Size))
         x := "a"
         TestMacro(mc, "{||testfunc(x), x}", Args(), "b", typeof(STRING))
         x := "a"
@@ -78,6 +80,11 @@ BEGIN NAMESPACE MacroCompilerTest
         m->lExpr := FALSE
         ? TestMacro(mc, "IIF(lExpr,'abc' ,&(cExpr))", Args(), "123", typeof(string) )
         TestMacro(mc, e"{|| &('1+2') }", Args(), 3, TYPEOF(LONG))
+
+        TestMacro(mc, "1 + (INT) +1", Args(), 2, TYPEOF(int))
+        TestMacro(mc, "1 + (INT) -1", Args(), 0, TYPEOF(int))
+        TestMacro(mc, "1 + (USUAL) +1", Args(), 2, TYPEOF(int))
+        TestMacro(mc, "1 + (USUAL) -1", Args(), 0, TYPEOF(int))
 
         // Test dotted AND and OR in combination with numbers
         TestMacro(mc, e"{|| 1>2.and.3<4}", Args(), FALSE, TYPEOF(LOGIC))

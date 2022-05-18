@@ -12,10 +12,10 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AddProperty(System.Object,System.String,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Adds a new property to an object at run time.
-      You can use AddProperty( ) to add properties and their values to valid X# objects,
-      including those created from X# classes, COM classes, and the SCATTER...NAME command.
-    </para></entry></row>
+            Adds a new property to an object at run time.
+            You can use AddProperty( ) to add properties and their values to valid X# objects,
+            including those created from X# classes, COM classes, and the SCATTER...NAME command.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.CheckInstanceOf(System.Object,System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -66,8 +66,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CreateObjectEx(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Creates an instance of a registered COM object (such as a X# Automation server) on a remote computer.
-    </para></entry></row>
+            Creates an instance of a registered COM object (such as a X# Automation server) on a remote computer.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.CSend(System.Object,System.String,XSharp.__Usual[])</codeEntityReference></para></entry>
 <entry><para>
@@ -187,8 +187,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RemoveProperty(System.Object,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Removes a property from an object at run time.
-    </para></entry></row>
+            Removes a property from an object at run time.
+        </para></entry></row>
 </table>
 </content>
      </section>

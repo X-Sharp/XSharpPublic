@@ -63,8 +63,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal("X", VarType ( b ))
             PRIVATE c
             c := .NULL.
-            #warning .NULL. Should be converted to DBNull.Value
-            //Assert.Equal("X", VarType ( c ))
+            Assert.Equal("X", VarType ( c ))
 
 
             DO CheckParams WITH "TestString" , 5 , 3

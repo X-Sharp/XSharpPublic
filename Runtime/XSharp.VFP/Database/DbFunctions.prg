@@ -43,7 +43,7 @@ FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS U
 /// <seealso cref="DbcView" />
 /// <seealso cref="DbcConnection" />
 /// <seealso cref="DbcField" />
-FUNCTION DbSetProp(cName AS STRING, cType AS STRING, cProperty AS STRING, ePropertyValue AS USUAL)
+FUNCTION DbSetProp(cName AS STRING, cType AS STRING, cProperty AS STRING, ePropertyValue AS USUAL) AS USUAL
     IF ! Dbc.IsValidObjectType(cType)
         THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.INVALID_DB_OBJECT, cType))
     ENDIF
@@ -104,7 +104,7 @@ FUNCTION ADatabases(ArrayName REF __FoxArray)
 #endif
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/lock/*" />
-FUNCTION Lock( cRecordNumberList, uArea) AS LOGIC
+FUNCTION Lock( cRecordNumberList, uArea) AS LOGIC CLIPPER
     RETURN RLock(cRecordNumberList, uArea)
 
 
@@ -116,7 +116,7 @@ FUNCTION __DbFieldList(aFields AS ARRAY, lIncludeMemo AS LOGIC) AS ARRAY
     NEXT
     RETURN acFields
 
-FUNCTION __DbFieldWild(includedFields, excludedFields, lIncludeMemo) AS ARRAY
+FUNCTION __DbFieldWild(includedFields, excludedFields, lIncludeMemo) AS ARRAY CLIPPER
     var fields := __DbFieldListHelper({}, includedFields, excludedFields, lIncludeMemo)
     LOCAL acFields := {} AS ARRAY
     foreach var cField in fields
@@ -277,10 +277,12 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
     LOCAL lMulti   AS LOGIC
     LOCAL nRows    AS DWORD
     LOCAL nColumns AS DWORD
-    LOCAL aSource := NULL_ARRAY as ARRAY
-    IF IsArray(uSource) .and. ALen(uSource) > 0
+    LOCAL aFox   := NULL  AS __FoxArray
+    LOCAL aSource := NULL_ARRAY AS ARRAY
+    IF IsArray(uSource) .AND. ALen(uSource) > 0
         aSource   := uSource
-        if aSource IS __FoxArray VAR aFox
+        IF aSource IS __FoxArray
+            aFox := (__FoxArray) aSource
             lMulti := aFox:MultiDimensional
             IF lMulti
                 nRows    := (DWORD) aFox:Rows
@@ -291,7 +293,7 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
             ENDIF
         ELSE
             lMulti := IsArray(aSource[1])
-            if lMulti
+            IF lMulti
                 nRows    := ALen(aSource)
                 nColumns := ALen(aSource[1])
             ELSE
@@ -304,23 +306,29 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
         nColumns  := FCount()
         nRows     := (DWORD) RecCount()
     ENDIF
-    LOCAL cbAction AS CodeBlock
+    LOCAL cbAction AS CODEBLOCK
     DO WHILE aFields:Count > nColumns
         aFields:RemoveAt(aFields:Count-1)
     ENDDO
     cbAction :=  {|| AAdd(aResult, DbCopyToArraySingleRecord(aFields)), ALen(aResult) < nRows }
     DbEval( cbAction, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, lNoOptimize )
     IF aSource != NULL_ARRAY
-        if lMulti
+        nColumns  := Math.Min(nColumns, FCount())
+        IF aFox != NULL
+            __FoxFillArray(aFox, NIL)
+        ELSE
+            AFill(aSource, NIL)
+        ENDIF
+        IF lMulti
             nRows := Min(ALen(aResult), nRows)
-            FOR VAR nRow := 1 to nRows
-                FOR VAR nCol := 1 to nColumns
+            FOR VAR nRow := 1 TO nRows
+                FOR VAR nCol := 1 TO nColumns
                     aSource[nRow, nCol] := aResult[nRow, nCol]
                 NEXT
             NEXT
         ELSE
             aResult := aResult[1]
-            FOR VAR nCol := 1 to nColumns
+            FOR VAR nCol := 1 TO nColumns
                 aSource[nCol] := aResult[nCol]
             NEXT
         ENDIF

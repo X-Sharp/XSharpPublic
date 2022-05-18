@@ -254,7 +254,7 @@ BEGIN NAMESPACE XSharp.IO
         STATIC METHOD SetErrorState ( o AS Exception ) AS VOID
             LOCAL e AS Error
             e := Error{o}
-            e:StackTrace := o:StackTrace+Environment.NewLine+System.Diagnostics.StackTrace{1,TRUE}:ToString()
+            e:SetStackTrace(o:StackTrace+Environment.NewLine+System.Diagnostics.StackTrace{1,TRUE}:ToString())
             RuntimeState.FileException := e
             RuntimeState.FileError := _AND ( (DWORD) System.Runtime.InteropServices.Marshal.GetHRForException ( o ) , 0x0000FFFF )
             e:OSCode := RuntimeState.FileError
@@ -417,15 +417,22 @@ BEGIN NAMESPACE XSharp.IO
         RETURN iResult
 
         INTERNAL STATIC METHOD Write( pFile AS IntPtr, c AS STRING, nLength AS INT, lAnsi AS LOGIC ) AS INT
-            LOCAL aBytes := String2Bytes(c) AS BYTE[]
-        RETURN WriteBuff(pFile, aBytes, nLength, lAnsi)
+            LOCAL aBytes AS BYTE[]
+            IF nLength == c:Length
+                aBytes  := String2Bytes(c)
+            ELSEIF nLength < c:Length
+                aBytes  := String2Bytes(c:Substring(0, nLength))
+            ELSE // nLength >
+                aBytes  := String2Bytes(c:PadRight(nLength,' '))
+            ENDIF
+            RETURN WriteBuff(pFile, aBytes, aBytes:Length, lAnsi)
 
         INTERNAL STATIC METHOD WriteBuff(pFile AS IntPtr,pBuffer AS BYTE[],iCount AS INT) AS INT
             LOCAL oStream	AS FileStream
             LOCAL iWritten := 0 AS INT
             oStream := XSharp.IO.File.findStream(pFile)
             IF oStream IS XsFileStream
-                    oStream:SafeWrite(pBuffer, iCount)
+                oStream:SafeWrite(pBuffer, iCount)
                 iWritten := iCount
             ELSEIF oStream != NULL_OBJECT
                 TRY
@@ -971,7 +978,7 @@ FUNCTION Bytes2String(aBytes AS BYTE[], nBuffLen AS INT) AS STRING
 FUNCTION String2Bytes(sSource AS STRING) AS BYTE[]
     LOCAL ret AS BYTE[]
     IF sSource != NULL
-            LOCAL encoding := StringHelpers.WinEncoding AS Encoding
+        LOCAL encoding := StringHelpers.WinEncoding AS Encoding
         ret := encoding:GetBytes( sSource )
     ELSE
         ret := BYTE[]{0}

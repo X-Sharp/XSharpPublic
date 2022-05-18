@@ -66,8 +66,14 @@ BEGIN NAMESPACE XSharp
         /// <param name="uValue">New value of the property</param>
         /// <remarks>Assigning a property that does not exist may result in a runtime error. <br/>
         /// However the class may also decide to "silently" add the property.</remarks>
-        PUBLIC METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
-    END INTERFACE
+        public method NoIvarPut(cName as string, uValue as usual) as void
+    end interface
+
+    interface IDynamicProperties2
+        public method _RemoveProperty(cName as string) as logic
+        public method _AddProperty(cPropertyName as string, uValue as usual, nVisibility as long, cDescription as string) as logic
+
+    end interface
 
     /// <summary>
     /// This interface defines and extension to the Macro compiler subsystem

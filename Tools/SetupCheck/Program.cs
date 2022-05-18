@@ -15,7 +15,7 @@ using System.Text;
 internal class Program
 {
     private const int REGDB_E_CLASSNOTREG = unchecked((int)0x80040154);
-    private const string FILENAME = "vs2017.txt";
+    private const string FILENAME = "vsversion.txt";
     /// <summary>
     /// Program entry point.
     /// </summary>
@@ -101,9 +101,14 @@ internal class Program
         if ((state & InstanceState.Registered) == InstanceState.Registered)
         {
             sb.AppendLine($"Product: {instance2.GetProduct().GetId()}");
-            sb.AppendLine("Workloads:");
+            //sb.AppendLine($"Installation Name: {instance2.GetInstallationName()}");
+            //sb.AppendLine($"Display name: {instance2.GetDisplayName(0)}");
+            //sb.AppendLine($"Description: {instance2.GetDescription()}");
+            //sb.AppendLine($"Productpath: {instance2.GetProductPath()}");
+            //sb.AppendLine($"Enginepath: {instance2.GetEnginePath()}");
 
             PrintWorkloads(sb, instance2.GetPackages());
+            //PrintProperties(sb, instance2.GetProperties());
         }
 
         sb.AppendLine();
@@ -111,8 +116,19 @@ internal class Program
         System.IO.File.AppendAllText(FILENAME, sb.ToString());
     }
 
+    private static void PrintProperties(StringBuilder sb, ISetupPropertyStore properties)
+    {
+        sb.AppendLine("Properties:");
+        var names = properties.GetNames();
+        foreach (var name in names)
+        {
+            var value = properties.GetValue(name);
+            sb.AppendLine($"    {name} = {value}");
+        }
+    }
     private static void PrintWorkloads(StringBuilder sb, ISetupPackageReference[] packages)
     {
+        sb.AppendLine("Workloads:");
         var workloads = from package in packages
                         where string.Equals(package.GetType(), "Workload", StringComparison.OrdinalIgnoreCase)
                         orderby package.GetId()

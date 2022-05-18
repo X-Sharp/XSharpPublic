@@ -891,13 +891,27 @@ namespace XSharpDocs
             replacements.Add(Usual, UsualReplace);
             replacements.Add(Currency, CurrencyReplace);
             replacements.Add(Binary, BinaryReplace);
+            replacements.Add("Int32", "Long");
+            replacements.Add("UInt32", "DWord");
+            replacements.Add("UInt16", "Word");
+            replacements.Add("Int16", "Short");
+            replacements.Add("Double", "Real8");
+            replacements.Add("Single", "Real4");
+            replacements.Add("Boolean", "Logic");
             string allText = File.ReadAllText(path);
+            bool usualType = false;
+            if (allText.IndexOf("__UsualType") >= 0)
+            {
+                usualType = true;
+                allText = allText.Replace("__UsualType", "__XUsualType");
+            }
             string or = "|";
             string pattern = delimiters + "(" + string.Join(or, new List<string>(replacements.Keys).ToArray()) + ")";
             Regex regex = new Regex(pattern);
             MatchCollection coll = regex.Matches(allText);
             string newText = "";
             // regex lambda magic to replace using the dictionary
+            System.Diagnostics.Debugger.Break();
             newText = regex.Replace(allText, replace =>
             {
                 if(replacements.ContainsKey(replace.Groups[2].Value))
@@ -906,26 +920,30 @@ namespace XSharpDocs
                 }
                 else return replace.Value;
             });
-            replacements.Clear();
-            replacements.Add("Int32", "Long");
-            replacements.Add("UInt32", "DWord");
-            replacements.Add("UInt16", "Word");
-            replacements.Add("Int16", "Short");
-            replacements.Add("Double", "Real8");
-            replacements.Add("Single", "Real4");
-            replacements.Add("Boolean", "Logic");
-
-            pattern = delimiters + "(" + string.Join(or, new List<string>(replacements.Keys).ToArray()) + ")";
-            regex = new Regex(pattern);
-            coll = regex.Matches(newText);
-            newText = regex.Replace(newText, replace =>
+            if (usualType)
             {
-                if (replacements.ContainsKey(replace.Groups[2].Value))
-                {
-                    return replace.Groups[1].Value + replacements[replace.Groups[2].Value];
-                }
-                else return replace.Value;
-            });
+                newText = newText.Replace("__XUsualType", "__UsualType");
+            }
+            //replacements.Clear();
+            //replacements.Add("Int32", "Long");
+            //replacements.Add("UInt32", "DWord");
+            //replacements.Add("UInt16", "Word");
+            //replacements.Add("Int16", "Short");
+            //replacements.Add("Double", "Real8");
+            //replacements.Add("Single", "Real4");
+            //replacements.Add("Boolean", "Logic");
+
+            //pattern = delimiters + "(" + string.Join(or, new List<string>(replacements.Keys).ToArray()) + ")";
+            //regex = new Regex(pattern);
+            //coll = regex.Matches(newText);
+            //newText = regex.Replace(newText, replace =>
+            //{
+            //    if (replacements.ContainsKey(replace.Groups[2].Value))
+            //    {
+            //        return replace.Groups[1].Value + replacements[replace.Groups[2].Value];
+            //    }
+            //    else return replace.Value; 
+            //});
             if (newText != allText)
             {
                 var writer = new StreamWriter(path);

@@ -21,7 +21,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     // - make sure that the FixPositionalKeyword code does not turn it back into an ID
     // - if the keyword has to appear before a DOT check the _inDottedIdentifier logic
     // - add it to the keyword<dialect> rule in XSharp.g4 (so it will become a positional keyword)
-    // - add it to the grammar in XSharp.g4 
+    // - add it to the grammar in XSharp.g4
 
     public partial class XSharpLexer
     {
@@ -62,6 +62,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return true;
             return false;
         }
+        public static bool IsPPKeyword(int iToken)
+        {
+            if (iToken > PP_FIRST && iToken < PP_LAST)
+                return true;
+            return false;
+        }
+
         public static bool IsString(int iToken)
         {
             switch (iToken)
@@ -684,7 +691,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 switch (La(1))
                 {
                     case EOF:
-                    case 10:        // \n 
+                    case 10:        // \n
                     case 13:        // \r
                         eos = true;
                         parseType(INCOMPLETE_STRING_CONST);
@@ -801,7 +808,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             // Sure that in the editor the case of the tokens is not changed
             switch (LastToken)
             {
-                case FOR:                               // For ()  
+                case FOR:                               // For ()
                 case FIELD:                             // Field()
                     if (Dialect == XSharpDialect.FoxPro)
                     {
@@ -921,7 +928,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 {
                                     parseString();
                                 }
-                                //parseOne(LBRKT); 
+                                //parseOne(LBRKT);
                                 break;
                         }
                         break;
@@ -1393,7 +1400,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
                 else
                 {
-                    // Check if the current token is a valid Identifier (starts with A..Z or _) 
+                    // Check if the current token is a valid Identifier (starts with A..Z or _)
                     if (_isValidIdentifier(t))
                     {
                         t.Type = ID;
@@ -1583,7 +1590,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case FUNCTION:
                     if (text.Length == 4)
                     {
-                        // if specified as FUNC then we want to make sure that it is not a type 
+                        // if specified as FUNC then we want to make sure that it is not a type
                         if (!StartOfLine(lastToken) && !IsModifier(lastToken)
                             && lastToken != RBRKT && lastToken != END
                             && lastToken != LOCAL && lastToken != DLL)
@@ -1684,7 +1691,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case INTRODUCE:
                 case SYNC:
                 case DEFERRED:
-                case INLINE:    // should not appear after modifier ... 
+                case INLINE:    // should not appear after modifier ...
                     if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != RBRKT)
                     {
                         return ID;
@@ -1804,7 +1811,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             foreach (XSharpToken token in tokens)
             {
                 // Some keywords may have been seen as identifier because they were
-                // originally in the Preprocessor Channel and for example not on a start 
+                // originally in the Preprocessor Channel and for example not on a start
                 // of a line or command
                 if (token.Channel == Lexer.DefaultTokenChannel)
                 {
@@ -2076,7 +2083,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     // normal keywords
                     // {"ENDSEQUENCE", END }, Xbase++ redefines ENDSEQUENCE to END in STD.CH
-                    {"ENDFOR",   NEXT }, 
+                    {"ENDFOR",   NEXT },
                     // class keywords
                     {"ENDCLASS",ENDCLASS},
                     {"READONLY",READONLY },
@@ -2232,7 +2239,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "INIT3", INIT3},
                     { "_SIZEOF", SIZEOF},
                     { "_TYPEOF", TYPEOF},
-                
+
                     // Vulcan keywords
                     { "ABSTRACT", ABSTRACT},
                     { "AUTO", AUTO},
@@ -2440,7 +2447,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"#WARNING", PP_WARNING},		// #warning [warningMessage]
                 {"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
                 {"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
-                {"#IF", PP_IF},	                // #if <expression> 
+                {"#IF", PP_IF},	                // #if <expression>
                 {"#STDOUT", PP_STDOUT },        // #stdout [Message]
                 {"#TEXT", PP_TEXT },            // #text const [, optionalfunc] or #text linefunc, endfunc
                 {"#ENDTEXT",  PP_ENDTEXT },      // endtext

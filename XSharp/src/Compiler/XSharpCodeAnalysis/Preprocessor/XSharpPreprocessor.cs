@@ -750,7 +750,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var sLine = sb.ToString().Trim();
                         if (sLine.ToUpper().StartsWith("ENDTEXT"))
                         {
-                            var temp = line.Where(t => t.Type != XSharpLexer.WS).ToList();
+                            var temp = stripWs(line);
                             line = doNormalLine(temp, write2ppo);
                         }
                         else
@@ -1635,7 +1635,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal IList<XSharpToken> textEndFunc = null;
             internal TextProperties (XSharpToken token)
             {
-                if (token != token.SourceSymbol)
+                if (token.SourceSymbol != null && token != token.SourceSymbol)
                     token = token.SourceSymbol;
                 Start = token;
                 LParen = new XSharpToken(XSharpLexer.LPAREN, "(", token);
@@ -1751,7 +1751,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                 {
                     // var UniqueName := System.Collections.Generic.StringList{}
-                    result.Add(new XSharpToken(XSharpLexer.VAR, "var", _textProps.Start));
+                    result.Add(new XSharpToken(XSharpLexer.VAR, "VAR", _textProps.Start));
                     result.Add(_textProps.Ws);
                     result.Add(_textProps.List);
                     result.Add(_textProps.Ws);
@@ -1764,7 +1764,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result.Add(new XSharpToken(XSharpLexer.LCURLY, "{", _textProps.Start));
                     result.Add(new XSharpToken(XSharpLexer.RCURLY, "}", _textProps.Start));
 
-                    // UniqueName:Add( .....(
+                    // UniqueName:Append( .....)
                     temp.Add(_textProps.List);
                     temp.Add(new XSharpToken(XSharpLexer.COLON, ":", _textProps.Start));
                     temp.Add(new XSharpToken(XSharpLexer.ID, "Append", _textProps.Start));
@@ -2443,14 +2443,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 cmds[i].Clear();
                             else
                                 cmds[i] = res;
-
-                            foreach (var token in cmds[i])
+                            if (cmds[i].Count > 0)
                             {
-                                result.Add(token);
-                            }
-                            if (i < cmds.Count - 1)
-                            {
-                                result.Add(separators[i]);
+                                foreach (var token in cmds[i])
+                                {
+                                    result.Add(token);
+                                }
+                                if (i < cmds.Count - 1)
+                                {
+                                    result.Add(separators[i]);
+                                }
                             }
                         }
                     }

@@ -8,7 +8,7 @@
     <AssemblyName>XSharp.VOSQLClasses</AssemblyName>
     <Name>XSharp.VO.SQLClasses</Name>
     <OutputName>XSSQLClasses</OutputName>
-    <XSharpProjectversion>2.8.3.14</XSharpProjectversion>
+    <XSharpProjectversion>2.12.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Unsafe>false</Unsafe>
@@ -18,11 +18,13 @@
     <VO14>false</VO14>
     <VO7>false</VO7>
     <FOX1>false</FOX1>
-    <VO15>true</VO15>
+    <VO15>False</VO15>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
+    <Vo5>False</Vo5>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>XSharp.VOSQLClasses.Xml</DocumentationFile>
@@ -108,6 +110,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-<Import Project="..\VOSDKDocs.Targets" />
-
+  <Import Project="..\VOSDKDocs.Targets" />
 </Project>

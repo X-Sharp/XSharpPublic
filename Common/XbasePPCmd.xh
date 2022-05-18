@@ -3,9 +3,21 @@
 //
 // XSharp Xbase++ Preprocessor Directives
 //
-// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 // Caution: do not modify this file. It will be overwritten during product updates
 //
 
+#ifndef XBASEPPCMD_XH
+#define XBASEPPCMD_XH
+
+// These commands are used to instruct the Xbase++ linker but
+// they are of no use in the .Net environment
+// Adding a reference to an assembly is enough to make code visible
+// even in the macro compiler
+
+#command REQUEST  <id1> [,<idn> ]   =>
+#command ANNOUNCE <id1> [,<idn> ]   =>
+
+#endif

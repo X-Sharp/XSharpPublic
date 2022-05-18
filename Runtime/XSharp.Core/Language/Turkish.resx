@@ -2533,7 +2533,7 @@
     <value>{0} USUAL tipleri için operatör yok '{1}'</value>
   </data>
   <data name="USUALCONVERSIONERR" xml:space="preserve">
-    <value>USUAL'den çevirme hatası ({0})  to {1}</value>
+    <value>USUAL'den çevirme hatası ({0}) to {1}</value>
   </data>
   <data name="VERSION" xml:space="preserve">
     <value>Versiyon: </value>

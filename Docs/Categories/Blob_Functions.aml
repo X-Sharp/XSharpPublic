@@ -15,7 +15,7 @@
             Export the contents of a binary large object (BLOB) pointer to a file.
             Note:
             A BLOB file (.DBV or .FPT) is used for storing memo field information, as an alternative to the standard .DBT file mechanism supported by some RDDs.
-            It is a more powerful and efficient mechanism for storing and retrieving large amounts of data than using .DBT files.  X# supplies the DBFCDX driver, which uses the BLOB file storage mechanism by default, and the DBFBLOB driver, which you can use as an inherited driver with other RDDs.
+            It is a more powerful and efficient mechanism for storing and retrieving large amounts of data than using .DBT files.  X# supplies the DBFCDX driver, which uses the BLOB file storage mechanism by default, and the DBFBLOB driver, which you can use as an inherited driver with other RDDs.
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBDirectGet(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>

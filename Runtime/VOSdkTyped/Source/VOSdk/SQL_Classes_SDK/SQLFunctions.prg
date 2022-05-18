@@ -36,7 +36,7 @@ FUNCTION DToCSQL( dDate AS DATE ) AS STRING
 
 /// <include file="Sql.xml" path="doc/SqlSetStmtConcurrency/*" />
 [Obsolete];
-FUNCTION SqlSetStmtConcurrency( nNew ) AS INT
+FUNCTION SqlSetStmtConcurrency( nNew ) AS INT CLIPPER
 	STATIC nValue := __CAVO_SQL_CONCURRENCY AS INT
 	LOCAL nResult AS INT
 	nResult := nValue
@@ -48,7 +48,7 @@ FUNCTION SqlSetStmtConcurrency( nNew ) AS INT
 
 /// <include file="Sql.xml" path="doc/SqlSetStmtCursorType/*" />
 [Obsolete];
-FUNCTION SqlSetStmtCursorType( nNew ) AS INT
+FUNCTION SqlSetStmtCursorType( nNew ) AS INT CLIPPER
 	STATIC nValue := __CAVO_SQL_CURSOR_TYPE AS INT
 	LOCAL nResult AS INT
 	nResult := nValue
@@ -60,7 +60,7 @@ FUNCTION SqlSetStmtCursorType( nNew ) AS INT
 
 /// <include file="Sql.xml" path="doc/SqlSetStmtSimulateCursor/*" />
 [Obsolete];
-FUNCTION SqlSetStmtSimulateCursor( nNew ) AS INT
+FUNCTION SqlSetStmtSimulateCursor( nNew ) AS INT CLIPPER
 	STATIC nValue := __CAVO_SQL_SIMULATE_CURSOR  AS INT
 	LOCAL nResult AS INT
 	nResult := nValue
@@ -323,7 +323,7 @@ STATIC CLASS SqlFunctions
 		RETURN cName
 
 
-	STATIC METHOD CreateError(nErrCode AS DWORD, cMessage AS STRING)
+	STATIC METHOD CreateError(nErrCode AS DWORD, cMessage AS STRING) AS Error
 		LOCAL oError AS Error
 		oError 				:= Error{}
 		oError:FuncSym      := ProcName(1)

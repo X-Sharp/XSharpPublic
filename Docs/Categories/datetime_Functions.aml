@@ -25,13 +25,13 @@
             Convert an ANSI date string to DateTime
             </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DToT(XSharp.__Date)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a DateTime value from a Date expression.
-    </para></entry></row>
+            Returns a DateTime value from a Date expression.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DtToC(System.DateTime)</codeEntityReference></para></entry>
 <entry><para>
@@ -64,8 +64,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TToD(System.DateTime)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a Date value from a DateTime expression.
-    </para></entry></row>
+            Returns a Date value from a DateTime expression.
+        </para></entry></row>
 </table>
 </content>
      </section>

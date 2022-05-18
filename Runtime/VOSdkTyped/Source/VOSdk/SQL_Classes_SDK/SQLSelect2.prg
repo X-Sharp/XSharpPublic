@@ -72,7 +72,13 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 /// <include file="Sql.xml" path="doc/SQLSelect.Append/*" />
 	METHOD Append(lReleaseLocks AS LOGIC)  AS LOGIC
 		LOCAL oRow AS DataRow
-		LOCAL lOk := FALSE AS LOGIC
+        LOCAL lOk := FALSE AS LOGIC
+        TRY
+            self:__CheckReadOnly()
+        CATCH e as Exception
+            SELF:ShowSQLError(e:Message, #Append, e)
+            return FALSE
+        END TRY
 		IF SELF:__PrepareForRecordMovement()
 			SELF:lChanges := TRUE
 			oRow := oTable:NewRow()
@@ -89,14 +95,17 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.AppendRow/*" />
-	METHOD AppendRow( lForce )
+	METHOD AppendRow( lForce ) AS LOGIC CLIPPER
+        if self:lBatchUpdates
+            return true
+        endif
 		RETURN SELF:Update(lForce)
 
 
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.Error/*" />
-	METHOD Error( oError ) AS USUAL
+	METHOD Error( oError as Error, symMethod as Symbol) AS VOID
 	//  Method for handling error conditions raised during database processing
 	//
 	//  The standard Error handling method passes the problem to its clients
@@ -126,7 +135,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		lErrorProcessingSemaphor := FALSE
 	ENDIF
-	RETURN NIL
+	RETURN
 
 
 /*
@@ -175,7 +184,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 /// <include file="Sql.xml" path="doc/SQLSelect.BindColumn/*" />
 	[Obsolete];
-	METHOD BindColumn( i ) AS LOGIC
+	METHOD BindColumn( i ) AS LOGIC CLIPPER
 		RETURN TRUE
 
 
@@ -184,7 +193,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		LOCAL lOk AS LOGIC
 		SELF:lErrorFlag := FALSE
 		TRY
-			lOk := SELF:__GoCold()
+			lOk := SELF:__GoCold(TRUE)
 			// Notify the clients that we closed down
 			SELF:__Notify( NOTIFYCLOSE )
 			IF lOk
@@ -309,10 +318,17 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 /// <include file="Sql.xml" path="doc/SQLSelect.Delete/*" />
 	METHOD Delete() AS LOGIC CLIPPER
 		LOCAL lOk := FALSE AS LOGIC
+        TRY
+            SELF:__CheckReadOnly()
+        CATCH e as Exception
+            SELF:ShowSQLError(e:Message, #Delete, e)
+            return FALSE
+        END TRY
+
 		IF SELF:__PrepareForRecordMovement()
 			IF oCurrentRow != NULL
 				SELF:lChanges := TRUE
-				oTable:Rows:Remove(oCurrentRow)
+				oCurrentRow:Delete()
 				nRowCount	:= oTable:Rows:Count-1
 				IF nCurrentRow >= nRowCount
 					nCurrentRow := nRowCount-1
@@ -324,12 +340,12 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.DirectSkip/*" />
-METHOD DirectSkip( nSkip )
+METHOD DirectSkip( nSkip ) AS LOGIC CLIPPER
 	RETURN SELF:Skip(nSkip)
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.Execute/*" />
-METHOD Execute( uParam ) AS LOGIC
+METHOD Execute( uParam ) AS LOGIC CLIPPER
 	LOCAL nCount        AS DWORD
 	LOCAL lRet          AS LOGIC
 	LOCAL i             AS DWORD
@@ -372,7 +388,7 @@ METHOD Execute( uParam ) AS LOGIC
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.ExtendedFetch/*" />
-	METHOD ExtendedFetch( nFetchType, nRow ) AS LOGIC
+	METHOD ExtendedFetch( nFetchType, nRow ) AS LOGIC CLIPPER
 		LOCAL lResult AS LOGIC
 		EnforceType(REF nFetchType, LONG)
 		@@Default ( REF nRow, 0)
@@ -448,7 +464,7 @@ METHOD Execute( uParam ) AS LOGIC
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.FieldGetFormatted/*" />
-	METHOD FieldGetFormatted( uFieldPos AS USUAL ) STRICT
+	METHOD FieldGetFormatted( uFieldPos AS USUAL ) AS USUAL
 		LOCAL nIndex    AS DWORD
 		LOCAL xRet     := NIL  AS USUAL
 		LOCAL oFs      AS FieldSpec
@@ -456,7 +472,7 @@ METHOD Execute( uParam ) AS LOGIC
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldGetFormatted )
-			SELF:Error( oStmt:ErrInfo )
+			SELF:Error( oStmt:ErrInfo , #FieldGetFormatted)
 		ELSE
 			xRet := SELF:FieldGet( nIndex )
 			oStmt:ErrInfo:ErrorFlag := FALSE

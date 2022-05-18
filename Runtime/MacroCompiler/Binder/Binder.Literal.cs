@@ -336,6 +336,8 @@ namespace XSharp.MacroCompiler
                     return Constant.CreateDefault(Compilation.Get(NativeType.String));
                 case TokenType.NULL_SYMBOL:
                     return Constant.CreateDefault(Compilation.Get(NativeType.Symbol));
+                //case TokenType.NULL_FOX:
+                    // todo
                 default:
                     throw new InternalError();
             }

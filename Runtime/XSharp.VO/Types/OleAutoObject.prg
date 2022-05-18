@@ -1,589 +1,598 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
-USING System.Diagnostics
-USING System.Reflection
-USING System.Runtime.Remoting
-USING System.Runtime.InteropServices
-USING System.Runtime.CompilerServices
-USING XSharp.Internal
-USING System.Collections.Generic
+using System.Diagnostics
+using System.Reflection
+using System.Runtime.Remoting
+using System.Runtime.InteropServices
+using System.Runtime.CompilerServices
+using XSharp.Internal
+using System.Collections.Generic
 /// <summary>VO Compatible OLE Automation class</summary>
 [AllowLateBinding];
 [DebuggerDisplay( "Type= {__ComObject}", Type := "OleAutoObject" )];
-CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties
-	PROTECTED oComObject AS OBJECT
-	PROTECTED lOk        AS LOGIC
-	PROTECTED _liFuncs   AS LONG
-	PROTECTED _liVars    AS LONG
-	PROTECTED oType      AS System.Type	
-	PROTECTED lDateTimeAsDate   AS LOGIC
-	
-	
+class XSharp.OleAutoObject implements IDynamicProperties
+	protected oComObject as object
+	protected lOk        as logic
+	protected _liFuncs   as long
+	protected _liVars    as long
+	protected oType      as System.Type
+	protected lDateTimeAsDate   as logic
+
+
 	#region Constructors
-	INTERNAL CONSTRUCTOR
-		_liFuncs                := _liVars := -1 
-		lOk                     := FALSE
-		oComObject              := NULL
-		oType                   := NULL 
-		SELF:lDateTimeAsDate    := OleDateTimeAsDate()
-		RETURN
-			
-   /// <summary>Construct an OleAutoObject</summary>
-	CONSTRUCTOR(cProgId AS STRING)
-		SELF()
+	internal constructor
+		_liFuncs                := _liVars := -1
+		lOk                     := false
+		oComObject              := null
+		oType                   := null
+		self:lDateTimeAsDate    := OleDateTimeAsDate()
+		return
+
+    /// <summary>Construct an OleAutoObject</summary>
+	constructor(cProgId as string)
+		self()
 		oComObject        := OleCreateObject(cProgId)
-		lOk := oComObject != NULL
-		IF lOk
+		lOk := oComObject != null
+		if lOk
 			oType := oComObject:GetType()
-		ENDIF
-		RETURN
-			
-   /// <summary>Construct an OleAutoObject</summary>
-	CONSTRUCTOR(cProgId AS STRING, fRotCheck AS LOGIC)
-		SELF()
-		IF fRotCheck
+		endif
+		return
+
+    /// <summary>Construct an OleAutoObject</summary>
+	constructor(cProgId as string, fRotCheck as logic)
+		self()
+		if fRotCheck
 			oComObject := OleGetObject(cProgId)
-		ENDIF
-		IF oComObject == NULL
+		endif
+		if oComObject == null
 			oComObject := OleCreateObject(cProgId)
-		ENDIF
-		lOk := oComObject != NULL
-		IF lOk
+		endif
+		lOk := oComObject != null
+		if lOk
 			oType := oComObject:GetType()
-		ENDIF
-		RETURN
-			
-			
+		endif
+		return
+
+
 	// Builds an OleAutoObject on Any OBJECT (including another AutoObject)
-   /// <summary>Construct an OleAutoObject</summary> 
-	CONSTRUCTOR(oObject AS OBJECT)
-		SELF()
+    /// <summary>Construct an OleAutoObject</summary>
+	constructor(oObject as object)
+		self()
 		oComObject :=  OleUnWrapObject(oObject)
-		lOk := oComObject != NULL
-		IF lOk
+		lOk := oComObject != null
+		if lOk
 			oType := oComObject:GetType()
-		ENDIF
-		RETURN
-			
+		endif
+		return
+
 		// Builds an OleAutoObject on Any OBJECT (including another AutoObject). Type already known
-   /// <summary>Construct an OleAutoObject</summary> 
-	CONSTRUCTOR(oObject AS OBJECT, _type AS System.Type)
-		SELF()
+    /// <summary>Construct an OleAutoObject</summary>
+	constructor(oObject as object, _type as System.Type)
+		self()
 		oComObject	:=  OleUnWrapObject(oObject)
 		oType		:= _type
-		lOk			:= oComObject != NULL
-		RETURN
-			
-	#endregion
-		
-	#region No..() EntryPoints
-			
-	    /// <exclude />
-    PRIVATE METHOD GetOurFieldInfo(cName AS STRING, result OUT USUAL) AS LOGIC
-        SWITCH cName:ToLower()
-        CASE "finit"
-            result := SELF:lOk
-            return TRUE
-        CASE "dwfuncs"
-            result := SELF:_liFuncs
-            return TRUE
-        CASE "dwVars"
-            result := SELF:_liVars
-            return TRUE
-        OTHERWISE
-            result := NIL
-            RETURN FALSE
-        END SWITCH 
+		lOk			:= oComObject != null
+		return
 
-    PRIVATE METHOD SetOurFieldInfo(cName AS STRING, newvalue AS USUAL) AS LOGIC
-        SWITCH cName:ToLower()
-        CASE "dwfuncs"
-            SELF:_liFuncs := newvalue
-            return TRUE
-        END SWITCH
-        RETURN FALSE
-            
+	#endregion
+
+	#region No..() EntryPoints
+
+	    /// <exclude />
+    private method GetOurFieldInfo(cName as string, result out usual) as logic
+        switch cName:ToLower()
+        case "finit"
+            result := self:lOk
+            return true
+        case "dwfuncs"
+            result := self:_liFuncs
+            return true
+        case "dwVars"
+            result := self:_liVars
+            return true
+        otherwise
+            result := nil
+            return false
+        end switch
+
+    private method SetOurFieldInfo(cName as string, newvalue as usual) as logic
+        switch cName:ToLower()
+        case "dwfuncs"
+            self:_liFuncs := newvalue
+            return true
+        end switch
+        return false
+
 	/// <exclude />
     // ? oObject:Property
-    VIRTUAL METHOD NoIvarGet(cName AS STRING ) AS USUAL 
-		LOCAL oRet AS OBJECT
-        IF SELF:GetOurFieldInfo(cName, OUT VAR result)
+    virtual method NoIvarGet(cName as string ) as usual
+		local oRet as object
+        if self:GetOurFieldInfo(cName, out var result)
             return result
-        ENDIF
-		oRet := OleAutoObject.__OleIvarGet(oComObject,oType, cName, NULL)
-		RETURN OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
-			
-		// oObject:Property := Value
-	    /// <exclude />   
-	VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
-        IF SELF:SetOurFieldInfo(cName, uValue)
-            return 
-        ENDIF
-		OleAutoObject.__OleIVarPut(oComObject, oType, cName , uValue, NULL)
-		RETURN 
+        endif
+		oRet := OleAutoObject.__OleIvarGet(oComObject,oType, cName, null)
+		return OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
 
-    VIRTUAL METHOD GetPropertyNames() AS STRING[]
+		// oObject:Property := Value
+	    /// <exclude />
+	virtual method NoIvarPut(cName as string, uValue as usual) as void
+        if self:SetOurFieldInfo(cName, uValue)
+            return
+        endif
+		OleAutoObject.__OleIVarPut(oComObject, oType, cName , uValue, null)
+		return
+
+    virtual method GetPropertyNames() as string[]
         var props := oType:GetProperties()
         var names := List<string>{}
-        FOREACH VAR prop in props
+        foreach var prop in props
             names:Add(prop:Name)
-        NEXT
+        next
         return names:ToArray()
 
-	    /// <exclude />   
-	METHOD NoMethod( ) AS USUAL CLIPPER
-		LOCAL cName AS STRING
-		LOCAL args  AS USUAL[]
-		LOCAL nArg, nArgs  AS INT
-		LOCAL oRet  AS OBJECT
+	    /// <exclude />
+	method NoMethod( ) as usual clipper
+		local cName as string
+		local args  as usual[]
+		local nArg, nArgs  as int
+		local oRet  as object
 		nArgs := PCOUNT()
 		cName := RuntimeState.NoMethod
-        IF RuntimeState.Dialect == XSharpDialect.Vulcan
-		    args  := USUAL[]{nArgs-1}
-		    FOR nArg := 2 TO nArgs
+        if RuntimeState.Dialect == XSharpDialect.Vulcan
+		    args  := usual[]{nArgs-1}
+		    for nArg := 2 to nArgs
 			    args[nArg-1] :=  _GetMParam(nArg)
-            NEXT
-        ELSE
-		    args  := USUAL[]{nArgs}
-		    FOR nArg := 1 TO nArgs
+            next
+        else
+		    args  := usual[]{nArgs}
+		    for nArg := 1 to nArgs
 			    args[nArg] :=  _GetMParam(nArg)
-            NEXT
-        ENDIF
+            next
+        endif
 		oRet := OleAutoObject.OleSend(oComObject, oType, cName, args)
-		RETURN OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
-			
+		return OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
+
 	// ? oObject:Property[dims]
 	// The compiler needs to be changed to look for this method
-	    /// <exclude />   
-	METHOD NoIVarGetCollection(cName AS STRING, dims AS USUAL[]) AS USUAL
-		LOCAL oRet AS OBJECT
+	    /// <exclude />
+	method NoIVarGetCollection(cName as string, dims as usual[]) as usual
+		local oRet as object
 		oRet := OleAutoObject.OleIvarGet(oComObject, cName, dims)
-		RETURN OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
-			
-			
+		return OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
+
+
 	// ? oObject:Property[dims] := Value
 	// The compiler needs to be changed to look for this method
-	    /// <exclude />   
-	METHOD NoIVarPutCollection(cName AS STRING, uValue AS USUAL, dims AS USUAL[]) AS VOID  
+	    /// <exclude />
+	method NoIVarPutCollection(cName as string, uValue as usual, dims as usual[]) as void
 		OleAutoObject.OleIVarPut(oComObject, cName, uValue , dims )
-		RETURN  
+		return
 	#endregion
-		
+
 	#region VO Compatibility Accesses
-	    /// <exclude />   
-		
-	ACCESS dwFuncs  AS LONG
-		IF (lOk)
-			LOCAL t AS System.Type
-			IF (_liFuncs < 0)
+	    /// <exclude />
+
+	access dwFuncs  as long
+		if (lOk)
+			local t as System.Type
+			if (_liFuncs < 0)
 				t := oComObject:GetType()
 				_liFuncs := t:GetMethods():Length
-			ENDIF
-			RETURN _liFuncs
-		ENDIF
-		RETURN 0
-			
-	ASSIGN dwFuncs(value AS LONG) 
-		SELF:_liFuncs := value
-		RETURN
-			
-	    /// <exclude />   
-	ACCESS dwVars   AS LONG
-		IF (lOk)
-			LOCAL t AS System.Type
-			IF (_liVars < 0)
+			endif
+			return _liFuncs
+		endif
+		return 0
+
+	assign dwFuncs(liValue as long)
+		self:_liFuncs := liValue
+		return
+
+	    /// <exclude />
+	access dwVars   as long
+		if (lOk)
+			local t as System.Type
+			if (_liVars < 0)
 				t := oComObject:GetType()
 				_liVars := t:GetProperties():Length
-			ENDIF
-			RETURN _liVars
-		ENDIF
-		RETURN 0
-			
-	    /// <exclude />   
-	ACCESS fInit    AS LOGIC
-		RETURN lOk
-			
-	#endregion
-		
-	#region	INTERNAL Properties
-			
-	// Access to OBJECT inside AutoObject
-    /// <exclude />   
+			endif
+			return _liVars
+		endif
+		return 0
 
-    ACCESS __ComObject AS OBJECT
-		RETURN SELF:oComObject
-			
+	    /// <exclude />
+	access fInit    as logic
+		return lOk
+
 	#endregion
-		
+
+	#region	INTERNAL Properties
+
+	// Access to OBJECT inside AutoObject
+    /// <exclude />
+
+    access __ComObject as object
+		return self:oComObject
+
+	#endregion
+
 	#region STATIC Methods
-	    /// <exclude />   
-	STATIC METHOD OleCreateObject(cProgId AS STRING) AS OBJECT
-		LOCAL oComObject := NULL AS OBJECT
-		LOCAL objecttype AS System.Type
-		TRY
-			objecttype        := System.Type.GetTypeFromProgID(cProgId, FALSE)
-			IF objecttype != NULL
+	    /// <exclude />
+	static method OleCreateObject(cProgId as string) as object
+		local oComObject := null as object
+		local objecttype as System.Type
+		try
+			objecttype        := System.Type.GetTypeFromProgID(cProgId, false)
+			if objecttype != null
 				oComObject        := System.Activator.CreateInstance (objecttype)
-			ENDIF
-		CATCH AS Exception
+			endif
+		catch as Exception
 			// We catch the exception but do not process it
-		END TRY
-		RETURN oComObject
-			
-			
-    /// <exclude />   
-	STATIC METHOD  OleGetObject(cProgId AS STRING) AS OBJECT
-		LOCAL oComObject AS OBJECT
-		TRY
+		end try
+		return oComObject
+
+
+    /// <exclude />
+	static method  OleGetObject(cProgId as string) as object
+		local oComObject as object
+		try
 			oComObject := Marshal.GetActiveObject(cProgId)
-		CATCH AS Exception
-			oComObject := NULL
-		END TRY
-		RETURN oComObject
-			
+		catch as Exception
+			oComObject := null
+		end try
+		return oComObject
+
 	#region Wrapping Objects
-    /// <exclude />   
-    STATIC METHOD  OleWrapObject(oObject AS OBJECT,lDateTimeAsDate AS LOGIC) AS USUAL
-		LOCAL t  AS System.Type 
-		LOCAL tc  AS System.TypeCode
-		LOCAL oDt AS OleDateTime
-		LOCAL uResult := NIL AS USUAL
-		IF (oObject != NULL)
+    /// <exclude />
+    static method  OleWrapObject(oObject as object,lDateTimeAsDate as logic) as usual
+		local t  as System.Type
+		local tc  as System.TypeCode
+		local oDt as OleDateTime
+		local uResult := nil as usual
+		if (oObject != null)
 			t := oObject:GetType()
 			tc := Type.GetTypeCode(t)
-			IF tc == TypeCode.DateTime
-				IF (lDateTimeAsDate)
-					LOCAL oD AS System.DateTime
+			if tc == TypeCode.DateTime
+				if (lDateTimeAsDate)
+					local oD as System.DateTime
 					oD := (System.DateTime)oObject
 					uResult := XSharp.__Date{oD}
-				ELSE
+				else
 					oDt := (DateTime) oObject
 					uResult := oDt
-				ENDIF
-			ELSE
-				IF t:IsCOMObject
+				endif
+			else
+				if t:IsCOMObject
 					uResult := OleAutoObject{oObject,t}
-				ELSE
+				else
 					uResult := oObject
-				ENDIF
-			ENDIF
-		ENDIF 
-		RETURN uResult
-				
-    /// <exclude />   
-	STATIC METHOD  OleUnWrapObject(oObject AS OBJECT) AS OBJECT
-		LOCAL oAuto AS OleAutoObject
-		IF oObject != NULL
-			IF oObject IS OleAutoObject
+				endif
+			endif
+		endif
+		return uResult
+
+    /// <exclude />
+	static method  OleUnWrapObject(oObject as object) as object
+		local oAuto as OleAutoObject
+		if oObject != null
+			if oObject is OleAutoObject
 				oAuto := (OleAutoObject) oObject
 				oObject := oAuto:__ComObject
-			ENDIF
-		ENDIF
-		RETURN oObject
-				
+			endif
+		endif
+		return oObject
+
 	#endregion
-			
+
 	#region OBJECT Properties
-			
-    /// <exclude />   
-	STATIC METHOD  OleIvarGet(oObject AS OBJECT,strName AS STRING) AS OBJECT
-		RETURN OleAutoObject.__OleIvarGet(oObject, oObject:GetType(), strName, NULL)
-				
-    /// <exclude />   
-	STATIC METHOD  OleIvarGet(oObject AS OBJECT, symName AS STRING, dims  AS USUAL[]) AS OBJECT
-		RETURN OleAutoObject.__OleIvarGet(oObject, oObject:GetType(), symName, dims)
-				
-    /// <exclude />   
-	STATIC METHOD  OleIvarGet(oObject AS OBJECT, symName AS STRING, index  AS USUAL) AS OBJECT
-		LOCAL dims AS USUAL[]
-		dims := USUAL[]{1}
+
+    /// <exclude />
+	static method  OleIvarGet(oObject as object,strName as string) as object
+		return OleAutoObject.__OleIvarGet(oObject, oObject:GetType(), strName, null)
+
+    /// <exclude />
+	static method  OleIvarGet(oObject as object, symName as string, dims  as usual[]) as object
+		return OleAutoObject.__OleIvarGet(oObject, oObject:GetType(), symName, dims)
+
+    /// <exclude />
+	static method  OleIvarGet(oObject as object, symName as string, index  as usual) as object
+		local dims as usual[]
+		dims := usual[]{1}
 		dims[1] := index
-		RETURN OleAutoObject.__OleIvarGet(oObject, oObject:GetType(), symName, dims)
-				
-				
-    /// <exclude />   
-	STATIC METHOD  OleIVarPut(oObject AS OBJECT, symName AS STRING, uValue AS USUAL) AS VOID
-		OleAutoObject.__OleIVarPut(oObject, oObject:GetType(), symName, uValue, NULL)
-		RETURN
-				
-    /// <exclude />   
-	STATIC METHOD  OleIVarPut(oObject AS OBJECT, symName AS STRING, uValue AS USUAL, dims AS USUAL[]) AS VOID
+		return OleAutoObject.__OleIvarGet(oObject, oObject:GetType(), symName, dims)
+
+
+    /// <exclude />
+	static method  OleIVarPut(oObject as object, symName as string, uValue as usual) as void
+		OleAutoObject.__OleIVarPut(oObject, oObject:GetType(), symName, uValue, null)
+		return
+
+    /// <exclude />
+	static method  OleIVarPut(oObject as object, symName as string, uValue as usual, dims as usual[]) as void
 		OleAutoObject.__OleIVarPut(oObject, oObject:GetType(), symName, uValue, dims)
-		RETURN
-				
-    /// <exclude />   
-	STATIC METHOD  OleIVarPut(oObject AS OBJECT, symName AS STRING, uValue AS USUAL, index AS USUAL) AS VOID
-		LOCAL dims AS USUAL[]
-		dims := USUAL[]{1}
+		return
+
+    /// <exclude />
+	static method  OleIVarPut(oObject as object, symName as string, uValue as usual, index as usual) as void
+		local dims as usual[]
+		dims := usual[]{1}
 		dims[1] := index
 		OleAutoObject.__OleIVarPut(oObject, oObject:GetType(), symName, uValue, dims)
-		RETURN
-				
-				
+		return
+
+
 	#endregion
-			
+
 	#region Worker Functions
-			
-    /// <exclude />   
-	STATIC METHOD  __OleIvarGet(oComObject AS OBJECT, oType AS System.Type, cName AS STRING, dims AS USUAL[]) AS OBJECT
-		LOCAL fi       AS FieldInfo
-		LOCAL oRet     AS OBJECT
-		LOCAL t        AS System.Type
-		LOCAL lIndexed AS LOGIC
-		LOCAL cMethod  AS STRING
-		LOCAL bf AS BindingFlags
-				
-		cMethod := __ENTITY__
-		IF oComObject == NULL
-			THROW Error.NullArgumentError( cMethod, "oComObject", 1 )
-		ENDIF
-		lIndexed := (dims != NULL)
+
+    /// <exclude />
+	static method  __OleIvarGet(oComObject as object, oType as System.Type, cName as string, dims as usual[]) as object
+		local fi       as FieldInfo
+		local oRet     as object
+		local t        as System.Type
+		local lIndexed as logic
+		local cMethod  as string
+		local bf as BindingFlags
+
+		cMethod := __entity__
+		if oComObject == null
+			throw Error.NullArgumentError( cMethod, "oComObject", 1 )
+		endif
+		lIndexed := (dims != null)
 		t  := oType
 		oComObject := OleUnWrapObject( oComObject )
 		bf := BindingFlags.FlattenHierarchy | BindingFlags.GetField | ;
 		BindingFlags.IgnoreCase | BindingFlags.GetProperty |  BindingFlags.Instance | BindingFlags.Public ;
-				
+
 		fi :=t:GetField( cName, bf )
-				
-		IF fi != NULL
-			IF ! fi:IsPublic
-				THROW Error.VOError( EG_NOVARMETHOD,  cMethod, "cMethod", 2,  <OBJECT>{cName } )
-			ELSE
+
+		if fi != null
+			if ! fi:IsPublic
+				throw Error.VOError( EG_NOVARMETHOD,  cMethod, "cMethod", 2,  <object>{cName } )
+			else
 				oRet := fi:GetValue( oComObject )
-			ENDIF   
-		ELSE
-			IF lIndexed
-							
-				LOCAL oArgs AS OBJECT[]
-				LOCAL i     AS INT
-				oArgs := OBJECT[]{dims:Length }
-				FOR i := 1 UPTO dims:Length
+			endif
+		else
+			if lIndexed
+
+				local oArgs as object[]
+				local i     as int
+				oArgs := object[]{dims:Length }
+				for i := 1 upto dims:Length
 					oArgs[i] :=  OleUnWrapObject(dims[i])
-				NEXT
-				oRet := oType:InvokeMember(cName,bf ,NULL, oComObject,oArgs)
-			ELSE
-				oRet := oType:InvokeMember(cName, bf,NULL, oComObject, NULL)
-			ENDIF
-		ENDIF
-		RETURN oRet
-				
+				next
+				oRet := oType:InvokeMember(cName,bf ,null, oComObject,oArgs)
+			else
+				oRet := oType:InvokeMember(cName, bf,null, oComObject, null)
+			endif
+		endif
+		return oRet
+
 		#endregion
-			
+
 #region Putting OBJECT Properties
-			
-    /// <exclude />   
-STATIC METHOD  __OleIVarPut(oComObject AS OBJECT, oType AS System.Type, cName AS STRING, uValue AS USUAL, dims AS USUAL[]) AS VOID
-	LOCAL t        AS System.Type
-	LOCAL fi       AS FieldInfo
-	LOCAL lIndexed AS LOGIC
-	LOCAL cMethod  AS STRING
-	cMethod := __ENTITY__
-				
-	IF oComObject == NULL
-		THROW Error.NullArgumentError( cMethod, NAMEOF(oComObject), 1 )
-	ENDIF
-				
+
+    /// <exclude />
+static method  __OleIVarPut(oComObject as object, oType as System.Type, cName as string, uValue as usual, dims as usual[]) as void
+	local t        as System.Type
+	local fi       as FieldInfo
+	local lIndexed as logic
+	local cMethod  as string
+	cMethod := __entity__
+
+	if oComObject == null
+		throw Error.NullArgumentError( cMethod, NAMEOF(oComObject), 1 )
+	endif
+
 	// Get the inner OBJECT from OleAutoObjects
 	// For both the Target and the value
 	oComObject  := OleUnWrapObject( oComObject)
 	uValue      := OleUnWrapObject( uValue )
-				
+
 	t := oType
-				
-	lIndexed := (dims != NULL)
-				
+
+	lIndexed := (dims != null)
+
 	fi := t:GetField( cName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase  )
-				
-	IF fi != NULL
+
+	if fi != null
 		fi:SetValue( oComObject, uValue )
-	ELSE
-		LOCAL bf      AS BindingFlags
-		LOCAL oArgs   AS OBJECT[]
+	else
+		local bf      as BindingFlags
+		local oArgs   as object[]
 		bf := BindingFlags.FlattenHierarchy | BindingFlags.SetField | ;
 		BindingFlags.IgnoreCase | BindingFlags.SetProperty
-		IF lIndexed
-			LOCAL i     AS INT
-			oArgs := OBJECT[]{dims:Length+1 }
-			FOR i := 1 UPTO dims:Length
+		if lIndexed
+			local i     as int
+			oArgs := object[]{dims:Length+1 }
+			for i := 1 upto dims:Length
 				oArgs[i+1] := OleUnWrapObject(dims[i])
-			NEXT
-		ELSE
-			oArgs := OBJECT[]{1 }
-		ENDIF
+			next
+		else
+			oArgs := object[]{1 }
+		endif
 		oArgs[1] := uValue
-		TRY
-			oType:InvokeMember(cName, bf,NULL, oComObject, oArgs)
-			CATCH e AS Exception
-			THROW e
-		END TRY
-					
-	ENDIF
-				
-	RETURN 
-				
+		try
+			oType:InvokeMember(cName, bf,null, oComObject, oArgs)
+			catch e as Exception
+			throw e
+		end try
+
+	endif
+
+	return
+
 	#endregion
-    /// <exclude />   
-		
-STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRING, args AS USUAL[]) AS OBJECT
-	LOCAL mi       AS MethodInfo
-	LOCAL pi       AS ParameterInfo[]
-	LOCAL t        AS Type
-	LOCAL cMethod  AS STRING
-	LOCAL x        AS INT
-	LOCAL bf       AS BindingFlags
-			
-	LOCAL retval := NULL AS OBJECT
-	cMethod  := __ENTITY__
-			
-	IF oComObject == NULL
-		THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oComObject), 1 )
-	ENDIF
+    /// <exclude />
+
+static method  OleSend(oComObject as object, oType as System.Type, cName as string, args as usual[]) as object
+	local mi       as MethodInfo
+	local pi       as ParameterInfo[]
+	local t        as Type
+	local cMethod  as string
+	local x        as int
+	local bf       as BindingFlags
+
+	local retval := null as object
+	cMethod  := __entity__
+
+	if oComObject == null
+		throw Error.NullArgumentError( __entity__, NAMEOF(oComObject), 1 )
+	endif
 	t  :=oType
 	oComObject := OleUnWrapObject(oComObject)
 	bf :=  BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy| BindingFlags.InvokeMethod |  BindingFlags.IgnoreCase
-			
-	TRY
+
+	try
 		mi := t:GetMethod( cName, bf)
-		IF mi == NULL
+		if mi == null
 			mi := t:GetMethod( cName)
-		ENDIF
-				
-		IF mi == NULL
+		endif
+
+		if mi == null
 			// Ok we know nothing, just try to Invoke the method
-			TRY
-				
-				VAR oArgs1 := OBJECT[] {args:Length} // Array of arguments for call to Invoke
-				FOR x := 1 UPTO args:Length
+			try
+
+				var oArgs1 := object[] {args:Length} // Array of arguments for call to Invoke
+				for x := 1 upto args:Length
 					oArgs1[x] := OleUnWrapObject(args[x])
-				NEXT
-				retval := t:InvokeMember(cName, bf, NULL, oComObject, oArgs1)
-			CATCH AS ArgumentException
-				THROW Error.VOError(EG_ARG,  cName,"args", 4, <OBJECT>{args} )
-			CATCH AS TargetException
-				THROW Error.VOError(EG_ARG,  cName, "args", 4, <OBJECT>{args})
-			CATCH e AS COMException
-				THROW Error{e}
-            CATCH e AS TargetInvocationException
-                // this always has the original exception as inner exception
-                VAR er := Error{e:InnerException}
-                VAR arguments := List<OBJECT>{}{cName}
-                arguments:AddRange(_UsualArrayToObjectArray(args))
-                er:Args := arguments:ToArray()
-                THROW er
-            CATCH AS Exception
-				THROW Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2,  <OBJECT>{cName}  )
-			END TRY
-		ELSE
+				next
+				retval := t:InvokeMember(cName, bf, null, oComObject, oArgs1)
+			catch e as ArgumentException
+            if e:InnerException is WrappedException
+                throw e:InnerException
+            endif
+				throw Error.VOError(EG_ARG,  cName,"args", 4, <object>{args} )
+			catch e as TargetException
+            if e:InnerException is WrappedException
+                throw e:InnerException
+            endif
+				throw Error.VOError(EG_ARG,  cName, "args", 4, <object>{args})
+			catch e as COMException
+				throw Error{e}
+         catch e as TargetInvocationException
+            // this always has the original exception as inner exception
+            if e:InnerException is WrappedException
+                throw e:InnerException
+            endif
+            var er := Error{e:GetInnerException()}
+            var arguments := List<object>{}{cName}
+            arguments:AddRange(_UsualArrayToObjectArray(args))
+            er:Args := arguments:ToArray()
+            throw er
+        catch as Exception
+				throw Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2,  <object>{cName}  )
+			end try
+		else
 			pi := mi:GetParameters()
-			IF pi:Length == 1 .AND. mi:IsDefined( TYPEOF( XSharp.Internal.ClipperCallingConventionAttribute ), FALSE )
-				retval := mi:Invoke(oComObject, <OBJECT>{args})
-			ELSEIF pi:Length == 0
-				retval := mi:Invoke(oComObject, NULL )
-			ELSE                                 
-				LOCAL nArgs          AS INT   // # of arguments passed in
-				LOCAL pArg           AS USUAL PTR   // This is used to derefence arguments
-				LOCAL nLastUnNamed   AS INT  // Last unnamed argument passed in
-				LOCAL lFound         AS LOGIC // Was the Named Arg Found 
-						
-				VAR nDefArgs := pi:Length			// # of arguments defined for method
-				VAR oArgs := OBJECT[]{ nDefArgs }	// Array of arguments for call to Invoke
-				IF args != NULL
+			if pi:Length == 1 .and. mi:IsDefined( TYPEOF( XSharp.Internal.ClipperCallingConventionAttribute ), false )
+				retval := mi:Invoke(oComObject, <object>{args})
+			elseif pi:Length == 0
+				retval := mi:Invoke(oComObject, null )
+			else
+				local nArgs          as int   // # of arguments passed in
+				local pArg           as usual ptr   // This is used to derefence arguments
+				local nLastUnNamed   as int  // Last unnamed argument passed in
+				local lFound         as logic // Was the Named Arg Found
+
+				var nDefArgs := pi:Length			// # of arguments defined for method
+				var oArgs := object[]{ nDefArgs }	// Array of arguments for call to Invoke
+				if args != null
 					nArgs := args:Length
 					nArgs := Math.Min( nArgs, nDefArgs )
-				ELSE
+				else
 					nArgs := 0
-				ENDIF
+				endif
 				nLastUnNamed := nArgs
-				FOR x := 1 UPTO nArgs
-					VAR oArg := OleUnWrapObject(args[x])
-							
-					IF IsPtr(oArg)
+				for x := 1 upto nArgs
+					var oArg := OleUnWrapObject(args[x])
+
+					if IsPtr(oArg)
 						// By Reference ?
-						pArg     := Usual{oArg}
+						pArg     := usual{oArg}
 						oArgs[x] := pArg[1]
-								
-					ELSEIF oArg IS NamedArg
-						// Named Argument ?   
+
+					elseif oArg is NamedArg
+						// Named Argument ?
 						nLastUnNamed:= Math.Min( x - 1, nLastUnNamed )
-						VAR oNamedArg   := (NamedArg) oArg
-						VAR cArgName    := oNamedArg:ArgName
-						lFound      := FALSE
-						FOR VAR y := 1 TO  nDefArgs
-							VAR paramInfo := pi[y]
-							IF String.Compare( paramInfo:Name, cArgName, StringComparison.OrdinalIgnoreCase ) == 0 
-								oArgs[y] := oNamedArg:Value                        
-								lFound   := TRUE
-								EXIT
-							ENDIF
-						NEXT
-						IF ! lFound
-							THROW Error.VOError(EG_ARG,  cMethod, cArgName, (DWORD) x, <OBJECT>{oNamedArg} )
-						ENDIF
-								
-					ELSE
+						var oNamedArg   := (NamedArg) oArg
+						var cArgName    := oNamedArg:ArgName
+						lFound      := false
+						for var y := 1 to  nDefArgs
+							var paramInfo := pi[y]
+							if String.Compare( paramInfo:Name, cArgName, StringComparison.OrdinalIgnoreCase ) == 0
+								oArgs[y] := oNamedArg:Value
+								lFound   := true
+								exit
+							endif
+						next
+						if ! lFound
+							throw Error.VOError(EG_ARG,  cMethod, cArgName, (dword) x, <object>{oNamedArg} )
+						endif
+
+					else
 						// Normal argument
 						oArgs[x] := oArg
-					ENDIF
-				NEXT
+					endif
+				next
 				// Fill in missing method parameter values
 				// nLastUnNamed has # of last unnamed argument
-				FOR x :=nLastUnNamed+1 TO nDefArgs
-					IF oArgs[x] == NULL
+				for x :=nLastUnNamed+1 to nDefArgs
+					if oArgs[x] == null
 						// When no value, fill in the default
-						VAR paramInfo := pi[x]
+						var paramInfo := pi[x]
 						oArgs[x] := paramInfo:DefaultValue
-					ENDIF
-				NEXT
-				LOCAL lOk AS LOGIC
-				// Try MethodInfo:Invoke first. 
-				TRY
+					endif
+				next
+				local lOk as logic
+				// Try MethodInfo:Invoke first.
+				try
 					retval := mi:Invoke(oComObject, oArgs)
-					lOk := TRUE
-					// return Out parameters 
-					FOR x := 1 TO nArgs
-						VAR paramInfo := pi[x]
-						IF paramInfo:Attributes:HasFlag( ParameterAttributes.Out) 
-							IF IsPtr(args[x])
+					lOk := true
+					// return Out parameters
+					for x := 1 to nArgs
+						var paramInfo := pi[x]
+						if paramInfo:Attributes:HasFlag( ParameterAttributes.Out)
+							if IsPtr(args[x])
 								pArg := args[x]
 								pArg[1] := oArgs[x]
-							ENDIF
-						ENDIF
-					NEXT 
-				CATCH AS Exception
-					lOk := FALSE              
-				END TRY
+							endif
+						endif
+					next
+				catch as Exception
+					lOk := false
+				end try
 				// If that fails we try t:InvokeMember. You never know if that will work...
-				IF ! lOk
-					TRY
-						retval := t:InvokeMember(cName, bf, NULL, oComObject, oArgs)
-						lOk    := TRUE
-					CATCH AS ArgumentException
-						THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, <OBJECT>{args})
-						//lOk := FALSE                                  
-					CATCH AS TargetException
-						THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, <OBJECT>{args} )
-						//lOk := FALSE                                  
-					CATCH AS MissingMethodException
-						THROW Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2, <OBJECT>{cName}  )
-						//lOk := FALSE                                  
-					CATCH AS Exception
-						lOk := FALSE              
-					END TRY
-				ENDIF
-				IF ! lOk
-					THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, <OBJECT>{args}  )
-				ENDIF   
-			ENDIF
-		ENDIF
-	CATCH AS AmbiguousMatchException
-		THROW Error.VOError( EG_AMBIGUOUSMETHOD,  cMethod, "cMethod", 2, <OBJECT>{cMethod} )
-	END TRY  
-	RETURN retval   
+				if ! lOk
+					try
+						retval := t:InvokeMember(cName, bf, null, oComObject, oArgs)
+						lOk    := true
+					catch as ArgumentException
+						throw Error.VOError(EG_ARG,  cMethod, cMethod, 1, <object>{args})
+						//lOk := FALSE
+					catch as TargetException
+						throw Error.VOError(EG_ARG,  cMethod, cMethod, 1, <object>{args} )
+						//lOk := FALSE
+					catch as MissingMethodException
+						throw Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2, <object>{cName}  )
+						//lOk := FALSE
+					catch as Exception
+						lOk := false
+					end try
+				endif
+				if ! lOk
+					throw Error.VOError(EG_ARG,  cMethod, cMethod, 1, <object>{args}  )
+				endif
+			endif
+		endif
+	catch as AmbiguousMatchException
+		throw Error.VOError( EG_AMBIGUOUSMETHOD,  cMethod, "cMethod", 2, <object>{cMethod} )
+	end try
+	return retval
 	#endregion
-	
-END CLASS
+
+end class
 

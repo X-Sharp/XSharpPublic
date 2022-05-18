@@ -65,7 +65,7 @@ BEGIN NAMESPACE XSharp
             NEXT
             RETURN
 
-        INTERNAL METHOD __ArrayAssignError(uValue as USUAL, nRow as INT, nCol as INT, lSizeError := FALSE AS LOGIC)
+        INTERNAL METHOD __ArrayAssignError(uValue as USUAL, nRow as INT, nCol as INT, lSizeError := FALSE AS LOGIC) AS VOID
             LOCAL err     := Error.ArgumentError(ProcName(),"value", "") as Error
             err:Stack     := ErrorStack(1)
             err:Arg := NULL

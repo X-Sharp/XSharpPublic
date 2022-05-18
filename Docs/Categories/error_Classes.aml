@@ -20,13 +20,15 @@
 <entry><para>Error code Enum that matches the Visual Objecs and Vulcan Generic Error Codes</para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Severity</codeEntityReference></para></entry>
-<entry><para>Error code Enum that matches the Visual Objecs and Vulcan Error Severity codesFDesc</para></entry></row>
+<entry><para>Error code Enum that matches the XSharp Error Severity codesFDesc</para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Subcodes</codeEntityReference></para></entry>
-<entry><para>Error code Enum that matches the Visual Objecs and Vulcan Error Sub Codes</para></entry></row>
+<entry><para>Error code Enum that matches the XSharp Error Sub Codes</para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VFPErrors</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>List of error codes used in the XSharp VTP support. 
+            Each error code represents a translatable string in the string table inside XSharp.Core.
+            </para></entry></row>
 <row><entry><para>XSharp.Internal</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.WrappedException</codeEntityReference></para></entry>
 <entry><para>Helper class for the BREAK statement</para></entry></row>

@@ -354,6 +354,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_prot) })
         	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_priv) })
 
+
+        [Fact, Trait("Category", "OOP")];
+        METHOD IVarPutVisibilitytests() AS VOID
+        	LOCAL o AS OOpVisTestClass
+            o := OOpVisTestClass{}
+            Assert.ThrowsAny<Exception>( { => IVarGet(o , #PrivateDummy) })
+            Assert.ThrowsAny<Exception>( { => IVarPut(o , #PrivateDummy,10) })
+            Assert.Equal( (INT) IVarGet(o , #PrivateSetDummy) ,42)
+            Assert.ThrowsAny<Exception>( { => IVarPut(o , #PrivateSetDummy,10) })
+
+
         [Fact, Trait("Category", "OOP")];
         METHOD PtrAndIntPtrMethodCalls() AS VOID
         	LOCAL o AS GeneralLBTestClass
@@ -534,6 +545,78 @@ BEGIN NAMESPACE XSharp.VO.Tests
             EXPORT cbWhen AS CODEBLOCK
 
         END CLASS
+
+        [Fact, Trait("Category", "OOP")];
+		METHOD SymbolLateBound() AS VOID
+			LOCAL u AS USUAL
+			u := SymbolTest{}
+			Assert.True(u:sym == #sym)
+			Assert.True(u:sym == #SYM)
+			Assert.True(u:symEmpty == NULL_SYMBOL)
+			Assert.False(Empty(u:sym))
+			Assert.True(Empty(u:symEmpty))
+			Assert.True(u:symUsual == #SymUsual)
+
+			u:sym := #test
+			Assert.True(u:sym == #TEST)
+			u:symUsual := #test
+			Assert.True(u:symUsual == #TEST)
+
+			u:sym := NULL_SYMBOL
+			Assert.True(u:sym == NULL_SYMBOL)
+			u:symUsual := NULL_SYMBOL
+			Assert.True(u:symUsual == NULL_SYMBOL)
+		RETURN
+
+		INTERNAL CLASS SymbolTest
+			EXPORT sym := "sym" AS SYMBOL
+			EXPORT symEmpty AS SYMBOL
+			EXPORT symUsual := #SymUsual AS USUAL
+		END CLASS
+
+
+        [Fact, Trait("Category", "OOP")];
+		METHOD IVarsLateBound() AS VOID
+			LOCAL u AS USUAL
+			u := TestIVars{}
+
+			u:InternalGet := "abc"
+			Assert.True( IVarGetSelf(u , "InternalGet") == "abc" )
+			Assert.True( u:InternalGet == "abc" )
+			
+			u:ProtectedGet := "123"
+			Assert.True( IVarGetSelf(u , "ProtectedGet") == "123" )
+			
+			u:PrivateGet := "456"
+			Assert.True( IVarGetSelf(u , "PrivateGet") == "456" )
+			
+			
+			u:InternalSET := "abc123"
+			Assert.True( IVarGet(u , "InternalSET") == "abc123" )
+
+			IVarPutSelf( u , "InternalSET" , "set")
+			Assert.True( IVarGetSelf(u , "InternalSET") == "set" )
+			Assert.True( u:InternalSET == "set" )
+			
+			IVarPutSelf( u , "ProtectedSET" , "SET")
+			Assert.True( IVarGet(u , "ProtectedSET") == "SET" )
+			Assert.True( u:ProtectedSET == "SET" )
+			
+			IVarPutSelf( u , "PrivateSET" , "abc")
+			Assert.True( u:PrivateSET == "abc" )
+			Assert.True( IVarGetSelf(u , "PrivateSET") == "abc" )
+		RETURN
+
+		INTERNAL CLASS TestIVars
+			PROPERTY InternalGet AS STRING AUTO INTERNAL GET SET
+			PROPERTY ProtectedGet AS STRING AUTO PROTECTED GET SET
+			PROPERTY PrivateGet AS STRING AUTO PRIVATE GET SET
+		
+			PROPERTY InternalSET AS STRING AUTO GET INTERNAL SET
+			PROPERTY ProtectedSET AS STRING AUTO GET PROTECTED SET
+			PROPERTY PrivateSET AS STRING AUTO GET PRIVATE SET
+		END CLASS
+
 	END CLASS
 
 
@@ -672,7 +755,7 @@ CLASS NilTestClass
 			RETURN 2
 		END IF
 	RETURN NIL
-	METHOD NoIVarGet(c)
+	METHOD NoIVarGet(c AS SYMBOL) AS USUAL
 		? c
 		IF AsString(c) == "DOESNOTEXISTACCESS"
 			RETURN 2
@@ -703,3 +786,10 @@ CLASS LBTestClass
 
 END CLASS
 
+CLASS OOpVisTestClass
+
+    PRIVATE PROPERTY PrivateDummy AS INT AUTO GET SET
+    PUBLIC PROPERTY PrivateSetDummy AS INT AUTO GET PRIVATE SET := 42
+
+
+END CLASS

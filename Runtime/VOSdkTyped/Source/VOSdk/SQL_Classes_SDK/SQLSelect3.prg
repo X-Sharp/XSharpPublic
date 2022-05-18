@@ -32,7 +32,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.FieldInfo/*" />
-	METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal ) AS USUAL
+	METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal ) AS USUAL CLIPPER
 		//
 		//  Retrieves information about fields
 		//  uFieldPos is numeric, symbol or string
@@ -136,7 +136,12 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		LOCAL oError AS Error
 		LOCAL oColumn AS DataColumn
 		LOCAL oDf AS DataField
-		 TRY
+        TRY
+        	SELF:__CheckReadOnly()
+        CATCH e as Exception
+            SELF:ShowSQLError(e:Message, #FieldPut,e )
+        END TRY
+        TRY
 			IF ! SELF:EoF .and. oCurrentRow != NULL_OBJECT
 				wField := (INT) SELF:__GetColIndex( uFieldID ,TRUE)
 				IF wField <= 0 .OR. wField > SELF:nNumCols
@@ -171,10 +176,24 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 //					ELSE
 						oCurrentRow:Item[wField-1]	:= oDT
 //					ENDIF
-				ELSE
-					oCurrentRow:Item[wField-1]	:= uValue
+                else
+                    var old := oCurrentRow:Item[wField-1]
+                    var newType := UsualType(uValue)
+                    var nullType := (dword) __UsualType.Null
+                    local changed as logic
+                    // you can't compare DBNull.Value !
+                    if old == DBNull.Value
+                        changed := newType != nullType
+                    elseif newType ==nullType
+                        changed := true
+                    else
+                        changed := old != uValue
+                    endif
+                    if changed
+					    oCurrentRow:Item[wField-1]	:= uValue
+                    endif
 				ENDIF
-				SELF:lChanges := TRUE
+                SELF:lChanges := TRUE
 				oDf := SELF:aDataFields[ wField ]
 				SELF:Notify( NOTIFYFIELDCHANGE, oDf:NameSym )
 			ENDIF
@@ -281,7 +300,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			wField := (INT) SELF:__GetColIndex( uFieldID ,TRUE)
 			IF wField <= 0 .OR. wField > SELF:nNumCols
 				oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADCOL ), #GetData )
-				SELF:Error( oStmt:ErrInfo )
+				SELF:Error( oStmt:ErrInfo ,#GetData)
 				RETURN NIL
 			ENDIF
 			IF SELF:lEof .OR. SELF:lBof
@@ -320,7 +339,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 
 /// <include file="Sql.xml" path="doc/SQLSelect.GetLookupTable/*" />
-	METHOD GetLookupTable(nMaxRows,uField1,uField2) AS ARRAY
+	METHOD GetLookupTable(nMaxRows,uField1,uField2) AS ARRAY CLIPPER
 		LOCAL aResult 	:= {}         AS ARRAY
 		LOCAL nRows 	:= 32767      AS DWORD
 		IF IsNil(nMaxRows)
@@ -347,7 +366,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 
 /// <include file="Sql.xml" path="doc/SQLSelect.GetStatementOption/*" />
 	[Obsolete];
-	METHOD GetStatementOption( fOption )
+	METHOD GetStatementOption( fOption ) AS USUAL CLIPPER
 		//RETURN oStmt:GetStatementOption( fOption )
 		RETURN NIL
 
@@ -362,14 +381,14 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF ( nIndex = 0 .OR. nIndex > nNumCols )
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #GetTimeStamp )
-			SELF:Error( oStmt:ErrInfo )
+			SELF:Error( oStmt:ErrInfo , #GetTimeStamp )
 			RETURN NIL
 		ENDIF
 		oColumn   := aSQLColumns[nIndex]
 		oType    := oColumn:Type
 		IF ( oType != typeof(System.DateTime))
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #GetTimeStamp )
-			SELF:Error( oStmt:ErrInfo )
+			SELF:Error( oStmt:ErrInfo , #GetTimeStamp )
 			RETURN NIL
 		ENDIF
 		oDT := (DateTime) oCurrentRow:Item[(INT)nIndex-1]

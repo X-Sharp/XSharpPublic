@@ -12,12 +12,13 @@
     <CS>true</CS>
     <Unsafe>true</Unsafe>
     <NS>true</NS>
-    <vo15>true</vo15>
+    <vo15>False</vo15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.10.0.3</XSharpProjectversion>
+    <XSharpProjectversion>2.11.0.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
+    <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DisabledWarnings />
@@ -61,6 +62,7 @@
     <Compile Include="Classes\Custom.prg" />
     <Compile Include="Classes\Abstract.prg" />
     <Compile Include="Classes\FoxArray.prg" />
+    <Compile Include="Classes\PropertyContainer.prg" />
     <Compile Include="ClassFunctions.prg" />
     <Compile Include="BitFunctions.prg" />
     <Compile Include="Commands.prg" />

@@ -455,12 +455,9 @@ namespace XSharp.LanguageService
                     switch (token.Type)
                     {
                         case XSharpLexer.PP_REGION:
-                            //case XSharpLexer.PP_IFDEF:
-                            //case XSharpLexer.PP_IFNDEF:
                             regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
                             break;
                         case XSharpLexer.PP_ENDREGION:
-                            //case XSharpLexer.PP_ENDIF:
                             regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
                             break;
                         default:
@@ -684,7 +681,6 @@ namespace XSharp.LanguageService
                 case XSharpLexer.FOR:
                 case XSharpLexer.FOREACH:
                 case XSharpLexer.REPEAT:
-                case XSharpLexer.TEXT:
                     startToken = null;
                     type = xsharpKwOpenType;            // Simple open
                     break;
@@ -694,7 +690,6 @@ namespace XSharp.LanguageService
                 case XSharpLexer.ENDDO:
                 case XSharpLexer.ENDIF:
                 case XSharpLexer.ENDCASE:
-                case XSharpLexer.ENDTEXT:
                 case XSharpLexer.ENDDEFINE:             // FoxPro end of class definition
                 case XSharpLexer.ENDCLASS:              // XPP end of class definition
                     startToken = null;
@@ -763,6 +758,20 @@ namespace XSharp.LanguageService
                     {
                         type = xsharpKwCloseType;
                         keywordContext = null;
+                    }
+                    break;
+                case XSharpLexer.UDC_KEYWORD:
+                    var text = token.Text.ToUpper();
+                    switch (text)
+                    {
+                        case "TEXT":
+                            startToken = null;
+                            type = xsharpKwOpenType;
+                            break;
+                        case "ENDTEXT":
+                            startToken = null;
+                            type = xsharpKwCloseType;
+                            break;
                     }
                     break;
 

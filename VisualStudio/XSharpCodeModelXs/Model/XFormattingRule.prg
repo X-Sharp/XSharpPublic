@@ -165,9 +165,6 @@ BEGIN NAMESPACE XSharpModel
         static initonly @@Finally := XKeyword{XTokenType.Finally} as XKeyword
         static initonly @@End_Try := XKeyword{XTokenType.End, XTokenType.Try} as XKeyword
 
-        static initonly @@Text := XKeyword{XTokenType.Text} as XKeyword
-        static initonly @@Endtext := XKeyword{XTokenType.Endtext} as XKeyword
-        static initonly @@End_Text := XKeyword{XTokenType.End, XTokenType.Text} as XKeyword
         static initonly @@Begin_Sequence := XKeyword{XTokenType.Begin, XTokenType.Sequence} as XKeyword
         static initonly @@Recover := XKeyword{XTokenType.Recover} as XKeyword
         static initonly @@End_Sequence := XKeyword{XTokenType.End, XTokenType.Sequence} as XKeyword
@@ -249,7 +246,6 @@ BEGIN NAMESPACE XSharpModel
                 rules:Add(XFormattingRule{@@Try,              @@End_Try,      XFormattingFlags.Statement | XFormattingFlags.End | XFormattingFlags.HasMiddle})
                 rules:Add(XFormattingRule{@@Begin_Sequence,   @@End_Sequence, XFormattingFlags.Statement | XFormattingFlags.End | XFormattingFlags.HasMiddle})
                 rules:Add(XFormattingRule{@@With,             @@End_With,     XFormattingFlags.Statement | XFormattingFlags.End })
-                rules:Add(XFormattingRule{@@Text,             @@Endtext,      XFormattingFlags.Statement | XFormattingFlags.End})
                 // begin end
                 rules:Add(XFormattingRule{@@Begin_Checked,    @@End_Checked, XFormattingFlags.Statement | XFormattingFlags.End })
                 rules:Add(XFormattingRule{@@Begin_Fixed,      @@End_Fixed, XFormattingFlags.Statement | XFormattingFlags.End })
@@ -284,7 +280,7 @@ BEGIN NAMESPACE XSharpModel
                 // Preprocessor
                 rules:Add(XFormattingRule{@@PP_Region, @@PP_Endregion, XFormattingFlags.Preprocessor })
                 rules:Add(XFormattingRule{@@PP_Ifdef, @@PP_Endif, XFormattingFlags.Preprocessor | XFormattingFlags.HasMiddle  })
-                rules:Add(XFormattingRule{@@PP_Text, @@PP_EndText, XFormattingFlags.Preprocessor  })
+                rules:Add(XFormattingRule{@@PP_Text, @@PP_EndText, XFormattingFlags.Preprocessor| XFormattingFlags.Statement  })
 
 
                 // tokens that are remapped to other tokens For example END IF is mapped to ENDIF and FOREACH is mapped to FOR
@@ -302,7 +298,6 @@ BEGIN NAMESPACE XSharpModel
                     {@@End_Case, @@Endcase },;
                     {@@PP_Ifndef, @@PP_Ifdef},;
                     {@@PP_If, @@PP_Ifdef},;
-                    {@@End_Text, @@Endtext },;
                     {@@End_Define, @@Enddefine},;
                     {@@Local_Function, @@Function },;
                     {@@Local_Procedure, @@Procedure};

@@ -226,8 +226,6 @@ BEGIN NAMESPACE XSharpModel
         MEMBER @@Each:= XSharpLexer.EACH
         MEMBER @@Then:= XSharpLexer.THEN
         MEMBER @@Fox_m:= XSharpLexer.FOX_M
-        MEMBER @@Text:= XSharpLexer.TEXT
-        MEMBER @@Endtext:= XSharpLexer.ENDTEXT
         MEMBER @@Last_keyword:= XSharpLexer.LAST_KEYWORD
         MEMBER @@First_null:= XSharpLexer.FIRST_NULL
         MEMBER @@Nil:= XSharpLexer.NIL

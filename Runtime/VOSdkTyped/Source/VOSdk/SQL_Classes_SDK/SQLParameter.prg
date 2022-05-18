@@ -25,7 +25,7 @@ CLASS SqlParameter
 
 
 /// <include file="Sql.xml" path="doc/SqlParameter.ctor/*" />
-CONSTRUCTOR(xValue,nIO,nODBCType,nSize) 
+CONSTRUCTOR(xValue,nIO,nODBCType,nSize)  CLIPPER
 	@@Default(REF nIO, SQL_PARAM_INPUT)
 	@@Default(REF nODBCType, SQL_TYPE_UNKNOWN)
 	@@Default(REF nSize, 0)

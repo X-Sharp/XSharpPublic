@@ -32,7 +32,7 @@
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Debugger.Functions.DbgShowWorkAreas</codeEntityReference></para></entry>
 <entry><para>Open a window to display the open workareas/cursors for the current thread.</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DebOut</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DebOut(XSharp.__Usual[])</codeEntityReference></para></entry>
 <entry><para>
             Write information to the Debug Terminal Program
             </para></entry></row>

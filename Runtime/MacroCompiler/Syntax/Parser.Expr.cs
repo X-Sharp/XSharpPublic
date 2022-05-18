@@ -48,6 +48,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL_PTR:
                 case TokenType.NULL_STRING:
                 case TokenType.NULL_SYMBOL:
+                //case TokenType.NULL_FOX:
                 case TokenType.INCOMPLETE_STRING_CONST:
                 case TokenType.INVALID_NUMBER:
                 case TokenType.ARRAY:
@@ -166,6 +167,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL_PTR:
                 case TokenType.NULL_STRING:
                 case TokenType.NULL_SYMBOL:
+                //case TokenType.NULL_FOX:
                     return new LiteralExpr(ConsumeAndGet());
                 case TokenType.INCOMPLETE_STRING_CONST:
                     throw Error(Lt(), ErrorCode.UnterminatedString);
@@ -465,6 +467,10 @@ namespace XSharp.MacroCompiler
             return Opers[(int)La()].IsBinary;
         }
 
+        bool CanParsePrefixOper()
+        {
+            return PrefixOpers[(int)La()] != Oper.Empty;
+        }
         bool CanParsePrefixOnlyOper()
         {
             return !CanParseBinaryOper() && PrefixOpers[(int)La()] != Oper.Empty;
@@ -485,10 +491,13 @@ namespace XSharp.MacroCompiler
 
                 e = ParseTerm();
 
-                if (isCast && e is TypeExpr && (CanParsePrefixOnlyOper() || CanParseTerm()))
+                if (isCast && (
+                    (e is NativeTypeExpr && CanParsePrefixOper()) ||
+                    (e is TypeExpr && (CanParsePrefixOnlyOper() || CanParseTerm()))
+                    ))
                 {
                     var p = Mark();
-                    while (ParsePrefixOnlyOper(out n) != null) { }
+                    while (ParsePrefixOper(out n) != null) { }
                     isCast = CanParseTerm();
                     Rewind(p);
                 }

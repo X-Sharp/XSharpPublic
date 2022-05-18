@@ -93,6 +93,35 @@ BEGIN NAMESPACE XSharp.RT.Tests
             uValue := Eval(bMacro)
             Assert.Equal(FALSE, (LOGIC) uValue)
 
+		[Fact, Trait("Category", "Macro")];
+		METHOD TestsWithConversions AS VOID
+            Assert.Equal(2, (INT) Eval(MCompile("1 + INT( 1)")))
+            Assert.Equal(2, (INT) Eval(MCompile("1 + INT(+1)")))
+            Assert.Equal(0, (INT) Eval(MCompile("1 - INT(+1)")))
+            Assert.Equal(0, (INT) Eval(MCompile("1 + INT(-1)")))
+            Assert.Equal(2, (INT) Eval(MCompile("1 - INT(-1)")))
+            Assert.Equal(-2, (INT) Eval(MCompile("-1 + INT(-1)")))
+            Assert.Equal(0, (INT) Eval(MCompile("-1 - INT(-1)")))
+            Assert.Equal(2, (INT) Eval(MCompile("1 + (INT) 1")))
+            Assert.Equal(2, (INT) Eval(MCompile("1 + (USUAL) 1")))
+            Assert.Equal(2, (INT) Eval(MCompile("1 + USUAL(+1)")))
+            Assert.Equal(0, (INT) Eval(MCompile("1 - USUAL(+1)")))
+            Assert.Equal(0, (INT) Eval(MCompile("-1 - USUAL(-1)")))
+            Assert.Equal(0, (INT) Eval(MCompile("1 + USUAL(-1)")))
+
+            Assert.Equal(2, (INT) Eval( MCompile( "1 + USUAL(-1) + USUAL(+2)") ) )
+            Assert.Equal(2, (INT) Eval( MCompile( "1 + INT(-1) + INT(+2)") ) )
+            Assert.Equal(4, (INT) Eval( MCompile( "1 + (USUAL)1 + (USUAL)2") ) )
+
+            Assert.Equal(2, (INT) Eval(MCompile("1 + (INT)+1")))
+            Assert.Equal(0, (INT) Eval(MCompile("1 + (INT)-1")))
+            Assert.Equal(2, (INT) Eval(MCompile("1 + (USUAL)+1")))
+            Assert.Equal(0, (INT) Eval(MCompile("1 + (USUAL)-1")))
+            Assert.Equal(2, (INT) Eval(MCompile("1 - (USUAL)-1")))
+            Assert.Equal(2, (INT) Eval( MCompile( "1 + (USUAL)-1 + (USUAL)+2") ) )
+            Assert.Equal(2, (INT) Eval( MCompile( "-1 - (USUAL)-1 - (USUAL)-2") ) )
+
+
 
 //		[Fact, Trait("Category", "Macro")];
 //		METHOD FunctionOverloadTest AS VOID

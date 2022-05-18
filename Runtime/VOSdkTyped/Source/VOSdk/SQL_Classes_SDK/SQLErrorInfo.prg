@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -25,10 +25,10 @@ CLASS SQLErrorInfo  INHERIT Error
 	PROPERTY ErrorMessageLen    AS LONG   GET (LONG) SLen(ErrorMessage)
 /// <include file="Sql.xml" path="doc/SQLErrorInfo.ReturnCode/*" />
 	PROPERTY ReturnCode         AS LONG   AUTO
-	
-	
+
+
 /// <include file="Sql.xml" path="doc/SQLErrorInfo.ctor/*" />
-	CONSTRUCTOR( oOriginator, symMethod, Ex ) 
+	CONSTRUCTOR( oOriginator, symMethod, Ex ) CLIPPER
 		LOCAL oType AS System.Type
 		IF IsNil(Ex)
 			Ex := NULL
@@ -39,25 +39,25 @@ CLASS SQLErrorInfo  INHERIT Error
 			IF oType:IsInstanceOfType(Ex)
 				SELF:_SetDbException(Ex)
 				SELF:ErrorFlag := TRUE
-			ENDIF        
+			ENDIF
 		ENDIF
-		
-		
+
+
 		SELF:SubSystem := __CavoStr( __CAVOSTR_SQLCLASS_SUBSYS )
-		
-		
+
+
 		IF IsObject( oOriginator )
 			SELF:MethodSelf := oOriginator
 		ENDIF
-		
-		
+
+
 		IF IsSymbol( symMethod )
 			SELF:FuncSym     := symMethod
 			SELF:CallFuncSym := symMethod
 		ENDIF
-		RETURN 
-	
-	
+		RETURN
+
+
 	PRIVATE METHOD _SetDbException(oEx AS DbException) AS VOID
 		SELF:ErrorMessage := oEx:Message
 		SELF:SQLState     := oEx:ErrorCode:ToString("x")
@@ -66,7 +66,7 @@ CLASS SQLErrorInfo  INHERIT Error
         //			oMyEx := (MySql.Data.MySqlClient.MySqlException) (OBJECT) oEx
         //			SELF:NativeError := oMyEx:Number
         //			SELF:Source      := oMyEx:Source
-        //			
+        //
         //		ELSEIF TYPEOF(Oracle.ManagedDataAccess.Client.OracleException):IsAssignableFrom(oEx:GetType())
         //			LOCAL oOraEx AS Oracle.ManagedDataAccess.Client.OracleException
         //			oOraEx := (Oracle.ManagedDataAccess.Client.OracleException) (OBJECT) oEx
@@ -78,7 +78,7 @@ CLASS SQLErrorInfo  INHERIT Error
         //				SELF:ErrorMessage += CRLF+"Procedure: "+oOraEx:@@Procedure
         //			ENDIF
         //			SELF:Source      := oOraEx:Source
-        //			
+        //
         //		ELSEIF TYPEOF(System.Data.SqlClient.SqlException):IsAssignableFrom(oEx:GetType())
         //			LOCAL oSqlEx AS System.Data.SqlClient.SqlException
         //			oSqlEx := (System.Data.SqlClient.SqlException) (OBJECT) oEx
@@ -90,16 +90,16 @@ CLASS SQLErrorInfo  INHERIT Error
         //			IF ! STRING.IsNullOrEmpty(oSqlEx:@@Procedure)
         //				SELF:ErrorMessage += CRLF+"Procedure: "+oSqlEx:@@Procedure
         //			ENDIF
-        //			
+        //
         //		ENDIF
         //SELF
-		RETURN 
-	
-	
+		RETURN
+
+
 /// <include file="Sql.xml" path="doc/SQLErrorInfo.ShowErrorMsg/*" />
-	METHOD ShowErrorMsg() 
+	METHOD ShowErrorMsg() AS USUAL
 //		LOCAL cTitle AS STRING
-//		
+//
 //		IF ErrorFlag
 //			//cTitle :=  AsString( FuncSym )
 //			//cTitle +=  "  NativeError: "
@@ -112,48 +112,48 @@ CLASS SQLErrorInfo  INHERIT Error
 ////			#else
 ////				System.Windows.Forms.MessageBox.Show(ErrorMessage , cTitle ,System.Windows.Forms.MessageBoxButtons.OK)
 ////			#endif
-//			
+//
 //		ENDIF
-		
-		
+
+
 		RETURN NIL
-	
-	
-	
-	
+
+
+
+
 /// <include file="Sql.xml" path="doc/SQLErrorInfo.ErrorList/*" />
 	ACCESS ErrorList AS ARRAY
 		LOCAL oErr 		AS SQLErrorInfo
 		LOCAL oStmt		AS SQLStatement
 		LOCAL aRet		AS ARRAY
-		
-		
-		aRet		:= {} 
-		
-		
+
+
+		aRet		:= {}
+
+
 		IF IsInstanceOf( SELF:MethodSelf , #SqlStatement)
-			
-			
-			oStmt		:= (SQLStatement) SELF:MethodSelf 		
+
+
+			oStmt		:= (SQLStatement) SELF:MethodSelf
 			oErr 		:= SELF
-			
-			
+
+
 			WHILE oErr != NULL_OBJECT .and. (Val(oErr:SQLState) <> 0 .or. oErr:NativeError <> 0)
-				
-				
+
+
 				AAdd( aRet, { oErr:NativeError, oErr:SQLState, oErr:ErrorMessage } )
 				oErr		:= SQLErrorInfo{ oStmt, SELF:FuncSym}
-			ENDDO		
-			
-			
+			ENDDO
+
+
 		ENDIF
-		
-		
+
+
 		RETURN aRet
-	
-	
-	
-	
+
+
+
+
 END CLASS
 
 

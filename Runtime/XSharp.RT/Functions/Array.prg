@@ -399,7 +399,11 @@ FUNCTION ACloneShallow<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T>
 FUNCTION ADel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
     ARRAYNOTNULL aTarget
     IF aTarget:__IsFoxArray
-        RETURN _CallClipFunc(#__FoxADel, aTarget, dwPosition, 2)
+        IF __Array.FoxArrayHelpers:ADel != NULL
+            RETURN Eval(__Array.FoxArrayHelpers:ADel , aTarget, dwPosition, 2)
+        ELSE
+            RETURN _CallClipFunc(#__FoxADel, aTarget, dwPosition, 2)
+        ENDIF
     ENDIF
     aTarget:Delete((INT) dwPosition)
     RETURN aTarget
@@ -456,7 +460,12 @@ RETURN Repl("[]", ADim(a))
 FUNCTION AIns(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
     ARRAYNOTNULL aTarget
     IF aTarget:__IsFoxArray
-        _CallClipFunc(#__FoxAIns, aTarget, dwPosition, 1)
+        IF __Array.FoxArrayHelpers:AIns != NULL
+            RETURN Eval(__Array.FoxArrayHelpers:AIns , aTarget, dwPosition, 1)
+        ELSE
+            RETURN _CallClipFunc(#__FoxAIns, aTarget, dwPosition, 1)
+        ENDIF
+
     ENDIF
     aTarget:Insert((INT) dwPosition)
     RETURN aTarget
@@ -482,7 +491,11 @@ FUNCTION ALen(aTarget AS ARRAY) AS DWORD
     IF aTarget == NULL
         RETURN 0
     ELSEIF aTarget:__IsFoxArray
-        RETURN _CallClipFunc(#__FoxALen, aTarget)
+        IF __Array.FoxArrayHelpers:ALen != NULL
+            RETURN Eval(__Array.FoxArrayHelpers:ALen, aTarget)
+        ELSE
+            RETURN _CallClipFunc(#__FoxALen, aTarget)
+        ENDIF
     ENDIF
     RETURN aTarget:Length
 

@@ -47,12 +47,12 @@
             Returns database alias of currently set database.
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbApp(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbApp(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
             Import records from a database file.
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAppDelim(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAppDelim(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
             Import records from a delimited text file.
         </para></entry></row>
@@ -65,13 +65,13 @@
             Add a new record to a database file.
         </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbAppendFromArray(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbAppendFromArray(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbAppFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAppSdf(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAppSdf(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
             Import records from an SDF file.
         </para></entry></row>
@@ -143,10 +143,10 @@
             Export records to a new delimited text file.
         </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbCopyDelimFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbCopyDelimFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbCopyFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbCopyFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCopySDF(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
@@ -159,7 +159,7 @@
             Create an empty database file with field definitions from another database file.
         </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbCopyToArray(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbCopyToArray(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCopyXStruct(System.String)</codeEntityReference></para></entry>
@@ -206,16 +206,16 @@
             Return the default RDD for the application.
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbEval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbEval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
             Evaluate a code block for each record that matches a specified scope and/or condition.
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DBF</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DBF(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
             Return the name of the alias.
-            Note:  DBF() is a compatibility function and is no longer recommended.
-            It is superseded by Alias0().  See Alias0() for more information.
+            Note:  DBF() is a compatibility function and is no longer recommended.
+            It is superseded by Alias0().  See Alias0() for more information.
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbFieldInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
@@ -256,7 +256,7 @@
             Return and optionally change information about a database file open in a work area.
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbJoin(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbJoin(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
             Create a new database file by merging records/fields from two work areas.
         </para></entry></row>
@@ -264,24 +264,18 @@
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbJoinAppend(System.UInt32,XSharp._JoinList)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbLocate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbLocate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
             Search for the first record that matches the specified condition and scope.
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbMemoExt(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>This returns the memo extension of the file in the current workarea. For example DBT or FPT.</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbMemoField(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
             Return the memo field pointer of a DBF record.
         </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbMoveToDisk</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbMoveToMemory</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbOrderInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -360,8 +354,8 @@
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetDriver(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
             Return and optionally change the default RDD driver for the application.
-            Note:  DBSetDriver() is a compatibility function and is no longer recommended.
-            It is superseded by the RDDSetDefault() function.  See RDDSetDefault() for more information.
+            Note:  DBSetDriver() is a compatibility function and is no longer recommended.
+            It is superseded by the RDDSetDefault() function.  See RDDSetDefault() for more information.
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetFilter(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
@@ -407,7 +401,7 @@
             Move the record pointer relative to the current record.
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSort(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSort(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
             Copy records to a database file in sorted order.
         </para></entry></row>
@@ -480,8 +474,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Field(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the name of a field, referenced by number, in a table.
-    </para></entry></row>
+            Returns the name of a field, referenced by number, in a table.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldBlock(System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -557,7 +551,9 @@
 <entry><para>Write an array of bytes direct to the workarea buffer.</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutSelect(XSharp.__Usual,XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Set the value of a field identified by its work area alias and field name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -581,13 +577,13 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Filter(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the table filter expression specified in Set Filter.
-    </para></entry></row>
+            Returns the table filter expression specified in Set Filter.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FldCount</codeEntityReference></para></entry>
 <entry><para>
-      This function is a synonym to FCount() Function.
-    </para></entry></row>
+            This function is a synonym to FCount() Function.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FldList</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
@@ -619,7 +615,9 @@
         </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Lock(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>-- todo --</para></entry></row>
+<entry><para>
+            Attempts to lock one or more records in a table.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.LockTries</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -634,8 +632,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Mdx(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Returns the name of the open .cdx compound index file that has the specified index position number.
-    </para></entry></row>
+            Returns the name of the open .cdx compound index file that has the specified index position number.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.OldVal(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
@@ -657,8 +655,8 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Relation(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Returns a specified relational expression for a table that is open in a specific work area.
-    </para></entry></row>
+            Returns a specified relational expression for a table that is open in a specific work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RLock</codeEntityReference></para></entry>
 <entry><para>

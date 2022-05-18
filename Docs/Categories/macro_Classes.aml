@@ -22,7 +22,7 @@
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.MacroCompilerResolveAmbiguousMatch</codeEntityReference></para></entry>
 <entry><para>
-            This delegate is used to decide between 2 ambigous methods or constructors
+            This delegate is used to decide between 2 ambigous methods, functions or constructors
             </para></entry></row>
 </table>
 </content>

@@ -92,6 +92,7 @@ namespace XSharp.MacroCompiler
         internal const string RecoverVarName = "Xs$Obj";
         internal const string ExVarName = "Xs$Exception";
         internal const string ReturnName = "Xs$Return";
+        internal const string LocalPrefix = "Xs$Local";
 
         internal const string FunctionsClass = "Functions";
         internal const string VOExeFunctionsClass = ".Exe.Functions";

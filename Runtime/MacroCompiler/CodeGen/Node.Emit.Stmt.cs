@@ -63,8 +63,8 @@ namespace XSharp.MacroCompiler.Syntax
             bool isVoid = true;
             if (Expr != null)
             {
-                isVoid &= Expr.Datatype.NativeType == NativeType.Void;
-                Expr.Emit(ilg, true);
+                isVoid &= Expr.Datatype.IsVoid;
+                Expr.Emit(ilg, Symbol != null);
             }
             if (Symbol != null)
             {

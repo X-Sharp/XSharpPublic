@@ -108,6 +108,7 @@ namespace XSharp.MacroCompiler
         internal bool IsReferenceType { get { return Type.IsClass || Type.IsInterface; } }
         internal bool IsEnum { get { return Type.IsEnum; } }
         internal bool IsGenericType { get { return Type.IsGenericType; } }
+        internal bool IsVoid { get { return NativeType == NativeType.Void; } }
         internal int ArrayRank { get { return Type.GetArrayRank(); } }
         internal TypeSymbol ElementType { get { return Type.HasElementType ? Binder.FindType(Type.GetElementType()) : null; } }
         internal TypeSymbol EnumUnderlyingType { get { return Type.IsEnum ? Binder.FindType(Type.GetEnumUnderlyingType()) : null; } }

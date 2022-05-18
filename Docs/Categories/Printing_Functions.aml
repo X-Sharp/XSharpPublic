@@ -11,7 +11,12 @@
 </row></tableHeader>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.APrinters(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>-- todo --</para></entry></row>
+<entry><para>
+            Stores information about currently-available printers into an array.
+            The behavior of this function is OS (operating system) - specific.
+            X# may or may not check to see if the printers are actually connected to your computer when it prepares this list,
+            and the list may include all printers installed as printer setups, or only those available on the current network.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetPrinter</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>

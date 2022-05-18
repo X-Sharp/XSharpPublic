@@ -15,7 +15,8 @@ USING XSharp.Internal
 [DebuggerDisplay("{Name,nq}={Value}")];
 INTERNAL STRUCTURE NameValuePair
     INTERNAL Name  as STRING
-    INTERNAL @@Value AS USUAL
+    internal @@Value as usual
+
 END STRUCTURE
 
 INTERNAL FUNCTION __GetFieldValues(aFieldList IN USUAL, lIncludeMemo AS LOGIC, lBlank AS LOGIC) AS NameValuePair[]
@@ -157,7 +158,7 @@ FUNCTION __ScatterObject(aFieldList, lBlank, cObject, lAdditive) AS OBJECT CLIPP
     ENDIF
     IF oResult IS XSharp.VFP.Empty VAR oEmpty
         FOREACH var oField in aFields
-            oEmpty:__AddProperty(oField:Name, oField:Value)
+            oEmpty:_AddProperty(oField:Name, oField:Value)
         NEXT
     ELSE
         FOREACH var oField in aFields

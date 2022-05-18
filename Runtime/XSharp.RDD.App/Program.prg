@@ -451,6 +451,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 			//
 			LOCAL oData AS OBJECT
 			oData := myDBF:GetValue( 14 )
+            ? oData
 			//
 			myDBF:Close()
 			

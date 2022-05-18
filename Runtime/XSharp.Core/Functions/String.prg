@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING XSharp
@@ -21,7 +21,7 @@ FUNCTION AllTrim(cString AS STRING) AS STRING
 FUNCTION Asc(cString AS STRING) AS DWORD
 	LOCAL ascValue := 0 AS DWORD
 	LOCAL chValue AS CHAR
-	IF ( !String.IsNullOrEmpty(cString) ) 
+	if ( !String.IsNullOrEmpty(cString) )
 		chValue := cString[0]
 		ascValue := (DWORD) chValue
 		IF ascValue > 127
@@ -59,7 +59,7 @@ FUNCTION Asc(cString AS STRING) AS DWORD
 FUNCTION AscW(c AS STRING) AS DWORD
 	LOCAL ascValue := 0 AS DWORD
 	LOCAL chValue AS CHAR
-	IF ( !String.IsNullOrEmpty(c) ) 
+	if ( !String.IsNullOrEmpty(c) )
 		chValue := c[0]
 		ascValue := (DWORD) chValue
 	ENDIF
@@ -106,7 +106,7 @@ FUNCTION AtC(cSearch AS STRING,cTarget AS STRING) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atc2/*" />
 FUNCTION AtC2(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	RETURN AtC(cSearch,cTarget)  
+	return AtC(cSearch,cTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atcline/*" />
 FUNCTION ATCLine(cSearch AS STRING,cTarget AS STRING) AS DWORD
@@ -122,7 +122,7 @@ FUNCTION ATLine(cSearch AS STRING,cTarget AS STRING) AS DWORD
 	IF String.IsNullOrEmpty(cTarget) .OR. String.IsNullOrEmpty(cSearch)
 		RETURN 0
 	ENDIF
-	IF cTarget:StartsWith(cSearch) 
+	if cTarget:StartsWith(cSearch)
 		RETURN 1
 	ENDIF
 	nPos    := At( cSearch, cTarget )
@@ -146,7 +146,7 @@ FUNCTION ATLine2(cSearch AS STRING,cTarget AS STRING) AS DWORD
 /// </returns>
 FUNCTION B64EncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	//RETURN String.Empty   
+	//RETURN String.Empty
 
 /// <summary>This function is not implemented yet</summary>
 /// <param name="cIn"></param>
@@ -154,7 +154,7 @@ FUNCTION B64EncFile(c AS STRING) AS STRING
 /// </returns>
 FUNCTION B64EncString(cIn AS STRING) AS STRING
 	THROW NotImplementedException{}
-	//RETURN String.Empty   
+	//RETURN String.Empty
 
 
 
@@ -168,13 +168,12 @@ FUNCTION Buffer(dwSize AS DWORD) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/chareven/*" />
 FUNCTION CharEven(cString AS STRING) AS STRING
 	LOCAL evenChars:=NULL AS STRING
-    LOCAL c := cString AS STRING
-	IF ( !String.IsNullOrEmpty(c) ) 
+	if ( !String.IsNullOrEmpty(cString) )
 		//local chars  := c:ToCharArray() as char[]
 		LOCAL isEven := FALSE AS  LOGIC
 		LOCAL sb     := System.Text.StringBuilder{} AS System.Text.StringBuilder
-		
-		FOREACH ch AS CHAR IN c//hars 
+
+		foreach ch as char in cString
 			IF isEven
 				sb:Append(ch)
 			ENDIF
@@ -190,15 +189,15 @@ FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
 	LOCAL n2 := 0 AS INT
 	LOCAL i1 := 0 AS INT
 	LOCAL i2 := 0  AS INT
-	LOCAL sb AS StringBuilder 
-	
+	local sb as StringBuilder
+
 	IF cEven:Length == 0
 		RETURN ""
 	ELSE
 		sb := StringBuilder{ cOdd:Length * 2 }
 		n1 := cOdd:Length - 1
 		n2 := cEven:Length - 1
-		
+
 		FOR i1 := 0 UPTO n1
 			sb:Append( cOdd[i1] )
 			IF i2 > n2
@@ -206,7 +205,7 @@ FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
 			ENDIF
 			sb:Append( cEven[i2++] )
 		NEXT
-		
+
 		RETURN sb:ToString()
 	ENDIF
 
@@ -214,13 +213,12 @@ FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/charodd/*" />
 FUNCTION CharOdd(cString AS STRING) AS STRING
 	LOCAL oddChars:=NULL AS STRING
-    LOCAL c := cString AS STRING
-	IF ( !String.IsNullOrEmpty(c) ) 
+	if ( !String.IsNullOrEmpty(cString) )
 		//local chars  := c:ToCharArray() as char[]
 		LOCAL isOdd  := TRUE AS  LOGIC
 		LOCAL sb     := System.Text.StringBuilder{} AS System.Text.StringBuilder
-		
-		FOREACH ch AS CHAR IN c//chars 
+
+		foreach ch as char in cString
 			IF isOdd
 				sb:Append(ch)
 			ENDIF
@@ -298,7 +296,7 @@ FUNCTION DecodeBase64(cAttachment AS STRING,hDestination AS IntPtr) AS INT
 	RETURN (INT) FWrite3(hDestination, aBytes, (DWORD) aBytes:Length)
 
 
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/encodebase64/*" />
 FUNCTION EncodeBase64(hSource AS IntPtr,hDestination AS IntPtr) AS INT
 	LOCAL nSize AS DWORD
@@ -375,7 +373,7 @@ FUNCTION Instr(cSearch AS STRING,cTarget AS STRING) AS LOGIC
 	IF cSearch != NULL .AND. cTarget != NULL .AND. cSearch:Length != 0
 		result := cTarget:IndexOf( cSearch, StringComparison.Ordinal ) > -1
 	ENDIF
-	RETURN result   
+	return result
 
 
 
@@ -416,25 +414,25 @@ FUNCTION LTrim(cString AS STRING) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/occurs/*" />
 FUNCTION Occurs(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	RETURN Occurs3(cSearch,cTarget, 0)   
+	return Occurs3(cSearch,cTarget, 0)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/occurs2/*" />
 FUNCTION Occurs2(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	RETURN Occurs3(cSearch,cTarget, 0)   
+	return Occurs3(cSearch,cTarget, 0)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/occurs3/*" />
 FUNCTION Occurs3(cSearch AS STRING,cTarget AS STRING,dwOffset AS DWORD) AS DWORD
 	LOCAL pos AS INT
 	LOCAL count AS DWORD
-	
+
 	IF String.IsNullOrEmpty(cSearch) .OR. String.IsNullOrEmpty(cTarget)
 		RETURN 0
 	ENDIF
-	
+
 	IF dwOffset > 0
 		dwOffset -= 1
 	ENDIF
-	
+
 	count := 0
 	IF dwOffset < (DWORD) cTarget:Length
 		DO WHILE ( pos := cTarget:IndexOf(cSearch, (INT)dwOffset, StringComparison.Ordinal) ) >= 0
@@ -442,7 +440,7 @@ FUNCTION Occurs3(cSearch AS STRING,cTarget AS STRING,dwOffset AS DWORD) AS DWORD
 			dwOffset := (DWORD)(pos + cSearch:Length)
 		ENDDO
 	ENDIF
-	
+
 	RETURN count
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oem/*" />
@@ -481,14 +479,14 @@ FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 /// </overloads>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oema/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
-/// <seealso cref="Ansi2OemBuff" />
+/// <seealso cref="M:Ansi2OemBuff" />
 FUNCTION Ansi2OemA(cAnsiString REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
 	iLen := cAnsiString:Length
 	aBytes := String2Bytes(cAnsiString)
 	aBytes := Ansi2Oem(aBytes, iLen)
-	cAnsiString := Bytes2String(aBytes, iLen)  
+	cAnsiString := Bytes2String(aBytes, iLen)
 	RETURN cAnsiString
 
 
@@ -496,7 +494,7 @@ FUNCTION Ansi2OemA(cAnsiString REF STRING) AS STRING
 /// Convert an array of ANSI characters to OEM characters, changing the contents of the argument as well as the return value.
 /// </summary>
 /// <param name="bSource">A byte array that contains the string to convert</param>
-/// <inheritdoc cref="Ansi2OemA(System.String@)" />
+/// <inheritdoc cref="M:Ansi2OemA(System.String@)" />
 FUNCTION Ansi2OemA(bSource AS BYTE[]) AS VOID
 	LOCAL bDest AS BYTE[]
 	bDest := Ansi2Oem(bSource, bSource:Length)
@@ -511,7 +509,7 @@ FUNCTION Ansi2OemA(bSource AS BYTE[]) AS VOID
 /// </overloads>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansi/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
-/// <seealso cref="Oem2AnsiBuff" />
+/// <seealso cref="M:Oem2AnsiBuff" />
 FUNCTION Oem2Ansi(cOemString AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -524,7 +522,7 @@ FUNCTION Oem2Ansi(cOemString AS STRING) AS STRING
 /// Convert an array of OEM characters to ANSI characters.
 /// </summary>
 /// <param name="bSource">A byte array that contains the string to convert</param>
-/// <inheritdoc cref="Oem2Ansi(System.String)" />
+/// <inheritdoc cref="M:Oem2Ansi(System.String)" />
 FUNCTION Oem2Ansi(bSource AS BYTE[]) AS BYTE[]
 	RETURN Oem2Ansi(bSource, bSource:Length)
 
@@ -552,7 +550,7 @@ FUNCTION Oem2AnsiA(bSource AS BYTE[]) AS VOID
 	bDest := Oem2Ansi(bSource, bSource:Length)
 	System.Array.Copy(bDest, bSource, bSource:Length)
     RETURN
-	
+
 
 /// <inheritdoc cref="Oem2Ansi(System.Byte[])" />
 /// <param name="iLen">The number of characters to convert</param>
@@ -623,7 +621,7 @@ FUNCTION ProperA(cName REF STRING) AS STRING
 /// </returns>
 FUNCTION QPEncString(cIn AS STRING) AS STRING
 	THROW NotImplementedException{}
-	//RETURN String.Empty   
+	//RETURN String.Empty
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rat/*" />
@@ -638,14 +636,14 @@ FUNCTION RAt(cSearch AS STRING,cTarget AS STRING) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rat/*" />
 FUNCTION RAt2(cSearch AS STRING,cTarget AS STRING) AS DWORD
-	RETURN RAt(cSearch,cTarget) 
+	return RAt(cSearch,cTarget)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rat3/*" />
 FUNCTION RAt3(cSearch AS STRING,cTarget AS STRING,dwOffSet AS DWORD) AS DWORD
 	LOCAL nResult := 0 AS DWORD
 	IF cSearch != NULL .AND. cTarget != NULL
 		IF cTarget:Length != 0 .AND. cSearch:Length != 0
-			IF dwOffSet > (DWORD) cTarget:Length 
+			if dwOffSet > (dword) cTarget:Length
 				dwOffSet := 0U
 			ENDIF
 			VAR cTemp := cTarget:Substring((INT) dwOffSet)
@@ -667,7 +665,7 @@ FUNCTION RAtLine(cSearch AS STRING, cTarget AS STRING) AS DWORD
 	ENDIF
 	nPos := RAt(cSearch,cTarget)
 	cTarget := Left(cTarget,nPos-1)
-	
+
 	RETURN MemLines(cTarget)
 
 
@@ -745,7 +743,7 @@ FUNCTION SoundEx(cString AS STRING) AS STRING
 	LOCAL i			AS INT
 	LOCAL cLastChar AS CHAR
 	LOCAL cSoundExChar AS CHAR
-	
+
 	IF String.IsNullOrEmpty(cString)
 		RETURN "0000"
 	END IF
@@ -765,8 +763,8 @@ FUNCTION SoundEx(cString AS STRING) AS STRING
 		ENDIF
 	NEXT
 	ret := sb:ToString()
-	
-	RETURN ret:PadRight( 4, '0' ) 
+
+	return ret:PadRight( 4, '0' )
 
 INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
 	LOCAL ret AS CHAR
@@ -782,7 +780,7 @@ INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
 			ret := c'2'
 		CASE c'D' ;	CASE c'T'
 			ret := c'3'
-		CASE c'L' 
+		case c'L'
 			ret := c'4'
 		CASE c'M' ;	CASE c'N'
 			ret := c'5'
@@ -791,7 +789,7 @@ INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
 		OTHERWISE
 			ret := '0'
 	END SWITCH
-	
+
 	RETURN ret
 
 
@@ -807,12 +805,12 @@ FUNCTION Stuff(cTarget AS STRING,dwStart AS DWORD,dwDelete AS DWORD,cInsert AS S
 			dwStart -= 1
 		ENDIF
 		LOCAL part1 := cTarget AS STRING
-		IF  (INT) dwStart < cTarget:Length 
+		if  (int) dwStart < cTarget:Length
 			part1 := cTarget:Substring(0,(INT)dwStart)
 		ENDIF
 		LOCAL part2 := "" AS STRING
 		VAR iOffSet := (INT) (dwStart + dwDelete)
-		IF  iOffSet  < cTarget:Length 
+		if  iOffSet  < cTarget:Length
 			part2 := cTarget:Substring( iOffSet )
 		ENDIF
 		result := part1 + cInsert + part2
@@ -825,15 +823,15 @@ FUNCTION __SubStr( c AS STRING, nStart AS INT, nLength AS INT ) AS STRING
 		IF nStart == 0
 			nStart := 1
 		ENDIF
-		
+
 		IF nStart < 0
 			nStart := c:Length+nStart+1
 		ENDIF
-		
+
 		IF nLength < 0
 			nLength := c:Length
 		ENDIF
-		
+
 		IF nStart <= c:Length .AND. nStart > 0
 			nLength := Math.Min( c:Length - nStart + 1, nLength )
 			c := c:Substring( nStart - 1, nLength )
@@ -890,7 +888,7 @@ FUNCTION UpperA(cString REF STRING) AS STRING
 /// </returns>
 FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS IntPtr) AS DWORD
 	THROW NotImplementedException{}
-//RETURN 0   
+//RETURN 0
 
 /// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
@@ -898,7 +896,7 @@ FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS IntPtr) AS DWORD
 /// </returns>
 FUNCTION UUEncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	//RETURN String.Empty   
+	//RETURN String.Empty
 
 /// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
@@ -906,7 +904,7 @@ FUNCTION UUEncFile(c AS STRING) AS STRING
 /// </returns>
 FUNCTION UUEncLine(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	//RETURN String.Empty   
+	//RETURN String.Empty
 
 
 
@@ -1043,12 +1041,12 @@ FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
         OTHERWISE
             IF sWildCard[nWildPos] == sSource[nSrcPos]
                 // match character after asterisk ?
-                IF lAsterisk 
+                if lAsterisk
                     lAsterisk := FALSE
                 ENDIF
                 nWildPos++
             ELSE
-                IF ! lAsterisk 
+                if ! lAsterisk
                     RETURN FALSE
                 ENDIF
             ENDIF

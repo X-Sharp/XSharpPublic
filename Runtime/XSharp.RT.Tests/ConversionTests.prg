@@ -285,5 +285,74 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			SetDigitFixed(digitfixed)
 		RETURN
 
+		[Fact, Trait("Category", "VariousConversions")];
+		METHOD SystemDecimalConversions() AS VOID
+			LOCAL deci,thou,decimal AS USUAL
+			deci := SetDecimalSep(Asc(","))
+			thou := SetThousandSep(Asc("."))
+			decimal := SetDecimal(2)
+
+			LOCAL d AS System.Decimal
+			LOCAL u AS USUAL
+			LOCAL f AS FLOAT
+			
+			f := 123.456
+			Assert.Equal( 3, f:Decimals )
+			Assert.Equal( "123,456", Str(f,-1) )
+
+			u := 123.456
+			f := u
+			Assert.Equal( 3, f:Decimals )
+			Assert.Equal( "123,456", Str(f,-1) )
+
+			d := 123.456m
+			f := d
+			Assert.Equal( 2, f:Decimals )
+			Assert.Equal( "123,46", Str(f,-1) )
+
+			u := d
+			f := u
+			Assert.Equal( 2, f:Decimals )
+			Assert.Equal( "123,46", Str(f,-1) )
+
+			SetDecimal(4)
+			f := d
+			Assert.Equal( 4, f:Decimals )
+			Assert.Equal( "123,4560", Str(f,-1) )
+
+			u := d
+			f := u
+			Assert.Equal( 4, f:Decimals )
+			Assert.Equal( "123,4560", Str(f,-1) )
+
+
+			SetDecimal(1)
+			LOCAL y AS Currency
+			y := 123.456
+			Assert.Equal( "123,4560", Str(y,-1) )
+			f := y
+			Assert.Equal( "123,4560", Str(f,-1) )
+			u := y
+			Assert.Equal( "123,4560", Str(u,-1) )
+			u := y
+			f := u
+			Assert.Equal( "123,4560", Str(f,-1) )
+
+			SetDecimalSep(deci)
+			SetThousandSep(thou)
+			SetDecimal(decimal)
+
+			// picture is invalid so result random, but make sure no exception is thrown
+			LOCAL dVal := 1 AS Decimal
+			LOCAL yVal := 1 AS Currency
+			LOCAL uVal AS USUAL
+			? Transform(dVal, "@R{9999}")
+			? Transform(yVal, "@R{9999}")
+			uVal := dVal
+			? Transform(uVal, "@R{9999}")
+			uVal := yVal
+			? Transform(uVal, "@R{9999}")
+		RETURN
+
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

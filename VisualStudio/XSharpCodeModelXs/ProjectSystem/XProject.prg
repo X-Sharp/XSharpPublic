@@ -820,11 +820,6 @@ BEGIN NAMESPACE XSharpModel
          result := FilterUsings(result, usings,startWith,true)
          RETURN GetPETypes(result)
 
-     METHOD GetAssemblyTypes(startWith AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
-         VAR result := XDatabase.GetAssemblyTypesLike(startWith, SELF:DependentAssemblyList )
-         // convert the database objects to the PeTypeSymbols
-         RETURN GetPETypes(result)
-
       PRIVATE METHOD FindAssemblyById(IdAssembly as INT64) AS XAssembly
 
             if _AssemblyDict:ContainsKey(IdAssembly)

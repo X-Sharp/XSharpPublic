@@ -1683,7 +1683,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // add one ) or ))
                     result.AddRange(_textProps.textLineEnd);
                 }
-                result.Add(new XSharpToken(XSharpLexer.EOS, "\r\n", original[0]));
+                result.Add(new XSharpToken(XSharpLexer.EOS, "\n", original[0]));
 
             }
             if (write2PPO)
@@ -1862,7 +1862,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     result.Add(_textProps.RParen);
                 }
-                result.Add(new XSharpToken(XSharpLexer.EOS, "\r\n", anchor));
+                result.Add(new XSharpToken(XSharpLexer.EOS, "\n", anchor));
                 if (write2PPO)
                 {
                     if (result.Count > 0)

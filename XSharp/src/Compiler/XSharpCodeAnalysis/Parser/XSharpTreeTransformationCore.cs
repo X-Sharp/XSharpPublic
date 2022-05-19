@@ -3255,7 +3255,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = m.ToList<SyntaxToken>();
                 _pool.Free(m);
             }
- 
+
             if (singleLine)         // Single Line Syntax
             {
                 var acclist = _syntaxFactory.AccessorList(
@@ -6812,7 +6812,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         return false;
 
                     case XP.ILoopStmtContext:
-                        // FOR , DO WHILE etc may have EXIT 
+                        // FOR , DO WHILE etc may have EXIT
                         continue;
 
                     case XP.IBlockStmtContext blockstmt:
@@ -7183,6 +7183,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Put(node);
             }
+        }
+
+        public override void ExitPragmaStmt([NotNull] XP.PragmaStmtContext context)
+        {
+            base.ExitPragmaStmt(context);
+            context.SetSequencePoint(context.Stmt.end);
+            context.Put(_syntaxFactory.EmptyStatement(attributeLists: default, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void ExitNopStmt([NotNull] XP.NopStmtContext context)

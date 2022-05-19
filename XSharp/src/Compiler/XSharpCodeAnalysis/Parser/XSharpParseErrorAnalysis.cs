@@ -260,7 +260,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
             }
-            
+
         }
 
         public override void ExitLocalvar([NotNull] XSharpParser.LocalvarContext context)
@@ -268,8 +268,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isDim = context.Dim != null;
             bool hasArraySub = context.ArraySub != null;
             if (isDim && !hasArraySub)
-            { 
-                _parseErrors.Add(new ParseErrorData(context.DIM(), ErrorCode.ERR_ArrayInitializerExpected)); 
+            {
+                _parseErrors.Add(new ParseErrorData(context.DIM(), ErrorCode.ERR_ArrayInitializerExpected));
             }
             if (!isDim && hasArraySub && _options.Dialect == XSharpDialect.Core)
             {
@@ -393,7 +393,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        //         0        1       2 3 4 5 6 
+                        //         0        1       2 3 4 5 6
                         // #pragma warnings disable 1 , 2 , 3
                         if (tokens.Count > 2)
                         {
@@ -437,10 +437,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     switch (i2.Text.ToLower())
                     {
+                        case "enable":
+                        case "true":
                         case "on":
                             state = Pragmastate.On;
                             break;
                         case "disable":
+                        case "false":
                         case "off":
                             state = Pragmastate.Off;
                             break;
@@ -811,9 +814,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_VarargsLast));
                 }
             }
-        } 
+        }
 
-        public override void ExitFoxmethod([NotNull] XSharpParser.FoxmethodContext context) 
+        public override void ExitFoxmethod([NotNull] XSharpParser.FoxmethodContext context)
         {
             if (context.HelpString != null)
             {
@@ -1179,7 +1182,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
             }
-        } 
+        }
 
         public override void ExitPropertyAccessor([NotNull] XSharpParser.PropertyAccessorContext context)
         {

@@ -35,12 +35,12 @@ macroScript         : ( CbExpr=codeblock | Code=codeblockCode ) EOS
                     ;
 
 source              :  (Entities+=entity )* EOF
-                    ; 
+                    ;
 
 foxsource           :  (MemVars += filewidememvar)*
                        StmtBlk=statementBlock
                        (Entities+=entity )* EOF
-                    ; 
+                    ;
 
 entity              : namespace_
                     // types
@@ -73,19 +73,19 @@ entity              : namespace_
                     ;
 
 
-eos                 : EOS+ 
+eos                 : EOS+
                     ;
 
                         // everything is handled in the error analysis and the treetransformation
-pragma                : P=PRAGMA (Tokens += ~EOS)*? EOS
+pragma                : P=PRAGMA (Tokens += ~EOS)*? end=EOS
                       ;
 
 
-funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
+funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                         T=funcproctype Sig=signature
-                        InitExit=(INIT1|INIT2|INIT3|EXIT)?                        
+                        InitExit=(INIT1|INIT2|INIT3|EXIT)?
                         vodummyclauses
-                        end=eos   
+                        end=eos
                         StmtBlk=statementBlock
                         (END T2=funcproctype EOS )?
                       ;
@@ -93,11 +93,11 @@ funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
 funcproctype          : Token=(FUNCTION|PROCEDURE)
                       ;
 
-signature             : Id=identifier                             
-                        TypeParameters=typeparameters?                            
-                        (ParamList=parameterList)?                                
-                        (AS Type=datatype)?                                       
-                        (ConstraintsClauses+=typeparameterconstraintsclause)*     
+signature             : Id=identifier
+                        TypeParameters=typeparameters?
+                        (ParamList=parameterList)?
+                        (AS Type=datatype)?
+                        (ConstraintsClauses+=typeparameterconstraintsclause)*
                         (CallingConvention=callingconvention)?
                         (UDCSEP ExpressionBody=expression)?                       // New: Expression Body
                       ;
@@ -124,16 +124,16 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                     // We parse the numeric entrypoint here but we will throw an error during the tree transformation
                     // _DLL FUNCTION SetDebugErrorLevel( dwLevel AS DWORD) AS VOID PASCAL:USER32.123
                     // and Finally we also parse the @Num
-                    // 
+                    //
 
 vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
-                      D=DLL T=funcproctype Id=identifier ParamList=parameterList (AS Type=datatype)? 
+                      D=DLL T=funcproctype Id=identifier ParamList=parameterList (AS Type=datatype)?
                       (CallingConvention=dllcallconv)? COLON
                       Dll=identifierString (DOT Extension=identifierString)?
-                      (	Ordinal=REAL_CONST 
-                       |  DOT Entrypoint=identifierString Address=ADDROF? Number=INT_CONST? (NEQ2 INT_CONST)? 
+                      (	Ordinal=REAL_CONST
+                       |  DOT Entrypoint=identifierString Address=ADDROF? Number=INT_CONST? (NEQ2 INT_CONST)?
                       )
-                       
+
                       ( CharSet=(AUTO | ID) )?  // ID must be either ANSI or UNICODE
                       EOS
                     ;
@@ -145,9 +145,9 @@ dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL | ASP
 
                     // Note that when an alias is specified (AS) then that is the name that we should use and then the Id is the entrypoint
 foxdll              : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
-                      DECLARE (Type=datatype)? Id=identifier IN Dll=identifier (DOT Extension=identifierString)? (AS Alias=identifier)? 
+                      DECLARE (Type=datatype)? Id=identifier IN Dll=identifier (DOT Extension=identifierString)? (AS Alias=identifier)?
                       ( Params+=foxdllparam (COMMA Params+=foxdllparam)* )?
-                      EOS  
+                      EOS
                     ;
 
 
@@ -190,14 +190,14 @@ using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoper
                     // [STATIC] GLOBAL [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
                     // STATIC          [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
 voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Global=GLOBAL (Const=CONST)?
-                      Vars+=classvar (COMMA Vars+=classvar)* end=EOS 
+                      Vars+=classvar (COMMA Vars+=classvar)* end=EOS
                     | (Attributes=attributes)? Static=STATIC (Const=CONST)?
                       Vars+=classvar (COMMA Vars+=classvar)* end=EOS
                     ;
 
 
 
-// method rule used inside and outside class members rule 
+// method rule used inside and outside class members rule
 method              : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       T=methodtype (ExplicitIface=nameDot)? Sig=signature
                       (CLASS ClassId=identifier)?      // Class Clause needed when entity and allowed when class member
@@ -243,8 +243,8 @@ namespace_          : BEGIN NAMESPACE Name=name e=eos
                       END NAMESPACE EOS
                     ;
 
-interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?            
-                      I=INTERFACE (Namespace=nameDot)? Id=identifier                        
+interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
+                      I=INTERFACE (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?                                      // TypeParameters indicate Generic Interface
                       ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
                       (ConstraintsClauses+=typeparameterconstraintsclause)*              // Optional typeparameterconstraints for Generic Interface
@@ -254,10 +254,10 @@ interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                     ;
 
 
-class_              : (Attributes=attributes)? (Modifiers=classModifiers)?              
-                      C=CLASS (Namespace=nameDot)? Id=identifier                          
+class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
+                      C=CLASS (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?                                    // TypeParameters indicate Generic Class
-                      (INHERIT BaseType=datatype)?                                  
+                      (INHERIT BaseType=datatype)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
                       e=eos
@@ -318,7 +318,7 @@ enum_               : (Attributes=attributes)? (Modifiers=classModifiers)?
 
 enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assignoperator Expr=expression)? eos
                     ;
-                     
+
 event_              : (Attributes=attributes)? (Modifiers=memberModifiers)?
                        E=EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)?
                        ( end=EOS
@@ -422,7 +422,7 @@ classmember         : Member=method                                 #clsmethod
 
 constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)?
                       c1=CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
-                        (CallingConvention=callingconvention)? 
+                        (CallingConvention=callingconvention)?
                         (CLASS ClassId=identifier)?
                         (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                         end=eos
@@ -444,7 +444,7 @@ vodeclare           : DECLARE (ACCESS | ASSIGN | METHOD )  (~EOS)+ eos
                     ;
 
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
-                      d1=DESTRUCTOR (LPAREN RPAREN)? 
+                      d1=DESTRUCTOR (LPAREN RPAREN)?
                       (CLASS ClassId=identifier)?
                       (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                       end=eos
@@ -482,9 +482,9 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
                       end=eos
                       StmtBlk=statementBlock
                      (END o1=OPERATOR EOS)?
-                      
+
                     ;
-        
+
 operatorModifiers   : ( Tokens+=(PUBLIC | STATIC | EXTERN) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
@@ -520,12 +520,13 @@ filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierN
 
 
 statement           : Decl=localdecl                        #declarationStmt
+                    | Stmt=pragma                           #pragmaStmt
                     | Decl=localfuncproc                    #localFunctionStmt
                     | {!IsFox}? Decl=xbasedecl              #xbasedeclStmt  // Memvar declarations, not for FoxPro
                     | Decl=fielddecl                        #fieldStmt
-                    | {IsFox}? Decl=foxdecl                 #foxdeclStmt    // Memvar declarations FoxPro specific 
+                    | {IsFox}? Decl=foxdecl                 #foxdeclStmt    // Memvar declarations FoxPro specific
                     | DO? w=WHILE Expr=expression end=eos
-                      StmtBlk=statementBlock 
+                      StmtBlk=statementBlock
                       ((e=END (DO|WHILE)? | e=ENDDO) eos)?	#whileStmt
                     | NOP (LPAREN RPAREN )? end=eos					#nopStmt
                     | f=FOR
@@ -563,7 +564,7 @@ statement           : Decl=localdecl                        #declarationStmt
                       eos                                                 #repeatStmt
                     | (f=FOREACH | f=FOR EACH)
                       ( V=IMPLIED Id=varidentifier
-                      | Id=varidentifier (AS Type=datatype)? 
+                      | Id=varidentifier (AS Type=datatype)?
                       | V=VAR Id=varidentifier
                       )
                       IN Container=expression end=eos
@@ -627,7 +628,7 @@ statement           : Decl=localdecl                        #declarationStmt
 	                ;
 
 ifElseBlock         : Cond=expression Then=THEN? end=eos StmtBlk=statementBlock
-                      ( ELSEIF ElseIfBlock=ifElseBlock 
+                      ( ELSEIF ElseIfBlock=ifElseBlock
                     | ELSE eos ElseBlock=statementBlock)?
                     ;
 
@@ -637,8 +638,8 @@ caseBlock           : Key=CASE Cond=expression end=eos StmtBlk=statementBlock Ne
 
 // Note that literalValue is not enough. We also need to support members of enums
 switchBlock         : (
-                      Key=CASE Const=expression (W=WHEN whenexpr=expression)? 
-                    | Key=CASE Id=varidentifier AS DataType=datatype (W=WHEN whenexpr=expression)? 
+                      Key=CASE Const=expression (W=WHEN whenexpr=expression)?
+                    | Key=CASE Id=varidentifier AS DataType=datatype (W=WHEN whenexpr=expression)?
                     | Key=OTHERWISE
                     )
                     end=eos StmtBlk=statementBlock
@@ -672,13 +673,13 @@ variableDeclarator  : Id=varidentifier Op=assignoperator Expr=expression
 // then the type of the following element propagates forward until for all elements without type
 
 // FoxPro allows LOCAL M.Name The M is only lexed in FoxPro dialect
-// We parse the M. Prefix in the localvar rule but ignore it, it is not relevant here. 
+// We parse the M. Prefix in the localvar rule but ignore it, it is not relevant here.
 
-localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl	
-                   | Static=STATIC LOCAL    LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl	
+localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl
+                   | Static=STATIC LOCAL    LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl
                    | {!XSharpLexer.IsKeyword(InputStream.La(2))}?   // STATIC Identifier , but not STATIC <Keyword>
                      Static=STATIC          LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl
-                   // The following rules allow STATIC in the parser, 
+                   // The following rules allow STATIC in the parser,
                    // but the treetransformation will produce an error 9044 for STATIC implied
                    | Static=STATIC? VAR           ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    | Static=STATIC LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
@@ -687,7 +688,7 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    | Using=USING Static=STATIC? LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    ;
 
-localvar           : (Const=CONST)? ( Dim=DIM )? Id=varidentifier (LBRKT ArraySub=arraysub RBRKT)?  
+localvar           : (Const=CONST)? ( Dim=DIM )? Id=varidentifier (LBRKT ArraySub=arraysub RBRKT)?
                      (Op=assignoperator Expression=expression)? (As=(AS | IS) DataType=datatype (OF ClassLib=identifierName)?  )?
                    ;
 
@@ -706,8 +707,8 @@ xbasedecl           : T=(MEMVAR|PARAMETERS) Vars+=varidentifierName
                       (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar
                       // This includes the optional initializer or array dimension
                     | T=(PRIVATE|PUBLIC) XVars+=xbasevar
-                      (COMMA XVars+=xbasevar)*  end=eos      
-                    ;  
+                      (COMMA XVars+=xbasevar)*  end=eos
+                    ;
 
 // For the variable list for Private and Public
 xbasevar            : (Amp=AMP)?  Id=varidentifierName
@@ -731,16 +732,16 @@ foxdecl             : T=(DIMENSION|DECLARE) DimVars += dimensionVar
                         (COMMA Vars+=varidentifierName XT=xbasedecltype? )* end=eos
                     // This has names and optional ampersands
                     | T=(PRIVATE|PUBLIC) XVars+=foxbasevar       // FoxBaseVar also allows Ampersands
-                        (COMMA XVars+=foxbasevar)*  end=eos      
+                        (COMMA XVars+=foxbasevar)*  end=eos
                     // Variations of LOCAL and PUBLIC with the ARRAY keyword
                     | T=LOCAL Ar=ARRAY DimVars += dimensionVar
-                        (COMMA DimVars+=dimensionVar)*    end=eos  
+                        (COMMA DimVars+=dimensionVar)*    end=eos
                     | T=PUBLIC (Ar=ARRAY)? DimVars += dimensionVar
-                        (COMMA DimVars+=dimensionVar)*    end=eos  
+                        (COMMA DimVars+=dimensionVar)*    end=eos
                    ;
 
                     // FoxPro dimension statement allows the AS Type per variable name
-dimensionVar        : (Amp=AMP)?  Id=varidentifierName 
+dimensionVar        : (Amp=AMP)?  Id=varidentifierName
                         ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
                         | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
                         XT=xbasedecltype?  // is ignored in FoxPro too, except when calling COM components
@@ -748,7 +749,7 @@ dimensionVar        : (Amp=AMP)?  Id=varidentifierName
 
 xbasedecltype       : AS Type=datatype (OF ClassLib=identifierName)?
                     ;  // parsed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor
-                    
+
 
 // For the variable list for Private and Public
 foxbasevar          : (Amp=AMP)?  Id=varidentifierName
@@ -757,11 +758,11 @@ foxbasevar          : (Amp=AMP)?  Id=varidentifierName
 
 
 
-localfuncproc       :  (Modifiers=localfuncprocModifiers)?   
+localfuncproc       :  (Modifiers=localfuncprocModifiers)?
                         LOCAL T=funcproctype Sig=signature
-                        end=eos   
+                        end=eos
                         StmtBlk=statementBlock
-                        END T2=funcproctype  EOS 
+                        END T2=funcproctype  EOS
                      ;
 
 localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
@@ -787,7 +788,7 @@ localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
 assignoperator      : Op = (ASSIGN_OP | EQ)
                     ;
 
-expression          : Expr=expression Op=(DOT | COLON) Name=simpleName         #accessMember           // member access. 
+expression          : Expr=expression Op=(DOT | COLON) Name=simpleName         #accessMember           // member access.
                     |    Op=(DOT|COLON|COLONCOLON)   Name=simpleName           #accessMember            // XPP & Harbour SELF member access or inside WITH
                     | Left=expression Op=(DOT | COLON) AMP LPAREN Right=expression RPAREN  #accessMemberLate // aa:&(Expr). Expr must evaluate to a string which is the ivar name
                                                                                                         // can become IVarGet() or IVarPut when this expression is the LHS of an assignment
@@ -804,14 +805,14 @@ expression          : Expr=expression Op=(DOT | COLON) Name=simpleName         #
                     | Expr=expression Op=(INC | DEC)                            #postfixExpression      // expr ++/--
                     | Op=AWAIT Expr=expression                                  #awaitExpression        // AWAIT expr
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
-                    | Expr=expression Op=IS Type=datatype (VAR Id=varidentifier)? #typeCheckExpression    // expr IS typeORid [VAR identifier] 
+                    | Expr=expression Op=IS Type=datatype (VAR Id=varidentifier)? #typeCheckExpression    // expr IS typeORid [VAR identifier]
                     | Expr=expression Op=ASTYPE Type=datatype                   #typeCheckExpression    // expr AS TYPE typeORid
                     | Left=expression Op=EXP Right=expression                   #binaryExpression       // expr ^ expr
                     | Left=expression Op=(MULT | DIV | MOD) Right=expression    #binaryExpression       // expr * expr
                     | Left=expression Op=(PLUS | MINUS) Right=expression        #binaryExpression       // expr +/- expr
                     | Left=expression Op=LSHIFT Right=expression                #binaryExpression       // expr << expr (shift)
                     | Left=expression Op=GT Gt=GT Right=expression              #binaryExpression       // expr >> expr (shift)
-                    | Left=expression Op=( LT | LTE | GT | GTE | EQ | EEQ | 
+                    | Left=expression Op=( LT | LTE | GT | GTE | EQ | EEQ |
                                           SUBSTR | NEQ | NEQ2) Right=expression #binaryExpression       // expr >= expr (relational)
                     | Left=expression Op=AMP Right=expression                   #binaryExpression       // expr & expr (bitwise and)
                     | Left=expression Op=TILDE Right=expression                 #binaryExpression       // expr ~ expr (bitwise xor)
@@ -843,7 +844,7 @@ primary             : Key=SELF                                                  
                     | Type=datatype LCURLY Obj=expression COMMA
                       ADDROF Func=name LPAREN RPAREN RCURLY                     #delegateCtorCall		// delegate{ obj , @func() }
                     | Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?  #ctorCall   // id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
-                    | Type=datatype LCURLY ArgList=argumentList  RCURLY	
+                    | Type=datatype LCURLY ArgList=argumentList  RCURLY
                                                    Init=objectOrCollectioninitializer?  #ctorCall				// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | ch=(CHECKED|UNCHECKED) LPAREN Expr=expression  RPAREN     #checkedExpression		// checked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		// typeof( typeORid )
@@ -887,7 +888,7 @@ aliasExpression     : MEMVAR ALIAS VarName=identifier                           
                     // DbSeek((nArea)->Field1 + (nArea)->Field2)
                     // The seek expression would be seen as  "(nArea)->(Field1+(nArea)->Field2)"
                     | {InputStream.La(6) != LPAREN}?
-                      LPAREN Area=identifier RPAREN ALIAS Field=identifier      #aliasedField		      // (nCust)->NAME  
+                      LPAREN Area=identifier RPAREN ALIAS Field=identifier      #aliasedField		      // (nCust)->NAME
                     | Alias=identifier              ALIAS AMP Field=expression  #aliasedFieldLate	    // CUSTOMER->&fldName
                     | FIELD ALIAS (Alias=identifier ALIAS)? AMP Field=expression #aliasedFieldLate	  // _FIELD->CUSTOMER->&fldName or _FIELD->&fldName
                     | LPAREN Area=identifier RPAREN ALIAS AMP Field=expression  #aliasedFieldLate	  // (nCust)->&fldName
@@ -895,7 +896,7 @@ aliasExpression     : MEMVAR ALIAS VarName=identifier                           
                     // !(CUSTOMER)->(Eof()) .and. SomeOtherCondition
                     // Because the subrule with LPAREN and RPAREN is listed first then only Eof() will be evaluated in the workarea.
                     | ( Id=identifier | LPAREN Alias=expression RPAREN)
-                       ALIAS ( (LPAREN Expr=expression RPAREN) | Expr=expression )  #aliasedExpr          // id -> expr   or (expr) -> expr 
+                       ALIAS ( (LPAREN Expr=expression RPAREN) | Expr=expression )  #aliasedExpr          // id -> expr   or (expr) -> expr
                     ;
 
 // Initializers
@@ -993,7 +994,7 @@ typeName            : NativeType=nativeType
                     ;
 
 usualTypeName       : NativeType=nativeType					// just type typenames that are allowed for USUAL variables
-                    | XType=xbaseType				
+                    | XType=xbaseType
                     ;
 
                     // Separate rule for Array with zero elements, to prevent entering the first arrayElement rule
@@ -1023,12 +1024,12 @@ codeblock       : LCURLY (Or=OR | P1=PIPE LambdaParamList=lambdaParameterList? P
                    Code=codeblockCode RCURLY
                     ;
 
-codeblockCode     : Expr=expression? 
+codeblockCode     : Expr=expression?
                   | eos StmtBlk=statementBlock
-                  | ExprList=codeblockExprList 
+                  | ExprList=codeblockExprList
                   ;
 
-lambdaParameterList : ImplicitParams=codeblockParamList 
+lambdaParameterList : ImplicitParams=codeblockParamList
                     | ExplicitParams=explicitAnonymousFunctionParamList
                     ;
 
@@ -1038,9 +1039,9 @@ codeblockParamList  : Ids+=identifier (COMMA Ids+=identifier)*
 codeblockExprList   : (Exprs+=expression? COMMA)+ ReturnExpr=expression
                     ;
 
-// Anonymous methods 
-anonymousMethodExpression : (Async=ASYNC)? Delegate=DELEGATE (LPAREN ParamList=explicitAnonymousFunctionParamList? RPAREN)? 
-                            LCURLY Code=codeblockCode RCURLY 
+// Anonymous methods
+anonymousMethodExpression : (Async=ASYNC)? Delegate=DELEGATE (LPAREN ParamList=explicitAnonymousFunctionParamList? RPAREN)?
+                            LCURLY Code=codeblockCode RCURLY
                           ;
 
 explicitAnonymousFunctionParamList  : Params+=explicitAnonymousFunctionParameter (COMMA Params+=explicitAnonymousFunctionParameter)*
@@ -1091,9 +1092,9 @@ identifier          : ID            // No names, we use the Start property to ac
                     | keywordxpp
                     | keywordfox
                     ;
-                     
+
 identifierString    : ID            // No names, we use the Start property to access the token
-                    | STRING_CONST 
+                    | STRING_CONST
                     | keywordxs
                     | keywordxpp
                     | keywordfox
@@ -1170,44 +1171,44 @@ literalValue        : Token=
                     | NULL_PSZ
                     | NULL_PTR
                     | NULL_STRING
-                    | NULL_SYMBOL 
+                    | NULL_SYMBOL
                     | NULL_FOX )
                     ;
 
-                     
-keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | DLL | DO 
-                    | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FOR | FUNCTION 
+
+keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | DLL | DO
+                    | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FOR | FUNCTION
                     | HIDDEN | IF | IIF | IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
                     | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SIZEOF | SUPER
                     | TYPEOF | WHILE | TRY | VO_AND | VO_NOT | VO_OR | VO_XOR
                     // The following new keywords cannot be in the keywordxs list because it will match an expression when used on their own
-                    | REPEAT | CONSTRUCTOR | CATCH | DESTRUCTOR | FINALLY 
+                    | REPEAT | CONSTRUCTOR | CATCH | DESTRUCTOR | FINALLY
                     )
                     ;
 
 
 keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS | NEW | OUT | REF | SET |  VALUE | VIRTUAL | INTERNAL
                     // The following did not exist in Vulcan
-                    | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM 
-                    | GROUP | INIT | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
-                    | SELECT | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME | NINT | NUINT 
+                    | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM
+                    | GROUP | INIT | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE
+                    | SELECT | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME | NINT | NUINT
                     // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
-                    | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE    
+                    | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE
                     // The following 'old' keywords are never used 'alone' and are harmless as identifiers
-                    | ALIGN | CALLBACK | CLIPPER  | DIM | DOWNTO | DLLEXPORT  
-                    | FASTCALL | IN | INIT1 | INIT2 | INIT3 | INSTANCE | PASCAL |  SEQUENCE 
-                    | STEP | STRICT | TO | THISCALL |  UPTO | USING | WINCALL 
+                    | ALIGN | CALLBACK | CLIPPER  | DIM | DOWNTO | DLLEXPORT
+                    | FASTCALL | IN | INIT1 | INIT2 | INIT3 | INSTANCE | PASCAL |  SEQUENCE
+                    | STEP | STRICT | TO | THISCALL |  UPTO | USING | WINCALL
                     // The following keywords are handled in the fixPositionalKeyword() method of the lexer and will only be keywords at the right place
                     // but when they code event->(DoSomething()) we still need them in this rule...
-                    | DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FIELD | FOREACH | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP 
+                    | DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FIELD | FOREACH | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP
                     | PARTIAL | SEALED | ABSTRACT | UNSAFE | SCOPE | NAMESPACE | LOCK | IMPLICIT | IMPLIED | INITONLY | PROPERTY | INTERFACE
-                    | VOSTRUCT | UNION | DECLARE | OPERATOR	
+                    | VOSTRUCT | UNION | DECLARE | OPERATOR
                     )
                     ;
-					
-/// XBase++ Parser definities					
-					
+
+/// XBase++ Parser definities
+
 keywordxpp         : Token=(SHARING| SHARED| ASSIGNMENT| EXPORTED| READONLY| NOSAVE )
                    ;
                    // context sensitive keywords
@@ -1216,16 +1217,16 @@ keywordxpp         : Token=(SHARING| SHARED| ASSIGNMENT| EXPORTED| READONLY| NOS
 
 
 xppclass           :  Attributes=attributes?                                // NEW Optional Attributes
-                      Modifiers=xppclassModifiers?                          // [STATIC|FREEZE|FINAL] 
+                      Modifiers=xppclassModifiers?                          // [STATIC|FREEZE|FINAL]
                        C=CLASS (Namespace=nameDot)? Id=identifier               // CLASS <ClassName>
                        (
-                          From=(FROM| SHARING) BaseTypes+=datatype (COMMA BaseTypes+=datatype)*  // [FROM <SuperClass,...>] ; 
+                          From=(FROM| SHARING) BaseTypes+=datatype (COMMA BaseTypes+=datatype)*  // [FROM <SuperClass,...>] ;
                        )?                                                                   // [SHARING <SuperClass,...>]
                        (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)? // NEW Implements
                        // No type parameters and type parameter constraints
                       e=eos
                       Members+=xppclassMember*
-                      ENDCLASS 
+                      ENDCLASS
                       eos
                     ;
 
@@ -1243,14 +1244,14 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
 xppmethodvis        : Vis=xppvisibility COLON eos
                     ;
 
-xppvisibility       : Token=(HIDDEN | PROTECTED | EXPORTED | INTERNAL | PUBLIC | PRIVATE )         
+xppvisibility       : Token=(HIDDEN | PROTECTED | EXPORTED | INTERNAL | PUBLIC | PRIVATE )
                     ;
 
 xppdeclareMethod    : Attributes=attributes?                                  // NEW Optional Attributes
-                      Modifiers=xppdeclareModifiers?                          // [DEFERRED |FINAL | INTRODUCE | OVERRIDE] [CLASS] 
-                      METHOD Methods+=identifier xppdeclmethodparams?         // METHOD <MethodName,...> 
+                      Modifiers=xppdeclareModifiers?                          // [DEFERRED |FINAL | INTRODUCE | OVERRIDE] [CLASS]
+                      METHOD Methods+=identifier xppdeclmethodparams?         // METHOD <MethodName,...>
                       (
-                          Is=xppisin                                           //  [IS <Name>] [IN <SuperClass>] 
+                          Is=xppisin                                           //  [IS <Name>] [IN <SuperClass>]
                           | (COMMA Methods+=identifier xppdeclmethodparams?)* // or an optional comma seperated list of other names
                       )
                       eos
@@ -1263,29 +1264,29 @@ xppdeclmethodparams : LPAREN (identifier  (COMMA identifier)*)? RPAREN      // (
 xppisin             : (IS identifier)? (IN identifier)?                     //  IS <Name> [IN <SuperClass>] = ignored
                     ;
 
-                    
+
 
 xppdeclareModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLASS | SYNC | ABSTRACT | NEW | STATIC) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
-xppclassvars        : Modifiers=xppmemberModifiers?                               // [CLASS | STATIC] 
-                      VAR Vars+=identifier                                        // VAR <VarName> 
+xppclassvars        : Modifiers=xppmemberModifiers?                               // [CLASS | STATIC]
+                      VAR Vars+=identifier                                        // VAR <VarName>
                       (
-                        Is=xppisin                                                // [IS <Name>] [IN <SuperClass>] 
-                        | ((COMMA Vars+=identifier)*                              // <,...> 
+                        Is=xppisin                                                // [IS <Name>] [IN <SuperClass>]
+                        | ((COMMA Vars+=identifier)*                              // <,...>
                         (AS DataType=datatype)?  )                                // Optional data type
 
                       )
                       Shared=SHARED?                                            // [SHARED]
-                      ReadOnly=READONLY?                                        // [READONLY] 
-                      Assignment=xppvarassignment?                              // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] 
-                      Nosave= NOSAVE?                                           // [NOSAVE] 
+                      ReadOnly=READONLY?                                        // [READONLY]
+                      Assignment=xppvarassignment?                              // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED]
+                      Nosave= NOSAVE?                                           // [NOSAVE]
                       eos
                     ;
 
 
-xppvarassignment    : ASSIGNMENT xppvisibility                                    // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] 
+xppvarassignment    : ASSIGNMENT xppvisibility                                    // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED]
                     ;
 xppproperty         : Attributes=attributes?                                      // NEW Optional Attributes
                       Accessors=xppaccessors?                                     // [ACCESS | ASSIGN]
@@ -1305,7 +1306,7 @@ xppmethod           : Attributes=attributes?                                // N
                       Accessors=xppaccessors?                               // [ACCESS | ASSIGN]
                       Modifiers=xppmemberModifiers?                         // [CLASS]
                       M=METHOD (ClassId=identifier COLON)? Id=identifier    // [<ClassName>:] <MethodName>
-                      // no type parameters 
+                      // no type parameters
                       ParamList=parameterList?                            // Optional Parameters
                       (AS Type=datatype)?                                   // NEW Optional return type
                       // no type constraints
@@ -1321,7 +1322,7 @@ xppinlineMethod     : Attributes=attributes?                                 // 
                       Accessors=xppaccessors?                                // [ACCESS | ASSIGN]
                       Modifiers=xppmemberModifiers?                          // [CLASS]
                       METHOD  Id=identifier                                  // METHOD <MethodName>
-                      // no type parameters 
+                      // no type parameters
                       (ParamList=parameterList)?                             // Optional Parameters
                       (AS Type=datatype)?                                    // NEW Optional return type
                       // no type constraints
@@ -1340,7 +1341,7 @@ xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
 /// FoxPro Parser definities
 keywordfox          :  Token=( OLEPUBLIC | EACH | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR | THEN | FOX_M)
                       // These tokens are already marked as 'only valid in a certain context ' in the lexer
-                      // ENDDEFINE | DIMENSION | LPARAMETERS 
+                      // ENDDEFINE | DIMENSION | LPARAMETERS
                     ;
 // class declaration
 // text ... endtext
@@ -1350,7 +1351,7 @@ keywordfox          :  Token=( OLEPUBLIC | EACH | EXCLUDE| THISACCESS| HELPSTRIN
 foxclass            : (Attributes=attributes)?
                       D=DEFINE (Modifiers=classModifiers)?
                       CLASS (Namespace=nameDot)? Id=identifier
-                      TypeParameters=typeparameters? 
+                      TypeParameters=typeparameters?
                       (AS BaseType=datatype)?
                       (OF Classlib=identifier) ?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
@@ -1383,15 +1384,15 @@ foxclassmember      : Member=foxclassvars          #foxclsvars
 
 foxmethod           : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       T=funcproctype  Sig=signature
-                      (HelpString=HELPSTRING HelpText=expression)?          	
+                      (HelpString=HELPSTRING HelpText=expression)?
                       (ThisAccess=THISACCESS LPAREN MemberId=identifier RPAREN)?
                       end=eos
                       StmtBlk=statementBlock
                       (END T2=funcproctype  EOS)?
                     ;
 
-foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)? 
-                      (Fld=FIELD)? Vars += identifier (COMMA Vars += identifier )*  (AS DataType=datatype)? 
+foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)?
+                      (Fld=FIELD)? Vars += identifier (COMMA Vars += identifier )*  (AS DataType=datatype)?
                       end=eos
                     ;
 
@@ -1402,7 +1403,7 @@ foxfield            : (Modifiers=classvarModifiers)? (Fld=FIELD)? F=foxfieldinit
 foxfieldinitializer : Name=name assignoperator Expr=expression
                     ;
 
-foximplementsclause : IMPLEMENTS Type=datatype (Excl=EXCLUDE)? (IN Library=expression)? 
+foximplementsclause : IMPLEMENTS Type=datatype (Excl=EXCLUDE)? (IN Library=expression)?
                       end=eos
                     ;
 

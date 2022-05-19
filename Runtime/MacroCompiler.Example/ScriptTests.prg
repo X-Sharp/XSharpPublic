@@ -420,5 +420,16 @@ FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     "CLOSE ",;
     "RETURN true"}),Args("test"), TRUE, typeof(LOGIC))
 
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "#include ""XSharpDefs.xh"" ",;
+        "x := ''",;
+        "TEXT TO x",;
+        "aaa",;
+        "bbb",;
+        "ccc",;
+        "ENDTEXT",;
+        "return x",;
+        ""}),Args(), e"aaa\r\nbbb\r\nccc\r\n", typeof(string))
+
     RETURN
 

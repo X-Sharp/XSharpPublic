@@ -20,14 +20,12 @@ namespace XSharp.MacroCompiler
             internal bool InDottedIdentifier;
             internal bool HasEos;
             internal bool InPp;
-            internal bool InTextBlock;
             internal static LexerState Initial => new LexerState() {
                 LastToken = TokenType.NL,
                 Index = 0,
                 InDottedIdentifier = false,
                 HasEos = true,
                 InPp = false,
-                InTextBlock = false,
             };
         }
 
@@ -924,33 +922,6 @@ namespace XSharp.MacroCompiler
                     bool endOfLine = t == TokenType.NL || t == TokenType.SEMI;
                     bool startOfLine = _s.HasEos;
 
-                    /* Handle parsing of TEXT...ENDTEXT region (FoxPro) */
-                    
-                    if (startOfLine && t == TokenType.TEXT)
-                    {
-                        _s.InTextBlock = true;
-                    }
-                    else if (startOfLine && _s.InTextBlock)
-                    {
-                        if (t != TokenType.ENDTEXT)
-                        {
-                            Rewind(start);
-                            while (!Eoi())
-                            {
-                                while (ExpectAny(' ', '\t')) ;
-                                if (AssertText("ENDTEXT")) break;
-                                while (!ReachEol()) ;
-                                while (ExpectAny('\r', '\n')) ;
-                            }
-                            ch = Channel.Default;
-                            t = TokenType.TEXT_STRING_CONST;
-                            st = TokenType.UNRECOGNIZED;
-                            value = _Source.Substring(start, _s.Index - start);
-                            if (Eoi())
-                                t = TokenType.INCOMPLETE_STRING_CONST;
-                        }
-                        _s.InTextBlock = false;
-                    }
 
                     /* Update InDottedIdentifier state (handling of positional keyword in ID.ID constructs) */
                     if (!_s.InDottedIdentifier)

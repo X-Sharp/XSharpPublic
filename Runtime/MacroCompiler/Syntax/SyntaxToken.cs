@@ -71,7 +71,7 @@ namespace XSharp.MacroCompiler.Syntax
         AWAIT, ASYNC, ASTYPE, CHECKED, UNCHECKED,
 
         // Fox kws
-        M, TEXT, ENDTEXT, 
+        M, 
 
         LAST_POSITIONAL_KEYWORD,
 
@@ -492,8 +492,12 @@ namespace XSharp.MacroCompiler.Syntax
                 {"__DIALECT_HARBOUR__", TokenType.MACRO},
                 {"__DIALECT_XBASEPP__", TokenType.MACRO},
                 {"__DIALECT_FOXPRO__", TokenType.MACRO},
+                { "__MEMVAR__", TokenType.MACRO},
+                { "__UNDECLARED__", TokenType.MACRO},
+                { "__UNSAFE__", TokenType.MACRO},
                 {"__ENTITY__", TokenType.MACRO},
                 {"__FILE__", TokenType.MACRO},
+                {"__FUNCTION__", TokenType.MACRO},
                 {"__FUNCTIONS__", TokenType.MACRO},
                 {"__LINE__", TokenType.MACRO},
                 {"__MODULE__", TokenType.MACRO},
@@ -520,6 +524,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"__VO14__", TokenType.MACRO},
                 {"__VO15__", TokenType.MACRO},
                 {"__VO16__", TokenType.MACRO},
+                {"__VO17__", TokenType.MACRO},
                 {"__VULCAN__", TokenType.MACRO},
                 {"__WINDIR__", TokenType.MACRO},
                 {"__WINDRIVE__", TokenType.MACRO},
@@ -580,8 +585,6 @@ namespace XSharp.MacroCompiler.Syntax
                 // FoxPro keywords
                 {"PARAMETERS", TokenType.PARAMETERS},
                 {"LPARAMETERS", TokenType.LPARAMETERS},
-                {"TEXT", TokenType.TEXT},
-                {"ENDTEXT", TokenType.ENDTEXT},
             };
 
             var Keywords = new Dictionary<string, TokenType>
@@ -707,23 +710,22 @@ namespace XSharp.MacroCompiler.Syntax
                 { "#ENDIF", TokenType.PP_ENDIF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
                 { "#ENDREGION", TokenType.PP_ENDREGION},	// #region [description]sourceCode#endregion
                 { "#ERROR", TokenType.PP_ERROR},			// #error [errorMessage]
-                //{ "#IF", TokenType.PP_IF},			        // #if <condition>   <statements>...[#else]   <statements>...#endif
                 { "#IFDEF", TokenType.PP_IFDEF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
                 { "#IFNDEF", TokenType.PP_IFNDEF},			// #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
                 { "#INCLUDE", TokenType.PP_INCLUDE},		// #include "<headerfilename>"
                 { "#LINE", TokenType.PP_LINE},				// #line <number> [FileName] or #line default
                 { "#REGION", TokenType.PP_REGION},			// #region [description]sourceCode#endregion
-                { "#STDOUT", TokenType.PP_STDOUT},			// #stdout [<message>]
                 { "#TRANSLATE", TokenType.PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern>
                 { "#UNDEF", TokenType.PP_UNDEF},			// #undef <identifier>
-                { "#TEXT", TokenType.PP_TEXT},			    // 
-                { "#ENDTEXT", TokenType.PP_ENDTEXT},		// 
                 { "#WARNING", TokenType.PP_WARNING},		// #warning [warningMessage]
                 { "#XCOMMAND", TokenType.PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
                 { "#XTRANSLATE", TokenType.PP_TRANSLATE},    // #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
-
+                { "#IF", TokenType.PP_IF},			        // #if <condition>   <statements>...[#else]   <statements>...#endif
                 { "#USING", TokenType.USING},
                 { "#PRAGMA", TokenType.PRAGMA},
+                { "#STDOUT", TokenType.PP_STDOUT},			// #stdout [<message>]
+                { "#TEXT", TokenType.PP_TEXT},			    // 
+                { "#ENDTEXT", TokenType.PP_ENDTEXT},		// 
             };
 
             //=================

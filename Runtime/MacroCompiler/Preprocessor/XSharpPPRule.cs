@@ -1679,7 +1679,10 @@ namespace XSharp.MacroCompiler.Preprocessor
                         {
                             var token = tokens[info.Start];
                             token = token.Original;
-                            token.Type = XSharpLexer.UDC_KEYWORD;
+                            if (!token.IsKeyword())
+                            {
+                                token.Type = XSharpLexer.UDC_KEYWORD;
+                            }
                         }
                         break;
                 }

@@ -39,8 +39,7 @@
     <BinariesDir>$(Solutiondir)Artifacts\bin\</BinariesDir>
 	<AntlrDir>$(Solutiondir)eng\</AntlrDir>
     <ZipsDir>$(Solutiondir)Artifacts\Zips</ZipsDir>
-    <TargetFrameworks Condition="'$(Configuration)' != 'Release'"> net472</TargetFrameworks>
-    <TargetFrameworks Condition="'$(Configuration)' == 'Release'">netcoreapp3.1;net472</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
     <GeneratedCompilerPath>$(BinariesDir)csc\$(Configuration)\net472\</GeneratedCompilerPath>
     <XscToolPath Condition="'$(XscToolPath)' == '' ">$(BinariesDir)xsc\$(Configuration)\net472</XscToolPath>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>

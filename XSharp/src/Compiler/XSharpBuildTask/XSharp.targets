@@ -9,7 +9,7 @@ WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and
 
 This file defines the steps in the standard build process specific for C# .NET projects.
 For example, it contains the step that actually calls the C# compiler.  The remainder
-of the build process is defined in Microsoft.Common.targets, which is imported by 
+of the build process is defined in Microsoft.Common.targets, which is imported by
 this file.
 
 Copyright (c) XSharp B.V.  All Rights Reserved
@@ -164,8 +164,8 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     </CreateItem>
 
   </Target>
-  <!-- Fix up FrameworkPathOverride, which is primarily used to determine the location of mscorlib.dll in the 
-        (relatively uncommon) situation where the reference assemblies, in which it's usually found, are not 
+  <!-- Fix up FrameworkPathOverride, which is primarily used to determine the location of mscorlib.dll in the
+        (relatively uncommon) situation where the reference assemblies, in which it's usually found, are not
         installed. -->
   <PropertyGroup Condition="'$(MSBuildAssemblyVersion)' == ''">
     <FrameworkPathOverride Condition="!Exists('$(FrameworkPathOverride)\mscorlib.dll')">$(MSBuildFrameworkToolsPath)</FrameworkPathOverride>
@@ -311,6 +311,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             VO14="$(VO14)"
             VO15="$(VO15)"
             VO16="$(VO16)"
+            VO17="$(VO17)"
             VsSessionGuid="$(VsSessionGuid)"
             VulcanCompatibleResources="$(VulcanCompatibleResources)"
             WarningLevel="$(WarningLevel)"

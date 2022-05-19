@@ -205,6 +205,11 @@ namespace XSharp.Build
             set { _store[nameof(VO16)] = value; }
             get { return _store.GetOrDefault(nameof(VO16), false); }
         }
+        public bool VO17
+        {
+            set { _store[nameof(VO17)] = value; }
+            get { return _store.GetOrDefault(nameof(VO17), false); }
+        }
         public bool XPP1
         {
             set { _store[nameof(XPP1)] = value; }
@@ -362,7 +367,7 @@ namespace XSharp.Build
             get { return _store.GetOrDefault(nameof(VulcanCompatibleResources), false); }
 
         }
- 
+
         public int WarningLevel
         {
             set { _store[nameof(WarningLevel)] = value; }
@@ -487,7 +492,7 @@ namespace XSharp.Build
             commandLine.AppendSwitchWithSplitting("/warnaserror+:", WarningsAsErrors, ",", ';', ',');
             commandLine.AppendSwitchWithSplitting("/warnaserror-:", WarningsNotAsErrors, ",", ';', ',');
 
-            // It's a good idea for the response file to be the very last switch passed, just 
+            // It's a good idea for the response file to be the very last switch passed, just
             // from a predictability perspective.  It also solves the problem that a dogfooder
             // ran into, which is described in an email thread attached to bug VSWhidbey 146883.
             // See also bugs 177762 and 118307 for additional bugs related to response file position.
@@ -669,11 +674,11 @@ namespace XSharp.Build
         /// "DefineConstants" property.  It worked fine in the IDE, because it
         /// effectively munged up the string so that it ended up being valid for
         /// the compiler.  We do the equivalent munging here now.
-        /// 
+        ///
         /// Basically, we take the incoming string, and split it on comma/semicolon/space.
         /// Then we look at the resulting list of strings, and remove any that are
         /// illegal identifiers, and pass the remaining ones through to the compiler.
-        /// 
+        ///
         /// Note that CSharp doesn't support assigning a value to the constants ... in
         /// other words, a constant is either defined or not defined ... it can't have
         /// an actual value.
@@ -770,6 +775,7 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/vo14", _store, nameof(VO14));
             commandline.AppendPlusOrMinusSwitch("/vo15", _store, nameof(VO15));
             commandline.AppendPlusOrMinusSwitch("/vo16", _store, nameof(VO16));
+            commandline.AppendPlusOrMinusSwitch("/vo17", _store, nameof(VO17));
             if (Dialect.ToLower() == "xpp")
             {
                 commandline.AppendPlusOrMinusSwitch("/xpp1", _store, nameof(XPP1));

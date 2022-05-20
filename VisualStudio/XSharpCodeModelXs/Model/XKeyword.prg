@@ -388,6 +388,7 @@ BEGIN NAMESPACE XSharpModel
 
         CONSTRUCTOR(kw1 as LONG, kw2 as LONG)
             SELF( (XTokenType) kw1, (XTokenType) kw2)
+
         CONSTRUCTOR(kw1 as XTokenType, kw2 as XTokenType)
             _code := 0
             SELF:Kw1 := kw1
@@ -399,8 +400,10 @@ BEGIN NAMESPACE XSharpModel
 
         CONSTRUCTOR(kw1 as LONG)
             SELF((XTokenType) kw1, XTokenType.None)
+            
         CONSTRUCTOR(kw1 as XTokenType)
             SELF(kw1, XTokenType.None)
+            
         OVERRIDE METHOD ToString() AS STRING
             IF Kw2 == XTokenType.None
                 RETURN Kw1:ToString()

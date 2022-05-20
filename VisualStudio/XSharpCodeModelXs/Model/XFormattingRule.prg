@@ -435,6 +435,7 @@ BEGIN NAMESPACE XSharpModel
                 token := _aliases[token]
             endif
             return _rulesByStart.ContainsKey(token)
+
         PUBLIC STATIC METHOD IsStartKeyword(token as XKeyword, withFlags as XFormattingFlags) AS LOGIC
             if _aliases:ContainsKey(token)
                 token := _aliases[token]
@@ -452,6 +453,16 @@ BEGIN NAMESPACE XSharpModel
             if _rulesByStart.ContainsKey(token)
                 var rule := _rulesByStart[token]
                 return rule:Flags:HasFlag(XFormattingFlags.Member) .or. rule:Flags:HasFlag(XFormattingFlags.Type)
+            endif
+            return false
+
+        PUBLIC STATIC METHOD IsStatementKeyword(token as XKeyword) AS LOGIC
+            if _aliases:ContainsKey(token)
+                token := _aliases[token]
+            endif
+            if _rulesByStart.ContainsKey(token)
+                var rule := _rulesByStart[token]
+                return rule:Flags:HasFlag(XFormattingFlags.Statement)
             endif
             return false
 

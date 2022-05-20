@@ -11,27 +11,15 @@ namespace XSharp.Project
 {
     public enum MessageSeverity
     {
-        Info = 0,
-        Warning = 1,
-        Error = 2,
+        Info = __VSERRORCATEGORY.EC_MESSAGE,
+        Warning = __VSERRORCATEGORY.EC_WARNING,
+        Error = __VSERRORCATEGORY.EC_ERROR,
         NoProblems = 3
     }
 
     internal static class ErrorMessageUtil
     {
-        static public __VSERRORCATEGORY ToVSERRORCATEGORY(this MessageSeverity severity)
-        {
-            if (severity == MessageSeverity.Warning)
-            {
-                return __VSERRORCATEGORY.EC_WARNING;
-            }
-            else if (severity == MessageSeverity.Error)
-            {
-                return __VSERRORCATEGORY.EC_ERROR;
-            }
-            return __VSERRORCATEGORY.EC_MESSAGE;
-        }
-
+        
         static public MessageSeverity ToMessageSeverity(this DiagnosticSeverity sev)
         {
             switch (sev)

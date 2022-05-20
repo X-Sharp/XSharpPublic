@@ -11,8 +11,7 @@ using Microsoft.VisualStudio.Shell.TableManager;
 
 namespace XSharp.Project
 {
-    [Export(typeof(TaskListProvider))]
-    internal class TaskListProvider : IListProvider, ITableDataSource, IDisposable
+    internal abstract class ListProvider : IListProvider, ITableDataSource, IDisposable
     {
         [Export(typeof(ITableManager))]
         internal  ITableManager tableManager;
@@ -22,21 +21,17 @@ namespace XSharp.Project
         // The list sinks. Probably only one but there could be more. Needs to be thread safe so is
         // also used as a lock
         private List<IListSinkManager> _managers = new List<IListSinkManager>();
-        private List<ITableEntriesSnapshotFactory> _factories = new List<ITableEntriesSnapshotFactory>();
+        private List<ITableEntriesSnapshotFactory> _errorListFactories = new List<ITableEntriesSnapshotFactory>();
 
-        internal TaskListProvider(ITableManager manager)
+        internal ListProvider(ITableManager manager)
         {
             tableManager = manager;
             this.AddSource();
         }
-
+        public abstract IReadOnlyCollection<string> Columns { get; } 
         internal virtual void AddSource()
         {
-            tableManager.AddSource(this, 
-                                                StandardTableColumnDefinitions.Priority, StandardTableColumnDefinitions.Text,
-                                                StandardTableColumnDefinitions.ProjectName, StandardTableColumnDefinitions.DocumentName,
-                                                StandardTableColumnDefinitions.Line, StandardTableColumnDefinitions.Column);
-
+            tableManager.AddSource(this, Columns);
         }
 
         public string DisplayName
@@ -61,13 +56,7 @@ namespace XSharp.Project
             }
         }
 
-        public string SourceTypeIdentifier
-        {
-            get
-            {
-                return StandardTableDataSources.CommentTableDataSource;
-            }
-        }
+        public abstract string SourceTypeIdentifier { get; }
 
         public IDisposable Subscribe(ITableDataSink sink)
         {
@@ -85,7 +74,7 @@ namespace XSharp.Project
                 _managers.Add(manager);
 
                 // Add the pre-existing error factories to the manager.
-                foreach (var errorFactory in _factories)
+                foreach (var errorFactory in _errorListFactories)
                 {
                     manager.AddListFactory(errorFactory);
                 }
@@ -109,7 +98,7 @@ namespace XSharp.Project
         {
             lock (_managers)
             {
-                _factories.Add(factory);
+                _errorListFactories.Add(factory);
 
                 // Tell the preexisting sinks about the new error source
                 foreach (var manager in _managers)
@@ -127,7 +116,7 @@ namespace XSharp.Project
         {
             lock (_managers)
             {
-                _factories.Remove(factory);
+                _errorListFactories.Remove(factory);
 
                 foreach (var manager in _managers)
                 {

@@ -13,69 +13,69 @@ namespace XSharp.Project
 {
     /// <summary>
     /// Manages the errors collection and updates the CurrentSnapshot by
-    ///  generating new Snapshot upon collection changes
+    ///  generating new OutputErrorSnapshot upon errors collection changes
     /// </summary>
-    internal class TasksFactory : TableEntriesSnapshotFactoryBase
+    internal class ListFactory<T> : TableEntriesSnapshotFactoryBase where T: IListItem
     {
-        private readonly IListProvider _listProvider;
-        private List<ITaskListItem> _currentTasks = new List<ITaskListItem>();
-        private Guid _projectGuid = Guid.Empty;
-        internal TasksFactory(IListProvider errorProvider, Guid projectGuid)
+        protected readonly IListProvider _errorProvider;
+        protected List<T> _items = new List<T>();
+        protected Guid _projectGuid = Guid.Empty;
+        internal ListFactory(IListProvider errorProvider, Guid projectGuid)
         {
-            _listProvider = errorProvider;
+            _errorProvider = errorProvider;
             _projectGuid = projectGuid;
-            CurrentSnapshot = new TasksSnapshot(0, _currentTasks, _projectGuid);
+            CurrentSnapshot = new ListSnapshot<T>(0, _items, _projectGuid);
         }
 
         /// <summary>
         /// Current snapshot of errors
         /// </summary>
-        internal TableEntriesSnapshotBase CurrentSnapshot { get; private set; }
+        internal TableEntriesSnapshotBase CurrentSnapshot { get; set; }
 
-        private TasksSnapshot NewSnapShot()
+        private ListSnapshot<T> NewSnapShot()
         {
-            return new TasksSnapshot(CurrentSnapshot.VersionNumber + 1, _currentTasks, _projectGuid);
+            return new ListSnapshot<T>(CurrentSnapshot.VersionNumber + 1, _items, _projectGuid);
         }
 
          /// <summary>
         /// Adds a new error to the Factory and updates the CurrentSnapshot
         /// </summary>
         /// <param name="newError"></param>
-        internal void AddItem(ITaskListItem newError)
+        internal void AddErrorItem(T newError)
         {
-            _currentTasks.Add(newError);
-            UpdateItems();
+            _items.Add(newError);
+            UpdateErrors();
         }
 
         /// <summary>
         /// Adds a new errors to the Factory and updates the CurrentSnapshot
         /// </summary>
         /// <param name="newErrors"></param>
-        internal void AddItems(IList<ITaskListItem> newItems)
+        internal void AddItems(IList<T> newErrors)
         {
-            _currentTasks.AddRange(newItems);
-            UpdateItems();
+            _items.AddRange(newErrors);
+            UpdateErrors();
         }
 
         /// <summary>
         /// Changes the errors collection for the Factory
         /// </summary>
         /// <param name="newErrors"></param>
-        internal void SetItems(IList<ITaskListItem> newItems)
+        internal void SetItems(IList<T> newErrors)
         {
-            _currentTasks.Clear();
-            _currentTasks.AddRange(newItems);
-            UpdateItems();
+            _items.Clear();
+            _items.AddRange(newErrors);
+            UpdateErrors();
         }
 
         /// <summary>
         /// Updates the factory errors snapshot
         /// </summary>
         /// <param name="errorsList"></param>
-        internal void UpdateItems()
+        internal void UpdateErrors()
         {
             CurrentSnapshot = NewSnapShot();
-            _listProvider.UpdateAllSinks(this);
+            _errorProvider.UpdateAllSinks(this);
         }
 
         #region ITableEntriesSnapshotFactory members

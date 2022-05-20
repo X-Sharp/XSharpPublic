@@ -430,8 +430,8 @@
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.xsproj" />
-    <VSIXSourceItem Include="$(Outdir)XSharpDebugger.vsdconfig">
-      <Link>XSharpDebugger.vsdconfig</Link>
+    <VSIXSourceItem Include="C:\XSharp\DevPublic\Binaries\2022\Debug\XSharpDebugger2022.vsdconfig">
+      <Link>XSharpDebugger2022.vsdconfig</Link>
     </VSIXSourceItem>
     <None Include="Snippets\Snippets\case.snippet" />
     <None Include="Snippets\Snippets\class.snippet" />
@@ -718,7 +718,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.445</Version>
+      <Version>17.0.448</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>

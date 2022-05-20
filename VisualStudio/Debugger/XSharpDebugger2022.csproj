@@ -46,7 +46,7 @@
     <NoWarn>1762;NU1603</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
-    <VsdConfigFile>$(OutputPath)\XSharpDebugger.vsdconfig</VsdConfigFile>
+    <VsdConfigFile>$(OutputPath)\XSharpDebugger2022.vsdconfig</VsdConfigFile>
     <!--Root directory to Concord SDK install; includes the trailing backslash '\'.-->
     <ConcordSDKDir>$(VSSDKRoot)VisualStudioIntegration\</ConcordSDKDir>
   </PropertyGroup>
@@ -80,21 +80,21 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.445</Version>
+      <Version>17.0.448</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine">
-      <Version>17.0.1110801</Version>
+      <Version>17.0.2012801</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Metadata">
-      <Version>17.0.1110801</Version>
+      <Version>17.0.2012801</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.Debugger.VSDConfigTool">
-      <Version>17.0.1110801</Version>
+      <Version>17.0.2012801</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Reflection.Metadata">
-      <Version>6.0.0</Version>
+      <Version>6.0.1</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>

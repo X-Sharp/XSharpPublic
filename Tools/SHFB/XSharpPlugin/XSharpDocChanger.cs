@@ -911,7 +911,7 @@ namespace XSharpDocs
             MatchCollection coll = regex.Matches(allText);
             string newText = "";
             // regex lambda magic to replace using the dictionary
-            System.Diagnostics.Debugger.Break();
+            //System.Diagnostics.Debugger.Break();
             newText = regex.Replace(allText, replace =>
             {
                 if(replacements.ContainsKey(replace.Groups[2].Value))
@@ -924,26 +924,6 @@ namespace XSharpDocs
             {
                 newText = newText.Replace("__XUsualType", "__UsualType");
             }
-            //replacements.Clear();
-            //replacements.Add("Int32", "Long");
-            //replacements.Add("UInt32", "DWord");
-            //replacements.Add("UInt16", "Word");
-            //replacements.Add("Int16", "Short");
-            //replacements.Add("Double", "Real8");
-            //replacements.Add("Single", "Real4");
-            //replacements.Add("Boolean", "Logic");
-
-            //pattern = delimiters + "(" + string.Join(or, new List<string>(replacements.Keys).ToArray()) + ")";
-            //regex = new Regex(pattern);
-            //coll = regex.Matches(newText);
-            //newText = regex.Replace(newText, replace =>
-            //{
-            //    if (replacements.ContainsKey(replace.Groups[2].Value))
-            //    {
-            //        return replace.Groups[1].Value + replacements[replace.Groups[2].Value];
-            //    }
-            //    else return replace.Value; 
-            //});
             if (newText != allText)
             {
                 var writer = new StreamWriter(path);

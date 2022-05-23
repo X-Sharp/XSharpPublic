@@ -66,6 +66,7 @@ namespace XSharpDocs
                 if (executionPoints == null)
                     executionPoints = new List<ExecutionPoint>
                     {
+                        new ExecutionPoint(BuildStep.BuildTopics, ExecutionBehaviors.After),
                         new ExecutionPoint(BuildStep.CompilingHelpFile, ExecutionBehaviors.Before),
                         new ExecutionPoint(BuildStep.GenerateHelpFormatTableOfContents, ExecutionBehaviors.After),
                         new ExecutionPoint(BuildStep.GenerateFullTextIndex, ExecutionBehaviors.Before,10000)

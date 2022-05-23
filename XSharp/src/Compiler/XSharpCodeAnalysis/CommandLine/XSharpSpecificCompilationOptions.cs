@@ -5,6 +5,7 @@
 //
 #nullable disable
 using Antlr4.Runtime;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -212,26 +213,26 @@ namespace Microsoft.CodeAnalysis.CSharp
     public class PragmaBase
     {
         public Pragmastate State { get; private set; }
-        public ParserRuleContext Context { get; private set; }
-        public PragmaBase(ParserRuleContext context, Pragmastate state)
+        public XSharpToken Token { get; private set; }
+        public PragmaBase(XSharpToken token, Pragmastate state)
         {
-            Context = context;
+            Token = token;
             State = state;
         }
         public int Line
         {
             get
             {
-                if (Context == null)
+                if (Token == null)
                     return -1;
-                return Context.Start.Line;
+                return Token.Line;
             }
         }
     }
     public class PragmaOption : PragmaBase
     {
         public CompilerOption Option { get; private set; }
-        public PragmaOption(ParserRuleContext context, Pragmastate state, CompilerOption option) : base(context, state)
+        public PragmaOption(XSharpToken token, Pragmastate state, CompilerOption option) : base(token, state)
         {
             Option = option;
         }
@@ -241,7 +242,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public IList<IToken> Numbers { get; private set; }
         public IToken Warning { get; private set; }
         public IToken Switch { get; private set; }
-        public PragmaWarning(ParserRuleContext context, Pragmastate state, IList<IToken> tokens, IToken warning, IToken switch_) : base(context, state)
+        public PragmaWarning(XSharpToken token, Pragmastate state, IList<IToken> tokens, IToken warning, IToken switch_) : base(token, state)
         {
             Numbers = tokens;
             Warning = warning;

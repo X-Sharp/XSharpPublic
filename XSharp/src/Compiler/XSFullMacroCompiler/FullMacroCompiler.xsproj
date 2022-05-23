@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <UseXSharpKey>true</UseXSharpKey>
-    <XSharpProjectversion>2.8.0.10</XSharpProjectversion>
+    <XSharpProjectversion>2.12.0.0</XSharpProjectversion>
     <SignAssembly>false</SignAssembly>
     <StrongNameKeyId />
     <AssemblyOriginatorKeyFile>$(Solutiondir)src\common\XSharp.snk</AssemblyOriginatorKeyFile>
@@ -92,6 +92,8 @@
       <Name>System.Collections.Immutable</Name>
       <AssemblyName>System.Collections.Immutable.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\artifacts\bin\XSharpScripting\Debug\net472\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.CodeAnalysis, Version=2.8.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.CodeAnalysis</Name>
@@ -156,8 +158,7 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-	<Target Name="SignWithXSharpKey" AfterTargets="PostBuildEvent" Condition="'$(UseXSharpKey)' == 'true'">
+  <Target Name="SignWithXSharpKey" AfterTargets="PostBuildEvent" Condition="'$(UseXSharpKey)' == 'true'">
     <Exec Command="&quot;$(SDK40ToolsPath)sn.exe&quot;  -q -R $(TargetPath) $(AssemblyOriginatorKeyFile)" />
   </Target>
-  
 </Project>

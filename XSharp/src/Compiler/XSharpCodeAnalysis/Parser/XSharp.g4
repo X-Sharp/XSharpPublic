@@ -67,7 +67,6 @@ entity              : namespace_
                     | constructor               // Constructor Class xxx syntax
                     | destructor                // Destructor Class xxx syntax
                     | filewidememvar            // memvar declared at file level
-                    | pragma                    // #pragma warning
                     | foxdll                    // FoxPro style of declaring Functions in External DLLs
                     | eos                       // Blank Lines between entities
                     ;
@@ -75,10 +74,6 @@ entity              : namespace_
 
 eos                 : EOS+
                     ;
-
-                        // everything is handled in the error analysis and the treetransformation
-pragma                : P=PRAGMA (Tokens += ~EOS)*? end=EOS
-                      ;
 
 
 funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
@@ -416,7 +411,6 @@ classmember         : Member=method                                 #clsmethod
                     | Member=event_                                 #nestedEvent
                     | Member=interface_                             #nestedInterface
                     | Member=vodllmethod                            #clsdllmethod
-                    | Member=pragma                                 #clspragma
                     | eos                                           #clseos// Blank Lines between entities
                     ;
 
@@ -520,7 +514,6 @@ filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierN
 
 
 statement           : Decl=localdecl                        #declarationStmt
-                    | Stmt=pragma                           #pragmaStmt
                     | Decl=localfuncproc                    #localFunctionStmt
                     | {!IsFox}? Decl=xbasedecl              #xbasedeclStmt  // Memvar declarations, not for FoxPro
                     | Decl=fielddecl                        #fieldStmt
@@ -1238,7 +1231,6 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                     | Member=xppinlineMethod                        #xppclsinlinemethod
                     | Member=xppdeclareMethod                       #xppclsdeclaremethod
                     | Member=xppproperty                            #xppclsproperty
-                    | Member=pragma                                 #xpppragma
                     ;
 
 xppmethodvis        : Vis=xppvisibility COLON eos
@@ -1369,7 +1361,6 @@ foxclassmember      : Member=foxclassvars          #foxclsvars
                     | Member=foxpemcomattrib       #foxpemcom
                     | Member=constructor           #foxclsctor
                     | Member=destructor            #foxclsdtor
-                    | Member=pragma                #foxpragma
                     ;
                     // do we also add support for events, operators, nested classes etc in the foxpro classes ?
                     //| Member=event_                #foxevent

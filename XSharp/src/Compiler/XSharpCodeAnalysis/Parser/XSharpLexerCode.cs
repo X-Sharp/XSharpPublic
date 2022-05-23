@@ -524,10 +524,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         parseType(USING);
                     }
                 }
-                else if (StartOfLine(LastToken) && text.Equals("PRAGMA", StringComparison.OrdinalIgnoreCase))
-                {
-                    parseType(PRAGMA);
-                }
             }
         }
 
@@ -2450,6 +2446,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"#IF", PP_IF},	                // #if <expression>
                 {"#STDOUT", PP_STDOUT },        // #stdout [Message]
                 {"#TEXT", PP_TEXT },            // #text const [, optionalfunc] or #text linefunc, endfunc
+                {"#PRAGMA", PP_PRAGMA },        // #pragma options.... or #pragma warnings
                 {"#ENDTEXT",  PP_ENDTEXT },      // endtext
             };
             if (Dialect == XSharpDialect.XPP)

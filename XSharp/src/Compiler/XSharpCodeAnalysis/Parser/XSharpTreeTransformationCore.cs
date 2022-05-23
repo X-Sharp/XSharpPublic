@@ -30,6 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal partial class XSharpTreeTransformationCore : XSharpBaseListener
     {
         #region Nested classes
+
         internal class SyntaxEntities
         {
             internal SyntaxListPool _pool;
@@ -2489,6 +2490,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //System.Diagnostics.Debug.WriteLine("Enter Source " + _fileName);
             GlobalClassEntities = CreateClassEntities();
             ClassEntities.Push(GlobalClassEntities);
+
         }
         public override void EnterSource([NotNull] XP.SourceContext context)
         {
@@ -2580,6 +2582,68 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected TypeSyntax getReturnType(XP.IMemberContext context)
         {
             return getDataType(context.ReturnType);
+        }
+        internal void SetPragmas(IList<PragmaBase> pragmas)
+        {
+            var directives = new List<PragmaWarningDirectiveTriviaSyntax>();
+            List<PragmaOption> options = new List<PragmaOption>();
+            List<PragmaWarning> warnings = new List<PragmaWarning>();
+            foreach (var pragma in pragmas)
+            {
+                switch (pragma)
+                {
+                    case PragmaWarning pw:
+                        warnings.Add(pw);
+                        break;
+                    case PragmaOption po:
+                        options.Add(po);
+                        break;
+                }
+            }
+            foreach (var warning in warnings)
+            {
+                SyntaxToken kind1;
+                SyntaxToken kind2;
+                kind1 = SyntaxFactory.MakeToken(SyntaxKind.WarningKeyword, warning.Warning.Text);
+                if (warning.State == Pragmastate.Off)
+                {
+                    kind2 = SyntaxFactory.MakeToken(SyntaxKind.DisableKeyword, warning.Switch.Text);
+                }
+                else
+                {
+                    kind2 = SyntaxFactory.MakeToken(SyntaxKind.RestoreKeyword, warning.Switch.Text);
+                }
+
+                var list = new List<ExpressionSyntax>();
+                foreach (var token in warning.Numbers)
+                {
+                    if (token.Type == XSharpParser.INT_CONST)
+                    {
+                        var num = token.SyntaxLiteralValue(_options);
+                        list.Add(GenerateLiteral((int)num.Value));
+                    }
+                    else
+                    {
+                        var id = _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(token.Text.ToUpper()));
+                        list.Add(id);
+                    }
+                }
+
+                var pragma = SyntaxFactory.PragmaWarningDirectiveTrivia(
+                    SyntaxFactory.MakeToken(SyntaxKind.HashToken),
+                    SyntaxFactory.MakeToken(SyntaxKind.PragmaKeyword),
+                    kind1, kind2, MakeSeparatedList(list.ToArray()),
+                    SyntaxFactory.MakeToken(SyntaxKind.EndOfDirectiveToken),
+                    true);
+
+                var context = new XSharpParserRuleContext();
+                context.Start = warning.Token;
+                pragma.XNode = context;
+                context.CsNode = pragma;
+                directives.Add(pragma);
+            }
+            this.PragmaOptions = options;
+            this.PragmaWarnings = directives;
         }
         protected void finishCompilationUnit(SyntaxListBuilder<MemberDeclarationSyntax> globalTypes)
         {
@@ -2848,53 +2912,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public override void EnterPragma([NotNull] XP.PragmaContext context)
-        {
-            if (context.Pragma is PragmaWarning)
-            {
-                var warning = context.Pragma as PragmaWarning;
-                SyntaxToken kind1;
-                SyntaxToken kind2;
-                kind1 = SyntaxFactory.MakeToken(SyntaxKind.WarningKeyword, warning.Warning.Text);
-                if (warning.State == Pragmastate.Off)
-                {
-                    kind2 = SyntaxFactory.MakeToken(SyntaxKind.DisableKeyword, warning.Switch.Text);
-                }
-                else
-                {
-                    kind2 = SyntaxFactory.MakeToken(SyntaxKind.RestoreKeyword, warning.Switch.Text);
-                }
-
-                var list = new List<ExpressionSyntax>();
-                foreach (var token in warning.Numbers)
-                {
-                    if (token.Type == XSharpParser.INT_CONST)
-                    {
-                        var num = token.SyntaxLiteralValue(_options);
-                        list.Add(GenerateLiteral((int)num.Value));
-                    }
-                    else
-                    {
-                        var id = _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(token.Text.ToUpper()));
-                        list.Add(id);
-                    }
-                }
-
-                var pragma = SyntaxFactory.PragmaWarningDirectiveTrivia(
-                    SyntaxFactory.MakeToken(SyntaxKind.HashToken),
-                    context.Start.SyntaxKeyword(),
-                    kind1, kind2, MakeSeparatedList(list.ToArray()),
-                    SyntaxFactory.MakeToken(SyntaxKind.EndOfDirectiveToken),
-                    true);
-                context.Put(pragma);
-                PragmaWarnings.Add(pragma);
-            }
-            else if (context.Pragma is PragmaOption option)
-            {
-                PragmaOptions.Add(option);
-            }
-            return;
-        }
+  
 
         public override void ExitEntity([NotNull] XP.EntityContext context)
         {
@@ -7185,13 +7203,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public override void ExitPragmaStmt([NotNull] XP.PragmaStmtContext context)
-        {
-            base.ExitPragmaStmt(context);
-            context.SetSequencePoint(context.Stmt.end);
-            context.Put(_syntaxFactory.EmptyStatement(attributeLists: default, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-        }
-
         public override void ExitNopStmt([NotNull] XP.NopStmtContext context)
         {
             context.SetSequencePoint(context.end);
@@ -7999,18 +8010,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                       x:ReasonEarlier, MonthDeviation(x:DeliveryRequested, x:DeliveryPlanned),;
                       AmountString(x:OrigPrice), AmountString(x:NewPrice), AmountString(nSaving)})), nil)})
                  */
-                // testcase R759 is simpler and looks like this.
-                // LOCAL aValues := { } AS ARRAY
-                // LOCAL aRes    := { } AS ARRAY
-                // AADD(aValues, NIL)
-                // AADD(aValues, 100)
-                // AEval(aValues, {|x,y,z| AAdd(aRes, iif (IsNil(x), (y := 10, z := 32, x := y + z), x))})
-                // xAssert(ALen(aRes) == 2)
-                // xAssert(aRes[1] == 42)
-                // xAssert(aRes[2] == 100)
-                // note that the y parameter in the codeblock gets initialized by AEVal() with the row number of the line in aValues that
-                // is evaluated, so 1 and 2 in this example.
-                if (context.IsInLambdaOrCodeBlock())
+            // testcase R759 is simpler and looks like this.
+            // LOCAL aValues := { } AS ARRAY
+            // LOCAL aRes    := { } AS ARRAY
+            // AADD(aValues, NIL)
+            // AADD(aValues, 100)
+            // AEval(aValues, {|x,y,z| AAdd(aRes, iif (IsNil(x), (y := 10, z := 32, x := y + z), x))})
+            // xAssert(ALen(aRes) == 2)
+            // xAssert(aRes[1] == 42)
+            // xAssert(aRes[2] == 100)
+            // note that the y parameter in the codeblock gets initialized by AEVal() with the row number of the line in aValues that
+            // is evaluated, so 1 and 2 in this example.
+            if (context.IsInLambdaOrCodeBlock())
                 {
                     var cbc = context.GetParentCodeBlock();
                     if (cbc.LambdaParamList != null)

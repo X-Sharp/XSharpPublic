@@ -345,6 +345,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             var treeTransform = CreateTransform(parser, _options, _pool, _syntaxFactory, _fileName);
+            if (pp != null && pp.Pragmas?.Count > 0)
+            {
+                treeTransform.SetPragmas(pp.Pragmas);
+            }
             bool hasErrors = false;
             SyntaxToken eof = null;
             try

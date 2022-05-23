@@ -231,18 +231,18 @@ LOCAL iParamCount AS INT
 
 	ENDIF
 
-//	RETURN cSelectedFont  // https://github.com/X-Sharp/XSharpPublic/issues/1017
+	//RETURN cSelectedFont  // https://github.com/X-Sharp/XSharpPublic/issues/1017
 
 	// --------------------
 
 	LOCAL FUNCTION StringToFontStyle ( c AS STRING ) AS FontStyle
-	LOCAL eStyle AS FontStyle
+	LOCAL eStyle := FontStyle.Regular AS FontStyle
 
-	IF c:IndexOf( "B" ) > -1
+	IF c:IndexOfAny( <char>{c'B',c'b'} ) > -1
 		eStyle += FontStyle.Bold
 	ENDIF
 
-	IF c:IndexOf( "I" ) > -1
+	IF c:IndexOfAny( <char>{c'I',c'i'} ) > -1
 		eStyle += FontStyle.Italic
 	ENDIF
 
@@ -259,11 +259,11 @@ LOCAL iParamCount AS INT
 		cStyle := "N"
 	ELSE
 
-		IF _and ( eStyle ,FontStyle.Bold ) == FontStyle.Bold
+		IF  eStyle:HasFlag(FontStyle.Bold )
 			cStyle += "B"
 		ENDIF
 
-		IF _and ( eStyle ,FontStyle.Italic ) == FontStyle.Italic
+		IF eStyle:HasFlag(FontStyle.Italic )
 			cStyle += "I"
 		ENDIF
 

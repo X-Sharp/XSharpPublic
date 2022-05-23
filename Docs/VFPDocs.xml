@@ -4517,7 +4517,7 @@
             Specifies the font size selected initially in the Font dialog box. If the font size you specify is not supported, the default font size is selected initially.
             If you omit nFontSize or if nFontSize is less than or equal to zero, the font size selected defaults to 10 point.<br/>
             <note name="Note">
-                The dialog box permits you to select sizes between code4/code and code127/code, inclusive. You can specify other values for nFontSize when calling the
+                The dialog box permits you to select sizes between <code>4</code> and <code>127</code>, inclusive. You can specify other values for nFontSize when calling the
                 <b>GetFont</b> function; no error occurs. If you do so, however, the user must select a size within the designated range of values before clicking <b>OK</b>
                 in the dialog box. Otherwise, the dialog box displays an alert and does not accept the value.
             </note>

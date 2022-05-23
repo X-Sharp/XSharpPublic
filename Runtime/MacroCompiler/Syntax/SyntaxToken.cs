@@ -15,7 +15,6 @@ namespace XSharp.MacroCompiler.Syntax
         Default,
         XmlDoc,
         PreProcessor,
-        Pragma,
         Hidden,
     };
 
@@ -71,7 +70,7 @@ namespace XSharp.MacroCompiler.Syntax
         AWAIT, ASYNC, ASTYPE, CHECKED, UNCHECKED,
 
         // Fox kws
-        M, TEXT, ENDTEXT, 
+        M, 
 
         LAST_POSITIONAL_KEYWORD,
 
@@ -146,7 +145,7 @@ namespace XSharp.MacroCompiler.Syntax
         // Pre processor symbols [entity]
         PP_FIRST,
         PP_COMMAND, PP_DEFINE, PP_ELSE, PP_ENDIF, PP_ENDREGION, PP_ERROR, PP_IF, PP_IFDEF, PP_IFNDEF, PP_INCLUDE, PP_LINE, PP_REGION, PP_STDOUT, PP_TRANSLATE,
-        PP_UNDEF, PP_WARNING,
+        PP_UNDEF, PP_WARNING, PP_PRAGMA,
 		// Text .. endText
         PP_TEXT, PP_ENDTEXT,
 
@@ -158,9 +157,6 @@ namespace XSharp.MacroCompiler.Syntax
 
         // Ids
         ID, KWID,
-
-        // Pragma [entity]
-        PRAGMA,
 
         // Comments
         DOC_COMMENT, SL_COMMENT, ML_COMMENT,
@@ -492,8 +488,12 @@ namespace XSharp.MacroCompiler.Syntax
                 {"__DIALECT_HARBOUR__", TokenType.MACRO},
                 {"__DIALECT_XBASEPP__", TokenType.MACRO},
                 {"__DIALECT_FOXPRO__", TokenType.MACRO},
+                { "__MEMVAR__", TokenType.MACRO},
+                { "__UNDECLARED__", TokenType.MACRO},
+                { "__UNSAFE__", TokenType.MACRO},
                 {"__ENTITY__", TokenType.MACRO},
                 {"__FILE__", TokenType.MACRO},
+                {"__FUNCTION__", TokenType.MACRO},
                 {"__FUNCTIONS__", TokenType.MACRO},
                 {"__LINE__", TokenType.MACRO},
                 {"__MODULE__", TokenType.MACRO},
@@ -520,6 +520,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"__VO14__", TokenType.MACRO},
                 {"__VO15__", TokenType.MACRO},
                 {"__VO16__", TokenType.MACRO},
+                {"__VO17__", TokenType.MACRO},
                 {"__VULCAN__", TokenType.MACRO},
                 {"__WINDIR__", TokenType.MACRO},
                 {"__WINDRIVE__", TokenType.MACRO},
@@ -580,8 +581,6 @@ namespace XSharp.MacroCompiler.Syntax
                 // FoxPro keywords
                 {"PARAMETERS", TokenType.PARAMETERS},
                 {"LPARAMETERS", TokenType.LPARAMETERS},
-                {"TEXT", TokenType.TEXT},
-                {"ENDTEXT", TokenType.ENDTEXT},
             };
 
             var Keywords = new Dictionary<string, TokenType>
@@ -707,23 +706,22 @@ namespace XSharp.MacroCompiler.Syntax
                 { "#ENDIF", TokenType.PP_ENDIF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
                 { "#ENDREGION", TokenType.PP_ENDREGION},	// #region [description]sourceCode#endregion
                 { "#ERROR", TokenType.PP_ERROR},			// #error [errorMessage]
-                //{ "#IF", TokenType.PP_IF},			        // #if <condition>   <statements>...[#else]   <statements>...#endif
                 { "#IFDEF", TokenType.PP_IFDEF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
                 { "#IFNDEF", TokenType.PP_IFNDEF},			// #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
                 { "#INCLUDE", TokenType.PP_INCLUDE},		// #include "<headerfilename>"
                 { "#LINE", TokenType.PP_LINE},				// #line <number> [FileName] or #line default
                 { "#REGION", TokenType.PP_REGION},			// #region [description]sourceCode#endregion
-                { "#STDOUT", TokenType.PP_STDOUT},			// #stdout [<message>]
                 { "#TRANSLATE", TokenType.PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern>
                 { "#UNDEF", TokenType.PP_UNDEF},			// #undef <identifier>
-                { "#TEXT", TokenType.PP_TEXT},			    // 
-                { "#ENDTEXT", TokenType.PP_ENDTEXT},		// 
                 { "#WARNING", TokenType.PP_WARNING},		// #warning [warningMessage]
                 { "#XCOMMAND", TokenType.PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
                 { "#XTRANSLATE", TokenType.PP_TRANSLATE},    // #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
-
+                { "#PRAGMA", TokenType.PP_PRAGMA},          // #pragma: Not supported
+                { "#IF", TokenType.PP_IF},			        // #if <condition>   <statements>...[#else]   <statements>...#endif
                 { "#USING", TokenType.USING},
-                { "#PRAGMA", TokenType.PRAGMA},
+                { "#STDOUT", TokenType.PP_STDOUT},			// #stdout [<message>]
+                { "#TEXT", TokenType.PP_TEXT},			    // 
+                { "#ENDTEXT", TokenType.PP_ENDTEXT},		// 
             };
 
             //=================
@@ -1000,8 +998,6 @@ namespace XSharp.MacroCompiler.Syntax
                 // PP constant
                 v[(int)TokenType.UDCSEP] = "=>";
 
-                // Pragma
-                v[(int)TokenType.PRAGMA] = "#pragma";
 
                 System.Threading.Interlocked.CompareExchange(ref _tokenText, v, null);
             }

@@ -79,6 +79,7 @@ namespace XSharp.MacroCompiler
         ERR_EndOfPPLineExpected = 9009,
         ERR_PreProcessorRecursiveRule = 9010,
         ERR_MissingEndText = 9086,
+        ERR_PragmaNotSupported = 9011,
 
 
         Internal = 9999,
@@ -156,6 +157,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.ERR_EndOfPPLineExpected, "End of line expected" },
             { ErrorCode.ERR_PreProcessorRecursiveRule, "Recursive pre-processor rule '{0}'" },
             { ErrorCode.ERR_MissingEndText, "TEXT statement found without matching ENDTEXT" },
+            { ErrorCode.ERR_PragmaNotSupported, "#pragma directives are not supported" },
 
             { ErrorCode.Internal, "Internal error" },
             { ErrorCode.Warning, "Warning base" },

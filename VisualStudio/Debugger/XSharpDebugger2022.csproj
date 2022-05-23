@@ -79,6 +79,12 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
+    <VsdConfigXmlFiles Include="ResultProvider\ResultProvider2022.vsdconfigxml" />
+    <VsdConfigXmlFiles Include="ExpressionCompiler\ExpressionCompiler2022.vsdconfigxml" />
+    <VsdConfigXmlFiles Include="Formatter\Formatter2022.vsdconfigxml" />
+    <VsdConfigXmlFiles Include="FrameDecoder\FrameDecoder2022.vsdconfigxml" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
       <Version>17.0.448</Version>
     </PackageReference>
@@ -103,18 +109,6 @@
   <ItemGroup>
     <Content Include="readme.txt" />
     <Content Include="XSharp.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <VsdConfigXmlFiles Include="Formatter\Formatter2022.vsdconfigxml" />
-  </ItemGroup>
-  <ItemGroup>
-    <VsdConfigXmlFiles Include="FrameDecoder\FrameDecoder2022.vsdconfigxml" />
-  </ItemGroup>
-  <ItemGroup>
-    <VsdConfigXmlFiles Include="ResultProvider\ResultProvider2022.vsdconfigxml" />
-  </ItemGroup>
-  <ItemGroup>
-    <VsdConfigXmlFiles Include="ExpressionCompiler\ExpressionCompiler2022.vsdconfigxml" />
   </ItemGroup>
   <PropertyGroup>
     <!--

@@ -15,7 +15,6 @@ namespace XSharp.MacroCompiler.Syntax
         Default,
         XmlDoc,
         PreProcessor,
-        Pragma,
         Hidden,
     };
 
@@ -146,7 +145,7 @@ namespace XSharp.MacroCompiler.Syntax
         // Pre processor symbols [entity]
         PP_FIRST,
         PP_COMMAND, PP_DEFINE, PP_ELSE, PP_ENDIF, PP_ENDREGION, PP_ERROR, PP_IF, PP_IFDEF, PP_IFNDEF, PP_INCLUDE, PP_LINE, PP_REGION, PP_STDOUT, PP_TRANSLATE,
-        PP_UNDEF, PP_WARNING,
+        PP_UNDEF, PP_WARNING, PP_PRAGMA,
 		// Text .. endText
         PP_TEXT, PP_ENDTEXT,
 
@@ -158,9 +157,6 @@ namespace XSharp.MacroCompiler.Syntax
 
         // Ids
         ID, KWID,
-
-        // Pragma [entity]
-        PRAGMA,
 
         // Comments
         DOC_COMMENT, SL_COMMENT, ML_COMMENT,
@@ -720,9 +716,9 @@ namespace XSharp.MacroCompiler.Syntax
                 { "#WARNING", TokenType.PP_WARNING},		// #warning [warningMessage]
                 { "#XCOMMAND", TokenType.PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
                 { "#XTRANSLATE", TokenType.PP_TRANSLATE},    // #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
+                { "#PRAGMA", TokenType.PP_PRAGMA},          // #pragma: Not supported
                 { "#IF", TokenType.PP_IF},			        // #if <condition>   <statements>...[#else]   <statements>...#endif
                 { "#USING", TokenType.USING},
-                { "#PRAGMA", TokenType.PRAGMA},
                 { "#STDOUT", TokenType.PP_STDOUT},			// #stdout [<message>]
                 { "#TEXT", TokenType.PP_TEXT},			    // 
                 { "#ENDTEXT", TokenType.PP_ENDTEXT},		// 
@@ -1002,8 +998,6 @@ namespace XSharp.MacroCompiler.Syntax
                 // PP constant
                 v[(int)TokenType.UDCSEP] = "=>";
 
-                // Pragma
-                v[(int)TokenType.PRAGMA] = "#pragma";
 
                 System.Threading.Interlocked.CompareExchange(ref _tokenText, v, null);
             }

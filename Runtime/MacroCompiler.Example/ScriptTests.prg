@@ -15,6 +15,11 @@ USING XSharp.MacroCompiler
 FUNCTION ScriptTests AS VOID
     var sc := CreateScriptCompiler()
 
+ TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "#pragma options(""az"", on)",;
+        "return 10",;
+        ""}),Args(), null, null,   ErrorCode.ERR_PragmaNotSupported)
+
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "Console.WriteLine(123)",;
         "NOP",;

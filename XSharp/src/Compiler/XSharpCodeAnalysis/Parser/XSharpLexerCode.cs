@@ -1355,6 +1355,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         case PP_UNDEF:
                         case PP_TEXT:
                         case PP_ENDTEXT:
+                        case PP_PRAGMA:
                             HasPPDefines = true;
                             break;
                         case PP_LINE:

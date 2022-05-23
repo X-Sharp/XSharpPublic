@@ -12,18 +12,16 @@ namespace XSharp.MacroCompiler
 
     internal static partial class CodeGen
     {
-        internal static R Emit<T,R>(this Binder<T,R> b, Node macro, string source) where R: Delegate
+        internal static R Emit<T,R>(this Binder<T,R> b, Node macro) where R: Delegate
         {
-            var dm = b.CreateMethod(source);
-            macro.Emit(dm.GetILGenerator());
-            return b.CreateDelegate(dm) as R;
+            macro.Emit(b.Method.GetILGenerator());
+            return b.MakeMethodDelegate() as R;
         }
 
-        internal static Delegate Emit(this Binder b, Node macro, string source)
+        internal static Delegate Emit(this Binder b, Node macro)
         {
-            var dm = b.CreateMethod(source);
-            macro.Emit(dm.GetILGenerator());
-            return b.CreateDelegate(dm);
+            macro.Emit(b.Method.GetILGenerator());
+            return b.MakeMethodDelegate();
         }
     }
 }

@@ -509,6 +509,18 @@ namespace XSharp.MacroCompiler
             return arg;
         }
 
+        internal ArgumentSymbol AddParam(string name, TypeSymbol type, int index)
+        {
+            var arg = new ArgumentSymbol(name, type, index);
+            if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
+                LocalCache.Add(name, arg);
+            }
+            return arg;
+        }
+
         internal VariableSymbol AddVariable(string name, TypeSymbol type)
         {
             var variable = new VariableSymbol(name, type);
@@ -617,9 +629,12 @@ namespace XSharp.MacroCompiler
 
         internal abstract Binder CreateNested();
 
-        internal abstract DynamicMethod CreateMethod(string source);
+        internal void MakeDynamicMethod(string source) => Method = CreateMethod(source);
+        internal DynamicMethod Method { get; private set; }
+        internal Delegate MakeMethodDelegate() => CreateDelegate(Method);
 
-        internal abstract Delegate CreateDelegate(DynamicMethod dm);
+        protected abstract DynamicMethod CreateMethod(string source);
+        protected abstract Delegate CreateDelegate(DynamicMethod dm);
     }
 
     internal class Binder<T,R> : Binder where R: Delegate
@@ -655,7 +670,7 @@ namespace XSharp.MacroCompiler
             return new Binder<T,R>(Options);
         }
 
-        internal override DynamicMethod CreateMethod(string source)
+        protected override DynamicMethod CreateMethod(string source)
         {
             if (HasNestedCodeblocks)
                 return new DynamicMethod(source, typeof(T), new Type[] { typeof(XSharp.Codeblock[]), typeof(T[]) });
@@ -663,7 +678,7 @@ namespace XSharp.MacroCompiler
                 return new DynamicMethod(source, typeof(T), new Type[] { typeof(T[]) });
         }
 
-        internal override Delegate CreateDelegate(DynamicMethod dm)
+        protected override Delegate CreateDelegate(DynamicMethod dm)
         {
             if (HasNestedCodeblocks)
             {
@@ -677,7 +692,7 @@ namespace XSharp.MacroCompiler
     internal class TypedBinder<T, R> : Binder<T, R> where R : Delegate
     {
         internal TypedBinder(MacroOptions options) : base(options) { }
-        internal override DynamicMethod CreateMethod(string source)
+        protected override DynamicMethod CreateMethod(string source)
         {
             var mi = typeof(R).GetMethod("Invoke");
             var par = mi.GetParameters().Select(p => p.ParameterType).ToList();

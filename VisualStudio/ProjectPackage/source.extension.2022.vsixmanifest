@@ -11,7 +11,7 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Icon>XSharp.ico</Icon>
         <PreviewImage>XSharpVSIXLogo.png</PreviewImage>
     </Metadata>
-    <Installation AllUsers="true">  
+    <Installation AllUsers="true" SystemComponent="true">
         <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Community" >
             <ProductArchitecture>amd64</ProductArchitecture>
         </InstallationTarget>

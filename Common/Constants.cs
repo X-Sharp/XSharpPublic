@@ -16,9 +16,9 @@ namespace XSharp
 #if RUNTIME
         internal const string Version = "2.6.0.0";
 #else
-        internal const string Version = "2.12.0.1";
+        internal const string Version = "2.12.1.0";
 #endif
-        internal const string FileVersion = "2.12.0.1";
+        internal const string FileVersion = "2.12.1.0";
         internal const string ProductVersion = "2.12 GA";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2022";
@@ -34,6 +34,8 @@ namespace XSharp
         // This also enables the "magic" button on the tools-options dialog
         // and adds CRLF to the response file between the various commands to make it easier to read.
         internal const string EnvironmentXSharpDev = "XSHARPDEV";
+        internal const string StandardHeaderFile = "XSharpDefs.xh";
+#if ! RUNTIME
         // Read Setting from Registry
         // Names of registry keys that contain settings used by code generation in the Code Generators
         // These are stored in the registry because the CodeDomProvider is also called "stand alone" from the
@@ -45,7 +47,6 @@ namespace XSharp
         internal const string RegistryTabSize = "TabSize";
         internal const string RegistryIndentSize = "IndentSize";
         internal static bool optionWasChanged = false;
-        internal const string StandardHeaderFile = "XSharpDefs.xh";
 
 
 
@@ -94,6 +95,6 @@ namespace XSharp
             return result;
         }
 
-
+#endif
     }
 }

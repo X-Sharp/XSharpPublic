@@ -2091,6 +2091,144 @@
         <seealso cref='O:XSharp.RT.Functions.ALen'>ALen</seealso>
         <seealso cref='O:XSharp.RT.Functions.Len'>Len</seealso>
     </atail>
+
+    <acos>
+        <summary>
+            Returns the arc cosine of a specified numeric expression.
+        </summary>
+        <param name="nExpression">
+
+            Specifies a numeric expression whose arc cosine ACOS( ) returns. The value of nExpression can range from –1 through +1. The value returned by ACOS( ) ranges from 0 through pi (3.141592). The number of decimal places ACOS( ) returns is determined by SET DECIMALS.
+            Use RTOD( ) to convert radians to degrees.
+        </param>
+        <returns>
+            Numeric
+        </returns>
+        <remarks>
+            The arc cosine is returned in radians.
+        </remarks>
+        <example>
+             <code language="X#">
+                CLEAR
+                ? RTOD(ACOS(0))  // Displays 90.00
+                STORE -1 to gnArcAngle
+                ? RTOD(ACOS(gnArcAngle))  // Displays 180.00
+                ? RTOD(ACOS(SQRT(2)/2))  // Displays 45.00
+            </code>
+        </example>
+    </acos>
+    <asin>
+        <summary>
+            Returns in radians the arc sine of a numeric expression.
+        </summary>
+        <param name="nExpression">
+
+            Specifies the numeric expression whose arc sine ASIN( ) returns. The value of nExpression can range from +1 through –1, and the value ASIN( ) returns can range from –pi/2 through +pi/2 ( –1.57079 to 1.57079). The number of decimal places in the display of the result can be specified with SET DECIMALS.
+        </param>
+        <returns>
+            Numeric
+        </returns>
+        <remarks>
+            Use RTOD( ) to convert radians to degrees.
+        </remarks>
+        <example>
+             <code language="X#">
+                CLEAR
+                ? RTOD(ASIN(0))  // Returns 0.00
+                STORE 1 to gnArcAngle
+                ? RTOD(ASIN(gnArcAngle))  // Returns 90.00
+                ? RTOD(ASIN(SQRT(2)/2))  // Returns 45.00
+            </code>
+        </example>
+    </asin>
+
+
+    <atan2>
+        <summary>
+            Returns the angle whose tangent is the quotient of two specified numbers.
+        </summary>
+
+        <param name="nX">Any numeric value.</param>
+        <param name="nY">Any numeric value.</param>
+        <returns>
+            Returns the angle whose tangent is the quotient of two specified numbers.
+        </returns>
+    </atan2>
+    <pi>
+        <summary>
+            Returns the numeric constant pi.
+        </summary>
+        <returns>
+            PI( )Return Value
+            Numeric
+        </returns>
+        <remarks>
+            The numeric constant pi (3.141592) is the ratio of the circumference of a circle to its diameter.
+            The number of decimal places displayed in the value returned by <b>PI( )</b> is determined by SET DECIMALS.
+        </remarks>
+        <example>
+             <code language="X#">
+                CLEAR
+                ? PI( ) // Displays 3.14
+                STORE 2.30 TO gnRadius
+                STORE PI( ) * gnRadius^2 TO gnArea
+                ? gnArea  // Displays 16.6190
+            </code>
+        </example>
+    </pi>
+    <rtod>
+        <summary>
+            Converts radians to its equivalent in degrees.
+            You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
+        </summary>
+        <param name="nExpression">
+
+            Specifies a numeric expression representing a radian value.
+        </param>
+        <returns>
+            Numeric data type. RTOD( ) returns the number of degrees converted from the number of radians.
+        </returns>
+        <remarks>
+            To convert degrees to radians, use the DTOR( ) function.
+        </remarks>
+        <example>
+             <code language="X#">
+                CLEAR
+                ? RTOD(ACOS(0))  // Displays 90.00
+                STORE -1 to gnArcAngle
+                ? RTOD(ACOS(gnArcAngle))  // Displays 180.00
+                ? RTOD(ACOS(SQRT(2)/2)) // Displays 45.00
+            </code>
+        </example>
+
+    </rtod>
+    <dtor>
+        <summary>
+            Converts degrees to radians.
+        </summary>
+        <param name="nExpression">
+
+            Specifies the numeric expression whose value you want to convert to radians. An angle expressed in a degree:minute:second format should be converted to its decimal equivalent.
+        </param>
+        <returns>
+            Numeric
+        </returns>
+        <remarks>
+            DTOR( ) converts the value of a numeric expression given in degrees to an equivalent value in radians. DTOR( ) is useful for working with the X# trigonometric functions: ACOS( ), ASIN( ), COS( ), SIN( ), TAN( ).
+            Use RTOD( ) to convert radians to degrees.
+        </remarks>
+        <example>
+             <code language="X#">
+                CLEAR
+                ? DTOR(0)  // Displays 0.00
+                ? DTOR(45) // Displays 0.79
+                ? DTOR(90) // Displays 1.57
+                ? DTOR(180)  // Displays 3.14
+                ? COS(DTOR(90))  // Displays 0.00
+            </code>
+        </example>
+
+    </dtor>
     <atan>
         <summary>
             Calculate the arc tangent of a number.

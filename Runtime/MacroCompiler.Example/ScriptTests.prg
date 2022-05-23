@@ -15,6 +15,11 @@ USING XSharp.MacroCompiler
 FUNCTION ScriptTests AS VOID
     var sc := CreateScriptCompiler()
 
+ TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "#pragma options(""az"", on)",;
+        "return 10",;
+        ""}),Args(), null, null,   ErrorCode.ERR_PragmaNotSupported)
+
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "Console.WriteLine(123)",;
         "NOP",;
@@ -419,6 +424,17 @@ FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     "recCount = LastRec()",;
     "CLOSE ",;
     "RETURN true"}),Args("test"), TRUE, typeof(LOGIC))
+
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "#include ""XSharpDefs.xh"" ",;
+        "x := ''",;
+        "TEXT TO x",;
+        "aaa",;
+        "bbb",;
+        "ccc",;
+        "ENDTEXT",;
+        "return x",;
+        ""}),Args(), e"aaa\r\nbbb\r\nccc\r\n", typeof(string))
 
     RETURN
 

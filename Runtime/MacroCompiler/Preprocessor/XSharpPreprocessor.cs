@@ -725,6 +725,10 @@ namespace XSharp.MacroCompiler.Preprocessor
                 case XSharpLexer.PP_ENDTEXT:
                     line = doEndTextDirective(line, write2ppo);
                     break;
+                case XSharpLexer.PP_PRAGMA:
+                    doPragmaDirective(line, write2ppo);
+                    line = null;
+                    break;
                 default:
                     if (_textProps != null && line.Count > 0)
                     {
@@ -2056,6 +2060,10 @@ namespace XSharp.MacroCompiler.Preprocessor
             checkForUnexpectedPPInput(line, 1);
         }
 
+        private void doPragmaDirective(IList<XSharpToken> originalTokens, bool isIfDef)
+        {
+            Error(originalTokens[0], ErrorCode.ERR_PragmaNotSupported);
+        }
         private void doIncludeDirective(IList<XSharpToken> original)
         {
             var line = stripWs(original);

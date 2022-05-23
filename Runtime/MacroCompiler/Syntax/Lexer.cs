@@ -738,17 +738,13 @@ namespace XSharp.MacroCompiler
                                                         break;
                                                     case TokenType.PP_DEFINE:
                                                     case TokenType.PP_UNDEF:
+                                                    case TokenType.PP_PRAGMA:
                                                         HasPPDefines = true;
                                                         break;
                                                     case TokenType.PP_LINE:
                                                     default:
                                                         break;
                                                 }
-                                            }
-                                            else if (tt == TokenType.PRAGMA)
-                                            {
-                                                ch = Channel.PreProcessor;
-                                                while (!ReachEol()) ;
                                             }
                                         }
                                     }

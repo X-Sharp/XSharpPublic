@@ -939,25 +939,6 @@ namespace XSharp.LanguageService
                         newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
                         keywordContext = null;
                     }
-                    if (token.Type == XSharpParser.PRAGMA)
-                    {
-                        var start = token;
-                        var stop = token;
-                        while (token.Type != XSharpParser.EOS && token.Type != XSharpParser.Eof)
-                        {
-                            stop = token;
-                            iToken++;
-                            token = (XSharpToken)tokenStream.Get(iToken);
-                        }
-                        TextSpan tokenSpan = new TextSpan(start.StartIndex, stop.StopIndex - start.StartIndex + 1);
-                        XsClassificationSpan span1 = tokenSpan.ToClassificationSpan(snapshot, xsharpPPType);
-                        span1.startTokenType = start.Type;
-                        span1.endTokenType = stop.Type;
-                        newtags.Add(span1);
-                        iToken--;
-                        continue;
-                    }
-
                     var span = ClassifyToken(token, regionTags, snapshot, lastToken);
                     
 

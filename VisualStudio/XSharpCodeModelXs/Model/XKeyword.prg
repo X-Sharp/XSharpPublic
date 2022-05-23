@@ -346,6 +346,7 @@ BEGIN NAMESPACE XSharpModel
         MEMBER @@PP_translate:= XSharpLexer.PP_TRANSLATE
         MEMBER @@PP_undef:= XSharpLexer.PP_UNDEF
         MEMBER @@PP_warning:= XSharpLexer.PP_WARNING
+        MEMBER @@PP_Pragma := XSharpLexer.PP_PRAGMA
         MEMBER @@PP_text:= XSharpLexer.PP_TEXT
         MEMBER @@PP_endtext:= XSharpLexer.PP_ENDTEXT
         MEMBER @@PP_last:= XSharpLexer.PP_LAST
@@ -353,7 +354,6 @@ BEGIN NAMESPACE XSharpModel
         MEMBER @@Udcsep:= XSharpLexer.UDCSEP
         MEMBER @@Id:= XSharpLexer.ID
         MEMBER @@Kwid:= XSharpLexer.KWID
-        MEMBER @@Pragma:= XSharpLexer.PRAGMA
         MEMBER @@Doc_comment:= XSharpLexer.DOC_COMMENT
         MEMBER @@Sl_comment:= XSharpLexer.SL_COMMENT
         MEMBER @@Ml_comment:= XSharpLexer.ML_COMMENT
@@ -400,10 +400,10 @@ BEGIN NAMESPACE XSharpModel
 
         CONSTRUCTOR(kw1 as LONG)
             SELF((XTokenType) kw1, XTokenType.None)
-            
+
         CONSTRUCTOR(kw1 as XTokenType)
             SELF(kw1, XTokenType.None)
-            
+
         OVERRIDE METHOD ToString() AS STRING
             IF Kw2 == XTokenType.None
                 RETURN Kw1:ToString()

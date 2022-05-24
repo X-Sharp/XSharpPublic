@@ -850,12 +850,48 @@ INTERNAL CLASS DesignTabControl INHERIT TabControl
 		NEXT
 	RETURN -1
 	METHOD AddPage() AS VOID
+		SELF:AddOrInsertPage(TRUE)
+	END METHOD
+	METHOD AddOrInsertPage(lAdd AS LOGIC) AS VOID
 		LOCAL oPage AS DesignTabPage
 		oPage := DesignTabPage{SELF:oItem}
 		oPage:Text := "Page" + (SELF:TabPages:Count + 1):ToString()
 		oPage:Name := SELF:oItem:Name + "_PAGE" + (SELF:TabPages:Count + 1):ToString()
 		oPage:Tag := FALSE
-		SELF:TabPages:Add(oPage)
+		IF lAdd
+			SELF:TabPages:Add(oPage)
+		ELSE
+			LOCAL nIndex AS INT
+			nIndex := SELF:SelectedIndex
+			IF nIndex = -1
+				nIndex := 0
+			END IF
+			SELF:TabPages:Insert(nIndex,oPage)
+		END IF
+	RETURN
+	METHOD MovePage(lLeft AS LOGIC) AS VOID
+		LOCAL oPage AS DesignTabPage
+		oPage := (DesignTabPage)SELF:SelectedTab
+		IF oPage == NULL
+			RETURN
+		END IF
+		LOCAL nIndex AS INT
+		nIndex := SELF:SelectedIndex
+		IF lLeft
+			nIndex --
+			IF nIndex >= 0
+				SELF:TabPages:Remove(oPage)
+				SELF:TabPages:Insert(nIndex, oPage)
+				SELF:SelectedTab := oPage
+			END IF
+		ELSE
+			nIndex ++
+			IF nIndex < SELF:TabPages:Count
+				SELF:TabPages:Remove(oPage)
+				SELF:TabPages:Insert(nIndex, oPage)
+				SELF:SelectedTab := oPage
+			END IF
+		END IF
 	RETURN
 	METHOD SetTabPageOptions(oOptions AS VOTabPageOptions) AS VOID
 		SELF:SetTabPageOptions(SELF:SelectedIndex + 1 , oOptions)

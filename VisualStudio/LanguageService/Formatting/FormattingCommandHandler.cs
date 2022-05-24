@@ -491,7 +491,8 @@ namespace XSharp.LanguageService
                 if (element == null)
                 {
                     // then Locals
-                    var location = new XSharpSearchLocation(currentMember.File, currentMember, null, lineNumber);
+                    
+                    var location = new XSharpSearchLocation(_buffer.GetDocument(), currentMember.File, currentMember, null, lineNumber);
                     var locals = currentMember.GetLocals(location);
                     if (locals != null)
                     {
@@ -538,19 +539,7 @@ namespace XSharp.LanguageService
                 return false;
             return canIndentLine(line);
         }
-        private bool IsCommentOrString(string classification)
-        {
-            if (string.IsNullOrEmpty(classification))
-                return false;
-            switch (classification.ToLower())
-            {
-                case "comment":
-                case "string":
-                case "xsharp.text":
-                    return true;
-            }
-            return false;
-        }
+        
 
         private void FormatLineCase(ITextEdit editSession, ITextSnapshotLine line)
         {

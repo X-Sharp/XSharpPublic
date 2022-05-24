@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Runtime;
 using System.Collections;
 using System.Threading;
+using System.Linq;
 using XSharp.MacroCompiler.Syntax;
 
 namespace XSharp.MacroCompiler.Preprocessor
@@ -298,6 +299,9 @@ namespace XSharp.MacroCompiler.Preprocessor
                 default:
                     break;
             }
+            _macroDefines.Add("__MEMVAR__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST ) { SourceSymbol = token });
+            _macroDefines.Add("__UNDECLARED__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST ) { SourceSymbol = token });
+            _macroDefines.Add("__UNSAFE__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST ) { SourceSymbol = token });
             _macroDefines.Add("__ENTITY__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__ENTITY__\"") { SourceSymbol = token });  // Handled later in Transformation phase
             _macroDefines.Add("__FILE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"') { SourceSymbol = token });
             _macroDefines.Add("__FUNCTION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__FUNCTION__\"") { SourceSymbol = token }); // Handled later in Transformation phase
@@ -337,9 +341,10 @@ namespace XSharp.MacroCompiler.Preprocessor
             _macroDefines.Add("__VO14__", (token) => new XSharpToken(_options.vo14 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
             _macroDefines.Add("__VO15__", (token) => new XSharpToken(_options.vo15 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
             _macroDefines.Add("__VO16__", (token) => new XSharpToken(_options.vo16 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
+            _macroDefines.Add("__VO17__", (token) => new XSharpToken(_options.vo17 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
 
             _macroDefines.Add("__XPP1__", (token) => new XSharpToken(_options.xpp1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__XPP2__", (token) => new XSharpToken(XSharpLexer.FALSE_CONST) { SourceSymbol = token });
+            //_macroDefines.Add("__XPP2__", (token) => new XSharpToken(XSharpLexer.FALSE_CONST) { SourceSymbol = token });
             _macroDefines.Add("__FOX1__", (token) => new XSharpToken(_options.fox1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
             _macroDefines.Add("__FOX2__", (token) => new XSharpToken(_options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
 
@@ -391,7 +396,23 @@ namespace XSharp.MacroCompiler.Preprocessor
         private void _writeToPPO(string text, bool addCRLF)
         {
             // do not call t.Text when not needed.
-            if (_preprocessorOutput)
+            var write = _preprocessorOutput;
+            if (write)
+            {
+                // when we are in a header file then do not output
+                // comment lines and blank lines
+                if (ProcessingIncludeFile)
+                {
+                    var temp = text.Trim();
+                    if (temp.Length == 0)
+                        write = false;
+                    else if (temp.StartsWith("//"))
+                    {
+                        write = false;
+                    }
+                }
+            }
+            if (write)
             {
                 _ppoWriter.Write(text);
                 if (addCRLF)
@@ -704,10 +725,31 @@ namespace XSharp.MacroCompiler.Preprocessor
                 case XSharpLexer.PP_ENDTEXT:
                     line = doEndTextDirective(line, write2ppo);
                     break;
+                case XSharpLexer.PP_PRAGMA:
+                    doPragmaDirective(line, write2ppo);
+                    line = null;
+                    break;
                 default:
-                    if (_textProps != null && line.Count > 0 && line[0].Type == XSharpLexer.TEXT_STRING_CONST)
+                    if (_textProps != null && line.Count > 0)
                     {
-                        line = doTextLine(line, write2ppo);
+                        var sb = new StringBuilder();
+                        foreach (var token in line)
+                        {
+                            if (token.Type != XSharpLexer.WS)
+                            {
+                                sb.Append(token.Text);
+                            }
+                        }
+                        var sLine = sb.ToString().Trim();
+                        if (sLine.ToUpper().StartsWith("ENDTEXT"))
+                        {
+                            var temp = stripWs(line);
+                            line = doNormalLine(temp, write2ppo);
+                        }
+                        else
+                        {
+                            line = doTextLine(line, write2ppo);
+                        }
                     }
                     else
                     {
@@ -757,6 +799,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 return _fileName;
             }
         }
+
 
         XSharpToken FixToken(XSharpToken token)
         {
@@ -1617,6 +1660,10 @@ namespace XSharp.MacroCompiler.Preprocessor
                 foreach (var token in original)
                 {
                     sb.Append(token.Text);
+#if VSPARSER
+                    //mark tokens with new type to give them a different color in the editor
+                    token.Type = XSharpLexer.TEXT_STRING_CONST;
+#endif
                 }
                 sb.Append("`");
                 result.Add(new XSharpToken(TokenType.STRING_CONST, sb.ToString()));
@@ -1630,8 +1677,9 @@ namespace XSharp.MacroCompiler.Preprocessor
                     // add one ) or ))
                     result.AddRange(_textProps.textLineEnd);
                 }
+                result.Add(new XSharpToken(TokenType.EOS, "\n"));
+
             }
-            //result.Add(new XSharpToken(XSharpLexer.EOS, "\r\n", original[0]));
             if (write2PPO)
             {
                 if (result.Count > 0)
@@ -1801,7 +1849,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 {
                     result.Add(_textProps.RParen);
                 }
-                result.Add(new XSharpToken(TokenType.EOS, "\r\n"));
+                result.Add(new XSharpToken(TokenType.EOS, "\n"));
                 if (write2PPO)
                 {
                     if (result.Count > 0)
@@ -2012,6 +2060,10 @@ namespace XSharp.MacroCompiler.Preprocessor
             checkForUnexpectedPPInput(line, 1);
         }
 
+        private void doPragmaDirective(IList<XSharpToken> originalTokens, bool isIfDef)
+        {
+            Error(originalTokens[0], ErrorCode.ERR_PragmaNotSupported);
+        }
         private void doIncludeDirective(IList<XSharpToken> original)
         {
             var line = stripWs(original);
@@ -2384,14 +2436,16 @@ namespace XSharp.MacroCompiler.Preprocessor
                                 cmds[i].Clear();
                             else
                                 cmds[i] = res;
-
-                            foreach (var token in cmds[i])
+                            if (cmds[i].Count > 0)
                             {
-                                result.Add(token);
-                            }
-                            if (i < cmds.Count - 1)
-                            {
-                                result.Add(separators[i]);
+                                foreach (var token in cmds[i])
+                                {
+                                    result.Add(token);
+                                }
+                                if (i < cmds.Count - 1)
+                                {
+                                    result.Add(separators[i]);
+                                }
                             }
                         }
                     }

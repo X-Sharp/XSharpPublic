@@ -71,6 +71,7 @@ namespace XSharp.LanguageService
         private readonly ITextView _view;
         private readonly ITextBuffer _buffer;
         private readonly IBufferTagAggregatorFactoryService _aggregator;
+        private readonly ITagAggregator<IClassificationTag> _tagAggregator;
         private SnapshotPoint? _currentChar;
         private readonly TextMarkerTag _tag = new TextMarkerTag("blue");
 
@@ -80,6 +81,7 @@ namespace XSharp.LanguageService
             _buffer = view.TextBuffer;
             _tag = new TextMarkerTag("blue");
             _aggregator = aggregator;
+            _tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
 
             _view.Caret.PositionChanged += CaretPositionChanged;
             _view.LayoutChanged += ViewLayoutChanged;
@@ -249,8 +251,7 @@ namespace XSharp.LanguageService
         private bool cursorOnKwOpenClose(SnapshotPoint caret)
         {
             SnapshotSpan span = new SnapshotSpan(_view.TextSnapshot, caret.Position, 0);
-            var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
-            return tagAggregator.GetTags(span).Any(tag =>
+            return _tagAggregator.GetTags(span).Any(tag =>
                    tag.Tag.ClassificationType.IsOfType(ColorizerConstants.XSharpKwOpenFormat) ||
                    tag.Tag.ClassificationType.IsOfType(ColorizerConstants.XSharpKwCloseFormat));
         }

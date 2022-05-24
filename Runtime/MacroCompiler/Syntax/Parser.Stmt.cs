@@ -81,20 +81,20 @@ namespace XSharp.MacroCompiler
                 case TokenType.EXIT:
                     {
                         var s = new ExitStmt(ConsumeAndGet());
-                        Require(TokenType.EOS);
+                        parseEos();
                         return s;
                     }
                 case TokenType.LOOP:
                     {
                         var s = new LoopStmt(ConsumeAndGet());
-                        Require(TokenType.EOS);
+                        parseEos();
                         return s;
                     }
                 case TokenType.BREAK:
                     {
                         Token t = ConsumeAndGet();
                         var e = ParseExpression();
-                        Require(TokenType.EOS);
+                        parseEos();
                         return new BreakStmt(t, e);
                     }
                 case TokenType.RETURN:
@@ -102,11 +102,11 @@ namespace XSharp.MacroCompiler
                         Token t = ConsumeAndGet();
                         if (Expect(TokenType.VOID))
                         {
-                            Require(TokenType.EOS);
+                            parseEos();
                             return new ReturnStmt(t, null);
                         }
                         var e = ParseExpression();
-                        Require(TokenType.EOS);
+                        parseEos();
                         return new ReturnStmt(t, e);
                     }
                 case TokenType.QMARK:
@@ -119,7 +119,7 @@ namespace XSharp.MacroCompiler
                             while (Expect(TokenType.COMMA))
                                 args.Add(RequireExpression());
                         }
-                        Require(TokenType.EOS);
+                        parseEos();
                         return new QMarkStmt(t, args.ToArray());
                     }
                 case TokenType.QQMARK:
@@ -132,14 +132,14 @@ namespace XSharp.MacroCompiler
                             while (Expect(TokenType.COMMA))
                                 args.Add(RequireExpression());
                         }
-                        Require(TokenType.EOS);
+                        parseEos();
                         return new QQMarkStmt(t, args.ToArray());
                     }
                 case TokenType.THROW:
                     {
                         Token t = ConsumeAndGet();
                         var e = ParseExpression();
-                        Require(TokenType.EOS);
+                        parseEos();
                         return new ThrowStmt(t, e);
                     }
                 case TokenType.TRY:
@@ -179,7 +179,7 @@ namespace XSharp.MacroCompiler
                     var l = ParseExprList();
                     if (l?.Exprs.Count > 0)
                     {
-                        Require(TokenType.EOS);
+                        parseEos();
                         return new ExprStmt(l);
                     }
                     break;
@@ -187,6 +187,14 @@ namespace XSharp.MacroCompiler
             return null;
         }
 
+        internal void parseEos()
+        {
+            Require(TokenType.EOS);
+            while (Expect(TokenType.EOS))
+            {
+
+            }
+        }
         internal Token ParseVarIdName()
         {
             if (La() == TokenType.ID)
@@ -228,7 +236,7 @@ namespace XSharp.MacroCompiler
                     vl.Add(v);
             } while (Expect(TokenType.COMMA));
             Require(vl.Count > 0, ErrorCode.Expected, "variable declaration");
-            Require(TokenType.EOS);
+            parseEos();
             return new DeclStmt(t, vl.ToArray());
         }
 
@@ -313,7 +321,7 @@ namespace XSharp.MacroCompiler
             } while (Expect(TokenType.COMMA));
             Require(vl.Count > 0, ErrorCode.Expected, "variable declaration");
 
-            Require(TokenType.EOS);
+            parseEos();
             return new DeclStmt(t, vl.ToArray());
         }
         internal VarDecl ParseVarDecl(bool implied)
@@ -376,7 +384,7 @@ namespace XSharp.MacroCompiler
                     vl.Add(v);
             } while (Expect(TokenType.COMMA));
             Require(vl.Count > 0, ErrorCode.Expected, "variable declaration");
-            Require(TokenType.EOS);
+            parseEos();
             return new DeclStmt(t, vl.ToArray());
         }
         internal VarDecl ParseFoxDimVarDecl()
@@ -435,7 +443,7 @@ namespace XSharp.MacroCompiler
                 alias = RequireId();
             }
 
-            Require(TokenType.EOS);
+            parseEos();
             return new FieldDeclStmt(fl.ToArray(), alias);
         }
 
@@ -445,7 +453,7 @@ namespace XSharp.MacroCompiler
             ExpectAndGet(TokenType.NOP, out t);
             if (Expect(TokenType.LPAREN))
                 Require(TokenType.RPAREN);
-            Require(TokenType.EOS);
+            parseEos();
             return new EmptyStmt(t);
         }
 
@@ -455,14 +463,14 @@ namespace XSharp.MacroCompiler
             Token w;
             Require(ExpectAndGet(TokenType.WHILE, out w),ErrorCode.Expected, TokenType.WHILE);
             var cond = RequireExpression();
-            Require(TokenType.EOS);
+            parseEos();
             var s = ParseStatementBlock();
             if (!Expect(TokenType.ENDDO))
             {
                 Require(TokenType.END);
                 ExpectAny(TokenType.DO, TokenType.WHILE);
             }
-            Require(TokenType.EOS);
+            parseEos();
             return new WhileStmt(w, cond, s);
         }
 
@@ -492,7 +500,7 @@ namespace XSharp.MacroCompiler
             {
                 step = RequireExpression();
             }
-            Require(TokenType.EOS);
+            parseEos();
             var s = ParseStatementBlock();
             if (Expect(TokenType.END))
             {
@@ -500,7 +508,7 @@ namespace XSharp.MacroCompiler
             }
             else
                 Require(Expect(TokenType.NEXT), ErrorCode.Expected, "END FOR");
-            Require(TokenType.EOS);
+            parseEos();
             return a != null ? new ForStmt(t, a, dir, final, step, s)
                 : new ForStmt(t, d, dir, final, step, s);
         }
@@ -532,12 +540,12 @@ namespace XSharp.MacroCompiler
             var t = RequireAndGet(TokenType.IF);
             var cond = RequireExpression();
             Expect(TokenType.THEN);
-            Require(TokenType.EOS);
+            parseEos();
             var si = ParseStatementBlock();
             Stmt se = null;
             if (Expect(TokenType.ELSE))
             {
-                Require(TokenType.EOS);
+                parseEos();
                 se = ParseStatementBlock();
             }
             if (Expect(TokenType.END))
@@ -546,7 +554,7 @@ namespace XSharp.MacroCompiler
             }
             else
                 Require(Expect(TokenType.ENDIF), ErrorCode.Expected, "END IF");
-            Require(TokenType.EOS);
+            parseEos();
             return new IfStmt(t, cond, si, se);
         }
 
@@ -554,14 +562,14 @@ namespace XSharp.MacroCompiler
         {
             var t = RequireAndGet(TokenType.DO);
             Require(TokenType.CASE);
-            Require(TokenType.EOS);
+            parseEos();
 
             var cases = new List<CaseBlock>();
             Token c;
             while (ExpectAndGet(TokenType.CASE, out c))
             {
                 var cond = ParseExpression();
-                Require(TokenType.EOS);
+                parseEos();
                 var s = ParseStatementBlock();
                 cases.Add(new CaseBlock(c, cond, s));
             }
@@ -569,7 +577,7 @@ namespace XSharp.MacroCompiler
             Stmt o = null;
             if (Expect(TokenType.OTHERWISE))
             {
-                Require(TokenType.EOS);
+                parseEos();
                 o = ParseStatementBlock();
             }
 
@@ -579,7 +587,7 @@ namespace XSharp.MacroCompiler
                 Expect(TokenType.CASE);
             else
                 Require(TokenType.ENDCASE);
-            Require(TokenType.EOS);
+            parseEos();
 
             return new DoCaseStmt(t, cases.ToArray(), o);
         }
@@ -588,7 +596,7 @@ namespace XSharp.MacroCompiler
         {
 
             Token t = RequireAndGet(TokenType.TRY);
-            Require(TokenType.EOS);
+            parseEos();
             var s = ParseStatementBlock();
 
             var cb = new List<CatchBlock>();
@@ -599,13 +607,13 @@ namespace XSharp.MacroCompiler
             if (La() == TokenType.FINALLY)
             {
                 var ft = ConsumeAndGet();
-                Require(TokenType.EOS);
+                parseEos();
                 fb = new FinallyBlock(ft, ParseStatementBlock());
             }
 
             Require(TokenType.END);
             Expect(TokenType.TRY);
-            Require(TokenType.EOS);
+            parseEos();
 
             return new TryStmt(t, s, cb.ToArray(), fb);
 
@@ -624,7 +632,7 @@ namespace XSharp.MacroCompiler
                 if (Expect(TokenType.WHEN))
                     when = RequireExpression();
 
-                Expect(TokenType.EOS);
+                parseEos();
                 var cs = ParseStatementBlock();
 
                 return new CatchBlock(ct, n, type, when, cs);
@@ -634,11 +642,11 @@ namespace XSharp.MacroCompiler
         internal RepeatStmt ParseRepeatStmt()
         {
             Token r = RequireAndGet(TokenType.REPEAT);
-            Require(TokenType.EOS);
+            parseEos();
             var s = ParseStatementBlock();
             Require(TokenType.UNTIL);
             var cond = RequireExpression();
-            Require(TokenType.EOS);
+            parseEos();
             return new RepeatStmt(r, cond, s);
         }
 
@@ -665,7 +673,7 @@ namespace XSharp.MacroCompiler
             Require(TokenType.IN);
             var e = RequireExpression();
 
-            Require(TokenType.EOS);
+            parseEos();
 
             var s = ParseStatementBlock();
 
@@ -674,7 +682,7 @@ namespace XSharp.MacroCompiler
                 Require(TokenType.END);
                 ExpectAny(TokenType.FOR, TokenType.FOREACH);
             }
-            Require(TokenType.EOS);
+            parseEos();
 
             return new ForeachStmt(r, v, e, s);
         }
@@ -684,14 +692,14 @@ namespace XSharp.MacroCompiler
             ExpectAny(TokenType.BEGIN, TokenType.DO);
             var t = RequireAndGet(TokenType.SWITCH);
             var e = RequireExpression();
-            Require(TokenType.EOS);
+            parseEos();
             var sbs = new List<SwitchBlock>();
             sbs.Add(Require(ParseSwitchBlock(), ErrorCode.Expected, "CASE"));
             while (ParseSwitchBlock() is SwitchBlock sb)
                 sbs.Add(sb);
             Require(TokenType.END);
             Expect(TokenType.SWITCH);
-            Require(TokenType.EOS);
+            parseEos();
             return new SwitchStmt(t, e, sbs.ToArray());
 
             SwitchBlock ParseSwitchBlock()
@@ -708,7 +716,7 @@ namespace XSharp.MacroCompiler
                     Expr wh = null;
                     if (Expect(TokenType.WHEN))
                         wh = ParseExpression();
-                    Require(TokenType.EOS);
+                    parseEos();
                     var s = ParseStatementBlock();
                     return new SwitchBlockType(st, n, ty, wh, s.StmtList.Length>0 ? s : null);
                 }
@@ -720,14 +728,14 @@ namespace XSharp.MacroCompiler
                     Expr wh = null;
                     if (Expect(TokenType.WHEN))
                         wh = ParseExpression();
-                    Require(TokenType.EOS);
+                    parseEos();
                     var s = ParseStatementBlock();
                     return new SwitchBlockExpr(st, se, wh, s.StmtList.Length > 0 ? s : null);
                 }
                 else if (La() == TokenType.OTHERWISE)
                 {
                     var st = ConsumeAndGet();
-                    Require(TokenType.EOS);
+                    parseEos();
                     var s = ParseStatementBlock();
                     return new SwitchBlock(st, s.StmtList.Length > 0 ? s : null);
                 }
@@ -740,7 +748,7 @@ namespace XSharp.MacroCompiler
         {
             Require(TokenType.BEGIN);
             var t = RequireAndGet(TokenType.SEQUENCE);
-            Require(TokenType.EOS);
+            parseEos();
             var s = ParseStatementBlock();
 
             Token n = null;
@@ -749,19 +757,19 @@ namespace XSharp.MacroCompiler
             {
                 Require(TokenType.USING);
                 n = RequireIdName();
-                Require(TokenType.EOS);
+                parseEos();
                 r = ParseStatementBlock();
             }
 
             StmtBlock f = null;
             if (Expect(TokenType.FINALLY))
             {
-                Require(TokenType.EOS);
+                parseEos();
                 f = ParseStatementBlock();
             }
             Require(TokenType.END);
             Expect(TokenType.SEQUENCE);
-            Require(TokenType.EOS);
+            parseEos();
 
             return new SequenceStmt(t, s, n, r, f);
         }
@@ -771,11 +779,11 @@ namespace XSharp.MacroCompiler
             Require(TokenType.BEGIN);
             var t = RequireAndGet(TokenType.LOCK);
             var key = RequireExpression();
-            Require(TokenType.EOS);
+            parseEos();
             var s = ParseStatementBlock();
             Require(TokenType.END);
             Expect(TokenType.LOCK);
-            Require(TokenType.EOS);
+            parseEos();
             return new LockStmt(t, key, s);
         }
 
@@ -783,11 +791,11 @@ namespace XSharp.MacroCompiler
         {
             Require(TokenType.BEGIN);
             var t = RequireAndGet(kind);
-            Require(TokenType.EOS);
+            parseEos();
             var s = ParseStatementBlock();
             Require(TokenType.END);
             Expect(kind);
-            Require(TokenType.EOS);
+            parseEos();
             return kind == TokenType.SCOPE ? (Stmt)s : new ScopeStmt(t, s);
         }
 
@@ -831,11 +839,11 @@ namespace XSharp.MacroCompiler
             var t = RequireAndGet(TokenType.USING);
             var d = ParseInnerDeclStmt();
             var e = d == null ? RequireExpression() : null;
-            Require(TokenType.EOS);
+            parseEos();
             var s = ParseStatementBlock();
             Require(TokenType.END);
             Expect(TokenType.USING);
-            Require(TokenType.EOS);
+            parseEos();
             return d != null ? new UsingStmt(t, d, s) : new UsingStmt(t, e, s);
         }
         internal UsingStmt ParseFixedStmt()
@@ -843,11 +851,11 @@ namespace XSharp.MacroCompiler
             Require(TokenType.BEGIN);
             var t = RequireAndGet(TokenType.FIXED);
             var d = ParseInnerDeclStmt();
-            Require(TokenType.EOS);
+            parseEos();
             var s = ParseStatementBlock();
             Require(TokenType.END);
             Expect(TokenType.FIXED);
-            Require(TokenType.EOS);
+            parseEos();
             return new UsingStmt(t, d, s);
         }
 

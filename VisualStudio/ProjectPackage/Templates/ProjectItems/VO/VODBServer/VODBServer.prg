@@ -122,7 +122,7 @@ CONSTRUCTOR(cDBF, lShare, lRO, xRdd)
 	RETURN
 
 
-ACCESS FieldDesc
+OVERRIDE ACCESS FieldDesc
 	//
 	//	Describes all fields selected by DBServer-Editor
 	//
@@ -157,7 +157,7 @@ ACCESS FieldDesc
 	RETURN aRet
 
 
-ACCESS IndexList
+OVERRIDE ACCESS IndexList
 	//
 	//	Describes all index files created or selected
 	//	by DBServer-Editor

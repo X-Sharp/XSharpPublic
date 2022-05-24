@@ -31,8 +31,10 @@ namespace XSharp.LanguageService.Editors.HighlightWord
         public override FindOptions FindOptions => FindOptions.WholeWord;
         public override bool ShouldHighlight(string text)
         {
+            if (XSharpSyntax.KeywordNames.ContainsKey(text))
+                return false;
             if (_classifierService == null)
-                return XSharpSyntax.KeywordNames.ContainsKey(text);
+                return true;
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -41,7 +43,7 @@ namespace XSharp.LanguageService.Editors.HighlightWord
                 var span = new SnapshotSpan(caret.Position.BufferPosition,1);
                 if (isSpanInInactiveRegion(span))
                     return false;
-                return !XSharpSyntax.KeywordNames.ContainsKey(text);
+                return true;
             });
 
             

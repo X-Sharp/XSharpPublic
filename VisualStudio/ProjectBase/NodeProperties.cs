@@ -286,7 +286,7 @@ namespace Microsoft.VisualStudio.Project
 
         #region IVsSpecifyProjectDesignerPages
         /// <summary>
-        /// Implementation of the IVsSpecifyProjectDesignerPages. It will retun the pages that are configuration independent.
+        /// Implementation of the IVsSpecifyProjectDesignerPages. It will return the pages that are configuration independent.
         /// </summary>
         /// <param name="pages">The pages to return.</param>
         /// <returns></returns>
@@ -384,11 +384,9 @@ namespace Microsoft.VisualStudio.Project
             {
                 // Retrieve the list of guids from hierarchy properties.
                 // Because a flavor could modify that list we must make sure we are calling the outer most implementation of IVsHierarchy
-                string guidsList = String.Empty;
                 IVsHierarchy hierarchy = HierarchyNode.GetOuterHierarchy(this.Node.ProjectMgr);
-                object variant = null;
-                ErrorHandler.ThrowOnFailure(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID2.VSHPROPID_PropertyPagesCLSIDList, out variant));
-                guidsList = (string)variant;
+                ErrorHandler.ThrowOnFailure(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID2.VSHPROPID_PropertyPagesCLSIDList, out var variant));
+                var guidsList = (string)variant;
 
                 Guid[] guids = Utilities.GuidsArrayFromSemicolonDelimitedStringOfGuids(guidsList);
                 if(guids == null || guids.Length == 0)
@@ -415,9 +413,9 @@ namespace Microsoft.VisualStudio.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             IVsHierarchy outerHierarchy = HierarchyNode.GetOuterHierarchy(this.Node);
-            if (outerHierarchy is EnvDTE80.IInternalExtenderProvider)
+            if (outerHierarchy is EnvDTE80.IInternalExtenderProvider ext)
             {
-                return ((EnvDTE80.IInternalExtenderProvider)outerHierarchy).CanExtend(extenderCATID, extenderName, extendeeObject);
+                return ext.CanExtend(extenderCATID, extenderName, extendeeObject);
             }
             return false;
         }
@@ -426,9 +424,9 @@ namespace Microsoft.VisualStudio.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             IVsHierarchy outerHierarchy = HierarchyNode.GetOuterHierarchy(this.Node);
-            if (outerHierarchy is EnvDTE80.IInternalExtenderProvider)
+            if (outerHierarchy is EnvDTE80.IInternalExtenderProvider ext)
             {
-                return ((EnvDTE80.IInternalExtenderProvider)outerHierarchy).GetExtender(extenderCATID, extenderName, extendeeObject, extenderSite, cookie);
+                return ext.GetExtender(extenderCATID, extenderName, extendeeObject, extenderSite, cookie);
             }
             return null;
         }
@@ -437,9 +435,9 @@ namespace Microsoft.VisualStudio.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             IVsHierarchy outerHierarchy = HierarchyNode.GetOuterHierarchy(this.Node);
-            if (outerHierarchy is EnvDTE80.IInternalExtenderProvider)
+            if (outerHierarchy is EnvDTE80.IInternalExtenderProvider ext)
             {
-                return ((EnvDTE80.IInternalExtenderProvider)outerHierarchy).GetExtenderNames(extenderCATID, extendeeObject);
+                return ext.GetExtenderNames(extenderCATID, extendeeObject);
             }
             return null;
         }

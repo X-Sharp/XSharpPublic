@@ -64,6 +64,8 @@ IgnoreStdDefs=0
 EnforceSelf=1
 Ovf=%option_overflow%
 FOvf=%option_overflow%
+Undeclared=%option_undeclared%
+MemVar=%option_undeclared%
 ResponseOnly=0
 [ConsoleClasses Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111

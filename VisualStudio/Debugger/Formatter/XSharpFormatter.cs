@@ -169,7 +169,7 @@ namespace XSharpDebugger.Formatter
             }
             else
             {
-                // Escape special characters in the string and wrap in single quotes.
+                // Escape special characters in the string and wrap in double quotes.
                 s = s.Replace("\"", "\"\"");
                 return "\"" + s + "\"";
             }

@@ -727,9 +727,10 @@ namespace XSharp.MacroCompiler.Syntax
         {
             // Emit nested codeblock
             var source = Token.ToString();
+            NestedBinder.MakeDynamicMethod(source);
             if (usualMacro)
             {
-                var dlg = NestedBinder.Emit(Codeblock, source) as UsualMacro.MacroCodeblockDelegate;
+                var dlg = NestedBinder.Emit(Codeblock) as UsualMacro.MacroCodeblockDelegate;
                 if (NestedBinder.CreatesAutoVars)
                     CbList[CbIndex] = new UsualMacro.MacroMemVarCodeblock(dlg, NestedBinder.ParamCount, source, true);
                 else
@@ -737,7 +738,7 @@ namespace XSharp.MacroCompiler.Syntax
             }
             else
             {
-                var dlg = NestedBinder.Emit(Codeblock, source) as ObjectMacro.MacroCodeblockDelegate;
+                var dlg = NestedBinder.Emit(Codeblock) as ObjectMacro.MacroCodeblockDelegate;
                 ICodeblock rtc = NestedBinder.CreatesAutoVars ? new ObjectMacro.MacroMemVarCodeblock(dlg, NestedBinder.ParamCount)
                                                               : new ObjectMacro.MacroCodeblock(dlg, NestedBinder.ParamCount);
                 CbList[CbIndex] = new _Codeblock(rtc, source, true, false);

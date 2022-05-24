@@ -223,6 +223,7 @@ namespace XSharp
         public const string Vo14 = nameof(Vo14);
         public const string Vo15 = nameof(Vo15);
         public const string Vo16 = nameof(Vo16);
+        public const string Vo17 = nameof(Vo17);
         public const string VOBinary = nameof(VOBinary);
         public const string VulcanCompatibleResources = nameof(VulcanCompatibleResources);
         public const string WarningLevel = nameof(WarningLevel);

@@ -16,6 +16,20 @@ namespace XSharp.LanguageService
 {
     public static class Extensions
     {
+        
+        public static bool IsClassificationCommentOrString(this string classification)
+        {
+            if (string.IsNullOrEmpty(classification))
+                return false;
+            switch (classification.ToLower())
+            {
+                case "comment":
+                case "string":
+                case "xsharp.text":
+                    return true;
+            }
+            return false;
+        }
         public static string CleanText(this IToken token)
         {
             string result = token.Text;
@@ -58,7 +72,7 @@ namespace XSharp.LanguageService
             return file;
         }
 
-        public static XDocument GetDocument(this ITextBuffer buffer)
+        internal static XDocument GetDocument(this ITextBuffer buffer)
         {
             XDocument tokens;
             if (buffer.Properties.TryGetProperty(typeof(XDocument), out tokens))
@@ -166,7 +180,7 @@ namespace XSharp.LanguageService
             string currentNS = "";
             if (ns != null)
                 currentNS = ns.FullName;
-            var location = new XSharpSearchLocation(file, member, snapshot, line, point, currentNS);
+            var location = new XSharpSearchLocation(buffer.GetDocument(), file, member, snapshot, line, point, currentNS);
             return location;
         }
 

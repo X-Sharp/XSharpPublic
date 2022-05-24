@@ -71,6 +71,21 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EditorShowSingleLineDividers     AS LOGIC AUTO
         PUBLIC STATIC PROPERTY FormEditorMakeBackupFiles        AS LOGIC AUTO
 
+        // Code completion settings
+        PUBLIC STATIC PROPERTY CompleteLocals                   AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteSelf                     AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteParent                   AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteNamespaces               AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteTypes                    AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteFunctions                AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteFunctionsP               AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteFunctionsA               AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteGlobals                  AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteGlobalsP                 AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteGlobalsA                 AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteKeywords                 AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteSnippets                 AS LOGIC AUTO := TRUE
+
         PUBLIC STATIC PROPERTY CodeGeneratorShowXmlComments     AS LOGIC AUTO
         PUBLIC STATIC PROPERTY CodeGeneratorPublicStyle         AS PublicStyle AUTO
         PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
@@ -79,60 +94,65 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY IndentBlockContent                AS LOGIC AUTO
         PUBLIC STATIC PROPERTY IndentCaseContent                 AS LOGIC AUTO
         PUBLIC STATIC PROPERTY IndentCaseLabel                   AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY IndentMultiLines                  AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentContinuedLines              AS LOGIC AUTO
 
         PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO := Int32.MaxValue
+        PUBLIC STATIC PROPERTY CompleteNumChars               AS LONG AUTO := 4
+
         PUBLIC STATIC PROPERTY ShellLink                        AS IXVsShellLink AUTO
         PUBLIC STATIC PROPERTY LanguageService                  AS OBJECT AUTO
 
         PUBLIC STATIC PROPERTY DebuggerMode                AS DebuggerMode AUTO
         PUBLIC STATIC PROPERTY DebuggerIsRunning           AS LOGIC GET DebuggerMode != DebuggerMode.Design
 
+
+
+
         PUBLIC STATIC METHOD LogMessage(message AS STRING) AS VOID
             IF EnableLogging .and. ShellLink != NULL
                 ShellLink:LogMessage(message)
             ENDIF
-         RETURN
+            RETURN
 
         PUBLIC STATIC METHOD LogException(ex AS Exception, msg as STRING) AS VOID
-         IF ShellLink != NULL
-            ShellLink:LogException(ex, msg)
-         ENDIF
-         RETURN
+            IF ShellLink != NULL
+                ShellLink:LogException(ex, msg)
+            ENDIF
+            RETURN
 
         PUBLIC STATIC METHOD ShowMessageBox(cMessage as STRING) AS INT
-         IF ShellLink != NULL
-            RETURN ShellLink:ShowMessageBox(cMessage)
-         ENDIF
-         RETURN 0
+            IF ShellLink != NULL
+                RETURN ShellLink:ShowMessageBox(cMessage)
+            ENDIF
+            RETURN 0
 
-      PUBLIC STATIC METHOD OpenDocument(file AS STRING, line AS LONG, column AS LONG, lPreview as LOGIC) AS VOID
-         IF ShellLink != NULL
-            ShellLink:OpenDocument(file, line, column, lPreview)
-         ENDIF
+        PUBLIC STATIC METHOD OpenDocument(file AS STRING, line AS LONG, column AS LONG, lPreview as LOGIC) AS VOID
+            IF ShellLink != NULL
+                ShellLink:OpenDocument(file, line, column, lPreview)
+            ENDIF
 
         PUBLIC STATIC METHOD IsDocumentOpen(file AS STRING) AS LOGIC
-         IF ShellLink != NULL
-            RETURN ShellLink:IsDocumentOpen(file)
-         ENDIF
-         RETURN FALSE
+            IF ShellLink != NULL
+                RETURN ShellLink:IsDocumentOpen(file)
+            ENDIF
+            RETURN FALSE
 
         PUBLIC STATIC METHOD SetStatusBarText(cText AS STRING) AS VOID
-        IF ShellLink != NULL_OBJECT
-            ShellLink:SetStatusBarText(cText)
-        ENDIF
+            IF ShellLink != NULL_OBJECT
+                ShellLink:SetStatusBarText(cText)
+            ENDIF
 
         PUBLIC STATIC METHOD SetStatusBarProgress(cMessage as STRING, nItem AS LONG, nTotal as LONG) AS VOID
-        IF ShellLink != NULL_OBJECT
-           ShellLink:SetStatusBarProgress(cMessage, nItem, nTotal)
-        ENDIF
+            IF ShellLink != NULL_OBJECT
+                ShellLink:SetStatusBarProgress(cMessage, nItem, nTotal)
+            ENDIF
 
-      PUBLIC STATIC METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
-        IF ShellLink != NULL_OBJECT
-            ShellLink:SetStatusBarAnimation(onOff, id)
-        ENDIF
+        PUBLIC STATIC METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
+            IF ShellLink != NULL_OBJECT
+                ShellLink:SetStatusBarAnimation(onOff, id)
+            ENDIF
 
-       PUBLIC STATIC PROPERTY IsVsBuilding AS LOGIC GET IIF(ShellLink != NULL, ShellLink:IsVsBuilding, FALSE)
+        PUBLIC STATIC PROPERTY IsVsBuilding AS LOGIC GET IIF(ShellLink != NULL, ShellLink:IsVsBuilding, FALSE)
 
         PUBLIC STATIC METHOD FormatKeyword(sKeyword AS STRING) AS STRING
             RETURN FormatKeyword(sKeyword, XSettings.KeywordCase)
@@ -151,7 +171,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE KeywordCase.Title
                     RETURN IIF(sKeyword:Length > 1 , sKeyword:Substring(0, 1):ToUpper() + sKeyword:Substring(1):ToLower() , sKeyword:ToUpper())
             END SWITCH
-        RETURN sKeyword
+            RETURN sKeyword
 
         PUBLIC STATIC METHOD FormatKeyword(sKeyword AS OBJECT) AS STRING
             RETURN FormatKeyword(sKeyword:ToString(), XSettings.KeywordCase)

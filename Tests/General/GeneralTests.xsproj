@@ -13,7 +13,7 @@
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>VO</Dialect>
     <OutputName>ConsoleApplication2</OutputName>
-    <XSharpProjectversion>2.10.0.3</XSharpProjectversion>
+    <XSharpProjectversion>2.12.0.1</XSharpProjectversion>
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
@@ -33,7 +33,7 @@
     <VO12>false</VO12>
     <VO13>false</VO13>
     <VO14>False</VO14>
-    <VO15>False</VO15>
+    <VO15>True</VO15>
     <VO16>false</VO16>
     <XPP1>false</XPP1>
     <FOX1>false</FOX1>
@@ -90,6 +90,11 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System.Windows.Forms</Name>
+      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.Core</Name>
       <AssemblyName>XSharp.Core.dll</AssemblyName>

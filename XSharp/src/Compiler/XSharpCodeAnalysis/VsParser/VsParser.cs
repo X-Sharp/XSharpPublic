@@ -112,7 +112,14 @@ namespace XSharp.Parser
                 parser.ErrorHandler = new BailErrorStrategy();
                 try
                 {
-                    tree = parser.source();
+                    if (options.Dialect == XSharpDialect.FoxPro)
+                    {
+                        tree = parser.foxsource();
+                    }
+                    else
+                    {
+                        tree = parser.source();
+                    }
                 }
                 catch (Exception)
                 {

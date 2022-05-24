@@ -273,6 +273,33 @@ FUNCTION Chr(dwCode AS DWORD) AS STRING
 
 
 /// <summary>
+/// Convert an ASCII code to a character value, always using the Ansi codepage, ignoring the SetAnsi() setting.
+/// </summary>
+/// <param name="dwChar"></param>
+/// <returns>
+/// </returns>
+FUNCTION ChrA(dwChar AS DWORD) AS STRING
+  LOCAL b   AS BYTE
+  LOCAL ret AS STRING
+   b := (BYTE)( dwChar & 0xFF )  // VO ignores the high 24 bits
+
+   IF b <= 0x7F
+      ret := Convert.ToChar( b ):ToString()
+   ELSE
+      LOCAL encoding AS Encoding
+      encoding := StringHelpers.WinEncoding
+
+      LOCAL chars := CHAR[]{ 1 } AS CHAR[]
+      LOCAL bytes := BYTE[]{ 1 } AS BYTE[]
+      LOCAL decoder := encoding:GetDecoder() AS Decoder
+      bytes[__ARRAYBASE__] := b
+      decoder:GetChars( bytes, 0, 1, chars, 0 )
+      ret := chars[__ARRAYBASE__]:ToString()
+   ENDIF
+   RETURN ret
+
+
+/// <summary>
 /// Convert an ASCII code to a character value.
 /// </summary>
 /// <param name="dwChar"></param>

@@ -18,6 +18,7 @@ namespace XSharp.LanguageService
     internal class XSharpSearchLocation
     {
         internal ITextSnapshot Snapshot { get; private set; }
+        internal XDocument Document { get; private set; }
         internal int Position { get; private set; }
         internal int LineNumber { get; private set; }
         internal string CurrentNamespace { get; private set; }
@@ -42,9 +43,10 @@ namespace XSharp.LanguageService
                 return null;
             }
         }
-        internal XSharpSearchLocation(XFile file, XSourceMemberSymbol member, ITextSnapshot snapshot,
+        internal XSharpSearchLocation(XDocument document, XFile file, XSourceMemberSymbol member, ITextSnapshot snapshot,
             int lineNumber = 0, int position = 0, string currentNs= "")
         {
+            Document = document;
             Member = member;
             Snapshot = snapshot;
             if (member != null)
@@ -105,6 +107,7 @@ namespace XSharp.LanguageService
             if (File != null)
             {
                 scopes.AddRange(File.Usings);
+                scopes.AddRange(File.StaticUsings);
             }
             while (scope != null)
             {

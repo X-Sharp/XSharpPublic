@@ -61,7 +61,9 @@
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACos(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Returns the arc cosine of a specified numeric expression.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ACot(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -69,7 +71,9 @@
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASin(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Returns in radians the arc sine of a numeric expression.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ATan(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -77,7 +81,9 @@
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Atan2(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Returns the angle whose tangent is the quotient of two specified numbers.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Ceil(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -101,7 +107,9 @@
 <entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DToR(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Converts degrees to radians.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DW2Bin(System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
@@ -297,7 +305,9 @@
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.PI</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Returns the numeric constant pi.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Pow(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -330,7 +340,10 @@
         </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RToD(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Converts radians to its equivalent in degrees.
+            You can use RTOD( ) when working with the X# trigonometric functions COS( ), SIN( ), and TAN( ).
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Sign(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>

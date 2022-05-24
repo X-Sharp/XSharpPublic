@@ -37,6 +37,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpDebugger2022", "Visua
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpProjectPackage2022", "VisualStudio\ProjectPackage\XSharpProjectPackage2022.csproj", "{F4ADEBDB-CD20-4532-B4E3-FE7424F5369D}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOXPorter", "Tools\VOXporter\Source\VOXPorter\VOXPorter.xsproj", "{939B111B-6EBD-490F-A7F4-CE923D758A3B}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Fab_VO_Entities", "Tools\VOXporter\Source\Fab_VO_Entities\Fab_VO_Entities.xsproj", "{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +91,14 @@ Global
 		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{939B111B-6EBD-490F-A7F4-CE923D758A3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73C0DCA6-BFE5-40CB-9240-3DB1C37F5B34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

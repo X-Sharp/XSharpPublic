@@ -52,6 +52,8 @@
     </Compile>
     <Compile Include="BraceCompletion\BraceCompletion.cs" />
     <Compile Include="BraceMatching\BraceMatching.cs" />
+    <Compile Include="Classifier\LineKeywords.cs" />
+    <Compile Include="Classifier\LineState.cs" />
     <Compile Include="Completion\CompletionHelpers.cs" />
     <Compile Include="Completion\CompletionState.cs" />
     <Compile Include="Completion\CompletionCommandHandler.cs" />
@@ -61,15 +63,12 @@
     <Compile Include="Completion\XSharpAsyncCompletionSource.cs" />
     <Compile Include="Completion\XSharpAsyncCompletionSourceProvider.cs" />
     <Compile Include="EventHandlers.cs" />
-    <Compile Include="Formatting\FormattingRule.cs" />
-    <Compile Include="Formatting\XToken.cs" />
-    <Compile Include="Formatting\FormattingKeywords.cs" />
     <Compile Include="Formatting\EditorConfigSettings.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
-    <Compile Include="Classifier\LineState.cs" />
+    <Compile Include="Classifier\LineInfo.cs" />
     <Compile Include="LightBulb\CommonAction.cs" />
     <Compile Include="LightBulb\CommonActionProvider.cs" />
     <Compile Include="LightBulb\ConstructorAction.cs" />
@@ -119,6 +118,15 @@
     <Compile Include="LightBulb\CreateStubProvider.cs" />
     <Compile Include="LightBulb\ImplementInterfaceAction.cs" />
     <Compile Include="LightBulb\ImplementInterfaceProvider.cs" />
+    <Compile Include="OptionsPages\CompletionOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\CompletionOptionsControl.Designer.cs">
+      <DependentUpon>CompletionOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionsPages\CompletionOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="OptionsPages\IndentingOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -210,7 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.416</Version>
+      <Version>15.0.445</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>
@@ -237,6 +245,9 @@
   <ItemGroup>
     <EmbeddedResource Include="LightBulb\CtorParamsDlg.resx">
       <DependentUpon>CtorParamsDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsPages\CompletionOptionsControl.resx">
+      <DependentUpon>CompletionOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\IndentingOptionsControl.resx">
       <DependentUpon>IndentingOptionsControl.cs</DependentUpon>
@@ -271,6 +282,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <PropertyGroup>
+    <PostBuildEvent>$(ProjectDir)generatepkgdef.cmd $(ProjectDir)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

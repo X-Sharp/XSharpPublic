@@ -45,6 +45,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _lastRefCheck                      AS DateTime
 
       PRIVATE _cachedAllNamespaces               AS IList<STRING>
+      PRIVATE _cachedUsingStatics                AS IList<STRING>
       PUBLIC  FileWalkComplete				     AS XProject.OnFileWalkComplete
       PUBLIC  ProjectWalkComplete				 AS XProject.OnProjectWalkComplete
 
@@ -179,6 +180,7 @@ BEGIN NAMESPACE XSharpModel
          SELF:_name              := System.IO.Path.GetFileNameWithoutExtension(project:Url)
          SELF:_lastRefCheck      := DateTime.MinValue
          SELF:_cachedAllNamespaces   := NULL
+         SELF:_cachedUsingStatics   := NULL
 
          SELF:Loaded := TRUE
          SELF:FileWalkCompleted := FALSE
@@ -196,9 +198,10 @@ BEGIN NAMESPACE XSharpModel
          RETURN
 
       PRIVATE METHOD _clearTypeCache() AS VOID
-         _ImplicitNamespaces    := NULL
-         _dependentAssemblyList := NULL
-         _cachedAllNamespaces   := NULL
+         SELF:_ImplicitNamespaces    := NULL
+         SELF:_dependentAssemblyList := NULL
+         SELF:_cachedAllNamespaces   := NULL
+         SELF:_cachedUsingStatics   := NULL
          SELF:_AssemblyTypeCache := NULL
          RETURN
 
@@ -799,11 +802,26 @@ BEGIN NAMESPACE XSharpModel
          // convert the database objects to the SourceTypeSymbols
          return GetSourceTypes(result)
 
+
       METHOD GetAssemblyTypesInNamespace(namespace AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
          if namespace.EndsWith(".")
             namespace := namespace.Substring(0, namespace.Length-1)
          ENDIF
+         var myUsings := usings.ToList()
+         myUsings:Add(namespace)
          VAR result := XDatabase.GetAssemblyTypesInNamespace(namespace, SELF:DependentAssemblyList )
+         // convert the database objects to the PeTypeSymbols
+         result := FilterUsings(result, myUsings,"",false)
+         RETURN GetPETypes(result)
+
+     METHOD GetAssemblyTypes(startWith AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
+         VAR result := XDatabase.GetAssemblyTypesLike(startWith, SELF:DependentAssemblyList )
+         // convert the database objects to the PeTypeSymbols
+         result := FilterUsings(result, usings,startWith,true)
+         RETURN GetPETypes(result)
+
+     METHOD GetAssemblyTypes(startWith AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
+         VAR result := XDatabase.GetAssemblyTypesLike(startWith, SELF:DependentAssemblyList )
          // convert the database objects to the PeTypeSymbols
          RETURN GetPETypes(result)
 
@@ -826,6 +844,10 @@ BEGIN NAMESPACE XSharpModel
                 fullTypeName := element:TypeName
             else
                 fullTypeName := element:Namespace+"."+element:TypeName
+            endif
+            IF SELF:GetTypeFromCache(fullTypeName, OUT VAR peTypeFound)
+                result:Add(peTypeFound)
+                LOOP
             endif
             IdAssembly   := element:IdAssembly
             if (lastAsm == null .or. lastAsm:Id != IdAssembly)
@@ -1187,10 +1209,12 @@ BEGIN NAMESPACE XSharpModel
                LOOP
             ENDIF
             VAR file       := XSolution.FindFullPath(element:FileName)
-            file:Virtual   := TRUE
-            file:Id        := element:IdFile
-            VAR xtype := XSourceTypeSymbol{element, file}
-            result:Add(xtype)
+            if (file != null)
+                file:Virtual   := TRUE
+                file:Id        := element:IdFile
+                VAR xtype := XSourceTypeSymbol{element, file}
+                result:Add(xtype)
+            endif
          NEXT
          RETURN result
 
@@ -1328,6 +1352,26 @@ BEGIN NAMESPACE XSharpModel
             RETURN result
          END GET
       END PROPERTY
+
+      PROPERTY AllUsingStatics as IList<String>
+            GET
+                IF _cachedUsingStatics != NULL
+                    RETURN _cachedUsingStatics
+                ENDIF
+                VAR statics := List<STRING>{}
+                IF SELF:ProjectNode != NULL .AND. SELF:ProjectNode:ParseOptions:HasRuntime
+                    FOREACH asm AS XAssembly IN SELF:AssemblyReferences
+                        VAR globalclass := asm:GlobalClassName
+                        IF (! String.IsNullOrEmpty(globalclass))
+                            statics:AddUnique(globalclass)
+                        ENDIF
+                    NEXT
+                ENDIF
+                _cachedUsingStatics := statics:ToArray()
+                RETURN _cachedUsingStatics
+            END GET
+        END PROPERTY
+
 
       PROPERTY OtherFiles AS List<STRING> GET SELF:_OtherFilesDict:Keys:ToList()
 

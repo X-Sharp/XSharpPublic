@@ -50,13 +50,6 @@ FUNCTION GetFldState( uField , uArea) AS USUAL
    // RETURN NIL
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getfont/*" />
-
-FUNCTION GetFont( cFontName , nFontSize , cFontStyle , nFontCharSet) AS USUAL
-    THROW NotImplementedException{}
-    // RETURN NIL
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getnextmodified/*" />
 
 FUNCTION GetNextModified( nRecordNumber , uArea , lNoFire)

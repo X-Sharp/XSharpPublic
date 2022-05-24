@@ -41,23 +41,27 @@ FUNCTION ACot(nNum AS USUAL) AS FLOAT
 FUNCTION ATan(nNum AS USUAL) AS FLOAT
     RETURN Math.Atan((REAL8)nNum)
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/acos/*" />
+FUNCTION ACos(nExpression AS USUAL) AS FLOAT
+    RETURN Math.Acos((REAL8) nExpression)
 
-FUNCTION ACos(nNum AS USUAL) AS FLOAT
-    RETURN Math.Acos((REAL8) nNum)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asin/*" />
+FUNCTION ASin(nExpression AS USUAL) AS FLOAT
+    RETURN Math.Asin((REAL8) nExpression)
 
-FUNCTION ASin(nNum AS USUAL) AS FLOAT
-    RETURN Math.Asin((REAL8) nNum)
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atan2/*" />
 FUNCTION Atan2(nY as USUAL, nX AS USUAL) AS FLOAT
     RETURN Math.Atan2((REAL8) nY, (REAL8) nX)
 
-FUNCTION DToR(nDegrees as USUAL) AS REAL8
-    RETURN (Real8) nDegrees / 180.0 * Math.PI
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dtor/*" />
+FUNCTION DToR(nExpression as USUAL) AS REAL8
+    RETURN (Real8) nExpression / 180.0 * Math.PI
 
-FUNCTION RToD(nRadian as USUAL) AS REAL8
-    RETURN ((REAL8) nRadian / Math.PI) * 180.0
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rtod/*" />
+FUNCTION RToD(nExpression as USUAL) AS REAL8
+    RETURN ((REAL8) nExpression / Math.PI) * 180.0
 
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/pi/*" />
 FUNCTION PI() AS REAL8
     RETURN Math.PI
 

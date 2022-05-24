@@ -85,7 +85,7 @@ namespace XSharp.LanguageService
          )]
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
     [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), LanguageName, null, "Intellisense", pageNameResourceId: "205")]  
-    //[ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), LanguageName, null, "Settings Completion", pageNameResourceId: "204")]   
+    [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), LanguageName, null, "Settings Completion", pageNameResourceId: "204")]   
     [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202")]
     [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), LanguageName, null, "Indentation", pageNameResourceId: "206")]
     [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Other", pageNameResourceId: "203")]       
@@ -118,7 +118,7 @@ namespace XSharp.LanguageService
         FormattingOptionsPage _formattingPage;
         IndentingOptionsPage _indentingPage;
         OtherOptionsPage _otherOptionsPage;
-        //CompletionOptionsPage _completionOptionsPage;
+        CompletionOptionsPage _completionOptionsPage;
         public void GetIntellisenseSettings()
         {
             if (_intellisensePage == null)
@@ -137,10 +137,10 @@ namespace XSharp.LanguageService
             {
                 _otherOptionsPage = (OtherOptionsPage)GetDialogPage(typeof(OtherOptionsPage));
             }
-            //if (_completionOptionsPage == null)
-            //{
-            //    _completionOptionsPage = (CompletionOptionsPage)GetDialogPage(typeof(CompletionOptionsPage));
-            //}
+            if (_completionOptionsPage == null)
+            {
+                _completionOptionsPage = (CompletionOptionsPage)GetDialogPage(typeof(CompletionOptionsPage));
+            }
             // Intellisense
             XSettings.EnableOutputWindowLogging = _intellisensePage.EnableOutputPane;
             XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
@@ -210,23 +210,23 @@ namespace XSharp.LanguageService
             XSettings.IndentBlockContent = _indentingPage.IndentBlockContent;
             XSettings.IndentCaseContent = _indentingPage.IndentCaseContent;
             XSettings.IndentCaseLabel = _indentingPage.IndentCaseLabel;
-            XSettings.IndentMultiLines = _indentingPage.IndentMultiLines;
+            XSettings.IndentContinuedLines = _indentingPage.IndentMultiLines;
 
             // Completion
-            //XSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
-            //XSettings.CompleteSelf = _completionOptionsPage.CompleteSelf;
-            //XSettings.CompleteParent = _completionOptionsPage.CompleteParent;
-            //XSettings.CompleteNamespaces = _completionOptionsPage.CompleteNamespaces;
-            //XSettings.CompleteTypes = _completionOptionsPage.CompleteTypes;
-            //XSettings.CompleteKeywords = _completionOptionsPage.CompleteKeywords;
-            //XSettings.CompleteSnippets = _completionOptionsPage.CompleteSnippets;
-            //XSettings.CompleteGlobals = _completionOptionsPage.CompleteGlobals;
-            //XSettings.CompleteGlobalsP = _completionOptionsPage.CompleteGlobalsP;
-            //XSettings.CompleteGlobalsA = _completionOptionsPage.CompleteGlobalsA;
-            //XSettings.CompleteFunctions = _completionOptionsPage.CompleteFunctions;
-            //XSettings.CompleteFunctionsP = _completionOptionsPage.CompleteFunctionsP;
-            //XSettings.CompleteFunctionsA = _completionOptionsPage.CompleteFunctionsA;
-            //XSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
+            XSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
+            XSettings.CompleteSelf = _completionOptionsPage.CompleteSelf;
+            XSettings.CompleteParent = _completionOptionsPage.CompleteParent;
+            XSettings.CompleteNamespaces = _completionOptionsPage.CompleteNamespaces;
+            XSettings.CompleteTypes = _completionOptionsPage.CompleteTypes;
+            XSettings.CompleteKeywords = _completionOptionsPage.CompleteKeywords;
+            XSettings.CompleteSnippets = _completionOptionsPage.CompleteSnippets;
+            XSettings.CompleteGlobals = _completionOptionsPage.CompleteGlobals;
+            XSettings.CompleteGlobalsP = _completionOptionsPage.CompleteGlobalsP;
+            XSettings.CompleteGlobalsA = _completionOptionsPage.CompleteGlobalsA;
+            XSettings.CompleteFunctions = _completionOptionsPage.CompleteFunctions;
+            XSettings.CompleteFunctionsP = _completionOptionsPage.CompleteFunctionsP;
+            XSettings.CompleteFunctionsA = _completionOptionsPage.CompleteFunctionsA;
+            XSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
             //XSettings.MaxCompletionEntries = _completionOptionsPage.MaxCompletionEntries;
             // Other
             XSettings.EditorShowDividers = _otherOptionsPage.ShowDividers;
@@ -387,10 +387,13 @@ namespace XSharp.LanguageService
             foreach (var doc in docs)
             {
                 var view = await doc.GetDocumentViewAsync();
-                var buffer = view.TextBuffer;
-                if (buffer.GetClassifier() != null)
+                if (view != null)
                 {
-                    EditorConfigReader.ReadSettings(buffer, view.FilePath);
+                    var buffer = view.TextBuffer;
+                    if (buffer.GetClassifier() != null)
+                    {
+                        EditorConfigReader.ReadSettings(buffer, view.FilePath);
+                    }
                 }
             }
             return;

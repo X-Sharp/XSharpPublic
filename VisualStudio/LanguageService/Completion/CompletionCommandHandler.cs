@@ -59,8 +59,8 @@ namespace XSharp.LanguageService
         readonly ITextView _textView;
         readonly ICompletionBroker _completionBroker;
         private ICompletionSession _completionSession;
-        readonly IOleCommandTarget m_nextCommandHandler;
-        readonly IBufferTagAggregatorFactoryService _aggregator;
+        private readonly IOleCommandTarget m_nextCommandHandler;
+        private readonly ITagAggregator<IClassificationTag> _tagAggregator;
         bool completionWasSelected = false;
         XSharpSignatureHelpCommandHandler _signatureCommandHandler = null;
 
@@ -70,7 +70,7 @@ namespace XSharp.LanguageService
             this._textView = textView;
             this._completionBroker = completionBroker;
             this._completionSession = null;
-            this._aggregator = aggregator;
+            this._tagAggregator = aggregator.CreateTagAggregator<IClassificationTag>(_textView.TextBuffer);
             //add this to the filter chain
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
         }
@@ -204,7 +204,7 @@ namespace XSharp.LanguageService
                                         InsertXMLDoc();
                                         break;
                                     default:
-                                        //completeCurrentToken(nCmdID, ch);
+                                        completeCurrentToken(nCmdID, ch);
                                         break;
                                 }
                             }
@@ -237,16 +237,23 @@ namespace XSharp.LanguageService
                     return;
                 // Do not classify here. Not really needed yet
                 ITextSnapshotLine lineUp = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber - 1);
-                string lineText = lineUp.GetText();
-                var afterADocComment = lineText.Trim().StartsWith("///");
+                ITextSnapshotLine lineDown = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
+                string prevLine = lineUp.GetText();
+                string nextLine = lineDown.GetText().Trim();
+                var afterADocComment = prevLine.Trim().StartsWith("///");
+                var beforeDocComment = nextLine.StartsWith("///") || String.IsNullOrEmpty(nextLine);
                 // Ok, check the content
-                if (afterADocComment)
+                if (afterADocComment && beforeDocComment)
                 {
                     // Get the line
                     // To retrieve the text and align to it
-                    int count = lineText.TakeWhile(Char.IsWhiteSpace).Count();
-                    string prefix = lineText.Substring(0, count + 4); // copy starting whitespace + /// + separator
-                    _textView.TextBuffer.Insert(_textView.Caret.Position.BufferPosition.Position, prefix);
+                    int count = prevLine.TakeWhile(Char.IsWhiteSpace).Count();
+                    string prefix;
+                    if (prevLine.Length >= count + 4)
+                        prefix = prevLine.Substring(0, count + 4); // copy starting whitespace + /// + separator
+                    else
+                        prefix = prevLine+" ";
+                    _textView.TextBuffer.Insert(caret.Position, prefix);
                     // Move the Caret 
                     _textView.Caret.MoveTo(new SnapshotPoint(_textView.TextSnapshot, caret.Position + prefix.Length));
                 }
@@ -364,38 +371,40 @@ namespace XSharp.LanguageService
             }
         }
 
-        //private void completeCurrentToken(uint nCmdID, char ch)
-        //{
-        //    SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
-        //    if (cursorIsInStringorComment(caret))
-        //    {
-        //        return;
-        //    }
-        //    if (char.IsLetterOrDigit(ch) || ch == '_')
-        //    {
-        //        var line = caret.GetContainingLine();
+        private void completeCurrentToken(uint nCmdID, char ch)
+        {
+            /*
+            if (CompletionNotAllowed())
+            {
+                return;
+            }
+            SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
+            if (char.IsLetterOrDigit(ch) || ch == '_')
+            {
+                var line = caret.GetContainingLine();
 
-        //        var lineText = line.GetText();
-        //        var pos = caret.Position - line.Start.Position;
-        //        int chars = 0;
-        //        // count the number of characters in the current word. When > limit set in the options dialog then trigger completion
-        //        for (int i = pos - 1; i >= 0; i--)
-        //        {
-        //            var c = lineText[i];
-        //            if (! char.IsLetterOrDigit(c) && c != '_' )
-        //            { 
-        //                break;
-        //            }
-        //            chars++;
-        //            if (chars >= XSettings.CompleteNumChars)
-        //                break;
-        //        }
-        //        if (chars >= XSettings.CompleteNumChars)
-        //        {
-        //            StartCompletionSession(nCmdID, '\0', true, true);
-        //        }
-        //    }
-        //}
+                var lineText = line.GetText();
+                var pos = caret.Position - line.Start.Position;
+                int chars = 0;
+                // count the number of characters in the current word. When > limit set in the options dialog then trigger completion
+                for (int i = pos - 1; i >= 0; i--)
+                {
+                    var c = lineText[i];
+                    if (!char.IsLetterOrDigit(c) && c != '_')
+                    {
+                        break;
+                    }
+                    chars++;
+                    if (chars >= XSettings.CompleteNumChars)
+                        break;
+                }
+                if (chars >= XSettings.CompleteNumChars)
+                {
+                    StartCompletionSession(nCmdID, '\0', true, true);
+                }
+            }
+            */
+        }
 
         private void FilterCompletionSession(char ch)
         {
@@ -592,10 +601,9 @@ namespace XSharp.LanguageService
                 if (!_completionSession.IsDismissed)
                     return false;
             }
-            SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
-            if (cursorIsAfterSLComment(caret))
+            if (CompletionNotAllowed())
                 return false;
-
+            SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
             ITextSnapshot snapshot = caret.Snapshot;
 
             if (!_completionBroker.IsCompletionActive(_textView))
@@ -609,13 +617,14 @@ namespace XSharp.LanguageService
 
             _completionSession.Dismissed += OnCompletionSessionDismiss;
             //_completionSession.Committed += OnCompletionSessionCommitted;
-            _completionSession.SelectedCompletionSetChanged += _completionSession_SelectedCompletionSetChanged;
+            _completionSession.SelectedCompletionSetChanged += SelectedCompletionSetChanged;
 
             _completionSession.Properties[XsCompletionProperties.Command] = nCmdId;
             _completionSession.Properties[XsCompletionProperties.Char] = typedChar;
             _completionSession.Properties[XsCompletionProperties.AutoType] = autoType;
             _completionSession.Properties[XsCompletionProperties.Type] = null;
             _completionSession.Properties[XsCompletionProperties.IncludeKeywords] = includeKeywords;
+            _completionSession.Properties[XsCompletionProperties.Filter] = "";
             try
             {
                 _completionSession.Start();
@@ -629,7 +638,7 @@ namespace XSharp.LanguageService
 
         internal bool HasActiveSession => _completionSession != null;
 
-        private void _completionSession_SelectedCompletionSetChanged(object sender, ValueChangedEventArgs<CompletionSet> e)
+        private void SelectedCompletionSetChanged(object sender, ValueChangedEventArgs<CompletionSet> e)
         {
             if (e.NewValue.SelectionStatus.IsSelected == false)
             {
@@ -681,7 +690,7 @@ namespace XSharp.LanguageService
             }
             //
             _completionSession.Dismissed -= OnCompletionSessionDismiss;
-            _completionSession.SelectedCompletionSetChanged -= _completionSession_SelectedCompletionSetChanged;
+            _completionSession.SelectedCompletionSetChanged -= SelectedCompletionSetChanged;
             _completionSession = null;
         }
 
@@ -701,100 +710,24 @@ namespace XSharp.LanguageService
         {
             return (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
         }
-        private bool cursorIsInStringorComment(SnapshotPoint caret)
+        private bool CompletionNotAllowed()
         {
-            var classification = getClassification(caret);
-            return IsCommentOrString(classification);
+            var caret = _textView.Caret.Position.BufferPosition;
+            var line = caret.GetContainingLine();
+            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
+            var tags = _tagAggregator.GetTags(lineSpan);
+            var tag = tags.LastOrDefault();
+            var classification = tag?.Tag?.ClassificationType?.Classification;
+            return classification.IsClassificationCommentOrString();
         }
-        private bool cursorIsAfterSLComment(SnapshotPoint caret)
-        {
-
-            var classification = getClassification(caret);
-            return classification != null && classification.ToLower() == "comment";
-        }
+       
         void formatKeyword(Completion completion)
         {
             completion.InsertionText = XSettings.FormatKeyword(completion.InsertionText);
         }
 
-        private string getClassification(SnapshotPoint caret)
-        {
-            var line = caret.GetContainingLine();
-            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
-            var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_textView.TextBuffer);
-            var tags = tagAggregator.GetTags(lineSpan);
-            var tag = tags.LastOrDefault();
-            return tag?.Tag?.ClassificationType?.Classification;
-        }
-        private bool IsCommentOrString(string classification)
-        {
-            if (string.IsNullOrEmpty(classification))
-                return false;
-            switch (classification.ToLower())
-            {
-                case "comment":
-                case "string":
-                case "xsharp.text":
-                    return true;
-            }
-            return false;
-        }
 
         #region Token Helpers for XMLDoc generation
-        private bool getBufferedTokens(out XDocument xTokens, ITextBuffer textBuffer)
-        {
-            if (textBuffer.Properties != null && textBuffer.Properties.TryGetProperty(typeof(XDocument), out xTokens))
-            {
-                return xTokens != null && xTokens.Complete;
-            }
-            xTokens = null;
-            return false;
-        }
-
-        private IList<IToken> getTokensInLine(ITextSnapshotLine line)
-        {
-            IList<IToken> tokens = new List<IToken>();
-            ITextBuffer textBuffer = line.Snapshot.TextBuffer;
-            // Already been lexed ?
-            if (getBufferedTokens(out var xTokens, textBuffer))
-            {
-                var allTokens = xTokens.TokenStream.GetTokens();
-                if (allTokens != null)
-                {
-                    if (xTokens.SnapShot.Version == textBuffer.CurrentSnapshot.Version)
-                    {
-                        // Ok, use it
-                        int startIndex = -1;
-                        // Move to the line position
-                        for (int i = 0; i < allTokens.Count; i++)
-                        {
-                            if (allTokens[i].StartIndex >= line.Start.Position)
-                            {
-                                startIndex = i;
-                                break;
-                            }
-                        }
-                        if (startIndex > -1)
-                        {
-                            // Move to the end of line
-                            int currentLine = allTokens[startIndex].Line;
-                            do
-                            {
-                                tokens.Add(allTokens[startIndex]);
-                                startIndex++;
-
-                            } while ((startIndex < allTokens.Count) && (currentLine == allTokens[startIndex].Line));
-                            return tokens;
-                        }
-                    }
-                }
-            }
-            // Ok, do it now
-            var text = line.GetText();
-            tokens = getTokens(text);
-            return tokens;
-            //
-        }
 
         private IList<IToken> getTokens(string text)
         {

@@ -567,11 +567,11 @@ internal static class OOPHelpers
             else
                 return null
             endif
-        else
-            var pi := OOPHelpers.FindProperty(t:BaseType, cName, lAccess, lSelf)
-            if pi != null
-                return pi
-            endif
+//        else
+//            var pi := OOPHelpers.FindProperty(t:BaseType, cName, lAccess, lSelf)
+//            if pi != null
+//                return pi
+//            endif
         endif
 
         var bf := BindingFlags.Instance | BindingFlags.IgnoreCase |  BindingFlags.DeclaredOnly | BindingFlags.Public

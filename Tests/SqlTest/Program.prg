@@ -9,11 +9,10 @@ FUNCTION Start() AS VOID STRICT
     LOCAL oConn AS SqlConnection
     local oSel as MySqlSelect
     try
-    //SetSqlFactory(SqlServerFactory{})
     //oConn := SqlOpenConnection()
     SetSqlFactory(SqlServerFactory{})
-    //oConn := SqlConnection{"CURSADM","cursbeheer","cursbeheer"}
-    oConn := SqlConnection{"Server=(local);Database=Cursadm;User Id=cursbeheer;Password=cursbeheer"}
+    //oConn := SqlConnection{"Driver=SQL Server;Trusted_Connection=yes;Server=(local);Database=CursAdm"}
+    oConn := SqlConnection{"Server=(local);Database=Cursadm;Trusted_Connection=True;"}
     //Conn:DriverConnect()
     ? oConn:ConnectString
     if ! oConn:Connected
@@ -25,11 +24,12 @@ FUNCTION Start() AS VOID STRICT
         //oSel:ReadOnly := TRUE
         //oSel:BatchUpdates := true
         oSel:Execute()
+        oSel:SetPrimaryKey(1)
         ? "Count", oSel:NumSuccessfulRows
 
-        TestFieldPut(oSel)
+        //TestFieldPut(oSel)
         TestAppend(oSel)
-        TestDelete(oSel)
+        //TestDelete(oSel)
         oSel:Update(true)
         oSel:Close()
         ? oConn:Disconnect()
@@ -46,6 +46,9 @@ class MySqlSelect inherit SqlSelect
     method PreExecute(cSqlString as string) as string
         ? cSqlString
         return super:PreExecute(cSqlString)
+    METHOD __CreateDataAdapter AS VOID
+        SUPER:__CreateDataAdapter()
+
 end class
 
 

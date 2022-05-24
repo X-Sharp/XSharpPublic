@@ -15,7 +15,11 @@ namespace XSharp.LanguageService
         static EditorConfigParser configParser;
         private const string KEYWORDCASE = "keyword_case";
         private const string IDENTIFIERCASE = "identifier_case";
-        private const string UDCCASE = "udc_case";
+        private const string INDENT_ENTITY_CONTENT = "indent_entity_content";
+        private const string INDENT_BLOCK_CONTENT = "indent_block_content";
+        private const string INDENT_CASE_CONTENT = "indent_case_content";
+        private const string INDENT_CASE_LABEL = "indent_case_label";
+        private const string INDENT_CONTINUED_LINES = "indent_continued_lines"; private const string UDCCASE = "udc_case";
         private const string TRUE = "true";
         private const string UPPER = "upper";
         private const string LOWER = "lower";
@@ -78,12 +82,39 @@ namespace XSharp.LanguageService
                     var temp = configuration.Properties[UDCCASE].ToLower();
                     settings.UDCKeywordCase = temp == TRUE;
                 }
+                if (configuration.Properties.ContainsKey(INDENT_ENTITY_CONTENT))
+                {
+                    var temp = configuration.Properties[INDENT_ENTITY_CONTENT].ToLower();
+                    settings.IndentEntityContent = temp == TRUE;
+                }
+                if (configuration.Properties.ContainsKey(INDENT_BLOCK_CONTENT))
+                {
+                    var temp = configuration.Properties[INDENT_BLOCK_CONTENT].ToLower();
+                    settings.IndentBlockContent = temp == TRUE;
+                }
+                if (configuration.Properties.ContainsKey(INDENT_CASE_CONTENT))
+                {
+                    var temp = configuration.Properties[INDENT_CASE_CONTENT].ToLower();
+                    settings.IndentCaseContent = temp == TRUE;
+                }
+                if (configuration.Properties.ContainsKey(INDENT_CASE_LABEL))
+                {
+                    var temp = configuration.Properties[INDENT_CASE_LABEL].ToLower();
+                    settings.IndentCaseLabel = temp == TRUE;
+                }
+                if (configuration.Properties.ContainsKey(INDENT_CONTINUED_LINES))
+                {
+                    var temp = configuration.Properties[INDENT_CONTINUED_LINES].ToLower();
+                    settings.IndentContinuedLines = temp == TRUE;
+                }
             }
             if (buffer.Properties.ContainsProperty(typeof(SourceCodeEditorSettings)))
                 buffer.Properties.RemoveProperty(typeof(SourceCodeEditorSettings));
             buffer.Properties.AddProperty(typeof(SourceCodeEditorSettings), settings);
             return settings;
         }
+        
+
 
     }
 }

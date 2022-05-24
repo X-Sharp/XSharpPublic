@@ -372,14 +372,20 @@ namespace XSharp.LanguageService
             if (type.HasEnumerator())
             {
                 var member = type.GetMembers("GetEnumerator").FirstOrDefault();
-                var enumtype = SearchType(location, member.OriginalTypeName).FirstOrDefault();
-                var current = enumtype.GetProperties("Current").FirstOrDefault();
-                elementType = current?.OriginalTypeName;
-                if (type.IsGeneric)
+                if (member != null)
                 {
-                    var p = location.FindType(elementType);
-                    if (p != null)
-                        return p;
+                    var enumtype = SearchType(location, member.OriginalTypeName).FirstOrDefault();
+                    if (enumtype != null)
+                    {
+                        var current = enumtype.GetProperties("Current").FirstOrDefault();
+                        elementType = current?.OriginalTypeName;
+                        if (type.IsGeneric)
+                        {
+                            var p = location.FindType(elementType);
+                            if (p != null)
+                                return p;
+                        }
+                    }
                 }
             }
             return null;
@@ -469,8 +475,6 @@ namespace XSharp.LanguageService
         }
 
 
-        
-
         /// <summary>
         /// Retrieve the CompletionType based on :
         ///  The Token list returned by GetTokenList()
@@ -485,8 +489,25 @@ namespace XSharp.LanguageService
         public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> xtokenList,
             CompletionState state, out string notProcessed, bool forQuickinfo = false )
         {
+            return RetrieveElement(location, xtokenList, state, out notProcessed, out _,forQuickinfo);
+        }
+
+        /// <summary>
+        /// Retrieve the CompletionType based on :
+        ///  The Token list returned by GetTokenList()
+        ///  The Token that stops the building of the Token List.
+        /// </summary>
+        /// <param name="location"></param>
+        /// <param name="tokenList"></param>
+        /// <param name="state"></param>
+        /// <param name="foundElement"></param>
+        /// <returns></returns>
+        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> xtokenList,
+            CompletionState state, out string notProcessed, out IXSymbol lastFound, bool forQuickinfo = false )
+        {
             //
             notProcessed = "";
+            lastFound = null;
             var result = new List<IXSymbol>();
             if (xtokenList == null || xtokenList.Count == 0)
                 return result;
@@ -541,7 +562,7 @@ namespace XSharp.LanguageService
             int count = -1;
             startType = currentType;
             bool resetState = false;
-           while (! list.Eoi())
+            while (! list.Eoi())
             {
                 // after LPAREN, LCURLY and LBRKT we skip until we see the closing token
                 currentToken = list.ConsumeAndGet();
@@ -553,11 +574,12 @@ namespace XSharp.LanguageService
                 if (symbols.Count > 0 && symbols.Count != count)
                 {
                     var top = symbols.Peek();
+                    lastFound = top;
                     currentType = GetTypeFromSymbol(location, top);
                     if (top != null)
                         top.ResolvedType = currentType;
                     count = symbols.Count;
-                    if (top.Kind == Kind.Namespace)
+                    if (top != null && top.Kind == Kind.Namespace)
                     {
                         namespacePrefix = top.Name+".";
                     }
@@ -654,6 +676,10 @@ namespace XSharp.LanguageService
                         startOfExpression = true;
                         state = CompletionState.General;
                         break;
+                    case XSharpLexer.VAR:
+                        startOfExpression = true;
+                        state = CompletionState.General;
+                        break;
                     default:
                         hasBracket = false;
                         if (XSharpLexer.IsOperator(currentToken.Type))
@@ -692,7 +718,7 @@ namespace XSharp.LanguageService
                 if (isId)
                 {
                     qualifiedName = list.La1 == XSharpLexer.DOT;
-                    findMethod = list.La1 == XSharpLexer.LPAREN;
+                    findMethod = list.La1 == XSharpLexer.LPAREN && ! isType;        // DWORD( is a cast and not a method call
                     findConstructor = list.La1 == XSharpLexer.LCURLY;
                     if (state.HasFlag(CompletionState.StaticMembers) && !findMethod && result.Count == 0)
                     {
@@ -1375,7 +1401,7 @@ namespace XSharp.LanguageService
             var namespaces = location.Project.AllNamespaces;
             foreach (var ns in namespaces)
             {
-                if (ns.StartsWith(name, StringComparison.OrdinalIgnoreCase))
+                if (ns.StartsWith(name+".", StringComparison.OrdinalIgnoreCase))
                 {
                     result.Add(new XSymbol(name, Kind.Namespace, Modifiers.Public));
                     break;

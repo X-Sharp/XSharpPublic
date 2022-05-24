@@ -325,7 +325,8 @@ BEGIN NAMESPACE XSharpModel
                source := xmember:SourceCode:ToLower():Replace('\t',' ')
                IF source:Contains(" get") .OR. ;
                   source:Contains(" set") .OR. ;
-                  source:Contains(" auto")
+                  source:Contains(" auto") .or. ;
+                  source:Contains("=>")
                   // single line
                   NOP
                ELSE

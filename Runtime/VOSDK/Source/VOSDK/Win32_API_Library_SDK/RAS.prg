@@ -1,18 +1,18 @@
-VOSTRUCT _WINRASCONN 
+VOSTRUCT _WINRASCONN
 	MEMBER dwSize AS DWORD
 	MEMBER hrasconn AS PTR
 	MEMBER DIM szEntryName[ RAS_MaxEntryName + 1 ] AS BYTE
 	MEMBER DIM szDeviceType[ RAS_MaxDeviceType + 1 ] AS BYTE
 	MEMBER DIM szDeviceName[ RAS_MaxDeviceName + 1 ] AS BYTE
 	MEMBER DIM szPhonebook [ MAX_PATH ] AS BYTE
-	MEMBER dwSubEntry AS DWORD 
+	MEMBER dwSubEntry AS DWORD
 	// RvdH 070411 added
 	MEMBER guidEntry	IS _WINGUID
 	MEMBER dwFlags	AS DWORD
-	MEMBER luid	IS _WINLUID    
+	MEMBER luid	IS _WINLUID
 
 
-VOSTRUCT _winRASCONNSTATUS 
+VOSTRUCT _winRASCONNSTATUS
 	MEMBER dwSize AS DWORD
 	MEMBER rasconnstate AS DWORD
 	MEMBER dwError AS DWORD
@@ -33,15 +33,15 @@ VOSTRUCT _winRASDIALPARAMS
 	MEMBER dwCallbackId AS DWORD
 
 
-VOSTRUCT _winRASDIALEXTENSIONS 
+VOSTRUCT _winRASDIALEXTENSIONS
 	MEMBER dwSize AS DWORD
 	MEMBER dwfOptions AS DWORD
 	MEMBER hwndParent AS DWORD
-	MEMBER reserved AS DWORD 
+	MEMBER reserved AS DWORD
 	// RvdH 070411 added
 	MEMBER reserved1	AS DWORD
 	MEMBER RasEapInfo	IS _WinRasEAPInfo
-VOSTRUCT _WINRASEAPINFO	// RvdH 070411 added 
+VOSTRUCT _WINRASEAPINFO	// RvdH 070411 added
 	MEMBER dwSizeofEapInfo AS DWORD
 	MEMBER pbEapInfo		AS PTR
 
@@ -76,7 +76,7 @@ VOSTRUCT _winRASPPPNBF     // RvdH 070411 removed alignment
 	MEMBER bLana AS  BYTE
 
 
-VOSTRUCT _winRASPPPIPX  
+VOSTRUCT _winRASPPPIPX
 	MEMBER dwSize AS DWORD
 	MEMBER dwError AS DWORD
 	MEMBER DIM szIpxAddress[ RAS_MaxIpxAddress + 1 ] AS BYTE
@@ -98,7 +98,7 @@ VOSTRUCT _winRASPPPIP    // RvdH 070411 removed alignment
 VOSTRUCT _winRASPPPLCP ALIGN 2     // RvdH 070411 changed alignment from 4 to 2
 	MEMBER dwSize AS DWORD
 	MEMBER fBundled AS LOGIC
-	
+
 	MEMBER dwError                                 AS DWORD
 	MEMBER dwAuthenticationProtocol                AS DWORD
 	MEMBER dwAuthenticationData                    AS DWORD
@@ -147,12 +147,12 @@ VOSTRUCT _winRASCTRYINFO ALIGN 4
 
 
 
-VOSTRUCT _winRASIPADDR     // RvdH 070411 removed alignment 
+VOSTRUCT _winRASIPADDR     // RvdH 070411 removed alignment
 	MEMBER a AS BYTE
 	MEMBER b AS BYTE
 	MEMBER c AS BYTE
 	MEMBER d AS BYTE
-VOSTRUCT _winRASENTRY     // RvdH 070411 removed alignment 
+VOSTRUCT _winRASENTRY     // RvdH 070411 removed alignment
 	MEMBER dwSize AS DWORD
 	MEMBER dwfOptions AS DWORD
 	MEMBER dwCountryID AS DWORD
@@ -202,7 +202,7 @@ VOSTRUCT _winRASENTRY     // RvdH 070411 removed alignment
 	//
 	// CustomAuthKey to be used for EAP
 	//
-	MEMBER dwCustomAuthKey AS DWORD       
+	MEMBER dwCustomAuthKey AS DWORD
 	//
 	// Guid of the connection
 	//
@@ -218,7 +218,7 @@ VOSTRUCT _winRASENTRY     // RvdH 070411 removed alignment
 	//
 	// More RASEO_* options
 	//
-	MEMBER dwfOptions2 AS DWORD		
+	MEMBER dwfOptions2 AS DWORD
 	//
 	// For future use
 	//
@@ -230,7 +230,7 @@ VOSTRUCT _winRASENTRY     // RvdH 070411 removed alignment
 	MEMBER dwRedialCount AS DWORD
 	MEMBER dwRedialPause  AS DWORD
 
-VOSTRUCT _WINRASSUBENTRY  // RvdH 070411 removed alignment 
+VOSTRUCT _WINRASSUBENTRY  // RvdH 070411 removed alignment
 	MEMBER dwSize AS DWORD
 	MEMBER dwfFlags AS DWORD
 	//
@@ -258,7 +258,7 @@ VOSTRUCT _winRASCREDENTIALS ALIGN 2
 	MEMBER DIM szDomain[ DNLEN + 1 ] AS BYTE
 
 
-VOSTRUCT _WINRASAUTODIALENTRY 
+VOSTRUCT _WINRASAUTODIALENTRY
 	MEMBER dwSize AS DWORD
 	MEMBER dwFlags AS DWORD
 	MEMBER dwDialingLocation AS DWORD
@@ -281,13 +281,13 @@ VOSTRUCT _WINRASCOMMSETTINGS ALIGN 2
 	MEMBER bParity AS BYTE
 	MEMBER bStop	 AS BYTE
 	MEMBER bByteSize AS BYTE
-	MEMBER bAlign	 AS BYTE      
-	
+	MEMBER bAlign	 AS BYTE
+
 VOSTRUCT RASCUSTOMSCRIPTEXTENSIONS ALIGN 2
 	MEMBER dwSize 	AS DWORD
 	MEMBER pfnRasSetCommSettings AS PTR
-	
-VOSTRUCT _winSECURITY_MESSAGE  // RvdH 070411 removed alignment 
+
+VOSTRUCT _winSECURITY_MESSAGE  // RvdH 070411 removed alignment
 	MEMBER dwMsgId AS DWORD
 
 	MEMBER hPort AS DWORD
@@ -305,14 +305,14 @@ VOSTRUCT _winSECURITY_MESSAGE  // RvdH 070411 removed alignment
 
 
 
-VOSTRUCT _winRAS_SECURITY_INFO // RvdH 070411 removed alignment 
+VOSTRUCT _winRAS_SECURITY_INFO // RvdH 070411 removed alignment
 	MEMBER LastError AS DWORD
 	MEMBER BytesReceived AS DWORD
 	MEMBER DIM DeviceName[RASSAPI_MAX_DEVICE_NAME+1] AS DWORD
 
 
 
-VOSTRUCT _winRASNOUSER     // RvdH 070411 removed alignment 
+VOSTRUCT _winRASNOUSER     // RvdH 070411 removed alignment
 	MEMBER dwSize AS DWORD
 	MEMBER dwFlags AS DWORD
 	MEMBER dwTimeoutMs AS DWORD
@@ -341,7 +341,7 @@ VOSTRUCT String_win ALIGN 1
 	MEMBER	Data  AS PSZ
 
 
-VOSTRUCT _winRAS_PARAMETERS  // RvdH 070411 removed alignment 
+VOSTRUCT _winRAS_PARAMETERS  // RvdH 070411 removed alignment
 
 	MEMBER DIM P_Key[RASSAPI_MAX_PARAM_KEY_SIZE]  AS BYTE
 	MEMBER P_Type  AS DWORD
@@ -350,23 +350,23 @@ VOSTRUCT _winRAS_PARAMETERS  // RvdH 070411 removed alignment
 
 
 
-VOSTRUCT  _winRAS_USER_0   // RvdH 070411 removed alignment 
+VOSTRUCT  _winRAS_USER_0   // RvdH 070411 removed alignment
 	MEMBER bfPrivilege AS BYTE
 	MEMBER DIM szPhoneNumber[ RASSAPI_MAX_PHONENUMBER_SIZE + 1] AS WORD	//RvdH 070412 changed from BYTE to WORD
 
 
-VOSTRUCT _winRAS_PORT_0   // RvdH 070411 removed alignment                      
+VOSTRUCT _winRAS_PORT_0   // RvdH 070411 removed alignment
 	//RvdH 070412 changed DIM members from BYTE to WORD
-	MEMBER DIM wszPortName[RASSAPI_MAX_PORT_NAME] AS WORD	
-	MEMBER DIM wszDeviceType[RASSAPI_MAX_DEVICETYPE_NAME] AS WORD	
-	MEMBER DIM wszDeviceName[RASSAPI_MAX_DEVICE_NAME] AS WORD	
-	MEMBER DIM wszMediaName[RASSAPI_MAX_MEDIA_NAME] AS WORD	
+	MEMBER DIM wszPortName[RASSAPI_MAX_PORT_NAME] AS WORD
+	MEMBER DIM wszDeviceType[RASSAPI_MAX_DEVICETYPE_NAME] AS WORD
+	MEMBER DIM wszDeviceName[RASSAPI_MAX_DEVICE_NAME] AS WORD
+	MEMBER DIM wszMediaName[RASSAPI_MAX_MEDIA_NAME] AS WORD
 	MEMBER MediaId AS DWORD
 	MEMBER Flags AS DWORD
-	MEMBER DIM wszUserName[UNLEN + 1] AS WORD	   		
-	MEMBER DIM wszComputer[NETBIOS_NAME_LEN] AS WORD		
+	MEMBER DIM wszUserName[UNLEN + 1] AS WORD
+	MEMBER DIM wszComputer[NETBIOS_NAME_LEN] AS WORD
 	MEMBER dwStartSessionTime AS DWORD
-	MEMBER DIM wszLogonDomain[DNLEN + 1] AS WORD	
+	MEMBER DIM wszLogonDomain[DNLEN + 1] AS WORD
 	MEMBER fAdvancedServer AS LOGIC
 
 
@@ -389,7 +389,7 @@ VOSTRUCT _winRAS_PPP_ATCP_RESULT // RvdH 070411 removed alignmen
 	MEMBER dwError AS DWORD
 	MEMBER DIM wszAddress[ RAS_ATADDRESSLEN + 1 ] AS WORD //RvdH 070412 changed from BYTE to WORD
 
-VOSTRUCT _winRAS_PPP_PROJECTION_RESULT 
+VOSTRUCT _winRAS_PPP_PROJECTION_RESULT
 	MEMBER nbf IS _winRAS_PPP_NBFCP_RESULT
 	MEMBER ip  IS _winRAS_PPP_IPCP_RESULT
 	MEMBER ipx IS _winRAS_PPP_IPXCP_RESULT
@@ -420,7 +420,7 @@ VOSTRUCT _winRAS_PORT_STATISTICS ALIGN 1
 	MEMBER dwBytesXmitedUncompressed AS DWORD
 	MEMBER dwBytesRcvedUncompressed AS DWORD
 	MEMBER dwBytesXmitedCompressed AS DWORD
-	MEMBER dwBytesRcvedCompressed AS DWORD  
+	MEMBER dwBytesRcvedCompressed AS DWORD
 	// RvdH 070411 added
 	// the following are the port statistics
 	MEMBER dwPortBytesXmited AS DWORD
@@ -463,7 +463,7 @@ VOSTRUCT _WINRAS_STATS
 	MEMBER dwBps AS DWORD
 	MEMBER dwConnectDuration AS DWORD
 
-VOSTRUCT _winRASADPARAMS // RvdH 070411 removed alignment  
+VOSTRUCT _winRASADPARAMS // RvdH 070411 removed alignment
 	MEMBER dwSize AS DWORD
 	MEMBER hwndOwner AS PTR
 	MEMBER dwFlags AS DWORD
@@ -474,7 +474,7 @@ VOSTRUCT _winRASADPARAMS // RvdH 070411 removed alignment
 
 	/* AutoDial DLL function parameter block 'dwFlags.'
 	*/
-VOSTRUCT _winRASPBDLG 		// RvdH 070411 removed alignment 
+VOSTRUCT _winRASPBDLG 		// RvdH 070411 removed alignment
 	MEMBER dwSize AS DWORD
 	MEMBER hwndOwner AS PTR
 	MEMBER dwFlags AS DWORD
@@ -490,7 +490,7 @@ VOSTRUCT _winRASPBDLG 		// RvdH 070411 removed alignment
 
 
 
-VOSTRUCT _winRASDIALDLG 		// RvdH 070411 removed alignment 
+VOSTRUCT _winRASDIALDLG 		// RvdH 070411 removed alignment
 	MEMBER dwSize AS DWORD
 	MEMBER hwndOwner AS PTR
 	MEMBER dwFlags AS DWORD
@@ -505,7 +505,7 @@ VOSTRUCT _winRASDIALDLG 		// RvdH 070411 removed alignment
 
 
 
-VOSTRUCT _winRASMONITORDLG 	// RvdH 070411 removed alignment 
+VOSTRUCT _winRASMONITORDLG 	// RvdH 070411 removed alignment
 	MEMBER dwSize AS DWORD
 	MEMBER hwndOwner AS PTR
 	MEMBER dwFlags AS DWORD
@@ -1209,7 +1209,7 @@ DEFINE RCD_Logon       := 0x00000004
 	//TEXTBLOCK E:\Program Files\CAVO26\SOURCE\win32\LMCONS.PRG
 DEFINE CNLEN       := 15
 DEFINE LM20_CNLEN  := 15
-DEFINE DNLEN       := CNLEN
+DEFINE DNLEN       := CNLEN AS INT
 DEFINE LM20_DNLEN  := LM20_CNLEN
 DEFINE UNCLEN      := (CNLEN+2)
 DEFINE LM20_UNCLEN := (LM20_CNLEN+2)

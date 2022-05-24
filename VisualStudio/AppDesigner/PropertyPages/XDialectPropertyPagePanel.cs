@@ -41,6 +41,7 @@ namespace XSharp.Project
         internal const string VO14Caption = "Use FLOAT literals";
         internal const string VO15Caption = "Treat missing types as USUAL";
         internal const string VO16Caption = "Generate Clipper constructors";
+        internal const string VO17Caption = "Compatible BEGIN SEQUENCE .. END SEQUENCE ";
         internal const string XPP1Caption = "Inherit from Abstract class";
         internal const string FOX1Caption = "Inherit from Custom class";
         internal const string FOX2Caption = "Compatible Array Handling";
@@ -60,6 +61,7 @@ namespace XSharp.Project
         internal const string VO14Description = "Store floating point literals as FLOAT and not as System.Double (REAL8)  (/vo14)";
         internal const string VO15Description = "Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). \rThe default = TRUE for the VO dialect and FALSE for the other dialects. \rWe strongly recommend to set this to FALSE because this will help you to find problems in your code and non optimal code. \rIf you have to use the USUAL type we recommend to explicitly declare variables and parameters as USUAL (/vo15)";
         internal const string VO16Description = "Automatically create clipper calling convention constructors for classes without constructor where the parent class has a Clipper Calling convention constructor.(/vo16)";
+        internal const string VO17Description = "Generate code to fully implement the VO compatible BEGIN SEQUENCE .. END SEQUENCE. The compiler generates calls to the runtime functions _SequenceError and _SequenceRecover that you may override in your own code.(/vo17)";
         internal const string XPP1Description = "All classes without parent class inherit from the XPP Abstract class.(/xpp1)";
         internal const string FOX1Description = "All classes are assumed to inherit from the Custom class. This also affects the way in which properties are processed by the compiler.(/fox1)";
         internal const string FOX2Description = "FoxPro compatible array handling (Allows parenthesized arrays and assigning a single value to an array to fill all elements). WARNING Allowing parenthesized arrays may slow down the execution of your program !(/fox2)";
@@ -97,6 +99,7 @@ namespace XSharp.Project
             this.chkVO14.Text = VO14Caption;
             this.chkVO15.Text = VO15Caption;
             this.chkVO16.Text = VO16Caption;
+            this.chkVO17.Text = VO17Caption;
             this.chkFox1.Text = FOX1Caption;
             this.chkFox2.Text = FOX2Caption;
             this.chkXPP1.Text = XPP1Caption;
@@ -116,6 +119,7 @@ namespace XSharp.Project
             this.chkVO14.Tag = XSharpProjectFileConstants.Vo14;
             this.chkVO15.Tag = XSharpProjectFileConstants.Vo15;
             this.chkVO16.Tag = XSharpProjectFileConstants.Vo16;
+            this.chkVO17.Tag = XSharpProjectFileConstants.Vo17;
             this.chkFox1.Tag = XSharpProjectFileConstants.Fox1;
             this.chkFox2.Tag = XSharpProjectFileConstants.Fox2;
             this.chkXPP1.Tag = XSharpProjectFileConstants.Xpp1;
@@ -135,6 +139,7 @@ namespace XSharp.Project
             toolTip1.SetToolTip(chkVO14, VO14Description);
             toolTip1.SetToolTip(chkVO15, VO15Description);
             toolTip1.SetToolTip(chkVO16, VO16Description);
+            toolTip1.SetToolTip(chkVO17, VO17Description);
 
             toolTip1.SetToolTip(chkFox1, FOX1Description);
             toolTip1.SetToolTip(chkFox2, FOX2Description);
@@ -195,6 +200,7 @@ namespace XSharp.Project
             chkVO14.Enabled = !core;
             chkVO15.Enabled = !core;
             chkVO16.Enabled = !core;
+            chkVO17.Enabled = !core;
             if (core)
             {
                 chkVO5.Checked = false;
@@ -206,6 +212,7 @@ namespace XSharp.Project
                 chkVO14.Checked = false;
                 chkVO15.Checked = false;
                 chkVO16.Checked = false;
+                chkVO17.Checked = false;
                 chkFox1.Checked = false;
                 chkXPP1.Checked = false;
             }

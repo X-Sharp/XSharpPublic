@@ -76,11 +76,49 @@ namespace XSharp.MacroCompiler
 
         public static Compilation<T, R> Create(MacroOptions options = null) => Compilation.Create<T, R>(options);
 
+        internal List<Tuple<string, Type>> ExternLocals;
+        internal string[] ParamNames;
+        public void AddExternLocal(string name, Type type)
+        {
+            if (ExternLocals == null)
+                ExternLocals = new List<Tuple<string, Type>>();
+            ExternLocals.Add(new Tuple<string, Type>(name, type));
+        }
+        public void SetParamNames(params string[] paramNames)
+        {
+            ParamNames = paramNames;
+        }
+        internal void AddLocalsToBinder(Binder binder)
+        {
+            // Add params
+            if (ParamNames != null)
+            {
+                int a = 0;
+                foreach (var p in binder.DelegateType.GetMethod("Invoke").GetParameters())
+                {
+                    if (a < ParamNames.Length)
+                        binder.AddParam(ParamNames[a], Binder.FindType(p.ParameterType), a);
+                    ++a;
+                }
+            }
+
+            // Add Locals
+            if (ExternLocals != null)
+                foreach (var l in ExternLocals)
+                    binder.AddLocal(l.Item1, Binder.FindType(l.Item2));
+        }
+        internal void DeclareLocals(Binder binder)
+        {
+            // Declare locals
+            if (ExternLocals != null)
+                foreach (var l in ExternLocals)
+                    (binder.LocalCache[l.Item1] as LocalSymbol)?.Declare(binder.Method.GetILGenerator());
+        }
+
         public CompilationResult Compile(string source)
         {
             try
             {
-                Binder<T, R> binder = CreateBinder();
                 var res = Bind(source, Parse(source));
                 EmitInternal(ref res);
                 return res;
@@ -97,7 +135,6 @@ namespace XSharp.MacroCompiler
         {
             try
             {
-                Binder<T, R> binder = CreateBinder();
                 return Bind(source, Parse(source));
             }
             catch (CompilationError e)
@@ -144,11 +181,17 @@ namespace XSharp.MacroCompiler
         internal virtual void EmitInternal(ref CompilationResult macro)
         {
             if (macro.Macro == null && macro.SyntaxTree != null)
-                macro.Macro = macro.Binder.Emit(macro.SyntaxTree, macro.Source);
+            {
+                macro.Binder.MakeDynamicMethod(macro.Source);
+                DeclareLocals(macro.Binder);
+                macro.Macro = macro.Binder.Emit(macro.SyntaxTree);
+            }
         }
         internal virtual Binder<T, R> CreateBinder()
         {
-            return Binder.Create<T, R>(options);
+            var binder = Binder.Create<T, R>(options);
+            AddLocalsToBinder(binder);
+            return binder;
         }
     }
     public class ScriptCompilation<T, R> : Compilation<T, R> where R : Delegate
@@ -174,11 +217,6 @@ namespace XSharp.MacroCompiler
     {
         internal TypedCompilation(MacroOptions o = null) : base(o)
         {
-        }
-        internal override Binder<T, R> CreateBinder()
-        {
-            var b = Binder.Create<T,R>(options);
-            return b;
         }
         internal override CompilationResult Bind(string source, Syntax.Node parseTree)
         {

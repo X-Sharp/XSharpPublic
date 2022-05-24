@@ -78,10 +78,8 @@ namespace XSharp.LanguageService
             if (afterDot)
                 types = location.Project.GetAssemblyTypesInNamespace(startWith, location.Usings.ToArray());
             else
-            {
-                // where is this called ?
-                types = new List < XPETypeSymbol >();
-            }
+                types = location.Project.GetAssemblyTypes(startWith, location.Usings.ToArray());
+
 
             foreach (var type in types)
             {
@@ -90,7 +88,7 @@ namespace XSharp.LanguageService
                 if (isHiddenTypeSymbol(type, out var displayName))
                     continue;
 
-                if (!afterDot && !displayName.StartsWith(startWith) )
+                if (!afterDot && !displayName.StartsWith(startWith,StringComparison.OrdinalIgnoreCase) )
                     continue;
                 var typeAnalysis = new XTypeAnalysis(type);
 
@@ -104,14 +102,10 @@ namespace XSharp.LanguageService
         {
             IList<XSourceTypeSymbol> types;
             if (afterDot)
-            {
                 types = location.Project.GetProjectTypesInNamespace(startWith, location.Usings.ToArray());
-            }
             else
-            {
-                // where is this called ?
-                types = new List<XSourceTypeSymbol>();
-            }
+                types = location.Project.GetTypes(startWith, location.Usings.ToArray());
+
             foreach (var type in types)
             {
                 if (onlyInterfaces && type.Kind != Kind.Interface)
@@ -134,7 +128,7 @@ namespace XSharp.LanguageService
                 return true;
             if (realTypeName.IndexOf('$') >= 0)
                 return true;
-            if (realTypeName.IndexOf('<') >= 0)
+            if (realTypeName.StartsWith("<") )
                 return true;
             return false;
         }
@@ -234,62 +228,62 @@ namespace XSharp.LanguageService
             }
         }
 
-        //internal void AddGenericCompletion(XCompletionList compList, XSharpSearchLocation location, string startWith )
-        //{
-        //    if (XSettings.CompleteLocals && compList.Count < XSettings.MaxCompletionEntries)
-        //    {
-        //        AddGenericLocals(compList, location, startWith);
-        //    }
-        //    if (XSettings.CompleteSelf && compList.Count < XSettings.MaxCompletionEntries)
-        //    {
-        //        AddGenericSelfMembers(compList, location, startWith);
-        //    }
-        //    if (XSettings.CompleteParent && compList.Count < XSettings.MaxCompletionEntries)
-        //    {
-        //        AddGenericInheritedMembers(compList, location, startWith);
-        //    }
-        //    if (XSettings.CompleteNamespaces && compList.Count < XSettings.MaxCompletionEntries)
-        //    {
-        //        AddNamespaces(compList, location, startWith);
-        //    }
-        //    if (XSettings.CompleteTypes && compList.Count < XSettings.MaxCompletionEntries)
-        //    {
-        //         AddTypeNames(compList, location, startWith);
-        //    }
-        //    if (XSettings.CompleteFunctions && compList.Count < XSettings.MaxCompletionEntries)
-        //    {
-        //        AddGenericFunctions(compList, location, startWith, true);
-        //    }
-        //    if (XSettings.CompleteFunctionsP && compList.Count < XSettings.MaxCompletionEntries)
-        //    {
-        //        AddGenericFunctions(compList, location, startWith, false);
-        //    }
-        //    if (XSettings.CompleteFunctionsA && compList.Count < XSettings.MaxCompletionEntries) 
-        //    {
-        //        AddGenericFunctionsAssemblies(compList, location, startWith, false);
-        //    }
-        //    if (XSettings.CompleteGlobals && compList.Count < XSettings.MaxCompletionEntries)
-        //    {
-        //        AddGenericGlobals(compList, location, startWith, true);
-        //    }
-        //    if (XSettings.CompleteGlobalsP && compList.Count < XSettings.MaxCompletionEntries)
-        //    {
-        //        AddGenericGlobals(compList, location, startWith, false);
-        //    }
-        //    if (XSettings.CompleteGlobalsA && compList.Count < XSettings.MaxCompletionEntries)
-        //    {
-        //        AddGenericGlobalsAssemblies(compList, location, startWith, false);
+        internal void AddGenericCompletion(XCompletionList compList, XSharpSearchLocation location, string startWith)
+        {
+            if (XSettings.CompleteLocals && compList.Count < XSettings.MaxCompletionEntries)
+            {
+                AddGenericLocals(compList, location, startWith);
+            }
+            if (XSettings.CompleteSelf && compList.Count < XSettings.MaxCompletionEntries)
+            {
+                AddGenericSelfMembers(compList, location, startWith);
+            }
+            if (XSettings.CompleteParent && compList.Count < XSettings.MaxCompletionEntries)
+            {
+                AddGenericInheritedMembers(compList, location, startWith);
+            }
+            if (XSettings.CompleteNamespaces && compList.Count < XSettings.MaxCompletionEntries)
+            {
+                AddNamespaces(compList, location, startWith);
+            }
+            if (XSettings.CompleteTypes && compList.Count < XSettings.MaxCompletionEntries)
+            {
+                AddTypeNames(compList, location, startWith);
+            }
+            if (XSettings.CompleteFunctions && compList.Count < XSettings.MaxCompletionEntries)
+            {
+                AddGenericFunctions(compList, location, startWith, true);
+            }
+            if (XSettings.CompleteFunctionsP && compList.Count < XSettings.MaxCompletionEntries)
+            {
+                AddGenericFunctions(compList, location, startWith, false);
+            }
+            if (XSettings.CompleteFunctionsA && compList.Count < XSettings.MaxCompletionEntries)
+            {
+                AddGenericFunctionsAssemblies(compList, location, startWith, false);
+            }
+            if (XSettings.CompleteGlobals && compList.Count < XSettings.MaxCompletionEntries)
+            {
+                AddGenericGlobals(compList, location, startWith, true);
+            }
+            if (XSettings.CompleteGlobalsP && compList.Count < XSettings.MaxCompletionEntries)
+            {
+                AddGenericGlobals(compList, location, startWith, false);
+            }
+            if (XSettings.CompleteGlobalsA && compList.Count < XSettings.MaxCompletionEntries)
+            {
+                AddGenericGlobalsAssemblies(compList, location, startWith, false);
 
-        //    }
-        //    if (XSettings.CompleteSnippets)
-        //    {
-        //        // todo: Add Snippets
-        //    }
-        //    if (XSettings.CompleteKeywords)
-        //    {
-        //        AddXSharpKeywords(compList, startWith);
-        //    }
-        //}
+            }
+            if (XSettings.CompleteSnippets)
+            {
+                // todo: Add Snippets
+            }
+            if (XSettings.CompleteKeywords)
+            {
+                AddXSharpKeywords(compList, startWith);
+            }
+        }
 
         internal void AddGenericGlobals(XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
         {

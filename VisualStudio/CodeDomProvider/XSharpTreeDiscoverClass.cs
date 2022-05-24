@@ -114,17 +114,23 @@ namespace XSharp.CodeDom
             this.CurrentNamespace = this.NamespaceStack.Pop();
         }
 
-        public override void ExitSource([NotNull] XSharpParser.SourceContext context)
+        private void _ExitSource(IList<XSharpParser.EntityContext> entities)
         {
-            var lastEnt = context._Entities.LastOrDefault();
+            var lastEnt = entities.LastOrDefault();
             if (lastEnt != null)
             {
-
                 writeTrivia(CodeCompileUnit, lastEnt, true);
-
             }
-        }
 
+        }
+        public override void ExitSource([NotNull] XSharpParser.SourceContext context)
+        {
+            _ExitSource(context._Entities);
+        }
+        public override void ExitFoxsource([NotNull] XSharpParser.FoxsourceContext context)
+        {
+            _ExitSource(context._Entities);
+        }
         public CodeAttributeDeclarationCollection GenerateAttributes(XSharpParser.AttributesContext context)
         {
             /*

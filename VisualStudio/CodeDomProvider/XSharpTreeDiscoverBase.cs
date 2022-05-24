@@ -260,15 +260,27 @@ namespace XSharp.CodeDom
             exitType(context);
         }
         #endregion
-        public override void EnterSource([NotNull] XSharpParser.SourceContext context)
+
+        private void _EnterSource(IToken start)
         {
-            var source = (XSharpLexer)context.Start.TokenSource;
+            var source = (XSharpLexer)start.TokenSource;
             source.Reset();
             _tokens = source.GetAllTokens();
-        }
-        
 
-#region Helpers
+        }
+
+        public override void EnterSource([NotNull] XSharpParser.SourceContext context)
+        {
+            _EnterSource(context.Start);
+        }
+        public override void EnterFoxsource([NotNull] XSharpParser.FoxsourceContext context)
+        {
+            _EnterSource(context.Start);
+        }
+
+
+
+        #region Helpers
         /// <summary>
         /// Save the original source for the attributes to the userdata, so Hidden, Export etc are
         /// saved even when the code generator uses PRIVATE and PUBLIC
@@ -1867,15 +1879,18 @@ namespace XSharp.CodeDom
         protected void writeTrivia(CodeObject o, XSharpParserRuleContext context, bool end = false)
         {
             string trivia;
-            if (end)
-                trivia = context.GetEndingTrivia(_tokens);
-            else
-                trivia = context.GetLeadingTrivia(_tokens);
-            var key = end ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
-            o.UserData[key] = trivia;
+            if (_tokens != null)
+            {
+                if (end)
+                    trivia = context.GetEndingTrivia(_tokens);
+                else
+                    trivia = context.GetLeadingTrivia(_tokens);
+                var key = end ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
+                o.UserData[key] = trivia;
+            }
 
         }
-#endregion
+        #endregion
     }
     internal static class ParserExtensions
     {

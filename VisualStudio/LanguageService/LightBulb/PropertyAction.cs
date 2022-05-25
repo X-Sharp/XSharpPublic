@@ -12,12 +12,12 @@ using Microsoft.VisualStudio.Text.Editor;
 using System.Text;
 using System.Linq;
 
-namespace XSharp.Project.Editors.LightBulb
+namespace XSharp.LanguageService.Editors.LightBulb
 {
     internal class PropertySuggestedAction : CommonAction, ISuggestedAction
     {
 
-        public PropertySuggestedAction(ITextSnapshot snapshot) : base(snapshot)
+        public PropertySuggestedAction(ITextView textview) : base(textview)
         {
         }
 

@@ -933,6 +933,9 @@ namespace XSharp.CodeDom
                         }
                     }
                     this.Indent--;
+                    // close the method.
+                    this.Output.Write("END METHOD");
+                    base.Output.WriteLine();
                 }
             }
 
@@ -992,6 +995,8 @@ namespace XSharp.CodeDom
             types = new Stack<CodeTypeDeclaration>();
             readSettings();
             this.overrideTextWriter();
+            // VerbatimOrder writes the members in the order in which they appear in the collection
+            this.Options.VerbatimOrder = true;
             this.Options.BlankLinesBetweenMembers = false;
             var tabStr = "";
             if (useTabs)
@@ -1453,6 +1458,12 @@ namespace XSharp.CodeDom
         {
 
             types.Push(e);
+            // Sort the members on the line/column position
+            // The form editor reorders them
+            var sortedmembers = Helpers.SortMembers(e.Members);
+            e.Members.Clear();
+            e.Members.AddRange(sortedmembers);
+
             hasSource = e.HasSourceCode();
             if (e.HasSourceCode()  && writeOriginalCode(e))
             {

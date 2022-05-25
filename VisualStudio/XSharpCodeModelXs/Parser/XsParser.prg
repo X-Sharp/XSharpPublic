@@ -580,7 +580,16 @@ using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoper
          RETURN TRUE
       PRIVATE METHOD ParseUdcTokens() AS VOID
         DO WHILE SELF:La1 == XSharpLexer.UDC_KEYWORD
-            SELF:Consume()
+            switch Lt1:Text:ToUpper()
+                case "TEXT"
+                    Lt1:Type := XSharpLexer.PP_TEXT
+                    return
+                case "ENDTEXT"
+                    Lt1:Type := XSharpLexer.PP_ENDTEXT
+                    return
+                otherwise
+                    SELF:Consume()
+            end switch
         ENDDO
         RETURN
 
@@ -883,12 +892,14 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          SELF:ParseUdcTokens()  // Read UDC tokens on the current line
 
 
-         if !XSharpLexer.IsKeyword(La1)
+            if !XSharpLexer.IsKeyword(La1) .and. ! XSharpLexer.IsPPKeyword(La1)
                 return FALSE
-         endif
+            endif
             local xt as XKeyword
             LOCAL rule as XFormattingRule
-            if XSharpLexer.IsKeyword(La2)
+            if XFormattingRule.IsSingleKeyword(La1)
+                xt := XKeyword{SELF:La1}
+            elseif XSharpLexer.IsKeyword(La2)
                 xt := XKeyword{SELF:La1, SELF:La2}
             else
                 xt := XKeyword{SELF:La1}

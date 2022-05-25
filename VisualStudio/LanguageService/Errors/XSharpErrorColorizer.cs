@@ -26,7 +26,7 @@ using XSharpModel;
 using XSharpColorizer;
 using Microsoft.VisualStudio.Text.Tagging;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
 
     [Export(typeof(ITaggerProvider))]

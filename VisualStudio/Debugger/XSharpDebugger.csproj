@@ -29,7 +29,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;XSHARP</DefineConstants>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -88,7 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.445</Version>
+      <Version>15.0.448</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Metadata">
       <Version>15.9.28307</Version>

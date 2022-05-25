@@ -19,13 +19,7 @@ namespace XSharp.LanguageService
 
         readonly XFile _file;
 
-        private int getCurrentLine()
-        {
-            SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
-            ITextSnapshotLine line = caret.GetContainingLine();
-            return line.LineNumber;
-        }
- 
+   
         public XSharpEditorCommandHandler(IWpfTextView textView)
         {
             TextView = textView;

@@ -63,6 +63,7 @@ namespace XSharp.CodeDom
     {
         private XCodeMemberMethod initComponent;
         public Stack<CodeTypeDeclaration> CurrentTypeStack { get; protected set; }
+        public bool IsNested => CurrentTypeStack.Count > 0;
 
         public XSharpClassDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
         {
@@ -113,17 +114,23 @@ namespace XSharp.CodeDom
             this.CurrentNamespace = this.NamespaceStack.Pop();
         }
 
-        public override void ExitSource([NotNull] XSharpParser.SourceContext context)
+        private void _ExitSource(IList<XSharpParser.EntityContext> entities)
         {
-            var lastEnt = context._Entities.LastOrDefault();
+            var lastEnt = entities.LastOrDefault();
             if (lastEnt != null)
             {
-
                 writeTrivia(CodeCompileUnit, lastEnt, true);
-
             }
-        }
 
+        }
+        public override void ExitSource([NotNull] XSharpParser.SourceContext context)
+        {
+            _ExitSource(context._Entities);
+        }
+        public override void ExitFoxsource([NotNull] XSharpParser.FoxsourceContext context)
+        {
+            _ExitSource(context._Entities);
+        }
         public CodeAttributeDeclarationCollection GenerateAttributes(XSharpParser.AttributesContext context)
         {
             /*
@@ -395,6 +402,10 @@ namespace XSharp.CodeDom
 
         public override void EnterMethod([NotNull] XSharpParser.MethodContext context)
         {
+            // Nested types are stored in Source code completely, so no need to analyze
+            if (IsNested)
+                return;
+
             _locals.Clear();
             var newMethod = new XCodeMemberMethod();
             writeTrivia(newMethod, context);
@@ -468,6 +479,9 @@ namespace XSharp.CodeDom
 
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
         {
+            // Nested types are stored in Source code completely, so no need to analyze
+            if (IsNested)
+                return;
             // Reset
             initComponent = null;
             _locals.Clear();
@@ -477,6 +491,9 @@ namespace XSharp.CodeDom
 
         public override void EnterEvent_([NotNull] XSharpParser.Event_Context context)
         {
+            // Nested types are stored in Source code completely, so no need to analyze
+            if (IsNested)
+                return;
             var evt = new XCodeMemberEvent();
             writeTrivia(evt, context);
             FillCodeDomDesignerData(evt, context.Start.Line, context.Start.Column);
@@ -514,6 +531,9 @@ namespace XSharp.CodeDom
 
         public override void EnterConstructor([NotNull] XSharpParser.ConstructorContext context)
         {
+            // Nested types are stored in Source code completely, so no need to analyze
+            if (IsNested)
+                return;
             var ctor = new XCodeConstructor();
             writeTrivia(ctor, context);
             ctor.Attributes = MemberAttributes.Public;
@@ -531,6 +551,9 @@ namespace XSharp.CodeDom
 
         public override void EnterDestructor([NotNull] XSharpParser.DestructorContext context)
         {
+            // Nested types are stored in Source code completely, so no need to analyze
+            if (IsNested)
+                return;
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
@@ -540,24 +563,36 @@ namespace XSharp.CodeDom
 
         public override void EnterProperty([NotNull] XSharpParser.PropertyContext context)
         {
+            // Nested types are stored in Source code completely, so no need to analyze
+            if (IsNested)
+                return;
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
             writeTrivia(snippet, context);
             this.CurrentType.Members.Add(snippet);
+
         }
 
         public override void EnterOperator_([NotNull] XSharpParser.Operator_Context context)
         {
+            // Nested types are stored in Source code completely, so no need to analyze
+            if (IsNested)
+                return;
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
             writeTrivia(snippet, context);
             this.CurrentType.Members.Add(snippet);
+
         }
 
         public override void EnterLocalvar([NotNull] XSharpParser.LocalvarContext context)
         {
+            // Nested types are stored in Source code completely, so no need to analyze
+            if (IsNested)
+                return;
+
             if (initComponent != null)
             {
                 if (context.DataType != null)
@@ -604,6 +639,9 @@ namespace XSharp.CodeDom
 
         public override void EnterExpressionStmt([NotNull] XSharpParser.ExpressionStmtContext context)
         {
+            // Nested types are stored in Source code completely, so no need to analyze
+            if (IsNested)
+                return;
             if (initComponent != null)
             {
                 CodeStatement stmt = new CodeStatement();

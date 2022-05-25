@@ -46,7 +46,7 @@ namespace Microsoft.VisualStudio.Project
 
         private int currentIndent;
         private IVsOutputWindowPane outputWindowPane;
-       // private string errorString = SR.GetString(SR.Error, CultureInfo.CurrentUICulture);
+        // private string errorString = SR.GetString(SR.Error, CultureInfo.CurrentUICulture);
         //private string warningString = SR.GetString(SR.Warning, CultureInfo.CurrentUICulture);
         private TaskProvider taskProvider;
         private IVsHierarchy hierarchy;
@@ -370,27 +370,30 @@ namespace Microsoft.VisualStudio.Project
         private void ReportQueuedOutput()
         {
             // NOTE: This may run on a background thread!
-            // We need to output this on the main thread. We must use BeginInvoke because the main thread may not be pumping events yet.
             FlushBuildOutput();
         }
 
         internal void FlushBuildOutput()
         {
-            OutputQueueEntry output;
-            lock (outputQueue)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                if (!outputQueue.IsEmpty)
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                OutputQueueEntry output;
+                lock (outputQueue)
                 {
-                    while (this.outputQueue.TryDequeue(out output))
+                    if (!outputQueue.IsEmpty)
                     {
+                        while (this.outputQueue.TryDequeue(out output))
+                        {
 #if DEV17
-                        ErrorHandler.ThrowOnFailure(output.Pane.OutputStringThreadSafe(output.Message));
+                            output.Pane.OutputStringThreadSafe(output.Message);
 #else
-                        ErrorHandler.ThrowOnFailure(output.Pane.OutputString(output.Message));
+                            output.Pane.OutputString(output.Message);
 #endif
+                        }
                     }
                 }
-            }
+            });
         }
 
         private void ClearQueuedOutput()
@@ -465,24 +468,24 @@ namespace Microsoft.VisualStudio.Project
         {
             // NOTE: This may run on a background thread!
             // We need to output this on the main thread. We must use BeginInvoke because the main thread may not be pumping events yet.
-                this.taskProvider.SuspendRefresh();
-                try
-                {
-                    Func<ErrorTask> taskFunc;
+            this.taskProvider.SuspendRefresh();
+            try
+            {
+                Func<ErrorTask> taskFunc;
 
-                    while (this.taskQueue.TryDequeue(out taskFunc))
-                    {
-                        // Create the error task
-                        ErrorTask task = taskFunc();
-
-                        // Log the task
-                        this.taskProvider.Tasks.Add(task);
-                    }
-                }
-                finally
+                while (this.taskQueue.TryDequeue(out taskFunc))
                 {
-                    this.taskProvider.ResumeRefresh();
+                    // Create the error task
+                    ErrorTask task = taskFunc();
+
+                    // Log the task
+                    this.taskProvider.Tasks.Add(task);
                 }
+            }
+            finally
+            {
+                this.taskProvider.ResumeRefresh();
+            }
         }
 
         private void ClearQueuedTasks()
@@ -493,7 +496,7 @@ namespace Microsoft.VisualStudio.Project
             if (this.InteractiveBuild)
             {
                 // We need to clear this on the main thread. We must use BeginInvoke because the main thread may not be pumping events yet.
-                    this.taskProvider.Tasks.Clear();
+                this.taskProvider.Tasks.Clear();
             }
         }
 

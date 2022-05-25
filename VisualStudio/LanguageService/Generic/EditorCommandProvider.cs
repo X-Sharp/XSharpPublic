@@ -108,7 +108,7 @@ namespace XSharp.LanguageService
                 if (_dropDowns.ContainsKey(fileName))
                 {
                     dropdown = _dropDowns[fileName];
-                    dropdown.addTextView(textView);
+                    dropdown.addTextView(textView, textViewAdapter);
                 }
                 else if (dropDownBarManager != null)
                 {
@@ -116,7 +116,7 @@ namespace XSharp.LanguageService
                     dropDownBarManager.RemoveDropdownBar();
                     dropDownBarManager.AddDropdownBar(2, dropdown);
                     _dropDowns.Add(fileName, dropdown);
-                    dropdown.addTextView(textView);
+                    dropdown.addTextView(textView, textViewAdapter);
                 }
                 if (!_textViews.ContainsKey(fileName))
                 {

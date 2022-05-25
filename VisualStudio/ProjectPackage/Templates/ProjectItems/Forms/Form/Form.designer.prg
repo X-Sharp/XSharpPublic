@@ -18,7 +18,7 @@
             endif
             Super:Dispose(disposing)
 			return
-
+        end method
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -30,7 +30,7 @@
             self:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
             self:Text := "$safeitemrootname$"
 			return
-
+        end method
         #endregion
     end class
 

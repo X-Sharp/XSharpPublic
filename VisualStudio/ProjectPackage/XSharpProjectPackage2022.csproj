@@ -125,12 +125,15 @@
     <Compile Include="Commands\CommandXPorter.cs" />
     <Compile Include="Commands\CommandVoXPorter.cs" />
     <Compile Include="Commands\XSharpBaseCommand.cs" />
-    <Compile Include="ErrorList\TaskListManager.cs" />
-    <Compile Include="ErrorList\TasksSnapShot.cs" />
-    <Compile Include="ErrorList\TasksFactory.cs" />
-    <Compile Include="ErrorList\TaskListItem.cs" />
-    <Compile Include="ErrorList\ErrorListManager.cs" />
-    <Compile Include="ErrorList\TaskListProvider.cs" />
+    <Compile Include="List\ListManager.cs" />
+    <Compile Include="List\IListItem.cs" />
+    <Compile Include="List\ListFactory.cs" />
+    <Compile Include="List\ListProvider.cs" />
+    <Compile Include="List\TaskList\TaskListManager.cs" />
+    <Compile Include="List\ListSnapShot.cs" />
+    <Compile Include="List\TaskList\TaskListItem.cs" />
+    <Compile Include="List\ErrorList\ErrorListManager.cs" />
+    <Compile Include="List\TaskList\TaskListProvider.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
@@ -140,14 +143,12 @@
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
-    <Compile Include="ErrorList\ErrorListProvider.cs" />
-    <Compile Include="ErrorList\ListSinkManager.cs" />
-    <Compile Include="ErrorList\ErrorMessageUtil.cs" />
-    <Compile Include="ErrorList\ErrorListItem.cs" />
-    <Compile Include="ErrorList\IListProvider.cs" />
-    <Compile Include="ErrorList\IListSinkManager.cs" />
-    <Compile Include="ErrorList\ErrorsFactory.cs" />
-    <Compile Include="ErrorList\ErrorsSnapshot.cs" />
+    <Compile Include="List\ErrorList\ErrorListProvider.cs" />
+    <Compile Include="List\ListSinkManager.cs" />
+    <Compile Include="List\ErrorList\ErrorMessageUtil.cs" />
+    <Compile Include="List\ErrorList\ErrorListItem.cs" />
+    <Compile Include="List\IListProvider.cs" />
+    <Compile Include="List\IListSinkManager.cs" />
     <Compile Include="Nodes\XSharpFileNodeProperties.cs" />
     <Compile Include="Nodes\XSharpNodeProperties.cs" />
     <Compile Include="Editors\XSharpVOEditorPane.cs" />
@@ -429,8 +430,8 @@
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.xsproj" />
-    <VSIXSourceItem Include="$(Outdir)XSharpDebugger.vsdconfig">
-      <Link>XSharpDebugger.vsdconfig</Link>
+    <VSIXSourceItem Include="C:\XSharp\DevPublic\Binaries\2022\Debug\XSharpDebugger2022.vsdconfig">
+      <Link>XSharpDebugger2022.vsdconfig</Link>
     </VSIXSourceItem>
     <None Include="Snippets\Snippets\case.snippet" />
     <None Include="Snippets\Snippets\class.snippet" />
@@ -717,7 +718,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.445</Version>
+      <Version>17.0.448</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>

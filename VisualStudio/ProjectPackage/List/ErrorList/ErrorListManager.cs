@@ -6,8 +6,10 @@
 using Microsoft.VisualStudio.Shell.TableManager;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using XSharpModel;
+using System.Collections.Concurrent;
 
 namespace XSharp.Project
 {
@@ -15,33 +17,23 @@ namespace XSharp.Project
     /// <summary>
     /// This class wraps the complexity of the error list
     /// Each project gets its own copy of this class
-    /// but they all share the same ErrorListProvider and IErrorList control
+    /// but they all share the same ListProvider and IList control
     /// and ITableManager manager
     /// </summary>
-    internal class ErrorListManager
+    internal class ErrorListManager : ListManager<IErrorListItem>
     {
-        static Dictionary<Guid, ErrorListManager> _projects;
+        static ConcurrentDictionary<Guid, ErrorListManager> _projects;
         static ErrorListProvider _provider = null;
         static IErrorList _errorList;
         static ITableManager _manager;
-        static object _gate;
-        private XSharpProjectNode Project { get; set; }
-        private ErrorsFactory Factory { get; set; }
-        internal IList<IErrorListItem> BuildErrors { get; set; }
-        internal IList<IErrorListItem> IntellisenseErrors { get; set; }
-        bool dirty;
 
-        internal ErrorListManager(XSharpProjectNode node)
+        internal ErrorListManager(XSharpProjectNode node) : base(node, _provider)
         {
-            Project = node;
-            BuildErrors = new List<IErrorListItem>();
-            IntellisenseErrors = new List<IErrorListItem>();
         }
 
         static ErrorListManager()
         {
-            _projects = new Dictionary<Guid, ErrorListManager>();
-            _gate = new object();
+            _projects = new ConcurrentDictionary<Guid, ErrorListManager>();
             _errorList = XSharpProjectPackage.XInstance.ErrorList;
             _manager = _errorList.TableControl.Manager;
             _provider = new ErrorListProvider(_manager);
@@ -51,40 +43,40 @@ namespace XSharp.Project
             if (!_projects.ContainsKey(project.ProjectIDGuid))
             {
                 var manager = new ErrorListManager(project);
-                manager.Factory = new ErrorsFactory(_provider, project.ProjectIDGuid);
                 _provider.AddListFactory(manager.Factory);
-                _projects.Add(project.ProjectIDGuid, manager);
+                _projects.TryAdd(project.ProjectIDGuid, manager);
             }
-            return _projects[project.ProjectIDGuid];
+            _projects.TryGetValue(project.ProjectIDGuid, out var errorlistmanager);
+            return errorlistmanager;
         }
   
 
         internal void DeleteIntellisenseErrorsFromFile(string fileName)
         {
+            var buildErrors = BuildErrors;
+            var intellisenseErrors = IntellisenseErrors;
             var newItems = new List<IErrorListItem>();
-            IList<IErrorListItem> oldItems;
-            bool changed = false;
-            lock (this)
+            var changed = false;
+
+            foreach (var item in intellisenseErrors)
             {
-                // store locally to prevent MT errors
-                oldItems = IntellisenseErrors;
-            }
-            foreach (var item in oldItems)
-            {
-                if (String.Compare(item.Filename, fileName, StringComparison.OrdinalIgnoreCase) != 0)
+                if (string.Compare(item.Filename, fileName, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     //keep the item
                     newItems.Add(item);
                 }
                 else
+                {
                     changed = true;
+                }
             }
             if (changed)
             {
                 lock (this)
                 {
-                    IntellisenseErrors = newItems;
-                    dirty = true;
+                    Clear();
+                    AddItems(buildErrors);
+                    AddItems(newItems);
                 }
             }
 
@@ -115,105 +107,88 @@ namespace XSharp.Project
         {
 
             var item = this.CreateItem(file, line, column, 1, errCode, message, sev, ErrorSource.Build, Project.Caption);
-            this.AddError(BuildErrors, item );
+            this.AddItem(item);
         }
 
         internal void AddIntellisenseError(string file, int line, int column, int length, string errCode,
             string message, MessageSeverity sev)
         {
             var item = this.CreateItem(file, line, column, length, errCode, message, sev, ErrorSource.Other, Project.Caption);
-            this.AddError(IntellisenseErrors, item);
+            this.AddItem(item);
+
         }
+
+        IList<IErrorListItem> BuildErrors => Items.Where(i => i.ErrorSource == ErrorSource.Build).ToArray();
+        IList<IErrorListItem> IntellisenseErrors => Items.Where(i => i.ErrorSource != ErrorSource.Build).ToArray();
 
         internal void ClearBuildErrors()
         {
-            lock (this)
-            {
-                // Replace collection to prevent MT errors
-                if (BuildErrors.Count != 0)
-                {
-                    BuildErrors = new List<IErrorListItem>();
-                    dirty = true;
-                }
-
-            }
+            var items = IntellisenseErrors;
+            this.Clear();
+            AddItems(items);
         }
 
-        private void AddError(IList<IErrorListItem> errors, IErrorListItem item)
-        {
-            lock (this)
-            {
-                errors.Add(item);
-                dirty = true;
-            }
-        }
 
-        internal void Refresh()
+        internal override void Refresh()
         {
             if (!dirty)
                 return;
             // dedupe errors based on filename, row, column, 
-            IList<IErrorListItem> errors = new List<IErrorListItem>();
-            Dictionary<string, string> keys = new Dictionary<string, string>();
+            var errors = new List<IErrorListItem>();
+            HashSet<string> keys = new HashSet<string>();
 
-            if (_errorList.AreBuildErrorSourceEntriesShown)
+            var buildErrors = BuildErrors;
+            foreach (var item in buildErrors)
             {
-                var buildErrors = BuildErrors;
-                foreach (var item in buildErrors)
+                string key = item.Key;
+                if (!keys.Contains(key))
                 {
-                    string key = item.Key;
-                    if (!keys.ContainsKey(key))
-                    {
-                        errors.Add(item);
-                        keys.Add(key, key);
-                    }
-                    else
-                    {
-                        ; // duplicate item
-                    }
+                    errors.Add(item);
+                    keys.Add(key);
+                }
+                else
+                {
+                    ; // duplicate item
                 }
             }
-            if (_errorList.AreOtherErrorSourceEntriesShown)
-            {
-                var intellisenseErrors = IntellisenseErrors;
-                Dictionary<string, bool> filenames = new Dictionary<string, bool>();
+            var intellisenseErrors = IntellisenseErrors;
+            Dictionary<string, bool> filenames = new Dictionary<string, bool>();
 
-                foreach (var item in intellisenseErrors)
+            foreach (var item in intellisenseErrors)
+            {
+                string key = item.Key;
+                string file = item.Filename.ToLower();
+                bool isOpen;
+                if (filenames.ContainsKey(file))
                 {
-                    string key = item.Key;
-                    string file = item.Filename.ToLower();
-                    bool isOpen;
-                    if (filenames.ContainsKey(file))
-                    {
-                        isOpen = filenames[file];
-                    }
-                    else
-                    {
-                        isOpen = XSettings.IsDocumentOpen(file);
-                        filenames.Add(file, isOpen);
-                    }
-                    if (isOpen && !keys.ContainsKey(key))
-                    {
-                        errors.Add(item);
-                        keys.Add(key, key);
-                    }
-                    else
-                    {
-                        ; // duplicate item or file is closed
-                    }
+                    isOpen = filenames[file];
+                }
+                else
+                {
+                    isOpen = XSettings.IsDocumentOpen(file);
+                    filenames.Add(file, isOpen);
+                }
+                if (isOpen && !keys.Contains(key))
+                {
+                    errors.Add(item);
+                    keys.Add(key);
+                }
+                else
+                {
+                    ; // duplicate item or file is closed
                 }
             }
             lock (this)
             {
-                Factory.SetErrorItems(errors);
+                Factory.SetItems(errors);
                 dirty = false;
             }
         }
 
-        internal List<XSharpModel.IXErrorPosition> GetIntellisenseErrorPos(string fileName)
+        internal List<IXErrorPosition> GetIntellisenseErrorPos(string fileName)
         {
             // dedupe errors based on filename, row, column, 
-            List<XSharpModel.IXErrorPosition> errorPos = new List<XSharpModel.IXErrorPosition>();
+            List<IXErrorPosition> errorPos = new List<XSharpModel.IXErrorPosition>();
             Dictionary<string, string> keys = new Dictionary<string, string>();
 
             if (_errorList.AreOtherErrorSourceEntriesShown)
@@ -252,12 +227,12 @@ namespace XSharp.Project
 
         public static bool RemoveProject(XSharpProjectNode project)
         {
-            if (!_projects.ContainsKey(project.ProjectIDGuid))
-                return false;
-
-            var entry = _projects[project.ProjectIDGuid];
-            _provider.RemoveListFactory(entry.Factory);
-            return _projects.Remove(project.ProjectIDGuid);
+            if (_projects.TryGetValue(project.ProjectIDGuid, out var entry))
+            {
+                _provider.RemoveListFactory(entry.Factory);
+                return _projects.TryRemove(project.ProjectIDGuid, out _);
+            }
+            return false;
         }
 
     }

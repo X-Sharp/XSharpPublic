@@ -637,7 +637,7 @@ namespace XSharp.LanguageService
                     }
                     if (_activeView != null)
                     {
-                        int caretPosition = _activeView.Caret.Position.BufferPosition.Position;
+                        int caretPosition = _activeView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
                         if (!needsUI)
                         {
                             SelectContainingMember(caretPosition);

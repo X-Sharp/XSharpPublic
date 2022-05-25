@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Text.Operations;
 using System.Threading.Tasks;
 using System.Threading;
 using XSharpModel;
-using XSharp.Project.Editors.LightBulb;
+
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {

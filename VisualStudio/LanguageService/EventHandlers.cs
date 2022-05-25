@@ -73,9 +73,7 @@ namespace XSharp.LanguageService
 #if DEBUG        
         private void DocumentEvents_Opened(string document)
         {
-
             XSolution.WriteOutputMessage("DocumentEvents_Opened " + document ?? "(none)");
-
         }
         
         

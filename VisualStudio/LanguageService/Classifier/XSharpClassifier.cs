@@ -455,12 +455,9 @@ namespace XSharp.LanguageService
                     switch (token.Type)
                     {
                         case XSharpLexer.PP_REGION:
-                            //case XSharpLexer.PP_IFDEF:
-                            //case XSharpLexer.PP_IFNDEF:
                             regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
                             break;
                         case XSharpLexer.PP_ENDREGION:
-                            //case XSharpLexer.PP_ENDIF:
                             regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
                             break;
                         default:
@@ -684,7 +681,6 @@ namespace XSharp.LanguageService
                 case XSharpLexer.FOR:
                 case XSharpLexer.FOREACH:
                 case XSharpLexer.REPEAT:
-                case XSharpLexer.TEXT:
                     startToken = null;
                     type = xsharpKwOpenType;            // Simple open
                     break;
@@ -694,7 +690,6 @@ namespace XSharp.LanguageService
                 case XSharpLexer.ENDDO:
                 case XSharpLexer.ENDIF:
                 case XSharpLexer.ENDCASE:
-                case XSharpLexer.ENDTEXT:
                 case XSharpLexer.ENDDEFINE:             // FoxPro end of class definition
                 case XSharpLexer.ENDCLASS:              // XPP end of class definition
                     startToken = null;
@@ -765,6 +760,20 @@ namespace XSharp.LanguageService
                         keywordContext = null;
                     }
                     break;
+                case XSharpLexer.UDC_KEYWORD:
+                    var text = token.Text.ToUpper();
+                    switch (text)
+                    {
+                        case "TEXT":
+                            startToken = null;
+                            type = xsharpKwOpenType;
+                            break;
+                        case "ENDTEXT":
+                            startToken = null;
+                            type = xsharpKwCloseType;
+                            break;
+                    }
+                    break;
 
             }
             //
@@ -818,13 +827,35 @@ namespace XSharp.LanguageService
             {
                 kw = new XKeyword(firstkw.Type);
             }
-            if (XFormattingRule.IsEndKeyword(kw) || XFormattingRule.IsMiddleKeyword(kw) ||
-                XFormattingRule.IsStartKeyword(kw) || kw.Kw1 == XTokenType.End)
+            var isEntity = XFormattingRule.IsEntityKeyword(kw);
+            var isStatement = XFormattingRule.IsStatementKeyword(kw);
+            var isStart = XFormattingRule.IsStartKeyword(kw);
+            var isEnd = XFormattingRule.IsEndKeyword(kw);
+            var isMiddle = XFormattingRule.IsMiddleKeyword(kw);
+            if (isStart)
+            {
+                var rule = XFormattingRule.GetStartRule(kw);
+                RuleStack.Push(rule);
+            }
+            
+            if (isEnd || isMiddle || isStart || kw.Kw1 == XTokenType.End)
             {
                 lineKeywords.Set(iLastLine - 1, kw);
+                if (kw.IsSingle && kw.IsEnd)
+                {
+                    if (CurrentRule.Flags.HasFlag(XFormattingFlags.End))
+                        isEnd = true;
+                }
             }
+            if (isEnd)
+            {
+                if (RuleStack.Count > 0)
+                    RuleStack.Pop();
+            }
+            
         }
-
+        private XFormattingRule CurrentRule => RuleStack?.Count == 0 ? null: RuleStack.Peek();
+        private Stack<XFormattingRule> RuleStack;
         private void BuildColorClassifications(XDocument xDocument)
         {
             var snapshot = xDocument.SnapShot;
@@ -834,6 +865,7 @@ namespace XSharp.LanguageService
             Debug("Start building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             XClassificationSpans newtags;
             var lines = new Dictionary<int, IList<XSharpToken>>(snapshot.LineCount);
+            RuleStack = new Stack<XFormattingRule>();
             var regionTags = new List<ClassificationSpan>();
             if (tokenStream != null)
             {
@@ -907,27 +939,6 @@ namespace XSharp.LanguageService
                         newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
                         keywordContext = null;
                     }
-                    if (token.Type == XSharpParser.PRAGMA)
-                    {
-                        var start = token;
-                        var stop = token;
-                        while (true)
-                        {
-                            iToken++;
-                            token = (XSharpToken)tokenStream.Get(iToken);
-                            if (token.Type == XSharpParser.EOS || token.Type == XSharpParser.Eof)
-                                break;
-                            stop = token;
-                        }
-                        TextSpan tokenSpan = new TextSpan(start.StartIndex, stop.StopIndex - start.StartIndex + 1);
-                        XsClassificationSpan span1 = tokenSpan.ToClassificationSpan(snapshot, xsharpPPType);
-                        span1.startTokenType = start.Type;
-                        span1.endTokenType = stop.Type;
-                        newtags.Add(span1);
-                        iToken--;
-                        continue;
-                    }
-
                     var span = ClassifyToken(token, regionTags, snapshot, lastToken);
                     
 

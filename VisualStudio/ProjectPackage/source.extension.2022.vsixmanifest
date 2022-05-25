@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="XSharp.ProjectSystem.2022" Version="2.12.0.2" Language="en-US" Publisher="XSharp BV" />
+        <Identity Id="XSharp.ProjectSystem.2022" Version="2.12.1.1" Language="en-US" Publisher="XSharp BV" />
         <DisplayName>XSharp VS Integration for 2022 and later</DisplayName>
         <Description xml:space="preserve">X# Visual Studio Integration.
 Includes a Project System, Language Service , Debugger Support, Custom Editors etc.</Description>
@@ -11,7 +11,7 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Icon>XSharp.ico</Icon>
         <PreviewImage>XSharpVSIXLogo.png</PreviewImage>
     </Metadata>
-    <Installation AllUsers="true">
+    <Installation AllUsers="true" SystemComponent="true">
         <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Community" >
             <ProductArchitecture>amd64</ProductArchitecture>
         </InstallationTarget>
@@ -33,7 +33,7 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="XSharpAppDesigner2022" Path="|XSharpAppDesigner2022|" AssemblyName="|XSharpAppDesigner2022;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="ProjectBase2022" Path="|ProjectBase2022|" AssemblyName="|ProjectBase2022;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" Path="XSharpMonoCecil.dll" AssemblyName="XSharpMonoCecil, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e" />
-        <Asset Type="DebuggerEngineExtension" d:Source="Project" d:ProjectName="%CurrentProject%" Path="XSharpDebugger.vsdconfig" />
+        <Asset Type="DebuggerEngineExtension" d:Source="Project" d:ProjectName="%CurrentProject%" Path="XSharpDebugger2022.vsdconfig" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

@@ -17,6 +17,7 @@ begin namespace $rootnamespace$
         public constructor() strict
             InitializeComponent()
 			return
+        end constructor
 
 
     end class

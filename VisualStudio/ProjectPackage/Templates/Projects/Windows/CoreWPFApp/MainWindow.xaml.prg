@@ -19,10 +19,11 @@ BEGIN NAMESPACE $safeprojectname$
     /// Interaction logic for $safeitemname$.xaml
     /// </summary>
     PUBLIC PARTIAL CLASS $safeitemname$ INHERIT Window
-    
+
         PUBLIC CONSTRUCTOR() STRICT
             InitializeComponent()
             RETURN
+        END CONSTRUCTOR
 
     END CLASS
 END NAMESPACE

@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using XSharpModel;
 using MVP = Microsoft.VisualStudio.Package;
 
-namespace XSharp.LanguageService.LightBulb
+namespace XSharp.LanguageService.Editors.LightBulb
 {
     public partial class CtorParamsDlg : Form
     {

@@ -226,8 +226,6 @@ BEGIN NAMESPACE XSharpModel
         MEMBER @@Each:= XSharpLexer.EACH
         MEMBER @@Then:= XSharpLexer.THEN
         MEMBER @@Fox_m:= XSharpLexer.FOX_M
-        MEMBER @@Text:= XSharpLexer.TEXT
-        MEMBER @@Endtext:= XSharpLexer.ENDTEXT
         MEMBER @@Last_keyword:= XSharpLexer.LAST_KEYWORD
         MEMBER @@First_null:= XSharpLexer.FIRST_NULL
         MEMBER @@Nil:= XSharpLexer.NIL
@@ -348,6 +346,7 @@ BEGIN NAMESPACE XSharpModel
         MEMBER @@PP_translate:= XSharpLexer.PP_TRANSLATE
         MEMBER @@PP_undef:= XSharpLexer.PP_UNDEF
         MEMBER @@PP_warning:= XSharpLexer.PP_WARNING
+        MEMBER @@PP_Pragma := XSharpLexer.PP_PRAGMA
         MEMBER @@PP_text:= XSharpLexer.PP_TEXT
         MEMBER @@PP_endtext:= XSharpLexer.PP_ENDTEXT
         MEMBER @@PP_last:= XSharpLexer.PP_LAST
@@ -355,7 +354,6 @@ BEGIN NAMESPACE XSharpModel
         MEMBER @@Udcsep:= XSharpLexer.UDCSEP
         MEMBER @@Id:= XSharpLexer.ID
         MEMBER @@Kwid:= XSharpLexer.KWID
-        MEMBER @@Pragma:= XSharpLexer.PRAGMA
         MEMBER @@Doc_comment:= XSharpLexer.DOC_COMMENT
         MEMBER @@Sl_comment:= XSharpLexer.SL_COMMENT
         MEMBER @@Ml_comment:= XSharpLexer.ML_COMMENT
@@ -390,6 +388,7 @@ BEGIN NAMESPACE XSharpModel
 
         CONSTRUCTOR(kw1 as LONG, kw2 as LONG)
             SELF( (XTokenType) kw1, (XTokenType) kw2)
+
         CONSTRUCTOR(kw1 as XTokenType, kw2 as XTokenType)
             _code := 0
             SELF:Kw1 := kw1
@@ -401,8 +400,10 @@ BEGIN NAMESPACE XSharpModel
 
         CONSTRUCTOR(kw1 as LONG)
             SELF((XTokenType) kw1, XTokenType.None)
+
         CONSTRUCTOR(kw1 as XTokenType)
             SELF(kw1, XTokenType.None)
+
         OVERRIDE METHOD ToString() AS STRING
             IF Kw2 == XTokenType.None
                 RETURN Kw1:ToString()

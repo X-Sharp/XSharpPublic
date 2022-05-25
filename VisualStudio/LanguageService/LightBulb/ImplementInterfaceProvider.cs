@@ -11,7 +11,6 @@ using Microsoft.VisualStudio.Text.Operations;
 using System.Threading.Tasks;
 using System.Threading;
 using XSharpModel;
-using XSharp.Project.Editors.LightBulb;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace XSharp.LanguageService.Editors.LightBulb

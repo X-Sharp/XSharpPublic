@@ -475,22 +475,6 @@ namespace XSharp.LanguageService
         }
 
 
-        /// <summary>
-        /// Retrieve the CompletionType based on :
-        ///  The Token list returned by GetTokenList()
-        ///  The Token that stops the building of the Token List.
-        /// </summary>
-        /// <param name="location"></param>
-        /// <param name="tokenList"></param>
-        /// <param name="state"></param>
-        /// <param name="foundElement"></param>
-        /// <param name="forQuickinfo"></param>
-        /// <returns></returns>
-        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> xtokenList,
-            CompletionState state, out string notProcessed, bool forQuickinfo = false )
-        {
-            return RetrieveElement(location, xtokenList, state, out notProcessed, out _,forQuickinfo);
-        }
 
         /// <summary>
         /// Retrieve the CompletionType based on :
@@ -503,11 +487,10 @@ namespace XSharp.LanguageService
         /// <param name="foundElement"></param>
         /// <returns></returns>
         public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> xtokenList,
-            CompletionState state, out string notProcessed, out IXSymbol lastFound, bool forQuickinfo = false )
+            CompletionState state, out string notProcessed,  bool forQuickinfo = false )
         {
             //
             notProcessed = "";
-            lastFound = null;
             var result = new List<IXSymbol>();
             if (xtokenList == null || xtokenList.Count == 0)
                 return result;
@@ -574,7 +557,6 @@ namespace XSharp.LanguageService
                 if (symbols.Count > 0 && symbols.Count != count)
                 {
                     var top = symbols.Peek();
-                    lastFound = top;
                     currentType = GetTypeFromSymbol(location, top);
                     if (top != null)
                         top.ResolvedType = currentType;
@@ -1401,10 +1383,13 @@ namespace XSharp.LanguageService
             var namespaces = location.Project.AllNamespaces;
             foreach (var ns in namespaces)
             {
-                if (ns.StartsWith(name+".", StringComparison.OrdinalIgnoreCase))
+                if (ns.StartsWith(name + ".", StringComparison.OrdinalIgnoreCase))
                 {
                     result.Add(new XSymbol(name, Kind.Namespace, Modifiers.Public));
-                    break;
+                }
+                else if (string.Compare(ns, name, true) == 0)
+                {
+                    result.Add(new XSymbol(name, Kind.Namespace, Modifiers.Public));
                 }
             }
             DumpResults(result, $"SearchNamespaces in file {location.File.SourcePath} '{name}' ");

@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using XSharpModel;
 using MVP = Microsoft.VisualStudio.Package;
 using File = System.IO.File;
+using Task = System.Threading.Tasks.Task;
 namespace XSharp.LanguageService
 {
     internal class DropdownSettings
@@ -97,7 +98,7 @@ namespace XSharp.LanguageService
             });
         }
 
-        internal void addTextView(ITextView textView)
+        internal void addTextView(ITextView textView, IVsTextView textViewAdapter)
         {
             if (! _textViews.ContainsKey(textView))
             {
@@ -105,10 +106,24 @@ namespace XSharp.LanguageService
                 textView.GotAggregateFocus += TextView_GotAggregateFocus;
                 textView.LostAggregateFocus += TextView_LostAggregateFocus;
                 textView.Closed += TextView_Closed;
-                textView.Caret.PositionChanged += Caret_PositionChanged;
+                InitializeAsync(textViewAdapter).FireAndForget();
+                
 
             }
         }
+        // This moves the caret to trigger initial drop down load
+        private Task InitializeAsync(IVsTextView textView)
+        {
+            return ThreadHelper.JoinableTaskFactory.StartOnIdleShim(() =>
+            {
+                
+                textView.SendExplicitFocus();
+                _activeView.Caret.MoveToNextCaretPosition();
+                _activeView.Caret.PositionChanged += Caret_PositionChanged;
+                _activeView.Caret.MoveToPreviousCaretPosition();
+            }).Task;
+        }
+
 
         private void TextView_Closed(object sender, EventArgs e)
         {
@@ -622,7 +637,7 @@ namespace XSharp.LanguageService
                     }
                     if (_activeView != null)
                     {
-                        int caretPosition = _activeView.Caret.Position.BufferPosition.Position;
+                        int caretPosition = _activeView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
                         if (!needsUI)
                         {
                             SelectContainingMember(caretPosition);

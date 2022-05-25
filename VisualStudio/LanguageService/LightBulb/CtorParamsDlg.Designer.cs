@@ -1,6 +1,6 @@
 ﻿
-namespace XSharp.LanguageService.LightBulb
-{
+namespace XSharp.LanguageService.Editors.LightBulb
+{ 
     partial class CtorParamsDlg
     {
         /// <summary>

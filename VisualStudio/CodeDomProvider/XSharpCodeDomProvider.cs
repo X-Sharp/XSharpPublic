@@ -76,6 +76,8 @@ namespace XSharp.CodeDom
                 if (options == null)
                     options = new CodeGeneratorOptions();
                 options.BlankLinesBetweenMembers = false;
+                // VerbatimOrder writes the members in the order in which they appear in the collection
+                options.VerbatimOrder = true;
                 base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
                 //
 #if WRITE2LOGFILE

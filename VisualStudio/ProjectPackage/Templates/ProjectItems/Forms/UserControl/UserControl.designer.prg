@@ -16,7 +16,7 @@
           endif
           super:Dispose( disposing )
           return
-
+       end method
        /// <summary>
        /// Required method for Designer support - do not modify
        /// the contents of this method with the code editor.
@@ -26,6 +26,6 @@
           self:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
           self:Text := "$safeitemname$"
           return
-
+       end method
     end class
 end namespace

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 namespace XSharp.CodeDom
 {
     public static class XSharpCodeConstants
@@ -28,8 +28,14 @@ namespace XSharp.CodeDom
         {
             return e.UserData.Contains(USERDATA_ENDINGTRIVIA);
         }
-
-
+        public static CodeDomDesignerData GetDesignerData( this CodeObject e)
+        {
+            if (e.UserData.Contains(typeof(CodeDomDesignerData)))
+            {
+                return (CodeDomDesignerData)e.UserData[typeof(CodeDomDesignerData)];
+            }
+            return null;
+        }
         public static bool HasSourceCode(this CodeObject e)
         {
             return e.UserData.Contains(USERDATA_SOURCECODE);

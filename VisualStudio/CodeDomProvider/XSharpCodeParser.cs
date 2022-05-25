@@ -14,6 +14,54 @@ using LanguageService.SyntaxTree;
 
 namespace XSharp.CodeDom
 {
+
+    internal static class Helpers
+    {
+        /// <summary>
+        /// Sort members on the line/column in which they are declared
+        /// New members (without line/column) are sorted at the end of the list
+        /// </summary>
+        /// <param name="members"></param>
+        /// <returns></returns>
+        internal static CodeTypeMemberCollection SortMembers(CodeTypeMemberCollection members)
+        {
+            CodeTypeMemberCollection result = new CodeTypeMemberCollection();
+            var items = new System.Collections.SortedList();
+            var  processed = new List<string>();
+            for (int i = 0; i < members.Count; i++)
+            {
+                var member = (CodeTypeMember)members[i];
+                // HACK: prevent duplicate items: there is an error in their code
+                // or our code that adds duplicates. This 
+                if (member.HasSourceCode())
+                {
+                    var source = member.GetSourceCode();
+                    if (processed.Contains(source))
+                        continue;
+                   processed.Add(source);
+                }
+                int line, col;
+                var data = member.GetDesignerData();
+                if (data != null)
+                {
+                    line = data.CaretPosition.Y;
+                    col = data.CaretPosition.X;
+                }
+                else
+                {
+                    line = col = 999_999_999;
+                }
+                var key = line.ToString("D10") + col.ToString("D10") + i.ToString("D10");
+                items.Add(key, member);
+            }
+            foreach (System.Collections.DictionaryEntry item in items)
+            {
+                result.Add((CodeTypeMember)item.Value);
+            }
+            return result;
+        }
+    }
+
     public class ErrorIgnorer : IErrorListener
     {
         #region IErrorListener
@@ -105,7 +153,8 @@ namespace XSharp.CodeDom
                 if (firstType != null)
                 {
                     // save a copy of the member list to the CCU
-                    ccu.Members = firstType.Members;
+                    // Sort them first
+                    ccu.Members = Helpers.SortMembers(firstType.Members); 
                 }
                 // save file name & original source
                 ccu.FileName = this.FileName;
@@ -119,6 +168,6 @@ namespace XSharp.CodeDom
             //
             return ccu;
         }
-
+       
     }
 }

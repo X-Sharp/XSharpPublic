@@ -8,17 +8,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using XSharpModel;
 
-namespace XSharp.Project.Editors.LightBulb
+namespace XSharp.LanguageService.Editors.LightBulb
 {
     internal abstract class CommonAction
     {
         protected readonly ITextSnapshot m_snapshot;
         protected readonly ITextView m_textView;
 
-        public CommonAction(ITextSnapshot snapshot)
-        {
-            m_snapshot = snapshot;
-        }
         public CommonAction(ITextView textView)
         {
             this.m_textView = textView;

@@ -12,7 +12,7 @@ using System.Windows.Media;
 using Microsoft.VisualStudio.Text;
 using System.Threading;
 
-namespace XSharp.Project.Editors.LightBulb
+namespace XSharp.LanguageService.Editors.LightBulb
 {
     internal class CreateStubSuggestedAction : ISuggestedAction
     {

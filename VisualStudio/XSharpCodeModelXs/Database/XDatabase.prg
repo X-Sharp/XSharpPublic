@@ -1145,7 +1145,7 @@ BEGIN NAMESPACE XSharpModel
                         USING VAR rdr := oCmd:ExecuteReader()
                         DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
                         var type := CreateTypeInfo(rdr)
-                        if type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+                        if type:FullName:StartsWith(sName, StringComparison.OrdinalIgnoreCase) .or. type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
                             result:Add(type)
                         endif
                         ENDDO
@@ -1201,7 +1201,7 @@ BEGIN NAMESPACE XSharpModel
         STATIC METHOD GetAssemblyTypesLike(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
             VAR stmt := "Select * from AssemblyTypes where name like $name or fullname like $name AND IdAssembly in ("+sAssemblyIds+")"
             VAR result := List<XDbResult>{}
-            var sLike := "%"+sName + "%"
+            var sLike := sName + "%"
             IF IsDbOpen
                 BEGIN LOCK oConn
                     TRY
@@ -1210,7 +1210,7 @@ BEGIN NAMESPACE XSharpModel
                         USING VAR rdr := oCmd:ExecuteReader()
                         DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
                         var type := CreateRefTypeInfo(rdr)
-                        if type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+                        if type:FullName:StartsWith(sName, StringComparison.OrdinalIgnoreCase) .or. type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
                             result:Add(type)
                         endif
                         ENDDO

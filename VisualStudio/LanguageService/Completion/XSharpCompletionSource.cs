@@ -148,6 +148,8 @@ namespace XSharp.LanguageService
                     return;
                 var tokenList = XSharpTokenTools.GetTokenList(location, out state, includeKeywords);
                 var lastToken = tokenList.LastOrDefault();
+                var addKeywords = typedChar != '.' && typedChar != ':';
+
 
                 // We might be here due to a COMPLETEWORD command, so we have no typedChar
                 // but we "may" have a incomplete word like System.String.To
@@ -188,18 +190,21 @@ namespace XSharp.LanguageService
 
                 int tokenType = XSharpLexer.UNRECOGNIZED;
 
-                var symbol = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General, out var notProcessed, out var lastProcessed).FirstOrDefault();
+                var symbol = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General, out var notProcessed).FirstOrDefault();
                 if (symbol != null)
                 {
                    
                     switch (lastToken.Type)
                     {
-                        case XSharpLexer.COLON:
                         case XSharpLexer.DOT:
+                            if (symbol.Kind == Kind.Namespace)
+                                filterText = symbol.FullName + ".";
+                            break;
+                        case XSharpLexer.COLON:
                             break;
                         default:
                             filterText = symbol.Name;
-                            symbol = lastProcessed;
+                            symbol = null;
                             break;
                     }
 
@@ -297,14 +302,15 @@ namespace XSharp.LanguageService
                     {
                         helpers.AddNamespaces(compList, location, filterText);
                     }
-                    if (type == null && state.HasFlag(CompletionState.Interfaces))
+                    if (state.HasFlag(CompletionState.Interfaces))
                     {
                         helpers.AddTypeNames(compList, location, filterText,  afterDot: typedChar == '.', onlyInterfaces: true);
                     }
-                    if (type == null && state.HasFlag(CompletionState.Types) )
+                    if (state.HasFlag(CompletionState.Types)  )
                     {
                         helpers.AddTypeNames(compList, location, filterText, afterDot: typedChar == '.', onlyInterfaces: false);
-                        helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
+                        if (addKeywords)
+                            helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
                     }
                     if (state.HasFlag(CompletionState.StaticMembers))
                     {
@@ -355,7 +361,7 @@ namespace XSharp.LanguageService
                                     }
                                     break;
                             }
-                        }
+                            }
                         // Now, Fill the CompletionList with the available members, from there
                         helpers.BuildCompletionListMembers(location, compList, type, visibleAs, false, filterText);
                     }
@@ -374,6 +380,7 @@ namespace XSharp.LanguageService
                         case XSharpLexer.IS:
                         case XSharpLexer.REF:
                         case XSharpLexer.INHERIT:
+                        case XSharpLexer.PARAMS:
                             // It can be a namespace
                             helpers.AddNamespaces(compList, location, filterText);
                             // It can be Type, FullyQualified

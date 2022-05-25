@@ -13,7 +13,7 @@ using System.Collections.Immutable;
 using System.Text;
 using System.Linq;
 
-namespace XSharp.Project.Editors.LightBulb
+namespace XSharp.LanguageService.Editors.LightBulb
 {
     internal class ImplementInterfaceSuggestedAction : CommonAction, ISuggestedAction
     {

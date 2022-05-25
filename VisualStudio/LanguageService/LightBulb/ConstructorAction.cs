@@ -11,14 +11,14 @@ using XSharpModel;
 using Microsoft.VisualStudio.Text.Editor;
 using System.Text;
 using System.Linq;
-using XSharp.LanguageService.LightBulb;
 
-namespace XSharp.Project.Editors.LightBulb
+
+namespace XSharp.LanguageService.Editors.LightBulb
 {
     internal class ConstructorSuggestedAction : CommonAction, ISuggestedAction
     {
 
-        public ConstructorSuggestedAction(ITextSnapshot snapshot) : base(snapshot)
+        public ConstructorSuggestedAction(ITextView textview) : base(textview)
         {
         }
         private int _insertionLine;
@@ -27,7 +27,7 @@ namespace XSharp.Project.Editors.LightBulb
         private List<IXMemberSymbol> _fieldsNProps;
         private List<string> _existingCtor;
 
-        public ConstructorSuggestedAction(ITextView textView, ITextBuffer textBuffer, IXTypeSymbol classEntity, int insertionLine, List<IXMemberSymbol> members) : base(textView.TextSnapshot)
+        public ConstructorSuggestedAction(ITextView textView, ITextBuffer textBuffer, IXTypeSymbol classEntity, int insertionLine, List<IXMemberSymbol> members) : base(textView)
         {
             this._textBuffer = textBuffer;
             this._classEntity = classEntity;
@@ -89,7 +89,7 @@ namespace XSharp.Project.Editors.LightBulb
         {
             try
             {
-                var settings = m_textView.TextBuffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
+                var settings = m_textView.TextBuffer.GetSettings();
                 //m_span.TextBuffer.Replace(m_span.GetSpan(m_snapshot), ");
                 StringBuilder insertText;
                 // Insertion line in the Entity

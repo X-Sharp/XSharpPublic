@@ -88,7 +88,8 @@ namespace XSharp.LanguageService
                 if (isHiddenTypeSymbol(type, out var displayName))
                     continue;
 
-                if (!afterDot && !displayName.StartsWith(startWith,StringComparison.OrdinalIgnoreCase) )
+                if (!afterDot && !displayName.StartsWith(startWith,StringComparison.OrdinalIgnoreCase) &&
+                    ! type.FullName.StartsWith(startWith, StringComparison.OrdinalIgnoreCase))
                     continue;
                 var typeAnalysis = new XTypeAnalysis(type);
 
@@ -113,7 +114,8 @@ namespace XSharp.LanguageService
                 if (isHiddenTypeSymbol(type, out var displayName))
                     continue;
 
-                if (!afterDot && !displayName.StartsWith(startWith) )
+                if (!afterDot && !displayName.StartsWith(startWith) &&
+                    !type.FullName.StartsWith(startWith, StringComparison.OrdinalIgnoreCase))
                     continue;
                 var typeAnalysis = new XTypeAnalysis(type);
 

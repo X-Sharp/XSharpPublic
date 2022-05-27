@@ -811,10 +811,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             // TODO: Why don't we drop "this" while lowering if method is static? 
             //       Actually, considering that method group expression does not evaluate to a particular value 
             //       why do we have it in the lowered tree at all?
-
+#if XSHARP
+            return (_currentMethod == _topLevelMethod || _topLevelMethod.ThisParameter == null ?
+                node :
+                FramePointer(node.Syntax, _currentMethod.ContainingType));
+#else
             return (_currentMethod == _topLevelMethod || _topLevelMethod.ThisParameter == null ?
                 node :
                 FramePointer(node.Syntax, (NamedTypeSymbol)node.Type));
+#endif
         }
 
         public override BoundNode VisitBaseReference(BoundBaseReference node)
@@ -1724,7 +1729,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             throw ExceptionUtilities.Unreachable;
         }
 
-        #endregion
+#endregion
 
 #if CHECK_LOCALS
         /// <summary>

@@ -77,6 +77,7 @@ ApplicationGroup = C200-C249,AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD,715D7617-320E-
 ApplicationGroup = C150-C199,EBE227D6-3F55-4251-A268-C654F38F1FAF,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C800-C849,54E26745-C95C-4FDB-98B2-2AF8DB1DED34,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = R800-R850,084FC9A2-9274-4770-AE44-6D078B06BA37,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C850-C899,B3CDE601-F52E-476A-9FD5-35CEE1E8C029,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = NEW,B9CFE839-D401-428D-94E9-E9D21E9F772D,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Known Incompatibilities with VO,40E29AF9-85EE-4D50-BADC-953EE318D423,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Broken,B7F6C4E3-31FD-40FC-B820-C57110817A58,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
@@ -109395,7 +109396,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R849 - TEXT and local variable with the name TEXT
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C850 - Internal compiler error with Evaluate() in CODEBLOCK with /memvar+ in VFP dialect *************
 Application = C850 - Internal compiler error with Evaluate() in CODEBLOCK with /memvar+ in VFP dialect
 IDEVersion = 1.06
@@ -109438,9 +109439,10 @@ FileType = Code
 CopyToBin = 0
 [C850 - Internal compiler error with Evaluate() in CODEBLOCK with /memvar+ in VFP dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Data.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C850 - Internal compiler error with Evaluate() in CODEBLOCK with /memvar+ in VFP dialect Resources]
 [C850 - Internal compiler error with Evaluate() in CODEBLOCK with /memvar+ in VFP dialect Native Resources]
 [C850 - Internal compiler error with Evaluate() in CODEBLOCK with /memvar+ in VFP dialect License files]

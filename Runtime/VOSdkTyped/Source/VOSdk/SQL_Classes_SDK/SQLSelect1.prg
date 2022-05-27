@@ -241,7 +241,6 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
         local lOk := FALSE as logic
         local lWriteBatch as logic
         lWriteBatch := lUpdateBatch .or. ! self:lBatchUpdates
-        SELF:nRowCount := 0
         if self:lChanges .and. lWriteBatch
             local oChanges as DataTable
 
@@ -251,7 +250,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
                     SELF:__CreateDataAdapter()
                 endif
                 TRY
-                    SELF:nRowCount := self:oAdapter:Update(self:oTable)
+                    self:oAdapter:Update(self:oTable)
                     SELF:oTable:AcceptChanges()
                     SELF:lChanges := FALSE
                     lOk := TRUE

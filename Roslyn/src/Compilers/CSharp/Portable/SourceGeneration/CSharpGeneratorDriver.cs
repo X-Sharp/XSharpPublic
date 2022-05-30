@@ -64,9 +64,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal override CommonMessageProvider MessageProvider => CSharp.MessageProvider.Instance;
 
 #if XSHARP
-        internal override AdditionalSourcesCollection CreateSourcesCollection() => new AdditionalSourcesCollection(".cs");
-#else
         internal override AdditionalSourcesCollection CreateSourcesCollection() => new AdditionalSourcesCollection(".prg");
+#else
+        internal override AdditionalSourcesCollection CreateSourcesCollection() => new AdditionalSourcesCollection(".cs");
 #endif
     }
 }

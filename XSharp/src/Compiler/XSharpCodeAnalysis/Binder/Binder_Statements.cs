@@ -5,9 +5,11 @@
 //
 #nullable disable
 using System.Collections.Generic;
+using System.Linq;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -338,7 +340,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        void XsCheckConversionForAssignment(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, bool isDefaultParameter = false, bool isRefAssignment = false)
+        void XsCheckConversionForAssignment(TypeSymbol targetType, ref BoundExpression expression, DiagnosticBag diagnostics, bool isDefaultParameter = false, bool isRefAssignment = false)
         {
             if (expression.Kind == BoundKind.UnboundLambda)
             {
@@ -351,6 +353,42 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             var sourceType = expression.Type;
+/*
+            if (expression is BoundObjectCreationExpression boc && sourceType.IsArrayType() && targetType.IsArrayBaseType())
+            {
+                var xNode = expression.Syntax.XNode;
+                if (xNode is PrimaryExpressionContext pe && pe.Expr is LiteralArrayExpressionContext la)
+                {
+                    var dims = boc.Arguments.Length;
+                    var ctors = targetType.GetMembers(".ctor");
+                    if (dims == 0)
+                    {
+                        var ctor = ctors.Where(c => c.GetParameterCount() == 0).FirstOrDefault() as MethodSymbol;
+                        expression = new BoundObjectCreationExpression(expression.Syntax, ctor);
+                        return;
+                    }
+                    else
+                    {
+                        foreach (MethodSymbol ctor in ctors)
+                        {
+                            var pars = ctor.GetParameters();
+                            if (pars.Length == 1)
+                            {
+                                if (pars[0].Type is ArrayTypeSymbol ats)
+                                {
+                                    if (ats.ElementType.SpecialType == SpecialType.System_Object)
+                                    {
+                                        var conv = CreateConversion(expression, pars[0].Type, diagnostics);
+                                        expression = new BoundObjectCreationExpression(expression.Syntax, ctor, conv);
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+*/ 
             if (expression.ConstantValue == null && sourceType is { } && targetType is { })
             {
 

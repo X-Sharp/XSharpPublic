@@ -1839,7 +1839,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
 #if XSHARP
-            XsCheckConversionForAssignment(targetType, expression, diagnostics, isDefaultParameter, isRefAssignment);
+            XsCheckConversionForAssignment(targetType, ref expression, diagnostics, isDefaultParameter, isRefAssignment);
 #endif
             var conversion = this.Conversions.ClassifyConversionFromExpression(expression, targetType, ref useSiteDiagnostics);
             diagnostics.Add(expression.Syntax, useSiteDiagnostics);

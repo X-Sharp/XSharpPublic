@@ -743,6 +743,7 @@ BEGIN NAMESPACE XSharp
         #endregion
 
         #region implementation IDisposable
+    /// <inheritdoc />
     PUBLIC VIRTUAL METHOD IDisposable.Dispose() AS VOID
         IF SELF:IsObject
             LOCAL oValue AS OBJECT
@@ -1260,11 +1261,13 @@ BEGIN NAMESPACE XSharp
         RETURN oValue:GetHashCode()
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
         [NODEBUG];
         STATIC OPERATOR ==(lhs AS __Usual, rhs AS __Usual) AS LOGIC
         RETURN lhs:UsualEquals(rhs, "==")
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
         [NODEBUG];
         STATIC OPERATOR !=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
         IF lhs:IsNull .or. rhs:IsNull
@@ -1439,6 +1442,7 @@ BEGIN NAMESPACE XSharp
 
         #region Unary Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>This operator is only supported on usuals of type LOGIC.</remarks>
         [NODEBUG];
         STATIC OPERATOR !(u AS __Usual) AS LOGIC
         IF u:_usualType == __UsualType.Logic
@@ -1447,6 +1451,7 @@ BEGIN NAMESPACE XSharp
         THROW UnaryError("!", u)
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>This operator is only supported on usuals of integral types.</remarks>
         [NODEBUG];
         STATIC OPERATOR ~(u AS __Usual) AS __Usual
         IF u:_usualType == __UsualType.Null
@@ -1461,6 +1466,7 @@ BEGIN NAMESPACE XSharp
         THROW UnaryError("~", u)
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>This operator is only supported on usuals of numeric types.</remarks>
         [NODEBUG];
         STATIC OPERATOR -(u AS __Usual) AS __Usual
         SWITCH u:_usualType
@@ -1475,6 +1481,7 @@ BEGIN NAMESPACE XSharp
         END SWITCH
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>This operator is only supported on usuals of numeric types.</remarks>
         [NODEBUG];
         STATIC OPERATOR +(u AS __Usual) AS __Usual
         SWITCH u:_usualType
@@ -1489,6 +1496,7 @@ BEGIN NAMESPACE XSharp
         END SWITCH
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>This operator is only supported on usuals of numeric types.</remarks>
         [NODEBUG];
         STATIC OPERATOR --(u AS __Usual) AS __Usual
         SWITCH u:_usualType
@@ -1505,6 +1513,7 @@ BEGIN NAMESPACE XSharp
         END SWITCH
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>This operator is only supported on usuals of numeric types.</remarks>
         [NODEBUG];
         STATIC OPERATOR ++(u AS __Usual) AS __Usual
         SWITCH u:_usualType
@@ -1521,9 +1530,10 @@ BEGIN NAMESPACE XSharp
         END SWITCH
 
         #endregion
-        #region Numeric Operators FOR ADD, Delete etc (also FOR strings)
+        #region Numeric Operators for Add, Delete etc (also for strings)
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/UsualBinary/*" />
         [NODEBUG];
         STATIC OPERATOR +(lhs AS __Usual, rhs AS __Usual) AS __Usual
         IF lhs:IsNull .or. rhs:IsNull
@@ -1630,6 +1640,7 @@ BEGIN NAMESPACE XSharp
         THROW BinaryError("+", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/UsualBinary/*" />
         [NODEBUG];
         STATIC OPERATOR -(lhs AS __Usual, rhs AS __Usual) AS __Usual
         IF lhs:IsNull .or. rhs:IsNull
@@ -1717,6 +1728,7 @@ BEGIN NAMESPACE XSharp
         THROW BinaryError("-", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/UsualBinary/*" />
         [NODEBUG];
         STATIC OPERATOR /(lhs AS __Usual, rhs AS __Usual) AS __Usual
         IF lhs:IsNull .or. rhs:IsNull
@@ -1838,6 +1850,7 @@ BEGIN NAMESPACE XSharp
         THROW BinaryError("/", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/UsualBinary/*" />
         [NODEBUG];
         STATIC OPERATOR %(lhs AS __Usual, rhs AS __Usual) AS __Usual
         IF lhs:IsNull .or. rhs:IsNull
@@ -1900,6 +1913,7 @@ BEGIN NAMESPACE XSharp
         THROW BinaryError("%", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/UsualBinary/*" />
         [NODEBUG];
         STATIC OPERATOR *(lhs AS __Usual, rhs AS __Usual) AS __Usual
         IF lhs:IsNull .or. rhs:IsNull
@@ -1962,6 +1976,7 @@ BEGIN NAMESPACE XSharp
         THROW BinaryError("*", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>This operator is only supported on usuals containing integral values</remarks>
         [NODEBUG];
         STATIC OPERATOR >>(lhs AS __Usual, rhs AS INT) AS __Usual
         IF lhs:IsNull
@@ -1976,6 +1991,7 @@ BEGIN NAMESPACE XSharp
         END SWITCH
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>This operator is only supported on usuals containing integral values</remarks>
         [NODEBUG];
         STATIC OPERATOR <<(lhs AS __Usual, rhs AS LONG) AS __Usual
         // Left shift
@@ -1992,6 +2008,7 @@ BEGIN NAMESPACE XSharp
 
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>This operator is only supported on usuals containing integral values</remarks>
         [NODEBUG];
         STATIC OPERATOR &(lhs AS __Usual, rhs AS __Usual) AS __Usual
         // Bitwise And
@@ -2018,6 +2035,7 @@ BEGIN NAMESPACE XSharp
         THROW BinaryError("&", __CavoStr(VOErrors.ARGNOTINTEGER), FALSE, lhs, rhs)
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>This operator is only supported on usuals containing integral values</remarks>
         [NODEBUG];
         STATIC OPERATOR |(lhs AS __Usual, rhs AS __Usual) AS __Usual
         // Bitwise or
@@ -2083,6 +2101,7 @@ BEGIN NAMESPACE XSharp
         THROW ConversionError(CODEBLOCK, TYPEOF(CODEBLOCK), u)
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>When the usual contains a numeric value then this checks if the value != 0.</remarks>
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS LOGIC
         IF u:IsNull  .or. !u:_initialized
@@ -2152,6 +2171,7 @@ BEGIN NAMESPACE XSharp
         END SWITCH
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>When the usual contains an integral value then this value is converted to an IntPtr</remarks>
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS PTR
         // Note Vulcan has a different implementation for USUAL -> PTR and USUAL -> IntPtr
@@ -2189,6 +2209,7 @@ BEGIN NAMESPACE XSharp
                 THROW ConversionError(STRING, TYPEOF(STRING), u)
         END SWITCH
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <remarks>When the usual contains an numeric value then this value is considered to be an index in the symbol table.</remarks>
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS SYMBOL
         IF u:IsNull  .or. !u:_initialized
@@ -2201,6 +2222,7 @@ BEGIN NAMESPACE XSharp
             CASE __UsualType.Int64	; RETURN (SYMBOL) ((DWORD) u:_i64Value)
             CASE __UsualType.Float	; RETURN (SYMBOL) ((DWORD) u:_floatValue)
             CASE __UsualType.Decimal; RETURN (SYMBOL) ((DWORD) u:_decimalValue)
+            CASE __UsualType.Currency; RETURN (SYMBOL) ((DWORD) u:_currencyValue)
             OTHERWISE
                 THROW ConversionError(SYMBOL, TYPEOF(SYMBOL), u)
         END SWITCH
@@ -2423,7 +2445,8 @@ BEGIN NAMESPACE XSharp
         END TRY
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        /// <remarks>When the usual contains a value that does not fit inside a LONG (such as a UInt36.MaxValue) NO overflow error will be generated, just like in VO. <br/>
+        /// <remarks>When the usual contains a value that does not fit inside a LONG (such as a MAX_DWORD) NO overflow error will be
+        /// generated, just like in VO. <br/>
         /// This may seem not logical, but the VO SDK code is full of code that will not run if we change this behavior</remarks>
 
         [NODEBUG];
@@ -2585,7 +2608,8 @@ BEGIN NAMESPACE XSharp
         END TRY
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        /// <remarks>When the usual contains a value that does not fit inside a LONG (such as a -1) NO overflow error will be generated, just like in VO. <br/>
+        /// <remarks>When the usual contains a value that does not fit inside a LONG (such as a -1) NO overflow error will be generated,
+        /// just like in VO. <br/>
         /// This may seem not logical, but the VO SDK code is full of code that will not run if we change this behavior</remarks>
 
         [NODEBUG];
@@ -2674,6 +2698,7 @@ BEGIN NAMESPACE XSharp
             THROW OverflowError(ex, "FLOAT", TYPEOF(FLOAT), u)
         END TRY
 
+        /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS Currency
         TRY
@@ -2688,6 +2713,7 @@ BEGIN NAMESPACE XSharp
             THROW OverflowError(ex, "CURRENCY", TYPEOF(Currency), u)
         END TRY
 
+        /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS Binary
         IF u:IsNull  .or. !u:_initialized
@@ -2703,9 +2729,9 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Implicit FROM Other Type TO USUAL
 
-        /// <include file="RTComments.xml" path="Comments/Operator/*" />
         /// Note this generates error XS0553.
         /// However our compiler needs this one. Therefore disable XS0553
+        /// <include file="RTComments.xml" path="Comments/Operator/*" />
         #pragma warnings (553, off)
         [NODEBUG] [INLINE];
         STATIC OPERATOR IMPLICIT(val AS OBJECT) AS __Usual
@@ -3057,7 +3083,6 @@ BEGIN NAMESPACE XSharp
         RETURN TypeCode.Empty
         #endregion
 
-        #region Error METHOD
         [HIDDEN];
         INTERNAL PROPERTY ValType AS STRING
         [NODEBUG];
@@ -3091,6 +3116,8 @@ BEGIN NAMESPACE XSharp
         RETURN "?"
         END GET
         END PROPERTY
+
+#region Error Methods
     STATIC INTERNAL METHOD ConversionError(toTypeString AS STRING, toType AS System.Type, u AS __Usual) AS Error
         VAR	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(u:Type), toTypeString)
         VAR err			:= Error{Gencode.EG_DATATYPE,STR_USUAL, cMessage}
@@ -3312,28 +3339,28 @@ BEGIN NAMESPACE XSharp
     /// <inheritdoc/>
     [NODEBUG];
     PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
-    IF info == NULL
-        THROW System.ArgumentException{"info"}
-    ENDIF
-    info:AddValue("Flags", SELF:_flags:Flags)
-    info:AddValue("Type",  SELF:Value:GetType():FullName)
-    info:AddValue("Value", SELF:Value)
-    RETURN
+        IF info == NULL
+            THROW System.ArgumentException{"info"}
+        ENDIF
+        info:AddValue("Flags", SELF:_flags:Flags)
+        info:AddValue("Type",  SELF:Value:GetType():FullName)
+        info:AddValue("Value", SELF:Value)
+        RETURN
 
     /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
     [NODEBUG];
     CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
-    IF info == NULL
-        THROW System.ArgumentException{"info"}
-    ENDIF
-    SELF:_flags          := UsualFlags{ __UsualType.Void }
-    SELF:_flags:Flags    := info:GetInt32("Flags")
-    VAR name             := info:GetString("Type")
-    VAR type             := System.Type.GetType(name)
-    VAR oValue           := info:GetValue("Value", type)
-    VAR uTemp            := USUAL{oValue}
-    SELF:_refData        := uTemp:_refData
-    SELF:_valueData      := uTemp:_valueData
+        IF info == NULL
+            THROW System.ArgumentException{"info"}
+        ENDIF
+        SELF:_flags          := UsualFlags{ __UsualType.Void }
+        SELF:_flags:Flags    := info:GetInt32("Flags")
+        VAR name             := info:GetString("Type")
+        VAR type             := System.Type.GetType(name)
+        VAR oValue           := info:GetValue("Value", type)
+        VAR uTemp            := USUAL{oValue}
+        SELF:_refData        := uTemp:_refData
+        SELF:_valueData      := uTemp:_valueData
 
     #endregion
     #region Special methods used BY the compiler

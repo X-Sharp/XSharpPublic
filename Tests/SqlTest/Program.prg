@@ -20,10 +20,17 @@ FUNCTION Start() AS VOID STRICT
     ENDIF
     ? oConn:Connected
     IF oConn:COnnected
-        oSel := MySqlSelect{"Select * from Bedrijven",oConn}
+        oSel := MySqlSelect{"Select top 1 * from Bedrijven",oConn}
         //oSel:ReadOnly := TRUE
         //oSel:BatchUpdates := true
         oSel:Execute()
+
+        do while ! oSel:EOF
+            ? oSel:RecNo, oSel:FieldGet(1)
+            oSel:Skip()
+        enddo
+        oSel:Skip(-1)
+
         oSel:SetPrimaryKey(1)
         ? "Count", oSel:NumSuccessfulRows
 
@@ -48,6 +55,13 @@ class MySqlSelect inherit SqlSelect
         return super:PreExecute(cSqlString)
     METHOD __CreateDataAdapter AS VOID
         SUPER:__CreateDataAdapter()
+
+    METHOD __GoCold(lUpdateBatch AS LOGIC) AS LOGIC STRICT
+        LOCAL lOk as LOGIC
+        lOk := SUPER:__GoCold(lUpdateBatch)
+        SELF:nRowCount := SELF:oTable:Rows:Count
+        RETURN lOk
+
 
 end class
 

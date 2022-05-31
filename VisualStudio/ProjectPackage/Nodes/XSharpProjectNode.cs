@@ -397,7 +397,7 @@ namespace XSharp.Project
                 case (int)__VSHPROPID.VSHPROPID_DefaultNamespace:
                     return this.RootNameSpace;
                 case (int)__VSHPROPID5.VSHPROPID_OutputType:
-                    return (uint) GetOutPutType();
+                    return (uint)GetOutPutType();
                 case (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration:
                 case (int)__VSHPROPID3.VSHPROPID_WebReferenceSupported:
                 case (int)__VSHPROPID3.VSHPROPID_ServiceReferenceSupported:
@@ -427,8 +427,8 @@ namespace XSharp.Project
                     return "Windows";
             }
             return base.GetProperty(propId);
-        }
-        static private XSharpProjectCapabilitiesPresenceChecker _checker;
+       }
+    static private XSharpProjectCapabilitiesPresenceChecker _checker;
 
         private object automationobject;
         /// <summary>
@@ -1077,17 +1077,14 @@ namespace XSharp.Project
 
         internal void LoadPackageReferences()
         {
-            if (! this.IsLoading)
+            var packageContainer = PackageReferenceContainerNode;
+            var referenceContainerNode = GetReferenceContainer() as HierarchyNode;
+            if (packageContainer == null)
             {
-                var packageContainer = PackageReferenceContainerNode;
-                if (packageContainer == null)
-                {
-                    HierarchyNode referenceContainerNode = GetReferenceContainer() as HierarchyNode;
-                    packageContainer = new XSharpPackageReferenceContainerNode(this);
-                    referenceContainerNode.AddChild(packageContainer);
-                }
-                packageContainer.LoadReferencesFromBuildProject(this);
+                packageContainer = new XSharpPackageReferenceContainerNode(this);
+                referenceContainerNode.AddChild(packageContainer);
             }
+            packageContainer.LoadReferencesFromBuildProject(this);
         }
 
         public XSharpPackageReferenceContainerNode PackageReferenceContainerNode =>

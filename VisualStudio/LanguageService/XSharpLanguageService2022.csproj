@@ -221,13 +221,13 @@
       <Version>0.12.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Language">
-      <Version>17.2.3194</Version>
+      <Version>17.0.491</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Text.UI.Wpf">
-      <Version>17.2.3194</Version>
+      <Version>17.0.491</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.12.0">
-      <Version>17.2.32505.113</Version>
+      <Version>17.0.32112.339</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>

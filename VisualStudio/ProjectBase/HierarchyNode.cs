@@ -2263,16 +2263,20 @@ namespace Microsoft.VisualStudio.Project
 
             Utilities.ArgumentNotNull("files", files);
             Utilities.ArgumentNotNull("flags", flags);
-            files.Add(this.GetMkDocument());
+            string name = this.GetMkDocument();
+            if (! string.IsNullOrEmpty(name))
+            {
+                files.Add(name);
 
-	         tagVsSccFilesFlags flagsToAdd;
-	         FileNode firstChild = this.firstChild as FileNode;
-	         if (firstChild != null && firstChild.IsDependent)
-	            flagsToAdd = tagVsSccFilesFlags.SFF_HasSpecialFiles;
-	         else
-	            flagsToAdd = tagVsSccFilesFlags.SFF_NoFlags;
+                tagVsSccFilesFlags flagsToAdd;
+                FileNode firstChild = this.firstChild as FileNode;
+                if (firstChild != null && firstChild.IsDependent)
+                    flagsToAdd = tagVsSccFilesFlags.SFF_HasSpecialFiles;
+                else
+                    flagsToAdd = tagVsSccFilesFlags.SFF_NoFlags;
 
-            flags.Add(flagsToAdd);
+                flags.Add(flagsToAdd);
+            }
         }
 
         /// <summary>

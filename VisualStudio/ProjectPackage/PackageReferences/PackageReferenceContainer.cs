@@ -49,6 +49,7 @@ namespace XSharp.Project
             : base(parent)
         {
             base.Parent = parent;
+            this.ExcludeNodeFromScc = true;
             _vsPackageReferences = null;
             _vsPackageReferences = new OAVSPackageReferences(this);
             PackageReferenceNodes = new List<XSharpPackageReferenceNode>();

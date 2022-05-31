@@ -493,8 +493,8 @@
     </DbFileSpec.RecSize>
     <DbFileSpec.Rename>
         <summary>
-            Renames files associated with DBFileSpec object. Only DBF/MEMO and auto-open index files will get renamed. 
-            Rename() will not rename a file if it is already open or there is a file name conflict. 
+            Renames files associated with DBFileSpec object. Only DBF/MEMO and auto-open index files will get renamed.
+            Rename() will not rename a file if it is already open or there is a file name conflict.
             To rename files to another directory, use the Move() method and supply a different target file name.
         </summary>
         <param name="oDBFSNewName">The new name for the DBF file.</param>
@@ -898,28 +898,19 @@
             Construct a DBServer object.
         </summary>
         <param name="oFile">
-            Identifies the DBF file that is to be opened.
+            A String or a FileSpec object with the name of the file to open<br/>
+            This parameter identifies the DBF file that is to be opened.
             If a string is specified, it corresponds exactly to the file name parameter of the DBUseArea() function; it can contain a full path with drive and directories, or just a file name.
             If a FileSpec object is specified, its file name component is used as the file to open. It can also contain a full path with drive and directories, or just a file name.
             With either type of parameter, if only a file name is specified, the DBServer works the same way as the USE command or the DBUseArea() function with regard to default path—it is subject to SET PATH and SET DEFAULT, for example. The extension DBF is assumed by default.
             In either case, after the DBServer object has been successfully created, it contains a FileSpec object with the original file specification.
         </param>
-        <param name="cFile">
-            Identifies the DBF file that is to be opened.
-            This corresponds exactly to the file name parameter of the DBUseArea() function; it can contain a full path with drive and directories, or just a file name.
-            If only a file name is specified, the DBServer works the same way as the USE command or the DBUseArea() function with regard to default path—it is subject to SET PATH and SET DEFAULT, for example. The extension DBF is assumed by default.
-            After the DBServer object has been successfully created, it contains a FileSpec object with the original file specification.
-        </param>
-        <param name="oFS">
-            Identifies the DBF file that is to be opened.
-            The file name component of the FileSpec is used as the file to open. It can also contain a full path with drive and directories, or just a file name.
-            If only a file name is specified, the DBServer works the same way as the USE command or the DBUseArea() function with regard to default path—it is subject to SET PATH and SET DEFAULT, for example. The extension DBF is assumed by default.
-            After the DBServer object has been successfully created, it contains a FileSpec object with the original file specification.
-        </param>
         <param name="lShareMode">Identifies whether the file should be opened in shared mode. Can be specified as a constant, DBSHARED (TRUE) or DBEXCLUSIVE (FALSE). If not specified, the default is determined by the SetExclusive() function, which in turn defaults to 'exclusive' or FALSE.</param>
         <param name="lReadOnlyMode">Identifies whether the file should be opened in read only mode. Can be specified as a constant, DBREADONLY (TRUE) DBREADWRITE (FALSE). If not specified, it defaults to read-write or FALSE.</param>
         <param name="xDriver">The driver can be specified. If not specified, it defaults to the driver specified by RDDSetDefault() which in turn defaults to DBFNTX.</param>
-        <param name="aRDD">A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality. This allows you to use RDDs with special capabilities, like encryption or decryption, for different data servers with different database drivers. These RDDs overlay special functions of the main RDD (specified with the <paramref name="cDriver" /> argument). If multiple RDDs (specified with this argument) implement the same function, the function associated with the last RDD in the list takes precedence. If <paramref name="aRdds" /> is omitted, no additional RDDs are assumed.</param>
+        <param name="aRDD">
+            A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality. This allows you to use RDDs with special capabilities, like encryption or decryption, for different data servers with different database drivers. These RDDs overlay special functions of the main RDD (specified with the <paramref name="cDriver" /> argument). If multiple RDDs (specified with this argument) implement the same function, the function associated with the last RDD in the list takes precedence. If <paramref name="aRdds" /> is omitted, no additional RDDs are assumed.
+        </param>
         <returns>
             As with all Init() methods, the instantiation returns the object. An object is created even if the file was not successfully opened, perhaps because the file does not exist, is corrupted or is locked by another user. Thus, before using the DBServer error, verify that it was successfully opened with the DBServer:Used or Status access methods.
         </returns>
@@ -974,7 +965,7 @@
             Append new records to the table from another DBF file.
         </summary>
         <param name="oFSSource">
-            The source file is opened in shared, read-only mode, and can be open elsewhere in this or some other application.
+            A string or filespec object that specifies the source file, which is opened in shared, read-only mode, and can be open elsewhere in this or some other application.
 
             This function attempts to open <paramref name="oFSSource" /> in shared mode. If the file does not exist, a runtime error is raised. If the file is successfully opened, the operation proceeds. Refer to the 'Concurrency Control' chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
         </param>
@@ -990,7 +981,10 @@
         <summary>
             Append new records to the table from a delimited file, such as the "comma-separated-value" (CSV) file format.
         </summary>
-        <param name="oFSSource">The source file containing the records to be appended. The source file is opened in shared, read-only mode, and can be open elsewhere in this or some other application.</param>
+        <param name="oFSSource">
+            A string or filespec object that specifies the source file containing the records to be appended. 
+            The source file is opened in shared, read-only mode, and can be open elsewhere in this or some other application.
+        </param>
         <param name="cDelimiter">The delimiter for fields within a delimited database file. If omitted, the default is NULL_STRING.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <returns>
@@ -1004,7 +998,10 @@
         <summary>
             Append new records to the table from an SDF-formatted file.
         </summary>
-        <param name="oFSSource">The source file containing the records to be appended. The source file is opened in shared, read-only mode, and can be open elsewhere in this or some other application.</param>
+        <param name="oFSSource">
+            A string or filespec object that specifies the source file containing the records to be appended. 
+            The source file is opened in shared, read-only mode, and can be open elsewhere in this or some other application.
+        </param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <returns>
             TRUE if successful; otherwise, FALSE (although this can still have caused records to be appended).
@@ -1031,14 +1028,16 @@
         <summary>
             Export the contents of a binary large object (BLOB) pointer to a file.
         </summary>
-        <param name="nPointer">A pointer to the BLOB data. This pointer can be obtained using DBServer:BLOBDirectPut(), DBServer:BLOBDirectExport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="nFieldPos" />).</param>
+        <param name="nPointer">
+            A pointer to the BLOB data. This pointer can be obtained using DBServer:BLOBDirectPut(), DBServer:BLOBDirectExport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="nFieldPos" />).
+        </param>
         <param name="oFSTarget">
-            The name of the target file where the BLOB data will be written, including an optional drive, directory, and extension. See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
-            If <paramref name="oFSTarget" />  does not exist, it is created. If it exists, this method attempts to open the file in exclusive mode and, if successful, the file is written to without warning or error. If access is denied because, for example, another process is using the file, NetErr() is set to TRUE and the data server's Status property is set. 
+            A string or filespec object that specifies the name of the target file where the BLOB data will be written, including an optional drive, directory, and extension. See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
+            If <paramref name="oFSTarget" />  does not exist, it is created. If it exists, this method attempts to open the file in exclusive mode and, if successful, the file is written to without warning or error. If access is denied because, for example, another process is using the file, NetErr() is set to TRUE and the data server's Status property is set.
         </param>
         <param name="cTarget">
             The name of the target file where the BLOB data will be written, including an optional drive, directory, and extension. See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
-            If <paramref name="cTarget" /> does not exist, it is created. If it exists, this method attempts to open the file in exclusive mode and, if successful, the file is written to without warning or error. If access is denied because, for example, another process is using the file, NetErr() is set to TRUE and the data server's Status property is set. 
+            If <paramref name="cTarget" /> does not exist, it is created. If it exists, this method attempts to open the file in exclusive mode and, if successful, the file is written to without warning or error. If access is denied because, for example, another process is using the file, NetErr() is set to TRUE and the data server's Status property is set.
         </param>
         <param name="kMode">
             A constant defining the copy mode, as shown in the table below:
@@ -1084,8 +1083,12 @@
         <summary>
             Retrieve data stored in a BLOB file without referencing a specific field.
         </summary>
-        <param name="nPointer">A pointer to the BLOB data. This pointer can be obtained using DBServer:BLOBDirectPut(), DBServer:BLOBDirectImport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="nFieldPos" />).</param>
-        <param name="nStart">The starting position in <paramref name="nPointer" />. If <paramref name="nStart" /> is positive, the starting position is relative to the leftmost character in <paramref name="nPointer" />. If <paramref name="nStart" /> is negative, it is relative to the rightmost character in <paramref name="nPointer" />. If <paramref name="nStart" /> is omitted, it is assumed to be 1.</param>
+        <param name="nPointer">
+            A pointer to the BLOB data. This pointer can be obtained using DBServer:BLOBDirectPut(), DBServer:BLOBDirectImport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="nFieldPos" />).
+        </param>
+        <param name="nStart">
+            The starting position in <paramref name="nPointer" />. If <paramref name="nStart" /> is positive, the starting position is relative to the leftmost character in <paramref name="nPointer" />. If <paramref name="nStart" /> is negative, it is relative to the rightmost character in <paramref name="nPointer" />. If <paramref name="nStart" /> is omitted, it is assumed to be 1.
+        </param>
         <param name="nCount">
             The number of bytes of data to retrieve, beginning at <paramref name="nStart" />. If <paramref name="nCount" /> is larger than the amount of data stored, excess data is ignored. If omitted, DBServer:BLOBDirectGet() retrieves to the end of the data.
         </param>
@@ -1093,7 +1096,9 @@
             The data retrieved from the BLOB file. The data type of the return value depends on the actual data stored. Use ValType() or UsualType() to determine the data type.
         </returns>
         <remarks>
-            <note type="tip"><paramref name="nStart" /> and <paramref name="nCount" /> apply to string data only. They are ignored for any other data types.</note>
+            <note type="tip">
+                <paramref name="nStart" /> and <paramref name="nCount" /> apply to string data only. They are ignored for any other data types.
+            </note>
             DBServer:BLOBDirectGet() retrieves data stored in a BLOB file without the need to reference a particular field in the data server. It is particularly useful when accessing data that is larger than 64KB, (such as memo fields created with the BLOBImport() method).
         </remarks>
         <example>
@@ -1131,10 +1136,8 @@
             <br />Important! If specified, DBServer:BLOBDirectImport() releases the space associated with <paramref name="nOldPointer" /> for reuse by other data. Therefore, it is illegal to use <paramref name="nOldPointer" /> with any of the BLOB methods after passing it as an argument to this method. Use the method's return value to refer to the newly stored data.
         </param>
         <param name="oFSSource">
-            The name of the file from which to read the BLOB data, including an optional drive, directory, and extension. See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
-        </param>
-        <param name="cSource">
-            The name of the file from which to read the BLOB data, including an optional drive, directory, and extension. See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
+            A string or filespec object that specifies the name of the file from which to read the BLOB data, including an optional drive, directory, and extension. 
+            See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
         </param>
         <returns>
             A numeric pointer to the BLOB image stored in the source file.
@@ -1145,7 +1148,9 @@
             DBServer:BLOBDirectImport() provides a mechanism for copying the contents of a file into a BLOB file.
             DBServer:BLOBDirectImport() is used in conjunction with DBServer:BLOBDirectExport() to transfer data back and forth between external files and BLOB files. You can use DBServer:BLOBDirectImport() with a variety of file types, including graphics images, word processor files, and printer fonts. These two methods are excellent for creating databases of documents, graphics, sounds, and so on.
             <br />Important! After importing a file with DBServer:BLOBDirectImport(), nNewPointer, the return value, is the only way to access the data from the BLOB file. It is up to you, the developer, to provide permanent storage for this reference (see example below)
-            <note type="tip">DBServer:FieldInfo(DBS_BLOB_TYPE, <paramref name="nFieldPos" />) will return "C" (string) for any memo field created using DBServer:BLOBDirectImport().</note>
+            <note type="tip">
+                DBServer:FieldInfo(DBS_BLOB_TYPE, <paramref name="nFieldPos" />) will return "C" (string) for any memo field created using DBServer:BLOBDirectImport().
+            </note>
         </remarks>
         <example>
             This example imports a .BMP file to be part of an array of startup data. The data, stored in the root area of the BLOB file, could then be used to display the application's startup screen:
@@ -1182,7 +1187,9 @@
             A reference to previously stored BLOB data. This reference can be obtained using DBServer:BLOBDirectPut(), DBServer:BLOBDirectImport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="nFieldPos" />). If other than 0, the data referenced by <paramref name="nOldPointer" /> is replaced by <paramref name="uBLOB" />; otherwise, <paramref name="uBLOB" /> is added to the current contents of the BLOB file.
             <br />Important! If specified, DBServer:BLOBDirectPut() releases the space associated with <paramref name="nOldPointer" /> for reuse by other data. Therefore, it is illegal to use <paramref name="nOldPointer" /> with any of the BLOB methods after passing it as an argument to this method. Use the method's return value to refer to the newly stored data.
         </param>
-        <param name="uBlob">The data you want to put into the BLOB file. <paramref name="uBLOB" /> can be any X# usual data type, except code block and object.</param>
+        <param name="uBlob">
+            The data you want to put into the BLOB file. <paramref name="uBLOB" /> can be any X# usual data type, except code block and object.
+        </param>
         <returns>
             A numeric pointer to the <paramref name="uBLOB" /> data.
         </returns>
@@ -1221,18 +1228,11 @@
         </summary>
         <param name="uField">The name, number, or symbol representing the position of the field in the database file structure.</param>
         <param name="oFSTarget">
-            The name of the target file where the BLOB data will be written, including an optional drive, directory, and extension. 
+            A string or filespec object that specifies the name of the target file where the BLOB data will be written, including an optional drive, directory, and extension.
             See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
             If <paramref name="oFSTarget" /> does not exist, it is created. If it exists, this method attempts to
             open the file in exclusive mode and, if successful, the file is written to without warning or error. If access is denied because,
-            for example, another process is using the file, NetErr() is set to TRUE and the data server's Status property is set. 
-        </param>
-        <param name="cTarget">
-            The name of the target file where the BLOB data will be written, including an optional drive, directory, and extension. 
-            See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
-            If <paramref name="cTarget" /> does not exist, it is created. If it exists, this method attempts to
-            open the file in exclusive mode and, if successful, the file is written to without warning or error. If access is denied because,
-            for example, another process is using the file, NetErr() is set to TRUE and the data server's Status property is set. 
+            for example, another process is using the file, NetErr() is set to TRUE and the data server's Status property is set.
         </param>
         <param name="kMode">
             A constant defining the copy mode, as shown in the table below:
@@ -1271,7 +1271,9 @@
             Get the contents of a BLOB, identified by its memo field number.
         </summary>
         <param name="uField">The name, number, or symbol representing the position of the field in the database file structure.</param>
-        <param name="nStart">The starting position in the memo field of the BLOB data. If <paramref name="nStart" /> is positive, the starting position is relative to the leftmost character in <paramref name="uFieldPos" />. If <paramref name="nStart" /> is negative, it is relative to the rightmost character in <paramref name="uFieldPos" />. If <paramref name="nStart" /> is omitted, it is assumed to be 1.</param>
+        <param name="nStart">
+            The starting position in the memo field of the BLOB data. If <paramref name="nStart" /> is positive, the starting position is relative to the leftmost character in <paramref name="uFieldPos" />. If <paramref name="nStart" /> is negative, it is relative to the rightmost character in <paramref name="uFieldPos" />. If <paramref name="nStart" /> is omitted, it is assumed to be 1.
+        </param>
         <param name="nCount">
             The number of bytes of data to retrieve, beginning at <paramref name="nStart" />. If <paramref name="nCount" /> is larger than the amount of data stored, excess data is ignored. If omitted, DBServer:BLOBGet() retrieves to the end of the data.
         </param>
@@ -1279,7 +1281,9 @@
             The BLOB data retrieved from the memo field. The data type of the return value depends on the actual data stored. Use ValType() or UsualType() to determine the data type. If the indicated field is not a memo field, DBServer:BLOBGet() returns NIL.
         </returns>
         <remarks>
-            <note type="tip"><paramref name="nStart" /> and <paramref name="nCount" /> apply to string data only. They are ignored for any other data types.</note>
+            <note type="tip">
+                <paramref name="nStart" /> and <paramref name="nCount" /> apply to string data only. They are ignored for any other data types.
+            </note>
             DBServer:BLOBGet() is very similar to DBServer:FieldGet(). However, because string type variables cannot be larger than 64KB, DBServer:FieldGet() will raise a runtime error when attempting to retrieve memo fields of this magnitude or greater.
             DBServer:BLOBGet() will also raise an error if you attempt to retrieve a field greater than this magnitude; however, you can retrieve any subset of the BLOB data by using an <paramref name="nCount" /> less than 64KB.
             <note type="tip">BLOB data less than 64KB can be retrieved from a memo field using standard means (for example, referring to the field by name in an expression or using the DBServer:FieldGet() method).</note>
@@ -1312,7 +1316,7 @@
         </summary>
         <param name="uField">The name, number, or symbol representing the position of the field in the database file structure.</param>
         <param name="oFSSource">
-            The name of the file from which to read the BLOB data, including an optional drive, directory, and extension. See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
+            A string or filespec object that specifies the name of the file from which to read the BLOB data, including an optional drive, directory, and extension. See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
         </param>
         <returns>
             TRUE if successful; otherwise, FALSE.
@@ -1323,7 +1327,9 @@
             DBServer:BLOBImport() provides a mechanism for copying the contents of a file into a memo field as BLOB data.
             DBServer:BLOBImport() is used in conjunction with DBServer:BLOBExport() to transfer BLOB data back and forth between files and memo fields. You can use DBServer:BLOBImport() with a variety of file types, including graphics images, word processor files, and printer fonts. These two methods are excellent for creating databases of documents, graphics, sounds, and so on.
             DBServer:BlobImport() sends a NotifyFieldChange message upon successful completion.
-            <note type="tip">DBServer:FieldInfo(DBS_BLOB_TYPE, <paramref name="uFieldPos" />) will return "C" (string) for any memo field created using DBServer:BLOBImport().</note>
+            <note type="tip">
+                DBServer:FieldInfo(DBS_BLOB_TYPE, <paramref name="uFieldPos" />) will return "C" (string) for any memo field created using DBServer:BLOBImport().
+            </note>
         </remarks>
         <example>
             This example imports information from a word processing document into a field, then uses DBServer:BLOBGet() to extract the first 25 characters of the field:
@@ -1422,7 +1428,9 @@
         <summary>
             Store data in the root area of a BLOB file.
         </summary>
-        <param name="uBlob">The data you want to put into the BLOB file's root area. <paramref name="uBLOB" /> can be any X# usual data type, except code block and object.</param>
+        <param name="uBlob">
+            The data you want to put into the BLOB file's root area. <paramref name="uBLOB" /> can be any X# usual data type, except code block and object.
+        </param>
         <returns>
             TRUE if successful; otherwise FALSE.
         </returns>
@@ -1658,7 +1666,7 @@
         <summary>
             Copy records to another DBF file.
         </summary>
-        <param name="oFSTarget">The file to which the records is copied. This file is opened exclusively during the operation, so it should not be open elsewhere with write capability.</param>
+        <param name="oFSTarget">A string or filespec object that specifies the file to which the records is copied. This file is opened exclusively during the operation, so it should not be open elsewhere with write capability.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <returns>
             TRUE if successful; otherwise, FALSE. Note that after a FALSE indication, records can still have been copied to the target: the operation can have failed halfway through because the disk had been filled or other problems.
@@ -1682,7 +1690,7 @@
         <summary>
             Copy records to a delimited file.
         </summary>
-        <param name="oFSTarget">The file to which the records is copied.</param>
+        <param name="oFSTarget">A string or filespec object that specifies the file to which the records is copied.</param>
         <param name="cDelimiter">The delimiter for fields within a delimited database file. If omitted, the default is NULL_STRING.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <returns>
@@ -1696,7 +1704,7 @@
         <summary>
             Copy records to an SDF file.
         </summary>
-        <param name="oFSTarget">The file to which the records is copied.</param>
+        <param name="oFSTarget">A string or filespec object that specifies the file to which the records is copied.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <returns>
             TRUE if successful; otherwise, FALSE. Note that after a FALSE indication, records can still have been copied to the target: the operation can have failed halfway through because the disk had been filled or other problems.
@@ -1709,8 +1717,7 @@
         <summary>
             Create a DBF file with the same record layout as the server object to which the message is sent.
         </summary>
-        <param name="oFSTarget">The file to which the record is copied.</param>
-        <param name="cFileName">The file to which the record is copied.</param>
+        <param name="oFSTarget">A string or filespec object that specifies the file to which the record is copied.</param>
         <param name="aFieldList">An array of fields that are to be included in the records to be copied.</param>
         <returns>
             TRUE if successful; otherwise, FALSE.
@@ -1754,7 +1761,7 @@
         <summary>
             Create an index file with an order in it.
         </summary>
-        <param name="oFSIndex">The name of the index file to be created.</param>
+        <param name="oFSIndex">A string or filespec object that specifies the name of the index file to be created.</param>
         <param name="cExpr">The indexing expression.</param>
         <param name="cbExpr">The indexing expression. If a code block is provided, it should match the string expression; if a code block is not provided, one is created from the string expression.</param>
         <param name="lUnique">Whether the index is unique. If not specified, the default is determined by SetUnique().</param>
@@ -1841,12 +1848,12 @@
             This example opens a database file, then creates an array containing the database structure using DBServer:DBStruct within an aliased expression. The field names are then listed using AEval():
             <code language="X#">
                 CLASS Sales INHERIT DBServer
-                 ...
+                ...
                 FUNCTION StructDemo()
-                 LOCAL aStruct AS ARRAY, oDBSales AS DBServer
-                 oDBSales := Sales{}
-                 aStruct := oDBSales:DBStruct
-                 AEval(aStruct, {|aField|QOut(aField[DBS_NAME])})
+                LOCAL aStruct AS ARRAY, oDBSales AS DBServer
+                oDBSales := Sales{}
+                aStruct := oDBSales:DBStruct
+                AEval(aStruct, {|aField|QOut(aField[DBS_NAME])})
             </code>
         </example>
     </DbServer.DBStruct>
@@ -2128,15 +2135,17 @@
         </summary>
         <param name="kFieldInfoType">
             Specifies the type of information. The constants are described in the Constants section below. Note, however, that not all constants are supported for all RDDs.
-            <br />Important! DBS_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters. 
+            <br />Important! DBS_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters.
             Values less than DBS_USER are reserved for development.
         </param>
         <param name="uField">
-            The name, number, or symbol representing the position of the field in the database file structure or a numeric pointer to a BLOB. 
+            The name, number, or symbol representing the position of the field in the database file structure or a numeric pointer to a BLOB.
             Only certain <paramref name="kFieldInfoType" /> constants designed to work with BLOB fields—all noted in the Constants section below—allow specifying the
             field using a pointer; all others require specifying the field by its position.
         </param>
-        <param name="uFieldVal">If specified, this parameter is used to change the value of a setting. The data type (and whether <paramref name="uNewSetting" /> can be specified), depends on the <paramref name="kInfoType" /> constant and is documented in the Constants section below.</param>
+        <param name="uFieldVal">
+            If specified, this parameter is used to change the value of a setting. The data type (and whether <paramref name="uNewSetting" /> can be specified), depends on the <paramref name="kInfoType" /> constant and is documented in the Constants section below.
+        </param>
         <returns>
             If <paramref name="uNewSetting" /> is not specified, DBServer:FieldInfo() returns the current setting. If <paramref name="uNewSetting" /> is specified, the previous setting is returned.
         </returns>
@@ -2148,15 +2157,21 @@
                 </listheader>
                 <item>
                     <term>DBS_ALIAS</term>
-                    <description>Returns and optionally changes an alternate name (or alias) by which a field can be referenced (by default, same as DBS_NAME). Using the <paramref name="uNewSetting" /> argument, you can specify a string that you can subsequently use to access the indicated field.</description>
+                    <description>
+                        Returns and optionally changes an alternate name (or alias) by which a field can be referenced (by default, same as DBS_NAME). Using the <paramref name="uNewSetting" /> argument, you can specify a string that you can subsequently use to access the indicated field.
+                    </description>
                 </item>
                 <item>
                     <term>DBS_BLOB_DIRECT_LEN</term>
-                    <description>Returns the length of data in a BLOB as an unsigned long integer, without referencing a particular memo field. For strings, the return value is the length of the string in bytes; for arrays, it is the number of elements in the first dimension; for all other data types, it returns -1. With this constant, you must specify the BLOB using a numeric pointer obtained from DBServer:BLOBDirectPut(), DBServer:BLOBDirectImport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="uFieldPos" />).</description>
+                    <description>
+                        Returns the length of data in a BLOB as an unsigned long integer, without referencing a particular memo field. For strings, the return value is the length of the string in bytes; for arrays, it is the number of elements in the first dimension; for all other data types, it returns -1. With this constant, you must specify the BLOB using a numeric pointer obtained from DBServer:BLOBDirectPut(), DBServer:BLOBDirectImport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="uFieldPos" />).
+                    </description>
                 </item>
                 <item>
                     <term>DBS_BLOB_DIRECT_TYPE</term>
-                    <description>To determine the data type of BLOB data, without reference to a particular memo field, use DBServer:FieldInfo(DBS_BLOB_DIRECT_TYPE, ...). With this constant, you must specify the BLOB using a numeric pointer obtained from DBServer:BLOBDirectPut(), DBServer:BLOBDirectImport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="uFieldPos" />).</description>
+                    <description>
+                        To determine the data type of BLOB data, without reference to a particular memo field, use DBServer:FieldInfo(DBS_BLOB_DIRECT_TYPE, ...). With this constant, you must specify the BLOB using a numeric pointer obtained from DBServer:BLOBDirectPut(), DBServer:BLOBDirectImport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="uFieldPos" />).
+                    </description>
                 </item>
                 <item>
                     <term></term>
@@ -2624,7 +2639,9 @@
             Specifies the type of information. The constants are described in the Constants section below. Note, however, that not all constants are supported for all RDDs.
             <br />Important! DBI_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters. Values less than DBI_USER are reserved for CA development.
         </param>
-        <param name="uInfo">If specified, this parameter is used to change the value of a setting. The data type (and whether <paramref name="uInfo" /> can be specified), depends on the <paramref name="kInfoType" /> constant and is documented in the Constants section below.</param>
+        <param name="uInfo">
+            If specified, this parameter is used to change the value of a setting. The data type (and whether <paramref name="uInfo" /> can be specified), depends on the <paramref name="kInfoType" /> constant and is documented in the Constants section below.
+        </param>
         <returns>
             If <paramref name="uInfo" /> is not specified, DBServer:RDDInfo() returns the current setting. If <paramref name="uInfo" /> is specified, the previous setting is returned.
         </returns>
@@ -2805,7 +2822,7 @@
             Join this DBServer object with another DBServer object and place the results in the file specified.
         </summary>
         <param name="oDBSource">The 'other' DBServer object to which this DBServer object is joined. It can be specified as a DBServer object, or as the alias of a table opened in a work area.</param>
-        <param name="oFSTarget">The file into which results of the join operation is placed.</param>
+        <param name="oFSTarget">A string or filespec object that specifies the file into which results of the join operation is placed.</param>
         <param name="aFieldList">An array of fields to be included in the join operation.</param>
         <param name="cbForBlock">The condition evaluated for each record in the scope; if TRUE, the record is included in the processing. It provides the same functionality as the FOR clause of record processing commands.</param>
         <returns>
@@ -2953,12 +2970,8 @@
             Specifying an invalid value will raise a runtime error.
         </param>
         <param name="oFSIndex">
-            The name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="cOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
+            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="cOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
             If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
-        </param>
-        <param name="cIndex">
-            The name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="cOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
-            If <paramref name="cIndex" /> is not open by the current process, a runtime error is raised.
         </param>
         <param name="lNew">TRUE dynamically turns on the descending flag for the order, resulting in descending order. FALSE dynamically turns the flag off, resulting in ascending order.</param>
         <returns>
@@ -3003,14 +3016,16 @@
             <br />Important! DBOI_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters. Values less than DBOI_USER are reserved for VO development.
         </param>
         <param name="oFSIndex">
-            The name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="cOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
+            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="cOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
             If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
         </param>
         <param name="uOrder">
             The name of the order about which you want to obtain information or a number representing its position in the order list. (For single-order index files, the order name is the eight-letter index file name.) Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files. Invalid values are ignored.
             If no index file or order is specified, the controlling order is assumed.
         </param>
-        <param name="uOrdVal">If specified, this parameter is used to change the value of a setting. The data type (and whether <paramref name="uOrdVal" /> can be specified), depends on the <paramref name="kInfoType" /> constant and is documented in the Constants section below.</param>
+        <param name="uOrdVal">
+            If specified, this parameter is used to change the value of a setting. The data type (and whether <paramref name="uOrdVal" /> can be specified), depends on the <paramref name="kInfoType" /> constant and is documented in the Constants section below.
+        </param>
         <returns>
             If <paramref name="uNewSetting" /> is not specified, DBServer:OrderInfo() returns the current setting. If <paramref name="uNewSetting" /> is specified, the previous setting is returned.
         </returns>
@@ -3026,7 +3041,9 @@
                 </item>
                 <item>
                     <term>DBOI_CUSTOM</term>
-                    <description>Returns and optionally sets the logical flag indicating whether the specified order is custom built (for RDDs that support custom built orders). Note that although you can turn the custom built flag on for a standard order by specifying TRUE for the <paramref name="uNewSetting" /> argument, you cannot turn a custom built order into a standard order. Specifying FALSE for <paramref name="uNewSetting" /> is the same as not specifying the argument at all—both return the current setting.</description>
+                    <description>
+                        Returns and optionally sets the logical flag indicating whether the specified order is custom built (for RDDs that support custom built orders). Note that although you can turn the custom built flag on for a standard order by specifying TRUE for the <paramref name="uNewSetting" /> argument, you cannot turn a custom built order into a standard order. Specifying FALSE for <paramref name="uNewSetting" /> is the same as not specifying the argument at all—both return the current setting.
+                    </description>
                 </item>
                 <item>
                     <term>DBOI_EXPRESSION</term>
@@ -3199,7 +3216,7 @@
             Specifying an invalid order will raise a runtime error.
         </param>
         <param name="oFSIndex">
-            The name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
+            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
             If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
         </param>
         <param name="cTarget">
@@ -3235,18 +3252,15 @@
             Specifying an invalid order, such as one that is not custom built, will raise a runtime error.
         </param>
         <param name="oFSIndex">
-            The name of an index file, including an optional drive and directory (no extension should be specified). 
-			Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
+            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified).
+            Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
             If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
         </param>
-        <param name="cIndex">
-            The name of an index file, including an optional drive and directory (no extension should be specified). 
-			Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
-            If <paramref name="cIndex" /> is not open by the current process, a runtime error is raised.
+        <param name="uKeyValue">
+            A specific key value that you want to add for the current record.
+            The data type must match that of the order. If not specified, the order's key expression is evaluated for
+            the current record and added to the order.
         </param>
-        <param name="uKeyValue">A specific key value that you want to add for the current record. 
-		The data type must match that of the order. If not specified, the order's key expression is evaluated for 
-		the current record and added to the order.</param>
         <returns>
             TRUE if successful; otherwise FALSE.
         </returns>
@@ -3290,12 +3304,8 @@
             Specifying an invalid order will raise a runtime error.
         </param>
         <param name="oFSIndex">
-            The name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
+            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
             If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
-        </param>
-       <param name="cIndex">
-            The name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
-            If <paramref name="cIndex" /> is not open by the current process, a runtime error is raised.
         </param>
         <remarks>
             DBServer:OrderKeyCount() counts the keys in the specified order and returns the result as a numeric value. If the order is not conditional and no scope has been set for it, DBServer:OrderKeyCount() is identical to DBServer:RecCount, returning the number of records in the data server. However, for a conditional order, there may be fewer keys than there are records, since some records may not meet the order's for condition or may not fall inside the scope specified by DBServer:OrderScope()—in counting the keys, DBServer:OrderKeyCount() respects the currently defined scope and for condition.
@@ -3337,14 +3347,9 @@
             Specifying an invalid order, such as one that is not custom built, will raise a runtime error.
         </param>
         <param name="oFSIndex">
-            The name of an index file, including an optional drive and directory (no extension should be specified). 
-			Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
+            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified).
+            Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
             If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
-        </param>
-        <param name="cIndex">
-            The name of an index file, including an optional drive and directory (no extension should be specified). 
-			Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
-            If <paramref name="cIndex" /> is not open by the current process, a runtime error is raised.
         </param>
         <returns>
             TRUE if successful; otherwise FALSE.
@@ -3412,19 +3417,14 @@
             Get the logical record number of the current record.
         </summary>
         <param name="uOrder">
-            The name of the order or a number representing its position in the order list. 
-			Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files. If omitted or NIL, the controlling order is assumed.
+            The name of the order or a number representing its position in the order list.
+            Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files. If omitted or NIL, the controlling order is assumed.
             Specifying an invalid order will raise a runtime error.
         </param>
         <param name="oFSIndex">
-            The name of an index file, including an optional drive and directory (no extension should be specified). 
-			Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
+            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified).
+            Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
             If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
-        </param>
-       <param name="cIndex">
-            The name of an index file, including an optional drive and directory (no extension should be specified). 
-			Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
-            If <paramref name="cIndex" /> is not open by the current process, a runtime error is raised.
         </param>
         <returns>
             The relative position of the current record in the specified order, as a numeric value. DBServer:OrderKeyNo() respects the scope and for condition of the order by returning zero if the record pointer is positioned on an invalid record or if DBServer:EOF is TRUE.
@@ -3577,7 +3577,9 @@
             The constants are described in the Constants section below. Note, however, that not all constants are supported for all RDDs.
             <br />Important! _SET_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kRDDInfoType" /> parameters. Values less than _SET_USER are reserved for CA development.
         </param>
-        <param name="uRDDVal">If specified, this parameter is used to change the value of a setting. The data type (and whether <paramref name="uNewSetting" /> can be specified), depends on the <paramref name="kRDDInfoType" /> constant and is documented in the Constants section below.</param>
+        <param name="uRDDVal">
+            If specified, this parameter is used to change the value of a setting. The data type (and whether <paramref name="uNewSetting" /> can be specified), depends on the <paramref name="kRDDInfoType" /> constant and is documented in the Constants section below.
+        </param>
         <returns>
             If <paramref name="uNewSetting" /> is not specified, DBServer:RDDInfo() returns the current setting. If <paramref name="uNewSetting" /> is specified, the previous setting is returned.
         </returns>
@@ -3966,8 +3968,12 @@
             Move to the record having the specified key value in the controlling order.
         </summary>
         <param name="uSearchExpr">Specifies the key value associated with the desired record.</param>
-        <param name="lSoftSeek">Determines how the data server is positioned if the specified key value is not found: TRUE performs a soft seek; FALSE does not. If <paramref name="lSoftSeek" /> is omitted, the current SetSoftSeek() setting is used.</param>
-        <param name="lLast">TRUE seeks the last occurrence of the specified key value. FALSE, the default, seeks the first occurrence. <paramref name="lLast" /> only applies to CDX indexes.</param>
+        <param name="lSoftSeek">
+            Determines how the data server is positioned if the specified key value is not found: TRUE performs a soft seek; FALSE does not. If <paramref name="lSoftSeek" /> is omitted, the current SetSoftSeek() setting is used.
+        </param>
+        <param name="lLast">
+            TRUE seeks the last occurrence of the specified key value. FALSE, the default, seeks the first occurrence. <paramref name="lLast" /> only applies to CDX indexes.
+        </param>
         <returns>
             TRUE if the specified key value was found; otherwise, FALSE.
         </returns>
@@ -4047,12 +4053,9 @@
             Open an index file and select its order as the controlling order, if this is the first index being opened.
         </summary>
         <param name="oFSIndex">
-            The index file as a FileSpec object. File type defaults to the native type for the driver (RDD).
+            A string or filespec object that specifies the index file. File type defaults to the native type for the driver (RDD).
         </param>
-        <param name="cIndexFileName">
-            The index file in string format, with or without file type. File type defaults to the native type for the driver (RDD).
-            If no argument or an empty argument is passed, all currently opened indexes are closed, and the server reverts back to sequential access based on record number (natural order). This is equivalent to ClearIndex().
-        </param>
+
         <returns>
             TRUE if successful; otherwise, FALSE.
         </returns>
@@ -4106,9 +4109,13 @@
             Using the WHILE condition is more efficient and faster than using the FOR condition. The WHILE condition processes only data for which <paramref name="cbWhileCondition" /> is TRUE from the current position. The FOR condition, in contrast, processes all data in the data source.
         </param>
         <param name="cbEvalBlock">The code block that is evaluated for every record that is processed, or as specified below. This code block allows the application to intercede during the order creation, which might be quite lengthy; it might be used to update the screen, for example, showing progress on a thermometer-type display or in the status bar.</param>
-        <param name="nStep">The numeric expression that modifies the number of times <paramref name="cbEvalBlock" /> is evaluated. This argument offers a performance enhancement by evaluating the condition for every nth record instead of for every record ordered. To step through every record, specify a value of 0 or omit the parameter.</param>
+        <param name="nStep">
+            The numeric expression that modifies the number of times <paramref name="cbEvalBlock" /> is evaluated. This argument offers a performance enhancement by evaluating the condition for every nth record instead of for every record ordered. To step through every record, specify a value of 0 or omit the parameter.
+        </param>
         <param name="nStart">The record number to start the evaluation from. To start at the top, specify a value of 0 or omit the parameter.</param>
-        <param name="nNext">The number of records to process, starting at <paramref name="nStart" />. Specify 0 to ignore this argument.</param>
+        <param name="nNext">
+            The number of records to process, starting at <paramref name="nStart" />. Specify 0 to ignore this argument.
+        </param>
         <param name="nRecno">A single record number to process. Specify 0 to ignore this argument.</param>
         <param name="lRest">Specifies whether the scope of processing is all records, or, starting with the current record, all records to the end of file. This argument corresponds to the REST and ALL clauses of record processing commands. If TRUE , the scope is REST; otherwise, the scope is ALL records.</param>
         <param name="lDescending">Specifies whether the keyed pairs be sorted in decreasing or increasing order of value. If TRUE the order is in descending order otherwise the order is in ascending order.</param>
@@ -4124,7 +4131,9 @@
         <summary>
             Set a relation from this server to the child server.
         </summary>
-        <param name="oDBChild">The server attached to the child server must be specified as a DBServer object (not as an alias). If <paramref name="oDBChild" /> is omitted, all relations for this server are removed (the recommended way of doing this is the ClearRelations() method).</param>
+        <param name="oDBChild">
+            The server attached to the child server must be specified as a DBServer object (not as an alias). If <paramref name="oDBChild" /> is omitted, all relations for this server are removed (the recommended way of doing this is the ClearRelations() method).
+        </param>
         <param name="uRelation">The relation code block for the server or the name or symbol representing the field from this server; a code block is constructed and macro-compiled</param>
         <param name="cRelation">When the relation is specified as a code block, a string version of the code block can be provided as well; it is returned by the Relation() method.</param>
         <param name="lSelective">Should this be a selective relation ?</param>
@@ -4148,7 +4157,9 @@
         <summary>
             Set a selective relation from this server to the child server; standard database operations are restricted to those records that match the relation.
         </summary>
-        <param name="oDBChild">The server attached to the child server must be specified as a DBServer object (not as an alias). If <paramref name="oDBChild" /> is omitted, all relations for this server are removed (the recommended way of doing this is the ClearRelations() method).</param>
+        <param name="oDBChild">
+            The server attached to the child server must be specified as a DBServer object (not as an alias). If <paramref name="oDBChild" /> is omitted, all relations for this server are removed (the recommended way of doing this is the ClearRelations() method).
+        </param>
         <param name="uRelation">The relation code block for the server or the name or symbol representing the field from this server; a code block is constructed and macro-compiled</param>
         <param name="cRelation">When the relation is specified as a code block, a string version of the code block can be provided as well; it is returned by the Relation() method.</param>
         <returns>
@@ -4208,8 +4219,7 @@
         <summary>
             Copy records to another database file in sorted order. If neither conditions nor scope is passed to the method, it is subject to the general server scope.
         </summary>
-        <param name="oFSTarget">The file to which the records is copied.</param>
-        <param name="cTarget">The file to which the records is copied.</param>
+        <param name="oFSTarget">A string or filespec object that specifies the file to which the records is copied.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <returns>
             TRUE if successful; otherwise, FALSE. Note that after a FALSE indication, some records can have been copied: the operation can have failed halfway through because of lock conflicts or technical problems.
@@ -4281,7 +4291,7 @@
         <summary>
             Aggregate records by key value, producing grouped summarizations, and write the aggregate records to another database.
         </summary>
-        <param name="oFSTarget">The file to which the summary data is written.</param>
+        <param name="oFSTarget">A string or filespec object that specifies the file to which the summary data is written.</param>
         <param name="cbKeyField">The key field in this server that is the basis for the summarization. Note that for the summarization to produce correct results, the table should be indexed or sorted on this key field.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <returns>
@@ -4550,7 +4560,7 @@
         <summary>
             Adds order information from an existing index file to the OrderSpec object and associates this OrderSpec object with the DBFileSpec object used for instantiation.
         </summary>
-        <param name="oFS">The full path to the index file or a FileSpec object of the index file.</param>
+        <param name="oFS">A string or filespec object that specifies the full path to the index file or a FileSpec object of the index file.</param>
         <param name="uOrder">The order name or numeric position if using multi-order files.</param>
         <returns>
             TRUE if successful; otherwise, FALSE.
@@ -4591,7 +4601,7 @@
         <summary>
             Create new orders, and if empty, fills in OrderSpec information and associates the created order with the DBFileSpec object.
         </summary>
-        <param name="oFS">The full path to the target file or a FileSpec object of the target file.</param>
+        <param name="oFS">A string or filespec object that specifies the full path to the target file.</param>
         <param name="cOrder">The order name. Used for multi-order index files.</param>
         <param name="cKeyValue">A string of the index key expression.</param>
         <param name="cbKeyValue">A code block of the index key expression.</param>

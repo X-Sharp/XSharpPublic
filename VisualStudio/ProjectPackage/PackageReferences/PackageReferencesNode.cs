@@ -68,6 +68,7 @@ namespace XSharp.Project
             {
                 base.Parent = XSharpProject.PackageReferenceContainerNode;
             }
+            this.ExcludeNodeFromScc = true;
         }
 
         protected override NodeProperties CreatePropertiesObject()

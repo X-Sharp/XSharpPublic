@@ -54,6 +54,7 @@
       <Name>System.Data.SQLite</Name>
       <AssemblyName>System.Data.SQLite.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
+	  <HintPath>..\..\External\Debug\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.VSParser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VSParser</Name>

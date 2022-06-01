@@ -1275,7 +1275,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             exp = GenerateMemVarPut(context, varname, initializer);
 
-                            var stmt = GenerateExpressionStatement(exp,memvar);
+                            var stmt = GenerateExpressionStatement(exp, memvar);
                             memvar.Put(stmt);
                             stmts.Add(stmt);
 
@@ -1506,7 +1506,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ArgumentListSyntax args = MakeArgumentList(arg);
 
             // add using statements
-            if (elements != null )
+            if (elements != null)
             {
                 foreach (var element in elements)
                 {
@@ -2186,7 +2186,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             stmts.Add(innerTry);
             tryBlock = MakeBlock(stmts);
             stmts.Clear();
-            CatchClauseSyntax catchClause ;
+            CatchClauseSyntax catchClause;
             FinallyClauseSyntax finallyClause = null;
             if (context.RecoverBlock != null)
             {
@@ -2227,7 +2227,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var condition1 = _syntaxFactory.BinaryExpression(SyntaxKind.IsExpression, objName,
                   SyntaxFactory.MakeToken(SyntaxKind.IsKeyword), GenerateQualifiedName(_wrappedExceptionType));
 
-            var unwrapException = MakeSimpleMemberAccess( MakeCastTo(GenerateQualifiedName(_wrappedExceptionType), objName),
+            var unwrapException = MakeSimpleMemberAccess(MakeCastTo(GenerateQualifiedName(_wrappedExceptionType), objName),
                             GenerateSimpleName("Value"));
 
             var callRtError = GenerateMethodCall(ReservedNames.SequenceError, MakeArgumentList(MakeArgument(objName)), true);
@@ -3411,7 +3411,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var defExpr = _syntaxFactory.EqualsValueClause(
                     SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                     MakeDefault(_usualType));
-
                 var @params = new List<ParameterSyntax>();
                 for (int i = 0; i < parameters.Parameters.Count; i++)
                 {
@@ -3461,6 +3460,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body = MakeBlock(stmts);
                 context.Data.UsesPSZ = false;
             }
+            if (context.Data.HasClipperCallingConvention)
+            {
+                // Create the ClipperCallingConventionAttribute for the method/function
+                // using the names from the paramNames list
+                // [ClipperCallingConvention(new string[] { "a", "b" })]
+                // make sure that existing attributes are not removed!
+                var names = new List<ExpressionSyntax>();
+                if (parameters.Parameters.Count > 0)
+                {
+                    for (int i = 0; i < parameters.Parameters.Count; i++)
+                    {
+                        var parm = parameters.Parameters[i];
+                        names.Add(GenerateLiteral(parm.Identifier.Text));
+                    }
+                }
+                var attrs = _pool.Allocate<AttributeListSyntax>();
+                attrs.AddRange(attributes); // Copy existing attributes
+                attrs.Add(MakeClipperCallingConventionAttribute(names));
+                attributes = attrs.ToList();
+                _pool.Free(attrs);
+            }
+
             if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ || context.Data.HasMemVars || _options.HasOption(CompilerOption.UndeclaredMemVars, prc, PragmaOptions))
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
@@ -3470,18 +3491,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     implementNoClipCall(context, ref parameters, ref dataType);
                     context.Data.HasClipperCallingConvention = false;
                 }
-
                 if (context.Data.HasClipperCallingConvention && !_options.NoClipCall)
                 {
-
                     // Assuming the parameters are called oPar1 and oPar2 then the following code is generated
                     // LOCAL oPar1 := iif(Xs$Args:Length > 0,  Xs$Args[0], NIL) as USUAL
                     // LOCAL oPar2 := iif(Xs$Args:Length > 1,  Xs$Args[1], NIL) as USUAL
-                    // Create the ClipperCallingConventionAttribute for the method/function
-                    // using the names from the paramNames list
-                    // [ClipperCallingConvention(new string[] { "a", "b" })]
-                    // make sure that existing attributes are not removed!
-
                     if (context.Data.HasParametersStmt || context.Data.HasLParametersStmt)
                     {
                         foreach (var field in context.Data.Fields.Values)
@@ -3501,18 +3515,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             parameternames.Add(name);
                         }
                     }
-                    // we create clipper calling convention attributes for methods
-                    // we declared parameters, a parameters statement or a lparameters statement
-                    var attrs = _pool.Allocate<AttributeListSyntax>();
-                    attrs.AddRange(attributes); // Copy existing attributes
-                    var names = new List<ExpressionSyntax>();
-                    foreach (var name in parameternames)
-                    {
-                        names.Add(GenerateLiteral(name));
-                    }
-                    attrs.Add(MakeClipperCallingConventionAttribute(names));
-                    attributes = attrs;
-                    _pool.Free(attrs);
 
                     // create PCount variable
                     var clipperArgs = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
@@ -3591,7 +3593,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         stmts.Add(decl);
                         var arg = MakeArgument(GenerateSimpleName(XSharpSpecialNames.PrivatesLevel));
                         expr = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarRelease, MakeArgumentList(arg), true);
-                        finallystmts.Add(GenerateExpressionStatement(expr, (XSharpParserRuleContext) context, true));
+                        finallystmts.Add(GenerateExpressionStatement(expr, (XSharpParserRuleContext)context, true));
                         context.Data.HasMemVarLevel = true;
                     }
                     if (finallystmts.Count > 0)

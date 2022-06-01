@@ -40,6 +40,9 @@
     <CreateVsixContainer>False</CreateVsixContainer>
     <NoWarn>618;4014;NU1603</NoWarn>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>

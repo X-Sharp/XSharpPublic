@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="f80a7605-2274-4950-b1e3-7cf834952050" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_terminal.html -->Terminal Window&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">?|?? Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Display the results of one or more expressions, separated by a space, in the terminal window.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>? | ?? [&lt;uValueList&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;uValueList&gt;</entry><entry>A list of values to display. &#160;If no argument is specified with the ? statement, a carriage return/linefeed is sent to the terminal window. &#160;If you use the ?? statement without arguments, nothing happens.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>? and ?? are synonyms for the QOut() and QQOut() functions, respectively.</para>
+<para>Although functionally similar to one another, ? and ?? differ slightly. &#160;? sends a carriage return/linefeed before displaying the results of the expression list. &#160;?? displays output at the current position. &#160;This lets you use ?? statements to display successive output on the same line.</para>
+<para>&#160;</para>
+<para>A ? or ?? statement locates the cursor or print head one position to the right of the last character displayed. &#160;Row() and Col() are updated to reflect the new cursor position. &#160;</para>
+<para>&#160;</para>
+<para>If output from a ? or ?? statement reaches the edge of the terminal window it wraps to the next line. &#160;If the output reaches the bottom of the window the window scrolls up one line.</para>
+<para>To format any expression specified, use Transform(). &#160;If you need to pad a variable length value for column alignment, use any of the Pad() functions to left-justify, right-justify, or center the value as illustrated in the examples below.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example displays a record from a database file using ? and ?? statements with PadR() to assure column alignment:</para>
+<para>&#160;</para>
+<para>LOCAL nPage := 0, nLine := 99<para/>
+USE salesman INDEX salesman NEW<para/>
+DO WHILE !EOF()<para/>
+&#160;IF nLine &gt; 55<para/>
+&#160; &#160; &#160; &#160; &#160;IF nPage != 0<para/>
+&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;EJECT<para/>
+&#160; &#160; &#160; &#160; &#160;ENDIF<para/>
+&#160; &#160; &#160; &#160; &#160;? PadR(&quot;Page&quot;, LTRIM(STR(++nPage)), 72)<para/>
+&#160; &#160; &#160; &#160; &#160;?? DTOC(TODAY())<para/>
+&#160; &#160; &#160; &#160; &#160;?<para/>
+&#160; &#160; &#160; &#160; &#160;?<para/>
+&#160; &#160; &#160; &#160; &#160;? PadC(&quot;Sales Listing&quot;, 79)<para/>
+&#160; &#160; &#160; &#160; &#160;?<para/>
+&#160; &#160; &#160; &#160; &#160;nLine := 5<para/>
+&#160;ENDIF <para/>
+&#160;? Name, Address, PadR(RTrim(City) + &quot;,&quot; + State, 20), ZipCode<para/>
+&#160;++nLine<para/>
+&#160;SKIP<para/>
+ENDDO<para/>
+CLOSE salesman</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_QOut.htm -->QOut(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_QQOut.htm -->QQOut()</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="59e8c9dc-c2e9-4b5d-b788-56a931e950cf" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">LOCATE Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Search for the first record in the current work area that matches the specified condition and scope.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>LOCATE [&lt;Scope&gt;] FOR &lt;lCondition&gt; [WHILE &lt;lCondition&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;Scope&gt;</entry><entry>The portion of the current database file to process. &#160;The default is all visible records. Scope is one or more clauses of:<para/>
+[NEXT &lt;NEXT&gt;] &#160; &#160; &#160; &#160;Optionally specifies the number of records to process starting <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;with the first record of the source file. <para/>
+[RECORD &lt;rec&gt;] &#160; &#160; &#160; &#160;An optional record ID If specified, the processing begins <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;with this data record in the source file. <para/>
+[&lt;rest:REST&gt;] &#160; &#160; &#160; &#160;The option REST specifies whether records are sequentially <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;searched only from the current up to the last record. <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;If a condition is specified, the option ALL is the default value.<para/>
+[ALL] &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;The option ALL specifies that all records from the source file are imported. <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;This is the default setting. </entry></row></table><para>&#160;</para>
+<table><row><entry>WHILE &lt;lCondition&gt;</entry><entry>A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;Scope&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</entry></row></table><para>&#160;</para>
+<table><row><entry>FOR &lt;lCondition&gt;</entry><entry>A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed. &#160;If no &lt;Scope&gt; or WHILE clause is specified, having a for condition changes the default scope to all visible records.</entry></row></table><para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>LOCATE evaluates each visible record within the scope using the for condition. &#160;As soon as a record meets the condition, the process terminates, leaving the record pointer on the matching record and setting the <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Found.htm -->Found() flag to TRUE. &#160;If the for condition is FALSE for all records in the scope, the Found() flag is set to FALSE, and the position of the record pointer depends on the scope.</para>
+<para>&#160;</para>
+<para>Each work area has its own locate condition which remains active until you execute another locate operation (for example, with LOCATE or DBLocate()), reset the locate condition (for example, with VODBSetLocate()), or terminate the application.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>CONTINUE:  Once you locate a record and have processed it, you can resume the search from the current record pointer position with CONTINUE (or DBContinue()). &#160;Both the &lt;Scope&gt; and the while condition, however, apply only to the initial locate operation and are not known by subsequent continue operations. &#160;To continue a pending locate with a scope or while condition, use SKIP then LOCATE REST WHILE &lt;lCondition&gt; instead of CONTINUE as shown in the example below.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>These examples show typical LOCATE constructs:</para>
+<para>&#160;</para>
+<para>USE sales INDEX salesman<para/>
+LOCATE FOR Branch = &quot;200&quot;<para/>
+? Found(), EOF(), RECNO() &#160; &#160; &#160; &#160;// Result: &#160;TRUE FALSE 5<para/>
+LOCATE FOR Branch = &quot;5000&quot;<para/>
+? Found(), EOF(), RECNO() &#160; &#160; &#160; &#160;// Result: &#160;FALSE TRUE 85</para>
+<para>&#160;</para>
+<para>The next example shows a LOCATE with a WHILE condition that is continued by using LOCATE REST:</para>
+<para>&#160;</para>
+<para>SEEK &quot;Bill&quot;<para/>
+LOCATE FOR Branch = &quot;200&quot; WHILE Salesman = &quot;Bill&quot;<para/>
+DO WHILE Found()<para/>
+&#160;? Branch, Salesman<para/>
+&#160;SKIP<para/>
+&#160;LOCATE REST FOR Branch = &quot;200&quot; WHILE ;<para/>
+&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;Salesman = &quot;Bill&quot;<para/>
+ENDDO</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="75949503-2d46-453a-aa3a-9b17e5f9cdb9">CONTINUE</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbContinue.htm -->DbContinue(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbLocate.htm -->DbLocate(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Eof.htm -->EoF(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Found.htm -->Found(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_RecNo.htm -->RecNo(), <link xlink:href="47709958-9c2e-4f27-80f6-4317fc7f7bc2">SEEK</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetFilter.htm -->DbSetFilter()</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

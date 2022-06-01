@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="c100f682-3607-4d37-af60-c7e05e9b7695" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">IF Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Conditionally execute a block of statements.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>IF &lt;lCondition&gt; [THEN]<para/>
+&#160;&lt;Statements&gt;...<para/>
+[ELSEIF &lt;lCondition&gt;]<para/>
+&#160;&lt;Statements&gt;...<para/>
+[ELSE]<para/>
+&#160;&lt;Statements&gt;...<para/>
+END[IF]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>[THEN]</entry><entry>The THEN keyword is optional and has been added because Visual FoxPro allows this keyword.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;lCondition&gt;</entry><entry>If this expression evaluates to TRUE, the statements following it up until the next ELSEIF, ELSE, or ENDIF are executed. &#160;Afterwards, control branches to the statement following the next ENDIF statement.</entry></row></table><para>&#160;</para>
+<table><row><entry>ELSE</entry><entry>If all preceding IF and ELSEIF conditions evaluate to FALSE, the statements following the ELSE up until the next ENDIF are executed. &#160;Afterwards, control branches to the statement following the next ENDIF statement.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>IF works by branching to the statement following the first &lt;lCondition&gt; that evaluates to TRUE. &#160;If all conditions evaluate to FALSE, it branches to the statement following the ELSE statement (if specified). &#160;Execution proceeds until the next ELSEIF, ELSE, or ENDIF is encountered, and control then branches to the first statement following the next ENDIF statement.</para>
+<para>&#160;</para>
+<para>Control structures can be nested to any depth. &#160;The only requirement is that each control structure be properly nested.</para>
+<para>&#160;</para>
+<para>Note:  IF...ELSEIF...ENDIF is identical to DO CASE...ENDCASE, with neither syntax having a performance advantage over the other. &#160;The IF construct is also similar to the IIf() operator which can be used within expressions.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example evaluates a number of conditions using an IF...ELSEIF...ENDIF construct:</para>
+<para>&#160;</para>
+<para>LOCAL nNumber := 0<para/>
+&#160;<para/>
+IF nNumber &lt; 50<para/>
+&#160;? &quot;Less than 50&quot;<para/>
+ELSEIF nNumber = 50<para/>
+&#160;? &quot;Is equal to 50&quot;<para/>
+ELSE<para/>
+&#160;? &quot;Greater than 50&quot;<para/>
+ENDIF</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="8fc150d3-ff60-4982-ba29-ec8c86969a13">BEGIN SEQUENCE</link>, <link xlink:href="289eca8d-5593-4340-b806-5a25d5a19a0b">DO CASE</link>, <link xlink:href="d5dffe8e-fc26-4e58-a5a7-31c26132758f">DO WHILE</link>, <link xlink:href="a6f0f406-78b2-4a8e-8819-6fadbb71474d">FOR</link>, <!-- TODO: Unknown topic link: operator_iif.html -->IIf()</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

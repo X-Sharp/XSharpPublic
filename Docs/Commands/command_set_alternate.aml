@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="81ba36de-47a6-43ca-ad09-032a3a707fab" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_terminal.html -->Terminal Window&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">SET ALTERNATE Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Write screen output to a text file.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>SET ALTERNATE TO [&lt;cFileName&gt; [ADDITIVE] ] </para>
+<para>SET ALTERNATE ON | OFF | &lt;lToggle&gt; </para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;cFileName&gt;</entry><entry>Specifies the name of the ASCII file where screen output is recorded. The name must contain the drive and path. The file name can be specified either as a literal file name or as a character expression in parentheses. When the file name is specified without a file extension, the extension &quot;.TXT&quot; is used by default. <para/>
+&#160;</entry></row></table><table><row><entry>ADDITIVE</entry><entry>The option ADDITIVE adds the screen output to the current contents of the file &lt;cFileName&gt; . Without this option, the contents of the file are deleted if the file already exists. If a file with the name &lt;cFileName&gt; does not exist, it is created. </entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;lToggle&gt;</entry><entry>&lt;lToggle&gt; is a logical expression which must appear in parentheses. Instead of the logical expression, the option ON can be specified for the value .T. (true) or OFF for the value .F. (false). When .T. or ON is specified, screen output is recorded in the file &lt;cFileName&gt; . </entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>The command SET ALTERNATE opens an ASCII file to record screen output. Only screen output performed using commands like ? or LIST and functions like QOut() and QQOut() is written into the file. Commands containing the option TO FILE work like SET ALTERNATE. . </para>
+<para>&#160;</para>
+<para>The alternate file (the ASCII file &lt;cFileName&gt; ) is not tied to a single work area, but can be used from all work areas. Output to the file is turned on or off by the options ON | OFF or the logical value of &lt;lToggle&gt; . An alternate file is defined by including a file name in the command SET ALTERNATE. When SET ALTERNATE TO is called without a specified file name, the currently open alternate file is closed and recording screen output to a file is no longer possible. The alternate file is also closed by the commands CLOSE ALTERNATE and CLOSE ALL. </para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>&#160;</para>
+<para>FUNCTION Start <para/>
+ &#160; &#160;  USE Customers NEW <para/>
+ &#160; &#160;  SET ALTERNATE TO CustomerList.TXT<para/>
+ &#160; &#160;  SET CONSOLE OFF <para/>
+ &#160; &#160;  DO WHILE .NOT. Eof() <para/>
+ &#160; &#160; &#160; &#160; ? Customers-&gt;LastName, Customers-&gt;FirstName<para/>
+ &#160; &#160; &#160; &#160; ? Customers-&gt;Street <para/>
+ &#160; &#160; &#160; &#160; ? Customers-&gt;City + &quot;,&quot;, Customers-&gt;State, Customers-&gt;Zip <para/>
+ &#160; &#160; &#160; &#160; ? <para/>
+ &#160; &#160; &#160; &#160; SKIP <para/>
+ &#160; &#160;  ENDDO <para/>
+ &#160; &#160;  SET ALTERNATE TO<para/>
+ &#160; &#160;  SET CONSOLE ON <para/>
+ &#160; &#160;  USE <para/>
+&#160;<para/>
+ &#160; RETURN </para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_SetAlternate.htm -->SetAlternate(),<!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_SetAltFile.htm -->SetAltFile(), <link xlink:href="5a4e274f-f8d8-4348-a990-ead59bc73fe4">SET CONSOLE</link></para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

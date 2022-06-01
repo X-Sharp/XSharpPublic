@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="9afbce44-d16f-4cde-a11e-74871ec4b08a" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">USE Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Open an existing database file, its associated memo file, and optionally associated index files in the current or the next available work area.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>USE [&lt;xcDataFile&gt; [INDEX &lt;xcIndexList&gt;] [ALIAS &lt;xcAlias&gt;] [FIELDS &lt;aFields&gt;] [NEW] [READONLY] <para/>
+&#160;[EXCLUSIVE | SHARED] [VIA &lt;cDriver&gt;] [INHERIT &lt;acRDDs&gt;]]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;xcDataFile&gt;</entry><entry>The name of the database file to open, including an optional drive, directory, and extension. &#160;If the database file has a corresponding memo file, it is also opened. &#160;The default extension for database and memo files is determined by the RDD.</entry></row></table><para>&#160;</para>
+<table><row><entry>INDEX &lt;xcIndexFileList&gt;</entry></row></table><table><row><entry></entry><entry>The names of the index files to open, including an optional drive, directory, and extension for each. &#160;The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT). &#160;</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>If you specify &lt;xcIndexList&gt; as an expression and the value returned is spaces or NIL, it is ignored.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>It is recommended that you open index files with SET INDEX or DBSetIndex() for proper resolution in case of a concurrency conflict.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>If the database file, its corresponding memo file, or any of the index files does not exist, a runtime error is raised. &#160;See SetDefault() and SetPath() for file searching and creation rules.</entry></row></table><para>&#160;</para>
+<table><row><entry>ALIAS &lt;xcAlias&gt;</entry><entry>An identifier name to associate with the work area when &lt;xcDataFile&gt; is opened. &#160;If not specified, the alias defaults to the database file name. &#160;Duplicate alias names are not allowed within a single application.</entry></row></table><para>&#160;</para>
+<table><row><entry>FIELDS &lt;aFields&gt;</entry><entry>An array containing field descriptions in the format returned by DBStruct().</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>This argument does not apply to DBF files. &#160;It is intended for use with file formats that do not store field descriptions. &#160;For example, if you use an RDD that supports SDF or delimited files, you can use this argument to define the file structure, which can then be used with other commands or functions to access the field descriptions. &#160;Here is an example of this argument:</entry></row></table><para>&#160;</para>
+<para>&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;aFields := {;<para/>
+ &#160; &#160; &#160; &#160; &#160;   &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;{&quot;First&quot;, &quot;C&quot;, 35, 0};<para/>
+&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;   &#160; &#160; &#160; &#160;{&quot;Last&quot;, &quot;C&quot;, 35, 0};<para/>
+ &#160; &#160; &#160; &#160;   &#160; &#160; &#160; &#160;   &#160; &#160; &#160; &#160;{&quot;Birthday&quot;, &quot;D&quot;, 8, 0}}<para/>
+ &#160; &#160; &#160; &#160;  &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;USE Names FIELDS aFields VIA &quot;DELIM&quot;<para/>
+&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;? First &#160; &#160; &#160; &#160; &#160;  // Return: &#160;Josie</para>
+<para>&#160;</para>
+<table><row><entry>NEW</entry><entry>Selects the next available work area before opening &lt;xcDataFile&gt;. &#160;If not specified, &lt;xcDataFile&gt; is opened in the current work area.</entry></row></table><para>&#160;</para>
+<table><row><entry>READONLY</entry><entry>Attempts to open &lt;xcDataFile&gt; with a read-only attribute, prohibiting updates to the work area. &#160;If not specified, &lt;xcDataFile&gt; is opened read-write, allowing updates. &#160;If &lt;xcDataFile&gt; cannot be accessed using the indicated attribute, a runtime error is raised.</entry></row></table><para>&#160;</para>
+<table><row><entry>EXCLUSIVE</entry><entry>Attempts to open &lt;xcDataFile&gt; for exclusive (non-shared) use. &#160;All other processes are denied access until the database file is closed.</entry></row></table><para>&#160;</para>
+<table><row><entry>SHARED</entry><entry>Attempts to open &lt;xcDataFile&gt; for shared use.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>If neither SHARED nor EXCLUSIVE is specified, the USE command attempts to open &lt;xcDataFile&gt; in the mode indicated by the SetExclusive() flag. &#160;However, it is highly recommended that you specify the open mode as part of the USE command rather than relying on SetExclusive() to determine it for you.</entry></row></table><para>&#160;</para>
+<table><row><entry>VIA &lt;cDriver&gt;</entry><entry>The name of the RDD that will service the work area. &#160;If not specified, the default RDD as determined by <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_RT_Functions_RddSetDefault.htm -->RDDSetDefault() is used.</entry></row></table><para>&#160;</para>
+<table><row><entry>INHERIT &lt;acRDDs&gt;</entry><entry>A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality. &#160;This allows you to use RDDs with special capabilities, like encryption or decryption, in different work areas with different database drivers. &#160;These RDDs overlay special functions of the main RDD (specified with the VIA clause). &#160;If multiple RDDs (specified with this INHERIT clause) implement the same function, the function associated with the last RDD in the list takes precedence.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>USE specified with no arguments closes the database file open in the current work area.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>The USE command attempts to open &lt;xcDataFile&gt; (and its associated .DBF file, if any) in the indicated mode. &#160;If the file is successfully opened, the operation proceeds to open any indicated index files in the same mode&#160;—&#160;any files that were already open in the work area are closed. &#160;The first order in the first index file in the list becomes the controlling order.</para>
+<para>&#160;</para>
+<para>If access is denied because, for example, another process has exclusive use of the database file, NetErr() is set to TRUE but no runtime error is raised. &#160;For this reason, it is recommended that you open index files as a separate operation (with SET INDEX or DBSetIndex()). &#160;Otherwise, a runtime error will result when the USE command tries to open the first index file in the list because the database file will not be open.</para>
+<para>When a database file is first opened, the record pointer is positioned at the first logical record in the file (record one if there is no controlling order).</para>
+<para>&#160;</para>
+<para>If the database file is opened in shared mode, other processes can have concurrent access to the file and responsibility for data integrity falls on the application program. &#160;File and record locking (using, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Flock.htm -->FLock(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_RLock.htm -->RLock(), or DBRLock()) are the basic means of denying other processes access to a particular file or record.</para>
+<para>&#160;</para>
+<para>Refer to the CLOSE command for information on how to close files of all types.</para>
+<para>&#160;</para>
+<para>USE is functionally equivalent to DBUseArea(). &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example opens a shared database file with associated index files. &#160;If NetErr() returns FALSE, indicating the USE was successful, the indexes are opened:</para>
+<para>&#160;</para>
+<para>USE accounts SHARED NEW<para/>
+IF !NetErr()<para/>
+ &#160; SET INDEX TO acctnames, acctzip<para/>
+ELSE<para/>
+ &#160; ? &quot;File open failed&quot;<para/>
+ &#160; BREAK<para/>
+ENDIF</para>
+<para>&#160;</para>
+<para>This example opens a database file with several index files specified as extended expressions:</para>
+<para>&#160;</para>
+<para>cDataFile = &quot;MyDbf&quot;<para/>
+acIndex = {&quot;MyIndex1&quot;, &quot;MyIndex2&quot;, &quot;MyIndex3&quot;}<para/>
+USE (cDataFile) INDEX (acIndex[1]), ;<para/>
+ &#160; &#160; &#160;(acIndex[2]), (acIndex[3])</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="01c5c1c9-fdc5-439f-b315-74a43eea5c13">CLOSE</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSelect.htm -->DbSelect(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetIndex.htm -->DbSetIndex(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetOrder.htm -->DbSetOrder(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbUseArea.htm -->DbUseArea(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_NetErr.htm -->NetErr(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_RddSetDefault.htm -->RddSetDefault() <link xlink:href="acd7ca8c-3036-402a-b2de-f7da4c74d089">SELECT</link>, <link xlink:href="9085df4a-da8f-4ed6-948a-db58aa0eeb27">SET INDEX</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Used.htm -->Used() </para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="acd7ca8c-3036-402a-b2de-f7da4c74d089" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">SELECT Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Change the current work area.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>SELECT &lt;xnWorkArea&gt; | &lt;xcAlias&gt;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;xnWorkArea&gt;</entry><entry>A number from 0 to 250 that specifies the work area to select.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;xcAlias&gt;</entry><entry>The alias identifier for the work area to select. &#160;If there is no open database file associated with the specified alias, a runtime error is raised.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>SELECT causes the specified work area to become the current work area. &#160;All subsequent database operations will apply to this work area unless another work area is explicitly specified for an operation.</para>
+<para>SELECT is functionally equivalent to DBSelectArea(). &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<table><row><entry>Selecting 0:  </entry><entry>Selecting work area 0 causes the lowest numbered unoccupied work area to become the current work area. &#160;Using SELECT 0 before opening a file is equivalent to USE with the NEW option.</entry></row></table><para>&#160;</para>
+<table><row><entry>Aliased expressions:  </entry><entry>The alias operator (-&gt;) can temporarily select a work area while an expression is evaluated and automatically restore the previously selected work area afterward. &#160;</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example opens a series of database files by selecting each work area by number, then using each database file in that work area:</para>
+<para>&#160;</para>
+<para>SELECT 1<para/>
+USE customer<para/>
+SELECT 2<para/>
+USE invoices<para/>
+SELECT 3<para/>
+USE parts<para/>
+SELECT customer</para>
+<para>&#160;</para>
+<para>To make your code independent of the work area number used, a better method is to open each database in the next available work area by specifying the NEW clause on the USE command line. &#160;In this example USE...NEW is employed instead of SELECT 0, then USE:</para>
+<para>&#160;</para>
+<para>USE customer NEW<para/>
+USE invoices NEW<para/>
+SELECT customer</para>
+<para>&#160;</para>
+<para>This code fragment changes work areas while saving the current work area name to a variable by using the <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Select.htm -->Select() function. &#160;After executing an operation for the new work area, the original work area is restored:</para>
+<para>&#160;</para>
+<para>nLastArea := Select()<para/>
+USE newfile NEW<para/>
+&#160;<para/>
+&lt;Statements&gt;...<para/>
+&#160;<para/>
+SELECT (nLastArea)s</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Alias.htm -->Alias(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSelectArea.htm -->DbSelectArea(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Select.htm -->Select(), <link xlink:href="9afbce44-d16f-4cde-a11e-74871ec4b08a">USE</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Used.htm -->Used()</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

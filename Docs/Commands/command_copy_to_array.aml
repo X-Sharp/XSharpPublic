@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="ca9a9a9e-070c-4be5-9f07-26b70cebbe4e" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">COPY TO ARRAY Command (FoxPro)</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><para>&#160;</para>
+<para>Purpose</para>
+<para>Copies data from the currently selected table to an array.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>COPY TO ARRAY &lt;ArrayName&gt; &#160; <para/>
+ &#160; [FIELDS FieldList | FIELDS LIKE &lt;Skeleton&gt; | FIELDS EXCEPT &lt;Skeleton&gt;]<para/>
+ &#160; [&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;] [NOOPTIMIZE]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;ArrayName&gt;</entry><entry>Specifies the name of the array that contains the data to be copied to the new records. New records are added to the table until all rows in the array are appended. &#160; &#160; &#160; &#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>FIELDS &lt;idFieldList&gt;</entry><entry>The list of fields to process. The default is all fields with the exception of memo fields, unless the command supports the MEMO clause.</entry></row></table><table><row><entry></entry><entry>Only fields with the same names and types in both files are appended. &#160;If fields with the same name do not match in data type, a runtime error is raised.</entry></row></table><table><row><entry>FIELDS LIKE &lt;Skeleton&gt;</entry><entry>You can specify field names with a wild card, such as FIELDS LIKE *name</entry></row></table><para>FIELDS EXCEPT &lt;Skeleton&gt;You can exclude fields, such as for example the primary keys: FIELDS EXCEPT Id<para/>
+&lt;Skeleton&gt; supports wildcards (* and ?). For example, to replace all fields that begin with the letters A and P, use: <para/>
+FIELDS LIKE A*,P*</para>
+<para>&#160;</para>
+<para>Please note that you can combine FIELDS LIKE and FIELDS EXCEPT but you cannot combine a fields list with the LIKE and EXCEPT clauses.</para>
+<para>&#160;</para>
+<table><row><entry>&lt;Scope&gt;</entry><entry>The portion of the current database file to process. &#160;The default is all visible records. Scope is one or more clauses of:<para/>
+[NEXT &lt;NEXT&gt;] &#160; &#160; &#160; &#160;Optionally specifies the number of records to process starting <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;with the first record of the source file. <para/>
+[RECORD &lt;rec&gt;] &#160; &#160; &#160; &#160;An optional record ID If specified, the processing begins <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;with this data record in the source file. <para/>
+[&lt;rest:REST&gt;] &#160; &#160; &#160; &#160;The option REST specifies whether records are sequentially <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;searched only from the current up to the last record. <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;If a condition is specified, the option ALL is the default value.<para/>
+[ALL] &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;The option ALL specifies that all records from the source file are imported. <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;This is the default setting. </entry></row></table><para>&#160;</para>
+<table><row><entry>WHILE &lt;lCondition&gt;</entry><entry>A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;Scope&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</entry></row></table><para>&#160;</para>
+<table><row><entry>FOR &lt;lCondition&gt;</entry><entry>A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed. &#160;If no &lt;Scope&gt; or WHILE clause is specified, having a for condition changes the default scope to all visible records.</entry></row></table><para>&#160;</para>
+<table><row><entry>NOOPTIMIZE</entry><entry>This clause is parsed but not yet supported.</entry></row></table><para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="758e4c7e-09b3-4ace-ab30-c361684ab5f7">APPEND FROM ARRAY</link>, <link xlink:href="f7451e68-caf8-41bd-967c-34c4860ebd45">GATHER</link>, <link xlink:href="c8ac4542-9a98-4c54-808e-781ed794489c">SCATTER</link></para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

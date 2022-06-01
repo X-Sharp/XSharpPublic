@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="86d49857-1cd9-44f8-ad9b-cdd3b9b7d344" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_concur.html -->Concurrency Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">SET EXCLUSIVE Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Change the setting that determines whether to open database files in exclusive or shared mode.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>SET EXCLUSIVE ON | OFF | (&lt;lToggle&gt;)</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>ON </entry><entry>Limits accessibility of a table opened on a network to the user who opened it. The table isn&#39;t accessible to other users on the network. Unlike FLOCK( ), SET EXCLUSIVE ON also prevents all other users from having read-only access. A file can also be opened on a network for exclusive use by including the EXCLUSIVE clause with the USE command. It isn&#39;t necessary to perform record or file locking on a table opened for exclusive use.</entry></row></table><table><row><entry></entry><entry>Opening a table for exclusive use ensures that the file can&#39;t be changed by other users. For some commands, execution isn&#39;t possible until a table is opened for exclusive use. These commands are <link xlink:href="db7d284d-ce1f-4ebc-bb02-0217e48b6449">PACK</link>, <link xlink:href="79edf21a-e6eb-4d50-abf8-a5284293d42b">REINDEX</link>, and <link xlink:href="92d108ad-302f-48aa-aeac-d4329b05a943">ZAP</link>. </entry></row></table><table><row><entry>OFF</entry><entry>Allows a table opened on a network to be shared and modified by any user on the network.</entry></row></table><table><row><entry>lToggle</entry><entry>A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>SET EXCLUSIVE is functionally equivalent to SetExclusive(). &#160;</para>
+<para>Changing the setting of SET EXCLUSIVE doesn&#39;t change the status of previously opened tables. For example, if a table is opened with SET EXCLUSIVE set to ON, and SET EXCLUSIVE is later changed to OFF, the table retains its exclusive-use status.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Flock.htm -->FLock(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_NetErr.htm -->NetErr(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_RLock.htm -->RLock(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetExclusive.htm -->SetExclusive(), <link xlink:href="9afbce44-d16f-4cde-a11e-74871ec4b08a">USE</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

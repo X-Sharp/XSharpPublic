@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="483b4e7b-dda5-41d7-9f41-1b60079ce94e" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">UPDATE Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Replace fields in the current work area with values from another work area, based on the specified key value.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>UPDATE FROM &lt;xcAlias&gt; ON &lt;uKeyValue&gt; [RANDOM]REPLACE &lt;idField&gt; WITH &lt;uValue&gt; &#160; &#160; &#160; &#160; [, &lt;idField&gt; WITH &lt;uValue&gt;...]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>FROM &lt;xcAlias&gt;</entry><entry>The alias identifier for the work area used to update records in the current work area. &#160;If there is no open database file associated with the specified alias, a runtime error is raised.</entry></row></table><para>&#160;</para>
+<table><row><entry>ON &lt;uKeyValue&gt;</entry><entry>The expression that defines matching records in the FROM work area.</entry></row></table><para>&#160;</para>
+<table><row><entry>REPLACE &lt;idField&gt;</entry><entry>A field in the current work area to update with a new value.</entry></row></table><para>&#160;</para>
+<table><row><entry>WITH &lt;uValue&gt;</entry><entry>The value used to update the current field. &#160;You must reference any field contained in the FROM work area with the correct alias.</entry></row></table><para>&#160;</para>
+<table><row><entry>RANDOM</entry><entry>If specified, the current work area must be ordered (using an index order) by &lt;uKeyValue&gt; but the FROM work area records can be in any order. &#160;If not specified, both the current work area and the FROM work area must be ordered (logically or physically) by &lt;uKeyValue&gt;.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>UPDATE can only update records in the current work area with unique key values. &#160;When there is more than one instance of a key value, only the first record with the key value is updated. &#160;The FROM work area, however, can have duplicate key values.</para>
+<para>&#160;</para>
+<para>UPDATE is functionally equivalent to DBUpdate(). &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>Deleted records:  If <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDeleted.htm -->SetDeleted()  is FALSE, deleted records in both files are processed. &#160;Records in the file being updated retain their deleted status and are not affected by the deleted status of records in the FROM file.</para>
+<para>&#160;</para>
+<para>Visibility:  If SetDeleted() is TRUE, however, deleted records are not visible and are, therefore, not processed. &#160;Similarly, filtered records (with <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetFilter.htm -->DbSetFilter() or a conditional controlling order) are not processed.</para>
+<para>&#160;</para>
+<para>Shared mode:  For a shared database, UPDATE requires a file lock on the current database file. &#160;The FROM database file can be open in any mode. &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example updates the CUSTOMER database file with outstanding invoice amounts:</para>
+<para>&#160;</para>
+<para>USE invoices NEW<para/>
+USE customer INDEX customer NEW<para/>
+UPDATE FROM Invoices ON Last;<para/>
+ &#160; REPLACE Owed WITH Owed + Invoices-&gt;Amount RANDOM</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbCreateIndex.htm -->DBCreateIndex(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbUpdate.htm -->DBUpdate(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Flock.htm -->FLock(), <link xlink:href="ed7dcc99-a2aa-4fad-8eb1-79d7e2ed9e3d">INDEX</link>, <link xlink:href="5ab205da-3eab-4669-9b4e-791fdec3b715">JOIN</link>, <link xlink:href="0a30ff7e-788b-4630-9e4b-b61279449f34">REPLACE</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_Core_Functions_SetUnique.htm -->SetUnique(), <link xlink:href="7f0a1f47-7559-4c41-a23f-9577625f322b">SORT</link>, <link xlink:href="e06547e3-3b3c-4b0d-a079-0f7e37964e4c">TOTAL</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

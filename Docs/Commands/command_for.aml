@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="a6f0f406-78b2-4a8e-8819-6fadbb71474d" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">FOR Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Execute a block of statements a specified number of times.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>FOR [&lt;idCounter&gt; := &lt;nStart&gt; | VAR &lt;idCounter&gt; := &lt;nStart&gt; | LOCAL &lt;idCounter&gt; := &lt;nStart&gt; AS &lt;idType&gt; ] [TO | UPTO | DOWNTO] &lt;nEnd&gt; [STEP &lt;nDelta&gt;]<para/>
+ &#160; &lt;Statements&gt;...<para/>
+ &#160; [EXIT]<para/>
+ &#160; &lt;Statements&gt;...<para/>
+ &#160; [LOOP]<para/>
+NEXT</para>
+<h2 class="p_Heading2" style="page-break-after: avoid;">Note</h2>
+<para>In the FoxPro and Xbase++ dialect ENDFOR is allowed as alternative for NEXT</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;idCounter&gt;</entry><entry>The name of the loop control or counter variable. &#160;IF a LOCAL or VAR clause is included then the local is created for the duration of the loop. With the VAR clause the datatype is inferred from the usage. </entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;nStart&gt;</entry><entry>The initial value assigned to &lt;idCounter&gt;. &#160;If the loop is counting up, &lt;nStart&gt; must be less than &lt;nEnd&gt;. &#160;If the loop is counting down, &lt;nStart&gt; must be greater than &lt;nEnd&gt;.</entry></row></table><para>&#160;</para>
+<table><row><entry>TO &lt;nEnd&gt;</entry><entry>The final value of &lt;idCounter&gt;. &#160;The TO clause can be used for counting up or down, depending on whether the STEP clause gives a positive or negative value for &lt;nDelta&gt;. &#160;Note, however, that your code will be more efficient if you avoid the TO clause and specify UPTO or DOWNTO instead.</entry></row></table><para>&#160;</para>
+<table><row><entry>UPTO &lt;nEnd&gt;</entry><entry>The final value of &lt;idCounter&gt;. &#160;The UPTO clause is used for counting up.</entry></row></table><para>&#160;</para>
+<table><row><entry>DOWNTO &lt;nEnd&gt;</entry><entry>The final value of &lt;idCounter&gt;. &#160;The DOWNTO clause is used for counting down.</entry></row></table><para>&#160;</para>
+<table><row><entry>STEP &lt;nDelta&gt;</entry><entry>The amount &lt;idCounter&gt; is changed for each iteration of the loop. &#160;If used with the TO clause, &lt;nDelta&gt; can be either positive or negative. &#160;With UPTO and DOWNTO, &lt;nDelta&gt; should be positive. &#160;If the STEP clause is not specified, &lt;idCounter&gt; is incremented (or decremented in the case of DOWNTO) by one for each iteration of the loop.</entry></row></table><para>&#160;</para>
+<table><row><entry>EXIT</entry><entry>Unconditionally branches control from within a FOR, FOREACH , REPEAT or DO WHILE statement to the statement immediately following the corresponding ENDDO or NEXT statement.</entry></row></table><para>&#160;</para>
+<table><row><entry>LOOP</entry><entry>Branches control to the most recently executed FOR, FOREACH , REPEAT or DO WHILE statement.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>The control structure loops from the initial value of &lt;idCounter&gt; to the boundary specified by &lt;nEnd&gt;, moving through the range of values of the control variable for an increment specified by &lt;nDelta&gt;. &#160;All expressions in the FOR statement are reevaluated for each iteration of the loop. &#160;The &lt;nStart&gt; and &lt;nEnd&gt; values, therefore, can be changed as the control structure operates.</para>
+<para>&#160;</para>
+<para>A FOR loop operates until &lt;idCounter&gt; is greater than or less than &lt;nEnd&gt; (depending on whether you are counting up or down) or an EXIT statement is encountered. &#160;Control then branches to the statement following the corresponding NEXT statement. &#160;If a LOOP statement is encountered, control branches back to the current FOR statement.</para>
+<para>Control structures can be nested to any depth. &#160;The only requirement is that each control structure be properly nested.</para>
+<para>&#160;</para>
+<para>Tip:  Although FOR loops are useful for traversing arrays (as demonstrated in the examples below), your code will be more efficient if there is a corresponding array function designed to do what you want.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example traverses an array in ascending order:</para>
+<para>&#160;</para>
+<para>nLenArray := ALen(aArray)<para/>
+FOR i := 1 UPTO nLenArray<para/>
+&#160;&lt;Statements&gt;...<para/>
+NEXT</para>
+<para>&#160;</para>
+<para>To traverse an array in descending order:</para>
+<para>&#160;</para>
+<para>nLenArray := ALen(aArray)<para/>
+FOR i := nLenArray DOWNTO 1<para/>
+&#160;&lt;Statements&gt;...<para/>
+NEXT</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_RT_Functions_AEval.htm -->AEval(), <link xlink:href="8fc150d3-ff60-4982-ba29-ec8c86969a13">BEGIN SEQUENCE</link>, <link xlink:href="289eca8d-5593-4340-b806-5a25d5a19a0b">DO CASE</link>, <link xlink:href="d5dffe8e-fc26-4e58-a5a7-31c26132758f">DO WHILE</link>, <link xlink:href="c100f682-3607-4d37-af60-c7e05e9b7695">IF</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

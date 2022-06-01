@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="70df5af5-ce42-4ba8-afec-5b3a4de8d996" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_memvar.html -->Memory Variable&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">MEMVAR Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare one or more memory variable names to be used by the current routine.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>MEMVAR &lt;idMemvarList&gt;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;idMemvarList&gt;</entry><entry>A list of public and private variable names to declare to the compiler.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>When you use the MEMVAR statement to declare variables, unaliased references to variables in &lt;idMemvarList&gt; are treated as if they were preceded by the special memory variable alias </para>
+<para>(_MEMVAR-&gt;).</para>
+<para>&#160;</para>
+<para>Like other variable declaration statements (such as LOCAL and FIELD), you must place MEMVAR statements before any executable statements (including PRIVATE, PUBLIC, and PARAMETERS) in the routine you are defining. &#160;The MEMVAR statement has no effect on the macro operator, which always assumes memory variables.</para>
+<para>&#160;</para>
+<para>The MEMVAR statement neither creates the variables nor verifies their existence. &#160;Its primary purpose is to ensure correct references to variables that are known to exist at runtime. &#160;Attempting to access variables before they are created will raise a runtime error.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example demonstrates the relationship between a private and field variable with the same name. &#160;The private variable is declared with the MEMVAR statement:</para>
+<para>&#160;</para>
+<para>FUNCTION Example()<para/>
+ &#160; MEMVAR Amount, Address<para/>
+ &#160; PRIVATE Amount := 100<para/>
+ &#160; USE customer NEW<para/>
+&#160;<para/>
+ &#160; ? Amount &#160; &#160;   &#160; &#160; &#160; &#160;// Refers to Amount private variable<para/>
+ &#160; ? Customer-&gt;Amount &#160; &#160; &#160; &#160; // Refers to Amount field variable</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="da571189-a521-4066-b374-de88f72d37e8">FIELD</link>, <link xlink:href="d8822cca-7c06-4150-b83c-2dd9b531186d">LOCAL</link>, <link xlink:href="f6fe8ee8-c61d-405e-8da1-35f1f0564f84">PARAMETERS</link>, <link xlink:href="167a7bca-5bea-4198-b685-3376fba16514">PRIVATE</link>, <link xlink:href="8d194317-f7c6-462f-bcfb-ccb8b195d6bf">PUBLIC</link>, <link xlink:href="3910e899-798b-4188-834b-5046aaa0cd3c">STATIC</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

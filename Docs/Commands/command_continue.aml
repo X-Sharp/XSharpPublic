@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="75949503-2d46-453a-aa3a-9b17e5f9cdb9" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">CONTINUE Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Resume a pending locate.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>CONTINUE</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>CONTINUE searches from the current record position for the next record meeting the most recent locate condition executed in the current work area. &#160;(You can set the locate condition with the LOCATE command or with the VODBLocate() or VODBSetLocate() functions.)</para>
+<para>&#160;</para>
+<para>The search terminates when a match is found or end of file is encountered. &#160;If CONTINUE is successful, the matching record becomes the current record and <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Found.htm -->Found() returns TRUE; if unsuccessful, Found() returns FALSE.</para>
+<para>Each work area can have an active locate condition. &#160;A locate condition remains pending until a new one is specified.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>Scope and WHILE condition:  The scope and WHILE condition of the locate condition are ignored; only the for condition is used with CONTINUE. &#160;If you are using a LOCATE command with a while condition and want to continue the search for a matching record, use SKIP and then repeat the original LOCATE command, adding REST as the scope.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example scans records in SALES.DBF for a particular salesman and displays a running total sales amount:</para>
+<para>&#160;</para>
+<para>LOCAL nRunTotal := 0<para/>
+USE sales NEW<para/>
+LOCATE FOR Sales-&gt;Salesman = &quot;1002&quot;<para/>
+DO WHILE Found()<para/>
+ &#160; ? Sales-&gt;SalesName, nRunTotal += Sales-&gt;Amount<para/>
+ &#160; CONTINUE<para/>
+ENDDO</para>
+<para>&#160;</para>
+<para>This example demonstrates how to continue if the pending LOCATE scope contains a WHILE condition:</para>
+<para>&#160;</para>
+<para>LOCAL nRunTotal := 0<para/>
+USE sales INDEX salesman NEW<para/>
+SEEK &quot;1002&quot;<para/>
+LOCATE REST WHILE Sales-&gt;Salesman = &quot;1002&quot;;<para/>
+&#160; &#160; &#160; &#160; &#160;FOR Sales-&gt;Amount &gt; 5000<para/>
+DO WHILE Found()<para/>
+&#160; &#160; &#160; &#160; &#160;? Sales-&gt;Salesname, nRunTotal += Sales-&gt;Amount<para/>
+&#160; &#160; &#160; &#160; &#160;SKIP<para/>
+&#160; &#160; &#160; &#160; &#160;LOCATE REST WHILE Sales-&gt;Salesman = &quot;1002&quot;;<para/>
+&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;FOR Sales-&gt;Amount &gt; 5000<para/>
+ENDDO</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbContinue.htm -->DbContinue(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbLocate.htm -->DbLocate(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Eof.htm -->EoF(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Found.htm -->Found(), <link xlink:href="59e8c9dc-c2e9-4b5d-b788-56a931e950cf">LOCATE</link>, <link xlink:href="47709958-9c2e-4f27-80f6-4317fc7f7bc2">SEEK</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

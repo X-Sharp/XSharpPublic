@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="d8822cca-7c06-4150-b83c-2dd9b531186d" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_vardecl.html -->Variable Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">LOCAL Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare and initialize local variables and arrays.</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>[STATIC] LOCAL &lt;idVar&gt; [:= &lt;uValue&gt;] [,...] [AS | IS &lt;idType&gt;] [, ...]</para>
+<para>[STATIC] LOCAL DIM &lt;ArraySpec&gt; [, ...] AS | IS &lt;idType&gt; [, ...]</para>
+<para>[STATIC] LOCAL &lt;ArraySpec&gt; [, ...] [AS ARRAY] [, ...]</para>
+<para>&#160;</para>
+<para>Note:  The LOCAL statement is shown using several syntax diagrams for convenience. &#160;You can declare variables, dynamic arrays, and dimensioned arrays using a single LOCAL statement if each definition is separated by a comma.</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>STATIC</entry><entry>Causes the local variable to retain its value across invocations of the declaring entity but does not affect its visibility.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idVar&gt;</entry><entry>A valid identifier name for the local variable to declare.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;uValue&gt;</entry><entry>The initial value to assign to the variable.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>For LOCAL, this can be any valid expression.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>For STATIC LOCAL, this value can be a literal representation of one of the data types listed below or a simple expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (including class instantiation) are not allowed.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>Note: &#160;Although &lt;uValue&gt; can be a literal array, it must be one-dimensional. &#160;Multi-dimensional literal arrays are not allowed. &#160;For example, {1, 2, 3} is allowed, but {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}} is not.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>Note: &#160;Although the Chr() function cannot be used in &lt;uValue&gt;, the _Chr() operator can. &#160; _Chr() is otherwise identical in functionality to Chr().</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>If &lt;uValue&gt; is not specified, the initial value of the variable depends on the data type you declare (e.g., NIL if you do not use strong typing, 0 for AS INT, etc.)</entry></row></table><para>&#160;</para>
+<table><row><entry>DIM &lt;ArraySpec&gt;</entry><entry>The specification for a dimensioned array to declare.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;ArraySpec&gt;</entry><entry>The specification for a dynamic array to declare.<para/>
+In both cases, &lt;ArraySpec&gt; is one of the following:<para/>
+&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]<para/>
+&lt;idArray&gt;[&lt;nElements&gt;][&lt;nElements&gt;][&lt;nElements&gt;]<para/>
+All dimensions except the first are optional.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>&lt;idArray&gt; is a valid identifier name for the array to declare. &#160;For dynamic arrays, array elements are initialized to NIL. &#160;For dimensioned arrays, the initial value of the elements depends on the data type as explained above for &lt;uValue&gt;.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><para>&#160;</para>
+<para>&#160;</para>
+<para>&#160;</para>
+<table><row><entry>IS &lt;idType&gt;</entry><entry>Specifies a structure data type in which the memory needed to hold the structure is allocated on the stack (&lt;idStructure&gt; is the only &lt;idType&gt; allowed with the IS keyword.) See the <link xlink:href="a036b3f9-462c-4bf4-8db2-e01961c0d4e3">VOSTRUCT</link> entry in this guide for more information on data structure memory allocation.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS ARRAY</entry><entry>For dynamic array declarations, specifies the data type of the entire array.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>LOCAL is a declaration statement that declares one or more variables or arrays as local to the current routine (i.e., function, method, or procedure). &#160;Like other variable declaration statements (such as FIELD and MEMVAR), you must place LOCAL statements before any executable statements (including PRIVATE, PUBLIC, and PARAMETERS) in the routine you are defining.</para>
+<para>&#160;</para>
+<para>Local variable declarations hide all inherited private variables, visible public variables, instance variables, global variables, and constants with the same name. &#160;The search order for a variable name is as follows:</para>
+<para>1. &#160; &#160; &#160; &#160;LOCALs, local parameters, MEMVARs, and FIELDs</para>
+<para>2. &#160; &#160; &#160; &#160;SELF instance variables (i.e., without &lt;idObject&gt;: &#160;prefix in class methods)</para>
+<para>3. &#160; &#160; &#160; &#160;GLOBALs and DEFINEs</para>
+<para>&#160;</para>
+<para>A LOCAL statement that declares a variable name which is already declared within the same routine (with FIELD, LOCAL, or MEMVAR) causes a compiler error.</para>
+<para>&#160;</para>
+<para>Local variables are visible only within the current routine, and unlike private variables, are not visible within invoked routines. &#160;If a routine is invoked recursively, each recursive activation creates a new set of local variables.</para>
+<para>&#160;</para>
+<para>Unless you specify the STATIC keyword, local variables are created automatically each time the routine in which they were declared begins executing. &#160;They continue to exist and retain their values until the declaring routine returns control to the routine that invoked it.</para>
+<para>&#160;</para>
+<para>The STATIC keyword serves as a lifetime modifier for a local variable, preventing the variable from being released from memory when the creating entity returns to its calling routine.</para>
+<para>&#160;</para>
+<para>Important!  When an application containing static variable declarations is invoked, the variables are created and initialized before the beginning of program execution. &#160;Thus, initial values are assigned only once per application run, not each time the creator is called.</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>Local parameters:  The FUNCTION, METHOD, and PROCEDURE statements allow you to declare a list of local parameters enclosed in parentheses following the entity name. &#160;For example:</para>
+<para>&#160;</para>
+<para>FUNCTION &lt;idFunction&gt;(&lt;idParamList&gt;)</para>
+<para>&#160;</para>
+<para>Exporting locals through code blocks:  When you create a code block, you can access local variables defined in the creating entity within the code block definition without passing them as parameters (because local variables are visible to the code block). &#160;This, along with the fact that you can pass a code block as a parameter, allows you to export local variables. &#160;For example:</para>
+<para>&#160;</para>
+<para>FUNCTION One() <para/>
+ &#160; LOCAL nVar := 10 AS INT, cbAdd AS CODEBLOCK<para/>
+ &#160; cbAdd := {|nValue| nValue + nVar}<para/>
+ &#160; <para/>
+ &#160; ? NextFunc(cbAdd) &#160; &#160;  // Result: &#160;210<para/>
+&#160;<para/>
+FUNCTION NextFunc(cbAddEmUp)<para/>
+ &#160; RETURN EVAL(cbAddEmUp, 200)</para>
+<para>&#160;</para>
+<para>When the code block is evaluated in NextFunc(), nVar, which is local to function One(), becomes visible even though it is not passed directly as a parameter.</para>
+<para>&#160;</para>
+<para>Macro expressions:  You cannot refer to local variables within macro variables and expressions. &#160;If you refer to a local variable within a macro variable, a private or public variable with the same name will be referenced instead. &#160;If no such variable exists, a runtime error will be raised.</para>
+<para>Type of a local variable:  Since Type() uses the macro operator (&amp;) to evaluate its argument, you cannot use it to determine the type of a local variable or an expression containing a local variable reference. &#160;You can, however, use ValType() which evaluates its argument and returns the type of the return value</para>
+<para>Memory files:  You cannot SAVE or RESTORE local variables.</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>The following example declares two local arrays and two local variables:</para>
+<para>&#160;</para>
+<para>LOCAL aArray1[20, 10], aArray2[20][10], var1, var2</para>
+<para>&#160;</para>
+<para>This example declares two local variables with initializers. &#160;The first is initialized to a date value and the second to an array:</para>
+<para>&#160;</para>
+<para>LOCAL dWhen := TODAY()<para/>
+LOCAL aVegies := {&quot;Tomato&quot;, &quot;Chickadee&quot;, &quot;Butterbean&quot;}</para>
+<para>&#160;</para>
+<para>In this example, the variable x and the dimensioned array z are typed as INT, while the variables cName and cAddr are typed as STRING:</para>
+<para>&#160;</para>
+<para>LOCAL x, DIM z[100] AS INT, cName, cAddr AS STRING</para>
+<para>&#160;</para>
+<para>The next example declares static variables both with and without initializers:</para>
+<para>&#160;</para>
+<para>STATIC LOCAL aArray1[20, 10], aArray2[20][10]<para/>
+STATIC LOCAL cVar, cVar2<para/>
+STATIC LOCAL cString := &quot;my string&quot;, var<para/>
+STATIC LOCAL aArray := {1, 2, 3}</para>
+<para>&#160;</para>
+<para>Here a static variable is manipulated within a function. &#160;In this example, a count variable increments itself each time the function is called:</para>
+<para>&#160;</para>
+<para>FUNCTION MyCounter(nNewValue)<para/>
+&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;// Initial value assigned once<para/>
+&#160;STATIC LOCAL nCounter := 0<para/>
+&#160;IF nNewValue != NIL<para/>
+&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;// New value for nCounter<para/>
+&#160;nCounter := nNewValue<para/>
+&#160;ELSE<para/>
+&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;// Increment nCounter<para/>
+&#160; &#160; &#160; &#160; &#160;++nCounter<para/>
+&#160;ENDIF<para/>
+&#160;RETURN nCounter</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="da571189-a521-4066-b374-de88f72d37e8">FIELD</link>, <link xlink:href="14cdd669-1822-49e7-b700-7abebe59013c">FUNCTION</link>, <link xlink:href="a27c69ad-1651-48fd-93e1-5c184a48acde">DEFINE</link>, <link xlink:href="2a900f41-b488-4d93-9c87-137df66f4503">GLOBAL</link>, <link xlink:href="70df5af5-ce42-4ba8-afec-5b3a4de8d996">MEMVAR</link>, <link xlink:href="77b4131b-7ffd-4fad-ae60-b9ca0ec84fc7">METHOD</link>, <link xlink:href="76e253bd-c169-4078-b086-64feffe160c1">PROCEDURE</link>, <link xlink:href="3910e899-798b-4188-834b-5046aaa0cd3c">STATIC</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

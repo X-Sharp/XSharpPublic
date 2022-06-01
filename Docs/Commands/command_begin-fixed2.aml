@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="5a515d6e-6b49-4fff-bebf-9583d1248ba8" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: blocks2.html -->Blocks and Namespaces&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">BEGIN FIXED</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<h1 class="p_Heading1" style="page-break-after: avoid;">The BEGIN FIXED and END FIXED keyword prevent the garbage collector from relocating a movable variable. The BEGIN FIXED statement is only allowed in an unsafe context.</h1>
+<para>&#160;</para>
+<para>The fixed statement sets a pointer to a managed variable and &quot;pins&quot; that variable during the execution of the statement. Pointers to movable managed variables are useful only in a fixed context. Without a fixed context, garbage collection could relocate the variables unpredictably. The X# &#160;compiler only lets you assign a pointer to a managed variable in a fixed statement.</para>
+<para>You can initialize a pointer by using an array, a string, a fixed-size buffer, or the address of a variable.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>BEGIN FIXED declaration<para/>
+ &#160; statements<para/>
+END FIXED</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>declaration</entry><entry>Declaration of a variable and assignment that </entry></row></table><table><row><entry>statements </entry><entry>Code including one or more statements that may contain unsafe code.</entry></row></table><para>&#160;</para>
+<para>Example</para>
+<para>&#160;</para>
+<para>UNSAFE FUNCTION Start AS VOID<para/>
+ &#160;  VAR s := &quot;SDRS&quot;<para/>
+ &#160;  BEGIN FIXED LOCAL p := s AS CHAR PTR<para/>
+ &#160; &#160; &#160;  VAR i := 0<para/>
+ &#160; &#160; &#160;  WHILE p[i] != 0<para/>
+ &#160; &#160; &#160; &#160; &#160; &#160;p[i++]++<para/>
+ &#160; &#160; &#160;  END<para/>
+ &#160;  END FIXED<para/>
+ &#160; &#160;Console.WriteLine(s)<para/>
+ &#160; &#160;Console.Read()<para/>
+ &#160;  RETURN</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

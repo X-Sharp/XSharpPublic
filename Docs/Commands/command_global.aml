@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="2a900f41-b488-4d93-9c87-137df66f4503" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">GLOBAL Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare a variable or array that is available to the entire application or module.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>[Modifiers] &#160;GLOBAL &lt;idVar&gt; [:= &lt;uValue&gt;] [AS | IS &lt;idType&gt;]</para>
+<para>[Modifiers] &#160;GLOBAL DIM &lt;ArraySpec&gt; AS | IS &lt;idType&gt;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, STATIC, INTERNAL, EXPORT and UNSAFE. </entry></row></table><table><row><entry>&lt;idVar&gt;</entry><entry>A valid identifier name for the variable. &#160;A global variable is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a global variable and a function, for example, with the same name.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;uValue&gt;</entry><entry>A constant value that is assigned to &lt;idVar&gt;. &#160;This value can be a literal representation of one of the data types listed below or a simple expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (including class instantiation) are not allowed.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>Note: &#160;Although &lt;uValue&gt; can be a literal array, it must be one-dimensional. &#160;Multi-dimensional literal arrays are not allowed. &#160;For example, {1, 2, 3} is allowed, but { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} } is not.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>Note: &#160;Although the Chr() function cannot be used in &lt;uValue&gt;, the _Chr() operator can. &#160;_Chr() is otherwise identical in functionality to Chr().</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>If &lt;uValue&gt; is not specified, the initial value of the variable depends on the data type you declare (e.g., NIL if you do not use strong typing, 0 for AS INT, etc.)</entry></row></table><para>&#160;</para>
+<para>&#160;</para>
+<table><row><entry>DIM &lt;ArraySpec&gt;</entry><entry>The specification for a dimensioned array to declare.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;ArraySpec&gt;</entry><entry>The specification for a dynamic array to declare.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>In both cases, &lt;ArraySpec&gt; is one of the following:</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]</entry></row></table><table><row><entry></entry><entry>&lt;idArray&gt;[&lt;nElements&gt;][&lt;nElements&gt;][&lt;nElements&gt;]</entry></row></table><table><row><entry></entry><entry>All dimensions except the first are optional.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>&lt;idArray&gt; is a valid identifier name for the array to declare. &#160;For dynamic arrays, array elements are initialized to NIL. &#160;For dimensioned arrays, the initial value of the elements depends on the data type as explained above for &lt;uValue&gt;.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><para>&#160;</para>
+<para>&#160;</para>
+<table><row><entry>IS &lt;idType&gt;</entry><entry>Specifies a VOSTRUCT or UNION data type in which the memory needed to hold the structure is allocated on the stack (&lt;idStructure&gt; is the only &lt;idType&gt; allowed with the IS keyword.) See the <link xlink:href="a036b3f9-462c-4bf4-8db2-e01961c0d4e3">VOSTRUCT</link> entry in this guide for more information on data structure memory allocation.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>Search order for variables:  You can hide a global variable name from a routine by declaring another variable with the same name (with LOCAL, MEMVAR, or FIELD). &#160;The search order for a variable name is as follows:</para>
+<para>1. &#160; &#160; &#160; &#160;LOCALs, local parameters, MEMVARs, and FIELDs</para>
+<para>2. &#160; &#160; &#160; &#160;SELF instance variables (i.e., without &lt;idObject&gt;: &#160;prefix in class methods)</para>
+<para>3. &#160; &#160; &#160; &#160;GLOBALs and DEFINEs</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>The following example illustrates using the GLOBAL statement to create a global variable, a global dimensioned array, and a global dynamic array. &#160;The dynamic array, since it is declared with STATIC GLOBAL, is visible only in the current module:</para>
+<para>&#160;</para>
+<para>GLOBAL cAppName := &quot;Accounts Payable&quot; AS STRING<para/>
+GLOBAL DIM aiValues[2][10] AS INT<para/>
+STATIC GLOBAL aPoly[100]<para/>
+...<para/>
+FUNCTION Start()<para/>
+&#160;? &quot;Start of &quot;, cAppName, &quot; application.&quot;<para/>
+&#160;AFill(aPoly, 0)<para/>
+&#160;...<para/>
+&#160;? &quot;End of &quot;, cAppName, &quot; application.&quot;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="a27c69ad-1651-48fd-93e1-5c184a48acde">DEFINE</link>, <link xlink:href="d8822cca-7c06-4150-b83c-2dd9b531186d">LOCAL</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

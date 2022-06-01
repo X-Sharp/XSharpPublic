@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stockSharedContentDefinitions fileAssetGuid="6c62abb0-0bab-4736-b196-f6d011ff2ead" assetTypeId="MediaContent">
+  <item id="btn_prev_n">
+    <image file="btn_prev_n.gif">
+      <altText>Previous page</altText>
+    </image>
+  </item>
+  <item id="btn_home_n">
+    <image file="btn_home_n.gif">
+      <altText>Return to chapter overview</altText>
+    </image>
+  </item>
+  <item id="btn_next_n">
+    <image file="btn_next_n.gif">
+      <altText>Next page</altText>
+    </image>
+  </item>
+</stockSharedContentDefinitions>

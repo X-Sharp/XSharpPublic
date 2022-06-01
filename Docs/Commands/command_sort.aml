@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="7f0a1f47-7559-4c41-a23f-9577625f322b" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">SORT Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Copy records from the current work area to a database file in sorted order.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>SORT TO &lt;xcTargetFile&gt; ON &lt;idFieldList&gt; [&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>TO &lt;xcTargetFile&gt;</entry><entry>The name of the target database file to write the sorted records, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>ON &lt;idFieldList&gt;</entry><entry>The sort keys, specified as a comma-separated list of field names. &#160;You may optionally add, after each field name, /A (to sort in dictionary order), /C (to ignore capitalization), or /D (to sort in descending order). &#160;The default setting is /A.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;Scope&gt;</entry><entry>The portion of the current database file to process. &#160;The default is all visible records. Scope is one or more clauses of:<para/>
+[NEXT &lt;NEXT&gt;] &#160; &#160; &#160; &#160;Optionally specifies the number of records to process starting <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;with the first record of the source file. <para/>
+[RECORD &lt;rec&gt;] &#160; &#160; &#160; &#160;An optional record ID If specified, the processing begins <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;with this data record in the source file. <para/>
+[&lt;rest:REST&gt;] &#160; &#160; &#160; &#160;The option REST specifies whether records are sequentially <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;searched only from the current up to the last record. <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;If a condition is specified, the option ALL is the default value.<para/>
+[ALL] &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;The option ALL specifies that all records from the source file are imported. <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;This is the default setting. </entry></row></table><para>&#160;</para>
+<table><row><entry>WHILE &lt;lCondition&gt;</entry><entry>A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;Scope&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</entry></row></table><para>&#160;</para>
+<table><row><entry>FOR &lt;lCondition&gt;</entry><entry>A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed. &#160;If no &lt;Scope&gt; or WHILE clause is specified, having a for condition changes the default scope to all visible records.</entry></row></table><para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>SORT is functionally equivalent to DBSort(). &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example copies a mailing list using a descending sort key to a smaller list for printing:</para>
+<para>&#160;</para>
+<para>USE mailing INDEX zip<para/>
+SEEK &quot;900&quot;<para/>
+SORT ON Lastname /D, Firstname /D TO invite ;<para/>
+&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;WHILE Zip = &quot;900&quot;<para/>
+USE invite NEW<para/>
+REPORT FORM rsvplist TO PRINTER</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_RT_Functions_ASort.htm -->ASort(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSort.htm -->DbSort(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Flock.htm -->FLock(), <link xlink:href="ed7dcc99-a2aa-4fad-8eb1-79d7e2ed9e3d">INDEX</link>,<!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDefault.htm -->SetDefault(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetPath.htm -->SetPath(), <link xlink:href="9afbce44-d16f-4cde-a11e-74871ec4b08a">USE</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

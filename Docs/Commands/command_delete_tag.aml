@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="f0167ca1-e970-4d15-8a44-6edea49d19e6" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_index.html -->Index/Order&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">DELETE TAG Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Delete one or more orders from open index files.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>DELETE TAG &lt;xcOrder&gt; [IN &lt;xcIndexFile&gt;] [, &lt;xcOrder&gt; [IN &lt;xcIndexFile&gt;]...]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;xcOrder&gt;</entry><entry>The name of the order to be removed. &#160;If &lt;xcOrder&gt; is a NULL_STRING or spaces, it is ignored. &#160;If &lt;xcOrder&gt; cannot be found, a runtime error is raised.</entry></row></table><para>&#160;</para>
+<table><row><entry>IN &lt;xcIndexFile&gt;</entry><entry>The name of an open index file, including an optional drive and directory (no extension should be specified). &#160;Use this argument to remove ambiguity when there are two or more orders with the same name in different index files.</entry></row></table><table><row><entry></entry><entry>If &lt;xcIndexFile&gt; is not open by the current process in the current work area, a runtime error is raised.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>DELETE TAG requires that the current database be open in exclusive mode. &#160;If this condition is not met when DELETE TAG is invoked, a runtime error is raised.</para>
+<para>&#160;</para>
+<para>If you specify an index file name, DELETE TAG deletes the indicated order from that file. &#160;Otherwise, the command searches all index files open in the current work area and deletes the first occurrence of &lt;xcOrder&gt; that it finds.</para>
+<para>If the controlling order is deleted, the database reverts to its natural order and <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetFilter.htm -->DbSetFilter() scoping.</para>
+<para>&#160;</para>
+<para>Note:  The RDD determines the order capacity of an index file, and DELETE TAG is supported only by RDDs with multiple-order capabilities. &#160;For single-order index files, you must delete the entire file. </para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example illustrates how to delete selected orders from an index file:</para>
+<para>&#160;</para>
+<para>USE customer VIA &quot;DBFMDX&quot; NEW<para/>
+Customer-&gt;DBSetIndex(&quot;customer&quot;)<para/>
+&#160;<para/>
+// Delete the Cust01 and Cust02 orders from the <para/>
+// Customer index file<para/>
+DELETE TAG Cust01 IN customer, Cust02 IN customer<para/>
+// or<para/>
+// Customer-&gt;DBDeleteOrder(&quot;Cust01&quot;, &quot;customer&quot;)<para/>
+// Customer-&gt;DBDeleteOrder(&quot;Cust02&quot;, &quot;customer&quot;)</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbCreateIndex.htm -->DBCreateIndex(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbCreateOrder.htm -->DbCreateOrder(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbDeleteOrder.htm -->DbDeleteOrder(),  <link xlink:href="ed7dcc99-a2aa-4fad-8eb1-79d7e2ed9e3d">INDEX</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDefault.htm -->SetDefault(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetPath.htm -->SetPath()</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

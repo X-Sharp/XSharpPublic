@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="5ffa86f0-6380-4660-8d4d-76e7c452fb24" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">YIELD Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>When you use the yield keyword in a statement, you indicate that the method, operator, or get accessor in which it appears is an iterator. <para/>
+&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>YIELD RETURN &lt;expression&gt;<para/>
+YIELD (EXIT|BREAK) </para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>YIELD RETURN</entry><entry>You use YIELD RETURN &lt;expression&gt; to return each element one at a time.</entry></row></table><para>&#160;</para>
+<table><row><entry>YIELD [BREAK|EXIT]</entry><entry>You use YIELD BREAK or YIELD EXIT to end the iteration.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>using System.Collections.Generic<para/>
+&#160;<para/>
+// The Yield return statement allows you to create code that returns a <para/>
+// collection of values without having to create the collection in memory first.<para/>
+// The compiler will create code that &quot;remembers&quot; where you were inside the <para/>
+// loop and returns to that spot. <para/>
+FUNCTION Start AS VOID<para/>
+ &#160; FOREACH nYear AS INT IN GetAllLeapYears(1896, 2040)<para/>
+ &#160; &#160; &#160;? &quot;Year&quot;, nYear, &quot;is a leap year.&quot;<para/>
+ &#160; NEXT<para/>
+ &#160; Console.ReadLine()<para/>
+RETURN<para/>
+&#160;<para/>
+FUNCTION GetAllLeapYears(nMin AS INT, nMax AS INT) AS IEnumerable&lt;INT&gt;<para/>
+ &#160; FOR LOCAL nYear := nMin AS INT UPTO nMax<para/>
+ &#160; &#160;  IF nYear % 4 == 0 .and. (nYear % 100 != 0 .or. nYear % 400 == 0)<para/>
+ &#160; &#160; &#160; &#160; YIELD RETURN nYear<para/>
+ &#160; &#160;  END IF<para/>
+ &#160; &#160;  IF nYear == 2012<para/>
+ &#160; &#160; &#160; &#160; YIELD EXIT &#160; &#160;  // Exit the loop<para/>
+ &#160; &#160;  ENDIF<para/>
+ &#160; NEXT</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

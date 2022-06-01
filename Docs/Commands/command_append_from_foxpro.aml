@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="e4171a19-d961-4cb8-bbff-a833b9a27ef7" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">APPEND FROM Command (FoxPro)</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Import records from a database or text file.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>APPEND FROM &lt;xcSourceFile&gt; <para/>
+ &#160; [FIELDS &lt;idFieldList&gt; | FIELDS LIKE &lt;Skeleton&gt; | FIELDS EXCEPT &lt;Skeleton&gt;]<para/>
+&#160;[&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;]<para/>
+ &#160; [[TYPE] [DELIMITED [WITH &lt;Delim&gt; | WITH BLANK | WITH TAB<para/>
+ &#160; &#160; &#160;| WITH CHARACTER &lt;cDelim&gt;] | DIF | FW2 | MOD | PDOX | RPD |<para/>
+ &#160; &#160; &#160;SDF | SYLK | WK1 | WK3 | WKS | WR1 | WRK | CSV | XLS | XL5 <para/>
+ &#160; &#160; &#160;[SHEET &lt;cSheetName&gt;] | XL8 [SHEET &lt;cSheetName&gt;]]] [AS &lt;nCodePage&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>FROM &lt;xcSourceFile&gt;</entry><entry>The name of the source file from which to add records, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD. &#160;For text files, it is .TXT.</entry></row></table><table><row><entry></entry><entry>This command attempts to open &lt;xcSourceFile&gt; in shared mode. &#160;If the file does not exist, a runtime error is raised. &#160;If the file is successfully opened, the operation proceeds. &#160;If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE. &#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>FIELDS &lt;idFieldList&gt;</entry><entry>The list of fields to process. The default is all fields with the exception of memo fields, unless the command supports the MEMO clause.</entry></row></table><table><row><entry></entry><entry>Only fields with the same names and types in both files are appended. &#160;If fields with the same name do not match in data type, a runtime error is raised.</entry></row></table><table><row><entry>FIELDS LIKE &lt;Skeleton&gt;</entry><entry>You can specify field names with a wild card, such as FIELDS LIKE *name</entry></row></table><para>FIELDS EXCEPT &lt;Skeleton&gt;You can exclude fields, such as for example the primary keys: FIELDS EXCEPT Id<para/>
+&lt;Skeleton&gt; supports wildcards (* and ?). For example, to replace all fields that begin with the letters A and P, use: <para/>
+FIELDS LIKE A*,P*</para>
+<para>&#160;</para>
+<para>Please note that you can combine FIELDS LIKE and FIELDS EXCEPT but you cannot combine a fields list with the LIKE and EXCEPT clauses.</para>
+<para>&#160;</para>
+<para>&#160;</para>
+<table><row><entry>&lt;Scope&gt;</entry><entry>The portion of the current database file to process. &#160;The default is all visible records. Scope is one or more clauses of:<para/>
+[NEXT &lt;NEXT&gt;] &#160; &#160; &#160; &#160;Optionally specifies the number of records to process starting <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;with the first record of the source file. <para/>
+[RECORD &lt;rec&gt;] &#160; &#160; &#160; &#160;An optional record ID If specified, the processing begins <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;with this data record in the source file. <para/>
+[&lt;rest:REST&gt;] &#160; &#160; &#160; &#160;The option REST specifies whether records are sequentially <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;searched only from the current up to the last record. <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;If a condition is specified, the option ALL is the default value.<para/>
+[ALL] &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;The option ALL specifies that all records from the source file are imported. <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;This is the default setting. </entry></row></table><para>&#160;</para>
+<table><row><entry>WHILE &lt;lCondition&gt;</entry><entry>A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;Scope&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</entry></row></table><para>&#160;</para>
+<table><row><entry>FOR &lt;lCondition&gt;</entry><entry>A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed. &#160;If no &lt;Scope&gt; or WHILE clause is specified, having a for condition changes the default scope to all visible records.</entry></row></table><para>&#160;</para>
+<para>&#160;</para>
+<table><row><entry>DELIMITED WITH &lt;Delim&gt;</entry><entry>Indicates that character fields are separated by a character other than the quotation mark. &#160; &#160; &#160; &#160; </entry></row></table><table><row><entry>DELIMITED WITH BLANK </entry><entry>Specifies files that contain fields separated by spaces instead of commas.</entry></row></table><table><row><entry>DELIMITED WITH TAB </entry><entry>Specifies files that contain fields separated by tabs rather than commas.</entry></row></table><table><row><entry>WITH CHARACTER &lt;cDelim&gt;</entry><entry>Specifies files that contain fields all enclosed by the character specified with Delimiter. If Delimiter is a semicolon (the character used in Visual FoxPro to indicate command line continuation), enclose the semicolon in quotation marks. You can also specify the BLANK and TAB keywords for Delimiter.<para/>
+The WITH Delimiter clause can be combined with the WITH CHARACTER clause. </entry></row></table><para>&#160;</para>
+<table><row><entry>TYPE</entry><entry>From the various types that FoxPro allows only the following ones are supported in X# at this moment:</entry></row></table><table><row><entry></entry><entry>SDF &#160; &#160; &#160; &#160;An SDF file is an ASCII text file in which records have a fixed length and end with a carriage return and line feed. Fields are not delimited. <para/>
+ &#160; &#160; &#160; &#160;The file name extension is assumed to be .txt for SDF files.</entry></row></table><para>&#160;<para/>
+CSV &#160; &#160; &#160; &#160;A comma separated value file. A CSV file has field names as the first line in the file; the field names are ignored when the file is imported.<para/>
+&#160;The file name extension is assumed to be .csv for CSV files.<para/>
+OTHER &#160; &#160; &#160; &#160;NOT SUPPORTED AT THIS MOMENT</para>
+<table><row><entry></entry><entry></entry></row></table><table><row><entry>AS &lt;nCodePage&gt;</entry><entry>Specifies the codepage to use for the source file. NOT SUPPORTED AT THIS MOMENT</entry></row></table><para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>Deleted records:  If <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDeleted.htm -->SetDeleted()  is FALSE, deleted records in &lt;xcSourceFile&gt; are appended to the current database file and retain their deleted status. &#160;If SetDeleted() is TRUE, however, deleted records are not visible and are, therefore, not processed.</para>
+<para>&#160;</para>
+<para>Unmatched field widths:  If a field in the current database file is character type and has a field length greater than the incoming &lt;xcSourceFile&gt; data, APPEND FROM pads the source data with blanks. &#160;If the current field is character data type and its field length is less than the incoming source data, the source data is truncated to fit. &#160;If the current field is numeric type and the incoming source data has more digits than the current field length, a runtime error is raised.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example demonstrates an APPEND FROM command using a fields list and a condition:</para>
+<para>&#160;</para>
+<para>USE sales NEW<para/>
+APPEND FROM branchfile FIELDS Branch, Salesman, Amount FOR Branch = 100</para>
+<para>&#160;</para>
+<para>The next example demonstrates how a &lt;Scope&gt; can be specified to import a particular record from another database file:</para>
+<para>&#160;</para>
+<para>APPEND RECORD 5 FROM temp</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="afff88e4-8ef5-4ba6-b258-ed25aed855c9">COPY TO</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbApp.htm -->DbApp(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbAppDelim.htm -->DbAppDelim(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbAppSdf.htm -->DbAppSDF(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_RT_Functions_RddSetDefault.htm -->RDDSetDefault(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDefault.htm -->SetDefault(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetPath.htm -->SetPath(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDeleted.htm -->SetDeleted() </para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

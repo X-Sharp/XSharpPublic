@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="command_ifndef" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">#ifndef Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Build a section of code if a constant is FALSE, 0, or not defined.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>#ifndef &lt;idConstant&gt; <para/>
+&#160;&lt;Statements&gt;...<para/>
+[#else] <para/>
+&#160;&lt;Statements&gt;...<para/>
+#endif</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;idConstant&gt;</entry><entry>The name of a constant whose absence is being verified.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>#ifndef...#endif lets you perform a conditional build by identifying a section of source code to include if a specified constant is defined as FALSE or 0 or is not defined. &#160;The #else statement specifies the code to include if the #ifndef condition fails, and the #endif terminates the conditional build block.</para>
+<para>Note:  You can use #ifndef with compiler entities other than constants, such as functions and globals. &#160;In these cases, the statement tests for existence only, and does not look at the value of the entity.</para>
+<para>&#160;</para>
+<para>Examples</para>
+<para>This code fragment is a general skeleton for a conditional build with #ifndef. &#160;Since the constant lDebug is set to FALSE, the code between the #ifndef and #else statements will be built, and the code between the #else and #endif statements will be ignored:</para>
+<para>&#160;</para>
+<para>DEFINE lDebug := FALSE<para/>
+&#160;<para/>
+FUNCTION Start()<para/>
+&#160;#IFNDEF lDebug<para/>
+&#160; &#160; &#160; &#160; &#160;&lt;Optimized version OF code&gt;...<para/>
+&#160;#ELSE<para/>
+&#160; &#160; &#160; &#160; &#160;&lt;Debugging version OF code&gt;...<para/>
+&#160;#ENDIF</para>
+<para>&#160;</para>
+<para>Changing the DEFINE statement as follows will build the code between the #else and #endif statements instead.</para>
+<para>DEFINE lDebug := TRUE</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="command_ifdef">#ifdef</link>, <link xlink:href="a27c69ad-1651-48fd-93e1-5c184a48acde">DEFINE</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

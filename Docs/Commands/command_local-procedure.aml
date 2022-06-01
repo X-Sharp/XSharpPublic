@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="a33f7857-86fb-4892-8044-3018b6a69e01" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: blocks2.html -->Blocks and Namespaces&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">LOCAL PROCEDURE</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare a local procedure </para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[Modifiers] LOCAL PROCEDURE &lt;idFunction&gt; </para>
+<para>&#160;[Typeparameters]</para>
+<para>&#160;[([&lt;idParam&gt; [AS | REF|OUT|IN &lt;idType&gt;] [, ...])] </para>
+<para>&#160;[TypeparameterConstraints]</para>
+<para>&#160;[=&gt; &lt;expression&gt;]</para>
+<para>&#160;CRLF</para>
+<para>&#160;[&lt;Body&gt;]</para>
+<para>&#160;END PROCEDURE</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry></entry><entry></entry></row></table><table><row><entry>[Modifiers]</entry><entry>The only valid modifiers for a local function are UNSAFE and/or ASYNC</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idFunction&gt;</entry><entry>A valid identifier name for the function. &#160;A function is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a function and a class, for example, with the same name.</entry></row></table><para>&#160;</para>
+<table><row><entry>TypeParameters</entry><entry>This is supported for methods with generic type arguments. This something like &lt;T&gt; for a method with one type parameter named T. Usually one of the parameters in the parameter list is then also of type T.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idParam&gt;</entry><entry>A &#160;parameter variable. &#160;A variable specified in this manner is automatically declared local. &#160;These variables, also called formal parameters, are used to receive arguments that you pass when you call the entity.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS | REF|OUT|IN &lt;idType&gt;</entry><entry>Specifies the data type of the parameter variable (called strong typing). &#160;AS indicates that the parameter must be passed by value, and REF indicates that it must be passed by reference with the @ operator. OUT is a special kind of REF parameter that does not have to be assigned before the call and must be assigned inside the body of the entity. IN parameters are passed as READONLY references.<para/>
+The last parameter in the list can also be declared as PARAMS &lt;idType&gt;[] which will tell the compiler that the function/method may receive zero or more optional parameters.<para/>
+Functions or Methods of the CLIPPER calling convention are compiled to a function with a single parameter that this declared as Args PARAMS USUAL[]<para/>
+&#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><para>&#160;</para>
+<table><row><entry>TypeParameterConstraints</entry><entry>Here you can specify constraints for the Type parameters, such as WHERE T IS SomeName or WHERE T IS New</entry></row></table><para>&#160;</para>
+<table><row><entry>=&gt; &lt;Expression&gt;</entry><entry>Single expression that replaces the multiline body for the entity. CANNOT be compiled with a body</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;Body&gt;</entry><entry>Program statements that form the code of this entity.<para/>
+The &lt;Body&gt; can contain one or more RETURN statements to return control to the calling routine and to serve as the function return value. &#160;If no return statement is specified, control passes back to the calling routine when the function definition ends, and the function will return a default value depending on the return value data type specified (NIL if the return value is not strongly typed).<para/>
+CANNOT be combined with an Expression Body</entry></row></table><para>&#160;</para>
+<para>&#160;</para>
+<table><row><entry>END PROCEDURE</entry><entry>These mandatory keywords indicate the logical end of the function.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>A local function is defined as a nested function inside a containing member. The END PROCEDURE is mandatory so the compiler knows where the function ends and its surrounding container continues.</para>
+<para>In the example below the WAIT command is part of the Start() function and will be executed after the call to Log(3)</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Example</h1>
+<para>FUNCTION Start AS VOID &#160;<para/>
+ &#160; &#160;Log(1)<para/>
+ &#160; &#160;Log(2)<para/>
+ &#160; &#160;Log(3)<para/>
+ &#160; &#160;<para/>
+ &#160;  LOCAL PROCEDURE Log(nNum AS LONG) <para/>
+ &#160; &#160; &#160; &#160;? nNum<para/>
+ &#160; &#160; &#160;  RETURN <para/>
+ &#160;  END PROCEDURE<para/>
+ &#160;  WAIT &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;<para/>
+ &#160; &#160;<para/>
+ &#160;  RETURN</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="da571189-a521-4066-b374-de88f72d37e8">FIELD</link>, <link xlink:href="d8822cca-7c06-4150-b83c-2dd9b531186d">LOCAL</link>, <link xlink:href="70df5af5-ce42-4ba8-afec-5b3a4de8d996">MEMVAR</link>, <link xlink:href="77b4131b-7ffd-4fad-ae60-b9ca0ec84fc7">METHOD</link>, <link xlink:href="76e253bd-c169-4078-b086-64feffe160c1">PROCEDURE</link>, <link xlink:href="70c94423-9322-4c94-aecc-907f367520ad">RETURN</link>, <link xlink:href="76e253bd-c169-4078-b086-64feffe160c1">PROCEDURE</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

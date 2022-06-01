@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="a036b3f9-462c-4bf4-8db2-e01961c0d4e3" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">VOSTRUCT Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare a data structure and its member names.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>[Modifiers] VOSTRUCT &lt;idStructure&gt; [ALIGN 1|2|4|8]</para>
+<para>&#160;MEMBER &lt;idVarList&gt; AS | IS &lt;idType&gt; [, ...] </para>
+<para>&#160;MEMBER DIM &lt;ArraySpec&gt; [, ...] AS | IS &lt;idType&gt; [, ...] </para>
+<para>[END VOSTRUCT]</para>
+<para>&#160;</para>
+<para>Note:  The MEMBER statement is shown using two syntax diagrams for convenience. &#160;You can declare variables and dimensioned arrays using a single MEMBER statement if each definition is separated by a comma.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, STATIC, INTERNAL, EXPORT and UNSAFE. </entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idStructure&gt;</entry><entry>A valid identifier name for the structure. &#160;A structure is an entity and shares the same name space as other entities. &#160;This means that it is not possible to have a structure and a constant, for example, with the same name.</entry></row></table><para>&#160;</para>
+<table><row><entry>MEMBER</entry><entry>Declares one or more structure member variables or dimensioned arrays. &#160;You can specify multiple MEMBER declarations on separate lines.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idVarList&gt;</entry><entry>A comma-separated list of identifier names for the structure member variables.</entry></row></table><para>&#160;</para>
+<table><row><entry>DIM &lt;ArraySpec&gt;</entry><entry>The specification for a dimensioned array to use as a structure member. &#160;&lt;ArraySpec&gt; is one of the following:</entry></row></table><table><row><entry></entry><entry>&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]</entry></row></table><table><row><entry></entry><entry>&lt;idArray&gt;[&lt;nElements&gt;][&lt;nElements&gt;][&lt;nElements&gt;]</entry></row></table><table><row><entry></entry><entry>All dimensions except the first are optional.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>&lt;idArray&gt; is a valid identifier name for the array to declare.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type of the variable you are declaring (called <!-- TODO: Unknown topic link: strong-typing.html -->strong typing). &#160;For DIM arrays, declares the data type for all array elements. &#160;The AS &lt;idType&gt; is required for all structure members.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>Refer to the CLASS entry for a list of valid values for &lt;idType&gt;. &#160;Note that the following data types are not supported in structures because they are dynamic types that require garbage collection:</entry></row></table><table><row><entry></entry><entry>ARRAY</entry></row></table><table><row><entry></entry><entry>FLOAT &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry></entry><entry>OBJECT</entry></row></table><table><row><entry></entry><entry>&lt;idClass&gt;</entry></row></table><table><row><entry></entry><entry>STRING</entry></row></table><table><row><entry></entry><entry>USUAL</entry></row></table><para>&#160;</para>
+<table><row><entry>IS &lt;idType&gt;</entry><entry>Specifies a structure data type in which the memory needed to hold the structure is allocated on the stack (i.e., &lt;idStructure&gt; is the only &lt;idType&gt; allowed with the IS keyword).</entry></row></table><para>&#160;</para>
+<table><row><entry>ALIGN 1|2|4|8</entry><entry>Specifies the memory alignment of the structure. The default alignment is based on the size of the structure members. See the paragraph about alignment below.</entry></row></table><table><row><entry></entry><entry>You may want to change this when you need to match a C/C++ structure that has been defined with a different alignment (the #pragma pack in a C/C++ header file). </entry></row></table><table><row><entry></entry><entry>.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>AS vs. IS:  Once you have defined a structure, you can use its name to declare variables (see GLOBAL and LOCAL statements in this guide) designed to hold instances of a specific structure. &#160;When you declare a structure variable, you have the choice of using AS or IS typing. &#160;The difference between these two declaration methods is as follows:</para>
+<para>&#183; &#160; &#160; &#160; &#160;IS automatically allocates the memory needed to hold the structure on the stack and deallocates the memory when the declaring entity returns.</para><para>&#183; &#160; &#160; &#160; &#160;AS requires that you allocate memory using MemAlloc() when you initialize structure variables. &#160;You must also deallocate the memory used by the structure variable using MemFree() before the declaring entity returns.</para><para>&#160;</para>
+<para>Important!  IS typing is much simpler than AS typing, and in most cases should satisfy your requirements for using structures. &#160;AS typing is recommended for experienced systems programmers who can, for various reasons, object to using the stack in this manner.</para>
+<para>&#160;</para>
+<para>Allocating substructures:  An interesting property of a structure is that it can contain other structures as members but, if you type these substructures using AS, you must allocate and deallocate memory for them. &#160;This is true regardless of whether the containing structure is typed with AS or IS:</para>
+<para>&#160;</para>
+<para>VOSTRUCT SysOne<para/>
+ &#160; MEMBER iAlpha AS INT<para/>
+ &#160; MEMBER pszName AS PSZ<para/>
+&#160;<para/>
+VOSTRUCT SysTwo<para/>
+ &#160; MEMBER iBeta AS INT<para/>
+ &#160; MEMBER strucOne AS SysOne<para/>
+&#160;<para/>
+FUNCTION UseStruct()<para/>
+ &#160; LOCAL strucVar AS SysTwo<para/>
+ &#160; strucVar := MemAlloc(_SizeOf(SysTwo))<para/>
+ &#160; strucVar.strucOne := MemAlloc(_SizeOf(SysOne))<para/>
+ &#160; ...<para/>
+ &#160; MemFree(strucVar.strucOne)<para/>
+ &#160; MemFree(strucVar)</para>
+<para>&#160;</para>
+<para>To simplify your programming, it makes sense to use IS for declaring substructures. &#160;Then, the memory for the substructure will be allocated and deallocated with the memory for its containing structure:</para>
+<para>&#160;<para/>
+VOSTRUCT SysTwo<para/>
+ &#160; MEMBER iBeta &#160;  AS INT<para/>
+ &#160; MEMBER strucOne &#160;  IS SysOne<para/>
+&#160;<para/>
+FUNCTION UseStruct()<para/>
+ &#160; LOCAL strucVar AS SysTwo<para/>
+ &#160; strucVar := MemAlloc(_SizeOf(SysTwo))<para/>
+ &#160; ...<para/>
+ &#160; MemFree(strucVar)</para>
+<para>&#160;</para>
+<para>Accessing structure members:  Structure variables are complex, the components being members that you declare within the structure. &#160;To access a structure member, use the dot operator (.) as follows:</para>
+<para>&#160;</para>
+<para>&lt;idStructVar&gt;.&lt;idMember&gt;</para>
+<para>&#160;</para>
+<para>Where &lt;idStructVar&gt; is a variable name or dimensioned array element that you have previously declared using a structure name, and &lt;idMember&gt; is a variable name or dimensioned array element declared within the VOSTRUCT definition as a MEMBER.</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example illustrates IS structure typing. No allocation is necessary but you must pass the structure by reference to calls.</para>
+<para>&#160;</para>
+<para>VOSTRUCT SysOne &#160; &#160;  // Define SysOne data structure<para/>
+ &#160; MEMBER iAlpha AS INT<para/>
+ &#160; MEMBER pszName AS PSZ<para/>
+&#160;<para/>
+FUNCTION Tester(strucSysOne AS SysOne) AS INT<para/>
+RETURN strucSysOne.iAlpha<para/>
+&#160;<para/>
+FUNCTION UseStruct()<para/>
+ &#160; LOCAL strucVar IS SysOne<para/>
+ &#160; strucVar.iAlpha := 100<para/>
+ &#160; ? Tester(@strucVar) &#160; <para/>
+ &#160; ...</para>
+<para>&#160;</para>
+<para>This example illustrates AS structure typing. This requires memory allocation and deallocation:</para>
+<para>&#160;</para>
+<para>VOSTRUCT SysOne &#160; &#160;  // Define SysOne data structure<para/>
+ &#160; MEMBER iAlpha AS INT<para/>
+ &#160; MEMBER pszName AS PSZ<para/>
+&#160;<para/>
+FUNCTION Tester(strucSysOne AS SysOne) AS INT<para/>
+RETURN strucSysOne.iAlpha<para/>
+&#160;<para/>
+FUNCTION UseStruct()<para/>
+ &#160; LOCAL strucVar AS SysOne<para/>
+ &#160; strucVar := MemAlloc(_SizeOf(SysOne))<para/>
+ &#160; strucVar.iAlpha := 100<para/>
+ &#160; ? Tester(strucVar) &#160; <para/>
+ &#160; ...<para/>
+ &#160; MemFree(strucVar)</para>
+<para>&#160;</para>
+<para>With MEMBER, you can list several groups of variable and array names separated by commas and followed by an AS | IS &lt;idType&gt; clause to indicate that all names listed are to be typed as indicated. &#160;In this example, the variable x and the dimensioned array z are typed as INT, while the variables ptrX and ptrY are typed as PTR.</para>
+<para>&#160;</para>
+<para>VOSTRUCT SysOne &#160; &#160;  // Define SysOne data structure<para/>
+ &#160; MEMBER x, DIM z[100] AS INT, ptrX, ptrY AS PTR</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Default VoStruct Alignment</h1>
+<para>You can choose to specify an alignment clause in the structure definition or let XSharp determine the best alignment for you.</para>
+<para>The default alignment uses the following mechanism:</para>
+<para>&#183;Each member of a size &lt;= 8 gets a memory address inside the structure that is a multiple of its size. So WORD and SHORT members get aligned on EVEN boundaries, DWORD, LONG, PTR, PSZ members get aligned to 4-byte boundaries and REAL8 members get aligned to 8- byte boundaries. Byte members are not aligned, they can appear everywhere in the structure.</para><para>&#183;The total size of the structure is aligned to the size of the largest member. This is done to make sure that a dim array of structures (multiple structures adjacent in memory) also align properly</para><para>&#183;When a structure contains an sub-structure (an IS declaration) &#160;the alignment of the outer structure uses the information from the inner structure.</para><para>&#160;</para>
+<para>With manual (explicit) alignment each element of the structure is aligned to a memory address that is a multiple of the alignment specified.</para>
+<para>&#160;</para>
+<para>Some examples of automatic alignment</para>
+<para>&#160;</para>
+<para>VOSTRUCT test1 &#160; &#160; &#160; &#160; &#160; &#160;  // Offset <para/>
+ &#160; MEMBER W  AS WORD &#160; &#160; &#160; &#160; // 0<para/>
+ &#160; MEMBER dw AS DWORD &#160; &#160; &#160;  // 4<para/>
+ &#160; MEMBER b  AS BYTE &#160; &#160; &#160; &#160; // 8<para/>
+ &#160; // Total size of structure = 12 bytes (largest element = 4, so padded to 12)<para/>
+ &#160; // Memory layout of structure<para/>
+ &#160; // 0123|4567|8901<para/>
+ &#160; // WW..|DWDW|B...<para/>
+ &#160; // <para/>
+ &#160; // WW &#160; = Word<para/>
+ &#160; // DWDW = Dword<para/>
+ &#160; // B &#160; &#160;= Byte<para/>
+ &#160; // . &#160; &#160;= Padding<para/>
+&#160;<para/>
+VOSTRUCT test1 &#160; &#160; &#160; &#160; &#160; &#160;  // Offset<para/>
+ &#160; MEMBER W  AS WORD &#160; &#160; &#160; &#160; // 0<para/>
+ &#160; MEMBER r8 AS REAL8 &#160; &#160; &#160;  // 8<para/>
+ &#160; MEMBER b  AS BYTE &#160; &#160; &#160; &#160; // 16<para/>
+ &#160; // Total size of structure = 24 bytes (largest element = 8, so padded to 24)<para/>
+ &#160; // Memory layout of structure<para/>
+ &#160; // 01234567|89012345|67890123<para/>
+ &#160; // WW......|R8R8R8R8|B.......</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Explicit (manual ) Structure Alignment</h1>
+<para>In some situations you need to match a structure declaration from a C/C++ header file that has explicit alignment. Then you need to add the ALIGN clause to your structure declaration.</para>
+<para>This forces the compiler to align the structure elements to a multiple of the specified size.</para>
+<para>An alignment of 1 tells the compiler NOT to use padding but to align all elements of a structure next to eachother. This is the most compact, but may be slower.</para>
+<para>&#160;</para>
+<para>&#160;</para>
+<para>Some examples of explicit alignment</para>
+<para>VOSTRUCT test1 ALIGN 1 &#160; &#160;  // Offset<para/>
+ &#160; MEMBER W  AS WORD &#160; &#160; &#160; &#160; // 0<para/>
+ &#160; MEMBER r8 AS DWORD &#160; &#160; &#160;  // 2<para/>
+ &#160; MEMBER b  AS BYTE &#160; &#160; &#160; &#160; // 6<para/>
+ &#160; // Total size of structure = 7 bytes (multiple of 1)<para/>
+ &#160; // Memory layout of structure<para/>
+ &#160; // 01|2345|6<para/>
+ &#160; // WW|DWDW|B<para/>
+ &#160; //<para/>
+ &#160; // WW &#160; = Word<para/>
+ &#160; // DWDW = Dword<para/>
+ &#160; // B &#160; &#160;= Byte<para/>
+ &#160; // . &#160; &#160;= Padding<para/>
+&#160;<para/>
+VOSTRUCT test1 ALIGN 2 &#160; &#160;  // Offset <para/>
+ &#160; MEMBER W  AS WORD &#160; &#160; &#160; &#160; // 0<para/>
+ &#160; MEMBER dw AS DWORD &#160; &#160; &#160;  // 2<para/>
+ &#160; MEMBER b  AS BYTE &#160; &#160; &#160; &#160; // 6<para/>
+ &#160; // Total size of structure = 8 bytes ( multiple of 2)<para/>
+ &#160; // Memory layout of structure<para/>
+ &#160; // 01|23|45|67<para/>
+ &#160; // WW|DW|DW|B.<para/>
+VOSTRUCT test1 ALIGN 4 &#160; &#160;  // Offset <para/>
+ &#160; MEMBER W  AS WORD &#160; &#160; &#160; &#160; // 0<para/>
+ &#160; MEMBER r8 AS DWORD &#160; &#160; &#160;  // 4<para/>
+ &#160; MEMBER b  AS BYTE &#160; &#160; &#160; &#160; // 8<para/>
+ &#160; // Total size of structure = 12 bytes (multiple of 4)<para/>
+ &#160; // Memory layout of structure<para/>
+ &#160; // 0123|4567|8901<para/>
+ &#160; // WW..|DWDW|B...<para/>
+&#160;<para/>
+VOSTRUCT test1 ALIGN 8 &#160; &#160;  // Offset<para/>
+ &#160; MEMBER W  AS WORD &#160; &#160; &#160; &#160; // 0<para/>
+ &#160; MEMBER r8 AS DWORD &#160; &#160; &#160;  // 8<para/>
+ &#160; MEMBER b  AS BYTE &#160; &#160; &#160; &#160; // 16<para/>
+ &#160; // Total size of structure = 24 bytes (multiple of 8)<para/>
+ &#160; // Memory layout of structure<para/>
+ &#160; // 01234567|89012345|67890123<para/>
+ &#160; // WW......|DWDW....|B.......</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="2a900f41-b488-4d93-9c87-137df66f4503">GLOBAL</link>, <link xlink:href="d8822cca-7c06-4150-b83c-2dd9b531186d">LOCAL</link>, <!-- TODO: Unknown topic link: function_memalloc.html -->MemAlloc(), <!-- TODO: Unknown topic link: function_memfree.html -->MemFree(), <link xlink:href="7bf12771-682c-4595-975e-d92b1a802255">UNION</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

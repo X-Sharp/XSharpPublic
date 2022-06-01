@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="289eca8d-5593-4340-b806-5a25d5a19a0b" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">DO CASE Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h2 class="p_Heading2" style="page-break-after: avoid;">Purpose</h2>
+<para>Conditionally execute a block of statements.</para>
+<h2 class="p_Heading2" style="page-break-after: avoid;">Syntax</h2>
+<para>DO CASE<para/>
+CASE &lt;lCondition&gt;<para/>
+ &#160; &lt;Statements&gt;...<para/>
+[CASE &lt;lCondition&gt;]<para/>
+ &#160; &lt;Statements&gt;...<para/>
+[OTHERWISE]<para/>
+ &#160; &lt;Statements&gt;...<para/>
+END[CASE]</para>
+<h2 class="p_Heading2" style="page-break-after: avoid;">Arguments</h2>
+<table><row><entry>&lt;lCondition&gt;</entry><entry>If this expression evaluates to TRUE, the statements following it up until the next CASE, OTHERWISE, or ENDCASE are executed. Afterwards, control branches to the statement following the next ENDCASE statement.</entry></row></table><table><row><entry>OTHERWISE</entry><entry>If all preceding CASE conditions evaluate to FALSE, the statements following the OTHERWISE up until the next ENDCASE are executed. Afterwards, control branches to the statement following the next ENDCASE statement.</entry></row></table><h2 class="p_Heading2" style="page-break-after: avoid;">Description</h2>
+<para>DO CASE works by branching to the statement following the first CASE &lt;lCondition&gt; that evaluates to TRUE. If all CASE conditions evaluate to FALSE, it branches to the statement following the OTHERWISE statement (if specified). </para>
+<para>Execution proceeds until the next CASE, OTHERWISE, or ENDCASE is encountered, and control then branches to the first statement following the next ENDCASE statement.</para>
+<para>Control structures can be nested to any depth. The only requirement is that each control structure be properly nested.</para>
+<para>Note: DO CASE...ENDCASE is identical to IF...ELSEIF...ENDIF, with neither syntax having a performance advantage over the other.</para>
+<h2 class="p_Heading2" style="page-break-after: avoid;">Examples</h2>
+<para>This example uses DO CASE in a menu structure to branch control based on user selection:</para>
+<para>FUNCTION ActonChoice(nChoice as LONG) AS VOID<para/>
+DO CASE<para/>
+CASE nChoice = 0<para/>
+ &#160; RETURN<para/>
+CASE nChoice = 1<para/>
+ &#160; ChoiceOne()<para/>
+CASE nChoice = 2<para/>
+ &#160; ChoiceTwo()<para/>
+ENDCASE</para>
+<h2 class="p_Heading2" style="page-break-after: avoid;">See Also</h2>
+<para><link xlink:href="8d75ad58-39e3-4eb7-86fc-c76fd96f2441" />, <link xlink:href="d5dffe8e-fc26-4e58-a5a7-31c26132758f">DO WHILE</link>, <link xlink:href="a6f0f406-78b2-4a8e-8819-6fadbb71474d">FOR</link>, <link xlink:href="1f854d56-6755-4db4-8078-83f5937dede8">FOREACH</link> <link xlink:href="c100f682-3607-4d37-af60-c7e05e9b7695">IF</link> <link xlink:href="3f1770e9-c4df-435e-86a3-2c990e77d598">SWITCH</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

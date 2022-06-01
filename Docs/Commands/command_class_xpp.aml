@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="ca532dd1-d0fb-4ed2-813b-7a152a34dc08" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">CLASS Statement (Xbase++ dialect)</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare a class name to the compiler.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[Attributes] [Modifiers]  &#160; &#160; &#160; &#160;CLASS &lt;idClass&gt; [FROM &lt;idParentClass&gt;] &#160;[SHARING &lt;idParentClass,...&gt;]<para/>
+&#160;[IMPLEMENTS &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
+<para>&#160;[ClassMembers]</para>
+<para>&#160;ENDCLASS</para>
+<para>&#160;[CLASS] METHOD [&lt;ClassName&gt;:] &lt;MethodName&gt; [( [&lt;Parameters,...&gt;] )]</para>
+<para>&#160; &#160; &#160; &#160; &#160;[&lt;Body&gt;]</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Attributes</entry><entry>An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword. &#160; &#160; &#160; &#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the entity, allowed values are STATIC, FREEZE and FINAL</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idClass&gt;</entry><entry>A valid identifier name for the class. &#160;A class is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a class and a global variable, for example, with the same name.</entry></row></table><para>&#160;</para>
+<table><row><entry>FROM &lt;idParentClass&gt;</entry><entry>The name of an existing class (called a superclass) from which the new class inherits methods and instance variables (with the exception of HIDDEN). X# does NOT allow multiple inheritance.</entry></row></table><para>&#160;</para>
+<table><row><entry>SHARING &lt;idParentClass&gt;</entry><entry>This clause is not supported by X#.</entry></row></table><para>&#160;</para>
+<table><row><entry>IMPLEMENTS &lt;idInterface&gt;</entry><entry>The name(s) of the interface(s) that this class implements</entry></row></table><para>&#160;</para>
+<table><row><entry>ClassMembers</entry><entry>This may be a list of variable declarations, method declarations and inline method implementations</entry></row></table><para>&#160;</para>
+<table><row><entry>[CLASS] METHOD</entry><entry>This implements one or more methods outside of the class declaration. The CLASS keyword indicates that it is a STATIC method, as opposed to an INSTANCE method.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">ClassMembers</h1>
+<para><link xlink:href="d8c79371-36c3-45ee-88ba-4c507bbac222" /></para>
+<para><link xlink:href="d82ca908-3507-4f4b-9da6-6d65ff2db61d" /></para>
+<para><link xlink:href="07c494c5-6627-49ae-abf3-01d9f0d6aaff" /></para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">&#160;</h1>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

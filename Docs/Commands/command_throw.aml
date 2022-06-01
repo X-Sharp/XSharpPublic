@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="b311f02d-ac36-46c7-a504-e068924e54c7" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">THROW Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <para>The THROW statement raises a runtime exception.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>THROW [expression] </para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>expression </entry><entry>An optional expression to throw. </entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Remarks</h1>
+<para>THROW throws a runtime exception, causing execution to branch to the nearest CATCH or FINALLY block in a TRY construct. If execution is not within a TRY construct the application will terminate.</para>
+<para>The specified expression is passed to the CATCH statement, if any, and must be of type System.Exception or a class derived from it . See TRY-CATCH-FINALLY fro more information.</para>
+<para>Using THROW within a CATCH block without any arguments re-throws the exception, passing it unchanged to the next highest TRY-CATCH block.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Example</h1>
+<para>USING System.IO<para/>
+FUNCTION ReadFile( filename AS STRING ) AS STRING<para/>
+ &#160; LOCAL s AS STRING<para/>
+ &#160; TRY<para/>
+ &#160; &#160; &#160;s := File.ReadAllText( filename ) <para/>
+ &#160; CATCH e AS DirectoryNotFoundException<para/>
+ &#160; &#160; &#160;? &quot;Directory not found&quot;, e<para/>
+ &#160; CATCH e AS IOException<para/>
+ &#160; &#160; &#160;? &quot;IO exception occurred&quot;, e<para/>
+ &#160; CATCH e AS UnauthorizedAccessException<para/>
+ &#160; &#160; &#160;? &quot;Access denied&quot;, e<para/>
+ &#160; CATCH<para/>
+ &#160; &#160; &#160;? &quot;Some other exception&quot;<para/>
+ &#160; &#160;  // Escalate error to next TRY-CATCH<para/>
+ &#160; &#160;  THROW<para/>
+ &#160; FINALLY<para/>
+ &#160; &#160; &#160;? &quot;All done!&quot;<para/>
+ &#160; END TRY<para/>
+ &#160; RETURN s </para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para>&#160;</para>
+<para><link xlink:href="71a37628-1a90-4927-a16d-9343f5ea84f2">TRY-CATCH-FINALLY </link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

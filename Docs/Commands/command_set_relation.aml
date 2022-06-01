@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="3b8419ea-2907-4b54-a995-d5bd1bc1a537" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">SET RELATION Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Link a parent work area to one or more child work areas using a key expression, record number, or numeric expression.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>SET RELATION TO [&lt;uRecID&gt; INTO &lt;xcAlias&gt;] [, [TO] &lt;uRecId&gt; INTO &lt;xcAlias&gt;...] [ADDITIVE] [SCOPED]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>TO &lt;uRecID&gt;</entry><entry>Performs an &lt;xcAlias&gt;-&gt;DBSeek(&lt;uRecID&gt;) operation if the child work area has a controlling order; otherwise, performs an &lt;xcAlias&gt;-&gt;DBGoTo(&lt;uRecID&gt;) operation. &#160;The operation serves to position the child work area to a matching index key value or record number each time the record pointer moves in the parent work area.</entry></row></table><para>&#160;</para>
+<table><row><entry>INTO &lt;xcAlias&gt;</entry><entry>The alias identifier for the child work area. &#160;If there is no open database file associated with the specified alias, a runtime error is raised.</entry></row></table><para>&#160;</para>
+<table><row><entry>ADDITIVE</entry><entry>Specifies that relations are to be added to the existing relations in the work area. &#160;If not specified, existing relations are cleared before the new ones are set.</entry></row></table><para>&#160;</para>
+<table><row><entry>SCOPED</entry><entry>Causes the SET RELATION command to map to the OrdSetRelation(). &#160;If not specified, SET RELATION maps to DBSetRelation().</entry></row></table><para>&#160;</para>
+<para>SET RELATION TO with no arguments clears all relations defined in the current work area.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>Each parent work area can be linked to as many as eight child work areas.</para>
+<para>&#160;</para>
+<para>Relating work areas synchronizes the child work area with the parent work area. &#160;This is achieved by automatically repositioning the child work area whenever the parent work area moves to a new record.</para>
+<para>&#160;</para>
+<para>SET RELATION TO when specified with a list of expressions and alias names is functionally equivalent to using several DBSetRelation() (or OrdSetRelation(), if SCOPED is specified) function calls. &#160;If no ADDITIVE clause is specified, the command calls DBClearRelation() first. &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>Soft seeking:  Seek operations that occur as part of relational positioning are never soft seeks (they do not respect the <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetSoftSeek.htm -->SetSoftSeek() flag). &#160;If a relational movement is unsuccessful, the child work area is positioned to <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_LastRec.htm -->LastRec() + 1, its <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Found.htm -->Found() status returns FALSE, and its <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Eof.htm -->EoF() status returns TRUE.</para>
+<para>&#160;</para>
+<para>Cyclical relations:  Do not relate a parent work area to itself either directly or indirectly.</para>
+<para>&#160;</para>
+<para>Record number relations:  To relate two work areas based on matching record numbers, use <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_RecNo.htm -->RecNo() for the SET RELATION TO expression and make sure the child work area has no active indexes.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example relates three work areas in a multiple parent-child configuration with CUSTOMER related to both INVOICES and ZIP:</para>
+<para>&#160;</para>
+<para>USE invoices INDEX invoices NEW<para/>
+USE zip INDEX zipcode NEW<para/>
+USE customer NEW<para/>
+SET RELATION TO CustNum INTO Invoices, Zipcode INTO Zip<para/>
+LIST Customer, Zip-&gt;City, Invoices-&gt;Number, Invoices-&gt;Amount</para>
+<para>&#160;</para>
+<para>Sometime later, you can add a new child relation using the ADDITIVE clause, like this:</para>
+<para>&#160;</para>
+<para>USE backorder INDEX backorder NEW<para/>
+SELECT customer<para/>
+SET RELATION TO CustNum INTO Backorder ADDITIVE</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbGoto.htm -->DbGoTo(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbRelation.htm -->DBRelation(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbRSelect.htm -->DBRSelect(),, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSeek.htm -->DbSeek(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetIndex.htm -->DbSetIndex(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetOrder.htm -->DbSetOrder() , <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetRelation.htm -->DBSetRelation(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Found.htm -->Found(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_OrdSetRelation.htm -->OrdSetRelation(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_RecNo.htm -->RecNo(), <link xlink:href="9085df4a-da8f-4ed6-948a-db58aa0eeb27">SET INDEX</link>, <link xlink:href="4d6305aa-62bf-4dce-8716-be94d777c277">SET ORDER</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetSoftSeek.htm -->SetSoftSeek()</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

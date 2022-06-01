@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="a10d017b-3f7b-4b45-bac4-11b209020cdd" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: blocks2.html -->Blocks and Namespaces&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">BEGIN (UN)CHECKED</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>The BEGIN (UN)CHECKED and END (UN)CHECKED keywords mark a block of statements that are compiled with overflow checking enabled or disabled</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>BEGIN CHECKED<para/>
+ &#160; statements<para/>
+END CHECKED<para/>
+&#160;<para/>
+BEGIN UNCHECKED<para/>
+ &#160; statements<para/>
+END CHECKED</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<para>&#160;</para>
+<table><row><entry>statements </entry><entry>One or more statements or expressions that are compiled with the specified overflow checking</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Remarks</h1>
+<para>&#160;</para>
+<para>BEGIN CHECKED ... END CHECKED ensures that a block of code is compiled with a clear overflow checking option, regardless of the compiler option <!-- TODO: Unknown topic link: opt-ovf.html -->-ovf.</para>
+<para>&#160;</para>
+<para>BEGIN CHECKED <para/>
+ &#160; LOCAL intValue as INT<para/>
+ &#160; LOCAL dwordValue as DWORD<para/>
+ &#160; intValue := -1<para/>
+ &#160; dwordValue := (DWORD) intValue &#160; // Overflow error<para/>
+END CHECKED<para/>
+&#160;<para/>
+BEGIN UNCHECKED <para/>
+ &#160; LOCAL intValue as INT<para/>
+ &#160; LOCAL dwordValue as DWORD<para/>
+ &#160; intValue := -1<para/>
+ &#160; dwordValue := (DWORD) intValue &#160; // NO Overflow error, dwordValue now has the value UInt32.MaxValue<para/>
+END UNCHECKED</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

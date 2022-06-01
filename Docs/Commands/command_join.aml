@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="5ab205da-3eab-4669-9b4e-791fdec3b715" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">JOIN Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Create a new database file by merging selected records and fields from two work areas based on a specified condition.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>JOIN WITH &lt;xcAlias&gt; TO &lt;xcTargetFile&gt; FOR &lt;lCondition&gt; [FIELDS &lt;idFieldList&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>WITH &lt;xcAlias&gt;</entry><entry>The alias identifier for the work area to merge with the current work area. &#160;If there is no open database associated with &lt;xcAlias&gt;, a runtime error is raised.</entry></row></table><para>&#160;</para>
+<table><row><entry>TO &lt;xcTargetFile&gt;</entry><entry>The name of the target database file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD .</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>FOR &lt;lCondition&gt;</entry><entry>A condition that is processed for each visible record in the current work area using every visible record in the WITH work area. &#160;If a record meets the condition, a new record is written to &lt;xcTargetFile&gt;. &#160;If a record does not meet the specified condition, it is ignored and the next record is processed.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>Warning! &#160;The number of records processed will be the <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_LastRec.htm -->LastRec() of the primary work area multiplied by the LastRec() of the secondary work area. &#160;For example, if you have two database files with 100 records each, the number of records JOIN processes is the equivalent of sequentially processing a single database file of 10,000 records. &#160;Therefore, use this command carefully.</entry></row></table><para>&#160;</para>
+<table><row><entry>FIELDS &lt;idFieldList&gt;</entry><entry>The projection of fields from both work areas into the new database file. &#160;To specify fields in the secondary work area, reference them with the alias operator (-&gt;). &#160;If the FIELDS clause is not specified, all fields from the current work area are included in the target database file.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>Deleted records:  If SetDeleted() is FALSE, deleted records in both source files are processed, but their deleted status is not retained in &lt;xcTargetFile&gt;; thus, no record in the target file is marked for deletion, regardless of its deleted status in the source files.</para>
+<para>Visibility:  If SetDeleted() is TRUE, deleted records (in both files) are not visible and are, therefore, not processed. &#160;Similarly, records that are filtered (with <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetFilter.htm -->DbSetFilter() or a conditional controlling order) are not processed.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example joins the CUSTOMER.DBF with INVOICES.DBF to produce PURCHASES.DBF:</para>
+<para>&#160;</para>
+<para>USE invoices NEW<para/>
+USE customer NEW<para/>
+JOIN WITH Invoices TO purchases;<para/>
+&#160;FOR Last = Invoices-&gt;Last;<para/>
+&#160;FIELDS First, Last, Invoices-&gt;Number, ;<para/>
+&#160; &#160; &#160; &#160; &#160;Invoices-&gt;Amount</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbJoin.htm -->DbJoin(), <link xlink:href="3b8419ea-2907-4b54-a995-d5bd1bc1a537">SET RELATION</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDefault.htm -->SetDefault(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetPath.htm -->SetPath()</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

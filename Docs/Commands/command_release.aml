@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="deefbc86-9dcf-48e1-85c3-6bb4ba96e72e" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_memvar.html -->Memory Variable&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">RELEASE Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Releases public and private memory variables visible to the current routine by assigning a NIL value to them.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>RELEASE &lt;idMemvarList&gt;<para/>
+RELEASE ALL [LIKE | EXCEPT &lt;Skeleton&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;idMemvarList&gt;</entry><entry>A list of private or public variables to release. &#160;Specifying a variable name that does not exist or is not visible raises a runtime error.</entry></row></table><para>&#160;</para>
+<table><row><entry>ALL</entry><entry>Releases all private variables and leaves public variables intact.</entry></row></table><para>&#160;</para>
+<table><row><entry>LIKE | EXCEPT &lt;Skeleton&gt;</entry></row></table><table><row><entry></entry><entry>Specifies a set of visible private variables to release (LIKE) or keep (EXCEPT) and leaves public variables intact. &#160;&lt;Skeleton&gt; can include literal characters as well as the standard wildcard characters, * and ?. &#160;If no variables match the &lt;Skeleton&gt;, nothing happens.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>This command does not actually delete the specified variables from memory like CLEAR ALL or CLEAR MEMORY. &#160;Instead, it releases the value of the variables by assigning NIL to them. &#160;For this reason, variables that are hidden do not become visible until termination of the routine initiating the RELEASE operation.</para>
+<para>&#160;</para>
+<para>Note:  Declared variables and constants are not affected by the RELEASE command. &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="7f522226-04b7-4e01-93bb-5e93c0c2d8d8">CLEAR MEMORY</link>, <link xlink:href="d8822cca-7c06-4150-b83c-2dd9b531186d">LOCAL</link>, <link xlink:href="167a7bca-5bea-4198-b685-3376fba16514">PRIVATE</link>, <link xlink:href="8d194317-f7c6-462f-bcfb-ccb8b195d6bf">PUBLIC</link>, <link xlink:href="da9ad6d2-893c-4a63-b00e-475dd4687e12">QUIT</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

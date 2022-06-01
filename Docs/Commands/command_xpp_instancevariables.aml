@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="d8c79371-36c3-45ee-88ba-4c507bbac222" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration &gt; <link xlink:href="ca532dd1-d0fb-4ed2-813b-7a152a34dc08" />&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">Fields (Xbase++ class syntax)</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare fields/ instance variables with optional initial values</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[Visibility :]</para>
+<para>&#160;[STATIC] VAR &lt;idVar,...&gt; [IS &lt;Name&gt;] [IN &lt;SuperClass&gt;] &#160;[AS &lt;idType&gt;]</para>
+<para>&#160;[SHARED]</para>
+<para>&#160;[READONLY]</para>
+<para>&#160;[ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] <para/>
+&#160;[NOSAVE]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Visibility</entry><entry>This sets the visibility for the variables on the line following the statement. This can be HIDDEN ,PROTECTED, EXPORTED or INTERNAL. The default visibility is HIDDEN.</entry></row></table><para>&#160;</para>
+<table><row><entry>STATIC</entry><entry>Declares that this is a class level field.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idVar&gt;</entry><entry>A valid identifier name for the field to declare.</entry></row></table><para>&#160;</para>
+<table><row><entry>IS .. IN ..</entry><entry>This clause is not supported in X#</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><para>&#160;</para>
+<table><row><entry>SHARED</entry><entry>This clause is not supported in X#</entry></row></table><para>&#160;</para>
+<table><row><entry>READONLY</entry><entry>This clause is not supported in X#</entry></row></table><para>&#160;</para>
+<table><row><entry>ASSIGNMENT ..</entry><entry>This clause is not supported in X#</entry></row></table><para>&#160;</para>
+<table><row><entry>NOSAVE</entry><entry>This sets the [NonSerializable] attribute on the field.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Note</h1>
+<para>Xbase++ has a complicated set of rules on how to control read/write access to fields. In .Net we simply use the Visibility .</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

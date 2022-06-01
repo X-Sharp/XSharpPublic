@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="b00d15fa-3647-440f-878d-efa42b7b7b26" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_terminal.html -->Terminal Window&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">WAIT Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Display a prompt after sending a carriage return/linefeed to the terminal window, then wait for a key to be pressed.</para>
+<para>&#160;</para>
+<para>Note:  WAIT is a compatibility command and is no longer recommended. &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>WAIT [&lt;uValuePrompt&gt;] [TO &lt;idVar&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;uValuePrompt&gt;</entry><entry>An optional prompt displayed before the input area. &#160;If omitted, &quot;Press any key to continue...&quot; is displayed. &#160;Specify NULL_STRING if you do not want to display a prompt.</entry></row></table><para>&#160;</para>
+<table><row><entry>TO &lt;idVar&gt;</entry><entry>The variable that will hold input from the keyboard. &#160;If there is no variable named &lt;idVar&gt; that is visible to the current routine, a private variable is created. &#160;&lt;idVar&gt; is assigned the keystroke as a string. &#160;If an Alt or Ctrl key combination is pressed, WAIT assigns Chr(0) to &lt;idVar&gt;. &#160;</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>Non-alphanumeric values entered by pressing an Alt+key combination assign the specified character. &#160;If the character can be displayed, it is echoed to the screen. &#160;</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Example</h1>
+<para>This example illustrates how to store the WAIT keystroke as an array element:</para>
+<para>&#160;</para>
+<para>FUNCTION Start AS VOID<para/>
+LOCAL aVar[2]<para/>
+WAIT &quot;Press a key...&quot; TO aVar[1]<para/>
+? aVar[1] &#160; &#160; &#160; &#160; &#160;  // Result: &#160;key pressed in<para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; // Response to WAIT<para/>
+? aVar[2] &#160; &#160; &#160; &#160; &#160;  // Result: &#160;NIL<para/>
+? ValType(aVar) &#160; &#160; &#160; &#160; // Result: &#160;A<para/>
+? ValType(aVar[1]) &#160; &#160;  // Result: &#160;C</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="725d43d7-d668-484b-9c95-ec2a7b9b4fd7">ACCEPT</link></para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

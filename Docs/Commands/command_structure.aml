@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="a6320054-7ff3-4d6a-a900-62bb607f9e55" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">STRUCTURE Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare a class name to the compiler.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[Attributes] [Modifiers] STRUCTURE &lt;idStructure&gt; <para/>
+&#160;[IMPLEMENTS &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
+<para>&#160;[StructureMembers]</para>
+<para>&#160;END STRUCTURE</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Attributes</entry><entry>An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method/function containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword.</entry></row></table><para>&#160;</para>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, PROTECTED, HIDDEN, INTERNAL, SEALED, ABSTRACT or STATIC.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idStructure&gt;</entry><entry>A valid identifier name for the class. &#160;A class is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a class and a global variable, for example, with the same name.</entry></row></table><para>&#160;</para>
+<table><row><entry>IMPLEMENTS &lt;idInterface&gt;</entry><entry>The name(s) of the interface(s) that this class implements</entry></row></table><para>&#160;</para>
+<table><row><entry>StructrureMembers</entry><entry>This can be any of <link xlink:href="2a5aba7a-b709-40e1-9bd0-f31d73c511b7">ACCESS</link>, <link xlink:href="91993c4b-eb98-471f-a272-3feaddceb3d0">ASSIGN</link>, <link xlink:href="2e3ce02f-e582-464b-b3d8-3ebe56eba8a2">CONSTRUCTOR</link>, <link xlink:href="1517da49-281d-4c1b-9337-5d60d2bd1f95">DESTRUCTOR</link>, <link xlink:href="e3b838c9-f90d-4c04-a519-0d3c6533d416">EVENT</link>, <link xlink:href="77b4131b-7ffd-4fad-ae60-b9ca0ec84fc7">METHOD</link>, <link xlink:href="4d6279cb-f438-4885-9c02-e61120f22548">OPERATOR</link>, <link xlink:href="ef62a4ba-0422-4701-9e88-9cc105d382be">PROPERTY</link>, just like in the CLASS declaration</entry></row></table><para>&#160;</para>
+<para>In this case, the variables x and z are typed as INT, while the variables cName and cAddr are typed as STRING.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>After the structure name is declared to the compiler, it is followed by 0 or more instance variable declaration statements. &#160;You use a structure name to declare variables (see GLOBAL and LOCAL statements in this guide) designed to hold instances of a specific class, to instantiate instances of the class, and to define methods (see the METHOD statement in this guide) and subclasses for the class.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>Binding of instance variables:  Instance variables can be either early or late bound, depending on how you declare them and how you use them.</para>
+<para>&#160;</para>
+<para>Early binding happens if the memory location of a variable is known at compile time. &#160;The compiler knows exactly how to reference the variable and can, therefore, generate code to do so.</para>
+<para>&#160;</para>
+<para>Late binding is necessary if the memory location of a variable is unknown at compile time. &#160;The compiler cannot determine from the program source code exactly where the variable is or how to go about referencing it, so it generates code to look the symbol up in a table. &#160;The lookup is performed at runtime.</para>
+<para>&#160;</para>
+<para>Since there is no need for a runtime lookup with early bound instance variables, using them instead of late bound variables will significantly improve the performance of your application. &#160;The following table summarizes the binding and visibility issues for the four types of instance variables:</para>
+<para>&#160;</para>
+<table><row><entry>Variable Type</entry><entry>Binding &#160; &#160; &#160; &#160;Visibility &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>EXPORT</entry><entry>Early, if possible &#160; &#160; &#160; &#160;Application-wide for CLASS and module-wide for STATIC CLASS &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>INSTANCE</entry><entry>Always late &#160; &#160; &#160; &#160;In class and subclasses &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>HIDDEN</entry><entry>Always early &#160; &#160; &#160; &#160;In class only &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>PROTECT</entry><entry>Always early &#160; &#160; &#160; &#160;In class and subclasses &#160; &#160; &#160; &#160;</entry></row></table><para>&#160;</para>
+<para>Object instantiation:  Once you declare a class, you create instances of the class using the class name followed by the instantiation operators, {}. &#160;The syntax is as follows:</para>
+<para>&#160;</para>
+<para>&lt;idClass&gt;{[&lt;uArgList&gt;]}</para>
+<para>&#160;</para>
+<para>where &lt;uArgList&gt; is an optional comma-separated list of values passed as arguments to a special method called Init() (see the METHOD statement in this guide for more information on the Init() method).</para>
+<para>&#160;</para>
+<para>Accessing instance variables:  The syntax to access an exported instance variable externally (i.e., from any entity that is not a method of its class) is as follows:</para>
+<para>&#160;</para>
+<para>&lt;idObject&gt;:&lt;idVar&gt;</para>
+<para>&#160;</para>
+<para>You can access non-exported instance variables only from methods in which they are visible. &#160;Within a method, you use the following syntax for accessing all instance variables:</para>
+<para>&#160;</para>
+<para>[SELF:]&lt;idVar&gt;</para>
+<para>&#160;</para>
+<para>The SELF: &#160;prefix is optional except in the case of an access/assign method (see the ACCESS and ASSIGN statement entries in this guide for more information and the METHOD statement for more information on SELF).</para>
+<para>Instance variables are just like other program variables. &#160;You can access them anywhere in the language where an expression is allowed.</para>
+<para>&#160;</para>
+<para>The prefix [STATIC] is no longer supported &#160;by XSharp</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>The following example defines two classes, one of which inherits values from the other, and demonstrates how to create a class instance with initial values for the instance variables:</para>
+<para>&#160;</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="2a5aba7a-b709-40e1-9bd0-f31d73c511b7">ACCESS</link>, <link xlink:href="91993c4b-eb98-471f-a272-3feaddceb3d0">ASSIGN</link>, <link xlink:href="2e3ce02f-e582-464b-b3d8-3ebe56eba8a2">CONSTRUCTOR</link>, <link xlink:href="1517da49-281d-4c1b-9337-5d60d2bd1f95">DESTRUCTOR</link>, <link xlink:href="e3b838c9-f90d-4c04-a519-0d3c6533d416">EVENT</link>, <link xlink:href="77b4131b-7ffd-4fad-ae60-b9ca0ec84fc7">METHOD</link>, <link xlink:href="4d6279cb-f438-4885-9c02-e61120f22548">OPERATOR</link>, <link xlink:href="ef62a4ba-0422-4701-9e88-9cc105d382be">PROPERTY</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

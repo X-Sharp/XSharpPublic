@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="ec59bbbe-c5f7-4c77-bb2f-cb4bedf04964" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">BREAK statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>The BREAK statement raises a runtime exception.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>BREAK [expression ] </para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>expression </entry><entry>An optional expression to throw. </entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Remarks</h1>
+<para>BREAK throws a runtime exception, causing execution to branch to the nearest RECOVER, CATCH or FINALLY block in a BEGIN SEQUENCE-RECOVER USING or TRY construct. If execution is not within a BEGIN SEQUENCE or TRY construct, the application will terminate.</para>
+<para>The specified expression will be evaluated and received by the nearest RECOVER USING statement, if any, as a value of type USUAL. If the nearest RECOVER statement does not have a USING clause, the result of expression is discarded.</para>
+<para>If expression is not specified, it defaults to NIL.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Example</h1>
+<para>FUNCTION foo<para/>
+LOCAL e AS USUAL<para/>
+BEGIN SEQUENCE<para/>
+ &#160; bar( 1 )<para/>
+RECOVER USING e<para/>
+ &#160; ? &quot;An exception has occurred, exception value is:&quot;, e<para/>
+END SEQUENCE<para/>
+&#160;<para/>
+FUNCTION bar( x )<para/>
+  IF Valtype(x) != STRING<para/>
+ &#160;  BREAK &quot;Argument not a string!&quot;<para/>
+ &#160; ENDIF<para/>
+ &#160;...<para/>
+RETURN</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

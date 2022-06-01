@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="76e253bd-c169-4078-b086-64feffe160c1" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">PROCEDURE Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare a procedure name and formal parameters. When used inside a FoxPro DEFINE CLASS .. ENDDEFINE this declares a method.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[Attributes] [Modifiers]  &#160; &#160; &#160; &#160;PROCEDURE &#160;&lt;idProcedure&gt; </para>
+<para>&#160;[Typeparameters]</para>
+<para>&#160;[([&lt;idParam&gt; [AS | REF|OUT|IN &lt;idType&gt;] [, ...])] </para>
+<para>&#160;[AS &lt;idType&gt;]</para>
+<para>&#160;[TypeparameterConstraints]</para>
+<para>&#160;[&lt;idConvention&gt;]</para>
+<para>&#160;[_INIT1 | _INIT2 | _INIT3 | EXIT]</para>
+<para>&#160;[EXPORT LOCAL] </para>
+<para>&#160;[DLLEXPORT STRING_CONST]</para>
+<para>&#160;[=&gt; &lt;expression&gt;]</para>
+<para>&#160;CRLF</para>
+<para>&#160;[&lt;Body&gt;]</para>
+<para>&#160;[ENDPROC | END PROCEDURE]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Attributes</entry><entry>An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method/function containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword.</entry></row></table><para>&#160;</para>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, STATIC, INTERNAL, EXPORT and UNSAFE. </entry></row></table><table><row><entry></entry><entry>Please note that functions and procedures used as class members in FoxPro compatible classes can have more modifiers.<para/>
+&#160;</entry></row></table><table><row><entry>&lt;idProcedure&gt;</entry><entry>A valid identifier name for the function. &#160;A function is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a function and a class, for example, with the same name.</entry></row></table><para>&#160;</para>
+<table><row><entry>TypeParameters</entry><entry>This is supported for methods with generic type arguments. This something like &lt;T&gt; for a method with one type parameter named T. Usually one of the parameters in the parameter list is then also of type T.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idParam&gt;</entry><entry>A &#160;parameter variable. &#160;A variable specified in this manner is automatically declared local. &#160;These variables, also called formal parameters, are used to receive arguments that you pass when you call the entity.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS | REF|OUT|IN &lt;idType&gt;</entry><entry>Specifies the data type of the parameter variable (called strong typing). &#160;AS indicates that the parameter must be passed by value, and REF indicates that it must be passed by reference with the @ operator. OUT is a special kind of REF parameter that does not have to be assigned before the call and must be assigned inside the body of the entity. IN parameters are passed as READONLY references.<para/>
+The last parameter in the list can also be declared as PARAMS &lt;idType&gt;[] which will tell the compiler that the function/method may receive zero or more optional parameters.<para/>
+Functions or Methods of the CLIPPER calling convention are compiled to a function with a single parameter that this declared as Args PARAMS USUAL[]<para/>
+&#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><para>&#160;</para>
+<table><row><entry>TypeParameterConstraints</entry><entry>Here you can specify constraints for the Type parameters, such as WHERE T IS SomeName or WHERE T IS New</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idConvention&gt;</entry><entry>Specifies the calling convention for this entity. &#160;&lt;idConvention&gt; must be one of the following:</entry></row></table><para>&#111; &#160; &#160; &#160; &#160;CLIPPER</para><para>&#111; &#160; &#160; &#160; &#160;STRICT</para><para>&#111; &#160; &#160; &#160; &#160;PASCAL</para><para>&#111; &#160; &#160; &#160; &#160;CALLBACK</para><para>&#111; &#160; &#160; &#160; &#160;THISCALL</para><table><row><entry></entry><entry>Most calling conventions are for backward compatibility only. <para/>
+There are 2 exceptions:<para/>
+CLIPPER declares that a method has untyped parameters. This is usually only needed for methods without any declared parameters. Otherwise the compiler will assume CLIPPER calling convention when it detects untyped parameters. <para/>
+Methods and Functions in external DLL may have STRICT, PASCAL, CALLBACK</entry></row></table><para>&#160;</para>
+<para>&#160;</para>
+<table><row><entry>EXPORT LOCAL</entry><entry>This clause is allowed by X# but ignored.</entry></row></table><para>&#160;</para>
+<table><row><entry>_INITn, EXIT</entry><entry>When an application is executed, all INIT procedures in all modules associated with the application (including libraries) are called automatically. &#160;There are three priority levels for INIT procedures indicated by the _INIT1, _INIT2, and _INIT3 keywords. &#160;_INIT1 procedures are called first, _INIT2 second, and _INIT3 third. &#160;All INIT procedures are called before the application Start() routine.<para/>
+EXIT procedures are called at application shutdown</entry></row></table><table><row><entry>=&gt; &lt;Expression&gt;</entry><entry>Single expression that replaces the multiline body for the entity. CANNOT be compiled with a body</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;Body&gt;</entry><entry>Program statements that form the code of this entity.<para/>
+The &lt;Body&gt; can contain one or more RETURN statements to return control to the calling routine and to serve as the function return value. &#160;If no return statement is specified, control passes back to the calling routine when the function definition ends, and the function will return a default value depending on the return value data type specified (NIL if the return value is not strongly typed).<para/>
+CANNOT be combined with an Expression Body</entry></row></table><para>&#160;</para>
+<table><row><entry>ENDPROC | END PROCEDURE</entry><entry>These (optional)keywords indicate the logical end of the function.</entry></row></table><para>&#160;</para>
+<para>You must follow the guidelines below when specifying an INIT procedure:</para>
+<para>&#183; &#160; &#160; &#160; &#160;No arguments are allowed</para><para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>&#160;</para>
+<para>PROCEDURE First AS VOID PASCAL _INIT1</para>
+<para>&#160;</para>
+<para>INIT procedures are necessary for having automatic initialization routines for libraries and other modules in an application besides the main startup module (i.e., the one containing the Start() routine). &#160;Although Start() routines are limited to one per application, there are no inherent limits for the total number of INIT procedures within an application.</para>
+<para>&#160;</para>
+<para>The following example shows a skeleton of a typical procedure that uses declared variables:</para>
+<para>&#160;</para>
+<para>PROCEDURE Skeleton(cName, cClassRoom, Bones, nJoints)<para/>
+&#160;LOCAL nCrossBones, aOnHand := {&quot;skull&quot;, &quot;metacarpals&quot;}<para/>
+&#160;STATIC nCounter := 0 &#160; &#160; &#160; &#160;<para/>
+&#160;<para/>
+&#160;&lt;Executable Statements&gt;...</para>
+<para>&#160;</para>
+<para>The next example determines whether an argument was skipped by comparing the parameter to NIL:</para>
+<para>&#160;</para>
+<para>PROCEDURE MyProc(param1, param2, param3)<para/>
+&#160;IF param2 != NIL<para/>
+&#160; &#160; &#160; &#160; &#160;param2 := &quot;default value&quot;<para/>
+&#160;ENDIF<para/>
+&#160;&lt;Statements&gt;...</para>
+<para>&#160;</para>
+<para>This example invokes the procedure, UpdateAmount(), as an aliased expression:</para>
+<para>&#160;</para>
+<para>USE invoices NEW<para/>
+USE customer NEW<para/>
+Invoices-&gt;UpdateAmount(Amount + Amount * nInterest)</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="da571189-a521-4066-b374-de88f72d37e8">FIELD</link>, <link xlink:href="14cdd669-1822-49e7-b700-7abebe59013c">FUNCTION</link>, <link xlink:href="d8822cca-7c06-4150-b83c-2dd9b531186d">LOCAL</link>, <link xlink:href="70df5af5-ce42-4ba8-afec-5b3a4de8d996">MEMVAR</link>, <link xlink:href="77b4131b-7ffd-4fad-ae60-b9ca0ec84fc7">METHOD</link>,<link xlink:href="70c94423-9322-4c94-aecc-907f367520ad">RETURN</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

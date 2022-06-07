@@ -109737,6 +109737,125 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R850
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C852 - Problem with #region..#endregion and external file specified with /stddefs *************
+Application = C852 - Problem with #region..#endregion and external file specified with /stddefs
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C852\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C852
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 7C3AE606-07D8-4F8E-9281-6E664A6AA1C2
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = test1.xh
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C852 - Problem with #region..#endregion and external file specified with /stddefs FileGroups]
+[C852 - Problem with #region..#endregion and external file specified with /stddefs Files]
+File = %AppPath%\Prg\C852.prg
+FileGUID = BD22CA46-619F-4DE0-A714-DAEFA00DFC05
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Prg\test1.xh
+FileGUID = 42887761-FA7E-48B8-8727-E0DD9785BE2C
+FileType = Text
+CopyToBin = 0
+File = %AppPath%\Prg\test2.xh
+FileGUID = 6D895EA7-78D8-4073-9448-91E8D4CED8B7
+FileType = Text
+CopyToBin = 0
+[C852 - Problem with #region..#endregion and external file specified with /stddefs References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+[C852 - Problem with #region..#endregion and external file specified with /stddefs Resources]
+[C852 - Problem with #region..#endregion and external file specified with /stddefs Native Resources]
+[C852 - Problem with #region..#endregion and external file specified with /stddefs License files]
+[C852 - Problem with #region..#endregion and external file specified with /stddefs General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C852 - Problem with #region..#endregion and external file specified with /stddefs Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C852 - Problem with #region..#endregion and external file specified with /stddefs
 [EndApplications]
 
 [Configurations]

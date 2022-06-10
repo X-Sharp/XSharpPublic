@@ -826,7 +826,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (inputs.Eof())
             {
-                if (_files.Count > 0)
+                while (inputs.Eof() && _files.Count > 0)
                 {
                     inputs = _files.Pop();
                     var token = inputs.Lt();

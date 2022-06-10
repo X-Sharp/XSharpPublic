@@ -23,14 +23,19 @@ namespace Microsoft.CodeAnalysis.CSharp
             areaName = null;
             if (_compilation.Options.Dialect == XSharpDialect.FoxPro)
             {
-                var xNode = loweredReceiver.Syntax.XNode;
-                if (xNode?.Parent is XSharpParser.AccessMemberContext amc && amc.IsFox)
+                // only do this when not bound to a field/property in the current type
+                // in that case BoundCall is usually a VarGet()
+                if (loweredReceiver is BoundCall bc && bc.ReceiverOpt == null)
                 {
-                    areaName = amc.AreaName;
-                    if (loweredReceiver is BoundCall && amc.Expr is XSharpParser.PrimaryExpressionContext pc
-                        && pc.Expr is XSharpParser.NameExpressionContext)
+                    var xNode = loweredReceiver.Syntax.XNode;
+                    if (xNode?.Parent is XSharpParser.AccessMemberContext amc && amc.IsFox)
                     {
-                        return true;
+                        areaName = amc.AreaName;
+                        if (loweredReceiver is BoundCall && amc.Expr is XSharpParser.PrimaryExpressionContext pc
+                            && pc.Expr is XSharpParser.NameExpressionContext)
+                        {
+                            return true;
+                        }
                     }
                 }
             }

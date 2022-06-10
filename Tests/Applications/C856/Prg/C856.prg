@@ -1,4 +1,5 @@
 // 856. Problems with ASYNC/AWAIT
+// https://github.com/X-Sharp/XSharpPublic/issues/1049
 // vo3+
 /*
 System.AccessViolationException

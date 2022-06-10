@@ -1,5 +1,5 @@
 #region Something
-
+// https://github.com/X-Sharp/XSharpPublic/issues/1046
 FUNCTION Start() AS VOID
 ? "test"
 

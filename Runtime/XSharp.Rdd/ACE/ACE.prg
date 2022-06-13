@@ -2048,6 +2048,14 @@ BEGIN NAMESPACE XSharp.ADS
     PUBLIC STATIC METHOD AdsGetFieldType(hTable AS IntPtr, lFieldOrdinal AS DWORD, pusType OUT WORD ) AS DWORD
         RETURN delGetFieldTypeD(hTable, lFieldOrdinal, OUT pusType)
 
+    PUBLIC STATIC METHOD AdsGetFieldType(hTable AS IntPtr, strFldName AS STRING, pusType OUT WORD ) AS DWORD
+        IF Is32Bits
+            RETURN ACE32.AdsGetFieldType(hTable, strFldName, OUT pusType )
+        ELSE
+            RETURN ACE64.AdsGetFieldType(hTable, strFldName, OUT pusType )
+        ENDIF
+
+
     PUBLIC STATIC METHOD AdsGetHandleType(hObj AS IntPtr, pusType OUT WORD ) AS DWORD
         RETURN delGetHandleType(hObj, OUT pusType)
 
@@ -2113,7 +2121,15 @@ BEGIN NAMESPACE XSharp.ADS
         RETURN delGetLastError(OUT pulErrCode, strBuf, REF pusBufLen)
 
     PUBLIC STATIC METHOD AdsGetMemoLength(hTable AS IntPtr, lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD
-        RETURN delGetMemoLengthD(hTable, lFieldOrdinal, OUT pulLength)
+        RETURN delGetMemoLengthD(hTable, lFieldOrdinal, OUT pulLength) 
+
+    PUBLIC STATIC METHOD AdsGetMemoLength(hTable AS IntPtr, strFldName as STRING, pulLength OUT DWORD ) AS DWORD
+        IF Is32Bits
+            RETURN ACE32.AdsGetMemoLength(hTable, strFldName,  OUT pulLength)
+        ELSE
+            RETURN ACE64.AdsGetMemoLength(hTable, strFldName,  OUT pulLength)
+        ENDIF
+
 
     PUBLIC STATIC METHOD AdsGetMemoBlockSize(hTable AS IntPtr, pusBlockSize OUT WORD ) AS DWORD
         RETURN delGetMemoBlockSize(hTable, OUT pusBlockSize)

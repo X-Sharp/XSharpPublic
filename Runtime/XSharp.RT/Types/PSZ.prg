@@ -292,16 +292,6 @@ BEGIN NAMESPACE XSharp
 			OPERATOR IMPLICIT( p AS IntPtr ) AS PSZ
 				RETURN PSZ{ p }
 			
-			// INT -> PSZ
-			/// <include file="RTComments.xml" path="Comments/Operator/*" />
-			OPERATOR IMPLICIT( i AS INT ) AS PSZ
-				RETURN PSZ{ IntPtr{ i } }
-			
-			// DWORD -> PSZ
-			/// <include file="RTComments.xml" path="Comments/Operator/*" />
-			OPERATOR IMPLICIT( d AS DWORD ) AS PSZ
-				RETURN PSZ{ IntPtr{ (INT64) d} } 
-			
 			///////////////////////////////////////////////////////////////////////////
 			// Conversion Operators - From PSZ...  
 			
@@ -329,20 +319,6 @@ BEGIN NAMESPACE XSharp
 			OPERATOR IMPLICIT( p AS PSZ ) AS STRING
 				RETURN p:ToString()
 			
-			// PSZ -> INT
-			/// <include file="RTComments.xml" path="Comments/Operator/*" />
-			OPERATOR IMPLICIT( p AS PSZ ) AS INT
-				RETURN (INT) p:_value
-			
-			// PSZ -> INT64
-			/// <include file="RTComments.xml" path="Comments/Operator/*" />
-			OPERATOR IMPLICIT( p AS PSZ ) AS INT64
-				RETURN (INT64) p:_value
-			
-			// PSZ -> DWORD
-			/// <include file="RTComments.xml" path="Comments/Operator/*" />
-			OPERATOR IMPLICIT( p AS PSZ ) AS DWORD
-				RETURN (DWORD) p:_value			
 		#endregion
 		
        #region ISerializable

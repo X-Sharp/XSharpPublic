@@ -16,16 +16,17 @@ USING System.Collections.Generic
 
 PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
     // make sure the class constructor gets called
+    #pragma warnings(219, off) // variable is assigned but not used
     VAR x := XSharp.MemVar{"InitTheClass",42}
-    x:Value := 43   // assign a value to suppress the warning about an unused var
+    #pragma warnings(219, default)
     XSharp.MemVar.Put := __FoxMemVarPut
     XSharp.RuntimeState.AutoLock    := __FoxAutoLock
     XSharp.RuntimeState.AutoUnLock  := __FoxAutoUnLock
 
-    XSharp.__Array.FoxArrayHelpers.ADel         := {|a, nEl, nDel| XSharp.VFP.Functions.ADel(a, nEl, nDel)}
-    XSharp.__Array.FoxArrayHelpers.ALen         := {|a, nAtt     | XSharp.VFP.Functions.ALen(a, nAtt)}
-    XSharp.__Array.FoxArrayHelpers.AIns         := {| a, nEl, nType| XSharp.VFP.Functions.AIns(a, nEl, nType)}
-    XSharp.__Array.FoxArrayHelpers.ShowArray    := {|a, cPrefix  | XSharp.VFP.Functions.ShowFoxArray(a, cPrefix)}
+    XSharp.__Array.FoxArrayHelpers.ADel         := XSharp.VFP.Functions.ADel
+    XSharp.__Array.FoxArrayHelpers.ALen         := XSharp.VFP.Functions.FoxALen
+    XSharp.__Array.FoxArrayHelpers.AIns         := XSharp.VFP.Functions.FoxAIns
+    XSharp.__Array.FoxArrayHelpers.ShowArray    := XSharp.VFP.Functions.ShowFoxArray
 
 RETURN
 

@@ -497,12 +497,16 @@ BEGIN NAMESPACE XSharp
     END	CLASS
 
 
-
+    /// <exclude/>
     CLASS FoxArrayHelpers
-        EXPORT ALen AS CODEBLOCK
-        EXPORT AIns AS CODEBLOCK
-        EXPORT ADel AS CODEBLOCK
-        EXPORT ShowArray AS CodeBlock
+        DELEGATE FoxADel(ArrayName AS ARRAY, nElementNumber AS LONG, nDeleteType AS LONG) AS DWORD
+        DELEGATE FoxALen(a as ARRAY) AS DWORD
+        DELEGATE FoxAIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertType AS DWORD) AS DWORD
+        DELEGATE FoxShowArray(a as Array, c as string) as void
+        PUBLIC ALen AS FoxALen
+        PUBLIC AIns AS FoxAIns
+        PUBLIC ADel AS FoxADel
+        PUBLIC ShowArray AS FoxShowArray
     END CLASS
 
 END NAMESPACE

@@ -246,6 +246,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (conversion.IsExplicit && !TypeSymbol.Equals(expression.Type, targetType))
             {
+                if (expression.Syntax.XNode is AssignmentExpressionContext aec && aec.Op.Type == ASSIGN_EXP)
+                {
+                    return CreateXsConversion(expression, conversion, targetType, diagnostics);
+                }
+                if (expression.Syntax.XNode is BinaryExpressionContext bec && bec.Op.Type == EXP)
+                {
+                    return CreateXsConversion(expression, conversion, targetType, diagnostics);
+                }
                 if (expression.Kind == BoundKind.UnconvertedConditionalOperator)
                 {
                     expression = BindToNaturalType(expression, diagnostics);

@@ -2490,7 +2490,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //System.Diagnostics.Debug.WriteLine("Enter Source " + _fileName);
             GlobalClassEntities = CreateClassEntities();
             ClassEntities.Push(GlobalClassEntities);
-
         }
         public override void EnterSource([NotNull] XP.SourceContext context)
         {
@@ -7423,14 +7422,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitBinaryExpression([NotNull] XP.BinaryExpressionContext context)
         {
             // when /vo12 is used then for the types .DIV add conversion for the LHS and RHS to Double
-
+            var left = context.Left.Get<ExpressionSyntax>();
+            var right = context.Right.Get<ExpressionSyntax>();
             switch (context.Op.Type)
             {
                 case XP.EXP:
                     context.Put(GenerateMethodCall(SystemQualifiedNames.Pow,
                         _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                            MakeSeparatedList(MakeArgument(context.Left.Get<ExpressionSyntax>()),
-                                MakeArgument(context.Right.Get<ExpressionSyntax>())),
+                            MakeSeparatedList(MakeArgument(left),
+                                MakeArgument(right)),
                             SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
                     break;
                 case XP.SUBSTR:
@@ -7438,13 +7438,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // but since they both can be NULL add a condition:
                     // LHS == NULL ? FALSE: RHS:IndexOf(LHS)
 
-                    var condition = _syntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression, context.Left.Get<ExpressionSyntax>(),
+                    var condition = _syntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression, left,
                         SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken), GenerateLiteralNull());
                     var indexof = _syntaxFactory.ConditionalAccessExpression(
-                                    context.Right.Get<ExpressionSyntax>(),
+                                    right,
                                     SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
                                     _syntaxFactory.InvocationExpression(_syntaxFactory.MemberBindingExpression(SyntaxFactory.MakeToken(SyntaxKind.DotToken), GenerateSimpleName("IndexOf")),
-                                     MakeArgumentList(MakeArgument(context.Left.Get<ExpressionSyntax>()))));
+                                     MakeArgumentList(MakeArgument(left))));
                     var rhsExp = _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanExpression, indexof,
                                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
                                 GenerateLiteral("-1", -1));
@@ -7453,27 +7453,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     context.Put(exp);
                     break;
-                case XP.ASSIGN_EXP:
-                    context.Put(MakeSimpleAssignment(
-                        context.Left.Get<ExpressionSyntax>(),
-                        GenerateMethodCall(SystemQualifiedNames.Pow,
-                            _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                MakeSeparatedList(MakeArgument(context.Left.Get<ExpressionSyntax>()),
-                                    MakeArgument(context.Right.Get<ExpressionSyntax>())),
-                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)))));
-                    break;
                 case XP.GT:
                     if (context.Gt == null)     // Normal Greater than
                         goto default;
 
                     SyntaxToken token = GetRShiftToken(context.Op, context.Gt);
+                    right = MakeCastTo(intType, right);
                     context.Put(_syntaxFactory.BinaryExpression(
                         SyntaxKind.RightShiftExpression,
-                        context.Left.Get<ExpressionSyntax>(),
+                        left,
                         token,
-                        context.Right.Get<ExpressionSyntax>()));
+                        right));
 
                     break;
+                case XP.RSHIFT:
+                case XP.LSHIFT:
+                    right = MakeCastTo(intType, right);
+                    goto default;
                 default:
                     // Note
                     // in VO ~is XOR for binary expressions and bitwise negation for unary expressions
@@ -7481,20 +7477,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // SyntaxOp() takes care of the Binary Operators
                     context.Put(_syntaxFactory.BinaryExpression(
                         context.Op.ExpressionKindBinaryOp(),
-                        context.Left.Get<ExpressionSyntax>(),
+                        left,
                         context.Op.SyntaxOp(),
-                        context.Right.Get<ExpressionSyntax>()));
+                        right));
                     break;
             }
         }
 
         public override void ExitAssignmentExpression([NotNull] XP.AssignmentExpressionContext context)
         {
-            context.Put(_syntaxFactory.AssignmentExpression(
-                context.Op.ExpressionKindBinaryOp(),
-                context.Left.Get<ExpressionSyntax>(),
-                context.Op.SyntaxOp(),
-                context.Right.Get<ExpressionSyntax>()));
+            var lhs = context.Left.Get<ExpressionSyntax>();
+            var rhs = context.Right.Get<ExpressionSyntax>();
+            switch (context.Op.Type)
+            {
+                case XSharpParser.ASSIGN_EXP:
+                    var args = MakeArgumentList(MakeArgument(lhs), MakeArgument(rhs));
+                    rhs = GenerateMethodCall(SystemQualifiedNames.Pow, args);
+                    context.Put(MakeSimpleAssignment(lhs, rhs));
+                    break;
+                case XSharpParser.ASSIGN_LSHIFT:
+                case XSharpParser.ASSIGN_RSHIFT:
+                    rhs = MakeCastTo(intType, rhs);
+                    goto default;
+                default:
+                    context.Put(_syntaxFactory.AssignmentExpression(
+                        context.Op.ExpressionKindBinaryOp(),
+                        lhs,
+                        context.Op.SyntaxOp(),
+                        rhs));
+                    break;
+            }
         }
 
         public override void ExitPrimaryExpression([NotNull] XP.PrimaryExpressionContext context)

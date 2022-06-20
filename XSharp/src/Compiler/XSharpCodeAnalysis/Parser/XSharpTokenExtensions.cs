@@ -745,9 +745,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SyntaxToken r;
             switch (token.Type)
             {
-                case XSharpParser.EXP:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
-                    break;
+                // C# does not have an EXP operator
+                //case XSharpParser.EXP:
+                //    r = SyntaxFactory.MakeToken(SyntaxKind.None);
+                //    break;
                 case XSharpParser.PLUS:
                     r = SyntaxFactory.MakeToken(SyntaxKind.PlusToken);
                     break;
@@ -838,9 +839,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.ASSIGN_SUB:
                     r = SyntaxFactory.MakeToken(SyntaxKind.MinusEqualsToken);
                     break;
-                //case XSharpParser.ASSIGN_EXP:
-                //    kind = SyntaxKind.None;
-                //    break;
                 case XSharpParser.ASSIGN_MUL:
                     r = SyntaxFactory.MakeToken(SyntaxKind.AsteriskEqualsToken);
                     break;
@@ -896,6 +894,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.FALSE_CONST:
                     r = SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword);
                     break;
+                // C# does not have an EXP operator
+                case XSharpParser.ASSIGN_EXP:
                 default:
                     // return a valid operator with an error message prevents a crash in the compiler
                     r = SyntaxFactory.MakeToken(SyntaxKind.PlusToken).WithAdditionalDiagnostics(
@@ -1412,6 +1412,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SyntaxKind r;
             switch (token.Type)
             {
+                // C# does not have an EXP operator
                 //case XSharpParser.EXP:
                 //    r = SyntaxKind.None;
                 //    break;
@@ -1504,9 +1505,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.ASSIGN_SUB:
                     r = SyntaxKind.SubtractAssignmentExpression;
                     break;
-                //case XSharpParser.ASSIGN_EXP:
-                //    r = SyntaxKind.None;
-                //    break;
                 case XSharpParser.ASSIGN_MUL:
                     r = SyntaxKind.MultiplyAssignmentExpression;
                     break;
@@ -1538,6 +1536,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.QQMARK:
                     r = SyntaxKind.CoalesceExpression;
                     break;
+                // C# does not have an EXP operator
+                case XSharpParser.ASSIGN_EXP:
                 default:
                     throw new InvalidOperationException();
             }
@@ -1582,6 +1582,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.ASSIGN_QQMARK:
                     r = SyntaxFactory.MakeToken(SyntaxKind.QuestionQuestionToken);
                     break;
+                // C# does not have an EXP operator
+                case XSharpParser.ASSIGN_EXP:
                 default:
                     r = SyntaxFactory.MakeToken(SyntaxKind.DotToken);
                     break;

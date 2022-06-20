@@ -214,6 +214,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 !kind.IsShift())
             {
                 Conversion rightToLeftConversion = this.Conversions.ClassifyConversionFromExpression(right, leftType, ref useSiteDiagnostics);
+#if XSHARP
+                if (rightToLeftConversion.IsExplicit && 
+                    Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, node) ||
+                    Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node))
+                {
+                    // with /vo7 or vo4 we silently allow the explicit conversion
+                    hasError = false;
+                    Error(diagnostics, ErrorCode.WRN_ImplicitCast, node, right.Type, leftType);
+                }
+                else
+#endif                
                 if (!rightToLeftConversion.IsImplicit || !rightToLeftConversion.IsValid)
                 {
                     hasError = true;

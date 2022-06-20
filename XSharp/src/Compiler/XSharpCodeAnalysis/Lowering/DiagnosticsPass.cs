@@ -70,10 +70,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             var sourceType = node.Operand.Type;
             var targetType = node.Type;
 
-            if (syntax is BinaryExpressionSyntax binexp)
-            {
 
-                if (node.HasConstant())
+            if (syntax is BinaryExpressionSyntax binexp )
+            {
+                if (node.HasConstant() || node.Conversion.IsImplicit)
                 {
                     node.DisableWarning();
                 }
@@ -101,7 +101,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 VOCheckIntegerToPointer(node);
             }
-            if (syntax == null || syntax.XIsExplicitTypeCastInCode || node.WasCompilerGenerated)
+            if (syntax == null || syntax.XIsExplicitTypeCastInCode || node.WasCompilerGenerated
+                || node.ConstantValueOpt != null)
                 return;
             GenerateWarning(sourceType, targetType, node);
         }

@@ -76,8 +76,9 @@ ApplicationGroup = C750-C799,09F25645-7429-41B4-8D41-DFD5B355DD87,715D7617-320E-
 ApplicationGroup = C200-C249,AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C150-C199,EBE227D6-3F55-4251-A268-C654F38F1FAF,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C800-C849,54E26745-C95C-4FDB-98B2-2AF8DB1DED34,715D7617-320E-41FF-B82F-E314D950CD23
-ApplicationGroup = R800-R850,084FC9A2-9274-4770-AE44-6D078B06BA37,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = R800-R849,084FC9A2-9274-4770-AE44-6D078B06BA37,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C850-C899,B3CDE601-F52E-476A-9FD5-35CEE1E8C029,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = R850-R899,4913BA1E-7338-4E92-9D0A-7C3EABF0B562,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = NEW,B9CFE839-D401-428D-94E9-E9D21E9F772D,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Known Incompatibilities with VO,40E29AF9-85EE-4D50-BADC-953EE318D423,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Broken,B7F6C4E3-31FD-40FC-B820-C57110817A58,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
@@ -110416,7 +110417,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C857 - Undeclared variables and Delegates
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R851 - Latebound property access of a FoxPro Property was translated to Workarea.Field *************
 Application = R851 - Latebound property access of a FoxPro Property was translated to Workarea.Field
 IDEVersion = 1.06
@@ -110460,9 +110461,9 @@ CopyToBin = 0
 [R851 - Latebound property access of a FoxPro Property was translated to Workarea.Field References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
 [R851 - Latebound property access of a FoxPro Property was translated to Workarea.Field Resources]
 [R851 - Latebound property access of a FoxPro Property was translated to Workarea.Field Native Resources]
 [R851 - Latebound property access of a FoxPro Property was translated to Workarea.Field License files]
@@ -110645,7 +110646,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R852 - String2Psz and DWORD parameter
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R853 - Nested Sequence *************
 Application = R853 - Nested Sequence
 IDEVersion = 1.06
@@ -110758,6 +110759,120 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R853 - Nested Sequence
+
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
+; ************** APPLICATION R854 - Numeric warnings *************
+Application = R854 - Numeric warnings
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\R854\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R854
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 6974734E-6915-417D-9187-5391E66AA2B1
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R854 - Numeric warnings FileGroups]
+[R854 - Numeric warnings Files]
+File = %AppPath%\Prg\R854.prg
+FileGUID = 28AEB7E7-AC71-4916-B71B-165F0A807BC4
+FileType = Code
+CopyToBin = 0
+[R854 - Numeric warnings References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
+[R854 - Numeric warnings Resources]
+[R854 - Numeric warnings Native Resources]
+[R854 - Numeric warnings License files]
+[R854 - Numeric warnings General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R854 - Numeric warnings Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R854 - Numeric warnings
 [EndApplications]
 
 [Configurations]

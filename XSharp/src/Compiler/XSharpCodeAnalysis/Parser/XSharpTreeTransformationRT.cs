@@ -2220,9 +2220,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public CatchClauseSyntax generateRecoverBlock(XSharpParserRuleContext context, BlockSyntax block, string Id)
         {
             var stmts = _pool.Allocate<StatementSyntax>();
-            var catchVar = SyntaxFactory.Identifier(XSharpSpecialNames.RecoverVarName);
+            var name = XSharpSpecialNames.RecoverVarName + "_" + context.Position.ToString();
+            var catchVar = SyntaxFactory.Identifier(name);
 
-            var objName = GenerateSimpleName(XSharpSpecialNames.RecoverVarName);
+            var objName = GenerateSimpleName(name);
 
             var condition1 = _syntaxFactory.BinaryExpression(SyntaxKind.IsExpression, objName,
                   SyntaxFactory.MakeToken(SyntaxKind.IsKeyword), GenerateQualifiedName(_wrappedExceptionType));

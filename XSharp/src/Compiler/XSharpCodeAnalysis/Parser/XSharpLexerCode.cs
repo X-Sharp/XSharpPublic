@@ -120,7 +120,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _inDottedIdentifier = false;
         bool _currentLineIsPreprocessorDefinition = false;
         bool _beginOfStatement = true;
-        bool _inTextBlock = false;
         bool _onTextLine = false;
         XSharpToken _lastToken = new(NL);
         readonly IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
@@ -838,19 +837,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             XSharpToken t;
             {
                 parseInit();
-                if (_inTextBlock && !ExpectLower("endtext", true) && !ExpectLower("#endtext", true))
-                {
-                    if (tryParseNewLine())
-                    {
-                        if (_tokenType == NL)
-                            _tokenType = EOS;
-                        t = (XSharpToken)TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn);
-                        return t;
-                    }
-                    t = parseTextLine();
-                    return t;
-                }
-                if (_onTextLine)
+                 if (_onTextLine)
                 {
                     return parseTextLine();
                 }

@@ -2360,7 +2360,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // on another line then the system will report 'Unreachable code' anyway.
             if (stmts.Count == 0)
                 return true;
-            var stmt = stmts.Last();
+            var stmt = stmts.Where(s => s is not XP.LocalFunctionStmtContext).Last();
             switch (stmt)
             {
                 case XP.ReturnStmtContext:

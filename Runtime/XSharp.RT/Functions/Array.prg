@@ -400,7 +400,8 @@ FUNCTION ADel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
     ARRAYNOTNULL aTarget
     IF aTarget:__IsFoxArray
         IF __Array.FoxArrayHelpers:ADel != NULL
-            RETURN Eval(__Array.FoxArrayHelpers:ADel , aTarget, dwPosition, 2)
+            __Array.FoxArrayHelpers:ADel( aTarget, (LONG) dwPosition, 2)
+            RETURN  aTarget
         ELSE
             RETURN _CallClipFunc(#__FoxADel, aTarget, dwPosition, 2)
         ENDIF
@@ -461,7 +462,8 @@ FUNCTION AIns(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
     ARRAYNOTNULL aTarget
     IF aTarget:__IsFoxArray
         IF __Array.FoxArrayHelpers:AIns != NULL
-            RETURN Eval(__Array.FoxArrayHelpers:AIns , aTarget, dwPosition, 1)
+            __Array.FoxArrayHelpers:AIns( aTarget, dwPosition, 1)
+            RETURN aTarget
         ELSE
             RETURN _CallClipFunc(#__FoxAIns, aTarget, dwPosition, 1)
         ENDIF
@@ -492,7 +494,7 @@ FUNCTION ALen(aTarget AS ARRAY) AS DWORD
         RETURN 0
     ELSEIF aTarget:__IsFoxArray
         IF __Array.FoxArrayHelpers:ALen != NULL
-            RETURN Eval(__Array.FoxArrayHelpers:ALen, aTarget)
+            RETURN __Array.FoxArrayHelpers:ALen(aTarget)
         ELSE
             RETURN _CallClipFunc(#__FoxALen, aTarget)
         ENDIF

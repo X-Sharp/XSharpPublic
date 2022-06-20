@@ -6,6 +6,10 @@
 
 USING XSharp.Internal
 
+
+INTERNAL FUNCTION FoxALen(a as ARRAY) AS DWORD
+RETURN ALen( (__FoxArray) a, 0)
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
 FUNCTION ALen(a AS __FoxArray) AS DWORD
     RETURN ALen(a, 0)
@@ -156,6 +160,14 @@ FUNCTION AIns(ArrayName AS __FoxArray, nElementNumber AS DWORD, nInsertType := 1
     RETURN __FoxAIns(ArrayName, nElementNumber, nInsertType)
 
 
+INTERNAL FUNCTION FoxAIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertType AS DWORD) AS DWORD
+    IF ! ArrayName IS __FoxArray VAR foxArray
+        XSharp.RT.Functions.AIns(ArrayName, nElementNumber)
+        RETURN 1
+    ENDIF
+    RETURN __FoxAIns(foxArray, nElementNumber, nInsertType)
+
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*" />
 /// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
 FUNCTION AIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertType AS DWORD) AS DWORD
@@ -176,8 +188,9 @@ FUNCTION ASize(ArrayName AS ARRAY, nSize AS DWORD) AS ARRAY
 
 
 /// <inheritdoc cref="ShowArray" />
-FUNCTION ShowFoxArray ( aTest AS __FoxArray , cPrefix := "" AS STRING ) AS VOID
+FUNCTION ShowFoxArray ( aPar AS ARRAY , cPrefix := "" AS STRING ) AS VOID
     LOCAL i, j AS DWORD
+    LOCAL aTest := (__FoxArray) aPar as __FoxArray
     LOCAL cLDelim as STRING
     LOCAL cRDelim as STRING
     IF cPrefix:Length == 0

@@ -109511,7 +109511,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C850 - Internal compiler error with Evaluate() in CODEBLOCK with /memvar+ in VFP dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C851 - VO Incompatibilites with Mod() function *************
 Application = C851 - VO Incompatibilites with Mod() function
 IDEVersion = 1.06
@@ -109554,8 +109554,8 @@ FileType = Code
 CopyToBin = 0
 [C851 - VO Incompatibilites with Mod() function References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 [C851 - VO Incompatibilites with Mod() function Resources]
 [C851 - VO Incompatibilites with Mod() function Native Resources]
 [C851 - VO Incompatibilites with Mod() function License files]
@@ -109738,7 +109738,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R850 - AAdd typed array
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C852 - Problem with #region..#endregion and external file specified with /stddefs *************
 Application = C852 - Problem with #region..#endregion and external file specified with /stddefs
 IDEVersion = 1.06
@@ -109857,7 +109857,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C852 - Problem with #region..#endregion and external file specified with /stddefs
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C853 - Problem with the numeric shift operators, when /vo4 is disabled *************
 Application = C853 - Problem with the numeric shift operators, when /vo4 is disabled
 IDEVersion = 1.06
@@ -109968,7 +109968,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C853 - Problem with the numeric shift operators, when /vo4 is disabled
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C854 - Incorrect signed/unsigned conversion warning with numeric shift operators and DWORD operands *************
 Application = C854 - Incorrect signed/unsigned conversion warning with numeric shift operators and DWORD operands
 IDEVersion = 1.06
@@ -110022,7 +110022,7 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=1
+VO4=0
 VO5=0
 VO6=0
 VO7=0
@@ -110059,7 +110059,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   DefineDebug=1
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=1
+  WarningsErrors=0
   ForceConsole=0
   ForceX86=0
   Optimize=0
@@ -110079,7 +110079,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C854 - Incorrect signed/unsigned conversion warning with numeric shift operators and DWORD operands
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C855 - Problems with implicit numeric conversions *************
 Application = C855 - Problems with implicit numeric conversions
 IDEVersion = 1.06
@@ -110087,7 +110087,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
@@ -110122,8 +110122,8 @@ FileType = Code
 CopyToBin = 0
 [C855 - Problems with implicit numeric conversions References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
 [C855 - Problems with implicit numeric conversions Resources]
 [C855 - Problems with implicit numeric conversions Native Resources]
 [C855 - Problems with implicit numeric conversions License files]
@@ -110143,7 +110143,7 @@ VO8=0
 VO9=0
 VO10=0
 VO11=0
-VO12=0
+VO12=1
 VO13=0
 VO14=0
 VO16=0
@@ -110192,7 +110192,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C855 - Problems with implicit numeric conversions
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C856 - Problems with ASYNC/AWAIT *************
 Application = C856 - Problems with ASYNC/AWAIT
 IDEVersion = 1.06
@@ -110304,8 +110304,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C856 - Problems with ASYNC/AWAIT
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION C857 *************
-Application = C857
+; ************** APPLICATION C857 - Undeclared variables and Delegates *************
+Application = C857 - Undeclared variables and Delegates
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -110338,20 +110338,20 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C857 FileGroups]
-[C857 Files]
+[C857 - Undeclared variables and Delegates FileGroups]
+[C857 - Undeclared variables and Delegates Files]
 File = %AppPath%\Prg\C857.prg
 FileGUID = 9997C871-EFE9-4A39-9B6C-B52F47C6772D
 FileType = Code
 CopyToBin = 0
-[C857 References]
+[C857 - Undeclared variables and Delegates References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = XSharp.Core,1,0,2.6.0.0
 ReferenceGAC = XSharp.RT,1,0,2.6.0.0
-[C857 Resources]
-[C857 Native Resources]
-[C857 License files]
-[C857 General Options]
+[C857 - Undeclared variables and Delegates Resources]
+[C857 - Undeclared variables and Delegates Native Resources]
+[C857 - Undeclared variables and Delegates License files]
+[C857 - Undeclared variables and Delegates General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -110385,7 +110385,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C857 Configurations]
+[C857 - Undeclared variables and Delegates Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -110414,7 +110414,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = C857
+ENDApplication = C857 - Undeclared variables and Delegates
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION R851 - Latebound property access of a FoxPro Property was translated to Workarea.Field *************
@@ -110644,6 +110644,120 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R852 - String2Psz and DWORD parameter
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION R853 - Nested Sequence *************
+Application = R853 - Nested Sequence
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\R853\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R853
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = B2CD09F0-B486-40A8-89AA-02793C4DACB7
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R853 - Nested Sequence FileGroups]
+[R853 - Nested Sequence Files]
+File = %AppPath%\Prg\R853.prg
+FileGUID = C300C43F-9CF9-42C4-AE29-C72A7202A97C
+FileType = Code
+CopyToBin = 0
+[R853 - Nested Sequence References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
+[R853 - Nested Sequence Resources]
+[R853 - Nested Sequence Native Resources]
+[R853 - Nested Sequence License files]
+[R853 - Nested Sequence General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R853 - Nested Sequence Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R853 - Nested Sequence
 [EndApplications]
 
 [Configurations]

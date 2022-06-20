@@ -215,11 +215,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 Conversion rightToLeftConversion = this.Conversions.ClassifyConversionFromExpression(right, leftType, ref useSiteDiagnostics);
 #if XSHARP
-                if (rightToLeftConversion.IsExplicit && 
-                    Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, node) ||
-                    Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node))
+                bool vo4 = Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, node);
+                bool vo11 = Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, node);
+                if (rightToLeftConversion.IsExplicit && (vo4||vo11) )
                 {
-                    // with /vo7 or vo4 we silently allow the explicit conversion
+                    // with /vo11 or vo4 we silently allow the explicit conversion
                     hasError = false;
                     Error(diagnostics, ErrorCode.WRN_ImplicitCast, node, right.Type, leftType);
                 }

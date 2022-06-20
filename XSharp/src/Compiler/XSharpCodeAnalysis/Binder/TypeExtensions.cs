@@ -95,6 +95,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case SpecialType.System_Decimal:
                 case SpecialType.System_DateTime:
                 case SpecialType.System_Object:
+                case SpecialType.System_Double:
+                case SpecialType.System_Single:
+                case SpecialType.System_Int16:
+                case SpecialType.System_UInt16:
+                case SpecialType.System_Byte:
+                case SpecialType.System_SByte:
                     return true;
             }
             if (type.IsArrayType())

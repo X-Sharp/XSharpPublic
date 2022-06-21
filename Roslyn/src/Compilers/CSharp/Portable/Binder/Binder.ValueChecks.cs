@@ -3554,8 +3554,12 @@ moreArguments:
             {
                 return false;
             }
-
+#if XSHARP
+            bool isNil = field.Name == "_NIL" && field.ContainingType.Name == "__Usual";
+            if (!field.IsReadOnly && ! isNil )
+#else
             if (!field.IsReadOnly)
+#endif
             {
                 // in a case if we have a writeable struct field with a receiver that only has a readable home we would need to pass it via a temp.
                 // it would be advantageous to make a temp for the field, not for the outer struct, since the field is smaller and we can get to is by fetching references.

@@ -13,7 +13,7 @@ USING System.Collections
 
 USING XSharp.Internal
 // use these UDCs to remove the attributes when needed during debugging
-#define USEATTRIB
+#undef USEATTRIB
 #ifdef USEATTRIB
     #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
     #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
@@ -43,7 +43,7 @@ BEGIN NAMESPACE XSharp
     #region STATIC fields
     /// <exclude />
     [HIDDEN];
-    PUBLIC INITONLY STATIC _NIL AS __Usual
+    PUBLIC STATIC _NIL AS __Usual
     #endregion
 
     #region PRIVATE fields
@@ -68,6 +68,18 @@ BEGIN NAMESPACE XSharp
     #region constructors
     /// <exclude />
     STATIC CONSTRUCTOR
+        __Usual.__InitUsual()
+//        IF RuntimeState.Dialect  == XSharpDialect.FoxPro
+//            _NIL := __Usual{__UsualType.Logic,FALSE}
+//        ELSE
+//            _NIL := __Usual{__UsualType.Void}
+//        ENDIF
+        RuntimeState.DialectChanged += DialectChanged
+
+    PRIVATE STATIC METHOD DialectChanged(oldDialect as XSharpDialect, newDialect as XSharpDialect) AS VOID
+        __Usual.__InitUsual()
+
+    INTERNAL STATIC METHOD __InitUsual() AS VOID
         IF RuntimeState.Dialect  == XSharpDialect.FoxPro
             _NIL := __Usual{__UsualType.Logic,FALSE}
         ELSE
@@ -75,8 +87,8 @@ BEGIN NAMESPACE XSharp
         ENDIF
         RETURN
 
-        [NODEBUG] [INLINE];
-        PUBLIC CONSTRUCTOR(type AS __UsualType , initialized AS LOGIC)
+    [NODEBUG] [INLINE];
+    PUBLIC CONSTRUCTOR(type AS __UsualType , initialized AS LOGIC)
         SELF:_valueData := _UsualData{}
         SELF:_flags     := UsualFlags{type}
         SELF:_refData   := NULL
@@ -3523,6 +3535,7 @@ FUNCTION UsualVal(u AS __Usual) AS __Usual
 /// </returns>
 FUNCTION ValType(u AS __Usual) AS STRING
     RETURN u:ValType
+
 
 
 

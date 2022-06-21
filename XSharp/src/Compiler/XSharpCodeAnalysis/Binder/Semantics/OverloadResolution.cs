@@ -283,13 +283,30 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var parType = pars[i].Type;
                 var arg = arguments[i];
-                if (!TypeEquals(parType, arg.Type, ref useSiteDiagnostics))
+                if (TypeEquals(parType, arg.Type, ref useSiteDiagnostics))
                 {
-                    equals = false;
+                    score += 100;
+                }
+                else if (arg.Type is { } && arg.Type.IsDerivedFrom(parType, TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
+                {
+                    // determine depth of inheritance
+                    // so we will take the most derived
+                    var baseType = arg.Type;
+                    var depth = 10;
+                    while (baseType is { } && !TypeEquals(baseType, parType, ref useSiteDiagnostics))
+                    {
+                        depth -= 1;
+                        baseType = baseType.BaseTypeNoUseSiteDiagnostics;
+                    }
+                    score += depth;
+                }
+                else if (arg.Type is { } && arg.Type.IsIntegralType() && parType.IsIntegralType() && arg.ConstantValue != null)
+                {
+                    score += 1;
                 }
                 else
                 {
-                    score += 1;
+                    equals = false;
                 }
             }
             return equals;
@@ -306,7 +323,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 result.Append(type.GetDisplayName());
                 result.Append(";");
             }
-            result.Append(returnType.Type.GetDisplayName());
             return result.ToString();
         }
 
@@ -666,6 +682,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         return true;
                     }
+                }
+                else
+                {
+                    // parameter counts are different for m1 and m2
+                    // choose the one where the parameter count matches the #help of arguments
+                    if (m1.Member.GetParameterCount() == arguments.Count)
+                    {
+                        result = BetterResult.Left;
+                        return true;
+                    }
+                    if (m2.Member.GetParameterCount() == arguments.Count)
+                    {
+                        result = BetterResult.Right;
+                        return true;
+                    }
+                    // both methods have a different # of arguments 
                 }
                 // when both methods are in a functions class from different assemblies
                 // pick the first one in the references list

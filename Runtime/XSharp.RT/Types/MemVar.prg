@@ -207,13 +207,16 @@ PUBLIC CLASS XSharp.MemVar
     #endregion
 
     STATIC CONSTRUCTOR()
-        MemVar.Get      := _Get
-        MemVar.Put      := _Put
-        MemVar.GetSafe  := _GetSafe
 		Publics  		:= MemVarLevel{-1,TRUE}
 		_PrivatesEnum 	:= NULL
 		_PublicsEnum  	:= NULL
 		Depth           := 0
+        Initialize()
+
+    PUBLIC STATIC METHOD Initialize() AS VOID
+        MemVar.Get      := _Get
+        MemVar.Put      := _Put
+        MemVar.GetSafe  := _GetSafe
 
     // Instance fields
     /// <summary>Name of the memory variable.</summary>

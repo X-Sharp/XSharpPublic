@@ -507,6 +507,11 @@ BEGIN NAMESPACE XSharp
         PUBLIC AIns AS FoxAIns
         PUBLIC ADel AS FoxADel
         PUBLIC ShowArray AS FoxShowArray
+        PUBLIC METHOD Reset() AS VOID
+            ALen := NULL
+            AIns := NULL
+            ADel := NULL
+            ShowArray := NULL
     END CLASS
 
 END NAMESPACE

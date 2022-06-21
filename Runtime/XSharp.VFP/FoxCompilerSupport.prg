@@ -15,10 +15,16 @@ USING XSharp.RDD.Support
 USING System.Collections.Generic
 
 PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
+    InitFoxState()
+RETURN
+
+
+INTERNAL FUNCTION InitFoxState() AS VOID
     // make sure the class constructor gets called
     #pragma warnings(219, off) // variable is assigned but not used
     VAR x := XSharp.MemVar{"InitTheClass",42}
     #pragma warnings(219, default)
+
     XSharp.MemVar.Put := __FoxMemVarPut
     XSharp.RuntimeState.AutoLock    := __FoxAutoLock
     XSharp.RuntimeState.AutoUnLock  := __FoxAutoUnLock
@@ -27,8 +33,29 @@ PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
     XSharp.__Array.FoxArrayHelpers.ALen         := XSharp.VFP.Functions.FoxALen
     XSharp.__Array.FoxArrayHelpers.AIns         := XSharp.VFP.Functions.FoxAIns
     XSharp.__Array.FoxArrayHelpers.ShowArray    := XSharp.VFP.Functions.ShowFoxArray
+RETURN
+
+INTERNAL FUNCTION ClearFoxState as VOID
+    XSharp.MemVar.Initialize()
+    XSharp.RuntimeState.AutoLock    := XSharp.RuntimeState.DoNothing
+    XSharp.RuntimeState.AutoUnLock  := XSharp.RuntimeState.DoNothing
+
+    XSharp.__Array.FoxArrayHelpers.Reset()
+
+
 
 RETURN
+
+
+
+INTERNAL FUNCTION DialectChanged(oldDialect as XSharpDialect, newDialect as XSharpDialect) AS VOID
+IF oldDialect != newDialect
+    if newDialect == XSharpDialect.FoxPro
+        InitFoxState()
+    else
+        ClearFoxState()
+    endif
+ENDIF
 
 
 // Automatically lock a record in the FoxPro dialect

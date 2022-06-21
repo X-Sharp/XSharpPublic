@@ -100200,7 +100200,7 @@ ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [R803 - REF or OUT variables and missing arguments Native Resources]
 [R803 - REF or OUT variables and missing arguments License files]
 [R803 - REF or OUT variables and missing arguments General Options]
-Switches=/optimize
+Switches=
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -103769,7 +103769,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   DefineDebug=1
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=1
+  WarningsErrors=0
   ForceConsole=0
   ForceX86=0
   Optimize=0
@@ -110874,7 +110874,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R854 - Numeric warnings
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R855 - FoxPro dialect && local functions *************
 Application = R855 - FoxPro dialect && local functions
 IDEVersion = 1.06
@@ -110918,9 +110918,9 @@ CopyToBin = 0
 [R855 - FoxPro dialect && local functions References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
 [R855 - FoxPro dialect && local functions Resources]
 [R855 - FoxPro dialect && local functions Native Resources]
 [R855 - FoxPro dialect && local functions License files]

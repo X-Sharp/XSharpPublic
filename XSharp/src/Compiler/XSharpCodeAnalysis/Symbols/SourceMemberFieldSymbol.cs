@@ -70,6 +70,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 var declarator = (VariableDeclaratorSyntax)this.DeclaringSyntaxReferences.AsSingleton().GetSyntax();
                 var initializerBinder = new ImplicitlyTypedFieldBinder(binder, fieldsBeingBound);
                 var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
+                if (initializerOpt != null && initializerOpt.ConstantValue == null)
+                {
+                    // Sometimes when a define depends on other defines we will have to try again to see
+                    // if it can be resolved to a constant
+                    // this seems to be a timing issue (binding the initializer triggers binding of another initializer and sometimes several layers deep)
+                    initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
+                }
                 if (initializerOpt != null && !type.IsPszType())
                 {
                     if (initializerOpt.Type is { } && !initializerOpt.Type.IsErrorType())

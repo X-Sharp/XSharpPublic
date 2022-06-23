@@ -217,9 +217,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 bool vo4 = Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, node);
                 bool vo11 = Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, node);
-                if (rightToLeftConversion.IsExplicit && (vo4||vo11) )
+                if (rightToLeftConversion.IsExplicit && (vo4 || vo11))
                 {
-                    // with /vo11 or vo4 we silently allow the explicit conversion
+                    // with /vo11 or vo4 we allow the conversion but generate a warning
                     hasError = false;
                     Error(diagnostics, ErrorCode.WRN_ImplicitCast, node, right.Type, leftType);
                 }

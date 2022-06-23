@@ -64,8 +64,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (targetType.IsIntegralType() && sourceType.IsIntegralType())
             {
-                // implicit casts are allowed when the compiler option is enabled
-                return Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, syntax);
+                if (targetType.SpecialType.SizeInBytes() == sourceType.SpecialType.SizeInBytes())
+                {
+                    // implicit casts are allowed for same sized types when the compiler option vo4 is enabled
+                    return Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, syntax);
+                }
+                // implicit casts are allowed when the compiler option vo11 is enabled
+                return Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, syntax);
             }
             if (sourceType.IsObjectType() && targetType.IsNumericType())
             {

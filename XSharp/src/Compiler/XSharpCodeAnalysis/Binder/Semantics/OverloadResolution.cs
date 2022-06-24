@@ -326,6 +326,134 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result.ToString();
         }
 
+        private bool MatchUsualParameters(Symbol m1, Symbol m2, ArrayBuilder<BoundExpression> arguments, out BetterResult result)
+        {
+            result = BetterResult.Neither;
+            var hasUsualArg = arguments.Any(a => a.Type.IsUsualType());
+            if (hasUsualArg)
+            {
+                // when one of the arguments is a usual then 
+                // prefer the overload that has one or more usual arguments
+                var leftUsual = m1.GetParameters().Any(p => p.Type.IsUsualType());
+                var rightUsual = m2.GetParameters().Any(p => p.Type.IsUsualType());
+                if (leftUsual != rightUsual)
+                {
+                    if (leftUsual)
+                        result = BetterResult.Left;
+                    else
+                        result = BetterResult.Right;
+                    return true;
+                }
+            }
+            return false;
+        }
+        private bool MatchRefParameters(Symbol m1, Symbol m2, ArrayBuilder<BoundExpression> arguments, out HashSet<DiagnosticInfo> useSiteDiagnostics, out BetterResult result)
+        {
+            useSiteDiagnostics = null;
+            result = BetterResult.Neither;
+            var parsLeft = m1.GetParameters();
+            var parsRight = m2.GetParameters();
+            var len = parsLeft.Length;
+            if (arguments.Count < len)
+                len = arguments.Count;
+            for (int i = 0; i < len; i++)
+            {
+                var parLeft = parsLeft[i];
+                var parRight = parsRight[i];
+                var refLeft = parLeft.RefKind;
+                var refRight = parRight.RefKind;
+                var arg = arguments[i];
+                bool argCanBeByRef = arg.Kind == BoundKind.AddressOfOperator;
+                var argType = arg.Type;
+                var leftType = parLeft.Type;
+                var rightType = parRight.Type;
+                if (argCanBeByRef)
+                {
+                    var bao = arg as BoundAddressOfOperator;
+                    argType = bao.Operand.Type;
+                }
+
+                if (!Equals(leftType, rightType) || refLeft != refRight)
+                {
+                    // Prefer the method with a more specific parameter which is not an array type over USUAL
+                    if (leftType.IsUsualType() && argType.IsNotUsualType() && !rightType.IsArray())
+                    {
+                        result = BetterResult.Right;
+                        return true;
+                    }
+                    if (rightType.IsUsualType() && argType.IsNotUsualType() && !leftType.IsArray())
+                    {
+                        result = BetterResult.Left;
+                        return true;
+                    }
+                    // Prefer the method with Object type over the one with Object[] type
+                    if (leftType.IsObjectType() && rightType.IsArray() && ((ArrayTypeSymbol)rightType).ElementType.IsObjectType())
+                    {
+                        result = BetterResult.Left;
+                        return true;
+                    }
+                    if (rightType.IsObjectType() && leftType.IsArray() && ((ArrayTypeSymbol)leftType).ElementType.IsObjectType())
+                    {
+                        result = BetterResult.Right;
+                        return true;
+                    }
+                    // Now check for REF parameters and possible REF arguments
+                    if (argCanBeByRef)
+                    {
+                        var op = arg as BoundAddressOfOperator;
+                        var opType = op?.Operand?.Type;
+                        if (refLeft == RefKind.Ref && Equals(opType, leftType))
+                        {
+                            result = BetterResult.Left;
+                            return true;
+                        }
+                        if (refRight == RefKind.Ref && Equals(opType, rightType))
+                        {
+                            result = BetterResult.Right;
+                            return true;
+                        }
+                        if (refLeft != refRight)
+                        {
+                            if (refLeft == RefKind.Ref)
+                            {
+                                result = BetterResult.Left;
+                                return true;
+                            }
+                            if (refRight == RefKind.Ref)
+                            {
+                                result = BetterResult.Right;
+                                return true;
+                            }
+                        }
+                    }
+                    if (refLeft != refRight)
+                    {
+                        if (TypeEquals(leftType, argType, ref useSiteDiagnostics) && refLeft != RefKind.None && argCanBeByRef)
+                        {
+                            result = BetterResult.Left;
+                            return true;
+                        }
+                        if (TypeEquals(rightType, argType, ref useSiteDiagnostics) && refRight != RefKind.None && argCanBeByRef)
+                        {
+                            result = BetterResult.Right;
+                            return true;
+                        }
+                        if (TypeEquals(leftType, argType, ref useSiteDiagnostics) && refLeft == RefKind.None && !argCanBeByRef)
+                        {
+                            result = BetterResult.Left;
+                            return true;
+                        }
+                        if (TypeEquals(rightType, argType, ref useSiteDiagnostics) && refRight == RefKind.None && !argCanBeByRef)
+                        {
+                            result = BetterResult.Right;
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         /// This function tries to decide which of 2 overloads needs to be picked.
         /// The logic is VERY complicated and fragile
@@ -411,29 +539,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (arguments.Count < len)
                         len = arguments.Count;
 
-                    bool equalLeft = false;
-                    bool equalRight = false;
-
-                    var hasUsualArg = arguments.Any(a => a.Type.IsUsualType());
-                    if (hasUsualArg)
+                    if (MatchRefParameters(m1.Member, m2.Member, arguments, out useSiteDiagnostics, out result))
                     {
-                        // when one of the arguments is a usual then 
-                        // prefer the overload that has one or more usual arguments
-                        var leftUsual = parsLeft.Any(p => p.Type.IsUsualType());
-                        var rightUsual = parsRight.Any(p => p.Type.IsUsualType());
-                        if (leftUsual != rightUsual)
-                        {
-                            if (leftUsual)
-                                result = BetterResult.Left;
-                            else
-                                result = BetterResult.Right;
-                            return true;
-                        }
+                        return true;
+                    }
+                    if (MatchUsualParameters(m1.Member, m2.Member, arguments, out result))
+                    {
+                        return true;
                     }
 
+
                     // check if all left and types are equal. The score is the # of matching types
-                    equalLeft = checkMatchingParameters(parsLeft, arguments, ref leftScore, ref useSiteDiagnostics);
-                    equalRight = checkMatchingParameters(parsRight, arguments, ref rightScore, ref useSiteDiagnostics);
+                    bool equalLeft = checkMatchingParameters(parsLeft, arguments, ref leftScore, ref useSiteDiagnostics);
+                    bool equalRight = checkMatchingParameters(parsRight, arguments, ref rightScore, ref useSiteDiagnostics);
                     // Only exit here when one of the two is better than the other
                     if (equalLeft != equalRight)
                     {
@@ -444,24 +562,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return true;
                     }
 
+
                     for (int i = 0; i < len; i++)
                     {
                         var parLeft = parsLeft[i];
                         var parRight = parsRight[i];
-                        var refLeft = parLeft.RefKind;
-                        var refRight = parRight.RefKind;
                         var arg = arguments[i];
-                        bool argCanBeByRef = arg.Kind == BoundKind.AddressOfOperator;
                         var argType = arg.Type;
                         var leftType = parLeft.Type;
                         var rightType = parRight.Type;
-                        if (argCanBeByRef)
-                        {
-                            var bao = arg as BoundAddressOfOperator;
-                            argType = bao.Operand.Type;
-                        }
 
-                        if (!Equals(leftType, rightType) || refLeft != refRight)
+                        if (!Equals(leftType, rightType) )
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
                             if (leftType.IsUsualType() && argType.IsNotUsualType() && !rightType.IsArray())
@@ -486,57 +597,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 return true;
                             }
                             // Now check for REF parameters and possible REF arguments
-                            if (argCanBeByRef)
-                            {
-                                var op = arg as BoundAddressOfOperator;
-                                var opType = op?.Operand?.Type;
-                                if (refLeft == RefKind.Ref && Equals(opType, leftType))
-                                {
-                                    result = BetterResult.Left;
-                                    return true;
-                                }
-                                if (refRight == RefKind.Ref && Equals(opType, rightType))
-                                {
-                                    result = BetterResult.Right;
-                                    return true;
-                                }
-                                if (refLeft != refRight)
-                                {
-                                    if (refLeft == RefKind.Ref)
-                                    {
-                                        result = BetterResult.Left;
-                                        return true;
-                                    }
-                                    if (refRight == RefKind.Ref)
-                                    {
-                                        result = BetterResult.Right;
-                                        return true;
-                                    }
-                                }
-                            }
-                            if (refLeft != refRight)
-                            {
-                                if (TypeEquals(leftType, argType, ref useSiteDiagnostics) && refLeft != RefKind.None && argCanBeByRef)
-                                {
-                                    result = BetterResult.Left;
-                                    return true;
-                                }
-                                if (TypeEquals(rightType, argType, ref useSiteDiagnostics) && refRight != RefKind.None && argCanBeByRef)
-                                {
-                                    result = BetterResult.Right;
-                                    return true;
-                                }
-                                if (TypeEquals(leftType, argType, ref useSiteDiagnostics) && refLeft == RefKind.None && !argCanBeByRef)
-                                {
-                                    result = BetterResult.Left;
-                                    return true;
-                                }
-                                if (TypeEquals(rightType, argType, ref useSiteDiagnostics) && refRight == RefKind.None && !argCanBeByRef)
-                                {
-                                    result = BetterResult.Right;
-                                    return true;
-                                }
-                            }
                             // now fall back to original type (and not addressof type)
                             argType = arg.Type;
                             // Handle passing Enum values to methods that have a non enum parameter
@@ -566,19 +626,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     return true;
                                 }
                             }
-                            if (!hasUsualArg || argType.IsUsualType())
-                            {
-                                if (TypeEquals(argType, leftType, ref useSiteDiagnostics))
-                                {
-                                    result = BetterResult.Left;
-                                    return true;
-                                }
-                                if (TypeEquals(argType, rightType, ref useSiteDiagnostics))
-                                {
-                                    result = BetterResult.Right;
-                                    return true;
-                                }
-                            }
                             // VoFloat prefers overload with double over all other conversions
                             if (argType.IsFloatType() || argType.IsUsualType())
                             {
@@ -596,47 +643,44 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             // if argument is numeric and one of the two types is also and the other not
                             // then prefer the numeric type
-                            if (!hasUsualArg)
+                            if (argType?.SpecialType != null && (argType.SpecialType.IsNumericType() || Equals(argType, Compilation.FloatType())))
                             {
-                                if (argType?.SpecialType != null && (argType.SpecialType.IsNumericType() || Equals(argType, Compilation.FloatType())))
+                                if (leftType.SpecialType.IsNumericType() && !rightType.SpecialType.IsNumericType())
                                 {
-                                    if (leftType.SpecialType.IsNumericType() && !rightType.SpecialType.IsNumericType())
+                                    result = BetterResult.Left;
+                                    return true;
+                                }
+                                if (rightType.SpecialType.IsNumericType() && !leftType.SpecialType.IsNumericType())
+                                {
+                                    result = BetterResult.Right;
+                                    return true;
+                                }
+                                if (!Equals(leftType, rightType))
+                                {
+                                    if (leftType.IsFloatType())
                                     {
                                         result = BetterResult.Left;
                                         return true;
                                     }
-                                    if (rightType.SpecialType.IsNumericType() && !leftType.SpecialType.IsNumericType())
+                                    if (rightType.IsFloatType())
                                     {
                                         result = BetterResult.Right;
                                         return true;
                                     }
-                                    if (!Equals(leftType, rightType))
+                                }
+                                var leftIntegral = leftType.IsIntegralType();
+                                var rightIntegral = rightType.IsIntegralType();
+                                if (leftIntegral != rightIntegral)
+                                {
+                                    if (argType.IsIntegralType())
                                     {
-                                        if (leftType.IsFloatType())
-                                        {
-                                            result = BetterResult.Left;
-                                            return true;
-                                        }
-                                        if (rightType.IsFloatType())
-                                        {
-                                            result = BetterResult.Right;
-                                            return true;
-                                        }
+                                        result = leftIntegral ? BetterResult.Left : BetterResult.Right;
                                     }
-                                    var leftIntegral = leftType.IsIntegralType();
-                                    var rightIntegral = rightType.IsIntegralType();
-                                    if (leftIntegral != rightIntegral)
+                                    else
                                     {
-                                        if (argType.IsIntegralType())
-                                        {
-                                            result = leftIntegral ? BetterResult.Left : BetterResult.Right;
-                                        }
-                                        else
-                                        {
-                                            result = rightIntegral ? BetterResult.Left : BetterResult.Right;
-                                        }
-                                        return true;
+                                        result = rightIntegral ? BetterResult.Left : BetterResult.Right;
                                     }
+                                    return true;
                                 }
                             }
 

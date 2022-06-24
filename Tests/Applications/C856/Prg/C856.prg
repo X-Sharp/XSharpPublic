@@ -5,6 +5,7 @@
 System.AccessViolationException
 Attempted to read or write protected memory. This is often an indication that other memory is corrupt.
 */
+
 FUNCTION Start() AS VOID
 	MultiThreadScan{}:OrderActioningScan(123)
 	MultiThreadScan{}:OrderActioningScan(42)
@@ -15,6 +16,7 @@ CLASS MultiThreadScan
 	ASYNC METHOD OrderActioningScan(loActionFileObject AS INT) AS VOID
 	var result := AWAIT System.Threading.Tasks.Task.Run({=> SELF:CallCreateActionFile(loActionFileObject)})
 	? result
+	return
 
 	METHOD CallCreateActionFile(loActionFileObject AS INT) AS INT
 	? loActionFileObject

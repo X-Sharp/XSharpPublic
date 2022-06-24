@@ -5431,8 +5431,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.DataType != null)
             {
                 type = context.DataType?.Get<TypeSyntax>();
-                if (type == objectType)
-                    isConst = false;
+                isConst = false;
             }
             var list = _pool.Allocate();
             SyntaxList<SyntaxToken> modifiers = null;

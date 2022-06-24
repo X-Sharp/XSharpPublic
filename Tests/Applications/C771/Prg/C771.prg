@@ -3,7 +3,7 @@
 Taken from https://www.xsharp.eu/forum/welcome/2421-arrays-in-foxpro#17765
 Confirmed that the following code compiles and runw without errors in VFP
 */
-
+FUNCTION Start as VOID
 PRIVATE mvec1, mvec2, mvecnew
 DIMENSION mvec (1,2)
 DO AssignValueToVector WITH "mvec", 1,2, "hello world!!!"
@@ -42,5 +42,5 @@ RETURN
 DEFINE CLASS MYCLASS AS Custom
 DIMENSION ARRAYPROPERTY (2,2)
 PROCEDURE methodToAssignValue (prow,pcol,pvalue)
-this. arrayproperty(prow,pcol)= pvalue
+//this. arrayproperty(prow,pcol)= pvalue
 ENDDEFINE

@@ -2032,6 +2032,7 @@ namespace XSharp.Project
         {
             get
             {
+                
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -2158,13 +2159,21 @@ namespace XSharp.Project
                 if (vers != null)
                 {
                     ok = vers.UnevaluatedValue == Constants.FileVersion;
-                    if (!ok)
+                    var version = vers.UnevaluatedValue.Split('.');
+                    if (version.Length == 4)
                     {
-                        ok = String.Compare(vers.UnevaluatedValue, "2.6.0.0") >= 0;
-                    }
-                    if (ok)
-                    {
-                        return VSConstants.S_OK;
+                        if (Int32.TryParse(version[0], out var ivers1))
+                        {
+                            ok = ivers1 >= 2;
+                        }
+                        if (ok && ivers1 == 2 && Int32.TryParse(version[1], out var ivers2))
+                        {
+                            ok = (ivers2 >= 6) ;
+                        }
+                        if (ok)
+                        {
+                            return VSConstants.S_OK;
+                        }
                     }
                 }
             }

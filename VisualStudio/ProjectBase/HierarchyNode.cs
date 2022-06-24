@@ -2925,9 +2925,16 @@ namespace Microsoft.VisualStudio.Project
         public virtual int IsItemDirty(uint itemId, IntPtr docData, out int isDirty)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-
-            IVsPersistDocData pd = (IVsPersistDocData)Marshal.GetObjectForIUnknown(docData);
-            return ErrorHandler.ThrowOnFailure(pd.IsDocDataDirty(out isDirty));
+            if (docData == IntPtr.Zero)
+            {
+                isDirty = VSConstants.S_FALSE;
+                return VSConstants.S_OK;
+            }
+            else
+            {
+                IVsPersistDocData pd = (IVsPersistDocData)Marshal.GetObjectForIUnknown(docData);
+                return ErrorHandler.ThrowOnFailure(pd.IsDocDataDirty(out isDirty));
+            }
         }
 
         /// <summary>

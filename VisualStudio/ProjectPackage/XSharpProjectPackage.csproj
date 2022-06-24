@@ -33,7 +33,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <VsixType>v3</VsixType>
-    <DeployExtension Condition=" '$(Configuration)' == 'Release' ">false</DeployExtension>
+    <DeployExtension Condition=" '$(VisualStudioVersion)' == '16' ">true</DeployExtension>
     <ContentSQLiteInteropFiles>false</ContentSQLiteInteropFiles>
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
@@ -58,6 +58,7 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <NoWarn>1762</NoWarn>
     <PlatformTarget>x86</PlatformTarget>
+    <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -70,7 +71,6 @@
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>x86</PlatformTarget>
     <NoWarn>VSTHRD010;VSSDK006;1762</NoWarn>
-    <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />

@@ -353,6 +353,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             result = BetterResult.Neither;
             var parsLeft = m1.GetParameters();
             var parsRight = m2.GetParameters();
+            var leftHasRef = parsLeft.Any(p => p.RefKind.IsByRef());
+            var rightHasRef = parsRight.Any(p => p.RefKind.IsByRef());
+            if (!leftHasRef && !rightHasRef)
+                return false;
             var len = parsLeft.Length;
             if (arguments.Count < len)
                 len = arguments.Count;

@@ -50,12 +50,13 @@ namespace XSharp.Project
         }
     }
 
-    internal class XSharpProjectConfig : DebuggableProjectConfig
+    internal class XSharpProjectConfig : DebuggableProjectConfig, IVsDebuggableProjectCfg2
+
     {
-        private ProjectNode _project;
+        private XSharpProjectNode _project;
         internal XSharpProjectConfig(ProjectNode project, ConfigCanonicalName configuration) : base(project, configuration)
         {
-            _project = project;
+            _project = project as XSharpProjectNode;
         }
         public override string GetConfigurationProperty(string propertyName, bool resetCache)
         {
@@ -69,8 +70,8 @@ namespace XSharp.Project
                         // This triggers the evaluation of the property
                         try
                         {
-                            if (! prop.IsImported)
-                            { 
+                            if (!prop.IsImported)
+                            {
                                 prop.UnevaluatedValue = prop.UnevaluatedValue;
                             }
                             result = prop.EvaluatedValue;
@@ -88,6 +89,29 @@ namespace XSharp.Project
 
             return result;
         }
+
+        public override int get_CfgType(ref Guid iidCfg, out IntPtr ppCfg)
+        {
+            ppCfg = IntPtr.Zero;
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (iidCfg == typeof(IVsDebuggableProjectCfg2).GUID)
+            {
+                ppCfg = Marshal.GetComInterfaceForObject(this, typeof(IVsDebuggableProjectCfg2));
+            }
+
+            // If supported
+            if (ppCfg != IntPtr.Zero)
+                return VSConstants.S_OK;
+
+            return base.get_CfgType(ref iidCfg, out ppCfg);
+        }
+
+        public int OnBeforeDebugLaunch(uint grfLaunch)
+        {
+            return VSConstants.S_OK;
+        }
+
         public override int DebugLaunch(uint grfLaunch)
         {
             CCITracing.TraceCall();
@@ -95,13 +119,13 @@ namespace XSharp.Project
             try
             {
                 if (grfLaunch == 0)
-                    grfLaunch = (uint) __VSDBGLAUNCHFLAGS.DBGLAUNCH_Silent;
+                    grfLaunch = (uint)__VSDBGLAUNCHFLAGS.DBGLAUNCH_Silent;
                 VsDebugTargetInfo info = new VsDebugTargetInfo();
                 info.cbSize = (uint)Marshal.SizeOf(info);
                 info.dlo = DEBUG_LAUNCH_OPERATION.DLO_CreateProcess;
 
                 // On first call, reset the cache, following calls will use the cached values
-                
+
                 string property = GetConfigurationProperty(XSharpProjectFileConstants.DebuggerCommand, true);
                 if (string.IsNullOrEmpty(property))
                 {
@@ -114,7 +138,7 @@ namespace XSharp.Project
                 {
                     property = Path.GetDirectoryName(info.bstrExe);
                 }
-                if (! Path.IsPathRooted(property))
+                if (!Path.IsPathRooted(property))
                 {
                     property = Path.Combine(this.ProjectMgr.ProjectFolder, property);
                 }
@@ -166,7 +190,7 @@ namespace XSharp.Project
                 {
                     info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedOnly_guid;      // {449EC4CC-30D2-4032-9256-EE18EB41B62B}
                 }
-                if (! string.IsNullOrEmpty(this.ProjectMgr.BuildProject.Xml.Sdk))
+                if (!string.IsNullOrEmpty(this.ProjectMgr.BuildProject.Xml.Sdk))
                 {
                     // Sdk style project
                     info.clsidCustom = VSConstants.DebugEnginesGuids.CoreSystemClr_guid;
@@ -177,7 +201,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSettings.LogException(e,"DebugLaunch");
+                XSettings.LogException(e, "DebugLaunch");
 
                 return Marshal.GetHRForException(e);
             }

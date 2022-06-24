@@ -1,7 +1,7 @@
 #pragma options ("enforceself", on)
 /// <include file="Gui.xml" path="doc/DateTimePicker/*" />
 CLASS DateTimePicker INHERIT TextControl
-    HIDDEN _lNoAssign AS LOGIC   
+    HIDDEN _lNoAssign AS LOGIC
     PROTECT lNullFormat       AS LOGIC
     PROTECT cOldFormat        AS STRING
     PROTECT cFormat           AS STRING
@@ -9,7 +9,7 @@ CLASS DateTimePicker INHERIT TextControl
 
 	//PP-030828 Strong typing
  /// <exclude />
-METHOD __Gather() AS LOGIC STRICT 
+METHOD __Gather() AS LOGIC STRICT
   //SE-040929 DTS_SHOWNONE Workaround
   LOCAL lReturn AS LOGIC
 
@@ -25,7 +25,7 @@ METHOD __Gather() AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __GetMCColor(dwColorID AS DWORD) AS Color STRICT 
+METHOD __GetMCColor(dwColorID AS DWORD) AS Color STRICT
 	//PP-030828 Strong typing
 	LOCAL cr AS LONGINT
 
@@ -37,7 +37,7 @@ METHOD __GetMCColor(dwColorID AS DWORD) AS Color STRICT
 
 
  /// <exclude />
-METHOD __SetMCColor(oColor AS Color, dwColorID AS DWORD) AS Color STRICT 
+METHOD __SetMCColor(oColor AS Color, dwColorID AS DWORD) AS Color STRICT
 	//PP-030828 Strong typing
 
 
@@ -46,7 +46,7 @@ METHOD __SetMCColor(oColor AS Color, dwColorID AS DWORD) AS Color STRICT
 
 
  /// <exclude />
-ASSIGN __Value(uValue AS USUAL)   
+ASSIGN __Value(uValue AS USUAL)
 	//PP-030828 Strong typing
 	//SE-040929 DTS_SHOWNONE Workaround
 
@@ -63,11 +63,11 @@ ASSIGN __Value(uValue AS USUAL)
    		SELF:SelectedTime := uValue
    	ENDIF
    ENDIF
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.DateRange/*" />
-ACCESS DateRange 
+ACCESS DateRange
 	LOCAL DIM dates[2] IS _winSYSTEMTIME
 
 
@@ -80,7 +80,7 @@ ACCESS DateRange
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.DateRange/*" />
-ASSIGN DateRange(oNewRange) 
+ASSIGN DateRange(oNewRange)
 	LOCAL DIM dates[2] IS _winSYSTEMTIME
 
 
@@ -92,8 +92,8 @@ ASSIGN DateRange(oNewRange)
 	dates[2]:wDay := WORD(Day(oNewRange:Max))
 	dates[2]:wMonth := WORD(Month(oNewRange:Max))
 	dates[2]:wYear := WORD(Year(oNewRange:Max))
-	// RvdH 090212 This makes sure that every time on the Max-Date is valid 
-	dates[2]:wHour := 32
+	// RvdH 090212 This makes sure that every time on the Max-Date is valid
+	dates[2]:wHour := 23
 	dates[2]:wMinute := 59
 	dates[2]:wSecond := 59
 	dates[2]:wMilliseconds := 999
@@ -112,7 +112,7 @@ ACCESS Format
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.Format/*" />
-ASSIGN Format(sNewFormat) 
+ASSIGN Format(sNewFormat)
     cFormat := sNewFormat
     IF (sNewFormat != "''")
         cOldFormat := sNewFormat
@@ -120,95 +120,95 @@ ASSIGN Format(sNewFormat)
     SendMessage(SELF:Handle(), DTM_SETFORMAT, 0, LONG(_CAST, String2Psz(sNewFormat)))
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, dwStyle, lDataAware) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, dwStyle, lDataAware)
+
+
 
 
 	DEFAULT(@lDataAware, TRUE)
 
 
 	SUPER(oOwner, xID, oPoint, oDimension, "SysDateTimePick32", dwStyle, lDataAware)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCBackgroundColor/*" />
-ACCESS MCBackgroundColor 
+ACCESS MCBackgroundColor
 	RETURN SELF:__GetMCColor(MCSC_BACKGROUND)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCBackgroundColor/*" />
-ASSIGN MCBackgroundColor(oColor) 
+ASSIGN MCBackgroundColor(oColor)
 	RETURN SELF:__SetMCColor(oColor, MCSC_BACKGROUND)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCFont/*" />
-ASSIGN MCFont(oNewFont) 
+ASSIGN MCFont(oNewFont)
 	SendMessage(SELF:handle(), DTM_SETMCFONT, DWORD(_CAST, oNewFont:Handle()), 1)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCMonthBackgroundColor/*" />
-ACCESS MCMonthBackgroundColor 
+ACCESS MCMonthBackgroundColor
 	RETURN SELF:__GetMCColor(MCSC_MONTHBK)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCMonthBackgroundColor/*" />
-ASSIGN MCMonthBackgroundColor(oColor) 
+ASSIGN MCMonthBackgroundColor(oColor)
 	RETURN SELF:__SetMCColor(oColor, MCSC_MONTHBK)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCTextColor/*" />
-ACCESS MCTextColor 
+ACCESS MCTextColor
 	RETURN SELF:__GetMCColor(MCSC_TEXT)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCTextColor/*" />
-ASSIGN MCTextColor(oColor) 
+ASSIGN MCTextColor(oColor)
 	RETURN SELF:__SetMCColor(oColor, MCSC_TEXT)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCTitleBackgroundColor/*" />
-ACCESS MCTitleBackgroundColor 
+ACCESS MCTitleBackgroundColor
 	RETURN SELF:__GetMCColor(MCSC_TITLEBK)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCTitleBackgroundColor/*" />
-ASSIGN MCTitleBackgroundColor(oColor) 
+ASSIGN MCTitleBackgroundColor(oColor)
 	RETURN SELF:__SetMCColor(oColor, MCSC_TITLEBK)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCTitleTextColor/*" />
-ACCESS MCTitleTextColor 
+ACCESS MCTitleTextColor
 	RETURN SELF:__GetMCColor(MCSC_TITLETEXT)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCTitleTextColor/*" />
-ASSIGN MCTitleTextColor(oColor) 
+ASSIGN MCTitleTextColor(oColor)
 	RETURN SELF:__SetMCColor(oColor, MCSC_TITLETEXT)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCTrailingTextColor/*" />
-ACCESS MCTrailingTextColor 
+ACCESS MCTrailingTextColor
 	RETURN SELF:__GetMCColor(MCSC_TRAILINGTEXT)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.MCTrailingTextColor/*" />
-ASSIGN MCTrailingTextColor(oColor) 
+ASSIGN MCTrailingTextColor(oColor)
 	RETURN SELF:__SetMCColor(oColor, MCSC_TRAILINGTEXT)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.NullFormat/*" />
 ACCESS NullFormat
     RETURN SELF:lNullFormat
-    
-    
+
+
 /// <include file="Gui.xml" path="doc/DateTimePicker.ParentNotify/*" />
-METHOD ParentNotify(nCode, lParam) 
+METHOD ParentNotify(nCode, lParam)
    //SE-040929 For a correct focus after closing the calender
 
 
@@ -226,7 +226,7 @@ METHOD ParentNotify(nCode, lParam)
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.PerformValidations/*" />
-METHOD PerformValidations() 
+METHOD PerformValidations()
 LOCAL lSuccess		AS LOGIC
 LOCAL uOldValue		AS USUAL
 
@@ -235,7 +235,7 @@ LOCAL uOldValue		AS USUAL
 	uOldValue := SELF:uValue
 	IF _AND(GetWindowLong(SELF:Handle(),GWL_STYLE),DTS_TIMEFORMAT)>0
 		SELF:uValue := SELF:SelectedTime
-	ELSE	
+	ELSE
 		SELF:uValue := SELF:SelectedDate
 	ENDIF
 	lSuccess := SUPER:PerformValidations()
@@ -246,7 +246,7 @@ RETURN lSuccess
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.SelectedDate/*" />
-ACCESS SelectedDate 
+ACCESS SelectedDate
 	LOCAL sDate IS _winSYSTEMTIME
 
 
@@ -259,14 +259,14 @@ ACCESS SelectedDate
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.SelectedDate/*" />
-ASSIGN SelectedDate(dNewDate) 
-    // Suggestion from H�kon Clausen 
+ASSIGN SelectedDate(dNewDate)
+    // Suggestion from H�kon Clausen
     SELF:SetDateTime(dNewDate, NULL_STRING)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.SelectedTime/*" />
-ACCESS SelectedTime 
+ACCESS SelectedTime
 	LOCAL sdate IS _winSYSTEMTIME
 
 
@@ -279,25 +279,25 @@ ACCESS SelectedTime
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.SelectedTime/*" />
-ASSIGN SelectedTime(sNewTime) 
-    // Suggestion from H�kon Clausen 
+ASSIGN SelectedTime(sNewTime)
+    // Suggestion from H�kon Clausen
     SELF:SetDateTime(NULL_DATE, sNewTime)
-	RETURN 
-	
-	
+	RETURN
+
+
 /// <include file="Gui.xml" path="doc/DateTimePicker.SetDateTime/*" />
 METHOD SetDateTime(dNewDate AS DATE, sNewTime AS STRING) AS VOID STRICT
-    // Suggestion from H�kon Clausen and Dirk Herijgers 
+    // Suggestion from H�kon Clausen and Dirk Herijgers
     LOCAL sDate IS _winSYSTEMTIME
     LOCAL dwFlag AS DWORD
 
 
     // if no date or time given. Reset to default values and uncheck
     IF dNewDate == NULL_DATE .AND. SLen(sNewTime) == 0
-        // clear the control 
-        IF SELF:lNullFormat=FALSE                               
+        // clear the control
+        IF SELF:lNullFormat=FALSE
            SELF:cOldFormat := SELF:Format
-        ENDIF                                                           
+        ENDIF
         SELF:Format := "''"
         SELF:lNullFormat := TRUE
         dwFlag := GDT_NONE
@@ -308,9 +308,9 @@ METHOD SetDateTime(dNewDate AS DATE, sNewTime AS STRING) AS VOID STRICT
         // get current value from control and set the parts that are given
         SendMessage(SELF:Handle(), DTM_GETSYSTEMTIME, 0, LONG(_CAST, @sDate))
         IF dNewDate != NULL_DATE
-            sDate:wDay       := LoWord (dNewDate:Day )   
-   	        sDate:wMonth     := LoWord (dNewDate:Month ) 
-       	    sDate:wYear      := LoWord (dNewDate:Year )        		
+            sDate:wDay       := LoWord (dNewDate:Day )
+   	        sDate:wMonth     := LoWord (dNewDate:Month )
+       	    sDate:wYear      := LoWord (dNewDate:Year )
         ENDIF
 
 
@@ -318,19 +318,19 @@ METHOD SetDateTime(dNewDate AS DATE, sNewTime AS STRING) AS VOID STRICT
 
 
         	// Start  KHR
-        	
-        	
+
+
         	// make sure that lateron DTM_SETSYSTEMTIME is always called with a valid date part !
 		    dNewDate := ConDate(sDate:wYear, sDate:wMonth, sDate:wDay)
 		    IF dNewDate == NULL_DATE
 	            dNewDate          := Today()
-	            sDate:wDay       := LoWord (dNewDate:Day )   
-	   	        sDate:wMonth     := LoWord (dNewDate:Month ) 
-	       	    sDate:wYear      := LoWord (dNewDate:Year )        		
-        	ENDIF        		
+	            sDate:wDay       := LoWord (dNewDate:Day )
+	   	        sDate:wMonth     := LoWord (dNewDate:Month )
+	       	    sDate:wYear      := LoWord (dNewDate:Year )
+        	ENDIF
         	// End KHR
-        	
-        	
+
+
             sDate:wHour      := Val(Left(sNewTime, 2))
             sDate:wMinute    := Val(SubStr3(sNewTime, 4,2))
             sDate:wSecond    := Val(SubStr3(sNewTime, 7,2))
@@ -345,7 +345,7 @@ METHOD SetDateTime(dNewDate AS DATE, sNewTime AS STRING) AS VOID STRICT
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.TextValue/*" />
-ACCESS TextValue 
+ACCESS TextValue
 	IF (_AND(GetWindowLong(SELF:Handle(), GWL_STYLE), DTS_TIMEFORMAT) > 0)
 		RETURN SELF:SelectedTime
 	ENDIF
@@ -353,11 +353,11 @@ ACCESS TextValue
 
 
 /// <include file="Gui.xml" path="doc/DateTimePicker.Value/*" />
-ACCESS Value 
+ACCESS Value
 	// DHer: 18/12/2008
 	IF _AND(GetWindowLong(SELF:Handle(),GWL_STYLE),DTS_TIMEFORMAT)>0
 		SELF:uValue := SELF:SelectedTime
-	ELSE	
+	ELSE
 		SELF:uValue := SELF:SelectedDate
 	ENDIF
     RETURN SUPER:Value
@@ -366,10 +366,10 @@ ACCESS Value
 /// <include file="Gui.xml" path="doc/DateTimePicker.IsNone/*" />
 ACCESS IsNone  AS LOGIC
    //SE-120210
-   LOCAL sDate IS _winSYSTEMTIME 
-   
-   
-   RETURN (SendMessage(SELF:Handle(), DTM_GETSYSTEMTIME, 0, LONGINT(_CAST, @sDate)) == GDT_NONE) 
+   LOCAL sDate IS _winSYSTEMTIME
+
+
+   RETURN (SendMessage(SELF:Handle(), DTM_GETSYSTEMTIME, 0, LONGINT(_CAST, @sDate)) == GDT_NONE)
 
 
 
@@ -384,8 +384,8 @@ ACCESS IsTimePicker AS LOGIC
 
 
 
-	
-	
+
+
 END CLASS
 
 

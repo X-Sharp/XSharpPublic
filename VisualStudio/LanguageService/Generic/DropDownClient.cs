@@ -116,11 +116,13 @@ namespace XSharp.LanguageService
         {
             return ThreadHelper.JoinableTaskFactory.StartOnIdleShim(() =>
             {
-                
-                textView.SendExplicitFocus();
-                _activeView.Caret.MoveToNextCaretPosition();
-                _activeView.Caret.PositionChanged += Caret_PositionChanged;
-                _activeView.Caret.MoveToPreviousCaretPosition();
+                if (_textViews.Count > 0 && _activeView != null)
+                {
+                    textView.SendExplicitFocus();
+                    _activeView.Caret.MoveToNextCaretPosition();
+                    _activeView.Caret.PositionChanged += Caret_PositionChanged;
+                    _activeView.Caret.MoveToPreviousCaretPosition();
+                }
             }).Task;
         }
 
@@ -135,9 +137,10 @@ namespace XSharp.LanguageService
                     textView.LostAggregateFocus -= TextView_LostAggregateFocus;
                     textView.Closed -= TextView_Closed;
                     textView.Caret.PositionChanged -= Caret_PositionChanged;
+                    if (_activeView == textView)
+                        _activeView = null;
                     _textViews.Remove(textView);
                     _file.ContentsChanged -= _file_ContentsChanged;
-
                 }
             }
         }

@@ -2032,13 +2032,15 @@ namespace XSharp.Project
         {
             get
             {
-                
+                if (this.IsClosed)
+                    return XSharpParseOptions.Default;
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    if (this.CurrentConfig != null)
+                    var config = this.CurrentConfig;
+                    if (config != null)
                     {
-                        var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
+                        var xoptions = GetProjectOptions(config.ConfigCanonicalName) as XSharpProjectOptions;
                         if (xoptions != null)
                         {
                             if (xoptions.ParseOptions == null)

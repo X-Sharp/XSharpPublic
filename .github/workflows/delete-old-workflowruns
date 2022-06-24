@@ -1,0 +1,23 @@
+on: [push]
+
+jobs:
+  delete-workflow-runs:
+    runs-on: ubuntu-latest
+    name: A demo job to delete workflow runs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Delete workflow runs
+        uses: ./ # Uses an action in the root directory
+        id: delete-workflow-runs
+        with:
+          repository: MajorScruffy/delete-workflow-runs
+          workflow: ".github/workflows/continuous-integration.yml"
+          # older-than-seconds: 2592000
+          # branch: main
+          # event: push
+          # event: completed
+          # maximum-workflow-runs-to-keep: 0
+          # what-if: true
+        

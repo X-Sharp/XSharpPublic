@@ -49,7 +49,7 @@ namespace XSharp.LanguageService
                 switch (nCmdId)
                 {
                     case (int)VSStd97CmdID.GotoDefn:
-                        return (int)(OLECMDF.OLECMDF_SUPPORTED | OLECMDF.OLECMDF_LATCHED);
+                        return (int)(OLECMDF.OLECMDF_SUPPORTED | OLECMDF.OLECMDF_ENABLED);
                     case (int)VSStd97CmdID.GotoDecl:
                     case (int)VSStd97CmdID.GotoRef:
                         return (int)(OLECMDF.OLECMDF_SUPPORTED | OLECMDF.OLECMDF_INVISIBLE);

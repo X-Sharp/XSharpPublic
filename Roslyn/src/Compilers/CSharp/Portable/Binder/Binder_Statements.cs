@@ -1448,6 +1448,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             var op1 = BindValue(node.Left, diagnostics, lhsKind);
             ReportSuppressionIfNeeded(op1, diagnostics);
 
+#if XSHARP
+            if (Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, node))
+            {
+                // when undeclared memvars is enabled then we want to make sure that
+                // assignment to delegate is resolved to a method/function
+                if (op1.Type is { } && op1.Type.BaseTypeNoUseSiteDiagnostics is { }
+                    && (op1.Type.BaseTypeNoUseSiteDiagnostics.SpecialType == SpecialType.System_MulticastDelegate ||
+                    op1.Type.BaseTypeNoUseSiteDiagnostics.SpecialType == SpecialType.System_Delegate))
+                {
+                    var rhs = BindMethodGroup(rhsExpr, false, false, diagnostics);
+                    return BindAssignment(node, op1, rhs, isRef, diagnostics);
+
+                }
+            }
+#endif
+
             var lhsRefKind = RefKind.None;
             // If the LHS is a ref (not ref-readonly), the rhs
             // must also be value-assignable

@@ -290,10 +290,41 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (TypeEquals(parType, argType, ref useSiteDiagnostics))
                 {
                     score += 100;
+                    continue;
                 }
-                else if (parType.IsObjectType() || parType.IsUsualType())
+                if (parType.TypeKind == TypeKind.Enum)
                 {
-                    score += 50;
+                    parType = parType.GetEnumUnderlyingType();
+                }
+                if (argType.TypeKind == TypeKind.Enum)
+                {
+                    argType = argType.GetEnumUnderlyingType();
+                }
+                if (TypeEquals(parType, argType, ref useSiteDiagnostics))
+                {
+                    score += 100;
+                    continue;
+                }
+
+
+                if (parType.IsObjectType() || parType.IsUsualType())
+                {
+                    if (argType.IsValidVOUsualType(Compilation))
+                    {
+                        score += 50;
+                    }
+                }
+                else if (argType.IsUsualType())
+                {
+                    if (parType.IsNumericType() &&
+                        (parType.SpecialType == SpecialType.System_Double || parType.IsFloatType()))
+                    {
+                        score += 60;
+                    }
+                    else if (parType.IsValidVOUsualType(Compilation))
+                    {
+                        score += 50;
+                    }
                 }
                 else if (argType.IsDerivedFrom(parType, TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
                 {
@@ -310,7 +341,31 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else if (argType.IsNumericType() && parType.IsNumericType())
                 {
-                    score += 10;
+                    if (argType.IsIntegralType() && parType.IsIntegralType())
+                    {
+                        score += 40;
+                    }
+                    if (argType.IsFractionalType() && parType.IsFractionalType())
+                    {
+                        if (argType.IsFloatType() && parType.SpecialType == SpecialType.System_Double)
+                        {
+                            score += 35;
+                        }
+                        else
+                        {
+                            score += 30;
+                        }
+                    }
+                    else if (parType.IsFractionalType())
+                    {
+                        // argument is then integral type
+                        score += 25;
+                    }
+                    else
+                    {
+                        // argument is fractional, parameter integral
+                        score += 20;
+                    }
                 }
                 else
                 {
@@ -551,6 +606,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (arguments.Count < len)
                         len = arguments.Count;
 
+                    // Now check for REF parameters and possible REF arguments
+                    // now fall back to original type (and not addressof type)
                     if (MatchRefParameters(m1.Member, m2.Member, arguments, out useSiteDiagnostics, out result))
                     {
                         return true;
@@ -586,6 +643,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         return true;
                     }
+                    /*
                     for (int i = 0; i < len; i++)
                     {
                         var parLeft = parsLeft[i];
@@ -595,7 +653,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var leftType = parLeft.Type;
                         var rightType = parRight.Type;
 
-                        if (!Equals(leftType, rightType) )
+                        if (!Equals(leftType, rightType))
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
                             if (leftType.IsUsualType() && argType.IsNotUsualType() && !rightType.IsArray())
@@ -619,8 +677,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 result = BetterResult.Right;
                                 return true;
                             }
-                            // Now check for REF parameters and possible REF arguments
-                            // now fall back to original type (and not addressof type)
                             argType = arg.Type;
                             // Handle passing Enum values to methods that have a non enum parameter
                             if (argType?.TypeKind == TypeKind.Enum)
@@ -737,7 +793,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                         }
                     }
-                    
+                    */
                 }
                 else
                 {
@@ -906,8 +962,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     // when /vo4 or /vo11 is enabled then we may end up having duplicate candidates
                     // we decide here which one takes precedence
-                    if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, left.Syntax) || // vo4
-                        Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, left.Syntax)) // vo11
+                    if (Compilation.Options.HasOption(CompilerOption.NumericConversions, left.Syntax) || // vo4
+                        Compilation.Options.HasOption(CompilerOption.VOArithmeticConversions, left.Syntax)) // vo11
                     {
                         #region Integral Binary Operators
                         if (left.Type.IsIntegralType() && right.Type.IsIntegralType()

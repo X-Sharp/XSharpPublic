@@ -111327,7 +111327,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R856 - Function resolving with usual parameters
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C860 - Runtime error with AScan() and OBJECT param passed *************
 Application = C860 - Runtime error with AScan() and OBJECT param passed
 IDEVersion = 1.06
@@ -111370,8 +111370,8 @@ FileType = Code
 CopyToBin = 0
 [C860 - Runtime error with AScan() and OBJECT param passed References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
 [C860 - Runtime error with AScan() and OBJECT param passed Resources]
 [C860 - Runtime error with AScan() and OBJECT param passed Native Resources]
 [C860 - Runtime error with AScan() and OBJECT param passed License files]

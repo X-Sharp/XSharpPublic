@@ -283,16 +283,24 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var parType = pars[i].Type;
                 var arg = arguments[i];
-                if (TypeEquals(parType, arg.Type, ref useSiteDiagnostics))
+                var argType = arguments[i].Type;
+                if (argType is not { })
+                    continue;
+
+                if (TypeEquals(parType, argType, ref useSiteDiagnostics))
                 {
                     score += 100;
                 }
-                else if (arg.Type is { } && arg.Type.IsDerivedFrom(parType, TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
+                else if (parType.IsObjectType() || parType.IsUsualType())
+                {
+                    score += 50;
+                }
+                else if (argType.IsDerivedFrom(parType, TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
                 {
                     // determine depth of inheritance
                     // so we will take the most derived
-                    var baseType = arg.Type;
-                    var depth = 10;
+                    var baseType = argType;
+                    var depth = 25;
                     while (baseType is { } && !TypeEquals(baseType, parType, ref useSiteDiagnostics))
                     {
                         depth -= 1;
@@ -300,9 +308,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     score += depth;
                 }
-                else if (arg.Type is { } && arg.Type.IsIntegralType() && parType.IsIntegralType() && arg.ConstantValue != null)
+                else if (argType.IsNumericType() && parType.IsNumericType())
                 {
-                    score += 1;
+                    score += 10;
                 }
                 else
                 {
@@ -566,7 +574,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return true;
                     }
 
-
+                    if (leftScore != rightScore)
+                    {
+                        if (leftScore > rightScore)
+                        {
+                            result = BetterResult.Left;
+                        }
+                        else
+                        {
+                            result = BetterResult.Right;
+                        }
+                        return true;
+                    }
                     for (int i = 0; i < len; i++)
                     {
                         var parLeft = parsLeft[i];
@@ -718,18 +737,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                         }
                     }
-                    if (leftScore != rightScore)
-                    {
-                        if (leftScore > rightScore)
-                        {
-                            result = BetterResult.Left;
-                        }
-                        else
-                        {
-                            result = BetterResult.Right;
-                        }
-                        return true;
-                    }
+                    
                 }
                 else
                 {

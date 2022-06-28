@@ -117,23 +117,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             return false;
         }
-        internal static TypeSymbol LargestOperand(this BoundBinaryOperator binop, Compilation compilation, bool checkConversions = true)
+        internal static TypeSymbol LargestOperand(this BoundBinaryOperator binop, Compilation compilation)
         {
             if (binop.OperatorKind.IsComparison() || !binop.Type.IsIntegralType())
                 return binop.Type;
 
             var left = binop.Left;
             var right = binop.Right;
-            if (checkConversions)
+            if (left is BoundConversion lconv && (lconv.WasCompilerGenerated || lconv.Syntax.XGenerated))
             {
-                if (left is BoundConversion lconv)
-                {
-                    left = lconv.Operand;
-                }
-                if (right is BoundConversion rconv)
-                {
-                    right = rconv.Operand;
-                }
+                left = lconv.Operand;
+            }
+            if (right is BoundConversion rconv && (rconv.WasCompilerGenerated || rconv.Syntax.XGenerated))
+            {
+                right = rconv.Operand;
             }
             var leftType = left.Type;
             var rightType = right.Type;
@@ -141,9 +138,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 leftType = binopl.LargestOperand(compilation) ;
             if (right is BoundBinaryOperator binopr)
                 rightType = binopr.LargestOperand(compilation);
-            if (left is BoundLiteral)
+            if (left is BoundLiteral || left is BoundFieldAccess)
                 leftType = left.ConstantType(compilation);
-            if (right is BoundLiteral)
+            if (right is BoundLiteral || right is BoundFieldAccess)
                 rightType = right.ConstantType(compilation);
 
             var leftSize = leftType.SpecialType.SizeInBytes();

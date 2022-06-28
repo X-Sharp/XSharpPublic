@@ -286,7 +286,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (expression is BoundBinaryOperator binop && targetType.SpecialType.IsIntegralType())
             {
-                var sourceType = binop.LargestOperand(this.Compilation, false);
+                var sourceType = binop.LargestOperand(this.Compilation);
                 if (Equals(sourceType, targetType))
                 {
                     return true;

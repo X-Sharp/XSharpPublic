@@ -658,6 +658,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultLeft = CreateConversion(left, best.LeftConversion, signature.LeftType, diagnostics);
                 resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
 #if XSHARP
+                if (resultLeft is BoundConversion)
+                    resultLeft.WasCompilerGenerated = true;
+                if (resultRight is BoundConversion)
+                    resultRight.WasCompilerGenerated = true;
                 var expectedResultType = resultType;
 #endif
                 resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics);

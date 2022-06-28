@@ -305,7 +305,7 @@
                 case ErrorCode.WRN_DuplicateDefineSame:
                 case ErrorCode.WRN_ImplicitParentConstructorInitializer:
                 case ErrorCode.WRN_ConversionMayLeadToLossOfData:
-                case ErrorCode.WRN_SignedUnSignedConversion:
+                case ErrorCode.WRN_Conversion:
                 case ErrorCode.WRN_AddrOfMovable:
                 case ErrorCode.WRN_MissingReturnStatement:
                 case ErrorCode.WRN_MissingReturnValue:

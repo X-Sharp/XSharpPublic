@@ -420,11 +420,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.EnforceSelf:  // enforceself
                     return CheckOption(option, EnforceSelf, context, options);
 
-                case CompilerOption.SignedUnsignedConversion: // vo4
-                case CompilerOption.ResolveTypedFunctionPointersToPtr: // vo6
-                case CompilerOption.CompatibleIIF:  // vo10
-                case CompilerOption.ArithmeticConversions: // vo11
-                case CompilerOption.StringComparisons: // vo13
+                case CompilerOption.Vo4: // vo4
+                case CompilerOption.Vo6: // ResolveTypedFunctionPointersToPtr: 
+                case CompilerOption.Vo10: // :  // vo10
+                case CompilerOption.Vo11: // ArithmeticConversions: // vo11
+                case CompilerOption.Vo13: // StringComparisons: // vo13
                     return false; // not handled during parsing
                 case CompilerOption.Vo1: // Init/Axit => Constructor / Destruction
                 case CompilerOption.Vo8: // Compatible Preprocessor

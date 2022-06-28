@@ -132,8 +132,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Overflow:
                     return CheckOption(option, CheckOverflow, syntax);
 
-                case CompilerOption.VirtualInstanceMethods:
-                    return CheckOption(option, VirtualInstanceMethods, syntax);
 
                 case CompilerOption.MemVars:
                     return CheckOption(option, MemVars, syntax);
@@ -144,37 +142,41 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.UndeclaredMemVars:
                     return CheckOption(option, UndeclaredMemVars, syntax);
 
-                case CompilerOption.NullStrings:    // vo2
+                case CompilerOption.Vo2: // NullStrings:    // vo2
                     return CheckOption(option, VONullStrings, syntax);
 
-                case CompilerOption.SignedUnsignedConversion: // vo4
+                case CompilerOption.Vo3: // VirtualInstanceMethods:
+                    return CheckOption(option, VirtualInstanceMethods, syntax);
+
+                case CompilerOption.Vo4: // vo4
                     return CheckOption(option, VOSignedUnsignedConversion, syntax);
 
-                case CompilerOption.ResolveTypedFunctionPointersToPtr: // vo6
+                case CompilerOption.Vo6: //  ResolveTypedFunctionPointersToPtr: // vo6
                     return CheckOption(option, VOResolveTypedFunctionPointersToPtr, syntax);
 
-                case CompilerOption.ImplicitCastsAndConversions: // vo7
+                case CompilerOption.Vo7: //  ImplicitCastsAndConversions: // vo7
                     return CheckOption(option, VOImplicitCastsAndConversions, syntax);
 
-                case CompilerOption.CompatibleIIF:  // vo10
+                case CompilerOption.Vo10: // CompatibleIIF:  // vo10
                     return CheckOption(option, VOCompatibleIIF, syntax);
 
-                case CompilerOption.ArithmeticConversions: // vo11
+                case CompilerOption.Vo11: // ArithmeticConversions: // vo11
                     return CheckOption(option, VOArithmeticConversions, syntax);
 
-                case CompilerOption.StringComparisons: // vo13
+                case CompilerOption.Vo13: //  StringComparisons: // vo13
                     return CheckOption(option, VOStringComparisons, syntax);
 
-                case CompilerOption.FoxArraySupport: // fox2
+                case CompilerOption.Fox2: // Fox Array Support
                     return CheckOption(option, FoxArraySupport, syntax);
 
                 // other options are not handled or only handled during parsing
-                case CompilerOption.ClipperCallingConvention:   // Vo5
-                case CompilerOption.AllowMissingReturns:   // Vo9
-                case CompilerOption.ClipperIntegerDivisions:   // Vo12
-                case CompilerOption.FloatConstants: // vo14
-                case CompilerOption.UntypedAllowed: // v015
-                case CompilerOption.DefaultClipperContructors: // v016
+                case CompilerOption.Vo1: // InitAxitConstructorDestructor:
+                case CompilerOption.Vo5: //  ClipperCallingConvention:
+                case CompilerOption.Vo9: //  AllowMissingReturns:   
+                case CompilerOption.Vo12: // ClipperIntegerDivisions:   
+                case CompilerOption.Vo14: // FloatConstants: 
+                case CompilerOption.Vo15: // UntypedAllowed: 
+                case CompilerOption.Vo16: // DefaultClipperContructors: 
                 case CompilerOption.EnforceOverride:
                     return false;
 

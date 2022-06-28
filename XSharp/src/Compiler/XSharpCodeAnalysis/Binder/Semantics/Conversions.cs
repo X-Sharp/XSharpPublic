@@ -155,13 +155,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             var dstType = destination.SpecialType;
             var syntax = sourceExpression.Syntax;
             // From and to CHAR
-            var vo4 = Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, syntax);
-            var vo11 = Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, syntax);
+            var vo4 = Compilation.Options.HasOption(CompilerOption.Vo4, syntax);
             if (srcType == SpecialType.System_Char)
             {
                 if (dstType == SpecialType.System_UInt16)
                     return Conversion.Identity;
-                if (vo4 || vo11)
+                if (vo4)
                 {
                     if (dstType == SpecialType.System_Byte)
                         return Conversion.ImplicitNumeric;
@@ -222,13 +221,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.Identity;
                 }
             }
-            if (!srcType.Equals(dstType) && (vo4 || vo11))
+            if (!srcType.Equals(dstType))
             {
                 // These compiler options only applies to numeric types
                 Conversion result = Conversion.NoConversion;
                 if (srcType.IsNumericType() && dstType.IsNumericType())
                 {
-                    if (srcType.IsIntegralType() && dstType.IsIntegralType())
+                    if (srcType.IsIntegralType() && dstType.IsIntegralType() && vo4)
                     {
                         // when both same # of bits and integral, use Identity conversion
                         if (srcType.SizeInBytes() == dstType.SizeInBytes())
@@ -236,21 +235,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                             syntax.XWarning = !syntax.XGenerated;
                             result = Conversion.Identity;
                         }
-                        else if (vo11)
+                        else
                         {
-                            // otherwise implicit conversion
                             syntax.XWarning = !syntax.XGenerated;
                             result = Conversion.ImplicitNumeric;
                         }
                     }
-                    else if (vo11 && dstType.IsIntegralType())
-                    {
-                        syntax.XWarning = !syntax.XGenerated;
-                        result = Conversion.ImplicitNumeric;
-                    }
                 }
                 // VO/Vulcan also allows to convert floating point types <-> integral types
-                if (result == Conversion.NoConversion && vo11 && (source.IsFloatType() || source.IsCurrencyType()))
+                var vo11 = Compilation.Options.HasOption(CompilerOption.Vo11, syntax);
+                if (vo11 && result == Conversion.NoConversion && source.IsFractionalType())
                 {
                     if (destination is { } && destination.SpecialType.IsNumericType())
                     {
@@ -296,17 +290,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var sourceSize = sourceType.SpecialType.SizeInBytes();
                     var targetSize = targetType.SpecialType.SizeInBytes();
                     if (sourceSize < targetSize)
-                    {
-                        return true;
-                    }
-                    if (sourceSize > targetSize)
-                    {
-                        return false;
-                    }
-                    // same size, but different type. Only allowed when SignedUnsignedConversion is active
-                    var vo4 = Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax);
-                    var vo11 = Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax);
-                    if (vo4 || vo11)
                     {
                         return true;
                     }

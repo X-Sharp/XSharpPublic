@@ -33,33 +33,41 @@ namespace Microsoft.CodeAnalysis.CSharp
         private void GenerateWarning(TypeSymbol sourceType, TypeSymbol targetType, BoundNode node)
         {
             var syntax = node.Syntax;
-            if (node is BoundExpression expr && expr.HasConstant())
+            if (syntax.XWarning && !Equals(sourceType, targetType) && !syntax.XContainsGeneratedExpression
+                && sourceType.IsNumericType() && targetType.IsNumericType())
             {
-                return;
-            }
-            if (syntax.XWarning && !Equals(sourceType, targetType) && !syntax.XContainsGeneratedExpression)
-            {
-                var vo4 = _compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, syntax);
-                var vo11 = _compilation.Options.HasOption(CompilerOption.ArithmeticConversions, syntax);
-                if (targetType.IsIntegralType() && sourceType.IsIntegralType())
+                var errCode = ErrorCode.Unknown;
+                if (targetType.IsIntegralType() && sourceType.IsIntegralType()
+                    && _compilation.Options.HasOption(CompilerOption.Vo4, syntax))
                 {
                     var srcsize = sourceType.SpecialType.SizeInBytes();
                     var trgsize = targetType.SpecialType.SizeInBytes();
-                    if ((vo4 || vo11) && srcsize == trgsize)
+                    if (srcsize == trgsize)
                     {
-                        Error(ErrorCode.WRN_SignedUnSignedConversion, node, sourceType, targetType);
+                        // when converting from signed to unsigned data may be lost
+                        errCode = ErrorCode.WRN_Conversion;
                     }
                     else if (srcsize > trgsize)
                     {
-                        Error(ErrorCode.WRN_ConversionMayLeadToLossOfData, node, sourceType, targetType);
+                        // when converting from larger to smaller integral type data may be lost
+                        errCode = ErrorCode.WRN_ConversionMayLeadToLossOfData;
                     }
                 }
-                else if (vo11 && sourceType.IsNumericType() && targetType.IsNumericType())
+                else if (_compilation.Options.HasOption(CompilerOption.Vo11, syntax))
                 {
+                    // when converting from fractional to integral precision may be lost
                     if (sourceType.IsFractionalType() && !targetType.IsFractionalType())
                     {
-                        Error(ErrorCode.WRN_ConversionMayLeadToLossOfData, node, sourceType, targetType);
+                        errCode = ErrorCode.WRN_ConversionMayLeadToLossOfData;
                     }
+                    else
+                    {
+                        errCode = ErrorCode.WRN_Conversion;
+                    }
+                }
+                if (errCode != ErrorCode.Unknown)
+                {
+                    Error(errCode, node, sourceType, targetType);
                 }
             }
         }
@@ -69,7 +77,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             var syntax = node.Syntax;
             var sourceType = node.Operand.Type;
             var targetType = node.Type;
-
 
             if (syntax is BinaryExpressionSyntax binexp )
             {

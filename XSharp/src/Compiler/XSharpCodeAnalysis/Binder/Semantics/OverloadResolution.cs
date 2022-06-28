@@ -963,8 +963,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     // when /vo4 or /vo11 is enabled then we may end up having duplicate candidates
                     // we decide here which one takes precedence
-                    if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, left.Syntax) || // vo4
-                        Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, left.Syntax)) // vo11
+                    if (Compilation.Options.HasOption(CompilerOption.Vo4, left.Syntax) || // vo4
+                        Compilation.Options.HasOption(CompilerOption.Vo11, left.Syntax)) // vo11
                     {
                         #region Integral Binary Operators
                         if (left.Type.IsIntegralType() && right.Type.IsIntegralType()

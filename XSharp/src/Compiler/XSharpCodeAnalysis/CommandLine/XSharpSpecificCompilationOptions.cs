@@ -262,7 +262,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         Vo3 = 1 << 3,
         VirtualInstanceMethods = Vo3,
         Vo4 = 1 << 4,
-        SignedUnsignedConversion = Vo4,
         Vo5 = 1 << 5,
         ClipperCallingConvention = Vo5,
         Vo6 = 1 << 6,
@@ -276,7 +275,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         Vo10 = 1 << 10,
         CompatibleIIF = Vo10,
         Vo11 = 1 << 11,
-        ArithmeticConversions = Vo11,
         Vo12 = 1 << 12,
         ClipperIntegerDivisions = Vo12,
         Vo13 = 1 << 13,
@@ -315,40 +313,44 @@ namespace Microsoft.CodeAnalysis.CSharp
             // sorted alphabetically
             switch (option)
             {
-                case CompilerOption.ArithmeticConversions:
-                case CompilerOption.ClipperCallingConvention:
-                case CompilerOption.ClipperIntegerDivisions:
-                case CompilerOption.DefaultClipperContructors:
-                case CompilerOption.FloatConstants:
+                case CompilerOption.Vo1: // InitAxit
+                case CompilerOption.Vo2: // NullStrings
+                case CompilerOption.Vo3: // VirtualInstanceMethods
+                case CompilerOption.Vo4: // Integral conversions
+                    return false;
+                case CompilerOption.Vo5: //  ClipperCallingConvention:
+                case CompilerOption.Vo6: //  ResolveTypedFunctionPointersToPtr:
+                case CompilerOption.Vo7: //  ImplicitCastsAndConversions:
+                    return true;
+                case CompilerOption.Vo8: //  CompatiblePreprocessor:
+                case CompilerOption.Vo9: // AllowMissingReturns
+                case CompilerOption.Vo10: // CompatibleIIF:
+                    return false;
+                case CompilerOption.Vo11: // Arithmetic Conversions
+                case CompilerOption.Vo12: // ClipperIntegerDivisions:
+                case CompilerOption.Vo13: // StringComparisons:
+                case CompilerOption.Vo14: // FloatConstants:
+                case CompilerOption.Vo15: // UntypedAllowed:
+                case CompilerOption.Vo16: // DefaultClipperContructors:
+                case CompilerOption.Vo17: // CompatibleBeginSequence:
                 case CompilerOption.Fox1:
                 case CompilerOption.Fox2:
-                case CompilerOption.ImplicitCastsAndConversions:
                 case CompilerOption.MemVars:
-                case CompilerOption.ResolveTypedFunctionPointersToPtr:
-                case CompilerOption.StringComparisons:
                 case CompilerOption.UndeclaredMemVars:
-                case CompilerOption.UntypedAllowed:
                 case CompilerOption.Xpp1:
                 //case CompilerOption.Xpp2:
                     return true;
                 case CompilerOption.AllowDotForInstanceMembers:
-                case CompilerOption.AllowMissingReturns:
                 case CompilerOption.AllowNamedArgs:
                 case CompilerOption.ArrayZero:
                 case CompilerOption.ClrVersion:
-                case CompilerOption.CompatibleIIF:
-                case CompilerOption.CompatiblePreprocessor:
                 case CompilerOption.EnforceOverride:
                 case CompilerOption.EnforceSelf:
                 case CompilerOption.ImplicitNamespace:
-                case CompilerOption.InitAxitConstructorDestructor:
                 case CompilerOption.InitLocals:
                 case CompilerOption.LateBinding:
                 case CompilerOption.None:
-                case CompilerOption.NullStrings:
                 case CompilerOption.Overflow:
-                case CompilerOption.SignedUnsignedConversion:
-                case CompilerOption.VirtualInstanceMethods:
                     return false;
                 default:
                     break;
@@ -396,7 +398,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Vo3:
                     return "All methods Virtual";
                 case CompilerOption.Vo4:
-                    return "Implicit signed/unsigned integer conversions";
+                    return "Implicit integer conversions";
                 case CompilerOption.Vo5:
                     return "Implicit CLIPPER calling convention";
                 case CompilerOption.Vo6:
@@ -410,7 +412,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Vo10:
                     return "Compatible IIF expressions";
                 case CompilerOption.Vo11:
-                    return "Compatible numeric conversions";
+                    return "Compatible fractional -> integer conversions";
                 case CompilerOption.Vo12:
                     return "Clipper Integer divisions";
                 case CompilerOption.Vo13:

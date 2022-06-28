@@ -1990,7 +1990,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_InvalidDLLEntryPoint = 9018,
         ERR_CompilerOptionNotSupportedForDialect = 9019,
         WRN_ConversionMayLeadToLossOfData = 9020,
-        WRN_SignedUnSignedConversion = 9021,
+        WRN_Conversion = 9021,
         ERR_ConflictingCommandLineOptions = 9022,
         WRN_AddrOfMovable = 9023,
         ERR_ExitInsideSwitchStatementNotAllowed = 9024,

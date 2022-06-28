@@ -7328,8 +7328,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_ConversionMayLeadToLossOfData" xml:space="preserve">
     <value>Narrowing conversion from '{0}' to '{1}' may lead to loss of data or overflow errors</value>
   </data>
-  <data name="WRN_SignedUnSignedConversion" xml:space="preserve">
-    <value>Signed/unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors</value>
+  <data name="WRN_Conversion" xml:space="preserve">
+    <value>Conversion from '{0}' to '{1}' may lead to loss of data or overflow errors</value>
   </data>
   <data name="ERR_ConflictingCommandLineOptions" xml:space="preserve">
     <value>Conflicting commandline options '{0}' and '{1}' are not allowed (both are internally mapped to /checked)</value>

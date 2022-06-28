@@ -215,8 +215,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 Conversion rightToLeftConversion = this.Conversions.ClassifyConversionFromExpression(right, leftType, ref useSiteDiagnostics);
 #if XSHARP
-                bool vo4 = Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, node);
-                bool vo11 = Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, node);
+                bool vo4 = Compilation.Options.HasOption(CompilerOption.Vo4, node);
+                bool vo11 = Compilation.Options.HasOption(CompilerOption.Vo11, node);
                 if (rightToLeftConversion.IsExplicit && (vo4 || vo11))
                 {
                     // with /vo11 or vo4 we allow the conversion but generate a warning

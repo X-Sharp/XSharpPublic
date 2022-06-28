@@ -165,7 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         BoundExpression XsCreateConversionNonIntegralNumeric(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
-            if (Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax)
+            if (Compilation.Options.HasOption(CompilerOption.Vo11, expression.Syntax)
                 && expression.Type.IsNumericType() && targetType.IsNumericType())
             {
                 // call Convert.To..() to round the result
@@ -360,57 +360,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+            var vo4 = Compilation.Options.HasOption(CompilerOption.Vo4, expression.Syntax);
             var sourceType = expression.Type;
-/*
-            if (expression is BoundObjectCreationExpression boc && sourceType.IsArrayType() && targetType.IsArrayBaseType())
-            {
-                var xNode = expression.Syntax.XNode;
-                if (xNode is PrimaryExpressionContext pe && pe.Expr is LiteralArrayExpressionContext la)
-                {
-                    var dims = boc.Arguments.Length;
-                    var ctors = targetType.GetMembers(".ctor");
-                    if (dims == 0)
-                    {
-                        var ctor = ctors.Where(c => c.GetParameterCount() == 0).FirstOrDefault() as MethodSymbol;
-                        expression = new BoundObjectCreationExpression(expression.Syntax, ctor);
-                        return;
-                    }
-                    else
-                    {
-                        foreach (MethodSymbol ctor in ctors)
-                        {
-                            var pars = ctor.GetParameters();
-                            if (pars.Length == 1)
-                            {
-                                if (pars[0].Type is ArrayTypeSymbol ats)
-                                {
-                                    if (ats.ElementType.SpecialType == SpecialType.System_Object)
-                                    {
-                                        var conv = CreateConversion(expression, pars[0].Type, diagnostics);
-                                        expression = new BoundObjectCreationExpression(expression.Syntax, ctor, conv);
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-*/ 
-            if (expression.ConstantValue == null && sourceType is { } && targetType is { })
-            {
-
-                if (sourceType.IsNumericType() && targetType.IsNumericType())
-                {
-                    if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax) || //vo4
-                        Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax)) //vo11
-                    {
-                        return;
-                    }
-                }
-            }
             var rhsType = expression.Type;
-            if (rhsType is { } && Equals(targetType, rhsType) &&
+            if (rhsType is { } && !Equals(targetType, rhsType) &&
                 targetType.SpecialType.IsIntegralType() &&
                 rhsType.SpecialType.IsIntegralType())
             {
@@ -435,7 +388,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         sourceType = binop.LargestOperand(this.Compilation);
                         sourceSize = sourceType.SpecialType.SizeInBytes();
                     }
-                    if (!Equals(sourceType, targetType) && !expression.Syntax.HasErrors)
+                    if (!Equals(sourceType, targetType) && !expression.Syntax.HasErrors && vo4)
                     {
                         // Find sources that do not fit in the target
                         if (expression is BoundConditionalOperator bco && XsLiteralIIfFitsInTarget(bco, targetType))
@@ -445,19 +398,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                         else if (sourceSize > targetSize)
                         {
                             // Narrowing conversion from '{0}' to '{1}' may lead to loss of data or overflow errors
-                            Error(diagnostics, ErrorCode.WRN_ConversionMayLeadToLossOfData, expression.Syntax, expression.Type, targetType);
+                            Error(diagnostics, ErrorCode.WRN_ConversionMayLeadToLossOfData, expression.Syntax, sourceType, targetType);
                         }
                         else if (sourceSize == targetSize)
                         {
-                            //Signed/unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
-                            Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
+                            //Conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
+                            Error(diagnostics, ErrorCode.WRN_Conversion, expression.Syntax, sourceType, targetType);
                         }
                         // lhs.Size < rhs.Size, only a problem when lhs is Signed and rhs is Unsiged
                         else if (sourceSize < targetSize && sourceType.SpecialType.IsSignedIntegralType() && !targetType.SpecialType.IsSignedIntegralType())
                         {
-                            // Signed / unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
+                            // Conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
 
-                            Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
+                            Error(diagnostics, ErrorCode.WRN_Conversion, expression.Syntax, sourceType, targetType);
                         }
                     }
                 }

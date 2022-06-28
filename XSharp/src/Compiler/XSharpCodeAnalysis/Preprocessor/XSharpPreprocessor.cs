@@ -2249,14 +2249,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 // case "vo1": // Init/axit
                                 case CompilerOption.Vo2:     // Initialize string variables with empty strings
                                 case CompilerOption.Vo3:     // All instance members virtual
-                                case CompilerOption.Vo4:     // SignedUnsignedConversion
+                                case CompilerOption.Vo4:     // Integer conversions
                                 case CompilerOption.Vo5:     // Implicit Clipper Calling convention
                                 case CompilerOption.Vo6:     // ResolveTypedFunctionPointersToPtr
                                 case CompilerOption.Vo7:     // Implicit Casts and Conversions
                                                              // case "vo8": // Compatible preprocessor
                                 case CompilerOption.Vo9:     // Allow missing return statements or missing return values
                                 case CompilerOption.Vo10:     // Compatible IIF
-                                case CompilerOption.Vo11:    // ArithmeticConversions
+                                case CompilerOption.Vo11:    // Fractional -> Integral Conversions
                                 case CompilerOption.Vo12:    // Clipper Integer divisions
                                 case CompilerOption.Vo13:    // StringComparisons
                                 case CompilerOption.Vo14:    // Embed real constants as float

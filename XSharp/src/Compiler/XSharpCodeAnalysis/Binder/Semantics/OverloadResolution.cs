@@ -286,10 +286,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var argType = arguments[i].Type;
                 if (argType is not { })
                     continue;
+                var isConst = arg.ConstantValue != null;
 
                 if (TypeEquals(parType, argType, ref useSiteDiagnostics))
                 {
-                    score += 100;
+                    score += isConst ? 90 : 100;
                     continue;
                 }
                 if (parType.TypeKind == TypeKind.Enum)
@@ -302,7 +303,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (TypeEquals(parType, argType, ref useSiteDiagnostics))
                 {
-                    score += 100;
+                    score += isConst ? 90 : 100;
                     continue;
                 }
 
@@ -311,7 +312,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (argType.IsValidVOUsualType(Compilation))
                     {
-                        score += 50;
+                        score += isConst ? 45 : 50;
                     }
                 }
                 else if (argType.IsUsualType())
@@ -319,11 +320,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (parType.IsNumericType() &&
                         (parType.SpecialType == SpecialType.System_Double || parType.IsFloatType()))
                     {
-                        score += 60;
+                        score += isConst ? 55 : 60;
                     }
                     else if (parType.IsValidVOUsualType(Compilation))
                     {
-                        score += 50;
+                        score += isConst ? 45 : 50;
                     }
                 }
                 else if (argType.IsDerivedFrom(parType, TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
@@ -331,7 +332,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // determine depth of inheritance
                     // so we will take the most derived
                     var baseType = argType;
-                    var depth = 25;
+                    var depth = isConst ? 25 : 35;
                     while (baseType is { } && !TypeEquals(baseType, parType, ref useSiteDiagnostics))
                     {
                         depth -= 1;
@@ -343,28 +344,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (argType.IsIntegralType() && parType.IsIntegralType())
                     {
-                        score += 40;
+                        score += isConst ? 35 : 40;
                     }
-                    if (argType.IsFractionalType() && parType.IsFractionalType())
+                    else if (argType.IsFractionalType() && parType.IsFractionalType())
                     {
                         if (argType.IsFloatType() && parType.SpecialType == SpecialType.System_Double)
                         {
-                            score += 35;
+                            score += isConst ? 30 : 35;
                         }
                         else
                         {
-                            score += 30;
+                            score += isConst ? 25 : 30;
                         }
                     }
                     else if (parType.IsFractionalType())
                     {
                         // argument is then integral type
-                        score += 25;
+                        score += isConst ? 20 : 25;
                     }
                     else
                     {
                         // argument is fractional, parameter integral
-                        score += 20;
+                        score += isConst ? 15 : 20;
                     }
                 }
                 else
@@ -962,8 +963,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     // when /vo4 or /vo11 is enabled then we may end up having duplicate candidates
                     // we decide here which one takes precedence
-                    if (Compilation.Options.HasOption(CompilerOption.NumericConversions, left.Syntax) || // vo4
-                        Compilation.Options.HasOption(CompilerOption.VOArithmeticConversions, left.Syntax)) // vo11
+                    if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, left.Syntax) || // vo4
+                        Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, left.Syntax)) // vo11
                     {
                         #region Integral Binary Operators
                         if (left.Type.IsIntegralType() && right.Type.IsIntegralType()

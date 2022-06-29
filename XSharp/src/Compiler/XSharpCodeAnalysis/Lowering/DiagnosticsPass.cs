@@ -80,7 +80,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (syntax is BinaryExpressionSyntax binexp )
             {
-                if (node.HasConstant() || node.Conversion.IsImplicit)
+                if (node.HasConstant())
                 {
                     node.DisableWarning();
                 }

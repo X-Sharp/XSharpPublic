@@ -75,5 +75,35 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             }
         }
+        internal NamespaceOrTypeOrAliasSymbolWithAnnotations XsBindVoStructSymbol(ExpressionSyntax syntax, NamespaceOrTypeOrAliasSymbolWithAnnotations symbol, DiagnosticBag diagnostics)
+        {
+            if ((symbol.TypeWithAnnotations.Type)?.IsVoStructOrUnion() == true)
+            {
+                if (!syntax.XVoIsDecl)
+                {
+                    symbol = NamespaceOrTypeOrAliasSymbolWithAnnotations.CreateUnannotated(false, new PointerTypeSymbol(symbol.TypeWithAnnotations));
+                }
+            }
+            else if (syntax.XVoIsDecl)
+            {
+                var _diagnosticInfo = diagnostics.Add(ErrorCode.ERR_BadSKknown, syntax.Location, syntax, symbol.NamespaceOrTypeSymbol.GetKindText(), "VOSTRUCT/UNION");
+                var errsymbol = new ExtendedErrorTypeSymbol(GetContainingNamespaceOrType(symbol.Symbol), symbol.Symbol, LookupResultKind.NotATypeOrNamespace, _diagnosticInfo);
+                symbol = NamespaceOrTypeOrAliasSymbolWithAnnotations.CreateUnannotated(false, errsymbol);
+            }
+            return symbol;
+        }
+        internal NamespaceOrTypeOrAliasSymbolWithAnnotations XsBindNamespaceOrTypeOrAliasSymbol(ExpressionSyntax syntax, DiagnosticBag diagnostics, ConsList<TypeSymbol> basesBeingResolved, bool suppressUseSiteDiagnostics, bool includeNameSpace = true)
+        {
+            switch (syntax.Kind())
+            {
+
+                case SyntaxKind.IdentifierName:
+                    return BindNonGenericSimpleNamespaceOrTypeOrAliasSymbol((IdentifierNameSyntax)syntax, diagnostics, basesBeingResolved, suppressUseSiteDiagnostics, qualifierOpt: null, includeNameSpace: includeNameSpace);
+                case SyntaxKind.GenericName:
+                    return BindGenericSimpleNamespaceOrTypeOrAliasSymbol((GenericNameSyntax)syntax, diagnostics, basesBeingResolved, qualifierOpt: null, includeNameSpace: includeNameSpace);
+                default:
+                    return BindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, suppressUseSiteDiagnostics);
+            }
+        }
     }
 }

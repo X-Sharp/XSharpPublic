@@ -217,11 +217,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 bool vo4 = Compilation.Options.HasOption(CompilerOption.Vo4, node);
                 bool vo11 = Compilation.Options.HasOption(CompilerOption.Vo11, node);
-                if (rightToLeftConversion.IsExplicit && (vo4 || vo11))
+                if (finalConversion.IsExplicit && !rightToLeftConversion.IsConstantExpression && (vo4 || vo11))
                 {
                     // with /vo11 or vo4 we allow the conversion but generate a warning
                     hasError = false;
-                    Error(diagnostics, ErrorCode.WRN_ImplicitCast, node, right.Type, leftType);
+                    Error(diagnostics, ErrorCode.WRN_Conversion, node, right.Type, leftType);
                 }
                 else
 #endif                
@@ -658,10 +658,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultLeft = CreateConversion(left, best.LeftConversion, signature.LeftType, diagnostics);
                 resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
 #if XSHARP
-                if (resultLeft is BoundConversion)
-                    resultLeft.WasCompilerGenerated = true;
-                if (resultRight is BoundConversion)
-                    resultRight.WasCompilerGenerated = true;
                 var expectedResultType = resultType;
 #endif
                 resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics);

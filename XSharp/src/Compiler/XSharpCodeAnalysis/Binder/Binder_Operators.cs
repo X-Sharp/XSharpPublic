@@ -56,7 +56,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (expression is BoundBinaryOperator binop)
             {
-                sourceType = binop.LargestOperand(this.Compilation);
+                sourceType = binop.LargestOperand(Compilation);
             }
             if (Equals(sourceType, targetType))
             {
@@ -73,6 +73,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return false;
         }
+
         private BoundExpression BindVOCompareString(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right)
         {
@@ -1295,8 +1296,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             // This is the place where we will handle VO specific conversion
             // when the left and right types are equal we want a result of the same type.
             // also shift operations should return the left type: C277 ByteValue >> 2 should not return int but byte.
+            var leftEquals = Equals(binaryOperator.Left.Type, leftType) || binaryOperator.Left.ConstantValue != null;
+            var rightEquals = Equals(binaryOperator.Right.Type, rightType) || binaryOperator.Right.ConstantValue != null;
 
-            if (!Equals(binaryOperator.Right.Type, rightType) || !Equals(binaryOperator.Left.Type, leftType))
+            if (!leftEquals || !rightEquals)
             {
                 node.XWarning = true;
             }
@@ -1336,8 +1339,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     result = new BoundConversion(result.Syntax, result, Conversion.ImplicitNumeric, false, true,
                         conversionGroupOpt: null,
                         constantValueOpt: binaryOperator.ConstantValue,
-                        type: preferredType)
-                    { WasCompilerGenerated = true };
+                        type: preferredType);
                 }
             }
             return result;

@@ -388,7 +388,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         sourceType = binop.LargestOperand(this.Compilation);
                         sourceSize = sourceType.SpecialType.SizeInBytes();
                     }
-                    if (!Equals(sourceType, targetType) && !expression.Syntax.HasErrors && vo4)
+                    if (!Equals(sourceType, targetType)
+                        && !expression.Syntax.HasErrors
+                        && vo4
+                        && !expression.Syntax.XContainsGeneratedExpression)
                     {
                         // Find sources that do not fit in the target
                         if (expression is BoundConditionalOperator bco && XsLiteralIIfFitsInTarget(bco, targetType))

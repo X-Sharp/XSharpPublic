@@ -124,18 +124,18 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var left = binop.Left;
             var right = binop.Right;
-            if (left is BoundConversion lconv && (lconv.WasCompilerGenerated || lconv.Syntax.XGenerated))
+            if (left is BoundConversion lconv)
             {
-                left = lconv.Operand;
+                left = lconv.XOperand;
             }
-            if (right is BoundConversion rconv && (rconv.WasCompilerGenerated || rconv.Syntax.XGenerated))
+            if (right is BoundConversion rconv)
             {
-                right = rconv.Operand;
+                right = rconv.XOperand;
             }
             var leftType = left.Type;
             var rightType = right.Type;
             if (left is BoundBinaryOperator binopl)
-                leftType = binopl.LargestOperand(compilation) ;
+                leftType = binopl.LargestOperand(compilation);
             if (right is BoundBinaryOperator binopr)
                 rightType = binopr.LargestOperand(compilation);
             if (left is BoundLiteral || left is BoundFieldAccess)

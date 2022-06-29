@@ -314,7 +314,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert(diagnostics != null);
 #if XSHARP
-            var symbol = BindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, basesBeingResolved != null, includeNameSpace: false);
+            var symbol = XsBindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, basesBeingResolved != null, includeNameSpace: false);
 #else
             var symbol = BindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, basesBeingResolved != null || suppressUseSiteDiagnostics);
 #endif
@@ -329,24 +329,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     symbol.TypeWithAnnotations.ReportDiagnosticsIfObsolete(this, syntax, diagnostics);
                 }
 #if XSHARP
-                if (syntax.XVoDecl)
+                if (syntax is not PredefinedTypeSyntax && syntax.XCanBeVoStruct)
                 {
-                    if ((symbol.TypeWithAnnotations.Type)?.IsVoStructOrUnion() == true)
-                    {
-                        if (!syntax.XVoIsDecl)
-                        {
-                            symbol = NamespaceOrTypeOrAliasSymbolWithAnnotations.CreateUnannotated(false,new PointerTypeSymbol(symbol.TypeWithAnnotations));
-                        }
-                    }
-                    else if (syntax.XVoIsDecl)
-                    {
-                        var _diagnosticInfo = diagnostics.Add(ErrorCode.ERR_BadSKknown, syntax.Location, syntax, symbol.NamespaceOrTypeSymbol.GetKindText(), "VOSTRUCT/UNION");
-                        var errsymbol = new ExtendedErrorTypeSymbol(GetContainingNamespaceOrType(symbol.Symbol), symbol.Symbol, LookupResultKind.NotATypeOrNamespace, _diagnosticInfo);
-                        symbol = NamespaceOrTypeOrAliasSymbolWithAnnotations.CreateUnannotated(false, errsymbol);
-                    }
+                   symbol = XsBindVoStructSymbol(syntax, symbol, diagnostics);
                 }
 #endif
-
                 return symbol;
             }
 
@@ -397,7 +384,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         [MethodImpl(MethodImplOptions.NoInlining)]
         internal NamespaceOrTypeOrAliasSymbolWithAnnotations BindNamespaceOrTypeSymbol(ExpressionSyntax syntax, DiagnosticBag diagnostics, ConsList<TypeSymbol> basesBeingResolved, bool suppressUseSiteDiagnostics)
         {
+#if XSHARP
+            var result = XsBindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, suppressUseSiteDiagnostics);
+#else
             var result = BindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, suppressUseSiteDiagnostics);
+#endif
             Debug.Assert(!result.IsDefault);
 
             return UnwrapAlias(result, diagnostics, syntax, basesBeingResolved);
@@ -418,11 +409,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// enough they should be disqualified from inlining. In the future when attributes are allowed on
         /// local functions we should explicitly mark them as <see cref="MethodImplOptions.NoInlining"/>
         /// </remarks>
-#if XSHARP
-        internal NamespaceOrTypeOrAliasSymbolWithAnnotations BindNamespaceOrTypeOrAliasSymbol(ExpressionSyntax syntax, DiagnosticBag diagnostics, ConsList<TypeSymbol> basesBeingResolved, bool suppressUseSiteDiagnostics, bool includeNameSpace = true)
-#else
         internal NamespaceOrTypeOrAliasSymbolWithAnnotations BindNamespaceOrTypeOrAliasSymbol(ExpressionSyntax syntax, DiagnosticBag diagnostics, ConsList<TypeSymbol> basesBeingResolved, bool suppressUseSiteDiagnostics)
-#endif
         {
             switch (syntax.Kind())
             {
@@ -433,17 +420,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return bindPredefined();
 
                 case SyntaxKind.IdentifierName:
-#if XSHARP
-                    return BindNonGenericSimpleNamespaceOrTypeOrAliasSymbol((IdentifierNameSyntax)syntax, diagnostics, basesBeingResolved, suppressUseSiteDiagnostics, qualifierOpt: null, includeNameSpace: includeNameSpace);
-#else
                     return BindNonGenericSimpleNamespaceOrTypeOrAliasSymbol((IdentifierNameSyntax)syntax, diagnostics, basesBeingResolved, suppressUseSiteDiagnostics, qualifierOpt: null);
-#endif
+
                 case SyntaxKind.GenericName:
-#if XSHARP
-                    return BindGenericSimpleNamespaceOrTypeOrAliasSymbol((GenericNameSyntax)syntax, diagnostics, basesBeingResolved, qualifierOpt: null, includeNameSpace: includeNameSpace);
-#else
                     return BindGenericSimpleNamespaceOrTypeOrAliasSymbol((GenericNameSyntax)syntax, diagnostics, basesBeingResolved, qualifierOpt: null);
-#endif
 
                 case SyntaxKind.AliasQualifiedName:
                     return bindAlias();

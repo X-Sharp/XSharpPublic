@@ -227,17 +227,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Conversion result = Conversion.NoConversion;
                 if (srcType.IsNumericType() && dstType.IsNumericType())
                 {
-                    if (srcType.IsIntegralType() && dstType.IsIntegralType() && vo4)
+                    if (srcType.IsIntegralType() && dstType.IsIntegralType() && (vo4 || syntax.XSignChanged))
                     {
                         // when both same # of bits and integral, use Identity conversion
                         if (srcType.SizeInBytes() == dstType.SizeInBytes())
                         {
-                            syntax.XWarning = !syntax.XGenerated;
                             result = Conversion.Identity;
                         }
                         else
                         {
-                            syntax.XWarning = !syntax.XGenerated;
                             result = Conversion.ImplicitNumeric;
                         }
                     }
@@ -251,26 +249,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // not really boxing but we'll handle the actual conversion later
                         // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
                         syntax.XSpecial = true;
-                        syntax.XWarning = !syntax.XGenerated;
                         result = Conversion.Boxing;
                     }
                 }
                 if (result != Conversion.NoConversion)
                 {
-                    if (syntax.Parent is AssignmentExpressionSyntax)
-                    {
-                        syntax.Parent.XWarning = syntax.XWarning;
-                    }
                     return result;
                 }
             }
             if (XsIsImplicitBinaryOperator(sourceExpression, destination, null))
             {
-                syntax.XWarning = !syntax.XGenerated;
-                if (syntax.Parent is AssignmentExpressionSyntax)
-                {
-                    syntax.Parent.XWarning = syntax.XWarning;
-                }
                 return Conversion.ImplicitNumeric;
             }
             return Conversion.NoConversion;

@@ -118,13 +118,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 return ConversionKind.Unboxing;
                             }
                         }
-                        if (nts.IsFloatType())
+                        if (nts.IsFractionalType())
                         {
-                            return XsRewriteNumericType(nts, ref rewrittenOperand, rewrittenType, SpecialType.System_Double);
-                        }
-                        if (nts.IsCurrencyType())
-                        {
-                            return XsRewriteNumericType(nts, ref rewrittenOperand, rewrittenType, SpecialType.System_Decimal);
+                            if (nts.IsFloatType())
+                            {
+                                return XsRewriteNumericType(nts, ref rewrittenOperand, rewrittenType, SpecialType.System_Double);
+                            }
+                            else if (nts.IsCurrencyType())
+                            {
+                                return XsRewriteNumericType(nts, ref rewrittenOperand, rewrittenType, SpecialType.System_Decimal);
+                            }
+                            rewrittenOperand = MakeConversionNode(rewrittenOperand, _compilation.FloatType(), false, false);
+                            return XsRewriteNumericType(_compilation.FloatType(), ref rewrittenOperand, rewrittenType, SpecialType.System_Double);
                         }
                     }
                 }

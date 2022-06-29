@@ -2107,7 +2107,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public BoundExpression BindNamespaceOrType(ExpressionSyntax node, DiagnosticBag diagnostics)
         {
+#if XSHARP
+            var symbol = this.XsBindNamespaceOrTypeOrAliasSymbol(node, diagnostics, null, false);
+#else
             var symbol = this.BindNamespaceOrTypeOrAliasSymbol(node, diagnostics, null, false);
+#endif
             return CreateBoundNamespaceOrTypeExpression(node, symbol.Symbol);
         }
 

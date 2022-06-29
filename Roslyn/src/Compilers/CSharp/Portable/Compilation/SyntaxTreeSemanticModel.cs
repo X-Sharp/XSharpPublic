@@ -391,7 +391,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         else
                         {
+#if XSHARP
+                            return binder.XsBindNamespaceOrTypeOrAliasSymbol(type, diagnostics, basesBeingResolved, basesBeingResolved != null).Symbol;
+#else
                             return binder.BindNamespaceOrTypeOrAliasSymbol(type, diagnostics, basesBeingResolved, basesBeingResolved != null).Symbol;
+#endif
                         }
                     }
                     finally
@@ -1340,7 +1344,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        #region "GetDeclaredSymbol overloads for MemberDeclarationSyntax and its subtypes"
+#region "GetDeclaredSymbol overloads for MemberDeclarationSyntax and its subtypes"
 
         /// <summary>
         /// Given a namespace declaration syntax node, get the corresponding namespace symbol for the declaration
@@ -1546,7 +1550,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return ((MethodSymbol)GetDeclaredMemberSymbol(declarationSyntax)).GetPublicSymbol();
         }
 
-        #region "GetDeclaredSymbol overloads for BasePropertyDeclarationSyntax and its subtypes"
+#region "GetDeclaredSymbol overloads for BasePropertyDeclarationSyntax and its subtypes"
 
         /// <summary>
         /// Given a syntax node that declares a property, indexer or an event, get the corresponding declared symbol.
@@ -1592,9 +1596,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return ((EventSymbol)GetDeclaredMemberSymbol(declarationSyntax)).GetPublicSymbol();
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Given a syntax node that declares a property or member accessor, get the corresponding symbol.

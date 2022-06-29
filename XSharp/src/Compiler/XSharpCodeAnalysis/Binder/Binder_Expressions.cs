@@ -61,7 +61,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var ptrconv = new BoundConversion(node, operand, newConv, true, false,
                             conversionGroupOpt: default,
                             constantValueOpt: default,
-                            type: ptrtype) { WasCompilerGenerated = true };
+                            type: ptrtype)
+                        { WasCompilerGenerated = true };
                         expression = new BoundPointerElementAccess(node, ptrconv, index, false, tType) { WasCompilerGenerated = true };
                         return true;
                     }
@@ -133,7 +134,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     foreach (var arg in analyzedArguments.Arguments)
                     {
                         var specialType = Compilation.Options.XSharpRuntime ? SpecialType.System_Int32 : SpecialType.System_UInt32;
-                        BoundExpression newarg = arg ;
+                        BoundExpression newarg = arg;
                         if (arg.Type.SpecialType != specialType)
                         {
                             newarg = CreateConversion(arg, Compilation.GetSpecialType(specialType), diagnostics);
@@ -147,7 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // we assume that all other dialects are closer to VO
                         if (Compilation.Options.Dialect != XSharpDialect.Vulcan)
                         {
-                            newarg = SubtractIndex(newarg, diagnostics,specialType);
+                            newarg = SubtractIndex(newarg, diagnostics, specialType);
                             newarg.WasCompilerGenerated = true;
                         }
                         argsBuilder.Add(newarg);
@@ -164,8 +165,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool numericParams = false;
                 bool mustcast = false;
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                if (!TypeSymbol.Equals(cf , arrayType) && (cf.IsUsualType()
-                    || TypeSymbol.Equals(cf.ConstructedFrom , arrayBaseType)
+                if (!TypeSymbol.Equals(cf, arrayType) && (cf.IsUsualType()
+                    || TypeSymbol.Equals(cf.ConstructedFrom, arrayBaseType)
                     || cf.ImplementsInterface(indexedPropsType, ref useSiteDiagnostics)
                     || cf.ImplementsInterface(indexerType, ref useSiteDiagnostics)))
                 {
@@ -210,7 +211,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         numericParams = true;
                     }
                 }
-                if (cf.IsArrayType() || numericParams )
+                if (cf.IsArrayType() || numericParams)
                 {
                     ImmutableArray<BoundExpression> args;
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
@@ -451,7 +452,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics
             )
         {
-            if (Compilation.Options.LateBindingOrFox(node) && right.Kind() != SyntaxKind.GenericName && boundLeft.Kind != BoundKind.TypeExpression )
+            if (Compilation.Options.LateBindingOrFox(node) && right.Kind() != SyntaxKind.GenericName && boundLeft.Kind != BoundKind.TypeExpression)
             {
                 string propName = right.Identifier.ValueText;
                 if (leftType is { })
@@ -462,7 +463,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     bool isArray = false;
                     NamedTypeSymbol usualType = Compilation.UsualType();
                     NamedTypeSymbol arrayType = Compilation.ArrayType();
-                    if (! isObject)
+                    if (!isObject)
                     {
                         if (leftType is NamedTypeSymbol)
                         {
@@ -475,14 +476,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (isObject || isUsual || isArray)
                     {
                         var returnType = Compilation.UsualType();
-                        if (isArray )
+                        if (isArray)
                         {
                             // When method does not exist then do a late bound ASend()
                             if (Compilation.Options.Dialect.AllowASend())
                             {
                                 var m = arrayType.GetMembers(propName);
                                 earlyBound = m.Length > 0;
-                                if (! earlyBound && Compilation.Options.XSharpRuntime)
+                                if (!earlyBound && Compilation.Options.XSharpRuntime)
                                 {
                                     m = arrayType.BaseTypeNoUseSiteDiagnostics.GetMembers(propName);
                                     earlyBound = m.Length > 0;
@@ -517,9 +518,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 hasErrors: false);
                         }
                     }
-                    if (!leftType.HasMembers(propName) )
+                    if (!leftType.HasMembers(propName))
                     {
-                        string method ;
+                        string method;
                         switch (node.Parent)
                         {
                             case InvocationExpressionSyntax ies:
@@ -580,7 +581,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 bool suppress = false;
                                 var loc = error.Location;
-                                if (loc.IsInSource )
+                                if (loc.IsInSource)
                                 {
                                     var start = loc.GetLineSpan().StartLinePosition;
                                     var curLine = expr.Syntax.Location.GetLineSpan().StartLinePosition;
@@ -599,7 +600,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         }
 
-        private BoundExpression BindXsCast(CastExpressionSyntax node, TypeSymbol targetType, ref BoundExpression operand,  DiagnosticBag diagnostics)
+        private BoundExpression BindXsCast(CastExpressionSyntax node, TypeSymbol targetType, ref BoundExpression operand, DiagnosticBag diagnostics)
         {
             var pe = node.XNode as XSharpParser.PrimaryExpressionContext;
             if (pe.IsVoCast())
@@ -789,7 +790,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     instance = node.IsInstanceMemberAccess(false);
                 }
-                else if (aes is { }  && aes.Left == node)
+                else if (aes is { } && aes.Left == node)
                 {
                     instance = true;
                 }
@@ -897,7 +898,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             receiver != null ? BoundMethodGroupFlags.HasImplicitReceiver : BoundMethodGroupFlags.None,
                             isError,
                             diagnostics);
-                        if (! bindMethod)
+                        if (!bindMethod)
                         {
                             skippedExpression = expression;
                             expression = null;
@@ -1114,7 +1115,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             bool noMethod = options.HasFlag(LookupOptions.MustNotBeMethod);
             bool onlyDef = options.HasFlag(LookupOptions.DefinesOnly);
-            if ((noMethod || onlyDef) && ! result.IsClear && result.Kind == LookupResultKind.Viable)
+            if ((noMethod || onlyDef) && !result.IsClear && result.Kind == LookupResultKind.Viable)
             {
                 LookupResult tmp = LookupResult.GetInstance();
                 foreach (var sym in result.Symbols)
@@ -1170,7 +1171,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return TypeWithAnnotations.Create(type);
         }
-        private BoundExpression XsFixPszArgumentProblems (BoundExpression argument, TypeWithAnnotations type, ref Conversion kind)
+        private BoundExpression XsFixPszArgumentProblems(BoundExpression argument, TypeWithAnnotations type, ref Conversion kind)
         {
             if (argument.Kind == BoundKind.Literal)
             {
@@ -1221,4 +1222,19 @@ namespace Microsoft.CodeAnalysis.CSharp
             return instance;
         }
     }
+    internal partial class BoundConversion
+    {
+        internal BoundExpression XOperand
+        {
+            get
+            {
+                if (this.Syntax.XGenerated)
+                    return this.Operand;
+                if (this.ExplicitCastInCode)
+                    return this;
+                return this.Operand;
+            }
+        }
+    }
+
 }

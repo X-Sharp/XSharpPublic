@@ -1,4 +1,6 @@
 // 552. Compiler crash with CLIPPER method and /vo9+ with missing RETURN type
+#pragma warnings(9026, off) //
+#pragma warnings(9025, off) //
 FUNCTION Start() AS VOID
 LOCAL o AS TestClass
 o := TestClass{}
@@ -47,13 +49,13 @@ METHOD Test16(a) PASCAL
 END CLASS
 
 FUNCTION TestFunc1() CLIPPER
-RETURN 
+RETURN
 FUNCTION TestFunc2(a) CLIPPER
-RETURN 
+RETURN
 FUNCTION TestFunc3()
-RETURN 
+RETURN
 FUNCTION TestFunc4(a)
-RETURN 
+RETURN
 FUNCTION TestFunc21() CLIPPER
 FUNCTION TestFunc22(a) CLIPPER
 FUNCTION TestFunc23()

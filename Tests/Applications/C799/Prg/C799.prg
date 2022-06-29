@@ -1,6 +1,7 @@
 // 799. Late-bound method calls and OUT parameters
 // https://github.com/X-Sharp/XSharpPublic/issues/771
 // lb+
+#pragma warnings(165, off) //   unassigned local
 FUNCTION Start() AS VOID STRICT
 
 	LOCAL oOwner AS OBJECT
@@ -17,9 +18,9 @@ FUNCTION Start() AS VOID STRICT
 
 	LOCAL cRef AS STRING
 	oOwner:RefParam(REF cRef)
-	? cRef // ref, OK 
+	? cRef // ref, OK
 	xAssert(cRef == "ref")
-	
+
 	RETURN
 
 CLASS TestClass
@@ -36,4 +37,4 @@ IF .not. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
 END IF
 ? "Assertion passed"
-RETURN       
+RETURN

@@ -1,5 +1,6 @@
 // 497. error XS9010: The function 'pcount' is only supported in functions or methods with CLIPPER calling convention
 // also vulcan has a problem with that
+#pragma warnings(9032, off) // return value ignored
 FUNCTION Start() AS VOID
 	LOCAL o AS TestClass
 	o := TestClass{}
@@ -23,9 +24,9 @@ CLASS TestClass
 		? pcount(),a,b
 	RETURN pcount()
 	ASSIGN TestAssign(n) CLIPPER
-		? pcount(),n                          
+		? pcount(),n
 	RETURN
-	
+
 	METHOD TestMethod(a,b,c) CLIPPER
 		? pcount()
 	RETURN pcount()

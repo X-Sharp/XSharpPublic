@@ -1,4 +1,5 @@
 // 510. DEFINE/GLOBAL incorrectly get precedence over CLASS member
+#pragma warnings(219, off) // assigned not used
 
 DEFINE dNAME := "abc"
 GLOBAL gNAME := "abc" AS STRING

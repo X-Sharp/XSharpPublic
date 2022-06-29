@@ -1,6 +1,8 @@
 // 528. STATIC METHOD gets priority over FUNCTION with the same name
 // This was in Bernhard's code, in vulcan the code is running as (he) expects,
 // in X# he gets a Statck Overflow
+#pragma warnings(9066, off) // ambiguous
+
 FUNCTION Start() AS VOID
 	LOCAL o AS AcAddOn3Commands
 	o := AcAddOn3Commands{}

@@ -16,6 +16,7 @@ System.AccessViolationException: Attempted to read or write protected memory. Th
    at TreeWin.DoTest(__Usual[] Xs$Args)
 */
 
+#pragma warnings(219, off) // assigned but not used
 
 #define TREEWIN_DOTEST 100
 #define TREEWIN_TREEVIEW1 101
@@ -67,7 +68,7 @@ PARTIAL CLASS TreeWin INHERIT DATAWINDOW
 		SELF:oDCTreeView1:AddItem(#ROOT , TreeViewItem{#CHILD , "aaaa"})
 		SELF:oDCTreeView1:AddItem(#CHILD , TreeViewItem{#CHILD1 , "bbb"})
 	RETURN NIL
-	
+
 
 	METHOD DoTest( )
 //		FOR LOCAL n := 1 AS INT UPTO 10000
@@ -81,21 +82,21 @@ PARTIAL CLASS TreeWin INHERIT DATAWINDOW
 		LOCAL strucItem IS _winTV_Item
 		LOCAL pszItemText AS PSZ
 		LOCAL DIM aBuf[1000] AS BYTE
-		
+
 		strucItem:hItem := SELF:oDCTreeView1:__GetHandleFromSymbol(#CHILD1)
 		strucItem:mask := 255
 		pszItemText := @aBuf[1]
 		strucItem:pszText := pszItemText
 		strucItem:cchTextMax := 256
-		
+
 		#warning No exception without the collect
 		GC.Collect()
-		
+
 		LOCAL u AS USUAL
 		#warning exception here
 		u := TreeView_GetItem(SELF:oDCTreeView1:Handle(),  @strucItem)
 //		? u
-		
+
 	RETURN NIL
 
 

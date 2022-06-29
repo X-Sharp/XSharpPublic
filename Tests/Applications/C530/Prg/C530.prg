@@ -1,4 +1,6 @@
 // 530. error XS0122: 'TestStruc.Test()' is inaccessible due to its protection level
+#pragma warnings(165, off) // unassigned
+
 STRUCTURE TestStruc
 	EXPORT n AS INT
 	METHOD Test() AS INT
@@ -19,7 +21,7 @@ FUNCTION Start( ) AS VOID
 	? s:Test() // error
 	s:MyProp := 456 // error
 	? s:MyProp // error
-	
+
 	TestStruc.SMyProp := 1 // ok
 	TestStruc.STest() // ok
 RETURN

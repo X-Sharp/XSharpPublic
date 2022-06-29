@@ -1,4 +1,5 @@
 // 355. Assertion failed and compiler crash with DWORD(_CAST , value)
+#pragma warnings(9032, off) // unassigned local
 FUNCTION Start() AS VOID
 	? DWORD (_CAST , 0x00000102L) // compiler crash
 	? DWORD (_CAST ,0) // compiler crash
@@ -27,5 +28,5 @@ FUNCTION Test() AS VOID
 	LOCAL socket AS CSocket
 	socket := CSocket{}
 	? socket:__ConnectThread()
-RETURN 
+RETURN
 

@@ -1,12 +1,13 @@
 // 291. error XS0211: Cannot take the address of the given expression
 // when reading the VOStruct from a dll
-
+#pragma warnings(219, off) // assigned but not used
+#pragma warnings(165, off) // unassigned local
 FUNCTION Start() AS VOID
 	LOCAL pData IS _WINWIN32_FIND_DATA
 	pData:cFileName[1] := 65
 	pData:cFileName[2] := 66
 	pData:cFileName[3] := 67
-	
+
     LOCAL cTemp AS STRING
     cTemp := Psz2String(@pData:cFileName)
     ? @pData:ftCreationTime
@@ -19,7 +20,7 @@ FUNCTION Start() AS VOID
     	p := @pAs:cFileName
     END IF
 
-// redefining the structure here works ok    
+// redefining the structure here works ok
 /*
 VOSTRUCT _WINWIN32_FIND_DATA
 	MEMBER dwFileAttributes AS DWORD

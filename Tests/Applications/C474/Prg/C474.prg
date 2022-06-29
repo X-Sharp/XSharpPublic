@@ -1,4 +1,5 @@
 // 474. No compiler error with incorrect PROPERTY syntax
+#pragma warnings(9047, off) // auto property
 FUNCTION Start( ) AS VOID
 	LOCAL o AS TestClass
 	o := TestClass{}

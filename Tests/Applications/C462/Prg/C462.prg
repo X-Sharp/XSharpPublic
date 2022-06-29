@@ -1,5 +1,6 @@
 // 462. error XS0150: A constant value is expected
 // reported by Frank Maraite
+#pragma warnings(165, off) // unassigned
 FUNCTION Start() AS VOID
 LOCAL  cTest AS Char
 LOCAL lFOund AS LOGIC

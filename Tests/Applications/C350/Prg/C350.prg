@@ -1,5 +1,6 @@
 // 350. error XS1503: Argument 2: cannot convert from '_winPOINT' to '_winPOINT*'
-
+#pragma warnings(165, off) // uniassigned local
+#pragma warnings(162, off) // unreachable code
 VOSTRUCT LOCAL_winPOINT
 	MEMBER x AS LONGINT
 	MEMBER y AS LONGINT
@@ -11,15 +12,15 @@ RETURN TRUE
 FUNCTION Start() AS VOID
 	LOCAL DIM aPtIS[2] IS LOCAL_WINPOINT
 	LOCAL hDC AS PTR
-	
+
 	aPtIS[1]:x := 1
 	aPtIS[1]:y := 2
 	aPtIS[2]:x := 3
 	aPtIS[2]:y := 4
-	
-	LOCAL_Polygon(hDC,@aPtIS,3)	
-	LOCAL_Polygon(hDC,@aPtIS[1],3)	
-	LOCAL_Polygon(hDC,@aPtIS[2],3)	
+
+	LOCAL_Polygon(hDC,@aPtIS,3)
+	LOCAL_Polygon(hDC,@aPtIS[1],3)
+	LOCAL_Polygon(hDC,@aPtIS[2],3)
 
 	LOCAL DIM aPtAS[2] AS LOCAL_WINPOINT
 	aPtAS[1] := MemAlloc(sizeof(LOCAL_WINPOINT))
@@ -30,8 +31,8 @@ FUNCTION Start() AS VOID
 	aPtAS[2]:x := 3
 	aPtAS[2]:y := 4
 	?
-	LOCAL_Polygon(hDC,aPtAS[1],3)	
-	LOCAL_Polygon(hDC,aPtAS[2],3)	
+	LOCAL_Polygon(hDC,aPtAS[1],3)
+	LOCAL_Polygon(hDC,aPtAS[2],3)
 
 
 	IF FALSE

@@ -1,4 +1,5 @@
 // 390. error XS9027: VoStruct member type must be one of the following: bool, byte, short, int, long, char, sbyte, ushort, uint, ulong, float, double, ptr, psz or vostruct
+#pragma warnings(170, off) // unassigned field
 VOSTRUCT myVOSTRUCT
 MEMBER n AS INT
 MEMBER sym AS SYMBOL

@@ -6,6 +6,9 @@
 // problem in code is that the kwywords ASTYPE and REPEAT are used as identifiers
 // the parser error messages need to be improved, because right now they do not help
 // finding what exactly the offending code is. Real code having that problem was a 3000 lines source file..
+#pragma warnings(162, off) // unreachable
+#pragma warnings(219, off) // assigned not used
+
 FUNCTION Start() AS VOID
 
 RETURN
@@ -31,6 +34,6 @@ FUNCTION AsType(n AS INT) AS INT
 RETURN n
 FUNCTION Repeat(n AS INT) AS INT
 RETURN n
-               
+
 Function Ref(n as int) as INT
 	return n

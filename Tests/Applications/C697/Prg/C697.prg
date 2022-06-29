@@ -1,4 +1,5 @@
 // 697. Cannot pass PUBLIC/PRIVATE by reference
+#pragma warnings (9093, off) // undeclared, cursor
 FUNCTION Start() AS VOID
 	PRIVATE pr
 	PUBLIC pu
@@ -9,25 +10,25 @@ FUNCTION Start() AS VOID
 	pr := 123
 	pu := "abc"
 
-	testproc(@pr,pu) 
+	testproc(@pr,pu)
 	? pr,pu
 	xAssert(pr == -1)
 	xAssert(pu == "abc")
     pr := 0
-	testproc(pr,REF pu) 
+	testproc(pr,REF pu)
 	? pr,pu
 	xAssert(pr == 0)
 	xAssert(pu == 2)
 	pr := 0
-	testproc2(@pr,@test.NAME) 
+	testproc2(@pr,@test.NAME)
 	xAssert(pr == 42)
 	xAssert(test.Name = "Chris")
 
 	pr := 0
 	TEST->Name := "Robert"
-	testproc2(@pr,@TEST->NAME) 
+	testproc2(@pr,@TEST->NAME)
 	xAssert(pr == 42)
-	xAssert(test->Name = "Chris")   
+	xAssert(test->Name = "Chris")
 	DbCLoseArea()
 
 RETURN
@@ -50,6 +51,6 @@ IF l
 	? "Assertion passed"
 ELSE
 	THROW Exception{"Incorrect result"}
-END IF  
+END IF
 RETURN TRUE
 

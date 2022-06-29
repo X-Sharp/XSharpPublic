@@ -1,4 +1,5 @@
 // 344. error XS0103: The name 'WinSockExitHandler' does not exist in the current context
+#pragma warnings(219, off)
 FUNCTION Start( ) AS VOID
 	AppDomain.CurrentDomain:ProcessExit += System.EventHandler{ NULL, @WinSockExitHandler() }
 RETURN

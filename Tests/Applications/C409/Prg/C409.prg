@@ -4,7 +4,7 @@
 // note: happens only with /vo9+
 
 #using System.Runtime.InteropServices
-
+#pragma warnings (9068, off) // psz
 [DllImport("user32.dll", CharSet := CharSet.Ansi)];
 FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD);
 	AS INT PASCAL
@@ -23,6 +23,6 @@ STATIC CLASS Foo
 	[DllImport("user32.dll", CharSet := CharSet.Ansi, EntryPoint := "MessageBox")];
 	STATIC EXTERN METHOD MessageBox1(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD);
 		AS INT PASCAL
-	
 
-END CLASS	
+
+END CLASS

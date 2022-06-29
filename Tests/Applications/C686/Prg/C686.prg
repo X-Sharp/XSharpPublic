@@ -1,3 +1,4 @@
+#pragma warnings (9025, off) // missing return
 FUNCTION Start() AS VOID
 	xAssert( DbCreate("Test686",{{"LASTNAME","C",10,0}}) )
 	xAssert( DbUseArea(TRUE, ,"Test686") )
@@ -5,7 +6,7 @@ FUNCTION Start() AS VOID
 	FieldPut(1, "ASD")
 	XAssert(AllTrim(FieldGet(1)) == "ASD")
 	xAssert( DbCloseArea() )
-	
+
 	xAssert( DbUseArea(TRUE,NIL ,"Test686",NIL) )
 	xAssert( DbCloseArea() )
 

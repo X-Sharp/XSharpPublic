@@ -1,6 +1,6 @@
-// 452. error XS9002: Parser: mismatched input 
+// 452. error XS9002: Parser: mismatched input
 // with different order of clauses passed. I assume this is a bug, because harbour allows it
-
+#pragma warnings(165, off) // unassigned
 #command @ <one>, <two> THREE <three> [FOUR <four>] [FIVE <five>] => Test(<one>, <two> , <three> , <four> , <five> , 6)
 
 
@@ -26,7 +26,7 @@ FUNCTION Start() AS VOID
 @ 1 , 2 THREE 3 FOUR 4 FIVE 5
 
 // error XS9002: Parser: mismatched input 'THREE'
-@ 1 , 2 THREE 3 FIVE 5 FOUR 4 
+@ 1 , 2 THREE 3 FIVE 5 FOUR 4
 
 TEST1 LEFT RIGHT // ok
 TEST2 LEFT RIGHT // error

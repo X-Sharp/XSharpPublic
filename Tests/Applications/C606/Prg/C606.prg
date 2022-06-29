@@ -1,10 +1,12 @@
 // 606. Some issues with PROPERTY GET/SET visibility modifiers
 // Ticket TECH-H6Z3688EQ4 by Stefan Hirsch
 // I really think we need somehow easier to read ticket numbers :-)
+#pragma warnings(273, off) // accessible modifier
+
 FUNCTION Start( ) AS VOID
 	LOCAL o AS TestClass
 	o := TestClass{}
-	
+
 	xAssert(o:MyProp1 == 0)
 	//xAssert(o:MyProp7 == 7)
 	xAssert(o:MyProp8 == 8)

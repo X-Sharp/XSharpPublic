@@ -1,4 +1,5 @@
 // 139. error XS0050: Inconsistent accessibility: return type 'IntClass' is less accessible than method 'TestClass.Test2()'
+#pragma warnings(50, off) // inconsistend accessibility
 CLASS TestClass
 PROTECTED METHOD Test() AS IntClass
 RETURN NULL

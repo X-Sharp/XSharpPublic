@@ -1,6 +1,8 @@
 // 687. Problems with undeclared vars/PUBLICs/PRIVATEs in VFP dialect
 
 // error XS0161: 'C687.Exe.Functions.C687()': not all code paths return a value
+#pragma warnings (9073, off) // undeclared, field or memvar
+#pragma warnings (9025, off) // return statement missing
 PRIVATE i1
 FUNCTION Test1( ) AS VOID
 	FOR i1 = 1 UPTO 10

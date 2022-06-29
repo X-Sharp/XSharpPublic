@@ -1,6 +1,7 @@
 //628. Runtime InvalidCastException with PSZ(_CAST, somedefine ) with the X# runtime
 
 // works ok with literal value, but not with literal value in a DEFINE
+#pragma warnings(9068, off) // psz
 
 DEFINE mydefine := "testDefine"
 
@@ -32,8 +33,8 @@ RETURN p
 /*
 TestLiteral() is being emitted as:
 
-.method public hidebysig static 
-	void TestLiteral () cil managed 
+.method public hidebysig static
+	void TestLiteral () cil managed
 {
 	// Method begins at RVA 0x2118
 	// Code size 51 (0x33)
@@ -79,8 +80,8 @@ while TestDefine() is being emitted as:
 
 
 
-.method public hidebysig static 
-	void TestDefine () cil managed 
+.method public hidebysig static
+	void TestDefine () cil managed
 {
 	// Method begins at RVA 0x20f0
 	// Code size 28 (0x1c)

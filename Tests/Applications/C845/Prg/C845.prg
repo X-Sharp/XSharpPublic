@@ -1,6 +1,8 @@
 // 844. Problem with iif() and NULL - /vo10 enabled
 // error XS0029: Cannot implicitly convert type 'object' to 'string'
 #pragma options("vo10", on)
+#pragma warnings(219, off) // assigned but not used
+
 FUNCTION Start() AS VOID
 LOCAL c AS STRING
 c := iif(FALSE, "", NULL)  // error XS0029

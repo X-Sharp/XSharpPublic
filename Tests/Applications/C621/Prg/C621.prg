@@ -7,8 +7,11 @@ warning XS9043: Method 'Left' is ambiguous. Could be 'TestClass.Left(string, int
 This is not correct, the function should be always used, not the same named static method.
 Indeed at teh runtime the static method is (incorrectly) called.
 */
+#pragma warnings(162, off) // unreachable
+#pragma warnings(9066, off) // ambiguous
+
 FUNCTION Start() AS VOID
-	LOCAL o AS TestClass               
+	LOCAL o AS TestClass
 	o := TestClass{}
 	o:InstanceTest("abc")
 	TestClass.StaticTest("def")

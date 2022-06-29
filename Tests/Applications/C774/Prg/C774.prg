@@ -1,5 +1,5 @@
 // 774. Compiler crash with namespace called xSharp
-
+#pragma warnings(219, off) //   assigned but not used
 BEGIN NAMESPACE xSharp.Something // compiler crash. "XSharp" works ok
 
 CLASS Nothing
@@ -25,6 +25,6 @@ Assertion Failed: Abort=Quit, Retry=Debug, Ignore=Continue
    at LanguageService.CodeAnalysis.XSharp.Symbols.AssemblySymbol.GetTopLevelTypeByMetadataName(MetadataTypeName& metadataName, AssemblyIdentity assemblyOpt, Boolean includeReferences, Boolean isWellKno......
 <truncated>
 ---------------------------
-Abort   Retry   Ignore   
+Abort   Retry   Ignore
 ---------------------------
 */

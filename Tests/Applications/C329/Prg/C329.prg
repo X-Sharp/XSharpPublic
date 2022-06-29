@@ -1,3 +1,4 @@
+#pragma warnings(165, off) // unassigned local
 VOSTRUCT _VOSTRUCT
 MEMBER n AS INT
 MEMBER m AS INT

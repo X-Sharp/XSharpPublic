@@ -1,5 +1,5 @@
 // error XS1503: Argument 1: cannot convert from '_WINFILETIME**' to '_WINFILETIME*'
-
+#pragma warnings(165, off) // uniassigned local
 VOSTRUCT _WINFILETIME
 	MEMBER dwLowDateTime AS  DWORD
 	MEMBER dwHighDateTime AS DWORD

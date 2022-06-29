@@ -1,4 +1,5 @@
 // error XS0208: Cannot take the address of, get the size of, or declare a pointer to a managed type ('Vulcan.__Usual')
+#pragma warnings (1718, off) // compare to same variable
 FUNCTION Start() AS VOID
 	LOCAL DIM p[25] AS USUAL
 	? @p

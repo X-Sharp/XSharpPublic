@@ -1,4 +1,5 @@
 // 547. error XS9002: Parser: unexpected input '@'
+#pragma warnings(165, off) // unassigned
 
 #include "C547.CH"
 FUNCTION Start() AS VOID

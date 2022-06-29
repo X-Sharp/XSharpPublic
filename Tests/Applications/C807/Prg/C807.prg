@@ -1,6 +1,7 @@
 // 807. Case sensitivity of #defines with /cs+ and /vo8+
 // https://github.com/X-Sharp/XSharpPublic/issues/816
 // /cs+ /vo8+
+#pragma warnings(9066, off) // ambiguous
 FUNCTION Start() AS VOID STRICT
 LOCAL n := 0 AS INT
 #ifdef debug // does not print this
@@ -34,10 +35,10 @@ SELF:DeBuG()
 DeBuG()
 END CLASS
 
-PROC xAssert(l AS LOGIC) 
+PROC xAssert(l AS LOGIC)
 IF .NOT. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
 END IF
-? "Assertion passed"   
-RETURN 		
+? "Assertion passed"
+RETURN
 

@@ -1,7 +1,7 @@
 // 673. Various issues with MEMVAR, PUBLIC etc
 PUBLIC gPublic := "Global1"
 PUBLIC gUndefined
-
+#pragma warnings (9073, off) // undeclared, field or memvar
 PROCEDURE DoTest()
 	PRIVATE SameName
 
@@ -15,40 +15,40 @@ FUNCTION Start( ) AS VOID
 	undeclared := 123
 	? undeclared
 	xAssertTrue(undeclared == 123) // ok
-	
+
 
 
 	? gPublic
 	xAssertTrue(gPublic == "Global1") // ok
-	
 
 
-	? gUndefined // "NIL", VO prints "FALSE"             
+
+	? gUndefined // "NIL", VO prints "FALSE"
 	xAssertTrue(gUndefined == FALSE)
 	// this is what VO does, is it intentional???
 
 
-	
+
 	PUBLIC inline
 	inline := 123 // exception here
 	xAssertTrue(inline == 123)
 
 	PUBLIC inline2 := 123
 	xAssertTrue(inline2 == 123)
-	
+
 
 
 	PRIVATE pri1
 	pri1 := TRUE
 	? pri1
 	xAssertTrue(pri1 == TRUE)
-	
+
 
 
 	PRIVATE pri2 := 123
 	? pri2 // NIL, wrong
 	xAssertTrue(pri2 == 123)
-		
+
 RETURN
 
 

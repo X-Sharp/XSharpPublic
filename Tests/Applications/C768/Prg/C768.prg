@@ -1,5 +1,5 @@
 // 768. Problem with overriding PROPERTY from a different assembly
-
+#pragma warnings(108, off) //   hides member
 FUNCTION Start( ) AS VOID
 RETURN
 

@@ -1,6 +1,10 @@
 // 491. Some issues with interfaces
 
 // No error, should we allow this?
+#pragma warnings(9047, off) // generate auto property
+#pragma warnings(9051, off) // generate auto property
+#pragma warnings(9032, off) // return value
+
 INTERFACE IEmpty
 END INTERFACE
 

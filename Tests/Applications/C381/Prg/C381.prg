@@ -1,3 +1,4 @@
+#pragma warnings(165, off) // uniassigned local
 #region Help defines
 #define HH_DISPLAY_TOPIC 0x0000
 #define HH_HELP_FINDER 0x0000
@@ -68,13 +69,13 @@ PARTIAL CLASS HelpDisplay INHERIT VObject
 	EXPORT Win32Processing := FALSE AS LOGIC
 
 	//PP-030828 Strong typing
-METHOD __CallHelp(uCommand AS DWORD, dwData AS DWORD, cTopic := "" AS STRING) AS LOGIC STRICT 
+METHOD __CallHelp(uCommand AS DWORD, dwData AS DWORD, cTopic := "" AS STRING) AS LOGIC STRICT
     RETURN TRUE
 
 
-CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing) 
+CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing)
 	//SE-060519
-	
+
 
 
 	IF !IsNil(oOwnerWindow)
@@ -84,7 +85,7 @@ CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing)
 	ENDIF
 
 	SUPER()
-	
+
 
 	SELF:cFileName := cFileName
 
@@ -92,9 +93,9 @@ CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing)
 		SELF:Win32Processing := lWin32Processing
 	ENDIF
 
-	RETURN 
+	RETURN
 
-METHOD Show(cKeyword, symLookupType) 
+METHOD Show(cKeyword, symLookupType)
    //SE-060519
 	LOCAL cKey AS STRING
 	LOCAL wLen AS DWORD
@@ -107,7 +108,7 @@ METHOD Show(cKeyword, symLookupType)
 	LOCAL DIM dwHH[2,2] AS DWORD
 	LOCAL sHelpInfo AS _winHelpInfo
 	LOCAL pszKey	AS PSZ
-	
+
 
 	//PP-030929
 	Default(@symLookupType, #KEYWORD)
@@ -140,13 +141,15 @@ METHOD Show(cKeyword, symLookupType)
 	CASE cFirst>="0" .AND. cFirst<="9"
 		// When numeric, take the value of the key
 	   lRetVal := SELF:__CallHelp(IIF(lHTMLHelp, HH_HELP_CONTEXT, HELP_CONTEXT), Val(cKey))
-	   
+
 	CASE ! lHTMLHelp .AND. cFirst="[" .AND. wLen>3 .AND. SubStr3(cKey,3,1)="]"
 		// When [Letter] store the Letter in the keylist and use the rest of the key
 		wMK :=  _SIZEOF(_winMULTIKEYHELP) + wLen
 		strucMKH := MemAlloc(wMK)
 		strucMKH:mkSize := wMK
+		#pragma warnings(9020, off) // narrowing
 		strucMKH:mkKeyList := Asc(SubStr3(cKey,2,1))
+    	#pragma warnings(9020, default) // narrowing
 		pszKey := StringAlloc(SubStr3(cKey,3, wLen-3))
 		MemCopy(@strucMKH:szKeyPhrase,pszKey,wLen-3)
 		MemFree(pszKey)
@@ -158,7 +161,7 @@ METHOD Show(cKeyword, symLookupType)
 	      dwHH[1,1] := DWORD(sHelpInfo:iCtrlId)
 	      dwHH[1,2] := Val(SubStr2(cKey,2))
 	      dwHH[2,1] := 0
-	      dwHH[2,2] := 0 
+	      dwHH[2,2] := 0
 			lRetVal := SELF:__CallHelp(HH_TP_HELP_WM_HELP, DWORD(_CAST,@dwHH), cPopUpTopic)
 		ELSE
 			//SELF:__CallHelp(HELP_SETPOPUP_POS, DWORD(MakeLong(WORD(sHelpInfo.MousePos.x), WORD(sHelpInfo.MousePos.y))))
@@ -178,7 +181,7 @@ METHOD Show(cKeyword, symLookupType)
 		ENDIF
 	CASE cKey=="HelpContents"
 		//PP-030929
-		IF ! lHTMLHelp             
+		IF ! lHTMLHelp
 			pszKey 	:= StringAlloc(cKey)
 			lRetVal := SELF:__CallHelp(HELP_CONTENTS , DWORD(_CAST, pszKey))
 			MemFree(pszKey)
@@ -192,9 +195,9 @@ METHOD Show(cKeyword, symLookupType)
 		ENDIF
 
 	OTHERWISE
-		pszKey 	:= StringAlloc(cKey)         
+		pszKey 	:= StringAlloc(cKey)
 		IF ! lHTMLHelp
-			//RvdH 070628 Changd HELP_CONTENTS to HELP_KEY in the next line. 
+			//RvdH 070628 Changd HELP_CONTENTS to HELP_KEY in the next line.
 			lRetVal := SELF:__CallHelp(HELP_KEY, DWORD(_CAST, pszKey))
 			IF ! lRetVal
 				lRetVal := SELF:__CallHelp(HELP_FINDER, 0)

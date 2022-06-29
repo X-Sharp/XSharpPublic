@@ -1,14 +1,16 @@
 // 847. Various inconsistencies with BEGIN SEQUENCE, BREAK etc
 // https://github.com/X-Sharp/XSharpPublic/issues/883
+#pragma warnings(165, off) // not assigned
+#pragma warnings(162, off) // unreachanle
 FUNCTION Start() AS VOID STRICT
 	LOCAL xError AS USUAL
-	
+
 	LOCAL untyped AS USUAL
 	LOCAL typed AS Tester
-	
+
 	typed := Tester{}
 	untyped := typed
-	
+
 	BEGIN SEQUENCE
 		untyped:Test()
 	RECOVER USING xError
@@ -36,5 +38,5 @@ IF .not. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
 END IF
 ? "Assertion passed"
-RETURN		
+RETURN
 

@@ -1,5 +1,6 @@
 // 669. error XS1503: Argument 1: cannot convert from 'int' to 'string'
-
+#pragma warnings (162, off) // unreachable code
+#pragma warnings (414, off) // field assigned but never used
 FUNCTION Start() AS VOID
 	// Following ccode in c# compiles without errors
 	// In x#, it reports error XS1503: Argument 1: cannot convert from 'int' to 'string'
@@ -17,14 +18,14 @@ RETURN
 
 
 
-CLASS BaseClass           
+CLASS BaseClass
 	PRIVATE testbase AS INT
 	PROPERTY SELF[n AS INT] AS INT GET n * 2  SET testbase := VALUE
 //	PROPERTY SELF[n AS LOGIC] AS STRING GET n:ToString()
 END CLASS
 CLASS Foo INHERIT BaseClass
 END CLASS
-CLASS MiddleClass INHERIT Foo                                    
+CLASS MiddleClass INHERIT Foo
 	PRIVATE test AS STRING
 	PROPERTY SELF[n AS STRING] AS STRING GET n SET test := VALUE
 END CLASS

@@ -1,4 +1,5 @@
 // 617. || and && translate to binary or and and operators, instad of the logical ones
+#pragma warnings(219, off) // assigned not used
 
 GLOBAL gnCalled AS INT
 
@@ -14,7 +15,7 @@ RETURN FALSE
 
 FUNCTION Start() AS VOID
 	LOCAL l AS LOGIC
-	
+
 	gnCalled := 0
 	l := TestOr() .or. TestOr()
 	xAssert(gnCalled == 1) // ok

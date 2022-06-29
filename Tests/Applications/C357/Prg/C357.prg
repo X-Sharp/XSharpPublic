@@ -1,4 +1,6 @@
 // 357. error XS1503: Argument 1: cannot convert from 'void*' to 'string'
+#pragma warnings(165, off) // uniassigned local
+#pragma warnings(219, off) // assigned but not used
 FUNCTION Start() AS VOID
 LOCAL ptrBuffer AS PTR
 LOCAL p AS PSZ

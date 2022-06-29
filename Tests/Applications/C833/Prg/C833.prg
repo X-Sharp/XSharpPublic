@@ -1,10 +1,12 @@
 // 833. Parser errors with VFP code
 // https://github.com/X-Sharp/XSharpPublic/issues/911
+#pragma warnings(9025, off) // return statement
+#pragma warnings(162, off) // unreachable code
 CLASS TestClass
 	METHOD Another() AS USUAL
 		LOCAL aFiles
 		LOCAL M.lcFile
-		
+
 		IF VARTYPE(aFiles)="O"
 			FOR EACH M.lcFile IN aFiles
 				IF File(M.lcFile)
@@ -12,7 +14,7 @@ CLASS TestClass
 				ENDIF
 			ENDFOR
 		ENDIF
-		
+
 	METHOD CheckMe() AS USUAL
 		LOCAL liALeft, liATop
 		IF TRUE

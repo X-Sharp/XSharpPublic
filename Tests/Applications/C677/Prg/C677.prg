@@ -11,6 +11,8 @@ warning XS0674: Do not use 'System.ParamArrayAttribute'. Use the 'params' keywor
 
 but the PARAMS sytnax does not seem to be supported
 */
+#pragma warnings (674, off) // Paramarray
+#pragma warnings (219, off) // assigned but not used
 FUNCTION Start() AS VOID
 	LOCAL u AS USUAL
 	u := "asd"
@@ -19,10 +21,10 @@ RETURN
 
 PROCEDURE DoTest(u AS USUAL)
 	TestClass.Test(u) // ok
-	
+
 	LOCAL o AS TestClass
 	o := TestClass{u} // runtime exception
-	
+
 CLASS TestClass
 	CONSTRUCTOR([ParamArray] s AS STRING[])
 		? s:Length

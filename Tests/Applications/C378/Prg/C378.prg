@@ -1,6 +1,7 @@
 // 378. Runtime problem calculating INT(_CAST, SLen())
+#pragma warnings(219, off) // assigned but not used
 FUNCTION Start() AS VOID
-LOCAL c := "abcde" AS STRING	
+LOCAL c := "abcde" AS STRING
 LOCAL n AS INT
 n := INT(_CAST, SLen(c))
 ? n
@@ -22,7 +23,7 @@ RETURN (DWORD)c:Length
 
 CLASS StandardFileDialog
 	PROTECT iFilterLen AS INT
-CONSTRUCTOR(uOwner, cInitPath) 
+CONSTRUCTOR(uOwner, cInitPath)
 	LOCAL pszFilters AS PSZ
 	LOCAL sFilters AS STRING
 
@@ -36,7 +37,7 @@ CONSTRUCTOR(uOwner, cInitPath)
 	pszFilters := MemAlloc(DWORD(iFilterLen))
 	MemSet(pszFilters, 0, DWORD(iFilterLen))
 	MemCopy(pszFilters, String2Psz(sFilters), DWORD(iFilterLen-1) )
-	
+
 	? pszFilters , sFilters
 END CLASS
 

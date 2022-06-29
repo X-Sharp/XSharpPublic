@@ -3,12 +3,13 @@
 // As discussed with Arne in https://www.xsharp.info/forum/public-vo-vn/384-compiler-switch-initialize-strings-vo2?limitstart=0
 // the compiler should emit code that checks for each string field if it is NULL and only then assign "" to it
 // /vo2
+#pragma warnings(219, off) // assigned not used
 
 #define sometext "assigned in child before super()"
 FUNCTION Start() AS VOID
 	LOCAL o AS ChildClass
 	o := ChildClass{}
-RETURN                  
+RETURN
 
 CLASS ParentClass
 	EXPORT cStr AS STRING

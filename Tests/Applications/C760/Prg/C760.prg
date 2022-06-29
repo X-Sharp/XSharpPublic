@@ -6,6 +6,8 @@ C760.prg(19,4): error XS0544: 'ControlSubclass.IsEnabled': cannot override becau
 */
 
 // version with /vo3 disabled
+
+#pragma warnings(108, off) //   methid hides parent methid
 FUNCTION Start() AS VOID
 
 RETURN
@@ -23,6 +25,6 @@ CLASS Child INHERIT Parent
 END CLASS
 
 CLASS ControlSubclass INHERIT PushButton
-   ACCESS IsEnabled 
+   ACCESS IsEnabled
    RETURN FALSE
 END CLASS

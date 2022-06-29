@@ -1,5 +1,6 @@
 // 625. Namespace aliases not working
 // error XS0246: The type or namespace name 'abc' could not be found (are you missing a using directive or an assembly reference?)
+#pragma warnings(219, off) // assigned not used
 
 USING abc := a.b.c
 

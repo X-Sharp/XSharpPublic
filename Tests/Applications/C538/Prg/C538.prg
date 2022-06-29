@@ -1,5 +1,6 @@
 // 538. error XS9055: Codeblocks cannot be declared with the Lambda Expression Syntax.
-// error XS0019: Operator '>=' cannot be applied to operands of type 'string' and 'string' 
+// error XS0019: Operator '>=' cannot be applied to operands of type 'string' and 'string'
+#pragma warnings(219, off) // assigned but not used
 FUNCTION Start( ) AS VOID
 LOCAL a AS ARRAY
 a := {65,67,66}

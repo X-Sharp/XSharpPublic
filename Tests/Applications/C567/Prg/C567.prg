@@ -1,5 +1,7 @@
 // 567. error XS7038: Failed to emit module 'C567'.
 // With build 1.02 this does compile without errors (a warning about the pipes only)
+#pragma warnings(9058, off) // lambda with pipes
+
 FUNCTION Start() AS VOID
 	LOCAL aRef AS INT[]
 	aRef := <INT>{1,3,3,2,5,4}
@@ -20,5 +22,5 @@ FUNCTION TypeArray(a AS INT[]) AS VOID
 		END IF
 		nPrev := n
 	NEXT
-RETURN 
+RETURN
 

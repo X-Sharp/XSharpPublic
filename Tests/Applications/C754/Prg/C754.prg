@@ -1,5 +1,7 @@
 // 754. error XS0037: Cannot convert null to 'PSZ' because it is a non-nullable value type
 // Following is used in a lot of places in the VOGUI classes
+#pragma warnings(165, off) //   unassigned local
+#pragma warnings(219, off) //   assigned but not used
 FUNCTION Start() AS VOID
 	LOCAL o AS Foo
 	o := Foo{}

@@ -1,9 +1,10 @@
 // 281. error XS0034: Operator '<=' is ambiguous on operands of type 'byte' and 'int'
 // vulcan dialect, no matter if /vo4 is enabled or not
-// note that all the following appear many times in user/SDK code and 
+// note that all the following appear many times in user/SDK code and
 // compile in vulcan without warnings on conversions (which makes sense I think)
-// Also vulcan does not require /vo4 for the following to compile       
-#pragma options("vo11", on)
+// Also vulcan does not require /vo4 for the following to compile
+#pragma warnings(165, off) // unassigned local
+#pragma options("vo4", on)
 FUNCTION Start() AS VOID
 LOCAL d AS DWORD
 LOCAL w AS WORD

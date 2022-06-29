@@ -1,5 +1,7 @@
 // 728. Problem in TEXT TO with substituting text with << >> inside double quotes
 // https://github.com/X-Sharp/XSharpPublic/issues/469
+#pragma warnings(9025, off) //   return statement
+#pragma warnings(219, off) //   assigned but not used
 /*
 Unhandled Exception: System.FormatException: Input string was not in a correct format.
    at System.Text.StringBuilder.FormatError()
@@ -7,7 +9,7 @@ Unhandled Exception: System.FormatException: Input string was not in a correct f
    at System.String.FormatHelper(IFormatProvider provider, String format, ParamsArray args)
    at System.String.Format(String format, Object arg0, Object arg1)
    at C728.Exe.Functions.Start() in C:\xSharp\Dev\Tests\Applications\C728\Prg\C728.prg:line 7
-*/     
+*/
 
 // note that TextMerge requires /memvar in X# 2.12 and later
 FUNCTION Start() AS VOID
@@ -18,7 +20,7 @@ TEXT TO cText TEXTMERGE NOSHOW
 <<cSubstitute>>
 '<<cSubstitute>>'
 "<<cSubstitute>>"
-ENDTEXT    
+ENDTEXT
 LOCAL cTest := cText as string
 xAssert( cTest[cTest:Length-4] == 101) // e
 xAssert( cTest[cTest:Length-3] == 34)  // "

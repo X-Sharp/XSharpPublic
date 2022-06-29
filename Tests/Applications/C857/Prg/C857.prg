@@ -1,6 +1,6 @@
 // 857. Problem assigning function to delegate, when /undeclared+ is enabled
 // https://github.com/X-Sharp/XSharpPublic/issues/1051
-
+#pragma warnings(9073, off) // undeclared, field or memvar
 DELEGATE TestDelegateType( par AS STRING ) AS INT
 
 FUNCTION Start() AS VOID

@@ -1,4 +1,7 @@
 // 537. error XS9055: Codeblocks cannot be declared with the Lambda Expression Syntax.
+#pragma warnings(219, off) // assigned but not used
+#pragma warnings(165, off) // unassigned
+
 FUNCTION Start( ) AS VOID
 LOCAL l := FALSE AS LOGIC
 IF l
@@ -10,7 +13,7 @@ IF l
 	u := (cAlias)->DBUnlock()
 	u := (cAlias)->(DBUnlock())
 	? (cAlias)->DBUnlock()
-	
+
 	LOCAL o AS OBJECT
 	o := (cAlias)->DBUnlock()
 END IF

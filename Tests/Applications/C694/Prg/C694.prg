@@ -1,4 +1,5 @@
 // 694. Compiler crash with undeclared vars passed by reference
+#pragma warnings (9073, off) // undeclared, field or memvar
 FUNCTION Start() AS VOID
 undeclared := 12
 ? undeclared

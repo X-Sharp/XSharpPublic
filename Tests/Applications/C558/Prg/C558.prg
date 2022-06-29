@@ -1,6 +1,8 @@
 // 558. error XS0037: Cannot convert null to 'logic' because it is a non-nullable value type
 // also warning XS9025: Missing RETURN statement. A statement with a default 'empty' return value is returned.
 // problem happens with /vo9 only (allow missing RETURN statements)
+#pragma warnings(168, off) // declared not used
+
 FUNCTION Start() AS VOID
 	? Test(TRUE)
 	xAssert(Test(TRUE))

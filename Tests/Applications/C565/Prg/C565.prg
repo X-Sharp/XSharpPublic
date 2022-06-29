@@ -1,10 +1,13 @@
 // 565. Missing overflow checks for numeric conversion when /ovf is enabled
+#pragma warnings(168, off) // declared but not used
+#pragma warnings(219, off) // declared but not used
+
 FUNCTION Start() AS VOID
 	LOCAL i AS INT
 	LOCAL d AS DWORD
 	LOCAL b AS BYTE
 	LOCAL ui64 AS UINT64
-	
+
 	FOR LOCAL n := 1 AS INT UPTO 5
 		LOCAL lOverflow := FALSE AS LOGIC
 		TRY
@@ -23,20 +26,20 @@ FUNCTION Start() AS VOID
 			CASE n == 4
 				i := -1
 				b := (BYTE)i
-			CASE n == 5       
+			CASE n == 5
 				i := -1
 				ui64 := (UINT64) i
 			END
-			
+
 		CATCH e AS System.OverflowException
 			lOverflow := TRUE
 			? "Overflow correctly detected for test", n
 		END TRY
-		
+
 		IF .not. lOverflow
 			THROW Exception{"Overflow check missing for test " + n:ToString()}
 		END IF
-		
+
 	NEXT
 
 	// Conversions with the _CAST syntax should not cause an exception:
@@ -53,5 +56,5 @@ FUNCTION Start() AS VOID
 	b := BYTE(_CAST,i)
 
 	ui64 := UINT64(_CAST,UInt64.MaxValue)
-	
+
 RETURN

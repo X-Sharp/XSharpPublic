@@ -1,4 +1,5 @@
 // 684. error XS0121: The call is ambiguous between the following methods or properties: 'C684.Exe.Functions.Test(XSharp.__Float)' and 'C684.Exe.Functions.Test(logic)'
+#pragma warnings (165, off) // unassigned local
 FUNCTION Start( ) AS VOID
 	LOCAL n AS DWORD
 	Test(n) // ok, float

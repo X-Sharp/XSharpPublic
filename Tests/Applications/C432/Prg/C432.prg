@@ -2,6 +2,7 @@
 // END WHILE, END DO and NEXT <identifier> also not allowed by vulcan
 // VO incompatibility, shouldn't we allow them in x#? (VO/vulcan dialect of course only)
 // Well, VO accepts anything after those keywords, I think we should allow those that do make sense
+#pragma warnings (162, off) // unreachable
 FUNCTION Start() AS VOID
 DO WHILE FALSE
 	? "don't print me"
@@ -18,10 +19,10 @@ FOR n := 1 UPTO 11
 	IF n > 10
 		? "> 10"
 	ENDIF //n > 10
-	
-NEXT //n  
+
+NEXT //n
 FOREACH IMPLIED x IN <INT>{1,2}
-	? x 
+	? x
 NEXT //x
 
 RETURN

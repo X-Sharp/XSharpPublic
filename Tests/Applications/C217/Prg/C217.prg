@@ -1,4 +1,5 @@
 // 217. compiler crash
+#pragma warnings(170, off) // unsasigned field
 UNION TestUnion
 MEMBER n AS DWORD
 MEMBER i AS INT

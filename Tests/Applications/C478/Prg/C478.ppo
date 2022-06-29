@@ -1,13 +1,14 @@
 // 478. error XS9002: Parser: unexpected input 'atail'
 // NOTE: deleting lines 203-208 (optional clauses) of C478.ch allows the sample to compile
 
+
 //PP #translate ARRAY(<x>) => ArrayCreate(<x>)
 //PP #xtranslate zGetSysId()               => zGetSet(1 )
 //PP #xtranslate zSetSysId(<x>)            => zGetSet(1 ,<x>)
 
 //PP #include "C478.ch"
 #line 1 "C:\XSharp\Dev\Tests\Applications\C478\Prg\C478.ch"
-#line 9 "C:\XSharp\Dev\Tests\Applications\C478\Prg\C478.prg"
+#line 13 "C:\XSharp\Dev\Tests\Applications\C478\Prg\C478.prg"
 
 
 FUNCTION Start() AS VOID
@@ -98,7 +99,7 @@ FUNCTION zGEDBComboNew( cVar, cTheVar, bVar, bWhen, bValid, lDropOnEnter,;
                        cBaseFilter, xRetFld, aBrowse_,;
                        xDispFld, cKeyTag, lStrict, aHotKeys_, cpicture,;
                        nWidth,nHeight, cColor, bPostEval, lEmptyAllowed
-*/                       
+*/
 ? "zGEDBComboNew() params cAlias, cTag:" , cAlias, cTag
 IF cAlias == NIL .or. .not. (cAlias == "SSUsers" .or. cAlias == "FilGrp")
 	THROW Exception{"cAlias parameter not preprocessed correctly"}

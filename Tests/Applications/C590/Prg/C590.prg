@@ -1,6 +1,9 @@
+#pragma warnings(9071, off) // ref needed
+#pragma warnings(9063, off) // ref needed
+
 // 590. error XS1503: Argument 2: cannot convert from '<null>' to 'ref int'
 /*
-Surprisingly vulcan allows NULL to be passed for REF params and additionally REF params 
+Surprisingly vulcan allows NULL to be passed for REF params and additionally REF params
 can be checked with @param == NULL to see if NULL was passed for them.
 
 The IL code that vulcan generates for the call simply passes null (with ldnull) to the param
@@ -21,7 +24,7 @@ FUNCTION Start() AS VOID
 	n := 1
 	? TempRef(10 , n)
 	? TempRef(10 , NULL)
-	
+
 	xAssert(TempRef(10 , n) == 11)
 	xAssert(TempRef(10 , NULL) == 1976)
 RETURN

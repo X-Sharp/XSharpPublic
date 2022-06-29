@@ -2,6 +2,7 @@
 // error XS9002: Parser: unexpected input 'CONSTRUCTOR'
 // error XS0116: A namespace cannot directly contain members such as fields or methods
 // error XS0122: 'TestClass.CursorPos()' is inaccessible due to its protection level
+#pragma warnings(9032, off) // return value
 FUNCTION Start() AS VOID
 TestClass{}:CursorPos := "Assign called" // error XS0122: 'TestClass.CursorPos()' is inaccessible due to its protection level
 

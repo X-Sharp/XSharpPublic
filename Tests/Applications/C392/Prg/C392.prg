@@ -1,4 +1,5 @@
 // 392. error XS1061: '__Array' does not contain a definition for 'CallMethodOnArray1' and no extension method 'CallMethodOnArray1' accepting a first argument of type '__Array' could be found (are you missing a using directive or an assembly reference?)
+#pragma warnings(9087, off) // call converted to ASend
 
 GLOBAL nCalled := 0 AS INT
 

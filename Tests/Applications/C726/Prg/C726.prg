@@ -1,6 +1,7 @@
 // 726. warning XS9085: Unbalanced textmerge delimiters '<<' and '>>'.
+#pragma warnings(219, off) //   assigned but not used
 FUNCTION Start() AS VOID
-LOCAL lcBatch AS STRING                      
+LOCAL lcBatch AS STRING
 LOCAL lcOutputPath as STRING
 lcOutputPath := "C:\Tmp"
 TEXT TO lcBatch TEXTMERGE NOSHOW PRETEXT 1+2
@@ -26,14 +27,14 @@ TEXT TO lcBatch TEXTMERGE NOSHOW PRETEXT 1+2
 	REM select files
 	REM ----------------------------------------
 	forfiles /P "%PATH1%" /S /M %FILEFILTER% /D %OLDERTHEN% /C "cmd /c del @file | echo loesche @file vom @fdate :: %LOGFILE%"
-	
+
 	REM ----------------------------------------
 	REM END of batch run
 	REM ----------------------------------------
 	echo ************************** >> %LOGFILE%
 	echo END of batch run >> %LOGFILE%
-	
-ENDTEXT 
+
+ENDTEXT
 
 ? lcBatch
 

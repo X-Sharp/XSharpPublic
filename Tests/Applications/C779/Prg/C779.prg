@@ -1,5 +1,6 @@
 // 779. Internal compiler error with Default(USUAL) used as argument
 // https://github.com/X-Sharp/XSharpPublic/issues/664
+#pragma warnings(9066, off) //   ambiguous
 FUNCTION Start() AS VOID
 LOCAL cb AS CODEBLOCK
 cb := {|a| IsNil(a)}
@@ -21,13 +22,13 @@ METHOD Eval(cbBlock AS USUAL) AS USUAL STRICT
 RETURN Eval(cbBlock,Default(USUAL),Default(USUAL),Default(USUAL))
 
 METHOD Eval(cbBlock AS USUAL, cbForBlock AS USUAL, cbWhileBlock AS USUAL, uScope AS USUAL) AS USUAL STRICT
-RETURN Default(USUAL)   
+RETURN Default(USUAL)
 END CLASS
 
 
-PROC xAssert(l AS LOGIC) 
+PROC xAssert(l AS LOGIC)
 IF .NOT. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
 END IF
-? "Assertion passed"   
-RETURN       
+? "Assertion passed"
+RETURN

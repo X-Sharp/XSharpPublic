@@ -1,6 +1,6 @@
 // error XS1503: Argument 1: cannot convert from 'method' to 'int'
 // name conflict between DEFINE and METHOD
-
+#pragma warnings(219, off) // assigned but not used
 FUNCTION Start() AS VOID
 	TestClass{}
 RETURN
@@ -8,9 +8,9 @@ RETURN
 DEFINE HELPINFO := 3
 
 CLASS HelpRequestEvent
-ACCESS HelpType AS DWORD STRICT 
+ACCESS HelpType AS DWORD STRICT
 RETURN HELPINFO
-ACCESS HelpInfo AS PTR STRICT 
+ACCESS HelpInfo AS PTR STRICT
 RETURN NULL_PTR
 END CLASS
 

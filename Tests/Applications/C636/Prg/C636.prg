@@ -4,22 +4,25 @@ Compiled WITHOUT /vo7 enabled, the sample produces a failed to emit module error
 It should either compile and run correctly, or give a good error message.
 (source taken from the SDK)
 */
+#pragma warnings(618, off) // obsolete
+#pragma warnings(9068, off) // ambiguous
+
 FUNCTION Start() AS VOID
 	LOCAL DIM abDrive[128] AS BYTE
 	LOCAL DIM abDir	 [256]   AS BYTE
 	LOCAL DIM abName [260]  AS BYTE
 	LOCAL DIM abExt  [128]	AS BYTE
 	LOCAL uString AS USUAL
-	
+
 	uString := "C:\Test\File.ext"
 
 	SplitPath(uString, PSZ(_CAST, @abDrive[1]), PSZ(_CAST,@abDir[1]), PSZ(_CAST,@abName[1]), PSZ(_CAST,@abExt[1]))
-	
+
 	? System.Text.Encoding.Default:GetString(abDrive)
 	? System.Text.Encoding.Default:GetString(abDir)
 	? System.Text.Encoding.Default:GetString(abName)
 	? System.Text.Encoding.Default:GetString(abExt)
-	
+
 	CheckResult(System.Text.Encoding.Default:GetString(abDrive) , "C:")
 	CheckResult(System.Text.Encoding.Default:GetString(abDir) , "\Test\")
 	CheckResult(System.Text.Encoding.Default:GetString(abName) , "File")

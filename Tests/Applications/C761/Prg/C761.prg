@@ -5,6 +5,7 @@ C760.prg(15,2): error XS0544: 'Child.Bar': cannot override because 'Parent.Bar(p
 C760.prg(19,4): error XS0544: 'ControlSubclass.IsEnabled': cannot override because 'VO.Control.IsEnabled(params XSharp.__Usual[])' is not a property
 */
 
+#pragma warnings(108, off) //   methid hides parent methid
 // version with /vo3+ enabled
 FUNCTION Start() AS VOID
 
@@ -23,6 +24,6 @@ CLASS Child INHERIT Parent
 END CLASS
 
 CLASS ControlSubclass INHERIT PushButton
-   ACCESS IsEnabled 
+   ACCESS IsEnabled
    RETURN FALSE
 END CLASS

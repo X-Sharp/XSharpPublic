@@ -1,5 +1,7 @@
 // 618. In Core dialect, function calls resolve to same named methods
 // (in VO dialect the call is resolved to the function as expected)
+#pragma warnings(273, off) // accessible modifier
+#pragma warnings(9066, off) // ambigous
 
 FUNCTION DoTest(c AS STRING) AS STRING
 RETURN c
@@ -8,9 +10,9 @@ FUNCTION AnotherTest() AS VOID
 FUNCTION Start() AS VOID
 	LOCAL o AS TestClass
 	o := TestClass{}
-	
+
 	xAssert(o:DoTest(1) == "1")
-	
+
 	// results to stack overflow due to recursive call
 	o:AnotherTest()
 RETURN

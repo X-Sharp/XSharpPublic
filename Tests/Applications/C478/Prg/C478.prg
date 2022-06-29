@@ -1,5 +1,9 @@
 // 478. error XS9002: Parser: unexpected input 'atail'
 // NOTE: deleting lines 203-208 (optional clauses) of C478.ch allows the sample to compile
+#pragma warnings(165, off) // unassigned
+#pragma warnings(168, off) // declared but not used
+#pragma warnings(219, off) // assigned but not used
+
 
 #translate ARRAY(<x>) => ArrayCreate(<x>)
 #xtranslate zGetSysId()               => zGetSet(1 )
@@ -96,7 +100,7 @@ FUNCTION zGEDBComboNew( cVar, cTheVar, bVar, bWhen, bValid, lDropOnEnter,;
                        cBaseFilter, xRetFld, aBrowse_,;
                        xDispFld, cKeyTag, lStrict, aHotKeys_, cpicture,;
                        nWidth,nHeight, cColor, bPostEval, lEmptyAllowed
-*/                       
+*/
 ? "zGEDBComboNew() params cAlias, cTag:" , cAlias, cTag
 IF cAlias == NIL .or. .not. (cAlias == "SSUsers" .or. cAlias == "FilGrp")
 	THROW Exception{"cAlias parameter not preprocessed correctly"}

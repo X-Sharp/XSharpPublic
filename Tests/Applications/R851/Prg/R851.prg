@@ -4,7 +4,8 @@ USING System.Linq
 USING System.Text
 USING XSharp.VFP
 
-
+#pragma warnings(9073, off) // undeclared, field or memvar
+#pragma warnings(9092, off) // undeclared, variable or cursor
 FUNCTION Start() AS VOID STRICT
     ? "Testing Late bound property get with ""."" accessor operator"
     undec = SubClass{}

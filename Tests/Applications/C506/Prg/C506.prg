@@ -5,6 +5,7 @@
 // note when using /vo9, then an warning is reported
 // warning XS9026: Missing RETURN value. A default 'empty' return value is returned
 // which is of course not correct, either.
+#pragma warnings(9026, off) // missing return value
 FUNCTION Start( ) AS VOID
 	LOCAL n AS INT
 	n := TestInt()

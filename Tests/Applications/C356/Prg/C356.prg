@@ -1,8 +1,10 @@
 // 356. error XS1503: Argument 1: cannot convert from 'byte' to 'string'
+#pragma warnings(165, off) // uniassigned local
+#pragma warnings(9068, off) // auto psz
 FUNCTION Start() AS VOID
 
 /*
-must print the following. Note that in previous builds this compiled without errors, 
+must print the following. Note that in previous builds this compiled without errors,
 but didn't print correct values either
 C:
 \Test\
@@ -23,17 +25,17 @@ FUNCTION __SplitPath() AS VOID
 	LOCAL DIM abDir	 [100] AS BYTE
 	LOCAL DIM abName [100] AS BYTE
 	LOCAL DIM abExt  [100] AS BYTE
-	
+
 	LOCAL cString AS USUAL
 	cString := "C:\Test\Testing.dat"
 
 	SplitPath(cString, PSZ(_CAST, @abDrive[1]), PSZ(_CAST,@abDir[1]), PSZ(_CAST,@abName[1]), PSZ(_CAST,@abExt[1]))
-	
+
 	? Psz2String(PSZ(_CAST, @abDrive[1]))
 	? Psz2String(PSZ(_CAST, @abDir[1]))
 	? Psz2String(PSZ(_CAST, @abName[1]))
 	? Psz2String(PSZ(_CAST, @abExt[1]))
-	
+
 	xAssertEquals( Psz2String(PSZ(_CAST, @abDrive[1])) , "C:")
 	xAssertEquals( Psz2String(PSZ(_CAST, @abDir[1]))   , "\Test\")
 	xAssertEquals( Psz2String(PSZ(_CAST, @abName[1]))  , "Testing")
@@ -70,12 +72,12 @@ st := (_WinCOPYDATASTRUCT PTR) (PTR(_CAST,lParam))
 FUNCTION __GetNextAddress(cBuffer AS STRING, dwPosition REF DWORD) AS STRING STRICT
     LOCAL dwPos          AS DWORD
     LOCAL pBuffer        AS BYTE PTR
-   
+
 	dwPos   := dwPosition
 	pBuffer := String2Psz(cBuffer)
 
 	? AsString(PSZ(_CAST, pBuffer + dwPos - 1))
-	
+
 	xAssertEquals(AsString(PSZ(_CAST, pBuffer + dwPos - 1)) , "bcde")
 RETURN NULL
 

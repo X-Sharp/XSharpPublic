@@ -1,5 +1,6 @@
 // 421. RETURN ignored in Start() function?
 // problem seems to exist only with Start()
+#pragma warnings(162, off) // unreachable code
 FUNCTION Start() AS INT
 LOCAL n AS INT
 Test1()

@@ -148,6 +148,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             internal ThreeState lazyHasEmbeddedAttribute = ThreeState.Unknown;
 #if XSHARP
             internal ThreeState lazyHasCompilerGeneratedAttribute = ThreeState.Unknown;
+            internal ThreeState lazyVoStruct = ThreeState.Unknown;
+            internal int? lazyVostructSize;
+            internal int? lazyVostructLargestElementSize;
 #endif
 
 #if DEBUG
@@ -164,6 +167,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     (object)lazyComImportCoClassType == (object)ErrorTypeSymbol.UnknownResultType &&
 #if XSHARP
                     !lazyHasCompilerGeneratedAttribute.HasValue() &&
+                    !lazyVoStruct.HasValue() &&
+                    !lazyVostructSize.HasValue &&
+                    !lazyVostructLargestElementSize.HasValue && 
+
 #endif
                     !lazyHasEmbeddedAttribute.HasValue();
             }
@@ -418,26 +425,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 return uncommon.lazyHasEmbeddedAttribute.Value();
             }
         }
-#if XSHARP
-        internal override bool HasCompilerGeneratedAttribute
-        {
-            get
-            {
-                var uncommon = GetUncommonProperties();
-                if (uncommon == s_noUncommonProperties)
-                {
-                    return false;
-                }
-
-                if (!uncommon.lazyHasCompilerGeneratedAttribute.HasValue())
-                {
-                    uncommon.lazyHasCompilerGeneratedAttribute = ContainingPEModule.Module.HasCompilerGeneratedAttribute(_handle).ToThreeState();
-                }
-
-                return uncommon.lazyHasCompilerGeneratedAttribute.Value();
-            }
-        }
-#endif
         internal override NamedTypeSymbol BaseTypeNoUseSiteDiagnostics
         {
             get

@@ -76,5 +76,114 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             }
         }
 
+        internal override bool HasCompilerGeneratedAttribute
+        {
+            get
+            {
+                var uncommon = GetUncommonProperties();
+                if (uncommon == s_noUncommonProperties)
+                {
+                    return false;
+                }
+
+                if (!uncommon.lazyHasCompilerGeneratedAttribute.HasValue())
+                {
+                    uncommon.lazyHasCompilerGeneratedAttribute = ContainingPEModule.Module.HasCompilerGeneratedAttribute(_handle).ToThreeState();
+                }
+
+                return uncommon.lazyHasCompilerGeneratedAttribute.Value();
+            }
+        }
+        internal bool IsVoStruct
+        {
+            get
+            {
+                var uncommon = GetUncommonProperties();
+                if (uncommon == s_noUncommonProperties)
+                {
+                    return false;
+                }
+
+                if (!uncommon.lazyVoStruct.HasValue())
+                {
+                    uncommon.lazyVoStruct = ThreeState.False;
+                    var attrs = this.GetAttributes();
+                    foreach (var attr in attrs)
+                    {
+                        var atype = attr.AttributeClass;
+                        if (atype.IsOurAttribute(OurTypeNames.VOStructAttribute))
+                        {
+                            uncommon.lazyVoStruct = ThreeState.True;
+                            break;
+                        }
+                    }
+                }
+
+                return uncommon.lazyVoStruct.Value();
+            }
+        }
+
+        internal int VoStructSizeInBytes
+        {
+            get
+            {
+                if (!IsVoStruct)
+                    return 0;
+                var uncommon = GetUncommonProperties();
+                if (uncommon == s_noUncommonProperties)
+                {
+                    return 0;
+                }
+                if (uncommon.lazyVostructSize.HasValue)
+                    return uncommon.lazyVostructSize.Value;
+
+                uncommon.lazyVostructSize = 0;
+                var attrs = GetAttributes();
+                foreach (var attr in attrs)
+                {
+                    var atype = attr.AttributeClass;
+                    if (atype.IsOurAttribute(OurTypeNames.VOStructAttribute))
+                    {
+                        if (attr.ConstructorArguments != null)
+                        {
+                            uncommon.lazyVostructSize = attr.ConstructorArguments.First().DecodeValue<int>(SpecialType.System_Int32);
+                            break;
+                        }
+                    }
+                }
+                return uncommon.lazyVostructSize.Value;
+            }
+        }
+        internal int VoStructLargestElementSize
+        {
+            get
+            {
+                if (!IsVoStruct)
+                    return 0;
+                var uncommon = GetUncommonProperties();
+                if (uncommon == s_noUncommonProperties)
+                {
+                    return 0;
+                }
+                if (uncommon.lazyVostructLargestElementSize.HasValue)
+                    return uncommon.lazyVostructLargestElementSize.Value;
+                uncommon.lazyVostructLargestElementSize = 0;
+                var attrs = GetAttributes();
+                foreach (var attr in attrs)
+                {
+                    var atype = attr.AttributeClass;
+                    if (atype.IsOurAttribute(OurTypeNames.VOStructAttribute))
+                    {
+                        if (attr.ConstructorArguments != null)
+                        {
+                            uncommon.lazyVostructLargestElementSize = attr.ConstructorArguments.Last().DecodeValue<int>(SpecialType.System_Int32);
+                            break;
+                        }
+                    }
+                }
+                return uncommon.lazyVostructLargestElementSize.Value;
+            }
+        }
     }
+
 }

@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private static readonly ConcurrentDictionary<string, XSharpTargetDLL> s_dictionary;
         static TypeSymbolExtensions()
         {
-            s_dictionary = new ConcurrentDictionary<string, XSharpTargetDLL>(XSharpString.Comparer);
+            s_dictionary = new(XSharpString.Comparer);
         }
 
         public static bool IsFunctionsClass(this NamedTypeSymbol type)
@@ -142,27 +142,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return type is { } && (type.Name == OurTypeNames.DateType || type.Name == OurTypeNames.VnDateType);
         }
+
         public static bool IsVoStructOrUnion(this TypeSymbol _type)
         {
-            // TODO (nvk): there must be a better way!
             if (_type is { } && _type.OriginalDefinition is NamedTypeSymbol type)
             {
                 if (type is SourceNamedTypeSymbol sourceType)
                 {
                     return sourceType.IsSourceVoStructOrUnion;
                 }
-                if (type is Metadata.PE.PENamedTypeSymbol)
+                if (type is PENamedTypeSymbol petype)
                 {
-                    if (type.Arity == 0 && !type.MangleName)
-                    {
-                        var attrs = type.GetAttributes();
-                        foreach (var attr in attrs)
-                        {
-                            var atype = attr.AttributeClass;
-                            if (atype.IsOurAttribute(OurTypeNames.VOStructAttribute))
-                                return true;
-                        }
-                    }
+                    return petype.IsVoStruct;
                 }
             }
             return false;
@@ -170,7 +161,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static int VoStructOrUnionSizeInBytes(this TypeSymbol _type)
         {
-            // TODO (nvk): there must be a better way!
             if (_type is { } && _type.OriginalDefinition is NamedTypeSymbol type)
             {
                 if (type is { } && type.Arity == 0 && !type.MangleName)
@@ -182,21 +172,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             return sourceType.VoStructSize;
                         }
                     }
-                    else if (type is Metadata.PE.PENamedTypeSymbol)
+                    else if (type is PENamedTypeSymbol petype && petype.IsVoStruct)
                     {
-                        var attrs = type.GetAttributes();
-                        foreach (var attr in attrs)
-                        {
-                            var atype = attr.AttributeClass;
-                            if (atype.IsOurAttribute(OurTypeNames.VOStructAttribute))
-                            {
-                                if (attr.ConstructorArguments != null)
-                                {
-                                    return attr.ConstructorArguments.First().DecodeValue<int>(SpecialType.System_Int32);
-                                }
-                                return 0;
-                            }
-                        }
+                        return petype.VoStructSizeInBytes;
                     }
                 }
             }
@@ -205,7 +183,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static int VoStructOrUnionLargestElementSizeInBytes(this TypeSymbol _type)
         {
-            // TODO (nvk): there must be a better way!
             if (_type is { } && _type.OriginalDefinition is NamedTypeSymbol type)
             {
                 if (type is { } && type.Arity == 0 && !type.MangleName)
@@ -217,21 +194,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             return sourceType.VoStructElementSize;
                         }
                     }
-                    else if (type is Metadata.PE.PENamedTypeSymbol)
+                    else if (type is PENamedTypeSymbol petype && petype.IsVoStruct)
                     {
-                        var attrs = type.GetAttributes();
-                        foreach (var attr in attrs)
-                        {
-                            var atype = attr.AttributeClass;
-                            if (atype.IsOurAttribute(OurTypeNames.VOStructAttribute))
-                            {
-                                if (attr.ConstructorArguments != null)
-                                {
-                                    return attr.ConstructorArguments.Last().DecodeValue<int>(SpecialType.System_Int32);
-                                }
-                                return 0;
-                            }
-                        }
+                        return petype.VoStructLargestElementSize;
                     }
                 }
             }

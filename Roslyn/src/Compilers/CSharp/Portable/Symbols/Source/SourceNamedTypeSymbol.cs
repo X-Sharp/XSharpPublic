@@ -108,7 +108,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 _lazyIsExplicitDefinitionOfNoPiaLocalType = ThreeState.False;
             }
 #if XSHARP
-            if (((CSharpSyntaxNode)declaration.SyntaxReferences.FirstOrDefault()?.GetSyntax()).XVoDecl == true)
+            if (((CSharpSyntaxNode)declaration.SyntaxReferences.FirstOrDefault()?.GetSyntax()).XVoStructUnion == true)
             {
                 _isVoStructOrUnion = true;
             }

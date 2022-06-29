@@ -67,7 +67,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 sig.Type = new XP.DatatypeContext(func, 0);
                 sig.Type.Start = new XSharpToken(XP.AS, "AS");
                 sig.Type.Stop = new XSharpToken(XP.VOID, "VOID");
-                sig.Type.Put(voidType);
+                sig.Type.Put(_voidType);
                 sig.AddChild(sig.Type);
             }
             func.Attributes = new XP.AttributesContext(func, 0);
@@ -536,7 +536,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitFoxclassvars([NotNull] XP.FoxclassvarsContext context)
         {
             var varType = getDataType(context.DataType);
-            varType.XVoDecl = true;
+            varType.XCanBeVoStruct = true;
             var list = new List<MemberDeclarationSyntax>();
             foreach (var varCtx in context._Vars)
             {
@@ -648,7 +648,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                returntype.XVoDecl = true;
+                returntype.XCanBeVoStruct = true;
             }
             var oldbody = body;
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
@@ -988,7 +988,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     body.XGenerated = true;
                     var mods = TokenList(SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword);
                     var id = SyntaxFactory.MakeIdentifier(XSharpSpecialNames.InitProperties);
-                    var mem = _syntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods, voidType, null, id,
+                    var mem = _syntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods, _voidType, null, id,
                         null, EmptyParameterList(), null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                     members.Add(mem);
                     stmts.Clear();
@@ -1043,16 +1043,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 switch (type.GetText().ToLower())
                 {
                     case "integer":
-                        result = intType;
+                        result = _intType;
                         break;
                     case "single":
-                        result = floatType;
+                        result = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword));
                         break;
                     case "double":
-                        result = doubleType;
+                        result = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword));
                         break;
                     case "string":
-                        result = stringType;
+                        result = _stringType;
                         break;
                     default:
                         result = type.Get<TypeSyntax>();
@@ -1061,9 +1061,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                result = voidType;
+                result = _voidType;
             }
-            result.XVoDecl = true;
+            result.XCanBeVoStruct = true;
             return result;
         }
 
@@ -1096,7 +1096,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 identifier: id,
                 @default: null);
 
-            if (type == stringType && context.Address != null)
+            if (type == _stringType && context.Address != null)
             {
                 par = par.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FoxDeclareDLLStringByReference));
             }

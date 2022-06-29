@@ -359,7 +359,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Check to see if the variables have not been also declared as property
             // when they are we do not generate variables
             var varType = getDataType(context.DataType);
-            varType.XVoDecl = true;
+            varType.XCanBeVoStruct = true;
             var fieldList = new List<FieldDeclarationSyntax>();
             var attributeLists = _pool.Allocate<AttributeListSyntax>();
             if (context.Nosave != null)

@@ -29,7 +29,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ContextAwareSyntax syntaxFactory, string fileName) :
             base(parser, options, pool, syntaxFactory, fileName)
         {
-            
         }
         public override void EnterVostruct([NotNull] XP.VostructContext context)
         {
@@ -74,7 +73,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : default,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                 semicolonToken: default);
-            m.XVoDecl = true;
+            m.XVoStructUnion = true;
             if (context.Namespace != null)
             {
                 m = AddNameSpaceToMember(context.Namespace, m);
@@ -118,7 +117,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isUnionMember = (context.Parent is XP.VounionContext);
             var varType = voStructMemberDataType(context);
 
-            varType.XVoDecl = true;
+            varType.XCanBeVoStruct = varType is not PredefinedTypeSyntax;
             if (context.As?.Type == XP.IS)
             {
                 varType.XVoIsDecl = true;
@@ -192,7 +191,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : default,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                 semicolonToken: null);
-            m.XVoDecl = true;
+            m.XVoStructUnion = true;
             if (context.Namespace != null)
             {
                 m = AddNameSpaceToMember(context.Namespace, m);

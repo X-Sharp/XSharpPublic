@@ -379,6 +379,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string CompilerGlobalScope = "global::System.Runtime.CompilerServices.CompilerGlobalScope";
         internal const string UnmanagedFunctionPointer = "global::System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute";
         internal const string IntPtr = "global::System.IntPtr";
+        internal const string DateTime = "gloal::System.DateTime";
         internal const string DllImport = "global::System.Runtime.InteropServices.DllImportAttribute";
         internal const string CharSet = "global::System.Runtime.InteropServices.CharSet";
         internal const string WriteLine = "global::System.Console.WriteLine";

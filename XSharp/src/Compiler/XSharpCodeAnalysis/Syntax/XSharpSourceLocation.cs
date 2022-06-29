@@ -21,9 +21,11 @@ namespace Microsoft.CodeAnalysis
         private readonly TextSpan _sourceSpan;
         private readonly FileLinePositionSpan _lineSpan;
         private readonly XSharpParserRuleContext _context;
+        private readonly SyntaxTree _syntaxTree; 
 
-        internal XSharpSourceLocation(XSharpParserRuleContext context)
+        internal XSharpSourceLocation(XSharpParserRuleContext context, SyntaxTree syntaxTree)
         {
+            _syntaxTree = syntaxTree;
             var start = context.Start as XSharpToken;
             var stop = context.Stop as XSharpToken;
             if (start.SourceSymbol != null)
@@ -53,7 +55,7 @@ namespace Microsoft.CodeAnalysis
             _lineSpan = new FileLinePositionSpan(context.SourceFileName, new LinePositionSpan(lp1, lp2));
 
         }
-
+        public override SyntaxTree SourceTree => _syntaxTree;
 
         public override TextSpan SourceSpan
         {

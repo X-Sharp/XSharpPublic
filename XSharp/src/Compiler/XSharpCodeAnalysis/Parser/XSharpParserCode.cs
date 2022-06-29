@@ -1200,7 +1200,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         int MappedLine { get; }
         IToken SourceSymbol { get; }
 #if !VSPARSER
-        Microsoft.CodeAnalysis.Location GetLocation();
+        Microsoft.CodeAnalysis.Location GetLocation(SyntaxTree syntaxTree);
 #endif
     }
     [Serializable]
@@ -1247,7 +1247,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public override string ToString() { return this.GetText(); }
 #if !VSPARSER
-        public Microsoft.CodeAnalysis.Location GetLocation()
+        public Microsoft.CodeAnalysis.Location GetLocation(SyntaxTree syntaxTree)
         {
             var token = this.Symbol;
             var ts = new MCT.TextSpan(token.StartIndex, this.FullWidth);
@@ -1259,7 +1259,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 lp2 = lp1;
             }
             var ls = new MCT.LinePositionSpan(lp1, lp2);
-            return Microsoft.CodeAnalysis.Location.Create(this.SourceFileName, ts, ls);
+            return new SourceLocation(syntaxTree, ts);
+            //return Microsoft.CodeAnalysis.Location.Create(this.SourceFileName, ts, ls);
 
         }
 #endif

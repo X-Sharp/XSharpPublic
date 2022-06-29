@@ -78,7 +78,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         if (n.XNode != null)
                         {
-                            _current = new CSDiagnostic(sdi, n.XNode.GetLocation());
+                            _current = _current.WithLocation(n.XNode.GetLocation(_syntaxTree));
                         }
                     }
 #endif

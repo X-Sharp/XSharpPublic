@@ -171,9 +171,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return null;
             }
         }
-        public Location GetLocation()
+        public Location GetLocation(SyntaxTree syntaxTree)
         {
-            return new XSharpSourceLocation(this);
+            return new XSharpSourceLocation(this, syntaxTree);
         }
 
 #endif

@@ -8,9 +8,6 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
-#if XSHARP
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-#endif
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
 #if XSHARP
@@ -401,35 +398,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 isExplicitInterfaceImplementation,
                 diagnostics);
         }
-#if XSHARP
-        // The error location for properties generated from an ACCESS and ASSIGN is read from the first GET or SET method.
-        internal Location ErrorLocation
-        {
-            get
-            {
-                if (_IsGeneratedFromAccessAssign)
-                {
-                    if (GetMethod != null)
-                    {
-                        var xnode = GetMethod.GetNonNullSyntaxNode().XNode;
-                        if (xnode != null)
-                        {
-                            return xnode.GetLocation();
-                        }
-                    }
-                    if (SetMethod != null)
-                    {
-                        var xnode = SetMethod.GetNonNullSyntaxNode().XNode;
-                        if (xnode != null)
-                        {
-                            return xnode.GetLocation();
-                        }
-                    }
-                }
-                return base.Location;
-            }
-        }
-#endif
+
         private SourcePropertyAccessorSymbol CreateExpressionBodiedAccessor(
             ArrowExpressionClauseSyntax syntax,
             PropertySymbol? explicitlyImplementedPropertyOpt,
@@ -448,12 +417,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 isExplicitInterfaceImplementation,
                 diagnostics);
         }
-#if XSHARP
-        public override bool IsIndexedProperty
-        {
-            get { return _isIndexedProperty; }
-        }
-#endif
 
         private Binder CreateBinderForTypeAndParameters()
         {

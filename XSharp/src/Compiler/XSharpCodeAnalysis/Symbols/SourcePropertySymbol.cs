@@ -132,7 +132,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     internal sealed partial class SourcePropertySymbol
     {
         private TypeWithAnnotations _newPropertyType = default;
-        
+
+        public override bool IsIndexedProperty
+        {
+            get { return _isIndexedProperty; }
+        }
+        // The error location for properties generated from an ACCESS and ASSIGN is read from the first GET or SET method.
+        internal Location ErrorLocation
+        {
+            get
+            {
+                if (_IsGeneratedFromAccessAssign)
+                {
+                    if (GetMethod != null)
+                    {
+                        var xnode = GetMethod.GetNonNullSyntaxNode().XNode;
+                        if (xnode != null)
+                        {
+                            var src = GetMethod as SourceMethodSymbol;
+                            return xnode.GetLocation(src?.DeclaringSyntaxReferences.First().SyntaxTree);
+                        }
+                    }
+                    if (SetMethod != null)
+                    {
+                        var xnode = SetMethod.GetNonNullSyntaxNode().XNode;
+                        if (xnode != null)
+                        {
+                            var src = SetMethod as SourceMethodSymbol;
+                            return xnode.GetLocation(src?.DeclaringSyntaxReferences.First().SyntaxTree);
+                        }
+                    }
+                }
+                return base.Location;
+            }
+        }
+
         public override bool IsIndexer
         {
             get { return base.IsIndexer && !_isIndexedProperty; }

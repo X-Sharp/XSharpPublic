@@ -53,58 +53,66 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             }
             TypeSymbol type;
-            if (xNode is XP.VodefineContext)
+            // HACK: RvdH: I am not sure why, but we need to make sure this code is only run synchronously.
+            // This seems to be related to defines that are dependent on other defines.
+            lock (this)
             {
-                var vodef = xNode as XP.VodefineContext;
-                DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
-                // detect recursion
-                if (XSharpString.Equals(vodef.Id.GetText(), currentDefine))
+                if (xNode is XP.VodefineContext)
                 {
-                    currentDefine = null;
-                    return default;
-                }
-                currentDefine = vodef.Id.GetText();
-                type = binder.BindType(typeSyntax, diagnostics).Type;
-                // parser could not determine the type
-                fieldsBeingBound = new ConsList<FieldSymbol>(this, fieldsBeingBound);
-                var declarator = (VariableDeclaratorSyntax)this.DeclaringSyntaxReferences.AsSingleton().GetSyntax();
-                var initializerBinder = new ImplicitlyTypedFieldBinder(binder, fieldsBeingBound);
-                var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
-                if (initializerOpt != null && initializerOpt.ConstantValue == null)
-                {
-                    // Sometimes when a define depends on other defines we will have to try again to see
-                    // if it can be resolved to a constant
-                    // this seems to be a timing issue (binding the initializer triggers binding of another initializer and sometimes several layers deep)
-                    initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
-                }
-                if (initializerOpt != null && !type.IsPszType())
-                {
-                    if (initializerOpt.Type is { } && !initializerOpt.Type.IsErrorType())
+                    var vodef = xNode as XP.VodefineContext;
+                    DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
+                    // detect recursion: define depends on itself, like in DEFINE FOO := FOO + 1
+                    if (XSharpString.Equals(vodef.Id.GetText(), currentDefine))
                     {
-                        if (vodef.DataType == null)
+                        currentDefine = null;
+                        return default;
+                    }
+                    // now try to deduce the type from the assignment expression of the VODEFINE
+                    currentDefine = vodef.Id.GetText();
+                    type = binder.BindType(typeSyntax, diagnostics).Type;
+                    fieldsBeingBound = new ConsList<FieldSymbol>(this, fieldsBeingBound);
+                    var declarator = (VariableDeclaratorSyntax)this.DeclaringSyntaxReferences.AsSingleton().GetSyntax();
+                    var initializerBinder = new ImplicitlyTypedFieldBinder(binder, fieldsBeingBound);
+                    var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
+                    if (initializerOpt != null && !Equals(type, initializerOpt.Type))
+                    {
+                        type = initializerOpt.Type;
+                    }
+                    if (initializerOpt != null && !type.IsPszType())
+                    {
+                        if (initializerOpt.Type is { } && !initializerOpt.Type.IsErrorType())
                         {
-                            type = initializerOpt.Type;
-                        }
-                        if (!type.IsVoidPointer() && initializerOpt.ConstantValue != null
-                            && !this.IsConst && type.CanBeConst() && !type.IsObjectType())
-                        {
-                            this._modifiers |= DeclarationModifiers.Const;
-                            this._modifiers |= DeclarationModifiers.Static;
-                            this._modifiers &= ~DeclarationModifiers.ReadOnly;
-                        }
-                        if (type.IsEnumType())
-                        {
-                            type = type.GetEnumUnderlyingType();
+                            // If they have declared the Define with a type clause then we keep that type
+                            if (vodef.DataType == null)
+                            {
+                                type = initializerOpt.Type;
+                            }
+                            else
+                            {
+                                type = this.Type;
+                            }
+                            if (!type.IsVoidPointer() && initializerOpt.ConstantValue != null
+                                && !this.IsConst && type.CanBeConst() && !type.IsObjectType())
+                            {
+                                this._modifiers |= DeclarationModifiers.Const;
+                                this._modifiers |= DeclarationModifiers.Static;
+                                this._modifiers &= ~DeclarationModifiers.ReadOnly;
+                            }
+                            if (type.IsEnumType())
+                            {
+                                type = type.GetEnumUnderlyingType();
+                            }
                         }
                     }
+                    if (type is null)
+                    {
+                        type = compilation.GetSpecialType(SpecialType.System_Object);
+                    }
+                    //System.Diagnostics.Debug.WriteLine($"Looking for type of define {vodef.Name.ToString()}, found {type.ToString()}, const: {IsConst}");
+                    currentDefine = null;
+
+                    return TypeWithAnnotations.Create(type);
                 }
-                if (type is null)
-                {
-                    type = compilation.GetSpecialType(SpecialType.System_Object);
-                }
-                //System.Diagnostics.Debug.WriteLine($"Looking for type of define {vodef.Name.ToString()}, found {type.ToString()}, const: {IsConst}");
-                currentDefine = null;
-                return TypeWithAnnotations.Create(type);
             }
             return default;
         }

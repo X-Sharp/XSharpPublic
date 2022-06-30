@@ -74,7 +74,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     var declarator = (VariableDeclaratorSyntax)this.DeclaringSyntaxReferences.AsSingleton().GetSyntax();
                     var initializerBinder = new ImplicitlyTypedFieldBinder(binder, fieldsBeingBound);
                     var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
-                    if (initializerOpt != null && !Equals(type, initializerOpt.Type))
+                    var repeat = 0;
+                    while (initializerOpt is { } && initializerOpt.ConstantValue == null && repeat < 5)
+                    {
+                        repeat += 1;
+                        diagnostics.Clear();
+                        initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
+                    }
+                    if (initializerOpt is { } && !Equals(type, initializerOpt.Type))
                     {
                         type = initializerOpt.Type;
                     }

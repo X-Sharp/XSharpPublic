@@ -35,7 +35,7 @@ n := dw
 b := 1.0
 ? b
 local d as Decimal
-d := 1.0
+d := 1.0m
 d := (Decimal) 1.0
 ? d
 return b

@@ -1,4 +1,8 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/951
+#pragma options("vo4", on)
+#pragma options("vo7", on)
+#pragma options("vo11", on)
+#pragma options("ovf", on)
 
 FUNCTION Start( ) AS VOID
     LOCAL f := -1343.345 AS FLOAT  // "AS DOUBLE" throws an compile error
@@ -13,7 +17,7 @@ FUNCTION Start( ) AS VOID
     // this is expected
         xAssert(TRUE)
     end try
-    
+
     try
         Test (c )
         xAssert(FALSE)
@@ -23,8 +27,8 @@ FUNCTION Start( ) AS VOID
     // this is expected
         xAssert(TRUE)
     end try
-    
-    
+
+
     try
         f := 12345673.89
         Test (  f )
@@ -34,8 +38,8 @@ FUNCTION Start( ) AS VOID
     // this is expected
         xAssert(TRUE)
     end try
-    
-    try    
+
+    try
         c := $12345673.89
         Test (c )
         xAssert(FALSE)
@@ -45,29 +49,29 @@ FUNCTION Start( ) AS VOID
     // this is expected
         xAssert(TRUE)
     end try
-    
+
     try
         f := 42
         xAssert(TRUE)
-        
+
         Test (  f )
     catch e as Exception
         ? "This exception should not happen"
         ? e:Message
     // this is expected
         xAssert(FALSE)
-    end try   
+    end try
     try
         c := 42
         xAssert(TRUE)
-        
+
         Test (  c )
     catch e as Exception
         ? e:Message
         ? e:ToString()
     // this is expected
         xAssert(FALSE)
-    end try    
+    end try
 RETURN
 
 

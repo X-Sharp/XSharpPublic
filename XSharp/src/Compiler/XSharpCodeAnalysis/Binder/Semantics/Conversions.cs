@@ -165,7 +165,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (dstType == SpecialType.System_Byte)
                         return Conversion.ImplicitNumeric;
                 }
-
             }
 
             if (dstType == SpecialType.System_Char)
@@ -291,149 +290,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Parameters checks have been done in the calling code
             var srcType = source.SpecialType;
             var dstType = destination.SpecialType;
-            bool voCast = false;
-            bool voConvert = false;
-            bool typeCast = false;
-            bool vo7 = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, sourceExpression.Syntax);
-            if (sourceExpression.Syntax != null)
-            {
-                var xNode = sourceExpression.Syntax.XNode;
-                if (xNode is XP.PrimaryExpressionContext pex)
-                    xNode = pex.Expr;
-                while (xNode != null)
-                {
-                    if (xNode is XP.AssignmentExpressionContext)
-                        break;
-                    voCast = xNode is XP.VoCastExpressionContext;
-                    if (voCast)
-                        break;
-                    voConvert = xNode is XP.VoConversionExpressionContext;
-                    if (voConvert)
-                        break;
-                    typeCast = xNode is XP.TypeCastContext;
-                    if (typeCast)
-                        break;
-                    xNode = xNode.Parent as IXParseTree;
-                    if (xNode is XP.StatementContext)
-                        break;
-                }
-            }
-            if (vo7 && (typeCast || voCast || voConvert))
-            {
-                // Allow cast -> BOOLEAN
-                if (dstType == SpecialType.System_Boolean && srcType.IsIntegralType())
-                {
-                    if (sourceExpression is BoundExpression be && be.Type.SpecialType == SpecialType.System_Boolean)
-                    {
-                        return Conversion.Identity;
-                    }
-                }
-            }
+            var syntax = sourceExpression.Syntax;
+            bool vo7 = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, syntax);
+
             if (Equals(source, destination))
             {
                 return Conversion.Identity;
             }
-            // TYPE(_CAST, expr) allows almost everything
-            // source must be PTR, Integral, IntPtr, UIntPtr
-            // this is handled in CanVOCast
-            if (voCast && source.CanVOCast() && destination.CanVOCast())
-            {
-                // No _CAST on USUAL
-                if (source.IsUsualType())
-                {
-                    return Conversion.NoConversion;
-                }
-                // Allow LOGIC(_CAST
-                if (dstType == SpecialType.System_Boolean)
-                {
-                    return Conversion.Identity;
-                }
-                // Allow cast -> INTEGRAL
-                // except from NullableTypes and Reference Types
-                if (dstType.IsIntegralType() && !source.IsNullableType() && !source.IsReferenceType)
-                {
-                    if (srcType.IsNumericType())
-                    {
-                        // always implicit numeric conversion
-                        return Conversion.ImplicitNumeric;
-                    }
-                    if (source.SpecialType == SpecialType.System_Boolean)
-                    {
-                        return Conversion.Identity;
-                    }
 
-                    // Allow PTR -> Integral when size matches
-                    if (source.IsVoidPointer() && Compilation.Options.Dialect.AllowPointerMagic())
-                    {
-                        if (dstType.SizeInBytes() == 4 && Compilation.Options.Platform == Platform.X86)
-                        {
-                            return Conversion.Identity;
-                        }
-                        if (dstType.SizeInBytes() == 8 && Compilation.Options.Platform == Platform.X64)
-                        {
-                            return Conversion.Identity;
-                        }
-                    }
-                }
-
-
-                // Allow cast -> PTR when 
-                // source is integral and source size matches the Integral size
-                // source is Ptr, IntPtr, UintPtr
-                // source is PSZ
-                if (destination is PointerTypeSymbol)
-                {
-                    if (source.IsIntegralType())
-                    {
-                        if (Compilation.Options.Platform == Platform.X86 && srcType.SizeInBytes() == 4)
-                        {
-                            return Conversion.Identity;
-                        }
-                        if (Compilation.Options.Platform == Platform.X64 && srcType.SizeInBytes() == 8)
-                        {
-                            return Conversion.Identity;
-                        }
-                        return Conversion.IntegerToPointer;
-                    }
-                    if (source.IsPointerType() || source.IsVoidPointer())
-                    {
-                        if (Compilation.Options.Dialect.AllowPointerMagic())
-                        {
-                            return Conversion.Identity;
-                        }
-                    }
-                    if (source.SpecialType == SpecialType.System_IntPtr || source.SpecialType == SpecialType.System_UIntPtr)
-                    {
-                        return Conversion.Identity;
-                    }
-                    // PSZ -> Pointer: No implicit conversion. There is a user defined conversion in the PSZ type
-                    if (source.IsPszType())
-                    {
-                        return Conversion.NoConversion;
-                    }
-                }
-                if (destination.IsPszType() && source is PointerTypeSymbol)
-                {
-                    // pointer -> PSZ: No implicit conversion. There is a user defined conversion in the PSZ type
-                    return Conversion.NoConversion;
-                }
-            }
-            if (voConvert)
-            {
-                // we need to convert BYTE(<p>) to dereferencing the <p>
-                // This is done else where in Binder.BindVOPointerDereference()
-                // Integer conversions
-                if (srcType.IsNumericType() && dstType.IsNumericType() &&
-                    srcType.IsIntegralType() == dstType.IsIntegralType())
-                {
-                    // always implicit numeric conversion
-                    return Conversion.ImplicitNumeric;
-                }
-            }
             if (source.IsUsualType())
             {
-                if (destination.IsUsualType())
-                    return Conversion.NoConversion;
                 if (dstType == SpecialType.System_Decimal)
                 // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
                 {
@@ -459,18 +325,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else if (destination.IsPointerType())
                 {
-                    // not really boxing but we'll handle the actual conversion later
-                    // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
-                    sourceExpression.Syntax.XSpecial = true;
-                    return Conversion.Boxing;
-                }
-            }
-            if (voCast && srcType == SpecialType.System_Object)
-            {
-                var xnode = sourceExpression.Syntax.XNode as XSharpParserRuleContext;
-                if (xnode.IsCastClass() && destination.IsUsualType())
-                {
-                    // __CASTCLASS(USUAL, OBJECT)
                     // not really boxing but we'll handle the actual conversion later
                     // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
                     sourceExpression.Syntax.XSpecial = true;
@@ -593,6 +447,172 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result;
         }
 
+        protected override Conversion ClassifyXSExplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, bool forCast, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            var syntax = sourceExpression.Syntax;
+            var vo11 = Compilation.Options.HasOption(CompilerOption.Vo11, syntax);
+            if (!forCast && !vo11)
+            {
+                return Conversion.NoConversion;
+            }
+            var srcType = source.SpecialType;
+            var dstType = destination.SpecialType;
+
+            if (source.IsFractionalType() && destination.SpecialType.IsIntegralType() )
+            {
+                if (vo11 && destination is { } && destination.SpecialType.IsNumericType())
+                {
+                    // not really boxing but we'll handle the actual conversion later
+                    // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                    syntax.XSpecial = true;
+                    return Conversion.Boxing;
+                }
+            }
+            bool vo7 = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, syntax);
+            // Allow cast -> BOOLEAN
+            if (vo7 && dstType == SpecialType.System_Boolean && source.IsIntegralType())
+            {
+                if (sourceExpression is BoundExpression be && be.Type.SpecialType == SpecialType.System_Boolean)
+                {
+                    return Conversion.Identity;
+                }
+            }
+            bool voCast = false;
+            bool voConvert = false;
+            if (syntax != null)
+            {
+                var xNode = sourceExpression.Syntax.XNode;
+                if (xNode is XP.PrimaryExpressionContext pex)
+                    xNode = pex.Expr;
+                while (xNode != null)
+                {
+                    if (xNode is XP.AssignmentExpressionContext)
+                        break;
+                    // voCast = type(_CAST, expr )
+                    voCast = xNode is XP.VoCastExpressionContext;
+                    if (voCast)
+                        break;
+                    // voConvert = type( expr )
+                    voConvert = xNode is XP.VoConversionExpressionContext;
+                    if (voConvert)
+                        break;
+                    // typeCast = (type) expr
+                    xNode = xNode.Parent as IXParseTree;
+                    if (xNode is XP.StatementContext)
+                        break;
+                }
+            }
+            // TYPE(_CAST, expr) allows almost everything
+            // source must be PTR, Integral, IntPtr, UIntPtr
+            // this is handled in CanVOCast
+            if (voCast && source.CanVOCast() && destination.CanVOCast())
+            {
+                // No _CAST on USUAL
+                if (source.IsUsualType())
+                {
+                    return Conversion.NoConversion;
+                }
+                // Allow LOGIC(_CAST
+                if (dstType == SpecialType.System_Boolean)
+                {
+                    return Conversion.Identity;
+                }
+                // Allow cast -> INTEGRAL
+                // except from NullableTypes and Reference Types
+                if (dstType.IsIntegralType() && !source.IsNullableType() && !source.IsReferenceType)
+                {
+                    if (srcType.IsNumericType())
+                    {
+                        // always implicit numeric conversion
+                        return Conversion.ImplicitNumeric;
+                    }
+                    if (source.SpecialType == SpecialType.System_Boolean)
+                    {
+                        return Conversion.Identity;
+                    }
+
+                    // Allow PTR -> Integral when size matches
+                    if (source.IsVoidPointer() && Compilation.Options.Dialect.AllowPointerMagic())
+                    {
+                        if (dstType.SizeInBytes() == 4 && Compilation.Options.Platform == Platform.X86)
+                        {
+                            return Conversion.Identity;
+                        }
+                        if (dstType.SizeInBytes() == 8 && Compilation.Options.Platform == Platform.X64)
+                        {
+                            return Conversion.Identity;
+                        }
+                    }
+                }
+
+
+                // Allow cast -> PTR when 
+                // source is integral and source size matches the Integral size
+                // source is Ptr, IntPtr, UintPtr
+                // source is PSZ
+                if (destination is PointerTypeSymbol)
+                {
+                    if (source.IsIntegralType())
+                    {
+                        if (Compilation.Options.Platform == Platform.X86 && srcType.SizeInBytes() == 4)
+                        {
+                            return Conversion.Identity;
+                        }
+                        if (Compilation.Options.Platform == Platform.X64 && srcType.SizeInBytes() == 8)
+                        {
+                            return Conversion.Identity;
+                        }
+                        return Conversion.IntegerToPointer;
+                    }
+                    if (source.IsPointerType() || source.IsVoidPointer())
+                    {
+                        if (Compilation.Options.Dialect.AllowPointerMagic())
+                        {
+                            return Conversion.Identity;
+                        }
+                    }
+                    if (source.SpecialType == SpecialType.System_IntPtr || source.SpecialType == SpecialType.System_UIntPtr)
+                    {
+                        return Conversion.Identity;
+                    }
+                    // PSZ -> Pointer: No implicit conversion. There is a user defined conversion in the PSZ type
+                    if (source.IsPszType())
+                    {
+                        return Conversion.NoConversion;
+                    }
+                }
+                if (destination.IsPszType() && source is PointerTypeSymbol)
+                {
+                    // pointer -> PSZ: No implicit conversion. There is a user defined conversion in the PSZ type
+                    return Conversion.NoConversion;
+                }
+            }
+            if (voConvert)
+            {
+                // we need to convert BYTE(<p>) to dereferencing the <p>
+                // This is done else where in Binder.BindVOPointerDereference()
+                // Integer conversions
+                if (srcType.IsNumericType() && dstType.IsNumericType() &&
+                    srcType.IsIntegralType() == dstType.IsIntegralType())
+                {
+                    // always implicit numeric conversion
+                    return Conversion.ImplicitNumeric;
+                }
+            }
+            if (voCast && srcType == SpecialType.System_Object)
+            {
+                var xnode = sourceExpression.Syntax.XNode as XSharpParserRuleContext;
+                if (xnode.IsCastClass() && destination.IsUsualType())
+                {
+                    // __CASTCLASS(USUAL, OBJECT)
+                    // not really boxing but we'll handle the actual conversion later
+                    // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                    sourceExpression.Syntax.XSpecial = true;
+                    return Conversion.Boxing;
+                }
+            }
+            return Conversion.NoConversion;
+        }
     }
 
     internal abstract partial class ConversionsBase
@@ -616,6 +636,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         protected virtual Conversion ClassifyXSImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            return Conversion.NoConversion;
+        }
+
+        protected virtual Conversion ClassifyXSExplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, bool forCast, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             return Conversion.NoConversion;
         }

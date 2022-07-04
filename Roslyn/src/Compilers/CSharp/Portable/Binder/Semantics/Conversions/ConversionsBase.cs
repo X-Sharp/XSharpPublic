@@ -1226,6 +1226,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if ((object)sourceType != null)
             {
+#if XSHARP
+                var xsConversion = ClassifyXSExplicitBuiltInConversionFromExpression(sourceExpression, sourceType, destination, forCast, ref useSiteDiagnostics);
+                if (xsConversion.Exists)
+                {
+                    return xsConversion;
+                }
+#endif
                 // Try using the short-circuit "fast-conversion" path.
                 Conversion fastConversion = FastClassifyConversion(sourceType, destination);
                 if (fastConversion.Exists)

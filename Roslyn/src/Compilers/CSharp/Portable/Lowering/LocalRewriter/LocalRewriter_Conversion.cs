@@ -207,8 +207,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ConversionKind.Boxing:
 
 #if XSHARP
-                    conversion = Conversion.GetTrivialConversion(
-                        UnBoxXSharpType(ref rewrittenOperand, conversion.Kind, rewrittenType));
+                    if (conversion.IsSpecial)
+                    {
+                        conversion = Conversion.GetTrivialConversion(
+                            UnBoxXSharpType(ref rewrittenOperand, conversion.Kind, rewrittenType));
+                    }
 #endif
                     if (!_inExpressionLambda)
                     {
@@ -404,12 +407,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return new BoundDelegateCreationExpression(syntax, argument: receiver, methodOpt: method,
                                                                    isExtensionMethod: oldNodeOpt.IsExtensionMethod, type: rewrittenType);
                     }
-#if XSHARP
-                case ConversionKind.Unboxing:
-                    conversion = Conversion.GetTrivialConversion(
-                        UnBoxXSharpType(ref rewrittenOperand, conversion.Kind, rewrittenType));
-                    break;
-#endif
+
 
                 default:
                     break;

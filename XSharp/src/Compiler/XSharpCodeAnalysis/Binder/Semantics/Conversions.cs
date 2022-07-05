@@ -191,8 +191,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (destination.SpecialType == SpecialType.System_Object)
                 {
-                    syntax.XSpecial = true;
-                    return Conversion.Boxing;
+                    return Conversion.Special;
                 }
             }
             else if (source.IsPointerType() || source.IsPszType())
@@ -203,8 +202,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // not really boxing but we'll handle the actual conversion later
                         // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
-                        syntax.XSpecial = true;
-                        return Conversion.Boxing;
+                        return Conversion.Special;
                     }
                 }
             }
@@ -220,35 +218,36 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.Identity;
                 }
             }
-            if (!srcType.Equals(dstType))
+            if (!srcType.Equals(dstType) && Compilation.Options.HasRuntime)
             {
                 // These compiler options only applies to numeric types
                 Conversion result = Conversion.NoConversion;
-                if (srcType.IsNumericType() && dstType.IsNumericType())
+                if (source.IsXNumericType() && destination.IsXNumericType())
                 {
-                    if (srcType.IsIntegralType() && dstType.IsIntegralType() && (vo4 || syntax.XSignChanged))
+                    if (vo4 || syntax.XSignChanged) // XSignChanged is used for Sizeof and SLen
                     {
-                        // when both same # of bits and integral, use Identity conversion
-                        if (srcType.SizeInBytes() == dstType.SizeInBytes())
+                        srcType = source.XsSpecialtype();
+                        dstType = destination.XsSpecialtype();
+                        if (srcType.IsIntegralType() && dstType.IsIntegralType() )
                         {
-                            result = Conversion.Identity;
+                            // when both same # of bits and integral, use Identity conversion
+                            if (srcType.SizeInBytes() == dstType.SizeInBytes())
+                            {
+                                result = Conversion.Identity;
+                            }
+                            else
+                            {
+                                result = Conversion.ImplicitNumeric;
+                            }
                         }
                         else
                         {
-                            result = Conversion.ImplicitNumeric;
+                            // VO/Vulcan also allows to convert floating point types <-> integral types
+                            // not really boxing but we'll handle the actual conversion later
+                            // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                            // The method of converting is chosen by inspecting the /vo11 compiler option
+                            result = Conversion.Special;
                         }
-                    }
-                }
-                // VO/Vulcan also allows to convert floating point types <-> integral types
-                var vo11 = Compilation.Options.HasOption(CompilerOption.Vo11, syntax);
-                if (vo11 && result == Conversion.NoConversion && source.IsFractionalType())
-                {
-                    if (destination is { } && destination.SpecialType.IsNumericType())
-                    {
-                        // not really boxing but we'll handle the actual conversion later
-                        // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
-                        syntax.XSpecial = true;
-                        result = Conversion.Boxing;
                     }
                 }
                 if (result != Conversion.NoConversion)
@@ -303,8 +302,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (dstType == SpecialType.System_Decimal)
                 // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
                 {
-                    sourceExpression.Syntax.XSpecial = true;
-                    return Conversion.Boxing;
+                    return Conversion.Special;
                 }
                 // Usual -> OBJECT. Get the object out of the Usual 
                 // Our special call will call in UnBoxXSharpType will
@@ -314,21 +312,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else if (dstType == SpecialType.System_Object)
                 {
                     // All Objects are boxed in a usual
-                    sourceExpression.Syntax.XSpecial = true;
-                    return Conversion.Boxing;
+                    return Conversion.Special;
                 }
                 else if (destination.IsReferenceType && !IsClipperArgsType(destination) && !destination.IsStringType() && !destination.IsIFormatProvider())
                 {
                     // all user reference types are boxed. But not the Usual[] args and not string
-                    sourceExpression.Syntax.XSpecial = true;
-                    return Conversion.Boxing;
+                    return Conversion.Special;
                 }
                 else if (destination.IsPointerType())
                 {
                     // not really boxing but we'll handle the actual conversion later
                     // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
-                    sourceExpression.Syntax.XSpecial = true;
-                    return Conversion.Boxing;
+                    return Conversion.Special;
                 }
             }
 
@@ -341,8 +336,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // Convert Object -> Reference allowed with /lb and with /vo7
                         // not really boxing but we'll handle generating the castclass later
                         // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
-                        sourceExpression.Syntax.XSpecial = true;
-                        return Conversion.Boxing;
+                        return Conversion.Special;
                     }
                     if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr || destination.IsPszType())
                     {
@@ -350,8 +344,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             // not really boxing but we'll handle the actual conversion later
                             // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
-                            sourceExpression.Syntax.XSpecial = true;
-                            return Conversion.Boxing;
+                            return Conversion.Special;
                         }
                     }
                 }
@@ -460,12 +453,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (source.IsFractionalType() && destination.SpecialType.IsIntegralType() )
             {
-                if (vo11 && destination is { } && destination.SpecialType.IsNumericType())
+                if (vo11 && destination is { } && destination.IsXNumericType())
                 {
                     // not really boxing but we'll handle the actual conversion later
                     // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
-                    syntax.XSpecial = true;
-                    return Conversion.Boxing;
+                    return Conversion.Special;
                 }
             }
             bool vo7 = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, syntax);
@@ -607,8 +599,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // __CASTCLASS(USUAL, OBJECT)
                     // not really boxing but we'll handle the actual conversion later
                     // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
-                    sourceExpression.Syntax.XSpecial = true;
-                    return Conversion.Boxing;
+                    return Conversion.Special;
                 }
             }
             return Conversion.NoConversion;

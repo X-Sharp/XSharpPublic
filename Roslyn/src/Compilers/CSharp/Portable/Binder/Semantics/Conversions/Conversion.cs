@@ -26,6 +26,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         private class UncommonData
         {
             public UncommonData(
+#if XSHARP
+                bool isSpecial,
+#endif
                 bool isExtensionMethod,
                 bool isArrayIndex,
                 UserDefinedConversionResult conversionResult,
@@ -41,6 +44,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     _flags |= IsArrayIndexMask;
                 }
+#if XSHARP
+                if (isSpecial)
+                {
+                    _flags |= IsSpecialMask;
+                }
+
+#endif
             }
 
             internal readonly MethodSymbol? _conversionMethod;
@@ -51,6 +61,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             private const byte IsExtensionMethodMask = 1 << 0;
             private const byte IsArrayIndexMask = 1 << 1;
+#if XSHARP
+            private const byte IsSpecialMask = 1 << 2;
+#endif
             private readonly byte _flags;
 
             internal bool IsExtensionMethod
@@ -69,12 +82,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return (_flags & IsArrayIndexMask) != 0;
                 }
             }
+#if XSHARP
+            internal bool IsSpecial
+            {
+                get
+                {
+                    return (_flags & IsSpecialMask) != 0;
+                }
+            }
+#endif
         }
 
         private class DeconstructionUncommonData : UncommonData
         {
             internal DeconstructionUncommonData(DeconstructMethodInfo deconstructMethodInfoOpt, ImmutableArray<Conversion> nestedConversions)
+#if XSHARP
+                : base(isSpecial: false, isExtensionMethod: false, isArrayIndex: false, conversionResult: default, conversionMethod: null, nestedConversions)
+#else
                 : base(isExtensionMethod: false, isArrayIndex: false, conversionResult: default, conversionMethod: null, nestedConversions)
+#endif
             {
                 Debug.Assert(!nestedConversions.IsDefaultOrEmpty);
                 DeconstructMethodInfo = deconstructMethodInfoOpt;
@@ -89,6 +115,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             _kind = kind;
             _uncommonData = uncommonData;
+
         }
 
         private Conversion(ConversionKind kind)
@@ -103,11 +130,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 : isImplicit ? ConversionKind.ImplicitUserDefined : ConversionKind.ExplicitUserDefined;
 
             _uncommonData = new UncommonData(
+#if XSHARP
+                isSpecial: false,
+#endif
                 isExtensionMethod: false,
                 isArrayIndex: false,
                 conversionResult: conversionResult,
                 conversionMethod: null,
-                nestedConversions: default);
+                nestedConversions: default); ;
+
         }
 
         // For the method group, lambda and anonymous method conversions
@@ -115,6 +146,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             this._kind = kind;
             _uncommonData = new UncommonData(
+#if XSHARP
+                isSpecial: false,
+#endif
                 isExtensionMethod: isExtensionMethod,
                 isArrayIndex: false,
                 conversionResult: default,
@@ -126,6 +160,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             this._kind = kind;
             _uncommonData = new UncommonData(
+#if XSHARP
+                isSpecial: false,
+#endif
                 isExtensionMethod: false,
                 isArrayIndex: false,
                 conversionResult: default,
@@ -160,12 +197,33 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new Conversion(
                 _kind,
                 new UncommonData(
+#if XSHARP
+                    isSpecial: false,
+#endif
                     isExtensionMethod: false,
                     isArrayIndex: true,
                     conversionResult: default,
                     conversionMethod: null,
                     nestedConversions: default));
         }
+
+#if XSHARP
+        internal Conversion SetSpecial()
+        {
+            Debug.Assert(_kind == ConversionKind.Boxing);
+            Debug.Assert(_uncommonData == null);
+
+            return new Conversion(
+                _kind,
+                new UncommonData(
+                    isExtensionMethod: false,
+                    isArrayIndex: false,
+                    isSpecial: true,
+                    conversionResult: default,
+                    conversionMethod: null,
+                    nestedConversions: default));
+        }
+#endif
 
         [Conditional("DEBUG")]
         private static void AssertTrivialConversion(ConversionKind kind)
@@ -226,6 +284,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal static Conversion ObjectCreation => new Conversion(ConversionKind.ObjectCreation);
         internal static Conversion AnonymousFunction => new Conversion(ConversionKind.AnonymousFunction);
         internal static Conversion Boxing => new Conversion(ConversionKind.Boxing);
+#if XSHARP
+        internal static Conversion Special => new Conversion(ConversionKind.Boxing).SetSpecial();
+#endif
         internal static Conversion NullLiteral => new Conversion(ConversionKind.NullLiteral);
         internal static Conversion DefaultLiteral => new Conversion(ConversionKind.DefaultLiteral);
         internal static Conversion NullToPointer => new Conversion(ConversionKind.ImplicitNullToPointer);
@@ -342,7 +403,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return _uncommonData?.IsArrayIndex == true;
             }
         }
-
+#if XSHARP
+        internal bool IsSpecial
+        {
+            get
+            {
+                return _uncommonData?.IsSpecial == true;
+            }
+        }
+#endif
         internal ImmutableArray<Conversion> UnderlyingConversions
         {
             get

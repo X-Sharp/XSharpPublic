@@ -34,38 +34,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var syntax = node.Syntax;
             if (syntax.XWarning && !Equals(sourceType, targetType) && !syntax.XContainsGeneratedExpression
-                && sourceType.IsNumericType() && targetType.IsNumericType())
+                && sourceType.IsXNumericType() && targetType.IsXNumericType())
             {
-                var errCode = ErrorCode.Unknown;
-                if (targetType.IsIntegralType() && sourceType.IsIntegralType()
-                    && _compilation.Options.HasOption(CompilerOption.Vo4, syntax))
+                var errCode = ErrorCode.Void;
+                if (_compilation.Options.HasOption(CompilerOption.Vo4, syntax))
                 {
-                    var srcsize = sourceType.SpecialType.SizeInBytes();
-                    var trgsize = targetType.SpecialType.SizeInBytes();
-                    if (srcsize == trgsize)
-                    {
-                        // when converting from signed to unsigned data may be lost
-                        errCode = ErrorCode.WRN_Conversion;
-                    }
-                    else if (srcsize > trgsize)
-                    {
-                        // when converting from larger to smaller integral type data may be lost
-                        errCode = ErrorCode.WRN_ConversionMayLeadToLossOfData;
-                    }
+                    // when converting from fractional to another type precision may be lost
+                    errCode = LocalRewriter.DetermineConversionError(sourceType, targetType);
                 }
-                else if (_compilation.Options.HasOption(CompilerOption.Vo11, syntax))
-                {
-                    // when converting from fractional to integral precision may be lost
-                    if (sourceType.IsFractionalType() && !targetType.IsFractionalType())
-                    {
-                        errCode = ErrorCode.WRN_ConversionMayLeadToLossOfData;
-                    }
-                    else
-                    {
-                        errCode = ErrorCode.WRN_Conversion;
-                    }
-                }
-                if (errCode != ErrorCode.Unknown)
+                if (errCode != ErrorCode.Void)
                 {
                     Error(errCode, node, sourceType, targetType);
                 }

@@ -216,12 +216,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Conversion rightToLeftConversion = this.Conversions.ClassifyConversionFromExpression(right, leftType, ref useSiteDiagnostics);
 #if XSHARP
                 bool vo4 = Compilation.Options.HasOption(CompilerOption.Vo4, node);
-                bool vo11 = Compilation.Options.HasOption(CompilerOption.Vo11, node);
-                if (finalConversion.IsExplicit && !rightToLeftConversion.IsConstantExpression && (vo4 || vo11))
+                if (finalConversion.IsExplicit && !rightToLeftConversion.IsConstantExpression && vo4)
                 {
-                    // with /vo11 or vo4 we allow the conversion but generate a warning
+                    // with /vo4 we make the conversion implicit but we generate a warning
                     hasError = false;
-                    Error(diagnostics, ErrorCode.WRN_Conversion, node, right.Type, leftType);
+                    var errCode = LocalRewriter.DetermineConversionError(right.Type, leftType);
+                    if (errCode != ErrorCode.Void)
+                    {
+                        Error(diagnostics, errCode, node, right.Type, leftType);
+                    }
                 }
                 else
 #endif                

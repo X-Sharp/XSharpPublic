@@ -5,6 +5,7 @@
 //
 #nullable disable
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using System.Linq;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -21,7 +22,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return m;
                 }
-
             }
             return null;
         }
@@ -59,10 +59,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private ConversionKind UnBoxXSharpType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
         {
-            // If the XSpecial flag is set then this not really unboxing but some special operation
-
-            var special = rewrittenOperand.Syntax.XSpecial;
-            if ((rewrittenType.IsPointerType() || rewrittenType.IsPszType()) && rewrittenOperand.Type.IsObjectType() && special)
+            var syntax = rewrittenOperand.Syntax;
+            if ((rewrittenType.IsPointerType() || rewrittenType.IsPszType()) && rewrittenOperand.Type.IsObjectType())
             {
                 rewrittenOperand = _factory.Convert(_compilation.GetSpecialType(SpecialType.System_IntPtr), rewrittenOperand, Conversion.Unboxing);
                 conversionKind = ConversionKind.Identity;
@@ -72,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (_compilation.Options.HasRuntime)
             {
                 // test C323 
-                if (special && (rewrittenOperand.Type.IsPointerType() || rewrittenOperand.Type.IsPszType()))
+                if ((rewrittenOperand.Type.IsPointerType() || rewrittenOperand.Type.IsPszType()))
                 {
                     rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
                         Conversion.Identity, false, false,
@@ -103,41 +101,192 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return XsRewriteUsualType(ref rewrittenOperand, rewrittenType, conversionKind);
                     }
-                    if (special)
+
+                    if (nts.IsObjectType())
                     {
-                        if (nts.IsObjectType())
+                        if (rewrittenType.IsReferenceType)
                         {
-                            if (rewrittenType.IsReferenceType)
-                            {
-                                rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
-                                rewrittenOperand.WasCompilerGenerated = true;
-                                return ConversionKind.ImplicitReference;
-                            }
-                            else
-                            {
-                                return ConversionKind.Unboxing;
-                            }
+                            rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
+                            rewrittenOperand.WasCompilerGenerated = true;
+                            return ConversionKind.ImplicitReference;
                         }
-                        if (nts.IsFractionalType())
+                        else
                         {
-                            if (nts.IsFloatType())
-                            {
-                                return XsRewriteNumericType(nts, ref rewrittenOperand, rewrittenType, SpecialType.System_Double);
-                            }
-                            else if (nts.IsCurrencyType())
-                            {
-                                return XsRewriteNumericType(nts, ref rewrittenOperand, rewrittenType, SpecialType.System_Decimal);
-                            }
-                            rewrittenOperand = MakeConversionNode(rewrittenOperand, _compilation.FloatType(), false, false);
-                            return XsRewriteNumericType(_compilation.FloatType(), ref rewrittenOperand, rewrittenType, SpecialType.System_Double);
+                            return ConversionKind.Unboxing;
+                        }
+                    }
+                    if (nts.IsXNumericType() && rewrittenType.IsXNumericType())
+                    {
+                        if (nts.IsFloatType() || nts.IsCurrencyType())
+                        {
+                            // Get the right Explicit Operator
+                            return XsRewriteOurNumericType(nts, ref rewrittenOperand, rewrittenType);
+                        }
+                        else
+                        {
+                            // Get a conversion or Convert.To<type> depending on the setting of /vo11
+                            return XsRewriteSystemNumericType(ref rewrittenOperand, rewrittenType);
                         }
                     }
                 }
             }
             return conversionKind;
-
         }
 
+        internal static ErrorCode DetermineConversionError(TypeSymbol source, TypeSymbol destination)
+        {
+            var sourceType = source.XsSpecialtype();
+            var destType = destination.XsSpecialtype();
+            if (sourceType == destType)
+                return ErrorCode.Void;
+            switch (sourceType)
+            {
+                case SpecialType.System_Double:
+                    switch (destType)
+                    {
+                        case SpecialType.System_Decimal:
+                            return ErrorCode.Void;
+
+                        default:
+                            return ErrorCode.WRN_ConversionMayLeadToLossOfData;
+                    }
+                case SpecialType.System_Single:
+                    switch (destType)
+                    {
+                        case SpecialType.System_Double:
+                        case SpecialType.System_Decimal:
+                            return ErrorCode.Void;
+
+                        default:
+                            return ErrorCode.WRN_ConversionMayLeadToLossOfData;
+                    }
+                case SpecialType.System_Decimal:
+                    switch (destType)
+                    {
+                        case SpecialType.System_Double:
+                        case SpecialType.System_Single:
+                            return ErrorCode.Void;
+
+                        default:
+                            return ErrorCode.WRN_ConversionMayLeadToLossOfData;
+                    }
+                case SpecialType.System_Int64:
+                case SpecialType.System_UInt64:
+                    switch (destType)
+                    {
+                        case SpecialType.System_Single:
+                        case SpecialType.System_Double:
+                        case SpecialType.System_Decimal:
+                            return ErrorCode.Void;
+                        case SpecialType.System_Int64:
+                        case SpecialType.System_UInt64:
+                            return ErrorCode.WRN_Conversion;
+                        default:
+                            return ErrorCode.WRN_ConversionMayLeadToLossOfData;
+
+                    }
+                case SpecialType.System_Int32:
+                case SpecialType.System_UInt32:
+                    switch (destType)
+                    {
+                        case SpecialType.System_Int64:
+                        case SpecialType.System_UInt64:
+                        case SpecialType.System_Decimal:
+                        case SpecialType.System_Single:
+                        case SpecialType.System_Double:
+                            return ErrorCode.Void;
+                        case SpecialType.System_UInt32:
+                        case SpecialType.System_Int32:
+                            return ErrorCode.WRN_Conversion;
+                        default:
+                            return ErrorCode.WRN_ConversionMayLeadToLossOfData;
+
+                    }
+                case SpecialType.System_Int16:
+                case SpecialType.System_UInt16:
+                    switch (destType)
+                    {
+                        case SpecialType.System_UInt32:
+                        case SpecialType.System_Int32:
+                        case SpecialType.System_UInt64:
+                        case SpecialType.System_Int64:
+                        case SpecialType.System_Decimal:
+                        case SpecialType.System_Single:
+                        case SpecialType.System_Double:
+                            return ErrorCode.Void;
+                        case SpecialType.System_UInt16:
+                        case SpecialType.System_Int16:
+                            return ErrorCode.WRN_Conversion;
+                        default:
+                            return ErrorCode.WRN_ConversionMayLeadToLossOfData;
+
+                    }
+                case SpecialType.System_Byte:
+                case SpecialType.System_SByte:
+                    switch (destType)
+                    {
+                        case SpecialType.System_Int16:
+                        case SpecialType.System_UInt16:
+                        case SpecialType.System_Int32:
+                        case SpecialType.System_UInt32:
+                        case SpecialType.System_Int64:
+                        case SpecialType.System_UInt64:
+                        case SpecialType.System_Decimal:
+                        case SpecialType.System_Single:
+                        case SpecialType.System_Double:
+                            return ErrorCode.Void;
+                        case SpecialType.System_Byte:
+                        case SpecialType.System_SByte:
+                            return ErrorCode.WRN_Conversion;
+                        default:
+                            return ErrorCode.WRN_ConversionMayLeadToLossOfData;
+
+                    }
+            }
+            return ErrorCode.Void;
+        }
+
+        ConversionKind XsRewriteSystemNumericType(ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType)
+        {
+            var error = DetermineConversionError(rewrittenOperand.Type, rewrittenType);
+            if (error != ErrorCode.Void)
+            {
+                _factory.Diagnostics.Add(error, rewrittenOperand.Syntax.Location, rewrittenOperand.Type, rewrittenType);
+            }
+            var vo11 = _compilation.Options.HasOption(CompilerOption.Vo11, rewrittenOperand.Syntax);
+            if (vo11)
+            {
+                var type = rewrittenOperand.Type;
+                var convert = _compilation.GetWellKnownType(WellKnownType.System_Convert);
+                MethodSymbol m = null;
+                foreach (var symbol in convert.GetMembers())
+                {
+                    if (symbol is MethodSymbol method)
+                    {
+                        if (Equals(method.ReturnType, rewrittenType))
+                        {
+                            if (method.ParameterCount == 1)
+                            {
+                                if (Equals(method.Parameters[0].Type, type))
+                                {
+                                    m = method;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (m != null)
+                {
+                    rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                    rewrittenOperand.WasCompilerGenerated = true;
+                    return ConversionKind.Identity;
+                }
+            }
+            rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
+            rewrittenOperand.WasCompilerGenerated = true;
+            return ConversionKind.Identity;
+        }
         ConversionKind XsRewriteUsualType(ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType, ConversionKind conversionKind)
         {
             // USUAL -> WINBOOL, use LOGIC as intermediate type
@@ -230,8 +379,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return conversionKind;
         }
-        ConversionKind XsRewriteNumericType(NamedTypeSymbol ourtype, ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType, SpecialType fallbacktype)
+        ConversionKind XsRewriteOurNumericType(NamedTypeSymbol ourtype, ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType)
         {
+            var error = DetermineConversionError(rewrittenOperand.Type, rewrittenType);
+            if (error != ErrorCode.Void)
+            {
+                _factory.Diagnostics.Add(error, rewrittenOperand.Syntax.Location, rewrittenOperand.Type, rewrittenType);
+            }
             MethodSymbol m = getExplicitOperator(ourtype, rewrittenType);
             if (m != null)
             {
@@ -252,24 +406,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return ConversionKind.Boxing;
 
             }
-            // what else, any other numeric type Convert to Double first and then to destination type
-            m = getImplicitOperatorByReturnType(ourtype, _compilation.GetSpecialType(fallbacktype));
-            if (m != null)  // this should never happen. This is an implicit converter
-            {
-                rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
-                rewrittenOperand.WasCompilerGenerated = true;
-                rewrittenOperand = MakeConversionNode(rewrittenOperand.Syntax,
-                    rewrittenOperand: rewrittenOperand,
-                    rewrittenType: rewrittenType,
-                    conversion: Conversion.ImplicitNumeric,
-                    @checked: true,
-                    explicitCastInCode: false
-                    );
-                rewrittenOperand.WasCompilerGenerated = true;
-                return ConversionKind.Identity;
-
-            }
-            return ConversionKind.Boxing;
+            rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
+            rewrittenOperand.WasCompilerGenerated = true;
+            return ConversionKind.Identity;
         }
     }
 }

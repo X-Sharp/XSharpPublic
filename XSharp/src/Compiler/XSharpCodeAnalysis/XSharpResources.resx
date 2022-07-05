@@ -5363,7 +5363,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -vo1[+|-]                      Allow Init() and Axit() as aliases for Constructor and Destructor
 -vo2[+|-]                      Initialize Strings
 -vo3[+|-]                      All instance methods virtual
--vo4[+|-]                      Implicit signed/unsigned conversions
+-vo4[+|-]                      Implicit numeric conversions
 -vo5[+|-]                      Implicit CLIPPER calling convention
 -vo6[+|-]                      Implicit pointer conversions
 -vo7[+|-]                      Implicit casts and Conversions

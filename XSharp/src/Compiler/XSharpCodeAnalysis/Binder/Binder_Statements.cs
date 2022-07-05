@@ -166,7 +166,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         BoundExpression XsCreateConversionNonIntegralNumeric(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
             if (Compilation.Options.HasOption(CompilerOption.Vo11, expression.Syntax)
-                && expression.Type.IsNumericType() && targetType.IsNumericType())
+                && expression.Type.IsXNumericType() && targetType.IsXNumericType())
             {
                 // call Convert.To..() to round the result
                 var mem = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Convert__ToInt32Double);
@@ -268,7 +268,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return CreateXsConversion(expression, conversion, targetType, diagnostics);
                     }
-                    if (Compilation.Options.HasRuntime && targetType.IsNumericType() && sourceType.IsObjectType())
+                    if (Compilation.Options.HasRuntime && targetType.IsXNumericType() && sourceType.IsObjectType())
                     {
                         // To "silently" convert an object to a numeric we create a usual first and then rely
                         // on the conversion routines for the USUAL type
@@ -280,11 +280,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         return CreateXsConversion(expression, conversion, targetType, diagnostics);
                     }
-                    if (targetType.IsNumericType() && sourceType.IsUsualType() && Compilation.Options.HasRuntime)
+                    if (targetType.IsXNumericType() && sourceType.IsUsualType() && Compilation.Options.HasRuntime)
                     {
                         return CreateXsConversion(expression, conversion, targetType, diagnostics);
                     }
-                    else if (sourceType.IsNumericType())
+                    else if (sourceType.IsXNumericType())
                     {
                         result = XsCreateConversionNonIntegralNumeric(targetType, expression, diagnostics, conversion);
                         result.WasCompilerGenerated = true;
@@ -398,22 +398,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             return; // ok
                         }
-                        else if (sourceSize > targetSize)
+                        else
                         {
-                            // Narrowing conversion from '{0}' to '{1}' may lead to loss of data or overflow errors
-                            Error(diagnostics, ErrorCode.WRN_ConversionMayLeadToLossOfData, expression.Syntax, sourceType, targetType);
-                        }
-                        else if (sourceSize == targetSize)
-                        {
-                            //Conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
-                            Error(diagnostics, ErrorCode.WRN_Conversion, expression.Syntax, sourceType, targetType);
-                        }
-                        // lhs.Size < rhs.Size, only a problem when lhs is Signed and rhs is Unsiged
-                        else if (sourceSize < targetSize && sourceType.SpecialType.IsSignedIntegralType() && !targetType.SpecialType.IsSignedIntegralType())
-                        {
-                            // Conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
-
-                            Error(diagnostics, ErrorCode.WRN_Conversion, expression.Syntax, sourceType, targetType);
+                            var errorCode = LocalRewriter.DetermineConversionError(sourceType, targetType);
+                            if (errorCode != ErrorCode.Void)
+                            {
+                                Error(diagnostics, errorCode, expression.Syntax, sourceType, targetType);
+                            }
                         }
                     }
                 }

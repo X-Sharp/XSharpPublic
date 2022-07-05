@@ -211,12 +211,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (rewrittenOperand.Type.IsUsualType())
                     {
                         conversion = Conversion.GetTrivialConversion(
-                            UnBoxUsualType(ref rewrittenOperand, conversion, rewrittenType));
+                            UnBoxUsualType(ref rewrittenOperand, conversion, rewrittenType, explicitCastInCode));
                     }
                     else if (conversion.IsSpecial)
                     {
                         conversion = Conversion.GetTrivialConversion(
-                            UnBoxSpecialType(ref rewrittenOperand, conversion, rewrittenType));
+                            UnBoxSpecialType(ref rewrittenOperand, conversion, rewrittenType, explicitCastInCode));
                     }
 #endif
                     if (!_inExpressionLambda)

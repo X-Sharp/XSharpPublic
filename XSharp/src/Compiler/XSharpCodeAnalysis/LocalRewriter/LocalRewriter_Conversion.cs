@@ -44,7 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
-        private ConversionKind UnBoxSpecialType(ref BoundExpression rewrittenOperand, Conversion conversion, TypeSymbol rewrittenType)
+        private ConversionKind UnBoxSpecialType(ref BoundExpression rewrittenOperand, Conversion conversion, TypeSymbol rewrittenType, bool explicitCastInCode)
         {
             Debug.Assert(conversion.IsSpecial);
             ConversionKind conversionKind = conversion.Kind;
@@ -103,12 +103,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (nts.IsFloatType() || nts.IsCurrencyType())
                         {
                             // Get the right Explicit Operator
-                            return XsRewriteOurNumericType(nts, ref rewrittenOperand, rewrittenType);
+                            return XsRewriteOurNumericType(nts, ref rewrittenOperand, rewrittenType, explicitCastInCode);
                         }
                         else
                         {
                             // Get a conversion or Convert.To<type> depending on the setting of /vo11
-                            return XsRewriteSystemNumericType(ref rewrittenOperand, rewrittenType);
+                            return XsRewriteSystemNumericType(ref rewrittenOperand, rewrittenType, explicitCastInCode, false);
                         }
                     }
                 }
@@ -229,9 +229,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return ErrorCode.Void;
         }
 
-        ConversionKind XsRewriteSystemNumericType(ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType, bool noError = false)
+        ConversionKind XsRewriteSystemNumericType(ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType, bool explicitcastincode, bool noError)
         {
-            if (!noError)
+            if (!noError) //  && !explicitcastincode)
             {
                 var error = DetermineConversionError(rewrittenOperand.Type, rewrittenType);
                 if (error != ErrorCode.Void)
@@ -240,7 +240,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             var vo11 = _compilation.Options.HasOption(CompilerOption.Vo11, rewrittenOperand.Syntax);
-            if (vo11)
+            // should we work differently with explicit cast 
+            if (vo11) //  && ! explicitcastincode)
             {
                 var type = rewrittenOperand.Type;
                 var convert = _compilation.GetWellKnownType(WellKnownType.System_Convert);
@@ -273,7 +274,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             rewrittenOperand.WasCompilerGenerated = true;
             return ConversionKind.Identity;
         }
-        private ConversionKind UnBoxUsualType(ref BoundExpression rewrittenOperand, Conversion conversion, TypeSymbol rewrittenType)
+        private ConversionKind UnBoxUsualType(ref BoundExpression rewrittenOperand, Conversion conversion, TypeSymbol rewrittenType, bool explicitCastInCode)
         {
             Debug.Assert(rewrittenOperand.Type.IsUsualType());
             // USUAL -> WINBOOL, use LOGIC as intermediate type
@@ -367,13 +368,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return conversionKind;
         }
-        ConversionKind XsRewriteOurNumericType(NamedTypeSymbol ourtype, ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType)
+        ConversionKind XsRewriteOurNumericType(NamedTypeSymbol ourtype, ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType, bool explicitCastInCode)
         {
             Debug.Assert(ourtype.IsFloatType() || ourtype.IsCurrencyType());
-            var error = DetermineConversionError(rewrittenOperand.Type, rewrittenType);
-            if (error != ErrorCode.Void)
+            // should we work differently with explicit cast 
+            //if (!explicitCastInCode)
             {
-                _factory.Diagnostics.Add(error, rewrittenOperand.Syntax.Location, rewrittenOperand.Type, rewrittenType);
+                var error = DetermineConversionError(rewrittenOperand.Type, rewrittenType);
+                if (error != ErrorCode.Void)
+                {
+                    _factory.Diagnostics.Add(error, rewrittenOperand.Syntax.Location, rewrittenOperand.Type, rewrittenType);
+                }
             }
             if (ourtype.IsFloatType())
             {
@@ -384,7 +389,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 rewrittenOperand = MakeConversionNode(rewrittenOperand, _compilation.GetSpecialType(SpecialType.System_Decimal), false, false); ;
 
             }
-            return XsRewriteSystemNumericType(ref rewrittenOperand, rewrittenType, true);
+            if ( Equals(rewrittenOperand.Type, rewrittenType))
+            {
+                return ConversionKind.Identity;
+            }
+            return XsRewriteSystemNumericType(ref rewrittenOperand, rewrittenType, explicitCastInCode, true);
+            
             //MethodSymbol m = getExplicitOperator(ourtype, rewrittenType);
             //if (m != null)
             //{

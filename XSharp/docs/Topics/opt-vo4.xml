@@ -7,9 +7,9 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo4<tab /><tab />Implicit signed/unsigned conversions</para>
+      <para styleclass="Heading1">-vo4<tab /><tab />Implicit numeric conversions</para>
     </header>
-    <para styleclass="Normal">The -vo4 option directs the compiler to implicitly convert signed integer types to/from unsigned types, and larger integer types to smaller types.</para>
+    <para styleclass="Normal">The -vo4 option directs the compiler to implicitly convert numeric types from larger types to smaller types but also from fractional types to integral types.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code with box">-vo4[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
@@ -19,7 +19,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When this option is enabled, the compiler will implicitly convert the data types listed in the table below:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="2">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="11" colcount="2">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal">From</para>
@@ -92,6 +92,22 @@
           <para styleclass="Normal">SByte, BYTE, WORD, SHORT, Char, INT, DWORD, INT64</para>
         </td>
       </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">REAL8, REAL4, DECIMAL</para>
+        </td>
+        <td>
+          <para styleclass="Normal">All other numeric types</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">FLOAT, CURRENCY</para>
+        </td>
+        <td>
+          <para styleclass="Normal">All other numeric types</para>
+        </td>
+      </tr>
     </table></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">For each conversion, the compiler will raise an appropriate warning. You may disable the warning with The -wx switch, or insert an explicit cast in the source code to eliminate the warning.</para>
@@ -101,7 +117,7 @@
     <para styleclass="Normal">For example, an INT containing a negative number cannot be represented in a DWORD. Similarly, an INT greater than 65535 cannot be represeneted in a SHORT. If you must mix signed and unsigned types or pass a larger type to a smaller type, you should always supply an explicit cast rather than using -vo4. This will document the fact that the conversion is known to be safe, and it will not suppress compile time errors if incompatible integer types are unintentionally used. </para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="28" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
       <li styleclass="Normal" style="margin-left:13px;">Change the value.</li>

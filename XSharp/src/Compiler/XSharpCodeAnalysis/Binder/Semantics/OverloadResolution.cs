@@ -317,7 +317,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else if (argType.IsUsualType())
                 {
-                    if (parType.IsNumericType() &&
+                    if (parType.IsXNumericType() &&
                         (parType.SpecialType == SpecialType.System_Double || parType.IsFloatType()))
                     {
                         score += isConst ? 55 : 60;
@@ -340,7 +340,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     score += depth;
                 }
-                else if (argType.IsNumericType() && parType.IsNumericType())
+                else if (argType.IsXNumericType() && parType.IsXNumericType())
                 {
                     if (argType.IsIntegralType() && parType.IsIntegralType())
                     {

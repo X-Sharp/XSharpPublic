@@ -1,9 +1,8 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/951
 #pragma options("vo4", on)
 #pragma options("vo7", on)
-#pragma options("vo11", on)
 #pragma options("ovf", on)
-
+#pragma warnings(9020, off)
 FUNCTION Start( ) AS VOID
     LOCAL f := -1343.345 AS FLOAT  // "AS DOUBLE" throws an compile error
     LOCAL c := -1343.345 AS CURRENCY  // "AS DOUBLE" throws an compile error

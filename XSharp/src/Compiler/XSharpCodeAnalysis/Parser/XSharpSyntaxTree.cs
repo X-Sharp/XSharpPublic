@@ -64,11 +64,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         XIsChr = 1 << 7,
         XDefaultTree = 1 << 8,
         XIsString2Psz = 1 << 9,
-        // This is used to tell the backend that a conversion needs special work
-        XSpecial = 1 << 10,
-        XWarning = 1 << 11,
-        XSignChanged = 1 << 12,
-        XVoStructUnion = 1 << 13,
+        XWarning = 1 << 10,
+        XSignChanged = 1 << 11,
+        XVoStructUnion = 1 << 12,
     }
 
     internal abstract partial class CSharpSyntaxNode
@@ -140,14 +138,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             get => xflags.HasFlag(XNodeFlags.XIsString2Psz);
             set => xflags = xflags.SetFlag(XNodeFlags.XIsString2Psz, value);
         }
-        /// <summary>
-        /// Return TRUE for conversions that require special handling
-        /// </summary>
-        public bool XSpecial
-        {
-            get => xflags.HasFlag(XNodeFlags.XSpecial);
-            set => xflags = xflags.SetFlag(XNodeFlags.XSpecial, value);
-        }
+
         /// <summary>
         /// Return TRUE when a warning should be generated
         /// </summary>
@@ -267,11 +258,6 @@ namespace Microsoft.CodeAnalysis
         {
             get => CsNode.CsGreen.XGenerated;
             set => CsNode.CsGreen.XGenerated = value;
-        }
-        internal bool XSpecial
-        {
-            get => CsNode.CsGreen.XSpecial;
-            set => CsNode.CsGreen.XSpecial = value;
         }
         internal bool XWarning
         {

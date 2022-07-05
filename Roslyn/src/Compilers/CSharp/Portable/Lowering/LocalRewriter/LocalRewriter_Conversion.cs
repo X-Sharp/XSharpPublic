@@ -207,10 +207,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ConversionKind.Boxing:
 
 #if XSHARP
-                    if (conversion.IsSpecial)
+                    // We store special conversions as a conversion with a "special" property
+                    if (rewrittenOperand.Type.IsUsualType())
                     {
                         conversion = Conversion.GetTrivialConversion(
-                            UnBoxXSharpType(ref rewrittenOperand, conversion.Kind, rewrittenType));
+                            UnBoxUsualType(ref rewrittenOperand, conversion, rewrittenType));
+                    }
+                    else if (conversion.IsSpecial)
+                    {
+                        conversion = Conversion.GetTrivialConversion(
+                            UnBoxSpecialType(ref rewrittenOperand, conversion, rewrittenType));
                     }
 #endif
                     if (!_inExpressionLambda)

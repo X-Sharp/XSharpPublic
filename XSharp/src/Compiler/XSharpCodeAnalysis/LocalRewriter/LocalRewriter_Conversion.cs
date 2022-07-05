@@ -5,7 +5,7 @@
 //
 #nullable disable
 using Microsoft.CodeAnalysis.CSharp.Symbols;
-using System.Linq;
+using System.Diagnostics;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -44,22 +44,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
-        private MethodSymbol getExplicitOperator(TypeSymbol srcType, TypeSymbol destType)
+        private ConversionKind UnBoxSpecialType(ref BoundExpression rewrittenOperand, Conversion conversion, TypeSymbol rewrittenType)
         {
-            var members = srcType.GetMembers(WellKnownMemberNames.ExplicitConversionName);
-            foreach (MethodSymbol m in members)
-            {
-                if (TypeSymbol.Equals(m.ReturnType, destType))
-                {
-                    return m;
-                }
-
-            }
-            return null;
-        }
-        private ConversionKind UnBoxXSharpType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
-        {
-            var syntax = rewrittenOperand.Syntax;
+            Debug.Assert(conversion.IsSpecial);
+            ConversionKind conversionKind = conversion.Kind;
             if ((rewrittenType.IsPointerType() || rewrittenType.IsPszType()) && rewrittenOperand.Type.IsObjectType())
             {
                 rewrittenOperand = _factory.Convert(_compilation.GetSpecialType(SpecialType.System_IntPtr), rewrittenOperand, Conversion.Unboxing);
@@ -97,11 +85,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return ConversionKind.Identity;
                         }
                     }
-                    if (nts.IsUsualType())
-                    {
-                        return XsRewriteUsualType(ref rewrittenOperand, rewrittenType, conversionKind);
-                    }
-
                     if (nts.IsObjectType())
                     {
                         if (rewrittenType.IsReferenceType)
@@ -246,12 +229,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             return ErrorCode.Void;
         }
 
-        ConversionKind XsRewriteSystemNumericType(ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType)
+        ConversionKind XsRewriteSystemNumericType(ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType, bool noError = false)
         {
-            var error = DetermineConversionError(rewrittenOperand.Type, rewrittenType);
-            if (error != ErrorCode.Void)
+            if (!noError)
             {
-                _factory.Diagnostics.Add(error, rewrittenOperand.Syntax.Location, rewrittenOperand.Type, rewrittenType);
+                var error = DetermineConversionError(rewrittenOperand.Type, rewrittenType);
+                if (error != ErrorCode.Void)
+                {
+                    _factory.Diagnostics.Add(error, rewrittenOperand.Syntax.Location, rewrittenOperand.Type, rewrittenType);
+                }
             }
             var vo11 = _compilation.Options.HasOption(CompilerOption.Vo11, rewrittenOperand.Syntax);
             if (vo11)
@@ -287,10 +273,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             rewrittenOperand.WasCompilerGenerated = true;
             return ConversionKind.Identity;
         }
-        ConversionKind XsRewriteUsualType(ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType, ConversionKind conversionKind)
+        private ConversionKind UnBoxUsualType(ref BoundExpression rewrittenOperand, Conversion conversion, TypeSymbol rewrittenType)
         {
+            Debug.Assert(rewrittenOperand.Type.IsUsualType());
             // USUAL -> WINBOOL, use LOGIC as intermediate type
-            var usualType = _compilation.UsualType();
+            ConversionKind conversionKind = conversion.Kind;
+            var usualType = rewrittenOperand.Type;
             if (rewrittenType.IsWinBoolType())
             {
                 MethodSymbol m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_Boolean));
@@ -381,34 +369,59 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         ConversionKind XsRewriteOurNumericType(NamedTypeSymbol ourtype, ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType)
         {
+            Debug.Assert(ourtype.IsFloatType() || ourtype.IsCurrencyType());
             var error = DetermineConversionError(rewrittenOperand.Type, rewrittenType);
             if (error != ErrorCode.Void)
             {
                 _factory.Diagnostics.Add(error, rewrittenOperand.Syntax.Location, rewrittenOperand.Type, rewrittenType);
             }
-            MethodSymbol m = getExplicitOperator(ourtype, rewrittenType);
-            if (m != null)
+            if (ourtype.IsFloatType())
             {
-                rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
-                rewrittenOperand.WasCompilerGenerated = true;
-                return ConversionKind.Identity;
+                rewrittenOperand = MakeConversionNode(rewrittenOperand, _compilation.GetSpecialType(SpecialType.System_Double), false, false);
             }
-            m = getImplicitOperatorByReturnType(ourtype, rewrittenType);
-            if (m != null)
+            else
             {
-                rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
-                rewrittenOperand.WasCompilerGenerated = true;
-                return ConversionKind.Identity;
+                rewrittenOperand = MakeConversionNode(rewrittenOperand, _compilation.GetSpecialType(SpecialType.System_Decimal), false, false); ;
 
             }
-            if (rewrittenType.IsObjectType() || rewrittenType.IsUsualType())
-            {
-                return ConversionKind.Boxing;
+            return XsRewriteSystemNumericType(ref rewrittenOperand, rewrittenType, true);
+            //MethodSymbol m = getExplicitOperator(ourtype, rewrittenType);
+            //if (m != null)
+            //{
+            //    rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+            //    rewrittenOperand.WasCompilerGenerated = true;
+            //    return ConversionKind.Identity;
+            //}
+            //m = getImplicitOperatorByReturnType(ourtype, rewrittenType);
+            //if (m != null)
+            //{
+            //    rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+            //    rewrittenOperand.WasCompilerGenerated = true;
+            //    return ConversionKind.Identity;
 
-            }
-            rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
-            rewrittenOperand.WasCompilerGenerated = true;
-            return ConversionKind.Identity;
+            //}
+            //if (rewrittenType.IsObjectType() || rewrittenType.IsUsualType())
+            //{
+            //    return ConversionKind.Boxing;
+
+            //}
+            //rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
+            //rewrittenOperand.WasCompilerGenerated = true;
+            //return ConversionKind.Identity;
         }
+        //private MethodSymbol getExplicitOperator(TypeSymbol srcType, TypeSymbol destType)
+        //{
+        //    var members = srcType.GetMembers(WellKnownMemberNames.ExplicitConversionName);
+        //    foreach (MethodSymbol m in members)
+        //    {
+        //        if (TypeSymbol.Equals(m.ReturnType, destType))
+        //        {
+        //            return m;
+        //        }
+
+        //    }
+        //    return null;
+        //}
+
     }
 }

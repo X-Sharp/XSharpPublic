@@ -146,7 +146,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             return res;
         }
-
+        // Please note that Conversion.Special is a 'pseudo' boxing conversion
+        // with a special flag set. This will trigger code in the local rewriter
+        // to convert things 'our way', applying knowledge about our types
+        // and about our compiler options, such as /vo11
         protected override Conversion ClassifyCoreImplicitConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             // Parameters checks have been done in the calling code
@@ -443,8 +446,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected override Conversion ClassifyXSExplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, bool forCast, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             var syntax = sourceExpression.Syntax;
-            var vo11 = Compilation.Options.HasOption(CompilerOption.Vo11, syntax);
-            if (!forCast && !vo11)
+            var vo4 = Compilation.Options.HasOption(CompilerOption.Vo4, syntax);
+            if (!forCast && !vo4)
             {
                 return Conversion.NoConversion;
             }
@@ -453,7 +456,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (source.IsFractionalType() && destination.SpecialType.IsIntegralType() )
             {
-                if (vo11 && destination is { } && destination.IsXNumericType())
+                if (vo4 && destination is { } && destination.IsXNumericType())
                 {
                     // not really boxing but we'll handle the actual conversion later
                     // see UnBoxXSharpType() in LocalRewriter_Conversion.cs

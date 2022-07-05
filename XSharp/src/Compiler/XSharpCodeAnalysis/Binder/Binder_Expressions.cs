@@ -77,7 +77,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (expression.Type.IsUsualType())
             {
-                expression = new BoundConversion(node, expression, Conversion.Boxing, false, false,
+                expression = new BoundConversion(node, expression, Conversion.Special, false, false,
                     conversionGroupOpt: null,
                     constantValueOpt: null,
                     type: GetSpecialType(SpecialType.System_Object, diagnostics, node));

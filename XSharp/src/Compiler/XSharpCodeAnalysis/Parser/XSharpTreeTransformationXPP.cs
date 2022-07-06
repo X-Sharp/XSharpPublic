@@ -133,22 +133,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _currentClass = null;
             _entryPoint = "Main";
         }
-        private SyntaxToken DecodeVisibility(int vis)
+        private static SyntaxToken DecodeVisibility(int vis)
         {
-            switch (vis)
+            return vis switch
             {
-                case XP.EXPORTED:
-                case XP.PUBLIC:
-                    return SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword, "EXPORTED");
-                case XP.PROTECTED:
-                    return SyntaxFactory.MakeToken(SyntaxKind.ProtectedKeyword, "PROTECTED");
-                case XP.INTERNAL:
-                    return SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword, "INTERNAL");
-                case XP.HIDDEN:
-                case XP.PRIVATE:
-                default:
-                    return SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword, "HIDDEN");
-            }
+                XP.EXPORTED or XP.PUBLIC => SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword, "EXPORTED"),
+                XP.PROTECTED => SyntaxFactory.MakeToken(SyntaxKind.ProtectedKeyword, "PROTECTED"),
+                XP.INTERNAL => SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword, "INTERNAL"),
+                _ => SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword, "HIDDEN"),
+            };
         }
 
         private XppClassInfo FindClassInfo(string name)
@@ -408,7 +401,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
         #region Methods with Bodies
 
-        private void CheckInitMethods(XP.IMemberContext context)
+        private static void CheckInitMethods(XP.IMemberContext context)
         {
             context.Data.MustBeVoid = false;
             var idName = context.ShortName;
@@ -425,7 +418,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private void CheckAccessors(XP.XppaccessorsContext context, XppDeclaredMethodInfo decl, string Id)
+        private static void CheckAccessors(XP.XppaccessorsContext context, XppDeclaredMethodInfo decl, string Id)
         {
             if (context != null && context._Tokens.Any((t) => t.Type == XSharpLexer.ACCESS))
             {
@@ -437,7 +430,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 decl.AssignMethod = Id;
                 decl.IsProperty = true;
             }
-
         }
 
         public override void EnterXppinlineMethod([NotNull] XP.XppinlineMethodContext context)
@@ -459,7 +451,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Attributes = context.Attributes,
                 ModifierTokens = context.Modifiers?._Tokens
             };
-            
+
             CheckAccessors(context.Accessors, decl, context.Id.GetText());
             context.Info = decl;
             _currentClass.Methods.Add(decl);
@@ -698,9 +690,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string accName = propDecl.AccessMethod;
             string assName = propDecl.AssignMethod;
             if (accName != null && !propDecl.HasVarName)
-                accName = accName + XSharpSpecialNames.PropertySuffix;
+                accName += XSharpSpecialNames.PropertySuffix;
             if (assName != null && !propDecl.HasVarName)
-                assName = assName + XSharpSpecialNames.PropertySuffix;
+                assName += XSharpSpecialNames.PropertySuffix;
             var method = propDecl.Entity as XP.IXPPMemberContext;
             var propType = getDataType(propDecl.DeclaredType);
             var methType = getDataType(method.ReturnType);
@@ -835,7 +827,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var mem in members.ToList())
                 {
                     // when an instant constructors then remember this
-                    if (mem is ConstructorDeclarationSyntax && !((ConstructorDeclarationSyntax)mem).IsStatic())
+                    if (mem is ConstructorDeclarationSyntax cds && !cds.IsStatic())
                     {
                         current.Entity.Data.HasInstanceCtor = true;
                         break;
@@ -1050,16 +1042,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {
             // convert ClassName():New(...) to ClassName{...}
-            var lhs = context.Expr as XP.AccessMemberContext;
-            if (lhs != null)
+            if (context.Expr is XP.AccessMemberContext lhs)
             {
                 if (lhs.Op.Type == XP.COLON && lhs.Name.GetText().ToLower() == "new")
                 {
-                    var operand = lhs.Expr as XP.MethodCallContext;
-                    if (operand != null && operand.ArgList == null)
+                    if (lhs.Expr is XP.MethodCallContext operand && operand.ArgList == null)
                     {
-                        var primary = operand.Expr as XP.PrimaryExpressionContext;
-                        if (primary != null)
+                        if (operand.Expr is XP.PrimaryExpressionContext primary)
                         {
                             var className = primary.GetText();
                             var seperators = new char[] { '.', ':' };

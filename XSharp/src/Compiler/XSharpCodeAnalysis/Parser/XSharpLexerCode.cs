@@ -373,7 +373,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return;
         }
 
-
         void parseToEol()
         {
             var la1 = La(1);
@@ -386,7 +385,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         bool tryParseNewLine()
         {
-            if (ExpectAny('\n','\r'))
+            if (ExpectAny('\n', '\r'))
             {
                 if (Expect('\r', '\n'))
                 {
@@ -493,8 +492,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return;
                     break;
             }
-
-
 
             var c = La(1);
             if (c > 0 && IsIdentifierStartCharacter((char)c))
@@ -837,7 +834,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             XSharpToken t;
             {
                 parseInit();
-                 if (_onTextLine)
+                if (_onTextLine)
                 {
                     return parseTextLine();
                 }
@@ -939,8 +936,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '|':
                         parseOne(PIPE);
-                        if (Expect('|')) parseOne(OR);
-                        else if (Expect('=')) parseOne(ASSIGN_BITOR);
+                        if (Expect('|'))
+                            parseOne(OR);
+                        else if (Expect('='))
+                            parseOne(ASSIGN_BITOR);
                         break;
                     case '&':
                         parseOne(AMP);
@@ -1309,8 +1308,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             else if (type == SYMBOL_CONST && (StartOfLine(LastToken) || LastToken == UDCSEP))
             {
-                int symtype;
-                if (SymPPIds.TryGetValue(t.Text, out symtype))
+                if (SymPPIds.TryGetValue(t.Text, out var symtype))
                 {
                     t.Type = symtype;
                     _currentLineIsPreprocessorDefinition = true;
@@ -1470,7 +1468,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 parseInit();
             }
         }
-        private bool StartOfLine(int iToken)
+        private static bool StartOfLine(int iToken)
         {
             switch (iToken)
             {
@@ -1766,8 +1764,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             if (token.Type == ID && token.Channel == Lexer.DefaultTokenChannel)
             {
-                int kwtype;
-                if (KwIds.TryGetValue(token.Text, out kwtype))
+                if (KwIds.TryGetValue(token.Text, out var kwtype))
                 {
                     if (IsPositionalKeyword(kwtype) && (lastToken == COLON || lastToken == DOT))
                     {
@@ -1817,7 +1814,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             return tokens;
         }
-        private bool _isValidIdentifier(IToken t)
+        private static bool _isValidIdentifier(IToken t)
         {
             if (t == null || t.Text?.Length == 0 || t.Type == EOF)
                 return false;
@@ -1831,7 +1828,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case XSharpLexer.PREPROCESSORCHANNEL:  // 4
                 case TokenConstants.DefaultChannel: // 0
                 default:
-                    char fc = t.Text?[0] ?? (Char)0;
+                    char fc = t.Text?[0] ?? (char)0;
                     return fc == '_' || InRange(fc, 'A', 'Z') || InRange(fc, 'a', 'z');
             }
         }
@@ -1840,7 +1837,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             var ids = new Dictionary<string, int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
 
-            Dictionary<string, int> voKeywords = null;
+            Dictionary<string, int> voKeywords;
             if (IsMacroLexer)
             {
                 // short list of keywords used in Macro Expressions
@@ -2170,7 +2167,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             //{
             //    ids.Add("ANY", USUAL);
             //}
-            Dictionary<string, int> keywords = null;
+            Dictionary<string, int> keywords;
             if (IsMacroLexer)
             {
                 keywords = new Dictionary<string, int>
@@ -2491,10 +2488,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #endregion
         public static XSharpLexer Create(string text, string fileName, CSharpParseOptions options = null)
         {
-            var stream = new AntlrInputStream(text);
-            stream.name = fileName;
-            var lexer = new XSharpLexer(stream);
-            lexer.TokenFactory = XSharpTokenFactory.Default;
+            var stream = new AntlrInputStream(text)
+            {
+                name = fileName
+            };
+            var lexer = new XSharpLexer(stream)
+            {
+                TokenFactory = XSharpTokenFactory.Default
+            };
+
 #if !TEST
             if (options == null)
                 options = CSharpParseOptions.Default;

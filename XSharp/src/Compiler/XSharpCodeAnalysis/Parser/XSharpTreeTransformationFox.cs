@@ -8,7 +8,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Roslyn.Utilities; 
+using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
@@ -49,24 +49,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var func = new XP.FuncprocContext(entity, 0);
             var id = new XP.IdentifierContext(func, 0);
             var token = new XSharpToken(XP.FUNCTION, "FUNCTION");
-            var sig = new XP.SignatureContext(func, 0);
-            sig.Id = id;
+            var sig = new XP.SignatureContext(func, 0)
+            {
+                Id = id
+            };
             func.Sig = sig;
             token.line = 1;
             token.charPositionInLine = 1;
-            func.T = new XP.FuncproctypeContext(func, 0);
-            func.T.Token = token;
-            token = new XSharpToken(XP.ID, name);
-            token.line = 1;
-            token.charPositionInLine = 1;
+            func.T = new XP.FuncproctypeContext(func, 0)
+            {
+                Token = token
+            };
+            token = new XSharpToken(XP.ID, name)
+            {
+                line = 1,
+                charPositionInLine = 1
+            };
             id.Start = id.Stop = token;
             sig.AddChild(sig.Id);
             ExitIdentifier(id);    // Generate SyntaxToken 
             if (string.Equals(name, _entryPoint, XSharpString.Comparison))
             {
-                sig.Type = new XP.DatatypeContext(func, 0);
-                sig.Type.Start = new XSharpToken(XP.AS, "AS");
-                sig.Type.Stop = new XSharpToken(XP.VOID, "VOID");
+                sig.Type = new XP.DatatypeContext(func, 0)
+                {
+                    Start = new XSharpToken(XP.AS, "AS"),
+                    Stop = new XSharpToken(XP.VOID, "VOID")
+                };
                 sig.Type.Put(_voidType);
                 sig.AddChild(sig.Type);
             }
@@ -256,7 +264,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.SetSequencePoint(context.end);
             var stmts = _pool.Allocate<StatementSyntax>();
-            bool hasError = false;
             switch (context.T.Type)
             {
                 case XP.DIMENSION:
@@ -267,7 +274,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // call the runtime function to allocate the array
                         // when the array is a LOCAL then the local declaration will also be added to the stmts list returned
                         // all the statements will be 'anchored' to the foxdeclContext.
-                        var dimstmts = processDimensionVar(context, dimvar, ref hasError);
+                        var dimstmts = processDimensionVar(context, dimvar);
                         foreach (var stmt in dimstmts)
                         {
                             stmts.Add(stmt);
@@ -317,7 +324,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var exp = GenerateMemVarDecl(dimvar, varname, false);
                             exp.XNode = dimvar;
                             stmts.Add(GenerateExpressionStatement(exp, dimvar));
-                            var dimstmts = processDimensionVar(context, dimvar, ref hasError);
+                            var dimstmts = processDimensionVar(context, dimvar);
                             foreach (var stmt in dimstmts)
                             {
                                 stmts.Add(stmt);
@@ -365,7 +372,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(stmts);
 
         }
-        private IList<StatementSyntax> processDimensionVar(XSharpParserRuleContext context, XP.DimensionVarContext dimVar, ref bool hasError)
+        private IList<StatementSyntax> processDimensionVar(XSharpParserRuleContext context, XP.DimensionVarContext dimVar)
         {
             var name = CleanVarName(dimVar.Id.GetText());
             var stmts = new List<StatementSyntax>();
@@ -427,11 +434,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return stmts;
         }
 
-
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {
             var expr = context.Expr.Get<ExpressionSyntax>();
-            string name = null;
+            string name;
             if (expr is IdentifierNameSyntax)
             {
                 // Intrinsic functions that depend on Vulcan types
@@ -448,7 +454,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         argList = context.ArgList.Get<ArgumentListSyntax>();
                     }
-                    else 
+                    else
                     {
                         if (entity.Data.HasClipperCallingConvention)
                             argList = MakeArgumentList(MakeArgument(GenerateSimpleName(XSharpSpecialNames.ClipperArgs)));
@@ -464,7 +470,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitMethodCall(context);
             return;
         }
- 
         public override void ExitFoxclsvars([NotNull] XP.FoxclsvarsContext context)
         {
             context.SetSequencePoint(context.Member.end);
@@ -474,7 +479,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.Member.end);
             context.Put(context.Member.Get<MemberDeclarationSyntax>());
         }
-        public override void ExitFoxclsctor([NotNull] XP.FoxclsctorContext context) 
+        public override void ExitFoxclsctor([NotNull] XP.FoxclsctorContext context)
         {
             context.SetSequencePoint(context.Member.end);
             context.Put(context.Member.Get<MemberDeclarationSyntax>());
@@ -511,7 +516,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitFoxaddobjectclause([NotNull] XP.FoxaddobjectclauseContext context)
         {
-            var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? TokenList(SyntaxKind.PublicKeyword);
             var datatype = context.Type.Get<TypeSyntax>();
             var name = context.Id.GetText();
             var prop = createProperty(name, datatype, context, context.Modifiers);
@@ -542,7 +546,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.Fld != null)
                 {
-                    var fielddecl = createField(varCtx.GetText(), varType,context.Modifiers);
+                    var fielddecl = createField(varCtx.GetText(), varType, context.Modifiers);
                     list.Add(fielddecl);
                 }
                 else
@@ -601,7 +605,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mName = mName.Substring(0, mName.Length - "_ASSIGN".Length);
             }
             idName = SyntaxFactory.MakeIdentifier(mName);
-            bool isAccessAssign = this.isAccessAssign(context.RealType);
+            bool isAccessAssign = IsAccessAssign(context.RealType);
             var attributes = getAttributes(context.Attributes);
             bool hasExtensionAttribute = false;
             if (isAccessAssign)
@@ -615,7 +619,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = vomods.ToList<SyntaxToken>();
                 _pool.Free(vomods);
             }
-           if (!isExtern)
+            if (!isExtern)
             {
                 isExtern = hasDllImport(attributes);
                 hasNoBody = hasNoBody || isExtern;
@@ -670,13 +674,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 attributeLists: attributes,
                 modifiers: mods,
                 returnType: returntype,
-                explicitInterfaceSpecifier: null ,
+                explicitInterfaceSpecifier: null,
                 identifier: idName,
                 typeParameterList: getTypeParameters(context.TypeParameters),
                 parameterList: parameters,
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 body: body,
-                expressionBody: expressionBody, 
+                expressionBody: expressionBody,
                 semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             if (hasExtensionAttribute)
             {
@@ -692,12 +696,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     ErrorCode.ERR_NoClipperCallingConventionForAccessAssign));
                 }
                 context.Put(m);
-                ClassEntities.Peek().AddVoPropertyAccessor(context, context.RealType, idName,isStatic);
+                ClassEntities.Peek().AddVoPropertyAccessor(context, context.RealType, idName, isStatic);
             }
         }
         public override void ExitFoxclass([NotNull] XP.FoxclassContext context)
         {
-            var fieldNames = new List<String>();
+            var fieldNames = new List<string>();
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
@@ -708,7 +712,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(baseType));
             }
-            if  (generated.Members.Count > 0)  
+            if (generated.Members.Count > 0)
             {
                 members.AddRange(generated.Members);
             }
@@ -731,8 +735,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         fieldNames.Add(v.GetText().ToLower());
                     }
-                    var list = mem.CsNode as List<MemberDeclarationSyntax>;
-                    if (list != null)
+                    if (mem.CsNode is List<MemberDeclarationSyntax> list)
                     {
                         foreach (var m1 in list)
                         {
@@ -750,7 +753,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (mCtx is XP.FoxclsvarinitContext cvi)
                 {
                     var fld = cvi.Member.F.Name.GetText();
-                    if (!fieldNames.Contains(fld.ToLower()) )
+                    if (!fieldNames.Contains(fld.ToLower()))
                     {
                         if (mCtx.CsNode != null)
                         {
@@ -772,7 +775,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 }
                 else if (mCtx is XP.FoxclsmethodContext cmc)
-                { 
+                {
                     if (cmc.Member.CsNode is MemberDeclarationSyntax mds)
                     {
                         members.Add(mds);
@@ -911,7 +914,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                var propdecl = createProperty(context.F.Name.GetText(), _usualType, context,context.Modifiers);
+                var propdecl = createProperty(context.F.Name.GetText(), _usualType, context, context.Modifiers);
                 if (propdecl != null)
                 {
                     context.Put(propdecl);
@@ -919,8 +922,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private ConstructorDeclarationSyntax createConstructor(XP.FoxclassContext context, SyntaxListBuilder<MemberDeclarationSyntax> members, 
-            List<String> fieldNames, ConstructorDeclarationSyntax existingctor)
+        private ConstructorDeclarationSyntax createConstructor(XP.FoxclassContext context, SyntaxListBuilder<MemberDeclarationSyntax> members,
+            List<string> fieldNames, ConstructorDeclarationSyntax existingctor)
         {
             var stmts = new List<StatementSyntax>();
             bool hasinit = false;
@@ -938,7 +941,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var syntax = method.Get<MethodDeclarationSyntax>();
                         initparams = syntax.ParameterList;
-                        attributeLists.AddRange( syntax.AttributeLists);
+                        attributeLists.AddRange(syntax.AttributeLists);
                         hasinit = true;
                     }
                 }
@@ -1040,24 +1043,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             TypeSyntax result;
             if (type != null)
             {
-                switch (type.GetText().ToLower())
+                result = type.GetText().ToLower() switch
                 {
-                    case "integer":
-                        result = _intType;
-                        break;
-                    case "single":
-                        result = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword));
-                        break;
-                    case "double":
-                        result = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword));
-                        break;
-                    case "string":
-                        result = _stringType;
-                        break;
-                    default:
-                        result = type.Get<TypeSyntax>();
-                        break;
-                }
+                    "integer" => _intType,
+                    "single" => _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword)),
+                    "double" => _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword)),
+                    "string" => _stringType,
+                    _ => type.Get<TypeSyntax>(),
+                };
             }
             else
             {
@@ -1082,7 +1075,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(list);
             }
             var foxdll = context.Parent as XP.FoxdllContext;
-            var pos = foxdll._Params.IndexOf(context)+1;
+            var pos = foxdll._Params.IndexOf(context) + 1;
             SyntaxToken id;
             if (context.Name != null)
                 id = context.Name.Get<SyntaxToken>();
@@ -1104,7 +1097,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(par);
         }
 
-        private AttributeSyntax _foxdllImportAttribute(XP.FoxdllContext context, ExpressionSyntax dllExpr, ExpressionSyntax entrypointExpr)
+        private AttributeSyntax foxdllImportAttribute(ExpressionSyntax dllExpr, ExpressionSyntax entrypointExpr)
         {
             AttributeArgumentSyntax charset;
             SyntaxToken id;
@@ -1173,7 +1166,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword, SyntaxKind.ExternKeyword);
             var attributes = MakeSeparatedList(_unmanagedCodeAttribute(),
-                                                _foxdllImportAttribute(context, dllExpr, entrypoint)
+                                                foxdllImportAttribute(dllExpr, entrypoint)
                                               );
             var attList = MakeList(MakeAttributeList(target: null, attributes: attributes));
 
@@ -1191,14 +1184,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
- 
         public override void ExitFoxtextoutStmt([NotNull] XP.FoxtextoutStmtContext context)
         {
             var sourceText = context.String.Text;
             var arg2 = GenerateLiteral(context.B.Type != XP.BACKBACKSLASH);
             var arg1 = GenerateLiteral(sourceText);
             var args = MakeArgumentList(MakeArgument(arg1), MakeArgument(arg2));
-            var call = GenerateMethodCall(XSharpQualifiedFunctionNames.TextOut, args, true); 
+            var call = GenerateMethodCall(XSharpQualifiedFunctionNames.TextOut, args, true);
             var stmt = GenerateExpressionStatement(call, context);
             context.Put(stmt);
             return;

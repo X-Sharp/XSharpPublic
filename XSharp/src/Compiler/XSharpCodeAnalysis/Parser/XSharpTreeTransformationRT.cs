@@ -44,10 +44,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ArrayTypeSyntax arrayOfUsual = null;
         private ArrayTypeSyntax arrayOfString = null;
-        private Dictionary<string, MemVarFieldInfo> _filewideMemvars = null;
+        private readonly Dictionary<string, MemVarFieldInfo> _filewideMemvars = null;
 
-        private Dictionary<string, FieldDeclarationSyntax> _literalSymbols;
-        private Dictionary<string, Tuple<string, FieldDeclarationSyntax>> _literalPSZs;
+        private readonly Dictionary<string, FieldDeclarationSyntax> _literalSymbols;
+        private readonly Dictionary<string, Tuple<string, FieldDeclarationSyntax>> _literalPSZs;
 
         private SyntaxList<AttributeListSyntax> _voClassAttribs = null;
         private ParameterListSyntax _clipperParams = null;
@@ -257,7 +257,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public static SyntaxTree DefaultRTSyntaxTree(IEnumerable<SyntaxTree> trees, CSharpParseOptions options)
         {
-            var isApp = options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication();
             // Trees is NEVER empty !
             // Collect Init procedures in all trees
             var initprocs = new List<Tuple<int, string>>();
@@ -312,7 +311,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var name = memvar.Name;
                     var exp = GenerateMemVarDecl(memvar.Context, GenerateLiteral(name), false);
                     exp.XNode = memvar.Context;
-                    stmts.Add(GenerateExpressionStatement(exp, memvar.Context)); ; ;
+                    stmts.Add(GenerateExpressionStatement(exp, memvar.Context));
                     var context = memvar.Context as XSharpParser.XbasevarContext;
                     if (context.Expression != null)
                     {
@@ -665,8 +664,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (parList.Parameters.Count > 0)
             {
                 var parameter = parList.Parameters[0];
-                var atype = parameter.Type as ArrayTypeSyntax;
-                if (atype != null)
+                if (parameter.Type is ArrayTypeSyntax atype)
                 {
                     var stringtype = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
                     if (atype.ElementType != stringtype)
@@ -696,7 +694,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var attr = _pool.Allocate<AttributeListSyntax>();
             foreach (var att in attributeList.Nodes)
             {
-                if (att.ToString().IndexOf("ClipperCallingConventionAttribute") == -1)
+                if (!att.ToString().Contains("ClipperCallingConventionAttribute"))
                 {
                     attr.Add(att);
                 }
@@ -734,9 +732,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // check because there may already be statements in here, such as the IF statement generated for AltD()
                 var node = exprCtx.CsNode;
-                if (node is StatementSyntax)
+                if (node is StatementSyntax sts)
                 {
-                    statements.Add((StatementSyntax)node);
+                    statements.Add(sts);
                 }
                 else
                 {
@@ -761,8 +759,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             if (binLeft.OperatorToken.Kind == SyntaxKind.EqualsEqualsToken)
                             {
-                                var xNode2 = binLeft.XNode as XP.BinaryExpressionContext;
-                                nestedAssign = xNode2 != null && xNode2.Op.Type == XP.EQ;
+                                nestedAssign = binLeft.XNode is XP.BinaryExpressionContext xNode2 && xNode2.Op.Type == XP.EQ;
                             }
                         }
                         if (oldStyleAssign || nestedAssign)
@@ -929,7 +926,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             fieldInfo = null;
                         }
-
                     }
                     if (fieldInfo != null)
                     {
@@ -1193,7 +1189,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-
         protected MemVarFieldInfo findVar(string name)
         {
 
@@ -1301,40 +1296,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitXbaseType([NotNull] XP.XbaseTypeContext context)
         {
-            TypeSyntax type = null;
-            switch (context.Token.Type)
+            TypeSyntax type;
+            type = context.Token.Type switch
             {
-                case XP.ARRAY:
-                    type = _arrayType;
-                    break;
-                case XP.BINARY:
-                    type = _binaryType;
-                    break;
-                case XP.CODEBLOCK:
-                    type = _codeblockType;
-                    break;
-                case XP.DATE:
-                    type = _dateType;
-                    break;
-                case XP.FLOAT:
-                    type = _floatType;
-                    break;
-                case XP.CURRENCY:
-                    type = _currencyType;
-                    break;
-                case XP.PSZ:
-                    type = _pszType;
-                    break;
-                case XP.USUAL:
-                    type = _usualType;
-                    break;
-                case XP.SYMBOL:
-                    type = _symbolType;
-                    break;
-                default:
-                    type = null;
-                    break;
-            }
+                XP.ARRAY => _arrayType,
+                XP.BINARY => _binaryType,
+                XP.CODEBLOCK => _codeblockType,
+                XP.DATE => _dateType,
+                XP.FLOAT => _floatType,
+                XP.CURRENCY => _currencyType,
+                XP.PSZ => _pszType,
+                XP.USUAL => _usualType,
+                XP.SYMBOL => _symbolType,
+                _ => null,
+            };
             if (type == null)
             {
                 type = NotInDialect(_objectType, context.Token.Text);
@@ -1353,9 +1328,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XP.StatementBlockContext stmtblock,
             XSharpParserRuleContext errorcontext,
             XP.ConstructorchainContext chain = null,
-            XP.ArgumentListContext args = null,
-            bool isInInterface = false,
-            IList<object> localFunctions = null)
+            XP.ArgumentListContext args = null
+            )
         {
             var attributes = getAttributes(atts);
             var parameters = getParameters(paramlist);
@@ -1543,7 +1517,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             base.ExitClass_(context);
             var csNode = context.Get<CSharpSyntaxNode>();
-            ClassDeclarationSyntax classdecl = null;
+            ClassDeclarationSyntax classdecl;
             if (csNode is ClassDeclarationSyntax)
                 classdecl = csNode as ClassDeclarationSyntax;
             else if (csNode is NamespaceDeclarationSyntax)
@@ -1562,7 +1536,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Data.HasInstanceCtor = false;
                 foreach (var m in members)
                 {
-                    if (m is ConstructorDeclarationSyntax && !((ConstructorDeclarationSyntax)m).IsStatic())
+                    if (m is ConstructorDeclarationSyntax cds && !cds.IsStatic())
                     {
                         context.Data.HasInstanceCtor = true;
                         break;
@@ -1623,7 +1597,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Data.HasClipperCallingConvention = false;
             }
             var ctor = createConstructor(context, mods, context.Attributes, context.ParamList, context.StmtBlk, context,
-                context.Chain, context.Chain?.ArgList, context.isInInterface(), context.LocalFunctions);
+                context.Chain, context.Chain?.ArgList);
             if (ctor != null)
             {
                 context.Put(ctor);
@@ -1684,7 +1658,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Convert method to constructor
                     var mods = context.Modifiers?.GetList<SyntaxToken>() ?? MakeList<SyntaxToken>(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
                     var ctor = createConstructor(context,
-                        mods, context.Attributes, context.ParamList, context.StmtBlk, context, null, null, false, context.LocalFunctions);
+                        mods, context.Attributes, context.ParamList, context.StmtBlk, context, null, null);
                     if (ctor != null)
                     {
                         if (!context.isInClass() && context.ClassId != null)
@@ -1959,7 +1933,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         private T getAliasedSubNode<T>(XSharpParserRuleContext xnode) where T : XSharpParserRuleContext
         {
-            if (xnode is XP.PrimaryExpressionContext prim)
+            if (xnode is XP.PrimaryExpressionContext)
             {
                 if (xnode.GetChild(0) is XP.AliasedExpressionContext aexp)
                 {
@@ -2094,9 +2068,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
             // Handle (SomeExpression)->FieldName := value
-            if (left is IdentifierNameSyntax && context.Parent is XP.AliasedExprContext aec)
+            if (left is IdentifierNameSyntax && context.Parent is XP.AliasedExprContext)
             {
-                var alias = aec.Alias.Get<ExpressionSyntax>();
                 string name = left.XNode.GetText();
                 MemVarFieldInfo fieldInfo = findMemVar(name);
                 ExpressionSyntax field;
@@ -2164,7 +2137,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // "real" exceptions inside a BEGIN SEQUENCE (_SequenceError)
             // without this option the behavior is like the behavior of Vulcan
             //
-
 
             context.SetSequencePoint(context.end);
             var stmts = _pool.Allocate<StatementSyntax>();
@@ -2447,14 +2419,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // For, Foreach, While, Repeat, but also BEGIN .. END and WITH .. END WITH
                     return NeedsReturn(blockstmt.Statements._Stmts);
 
-
             }
 
             return true;
         }
         private ExpressionSyntax GetReturnExpression(TypeSyntax returnType)
         {
-            ExpressionSyntax result = null;
+            ExpressionSyntax result;
             if (isVoidType(returnType))
             {
                 return null;
@@ -2673,6 +2644,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 var zero = GenerateLiteral(0);
+                string text;
                 switch (token.Type)
                 {
                     case XP.NIL:
@@ -2715,44 +2687,58 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         return MakeDefaultParameter(GenerateLiteralNull(), zero);                          // 0 = regular .Net Value
                     case XP.INT_CONST:
                         var ts = datatype.Get<TypeSyntax>();
+                        text = token.Text;
+                        switch (text[text.Length - 1])
+                        {
+                            case 'L':
+                            case 'l':
+                            case 'U':
+                            case 'u':
+                                text = text.Substring(0, text.Length - 1);
+                                break;
+                        }
+                        var iValue = System.Int64.Parse(text);
                         if (negative)
                         {
-                            string text = token.Text;
-                            switch (text[text.Length - 1])
-                            {
-                                case 'L':
-                                case 'l':
-                                case 'U':
-                                case 'u':
-                                    text = text.Substring(0, text.Length - 1);
-                                    break;
-                            }
-                            Int64 iValue = Int64.Parse(text) * -1;
-                            ExpressionSyntax expr1 = GenerateLiteral(iValue);
-                            if (datatype is XP.SimpleDatatypeContext sdtc && sdtc.TypeName.NativeType != null)
-                            {
-                                expr1 = MakeCastTo(ts, expr1);
-                            }
-                            return MakeDefaultParameter(expr1, zero);   // 0 = regular .Net Value
+                            iValue = -iValue;
                         }
-                        else
+                        ExpressionSyntax expr1 = GenerateLiteral(iValue);
+                        IToken startToken = null;
+                        if (datatype is XP.SimpleDatatypeContext sdtc)
                         {
-                            ExpressionSyntax expr1 = GenerateLiteral(token, initexpr);
-                            if (datatype is XP.SimpleDatatypeContext sdtc && sdtc.TypeName.NativeType != null)
+                            if (sdtc.TypeName.NativeType != null)
+                                startToken = sdtc.TypeName.NativeType.Start;
+                            if (sdtc.TypeName.XType != null)
+                                startToken = sdtc.TypeName.XType.Start;
+                            if (startToken != null)
                             {
-                                expr1 = MakeCastTo(ts, expr1);
+                                switch (startToken.Type)
+                                {
+                                    case XP.REAL8:
+                                    case XP.REAL4:
+                                    case XP.DECIMAL:
+                                    case XP.FLOAT:
+                                    case XP.CURRENCY:
+                                        expr1 = GenerateLiteral(Convert.ToDouble(iValue));
+                                        break;
+                                    default:
+                                        if (sdtc.TypeName.NativeType != null)
+                                            expr1 = MakeCastTo(ts, expr1);
+                                        break;
+                                }
                             }
-                            return MakeDefaultParameter(expr1, zero);   // 0 = regular .Net Value
                         }
+                        return MakeDefaultParameter(expr1, zero);   // 0 = regular .Net Value
                     case XP.REAL_CONST:
                         double dValue;
-                        if (token.Text[0] == '$')
+                        text = token.Text;
+                        if (text[0] == '$')
                         {
-                            dValue = double.Parse(token.Text.Substring(1, token.Text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                            text = text.Substring(1, text.Length - 1);
                         }
                         else
                         {
-                            switch (token.Text.Last())
+                            switch (text.Last())
                             {
                                 case 'M':
                                 case 'm':
@@ -2760,21 +2746,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 case 's':
                                 case 'D':
                                 case 'd':
-                                    dValue = double.Parse(token.Text.Substring(0, token.Text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                                    text = text.Substring(0, text.Length - 1);
                                     break;
                                 default:
-                                    dValue = double.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
                                     break;
                             }
                         }
+                        dValue = double.Parse(text, System.Globalization.CultureInfo.InvariantCulture);
                         if (negative)
                         {
-                            return MakeDefaultParameter(GenerateLiteral(dValue * -1), zero);   // 0 = regular .Net Value
+                            dValue *= -1.0;   // 0 = regular .Net Value
                         }
-                        else
-                        {
-                            return MakeDefaultParameter(GenerateLiteral(dValue), zero);   // 0 = regular .Net Value
-                        }
+                        return MakeDefaultParameter(GenerateLiteral(dValue), zero);   // 0 = regular .Net Value
 
                     default:
                         return MakeDefaultParameter(GenerateLiteral(token), zero);   // 0 = regular .Net Value
@@ -3138,7 +3121,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-            string name = null;
+            string name;
             if (expr is IdentifierNameSyntax ins)
             {
                 // Intrinsic functions that depend on Vulcan types
@@ -3331,8 +3314,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         type: arrayOfUsual,
                                         identifier: SyntaxFactory.Identifier(XSharpSpecialNames.ClipperArgs),
                                         @default: null);
-                        var pars = new List<ParameterSyntax>();
-                        pars.Add(par);
+                        var pars = new List<ParameterSyntax>
+                        {
+                            par
+                        };
                         _clipperParams = MakeParameterList(pars);
                         _pool.Free(modifiers);
                     }
@@ -3436,7 +3421,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ref TypeSyntax dataType)
         {
             var prc = (XSharpParserRuleContext)context;
-            var inLocalFuncProc = context is XP.LocalfuncprocContext;
             InitializeArrayTypes();
             if (context.Data.HasTypedParameter && context.Data.HasClipperCallingConvention)
             {
@@ -3802,9 +3786,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var assign = GenerateExpressionStatement(MakeSimpleAssignment(left, right), context);
                     if (last != null)
                     {
-                        var list = new List<StatementSyntax>();
-                        list.Add(assign);
-                        list.Add(last);
+                        var list = new List<StatementSyntax>() { assign, last };
                         var block = MakeBlock(list);
                         block.XGenerated = true;
                         last = GenerateIfStatement(cond, block, null);
@@ -3987,7 +3969,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitLiteralArray([NotNull] XP.LiteralArrayContext context)
         {
-            ExpressionSyntax expr = null;
+            ExpressionSyntax expr;
             // detect typed arrays.
             // <LONG> {...} indicates an array of type LONG -> Handled by base class
             if (context.Type != null)
@@ -4148,8 +4130,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Convert everything to a stmt block when it is a real codeblock and "just" an expression
             // so it is easier to fix Void expressions as last expression in the list
             base.ExitCodeblockCode(context);
-            var block = context.CsNode as BlockSyntax;
-            if (block == null)
+            if (context.CsNode is not BlockSyntax)
             {
                 // No need to do anything. We now support codeblocks with an expression body
                 /*

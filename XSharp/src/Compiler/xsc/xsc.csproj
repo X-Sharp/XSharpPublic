@@ -27,9 +27,11 @@
   
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(DefineConstants);TRACE;DEBUG;XSHARP;</DefineConstants>
+    <TargetFrameworks>net472</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Public|AnyCPU'">
     <DefineConstants>$(DefineConstants);TRACE;XSHARP;</DefineConstants>
+    <TargetFrameworks>net472</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DefineConstants>$(DefineConstants);NDEBUG;XSHARP;</DefineConstants>

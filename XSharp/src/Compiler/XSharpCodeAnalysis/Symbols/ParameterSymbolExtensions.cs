@@ -187,9 +187,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     if (atype.IsOurAttribute(OurTypeNames.ActualTypeAttribute))
                     {
                         object t = attr.CommonConstructorArguments[0].DecodeValue<object>(SpecialType.None);
-                        if (t is TypeSymbol)
+                        if (t is TypeSymbol t2)
                         {
-                            type = (TypeSymbol)t;
+                            type = t2;
                             break;
                         }
                     }

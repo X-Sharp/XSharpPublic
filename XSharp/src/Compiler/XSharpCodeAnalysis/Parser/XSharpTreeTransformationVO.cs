@@ -62,17 +62,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             );
 
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
-                attributeLists: MakeList( MakeAttributeList(default, atts)),
+                attributeLists: MakeList(MakeAttributeList(null, atts)),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: default,
-                baseList: default,
-                constraintClauses: default,
+                typeParameterList: null,
+                baseList: null,
+                constraintClauses: null,
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : default,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: default);
+                semicolonToken: null);
             m.XVoStructUnion = true;
             if (context.Namespace != null)
             {
@@ -95,13 +95,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (sdt.TypeName.NativeType.Token.Type == XP.LOGIC)
                     {
-                        string winBoolType = _options.XSharpRuntime ? XSharpQualifiedTypeNames.WinBool : VulcanQualifiedTypeNames.WinBool;
+                        var winBoolType = _options.XSharpRuntime ? XSharpQualifiedTypeNames.WinBool : VulcanQualifiedTypeNames.WinBool;
                         varType = GenerateQualifiedName(winBoolType);
                     }
                 }
                 if (sdt.TypeName.XType != null)
                 {
-                    string winDateType = _options.XSharpRuntime ? XSharpQualifiedTypeNames.WinDate: VulcanQualifiedTypeNames.WinDate; // UInt32
+                    var winDateType = _options.XSharpRuntime ? XSharpQualifiedTypeNames.WinDate : VulcanQualifiedTypeNames.WinDate; // UInt32
                     if (sdt.TypeName.XType.Token.Type == XP.DATE)
                     {
                         varType = GenerateQualifiedName(winDateType);
@@ -113,8 +113,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVostructmember([NotNull] XP.VostructmemberContext context)
         {
-            bool isDim = context.Dim != null;
-            bool isUnionMember = (context.Parent is XP.VounionContext);
+            var isDim = context.Dim != null;
+            var isUnionMember = (context.Parent is XP.VounionContext);
             var varType = voStructMemberDataType(context);
 
             varType.XCanBeVoStruct = varType is not PredefinedTypeSyntax;
@@ -147,7 +147,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     MakeSeparatedList(
                         isDim ? GenerateBuffer(context.Id.Get<SyntaxToken>(), MakeBracketedArgumentList(context.ArraySub._ArrayIndex.Select(e => _syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>())).ToArray()))
                         : GenerateVariable(context.Id.Get<SyntaxToken>()))),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))); 
         }
 
         public override void EnterVounion([NotNull] XP.VounionContext context)
@@ -202,7 +202,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(m);
         }
-
     }
 }
 

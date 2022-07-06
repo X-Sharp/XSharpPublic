@@ -120,7 +120,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return true;
         }
 
-        private bool CanFollowCast(int c)
+        private static bool CanFollowCast(int c)
         {
             // This code is derived from the Roslyn code for CanFollowCast() In LanguageParser.Cs
             switch (c)
@@ -170,9 +170,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case INC:                             // SyntaxKind.MinusMinusToken:
                 case LBRKT:                           // SyntaxKind.OpenBracketToken:
                 case DOT:                             // SyntaxKind.DotToken:
-                                                      // SyntaxKind.MinusGreaterThanToken     used for pointer type in C#
+                // case ALIAS                         // SyntaxKind.MinusGreaterThanToken     Disabled we allow (ABC)->FieldName
                 case DEFAULT:                         // SyntaxKind.QuestionQuestionToken:
-                case Eof:                             // SyntaxKind.EndOfFileToken:     
+                case Eof:                             // SyntaxKind.EndOfFileToken:
+                case UDCSEP:                          // SyntaxKind.EqualsGreaterThanToken: for lambda expressions
+                                                      // SyntaxKind.DotDotToken:  // used for ranges. We do not have that
                     return false;
             }
             return true;
@@ -194,7 +196,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public PragmaBase Pragma;
         }
-
 
         #region Interfaces
         public interface IPartialPropertyContext : ITypeContext
@@ -221,12 +222,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             StatementBlockContext FinallyBlockStatements { get; }
         }
 
-
         public interface ITypeParametersContext
         {
             public TypeparametersContext TypeParameters { get; }
             public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses { get; }
-
         }
         public interface IMemberWithBodyContext : IMemberContext, IBlockStmtContext
         {
@@ -246,7 +245,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public interface ITypeContext : IEntityContext
         {
 #if !VSPARSER
-         TypeData Data { get; }
+            TypeData Data { get; }
 #endif
         }
         public interface IMemberContext : IEntityContext
@@ -256,15 +255,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #endif
             DatatypeContext ReturnType { get; }
             ParameterListContext Params { get; }
-
         }
         public interface IEntityContext : IRuleNode, IXParseTree
         {
             string Name { get; }
             string ShortName { get; }
         }
-
-
 
         public interface IXPPMemberContext : IMemberWithBodyContext, IBodyWithLocalFunctions
         {
@@ -322,7 +318,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #if !VSPARSER
         public class TypeData
         {
-            TypeFlags setFlag(TypeFlags oldFlag, TypeFlags newFlag, bool set)
+            static TypeFlags setFlag(TypeFlags oldFlag, TypeFlags newFlag, bool set)
             {
                 if (set)
                     oldFlag |= newFlag;
@@ -355,7 +351,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public class MemberData
         {
-            MemberFlags setFlag(MemberFlags oldFlag, MemberFlags newFlag, bool set)
+            static MemberFlags setFlag(MemberFlags oldFlag, MemberFlags newFlag, bool set)
             {
                 if (set)
                     oldFlag |= newFlag;
@@ -508,7 +504,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
                 return null;
             }
-        
         }
 #endif
         public partial class ScriptContext : IEntityContext
@@ -565,7 +560,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public StatementBlockContext Statements { get { return StmtBlk; } }
             public StatementBlockContext FinallyBlockStatements { get { return FinBlock; } }
-
         }
         public partial class TryStmtContext : IFinallyBlockStmtContext
         {
@@ -1055,8 +1049,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public bool XSharpRuntime;
         }
-
-
         public partial class XpppropertyContext : IMemberContext
         {
 #if !VSPARSER
@@ -1118,8 +1110,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpper();
             internal string FieldName => Name.GetText().ToUpper();
         }
-
-
     }
 
     [DebuggerDisplay("{DebuggerDisplay()}")]
@@ -1148,8 +1138,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             this(node: null, code: code, args: args)
         {
             var token = new XSharpToken(0);
-            var node = new XTerminalNodeImpl(token);
-            node.SourceFileName = fileName;
+            var node = new XTerminalNodeImpl(token)
+            {
+                SourceFileName = fileName
+            };
             this.Node = node;
         }
         internal ParseErrorData(IXParseTree node, ErrorCode code) :
@@ -1315,7 +1307,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
 
         private FieldFlags _flags;
-        FieldFlags setFlag(FieldFlags oldFlag, FieldFlags newFlag, bool set)
+        static FieldFlags setFlag(FieldFlags oldFlag, FieldFlags newFlag, bool set)
         {
             if (set)
                 oldFlag |= newFlag;
@@ -1587,5 +1579,4 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return parent.isInStructure();
         }
     }
-
 }

@@ -14,7 +14,7 @@ if /i "%1" == "All" goto All
 goto Error
 :All
 Echo Restore nuget packages once for all builds
-dotnet restore Compiler.sln 
+dotnet restore Compiler.sln  -p:Configuration=Release
 SET XSHARPBUILDNESTED=1
 call Build Debug
 call Build Release
@@ -31,7 +31,7 @@ rem Next line can help to debug where DotNet.exe finds the right SDK
 rem SET COREHOST_TRACE=1
 if "%XSHARPBUILDNESTED%" == "1" goto Build
 Echo Restoring packages for configuration %1 
-dotnet restore Compiler.sln 
+dotnet restore Compiler.sln  -p:Configuration=%1
 :Build
 Echo Building output for configuration %1
 set AntlrCall=java -jar eng\antlr4-csharp-4.6.1-SNAPSHOT-complete.jar

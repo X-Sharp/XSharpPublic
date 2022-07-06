@@ -294,14 +294,32 @@ namespace Microsoft.CodeAnalysis.CSharp
                 rewrittenOperand.WasCompilerGenerated = true;
                 return ConversionKind.Identity;
             }
-            if (rewrittenType.SpecialType == SpecialType.System_Decimal && _compilation.Options.XSharpRuntime)
+            if (rewrittenType.SpecialType == SpecialType.System_Decimal)
             {
-                MethodSymbol m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_Decimal));
-                rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
-                rewrittenOperand.WasCompilerGenerated = true;
+                if (_compilation.Options.XSharpRuntime)
+                {
+                    // Vulcan does not support this !
+                    MethodSymbol m = getImplicitOperatorByReturnType(usualType, rewrittenType);
+                    rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                    rewrittenOperand.WasCompilerGenerated = true;
+                }
+                else
+                {
+                    MethodSymbol m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_Double));
+                    rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                    rewrittenOperand.WasCompilerGenerated = true;
+                    rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: false, false);
+                }
                 return ConversionKind.Identity;
             }
 
+            if (rewrittenType.IsEnumType())
+            {
+                var enumType = rewrittenType.GetEnumUnderlyingType();
+                rewrittenOperand = MakeConversionNode(rewrittenOperand, enumType, @checked: false, false);
+                rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: false, false);
+                return ConversionKind.Identity;
+            }
             if (rewrittenType.IsPointerType())
             {
                 // Pointer types are not really boxed
@@ -319,14 +337,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return ConversionKind.ExplicitPointerToPointer;
                 }
             }
-            else if (rewrittenType.SpecialType == SpecialType.System_DateTime)
+            if (rewrittenType.SpecialType == SpecialType.System_DateTime)
             {
                 rewrittenOperand = _factory.StaticCall(usualType, ReservedNames.ToObject, rewrittenOperand);
                 return ConversionKind.Unboxing;
             }
             else // System.Decimals, Objects and reference types, but not String
             {
-
                 // check to see if we are casting to an interface that the usual type supports
                 if (rewrittenType.IsInterfaceType())
                 {

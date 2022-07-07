@@ -204,20 +204,34 @@ namespace Microsoft.CodeAnalysis.CSharp
                         explicitCastInCode: explicitCastInCode,
                         rewrittenType: rewrittenType);
 
-                case ConversionKind.Boxing:
 
 #if XSHARP
+                case ConversionKind.Unboxing:
+                    if (rewrittenType.IsUsualType())
+                    {
+                        conversion = Conversion.GetTrivialConversion(
+                            UnBoxToUsualType(ref rewrittenOperand, conversion, rewrittenType, explicitCastInCode));
+                    }
+                    break;
+                case ConversionKind.Boxing:
                     // We store special conversions as a conversion with a "special" property
                     if (rewrittenOperand.Type.IsUsualType())
                     {
                         conversion = Conversion.GetTrivialConversion(
                             UnBoxUsualType(ref rewrittenOperand, conversion, rewrittenType, explicitCastInCode));
                     }
+                    else if (rewrittenType.IsUsualType())
+                    {
+                        conversion = Conversion.GetTrivialConversion(
+                            UnBoxToUsualType(ref rewrittenOperand, conversion, rewrittenType, explicitCastInCode));
+                    }
                     else if (conversion.IsSpecial)
                     {
                         conversion = Conversion.GetTrivialConversion(
                             UnBoxSpecialType(ref rewrittenOperand, conversion, rewrittenType, explicitCastInCode));
                     }
+#else
+                case ConversionKind.Boxing:
 #endif
                     if (!_inExpressionLambda)
                     {

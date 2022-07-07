@@ -402,6 +402,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                  return Conversion.ImplicitReference;
             }
+            if (srcType == SpecialType.System_Object || dstType == SpecialType.System_Object)
+            {
+                var xnode = sourceExpression.Syntax.XNode as XSharpParserRuleContext;
+                if (xnode.IsCastClass())
+                {
+                    // __CASTCLASS(USUAL, OBJECT)
+                    // not really boxing but we'll handle the actual conversion later
+                    // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
+                    return Conversion.Special;
+                }
+            }
             // when nothing else, then use the Core rules
             return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
         }
@@ -592,17 +603,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // always implicit numeric conversion
                     return Conversion.ImplicitNumeric;
-                }
-            }
-            if (voCast && srcType == SpecialType.System_Object)
-            {
-                var xnode = sourceExpression.Syntax.XNode as XSharpParserRuleContext;
-                if (xnode.IsCastClass() && destination.IsUsualType())
-                {
-                    // __CASTCLASS(USUAL, OBJECT)
-                    // not really boxing but we'll handle the actual conversion later
-                    // see UnBoxXSharpType() in LocalRewriter_Conversion.cs
-                    return Conversion.Special;
                 }
             }
             return Conversion.NoConversion;

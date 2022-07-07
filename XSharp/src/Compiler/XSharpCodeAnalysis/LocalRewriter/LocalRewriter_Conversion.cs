@@ -6,7 +6,7 @@
 #nullable disable
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using System.Diagnostics;
-
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class LocalRewriter
@@ -274,6 +274,36 @@ namespace Microsoft.CodeAnalysis.CSharp
             rewrittenOperand.WasCompilerGenerated = true;
             return ConversionKind.Identity;
         }
+        private ConversionKind UnBoxToUsualType(ref BoundExpression rewrittenOperand, Conversion conversion, TypeSymbol rewrittenType, bool explicitCastInCode)
+        {
+            Debug.Assert(rewrittenType.IsUsualType());
+            ConversionKind conversionKind = conversion.Kind;
+            var usualType = rewrittenType;
+            if (rewrittenOperand.Type.IsInterfaceType())
+            {
+                // Ticket C575: Assign Interface to USUAL
+                // Marked as Boxing in Conversions.cs but not with the "Special" marker.
+                // Implementation here: Create new usual by getting the ImplicitOperator OBJECT -> USUAL
+                var m = getImplicitOperatorByParameterType(usualType, _compilation.GetSpecialType(SpecialType.System_Object));
+                if (m != null)
+                {
+                    rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                    rewrittenOperand.WasCompilerGenerated = true;
+                    conversionKind = ConversionKind.Identity;
+                }
+            }
+            var xnode = rewrittenOperand.Syntax.Parent?.XNode as XSharpParserRuleContext;
+            if (xnode is XSharpParser.AssignmentExpressionContext aec)
+            {
+                xnode = aec.Right;
+            }
+            if (xnode != null && xnode.IsCastClass())
+            {
+                conversionKind = ConversionKind.Unboxing;
+            }
+            return conversionKind;
+        }
+
         private ConversionKind UnBoxUsualType(ref BoundExpression rewrittenOperand, Conversion conversion, TypeSymbol rewrittenType, bool explicitCastInCode)
         {
             Debug.Assert(rewrittenOperand.Type.IsUsualType());

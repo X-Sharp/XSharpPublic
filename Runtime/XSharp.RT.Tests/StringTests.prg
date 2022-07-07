@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -24,13 +24,13 @@ BEGIN NAMESPACE XSharp.RT.Tests
             cString := "the quick brown fox jumps over the lazy dog 1234567890"
             cDesc   := Descend(cString)
             Assert.Equal(cString:Length, cDesc:Length)
-            FOR VAR i := 1 TO Slen(cString)
+            FOR VAR i := 1 TO SLen(cString)
                 Assert.Equal(Asc(Substr(cDesc,i,1)), 256 - Asc(Substr(cString,i,1)))
             NEXT
             cString := "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG !@#$%^&*()"
             cDesc   := Descend(cString)
             Assert.Equal(cString:Length, cDesc:Length)
-            FOR VAR i := 1 TO Slen(cString)
+            FOR VAR i := 1 TO SLen(cString)
                 Assert.Equal(Asc(Substr(cDesc,i,1)), 256 - Asc(Substr(cString,i,1)))
             NEXT
             cString := ""
@@ -39,9 +39,9 @@ BEGIN NAMESPACE XSharp.RT.Tests
              NEXT
              cDesc   := Descend(cString)
              Assert.Equal(cString:Length, cDesc:Length)
-             FOR VAR i := 1 TO Slen(cString)
+             FOR VAR i := 1 TO SLen(cString)
                  Assert.Equal(Asc(Substr(cDesc,i,1)), 256 - Asc(Substr(cString,i,1)))
-             NEXT     
+             NEXT
             RETURN
 
 		[Fact, Trait("Category", "String")];
@@ -53,7 +53,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal("1234512345", Transform("1234512345", "XXXXXXXXXX") )
 			Assert.Equal("1234"      , Transform("1234", "XX99") )
 			Assert.Equal("ITALIA"    , Transform("Italia", "@!") )
-			
+
 			LOCAL c AS STRING
 			c := "Not nil!"
 			Assert.False(c == NIL)
@@ -63,7 +63,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.False(c == NIL)
 			Assert.True(c != NIL)
 		RETURN
-	
+
 		[Fact, Trait("Category", "StringEq")];
 		METHOD StringEquality() AS VOID
 			LOCAL c1,c2 AS STRING
@@ -72,16 +72,16 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			u1 := c1 := "TESTLONG"
 			u2 := c2 := "TEST"
 			exact := SetExact( FALSE )
-			
+
 			Assert.Equal(TRUE, c1 = c2)
 			Assert.Equal(TRUE, c1 != c2)
-	
+
 			Assert.Equal(TRUE, u1 = u2)
 			Assert.Equal(FALSE, u1 != u2)
-	
-			SetExact( exact )	
+
+			SetExact( exact )
 		RETURN
-	
+
 		[Fact, Trait("Category", "Str")];
 		METHOD StrTests() AS VOID
 			LOCAL deci,thou,digit,decimal,fixed_,digitfixed AS USUAL
@@ -91,7 +91,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			decimal := SetDecimal(3)
 			fixed_ := SetFixed(FALSE)
 			digitfixed := SetDigitFixed(FALSE)
-	
+
 			Assert.Equal( "     1.2"			, Str(1.2) )
 			Assert.Equal( "    12.3"			, Str(12.3) )
 			Assert.Equal( "    12.34"			, Str(12.34) )
@@ -116,8 +116,8 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal( "  0,00" , Transform(0 , "999.99") )
 			Assert.Equal( "  0,0" , Transform(0 , "999.9") )
 			Assert.Equal( " 0,0" , Transform(0 , "99.9") )
-			
-			
+
+
 			SetFixed(TRUE)
 			SetDigit(5)
 			Assert.Equal("  123" , Str(123))
@@ -145,7 +145,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			SetDigit(10)
 			Assert.Equal(" 123456789" , Str(123456789))
 			Assert.Equal("**********" , Str(12345678901))
-			
+
 			SetDecimal(2)
 			SetDecimalSep(Asc(","))
 			SetThousandSep(Asc("."))
@@ -177,8 +177,8 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal( " 123,5"	, Str(FloatFormat(123.456 , 6, 1) ) )
 			Assert.Equal( "123,46"	, Str(FloatFormat(123.456 , 6, 2) ) )
 			Assert.Equal( " 123,46"	, Str(FloatFormat(123.456 , 7, 2) ) )
-			
-	
+
+
 			SetDecimalSep(deci)
 			SetThousandSep(thou)
 			SetDigit(digit)
@@ -186,18 +186,18 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			SetFixed(fixed_)
 			SetDigitFixed(digitfixed)
 		RETURN
-	
+
 		[Fact, Trait("Category", "Str")];
 		METHOD Str_With_SetFixed_TRUE() AS VOID
-	
-		   SetDecimalSep(Asc(".")) 
-		   SetThousandSep(Asc(",")) 
+
+		   SetDecimalSep(Asc("."))
+		   SetThousandSep(Asc(","))
 		   SetDecimal(3)
 		   SetDigit(12)
-	
+
 		   SetFixed(TRUE)
 		   SetDigitFixed(TRUE)
-	   
+
 		   Assert.Equal( Str(12.34)            		, "          12.340")
 		   Assert.Equal( Str1(12.34)          		, "          12.340")
 		   Assert.Equal( Str(123.456)         		, "         123.456")
@@ -236,8 +236,8 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
 		   SetDigit(8)
 		   SetDecimal(2)
-		   SetDecimalSep(Asc(",")) 
-		   SetThousandSep(Asc(".")) 
+		   SetDecimalSep(Asc(","))
+		   SetThousandSep(Asc("."))
 
 		   Assert.Equal( Str(123456789.1)	, "***********")
 		   Assert.True(Str1(123456789.1):StartsWith("*****"))
@@ -249,18 +249,18 @@ BEGIN NAMESPACE XSharp.RT.Tests
 		   Assert.Equal(Str1(123456.1)		, "  123456,10")
 
 		RETURN
-	
+
 		[Fact, Trait("Category", "Str")];
 		METHOD Str_With_SetFixed_FALSE() AS VOID
-	
-		   SetDecimalSep(Asc(".")) 
-		   SetThousandSep(Asc(",")) 
+
+		   SetDecimalSep(Asc("."))
+		   SetThousandSep(Asc(","))
 		   SetDecimal(3)
 		   SetDigit(12)
-	
+
 		   SetFixed(FALSE)
-		   SetDigitFixed(FALSE) 
-	   
+		   SetDigitFixed(FALSE)
+
 		   Assert.Equal( Str(12.34)            		, "          12.34")
 		   Assert.Equal( Str1(12.34)          		, "          12.34")
 		   Assert.Equal( Str(123.456)         		, "         123.456")
@@ -292,7 +292,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 		   Assert.Equal( Str1(-12.3456)         	, "         -12.3456")
 		   Assert.Equal( Str(-12.34 , 10, 2)    	, "    -12.34")
 		   Assert.Equal( Str(-12.34 , 5, 2)     	, "-12.3")	 //VO: -2.34
-		   Assert.Equal( Str(-12.34 , 4, 2)     	, "-12.")    // VO 
+		   Assert.Equal( Str(-12.34 , 4, 2)     	, "-12.")    // VO
 		   Assert.Equal( Str(-12.34 , 4, 1)     	, "-12.")    //VO: -2.3
 		   Assert.Equal( Str(-12.34 , 2, 1)     	, "**")
 
@@ -344,12 +344,12 @@ BEGIN NAMESPACE XSharp.RT.Tests
 				XSharp.RuntimeState.CompilerOptionVO13 := TRUE
 				c := SetCollation(#WINDOWS)
 				e := SetExact(FALSE)
-				
+
 				uAB := "AB"
 				uA := "A"
 				sAB := uAB
 				sA := uA
-				
+
 				Assert.True ( "AB" = "A"  )
 				Assert.False( "A" = "AB"  )
 				Assert.True ( uAB = uA    )
@@ -370,7 +370,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 				Assert.True ( uAB <= uA   )
 				Assert.True ( sAB >= sA   )
 				Assert.True ( sAB <= sA   )
-				
+
 				Assert.False( "AB" > "A"  )
 				Assert.False( "AB" < "A"  )
 				Assert.False( uAB > uA    )
@@ -392,12 +392,12 @@ BEGIN NAMESPACE XSharp.RT.Tests
 				XSharp.RuntimeState.CompilerOptionVO13 := TRUE
 				c := SetCollation(#CLIPPER)
 				e := SetExact(FALSE)
-				
+
 				uAB := "AB"
 				uA := "A"
 				sAB := uAB
 				sA := uA
-				
+
 				Assert.True ( "AB" = "A"  )
 				Assert.False( "A" = "AB"  )
 				Assert.True ( uAB = uA    )
@@ -418,7 +418,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 				Assert.True ( uAB <= uA   )
 				Assert.True ( sAB >= sA   )
 				Assert.True ( sAB <= sA   )
-				
+
 				Assert.False( "AB" > "A"  )
 				Assert.False( "AB" < "A"  )
 				Assert.False( uAB > uA    )
@@ -440,12 +440,12 @@ BEGIN NAMESPACE XSharp.RT.Tests
 				XSharp.RuntimeState.CompilerOptionVO13 := TRUE
 				c := SetCollation(#WINDOWS)
 				e := SetExact(TRUE)
-				
+
 				uAB := "AB"
 				uA := "A"
 				sAB := uAB
 				sA := uA
-				
+
 				Assert.False( "AB" = "A"  )
 				Assert.False( "A" = "AB"  )
 				Assert.False( uAB = uA    )
@@ -466,7 +466,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 				Assert.False( uAB <= uA   )
 				Assert.True ( sAB >= sA   )
 				Assert.False( sAB <= sA   )
-				
+
 				Assert.True ( "AB" > "A"  )
 				Assert.False( "AB" < "A"  )
 				Assert.True ( uAB > uA    )
@@ -488,12 +488,12 @@ BEGIN NAMESPACE XSharp.RT.Tests
 				XSharp.RuntimeState.CompilerOptionVO13 := TRUE
 				c := SetCollation(#CLIPPER)
 				e := SetExact(TRUE)
-				
+
 				uAB := "AB"
 				uA := "A"
 				sAB := uAB
 				sA := uA
-				
+
 				Assert.False( "AB" = "A"  )
 				Assert.False( "A" = "AB"  )
 				Assert.False( uAB = uA    )
@@ -514,7 +514,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 				Assert.False( uAB <= uA   )
 				Assert.True ( sAB >= sA   )
 				Assert.False( sAB <= sA   )
-				
+
 				Assert.True ( "AB" > "A"  )
 				Assert.False( "AB" < "A"  )
 				Assert.True ( uAB > uA    )
@@ -529,6 +529,35 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
 
 #pragma options ("vo13" , default)
+
+  [Fact, Trait("Category", "Between")];
+	METHOD BetweenTest() AS VOID
+        local s1, s2, s3 as string
+        s1 := "BBB"
+        s2 := "AAA"
+        s3 := "CCC"
+        SetExact(TRUE)
+        RuntimeState.CompilerOptionVO13 := true
+        Assert.True(Between(s1, s2, s3))
+        Assert.True(Between(s2, s2, s3))
+        Assert.True(Between(s3, s2, s3))
+        RuntimeState.CompilerOptionVO13 := false
+        Assert.True(Between(s1, s2, s3))
+        Assert.True(Between(s2, s2, s3))
+        Assert.True(Between(s3, s2, s3))
+        RuntimeState.CompilerOptionVO13 := true
+        Assert.False(Between(s2, s1, s3))
+        RuntimeState.CompilerOptionVO13 := false
+        Assert.False(Between(s2, s1, s3))
+
+        SetExact(FALSE)
+        // AAA = A
+        S2 := "AAA"
+        s1 := "A"
+        RuntimeState.CompilerOptionVO13 := true
+        Assert.True(Between(s1, s2, s3))
+        RuntimeState.CompilerOptionVO13 := false
+        Assert.True(Between(s1, s2, s3))
 
 	END CLASS
 

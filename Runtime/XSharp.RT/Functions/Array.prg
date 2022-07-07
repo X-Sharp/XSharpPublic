@@ -216,7 +216,6 @@ INTERNAL STATIC CLASS ArrayHelpers
         IF nStart == 0
             THROW  Error.ArgumentError( __FUNCTION__, nameof(nStart), 3, __CavoStr( VOErrors.ARGCANNOTBEZERO ), { nStart } )
         ENDIF
-
         IF nCount != 0
 
             IF nStart < 0
@@ -403,7 +402,7 @@ FUNCTION ADel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
             __Array.FoxArrayHelpers:ADel( aTarget, (LONG) dwPosition, 2)
             RETURN  aTarget
         ELSE
-            RETURN _CallClipFunc(#__FoxADel, aTarget, dwPosition, 2)
+            RETURN _CallClipFunc(#__FoxADel, {aTarget, dwPosition, 2})
         ENDIF
     ENDIF
     aTarget:Delete((INT) dwPosition)
@@ -465,7 +464,7 @@ FUNCTION AIns(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
             __Array.FoxArrayHelpers:AIns( aTarget, dwPosition, 1)
             RETURN aTarget
         ELSE
-            RETURN _CallClipFunc(#__FoxAIns, aTarget, dwPosition, 1)
+            RETURN _CallClipFunc(#__FoxAIns, {aTarget, dwPosition, 1})
         ENDIF
 
     ENDIF
@@ -496,7 +495,7 @@ FUNCTION ALen(aTarget AS ARRAY) AS DWORD
         IF __Array.FoxArrayHelpers:ALen != NULL
             RETURN __Array.FoxArrayHelpers:ALen(aTarget)
         ELSE
-            RETURN _CallClipFunc(#__FoxALen, aTarget)
+            RETURN _CallClipFunc(#__FoxALen, {aTarget})
         ENDIF
     ENDIF
     RETURN aTarget:Length

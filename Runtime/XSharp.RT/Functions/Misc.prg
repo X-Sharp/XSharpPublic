@@ -6,8 +6,30 @@
 
 USING System.Runtime.CompilerServices
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/between/*" />
+/// <seealso cref='O:XSharp.Core.Functions.Between'>Between</seealso>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION Between(uValue AS USUAL,uMin AS USUAL,uMax AS USUAL) AS LOGIC
 	RETURN uValue >=uMin .AND.  uValue<=uMax
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/betweentyped/*" />
+/// <seealso cref='O:XSharp.Core.Functions.Between'>Between</seealso>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Between(dValue AS DATE, dMin AS DATE, dMax AS DATE) AS LOGIC
+    RETURN ( dValue >= dMin .AND. dValue <= dMax )
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/betweentyped/*" />
+/// <seealso cref='O:XSharp.Core.Functions.Between'>Between</seealso>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Between(nValue AS CURRENCY, nMin AS CURRENCY, nMax AS CURRENCY) AS LOGIC
+    RETURN ( nValue >= nMin .AND. nValue <= nMax )
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/betweentyped/*" />
+/// <seealso cref='O:XSharp.Core.Functions.Between'>Between</seealso>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Between(nValue AS FLOAT, nMin AS FLOAT, nMax AS FLOAT) AS LOGIC
+    RETURN ( nValue >= nMin .AND. nValue <= nMax )
+
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/inlist/*" />
@@ -63,7 +85,7 @@ FUNCTION Max(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
 		RETURN IIF ((DateTime) uValue1 > (DateTime) uValue2, uValue1, uValue2)
 
 	ELSEIF (uValue1:IsDateTime .OR. uValue1:IsDate) .AND. (uValue2:IsDateTime .OR. uValue2:IsDate)
-		RETURN IIF ((DateTime) uValue1 > (DateTime) uValue2, uValue1, uValue2)
+		RETURN IIF ((Date) uValue1 > (Date) uValue2, uValue1, uValue2)
 
 	ELSEIF uValue1:IsString .AND. uValue2:IsString
 		RETURN IIF ((STRING) uValue1 > (STRING) uValue2, uValue1, uValue2)
@@ -97,8 +119,18 @@ FUNCTION Min(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
 	ELSEIF uValue1:IsDate .AND. uValue2:IsDate
 		RETURN IIF ((DATE) uValue1 <(DATE) uValue2, uValue1, uValue2)
 
+    ELSEIF uValue1:IsDateTime .AND. uValue2:IsDateTime
+		RETURN IIF ((DateTime) uValue1 <(DateTime) uValue2, uValue1, uValue2)
+
+    ELSEIF (uValue1:IsDateTime .OR. uValue1:IsDate) .AND. (uValue2:IsDateTime .OR. uValue2:IsDate)
+
+		RETURN IIF ((Date) uValue1 <(Date) uValue2, uValue1, uValue2)
+
 	ELSEIF uValue1:IsString .AND. uValue2:IsString
-		RETURN IIF ((STRING) uValue1 <(STRING) uValue2, uValue1, uValue2)
+		RETURN IIF ((STRING) uValue1 < (STRING) uValue2, uValue1, uValue2)
+
+	ELSEIF uValue1:IsSymbol .AND. uValue2:IsSymbol
+		RETURN IIF ((SYMBOL) uValue1 < (SYMBOL) uValue2, uValue1, uValue2)
 	ELSE
         THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uValue2) , "Incompatible types")
 	ENDIF

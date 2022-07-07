@@ -1,37 +1,38 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
 USING XSharp
 USING System.Globalization
+USING System.Runtime.CompilerServices
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2date/*" />
 FUNCTION Bin2Date(cString AS STRING) AS DATE
 	RETURN (DATE)(DWORD) Bin2L( cString )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/cdow/*" />
-FUNCTION CDoW(dDate AS DATE) AS STRING		
+FUNCTION CDoW(dDate AS DATE) AS STRING
 	RETURN NToCDoW(DoW(dDate))
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/cmonth/*" /> 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/cmonth/*" />
 FUNCTION CMonth(dDate AS DATE) AS STRING
 	RETURN NToCMonth( dDate:DMonth)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/condate/*" />   
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/condate/*" />
 FUNCTION ConDate(dwYear AS DWORD,dwMonth AS DWORD,dwDay AS DWORD) AS DATE
     // Year may be 0 and then we use SetEpoch to determine the right year
-    IF dwMonth == 0 .OR. dwDay == 0 
+    IF dwMonth == 0 .OR. dwDay == 0
       RETURN NULL_DATE
     ENDIF
     RETURN ConDateTime(dwYear, dwMonth, dwDay)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ctod/*" />     
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ctod/*" />
 FUNCTION CToD(cDate AS STRING) AS DATE
 	RETURN CToDt(cDate, XSharp.RuntimeState.DateFormat)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ctod/*" />     
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ctod/*" />
 /// <param name="cDateFormat">A string representating the date format to use when converting the string to a date. Should consist of D, M and Y characters and separators.</param>
 FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
     RETURN CToDt(cDate, cDateFormat)
@@ -40,19 +41,19 @@ FUNCTION CToD(cDate AS STRING, cDateFormat AS STRING) AS DATE
 FUNCTION CToDAnsi(cDate AS STRING) AS DATE
 	RETURN CToDt(Left(cDate,10), "YYYY.MM.DD")
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/date2bin/*" />      
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/date2bin/*" />
 FUNCTION Date2Bin(dValue AS DATE) AS STRING
 	RETURN L2Bin((LONG) (DATE) dValue)
- 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/day/*" />     
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/day/*" />
 FUNCTION Day(dDate AS DATE) AS DWORD
 	LOCAL day := 0  AS DWORD
 	IF ! dDate:IsEmpty
-		day :=  dDate:DDay  
+		day :=  dDate:DDay
 	ENDIF
-	RETURN day  
+	RETURN day
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dow/*" />     
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dow/*" />
 FUNCTION DoW(dDate AS DATE) AS DWORD
 	LOCAL day := 0  AS DWORD
 	IF ! dDate:IsEmpty
@@ -61,11 +62,11 @@ FUNCTION DoW(dDate AS DATE) AS DWORD
 	ENDIF
 	RETURN day
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dtoc/*" />   
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dtoc/*" />
 FUNCTION DToC(dDate AS DATE) AS STRING
     RETURN DtToC(dDate)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dtos/*" />   
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dtos/*" />
 FUNCTION DToS(dDate AS DATE) AS STRING
     RETURN DtToS(dDate)
 
@@ -80,7 +81,7 @@ FUNCTION JCDOW(d AS DATE) AS STRING
     LOCAL dow := cal:GetDayOfWeek(dt) AS DayOfWeek
 	LOCAL culture := System.Globalization.CultureInfo.GetCultureInfo("ja-JP") AS CultureInfo
 	RETURN culture:DateTimeFormat:GetDayName(dow)
-    
+
 
 /// <summary>
 /// </summary>
@@ -103,7 +104,7 @@ FUNCTION JCMONTH(d AS DATE) AS STRING
 FUNCTION JCYEAR(d AS DATE) AS STRING
 	RETURN Year(d):ToString()
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/month/*" />   
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/month/*" />
 FUNCTION Month(dDate AS DATE) AS DWORD
 	LOCAL month := 0  AS DWORD
 	IF !dDate:IsEmpty
@@ -120,21 +121,21 @@ FUNCTION SToD(cDate AS STRING) AS DATE
 	RETURN SToDt(cDate)
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/today/*" />     
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/today/*" />
 FUNCTION Today() AS DATE
 	RETURN (DATE) DateTime.Now
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/today/*" />     
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/today/*" />
 FUNCTION @@Date() AS DATE
 	RETURN (DATE) DateTime.Now
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/condate/*" />     
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/condate/*" />
 FUNCTION @@Date(dwYear AS DWORD,dwMonth AS DWORD,dwDay AS DWORD) AS DATE
 	RETURN ConDate(dwYear, dwMonth, dwDay)
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tstring/*" />     
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tstring/*" />
 FUNCTION TString(nSeconds AS USUAL) AS STRING
 	IF nSeconds:IsNil
 		RETURN XSharp.Core.Functions.TString( (DWORD) 0 )
@@ -143,12 +144,23 @@ FUNCTION TString(nSeconds AS USUAL) AS STRING
 	ELSEIF nSeconds:IsInteger
 		RETURN XSharp.Core.Functions.TString ( (DWORD) nSeconds)
 	ENDIF
-	RETURN String.Empty   
+	RETURN String.Empty
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/year/*" />     
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/year/*" />
 FUNCTION Year(dDate AS DATE) AS DWORD
 	LOCAL year := 0  AS DWORD
 	IF ! dDate:IsEmpty
 		year := dDate:DYear
 	ENDIF
 	RETURN year
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mintyped/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Min(dValue1 AS DATE, dValue2 AS DATE) AS DATE
+	RETURN IIF(dValue1 < dValue2, dValue1, dValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/maxtyped/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Max(dValue1 AS DATE, dValue2 AS DATE) AS DATE
+	RETURN IIF(dValue1 > dValue2, dValue1, dValue2)
+

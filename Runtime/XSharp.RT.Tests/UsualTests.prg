@@ -793,19 +793,95 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			LOCAL u AS USUAL
 			LOCAL a1 AS INT[]
 			LOCAL a2 AS STRING[]
-			
+
 			a1 := <INT>{ 1,2,3 }
 			u := a1 // OK
 			a1 := u
 			Assert.Equal(3, a1:Length)
 			Assert.Equal(2, a1[2])
-			
+
 			a2 := <STRING>{ "abc","def" }
 			u := a2
 			a2 := u
 			Assert.Equal(2, a2:Length)
 			Assert.Equal("abc", a2[1])
 
+        [Fact, Trait("Category", "usual MinMax Tests")];
+		METHOD UsualMinMaxTests() AS VOID
+        local u1,u2 as usual
+        u1 := Today()
+        u2 := Today() +1
+        Assert.True(Min(u1,u2) == u1)
+        Assert.True(Max(u1,u2) == u2)
+
+        u1 := "abc"
+        u2 := "def"
+        Assert.True(Min(u1,u2) == u1)
+        Assert.True(Max(u1,u2) == u2)
+
+        u1 := #abc
+        u2 := #def
+        Assert.True(Min(u1,u2) == u1)
+        Assert.True(Max(u1,u2) == u2)
+
+        u1 := DateTime.Now
+        u2 := DateTime.Now:AddDays(1)
+        Assert.True(Min(u1,u2) == u1)
+        Assert.True(Max(u1,u2) == u2)
+
+
+        u1 := ToDay()
+        u2 := DateTime.Now:AddDays(1)
+        // Datetime comparison
+        Assert.True(Min(u1,u2) == u1)
+        Assert.True(Max(u1,u2) == u2)
+
+        u1 := 42.0
+        u2 := 44.0
+        Assert.True(Min(u1,u2) == u1)
+        Assert.True(Max(u1,u2) == u2)
+
+
+        u1 := 42L
+        u2 := 44L
+        Assert.True(Min(u1,u2) == u1)
+        Assert.True(Max(u1,u2) == u2)
+
+        u1 := 42.0m
+        u2 := 44.0m
+        Assert.True(Min(u1,u2) == u1)
+        Assert.True(Max(u1,u2) == u2)
+
+        u1 := $42.0
+        u2 := $44.0
+        Assert.True(Min(u1,u2) == u1)
+        Assert.True(Max(u1,u2) == u2)
+
+
+[Fact, Trait("Category", "Numeric")];
+		METHOD BetweenTests() AS VOID
+            local d1, d2, d3 as decimal
+            d1 := 1m
+            d2 := 2m
+            d3 := 4m
+            Assert.False(Between(d1,d2,d3))
+            d1 := 3m
+            Assert.True(Between(d1,d2,d3))
+            local dw1, dw2, dw3 as dword
+            dw1 := 1u
+            dw2 := 2u
+            dw3 := 4u
+            Assert.False(Between(dw1,dw2,dw3))
+            dw1 := 3
+            Assert.True(Between(dw1,dw2,dw3))
+            local l1, l2, l3 as long
+            l1 := 1
+            l2 := 2
+            l3 := 4
+            Assert.False(Between(l1,l2,l3))
+            l1 := 3
+            Assert.True(Between(l1,l2,l3))
+		RETURN
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

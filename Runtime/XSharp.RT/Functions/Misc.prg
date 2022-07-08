@@ -8,7 +8,7 @@ USING System.Runtime.CompilerServices
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/between/*" />
 /// <seealso cref='O:XSharp.Core.Functions.Between'>Between</seealso>
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Between(uValue AS USUAL,uMin AS USUAL,uMax AS USUAL) AS LOGIC
+FUNCTION Between(uValue AS USUAL, uMin AS USUAL, uMax AS USUAL) AS LOGIC
 	RETURN uValue >=uMin .AND.  uValue<=uMax
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/betweentyped/*" />
@@ -31,67 +31,107 @@ FUNCTION Between(nValue AS FLOAT, nMin AS FLOAT, nMax AS FLOAT) AS LOGIC
     RETURN ( nValue >= nMin .AND. nValue <= nMax )
 
 
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/inlist/*" />
 FUNCTION InList(u AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
-	RETURN _InListWorker(u, uValueList, FALSE)
+	RETURN _InListWorker(u, uValueList, {x,y => x = y})
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/inlistexact/*" />
 FUNCTION InListExact(u AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
-	RETURN _InListWorker(u, uValueList, TRUE)
+	RETURN _InListWorker(u, uValueList, {x,y => x == y})
 
 
-INTERNAL FUNCTION _InListWorker( u AS USUAL, args AS CONST USUAL[], lExact AS LOGIC) AS LOGIC
+INTERNAL FUNCTION _InListWorker( u AS USUAL, args AS CONST USUAL[], compare as Func<USUAL, USUAL, LOGIC>) AS LOGIC
 	LOCAL i, nLen AS INT
 	nLen := args:Length
-	IF lExact
-		FOR i := 1 TO nLen
-			IF args[i] == u
-				RETURN TRUE
-			ENDIF
-		NEXT
-	ELSE
-		FOR i := 1 TO nLen
-			IF u = args[i]
-				RETURN TRUE
-			ENDIF
-		NEXT
-	ENDIF
+	FOR i := 1 TO nLen
+		IF compare(args[i], u)
+			RETURN TRUE
+		ENDIF
+	NEXT
 	RETURN FALSE
 
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Max(uValue1 AS REAL8, uValue2 AS REAL8) AS REAL8
+    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Max(uValue1 AS LONG, uValue2 AS LONG) AS LONG
+    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Max(uValue1 AS INT64, uValue2 AS INT64) AS INT64
+    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Max(uValue1 AS DECIMAL, uValue2 AS DECIMAL) AS DECIMAL
+    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Max(uValue1 AS DWORD, uValue2 AS DWORD) AS DWORD
+    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Max(uValue1 AS FLOAT, uValue2 AS FLOAT) AS FLOAT
+    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Max(uValue1 AS CURRENCY, uValue2 AS CURRENCY) AS CURRENCY
+    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-FUNCTION Max(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Max(uValue1 AS SYMBOL, uValue2 AS SYMBOL) AS SYMBOL
+    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Max(uValue1 AS STRING, uValue2 AS STRING) AS STRING
+    RETURN IIF(XSharp.RuntimeState.StringCompare(uValue1, uValue2) >= 0, uValue1, uValue2)
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+FUNCTION Max(uValue1 AS USUAL, uValue2 AS USUAL) AS USUAL
 
 	IF uValue1:IsNumeric .AND. uValue2:IsNumeric
 
 		IF uValue1:IsFloat .OR. uValue2:IsFloat
-			RETURN (USUAL) Math.Max( (REAL8) uValue1, (REAL8) uValue2)
+			RETURN Max( (REAL8) uValue1, (REAL8) uValue2)
 
-		ELSEIF uValue1:IsDecimal .OR. uValue2:IsDecimal .OR. uValue1:IsCurrency  .OR. uValue2:IsCurrency
-			RETURN (USUAL) Math.Max( (Decimal) uValue1, (Decimal) uValue2)
-
+		ELSEIF uValue1:IsDecimal .OR. uValue2:IsDecimal
+			RETURN Max( (Decimal) uValue1, (Decimal) uValue2)
+        ELSEIF uValue1:IsCurrency  .OR. uValue2:IsCurrency
+            RETURN Max( (Currency) uValue1, (Currency) uValue2)
 		ELSEIF uValue1:IsInt64 .OR. uValue2:IsInt64
-			RETURN (USUAL) Math.Max( (INT64) uValue1, (INT64) uValue2)
+			RETURN Max( (INT64) uValue1, (INT64) uValue2)
 		ENDIF
-		RETURN (USUAL) Math.Max( (LONG) uValue1, (LONG) uValue2)
+		RETURN Max( (LONG) uValue1, (LONG) uValue2)
 
 	ELSEIF uValue1:IsDate .AND. uValue2:IsDate
-		RETURN IIF ((DATE) uValue1 > (DATE) uValue2, uValue1, uValue2)
+		RETURN Max(uValue1:_dateValue, uValue2:_dateValue)
 
 	ELSEIF uValue1:IsDateTime .AND. uValue2:IsDateTime
-		RETURN IIF ((DateTime) uValue1 > (DateTime) uValue2, uValue1, uValue2)
+		RETURN Max(uValue1:_dateTimeValue, uValue2:_dateTimeValue)
 
 	ELSEIF (uValue1:IsDateTime .OR. uValue1:IsDate) .AND. (uValue2:IsDateTime .OR. uValue2:IsDate)
-		RETURN IIF ((Date) uValue1 > (Date) uValue2, uValue1, uValue2)
+		RETURN Max((Date) uValue1 ,(Date) uValue2)
 
 	ELSEIF uValue1:IsString .AND. uValue2:IsString
-		RETURN IIF ((STRING) uValue1 > (STRING) uValue2, uValue1, uValue2)
+		RETURN Max (uValue1:_stringValue , uValue2:_stringValue)
 
 	ELSEIF uValue1:IsSymbol .AND. uValue2:IsSymbol
-		RETURN IIF ((SYMBOL) uValue1 > (SYMBOL) uValue2, uValue1, uValue2)
+		RETURN Max(uValue1:_symValue, uValue2:_symValue)
+
+	ELSEIF uValue1:IsBinary .AND. uValue2:IsBinary
+		RETURN iif( (BINARY) uValue1 > (BINARY) uValue2, uValue1, uValue2)
 
 	ELSE
         THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uValue2) , "Incompatible types")
@@ -100,37 +140,89 @@ FUNCTION Max(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
 
 
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Min(uValue1 AS REAL8, uValue2 AS REAL8) AS REAL8
+    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Min(uValue1 AS LONG, uValue2 AS LONG) AS LONG
+    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Min(uValue1 AS INT64, uValue2 AS INT64) AS INT64
+    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Min(uValue1 AS DECIMAL, uValue2 AS DECIMAL) AS DECIMAL
+    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Min(uValue1 AS DWORD, uValue2 AS DWORD) AS DWORD
+    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Min(uValue1 AS FLOAT, uValue2 AS FLOAT) AS FLOAT
+    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Min(uValue1 AS CURRENCY, uValue2 AS CURRENCY) AS CURRENCY
+    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Min(uValue1 AS SYMBOL, uValue2 AS SYMBOL) AS SYMBOL
+    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Min(uValue1 AS STRING, uValue2 AS STRING) AS STRING
+    RETURN IIF(XSharp.RuntimeState.StringCompare(uValue1, uValue2) <= 0, uValue1, uValue2)
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/min/*" />
-FUNCTION Min(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
+FUNCTION Min(uValue1 AS USUAL, uValue2 AS USUAL) AS USUAL
 	IF uValue1:IsNumeric .AND. uValue2:IsNumeric
 
 		IF uValue1:IsFloat .OR. uValue2:IsFloat
 
-			RETURN (USUAL) Math.Min((REAL8) uValue1, (REAL8) uValue2)
+			RETURN Min((REAL8) uValue1, (REAL8) uValue2)
 
-		ELSEIF uValue1:IsDecimal .OR. uValue2:IsDecimal .OR. uValue1:IsCurrency .OR. uValue2:IsCurrency
-			RETURN (USUAL) Math.Min( (Decimal) uValue1, (Decimal) uValue2)
+		ELSEIF uValue1:IsDecimal .OR. uValue2:IsDecimal
+			RETURN Min( (Decimal) uValue1, (Decimal) uValue2)
+
+        ELSEIF uValue1:IsCurrency  .OR. uValue2:IsCurrency
+            RETURN Min( (Currency) uValue1, (Currency) uValue2)
 
 		ELSEIF uValue1:IsInt64 .OR. uValue2:IsInt64
-			RETURN (USUAL) Math.Min( (INT64) uValue1, (INT64) uValue2)
+			RETURN Min( (INT64) uValue1, (INT64) uValue2)
 		ENDIF
-		RETURN (USUAL) Math.Min( (LONG) uValue1, (LONG) uValue2)
+		RETURN Min( (LONG) uValue1, (LONG) uValue2)
 
 	ELSEIF uValue1:IsDate .AND. uValue2:IsDate
-		RETURN IIF ((DATE) uValue1 <(DATE) uValue2, uValue1, uValue2)
+		RETURN Min(uValue1:_dateValue, uValue2:_dateValue)
 
-    ELSEIF uValue1:IsDateTime .AND. uValue2:IsDateTime
-		RETURN IIF ((DateTime) uValue1 <(DateTime) uValue2, uValue1, uValue2)
+	ELSEIF uValue1:IsDateTime .AND. uValue2:IsDateTime
+		RETURN Min(uValue1:_dateTimeValue, uValue2:_dateTimeValue)
 
-    ELSEIF (uValue1:IsDateTime .OR. uValue1:IsDate) .AND. (uValue2:IsDateTime .OR. uValue2:IsDate)
-
-		RETURN IIF ((Date) uValue1 <(Date) uValue2, uValue1, uValue2)
+	ELSEIF (uValue1:IsDateTime .OR. uValue1:IsDate) .AND. (uValue2:IsDateTime .OR. uValue2:IsDate)
+		RETURN Min((Date) uValue1 ,(Date) uValue2)
 
 	ELSEIF uValue1:IsString .AND. uValue2:IsString
-		RETURN IIF ((STRING) uValue1 < (STRING) uValue2, uValue1, uValue2)
+		RETURN Min (uValue1:_stringValue , uValue2:_stringValue)
 
 	ELSEIF uValue1:IsSymbol .AND. uValue2:IsSymbol
-		RETURN IIF ((SYMBOL) uValue1 < (SYMBOL) uValue2, uValue1, uValue2)
+		RETURN Min(uValue1:_symValue, uValue2:_symValue)
+
+	ELSEIF uValue1:IsBinary .AND. uValue2:IsBinary
+		RETURN iif( (BINARY) uValue1 < (BINARY) uValue2, uValue1, uValue2)
+
 	ELSE
         THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uValue2) , "Incompatible types")
 	ENDIF

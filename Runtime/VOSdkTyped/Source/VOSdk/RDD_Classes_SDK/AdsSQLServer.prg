@@ -28,7 +28,7 @@
 CLASS AdsSQLServer INHERIT DbServer
 
 
-/// <include file="Rdd.xml" path="doc/AdsSQLServer.ctor/*" />
+/// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
 CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD ) CLIPPER
     LOCAL cTemp AS STRING
     LOCAL cFileName AS STRING

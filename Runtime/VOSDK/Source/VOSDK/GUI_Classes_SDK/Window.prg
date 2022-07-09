@@ -92,7 +92,6 @@ PARTIAL CLASS Window INHERIT @@EventContext
 
     //PP-030828 Strong typing
     //RvdH 041123 Typing of OLE methods
- /// <exclude />
     METHOD __AddAlign(oControl AS OBJECT, iType AS USUAL) AS Window STRICT
         //PP-030828 Strong typing
         //PP-040513 Update from S Ebert
@@ -1023,9 +1022,6 @@ METHOD __HelpFilter(oEvent AS @@Event) AS LOGIC STRICT
 
 
 
-
-
-
     wParam := LoWord(oEvent:wParam)
     IF (wParam >= ID_FIRSTWCHELPID)
         DO CASE
@@ -1041,8 +1037,6 @@ METHOD __HelpFilter(oEvent AS @@Event) AS LOGIC STRICT
 
 
     RETURN FALSE
-
-
 
 
  /// <exclude />

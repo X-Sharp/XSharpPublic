@@ -2070,9 +2070,8 @@
             The identification of the event, specified as one of the following constants:
             symbol describing the event.  Used only with some notification types, as described above.
         </param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
-            <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
-        </remarks>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
+        <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
     </SQLSelect.Notify>
     <SQLSelect.NullAsBlank>
         <summary>
@@ -2718,11 +2717,8 @@
         <summary>
             Provide a method that is automatically called by the action methods of the server after completion of some significant event:  a column has changed, the server position has changed, some operation has been completed.  Its standard implementation is to broadcast the same notification to its attached clients.
         </summary>
-        <param name="kNotification">The identification of the event, specified as one of the following constants:</param>
-        <param name="uDescription">Used only with some notification types.</param>
-<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
-            <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
-        </remarks>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
+        <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
     </SQLTable.Notify>
     <SQLTable.OrderBy>
         <summary>

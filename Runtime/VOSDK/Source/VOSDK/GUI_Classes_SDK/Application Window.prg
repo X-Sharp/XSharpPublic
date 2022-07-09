@@ -5,58 +5,51 @@ CLASS AppWindow INHERIT Window
 	PROTECT oSysMenu AS SystemMenu
 	PROTECT oStatusBar AS StatusBar
 	PROTECT lQuitOnClose AS LOGIC
-	
-	
+
+
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __StatusMessageFromEvent(oEvent AS OBJECT, nType AS LONGINT) AS VOID STRICT 
+	METHOD __StatusMessageFromEvent(oEvent AS OBJECT, nType AS LONGINT) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL oHL AS HyperLabel
-	
-	
+
+
 	oHL := oEvent:HyperLabel
 	IF (oHL != NULL_OBJECT)
 		SELF:StatusMessage(oHL, nType)
 	ENDIF
 	RETURN
-	
-	
+
+
 
 
  /// <exclude />
-ACCESS __SysMenu AS SystemMenu STRICT 
+ACCESS __SysMenu AS SystemMenu STRICT
 	//PP-030828 Strong typing
-	
-	
+
 	IF (oSysMenu == NULL_OBJECT) .AND. (GetSystemMenu(SELF:Handle(), FALSE) != NULL_PTR)
 		oSysMenu := SystemMenu{SELF}
 	ENDIF
-	
-	
+
 	RETURN oSysMenu
-	
-	
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.Default/*" />
-METHOD Default(oEvent) 
+METHOD Default(oEvent)
 	LOCAL oEvt := oEvent AS @@Event
-	
-	
+
+
 	SELF:EventReturnValue := DefWindowProc(oEvt:hWnd, oEvt:uMsg, oEvt:wParam, oEvt:lParam)
 	RETURN SELF
-	
-	
-
 
 /// <include file="Gui.xml" path="doc/AppWindow.Destroy/*" />
 METHOD Destroy()   AS USUAL CLIPPER
-	
-	
-	//SE-070501 
+
+
+	//SE-070501
 	//__WCUnregisterMenu(oSysMenu)
-	
-	
+
+
 	IF !InCollect()
 		IF (oVertScroll != NULL_OBJECT)
 			oVertScroll:Destroy()
@@ -75,32 +68,32 @@ METHOD Destroy()   AS USUAL CLIPPER
 			oStatusBar := NULL_OBJECT
 		ENDIF
 	ENDIF
-	
-	
+
+
 	SUPER:Destroy()
-	
-	
+
+
 	RETURN SELF
-	
-	
-	
-	
+
+
+
+
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.Dispatch/*" />
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent)
 	LOCAL oEvt := oEvent AS @@Event
 	LOCAL dwMsg AS DWORD
-	
-	
+
+
 	LOCAL lHelpEnable AS LOGIC
-	
-	
-	
-	
+
+
+
+
 	dwMsg := oEvt:Message
-	
-	
+
+
 	DO CASE
 	CASE (dwMsg == WM_MOUSEACTIVATE)
 		IF lHelpOn
@@ -111,8 +104,8 @@ METHOD Dispatch(oEvent)
 				SELF:Default(oEvt)
 			ENDIF
 		ENDIF
-		
-		
+
+
 	CASE (dwMsg == WM_SETCURSOR)
 		IF lHelpOn
 			IF lHelpcursorOn
@@ -126,21 +119,21 @@ METHOD Dispatch(oEvent)
 		// last par. changed from true (bug report l. atkins)
 		SELF:__HandlePointer(oEvt, lHelpEnable, FALSE)
 		RETURN SELF:EventReturnValue
-		
-		
+
+
 	CASE (dwMsg == WM_MENUSELECT)
 		SELF:__StatusMessageFromEvent(MenuSelectEvent{oEvt}, MESSAGEMENU)
 		//SELF:__StatusMessageFromEvent(__ObjectCastClassPtr(oEvt, __pCMenuSelectEvent), MESSAGEMENU)
-		
-		
+
+
 	CASE (dwMsg == WM_NCLBUTTONDOWN)
 		IF lHelpOn
 			IF lHelpcursorOn
 				RETURN SELF:EventReturnValue
 			ENDIF
 		ENDIF
-		
-		
+
+
 	CASE (dwMsg == WM_LBUTTONDOWN)
 		// ***********************************
 		// Ignore if we're in Help Cursor mode
@@ -150,20 +143,20 @@ METHOD Dispatch(oEvent)
 			//SELF:MouseButtonDown(__ObjectCastClassPtr(oEvt, __pCMouseEvent))
 		ENDIF
 		RETURN SELF:EventReturnValue
-		
-		
+
+
 	CASE (dwMsg == WM_SIZE)
 		// Allow this window to handle the resizing of its StatusBar
 		IF SELF:StatusBar != NULL_OBJECT
 			SendMessage(SELF:StatusBar:Handle(), dwMsg, oEvt:wParam, oEvt:lParam)
 			SELF:StatusBar:__BuildItems()
 		ENDIF
-		
-		
+
+
 		//	CASE (dwMsg == WM_DRAWITEM)
 		//PP-031006  Moved StatusBar drawinging to StatusBar:ODDrawItem()
-		
-		
+
+
 	CASE (dwMsg == WM_CLOSE)
 		//PP-040101 fix via S Ebert
 		IF SELF:QueryClose(oEvt)
@@ -173,29 +166,29 @@ METHOD Dispatch(oEvent)
 			ENDIF
 		ENDIF
 		RETURN SELF:EventReturnValue
-		
-		
+
+
 	ENDCASE
-	
-	
+
+
 	//PP-040101 Commented code below replaced with WM_CLOSE case above.
 	// IF (dwMsg == WM_CLOSE) .and. lQuitOnClose
 	// 	PostQuitMessage(0)
 	// ENDIF
-	
-	
+
+
 	RETURN SUPER:Dispatch(oEvt)
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.EnableBorder/*" />
-METHOD EnableBorder(kBorderStyle) 
-	
-	
+METHOD EnableBorder(kBorderStyle)
+
+
 	DEFAULT(@kBorderStyle, WINDOWSIZINGBORDER)
-	
-	
+
+
 	DO CASE
 	CASE kBorderStyle == WINDOWNOBORDER
 		SELF:SetStyle(_OR(WS_BORDER, WS_THICKFRAME), FALSE)
@@ -205,20 +198,20 @@ METHOD EnableBorder(kBorderStyle)
 	CASE kBorderStyle == WINDOWSIZINGBORDER
 		SELF:SetStyle(_OR(WS_BORDER, WS_THICKFRAME), TRUE)
 	END CASE
-	
-	
+
+
 	IF (hWnd != NULL_PTR)
 		SetWindowPos(hWnd, NULL_PTR, 0, 0, 0, 0, _OR(SWP_NOZORDER, SWP_NOMOVE, SWP_FRAMECHANGED, SWP_NOSIZE, SWP_NOACTIVATE))
 	ENDIF
-	
-	
+
+
 	RETURN NIL
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.EnableHorizontalScroll/*" />
-METHOD EnableHorizontalScroll(lEnable) 
+METHOD EnableHorizontalScroll(lEnable)
 	IF IsNil(lEnable) .OR. lEnable
 		IF (oHorzScroll == NULL_OBJECT)
 			oHorzScroll:=WindowHorizontalScrollBar{SELF}:Show()
@@ -227,55 +220,46 @@ METHOD EnableHorizontalScroll(lEnable)
 		oHorzScroll:Destroy()
 		oHorzScroll := NULL_OBJECT
 	ENDIF
-	
-	
-	RETURN oHorzScroll
-	
-	
 
+
+	RETURN oHorzScroll
 
 /// <include file="Gui.xml" path="doc/AppWindow.EnableMaxBox/*" />
-METHOD EnableMaxBox(lEnable) 
+METHOD EnableMaxBox(lEnable)
 	DEFAULT(@lEnable, TRUE)
-	
-	
+
+
 	SELF:SetStyle(WS_MAXIMIZEBOX, lEnable)
-	
-	
+
+
 	IF (hWnd != NULL_PTR)
 		SetWindowPos(hWnd, NULL_PTR, 0, 0, 0, 0, _OR(SWP_NOZORDER, SWP_NOMOVE, SWP_FRAMECHANGED, SWP_NOSIZE, SWP_NOACTIVATE))
 	ENDIF
-	
-	
+
+
 	RETURN lEnable
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.EnableMinBox/*" />
-METHOD EnableMinBox(lEnable) 
+METHOD EnableMinBox(lEnable)
 	DEFAULT(@lEnable, TRUE)
-	
-	
+
 	SELF:SetStyle(WS_MINIMIZEBOX, lEnable)
-	
-	
+
+
 	IF (hWnd != NULL_PTR)
 		SetWindowPos(hWnd, NULL_PTR, 0, 0, 0, 0, _OR(SWP_NOZORDER, SWP_NOMOVE, SWP_FRAMECHANGED, SWP_NOSIZE, SWP_NOACTIVATE))
 	ENDIF
-	
-	
+
 	RETURN lEnable
-	
-	
-
-
 /// <include file="Gui.xml" path="doc/AppWindow.EnableOleDropTarget/*" />
-METHOD EnableOleDropTarget(lEnable) 
+METHOD EnableOleDropTarget(lEnable)
 	// RvdH 030815 Moved method from Ole classes
 #ifdef __VULCAN__
    // TODO
-#else	
+#else
 	LOCAL pRegister AS  _VOOLERegisterDropTargetCallback  PTR
 	pRegister := GetProcAddress(GetModuleHandle(String2Psz("VO28ORUN.DLL")), String2Psz("_VOOLERegisterDropTargetCallback"))
 	IF pRegister != NULL_PTR
@@ -285,15 +269,14 @@ METHOD EnableOleDropTarget(lEnable)
 			RETURN PCALL(pRegister, SELF:owner:Handle(), SELF:Handle(), NULL_PTR)
 		ENDIF
 	ENDIF
-#endif	
+#endif
 	RETURN FALSE
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.EnableStatusBar/*" />
-METHOD EnableStatusBar(lEnable) 
+METHOD EnableStatusBar(lEnable)
 	DEFAULT(@lEnable, TRUE)
-	
-	
+
 	IF lEnable
 		IF (SELF:StatusBar == NULL_OBJECT)
 			SELF:StatusBar := StatusBar{SELF}
@@ -304,18 +287,15 @@ METHOD EnableStatusBar(lEnable)
 		SELF:StatusBar:Destroy()
 		SELF:StatusBar := NULL_OBJECT
 	ENDIF
-	
-	
+
 	RETURN SELF:StatusBar
-	
-	
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.EnableSystemMenu/*" />
-METHOD EnableSystemMenu(lEnable) 
+METHOD EnableSystemMenu(lEnable)
 	DEFAULT(@lEnable, TRUE)
-	
-	
+
+
 	SELF:SetStyle(WS_SYSMENU, lEnable)
 	IF ! lEnable
 		//PP-030510 //Bug:20
@@ -323,29 +303,29 @@ METHOD EnableSystemMenu(lEnable)
 		SELF:SetStyle(WS_MAXIMIZEBOX, lEnable)
 		SELF:SetStyle(WS_MINIMIZEBOX, lEnable)
 	ENDIF
-	
-	
+
+
 	IF (oSysMenu != NULL_OBJECT)
 		oSysMenu:Destroy()
 		oSysMenu := NULL_OBJECT
 	ENDIF
-	
-	
+
+
 	IF lEnable
 		oSysMenu := SystemMenu{SELF}
 	ENDIF
-	
-	
+
+
 	RETURN oSysMenu
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.EnableToolBar/*" />
-METHOD EnableToolBar(lEnable) 
+METHOD EnableToolBar(lEnable)
 	DEFAULT(@lEnable, TRUE)
-	
-	
+
+
 	IF (SELF:ToolBar != NULL_OBJECT)
 		IF lEnable
 			SELF:ToolBar:Show()
@@ -353,18 +333,14 @@ METHOD EnableToolBar(lEnable)
 			SELF:ToolBar:Hide()
 		ENDIF
 	ENDIF
-	
-	
+
+
 	RETURN SELF:ToolBar
-	
-	
-
-
 /// <include file="Gui.xml" path="doc/AppWindow.EnableVerticalScroll/*" />
-METHOD EnableVerticalScroll(lEnable) 
+METHOD EnableVerticalScroll(lEnable)
 	DEFAULT(@lEnable, TRUE)
-	
-	
+
+
 	IF lEnable
 		IF (oVertScroll == NULL_OBJECT)
 			oVertScroll := WindowVerticalScrollBar{SELF}:Show()
@@ -373,41 +349,36 @@ METHOD EnableVerticalScroll(lEnable)
 		oVertScroll:Destroy()
 		oVertScroll := NULL_OBJECT
 	ENDIF
-	
-	
+
 	RETURN oVertScroll
-	
-	
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.EndWindow/*" />
-METHOD EndWindow(lSendMsg) 
+METHOD EndWindow(lSendMsg)
 	IF IsLogic(lSendMsg) .AND. lSendMsg
 		RETURN SendMessage(SELF:Handle(), WM_CLOSE, 0, 0)
 	ENDIF
 	RETURN PostMessage(SELF:Handle(), WM_CLOSE, 0, 0)
-	
-	
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.ErrorMessage/*" />
-METHOD ErrorMessage(uText) 
+METHOD ErrorMessage(uText)
 	ErrorBox{SELF, uText}
-	RETURN SELF   
-	
-	
- 
- 
+	RETURN SELF
+
+
+
+
 /// <include file="Gui.xml" path="doc/AppWindow.ctor/*" />
-CONSTRUCTOR(oOwner) 
-    
-    
+CONSTRUCTOR(oOwner)
+
+
     SUPER(oOwner)
 
 
 
 
-RETURN 
+RETURN
 
 
 //RvdH 080814 Added OLE Drag Message Handlers
@@ -436,92 +407,62 @@ METHOD OLEDrop(oOleDragEvent)
 //RvdH 080814 End of Additions
 
 
-
-
 /// <include file="Gui.xml" path="doc/AppWindow.OLEInPlaceActivate/*" />
-METHOD OLEInPlaceActivate() 
+METHOD OLEInPlaceActivate()
 	// RvdH 030815 Moved method from Ole classes
 	RETURN NIL
-	
-	
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.OLEInPlaceDeactivate/*" />
-METHOD OLEInPlaceDeactivate() 
+METHOD OLEInPlaceDeactivate()
 	// RvdH 030815 Moved method from Ole classes
 	RETURN NIL
-	
-	
-
 
 /// <include file="Gui.xml" path="doc/AppWindow.QuitOnClose/*" />
-ACCESS QuitOnClose 
+ACCESS QuitOnClose
 	RETURN lQuitOnClose
-	
-	
-
 
 /// <include file="Gui.xml" path="doc/AppWindow.QuitOnClose/*" />
-ASSIGN QuitOnClose(lNewValue) 
+ASSIGN QuitOnClose(lNewValue)
 	RETURN (lQuitOnClose := lNewValue)
-	
-	
-
 
 /// <include file="Gui.xml" path="doc/AppWindow.ReportException/*" />
-METHOD ReportException(oRQ) 
+METHOD ReportException(oRQ)
 	RETURN NIL
-	
-	
-
 
 /// <include file="Gui.xml" path="doc/AppWindow.ReportNotification/*" />
-METHOD ReportNotification(oRQ) 
+METHOD ReportNotification(oRQ)
 	RETURN NIL
-	
-	
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.Show/*" />
-METHOD Show(nShowState) 
+METHOD Show(nShowState)
 	IF oStatusBar != NULL_OBJECT
 		oStatusBar:Show()
 	ENDIF
 	SUPER:Show(nShowState)
-	
-	
 	RETURN NIL
-	
-	
-
 
 /// <include file="Gui.xml" path="doc/AppWindow.StatusBar/*" />
-ACCESS StatusBar 
+ACCESS StatusBar
 	RETURN oStatusBar
-	
-	
-
 
 /// <include file="Gui.xml" path="doc/AppWindow.StatusBar/*" />
-ASSIGN StatusBar(oNewStatusBar) 
+ASSIGN StatusBar(oNewStatusBar)
 	oStatusBar := oNewStatusBar
-	
-	
-	RETURN 
-	
-	
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.StatusMessage/*" />
-METHOD StatusMessage(oHL, nType) 
+METHOD StatusMessage(oHL, nType)
 	LOCAL Message AS STRING
 	LOCAL oStatBar AS StatusBar
 	LOCAL oOwner AS OBJECT
-	
-	
+
+
 	DEFAULT(@nType, MESSAGETRANSIENT)
-	
-	
+
+
 	IF SELF:StatusBar != NULL_OBJECT
 		oStatBar := SELF:StatusBar
 	ELSE
@@ -530,8 +471,7 @@ METHOD StatusMessage(oHL, nType)
 			oStatBar := oOwner:StatusBar
 		ENDIF
 	ENDIF
-	
-	
+
 	IF oStatBar != NULL_OBJECT
 		DO CASE
 		CASE IsInstanceOfUsual(oHL, #HyperLabel) .AND. IsString(oHL:Description)
@@ -541,32 +481,31 @@ METHOD StatusMessage(oHL, nType)
 		OTHERWISE
 			Message := ""
 		ENDCASE
-		
-		
+
+
 		oStatBar:setmessage(Message, nType)
 	ENDIF
-	
-	
+
 	RETURN NIL
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.SystemMenu/*" />
 ACCESS SystemMenu AS SystemMenu
 	RETURN oSysMenu
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/AppWindow.SystemMenu/*" />
-ASSIGN SystemMenu (oMenu AS SystemMenu)  
+ASSIGN SystemMenu (oMenu AS SystemMenu)
 	oSysMenu := oMenu
     RETURN
-	
-	
+
+
 /// <include file="Gui.xml" path="doc/AppWindow.WarningMessage/*" />
-METHOD WarningMessage(aPlace1, aPlace2) 
+METHOD WarningMessage(aPlace1, aPlace2)
 	RETURN WarningBox{SELF, aPlace1, aPlace2}:Show()
 
 
@@ -576,7 +515,7 @@ END CLASS
 STATIC FUNCTION  _VOOLERegisterDropTargetCallback(hFrameWnd AS PTR, hDocWnd AS PTR, pCallBackFunc AS PTR) ;
 		AS LOGIC STRICT
 	RETURN FALSE
-	
-	
-	
-	
+
+
+
+

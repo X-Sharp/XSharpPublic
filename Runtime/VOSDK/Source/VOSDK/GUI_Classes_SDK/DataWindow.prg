@@ -1079,8 +1079,6 @@ METHOD __UpdateCurrent() AS DataWindow STRICT
  /// <exclude />
 METHOD __UpdateStatus() AS LOGIC STRICT
 	//PP-030828 Strong typing
-
-
 	IF oHLStatus != NULL_OBJECT
     	SELF:__StatusMessage(ResourceString{__WCSError2}:value + oHLStatus:Description, MESSAGEERROR)
 		RETURN FALSE
@@ -1217,10 +1215,7 @@ ACCESS Background
 		RETURN oSurface:Background
 	ENDIF
 
-
 	RETURN NULL_OBJECT
-
-
 
 
 /// <include file="Gui.xml" path="doc/DataWindow.Background/*" />
@@ -1242,19 +1237,11 @@ ASSIGN Background(oBrush)
 /// <include file="Gui.xml" path="doc/DataWindow.Browser/*" />
 ACCESS Browser
 
-
-
-
 	RETURN oGBrowse
-
-
-
 
 /// <include file="Gui.xml" path="doc/DataWindow.Browser/*" />
 ASSIGN Browser(oDataBrowser)
 	// If theres a browser already remove it and set up the new browser
-
-
 
 
 	IF !IsInstanceOfUsual(oDataBrowser, #Control) .OR. (oDataBrowser == NULL_OBJECT)
@@ -1272,19 +1259,10 @@ ASSIGN Browser(oDataBrowser)
 /// <include file="Gui.xml" path="doc/DataWindow.BrowserClass/*" />
 ACCESS BrowserClass
 
-
-
-
 	RETURN symBrowserClass
-
-
-
 
 /// <include file="Gui.xml" path="doc/DataWindow.BrowserClass/*" />
 ASSIGN BrowserClass(symNewClass)
-
-
-
 
 	RETURN (symBrowserClass := symNewClass)
 
@@ -1365,22 +1343,13 @@ METHOD CanvasErase()
 	ENDIF
 	RETURN SELF
 
-
-
-
 /// <include file="Gui.xml" path="doc/DataWindow.Caption/*" />
 ASSIGN Caption(sNewCaption)
-
-
-
 
 	IF !lTopApp .AND. (lSubForm) // .or. !IsInstanceOf(oParent, #ShellWindow))
 		RETURN NULL_STRING
 	ENDIF
 	RETURN SUPER:Caption := sNewCaption
-
-
-
 
 /// <include file="Gui.xml" path="doc/DataWindow.ChangeFont/*" />
 METHOD ChangeFont(oFont, lUpdate)
@@ -1409,13 +1378,9 @@ METHOD ChangeFont(oFont, lUpdate)
 	RETURN oFont
 
 
-
-
 /// <include file="Gui.xml" path="doc/DataWindow.CheckStatus/*" />
 METHOD CheckStatus()
 	LOCAL oOldStatus AS OBJECT
-
-
 
 
 	oOldStatus := oHLStatus
@@ -1447,13 +1412,8 @@ METHOD CheckStatus()
 	RETURN TRUE
 
 
-
-
 /// <include file="Gui.xml" path="doc/DataWindow.Clear/*" />
 METHOD Clear()
-
-
-
 
 	IF sCurrentView == #FormView
 		IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
@@ -1487,16 +1447,12 @@ METHOD ClearRelations
 	RETURN FALSE
 
 
-
-
 /// <include file="Gui.xml" path="doc/DataWindow.ClipperKeys/*" />
 ACCESS ClipperKeys
 	IF oSurface != NULL_OBJECT
 		RETURN oSurface:ClipperKeys
 	ENDIF
 	RETURN FALSE
-
-
 
 
 /// <include file="Gui.xml" path="doc/DataWindow.ClipperKeys/*" />
@@ -1512,8 +1468,6 @@ ASSIGN ClipperKeys(lNewValue)
 
 /// <include file="Gui.xml" path="doc/DataWindow.Close/*" />
 METHOD Close(oEvent)
-
-
 
 
 	IF (oAttachedServer != NULL_OBJECT)
@@ -1538,11 +1492,6 @@ METHOD Close(oEvent)
 METHOD Commit()
 	LOCAL lRetCode AS LOGIC
 
-
-
-
-
-
 	//PP-040410 following line was incorrectly assigning NIL
 	oHLStatus:= NULL_OBJECT // assume success
 	IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus()
@@ -1562,8 +1511,6 @@ METHOD Commit()
 
 /// <include file="Gui.xml" path="doc/DataWindow.ConcurrencyControl/*" />
 ACCESS ConcurrencyControl
-
-
 
 
 	IF IsNil(oAttachedServer)
@@ -1609,7 +1556,6 @@ ASSIGN ConcurrencyControl( nMode)
 		WCError{#ConcurrencyControl,#DataWindow,__WCSTypeError,nMode,1}:Throw()
 	ENDIF
 
-
 	SELF:nCCMode := newMode
 	IF oAttachedServer!=NULL_OBJECT
 		oAttachedServer:ConcurrencyControl:=nCCMode
@@ -1623,8 +1569,6 @@ ASSIGN ConcurrencyControl( nMode)
 ASSIGN ContextMenu(oNewMenu)
     SELF:SetContextMenu(oNewMenu, #Both)
     RETURN
-
-
 
 
 /// <include file="Gui.xml" path="doc/DataWindow.SetContextMenu/*" />
@@ -1798,9 +1742,6 @@ RETURN SELF:oDCCurrentControl:=uValue
 ACCESS CurrentView
 	RETURN SELF:sCurrentView
 
-
-
-
 /// <include file="Gui.xml" path="doc/DataWindow.Cut/*" />
 METHOD Cut()
 
@@ -1847,32 +1788,20 @@ METHOD DeactivateAllOLEObjects(oExcept)
 	RETURN SELF
 
 
-
-
 /// <include file="Gui.xml" path="doc/DataWindow.DeferUse/*" />
 ACCESS DeferUse
 
-
-
-
 	RETURN lDeferUse
-
-
 
 
 /// <include file="Gui.xml" path="doc/DataWindow.DeferUse/*" />
 ASSIGN DeferUse(lNewVal)
 
-
-
-
 	RETURN (lDeferUse := lNewVal)
 
 
-
-
 /// <include file="Gui.xml" path="doc/DataWindow.Delete/*" />
-METHOD @@Delete()
+METHOD Delete()
 	LOCAL nRecno AS LONGINT
 	LOCAL nLastRec AS LONGINT
 	LOCAL fSQL AS LOGIC
@@ -1938,9 +1867,6 @@ METHOD @@Delete()
 
 
 	RETURN(fRet)
-
-
-
 
 
 
@@ -2916,9 +2842,6 @@ METHOD OLEInPlaceActivate()
 
 
 	RETURN SUPER:OLEInPlaceActivate()
-
-
-
 
 /// <include file="Gui.xml" path="doc/DataWindow.OLEInPlaceDeactivate/*" />
 METHOD OLEInPlaceDeactivate()

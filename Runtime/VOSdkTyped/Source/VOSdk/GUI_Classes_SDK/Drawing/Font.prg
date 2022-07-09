@@ -29,7 +29,7 @@ CLASS Font INHERIT VObject
 	METHOD __ToLogFont() AS VOID STRICT
 		IF oFont != NULL_OBJECT
 			oFont:ToLogFont(oLogFont)
-			iPointSize := (INT) oFont:SizeInPoints
+			iPointSize := Convert.ToInt32(oFont:SizeInPoints)
 		ENDIF
 
 
@@ -178,7 +178,7 @@ CLASS Font INHERIT VObject
 		RETURN SELF
 
 
-	METHOD Destroy() AS USUAL 
+	METHOD Destroy() AS USUAL
 
 		SUPER:Destroy()
 

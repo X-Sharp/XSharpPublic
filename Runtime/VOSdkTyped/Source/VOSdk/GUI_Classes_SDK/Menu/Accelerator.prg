@@ -27,23 +27,24 @@ CLASS AcceleratorKey
 			iKey += ASCII
 		ENDIF
 		RETURN (System.Windows.Forms.Shortcut) iKey
-		
-		
+
+
 
 END CLASS
+/// <include file="Gui.xml" path="doc/Accelerator/*" />
 
 CLASS Accelerator INHERIT VObject
 	PROTECT hAccel  AS IntPtr
 	PROTECT aKeys	as List<AcceleratorKey>
-	
-	
+
+
 	METHOD __AddKeys(hTable as IntPtr) as LOGIC
 		LOCAL dwI     AS DWORD
 		LOCAL dwCount AS DWORD
 		LOCAL pAccel  AS _winAccel
 		LOCAL pMem    AS _winAccel
-		IF hTable != NULL_PTR 
-		
+		IF hTable != NULL_PTR
+
 			dwCount := DWORD(GuiWin32.CopyAcceleratorTable(hTable, NULL_PTR, 0l))
 			IF dwCount > 1
 				IF (pMem := MemAlloc(_SIZEOF(_winAccel)*dwCount)) != NULL_PTR
@@ -58,8 +59,8 @@ CLASS Accelerator INHERIT VObject
 				RETURN TRUE
 			ENDIF
 		ENDIF
-		RETURN FALSE 
-	
+		RETURN FALSE
+
 	ACCESS Keys as IList<AcceleratorKey>
 		if aKeys == NULL_OBJECT
 			aKeys :=  List<AcceleratorKey>{}
@@ -68,15 +69,17 @@ CLASS Accelerator INHERIT VObject
 			SELF:__AddKeys(hAccel)
 		ENDIF
 		return aKeys
-		
-	METHOD AddAccelerator(oAccelerator as Accelerator) as LOGIC 
+/// <include file="Gui.xml" path="doc/Accelerator.AddAccelerator/*" />
+
+	METHOD AddAccelerator(oAccelerator as Accelerator) as LOGIC
 		IF hAccel == NULL_PTR
 			SELF:__AddKeys(oAccelerator:Handle())
 			RETURN TRUE
 		ENDIF
 		RETURN FALSE
 
-	METHOD AddKey(nMenuItemId, xKeyId, lCtrl, lAlt, lShift) 
+/// <include file="Gui.xml" path="doc/Accelerator.AddKey/*" />
+	METHOD AddKey(nMenuItemId, xKeyId, lCtrl, lAlt, lShift)
 		LOCAL fVirt AS DWORD
 		LOCAL wKey  AS DWORD
 		LOCAL wCmd  AS DWORD
@@ -99,11 +102,11 @@ CLASS Accelerator INHERIT VObject
 			ENDIF
 
 			IF IsNumeric(xKeyId)
-				fVirt := _OR(fVirt, FVIRTKEY)  
+				fVirt := _OR(fVirt, FVIRTKEY)
 				wKey  := xKeyId
 			ELSE
 				IF fVirt > 0
-					fVirt := _OR(fVirt, FVIRTKEY)  
+					fVirt := _OR(fVirt, FVIRTKEY)
 					wKey  := WORD(Asc(Upper(xKeyId)))
 				ELSE
 					wKey  := WORD(Asc(xKeyId))
@@ -118,7 +121,8 @@ CLASS Accelerator INHERIT VObject
 
 		RETURN FALSE
 
-	METHOD Create() 
+/// <include file="Gui.xml" path="doc/Accelerator.Create/*" />
+	METHOD Create()
 		LOCAL dwCount AS LONG
 		LOCAL pAccel  AS _winAccel
 		LOCAL pMem    AS _winAccel
@@ -143,7 +147,8 @@ CLASS Accelerator INHERIT VObject
 
 		RETURN NIL
 
-	METHOD Destroy() AS USUAL 
+/// <include file="Gui.xml" path="doc/Accelerator.Destroy/*" />
+	METHOD Destroy() AS USUAL
 		IF hAccel != NULL_PTR
 			GuiWin32.DestroyAcceleratorTable(hAccel)
 			hAccel := NULL_PTR
@@ -154,6 +159,7 @@ CLASS Accelerator INHERIT VObject
 		RETURN NIL
 
 
+/// <include file="Gui.xml" path="doc/Accelerator.Handle/*" />
 	METHOD Handle() AS IntPtr STRICT
 		IF hAccel == NULL_PTR
 			SELF:Create()
@@ -161,7 +167,8 @@ CLASS Accelerator INHERIT VObject
 
 		RETURN hAccel
 
-	CONSTRUCTOR(xResourceID) 
+/// <include file="Gui.xml" path="doc/Accelerator.ctor/*" />
+	CONSTRUCTOR(xResourceID)
 		LOCAL hInst AS PTR
 		LOCAL lpTableName AS PTR
 
@@ -189,8 +196,8 @@ CLASS Accelerator INHERIT VObject
 
 		hAccel := GuiWin32.LoadAccelerators(hInst, lpTableName)
 
-		RETURN 
-		
+		RETURN
+
 END CLASS
 
 

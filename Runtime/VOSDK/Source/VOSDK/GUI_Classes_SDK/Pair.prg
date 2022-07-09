@@ -1,28 +1,28 @@
 /// <include file="Gui.xml" path="doc/Dimension/*" />
 CLASS Dimension INHERIT Pair
 /// <include file="Gui.xml" path="doc/Dimension.Height/*" />
-	ACCESS Height AS LONGINT STRICT 
+	ACCESS Height AS LONGINT STRICT
 	RETURN iInt2
 
 
 /// <include file="Gui.xml" path="doc/Dimension.Height/*" />
-ASSIGN Height(nHeight AS LONGINT)  STRICT 
+ASSIGN Height(nHeight AS LONGINT)  STRICT
 	RETURN iInt2 := nHeight
 
 
 /// <include file="Gui.xml" path="doc/Dimension.ctor/*" />
-CONSTRUCTOR(nWidth, nHeight) 
+CONSTRUCTOR(nWidth, nHeight)
 	SUPER(nWidth, nHeight)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Dimension.Width/*" />
-ACCESS Width AS LONGINT STRICT 
+ACCESS Width AS LONGINT STRICT
 	RETURN iInt1
 
 
 /// <include file="Gui.xml" path="doc/Dimension.Width/*" />
-ASSIGN Width(nWidth AS LONGINT)  STRICT 
+ASSIGN Width(nWidth AS LONGINT)  STRICT
 	RETURN iInt1 := nWidth
 
 
@@ -36,8 +36,8 @@ CLASS Pair INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/Pair.ctor/*" />
-CONSTRUCTOR(uInt1, uInt2) 
-	SUPER()   
+CONSTRUCTOR(uInt1, uInt2)
+	SUPER()
 	IF !IsNil(uInt1)
 		iInt1 := uInt1
 	ENDIF
@@ -46,7 +46,7 @@ CONSTRUCTOR(uInt1, uInt2)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -55,7 +55,7 @@ END CLASS
 /// <include file="Gui.xml" path="doc/Point/*" />
 CLASS Point INHERIT Pair
 /// <include file="Gui.xml" path="doc/Point.ConvertToScreen/*" />
-	METHOD ConvertToScreen(oWindow) 
+	METHOD ConvertToScreen(oWindow)
    LOCAL sPoint IS _winPoint
    LOCAL sRect  IS _winRect
    LOCAL hWnd   AS PTR
@@ -102,28 +102,28 @@ CLASS Point INHERIT Pair
 
 
 /// <include file="Gui.xml" path="doc/Point.ctor/*" />
-CONSTRUCTOR(nX, nY) 
+CONSTRUCTOR(nX, nY)
 	SUPER(nX, nY)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Point.X/*" />
-ACCESS X  AS LONGINT STRICT 
+ACCESS X  AS LONGINT STRICT
 	RETURN iInt1
 
 
 /// <include file="Gui.xml" path="doc/Point.X/*" />
-ASSIGN X(nX AS LONGINT)   STRICT 
+ASSIGN X(nX AS LONGINT)   STRICT
 	RETURN iInt1 := nX
 
 
 /// <include file="Gui.xml" path="doc/Point.Y/*" />
-ACCESS Y  AS LONGINT STRICT 
+ACCESS Y  AS LONGINT STRICT
 	RETURN iInt2
 
 
 /// <include file="Gui.xml" path="doc/Point.Y/*" />
-ASSIGN Y(nY AS LONGINT)   STRICT 
+ASSIGN Y(nY AS LONGINT)   STRICT
 	RETURN iInt2 := nY
 
 
@@ -131,15 +131,15 @@ END CLASS
 
 
 /// <include file="Gui.xml" path="doc/Range/*" />
-CLASS Range INHERIT Pair        
+CLASS Range INHERIT Pair
 /// <include file="Gui.xml" path="doc/Range.ctor/*" />
-	CONSTRUCTOR(nMin, nMax) 
+	CONSTRUCTOR(nMin, nMax)
 	SUPER(nMin, nMax)
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Range.IsInRange/*" />
-METHOD IsInRange(nValue) 
+METHOD IsInRange(nValue)
    //SE-060525
    LOCAL iVal AS INT
    IF IsNumeric(nValue)
@@ -149,27 +149,26 @@ METHOD IsInRange(nValue)
   	   ENDIF
    ENDIF
 
-
    RETURN FALSE
 
 
 /// <include file="Gui.xml" path="doc/Range.Max/*" />
-ACCESS Max AS LONGINT STRICT 
+ACCESS Max AS LONGINT STRICT
 	RETURN iInt2
 
 
 /// <include file="Gui.xml" path="doc/Range.Max/*" />
-ASSIGN Max(nMax AS LONGINT)  STRICT 
+ASSIGN Max(nMax AS LONGINT)  STRICT
 	RETURN iInt2 := nMax
 
 
 /// <include file="Gui.xml" path="doc/Range.Min/*" />
-ACCESS Min AS LONGINT STRICT 
+ACCESS Min AS LONGINT STRICT
 	RETURN iInt1
 
 
 /// <include file="Gui.xml" path="doc/Range.Min/*" />
-ASSIGN Min(nMin AS LONGINT)  STRICT 
+ASSIGN Min(nMin AS LONGINT)  STRICT
 	RETURN iInt1 := nMin
 
 
@@ -177,30 +176,27 @@ END CLASS
 
 
 /// <include file="Gui.xml" path="doc/Selection/*" />
-CLASS Selection INHERIT Pair 
+CLASS Selection INHERIT Pair
 /// <include file="Gui.xml" path="doc/Selection.Finish/*" />
-	ACCESS Finish AS LONGINT STRICT 
+	ACCESS Finish AS LONGINT STRICT
 	RETURN iInt2
 
-
 /// <include file="Gui.xml" path="doc/Selection.Finish/*" />
-ASSIGN Finish(nFinish AS LONGINT)  STRICT 
+ASSIGN Finish(nFinish AS LONGINT)  STRICT
 	RETURN iInt2 := nFinish
 
-
 /// <include file="Gui.xml" path="doc/Selection.ctor/*" />
-CONSTRUCTOR(nStart, nFinish) 
+CONSTRUCTOR(nStart, nFinish)
 	SUPER(nStart, nFinish)
-	RETURN 
-
+	RETURN
 
 /// <include file="Gui.xml" path="doc/Selection.Start/*" />
-ACCESS Start AS LONGINT STRICT 
+ACCESS Start AS LONGINT STRICT
 	RETURN iInt1
 
 
 /// <include file="Gui.xml" path="doc/Selection.Start/*" />
-ASSIGN Start(nStart AS LONGINT)  STRICT 
+ASSIGN Start(nStart AS LONGINT)  STRICT
 	RETURN iInt1 := nStart
 
 

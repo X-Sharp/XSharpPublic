@@ -1,4 +1,4 @@
-
+/// <include file="Gui.xml" path="doc/HelpDisplay/*" />
 
 
 CLASS HelpDisplay INHERIT VObject
@@ -16,7 +16,8 @@ CLASS HelpDisplay INHERIT VObject
 	EXPORT Win32Processing := FALSE AS LOGIC
 
 	//PP-030828 Strong typing
-	METHOD __CallHelp(uCommand AS DWORD, dwData AS DWORD, cTopic := "" AS STRING) AS LOGIC STRICT 
+ /// <exclude />
+	METHOD __CallHelp(uCommand AS DWORD, dwData AS DWORD, cTopic := "" AS STRING) AS LOGIC STRICT
 		//SE-060519
 		LOCAL cFName AS STRING
 		LOCAL hWnd AS IntPtr
@@ -36,9 +37,10 @@ CLASS HelpDisplay INHERIT VObject
 		ENDIF
 
 
+ /// <exclude />
 	METHOD __VerifyHelp() AS LOGIC STRICT
 		//PP-030828 Strong typing
-		
+
 
 		IF (oWnd == NULL_OBJECT) .AND. !lHTMLHelp // Create dummy window for use with help system
 			IF (oApp != NULL_OBJECT)
@@ -52,8 +54,9 @@ CLASS HelpDisplay INHERIT VObject
 
 		RETURN TRUE
 
-	METHOD Destroy() AS USUAL 
-		
+/// <include file="Gui.xml" path="doc/HelpDisplay.Destroy/*" />
+	METHOD Destroy() AS USUAL
+
 
 		IF (oWnd != NULL_OBJECT)
 			IF !lHTMLHelp
@@ -72,9 +75,10 @@ CLASS HelpDisplay INHERIT VObject
 
 		RETURN NIL
 
-	METHOD EnableHTMLHelp(lEnable, cPopUpTopic) 
+/// <include file="Gui.xml" path="doc/HelpDisplay.EnableHTMLHelp/*" />
+	METHOD EnableHTMLHelp(lEnable, cPopUpTopic)
 		//SE-060519
-		
+
 
 		Default(@lEnable, TRUE)
 
@@ -93,12 +97,14 @@ CLASS HelpDisplay INHERIT VObject
 
 		RETURN TRUE
 
-	METHOD HelpError() 
+/// <include file="Gui.xml" path="doc/HelpDisplay.HelpError/*" />
+	METHOD HelpError()
 		RETURN wError
 
-	CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing) 
+/// <include file="Gui.xml" path="doc/HelpDisplay.ctor/*" />
+	CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing)
 		//SE-060519
-		
+
 
 		IF !IsString(cFileName)
 			WCError{#Init,#HelpDisplay,__WCSTypeError,cFileName,1}:@@Throw()
@@ -113,7 +119,7 @@ CLASS HelpDisplay INHERIT VObject
 		ENDIF
 
 		SUPER()
-		
+
 
 		SELF:cFileName := cFileName
 
@@ -121,9 +127,10 @@ CLASS HelpDisplay INHERIT VObject
 			SELF:Win32Processing := lWin32Processing
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	METHOD Show(cKeyword, symLookupType) 
+/// <include file="Gui.xml" path="doc/HelpDisplay.Show/*" />
+	METHOD Show(cKeyword, symLookupType)
 		//SE-060519
 		LOCAL cKey AS STRING
 		LOCAL wLen AS DWORD
@@ -136,7 +143,7 @@ CLASS HelpDisplay INHERIT VObject
 		LOCAL DIM dwHH[2,2] AS DWORD
 		LOCAL sHelpInfo AS _winHELPINFO
 		LOCAL pszKey	AS PSZ
-		
+
 
 		DEFAULT (@symLookupType,#KEYWORD)
 
@@ -174,7 +181,7 @@ CLASS HelpDisplay INHERIT VObject
 		CASE cFirst>="0" .AND. cFirst<="9"
 			// When numeric, take the value of the key
 			lRetVal := SELF:__CallHelp(IIF(lHTMLHelp, HH_HELP_CONTEXT, HELP_CONTEXT), Val(cKey))
-			
+
 		CASE ! lHTMLHelp .AND. cFirst="[" .AND. wLen>3 .AND. SubStr3(cKey,3,1)="]"
 			// When [Letter] store the Letter in the keylist and use the rest of the key
 			wMK :=  _SIZEOF(_winMULTIKEYHELP) + wLen
@@ -212,7 +219,7 @@ CLASS HelpDisplay INHERIT VObject
 			ENDIF
 		CASE cKey=="HelpContents"
 			//PP-030929
-			IF ! lHTMLHelp             
+			IF ! lHTMLHelp
 				pszKey 	:= StringAlloc(cKey)
 				lRetVal := SELF:__CallHelp(HELP_CONTENTS , DWORD(_CAST, pszKey))
 				MemFree(pszKey)
@@ -226,9 +233,9 @@ CLASS HelpDisplay INHERIT VObject
 			ENDIF
 
 		OTHERWISE
-			pszKey 	:= StringAlloc(cKey)         
+			pszKey 	:= StringAlloc(cKey)
 			IF ! lHTMLHelp
-				//RvdH 070628 Changd HELP_CONTENTS to HELP_KEY in the next line. 
+				//RvdH 070628 Changd HELP_CONTENTS to HELP_KEY in the next line.
 				lRetVal := SELF:__CallHelp(HELP_KEY, DWORD(_CAST, pszKey))
 				IF ! lRetVal
 					lRetVal := SELF:__CallHelp(HELP_FINDER, 0)

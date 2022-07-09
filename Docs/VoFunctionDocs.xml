@@ -2460,11 +2460,12 @@
             A value of any type to compare to <paramref name="uMin" /> and <paramref name="uMax" />.
         </param>
         <param name="uMin">
-            The point at which to start comparing.<br/>
+            The minimum value to compare with.<br/>
             This must be of the same type as <paramref name="uValue" /> except that numerics of different types are allowed.
         </param>
         <param name="uMax">
-            The point at which to stop comparing. This must be of the same type as <paramref name="uValue" /> except that numerics of different types are allowed.
+            TThe maximum value to compare with. 
+            This must be of the same type as <paramref name="uValue" /> except that numerics of different types are allowed.
         </param>
         <returns>
             TRUE if the value is greater than or equal to the minimum and less than or equal to the maximum otherwise, FALSE.
@@ -2506,11 +2507,11 @@
             Determine if a value is between two other values.
         </summary>
         <param name="dValue">A value to compare</param>
-        <param name="dMin">The point at which to start comparing.</param>
-        <param name="dMax">The point at which to stop comparing.</param>
+        <param name="dMin">The minumum value to compare with.</param>
+        <param name="dMax">The maximum value to compare with.</param>
         <param name="nValue">A value to compare</param>
-        <param name="nMin">The point at which to start comparing.</param>
-        <param name="nMax">The point at which to stop comparing.</param>
+        <param name="nMin">The minumum value to compare with.</param>
+        <param name="nMax">The maximum value to compare with.</param>
         <returns>
             TRUE if the value is greater than or equal to the minimum and less than or equal to the maximum otherwise, FALSE.
         </returns>

@@ -8,6 +8,7 @@
 
 #endif
 
+/// <include file="Gui.xml" path="doc/IpcServer/*" />
 CLASS IpcServer INHERIT @@EventContext
 	PROTECT dwIdInst AS DWORD
 	PROTECT hInst AS PTR
@@ -17,13 +18,14 @@ CLASS IpcServer INHERIT @@EventContext
 	PROTECT oIpcTopicData AS IpcTopicData
 	PROTECT oIpcExecuteRequestEvent AS IpcExecuteRequestEvent
 	PROTECT oIpcDataUpdateEvent AS IpcDataUpdateEvent
-	
+
 	#ifdef __VULCAN__
 	   //HIDDEN cbDelegate AS DDECallbackDelegate
 	#endif
 
 	//PP-030828 Strong typing
-	METHOD __FindTopic(hsz1 AS PTR) AS LOGIC STRICT 
+ /// <exclude />
+	METHOD __FindTopic(hsz1 AS PTR) AS LOGIC STRICT
 	//PP-030828 Strong typing
 	//SE-060526
 	//LOCAL dwI AS DWORD
@@ -32,7 +34,7 @@ CLASS IpcServer INHERIT @@EventContext
 	//LOCAL dwLen AS DWORD
 	//LOCAL cTopic AS STRING
 
-	
+
 
 	//hHsz  := DWORD (_CAST, hsz1)
 	//dwLen := DdeQueryString(dwIdInst, hHsz, NULL_PSZ,20,0)
@@ -53,7 +55,8 @@ CLASS IpcServer INHERIT @@EventContext
 
 	RETURN FALSE
 
-METHOD __WCAddTopicToList(cTopic AS STRING, oIpcTopic AS IPCTopic) AS IPCServer STRICT 
+ /// <exclude />
+METHOD __WCAddTopicToList(cTopic AS STRING, oIpcTopic AS IPCTopic) AS IPCServer STRICT
 	//PP-030828 Strong typing
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -71,7 +74,8 @@ METHOD __WCAddTopicToList(cTopic AS STRING, oIpcTopic AS IPCTopic) AS IPCServer 
 
 	RETURN SELF
 
-METHOD __WCFindItem(hsz1 AS PTR, hsz2 AS PTR) AS LOGIC STRICT 
+ /// <exclude />
+METHOD __WCFindItem(hsz1 AS PTR, hsz2 AS PTR) AS LOGIC STRICT
 	//PP-030828 Strong typing
 	//SE-060526
 	/*
@@ -116,7 +120,8 @@ METHOD __WCFindItem(hsz1 AS PTR, hsz2 AS PTR) AS LOGIC STRICT
 	*/
 	RETURN FALSE
 
-METHOD __WCGetTopicFromList(cTopic AS STRING) AS OBJECT STRICT 
+ /// <exclude />
+METHOD __WCGetTopicFromList(cTopic AS STRING) AS OBJECT STRICT
 	//PP-030828 Strong typing
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -133,11 +138,12 @@ METHOD __WCGetTopicFromList(cTopic AS STRING) AS OBJECT STRICT
 
 	RETURN NULL_OBJECT
 
-METHOD AddTopic(oIpcTopic) 
+/// <include file="Gui.xml" path="doc/IpcServer.AddTopic/*" />
+METHOD AddTopic(oIpcTopic)
 	//PP-030828 Strong typing
 	LOCAL cTopicString AS STRING
 
-	
+
 
 	IF !IsNil(oIpcTopic)
 		IF !IsInstanceOfUsual(oIpcTopic, #IpcTopic)
@@ -149,25 +155,27 @@ METHOD AddTopic(oIpcTopic)
 	ENDIF
 	RETURN SELF
 
-METHOD DataRequest(oIpcDataRequestEvent) 
+/// <include file="Gui.xml" path="doc/IpcServer.DataRequest/*" />
+METHOD DataRequest(oIpcDataRequestEvent)
 	LOCAL oIpcTopicData AS IpcTopicData
 
-	
+
 
 	oIpcTopicData := IpcTopicData{"ok", 3}
 
 	RETURN oIpcTopicData
 
-METHOD DataUpdate(oIpcDataUpdateEvent) 
-	
+METHOD DataUpdate(oIpcDataUpdateEvent)
+
 	RETURN SELF
 
-METHOD Destroy() AS USUAL 
+/// <include file="Gui.xml" path="doc/IpcServer.Destroy/*" />
+METHOD Destroy() AS USUAL
 	//LOCAL i, dwLen AS DWORD
 	//LOCAL hConv AS PTR
 	//LOCAL hHsz AS PTR
 
-	
+
 	//DdeFreeStringHandle(dwIdInst, hStr)
 	//IF dwIdInst != 0
 	//	DdeUninitialize(dwIdInst)
@@ -209,7 +217,8 @@ METHOD Destroy() AS USUAL
 
 	RETURN SELF
 
-METHOD Dispatch(oEvent) 
+/// <inheritdoc />
+METHOD Dispatch(oEvent)
 	/*
 	LOCAL oE AS IpcEvent
 	LOCAL dwType AS DWORD
@@ -223,7 +232,7 @@ METHOD Dispatch(oEvent)
 	LOCAL ptrData AS PTR
 	LOCAL dwLen AS DWORD
 
-	
+
 
 	oE:=oEvent //faster execution
 	dwType :=oE:dwType
@@ -279,18 +288,21 @@ METHOD Dispatch(oEvent)
 	*/
 	RETURN 0
 
-METHOD ExecuteRequest(oIpcExecuteRequestEvent) 
-	
+/// <include file="Gui.xml" path="doc/IpcServer.ExecuteRequest/*" />
+METHOD ExecuteRequest(oIpcExecuteRequestEvent)
+
 	RETURN SELF
 
-ACCESS idInst 
-	
+/// <include file="Gui.xml" path="doc/IpcServer.idInst/*" />
+ACCESS idInst
+
 	RETURN dwIdInst
 
-CONSTRUCTOR(cServName) 
+/// <include file="Gui.xml" path="doc/IpcServer.ctor/*" />
+CONSTRUCTOR(cServName)
 	//LOCAL c AS STRING
 
-	
+
 
 	aTopicList := {}
 	SUPER()
@@ -309,9 +321,10 @@ CONSTRUCTOR(cServName)
 	__WCAddServerToHsz(hStr, SELF )
 	DdeNameService(dwIdInst, hStr, 0, DNS_REGISTER)
 */
-	RETURN 
+	RETURN
 
-METHOD UpdateTopic(cTopic, cItem) 
+/// <include file="Gui.xml" path="doc/IpcServer.UpdateTopic/*" />
+METHOD UpdateTopic(cTopic, cItem)
 	//LOCAL oIpcTopic AS IpcTopic
 	//LOCAL aItemLIst AS ARRAY
 	//LOCAL dwI, dwCount AS DWORD
@@ -321,7 +334,7 @@ METHOD UpdateTopic(cTopic, cItem)
 	//LOCAL hTopic AS PTR
 	//LOCAL hItem AS PTR
 
-	
+
 
 	IF !IsString(cTopic)
 		WCError{#UpdateTopic,#IpcServer,__WCSTypeError,cTopic,1}:@@Throw()
@@ -353,6 +366,7 @@ METHOD UpdateTopic(cTopic, cItem)
 
 END CLASS
 
+ /// <exclude />
 FUNCTION __DdecallbackProc(wType AS WORD, wFmt AS WORD, hConv AS PTR, hsz1 AS PTR, hsz2 AS PTR, hData AS PTR, dwData1 AS DWORD, dwData2 AS DWORD) AS LONGINT /* WINCALL */
 	LOCAL oIpcEvent AS IpcEvent
 	LOCAL oIPCObject AS OBJECT

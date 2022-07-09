@@ -1,13 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <doc>
-	<ReturnsLogic>
-	    <returns>
+    <ReturnsLogic>
+        <returns>
             TRUE if successful; otherwise, FALSE.
         </returns>
-	</ReturnsLogic>
+    </ReturnsLogic>
     <commonblocks>
         <notify>
-            <span>
+            <param name="kNotification">Identifies the event, specified as one of the constants in the table below.</param>
+            <param name="uDescription">Used only with some notification types. See descriptions in the table below</param>
+            <remarks>
                 <list type="table">
                     <listheader>
                         <term>Constant</term>
@@ -15,7 +17,10 @@
                     </listheader>
                     <item>
                         <term>NOTIFYAPPEND</term>
-                        <description>A blank record has been appended to the server; the server is still positioned on this new record, and its values have not been finalized.</description>
+                        <description>
+                            A blank record has been appended to the server;
+                            the server is still positioned on this new record, and its values have not been finalized.
+                        </description>
                     </item>
                     <item>
                         <term>NOTIFYCLEARRELATION</term>
@@ -28,7 +33,9 @@
                     <item>
                         <term>NOTIFYCOMPLETION</term>
                         <description>
-                            The server has completed some large operation that did not involve repositioning of the server or change to the data (such as reindexing). This gives the browser a chance to update visual indication to the user that some operation has been completed.  In this situation, <paramref name="uDescription" /> is the name of the method that was just completed, as a symbol.
+                            The server has completed some large operation that did not involve repositioning
+                            of the server or change to the data (such as reindexing).
+                            This gives clients a chance to update visual indication to the user that some operation has been completed.
                         </description>
                     </item>
                     <item>
@@ -43,19 +50,28 @@
                     </item>
                     <item>
                         <term>NOTIFYFILECHANGE</term>
-                        <description>The server has executed some method that perform many changes to the data; all the browser's knowledge about the server and its data is potentially obsolete, and it should refresh all information from the server and all calculations that depend on the data or its position. </description>
+                        <description>
+                            The server has executed some method that perform many changes to the data; all the browser's knowledge about the server and its data is potentially obsolete, and it should refresh all information from the server and all calculations that depend on the data or its position.
+                        </description>
                     </item>
                     <item>
                         <term>NOTIFYGOBOTTOM</term>
-                        <description>The server has moved to its last record. Many clients treat this merely as a record change, but the data browser can treat a positioning-to-the-end as a special case.</description>
+                        <description>
+                            The server has moved to its last record. Many clients treat this merely as a record change,
+                            but the data browser can treat a positioning-to-the-end as a special case.
+                        </description>
                     </item>
                     <item>
                         <term>NOTIFYGOTOP</term>
-                        <description>The server has moved to its first record. Many clients treat this merely as a record change, but the data browser can treat a positioning-to-the-top as a special case.</description>
+                        <description>
+                            The server has moved to its first record. Many clients treat this merely as a record change, but the data browser can treat a positioning-to-the-top as a special case.
+                        </description>
                     </item>
                     <item>
                         <term>NOTIFYINTENTTOMOVE</term>
-                        <description>The server intends to make a move. (Note that the move may have been initiated by another client.) The browser should make sure that all its data is saved, if necessary, before the movement is done. The standard implementation checks validation status. If the browser contains data that is invalid, the user has a choice of correcting the errors or discarding the data. </description>
+                        <description>
+                            The server intends to make a move. (Note that the move may have been initiated by another client.) The browser should make sure that all its data is saved, if necessary, before the movement is done. The standard implementation checks validation status. If the browser contains data that is invalid, the user has a choice of correcting the errors or discarding the data.
+                        </description>
                     </item>
                     <item>
                         <term>NOTIFYRECORDCHANGE</term>
@@ -65,12 +81,18 @@
                     </item>
                     <item>
                         <term>NOTIFYRELATIONCHANGE</term>
-                        <description>Not sent to a data browser (relation changes among servers are transmitted to clients as file changes).</description>
+                        <description>
+                            Not sent to a data browser (relation changes among servers are transmitted to clients as file changes).
+                        </description>
                     </item>
                 </list>
-                This Notify() method is at the heart of the automatic notification among linked browsers and servers, allowing any window to make a change to a field value or initiate a movement and also ensuring that all client windows reflect the change. Any class that is registered as a client of a server must respond intelligently to the Notify message.
-                As always with defined constants, you should never rely on the actual values of the constants—they will not necessarily stay the same. However, the constants do maintain their order:
-                <list type="table">
+                This Notify() method is at the heart of the automatic notification among linked browsers and servers,
+                allowing any window to make a change to a field value or initiate a movement and also ensuring that all
+                client windows reflect the change. <br/>
+                Any class that is registered as a client of a server must respond intelligently to the Notify message.<br/>
+                As always with defined constants, you should never rely on the actual values of the constants—they will not
+                necessarily stay the same. However, the constants do maintain their order:
+                <list type="bullet">
                     <listheader>
                         <term>Constant</term>
                         <description>Description</description>
@@ -81,43 +103,43 @@
                     </item>
                     <item>
                         <term>NOTIFYCLOSE</term>
-                        <description>...</description>
+                        <description>.</description>
                     </item>
                     <item>
                         <term>NOTIFYCOMPLETION</term>
-                        <description>...</description>
+                        <description>.</description>
                     </item>
                     <item>
                         <term>NOTIFYINTENTTOMOVE</term>
-                        <description>...</description>
+                        <description>.</description>
                     </item>
                     <item>
                         <term>NOTIFYRECORDCHANGE</term>
-                        <description>...</description>
+                        <description>.</description>
                     </item>
                     <item>
                         <term>NOTIFYGOBOTTOM</term>
-                        <description>...</description>
+                        <description>.</description>
                     </item>
                     <item>
                         <term>NOTIFYGOTOP</term>
-                        <description>...</description>
+                        <description>.</description>
                     </item>
                     <item>
                         <term>NOTIFYDELETE</term>
-                        <description>...</description>
+                        <description>.</description>
                     </item>
                     <item>
                         <term>NOTIFYAPPEND</term>
-                        <description>...</description>
+                        <description>.</description>
                     </item>
                     <item>
                         <term>NOTIFYFILECHANGE</term>
-                        <description>...</description>
+                        <description>.</description>
                     </item>
                     <item>
                         <term>NOTIFYRELATIONCHANGE</term>
-                        <description>...</description>
+                        <description>.</description>
                     </item>
                     <item>
                         <term>NOTIFYCLEARRELATION</term>
@@ -126,12 +148,12 @@
                 </list>
                 Thus, you can reliably write:
                 <code language="X#">
-                    IF  kNotifyName &gt; NOTIFYINTENTTOMOVE;
-                    .AND. kNotifyName &lt; NOTIFYFILECHANGE
+                    IF  kNotification &gt; NOTIFYINTENTTOMOVE;
+                    .AND. kNotification &lt; NOTIFYFILECHANGE
                     ... // Only record level moves
                     ENDIF
                 </code>
-            </span>
+            </remarks>
         </notify>
         <scopeparams>
             <param name="aFieldList">An array of fields from the source file that are to be included. The default is all fields.</param>

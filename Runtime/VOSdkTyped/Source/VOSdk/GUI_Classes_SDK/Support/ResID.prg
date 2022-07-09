@@ -1,22 +1,24 @@
-
+/// <include file="Gui.xml" path="doc/ResourceID/*" />
 CLASS ResourceID INHERIT VObject
 	PROTECT hInst AS IntPtr
 	PROTECT nID AS INT
 	PROTECT sID AS STRING
 	PROTECT _lpAddress AS PSZ
 	PROTECT _lMustFree as LOGIC
-	
+
+/// <include file="Gui.xml" path="doc/ResourceID.dtor/*" />
 	DESTRUCTOR()
 		IF _lpAddress != NULL_PSZ .and. _lMustFree
 			MemFree( _lpAddress )
 			_lpAddress := NULL_PSZ
 		ENDIF
-		RETURN	
+		RETURN
 
+/// <include file="Gui.xml" path="doc/ResourceID.Address/*" />
 	METHOD Address() AS IntPtr
 		LOCAL lpAddress AS IntPtr
 
-		IF NULL_STRING != sID    
+		IF NULL_STRING != sID
 			IF SELF:_lpAddress == NULL_PSZ
 				SELF:_lpAddress := lpAddress := StringAlloc(sID)
 				SELF:_lMustFree := TRUE
@@ -29,19 +31,19 @@ CLASS ResourceID INHERIT VObject
 
 		RETURN lpAddress
 
+/// <include file="Gui.xml" path="doc/ResourceID.Handle/*" />
 	METHOD Handle() AS IntPtr STRICT
+	RETURN hInst
 
-		RETURN hInst
-
-	ACCESS Name as STRING
-		RETURN sID
+/// <include file="Gui.xml" path="doc/ResourceID.ID/*" />
 
 	ACCESS ID	AS LONG
 		RETURN nID
 
-	CONSTRUCTOR(xID, xResourceFile) 
+/// <include file="Gui.xml" path="doc/ResourceID.ctor/*" />
+	CONSTRUCTOR(xID, xResourceFile)
 		LOCAL argTypeError AS LOGIC
-		
+
 		SUPER()
 		SELF:_lMustFree := FALSE
 		IF IsString(xID)
@@ -58,7 +60,7 @@ CLASS ResourceID INHERIT VObject
 			hInst := xResourceFile
 		ELSEIF IsInstanceOfUsual(xResourceFile, #ResourceFile)
 			hInst := xResourceFile:Handle()
-		ELSEIF IsNil(xResourceFile)     
+		ELSEIF IsNil(xResourceFile)
 			IF IsNumeric(xID)		// String table
 				hInst := GetNatDllHandle()
 			ELSE
@@ -71,7 +73,7 @@ CLASS ResourceID INHERIT VObject
 		IF argTypeError
 			WCError{#Init, #ResourceID, __WCSTypeError}:@@Throw()
 		ENDIF
-		
-		RETURN 
+
+		RETURN
 END CLASS
 

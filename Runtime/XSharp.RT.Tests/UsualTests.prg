@@ -857,6 +857,12 @@ BEGIN NAMESPACE XSharp.RT.Tests
         Assert.True(Min(u1,u2) == u1)
         Assert.True(Max(u1,u2) == u2)
 
+        u1 := 0h123456
+        u2 := 0h234567
+        Assert.True(Min(u1,u2) == u1)
+        Assert.True(Max(u1,u2) == u2)
+
+
 
 [Fact, Trait("Category", "Numeric")];
 		METHOD BetweenTests() AS VOID

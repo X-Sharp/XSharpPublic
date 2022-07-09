@@ -2,6 +2,7 @@
 
 
 USING System.Collections.Generic
+/// <include file="Gui.xml" path="doc/ToolBar/*" />
 CLASS ToolBar INHERIT Control
 
 	PROTECT oBitmap 		AS Bitmap
@@ -9,7 +10,7 @@ CLASS ToolBar INHERIT Control
 	PROTECT nButtonStyle 	AS DWORD
 	PROTECT nImageCount 	AS INT
 	PROTECT oButtonSize 	AS Dimension
-	PROTECT aUpdates 		AS List<ToolbarUpdate>			
+	PROTECT aUpdates 		AS List<ToolbarUpdate>
 	//PROTECT dwBufferSize 	AS DWORD      //SE-070427 unused, can be deleted in the future
 	PROTECT aTipsText		AS List<ToolbarTipText>
 	PROTECT lFlat 			AS LOGIC
@@ -20,10 +21,11 @@ CLASS ToolBar INHERIT Control
 	PROTECT aBackBitmaps[0]	AS ARRAY
 	EXPORT Divider 			AS LOGIC
 
-	ACCESS __HasUpdates AS LOGIC 
+	ACCESS __HasUpdates AS LOGIC
 		RETURN aUpdates != NULL .and. aUpdates:Count > 0
 
-	ACCESS __ButtonStyle AS DWORD STRICT 
+ /// <exclude />
+	ACCESS __ButtonStyle AS DWORD STRICT
 		RETURN nButtonStyle
 
     PROPERTY ControlType  AS ControlType  GET ControlType.ToolBar
@@ -34,9 +36,9 @@ CLASS ToolBar INHERIT Control
 		oControl:ShowToolTips := TRUE
 		oControl:Wrappable := FALSE
 		oControl:ButtonClick += ButtonClick
-		RETURN 
-	
-	
+		RETURN
+
+
 	VIRTUAL METHOD ButtonClick (Sender AS OBJECT, e AS System.Windows.Forms.ToolBarButtonClickEventArgs) AS VOID
 		LOCAL nID AS LONG
 		LOCAL oWin AS Window
@@ -46,11 +48,11 @@ CLASS ToolBar INHERIT Control
 			oWin := (Window) SELF:Owner
 			IF oWin:Menu != NULL_OBJECT
 				oEvt := MenuCommandEvent{oWin:Menu,oWin, nID}
-				oWin:__PreMenuCommand(oEvt)				
+				oWin:__PreMenuCommand(oEvt)
 			ENDIF
 		endif
-		RETURN 
-	
+		RETURN
+
 	METHOD __CleanText(cText AS STRING) AS STRING
 		IF cText:IndexOf('\t') > 0
 			cText := Left(cText, (DWORD) cText:IndexOf('\t') )
@@ -59,7 +61,7 @@ CLASS ToolBar INHERIT Control
 			cText := cText:Replace("&","")
 		ENDIF
 		RETURN cText
-	
+
 	METHOD __CreateButton(cCaption AS STRING, nID AS LONG) AS System.Windows.Forms.ToolBarButton
 		LOCAL oButton AS VOToolBarButton
 		LOCAL cText AS STRING
@@ -73,7 +75,7 @@ CLASS ToolBar INHERIT Control
 			ENDIF
 		ENDIF
 		oButton:ToolTipText := cText
-		
+
 		RETURN oButton
 
 	ACCESS __ToolBar AS VOToolBar
@@ -81,7 +83,7 @@ CLASS ToolBar INHERIT Control
 			SELF:Create()
 		ENDIF
 		RETURN (VOToolBar) oCtrl
-	
+
 	METHOD __GetButton(nID, symIDType, symTB) AS System.Windows.Forms.ToolBarButton
 		LOCAL oTB AS VOToolBar
 		Default(@symTB, #MAINTOOLBAR)
@@ -100,17 +102,17 @@ CLASS ToolBar INHERIT Control
 			ENDIF
 		ENDIF
 		RETURN NULL_OBJECT
-	
+
 	#endregion
 
-	METHOD __CreateToolBar(symTB AS SYMBOL, oParent AS OBJECT, dwID AS DWORD, dwTBStyle AS DWORD) AS VOToolBar STRICT 
+	METHOD __CreateToolBar(symTB AS SYMBOL, oParent AS OBJECT, dwID AS DWORD, dwTBStyle AS DWORD) AS VOToolBar STRICT
 		//PP-040914 from S Ebert
 		//SE-050729
 		//RvdH 0702056 Changed to use ToolBarChild
 		LOCAL oImagelist	AS ImageList
 		LOCAL oTb			AS VOToolBar
 		LOCAL oTbC			AS ToolBarChild
-		//LOCAL sTBAddBitmap	IS _winTBAddBitmap          
+		//LOCAL sTBAddBitmap	IS _winTBAddBitmap
 		//LOCAL liTbStyle		AS LONGINT
 
 		oCtrl := SELF:__CreateControl((INT) dwTBStyle, 0)
@@ -163,7 +165,7 @@ CLASS ToolBar INHERIT Control
 				//IF oImagelist != NULL_OBJECT
 				//	SendMessage(hWndTB, TB_SETDISABLEDIMAGELIST, 0u, LONGINT(_CAST, oImagelist:Handle()))
 				//ENDIF
-			ELSEIF oBitmap != NULL_OBJECT 
+			ELSEIF oBitmap != NULL_OBJECT
 				//sTBAddBitmap:hInst := NULL_PTR
 				//sTBAddBitmap:nID   := DWORD(_CAST,oBitmap:Handle())
 				//SendMessage(hWndTB, TB_ADDBITMAP , DWORD(_CAST,nImageCount), LONGINT(_CAST,@sTBAddBitmap))
@@ -171,18 +173,20 @@ CLASS ToolBar INHERIT Control
 
 		ENDIF
 
-		RETURN oTb  
+		RETURN oTb
 
-	METHOD __FindExtraBitMap(oBmp AS OBJECT, symTB AS SYMBOL)  AS ToolBarExtraBitmap STRICT 
+ /// <exclude />
+	METHOD __FindExtraBitMap(oBmp AS OBJECT, symTB AS SYMBOL)  AS ToolBarExtraBitmap STRICT
 		//RvdH 070206 Added to centralize location of Extra Bitmaps
 		FOREACH oExtraBitMap AS ToolBarExtraBitmap IN aExtraBitmaps
-			IF oExtraBitMap:Bitmap == oBmp .AND. oExtraBitMap:NameSym == symTB 
+			IF oExtraBitMap:Bitmap == oBmp .AND. oExtraBitMap:NameSym == symTB
 				RETURN oExtraBitmap
 			ENDIF
 		NEXT //
 		RETURN NULL_OBJECT
 
-	METHOD __FindTipText(nID AS LONGINT, symLookUp AS SYMBOL)  AS ToolbarTipText STRICT 
+ /// <exclude />
+	METHOD __FindTipText(nID AS LONGINT, symLookUp AS SYMBOL)  AS ToolbarTipText STRICT
 		//RvdH 070206 Added to centralize location of TipTexts
 		IF (symLookUp == #ButtonID)
 			FOREACH oText AS ToolbarTipText IN aTipsText
@@ -196,10 +200,11 @@ CLASS ToolBar INHERIT Control
 					RETURN oText
 				ENDIF
 			NEXT //dwIndex
-		ENDIF		
+		ENDIF
 		RETURN NULL_OBJECT
 
-	METHOD __FindToolBar(symTB AS SYMBOL) AS ToolBarChild STRICT 
+ /// <exclude />
+	METHOD __FindToolBar(symTB AS SYMBOL) AS ToolBarChild STRICT
 		FOREACH oChild	AS ToolBarChild IN aChildren
 			IF oChild:NameSym == symTB
 				RETURN oChild
@@ -208,24 +213,27 @@ CLASS ToolBar INHERIT Control
 
 		RETURN NULL_OBJECT
 
-	METHOD __FindToolBarHandle(symTB AS SYMBOL) AS VOToolBar STRICT 
+ /// <exclude />
+	METHOD __FindToolBarHandle(symTB AS SYMBOL) AS VOToolBar STRICT
 		LOCAL oTB AS ToolBarChild
 		oTB := SELF:__FindToolBar(symTB)
 
-		IF oTB != NULL_OBJECT 
+		IF oTB != NULL_OBJECT
 			RETURN oTB:Handle
 		ENDIF
 
 		RETURN NULL_OBJECT
 
-	ACCESS __IsRebar AS LOGIC STRICT 
+ /// <exclude />
+	ACCESS __IsRebar AS LOGIC STRICT
 		//PP-030828 Strong typing
-		
+
 
 		//RETURN (gpfnInitCommonControlsEx != NULL_PTR) .AND. !lOldStyle
 		RETURN FALSE
 
-	ACCESS __IsTopAligned AS LOGIC STRICT 
+ /// <exclude />
+	ACCESS __IsTopAligned AS LOGIC STRICT
 		//PP-030828 Strong typing
 
 		//IF (hWnd != NULL_PTR)
@@ -236,7 +244,8 @@ CLASS ToolBar INHERIT Control
 
 		RETURN FALSE
 
-	METHOD __SetParent(oObject AS Window) AS VOID STRICT 
+ /// <exclude />
+	METHOD __SetParent(oObject AS Window) AS VOID STRICT
 		IF (oObject != NULL_OBJECT)
 			oParent		 := oObject
 			oFormSurface := oObject
@@ -244,7 +253,8 @@ CLASS ToolBar INHERIT Control
 		RETURN
 
 
-	METHOD __TryDeferAction(symAction AS SYMBOL, nMenuItemID AS LONGINT, symTB AS SYMBOL) AS ToolBarUpdate STRICT 
+ /// <exclude />
+	METHOD __TryDeferAction(symAction AS SYMBOL, nMenuItemID AS LONGINT, symTB AS SYMBOL) AS ToolBarUpdate STRICT
 		LOCAL oUpdate AS ToolBarUpdate
 
 		IF (aUpdates == NULL)
@@ -264,7 +274,8 @@ CLASS ToolBar INHERIT Control
 		RETURN oUpdate
 
 
-	METHOD AddBand(sBandName, oControl, iPos, iMinWidth, iMinHeight, sText, oForeColor, oBackColor, iImageIndex, oBackBitmap) 
+/// <include file="Gui.xml" path="doc/ToolBar.AddBand/*" />
+	METHOD AddBand(sBandName, oControl, iPos, iMinWidth, iMinHeight, sText, oForeColor, oBackColor, iImageIndex, oBackBitmap)
 		//PP-040511 Update from S Ebert
 		//LOCAL rbBand 			IS _winREBARBANDINFO
 		//LOCAL lRet := FALSE 	AS LOGIC
@@ -320,7 +331,7 @@ CLASS ToolBar INHERIT Control
 	////RvdH 070427 	oControl MUST be a Control (according to docs)
 	////					but we also accept other objects that has a handle (a window)
 	//rbBand:hwndChild := oControl:Handle()
-	//IF IsAccess(oControl, #ControlID) 
+	//IF IsAccess(oControl, #ControlID)
 	//	rbBand:wID := oControl:ControlID
 	//ELSE
 	//	rbBand:wID := DWORD(100+SendMessage(hWnd, RB_GETBANDCOUNT, 0, 0))
@@ -343,7 +354,8 @@ CLASS ToolBar INHERIT Control
 
 	//RETURN lRet
 
-	METHOD AddSubToolBarBand(symToolBar, iPos, iMinWidth, lFlat_dwStyle) 
+/// <include file="Gui.xml" path="doc/ToolBar.AddSubToolBarBand/*" />
+	METHOD AddSubToolBarBand(symToolBar, iPos, iMinWidth, lFlat_dwStyle)
 		//PP-040505 Update from S Ebert
 		//RvdH 070206 Changed to use ToolBarUpdate class
 		//LOCAL hwndNewTB   AS PTR
@@ -431,11 +443,12 @@ CLASS ToolBar INHERIT Control
 	//ENDIF
 	//RETURN SELF
 
-	METHOD AddTipText(nButtonID, nMenuItemID, cText) 
+/// <include file="Gui.xml" path="doc/ToolBar.AddTipText/*" />
+	METHOD AddTipText(nButtonID, nMenuItemID, cText)
 		//RvdH 070206 Changerd to use new ToolBarTipText objects
 		LOCAL oTipText AS ToolBarTipText
-		
-		
+
+
 		EnforceNumeric(REF nButtonID)
 		EnforceNumeric(REF nMenuItemID)
 		EnforceType(REF cText,STRING)
@@ -447,25 +460,26 @@ CLASS ToolBar INHERIT Control
 			IF nButtonID <= 132
 				cText := __CavoStr( __WCToolTipOffset + nButtonID )
 			ENDIF
-		ENDIF                               
+		ENDIF
 		oTipText 				:= ToolBarTipText{}
 		oTipText:ButtonID 		:= nButtonID
-		oTipText:MenuItemID 	:= nMenuItemID 
+		oTipText:MenuItemID 	:= nMenuItemID
 		oTipText:TipText		:= cText
 		aTipsText:Add( oTipText)
 
 		RETURN NIL
 
-	METHOD AppendItem(nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bState, bStyle, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.AppendItem/*" />
+	METHOD AppendItem(nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bState, bStyle, symTB)
 		//PP-040505 Update from S Ebert
-		//SE-050929           
+		//SE-050929
 		//RvdH 070206 Changed to use new ToolBarExtraBitmap objects
 		//RvdH 070206 Changed to use ToolBarUpdate class
 		LOCAL oUpdate		 	AS ToolBarUpdate
 		LOCAL oExtraBitmap		AS ToolBarExtraBitmap
 		LOCAL oTB				AS VOToolBar
 		LOCAL oButton			as System.Windows.Forms.ToolBarButton
-		
+
 
 		Default(@symTB, #MAINTOOLBAR)
 		Default(@cTitle, "")
@@ -479,10 +493,10 @@ CLASS ToolBar INHERIT Control
 		ENDIF
 
 		IF oTB != NULL_OBJECT
-			
+
 			IF IsLong(nButtonID) .AND. nButtonID >= I_IMAGENONE
 				oButton := SELF:__CreateButton(cTitle, nMenuItemID)
-				oButton:ImageIndex := nButtonID-1				
+				oButton:ImageIndex := nButtonID-1
 				IF nButtonID == IDT_SEPARATOR
 					oButton:Style := System.Windows.Forms.ToolBarButtonStyle.Separator
 					oButton:Pushed := TRUE
@@ -500,13 +514,13 @@ CLASS ToolBar INHERIT Control
 							oExtraBitmap:Bitmap 		:= oBmp
 							oExtraBitmap:ImageCount		:= nPosition
 							aExtraBitmaps:Add(oExtraBitmap)
-						ENDIF                        
+						ENDIF
 						IF oExtraBitmap:NameSym == NULL_SYMBOL
 							//strucAddBitmap:hInst 	:= NULL_PTR
 							//strucAddBitmap:nID 		:= DWORD(_CAST, oBmp:Handle())
 							//nImgCount := Max(nImgCount, oExtraBitmap:ImageCount)
 							//oExtraBitmap:FirstImageIndex:= SendMessage(hWndTB, TB_ADDBITMAP, nImgCount, LONGINT(_CAST, @strucAddBitmap))
-							oExtraBitmap:NameSym	:= symTB      
+							oExtraBitmap:NameSym	:= symTB
 						ENDIF
 
 					ENDIF
@@ -601,27 +615,33 @@ CLASS ToolBar INHERIT Control
 
 		RETURN TRUE
 
-	METHOD AppendSubItem(symTB, nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bState, bStyle) 
+/// <include file="Gui.xml" path="doc/ToolBar.AppendSubItem/*" />
+	METHOD AppendSubItem(symTB, nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bState, bStyle)
 		// This is only a shortcut for AppendItem
 		RETURN SELF:AppendItem(nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bState, bStyle, symTB)
 
-	ACCESS BandCount 
+/// <include file="Gui.xml" path="doc/ToolBar.BandCount/*" />
+	ACCESS BandCount
 		//IF !SELF:__IsRebar
 		RETURN 0
 	//ENDIF
 	//RETURN SendMessage(hwnd, RB_GETBANDCOUNT, 0, 0)
 
+/// <include file="Gui.xml" path="doc/ToolBar.BandImageList/*" />
 	ACCESS BandImageList as ImageList
 		RETURN oBandImageList
 
-	ASSIGN BandImageList(oImageList as ImageList) 
+/// <include file="Gui.xml" path="doc/ToolBar.BandImageList/*" />
+	ASSIGN BandImageList(oImageList as ImageList)
 		oBandImageList := oImageList
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/ToolBar.Bitmap/*" />
 	ACCESS Bitmap AS Bitmap
 		RETURN oBitmap
 
-	ASSIGN Bitmap(oNewBitmap AS Bitmap) 
+/// <include file="Gui.xml" path="doc/ToolBar.Bitmap/*" />
+	ASSIGN Bitmap(oNewBitmap AS Bitmap)
 		LOCAL oBMPSize AS Dimension
 
 		// Only allow the assign if the control has not yet been created
@@ -644,24 +664,27 @@ CLASS ToolBar INHERIT Control
 			ENDIF
 		ENDIF
 
-		RETURN 
+		RETURN
 
 
-	ASSIGN BorderStyle(kBorderStyle) 
+/// <include file="Gui.xml" path="doc/ToolBar.BorderStyle/*" />
+	ASSIGN BorderStyle(kBorderStyle)
 		// For CA-Visual Objects 1.0 compatibility only
-		RETURN 
+		RETURN
 
-	ACCESS BoundingBox 
+/// <include file="Gui.xml" path="doc/ToolBar.BoundingBox/*" />
+	ACCESS BoundingBox
 		LOCAL oBoundingBox AS BoundingBox
 		IF oCtrl != NULL_OBJECT
 			oBoundingBox := BoundingBox{SELF:Origin, SELF:Size}
 		ENDIF
 
 		RETURN oBoundingBox
-	
+/// <include file="Gui.xml" path="doc/ToolBar.ButtonCount/*" />
 	ACCESS ButtonCount            // dcaton 070215 changed from ACCESS ButtonCount(symTB)
 		RETURN SELF:GetButtonCount()
 
+/// <include file="Gui.xml" path="doc/ToolBar.GetButtonCount/*" />
 	METHOD GetButtonCount(symTB)  // dcaton 070215 changed from ACCESS to METHOD, Vulcan doesn't support CLIPPER-calling convention properties
 		LOCAL oTB	as VOToolBar
 		LOCAL symToolBar AS SYMBOL
@@ -677,10 +700,12 @@ CLASS ToolBar INHERIT Control
 		ENDIF
 		RETURN 0
 
+/// <include file="Gui.xml" path="doc/ToolBar.ButtonSize/*" />
 	ACCESS ButtonSize as Dimension
 		RETURN oButtonSize
 
-	ASSIGN ButtonSize(oNewButtonSize as Dimension) 
+/// <include file="Gui.xml" path="doc/ToolBar.ButtonSize/*" />
+	ASSIGN ButtonSize(oNewButtonSize as Dimension)
 
 		// Only allow the assign if the control has not yet been created
 		IF oCtrl = NULL_OBJECT .AND. SELF:__HasUpdates
@@ -688,10 +713,11 @@ CLASS ToolBar INHERIT Control
 		ELSE
 			oButtonSize := oNewButtonSize
 		ENDIF
-		RETURN 
+		RETURN
 
 
-	ASSIGN ButtonStyle(kButtonStyle AS LONG) 
+/// <include file="Gui.xml" path="doc/ToolBar.ButtonStyle/*" />
+	ASSIGN ButtonStyle(kButtonStyle AS LONG)
 		IF (kButtonStyle == TB_ICONONLY) .OR. (kButtonStyle == TB_TEXTONLY) .OR. (kButtonStyle == TB_TEXTANDICON)
 			IF oCtrl = NULL_OBJECT .AND. SELF:__HasUpdates
 				SELF:__TryDeferAction(#ButtonStyle, kButtonStyle, NULL_SYMBOL)
@@ -709,10 +735,11 @@ CLASS ToolBar INHERIT Control
 			ENDIF
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	METHOD ChangeTipText(nID, cText, symLookUp) 
-		//SE-060526       
+/// <include file="Gui.xml" path="doc/ToolBar.ChangeTipText/*" />
+	METHOD ChangeTipText(nID, cText, symLookUp)
+		//SE-060526
 		//RvdH 070206 Changed to use new ToolBarTipText objects
 		LOCAL oTipText AS ToolBarTipText
 		DEFAULT(@symLookUp, #ButtonID)
@@ -723,9 +750,11 @@ CLASS ToolBar INHERIT Control
 		ENDIF
 		RETURN oTipText != NULL_OBJECT
 
-	METHOD ClickItem(nMenuItemID, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.ClickItem/*" />
+	METHOD ClickItem(nMenuItemID, symTB)
 		RETURN SELF:PressItem(nMenuItemID, symTB)
 
+/// <include file="Gui.xml" path="doc/ToolBar.ClientArea/*" />
 	ACCESS ClientArea as BoundingBox
 		LOCAL oOwnerArea AS BoundingBox
 		LOCAL oToolBarArea AS BoundingBox
@@ -741,7 +770,8 @@ CLASS ToolBar INHERIT Control
 
 		RETURN  ((Window) SELF:Owner):CanvasArea
 
-	METHOD Configure() 
+/// <include file="Gui.xml" path="doc/ToolBar.Configure/*" />
+	METHOD Configure()
 		/*
 		// !!! we need more info to support configure !!!
 		if (hWndTB != NULL_PTR)
@@ -749,7 +779,8 @@ CLASS ToolBar INHERIT Control
 		endif
 		*/
 		RETURN NIL
- 
+
+/// <include file="Gui.xml" path="doc/ToolBar.Create/*" />
 	METHOD Create() AS IVOControl STRICT
 		//PP-040505 Update from S Ebert
 		//SE-050929
@@ -771,7 +802,7 @@ CLASS ToolBar INHERIT Control
 					oBandImageList := ImageList{132,oButtonSize}
 					nImageCount := 132
 					LOCAL i as DWORD
-					
+
 					LOCAL nWidth as LONG
 					LOCAL nLeft  as LONG
 					LOCAL nHeight as LONG
@@ -782,12 +813,12 @@ CLASS ToolBar INHERIT Control
 						LOCAL oBmp as System.Drawing.Bitmap
 						rect := System.Drawing.Rectangle{nLeft,0,nWidth, nHeight}
 						oBmp := oBitmap:__Bitmap:Clone(rect, oBitmap:__Bitmap:PixelFormat)
-						oBandImageList:__ImageList:Images:Add(oBmp)				
+						oBandImageList:__ImageList:Images:Add(oBmp)
 						nLeft += nWidth
 					NEXT
 				ENDIF
 			ENDIF
-			
+
 			//IF SELF:__IsRebar
 			//	SELF:SetStyle(_OR(CCS_NORESIZE, CCS_NOPARENTALIGN, CCS_NODIVIDER))
 
@@ -811,9 +842,9 @@ CLASS ToolBar INHERIT Control
 			//	ENDIF
 			//ELSE
 			SELF:SetStyle(CCS_NODIVIDER, ! SELF:Divider)
-			
+
 			hwndMainTB := SELF:__CreateToolBar(#MAINTOOLBAR, SELF:Owner, DWORD(wId), (DWORD) dwStyle)
-			
+
 			oCtrl       := hwndMainTB
 			//ENDIF
 			IF oButtonSize != NULL_OBJECT
@@ -849,7 +880,7 @@ CLASS ToolBar INHERIT Control
 				//	ENDIF
 				//ENDIF
 
-					
+
 					// Apply all buffered changes and reset dwUpdateCount
 					FOREACH oUpdate AS ToolbarUpdate IN  aUpdates
 						DO CASE
@@ -926,7 +957,8 @@ CLASS ToolBar INHERIT Control
 		ENDIF
 		RETURN oCtrl
 
-	METHOD DeleteItem(nMenuItemID, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.DeleteItem/*" />
+	METHOD DeleteItem(nMenuItemID, symTB)
 		LOCAL liIndex AS LONGINT
 		LOCAL oTB AS VOToolBar
 
@@ -950,7 +982,8 @@ CLASS ToolBar INHERIT Control
 
 		RETURN NIL
 
-	METHOD Destroy() AS USUAL 
+/// <include file="Gui.xml" path="doc/ToolBar.Destroy/*" />
+	METHOD Destroy() AS USUAL
 		//PP-040417 from S Ebert
 		//SE-050729
 		//RvdH 0702056 Changed to use ToolBarChild
@@ -966,7 +999,7 @@ CLASS ToolBar INHERIT Control
 		//		ENDIF
 		//	NEXT //dwI
 		//ENDIF
-		
+
 		//oBitmap 		:= NULL_OBJECT
 		//aExtraBitmaps 	:= NULL_ARRAY
 		//aTipsText 		:= NULL_ARRAY
@@ -978,7 +1011,7 @@ CLASS ToolBar INHERIT Control
 
 		RETURN NIL
 
-	METHOD DimItem(nMenuItemID, symTB) 
+	METHOD DimItem(nMenuItemID, symTB)
 		LOCAL oTb AS VOToolBar
 		Default(@symTB, #MAINTOOLBAR)
 		oTb := SELF:__FindToolBarHandle(symTB)
@@ -995,7 +1028,8 @@ CLASS ToolBar INHERIT Control
 		RETURN NIL
 
 
-	METHOD DisableItem(nMenuItemID, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.DisableItem/*" />
+	METHOD DisableItem(nMenuItemID, symTB)
 		LOCAL oTB  AS VOToolBar
 
 		IF IsSymbol(symTB) .AND. symTB != NULL_SYMBOL
@@ -1012,8 +1046,8 @@ CLASS ToolBar INHERIT Control
 		ELSE
 			IF oCtrl != NULL_OBJECT
 				//dwLen := ALen(aChildren)
-				//FOR i := 1 UPTO dwLen  
-				//	oChild :=aChildren[i] 
+				//FOR i := 1 UPTO dwLen
+				//	oChild :=aChildren[i]
 				//	IF oChild:Handle != NULL_PTR .AND. oChild:oCargo = NULL_OBJECT
 				//		SendMessage(oChild:Handle, TB_ENABLEBUTTON, nMenuItemID, 0)
 				//	ENDIF
@@ -1028,7 +1062,8 @@ CLASS ToolBar INHERIT Control
 	METHOD DoAction(oUpdate)
 		RETURN NIL
 
-	METHOD EnableBands(lEnable) 
+/// <include file="Gui.xml" path="doc/ToolBar.EnableBands/*" />
+	METHOD EnableBands(lEnable)
 
 		Default(@lEnable, TRUE)
 		lOldStyle := !lEnable
@@ -1036,11 +1071,13 @@ CLASS ToolBar INHERIT Control
 		RETURN lEnable
 
 
-	METHOD EnableDrag(lEnable) 
+/// <include file="Gui.xml" path="doc/ToolBar.EnableDrag/*" />
+	METHOD EnableDrag(lEnable)
 		// Defer while feature is unavailable
 		RETURN NIL
 
-	METHOD EnableItem(nMenuItemID, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.EnableItem/*" />
+	METHOD EnableItem(nMenuItemID, symTB)
 		//PP-040421 Update from S Ebert
 		//SE-060520
 		//RvdH 0702056 Changed to use ToolBarChild
@@ -1072,10 +1109,12 @@ CLASS ToolBar INHERIT Control
 
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/ToolBar.Flat/*" />
 	ACCESS Flat AS LOGIC
 		RETURN lFlat
 
-	ASSIGN Flat(lNewVal as LOGIC) 
+/// <include file="Gui.xml" path="doc/ToolBar.Flat/*" />
+	ASSIGN Flat(lNewVal as LOGIC)
 		lFlat := lNewVal
 		IF oCtrl != NULL_OBJECT
 			IF lFlat
@@ -1085,13 +1124,15 @@ CLASS ToolBar INHERIT Control
 			ENDIF
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	ASSIGN GapSize(nGapSize) 
+/// <include file="Gui.xml" path="doc/ToolBar.GapSize/*" />
+	ASSIGN GapSize(nGapSize)
 		// For CA-Visual Objects 1.0 compatibility only
-		RETURN 
+		RETURN
 
-	METHOD GetButtonDescription(nButtonID, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.GetButtonDescription/*" />
+	METHOD GetButtonDescription(nButtonID, symTB)
 		//SE-041015 Fix from S Ebert
 		LOCAL cDescription AS STRING
 		LOCAL oTB AS VOToolBar
@@ -1108,7 +1149,8 @@ CLASS ToolBar INHERIT Control
 
 		RETURN AllTrim(cDescription)
 
-	METHOD GetImageList(symType, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.GetImageList/*" />
+	METHOD GetImageList(symType, symTB)
 		//PP-040417 from S Ebert
 		//RvdH 0702056 Changed to use ToolBarChild
 		LOCAL oTB	  	  AS ToolBarChild
@@ -1129,10 +1171,11 @@ CLASS ToolBar INHERIT Control
 
 		RETURN oImageList
 
-	METHOD GetState(nMenuItemID, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.GetState/*" />
+	METHOD GetState(nMenuItemID, symTB)
 		//SE-050701
 		LOCAL oTb AS VOToolBar
-		
+
 
 		Default(@symTB, #MAINTOOLBAR)
 		oTb := SELF:__FindToolBarHandle(symTB)
@@ -1145,22 +1188,23 @@ CLASS ToolBar INHERIT Control
 		RETURN -1l
 
 
-	METHOD GetTipText(nButtonID, symLookUp) 
-		//SE-060526       
+/// <include file="Gui.xml" path="doc/ToolBar.GetTipText/*" />
+	METHOD GetTipText(nButtonID, symLookUp)
+		//SE-060526
 		//RvdH 070206 Changerd to use new ToolBarTipText objects
 		LOCAL oTipText AS ToolBarTipText
 		LOCAL cResult	AS STRING
-		
+
 
 		DEFAULT(@symLookUp, #ButtonID)
 
 		oTipText := SELF:__FindTipText(nButtonID, symLookUp)
 		IF oTipText != NULL_OBJECT
-			cResult := oTipText:TipText 
+			cResult := oTipText:TipText
 		ENDIF
 		RETURN cResult
 
-	//METHOD Hide() 
+	//METHOD Hide()
 	//	SUPER:Hide()
 	//IF IsInstanceOf(SELF:Owner, #ShellWindow)
 	//	((ShellWindow) SELF:Owner):__AdjustClient()
@@ -1170,7 +1214,8 @@ CLASS ToolBar INHERIT Control
 
 	//	RETURN NIL
 
-	METHOD HideItem(nMenuItemID, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.HideItem/*" />
+	METHOD HideItem(nMenuItemID, symTB)
 		LOCAL oTb AS VOToolBar
 
 		Default(@symTB, #MAINTOOLBAR)
@@ -1187,7 +1232,8 @@ CLASS ToolBar INHERIT Control
 
 		RETURN NIL
 
-	ACCESS ImageCount 
+/// <include file="Gui.xml" path="doc/ToolBar.ImageCount/*" />
+	ACCESS ImageCount
 		//SE-050729
 
 		IF nImageCount < 0
@@ -1197,7 +1243,8 @@ CLASS ToolBar INHERIT Control
 		RETURN nImageCount
 
 
-	ASSIGN ImageCount(nNewImageCount) 
+/// <include file="Gui.xml" path="doc/ToolBar.ImageCount/*" />
+	ASSIGN ImageCount(nNewImageCount)
 		//SE-050729
 
 		// Only allow the assign if the control has not yet been created
@@ -1205,7 +1252,7 @@ CLASS ToolBar INHERIT Control
 			nImageCount := nNewImageCount
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	METHOD __SetButtonSize(nSize AS LONG) AS VOID
 		oButtonSize := Dimension{nSize, nSize}
@@ -1215,7 +1262,8 @@ CLASS ToolBar INHERIT Control
 			oTb:ButtonSize := oButtonSize
 		NEXT
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lEnableBands, nButtonSize) 
+/// <include file="Gui.xml" path="doc/ToolBar.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lEnableBands, nButtonSize)
 		DEFAULT(@xID, 0)
 		DEFAULT(@oPoint, Point{})
 		DEFAULT(@oDimension, Dimension{})
@@ -1249,9 +1297,9 @@ CLASS ToolBar INHERIT Control
 
 		SELF:ButtonStyle := TB_ICONONLY
 		aBackBitmaps := {}
-		IF IsNil(oOwner) 
+		IF IsNil(oOwner)
 			// ToolBar is being created without a parent; don't call super:Init()
-			
+
 			oOrigin 	:= Point{oPoint:X, oPoint:Y}
 			oSize 		:= Dimension{oDimension:Width, oDimension:Height}
 		ELSE
@@ -1259,9 +1307,10 @@ CLASS ToolBar INHERIT Control
 			SUPER(oOwner, xID, oPoint, oDimension, TOOLBARCLASSNAME)
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	METHOD InsertItem(nButtonID, nMenuItemID, nBeforeID, bState, bStyle, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.InsertItem/*" />
+	METHOD InsertItem(nButtonID, nMenuItemID, nBeforeID, bState, bStyle, symTB)
 		//PP-040421 Update from S Ebert
 		//RvdH 070206 Changed to use ToolBarUpdate class
 		LOCAL oUpdate 		AS ToolBarUpdate
@@ -1291,8 +1340,8 @@ CLASS ToolBar INHERIT Control
 				ENDIF
 				oTB:Buttons:Insert(nBeforeID, oButton)
 			ENDIF
-			
-			
+
+
 		ELSEIF (SELF:aUpdates != NULL)
 			// If the toolbar has not yet been created, fill out the buffer information
 			// necessary to apply this operation when it is created
@@ -1312,20 +1361,23 @@ CLASS ToolBar INHERIT Control
 
 		RETURN TRUE
 
-	METHOD IsClicked(nID, symIDType, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.IsClicked/*" />
+	METHOD IsClicked(nID, symIDType, symTB)
 		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN oButton:Pushed
 		ENDIF
 		RETURN FALSE
 
-	METHOD IsDimmed(nID, symIDType, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.IsDimmed/*" />
+	METHOD IsDimmed(nID, symIDType, symTB)
 		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN !oButton:PartialPush
 		ENDIF
 		RETURN FALSE
 
+/// <include file="Gui.xml" path="doc/ToolBar.IsEnabled/*" />
 	METHOD IsEnabled(nID, symIDType, symTB) AS LOGIC CLIPPER
 		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
@@ -1333,25 +1385,29 @@ CLASS ToolBar INHERIT Control
 		ENDIF
 		RETURN FALSE
 
-	METHOD IsToolbarHidden(nID, symIDType, symTB) 	
+/// <include file="Gui.xml" path="doc/ToolBar.IsHidden/*" />
+	METHOD IsToolbarHidden(nID, symIDType, symTB)
 		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN !oButton:Visible
 		ENDIF
 		RETURN FALSE
 
-	METHOD IsPressed(nID, symIDType, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.IsPressed/*" />
+	METHOD IsPressed(nID, symIDType, symTB)
 		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN oButton:Pushed
 		ENDIF
 		RETURN FALSE
 
-	ASSIGN Location(kLocation) 
+/// <include file="Gui.xml" path="doc/ToolBar.Location/*" />
+	ASSIGN Location(kLocation)
 		// Defer while feature is unavailable
-		RETURN 
+		RETURN
 
-	METHOD PressItem(nMenuItemID, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.PressItem/*" />
+	METHOD PressItem(nMenuItemID, symTB)
 		LOCAL oTb AS VOToolBar
 		Default(@symTB, #MAINTOOLBAR)
 		oTb := SELF:__FindToolBarHandle(symTB)
@@ -1368,9 +1424,10 @@ CLASS ToolBar INHERIT Control
 		RETURN NIL
 
 
-	METHOD RemoveTipText(nButtonID, symLookUp) 
-		//SE-060526      
-				
+/// <include file="Gui.xml" path="doc/ToolBar.RemoveTipText/*" />
+	METHOD RemoveTipText(nButtonID, symLookUp)
+		//SE-060526
+
 
 		DEFAULT(@symLookUp, #ButtonID)
 
@@ -1380,10 +1437,12 @@ CLASS ToolBar INHERIT Control
 		ENDIF
 
 		RETURN oText != NULL_OBJECT
-		
-	ACCESS Rows             // dcaton 070215 was ACCESS Rows(nRows)
-		RETURN SELF:GetRows()	
 
+/// <include file="Gui.xml" path="doc/ToolBar.Rows/*" />
+	ACCESS Rows             // dcaton 070215 was ACCESS Rows(nRows)
+		RETURN SELF:GetRows()
+
+/// <include file="Gui.xml" path="doc/ToolBar.GetRows/*" />
 	METHOD GetRows(symTB)   // dcaton changed from ACCESS to METHOD, Vulcan doesn't support CLIPPER-calling convention properties
 		LOCAL oTB AS VOToolBar
 		LOCAL symToolBar AS SYMBOL
@@ -1398,12 +1457,14 @@ CLASS ToolBar INHERIT Control
 		IF (oTB != NULL_OBJECT)
 			RETURN 1
 		ENDIF
-		
+
 		RETURN 0
 
+/// <include file="Gui.xml" path="doc/ToolBar.Rows/*" />
 	ASSIGN Rows( nRows )	         // dcaton 070215 was ASSIGN Rows(nRows,symTB)
 		SELF:SetRows( nRows )
 
+/// <include file="Gui.xml" path="doc/ToolBar.SetRows/*" />
 	METHOD SetRows(nRows, symTB)   // dcaton 070215 changed from ASSIGN to METHOD, Vulcan doesn't support CLIPPER-calling convention properties
 		//PP-040421 Update from S Ebert
 		//LOCAL strucRect IS _winRect
@@ -1427,11 +1488,13 @@ CLASS ToolBar INHERIT Control
 		RETURN nRows
 
 
-	ASSIGN SeparatorSize(nSeparatorSize) 
+/// <include file="Gui.xml" path="doc/ToolBar.SeparatorSize/*" />
+	ASSIGN SeparatorSize(nSeparatorSize)
 		// For CA-Visual Objects 1.0 compatibility only
 		RETURN
 
-	METHOD SetImageList(uImageList, symType, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.SetImageList/*" />
+	METHOD SetImageList(uImageList, symType, symTB)
 		//PP-040417 from S Ebert
 		//SE-050729
 		//RvdH 0702056 Changed to use ToolBarChild
@@ -1470,7 +1533,7 @@ CLASS ToolBar INHERIT Control
 
 		//	Default(@symTB, #MAINTOOLBAR)
 		//	oTB := SELF:__FindToolBar(symTB)
-		//	IF oTB == NULL_OBJECT  
+		//	IF oTB == NULL_OBJECT
 		//		oTB	:= ToolBarChild{}
 		//		oTB:NameSym := symTB
 		//		AAdd(aChildren, oTB)
@@ -1485,10 +1548,10 @@ CLASS ToolBar INHERIT Control
 		//			oTB:DisabledImageList := oImageList
 		//			dwMsg  := TB_SETDISABLEDIMAGELIST
 		//		ELSE
-		//			oTB:ImageList := oImageList				
+		//			oTB:ImageList := oImageList
 		//		ENDIF
 		//	ELSE
-		//		oTB:ImageList := oImageList							
+		//		oTB:ImageList := oImageList
 		//	ENDIF
 
 		//	IF oTB:Handle != NULL_PTR .AND. oImageList != NULL_OBJECT
@@ -1501,7 +1564,8 @@ CLASS ToolBar INHERIT Control
 		RETURN uImageList
 
 
-	METHOD SetState(nMenuItemID, nState, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.SetState/*" />
+	METHOD SetState(nMenuItemID, nState, symTB)
 		LOCAL oTB AS VOToolBar
 
 		Default(@symTB, #MAINTOOLBAR)
@@ -1514,7 +1578,7 @@ CLASS ToolBar INHERIT Control
 
 		RETURN NIL
 
-	//METHOD Show() 
+	//METHOD Show()
 	//	SUPER:Show()
 
 	//	//IF IsInstanceOf(SELF:Owner, #ShellWindow)
@@ -1525,8 +1589,9 @@ CLASS ToolBar INHERIT Control
 
 	//	RETURN NIL
 
-	METHOD ShowBand(iPos, lShow) 
-		
+/// <include file="Gui.xml" path="doc/ToolBar.ShowBand/*" />
+	METHOD ShowBand(iPos, lShow)
+
 
 		//IF !SELF:__IsRebar
 		RETURN FALSE
@@ -1535,7 +1600,8 @@ CLASS ToolBar INHERIT Control
 	//Default(@lShow, TRUE)
 	//RETURN (SendMessage(hWnd, RB_SHOWBAND, DWORD(_CAST, iPos), LONGINT(_CAST, lShow)) > 0)
 
-	METHOD ShowItem(nMenuItemID, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.ShowItem/*" />
+	METHOD ShowItem(nMenuItemID, symTB)
 		LOCAL oTb AS VOToolBar
 
 		Default(@symTB, #MAINTOOLBAR)
@@ -1552,7 +1618,8 @@ CLASS ToolBar INHERIT Control
 
 		RETURN NIL
 
-	METHOD UnClickItem(nMenuItemID, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.UnClickItem/*" />
+	METHOD UnClickItem(nMenuItemID, symTB)
 		LOCAL oTb AS VOToolBar
 		DEFAULT(@symTB, #MAINTOOLBAR)
 		oTb := SELF:__FindToolBarHandle(symTB)
@@ -1567,7 +1634,8 @@ CLASS ToolBar INHERIT Control
 		ENDIF
 		RETURN NIL
 
-	METHOD UnDimItem(nMenuItemID, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.UnDimItem/*" />
+	METHOD UnDimItem(nMenuItemID, symTB)
 		//PP-040421 Update from S Ebert
 		LOCAL oTb AS VOToolBar
 		DEFAULT(@symTB, #MAINTOOLBAR)
@@ -1584,16 +1652,18 @@ CLASS ToolBar INHERIT Control
 
 		RETURN NIL
 
-	METHOD UnPressItem(nMenuItemID, symTB) 
+/// <include file="Gui.xml" path="doc/ToolBar.UnPressItem/*" />
+	METHOD UnPressItem(nMenuItemID, symTB)
 		RETURN SELF:UnClickItem(nMenuItemID, symTB)
 
 
-	METHOD Update() 
+/// <include file="Gui.xml" path="doc/ToolBar.Update/*" />
+	METHOD Update()
 		// Dummy - for CA-Visual Objects 1.0 compatibility only
 		RETURN NIL
 
 
-	CLASS ToolBarChild  
+	CLASS ToolBarChild
 		PROPERTY NameSym 			AS SYMBOL       AUTO
 		PROPERTY Handle				AS VOToolBar    AUTO
 		PROPERTY ImageList 			AS OBJECT       AUTO
@@ -1601,20 +1671,20 @@ CLASS ToolBar INHERIT Control
 		PROPERTY DisabledImageList 	AS OBJECT       AUTO
 	END CLASS
 
-	CLASS ToolBarExtraBitmap 
+	CLASS ToolBarExtraBitmap
 		PROPERTY Bitmap				AS OBJECT       AUTO
 		PROPERTY ImageCount			AS LONGINT      AUTO
 		PROPERTY FirstImageIndex	    AS LONGINT      AUTO
 		PROPERTY NameSym				AS SYMBOL       AUTO
-	END CLASS                                       
+	END CLASS
 
-	CLASS ToolBarTipText	
+	CLASS ToolBarTipText
 		PROPERTY ButtonID 	AS LONGINT   AUTO
 		PROPERTY MenuItemID	AS LONGINT   AUTO
 		PROPERTY TipText	AS STRING    AUTO
 	END CLASS
 
-	CLASS ToolBarUpdate  
+	CLASS ToolBarUpdate
 		PROPERTY symAction	 	AS SYMBOL       AUTO
 		PROPERTY nButtonID	 	AS LONGINT      AUTO
 		PROPERTY nMenuItemID 	AS LONGINT      AUTO
@@ -1627,7 +1697,7 @@ CLASS ToolBar INHERIT Control
 		PROPERTY bStyle		 	AS BYTE         AUTO
 		PROPERTY symToolBar 	AS SYMBOL       AUTO
 		PROPERTY lFlat          AS LOGIC        AUTO
-	END CLASS                                   
+	END CLASS
 
 END CLASS
 

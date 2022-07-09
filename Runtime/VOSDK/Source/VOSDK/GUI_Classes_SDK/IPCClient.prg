@@ -18,10 +18,10 @@ CLASS IpcClient INHERIT EventContext
 	#endif
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __UpdateClient(hData AS PTR, hTopicHstr AS PTR, hItemHstr AS PTR) AS VOID STRICT 
+	METHOD __UpdateClient(hData AS PTR, hTopicHstr AS PTR, hItemHstr AS PTR) AS VOID STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	oIpcDataUpdateEvent := IpcDataUpdateEvent{NULL_PTR,0,NULL_PTR, hTopicHstr, hItemHstr, hData, 0, 0, SELF}
@@ -30,7 +30,7 @@ CLASS IpcClient INHERIT EventContext
 
 
 /// <include file="Gui.xml" path="doc/IpcClient.ChangeData/*" />
-METHOD ChangeData(cTopic, cItem, cStringData) 
+METHOD ChangeData(cTopic, cItem, cStringData)
 	LOCAL hItemHstr AS PTR
 	LOCAL dwLen AS DWORD
 	LOCAL pszTemp AS PSZ
@@ -38,8 +38,8 @@ METHOD ChangeData(cTopic, cItem, cStringData)
 	LOCAL hTopicHstr AS PTR
 
 
-	
-	
+
+
 	IF !IsString(cItem)
 		WCError{#ChangData,#IpcClient,__WCSTypeError,cItem,2}:Throw()
 	ENDIF
@@ -71,13 +71,11 @@ METHOD ChangeData(cTopic, cItem, cStringData)
 
 
 /// <include file="Gui.xml" path="doc/IpcClient.ClientError/*" />
-METHOD ClientError(oIpcClientErrorEvent) 
+METHOD ClientError(oIpcClientErrorEvent)
 	LOCAL selected AS DWORD
 	LOCAL __WCSIpcError AS DWORD
 
 
-	
-	
 	selected := oIpcClientErrorEvent:ErrorType
 	DO CASE
 	CASE (selected == IPCSERVERNOTFOUND)
@@ -100,11 +98,9 @@ METHOD ClientError(oIpcClientErrorEvent)
 	WCError{#ClientError,#IpcClient,__WCSIpcError}:Throw()
 	RETURN SELF
 
-
 /// <include file="Gui.xml" path="doc/IpcClient.DataUpdate/*" />
-METHOD DataUpdate(oIpcDataUpdateEvent) 
-	
-	
+METHOD DataUpdate(oIpcDataUpdateEvent)
+
 	RETURN SELF
 
 
@@ -140,14 +136,14 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 	RETURN SELF
 /// <inheritdoc />
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent)
 	LOCAL oE AS IpcEvent
 	LOCAL dwType AS DWORD
 	LOCAL hConv AS PTR
 
 
-	
-	
+
+
 
 
 	oE := oEvent //faster execution
@@ -171,15 +167,15 @@ METHOD Dispatch(oEvent)
 
 
 /// <include file="Gui.xml" path="doc/IpcClient.Execute/*" />
-METHOD Execute(cTopic, cItem,cCommand) 
+METHOD Execute(cTopic, cItem,cCommand)
 	LOCAL dwLen AS DWORD
 	LOCAL pszTemp AS PSZ
 	LOCAL hTopicHstr AS PTR
 	LOCAL hConvTemp AS PTR
 
 
-	
-	
+
+
 
 
 	IF !IsString(cTopic)
@@ -217,16 +213,16 @@ METHOD Execute(cTopic, cItem,cCommand)
 
 
 /// <include file="Gui.xml" path="doc/IpcClient.IdInst/*" />
-ACCESS IdInst 
-	
-	
+ACCESS IdInst
+
+
 	RETURN dwIdInst
 
 
 /// <include file="Gui.xml" path="doc/IpcClient.ctor/*" />
-CONSTRUCTOR(cServerName) 
-	
-	
+CONSTRUCTOR(cServerName)
+
+
 
 
 	SUPER()
@@ -244,11 +240,11 @@ CONSTRUCTOR(cServerName)
 	hServHstr := DdeCreateStringHandle(dwIdInst, String2Psz(cServerName), CP_WINANSI)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/IpcClient.RequestData/*" />
-METHOD RequestData(oIpcTopic, continuous) 
+METHOD RequestData(oIpcTopic, continuous)
 	LOCAL iItemListLen AS INT
 	LOCAL liLoop AS LONGINT
 	LOCAL hTopicHstr AS PTR
@@ -257,8 +253,8 @@ METHOD RequestData(oIpcTopic, continuous)
 	LOCAL cItemName AS STRING
 	LOCAL hData AS PTR
     LOCAL dwErrorCode AS DWORD
-	
-	
+
+
 
 
 	cTopicName := oIpcTopic:cTopicName

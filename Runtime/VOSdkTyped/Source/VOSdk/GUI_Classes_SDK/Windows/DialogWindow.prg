@@ -4,6 +4,7 @@
 USING System.Runtime.InteropServices
 
 
+/// <include file="Gui.xml" path="doc/DialogWindow/*" />
 CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 	PROTECT oResourceID 	AS ResourceID
 	PROTECT bModal 			AS LOGIC
@@ -27,7 +28,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 			ENDIF
 		ENDDO
 		RETURN oWin
-		
+
 	METHOD __CreateForm AS VOForm STRICT
 		LOCAL oDlg AS VODialogForm
         oDlg := GuiFactory.Instance:CreateDialogWindow(SELF, SELF:oResourceDialog)
@@ -41,12 +42,12 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 			oDlg:ShowInTaskbar := FALSE
             		oDlg:Text := SELF:Caption
 		ENDIF
-		SELF:oSurface := oDlg:Surface   
+		SELF:oSurface := oDlg:Surface
 		SELF:SetExStyle(WS_EX_APPWINDOW, FALSE)
 		SELF:SetExStyle(WS_EX_DLGMODALFRAME, TRUE)
 		SELF:SetStyle(WS_CLIPCHILDREN, FALSE)
 		SELF:SetStyle(4, TRUE)
-		IF _AND( SELF:dwStyle, WS_THICKFRAME ) = WS_THICKFRAME 
+		IF _AND( SELF:dwStyle, WS_THICKFRAME ) = WS_THICKFRAME
 			oDlg:SetSizable(TRUE)
 			oDlg:MinimizeBox := TRUE
 			oDlg:MaximizeBox := TRUE
@@ -62,55 +63,62 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		ENDIF
 		RETURN oDlg
 
-	METHOD __Close(oEvent AS @@Event) AS VOID STRICT 
+ /// <exclude />
+	METHOD __Close(oEvent AS @@Event) AS VOID STRICT
 		SELF:Close(oEvent)
-		
+
 		SELF:Destroy()
 		SELF:EventReturnValue := 1L
-		
+
 		RETURN
-	
+ /// <exclude />
+
 	METHOD __RestoreLastFocus() AS VOID STRICT
 		IF oParent != NULL_OBJECT .AND. oParent IS ILastFocus VAR oLastFocus
 			IF oLastFocus:LastFocus != NULL_OBJECT
 				oLastFocus:LastFocus:SetFocus()
 			ENDIF
 		ENDIF
-
+ /// <exclude />
 	ACCESS __HasSurface AS LOGIC
 		RETURN TRUE
 
+ /// <exclude />
 	ACCESS __Surface AS IVOControlContainer
 		RETURN oSurface
-	
-	METHOD __SetupDataControl(oDC AS Control) AS VOID 
+ /// <exclude />
+	METHOD __SetupDataControl(oDC AS Control) AS VOID
 		IF oDC IS RadioButtonGroup
 			AAdd(aRadioGroups, oDC)
 		ENDIF
-		RETURN 
+		RETURN
 
+ /// <exclude />
 	METHOD __SetFont() AS VOID STRICT
 		IF SELF:oFont != NULL_OBJECT .and. oSurface != NULL_OBJECT
 			oSurface:Font := SELF:oFont
 		ELSE
 			SUPER:__SetFont()
 		ENDIF
-		RETURN 
+		RETURN
 
-	METHOD Activate(oEvent  AS Event) 
+/// <include file="Gui.xml" path="doc/DialogWindow.Activate/*" />
+	METHOD Activate(oEvent  AS Event)
 		WC.AppSetDialogWindow(SELF:oSurface)
 		RETURN SUPER:Activate(oEvent)
-	
+
+/// <include file="Gui.xml" path="doc/DialogWindow.Active/*" />
 	METHOD Active() AS LOGIC
 		RETURN __Dialog:IsShown
-	
-	METHOD ButtonClick(oControlEvent AS ControlEvent)  
+
+/// <include file="Gui.xml" path="doc/DialogWindow.ButtonClick/*" />
+	METHOD ButtonClick(oControlEvent AS ControlEvent)
 		LOCAL oButton AS Control
 		LOCAL dwI, dwCount AS DWORD
-		LOCAL oRBG AS RadioButtonGroup 
+		LOCAL oRBG AS RadioButtonGroup
 		LOCAL oCE := oControlEvent	AS ControlEvent
 		SUPER:ButtonClick(oControlEvent)
-		
+
 		oButton := oCE:Control
 		IF oButton IS Button
 			oButton:Modified := TRUE // assume its modified
@@ -130,18 +138,20 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 			oButton:__Update() // Update radio button group
 		ENDIF
 		RETURN 0
-	
 
-	METHOD ChangeFont(oNew_Font, lRescale) 
+
+/// <include file="Gui.xml" path="doc/DialogWindow.ChangeFont/*" />
+	METHOD ChangeFont(oNew_Font, lRescale)
 		SELF:Font := oNew_Font
 		RETURN TRUE
-	
-	ACCESS ClipperKeys() AS LOGIC 
+
+	ACCESS ClipperKeys() AS LOGIC
 		RETURN FALSE
 
-	ASSIGN ClipperKeys(lNewValue AS LOGIC) 
-		RETURN 
-	
+	ASSIGN ClipperKeys(lNewValue AS LOGIC)
+		RETURN
+
+/// <include file="Gui.xml" path="doc/DialogWindow.ControlFocusChange/*" />
 	METHOD ControlFocusChange(oControlFocusChangeEvent AS  ControlFocusChangeEvent) AS USUAL STRICT
 		LOCAL oCFCE := oControlFocusChangeEvent AS ControlFocusChangeEvent
 		IF oCFCE:GotFocus
@@ -150,20 +160,23 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		ENDIF
 		RETURN NIL
 
-	METHOD DeActivate(oEvent  AS Event) 
+/// <include file="Gui.xml" path="doc/DialogWindow.DeActivate/*" />
+	METHOD DeActivate(oEvent  AS Event)
 		RETURN SUPER:DeActivate(oEvent)
-	
 
-	METHOD Default(oEvent AS Event) 
+
+/// <include file="Gui.xml" path="doc/DialogWindow.Default/*" />
+	METHOD Default(oEvent AS Event)
 		SELF:EventReturnValue := 0
 		RETURN SELF
-	
 
-	METHOD Destroy() AS USUAL 
+
+/// <include file="Gui.xml" path="doc/DialogWindow.Destroy/*" />
+	METHOD Destroy() AS USUAL
 		IF SELF:oSurface != NULL_OBJECT
-			IF (WC.AppGetDialogWindow() == SELF:oSurface) 
+			IF (WC.AppGetDialogWindow() == SELF:oSurface)
 				WC.AppSetDialogWindow(NULL_OBJECT)
-			ENDIF 
+			ENDIF
 			SELF:oSurface:CleanUp()
 			// Surface is not disposed. We may want to access the controls on the surface
 
@@ -171,39 +184,42 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		SELF:oLastFocus := NULL_OBJECT
 		SUPER:Destroy()
 		RETURN NIL
-	
-	METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent) 
+
+/// <include file="Gui.xml" path="doc/DialogWindow.EditFocusChange/*" />
+	METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent)
 		LOCAL uRetCode AS USUAL
 		LOCAL oEFCE AS EditFocusChangeEvent
-		oEFCE := oEditFocusChangeEvent 
+		oEFCE := oEditFocusChangeEvent
 		uRetCode := SUPER:EditFocusChange(oEFCE)
-		
+
 		IF !oEFCE:GotFocus
 			IF oEFCE:Control != NULL_OBJECT
 				oEFCE:Control:__Update()
 			ENDIF
 		ENDIF
-		
-		RETURN uRetCode
-	
 
-	METHOD EndDialog(iResult) 
+		RETURN uRetCode
+
+
+/// <include file="Gui.xml" path="doc/DialogWindow.EndDialog/*" />
+	METHOD EndDialog(iResult)
 		Default(@iResult, 0)
 		nResult := iResult
 		IF SELF:__IsValid
             		// prevent owner invalidation and visual noise
-			SELF:oWnd:Owner := NULL 
+			SELF:oWnd:Owner := NULL
 			SELF:oWnd:Close()
 		ENDIF
-		SELF:__RestoreLastFocus()		
+		SELF:__RestoreLastFocus()
 		RETURN iResult
-	
 
-	METHOD ExecModal() 
+
+/// <include file="Gui.xml" path="doc/DialogWindow.ExecModal/*" />
+	METHOD ExecModal()
 		oApp:Exec(EXECNORMAL, SELF)
 		RETURN SELF
 
-	//METHOD HelpRequest(oHelpRequestEvent) 
+	//METHOD HelpRequest(oHelpRequestEvent)
 	//	SUPER:HelpRequest(oHelpRequestEvent)
 	//	RETURN SELF
 
@@ -211,15 +227,16 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 	ACCESS HyperLabel AS HyperLabel
 		RETURN SUPER:HyperLabel
 
-	ASSIGN HyperLabel (oHL AS HyperLabel) 
+	ASSIGN HyperLabel (oHL AS HyperLabel)
 		SUPER:HyperLabel := oHL
 		IF oHL != NULL_OBJECT
 			SELF:__Surface:Text := "Surface:"+oHL:Name
 		ENDIF
-	
-	
-	CONSTRUCTOR(oOwner, xResourceID, lModal) 
-		
+
+
+/// <include file="Gui.xml" path="doc/DialogWindow.ctor/*" />
+	CONSTRUCTOR(oOwner, xResourceID, lModal)
+
 		IF IsInstanceOfUsual(oOwner, #App)
 			oOwner := NIL
 		ENDIF
@@ -227,7 +244,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		IF !IsNil(oOwner) .AND. !IsInstanceOfUsual(oOwner, #Window) .AND. !IsInstanceOfUsual(oOwner, #ToolBar) .AND. !IsPtr(oOwner)
 			WCError{#Init,#DialogWindow,__WCSTypeError,oOwner,1}:@@Throw()
 		ENDIF
-		
+
 		IF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
 			oResourceID := ResourceID{xResourceID}
 		ELSEIF IsInstanceOfUsual(xResourceID, #ResourceID)
@@ -236,25 +253,28 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		SELF:__ReadResource(oResourceID, oOwner)
 		DEFAULT(@lModal, TRUE)
 		bModal := lModal
-		
+
 		SUPER(oOwner)
-		
-		
+
+
 		aRadioGroups := {}
 		IF (SELF:oParent != NULL_OBJECT .AND. IsAccess(SELF:oParent, #HELPDISPLAY ))
 			SELF:HelpDisplay := IVarGet(oParent,#HelpDisplay)
 		ENDIF
-		RETURN 
+		RETURN
 
 
+/// <include file="Gui.xml" path="doc/DialogWindow.IsModal/*" />
 	ACCESS IsModal AS LOGIC
 		RETURN bModal
-	
 
+
+/// <include file="Gui.xml" path="doc/DialogWindow.LastFocus/*" />
 	ACCESS LastFocus AS Control
 		RETURN oLastFocus
 
-	ASSIGN LastFocus (oControl AS Control) 
+/// <include file="Gui.xml" path="doc/DialogWindow.LastFocus/*" />
+	ASSIGN LastFocus (oControl AS Control)
 		LOCAL nStyle AS LONG
 		nStyle := SELF:GetStyle()
 		IF _AND(nStyle, WS_CHILD) =  WS_CHILD
@@ -263,8 +283,9 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 			ENDIF
 		ENDIF
 		oLastFocus := oControl
-	
-	METHOD ListBoxClick(oControlEvent AS ControlEvent) 
+
+/// <include file="Gui.xml" path="doc/DialogWindow.ListBoxClick/*" />
+	METHOD ListBoxClick(oControlEvent AS ControlEvent)
 		LOCAL oListBox := NULL_OBJECT AS ListBox
 		LOCAL oCE AS ControlEvent
 		oCE := oControlEvent
@@ -273,7 +294,8 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		oListBox:__Update()
 		RETURN SELF
 
-	METHOD ListBoxSelect(oControlEvent AS ControlEvent) 
+/// <include file="Gui.xml" path="doc/DialogWindow.ListBoxSelect/*" />
+	METHOD ListBoxSelect(oControlEvent AS ControlEvent)
 		LOCAL oListBox := NULL_OBJECT AS ListBox
 		LOCAL oCE AS ControlEvent
 		oCE := oControlEvent
@@ -281,22 +303,25 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		oListBox:Modified := TRUE // assume its modified
 		oListBox:__SetText(oListBox:CurrentItem)
 		oListBox:__Update()
-		RETURN SELF	
-		
+		RETURN SELF
+
+/// <include file="Gui.xml" path="doc/DialogWindow.Owner/*" />
 	ACCESS Owner AS OBJECT
 		IF oParent == NULL_OBJECT
 			RETURN oApp
 		ENDIF
 		RETURN oParent
-	
-	METHOD PostShowDialog() 
+
+/// <include file="Gui.xml" path="doc/DialogWindow.PostShowDialog/*" />
+	METHOD PostShowDialog()
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/DialogWindow.Result/*" />
 	ACCESS Result() AS LONG
 		RETURN nResult
 
 	ACCESS Surface AS VOPanel
-		RETURN oSurface 
+		RETURN oSurface
 
 	ASSIGN Size (oSize AS Dimension)
 		IF ! SELF:__Dialog:IsShown
@@ -305,7 +330,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		SUPER:Size := oSize
 
 
-	
+/// <include file="Gui.xml" path="doc/DialogWindow.Show/*" />
 	METHOD Show(kShowState := SHOWCENTERED AS LONG ) AS VOID
 		IF bModal
 			oWnd:StartPosition := SELF:__GetStartPosFromShowState(kShowState)
@@ -314,13 +339,14 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 			SUPER:Show(kShowState)
 			//SELF:PostShowDialog()		// Is now called from the OnShown method on the Form
 		ENDIF
-		RETURN 
-	
-	METHOD ShowModal(lActive AS LOGIC) 
+		RETURN
+
+/// <include file="Gui.xml" path="doc/DialogWindow.ShowModal/*" />
+	METHOD ShowModal(lActive AS LOGIC)
 		LOCAL oShell AS ShellWindow
 		IF SELF:Owner IS Window
 			oShell := GetShell(SELF:Owner)
-		ENDIF	
+		ENDIF
 		IF lActive
 			oWnd:Visible := FALSE
 			IF oShell != NULL_OBJECT
@@ -335,5 +361,5 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 			oWnd:Close()
 		ENDIF
 		RETURN TRUE
-	
+
 END CLASS

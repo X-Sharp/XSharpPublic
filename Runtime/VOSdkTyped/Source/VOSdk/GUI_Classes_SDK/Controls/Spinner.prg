@@ -8,7 +8,7 @@ CLASS Spinner INHERIT Control
 	PROPERTY Client AS Control GET oClient SET oClient := VALUE
     ACCESS __UpDown AS System.Windows.Forms.NumericUpDown
 		RETURN (System.Windows.Forms.NumericUpDown) oCtrl
-	PROPERTY Position AS INT GET (INT) __UpDown:Value SET __UpDown:Value := VALUE
+	PROPERTY Position AS INT GET Convert.ToInt32(__UpDown:Value) SET __UpDown:Value := VALUE
 
     PROPERTY Range AS Range
         GET
@@ -19,8 +19,8 @@ CLASS Spinner INHERIT Control
             __UpDown:Maximum := VALUE:Max
         END SET
     END PROPERTY
-    PROPERTY ThumbPosition AS LONG GET (INT) __UpDown:Value SET __UpDown:Value := VALUE
-    PROPERTY UnitSize AS LONG GET (INT) __UpDown:Increment SET __UpDown:Increment := Value
+    PROPERTY ThumbPosition AS LONG GET Convert.ToInt32(__UpDown:Value) SET __UpDown:Value := VALUE
+    PROPERTY UnitSize AS LONG GET Convert.ToInt32(__UpDown:Increment) SET __UpDown:Increment := Value
 
     CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware) CLIPPER
 	   SUPER(oOwner,xID,oPoint,oDimension,lDataAware)

@@ -6,7 +6,7 @@
 #pragma options ("enforceself", on)
 #pragma warnings(165, off)
 
-PARTIAL CLASS DbServer
+PARTIAL CLASS DbServer 
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.GetArray/*" />
@@ -1297,7 +1297,7 @@ METHOD OrderIsUnique( uOrder AS USUAL, cTarget := "" AS STRING) AS LONG
 		SELF:Error( oErrorInfo, #OrderIsUnique )
 	END SEQUENCE
 
-
+ 
 
 
 	RETURN lRetVal
@@ -1314,7 +1314,7 @@ METHOD OrderKeyAdd( uOrder AS USUAL, oFSIndex AS FileSpec, uKeyValue  := NIL AS 
 METHOD OrderKeyAdd( uOrder AS USUAL, cIndex := "" AS STRING, uKeyValue := NIL  AS USUAL) AS LONG
 
 
-
+ 
 
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL

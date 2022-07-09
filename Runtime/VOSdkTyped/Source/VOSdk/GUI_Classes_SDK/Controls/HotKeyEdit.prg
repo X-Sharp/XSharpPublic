@@ -86,7 +86,7 @@ CLASS HotKeyEdit INHERIT TextControl
 			oWindow := (Object)SELF:Owner
 		ENDIF
 
-		dwHotKey := _AND(GuiWin32.SendMessage(SELF:Handle(), HKM_GETHOTKEY, 0, 0),0XFFFF)
+		dwHotKey := (DWORD)_AND(GuiWin32.SendMessage(SELF:Handle(), HKM_GETHOTKEY, 0, 0),0XFFFF)
 
 		RETURN GuiWin32.SendMessage(oWindow:Handle(), WM_SETHOTKEY, dwHotKey, 0)
 

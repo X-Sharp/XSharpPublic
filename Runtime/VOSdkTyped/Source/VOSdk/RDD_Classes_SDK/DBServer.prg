@@ -712,9 +712,6 @@ METHOD __SetupLocks( )  AS VOID STRICT
 		SELF:Error( oErrorInfo, #ConcurrencyControl )
 	ENDCASE
 
-
-
-
 	RETURN
 /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
 CONSTRUCTOR( cFile AS STRING, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRDD := NULL_ARRAY AS ARRAY)

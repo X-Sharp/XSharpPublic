@@ -1,13 +1,16 @@
 
 USING System.Text
+/// <include file="Gui.xml" path="doc/ResourceString/*" />
 CLASS ResourceString INHERIT VObject
 	PROTECT iLength AS INT
 	PROTECT sBuffer AS STRING
 
-	METHOD AsString() 
+/// <include file="Gui.xml" path="doc/ResourceString.AsString/*" />
+	METHOD AsString()
 		RETURN sBuffer
 
-	CONSTRUCTOR(xResourceID, uMaxLen) 
+/// <include file="Gui.xml" path="doc/ResourceString.ctor/*" />
+	CONSTRUCTOR(xResourceID, uMaxLen)
 		LOCAL hInst AS IntPtr
 		LOCAL wID AS LONG
 		LOCAL ptrBuffer AS StringBuilder
@@ -43,7 +46,7 @@ CLASS ResourceString INHERIT VObject
 		IF hInst == GetNatDllHandle()
 			sBuffer := __CavoStr( (DWORD) wID )
 			RETURN
-		ENDIF   
+		ENDIF
 
 		ptrBuffer 	:= StringBuilder{(INT) nMaxLen+1}
 		iLength 	:= GuiWin32.LoadString(hInst, wID, ptrBuffer, nMaxLen)
@@ -51,11 +54,13 @@ CLASS ResourceString INHERIT VObject
 			sBuffer := ptrBuffer:ToString()
 		ENDIF
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/ResourceString.Length/*" />
 	ACCESS Length AS INT
 		RETURN iLength
 
+/// <include file="Gui.xml" path="doc/ResourceString.Value/*" />
 	ACCESS Value AS STRING
 		RETURN sBuffer
 

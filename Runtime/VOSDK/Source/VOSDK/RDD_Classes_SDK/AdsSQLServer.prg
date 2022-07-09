@@ -26,7 +26,7 @@
 // #include "dbfaxs.vh"
 /// <include file="Rdd.xml" path="doc/AdsSQLServer/*" />
 CLASS AdsSQLServer INHERIT DBServer
-/// <include file="Rdd.xml" path="doc/AdsSQLServer.ctor/*" />
+/// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
 CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD, aParams )
     LOCAL cTemp AS STRING
     LOCAL cFileName AS STRING

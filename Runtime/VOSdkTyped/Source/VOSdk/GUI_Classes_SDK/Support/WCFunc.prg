@@ -689,10 +689,10 @@ FUNCTION IsCtl3dEnabled() AS LOGIC
 	RETURN TRUE
 
 FUNCTION SetClassStyle(hWnd AS IntPtr, dwSetStyle AS DWORD, lEnable := TRUE AS LOGIC) AS DWORD STRICT
-	LOCAL dwOldStyle AS LONG
+	LOCAL dwOldStyle AS DWORD
 
 	IF (hWnd != NULL_PTR)
-		dwOldStyle := GuiWin32.GetClassLong(hWnd, GCL_STYLE)
+		dwOldStyle := (DWORD) GuiWin32.GetClassLong(hWnd, GCL_STYLE)
 
 		IF lEnable
 			dwSetStyle := _OR(dwOldStyle, dwSetStyle)

@@ -1,5 +1,6 @@
 
 
+/// <include file="Gui.xml" path="doc/Icon/*" />
 
 CLASS Icon INHERIT VObject
 	PROTECT oIcon AS System.Drawing.Icon
@@ -8,7 +9,8 @@ CLASS Icon INHERIT VObject
 		RETURN oIcon
 
 
-	METHOD Destroy() AS USUAL 
+/// <include file="Gui.xml" path="doc/Icon.Destroy/*" />
+	METHOD Destroy() AS USUAL
 		IF ! oIcon == NULL_OBJECT
 			oIcon:Dispose()
 			oIcon := NULL_OBJECT
@@ -18,9 +20,11 @@ CLASS Icon INHERIT VObject
 
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/Icon.Handle/*" />
 	METHOD Handle() AS IntPtr STRICT
 		RETURN oIcon:Handle
 
+/// <include file="Gui.xml" path="doc/Icon.ctor/*" />
 	CONSTRUCTOR(xResourceID, kLoadOption, iWidth, iHeight)
 		LOCAL hInst AS IntPtr
 		LOCAL oResourceID as ResourceID
@@ -45,7 +49,7 @@ CLASS Icon INHERIT VObject
 			IF IsSymbol(xResourceID) .or. IsString(xResourceID)
 				oResourceID := ResourceID{xResourceID}
 			ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
-				WCError{#Init, #Icon, __WCSTypeError, xResourceID, 1}:@@Throw()
+				WCError{#Init, #Icon, __WCSTypeError, xResourceID, 1}:Throw()
 			ELSE
 				oResourceID := xResourceID
 			ENDIF
@@ -72,6 +76,7 @@ CLASS Icon INHERIT VObject
 		ENDIF
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Icon.Size/*" />
 	ACCESS Size
 		RETURN (Dimension) oIcon:Size
 
@@ -87,21 +92,22 @@ CLASS Icon INHERIT VObject
 
 END CLASS
 
+ /// <exclude />
 FUNCTION __WCConvertIcon(iconType AS INT) AS System.Drawing.Icon
 	LOCAL retVal AS System.Drawing.Icon
 
-	DO CASE
-	CASE iconType == IconAsterisk
+	SWITCH iconType
+	CASE IconAsterisk
 		retVal := System.Drawing.SystemIcons.Asterisk
-	CASE iconType == IconExclamation
+	CASE IconExclamation
 		retVal := System.Drawing.SystemIcons.Exclamation
-	CASE iconType == IconHand
+	CASE IconHand
 		retVal := System.Drawing.SystemIcons.Hand
-	CASE iconType == IconQuestionMark
+	CASE IconQuestionMark
 		retVal := System.Drawing.SystemIcons.Question
 	OTHERWISE
 		retVal := System.Drawing.SystemIcons.Application
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal
 

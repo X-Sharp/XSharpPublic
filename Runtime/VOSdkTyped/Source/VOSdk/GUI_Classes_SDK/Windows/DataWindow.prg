@@ -1028,13 +1028,13 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	METHOD ChangeFont(uFont, lUpdate)
 		LOCAL oFont AS Font
 		IF !IsInstanceOfUsual(uFont,#Font)
-			WCError{#ChangeFont,#DataWindow,__WCSTypeError,uFont,1}:@@Throw()
+			WCError{#ChangeFont,#DataWindow,__WCSTypeError,uFont,1}:Throw()
 		ENDIF
 		oFont := uFont
 
 		IF !IsNil(lUpdate)
 			IF !IsLogic(lUpdate)
-				WCError{#ChangeFont,#DataWindow,__WCSTypeError,lUpdate,2}:@@Throw()
+				WCError{#ChangeFont,#DataWindow,__WCSTypeError,lUpdate,2}:Throw()
 			ENDIF
 		ELSE
 			lUpdate := FALSE
@@ -1844,7 +1844,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				SUPER(oOwner, TRUE)
 			ELSEIF oObject IS Window
 				// <XXX> invalid Owner - throw error
-				WCError{#Init,#DataWindow,__WCSTypeError,oOwner,1}:@@Throw()
+				WCError{#Init,#DataWindow,__WCSTypeError,oOwner,1}:Throw()
 			ELSE
 				SUPER(oOwner)
 			ENDIF
@@ -2685,7 +2685,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				IF (oHLStatus != NULL_OBJECT)
 					ErrorBox{, oHLStatus}:Show()
 				ELSE
-					WCError{#oDataServer,#DataWindow,__WCSTypeError,oDataServer,1}:@@Throw()
+					WCError{#oDataServer,#DataWindow,__WCSTypeError,oDataServer,1}:Throw()
 				ENDIF
 				SELF:lValidFlag := FALSE
 			ENDIF

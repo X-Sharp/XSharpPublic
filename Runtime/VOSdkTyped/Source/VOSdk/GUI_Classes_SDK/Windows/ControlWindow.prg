@@ -51,7 +51,7 @@ CLASS ControlWindow INHERIT Window
 	CONSTRUCTOR(oControl)
 
 		IF !IsInstanceOfUsual(oControl,#Control)
-			WCError{#Init,#ControlWindow,__WCSTypeError,oControl,1}:@@Throw()
+			WCError{#Init,#ControlWindow,__WCSTypeError,oControl,1}:Throw()
 		ENDIF
 
 		oCtrl := oControl

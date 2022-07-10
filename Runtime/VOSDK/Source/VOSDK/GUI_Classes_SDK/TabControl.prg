@@ -538,9 +538,6 @@ METHOD DeleteTab(symTabName)
 /// <include file="Gui.xml" path="doc/TabControl.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 
-
-
-
 	IF !InCollect()
 		aPages := NULL_ARRAY
 		aTipsText := NULL_ARRAY
@@ -857,8 +854,6 @@ ASSIGN ImageList(oNewImageList)
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 
 
-
-
 	IF IsInstanceOfUsual(xID, #ResourceID)
 		SUPER(oOwner, xID, oPoint, oDimension, , kStyle, FALSE)
 	ELSE
@@ -1049,8 +1044,6 @@ METHOD Resize(oResizeEvent)
 
 /// <include file="Gui.xml" path="doc/TabControl.RowCount/*" />
 ACCESS RowCount
-
-
 
 
 	IF (_AND(GetWindowLong(SELF:Handle(), GWL_STYLE), TCS_MULTILINE) > 0)

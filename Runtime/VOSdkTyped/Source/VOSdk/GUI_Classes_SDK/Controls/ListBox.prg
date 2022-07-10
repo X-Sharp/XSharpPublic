@@ -1,9 +1,10 @@
+/// <include file="Gui.xml" path="doc/ListBox/*" />
 CLASS ListBox INHERIT BaseListBox
 	PROTECT wSelectNum 		AS LONG
-
+    /// <inheritdoc  />
     PROPERTY ControlType AS ControlType GET ControlType.ListBox
 
-
+    /// <inheritdoc  />
 	METHOD OnHandleCreated(o AS OBJECT, e AS EventArgs) AS VOID
 		LOCAL nItem AS LONG
 		SELF:cSavedText := STRING.Empty
@@ -12,10 +13,11 @@ CLASS ListBox INHERIT BaseListBox
 		SELF:__CurrentItemNo := nItem
 
 	[Obsolete];
-	METHOD __AddItem(cItem AS STRING, uRetValue AS USUAL, dwPosition AS LONG) AS VOID STRICT 
+	METHOD __AddItem(cItem AS STRING, uRetValue AS USUAL, dwPosition AS LONG) AS VOID STRICT
 		RETURN
 
-	METHOD __FindDisplayValue(cValue AS STRING) AS LONG STRICT 
+ /// <exclude />
+	METHOD __FindDisplayValue(cValue AS STRING) AS LONG STRICT
 		// Returns 1-based index in collection
 		LOCAL dwI AS LONG
 		FOREACH oItem AS ListBoxItemValue IN SELF:__Items
@@ -23,16 +25,18 @@ CLASS ListBox INHERIT BaseListBox
 			IF Alltrim(oItem:DisplayValue) == cValue
 				RETURN dwI
 			ENDIF
-		NEXT  
+		NEXT
 
 		RETURN 0
 
-	METHOD __FindRetValue(uValue AS USUAL) AS LONG STRICT 
+
+ /// <exclude />
+	METHOD __FindRetValue(uValue AS USUAL) AS LONG STRICT
 		LOCAL dwI as LONG
 		// Returns 1-based index in collection
 		FOREACH oItem AS ListBoxItemValue IN SELF:__Items
 			dwI++
-			IF valtype(oItem:Value) == valtype(uValue) 
+			IF valtype(oItem:Value) == valtype(uValue)
 				IF oItem:Value == uValue
 					RETURN dwI
 				ENDIF
@@ -40,7 +44,7 @@ CLASS ListBox INHERIT BaseListBox
 				// What is this ?
 				oItem:Value := oItem:Value
 			ENDIF
-		NEXT  
+		NEXT
 		RETURN 0
 
 	METHOD __SetText(cNewText AS STRING) AS STRING
@@ -48,8 +52,9 @@ CLASS ListBox INHERIT BaseListBox
 			RETURN SUPER:__SetText(cNewText)
 		ENDIF
 		RETURN cNewText
-		
-	METHOD __Update() AS VOID STRICT 
+
+ /// <exclude />
+	METHOD __Update() AS VOID STRICT
 		LOCAL cOldValue AS STRING
 		LOCAL oItem AS ListBoxItemValue
 		LOCAL nIndex AS LONG
@@ -64,9 +69,10 @@ CLASS ListBox INHERIT BaseListBox
 			SELF:ValueChanged	:= !(cOldValue == AsString(uValue))
 			SELF:Modified		:= FALSE
 		ENDIF
-		RETURN 
+		RETURN
 
-	ASSIGN __Value(uNewVal AS USUAL)  STRICT 
+ /// <exclude />
+	ASSIGN __Value(uNewVal AS USUAL)  STRICT
 		LOCAL cSelValue AS STRING
 		LOCAL nIndex AS LONG
 		LOCAL oValue AS ListBoxItemValue
@@ -83,7 +89,7 @@ CLASS ListBox INHERIT BaseListBox
 			IF nIndex > 0
 				// select the corresponding display string
 				SELF:CurrentItemNo := nIndex
-				oValue := SELF:__Items[nIndex-1]	
+				oValue := SELF:__Items[nIndex-1]
 				SELF:__SetText(oValue:DisplayValue)
 				uValue := oValue:Value
 			ELSE
@@ -91,7 +97,7 @@ CLASS ListBox INHERIT BaseListBox
 				IF nIndex == 0
 					nIndex := SELF:FindItem(cSelValue, FALSE)
 					IF nIndex > 0
-						oValue := SELF:__Items[nIndex-1]	
+						oValue := SELF:__Items[nIndex-1]
 						IF ! cSelValue == oValue:DisplayValue
 							nIndex := 0
 						ENDIF
@@ -100,7 +106,7 @@ CLASS ListBox INHERIT BaseListBox
 					ENDIF
 				ENDIF
 				IF nIndex > 0
-					oValue    := SELF:__Items[nIndex-1]	
+					oValue    := SELF:__Items[nIndex-1]
 					cSelValue := oValue:DisplayValue
 					uValue    := oValue:Value
 				ENDIF
@@ -109,9 +115,10 @@ CLASS ListBox INHERIT BaseListBox
 			ENDIF
 		ENDIF
 
-		RETURN 
+		RETURN
 
 
+/// <include file="Gui.xml" path="doc/ListBox.AddItem/*" />
 	METHOD AddItem(cItem , nItemNumber , uRetValue ) AS LONG
 		// nItemNumber = 1-based index in collection
 		// Returns 1-based index in collection
@@ -123,10 +130,12 @@ CLASS ListBox INHERIT BaseListBox
 		nIndex := SUPER:AddItem(cItem, nItemNumber, uRetValue)
 		RETURN nIndex
 
+/// <include file="Gui.xml" path="doc/ListBox.Caption/*" />
 	ACCESS Caption AS STRING
 		RETURN cCaption
 
-	ASSIGN Caption(cNewCaption AS STRING) 
+/// <include file="Gui.xml" path="doc/ListBox.Caption/*" />
+	ASSIGN Caption(cNewCaption AS STRING)
 		cCaption := cNewCaption
 		RETURN
 
@@ -148,6 +157,7 @@ CLASS ListBox INHERIT BaseListBox
 		ENDIF
 		RETURN FALSE
 
+/// <include file="Gui.xml" path="doc/ListBox.Clear/*" />
 	METHOD Clear() AS VOID
 		IF SELF:FieldSpec == NULL_OBJECT
 			SELF:uValue := NIL
@@ -156,10 +166,11 @@ CLASS ListBox INHERIT BaseListBox
 		ENDIF
 
 		SUPER:Clear()
-		RETURN 
-		
+		RETURN
 
-	METHOD ClearSelection() 
+
+/// <include file="Gui.xml" path="doc/ListBox.ClearSelection/*" />
+	METHOD ClearSelection()
 		IF SELF:ValidateControl()
 			IF !lIsComboBox
 				SELF:__ListBox:SelectedIndices:Clear()
@@ -170,29 +181,33 @@ CLASS ListBox INHERIT BaseListBox
 
 		RETURN FALSE
 
+/// <include file="Gui.xml" path="doc/ListBox.Create/*" />
 	METHOD Create() AS IVOControl STRICT
 		IF oCtrl ==  NULL_OBJECT  .AND. !IsInstanceOf(SELF, #ComboBox)
 			SELF:SetStyle(_OR(LBS_Notify, LBS_NoIntegralHeight))
 		ENDIF
 		RETURN SUPER:Create()
 
+/// <include file="Gui.xml" path="doc/ListBox.CurrentItem/*" />
 	ACCESS CurrentItem  AS STRING
 		IF SELF:ValidateControl()
 			RETURN SELF:GetItem(0)
 		ENDIF
 		RETURN sSavedCurrentItem
 
-	ASSIGN CurrentItem(cValue AS STRING) 
+	ASSIGN CurrentItem(cValue AS STRING)
 		SELF:CurrentItemNo := SELF:FindItem(cValue)
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/ListBox.CurrentItemNo/*" />
 	ACCESS CurrentItemNo AS LONG
 		IF SELF:MultiSelection
 			RETURN SELF:FirstSelected()
 		ENDIF
 		RETURN SUPER:CurrentItemNo
 
-	ASSIGN CurrentItemNo(nItemNo  AS LONG) 
+/// <include file="Gui.xml" path="doc/ListBox.CurrentItemNo/*" />
+	ASSIGN CurrentItemNo(nItemNo  AS LONG)
 		// nItemNo = 1-based index in collection
 		LOCAL cSelValue AS STRING
 		LOCAL dwIndex AS LONG
@@ -212,18 +227,22 @@ CLASS ListBox INHERIT BaseListBox
 		ENDIF
 		SELF:ValueChanged := !(AsString(uValue) == uOldValue)
 
-		RETURN 
+		RETURN
 
-	ASSIGN CurrentText(cNewText AS STRING) 
+
+/// <include file="Gui.xml" path="doc/ListBox.CurrentText/*" />
+	ASSIGN CurrentText(cNewText AS STRING)
 		SELF:__SetText(cNewText)
 		RETURN
 
+/// <include file="Gui.xml" path="doc/ListBox.DeleteItem/*" />
 	METHOD DeleteItem(nItem := 0 AS LONG) AS LOGIC
 		// nItem = 1-based index in collection
 		LOCAL lReturnValue AS LOGIC
 		lReturnValue := SUPER:DeleteItem(nItem)
 		RETURN lReturnValue
 
+/// <include file="Gui.xml" path="doc/ListBox.DeselectItem/*" />
 	METHOD DeselectItem(nItem AS LONG) AS LOGIC
 		// nItem = 1-based index in collection
 		IF SELF:ValidateControl() .and. ! SELF:lIsComboBox
@@ -235,6 +254,7 @@ CLASS ListBox INHERIT BaseListBox
 
 		RETURN FALSE
 
+/// <include file="Gui.xml" path="doc/ListBox.EnableItemDrag/*" />
 	METHOD EnableItemDrag() AS VOID
 		//Todo EnableItemDrag
 		//IF IsInstanceOf(oFormSurface, #DialogWindow)
@@ -243,6 +263,7 @@ CLASS ListBox INHERIT BaseListBox
 		//SELF:setstyle(LBS_SORT, FALSE)
 		//RETURN MakeDragList(SELF:Handle())
 
+/// <include file="Gui.xml" path="doc/ListBox.FillUsing/*" />
 	METHOD FillUsingBySortedList(oList AS System.Collections.Generic.SortedList<STRING,USUAL>) AS VOID STRICT
 		IF !SELF:lIsComboBox
 			SELF:__ListBox:BeginUpdate()
@@ -255,7 +276,8 @@ CLASS ListBox INHERIT BaseListBox
 			SELF:__ListBox:EndUpdate()
 		ENDIF
 
-	METHOD FillUsing(aContents, symField1, symField2) 
+/// <include file="Gui.xml" path="doc/ListBox.FillUsing/*" />
+	METHOD FillUsing(aContents, symField1, symField2)
 		LOCAL wArrLen AS DWORD
 		LOCAL wElemLen AS DWORD
 		LOCAL wIndex AS LONG
@@ -268,10 +290,10 @@ CLASS ListBox INHERIT BaseListBox
 			aContents := Send(aContents, #GetLookUpTable, Min(0x7FFF, IVarGet(aContents, #RecCount)), symField1, symField2)
 		ELSEIF IsArray(aContents)
 			IF !IsNil(symField1) .OR. !IsNil(symField2)
-				WCError{#FillUsing,#ListBox,__WCSTypeError,symField1,2}:@@Throw()
+				WCError{#FillUsing,#ListBox,__WCSTypeError,symField1,2}:Throw()
 			ENDIF
 		ELSE
-			WCError{#FillUsing,#ListBox,__WCSTypeError,aContents,1}:@@Throw()
+			WCError{#FillUsing,#ListBox,__WCSTypeError,aContents,1}:Throw()
 		ENDIF
 
 		SELF:Clear()
@@ -293,7 +315,7 @@ CLASS ListBox INHERIT BaseListBox
 						uDisplayValue := uElement[1]
 						uRetValue := uElement[1]
 					ELSE
-						WCError{#FillUsing,#ListBox,__WCSTypeError,aContents,1}:@@Throw()
+						WCError{#FillUsing,#ListBox,__WCSTypeError,aContents,1}:Throw()
 					ENDIF
 				ELSE
 					uDisplayValue := uElement
@@ -316,9 +338,10 @@ CLASS ListBox INHERIT BaseListBox
 		ELSE
 			SELF:__ListBox:EndUpdate()
 		ENDIF
-		SELF:IsBusy := FALSE		
+		SELF:IsBusy := FALSE
 		RETURN SELF
 
+/// <include file="Gui.xml" path="doc/ListBox.FirstSelected/*" />
 	METHOD FirstSelected ( ) AS LONG
 		// nItem = 1-based index in collection
 		LOCAL iResult AS LONG
@@ -327,7 +350,7 @@ CLASS ListBox INHERIT BaseListBox
 				IF SELF:lIsComboBox
 					iResult :=  SELF:__ComboBox:SelectedIndex+1
 				ELSE
-					IF __ListBox:SelectedIndex >= 0 
+					IF __ListBox:SelectedIndex >= 0
 						wSelectNum := 1
 						IF wSelectNum <= __ListBox:SelectedIndices:Count
 							iResult := (INT) __ListBox:SelectedIndices[wSelectNum-1]+1
@@ -341,15 +364,17 @@ CLASS ListBox INHERIT BaseListBox
 		RETURN iResult
 
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+/// <include file="Gui.xml" path="doc/ListBox.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 		SUPER(oOwner, xID, oPoint, oDimension, kStyle, TRUE)
-		RETURN 
+		RETURN
 
-	METHOD IsSelected(iIdx AS LONG) 
+/// <include file="Gui.xml" path="doc/ListBox.IsSelected/*" />
+	METHOD IsSelected(iIdx AS LONG)
 		// nItem = 1-based index in collection
 		LOCAL lResult AS LOGIC
 		IF SELF:ValidateControl()
-			IF ! SELF:MultiSelection	
+			IF ! SELF:MultiSelection
 				lResult := (iIdx == SELF:CurrentItemNo)
 			ELSEIF ! SELF:lIsComboBox
 				lResult := SELF:__ListBox:SelectedIndices:Contains(iIdx-1)
@@ -358,10 +383,12 @@ CLASS ListBox INHERIT BaseListBox
 
 		RETURN lResult
 
+/// <include file="Gui.xml" path="doc/ListBox.ItemCount/*" />
 	ACCESS ItemCount AS LONG
 		RETURN (LONG) SELF:__Items:Count
-	
-	METHOD ListFiles(sStartDir, oFixedText, FileTypes) 
+
+/// <include file="Gui.xml" path="doc/ListBox.ListFiles/*" />
+	METHOD ListFiles(sStartDir, oFixedText, FileTypes)
 		//Todo ListFiles
 		RETURN SELF
 		//LOCAL pPath AS PSZ
@@ -399,6 +426,7 @@ CLASS ListBox INHERIT BaseListBox
 
 		//RETURN (iRet != 0)
 
+/// <include file="Gui.xml" path="doc/ListBox.MultiSelection/*" />
 	ACCESS MultiSelection AS LOGIC
 		LOCAL lMulti AS LOGIC
 		IF SELF:ValidateControl() .and. ! SELF:lIsComboBox
@@ -407,6 +435,7 @@ CLASS ListBox INHERIT BaseListBox
 		ENDIF
 		RETURN lMulti
 
+/// <include file="Gui.xml" path="doc/ListBox.NextSelected/*" />
 	METHOD NextSelected() AS LONG
 		// RETURNS 1-based index in collection
 		LOCAL iResult AS LONG
@@ -423,16 +452,18 @@ CLASS ListBox INHERIT BaseListBox
 		ENDIF
 		RETURN iResult
 
+/// <include file="Gui.xml" path="doc/ListBox.SelectedCount/*" />
 	ACCESS SelectedCount AS LONG
 		LOCAL liNumSelected := 0 AS LONGINT
 
 		IF SELF:ValidateControl()  .and. ! SELF:lIsComboBox
 			liNumSelected := __ListBox:SelectedItems:Count
-			
+
 		ENDIF
 
 		RETURN liNumSelected
 
+/// <include file="Gui.xml" path="doc/ListBox.SelectedFile/*" />
 	ACCESS SelectedFile AS STRING
 		//Todo SelectedFile
 		//LOCAL pPath AS PSZ
@@ -446,6 +477,7 @@ CLASS ListBox INHERIT BaseListBox
 		//RETURN sRet
 		RETURN NULL_STRING
 
+/// <include file="Gui.xml" path="doc/ListBox.SelectItem/*" />
 	METHOD SelectItem(nItemId AS LONG) AS LOGIC
 		// nItemID =  1-based index in collection
 		IF SELF:ValidateControl()
@@ -463,7 +495,7 @@ CLASS ListBox INHERIT BaseListBox
 	// not supported anymore
 	[obsolete];
 	METHOD SetTabs(aTabs AS ARRAY) AS VOID
-		RETURN 
+		RETURN
 
 	// Estimates optimal Width of the control by Measuring the Displayvalues
 	METHOD GetOptimalWidth() AS DWORD
@@ -474,6 +506,7 @@ CLASS ListBox INHERIT BaseListBox
 		nMaxlen += 20 // Offset for Vertical Scrollbar
 		RETURN nMaxlen
 
+/// <include file="Gui.xml" path="doc/ListBox.TextValue/*" />
 	ACCESS TextValue AS STRING
 		LOCAL nItem AS LONG
 		LOCAL oItem AS ListBoxItemValue
@@ -493,8 +526,9 @@ CLASS ListBox INHERIT BaseListBox
 			ENDIF
 		ENDIF
 		RETURN ""
-		
-	ASSIGN TextValue(cNewText AS STRING) 
+
+/// <include file="Gui.xml" path="doc/ListBox.TextValue/*" />
+	ASSIGN TextValue(cNewText AS STRING)
 		LOCAL cSelValue AS STRING
 		LOCAL dwIndex AS LONG
 		LOCAL oItem AS ListBoxItemValue
@@ -513,10 +547,10 @@ CLASS ListBox INHERIT BaseListBox
 				ELSE
 					SELF:__List:SelectedIndex := -1
 					uValue := NIL
-				ENDIF				
+				ENDIF
 			ENDIF
 		ENDIF
-		RETURN 
+		RETURN
 
 END CLASS
 

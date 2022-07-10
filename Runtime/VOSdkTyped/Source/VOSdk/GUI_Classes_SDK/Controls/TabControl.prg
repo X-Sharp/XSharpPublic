@@ -8,6 +8,7 @@ STATIC DEFINE TIP_SYMBOL := 1
 STATIC DEFINE TIP_TEXT   := 2
 
 
+/// <include file="Gui.xml" path="doc/TabControl/*" />
 CLASS TabControl INHERIT TextControl
 	PROTECT oImageList		 AS ImageList
 	PROTECT aPages			 AS ARRAY
@@ -16,13 +17,15 @@ CLASS TabControl INHERIT TextControl
 	PROTECT nMaxWidth		 AS INT
 	PROTECT lAutoSize        AS LOGIC
 	PROTECT oCurrentPage	 AS OBJECT
-
+    /// <inheritdoc />
     PROPERTY ControlType AS Controltype GET Controltype.TabControl
 
+    /// <inheritdoc />
 	METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		oC:Resize += OnReSize
-		RETURN 
+		RETURN
 
+    /// <inheritdoc />
 	PROTECTED METHOD OnResize(o as object, e AS EventArgs) AS VOID
 		SELF:Resize(ResizeEvent{})
 
@@ -51,20 +54,22 @@ CLASS TabControl INHERIT TextControl
 				aSize(aPages, Alen(aPages)-1)
 			ENDIF
 		NEXT
-		
 
-	METHOD __AdjustPage() AS VOID STRICT 
+
+	METHOD __AdjustPage() AS VOID STRICT
 		// The FramePanel for a DataWindow sizes automatically
 		// The SurfacePanel must be changed here, because we may want it to grow automatically
 		// Todo: Fix this
 		RETURN
 
-	METHOD __CalcNewDimension(oNewPage AS OBJECT) AS VOID STRICT 
+ /// <exclude />
+	METHOD __CalcNewDimension(oNewPage AS OBJECT) AS VOID STRICT
 		// No need to resize, DockStyle.Fill
 		RETURN
 
-	METHOD __FocusPage(nIndex AS INT) AS VOID STRICT 
-		
+ /// <exclude />
+	METHOD __FocusPage(nIndex AS INT) AS VOID STRICT
+
 		LOCAL oOldPage        AS Window
 		LOCAL lSelfFocus      AS LOGIC
 		LOCAL oTabPage		  as System.Windows.Forms.TabPage
@@ -84,28 +89,30 @@ CLASS TabControl INHERIT TextControl
 				oPanel := oDw:__Frame
 			ELSE
 				oPanel := oCurrentPage:__Surface
-			ENDIF	
+			ENDIF
 			oPanel:Visible := TRUE
-				
+
 			IF lSelfFocus
 				__TabControl:Focus()
 			ELSE
 				oTabPage  := __TabControl:TabPages[nIndex]
-				oTabPage:Focus()	
+				oTabPage:Focus()
 				oCurrentPage:SetFocus()
 			ENDIF
 		ENDIF
 		RETURN
 
-	METHOD __GetIndexFromSymbol(symTabName AS SYMBOL) AS INT STRICT 
+ /// <exclude />
+	METHOD __GetIndexFromSymbol(symTabName AS SYMBOL) AS INT STRICT
 		FOREACH oPage AS System.Windows.Forms.TabPage IN __TabControl:TabPages
 			IF oPage:Name == (STRING) symTabName
 				RETURN __TabControl:TabPages:IndexOf(oPage)
 			ENDIF
 		NEXT
 		RETURN -1
-	
-	METHOD __GetIndexFromPage(oTab) 
+
+ /// <exclude />
+	METHOD __GetIndexFromPage(oTab)
 		LOCAL dwI, dwCount AS DWORD
 		dwCount := ALen(aPages)
 		FOR dwI := 1 UPTO dwCount
@@ -114,18 +121,19 @@ CLASS TabControl INHERIT TextControl
 				symName := aPages[dwI][ TAB_SYMBOL]
 				RETURN __TabControl:TabPages:IndexOfKey((STRING) symName)
 			ENDIF
-		NEXT  
+		NEXT
 
 		RETURN -1
 
-	METHOD __GetPageFromIndex(nTabIndex AS LONG) AS OBJECT STRICT 
+ /// <exclude />
+	METHOD __GetPageFromIndex(nTabIndex AS LONG) AS OBJECT STRICT
 		LOCAL uPage AS USUAL
 		LOCAL dwI AS LONG
 		IF nTabIndex >= 0 .and. nTabIndex < __TabControl:TabPages:Count
 			LOCAL symName AS SYMBOL
 			LOCAL oPage AS System.Windows.Forms.TabPage
 			LOCAL nIndex AS LONG
-			// Retrieve Symbol from the TabControl:TabPages collection 
+			// Retrieve Symbol from the TabControl:TabPages collection
 			oPage   := __TabControl:TabPages[nTabIndex]
 			symName := (SYMBOL) oPage:Name
 			nIndex  := __TabControl:TabPages:IndexOf(oPage)
@@ -143,22 +151,24 @@ CLASS TabControl INHERIT TextControl
 					ENDIF
 					RETURN uPage
 				ENDIF
-			NEXT  
+			NEXT
 		ENDIF
 		RETURN NULL_OBJECT
 
-	METHOD __GetPageFromSymbol(symTabName) 
+ /// <exclude />
+	METHOD __GetPageFromSymbol(symTabName)
 		LOCAL dwI, dwCount AS DWORD
 		dwCount := ALen(aPages)
 		FOR dwI := 1 UPTO dwCount
 			IF aPages[dwI][ TAB_SYMBOL] == symTabName
 				RETURN aPages[dwI][TAB_PAGE]
 			ENDIF
-		NEXT  
+		NEXT
 
 		RETURN NULL_OBJECT
 
-	METHOD __GetSymbolFromIndex(nTabIndex AS LONG) AS SYMBOL STRICT 
+ /// <exclude />
+	METHOD __GetSymbolFromIndex(nTabIndex AS LONG) AS SYMBOL STRICT
 		IF nTabIndex >= 0 .and. nTabIndex < __TabControl:TabPages:Count
 			LOCAL oPage AS System.Windows.Forms.TabPage
 			oPage := __TabControl:TabPages[nTabIndex]
@@ -167,7 +177,8 @@ CLASS TabControl INHERIT TextControl
 		RETURN NULL_SYMBOL
 
 
-	METHOD __GetSymbolFromPage(oTab) 
+ /// <exclude />
+	METHOD __GetSymbolFromPage(oTab)
 		LOCAL dwI, dwCount AS DWORD
 
 		dwCount := ALen(aPages)
@@ -175,7 +186,7 @@ CLASS TabControl INHERIT TextControl
 			IF aPages[dwI][ TAB_PAGE] == oTab
 				RETURN aPages[dwI][TAB_SYMBOL]
 			ENDIF
-		NEXT  
+		NEXT
 		RETURN NULL_SYMBOL
 
 	METHOD __GetTabPage(symIndex as Symbol) as System.Windows.Forms.TabPage
@@ -183,13 +194,13 @@ CLASS TabControl INHERIT TextControl
 		LOCAL oPage AS System.Windows.Forms.TabPage
 		IF SELF:ValidateControl()
 			i := SELF:__GetIndexFromSymbol(symIndex)
-			IF i !=-1 
+			IF i !=-1
 				oPage := __TabControl:TabPages[i]
 			ENDIF
 		ENDIF
 		RETURN oPage
-		
-		
+
+
 	METHOD __SetTabOwner(nIndex AS INT, xPage AS USUAL) AS VOID
 		LOCAL oTabPage AS System.Windows.Forms.TabPage
 		LOCAL oWin AS Window
@@ -220,21 +231,23 @@ CLASS TabControl INHERIT TextControl
 					NEXT
 				ELSE
 					oPanel := (VOPanel) (OBJECT) oWin:__Surface
-				ENDIF					
+				ENDIF
 				oTabPage:Controls:Add(oPanel)
 			ENDIF
 			oTabPage:AutoSize := TRUE
 		ENDIF
 		SELF:__AdjustIndices()
-		RETURN 
-		
-	METHOD AddTipText(symTabName, cText) 
+		RETURN
+
+/// <include file="Gui.xml" path="doc/TabControl.AddTipText/*" />
+	METHOD AddTipText(symTabName, cText)
 		IF ! SELF:ChangeTipText(symTabName, cText)
 			AAdd(aTipsText, {symTabName, cText})
 		ENDIF
 		RETURN NIL
 
-	METHOD AppendTab(symTabName, cCaption, xPage, nImage) 
+/// <include file="Gui.xml" path="doc/TabControl.AppendTab/*" />
+	METHOD AppendTab(symTabName, cCaption, xPage, nImage)
 		LOCAL nIndex		AS INT
 		LOCAL lReturnValue	AS LOGIC
 		LOCAL cTooltip AS STRING
@@ -244,10 +257,10 @@ CLASS TabControl INHERIT TextControl
 
 
 		// Fill out the tab structure with the arguments passed in
-		IF IsInstanceOfUsual(xPage,#Window) 
+		IF IsInstanceOfUsual(xPage,#Window)
 			//PP-030909 XP theme background on tab page
 			((Window)xPage):EnableThemeDialogTexture(ETDT_ENABLETAB)
-			
+
 			IF Empty(cCaption) .AND. (((Window)xPage):HyperLabel != NULL_OBJECT)
 				cCaption := ((Window)xPage):HyperLabel:Caption
 			ENDIF
@@ -276,14 +289,17 @@ CLASS TabControl INHERIT TextControl
 		SELF:__AdjustIndices()
 		RETURN lReturnValue
 
+/// <include file="Gui.xml" path="doc/TabControl.AutoSize/*" />
 	ACCESS AutoSize AS LOGIC
 		RETURN lAutoSize
 
-	ASSIGN AutoSize(lNewValue AS LOGIC) 
+/// <include file="Gui.xml" path="doc/TabControl.AutoSize/*" />
+	ASSIGN AutoSize(lNewValue AS LOGIC)
 		lAutoSize := lNewValue
-		RETURN 
+		RETURN
 
-	METHOD ChangeTipText(symTabName, cText) 
+/// <include file="Gui.xml" path="doc/TabControl.ChangeTipText/*" />
+	METHOD ChangeTipText(symTabName, cText)
 		LOCAL oPage AS System.Windows.Forms.TabPage
 		LOCAL dwIndex AS DWORD
 		LOCAL dwCount AS DWORD
@@ -294,7 +310,7 @@ CLASS TabControl INHERIT TextControl
 			symName := symTabName
 		ENDIF
 		oPage := SELF:__GetTabPage(symTabName)
-		
+
 		IF oPage != NULL_OBJECT
 			oPage:ToolTipText := cText
 			RETURN TRUE
@@ -305,11 +321,12 @@ CLASS TabControl INHERIT TextControl
 					aTipsText[dwIndex][ TIP_TEXT] := cText
 					RETURN TRUE
 				ENDIF
-			NEXT  
+			NEXT
 		ENDIF
 		RETURN FALSE
 
-	METHOD CreatePageInstance(symPageClass, symTabName) 
+/// <include file="Gui.xml" path="doc/TabControl.CreatePageInstance/*" />
+	METHOD CreatePageInstance(symPageClass, symTabName)
 		LOCAL oPage AS OBJECT
 		oPage := CreateInstance(symPageClass, (OBJECT) SELF:Owner)
 		IF IsInstanceOfUsual(oPage, #Window)
@@ -326,6 +343,7 @@ CLASS TabControl INHERIT TextControl
 
 		RETURN oPage
 
+/// <include file="Gui.xml" path="doc/TabControl.CurrentPage/*" />
 	ACCESS CurrentPage AS OBJECT
 		LOCAL nCurrentIndex AS LONG
 		IF oCurrentPage == NULL_OBJECT
@@ -336,6 +354,7 @@ CLASS TabControl INHERIT TextControl
 		ENDIF
 		RETURN oCurrentPage
 
+/// <include file="Gui.xml" path="doc/TabControl.DeleteAllTabs/*" />
 	METHOD DeleteAllTabs() AS LOGIC
 		LOCAL dwI, dwCount AS DWORD
 		dwCount := ALen(aPages)
@@ -343,7 +362,7 @@ CLASS TabControl INHERIT TextControl
 			IF IsObject(aPages[dwI][ TAB_PAGE])
 				((VObject) aPages[dwI][ TAB_PAGE]):Destroy()
 			ENDIF
-		NEXT  
+		NEXT
 
 		aPages := {}
 		aTipsText := {}
@@ -352,6 +371,7 @@ CLASS TabControl INHERIT TextControl
 		ENDIF
 		RETURN TRUE
 
+/// <include file="Gui.xml" path="doc/TabControl.DeleteTab/*" />
 	METHOD DeleteTab(symTabName AS SYMBOL)  AS LOGIC
 		// LOCAL dwI, dwCount AS DWORD
 		LOCAL iTabIdx AS DWORD
@@ -361,7 +381,7 @@ CLASS TabControl INHERIT TextControl
 		IF SELF:ValidateControl()
 			FOR iTabIdx := 1 TO alen(SELF:aPages)
 				IF SELF:aPages[iTabIdx][ TAB_SYMBOL] == symTabName
-					oTabPage := SELF:aPages[iTabIdx][ TAB_PAGE]				
+					oTabPage := SELF:aPages[iTabIdx][ TAB_PAGE]
 					SELF:__TabControl:TabPages:Remove(oTabPage)
 					ADel(SELF:aPages, iTabIdx)
 					Asize(SELF:aPages, Alen(aPages)-1)
@@ -371,7 +391,7 @@ CLASS TabControl INHERIT TextControl
 			NEXT
 			SELF:RemoveTipText(symTabName)
 			oCurrentPage := NULL_OBJECT
-			IF SELF:TabCount > 0 
+			IF SELF:TabCount > 0
 				iFocus := iFocus -1
 				IF iFocus <  0 .or. iFocus >= SELF:TabCount
 					iFocus := 0
@@ -383,7 +403,8 @@ CLASS TabControl INHERIT TextControl
 		SELF:__AdjustIndices()
 		RETURN lRet
 
-	METHOD Destroy() AS USUAL 
+/// <include file="Gui.xml" path="doc/TabControl.Destroy/*" />
+	METHOD Destroy() AS USUAL
 		aPages := NULL_ARRAY
 		aTipsText := NULL_ARRAY
 		oCurrentPage := NULL_OBJECT
@@ -391,6 +412,7 @@ CLASS TabControl INHERIT TextControl
 		RETURN NIL
 
 
+/// <include file="Gui.xml" path="doc/TabControl.GetTabBoundingBox/*" />
 	METHOD GetTabBoundingBox(symTabName AS SYMBOL) AS BoundingBox
 		LOCAL oOrigin	AS Point
 		LOCAL oSize		AS Dimension
@@ -412,10 +434,11 @@ CLASS TabControl INHERIT TextControl
 		ENDIF
 		RETURN cReturn
 
+/// <include file="Gui.xml" path="doc/TabControl.GetTabImage/*" />
 	METHOD GetTabImage (symTabName AS SYMBOL)  AS INT
 		LOCAL oPage         AS System.Windows.Forms.TabPage
 		LOCAL nImageIndex	AS INT
-		
+
 		oPage := SELF:__GetTabPage(symTabName)
 		IF oPage != NULL_OBJECT
 			nImageIndex := oPage:ImageIndex
@@ -423,6 +446,7 @@ CLASS TabControl INHERIT TextControl
 		RETURN nImageIndex
 
 
+/// <include file="Gui.xml" path="doc/TabControl.GetTabPage/*" />
 	METHOD GetTabPage(xSymbolOrPosition AS USUAL)  AS OBJECT
 		IF IsSymbol(xSymbolOrPosition)
 			RETURN SELF:__GetPageFromIndex(SELF:__GetIndexFromSymbol(xSymbolOrPosition))
@@ -432,6 +456,7 @@ CLASS TabControl INHERIT TextControl
 
 		RETURN NULL_OBJECT
 
+/// <include file="Gui.xml" path="doc/TabControl.GetTipText/*" />
 	METHOD GetTipText(symTabName AS USUAL)  AS STRING
 		LOCAL dwIndex AS DWORD
 		LOCAL dwCount AS DWORD
@@ -448,35 +473,39 @@ CLASS TabControl INHERIT TextControl
 		oPage := SELF:__GetTabPage(symTabName)
 		IF oPage != NULL_OBJECT
 			RETURN oPage:ToolTipText
-		ENDIF	
+		ENDIF
 
 		dwCount := ALen(aTipsText)
 		FOR dwIndex := 1 UPTO dwCount
 			IF aTipsText[dwIndex][ TIP_SYMBOL] == symName
 				RETURN aTipsText[dwIndex][ TIP_TEXT]
 			ENDIF
-		NEXT  
+		NEXT
 
 		RETURN NULL_STRING
 
+/// <include file="Gui.xml" path="doc/TabControl.Hide/*" />
 	METHOD Hide()  AS VOID STRICT
 		SUPER:Hide()
 		IF (oCurrentPage != NULL_OBJECT)
 			oCurrentPage:Hide()
 		ENDIF
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/TabControl.ImageList/*" />
 	ACCESS ImageList AS ImageList
 		RETURN oImageList
 
-	ASSIGN ImageList(oNewImageList AS ImageList) 
+/// <include file="Gui.xml" path="doc/TabControl.ImageList/*" />
+	ASSIGN ImageList(oNewImageList AS ImageList)
 		IF SELF:ValidateControl()
 			oImageList := oNewImageList
 			__TabControl:ImageList := oImageList:__ImageList
 		ENDIF
-		RETURN 
+		RETURN
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+/// <include file="Gui.xml" path="doc/TabControl.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 		IF IsInstanceOfUsual(xID, #ResourceID)
 			SUPER(oOwner, xID, oPoint, oDimension, , kStyle, FALSE)
 		ELSE
@@ -489,9 +518,10 @@ CLASS TabControl INHERIT TextControl
 		aPages := {}
 		aTipsText := {}
 
-		RETURN 
+		RETURN
 
-	METHOD InsertTab(nPosition, symTabName, cCaption, xPage, nImage) 
+/// <include file="Gui.xml" path="doc/TabControl.InsertTab/*" />
+	METHOD InsertTab(nPosition, symTabName, cCaption, xPage, nImage)
 		LOCAL nIndex		AS INT
 		LOCAL lReturnValue	AS LOGIC
 		LOCAL iLen, i AS DWORD
@@ -499,7 +529,7 @@ CLASS TabControl INHERIT TextControl
 
 		DEFAULT(@nImage, 0)
 		IF SELF:ValidateControl()
-		
+
 			cTooltip := SELF:GetTipText(symTabName)
 
 			// Insert the new tab and add its page to the list of pages
@@ -516,7 +546,7 @@ CLASS TabControl INHERIT TextControl
 			ELSE
 				__TabControl:TabPages:Insert((INT) nPosition, (STRING) symTabName, (STRING) cCaption )
 			ENDIF
-		
+
 			nIndex := __TabControl:TabPages:IndexOfKey((STRING) symTabName)
 			IF nIndex != -1
 				iLen := ALen(aPages)
@@ -529,11 +559,11 @@ CLASS TabControl INHERIT TextControl
 				IF ! Empty(cTooltip)
 					SELF:ChangeTipText(symTabName, cTooltip)
 				ENDIF
-				SELF:__SetTabOwner(nIndex, xPage)			
+				SELF:__SetTabOwner(nIndex, xPage)
 				lReturnValue := TRUE
 			ENDIF
 
-			IF lAutoSize .AND. ! IsSymbol(xPage) 
+			IF lAutoSize .AND. ! IsSymbol(xPage)
 				SELF:__CalcNewDimension(xPage)
 			ENDIF
 		ENDIF
@@ -541,23 +571,26 @@ CLASS TabControl INHERIT TextControl
 		RETURN lReturnValue
 
 
+/// <include file="Gui.xml" path="doc/TabControl.IsTabPage/*" />
 	METHOD IsTabPage(iPos AS LONG) AS LOGIC
 		RETURN iPos >= 0 .and. iPos < __TabControl:TabPages:Count
 
+
+/// <include file="Gui.xml" path="doc/TabControl.IsTabPage/*" />
 	METHOD IsTabPage(symPos AS SYMBOL) AS LOGIC
 		LOCAL dwI, dwCount AS DWORD
 		dwCount := ALen(aPages)
-		FOR dwI := 1 UPTO dwCount 
+		FOR dwI := 1 UPTO dwCount
 			IF aPages[dwI][ TAB_SYMBOL] == symPos
 				IF IsInstanceOfUsual(aPages[dwI][ TAB_PAGE], #Window)
 					RETURN TRUE
-				ENDIF    
+				ENDIF
 				EXIT
 			ENDIF
 		NEXT
 		RETURN FALSE
 
-
+/// <include file="Gui.xml" path="doc/TabControl.IsTabPage/*" />
 	METHOD IsTabPage(xSymbolOrPosition AS USUAL) AS LOGIC
 		IF IsSymbol(xSymbolOrPosition)
 			RETURN SELF:IsTabPage((SYMBOL) xSymbolOrPosition)
@@ -567,16 +600,19 @@ CLASS TabControl INHERIT TextControl
 			RETURN FALSE
 		ENDIF
 
-	METHOD Move(oMoveEvent) 
+/// <include file="Gui.xml" path="doc/TabControl.Move/*" />
+	METHOD Move(oMoveEvent)
 		SELF:__AdjustPage()
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/TabControl.PadTabs/*" />
 	METHOD PadTabs(dwWidth AS INT, dwHeight AS INT) AS VOID
 		IF SELF:ValidateControl()
 			__TabControl:Padding := Point{dwWidth, dwHeight}
 		ENDIF
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/TabControl.RemoveTabImage/*" />
 	METHOD RemoveTabImage(nImageIndex AS INT)  AS LOGIC
 		IF SELF:oImageList != NULL_OBJECT .and. SELF:oImageList:ImageCount >= nImageIndex
 			SELF:oImageList:__ImageList:Images[(INT) nImageIndex -1] := (OBJECT) System.Drawing.Bitmap{SELF:Size:Width, SELF:Size:Height}
@@ -584,7 +620,8 @@ CLASS TabControl INHERIT TextControl
 		ENDIF
 		RETURN  FALSE
 
-	METHOD RemoveTipText(symTabName AS USUAL) 
+/// <include file="Gui.xml" path="doc/TabControl.RemoveTipText/*" />
+	METHOD RemoveTipText(symTabName AS USUAL)
 		LOCAL dwIndex AS DWORD
 		LOCAL dwCount AS DWORD
 		LOCAL symName AS SYMBOL
@@ -606,23 +643,27 @@ CLASS TabControl INHERIT TextControl
 				AtrueDel(aTipsText, dwIndex)
 				RETURN TRUE
 			ENDIF
-		NEXT 
-		
+		NEXT
+
 		RETURN FALSE
 
-	METHOD Resize(oResizeEvent) 
+/// <include file="Gui.xml" path="doc/TabControl.Resize/*" />
+	METHOD Resize(oResizeEvent)
 		SELF:__AdjustPage()
 		RETURN SELF
 
+/// <include file="Gui.xml" path="doc/TabControl.RowCount/*" />
 	ACCESS RowCount AS INT
 		IF SELF:__isValid
 			RETURN __TabControl:RowCount
 		ENDIF
 		RETURN 0
 
+/// <include file="Gui.xml" path="doc/TabControl.SelectedTab/*" />
 	ACCESS SelectedTab AS SYMBOL
 		RETURN SELF:__GetSymbolFromIndex(__TabControl:SelectedIndex)
 
+/// <include file="Gui.xml" path="doc/TabControl.SelectedTabPage/*" />
 	ACCESS SelectedTabPage  AS OBJECT
 		LOCAL sTabPage AS SYMBOL
 		sTabPage := SELF:SelectedTab
@@ -631,7 +672,8 @@ CLASS TabControl INHERIT TextControl
 		ENDIF
 		RETURN SELF:GetTabPage(sTabPage)
 
-	METHOD SelectTab(symTabName AS SYMBOL) 
+/// <include file="Gui.xml" path="doc/TabControl.SelectTab/*" />
+	METHOD SelectTab(symTabName AS SYMBOL)
 		LOCAL oPage		AS System.Windows.Forms.TabPage
 		oPage := SELF:__GetTabPage(symTabName)
 		IF oPage != NULL_OBJECT
@@ -641,6 +683,7 @@ CLASS TabControl INHERIT TextControl
 		ENDIF
 		RETURN SELF
 
+/// <include file="Gui.xml" path="doc/TabControl.SetCaption/*" />
 	METHOD SetCaption(symTabName AS SYMBOL, cCaption AS STRING) AS LOGIC
 		LOCAL lRet		AS LOGIC
 		LOCAL oPage		AS System.Windows.Forms.TabPage
@@ -652,6 +695,7 @@ CLASS TabControl INHERIT TextControl
 
 		RETURN lRet
 
+/// <include file="Gui.xml" path="doc/TabControl.SetTabImage/*" />
 	METHOD SetTabImage(symTabName AS SYMBOL, nImageIndex AS INT) AS INT
 		LOCAL oPage		AS System.Windows.Forms.TabPage
 
@@ -662,18 +706,23 @@ CLASS TabControl INHERIT TextControl
 
 		RETURN nImageIndex
 
-	METHOD SetTipText(symTabName AS SYMBOL, cText AS STRING) 
+/// <include file="Gui.xml" path="doc/TabControl.SetTipText/*" />
+	METHOD SetTipText(symTabName AS SYMBOL, cText AS STRING)
 		RETURN SELF:AddTipText(symTabName, cText)
 
+/// <include file="Gui.xml" path="doc/TabControl.Show/*" />
 	METHOD Show() AS VOID STRICT
 		SUPER:Show()
 		IF (oCurrentPage != NULL_OBJECT)
 			oCurrentPage:Show()
 		ENDIF
-		RETURN 
-		
+		RETURN
+
+/// <include file="Gui.xml" path="doc/TabControl.TabCaption/*" />
+
 	PROPERTY TabCaption [symTabName AS SYMBOL] AS STRING GET SELF:GetCaption(symTabName) SET SELF:SetCaption(symTabName, Value)
 
+/// <include file="Gui.xml" path="doc/TabControl.TabCount/*" />
 	ACCESS TabCount  AS LONG
 		IF SELF:__IsValid
 			RETURN __TabControl:TabCount

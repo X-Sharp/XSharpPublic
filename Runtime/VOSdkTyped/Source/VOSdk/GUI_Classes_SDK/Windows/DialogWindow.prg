@@ -242,7 +242,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		ENDIF
 
 		IF !IsNil(oOwner) .AND. !IsInstanceOfUsual(oOwner, #Window) .AND. !IsInstanceOfUsual(oOwner, #ToolBar) .AND. !IsPtr(oOwner)
-			WCError{#Init,#DialogWindow,__WCSTypeError,oOwner,1}:@@Throw()
+			WCError{#Init,#DialogWindow,__WCSTypeError,oOwner,1}:Throw()
 		ENDIF
 
 		IF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)

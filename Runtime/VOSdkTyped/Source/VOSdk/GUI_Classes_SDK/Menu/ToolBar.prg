@@ -660,7 +660,7 @@ CLASS ToolBar INHERIT Control
 					ENDIF
 				ENDIF
 			ELSE
-				WCError{#Bitmap,#ToolBar,"Can not assign a Bitmap in imagelist mode!",oNewBitmap,1}:@@Throw()
+				WCError{#Bitmap,#ToolBar,"Can not assign a Bitmap in imagelist mode!",oNewBitmap,1}:Throw()
 			ENDIF
 		ENDIF
 
@@ -1558,7 +1558,7 @@ CLASS ToolBar INHERIT Control
 		//		SendMessage(oTB:Handle, dwMsg, 0u, LONGINT(_CAST, oImageList:Handle()))
 		//	ENDIF
 		//ELSE
-		//	WCError{#SetImageList,#ToolBar,"Can not assign an ImageList in bitmap mode!",uImageList,1}:@@Throw()
+		//	WCError{#SetImageList,#ToolBar,"Can not assign an ImageList in bitmap mode!",uImageList,1}:Throw()
 		//ENDIF
 
 		RETURN uImageList

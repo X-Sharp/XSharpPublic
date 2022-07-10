@@ -68,7 +68,7 @@ CLASS TextBox INHERIT VObject
 
 		IF !IsNil(uCaption)
 			IF !IsString(uCaption)
-				WCError{#Init,#TextBox,__WCSTypeError,uCaption,2}:@@Throw()
+				WCError{#Init,#TextBox,__WCSTypeError,uCaption,2}:Throw()
 			ENDIF
 			Caption := uCaption
 		ELSE
@@ -77,7 +77,7 @@ CLASS TextBox INHERIT VObject
 
 		IF !IsNil(uText)
 			IF !IsString(uText)
-				WCError{#Init,#TextBox,__WCSTypeError,uText,3}:@@Throw()
+				WCError{#Init,#TextBox,__WCSTypeError,uText,3}:Throw()
 			ENDIF
 			Message := uText
 		ELSE

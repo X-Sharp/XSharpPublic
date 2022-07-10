@@ -1,14 +1,17 @@
-
+/// <include file="Gui.xml" path="doc/FixedBitmap/*" />
 CLASS FixedBitmap INHERIT FixedImage
 	PROTECT hInst AS IntPtr
-	
-	METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT 
+
+ /// <exclude />
+	METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT
 		RETURN SELF:SetBitmap(Bitmap{uResID})
 
-	METHOD AsString() 
+/// <include file="Gui.xml" path="doc/FixedBitmap.AsString/*" />
+	METHOD AsString()
 		RETURN "#FixedBitmap Object"
 
-	CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID) 
+/// <include file="Gui.xml" path="doc/FixedBitmap.ctor/*" />
+	CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID)
 		SUPER(uOwner, uID, uPoint, uDimension, uResID)
 		IF IsInstanceOfUsual(uID , #ResourceID)
 			LOCAL oResID AS ResourceID
@@ -18,7 +21,7 @@ CLASS FixedBitmap INHERIT FixedImage
 		IF IsInstanceOfUsual(uResID , #ResourceID)
 			SELF:__SetImage(uResID)
 		ENDIF
-		RETURN 
+		RETURN
 
 	ASSIGN HyperLabel(oHL AS HyperLabel)
 		SUPER:HyperLabel := oHL
@@ -27,7 +30,8 @@ CLASS FixedBitmap INHERIT FixedImage
 		ENDIF
 		RETURN
 
-	METHOD SetBitmap(oBitmap AS Bitmap) 
+/// <include file="Gui.xml" path="doc/FixedBitmap.SetBitmap/*" />
+	METHOD SetBitmap(oBitmap AS Bitmap)
 		LOCAL oImg AS System.Drawing.Image
 		oImg := oBitmap:__Image
 		SELF:SetStyle(SS_BITMAP)

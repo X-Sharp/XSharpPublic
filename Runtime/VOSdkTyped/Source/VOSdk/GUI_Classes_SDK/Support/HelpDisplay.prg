@@ -107,12 +107,12 @@ CLASS HelpDisplay INHERIT VObject
 
 
 		IF !IsString(cFileName)
-			WCError{#Init,#HelpDisplay,__WCSTypeError,cFileName,1}:@@Throw()
+			WCError{#Init,#HelpDisplay,__WCSTypeError,cFileName,1}:Throw()
 		ENDIF
 
 		IF !IsNil(oOwnerWindow)
 			IF !IsInstanceOfUsual(oOwnerWindow, #Window)
-				WCError{#Init,#HelpDisplay,__WCSTypeError,oOwnerWindow,2}:@@Throw()
+				WCError{#Init,#HelpDisplay,__WCSTypeError,oOwnerWindow,2}:Throw()
 			ELSE
 				SELF:oWnd := oOwnerWindow
 			ENDIF
@@ -148,7 +148,7 @@ CLASS HelpDisplay INHERIT VObject
 		DEFAULT (@symLookupType,#KEYWORD)
 
 		IF !IsString(cKeyword)
-			WCError{#Show,#HelpDisplay,__WCSTypeError,cKeyword,1}:@@Throw()
+			WCError{#Show,#HelpDisplay,__WCSTypeError,cKeyword,1}:Throw()
 			wError := HdInvalidKey
 			RETURN FALSE
 		ENDIF

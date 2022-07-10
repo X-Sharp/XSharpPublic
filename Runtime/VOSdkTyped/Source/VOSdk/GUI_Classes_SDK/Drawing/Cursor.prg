@@ -84,7 +84,7 @@ CLASS Cursor INHERIT VObject
 		
 
 		IF !IsInstanceOfUsual(oOwner,#Window)
-			WCError{#Init,#Cursor,__WCSTypeError,oOwner,1}:@@Throw()
+			WCError{#Init,#Cursor,__WCSTypeError,oOwner,1}:Throw()
 		ENDIF
 
 		oWnd := oOwner
@@ -92,7 +92,7 @@ CLASS Cursor INHERIT VObject
 			oDim := oObject
 			IF !IsNil(lDimmed)
 				IF !IsLogic(lDimmed)
-					WCError{#Init,#Cursor,__WCSTypeError,lDimmed,3}:@@Throw()
+					WCError{#Init,#Cursor,__WCSTypeError,lDimmed,3}:Throw()
 				ENDIF
 				SELF:lDimmed := lDimmed
 			ELSE
@@ -101,10 +101,10 @@ CLASS Cursor INHERIT VObject
 			SELF:Position := Point{0,0}
 		ELSE
 			IF !IsInstanceOfUsual(oObject,#Bitmap)
-				WCError{#Init,#Cursor,__WCSTypeError,oObject,2}:@@Throw()
+				WCError{#Init,#Cursor,__WCSTypeError,oObject,2}:Throw()
 			ENDIF
 			IF !IsNil(lDimmed)
-				WCError{#Init,#Cursor,__WCSTypeError,lDimmed,3}:@@Throw()
+				WCError{#Init,#Cursor,__WCSTypeError,lDimmed,3}:Throw()
 			ENDIF
 			oBitmap := oObject
 			oDim := oBitmap:Size

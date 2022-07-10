@@ -279,7 +279,7 @@ CLASS Menu INHERIT VObject
 				IF IsNumeric(xResourceID) .OR. IsPtr(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
 					oResourceID := ResourceID{xResourceID}
 				ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
-					WCError{#Init, #Menu, __WCSTypeError}:@@Throw()
+					WCError{#Init, #Menu, __WCSTypeError}:Throw()
 				ELSE
 					oResourceID := xResourceID
 				ENDIF
@@ -448,7 +448,7 @@ CLASS Menu INHERIT VObject
 		//PP-041001 Update from S. Ebert
 
 		IF !IsInstanceOfUsual(oOwner, #Window) .AND. !IsInstanceOfUsual(oOwner, #Control)
-		WCError{#ShowPopup, #Menu, __WCSTypeError, oOwner, 1}:@@Throw()
+		WCError{#ShowPopup, #Menu, __WCSTypeError, oOwner, 1}:Throw()
 		ENDIF
 
 		Default(@kButton, PM_RIGHTBUTTON)

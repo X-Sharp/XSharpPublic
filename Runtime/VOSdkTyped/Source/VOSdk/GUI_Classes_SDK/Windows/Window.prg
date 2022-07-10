@@ -1605,7 +1605,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 		IF !IsArray(oDrawObject)
 			IF !IsInstanceOfUsual(oDrawObject,#DrawObject)
-				WCError{#Draw,#Window,__WCSTypeError,oDrawObject,1}:@@Throw()
+				WCError{#Draw,#Window,__WCSTypeError,oDrawObject,1}:Throw()
 			ENDIF
 			oDraw := oDrawObject
 			oDraw:__SetWindow(SELF)
@@ -1615,7 +1615,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			cnt := ALen(aDraw)
 			FOR i:=1 TO cnt
 				IF !IsInstanceOfUsual(aDraw[i],#DrawObject)
-					WCError{#Draw,#Window,__WCSTypeError,oDrawObject[i],1}:@@Throw()
+					WCError{#Draw,#Window,__WCSTypeError,oDrawObject[i],1}:Throw()
 				ENDIF
 				oDraw := aDraw[i]
 				oDraw:__SetWindow(SELF)
@@ -1643,13 +1643,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN
 
 /// <include file="Gui.xml" path="doc/Window.EnableCloseBox/*" />
-	METHOD EnableCloseBox(lValue := TRUE AS LOGIC)
+	METHOD EnableCloseBox(uValue := TRUE AS LOGIC)
 		LOCAL hBox AS IntPtr
 		IF SELF:__IsValid
 			hBox := GuiWin32.GetSystemMenu(oWnd:Handle,FALSE)
 		ENDIF
 		IF hBox != IntPtr.Zero
-			IF lValue
+			IF uValue
 				RETURN GuiWin32.EnableMenuItem(hBox,SC_CLOSE,MF_ENABLED)
 			ELSE
 				RETURN GuiWin32.EnableMenuItem(hBox,SC_CLOSE,_OR(MF_GRAYED,MF_BYCOMMAND))
@@ -2356,7 +2356,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 		//IF !IsInstanceOfUsual(oBoundingBox, #BoundingBox)
-		//	WCError{#PaintBoundingBox,#Window,__WCSTypeError,oBoundingBox,1}:@@Throw()
+		//	WCError{#PaintBoundingBox,#Window,__WCSTypeError,oBoundingBox,1}:Throw()
 		//ENDIF
 
 		//IF oForeground == NULL_OBJECT
@@ -2443,7 +2443,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 		//IF !IsNil(oDevice)
 		//	IF !IsInstanceOfUsual(oDevice, #PrintingDevice)
-		//		WCError{#Init,#Printer,__WCSTypeError,oDevice,2}:@@Throw()
+		//		WCError{#Init,#Printer,__WCSTypeError,oDevice,2}:Throw()
 		//	ENDIF
 		//	oPrintingDev := oDevice
 		//ELSE
@@ -2487,12 +2487,12 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	METHOD RegisterTimer(nInterval, lOneTime)
 
 		IF !IsLong(nInterval)
-			WCError{#RegisterTimer,#Window,__WCSTypeError,nInterval,1}:@@Throw()
+			WCError{#RegisterTimer,#Window,__WCSTypeError,nInterval,1}:Throw()
 		ENDIF
 
 		IF !IsNil(lOneTime)
 			IF !IsLogic(lOneTime)
-				WCError{#RegisterTimer,#Window,__WCSTypeError,lOneTime,2}:@@Throw()
+				WCError{#RegisterTimer,#Window,__WCSTypeError,lOneTime,2}:Throw()
 			ENDIF
 			IF lOneTime
 				dwTimerInterval := 0
@@ -2548,11 +2548,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//LOCAL oPoint AS Point
 
 		//IF !IsInstanceOfUsual(oDimension,#Dimension)
-		//	WCError{#Scroll,#Window,__WCSTypeError,oDimension,1}:@@Throw()
+		//	WCError{#Scroll,#Window,__WCSTypeError,oDimension,1}:Throw()
 		//ENDIF
 		//IF !IsNil(oBoundingBox)
 		//	IF !IsInstanceOfUsual(oBoundingBox,#BoundingBox)
-		//		WCError{#Scroll,#Window,__WCSTypeError,oBoundingBox,2}:@@Throw()
+		//		WCError{#Scroll,#Window,__WCSTypeError,oBoundingBox,2}:Throw()
 		//	ENDIF
 		//	oBB:=oBoundingBox
 		//ELSE
@@ -2568,7 +2568,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 		//IF !IsNil(lClip)
 		//	IF !IsLogic(lClip)
-		//		WCError{#Scroll,#Window,__WCSTypeError,lClip,3}:@@Throw()
+		//		WCError{#Scroll,#Window,__WCSTypeError,lClip,3}:Throw()
 		//	ENDIF
 		//	IF lClip
 		//		strucRectClip:=@strucRectScroll
@@ -2860,10 +2860,10 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 		//IF !IsString(cText)
-		//	WCError{#TextPrint,#Window,__WCSTypeError,cText,1}:@@Throw()
+		//	WCError{#TextPrint,#Window,__WCSTypeError,cText,1}:Throw()
 		//ENDIF
 		//IF !IsInstanceOfUsual(oPoint,#Point)
-		//	WCError{#TextPrint,#Window,__WCSTypeError,oPoint,2}:@@Throw()
+		//	WCError{#TextPrint,#Window,__WCSTypeError,oPoint,2}:Throw()
 		//ENDIF
 
 		//DCFontNeeded := TRUE

@@ -488,7 +488,7 @@
             Construct an application.
         </summary>
         <remarks>
-            <br />Important! X# instantiates this object.
+            <br/>Important! X# instantiates this object.
         </remarks>
         <param name="oOwner">The window that owns the application.</param>
     </App.ctor>
@@ -2711,11 +2711,11 @@
     <Control.Activate>
         <summary>
             Provide a method that is invoked when the control has focus and a window is activated.<br /><br />
-            <include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oEvent">The event that describes which window was activated.</param>
         <seealso cref="T:VO.Event" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The Activate() event occurs at the start of the control's lifetime or when the control is activated after it has been deactivated (for example, by clicking on it with the mouse). The newly active control receives the input focus.
 
             You should create and show cursors (if needed) in this event handler method.
@@ -2773,10 +2773,10 @@
     <Control.Deactivate>
         <summary>
             Provide a method that is invoked when the control has focus and a window is deactivated.<br /><br />
-            <include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oEvent">An empty event required to maintain the protocol that all event handlers have exactly one event as their argument.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This event handler is normally invoked when another application, window or control becomes activated.
         </remarks>
         <seealso cref="T:VO.Event" />
@@ -2811,7 +2811,6 @@
     <Control.Dispatch>
         <summary>
             Provide the prototype dispatcher for events within the system when the control has focus; routing various events to their appropriate event handlers.<br /><br />
-            <include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oEvent">The event to be handled.</param>
         <seealso cref="T:VO.Event" />
@@ -2819,6 +2818,7 @@
             A numeric value representing the event handler to handle the event.
         </returns>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             Controls receive events from the user and the system all of the time. Each control receives only the events that are relevant to it. For each event that is generated, two things happen:
             1.	The event is converted to a particular Event object (an ExposeEvent or a MouseEvent, for example) according to the action that triggered the event.
             2.	The appropriate event handler is called, and this typed Event object is passed to it.
@@ -2854,10 +2854,10 @@
     <Control.Expose>
         <summary>
             Provide a method that is invoked when the control has focus and whenever part of the window needs repainting.<br /><br />
-            <include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oExposeEvent">The ExposeEvent object that describes which control of the window needs repainting.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This is one of the most important event handlers. A control requires repainting when the control:
             <list type="bullet">
                 <item>Is partially uncovered by another window</item>
@@ -2886,9 +2886,13 @@
     </Control.FieldSpec>
     <Control.FocusChange>
         <summary>
-            Provide a method that is invoked when the control has focus and the input focus changes from the current control to another (or vice versa).<br /><br /><include file="Gui.xml" path="doc/Callback/*" />
+            Provide a method that is invoked when the control has focus and the input focus changes from the current control to another (or vice versa).<br /><br />
         </summary>
         <param name="oFocusChangeEvent">The FocusChangeEvent object that identifies whether the focus is being gained or lost.</param>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
+
     </Control.FocusChange>
     <Control.GetExStyle>
         <summary>
@@ -2939,10 +2943,11 @@
     </Control.Hide>
     <Control.HorizontalScroll>
         <summary>
-            Provide a method that is invoked when the control has focus and a horizontal scroll bar is scrolled.<br /><br /><include file="Gui.xml" path="doc/Callback/*" />
+            Provide a method that is invoked when the control has focus and a horizontal scroll bar is scrolled.<br /><br />
         </summary>
         <param name="oScrollEvent">The ScrollEvent object that describes the scroll type and new position.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The default behavior for this event handler is to update the thumb position; this can be changed using your own implementation of the handler. This event handler only works for HorizontalScrollBar and WindowHorizontalScrollBar objects. If the application has vertical scroll bars, use a WindowVerticalScrollBar event handler.
         </remarks>
     </Control.HorizontalScroll>
@@ -3008,19 +3013,21 @@
     </Control.IsVisible>
     <Control.KeyDown>
         <summary>
-            Provide a method that is invoked when the control has focus and a key on the keyboard is pressed.<br /><br /><include file="Gui.xml" path="doc/Callback/*" />
+            Provide a method that is invoked when the control has focus and a key on the keyboard is pressed.<br /><br />
         </summary>
         <param name="oKeyEvent">The KeyEvent object that describes what key was pressed.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This event handler is called only if the control has the input focus.
         </remarks>
     </Control.KeyDown>
     <Control.KeyUp>
         <summary>
-            Provide a method that is invoked when the control has focus and a key on the keyboard is released.<br /><br /><include file="Gui.xml" path="doc/Callback/*" />
+            Provide a method that is invoked when the control has focus and a key on the keyboard is released.<br /><br />
         </summary>
         <param name="oKeyEvent">The KeyEvent object that describes what key was released.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This event handler is called only if the control has the input focus.
         </remarks>
     </Control.KeyUp>
@@ -3058,25 +3065,31 @@
     </Control.Modified>
     <Control.MouseButtonDoubleClick>
         <summary>
-            Provide a method that is invoked when the control has focus, the mouse pointer is positioned over the window, and a mouse button is double-clicked.<br /><br /><include file="Gui.xml" path="doc/Callback/*" />
+            Provide a method that is invoked when the control has focus, the mouse pointer is positioned over the window, and a mouse button is double-clicked.<br /><br />
+            
         </summary>
         <param name="oMouseEvent">The MouseEvent object that contains information about the state of the mouse when the button was double-clicked.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             MouseButtonDoubleClick() often occurs between MouseButtonDown() and MouseButtonUp() event handlers.
         </remarks>
     </Control.MouseButtonDoubleClick>
     <Control.MouseButtonDown>
         <summary>
-            Provide a method that is invoked when the control has focus, the mouse pointer is positioned over the window, and a mouse button is clicked.<br /><br /><include file="Gui.xml" path="doc/Callback/*" />
+            Provide a method that is invoked when the control has focus, the mouse pointer is positioned over the window, and a mouse button is clicked.<br /><br />
         </summary>
         <param name="oMouseEvent">The MouseEvent object that contains information about the state of the mouse when the button was clicked.</param>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
     </Control.MouseButtonDown>
     <Control.MouseButtonUp>
         <summary>
-            Provide a method that is invoked when the control has focus, the mouse pointer is positioned over the window, and a mouse button is released.<br /><br /><include file="Gui.xml" path="doc/Callback/*" />
+            Provide a method that is invoked when the control has focus, the mouse pointer is positioned over the window, and a mouse button is released.
         </summary>
         <param name="oMouseEvent">The MouseEvent object that contains information about the state of the mouse when the button was released.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             Do not assume Control:MouseButtonUp() is called immediately after Control:MouseButtonDown(). Other MouseEvents can be generated during this time.
             In some cases, there may be no Control:MouseButtonUp() events directed to the window for a corresponding Control:MouseButtonDown(). This can occur if the mouse button is clicked while over the window, but released after the mouse has moved off the window.
         </remarks>
@@ -3084,15 +3097,19 @@
     <Control.MouseDrag>
         <summary>
             Provide a method that is invoked when the control has focus and a mouse with one or more buttons clicked is moved in the window.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oMouseEvent">The MouseEvent object containing information on the location and state of the buttons when the mouse was dragged.</param>
-    </Control.MouseDrag>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
+        </Control.MouseDrag>
     <Control.MouseMove>
         <summary>
             Provide a method that is invoked when the control has focus and the mouse is moved in the control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oMouseEvent">The MouseEvent object containing information on the location of the mouse when it was moved.</param>
         <remarks>
             This event occurs when the mouse is moved with no mouse buttons clicked.
@@ -3101,7 +3118,6 @@
     <Control.Move>
         <summary>
             Provide a method that is invoked when the control has focus and the control is moved (either by the user or by the application).
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oMoveEvent">The MoveEvent object that describes the window movement.</param>
     </Control.Move>
@@ -3219,10 +3235,10 @@
     <Control.Resize>
         <summary>
             Provide a method that is invoked when the control has focus and the control changes size.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oResizeEvent">The ResizeEvent object that describes the new dimensions of the control.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             In the Control:Resize() event handler, calling Window:Size should be used with caution to avoid entering an infinite loop.
         </remarks>
     </Control.Resize>
@@ -3342,8 +3358,11 @@
     <Control.Timer>
         <summary>
             Provide a method to be invoked at specific intervals defined when the timer is registered though the RegisterTimer() method.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
+        
     </Control.Timer>
     <Control.ToolTipText>
         <summary>
@@ -3403,10 +3422,10 @@
     <Control.VerticalScroll>
         <summary>
             Provide a method that is invoked when the control has focus and a vertical scroll bar is scrolled.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oScrollEvent">The ScrollEvent object that describes the scroll type and new position.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The default behavior for this event handler is to update the thumb position; this can be changed using your own implementation of the handler. This event handler only works for HorizontalScrollBar and WindowHorizontalScrollBar objects. If the application has horizontal scroll bars, use a HorizontalScrollBar event handler.
         </remarks>
     </Control.VerticalScroll>
@@ -4215,8 +4234,11 @@
     <DataBrowser.Error>
         <summary>
             Provide a method for handling error conditions raised during data browser processing.
-            <note type="tip">This is an event handler and is automatically called by other methods; the developer does not normally need to call the DataBrowser:Error() method, but might want to override it.</note>
         </summary>
+        <remarks>
+            <note type="tip">This is an event handler and is automatically called by other methods; the developer does not normally need to call the DataBrowser:Error() method, but might want to override it.</note>
+
+        </remarks>
         <param name="oErrorObj">An Error object describing the error condition.</param>
     </DataBrowser.Error>
     <DataBrowser.Font>
@@ -5182,16 +5204,13 @@
     <DataWindow.Background>
         <summary>
             The background brush currently in use by this data window.
-
-            The background brush currently in use by this data window.
-            A window's background brush is used by CanvasErase() and in handling Expose events. Assigning a new background brush has no effect until the data window (or portion of the data window) is redrawn. If a data window was partially covered and is then fully exposed, only the covered part of the data window is redrawn and only that part gets the new background.
         </summary>
         <value>
             The background brush currently in use by this data window.
-
-            The background brush currently in use by this data window.
-            A window's background brush is used by CanvasErase() and in handling Expose events. Assigning a new background brush has no effect until the data window (or portion of the data window) is redrawn. If a data window was partially covered and is then fully exposed, only the covered part of the data window is redrawn and only that part gets the new background.
         </value>
+        <remarks>
+            A window's background brush is used by CanvasErase() and in handling Expose events. Assigning a new background brush has no effect until the data window (or portion of the data window) is redrawn. If a data window was partially covered and is then fully exposed, only the covered part of the data window is redrawn and only that part gets the new background.
+        </remarks>
     </DataWindow.Background>
     <DataWindow.Browser>
         <summary>
@@ -5216,11 +5235,11 @@
     <DataWindow.ButtonClick>
         <summary>
             Provide a method that is invoked when a check box, push button, or radio button is clicked with the mouse.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that describes which button was clicked.</param>
         <seealso cref="T:VO.ControlEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             Button click events are propagated to the data window's owner the same way as menu events.
             For an in-depth discussion on command event propagation, refer to the Programmer's Guide.
             You must supply the code to turn a radio button on (and all the other radio buttons off)
@@ -5307,12 +5326,12 @@
     <DataWindow.Close>
         <summary>
             Invoked just as the data window is about to close.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oEvent">An event required to maintain the protocol that all event handlers have exactly one event as their argument.</param>
         <seealso cref="T:VO.Event" />
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This method is not used to close a data window. Use DataWindow:Hide() to make a data window disappear from view,
             but remain available for re-opening; use DataWindow:Destroy() to permanently destroy the data window.
         </remarks>
@@ -5500,22 +5519,22 @@
     <DataWindow.Draw>
         <summary>
             Display a Draw object on this data window.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oDrawObject">The object to be drawn.</param>
         <param name="aoDrawObject">The array of objects to be drawn.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             A Draw object is drawn by placing the device context or presentation space into the Draw object and then calling the Draw object's method Draw(). This is the only valid way of drawing a Draw object on a window.
         </remarks>
     </DataWindow.Draw>
     <DataWindow.EditChange>
         <summary>
             Provide a method that is invoked when the text in an edit control is changed.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that describes which edit control was changed.</param>
         <seealso cref="T:VO.ControlEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This method is called every time the contents of an edit control is changed.
         </remarks>
     </DataWindow.EditChange>
@@ -5548,10 +5567,10 @@
     <DataWindow.Expose>
         <summary>
             Provide a method that is invoked whenever part of the data window needs repainting.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oExposeEvent">The ExposeEvent object that describes which area of the data window needs repainting.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This is one of the most important event handlers. A data window requires repainting when the data window:
             <list type="bullet">
                 <item>Is partially uncovered by another window</item>
@@ -5592,10 +5611,10 @@
     <DataWindow.FocusChange>
         <summary>
             Provide a method that is invoked when the input focus changes from the current data window to another window (or vice versa).
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oFocusChangeEvent">The FocusChangeEvent object that identifies whether the focus is being gained or lost.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             If your data window uses cursors, you should hide the data window's cursor when the focus is changed to a different data window, and then show the cursor when the data window receives focus again. This should be used in conjunction with the Activate() and Deactivate() event handlers.
         </remarks>
         <example>
@@ -5658,10 +5677,10 @@
     <DataWindow.HelpRequest>
         <summary>
             Provide a method that is invoked when the user requests help from the application using one of the available context-sensitive help mechanisms.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oHelpRequestEvent">The HelpRequestEvent object that describes which item help is being requested for.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This event handler is invoked only if the help mechanism has been enabled for the current data window (or one of its owners). The help mechanism is enabled by assigning a HelpDisplay object to the windows HelpDisplay property.
             The default implementation of this event handler is to display the help topic that is associated with the control, menu command, or window region with focus when the HelpRequestEvent was generated. This is accomplished using HelpDisplay:Show(<paramref name="cKeyword" />), where <paramref name="cKeyword" /> is either a HyperLabel:HelpContext property or a default keyword generated by this event handler in cases where a hyperlabel is not available.
             If there is no hyperlabel for an item, the keyword generated is as follows:
@@ -5699,10 +5718,10 @@
     <DataWindow.HorizontalScroll>
         <summary>
             Provide a method that is invoked when a horizontal scroll bar is scrolled.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oScrollEvent">The ScrollEvent object that describes the scroll type and new position.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The default behavior for this event handler is to update the thumb position of the scrollbar; this can be changed using your own implementation of the handler. This event handler only works for HorizontalScrollBar and WindowHorizontalScrollBar objects. If the application has vertical scroll bars, use a WindowVerticalScrollBar event handler.
         </remarks>
     </DataWindow.HorizontalScroll>
@@ -5756,17 +5775,21 @@
     <DataWindow.ListBoxClick>
         <summary>
             Provide a method that is invoked when an item in a list box owned by this data window is double-clicked.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that describes which list box contained the item that is double-clicked.</param>
         <seealso cref="T:VO.ControlEvent" />
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
     </DataWindow.ListBoxClick>
     <DataWindow.ListBoxSelect>
         <summary>
             Provide a method that is invoked when an item in a list box owned by this data window is clicked.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that describes which list box contained the item that was clicked.</param>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <seealso cref="T:VO.ControlEvent" />
     </DataWindow.ListBoxSelect>
     <DataWindow.MouseButtonDown>
@@ -5883,9 +5906,9 @@
     <DataWindow.PreValidate>
         <summary>
             Called after any status change in this data window to allow controls and menu commands to be enabled/disabled based on the current validation status.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This method provides some of the functionality of the WHEN clause in classical Xbase @...SAY...GET statements. However, since the GUI approach does not enforce a rigid sequence of data entry but allows the user to move from control to control at random, the logic of enabling and disabling controls must be different.
             Instead of checking a condition when focus switches into the control (this is too late, a user with a mouse is already on the new control), the system must keep checking on every significant event.
             DataWindow:Prevalidate() provides some automatic handling of this type of validation (through DataWindow:RegisterConditionalControls()), but it also allows you to insert custom logic by overriding the method.
@@ -5944,10 +5967,10 @@
     <DataWindow.Resize>
         <summary>
             Provide a method that is invoked when the data window changes size.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oResizeEvent">The ResizeEvent object that describes the new dimensions of the data window canvas area.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             In the Resize() event handler, calling DataWindow:Size should be used with caution to avoid entering an infinite loop.
         </remarks>
     </DataWindow.Resize>
@@ -6194,10 +6217,10 @@
     <DataWindow.VerticalScroll>
         <summary>
             Provide a method that is invoked when a vertical scroll bar is scrolled.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oScrollEvent">The ScrollEvent object that describes the scroll type and new position.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The default behavior for this event handler is to update the thumb position; this can be changed using your own implementation of the handler. This event handler only works for HorizontalScrollBar and WindowHorizontalScrollBar objects. If the application has horizontal scroll bars, use a HorizontalScrollBar event handler.
         </remarks>
     </DataWindow.VerticalScroll>
@@ -6583,11 +6606,11 @@
     <DialogWindow.ButtonClick>
         <summary>
             Provide a method that is invoked when a check box, push button, or radio button is clicked with the mouse.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that describes which button was clicked.</param>
         <seealso cref="T:VO.ControlEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             Button click events are propagated to the dialog window's owner the same way as MenuEvents. For an in-depth discussion on command event propagation, refer to the Programmer's Guide .
             You must supply the code to turn a radio button on (and all the other radio buttons off) when a user clicks on a radio button. Similarly, you must also be sure to invert the state of a check box when it is clicked.
         </remarks>
@@ -6638,19 +6661,21 @@
     <DialogWindow.EditChange>
         <summary>
             Provide a method that is invoked when the text in an edit control is changed.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that describes which edit control was changed.</param>
         <seealso cref="T:VO.ControlEvent" />
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
     </DialogWindow.EditChange>
     <DialogWindow.EditFocusChange>
         <summary>
             Provide a method that is invoked when the input focus changes to or from an edit control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oEditFocusChangeEvent">The EditFocusChangeEvent object that identifies which edit control generated the EditFocusChangeEvent object and whether it has just gained or lost the keyboard focus.</param>
         <seealso cref="T:VO.EditFocusChangeEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             If DialogWindow:EditFocusChange() is used to validate an edit control (and also return the focus to it if invalid), Control:SetFocus() should not be called until another control has received the focus.
             In complex dialog windows that contain many edit controls, it makes sense to grab the edit control's text when the focus is changing so that other controls can be updated with it if necessary.
         </remarks>
@@ -6741,10 +6766,10 @@
     <DialogWindow.HorizontalScroll>
         <summary>
             Provide a method that is invoked when a horizontal scroll bar is scrolled.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oScrollEvent">The ScrollEvent object that describes the scroll type and new position.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The default behavior for this event handler is to update the thumb position; this can be changed using your own implementation of the handler. This event handler only works for HorizontalScrollBar and WindowHorizontalScrollBar objects. If the application has vertical scroll bars, use a WindowVerticalScrollBar event handler.
         </remarks>
     </DialogWindow.HorizontalScroll>
@@ -6757,17 +6782,21 @@
     <DialogWindow.ListBoxClick>
         <summary>
             Provide a method that is invoked when an item in a list box owned by this dialog window is double-clicked.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that describes which list box contained the item that is double-clicked.</param>
         <seealso cref="T:VO.ControlEvent" />
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
     </DialogWindow.ListBoxClick>
     <DialogWindow.ListBoxSelect>
         <summary>
             Provide a method that is invoked when an item in a list box owned by this window is clicked.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that describes which list box contained the item that was clicked.</param>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <seealso cref="T:VO.ControlEvent" />
     </DialogWindow.ListBoxSelect>
     <DialogWindow.Owner>
@@ -6827,10 +6856,10 @@
     <DialogWindow.VerticalScroll>
         <summary>
             Provide a method that is invoked when a vertical scroll bar is scrolled.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oScrollEvent">The ScrollEvent object that describes the scroll type and new position.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The default behavior for this event handler is to update the thumb position; 
             this can be changed using your own implementation of the handler. This event handler only works for HorizontalScrollBar and WindowHorizontalScrollBar objects. If the application has horizontal scroll bars, use a HorizontalScrollBar event handler.
         </remarks>
@@ -6932,34 +6961,34 @@
     <DragDropClient.DragLeave>
         <summary>
             Notify the application that the mouse has left the client area of the window that owns the drag-and-drop client.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oEvent">An empty event maintaining the protocol requirement that an event handler has exactly one event as its argument.</param>
         <seealso cref="T:VO.Event" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The system dispatches this method when, during an apparent drag-and-drop operation (that is, DragDropClient:DragOver() returns TRUE), the mouse leaves the client area of the window that owns the drag-and-drop client. This means that the user has thought better of performing the operation. Your implementation of DragLeave() should undo any actions taken during the drag-and-drop attempt, in case the user was simply en route to some other client.
         </remarks>
     </DragDropClient.DragLeave>
     <DragDropClient.DragOver>
         <summary>
             Notify the application of a DragOver event and accept or reject the drop.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oDragEvent">The drag event that determines the position of the mouse (in canvas coordinates), aswell as the number and names of files, in the drag-and-drop load.</param>
         <returns>
             The client can refuse a drag-and-drop operation by returning FALSE from this method (usually because a certain file type is not accepted). Windows then changes the pointer to a no-entry sign. The method returns TRUE if a drop is accepted.
         </returns>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The system dispatches this method when, during a drag-and-drop operation, the mouse drags inside the client area of the drag-and-drop client. Several drag events can arrive at DragDropClient:DragOver() during the one operation, before the user finally drops the load or leaves the client area. Windows displays a special pointer to give the user visual feedback on the progress of the operation.
         </remarks>
     </DragDropClient.DragOver>
     <DragDropClient.Drop>
         <summary>
             Retrieve information about a load from the drag event and act on each file in the selection.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oDragEvent">The drag event that determines the position of the mouse (in canvas coordinates), as well as the number and names of files, in the drag-and-drop load.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The system dispatches this method when the user lets go of the mouse button to drop the load in the client area. This method is required to handle drag-and-drop correctly. It retrieves information about the load from the drag event and acts on each file in the selection. If the drag-and-drop client is a shell window, it might open a data browser for each file in the selection.
         </remarks>
     </DragDropClient.Drop>
@@ -7089,8 +7118,9 @@
         <summary>
             Display a DrawObject object.
         </summary>
+                
         <remarks>
-            <br />Important! This is a callback method used by X#. Normally, it should not be called by your application code.
+            <include file="Gui.xml" path="doc/Callback/*" />
             <note type="tip">The default implementation of the DrawObject:Draw() method has no effect. You should derive your class from DrawObject and overload the Draw() method to contain the code to draw the new object. This method can then be called by Window:Draw().</note>
             To display a DrawObject object, call Window:Draw() with the DrawObject object as its argument. The window does the drawing by asking each object to draw itself—for example:
             <code language="X#">
@@ -7607,10 +7637,10 @@
     <EllipseObject.Draw>
         <summary>
             Draw this EllipseObject object.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <remarks>
-            This method should not be invoked directly in the application code—it is invoked in X# by Window:Draw(). Refer to the EllipseObject class description for an example using the Draw() method.
+            <include file="Gui.xml" path="doc/Callback/*" />
+        This method should not be invoked directly in the application code—it is invoked in X# by Window:Draw(). Refer to the EllipseObject class description for an example using the Draw() method.
         </remarks>
     </EllipseObject.Draw>
     <Error>
@@ -8569,9 +8599,9 @@
     <FormattedTextObject.Draw>
         <summary>
             Draw a FormattedTextObject object on a window.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This method is invoked inside the system by Window:Draw().
         </remarks>
     </FormattedTextObject.Draw>
@@ -10336,9 +10366,9 @@
     <HyperLink.OpenLink>
         <summary>
             Is the method that is invoked whenever the mouse is clicked over the HyperLink control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This method is automatically called whenever the mouse is clicked over the HyperLink control.
         </remarks>
     </HyperLink.OpenLink>
@@ -10863,9 +10893,11 @@
     <IpcClient.DataUpdate>
         <summary>
             Called whenever the requested data changes. It is invoked after the IpcServer calls its UpdateTopic() method.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oIpcDataUpdateEvent">Stores the topic name, item name, and the changed data as a string.</param>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
     </IpcClient.DataUpdate>
     <IpcClient.Destroy>
         <summary>
@@ -11106,9 +11138,11 @@
     <IpcServer.DataRequest>
         <summary>
             Called whenever a client makes a request for data or when the IpcServer:UpdateTopic() is called.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oIpcDataRequestEvent">Stores the topic name and item name.</param>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <returns>
             An object containing a pointer to the data and the length of the data string (it created as a global memory object by Windows DDE management library and it passes a data handle back to the application).
         </returns>
@@ -11116,10 +11150,10 @@
     <IpcServer.DataUpdate>
         <summary>
             Called whenever a client calls IpcClient:ChangeData().
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oIpcDataUpdateEvent">Stores the topic name, item name, and the changed data as a string.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             When this method is called, the server should update itself. This functionality is provided by the developer in the overridden method, not by X#.
         </remarks>
     </IpcServer.DataUpdate>
@@ -11137,9 +11171,11 @@
     <IpcServer.ExecuteRequest>
         <summary>
             Called when the client calls IpcClient:Execute(). The server should take the appropriate action to execute the command locally.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oIpcExecuteRequestEvent">Stores the topic name, item name, and the command name to be executed.</param>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
     </IpcServer.ExecuteRequest>
     <IpcServer.idInst>
         <exclude />
@@ -12822,9 +12858,9 @@
     <LineObject.Draw>
         <summary>
             Draw the LineObject object on a window.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This method should not be invoked directly in the application code—it is invoked in X# by Window:Draw(). Refer to the class description for an example using the Draw() method.
         </remarks>
     </LineObject.Draw>
@@ -13008,7 +13044,7 @@
         <summary>
             Turn off the selection of a specified item in a list box.
         </summary>
-        <param name="nItemId">The item number to be deselected. Zero (0) represents the current item.</param>
+        <param name="nItem">The item number to be deselected. Zero (0) represents the current item.</param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Normally, the user turns selections off, but this method enables the program to do so also.
@@ -15752,7 +15788,6 @@
     <MultiMediaContainer.Dispatch>
         <summary>
             Provide the prototype dispatcher for events within the system when the control has focus, routing various events to their appropriate event handlers.
-            <br />Important! This is a callback method used by X#.
         </summary>
         <param name="oEvent">The event to be handled.</param>
         <seealso cref="T:VO.Event" />
@@ -15760,6 +15795,7 @@
             A numeric value representing the event handler that handled the event.
         </returns>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             MultiMediaContainer:Dispatch() serves as an internal callback method, dispatching events to various event handlers. It should never be necessary to call this method directly. Instead you should write your own Dispatch() method for derived classes, if you want to handle additional events. Usually the derived class Dispatch() method should call SUPER:Dispatch() to support the inherited event handling.
         </remarks>
     </MultiMediaContainer.Dispatch>
@@ -16321,10 +16357,10 @@
             Note 	The functionality in this method has now been incorporated into the Window Class.
 
             Provide an event handler that is invoked when the mouse pointer is positioned over the window and a mouse button is clicked.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oMouseEvent">The MouseEvent object that contains information about the state of the mouse when the button was clicked.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             By default, this method will deactivate all OLE object controls on the window before processing the MouseEvent.
             Use the Window:MouseTrapOn() method to force MouseEvents generated outside the canvas area to be directed to this window.
         </remarks>
@@ -17039,7 +17075,6 @@
             Note -
 
             Provide the prototype dispatcher for events within the system when the OLE shell window has focus, routing various events to their appropriate event handlers.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oEvent">The event to be handled.</param>
         <seealso cref="T:VO.Event" />
@@ -17047,6 +17082,7 @@
             TRUE if the event was handled; otherwise, FALSE.
         </returns>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This method serves as an internal callback, dispatching events to various event handlers. It should never be necessary to call this method directly. Instead, you can write your own Dispatch() method for derived classes if you want to handle additional events. Usually the derived class Dispatch() should call SUPER:Dispatch() to support the inherited event handling.
             In addition to the functionality provided by the ShellWindow base class, the implementation for the OLEShellWindow class also includes support for handling in-place active OLE objects. For example, whenever the shell window is resized, it automatically asks the activated OLE objects to update their toolbars.
         </remarks>
@@ -17203,9 +17239,9 @@
     <PieObject.Draw>
         <summary>
             Draw a PieObject object which represents a pie-shaped portion of an ellipse.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This method should not be invoked directly in the application code--it is invoked in X# by Window:Draw().
         </remarks>
         <example>
@@ -17512,12 +17548,14 @@
     <Printer.PrinterError>
         <summary>
             Called if a printer error occurs. PrintErrorEvent is interrogated to identify the type of error has occurred.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oPerr">The printer error event that is being handled.</param>
         <returns>
             TRUE if the print job is to be retried (i.e., the error is to be ignored); FALSE if the print job is to be canceled.
         </returns>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
     </Printer.PrinterError>
     <Printer.PrinterExpose>
         <summary>
@@ -18361,9 +18399,9 @@
     <RectangleObject.Draw>
         <summary>
             Draw the rectangle on the window.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This method should not be invoked directly in the application code—it is invoked in X# by Window:Draw(). Refer to the class description for an example using the Draw() method.
         </remarks>
     </RectangleObject.Draw>
@@ -19944,9 +19982,9 @@
     </ShellWindow.Arrange>
     <ShellWindow.Background>
         <summary>
-            This method is inherited from the Window class but does not apply to ShellWindow.
+            This property is inherited from the Window class but does not apply to ShellWindow.
         </summary>
-        <value>This method is inherited from the Window class but does not apply to ShellWindow.</value>
+        <value>This property is inherited from the Window class but does not apply to ShellWindow.</value>
     </ShellWindow.Background>
     <ShellWindow.CanvasErase>
         <summary>
@@ -20027,10 +20065,10 @@
     <ShellWindow.HelpRequest>
         <summary>
             Provide a method that is invoked when the user requests help from the application using one of the available context-sensitive help mechanisms.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oHelpRequestEvent">The HelpRequestEvent object that describes which item help is being requested for.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This event handler is invoked only if the help mechanism has been enabled for the current window (or one of its owners).
             The help mechanism is enabled by assigning a HelpDisplay object to the windows HelpDisplay property.
             The default implementation of this event handler is to display the help topic that is associated with the control, menu command, or window region with focus when the HelpRequestEvent was generated. This is accomplished using HelpDisplay:Show(&lt;cKeyword&gt;), where &lt;cKeyword&gt; is either a HyperLabel:HelpContext property or a default keyword generated by this event handler in cases where a hyperlabel is not available.
@@ -21834,8 +21872,10 @@
     <TabControl.CreatePageInstance>
         <summary>
             Dynamically create a tab page.
-            Note: this is a callback method that is called automatically by X#
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="symPageClass">Classname of the page to create</param>
         <param name="symTabName">Symbolic Name of the tab to create</param>
         <returns>
@@ -24261,11 +24301,11 @@
     <Window.Activate>
         <summary>
             Provide a method that is invoked when this window is activated.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oEvent">The event that describes which window was activated.</param>
         <seealso cref="T:VO.Event" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The Activate() event occurs at the start of the window's lifetime or when the window is activated after it has been deactivated (for example, by clicking on it with the mouse). The newly active window receives the input focus.
 
             You should create and show cursors (if needed) in this event handler method.
@@ -24294,26 +24334,30 @@
     <Window.AnimationStart>
         <summary>
             Provide a method that is invoked when an animation control begins playback.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that describes which animation control started playback.</param>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <seealso cref="T:VO.ControlEvent" />
     </Window.AnimationStart>
     <Window.AnimationStop>
         <summary>
             Provide a method that is invoked when an animation control ends playback.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oControlEvent">The ControlEvent object that describes which animation control ended playback.</param>
         <seealso cref="T:VO.ControlEvent" />
     </Window.AnimationStop>
     <Window.AppCommand>
         <summary>
             Provide a method that is invoked when an AppCommand event takes place.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oACEvent">The AppCommandEvent object that describes the event which was initiated.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This event must be overridden in the application and must return TRUE to complete the processing.
         </remarks>
         <seealso cref="T:VO.AppCommandEvent" />
@@ -24327,6 +24371,8 @@
     <Window.Background>
         <summary>
             The background brush currently in use by this window.
+        </summary>
+        <remarks>
 
             The background brush currently in use by this window.
             A window's background brush is used by CanvasErase() and in handling Expose events. Assigning a new background brush has no effect until the window (or portion of the window) is redrawn. If a window was partially covered and is then fully exposed, only the covered part of the window is redrawn and only that part gets the new background.
@@ -24337,28 +24383,20 @@
                 // app background set to light green
                 oWin:ShellWithColourOnly()
             </code>
-        </summary>
+
+        </remarks>
         <value>
             The background brush currently in use by this window.
-
-            The background brush currently in use by this window.
-            A window's background brush is used by CanvasErase() and in handling Expose events. Assigning a new background brush has no effect until the window (or portion of the window) is redrawn. If a window was partially covered and is then fully exposed, only the covered part of the window is redrawn and only that part gets the new background.
-
-            This related example will change the background color of an application's main window, and would typically occur in the main Initialize() method:
-
-            oWin:oColour := Color{164,255,164}
-            // app background set to light green
-            oWin:ShellWithColourOnly()
         </value>
     </Window.Background>
     <Window.ButtonClick>
         <summary>
             Provide a method that is invoked when a check box, push button, or radio button is clicked with the mouse.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that describes which button was clicked.</param>
         <seealso cref="T:VO.ControlEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             Button click events (radio, check, and push buttons) are propagated to the window's owner the same way as MenuEvents. For an in-depth discussion on command event propagation, refer to the Programmer's Guide.
             You must supply the code to turn a radio button on (and all the other radio buttons off) when a user clicks on a radio button. Similarly, you must also be sure to invert the state of a check box when it is clicked.
         </remarks>
@@ -24391,11 +24429,13 @@
     <Window.ButtonDoubleClick>
         <summary>
             Provide a method that is invoked when a check box, push button, or radio button is double-clicked.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">
             The <seealso cref="T:VO.ControlEvent">ControlEvent</seealso> that describes which button was double-clicked.
         </param>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <seealso cref="T:VO.ControlEvent" />
     </Window.ButtonDoubleClick>
     <Window.CanvasArea>
@@ -24422,10 +24462,10 @@
     <Window.Close>
         <summary>
             Invoked just as the window is about to close.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oEvent">An empty event required to maintain the protocol that all event handlers have exactly one event as their argument.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             Note that this method is automatically called when an EndDialog() or EndWindow() method is called.
         </remarks>
         <seealso cref="T:VO.Event" />
@@ -24433,10 +24473,10 @@
     <Window.ComboBoxExEndEdit>
         <summary>
             A callback method that is invoked when a ComboBoxEx control sends an 'EndEdit' notification message
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oComboBoxExEndEditEvent">An object that has the information about the event</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             Provide a method that is invoked when a ComboBoxEx controls sends a CBEN_ENDEDIT message.
         </remarks>
         <seealso cref="T:VO.ComboBoxExEndEditEvent" />
@@ -24444,10 +24484,10 @@
     <Window.ComboBoxExNotify>
         <summary>
             A callback method that is invoked when a ComboBoxEx control sends a notification message
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlNotifyEvent">An event that has the information about the notify event</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             Provide a method that is invoked when a ComboBoxEx control sends one of the following notification messages.
             CBEN_INSERTITEM, CBEN_DELETEITEM, CBEN_DRAGBEGIN, CBEN_BEGINEDIT and CBEN_ENDEDIT
             Currently this method contains only a message handler for the CBEN_ENDEDIT message,
@@ -24465,10 +24505,10 @@
     <Window.ControlNotify>
         <summary>
             Provide a method that is invoked when a control sends a notification to its parent window.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlNotifyEvent">The ControlNotifyEvent object that describes which control sent the notification.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This is a general method that is called whenever a common control sends a notification to its parent window.
             In many cases, a more specific method is invoked in addition to this method in response to the notification.
             Notifiy codes that are not handled by this method are send to the Control:ParentNotify() method when this method is available.
@@ -24478,18 +24518,20 @@
     <Window.DateTimeSelectionChanged>
         <summary>
             Provide a method that is invoked when a DateTimePicker selection is changed.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oDateTimeSelectionEvent">The DateTimeSelectionEvent object that describes which control sent the notification.</param>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <seealso cref="T:VO.DateTimeSelectionEvent" />
     </Window.DateTimeSelectionChanged>
     <Window.DeActivate>
         <summary>
             Provide a method that is invoked when this window is deactivated.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oEvent">An empty event required to maintain the protocol that all event handlers have exactly one event as their argument.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This event handler is normally invoked when another application or window becomes activated. If Window:MouseTrapOn() is left on, MouseEvent events cannot be directed to other applications or windows.
         </remarks>
         <seealso cref="T:VO.Event" />
@@ -24529,11 +24571,10 @@
         <summary>
             Provide the dispatcher for events within the system when the window has focus;
             routing various events to their appropriate event handlers.
-            <br />Important! This is a callback method used by X#.
         </summary>
         <param name="oEvent">The event to be handled.</param>
         <seealso cref="T:VO.Event" />
-        <returns>
+                <returns>
             A numeric value representing the event handler to handle the event. This is usually the value of the EventReturnValue field.
         </returns>
         <remarks>
@@ -24612,10 +24653,10 @@
     <Window.Drop>
         <summary>
             Retrieve information about a load from the drag event and act on each file in the selection.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oDragEvent">The DragEvent that determines the position of the mouse (in canvas coordinates), as well as the number and names of files, in the drag-and-drop load.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The system dispatches this method when the user lets go of the mouse button to drop the load in the client area. This method is required to handle drag-and-drop correctly. It retrieves information about the load from the drag event and acts on each file in the selection.
         </remarks>
         <seealso cref="T:VO.DragEvent" />
@@ -24623,8 +24664,10 @@
     <Window.EditChange>
         <summary>
             Provide a method that is invoked when the text in an edit control is changed.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oControlEvent">The ControlEvent object that describes which edit control was changed.</param>
         <seealso cref="T:VO.ControlEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -24632,12 +24675,12 @@
     <Window.EditFocusChange>
         <summary>
             Provide a method that is invoked when the input focus changes to or from an edit control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
         <param name="oEditFocusChangeEvent">The EditFocusChangeEvent object that identifies which edit control generated the EditFocusChangeEvent object and whether it has just gained or lost the keyboard focus.</param>
         <seealso cref="T:VO.EditFocusChangeEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             If Window:EditFocusChange() is used to validate an edit control (and also return the focus to it if invalid), Control:SetFocus() should not be called until another control has received the focus.
             In complex dialog windows that contain many edit controls, it makes sense to grab the edit control's text when the focus is changing so that other controls can be updated with it if necessary.
             See the ButtonClick() method for an example of similar syntax to be used in this method. Note that none of the button controls are passed through this method, only SingleLineEdit and MultiLineEdit controls. If looking to control Combobox selections, then use the ListBoxSelect() callback method.
@@ -24646,12 +24689,12 @@
     <Window.EditScroll>
         <summary>
             Provide a method that is invoked for this window when an edit control is scrolled.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that identifies which edit control invoked the event handler.</param>
         <seealso cref="T:VO.ControlEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This type of event normally happens when the user enters more characters in an edit control than it can display.
 
             In Windows, you must set flags in the resource entity description of the edit control to allow scrolling:
@@ -24778,11 +24821,11 @@
     <Window.Expose>
         <summary>
             Provide a method that is invoked whenever part of the window needs repainting.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oExposeEvent">The ExposeEvent object that describes which area of the window needs repainting.</param>
         <seealso cref="T:VO.ExposeEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This is one of the most important event handlers.
             A window requires repainting when the window:
             <list type="bullet">
@@ -24799,11 +24842,11 @@
     <Window.FocusChange>
         <summary>
             Provide a method that is invoked when the input focus changes from the current window to another (or vice versa).
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oFocusChangeEvent">The FocusChangeEvent object that identifies whether the focus is being gained or lost.</param>
         <seealso cref="T:VO.FocusChangeEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             If your window uses cursors, you should hide the window's cursor when the focus is changed to a different window, and then show the cursor when the window receives focus again. This should be used in conjunction with the Window:Activate() and Window:Deactivate() event handlers.
         </remarks>
         <example>
@@ -24909,11 +24952,11 @@
     <Window.HelpRequest>
         <summary>
             Provide a method that is invoked when the user requests help from the application using one of the available context-sensitive help mechanisms.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oHelpRequestEvent">The HelpRequestEvent object that describes which item help is being requested for.</param>
         <seealso cref="T:VO.HelpRequestEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This event handler is invoked only if the help mechanism has been enabled for the current window (or one of its owners). The help mechanism is enabled by assigning a HelpDisplay object to the windows HelpDisplay property.
             The default implementation of this event handler is to display the help topic that is associated with the control, menu command, or window region with focus when the HelpRequestEvent was generated. This is accomplished using HelpDisplay:Show(&lt;cKeyword&gt;), where &lt;cKeyword&gt; is either a HyperLabel:HelpContext property or a default keyword generated by this event handler in cases where a hyperlabel is not available.
             If there is no hyperlabel for an item, the keyword generated is as follows:
@@ -24949,11 +24992,11 @@
     <Window.HorizontalScroll>
         <summary>
             Provide a method that is invoked when a horizontal scroll bar is scrolled.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oScrollEvent">The ScrollEvent object that describes the scroll type and new position.</param>
         <seealso cref="T:VO.ScrollEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The default behavior for this event handler is to update the thumb position of the scrollbar; this can be changed using your own implementation of the handler. This event handler only works for HorizontalScrollBar and WindowHorizontalScrollBar objects. If the application has vertical scroll bars, use a WindowVerticalScrollBar event handler.
         </remarks>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -24961,18 +25004,20 @@
     <Window.HorizontalSlide>
         <summary>
             Provide a method that is invoked when a horizontal slider's thumb is dragged either by the mouse or the keyboard.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oSliderEvent">The SliderEvent object that describes which horizontal slider's thumb was dragged.</param>
         <seealso cref="T:VO.SliderEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
     </Window.HorizontalSlide>
     <Window.HorizontalSpin>
         <summary>
             Provide a method that is invoked when a horizontal spinner is spun.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The default behavior for this event handler is to update the position of the spinner; this can be changed using your own implementation of the handler. This event handler only works for HorizontalScrollBar and WindowHorizontalScrollBar objects. If the application has vertical scroll bars, use a WindowVerticalScrollBar event handler.
         </remarks>
         <param name="oSpinnerEvent">The SpinnerEvent object that describes which horizontal spinner was spun.</param>
@@ -25041,20 +25086,20 @@
     <Window.KeyDown>
         <summary>
             Provide a method that is invoked when a key on the keyboard is pressed.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oKeyEvent">The KeyEvent object that describes what key was pressed.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This event handler is called only if the window has the input focus. In addition, it is rarely overridden due to the existence of edit controls. If it is overridden for a dialog window, it should call the owner handler (this ensures that tabbing to controls in Windows still works).
         </remarks>
     </Window.KeyDown>
     <Window.KeyUp>
         <summary>
             Provide a method that is invoked when a key on the keyboard is released.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oKeyEvent">The KeyEvent object that describes what key was released.</param>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This event handler is called only if the window has the input focus.
         </remarks>
     </Window.KeyUp>
@@ -25074,19 +25119,23 @@
     <Window.ListBoxClick>
         <summary>
             Provide a method that is invoked when an item in a list box owned by this window is double-clicked.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that describes which list box contained the item that is double-clicked.</param>
         <seealso cref="T:VO.ControlEvent" />
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
     </Window.ListBoxClick>
     <Window.ListBoxSelect>
         <summary>
             Provide a method that is invoked when an item in a list box owned by this window is clicked.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oControlEvent">The ControlEvent object that describes which list box contained the item that was clicked.</param>
         <seealso cref="T:VO.ControlEvent" />
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <example>
             Typical example below of using this method:
             <code language="X#">
@@ -25119,11 +25168,11 @@
     <Window.ListViewItemChanged>
         <summary>
             Provide a method that is invoked when a list view item has changed.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oListViewItemEvent">The ListViewItemEvent object that describes which list view item has changed.</param>
         <seealso cref="T:VO.ListViewItemEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The ListViewItemChanged event handler notifies a list view control's parent window that an item has changed.
         </remarks>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25131,11 +25180,11 @@
     <Window.ListViewItemChanging>
         <summary>
             Provide a method that is invoked when the state of a list view item is about to change.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oListViewItemEvent">The ListViewItemEvent object that describes which list view item is about to change.</param>
         <seealso cref="T:VO.ListViewItemEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The ListViewItemChanging event handler notifies a list view control's parent window that an item is about to be changed.
         </remarks>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25143,21 +25192,23 @@
     <Window.ListViewItemDelete>
         <summary>
             Provide a method that is invoked when a list view item is deleted in a list view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oListViewDeleteEvent">The ListViewDeleteEvent object that describes which list view item of which list view control was deleted.</param>
         <seealso cref="T:VO.ListViewDeleteEvent" />
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
     </Window.ListViewItemDelete>
     <Window.ListViewItemDrag>
         <summary>
             Provide a method that is invoked when a list view item is dragged in a list view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oListViewDragEvent">The ListViewDragEvent object that describes which list view item of which list view control was dragged.</param>
         <seealso cref="T:VO.ListViewDragEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The default implementation of this method checks to see if the listview control has DragDrop enabled, builds and positions the Drag image and
             calls the DragEnter() method on the imagelist.
         </remarks>
@@ -25165,8 +25216,10 @@
     <Window.ListViewItemEdit>
         <summary>
             Provide a method that is invoked when a list view item is edited in a list view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oListViewEditEvent">The ListViewEditEvent object that describes which list view item of which list view control was edited.</param>
         <seealso cref="T:VO.ListViewEditEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25174,8 +25227,10 @@
     <Window.ListViewKeyDown>
         <summary>
             Provide a method that is invoked when a key is pressed in a list view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oListViewKeyEvent">The ListViewKeyEvent object that describes which list view control received a key press.</param>
         <seealso cref="T:VO.ListViewKeyEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25183,20 +25238,24 @@
     <Window.ListViewMouseButtonDoubleClick>
         <summary>
             Provide a method that is invoked when a mouse button is double-clicked in a list view control. This could be used to invoke an "edit screen" for the selected item, print a report, etc. See the ListViewMouseButtonDown() method for sample syntax.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oListViewMouseEvent">The ListViewMouseEvent object that describes which list control received a mouse button double-click.</param>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <seealso cref="T:VO.ListViewMouseEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
     </Window.ListViewMouseButtonDoubleClick>
     <Window.ListViewMouseButtonDown>
         <summary>
             Provide a method that is invoked when a mouse button is clicked in a list view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oListViewMouseEvent">The ListViewMouseEvent object that describes which list control received a mouse button click.</param>
         <seealso cref="T:VO.ListViewMouseEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <example>
             Typical example of a ListViewMouseButtonDown usage. Note that in the example, the item's record number is stored in the "value" of the LVI, whereas the text of the item is stored in the "text" entity. Obviously this will only work when using a string-type column in the ListView for storing the record number also.
             <code language="X#">
@@ -25229,19 +25288,21 @@
     <Window.MenuCommand>
         <summary>
             Provide a method that is invoked when an item on a menu owned by this window is selected.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oMenuCommandEvent">The MenuCommandEvent object that describes which menu and menu command (via the item's ID) generated the event.</param>
         <seealso cref="T:VO.MenuCommandEvent" />
     </Window.MenuCommand>
     <Window.MenuInit>
         <summary>
             Provide a method that is invoked when a pop-up menu owned by this window is about to "pop up."
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oMenuInitEvent">The MenuInitEvent object that describes which menu is about to pop up.</param>
         <seealso cref="T:VO.MenuInitEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This event handler can be used to initialize menu commands, check items, and so forth.
         </remarks>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25249,11 +25310,11 @@
     <Window.MenuSelect>
         <summary>
             Provide a method that is invoked when an item on a menu owned by this window is selected.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oMenuSelectEvent">The MenuSelectEvent object that describes which menu and menu command (via the item's ID) generated the event.</param>
         <seealso cref="T:VO.MenuSelectEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             One use for this event handler is to provide more extensive help with the user's current selection. Selecting a menu command does not necessarily imply that it is invoked, only that the menu highlight bar is currently over this item.
         </remarks>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25261,9 +25322,9 @@
     <Window.MinMaxInfo>
         <summary>
             Provide a method that is invoked when the size or position of a window is about to change (cf WM_GETMINMAXINFO in Win API).
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The default implementation of this method sets the MinTrackSize property of the MinMaxInfoEvent event to the minsize of the window.
         </remarks>
         <param name="oMinMaxInfoEvent">The MinMaxInfoEvent object that describes the maximised width, height and position of the maximised window in addition to the minimum and maximum height and width of the window.</param>
@@ -25290,8 +25351,10 @@
     <Window.MonthCalSelectionChanged>
         <summary>
             Provide a method that is invoked when the selection of a MonthCalendar control is changed.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="_oMonthCalSelectionEvent">The MonthCalSelectionEvent object that describes the changed selection.</param>
         <seealso cref="T:VO.MonthCalSelectionEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25299,11 +25362,11 @@
     <Window.MouseButtonDoubleClick>
         <summary>
             Provide a method that is invoked when the mouse pointer is positioned over the window and a mouse button is double-clicked.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oMouseEvent">The MouseEvent object that contains information about the state of the mouse when the button was double-clicked.</param>
         <seealso cref="T:VO.MouseEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             MouseButtonDoubleClick() often occurs between MouseButtonDown() and MouseButtonUp() event handlers.
         </remarks>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25311,11 +25374,11 @@
     <Window.MouseButtonDown>
         <summary>
             Provide a method that is invoked when the mouse pointer is positioned over the window and a mouse button is clicked.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oMouseEvent">The MouseEvent object that contains information about the state of the mouse when the button was clicked.</param>
         <seealso cref="T:VO.MouseEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             Use the Window:MouseTrapOn() method to force MouseEvents generated outside the canvas area to be directed to this window.
         </remarks>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25323,11 +25386,11 @@
     <Window.MouseButtonUp>
         <summary>
             Provide a method that is invoked when the mouse pointer is positioned over the window and a mouse button is released.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oMouseEvent">The MouseEvent object that contains information about the state of the mouse when the button was released.</param>
         <seealso cref="T:VO.MouseEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             Do not assume Window:MouseButtonUp() is called immediately after Window:MouseButtonDown(). Other MouseEvents can be generated during this time.
             In some cases, there may be no Window:MouseButtonUp() events directed to the window for a corresponding Window:MouseButtonDown().
             This can occur if the mouse button is clicked while over the window, but released after the mouse has moved off the window.
@@ -25340,22 +25403,22 @@
     <Window.MouseDrag>
         <summary>
             Provide a method that is invoked when a mouse with one or more buttons clicked is moved in the window.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oMouseEvent">The MouseEvent object containing information on the location and state of the buttons when the mouse was dragged.</param>
         <seealso cref="T:VO.MouseEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This method moves the drag imagelist to the new position.
         </remarks>
     </Window.MouseDrag>
     <Window.MouseMove>
         <summary>
             Provide a method that is invoked when the mouse is moved in the window.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oMouseEvent">The MouseEvent object containing information on the location of the mouse when it was moved.</param>
         <seealso cref="T:VO.MouseEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This event occurs when the mouse is moved with no mouse buttons clicked.
         </remarks>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25378,9 +25441,11 @@
     <Window.Move>
         <summary>
             Provide a method that is invoked when the window is moved (either by the user or by the application).
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oMoveEvent">The MoveEvent object that describes the window movement.</param>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <seealso cref="T:VO.MoveEvent" />
     </Window.Move>
     <Window.MoveTo>
@@ -25417,8 +25482,11 @@
     </Window.OwnerAlignment>
     <Window.PaintBackground>
         <summary>
-            Paint the background for a window with the brush or background object that was specified by the user.<br /><br /><include file="Gui.xml" path="doc/Callback/*" />
+            Paint the background for a window with the brush or background object that was specified by the user.
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="hDC">The device context of the window on which the background must be painted.</param>
         <returns>NIL</returns>
     </Window.PaintBackground>
@@ -25486,9 +25554,9 @@
     <Window.PreMenuCommand>
         <summary>
             Process menu events before the normal MenuCommand method is called.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             This method can be written at the Window level to process menu commands. The window:PreMenuCommand( ) method will be called if it exists to process menu events before the normal MenuCommand( ) methods are called.
             The method must return a logic –
             TRUE – If you have processed the MenuCommand.
@@ -25507,8 +25575,6 @@
     <Window.QueryClose>
         <summary>
             Provide a method that is invoked just before the window closes to confirm if the application really wants to close the window.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
-            <note type="tip">If you reimplement this method in your subclass, it is recommended that you first call SUPER:QueryClose() within the method to obtain its default behavior.</note>
         </summary>
         <param name="oEvent">An empty event required to maintain the protocol that all event handlers have exactly one event as their argument.</param>
         <seealso cref="T:VO.Event" />
@@ -25517,7 +25583,9 @@
             If you override this method in your subclass then you must return TRUE if the window is to be closed; otherwise, return FALSE.
         </returns>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             When a user tries to close an application by selecting the Close menu command from a system menu (or by using another method to end the session), the system calls each window's QueryClose() event handler.
+            <note type="tip">If you reimplement this method in your subclass, it is recommended that you first call SUPER:QueryClose() within the method to obtain its default behavior.</note>
         </remarks>
         <example>
             This example displays a message box to confirm that a user wants to quit the application. If a user chooses YES, TRUE is returned (otherwise, FALSE is returned).
@@ -25560,11 +25628,11 @@
     <Window.Resize>
         <summary>
             Provide a method that is invoked when the window changes size.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <param name="oResizeEvent">The ResizeEvent object that describes the new dimensions of the window canvas area.</param>
         <seealso cref="T:VO.ResizeEvent" />
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             In the Window:Resize() event handler, calling Window:Size should be used with caution to avoid entering an infinite loop. <br />
             If the window has a Toolbar then this method will also make sure that the toolbar is resized as well.
         </remarks>
@@ -25572,8 +25640,10 @@
     <Window.RichEditProtected>
         <summary>
             Provide a method that is invoked when an attempt is made to modify text that is protected in a rich edit control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oRichEditProtectEvent">The RichEditProtectEvent object that describes which rich edit control received a protect event.</param>
         <seealso cref="T:VO.RichEditProtectEvent" />
         <returns>This method always sets the EventReturnValue to 1 and returns 0</returns>
@@ -25581,8 +25651,10 @@
     <Window.RichEditSelectionChange>
         <summary>
             Provide a method that is invoked when the current selection in a rich edit control is changed.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oRichEditSelectionEvent">The RichEditSelectionEvent object that describes which rich edit had its current selection change.</param>
         <seealso cref="T:VO.RichEditSelectionEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25590,8 +25662,10 @@
     <Window.RichEditUndoLost>
         <summary>
             Provide a method that is invoked when the undo state in a rich edit control can no longer be maintained.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oControlNotifyEvent">The ControlNotifyEvent object that describes which rich edit has lost its undo state.</param>
         <seealso cref="T:VO.ControlNotifyEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25727,8 +25801,10 @@
     <Window.SysLinkSelect>
         <summary>
             Provide a method that is invoked when a a user clicks on a SysLink control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
         <param name="oSysLinkSelectEvent">The SysLinkSelectEvent object that describes the control on which the user clicked.</param>
         <seealso cref="T:VO.SysLinkSelectEvent" />
@@ -25736,8 +25812,10 @@
     <Window.TabKeyDown>
         <summary>
             Provide a method that is invoked when a key press occurs in a tab control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oControlNotifyEvent">The ControlNotifyEvent object that describes which tab control received a key press.</param>
         <seealso cref="T:VO.ControlNotifyEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25745,8 +25823,10 @@
     <Window.TabSelect>
         <summary>
             Provide a method that is invoked when a tab is selected in a tab control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oControlNotifyEvent">The ControlNotifyEvent object that describes which tab control's tab has been selected.</param>
         <seealso cref="T:VO.ControlNotifyEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25754,8 +25834,10 @@
     <Window.TabSelectionChanging>
         <summary>
             Provide a method that is invoked when a tab selection is changing in a tab control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oControlNotifyEvent">The ControlNotifyEvent object that describes which tab control's selected tab is changing.</param>
         <seealso cref="T:VO.ControlNotifyEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25776,8 +25858,10 @@
     <Window.Timer>
         <summary>
             Provide a method to be invoked at specific intervals defined when the timer is registered though the RegisterTimer() method.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
     </Window.Timer>
     <Window.ToolBar>
         <summary>
@@ -25788,8 +25872,10 @@
     <Window.ToolBarHeightChanged>
         <summary>
             Provide a method that is invoked when the height of the window's toolbar is changed.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oControlNotifyEvent">The ControlNotifyEvent object that describes the changes to the toolbar height.</param>
         <seealso cref="T:VO.ControlNotifyEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25806,32 +25892,40 @@
     <Window.TrayIconBalloonClicked>
         <summary>
             Provide a method that is invoked when a tray icon balloon is clicked.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="dwID">The ID that was associated with the tray icon balloon.</param>
         <returns>NIL</returns>
     </Window.TrayIconBalloonClicked>
     <Window.TrayIconBalloonShown>
         <summary>
             Provide a method that is invoked when a tray icon balloon is shown.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="dwID">The ID that was associated with the tray icon balloon.</param>
         <returns>NIL</returns>
     </Window.TrayIconBalloonShown>
     <Window.TrayIconBalloonTimeOut>
         <summary>
             Provide a method that is invoked when a tray icon balloon times out.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="dwID">The ID that was associated with the tray icon balloon.</param>
         <returns>NIL</returns>
     </Window.TrayIconBalloonTimeOut>
     <Window.TrayIconClicked>
         <summary>
             Provide a method that is invoked when a user clicks on a tray Icon
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="dwID">The ID that was associated with the tray icon balloon.</param>
         <param name="lRightButton">TRUE when the user clicked with the Right Mouse button</param>
         <param name="lDoubleClick">TRUE when the user double clicked</param>
@@ -25840,8 +25934,10 @@
     <Window.TreeViewItemDelete>
         <summary>
             Provide a method that is invoked when a tree view item is deleted in a tree view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oTreeViewDeleteEvent">The TreeViewDeleteEvent object that describes which tree view item of which tree view control was deleted.</param>
         <seealso cref="T:VO.TreeViewDeleteEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25849,8 +25945,10 @@
     <Window.TreeViewItemDrag>
         <summary>
             Provide a method that is invoked when a tree view item is dragged in a tree view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oTreeViewDragEvent">The TreeViewDragEvent object that describes which tree view item of which tree view control was dragged.</param>
         <seealso cref="T:VO.TreeViewDragEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25858,8 +25956,10 @@
     <Window.TreeViewItemEdit>
         <summary>
             Provide a method that is invoked when a tree view item is edited in a tree view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oTreeViewEditEvent">The TreeViewEditEvent object that describes which tree view item of which tree view control was edited.</param>
         <seealso cref="T:VO.TreeViewEditEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25867,8 +25967,10 @@
     <Window.TreeViewItemExpanded>
         <summary>
             Provide a method that is invoked when a tree view item is expanded in a tree view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oTreeViewExpandedEvent">The TreeViewExpandedEvent object that describes which tree view item of which tree view control was expanded.</param>
         <seealso cref="T:VO.TreeViewExpandedEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25876,8 +25978,10 @@
     <Window.TreeViewItemExpanding>
         <summary>
             Provide a method that is invoked when a tree view item is expanding in a tree view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oTreeViewExpandingEvent">The TreeViewExpandingEvent object that describes which tree view item of which tree view control is expanding.</param>
         <seealso cref="T:VO.TreeViewExpandingEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25885,8 +25989,10 @@
     <Window.TreeViewKeyDown>
         <summary>
             Provide a method that is invoked when a key is pressed in a tree view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oTreeViewKeyEvent">The TreeViewKeyEvent object that describes which tree view control received a key press.</param>
         <seealso cref="T:VO.TreeViewKeyEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25894,8 +26000,10 @@
     <Window.TreeViewMouseButtonDoubleClick>
         <summary>
             Provide a method that is invoked when a mouse button is double-clicked in a tree view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oTreeViewMouseEvent">The TreeViewMouseEvent object that describes which tree view control received a mouse button double-click.</param>
         <seealso cref="T:VO.TreeViewMouseEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25903,8 +26011,10 @@
     <Window.TreeViewMouseButtonDown>
         <summary>
             Provide a method that is invoked when a mouse button is clicked in a tree view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oTreeViewMouseEvent">The TreeViewMouseEvent object that describes which tree view control received a mouse button click.</param>
         <seealso cref="T:VO.TreeViewMouseEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25912,8 +26022,10 @@
     <Window.TreeViewSelectionChanged>
         <summary>
             Provide a method that is invoked when the selection has changed from one tree view item to another in a tree view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oTreeViewSelectionEvent">The TreeViewSelectionEvent object that describes which tree view control's selected item was changed.</param>
         <seealso cref="T:VO.TreeViewSelectionEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25921,8 +26033,10 @@
     <Window.TreeViewSelectionChanging>
         <summary>
             Provide a method that is invoked when the selection is changing from one tree view item to another in a tree view control.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oTreeViewSelectionEvent">The TreeViewSelectionEvent object that describes which tree view control's selected item is changing.</param>
         <seealso cref="T:VO.TreeViewSelectionEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25941,8 +26055,10 @@
     <Window.VerticalScroll>
         <summary>
             Provide a method that is invoked when a vertical scroll bar is scrolled.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oScrollEvent">The ScrollEvent object that describes the scroll type and new position.</param>
         <seealso cref="T:VO.ScrollEvent" />
         <remarks>
@@ -25953,8 +26069,10 @@
     <Window.VerticalSlide>
         <summary>
             Provide a method that is invoked when a vertical slider's thumb is dragged either by the mouse or the keyboard.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
+        <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
+        </remarks>
         <param name="oSliderEvent">The SliderEvent object that describes which vertical slider's thumb was dragged.</param>
         <seealso cref="T:VO.SliderEvent" />
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -25962,9 +26080,9 @@
     <Window.VerticalSpin>
         <summary>
             Provide a method that is invoked when a vertical spinner is spun.
-            <br /><include file="Gui.xml" path="doc/Callback/*" />
         </summary>
         <remarks>
+            <include file="Gui.xml" path="doc/Callback/*" />
             The default behavior for this event handler is to update the position of the spinner; this can be changed using your own implementation of the handler. This event handler only works for HorizontalScrollBar and WindowHorizontalScrollBar objects. If the application has vertical scroll bars, use a WindowVerticalScrollBar event handler.
         </remarks>
         <param name="oSpinnerEvent">The SpinnerEvent object that describes which vertical spinner was spun.</param>

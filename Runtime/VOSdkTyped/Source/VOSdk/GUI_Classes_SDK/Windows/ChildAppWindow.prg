@@ -24,7 +24,7 @@ CLASS ChildAppWindow INHERIT AppWindow
 		SUPER(oOwner)
 		IF !IsNil(lManaged)
 			IF !IsLogic(lManaged)
-				WCError{#Init,#ChildAppWindow,__WCSTypeError,lManaged,2}:@@Throw()
+				WCError{#Init,#ChildAppWindow,__WCSTypeError,lManaged,2}:Throw()
 			ELSE
 				lMng := lManaged
 			ENDIF

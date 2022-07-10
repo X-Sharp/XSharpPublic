@@ -10,12 +10,11 @@ CLASS ResourceString INHERIT VObject
 		RETURN sBuffer
 
 /// <include file="Gui.xml" path="doc/ResourceString.ctor/*" />
-	CONSTRUCTOR(xResourceID, uMaxLen)
+	CONSTRUCTOR(xResourceID, nMaxLen)
 		LOCAL hInst AS IntPtr
 		LOCAL wID AS LONG
 		LOCAL ptrBuffer AS StringBuilder
 		LOCAL oResourceID as ResourceID
-		LOCAL nMaxLen as LONG
 
 		SUPER()
 
@@ -24,15 +23,15 @@ CLASS ResourceString INHERIT VObject
 		ELSEIF IsInstanceOfUsual(xResourceID, #ResourceID)
 			oResourceID := xResourceID
 		ELSE
-			WCError{#Init, #ResourceString, __WCSTypeError, xResourceID, 1}:@@Throw()
+			WCError{#Init, #ResourceString, __WCSTypeError, xResourceID, 1}:Throw()
 		ENDIF
 
-		IF IsNil(uMaxLen)
+		IF IsNil(nMaxLen)
 			nMaxLen := 256
 		ELSEIF !IsNumeric(nMaxLen)
-			WCError{#Init, #ResourceString, __WCSTypeError, nMaxLen, 2}:@@Throw()
+			WCError{#Init, #ResourceString, __WCSTypeError, nMaxLen, 2}:Throw()
 		ELSE
-			nMaxLen := (LONG) uMaxLen
+			NOP 
 		ENDIF
 
 		hInst := oResourceID:Handle()

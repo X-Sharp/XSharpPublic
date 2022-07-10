@@ -1,44 +1,53 @@
-
+/// <include file="Gui.xml" path="doc/HorizontalSelectionSlider/*" />
 CLASS HorizontalSelectionSlider INHERIT SelectionSlider
 
-
+    /// <inheritdoc />
     PROPERTY Controltype AS ControlType GET ControlType.Slider
 
+    /// <inheritdoc />
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
         VAR oControl := (System.Windows.Forms.TrackBar) oC
 		oControl:Orientation := System.Windows.Forms.Orientation.Horizontal
-		RETURN 
+		RETURN
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
+/// <include file="Gui.xml" path="doc/HorizontalSelectionSlider.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 		SUPER(oOwner, xID, oPoint, oDimension)
-		RETURN 
+		RETURN
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/HorizontalSlider/*" />
 CLASS HorizontalSlider INHERIT Slider
 
+    /// <inheritdoc />
     PROPERTY Controltype AS ControlType GET ControlType.Slider
 
+    /// <inheritdoc />
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
         VAR oControl := (System.Windows.Forms.TrackBar) oC
 		oControl:Orientation := System.Windows.Forms.Orientation.Horizontal
-		RETURN 
+		RETURN
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
+/// <include file="Gui.xml" path="doc/HorizontalSlider.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 		SUPER(oOwner, xID, oPoint, oDimension)
-		RETURN 
+		RETURN
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/SelectionSlider/*" />
 CLASS SelectionSlider INHERIT Slider
 	PROTECT oSelectionRange AS Range
 
+    /// <inheritdoc />
     PROPERTY Controltype AS ControlType GET ControlType.Slider
 
+    /// <inheritdoc />
 	METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS IVOControl
 		RETURN SUPER:__CreateControl(liStyle| (LONG) TBS_ENABLESELRANGE, liExStyle)
 
-
+/// <include file="Gui.xml" path="doc/SelectionSlider.ClearSelection/*" />
 	METHOD ClearSelection() AS VOID
 		// Todo ClearSelection
 		//IF (hWnd != NULL_PTR)
@@ -46,12 +55,14 @@ CLASS SelectionSlider INHERIT Slider
 		//	SendMessage(hWnd, TBM_CLEARSEL, 0, 0)
 		//ENDIF
 
-		RETURN 
+		RETURN
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
+/// <include file="Gui.xml" path="doc/SelectionSlider.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 		SUPER(oOwner, xID, oPoint, oDimension)
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/SelectionSlider.SelectionRange/*" />
 	ACCESS SelectionRange as Range
 		// Todo SelectionRange
 		//LOCAL hSlider AS PTR
@@ -65,12 +76,13 @@ CLASS SelectionSlider INHERIT Slider
 		//RETURN Range{nMin, nMax}
 		RETURN Range{}
 
-	ASSIGN SelectionRange(oNewSelectionRange as Range) 
+/// <include file="Gui.xml" path="doc/SelectionSlider.SelectionRange/*" />
+	ASSIGN SelectionRange(oNewSelectionRange as Range)
 		// Todo SelectionRange
 		//SendMessage(SELF:Handle(), TBM_SETSELSTART, DWORD(_CAST, FALSE), oNewSelectionRange:Min)
 		//SendMessage(SELF:Handle(), TBM_SETSELEND, DWORD(_CAST, TRUE), oNewSelectionRange:Max)
 
-		RETURN 
+		RETURN
 
 END CLASS
 
@@ -79,10 +91,10 @@ CLASS Slider INHERIT ScrollBar
 
     PROPERTY Controltype AS ControlType GET ControlType.Slider
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 		SUPER(oOwner, xID, oPoint, oDimension)
 		SELF:Range := Range{0,10}
-		RETURN 
+		RETURN
 
 	ACCESS __TrackBar AS System.Windows.Forms.TrackBar
 		RETURN (System.Windows.Forms.TrackBar) oCtrl
@@ -105,14 +117,14 @@ CLASS Slider INHERIT ScrollBar
 	ACCESS Range as Range
 		RETURN Range{__TrackBar:Minimum, __TrackBar:Maximum}
 
-	ASSIGN Range(oNewRange as Range) 
-		__TrackBar:SetRange(oNewRange:Min, oNewRange:Max)		
-		RETURN 
+	ASSIGN Range(oNewRange as Range)
+		__TrackBar:SetRange(oNewRange:Min, oNewRange:Max)
+		RETURN
 
-	METHOD SetTickPos(nPosition AS LONG) 
+	METHOD SetTickPos(nPosition AS LONG)
 		RETURN __TrackBar:Value := nPosition
 
-	ACCESS ThumbBoundingBox 
+	ACCESS ThumbBoundingBox
 		// Todo ThumbBoundingBox
 		//LOCAL strucRect IS _winRect
 		//LOCAL oOrigin AS Point
@@ -130,17 +142,17 @@ CLASS Slider INHERIT ScrollBar
 		//RETURN SendMessage(SELF:Handle(), TBM_GETTHUMBLENGTH, 0, 0)
 		RETURN 0
 
-	ASSIGN ThumbLength(nThumbLength AS LONG) 
+	ASSIGN ThumbLength(nThumbLength AS LONG)
 		// Todo ThumbLength
 		//SendMessage(SELF:Handle(), TBM_SETTHUMBLENGTH, nThumbLength, 0)
-		RETURN 
+		RETURN
 
 	PROPERTY ThumbPosition AS INT GET __TrackBar:Value SET __TrackBar:Value := Value
 
-	ACCESS TickAlignment 
+	ACCESS TickAlignment
 		RETURN symTickAlignment
 
-	ASSIGN TickAlignment(symNewTickAlignment) 
+	ASSIGN TickAlignment(symNewTickAlignment)
 		IF __TrackBar:Orientation == System.Windows.Forms.Orientation.Horizontal
 			IF symNewTickAlignment == #Top
 				__TrackBar:TickStyle := System.Windows.Forms.TickStyle.TopLeft
@@ -164,7 +176,7 @@ CLASS Slider INHERIT ScrollBar
 				symTickAlignment := symNewTickAlignment
 			ENDIF
 		ENDIF
-		RETURN 
+		RETURN
 
 	ACCESS TickCount AS LONG
 		// Todo TickCount
@@ -185,14 +197,14 @@ CLASS VerticalSelectionSlider INHERIT SelectionSlider
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
         VAR oControl := (System.Windows.Forms.TrackBar) oC
 		oControl:Orientation := System.Windows.Forms.Orientation.Vertical
-		RETURN 
+		RETURN
 
 	METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS IVOControl
-		RETURN SUPER:__CreateControl(liStyle| (LONG) TBS_VERT, liExStyle) 
+		RETURN SUPER:__CreateControl(liStyle| (LONG) TBS_VERT, liExStyle)
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 		SUPER(oOwner, xID, oPoint, oDimension)
-		RETURN 
+		RETURN
 
 END CLASS
 
@@ -203,11 +215,11 @@ CLASS VerticalSlider INHERIT Slider
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
         VAR oControl := (System.Windows.Forms.TrackBar) oC
 		oControl:Orientation := System.Windows.Forms.Orientation.Vertical
-		RETURN 
+		RETURN
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 		SUPER(oOwner, xID, oPoint, oDimension)
-		RETURN 
+		RETURN
 
 END CLASS
 

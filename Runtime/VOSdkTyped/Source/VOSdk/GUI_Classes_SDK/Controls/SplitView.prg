@@ -201,7 +201,7 @@ CLASS SplitView INHERIT Control
 
 		// the owner must be a window
 		IF !IsInstanceOfUsual(oOwner, #Window)
-			WCError{#Init, #SplitView, __WCSTypeError, oOwner, 1}:@@Throw()
+			WCError{#Init, #SplitView, __WCSTypeError, oOwner, 1}:Throw()
 		ENDIF
 		oWin := oOwner
 

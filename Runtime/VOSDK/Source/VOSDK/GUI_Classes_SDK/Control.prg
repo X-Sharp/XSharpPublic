@@ -1629,7 +1629,7 @@ ASSIGN Origin(oPoint)
 
 
 /// <include file="Gui.xml" path="doc/Control.OverRide/*" />
-METHOD @@OverRide(lEnable)
+METHOD OverRide(lEnable)
 	//local hHandle as ptr
 	RETURN NIL
 
@@ -1975,12 +1975,7 @@ ASSIGN Size(oDimension)
 ACCESS Status
 
 
-
-
 	RETURN oHLStatus
-
-
-
 
 /// <include file="Gui.xml" path="doc/Control.Status/*" />
 ASSIGN Status(oStatus)
@@ -2125,11 +2120,6 @@ ASSIGN Value(uNewValue)
 	// Note : value does not have to be same as what is displayed
 	//
 	LOCAL cOldValue AS STRING
-
-
-
-
-
 
 	cOldValue := AsString(uValue)
 	// !!! should be result of FIELDGET and located after FIELDPUT !!!

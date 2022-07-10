@@ -1,4 +1,4 @@
-
+/// <include file="Gui.xml" path="doc/MultiMediaContainer/*" />
 CLASS MultiMediaContainer INHERIT Control
 	PROTECT pBitmap AS IntPtr
 	PROTECT sMajorType AS STRING
@@ -7,11 +7,11 @@ CLASS MultiMediaContainer INHERIT Control
 	PROTECT wBasicType AS INT
 	PROTECT hwndMCI AS IntPtr
 
-
+    /// <inheritdoc />
     PROPERTY ControlType AS ControlType GET ControlType.Panel
 
 
-	METHOD __ResizeMCIWnd() AS MultiMediaContainer STRICT 
+	METHOD __ResizeMCIWnd() AS MultiMediaContainer STRICT
 		//Todo Implement
 		//LOCAL rc IS _winRECT
 
@@ -19,7 +19,7 @@ CLASS MultiMediaContainer INHERIT Control
 		//SetWindowPos(hwndMCI, NULL_PTR, 0, 0, rc:right, rc:bottom, _OR(SWP_NOMOVE, SWP_NOZORDER))
 		RETURN SELF
 
-	ASSIGN __Value(uNewVal AS USUAL)  STRICT 
+	ASSIGN __Value(uNewVal AS USUAL)  STRICT
 		//Todo Implement
 		/*	LOCAL rc IS _winRECT
 		LOCAL ic1, ic2 AS DWORD
@@ -49,7 +49,7 @@ CLASS MultiMediaContainer INHERIT Control
 		MapWindowPoints(NULL_PTR, GetParent(SELF:Handle()), (_winPOINT PTR) @rc, 2)
 		InvalidateRect(GetParent(SELF:Handle()), @rc, TRUE)
 		ENDIF*/
-		RETURN 
+		RETURN
 
 
 	//METHOD Destroy() AS USUAL STRICT
@@ -67,7 +67,7 @@ CLASS MultiMediaContainer INHERIT Control
 
 		//RETURN SUPER:Destroy()
 
-	METHOD Dispatch(oEvent AS @@Event) 
+	METHOD Dispatch(oEvent AS @@Event)
 		//Todo Implement
 		//LOCAL ps IS _winPAINTSTRUCT
 		LOCAL oEvt := oEvent AS @@Event
@@ -104,7 +104,7 @@ CLASS MultiMediaContainer INHERIT Control
 		RETURN SUPER:Dispatch(oEvt)
 
 
-	ASSIGN FileName(sNewVal) 
+	ASSIGN FileName(sNewVal)
 		//Todo Implement
 		//	LOCAL rc IS _winRECT
 		//	LOCAL sof IS _winOFSTRUCT
@@ -144,9 +144,10 @@ CLASS MultiMediaContainer INHERIT Control
 		//	MapWindowPoints(NULL_PTR, GetParent(SELF:Handle()), (_winPOINT PTR) @rc, 2)
 		//	InvalidateRect(GetParent(SELF:Handle()), @rc, TRUE)
 
-		RETURN 
+		RETURN
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 		LOCAL LoadError AS WCError
 
 		//__LoadMSVFWDll()
@@ -156,20 +157,23 @@ CLASS MultiMediaContainer INHERIT Control
 		IF TRUE // (!CAPaintIsLoaded())
 			LoadError := WCError{#Init,#MultiMediaContainer,__WCSCAPaintLoadFailed}
 			LoadError:CanDefault := TRUE
-			LoadError:@@Throw()
+			LoadError:Throw()
 		ENDIF
 
 		uValue := NULL_STRING
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.MajorType/*" />
 	ACCESS MajorType  AS STRING
 		RETURN sMajorType
 
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.MajorType/*" />
 	ASSIGN MajorType(sNewType AS STRING )
 		sMajorType := Lower(sNewType)
 
-	METHOD MCISendMessage(dwMsg, wParam, lParam) 
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.MCISendMessage/*" />
+	METHOD MCISendMessage(dwMsg, wParam, lParam)
 		//Todo Implement
 		//LOCAL uMsg, wPar AS DWORD
 		//LOCAL lPar, lRet AS LONGINT
@@ -194,13 +198,15 @@ CLASS MultiMediaContainer INHERIT Control
 		//RETURN lRet
 		RETURN 0
 
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.MinorType/*" />
 	ACCESS MinorType AS STRING
 		RETURN sMinorType
 
-	ASSIGN MinorType(sNewType AS STRING) 
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.MinorType/*" />
+	ASSIGN MinorType(sNewType AS STRING)
 		sMinorType := Lower(sNewType)
 
-	/*ASSIGN Size(oNewDim) 
+	/*ASSIGN Size(oNewDim)
 	LOCAL uRet AS USUAL
 
 	uRet := SUPER:Size := oNewDim
@@ -211,7 +217,7 @@ CLASS MultiMediaContainer INHERIT Control
 END CLASS
 
 //Todo Implement
-//FUNCTION __LoadMSVFWDll() 
+//FUNCTION __LoadMSVFWDll()
 //	LOCAL hDll AS PTR
 //	LOCAL rsFormat AS ResourceString
 
@@ -222,7 +228,7 @@ END CLASS
 //	hDll := LoadLibrary(String2Psz("MSVFW32.DLL"))
 //	IF (hDll == NULL_PTR)
 //		rsFormat := ResourceString{__WCSLoadLibraryError}
-//		WCError{#LoadSplitWindowDLL, #SplitWindow, VO_SPrintF(rsFormat:value, "MSVFW32.DLL"),,,FALSE}:@@Throw()
+//		WCError{#LoadSplitWindowDLL, #SplitWindow, VO_SPrintF(rsFormat:value, "MSVFW32.DLL"),,,FALSE}:Throw()
 //		RETURN FALSE
 //	ENDIF
 
@@ -238,9 +244,9 @@ wc:style := _OR(CS_DBLCLKS, CS_GLOBALCLASS)
 LOCAL hDll := LoadLibraryW( "user32.dll" ) AS PTR
 wc:lpfnWndProc 	:= GetProcAddress( hDll, String2Psz( "DefWindowProcA" ) )
 FreeLibrary( hDll )
-#else	
+#else
 wc:lpfnWndProc := PTR(_CAST, @DefWindowProc())
-#endif	
+#endif
 wc:hInstance := _GetInst() // 0x400000
 wc:hIcon := NULL_PTR // LoadIcon(0, IDI_APPLICATION)
 wc:hCursor := LoadCursor(0, IDC_Arrow)

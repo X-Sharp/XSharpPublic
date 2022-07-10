@@ -420,7 +420,7 @@ CLASS DragEvent INHERIT @@Event
 
 
 	IF !IsLong(nFile)
-	WCError{#FileName,#DragEvent,__WCSTypeError,nfile,1}:@@Throw()
+	WCError{#FileName,#DragEvent,__WCSTypeError,nfile,1}:Throw()
 	ENDIF
 
 	nfile--

@@ -2,15 +2,17 @@
 //#define EM_FINDTEXTEXW			(WM_USER + 124)
 
 
+/// <include file="Gui.xml" path="doc/RichEdit/*" />
 CLASS RichEdit INHERIT MultiLineEdit
 	PROTECT oBackgroundColor AS Color
 	PROTECT pStreamPos AS BYTE PTR
 
     PROPERTY ControlType AS ControlType GET ControlType.RichEdit
 
+/// <include file="Gui.xml" path="doc/RichEdit.ctor/*" />
 
-    CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
-		
+    CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
+
 
 		GuiWin32.LoadLibrary("RICHED20.DLL")
 
@@ -23,7 +25,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 		GuiWin32.SendMessage(oCtrl:Handle, EM_SETEVENTMASK, 0, LONGINT(_CAST, _OR(ENM_CHANGE, ENM_PROTECTED, ENM_SCROLL, ENM_SELCHANGE, ENM_UPDATE)))
 
-		RETURN 
+		RETURN
 
 
 
@@ -31,14 +33,17 @@ CLASS RichEdit INHERIT MultiLineEdit
 	ACCESS __RichEdit AS VORichTextBox
 		RETURN (VORichTextBox) oCtrl
 
-	ACCESS __StreamPos AS PTR STRICT 
+ /// <exclude />
+	ACCESS __StreamPos AS PTR STRICT
 		RETURN pStreamPos
 
-	ASSIGN __StreamPos(pNewPos AS PTR)  STRICT 
+ /// <exclude />
+	ASSIGN __StreamPos(pNewPos AS PTR)  STRICT
 		pStreamPos := pNewPos
-		RETURN 
+		RETURN
 
-	ASSIGN __Value(uNewVal AS USUAL)  STRICT 
+ /// <exclude />
+	ASSIGN __Value(uNewVal AS USUAL)  STRICT
 		LOCAL sVal AS STRING
 		sVal := AsString(uNewVal)
 		IF	sVal:StartsWith("{\rtf", StringComparison.OrdinalIgnoreCase)
@@ -47,33 +52,42 @@ CLASS RichEdit INHERIT MultiLineEdit
 			__RichEdit:Text := sVal
 		ENDIF
 		SUPER:__Value := uNewVal
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/RichEdit.Alignment/*" />
 	ACCESS Alignment AS LONG
 		RETURN __RichEdit:SelectionAlignment
 
-	ASSIGN Alignment(kAlignment AS LONG) 
+/// <include file="Gui.xml" path="doc/RichEdit.Alignment/*" />
+	ASSIGN Alignment(kAlignment AS LONG)
 		__RichEdit:SelectionAlignment := (System.Windows.Forms.HorizontalAlignment) kAlignment
-		RETURN 
+		RETURN
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.BackgroundColor/*" />
 	ACCESS BackgroundColor AS Color
 		RETURN __RichEdit:BackColor
 
-	ASSIGN Background(oBrush AS Brush) 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Background/*" />
+	ASSIGN Background(oBrush AS Brush)
 		LOCAL dwColor AS DWORD
 		dwColor:=WC.GetBrushColor(oBrush)
 		SELF:BackgroundColor:= Color.FromColorRef(dwColor)
 		__RichEdit:BackColor := SELF:BackgroundColor
 
-	ASSIGN BackgroundColor(oColor AS Color) 
+/// <include file="Gui.xml" path="doc/RichEdit.BackgroundColor/*" />
+	ASSIGN BackgroundColor(oColor AS Color)
 		oBackgroundColor := oColor
 		__RichEdit:BackColor := oColor
-		RETURN 
+		RETURN
 
-	METHOD CanPaste(dwClipboardFormat AS LONG) 
+/// <include file="Gui.xml" path="doc/RichEdit.CanPaste/*" />
+	METHOD CanPaste(dwClipboardFormat AS LONG)
 		RETURN __RichEdit:CanPaste(System.Windows.Forms.DataFormats.GetFormat(dwClipboardFormat))
 
-	METHOD EnableAdvancedTypography(lEnable) 
+/// <include file="Gui.xml" path="doc/RichEdit.EnableAdvancedTypography/*" />
+	METHOD EnableAdvancedTypography(lEnable)
 		LOCAL dwOption AS DWORD
 
 		IF IsLogic(lEnable) .AND. ! lEnable
@@ -84,7 +98,8 @@ CLASS RichEdit INHERIT MultiLineEdit
 		GuiWin32.SendMessage(oCtrl:Handle, EM_SETTYPOGRAPHYOPTIONS, dwOption, LONGINT(_CAST, dwOption))
 		RETURN SELF
 
-	//ACCESS Font 
+/// <include file="Gui.xml" path="doc/RichEdit.ControlFont/*" />
+	//ACCESS ControlFont
 		//Todo Font
 	//	RETURN  NULL_OBJECT
 	////PP-040322 Update from S Ebert
@@ -127,7 +142,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 	//RETURN oFont
 
-	//ASSIGN Font (oNewFont) 
+	//ASSIGN Font (oNewFont)
 		//Todo Font
 		//LOCAL strucCharFormat IS _winCHARFORMAT
 		//LOCAL cFaceName AS STRING
@@ -167,18 +182,21 @@ CLASS RichEdit INHERIT MultiLineEdit
 		//// GuiWin32.SendMessage(oCtrl:Handle, EM_SETCHARFORMAT, _Or(SCF_SELECTION, SCF_WORD), LONG(_CAST, @strucCharFormat))
 		//GuiWin32.SendMessage(oCtrl:Handle, EM_SETCHARFORMAT, SCF_SELECTION, LONGINT(_CAST, @strucCharFormat))
 
-		//RETURN 
+		//RETURN
 
-	METHOD GetOption(kOption) 
-		
+/// <include file="Gui.xml" path="doc/RichEdit.GetOption/*" />
+	METHOD GetOption(kOption)
+
 
 		// check to see if the specified option is set
 		RETURN _AND(LONGINT(kOption), GuiWin32.SendMessage(oCtrl:Handle, EM_SETOPTIONS, 0, 0)) != 0
 
+/// <include file="Gui.xml" path="doc/RichEdit.GetTabStops/*" />
 	METHOD GetTabStops() AS INT[]
 		RETURN __RichEdit:SelectionTabs
 
-	METHOD GetTextRange(oRange) 
+/// <include file="Gui.xml" path="doc/RichEdit.GetTextRange/*" />
+	METHOD GetTextRange(oRange)
 		LOCAL sRet AS STRING
 		LOCAL strucTextRange IS winTextRange
 
@@ -194,8 +212,9 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 		RETURN sRet
 
-	METHOD GetWordBreak(nCharPos, kWordBreakType) 
-		
+/// <include file="Gui.xml" path="doc/RichEdit.GetWordBreak/*" />
+	METHOD GetWordBreak(nCharPos, kWordBreakType)
+
 
 		IF kWordBreakType == REGWB_ISDELIMITER
 			RETURN LOGIC(_CAST, GuiWin32.SendMessage(oCtrl:Handle, EM_FINDWORDBREAK, kWordBreakType, (LONG) nCharPos - 1))
@@ -203,8 +222,8 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 		RETURN GuiWin32.SendMessage(oCtrl:Handle, EM_FINDWORDBREAK, kWordBreakType, (LONG) nCharPos - 1)
 
-	METHOD HideSelection(lTemporary) 
-		
+	METHOD HideSelection(lTemporary)
+
 
 		Default(@lTemporary, TRUE)
 
@@ -230,14 +249,17 @@ CLASS RichEdit INHERIT MultiLineEdit
 	Windows 95 Includes only Rich Edit 1.0. However, Riched20.dll is compatible with Windows 95 and may be installed by an application that requires it.
 	*/
 
-	METHOD LineFromCharacter(nCharacterPos AS LONG) 
+/// <include file="Gui.xml" path="doc/RichEdit.LineFromCharacter/*" />
+	METHOD LineFromCharacter(nCharacterPos AS LONG)
 		RETURN __RichEdit:GetLineFromCharIndex(	nCharacterPos-1)+1
 
+/// <include file="Gui.xml" path="doc/RichEdit.LoadFromFile/*" />
 
-	METHOD LoadFromFile(cFileName AS STRING) 
+	METHOD LoadFromFile(cFileName AS STRING)
 		RETURN SELF:LoadFromFile(cFileName, SF_RTF)
 
-	METHOD LoadFromFile(cFileName AS STRING, dwFormat AS LONG) 
+/// <include file="Gui.xml" path="doc/RichEdit.LoadFromFile/*" />
+	METHOD LoadFromFile(cFileName AS STRING, dwFormat AS LONG)
 		LOCAL lOk AS LOGIC
 		TRY
 			DO CASE
@@ -249,10 +271,10 @@ CLASS RichEdit INHERIT MultiLineEdit
 			lOk := TRUE
 		CATCH AS Exception
 			lOk := FALSE
-		END TRY		
+		END TRY
 		RETURN lOk
 
-
+    /// <inheritdoc />
 	ACCESS Margins  AS Dimension
 		LOCAL nLeft AS LONG
 		LOCAL nTop AS LONG
@@ -262,8 +284,8 @@ CLASS RichEdit INHERIT MultiLineEdit
 		ENDIF
 
 		RETURN Dimension{nLeft, nTop}
-
-	ASSIGN Margins(oNewMargins AS Dimension) 
+    /// <inheritdoc />
+	ASSIGN Margins(oNewMargins AS Dimension)
 		IF SELF:ValidateControl()
 			LOCAL oPadding AS System.Windows.Forms.Padding
 			oPadding := __RichEdit:Margin
@@ -274,9 +296,10 @@ CLASS RichEdit INHERIT MultiLineEdit
 			ENDIF
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	METHOD Margin(nStart, nRight, nOffset) 
+/// <include file="Gui.xml" path="doc/RichEdit.Margin/*" />
+	METHOD Margin(nStart, nRight, nOffset)
 		LOCAL strucParaFormat IS _winPARAFORMAT
 
 		strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
@@ -288,7 +311,8 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 		RETURN 1
 
-	ACCESS Numbering 
+/// <include file="Gui.xml" path="doc/RichEdit.Numbering/*" />
+	ACCESS Numbering
 		LOCAL strucParaFormat IS _winPARAFORMAT
 		strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 		strucParaFormat:dwMask := PFM_NUMBERING
@@ -296,29 +320,34 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 		RETURN strucParaFormat:wNumbering
 
-	ASSIGN Numbering(kNumbering) 
+/// <include file="Gui.xml" path="doc/RichEdit.Numbering/*" />
+	ASSIGN Numbering(kNumbering)
 		LOCAL strucParaFormat IS _winPARAFORMAT
 		strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 		strucParaFormat:dwMask := PFM_NUMBERING
 		strucParaFormat:wNumbering := kNumbering
 		GuiWin32.SendMessage(oCtrl:Handle, EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
-		RETURN 
+		RETURN
 
-	METHOD PasteSpecial(dwClipboardFormat) 
-		
+/// <include file="Gui.xml" path="doc/RichEdit.PasteSpecial/*" />
+	METHOD PasteSpecial(dwClipboardFormat)
+
 
 		GuiWin32.SendMessage(oCtrl:Handle, EM_PASTESPECIAL, dwClipboardFormat, 0)
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/RichEdit.PrimaryIndent/*" />
 	ACCESS PrimaryIndent  AS LONG
 		RETURN __RichEdit:SelectionIndent
 
 
-	ASSIGN PrimaryIndent(nIndent AS LONG) 
+/// <include file="Gui.xml" path="doc/RichEdit.PrimaryIndent/*" />
+	ASSIGN PrimaryIndent(nIndent AS LONG)
 		__RichEdit:SelectionIndent := nIndent
 
-	METHOD Print(oPrintingDevice, oRange) 
+/// <include file="Gui.xml" path="doc/RichEdit.Print/*" />
+	METHOD Print(oPrintingDevice, oRange)
 		//Todo Print
 		//LOCAL strucFormatRange IS _winFormatRange
 		//LOCAL strucPrintDlg IS _winPrintDlg
@@ -330,9 +359,9 @@ CLASS RichEdit INHERIT MultiLineEdit
 		//LOCAL cDeviceName AS STRING
 		//LOCAL pszDevice AS PSZ
 		//LOCAL pszClassName AS PSZ
-		//LOCAL lBanding AS LOGIC 
+		//LOCAL lBanding AS LOGIC
 		//LOCAL rc1 IS _WINRECT
-		//LOCAL rc2 IS _WINRECT      
+		//LOCAL rc2 IS _WINRECT
 		//LOCAL DIM strucTextLength[2] AS DWORD
 
 		////RvdH 070717 Changed text length calculatio to 'precize'
@@ -431,7 +460,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		//GuiWin32.SendMessage(oCtrl:Handle, EM_FORMATRANGE, 0, 0L)
 		//SetMapMode(hDC, MM_TEXT)
 		//WHILE (liTextOut < liTextAmt)
-		//	StartPage(hDC)                                              
+		//	StartPage(hDC)
 		//	//RvdH 070717 Restore rects. They are changed by the RTF control !
 		//	CopyRect(@strucFormatRange:rc		, @rc1)
 		//	CopyRect(@strucFormatRange:rcPage, @rc2)
@@ -467,20 +496,25 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 		RETURN TRUE
 
-	ACCESS @@Protected  AS LOGIC
+/// <include file="Gui.xml" path="doc/RichEdit.Protected/*" />
+	ACCESS Protected  AS LOGIC
 		RETURN __RichEdit:SelectionProtected
 
-	ASSIGN @@Protected(lEnable AS LOGIC) 
+/// <include file="Gui.xml" path="doc/RichEdit.Protected/*" />
+	ASSIGN Protected(lEnable AS LOGIC)
 		__RichEdit:SelectionProtected := lEnable
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/RichEdit.RightMargin/*" />
 	ACCESS RightMargin AS LONG
 		RETURN __RichEdit:SelectionRightIndent
-	
-	ASSIGN RightMargin(nRightMargin AS LONG) 
-		__RichEdit:SelectionRightIndent := nRightMargin
-		RETURN 
 
+/// <include file="Gui.xml" path="doc/RichEdit.RightMargin/*" />
+	ASSIGN RightMargin(nRightMargin AS LONG)
+		__RichEdit:SelectionRightIndent := nRightMargin
+		RETURN
+
+/// <include file="Gui.xml" path="doc/RichEdit.SaveToFile/*" />
 	METHOD SaveToFile(cFileName AS STRING, dwFormat := SF_RTF AS LONG)  AS LOGIC
 		LOCAL lOk AS LOGIC
 		TRY
@@ -493,14 +527,17 @@ CLASS RichEdit INHERIT MultiLineEdit
 		END TRY
 		RETURN lOk
 
+/// <include file="Gui.xml" path="doc/RichEdit.SecondaryIndent/*" />
 	ACCESS SecondaryIndent AS LONG
 		RETURN __RichEdit:SelectionHangingIndent
 
-	ASSIGN SecondaryIndent(nIndent  AS LONG) 
+/// <include file="Gui.xml" path="doc/RichEdit.SecondaryIndent/*" />
+	ASSIGN SecondaryIndent(nIndent  AS LONG)
 		__RichEdit:SelectionHangingIndent := nIndent
-		RETURN 
+		RETURN
 
-	METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp) 
+/// <include file="Gui.xml" path="doc/RichEdit.Seek/*" />
+	METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp)
 		LOCAL strucFindTextEx AS winFindTextEx
 		LOCAL dwFlags AS DWORD
 		LOCAL liRet   AS LONGINT
@@ -539,23 +576,29 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 		RETURN liRet + 1l
 
+/// <include file="Gui.xml" path="doc/RichEdit.SelectedText/*" />
 	ACCESS SelectedText as string
 		RETURN __RichEdit:SelectedText
 
+/// <include file="Gui.xml" path="doc/RichEdit.Selection/*" />
 	ACCESS Selection  AS Selection
 		LOCAL nStart AS LONG
 		nStart := __RichEdit:SelectionStart
 		RETURN Selection{nStart, nStart+ __RichEdit:SelectionLength+1}
 
-	ASSIGN Selection(oSelection AS Selection) 
+/// <include file="Gui.xml" path="doc/RichEdit.Selection/*" />
+	ASSIGN Selection(oSelection AS Selection)
 		__RichEdit:SelectionStart := oSelection:Start
 		__RichEdit:SelectionLength := oSelection:Finish - oSelection:Start
-		RETURN 
+		RETURN
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.SelectionType/*" />
 	ACCESS SelectionType AS LONG
 		RETURN (LONG) __RichEdit:SelectionType
 
-	METHOD SetOption(kOption, symOperation) 
+/// <include file="Gui.xml" path="doc/RichEdit.SetOption/*" />
+	METHOD SetOption(kOption, symOperation)
 		LOCAL dwOperation AS DWORD
 
 		Default(@symOperation, #Add)
@@ -578,12 +621,14 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/RichEdit.SetTabStops/*" />
 	METHOD SetTabStops(aTabStops AS INT[]) AS VOID
 		__RichEdit:SelectionTabs:= aTabStops
-		RETURN 
+		RETURN
 
-	METHOD ShowSelection(lTemporary) 
-		
+/// <include file="Gui.xml" path="doc/RichEdit.ShowSelection/*" />
+	METHOD ShowSelection(lTemporary)
+
 
 		Default(@lTemporary, TRUE)
 
@@ -591,6 +636,8 @@ CLASS RichEdit INHERIT MultiLineEdit
 
 		RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.TabStopCount/*" />
 	ACCESS TabStopCount AS LONG
 		LOCAL strucParaFormat	IS _winPARAFORMAT
 		strucParaFormat:cbSize	:= _SIZEOF(_winPARAFORMAT)
@@ -598,27 +645,32 @@ CLASS RichEdit INHERIT MultiLineEdit
 		GuiWin32.SendMessage(oCtrl:Handle, EM_GETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
 		RETURN strucParaFormat:cTabCount
-		
-	ASSIGN TabStopCount(nTabStops AS LONG) 
+
+/// <include file="Gui.xml" path="doc/RichEdit.TabStopCount/*" />
+	ASSIGN TabStopCount(nTabStops AS LONG)
 		LOCAL strucParaFormat IS _winPARAFORMAT
 		strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 		strucParaFormat:dwMask := PFM_TABSTOPS
 		strucParaFormat:cTabCount := (SHORT) nTabStops
 		GuiWin32.SendMessage(oCtrl:Handle, EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/RichEdit.TextColor/*" />
 	ACCESS TextColor AS Color
 		RETURN (Color) __RichEdit:SelectionColor
 
-	ASSIGN TextColor(oColor  AS Color) 
+/// <include file="Gui.xml" path="doc/RichEdit.TextColor/*" />
+	ASSIGN TextColor(oColor  AS Color)
 		__RichEdit:SelectionColor := oColor
-		RETURN 
+		RETURN
 
-	ASSIGN TextLimit(dwTextLimit AS LONG) 
+/// <include file="Gui.xml" path="doc/RichEdit.TextLimit/*" />
+	ASSIGN TextLimit(dwTextLimit AS LONG)
 		__RichEdit:MaxLength := dwTextLimit
-		RETURN 
+		RETURN
 
+ /// <exclude />
 	METHOD __GetValue(dwType AS DWORD) AS STRING
 		LOCAL sReturn AS STRING
 		IF dwType == SF_RTF
@@ -626,16 +678,19 @@ CLASS RichEdit INHERIT MultiLineEdit
 		ELSE
 			sReturn := __RichEdit:Text
 		ENDIF
-			
+
 		RETURN sReturn
 
-	ACCESS Value 
+/// <include file="Gui.xml" path="doc/RichEdit.Value/*" />
+	ACCESS Value
 		RETURN __RichEdit:Rtf
-	
+
+/// <include file="Gui.xml" path="doc/RichEdit.ValueAsText/*" />
 	ACCESS ValueAsText
 		RETURN __RichEdit:Text
-	
-	ASSIGN Value(uNewValue) 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Value/*" />
+	ASSIGN Value(uNewValue)
 		SELF:__Value := uNewValue
 END CLASS
 

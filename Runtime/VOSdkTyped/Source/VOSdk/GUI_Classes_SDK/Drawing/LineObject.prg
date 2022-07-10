@@ -1,21 +1,21 @@
-
+/// <include file="Gui.xml" path="doc/LineObject/*" />
 
 CLASS LineObject INHERIT DrawObject
 	PROTECT oEnd AS Point
 	PROTECT oPen AS Pen
 
-
-	CONSTRUCTOR(oPoint1 AS Point, oPoint2 AS Point) 
+/// <include file="Gui.xml" path="doc/LineObject.ctor/*" />
+	CONSTRUCTOR(oPoint1 AS Point, oPoint2 AS Point)
 		SUPER(oPoint1)
 		oEnd := oPoint2
 
-	
-	CONSTRUCTOR(oPoint1 AS Point, oPoint2 AS Point, oPen AS Pen) 
+/// <include file="Gui.xml" path="doc/LineObject.ctor/*" />
+	CONSTRUCTOR(oPoint1 AS Point, oPoint2 AS Point, oPen AS Pen)
 		SELF(oPoint1, oPoint2)
 		SELF:oPen := oPen
 
-		RETURN 
-
+		RETURN
+/// <include file="Gui.xml" path="doc/LineObject.BoundingBox/*" />
 	ACCESS BoundingBox AS BoundingBox
 		LOCAL oOrg AS Point
 		LOCAL EndX, EndY, OrgX, OrgY AS LONGINT
@@ -27,8 +27,9 @@ CLASS LineObject INHERIT DrawObject
 		OrgY := oOrg:Y
 		RETURN BoundingBox{Point{Min(EndX,OrgX), Min(EndY,OrgY)}, Dimension{Abs(EndX-OrgX),Abs(EndY-OrgY)}}
 
+/// <include file="Gui.xml" path="doc/LineObject.Destroy/*" />
 	METHOD Destroy() AS USUAL STRICT
-	
+
 		oPen:=NULL_OBJECT
 		oEnd:=NULL_OBJECT
 
@@ -38,7 +39,8 @@ CLASS LineObject INHERIT DrawObject
 
 	#ifdef DONOTINCLUDE
 
-	METHOD Draw() 
+/// <include file="Gui.xml" path="doc/LineObject.Draw/*" />
+	METHOD Draw()
 		LOCAL hDC AS PTR
 		LOCAL hLastROP AS PTR
 		LOCAL wROP AS DWORD
@@ -85,9 +87,9 @@ CLASS LineObject INHERIT DrawObject
 		RETURN NIL
 	#endif
 
-	
 
-	ASSIGN Origin(oNewPoint AS Point) 
+
+	ASSIGN Origin(oNewPoint AS Point)
 		LOCAL oOldPoint AS Point
 
 		oOldPoint := SUPER:Origin
@@ -96,12 +98,12 @@ CLASS LineObject INHERIT DrawObject
 		oEnd:X := oEnd:X+oNewPoint:X-oOldPoint:X //Adjust end point
 		oEnd:Y := oEnd:Y+oNewPoint:Y-oOldPoint:Y
 
-		RETURN 
+		RETURN
 
 	ACCESS Pen AS Pen
 		RETURN oPen
 
-	ASSIGN Pen(oNewPen AS Pen) 
+	ASSIGN Pen(oNewPen AS Pen)
 		oPen := oNewPen
 
 	ACCESS Size AS Dimension
@@ -109,10 +111,10 @@ CLASS LineObject INHERIT DrawObject
 		oOrg := SELF:Origin
 		RETURN Dimension{oEnd:X-oOrg:X, oEnd:Y-oOrg:Y}
 
-	ASSIGN Size(oNewSize AS Dimension) 
+	ASSIGN Size(oNewSize AS Dimension)
 		oEnd:X := SELF:Origin:X + oNewSize:Width
 		oEnd:Y := SELF:Origin:Y + oNewSize:Height
 
-		RETURN 
+		RETURN
 END CLASS
 

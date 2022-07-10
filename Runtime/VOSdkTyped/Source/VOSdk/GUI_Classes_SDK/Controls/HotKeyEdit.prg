@@ -1,7 +1,7 @@
-
+/// <include file="Gui.xml" path="doc/HotKey/*" />
 [XSharp.Internal.TypesChanged];
 CLASS HotKey INHERIT VObject
-	CONSTRUCTOR(bKey, lAlt, lCtl, lShift, lExt) 
+	CONSTRUCTOR(bKey, lAlt, lCtl, lShift, lExt)
 		SUPER()
 		IF IsNumeric(bKey)
 			SELF:Key := BYTE(bKey)
@@ -18,15 +18,22 @@ CLASS HotKey INHERIT VObject
 		IF IsLogic(lExt)
 			SELF:ExtendedKey := lExt
 		ENDIF
-		RETURN 
-
+		RETURN
+/// <include file="Gui.xml" path="doc/HotKey.AltKey/*" />
 	PROPERTY AltKey       AS LOGIC AUTO
+
+	/// <include file="Gui.xml" path="doc/HotKey.CtrlKey/*" />
 	PROPERTY CtrlKey      AS LOGIC AUTO
+
+	/// <include file="Gui.xml" path="doc/HotKey.ExtendedKey/*" />
 	PROPERTY ExtendedKey  AS LOGIC AUTO
+/// <include file="Gui.xml" path="doc/HotKey.Key/*" />
 	PROPERTY Key          AS BYTE AUTO
+/// <include file="Gui.xml" path="doc/HotKey.ShiftKey/*" />
 	PROPERTY ShiftKey     AS LOGIC AUTO
 
 END CLASS
+/// <include file="Gui.xml" path="doc/HotKeyEdit/*" />
 
 [XSharp.Internal.TypesChanged];
 CLASS HotKeyEdit INHERIT TextControl
@@ -34,7 +41,8 @@ CLASS HotKeyEdit INHERIT TextControl
     PROPERTY ControlType AS ControlType GET ControlType.Hotkey
 
 
-	METHOD __SetRule(oNewRule AS HotKeyRule) AS VOID STRICT 
+ /// <exclude />
+	METHOD __SetRule(oNewRule AS HotKeyRule) AS VOID STRICT
 		LOCAL dwInvalidCombinations	AS DWORD
 		LOCAL wInvalidModifiers			AS DWORD
 
@@ -79,7 +87,8 @@ CLASS HotKeyEdit INHERIT TextControl
 		GuiWin32.SendMessage(SELF:Handle(), HKM_SETRULES, dwInvalidCombinations, MakeLong((WORD)wInvalidModifiers, 0))
 		RETURN
 
-	METHOD ApplyHotKey(oWindow) 
+/// <include file="Gui.xml" path="doc/HotKeyEdit.ApplyHotKey/*" />
+	METHOD ApplyHotKey(oWindow)
 		LOCAL dwHotKey			AS DWORD
 
 		IF IsNil(oWindow)
@@ -90,6 +99,7 @@ CLASS HotKeyEdit INHERIT TextControl
 
 		RETURN GuiWin32.SendMessage(oWindow:Handle(), WM_SETHOTKEY, dwHotKey, 0)
 
+/// <include file="Gui.xml" path="doc/HotKeyEdit.Create/*" />
 	METHOD Create() AS IVOControl STRICT
 		IF (SUPER:Create() != NULL_OBJECT)
 			IF oHotKeyRule != NULL_OBJECT
@@ -99,6 +109,8 @@ CLASS HotKeyEdit INHERIT TextControl
 
 		RETURN oCtrl
 
+
+/// <include file="Gui.xml" path="doc/HotKeyEdit.HotKey/*" />
 	ACCESS HotKey AS HotKey
 		LOCAL oHotKeyRet AS HotKey
 		LOCAL wRet AS WORD
@@ -112,7 +124,8 @@ CLASS HotKeyEdit INHERIT TextControl
 
 		RETURN oHotKeyRet
 
-	ASSIGN HotKey(oNewHotKey AS HotKey) 
+/// <include file="Gui.xml" path="doc/HotKeyEdit.HotKey/*" />
+	ASSIGN HotKey(oNewHotKey AS HotKey)
 		LOCAL bModifierFlags AS DWORD
 		IF oNewHotKey:AltKey
 			bModifierFlags := _OR(bModifierFlags, HOTKEYF_ALT)
@@ -129,9 +142,10 @@ CLASS HotKeyEdit INHERIT TextControl
 
 		GuiWin32.SendMessage(SELF:Handle(), HKM_SETHOTKEY, MakeWord(oNewHotKey:Key, (BYTE)bModifierFlags), 0)
 
-		RETURN 
+		RETURN
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+/// <include file="Gui.xml" path="doc/HotKeyEdit.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 
 		//IF !IsNil(kStyle)
 		//	dwStyle := _OR(dwStyle, kStyle)
@@ -145,32 +159,47 @@ CLASS HotKeyEdit INHERIT TextControl
 		ENDIF
 
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/HotKeyEdit.Rule/*" />
 	ACCESS Rule AS HotKeyRule
 		RETURN oHotKeyRule
 
-	ASSIGN Rule(oNewRule AS HotKeyRule) 
+/// <include file="Gui.xml" path="doc/HotKeyEdit.Rule/*" />
+	ASSIGN Rule(oNewRule AS HotKeyRule)
 		oHotKeyRule := oNewRule
 		SELF:__SetRule(oNewRule)
 
-		RETURN 
+		RETURN
 END CLASS
 
+/// <include file="Gui.xml" path="doc/HotKeyRule/*" />
 CLASS HotKeyRule INHERIT VObject
 
+/// <include file="Gui.xml" path="doc/HotKeyRule.AltKeyInvalid/*" />
 
 	PROPERTY AltKeyInvalid           AS LOGIC AUTO
+/// <include file="Gui.xml" path="doc/HotKeyRule.CtrlAltKeysInvalid/*" />
 	PROPERTY CtrlAltKeysInvalid      AS LOGIC AUTO
+/// <include file="Gui.xml" path="doc/HotKeyRule.CtrlKeyInvalid/*" />
 	PROPERTY CtrlKeyInvalid          AS LOGIC AUTO
+/// <include file="Gui.xml" path="doc/HotKeyRule.ShiftAltKeysInvalid/*" />
 	PROPERTY ShiftAltKeysInvalid     AS LOGIC AUTO
+/// <include file="Gui.xml" path="doc/HotKeyRule.ShiftCtrlAltKeysInvalid/*" />
 	PROPERTY ShiftCtrlAltKeysInvalid AS LOGIC AUTO
+/// <include file="Gui.xml" path="doc/HotKeyRule.ShiftCtrlKeysInvalid/*" />
 	PROPERTY ShiftCtrlKeysInvalid    AS LOGIC AUTO
+/// <include file="Gui.xml" path="doc/HotKeyRule.ShiftKeyInvalid/*" />
 	PROPERTY ShiftKeyInvalid         AS LOGIC AUTO
+/// <include file="Gui.xml" path="doc/HotKeyRule.UnmodifiedKeysInvalid/*" />
 	PROPERTY UnmodifiedKeysInvalid   AS LOGIC AUTO
+/// <include file="Gui.xml" path="doc/HotKeyRule.UseAltKeyOnInvalid/*" />
 	PROPERTY UseAltKeyOnInvalid      AS LOGIC AUTO
+/// <include file="Gui.xml" path="doc/HotKeyRule.UseCtrlKeyOnInvalid/*" />
 	PROPERTY UseCtrlKeyOnInvalid     AS LOGIC AUTO
+/// <include file="Gui.xml" path="doc/HotKeyRule.UseExtendedKeyOnInvalid/*" />
 	PROPERTY UseExtendedKeyOnInvalid AS LOGIC AUTO
+/// <include file="Gui.xml" path="doc/HotKeyRule.UseShiftKeyOnInvalid/*" />
 	PROPERTY UseShiftKeyOnInvalid    AS LOGIC AUTO
 
 END CLASS

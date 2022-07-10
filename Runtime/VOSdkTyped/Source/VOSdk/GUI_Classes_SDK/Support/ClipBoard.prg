@@ -69,7 +69,7 @@ RETURN
 			System.Windows.Forms.Clipboard.SetImage( (System.Drawing.Image) oBitMap:__Image)
 			lOk := TRUE
 		ELSE
-			WCError{#Insert,#Clipboard,__WCSTypeError,xType,1}:@@Throw()
+			WCError{#Insert,#Clipboard,__WCSTypeError,xType,1}:Throw()
 			lOk := FALSE
 		ENDIF
 		RETURN lOk

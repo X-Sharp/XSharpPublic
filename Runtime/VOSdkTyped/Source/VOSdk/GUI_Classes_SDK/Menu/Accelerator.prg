@@ -186,7 +186,7 @@ CLASS Accelerator INHERIT VObject
 			ENDIF
 			RETURN
 		ELSE
-			WCError{#Init, #Accelerator, __WCSTypeError, xResourceID, 1}:@@Throw()
+			WCError{#Init, #Accelerator, __WCSTypeError, xResourceID, 1}:Throw()
 		ENDIF
 
 		aKeys := NULL_OBJECT

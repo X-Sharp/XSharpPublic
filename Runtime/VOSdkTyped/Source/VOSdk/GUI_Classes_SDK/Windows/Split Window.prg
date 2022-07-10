@@ -125,7 +125,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
 			ELSEIF IsInstanceOf(oOBject, #DialogWindow)
 				SUPER(oOwner)
 			ELSEIF IsInstanceOf(oObject, #Window)
-				WCError{#Init, #SplitWindow, __WCSTypeError, oOwner, 1}:@@Throw()
+				WCError{#Init, #SplitWindow, __WCSTypeError, oOwner, 1}:Throw()
 			ELSE
 				SUPER(oOwner)
 			ENDIF

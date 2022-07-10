@@ -1,10 +1,11 @@
-
+/// <include file="Gui.xml" path="doc/RadioButton/*" />
 CLASS RadioButton INHERIT Button
 	PROTECT lSavedPressed AS LOGIC
 
+    /// <inheritdoc />
     PROPERTY ControlType AS ControlType GET ControlType.RadioButton
 
-
+    /// <inheritdoc />
 	METHOD OnHandleCreated(o AS OBJECT, e AS EventArgs) AS VOID
 		SUPER:OnHandleCreated(o, e)
 		GuiWin32.SetWindowLong(SELF:hWnd, GWL_STYLE, dwStyle)
@@ -14,14 +15,16 @@ CLASS RadioButton INHERIT Button
 	ACCESS __RadioButton AS IVORadioButton
 		RETURN (IVORadioButton ) oCtrl
 
-	METHOD Destroy() AS USUAL 
+/// <include file="Gui.xml" path="doc/RadioButton.Destroy/*" />
+	METHOD Destroy() AS USUAL
 		IF oCtrl != NULL_OBJECT .and. !oCtrl:IsDisposed
 			lSavedPressed := SELF:Pressed
 		ENDIF
 
 		RETURN SUPER:Destroy()
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, kStyle) 
+/// <include file="Gui.xml" path="doc/RadioButton.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, kStyle)
 
 		SUPER(oOwner, xID, oPoint, oDimension, cText, kStyle)
 		IF !IsInstanceOfUsual(xID,#ResourceID)
@@ -29,8 +32,9 @@ CLASS RadioButton INHERIT Button
 		ENDIF
 		SELF:ValueChanged := FALSE
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/RadioButton.Pressed/*" />
 	ACCESS Pressed  AS LOGIC
 		IF SELF:ValidateControl()
 			RETURN __RadioButton:Checked
@@ -38,7 +42,7 @@ CLASS RadioButton INHERIT Button
 			RETURN lSavedPressed
 		ENDIF
 
-	ASSIGN Pressed(lPressed AS LOGIC) 
+	ASSIGN Pressed(lPressed AS LOGIC)
 
 		IF SELF:ValidateControl()
 			__RadioButton:Checked := lPressed
@@ -46,7 +50,7 @@ CLASS RadioButton INHERIT Button
 			SELF:Value := lPressed
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	ACCESS TextValue AS STRING
 		LOCAL lTicked AS LOGIC
@@ -61,7 +65,8 @@ CLASS RadioButton INHERIT Button
 
 		RETURN cTickValue
 
-	ASSIGN TextValue(cNewValue  AS STRING) 
+/// <include file="Gui.xml" path="doc/RadioButton.TextValue/*" />
+	ASSIGN TextValue(cNewValue  AS STRING)
 		LOCAL lOldTicked AS LOGIC
 		LOCAL lTicked AS LOGIC
 
@@ -78,9 +83,10 @@ CLASS RadioButton INHERIT Button
 			SELF:Modified := TRUE
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	ACCESS Value 
+/// <include file="Gui.xml" path="doc/RadioButton.Value/*" />
+	ACCESS Value
 		RETURN SELF:Pressed
 
 END CLASS

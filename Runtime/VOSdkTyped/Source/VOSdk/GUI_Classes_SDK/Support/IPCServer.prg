@@ -147,7 +147,7 @@ METHOD AddTopic(oIpcTopic)
 
 	IF !IsNil(oIpcTopic)
 		IF !IsInstanceOfUsual(oIpcTopic, #IpcTopic)
-			WCError{#AddItem,#IpcServer,__WCSTypeError,oIpcTopic,1}:@@Throw()
+			WCError{#AddItem,#IpcServer,__WCSTypeError,oIpcTopic,1}:Throw()
 		ENDIF
 
 		cTopicString :=oIpcTopic:cTopicName
@@ -307,7 +307,7 @@ CONSTRUCTOR(cServName)
 	aTopicList := {}
 	SUPER()
 	IF !IsString(cServName)
-		WCError{#Init,#IpcServer,__WCSTypeError,cServName,1}:@@Throw()
+		WCError{#Init,#IpcServer,__WCSTypeError,cServName,1}:Throw()
 	ENDIF
 /*
 #ifdef __VULCAN__
@@ -337,11 +337,11 @@ METHOD UpdateTopic(cTopic, cItem)
 
 
 	IF !IsString(cTopic)
-		WCError{#UpdateTopic,#IpcServer,__WCSTypeError,cTopic,1}:@@Throw()
+		WCError{#UpdateTopic,#IpcServer,__WCSTypeError,cTopic,1}:Throw()
 	ENDIF
 
 	IF !IsString(cItem)
-		WCError{#UPdateTopic,#IpcServer,__WCSTypeError,cItem,2}:@@Throw()
+		WCError{#UPdateTopic,#IpcServer,__WCSTypeError,cItem,2}:Throw()
 	ENDIF
 
 	//cTempItem := Upper(cItem)

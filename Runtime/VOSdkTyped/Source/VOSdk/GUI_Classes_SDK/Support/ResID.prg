@@ -71,7 +71,7 @@ CLASS ResourceID INHERIT VObject
 		ENDIF
 
 		IF argTypeError
-			WCError{#Init, #ResourceID, __WCSTypeError}:@@Throw()
+			WCError{#Init, #ResourceID, __WCSTypeError}:Throw()
 		ENDIF
 
 		RETURN

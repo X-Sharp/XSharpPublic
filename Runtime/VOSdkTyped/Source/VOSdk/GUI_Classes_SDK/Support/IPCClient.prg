@@ -38,10 +38,10 @@ METHOD ChangeData(cTopic, cItem, cStringData)
 
 
 	IF !IsString(cItem)
-		WCError{#ChangData,#IpcClient,__WCSTypeError,cItem,2}:@@Throw()
+		WCError{#ChangData,#IpcClient,__WCSTypeError,cItem,2}:Throw()
 	ENDIF
 	IF !IsString(cStringData)
-		WCError{#ChangData,#IpcClient,__WCSTypeError,cStringData,3}:@@Throw()
+		WCError{#ChangData,#IpcClient,__WCSTypeError,cStringData,3}:Throw()
 	ENDIF
 
 	IF !Empty(cTopic)
@@ -85,7 +85,7 @@ METHOD ClientError(oIpcClientErrorEvent)
 		__WCSIpcError := __WCSIpcItemNotFound
 
 	ENDCASE
-	WCError{#ClientError,#IpcClient,__WCSIpcError}:@@Throw()
+	WCError{#ClientError,#IpcClient,__WCSIpcError}:Throw()
 	RETURN SELF
 
 
@@ -161,13 +161,13 @@ METHOD Destroy() AS USUAL
 
 
 	IF !IsString(cTopic)
-		WCError{#ChangData,#IpcClient,__WCSTypeError,cTopic,1}:@@Throw()
+		WCError{#ChangData,#IpcClient,__WCSTypeError,cTopic,1}:Throw()
 	ENDIF
 	IF !IsString(cItem)
-		WCError{#ChangData,#IpcClient,__WCSTypeError,cItem,2}:@@Throw()
+		WCError{#ChangData,#IpcClient,__WCSTypeError,cItem,2}:Throw()
 	ENDIF
 	IF !IsString(cCommand)
-		WCError{#ChangData,#IpcClient,__WCSTypeError,cCommand,3}:@@Throw()
+		WCError{#ChangData,#IpcClient,__WCSTypeError,cCommand,3}:Throw()
 	ENDIF
 
 	IF !Empty(cTopic)
@@ -200,7 +200,7 @@ CONSTRUCTOR(cServerName)
 
 	SUPER()
 	IF !IsString(cServerName)
-		WCError{#Init, #IpcClient,__WCSTypeError,cServerName,1}:@@Throw()
+		WCError{#Init, #IpcClient,__WCSTypeError,cServerName,1}:Throw()
 	ENDIF
 /*
 #ifdef __VULCAN__

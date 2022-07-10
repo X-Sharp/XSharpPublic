@@ -40,7 +40,7 @@ CLASS PaletteDialog INHERIT StandardColorDialog
 
 		IF !IsNil(uOwner)
 			IF !IsInstanceOfUsual(uOwner,#Window)
-				WCError{#Init,#PaletteDialog,__WCSTypeError,uOwner,1}:@@Throw()
+				WCError{#Init,#PaletteDialog,__WCSTypeError,uOwner,1}:Throw()
 			ENDIF
 		ENDIF
 		SUPER(oColor)
@@ -92,7 +92,7 @@ CLASS SelectDialog INHERIT StandardColorDialog
 
 		IF !IsNil(uOwner)
 			IF !IsInstanceOfUsual(uOwner,#Window)
-				WCError{#Init,#SelectDialog,__WCSTypeError,uOwner,1}:@@Throw()
+				WCError{#Init,#SelectDialog,__WCSTypeError,uOwner,1}:Throw()
 			ENDIF
 		ENDIF
 		SUPER(oColor)
@@ -135,7 +135,7 @@ CLASS StandardColorDialog INHERIT StandardDialog
 
 		IF !IsNil(oColor)
 			IF !IsInstanceOfUsual(oColor,#Color)
-				WCError{#Init,#StandardColorDialog,__WCSTypeError,oColor,1}:@@Throw()
+				WCError{#Init,#StandardColorDialog,__WCSTypeError,oColor,1}:Throw()
 			ENDIF
 			oDefColor := oColor
 		ENDIF
@@ -293,7 +293,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		SUPER()
 		IF !IsNil(uOwner)
 			IF !IsInstanceOfUsual(uOwner,#Window)
-				WCError{#Init,#TextBox,__WCSTypeError,uOwner,1}:@@Throw()
+				WCError{#Init,#TextBox,__WCSTypeError,uOwner,1}:Throw()
 			ELSE
 				oOwner:=uOwner
 			ENDIF
@@ -583,7 +583,7 @@ CLASS StandardFontDialog INHERIT StandardDialog
 	CONSTRUCTOR(uOwner)
 		IF !IsNil(uOwner)
 			IF !IsInstanceOfUsual(uOwner,#Window) .AND. IsInstanceOfUsual( uOwner,#Printer)
-				WCError{#Init,#StandardFontDialog,__WCSTypeError,uOwner,1}:@@Throw()
+				WCError{#Init,#StandardFontDialog,__WCSTypeError,uOwner,1}:Throw()
 			ENDIF
 			IF IsInstanceOf(uOwner, #Window)
 				oOwner := uOwner

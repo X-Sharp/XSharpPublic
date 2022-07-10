@@ -35,6 +35,11 @@ CLASS ResourceID INHERIT VObject
 	METHOD Handle() AS IntPtr STRICT
 	RETURN hInst
 
+
+/// <include file="Gui.xml" path="doc/ResourceID.Name/*" />
+	ACCESS Name as STRING
+		RETURN sID
+
 /// <include file="Gui.xml" path="doc/ResourceID.ID/*" />
 
 	ACCESS ID	AS LONG

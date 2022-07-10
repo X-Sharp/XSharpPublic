@@ -1018,7 +1018,7 @@ METHOD InsertItem(symParentName, symInsertAfter, oTreeViewItem)
 
 
 		// set up the insert structure
-		strucInsertItem:u:item:mask := _OR(TVIF_TEXT, TVIF_IMAGE, TVIF_SELECTEDIMAGE, (INT) dwMask) //, TVIF_PARAM
+		strucInsertItem:u:item:mask := (DWORD) _OR(TVIF_TEXT, TVIF_IMAGE, TVIF_SELECTEDIMAGE, (INT) dwMask) //, TVIF_PARAM
 		//strucInsertItem.u.item.lparam := LONG(_CAST, oTreeViewItem:NameSym)
 		strucInsertItem:u:item:statemask := dwStateMask
 		strucInsertItem:u:item:state := dwState 

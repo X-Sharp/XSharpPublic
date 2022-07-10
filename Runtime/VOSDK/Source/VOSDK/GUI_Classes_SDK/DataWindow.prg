@@ -2443,7 +2443,7 @@ CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
 	DEFAULT(@oOwner, GetAppObject())
 	//SE-120204
 	IF IsLong(nDialogStyle)
-	   dwDialogStyle := _OR(LONG(nDialogStyle), WS_DLGFRAME)
+	   dwDialogStyle := (DWORD) _OR(LONG(nDialogStyle), WS_DLGFRAME)
 	ENDIF
 
 

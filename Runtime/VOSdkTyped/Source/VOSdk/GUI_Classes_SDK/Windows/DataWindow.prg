@@ -404,7 +404,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
  /// <exclude />
-	METHOD __DoValidate(oControl AS Control) AS DataWindow STRICT
+	METHOD __DoValidate(oControl AS Control) AS VOID STRICT
 		//RH Check fore Server on control in stead of Server on window
 		LOCAL oServer AS DataServer
 		IF oControl is RadioButton
@@ -439,8 +439,30 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ENDIF
 		ENDIF
 
-		RETURN SELF
+		RETURN 
 
+
+    /// <exclude />
+    METHOD __DoValidateColumn(oColumn AS DataColumn) AS VOID STRICT
+	    IF oColumn:Modified
+		    oColumn:__Update()
+		    IF oColumn:ValueChanged
+			    IF !oColumn:PerformValidations()
+				    oHLStatus := oColumn:Status
+				    SELF:__UpdateStatus()
+			    ELSE
+				    oHLStatus := oColumn:Status
+				    SELF:StatusMessage(NULL_STRING, MessageError)
+				    IF !IsNil(oAttachedServer)
+					    oColumn:__Gather()
+				    ENDIF
+			    ENDIF
+			    SELF:PreValidate()
+			    oColumn:ValueChanged := TRUE
+		    ENDIF
+	    ENDIF
+
+	    RETURN 
 
  /// <exclude />
 	METHOD __EnableHelpCursor(lEnabled AS LOGIC) AS Window STRICT
@@ -1989,7 +2011,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		LOCAL oDF AS DataField
 		LOCAL oControl AS Control
 
-		
+
 	SWITCH (INT) kNotification
 	CASE NOTIFYCOMPLETION
 			// Do nothing, __NotifyCompletion had no code in it

@@ -4167,7 +4167,7 @@ CLASS DataColumn INHERIT VObject
                   iMaxWidth := Max(i-1, iMaxWidth)
                   cTemp := SubStr(cTemp, i+1)
                ELSE
-                  iMaxWidth := Max(SLen(cTemp), iMaxWidth)
+                  iMaxWidth := Max((INT) SLen(cTemp), iMaxWidth)
                   EXIT
                ENDIF
             ENDDO
@@ -4182,9 +4182,9 @@ CLASS DataColumn INHERIT VObject
 
 		// multi line titles are vertically aligned on the Top of the control by default
          IF (ilines > 1)
-            strucFI:flFTitleAlign := _OR(iAlign,CA_TA_TOP)
+            strucFI:flFTitleAlign := (DWORD) _OR(iAlign,CA_TA_TOP)
          ELSE
-            strucFI:flFTitleAlign := _OR(iAlign,CA_TA_VCENTER)
+            strucFI:flFTitleAlign := (DWORD) _OR(iAlign,CA_TA_VCENTER)
          ENDIF
 
          cCaption := cText

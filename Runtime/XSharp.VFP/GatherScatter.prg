@@ -91,7 +91,7 @@ FUNCTION __GatherMemVar(aFieldList) AS LOGIC CLIPPER
 
 FUNCTION __ScatterArray(uSource, aFieldList, lBlank) AS ARRAY CLIPPER
     VAR aFields := __GetFieldValues(aFieldList, FALSE, lBlank)
-    VAR nLen    := aFields:Length
+    VAR nLen    := (DWORD) aFields:Length
 
     LOCAL aResult AS ARRAY
     LOCAL aSource := NULL_ARRAY as ARRAY

@@ -23,7 +23,7 @@ FUNCTION __SetAppObject(oNewApp AS App) AS App STRICT
 
 
 	LeaveCriticalSection(@__WCCSApp)
-#endif	
+#endif
 
 
 	RETURN oApp
@@ -31,18 +31,18 @@ FUNCTION __SetAppObject(oNewApp AS App) AS App STRICT
 
  /// <exclude />
 FUNCTION __WCConvertPoint(oWindow AS OBJECT, oPoint AS Point) AS Point STRICT
-    //SE-080520 optimized version 
+    //SE-080520 optimized version
     LOCAL sRect  IS _WINRECT
     LOCAL yCoord AS INT
-    
-    
+
+
     IF __WCCoordinateSystem // Cartesian Coordinate System
         IF oWindow == NULL_OBJECT .OR. IsInstanceOf(oWindow,#App)
             yCoord := GetSystemMetrics(SM_CYSCREEN) - oPoint:Y
         ELSEIF IsInstanceOf(oWindow,#Window)
             GetClientRect(oWindow:Handle(4), @sRect)
             yCoord :=  sRect:bottom - oPoint:Y
-        ELSE // The parent is a control 
+        ELSE // The parent is a control
             GetWindowRect(oWindow:Handle(), @sRect)
             yCoord := sRect:bottom - sRect:top - oPoint:Y
         ENDIF
@@ -59,16 +59,16 @@ FUNCTION __WCConvertPoint(oWindow AS OBJECT, oPoint AS Point) AS Point STRICT
 STATIC GLOBAL __WCCoordinateSystem := WCCartesianCoordinates AS LOGIC
 
 
-#ifdef __VULCAN__ 
+#ifdef __VULCAN__
 
 
    // We don't use critical sections in the Vulcan version because __WCDeleteCriticalSection()
    // ends up being called before the GC finalizes all of the window objects.  When a window is
    // destroyed, its destructor (Axit) calls WCUnregisterMenu(), and since the critical section in
    // __WCCSMenu has already been destroyed and this causes an access violation on the call to
-   // EnterCriticalSection() in WCUnregisterMenu(). 
-   
-   
+   // EnterCriticalSection() in WCUnregisterMenu().
+
+
    // So, rather than using native CriticalSection objects, we use .NET locks.  For menus and
    // timers, the critical sections protected the arrays __WCMenuList and __WCTimerObjects so we can
    // just lock on those objects.  For oApp and __WCDCCurHDCOwner, we need something constant to
@@ -76,8 +76,8 @@ STATIC GLOBAL __WCCoordinateSystem := WCCartesianCoordinates AS LOGIC
    // timing issues, since none of these objects will be destroyed until the last reference goes
    // out of scope, and we don't have to worry about the timing of the garbage collector and the
    // invocation of window finalizers.
-   
-   
+
+
    STATIC GLOBAL __WCCSHDC := OBJECT{} AS OBJECT
    GLOBAL __WCCSApp := OBJECT{} AS OBJECT
 #else
@@ -99,7 +99,7 @@ FUNCTION __WCDeleteCriticalSections()
 	DeleteCriticalSection(@__WCCSTimer)
 	DeleteCriticalSection(@__WCCSHDC)
 	DeleteCriticalSection(@__WCCSApp)
-	#endif   
+	#endif
 	RETURN NIL
 
 
@@ -287,10 +287,10 @@ FUNCTION __WCGetMenuByHandle(hMenu AS PTR) AS Menu STRICT
 #ifdef __VULCAN__
 			p := (PTR) __WCMenuList[dwIndex][1]
 			oMenu := GCHandle.FromIntPtr( PTR( p ) ):Target
-#else			
+#else
 			p := __WCMenuList[dwIndex][1]
 			oMenu := OBJECT(_CAST, PTR(p))
-#endif			
+#endif
 		ENDIF
 	ENDIF
 
@@ -346,9 +346,9 @@ FUNCTION __WCGetPictureCoordinates(hWnd AS PTR, hDCPrinter AS PTR, lpRC AS _winR
 	//LOCAL pt IS _winPoint
 	LOCAL hDCTemp:= GetDC(hWnd) AS PTR
 	LOCAL ratioX := 0 AS INT
-	LOCAL ratioY := 0 AS INT  
+	LOCAL ratioY := 0 AS INT
 	LOCAL nShrinkX, nShrinkY AS FLOAT
-	LOCAL nWidth, nHeight AS INT  
+	LOCAL nWidth, nHeight AS INT
    LOCAL nX, nY AS INT
 	GetWindowRect(hWnd, lpRc)
 	OffsetRect(lpRc, - lpRc:left, - lpRc:top)
@@ -374,32 +374,32 @@ FUNCTION __WCGetPictureCoordinates(hWnd AS PTR, hDCPrinter AS PTR, lpRC AS _winR
    nHeight 	:= GetDeviceCaps(hDCPrinter, PHYSICALHEIGHT)
    nX 		:= GetDeviceCaps(hDCPrinter, PHYSICALOFFSETX)
    nY 		:= GetDeviceCaps(hDCPrinter, PHYSICALOFFSETY)
-   
-   
+
+
    IF (lpRC:right > nWidth-nX .OR. lpRC:bottom> nHeight-nY)
    	// e.g. Image = 800 - 600, paper = 200 - 300
    	// shrinkX = 200/800 = 0.25
    	// shrinkY = 300/600 = 0.50
    	// we must shrink with 0.25 to fit.
-   	nShrinkX := FLOAT(nWidth-nX) / FLOAT(lpRC:Right)  
+   	nShrinkX := FLOAT(nWidth-nX) / FLOAT(lpRC:Right)
    	nShrinkY := FLOAT(nHeight-nY) / FLOAT(lpRC:bottom)
-   	 
-   	 
+
+
    	IF nShrinkY < nShrinkX
-			lpRC:right 	:= INT(FLOAT(lpRC:Right) * nShrinkY)
+			lpRC:right 	:= (INT) FLOAT(lpRC:Right) * nShrinkY
 			lpRC:bottom := INT(FLOAT(lpRC:bottom) * nShrinkY)
    	ELSE
 			lpRC:right 	:= INT(FLOAT(lpRC:Right) * nShrinkX)
 			lpRC:bottom := INT(FLOAT(lpRC:bottom) * nShrinkX)
-   	ENDIF   		     
-		lpRC:left 	:= nX 
+   	ENDIF
+		lpRC:left 	:= nX
    	lpRC:top		:= nY
    ELSE
 		OffsetRect(lpRC, (nWidth / 2) - (lpRC:right / 2), (nHeight / 2) - (lpRC:bottom / 2))
 		OffsetRect(lpRC, - nX, - nY)
    ENDIF
-   
-   
+
+
 	//IF (Escape(hDCPrinter, GETPHYSPAGESIZE, 0, NULL, @pt) >= 0)
 	//	OffsetRect(lpRc, (pt.x / 2) - (lpRc.right / 2), (pt.y / 2) - (lpRc.bottom / 2))
 	//ENDIF
@@ -453,13 +453,13 @@ FUNCTION __WCGetWindowObjectByHandle(hWnd AS PTR) AS OBJECT STRICT
 PROCEDURE __WCInitCriticalSections() _INIT1
 #ifdef __VULCAN__
    AppDomain.CurrentDomain:ProcessExit += System.EventHandler{ NULL, @GUIExit() }
-#else	
+#else
 	InitializeCriticalSection(@__WCCSMenu)
 	InitializeCriticalSection(@__WCCSTimer)
 	InitializeCriticalSection(@__WCCSHDC)
 	InitializeCriticalSection(@__WCCSApp)
 	_RegisterWEP(@GUIExit(), _GetInst())
-#endif	
+#endif
   	RETURN
 
 
@@ -578,7 +578,7 @@ FUNCTION __WCRegisterControl(oControl AS Control) AS VOID
 	LOCAL strucSelf AS SelfPtr
 	strucSelf := __WCSelfPtrAlloc(oControl)
 	__WCRegisterProperty(oControl:Handle(), strucSelf)
-	RETURN 
+	RETURN
 
 
  /// <exclude />
@@ -586,14 +586,14 @@ FUNCTION __WCRegisterMenu(oObject AS Menu, hMenu AS PTR) AS VOID
 	LOCAL idx, iLen AS DWORD
 	LOCAL p AS PTR PTR// as SelfPtr
 	LOCAL lFound	AS LOGIC
-	
-	
+
+
 #ifdef __VULCAN__
 
 
    BEGIN LOCK __WCMenuList
-   
-   
+
+
 	   iLen := ALen(__WCMenuList)
 	   lFound := FALSE
 	   FOR idx := 1 TO iLen
@@ -609,7 +609,7 @@ FUNCTION __WCRegisterMenu(oObject AS Menu, hMenu AS PTR) AS VOID
 	   ENDIF
 
 
-   END LOCK	
+   END LOCK
 
 
 #else
@@ -643,9 +643,9 @@ FUNCTION __WCRegisterMenu(oObject AS Menu, hMenu AS PTR) AS VOID
 
 
 	LeaveCriticalSection(@__WCCSMenu)
-	
-	
-#endif	
+
+
+#endif
 
 
 	RETURN
@@ -654,24 +654,24 @@ FUNCTION __WCRegisterMenu(oObject AS Menu, hMenu AS PTR) AS VOID
  /// <exclude />
 FUNCTION __WCRegisterTimer(oNew AS OBJECT) AS VOID STRICT
 	LOCAL idx, iLen AS DWORD
-	
-	
+
+
 #ifdef __VULCAN__
 
 
    STATIC LOCAL WCTimerProcDelegate AS __WCTimerProcDelegate
    STATIC LOCAL TimerProcPtr AS IntPtr
-   
-   
+
+
    IF WCTimerProcDelegate == NULL
       WCTimerProcDelegate := __WCTimerProcDelegate{ NULL, @__WCTimerProc() }
       TimerProcPtr        := System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) WCTimerProcDelegate )
    ENDIF
-   
-   
+
+
    BEGIN LOCK __WCTimerObjects
-   
-   
+
+
 	   iLen := ALen(__WCTimerObjects)
 	   FOR idx := 1 TO iLen
 		   IF (__WCTimerObjects[idx] == oNew)
@@ -695,11 +695,11 @@ FUNCTION __WCRegisterTimer(oNew AS OBJECT) AS VOID STRICT
 
 
    END LOCK
-   
-   
-#else   
-   
-   
+
+
+#else
+
+
 	EnterCriticalSection(@__WCCSTimer)
 
 
@@ -726,9 +726,9 @@ FUNCTION __WCRegisterTimer(oNew AS OBJECT) AS VOID STRICT
 
 
 	LeaveCriticalSection(@__WCCSTimer)
-	
-	
-#endif	
+
+
+#endif
 
 
 	RETURN
@@ -784,17 +784,17 @@ FUNCTION __WCTimerProc(hWnd AS PTR, uMsg AS DWORD, idEvent AS DWORD, dwTime AS D
    BEGIN LOCK __WCTimerObjects
 	   iLen := INT(_CAST, ALen(__WCTimerObjects))
 	   FOR i:= 1 TO iLen
-		   IF IsObject(__WCTimerObjects[i]) 
-			   oObject := __WCTimerObjects[i] 
+		   IF IsObject(__WCTimerObjects[i])
+			   oObject := __WCTimerObjects[i]
 			   IF IsMethod(oObject, #__Timer)
 				   oObject:__Timer()
 			   ENDIF
 		   ENDIF
 	   NEXT
    END LOCK
-   
-   
-#else   
+
+
+#else
 
 
 	EnterCriticalSection(@__WCCSTimer)
@@ -802,8 +802,8 @@ FUNCTION __WCTimerProc(hWnd AS PTR, uMsg AS DWORD, idEvent AS DWORD, dwTime AS D
 
 	iLen := INT(_CAST, ALen(__WCTimerObjects))
 	FOR i:= 1 TO iLen
-		IF IsObject(__WCTimerObjects[i]) 
-			oObject := __WCTimerObjects[i] 
+		IF IsObject(__WCTimerObjects[i])
+			oObject := __WCTimerObjects[i]
 			IF IsMethod(oObject, #__Timer)
 				oObject:__Timer()
 			ENDIF
@@ -812,9 +812,9 @@ FUNCTION __WCTimerProc(hWnd AS PTR, uMsg AS DWORD, idEvent AS DWORD, dwTime AS D
 
 
 	LeaveCriticalSection(@__WCCSTimer)
-	
-	
-#endif	
+
+
+#endif
 
 
 	RETURN
@@ -849,8 +849,8 @@ FUNCTION __WCUnRegisterControl(hwndCtl AS PTR) AS VOID
  /// <exclude />
 FUNCTION __WCUnregisterTimer(oDel AS OBJECT) AS VOID STRICT
 	LOCAL idx, iLen AS DWORD
-	
-	
+
+
 #ifdef __VULCAN__
 
 
@@ -867,9 +867,9 @@ FUNCTION __WCUnregisterTimer(oDel AS OBJECT) AS VOID STRICT
 		   __WCTimerObjects[idx] := NIL
 	   ENDIF
    END LOCK
-   
-   
-#else   	
+
+
+#else
 
 
 	EnterCriticalSection(@__WCCSTimer)
@@ -895,9 +895,9 @@ FUNCTION __WCUnregisterTimer(oDel AS OBJECT) AS VOID STRICT
 
 
 	LeaveCriticalSection(@__WCCSTimer)
-	
-	
-#endif	
+
+
+#endif
 
 
 	RETURN
@@ -935,7 +935,7 @@ FUNCTION GetAppObject() AS App STRICT
    BEGIN LOCK __WCCSApp
    oRet := oApp
    END LOCK
-#else   
+#else
 	EnterCriticalSection(@__WCCSApp)
 	oRet := oApp
 	LeaveCriticalSection(@__WCCSApp)
@@ -971,8 +971,8 @@ FUNCTION __WCGetObjectByHandle(hWnd AS PTR) AS OBJECT STRICT
 	ENDIF
 	// When not a control and not a window, then maybe a menu ?
    RETURN __WCGetMenuByHandle(hWnd)
-	
-	
+
+
 #ifdef __VULCAN__
    // This is registered as an ProcessExit event handler, so it needs
    // a different signature in Vulcan than it does in VO, which uses
@@ -1050,7 +1050,7 @@ FUNCTION WCDCClear() AS VOID STRICT
 		   __WCDCCurHDCOwner:__ReleaseDC()
 	   ENDIF
    END LOCK
-#else   
+#else
 	EnterCriticalSection(@__WCCSHDC)
 
 
@@ -1197,15 +1197,15 @@ FUNCTION __WCUnregisterMenu(oObject AS Menu) AS VOID
 	IF (oObject == NULL_OBJECT)
 		RETURN
 	ENDIF
-	
-	
+
+
 #ifdef __VULCAN__
 
 
    BEGIN LOCK __WCMenuList
-   
-   
-	   iLen 		:= INT(_CAST, ALen(__WCMenuList))
+
+
+	   iLen 		:=   ALen(__WCMenuList)
 	   FOR idx := iLen DOWNTO 1
 		   p := __WCMenuList[idx][1]
 
@@ -1226,17 +1226,17 @@ FUNCTION __WCUnregisterMenu(oObject AS Menu) AS VOID
 	   ENDIF
 
 
-   END LOCK	
-   
-   
-#else   
+   END LOCK
+
+
+#else
 
 
 	EnterCriticalSection(@__WCCSMenu)
 
 
 	iLen 		:= ALen(__WCMenuList)
-	FOR idx := iLen DOWNTO 1 
+	FOR idx := iLen DOWNTO 1
 		p := __WCMenuList[idx][1]
 		IF (PTR(p) == PTR(_CAST, oObject)) .OR. (PTR(p) == NULL_PTR)
 			UnRegisterKid(p)
@@ -1249,9 +1249,9 @@ FUNCTION __WCUnregisterMenu(oObject AS Menu) AS VOID
 		ASize(__WCMenuList, ALen(__WCMenuList) - iDel)
 	ENDIF
 	LeaveCriticalSection(@__WCCSMenu)
-	
-	
-#endif	
+
+
+#endif
 
 
 	RETURN
@@ -1336,10 +1336,10 @@ FUNCTION __WCSelfPtrAlloc(oObject AS OBJECT) AS  SelfPtr
 	strucSelfPtr := MemAlloc(_SizeOf(SelfPtr))
 	RegisterKid(@strucSelfPtr:ptrSelf, 1, FALSE)
 	strucSelfPtr:ptrSelf := PTR(_CAST, oObject)
-#endif	
+#endif
    RETURN strucSelfPtr
-   
-   
+
+
  /// <exclude />
 FUNCTION __WCSelfPtrFree(ptrSelfPtr AS SelfPtr) AS LOGIC
    LOCAL lOk := FALSE AS LOGIC
@@ -1367,14 +1367,14 @@ FUNCTION __WCSelfPtr2Object( p AS SelfPtr) AS OBJECT
       #else
 		      oObject := OBJECT(_CAST, p:ptrSelf)
       #endif
-      RETURN oObject  
-   ENDIF   
+      RETURN oObject
+   ENDIF
    RETURN NULL_OBJECT
-   
-   
-   
-   
-// Three new functions that manage the properties 
+
+
+
+
+// Three new functions that manage the properties
  /// <exclude />
 FUNCTION __WCRegisterProperty(hWnd AS PTR, hSelf AS SelfPtr) AS LOGIC
    IF (hWnd != NULL_PTR)

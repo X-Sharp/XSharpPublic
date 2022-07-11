@@ -14,6 +14,7 @@ namespace XSharp.LanguageService
         DocComments = 1 << 4,
         Inactive = 1 << 5,
         SingleLineEntity = 1 << 6,
+        Preprocessor = 1 << 7,
 
     }
     /// <summary>

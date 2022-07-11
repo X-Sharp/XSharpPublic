@@ -451,6 +451,7 @@ namespace XSharp.LanguageService
             {
                 case XSharpLexer.PREPROCESSORCHANNEL:
                     // #define, #ifdef etc
+                    lineState.SetFlags(token.Line - 1, LineFlags.Preprocessor);
                     result = Token2ClassificationSpan(token, snapshot, xsharpPPType);
                     switch (token.Type)
                     {
@@ -492,7 +493,14 @@ namespace XSharp.LanguageService
                         else
                         {
                             if (token.Type == XSharpLexer.DOC_COMMENT)
-                                lineState.SetFlags(token.Line - 1, LineFlags.DocComments);
+                            {
+                                var startline = result.Span.Start.GetContainingLine().LineNumber;
+                                var endLine = result.Span.End.GetContainingLine().LineNumber;
+                                for (int i = startline; i <= endLine; i++)
+                                {
+                                    lineState.SetFlags(i, LineFlags.DocComments);
+                                }
+                            }
                             else
                                 lineState.SetFlags(token.Line - 1, LineFlags.SingleLineComments);
                         }

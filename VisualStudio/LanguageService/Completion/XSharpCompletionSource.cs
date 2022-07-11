@@ -415,6 +415,14 @@ namespace XSharp.LanguageService
                 }
                 // Sort in alphabetical order
                 // and put in the SelectionList
+                if (compList.Values.Count == 1)
+                {
+                    var value = compList.Values.First();
+                    if (value.KeyText.ToLower() == filterText.ToLower())
+                    {
+                        compList.Clear();
+                    }    
+                }
                 var values = compList.Values;
                 // Create the All Tab
                 completionSets.Add(new CompletionSet("All", "All", applicableTo, values, Enumerable.Empty<Completion>()));

@@ -10,50 +10,80 @@ namespace XSharp.LanguageService.OptionsPages
         {
             InitializeComponent();
             //
-            ListViewItem lvi = new ListViewItem("Indent Entity content");
-            lvi.Tag = new String[] { "IndentEntityContent",
+            treeIndentStyle.CheckBoxes = true;
+            var tvi = new TreeNode("Indent entities inside namespace");
+            var first = tvi;
+            tvi.Tag = new string[] { "IndentNamespace",
+                @"\cf1 BEGIN NAMESPACE \cf0 MyNs\par\cf1\tab CLASS \cf0 MyClass \par\par\tab\cf1 END CLASS \cf0\par\cf1 END NAMESPACE\par}",
+                @"\cf1 BEGIN NAMESPACE \cf0 MyNs\par\cf1 CLASS \cf0 MyClass \par\par\cf1 END CLASS \cf0\par\cf1 END NAMESPACE\par}" };
+            this.treeIndentStyle.Nodes.Add(tvi);
+            tvi = new TreeNode("Indent members inside types");
+            tvi.Tag = new string[] { "IndentEntityContent",
                 @"\cf1 CLASS \cf0 foo\par\cf1\tab PUBLIC \cf0 x \cf1 AS INT\cf0\par\par\cf1\tab METHOD \cf0 m1() \cf1 AS VOID\cf0\par}",
                 @"\cf1 CLASS \cf0 foo\par\cf1 PUBLIC \cf0 x \cf1 AS INT\cf0\par\par\cf1 METHOD \cf0 m1() \cf1 AS VOID\cf0\par}" };
-            this.listIndentStyle.Items.Add(lvi);
+            this.treeIndentStyle.Nodes.Add(tvi);
             //
-            lvi = new ListViewItem("Indent block content");
-            lvi.Tag = new String[] { "IndentBlockContent",
+            tvi = new TreeNode("Indent statements inside entities");
+            tvi.Tag = new string[] { "IndentBlockContent",
                 @"\cf1 FUNCTION \cf0 foo\par\cf1\tab LOCAL \cf0 x \cf1 AS INT\cf0\par\cf1\tab LOCAL \cf0 y \cf1 AS INT\cf0\par}",
                 @"\cf1 FUNCTION \cf0 foo\par\cf1 LOCAL \cf0 x \cf1 AS INT\cf0\par\cf1 LOCAL \cf0 y \cf1 AS INT\cf0\par}" };
-            this.listIndentStyle.Items.Add(lvi);
+            this.treeIndentStyle.Nodes.Add(tvi);
             //
-            lvi = new ListViewItem("Indent case content");
-            lvi.Tag = new String[] { "IndentCaseContent",
+            tvi = new TreeNode("Indent statements inside case block");
+            tvi.Tag = new string[] { "IndentCaseContent",
                 @"\cf1 DO CASE \par\cf1\tab CASE \cf0 x == 1\par\cf1\tab\tab nop\par\cf1\tab\tab nop\cf0\par}",
                 @"\cf1 DO CASE \par\cf1\tab CASE \cf0 x == 1\par\cf1\tab nop\par\cf1\tab nop\cf0\par}" };
-            this.listIndentStyle.Items.Add(lvi);
+            this.treeIndentStyle.Nodes.Add(tvi);
             //
-            lvi = new ListViewItem("Indent case label");
-            lvi.Tag = new String[] { "IndentCaseLabel",
+            tvi = new TreeNode("Indent case label");
+            tvi.Tag = new string[] { "IndentCaseLabel",
                 @"\cf1 DO CASE \par\cf1\tab CASE \cf0 x == 1\par\par\cf1\tab CASE \cf0 x == 2\par}",
                 @"\cf1 DO CASE \par\cf1 CASE \cf0 x == 1\par\par\cf1 CASE \cf0 x == 2\par}" };
-            this.listIndentStyle.Items.Add(lvi);
+            this.treeIndentStyle.Nodes.Add(tvi);
             //
-            lvi = new ListViewItem("Indent continuing Lines");
-            lvi.Tag = new String[] { "IndentMultiLines",
+            tvi = new TreeNode("Indent continuing Lines");
+            tvi.Tag = new string[] { "IndentMultiLines",
                 @"\cf1 FUNCTION \cf0 foo( \cf0 x \cf1 AS INT ; \par \tab\cf0 y \cf1 AS INT \cf0 ; \par \tab\cf0 z \cf1 AS INT \cf0) \par}",
                 @"\cf1 FUNCTION \cf0 foo( \cf0 x \cf1 AS INT ; \par \cf0 y \cf1 AS INT \cf0 ; \par \cf0 z \cf1 AS INT \cf0) \par}" };
-            this.listIndentStyle.Items.Add(lvi);
+            this.treeIndentStyle.Nodes.Add(tvi);
+            tvi = new TreeNode("Indent preprocessor lines");
+            tvi.Tag = new string[] { "IndentPreprocessor",
+                @"\cf1 CLASS \cf0 foo\par\tab\cf0#region FIELDS \par\cf1\tab PUBLIC \cf0 x \cf1 AS INT\cf0\par\tab\cf0#endregion\par\cf1\tab METHOD \cf0 m1() \cf1 AS VOID\cf0\par}",
+                @"\cf1 CLASS \cf0 foo\par\cf0#region FIELDS \par\cf1\tab PUBLIC \cf0 x \cf1 AS INT\cf0\par\cf0#endregion\par\cf1\tab METHOD \cf0 m1() \cf1 AS VOID\cf0\par}" };
+            this.treeIndentStyle.Nodes.Add(tvi);
+            this.treeIndentStyle.AfterCheck += TreeIndentStyle_AfterCheck;
+            this.treeIndentStyle.AfterSelect += TreeIndentStyle_AfterSelect;
+            this.treeIndentStyle.SelectedNode = first;
+        }
+
+        private void TreeIndentStyle_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            var node = e.Node;
+            var tag = node.Tag;
+            ShowCodeSample(tag, node.Checked);
+        }
+
+        private void TreeIndentStyle_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            var node = e.Node;
+            var tag = node.Tag;
+            ShowCodeSample(tag, node.Checked);
+
         }
 
 
         private IndentingOptionsPage OurOptionPage => (IndentingOptionsPage)optionPage;
         internal override void ReadValues()
         {
-            foreach (ListViewItem lvi in this.listIndentStyle.Items)
+            foreach (TreeNode tvi in this.treeIndentStyle.Nodes)
             {
-                ReadListViewItem(lvi);
+                ReadItem(tvi);
             }
         }
 
-        private void ReadListViewItem(ListViewItem lvi)
+        private void ReadItem(TreeNode tvi)
         {
-            var tag = lvi.Tag;
+            var tag = tvi.Tag;
             if (tag is string[] tags)
             {
                 // The Tag is a String[] with 3 elements :
@@ -69,7 +99,7 @@ namespace XSharp.LanguageService.OptionsPages
                         var val = prop.GetValue(optionPage);
                         if (val is bool bValue)
                         {
-                            lvi.Checked = bValue;
+                            tvi.Checked = bValue;
                         }
                     }
                 }
@@ -78,15 +108,15 @@ namespace XSharp.LanguageService.OptionsPages
 
         internal override void SaveValues()
         {
-            foreach (ListViewItem lvi in this.listIndentStyle.Items)
+            foreach (TreeNode tvi in this.treeIndentStyle.Nodes)
             {
-                SaveListViewItem(lvi);
+                SaveItem(tvi);
             }
         }
 
-        private void SaveListViewItem(ListViewItem lvi)
+        private void SaveItem(TreeNode tvi)
         {
-            var tag = lvi.Tag;
+            var tag = tvi.Tag;
             if (tag is string[] tags)
             {
                 // The Tag is a String[] with 3 elements :
@@ -99,7 +129,7 @@ namespace XSharp.LanguageService.OptionsPages
                     var prop = optionPage.GetType().GetProperty(strTag);
                     if (prop != null && prop.SetMethod != null)
                     {
-                        prop.SetValue(optionPage, lvi.Checked);
+                        prop.SetValue(optionPage, tvi.Checked);
                     }
                 }
             }
@@ -109,16 +139,6 @@ namespace XSharp.LanguageService.OptionsPages
         {
             var tag = e.Item.Tag;
             ShowCodeSample(tag, e.Item.Checked );
-        }
-
-        private void listIndentStyle_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var items = this.listIndentStyle.SelectedItems;
-            if (items.Count > 0)
-            {
-                var tag = items[0].Tag;
-                ShowCodeSample(tag, items[0].Checked);
-            }
         }
 
         private void ShowCodeSample( object tag, bool isChecked)

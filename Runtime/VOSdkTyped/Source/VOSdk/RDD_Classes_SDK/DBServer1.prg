@@ -33,7 +33,7 @@ METHOD Append( lReleaseLocks AS LOGIC) AS LOGIC
 				ENDIF
 				lRetCode := __DBSAPPEND( lLocks, nTries )
 				IF nEffectiveCCMode == ccStable
-					nLastLock := VoDbRecno( )
+					nLastLock := (LONG) VoDbRecno( )
 				ENDIF
 			ENDIF
 			siSelectionStatus := DBSELECTIONNULL

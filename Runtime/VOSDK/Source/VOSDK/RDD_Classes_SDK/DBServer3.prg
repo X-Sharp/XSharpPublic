@@ -461,7 +461,7 @@ METHOD GoTo( nRecordNumber )
 							__DBSGoBottom( nTries )
 							__DBSSkip( 1, nTries )
 						ELSE
-							__DBSGoTo( nCurrentRecord, nTries )
+							__DBSGoTo( (INT) nCurrentRecord, nTries )
 						ENDIF
 					ENDIF
 				ENDIF

@@ -1325,7 +1325,7 @@ METHOD Skip( nRecordCount )
 							IF VODBEof() .OR. ! ( Eval( cbSelectionIndexingExpression ) = uSelectionValue )
 								siSelectionStatus := DBSELECTIONEOF
 								IF ! VODBEof()
-									wLastSelectionRec := VODBRecno() - 1
+									wLastSelectionRec := (INT) VODBRecno() - 1 
 									__DBSGoBottom(nTries)
 									__DBSSkip(1, nTries)
 								ENDIF

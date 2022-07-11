@@ -1299,11 +1299,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             var leftEquals = Equals(binaryOperator.Left.Type, leftType) || binaryOperator.Left.ConstantValue != null;
             var rightEquals = Equals(binaryOperator.Right.Type, rightType) || binaryOperator.Right.ConstantValue != null;
 
-            if (!leftEquals || !rightEquals)
-            {
-                node.XWarning = true;
-            }
-
             BoundExpression result = binaryOperator;
             var kind = binaryOperator.OperatorKind;
             if (kind.IsComparison())

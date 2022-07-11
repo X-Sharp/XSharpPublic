@@ -227,21 +227,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Conversion result = Conversion.NoConversion;
                 if (source.IsXNumericType() && destination.IsXNumericType())
                 {
-                    if (vo4 || syntax.XSignChanged) // XSignChanged is used for Sizeof and SLen
+                    if (vo4 || syntax.XNoTypeWarning)
                     {
                         srcType = source.XsSpecialtype();
                         dstType = destination.XsSpecialtype();
-                        if (srcType.IsIntegralType() && dstType.IsIntegralType() )
+                        if (srcType.IsIntegralType() && dstType.IsIntegralType())
                         {
                             // when both same # of bits and integral, use Identity conversion
-                            if (srcType.SizeInBytes() == dstType.SizeInBytes())
-                            {
+                            if (srcType.SizeInBytes() == dstType.SizeInBytes() && sourceExpression.HasConstant())
                                 result = Conversion.Identity;
-                            }
                             else
-                            {
                                 result = Conversion.ImplicitNumeric;
-                            }
                         }
                         else
                         {

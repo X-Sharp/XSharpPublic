@@ -310,9 +310,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 default:
                     break;
             }
-            _macroDefines.Add("__MEMVAR__", (token) => new XSharpToken(_options.SupportsMemvars ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__UNDECLARED__", (token) => new XSharpToken(_options.SupportsUndeclaredMemVars ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__UNSAFE__", (token) => new XSharpToken(_options.AllowUnsafe ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
             _macroDefines.Add("__ENTITY__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__ENTITY__\"") { SourceSymbol = token });  // Handled later in Transformation phase
             _macroDefines.Add("__FILE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"') { SourceSymbol = token });
             _macroDefines.Add("__FUNCTION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__FUNCTION__\"") { SourceSymbol = token }); // Handled later in Transformation phase
@@ -335,29 +332,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _macroDefines.Add("__SYSDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.SystemDir + '"', token));
             _macroDefines.Add("__WINDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.WindowsDir + '"', token));
             _macroDefines.Add("__WINDRIVE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.WindowsDir?.Substring(0, 2) + '"', token));
-
-            _macroDefines.Add("__VO1__", (token) => new XSharpToken(_options.vo1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO2__", (token) => new XSharpToken(_options.vo2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO3__", (token) => new XSharpToken(_options.vo3 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO4__", (token) => new XSharpToken(_options.vo4 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO5__", (token) => new XSharpToken(_options.vo5 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO6__", (token) => new XSharpToken(_options.vo6 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO7__", (token) => new XSharpToken(_options.vo7 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO8__", (token) => new XSharpToken(_options.vo8 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO9__", (token) => new XSharpToken(_options.vo9 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO10__", (token) => new XSharpToken(_options.vo10 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO11__", (token) => new XSharpToken(_options.vo11 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO12__", (token) => new XSharpToken(_options.vo12 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO13__", (token) => new XSharpToken(_options.vo13 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO14__", (token) => new XSharpToken(_options.vo14 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO15__", (token) => new XSharpToken(_options.vo15 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO16__", (token) => new XSharpToken(_options.vo16 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO17__", (token) => new XSharpToken(_options.vo17 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-
-            _macroDefines.Add("__XPP1__", (token) => new XSharpToken(_options.xpp1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            //_macroDefines.Add("__XPP2__", (token) => new XSharpToken(XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__FOX1__", (token) => new XSharpToken(_options.fox1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__FOX2__", (token) => new XSharpToken(_options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
+            var options = new string[] { "__VO1__", "__VO2__", "__VO3__", "__VO4__", "__VO5__", "__VO6__", "__VO7__", "__VO8__", "__VO9__", "__VO10__",
+                                        "__VO11__","__VO12__","__VO13__","__VO14__","__VO15__","__VO16__","__VO17__","__XPP1__", "__FOX1__","__FOX2__",
+                                        "__MEMVAR__","__UNDECLARED__", "__UNSAFE__"};
+            foreach (var option in options)
+            {
+                _macroDefines.Add(option, (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token.Text) { SourceSymbol = token }); 
+            }
 
             if (!_options.NoStdDef)
             {

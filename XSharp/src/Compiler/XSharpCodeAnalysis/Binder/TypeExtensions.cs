@@ -5,6 +5,7 @@
 //
 #nullable disable
 
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -14,53 +15,72 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     internal static class TypeExtensions
     {
+
+        private class ConstantWalker : BoundTreeWalker
+        {
+            private bool hasConstant;
+            internal bool HasConstant => hasConstant;
+            public ConstantWalker() : base()
+            {
+            }
+
+            public override BoundNode Visit(BoundNode node)
+            {
+                if (node is BoundCall || node is BoundDynamicInvocation || node is not BoundExpression)
+                    return null;
+                if (node is BoundExpression expr && expr.ConstantValue != null && !expr.ConstantValue.IsBad)
+                {
+                    hasConstant = true;
+                    return node;
+                }
+                return base.Visit(node);
+            }
+            protected override BoundExpression VisitExpressionWithoutStackGuard(BoundExpression expr)
+            {
+                return (BoundExpression)base.Visit(expr);
+            }
+        }
+
         /// <summary>
         /// Walk a an expression tree to detect if a constant element is involved.
         /// NOTE: this may not be complete !
         /// </summary>
-        /// <param name="expr"></param>
+        /// <param name="node"></param>
         /// <returns></returns>
-        internal static bool HasConstant(this BoundExpression expr)
+        internal static bool HasConstant(this BoundNode node)
         {
-            if (expr.ConstantValue != null)
-                return true;
-            switch (expr)
+            if (node is BoundExpression)
             {
-                case BoundUnaryOperator unop:
-                    return unop.Operand.HasConstant();
-                case BoundBinaryOperatorBase binop:
-                    return binop.Left.HasConstant() || binop.Right.HasConstant();
-                case BoundConversion conv:
-                    return conv.Operand.HasConstant();
-                case BoundCompoundAssignmentOperator bao:
-                    return bao.Left.HasConstant() || bao.Right.HasConstant();
-
+                var walker = new ConstantWalker();
+                walker.Visit(node);
+                return walker.HasConstant;
             }
             return false;
         }
 
-        internal static void DisableWarning(this BoundExpression expr)
+
+        private class DisableWarningsWalker : BoundTreeWalker
         {
-            expr.Syntax.XWarning = false;
-            switch (expr)
+            public DisableWarningsWalker() : base()
             {
-                case BoundUnaryOperator unop:
-                    unop.Operand.DisableWarning();
-                    break;
-                case BoundBinaryOperatorBase binop:
-                    binop.Left.DisableWarning();
-                    binop.Right.DisableWarning();
-                    break;
-                case BoundConversion conv:
-                    conv.Operand.DisableWarning();
-                    break;
-                case BoundCompoundAssignmentOperator bao:
-                    bao.Left.DisableWarning();
-                    bao.Right.DisableWarning();
-                    break;
-                default:
-                    break;
             }
+
+            public override BoundNode Visit(BoundNode node)
+            {
+                if (node?.Syntax != null)
+                    node.Syntax.XNoWarning = true;
+                return base.Visit(node);
+            }
+            protected override BoundExpression VisitExpressionWithoutStackGuard(BoundExpression expr)
+            {
+                return (BoundExpression)base.Visit(expr);
+            }
+        }
+
+        internal static void DisableWarnings(this BoundNode node)
+        {
+            var walker = new DisableWarningsWalker();
+            walker.Visit(node);
             return;
         }
 

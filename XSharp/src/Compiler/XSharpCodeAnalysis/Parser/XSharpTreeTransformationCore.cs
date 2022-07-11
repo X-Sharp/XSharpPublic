@@ -7397,11 +7397,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (context.Op.Type)
             {
                 case XP.EXP:
-                    context.Put(GenerateMethodCall(SystemQualifiedNames.Pow,
+                    var expr = GenerateMethodCall(SystemQualifiedNames.Pow,
                         _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                             MakeSeparatedList(MakeArgument(left),
                                 MakeArgument(right)),
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                    expr.XNoTypeWarning = true;
+                    context.Put(expr);
+                    
                     break;
                 case XP.SUBSTR:
                     // Convert LHS $ RHS to RHS:IndexOf(LHS) >= 0
@@ -7748,7 +7751,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             expr = MakeConditional(cond, left, right);
             expr = MakeCastTo(_uintType, expr, true);
             expr.XGenerated = true;
-            expr.XSignChanged = true;
+            expr.XNoTypeWarning = true;
             context.Put(expr);
             return true;
         }
@@ -8285,7 +8288,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Type.Get<TypeSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
             expr.XGenerated = true;
-            expr.XSignChanged = true;
+            expr.XNoTypeWarning = true;
             context.Put(expr);
         }
 
@@ -9092,7 +9095,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                 }
             }
-
             if (!string.IsNullOrEmpty(replacement))
             {
                 context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(),
@@ -9100,7 +9102,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                context.Put(GenerateLiteral(context.Token,context));
+                context.Put(GenerateLiteral(context.Token, context));
                 if (context.Token.Type == XP.INCOMPLETE_STRING_CONST)
                 {
                     var litExpr = context.Get<LiteralExpressionSyntax>();
@@ -9108,11 +9110,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(litExpr.WithAdditionalDiagnostics(diag));
                 }
             }
+            // __VO1__ ... __VO17__, __XPP1__, __FOX1__, __FOX2__ are translated by the preprocessor to TRUE const
+            // determine real value now
+            var text = context.Token.Text;
+            if (context.Token.Type == XP.TRUE_CONST && text.Length > 4 && text.StartsWith("__") && text.EndsWith("__"))
+            {
+                var option = text.ToLowerInvariant().Substring(2);
+                option = option.Substring(0, option.Length - 2);
+                var compopt = CompilerOptionDecoder.Decode(option);
+                if (compopt != CompilerOption.None)
+                {
+                    context.Put(GenerateLiteral(_options.HasOption(compopt, context, PragmaOptions)));
+                }
+            }
         }
         public override void ExitLiteralArray([NotNull] XP.LiteralArrayContext context)
         {
             TypeSyntax type = null;
-            ExpressionSyntax expr = null;
             // detect typed arrays.
             // <LONG> {...} indicates an array of type LONG
             // when no type is specified and the dialect VO or Vulcan the type is USUAL
@@ -9141,7 +9155,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 exprs = default;
             }
-
+            ExpressionSyntax expr;
             var initializer = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 exprs,

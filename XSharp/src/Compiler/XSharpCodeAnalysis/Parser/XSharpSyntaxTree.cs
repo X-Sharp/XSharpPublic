@@ -64,8 +64,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         XIsChr = 1 << 7,
         XDefaultTree = 1 << 8,
         XIsString2Psz = 1 << 9,
-        XWarning = 1 << 10,
-        XSignChanged = 1 << 11,
+        XNoWarning = 1 << 10,
+        XNoTypeWarning = 1 << 11,
         XVoStructUnion = 1 << 12,
     }
 
@@ -142,18 +142,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         /// <summary>
         /// Return TRUE when a warning should be generated
         /// </summary>
-        public bool XWarning
+        public bool XNoWarning
         {
-            get => xflags.HasFlag(XNodeFlags.XWarning);
-            set => xflags = xflags.SetFlag(XNodeFlags.XWarning, value);
+            get => xflags.HasFlag(XNodeFlags.XNoWarning);
+            set => xflags = xflags.SetFlag(XNodeFlags.XNoWarning, value);
         }
         /// <summary>
         /// Return TRUE for expressions for which the sign was changed (SLen(), SizeOf())
         /// </summary>
-        public bool XSignChanged
+        public bool XNoTypeWarning
         {
-            get => xflags.HasFlag(XNodeFlags.XSignChanged);
-            set => xflags = xflags.SetFlag(XNodeFlags.XSignChanged, value);
+            get => xflags.HasFlag(XNodeFlags.XNoTypeWarning);
+            set => xflags = xflags.SetFlag(XNodeFlags.XNoTypeWarning, value);
         }
         /// <summary>
         /// Return TRUE for a DataType that was declared as 
@@ -259,10 +259,10 @@ namespace Microsoft.CodeAnalysis
             get => CsNode.CsGreen.XGenerated;
             set => CsNode.CsGreen.XGenerated = value;
         }
-        internal bool XWarning
+        internal bool XNoWarning
         {
-            get => CsNode.CsGreen.XWarning;
-            set => CsNode.CsGreen.XWarning = value;
+            get => CsNode.CsGreen.XNoWarning;
+            set => CsNode.CsGreen.XNoWarning = value;
         }
         /// <summary>
         /// Walk the X# parse tree to detect if the expression or one of its children is a "cast" in code.
@@ -320,23 +320,18 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// Return TRUE for expressions for which the sign was changed (SLen(), SizeOf())
         /// </summary>
-        internal bool XSignChanged
+        internal bool XNoTypeWarning
         {
             get
             {
-                switch (this)
+                if (this.CsNode.CsGreen.XNoTypeWarning)
+                    return true;
+                foreach (var child in this.ChildNodes())
                 {
-                    case BinaryExpressionSyntax binexp:
-                        return binexp.Left.XSignChanged || binexp.Right.XSignChanged;
-                    case PrefixUnaryExpressionSyntax prefun:
-                        return prefun.Operand.XSignChanged;
-                    case CastExpressionSyntax cast:
-                        return cast.Expression.XSignChanged;
-                    case ParenthesizedExpressionSyntax paren:
-                        return paren.Expression.XSignChanged;
-                    default:
-                        return this.CsNode.CsGreen.XSignChanged;
+                    if (child.XNoTypeWarning)
+                        return true;
                 }
+                return false;
             }
         }
 
@@ -350,21 +345,12 @@ namespace Microsoft.CodeAnalysis
             {
                 if (this.XGenerated)
                     return true;
-                switch (this)
+                foreach (var child in this.ChildNodes())
                 {
-                    case BinaryExpressionSyntax binexp:
-                        return binexp.Left.XContainsGeneratedExpression || binexp.Right.XContainsGeneratedExpression;
-                    case PrefixUnaryExpressionSyntax prefun:
-                        return prefun.Operand.XContainsGeneratedExpression;
-                    case CastExpressionSyntax cast:
-                        return cast.Expression.XContainsGeneratedExpression;
-                    case ParenthesizedExpressionSyntax paren:
-                        return paren.Expression.XContainsGeneratedExpression;
-                    case LiteralExpressionSyntax:
-                        return false;
-                    default:
-                        return false;
+                    if (child.XContainsGeneratedExpression)
+                        return true;
                 }
+                return false;
             }
         }
     }

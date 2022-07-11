@@ -377,23 +377,44 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.UndeclaredMemVars: // undeclared
                     return CheckOption(option, UndeclaredMemVars, context, options);
 
+                case CompilerOption.Vo1: // Init/Axit => Constructor / Destruction
+                    return CheckOption(option, vo1, context, options);
+
                 case CompilerOption.NullStrings: // vo2
                     return CheckOption(option, VONullStrings, context, options);
 
                 case CompilerOption.VirtualInstanceMethods: // /vo3
                     return CheckOption(option, VirtualInstanceMethods, context, options);
 
+                case CompilerOption.Vo4: // vo4
+                    return CheckOption(option, vo4, context, options);
+
                 case CompilerOption.ClipperCallingConvention: // vo5
                     return CheckOption(option, VOClipperCallingConvention, context, options);
+
+                case CompilerOption.Vo6: // ResolveTypedFunctionPointersToPtr:
+                    return CheckOption(option, vo6, context, options);
 
                 case CompilerOption.ImplicitCastsAndConversions: // vo7
                     return CheckOption(option, VOImplicitCastsAndConversions, context, options);
 
+                case CompilerOption.Vo8: // Compatible Preprocessor
+                    return CheckOption(option, vo8, context, options);
+
                 case CompilerOption.AllowMissingReturns: // vo9
                     return CheckOption(option, VOAllowMissingReturns, context, options);
 
+                case CompilerOption.Vo10: // :  // vo10
+                    return CheckOption(option, vo10, context, options);
+
+                case CompilerOption.Vo11: // ArithmeticConversions: // vo11
+                    return CheckOption(option, vo11, context, options);
+
                 case CompilerOption.ClipperIntegerDivisions: // vo12
                     return CheckOption(option, VOClipperIntegerDivisions, context, options);
+
+                case CompilerOption.Vo13: // StringComparisons: // vo13
+                    return CheckOption(option, vo13, context, options);
 
                 case CompilerOption.FloatConstants: // vo14
                     return CheckOption(option, VOFloatConstants, context, options);
@@ -420,19 +441,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.EnforceSelf:  // enforceself
                     return CheckOption(option, EnforceSelf, context, options);
 
-                case CompilerOption.Vo4: // vo4
-                case CompilerOption.Vo6: // ResolveTypedFunctionPointersToPtr: 
-                case CompilerOption.Vo10: // :  // vo10
-                case CompilerOption.Vo11: // ArithmeticConversions: // vo11
-                case CompilerOption.Vo13: // StringComparisons: // vo13
-                    return false; // not handled during parsing
-                case CompilerOption.Vo1: // Init/Axit => Constructor / Destruction
-                case CompilerOption.Vo8: // Compatible Preprocessor
                 case CompilerOption.Xpp1: // Inherit from Custom
+                    return CheckOption(option, XPPInheritFromAbstract, context, options);
                 //case CompilerOption.Xpp2:
+
                 case CompilerOption.Fox1: // Inherit from Custom
+                    return CheckOption(option, FoxInheritUnknown, context, options);
+
                 case CompilerOption.AllowNamedArgs: // AllowNamedArguments: used in Antlr rules
+                    return CheckOption(option, AllowNamedArguments, context, options);
+
                 case CompilerOption.ImplicitNamespace:
+                    return CheckOption(option, ImplicitNamespace, context, options);
+
                 case CompilerOption.ClrVersion:
                 case CompilerOption.All:
                     break;
@@ -445,7 +466,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool result = defaultValue;
             if (context != null && options != null && options.Count > 0)
             {
-                int line = context.Start.Line;
+                var token = context.Start as XSharpToken;
+                int line = token.Line;
+                if (token.SourceSymbol != null)
+                    line = token.SourceSymbol.Line;
                 foreach (var pragmaoption in options)
                 {
                     if (pragmaoption.Line > line)

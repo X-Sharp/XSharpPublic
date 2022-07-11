@@ -55,61 +55,58 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return conversionKind;
             }
 
-            if (_compilation.Options.HasRuntime)
+            // test C323 
+            if ((rewrittenOperand.Type.IsPointerType() || rewrittenOperand.Type.IsPszType()))
             {
-                // test C323 
-                if ((rewrittenOperand.Type.IsPointerType() || rewrittenOperand.Type.IsPszType()))
+                rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
+                    Conversion.Identity, false, false,
+                    conversionGroupOpt: null,
+                    constantValueOpt: null,
+                    type: _compilation.GetSpecialType(SpecialType.System_IntPtr));
+                return conversionKind;
+            }
+            var nts = rewrittenOperand?.Type as NamedTypeSymbol;
+            if (nts is { })
+            {
+                var usualType = _compilation.UsualType();
+                nts = nts.ConstructedFrom;
+                // Ticket C575: Assign Interface to USUAL
+                // Marked as Boxing in Conversions.cs
+                // Implementation here
+                if (nts.IsInterface && rewrittenType.IsUsualType())
                 {
-                    rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
-                        Conversion.Identity, false, false,
-                        conversionGroupOpt: null,
-                        constantValueOpt: null,
-                        type: _compilation.GetSpecialType(SpecialType.System_IntPtr));
-                    return conversionKind;
+                    var m = getImplicitOperatorByParameterType(usualType, _compilation.GetSpecialType(SpecialType.System_Object));
+                    if (m != null)
+                    {
+                        rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                        rewrittenOperand.WasCompilerGenerated = true;
+                        return ConversionKind.Identity;
+                    }
                 }
-                var nts = rewrittenOperand?.Type as NamedTypeSymbol;
-                if (nts is { })
+                if (nts.IsObjectType())
                 {
-                    var usualType = _compilation.UsualType();
-                    nts = nts.ConstructedFrom;
-                    // Ticket C575: Assign Interface to USUAL
-                    // Marked as Boxing in Conversions.cs
-                    // Implementation here
-                    if (nts.IsInterface && rewrittenType.IsUsualType())
+                    if (rewrittenType.IsReferenceType)
                     {
-                        var m = getImplicitOperatorByParameterType(usualType, _compilation.GetSpecialType(SpecialType.System_Object));
-                        if (m != null)
-                        {
-                            rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
-                            rewrittenOperand.WasCompilerGenerated = true;
-                            return ConversionKind.Identity;
-                        }
+                        rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
+                        rewrittenOperand.WasCompilerGenerated = true;
+                        return ConversionKind.ImplicitReference;
                     }
-                    if (nts.IsObjectType())
+                    else
                     {
-                        if (rewrittenType.IsReferenceType)
-                        {
-                            rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
-                            rewrittenOperand.WasCompilerGenerated = true;
-                            return ConversionKind.ImplicitReference;
-                        }
-                        else
-                        {
-                            return ConversionKind.Unboxing;
-                        }
+                        return ConversionKind.Unboxing;
                     }
-                    if (nts.IsXNumericType() && rewrittenType.IsXNumericType())
+                }
+                if (nts.IsXNumericType() && rewrittenType.IsXNumericType())
+                {
+                    if (nts.IsFloatType() || nts.IsCurrencyType())
                     {
-                        if (nts.IsFloatType() || nts.IsCurrencyType())
-                        {
-                            // Get the right Explicit Operator
-                            return XsRewriteOurNumericType(nts, ref rewrittenOperand, rewrittenType, explicitCastInCode);
-                        }
-                        else
-                        {
-                            // Get a conversion or Convert.To<type> depending on the setting of /vo11
-                            return XsRewriteSystemNumericType(ref rewrittenOperand, rewrittenType, explicitCastInCode, false);
-                        }
+                        // Get the right Explicit Operator
+                        return XsRewriteOurNumericType(nts, ref rewrittenOperand, rewrittenType, explicitCastInCode);
+                    }
+                    else
+                    {
+                        // Get a conversion or Convert.To<type> depending on the setting of /vo11
+                        return XsRewriteSystemNumericType(ref rewrittenOperand, rewrittenType, explicitCastInCode, false);
                     }
                 }
             }
@@ -231,7 +228,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         ConversionKind XsRewriteSystemNumericType(ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType, bool explicitcastincode, bool noError)
         {
-            if (!noError) //  && !explicitcastincode)
+            if (!noError  && !explicitcastincode)
             {
                 var error = DetermineConversionError(rewrittenOperand.Type, rewrittenType);
                 if (error != ErrorCode.Void)
@@ -419,7 +416,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert(ourtype.IsFloatType() || ourtype.IsCurrencyType());
             // should we work differently with explicit cast 
-            //if (!explicitCastInCode)
+            if (!explicitCastInCode)
             {
                 var error = DetermineConversionError(rewrittenOperand.Type, rewrittenType);
                 if (error != ErrorCode.Void)

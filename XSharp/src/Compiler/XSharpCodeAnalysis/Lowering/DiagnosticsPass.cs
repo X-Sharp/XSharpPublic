@@ -32,8 +32,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private void GenerateWarning(TypeSymbol sourceType, TypeSymbol targetType, BoundNode node)
         {
+
             var syntax = node.Syntax;
-            if (syntax.XWarning && !Equals(sourceType, targetType) && !syntax.XContainsGeneratedExpression
+            if (node.HasConstant() || syntax.XIsExplicitTypeCastInCode)
+            {
+                node.DisableWarnings();
+            }
+            if (!syntax.XNoWarning && ! syntax.XNoTypeWarning  && !Equals(sourceType, targetType) && !syntax.XContainsGeneratedExpression
                 && sourceType.IsXNumericType() && targetType.IsXNumericType())
             {
                 var errCode = ErrorCode.Void;
@@ -54,17 +59,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             var syntax = node.Syntax;
             var sourceType = node.Operand.Type;
             var targetType = node.Type;
-
-            if (syntax is BinaryExpressionSyntax binexp )
+            if (syntax is BinaryExpressionSyntax binexp)
             {
-                if (node.HasConstant())
-                {
-                    node.DisableWarning();
-                }
-                else if (binexp.XIsExplicitTypeCastInCode)
-                {
-                    node.DisableWarning();
-                }
                 // determine original expression type
                 // Roslyn will change a Int32 + UIn32
                 // to an addition of 2 Int64 values

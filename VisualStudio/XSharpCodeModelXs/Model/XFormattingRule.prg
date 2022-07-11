@@ -138,6 +138,9 @@ BEGIN NAMESPACE XSharpModel
         static initonly @@Remove := XKeyword{XTokenType.Remove} as XKeyword
         static initonly @@End_Remove := XKeyword{XTokenType.End, XTokenType.Remove} as XKeyword
 
+        static initonly @@Field  := XKeyword{XTokenType.Field} as XKeyword
+        static initonly @@End_Field  := XKeyword{XTokenType.End,XTokenType.Field} as XKeyword
+
         // statements
         static initonly @@Do_Case := XKeyword{XTokenType.Do, XTokenType.Case} as XKeyword
         static initonly @@Case := XKeyword{XTokenType.Case} as XKeyword
@@ -258,6 +261,7 @@ BEGIN NAMESPACE XSharpModel
                 rules:Add(XFormattingRule{@@Property, @@End_Property, XFormattingFlags.Member | XFormattingFlags.End })
                 rules:Add(XFormattingRule{@@Event, @@End_Event, XFormattingFlags.Member | XFormattingFlags.End  })
 
+
                 // Accessors are treated like a statement
                 // and they have an optional end because they can be a single like
 
@@ -281,6 +285,10 @@ BEGIN NAMESPACE XSharpModel
                 rules:Add(XFormattingRule{@@PP_Region, @@PP_Endregion, XFormattingFlags.Preprocessor })
                 rules:Add(XFormattingRule{@@PP_Ifdef, @@PP_Endif, XFormattingFlags.Preprocessor | XFormattingFlags.HasMiddle  })
                 rules:Add(XFormattingRule{@@PP_Text, @@PP_EndText, XFormattingFlags.Preprocessor| XFormattingFlags.Statement  })
+
+
+                // Class vars
+                rules:Add(XFormattingRule{@@Field, @@End_Field, XFormattingFlags.Member| XFormattingFlags.OptionalEnd })
 
 
                 // tokens that are remapped to other tokens For example END IF is mapped to ENDIF and FOREACH is mapped to FOR
@@ -453,6 +461,37 @@ BEGIN NAMESPACE XSharpModel
             if _rulesByStart.ContainsKey(token)
                 var rule := _rulesByStart[token]
                 return rule:Flags:HasFlag(XFormattingFlags.Member) .or. rule:Flags:HasFlag(XFormattingFlags.Type)
+            endif
+            return false
+        PUBLIC STATIC METHOD IsGlobalEntity(token as XKeyword) AS LOGIC
+            SWITCH token:Kw1
+                CASE XTokenType.Function
+                CASE XTokenType.Procedure
+                CASE XTokenType.Vostruct
+                CASE XTokenType.Union
+                CASE XTokenType.Define
+                CASE XTokenType.Global
+                    return true
+            END SWITCH
+            RETURN FALSE
+
+        PUBLIC STATIC METHOD IsTypeKeyword(token as XKeyword) AS LOGIC
+            if _aliases:ContainsKey(token)
+                token := _aliases[token]
+            endif
+            if _rulesByStart.ContainsKey(token)
+                var rule := _rulesByStart[token]
+                return rule:Flags:HasFlag(XFormattingFlags.Type)
+            endif
+            return false
+
+        PUBLIC STATIC METHOD IsMemberKeyword(token as XKeyword) AS LOGIC
+            if _aliases:ContainsKey(token)
+                token := _aliases[token]
+            endif
+            if _rulesByStart.ContainsKey(token)
+                var rule := _rulesByStart[token]
+                return rule:Flags:HasFlag(XFormattingFlags.Member)
             endif
             return false
 

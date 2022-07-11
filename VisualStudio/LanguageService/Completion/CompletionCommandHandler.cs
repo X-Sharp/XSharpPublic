@@ -373,7 +373,6 @@ namespace XSharp.LanguageService
 
         private void completeCurrentToken(uint nCmdID, char ch)
         {
-            /*
             if (CompletionNotAllowed())
             {
                 return;
@@ -403,7 +402,6 @@ namespace XSharp.LanguageService
                     StartCompletionSession(nCmdID, '\0', true, true);
                 }
             }
-            */
         }
 
         private void FilterCompletionSession(char ch)

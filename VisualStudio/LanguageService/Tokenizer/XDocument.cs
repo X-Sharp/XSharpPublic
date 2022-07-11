@@ -51,6 +51,14 @@ namespace XSharp.LanguageService
         public Dictionary<int, IList<XSharpToken>> Lines;
         internal XSharpLineState LineState { get; set; }
         internal XSharpLineKeywords LineKeywords{ get; set; }
+        internal bool HasLineState(int line, LineFlags flag)
+        {
+            if (LineState.Lines.ContainsKey(line))
+            {
+                return LineState.Lines[line].HasFlag(flag);
+            }
+            return false;
+        }
 
     }
 }

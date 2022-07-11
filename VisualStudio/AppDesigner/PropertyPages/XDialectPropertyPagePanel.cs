@@ -28,7 +28,7 @@ namespace XSharp.Project
         internal const string VO1Caption = "Allow Init() and Axit() as aliases for Constructor/Destructor";
         internal const string VO2Caption = "Initialize strings";
         internal const string VO3Caption = "All instance methods virtual";
-        internal const string VO4Caption = "Implicit signed/unsigned conversions";
+        internal const string VO4Caption = "Implicit numeric conversions";
         internal const string VO5Caption = "Implicit Clipper calling convention";
         internal const string VO6Caption = "Implicit pointer conversions";
         internal const string VO7Caption = "Implicit casts and conversions";
@@ -48,7 +48,7 @@ namespace XSharp.Project
         internal const string VO1Description = "Allow Init() and Axit() as aliases for Constructor/Destructor (/vo1)";
         internal const string VO2Description = "Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0. \rWhen enabled this will initialize local string variables regardless of the setting of 'initialize locals' setting from the Language page.";
         internal const string VO3Description = "Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)";
-        internal const string VO4Description = "Implicit signed/unsigned integer conversions (/vo4)";
+        internal const string VO4Description = "Implicit conversions between numeric values, such as when assigning a DWORD to an INT or assigning a FLOAT to an INT (/vo4)";
         internal const string VO5Description = "Methods without parameters and calling convention are compiled as Clipper calling convention (/vo5). \nPlease note that without this switch all methods without parameters will be seen as STRICT. \rMethods with untyped parameters are always seen as CLIPPER calling convention.";
         internal const string VO6Description = "Implicit conversions between typed function PTR and PTR (/vo6)";
         internal const string VO7Description = "Compatible implicit casts and Conversions (/vo7)";

@@ -478,7 +478,7 @@ CLASS xPorter
 		oModule:Analyze()
 
 		LOCAL oCode AS OutputCode
-		oCode := oModule:Generate()
+		oCode := oModule:Generate(glCreateFilePerClass)
 
 		IF oModule:Generated
 			xPorter.Message("  Generating module :" , oModule:Name)
@@ -1996,6 +1996,8 @@ CLASS ModuleDescriptor
 	PROPERTY GeneratedRest AS OutputCode AUTO
 
 	METHOD Generate() AS OutputCode
+	RETURN SELF:Generate(FALSE)
+	METHOD Generate(lSortEntities AS LOGIC) AS OutputCode
 		LOCAL oCode AS OutputCode
 		LOCAL oClasses , oDefines , oTextblocks , oGlobals , oFuncs , oRest AS OutputCode
 
@@ -2012,10 +2014,17 @@ CLASS ModuleDescriptor
 
 		FOREACH oClassDescr AS ClassDescriptor IN SELF:_aClasses
 			LOCAL oClass AS OutputCode
+			IF lSortEntities
+				oClassDescr:Sort()
+			END IF
 			oClass := oClassDescr:Generate()
 			oClasses:Combine(oClass)
 			SELF:GeneratedClasses:Add(oClassDescr:Name, oClass)
 		NEXT
+		
+		IF lSortEntities
+			SELF:_aEntities:Sort({a AS EntityDescriptor, b AS EntityDescriptor => a:Name:CompareTo(b:Name)})
+		END IF
 
 		FOREACH oEntity AS EntityDescriptor IN SELF:_aEntities
 
@@ -2167,6 +2176,10 @@ CLASS ClassDescriptor
 	RETURN
 	METHOD HasNonPublicIVar(cIVar AS STRING) AS LOGIC
 	RETURN SELF:_aNonPublicIVars:ContainsKey(cIVar:ToUpper())
+	
+	METHOD Sort() AS VOID
+		SELF:_aMembers:Sort({a AS EntityDescriptor, b AS EntityDescriptor => a:Name:CompareTo(b:Name)})
+	RETURN
 
 	METHOD Generate() AS OutputCode
 		LOCAL oCode AS OutputCode

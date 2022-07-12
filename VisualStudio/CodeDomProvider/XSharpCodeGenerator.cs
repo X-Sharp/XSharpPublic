@@ -1135,12 +1135,12 @@ namespace XSharp.CodeDom
                     if (! lTemp.StartsWith("//") && ! lTemp.StartsWith("#"))
                         l2.Add(l);
                 }
-                lastTrivia = String.Join("\r\n", l2);
+                //lastTrivia = String.Join("\r\n", l2);
                 return true;
             }
             else if (lastTrivia != null)
             {
-                _writeTrivia(lastTrivia);
+                //_writeTrivia(lastTrivia);
             }
             return false;
         }

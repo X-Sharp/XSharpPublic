@@ -492,7 +492,7 @@ namespace XSharp.CodeDom
             else
             {
                 // no trivia needed. We write the complete source code including trivia
-                //writeTrivia(newMethod, context);
+                writeTrivia(newMethod, context);
                 if (context.StmtBlk != null)
                 {
 

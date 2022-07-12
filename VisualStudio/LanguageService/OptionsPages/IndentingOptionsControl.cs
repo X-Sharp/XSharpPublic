@@ -44,7 +44,7 @@ namespace XSharp.LanguageService.OptionsPages
             //
 
             tvi = new TreeNode("Indent preprocessor lines");
-            tvi.Tag = new string[] { "IndentPreprocessor",
+            tvi.Tag = new string[] { "IndentPreprocessorLines",
                 @"\cf1 CLASS \cf0 foo\par{tab}\cf0#region FIELDS \par\cf1\tab PUBLIC \cf0 x \cf1 AS INT\cf0\par{tab} \cf0#endregion\par\cf1\tab METHOD \cf0 m1() \cf1 AS VOID\cf0\par}"};
             this.treeIndentStyle.Nodes.Add(tvi);
             this.treeIndentStyle.AfterCheck += TreeShowNode;

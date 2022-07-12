@@ -553,7 +553,7 @@ namespace XSharp.LanguageService
                 return expectedIndent;
             }
         }
-
+         
         private void FormatSpan(IEnumerable<ITextSnapshotLine> lines, int startLine, int endLine, int startIndent)
         {
             // Already been lexed ?

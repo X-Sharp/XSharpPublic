@@ -63,6 +63,7 @@ namespace XSharp.CodeDom
     {
         private XCodeMemberMethod initComponent;
         public Stack<CodeTypeDeclaration> CurrentTypeStack { get; protected set; }
+        public List<CodeObject> globalmembers;
         public bool IsNested => CurrentTypeStack.Count > 0;
 
         public XSharpClassDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
@@ -81,7 +82,43 @@ namespace XSharp.CodeDom
             //
             this.CurrentFile = "";
             _tokens = null;
+            globalmembers = new List<CodeObject>();
         }
+
+        #region GLobalMembers
+
+        public void ProcessGlobalMember(XSharpParserRuleContext context)
+        {
+            CodeSnippetTypeMember snippet = CreateSnippetMember(context);
+            this.globalmembers.Add(snippet);
+        }
+        public override void EnterFuncproc([NotNull] XSharpParser.FuncprocContext context)
+        {
+            ProcessGlobalMember(context);
+        }
+        public override void EnterVoglobal([NotNull] XSharpParser.VoglobalContext context)
+        {
+            ProcessGlobalMember(context);
+        }
+
+        public override void EnterVodefine([NotNull] XSharpParser.VodefineContext context)
+        {
+            ProcessGlobalMember(context);
+        }
+        public override void EnterVounion([NotNull] XSharpParser.VounionContext context)
+        {
+            ProcessGlobalMember(context);
+        }
+        public override void EnterVostruct([NotNull] XSharpParser.VostructContext context)
+        {
+            ProcessGlobalMember(context);
+        }
+        public override void EnterVodll([NotNull] XSharpParser.VodllContext context)
+        {
+            ProcessGlobalMember(context);
+        }
+        #endregion
+
 
         public XCodeCompileUnit CodeCompileUnit { get; internal set; }
 
@@ -120,6 +157,10 @@ namespace XSharp.CodeDom
             if (lastEnt != null)
             {
                 writeTrivia(CodeCompileUnit, lastEnt, true);
+            }
+            if (globalmembers.Count > 0)
+            {
+                CodeCompileUnit.SetGlobals(globalmembers);
             }
 
         }
@@ -408,7 +449,6 @@ namespace XSharp.CodeDom
 
             _locals.Clear();
             var newMethod = new XCodeMemberMethod();
-            writeTrivia(newMethod, context);
             newMethod.Name = context.Sig.Id.GetCleanText();
             newMethod.Attributes = MemberAttributes.Public;
             newMethod.Parameters.AddRange(GetParametersList(context.Sig.ParamList));
@@ -441,6 +481,8 @@ namespace XSharp.CodeDom
             // Else, we can just copy the whole code in USERDATA, that will be fine
             if (newMethod.Name == "InitializeComponent")
             {
+
+                writeTrivia(newMethod, context);
                 initComponent = newMethod;
                 if (context.Attributes != null)
                 {
@@ -449,7 +491,8 @@ namespace XSharp.CodeDom
             }
             else
             {
-
+                // no trivia needed. We write the complete source code including trivia
+                //writeTrivia(newMethod, context);
                 if (context.StmtBlk != null)
                 {
 
@@ -557,7 +600,7 @@ namespace XSharp.CodeDom
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
-            writeTrivia(snippet, context);
+            //writeTrivia(snippet, context);
             this.CurrentType.Members.Add(snippet);
         }
 
@@ -569,7 +612,7 @@ namespace XSharp.CodeDom
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
-            writeTrivia(snippet, context);
+            //writeTrivia(snippet, context);
             this.CurrentType.Members.Add(snippet);
 
         }
@@ -582,7 +625,7 @@ namespace XSharp.CodeDom
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
-            writeTrivia(snippet, context);
+            //writeTrivia(snippet, context);
             this.CurrentType.Members.Add(snippet);
 
         }

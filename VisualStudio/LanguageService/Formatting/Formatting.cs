@@ -360,7 +360,12 @@ namespace XSharp.LanguageService
                 }
                 if (blocks.Count > 0)
                 {
-                    indentSize = blocks.Peek().indent;
+                    var block = blocks.Peek();
+                    indentSize = block.indent;
+                    if (_settings.IndentNamespace && block.kw.Kw2 == XTokenType.Namespace)
+                    {
+                        indentSize += 1;
+                    }
                     if (_settings.IndentTypeMembers)
                     {
                         if (XFormattingRule.IsMemberKeyword(kw) && XFormattingRule.IsTypeKeyword(blocks.Peek().kw))
@@ -403,8 +408,12 @@ namespace XSharp.LanguageService
                 return indentSize;
             }
 
-            void HandleStart(XKeyword kw, bool isEntity, int lineNumber)
+            void HandleStart(XKeyword kw, int lineNumber)
             {
+                var rule = XFormattingRule.GetStartRule(kw);
+                var isEntity = rule.Flags.HasFlag(XFormattingFlags.Type) ||
+                    rule.Flags.HasFlag(XFormattingFlags.Member);
+
                 blocks.Push(new blockindent(kw, indentSize));
                 if (isEntity)
                 {
@@ -520,21 +529,15 @@ namespace XSharp.LanguageService
                         }
                         var kw = lineKeywords.Lines[lineNumber];
                         var isEntity = XFormattingRule.IsEntityKeyword(kw);
-                        var isNamespace = false;
-                        if (kw.Kw1 == XTokenType.Begin && kw.Kw2 == XTokenType.Namespace)
-                        {
-                            isNamespace = true;
-                            if (_settings.IndentNamespace)
-                                indentSize += 1;
-                        }
-                        if (isEntity || isNamespace)
+                        
+                        if (isEntity )
                         {
                             indentSize = IndentEntityStart(kw, lineNumber, startIndent);
                             firstDoccomment = -1;
                         }
                         if (XFormattingRule.IsStartKeyword(kw))
                         {
-                            HandleStart(kw, isEntity, lineNumber);
+                            HandleStart(kw, lineNumber);
                         }
                         if (XFormattingRule.IsEndKeyword(kw) || kw.IsEnd)
                         {
@@ -1004,6 +1007,8 @@ namespace XSharp.LanguageService
                         else if (_indentKeywords.Contains(keyword))
                         {
                             indentValue += _settings.IndentSize;
+                            if (keyword.Kw2 == XTokenType.Namespace && !_settings.IndentNamespace)
+                                indentValue -= _settings.IndentSize;
                         }
                         else
                         {
@@ -1318,7 +1323,7 @@ namespace XSharp.LanguageService
                     if (XSharpLexer.IsKeyword(token.Type) || this.IsPPKeyword(token.Type))
                     {
                         // Skip modifiers at start of line
-                        if (XSharpLexer.IsModifier(token.Type))
+                        if (XSharpLexer.IsModifier(token.Type) && token.Type != XSharpLexer.CLASS)
                         {
                             index++;
                             keyword = default;

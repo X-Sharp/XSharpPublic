@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharpModel
     /// </summary>
     [Flags];
     enum XFormattingFlags
+        member @@None := -1
         /// <summary>
         /// Type block.
         /// </summary>
@@ -230,7 +231,7 @@ BEGIN NAMESPACE XSharpModel
             STATIC CONSTRUCTOR()
                 var rules := List<XFormattingRule>{}
                 _singleKeywords := BitArray{XSharpLexer.LAST}
-                rules:Add(XFormattingRule{@@Begin_Namespace,  @@End_Namespace, XFormattingFlags.Namespace })
+                rules:Add(XFormattingRule{@@Begin_Namespace,  @@End_Namespace, XFormattingFlags.Namespace|XFormattingFlags.Type   })
                 // Types
                 rules:Add(XFormattingRule{@@Class, @@End_Class, XFormattingFlags.Type  })
                 rules:Add(XFormattingRule{@@Define_Class, @@Enddefine, XFormattingFlags.Type  })
@@ -352,9 +353,6 @@ BEGIN NAMESPACE XSharpModel
                 next
             next
 
-
-
-
         private static method AddSingleKeyword(kw as XKeyword) as void
             if kw:Kw2 == XTokenType.None
                 _singleKeywords:Set( (int) kw:Kw1, TRUE)
@@ -415,13 +413,17 @@ BEGIN NAMESPACE XSharpModel
 
         #region public methods
 
+        PRIVATE STATIC METHOD AdjustToken(token as XKeyword) as XKeyword
+            if _aliases:ContainsKey(token)
+                token := _aliases[token]
+            endif
+            return token
 
         PUBLIC STATIC METHOD IsSingleKeyword(token as long) AS LOGIC
             return _singleKeywords:Get( token)
 
-
         OVERRIDE METHOD ToString() AS STRING
-            RETURN SELF:Start:ToString() + " "+SELF:Stop:ToString()
+            RETURN SELF:Start:ToString() + " " + SELF:Stop:ToString()
 
         PUBLIC STATIC METHOD TranslateToken(token as XKeyword ) AS XKeyword
             if _aliases:ContainsKey(token)
@@ -430,39 +432,17 @@ BEGIN NAMESPACE XSharpModel
             return token
 
         PUBLIC STATIC METHOD GetStartRule( token as XKeyword) AS XFormattingRule
-            if _aliases:ContainsKey(token)
-                token := _aliases[token]
-            endif
+            token := TranslateToken(token)
             if _rulesByStart.ContainsKey(token)
                 return _rulesByStart[token]
             endif
             return DEFAULT(XFormattingRule)
 
         PUBLIC STATIC METHOD IsStartKeyword(token as XKeyword) AS LOGIC
-            if _aliases:ContainsKey(token)
-                token := _aliases[token]
-            endif
+            token := TranslateToken(token)
             return _rulesByStart.ContainsKey(token)
 
-        PUBLIC STATIC METHOD IsStartKeyword(token as XKeyword, withFlags as XFormattingFlags) AS LOGIC
-            if _aliases:ContainsKey(token)
-                token := _aliases[token]
-            endif
-            if _rulesByStart.ContainsKey(token)
-                var rule := _rulesByStart[token]
-                return rule:Flags:HasFlag(XFormattingFlags.Statement)
-            endif
-            return false
 
-        PUBLIC STATIC METHOD IsEntityKeyword(token as XKeyword) AS LOGIC
-            if _aliases:ContainsKey(token)
-                token := _aliases[token]
-            endif
-            if _rulesByStart.ContainsKey(token)
-                var rule := _rulesByStart[token]
-                return rule:Flags:HasFlag(XFormattingFlags.Member) .or. rule:Flags:HasFlag(XFormattingFlags.Type)
-            endif
-            return false
         PUBLIC STATIC METHOD IsGlobalEntity(token as XKeyword) AS LOGIC
             SWITCH token:Kw1
                 CASE XTokenType.Function
@@ -475,36 +455,25 @@ BEGIN NAMESPACE XSharpModel
             END SWITCH
             RETURN FALSE
 
-        PUBLIC STATIC METHOD IsTypeKeyword(token as XKeyword) AS LOGIC
-            if _aliases:ContainsKey(token)
-                token := _aliases[token]
-            endif
+        PRIVATE STATIC METHOD IsKeyword(token as XKeyword, flag as XFormattingFlags, flag2 := XFormattingFlags.None as XFormattingFlags ) AS LOGIC
+            token := AdjustToken(token)
             if _rulesByStart.ContainsKey(token)
                 var rule := _rulesByStart[token]
-                return rule:Flags:HasFlag(XFormattingFlags.Type)
+                return rule:Flags:HasFlag(flag) .or. rule:Flags:HasFlag(flag2)
             endif
             return false
+
+       PUBLIC STATIC METHOD IsEntityKeyword(token as XKeyword) AS LOGIC
+            RETURN IsKeyword(token, XFormattingFlags.Type,XFormattingFlags.Member)
+
+        PUBLIC STATIC METHOD IsTypeKeyword(token as XKeyword) AS LOGIC
+            RETURN IsKeyword(token, XFormattingFlags.Type)
 
         PUBLIC STATIC METHOD IsMemberKeyword(token as XKeyword) AS LOGIC
-            if _aliases:ContainsKey(token)
-                token := _aliases[token]
-            endif
-            if _rulesByStart.ContainsKey(token)
-                var rule := _rulesByStart[token]
-                return rule:Flags:HasFlag(XFormattingFlags.Member)
-            endif
-            return false
+            RETURN IsKeyword(token, XFormattingFlags.Member)
 
         PUBLIC STATIC METHOD IsStatementKeyword(token as XKeyword) AS LOGIC
-            if _aliases:ContainsKey(token)
-                token := _aliases[token]
-            endif
-            if _rulesByStart.ContainsKey(token)
-                var rule := _rulesByStart[token]
-                return rule:Flags:HasFlag(XFormattingFlags.Statement)
-            endif
-            return false
-
+            RETURN IsKeyword(token, XFormattingFlags.Statement)
 
 
         PUBLIC STATIC METHOD IsMiddleKeyword(token as XKeyword) AS LOGIC
@@ -538,8 +507,6 @@ BEGIN NAMESPACE XSharpModel
             next
             return tokens:ToArray()
 
-
-
         /// <summary>
         /// Return all tokens that are the start of a Member
         /// </summary>
@@ -561,7 +528,6 @@ BEGIN NAMESPACE XSharpModel
 
             return tokens:ToArray()
 
-
         /// <summary>
         /// Return all tokens that can be closed with "just" an END
         /// </summary>
@@ -574,7 +540,6 @@ BEGIN NAMESPACE XSharpModel
                 endif
             next
             return tokens:ToArray()
-
 
         /// <summary>
         /// Return end keywords that can match more than one start keyword
@@ -604,8 +569,6 @@ BEGIN NAMESPACE XSharpModel
             return tokens
 
         #endregion
-
-
 
     END CLASS
 END NAMESPACE // XSharpModel.Model

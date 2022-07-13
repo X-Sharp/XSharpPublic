@@ -14,7 +14,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// This pass detects and reports diagnostics that do not affect lambda convertibility.
     /// This part of the partial class focuses on expression and operator warnings.
     /// </summary>
-    internal sealed partial class DiagnosticsPass 
+    internal sealed partial class DiagnosticsPass
     {
         private void XsCheckCompoundAssignmentOperator(BoundCompoundAssignmentOperator node)
         {
@@ -34,11 +34,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
 
             var syntax = node.Syntax;
-            if (node.HasConstant() || syntax.XIsExplicitTypeCastInCode)
+            if (node.IsExpressionWithConstant() || syntax.XIsExplicitTypeCastInCode)
             {
                 node.DisableWarnings();
             }
-            if (!syntax.XNoWarning && ! syntax.XNoTypeWarning  && !Equals(sourceType, targetType) && !syntax.XContainsGeneratedExpression
+            if (!syntax.XNoWarning && !syntax.XNoTypeWarning && !Equals(sourceType, targetType) && !syntax.XContainsGeneratedExpression
                 && sourceType.IsXNumericType() && targetType.IsXNumericType())
             {
                 var errCode = ErrorCode.Void;
@@ -97,7 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case Platform.X86:
                     if (srcType.SpecialType.SizeInBytes() > 4)
                     {
-                        Error(ErrorCode.ERR_CantCastPtrInPlatform, node,srcType.ToDisplayString(), "x86");
+                        Error(ErrorCode.ERR_CantCastPtrInPlatform, node, srcType.ToDisplayString(), "x86");
                     }
                     else if (node.Syntax.XIsExplicitTypeCastInCode && srcType.SpecialType.SizeInBytes() != 4)
                     {

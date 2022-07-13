@@ -1,0 +1,9 @@
+// 861. ICE with invalid code
+FUNCTION Start( ) AS VOID
+? 123
+RETURN
+
+END FUNCTION
+
+CLOSE // DATABASES
+

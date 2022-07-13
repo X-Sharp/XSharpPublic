@@ -511,7 +511,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 parser.Directives,
                 diagnosticOptions: diagnosticOptions,
 #endif
-                cloneRoot: true); ;
+                cloneRoot: true); 
 #if XSHARP
             if (options.SaveAsCSharp)
             {

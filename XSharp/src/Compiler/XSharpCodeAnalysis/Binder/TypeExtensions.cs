@@ -18,7 +18,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private class ConstantWalker : BoundTreeWalker
         {
-            private bool hasConstant;
+            private bool hasConstant = false;
             internal bool HasConstant => hasConstant;
             public ConstantWalker() : base()
             {
@@ -47,15 +47,24 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        internal static bool HasConstant(this BoundNode node)
+        internal static bool IsExpressionWithConstant(this BoundNode node)
         {
-            if (node is BoundExpression)
+            switch (node)
             {
-                var walker = new ConstantWalker();
-                walker.Visit(node);
-                return walker.HasConstant;
+                case BoundLiteral:
+                    return false;
+                case BoundUnaryOperator unary:
+                    if (unary.Operand is BoundLiteral)
+                        return false;
+                    break;
+                case BoundExpression:
+                    break;
+                default:
+                    return false;
             }
-            return false;
+            var walker = new ConstantWalker();
+            walker.Visit(node);
+            return walker.HasConstant;
         }
 
 

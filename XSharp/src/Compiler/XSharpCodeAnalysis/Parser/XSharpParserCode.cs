@@ -1242,18 +1242,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public Microsoft.CodeAnalysis.Location GetLocation(SyntaxTree syntaxTree)
         {
             var token = this.Symbol;
-            var ts = new MCT.TextSpan(token.StartIndex, this.FullWidth);
-            var lp1 = new MCT.LinePosition(token.Line - 1, token.Column);
-            var lp2 = new MCT.LinePosition(token.Line - 1, token.Column + this.FullWidth - 1);
-            // prevent error  at EOF
-            if (lp2 < lp1)
-            {
-                lp2 = lp1;
-            }
-            var ls = new MCT.LinePositionSpan(lp1, lp2);
-            return new SourceLocation(syntaxTree, ts);
-            //return Microsoft.CodeAnalysis.Location.Create(this.SourceFileName, ts, ls);
-
+            return new XSharpSourceLocation(token, syntaxTree);
         }
 #endif
     }

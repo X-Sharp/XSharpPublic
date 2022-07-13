@@ -20,74 +20,33 @@ namespace Microsoft.CodeAnalysis
     {
         private readonly TextSpan _sourceSpan;
         private readonly FileLinePositionSpan _lineSpan;
-        private readonly XSharpParserRuleContext _context;
-        private readonly SyntaxTree _syntaxTree; 
+        private readonly SyntaxTree _syntaxTree;
 
+        void GetSpans(IToken start, IToken end, out FileLinePositionSpan lineSpan, out TextSpan sourceSpan)
+        {
+            var lp1 = new LinePosition(start.Line - 1, start.Column);
+            var lp2 = new LinePosition(end.Line - 1, end.Column + end.Text.Length - 1);
+            var width = end.StopIndex - start.StartIndex;
+            sourceSpan = new TextSpan(start.StartIndex, width);
+            lineSpan = new FileLinePositionSpan(start.InputStream.SourceName, new LinePositionSpan(lp1, lp2));
+        }
+
+        internal XSharpSourceLocation(IToken token, SyntaxTree syntaxTree)
+        {
+            _syntaxTree = syntaxTree;
+            GetSpans(token, token, out _lineSpan, out _sourceSpan);
+        }
         internal XSharpSourceLocation(XSharpParserRuleContext context, SyntaxTree syntaxTree)
         {
             _syntaxTree = syntaxTree;
-            var start = context.Start as XSharpToken;
-            var stop = context.Stop as XSharpToken;
-            if (start.SourceSymbol != null)
-                start = start.SourceSymbol;
-            if (stop.SourceSymbol != null)
-                stop = stop.SourceSymbol;
-
-            if (stop.Type == XSharpLexer.Eof)
-            {
-                var cu = context.CompilationUnit;
-                if (cu != null)
-                {
-                    var stream = cu.XTokens as BufferedTokenStream;
-                    var tokens = stream.GetTokens();
-                    var last = tokens.Count - 1;
-                    if (tokens[last].Type == XSharpLexer.Eof && last > 0)
-                    {
-                        stop = (XSharpToken) tokens[last - 1];
-                    }
-                }
-            }
-            var width = stop.StopIndex - start.StartIndex;
-            var lp1 = new LinePosition(start.Line - 1, start.Column);
-            var lp2 = new LinePosition(stop.Line - 1, stop.Column + stop.Text.Length - 1);
-            _context = context;
-            _sourceSpan = new TextSpan(start.StartIndex, width);
-            _lineSpan = new FileLinePositionSpan(context.SourceFileName, new LinePositionSpan(lp1, lp2));
-
+            GetSpans(context.Start, context.Stop, out _lineSpan, out _sourceSpan);
         }
         public override SyntaxTree SourceTree => _syntaxTree;
-
-        public override TextSpan SourceSpan
-        {
-            get
-            {
-                return _sourceSpan;
-            }
-        }
-
-        public override FileLinePositionSpan GetLineSpan()
-        {
-            return _lineSpan;
-        }
-
-        public override FileLinePositionSpan GetMappedLineSpan()
-        {
-            return _lineSpan;
-        }
-
-        public override LocationKind Kind
-        {
-            get
-            {
-                return LocationKind.SourceFile;
-            }
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as XSharpSourceLocation);
-        }
-
+        public override TextSpan SourceSpan => _sourceSpan;
+        public override FileLinePositionSpan GetLineSpan() => _lineSpan;
+        public override FileLinePositionSpan GetMappedLineSpan() => _lineSpan;
+        public override LocationKind Kind => LocationKind.SourceFile;
+        public override bool Equals(object obj) => this.Equals(obj as XSharpSourceLocation);
         public bool Equals(XSharpSourceLocation obj)
         {
             if (ReferenceEquals(obj, this))

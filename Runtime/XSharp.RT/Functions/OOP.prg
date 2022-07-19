@@ -391,9 +391,9 @@ internal static class OOPHelpers
                 case 3 // SYMBOL
                     result := String2Symbol( (string)oDefAttrib:Value )
                 case 4 // NULL_PSZ
-                    if oDefAttrib:Value is string
+                    if oDefAttrib:Value is string var strValue
                         // Note: Do not use String2Psz() because that PSZ will be freed when this method finishes !
-                        result := psz{ (string) oDefAttrib:Value}
+                        result := psz{ strValue }
                     else
                         result := psz{IntPtr.Zero}
                     endif
@@ -403,6 +403,13 @@ internal static class OOPHelpers
                     else
                         result := IntPtr.Zero
                     endif
+                case 6 // Decimal value stored as string, without the 'm' suffix
+                    if oDefAttrib:Value is string var strDecimal
+                        result := System.Decimal.Parse(strDecimal, System.Globalization.CultureInfo.InvariantCulture)
+                    else
+                        result := 0.0m
+                    endif
+
                 otherwise
                     result := oDefAttrib:Value
                     // for usuals there is no need to convert.

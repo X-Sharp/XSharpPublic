@@ -165,6 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.ParseLevel = ParseLevel.Lex;
                     break;
                 case "memvar":
+                case "memvars":
                     options.MemVars = positive;
                     encode = true;
                     break;

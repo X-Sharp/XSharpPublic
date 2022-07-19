@@ -8424,7 +8424,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitNamedArgument([NotNull] XP.NamedArgumentContext context)
         {
             /*
-           namedArgument       :  {AllowNamedArgs}?  Name=identifierName Op=assignoperator  ( RefOut=(REF | OUT) )? Expr=expression?
+           namedArgument       :  {AllowNamedArgs}?  Name=identifierName Op=ASSIGN_OP ( RefOut=(REF | OUT) )? Expr=expression?
                                 |   RefOut=OUT Var=VAR  Id=identifier
                                 |   RefOut=OUT Null=NULL
                                 |  ( RefOut=(REF | OUT) )? Expr=expression?

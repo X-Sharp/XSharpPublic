@@ -462,6 +462,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "memvar":
                 case "memvars":
                     return CompilerOption.MemVars;
+                case "namedargs":
                 case "namedarguments":
                     return CompilerOption.AllowNamedArgs;
                 case "ovf":

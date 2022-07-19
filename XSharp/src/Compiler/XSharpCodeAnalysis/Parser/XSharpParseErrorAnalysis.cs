@@ -15,15 +15,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal class XSharpParseErrorAnalysis : XSharpBaseListener
     {
-        private XSharpParser _parser;
-        private IList<ParseErrorData> _parseErrors;
-        CSharpParseOptions _options;
+        readonly XSharpParser _parser;
+        readonly IList<ParseErrorData> _parseErrors;
+        readonly CSharpParseOptions _options;
+        readonly List<PragmaOption> _pragmas;
 
-        public XSharpParseErrorAnalysis(XSharpParser parser, IList<ParseErrorData> parseErrors, CSharpParseOptions options)
+        public XSharpParseErrorAnalysis(XSharpParser parser, IList<ParseErrorData> parseErrors,
+            CSharpParseOptions options, List<PragmaOption> pragmas)
         {
             _parser = parser;
             _parseErrors = parseErrors;
             _options = options;
+            _pragmas = pragmas;
         }
 
         private void NotInDialect(XSharpParserRuleContext context, string msg)
@@ -125,9 +128,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         // Check for incorrect operators
         public override void ExitAssignoperator([NotNull] XSharpParser.AssignoperatorContext context)
         {
-            if (context.Op.Type != XSharpParser.ASSIGN_OP && _options.Dialect != XSharpDialect.FoxPro)
+            if (context.Op.Type != XSharpParser.ASSIGN_OP && !_options.HasOption(CompilerOption.AllowOldStyleAssignments, context, _pragmas))
             {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_AssignmentOperatorExpected));
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_AssignmentOperatorExpected));
             }
         }
 
@@ -305,9 +308,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var ass = context.AssignExpr as XSharpParser.AssignmentExpressionContext;
                 Op = ass.Op;
             }
-            if (Op != null && Op.Type != XSharpParser.ASSIGN_OP && _options.Dialect != XSharpDialect.FoxPro)
+            if (Op != null && Op.Type != XSharpParser.ASSIGN_OP && !_options.HasOption(CompilerOption.AllowOldStyleAssignments, context, _pragmas))
             {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_AssignmentOperatorExpected));
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_AssignmentOperatorExpected));
             }
         }
         public override void ExitForeachStmt([NotNull] XSharpParser.ForeachStmtContext context)

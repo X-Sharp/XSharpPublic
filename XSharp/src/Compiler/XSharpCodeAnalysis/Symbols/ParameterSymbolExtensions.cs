@@ -160,6 +160,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 IntPtr p = new IntPtr(arg.DecodeValue<int>(SpecialType.System_Int32));
                                 constant = ConstantValue.Create(p);
                                 return new BoundLiteral(syntax, constant, compilation.GetSpecialType(SpecialType.System_IntPtr));
+                            case 6:
+                                // Decimal stored as string, without the 'M' suffix
+                                var str = arg.DecodeValue<string>(SpecialType.System_String);
+                                var decValue = decimal.Parse(str, System.Globalization.CultureInfo.InvariantCulture);
+                                constant = ConstantValue.Create(decValue);
+                                return new BoundLiteral(syntax, constant, compilation.GetSpecialType(SpecialType.System_Decimal));
                             default:
                                 return new BoundDefaultExpression(syntax, param.Type);
                         }

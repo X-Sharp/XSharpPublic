@@ -5178,13 +5178,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 bool enforceOverride = _options.HasOption(CompilerOption.EnforceOverride, context, PragmaOptions);
 
                 modifiers.FixDefaultVisibility();
-                if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions) && !context.isInStructure())
+                if (!genericParent)
                 {
-                    modifiers.FixVirtual(enforceOverride);
-                }
-                else if (!genericParent)
-                {
-                    modifiers.FixOverride(enforceOverride);
+                    if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions) && !context.isInStructure())
+                    {
+                        modifiers.FixVirtual(enforceOverride);
+                    }
+                    else
+                    {
+                        modifiers.FixOverride(enforceOverride);
+                    }
                 }
             }
             context.PutList(modifiers.ToList<SyntaxToken>());
@@ -7003,9 +7006,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             // other LHS to do a fieldput or memvar put are handled in XSharpTreeTransformationRT
                             expr = MakeSimpleAssignment(bin.Left, RHS);
                         }
-                        if (_options.Dialect != XSharpDialect.FoxPro)
+                        if (!_options.HasOption(CompilerOption.AllowOldStyleAssignments, exprCtx, PragmaOptions))
                         {
-                            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignmentOperatorExpected));
+                            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_AssignmentOperatorExpected));
                         }
                     }
                     stmt = GenerateExpressionStatement(expr, exprCtx);
@@ -8424,7 +8427,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitNamedArgument([NotNull] XP.NamedArgumentContext context)
         {
             /*
-           namedArgument       :  {AllowNamedArgs}?  Name=identifierName Op=assignoperator  ( RefOut=(REF | OUT) )? Expr=expression?
+           namedArgument       :  {AllowNamedArgs}?  Name=identifierName Op=ASSIGN_OP ( RefOut=(REF | OUT) )? Expr=expression?
                                 |   RefOut=OUT Var=VAR  Id=identifier
                                 |   RefOut=OUT Null=NULL
                                 |  ( RefOut=(REF | OUT) )? Expr=expression?
@@ -9930,7 +9933,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                 tree = new XSharpParserRuleContext();
             }
-            var errchecker = new XSharpParseErrorAnalysis(parser, parseErrors, _options);
+            var errchecker = new XSharpParseErrorAnalysis(parser, parseErrors, _options, PragmaOptions);
             var walker = new ParseTreeWalker();
             walker.Walk(errchecker, tree);
             if (parseErrors.Count == 0)

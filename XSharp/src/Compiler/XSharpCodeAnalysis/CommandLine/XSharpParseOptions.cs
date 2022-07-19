@@ -114,6 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoClipCall { get; internal set; }
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool AllowNamedArguments { get; private set; }
+        public bool AllowOldStyleAssignments { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
         public bool EnforceOverride { get; private set; }
@@ -179,6 +180,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 AllowDotForInstanceMembers = opt.AllowDotForInstanceMembers;
                 AllowNamedArguments = opt.AllowNamedArguments;
+                AllowOldStyleAssignments = opt.AllowOldStyleAssignments;
                 AllowUnsafe = opt.AllowUnsafe;
                 ArrayZero = opt.ArrayZero;
                 CaseSensitive = opt.CaseSensitive;
@@ -262,6 +264,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             AllowDotForInstanceMembers = opt.AllowDotForInstanceMembers;
             AllowNamedArguments = opt.AllowNamedArguments;
+            AllowOldStyleAssignments = opt.AllowOldStyleAssignments;
             AllowUnsafe = opt.AllowUnsafe;
             ArrayZero = opt.ArrayZero;
             CaseSensitive = opt.CaseSensitive;
@@ -362,6 +365,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.AllowDotForInstanceMembers: // allowdot
                     return CheckOption(option, AllowDotForInstanceMembers, context, options);
 
+                case CompilerOption.AllowOldStyleAssignments: // allowoldstyleassignments
+                    return CheckOption(option, AllowOldStyleAssignments, context, options);
+
                 case CompilerOption.ArrayZero: // az
                     return CheckOption(option, ArrayZero, context, options);
 
@@ -430,7 +436,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case CompilerOption.FoxArraySupport: // fox2
                     return CheckOption(option, FoxArraySupport, context, options);
-
 
                 case CompilerOption.LateBinding:  // lb
                     return CheckOption(option, LateBinding, context, options);

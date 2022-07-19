@@ -18,7 +18,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class LocalRewriter
     {
-        private bool IsFoxAccessMember(BoundExpression loweredReceiver, out string areaName)
+        private bool IsFoxAccessMember(BoundExpression loweredReceiver, IXParseTree xNode, out string areaName)
         {
             areaName = null;
             if (_compilation.Options.Dialect == XSharpDialect.FoxPro)
@@ -27,13 +27,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // in that case BoundCall is usually a VarGet()
                 if (loweredReceiver is BoundCall bc && bc.ReceiverOpt == null)
                 {
-                    var xNode = loweredReceiver.Syntax.XNode;
-                    if (xNode?.Parent is XSharpParser.AccessMemberContext amc && amc.IsFox)
+                    if (xNode is XSharpParser.AccessMemberContext amc && amc.IsFox)
                     {
-                        areaName = amc.AreaName;
                         if (loweredReceiver is BoundCall && amc.Expr is XSharpParser.PrimaryExpressionContext pc
                             && pc.Expr is XSharpParser.NameExpressionContext)
                         {
+                            areaName = amc.AreaName;
                             return true;
                         }
                     }
@@ -42,16 +41,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        public BoundExpression MakeVODynamicGetMember(BoundExpression loweredReceiver, string name)
+        public BoundExpression MakeVODynamicGetMember(BoundExpression loweredReceiver, BoundDynamicMemberAccess node)
         {
             // check for FoxPro late access, such as Customer.LastName
+            string name = node.Name;
             var syntax = loweredReceiver.Syntax;
             var allowLB = _compilation.Options.LateBindingOrFox(syntax);
             if (!allowLB || loweredReceiver.HasDynamicType())
                 return null;
             _factory.Syntax = syntax;
-            var nameExpr = _factory.Literal( name);
-            if (IsFoxAccessMember(loweredReceiver, out var areaName))
+            var nameExpr = _factory.Literal(name);
+            if (IsFoxAccessMember(loweredReceiver, node.Syntax.XNode, out var areaName))
             {
                 string method = ReservedNames.FieldGetWaUndeclared;
                 var exprUndeclared = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, syntax));
@@ -64,7 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
             if (!_compilation.Options.HasOption(CompilerOption.LateBinding, syntax))
             {
-                _diagnostics.Add(new CSDiagnostic(new CSDiagnosticInfo(ErrorCode.WRN_UndeclaredMember, constructedFrom, name,"property","access"), loweredReceiver.Syntax.Location));
+                _diagnostics.Add(new CSDiagnostic(new CSDiagnosticInfo(ErrorCode.WRN_UndeclaredMember, constructedFrom, name, "property", "access"), loweredReceiver.Syntax.Location));
             }
 
             var usualType = _compilation.UsualType();
@@ -75,7 +75,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             loweredReceiver = MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false);
             return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.IVarGet, loweredReceiver, nameExpr);
         }
-
 
         bool allowLateBound(SyntaxNode syntax, TypeSymbol type)
         {
@@ -91,8 +90,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return allowLB;
         }
 
-        public BoundExpression MakeVODynamicSetMember(BoundExpression loweredReceiver, string name, BoundExpression loweredValue)
+        public BoundExpression MakeVODynamicSetMember(BoundExpression loweredReceiver, BoundDynamicMemberAccess node, BoundExpression loweredValue)
         {
+            string name = node.Name;
             var syntax = loweredReceiver.Syntax;
             _factory.Syntax = syntax;
             var allowLB = _compilation.Options.LateBindingOrFox(syntax);
@@ -102,7 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var value = loweredValue.Type is null ? new BoundDefaultExpression(syntax, usualType) 
                 : MakeConversionNode(loweredValue, usualType, false);
             var nameExpr = _factory.Literal(name);
-            if (IsFoxAccessMember(loweredReceiver, out var areaName))
+            if (IsFoxAccessMember(loweredReceiver, node.Syntax.XNode, out var areaName))
             {
                 string method =  ReservedNames.FieldSetWaUndeclared;
                 var exprUndeclared = _factory.Literal(_compilation.Options.HasOption(CompilerOption.UndeclaredMemVars,syntax));

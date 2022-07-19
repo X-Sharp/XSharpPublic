@@ -287,6 +287,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (argType is not { })
                     continue;
                 var isConst = arg.ConstantValue != null;
+                if (argType.IsArrayType() && parType.IsArrayType())
+                {
+                    // Make sure function with array argument have preference when array type is passed
+                    score += 500;
+                }
 
                 if (TypeEquals(parType, argType, ref useSiteDiagnostics))
                 {
@@ -306,7 +311,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     score += isConst ? 90 : 100;
                     continue;
                 }
-
 
                 if (parType.IsObjectType() || parType.IsUsualType())
                 {

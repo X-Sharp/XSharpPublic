@@ -800,9 +800,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 RegisterParamAssign(bin.Left.XNode.GetText());
                             }
                         }
-                        if (_options.Dialect != XSharpDialect.FoxPro)
+                        if (oldStyleAssign && !_options.HasOption(CompilerOption.AllowOldStyleAssignments, exprCtx, PragmaOptions))
                         {
-                            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignmentOperatorExpected));
+                            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_AssignmentOperatorExpected));
                         }
                     }
                     var stmt = GenerateExpressionStatement(expr, exprCtx);
@@ -2697,7 +2697,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 text = text.Substring(0, text.Length - 1);
                                 break;
                         }
-                        var iValue = System.Int64.Parse(text);
+                        var iValue = long.Parse(text);
                         if (negative)
                         {
                             iValue = -iValue;
@@ -2742,6 +2742,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 case 'M':
                                 case 'm':
+                                    // 6 = Decimal literal, stored as string without the 'M' suffix
+                                    text = text.Substring(0, text.Length - 1);
+                                    if (negative)
+                                        text = "-" + text;
+                                    return MakeDefaultParameter(GenerateLiteral(text), GenerateLiteral(6));
                                 case 'S':
                                 case 's':
                                 case 'D':

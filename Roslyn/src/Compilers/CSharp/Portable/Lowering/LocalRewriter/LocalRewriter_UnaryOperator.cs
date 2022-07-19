@@ -835,7 +835,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                     if (_compilation.Options.LateBindingOrFox(transformedExpression.Syntax) && !dynamicMemberAccess.Receiver.HasDynamicType())
                     {
-                        var expr = MakeVODynamicGetMember(dynamicMemberAccess.Receiver, dynamicMemberAccess.Name);
+                        var expr = MakeVODynamicGetMember(dynamicMemberAccess.Receiver, dynamicMemberAccess);
                         if (expr != null)
                             return expr;
                     }

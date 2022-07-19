@@ -58,7 +58,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var memberAccess = (BoundDynamicMemberAccess)left;
                         var loweredReceiver = VisitExpression(memberAccess.Receiver);
 #if XSHARP
-                        var expr = MakeVODynamicSetMember(loweredReceiver, memberAccess.Name, loweredRight);
+                        var expr = MakeVODynamicSetMember(loweredReceiver, memberAccess, loweredRight);
                         if (expr != null)
                             return expr;
 #endif
@@ -111,7 +111,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BoundKind.DynamicMemberAccess:
                     var memberAccess = (BoundDynamicMemberAccess)rewrittenLeft;
 #if XSHARP
-                    var expr = MakeVODynamicSetMember(memberAccess.Receiver, memberAccess.Name, rewrittenRight);
+                    var expr = MakeVODynamicSetMember(memberAccess.Receiver, memberAccess, rewrittenRight);
                     if (expr != null)
                         return expr;
 #endif

@@ -5178,13 +5178,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 bool enforceOverride = _options.HasOption(CompilerOption.EnforceOverride, context, PragmaOptions);
 
                 modifiers.FixDefaultVisibility();
-                if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions) && !context.isInStructure())
+                if (!genericParent)
                 {
-                    modifiers.FixVirtual(enforceOverride);
-                }
-                else if (!genericParent)
-                {
-                    modifiers.FixOverride(enforceOverride);
+                    if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions) && !context.isInStructure())
+                    {
+                        modifiers.FixVirtual(enforceOverride);
+                    }
+                    else
+                    {
+                        modifiers.FixOverride(enforceOverride);
+                    }
                 }
             }
             context.PutList(modifiers.ToList<SyntaxToken>());

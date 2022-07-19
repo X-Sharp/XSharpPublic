@@ -439,7 +439,7 @@ BEGIN NAMESPACE XSharp
 
 
         /// <summary>Implicitely convert a typed array to an array of USUALs.</summary>
-        STATIC OPERATOR IMPLICIT ( a AS __ArrayBase<T> ) AS ARRAY
+        STATIC OPERATOR EXPLICIT ( a AS __ArrayBase<T> ) AS ARRAY
             VAR aResult := __Array{}
             FOREACH VAR o IN a
                 aResult:Add(  o)

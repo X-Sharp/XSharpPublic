@@ -1224,10 +1224,10 @@ FUNCTION RtlCopyMemory(Destination AS PTR ,Source AS PTR,Length AS DWORD) AS PTR
 	RETURN MemCopy(Destination,Source,Length)
 
 FUNCTION RtlFillMemory(Destination AS PTR, Length AS INT, Fill AS DWORD) AS PTR STRICT
-	RETURN MemSet((Destination), BYTE(Fill),(Length))
+	RETURN MemSet((Destination), BYTE(Fill),DWORD(Length))
 
 FUNCTION  RtlZeroMemory(Destination AS PTR, Length AS INT) AS PTR STRICT
-	RETURN MemSet((Destination),0,(Length))
+	RETURN MemSet((Destination),0,DWORD(Length))
 
 FUNCTION WorkItemFunc (pvContext AS PTR)  AS DWORD STRICT
 	RETURN 0
@@ -1289,7 +1289,7 @@ FUNCTION SORTIDFROMLCID(lcid AS DWORD) AS WORD
 
    val1  := DWORD(lcid)
 	//PP-030924 correct 51422
-	VAL2 := _AND(NLS_VALID_LOCALE_MASK, LONGINT(_CAST,VAL1))
+	VAL2 := _AND(NLS_VALID_LOCALE_MASK, VAL1)
 	RETURN (WORD(_CAST, (val2 >> 16)))
 
 

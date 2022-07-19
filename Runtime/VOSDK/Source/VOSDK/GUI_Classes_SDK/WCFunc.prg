@@ -386,7 +386,7 @@ FUNCTION __WCGetPictureCoordinates(hWnd AS PTR, hDCPrinter AS PTR, lpRC AS _winR
 
 
    	IF nShrinkY < nShrinkX
-			lpRC:right 	:= (INT) FLOAT(lpRC:Right) * nShrinkY
+			lpRC:right 	:= INT(FLOAT(lpRC:Right) * nShrinkY)
 			lpRC:bottom := INT(FLOAT(lpRC:bottom) * nShrinkY)
    	ELSE
 			lpRC:right 	:= INT(FLOAT(lpRC:Right) * nShrinkX)

@@ -12,11 +12,11 @@ USING System.Runtime.Serialization
 
 #define USEATTRIB
 #ifdef USEATTRIB
-    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
     #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
     #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
 #else
-    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[NOSHOW\] =>
     #XTRANSLATE \[INLINE\] =>
     #XTRANSLATE \[NODEBUG\] =>
 #endif
@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharp
         IComparable,            ;
         ISerializable
 
-        [HIDDEN];
+        [NOSHOW];
         PRIVATE INITONLY _value AS System.Decimal
 
         #region constructors
@@ -62,7 +62,7 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties
         /// <summary>Decimal (System.Decimal) value</summary>
-        [HIDDEN];
+        [NOSHOW];
         PROPERTY @@Value    AS System.Decimal	GET _value
         #endregion
 

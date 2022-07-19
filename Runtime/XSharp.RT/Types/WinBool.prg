@@ -11,11 +11,11 @@ USING System.Runtime.Serialization
 
 #define USEATTRIB
 #ifdef USEATTRIB
-    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
     #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
     #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
 #else
-    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[NOSHOW\] =>
     #XTRANSLATE \[INLINE\] =>
     #XTRANSLATE \[NODEBUG\] =>
 #endif
@@ -25,11 +25,11 @@ BEGIN NAMESPACE XSharp
     [DebuggerDisplay("WinBool({ToString(),nq})", Type := "LOGIC")];
     [Serializable];
     PUBLIC STRUCT __WinBool IMPLEMENTS ISerializable
-        [HIDDEN];
+        [NOSHOW];
         PRIVATE STATIC trueValue := __WinBool{1}	AS __WinBool
-        [HIDDEN];
+        [NOSHOW];
         PRIVATE STATIC falseValue := __WinBool{0}	AS __WinBool
-        [HIDDEN];
+        [NOSHOW];
         PRIVATE INITONLY _value AS INT			// 0 = false, 1 = true
         /// <summary>Value as Logic</summary>
         PUBLIC PROPERTY @@Value AS LOGIC GET _value != 0

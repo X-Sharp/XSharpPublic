@@ -15,11 +15,11 @@ USING System.Diagnostics
 
 #define USEATTRIB
 #ifdef USEATTRIB
-    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
     #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
     #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
 #else
-    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[NOSHOW\] =>
     #XTRANSLATE \[INLINE\] =>
     #XTRANSLATE \[NODEBUG\] =>
 #endif
@@ -51,27 +51,27 @@ BEGIN NAMESPACE XSharp
         // for date calculation we use the Value PROPERTY which returns a System.DateTime type
         // Note that the Vulcan type uses a datetime which takes 8 bytes. We only use 4 bytes
         #region fields
-        [HIDDEN] [FieldOffset(00)] PRIVATE _ymd   AS System.Int32
-        [HIDDEN] [FieldOffset(00)] PRIVATE _year  AS System.UInt16
-        [HIDDEN] [FieldOffset(02)] PRIVATE _month AS System.Byte
-        [HIDDEN] [FieldOffset(03)] PRIVATE _day   AS System.Byte
+        [NOSHOW] [FieldOffset(00)] PRIVATE _ymd   AS System.Int32
+        [NOSHOW] [FieldOffset(00)] PRIVATE _year  AS System.UInt16
+        [NOSHOW] [FieldOffset(02)] PRIVATE _month AS System.Byte
+        [NOSHOW] [FieldOffset(03)] PRIVATE _day   AS System.Byte
         #endregion
 
         #region STATIC fields
         /// <exclude />
-        [HIDDEN] STATIC INITONLY PUBLIC  _NULL_DATE AS DATE
+        [NOSHOW] STATIC INITONLY PUBLIC  _NULL_DATE AS DATE
         /// <exclude />
-        [HIDDEN] CONST  CLIPPER_MIN_DATE := 2415386U AS DWORD	// 1901-01-01
+        [NOSHOW] CONST  CLIPPER_MIN_DATE := 2415386U AS DWORD	// 1901-01-01
         /// <exclude />
-        [HIDDEN] CONST  CLIPPER_MAX_DATE := 4606840U AS DWORD	// 7900-12-31
+        [NOSHOW] CONST  CLIPPER_MAX_DATE := 4606840U AS DWORD	// 7900-12-31
         /// <exclude />
-        [HIDDEN] STATIC INITONLY _dtCalc AS DateTime
+        [NOSHOW] STATIC INITONLY _dtCalc AS DateTime
 
         #endregion
 
         #region datetime conversions
         /// <summary>Return DATE value as DateTime.</summary>
-        [HIDDEN];
+        [NOSHOW];
         PUBLIC PROPERTY Value AS System.DateTime
         GET
             IF (_ymd == 0)
@@ -648,7 +648,7 @@ BEGIN NAMESPACE XSharp
             #region properties
 
             /// <inheritdoc />
-            [HIDDEN];
+            [NOSHOW];
             PROPERTY IsEmpty AS LOGIC
             GET
                 RETURN _ymd == 0
@@ -661,16 +661,16 @@ BEGIN NAMESPACE XSharp
         /// <inheritdoc />
         PROPERTY Day	AS INT GET _day
             // Next properties for easy access in right type
-            [HIDDEN];
+            [NOSHOW];
             INTERNAL PROPERTY DYear		AS DWORD GET _year
 
-            [HIDDEN];
+            [NOSHOW];
             INTERNAL PROPERTY DMonth	AS DWORD GET _month
 
-            [HIDDEN];
+            [NOSHOW];
             INTERNAL PROPERTY DDay		AS DWORD GET _day
 
-            [HIDDEN];
+            [NOSHOW];
             INTERNAL PROPERTY YMD AS DWORD GET ;
             (SELF:DYear * 0xFFFF)  + (SELF:DMonth *0xFF) + _day
 

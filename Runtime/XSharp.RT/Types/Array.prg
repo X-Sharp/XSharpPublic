@@ -14,11 +14,11 @@ USING XSharp
 
 #define USEATTRIB
 #ifdef USEATTRIB
-    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
     #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
     #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
 #else
-    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[NOSHOW\] =>
     #XTRANSLATE \[INLINE\] =>
     #XTRANSLATE \[NODEBUG\] =>
 #endif
@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp
         STATIC FoxArrayHelpers := FoxArrayHelpers {} AS FoxArrayHelpers
         INTERNAL PROPERTY __IsFoxArray AS LOGIC GET SELF:GetType():FullName == FoxArrayName
 
-        [HIDDEN];
+        [NOSHOW];
         INTERNAL STATIC SuppressArrayIndexErrors := FALSE AS LOGIC  // used for Get_Element to emulate strange VO behaviour
 
         /// <inheritdoc />
@@ -215,7 +215,7 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
 
         /// <summary>Returns the default value for array elements when arrays are resized or initialized. This is NIL.</summary>
-        [HIDDEN];
+        [NOSHOW];
         PUBLIC OVERRIDE PROPERTY DefaultValue AS USUAL GET NIL
 
         NEW INTERNAL METHOD Swap(position AS INT, element AS USUAL) AS USUAL

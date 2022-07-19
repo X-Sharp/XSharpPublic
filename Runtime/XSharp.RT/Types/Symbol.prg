@@ -14,11 +14,11 @@ USING System.Runtime.Serialization
 
 #define USEATTRIB
 #ifdef USEATTRIB
-    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
     #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
     #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
 #else
-    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[NOSHOW\] =>
     #XTRANSLATE \[INLINE\] =>
     #XTRANSLATE \[NODEBUG\] =>
 #endif
@@ -42,9 +42,9 @@ BEGIN NAMESPACE XSharp
         ISerializable
 
         #region fields
-        [HIDDEN];
+        [NOSHOW];
         PRIVATE INITONLY _index		AS DWORD
-        [HIDDEN];
+        [NOSHOW];
         PRIVATE STATIC _PszDict		AS Dictionary<DWORD, PSZ>
         #endregion
 
@@ -83,13 +83,13 @@ BEGIN NAMESPACE XSharp
             ENDIF
             RETURN __Symbol{0}
 
-        [HIDDEN];
+        [NOSHOW];
         INTERNAL PROPERTY _value AS STRING
             GET
                 RETURN SymbolTable.GetString(SELF:_index)
             END GET
         END PROPERTY
-        [HIDDEN];
+        [NOSHOW];
         INTERNAL STATIC PROPERTY PszDict AS Dictionary<DWORD, PSZ>
             GET
                 IF _PszDict == NULL

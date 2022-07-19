@@ -12,11 +12,11 @@ USING System.Runtime.CompilerServices
 
 #define USEATTRIB
 #ifdef USEATTRIB
-    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
     #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
     #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
 #else
-    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[NOSHOW\] =>
     #XTRANSLATE \[INLINE\] =>
     #XTRANSLATE \[NODEBUG\] =>
 #endif
@@ -29,7 +29,7 @@ USING System.Runtime.CompilerServices
 ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
 	PRIVATE INITONLY _pcount AS INT
 
-    [HIDDEN];
+    [NOSHOW];
     PRIVATE STATIC nullArgs AS USUAL[]
 
     STATIC CONSTRUCTOR
@@ -114,7 +114,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 	/// <exclude />
 	INITONLY PROTECT _addsMemVars AS LOGIC
 
-    [HIDDEN];
+    [NOSHOW];
     STATIC PRIVATE nullArgs AS OBJECT[]
 
     STATIC CONSTRUCTOR

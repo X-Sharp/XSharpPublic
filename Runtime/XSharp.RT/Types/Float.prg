@@ -10,11 +10,11 @@ USING System.Runtime.Serialization
 USING System.Diagnostics
 #define USEATTRIB
 #ifdef USEATTRIB
-    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
     #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
     #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
 #else
-    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[NOSHOW\] =>
     #XTRANSLATE \[INLINE\] =>
     #XTRANSLATE \[NODEBUG\] =>
 #endif
@@ -39,11 +39,11 @@ BEGIN NAMESPACE XSharp
         IComparable,            ;
         ISerializable
 
-        [HIDDEN];
+        [NOSHOW];
         [FieldOffset(0)]  PRIVATE INITONLY _value AS REAL8
-        [HIDDEN];
+        [NOSHOW];
         [FieldOffset(8)]  PRIVATE INITONLY _length AS SHORTINT
-        [HIDDEN];
+        [NOSHOW];
         [FieldOffset(10)] PRIVATE INITONLY _decimals AS SHORTINT
 
         #region constructors

@@ -12,11 +12,11 @@ USING System.Runtime.CompilerServices
 
 #define USEATTRIB
 #ifdef USEATTRIB
-    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
     #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
     #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
 #else
-    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[NOSHOW\] =>
     #XTRANSLATE \[INLINE\] =>
     #XTRANSLATE \[NODEBUG\] =>
 #endif

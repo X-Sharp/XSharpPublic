@@ -14,11 +14,11 @@ USING System.Runtime.Serialization
 
 #define USEATTRIB
 #ifdef USEATTRIB
-    #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
+    #XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
     #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
     #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
 #else
-    #XTRANSLATE \[HIDDEN\] =>
+    #XTRANSLATE \[NOSHOW\] =>
     #XTRANSLATE \[INLINE\] =>
     #XTRANSLATE \[NODEBUG\] =>
 #endif
@@ -32,9 +32,9 @@ BEGIN NAMESPACE XSharp
     PUBLIC CLASS __ArrayBase<T> ;
         IMPLEMENTS INamedIndexer, IEnumerable<T>, ISerializable
 
-        [HIDDEN];
+        [NOSHOW];
         PROTECTED INTERNAL _internalList AS List<T>
-        [HIDDEN];
+        [NOSHOW];
         PRIVATE _islocked AS LOGIC
         #region constructors
         /// <summary>Create an empty array</summary>
@@ -86,16 +86,16 @@ BEGIN NAMESPACE XSharp
 
         #region properties
         /// <summary>Is the array empty.</summary>
-        [HIDDEN];
+        [NOSHOW];
         PUBLIC PROPERTY IsEmpty AS LOGIC GET _internalList:Count == 0
         /// <summary>Length of the array.</summary>
         PUBLIC PROPERTY Length AS DWORD GET (DWORD) _internalList:Count
         /// <summary>Length of the array as integer.</summary>
-        [HIDDEN];
+        [NOSHOW];
         PUBLIC PROPERTY Count AS INT GET _internalList:Count
 
         /// <summary>Returns the default value for array elements when arrays are resized or initialized.</summary>
-        [HIDDEN];
+        [NOSHOW];
         PUBLIC VIRTUAL PROPERTY DefaultValue AS T GET DEFAULT(T)
         #endregion
 
@@ -400,7 +400,7 @@ BEGIN NAMESPACE XSharp
             SELF:_islocked := lLocked
             RETURN wasLocked
             /// <summary>Is the array locked?</summary>
-        [HIDDEN];
+        [NOSHOW];
         PROPERTY Locked AS LOGIC GET _islocked
 
         INTERNAL METHOD CheckLock AS LOGIC

@@ -1,11 +1,26 @@
+// https://github.com/X-Sharp/XSharpPublic/issues/885
+
 function start as void
-    try
-    local aStrings as ARRAY OF STRING
-    aStrings := {}
-    AAdd(aStrings, 123)
-    ? aStrings[1]
-    catch e as exception
-        ? e:ToString()
-    end try
-    wait
-    RETURN
+
+
+local aTest as array of Brw
+local uBrw as usual
+aTest := {}
+
+uBrw := Brw{}
+AAdd(aTest, uBrw)
+? aTest[1]
+xAssert(aTest[1] == uBrw)
+return
+
+class Brw
+end class
+
+
+PROC xAssert(l AS LOGIC)  AS VOID
+	IF l
+		? "Assertion passed"
+	ELSE
+		THROW Exception{"Incorrect result"}
+	END IF
+RETURN

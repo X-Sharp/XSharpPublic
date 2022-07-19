@@ -2697,7 +2697,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 text = text.Substring(0, text.Length - 1);
                                 break;
                         }
-                        var iValue = System.Int64.Parse(text);
+                        var iValue = long.Parse(text);
                         if (negative)
                         {
                             iValue = -iValue;
@@ -2742,6 +2742,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 case 'M':
                                 case 'm':
+                                    // 6 = Decimal literal, stored as string without the 'M' suffix
+                                    text = text.Substring(0, text.Length - 1);
+                                    if (negative)
+                                        text = "-" + text;
+                                    return MakeDefaultParameter(GenerateLiteral(text), GenerateLiteral(6));
                                 case 'S':
                                 case 's':
                                 case 'D':

@@ -800,9 +800,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 RegisterParamAssign(bin.Left.XNode.GetText());
                             }
                         }
-                        if (_options.Dialect != XSharpDialect.FoxPro)
+                        if (oldStyleAssign && !_options.HasOption(CompilerOption.AllowOldStyleAssignments, exprCtx, PragmaOptions))
                         {
-                            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignmentOperatorExpected));
+                            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_AssignmentOperatorExpected));
                         }
                     }
                     var stmt = GenerateExpressionStatement(expr, exprCtx);

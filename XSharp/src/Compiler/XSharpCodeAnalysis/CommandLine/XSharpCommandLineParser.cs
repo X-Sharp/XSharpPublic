@@ -43,6 +43,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             switch (name)
             {
+                case "allowoldstyleassignments":
+                    options.AllowOldStyleAssignments = positive;
+                    encode = true;
+                    break;
                 case "allowdot":
                     options.AllowDotForInstanceMembers = positive;
                     encode = true;
@@ -669,6 +673,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "The FoxPro dialect requires the use of the X# Runtime");
                         //options.Fox2 = false;
+                    }
+                    if (!options.ExplicitOptions.HasFlag(CompilerOption.AllowOldStyleAssignments))
+                    {
+                        options.AllowOldStyleAssignments = true;
                     }
                     if (!options.ExplicitOptions.HasFlag(CompilerOption.Vo9))
                     {

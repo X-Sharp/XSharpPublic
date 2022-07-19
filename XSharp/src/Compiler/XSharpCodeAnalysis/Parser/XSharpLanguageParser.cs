@@ -328,7 +328,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 System.IO.File.WriteAllText(file, strTree);
             }
             var walker = new ParseTreeWalker();
-
+            List<PragmaBase> pragmas = new List<PragmaBase>();
+            List<PragmaOption> pragmaoptions = new List<PragmaOption>();
+            if (pp != null && pp.Pragmas?.Count > 0)
+            {
+                pragmas = pp.Pragmas;
+                foreach (var pragma in pragmas)
+                {
+                    if (pragma is PragmaOption po)
+                    {
+                        pragmaoptions.Add(po);
+                    }
+                }
+            }
             if (_options.ParseLevel == ParseLevel.Complete)
             {
                 // check for parser errors, such as missing tokens
@@ -336,7 +348,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // tokens and missing keywords
                 try
                 {
-                    var errchecker = new XSharpParseErrorAnalysis(parser, parseErrors, _options);
+                    var errchecker = new XSharpParseErrorAnalysis(parser, parseErrors, _options, pragmaoptions);
                     walker.Walk(errchecker, tree);
                 }
                 catch (Exception e)
@@ -345,9 +357,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             var treeTransform = CreateTransform(parser, _options, _pool, _syntaxFactory, _fileName);
-            if (pp != null && pp.Pragmas?.Count > 0)
+            if (pragmas.Count > 0)
             {
-                treeTransform.SetPragmas(pp.Pragmas);
+                treeTransform.SetPragmas(pragmas);
             }
             bool hasErrors = false;
             SyntaxToken eof = null;

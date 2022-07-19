@@ -319,7 +319,6 @@
                 case ErrorCode.WRN_LamdaExpressionWithPipes:
                 case ErrorCode.WRN_NullPointerForRefParameter:
                 case ErrorCode.WRN_AssgReadonlyLocalCause:
-                case ErrorCode.WRN_AssignmentOperatorExpected:
                 case ErrorCode.WRN_FunctionsTakePrecedenceOverMethods:
                 case ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak:
                 case ErrorCode.WRN_ArgumentRefParameterOut:

@@ -1,3 +1,4 @@
+
 FUNCTION Start() AS VOID STRICT
 Test{}
 
@@ -17,6 +18,10 @@ CLASS Test
 		XAssert(thisform.s:Length == 3)
 		XAssert(thisform.s.Length == 3)
 		XAssert(thisform.thisform.s.Length == 3)
+        s = "abcd" // old style assignments are allowed in the FoxPro dialect
+        ? thisform.s.Length
+        XAssert(thisform.s.Length == 4)
+
 END CLASS
 
 

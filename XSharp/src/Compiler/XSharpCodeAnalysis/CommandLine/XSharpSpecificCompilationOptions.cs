@@ -40,6 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // All defaults are set at property level
         }
         public bool AllowDotForInstanceMembers { get; internal set; } = false;
+        public bool AllowOldStyleAssignments { get; internal set; } = false;
         public bool ArrayZero { get; internal set; } = false;
         public bool CaseSensitive { get; internal set; } = false;
         public int ClrVersion { get; internal set; } = 4;
@@ -108,6 +109,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             // options in alphabetical order
             switch (option)
             {
+                case CompilerOption.AllowOldStyleAssignments:
+                    AllowOldStyleAssignments = value;
+                    break;
                 case CompilerOption.AllowDotForInstanceMembers:
                     AllowDotForInstanceMembers = value;
                     break;
@@ -251,7 +255,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
 
     [Flags]
-    public enum CompilerOption
+    public enum CompilerOption : long
     {
         None = 0,
         Overflow = 1 << 0,
@@ -303,6 +307,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         EnforceSelf = 1 << 29,
         AllowDotForInstanceMembers = 1 << 30,
         EnforceOverride = 1 << 31,
+        AllowOldStyleAssignments = 1L << 32,
         All = -1,       // used for Push/Pop
     }
 
@@ -338,9 +343,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.MemVars:
                 case CompilerOption.UndeclaredMemVars:
                 case CompilerOption.Xpp1:
-                //case CompilerOption.Xpp2:
+                    //case CompilerOption.Xpp2:
                     return true;
                 case CompilerOption.AllowDotForInstanceMembers:
+                case CompilerOption.AllowOldStyleAssignments:
                 case CompilerOption.AllowNamedArgs:
                 case CompilerOption.ArrayZero:
                 case CompilerOption.ClrVersion:
@@ -367,10 +373,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return "Instance Dot operator for instance members"; ;
                 case CompilerOption.ArrayZero:
                     return "Use Zero Based Arrays";
-                case CompilerOption.ClrVersion:
-                    break;
+                case CompilerOption.AllowOldStyleAssignments:
+                    return "Allow Old Style Assignments";
                 case CompilerOption.EnforceOverride:
-                    return "OVERRIDE must be explicitely used in the source code"; ;
+                    return "OVERRIDE must be explicitly used in the source code"; ;
                 case CompilerOption.EnforceSelf:
                     return "Instance Method calls inside a class require a SELF prefix";
                 case CompilerOption.Fox1:
@@ -439,6 +445,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             // options sorted in alphabetical order
             switch (option.ToLower())
             {
+                case "allowoldstyleassignments":
+                    return CompilerOption.AllowOldStyleAssignments;
                 case "allowdot":
                     return CompilerOption.AllowDotForInstanceMembers;
                 case "az":

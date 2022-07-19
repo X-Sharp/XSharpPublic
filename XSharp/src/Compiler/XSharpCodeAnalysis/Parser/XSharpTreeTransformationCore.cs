@@ -7006,9 +7006,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             // other LHS to do a fieldput or memvar put are handled in XSharpTreeTransformationRT
                             expr = MakeSimpleAssignment(bin.Left, RHS);
                         }
-                        if (_options.Dialect != XSharpDialect.FoxPro)
+                        if (!_options.HasOption(CompilerOption.AllowOldStyleAssignments, exprCtx, PragmaOptions))
                         {
-                            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignmentOperatorExpected));
+                            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_AssignmentOperatorExpected));
                         }
                     }
                     stmt = GenerateExpressionStatement(expr, exprCtx);
@@ -9933,7 +9933,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                 tree = new XSharpParserRuleContext();
             }
-            var errchecker = new XSharpParseErrorAnalysis(parser, parseErrors, _options);
+            var errchecker = new XSharpParseErrorAnalysis(parser, parseErrors, _options, PragmaOptions);
             var walker = new ParseTreeWalker();
             walker.Walk(errchecker, tree);
             if (parseErrors.Count == 0)

@@ -2219,6 +2219,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             switch (compopt)
                             {
                                 case CompilerOption.AllowDotForInstanceMembers:
+                                case CompilerOption.AllowOldStyleAssignments:
                                 case CompilerOption.ArrayZero:
                                 case CompilerOption.EnforceOverride:
                                 case CompilerOption.EnforceSelf:

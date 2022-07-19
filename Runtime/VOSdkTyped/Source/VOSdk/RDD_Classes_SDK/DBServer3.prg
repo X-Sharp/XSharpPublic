@@ -6,7 +6,7 @@
 #pragma options ("enforceself", on)
 #pragma warnings(165, off)
 
-PARTIAL CLASS DbServer 
+PARTIAL CLASS DbServer
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.GetArray/*" />
@@ -420,7 +420,7 @@ METHOD GoTo( nRecordNumber AS LONG) AS LOGIC
 							__DBSGoBottom( nTries )
 							__DBSSkip( 1, nTries )
 						ELSE
-							__DBSGoTo( nCurrentRecord, nTries )
+							__DBSGoTo( (int) nCurrentRecord, nTries )
 						ENDIF
 					ENDIF
 				ENDIF
@@ -583,7 +583,7 @@ METHOD Info( kInfoType AS LONG, uInfo := NIL AS USUAL) AS USUAL
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbInfo( kInfoType, REF uInfo)
+		IF ! VoDbInfo( (DWORD) kInfoType, REF uInfo)
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
       __DBSSetSelect( dwCurrentWorkArea )
@@ -1297,7 +1297,7 @@ METHOD OrderIsUnique( uOrder AS USUAL, cTarget := "" AS STRING) AS LONG
 		SELF:Error( oErrorInfo, #OrderIsUnique )
 	END SEQUENCE
 
- 
+
 
 
 	RETURN lRetVal
@@ -1314,7 +1314,7 @@ METHOD OrderKeyAdd( uOrder AS USUAL, oFSIndex AS FileSpec, uKeyValue  := NIL AS 
 METHOD OrderKeyAdd( uOrder AS USUAL, cIndex := "" AS STRING, uKeyValue := NIL  AS USUAL) AS LONG
 
 
- 
+
 
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL

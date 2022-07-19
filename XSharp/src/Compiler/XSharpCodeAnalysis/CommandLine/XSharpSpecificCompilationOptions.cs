@@ -306,7 +306,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ClrVersion = 1 << 28,
         EnforceSelf = 1 << 29,
         AllowDotForInstanceMembers = 1 << 30,
-        EnforceOverride = 1 << 31,
+        EnforceOverride = 1L << 31,
         AllowOldStyleAssignments = 1L << 32,
         All = -1,       // used for Push/Pop
     }

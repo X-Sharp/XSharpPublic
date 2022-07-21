@@ -287,15 +287,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (argType is not { })
                     continue;
                 var isConst = arg.ConstantValue != null;
-                if (argType.IsArrayType() && parType.IsArrayType())
-                {
-                    // Make sure function with array argument have preference when array type is passed
-                    score += 500;
-                }
 
                 if (TypeEquals(parType, argType, ref useSiteDiagnostics))
                 {
                     score += isConst ? 90 : 100;
+                    if (parType.IsArrayType())
+                    {
+                        // Make sure function with array argument have preference when array type is passed
+                        score += 500;
+                    }
                     continue;
                 }
                 if (parType.TypeKind == TypeKind.Enum)
@@ -306,14 +306,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     argType = argType.GetEnumUnderlyingType();
                 }
-                if (TypeEquals(parType, argType, ref useSiteDiagnostics))
-                {
-                    score += isConst ? 90 : 100;
-                    continue;
-                }
 
                 if (parType.IsObjectType() || parType.IsUsualType())
                 {
+                    // usual argument prefers object or usual parameter type
+                    if (argType.IsUsualType())
+                    {
+                        score += isConst ? 90 : 100;
+                    }
                     if (argType.IsValidVOUsualType(Compilation))
                     {
                         score += isConst ? 45 : 50;
@@ -321,10 +321,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else if (argType.IsUsualType())
                 {
-                    if (parType.IsXNumericType() &&
-                        (parType.SpecialType == SpecialType.System_Double || parType.IsFloatType()))
+                    // First prefer object variable
+                    if (parType.IsObjectType())
+                    {
+                        score += isConst ? 60 : 65;
+                    }
+                    // Prefer string types over all other usual types
+                    else if (parType.IsStringType())
                     {
                         score += isConst ? 55 : 60;
+                    }
+                    else if (parType.IsXNumericType() &&
+                        (parType.SpecialType == SpecialType.System_Double || parType.IsFloatType()))
+                    {
+                        score += isConst ? 50 : 55;
                     }
                     else if (parType.IsValidVOUsualType(Compilation))
                     {
@@ -558,19 +568,30 @@ namespace Microsoft.CodeAnalysis.CSharp
                 m1.Member.GetParameters();
                 var asm1 = m1.Member.ContainingAssembly;
                 var asm2 = m2.Member.ContainingAssembly;
-                if (asm1 != asm2 && GetSignature(m1.Member) == GetSignature(m2.Member))
+                if (asm1 != asm2)
                 {
                     // prefer non runtime over runtime to allow customers to override built-in functions
-                    if (asm1.IsRT() != asm2.IsRT() )
+                    // we ignore the prototype of the function here
+                    // This means that even when the function in XSharp.Core or XSharp.RT matches better
+                    // then that function will still not be chosen.
+                    if (asm1.IsRT() != asm2.IsRT())
                     {
                         if (asm1.IsRT())
                         {
                             result = BetterResult.Right;
+                            if (GetSignature(m1.Member) != GetSignature(m2.Member))
+                            {
+                                useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
+                            }
                             return true;
                         }
                         else if (asm2.IsRT())
                         {
                             result = BetterResult.Left;
+                            if (GetSignature(m1.Member) != GetSignature(m2.Member))
+                            {
+                                useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
+                            }
                             return true;
                         }
                     }
@@ -580,27 +601,41 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (result != BetterResult.Neither)
                             return true;
                     }
-                    // prefer functions/method in the current assembly over external methods
-                    if (asm1.IsFromCompilation(Compilation))
+                    if (GetSignature(m1.Member) == GetSignature(m2.Member))
                     {
-                        result = BetterResult.Left;
-                        return true;
-                    }
-                    if (asm2.IsFromCompilation(Compilation))
-                    {
-                        result = BetterResult.Right;
-                        return true;
+                        if (asm1.IsFromCompilation(Compilation))
+                        {
+                            result = BetterResult.Left;
+                            useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
+                            return true;
+                        }
+                        if (asm2.IsFromCompilation(Compilation))
+                        {
+                            result = BetterResult.Right;
+                            useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
+                            return true;
+                        }
                     }
                 }
                 if (m1.Member.HasClipperCallingConvention() != m2.Member.HasClipperCallingConvention())
                 {
                     if (m1.Member.HasClipperCallingConvention())
+                    {
                         result = BetterResult.Right;
+                        useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
+                    }
                     else
+                    {
                         result = BetterResult.Left;
+                        useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
+                    }
                     return true;
                 }
-
+                if (GetSignature(m1.Member) == GetSignature(m2.Member))
+                {
+                    result = BetterResult.Neither;
+                    return false;
+                }
                 if (m1.Member.GetParameterCount() == m2.Member.GetParameterCount())
                 {
                     // In case of 2 methods with the same # of parameters 
@@ -621,7 +656,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return true;
                     }
-
 
                     // check if all left and types are equal. The score is the # of matching types
                     bool equalLeft = checkMatchingParameters(parsLeft, arguments, ref leftScore, ref useSiteDiagnostics);
@@ -648,157 +682,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         return true;
                     }
-                    /*
-                    for (int i = 0; i < len; i++)
-                    {
-                        var parLeft = parsLeft[i];
-                        var parRight = parsRight[i];
-                        var arg = arguments[i];
-                        var argType = arg.Type;
-                        var leftType = parLeft.Type;
-                        var rightType = parRight.Type;
-
-                        if (!Equals(leftType, rightType))
-                        {
-                            // Prefer the method with a more specific parameter which is not an array type over USUAL
-                            if (leftType.IsUsualType() && argType.IsNotUsualType() && !rightType.IsArray())
-                            {
-                                result = BetterResult.Right;
-                                return true;
-                            }
-                            if (rightType.IsUsualType() && argType.IsNotUsualType() && !leftType.IsArray())
-                            {
-                                result = BetterResult.Left;
-                                return true;
-                            }
-                            // Prefer the method with Object type over the one with Object[] type
-                            if (leftType.IsObjectType() && rightType.IsArray() && ((ArrayTypeSymbol)rightType).ElementType.IsObjectType())
-                            {
-                                result = BetterResult.Left;
-                                return true;
-                            }
-                            if (rightType.IsObjectType() && leftType.IsArray() && ((ArrayTypeSymbol)leftType).ElementType.IsObjectType())
-                            {
-                                result = BetterResult.Right;
-                                return true;
-                            }
-                            argType = arg.Type;
-                            // Handle passing Enum values to methods that have a non enum parameter
-                            if (argType?.TypeKind == TypeKind.Enum)
-                            {
-                                // First check if they have the enum type itself
-                                if (TypeEquals(argType, leftType, ref useSiteDiagnostics))
-                                {
-                                    result = BetterResult.Left;
-                                    return true;
-                                }
-                                if (TypeEquals(argType, rightType, ref useSiteDiagnostics))
-                                {
-                                    result = BetterResult.Right;
-                                    return true;
-                                }
-                                // Then check the underlying type
-                                argType = argType.GetEnumUnderlyingType();
-                                if (TypeEquals(argType, leftType, ref useSiteDiagnostics))
-                                {
-                                    result = BetterResult.Left;
-                                    return true;
-                                }
-                                if (TypeEquals(argType, rightType, ref useSiteDiagnostics))
-                                {
-                                    result = BetterResult.Right;
-                                    return true;
-                                }
-                            }
-                            // VoFloat prefers overload with double over all other conversions
-                            if (argType.IsFloatType() || argType.IsUsualType())
-                            {
-                                var doubleType = Compilation.GetSpecialType(SpecialType.System_Double);
-                                if (TypeEquals(leftType, doubleType, ref useSiteDiagnostics))
-                                {
-                                    result = BetterResult.Left;
-                                    return true;
-                                }
-                                if (TypeEquals(rightType, doubleType, ref useSiteDiagnostics))
-                                {
-                                    result = BetterResult.Right;
-                                    return true;
-                                }
-                            }
-                            // if argument is numeric and one of the two types is also and the other not
-                            // then prefer the numeric type
-                            if (argType?.SpecialType != null && (argType.SpecialType.IsNumericType() || Equals(argType, Compilation.FloatType())))
-                            {
-                                if (leftType.SpecialType.IsNumericType() && !rightType.SpecialType.IsNumericType())
-                                {
-                                    result = BetterResult.Left;
-                                    return true;
-                                }
-                                if (rightType.SpecialType.IsNumericType() && !leftType.SpecialType.IsNumericType())
-                                {
-                                    result = BetterResult.Right;
-                                    return true;
-                                }
-                                if (!Equals(leftType, rightType))
-                                {
-                                    if (leftType.IsFloatType())
-                                    {
-                                        result = BetterResult.Left;
-                                        return true;
-                                    }
-                                    if (rightType.IsFloatType())
-                                    {
-                                        result = BetterResult.Right;
-                                        return true;
-                                    }
-                                }
-                                var leftIntegral = leftType.IsIntegralType();
-                                var rightIntegral = rightType.IsIntegralType();
-                                if (leftIntegral != rightIntegral)
-                                {
-                                    if (argType.IsIntegralType())
-                                    {
-                                        result = leftIntegral ? BetterResult.Left : BetterResult.Right;
-                                    }
-                                    else
-                                    {
-                                        result = rightIntegral ? BetterResult.Left : BetterResult.Right;
-                                    }
-                                    return true;
-                                }
-                            }
-
-                            // handle case where argument is usual and the method is not usual
-                            // prefer method with "native VO" parameter type
-                            if (argType.IsUsualType())
-                            {
-                                // no need to check if parleft or parright are equal or usual that was checked above
-                                // is there an VO style conversion possible ?
-                                var leftConvert = leftType.IsValidVOUsualType(Compilation);
-                                var rightConvert = rightType.IsValidVOUsualType(Compilation);
-                                if (leftConvert != rightConvert)
-                                {
-                                    // One is a valid conversion, the other is not.
-                                    if (leftConvert)
-                                        result = BetterResult.Left;
-                                    else
-                                        result = BetterResult.Right;
-                                    return true;
-                                }
-                                // prefer fractional parameters so no information gets lost
-                                if (leftType.IsFractionalType() != rightType.IsFractionalType())
-                                {
-                                    if (leftType.IsFractionalType())
-                                        result = BetterResult.Left;
-                                    else
-                                        result = BetterResult.Right;
-                                    return true;
-
-                                }
-                            }
-                        }
-                    }
-                    */
                 }
                 else
                 {
@@ -849,10 +732,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 r2 = m1.Member;
                             }
 
-                            var info = GenerateAmbiguousWarning(r1, r2);
-
-                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                            useSiteDiagnostics.Add(info);
+                            useSiteDiagnostics = GenerateAmbiguousWarning(r1, r2);
                             return true;
                         }
                     }
@@ -865,25 +745,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (func1 && !func2)
             {
                 result = BetterResult.Left;
-                var info = GenerateFuncMethodWarning(m1.Member, m2.Member);
-
-                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                useSiteDiagnostics.Add(info);
+                useSiteDiagnostics = GenerateFuncMethodWarning(m1.Member, m2.Member);
                 return true;
             }
             else if (func2 && !func1)
             {
                 result = BetterResult.Right;
-                var info = GenerateFuncMethodWarning(m2.Member, m1.Member);
-                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                useSiteDiagnostics.Add(info);
+                useSiteDiagnostics = GenerateFuncMethodWarning(m2.Member, m1.Member);
                 return true;
             }
             return false;
             // Local Functions
-            CSDiagnosticInfo GenerateAmbiguousWarning(Symbol r1, Symbol r2)
+            HashSet<DiagnosticInfo> GenerateAmbiguousWarning(Symbol r1, Symbol r2)
             {
-
+                var diag = new HashSet<DiagnosticInfo>();
                 var info = new CSDiagnosticInfo(ErrorCode.WRN_XSharpAmbiguous,
                         new object[] {
                         r1.Name,
@@ -894,16 +769,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                         new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat),
                         r2.ContainingAssembly.Name,
                         });
-                return info;
+                diag.Add(info);
+                return diag;
             }
-            CSDiagnosticInfo GenerateFuncMethodWarning(Symbol s1, Symbol s2)
+            HashSet<DiagnosticInfo> GenerateFuncMethodWarning(Symbol s1, Symbol s2)
             {
-                return new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods,
+                var diag = new HashSet<DiagnosticInfo>();
+                var info = new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods,
                 new object[] {
                     s1.Name,
                     new FormattedSymbol(s1, SymbolDisplayFormat.CSharpErrorMessageFormat),
                     new FormattedSymbol(s2, SymbolDisplayFormat.CSharpErrorMessageFormat)
                     });
+                diag.Add(info);
+                return diag;
             }
 
         }

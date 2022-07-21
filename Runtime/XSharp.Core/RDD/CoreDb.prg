@@ -1417,6 +1417,9 @@ CLASS XSharp.CoreDb
             VAR info     := DbOrderInfo{}
             cBagName := cBagName?:Trim()
             info:BagName := cBagName
+            if oOrder != NULL .and. SystemTypeToUsualType(oOrder:GetType()) == __UsualType.Symbol
+                oOrder := oOrder:ToString()
+            endif
             info:Order   := oOrder
             VAR result := oRdd:OrderListFocus(info)
             RAISE OrderChanged oRdd:OrderInfo(DBOI_NAME,info)
@@ -1444,6 +1447,9 @@ CLASS XSharp.CoreDb
             IF result IS STRING VAR cOrder
                 strTemp := cOrder
             ENDIF
+            if oOrder != NULL .and. SystemTypeToUsualType(oOrder:GetType()) == __UsualType.Symbol
+                oOrder := oOrder:ToString()
+            endif
             cBagName     := cBagName?:Trim()
             info:BagName := cBagName
             info:Order   := oOrder

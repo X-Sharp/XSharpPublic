@@ -211,6 +211,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             AdditionalLibPaths="$(AdditionalLibPaths)"
             AddModules="@(AddModules)"
             AllowDot="$(AllowDot)"
+            AllowOldStyleAssignments="$(AllowOldStyleAssignments)"
             AllowUnsafeBlocks="$(Unsafe)"
             Analyzers="@(Analyzer)"
             ApplicationConfiguration="$(AppConfigForCompiler)"

@@ -59,6 +59,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     PRIVATE CONST STR_NIL  := "NIL" AS STRING
     PRIVATE CONST STR_NULL := "Null" AS STRING
     PRIVATE CONST STR_NULL_STRING := "NULL_STRING" AS STRING
+    PRIVATE CONST STR_NULL_PSZ := "NULL_PSZ" AS STRING
     PRIVATE CONST STR_NULL_ARRAY := "NULL_ARRAY" AS STRING
     PRIVATE CONST STR_NULL_CODEBLOCK := "NULL_CODEBLOCK" AS STRING
     PRIVATE CONST STR_USUAL := "USUAL" AS STRING
@@ -531,6 +532,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             CASE __UsualType.Binary
             CASE __UsualType.Object
             CASE __UsualType.Decimal
+            CASE __UsualType.Psz
             CASE __UsualType.String
             CASE __UsualType.Currency
                 RETURN TRUE
@@ -561,6 +563,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             CASE __UsualType.Long		; RETURN _intValue == 0
             CASE __UsualType.Object		; RETURN _refData == NULL
             CASE __UsualType.Ptr		; RETURN _ptrValue == IntPtr.Zero
+            CASE __UsualType.Psz
             CASE __UsualType.String		; RETURN EmptyString(_stringValue)
             CASE __UsualType.Symbol		; RETURN _symValue == 0
             CASE __UsualType.Null       ; RETURN TRUE
@@ -603,6 +606,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             CASE __UsualType.Long		; RETURN TYPEOF(INT)
             CASE __UsualType.Object		; RETURN TYPEOF(OBJECT)
             CASE __UsualType.Ptr		; RETURN TYPEOF(IntPtr)
+            CASE __UsualType.Psz		; RETURN TYPEOF(PSZ)
             CASE __UsualType.String		; RETURN TYPEOF(STRING)
             CASE __UsualType.Symbol		; RETURN TYPEOF(SYMBOL)
             CASE __UsualType.Void		; RETURN TYPEOF(USUAL)
@@ -649,6 +653,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             CASE __UsualType.Long		; RETURN SELF:_intValue:CompareTo(rhs:_intValue)
             CASE __UsualType.Ptr		; RETURN SELF:_ptrValue:ToInt64():CompareTo(rhs:_ptrValue:ToInt64())
                 // Uses String Comparison rules
+            CASE __UsualType.Psz
             CASE __UsualType.String
                 RETURN __StringCompare( SELF:_stringValue,  rhs:_stringValue)
             CASE __UsualType.Symbol		; RETURN __StringCompare( (STRING) SELF:_symValue, (STRING) rhs:_symValue)
@@ -735,6 +740,14 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                 CASE __UsualType.Long		; RETURN (_ptrValue:ToInt32()):CompareTo(rhs:_intValue)
                 CASE __UsualType.Int64		; RETURN (_ptrValue:ToInt64()):CompareTo(rhs:_i64Value)
                 END SWITCH
+            CASE __UsualType.Psz
+            CASE __UsualType.String
+                SWITCH rhs:_usualType
+                CASE __UsualType.Psz
+                CASE __UsualType.String
+                    RETURN __StringCompare( SELF:_stringValue,  rhs:_stringValue)
+                END SWITCH
+
             END SWITCH
         ENDIF
         IF rhs:_usualType == __UsualType.Void
@@ -837,8 +850,9 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                 THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
             END SWITCH
 
+        CASE __UsualType.Psz
         CASE __UsualType.String
-            IF rhs:_usualType == __UsualType.String
+            IF rhs:_usualType == __UsualType.String .or. rhs:_usualType == __UsualType.Psz
                 RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) > 0
             ELSE
                 NOP // error below
@@ -953,9 +967,9 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                 THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
             END SWITCH
 
-
+        CASE __UsualType.Psz
         CASE __UsualType.String
-            IF rhs:_usualType == __UsualType.String
+            IF rhs:_usualType == __UsualType.String .or. rhs:_usualType == __UsualType.Psz
                 RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) >= 0
             ELSE
                 NOP // error below
@@ -1068,8 +1082,9 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             OTHERWISE
                 THROW BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
             END SWITCH
+        CASE __UsualType.Psz
         CASE __UsualType.String
-            IF rhs:_usualType == __UsualType.String
+            IF rhs:_usualType == __UsualType.String .or. rhs:_usualType == __UsualType.Psz
                 RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) < 0
             ELSE
                 NOP // error below
@@ -1184,8 +1199,9 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                 THROW BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
             END SWITCH
 
+        CASE __UsualType.Psz
         CASE __UsualType.String
-            IF rhs:_usualType == __UsualType.String
+            IF rhs:_usualType == __UsualType.String .or. rhs:_usualType == __UsualType.Psz
                 RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) <= 0
             ELSE
                 NOP // error below
@@ -1288,6 +1304,8 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             RETURN FALSE
         ENDIF
         IF lhs:_usualType == __UsualType.String .AND. rhs:_usualType == __UsualType.String
+            RETURN ! __StringEquals(  lhs:_stringValue, rhs:_stringValue)
+        ELSEIF lhs:_usualType == __UsualType.Psz .AND. rhs:_usualType == __UsualType.Psz
             RETURN ! __StringEquals(  lhs:_stringValue, rhs:_stringValue)
         ELSE
             RETURN ! lhs:UsualEquals(rhs, "!=")
@@ -1399,8 +1417,10 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                 NOP // error below
             END SWITCH
 
+        CASE __UsualType.Psz
         CASE __UsualType.String
             SWITCH rhs:_usualType
+            CASE __UsualType.Psz
             CASE __UsualType.String		; RETURN SELF:_stringValue == rhs:_stringValue
             CASE __UsualType.Symbol		; RETURN SELF:_stringValue == rhs:_symValue
             OTHERWISE
@@ -1433,6 +1453,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         CASE __UsualType.Symbol
             SWITCH rhs:_usualType
             CASE __UsualType.Symbol		; RETURN SELF:_symValue == rhs:_symValue
+            CASE __UsualType.Psz
             CASE __UsualType.String		; RETURN SELF:_symValue == rhs:_stringValue
             OTHERWISE
                 NOP // error below
@@ -1602,8 +1623,10 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             OTHERWISE					; NOP // error below
             END SWITCH
 
+        CASE __UsualType.Psz
         CASE __UsualType.String
             SWITCH rhs:_usualType
+            CASE __UsualType.Psz
             CASE __UsualType.String		; RETURN lhs:_stringValue+ rhs:_stringValue
             CASE __UsualType.Symbol		; RETURN lhs:_stringValue+ (STRING) rhs:_symValue
             CASE __UsualType.Binary     ; RETURN lhs:_stringValue + rhs:_binaryValue
@@ -1612,6 +1635,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             END SWITCH
         CASE __UsualType.Symbol
             SWITCH rhs:_usualType
+            CASE __UsualType.Psz
             CASE __UsualType.String		; RETURN (STRING)lhs:_symValue + rhs:_stringValue
             CASE __UsualType.Symbol		; RETURN (STRING)lhs:_symValue + (STRING) rhs:_symValue
             CASE __UsualType.Binary     ; RETURN (STRING)lhs:_symValue + rhs:_binaryValue
@@ -1641,6 +1665,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             CASE __UsualType.Binary
                 RETURN lhs:_binaryValue + rhs:_binaryValue
             CASE __UsualType.String
+            CASE __UsualType.Psz
                 RETURN lhs:_binaryValue + rhs:_stringValue
             OTHERWISE
                 NOP // error below
@@ -1708,8 +1733,10 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             OTHERWISE					; NOP // error below
             END SWITCH
 
+        CASE __UsualType.Psz
         CASE __UsualType.String
             SWITCH rhs:_usualType
+            CASE __UsualType.Psz
             CASE __UsualType.String		; RETURN CompilerServices.StringSubtract(lhs, rhs)
             CASE __UsualType.Binary		; RETURN CompilerServices.StringSubtract(lhs:_stringValue, (STRING) rhs:_binaryValue )
             OTHERWISE					; THROW BinaryError("-", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
@@ -2207,6 +2234,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             RETURN String.Empty
         ENDIF
         SWITCH u:_usualType
+        CASE __UsualType.Psz
         CASE __UsualType.String
             IF u:_refData == NULL
                 RETURN String.Empty
@@ -2228,6 +2256,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             RETURN NULL_SYMBOL
         ENDIF
         SWITCH u:_usualType
+        CASE __UsualType.Psz
         CASE __UsualType.String	; RETURN __Symbol{u:_stringValue, TRUE}
         CASE __UsualType.Symbol	; RETURN u:_symValue
         CASE __UsualType.Long	; RETURN (SYMBOL) ((DWORD) u:_intValue)
@@ -2246,8 +2275,8 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             RETURN NULL_PSZ
         ENDIF
         SWITCH u:_usualType
-        CASE __UsualType.Psz	; RETURN PSZ{u:_stringValue}
         CASE __UsualType.Ptr	; RETURN PSZ{u:_ptrValue }
+        CASE __UsualType.Psz
         CASE __UsualType.String	; RETURN PSZ{u:_stringValue}
         OTHERWISE
             THROW ConversionError(PSZ, TYPEOF(PSZ), u)
@@ -2956,7 +2985,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         CASE __UsualType.Logic		; RETURN u:_logicValue
         CASE __UsualType.Object		; RETURN u:_refData
         CASE __UsualType.Ptr		; RETURN u:_ptrValue
-        CASE __UsualType.Psz		; RETURN u:_stringValue
+        CASE __UsualType.Psz
         CASE __UsualType.String		; RETURN u:_stringValue
         CASE __UsualType.Symbol		; RETURN u:_symValue
         OTHERWISE
@@ -2987,6 +3016,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         SWITCH SELF:_usualType
         CASE __UsualType.Object
             result := __Usual{SELF:Value}
+        CASE __UsualType.Psz
         CASE __UsualType.String
             result := __Usual { String.Copy(SELF:_stringValue)}
         CASE __UsualType.Array
@@ -3015,7 +3045,8 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         CASE __UsualType.Int64		; strResult := SELF:_i64Value:ToString()
         CASE __UsualType.Logic		; strResult := IIF(!SELF:_logicValue , ".F." , ".T.")
         CASE __UsualType.Ptr		; strResult := SELF:_ptrValue:ToString()
-        CASE __UsualType.String		; strResult := IIF (SELF:_refData == NULL, STR_NULL_STRING, SELF:_stringValue:ToString())
+        CASE __UsualType.Psz		; strResult := IIF (SELF:_refData == NULL, STR_NULL_PSZ, SELF:_stringValue)
+        CASE __UsualType.String		; strResult := IIF (SELF:_refData == NULL, STR_NULL_STRING, SELF:_stringValue)
         CASE __UsualType.Symbol		; strResult := SELF:_symValue:ToString()
         CASE __UsualType.Void		; strResult := STR_NIL
         CASE __UsualType.Null		; strResult := STR_NULL
@@ -3085,6 +3116,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         CASE __UsualType.Logic	    ; RETURN TypeCode.Boolean
         CASE __UsualType.Object	    ; RETURN TypeCode.Object
         CASE __UsualType.Ptr	    ; RETURN TypeCode.Object
+        CASE __UsualType.Psz
         CASE __UsualType.String     ; RETURN TypeCode.String
         CASE __UsualType.Symbol     ; RETURN TypeCode.Object
         CASE __UsualType.Void       ; RETURN TypeCode.Object
@@ -3106,12 +3138,13 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             CASE __UsualType.Currency	; RETURN "Y"
             CASE __UsualType.Date		; RETURN "D"
             CASE __UsualType.DateTime	; RETURN "T"
-            CASE __UsualType.Decimal	; RETURN "N"
-            CASE __UsualType.Float		; RETURN "N"
-            CASE __UsualType.Int64		; RETURN "N"
+            CASE __UsualType.Decimal
+            CASE __UsualType.Float
+            CASE __UsualType.Int64
             CASE __UsualType.Long		; RETURN "N"
             CASE __UsualType.Logic		; RETURN "L"
             CASE __UsualType.Ptr		; RETURN "-"
+            CASE __UsualType.Psz
             CASE __UsualType.String		; RETURN "C"
             CASE __UsualType.Object		; RETURN "O"
             CASE __UsualType.Symbol		; RETURN "#"

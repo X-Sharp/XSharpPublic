@@ -3,6 +3,7 @@
 #pragma warnings(165, off) // unassigned
 #pragma warnings(168, off) // declared but not used
 #pragma warnings(219, off) // assigned but not used
+#pragma warnings(9043, off) // zGEDBCOmboNew double defined
 
 
 #translate ARRAY(<x>) => ArrayCreate(<x>)

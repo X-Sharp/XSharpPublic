@@ -1,6 +1,6 @@
 // 757. error XS9002: Parser: unexpected input 'NUMERIC'
 // (it did compile cleanly before)
-
+#pragma warnings(9043, off)
 #region UDCs
 
 #xtranslate :Messages    =>  :cargo\[2\]
@@ -97,7 +97,7 @@
      =>  @ <row>, <col> zGET <VAR> ;
 	                  	[<clauses>] ;
                                 [<moreClauses>] ;
-                                ;ATail(getlist):Messages := <msg> 
+                                ;ATail(getlist):Messages := <msg>
 
 
 // GET & SAY

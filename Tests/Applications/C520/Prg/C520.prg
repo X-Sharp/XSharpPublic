@@ -1,5 +1,5 @@
 // 520. Incorrect preprocessor results
-
+#pragma warnings(9043, off) // zGEDBCOmboNew double defined
 #include "C520.ch"
 
 FUNCTION Start() AS VOID

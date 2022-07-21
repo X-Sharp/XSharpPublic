@@ -1,6 +1,7 @@
 // 460. error XS9002: Parser: unexpected input '@' (used to be compiler crash)
 //      error XS1003: Syntax error, 'Entity' expected
 
+#pragma warnings(9043, off) // zGEDBCOmboNew double defined
 #xtranslate :Field1 => \[1 \]
 #xtranslate :Field2 => \[2 \]
 

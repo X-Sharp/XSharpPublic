@@ -100379,7 +100379,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C803 - Compiler error with two INSTANCE vars defined in the same line
 
-ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C804 - Problems with the new _WinDate structure *************
 Application = C804 - Problems with the new _WinDate structure
 IDEVersion = 1.06
@@ -112574,7 +112574,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C865 - Problems with StrEvaluate()
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R862 - Wrong overload selected *************
 Application = R862 - Wrong overload selected
 IDEVersion = 1.06
@@ -112668,7 +112668,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   DefineDebug=1
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=0
+  WarningsErrors=1
   ForceConsole=0
   ForceX86=0
   Optimize=0

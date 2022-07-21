@@ -35,6 +35,7 @@
     <initlocals>true</initlocals>
     <fox1>true</fox1>
     <fox2>true</fox2>
+    <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

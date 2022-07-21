@@ -309,12 +309,14 @@ INTERNAL FUNCTION StrEvaluateMemVarGet(cVariableName AS STRING) AS STRING
             oMemVar := XSharp.MemVar.PublicFind(cVariableName)
         ENDIF
         IF oMemVar != NULL
-            RETURN oMemVar:Value:ToString()
+        	IF oMemVar:Value:IsString
+                RETURN oMemVar:Value:ToString()
+        	ENDIF
         ENDIF
     CATCH
         // Memvar not found ?
     END TRY
-    RETURN cVariableName
+    RETURN "&" + cVariableName // include the & symbol which was not included in the argument
 
 INTERNAL FUNCTION DefaultMacroAmbigousMatchResolver(m1 AS MemberInfo, m2 AS MemberInfo, args AS System.Type[]) AS LONG
     LOCAL comp1 := GetCompany(m1:Module:Assembly) AS STRING

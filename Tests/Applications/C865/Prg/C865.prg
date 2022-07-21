@@ -31,13 +31,27 @@ FUNCTION Start() AS VOID
 	xAssert( StrEvaluate("&abc_def&abc_def*&abc_def") == "underscoreunderscore*underscore")
 	
 	
-	// VO does not replace values of non-string memvars, while X# does
-	// we may want to look also into this in the future
+	// VO, Alaska, VFP do not replace values of non-string memvars
 	abc := Today()
 	? StrEvaluate("&abc")
+	? StrEvaluate("&abc1")
+	? StrEvaluate("&abc1&test &nothing")
+	xAssert( StrEvaluate("&abc") == "&abc")
+	xAssert( StrEvaluate("&abc1&test &nothing") == "&abc1&test &nothing")
+
+	abc := #test
+	? StrEvaluate("&abc")
+	xAssert( StrEvaluate("&abc") == "&abc")
+
 	abc := 123
 	? StrEvaluate("&abc")
-	
+	xAssert( StrEvaluate("&abc") == "&abc")
+	xAssert( StrEvaluate("&abc&abc") == "&abc&abc")
+
+	abc := NIL
+	? StrEvaluate("&abc")
+	xAssert( StrEvaluate("&abc") == "&abc")
+	xAssert( StrEvaluate("&abc&abc") == "&abc&abc")
 RETURN
 
 PROCEDURE OriginalReport()

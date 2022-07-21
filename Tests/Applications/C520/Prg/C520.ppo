@@ -1,5 +1,4 @@
 // 520. Incorrect preprocessor results
-
 //PP #include "C520.ch"
 #line 1 "C:\XSharp\Dev\Tests\Applications\C520\Prg\C520.ch"
 #line 4 "C:\XSharp\Dev\Tests\Applications\C520\Prg\C520.prg"

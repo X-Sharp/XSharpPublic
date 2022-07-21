@@ -282,6 +282,9 @@ FUNCTION AsString(uValue AS USUAL) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/assymbol/*" />
 FUNCTION AsSymbol(uValue AS USUAL) AS SYMBOL
+    IF uValue:IsSymbol
+        return (SYMBOL) uValue
+    ENDIF
     RETURN SYMBOL{(STRING)uValue, TRUE}
 
 

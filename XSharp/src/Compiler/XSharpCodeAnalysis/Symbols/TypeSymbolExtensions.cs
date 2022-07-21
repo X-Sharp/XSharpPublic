@@ -19,8 +19,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private static readonly ConcurrentDictionary<string, XSharpTargetDLL> s_dictionary;
         static TypeSymbolExtensions()
         {
-            s_dictionary = new(XSharpString.Comparer);
+            s_dictionary = new(XSharpString.Comparer)
+            {
+                { XSharpAssemblyNames.XSharpCore, XSharpTargetDLL.Core },
+                {XSharpAssemblyNames.XSharpVO,XSharpTargetDLL.VO},
+                {XSharpAssemblyNames.XSharpRT,XSharpTargetDLL.RT},
+                {XSharpAssemblyNames.XSharpXPP,XSharpTargetDLL.XPP},
+                {XSharpAssemblyNames.XSharpVFP,XSharpTargetDLL.VFP},
+                {XSharpAssemblyNames.VoConsole,XSharpTargetDLL.VOConsoleClasses},
+                {XSharpAssemblyNames.VoGui,XSharpTargetDLL.VOGuiClasses},
+                {XSharpAssemblyNames.VoWin32,XSharpTargetDLL.VOWin32Api},
+                {XSharpAssemblyNames.VoRdd,XSharpTargetDLL.VORDDClasses},
+                {XSharpAssemblyNames.VoSql,XSharpTargetDLL.VOSQLClasses},
+                {XSharpAssemblyNames.VoSystem,XSharpTargetDLL.VOSystemClasses},
+                {XSharpAssemblyNames.VoReport,XSharpTargetDLL.VOReportClasses},
+                {XSharpAssemblyNames.VoInet,XSharpTargetDLL.VOInternetClasses},
+                {VulcanAssemblyNames.VulcanRT,XSharpTargetDLL.VulcanRT},
+                {VulcanAssemblyNames.VulcanRTFuncs,XSharpTargetDLL.VulcanRTFuncs},
+                {VulcanAssemblyNames.VulcanVoConsole,XSharpTargetDLL.VulcanVOConsoleClasses},
+                {VulcanAssemblyNames.VulcanVoGui,XSharpTargetDLL.VulcanVOGuiClasses},
+                {VulcanAssemblyNames.VulcanVoSystem,XSharpTargetDLL.VulcanVOSystemClasses},
+                {VulcanAssemblyNames.VulcanVoRdd,XSharpTargetDLL.VulcanVORDDClasses},
+                {VulcanAssemblyNames.VulcanVoSql,XSharpTargetDLL.VulcanVOSQLClasses},
+                {VulcanAssemblyNames.VulcanVoInet,XSharpTargetDLL.VulcanVOInternetClasses},
+                {VulcanAssemblyNames.VulcanVoWin32,XSharpTargetDLL.VulcanVOWin32Api}
+            };
         }
+
 
         public static bool IsFunctionsClass(this NamedTypeSymbol type)
         {
@@ -258,50 +283,76 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             if (!s_dictionary.TryGetValue(_asm.Name, out var target))
             {
-                IsRT(_asm);
                 s_dictionary.TryGetValue(_asm.Name, out target);
             }
             return target == wantedTarget;
         }
 
+        public static bool IsRt(this XSharpTargetDLL target)
+        {
+            switch (target)
+            {
+                case XSharpTargetDLL.Core:
+                case XSharpTargetDLL.RDD:
+                case XSharpTargetDLL.RT:
+                case XSharpTargetDLL.VO:
+                case XSharpTargetDLL.Data:
+                case XSharpTargetDLL.XPP:
+                case XSharpTargetDLL.VFP:
+                case XSharpTargetDLL.RTDebugger:
+                case XSharpTargetDLL.VulcanRT:
+                case XSharpTargetDLL.VulcanRTFuncs:
+                    return true;
+            }
+            return false;
+        }
+        public static bool IsSdk(this XSharpTargetDLL target)
+        {
+            switch (target)
+            {
+                case XSharpTargetDLL.VOWin32Api:
+                case XSharpTargetDLL.VOSystemClasses:
+                case XSharpTargetDLL.VORDDClasses:
+                case XSharpTargetDLL.VOSQLClasses:
+                case XSharpTargetDLL.VOGuiClasses:
+                case XSharpTargetDLL.VOInternetClasses:
+                case XSharpTargetDLL.VOConsoleClasses:
+                case XSharpTargetDLL.VOReportClasses:
+                case XSharpTargetDLL.VulcanVOWin32Api:
+                case XSharpTargetDLL.VulcanVOSystemClasses:
+                case XSharpTargetDLL.VulcanVORDDClasses:
+                case XSharpTargetDLL.VulcanVOSQLClasses:
+                case XSharpTargetDLL.VulcanVOGuiClasses:
+                case XSharpTargetDLL.VulcanVOInternetClasses:
+                case XSharpTargetDLL.VulcanVOConsoleClasses:
+                case XSharpTargetDLL.VulcanVOReportClasses:
+                    return true;
+            }
+            return false;
+        }
         public static bool IsRT(this AssemblySymbol _asm)
         {
             if (_asm is null)  // prevent calling equals operator on AssemblySymbol
                 return false;
             if (s_dictionary.TryGetValue(_asm.Name, out var target))
             {
-                return target != XSharpTargetDLL.Other;
+                return target.IsRt();
             }
-            switch (_asm.Name.ToLower())
-            {
-                case XSharpAssemblyNames.XSharpCore:
-                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.Core);
-                    return true;
-                case XSharpAssemblyNames.XSharpVO:
-                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VO);
-                    return true;
-                case XSharpAssemblyNames.XSharpRT:
-                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.RT);
-                    return true;
-                case XSharpAssemblyNames.XSharpXPP:
-                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.XPP);
-                    return true;
-                case XSharpAssemblyNames.XSharpVFP:
-                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VFP);
-                    return true;
-                case VulcanAssemblyNames.VulcanRT:
-                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRT);
-                    return true;
-                case VulcanAssemblyNames.VulcanRTFuncs:
-                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.VulcanRTFuncs);
-                    return true;
-                default:
-                    s_dictionary.TryAdd(_asm.Name, XSharpTargetDLL.Other);
-                    return false;
-            }
+            return false;
         }
 
-          public static bool HasLateBindingAttribute(this TypeSymbol type)
+        public static bool IsSdk(this AssemblySymbol _asm)
+        {
+            if (_asm is null)  // prevent calling equals operator on AssemblySymbol
+                return false;
+            if (s_dictionary.TryGetValue(_asm.Name, out var target))
+            {
+                return target.IsSdk();
+            }
+            return false;
+        }
+
+        public static bool HasLateBindingAttribute(this TypeSymbol type)
         {
             while (type is { }) // prevent calling equals operator on TypeSymbol
             {
@@ -336,7 +387,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return false;
         }
-     
+
         public static bool NeedAccessToLocals(this MethodSymbol method, out bool writeAccess)
         {
             var attrs = method.GetAttributes();

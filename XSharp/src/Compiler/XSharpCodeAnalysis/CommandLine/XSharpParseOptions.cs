@@ -57,8 +57,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         VO = 5,
         XPP = 6,
         VFP = 7,
-        VulcanRT = 8,    // strictly not a target but we use this in the OverloadResolution
-        VulcanRTFuncs = 9,  // strictly not a target but we use this in the OverloadResolution
+        // The following are strictly not a target but
+        // we use this in the OverloadResolution
+        VulcanRT = 8,    
+        VulcanRTFuncs = 9,  
+        // XSharp SDK DLLs
         VOWin32Api = 10,
         VOSystemClasses = 11,
         VORDDClasses = 12,
@@ -68,6 +71,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         VOConsoleClasses = 16,
         RTDebugger = 17,
         VOReportClasses = 18,
+        // Vulcan SDK DLLs
+        VulcanVOWin32Api = 20,
+        VulcanVOSystemClasses = 21,
+        VulcanVORDDClasses = 22,
+        VulcanVOSQLClasses = 23,
+        VulcanVOGuiClasses = 24,
+        VulcanVOInternetClasses = 25,
+        VulcanVOConsoleClasses = 26,
+        VulcanVOReportClasses = 28,
     }
 
     public sealed partial class CSharpParseOptions

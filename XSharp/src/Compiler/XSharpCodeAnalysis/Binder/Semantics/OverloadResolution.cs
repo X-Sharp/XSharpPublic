@@ -268,6 +268,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BetterResult.Right;
                 }
             }
+            if (asm1.IsRT() && asm2.IsSdk())
+                return BetterResult.Right;
+            if (asm2.IsRT() && asm1.IsSdk())
+                return BetterResult.Left;
             return BetterResult.Neither;
         }
 
@@ -568,83 +572,99 @@ namespace Microsoft.CodeAnalysis.CSharp
                 m1.Member.GetParameters();
                 var asm1 = m1.Member.ContainingAssembly;
                 var asm2 = m2.Member.ContainingAssembly;
-                if (asm1 != asm2)
+                var rt1 = asm1.IsRT();
+                var rt2 = asm2.IsRT();
+                var sig1 = GetSignature(m1.Member);
+                var sig2 = GetSignature(m2.Member);
+                var sdk1 = asm1.IsSdk();
+                var sdk2 = asm2.IsSdk();
+                if (asm1 != asm2 && sig1 == sig2)
                 {
                     // prefer non runtime over runtime to allow customers to override built-in functions
                     // we ignore the prototype of the function here
                     // This means that even when the function in XSharp.Core or XSharp.RT matches better
                     // then that function will still not be chosen.
-                    if (asm1.IsRT() != asm2.IsRT())
+                    if (rt1 != rt2 )
                     {
-                        if (asm1.IsRT())
+                        if (rt1)
                         {
                             result = BetterResult.Right;
-                            if (GetSignature(m1.Member) != GetSignature(m2.Member))
+                            if (sig1 != sig2)
                             {
                                 useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
                             }
                             return true;
                         }
-                        else if (asm2.IsRT())
+                        else //  (rt2)
                         {
                             result = BetterResult.Left;
-                            if (GetSignature(m1.Member) != GetSignature(m2.Member))
+                            if (sig1 != sig2)
                             {
                                 useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
                             }
                             return true;
                         }
                     }
-                    if (asm1.IsRT() && asm2.IsRT())
+                    if (rt1 && rt2)
                     {
                         result = DetermineAssemblyPriority(asm1, asm2);
                         if (result != BetterResult.Neither)
                             return true;
                     }
-                    if (GetSignature(m1.Member) == GetSignature(m2.Member))
-                    {
-                        if (asm1.IsFromCompilation(Compilation))
-                        {
-                            result = BetterResult.Left;
-                            useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
-                            return true;
-                        }
-                        if (asm2.IsFromCompilation(Compilation))
-                        {
-                            result = BetterResult.Right;
-                            useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
-                            return true;
-                        }
-                    }
                 }
-                if (m1.Member.HasClipperCallingConvention() != m2.Member.HasClipperCallingConvention())
+                if (asm1 != asm2)
                 {
-                    if (m1.Member.HasClipperCallingConvention())
+                    if (asm1.IsFromCompilation(Compilation))
+                    {
+                        result = BetterResult.Left;
+                        useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
+                        return true;
+                    }
+                    if (asm2.IsFromCompilation(Compilation))
                     {
                         result = BetterResult.Right;
                         useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
+                        return true;
+                    }
+                }
+                var m1Clipper = m1.Member.HasClipperCallingConvention();
+                var m2Clipper = m2.Member.HasClipperCallingConvention();
+                if (m1Clipper != m2Clipper)
+                {
+                    bool bothRT = rt1 && rt2;
+                    if (m1Clipper)
+                    {
+                        result = BetterResult.Right;
+                        if (!bothRT)
+                        {
+                            useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
+                        }
                     }
                     else
                     {
                         result = BetterResult.Left;
-                        useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
+                        if (!bothRT)
+                        {
+                            useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
+                        }
                     }
                     return true;
                 }
-                if (GetSignature(m1.Member) == GetSignature(m2.Member))
+                if (sig1 == sig2)
                 {
-                    result = BetterResult.Neither;
-                    return false;
-                }
+                    // when a function is in one of the SDK dlls choose the other
+                    if (sdk1 || sdk2)
+                    {
+                        result = sdk1 ? BetterResult.Left : BetterResult.Right;
+                        return true;
+                    }
+                 }
                 if (m1.Member.GetParameterCount() == m2.Member.GetParameterCount())
                 {
                     // In case of 2 methods with the same # of parameters 
                     // we have different / extended rules compared to C#
                     var parsLeft = m1.Member.GetParameters();
                     var parsRight = m2.Member.GetParameters();
-                    var len = parsLeft.Length;
-                    if (arguments.Count < len)
-                        len = arguments.Count;
 
                     // Now check for REF parameters and possible REF arguments
                     // now fall back to original type (and not addressof type)

@@ -342,6 +342,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         // please note that these MUST be lowercase !
         internal const string VulcanRT = "vulcanrt";
         internal const string VulcanRTFuncs = "vulcanrtfuncs";
+        internal const string VulcanVoGui = "vulcanvoguiclasses";
+        internal const string VulcanVoSystem = "vulcanvosystemclasses";
+        internal const string VulcanVoRdd = "vulcanvorddclasses";
+        internal const string VulcanVoSql = "vulcanvosqlclasses";
+        internal const string VulcanVoConsole = "vulcanvoconsoleclasses";
+        internal const string VulcanVoWin32 = "vulcanvowin32apilibrary";
+        internal const string VulcanVoInet = "vulcanvointernetclasses";
+        internal const string VulcanVoReport = "vulcanvoreportclasses";
     }
     internal static class XSharpAssemblyNames
     {

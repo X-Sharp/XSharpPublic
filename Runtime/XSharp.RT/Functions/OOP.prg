@@ -1134,19 +1134,25 @@ function CreateInstance(symClassName,InitArgList) as object clipper
     if ! ( symClassName:IsSymbol || symClassName:IsString )
         throw Error.DataTypeError( __function__, nameof(symClassName), 1, symClassName)
     endif
-    var t := OOPHelpers.FindClass((string) symClassName)
+    var nPCount := PCount()
+    var uArgs := usual[]{nPCount-1}
+    for var nArg := 1 to nPCount-1
+        uArgs[nArg-1] := _GetFParam(nArg+1) // _GetFParam() is 1 based !
+    next
+    return _CreateInstance(symClassName, uArgs)
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/createinstance/*" />
+function _CreateInstance(symClassName as string, InitArgList as usual[]) as object
+
+    var t := OOPHelpers.FindClass(symClassName)
     if t == null
             var oError := Error.VOError( EG_NOCLASS, __function__, nameof(symClassName), 1,  <object>{symClassName}  )
             oError:Description := oError:Message+" '"+symClassName+"'"
             throw oError
     endif
     var constructors := t:GetConstructors()
-    var nPCount := PCount()
-    var uArgs := usual[]{nPCount-1}
-    for var nArg := 1 to nPCount-1
-        uArgs[nArg-1] := _GetFParam(nArg+1) // _GetFParam() is 1 based !
-    next
-    local ctor := OOPHelpers.FindBestOverLoad(constructors, __function__ ,uArgs) as ConstructorInfo
+    local ctor := OOPHelpers.FindBestOverLoad(constructors, __function__ ,InitArgList) as ConstructorInfo
     if ctor == null
         var oError := Error.VOError( EG_NOMETHOD, __function__, "Constructor", 0 , null)
         oError:Description := "No CONSTRUCTOR defined for type "+ (string) symClassName
@@ -1154,10 +1160,10 @@ function CreateInstance(symClassName,InitArgList) as object clipper
     endif
     local oRet as object
     try
-        local oArgs := OOPHelpers.MatchParameters(ctor, uArgs, out var hasByRef) as object[]
+        local oArgs := OOPHelpers.MatchParameters(ctor, InitArgList, out var hasByRef) as object[]
         oRet := ctor:Invoke( oArgs )
         if hasByRef
-            OOPHelpers.CopyByRefParameters(uArgs, oArgs, ctor:GetParameters())
+            OOPHelpers.CopyByRefParameters(InitArgList, oArgs, ctor:GetParameters())
 
         endif
     catch e as Error
@@ -1166,9 +1172,6 @@ function CreateInstance(symClassName,InitArgList) as object clipper
         throw Error{e:GetInnerException()}
     end try
     return oRet
-
-
-
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtreeclass/*" />

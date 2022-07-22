@@ -302,6 +302,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.ASSIGN_RSHIFT:
                 case XSharpLexer.ASSIGN_SUB:
                 case XSharpLexer.ASSIGN_XOR:
+                case XSharpLexer.ASSIGN_QQMARK: 
                     return true;
             }
             return false;

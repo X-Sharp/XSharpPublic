@@ -322,6 +322,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         score += isConst ? 45 : 50;
                     }
+                    if (parType.IsObjectType())
+                    {
+                        // give a slight preference to usual parameters
+                        score -= 1;
+                    }
                 }
                 else if (argType.IsUsualType())
                 {
@@ -567,13 +572,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             useSiteDiagnostics = null;
             int leftScore = 0;
             int rightScore = 0;
+            var asm1 = m1.Member.ContainingAssembly;
+            var asm2 = m2.Member.ContainingAssembly;
+            var rt1 = asm1.IsRT();
+            var rt2 = asm2.IsRT();
+            bool bothRT = rt1 && rt2;
             if (Compilation.Options.HasRuntime)
             {
-                m1.Member.GetParameters();
-                var asm1 = m1.Member.ContainingAssembly;
-                var asm2 = m2.Member.ContainingAssembly;
-                var rt1 = asm1.IsRT();
-                var rt2 = asm2.IsRT();
                 var sig1 = GetSignature(m1.Member);
                 var sig2 = GetSignature(m2.Member);
                 var sdk1 = asm1.IsSdk();
@@ -584,7 +589,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // we ignore the prototype of the function here
                     // This means that even when the function in XSharp.Core or XSharp.RT matches better
                     // then that function will still not be chosen.
-                    if (rt1 != rt2 )
+                    if (rt1 != rt2)
                     {
                         if (rt1)
                         {
@@ -631,22 +636,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var m2Clipper = m2.Member.HasClipperCallingConvention();
                 if (m1Clipper != m2Clipper)
                 {
-                    bool bothRT = rt1 && rt2;
                     if (m1Clipper)
                     {
                         result = BetterResult.Right;
-                        if (!bothRT)
-                        {
-                            useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
-                        }
+                        useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
                     }
                     else
                     {
                         result = BetterResult.Left;
-                        if (!bothRT)
-                        {
-                            useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
-                        }
+                        useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
                     }
                     return true;
                 }
@@ -658,7 +656,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         result = sdk1 ? BetterResult.Left : BetterResult.Right;
                         return true;
                     }
-                 }
+                }
                 if (m1.Member.GetParameterCount() == m2.Member.GetParameterCount())
                 {
                     // In case of 2 methods with the same # of parameters 
@@ -774,37 +772,37 @@ namespace Microsoft.CodeAnalysis.CSharp
                 useSiteDiagnostics = GenerateFuncMethodWarning(m2.Member, m1.Member);
                 return true;
             }
+
             return false;
             // Local Functions
+            HashSet<DiagnosticInfo> GenerateWarning(Symbol r1, Symbol r2, ErrorCode warning)
+            {
+                if (!bothRT)
+                {
+                    var diag = new HashSet<DiagnosticInfo>();
+                    var info = new CSDiagnosticInfo(warning,
+                            new object[] {
+                            r1.Name,
+                            r1.Kind.ToString(),
+                            new FormattedSymbol(r1, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                            r1.ContainingAssembly.Name,
+                            r2.Kind.ToString(),
+                            new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                            r2.ContainingAssembly.Name,
+                            });
+                    diag.Add(info);
+                    return diag;
+                }
+                return null;
+            }
             HashSet<DiagnosticInfo> GenerateAmbiguousWarning(Symbol r1, Symbol r2)
             {
-                var diag = new HashSet<DiagnosticInfo>();
-                var info = new CSDiagnosticInfo(ErrorCode.WRN_XSharpAmbiguous,
-                        new object[] {
-                        r1.Name,
-                        r1.Kind.ToString(),
-                        new FormattedSymbol(r1, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                        r1.ContainingAssembly.Name,
-                        r2.Kind.ToString(),
-                        new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                        r2.ContainingAssembly.Name,
-                        });
-                diag.Add(info);
-                return diag;
+                return GenerateWarning(r1, r2, ErrorCode.WRN_XSharpAmbiguous);
             }
             HashSet<DiagnosticInfo> GenerateFuncMethodWarning(Symbol s1, Symbol s2)
             {
-                var diag = new HashSet<DiagnosticInfo>();
-                var info = new CSDiagnosticInfo(ErrorCode.WRN_FunctionsTakePrecedenceOverMethods,
-                new object[] {
-                    s1.Name,
-                    new FormattedSymbol(s1, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                    new FormattedSymbol(s2, SymbolDisplayFormat.CSharpErrorMessageFormat)
-                    });
-                diag.Add(info);
-                return diag;
+                return GenerateWarning(s1, s2, ErrorCode.WRN_FunctionsTakePrecedenceOverMethods);
             }
-
         }
 
         private BetterResult VoBetterOperator(BinaryOperatorSignature op1, BinaryOperatorSignature op2, BoundExpression left, BoundExpression right, ref HashSet<DiagnosticInfo> useSiteDiagnostics)

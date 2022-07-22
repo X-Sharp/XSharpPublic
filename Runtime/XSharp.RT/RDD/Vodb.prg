@@ -213,11 +213,11 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         IF ( Empty(aNames) )
 
             aNames     := {}
-            nFields    := (INT) FCount()
+            nFields    := (INT) VoDb.FCount()
             siSelect   := VoDb.GetSelect()
             FOR i := 1 TO nFields
                 cName := aDbStruct[i, DBS_NAME]
-                AAdd(aFldList, {siSelect, FieldPos(cName)})
+                AAdd(aFldList, {siSelect, VoDb.FieldPos(cName)})
                 AAdd(aStruct, aDbStruct[i])
                 AAdd(aNames, cName)
             NEXT
@@ -228,12 +228,12 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
                 AAdd(aNew, AllTrim(Upper(aNames[i])))
             NEXT
             aNames := aNew
-            nFields := (INT)FCount()
+            nFields := (INT)VoDb.FCount()
             siSelect := VoDb.GetSelect()
             FOR i := 1 TO nFields
                 cName := aDbStruct[i, DBS_NAME]
                 IF AScan(aNames, {|c| c == cName}) > 0
-                    AAdd(aFldList, {siSelect, FieldPos(cName)})
+                    AAdd(aFldList, {siSelect, VoDb.FieldPos(cName)})
                     AAdd(aStruct, aDbStruct[i])
                 ENDIF
             NEXT
@@ -251,7 +251,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
 
             siPos := AScan(aDbStruct, {|a| a[DBS_NAME] == cName})
             IF siPos > 0 .AND. (AScan( aStruct, {|c|c[DBS_NAME]== cName }) == 0)
-                AAdd(aFldList, {siSelect, FieldPos(cName)})
+                AAdd(aFldList, {siSelect, VoDb.FieldPos(cName)})
                 AAdd(aStruct, aDbStruct[siPos])
             ENDIF
         NEXT

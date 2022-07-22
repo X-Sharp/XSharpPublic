@@ -211,6 +211,10 @@ namespace XSharp.LanguageService
                                 FormatLine();
                             break;
 
+                        //case (int)VSConstants.VSStd2KCmdID.TYPECHAR:
+                        //    if (!completionActive)
+                        //        FormatLine();
+                        //    break;
                         default:
                             break;
 
@@ -508,58 +512,39 @@ namespace XSharp.LanguageService
                 }
             }
         }
-        private bool canIndentLine(ITextSnapshotLine line)
+        private bool canChangeLine(ITextSnapshotLine line, XDocument document)
         {
-            var ss = new SnapshotSpan(line.Snapshot, line.Extent);
-
-            var spans = _classifier.GetClassificationSpans(ss);
-            if (spans.Count > 0 && spans[0].Span.Snapshot.Version == line.Snapshot.Version)
-            {
-                var type = spans[0].ClassificationType;
-                if (type.Classification.ToLower() == "comment")
-                    return false;
-                if (type.Classification.ToLower() == "xsharp.text")
-                {
-                    if (spans.Count == 1)
-                        return false;
-                    // endtext line starts with token with type "xsharp.text" when it starts with spaces
-                    return spans[1].ClassificationType.Classification == "keyword";
-                }
-            }
-            return true;
-
-        }
-        private bool canFormatLine(ITextSnapshotLine line)
-        {
-            // get first token on line
-            // when comment: do not format
-            // when xsharp.text and only one token: do not format
-            // when xsharp.text and second token = keyword, then endtext line, so format
             if (line.Length == 0)
                 return false;
-            return canIndentLine(line);
+            if (document.GetTokens(line.LineNumber, out var tokens))
+            {
+                var token = tokens.Where((t) => t.Type != XSharpLexer.WS).FirstOrDefault();
+                if (token == null)
+                    return false;
+                if (XSharpLexer.IsComment(token.Type))
+                    return false;
+                if (token.Type == XSharpLexer.TEXT_STRING_CONST)
+                    return false;
+                return true;
+            }
+            return false;
         }
-        
+
 
         private void FormatLineCase(ITextEdit editSession, ITextSnapshotLine line)
         {
-            if (XSettings.DebuggerIsRunning)
-            {
-                return;
-            }
-            if (!canFormatLine(line))
-            {
-                return;
-            }
-
-            if (_settings.KeywordCase == KeywordCase.None)
+            if (_settings.KeywordCase == KeywordCase.None || XSettings.DebuggerIsRunning)
             {
                 return;
             }
             if (line.LineNumber == getCurrentLine())
             {
-                // Come back later.
+                // Do not change case for current line, Come back later.
                 registerLineForCaseSync(line.LineNumber);
+                return;
+            }
+            if (!canChangeLine(line, _buffer.GetDocument()))
+            {
                 return;
             }
 

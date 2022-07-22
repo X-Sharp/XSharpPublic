@@ -13,7 +13,7 @@ USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 BEGIN NAMESPACE XSharpModel
 
    [DebuggerDisplay("{ToString(),nq}")];
-   CLASS XSourceMemberSymbol INHERIT XSourceEntity IMPLEMENTS IXMemberSymbol
+   CLASS XSourceMemberSymbol INHERIT XSourceEntity IMPLEMENTS IXMemberSymbol,IXSourceEntity
       // Fields
       PRIVATE _signature    AS XMemberSignature
       PROPERTY InitExit     AS STRING AUTO

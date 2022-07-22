@@ -398,7 +398,9 @@ BEGIN NAMESPACE XSharpModel
             LOCAL lastEntity          := SELF:_EntityList:Last() as XSourceEntity
             if lastEntity:Kind:IsClassMember(_dialect)
                 // if type has no end clause then also set the end
-                if lastEntity:Range:StartLine == lastEntity:Range:EndLine
+
+                if lastEntity:Range:StartLine == lastEntity:Range:EndLine .or. ;
+                    (lastEntity is IXSourceEntity var srcent .and. srcent:SourceCode:Contains(";"))
                     lastEntity:Range        := lastEntity:Range:WithEnd(lasttoken)
                     lastEntity:Interval     := lastEntity:Interval:WithEnd(lasttoken)
                 endif
@@ -904,7 +906,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             else
                 xt := XKeyword{SELF:La1}
             endif
-            rule := XFormattingRule.GetStartRule(xt)
+            rule := XFormattingRule.GetFirstRuleByStart(xt)
             if rule != null .and. rule:Flags:HasFlag(XFormattingFlags.Statement)
                IF SELF:_collectBlocks
                    VAR block := XSourceBlock{ xt, SELF:Lt1}
@@ -924,9 +926,13 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                                 _BlockStack:Pop()
                             endif
                         endif
-                   endif
-                   _BlockList:Add(block)
-                   _BlockStack:Push(block)
+                    endif
+                    if XFormattingRule.IsMiddleKeyword(xt) .and. _BlockStack:Count > 0
+                        CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
+                    else
+                       _BlockList:Add(block)
+                       _BlockStack:Push(block)
+                    endif
                 ENDIF
                 IF SELF:_collectLocals
                     IF SELF:La1 == XSharpLexer.SET .OR. SELF:La1 == XSharpLexer.REMOVE .OR. SELF:La1 == XSharpLexer.ADD
@@ -939,45 +945,43 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                       VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
 
                       SELF:_locals:Add(xVar)
-                   ENDIF
-                   IF SELF:La1 == XSharpLexer.IF
-                      SELF:ParseForLocals()
-                   ELSE
-                      SELF:ParseForLocalDeclaration()
-                   ENDIF
+                    ENDIF
+                ENDIF
+                if XFormattingRule.IsMiddleKeyword(xt)
+                    IF SELF:_collectLocals
+                        SWITCH SELF:La1
+                        CASE XSharpLexer.CATCH
+
+                            IF SELF:IsId(SELF:La2)
+                                SELF:Consume()
+                                VAR start   := SELF:Lt1
+                                VAR id      := SELF:ParseIdentifier()
+                                VAR strType := "System.Exception"
+                                IF SELF:La1 == XSharpLexer.AS
+                                    strType := SELF:ParseDataType(FALSE)
+                                ENDIF
+
+                                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
+                                VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
+                                SELF:_locals:Add(xVar)
+                            ENDIF
+                        CASE XSharpLexer.ELSEIF
+                        CASE XSharpLexer.CASE
+                            SELF:ParseForLocals()
+                        OTHERWISE
+                            SELF:ReadLine()
+                        END SWITCH
+                    ELSE
+                       SELF:ReadLine()
+                    ENDIF
+                ELSEIF ! SELF:_collectLocals
+                    SELF:ReadLine()
+                ELSEIF SELF:La1 == XSharpLexer.IF
+                    SELF:ParseForLocals()
                 ELSE
-                   SELF:ReadLine()
+                    SELF:ParseForLocalDeclaration()
                 ENDIF
                 RETURN TRUE
-            elseif XFormattingRule.IsMiddleKeyword(xt)
-               IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
-                   CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
-               ENDIF
-               SWITCH SELF:La1
-                CASE XSharpLexer.CATCH
-                   IF SELF:_collectLocals
-                      IF SELF:IsId(SELF:La2)
-                         SELF:Consume()
-                         VAR start   := SELF:Lt1
-                         VAR id      := SELF:ParseIdentifier()
-                         VAR strType := "System.Exception"
-                         IF SELF:La1 == XSharpLexer.AS
-                             strType := SELF:ParseDataType(FALSE)
-                         ENDIF
-
-                         SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
-                         VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
-                         SELF:_locals:Add(xVar)
-                      ENDIF
-                   ENDIF
-                CASE XSharpLexer.ELSEIF
-                CASE XSharpLexer.CASE
-                    IF SELF:_collectLocals
-                         SELF:ParseForLocals()
-                    ENDIF
-                END SWITCH
-                SELF:ReadLine()
-                return TRUE
           elseif XFormattingRule.IsEndKeyword(xt)
             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
                CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
@@ -985,20 +989,6 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             ENDIF
             SELF:ReadLine()
             RETURN TRUE
-         elseif xt:Kw1 == XTokenType.End
-             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
-                var block := CurrentBlock
-                var start := block:XKeyword
-                rule := XFormattingRule.GetStartRule(start)
-                if (rule != null .and. rule:Flags:HasFlag(XFormattingFlags.End))
-                   CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
-                   _BlockStack:Pop()
-                   SELF:ReadLine()
-                   return TRUE
-
-                endif
-            ENDIF
-            SELF:ReadLine()
          endif
 
          RETURN FALSE

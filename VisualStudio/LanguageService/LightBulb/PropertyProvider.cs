@@ -168,14 +168,14 @@ namespace XSharp.LanguageService.Editors.LightBulb
             if (!xDocument.Complete)
                 return false;
             //
-            var xLines = xDocument.Lines;
+            var xLines = xDocument.TokensPerLine;
             //
             SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
             //
-            IList<XSharpToken> lineTokens = null;
             List<XSharpToken> fulllineTokens = new List<XSharpToken>();
             var lineNumber = line.LineNumber;
+            
             var lineState = linesState.Get(lineNumber);
             // Search the first line
             while (lineState == LineFlags.Continued)
@@ -187,7 +187,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             // It must be a SingleLineEntity
             if (lineState != LineFlags.SingleLineEntity)
                 return false;
-            if (!xLines.TryGetValue(lineNumber, out lineTokens))
+            if (xDocument.GetTokens(lineNumber, out var lineTokens))
                 return false;
             //
             fulllineTokens.AddRange(lineTokens);

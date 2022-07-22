@@ -300,7 +300,6 @@ namespace XSharp.LanguageService
                         var doc = _textView.TextBuffer.GetDocument();
                         if (doc == null)
                             return;
-                        var lines = doc.LineState;
                         // Make sure that the entity list matches the contents of the buffer
                         // Parse the entities
                         classifier.Parse();

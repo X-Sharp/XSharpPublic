@@ -1,5 +1,6 @@
 name: Clean Workflow Logs
 on:
+  workflow_dispatch:
   schedule:
      - cron: '0 1 * * *' # every night at 2 am UTC
 jobs:

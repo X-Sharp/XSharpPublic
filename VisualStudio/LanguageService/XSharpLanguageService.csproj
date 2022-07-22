@@ -66,6 +66,7 @@
     <Compile Include="Completion\XSharpAsyncCompletionSource.cs" />
     <Compile Include="Completion\XSharpAsyncCompletionSourceProvider.cs" />
     <Compile Include="EventHandlers.cs" />
+    <Compile Include="Formatting\DocFormatter.cs" />
     <Compile Include="Formatting\EditorConfigSettings.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />

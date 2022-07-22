@@ -222,7 +222,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             }
             var linesState = xDocument.LineState;
             //
-            var xLines = xDocument.Lines;
+            var xLines = xDocument.TokensPerLine;
             //
             IList<XSharpToken> lineTokens = null;
             List<XSharpToken> fulllineTokens = new List<XSharpToken>();

@@ -60,7 +60,7 @@ namespace XSharp.LanguageService
             var lastLine = location.Snapshot.LineCount;
             if (xdocument != null)
             {
-                var lines = xdocument.Lines;
+                var lines = xdocument.TokensPerLine;
                 var lineNumber = location.LineNumber;
                 while (result.Count == 0 || result.Last().Type != XSharpLexer.EOS)
                 {

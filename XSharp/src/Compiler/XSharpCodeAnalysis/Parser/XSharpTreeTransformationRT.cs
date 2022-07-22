@@ -294,6 +294,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         #endregion
 
+        protected ExpressionSyntax MakePublicInitializer(string name)
+        {
+            // Assign FALSE to PUBLIC variables or TRUE when the name is CLIPPER
+            bool publicValue = false;
+            switch (name.ToUpper())
+            {
+                case "FOX":
+                case "FOXPRO":
+                    publicValue = _options.Dialect == XSharpDialect.FoxPro;
+                    break;
+                case "CLIPPER":
+                    publicValue = _options.Dialect != XSharpDialect.FoxPro;
+                    break;
+            }
+            return GenerateLiteral(publicValue);
+        }
+
         #region Special app methods
         protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool isApp, List<MemVarFieldInfo> filewidepublics = null)
         {
@@ -312,31 +329,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var exp = GenerateMemVarDecl(memvar.Context, GenerateLiteral(name), false);
                     exp.XNode = memvar.Context;
                     stmts.Add(GenerateExpressionStatement(exp, memvar.Context));
-                    var context = memvar.Context as XSharpParser.XbasevarContext;
-                    if (context.Expression != null)
+                    ExpressionSyntax initializer = null;
+                    if (memvar.Context is XP.XbasevarContext context)
                     {
-                        exp = GenerateMemVarPut(context, GenerateLiteral(name), context.Expression.Get<ExpressionSyntax>());
-                        stmts.Add(GenerateExpressionStatement(exp, context));
-                    }
-                    else if (context.ArraySub != null)
-                    {
-                        var args = new List<ArgumentSyntax>();
-                        foreach (var index in context.ArraySub._ArrayIndex)
+                        if (context.Expression != null)
                         {
-                            args.Add(MakeArgument(index.Get<ExpressionSyntax>()));
+                            initializer = context.Expression.Get<ExpressionSyntax>();
                         }
-                        var initializer = GenerateMethodCall(XSharpQualifiedFunctionNames.ArrayNew, MakeArgumentList(args.ToArray()), true);
-                        exp = GenerateMemVarPut(context, GenerateLiteral(name), initializer);
-                        stmts.Add(GenerateExpressionStatement(exp, context));
-
+                        else if (context.ArraySub != null)
+                        {
+                            var args = new List<ArgumentSyntax>();
+                            foreach (var index in context.ArraySub._ArrayIndex)
+                            {
+                                args.Add(MakeArgument(index.Get<ExpressionSyntax>()));
+                            }
+                            initializer = GenerateMethodCall(XSharpQualifiedFunctionNames.ArrayNew, MakeArgumentList(args.ToArray()), true);
+                        }
                     }
-                    else
+                    if (initializer == null)
                     {
-                        // Assign FALSE to PUBLIC variables or TRUE when the name is CLIPPER
-                        bool publicvalue = context.Id.GetText().ToUpper() == "CLIPPER";
-                        exp = GenerateMemVarPut(context, GenerateLiteral(name), GenerateLiteral(publicvalue));
-                        stmts.Add(GenerateExpressionStatement(exp, context));
+                        initializer = MakePublicInitializer(memvar.Name);
                     }
+                    exp = GenerateMemVarPut(memvar.Context, GenerateLiteral(name), initializer);
+                    stmts.Add(GenerateExpressionStatement(exp, memvar.Context));
+
                 }
             }
             var mods = TokenList(isApp ? SyntaxKind.InternalKeyword : SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
@@ -1157,16 +1173,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.Token.Type == XP.PUBLIC)
                 {
                     // PUBLIC
-                    foreach (var memvar in context._XVars)
+                    if (_options.Dialect != XSharpDialect.FoxPro)
                     {
-                        if (memvar.Amp == null)
+                        foreach (var memvar in context._XVars)
                         {
-                            var name = CleanVarName(memvar.Id.GetText());
-                            var mv = new MemVarFieldInfo(name, "M", memvar, true);
-                            _filewideMemvars.Add(mv.Name, mv);
-                            GlobalEntities.FileWidePublics.Add(mv);
+                            if (memvar.Amp == null)
+                            {
+                                var name = CleanVarName(memvar.Id.GetText());
+                                var mv = new MemVarFieldInfo(name, "M", memvar, true);
+                                _filewideMemvars.Add(mv.Name, mv);
+                                GlobalEntities.FileWidePublics.Add(mv);
+                            }
+                            // Code generation for initialization is done in CreateInitFunction()
                         }
-                        // Code generation for initialization is done in CreateInitFunction()
+                    }
+                    else
+                    {
+                        foreach (var memvar in context._FoxVars)
+                        {
+                            if (memvar.Amp == null)
+                            {
+                                var name = CleanVarName(memvar.Id.GetText());
+                                var mv = new MemVarFieldInfo(name, "M", memvar, true);
+                                _filewideMemvars.Add(mv.Name, mv);
+                                GlobalEntities.FileWidePublics.Add(mv);
+                            }
+                            // Code generation for initialization is done in CreateInitFunction()
+                        }
                     }
                 }
                 else
@@ -1268,14 +1301,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         if (initializer != null)
                         {
-                            exp = GenerateMemVarPut(context, varname, initializer);
-
-                            var stmt = GenerateExpressionStatement(exp, memvar);
-                            memvar.Put(stmt);
-                            stmts.Add(stmt);
-
+                            initializer = MakePublicInitializer(memvar.Id.GetText());
                         }
-                        // no need to assign a default. The runtime takes care of that
+                        exp = GenerateMemVarPut(context, varname, initializer);
+                        var stmt = GenerateExpressionStatement(exp, memvar);
+                        memvar.Put(stmt);
+                        stmts.Add(stmt);
+
                     }
                     context.Put(MakeBlock(stmts));
                     break;

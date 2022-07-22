@@ -214,7 +214,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 CurrentMember.Data.HasMemVars = true;
                 // List inside _XVars. 
-                foreach (var memvar in context._XVars)
+                foreach (var memvar in context._FoxVars)
                 {
                     var name = memvar.Id.GetText();
                     AddAmpbasedMemvar(memvar, name, "M", memvar.Amp);
@@ -303,7 +303,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     break;
                 case XP.PRIVATE:
-                    foreach (var memvar in context._XVars)
+                    foreach (var memvar in context._FoxVars)
                     {
                         // declare the private. FoxPro has no initializers 
                         var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
@@ -333,12 +333,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else // context._XVars.Count > 0
                     {
-                        foreach (var memvar in context._XVars)
+                        foreach (var memvar in context._FoxVars)
                         {
                             // declare the public. FoxPro has no initializers
                             var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
                             var exp = GenerateMemVarDecl(memvar, varname, false);
                             exp.XNode = memvar;
+                            stmts.Add(GenerateExpressionStatement(exp, memvar));
+                            if (memvar.Amp == null)
+                            {
+                                var initializer = MakePublicInitializer(memvar.Id.GetText());
+                                exp = GenerateMemVarPut(memvar, varname, initializer);
+                                exp.XNode = memvar;
+                                stmts.Add(GenerateExpressionStatement(exp, memvar));
+                            }
                             stmts.Add(GenerateExpressionStatement(exp, memvar));
                         }
                     }

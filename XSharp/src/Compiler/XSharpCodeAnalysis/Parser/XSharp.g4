@@ -509,7 +509,8 @@ globalAttributeTarget : Token=ID COLON      // We'll  check for ASSEMBLY and MOD
                       ;
 
 filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS
-                    | Token=PUBLIC XVars+=xbasevar (COMMA XVars+=xbasevar)*  end=EOS
+                    | {!IsFox}? Token=PUBLIC XVars+=xbasevar (COMMA XVars+=xbasevar)*  end=EOS
+                    | {IsFox}?  Token=PUBLIC FoxVars+=foxbasevar (COMMA FoxVars+=foxbasevar)*  end=EOS
                     ;
 
 
@@ -724,8 +725,8 @@ foxdecl             : T=(DIMENSION|DECLARE) DimVars += dimensionVar
                     | T=(PARAMETERS|LPARAMETERS) Vars+=varidentifierName XT=xbasedecltype?
                         (COMMA Vars+=varidentifierName XT=xbasedecltype? )* end=eos
                     // This has names and optional ampersands
-                    | T=(PRIVATE|PUBLIC) XVars+=foxbasevar       // FoxBaseVar also allows Ampersands
-                        (COMMA XVars+=foxbasevar)*  end=eos
+                    | T=(PRIVATE|PUBLIC) FoxVars+=foxbasevar       // FoxBaseVar also allows Ampersands
+                        (COMMA FoxVars+=foxbasevar)*  end=eos
                     // Variations of LOCAL and PUBLIC with the ARRAY keyword
                     | T=LOCAL Ar=ARRAY DimVars += dimensionVar
                         (COMMA DimVars+=dimensionVar)*    end=eos

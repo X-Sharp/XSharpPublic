@@ -426,7 +426,7 @@ BEGIN NAMESPACE XSharpModel
              IF SELF:SaveToDisk
                 _file:SaveToDatabase()
              ENDIF
-             _file:NofityClients()   
+             _file:NofityClients()
          ENDIF
       PRIVATE METHOD AddNameSpaceToUsing(name as STRING) AS VOID
          var pos  := name:LastIndexOf(".")
@@ -2882,11 +2882,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          ENDIF
          xVar:Expression := expr
          IF expr != NULL
-            var sb := StringBuilder{}
-            foreach var token in expr
-                sb:Append(token:TextWithTrivia)
-            next
-            xVar:Value := sb:ToString():Trim()
+            xVar:Value := SELF:TokensAsString(expr)
          endif
          RETURN xVar
 
@@ -2908,7 +2904,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          VAR xVar     := XSourceImpliedVariableSymbol{SELF:CurrentEntity, id,  range, interval}
          xVar:Expression := expr
          xVar:ImpliedKind := ImpliedKind.Assignment
-         xVar:TypeName    := Self:TokensAsString(expr):Trim()
+         xVar:Value := SELF:TokensAsString(expr)
          RETURN xVar
 
       PRIVATE METHOD ParseXBaseDeclarationStatement() AS LOGIC

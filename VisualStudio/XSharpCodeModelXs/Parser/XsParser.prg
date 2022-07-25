@@ -426,6 +426,7 @@ BEGIN NAMESPACE XSharpModel
              IF SELF:SaveToDisk
                 _file:SaveToDatabase()
              ENDIF
+             _file:NofityClients()   
          ENDIF
       PRIVATE METHOD AddNameSpaceToUsing(name as STRING) AS VOID
          var pos  := name:LastIndexOf(".")

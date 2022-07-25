@@ -952,8 +952,17 @@ namespace XSharp.LanguageService
                     var symbol = symbols.Peek();
                 }
             }
-            result.Clear();
-            if (symbols.Count > 0)
+            if (result.Count == 0 && XSharpLexer.IsKeyword(currentToken.Type))
+            {
+                currentToken.Text = XSettings.FormatKeyword(currentToken.Text);
+                var sym = new XSymbol(currentToken.Text, Kind.Keyword, Modifiers.Public);
+                result.Add(sym);
+            }
+            else
+            {
+                result.Clear();
+            }
+            if (result.Count == 0 && symbols.Count > 0 )
             {
                 result.Add(symbols.Pop());
                 if (result[0] is IXMemberSymbol xmember && xmember.ParentType != null && xmember.ParentType.IsGeneric && symbols.Count > 0)
@@ -980,7 +989,7 @@ namespace XSharp.LanguageService
                     result.AddRange(ctors);
                 }
             }
-            if (result.Count == 0)
+            if (result.Count == 0 )
             {
                 var namespaces = location.Project.AllNamespaces.Where(n => n == namespacePrefix);
                 if (namespaces.Count() > 0)
@@ -1005,12 +1014,6 @@ namespace XSharp.LanguageService
                         result.Add(sym);
                     }
                 }
-            }
-            else if (result.Count == 0 && XSharpLexer.IsKeyword(currentToken.Type))
-            {
-                currentToken.Text = XSettings.FormatKeyword(currentToken.Text);
-                var sym = new XSymbol(currentToken.Text, Kind.Keyword, Modifiers.Public);
-                result.Add(sym);
             }
             else if (result.Count > 0 && result[0] != null)
             {

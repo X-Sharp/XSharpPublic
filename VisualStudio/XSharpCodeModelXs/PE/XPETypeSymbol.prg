@@ -383,6 +383,57 @@ BEGIN NAMESPACE XSharpModel
             RETURN result
 
     END CLASS
+    CLASS XPEArrayTypeSymbol INHERIT XPETypeSymbol
+        PRIVATE _elementName     AS STRING
+        PRIVATE _ctors           AS IList<IXMemberSymbol>
+        CONSTRUCTOR (aType as XPETypeSymbol, elementType as STRING)
+            SUPER(aType:TypeDef,aType:Assembly)
+            SELF:_elementName := elementType
+            SELF:IsArray := TRUE
+
+        PROPERTY TypeName  AS STRING
+            GET
+                RETURN SELF:_elementName+"[]"
+            END GET
+        END PROPERTY
+
+        PROPERTY FullName  AS STRING
+            GET
+                RETURN SELF:_elementName+"[]"
+            END GET
+        END PROPERTY
+
+        METHOD SetConstructors(ctors as IList<IXMemberSymbol>) AS VOID
+            _ctors := ctors
+
+        METHOD GetConstructors() AS IList<IXMemberSymbol>
+            if (_ctors == null)
+                var temp := SUPER:Members:Where ( {x => x:Name == "CreateInstance" }):ToArray()
+                var ctors := List<IXMemberSymbol>{}
+                foreach var m in temp
+
+                    var newmethod := (XPEMethodSymbol) m:Clone()
+                    // remove first parameter
+                    var pars := List<IXParameterSymbol>{}
+                    pars:AddRange(m:Parameters)
+                    pars:RemoveAt(0)
+                    newmethod:Kind := Kind.Constructor
+                    newmethod:Attributes := _XOR(newmethod:Attributes, Modifiers.Static)
+                    newmethod:Name := ".ctor"
+                    newmethod:DeclaringType := SELF:FullName
+                    newmethod:Parent := SELF
+                    newmethod:Signature:DataType := SELF:TypeName
+                    newmethod:Signature:Parameters := pars:ToList()
+
+                    ctors.Add(newmethod)
+                next
+                _ctors := ctors:ToArray()
+            endif
+            return _ctors
+        METHOD ToString() AS STRING
+            var result := i"{Kind} {TypeName}"
+            RETURN result
+    END CLASS
 
 END NAMESPACE
 

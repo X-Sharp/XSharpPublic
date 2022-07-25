@@ -115,10 +115,32 @@ BEGIN NAMESPACE XSharpModel
             RETURN typename
 
 
+    STATIC METHOD GetTypeSuffix(typeName REF STRING) AS STRING
+        LOCAL suffix AS STRING
+        suffix := ""
+        if typeName:EndsWith("[]")
+            typeName := typeName:Substring(0, typeName:Length -2)
+            suffix := "[]"
+        endif
+        if typeName:EndsWith("&")
+            typeName := typeName:Substring(0, typeName:Length -1)
+            suffix := "&"
+        endif
+        if typeName:EndsWith("*")
+            typeName := typeName:Substring(0, typeName:Length -1)
+            suffix := "*"
+        endif
+        return suffix
+
     STATIC METHOD GetXSharpTypeName( SELF typeName AS STRING) AS STRING
+        var suffix := GetTypeSuffix(REF typeName)
         if typeName:IndexOf("/") >= 0
             typeName := typeName:Replace('/','.')
         endif
+        IF (SystemToXSharp:ContainsKey(typeName))
+            //
+            typeName := SystemToXSharp[typeName]
+        ENDIF
         VAR pos := typeName:IndexOf("<")
         IF pos > 0
             VAR lhs := typeName:Substring(0, pos)
@@ -136,62 +158,51 @@ BEGIN NAMESPACE XSharpModel
             NEXT
             lhs += ">"
             typeName := lhs
-        ELSE
-            IF (SystemToXSharp:ContainsKey(typeName))
-                typeName := SystemToXSharp[typeName]
-            ENDIF
         ENDIF
-        IF typeName == "System.Void*"
-            typeName := "PTR"
-        ELSEIF typeName:EndsWith("*")
-            // translate System.UInt32* to DWORD PTR
-            // calls this function recursively !
-            typeName := typeName:Substring(0, typeName:Length-1)
-            typeName := typeName:GetXSharpTypeName()+" PTR"
+        IF suffix == "*"
+            if typeName == "VOID"
+                typeName := "PTR"
+                suffix := ""
+            else
+                suffix := " PTR"
+            endif
         ENDIF
+        if suffix:Length > 0
+             typeName += suffix
+        endif
         RETURN typeName
 
     STATIC METHOD GetXSharpTypeName( SELF sysType AS Mono.Cecil.TypeReference) AS STRING
-            LOCAL fullName AS STRING
-            LOCAL suffix AS STRING
-            fullName := sysType:FullName
-            IF (fullName == NULL)
-                fullName := sysType:Name
-            ENDIF
-            suffix := ""
-            IF fullName:EndsWith("[]")
-                fullName := fullName:Substring(0, (fullName:Length - 2))
-                suffix := "[]"
-            ENDIF
-            IF fullName:EndsWith("&")
-                fullName := fullName:Substring(0, (fullName:Length - 1))
-                suffix := ""
-            ENDIF
-            IF (SystemToXSharp:ContainsKey(fullName))
-                //
-                fullName := SystemToXSharp[fullName]
-            ENDIF
-            // Maybe it's a Raw format ?
-            LOCAL genMarker := fullName:IndexOf('`') AS INT
-            IF (genMarker > -1)
-                // First extract the type
-                LOCAL genTypeName := fullName:Substring(0, genMarker) AS STRING
-                VAR genericString := "<"
-                VAR GenericParameters := sysType:GenericParameters
-                LOCAL first := TRUE AS LOGIC
-                FOREACH VAR genArg IN GenericParameters
-                    IF first
-                        genericString += genArg:Name
-                        first := FALSE
-                    ELSE
-                        genericString += "," + genArg:Name
-                    ENDIF
-                NEXT
-                //
-                genericString += ">"
-                fullName := genTypeName + genericString
-            ENDIF
-            RETURN fullName+ suffix
+        var fullName := sysType:FullName
+        IF (fullName == NULL)
+            fullName := sysType:Name
+        ENDIF
+        var suffix := GetTypeSuffix(ref fullName)
+        fullName := fullName:GetXSharpTypeName()
+        // Maybe it's a Raw format ?
+        LOCAL genMarker := fullName:IndexOf('`') AS INT
+        IF (genMarker > -1)
+            // First extract the type
+            LOCAL genTypeName := fullName:Substring(0, genMarker) AS STRING
+            VAR genericString := "<"
+            VAR GenericParameters := sysType:GenericParameters
+            LOCAL first := TRUE AS LOGIC
+            FOREACH VAR genArg IN GenericParameters
+                IF first
+                    genericString += genArg:Name
+                    first := FALSE
+                ELSE
+                    genericString += "," + genArg:Name
+                ENDIF
+            NEXT
+            //
+            genericString += ">"
+            fullName := genTypeName + genericString
+        ENDIF
+        if suffix:Length > 0
+            fullName += suffix
+        endif
+        RETURN fullName
 
     END CLASS
 

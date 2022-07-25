@@ -101,7 +101,12 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD GetOverloads(SELF tm as IXMemberSymbol) AS IXMemberSymbol[]
          var result := List<IXMemberSymbol>{}
          IF tm:ParentType != NULL
-            VAR overloads := tm:ParentType:GetMembers(tm.Name, TRUE)
+            local overloads as IList<IXMemberSymbol>
+            if (tm:ParentType is XPEArrayTypeSymbol var aType .and. tm:Name == ".ctor")
+                overloads := aType:GetConstructors()
+            else
+                overloads := tm:ParentType:GetMembers(tm.Name, TRUE)
+            endif
             result:AddRange(overloads:Where( { x => x:IsStatic == tm:IsStatic}))
          ENDIF
          RETURN result:ToArray()

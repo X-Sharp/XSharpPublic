@@ -165,8 +165,6 @@ namespace XSharpDebugger.ExpressionCompiler
             // when the user assigns a value in the debugger then this method is called.
             // we may want to change an expression like "{1,2,3}" to "new object[] {1,2,3}"
             // and "2020.12.03" to "XSharp.RT.Functions.ConDate(2020,12,03)"
-            error = null;
-            result = null;
             expression.CompileAssignment(instructionAddress, lValue, out error, out result);
         }
 /*

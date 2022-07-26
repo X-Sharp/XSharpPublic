@@ -22,7 +22,7 @@ using Microsoft.VisualStudio.ComponentModelHost;
 namespace XSharp.LanguageService
 {
     [Guid(GuidStrings.guidXSharpLanguageServicePkgString)]
-    public class XSharpLegacyLanguageService : Microsoft.VisualStudio.Package.LanguageService, IVsLanguageDebugInfo
+    public class XSharpLegacyLanguageService : Microsoft.VisualStudio.Package.LanguageService, IVsLanguageDebugInfo, IVsLanguageTextOps
     {
         private readonly IServiceContainer _serviceContainer;
         private readonly IComponentModel _componentModel;
@@ -347,6 +347,74 @@ namespace XSharp.LanguageService
             // VS debugger will highlight the entire line when the breakpoint is active and the corresponding option
             // ("Highlight entire source line for breakpoints and current statement") is set. If we returned S_OK,
             // we'd have to handle this ourselves.
+            return VSConstants.E_NOTIMPL;
+        }
+        #endregion
+        #region  IVsLanguageTextOps      
+        public int GetDataTip(IVsTextLayer pTextLayer, TextSpan[] ptsSel, TextSpan[] ptsTip, out string text)
+        {
+            text = null;
+            return VSConstants.E_NOTIMPL;
+
+        }
+
+        public int GetPairExtent(IVsTextLayer pTextLayer, TextAddress ta, TextSpan[] pts)
+        {
+            return VSConstants.E_NOTIMPL;
+        }
+
+        bool IsWordChar(char c)
+        {
+            switch (c)
+            {
+                case ' ':
+                case '\t':
+                    return false;
+                case ':':
+                case '.':
+                    break;
+                default:
+                    if (!System.Char.IsLetterOrDigit(c))
+                        return false;
+                    break;
+            }
+            return true;
+        }
+        public int GetWordExtent(IVsTextLayer pTextLayer, TextAddress ta, WORDEXTFLAGS flags, TextSpan[] pts)
+        {
+            string text;
+            
+            if (flags.HasFlag(WORDEXTFLAGS.WORDEXT_FINDTOKEN))
+            {
+                pts[0].iStartLine = pts[0].iEndLine = ta.line;
+
+                pTextLayer.GetLineText(ta.line, 0, ta.line + 1, 0, out text);
+                var index = ta.index;
+                // find start token
+                while (index > 0)
+                {
+                    char c = text[index];
+                    if (!IsWordChar(c))
+                        break;
+                    index -= 1;
+                }
+                pts[0].iStartIndex = index;
+                index = ta.index;
+                while (index < text.Length)
+                {
+                    char c = text[index];
+                    if (!IsWordChar(c))
+                        break;
+                    index += 1;
+                }
+                pts[0].iEndIndex = index;
+            }
+            return VSConstants.S_OK;
+
+        }
+
+        public int Format(IVsTextLayer pTextLayer, TextSpan[] ptsSel)
+        {
             return VSConstants.E_NOTIMPL;
         }
 

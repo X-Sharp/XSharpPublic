@@ -818,7 +818,7 @@ namespace XSharp.LanguageService
 
        
 
-        private void addKw(XSharpToken firstkw, XSharpToken secondkw, int iLastLine)
+        private void addKw(IToken firstkw, IToken secondkw, int iLastLine)
         {
             XKeyword kw;
             if (XFormattingRule.IsSingleKeyword(firstkw.Type))
@@ -868,8 +868,9 @@ namespace XSharp.LanguageService
             var tokenStream = xDocument.TokenStream;
             Debug("Start building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             XClassificationSpans newtags;
-            var lineTokens = new Dictionary<int, IList<XSharpToken>>(snapshot.LineCount);
-            var currentLine = new List<XSharpToken>(); 
+            var lineTokens = new Dictionary<int, IList<IToken>>(snapshot.LineCount);
+            var currentLine = new List<IToken>();
+            var ids = new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
             RuleStack = new Stack<XFormattingRule>();
             var regionTags = new List<ClassificationSpan>();
             if (tokenStream != null)
@@ -884,12 +885,19 @@ namespace XSharp.LanguageService
                 IToken keywordContext = null;
                 IToken lastToken = null;
                 int iLastLine = -1;
-                XSharpToken firstkw = null;
-                XSharpToken secondkw = null;
+                IToken firstkw = null;
+                IToken secondkw = null;
                 bool firstInLine = false;
                 for (var iToken = 0; iToken < tokenStream.Size; iToken++)
                 {
-                    var token = (XSharpToken)tokenStream.Get(iToken);
+                    var token = tokenStream.Get(iToken);
+                    if (token.Type == XSharpLexer.ID && XSettings.IdentifierCase)
+                    {
+                        if (! ids.ContainsKey(token.Text))
+                        {
+                            ids[token.Text] = token.Text;
+                        }
+                    }
                     // store the tokens per line in a dictionary so we can quickly look them up
                     var line = token.Line - 1;  // VS Has 0 based line numbers
                     if (token.Line != iLastLine )
@@ -905,7 +913,7 @@ namespace XSharp.LanguageService
                         firstInLine = true;
                         if (!lineTokens.ContainsKey(line))
                         {
-                            currentLine = new List<XSharpToken>();
+                            currentLine = new List<IToken>();
                             lineTokens.Add(line, currentLine);
                         }
                     }
@@ -999,6 +1007,7 @@ namespace XSharp.LanguageService
                 }
                 // Orphan End ?
                 xDocument.SetTokens(lineTokens);
+                xDocument.SetIdentifiers(ids);
                 if ((keywordContext != null) && (keywordContext.Type == XSharpLexer.END))
                 {
                     newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
@@ -1121,7 +1130,7 @@ namespace XSharp.LanguageService
         {
             // Todo:
             // We can probably avoid building all tags in BuildColorClassifications.
-            // and directly create the necessary tags here from the List<XSharpToken>
+            // and directly create the necessary tags here from the List
             // In that case we need to keep a reference to the tokenstream in stead of the tags
             // There also must be a smart way to find the first matching tag.
             var result = new List<ClassificationSpan>();

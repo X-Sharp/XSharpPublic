@@ -1,4 +1,10 @@
-﻿/*
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+//------------------------------------------------------------------------------
+/*
 Formattingrules.txt
 Each line consists of one or more begin token(s) followed by a comma and the matching end token(s)
 Tokens that are followed by a question mark are optional. Per Token there can only be one questionmark
@@ -73,6 +79,7 @@ DO CASE,END CASE?,CASE
 BEGIN? SWITCH,CASE,CASE MIDDLE
 BEGIN? SWITCH,OTHERWISE,CASE MIDDLE
 BEGIN? SWITCH,END SWITCH?,CASE
+// No need for DO? SWITCH. The single SWITCH keyword is already covered above
 DO SWITCH,CASE,MIDDLE CASE
 DO SWITCH,OTHERWISE,MIDDLE CASE
 DO SWITCH,END SWITCH?,CASE

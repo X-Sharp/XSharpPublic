@@ -22,27 +22,27 @@ namespace XSharp.LanguageService
     internal class XDocument
     {
 
-
-
         public XDocument(BufferedTokenStream stream, ITextSnapshot snapshot, IList<string> files)
         {
             tokenStream = stream;
             snapShot = snapshot;
             entities = null;
-            tokensPerLine = new Dictionary<int, IList<XSharpToken>>();
+            tokensPerLine = new Dictionary<int, IList<IToken>>();
             includeFiles = files;
             lineKeywords = new XSharpLineKeywords(snapshot);
             lineState = new XSharpLineState(snapshot);
+            identifiers = new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
         }
 
         #region fields
         private BufferedTokenStream tokenStream;
         private IList<XSourceEntity> entities;
-        private Dictionary<int, IList<XSharpToken>> tokensPerLine;
+        private Dictionary<int, IList<IToken>> tokensPerLine;
         private XSharpLineState lineState;
         private XSharpLineKeywords lineKeywords;
         private IList<string> includeFiles;
         private ITextSnapshot snapShot;
+        private IDictionary<string, string> identifiers;
 
 
         #endregion
@@ -52,9 +52,10 @@ namespace XSharp.LanguageService
         internal ITextSnapshot SnapShot => snapShot;
         public IList<string> IncludeFiles => includeFiles;
         internal IList<XSourceEntity> Entities => entities;
-        internal Dictionary<int, IList<XSharpToken>> TokensPerLine => tokensPerLine;
+        internal Dictionary<int, IList<IToken>> TokensPerLine => tokensPerLine;
         internal XSharpLineState LineState => lineState;
         internal XSharpLineKeywords LineKeywords => lineKeywords;
+        internal IDictionary<string, string> Identifiers => identifiers;
         #endregion
 
         internal bool HasLineState(int line, LineFlags flag)
@@ -81,7 +82,7 @@ namespace XSharp.LanguageService
             }
             return false;
         }
-        internal bool GetTokens(int line, out IList<XSharpToken> tokens)
+        internal bool GetTokens(int line, out IList<IToken> tokens)
         {
             lock (this)
             {
@@ -94,7 +95,8 @@ namespace XSharp.LanguageService
             }
             return false;
         }
-        internal void SetTokens(Dictionary<int, IList<XSharpToken>> tokens)
+        
+        internal void SetTokens(Dictionary<int, IList<IToken>> tokens)
         {
             lock (this)
             {
@@ -116,6 +118,15 @@ namespace XSharp.LanguageService
                 lineKeywords = keywords;
             }
         }
+
+        internal void SetIdentifiers(IDictionary<string, string> ids)
+        {
+            lock (this)
+            {
+                identifiers = ids;
+            }
+        }
+
         internal void SetEntities(IList<XSourceEntity> entities)
         {
             lock (this)

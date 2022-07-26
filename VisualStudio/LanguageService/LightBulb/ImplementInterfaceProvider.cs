@@ -1,4 +1,11 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+//------------------------------------------------------------------------------
+
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -12,6 +19,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using XSharpModel;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
@@ -224,14 +232,13 @@ namespace XSharp.LanguageService.Editors.LightBulb
             //
             var xLines = xDocument.TokensPerLine;
             //
-            IList<XSharpToken> lineTokens = null;
-            List<XSharpToken> fulllineTokens = new List<XSharpToken>();
+            var fulllineTokens = new List<IToken>();
             var lineNumber = SearchRealStartLine();
             var lineState = linesState.Get(lineNumber);
             // It must be a EntityStart
             if (lineState != LineFlags.EntityStart)
                 return false;
-            if (!xLines.TryGetValue(lineNumber, out lineTokens))
+            if (!xLines.TryGetValue(lineNumber, out var lineTokens))
                 return false;
             //
             fulllineTokens.AddRange(lineTokens);

@@ -1,4 +1,11 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+//------------------------------------------------------------------------------
+
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -12,6 +19,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using XSharpModel;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
@@ -173,7 +181,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
             //
-            List<XSharpToken> fulllineTokens = new List<XSharpToken>();
+            var fulllineTokens = new List<IToken>();
             var lineNumber = line.LineNumber;
             
             var lineState = linesState.Get(lineNumber);

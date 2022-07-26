@@ -8,6 +8,7 @@ USING XSharpModel
 USING System.Diagnostics
 USING System.Collections.Generic
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
+USING LanguageService.SyntaxTree
 
 BEGIN NAMESPACE XSharpModel
      // A variable is strictly speaking not an entity
@@ -27,7 +28,7 @@ BEGIN NAMESPACE XSharpModel
 
         // Properties
 
-        PROPERTY Expression   AS IList<XSharpToken> AUTO GET INTERNAL SET
+        PROPERTY Expression   AS IList<IToken> AUTO GET INTERNAL SET
 
         PROPERTY FullName     AS STRING GET SELF:TypeName
 
@@ -104,4 +105,5 @@ BEGIN NAMESPACE XSharpModel
     END CLASS
 
 END NAMESPACE
+
 

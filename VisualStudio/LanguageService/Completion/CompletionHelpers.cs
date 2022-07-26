@@ -685,7 +685,7 @@ namespace XSharp.LanguageService
         /// </summary>
         /// <param name="tokenList"></param>
         /// <returns></returns>
-        internal string TokenListAsString(List<XSharpToken> tokenList)
+        internal string TokenListAsString(List<IToken> tokenList)
         {
             string retValue = "";
             for (int pos = 0; pos < tokenList.Count; pos++)

@@ -1,10 +1,9 @@
-﻿// XKeywordPairs.prg
-// Created by    : robert
-// Creation Date : 4/14/2022 4:18:52 PM
-// Created for   :
-// WorkStation   : NYX
-
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+//------------------------------------------------------------------------------
 USING System
 USING System.Collections.Generic
 USING System.Collections
@@ -100,6 +99,7 @@ BEGIN NAMESPACE XSharpModel
     static initonly _rulesByStart   as IDictionary<XKeyword, List<XFormattingRule>>
     static initonly _rulesByEnd     as IDictionary<XKeyword, List<XFormattingRule>>
     static initonly _rulesByMiddle  as IDictionary<XKeyword, List<XFormattingRule>>
+    static initonly _synonyms       as IDictionary<XKeyword, List<XKeyword> >
     static initonly _singleKeywords as BitArray
 
     #endregion
@@ -128,6 +128,7 @@ BEGIN NAMESPACE XSharpModel
     _rulesByStart  := Dictionary<XKeyword, List<XFormattingRule>>{}
     _rulesByEnd    := Dictionary<XKeyword, List<XFormattingRule>>{}
     _rulesByMiddle := Dictionary<XKeyword, List<XFormattingRule>>{}
+    _synonyms      := Dictionary<XKeyword, List<XKeyword> >{}
     foreach var item in rules
         var Start := item:Start
         var Stop  := item:Stop
@@ -158,6 +159,28 @@ BEGIN NAMESPACE XSharpModel
         endif
         AddSingleKeyword(item:Start)
         AddSingleKeyword(item:Stop)
+    next
+    // walk the end rules list for synonyms such as ENDCASE and END CASE
+    foreach var item in _rulesByEnd
+        var key := item:Key
+        var first := TRUE
+        foreach var rule in item:Value
+            var kwstart := rule:Start
+            var startrules := _rulesByStart[kwstart]
+            if startrules:Count > 1
+                foreach var startrule in startrules
+                    if !startrule:Stop:Equals(key) .and. ! startrule:Flags:HasFlag(XFormattingFlags.Middle)
+                        if first
+                            _synonyms:Add(key, List<XKeyword>{})
+                            first := false
+                        endif
+                        if ! _synonyms[key]:Contains(startrule:Stop)
+                            _synonyms[key]:Add(startrule:Stop)
+                        endif
+                    endif
+                next
+            endif
+         next
     next
     return
 
@@ -220,7 +243,11 @@ BEGIN NAMESPACE XSharpModel
         endif
         return null
 
-
+    PUBLIC STATIC METHOD IsSynonym(token1 as XKeyword, token2 as XKeyword) AS LOGIC
+        if _synonyms:ContainsKey(token1)
+            return _synonyms[token1]:Contains(token2)
+        endif
+        return false
 
 
 
@@ -361,8 +388,8 @@ BEGIN NAMESPACE XSharpModel
         XSharp.Parser.VsParser.Lex(cSource, "rules.txt", XSharpParseOptions.Default, SELF, OUT stream, OUT VAR includeFiles)
         var bufferedStream := (BufferedTokenStream) stream
         var tokens := bufferedStream:GetTokens()
-        var line := List<XSharpToken>{}
-        FOREACH token as XSharpToken in tokens
+        var line := List<IToken>{}
+        FOREACH var token  in tokens
             // Read a line
             if token:Channel != 0 .and. token:Channel != XSharpLexer.PREPROCESSORCHANNEL
                 LOOP
@@ -396,7 +423,7 @@ BEGIN NAMESPACE XSharpModel
     NEXT
 
 
-    METHOD TokensAsString(line as IList<XSharpToken>) AS STRING
+    METHOD TokensAsString(line as IList<IToken>) AS STRING
     var tokenstring := ""
     foreach var token in line
         tokenstring += token:Text+" "
@@ -433,13 +460,12 @@ BEGIN NAMESPACE XSharpModel
     END SWITCH
     return flags
 
-    METHOD ProcessFlags(line as IList<XSharpToken>) AS VOID
+    METHOD ProcessFlags(line as IList<IToken>) AS VOID
     // Change the type of the line
     SELF:Flags := GetFlags(line[1]:Text)
     RETURN
 
-    METHOD SplitPairs(line as IList<XSharpToken>, tStart AS List<XSharpToken>, tEnd AS List<XSharpToken>, ;
-    tOptions AS List<XSharpToken>) AS LOGIC
+    METHOD SplitPairs(line as IList<IToken>, tStart AS List<IToken>, tEnd AS List<IToken>, tOptions AS List<IToken>) AS LOGIC
     local section as int
 
     section := 1
@@ -466,10 +492,10 @@ BEGIN NAMESPACE XSharpModel
     next
     return hasQuestion
 
-    METHOD ProcessKeywordPairs(line as IList<XSharpToken>) AS VOID
-    var tStart := List<XSharpToken>{}
-    var tEnd   := List<XSharpToken>{}
-    var tOptions := List<XSharpToken>{}
+    METHOD ProcessKeywordPairs(line as IList<IToken>) AS VOID
+    var tStart := List<IToken>{}
+    var tEnd   := List<IToken>{}
+    var tOptions := List<IToken>{}
     local rule as XFormattingRule
     local kwStart as XKeyword
     local kwEnd as XKeyword
@@ -491,6 +517,17 @@ BEGIN NAMESPACE XSharpModel
                 kwEnd   := GetKeyword(tEnd, endindex, false)
                 rule := XFormattingRule{kwStart, kwEnd, kwFlags}
                 SELF:Rules:Add(rule)
+
+                kwStart := GetKeyword(tStart, startindex, false)
+                kwEnd   := GetKeyword(tEnd, endindex, true)
+                rule := XFormattingRule{kwStart, kwEnd, kwFlags}
+                SELF:Rules:Add(rule)
+
+                kwStart := GetKeyword(tStart, startindex, true)
+                kwEnd   := GetKeyword(tEnd, endindex, false)
+                rule := XFormattingRule{kwStart, kwEnd, kwFlags}
+                SELF:Rules:Add(rule)
+
                 kwStart := GetKeyword(tStart, startindex, true)
                 kwEnd   := GetKeyword(tEnd, endindex, true)
                 rule := XFormattingRule{kwStart, kwEnd, kwFlags}
@@ -528,7 +565,7 @@ BEGIN NAMESPACE XSharpModel
         SELF:Rules:Add(rule)
     endif
     RETURN
-    METHOD ProcessLine(line as IList<XSharpToken>) AS VOID
+    METHOD ProcessLine(line as IList<IToken>) AS VOID
     if line:Count == 0
         return
     endif
@@ -540,7 +577,7 @@ BEGIN NAMESPACE XSharpModel
 
     RETURN
 
-    PRIVATE METHOD GetTokentype(token as XSharpToken) AS LONG
+    PRIVATE METHOD GetTokentype(token as IToken) AS LONG
     local type := token:Type as LONG
     IF type == XSharpLexer.ID
         if lexer:KwIds:ContainsKey(token:Text)
@@ -566,7 +603,7 @@ BEGIN NAMESPACE XSharpModel
     return type
 
 
-    PRIVATE METHOD GetKeyword(tokens as List<XSharpToken>, qmark as int, delete as logic) AS XKeyword
+    PRIVATE METHOD GetKeyword(tokens as List<IToken>, qmark as int, delete as logic) AS XKeyword
     local kw as XKeyword
     Debug.Assert(tokens:Count == 3)
     Debug.Assert(qmark == 1 .or. qmark == 2)
@@ -586,7 +623,7 @@ BEGIN NAMESPACE XSharpModel
     endif
     return kw
 
-    PRIVATE METHOD GetKeyword(tokens as List<XSharpToken>) AS XKeyword
+    PRIVATE METHOD GetKeyword(tokens as List<IToken>) AS XKeyword
     local kw as XKeyword
     if tokens:Count == 1
         kw := XKeyword{GetTokentype(tokens[0])}
@@ -598,7 +635,7 @@ BEGIN NAMESPACE XSharpModel
     endif
     return kw
 
-    PRIVATE METHOD GetOptions(tOptions as List<XSharpToken>) AS XFormattingFlags
+    PRIVATE METHOD GetOptions(tOptions as List<IToken>) AS XFormattingFlags
     local kwFlags as XFormattingFlags
     kwFlags := SELF:Flags
     FOREACH VAR token in tOptions

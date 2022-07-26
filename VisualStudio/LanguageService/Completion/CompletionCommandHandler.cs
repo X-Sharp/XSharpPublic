@@ -1,4 +1,11 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+//------------------------------------------------------------------------------
+
+using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.OLE.Interop;
@@ -722,30 +729,7 @@ namespace XSharp.LanguageService
         {
             completion.InsertionText = XSettings.FormatKeyword(completion.InsertionText);
         }
-
-
-        #region Token Helpers for XMLDoc generation
-
-        private IList<IToken> getTokens(string text)
-        {
-            IList<IToken> tokens;
-            try
-            {
-                string fileName;
-                fileName = "MissingFile.prg";
-                var reporter = new ErrorIgnorer();
-                bool ok = XSharp.Parser.VsParser.Lex(text, fileName, XSharpParseOptions.Default, reporter, out ITokenStream tokenStream);
-                var stream = tokenStream as BufferedTokenStream;
-                tokens = stream.GetTokens();
-            }
-            catch (Exception e)
-            {
-                XSettings.LogException(e,"getTokens");
-                tokens = new List<IToken>();
-            }
-            return tokens;
-        }
-        #endregion
+        
     }
 }
 #endif

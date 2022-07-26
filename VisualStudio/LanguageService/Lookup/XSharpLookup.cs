@@ -278,8 +278,8 @@ namespace XSharp.LanguageService
         {
             //  Resolve the type of a loop variable. To do so we split the line in the part before and after the TO/UPTO/DOWNTO
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.LoopCounter);
-            var start = new List<XSharpToken>();
-            var end = new List<XSharpToken>();
+            var start = new List<IToken>();
+            var end = new List<IToken>();
             bool seento = false;
             foreach (var t in xVar.Expression)
             {
@@ -421,9 +421,9 @@ namespace XSharp.LanguageService
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.OutParam);
             return null;
         }
-        private static IList<XSharpToken> DeleteNestedTokens(IList<XSharpToken> tokens)
+        private static IList<IToken> DeleteNestedTokens(IList<IToken> tokens)
         {
-            IList<XSharpToken> result = new List<XSharpToken>();
+            var result = new List<IToken>();
             if (tokens == null)
                 return result;
             int level = 0;
@@ -510,7 +510,7 @@ namespace XSharp.LanguageService
         /// <param name="state"></param>
         /// <param name="foundElement"></param>
         /// <returns></returns>
-        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> xtokenList,
+        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<IToken> xtokenList,
             CompletionState state, out string notProcessed,  bool forQuickinfo = false )
         {
             //
@@ -523,7 +523,7 @@ namespace XSharp.LanguageService
             IXTypeSymbol currentType = null;
             var startOfExpression = true;
             var findConstructor = false;
-            XSharpToken currentToken = null;
+            IToken currentToken = null;
             IXTypeSymbol startType = null;
             state = CompletionState.General;
             if (location.Member == null)
@@ -954,7 +954,7 @@ namespace XSharp.LanguageService
             }
             if (result.Count == 0 && XSharpLexer.IsKeyword(currentToken.Type))
             {
-                currentToken.Text = XSettings.FormatKeyword(currentToken.Text);
+                ((XSharpToken) currentToken).Text = XSettings.FormatKeyword(currentToken.Text);
                 var sym = new XSymbol(currentToken.Text, Kind.Keyword, Modifiers.Public);
                 result.Add(sym);
             }
@@ -1196,7 +1196,6 @@ namespace XSharp.LanguageService
             return typeName;
         }
 
-        private static List<IXMemberSymbol> _arrayConstructors = null;
         /// <summary>
         /// Search for the Constructor in the corresponding Type,
         /// no return value, the constructor is returned by foundElement
@@ -1226,7 +1225,7 @@ namespace XSharp.LanguageService
             return result;
         }
 
-        internal static IXTypeSymbol GetConstantType(XSharpToken token, XFile file)
+        internal static IXTypeSymbol GetConstantType(IToken token, XFile file)
         {
             IXTypeSymbol result;
             var project = file.Project;

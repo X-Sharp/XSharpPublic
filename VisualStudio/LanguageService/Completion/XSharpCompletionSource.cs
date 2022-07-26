@@ -172,7 +172,8 @@ namespace XSharp.LanguageService
                                     string startToken = extract.Substring(0, dotPos);
                                     filterText = extract.Substring(dotPos + 1);
                                     typedChar = '.';
-                                    tokenList[0].Text = startToken + ".";
+                                    var token = (XSharpToken)tokenList[0];
+                                    token.Text = startToken + ".";
                                 }
                             }
                             else

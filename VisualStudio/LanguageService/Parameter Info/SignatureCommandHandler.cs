@@ -1,4 +1,11 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+//------------------------------------------------------------------------------
+
+using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.OLE.Interop;
@@ -14,6 +21,7 @@ using XSharpModel;
 using Microsoft.VisualStudio.Editor;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Collections.Generic;
+using LanguageService.SyntaxTree;
 
 
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
@@ -250,10 +258,10 @@ namespace XSharp.LanguageService
             // The same for ID1 { e1 }
             // so we need to see if LPAREN / RPAREN is closed and if LCURLY / RCURLY is closed and if LBRKT / RBRKT is closed
             int nested = 0;
-            var openTokens = new Stack<XSharpToken>();
+            var openTokens = new Stack<IToken>();
             for (int i = 0; i < tokenList.Count; i++)
             {
-                var token = tokenList[i];
+                var token = (XSharpToken) tokenList[i];
                 // comma right before closing token should still trigger the parameter tips
                 // so skip the closing token
                 // the comma itself is usually not in the list yet because the tokens are from the previous
@@ -449,7 +457,7 @@ namespace XSharp.LanguageService
                 var last = tokenList.Count - 1;
                 for (int i = last; i >= 0 && ! done; i--)
                 {
-                    var token = tokenList[i];
+                    var token = (XSharpToken) tokenList[i];
                     switch (token.Type)
                     {
                         case XSharpLexer.LPAREN:

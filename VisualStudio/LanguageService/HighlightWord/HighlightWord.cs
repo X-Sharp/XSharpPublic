@@ -78,6 +78,7 @@ namespace XSharp.LanguageService.Editors.HighlightWord
 
             return false;
         }
+        public override string TextMarkerTagType => ColorizerConstants.HighLightIdentifierFormatDefinition;
 
         public override FindOptions FindOptions => FindOptions.WholeWord;
         public override bool ShouldHighlight(string text)

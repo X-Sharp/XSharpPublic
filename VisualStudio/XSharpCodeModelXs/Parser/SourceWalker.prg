@@ -71,7 +71,7 @@ BEGIN NAMESPACE XSharpModel
 
 
 
-        METHOD Lex(cSource AS STRING) AS ITokenStream
+        METHOD Lex(cSource AS STRING) AS BufferedTokenStream
             LOCAL lOk := FALSE AS LOGIC
             WriteOutputMessage("-->> Lex() "+SourcePath+" ("+cSource:Length:ToString()+")")
             SELF:_errors := List<XError>{}
@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharpModel
                 XSettings.LogException(e, __FUNCTION__)
             END TRY
             WriteOutputMessage("<<-- Lex() "+SELF:SourcePath)
-            RETURN stream
+            RETURN (BufferedTokenStream) stream
 
         METHOD ParseLocals(source AS STRING, xmember AS XSourceMemberSymbol) AS List<XSourceVariableSymbol>
             // This is JUST the source of the method. The locations in the variables need to be adjusted
@@ -139,7 +139,7 @@ BEGIN NAMESPACE XSharpModel
 
 
 
-        METHOD ParseTokens(tokens AS ITokenStream , lIncludeRegions AS LOGIC, lIncludeLocals AS LOGIC) AS VOID
+        METHOD ParseTokens(tokens AS IList<IToken> , lIncludeRegions AS LOGIC, lIncludeLocals AS LOGIC) AS VOID
             IF SELF:ParseOptions == NULL
                 RETURN
             ENDIF
@@ -174,8 +174,8 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             WriteOutputMessage("-->> Parse() "+SELF:SourcePath+" locals "+lIncludeLocals:ToString()+" )")
             TRY
-                VAR tokens   := SELF:Lex(cSource)
-                SELF:ParseTokens(tokens, FALSE, lIncludeLocals)
+                VAR stream   := SELF:Lex(cSource)
+                SELF:ParseTokens(stream:GetTokens(), FALSE, lIncludeLocals)
             CATCH e AS Exception
                 WriteOutputMessage("Parse() Failed:")
                 WriteOutputMessage(SELF:SourcePath)

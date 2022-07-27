@@ -185,7 +185,7 @@ namespace XSharp.LanguageService
                 SelectContainingMember(newLine);
                 _lastLine = newLine;
             }
-#if DEBUG
+#if XDEBUG
             XSettings.LogMessage($"Caret_PositionChanged {newLine} Types: {_types.Count} Members: {_members.Count}");
             XSettings.LogMessage($"Caret_PositionChanged {newLine} Entity: {_lastSelected} Type: {_selectedTypeIndex}, Member: {_selectedMemberIndex} ");
 #endif

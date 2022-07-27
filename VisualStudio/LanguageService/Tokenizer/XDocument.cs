@@ -3,60 +3,54 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XSharpModel;
 
 namespace XSharp.LanguageService
 {
     /// <summary>
-    /// This type stores tokens and the snapshot that they are based on in the TextBuffer of an open editor window
+    /// This type stores tokens and the snapshot that they are based on the TextBuffer of an open editor window
     /// It also stores (after parsing) the list of Entities in the buffer
     /// </summary>
     internal class XDocument
     {
-
-        public XDocument(BufferedTokenStream stream, ITextSnapshot snapshot, IList<string> files)
+        public XDocument(IList<IToken> tokens, ITextSnapshot snapshot, IList<string> includeFiles)
         {
-            tokenStream = stream;
-            snapShot = snapshot;
-            entities = null;
-            tokensPerLine = new Dictionary<int, IList<IToken>>();
-            includeFiles = files;
-            lineKeywords = new XSharpLineKeywords();
-            lineState = new XSharpLineState();
-            identifiers = new ConcurrentDictionary<string,string>(StringComparer.OrdinalIgnoreCase);
+            _tokens = tokens;
+            _snapShot = snapshot;
+            _entities = null;
+            _tokensPerLine = new Dictionary<int, IList<IToken>>();
+            _includeFiles = includeFiles;
+            _lineKeywords = new XSharpLineKeywords();
+            _lineState = new XSharpLineState();
+            _identifiers = new ConcurrentDictionary<string,string>(StringComparer.OrdinalIgnoreCase);
         }
 
         #region fields
-        private BufferedTokenStream tokenStream;
-        private IList<XSourceEntity> entities;
-        private Dictionary<int, IList<IToken>> tokensPerLine;
-        private XSharpLineState lineState;
-        private XSharpLineKeywords lineKeywords;
-        private IList<string> includeFiles;
-        private ITextSnapshot snapShot;
-        private ConcurrentDictionary<string, string> identifiers;
+        private IList<IToken> _tokens;
+        private IList<XSourceEntity> _entities;
+        private Dictionary<int, IList<IToken>> _tokensPerLine;
+        private XSharpLineState _lineState;
+        private XSharpLineKeywords _lineKeywords;
+        private IList<string> _includeFiles;
+        private ITextSnapshot _snapShot;
+        private ConcurrentDictionary<string, string> _identifiers;
 
 
         #endregion
         #region Properties
-        internal BufferedTokenStream TokenStream => tokenStream;
-        public bool Complete => TokenStream != null && SnapShot != null;
-        internal ITextSnapshot SnapShot => snapShot;
-        public IList<string> IncludeFiles => includeFiles;
-        internal IList<XSourceEntity> Entities => entities;
-        internal Dictionary<int, IList<IToken>> TokensPerLine => tokensPerLine;
-        internal XSharpLineState LineState => lineState;
-        internal XSharpLineKeywords LineKeywords => lineKeywords;
-        internal IDictionary<string, string> Identifiers => identifiers;
+        internal IList<IToken> Tokens => _tokens;
+        internal ITextSnapshot SnapShot => _snapShot;
+        public IList<string> IncludeFiles => _includeFiles;
+        internal IList<XSourceEntity> Entities => _entities;
+        internal Dictionary<int, IList<IToken>> TokensPerLine => _tokensPerLine;
+        internal XSharpLineState LineState => _lineState;
+        internal XSharpLineKeywords LineKeywords => _lineKeywords;
+        internal IDictionary<string, string> Identifiers => _identifiers;
         #endregion
 
         internal bool HasLineState(int line, LineFlags flag)
@@ -85,7 +79,7 @@ namespace XSharp.LanguageService
         {
             lock (this)
             {
-                tokensPerLine = tokens;
+                _tokensPerLine = tokens;
             }
         }
        
@@ -93,9 +87,9 @@ namespace XSharp.LanguageService
         {
             lock (this)
             {
-                lineState = state;
-                lineKeywords = keywords;
-                snapShot = ss;
+                _lineState = state;
+                _lineKeywords = keywords;
+                _snapShot = ss;
             }
         }
 
@@ -103,7 +97,7 @@ namespace XSharp.LanguageService
         {
             lock (this)
             {
-                identifiers = ids;
+                _identifiers = ids;
             }
         }
 
@@ -111,16 +105,16 @@ namespace XSharp.LanguageService
         {
             lock (this)
             {
-                this.entities = entities;
+                this._entities = entities;
             }
         }
-        internal void SetData(BufferedTokenStream stream, ITextSnapshot ss, IList<string> files)
+        internal void SetData(IList<IToken> tokens, ITextSnapshot ss, IList<string> files)
         {
             lock (this)
             {
-                tokenStream = stream;
-                snapShot = ss;
-                includeFiles = files;
+                _tokens = tokens;
+                _snapShot = ss;
+                _includeFiles = files;
             }
         }
     }

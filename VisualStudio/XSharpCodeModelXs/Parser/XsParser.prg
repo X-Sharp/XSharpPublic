@@ -24,7 +24,6 @@ BEGIN NAMESPACE XSharpModel
 
 
    CLASS XsParser IMPLEMENTS VsParser.IErrorListener
-      PRIVATE  _stream       AS BufferedTokenStream
       PRIVATE  _list         AS XSharpTokenList
       PRIVATE  _file         AS XFile
       PRIVATE  _usings       AS IList<STRING>
@@ -106,7 +105,8 @@ BEGIN NAMESPACE XSharpModel
          VAR cSource  := System.IO.File.ReadAllText(_file:SourcePath)
          VAR options  := XSharpParseOptions.Default
          XSharp.Parser.VsParser.Lex(cSource, SELF:_file:SourcePath, options, SELF, OUT VAR stream, OUT VAR includeFiles)
-         SELF:Parse(stream, lBlocks, lLocals)
+         var bufStream := (BufferedTokenStream) stream
+         SELF:Parse(bufStream:GetTokens(), lBlocks, lLocals)
          RETURN
 
       METHOD AddCommentLine(comment AS STRING, token AS XSharpToken, cmtToken AS XCommentToken) AS VOID
@@ -121,7 +121,7 @@ BEGIN NAMESPACE XSharpModel
         ENDIF
 
 
-      METHOD Parse( tokenStream AS ITokenStream, lBlocks AS LOGIC, lLocals AS LOGIC) AS VOID
+      METHOD Parse( tokens AS IList<IToken>, lBlocks AS LOGIC, lLocals AS LOGIC) AS VOID
          LOCAL aAttribs        AS IList<IToken>
          LOCAL cXmlDoc   := "" AS STRING
          VAR cmtTokens  := XSolution.CommentTokens
@@ -129,8 +129,7 @@ BEGIN NAMESPACE XSharpModel
 
          _collectLocals := lLocals
          _collectBlocks := lBlocks
-         _stream        := (BufferedTokenStream) tokenStream
-         _tokens        := _stream:GetTokens()
+         _tokens        := tokens
          VAR _input     := List<IToken>{}
          FOREACH token AS XSharpToken IN _tokens
             SWITCH token:Channel

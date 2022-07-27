@@ -351,31 +351,24 @@ namespace XSharp.LanguageService
             else
             {
                 var templine = lineNo - 1;
-                while (!_document.GetKeyword(templine, out keyword))
+                if (_document.GetTokens(templine, out var tokens) )
                 {
-                    if (!keyword.IsEmpty)
-                        break;
-                    templine -= 1;
-                    if (templine < 0)
-                        break;
+                    if (tokens[0].Type == XSharpLexer.WS)
+                        prevIndentation = GetIndentTokenLength(tokens[0]);
+                    else
+                        prevIndentation = 0;
                 }
+                _document.GetKeyword(templine, out keyword);
 
                 if (XFormattingRule.IsMiddleKeyword(keyword) ||
                     XFormattingRule.IsStartKeyword(keyword))
                 {
-                    if (_document.GetTokens(templine, out var tokens) && tokens[0].Type == XSharpLexer.WS)
-                    {
-                        prevIndentation = GetIndentTokenLength(tokens[0]);
-                    }
                     prevIndentation += _settings.IndentSize;
                 }
             }
-            if (XFormattingRule.IsEntity(keyword))
-            {
-                prevIndentation = MemberToken(keyword, lineNo);
-            }
             return prevIndentation;
         }
+     
         private int GetDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession, bool alignOnPrev, int prevIndent)
         {
             WriteOutputMessage($"getDesiredIndentation({line.LineNumber + 1})");
@@ -461,8 +454,6 @@ namespace XSharp.LanguageService
             }
             return _lastIndentValue;
         }
-
-
 
         private void CopyWhiteSpaceFromPreviousLine(ITextEdit editSession, ITextSnapshotLine line)
         {

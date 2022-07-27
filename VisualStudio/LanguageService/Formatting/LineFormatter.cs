@@ -110,7 +110,6 @@ namespace XSharp.LanguageService
             return keyword;
         }
 
-
         internal bool CanChangeLine(ITextSnapshotLine line)
         {
             if (line.Length == 0)
@@ -351,19 +350,36 @@ namespace XSharp.LanguageService
             else
             {
                 var templine = lineNo - 1;
-                if (_document.GetTokens(templine, out var tokens) )
+                prevIndentation = 0;
+                IList<IToken> tokens;
+                do
+                {
+                    if (_document.GetTokens(templine, out tokens))
+                    {
+                        if (tokens.Count <= 1)
+                            templine -= 1;
+                    }
+                }
+                while (templine >= 0 && tokens?.Count <= 1);
+
+                if (tokens?.Count > 0)
                 {
                     if (tokens[0].Type == XSharpLexer.WS)
+                    {
                         prevIndentation = GetIndentTokenLength(tokens[0]);
+                    }
                     else
+                    {
                         prevIndentation = 0;
+                    }
                 }
-                _document.GetKeyword(templine, out keyword);
-
-                if (XFormattingRule.IsMiddleKeyword(keyword) ||
-                    XFormattingRule.IsStartKeyword(keyword))
+                if (_document.GetKeyword(templine, out keyword))
                 {
-                    prevIndentation += _settings.IndentSize;
+                    if (XFormattingRule.IsMiddleKeyword(keyword) ||
+                        XFormattingRule.IsStartKeyword(keyword))
+                    {
+                        prevIndentation += _settings.IndentSize;
+                    }
                 }
             }
             return prevIndentation;

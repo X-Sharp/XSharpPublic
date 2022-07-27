@@ -10,7 +10,7 @@ namespace XSharp.LanguageService
     /// </summary>
     internal class XSharpLineKeywords : XSharpLineInfo<XKeyword>
     {
-        internal XSharpLineKeywords(ITextSnapshot snapshot) : base(snapshot)
+        internal XSharpLineKeywords() : base()
         {
         }
         

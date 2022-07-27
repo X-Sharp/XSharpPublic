@@ -210,7 +210,7 @@ namespace XSharp.LanguageService
 
                     }
                     expectedIndent[lineNumber] = indentSize;
-                    if (!lineKeywords.Lines.ContainsKey(lineNumber))
+                    if (!lineKeywords.ContainsKey(lineNumber))
                     {
                         // check for continuation
                         if (_settings.IndentContinuedLines && document.HasLineState(lineNumber, LineFlags.Continued))
@@ -219,7 +219,7 @@ namespace XSharp.LanguageService
                         }
                         continue;
                     }
-                    var kw = lineKeywords.Lines[lineNumber];
+                    lineKeywords.Get(lineNumber, out var kw);
 
                     if (XFormattingRule.IsEntity(kw))
                     {

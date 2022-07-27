@@ -23,7 +23,7 @@ namespace XSharp.LanguageService
     internal class XSharpLineState: XSharpLineInfo<LineFlags>
     {
         
-        internal XSharpLineState(ITextSnapshot snapshot) : base(snapshot)
+        internal XSharpLineState() : base()
         {
             
         }
@@ -31,13 +31,14 @@ namespace XSharp.LanguageService
         {
             lock (dict)
             {
-                Set(line, Get(line) | flags);
+                Get(line, out var oldFlags);
+                Set(line, oldFlags | flags);
             }
         }
 
         internal bool IsComment(int line)
         {
-            var flags = Get(line);
+            Get(line, out var flags);
             return flags.HasFlag(LineFlags.SingleLineComments) ||
                 flags.HasFlag(LineFlags.MultiLineComments) ||
                 flags.HasFlag(LineFlags.DocComments);
@@ -48,7 +49,7 @@ namespace XSharp.LanguageService
             {
                 if (dict.ContainsKey(line))
                 {
-                    var oldflags = this.Get(line);
+                    this.Get(line, out var oldflags);
                     Set(line, oldflags &= ~flags);
                 }
             }

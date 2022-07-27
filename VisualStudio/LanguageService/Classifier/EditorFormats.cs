@@ -73,7 +73,7 @@ namespace XSharp.LanguageService
     {
         public XSharpTextEndTextFormat()
         {
-            this.DisplayName = "XSharp Text .. EndText";
+            this.DisplayName = "X# Text .. EndText";
             this.ForegroundColor = Colors.DarkSalmon;
         }
     }
@@ -89,7 +89,7 @@ namespace XSharp.LanguageService
         public BraceFormatDefinition()
         {
             this.BackgroundColor = Colors.Tan;
-            this.DisplayName = "XSharp Brace Matching";
+            this.DisplayName = "X# Brace Matching";
             this.ZOrder = 5;
         }
     }
@@ -105,7 +105,7 @@ namespace XSharp.LanguageService
         public KeywordFormatDefinition()
         {
             this.BackgroundColor = Colors.LightSalmon;
-            this.DisplayName = "XSharp Highlight Keyword";
+            this.DisplayName = "X# Highlight Keyword";
             this.ZOrder = 5;
         }
     }
@@ -115,12 +115,12 @@ namespace XSharp.LanguageService
     internal class HighLightIdentifierFormatDefinition : MarkerFormatDefinition
     {
         /// <summary>
-        /// Color of hightlighted identifiers
+        /// Color of highlighted identifiers
         /// </summary>
         public HighLightIdentifierFormatDefinition()
         {
             this.BackgroundColor = Colors.Bisque;
-            this.DisplayName = "XSharp Highlight Identifier";
+            this.DisplayName = "X# Highlight Identifier";
             this.ZOrder = 5;
         }
     }

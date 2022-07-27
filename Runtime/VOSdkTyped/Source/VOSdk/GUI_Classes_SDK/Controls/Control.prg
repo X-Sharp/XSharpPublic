@@ -130,7 +130,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         oPoint:X += (rParent:left - rCtl:left)
         SetScrollPos(hFFrame, SB_HORZ, lHScrollPos - (rParent:left - rCtl:left), TRUE)
         ELSEIF (rCtl:right > rParent:right)
-        iXCorrect := Min((rCtl:right - rParent:right), (rCtl:left - rParent:left))
+        iXCorrect := Math.Min((rCtl:right - rParent:right), (rCtl:left - rParent:left))
         oPoint:X -= iXCorrect
         SetScrollPos(hFFrame, SB_HORZ, lHScrollPos + iXCorrect, TRUE)
         ENDIF

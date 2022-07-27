@@ -404,7 +404,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 			SELF:__AddFilter(uFilter, uFilterDesc)
 		ELSEIF IsArray(uFilter) .AND. IsArray(uFilterDesc)
 			SELF:__ClearFilters()
-			FOR i:=1 TO Min(ALen(uFilter), ALen(uFilterDesc))
+			FOR i:=1 TO Math.Min(ALen(uFilter), ALen(uFilterDesc))
 				SELF:__AddFilter(AsString(uFilter[i]), AsString(uFilterDesc[i]))
 			NEXT
 		ENDIF

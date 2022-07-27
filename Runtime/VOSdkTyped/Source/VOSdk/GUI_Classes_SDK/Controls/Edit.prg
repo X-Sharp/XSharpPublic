@@ -216,9 +216,9 @@ CLASS Edit INHERIT TextControl
 				SELF:__TextBox:SelectionLength := SELF:__TextBox:Text:Length
 			ELSE
 				IF oSel:Finish - oSel:Start > 0
-					SELF:__TextBox:SelectionStart	:= MAX(oSel:Start-1 ,0)
+					SELF:__TextBox:SelectionStart	:= Math.MAX(oSel:Start-1 ,0)
 				ELSE
-					SELF:__TextBox:SelectionStart	:= MAX(oSel:Start ,0)
+					SELF:__TextBox:SelectionStart	:= Math.MAX(oSel:Start ,0)
 				ENDIF
 				SELF:__TextBox:SelectionLength  := oSel:Finish - oSel:Start
 			ENDIF
@@ -502,11 +502,11 @@ CLASS SingleLineEdit INHERIT Edit
 		vt := oFieldSpec:ValType
 		DO CASE
 		CASE (vt == "C")
-			sDefTempl := Replicate("X", Min(oFieldSpec:Length, MAX_FMTSTRING_LEN))
+			sDefTempl := Replicate("X", Math.Min(oFieldSpec:Length, MAX_FMTSTRING_LEN))
 		CASE (vt == "L")
 			sDefTempl := "L"
 		CASE oFieldSpec:ValType == "N"
-			sDefTempl := Replicate("#", Min(oFieldSpec:Length, MAX_FMTSTRING_LEN))
+			sDefTempl := Replicate("#", Math.Min(oFieldSpec:Length, MAX_FMTSTRING_LEN))
 			IF (oFieldSpec:Decimals > 0)
 				pos := oFieldSpec:Length - oFieldSpec:Decimals
 				sDefTempl := Left(sDefTempl, Pos - 1) + "." + Replicate("#", oFieldSpec:Decimals)
@@ -807,7 +807,7 @@ CLASS SpinnerEdit INHERIT SingleLineEdit
 	PROPERTY IsHexBased AS LOGIC GET __UpDownControl:Hexadecimal SET __UpDownControl:Hexadecimal := Value
 	PROPERTY MaxValue	AS LONG GET (LONG) Convert.ToInt32(__UpDownControl:Maximum) SET __UpDownControl:Maximum := Value
 	PROPERTY MinValue	AS LONG GET (LONG) Convert.ToInt32(__UpDownControl:Minimum) SET __UpDownControl:Minimum := Value
-	PROPERTY Position	AS LONG GET (LONG) Convert.ToInt32(__UpDownControl:Value) SET __UpDownControl:Value := (LONG) Max(min(Value, MaxValue), MinValue)
+	PROPERTY Position	AS LONG GET (LONG) Convert.ToInt32(__UpDownControl:Value) SET __UpDownControl:Value := Math.Max(Math.min(Value, MaxValue), MinValue)
 	PROPERTY Range		AS Range
 		GET
 			RETURN Range{SELF:MinValue, SELF:MaxValue}

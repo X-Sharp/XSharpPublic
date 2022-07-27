@@ -287,7 +287,7 @@ CLASS ListBox INHERIT BaseListBox
 		LOCAL uRetValue AS USUAL
 
 		IF IsInstanceOfUsual(aContents, #DataServer) .AND. IsMethod(aContents, #GetLookUpTable)
-			aContents := Send(aContents, #GetLookUpTable, Min(0x7FFF, IVarGet(aContents, #RecCount)), symField1, symField2)
+			aContents := Send(aContents, #GetLookUpTable, Math.Min(0x7FFF, (LONG) IVarGet(aContents, #RecCount)), symField1, symField2)
 		ELSEIF IsArray(aContents)
 			IF !IsNil(symField1) .OR. !IsNil(symField2)
 				WCError{#FillUsing,#ListBox,__WCSTypeError,symField1,2}:Throw()

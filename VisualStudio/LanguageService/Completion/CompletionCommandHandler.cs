@@ -125,11 +125,20 @@ namespace XSharp.LanguageService
                                     break;
 
                                 case '=':
-                                    CancelCompletionSession();
+                                  CancelCompletionSession();
                                     break;
                                 case '.':
-                                case ':':
                                     handled = CompleteCompletionSession(ch);
+                                    break;
+                                case ':':
+                                    if (nextChar() == '=')
+                                    {
+                                        CancelCompletionSession();
+                                    }
+                                    else
+                                    {
+                                        handled = CompleteCompletionSession(ch);
+                                    }
                                     break;
                                 default:
                                     if (char.IsLetterOrDigit(ch))
@@ -379,7 +388,7 @@ namespace XSharp.LanguageService
 
         private void completeCurrentToken(uint nCmdID, char ch)
         {
-            if (CompletionNotAllowed())
+            if (CompletionNotAllowed(ch))
             {
                 return;
             }
@@ -605,7 +614,7 @@ namespace XSharp.LanguageService
                 if (!_completionSession.IsDismissed)
                     return false;
             }
-            if (CompletionNotAllowed())
+            if (CompletionNotAllowed(typedChar))
                 return false;
             SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
             ITextSnapshot snapshot = caret.Snapshot;
@@ -714,11 +723,59 @@ namespace XSharp.LanguageService
         {
             return (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
         }
-        private bool CompletionNotAllowed()
+        private char curChar()
         {
+            // the caret is AFTER the last character !
+            var caret = _textView.Caret.Position.BufferPosition;
+            var pos = caret.Position;
+            if (pos == 0)
+                return '\0';
+            return _textView.TextSnapshot.GetText(pos - 1, 1)[0];
+        }
+
+        private char prevChar()
+        {
+            // the caret is AFTER the last character !
+            var caret = _textView.Caret.Position.BufferPosition;
+            var pos = caret.Position;
+            if (pos == 0)
+                return '\0';
+            return _textView.TextSnapshot.GetText(pos - 2,1)[0];
+        }
+        private char nextChar()
+        {
+            // the caret is AFTER the last character !
+            var caret = _textView.Caret.Position.BufferPosition;
+            var pos = caret.Position;
+            if (pos == _textView.TextSnapshot.Length) 
+                return '\0';
+            return _textView.TextSnapshot.GetText(pos , 1)[0];
+        }
+        private bool IsWs(char c)
+        {
+            switch (c)
+            {
+                case ' ':
+                case '\t':
+                case '\0':
+                case '\r':
+                case '\n':
+                    return true;
+            }
+            return char.IsWhiteSpace(c);
+        }
+        private bool CompletionNotAllowed(char c)
+        {
+            // := should never produce a list
+            if (c == ':' && nextChar() == '=')
+                return true;
+            // single character should not trigger completion
+            if (IsWs(prevChar()) && IsWs(nextChar()))
+                return true;
             var caret = _textView.Caret.Position.BufferPosition;
             var line = caret.GetContainingLine();
-            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
+            var pos = caret.Position - line.Start;
+            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, pos);
             var tags = _tagAggregator.GetTags(lineSpan);
             var tag = tags.LastOrDefault();
             var classification = tag?.Tag?.ClassificationType?.Classification;

@@ -492,7 +492,10 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
-                    BuildCompletionListMembers(location, compList, parentType, Modifiers.Protected, staticOnly, startWith);
+                    var nextVis = Modifiers.Protected;
+                    if (minVisibility == Modifiers.Internal || minVisibility == Modifiers.Public)
+                        nextVis = minVisibility;
+                    BuildCompletionListMembers(location, compList, parentType, nextVis, staticOnly, startWith);
                 }
                 foreach (var ifname in sourceType.Interfaces)
                 {

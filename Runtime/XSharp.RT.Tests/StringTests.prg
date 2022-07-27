@@ -552,8 +552,8 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
         SetExact(FALSE)
         // AAA = A
-        S2 := "AAA"
-        s1 := "A"
+        S1 := "AAA"
+        s2 := "A"
         RuntimeState.CompilerOptionVO13 := true
         Assert.True(Between(s1, s2, s3))
         RuntimeState.CompilerOptionVO13 := false

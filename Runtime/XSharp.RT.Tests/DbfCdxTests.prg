@@ -3127,7 +3127,7 @@ RETURN
 //			#warning disabled following test because it makes tests stop responding
 			//  Here it hangs because SetDeleted() is true
 			// We are now VO compatible and return 20 instead of 17
-            Assert.Equal(20 , (INT) OrdKeyCount() ) // 20  ok
+            Assert.Equal(17 , (INT) OrdKeyCount() ) // 20  ok
 			DbCloseAll()
 
 			FINALLY
@@ -5288,41 +5288,41 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD Test_DBOI_ORDERCOUNT() AS VOID
 			// https://github.com/X-Sharp/XSharpPublic/issues/954
-			
-			
-			LOCAL cDbf, cIndex1, cIndex2, cIndex3 AS STRING 
+
+
+			LOCAL cDbf, cIndex1, cIndex2, cIndex3 AS STRING
 			cDbf := DbfTests.GetTempFileName()
-			
-			RddSetDefault ( "DBFCDX" ) 
-			
+
+			RddSetDefault ( "DBFCDX" )
+
 			cIndex1 := cDbf + "x"
-			cIndex2 := cDbf + "y" 
+			cIndex2 := cDbf + "y"
 			cIndex3 := cDbf + "z" // note: file is never created !
-			
-			FErase ( cIndex1 + IndexExt() ) 
-			FErase ( cIndex2 + IndexExt() ) 
-			FErase ( cIndex3 + IndexExt() ) 
+
+			FErase ( cIndex1 + IndexExt() )
+			FErase ( cIndex2 + IndexExt() )
+			FErase ( cIndex3 + IndexExt() )
 
 			DbCreate( cDBF , { { "LAST" , "C" , 10 , 0 }})
 			DbUseArea( ,, cDBF )
-			
-			DbCreateOrder ( "ORDER1"  , cIndex1 , "upper(LAST)" , { || Upper ( _Field->LAST) } )   
+
+			DbCreateOrder ( "ORDER1"  , cIndex1 , "upper(LAST)" , { || Upper ( _Field->LAST) } )
 			DbCreateOrder ( "ORDER2"  , cIndex2 , "upper(LAST)" , { || Upper ( _Field->LAST) } )
 			DbCreateOrder ( "ORDER3"  , cIndex2 , "upper(LAST)" , { || Upper ( _Field->LAST) } )
-			
+
 			DbCloseArea()
-			
-			DbUseArea( ,,cDBF )	
-			DbSetIndex ( cIndex1 ) 
-			DbSetIndex ( cIndex2 ) 
-			
-			DbSetOrder ( "ORDER3" )  
+
+			DbUseArea( ,,cDBF )
+			DbSetIndex ( cIndex1 )
+			DbSetIndex ( cIndex2 )
+
+			DbSetOrder ( "ORDER3" )
 			Assert.Equal(1, (INT) DbOrderInfo(DBOI_ORDERCOUNT , cIndex1 ) )
 			Assert.Equal(2, (INT) DbOrderInfo(DBOI_ORDERCOUNT , cIndex2 ) )
 			Assert.Equal(3, (INT) DbOrderInfo(DBOI_ORDERCOUNT ) )
 			Assert.Equal(0, (INT) DbOrderInfo(DBOI_ORDERCOUNT , cIndex3 ) )
 
-			DbClearIndex ( , cIndex2 )   
+			DbClearIndex ( , cIndex2 )
 
 			Assert.Equal(1, (INT) DbOrderInfo(DBOI_ORDERCOUNT , cIndex1 ) )
 			Assert.Equal(0, (INT) DbOrderInfo(DBOI_ORDERCOUNT , cIndex2 ) )
@@ -5331,9 +5331,9 @@ RETURN
 
 			DbCloseArea()
 		RETURN
-	
-	
-	
+
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

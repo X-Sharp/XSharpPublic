@@ -194,17 +194,21 @@ BEGIN NAMESPACE XSharpModel
 
         STATIC METHOD IsVisible(SELF tm AS IXMemberSymbol, Wanted AS Modifiers) AS LOGIC
             VAR vis := tm:Visibility
-            IF vis >= Wanted
-                RETURN TRUE
-            ELSE
-                SWITCH vis
-                CASE Modifiers.ProtectedInternal
-                CASE Modifiers.Internal
-                    RETURN tm IS IXSourceSymbol
-                OTHERWISE
-                    RETURN FALSE
-                END SWITCH
-            ENDIF
+            SWITCH vis
+            case Modifiers.Public
+                return true
+            CASE Modifiers.Private
+                return Wanted == Modifiers.Private
+            CASE Modifiers.Protected
+                return Wanted == Modifiers.Private .or. Wanted == Modifiers.Protected .or. Wanted == Modifiers.ProtectedInternal
+            CASE Modifiers.ProtectedInternal
+                return Wanted == Modifiers.Private .or. Wanted == Modifiers.Protected .or. ;
+                    Wanted == Modifiers.ProtectedInternal .or. Wanted == Modifiers.Internal
+            CASE Modifiers.Internal
+                RETURN tm IS IXSourceSymbol
+            OTHERWISE
+                RETURN FALSE
+            END SWITCH
 
         STATIC METHOD IsMethodVisibleInSubclass(SELF m as IXMemberSymbol) AS LOGIC
             IF m.Visibility > Modifiers.Private .and. m.Kind != Kind.Constructor

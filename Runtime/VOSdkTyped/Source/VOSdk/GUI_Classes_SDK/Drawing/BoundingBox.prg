@@ -196,8 +196,8 @@ CLASS BoundingBox INHERIT VObject
 /// <include file="Gui.xml" path="doc/BoundingBox.Union_/*" />
 	METHOD Union_(oBB AS BoundingBox) AS BoundingBox
 		LOCAL oNewOrigin, oNewExtent AS Point
-		oNewOrigin 	:= Point{Min(_Origin:X, oBB:Origin:X), Min(_Origin:Y, oBB:Origin:Y)}
-		oNewExtent	:= Point{Max(_Extent:X, oBB:Extent:X), Max(_Extent:Y, oBB:Extent:Y)}
+		oNewOrigin 	:= Point{Math.Min(_Origin:X, oBB:Origin:X), Math.Min(_Origin:Y, oBB:Origin:Y)}
+		oNewExtent	:= Point{Math.Max(_Extent:X, oBB:Extent:X), Math.Max(_Extent:Y, oBB:Extent:Y)}
 		RETURN BoundingBox{ oNewOrigin, oNewExtent}
 
 

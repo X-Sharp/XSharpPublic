@@ -199,7 +199,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 		//// Add the fields
 		liField := 0
-		maxEditSize := Min(iMaxWidth, (maxFldSize+1) * iFontWidth)
+		maxEditSize := Math.Min(iMaxWidth, (maxFldSize+1) * iFontWidth)
 
 		oPoint := Point{IIF(lBidi, (25 + maxEditSize), 20), 0}
 
@@ -247,7 +247,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 				IF (lBidi)
 					// s.b. We have to add this otherwise the "C" type fields overlap the text captions.
-					oPoint:X := 20 + maxEditSize - Min(iMaxWidth, iNewWidth)
+					oPoint:X := 20 + maxEditSize - Math.Min(iMaxWidth, iNewWidth)
 				ELSE
 					oPoint:X := 25 + maxLblSize
 				ENDIF
@@ -439,7 +439,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ENDIF
 		ENDIF
 
-		RETURN 
+		RETURN
 
 
     /// <exclude />
@@ -462,7 +462,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		    ENDIF
 	    ENDIF
 
-	    RETURN 
+	    RETURN
 
  /// <exclude />
 	METHOD __EnableHelpCursor(lEnabled AS LOGIC) AS Window STRICT

@@ -78,4 +78,50 @@ namespace XSharp.LanguageService
         }
     }
 
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ColorizerConstants.BraceFormatDefinition)]
+    [UserVisible(true)]
+    internal class BraceFormatDefinition : MarkerFormatDefinition
+    {
+        /// <summary>
+        /// Color of matching braces
+        /// </summary>
+        public BraceFormatDefinition()
+        {
+            this.BackgroundColor = Colors.Tan;
+            this.DisplayName = "XSharp Brace Matching";
+            this.ZOrder = 5;
+        }
+    }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ColorizerConstants.KeyWordFormatDefinition)]
+    [UserVisible(true)]
+    internal class KeywordFormatDefinition : MarkerFormatDefinition
+    {
+        /// <summary>
+        /// The color of highlighted keyword (pairs)
+        /// </summary>
+        public KeywordFormatDefinition()
+        {
+            this.BackgroundColor = Colors.LightSalmon;
+            this.DisplayName = "XSharp Highlight Keyword";
+            this.ZOrder = 5;
+        }
+    }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ColorizerConstants.HighLightIdentifierFormatDefinition)]
+    [UserVisible(true)]
+    internal class HighLightIdentifierFormatDefinition : MarkerFormatDefinition
+    {
+        /// <summary>
+        /// Color of hightlighted identifiers
+        /// </summary>
+        public HighLightIdentifierFormatDefinition()
+        {
+            this.BackgroundColor = Colors.Bisque;
+            this.DisplayName = "XSharp Highlight Identifier";
+            this.ZOrder = 5;
+        }
+    }
 }

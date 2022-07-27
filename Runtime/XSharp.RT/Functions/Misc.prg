@@ -52,11 +52,14 @@ FUNCTION Max(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
     ELSEIF uValue1:IsDate .AND. uValue2:IsDate
         RETURN IIF ((DATE) uValue1 > (DATE) uValue2, uValue1, uValue2)
 
-    ELSEIF uValue1:IsDateTime .AND. uValue2:IsDateTime
+        ELSEIF uValue1:IsDateTime .AND. uValue2:IsDateTime
+
         RETURN IIF ((DateTime) uValue1 > (DateTime) uValue2, uValue1, uValue2)
 
     ELSEIF (uValue1:IsDateTime .OR. uValue1:IsDate) .AND. (uValue2:IsDateTime .OR. uValue2:IsDate)
-        RETURN IIF ((DateTime) uValue1 > (DateTime) uValue2, uValue1, uValue2)
+        var d1 := (DATE) uValue1
+        var d2 := (DATE) uValue2
+        RETURN IIF (d1 > d2, d1, d2)
 
     ELSEIF uValue1:IsString .AND. uValue2:IsString
         RETURN IIF ((STRING) uValue1 > (STRING) uValue2, uValue1, uValue2)
@@ -64,8 +67,13 @@ FUNCTION Max(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
     ELSEIF uValue1:IsSymbol .AND. uValue2:IsSymbol
         RETURN IIF ((SYMBOL) uValue1 > (SYMBOL) uValue2, uValue1, uValue2)
 
+   ELSEIF uValue1:IsBinary.AND. uValue2:IsBinary
+        RETURN IIF ((BINARY) uValue1 > (BINARY) uValue2, uValue1, uValue2)
+
     ELSE
-        THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uValue2) , "Incompatible types")
+        var type1 := uValue1:ValType
+        var type2 := uValue2:ValType
+        THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uValue2) , i"Incompatible types ({type1}, {type2})")
     ENDIF
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/min/*" />
@@ -90,7 +98,9 @@ FUNCTION Min(uValue1 AS USUAL, uValue2 AS USUAL) AS USUAL
         RETURN IIF ((DateTime) uValue1 < (DateTime) uValue2, uValue1, uValue2)
 
     ELSEIF (uValue1:IsDateTime .OR. uValue1:IsDate) .AND. (uValue2:IsDateTime .OR. uValue2:IsDate)
-        RETURN IIF ((DateTime) uValue1 < (DateTime) uValue2, uValue1, uValue2)
+        var d1 := (DATE) uValue1
+        var d2 := (DATE) uValue2
+        RETURN IIF ( d1 < d2, d1, d2)
 
     ELSEIF uValue1:IsString .AND. uValue2:IsString
         RETURN IIF ((STRING) uValue1 < (STRING) uValue2, uValue1, uValue2)
@@ -98,8 +108,13 @@ FUNCTION Min(uValue1 AS USUAL, uValue2 AS USUAL) AS USUAL
     ELSEIF uValue1:IsSymbol .AND. uValue2:IsSymbol
         RETURN IIF ((SYMBOL) uValue1 < (SYMBOL) uValue2, uValue1, uValue2)
 
-    ELSE
-        THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uValue2) , "Incompatible types")
+    ELSEIF uValue1:IsBinary.AND. uValue2:IsBinary
+        RETURN IIF ((BINARY) uValue1 < (BINARY) uValue2, uValue1, uValue2)
+
+        ELSE
+            var type1 := uValue1:ValType
+            var type2 := uValue2:ValType
+        THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uValue2) , i"Incompatible types ({type1}, {type2})")
     ENDIF
 
 

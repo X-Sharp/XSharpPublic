@@ -44,18 +44,18 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <exclude />
     [NOSHOW];
     PUBLIC STATIC _NIL AS __Usual
-    #endregion
+#endregion
 
-    #region PRIVATE fields
+#region PRIVATE fields
     [NOSHOW];
     PRIVATE INITONLY _flags    	AS UsualFlags	// type, byref, width, decimals
     [NOSHOW];
     PRIVATE INITONLY _valueData	AS _UsualData		// for non GC data
     [NOSHOW];
     PRIVATE INITONLY _refData  	AS OBJECT			// for GC data
-    #endregion
+#endregion
 
-    #region constants
+#region constants
     PRIVATE CONST STR_NIL  := "NIL" AS STRING
     PRIVATE CONST STR_NULL := "Null" AS STRING
     PRIVATE CONST STR_NULL_STRING := "NULL_STRING" AS STRING
@@ -64,9 +64,9 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     PRIVATE CONST STR_NULL_CODEBLOCK := "NULL_CODEBLOCK" AS STRING
     PRIVATE CONST STR_USUAL := "USUAL" AS STRING
 
-    #endregion
+#endregion
 
-    #region constructors
+#region constructors
     /// <exclude />
     STATIC CONSTRUCTOR
         __Usual.__InitUsual()
@@ -413,19 +413,19 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     PRIVATE PROPERTY _initialized   AS LOGIC
         // we cannot simply read the initialized flag from _flags
         // because a FLOAT with 0 decimals will also set initialized to false
-        [NODEBUG] ;
-        GET
-            SWITCH SELF:_flags:UsualType
-            CASE __UsualType.Void
-                RETURN FALSE
-            CASE __UsualType.Logic
-                RETURN SELF:_flags:Initialized
-            CASE __UsualType.Object
-                RETURN SELF:_refData != NULL
-            OTHERWISE
-                RETURN TRUE
-            END SWITCH
-        END GET
+    [NODEBUG] ;
+    GET
+        SWITCH SELF:_flags:UsualType
+        CASE __UsualType.Void
+            RETURN FALSE
+        CASE __UsualType.Logic
+            RETURN SELF:_flags:Initialized
+        CASE __UsualType.Object
+            RETURN SELF:_refData != NULL
+        OTHERWISE
+            RETURN TRUE
+        END SWITCH
+    END GET
     END PROPERTY
     // Is .. ?
     /// <summary>This property returns TRUE when the USUAL is of type BINARY </summary>
@@ -470,17 +470,17 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <summary>This property returns TRUE when the USUAL is of type FLOAT, Decimal or Currency</summary>
     [NOSHOW];
     PUBLIC PROPERTY IsFractional AS LOGIC
-        [NODEBUG] ;
-        GET
-            SWITCH _usualType
-            CASE __UsualType.Float
-            CASE __UsualType.Decimal
-            CASE __UsualType.Currency
-                RETURN TRUE
-            OTHERWISE
-                RETURN FALSE
-            END SWITCH
-        END GET
+    [NODEBUG] ;
+    GET
+        SWITCH _usualType
+        CASE __UsualType.Float
+        CASE __UsualType.Decimal
+        CASE __UsualType.Currency
+            RETURN TRUE
+        OTHERWISE
+            RETURN FALSE
+        END SWITCH
+    END GET
     END PROPERTY
     /// <summary>This property returns the __UsualType of the USUAL </summary>
     [NOSHOW];
@@ -488,19 +488,19 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <summary>This property returns TRUE when the USUAL is of type LONG, Int64, FLOAT or Decimal</summary>
     [NOSHOW];
     PUBLIC PROPERTY IsNumeric AS LOGIC
-        [NODEBUG] ;
-        GET
-            SWITCH _usualType
-            CASE __UsualType.Long
-            CASE __UsualType.Int64
-            CASE __UsualType.Float
-            CASE __UsualType.Decimal
-            CASE __UsualType.Currency
-                RETURN TRUE
-            OTHERWISE
-                RETURN FALSE
-            END SWITCH
-        END GET
+    [NODEBUG] ;
+    GET
+        SWITCH _usualType
+        CASE __UsualType.Long
+        CASE __UsualType.Int64
+        CASE __UsualType.Float
+        CASE __UsualType.Decimal
+        CASE __UsualType.Currency
+            RETURN TRUE
+        OTHERWISE
+            RETURN FALSE
+        END SWITCH
+    END GET
     END PROPERTY
 
     /// <summary>This property returns TRUE when the USUAL is of type Object</summary>
@@ -525,97 +525,97 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <summary>This property returns TRUE when the USUAL is a reference type (Array, Decimal, Object, String)</summary>
     [NOSHOW];
     PRIVATE PROPERTY IsReferenceType AS LOGIC
-        [NODEBUG] ;
-        GET
-            SWITCH _usualType
-            CASE __UsualType.Array
-            CASE __UsualType.Binary
-            CASE __UsualType.Object
-            CASE __UsualType.Decimal
-            CASE __UsualType.Psz
-            CASE __UsualType.String
-            CASE __UsualType.Currency
-                RETURN TRUE
-            OTHERWISE
-                RETURN FALSE
-            END SWITCH
-        END GET
+    [NODEBUG] ;
+    GET
+        SWITCH _usualType
+        CASE __UsualType.Array
+        CASE __UsualType.Binary
+        CASE __UsualType.Object
+        CASE __UsualType.Decimal
+        CASE __UsualType.Psz
+        CASE __UsualType.String
+        CASE __UsualType.Currency
+            RETURN TRUE
+        OTHERWISE
+            RETURN FALSE
+        END SWITCH
+    END GET
     END PROPERTY
     /// <summary>This property returns TRUE when the USUAL is Empty. </summary>
     [NOSHOW];
     INTERNAL PROPERTY IsEmpty AS LOGIC
-        [NODEBUG] ;
-        GET
-            IF !SELF:_initialized
-                RETURN TRUE
-            ENDIF
-            SWITCH _usualType
-            CASE __UsualType.Array		; RETURN _arrayValue == NULL .OR. _arrayValue:Length == 0
-            CASE __UsualType.Binary	    ; RETURN _refData == NULL
-            CASE __UsualType.Codeblock	; RETURN _codeblockValue == NULL
-            CASE __UsualType.Currency	; RETURN _currencyValue == 0
-            CASE __UsualType.Date		; RETURN _dateValue:IsEmpty
-            CASE __UsualType.DateTime	; RETURN _dateTimeValue == DateTime.MinValue
-            CASE __UsualType.Decimal	; RETURN _decimalValue == 0
-            CASE __UsualType.Float		; RETURN _floatValue == 0.0
-            CASE __UsualType.Int64		; RETURN _i64Value == 0
-            CASE __UsualType.Logic		; RETURN _logicValue == FALSE
-            CASE __UsualType.Long		; RETURN _intValue == 0
-            CASE __UsualType.Object		; RETURN _refData == NULL
-            CASE __UsualType.Ptr		; RETURN _ptrValue == IntPtr.Zero
-            CASE __UsualType.Psz
-            CASE __UsualType.String		; RETURN EmptyString(_stringValue)
-            CASE __UsualType.Symbol		; RETURN _symValue == 0
-            CASE __UsualType.Null       ; RETURN TRUE
-            OTHERWISE
-                Debug.Fail( "Unhandled data type in Usual:Empty()" )
-            END SWITCH
-            RETURN FALSE
-        END GET
+    [NODEBUG] ;
+    GET
+        IF !SELF:_initialized
+            RETURN TRUE
+        ENDIF
+        SWITCH _usualType
+        CASE __UsualType.Array		; RETURN _arrayValue == NULL .OR. _arrayValue:Length == 0
+        CASE __UsualType.Binary	    ; RETURN _refData == NULL
+        CASE __UsualType.Codeblock	; RETURN _codeblockValue == NULL
+        CASE __UsualType.Currency	; RETURN _currencyValue == 0
+        CASE __UsualType.Date		; RETURN _dateValue:IsEmpty
+        CASE __UsualType.DateTime	; RETURN _dateTimeValue == DateTime.MinValue
+        CASE __UsualType.Decimal	; RETURN _decimalValue == 0
+        CASE __UsualType.Float		; RETURN _floatValue == 0.0
+        CASE __UsualType.Int64		; RETURN _i64Value == 0
+        CASE __UsualType.Logic		; RETURN _logicValue == FALSE
+        CASE __UsualType.Long		; RETURN _intValue == 0
+        CASE __UsualType.Object		; RETURN _refData == NULL
+        CASE __UsualType.Ptr		; RETURN _ptrValue == IntPtr.Zero
+        CASE __UsualType.Psz
+        CASE __UsualType.String		; RETURN EmptyString(_stringValue)
+        CASE __UsualType.Symbol		; RETURN _symValue == 0
+        CASE __UsualType.Null       ; RETURN TRUE
+        OTHERWISE
+            Debug.Fail( "Unhandled data type in Usual:Empty()" )
+        END SWITCH
+        RETURN FALSE
+    END GET
     END PROPERTY
 
     /// <summary>This property returns TRUE when the USUAL is NIL, or when the usual is a reference type and NULL or when the isual is a PTR type and IntPtr.Zero</summary>
     [NOSHOW];
     INTERNAL PROPERTY IsNil AS LOGIC
-        [NODEBUG] ;
-        GET
-            RETURN SELF:_usualType == __UsualType.Void .OR. ;
-                ! SELF:_initialized .OR. ;
-                (SELF:IsReferenceType .AND. SELF:_refData  == NULL) .OR. ;
-                (SELF:_usualType == __UsualType.Ptr .AND. SELF:_ptrValue == IntPtr.Zero)
+    [NODEBUG] ;
+    GET
+        RETURN SELF:_usualType == __UsualType.Void .OR. ;
+            ! SELF:_initialized .OR. ;
+            (SELF:IsReferenceType .AND. SELF:_refData  == NULL) .OR. ;
+            (SELF:_usualType == __UsualType.Ptr .AND. SELF:_ptrValue == IntPtr.Zero)
 
-        END GET
+    END GET
     END PROPERTY
 
     /// <summary>This property returns the System.Type that represents the value of the usual.</summary>
     [NOSHOW];
     PUBLIC PROPERTY SystemType AS System.Type
-        [NODEBUG] ;
-        GET
-            SWITCH _usualType
-            CASE __UsualType.Array		; RETURN TYPEOF(ARRAY)
-            CASE __UsualType.Binary		; RETURN TYPEOF(BINARY)
-            CASE __UsualType.Codeblock	; RETURN TYPEOF(CODEBLOCK)
-            CASE __UsualType.Currency	; RETURN TYPEOF(Currency)
-            CASE __UsualType.Date		; RETURN TYPEOF(DATE)
-            CASE __UsualType.DateTime	; RETURN TYPEOF(System.DateTime)
-            CASE __UsualType.Decimal	; RETURN TYPEOF(System.Decimal)
-            CASE __UsualType.Float		; RETURN TYPEOF(FLOAT)
-            CASE __UsualType.Int64		; RETURN TYPEOF(INT64)
-            CASE __UsualType.Logic		; RETURN TYPEOF(LOGIC)
-            CASE __UsualType.Long		; RETURN TYPEOF(INT)
-            CASE __UsualType.Object		; RETURN TYPEOF(OBJECT)
-            CASE __UsualType.Ptr		; RETURN TYPEOF(IntPtr)
-            CASE __UsualType.Psz		; RETURN TYPEOF(PSZ)
-            CASE __UsualType.String		; RETURN TYPEOF(STRING)
-            CASE __UsualType.Symbol		; RETURN TYPEOF(SYMBOL)
-            CASE __UsualType.Void		; RETURN TYPEOF(USUAL)
-            CASE __UsualType.Null		; RETURN TYPEOF(DBNull)
-            OTHERWISE
-                Debug.Fail( "Unhandled data type in Usual:SystemType" )
-            END SWITCH
-            RETURN NULL
-        END GET
+    [NODEBUG] ;
+    GET
+        SWITCH _usualType
+        CASE __UsualType.Array		; RETURN TYPEOF(ARRAY)
+        CASE __UsualType.Binary		; RETURN TYPEOF(BINARY)
+        CASE __UsualType.Codeblock	; RETURN TYPEOF(CODEBLOCK)
+        CASE __UsualType.Currency	; RETURN TYPEOF(Currency)
+        CASE __UsualType.Date		; RETURN TYPEOF(DATE)
+        CASE __UsualType.DateTime	; RETURN TYPEOF(System.DateTime)
+        CASE __UsualType.Decimal	; RETURN TYPEOF(System.Decimal)
+        CASE __UsualType.Float		; RETURN TYPEOF(FLOAT)
+        CASE __UsualType.Int64		; RETURN TYPEOF(INT64)
+        CASE __UsualType.Logic		; RETURN TYPEOF(LOGIC)
+        CASE __UsualType.Long		; RETURN TYPEOF(INT)
+        CASE __UsualType.Object		; RETURN TYPEOF(OBJECT)
+        CASE __UsualType.Ptr		; RETURN TYPEOF(IntPtr)
+        CASE __UsualType.Psz		; RETURN TYPEOF(PSZ)
+        CASE __UsualType.String		; RETURN TYPEOF(STRING)
+        CASE __UsualType.Symbol		; RETURN TYPEOF(SYMBOL)
+        CASE __UsualType.Void		; RETURN TYPEOF(USUAL)
+        CASE __UsualType.Null		; RETURN TYPEOF(DBNull)
+        OTHERWISE
+            Debug.Fail( "Unhandled data type in Usual:SystemType" )
+        END SWITCH
+        RETURN NULL
+    END GET
 
     END PROPERTY
 
@@ -623,14 +623,14 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 #region Properties FOR the Debugger
     /// <summary>Return the value of the USUAL as object. NIL values are shown as a NIL string.</summary>
     PROPERTY @@Value AS OBJECT
-        [NODEBUG] ;
-        GET
-            IF _usualType == __UsualType.Void
-                RETURN STR_NIL
-            ELSE
-                RETURN __Usual.ToObject(SELF)
-            ENDIF
-        END GET
+    [NODEBUG] ;
+    GET
+        IF _usualType == __UsualType.Void
+            RETURN STR_NIL
+        ELSE
+            RETURN __Usual.ToObject(SELF)
+        ENDIF
+    END GET
     END PROPERTY
 
 #endregion
@@ -2773,7 +2773,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// Note this generates error XS0553.
     /// However our compiler needs this one. Therefore disable XS0553
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    #pragma warnings (553, off)
+#pragma warnings (553, off)
     [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(val AS OBJECT) AS __Usual
         RETURN __Usual{val}
@@ -3129,37 +3129,37 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     [NOSHOW];
     INTERNAL PROPERTY ValType AS STRING
-        [NODEBUG];
-        GET
-            SWITCH SELF:_usualType
-            CASE __UsualType.Array		; RETURN "A"
-            CASE __UsualType.Binary		; RETURN "Q"    // Blob - VarBinary
-            CASE __UsualType.Codeblock	; RETURN "B"
-            CASE __UsualType.Currency	; RETURN "Y"
-            CASE __UsualType.Date		; RETURN "D"
-            CASE __UsualType.DateTime	; RETURN "T"
-            CASE __UsualType.Decimal
-            CASE __UsualType.Float
-            CASE __UsualType.Int64
-            CASE __UsualType.Long		; RETURN "N"
-            CASE __UsualType.Logic		; RETURN "L"
-            CASE __UsualType.Ptr		; RETURN "-"
-            CASE __UsualType.Psz
-            CASE __UsualType.String		; RETURN "C"
-            CASE __UsualType.Object		; RETURN "O"
-            CASE __UsualType.Symbol		; RETURN "#"
-            CASE __UsualType.Null       ; RETURN "X"
-            CASE __UsualType.Void
-                IF RuntimeState.Dialect == XSharpDialect.FoxPro
-                    RETURN "L"
-                ENDIF
-                RETURN "U"
+    [NODEBUG];
+    GET
+        SWITCH SELF:_usualType
+        CASE __UsualType.Array		; RETURN "A"
+        CASE __UsualType.Binary		; RETURN "Q"    // Blob - VarBinary
+        CASE __UsualType.Codeblock	; RETURN "B"
+        CASE __UsualType.Currency	; RETURN "Y"
+        CASE __UsualType.Date		; RETURN "D"
+        CASE __UsualType.DateTime	; RETURN "T"
+        CASE __UsualType.Decimal
+        CASE __UsualType.Float
+        CASE __UsualType.Int64
+        CASE __UsualType.Long		; RETURN "N"
+        CASE __UsualType.Logic		; RETURN "L"
+        CASE __UsualType.Ptr		; RETURN "-"
+        CASE __UsualType.Psz
+        CASE __UsualType.String		; RETURN "C"
+        CASE __UsualType.Object		; RETURN "O"
+        CASE __UsualType.Symbol		; RETURN "#"
+        CASE __UsualType.Null       ; RETURN "X"
+        CASE __UsualType.Void
+            IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                RETURN "L"
+            ENDIF
+            RETURN "U"
 
-            OTHERWISE
-                Debug.Fail( "Unhandled data type in Usual:Valtype" )
-            END SWITCH
-            RETURN "?"
-        END GET
+        OTHERWISE
+            Debug.Fail( "Unhandled data type in Usual:Valtype" )
+        END SWITCH
+        RETURN "?"
+    END GET
     END PROPERTY
 
 #region Error Methods
@@ -3221,44 +3221,44 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <returns>The element stored at the indicated location in the array.</returns>
     /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
     PROPERTY SELF[index AS INT[]] AS USUAL
-        [NODEBUG];
-        GET
-            IF SELF:IsArray
-                IF index:Length == 1
-                    RETURN  SELF:_arrayValue:__GetElement(index[1])
-                ELSEIF index:Length == 2
-                    RETURN  SELF:_arrayValue:__GetElement(index[1], index[2])
-                ELSE
-                    RETURN  SELF:_arrayValue:__GetElement(index)
-                ENDIF
-            ELSEIF (SELF:IsString .OR. SELF:IsLong) .AND. RuntimeState.Dialect  == XSharpDialect.XPP .AND. index:Length == 1
-                RETURN SELF:XppUsualIndex(index[1])
-            ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties VAR props
-                IF index:Length == 1
-                    LOCAL pos AS LONG
-                    pos := index[1]
-                    RETURN props[pos]
-                ENDIF
+    [NODEBUG];
+    GET
+        IF SELF:IsArray
+            IF index:Length == 1
+                RETURN  SELF:_arrayValue:__GetElement(index[1])
+            ELSEIF index:Length == 2
+                RETURN  SELF:_arrayValue:__GetElement(index[1], index[2])
+            ELSE
+                RETURN  SELF:_arrayValue:__GetElement(index)
             ENDIF
-            VAR message := typeof(IIndexedProperties):FullName + " ( actual type='" + SELF:ValType + "', dialect=" + RuntimeState.Dialect :ToString()+", index length=" + index:Length:ToString()+")"
-            THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, message)}
-        END GET
-        [NODEBUG];
-        SET
-            IF SELF:IsArray
-                SELF:_arrayValue:__SetElement(value, index)
-                RETURN
-            ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties VAR props
-                IF index:Length == 1
-                    LOCAL pos AS LONG
-                    pos := index[1]
-                    props[pos] := value
-                ENDIF
-                RETURN
+        ELSEIF (SELF:IsString .OR. SELF:IsLong) .AND. RuntimeState.Dialect  == XSharpDialect.XPP .AND. index:Length == 1
+            RETURN SELF:XppUsualIndex(index[1])
+        ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties VAR props
+            IF index:Length == 1
+                LOCAL pos AS LONG
+                pos := index[1]
+                RETURN props[pos]
             ENDIF
+        ENDIF
+        VAR message := typeof(IIndexedProperties):FullName + " ( actual type='" + SELF:ValType + "', dialect=" + RuntimeState.Dialect :ToString()+", index length=" + index:Length:ToString()+")"
+        THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, message)}
+    END GET
+    [NODEBUG];
+    SET
+        IF SELF:IsArray
+            SELF:_arrayValue:__SetElement(value, index)
+            RETURN
+        ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties VAR props
+            IF index:Length == 1
+                LOCAL pos AS LONG
+                pos := index[1]
+                props[pos] := value
+            ENDIF
+            RETURN
+        ENDIF
 
-            THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
-        END SET
+        THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+    END SET
     END PROPERTY
 
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
@@ -3267,21 +3267,21 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <returns>The element stored at the indicated location in the array.</returns>
     /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
     PROPERTY SELF[index1 AS INT, index2 AS INT] AS USUAL
-        [NODEBUG];
-        GET
-            IF SELF:IsArray
-                RETURN  SELF:_arrayValue:__GetElement(index1, index2)
-            ENDIF
-            THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
-        END GET
-        [NODEBUG];
-        SET
-            IF SELF:IsArray
-                SELF:_arrayValue:__SetElement(value, index1, index2)
-                RETURN
-            ENDIF
-            THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
-        END SET
+    [NODEBUG];
+    GET
+        IF SELF:IsArray
+            RETURN  SELF:_arrayValue:__GetElement(index1, index2)
+        ENDIF
+        THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+    END GET
+    [NODEBUG];
+    SET
+        IF SELF:IsArray
+            SELF:_arrayValue:__SetElement(value, index1, index2)
+            RETURN
+        ENDIF
+        THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+    END SET
     END PROPERTY
 
 #endregion
@@ -3308,16 +3308,16 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     [NOSHOW];
     INTERNAL PROPERTY IsIndexed AS LOGIC
-        [NODEBUG];
-        GET
-            IF SELF:IsArray
-                RETURN TRUE
-            ENDIF
-            IF (SELF:IsString .OR. SELF:IsLong) .AND. RuntimeState.Dialect  == XSharpDialect.XPP
-                RETURN TRUE
-            ENDIF
-            RETURN FALSE
-        END GET
+    [NODEBUG];
+    GET
+        IF SELF:IsArray
+            RETURN TRUE
+        ENDIF
+        IF (SELF:IsString .OR. SELF:IsLong) .AND. RuntimeState.Dialect  == XSharpDialect.XPP
+            RETURN TRUE
+        ENDIF
+        RETURN FALSE
+    END GET
     END PROPERTY
 
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
@@ -3325,36 +3325,36 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <returns>The element stored at the indicated location in the collection.</returns>
     /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
     PROPERTY SELF[index AS INT ] AS USUAL
-        [NODEBUG];
-        GET
-            IF SELF:IsArray
-                VAR a := SELF:_arrayValue
-                RETURN a:__GetElement(index)
-            ENDIF
-            IF (SELF:IsString .OR. SELF:IsLong) .AND. RuntimeState.Dialect  == XSharpDialect.XPP
-                RETURN SELF:XppUsualIndex(index)
-            ENDIF
+    [NODEBUG];
+    GET
+        IF SELF:IsArray
+            VAR a := SELF:_arrayValue
+            RETURN a:__GetElement(index)
+        ENDIF
+        IF (SELF:IsString .OR. SELF:IsLong) .AND. RuntimeState.Dialect  == XSharpDialect.XPP
+            RETURN SELF:XppUsualIndex(index)
+        ENDIF
 
-            VAR indexer := _refData ASTYPE IIndexedProperties
-            IF indexer == NULL
-                VAR error := Error{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
-                THROW error
-            ENDIF
-            RETURN indexer[index]
-        END GET
-        [NODEBUG];
-        SET
-            IF SELF:IsArray
-                VAR a := SELF:_arrayValue
-                a:__SetElement(value, index)
-                RETURN
-            ENDIF
-            VAR indexer := _refData ASTYPE IIndexedProperties
-            IF indexer == NULL
-                THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
-            ENDIF
-            indexer[index] := value
-        END SET
+        VAR indexer := _refData ASTYPE IIndexedProperties
+        IF indexer == NULL
+            VAR error := Error{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+            THROW error
+        ENDIF
+        RETURN indexer[index]
+    END GET
+    [NODEBUG];
+    SET
+        IF SELF:IsArray
+            VAR a := SELF:_arrayValue
+            a:__SetElement(value, index)
+            RETURN
+        ENDIF
+        VAR indexer := _refData ASTYPE IIndexedProperties
+        IF indexer == NULL
+            THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+        ENDIF
+        indexer[index] := value
+    END SET
     END PROPERTY
 
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
@@ -3363,20 +3363,20 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <remarks>When the contents of the USUAL is not an array or does not name based indexing  then a runtime error is generated.</remarks>
 
     PROPERTY SELF[name AS STRING] AS USUAL
-        GET
-            VAR indexer := _refData ASTYPE IIndexedProperties
-            IF indexer == NULL
-                THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
-            ENDIF
-            RETURN indexer[name]
-        END GET
-        SET
-            VAR indexer := _refData ASTYPE IIndexedProperties
-            IF indexer == NULL
-                THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
-            ENDIF
-            indexer[name] := value
-        END SET
+    GET
+        VAR indexer := _refData ASTYPE IIndexedProperties
+        IF indexer == NULL
+            THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+        ENDIF
+        RETURN indexer[name]
+    END GET
+    SET
+        VAR indexer := _refData ASTYPE IIndexedProperties
+        IF indexer == NULL
+            THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+        ENDIF
+        indexer[name] := value
+    END SET
     END PROPERTY
 #endregion
 
@@ -3568,6 +3568,7 @@ FUNCTION UsualVal(u AS __Usual) AS __Usual
 /// </returns>
 FUNCTION ValType(u AS __Usual) AS STRING
     RETURN u:ValType
+
 
 
 

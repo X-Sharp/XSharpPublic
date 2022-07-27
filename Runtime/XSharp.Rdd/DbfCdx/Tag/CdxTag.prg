@@ -614,7 +614,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPEBOTTOM)
                     records := SELF:_getScopePos()
                 ELSE
-                    IF SELF:_oRdd:FilterInfo:Active
+                    IF XSharp.RuntimeState.Deleted .or. SELF:_oRdd:FilterInfo:Active
                         SELF:_oRdd:SkipFilter(1)
                         oldRec := SELF:_RecNo
                         records := 0

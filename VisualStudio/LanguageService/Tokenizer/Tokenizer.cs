@@ -300,6 +300,7 @@ namespace XSharp.LanguageService
             var list = new XSharpTokenList(line);
             while (!done && !list.Eoi())
             {
+                IToken lasttoken = result.LastOrDefault();
                 var token = (XSharpToken) list.ConsumeAndGet();
                 int openToken = 0;
                 XSharpToken closeToken = null;
@@ -410,7 +411,7 @@ namespace XSharp.LanguageService
                         bool add = true;
                         if (result.Count > 0 && token == list.LastOrDefault)
                         {
-                            var lasttoken = result.Last();
+                            
                             if (lasttoken.Type == XSharpLexer.COLON ||
                                 lasttoken.Type == XSharpLexer.DOT)
                             {
@@ -444,8 +445,10 @@ namespace XSharp.LanguageService
                             state = CompletionState.None;
                         break;
                     case XSharpLexer.USING:
-                        if (isNotLast) // there has to be a space after the token
-                        {
+                         if (isNotLast) // there has to be a space after the token
+                         {
+                            list.Expect(XSharpLexer.WS);
+                            
                             if (list.Expect(XSharpLexer.STATIC))
                             {
                                 state = CompletionState.Namespaces | CompletionState.Types;
@@ -480,7 +483,7 @@ namespace XSharp.LanguageService
                             result.Add(token);
                         }
                         if (isNotLast) // there has to be a space after the token
-                           state = CompletionState.Namespaces | CompletionState.Types;
+                            state = CompletionState.Namespaces | CompletionState.Types;
                         else
                             state = CompletionState.None;
                         break;
@@ -498,11 +501,24 @@ namespace XSharp.LanguageService
                         result.Add(token);
                         break;
                     case XSharpLexer.DOT:
-                        if (!state.HasFlag(CompletionState.Namespaces))
+                        if (lasttoken != null)
                         {
-                            state = CompletionState.Namespaces | CompletionState.Types | CompletionState.StaticMembers;
-                            if (allowdot)
-                                state |= CompletionState.InstanceMembers;
+                            switch (lasttoken.Type)
+                            {
+                                // Dot after } should only list Instance Members
+                                case XSharpLexer.RCURLY:
+                                case XSharpLexer.RPAREN:
+                                case XSharpLexer.RBRKT:
+                                    state = CompletionState.InstanceMembers;
+                                    break;
+                                case XSharpLexer.ID:
+                                default:
+                                    if (!state.HasFlag(CompletionState.Namespaces))
+                                        state = CompletionState.Namespaces | CompletionState.Types | CompletionState.StaticMembers;
+                                    if (allowdot)
+                                        state |= CompletionState.InstanceMembers;
+                                    break;
+                            }
                         }
                         result.Add(token);
                         break;

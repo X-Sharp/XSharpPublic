@@ -2502,31 +2502,7 @@
         <seealso cref='O:XSharp.Core.Functions.Min'>Min</seealso>
         <seealso cref='O:XSharp.RT.Functions.SetFloatDelta'>SetFloatDelta</seealso>
     </between>
-    <betweentyped>
-        <summary>
-            Determine if a value is between two other values.
-        </summary>
-        <param name="dValue">A value to compare</param>
-        <param name="dMin">The minumum value to compare with.</param>
-        <param name="dMax">The maximum value to compare with.</param>
-        <param name="nValue">A value to compare</param>
-        <param name="nMin">The minumum value to compare with.</param>
-        <param name="nMax">The maximum value to compare with.</param>
-        <returns>
-            TRUE if the value is greater than or equal to the minimum and less than or equal to the maximum otherwise, FALSE.
-        </returns>
-        <remarks>
-            <note type="tip">
-                XSharp has added typed overloads for the Between function. This will improve the runtime speed.
-            </note>
-        </remarks>
-        <seealso cref='O:XSharp.Core.Functions.Ansi2Oem'>Ansi2Oem</seealso>
-        <seealso cref='O:XSharp.RT.Functions.Max'>Max</seealso>
-        <seealso cref='O:XSharp.Core.Functions.Max'>Max</seealso>
-        <seealso cref='O:XSharp.RT.Functions.Min'>Min</seealso>
-        <seealso cref='O:XSharp.Core.Functions.Min'>Min</seealso>
-        <seealso cref='O:XSharp.RT.Functions.SetFloatDelta'>SetFloatDelta</seealso>
-    </betweentyped>
+  
     <bin2date>
         <summary>
             Convert a string containing a 32-bit binary date to a date data type.
@@ -16055,26 +16031,7 @@
         <seealso cref='O:XSharp.RT.Functions.Min'>Min</seealso>
         <seealso cref="O:XSharp.Core.Functions.Max" />
     </max>
-    <maxtyped>
-        <summary>
-            Return the larger of 2 values.
-        </summary>
-
-        <param name="dValue1">The first value to compare.</param>
-        <param name="dValue2">The second value to compare.</param>
-        <returns>
-            The larger of the 2 arguments.<br/>
-        </returns>
-        <remarks>
-            The inverse of Max() is Min(), which returns the smaller of 2 expressions. 
-            <note type="tip">
-                XSharp has added typed overloads for the Max function. This will improve the runtime speed.
-            </note>
-
-        </remarks>
-        <seealso cref="O:XSharp.Core.Functions.Min" />
-        <seealso cref="O:XSharp.RT.Functions.Max" />
-    </maxtyped>
+ 
 
     <maxatom>
         <summary>
@@ -17998,26 +17955,6 @@
         <seealso cref='O:XSharp.RT.Functions.Max'>Max</seealso>
         <seealso cref="O:XSharp.Core.Functions.Min" />
     </min>
-    <mintyped>
-        <summary>
-            Return the smaller of 2 values.
-        </summary>
-
-        <param name="dValue1">The first value to compare.</param>
-        <param name="dValue2">The second value to compare.</param>
-        <returns>
-            The smaller of the 2 arguments.<br/>
-        </returns>
-        <remarks>
-            The inverse of Min() is Max(), which returns the larger of 2 expressions.
-            <note type="tip">
-                XSharp has added typed overloads for the Min function. This will improve the runtime speed.
-            </note>
-        </remarks>
-        <seealso cref="O:XSharp.Core.Functions.Max" />
-        <seealso cref="O:XSharp.RT.Functions.Min" />
-
-    </mintyped>
     <mlcount>
         <summary>
             Count the number of lines in a string.

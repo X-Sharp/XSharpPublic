@@ -11,26 +11,6 @@ USING System.Runtime.CompilerServices
 FUNCTION Between(uValue AS USUAL, uMin AS USUAL, uMax AS USUAL) AS LOGIC
 	RETURN uValue >=uMin .AND.  uValue<=uMax
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/betweentyped/*" />
-/// <seealso cref='O:XSharp.Core.Functions.Between'>Between</seealso>
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Between(dValue AS DATE, dMin AS DATE, dMax AS DATE) AS LOGIC
-    RETURN ( dValue >= dMin .AND. dValue <= dMax )
-
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/betweentyped/*" />
-/// <seealso cref='O:XSharp.Core.Functions.Between'>Between</seealso>
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Between(nValue AS CURRENCY, nMin AS CURRENCY, nMax AS CURRENCY) AS LOGIC
-    RETURN ( nValue >= nMin .AND. nValue <= nMax )
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/betweentyped/*" />
-/// <seealso cref='O:XSharp.Core.Functions.Between'>Between</seealso>
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Between(nValue AS FLOAT, nMin AS FLOAT, nMax AS FLOAT) AS LOGIC
-    RETURN ( nValue >= nMin .AND. nValue <= nMax )
-
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/inlist/*" />
 FUNCTION InList(u AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
 	RETURN _InListWorker(u, uValueList, {x,y => x = y})
@@ -40,7 +20,7 @@ FUNCTION InListExact(u AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
 	RETURN _InListWorker(u, uValueList, {x,y => x == y})
 
 
-INTERNAL FUNCTION _InListWorker( u AS USUAL, args AS CONST USUAL[], compare as Func<USUAL, USUAL, LOGIC>) AS LOGIC
+INTERNAL FUNCTION _InListWorker( u IN USUAL, args AS CONST USUAL[], compare as Func<USUAL, USUAL, LOGIC>) AS LOGIC
 	LOCAL i, nLen AS INT
 	nLen := args:Length
 	FOR i := 1 TO nLen
@@ -50,52 +30,6 @@ INTERNAL FUNCTION _InListWorker( u AS USUAL, args AS CONST USUAL[], compare as F
 	NEXT
 	RETURN FALSE
 
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Max(uValue1 AS REAL8, uValue2 AS REAL8) AS REAL8
-    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Max(uValue1 AS LONG, uValue2 AS LONG) AS LONG
-    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Max(uValue1 AS INT64, uValue2 AS INT64) AS INT64
-    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Max(uValue1 AS DECIMAL, uValue2 AS DECIMAL) AS DECIMAL
-    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Max(uValue1 AS DWORD, uValue2 AS DWORD) AS DWORD
-    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Max(uValue1 AS FLOAT, uValue2 AS FLOAT) AS FLOAT
-    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Max(uValue1 AS CURRENCY, uValue2 AS CURRENCY) AS CURRENCY
-    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
-
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Max(uValue1 AS SYMBOL, uValue2 AS SYMBOL) AS SYMBOL
-    RETURN IIF (uValue1 > uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Max(uValue1 AS STRING, uValue2 AS STRING) AS STRING
-    RETURN IIF(XSharp.RuntimeState.StringCompare(uValue1, uValue2) >= 0, uValue1, uValue2)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
@@ -138,53 +72,6 @@ FUNCTION Max(uValue1 AS USUAL, uValue2 AS USUAL) AS USUAL
 	ENDIF
 
 
-
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Min(uValue1 AS REAL8, uValue2 AS REAL8) AS REAL8
-    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Min(uValue1 AS LONG, uValue2 AS LONG) AS LONG
-    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Min(uValue1 AS INT64, uValue2 AS INT64) AS INT64
-    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Min(uValue1 AS DECIMAL, uValue2 AS DECIMAL) AS DECIMAL
-    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Min(uValue1 AS DWORD, uValue2 AS DWORD) AS DWORD
-    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Min(uValue1 AS FLOAT, uValue2 AS FLOAT) AS FLOAT
-    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Min(uValue1 AS CURRENCY, uValue2 AS CURRENCY) AS CURRENCY
-    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
-
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Min(uValue1 AS SYMBOL, uValue2 AS SYMBOL) AS SYMBOL
-    RETURN IIF (uValue1 < uValue2, uValue1, uValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Min(uValue1 AS STRING, uValue2 AS STRING) AS STRING
-    RETURN IIF(XSharp.RuntimeState.StringCompare(uValue1, uValue2) <= 0, uValue1, uValue2)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/min/*" />
 FUNCTION Min(uValue1 AS USUAL, uValue2 AS USUAL) AS USUAL

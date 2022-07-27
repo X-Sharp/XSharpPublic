@@ -363,7 +363,7 @@ namespace XSharp.LanguageService
             return VSConstants.E_NOTIMPL;
         }
 
-        bool IsWordChar(char c)
+        bool IsWordChar(char c, bool stopAtDelimiter)
         {
             switch (c)
             {
@@ -372,6 +372,8 @@ namespace XSharp.LanguageService
                     return false;
                 case ':':
                 case '.':
+                    if (stopAtDelimiter)
+                        return false; 
                     break;
                 default:
                     if (!System.Char.IsLetterOrDigit(c))
@@ -382,10 +384,9 @@ namespace XSharp.LanguageService
         }
         public int GetWordExtent(IVsTextLayer pTextLayer, TextAddress ta, WORDEXTFLAGS flags, TextSpan[] pts)
         {
-            string text;
-            
-            if (flags.HasFlag(WORDEXTFLAGS.WORDEXT_FINDTOKEN))
+            if (flags.HasFlag(WORDEXTFLAGS.WORDEXT_FINDTOKEN) && XSettings.DebuggerIsRunning)
             {
+                string text;
                 pts[0].iStartLine = pts[0].iEndLine = ta.line;
 
                 pTextLayer.GetLineText(ta.line, 0, ta.line + 1, 0, out text);
@@ -394,7 +395,7 @@ namespace XSharp.LanguageService
                 while (index > 0)
                 {
                     char c = text[index];
-                    if (!IsWordChar(c))
+                    if (!IsWordChar(c, false))
                         break;
                     index -= 1;
                 }
@@ -403,14 +404,14 @@ namespace XSharp.LanguageService
                 while (index < text.Length)
                 {
                     char c = text[index];
-                    if (!IsWordChar(c))
+                    if (!IsWordChar(c, true))
                         break;
                     index += 1;
                 }
                 pts[0].iEndIndex = index;
+                return VSConstants.S_OK;
             }
-            return VSConstants.S_OK;
-
+            return VSConstants.S_FALSE;
         }
 
         public int Format(IVsTextLayer pTextLayer, TextSpan[] ptsSel)

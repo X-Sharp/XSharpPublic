@@ -154,13 +154,4 @@ FUNCTION Year(dDate AS DATE) AS DWORD
 	ENDIF
 	RETURN year
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mintyped/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Min(dValue1 AS DATE, dValue2 AS DATE) AS DATE
-	RETURN IIF(dValue1 < dValue2, dValue1, dValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/maxtyped/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Max(dValue1 AS DATE, dValue2 AS DATE) AS DATE
-	RETURN IIF(dValue1 > dValue2, dValue1, dValue2)
 

@@ -424,13 +424,4 @@ FUNCTION @@DateTime(nYear AS INT, nMonth AS INT, nDay AS INT, nHours AS INT, nMi
 FUNCTION @@DateTime(nYear AS INT, nMonth AS INT, nDay AS INT, nHours AS INT, nMinutes AS INT, nSeconds AS INT) AS DateTime
     RETURN System.DateTime{nYear, nMonth, nDay,nHours, nMinutes, nSeconds}
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mintyped/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Min(dValue1 AS DateTime, dValue2 AS DateTime) AS DateTime
-	RETURN IIF(dValue1 < dValue2, dValue1, dValue2)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/maxtyped/*" />
-[MethodImpl(MethodImplOptions.AggressiveInlining)];
-FUNCTION Max(dValue1 AS DateTime, dValue2 AS DateTime) AS DateTime
-	RETURN IIF(dValue1 > dValue2, dValue1, dValue2)
 

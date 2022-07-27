@@ -388,8 +388,8 @@ BEGIN NAMESPACE XSharp.RT.Tests
 		METHOD MinMax() AS VOID
             var dt1 := DateTime{2021,1,4}  // use the constructor
             var dt2 := DateTime(2022,1,1)  // use the DateTime function
-            Assert.Equal(Min(dt1, dt2), dt1)
-            Assert.Equal(Max(dt1, dt2), dt2)
+            Assert.Equal((DateTime) Min(dt1, dt2), dt1)
+            Assert.Equal((DateTime) Max(dt1, dt2), dt2)
             var dTest := dt1:AddDays(1)
             Assert.True(Between(dt1, dt1, dt2))
             Assert.True(Between(dTest, dt1, dt2))

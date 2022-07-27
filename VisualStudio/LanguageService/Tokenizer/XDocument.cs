@@ -7,6 +7,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,9 +30,9 @@ namespace XSharp.LanguageService
             entities = null;
             tokensPerLine = new Dictionary<int, IList<IToken>>();
             includeFiles = files;
-            lineKeywords = new XSharpLineKeywords(snapshot);
-            lineState = new XSharpLineState(snapshot);
-            identifiers = new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
+            lineKeywords = new XSharpLineKeywords();
+            lineState = new XSharpLineState();
+            identifiers = new ConcurrentDictionary<string,string>(StringComparer.OrdinalIgnoreCase);
         }
 
         #region fields
@@ -42,7 +43,7 @@ namespace XSharp.LanguageService
         private XSharpLineKeywords lineKeywords;
         private IList<string> includeFiles;
         private ITextSnapshot snapShot;
-        private IDictionary<string, string> identifiers;
+        private ConcurrentDictionary<string, string> identifiers;
 
 
         #endregion
@@ -60,27 +61,11 @@ namespace XSharp.LanguageService
 
         internal bool HasLineState(int line, LineFlags flag)
         {
-            lock (this)
-            {
-                if (LineState.Lines.ContainsKey(line))
-                {
-                    return LineState.Lines[line].HasFlag(flag);
-                }
-            }
-            return false;
+            return LineState.Get(line, out var flags ) && flags.HasFlag(flag);
         }
         internal bool GetKeyword(int line, out XKeyword keyword)
         {
-            lock (this)
-            {
-                if (LineKeywords.Lines.ContainsKey(line))
-                {
-                    keyword = LineKeywords.Lines[line];
-                    return true;
-                }
-                keyword = new XKeyword();
-            }
-            return false;
+            return LineKeywords.Get(line, out keyword);
         }
         internal bool GetTokens(int line, out IList<IToken> tokens)
         {
@@ -104,22 +89,17 @@ namespace XSharp.LanguageService
             }
         }
        
-        internal void SetLineState(XSharpLineState state)
+        internal void SetData(XSharpLineState state, XSharpLineKeywords keywords,ITextSnapshot ss)
         {
             lock (this)
             {
                 lineState = state;
-            }
-        }
-        internal void SetLineKeywords(XSharpLineKeywords keywords)
-        {
-            lock (this)
-            {
                 lineKeywords = keywords;
+                snapShot = ss;
             }
         }
 
-        internal void SetIdentifiers(IDictionary<string, string> ids)
+        internal void SetIdentifiers(ConcurrentDictionary<string, string> ids)
         {
             lock (this)
             {

@@ -234,7 +234,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             //
             var fulllineTokens = new List<IToken>();
             var lineNumber = SearchRealStartLine();
-            var lineState = linesState.Get(lineNumber);
+            linesState.Get(lineNumber, out var lineState);
             // It must be a EntityStart
             if (lineState != LineFlags.EntityStart)
                 return false;
@@ -246,8 +246,8 @@ namespace XSharp.LanguageService.Editors.LightBulb
             do
             {
                 lineNumber++;
-                lineState = linesState.Get(lineNumber);
-                if (lineState == LineFlags.Continued)
+                linesState.Get(lineNumber, out lineState);
+                if (lineState.HasFlag(LineFlags.Continued))
                 {
                     xLines.TryGetValue(lineNumber, out lineTokens);
                     if (lineTokens != null)
@@ -256,7 +256,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                         continue;
                     }
                 }
-            } while (lineState == LineFlags.Continued);
+            } while (lineState.HasFlag(LineFlags.Continued));
             // Now, search for IMPLEMENT
             bool found = false;
             foreach( var token in fulllineTokens)

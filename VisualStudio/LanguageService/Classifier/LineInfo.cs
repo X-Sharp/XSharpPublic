@@ -8,30 +8,17 @@ namespace XSharp.LanguageService
     internal class XSharpLineInfo<T> where T : struct
     {
         protected ConcurrentDictionary<int, T> dict;
-        internal ITextSnapshot Snapshot { get; private set; }
-        internal XSharpLineInfo(ITextSnapshot snapshot)
+        internal XSharpLineInfo()
         {
             dict = new ConcurrentDictionary<int, T>();
-            Snapshot = snapshot;
         }
-       
-        internal void Clear()
+        internal bool ContainsKey(int line)
         {
-            lock (dict)
-            {
-                dict.Clear();
-            }
+            return dict.ContainsKey(line);
         }
-        internal T Get(int line)
+        internal bool Get(int line, out T value)
         {
-            lock (dict)
-            {
-                if (dict.TryGetValue(line, out var flags))
-                {
-                    return flags;
-                }
-            }
-            return default;
+            return dict.TryGetValue(line, out value);
         }
         internal void Set(int line, T value)
         {

@@ -68,13 +68,15 @@ namespace XSharp.LanguageService.Editors.LightBulb
             ITextSnapshotLine line = caret.GetContainingLine();
             //
             var lineNumber = line.LineNumber;
-            var lineState = linesState.Get(lineNumber);
-            // Search the first line
-            while (lineState == LineFlags.Continued)
+            if (linesState.Get(lineNumber, out var lineState))
             {
-                // Move back
-                lineNumber--;
-                lineState = linesState.Get(lineNumber);
+                // Search the first line
+                while (lineState == LineFlags.Continued)
+                {
+                    // Move back
+                    lineNumber--;
+                    linesState.Get(lineNumber, out lineState);
+                }
             }
             return lineNumber;
         }

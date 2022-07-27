@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Threading;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -52,12 +53,13 @@ namespace XSharp.LanguageService
         private readonly object gate = new object();
         private readonly SourceWalker _sourceWalker;
         private readonly ITextBuffer _buffer;
+        private XDocument _document = null;
 
         private XClassificationSpans _colorTags = new XClassificationSpans();
         private IList<ClassificationSpan> _lexerRegions = null;
         private IList<ClassificationSpan> _parserRegions = null;
         private readonly bool _first = true;
-        
+
         private readonly List<String> xtraKeywords;
         private XSharpLineState lineState;
         private XSharpLineKeywords lineKeywords;
@@ -97,10 +99,11 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-
+            // we do not check for the existence of the XDocument here.
+            // The classifier may be called before the XDocument was created
             //
-            lineState = new XSharpLineState(buffer.CurrentSnapshot);
-            lineKeywords= new XSharpLineKeywords(buffer.CurrentSnapshot);
+            lineState = new XSharpLineState();
+            lineKeywords = new XSharpLineKeywords();
             xtraKeywords = new List<string>();
             // Initialize our background workers
             _buffer.Changed += Buffer_Changed;
@@ -135,7 +138,7 @@ namespace XSharp.LanguageService
 
         private void Buffer_Changed(object sender, TextContentChangedEventArgs e)
         {
-            if (! IsLexing)
+            if (!IsLexing)
             {
                 LexAsync().FireAndForget();
             }
@@ -143,17 +146,18 @@ namespace XSharp.LanguageService
             {
                 Debug("Buffer_Changed: Suppress lexing because classifier is active");
             }
-
         }
 
         private XDocument GetDocument()
         {
-            XDocument xDocument;
             lock (gate)
             {
-                xDocument = _buffer.GetDocument();
+                if (_document == null)
+                {
+                    _document = _buffer.GetDocument();
+                }
             }
-            return xDocument;
+            return _document;
         }
 
         public async Task ClassifyWhenNeededAsync()
@@ -190,7 +194,7 @@ namespace XSharp.LanguageService
         public void Parse()
         {
             XDocument xDocument = GetDocument();
-            if (xDocument.Entities == null)
+            if (xDocument != null && xDocument.Entities == null)
                 ParseAsync().FireAndForget(); ;
         }
 
@@ -202,8 +206,8 @@ namespace XSharp.LanguageService
             XDocument xDocument = GetDocument();
             if (xDocument == null || xDocument.SnapShot.Version != snapshot.Version)
             {
-                lineState = new XSharpLineState(snapshot);
-                lineKeywords = new XSharpLineKeywords(snapshot);
+                lineState = new XSharpLineState();
+                lineKeywords = new XSharpLineKeywords();
                 Debug("Starting classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
                 ITokenStream tokenstream = _sourceWalker.Lex(snapshot.GetText());
                 lock (gate)
@@ -217,12 +221,11 @@ namespace XSharp.LanguageService
                     {
                         xDocument.SetData((BufferedTokenStream)tokenstream, snapshot, _sourceWalker.IncludeFiles);
                     }
-                    xDocument.SetLineState(lineState);
-                    xDocument.SetLineKeywords(lineKeywords);
+                    xDocument.SetData(lineState, lineKeywords, snapshot);
 
                 }
             }
-            BuildColorClassifications(xDocument);
+            BuildColorClassifications();
             Debug("Ending classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             return;
         }
@@ -258,6 +261,8 @@ namespace XSharp.LanguageService
 
             var snapshot = _buffer.CurrentSnapshot;
             var xDocument = GetDocument();
+            if (xDocument == null) // should not happen
+                return;
             if (xDocument.SnapShot != snapshot)
             {
                 XSettings.LogMessage($"XSharpClassifier.ParseAsync() aborted because snapshot is version {xDocument.SnapShot.Version} and buffer has version {snapshot.Version}");
@@ -287,10 +292,7 @@ namespace XSharp.LanguageService
                 Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             }
             XSettings.LogMessage("<<-- XSharpClassifier.ParseAsync()");
-
         }
-
-
 
         #endregion
 
@@ -300,7 +302,7 @@ namespace XSharp.LanguageService
             XDocument xDocument = GetDocument();
             if (xDocument == null)
                 return;
-            xDocument.SetEntities (_sourceWalker.EntityList);
+            xDocument.SetEntities(_sourceWalker.EntityList);
             foreach (var entity in _sourceWalker.EntityList)
             {
                 var line = entity.Range.StartLine;
@@ -429,7 +431,7 @@ namespace XSharp.LanguageService
         /// <returns></returns>
         private ClassificationSpan Token2ClassificationSpan(IToken token, ITextSnapshot snapshot, IClassificationType type)
         {
-            if (token != null && snapshot != null )
+            if (token != null && snapshot != null)
             {
                 TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
                 XsClassificationSpan span = tokenSpan.ToClassificationSpan(snapshot, type);
@@ -589,7 +591,7 @@ namespace XSharp.LanguageService
         }
 
 
-        private List<ClassificationSpan> ClassifyKeyword(IToken token, ITextSnapshot snapshot, ref IToken keywordContext )
+        private List<ClassificationSpan> ClassifyKeyword(IToken token, ITextSnapshot snapshot, ref IToken keywordContext)
         {
             var tokenType = token.Type;
             var result = new List<ClassificationSpan>();
@@ -816,8 +818,6 @@ namespace XSharp.LanguageService
             }
         }
 
-       
-
         private void addKw(IToken firstkw, IToken secondkw, int iLastLine)
         {
             XKeyword kw;
@@ -841,7 +841,7 @@ namespace XSharp.LanguageService
                 var rule = XFormattingRule.GetFirstRuleByStart(kw);
                 RuleStack.Push(rule);
             }
-            
+
             if (isEnd || isMiddle || isStart)
             {
                 lineKeywords.Set(iLastLine - 1, kw);
@@ -856,21 +856,22 @@ namespace XSharp.LanguageService
                 if (RuleStack.Count > 0)
                     RuleStack.Pop();
             }
-            
         }
-        private XFormattingRule CurrentRule => RuleStack?.Count == 0 ? null: RuleStack.Peek();
+        private XFormattingRule CurrentRule => RuleStack?.Count == 0 ? null : RuleStack.Peek();
         private Stack<XFormattingRule> RuleStack;
-        private void BuildColorClassifications(XDocument xDocument)
+        private void BuildColorClassifications()
         {
-            var snapshot = xDocument.SnapShot;
+            if (_document == null)
+                return;
+            var snapshot = _document.SnapShot;
             if (_buffer.CurrentSnapshot != snapshot)
                 return;
-            var tokenStream = xDocument.TokenStream;
+            var tokenStream = _document.TokenStream;
             Debug("Start building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             XClassificationSpans newtags;
             var lineTokens = new Dictionary<int, IList<IToken>>(snapshot.LineCount);
             var currentLine = new List<IToken>();
-            var ids = new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase);
+            var ids = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             RuleStack = new Stack<XFormattingRule>();
             var regionTags = new List<ClassificationSpan>();
             if (tokenStream != null)
@@ -893,14 +894,14 @@ namespace XSharp.LanguageService
                     var token = tokenStream.Get(iToken);
                     if (token.Type == XSharpLexer.ID && XSettings.IdentifierCase)
                     {
-                        if (! ids.ContainsKey(token.Text))
+                        if (!ids.ContainsKey(token.Text))
                         {
-                            ids[token.Text] = token.Text;
+                            ids.TryAdd(token.Text,token.Text);
                         }
                     }
                     // store the tokens per line in a dictionary so we can quickly look them up
                     var line = token.Line - 1;  // VS Has 0 based line numbers
-                    if (token.Line != iLastLine )
+                    if (token.Line != iLastLine)
                     {
                         // register the type for the previous line
                         if (iLastLine != -1 && firstkw != null)
@@ -922,7 +923,7 @@ namespace XSharp.LanguageService
                     {
                         if (firstInLine)
                         {
-                            if (!XSharpLexer.IsModifier(token.Type) ||token.Type == XSharpLexer.CLASS )
+                            if (!XSharpLexer.IsModifier(token.Type) || token.Type == XSharpLexer.CLASS)
                             {
                                 if (XSharpLexer.IsKeyword(token.Type))
                                 {
@@ -953,8 +954,6 @@ namespace XSharp.LanguageService
                         keywordContext = null;
                     }
                     var span = ClassifyToken(token, regionTags, snapshot, lastToken);
-                    
-
 
                     if (span != null)
                     {
@@ -996,7 +995,7 @@ namespace XSharp.LanguageService
                             }
                         }
                     }
-                    if (token.Channel != XSharpLexer.Hidden)
+                    if (token.Channel != Lexer.Hidden)
                     {
                         lastToken = token;
                     }
@@ -1006,8 +1005,8 @@ namespace XSharp.LanguageService
                     addKw(firstkw, secondkw, iLastLine);
                 }
                 // Orphan End ?
-                xDocument.SetTokens(lineTokens);
-                xDocument.SetIdentifiers(ids);
+                _document.SetTokens(lineTokens);
+                _document.SetIdentifiers(ids);
                 if ((keywordContext != null) && (keywordContext.Type == XSharpLexer.END))
                 {
                     newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
@@ -1153,7 +1152,7 @@ namespace XSharp.LanguageService
 
         #endregion
 
-        static internal XSharpClassifier GetColorizer(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
+        static internal XSharpClassifier Create(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
         {
             XSharpClassifier colorizer = buffer.Properties.GetOrCreateSingletonProperty(
                 () => new XSharpClassifier(buffer, registry, factory));
@@ -1283,7 +1282,6 @@ namespace XSharp.LanguageService
                     return tags;
                 }
             }
-
         }
     }
 }

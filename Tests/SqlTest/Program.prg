@@ -3,6 +3,7 @@ using System.Collections.Generic
 using System.Linq
 using System.Text
 using XSharp.Data
+using System.Data
 using XSharp.VO
 
 FUNCTION Start() AS VOID STRICT
@@ -20,7 +21,7 @@ FUNCTION Start() AS VOID STRICT
     ENDIF
     ? oConn:Connected
     IF oConn:COnnected
-        oSel := MySqlSelect{"Select top 1 * from Bedrijven",oConn}
+        oSel := MySqlSelect{"Select top 1 * from Fakturen",oConn}
         //oSel:ReadOnly := TRUE
         //oSel:BatchUpdates := true
         oSel:Execute()
@@ -62,6 +63,37 @@ class MySqlSelect inherit SqlSelect
         SELF:nRowCount := SELF:oTable:Rows:Count
         RETURN lOk
 
+METHOD __InitColumnDesc() AS LOGIC STRICT
+
+        local nScaleColumn as LONG
+
+        foreach oColumn AS DataColumn in oSchema:Columns
+
+            if oColumn:ColumnName == "NumericScale"
+
+                nScaleColumn := oColumn:Ordinal
+
+                oColumn:ReadOnly := FALSE
+
+                EXIT
+
+            endif
+
+        next
+
+        foreach oColumn AS DataColumn in oTable:Columns
+
+            if oColumn:DataType == typeof(Decimal)
+
+                var oRow := oSchema:Rows[oColumn:Ordinal]
+
+                oRow[nScaleColumn] := 4
+
+            endif
+
+        next
+
+        RETURN SUPER:__InitColumnDesc()
 
 end class
 

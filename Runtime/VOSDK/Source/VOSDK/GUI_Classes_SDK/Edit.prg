@@ -6,29 +6,29 @@ CLASS Edit INHERIT TextControl
 
 	//PP-030828 Strong typing
  /// <exclude />
-	ASSIGN __ForceModFlag2True(lNewValue AS LOGIC)  STRICT 
+	ASSIGN __ForceModFlag2True(lNewValue AS LOGIC)  STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN (lForceModFlag2True := lNewValue)
 
 
  /// <exclude />
-ACCESS __NoNotify AS LOGIC STRICT 
+ACCESS __NoNotify AS LOGIC STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN lNoNotify
 
 
 /// <include file="Gui.xml" path="doc/Edit.CanUndo/*" />
-METHOD CanUndo() 
-	
-	
+METHOD CanUndo()
+
+
 
 
 	IF SELF:ValidateControl()
@@ -40,18 +40,18 @@ METHOD CanUndo()
 
 
 /// <include file="Gui.xml" path="doc/Edit.Caption/*" />
-ACCESS Caption 
-	
-	
+ACCESS Caption
+
+
 
 
 	RETURN cCaption
 
 
 /// <include file="Gui.xml" path="doc/Edit.Caption/*" />
-ASSIGN Caption(cNewCaption) 
-	
-	
+ASSIGN Caption(cNewCaption)
+
+
 	IF !IsString(cNewCaption)
 		WCError{#Caption,#Edit,__WCSTypeError,cNewCaption,1}:Throw()
 	ENDIF
@@ -59,9 +59,9 @@ ASSIGN Caption(cNewCaption)
 
 
 /// <include file="Gui.xml" path="doc/Edit.Clear/*" />
-METHOD Clear() 
-	
-	
+METHOD Clear()
+
+
 	IF SELF:ValidateControl()
 		SendMessage (SELF:Handle(), WM_CLEAR, 0, 0 )
 	ENDIF
@@ -69,7 +69,7 @@ METHOD Clear()
 
 
 /// <include file="Gui.xml" path="doc/Edit.Copy/*" />
-METHOD Copy() 
+METHOD Copy()
 	LOCAL hHandle AS PTR
 
 
@@ -84,9 +84,9 @@ METHOD Copy()
 
 
 /// <include file="Gui.xml" path="doc/Edit.Cut/*" />
-METHOD Cut() 
-	
-	
+METHOD Cut()
+
+
 
 
 	IF SELF:ValidateControl()
@@ -98,7 +98,7 @@ METHOD Cut()
 
 
 /// <include file="Gui.xml" path="doc/Edit.Font/*" />
-METHOD Font(oNewFont, lRescal) 
+METHOD Font(oNewFont, lRescal)
 	LOCAL uRet AS USUAL
 	LOCAL oMargins AS Pair
 
@@ -114,12 +114,12 @@ METHOD Font(oNewFont, lRescal)
 
 
 /// <include file="Gui.xml" path="doc/Edit.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	LOCAL dwStyle AS DWORD
 
 
-	
-	
+
+
 
 
 	IF !IsInstanceOfUsual(xID,#ResourceID)
@@ -133,13 +133,13 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 
 
 /// <include file="Gui.xml" path="doc/Edit.IsPassword/*" />
-METHOD IsPassword() 
+METHOD IsPassword()
 LOCAL Style		AS LONG
 
 
@@ -151,7 +151,7 @@ RETURN _AND(Style,ES_PASSWORD)!=0
 
 
 /// <include file="Gui.xml" path="doc/Edit.Margins/*" />
-ACCESS Margins 
+ACCESS Margins
 	LOCAL dwRet AS DWORD
 
 
@@ -164,11 +164,8 @@ ACCESS Margins
 
 
 /// <include file="Gui.xml" path="doc/Edit.Margins/*" />
-ASSIGN Margins(oNewMargins) 
+ASSIGN Margins(oNewMargins)
 	LOCAL wLeft, wRight AS WORD
-	
-	
-
 
 	IF SELF:ValidateControl()
 		wLeft := oNewMargins:Width
@@ -177,14 +174,11 @@ ASSIGN Margins(oNewMargins)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Edit.Modified/*" />
-ACCESS Modified 
-	
-	
-
+ACCESS Modified
 
 	IF SELF:ValidateControl()
 		IF lForceModFlag2True
@@ -199,9 +193,9 @@ ACCESS Modified
 
 
 /// <include file="Gui.xml" path="doc/Edit.Modified/*" />
-ASSIGN Modified(lModified) 
-	
-	
+ASSIGN Modified(lModified)
+
+
 
 
 	IF !IsLogic(lModified)
@@ -214,16 +208,16 @@ ASSIGN Modified(lModified)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Edit.Paste/*" />
-METHOD Paste(cNewString) 
+METHOD Paste(cNewString)
 	LOCAL hHandle AS PTR
 
 
-	
-	
+
+
 
 
 	IF SELF:ValidateControl()
@@ -246,7 +240,7 @@ METHOD Paste(cNewString)
 
 
 /// <include file="Gui.xml" path="doc/Edit.ReadOnly/*" />
-ACCESS ReadOnly 
+ACCESS ReadOnly
 	IF SELF:ValidateControl()
 		RETURN (_AND(GetWindowLong(SELF:Handle(), GWL_STYLE), ES_READONLY) > 0)
 	ENDIF
@@ -254,7 +248,7 @@ ACCESS ReadOnly
 
 
 /// <include file="Gui.xml" path="doc/Edit.ReadOnly/*" />
-ASSIGN ReadOnly(lNewValue) 
+ASSIGN ReadOnly(lNewValue)
 	IF SELF:ValidateControl()
 		SendMessage(SELF:Handle(), EM_SETREADONLY, DWORD(_CAST, lNewValue), 0L)
 	ELSE
@@ -266,19 +260,19 @@ ASSIGN ReadOnly(lNewValue)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Edit.SelectedText/*" />
-ACCESS SelectedText 
+ACCESS SelectedText
 	//PP-040508 Update S.Ebert
 	LOCAL dwLast  AS DWORD
 	LOCAL dwFirst AS DWORD
 	LOCAL cReturn AS STRING
 
 
-	
-	
+
+
 
 
 	IF SELF:ValidateControl()
@@ -293,9 +287,9 @@ ACCESS SelectedText
 
 
 /// <include file="Gui.xml" path="doc/Edit.SelectedText/*" />
-ASSIGN SelectedText(cNewString) 
-	
-	
+ASSIGN SelectedText(cNewString)
+
+
 	IF !IsString(cNewString)
 		WCError{#SelectedText,#Edit,__WCSTypeError,cNewString,1}:Throw()
 	ENDIF
@@ -304,11 +298,11 @@ ASSIGN SelectedText(cNewString)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Edit.Selection/*" />
-ACCESS Selection 
+ACCESS Selection
 	LOCAL dwStart AS DWORD
 	LOCAL dwFinish AS DWORD
 
@@ -323,7 +317,7 @@ ACCESS Selection
 
 
 /// <include file="Gui.xml" path="doc/Edit.Selection/*" />
-ASSIGN Selection(oSelection) 
+ASSIGN Selection(oSelection)
 	LOCAL oSel AS Selection
 	IF !IsInstanceOfUsual(oSelection,#Selection)
 		WCError{#Selection,#Edit,__WCSTypeError,oSelection,1}:Throw()
@@ -335,7 +329,7 @@ ASSIGN Selection(oSelection)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Edit.SelectAll/*" />
@@ -347,8 +341,8 @@ METHOD SelectAll()
 
 
 RETURN NIL
-	
-	
+
+
 /// <include file="Gui.xml" path="doc/Edit.SelectNone/*" />
 METHOD SelectNone()
 	// Deselects the text in an edit control
@@ -358,10 +352,10 @@ METHOD SelectNone()
 
 
 RETURN NIL
-		
-		
+
+
 /// <include file="Gui.xml" path="doc/Edit.SetSelectionFocus/*" />
-METHOD SetSelectionFocus() 
+METHOD SetSelectionFocus()
 	// DHer: 18/12/2008
 	SELF:Owner:SetFocus()
 	SELF:SetFocus()
@@ -374,7 +368,7 @@ RETURN NIL
 
 
 /// <include file="Gui.xml" path="doc/Edit.TextLimit/*" />
-ACCESS TextLimit 
+ACCESS TextLimit
 	IF SELF:ValidateControl()
 		RETURN SendMessage(SELF:Handle(), EM_GETLIMITTEXT, 0, 0)
 	ENDIF
@@ -384,7 +378,7 @@ ACCESS TextLimit
 
 
 /// <include file="Gui.xml" path="doc/Edit.TextLimit/*" />
-ASSIGN TextLimit(nChars) 
+ASSIGN TextLimit(nChars)
 	LOCAL dwTextLen AS DWORD
 	LOCAL ptrBuffer AS PTR
 	LOCAL wChars AS DWORD
@@ -414,27 +408,22 @@ ASSIGN TextLimit(nChars)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Edit.TextValue/*" />
-ACCESS TextValue 
-	
-	
+ACCESS TextValue
+
+
 
 
 	RETURN SELF:__GetText()
 
 
 /// <include file="Gui.xml" path="doc/Edit.TextValue/*" />
-ASSIGN TextValue(cNewText) 
+ASSIGN TextValue(cNewText)
 	LOCAL cTextValue AS STRING
 	LOCAL cOldValue AS STRING
-
-
-	
-	
-
 
 	IF !IsString(cNewText)
 		WCError{#TextValue,#Edit,__WCSTypeError,cNewText,1}:Throw()
@@ -455,13 +444,13 @@ ASSIGN TextValue(cNewText)
 	SELF:ValueChanged := !(cOldValue == AsString(uValue))
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/Edit.Undo/*" />
-METHOD Undo() 
-	
-	
+METHOD Undo()
+
+
 
 
 	IF SELF:ValidateControl()
@@ -485,13 +474,13 @@ CLASS SingleLineEdit INHERIT Edit
 
 	//PP-030828 Strong typing
  /// <exclude />
-	ASSIGN __AllowSelection(lNewValue AS LOGIC)  STRICT 
+	ASSIGN __AllowSelection(lNewValue AS LOGIC)  STRICT
 	//PP-030828 Strong typing
 	RETURN (lAllowSelection := lNewValue)
 
 
  /// <exclude />
-ACCESS __CurPos AS LONGINT STRICT 
+ACCESS __CurPos AS LONGINT STRICT
 	//PP-030828 Strong typing
 	LOCAL liStart AS LONGINT
 
@@ -504,10 +493,10 @@ ACCESS __CurPos AS LONGINT STRICT
 
 
  /// <exclude />
-ASSIGN __CurPos(iNewPos AS LONGINT)  STRICT 
+ASSIGN __CurPos(iNewPos AS LONGINT)  STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 	IF (iNewPos > 0)
 		SendMessage(SELF:Handle(), EM_SETSEL, DWORD(iNewPos-1), iNewPos-1)
 	ELSE
@@ -515,21 +504,21 @@ ASSIGN __CurPos(iNewPos AS LONGINT)  STRICT
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
  /// <exclude />
-ACCESS __EditString AS __FormattedString STRICT  
+ACCESS __EditString AS __FormattedString STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN oEditString
 
 
  /// <exclude />
-ACCESS __FSLength AS DWORD STRICT 
+ACCESS __FSLength AS DWORD STRICT
 	//PP-030828 Strong typing
 
 
@@ -542,7 +531,7 @@ ACCESS __FSLength AS DWORD STRICT
 
 
  /// <exclude />
-METHOD __Update() AS Control STRICT 
+METHOD __Update() AS Control STRICT
 	//PP-030828 Strong typing
 	// Added version of __Update() for TextControl
 	LOCAL cText,cNumText AS STRING
@@ -590,10 +579,10 @@ METHOD __Update() AS Control STRICT
 
 
  /// <exclude />
-ASSIGN __Value(uNewValue AS USUAL)  STRICT 
+ASSIGN __Value(uNewValue AS USUAL)  STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	IF (oEditString != NULL_OBJECT .AND. (oFieldSpec == NULL_OBJECT))
@@ -605,18 +594,18 @@ ASSIGN __Value(uNewValue AS USUAL)  STRICT
 	ELSE
 		SUPER:__Value := uNewValue
 	ENDIF
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.AutoFocusChange/*" />
-ACCESS AutoFocusChange 
+ACCESS AutoFocusChange
 
 
 	RETURN lAutoFocusChange
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.AutoFocusChange/*" />
-ASSIGN AutoFocusChange(lNewVal) 
+ASSIGN AutoFocusChange(lNewVal)
 
 
 	RETURN (lAutoFocusChange := lNewVal)
@@ -625,7 +614,7 @@ ASSIGN AutoFocusChange(lNewVal)
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.CreateFormattedString/*" />
-METHOD CreateFormattedString(cPicture, cType, cDefTempl) 
+METHOD CreateFormattedString(cPicture, cType, cDefTempl)
 	//PP-031115 New method, replaces __FormattedString assignment with method call, allowing overriding
 	//PP-040101 Fixed method name spelling
 	oEditString := __FormattedString{SELF, cPicture, cType, wOverWrite, cDefTempl, wScrMode}
@@ -633,7 +622,7 @@ METHOD CreateFormattedString(cPicture, cType, cDefTempl)
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.Dispatch/*" />
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent)
 	LOCAL oEvt := oEvent AS @@Event
 	LOCAL uMsg 		AS DWORD
 	LOCAL wParam 	AS DWORD
@@ -642,10 +631,10 @@ METHOD Dispatch(oEvent)
 	LOCAL lExtSel AS LOGIC
 
 
-	uMsg 	 := oEvt:uMsg 
-	wParam := oEvt:wParam 
-	
-	
+	uMsg 	 := oEvt:uMsg
+	wParam := oEvt:wParam
+
+
 	IF ((oEditString != NULL_OBJECT) .AND. (_AND(GetWindowLong(hwnd, GWL_STYLE), ES_READONLY) == 0))
 		IF (((uMsg == WM_KEYDOWN) .OR. (uMsg == WM_KEYUP) .OR. (uMsg == WM_CHAR)))
 			#ifndef __VULCAN__
@@ -710,15 +699,15 @@ METHOD Dispatch(oEvent)
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.FieldSpec/*" />
-ASSIGN FieldSpec(oNewFS) 
+ASSIGN FieldSpec(oNewFS)
 	LOCAL sPic AS STRING
 	LOCAL pos AS USUAL
 	LOCAL vt AS STRING
 	LOCAL sDefTempl AS STRING
 
 
-	
-	
+
+
 	SUPER:FieldSpec := oNewFS
 
 
@@ -774,16 +763,16 @@ ASSIGN FieldSpec(oNewFS)
 	SELF:modified := FALSE
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.FocusChange/*" />
-METHOD FocusChange(oFocusChangeEvent) 
+METHOD FocusChange(oFocusChangeEvent)
 	LOCAL iPos AS INT
 
 
-	
-	
+
+
 	//PP-030505 Bug:93 SendMessage changed to PostMessage
 
 
@@ -821,18 +810,18 @@ METHOD FocusChange(oFocusChangeEvent)
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.FocusSelect/*" />
-ACCESS FocusSelect 
-	
-	
+ACCESS FocusSelect
+
+
 
 
 	RETURN wFocusSel
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.FocusSelect/*" />
-ASSIGN FocusSelect(wNewValue) 
-	
-	
+ASSIGN FocusSelect(wNewValue)
+
+
 
 
 	IF !IsLong(wNewValue)
@@ -849,9 +838,9 @@ ASSIGN FocusSelect(wNewValue)
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
+
+
 
 
 	SUPER(oOwner, xID, oPoint, oDimension, kStyle)
@@ -861,22 +850,22 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	lAllowSelection := TRUE
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.OverWrite/*" />
-ACCESS OverWrite 
-	
-	
+ACCESS OverWrite
+
+
 
 
 	RETURN wOverWrite
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.OverWrite/*" />
-ASSIGN OverWrite(wNewValue) 
-	
-	
+ASSIGN OverWrite(wNewValue)
+
+
 
 
 	IF !IsLong(wNewValue)
@@ -895,13 +884,13 @@ ASSIGN OverWrite(wNewValue)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.Picture/*" />
-ACCESS Picture 
-	
-	
+ACCESS Picture
+
+
 
 
 	IF oEditString == NULL_OBJECT
@@ -911,12 +900,12 @@ ACCESS Picture
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.Picture/*" />
-ASSIGN Picture(cNewPicture) 
+ASSIGN Picture(cNewPicture)
 	LOCAL uOldVal AS USUAL
 
 
-	
-	
+
+
 
 
 	IF !IsString(cNewPicture)
@@ -947,18 +936,18 @@ ASSIGN Picture(cNewPicture)
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.ScrollMode/*" />
-ACCESS ScrollMode 
-	
-	
+ACCESS ScrollMode
+
+
 
 
 	RETURN wScrMode
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.ScrollMode/*" />
-ASSIGN ScrollMode(wNewValue) 
-	
-	
+ASSIGN ScrollMode(wNewValue)
+
+
 
 
 	IF !IsLong(wNewValue)
@@ -977,11 +966,11 @@ ASSIGN ScrollMode(wNewValue)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.TextValue/*" />
-ACCESS TextValue 
+ACCESS TextValue
 LOCAL cText			AS STRING
 LOCAL cOrigText		AS STRING
 LOCAL cFormat		AS STRING
@@ -1031,9 +1020,9 @@ RETURN cText
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.TextValue/*" />
-ASSIGN TextValue(cNewText) 
-	
-	
+ASSIGN TextValue(cNewText)
+
+
 
 
 	SUPER:TextValue := cNewText
@@ -1049,13 +1038,13 @@ ASSIGN TextValue(cNewText)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/SingleLineEdit.Undo/*" />
-METHOD Undo() 
-	
-	
+METHOD Undo()
+
+
 
 
 	IF (oEditString != NULL_OBJECT)

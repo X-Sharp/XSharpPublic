@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="2e388c61-0643-4c5d-976f-125a5c7e9bf5" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration &gt; <link xlink:href="e8707520-821f-41bc-857b-31cdf44b7886" />&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">Instance Variables</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare fields/ instance variables with optional initial values</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;</para>
+<para>&#160;[Attributes] [Modifiers] [INSTANCE] [DIM] &lt;idVar&gt;[ [ &lt;dimensions&gt; ] ] &#160; &#160;[:= &lt;uValue&gt;] &#160; &#160;[, ...] [AS &lt;idType&gt;] [, ...]]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Attributes</entry><entry>An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method/function containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword.</entry></row></table><para>&#160;</para>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, PROTECTED, HIDDEN, INTERNAL, SEALED, ABSTRACT or STATIC.</entry></row></table><para>&#160;</para>
+<table><row><entry>DIM</entry><entry>An optional keyword that specifies that you want to create a variable of a (.Net) array type</entry></row></table><para>&#160;</para>
+<table><row><entry>INSTANCE</entry><entry>An optional keyword that you have to use when no modifiers are used. Without modifier the fields will become PUBLIC</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idVar&gt;</entry><entry>A valid identifier name for the field to declare.</entry></row></table><para>&#160;</para>
+<table><row><entry>[&lt;dimensions&gt;]</entry><entry>The initial dimensions for a variable of type array. This may be used with the DIM keyword, in which case it is a .Net array, or without the DIM keyword in which case it is a VO compatible dynamic array.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;uValue&gt;</entry><entry>The initial value to assign to the variable.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry></entry></row></table><para>&#160;</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

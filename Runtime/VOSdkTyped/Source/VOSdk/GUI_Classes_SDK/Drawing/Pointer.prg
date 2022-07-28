@@ -1,4 +1,4 @@
-
+/// <include file="Gui.xml" path="doc/Pointer/*" />
 
 
 CLASS Pointer INHERIT VObject
@@ -6,24 +6,28 @@ CLASS Pointer INHERIT VObject
 	ACCESS __Cursor AS System.Windows.Forms.Cursor
 		RETURN oCursor
 
+/// <include file="Gui.xml" path="doc/Pointer.Confine/*" />
 	METHOD Confine(oRect as BoundingBox) AS VOID
 		System.Windows.Forms.Cursor.Clip := oRect
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/Pointer.Handle/*" />
 	METHOD Handle() AS IntPtr STRICT
 		RETURN oCursor:Handle
 
-	METHOD Hide() 
+/// <include file="Gui.xml" path="doc/Pointer.Hide/*" />
+	METHOD Hide()
 		System.Windows.Forms.Cursor.Hide()
 		RETURN SELF
 
-	CONSTRUCTOR(xResourceID) 
-		LOCAL lOk AS LOGIC	
+/// <include file="Gui.xml" path="doc/Pointer.ctor/*" />
+	CONSTRUCTOR(xResourceID)
+		LOCAL lOk AS LOGIC
 		SUPER()
 
 		DEFAULT(@xResourceID, POINTERARROW)
 
-		IF IsObject(xResourceID)  
+		IF IsObject(xResourceID)
 			LOCAL oResID := xResourceID AS OBJECT
 			IF oResID IS System.Windows.Forms.Cursor VAR oCurs
 				oCursor := oCurs
@@ -40,7 +44,7 @@ CLASS Pointer INHERIT VObject
 				oCursor     := System.Windows.Forms.Cursor{hCursor}
 				lOk := TRUE
 			ENDIF
-		ELSEIF IsNumeric(xResourceID) 
+		ELSEIF IsNumeric(xResourceID)
 			oCursor := __WCConvertPointer(xResourceID)
 			lOk := TRUE
 		ELSEIF IsSymbol(xResourceID) .or. IsString(xResourceID)
@@ -48,25 +52,28 @@ CLASS Pointer INHERIT VObject
 			lOk := TRUE
 		ENDIF
 		IF ! lOk
-			WCError{#Init, #Pointer, __WCSTypeError}:@@Throw()
+			WCError{#Init, #Pointer, __WCSTypeError}:Throw()
 		ENDIF
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/Pointer.Position/*" />
 	ACCESS Position AS Point
 		RETURN (Point) System.Windows.Forms.Cursor.Position
 
-	ASSIGN Position(oPoint AS Point) 
+/// <include file="Gui.xml" path="doc/Pointer.Position/*" />
+	ASSIGN Position(oPoint AS Point)
 		System.Windows.Forms.Cursor.Position := oPoint
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/Pointer.Show/*" />
 	METHOD Show()
 		System.Windows.Forms.Cursor.Show()
 		RETURN  SELF
 
 	STATIC METHOD __WCConvertPointer(pointerType AS INT) AS System.Windows.Forms.Cursor
 		LOCAL retVal AS System.Windows.Forms.Cursor
-		SWITCH pointerType 
+		SWITCH pointerType
 		CASE PointerCrossHairs
 			retVal := System.Windows.Forms.Cursors.Cross
 		CASE PointerIBeam
@@ -94,9 +101,9 @@ CLASS Pointer INHERIT VObject
 	OPERATOR IMPLICIT ( p AS Pointer ) AS System.Windows.Forms.Cursor
 		IF p != NULL_OBJECT
 			RETURN p:__Cursor
-		ENDIF	
+		ENDIF
 		RETURN NULL_OBJECT
-	
+
 
 END CLASS
 

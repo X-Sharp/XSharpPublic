@@ -1,6 +1,7 @@
 
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
+/// <include file="Gui.xml" path="doc/ChildAppWindow/*" />
 CLASS ChildAppWindow INHERIT AppWindow
 	PROTECT oShell AS ShellWindow
 
@@ -12,8 +13,9 @@ CLASS ChildAppWindow INHERIT AppWindow
 			oChild := GuiFactory.Instance:CreateChildAppWindow(SELF, NULL_OBJECT)
 		ENDIF
 		RETURN oChild
-	
-	CONSTRUCTOR(oOwner, lManaged, lImpl) 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.ctor/*" />
+	CONSTRUCTOR(oOwner, lManaged, lImpl)
 		LOCAL lMng AS LOGIC
 		IF IsInstanceOfUsual(oOwner,#ShellWindow) // create an MDI child
 			oShell := oOwner
@@ -22,7 +24,7 @@ CLASS ChildAppWindow INHERIT AppWindow
 		SUPER(oOwner)
 		IF !IsNil(lManaged)
 			IF !IsLogic(lManaged)
-				WCError{#Init,#ChildAppWindow,__WCSTypeError,lManaged,2}:@@Throw()
+				WCError{#Init,#ChildAppWindow,__WCSTypeError,lManaged,2}:Throw()
 			ELSE
 				lMng := lManaged
 			ENDIF
@@ -47,7 +49,8 @@ CLASS ChildAppWindow INHERIT AppWindow
 			//ENDIF
 		ENDIF
 
-	ASSIGN Menu(oNewMenu AS VOSDK.Menu) 
+/// <include file="Gui.xml" path="doc/ChildAppWindow.Menu/*" />
+	ASSIGN Menu(oNewMenu AS VOSDK.Menu)
 		LOCAL i as DWORD
 		SUPER:Menu := oNewMenu
 		if oShell != NULL_OBJECT
@@ -60,13 +63,14 @@ CLASS ChildAppWindow INHERIT AppWindow
 				oItem:MergeType := System.Windows.Forms.MenuMerge.Add
 			NEXT
 		ENDIF
-		RETURN 
+		RETURN
 
+	/// <inheritdoc />
     METHOD Close(oEvent)
         SUPER:Close()
         oShell:Menu := oShell:__ActualMenu
         RETURN SELF
-        
+
 
 END CLASS
 

@@ -19,13 +19,9 @@ CLASS HelpDisplay INHERIT VObject
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __CallHelp(uCommand AS DWORD, dwData AS DWORD, cTopic := "" AS STRING) AS LOGIC STRICT 
+	METHOD __CallHelp(uCommand AS DWORD, dwData AS DWORD, cTopic := "" AS STRING) AS LOGIC STRICT
    //SE-060519
    LOCAL cFName AS STRING
-
-
-   
-   
 
 
    IF lHTMLHelp
@@ -45,9 +41,6 @@ CLASS HelpDisplay INHERIT VObject
  /// <exclude />
 METHOD __VerifyHelp() AS LOGIC STRICT
 	//PP-030828 Strong typing
-	
-	
-
 
 	IF (hWnd == NULL_PTR) .AND. !lHTMLHelp // Create dummy window for use with help system
 		// oTopApp := TopAppWindow{}
@@ -67,8 +60,8 @@ METHOD __VerifyHelp() AS LOGIC STRICT
 
 /// <include file="Gui.xml" path="doc/HelpDisplay.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF (hWnd != NULL_PTR)
@@ -96,17 +89,12 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/HelpDisplay.EnableHTMLHelp/*" />
-METHOD EnableHTMLHelp(lEnable, cPopUpTopic) 
+METHOD EnableHTMLHelp(lEnable, cPopUpTopic)
    //SE-060519
-   
-   
-
 
 	Default(@lEnable, TRUE)
 
-
 	lHTMLHelp := FALSE
-
 
 	IF lEnable
 		IF (pfnHTMLHelp := GetProcAddress(LoadLibrary(String2Psz("HHCTRL.OCX")), String2Psz("HtmlHelpA"))) == NULL_PTR
@@ -129,19 +117,19 @@ METHOD EnableHTMLHelp(lEnable, cPopUpTopic)
 
 
 /// <include file="Gui.xml" path="doc/HelpDisplay.HelpError/*" />
-METHOD HelpError() 
-	
-	
+METHOD HelpError()
+
+
 
 
 	RETURN wError
 
 
 /// <include file="Gui.xml" path="doc/HelpDisplay.ctor/*" />
-CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing) 
+CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing)
 	//SE-060519
-	
-	
+
+
 
 
 	IF !IsString(cFileName)
@@ -159,8 +147,8 @@ CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing)
 
 
 	SUPER()
-	
-	
+
+
 
 
 	SELF:cFileName := cFileName
@@ -171,11 +159,11 @@ CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/HelpDisplay.Show/*" />
-METHOD Show(cKeyword, symLookupType) 
+METHOD Show(cKeyword, symLookupType)
    //SE-060519
 	LOCAL cKey AS STRING
 	LOCAL wLen AS DWORD
@@ -188,8 +176,8 @@ METHOD Show(cKeyword, symLookupType)
 	LOCAL DIM dwHH[2,2] AS DWORD
 	LOCAL sHelpInfo AS _winHelpInfo
 	LOCAL pszKey	AS PSZ
-	
-	
+
+
 
 
 	//PP-030929
@@ -236,8 +224,8 @@ METHOD Show(cKeyword, symLookupType)
 	CASE cFirst>="0" .AND. cFirst<="9"
 		// When numeric, take the value of the key
 	   lRetVal := SELF:__CallHelp(IIF(lHTMLHelp, HH_HELP_CONTEXT, HELP_CONTEXT), Val(cKey))
-	   
-	   
+
+
 	CASE ! lHTMLHelp .AND. cFirst="[" .AND. wLen>3 .AND. SubStr3(cKey,3,1)="]"
 		// When [Letter] store the Letter in the keylist and use the rest of the key
 		wMK :=  _SIZEOF(_winMULTIKEYHELP) + wLen
@@ -275,7 +263,7 @@ METHOD Show(cKeyword, symLookupType)
 		ENDIF
 	CASE cKey=="HelpContents"
 		//PP-030929
-		IF ! lHTMLHelp             
+		IF ! lHTMLHelp
 			pszKey 	:= StringAlloc(cKey)
 			lRetVal := SELF:__CallHelp(HELP_CONTENTS , DWORD(_CAST, pszKey))
 			MemFree(pszKey)
@@ -290,9 +278,9 @@ METHOD Show(cKeyword, symLookupType)
 
 
 	OTHERWISE
-		pszKey 	:= StringAlloc(cKey)         
+		pszKey 	:= StringAlloc(cKey)
 		IF ! lHTMLHelp
-			//RvdH 070628 Changd HELP_CONTENTS to HELP_KEY in the next line. 
+			//RvdH 070628 Changd HELP_CONTENTS to HELP_KEY in the next line.
 			lRetVal := SELF:__CallHelp(HELP_KEY, DWORD(_CAST, pszKey))
 			IF ! lRetVal
 				lRetVal := SELF:__CallHelp(HELP_FINDER, 0)
@@ -340,11 +328,6 @@ FUNCTION THTMLHelp(hwndCaller AS PTR, pszFile AS PSZ, uCommand AS DWORD, dwData 
 	//SE-060519 Update S.Ebert
 	//SYSTEM
 	RETURN 0
-
-
-
-
-
 
 #region defines
 DEFINE HDCANTOPENFILE := 1

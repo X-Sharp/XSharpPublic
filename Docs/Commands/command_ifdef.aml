@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="command_ifdef" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">#ifdef Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Build a section of code if a constant exists and is not equal to FALSE or 0.</para>
+<para>&#160;</para>
+<para>Syntax</para>
+<para>#ifdef &lt;idConstant&gt; <para/>
+&#160;&lt;Statements&gt;...<para/>
+[#else] <para/>
+&#160;&lt;Statements&gt;...<para/>
+#endif</para>
+<para>Arguments</para>
+<table><row><entry>&lt;idConstant&gt;</entry><entry>The name of a constant whose existence is being verified.</entry></row></table><para>&#160;</para>
+<para>Description</para>
+<para>#ifdef...#endif lets you perform a conditional build by identifying a section of source code to include if a specified constant exists and is not equal to FALSE or 0. &#160;The #else statement specifies the code to include if the #ifdef condition fails, and the #endif terminates the conditional build block.</para>
+<para>Note:  You can use #ifdef with compiler entities other than constants, such as functions and globals. &#160;In these cases, the statement tests for existence only, and does not look at the value of the entity.</para>
+<para>&#160;</para>
+<para>Examples</para>
+<para>This code fragment is a general skeleton for a conditional build with #ifdef. &#160;Because the lDemo constant is defined as TRUE, the code between the #ifdef and #endif statements will be built:</para>
+<para>&#160;</para>
+<para>DEFINE lDemo := TRUE<para/>
+FUNCTION Start()<para/>
+&#160;#IFDEF lDemo<para/>
+&#160; &#160; &#160; &#160; &#160;&lt;Demo-specific statements&gt;...<para/>
+&#160;#ENDIF<para/>
+&#160;...<para/>
+&#160;</para>
+<para>&#160;<para/>
+To build the real (non-demo) version of this application, you would change the DEFINE statement to:</para>
+<para>&#160;<para/>
+DEFINE lDemo := FALSE</para>
+<para>&#160;</para>
+<para>See Also</para>
+<para><link xlink:href="cfe86e62-aa3a-466b-9fbb-ce377f017bc9">#ifndef</link>, <link xlink:href="a27c69ad-1651-48fd-93e1-5c184a48acde">DEFINE</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

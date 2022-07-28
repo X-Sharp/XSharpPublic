@@ -420,7 +420,7 @@ METHOD GoTo( nRecordNumber AS LONG) AS LOGIC
 							__DBSGoBottom( nTries )
 							__DBSSkip( 1, nTries )
 						ELSE
-							__DBSGoTo( nCurrentRecord, nTries )
+							__DBSGoTo( (int) nCurrentRecord, nTries )
 						ENDIF
 					ENDIF
 				ENDIF
@@ -583,7 +583,7 @@ METHOD Info( kInfoType AS LONG, uInfo := NIL AS USUAL) AS USUAL
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbInfo( kInfoType, REF uInfo)
+		IF ! VoDbInfo( (DWORD) kInfoType, REF uInfo)
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
       __DBSSetSelect( dwCurrentWorkArea )

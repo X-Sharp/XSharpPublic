@@ -91,9 +91,9 @@ BEGIN NAMESPACE XSharp.RT.Tests
             METHOD BlobRootTest() AS VOID
             LOCAL cPath AS STRING
             LOCAL aStruct AS ARRAY
-            LOCAL cMemo := "test.txt" as STRING
+            //LOCAL cMemo := "test.txt" as STRING
             LOCAL cContents := "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ" AS STRING
-            LOCAL cMemoContents := "The quick brown fox jumps over the lazy dog" AS STRING
+            //LOCAL cMemoContents := "The quick brown fox jumps over the lazy dog" AS STRING
             //RDDINFO(_SET_MEMOEXT, ".DBF.FPT.U")
             cPath := ""
             aStruct := { { "DATA", "M", 10, 0, "DATA" } }

@@ -48,3 +48,14 @@ trim_trailing_whitespace = false
 indent_style = space
 keyword_case = none
 identifier_case = false
+indent_namespace = false
+indent_entity_content = true
+indent_type_members = true
+indent_block_content = true
+indent_statements = true
+indent_case_content = true
+indent_case_labels = false
+indent_continued_lines = true
+indent_preprocessor = false
+
+

@@ -5,16 +5,17 @@
 
 USING System.Diagnostics
 
+/// <include file="Gui.xml" path="doc/MenuEvent/*" />
 CLASS MenuEvent INHERIT @@Event IMPLEMENTS INamedEvent
 	PROTECT oMenu AS Menu
 	PROTECT nID AS LONG
 
-	METHOD AsString() AS STRING STRICT 
+	METHOD AsString() AS STRING STRICT
 		RETURN SELF:HyperLabel:Caption
 
-	ACCESS HyperLabel AS HyperLabel STRICT 
+	ACCESS HyperLabel AS HyperLabel STRICT
 		LOCAL oHyperLabel AS HyperLabel
-		IF oMenu != NULL_OBJECT		
+		IF oMenu != NULL_OBJECT
 			oHyperLabel := oMenu:HyperLabel(nID)
 			IF oHyperLabel == NULL
 				oHyperLabel := HyperLabel{#Item}
@@ -34,22 +35,24 @@ CLASS MenuEvent INHERIT @@Event IMPLEMENTS INamedEvent
 		IF IsLong(uID)
 			SELF:nID := uID
 		ENDIF
-		RETURN 
+		RETURN
 
-	ACCESS ItemID AS LONGINT STRICT 
+	ACCESS ItemID AS LONGINT STRICT
 		RETURN nID
 
-	ACCESS Menu AS Menu 
+/// <include file="Gui.xml" path="doc/MenuSelectEvent.Menu/*" />
+	ACCESS Menu AS Menu
 		RETURN oMenu
 
-	ACCESS Name AS STRING STRICT 
+/// <include file="Gui.xml" path="doc/MenuSelectEvent.Name/*" />
+	ACCESS Name AS STRING STRICT
 		LOCAL retVal AS STRING
 		IF SELF:HyperLabel != NULL_OBJECT
 			retVal := SELF:HyperLabel:Name
 		ENDIF
 		RETURN retVal
 
-	ACCESS NameSym AS SYMBOL STRICT 
+	ACCESS NameSym AS SYMBOL STRICT
 		LOCAL retVal AS SYMBOL
 		IF SELF:HyperLabel != NULL_OBJECT
 			retVal := SELF:HyperLabel:NameSym
@@ -61,21 +64,24 @@ END CLASS
 
 CLASS MenuCommandEvent INHERIT MenuEvent
 	[DebuggerStepThrough];
-	CONSTRUCTOR(uMenu AS USUAL, uWin AS USUAL, uID AS USUAL) 
-		SUPER(uMenu, uWin, uID) 
+	CONSTRUCTOR(uMenu AS USUAL, uWin AS USUAL, uID AS USUAL)
+		SUPER(uMenu, uWin, uID)
 
 END CLASS
+/// <include file="Gui.xml" path="doc/MenuSelectEvent/*" />
 CLASS MenuSelectEvent INHERIT MenuEvent
 	[DebuggerStepThrough];
 	CONSTRUCTOR(uMenu AS USUAL, uWin AS USUAL, uID AS USUAL) STRICT
-		SUPER(uMenu, uWin, uID) 
+		SUPER(uMenu, uWin, uID)
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/MenuInitEvent/*" />
 CLASS MenuInitEvent INHERIT MenuEvent
+
 	[DebuggerStepThrough];
 	CONSTRUCTOR(uMenu AS USUAL, uWin AS USUAL, uID AS USUAL) STRICT
-		SUPER(uMenu, uWin, uID) 
+		SUPER(uMenu, uWin, uID)
 
 END CLASS
 

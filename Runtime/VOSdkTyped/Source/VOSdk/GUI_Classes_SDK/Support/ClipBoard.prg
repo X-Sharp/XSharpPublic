@@ -2,13 +2,15 @@
 
 
 USING System.Collections.Specialized
+/// <include file="Gui.xml" path="doc/Clipboard/*" />
 
 CLASS Clipboard INHERIT VObject
 
+/// <include file="Gui.xml" path="doc/Clipboard.Clear/*" />
 	METHOD Clear() AS VOID
 		System.Windows.Forms.Clipboard.Clear()
-		RETURN 
-
+		RETURN
+/// <include file="Gui.xml" path="doc/Clipboard.FileCount/*" />
 	ACCESS FileCount AS LONG
 		LOCAL nCount AS LONG
 		LOCAL aFiles AS StringCollection
@@ -18,7 +20,8 @@ CLASS Clipboard INHERIT VObject
 		ENDIF
 		RETURN nCount
 
-	METHOD GetItemSize(kFormat AS LONG) AS LONG 
+/// <include file="Gui.xml" path="doc/Clipboard.GetItemSize/*" />
+	METHOD GetItemSize(kFormat AS LONG) AS LONG
 		LOCAL nSize AS LONG
 		LOCAL oImage AS System.Drawing.Image
 		LOCAL oStream AS System.IO.MemoryStream
@@ -43,9 +46,14 @@ CLASS Clipboard INHERIT VObject
 		ENDCASE
 		RETURN nSize
 
-	
-		
 
+/// <include file="Gui.xml" path="doc/Clipboard.ctor/*" />
+CONSTRUCTOR()
+
+    SUPER()
+
+RETURN
+/// <include file="Gui.xml" path="doc/Clipboard.Insert/*" />
 	METHOD Insert(xType AS USUAL)  AS LOGIC
 		LOCAL lOk AS LOGIC
 		IF IsString(xType)
@@ -61,28 +69,31 @@ CLASS Clipboard INHERIT VObject
 			System.Windows.Forms.Clipboard.SetImage( (System.Drawing.Image) oBitMap:__Image)
 			lOk := TRUE
 		ELSE
-			WCError{#Insert,#Clipboard,__WCSTypeError,xType,1}:@@Throw()
+			WCError{#Insert,#Clipboard,__WCSTypeError,xType,1}:Throw()
 			lOk := FALSE
 		ENDIF
 		RETURN lOk
 
+/// <include file="Gui.xml" path="doc/Clipboard.InsertRTF/*" />
 	METHOD InsertRTF(cText AS STRING)  AS LOGIC
 		LOCAL lOk AS LOGIC
 		System.Windows.Forms.Clipboard.SetText((STRING) cText, System.Windows.Forms.TextDataFormat.Rtf)
 		lOk := TRUE
 		RETURN lOk
 
+/// <include file="Gui.xml" path="doc/Clipboard.RetrieveBitmap/*" />
 	METHOD RetrieveBitmap(oBitmap AS Bitmap) as LOGIC
 		LOCAL lRetVal AS LOGIC
 		LOCAL oImage AS System.Drawing.Image
 		IF System.Windows.Forms.Clipboard.ContainsImage()
 			oImage := System.Windows.Forms.Clipboard.GetImage()
 			oBitmap:__SetImage(oImage)
-			lRetVal := TRUE			
+			lRetVal := TRUE
 		ENDIF
-		
+
 		RETURN lRetVal
 
+/// <include file="Gui.xml" path="doc/Clipboard.RetrieveFiles/*" />
 	METHOD RetrieveFiles(lMustExist AS LOGIC)  AS ARRAY
 		LOCAL aFiles AS ARRAY
 		LOCAL aCollection AS StringCollection
@@ -95,6 +106,7 @@ CLASS Clipboard INHERIT VObject
 		ENDIF
 		RETURN aFiles
 
+/// <include file="Gui.xml" path="doc/Clipboard.RetrieveRTF/*" />
 	METHOD RetrieveRTF(nStringLength := -1 AS LONG)  AS STRING
 		LOCAL cRetVal AS STRING
 		IF System.Windows.Forms.Clipboard.ContainsText(System.Windows.Forms.TextDataFormat.Rtf)
@@ -105,6 +117,7 @@ CLASS Clipboard INHERIT VObject
 		ENDIF
 		RETURN cRetVal
 
+/// <include file="Gui.xml" path="doc/Clipboard.RetrieveString/*" />
 	METHOD RetrieveString(nStringLength := -1 AS LONG)  AS STRING
 		LOCAL cRetVal AS STRING
 		IF System.Windows.Forms.Clipboard.ContainsText()

@@ -1,3 +1,4 @@
+/// <include file="Gui.xml" path="doc/FixedText/*" />
 [XSharp.Internal.TypesChanged];
 CLASS FixedText INHERIT TextControl
 	PROTECT _dwDrawStyle AS DWORD
@@ -8,11 +9,12 @@ CLASS FixedText INHERIT TextControl
     PROPERTY ControlType AS Controltype GET ControlType.FixedText
 
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware) 
+/// <include file="Gui.xml" path="doc/FixedText.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 		LOCAL cClass AS USUAL
 		LOCAL lResID AS LOGIC
 
-		
+
 		// Text will be displayed using API DrawText(). Default style set below.
 		// Standard styles will cause the appropriate draw style to be used.
 		// DT_END_ELLIPSIS will put ... if text does not fit in space provided
@@ -36,17 +38,17 @@ CLASS FixedText INHERIT TextControl
 			ENDIF
 		ENDIF
 
-		RETURN 
+		RETURN
 
 
 	ACCESS __Label AS IVOLabel
 		RETURN (IVOLabel) oCtrl
 
 	[Obsolete];
-	METHOD __SetColors(_hDC AS IntPtr) AS IntPtr STRICT 
+	METHOD __SetColors(_hDC AS IntPtr) AS IntPtr STRICT
 		RETURN IntPtr.Zero
 
-	METHOD __SetText(cNewText AS STRING) AS STRING STRICT 
+	METHOD __SetText(cNewText AS STRING) AS STRING STRICT
 		//PP-030915
 		IF SELF:ValidateControl()
 			//PP-040107
@@ -72,7 +74,7 @@ CLASS FixedText INHERIT TextControl
 			oRect := oBB
 		ENDIF
 		liSSStyle := SELF:dwStyle
-		
+
 		dwDrawStyle := (System.Windows.Forms.TextFormatFlags) _dwDrawStyle
 		IF LOGIC(_CAST, _AND(liSSStyle, SS_CENTERIMAGE))
 			//PP-040812 DT_VCENTER needs DT_SINGLELINE to work - see MS docs
@@ -93,10 +95,10 @@ CLASS FixedText INHERIT TextControl
 		ENDIF
 
 		dwDrawStyle |= System.Windows.Forms.TextFormatFlags.NoPadding
-		
+
 		dwDrawStyle |= System.Windows.Forms.TextFormatFlags.PreserveGraphicsTranslateTransform | ;
 			System.Windows.Forms.TextFormatFlags.PreserveGraphicsClipping
-		
+
 		LOCAL oCol AS System.Drawing.Color
 		IF oCtrl:Enabled
 			oCol := oCtrl:ForeColor
@@ -105,14 +107,15 @@ CLASS FixedText INHERIT TextControl
 		ENDIF
 		System.Windows.Forms.TextRenderer.DrawText(e:Graphics, cCaption, oCtrl:Font, oRect,oCol,dwDrawStyle)
 		RETURN TRUE
-	
 
-	ASSIGN Margin (nNewValue) 
+/// <include file="Gui.xml" path="doc/FixedText.Margin/*" />
+	ASSIGN Margin (nNewValue)
 		(_dwMargin := nNewValue)
 		SELF:oCtrl:Margin := System.Windows.Forms.Padding{(LONG) nNewValue}
 
 
-	METHOD SetDrawStyle(dwDrawStyle, lEnable ) 
+/// <include file="Gui.xml" path="doc/FixedText.SetDrawStyle/*" />
+	METHOD SetDrawStyle(dwDrawStyle, lEnable )
 
 		IF IsLogic(lEnable)
 			IF lEnable
@@ -126,23 +129,24 @@ CLASS FixedText INHERIT TextControl
 
 		RETURN _dwDrawStyle
 
-	METHOD SetStandardStyle(kTextStyle) 
+/// <include file="Gui.xml" path="doc/FixedText.SetStandardStyle/*" />
+	METHOD SetStandardStyle(kTextStyle)
 		LOCAL dwTempStyle, dwStyle AS DWORD
 		LOCAL hHandle AS PTR
 
-		
+
 		IF !IsLong(kTextStyle)
-			WCError{#SetStandardStyle,#FixedText,__WCSTypeError,kTextStyle,1}:@@Throw()
+			WCError{#SetStandardStyle,#FixedText,__WCSTypeError,kTextStyle,1}:Throw()
 		ENDIF
 
-		DO CASE
-		CASE (kTextStyle == FT_LEFTALIGN)
+	SWITCH (INT) kTextStyle
+	CASE FT_LEFTALIGN
 			dwTempStyle := SS_LEFT
-		CASE (kTextStyle == FT_RIGHTALIGN)
+	CASE FT_RIGHTALIGN
 			dwTempStyle := SS_RIGHT
-		CASE (kTextStyle == FT_CENTERED)
+	CASE FT_CENTERED
 			dwTempStyle := SS_CENTER
-		ENDCASE
+	END SWITCH
 
 		hHandle := SELF:Handle()
 		IF oCtrl != NULL_OBJECT .and. ! oCtrl:IsDisposed

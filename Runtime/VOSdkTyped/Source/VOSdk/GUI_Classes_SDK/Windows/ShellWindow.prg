@@ -4,6 +4,7 @@ STATIC DEFINE __WCMdiFirstChildID := 0x8001
 USING SWF := System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 
+/// <include file="Gui.xml" path="doc/ShellWindow/*" />
 CLASS ShellWindow INHERIT AppWindow
 	PROTECT oWndClient	AS System.Windows.Forms.MdiClient
 	PROTECT lOpened		AS LOGIC
@@ -11,7 +12,7 @@ CLASS ShellWindow INHERIT AppWindow
 	PROTECT oActualMenu	AS VOSDK.Menu
 	PROTECT oSavedTB	AS VOSDK.ToolBar
 	PROTECT iChildTBLoc AS INT
-	
+
 	METHOD enableScrollBars(enable AS LOGIC) AS VOID
 	//SELF:oNMDI:hideScrollbars := !enable
 	RETURN
@@ -20,6 +21,7 @@ CLASS ShellWindow INHERIT AppWindow
 		RETURN SELF:oWndClient != NULL_OBJECT .and. ! SELF:oWndClient:IsDisposed
 
 
+ /// <exclude />
 	METHOD __CreateForm() AS VOForm STRICT
 		LOCAL oShell AS VOShellForm
 		oShell := GuiFactory.Instance:CreateShellWindow(SELF)
@@ -34,7 +36,7 @@ CLASS ShellWindow INHERIT AppWindow
                 SELF:oWndClient:ControlRemoved += OnMdiDeleted
 			ENDIF
         NEXT
-        
+
 		RETURN oShell
 
     PRIVATE METHOD OnMdiDeleted(sender AS OBJECT, e AS System.Windows.Forms.ControlEventArgs) AS VOID
@@ -46,18 +48,19 @@ CLASS ShellWindow INHERIT AppWindow
 
 	ACCESS __Shell AS VOShellForm
 		RETURN (VOShellForm) __Form
-	
-	ACCESS __ActualMenu AS VOSDK.Menu STRICT 
+
+	ACCESS __ActualMenu AS VOSDK.Menu STRICT
 		//PP-030828 Strong typing
 		RETURN oActualMenu
-	
-	[Obsolete];
-	METHOD __AdjustClient() AS LOGIC STRICT 
-		RETURN TRUE
-	
 
-	METHOD __RemoveChildToolBar() AS VOSDK.ToolBar STRICT 
-		
+	[Obsolete];
+	METHOD __AdjustClient() AS LOGIC STRICT
+		RETURN TRUE
+
+
+ /// <exclude />
+	METHOD __RemoveChildToolBar() AS VOSDK.ToolBar STRICT
+
 		IF (iChildTBLoc == TBL_SHELL)
 			IF (oSavedTB != NULL_OBJECT)
 				SELF:ToolBar := oSavedTB
@@ -67,20 +70,21 @@ CLASS ShellWindow INHERIT AppWindow
 			// SendMessage(oToolBar:Handle(), RB_DELETEBAND, 1, 0)
 			//endif
 		ENDIF
-		
-		RETURN oToolBar
-	
-	
 
-	METHOD __SetChildToolBar(oChildToolbar AS VOSDK.ToolBar) AS VOSDK.ToolBar STRICT 
+		RETURN oToolBar
+
+
+
+ /// <exclude />
+	METHOD __SetChildToolBar(oChildToolbar AS VOSDK.ToolBar) AS VOSDK.ToolBar STRICT
 		LOCAL oTB AS VOSDK.ToolBar
 		IF oChildToolbar != NULL_OBJECT  //SE-050926
-			
+
 			IF (iChildTBLoc == TBL_SHELL)
-				
+
 				IF (oToolBar != oChildToolbar)
 					oTB := oToolBar
-					
+
 					oToolBar := oChildToolbar
 					oToolBar:__SetParent(SELF)
 					oToolBar:Show()
@@ -94,36 +98,40 @@ CLASS ShellWindow INHERIT AppWindow
 				// oChildToolBar:Show()
 				// oToolBar:AddBand(#__CHILDTBBAND, oChildToolBar, 1, 50, 25)
 			ENDIF
-			
-		ENDIF
-		
-		RETURN oToolBar
-	
-	
-	METHOD Arrange(liStyle := ArrangeCascade AS LONG) 
-		IF SELF:__IsValid
-			DO CASE
-			CASE liStyle == ARRANGEASICONS
-				oWnd:LayoutMdi(SWF.MdiLayout.ArrangeIcons)
-			CASE liStyle == ARRANGECASCADE
-				oWnd:LayoutMdi(SWF.MdiLayout.Cascade)
-			CASE liStyle == ARRANGETILEVERTICAL
-				oWnd:LayoutMdi(SWF.MdiLayout.TileVertical)
-			CASE liStyle == ARRANGETILEHORIZONTAL
-				oWnd:LayoutMdi(SWF.MdiLayout.TileHorizontal)
-			ENDCASE
-		ENDIF	
-		RETURN SELF
-	
 
+		ENDIF
+
+		RETURN oToolBar
+
+
+/// <include file="Gui.xml" path="doc/ShellWindow.Arrange/*" />
+	METHOD Arrange(liStyle := ArrangeCascade AS LONG)
+		IF SELF:__IsValid
+			SWITCH liStyle
+			CASE ARRANGEASICONS
+				oWnd:LayoutMdi(SWF.MdiLayout.ArrangeIcons)
+			CASE ARRANGECASCADE
+				oWnd:LayoutMdi(SWF.MdiLayout.Cascade)
+			CASE ARRANGETILEVERTICAL
+				oWnd:LayoutMdi(SWF.MdiLayout.TileVertical)
+			CASE ARRANGETILEHORIZONTAL
+				oWnd:LayoutMdi(SWF.MdiLayout.TileHorizontal)
+			END SWITCH
+		ENDIF
+		RETURN SELF
+
+
+/// <include file="Gui.xml" path="doc/ShellWindow.ChildToolBarLocation/*" />
 	ACCESS ChildToolBarLocation AS LONG
 		RETURN iChildTBLoc
 
-	ASSIGN ChildToolBarLocation(iNewLoc AS LONG) 
+/// <include file="Gui.xml" path="doc/ShellWindow.ChildToolBarLocation/*" />
+	ASSIGN ChildToolBarLocation(iNewLoc AS LONG)
 		iChildTBLoc := iNewLoc
-	
 
-	METHOD CloseAllChildren() 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.CloseAllChildren/*" />
+	METHOD CloseAllChildren()
 		LOCAL aForms AS System.Windows.Forms.Form[]
 		IF SELF:__IsValid
 			aForms := oWnd:MdiChildren
@@ -132,13 +140,14 @@ CLASS ShellWindow INHERIT AppWindow
 			NEXT
 		ENDIF
 		RETURN NIL
-	
-	
 
-	METHOD Destroy() AS USUAL 
+
+
+/// <include file="Gui.xml" path="doc/ShellWindow.Destroy/*" />
+	METHOD Destroy() AS USUAL
 		// was at the end !!!
 		SUPER:Destroy()
-		
+
 		// Tests if this is the last TopAppWindow
 		IF (oApp != NULL_OBJECT)
 			oApp:__WindowCount := oApp:__WindowCount - 1
@@ -146,11 +155,11 @@ CLASS ShellWindow INHERIT AppWindow
 				oApp:Quit()
 			ENDIF
 		ENDIF
-		
-		
+
+
 		RETURN SELF
-	
-	//METHOD Dispatch(oEvent) 
+
+	//METHOD Dispatch(oEvent)
 	//	//PP-040601 S.Ebert (WM_CONTEXTMENU)
 	//	LOCAL oEvt := oEvent AS @@Event
 	//	LOCAL uMsg AS DWORD
@@ -163,34 +172,34 @@ CLASS ShellWindow INHERIT AppWindow
 	//	LOCAL oWndChild AS PTR
 	//	LOCAL hMDIChild AS PTR
 	//	LOCAL oDocApp AS Window
-	
-	
-	
+
+
+
 	//	uMsg := oEvt:uMsg
-	
+
 	//	DO CASE
 	//		CASE (uMsg == WM_MENUSELECT) .OR.;
 	//		(uMsg == WM_INITMENU) .OR.;
 	//		(uMsg == WM_INITMENUPOPUP)
-	
+
 	//			oWndChild := PTR(_CAST, SendMessage(oWndClient, WM_MDIGetActive, 0, 0))
 	//		SendMessage(oWndChild, oEvt:uMsg, oEvt:wParam, oEvt:lParam)
-	
+
 	//	CASE uMsg == WM_COMMAND
 	//		// If the WM_COMMAND is not a help message (id < 0xFFFD)
 	//		// and not a WINDOW menu option (id >= MDI_FIRSTCHILDID)
 	//		// process it.
-	
+
 	//		wParam := oEvt:wParam
 	//		wParamLow := LoWord(wParam)
-	
+
 	//		IF (wParamLow >= __WCMdiFirstChildID) //.and. wParamLow<ID_FirstSystemID
 	//			IF (wParamLow < ID_FIRSTWCHELPID)
 	//				SELF:Default(oEvt)
 	//				RETURN SELF:EventReturnValue
 	//			ENDIF
 	//		ENDIF
-	
+
 	//		lParam := oEvt:lParam
 	//		IF (HiWord(wParam) <= 1) //accelerator or menu
 	//			IF !lHelpOn .OR. !SELF:__HelpFilter(oEvt)
@@ -198,9 +207,9 @@ CLASS ShellWindow INHERIT AppWindow
 	//					SELF:Default(oEvt)
 	//					RETURN SELF:EventReturnValue
 	//				ENDIF
-	
+
 	//				oWndChild := PTR(_CAST,SendMessage(oWndClient,WM_MDIGetActive,0,0))
-	
+
 	//				IF (oWndChild != 0)
 	//					SendMessage(oWndChild, WM_COMMAND, wParam, lParam)
 	//					RETURN SELF:EventReturnValue //Assume child handled menu
@@ -210,8 +219,8 @@ CLASS ShellWindow INHERIT AppWindow
 	//				RETURN SELF:EventReturnValue
 	//			ENDIF
 	//		ENDIF
-	
-	
+
+
 	//	CASE (uMsg == WM_SETCURSOR)
 	//		IF (oEvt:wParam) != (DWORD(_CAST, oWndClient:Handle))
 	//			lclient := FALSE
@@ -229,39 +238,41 @@ CLASS ShellWindow INHERIT AppWindow
 	//		ENDIF
 	//		SELF:__HandlePointer(oEvt, lHelpCursorOn, lclient)
 	//		RETURN SELF:EventReturnValue
-	
+
 	//	CASE (uMsg == WM_WCHELP)
 	//		SELF:__EnableHelpCursor(FALSE)
 	//		//SELF:HelpRequest(__ObjectCastClassPtr(oEvt, __pCHelpRequestEvent))
 	//		SELF:HelpRequest(HelpRequestEvent{oEvt})
 	//		RETURN SELF:EventReturnValue
-	
+
 
 	//	ENDCASE
-	
+
 	//	SUPER:Dispatch(oEvt)
-	
+
 	//	RETURN SELF:EventReturnValue
 
-	METHOD EnableOleStatusMessages(lEnable) 
+/// <include file="Gui.xml" path="doc/ShellWindow.EnableOleStatusMessages/*" />
+	METHOD EnableOleStatusMessages(lEnable)
 		// Also Empty in the GUI Classes
 		RETURN FALSE
 
+/// <include file="Gui.xml" path="doc/ShellWindow.GetActiveChild/*" />
 	METHOD GetActiveChild() AS Window Strict
 		LOCAL oActive AS Window
 		LOCAL oForm AS System.Windows.Forms.Form
 		LOCAL oVewaForm AS VOAppForm
 		IF SELF:__IsValid
-			IF oWnd:ActiveMdiChild != NULL_OBJECT 
+			IF oWnd:ActiveMdiChild != NULL_OBJECT
 				oForm := oWnd:ActiveMdiChild
 				IF oForm is VOAppForm
 					oVewaForm := (VOAppForm) oForm
 					oActive := oVewaForm:Window
 				ENDIF
 			ENDIF
-		ENDIF		
+		ENDIF
 		RETURN oActive
-	
+
 	METHOD SetActiveChild(oForm AS VOAppForm) AS VOID STRICT
 		LOCAL oMdi AS System.Windows.Forms.MdiClient
 		oMdi := SELF:oWndClient
@@ -295,25 +306,28 @@ CLASS ShellWindow INHERIT AppWindow
 		RETURN NULL_OBJECT
 
 
+/// <include file="Gui.xml" path="doc/ShellWindow.Handle/*" />
 
 	METHOD Handle(nWhich) AS IntPtr  CLIPPER
 		IF IsNumeric(nWhich) .and. nWhich == 4 .and. SELF:__IsClientValid
 			RETURN SELF:oWndClient:Handle
 		ELSE
 			RETURN SUPER:Handle()
-		ENDIF			
-	
+		ENDIF
 
-	CONSTRUCTOR(oOwner) 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.ctor/*" />
+	CONSTRUCTOR(oOwner)
 		LOCAL oScreen AS System.Windows.Forms.Screen
 		SUPER(oOwner)
 		SELF:EnableStatusBar(TRUE)
 		oScreen := System.Windows.Forms.Screen.PrimaryScreen
 		SELF:Size := Dimension{oScreen:WorkingArea:Width/2, oScreen:WorkingArea:Height/2}
-		RETURN 
-	
+		RETURN
 
-	ASSIGN Menu(oNewMenu  AS VOSDK.Menu) 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.Menu/*" />
+	ASSIGN Menu(oNewMenu  AS VOSDK.Menu)
 		LOCAL nAuto as LONG
 		SUPER:Menu := oNewMenu
 		nAuto := oNewMenu:GetAutoUpdate()
@@ -321,23 +335,26 @@ CLASS ShellWindow INHERIT AppWindow
 			oNewMenu:__Menu:MenuItems[nAuto]:MdiList := TRUE
         ENDIF
 	    SELF:oActualMenu := oNewMenu
-		RETURN 
-	
-	METHOD OnOleStatusMessage(cMsgString) 
+		RETURN
+
+/// <include file="Gui.xml" path="doc/ShellWindow.OnOleStatusMessage/*" />
+	METHOD OnOleStatusMessage(cMsgString)
 		IF SELF:StatusBar != NULL_OBJECT
 			SELF:StatusBar:MenuText := cMsgString
 		ENDIF
 		RETURN SELF
-	
 
-	ASSIGN StatusBar(oNewBar AS StatusBar) 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.StatusBar/*" />
+	ASSIGN StatusBar(oNewBar AS StatusBar)
 		SUPER:StatusBar := oNewBar
-		RETURN 
-	
-	ASSIGN ToolBar(oNewToolBar AS VOSDK.ToolBar) 
+		RETURN
+
+/// <include file="Gui.xml" path="doc/ShellWindow.ToolBar/*" />
+	ASSIGN ToolBar(oNewToolBar AS VOSDK.ToolBar)
 		oSavedTB := oNewToolBar
 		SUPER:ToolBar := oNewToolBar
-	
+
 END CLASS
 
 

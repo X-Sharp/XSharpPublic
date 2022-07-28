@@ -4,20 +4,19 @@ CLASS ResourceID INHERIT VObject
 	PROTECT nID AS INT
 	PROTECT sID AS STRING
 	PROTECT _lpAddress AS PSZ
-	
-	
+
+
 /// <include file="Gui.xml" path="doc/ResourceID.dtor/*" />
 DESTRUCTOR()
    MemFree( _lpAddress )
-   RETURN	
-
+   RETURN
 
 /// <include file="Gui.xml" path="doc/ResourceID.Address/*" />
-METHOD Address() 
+METHOD Address()
 	LOCAL lpAddress AS PTR
 
 
-	IF NULL_STRING != sID    
+	IF NULL_STRING != sID
 		//RvdH 070615 Make sure the string is STATIC. We can't control the lifetime of the return variable
 		//lpAddress := PTR(_CAST, Cast2Psz(sID))
 #ifdef __VULCAN__
@@ -29,7 +28,7 @@ METHOD Address()
          ENDIF
 #else
 		lpAddress := SysGetAtomName(SysAddAtom(String2Psz(sID)))
-#endif		
+#endif
 	ELSE
 		lpAddress := PTR(_CAST, nID)
 	ENDIF
@@ -40,15 +39,10 @@ METHOD Address()
 
 /// <include file="Gui.xml" path="doc/ResourceID.Handle/*" />
 METHOD Handle() AS PTR
-
-
 	RETURN hInst
 
-
 /// <include file="Gui.xml" path="doc/ResourceID.ID/*" />
-ACCESS ID 
-
-
+ACCESS ID
 	IF (NULL_STRING != sID)
 		RETURN sID
 	ENDIF
@@ -56,12 +50,11 @@ ACCESS ID
 
 
 /// <include file="Gui.xml" path="doc/ResourceID.ctor/*" />
-CONSTRUCTOR(xID, xResourceFile) 
+CONSTRUCTOR(xID, xResourceFile)
 	LOCAL argTypeError AS LOGIC
-	
-	
-	SUPER()
 
+
+	SUPER()
 
 	IF IsString(xID)
 		sID := xID
@@ -78,7 +71,7 @@ CONSTRUCTOR(xID, xResourceFile)
 		hInst := xResourceFile
 	ELSEIF IsInstanceOfUsual(xResourceFile, #ResourceFile)
 		hInst := xResourceFile:Handle()
-	ELSEIF IsNil(xResourceFile)     
+	ELSEIF IsNil(xResourceFile)
 		IF IsNumeric(xID)		// String table
 			hInst := GetNatDllHandle()
 		ELSE
@@ -92,16 +85,16 @@ CONSTRUCTOR(xID, xResourceFile)
 	IF argTypeError
 		WCError{#Init, #ResourceID, __WCSTypeError}:Throw()
 	ENDIF
-	
-	
-#ifdef __VULCAN__		
+
+
+#ifdef __VULCAN__
       // we only need the destructor if lpAddress
       // has a pointer that needs to be released
       GC.SuppressFinalize( SELF )
 #endif
-      
-      
-	RETURN 
+
+
+	RETURN
 END CLASS
 
 

@@ -150,7 +150,7 @@
         </returns>
         <remarks>
             AbsLong() is the same as Abs() except that it is strongly typed. <br/>
-             For more information, see Abs().
+            For more information, see Abs().
         </remarks>
         <example>
             These examples show typical results from AbsLong():
@@ -368,7 +368,7 @@
         </remarks>
         <example>
             This example creates two arrays, each filled with a value. <br/>
-             The first two elements from the source array are then copied into the target array:
+            The first two elements from the source array are then copied into the target array:
             <code language="X#">
                 LOCAL nCount := 2, nStart := 1, aOne, aTwo
                 aOne := {1, 1, 1}
@@ -461,9 +461,15 @@
             The array to fill with the file names matching <paramref name="cFileSpec" />.<br/>
             Each element will contain the file name and extension as a string, in all uppercase letters.
         </param>
-        <param name="anSizes">The array to fill with the sizes of the corresponding files in <paramref name="acFileNames" />.</param>
-        <param name="adDates">The array to fill with the dates of the corresponding files in <paramref name="acFileNames" />.</param>
-        <param name="acTimes">The array to fill with the times of the corresponding files in <paramref name="acFileNames" />, in the form hh:mO:ss.</param>
+        <param name="anSizes">
+            The array to fill with the sizes of the corresponding files in <paramref name="acFileNames" />.
+        </param>
+        <param name="adDates">
+            The array to fill with the dates of the corresponding files in <paramref name="acFileNames" />.
+        </param>
+        <param name="acTimes">
+            The array to fill with the times of the corresponding files in <paramref name="acFileNames" />, in the form hh:mO:ss.
+        </param>
         <param name="acAttributes">
             The array to fill with attributes of the corresponding files in <paramref name="acFileNames" />.<br/>
             If <paramref name="acAttributes" /> is specified, hidden, system, and directory files are included as well as normal files.<br/>
@@ -614,7 +620,7 @@
         <param name="nCount">
             The number of elements to process from <paramref name="nStart" />.<br/>
             A negative value starts from the end. <br/>
-             The default is all elements to the end of the array.
+            The default is all elements to the end of the array.
         </param>
         <returns>
             A reference to <paramref name="aArray" />.
@@ -708,8 +714,12 @@
         </summary>
 
         <param name="acFieldNames">The array to fill with field names.</param>
-        <param name="acTypes">The array to fill with the type of fields in <paramref name="acFieldNames" />.</param>
-        <param name="anWidths">The array to fill with the widths of fields in <paramref name="acFieldNames" />.</param>
+        <param name="acTypes">
+            The array to fill with the type of fields in <paramref name="acFieldNames" />.
+        </param>
+        <param name="anWidths">
+            The array to fill with the widths of fields in <paramref name="acFieldNames" />.
+        </param>
         <param name="anDecimals">
             The array to fill with the number of decimals defined for fields in <paramref name="acFieldNames" />.<br/>
             If the field type is not numeric, the system assigns 0 to <paramref name="anDecimals" />.
@@ -1661,7 +1671,7 @@
             AScanBinExact() returns 0 if no exact match is found.
         </returns>
         <remarks>
-            AScanBinExact() is the same as AScanBin() except that == is used for matching instead of =.  
+            AScanBinExact() is the same as AScanBin() except that == is used for matching instead of =.
         </remarks>
         <example>
             This example shows the difference between AScanBinExact() and AScanBin():
@@ -1728,7 +1738,9 @@
 
         <param name="aTarget">The array to process.</param>
         <param name="symMethod">The method name, specified without parentheses.</param>
-        <param name="MethodArgList">A comma-separated list of arguments to pass to <paramref name="symMethod" />.</param>
+        <param name="MethodArgList">
+            A comma-separated list of arguments to pass to <paramref name="symMethod" />.
+        </param>
         <returns>
             A reference to <paramref name="aTarget" />.
         </returns>
@@ -1877,7 +1889,7 @@
                 aSortKids := ASort(aKids,,, {|x, y| x[2] &lt;= y[2]})&#0009;// {{"Mary", 14}, {"Art", 16}, {"Joe", 23}}
             </code>
             Note:<br/>
-            The &lt; and &gt; operators can be used in the codeblock if you are sure that there will be no duplicates; otherwise, 
+            The &lt; and &gt; operators can be used in the codeblock if you are sure that there will be no duplicates; otherwise,
             it is more appropriate to use &lt;= and &gt;=, as they properly allow for duplicate values.
         </example>
         <seealso cref='O:XSharp.RT.Functions.AScan'>AScan</seealso>
@@ -2424,7 +2436,7 @@
         </param>
         <param name="uValue">
             A value to be translated.<br/>
-            The value should match the types of the values in the first column of the <paramref name="aLookupTable" /> array.  
+            The value should match the types of the values in the first column of the <paramref name="aLookupTable" /> array.
         </param>
         <param name="lSoftSeek">
             Indicates whether soft seeking should be used.<br/>
@@ -2444,15 +2456,19 @@
         <summary>
             Determine if a value is between two other values.
         </summary>
-
-        <param name="uValue">A value of any type to compare to <paramref name="uMin" /> and <paramref name="uMax" />.</param>
+        <param name="uValue">
+            A value of any type to compare to <paramref name="uMin" /> and <paramref name="uMax" />.
+        </param>
         <param name="uMin">
-            The point at which to start comparing.<br/>
+            The minimum value to compare with.<br/>
             This must be of the same type as <paramref name="uValue" /> except that numerics of different types are allowed.
         </param>
-        <param name="uMax">The point at which to stop comparing. This must be of the same type as <paramref name="uValue" /> except that numerics of different types are allowed.</param>
+        <param name="uMax">
+            TThe maximum value to compare with. 
+            This must be of the same type as <paramref name="uValue" /> except that numerics of different types are allowed.
+        </param>
         <returns>
-            TRUE if <paramref name="uValue" /> is greater than or equal to <paramref name="uMin" /> and less than or equal to <paramref name="uMax" />; otherwise, FALSE.
+            TRUE if the value is greater than or equal to the minimum and less than or equal to the maximum otherwise, FALSE.
         </returns>
         <remarks>
             Between() can be used to do advanced searching on polymorphic data types.<br/>
@@ -2481,9 +2497,12 @@
         </example>
         <seealso cref='O:XSharp.Core.Functions.Ansi2Oem'>Ansi2Oem</seealso>
         <seealso cref='O:XSharp.RT.Functions.Max'>Max</seealso>
+        <seealso cref='O:XSharp.Core.Functions.Max'>Max</seealso>
         <seealso cref='O:XSharp.RT.Functions.Min'>Min</seealso>
+        <seealso cref='O:XSharp.Core.Functions.Min'>Min</seealso>
         <seealso cref='O:XSharp.RT.Functions.SetFloatDelta'>SetFloatDelta</seealso>
     </between>
+  
     <bin2date>
         <summary>
             Convert a string containing a 32-bit binary date to a date data type.
@@ -2854,7 +2873,7 @@
 
             &#0009;If <paramref name="cTargetFile" /> does not exist, it is created.<br/>
             If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is written to without warning or error.<br/>
-            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
+            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.
         </param>
         <param name="kMode">
             A constant defining the copy mode, as shown in the table below:<br/>
@@ -2993,7 +3012,7 @@
             &#0009;This function attempts to open <paramref name="cSourceFile" /> in shared mode.<br/>
             If the file does not exist, a runtime error is raised.<br/>
             If the file is successfully opened, the operation proceeds.<br/>
-            If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  
+            If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.
         </param>
         <returns>
             A numeric pointer to the BLOB image stored in <paramref name="cSourceFile" />.
@@ -3053,7 +3072,9 @@
             Therefore, it is illegal to use <paramref name="nOldPointer" /> with any of the BLOB functions after passing it as an argument to this function.<br/>
             Use the function's return value to refer to the newly stored data.
         </param>
-        <param name="uBLOB">The data you want to put into the BLOB file.  <paramref name="uBLOB" /> can be any X# usual data type, except code block and object.</param>
+        <param name="uBLOB">
+            The data you want to put into the BLOB file.  <paramref name="uBLOB" /> can be any X# usual data type, except code block and object.
+        </param>
         <returns>
             A numeric pointer to the <paramref name="uBLOB" /> data.
         </returns>
@@ -3105,7 +3126,7 @@
 
             &#0009;If <paramref name="cTargetFile" /> does not exist, it is created.<br/>
             If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is written to without warning or error.<br/>
-            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
+            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.
         </param>
         <param name="kMode">
             A constant defining the copy mode, as shown in the table below:<br/>
@@ -3225,7 +3246,7 @@
             &#0009;This function attempts to open <paramref name="cSourceFile" /> in shared mode.<br/>
             If the file does not exist, a runtime error is raised.<br/>
             If the file is successfully opened, the operation proceeds.<br/>
-            If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  
+            If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.
         </param>
         <returns>
             TRUE if successful; otherwise, FALSE.
@@ -3270,7 +3291,7 @@
             Use ValType() or UsualType() to determine the data type.  Note that BLOBRootGet() returns NIL if the root reference has never been written to with BLOBRootPut().
         </returns>
         <remarks>
-            BLOBRootGet() allows the retrieval of a BLOB from the root of a BLOB file in a work area.  
+            BLOBRootGet() allows the retrieval of a BLOB from the root of a BLOB file in a work area.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
             Note:  Because the root data does not reference a particular record in the database file, the DBRLock() will not protect this root storage reference.<br/>
             Therefore, if the database file is opened in shared mode, you should use BLOBRootLock() before calling BLOBRootGet().
@@ -3350,7 +3371,9 @@
             Store data in the root area of a BLOB file.
         </summary>
 
-        <param name="uBLOB">The data you want to put into the BLOB file's root area.  <paramref name="uBLOB" /> can be any X# usual data type, except code block and object.</param>
+        <param name="uBLOB">
+            The data you want to put into the BLOB file's root area.  <paramref name="uBLOB" /> can be any X# usual data type, except code block and object.
+        </param>
         <returns>
             TRUE if successful; otherwise FALSE.
         </returns>
@@ -3476,7 +3499,9 @@
             Branch out of a BEGIN SEQUENCE...END construct.
         </summary>
 
-        <param name="uValue">The value passed to the RECOVER clause.  Note that <paramref name="uValue" /> is not optional; however, NIL can be specified if there is no break value.</param>
+        <param name="uValue">
+            The value passed to the RECOVER clause.  Note that <paramref name="uValue" /> is not optional; however, NIL can be specified if there is no break value.
+        </param>
         <returns>
             The value passed to the RECOVER clause.
         </returns>
@@ -3748,7 +3773,9 @@
         </summary>
 
         <param name="cString">The string that you want to extract a character from.</param>
-        <param name="wPosition">The position of the character within <paramref name="cString" />.</param>
+        <param name="wPosition">
+            The position of the character within <paramref name="cString" />.
+        </param>
         <returns>
             The character located at the specified position.
         </returns>
@@ -3778,7 +3805,9 @@
         </summary>
 
         <param name="oObject">The object to check for.</param>
-        <param name="symClassName">The class that <paramref name="oObject" /> may be an instance of.</param>
+        <param name="symClassName">
+            The class that <paramref name="oObject" /> may be an instance of.
+        </param>
         <returns>
             TRUE if <paramref name="oObject" /> is an instance of <paramref name="symClassName" />; otherwise, an error is generated.  FALSE is returned if you choose to ignore the error.
             If <paramref name="oObject" /> is a NULL_OBJECT, a FALSE is returned but no error is generated.
@@ -4191,7 +4220,7 @@
             This symbol is added to the atom table if it is not already there.
         </returns>
         <remarks>
-            ConcatAtom() lets you concatenate 2 symbols, the same way you concatenate strings with the "+" operator.  
+            ConcatAtom() lets you concatenate 2 symbols, the same way you concatenate strings with the "+" operator.
             To perform more complicated string operations, convert symbols to strings (using Symbol2String()).
         </remarks>
         <example>
@@ -4216,7 +4245,7 @@
             This symbol is added to the atom table if it is not already there.
         </returns>
         <remarks>
-            ConcatAtom3() lets you concatenate 3 symbols, the same way you concatenate strings with the "+" operator.  
+            ConcatAtom3() lets you concatenate 3 symbols, the same way you concatenate strings with the "+" operator.
             To perform more complicated string operations, convert symbols to strings (using Symbol2String()).
         </remarks>
         <example>
@@ -4244,7 +4273,7 @@
             This symbol is added to the atom table if it is not already there.
         </returns>
         <remarks>
-            ConcatAtom4() lets you concatenate 4 symbols, the same way you concatenate strings with the "+" operator.  
+            ConcatAtom4() lets you concatenate 4 symbols, the same way you concatenate strings with the "+" operator.
             To perform more complicated string operations, convert symbols to strings (using Symbol2String()).
         </remarks>
         <seealso cref='O:XSharp.RT.Functions.ConcatAtom'>ConcatAtom</seealso>
@@ -4264,7 +4293,7 @@
             This symbol is added to the atom table if it is not already there.
         </returns>
         <remarks>
-            ConcatAtom5() lets you concatenate 5 symbols, the same way you concatenate strings with the "+" operator.  
+            ConcatAtom5() lets you concatenate 5 symbols, the same way you concatenate strings with the "+" operator.
             To perform more complicated string operations, convert symbols to strings (using Symbol2String()).
         </remarks>
         <seealso cref='O:XSharp.RT.Functions.ConcatAtom'>ConcatAtom</seealso>
@@ -4279,7 +4308,9 @@
             If the century digits are not specified, the century is determined by the rules of SetEpoch().
         </param>
         <param name="dwMonth">A number from 1 through 12 representing a valid month.</param>
-        <param name="dwDay">A number representing a valid day of <paramref name="dwMonth" />.</param>
+        <param name="dwDay">
+            A number representing a valid day of <paramref name="dwMonth" />.
+        </param>
         <returns>
             The date that corresponds to the passed arguments.<br/>
             If any of the arguments specified do not represent a valid year, month, or day, a NULL_DATE is returned.
@@ -4432,7 +4463,9 @@
         </summary>
 
         <param name="symClassName">The name of the class for which you want to create an object.</param>
-        <param name="InitArgList">A comma-separated list of arguments to pass to the Init() method of <paramref name="symClassName" /> (see example below).</param>
+        <param name="InitArgList">
+            A comma-separated list of arguments to pass to the Init() method of <paramref name="symClassName" /> (see example below).
+        </param>
         <returns>
         </returns>
         <remarks>
@@ -4477,7 +4510,9 @@
             Entry point of the new thread, typically the address of a function declared with the PASCAL calling convention.<br/>
             Its prototype is: ThreadFunc( pArguments AS PTR ) AS DWORD PASCAL.
         </param>
-        <param name="pParam">Pointer or any other 32-bit parameter passed to the thread entry point <paramref name="pFunc" /> as the argument.</param>
+        <param name="pParam">
+            Pointer or any other 32-bit parameter passed to the thread entry point <paramref name="pFunc" /> as the argument.
+        </param>
         <param name="dwFlags">
             Additional flags to control the thread creation.<br/>
 
@@ -4616,7 +4651,7 @@
         <param name="cDate">
             A string of numbers representing the month, day, and year,
             separated by any character other than a number.
-            The month, day, and year digits must be in the format set by SetDateFormat() or SetDateCountry().  
+            The month, day, and year digits must be in the format set by SetDateFormat() or SetDateCountry().
             If the century digits are not specified, the century is determined by the rules of SetEpoch().
         </param>
         <returns>
@@ -4699,7 +4734,7 @@
             SetDefault() is ignored; the Windows default is used unless you specify a drive.
         </param>
         <returns>
-            The current directory of the drive specified by <paramref name="cDrive" />, without either leading or trailing backslash (\) characters.  
+            The current directory of the drive specified by <paramref name="cDrive" />, without either leading or trailing backslash (\) characters.
             <br/>
 
 
@@ -4878,7 +4913,7 @@
             If the file does not exist, a runtime error is raised.<br/>
             If the file is successfully opened, the operation proceeds.  <br/>
 
-            If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  
+            If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.
         </param>
         <param name="acFields">
             The list of fields to append from <paramref name="cSourceFile" />.  <br/>
@@ -4935,7 +4970,7 @@
             If the file does not exist, a runtime error is raised.<br/>
             If the file is successfully opened, the operation proceeds.<br/>
 
-            If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  
+            If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.
         </param>
         <param name="cDelim">
             The delimiter used to separate fields in <paramref name="cSourceFile" />.  <br/>
@@ -4953,7 +4988,7 @@
         </returns>
         <remarks>
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
-            DBAppDelim() is the functional equivalent of the APPEND FROM DELIMITED command.  
+            DBAppDelim() is the functional equivalent of the APPEND FROM DELIMITED command.
             It is the same as the DBApp() function except that it can be used only with text files.  <br/>
 
             See APPEND FROM and DBApp() for more information.
@@ -5052,7 +5087,7 @@
 
             If the file does not exist, a runtime error is raised.<br/>
             If the file is successfully opened, the operation proceeds.<br/>
-            If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  
+            If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.
         </param>
         <param name="acFields">
             A list of fields to copy from <paramref name="cSourceFile" />.<br/>
@@ -5268,7 +5303,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            DBCloseArea() releases a work area from use.  
+            DBCloseArea() releases a work area from use.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
             DBCloseArea() is equivalent to the CLOSE command or the USE command with no clauses.<br/>
             For more information, refer to the USE and CLOSE commands.
@@ -5314,13 +5349,13 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            DBCommit() causes all updates to the work area to be written to disk.  
+            DBCommit() causes all updates to the work area to be written to disk.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
             All updated database and order buffers are written to DOS, and a DOS Commit request is issued for the database file and any index files associated with the work area.
             DBCommit() performs the same function as the DBCommitAll() function, except that it operates only on the current or aliased work area.
             <note type="tip">
                 Shared mode:  DBCommit() makes database updates visible to other processes.<br/>
-                To insure data integrity, issue DBCommit() before an unlock operation.  
+                To insure data integrity, issue DBCommit() before an unlock operation.
                 &#0009;DBCommit() uses DOS interrupt 21h function 68h to perform the solid-disk write.<br/>
                 It is up to the network software to properly implement this request.  Check with the network software vendor to see if this is supported.
             </note>
@@ -5462,7 +5497,7 @@
         </returns>
         <remarks>
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
-            By default, this function copies records from the database file in the currently selected work area to a new file.  
+            By default, this function copies records from the database file in the currently selected work area to a new file.
             It can be made to operate on an unselected work area by specifying it within an aliased expression.
             If SetDeleted() is FALSE, deleted records in the source file are copied to <paramref name="cTargetFile" /> where they retain their deleted status.<br/>
             If SetDeleted() is TRUE, however, no deleted records are copied.  Similarly, if a filter has been set, invisible records are not copied.
@@ -5493,7 +5528,7 @@
 
             &#0009;If <paramref name="cTargetFile" /> does not exist, it is created.<br/>
             If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.<br/>
-            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
+            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.
         </param>
         <param name="cDelim">
             The delimiter used to separate fields in <paramref name="cTargetFile" />.<br/>
@@ -5509,7 +5544,7 @@
         </returns>
         <remarks>
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
-            DBCopyDelim() is the functional equivalent of the COPY TO DELIMITED command.  
+            DBCopyDelim() is the functional equivalent of the COPY TO DELIMITED command.
             It is the same as DBCopy() except that it copies records to a delimited text file.  See COPY TO and DBCopy() for more information.
         </remarks>
         <example>
@@ -5538,7 +5573,7 @@
 
             &#0009;If <paramref name="cTargetFile" /> does not exist, it is created.<br/>
             If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.<br/>
-            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
+            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.
         </param>
         <param name="acFields">
             A list of fields to copy to <paramref name="cTargetFile" />.<br/>
@@ -5550,7 +5585,7 @@
         </returns>
         <remarks>
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
-            DBCopySDF() is the functional equivalent of the COPY TO SDF command.  
+            DBCopySDF() is the functional equivalent of the COPY TO SDF command.
             It is the same as DBCopy() except that it copies records to an SDF file.  See COPY TO and DBCopy() for more information.
         </remarks>
         <example>
@@ -5627,7 +5662,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            DBCopyXStruct() creates a database file whose contents is the structure of the current database file, with a record for the definition of each field.  
+            DBCopyXStruct() creates a database file whose contents is the structure of the current database file, with a record for the definition of each field.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
             The structure-extended database file has the following structure:
             Name&#0009;Type&#0009;Length&#0009;Decimals&#0009;
@@ -5686,7 +5721,9 @@
             The name of the RDD that will service the work area.<br/>
             If not specified, the default RDD as determined by RDDSetDefault() is used.
         </param>
-        <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  <paramref name="lNew" /> is useful only when <paramref name="lOpen" /> has a value of TRUE. The default is FALSE.</param>
+        <param name="lNew">
+            TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  <paramref name="lNew" /> is useful only when <paramref name="lOpen" /> has a value of TRUE. The default is FALSE.
+        </param>
         <param name="cAlias">
             The alias to be associated with the work area where the file is opened.  Within a single application, X# will not accept duplicate aliases.  <paramref name="cAlias" /> is useful only when <paramref name="lOpen" /> has a value of TRUE.<br/>
             The default alias is the eight-letter database file name .
@@ -5767,7 +5804,7 @@
 
             &#0009;If <paramref name="cIndexFile" /> exists, DBCreateIndex() must first obtain exclusive use of the file.<br/>
             If successful, the file is overwritten without warning or error.<br/>
-            If the attempt is unsuccessful because, for example, the file is open by another process, NetErr() is set to TRUE.  
+            If the attempt is unsuccessful because, for example, the file is open by another process, NetErr() is set to TRUE.
         </param>
         <param name="cKeyValue">
             The order key expression specified as a string.<br/>
@@ -5797,7 +5834,7 @@
             After the new index file is created, an order is added to the file using the index file name and the specified key.<br/>
             The index file is opened (in the same mode as its associated database file), the controlling order for the work area is set, and the database file is positioned to the first logical record.
             Note:<br/>
-            If the RDD supports multiple orders per index file, add subsequent orders to the index file using DBCreateOrder().  
+            If the RDD supports multiple orders per index file, add subsequent orders to the index file using DBCreateOrder().
             <note type="tip">
                 Side effects:&#0009;DBCreateIndex() is guaranteed to create an order that, when made the controlling order, will impose the specified logical order on the database.<br/>
                 The key expression is not necessarily evaluated at any particular time, by any particular means, or on any particular record or series of records.<br/>
@@ -5917,7 +5954,7 @@
             For more information, refer to DELETE.
             <note type="tip">
                 Logical records:&#0009;If SetDeleted() is TRUE, deleted records are not logically visible.  That is, database operations which operate on logical records will not consider records marked for deletion.  Note, however, that if SetDeleted() is TRUE when the current record is marked for deletion, the record remains visible until it is no longer the current record.
-                Shared mode:&#0009;For a shared database, DBDelete() requires the current record to be locked.  
+                Shared mode:&#0009;For a shared database, DBDelete() requires the current record to be locked.
             </note>
         </remarks>
         <example>
@@ -5972,7 +6009,7 @@
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
             Note:<br/>
             The RDD determines the order capacity of an index file, and DBDeleteOrder() is supported only by RDDs with multiple-order capabilities.<br/>
-            For single-order index files, you must delete the entire file.  
+            For single-order index files, you must delete the entire file.
             <br/>
 
 
@@ -6030,10 +6067,10 @@
         <remarks>
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-            On each iteration, DBEval() evaluates the specified code block.  
+            On each iteration, DBEval() evaluates the specified code block.
             All records within the scope or matching the condition are processed until end-of-file is reached.
-            DBEval() is similar to AEval(), which executes code for each element in an array.  
-            Like AEval(), DBEval() can be used as a primitive for the construction of commands that process database files.  
+            DBEval() is similar to AEval(), which executes code for each element in an array.
+            Like AEval(), DBEval() can be used as a primitive for the construction of commands that process database files.
             In fact, many of the X# database processing commands are created using DBEval().
         </remarks>
         <example>
@@ -6102,7 +6139,9 @@
 
             &#0009;Important!  DBS_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters.  Values less than DBS_USER are reserved for Computer Associates development.
         </param>
-        <param name="nFieldPos">The position of the field in the database file structure or a numeric pointer to a BLOB.  Only certain <paramref name="kInfoType" /> constants designed to work with BLOB fields — all noted in the Constants section below — allow specifying the field using a pointer; all others require specifying the field by its position.</param>
+        <param name="nFieldPos">
+            The position of the field in the database file structure or a numeric pointer to a BLOB.  Only certain <paramref name="kInfoType" /> constants designed to work with BLOB fields — all noted in the Constants section below — allow specifying the field using a pointer; all others require specifying the field by its position.
+        </param>
         <param name="uNewSetting">
             If specified, this parameter is used to change the value of a setting.<br/>
             The data type (and whether <paramref name="uNewSetting" /> can be specified), depends on the <paramref name="kInfoType" /> constant and is documented in the Constants section below.<br/>
@@ -6164,7 +6203,7 @@
             If <paramref name="uNewSetting" /> is specified, the previous setting is returned.
         </returns>
         <remarks>
-            DBFieldInfo() retrieves information about the state of a field (column).  
+            DBFieldInfo() retrieves information about the state of a field (column).
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
             The field information that is available is defined by the RDD.  In the DBF work area model, this is limited to the information stored in the DBF file structure (that is, name, length, number of decimals, and data type) plus the field alias that can be changed at runtime.
             To support RDDs for other database models (such as dictionary based databases) that store more information about each field or column, the X# RDD API has been enhanced.<br/>
@@ -6288,7 +6327,7 @@
                 Logical records:&#0009;DBGoBottom() operates on logical records.<br/>
                 If the work area has an active order list, DBGoBottom() moves to the last record in controlling order.<br/>
                 If a filter is set, only records which meet the filter condition are considered.
-                Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  
+                Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.
             </note>
         </remarks>
         <example>
@@ -6337,7 +6376,7 @@
             For more information, refer to the GO command.
             <note type="tip">
                 Logical records:&#0009;DBGoTo() does not respect logical visibility.  That is, if the specified record exists, it will become the current record regardless of any order or filter condition.
-                Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  
+                Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.
             </note>
         </remarks>
         <example>
@@ -6378,7 +6417,7 @@
                 Logical records:&#0009;DBGoTop() operates on logical records.<br/>
                 If the work area has an active order list, DBGoTop() moves to the first record in the controlling order.<br/>
                 If a filter is set, only records which meet the filter condition are considered.
-                Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  
+                Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.
             </note>
         </remarks>
         <example>
@@ -6551,7 +6590,7 @@
 
             &#0009;If <paramref name="cTargetFile" /> does not exist, it is created.<br/>
             If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.<br/>
-            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
+            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.
         </param>
         <param name="acFields">
             The projection of fields from both work areas into the new database file.<br/>
@@ -6592,14 +6631,14 @@
         <remarks>
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-            DBLocate() is the functional form of the LOCATE command.  
+            DBLocate() is the functional form of the LOCATE command.
             DBLocate() searches from the beginning record of the scope.<br/>
             It terminates when a match is found or the end of the scope is reached.<br/>
-            If it is successful, the matching record becomes the current record and Found() returns TRUE.  
+            If it is successful, the matching record becomes the current record and Found() returns TRUE.
             If it is unsuccessful, Found() returns FALSE and the position of the record pointer depends on the scope.
-            Each work area can have its own locate condition.  
+            Each work area can have its own locate condition.
             The condition remains active until you execute another locate condition in that work area or the application terminates.
-            DBLocate() works with DBContinue().  Once DBLocate() has been issued, you can resume the search from the current record pointer position with DBContinue().  
+            DBLocate() works with DBContinue().  Once DBLocate() has been issued, you can resume the search from the current record pointer position with DBContinue().
             There are, however, some exceptions.  Both the scope and <paramref name="cbWhileCondition" /> apply only to the initial DBLocate() function and are not operational for any subsequent DBContinue() functions.<br/>
             To continue a pending locate condition with a scope or <paramref name="cbWhileCondition" />, use DBSkip(); then DBLocate() with the <paramref name="lRest" /> and <paramref name="cbWhileCondition" /> arguments instead of DBContinue().
         </remarks>
@@ -6854,7 +6893,7 @@
             If this condition is not met when the function is invoked, a runtime error is raised. <br/>
 
 
-             Otherwise, the operation proceeds and, upon termination, resets the record pointer to the first logical record in the current work area.
+            Otherwise, the operation proceeds and, upon termination, resets the record pointer to the first logical record in the current work area.
             Warning!  DBPack() does not create backup files.  You may want to make a backup of the file before issuing this function call; otherwise, you will not be able to recover deleted records.
             Tip:  Packing large database files can be a time-consuming process and is, therefore, not recommended in a high-volume transaction application.  By modifying the application design, you can remove the necessity of physically removing records from the database file.  Simply filter the deleted records with SetDeleted(TRUE) or DBSetFilter(!Deleted()) and reuse deleted records instead of adding new ones.
         </remarks>
@@ -6887,7 +6926,7 @@
             <note type="tip">
                 Logical records:&#0009;Reinstating a deleted record affects the record's logical visibility if SetDeleted() is TRUE.<br/>
                 For more information, refer to the DBDelete() function and the DELETE and RECALL commands.
-                Shared mode:&#0009;For a shared database, DBRecall() requires the current record to be locked.  
+                Shared mode:&#0009;For a shared database, DBRecall() requires the current record to be locked.
             </note>
         </remarks>
         <example>
@@ -7218,7 +7257,9 @@
             Release all or specified record locks.
         </summary>
 
-        <param name="uRecID">A unique value guaranteed by the structure of the data file to reference a specific item in a data source (database).  In a database file, <paramref name="uRecID" /> is the record number.  In other data formats, <paramref name="uRecID" /> is the unique primary key value.</param>
+        <param name="uRecID">
+            A unique value guaranteed by the structure of the data file to reference a specific item in a data source (database).  In a database file, <paramref name="uRecID" /> is the record number.  In other data formats, <paramref name="uRecID" /> is the unique primary key value.
+        </param>
         <returns>
             TRUE if successful; otherwise, FALSE.
         </returns>
@@ -7256,7 +7297,9 @@
             Determines how the work area is positioned if the specified key value is not found: TRUE performs a soft seek; FALSE does not.<br/>
             If <paramref name="lSoftSeek" /> is omitted, the current SetSoftSeek() setting is used.
         </param>
-        <param name="lLast">TRUE seeks the last occurrence of the specified key value.  FALSE, the default, seeks the first occurrence.  <paramref name="lLast" /> only applies to CDX indexes.</param>
+        <param name="lLast">
+            TRUE seeks the last occurrence of the specified key value.  FALSE, the default, seeks the first occurrence.  <paramref name="lLast" /> only applies to CDX indexes.
+        </param>
         <returns>
             TRUE if the specified key value was found; otherwise, FALSE.
         </returns>
@@ -7272,7 +7315,7 @@
             <note type="tip">
                 Logical records:&#0009;DBSeek() operates on logical records.  Records are processed in controlling order.<br/>
                 If a filter is set, only records which meet the filter condition are considered.
-                Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  
+                Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.
             </note>
         </remarks>
         <example>
@@ -7396,7 +7439,7 @@
             TRUE if the current record meets the filter condition; otherwise, FALSE.
         </returns>
         <remarks>
-            DBSetFilter() sets a logical filter condition.  
+            DBSetFilter() sets a logical filter condition.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
             When a filter is set, records which do not meet the filter condition are not logically visible.  That is, database operations which act on logical records will not consider these records.
             The filter expression can be a code block (<paramref name="bCondition" />) or both a code block and equivalent text (<paramref name="cCondition" />).<br/>
@@ -7472,7 +7515,7 @@
             Otherwise, the file open is successful.<br/>
 
             &#0009;Concurrency conflicts with index files are rare since they should be used with only one database file.<br/>
-            If a concurrency problem arises, it will normally be when you attempt to open the database file.  
+            If a concurrency problem arises, it will normally be when you attempt to open the database file.
         </param>
         <returns>
             TRUE if successful; otherwise, FALSE.
@@ -7616,9 +7659,13 @@
             The default is all records.  Record scoping information is used only to create the order.<br/>
             It is not stored in the index file and not used for index updates and reindexing purposes.
         </param>
-        <param name="nNext">The number of records to process, starting at <paramref name="nStart" />.  Specify 0 to ignore this argument.</param>
+        <param name="nNext">
+            The number of records to process, starting at <paramref name="nStart" />.  Specify 0 to ignore this argument.
+        </param>
         <param name="nRecord">A single record number to process.  Specify 0 to ignore this argument.</param>
-        <param name="lRest">TRUE processes only records from <paramref name="nStart" /> to the end of the file.  FALSE processes all records.</param>
+        <param name="lRest">
+            TRUE processes only records from <paramref name="nStart" /> to the end of the file.  FALSE processes all records.
+        </param>
         <param name="lDescend">
             Specifies whether the keyed pairs be sorted in decreasing or increasing order of value.  TRUE results in descending order.  FALSE results in ascending order.<br/>
             The default is FALSE.
@@ -7647,9 +7694,9 @@
         <remarks>
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-            Unless you specify otherwise with DBSetOrderCondition(), new orders that you create will use default scoping rules, processing all records in the work area.  
-            DBSetOrderCondition() allows you to specify conditions and scoping rules that records must meet in order to be included in the next order created.  
-            Creating a new order, then, automatically resets the work area to use the default scoping rules.  
+            Unless you specify otherwise with DBSetOrderCondition(), new orders that you create will use default scoping rules, processing all records in the work area.
+            DBSetOrderCondition() allows you to specify conditions and scoping rules that records must meet in order to be included in the next order created.
+            Creating a new order, then, automatically resets the work area to use the default scoping rules.
             Thus, if scoping is required, you must reset DBSetOrderCondition() each time you create a new order.
             This function is essential if you want to create conditional orders using DBCreateOrder() and DBCreateIndex() because these functions do not support arguments to do this.
         </remarks>
@@ -7806,7 +7853,7 @@
                 Logical records:&#0009;DBSkip() operates on logical records.<br/>
                 If the work area has an active order list, records are considered in controlling order.<br/>
                 If a filter is set, only records which meet the filter condition are considered.
-                Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  
+                Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.
             </note>
         </remarks>
         <example>
@@ -7842,7 +7889,7 @@
 
             &#0009;If <paramref name="cTargetFile" /> does not exist, it is created.<br/>
             If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.<br/>
-            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
+            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.
         </param>
         <param name="acFields">The sort keys, specified as an array of field names.  You may optionally add, after the field name, /A (to sort in dictionary order), /C (to ignore capitalization), or /D (to sort in descending order). The default setting is /A.</param>
         <param name="lNoOpt" >Disable (Rushmore) optimizations (not supported yet).</param>
@@ -7854,31 +7901,31 @@
         </returns>
         <remarks>
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
-            DBSort() copies records from the current work area to another database file in sorted order.  
-            X# sorts character fields in accordance with the ASCII value of each character 
-            within the string.  
-            Numeric fields are sorted in numeric order, date fields are sorted chronologically, 
-            and logical fields are sorted with TRUE as the high value.  
+            DBSort() copies records from the current work area to another database file in sorted order.
+            X# sorts character fields in accordance with the ASCII value of each character
+            within the string.
+            Numeric fields are sorted in numeric order, date fields are sorted chronologically,
+            and logical fields are sorted with TRUE as the high value.
             Memo fields cannot be sorted.
-            DBSort() performs as much of its operation as possible in memory, then it spools 
+            DBSort() performs as much of its operation as possible in memory, then it spools
             to a uniquely named temporary disk file.<br/>
-            This temporary file can be as large as the size of the source database file.  
-            Note also that DBSort() uses up three file handles: the source database file, 
+            This temporary file can be as large as the size of the source database file.
+            Note also that DBSort() uses up three file handles: the source database file,
             the target database file, and the temporary file.
             If the database is opened in shared mode, you must lock the file to be sorted with FLock().
             DBSort() is the functional equivalent of the SORT command.
             <note type="tip">
                 Deleted Source Records: <br/>
-                If SetDeleted() is TRUE, VODBSort() copies deleted records to the target database file; 
-                however, the deleted records do not retain their deleted status.  
+                If SetDeleted() is TRUE, VODBSort() copies deleted records to the target database file;
+                however, the deleted records do not retain their deleted status.
                 No record is marked for deletion in the target file regardless of its status in the source file.<br/>
-                If SetDeleted() is FALSE, deleted records are not copied to the target database file.  
-                Similarly, filtered records are ignored during a sort and are not included in the target 
+                If SetDeleted() is FALSE, deleted records are not copied to the target database file.
+                Similarly, filtered records are ignored during a sort and are not included in the target
                 file.<br/>
             </note>
         </remarks>
         <example>
-            The following example sorts a database on two fields (ignoring case) and uses 
+            The following example sorts a database on two fields (ignoring case) and uses
             it as the current file:
             <code language="X#">
                 IF DBSort("sortdb.dbf", {"Last/C", "First/C"})
@@ -7899,7 +7946,7 @@
         </param>
 
         <returns>
-            The structure of the database file in an array whose length is equal to the number 
+            The structure of the database file in an array whose length is equal to the number
             of fields in the database file.<br/>
             Each element of the array is a subarray containing information for one field.<br/>
             The subarrays have the following format:
@@ -7909,18 +7956,18 @@
             DBS_LEN&#0009;nLength&#0009;
             DBS_DEC&#0009;nDecimals&#0009;
             DBS_ALIAS&#0009;cAlias&#0009;
-            If there is no database file in use in the work area, DBStruct() will generate 
+            If there is no database file in use in the work area, DBStruct() will generate
             a runtime error.
         </returns>
         <remarks>
-            DBStruct() operates like COPY STRUCTURE EXTENDED by creating an array of structure 
+            DBStruct() operates like COPY STRUCTURE EXTENDED by creating an array of structure
             information rather than a database file of structure information.<br/>
-            There is another function, DBCreate(), that can create a database file from 
+            There is another function, DBCreate(), that can create a database file from
             the structure array.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
         </remarks>
         <example>
-            This example opens two database files, then creates an array containing the 
+            This example opens two database files, then creates an array containing the
             database structure using DBStruct() within an aliased expression.<br/>
             The field attributes are then listed using AEval():
             <code language="X#">
@@ -7987,7 +8034,7 @@
 
             &#0009;If <paramref name="cTargetFile" /> does not exist, it is created.<br/>
             If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.<br/>
-            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
+            If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.
         </param>
         <param name="cbKey">A key expression specified as a code block.</param>
         <param name="acFields">The fields to be totaled specified as an array of strings.</param>
@@ -8071,7 +8118,7 @@
             DBUnLock() releases any record or file locks obtained by the current process for a work area.  DBUnLock() is only meaningful on a shared database.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
             <note type="tip">
-                Shared mode:&#0009;Releasing locks can cause updates to the database to become visible to other processes.  
+                Shared mode:&#0009;Releasing locks can cause updates to the database to become visible to other processes.
             </note>
         </remarks>
         <example>
@@ -8112,7 +8159,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            DbUnLockAll() releases any record or file locks obtained by the current process for any work area.  
+            DbUnLockAll() releases any record or file locks obtained by the current process for any work area.
             DbUnLockAll() is only meaningful on a shared database.<br/>
             It is equivalent to calling DBUnLock() on every occupied work area.
         </remarks>
@@ -8169,7 +8216,7 @@
         </returns>
         <remarks>
             For a shared database, DBUpdate() requires a file lock on the current database file.<br/>
-            The source database file can be open in any mode.  
+            The source database file can be open in any mode.
             DBUpdate() is the functional equivalent of the UPDATE command.
             <note type="tip">
                 Deleted records:&#0009;If SetDeleted() is FALSE, deleted records in both source files are processed.  Records in the file being updated retain their deleted status and are not affected by the deleted status of records in the source file.<br/>
@@ -8212,7 +8259,9 @@
             An identifier name to associate with the work area when <paramref name="cDataFile" /> is opened.<br/>
             If not specified, the alias defaults to the database file name.  Duplicate alias names are not allowed within a single application.
         </param>
-        <param name="lShared">TRUE attempts to open <paramref name="cDataFile" /> for shared use.  FALSE attempts to open <paramref name="xcDataFile" /> for exclusive (non-shared) use, denying all other processes access until the database file is closed.If <paramref name="lShared" /> is omitted, the current SetExclusive() setting determines whether shared access is allowed.  However, it is highly recommended that you specify the open mode as part of the USE command rather than relying on SetExclusive() to determine it for you.</param>
+        <param name="lShared">
+            TRUE attempts to open <paramref name="cDataFile" /> for shared use.  FALSE attempts to open <paramref name="xcDataFile" /> for exclusive (non-shared) use, denying all other processes access until the database file is closed.If <paramref name="lShared" /> is omitted, the current SetExclusive() setting determines whether shared access is allowed.  However, it is highly recommended that you specify the open mode as part of the USE command rather than relying on SetExclusive() to determine it for you.
+        </param>
         <param name="lReadOnly">
             TRUE attempts to open <paramref name="cDataFile" /> with a read-only attribute, prohibiting updates to the work area.  FALSE attempts to open <paramref name="cDataFile" /> with a read-write attribute, allowing updates.<br/>
             If <paramref name="lReadOnly" /> is omitted, the default value is FALSE.<br/>
@@ -8378,7 +8427,9 @@
             Assign a default value to a NIL argument.
         </summary>
 
-        <param name="uVar">The variable to which the default value will be assigned.  <paramref name="uVar" /> must be passed by reference to the Default() function.</param>
+        <param name="uVar">
+            The variable to which the default value will be assigned.  <paramref name="uVar" /> must be passed by reference to the Default() function.
+        </param>
         <param name="uDefault">The default value to assign.</param>
         <returns>
         </returns>
@@ -8566,7 +8617,7 @@
 
         <param name="pszDir">The name of the directory to change to, including the drive.</param>
         <returns>
-            0 if successful; -1 if there is an argument error; otherwise, the DOS error code.  
+            0 if successful; -1 if there is an argument error; otherwise, the DOS error code.
         </returns>
         <remarks>
             DirChange() changes the current subdirectory or determines if a directory exists.  Be aware that if, after issuing a DirChange(), you change to another drive (via DiskChange(), for example), another Windows task might change the directory of the disk on which your original DirChange() was issued.
@@ -8684,7 +8735,7 @@
                 &#0009;&#0009;  aDir[i][F_DATE], aDir[i][F_TIME],;
                 &#0009;&#0009;  aDir[i][F_ATTR]
                 &#0009;NEXT
-                &#0009;// Instead of the above FOR loop, you could  
+                &#0009;// Instead of the above FOR loop, you could
                 &#0009;// use the AEval() array iterator function as
                 &#0009;// follows:
                 &#0009;AEval(aDir, {|aSub| QOut(aSub[F_NAME],;
@@ -8708,7 +8759,7 @@
             If you do not specify a drive, the Windows default is used.
         </param>
         <returns>
-            0 if successful; -1 if there is an argument error; otherwise, the DOS error code.  
+            0 if successful; -1 if there is an argument error; otherwise, the DOS error code.
         </returns>
         <remarks>
             DirMake() creates a specified directory.  You must have sufficient rights to create a directory.<br/>
@@ -8736,7 +8787,7 @@
             If you do not specify a drive, the Windows default is used.
         </param>
         <returns>
-            0 if successful; -1 if there is an argument error; otherwise, the DOS error code.  
+            0 if successful; -1 if there is an argument error; otherwise, the DOS error code.
         </returns>
         <remarks>
             DirRemove() removes a specified directory. You must have sufficient rights to delete a directory.<br/>
@@ -8780,7 +8831,7 @@
                 &#0009;LOCAL wI AS DWORD
                 &#0009;LOCAL cDrives AS STRING
                 &#0009;cDrives := NULL_STRING
-                &#0009;FOR wI := 1 UPTO 27&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;  
+                &#0009;FOR wI := 1 UPTO 27&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;
                 &#0009;&#0009;IF DiskChange(Chr(wI +64))
                 &#0009;&#0009;&#0009;cDrives := cDrives + Chr(wI+64)
                 &#0009;&#0009;ENDIF
@@ -9199,10 +9250,10 @@
         </summary>
 
         <param name="uValue">
-            The value to check for 'emptyness'            
+            The value to check for 'emptyness'
         </param>
         <param name="oObject">
-            The value to check for 'emptyness'            
+            The value to check for 'emptyness'
         </param>
         <returns>
             TRUE if the expression results in an empty value; otherwise, FALSE.
@@ -9252,7 +9303,9 @@
             These values are as follows:
             <list type="table">
                 <listheader>
-                    <term><paramref name="kType" /></term>
+                    <term>
+                        <paramref name="kType" />
+                    </term>
                     <description>Empty Value</description>
                 </listheader>
                 <item>
@@ -9416,8 +9469,8 @@
 
         <param name="u">
             The variable to check.<br/>
-            If <paramref name="u" /> is NIL, a value of 0 is assigned to it.  
-            If <paramref name="u" /> is not passed by reference and is not a numeric, the error system aborts the program.  
+            If <paramref name="u" /> is NIL, a value of 0 is assigned to it.
+            If <paramref name="u" /> is not passed by reference and is not a numeric, the error system aborts the program.
             If <paramref name="u" /> is passed by reference but is not a numeric, the error system is called up and a value of 0 is assigned to <paramref name="u" />.
         </param>
         <returns>
@@ -9576,7 +9629,7 @@
     <errorbuild>
         <summary>Create an error object from an exception.</summary>
         <param name="pErrInfo">An exception object to base the Error object on.</param>
-        
+
     </errorbuild>
     <errorblock>
         <summary>
@@ -9591,7 +9644,9 @@
         <remarks>
             X# defines a default error handling code block that determines what to do when a runtime error occurs.  ErrorBlock() lets you override this default error handling mechanism with one that you define.
             Specify the error handler as a code block with the following forO:
-            <code language="X#">{|<paramref name="oError" />| <paramref name="uList" />}</code>
+            <code language="X#">
+                {|<paramref name="oError" />| <paramref name="uList" />}
+            </code>
             where <paramref name="oError" /> is an error object containing information about the error and <paramref name="uList" /> is a comma-separated list of USUAL
             expressions that call the function that actually handles the errors.  <br/>
 
@@ -10653,7 +10708,7 @@
             <code language="X#">
                 FUNCTION FileLock(ptrHandle AS PTR,;
                 &#0009;&#0009;dwOffset AS DWORD, dwLength AS DWORD,;
-                &#0009;&#0009;wSeconds AS DWORD) AS LOGIC PASCAL  
+                &#0009;&#0009;wSeconds AS DWORD) AS LOGIC PASCAL
                 &#0009;LOCAL lForever AS LOGIC
                 &#0009;IF FFLock(ptrHandle, dwOffset, dwLength)
                 &#0009;&#0009;RETURN TRUE&#0009;&#0009;&#0009;// Locked
@@ -10685,7 +10740,7 @@
         </returns>
         <remarks>
             FFlush() writes buffers to disk, thus releasing the memory used by those buffers.<br/>
-            If files are being shared in a multi-user or multi-tasking environment, FFlush() allows each user to see the latest contents of the file.  
+            If files are being shared in a multi-user or multi-tasking environment, FFlush() allows each user to see the latest contents of the file.
             By flushing data from memory, FFlush() can also protect against possible data loss due to a system crash.
             Calling the method with 2 parameters and a second parameter with the value TRUE will significantly slow down your apps!
             The with 1 parameter works the same as calling FFlush() with a value of FALSE for the second parameter.
@@ -10984,7 +11039,9 @@
             Get the contents of a field that is identified by its work area and a symbol.
         </summary>
 
-        <param name="dwWorkArea">The work area in which <paramref name="symFieldName" /> is located.</param>
+        <param name="dwWorkArea">
+            The work area in which <paramref name="symFieldName" /> is located.
+        </param>
         <param name="symFieldName">A symbol that corresponds to the field name.</param>
         <returns>
         </returns>
@@ -11061,7 +11118,9 @@
             If information for more than one field is required, use DBStruct().
             If you need additional database file structure information, use Type() and Len().<br/>
             For example, to obtain the number of decimal places for a numeric field, use the following expression:
-            <code language="X#">Len(Substr(Str(<paramref name="idField" />), RAt(".", Str(<paramref name="idField" />)) + 1))</code>
+            <code language="X#">
+                Len(Substr(Str(<paramref name="idField" />), RAt(".", Str(<paramref name="idField" />)) + 1))
+            </code>
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
         </remarks>
         <example>
@@ -11179,7 +11238,7 @@
             The data type of this expression must match the data type of the field.
         </param>
         <returns>
-            The value assigned to the field.  
+            The value assigned to the field.
             If <paramref name="nFieldPos" /> does not correspond to the position of any field in the database file, FieldPut() will generate an error.
             The exception to this is the XBase++ dialect where an invalid <paramref name="nFieldPos" /> will not generate an exception but will return NIL.
         </returns>
@@ -11188,7 +11247,7 @@
             Note:  FieldPut() can be used with a BLOB field (that is, a memo field associated with a BLOB file), provided the length of the field does not exceed 64 KB.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
             Shared mode:<br/>
-            For a shared database, this function requires a record lock.  
+            For a shared database, this function requires a record lock.
         </remarks>
         <example>
             This example compares FieldPut() to functionally equivalent code that uses the macro operator to set the value of a field:
@@ -11211,7 +11270,9 @@
             Set the value of a field identified by its work area alias and field name.
         </summary>
 
-        <param name="symAlias">The alias of the work area in which <paramref name="symField" /> is located.</param>
+        <param name="symAlias">
+            The alias of the work area in which <paramref name="symField" /> is located.
+        </param>
         <param name="symField">The field name.</param>
         <param name="uNewValue">
             The value to assign to the field.<br/>
@@ -11225,7 +11286,7 @@
             This function allows you to set the value of a field using a symbol that specifies the field name.  Within generic database service functions, this allows the setting of field values without the use of the macro operator, among other things.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
             Shared mode:<br/>
-            For a shared database, this function requires a record lock.  
+            For a shared database, this function requires a record lock.
         </remarks>
         <example>
             This example uses FieldPutAlias() to set field values in two different work areas:
@@ -11287,7 +11348,9 @@
             Set the value of a field identified by its work area number and field name.
         </summary>
 
-        <param name="dwWorkArea">The work area in which <paramref name="symField" /> is located.</param>
+        <param name="dwWorkArea">
+            The work area in which <paramref name="symField" /> is located.
+        </param>
         <param name="symField">The field name.</param>
         <param name="uNewValue">
             The value to assign to the field.<br/>
@@ -11300,7 +11363,7 @@
         <remarks>
             FieldPutArea() allows you to set the value of a field using a symbol that specifies the field name.  Within generic database service functions this allows, among other things, the setting of field values without use of the macro operator.
             Shared mode:<br/>
-            For a shared database, this function requires a record lock.  
+            For a shared database, this function requires a record lock.
         </remarks>
         <example>
             This example uses FieldPutArea() to set field values:
@@ -11369,7 +11432,9 @@
             If information for more than one field is required, use DBStruct().
             If you need additional database file structure information, use Type() and Len().<br/>
             For example, to obtain the number of decimal places for a numeric field, use the following expression:
-            <code language="X#">Len(Substr(Str(<paramref name="idField" />), RAt(".", Str(<paramref name="idField" />)) + 1))</code>
+            <code language="X#">
+                Len(Substr(Str(<paramref name="idField" />), RAt(".", Str(<paramref name="idField" />)) + 1))
+            </code>
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
         </remarks>
         <example>
@@ -11760,7 +11825,9 @@
 
             &#0009;This function sets NetErr() in case of a concurrency control conflict.
         </param>
-        <param name="kMode">This argument is the same as <paramref name="kMode" /> used with FOpen().  See FOpen() for details.</param>
+        <param name="kMode">
+            This argument is the same as <paramref name="kMode" /> used with FOpen().  See FOpen() for details.
+        </param>
         <returns>
             The file handle of the opened file in the range of 0 to 32,767.<br/>
             If an error occurs, FOpen2() returns F_ERROR.  FError() can be used to determine the specific error.
@@ -11938,7 +12005,9 @@
 
         <param name="ptrHandle">The handle of the file to write to.</param>
         <param name="cBuffer">The string to write.</param>
-        <param name="dwBytes">The number of bytes in <paramref name="cBuffer" /> to write, beginning at the current file pointer position.</param>
+        <param name="dwBytes">
+            The number of bytes in <paramref name="cBuffer" /> to write, beginning at the current file pointer position.
+        </param>
         <returns>
             The number of bytes written.<br/>
             If the value returned is equal to <paramref name="dwBytes" /> + 2, the operation was successful.<br/>
@@ -12545,7 +12614,9 @@
             It can be a positive or negative number.<br/>
             A positive number moves the pointer forward in the file, and a negative number moves the pointer backward.
         </param>
-        <param name="dwOrigin">The same as <paramref name="nOrigin" /> with FSeek(), except required.  See FSeek() for details.</param>
+        <param name="dwOrigin">
+            The same as <paramref name="nOrigin" /> with FSeek(), except required.  See FSeek() for details.
+        </param>
         <returns>
             The new position of the file pointer, relative to the beginning of the file (position 0).  (The original position of the file pointer does not matter.)
         </returns>
@@ -12705,7 +12776,9 @@
 
         <param name="ptrHandle">The handle of the file to write to.</param>
         <param name="ptrBuffer">A pointer to the buffer to write.</param>
-        <param name="dwBytes">The number of bytes in <paramref name="ptrBuffer" /> to write, beginning at the current file pointer position.</param>
+        <param name="dwBytes">
+            The number of bytes in <paramref name="ptrBuffer" /> to write, beginning at the current file pointer position.
+        </param>
         <returns>
             The number of bytes written.<br/>
             If the value returned is equal to <paramref name="dwBytes" />, the operation was successful.<br/>
@@ -12739,7 +12812,9 @@
 
         <param name="ptrHandle">The handle of the file to write to.</param>
         <param name="ptrBuffer">A pointer to the buffer to write</param>
-        <param name="dwBytes">The number of bytes in <paramref name="ptrBuffer" /> to write, beginning at the current file pointer position.</param>
+        <param name="dwBytes">
+            The number of bytes in <paramref name="ptrBuffer" /> to write, beginning at the current file pointer position.
+        </param>
         <param name="lAnsi">If FALSE , an ANSI to OEM conversion is made.</param>
         <returns>
             The number of bytes written.<br/>
@@ -12809,7 +12884,9 @@
 
         <param name="ptrHandle">The handle of the file to write to.</param>
         <param name="cBuffer">The string to write.</param>
-        <param name="dwBytes">The number of bytes in <paramref name="cBuffer" /> to write, beginning at the current file pointer position.</param>
+        <param name="dwBytes">
+            The number of bytes in <paramref name="cBuffer" /> to write, beginning at the current file pointer position.
+        </param>
         <returns>
             The number of bytes written.<br/>
             If the value returned is equal to <paramref name="dwBytes" /> + 2, the operation was successful.<br/>
@@ -12890,7 +12967,9 @@
 
         <param name="ptrHandle">The handle of the file to write to.</param>
         <param name="ptrBuffer">A pointer to the buffer to write.</param>
-        <param name="dwBytes">The number of bytes in <paramref name="ptrBuffer" /> to write, beginning at the current file pointer position.</param>
+        <param name="dwBytes">
+            The number of bytes in <paramref name="ptrBuffer" /> to write, beginning at the current file pointer position.
+        </param>
         <returns>
             The number of bytes written.<br/>
             If the value returned is equal to <paramref name="dwBytes" />, the operation was successful.<br/>
@@ -13211,7 +13290,9 @@
         <param name="CSIDL_PROGRAM_FILES_COMMON"> := 0x002b // C:\Program Files\Common</param>
         <param name="CSIDL_COMMON_DOCUMENTS"> := 0x002e // All Users\Documents</param>
         <param name="CSIDL_RESOURCES"> := 0x0038 // %windir%\Resources\, For theme and other windows resources.</param>
-        <param name="CSIDL_RESOURCES_LOCALIZED"> := 0x0039 // %windir%\Resources\<paramref name="LangID" />, for theme and other windows specific resources.</param>
+        <param name="CSIDL_RESOURCES_LOCALIZED">
+            := 0x0039 // %windir%\Resources\<paramref name="LangID" />, for theme and other windows specific resources.
+        </param>
         <param name="CSIDL_COMMON_ADMINTOOLS"> := 0x002f // All Users\Start Menu\Programs\Administrative Tools</param>
         <param name="CSIDL_ADMINTOOLS"> := 0x0030</param>
         <param name="lCreate">TRUE to create nominated folder, FALSE to retrieve </param>
@@ -13796,13 +13877,13 @@
             The whole number to the left of the decimal point.  Since both <paramref name="uValue" /> and the return value are data type USUAL, you are not limited to the size of an integer.
         </returns>
         <remarks>
-            Integer() converts a numeric value to an integer by taking the floor of the number. Note – this is not the same as truncation except for positive integers — it is not rounding.  Integer() is useful in operations where the decimal portion of a number is not needed.  
+            Integer() converts a numeric value to an integer by taking the floor of the number. Note – this is not the same as truncation except for positive integers — it is not rounding.  Integer() is useful in operations where the decimal portion of a number is not needed.
             Note that a loss of precision on floating numbers might be significant.<br/>
             For example, you might not know that a number is internally represented as 0.99999999999999999, because, when that number is displayed with QOut() or passed to the Str() function, internal rounding returns a value of 1.0.
             When a number like that is passed to the Integer() function, however, its decimal portion is truncated and a value of zero is returned.<br/>
             If this is not what you had intended, you can use Round(<paramref name="nValue" />, 0) instead of Integer().
             <note type="tip">
-                Integer() is the same as the Int() function in CA-Clipper, but INT is a reserved word in X#.  
+                Integer() is the same as the Int() function in CA-Clipper, but INT is a reserved word in X#.
                 Under X#, Int() is a conversion operator.  With numbers that are not greater than a short integer, it yields the same results as Integer() and maintains compatibility with CA-Clipper.
             </note>
         </remarks>
@@ -15353,7 +15434,9 @@
             Look up an identifier in a string table and returns its corresponding string.
         </summary>
 
-        <param name="cDefault">The default string to return if <paramref name="nStringID" /> cannot be found in the designated string table.  Omitting this value is the same as specifying NULL_STRING.</param>
+        <param name="cDefault">
+            The default string to return if <paramref name="nStringID" /> cannot be found in the designated string table.  Omitting this value is the same as specifying NULL_STRING.
+        </param>
         <param name="nStringID">
             The unique integer identifier that you want to look up.<br/>
             This value is defined when you declare the string table via RESOURCE...STRINGTABLE statement.
@@ -15890,7 +15973,9 @@
             Perform an assignment to a variable whose name is stored in a specified string.
         </summary>
 
-        <param name="cExp">The string containing the variable name you want to assign <paramref name="uValue" /> to.</param>
+        <param name="cExp">
+            The string containing the variable name you want to assign <paramref name="uValue" /> to.
+        </param>
         <param name="uValue">The value to assign.</param>
         <returns>
             The assigned value.
@@ -15944,7 +16029,10 @@
         </example>
         <seealso cref='O:XSharp.RT.Functions.Between'>Between</seealso>
         <seealso cref='O:XSharp.RT.Functions.Min'>Min</seealso>
+        <seealso cref="O:XSharp.Core.Functions.Max" />
     </max>
+ 
+
     <maxatom>
         <summary>
             Determine the number of symbols in the atom table.
@@ -16354,7 +16442,9 @@
         </summary>
 
         <param name="cMBTarget">The string into which characters are inserted and deleted.</param>
-        <param name="wStart">The position in <paramref name="cMBTarget" /> where the insertion/deletion occurs.</param>
+        <param name="wStart">
+            The position in <paramref name="cMBTarget" /> where the insertion/deletion occurs.
+        </param>
         <param name="wDelete">The number of characters to delete — each double-byte character counts as one character.</param>
         <param name="cMBInsert">The string to insert.</param>
         <returns>
@@ -16386,7 +16476,7 @@
         <param name="nCount">
             The number of characters to extract — double-byte characters count as one character.<br/>
             If omitted, the substring begins at <paramref name="nStart" /> and continues to the end of the string.<br/>
-            If <paramref name="nCount" /> is greater than the number of characters from <paramref name="nStart" /> to the end of <paramref name="cMBTarget" />, the extra is ignored.  
+            If <paramref name="nCount" /> is greater than the number of characters from <paramref name="nStart" /> to the end of <paramref name="cMBTarget" />, the extra is ignored.
         </param>
         <returns>
             The substring.<br/>
@@ -16411,7 +16501,9 @@
         </summary>
 
         <param name="cMBTarget">The string from which to extract a substring.</param>
-        <param name="wStart">The starting position relative to the leftmost character in <paramref name="cMBTarget" />.</param>
+        <param name="wStart">
+            The starting position relative to the leftmost character in <paramref name="cMBTarget" />.
+        </param>
         <returns>
             The substring.<br/>
             If the substring is not present, or if you specify <paramref name="wStart" /> as zero, MBSubstr2() returns a NULL_STRING.
@@ -16437,7 +16529,9 @@
         </summary>
 
         <param name="cMBTarget">The string from which to extract a substring.</param>
-        <param name="wStart">The starting position relative to the leftmost character in <paramref name="cMBTarget" />.</param>
+        <param name="wStart">
+            The starting position relative to the leftmost character in <paramref name="cMBTarget" />.
+        </param>
         <param name="wCount">
             The number of characters to extract — double-byte characters count as one character.<br/>
             If <paramref name="wCount" /> is greater than the number of characters from <paramref name="wStart" /> to the end of <paramref name="cMBTarget" />, the extra is ignored.
@@ -16512,7 +16606,9 @@
         </summary>
 
         <param name="ptrSource">Pointer to the buffer from which to extract the substring.</param>
-        <param name="dwCount">The number of bytes, from the left, to extract from <paramref name="ptrSource" />.</param>
+        <param name="dwCount">
+            The number of bytes, from the left, to extract from <paramref name="ptrSource" />.
+        </param>
         <returns>
             A substring of the specified number of bytes.
         </returns>
@@ -16582,7 +16678,9 @@
         </summary>
 
         <param name="ptrBuffer">A pointer to a buffer.</param>
-        <param name="dwCount">The number of bytes in <paramref name="ptrBuffer" /> to check.</param>
+        <param name="dwCount">
+            The number of bytes in <paramref name="ptrBuffer" /> to check.
+        </param>
         <returns>
             The location of the first special console character within the specified portion of <paramref name="ptrBuffer" />.<br/>
             If a special console character does not exist, MemAtSpecial() returns 0.
@@ -16620,7 +16718,9 @@
 
         <param name="ptrBuffer">A pointer to the memory buffer to examine.</param>
         <param name="bChar">The byte value to match.</param>
-        <param name="dwCount">The number of bytes in <paramref name="ptrBuffer" /> to examine.</param>
+        <param name="dwCount">
+            The number of bytes in <paramref name="ptrBuffer" /> to examine.
+        </param>
         <returns>
             A pointer to the first occurrence of <paramref name="bChar" /> within the first <paramref name="dwCount" /> bytes of <paramref name="ptrBuffer" />.<br/>
             If <paramref name="bChar" /> is not matched, MemChr() returns a NULL_PTR.
@@ -16735,7 +16835,9 @@
 
         <param name="ptrBuffer">A pointer to the memory buffer to examine.</param>
         <param name="dwChar">Word representation of the character to match.</param>
-        <param name="dwCount">The number of characters in <paramref name="ptrBuffer" /> to examine.</param>
+        <param name="dwCount">
+            The number of characters in <paramref name="ptrBuffer" /> to examine.
+        </param>
         <returns>
             A pointer to the first occurrence of <paramref name="dwChar" /> within the first <paramref name="dwCount" /> characters of <paramref name="ptrBuffer" />.<br/>
             If <paramref name="dwChar" /> is not matched, MemChr() returns a NULL_PTR.
@@ -16904,7 +17006,9 @@
 
         <param name="ptrBuffer">A pointer to the memory buffer to examine.</param>
         <param name="dwValue">The double word value to match.</param>
-        <param name="dwCount">The number of double words in <paramref name="ptrBuffer" /> to examine.</param>
+        <param name="dwCount">
+            The number of double words in <paramref name="ptrBuffer" /> to examine.
+        </param>
         <returns>
             A pointer to the first occurrence of <paramref name="dwValue" /> within the first <paramref name="dwCount" /> characters of <paramref name="ptrBuffer" />.<br/>
             If <paramref name="dwValue" /> is not matched, MemDWord() returns a NULL_PTR.
@@ -17073,7 +17177,9 @@
 
         <param name="ptrBuffer">A pointer to the memory buffer to examine.</param>
         <param name="iValue">An integer to match.</param>
-        <param name="dwCount">The number of integers in <paramref name="ptrBuffer" /> to examine.</param>
+        <param name="dwCount">
+            The number of integers in <paramref name="ptrBuffer" /> to examine.
+        </param>
         <returns>
             A pointer to the first occurrence of <paramref name="iValue" /> within the first <paramref name="dwCount" /> integers of <paramref name="ptrBuffer" />.<br/>
             If <paramref name="iValue" /> is not matched, MemInt() returns a NULL_PTR.
@@ -17135,7 +17241,9 @@
 
         <param name="ptrBuffer">A pointer to the memory buffer to examine.</param>
         <param name="liValue">The long integer value to match.</param>
-        <param name="dwCount">The number of long integers in <paramref name="ptrBuffer" /> to examine.</param>
+        <param name="dwCount">
+            The number of long integers in <paramref name="ptrBuffer" /> to examine.
+        </param>
         <returns>
             A pointer to the first occurrence of <paramref name="liValue" /> within the first <paramref name="dwCount" /> long integers of <paramref name="ptrBuffer" />.<br/>
             If <paramref name="liValue" /> is not matched, MemLong() returns a NULL_PTR.
@@ -17388,7 +17496,9 @@
             If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.<br/>
             If access is denied because, for example, another process is using the file, MemoWrit() returns FALSE and NetErr() is set to TRUE.
         </param>
-        <param name="cString">The string to write to <paramref name="cFileName" />.</param>
+        <param name="cString">
+            The string to write to <paramref name="cFileName" />.
+        </param>
         <returns>
             TRUE if the writing operation is successful; otherwise, FALSE.
         </returns>
@@ -17461,7 +17571,9 @@
 
         <param name="ptrBuffer">A pointer to the memory buffer to examine.</param>
         <param name="siValue">The short integer value to match.</param>
-        <param name="dwCount">The number of short integers in <paramref name="ptrBuffer" /> to examine.</param>
+        <param name="dwCount">
+            The number of short integers in <paramref name="ptrBuffer" /> to examine.
+        </param>
         <returns>
             A pointer to the first occurrence of <paramref name="siValue" /> within the first <paramref name="dwCount" /> short integers of  <paramref name="ptrBuffer" />.<br/>
             If <paramref name="siValue" /> is not matched, MemShort() returns a NULL_PTR.
@@ -17666,7 +17778,9 @@
 
         <param name="ptrBuffer">A pointer to the memory buffer to examine.</param>
         <param name="dwValue">The word value to match.</param>
-        <param name="dwCount">The number of words in <paramref name="ptrBuffer" /> to examine.</param>
+        <param name="dwCount">
+            The number of words in <paramref name="ptrBuffer" /> to examine.
+        </param>
         <returns>
             A pointer to the first occurrence of <paramref name="dwValue" /> within the first <paramref name="dwCount" /> words of <paramref name="ptrBuffer" />.<br/>
             If <paramref name="dwValue" /> is not matched, MemWord() returns a NULL_PTR.
@@ -17787,7 +17901,7 @@
             The value of the compiled expression.
         </returns>
         <remarks>
-            MExec() evaluates an expression that was previously macro-compiled.  
+            MExec() evaluates an expression that was previously macro-compiled.
             Instead of  invoking the macro compiler each time an expression is evaluated,
             you could speed up your application by compiling an expression only once and
             executing the compiled result as often as desired.
@@ -17811,6 +17925,8 @@
             Return the smaller of 2 values.
         </summary>
 
+        <param name="dValue1">The first value to compare.</param>
+        <param name="dValue2">The second value to compare.</param>
         <param name="uValue1">The first value to compare.</param>
         <param name="uValue2">
             The second value to compare.<br/>
@@ -17837,6 +17953,7 @@
         </example>
         <seealso cref='O:XSharp.RT.Functions.Between'>Between</seealso>
         <seealso cref='O:XSharp.RT.Functions.Max'>Max</seealso>
+        <seealso cref="O:XSharp.Core.Functions.Min" />
     </min>
     <mlcount>
         <summary>
@@ -17910,7 +18027,9 @@
         </summary>
 
         <param name="cText">A string.</param>
-        <param name="nWidth">The length of each line after <paramref name="cText" /> is formatted.</param>
+        <param name="nWidth">
+            The length of each line after <paramref name="cText" /> is formatted.
+        </param>
         <param name="nLine">The line number in the formatted text, starting from the top at 1.</param>
         <param name="nCol">The column number in the formatted text, starting from the left at 0.</param>
         <param name="nTabSize">
@@ -18020,7 +18139,9 @@
         </summary>
 
         <param name="cText">A string.</param>
-        <param name="nWidth">The length of each line after <paramref name="cText" /> is formatted.</param>
+        <param name="nWidth">
+            The length of each line after <paramref name="cText" /> is formatted.
+        </param>
         <param name="nLine">The line number in the formatted text, starting from the top at 1.</param>
         <param name="nTabSize">
             The number of characters to insert when the user presses Tab.<br/>
@@ -18176,7 +18297,9 @@
         </summary>
 
         <param name="cText">A string.</param>
-        <param name="nWidth">The length of each line after <paramref name="cText" /> is formatted.</param>
+        <param name="nWidth">
+            The length of each line after <paramref name="cText" /> is formatted.
+        </param>
         <param name="nPos">The byte position within the formatted text, counting from 1.</param>
         <param name="nTabSize">
             The number of characters to insert when the user presses Tab.<br/>
@@ -18523,7 +18646,7 @@
             The number of times that <paramref name="cSearch" /> appears in <paramref name="cTarget" />.
         </returns>
         <remarks>
-            Occurs2() is the same as Occurs(). 
+            Occurs2() is the same as Occurs().
         </remarks>
         <example>
             This example shows typical use of Occurs():
@@ -18856,14 +18979,14 @@
 
         <param name="cForCondition">
             A string that specifies the for condition for the order.<br/>
-            This string is returned by DBOrderInfo(DBOI_CONDITION, [<paramref name="cIndexFile" />], <paramref name="cOrder" />).  
+            This string is returned by DBOrderInfo(DBOI_CONDITION, [<paramref name="cIndexFile" />], <paramref name="cOrder" />).
             If you do not need this information, you can specify a NULL_STRING.
         </param>
         <param name="cbForCondition">
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" /><br/>
             >
-            This condition (not <paramref name="cForCondition" />) is the one that is actually used to create the order.  
-            Unlike the while condition and other scoping information, the for condition is stored as part of the index file and is used when updating or rebuilding the order with DBReindex().  
+            This condition (not <paramref name="cForCondition" />) is the one that is actually used to create the order.
+            Unlike the while condition and other scoping information, the for condition is stored as part of the index file and is used when updating or rebuilding the order with DBReindex().
             Any limitations on the for condition are determined by the RDD
         </param>
 
@@ -19425,7 +19548,7 @@
             Otherwise, the file open is successful.<br/>
 
             &#0009;Concurrency conflicts with index files are rare since they should be used with only one database file.<br/>
-            If a concurrency problem arises, it will normally be when you attempt to open the database file.  
+            If a concurrency problem arises, it will normally be when you attempt to open the database file.
         </param>
         <param name="cOrder">
             The name of a specific order to add.<br/>
@@ -20133,7 +20256,7 @@
         <returns>
         </returns>
         <remarks>
-            The newly allocated string is a static object, which implies that the garbage collector does not move the string.  
+            The newly allocated string is a static object, which implies that the garbage collector does not move the string.
         </remarks>
         <example>
             This example displays the storage addresses of two variables:
@@ -20428,7 +20551,7 @@
         </returns>
         <remarks>
             RAt() is like At(), which returns the position of the first occurrence of a substring within another string.<br/>
-            If you only need to know whether a substring exists within another string, use the InStr() function or the $ operator.  
+            If you only need to know whether a substring exists within another string, use the InStr() function or the $ operator.
             Both the RAt() and At() functions are used with Substr(), Left(), and Right() to extract substrings.
         </remarks>
         <example>
@@ -21157,7 +21280,9 @@
         </summary>
 
         <param name="cString">The string to repeat.</param>
-        <param name="dwCount">The number of times to repeat <paramref name="cString" />, up to a maximum of MAX_ALLOC. Specifying a value of zero returns a NULL_STRING.</param>
+        <param name="dwCount">
+            The number of times to repeat <paramref name="cString" />, up to a maximum of MAX_ALLOC. Specifying a value of zero returns a NULL_STRING.
+        </param>
         <returns>
         </returns>
         <remarks>
@@ -21257,13 +21382,13 @@
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
         </param>
         <param name="cRecordNumberList">
-            Specifies that RLOCK( ) attempts to lock multiple records. 
-            The character expression cRecordNumberList specifies one or more record numbers, separated by commas, that RLOCK( ) attempts to lock. 
+            Specifies that RLOCK( ) attempts to lock multiple records.
+            The character expression cRecordNumberList specifies one or more record numbers, separated by commas, that RLOCK( ) attempts to lock.
             For example, to attempt record locks on the first four records in a table, cRecordNumberList should contain 1, 2, 3, 4.
         </param>
         <returns>
             TRUE if the record lock(s) is (are) obtained; otherwise, FALSE.<br/>
-            If you try to lock more than one record and one of them fails then 
+            If you try to lock more than one record and one of them fails then
             locks that were successful are released again.<br/>
             An attempt to lock a record in an empty database returns TRUE.
         </returns>
@@ -21271,10 +21396,10 @@
             If a database file is opened in shared mode, you must obtain a record lock before attempting any operation that writes to the database file.
             For each invocation of RLock(), there is one attempt to lock the target record, and the result is returned as a logical value.<br/>
             An attempt to obtain a record lock fails if another process currently has a file lock or record lock on the target record.
-            If RLock() is successful, the record is locked and other processes are prevented from updating the record until the lock is released.  
-            RLock() provides a shared lock, allowing other users read-only access to the locked record while allowing only the current process to 
+            If RLock() is successful, the record is locked and other processes are prevented from updating the record until the lock is released.
+            RLock() provides a shared lock, allowing other users read-only access to the locked record while allowing only the current process to
             modify it.
-            A record lock remains in effect until you explicitly unlock it (with DBUnLock(), for example), close the database file, or 
+            A record lock remains in effect until you explicitly unlock it (with DBUnLock(), for example), close the database file, or
             attempt another file or record lock (with RLock() or DBRLock() without an argument).
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
             This feature is useful since RLock() does not automatically attempt a record lock for related files.
@@ -21532,7 +21657,9 @@
 
         <param name="oObject">The object whose method is invoked.</param>
         <param name="symMethod">The method name, specified without parentheses.</param>
-        <param name="MethodArgList">A comma-separated list of arguments to pass to <paramref name="symMethod" />.</param>
+        <param name="MethodArgList">
+            A comma-separated list of arguments to pass to <paramref name="symMethod" />.
+        </param>
         <returns>
             The return value of the method.
         </returns>
@@ -21646,7 +21773,7 @@
             First and foremost, it determines the format used to create new database files — ANSI, which uses the Windows character set, or OEM, which uses the ASCII character set.  Thus, functions such as DBCreate() and DBCopyStruct() are affected by this setting.<br/>
             The information that determines the ANSI/OEM format of a database file is stored in the header record of the file.
             Important!<br/>
-            If your application must share data with a DOS-based product, either simultaneously or at different times, you must use the OEM format when creating .DBF files.  
+            If your application must share data with a DOS-based product, either simultaneously or at different times, you must use the OEM format when creating .DBF files.
             If SetAnsi() is TRUE, your X# application will perform an automatic conversion between OEM and ANSI for existing database files that are in OEM format, thereby preserving the format of the data and allowing it to be used by other applications that do not support the ANSI format.
             Is SetAnsi() is FALSE, however, no automatic conversion is performed when reading to or writing from any database file.  In this case, the data will appear at runtime just as it was read from disk.<br/>
             For OEM databases, therefore, the programmer is fully responsible for ANSI/OEM conversion of displayed data or data modified by any edit control or terminal function.  You can use the Ansi2Oem() and Oem2Ansi() functions to convert data between the two formats.
@@ -21861,7 +21988,7 @@
 
             &#0009;When specifying the foreground color for a particular region, you can also specify high intensity with either a plus sign (+) or an asterisk (*).  <br/>
 
-            &#0009;Colors can be specified using letters according to the following table.For example, you might specify W+/N.  
+            &#0009;Colors can be specified using letters according to the following table.For example, you might specify W+/N.
         </param>
         <param name="Letter">Color</param>
         <param name="B">Blue</param>
@@ -22086,7 +22213,7 @@
         <example>
             These examples show various results of the SetDecimal() function:
             <code language="X#">
-                SetDecimal(2)      
+                SetDecimal(2)
                 ? 2.0/4.0               // 0.50
                 ? 1.0/3.0               // 0.33
                 SetDecimal(4)
@@ -22326,7 +22453,7 @@
         </returns>
         <remarks>
             SetEnv() lets you either append or replace a DOS environment variable from within an application.  Typically this is configuration information-- including path names--that describes the location of files (database, index, label, or reports).
-            Note:  Instead of using environment variables for configuring your application, you may want to consider using registry settings.  
+            Note:  Instead of using environment variables for configuring your application, you may want to consider using registry settings.
         </remarks>
         <example>
             These examples modify the DOS PATH:
@@ -23251,7 +23378,7 @@
             SEvalA() is identical to SEval() in that they both evaluate a code block once for each character of a string,
             passing the ASCII value and the character index as arguments.<br/>
             The only difference is that, while SEval()
-            ignores the return value of the code block, SEvalA() assigns the return value to the original string.  
+            ignores the return value of the code block, SEvalA() assigns the return value to the original string.
             See SEval() for details.
         </remarks>
         <example>
@@ -23430,14 +23557,20 @@
         </summary>
 
         <param name="pszPathName">The path name to break.</param>
-        <param name="pszDrive">The drive letter followed by a colon.  <paramref name="pszDrive" /> must contain 2 bytes, plus 1 byte for the terminating _Chr(0) character.</param>
+        <param name="pszDrive">
+            The drive letter followed by a colon.  <paramref name="pszDrive" /> must contain 2 bytes, plus 1 byte for the terminating _Chr(0) character.
+        </param>
         <param name="pszDir">
             The directories, including the trailing slash.<br/>
             Forward slashes and backslashes both may be present in <paramref name="pszFile" />.<br/>
             Forward slashes (/) are converted to backslashes (\).  <paramref name="pszDir" /> must contain 255 bytes, plus 1 byte for the terminating _Chr(0) character.
         </param>
-        <param name="pszFile">The file name, without the extension.  <paramref name="pszFile" />  must contain 255 bytes, plus 1 byte for the terminating _Chr(0) character.</param>
-        <param name="pszExt">The extension, including the leading period.  <paramref name="pszExt" /> must contain 7 bytes, plus 1 byte for the terminating _Chr(0) character.</param>
+        <param name="pszFile">
+            The file name, without the extension.  <paramref name="pszFile" />  must contain 255 bytes, plus 1 byte for the terminating _Chr(0) character.
+        </param>
+        <param name="pszExt">
+            The extension, including the leading period.  <paramref name="pszExt" /> must contain 7 bytes, plus 1 byte for the terminating _Chr(0) character.
+        </param>
         <returns>
         </returns>
         <remarks>
@@ -24079,7 +24212,7 @@
         </param>
         <param name="uStart">
             The first occurrence to replace.<br/>
-            If this argument is omitted or 0, the default is 1.  
+            If this argument is omitted or 0, the default is 1.
         </param>
         <param name="uCount">
             The number of occurrences to replace.<br/>
@@ -24135,7 +24268,9 @@
         </summary>
 
         <param name="cTarget">The string into which characters are inserted and deleted.</param>
-        <param name="dwStart">The position in <paramref name="cTarget" /> where the insertion/deletion occurs.</param>
+        <param name="dwStart">
+            The position in <paramref name="cTarget" /> where the insertion/deletion occurs.
+        </param>
         <param name="dwDelete">The number of characters to delete.</param>
         <param name="cInsert">The string to insert.</param>
         <returns>
@@ -24253,7 +24388,9 @@
         </summary>
 
         <param name="cTarget">The string from which to extract a substring.</param>
-        <param name="dwStart">The starting position in <paramref name="cTarget" />.  Since this argument is a WORD, it cannot be negative.</param>
+        <param name="dwStart">
+            The starting position in <paramref name="cTarget" />.  Since this argument is a WORD, it cannot be negative.
+        </param>
         <returns>
             The substring.<br/>
             If the substring is not found, a NULL_STRING is returned.
@@ -24297,7 +24434,9 @@
         </summary>
 
         <param name="cTarget">The string from which to extract a substring.</param>
-        <param name="dwStart">The starting position in <paramref name="cTarget" />.  Since this argument is a WORD, it cannot be negative.</param>
+        <param name="dwStart">
+            The starting position in <paramref name="cTarget" />.  Since this argument is a WORD, it cannot be negative.
+        </param>
         <param name="dwLen">
             The number of characters to extract.<br/>
             If omitted, the substring begins at <paramref name="dwStart" /> and continues to the end of the string.<br/>
@@ -25413,7 +25552,9 @@
             Convert a string containing a numeric value to a numeric data type.
         </summary>
 
-        <param name="cNumber">The string to convert.  <paramref name="cNumber" /> can be in any of the compiler-supported base formats, such as binary, decimal, hex, or scientific.  When in scientific format, a decimal point is necessary to identify the base "E".  So Val("1E+1") equals 1 but Val("1.0E+1") equals 10.0.  Moreover, "+INF" and "-INF" (both must be in uppercase) represent +infinity and -infinity.</param>
+        <param name="cNumber">
+            The string to convert.  <paramref name="cNumber" /> can be in any of the compiler-supported base formats, such as binary, decimal, hex, or scientific.  When in scientific format, a decimal point is necessary to identify the base "E".  So Val("1E+1") equals 1 but Val("1.0E+1") equals 10.0.  Moreover, "+INF" and "-INF" (both must be in uppercase) represent +infinity and -infinity.
+        </param>
         <returns>
             <paramref name="cNumber" /> as a numeric value.
         </returns>
@@ -25698,7 +25839,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            VODBClearLocate() clears the locate condition by deleting the locate code block.  
+            VODBClearLocate() clears the locate condition by deleting the locate code block.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
             A locate condition can be set by DBLocate(), VODBLocate(), VODBSetLocate(), or the LOCATE command.
             Note that this function does not call the error handler and will not, therefore, produce a runtime error message or create an error object if it fails.  Thus, it may be important to check the return value to determine if the function succeeded.
@@ -27043,7 +27184,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            VODBSetLocate() allows you to change the locate condition.  Once you issue a LOCATE command, DBLocate(), or VODBLocate(), you could continue searching but with a different condition.  
+            VODBSetLocate() allows you to change the locate condition.  Once you issue a LOCATE command, DBLocate(), or VODBLocate(), you could continue searching but with a different condition.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
             Note that this function does not call the error handler and will not, therefore, produce a runtime error message or create an error object if it fails.  Thus, it may be important to check the return value to determine if the function succeeded.<br/>
             The global structure, StrucErrInfo, will contain needed information regarding any error that occurs.
@@ -27123,7 +27264,7 @@
 
         <param name="liRecords">
             The number of logical records to move, relative to the current record.<br/>
-            A positive value means to skip forward, and a negative value means to skip backward.  
+            A positive value means to skip forward, and a negative value means to skip backward.
         </param>
         <returns>
             TRUE if successful; otherwise, FALSE.
@@ -27268,9 +27409,15 @@
             If the database file has a corresponding memo file, it is also opened.<br/>
             The default extension for database and memo files is determined by the RDD.  See SetDefault() and SetPath() for file searching and creation rules.
         </param>
-        <param name="cAlias">An identifier name to associate with the work area when <paramref name="cDataFile" /> is opened.  Duplicate alias names are not allowed within a single application.</param>
-        <param name="lShared">TRUE Attempts to open <paramref name="cDataFile" /> for shared use.  FALSE attempts to open <paramref name="xcDataFile" /> for exclusive (non-shared) use, denying all other processes access until the database file is closed.</param>
-        <param name="lReadOnly">TRUE attempts to open <paramref name="cDataFile" /> with a read-only attribute, prohibiting updates to the work area.  FALSE attempts to open <paramref name="cDataFile" /> with a read-write attribute, allowing updates.</param>
+        <param name="cAlias">
+            An identifier name to associate with the work area when <paramref name="cDataFile" /> is opened.  Duplicate alias names are not allowed within a single application.
+        </param>
+        <param name="lShared">
+            TRUE Attempts to open <paramref name="cDataFile" /> for shared use.  FALSE attempts to open <paramref name="xcDataFile" /> for exclusive (non-shared) use, denying all other processes access until the database file is closed.
+        </param>
+        <param name="lReadOnly">
+            TRUE attempts to open <paramref name="cDataFile" /> with a read-only attribute, prohibiting updates to the work area.  FALSE attempts to open <paramref name="cDataFile" /> with a read-write attribute, allowing updates.
+        </param>
         <returns>
             TRUE if successful; otherwise, FALSE.
         </returns>
@@ -27772,7 +27919,7 @@
             If an Alt or Ctrl key combination is pressed, WAIT assigns Chr(0) to <paramref name="idVar" />.  <br/>
 
             &#0009;Non-alphanumeric values entered by pressing an Alt+key combination assign the specified character.<br/>
-            If the character can be displayed, it is echoed to the screen.  
+            If the character can be displayed, it is echoed to the screen.
         </param>
         <returns>
         </returns>
@@ -27794,25 +27941,25 @@
     </uAreaOperation>
     <currentWorkareaParam>
         <span>
-            By default, this function operates on the currently selected work area.  
-            It can be made to operate on an unselected work area by specifying 
-			it within an aliased expression or by calling the overload that accepts a workarea 
-			parameter (a workarea number or alias ).
+            By default, this function operates on the currently selected work area.
+            It can be made to operate on an unselected work area by specifying
+            it within an aliased expression or by calling the overload that accepts a workarea
+            parameter (a workarea number or alias ).
         </span>
     </currentWorkareaParam>
     <currentWorkarea>
         <span>
             By default, this function operates on the currently selected work area.<br/>
-            It can be made to operate on an unselected work area by specifying 
-			it within an aliased expression
+            It can be made to operate on an unselected work area by specifying
+            it within an aliased expression
         </span>
     </currentWorkarea>
     <cbwhile>
         <span>
-            A code block that defines another condition that each record must meet in order 
-			to be processed.  
-            As soon as a record is encountered that causes the condition to fail, the operation 
-			terminates.<br/>
+            A code block that defines another condition that each record must meet in order
+            to be processed.
+            As soon as a record is encountered that causes the condition to fail, the operation
+            terminates.<br/>
 
             If no scope is specified, <paramref name="cbWhileCondition" /> changes the default scope to <paramref name="lRest" />.<br/>
 
@@ -27867,8 +28014,8 @@
             <see href='!:https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-winexec'>WinExec()</see>
         </remarks>
         <param name="cProgram">
-            The command line (file name plus optional parameters) for the application to be executed. 
-            If the name of the executable file in the lpCmdLine parameter does not contain a directory path, 
+            The command line (file name plus optional parameters) for the application to be executed.
+            If the name of the executable file in the lpCmdLine parameter does not contain a directory path,
             the system searches for the executable file in this sequence:<br/>
             1) The directory from which the application loaded.<br/>
             2) The current directory.<br/>
@@ -27911,11 +28058,11 @@
         </returns>
 
     </_run>
-	<oclone>
-	  <summary>Duplicate an object`.</summary>
-       <param name="o">The variable to duplicate. </param>
-	   <returns>A reference to a new object with the same values as the original object.</returns>
-	</oclone>
+    <oclone>
+        <summary>Duplicate an object`.</summary>
+        <param name="o">The variable to duplicate. </param>
+        <returns>A reference to a new object with the same values as the original object.</returns>
+    </oclone>
     <mcompilemexec>
         <span>
             <note type="tip">
@@ -27954,5 +28101,29 @@
 
         </span>
     </mcompileexamples>
+    <datetime>
+        <summary>
+            Returns the current date and time as a DateTime value, or creates a year 2000-compliant DateTime value.
+        </summary>
+        <param name="nYear">
+            Specifies the year in the DateTime value. <paramref name="nYear" /> can be a value from 100 to 9999.
+        </param>
+        <param name="nMonth">
+            Specifies the month in the DateTime value. <paramref name="nMonth" /> can be a value from 1 to 12.
+        </param>
+        <param name="nDay">
+            Specifies the day in the DateTime value. <paramref name="nDay" /> can be a value from 1 to 31.
+        </param>
+        <param name="nHours">
+            Specifies the hours in the DateTime value. <paramref name="nHours" /> can be a value from from 0 (midnight) to 23 (11 P.M). Defaults to 0 if omitted.
+        </param>
+        <param name="nMinutes">
+            Specifies the minutes in the DateTime value. <paramref name="nMinutes" /> can be a value from 0 to 59. Defaults to 0 if omitted.
+        </param>
+        <param name="nSeconds">
+            Specifies the seconds in the DateTime value. <paramref name="nSeconds" /> can be a value from 0 to 59. Defaults to 0 if omitted.
+        </param>
+
+    </datetime>
 
 </Runtimefunctions>

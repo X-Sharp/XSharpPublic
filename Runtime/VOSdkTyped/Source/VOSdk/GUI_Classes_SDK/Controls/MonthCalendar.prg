@@ -1,55 +1,61 @@
-
+/// <include file="Gui.xml" path="doc/DateRange/*" />
 
 CLASS DateRange INHERIT VObject
 	PROTECT dStartDate AS DATE
 	PROTECT dEndDate AS DATE
 
-	CONSTRUCTOR(dStart AS DATE, dEnd AS DATE) 
+	CONSTRUCTOR(dStart AS DATE, dEnd AS DATE)
 		SUPER()
 		dStartDate := dStart
 		dEndDate := dEnd
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/DateRange.Max/*" />
 	PROPERTY Max AS DATE GET dEndDate	SET dEndDate := Value
+	/// <include file="Gui.xml" path="doc/DateRange.Min/*" />
 	PROPERTY Min AS DATE GET dStartDate SET dStartDate := Value
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/MonthCalendar/*" />
 CLASS MonthCalendar INHERIT TextControl
 
 	ACCESS __Calendar AS IVOMonthCalendar
 		RETURN (IVOMonthCalendar) oCtrl
-
+    /// <inheritdoc />
     PROPERTY ControlType AS ControlType GET ControlType.MonthCalendar
 
-	METHOD __GetColor(dwColorID AS DWORD) AS Color STRICT 
+	METHOD __GetColor(dwColorID AS DWORD) AS Color STRICT
 		LOCAL cr AS LONG
 		cr := GuiWin32.SendMessage(oCtrl:Handle, MCM_GETCOLOR, dwColorID, 0L)
 		RETURN Color.FromColorRef((DWORD) cr)
-  
-	METHOD __SetColor(oColor AS Color, dwColorID AS DWORD) AS Color STRICT 
+
+ /// <exclude />
+	METHOD __SetColor(oColor AS Color, dwColorID AS DWORD) AS Color STRICT
 		GuiWin32.SendMessage(oCtrl:Handle, MCM_SETCOLOR, dwColorID, (LONG) oColor:ColorRef)
 		RETURN oColor
 
-	ASSIGN __Value(dValue AS USUAL)  STRICT 
-		
+ /// <exclude />
+	ASSIGN __Value(dValue AS USUAL)  STRICT
+
 		SUPER:__Value := dValue
 		IF IsDate(uValue)
 			SELF:Selection := uValue
 		ENDIF
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/MonthCalendar.BackgroundColor/*" />
 	ACCESS BackgroundColor  AS Color
 		IF SELF:ValidateControl()
 
 			RETURN (Color) __Calendar:BackColor
 		ENDIF
 		RETURN NULL_OBJECT
-	ASSIGN BackgroundColor(oColor AS Color) 
+	ASSIGN BackgroundColor(oColor AS Color)
 		IF SELF:ValidateControl()
 			__Calendar:BackColor := oColor
 		ENDIF
-	//METHOD Dispatch (oEvent) 
+	//METHOD Dispatch (oEvent)
 	//	LOCAL oEvt := oEvent AS @@Event
 	//	//PP-030319 WM_GETDLGCODE used to support arrow keys in the control. Thanks to S Ebert
 
@@ -60,52 +66,63 @@ CLASS MonthCalendar INHERIT TextControl
 
 	//	RETURN SUPER:Dispatch(oEvt)
 
+	/// <include file="Gui.xml" path="doc/MonthCalendar.FirstDayOfWeek/*" />
 	ACCESS FirstDayOfWeek AS LONG
 		IF SELF:ValidateControl()
 			RETURN (LONG) __Calendar:FirstDayOfWeek
 		ENDIF
 		RETURN 0
-	ASSIGN FirstDayOfWeek(iNewVal AS LONG) 
+/// <include file="Gui.xml" path="doc/MonthCalendar.FirstDayOfWeek/*" />
+	ASSIGN FirstDayOfWeek(iNewVal AS LONG)
 		IF SELF:ValidateControl()
-			__Calendar:FirstDayOfWeek	:= (System.Windows.Forms.Day) iNewVal	
+			__Calendar:FirstDayOfWeek	:= (System.Windows.Forms.Day) iNewVal
 		ENDIF
-		RETURN 
+		RETURN
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, dwStyle, lDataAware) 
+/// <include file="Gui.xml" path="doc/MonthCalendar.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, dwStyle, lDataAware)
 		DEFAULT(@lDataAware, TRUE)
 		SUPER(oOwner, xID, oPoint, oDimension, "SysMonthCal32", dwStyle, lDataAware)
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/MonthCalendar.MaxSelCount/*" />
 	ACCESS MaxSelCount AS LONG
 		IF SELF:ValidateControl()
 			RETURN __Calendar:MaxSelectionCount
 		ENDIF
 		RETURN 0
-	ASSIGN MaxSelCount(iNewVal AS LONG) 
+
+/// <include file="Gui.xml" path="doc/MonthCalendar.MaxSelCount/*" />
+	ASSIGN MaxSelCount(iNewVal AS LONG)
 		IF SELF:ValidateControl()
 			__Calendar:MaxSelectionCount := iNewVal
 		ENDIF
-		RETURN 
+		RETURN
 
 
+/// <include file="Gui.xml" path="doc/MonthCalendar.MonthBackgroundColor/*" />
 	ACCESS MonthBackgroundColor  AS Color
 		IF SELF:ValidateControl()
 			RETURN __Calendar:BackColor
         ENDIF
         RETURN System.Drawing.Color.White
 
-	ASSIGN MonthBackgroundColor(oColor AS Color) 
+/// <include file="Gui.xml" path="doc/MonthCalendar.MonthBackgroundColor/*" />
+	ASSIGN MonthBackgroundColor(oColor AS Color)
 		IF SELF:ValidateControl()
 			__Calendar:BackColor := oColor
 		ENDIF
 
-	ACCESS MonthDelta 
+/// <include file="Gui.xml" path="doc/MonthCalendar.MonthDelta/*" />
+	ACCESS MonthDelta
 		RETURN GuiWin32.SendMessage(SELF:Handle(), MCM_GETMONTHDELTA, 0, 0)
 
-	ASSIGN MonthDelta(iNewVal) 
+/// <include file="Gui.xml" path="doc/MonthCalendar.MonthDelta/*" />
+	ASSIGN MonthDelta(iNewVal)
 		GuiWin32.SendMessage(SELF:Handle(), MCM_SETMONTHDELTA, DWORD(_CAST, iNewVal), 0)
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/MonthCalendar.Range/*" />
 	ACCESS Range AS DateRange
 		LOCAL dStart, dEnd AS DATE
 		IF SELF:ValidateControl()
@@ -114,25 +131,29 @@ CLASS MonthCalendar INHERIT TextControl
 			RETURN DateRange{dStart, dEnd }
 		ENDIF
 		RETURN DateRange{Today(), Today()}
-	ASSIGN Range(oNewRange AS DateRange) 
+/// <include file="Gui.xml" path="doc/MonthCalendar.Range/*" />
+	ASSIGN Range(oNewRange AS DateRange)
 		IF SELF:ValidateControl()
 			__Calendar:SelectionStart	:= oNewRange:Min
 			__Calendar:SelectionEnd		:= oNewRange:Max
 		ENDIF
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/MonthCalendar.Selection/*" />
 	ACCESS Selection AS DATE
 		IF SELF:ValidateControl()
 			RETURN (DATE) __Calendar:SelectionStart
 		ENDIF
 		RETURN NULL_DATE
 
-	ASSIGN Selection(dNewVal AS DATE) 
+/// <include file="Gui.xml" path="doc/MonthCalendar.Selection/*" />
+	ASSIGN Selection(dNewVal AS DATE)
 		IF SELF:ValidateControl()
 			__Calendar:SelectionStart := dNewVal
 		ENDIF
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/MonthCalendar.SelectionRange/*" />
 	ACCESS SelectionRange AS DateRange
 		LOCAL dStart AS DATE
 		LOCAL dEnd AS DATE
@@ -142,72 +163,89 @@ CLASS MonthCalendar INHERIT TextControl
 			RETURN DateRange{dStart, dEnd }
 		ENDIF
 		RETURN DateRange{Today(), Today()}
-		
-	ASSIGN SelectionRange(oNewRange AS DateRange) 
+
+/// <include file="Gui.xml" path="doc/MonthCalendar.SelectionRange/*" />
+	ASSIGN SelectionRange(oNewRange AS DateRange)
 		IF SELF:ValidateControl()
 			__Calendar:MinDate := oNewRange:Min
 			__Calendar:MaxDate := oNewRange:Max
 		ENDIF
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/MonthCalendar.TextColor/*" />
 	ACCESS TextColor AS Color
 		//RETURN SELF:__GetColor(MCSC_TEXT)
 		IF SELF:ValidateControl()
 			RETURN (Color) __Calendar:ForeColor
 		ENDIF
 		RETURN NULL_OBJECT
-	ASSIGN TextColor(oColor AS Color) 
+
+/// <include file="Gui.xml" path="doc/MonthCalendar.TextColor/*" />
+	ASSIGN TextColor(oColor AS Color)
 		IF SELF:ValidateControl()
-			__Calendar:ForeColor := oColor		
+			__Calendar:ForeColor := oColor
 		ENDIF
+
+/// <include file="Gui.xml" path="doc/MonthCalendar.TextValue/*" />
 	ACCESS TextValue AS STRING
 		RETURN AsString(SELF:Selection)
 
+
+/// <include file="Gui.xml" path="doc/MonthCalendar.TitleBackgroundColor/*" />
 	ACCESS TitleBackgroundColor AS Color
 		IF SELF:ValidateControl()
 			RETURN (Color) __Calendar:TitleBackColor
 		ENDIF
-		RETURN NULL_OBJECT	
+		RETURN NULL_OBJECT
 
-	ASSIGN TitleBackgroundColor(oColor AS Color) 
+/// <include file="Gui.xml" path="doc/MonthCalendar.TitleBackgroundColor/*" />
+	ASSIGN TitleBackgroundColor(oColor AS Color)
 		IF SELF:ValidateControl()
 			__Calendar:TitleBackColor := oColor
 		ENDIF
-		
+
+/// <include file="Gui.xml" path="doc/MonthCalendar.TitleTextColor/*" />
 	ACCESS TitleTextColor AS Color
 		IF SELF:ValidateControl()
 			RETURN (Color) __Calendar:TitleForeColor
 		ENDIF
 		RETURN NULL_OBJECT
-		
-	ASSIGN TitleTextColor(oColor AS Color) 
+
+/// <include file="Gui.xml" path="doc/MonthCalendar.TitleTextColor/*" />
+	ASSIGN TitleTextColor(oColor AS Color)
 		IF SELF:ValidateControl()
 			__Calendar:TitleForeColor := oColor
 		ENDIF
-		
+
+/// <include file="Gui.xml" path="doc/MonthCalendar.Today/*" />
 	ACCESS Today AS DATE
 		IF SELF:ValidateControl()
 			RETURN (DATE) __Calendar:TodayDate
 		ENDIF
 		RETURN Today()
-	ASSIGN Today(dNewVal AS DATE) 
+/// <include file="Gui.xml" path="doc/MonthCalendar.Today/*" />
+	ASSIGN Today(dNewVal AS DATE)
 		IF SELF:ValidateControl()
 			__Calendar:TodayDate := (DateTime) dNewVal
 		ENDIF
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/MonthCalendar.TrailingTextColor/*" />
 	ACCESS TrailingTextColor AS Color
 		IF SELF:ValidateControl()
 			RETURN (Color) __Calendar:TrailingForeColor
 		ENDIF
 		RETURN NULL_OBJECT
-	ASSIGN TrailingTextColor(oColor AS Color) 
+
+/// <include file="Gui.xml" path="doc/MonthCalendar.TrailingTextColor/*" />
+	ASSIGN TrailingTextColor(oColor AS Color)
 		IF SELF:ValidateControl()
 			__Calendar:TrailingForeColor := oColor
 		ENDIF
+/// <include file="Gui.xml" path="doc/MonthCalendar.Value/*" />
 	ACCESS Value AS USUAL
 		uValue := SELF:Selection
 		RETURN uValue
-	
+
 END CLASS
 

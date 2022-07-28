@@ -13,10 +13,12 @@ USING System.IO
 USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
-    CLASS DBFFPT INHERIT DBF
+    CLASS DBFFPT INHERIT DBF IMPLEMENTS IRawData
         PRIVATE _oFptMemo AS FPTMemo
+        PROPERTY ReturnRawData as LOGIC AUTO
         CONSTRUCTOR
             SUPER()
+            SELF:ReturnRawData := FALSE
             SELF:_Memo := _oFptMemo := FPTMemo{SELF}
             SELF:_oFptMemo:ExportMode := BLOB_EXPORT_APPEND
 
@@ -27,9 +29,15 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
                 VAR rawData := _oFptMemo:GetRawValueWithHeader(nFldPos)
-                if rawData != NULL 
-                     RETURN SELF:_oFptMemo:DecodeValue(rawData)
+                if rawData != NULL
+                    IF SELF:ReturnRawData
+                        RETURN rawData
+                    ENDIF
+                    RETURN SELF:_oFptMemo:DecodeValue(rawData)
                 else
+                    IF SELF:ReturnRawData
+                        RETURN <BYTE>{}
+                    ENDIF
                     var column  := SELF:_GetColumn(nFldPos)
                     return column:BlankValue()
                 ENDIF

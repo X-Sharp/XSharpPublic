@@ -85,23 +85,21 @@ FUNCTION DbAlias () AS STRING
     RETURN String.Empty
 
 
-#ifdef NOTDEFINED
+#pragma options("az", ON)
 /// <include file="VFPDocs.xml" path="Runtimefunctions/adatabases/*" />
-FUNCTION ADatabases(ArrayName REF __FoxArray)
-    local result := DbcManager.Databases:Count AS LONG
+FUNCTION ADatabases( ArrayName AS ARRAY) AS DWORD
+    local result := (DWORD) DbcManager.Databases:Count AS DWORD
     IF result > 0
-        if ! IsArray(ArrayName) .or. ArrayName == NULL_OBJECT
-            ArrayName := __FoxArray{}
-        ENDIF
-        ArrayName:ReDim(result,2)
-        FOR VAR nDb := 1 to result
-            var db := DbcManager.Databases[nDb]
-            ArrayName[nDb,1]   := db:Name
-            ArrayName[nDb,2]   := db:FileName
+        ArrayName := __FoxRedim(ArrayName, result, 2 )
+        LOCAL nDb := 0 as DWORD
+        FOREACH var db in DbcManager.Databases
+            ArrayName[nDb,0]   := db:Name
+            ArrayName[nDb,1]   := db:FileName
+            nDb += 1
         NEXT
     ENDIF
     RETURN result
-#endif
+#pragma options("az", default)
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/lock/*" />
 FUNCTION Lock( cRecordNumberList, uArea) AS LOGIC CLIPPER

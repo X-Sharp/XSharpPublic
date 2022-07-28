@@ -5,7 +5,7 @@ USING System.Runtime.InteropServices
 USING System.Text
 
 
-
+ 
 INTERNAL STATIC CLASS GuiWin32
 	#region Kernel32
 

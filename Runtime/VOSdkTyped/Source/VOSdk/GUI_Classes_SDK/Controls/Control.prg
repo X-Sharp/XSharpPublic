@@ -1,20 +1,20 @@
 
 USING System.Reflection
 USING SWF := System.Windows.Forms
-
+/// <include file="Gui.xml" path="doc/Control/*" />
 [XSharp.Internal.TypesChanged];
 CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
     PROTECT oCtrl                AS IVOControl
-    PROTECT oParent              AS IControlParent 
-    
+    PROTECT oParent              AS IControlParent
+
     // The surface window that owns the control. This is the same as oParent except
     // when oParent                                   is a data window. Then oFormSurface is the DataWindow's dialog
     PROTECT oFormSurface         AS IControlParent
-    PROTECT wId                  AS LONGINT   
-    PROTECT lDataAware           AS LOGIC 
+    PROTECT wId                  AS LONGINT
+    PROTECT lDataAware           AS LOGIC
     PROTECT lIsDestroyed         AS LOGIC
     PROTECT oContextMenu         AS Menu
-    
+
     PROTECT oSize                AS Dimension
     PROTECT oOrigin              AS Point
     PROTECT cWindowName          AS STRING
@@ -28,9 +28,9 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
     PROTECT __lModified          AS LOGIC
     PROTECT oHyperLabel          AS HyperLabel
     PROTECT lExplicitHL          AS LOGIC
-    PROTECT oServer              AS DataServer		
+    PROTECT oServer              AS DataServer
     PROTECT lBaseServer          AS LOGIC
-    PROTECT siDataField          AS LONGINT      
+    PROTECT siDataField          AS LONGINT
     PROTECT symDataField         AS SYMBOL
     PROTECT oHLStatus            AS HyperLabel
     PROTECT oControlBackground   AS Brush
@@ -44,7 +44,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
     PROTECT sToolTipText         AS STRING
     PROTECT lUseHLForToolTip     AS LOGIC
     PROTECT oControlWindow		 AS ControlWindow
-    
+
     PROPERTY EventReturnValue      AS LONGINT AUTO
 
     PROPERTY __IsValid		AS LOGIC GET oCtrl != NULL_OBJECT .and. ! oCtrl:IsDisposed
@@ -60,7 +60,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         IF SELF:oParent == NULL_OBJECT
             oParent := oWin
         ENDIF
-        
+
     ACCESS __ControlWindow AS ControlWindow
         RETURN oControlWindow
 
@@ -83,16 +83,17 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
     ACCESS __Control AS IVOControl
         RETURN oCtrl
-    
-    METHOD __AddTool(oControl AS Control) AS LOGIC STRICT 
+
+    METHOD __AddTool(oControl AS Control) AS LOGIC STRICT
         RETURN oParent:__AddTool(oControl)
-    
-    
-    
-    ACCESS __DataField AS DataField STRICT 
+
+
+
+ /// <exclude />
+    ACCESS __DataField AS DataField STRICT
         RETURN oDataField
-    
-    METHOD __EnsureVisibity() AS LOGIC STRICT 
+
+    METHOD __EnsureVisibity() AS LOGIC STRICT
         //Todo __EnsureVisibity
         /*
         LOCAL rCtl, rParent IS _winRECT
@@ -103,37 +104,37 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         IF (oParent:__FormWindow == NULL_OBJECT)
         RETURN FALSE
         ENDIF
-        
+
         hFFrame := oParent:__FormWindow:Handle()
         IF (hFFrame == NULL_PTR)
         RETURN FALSE
         ENDIF
-        
+
         GetWindowRect(SELF:Handle(), @rCtl)
         GetClientRect(hFFrame, @rParent)
-        #ifdef __VULCAN__	
+        #ifdef __VULCAN__
         ClientToScreen(hFFrame, (_winPOINT PTR) @rParent)
-        #else	
+        #else
         ClientToScreen(hFFrame, @rParent)
-        #endif	
+        #endif
         ClientToScreen(hFFrame, (_winPOINT PTR) @(rParent:right))
-        
+
         IF (rCtl:left < rParent:left) .OR. (rCtl:right > rParent:right) .OR.;
         (rCtl:top < rParent:top) .OR. (rCtl:bottom > rParent:bottom)
         oPoint := oFormSurface:Origin
-        
+
         lHScrollPos := GetScrollPos(hFFrame, SB_HORZ)
         lVScrollPos := GetScrollPos(hFFrame, SB_VERT)
-        
+
         IF (rCtl:left < rParent:left)
         oPoint:X += (rParent:left - rCtl:left)
         SetScrollPos(hFFrame, SB_HORZ, lHScrollPos - (rParent:left - rCtl:left), TRUE)
         ELSEIF (rCtl:right > rParent:right)
-        iXCorrect := Min((rCtl:right - rParent:right), (rCtl:left - rParent:left))
+        iXCorrect := Math.Min((rCtl:right - rParent:right), (rCtl:left - rParent:left))
         oPoint:X -= iXCorrect
         SetScrollPos(hFFrame, SB_HORZ, lHScrollPos + iXCorrect, TRUE)
         ENDIF
-        
+
         IF (rCtl:top < rParent:top)
         oPoint:Y -= (rParent:top - rCtl:top)
         SetScrollPos(hFFrame, SB_VERT, lVScrollPos - (rParent:top - rCtl:top), TRUE)
@@ -141,22 +142,24 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         oPoint:Y += (rCtl:bottom - rParent:bottom)
         SetScrollPos(hFFrame, SB_VERT, lVScrollPos + (rCtl:bottom - rParent:bottom), TRUE)
         ENDIF
-        
+
         oFormSurface:Origin := oPoint
         ENDIF
         */
         RETURN TRUE
-    
 
-    ACCESS __FormSurface AS OBJECT STRICT 
+
+ /// <exclude />
+    ACCESS __FormSurface AS OBJECT STRICT
         RETURN oFormSurface
-    
 
-    METHOD __Gather() AS LOGIC STRICT 
+
+ /// <exclude />
+    METHOD __Gather() AS LOGIC STRICT
         LOCAL lReturn:=TRUE AS LOGIC
         // Get value from control if necessary
         SELF:__Update()
-        
+
         IF lChanged
             IF oServer != NULL_OBJECT
                 IF lBaseServer // if not subclassing
@@ -180,25 +183,28 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ENDIF
         ENDIF
         RETURN lReturn
-    
 
-    ACCESS __GetDataFldPos AS LONGINT STRICT 
+
+ /// <exclude />
+    ACCESS __GetDataFldPos AS LONGINT STRICT
         RETURN siDataField
-    
+ /// <exclude />
     [Obsolete];
-    METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT 
+    METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
         //processes LVN_GETDISPINFO, TVN_GETDISPINFO, CBEN_GETDISPINFO, TBN_GETDISPINFO, HDN_GETDISPINFO
         //see Window:ControlNotify()
         RETURN
 
-    ACCESS __Parent AS IControlParent STRICT 
+ /// <exclude />
+    ACCESS __Parent AS IControlParent STRICT
         RETURN oParent
-    
 
-    METHOD __Scatter() AS Control STRICT 
+
+ /// <exclude />
+    METHOD __Scatter() AS Control STRICT
         LOCAL newValue AS USUAL
         LOCAL cFSValType AS STRING
-        
+
         IF oServer != NULL_OBJECT
             IF lBaseServer // if not subclassing
                 newValue := oServer:FIELDGET(symDataField) //use fieldget
@@ -228,15 +234,16 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 SELF:Value := FALSE
             END SWITCH
         ENDIF
-        
-        RETURN SELF
-    
 
+        RETURN SELF
+
+ /// <exclude />
     [Obsolete];
-    METHOD __SetColors(_hDC AS IntPtr) AS IntPtr STRICT 
+    METHOD __SetColors(_hDC AS IntPtr) AS IntPtr STRICT
         RETURN IntPtr.Zero
 
-    METHOD __Timer() AS VOID STRICT 
+ /// <exclude />
+    METHOD __Timer() AS VOID STRICT
         dwTimerCount := dwTimerCount - 1
         IF (dwTimerCount == 0)
             SELF:Timer()
@@ -246,27 +253,28 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 lTimerRegistered:=FALSE
             ENDIF
         ENDIF
-        
-        RETURN 
-    
+
+        RETURN
+
 
     [Obsolete];
-    METHOD __ToolTipHandle() AS IntPtr STRICT 
+    METHOD __ToolTipHandle() AS IntPtr STRICT
         // Todo __EnsureVisibity
         //	RETURN oParent:__ToolTipHandle()
         RETURN IntPtr.Zero
 
-    METHOD __Unlink(oDataServer := NIL AS USUAL) AS Control STRICT 
-        
+ /// <exclude />
+    METHOD __Unlink(oDataServer := NIL AS USUAL) AS Control STRICT
+
         IF SELF:Modified
             SELF:__Update()
             IF SELF:PerformValidations(uValue)
                 SELF:__Gather()
             ENDIF
         ENDIF
-        
+
         Default(@oDataServer,oServer)
-        
+
         // Do actual unlinking
         IF IsNil(oDataServer)
             uGetSetOwner:= NIL
@@ -275,7 +283,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             oServer:= NULL_OBJECT
         ELSE
             IF !IsInstanceOfUsual(oDataServer,#DataServer)
-                WCError{#__Unlink,#Control,__WCSTypeError,oDataServer,1}:@@Throw()
+                WCError{#__Unlink,#Control,__WCSTypeError,oDataServer,1}:Throw()
             ENDIF
             IF (oDataServer == oServer)
                 uGetSetOwner:= NIL
@@ -286,10 +294,11 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         ENDIF
         RETURN SELF
 
+ /// <exclude />
     METHOD __Update() AS VOID STRICT
         LOCAL cText AS STRING
         LOCAL uOldValue AS USUAL
-        
+
         IF SELF:Modified
             cText := SELF:TextValue
             uOldValue := uValue
@@ -302,14 +311,15 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 uValue := cText
             ENDIF
             SELF:Modified := FALSE
-            
+
             SELF:lChanged := !(uOldValue == uValue)
         ENDIF
-        RETURN 
+        RETURN
 
-    ASSIGN __Value(uNewValue AS USUAL)  STRICT 
+ /// <exclude />
+    ASSIGN __Value(uNewValue AS USUAL)  STRICT
         LOCAL uTemp AS USUAL
-        
+
         IF uNewValue == NIL
             uValue := NIL
             SELF:TextValue := ""
@@ -320,7 +330,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             uTemp := oFieldSpec:Transform(uNewValue)
             IF IsNil(uTemp)
                 oHLStatus := oFieldSpec:Status
-                WCError{#__Value,#Control,__WCSTypeError}:@@Throw()
+                WCError{#__Value,#Control,__WCSTypeError}:Throw()
             ELSE
                 SELF:uValue := oFieldSpec:Val(uTemp)
                 SELF:TextValue := uTemp
@@ -336,10 +346,11 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             SELF:Modified := FALSE
             SELF:lChanged := TRUE
         ENDIF
-        
-        RETURN 
-    
-    METHOD Activate(oEvent  AS Event ) 
+
+        RETURN
+
+/// <include file="Gui.xml" path="doc/Control.Activate/*" />
+    METHOD Activate(oEvent  AS Event )
         // Also empty in GUI Classes
         RETURN NIL
 
@@ -355,36 +366,39 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ENDCASE
             ENDIF
         RETURN
-    
-    METHOD AsString() 
+
+    METHOD AsString()
         IF !IsNil(SELF:uValue)
             RETURN AsString(SELF:uValue)
         ENDIF
         RETURN "#"+Symbol2String(ClassName(SELF))+":"+SELF:Caption
 
+/// <include file="Gui.xml" path="doc/Control.Background/*" />
     ACCESS Background AS Brush
         RETURN oControlBackground
 
-    ASSIGN Background(oNewBrush AS Brush) 
+/// <include file="Gui.xml" path="doc/Control.Background/*" />
+    ASSIGN Background(oNewBrush AS Brush)
         oControlBackground := oNewBrush
         IF SELF:__IsValid .and. oNewBrush != NULL_OBJECT
-            oCtrl:BackColor := oNewBrush:Color 
+            oCtrl:BackColor := oNewBrush:Color
         ENDIF
-        RETURN 
-    
+        RETURN
+
     METHOD BringToFront() AS VOID CLIPPER
         IF SELF:ValidateControl()
             oCtrl:BringToFront()
         ENDIF
-
+/// <include file="Gui.xml" path="doc/Control.Caption/*" />
     PROPERTY Caption AS STRING GET cCaption SET cCaption := Value
 
-    PROPERTY ContextMenu AS Menu 
-    GET 
-        RETURN oContextMenu 
+/// <include file="Gui.xml" path="doc/Control.ContextMenu/*" />
+    PROPERTY ContextMenu AS Menu
+    GET
+        RETURN oContextMenu
     END GET
-    SET 
-        IF SELF:__IsValid 
+    SET
+        IF SELF:__IsValid
             oContextMenu := VALUE
             IF oCtrl IS System.Windows.Forms.Control VAR oC
                 IF oContextMenu != NULL_OBJECT
@@ -396,17 +410,18 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         ENDIF
     END SET
     END PROPERTY
-    
+
     PROPERTY SWFControl AS IVOControl GET oCtrl
+/// <include file="Gui.xml" path="doc/Control.ControlID/*" />
     PROPERTY ControlID AS LONG GET SELF:wId
-    
+
     METHOD CreateWindowEx(dwExStyle AS LONG, sCaption AS STRING, dwStyle AS LONG,;
         nX AS LONG, nY AS LONG, nWidth AS LONG, nHeight AS LONG, oOwner AS Window) AS IVOControl
-        oCtrl  := 	SELF:__CreateControl(dwStyle , dwExStyle ) 
+        oCtrl  := 	SELF:__CreateControl(dwStyle , dwExStyle )
 
         IF oCtrl != NULL_OBJECT
             // Determine where to add the control
-            // Some controls are added to the surface, others to the form 
+            // Some controls are added to the surface, others to the form
             oCtrl:HandleDestroyed += OnHandleDestroyed
             oCtrl:HandleCreated   += OnHandleCreated
 
@@ -435,7 +450,8 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             oCtrl:Size     := Dimension{nWidth, nHeight}
         ENDIF
         RETURN oCtrl
-    
+
+/// <include file="Gui.xml" path="doc/Control.Create/*" />
     METHOD Create() AS IVOControl STRICT
         LOCAL oDlgItem AS ResourceDialogItem
         LOCAL oFont AS System.Drawing.Font
@@ -443,13 +459,13 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         LOCAL oOwner AS OBJECT
         LOCAL nTabIndex AS LONG
         // don't create twice
-        IF SELF:__IsValid 
+        IF SELF:__IsValid
             RETURN oCtrl
         ENDIF
-        
+
         IF !lIsDestroyed
-            
-            IF (oCtrl == NULL_OBJECT) 
+
+            IF (oCtrl == NULL_OBJECT)
                 // See if the control has been defined in a native resource. When so, then copy some of the properties
                 // from the resource, such as position, size, styles and caption
                 IF oFormSurface != NULL_OBJECT
@@ -487,33 +503,37 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                     oCtrl:TabIndex := nTabIndex
                 ENDIF
             ENDIF
-            
+
             IF (oCtrl != NULL_OBJECT)
                 oFont := System.Drawing.SystemFonts.DefaultFont
                 oCtrl:Font := oFont
 
             ELSE
                 // !!! Maybe we should remove this before shipping !!!
-                WCError{#Create,#Control,__WCSCreateCtlFailed,SELF}:@@Throw()
+                WCError{#Create,#Control,__WCSCreateCtlFailed,SELF}:Throw()
             ENDIF
         ENDIF
         RETURN oCtrl
-    
+
+/// <include file="Gui.xml" path="doc/Control.DataField/*" />
     PROPERTY DataField  AS SYMBOL GET SELF:symDataField
 
-    METHOD Deactivate(oEvent AS @@Event) AS VOID 
+/// <include file="Gui.xml" path="doc/Control.Deactivate/*" />
+    METHOD Deactivate(oEvent AS @@Event) AS VOID
         //Also empty in GUI Classes
-        RETURN 
-    
-    METHOD Default(oEvent) 		
+        RETURN
+
+/// <include file="Gui.xml" path="doc/Control.Default/*" />
+    METHOD Default(oEvent)
         //Todo Default
         // LOCAL oEvt := oEvent AS @@event
         // SELF:EventReturnValue := CallWindowProc(SELF:__lpfnDefaultProc, oCtrl, oEvt:umsg, oEvt:wParam, oEvt:lParam)
 
         RETURN 1L
-    
-    METHOD Destroy() AS USUAL 
-        
+
+/// <include file="Gui.xml" path="doc/Control.Destroy/*" />
+    METHOD Destroy() AS USUAL
+
         IF oCtrl != NULL_OBJECT
             IF ! oCtrl:IsDisposed
                 // Prevent calling Dispose in a background thread
@@ -529,32 +549,35 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         SUPER:Destroy()
         lIsDestroyed := TRUE
         RETURN SELF
-    
 
+
+/// <include file="Gui.xml" path="doc/Control.Disable/*" />
     METHOD Disable() AS VOID STRICT
-        IF SELF:__IsValid 
+        IF SELF:__IsValid
             oCtrl:Enabled := FALSE
             oCtrl:Invalidate()
         ENDIF
         SELF:SetStyle(WS_DISABLED, TRUE)
-        
-        RETURN 
-    
 
+        RETURN
+
+
+/// <include file="Gui.xml" path="doc/Control.DisableTheme/*" />
     METHOD DisableTheme() AS VOID STRICT
         //Todo DisableTheme
         //RETURN SetWindowTheme(SELF:handle(),"","")
-        
-    METHOD Dispatch(oEvent AS @@Event) 
+
+/// <include file="Gui.xml" path="doc/Control.Dispatch/*" />
+    METHOD Dispatch(oEvent AS @@Event)
         /*
         LOCAL oEvt := oEvent AS @@event
         LOCAL msg AS DWORD
         LOCAL uRet AS USUAL
-        
-        
+
+
         SELF:EventReturnValue := 0L
         msg := oEvt:uMsg
-        
+
         DO CASE
         CASE msg == WM_ERASEBKGND
             //RH PaintBackground is defined in our patch file
@@ -562,76 +585,76 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 SELF:EventReturnValue := 1L
                 RETURN 1L
             ENDIF
-            
+
         CASE msg == WM_PAINT
             uRet := SELF:Expose(ExposeEvent{oEvt})
-            
+
         CASE msg == WM_DRAWITEM
             //PP-031006 owner draw support, thanks to SEbert
             //Used for owner drawn menus or controls
             RETURN __Dispatch_DrawItem(oEvt, SELF)
-            
+
         CASE msg == WM_MEASUREITEM
             //PP-031006 owner draw support
             //Used for owner drawn menus or controls
             RETURN __Dispatch_MeasureItem(oEvt, SELF)
-            
+
         CASE msg == WM_MENUCHAR
             //PP-031006 owner draw support
             //Used for owner drawn menus or controls
             RETURN __Dispatch_MenuChar(oEvt, SELF)
         CASE msg == WM_WCHELP
             oParent:HelpRequest(HelpRequestEvent{oEvt})
-            
+
         CASE msg == WM_ACTIVATE
             IF LoWord(oEvt:wParam) != 0
                 uRet := SELF:Activate(oEvt)
             ELSE
                 uRet := SELF:Deactivate(oEvt)
             ENDIF
-            
+
             // WM_COMMAND trigged by (popup) menu
         CASE (msg == WM_COMMAND) .AND. (HiWord(oEvt:wParam) == 0) .AND. (oEvt:lParam == 0L)
             IF (oContextMenu != NULL_OBJECT)
                 oParent:__PreMenuCommand(MenuCommandEvent{oEvt}:__SetMenu(oContextMenu))
                 RETURN 1L
             ENDIF
-            
+
             //PP-040421 Improved focus handling
         CASE msg == WM_SETFOCUS .OR. msg == WM_KILLFOCUS
             uRet := SELF:FocusChange(FocusChangeEvent{oEvt})
         CASE msg == WM_HSCROLL
             uRet := SELF:HorizontalScroll(ScrollEvent{oEvt})
-            
+
         CASE msg == WM_KEYUP
             uRet := SELF:KeyUp(KeyEvent{oEvt})
-            
+
         CASE msg == WM_KEYDOWN
             uRet := SELF:KeyDown(KeyEvent{oEvt})
-            
-            
+
+
         CASE msg == WM_LBUTTONDBLCLK .OR.;
             msg == WM_RBUTTONDBLCLK .OR.;
             msg == WM_MBUTTONDBLCLK .OR. ;
             msg == WM_XBUTTONDBLCLK
             uRet := SELF:MouseButtonDoubleClick(MouseEvent{oEvt})
-            
+
         CASE msg == WM_LBUTTONDOWN .OR.;
             msg == WM_RBUTTONDOWN .OR.;
             msg == WM_MBUTTONDOWN .OR. ;
             msg == WM_XBUTTONDOWN
             uRet := SELF:MouseButtonDown(MouseEvent{oEvt})
-            
+
         CASE msg == WM_LBUTTONUP .OR.;
             msg == WM_RBUTTONUP .OR.;
             msg == WM_MBUTTONUP .OR. ;
             msg == WM_XBUTTONUP
             uRet := SELF:MouseButtonUp(MouseEvent{oEvt})
-            
+
         CASE msg == WM_VSCROLL
             uRet := SELF:VerticalScroll(ScrollEvent{oEvt})
-            
-            
+
+
         CASE msg == WM_MOUSEMOVE
             //IF IsMethod(oFormSurface, #__ToolTipHandle) .AND. (oFormSurface:__ToolTipHandle() != NULL_PTR)
             //	struMsg:oCtrl := oCtrl
@@ -642,19 +665,19 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             //	struMsg:time := DWORD(GetMessageTime())
             //	SendMessage(oFormSurface:__ToolTipHandle(), TTM_RELAYEVENT, 0, LONGINT(_CAST, @struMsg))
             //ENDIF
-            
+
             IF oEvt:wParam != 0
                 uRet := SELF:MouseDrag(MouseEvent{oEvt})
             ELSE
                 uRet := SELF:MouseMove(MouseEvent{oEvt})
             ENDIF
-            
+
         CASE msg == WM_MOVE
             uRet := SELF:Move(MoveEvent{oEvt})
-            
+
         CASE msg == WM_SIZE
             uRet := SELF:Resize(ResizeEvent{oEvt})
-            
+
         CASE (msg == WM_DROPFILES)
             IF IsMethod(oParent, #Drop)
                 oParent:Drop(DragEvent{oEvt, SELF})
@@ -663,77 +686,80 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 PCALL(gpfnDragFinish, PTR(_CAST, oEvt:wParam))
             ENDIF
             RETURN 1L
-            
+
         CASE (msg == WM_INITMENU) .OR. (msg == WM_INITMENUPOPUP)
             uRet := SendMessage(oParent:Handle(), msg, oEvt:wParam, oEvt:lParam)
             //if IsMethod(oParent, #MenuInit)
             //oParent:MenuInit(__ObjectCastClassPtr(oEvt, __pCMenuInitEvent))
             //endif
-            
+
         CASE msg == WM_MENUSELECT
             uRet := SendMessage(oParent:Handle(), msg, oEvt:wParam, oEvt:lParam)
             //if (oEvent:lParam != 0) .and. IsMethod(oParent, #MenuSelect)
             //oParent:MenuSelect(__ObjectCastClassPtr(oEvt, __pCMenuSelectEvent))
             //endif
-            
+
             //RvdH 050809 Removed next line
             //CASE msg == WM_CLOSE
             // __WCUnregisterControl(self)
-            
+
             //PP-040425 improved context menu support, following code replaced with subsequent code
             // 	CASE msg == WM_CONTEXTMENU
             // 		IF (oContextMenu != NULL_OBJECT)
             // 			RETURN (SELF:EventReturnValue := 1L)
             // 		ENDIF
-            
+
             //PP-040410 improved context menu support
         CASE msg == WM_CONTEXTMENU
             IF (oContextMenu != NULL_OBJECT)
                 oContextMenu:ShowAsPopup(SELF, oEvt:lParam)
                 RETURN (SELF:EventReturnValue := 1L)
             ENDIF
-            
+
         CASE msg == WM_THEMECHANGED //SE-060526
             VerifyThemeState()
             InvalidateRect(oCtrl, NULL_PTR, TRUE)
-            
+
         ENDCASE
-        
+
         IF IsLong(uRet)
             SELF:EventReturnValue := uRet
             RETURN 1L
         ENDIF
         */
         RETURN SELF:EventReturnValue
-    
 
-    METHOD Drop(oDragEvent) 
+
+    METHOD Drop(oDragEvent)
         // Also empty in GUI Classes
         RETURN NIL
-    
 
+
+/// <include file="Gui.xml" path="doc/Control.Enable/*" />
     METHOD Enable() AS VOID STRICT
         IF SELF:ValidateControl()
             oCtrl:Enabled := TRUE
             oCtrl:Invalidate()
         ENDIF
         SELF:SetStyle(WS_DISABLED, FALSE)
-        RETURN 
-    
+        RETURN
 
-    METHOD Expose(oExposeEvent ) 
+
+/// <include file="Gui.xml" path="doc/Control.Expose/*" />
+    METHOD Expose(oExposeEvent )
         // Also empty in GUI Classes
         RETURN NIL
-    
+
 
     ACCESS FieldSpec AS FieldSpec
         RETURN oFieldSpec
-    
 
-    ASSIGN FieldSpec(oDSAssign AS FieldSpec) 
+
+/// <include file="Gui.xml" path="doc/Control.FieldSpec/*" />
+    ASSIGN FieldSpec(oDSAssign AS FieldSpec)
         oFieldSpec := oDSAssign
         lExplicitFS := TRUE
-        
+
         // We need to update the control if is visible and connected to the server
         IF oServer != NIL .AND. oDataField!=NIL .OR. cbGetSetBlock != NULL_CODEBLOCK
             IF SELF:IsVisible()
@@ -742,29 +768,32 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 SELF:__Scatter()
             ENDIF
         ENDIF
-        RETURN 
-    
+        RETURN
 
-    METHOD FocusChange(oFocusChangeEvent ) 
+
+/// <include file="Gui.xml" path="doc/Control.FocusChange/*" />
+    METHOD FocusChange(oFocusChangeEvent )
         IF oParent != NULL_OBJECT
             oParent:ControlFocusChange(ControlFocusChangeEvent{oFocusChangeEvent, SELF})
         ENDIF
         RETURN NIL
 
+/// <include file="Gui.xml" path="doc/Control.Handle/*" />
     METHOD Handle() AS IntPtr CLIPPER
         IF (oCtrl == NULL_OBJECT )
             SELF:Create()
         ENDIF
-        IF SELF:__IsValid 
+        IF SELF:__IsValid
             RETURN oCtrl:Handle
         ENDIF
         RETURN Intptr.Zero
-    
+
     PROTECTED PROPERTY hWnd AS IntPtr GET SELF:Handle()
-    
+
+/// <include file="Gui.xml" path="doc/Control.HasBorder/*" />
     METHOD HasBorder() AS LOGIC STRICT
         LOCAL lBorder		AS LOGIC
-        LOCAL nStyle		AS LONG    
+        LOCAL nStyle		AS LONG
 
         nStyle := GuiWin32.GetWindowLong(SELF:hWnd,GWL_EXSTYLE)
         IF _AND(nStyle,WS_EX_DLGMODALFRAME)>0
@@ -783,21 +812,25 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         ENDIF
         RETURN lBorder
 
+/// <include file="Gui.xml" path="doc/Control.Hide/*" />
     METHOD Hide() AS VOID STRICT
-        IF SELF:__IsValid 
+        IF SELF:__IsValid
             oCtrl:Visible := FALSE
-        ENDIF		
-        RETURN 
-    
+        ENDIF
+        RETURN
 
-    METHOD HorizontalScroll(oScrollEvent ) 
+
+/// <include file="Gui.xml" path="doc/Control.HorizontalScroll/*" />
+    METHOD HorizontalScroll(oScrollEvent )
         //Also empty in GUI Classes
         RETURN NIL
 
+/// <include file="Gui.xml" path="doc/Control.HyperLabel/*" />
     ACCESS HyperLabel AS HyperLabel
         RETURN oHyperLabel
-    
-    ASSIGN HyperLabel(oNewHL AS HyperLabel) 
+
+/// <include file="Gui.xml" path="doc/Control.HyperLabel/*" />
+    ASSIGN HyperLabel(oNewHL AS HyperLabel)
         oHyperLabel := oNewHL
         lExplicitHL := TRUE
         IF oNewHL != NULL_OBJECT
@@ -810,12 +843,13 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 SELF:__AddTool(SELF)
             ENDIF
         ENDIF
-        RETURN 
-    
+        RETURN
 
-    CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware) 
+
+/// <include file="Gui.xml" path="doc/Control.ctor/*" />
+    CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
         SUPER()
-        IF oOwner != NULL_OBJECT 
+        IF oOwner != NULL_OBJECT
             local oOwnerObject := oOwner as OBJECT
             IF oOwnerObject IS IVOControl VAR ownerControl
                 SELF:oCtrl    := ownerControl
@@ -826,7 +860,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 ENDIF
                 RETURN
             ENDIF
-        ENDIF		
+        ENDIF
 
         IF !IsNil(oPoint)
             SELF:oOrigin 	:= Point{oPoint:x, oPoint:y}
@@ -838,20 +872,20 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         IF !IsNil(kStyle)
             dwStyle := _OR(dwStyle, (LONG) kStyle)
         ENDIF
-        
+
         oParent := oOwner
 
-        
+
         IF IsObject(oOwner)
             oParent := oOwner
         ELSEIF IsPtr(oOwner)
             oParent := __ForeignWindow{oOwner}
         ELSE
-            WCError{#Init,#Control,__WCSTypeError,oOwner,1}:@@Throw()
+            WCError{#Init,#Control,__WCSTypeError,oOwner,1}:Throw()
         ENDIF
-        
-        oFormSurface := oParent		
-        IF IsLong(xID)   
+
+        oFormSurface := oParent
+        IF IsLong(xID)
             IF IsString(oPoint) .AND. IsNil(oDimension)
                 xID := ResourceID{ xID }
             ELSE
@@ -859,50 +893,50 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ENDIF
         ELSE
             IF !IsInstanceOfUsual(xID,#ResourceID)
-                WCError{#Init,#Control,__WCSTypeError,xID,2}:@@Throw()
-            ENDIF               
+                WCError{#Init,#Control,__WCSTypeError,xID,2}:Throw()
+            ENDIF
         ENDIF
-        
-        
-        
+
+
+
         IF (oFormSurface IS DialogWindow .OR. oFormSurface IS DataWindow)  .AND. ;
             (IsInstanceOfUsual(xID,#ResourceID) .OR. (IsLong(xID) .AND.;
             IsNil(oDimension) .AND. IsNil(oPoint)))
-            
+
             IF IsInstanceOfUsual(xID,#ResourceID)
                 wId 		:= xID:ID
             ELSE
                 wId 		:= xID
             ENDIF
-            
+
             dwStyle := WS_CHILD
             IF !IsNil(kStyle)
                 dwStyle := _OR(dwStyle, (LONG) kStyle)
             ENDIF
-            
+
             //oCtrl := GetDlgItem(oFormSurface:Handle(), wId)
-            
+
             //__WCRegisterControl(SELF) //register after we get the handle
             //SetWindowLong(oCtrl, GWL_STYLE, _OR(GetWindowLong(oCtrl, GWL_STYLE), LONGINT(_CAST, dwStyle)))
             //SetWindowLong(oCtrl, GWL_EXSTYLE, LONGINT(_CAST, _AND(GetWindowLong(oCtrl, GWL_EXSTYLE), _NOT(WS_EX_NOPARENTNOTIFY))))
-            
+
             //__lpfnDefaultProc := PTR(_CAST, GetWindowLong(oCtrl, GWL_WNDPROC))
             //SetWindowLong(oCtrl, GWL_WNDPROC, LONGINT(_CAST, Get__WCControlProcPtr()))
-            
+
         ELSEIF (oFormSurface IS Window .OR. oFormSurface IS Control) .AND. IsLong(xID)
             IF !IsInstanceOfUsual(oPoint,#Point)
-                WCError{#Init,#Control,__WCSTypeError,oPoint,3}:@@Throw()
+                WCError{#Init,#Control,__WCSTypeError,oPoint,3}:Throw()
             ENDIF
             IF !IsInstanceOfUsual(oDimension,#Dimension)
-                WCError{#Init,#Control,__WCSTypeError,oDimension,4}:@@Throw()
+                WCError{#Init,#Control,__WCSTypeError,oDimension,4}:Throw()
             ENDIF
-            
+
             IF !IsNil(cRegClass) .AND. !IsString(cRegClass)
-                WCError{#Init,#Control,__WCSTypeError,cRegClass,5}:@@Throw()
+                WCError{#Init,#Control,__WCSTypeError,cRegClass,5}:Throw()
             ENDIF
-            
+
             cClassName := cRegClass
-            
+
             IF (cClassName == "Edit" .OR. cClassName == "ListBox" .OR. cClassName == "SysAnimate32" .OR.;
                 cClassName == "SysTreeView32" .OR. cClassName == "SysListView32" .OR. cClassName == "msctls_hotkey32")
                 dwExStyle := _OR(dwExStyle, (LONG) WS_EX_CLIENTEDGE)
@@ -911,13 +945,13 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 dwExStyle := _OR(dwExStyle, (LONG) WS_EX_CLIENTEDGE, (LONG) WS_EX_STATICEDGE)
             ENDIF
         ELSE
-            WCError{#Init,#Control,__WCSTypeError}:@@Throw()
+            WCError{#Init,#Control,__WCSTypeError}:Throw()
         ENDIF
-        
+
         IF IsLogic(lDataAware)
             SELF:lDataAware:=lDataAware
         ENDIF
-        
+
         IF SELF:lDataAware .AND. !(SELF IS DataBrowser) .AND. IsMethod(oParent, #__SetUpDataControl)
             SELF:Create()
             oParent:__SetupDataControl(SELF)
@@ -925,16 +959,30 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             SELF:Create()
             oDw:__SetupNonDataControl(SELF)
         ELSE
-            SELF:Create()	
+            SELF:Create()
         ENDIF
-        RETURN 
-    
+        RETURN
+
+/// <include file="Gui.xml" path="doc/Control.IsDestroyed/*" />
     PROPERTY IsDestroyed AS LOGIC GET SELF:lIsDestroyed
 
+/// <include file="Gui.xml" path="doc/Control.IsDisabled/*" />
+    ACCESS IsDisabled AS LOGIC
+        RETURN SELF:__IsValid  .and. !oCtrl:Enabled
+/// <include file="Gui.xml" path="doc/Control.IsDisabled/*" />
+    ASSIGN IsDisabled(lValue AS LOGIC)
+        IF lValue
+            SELF:Disable()
+        ELSE
+            SELF:Enable()
+        ENDIF
+        RETURN
+
+/// <include file="Gui.xml" path="doc/Control.IsEditable/*" />
     ACCESS IsEditable AS LOGIC
         LOCAL lEditable	AS LOGIC
         lEditable := FALSE
-        IF SELF:__IsValid 
+        IF SELF:__IsValid
             IF oCtrl:Visible
                 IF oCtrl:Enabled
                     IF  SELF IS BASELISTBOX .OR. ;
@@ -953,12 +1001,23 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         ENDIF
         RETURN lEditable
 
+/// <include file="Gui.xml" path="doc/Control.IsEnabled/*" />
     METHOD IsEnabled() AS LOGIC CLIPPER
-        IF SELF:__IsValid 
+        IF SELF:__IsValid
             RETURN oCtrl:Enabled
         ENDIF
         RETURN FALSE
-    
+
+    ACCESS IsHidden( )  AS LOGIC
+        RETURN SELF:__IsValid  .and. !oCtrl:Visible
+
+    ASSIGN IsHidden( lValue  AS LOGIC)
+        IF SELF:__IsValid
+            oCtrl:Visible := ! lValue
+        ENDIF
+        RETURN
+
+/// <include file="Gui.xml" path="doc/Control.IsReadOnly/*" />
     METHOD IsReadOnly() AS LOGIC STRICT
         IF SELF:__IsValid .AND. SELF IS Edit
             RETURN ((VOTextBox) SELF:oCtrl):ReadOnly
@@ -966,51 +1025,55 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             RETURN FALSE
         ENDIF
 
-    METHOD IsVisible 
-        RETURN SELF:__IsValid .and. oCtrl:Visible	
+/// <include file="Gui.xml" path="doc/Control.IsVisible/*" />
+    METHOD IsVisible
+        RETURN SELF:__IsValid .and. oCtrl:Visible
 
-    METHOD KeyDown(oKeyEvent) 
+/// <include file="Gui.xml" path="doc/Control.KeyDown/*" />
+    METHOD KeyDown(oKeyEvent)
         //Also empty in GUI Classes
         RETURN NIL
-    
-    METHOD KeyUp(oKeyEvent) 
+
+/// <include file="Gui.xml" path="doc/Control.KeyUp/*" />
+    METHOD KeyUp(oKeyEvent)
         //Also empty in GUI Classes
         RETURN NIL
-    
-    METHOD LinkDF(oDS, siDF) 
+
+/// <include file="Gui.xml" path="doc/Control.LinkDF/*" />
+    METHOD LinkDF(oDS, siDF)
         LOCAL tmpDF AS OBJECT
         LOCAL symClassName AS SYMBOL
-        
+
         IF !IsNumeric(siDF)
             siDF:=oDS:FieldPos(siDF)
-        ENDIF	
-        
-        IF !IsInstanceOfUsual(oDS,#DataServer)
-            WCError{#LinkDF,#Control,__WCSTypeError,oDS,1}:@@Throw()
         ENDIF
-        
+
+        IF !IsInstanceOfUsual(oDS,#DataServer)
+            WCError{#LinkDF,#Control,__WCSTypeError,oDS,1}:Throw()
+        ENDIF
+
         IF (!IsNil(oServer) .AND. (oDS!=oServer))
             SELF:__Unlink()
         ENDIF
-        
+
         oServer 	 := oDS
         siDataField  := siDF
         symDataField := oServer:FieldSym(siDataField)
         IF IsMethod(oServer, #IsBaseField)
             lBaseServer := Send(oServer, #IsBaseField, symDataField)
-        ELSE   
+        ELSE
             symClassName := ClassName(oServer)
             lBaseServer  := symClassName==#DBServer .OR. symClassName==#SQLSelect .OR. symClassName==#SQLTable .OR. symClassName==#JDataServer
         ENDIF
-        
+
         // Propogate data field if no explicit one
         IF ((tmpDF := oServer:DataField(siDataField)) != NULL_OBJECT)
             oDataField := tmpDF
-            
+
             IF !lExplicitFS
                 // propogate field spec if no explicit one
                 SELF:FieldSpec := SELF:oDataField:FieldSpec
-                
+
                 // propogate field spec
                 IF !lExplicitHL
                     // CHECK if NameSym and hyperlabel are same
@@ -1024,73 +1087,85 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 ENDIF
             ENDIF
         ENDIF
-        
+
         uGetSetOwner := NIL
         cbGetSetBlock := NULL_CODEBLOCK
-        
-        RETURN SELF
-    
 
-    METHOD MenuInit(oMenuInitEvent )  
+        RETURN SELF
+
+
+/// <include file="Gui.xml" path="doc/Control.MenuInit/*" />
+    METHOD MenuInit(oMenuInitEvent )
         //Also empty in GUI Classes
         RETURN NIL
-    
-    METHOD MenuSelect(oMenuSelectEvent )  
+
+/// <include file="Gui.xml" path="doc/Control.MenuSelect/*" />
+    METHOD MenuSelect(oMenuSelectEvent )
         //Also empty in GUI Classes
         RETURN NIL
+/// <include file="Gui.xml" path="doc/Control.Modified/*" />
     ACCESS Modified AS LOGIC
         RETURN __lModified
-    
 
-    ASSIGN Modified(lChangedFlag  AS LOGIC) 
+
+/// <include file="Gui.xml" path="doc/Control.Modified/*" />
+    ASSIGN Modified(lChangedFlag  AS LOGIC)
         __lModified := lChangedFlag
-        RETURN  
-    
-    METHOD MouseButtonDoubleClick(oMouseEvent )  
-        //Also empty in GUI Classes
-        RETURN NIL 
+        RETURN
 
-    METHOD MouseButtonDown(oMouseEvent)  
-        //Also empty in GUI Classes
-        RETURN NIL 
-    
-    METHOD MouseButtonUp(oMouseEvent )  
+/// <include file="Gui.xml" path="doc/Control.MouseButtonDoubleClick/*" />
+    METHOD MouseButtonDoubleClick(oMouseEvent )
         //Also empty in GUI Classes
         RETURN NIL
-    
-    METHOD MouseDrag(oMouseEvent )  
-        //Also empty in GUI Classes
-        RETURN NIL 
-    
-    METHOD MouseMove(oMouseEvent ) 
-        //Also empty in GUI Classes
-        RETURN NIL 
-    
-    METHOD Move(oMoveEvent ) 
+
+/// <include file="Gui.xml" path="doc/Control.MouseButtonDown/*" />
+    METHOD MouseButtonDown(oMouseEvent)
         //Also empty in GUI Classes
         RETURN NIL
-    
+
+/// <include file="Gui.xml" path="doc/Control.MouseButtonUp/*" />
+    METHOD MouseButtonUp(oMouseEvent )
+        //Also empty in GUI Classes
+        RETURN NIL
+
+/// <include file="Gui.xml" path="doc/Control.MouseDrag/*" />
+    METHOD MouseDrag(oMouseEvent )
+        //Also empty in GUI Classes
+        RETURN NIL
+
+/// <include file="Gui.xml" path="doc/Control.MouseMove/*" />
+    METHOD MouseMove(oMouseEvent )
+        //Also empty in GUI Classes
+        RETURN NIL
+
+/// <include file="Gui.xml" path="doc/Control.Move/*" />
+    METHOD Move(oMoveEvent )
+        //Also empty in GUI Classes
+        RETURN NIL
+
+/// <include file="Gui.xml" path="doc/Control.Name/*" />
     ACCESS Name  AS STRING
         IF (SELF:HyperLabel  != NULL_OBJECT)
             RETURN SELF:HyperLabel :Name
         ENDIF
-        
+
         RETURN NULL_STRING
-    
+
+/// <include file="Gui.xml" path="doc/Control.NameSym/*" />
     ACCESS NameSym AS SYMBOL
         IF (SELF:HyperLabel != NULL_OBJECT)
             RETURN SELF:HyperLabel:NameSym
         ENDIF
         RETURN NULL_SYMBOL
-    
+
     ACCESS __OwnerOffSet AS Point
         LOCAL oCtrlOwner AS SWF.Control
         LOCAL oPoint AS Point
         LOCAL oPoint2 AS Point
         oPoint := Point{}
-        IF SELF:oCtrl != NULL_OBJECT		
+        IF SELF:oCtrl != NULL_OBJECT
             oCtrlOwner 	:= SELF:oCtrl:Parent
-            DO WHILE oCtrlOwner != NULL 
+            DO WHILE oCtrlOwner != NULL
                 IF oCtrlOwner is VOSurfacePanel
                     EXIT
                 ENDIF
@@ -1101,7 +1176,8 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ENDDO
         ENDIF
         RETURN oPoint
-    
+
+/// <include file="Gui.xml" path="doc/Control.Origin/*" />
     ACCESS Origin AS Point
         IF (oCtrl == NULL_OBJECT .AND. oOrigin != NULL_OBJECT)
             RETURN oOrigin
@@ -1112,19 +1188,22 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             RETURN oPoint
         ENDIF
 
-    ASSIGN Origin(oPoint AS Point) 
+/// <include file="Gui.xml" path="doc/Control.Origin/*" />
+    ASSIGN Origin(oPoint AS Point)
         IF (oCtrl == NULL_OBJECT)
             SELF:oOrigin := Point{oPoint:X, oPoint:Y}
         ELSE
             oPoint := oPoint - SELF:__OwnerOffSet
             WC.MoveWindow(oCtrl, oPoint, TRUE)
         ENDIF
-        RETURN 
-    
+        RETURN
+
+/// <include file="Gui.xml" path="doc/Control.OverRide/*" />
     METHOD OverRide(lEnable AS LOGIC) AS VOID PASCAL
         //Also empty in GUI Classes
-        RETURN 
-    
+        RETURN
+
+/// <include file="Gui.xml" path="doc/Control.Owner/*" />
     ACCESS Owner AS OBJECT
         RETURN SELF:oParent
 
@@ -1168,9 +1247,10 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             lStandard := FALSE
          ENDIF
         RETURN lStandard
-    
-    ASSIGN OwnerAlignment(iNewType AS USUAL) 
-    
+
+/// <include file="Gui.xml" path="doc/Control.OwnerAlignment/*" />
+    ASSIGN OwnerAlignment(iNewType AS USUAL)
+
         IF ! Control.OwnerAlignmentHandledByWinForms(oCtrl, iNewType)
             IF oFormSurface IS Window
                 oFormSurface:__AddAlign(SELF, iNewType)
@@ -1178,13 +1258,14 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 oParent:__AddAlign(SELF, iNewType)
             ENDIF
         ENDIF
-        RETURN 
-    
+        RETURN
+
 
 
     METHOD PaintBackGround() CLIPPER
         RETURN FALSE
 
+/// <include file="Gui.xml" path="doc/Control.PerformValidations/*" />
     METHOD PerformValidations() CLIPPER
         // Perform validations for Control against supplied parameter
         // if it has a data spec, otherwise just return true
@@ -1199,16 +1280,17 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ENDIF
         ENDIF
         RETURN TRUE
-    
 
-    METHOD RegisterTimer(nInterval,lOneTime) 
+
+/// <include file="Gui.xml" path="doc/Control.RegisterTimer/*" />
+    METHOD RegisterTimer(nInterval,lOneTime)
         IF !IsLong(nInterval)
-            WCError{#RegisterTimer,#Control,__WCSTypeError,nInterval,1}:@@Throw()
+            WCError{#RegisterTimer,#Control,__WCSTypeError,nInterval,1}:Throw()
         ENDIF
-        
+
         IF !IsNil(lOneTime)
             IF !IsLogic(lOneTime)
-                WCError{#RegisterTimer,#Control,__WCSTypeError,lOneTime,2}:@@Throw()
+                WCError{#RegisterTimer,#Control,__WCSTypeError,lOneTime,2}:Throw()
             ENDIF
             IF lOneTime
                 dwTimerInterval:=0
@@ -1218,7 +1300,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         ELSE
             dwTimerInterval := nInterval
         ENDIF
-        
+
         IF (nInterval > 0)
             dwTimerCount := nInterval
             IF !lTimerRegistered
@@ -1229,48 +1311,57 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             WC.UnregisterTimer(SELF)
             lTimerRegistered := FALSE
         ENDIF
-        
+
         RETURN SELF
 
+/// <include file="Gui.xml" path="doc/Control.ReadOnly/*" />
     ACCESS ReadOnly AS LOGIC
         RETURN SELF:IsEnabled()
 
-    ASSIGN ReadOnly(lNewValue AS LOGIC) 
+
+/// <include file="Gui.xml" path="doc/Control.ReadOnly/*" />
+    ASSIGN ReadOnly(lNewValue AS LOGIC)
         IF (lNewValue)
             SELF:Disable()
         ELSE
             SELF:Enable()
         ENDIF
-        RETURN 
+        RETURN
 
 
 
+/// <include file="Gui.xml" path="doc/Control.RePaint/*" />
     METHOD RePaint() AS VOID STRICT
-        IF SELF:__IsValid 
+        IF SELF:__IsValid
             oCtrl:Invalidate()
         ENDIF
-        RETURN 
+        RETURN
 
-    METHOD Resize(oResizeEvent ) 
-        RETURN NIL
 
+/// <include file="Gui.xml" path="doc/Control.Resize/*" />
+METHOD Resize(oResizeEvent)
+	RETURN NIL
+
+/// <include file="Gui.xml" path="doc/Control.RestoreUpdate/*" />
     METHOD RestoreUpdate() AS VOID STRICT
-        IF SELF:__IsValid 
+        IF SELF:__IsValid
             SELF:oCtrl:ResumeLayout()
         ENDIF
-        RETURN 
-    
+        RETURN
+
     METHOD SendToBack() AS VOID CLIPPER
         IF SELF:ValidateControl()
             oCtrl:SendToBack()
         ENDIF
 
+/// <include file="Gui.xml" path="doc/Control.Server/*" />
     ACCESS Server AS DataServer
         RETURN oServer
 
+/// <include file="Gui.xml" path="doc/Control.SetExStyle/*" />
     METHOD SetExStyle(kExStyle AS LONG, lEnable := TRUE AS LOGIC) AS VOID STRICT
         LOCAL liTemp AS LONG
-        
+
         IF oCtrl == NULL_OBJECT
             IF lEnable
                 dwExStyle := _OR(kExStyle, dwExStyle)
@@ -1278,7 +1369,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 dwExStyle := _AND(dwExStyle, _NOT(kExStyle))
             ENDIF
         ELSE
-            VAR iCtrl := (IVOControlProperties) oCtrl 
+            VAR iCtrl := (IVOControlProperties) oCtrl
             liTemp := GuiWin32.GetWindowLong(hWnd, GWL_EXSTYLE)
             iCtrl:ControlProperties:SetExStyle(kExStyle, lEnable)
             IF lEnable
@@ -1288,29 +1379,33 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ENDIF
             GuiWin32.SetWindowLong(hWnd, GWL_EXSTYLE, liTemp)
         ENDIF
-        
-        RETURN 
-    
 
+        RETURN
+
+
+/// <include file="Gui.xml" path="doc/Control.SetFocus/*" />
     METHOD SetFocus() AS VOID STRICT
-        
+
         IF SELF:ValidateControl()
             oCtrl:Focus()
         ENDIF
-        RETURN 
-        
+        RETURN
+
     ACCESS HasFocus AS LOGIC
         RETURN SELF:__IsValid .and. oCtrl:Focused
 
+/// <include file="Gui.xml" path="doc/Control.HasStyle/*" />
     METHOD HasStyle(kStyle AS LONG)
         LOCAL liStyle	AS LONG
         liStyle := GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)
         RETURN _AND(liStyle,kStyle) != 0
-    
+
+/// <include file="Gui.xml" path="doc/Control.Style/*" />
     ACCESS Style AS LONG
         RETURN GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)
 
-    METHOD SetStyle(kStyle AS LONG, lEnable := TRUE AS LOGIC) 
+/// <include file="Gui.xml" path="doc/Control.SetStyle/*" />
+    METHOD SetStyle(kStyle AS LONG, lEnable := TRUE AS LOGIC)
         LOCAL liTemp as LONG
         IF (oCtrl == NULL_OBJECT .or. ! oCtrl:IsHandleCreated)
             IF lEnable
@@ -1320,8 +1415,8 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ENDIF
         ELSE
             LOCAL iCtrl AS IVOControlProperties
-            iCtrl := (IVOControlProperties) (OBJECT) oCtrl			
-            liTemp := GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)				
+            iCtrl := (IVOControlProperties) (OBJECT) oCtrl
+            liTemp := GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)
             iCtrl:ControlProperties:SetStyle(kStyle, lEnable)
             IF lEnable
                 liTemp := _OR(kStyle, liTemp)
@@ -1331,28 +1426,30 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             dwStyle := liTemp // without this line it does not work for custom drawn labels
             GuiWin32.SetWindowLong(hWnd, GWL_STYLE,  liTemp)
         ENDIF
-        
-        RETURN SELF
-    
 
+        RETURN SELF
+
+
+/// <include file="Gui.xml" path="doc/Control.Show/*" />
     METHOD Show( ) AS VOID STRICT
-        
+
         IF (oCtrl == NULL_OBJECT)
             SELF:Create()
         ENDIF
-        IF SELF:__IsValid 
+        IF SELF:__IsValid
             oCtrl:Show()
         ENDIF
-        
-        RETURN 
-    
-    
+
+        RETURN
+
+
     METHOD ShowToolTip() AS VOID STRICT
         IF SELF:oFormSurface != NULL_OBJECT
             SELF:oFormSurface:__ShowToolTip(SELF)
         ENDIF
         RETURN
 
+/// <include file="Gui.xml" path="doc/Control.Size/*" />
     ACCESS Size  AS Dimension
         LOCAL oResult AS Dimension
         IF SELF:ValidateControl()
@@ -1361,72 +1458,85 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             oResult := SELF:oSize
         ENDIF
         RETURN oResult
-    
 
-    ASSIGN Size(oDimension AS Dimension) 
+/// <include file="Gui.xml" path="doc/Control.Size/*" />
+    ASSIGN Size(oDimension AS Dimension)
         IF (oCtrl == NULL_OBJECT)
             oSize		:= oDimension:Clone()
         ELSE
             SELF:oCtrl:Size := oDimension
         ENDIF
-        
-        RETURN 
-    
 
+        RETURN
+
+
+/// <include file="Gui.xml" path="doc/Control.Status/*" />
     ACCESS Status AS HyperLabel
         RETURN SELF:oHLStatus
-    
 
-    ASSIGN Status(oStatus AS HyperLabel) 
+
+/// <include file="Gui.xml" path="doc/Control.Status/*" />
+    ASSIGN Status(oStatus AS HyperLabel)
         oHLStatus := oStatus
-        RETURN 
-    
+        RETURN
+
+/// <include file="Gui.xml" path="doc/Control.SuspendUpdate/*" />
     METHOD SuspendUpdate() AS VOID STRICT
-        IF SELF:__IsValid 
+        IF SELF:__IsValid
             SELF:oCtrl:SuspendLayout()
         ENDIF
-        RETURN 
-    
+        RETURN
+
+/// <include file="Gui.xml" path="doc/Control.TextValue/*" />
     ACCESS TextValue AS STRING
         //Also empty in GUI Classes
         RETURN ""
 
-    ASSIGN TextValue (cNewText AS STRING) 
+/// <include file="Gui.xml" path="doc/Control.TextValue/*" />
+    ASSIGN TextValue (cNewText AS STRING)
         //Also empty in GUI Classes
-        RETURN 
-    
+        RETURN
 
+
+/// <include file="Gui.xml" path="doc/Control.Timer/*" />
     METHOD Timer()  CLIPPER
         //Also empty in GUI Classes
         RETURN NIL
-    
 
+
+/// <include file="Gui.xml" path="doc/Control.ToolTipText/*" />
     ACCESS ToolTipText AS STRING
         RETURN sToolTipText
-    
 
-    ASSIGN ToolTipText(sNewText AS STRING) 
+
+/// <include file="Gui.xml" path="doc/Control.ToolTipText/*" />
+    ASSIGN ToolTipText(sNewText AS STRING)
         sToolTipText := sNewText
-    
-    ACCESS UseHLForToolTip AS LOGIC 
+
+/// <include file="Gui.xml" path="doc/Control.UseHLForToolTip/*" />
+    ACCESS UseHLForToolTip AS LOGIC
         RETURN lUseHLForToolTip
 
-    ASSIGN UseHLForToolTip(lNewValue AS LOGIC) 
+/// <include file="Gui.xml" path="doc/Control.UseHLForToolTip/*" />
+    ASSIGN UseHLForToolTip(lNewValue AS LOGIC)
         lUseHLForToolTip := lNewValue
-    
-    METHOD ValidateControl() 
+
+/// <include file="Gui.xml" path="doc/Control.ValidateControl/*" />
+    METHOD ValidateControl()
         IF (oCtrl == NULL_OBJECT)
             SELF:Create()
         ENDIF
-        RETURN SELF:__IsValid 
-    
+        RETURN SELF:__IsValid
 
-    ACCESS Value 
+
+/// <include file="Gui.xml" path="doc/Control.Value/*" />
+    ACCESS Value
         // returns last valid value
         // value is only updated on leaving the field
         RETURN uValue
 
-    ASSIGN Value(uNewValue) 
+/// <include file="Gui.xml" path="doc/Control.Value/*" />
+    ASSIGN Value(uNewValue)
         //
         // Value assignment
         // Note : value does not have to be same as what is displayed
@@ -1434,7 +1544,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         LOCAL cOldValue AS STRING
         cOldValue := AsString(uValue)
         // !!! should be result of FIELDGET and located after FIELDPUT !!!
-        
+
         SELF:__Value := uNewValue //Update the control
         IF oServer != NULL_OBJECT
             IF lBaseServer // if not subclassing
@@ -1446,42 +1556,17 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ENDIF
         ENDIF
         SELF:ValueChanged := !(cOldValue == AsString(uValue))
-        
-        RETURN 
-    
+
+        RETURN
+
 
     PROPERTY ValueChanged AS LOGIC GET lChanged SET SELF:lChanged := VALUE
-    
 
-    METHOD VerticalScroll(oScrollEvent) 
+
+/// <include file="Gui.xml" path="doc/Control.VerticalScroll/*" />
+    METHOD VerticalScroll(oScrollEvent)
         //Also empty in GUI Classes
         RETURN NIL
 
-    #region Extensions
-    ASSIGN DynAlignment( symMode AS SYMBOL) 
-        // Ignored, but still here in case it is used in a script 
-        RETURN 
 
-    ACCESS IsDisabled AS LOGIC
-        RETURN SELF:__IsValid  .and. !oCtrl:Enabled
-
-    ASSIGN IsDisabled(lValue AS LOGIC) 
-        IF lValue
-            SELF:Disable()
-        ELSE
-            SELF:Enable()
-        ENDIF
-        RETURN 
-
-    ACCESS IsHidden( )  AS LOGIC
-        RETURN SELF:__IsValid  .and. !oCtrl:Visible
-
-    ASSIGN IsHidden( lValue  AS LOGIC) 
-        IF SELF:__IsValid 
-            oCtrl:Visible := ! lValue
-        ENDIF
-        RETURN 
-        
-    #endregion
-    
 END CLASS

@@ -1,18 +1,18 @@
-
+/// <include file="Gui.xml" path="doc/FormattedTextObject/*" />
 CLASS FormattedTextObject INHERIT TextObject
-	PROTECT wTabSize:=8 AS LONGINT       //RvdH 070205 changed from WORD to LONG 
+	PROTECT wTabSize:=8 AS LONGINT       //RvdH 070205 changed from WORD to LONG
 
-
-	CONSTRUCTOR(oPoint as Point , cText as string, oFont as Font, oColor as Color) 
+/// <include file="Gui.xml" path="doc/FormattedTextObject.ctor/*" />
+	CONSTRUCTOR(oPoint as Point , cText as string, oFont as Font, oColor as Color)
 		SUPER(oPoint, cText, oFont, oColor)
-		RETURN 
+		RETURN
 
-	
+
 	#ifdef DONOTINCLUDE
 
-	METHOD Draw() 
+	METHOD Draw()
 		// Todo FormattedTextObject:Draw()
-		//RvdH 070205 changed variables from WORD to LONG 
+		//RvdH 070205 changed variables from WORD to LONG
 		//	and use typed byte pointer in stead of casting
 		LOCAL hDC 			AS PTR
 		LOCAL oOldPen 		AS Pen
@@ -21,28 +21,28 @@ CLASS FormattedTextObject INHERIT TextObject
 		LOCAL iTabStops, iLineHeight AS LONGINT
 		LOCAL oOrigin 		AS Point
 		LOCAL iX, iY, iLenSegment := 0 AS LONGINT
-		local pText			AS BYTE PTR            
+		local pText			AS BYTE PTR
 		LOCAL bChar 		AS BYTE
 		LOCAL i  			AS LONGINT
-		LOCAL lPrevCR 		AS LOGIC               
-		
-		
-		
+		LOCAL lPrevCR 		AS LOGIC
+
+
+
 		hDC := SELF:Handle()
-		
+
 		IF (hDC != 0)
 			oOldPen := oWnd:Pen
 			oWnd:Pen := Pen{SELF:Color}
 			oOldFont := oWnd:Font
 			oWnd:Font := SELF:Font
 			GetTextMetrics(hDC, @strucTM)
-			
+
 			iTabStops 	:= wTabSize * strucTM:tmAveCharWidth
 			iLineHeight := strucTM:tmAscent + strucTM:tmDescent + strucTM:tmExternalLeading
 			oOrigin := SELF:Origin
 			iY := oOrigin:Y
 			iX := oOrigin:X
-			
+
 			pText := StringAlloc( SELF:DisplayText)
 			i		:= 1
 			bChar := pText[i]
@@ -65,7 +65,7 @@ CLASS FormattedTextObject INHERIT TextObject
 					EXIT
 				OTHERWISE
 					lPrevCR := FALSE
-				ENDCASE      
+				ENDCASE
 				i++
 				bChar := pText[i]
 			ENDDO
@@ -78,15 +78,15 @@ CLASS FormattedTextObject INHERIT TextObject
 					i++
 					iLenSegment++
 					lPrevCR := FALSE
-					
+
 				CASE (bChar == 13) //CR
-					IF (iLenSegment != 0)    
-						TabbedTextOut( hDC, iX, iY, pText+i-iLenSegment  , iLenSegment, 1, @iTabStops, iX)					
+					IF (iLenSegment != 0)
+						TabbedTextOut( hDC, iX, iY, pText+i-iLenSegment  , iLenSegment, 1, @iTabStops, iX)
 					ENDIF
 					lPrevCR := TRUE
 					iLenSegment := 0
 					iY -= iLineHeight //Move to new line
-					
+
 				CASE (bChar == 10) //LF
 					IF !lPrevCR
 						IF (iLenSegment != 0)
@@ -96,17 +96,17 @@ CLASS FormattedTextObject INHERIT TextObject
 						iY -= iLineHeight //Move to new line
 					ENDIF
 					lPrevCR := FALSE
-					
+
 				CASE (bChar == 0)
 					IF (iLenSegment != 0)
 						TabbedTextOut( hDC, iX, iY, pText+i-iLenSegment, iLenSegment, 1, @iTabStops, iX)
 					ENDIF
 					EXIT
-					
+
 				OTHERWISE
 					iLenSegment++
 					lPrevCR := FALSE
-				ENDCASE          
+				ENDCASE
 				i++
 				bChar := pText[i]
 			ENDDO
@@ -114,13 +114,13 @@ CLASS FormattedTextObject INHERIT TextObject
 			oWnd:Pen := oOldPen
 			oWnd:Font := oOldFont
 		ENDIF
-		
+
 		RETURN NIL
 	#endif
 
-	ASSIGN TabSize(nNewTabSize AS LONG) 
+	ASSIGN TabSize(nNewTabSize AS LONG)
 		wTabSize:=nNewTabSize
-	
-	
+
+
 END CLASS
 

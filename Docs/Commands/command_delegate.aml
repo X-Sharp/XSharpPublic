@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="198dc8b4-b6e9-482d-9edd-0be368279d52" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">DELEGATE Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare a delegate to &#160;the compiler.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[Attributes] [Modifiers] DELEGATE &lt;idDelegate&gt; </para>
+<para>&#160;[Typeparameters]</para>
+<para>&#160;[([&lt;idParam&gt; [AS | REF|OUT|IN &lt;idType&gt;] [, ...])] </para>
+<para>&#160;[AS &lt;idType&gt;]</para>
+<para>&#160;[TypeparameterConstraints]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Attributes</entry><entry>An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method/function containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword.</entry></row></table><para>&#160;</para>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, PROTECTED, HIDDEN, INTERNAL, SEALED, ABSTRACT or STATIC.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idDelegate&gt;</entry><entry>A valid identifier name for the delegate. &#160;Delegate names must be unique within a namespace.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idParam&gt;</entry><entry>A &#160;parameter variable. &#160;A variable specified in this manner is automatically declared local. &#160;These variables, also called formal parameters, are used to receive arguments that you pass when you call the entity.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS | REF|OUT|IN &lt;idType&gt;</entry><entry>Specifies the data type of the parameter variable (called strong typing). &#160;AS indicates that the parameter must be passed by value, and REF indicates that it must be passed by reference with the @ operator. OUT is a special kind of REF parameter that does not have to be assigned before the call and must be assigned inside the body of the entity. IN parameters are passed as READONLY references.<para/>
+The last parameter in the list can also be declared as PARAMS &lt;idType&gt;[] which will tell the compiler that the function/method may receive zero or more optional parameters.<para/>
+Functions or Methods of the CLIPPER calling convention are compiled to a function with a single parameter that this declared as Args PARAMS USUAL[]<para/>
+&#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><para>&#160;</para>
+<table><row><entry>TypeParameterConstraints</entry><entry>Here you can specify constraints for the Type parameters, such as WHERE T IS SomeName or WHERE T IS New</entry></row></table><para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>A delegate is a reference type that encapsulates a function or method. Delegates are similar to function pointers in native code languages such as Visual Objects, C and C++, but unlike function pointers, delegates are object-oriented, secure and type-safe.</para>
+<para>The DELEGATE statement declares a special type of class which is partially implemented by the compiler, and partially implemented by the CLR. All delegates inherit from System.MulticastDelegate.</para>
+<para>Every delegate has a signature, which is a combination of its parameter and return value types.</para>
+<h3 class="p_Heading3" style="page-break-after: avoid;">Instantiation</h3>
+<h3 class="p_Heading3" style="page-break-after: avoid;">You can explicitly call the delegate constructor like:</h3>
+<para>f := MyDelegate{ NULL, @SomeClass.Test() }</para>
+<para>for static methods :</para>
+<para>f := MyDelegate{ SELF, @SomeClass.Test() }</para>
+<para>&#160;</para>
+<para>for instance methods, it is also possible to write:</para>
+<para>f := SomeClass.Test</para>
+<para>for static methods:</para>
+<para>f := SELF:Test</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Example</h1>
+<para>DELEGATE MyDelegate( x AS STRING ) AS STRING </para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

@@ -1,6 +1,6 @@
 USING VOSDK := XSharp.VO.SDK
 
-
+/// <include file="Gui.xml" path="doc/Brush/*" />
 CLASS Brush INHERIT VObject
 	PROTECT oBrush   AS System.Drawing.Brush
 	PROTECT _hParent AS IntPtr
@@ -12,8 +12,9 @@ CLASS Brush INHERIT VObject
 	[Obsolete];
 	METHOD __SetBrushOrg(_hDc AS IntPtr, hClient AS IntPtr) AS VOID STRICT
 		RETURN
-		
-	METHOD CreateNew(xColor, kHatchStyle) 
+
+/// <include file="Gui.xml" path="doc/Brush.CreateNew/*" />
+	METHOD CreateNew(xColor, kHatchStyle)
 		LOCAL argTypeError AS LOGIC
 
 		IF (oBrush != NULL_OBJECT)
@@ -57,12 +58,13 @@ CLASS Brush INHERIT VObject
 		ENDIF
 
 		IF argTypeError
-			WCError{#Init, #Brush, __WCSTypeError}:@@Throw()
+			WCError{#Init, #Brush, __WCSTypeError}:Throw()
 		ENDIF
 		RETURN SELF
 
-	METHOD Destroy() AS USUAL 
-		
+/// <include file="Gui.xml" path="doc/Brush.Destroy/*" />
+	METHOD Destroy() AS USUAL
+
 		IF (oBrush != NULL_OBJECT)
 			oBrush:Dispose()
 			oBrush := NULL_OBJECT
@@ -72,16 +74,19 @@ CLASS Brush INHERIT VObject
 
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/Brush.Handle/*" />
 	METHOD Handle() AS System.Drawing.Brush
 		RETURN oBrush
 
-	CONSTRUCTOR(xColor, kHatchStyle, oParent) 
+/// <include file="Gui.xml" path="doc/Brush.ctor/*" />
+	CONSTRUCTOR(xColor, kHatchStyle, oParent)
 		SUPER()
 		SELF:CreateNew(xColor, kHatchStyle)
 		SELF:Parent := oParent
-		RETURN 
+		RETURN
 
-	ASSIGN Parent (oWindow) 
+/// <include file="Gui.xml" path="doc/Brush.Parent/*" />
+	ASSIGN Parent (oWindow)
 		LOCAL oParent AS Window
 
 		IF IsInstanceOfUsual(oWindow, #Window)
@@ -90,7 +95,7 @@ CLASS Brush INHERIT VObject
 		ELSE
 			_hParent := NULL_PTR
 		ENDIF
-		RETURN 
+		RETURN
 
 	OPERATOR IMPLICIT ( c AS System.Drawing.Color) AS Brush
 		RETURN Brush{Color{c:R, c:B, c:G}}
@@ -106,48 +111,50 @@ CLASS Brush INHERIT VObject
 	OPERATOR IMPLICIT ( b AS Brush) AS Color
 		RETURN b:Color
 
+/// <exclude/>
 
 STATIC METHOD __ConvertBrush(brushType AS INT) AS System.Drawing.Brush STRICT
 	LOCAL retVal AS System.Drawing.Brush
 
-	DO CASE
-	CASE brushType == BRUSHBLACK
+	SWITCH brushType
+	CASE BRUSHBLACK
 		retVal := System.Drawing.Brushes.Black
-	CASE brushType == BRUSHDARK
+	CASE BRUSHDARK
 		retVal := System.Drawing.Brushes.DarkGray
-	CASE brushType == BRUSHMEDIUM
+	CASE BRUSHMEDIUM
 		retVal := System.Drawing.Brushes.Gray
-	CASE brushType == BRUSHLIGHT
+	CASE BRUSHLIGHT
 		retVal := System.Drawing.Brushes.LightGray
-	CASE brushType == BRUSHHOLLOW
+	CASE BRUSHHOLLOW
 		retVal := System.Drawing.Brushes.Transparent
-	CASE brushType == BRUSHCLEAR
+	CASE BRUSHCLEAR
 		retVal := System.Drawing.Brushes.Transparent
 	OTHERWISE
 		retVal := System.Drawing.Brushes.White
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal
 
 
+/// <exclude/>
 
 STATIC METHOD __ConvertHatch(hatchStyle AS INT) AS System.Drawing.Drawing2D.HatchStyle STRICT
 	LOCAL retVal AS System.Drawing.Drawing2D.HatchStyle
 
-	DO CASE
-	CASE hatchStyle == HATCHDIAGONAL45
+	SWITCH hatchStyle
+	CASE HATCHDIAGONAL45
 		retVal := System.Drawing.Drawing2D.HatchStyle.ForwardDiagonal
-	CASE hatchStyle == HATCHVERTICAL
+	CASE  HATCHVERTICAL
 		retVal := System.Drawing.Drawing2D.HatchStyle.Vertical
-	CASE hatchStyle == HATCHDIAGONAL135
+	CASE HATCHDIAGONAL135
 		retVal := System.Drawing.Drawing2D.HatchStyle.BackwardDiagonal
-	CASE hatchStyle == HATCHHORIZONTAL
+	CASE HATCHHORIZONTAL
 		retVal := System.Drawing.Drawing2D.HatchStyle.Horizontal
-	CASE hatchStyle == HATCHORTHOGONALCROSS
+	CASE HATCHORTHOGONALCROSS
 		retVal := System.Drawing.Drawing2D.HatchStyle.Cross
 	OTHERWISE
 		retVal := System.Drawing.Drawing2D.HatchStyle.SmallGrid
-	ENDCASE
+	END SWITCH
 
 	RETURN retVal
 

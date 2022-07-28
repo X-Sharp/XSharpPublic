@@ -1,17 +1,19 @@
-
+/// <include file="Gui.xml" path="doc/RadioButtonGroup/*" />
 CLASS RadioButtonGroup INHERIT GroupBox
 	PROTECT wPressedButton AS DWORD
 	PROTECT aButtons AS ARRAY
 	PROTECT aValues AS ARRAY
 
-	CONSTRUCTOR(oOwner, xID, uPoint, uDimension, cText) 
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, uPoint, uDimension, cText)
 		SUPER(oOwner, xID, uPoint, uDimension, cText, TRUE)
 		aButtons	:= {}
 		aValues		:= {}
-		RETURN 
+		RETURN
 
 
-	METHOD __AlreadyHasFocus(oButton AS RadioButton) AS LOGIC STRICT 
+ /// <exclude />
+	METHOD __AlreadyHasFocus(oButton AS RadioButton) AS LOGIC STRICT
 		LOCAL dwI, dwCount AS DWORD
 
 		dwCount := ALen(aButtons)
@@ -23,7 +25,8 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
 		RETURN (dwI == wPressedButton)
 
-	METHOD __IsElement(oButton AS RadioButton) AS LOGIC STRICT 
+ /// <exclude />
+	METHOD __IsElement(oButton AS RadioButton) AS LOGIC STRICT
 		FOREACH oItem AS RadioButton IN aButtons
 			IF oItem == oButton
 				RETURN TRUE
@@ -32,7 +35,8 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
 		RETURN FALSE
 
-	METHOD __SetOn(oButton AS RadioButton) AS VOID STRICT 
+ /// <exclude />
+	METHOD __SetOn(oButton AS RadioButton) AS VOID STRICT
 		LOCAL dwI, dwCount AS DWORD
 
 		dwCount := ALen(aButtons)
@@ -47,16 +51,18 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
 		RETURN
 
-	METHOD __Update() AS VOID STRICT 
+ /// <exclude />
+	METHOD __Update() AS VOID STRICT
 		// Update is called to resynchronise Control:Value with control state
 		// For RadioButtonGroups this is done when a button is pressed
 		IF SELF:Modified
 			SELF:Modified := FALSE
 			SELF:ValueChanged := TRUE
 		ENDIF
-		RETURN 
+		RETURN
 
-	ASSIGN __Value(uNewValue AS USUAL)  STRICT 
+ /// <exclude />
+	ASSIGN __Value(uNewValue AS USUAL)  STRICT
 		LOCAL dwI, dwCount AS DWORD
 		LOCAL cTempVal AS STRING
 		LOCAL oRB AS RadioButton
@@ -68,7 +74,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 				wPressedButton := dwI
 				oRB:Pressed := FALSE
 			ENDIF
-		NEXT  
+		NEXT
 
 		cTempVal := AllTrim(AsString(uNewValue))
 		dwCount := ALen(aValues)
@@ -85,7 +91,8 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
 		SELF:uValue := uNewValue
 
-	METHOD Button(nButtonPosition) 
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.Button/*" />
+	METHOD Button(nButtonPosition)
 		// Return button at specified position in list
 		// - Doesn't necessarily correspond to onscreen sequence
 		// - returns NIL if button not found
@@ -96,10 +103,11 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
 		RETURN NIL
 
-	ACCESS Buttons 
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.Buttons/*" />
+	ACCESS Buttons
 		RETURN SELF:aButtons
 
-	PROTECTED EnabledButtons := System.Collections.Generic.List<RadioButton>{} AS System.Collections.Generic.List<RadioButton> 
+	PROTECTED EnabledButtons := System.Collections.Generic.List<RadioButton>{} AS System.Collections.Generic.List<RadioButton>
 	METHOD DisableAndSave() AS VOID STRICT
 		SELF:EnabledButtons:Clear()
 		FOREACH oItem AS RadioButton IN aButtons
@@ -109,29 +117,31 @@ CLASS RadioButtonGroup INHERIT GroupBox
 			ENDIF
 		NEXT
 		RETURN
-		
-		
+
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.Disable/*" />
 	METHOD Disable() AS VOID STRICT
 		FOREACH oItem AS RadioButton IN aButtons
 			oItem:Disable()
 		NEXT
 		SUPER:Disable()
-		RETURN 
+		RETURN
 
 	METHOD EnableAndRestore() AS VOID STRICT
 		FOREACH oItem AS RadioButton IN SELF:EnabledButtons
 			oItem:Enable()
 		NEXT
 		RETURN
-	
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.Enable/*" />
+
 	METHOD Enable() AS VOID STRICT
 		FOREACH oItem AS RadioButton IN aButtons
 			oItem:Enable()
 		NEXT
 		SUPER:Enable()
-		RETURN 
+		RETURN
 
-	METHOD FillUsing(aContents) 
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.FillUsing/*" />
+	METHOD FillUsing(aContents)
 		LOCAL wContentsLength AS DWORD
 		LOCAL wElementLength AS DWORD
 		LOCAL wIndex AS DWORD
@@ -141,7 +151,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 		LOCAL uDefValue AS USUAL
 
 		IF !IsArray(aContents)
-			WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:@@Throw()
+			WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:Throw()
 		ENDIF
 
 		wContentsLength := ALen(aContents)
@@ -160,7 +170,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 						uButton := uElement[1]
 						uDefValue := wIndex
 					ELSE
-						WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:@@Throw()
+						WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:Throw()
 					ENDIF
 				ELSE
 					uButton := uElement
@@ -170,7 +180,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 				IF IsNumeric(uButton) .OR. IsString(uButton)
 					uButton := RadioButton{(OBJECT) SELF:Owner, ResourceID{uButton}}
 				ELSEIF !IsInstanceOfUsual(uButton, #RadioButton)
-					WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:@@Throw()
+					WCError{#FillUsing,#RadioButtonGroup,__WCSTypeError,aContents,1}:Throw()
 				ENDIF
 				oButton := uButton
 				AAdd(aButtons, oButton)
@@ -186,7 +196,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 				LOCAL oPoint := oItem:Origin AS Point
 				oPoint:X -= nX
 				oPoint:Y -= nY
-				oItem:Origin := oPoint			
+				oItem:Origin := oPoint
 				SELF:oCtrl:Controls:Add((System.Windows.Forms.Control) oItem:__Control)
 			ENDIF
 			oItem:Show()
@@ -195,6 +205,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
 		RETURN SELF
 
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.Hide/*" />
 	METHOD Hide()  AS VOID STRICT
 	//	FOREACH oItem AS RadioButton IN aButtons
 	//		oItem:Visible := FALSE
@@ -202,25 +213,28 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
 		SUPER:Hide()
 
-		RETURN 
+		RETURN
 
 
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.SetFocus/*" />
 	METHOD SetFocus() AS VOID STRICT
 		LOCAL oRB AS RadioButton
-		IF wPressedButton != 0     
-			oRB := aButtons[wPressedButton] 
+		IF wPressedButton != 0
+			oRB := aButtons[wPressedButton]
 			oRB:SetFocus()
 		ENDIF
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.Show/*" />
 	METHOD Show()  AS VOID STRICT
 		SUPER:Show()
 	//	FOREACH oC AS System.Windows.Forms.Control IN SELF:oCtrl:Controls
 	//		oC:Visible := TRUE
 	//	NEXT
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.TextValue/*" />
 	ACCESS TextValue AS STRING
 		LOCAL cRetVal AS STRING
 		LOCAL dwI, dwCount AS DWORD
@@ -228,7 +242,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 		IF wPressedButton == 0
 			dwCount := ALen(aButtons)
 			FOR dwI := 1 UPTO dwCount
-				oRB := aButtons[dwI] 
+				oRB := aButtons[dwI]
 				IF oRB:Pressed
 					wPressedButton := dwI
 					EXIT
@@ -236,7 +250,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 			NEXT
 		ENDIF
 		IF (wPressedButton != 0)
-			oRB			:= aButtons[ wPressedButton] 
+			oRB			:= aButtons[ wPressedButton]
 			cRetVal		:= oRB:Caption
 			IF IsNil(cRetVal)
 				cRetVal:=AsString(SELF:Value)
@@ -244,8 +258,9 @@ CLASS RadioButtonGroup INHERIT GroupBox
 		ENDIF
 
 		RETURN cRetVal
-	
-	ASSIGN TextValue(cNewText AS STRING) 
+
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.TextValue/*" />
+	ASSIGN TextValue(cNewText AS STRING)
 		LOCAL dwI, dwCount AS DWORD
 		LOCAL cText AS STRING
 		LOCAL cOldValue AS STRING
@@ -256,25 +271,28 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
 		dwCount := ALen(aButtons)
 		FOR dwI := 1 UPTO dwCount
-			oRB := aButtons[dwI] 
+			oRB := aButtons[dwI]
 			IF Upper(AllTrim(oRB:Caption)) == cText
 				SELF:Value := aValues[dwI]
 				SELF:ValueChanged := !(cOldValue == AsString(uValue))
-				RETURN 
+				RETURN
 			ENDIF
 		NEXT  // dwI
 
-		RETURN 
+		RETURN
 
-	ACCESS Value 
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.Value/*" />
+	ACCESS Value
 		RETURN SUPER:Value
 
-	ASSIGN Value(uNewValue) 
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.Value/*" />
+	ASSIGN Value(uNewValue)
 		SUPER:Value := uNewValue
 		SELF:SetFocus()
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/RadioButtonGroup.Values/*" />
 	ACCESS Values AS ARRAY
 		RETURN aValues
 END CLASS

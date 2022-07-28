@@ -1,12 +1,13 @@
 STATIC DEFINE __EXPW_LABEL_HEIGHT	:= 19
 
+ /// <exclude />
 CLASS __ExplorerLV INHERIT ListView
 	PROPERTY symSortCol AS SYMBOL   AUTO
 
-METHOD DefaultSort(oLVItem1, oLVItem2) 
+METHOD DefaultSort(oLVItem1, oLVItem2)
 	LOCAL s1, s2 AS STRING
 
-	
+
 
 	s1 := oLVItem1:GetText(symSortCol)
 	s2 := oLVItem2:GetText(symSortCol)
@@ -19,9 +20,10 @@ METHOD DefaultSort(oLVItem1, oLVItem2)
 		RETURN 1
 	ENDIF
 
-METHOD Dispatch(oEvent  AS @@Event) 
-	LOCAL oEvt := oEvent AS @@Event	
-		
+ /// <exclude />
+METHOD Dispatch(oEvent  AS @@Event)
+	LOCAL oEvt := oEvent AS @@Event
+
 
 	IF (oEvt:uMsg == WM_CHAR)	.AND. (oEvt:wParam == 0x00000009)
 		Send(SELF:Owner, #__FocusTV)
@@ -29,50 +31,56 @@ METHOD Dispatch(oEvent  AS @@Event)
 	ENDIF
 	RETURN SUPER:Dispatch(oEvt)
 
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
+
 	SUPER(oOwner, xID, oPoint, oDimension, kStyle)
 
 
-RETURN 
+RETURN
 END CLASS
 
+ /// <exclude />
 CLASS __ExplorerTV INHERIT TreeView
 
-METHOD Dispatch(oEvent AS @@Event) 
-	LOCAL oEvt := oEvent AS @@Event	
-	
+ /// <exclude />
+METHOD Dispatch(oEvent AS @@Event)
+	LOCAL oEvt := oEvent AS @@Event
+
 	IF (oEvt:uMsg == WM_CHAR)	.AND. (oEvt:wParam == 0x00000009)
 		Send(SELF:Owner, #__FocusLV)
 		RETURN (SELF:EventReturnValue := 1L)
 	ENDIF
 	RETURN SUPER:Dispatch(oEvt)
 
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
+
 	SUPER(oOwner, xID, oPoint, oDimension, kStyle)
 
 
-RETURN 
+RETURN
 END CLASS
 
 
+/// <include file="Gui.xml" path="doc/ExplorerWindow/*" />
 CLASS ExplorerWindow INHERIT SplitWindow
 	PROTECT oLabelLeft	AS FixedText
 	PROTECT oLabelRight	AS FixedText
 	PROTECT oTreeView	AS TreeView
 	PROTECT oListView	AS ListView
 
-METHOD __FocusLV AS ExplorerWindow STRICT 
+ /// <exclude />
+METHOD __FocusLV AS ExplorerWindow STRICT
     oListView:SetFocus()
 	RETURN SELF
 
-METHOD __FocusTV AS ExplorerWindow STRICT 
+ /// <exclude />
+METHOD __FocusTV AS ExplorerWindow STRICT
 
 	oTreeView:SetFocus()
 	RETURN SELF
 
-METHOD Destroy() AS USUAL 
+/// <include file="Gui.xml" path="doc/ExplorerWindow.Destroy/*" />
+METHOD Destroy() AS USUAL
 	oLabelLeft := NULL_OBJECT
 	oLabelRight := NULL_OBJECT
 	oTreeView := NULL_OBJECT
@@ -82,7 +90,8 @@ METHOD Destroy() AS USUAL
 
 	RETURN NIL
 
-CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName) 
+/// <include file="Gui.xml" path="doc/ExplorerWindow.ctor/*" />
+CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName)
 	LOCAL oDimension	AS Dimension
 
 	DEFAULT(@lLabels, TRUE) // by default, add labels
@@ -137,18 +146,23 @@ CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName)
 		oListView:EnableSort(#DefaultSort)
 	ENDIF
 
-	RETURN 
+	RETURN
 
+/// <include file="Gui.xml" path="doc/ExplorerWindow.LabelLeft/*" />
 ACCESS LabelLeft AS Fixedtext
 	RETURN oLabelLeft
 
-ACCESS LabelRight AS Fixedtext 
+/// <include file="Gui.xml" path="doc/ExplorerWindow.LabelRight/*" />
+ACCESS LabelRight AS Fixedtext
 	RETURN oLabelRight
 
+/// <include file="Gui.xml" path="doc/ExplorerWindow.ListView/*" />
 ACCESS ListView AS ListView
 	RETURN oListView
 
-METHOD ListViewColumnClick(oEvt AS ListViewColumnClickEvent) 
+
+/// <include file="Gui.xml" path="doc/ExplorerWindow.ListViewColumnClick/*" />
+METHOD ListViewColumnClick(oEvt AS ListViewColumnClickEvent)
 
 	IF oListView IS __ExplorerLV VAR oLV
 		oLV:symSortCol := oEvt:ListViewColumn:NameSym
@@ -157,6 +171,7 @@ METHOD ListViewColumnClick(oEvt AS ListViewColumnClickEvent)
 
 	RETURN SUPER:ListViewColumnClick(oEvt)
 
+/// <include file="Gui.xml" path="doc/ExplorerWindow.TreeView/*" />
 ACCESS TreeView AS TreeView
 	RETURN oTreeView
 END CLASS

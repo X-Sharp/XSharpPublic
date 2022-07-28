@@ -2,12 +2,14 @@
 
 USING System.Windows.Forms
 USING System.Drawing
+/// <include file="Gui.xml" path="doc/Button/*" />
 [XSharp.Internal.TypesChanged];
 CLASS Button INHERIT TextControl
 	PROTECT oImage AS VObject
 
     PROPERTY ControlType AS Controltype GET ControlType.Button
 
+/// <include file="Gui.xml" path="doc/Button.ctor/*" />
 	CONSTRUCTOR ( oOwner, xID, oPoint, oDimension, cText, kStyle, lDataAware)
 		IF IsInstanceOfUsual(xID,#ResourceID)
 			SUPER(oOwner, xID, oPoint, oDimension, , kStyle,lDataAware)
@@ -17,8 +19,8 @@ CLASS Button INHERIT TextControl
 				SELF:Caption := cText
 			ENDIF
 		ENDIF
-        
-		RETURN 
+
+		RETURN
 
     ASSIGN Caption(cNewText AS STRING)
         IF SELF:oImage == NULL
@@ -28,14 +30,15 @@ CLASS Button INHERIT TextControl
 
 	ACCESS __Button AS IVOButton
 		RETURN (IVOButton) oCtrl
-		
 
+ /// <exclude />
 	METHOD __GetImage()  AS VObject
 		IF oImage is ButtonImageList
 			RETURN IVarGet(oImage,#Image)
 		ENDIF
 		RETURN oImage
 
+ /// <exclude />
 	METHOD __SetImage(oNewImage AS VObject)  AS LOGIC
 		IF oNewImage IS ButtonImageList VAR oBIL
 			oImage := oNewImage
@@ -51,15 +54,11 @@ CLASS Button INHERIT TextControl
 
 			RETURN TRUE
 		ENDIF
-		
+
 		RETURN FALSE
 
 
-    METHOD Dispatch (oEvent AS @@Event)
-        
-        RETURN SUPER:Dispatch(oEvent)
-
-
+ /// <exclude />
 	METHOD __Update() AS VOID STRICT
 		//PP-030828 Strong typing
 		LOCAL cText AS STRING
@@ -83,53 +82,64 @@ CLASS Button INHERIT TextControl
 			ELSE
 				uValue := Unformat(cText, "", "L")
 			ENDIF
-			SELF:Modified := .F. 
+			SELF:Modified := .F.
 			SELF:ValueChanged := !(uOldValue == AsString(uValue))
 		ENDIF
-		RETURN 
+		RETURN
 
-	METHOD AsString () 
+/// <include file="Gui.xml" path="doc/Button.AsString/*" />
+	METHOD AsString ()
 		RETURN "#"+Symbol2String(ClassName(SELF))+":"+SELF:Caption
 
+/// <include file="Gui.xml" path="doc/Button.CurrentText/*" />
 	ACCESS CurrentText AS STRING
 		RETURN NULL_STRING
 
-	ASSIGN CurrentText(cValue AS STRING) 
-		RETURN 
+/// <include file="Gui.xml" path="doc/Button.CurrentText/*" />
+	ASSIGN CurrentText(cValue AS STRING)
+		RETURN
 
+/// <include file="Gui.xml" path="doc/Button.Image/*" />
 	ACCESS Image AS VObject
 		RETURN SELF:__GetImage()
 
-	ASSIGN Image(oNewImage AS VObject) 
-		SELF:__SetImage(oNewImage)				
+/// <include file="Gui.xml" path="doc/Button.Image/*" />
+	ASSIGN Image(oNewImage AS VObject)
+		SELF:__SetImage(oNewImage)
 
-		RETURN 
+		RETURN
 
-	ACCESS ImageList 
+/// <include file="Gui.xml" path="doc/Button.ImageList/*" />
+	ACCESS ImageList
 		IF oImage IS ImageList
 			RETURN oImage
 		ENDIF
 		RETURN NULL_OBJECT
 
-	ASSIGN ImageList(oImageList) 
+/// <include file="Gui.xml" path="doc/Button.ImageList/*" />
+	ASSIGN ImageList(oImageList)
 		SELF:__SetImage(oImageList)
 
 
-	METHOD SetStyle(kStyle AS LONG, lEnable := TRUE AS LOGIC) 
+/// <include file="Gui.xml" path="doc/Button.SetStyle/*" />
+	METHOD SetStyle(kStyle AS LONG, lEnable := TRUE AS LOGIC)
 		RETURN SUPER:SetStyle(kStyle, lEnable)
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/ButtonImageList/*" />
 CLASS ButtonImageList INHERIT ImageList
 	PROTECTED _oImage AS Object
 
+/// <include file="Gui.xml" path="doc/ButtonImageList.Image/*" />
 	ACCESS Image AS OBJECT
 		RETURN _oImage
 
-	CONSTRUCTOR(oImage AS OBJECT) 
+/// <include file="Gui.xml" path="doc/ButtonImageList.ctor/*" />
+	CONSTRUCTOR(oImage AS OBJECT)
 		_oImage := oImage
 		SUPER(1, oImage:Size, oImage, _OR(ILC_COLOR32, ILC_MASK))
-		RETURN 
+		RETURN
 
 
 END CLASS

@@ -173,7 +173,7 @@ FUNCTION Type(cString AS STRING) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/type/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(FALSE)];
-FUNCTION Type(cString AS STRING, nArray as LONG) AS STRING
+FUNCTION Type(cString AS STRING, nArray AS LONG) AS STRING
     LOCAL uValue AS USUAL
     LOCAL cRet	 AS STRING
     uValue := NIL
@@ -190,9 +190,9 @@ FUNCTION Type(cString AS STRING, nArray as LONG) AS STRING
             ENDIF
             IF RuntimeState:Dialect == XSharpDialect.FoxPro .and. uValue == NULL
                 cRet := "L"
-            else
+            ELSE
                 cRet   := ValType(uValue)
-            endif
+            ENDIF
 
         CATCH  AS Exception
             cRet  := "UE"
@@ -202,7 +202,7 @@ FUNCTION Type(cString AS STRING, nArray as LONG) AS STRING
         IF nArray == 1
             IF IsArray(uValue)
                 cRet := "A"
-            else
+            ELSE
                 cRet := "U"
             ENDIF
         ELSE
@@ -210,10 +210,10 @@ FUNCTION Type(cString AS STRING, nArray as LONG) AS STRING
             CASE "A"
                 // FoxPro returns the type of the first element
                 IF IsArray(uValue)
-                    local aValue as ARRAY
+                    LOCAL aValue AS ARRAY
                     aValue := uValue
                     cRet := ValType(aValue[1])
-                    if cRet == "A"
+                    IF cRet == "A"
                         aValue := aValue[1]
                         cRet := ValType(aValue[1])
                     ENDIF
@@ -235,7 +235,7 @@ FUNCTION Type(cString AS STRING, nArray as LONG) AS STRING
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(FALSE)];
 FUNCTION StrEvaluate( cString AS STRING ) AS STRING
-    IF cString:IndexOf("&") > 0
+    IF cString:IndexOf("&") >= 0
         LOCAL cVariableName AS STRING
         LOCAL lInVariable   AS LOGIC
         LOCAL evalMacro     AS LOGIC
@@ -247,8 +247,12 @@ FUNCTION StrEvaluate( cString AS STRING ) AS STRING
             lAddChar := TRUE
             SWITCH cChar
                 CASE c'&'
+                    IF lInVariable
+                        evalMacro   := TRUE
+                    ELSE
+                        cVariableName := ""
+                    ENDIF
                     lInVariable   := TRUE
-                    cVariableName := ""
                     lAddChar     := FALSE
                 CASE c' '
                 CASE c'\t'
@@ -264,7 +268,13 @@ FUNCTION StrEvaluate( cString AS STRING ) AS STRING
                     ENDIF
                 OTHERWISE
                     IF lInVariable
-                        IF Char.IsLetterOrDigit(cChar)
+                        LOCAL lIsNameChar AS LOGIC
+                        IF cVariableName:Length == 0
+                            lIsNameChar := _IsIdentifierStartChar(cChar)
+                    	ELSE
+                            lIsNameChar := _IsIdentifierPartChar(cChar)
+                    	END IF
+                        IF lIsNameChar
                             cVariableName += cChar:ToString()
                             lAddChar     := FALSE
                         ELSE
@@ -277,6 +287,7 @@ FUNCTION StrEvaluate( cString AS STRING ) AS STRING
                 VAR result := StrEvaluateMemVarGet(cVariableName)
                 sb:Append(result)
                 evalMacro := FALSE
+                cVariableName := ""
             ENDIF
             IF lAddChar
                 sb:Append(cChar)
@@ -298,12 +309,14 @@ INTERNAL FUNCTION StrEvaluateMemVarGet(cVariableName AS STRING) AS STRING
             oMemVar := XSharp.MemVar.PublicFind(cVariableName)
         ENDIF
         IF oMemVar != NULL
-            RETURN oMemVar:Value:ToString()
+        	IF oMemVar:Value:IsString
+                RETURN oMemVar:Value:ToString()
+        	ENDIF
         ENDIF
     CATCH
         // Memvar not found ?
     END TRY
-    RETURN cVariableName
+    RETURN "&" + cVariableName // include the & symbol which was not included in the argument
 
 INTERNAL FUNCTION DefaultMacroAmbigousMatchResolver(m1 AS MemberInfo, m2 AS MemberInfo, args AS System.Type[]) AS LONG
     LOCAL comp1 := GetCompany(m1:Module:Assembly) AS STRING

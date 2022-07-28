@@ -1,3 +1,4 @@
+/// <include file="Gui.xml" path="doc/ComboBox/*" />
 [XSharp.Internal.TypesChanged];
 CLASS ComboBox INHERIT ListBox
 	PROTECT liComboType AS LONG	// BOXSIMPLE, BOXDROPDOWN or BOXDROPDOWNLIST
@@ -8,18 +9,20 @@ CLASS ComboBox INHERIT ListBox
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		VAR oCombo := (IVOComboBox) oC
 		oCombo:DropDownHeight := oSize:Height
-		RETURN 
+		RETURN
+ /// <exclude />
 
-	METHOD __EditChange() AS VOID STRICT 
+	METHOD __EditChange() AS VOID STRICT
 		SELF:Modified := TRUE
 		RETURN
 
+ /// <exclude />
 	[Obsolete];
-	METHOD __InitTextMetrics() AS VOID STRICT 
+	METHOD __InitTextMetrics() AS VOID STRICT
 		RETURN
 
 
-	METHOD __Update() AS VOID STRICT 
+	METHOD __Update() AS VOID STRICT
 		LOCAL cOldValue AS STRING
 		LOCAL oItem AS ListBoxItemValue
 		LOCAL nIndex AS LONG
@@ -35,12 +38,13 @@ CLASS ComboBox INHERIT ListBox
 			ENDIF
 			SELF:ValueChanged	:= !(cOldValue == AsString(uValue))
 			//debout(__ENTITY__, cOldValue + "  ==  " + asString(uValue))
-			
+
 			SELF:Modified		:= FALSE
 		ENDIF
-		RETURN 
+		RETURN
 
-	ASSIGN CurrentText(cNewText AS STRING) 
+/// <include file="Gui.xml" path="doc/ComboBox.CurrentText/*" />
+	ASSIGN CurrentText(cNewText AS STRING)
 		LOCAL cCurrentText AS STRING
 		cCurrentText := SELF:__SetText(cNewText)
 		IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
@@ -48,43 +52,49 @@ CLASS ComboBox INHERIT ListBox
 		ELSE
 			uValue := cCurrentText
 		ENDIF
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/ComboBox.EditHandle/*" />
 	ACCESS EditHandle AS IntPtr
 		IF SELF:ValidateControl()
 			GuiWin32.GetWindow(SELF:oCtrl:Handle, GW_CHILD)
 		ENDIF
 		RETURN IntPtr.Zero
-	
 
+
+
+/// <include file="Gui.xml" path="doc/ComboBox.EditHeight/*" />
 	ACCESS EditHeight  AS LONG
 		IF SELF:ValidateControl()
 			RETURN SELF:__ComboBox:Height
 		ENDIF
 		RETURN 0
 
-	ASSIGN EditHeight(liNewHeight AS LONG) 
+/// <include file="Gui.xml" path="doc/ComboBox.EditHeight/*" />
+	ASSIGN EditHeight(liNewHeight AS LONG)
 
 		IF SELF:ValidateControl()
 			IF liNewHeight > 0
 				SELF:__ComboBox:Height := liNewHeight
 			ENDIF
 		ENDIF
-		RETURN 
+		RETURN
 
-	METHOD EnableAutoComplete(dwFlags AS DWORD) AS VOID STRICT 
+/// <include file="Gui.xml" path="doc/ComboBox.EnableAutoComplete/*" />
+	METHOD EnableAutoComplete(dwFlags AS DWORD) AS VOID STRICT
 		IF SELF:ValidateControl()
 			SELF:__ComboBox:AutoCompleteSource := (System.Windows.Forms.AutoCompleteSource) dwFlags
 		ENDIF
 
-	METHOD FillUsing(aContents, symField1, symField2) 
+	METHOD FillUsing(aContents, symField1, symField2)
 		LOCAL uResult AS USUAL
 		IF SELF:ValidateControl()
 			uResult := SUPER:FillUsing(aContents, symField1, symField2)
 		ENDIF
 		RETURN uResult
-		
-	METHOD Font(oNewFont, lRescal) 
+
+/// <include file="Gui.xml" path="doc/ComboBox.Font/*" />
+	METHOD Font(oNewFont, lRescal)
 		LOCAL uRet AS USUAL
 		IF SELF:ValidateControl()
 			uRet := SUPER:Font(oNewFont, lRescal)
@@ -100,7 +110,7 @@ CLASS ComboBox INHERIT ListBox
 
 	PRIVATE METHOD __SetComboStyle() AS VOID STRICT
 		IF SELF:__Combobox != NULL
-		SWITCH liComboType 
+		SWITCH liComboType
 		CASE BOXSIMPLE
 			SELF:__ComboBox:DropDownStyle := System.Windows.Forms.ComboBoxStyle.Simple
 		CASE BOXDROPDOWN
@@ -111,16 +121,17 @@ CLASS ComboBox INHERIT ListBox
 		SELF:__ComboBox:DropDownHeight := oSize:Height
 		ENDIF
 		RETURN
-		
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle) 
+
+/// <include file="Gui.xml" path="doc/ComboBox.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 		LOCAL dwStyle AS LONG
 		SELF:cClassName := "ComboBox"
 		SUPER(oOwner, xID, oPoint, oDimension, kStyle)
 
 		IF !IsNil(kComboType)
 			IF !IsLong(kComboType)
-				WCError{#Init,#ComboBox,__WCSTypeError,kComboType,5}:@@Throw()
+				WCError{#Init,#ComboBox,__WCSTypeError,kComboType,5}:Throw()
 			ENDIF
 			liComboType := kComboType
 		ELSE
@@ -132,7 +143,7 @@ CLASS ComboBox INHERIT ListBox
 				SELF:SetStyle(_OR(WS_CLIPSIBLINGS,WS_CLIPCHILDREN), FALSE)
 				dwStyle := _OR(WS_BORDER, WS_VSCROLL)
 			ENDIF
-			SWITCH liComboType 
+			SWITCH liComboType
 			CASE BOXSIMPLE
 				SELF:SetStyle( CBS_SIMPLE, TRUE)
 			CASE BOXDROPDOWN
@@ -140,7 +151,7 @@ CLASS ComboBox INHERIT ListBox
 			CASE BOXDROPDOWNLIST
 				SELF:SetStyle(CBS_DROPDOWNLIST, TRUE)
 			OTHERWISE
-				WCError{#Init,#ComboBox,__WCSTypeError,liComboType,5}:@@Throw()
+				WCError{#Init,#ComboBox,__WCSTypeError,liComboType,5}:Throw()
 			END SWITCH
 		ELSE
 			// When created from resource, make sure that the DotNet combo has the property style
@@ -154,26 +165,29 @@ CLASS ComboBox INHERIT ListBox
 				liComboType := BOXSIMPLE
 			OTHERWISE
 				liComboType := BOXSIMPLE
-			ENDCASE				
+			ENDCASE
 			SELF:__SetComboStyle()
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	//METHOD RemoveEditBalloonTip() 
+	//METHOD RemoveEditBalloonTip()
 	//	RETURN SUPER:RemoveEditBalloonTip(SELF:EditHandle)
 
 	ACCESS MultiSelection AS LOGIC
 		RETURN FALSE
 
+/// <include file="Gui.xml" path="doc/ComboBox.ReadOnly/*" />
 	ACCESS ReadOnly()  AS LOGIC
 		RETURN SELF:__IsValid .and. SELF:oCtrl:Enabled
 
-	ASSIGN ReadOnly( lReadOnly AS LOGIC)  
+/// <include file="Gui.xml" path="doc/ComboBox.ReadOnly/*" />
+	ASSIGN ReadOnly( lReadOnly AS LOGIC)
 		IF SELF:ValidateControl()
 			SELF:oCtrl:Enabled := !lReadOnly
 		ENDIF
-		RETURN 
+		RETURN
+/// <inheritdoc/>
 
 	ACCESS Size AS Dimension
 		LOCAL oSize AS Dimension
@@ -182,21 +196,24 @@ CLASS ComboBox INHERIT ListBox
 			oSize:Height := SELF:__ComboBox:DropDownHeight
 		ENDIF
 		RETURN oSize
+/// <inheritdoc/>
 
 	ASSIGN Size (oDim AS Dimension)
 		LOCAL oSize AS Dimension
 		IF SELF:ValidateControl()
-			oSize := (Dimension) oDim:Clone()		
+			oSize := (Dimension) oDim:Clone()
 			oSize:Height := SELF:EditHeight
 			SELF:__Combobox:Size := oSize
 			SELF:__ComboBox:DropDownHeight := oDim:Height
 		ENDIF
-		
+
+/// <include file="Gui.xml" path="doc/ComboBox.SetCueBanner/*" />
 	METHOD SetCueBanner(cTitle AS STRING) AS LOGIC
 		//PP-030902
 		RETURN SUPER:SetCueBanner(cTitle,SELF:EditHandle)
 
-	//METHOD ShowEditBalloonTip(cTitle,cText,dwIcon) 
+/// <include file="Gui.xml" path="doc/ComboBox.ShowEditBalloonTip/*" />
+	//METHOD ShowEditBalloonTip(cTitle,cText,dwIcon)
 	//	//PP-030902
 	//	RETURN SUPER:ShowEditBalloonTip(cTitle,cText,dwIcon,SELF:EditHandle)
 
@@ -206,7 +223,7 @@ END CLASS
 CLASS ComboBoxEx INHERIT ComboBox
 PROTECT oImgList AS ImageList
 
-METHOD AddItem(cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent) 
+METHOD AddItem(cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent)
 //SE-060519
 
 Default(@nItemNumber, 0)
@@ -214,7 +231,7 @@ Default(@iSelectedIdx, iImageIdx)
 
 RETURN SELF:InsertItem(ComboBoxExItem{cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent})
 
-METHOD DeleteItem(nItemNumber) 
+METHOD DeleteItem(nItemNumber)
 //SE-060519
 LOCAL lReturnValue AS LOGIC
 LOCAL dwPos        AS DWORD
@@ -222,7 +239,7 @@ LOCAL dwPos        AS DWORD
 
 IF ! IsNil(nItemNumber)
 IF !IsLong(nItemNumber)
-WCError{#DeleteItem,#ComboBoxEx,__WCSTypeError,nItemNumber,1}:@@Throw()
+WCError{#DeleteItem,#ComboBoxEx,__WCSTypeError,nItemNumber,1}:Throw()
 ENDIF
 IF (nItemNumber != 0)
 dwPos := nItemNumber-1
@@ -241,7 +258,7 @@ ENDIF
 lReturnValue := (SendMessage(SELF:Handle(), CBEM_DELETEITEM, dwPos, 0) != CB_ERR)
 
 IF lReturnValue
-dwPos++
+dwPos++ 
 ADel(aDisplayValues, dwPos)
 ADel(aRetValues, dwPos)
 ASize(aDisplayValues, ALen(aDisplayValues) - 1)
@@ -252,7 +269,7 @@ RETURN lReturnValue
 
 //	RETURN SUPER:DeleteItem(nItemNumber)
 
-METHOD Dispatch (oEvent) 
+METHOD Dispatch (oEvent)
 //SE-060518
 LOCAL oEvt AS @@event
 LOCAL hBr  AS PTR
@@ -268,14 +285,14 @@ ENDIF
 
 RETURN SUPER:Dispatch (oEvt)
 
-ACCESS EditHandle 
+ACCESS EditHandle
 //SE-060519
 IF SELF:ValidateControl()
 RETURN PTR(_CAST, SendMessage(hWnd, CBEM_GETEDITCONTROL, 0, 0L))
 ENDIF
 RETURN NULL_PTR
 
-METHOD GetExCBStyle(kExStyle) 
+METHOD GetExCBStyle(kExStyle)
 //SE-060519
 LOCAL dwExStyle AS DWORD
 
@@ -287,7 +304,7 @@ ENDIF
 
 RETURN dwExStyle
 
-METHOD GetItemAttributes(uItemNumber) 
+METHOD GetItemAttributes(uItemNumber)
 //SE-060519
 LOCAL oComboBoxExItem AS ComboBoxExItem
 LOCAL cbxi IS _winCOMBOBOXEXITEM
@@ -308,11 +325,11 @@ ENDIF
 
 RETURN oComboBoxExItem
 
-ACCESS ImageList 
+ACCESS ImageList
 
 RETURN oImgList
 
-ASSIGN ImageList(oNewImageList) 
+ASSIGN ImageList(oNewImageList)
 LOCAL oDim AS Dimension
 
 oImgList := oNewImageList
@@ -326,9 +343,9 @@ ENDIF
 SetWindowPos(hWnd, NULL_PTR, 0, 0, oDim:width, oDim:height, _OR(SWP_NOACTIVATE, SWP_NOZORDER,SWP_NOMOVE))
 ENDIF
 
-RETURN 
+RETURN
 
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 
 Default(@kComboType, BOXDROPDOWN)
 SUPER(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
@@ -336,9 +353,9 @@ SELF:__ClassName := "ComboBoxEx32"
 
 dwExStyle := _AND(dwExStyle, DWORD(_CAST, _NOT(WS_EX_CLIENTEDGE)))
 dwStyle := _OR(dwStyle, DWORD(_CAST, CCS_NOMOVEY))
-RETURN 
+RETURN
 
-METHOD InsertItem(uComboBoxExItem) 
+METHOD InsertItem(uComboBoxExItem)
 //SE-060519
 LOCAL oComboBoxExItem 	AS ComboBoxExItem
 LOCAL cbxi 					IS _winCOMBOBOXEXITEM
@@ -375,12 +392,12 @@ ENDIF
 
 RETURN lRetVal
 
-METHOD SetExCBStyle(kExStyle, lEnable) 
+METHOD SetExCBStyle(kExStyle, lEnable)
 //SE-060519
 
 
 IF !IsLong(kExStyle)
-WCError{#SetExCBStyle,#ComboBoxEx,__WCSTypeError,kExStyle,}:@@Throw()
+WCError{#SetExCBStyle,#ComboBoxEx,__WCSTypeError,kExStyle,}:Throw()
 ENDIF
 
 IF IsNil(lEnable) .OR. !IsLogic(lEnable)
@@ -391,7 +408,7 @@ SendMessage(SELF:Handle(), CBEM_SETEXTENDEDSTYLE, kExStyle, IIF(lEnable, kExStyl
 
 RETURN SELF
 
-METHOD SetItemAttributes(uComboBoxExItem) 
+METHOD SetItemAttributes(uComboBoxExItem)
 //SE-060519
 LOCAL oComboBoxExItem AS ComboBoxExItem
 LOCAL cbxi IS _winCOMBOBOXEXITEM
@@ -426,7 +443,7 @@ END CLASS
 //	EXPORT Indent AS INT
 
 //	/*
-//	METHOD __GetValues(cbxi AS _winCOMBOBOXEXITEM) AS VOID STRICT 
+//	METHOD __GetValues(cbxi AS _winCOMBOBOXEXITEM) AS VOID STRICT
 //	//SE-060519
 //	SELF:ItemIndex          := cbxi:iItem + 1l
 //	SELF:ImageIndex         := cbxi:iImage + IIF(cbxi:iImage >= 0, 1l, 0l)
@@ -435,7 +452,7 @@ END CLASS
 //	SELF:Indent             := cbxi:iIndent
 //	RETURN
 
-//	METHOD __SetValues(cbxi AS _winCOMBOBOXEXITEM) AS VOID STRICT 
+//	METHOD __SetValues(cbxi AS _winCOMBOBOXEXITEM) AS VOID STRICT
 //	//SE-060519
 //	LOCAL cItem AS STRING
 
@@ -447,8 +464,8 @@ END CLASS
 //	//RvdH 060608 optimized: cItem is a string
 //	//IF !Empty(cItem)
 //	IF SLen(cItem) > 0
-//	//cbxi.pszText := Cast2Psz(cItem)		
-//	cbxi:pszText := StringAlloc(cItem)		// RvdH 070615 Cast2Psz is not safe here !	   
+//	//cbxi.pszText := Cast2Psz(cItem)
+//	cbxi:pszText := StringAlloc(cItem)		// RvdH 070615 Cast2Psz is not safe here !
 //	ENDIF
 
 //	IF SELF:ImageIndex != 0
@@ -474,7 +491,7 @@ END CLASS
 
 //	RETURN
 //	*/
-//	CONSTRUCTOR(cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent) 
+//	CONSTRUCTOR(cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent)
 //		//SE-060519
 
 //		IF IsString(cItem)
@@ -503,6 +520,6 @@ END CLASS
 //			SELF:Indent := iIndent
 //		ENDIF
 
-//		RETURN 
+//		RETURN
 //END CLASS
 

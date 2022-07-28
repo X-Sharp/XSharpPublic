@@ -1,10 +1,11 @@
-
+/// <include file="Gui.xml" path="doc/ErrorBox/*" />
 
 
 CLASS ErrorBox INHERIT TextBox
 
-	CONSTRUCTOR(uParent, uText) 
-		
+/// <include file="Gui.xml" path="doc/ErrorBox.ctor/*" />
+	CONSTRUCTOR(uParent, uText)
+
 
 		IF IsInstanceOfUsual( uText, #HyperLabel )
 			uText := uText:Description
@@ -15,14 +16,16 @@ CLASS ErrorBox INHERIT TextBox
 		SELF:Type := BOXICONHAND
 		SELF:Beep := TRUE
 
-		RETURN 
+		RETURN
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/InfoBox/*" />
 CLASS InfoBox INHERIT TextBox
 
-	CONSTRUCTOR(uParent, uCaption, uText) 
-		
+/// <include file="Gui.xml" path="doc/InfoBox.ctor/*" />
+	CONSTRUCTOR(uParent, uCaption, uText)
+
 
 		IF IsInstanceOfUsual(uCaption,#HyperLabel) .AND. IsNil(uText)
 			uText := uCaption:Description
@@ -34,17 +37,23 @@ CLASS InfoBox INHERIT TextBox
 		SUPER(uParent,uCaption,uText)
 		SELF:Type := BOXICONASTERISK
 
-		RETURN 
+		RETURN
 END CLASS
 
+/// <include file="Gui.xml" path="doc/TextBox/*" />
 CLASS TextBox INHERIT VObject
 	PROTECT oParent		AS Window
+/// <include file="Gui.xml" path="doc/TextBox.Beep/*" />
 	PROPERTY Beep		AS LOGIC	AUTO
+/// <include file="Gui.xml" path="doc/TextBox.Caption/*" />
 	PROPERTY Caption	AS STRING	AUTO
+/// <include file="Gui.xml" path="doc/TextBox.Message/*" />
 	PROPERTY Message	AS STRING	AUTO
+/// <include file="Gui.xml" path="doc/TextBox.TYPE/*" />
 	PROPERTY Type		AS LONG		AUTO
+/// <include file="Gui.xml" path="doc/TextBox.ctor/*" />
 
-	CONSTRUCTOR(uParent, uCaption, uText, nType) 
+	CONSTRUCTOR(uParent, uCaption, uText, nType)
 		SUPER()
 		IF !IsNil(uParent)
 			IF IsInstanceOfUsual(uParent, #Window)
@@ -59,7 +68,7 @@ CLASS TextBox INHERIT VObject
 
 		IF !IsNil(uCaption)
 			IF !IsString(uCaption)
-				WCError{#Init,#TextBox,__WCSTypeError,uCaption,2}:@@Throw()
+				WCError{#Init,#TextBox,__WCSTypeError,uCaption,2}:Throw()
 			ENDIF
 			Caption := uCaption
 		ELSE
@@ -68,7 +77,7 @@ CLASS TextBox INHERIT VObject
 
 		IF !IsNil(uText)
 			IF !IsString(uText)
-				WCError{#Init,#TextBox,__WCSTypeError,uText,3}:@@Throw()
+				WCError{#Init,#TextBox,__WCSTypeError,uText,3}:Throw()
 			ENDIF
 			Message := uText
 		ELSE
@@ -79,8 +88,9 @@ CLASS TextBox INHERIT VObject
 			Type := nType
 		ENDIF
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/TextBox.Show/*" />
 	METHOD Show() AS LONG STRICT
 		LOCAL iRetVal AS INT
 		LOCAL aRetVal AS ARRAY
@@ -92,7 +102,7 @@ CLASS TextBox INHERIT VObject
 		aRetVal:= {BoxReplyOkay, BoxReplyCancel, BoxReplyAbort, BoxReplyRetry,;
 		BoxReplyIgnore, BoxReplyYes, BoxReplyNo, BoxReplyClose, ;
 		-1, BoxReplyTryAgain, BoxReplyContinue}
-		// Note IDHELP is 8, but this is never a return value 
+		// Note IDHELP is 8, but this is never a return value
 
 		//IF (oParent != NULL_OBJECT)
 		//	hParent := oParent:Handle()
@@ -136,9 +146,11 @@ CLASS TextBox INHERIT VObject
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/WarningBox/*" />
 CLASS WarningBox INHERIT TextBox
 
-	CONSTRUCTOR(uParent, uCaption, uText) 
+/// <include file="Gui.xml" path="doc/WarningBox.ctor/*" />
+	CONSTRUCTOR(uParent, uCaption, uText)
 		IF IsInstanceOfUsual(uCaption,#HyperLabel) .AND. IsNil(uText)
 			uText := uCaption:Description
 			uCaption := uCaption:Caption
@@ -151,6 +163,6 @@ CLASS WarningBox INHERIT TextBox
 		SELF:Type := BOXICONEXCLAMATION
 		SELF:Beep := TRUE
 
-		RETURN 
+		RETURN
 END CLASS
 

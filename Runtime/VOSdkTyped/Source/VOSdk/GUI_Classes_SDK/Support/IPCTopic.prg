@@ -7,7 +7,7 @@ CLASS IpcTopic INHERIT VObject
 	METHOD AddItem (cItemString ) 
 		LOCAL cItemName AS STRING
 		IF !IsString(cItemString)
-			WCError{#AddItem,#IpcTopic,__WCSTypeError,cItemString,1}:@@Throw()
+			WCError{#AddItem,#IpcTopic,__WCSTypeError,cItemString,1}:Throw()
 		ENDIF
 		cItemName := Upper(cItemString)
 		AAdd(aItemList, cItemName)
@@ -22,7 +22,7 @@ CLASS IpcTopic INHERIT VObject
 		
 
 		IF !IsString(cItemString)
-			WCError{#AddItem,#IpcTopic,__WCSTypeError,cItemString,1}:@@Throw()
+			WCError{#AddItem,#IpcTopic,__WCSTypeError,cItemString,1}:Throw()
 		ENDIF
 
 		cItemName := Upper(cItemString)
@@ -54,7 +54,7 @@ CLASS IpcTopic INHERIT VObject
 		SUPER()
 
 		IF !IsString(cTopicString)
-			WCError{#Init,#IpcTopic, __WCSTypeError,cTopicString,1}:@@Throw()
+			WCError{#Init,#IpcTopic, __WCSTypeError,cTopicString,1}:Throw()
 		ENDIF
 
 		cTopicName := Upper(cTopicString)
@@ -93,7 +93,7 @@ CLASS IpcTopicData INHERIT VObject
 		SUPER()
 
 		IF !IsPtr(ptrString) .And. !IsString(ptrString)
-			WCError{#Init,#IpcTopicData,__WCSTypeError,ptrString,1}:@@Throw()
+			WCError{#Init,#IpcTopicData,__WCSTypeError,ptrString,1}:Throw()
 		ENDIF
 
 		IF IsPtr(ptrString)

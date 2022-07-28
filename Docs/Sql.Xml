@@ -230,10 +230,7 @@
         <param name="cDataSource">The ODBC data source name.  If not specified, the default is NULL_STRING.</param>
         <param name="cUserID">The ODBC user ID.  If not specified, the default is NULL_STRING.</param>
         <param name="cPassword">The ODBC password (authorization string).  If not specified, the default is NULL_STRING.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             If the connection fails, a message box will display the error.  To suppress the message box, call the SQLConnectErrorMsg(FALSE) function.
         </remarks>
     </SQLConnection.Connect>
@@ -268,10 +265,7 @@
         <summary>
             Disconnect the current user from an ODBC data source.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-    </SQLConnection.Disconnect>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </SQLConnection.Disconnect>
     <SQLConnection.DriverConnect>
         <summary>
             Display a dialog box prompting for a source; after a source is selected, displays the driver's connection dialog box; then connects to the selected data source.
@@ -411,10 +405,7 @@
         <summary>
             Disconnect the current user from a data source; if connected; then, connect.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-    </SQLConnection.Reconnect>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </SQLConnection.Reconnect>
     <SQLConnection.ScrollConcurrency>
         <summary>
             A constant representing the concurrency level of the SQL connection.
@@ -732,11 +723,7 @@
         <summary>
             Retrieve the list of columns representing foreign keys.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-
-            Level 2
-        </returns>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </SQLListForeignKeys.Execute>
     <SQLListForeignKeys.FOwner>
         <summary>
@@ -792,11 +779,7 @@
         <summary>
             Retrieve the list of primary keys.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-
-            Level 2
-        </returns>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </SQLListPrimaryKeys.Execute>
     <SQLListPrimaryKeys.Owner>
         <summary>
@@ -841,11 +824,7 @@
         <summary>
             Retrieve a list of procedure columns.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-
-            Level 2
-        </returns>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </SQLListProcedureColumns.Execute>
     <SQLListProcedureColumns.Owner>
         <summary>
@@ -883,11 +862,7 @@
         <summary>
             Retrieve the list of procedure names in a specific data source.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-
-            Level 2
-        </returns>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </SQLListProcedures.Execute>
     <SQLListProcedures.Owner>
         <summary>
@@ -1004,11 +979,7 @@
         <summary>
             Initiate the retrieval of the list of special columns.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-
-            Level 1
-        </returns>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </SQLListSpecialColumns.Execute>
     <SQLListSpecialColumns.Nullable>
         <summary>
@@ -1219,11 +1190,7 @@
         <summary>
             Retrieve the list of table privileges.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-
-            Level 2
-        </returns>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </SQLListTablePrivileges.Execute>
     <SQLListTablePrivileges.Owner>
         <summary>
@@ -1261,11 +1228,7 @@
         <summary>
             Retrieve the list of tables.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-
-            Level 1
-        </returns>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </SQLListTables.Execute>
     <SQLListTables.Owner>
         <summary>
@@ -1310,11 +1273,7 @@
         <summary>
             Retrieve the list of type information.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-
-            Level 1
-        </returns>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </SQLListTypeInfo.Execute>
     <SQLListTypeInfo.SqlType>
         <summary>
@@ -1407,10 +1366,7 @@
         <summary>
             Create a blank row in the buffer; this blank row becomes the current position and is ready for assignment of data values.  The SQLSelect:RecNo of this buffer is SQLSelect:RecCount+1.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             <note type="tip">The details of the implementation of this method, and how it interacts with other operations such as unique indexes and concurrency control, depend on the particular database.</note>
             Use FieldPut() to assign values into the blank buffer.  When you attempt to move position off this record, an insert will be automatically performed (using SQLSelect:AppendRow()) into the table, using the values in the buffer.  You can also deliberately force the update to occur by calling SQLSelect:AppendRow() or SQLSelect:Update(TRUE).
             If the AutoCommit option is off, you may need to invoke the Commit() method to insert the row into the database.
@@ -1442,10 +1398,7 @@
             Insert the row that has been created in the buffer since the last SQLSelect:Append() operation.
         </summary>
         <param name="lForce">A logical value determining whether the update should occur.  If omitted, the default is TRUE.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             <note type="tip">The details of the implementation of this method, and how it interacts with other operations such as unique indexes and concurrency control, depend on the particular database.</note>
             This method is used to actually perform the insertion of a row into the table after the SQLSelect:Append() and SQLSelect:FieldPut() operations have been performed, which insert a blank row into the buffer and assign values into the buffer.
             It is not necessary to call SQLSelect:AppendRow() in all cases, since it will be called automatically when the position is changed (for example, using GoTop(), Skip(), etc.), using the values in the buffer.
@@ -1608,10 +1561,7 @@
         <summary>
             Delete the current row.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             The row is not deleted until the Commit() is invoked and is not deleted if Rollback() is invoked.  Delete() sends a NotifyRecordChange message if successful.
             If the server is currently positioned on the append buffer, SQLSelect:Delete() will cancel the pending update.
             The type of SQL statement (searched or positioned) used by Delete() is determined by the system automatically, unless set to cursor, key, or value, using SQLSelect:ScrollUpdateType.
@@ -1664,10 +1614,7 @@
             &lt;cParam&gt; [, &lt;cParam&gt; …] | &lt;nParam&gt; [ , &lt;nParam&gt; …]
             The list of parameters to execute.
         </param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <example>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <example>
             The following example demonstrates the use of the SQLSelect:Execute() method:
             <code language="X#">
                 oSel := SQLSelect{"SELECT * FROM customer WHERE CustNo &gt; ?",oConn}
@@ -1681,11 +1628,7 @@
         </summary>
         <param name="kFetchType">The type of fetch (for example, SQL_FETCH_NEXT, SQL_FETCH_PREV, SQL_FETCH_FIRST, SQL_FETCH_LAST, SQL_FETCH_ABSOLUTE, SQL_FETCH_RELATIVE).  Refer to your ODBC documentation for a complete list of ODBC fetch types that are available.</param>
         <param name="kRow">The row to be fetched, specified by SQL_FETCH_ABSOLUTE or SQL_FETCH_RELATIVE.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-
-            Level 2
-        </returns>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyRecordChange message, if successful.  (If <paramref name="kFetchType" /> is specified as SQL_FETCH_FIRST, this method sends a NotifyGoTop message, if successful.  If SQL_FETCH_LAST is specified, NotifyGoBottom is sent, if successful.)
             <note type="tip">ODBC does not support the use of both SQLSelect:Fetch() and SQLSelect:ExtendedFetch() within the same select.</note>
@@ -1701,9 +1644,7 @@
         <summary>
             Fetch the next row.
         </summary>
-        <returns>
-            TRUE if successful; otherwise FALSE.
-        </returns>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyRecordChange message, if successful.
             <note type="tip">ODBC does not support the use of both SQLSelect:Fetch() and SQLSelect:ExtendedFetch() within the same select.</note>
@@ -1955,10 +1896,7 @@
         <param name="SQL_DROP">Closes the cursor, unbinds and resets the parameters, and frees the statement.</param>
         <param name="SQL_RESET_PARAMS">Resets the parameters.</param>
         <param name="SQL_UNBIND">Unbinds the parameters.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-    </SQLSelect.FreeStmt>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </SQLSelect.FreeStmt>
     <SQLSelect.GetData>
         <summary>
             Retrieve the contents of the specified column.
@@ -2007,10 +1945,7 @@
         <summary>
             Position the data server on the last row.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             Sends a NotifyGoBottom message, if successful.
             <note type="tip">If the database supports scrollable cursors (see SQLConnection:ScrollCsr), then record numbers will be negative relative to the bottom (see SQLSelect:RecNo).  If not, all records will be buffered, to simulate positioning.  Use with caution, since large result sets may degrade performance.  You can disable the buffering with the SQLSelect:BufferData() method.</note>
         </remarks>
@@ -2038,10 +1973,7 @@
             Position the data server on the specified row number.
         </summary>
         <param name="nRow">The row number that the server should be positioned to.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             <note type="tip">Some types of data servers cannot support movement by row number.</note>
             Sends a NotifyRecordChange message, if successful.
         </remarks>
@@ -2050,10 +1982,7 @@
         <summary>
             Position the data server on the first row.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             Sends a NotifyGoTop message, if successful.
         </remarks>
         <example>
@@ -2128,10 +2057,7 @@
         <param name="uValue">
             The corresponding value to be assigned.  <paramref name="uValue" /> should be compatible with the column type.
         </param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             Sends a NotifyFieldChange message if the variable reference was to a valid column of the server, and the assignment was successful.
             For SQLSelect, this method is used to intercept references to column names as exported variables, which ordinarily would not be allowed.  If the column name is valid, it does a FieldPut() for the corresponding column name with the passed value, in effect turning table columns into Assign methods of each SQLSelect object.  See "Objects, Classes, and Methods" in the Programmer's Guide for more information on NoIVarPut().
         </remarks>
@@ -2144,12 +2070,8 @@
             The identification of the event, specified as one of the following constants:
             symbol describing the event.  Used only with some notification types, as described above.
         </param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
-            <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
-        </remarks>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
+        <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
     </SQLSelect.Notify>
     <SQLSelect.NullAsBlank>
         <summary>
@@ -2248,10 +2170,7 @@
         <summary>
             Prepare the statement.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             In most cases, there is no need to invoke SQLSelect:Prepare(), since it is automatically invoked when needed.
         </remarks>
     </SQLSelect.Prepare>
@@ -2304,10 +2223,7 @@
         <summary>
             Refresh the current row in the buffer, discarding any changes that have been made.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             Sends a NotifyRecordChange message, if successful.
             This command discards all changes to the current row.  It is useful as a way of implementing Undo in an application. However, it cannot roll back changes that have been committed with the SQLSelect:Commit().  Also, note that it applies only to the current row; the data server and the drivers do not buffer changes made to multiple rows.
         </remarks>
@@ -2423,10 +2339,7 @@
             Specify a column to be used as a unique index in searched updates or deletes that require a key (i.e., SQLSelect:ScrollUpdateType = SQL_SC_UPD_KEY).
         </summary>
         <param name="uFieldPos">The name, number, or symbol representing the desired column.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             If SQLSelect:SetPrimaryKey() is passed a zero as an argument, all assigned columns are cleared.  You can also find the unique index columns by using the SQLListSpecialColumns class.
         </remarks>
     </SQLSelect.SetPrimaryKey>
@@ -2575,10 +2488,7 @@
             Update the current row or restore the original values of the row.
         </summary>
         <param name="lUpdate">TRUE updates the row; FALSE cancels the update and restores the original values of the row.  The default is TRUE.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             The type of SQL statement (searched or positioned) used by Update() is determined by the system automatically, unless set to cursor, key, or value, using SQLSelect:ScrollUpdateType.
             SQLSelect:Update() is invoked automatically if a field's value is changed (using SQLSelect:FieldPut()), and then a positioning operation (such as Skip()) was requested.
             When executed successfully, this method sends a NotifyRecordChange message to this data server's clients.
@@ -2636,10 +2546,7 @@
         <summary>
             Save the changes made since the last Commit().
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             The AutoCommit option may interfere with manual commits.  You may want to turn AutoCommit off, for example:
             <code language="X#">oStmt:Connection:SetConnectOption(SQL_AUTOCOMMIT, 0)</code>
         </remarks>
@@ -2661,10 +2568,7 @@
             Execute the statement.
         </summary>
         <param name="uParm">The array of parameters to execute., or a list of parameters to execute.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <example>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <example>
             The following example executes the SQL statement:
             <code language="X#">
                 oStmt := SQLStatement{"Insert into employee;
@@ -2686,10 +2590,7 @@
             SQL_RESET_PARAMS	Resets the parameters.
             SQL_UNBIND	Unbinds the parameters.
         </param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-    </SQLStatement.FreeStmt>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />    </SQLStatement.FreeStmt>
     <SQLStatement.GetStatementOption>
         <summary>
             Return current setting for a statement option or NIL, if an error occurred.
@@ -2736,10 +2637,7 @@
         <summary>
             Prepare a statement.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             In most cases, there is no need to invoke SQLStatement:Prepare(), since it will be automatically invoked when needed, by other methods (for example, Execute()).
         </remarks>
     </SQLStatement.Prepare>
@@ -2753,10 +2651,7 @@
         <summary>
             Undo the changes made since the last Commit().
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             The AutoCommit option may interfere with manual commits.  You may want to turn AutoCommit off, for example:
             <code language="X#">oStmt:Connection:SetConnectOption(SQL_AUTOCOMMIT, 0)</code>
         </remarks>
@@ -2767,11 +2662,7 @@
         </summary>
         <param name="fOption">The statement option (for example, SQL_BIND_TYPE, etc.).  Refer to SQLSetStatement Option() in your ODBC documentation for a complete list of ODBC statement options that are available.</param>
         <param name="uValue">The value to set the statement option to.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-
-            Level 1
-        </returns>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </SQLStatement.SetStatementOption>
     <SQLStatement.SQLString>
         <summary>
@@ -2814,9 +2705,7 @@
             Clear a relation (or all relations) held by this server to other servers.
         </summary>
         <param name="nRelation">The number of the relation to clear.  If omitted, all relations are cleared.</param>
-        <returns>
-            TRUE if successful; otherwise, it returns FALSE.
-        </returns>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </SQLTable.ClearRelation>
     <SQLTable.Condition>
         <summary>
@@ -2828,14 +2717,8 @@
         <summary>
             Provide a method that is automatically called by the action methods of the server after completion of some significant event:  a column has changed, the server position has changed, some operation has been completed.  Its standard implementation is to broadcast the same notification to its attached clients.
         </summary>
-        <param name="kNotification">The identification of the event, specified as one of the following constants:</param>
-        <param name="uDescription">Used only with some notification types.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
-            <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
-        </remarks>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
+        <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
     </SQLTable.Notify>
     <SQLTable.OrderBy>
         <summary>
@@ -2887,10 +2770,7 @@
         <param name="oChild">The server attached to the child server must be specified as a SQLTable object.  If omitted, all relations for this server are removed (the recommended way of doing this is the ClearRelations() method).</param>
         <param name="uRelation">The field name representing the relation for the server.  An alias can be used for the field name.  (See the SQLSelect:FieldInfo() method to set an alias name).</param>
         <param name="cRelation">The array of field names representing the relation for the server.  The array can also contain complex relational operators (SQL_RELOP_AND, SQL_RELOP_OR, SQL_RELOP_NOT, SQL_RELOP_OPENP, SQL_RELOP_CLOSEP).</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             In the SQLTable class, SetRelation() functions identically to SetSelectiveRelation().  The relation is implemented as an extension to the WHERE clause.
             Sends a NotifyRecordChange message to the child server, if successful.
         </remarks>
@@ -2918,10 +2798,7 @@
         </param>
         <param name="uRelation">The field name from this server.  An alias can be used for the field name.  (See the SQLSelect:FieldInfo() method to set an alias name).</param>
         <param name="cRelation">The array of field names representing the relation for the server.  The array can also contain complex relational operators (SQL_RELOP_AND, SQL_RELOP_OR, SQL_RELOP_NOT, SQL_RELOP_OPENP, SQL_RELOP_CLOSEP).</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
-        <remarks>
+<include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        <remarks>
             Sends a NotifyRecordChange message to the child server, if successful.  This method is equivalent to the SetRelation() method.
         </remarks>
         <example>

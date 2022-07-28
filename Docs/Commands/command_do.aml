@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="7c01f660-13b8-4e72-9084-4b401a7a90e9" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">DO Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Call a procedure or function, and optionally pass arguments to the called routine.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>DO &lt;idProcedure&gt; [WITH &lt;uValueArgList&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;idProcedure&gt;</entry><entry>The name of the procedure or function to execute.</entry></row></table><para>&#160;</para>
+<table><row><entry>WITH &lt;uValueArgList&gt;</entry><entry>A comma-separated list of arguments to pass to &lt;idProcedure&gt;.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>DO performs the same action as a function or procedure specified on a line by itself with the exception that variables other than field variables are passed by reference as the default. &#160;<para/>
+In order to pass a field variable as an argument, enclose it in parentheses, unless you declare it with the FIELD statement or specify it with an alias.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example executes a procedure with no parameters:</para>
+<para>DO AcctsRpt<para/>
+AcctsRpt() &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;// Preferred method</para>
+<para>The next example executes a procedure passing two constants:</para>
+<para>DO QtrRpt WITH &quot;2nd&quot;, &quot;Sales Division&quot;<para/>
+// Preferred method<para/>
+QtrRpt(&quot;2nd&quot;, &quot;Sales Division&quot;)</para>
+<para>In this example, a procedure is executed with the first argument passed by value and the second passed by reference:</para>
+<para>nNumber := 12<para/>
+DO YearRpt WITH nNumber + 12, nNumber<para/>
+// Preferred method<para/>
+YearRpt(nNumber + 12, @nNumber)</para>
+<para>Here, a procedure is invoked with skipped arguments embedded in the list of arguments:</para>
+<para>DO DisplayWindow WITH ,,,,&quot;My Window&quot;<para/>
+// Preferred method<para/>
+DisplayWindow(,,,,&quot;My Window&quot;)</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="da571189-a521-4066-b374-de88f72d37e8">FIELD</link>, <link xlink:href="14cdd669-1822-49e7-b700-7abebe59013c">FUNCTION</link>, <link xlink:href="d8822cca-7c06-4150-b83c-2dd9b531186d">LOCAL</link>, <link xlink:href="f6fe8ee8-c61d-405e-8da1-35f1f0564f84">PARAMETERS</link>, <link xlink:href="167a7bca-5bea-4198-b685-3376fba16514">PRIVATE</link>, <link xlink:href="76e253bd-c169-4078-b086-64feffe160c1">PROCEDURE</link>, <link xlink:href="8d194317-f7c6-462f-bcfb-ccb8b195d6bf">PUBLIC</link>, <link xlink:href="70c94423-9322-4c94-aecc-907f367520ad">RETURN</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

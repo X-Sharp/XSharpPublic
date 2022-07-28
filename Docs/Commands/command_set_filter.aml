@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="b599a490-b76f-4658-8844-348d51ae7120" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">SET FILTER Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Set or clear a filter condition for the current work area.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>SET FILTER TO [&lt;lCondition&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>TO &lt;lCondition&gt;</entry><entry>The condition used to filter records.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>SET FILTER TO without an argument clears the filter condition.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>When a filter is set, records that do not meet the filter condition are not logically visible. &#160;The filter condition can be returned as a string using the DBFilter() function.</para>
+<para>That is, database operations which act on logical records will not consider these records except to access them specifically by record number. &#160;So, for example, you can GOTO a filtered record or process one using the RECORD &lt;nRecord&gt; scope.</para>
+<para>&#160;</para>
+<para>Note:  Once a filter is set, it is not activated until the record pointer is moved from its current position. &#160;You can use GO TOP to activate it.</para>
+<para>&#160;</para>
+<para>SET FILTER TO when specified with a condition is functionally equivalent to <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetFilter.htm -->DbSetFilter() with the condition expressed as a code block and a string. &#160;SET FILTER TO with no arguments is equivalent to DBClearFilter(). &#160;</para>
+<para>&#160;</para>
+<para>Tip:  If the RDD you are using supports optimization, use SET OPTIMIZE to control whether the RDD will optimize the filter search based on the available orders in the work area.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>Visibility:  As with <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDeleted.htm -->SetDeleted() , a filter has no effect on INDEX and REINDEX. &#160;To create a conditional index, use the FOR condition of the INDEX command.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example filters EMPLOYEE.DBF to only those records where the age is greater than 50:</para>
+<para>&#160;</para>
+<para>USE employee INDEX name NEW<para/>
+SET FILTER TO Age &gt; 50<para/>
+LIST Lastname, Firstname, Age, Phone<para/>
+SET FILTER TO</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbClearFilter.htm -->DbClearFilter(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbFilter.htm -->DbFilter(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetFilter.htm -->DbSetFilter(), <link xlink:href="5b8cee2d-7c7e-4279-9f76-4daabb6d7fb6">SET OPTIMIZE</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDeleted.htm -->SetDeleted() </para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

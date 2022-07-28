@@ -20,6 +20,9 @@ END NAMESPACE
 
     /// <summary>Delegate used for the StateChanged Event handler</summary>
 DELEGATE XSharp.StateChanged (e AS StateChangedEventArgs) AS VOID
+    /// <summary>Delegate used for the DialectChanged Event handler</summary>
+DELEGATE XSharp.DialectChanged(oldDialect as XSharpDialect, newDialect as XSharpDialect) AS VOID
+
 /// <summary>Arguments that are sent to StateChanged event handlers</summary>
 CLASS XSharp.StateChangedEventArgs
     /// <summary>Setting that was just changed</summary>
@@ -85,6 +88,9 @@ CLASS XSharp.RuntimeState
 		RETURN currentState:Value
     /// <summary>This event is invoked when the runtime state is changed.</summary>
     PUBLIC STATIC EVENT StateChanged AS StateChanged
+    /// <summary>This event is invoked when the runtime dialect is changed.</summary>
+    /// <remarks>Normally this will almost never happen. However inside our test suites this is quite common </remarks>
+    PUBLIC STATIC EVENT DialectChanged as DialectChanged
     [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE oSettings AS Dictionary<XSharp.Set, OBJECT>
     /// <summary>The dictionary that stores most of the settings in the runtime state. The key to the index is the number from the Set Enum</summary>
@@ -243,7 +249,21 @@ CLASS XSharp.RuntimeState
     /// <summary>The current compiler setting for the X# Dialect.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for the Dialect is 'Core'.</value>
-	STATIC PROPERTY Dialect AS XSharpDialect  AUTO
+    /// <remarks>When the dialect changes then registered DialectChanged Event Handlers will be called </remarks>
+    /// <seealso cref="DialectChanged" />
+    STATIC PRIVATE _dialect := XSharpDialect.Core AS XSharpDialect
+	STATIC PROPERTY Dialect AS XSharpDialect
+        GET
+            RETURN _dialect
+        END GET
+        SET
+            var old := _dialect
+            _dialect := value
+            IF DialectChanged != NULL .and. old != value
+                DialectChanged(old, value)
+            ENDIF
+        END SET
+    END PROPERTY
 
 	/// <summary>The current compiler setting for the FOVF compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />

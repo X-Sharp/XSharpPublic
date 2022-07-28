@@ -87,3 +87,84 @@ BEGIN NAMESPACE XSharp
     END ENUM
 
 END NAMESPACE // global::XSharp.Types
+
+
+/// <summary>
+/// Calculate the Usual Type for a System Type
+/// </summary>
+/// <remarks>
+/// You can use this function in assemblies that do not have a reference to XSharp.RT to determine the type of a value
+/// </remarks>
+/// <example>
+/// This example converts a symbol that is passed inside an object to a string
+/// <code language="X#">
+/// if SystemTypeToUsualType(oOrder:GetType()) == __UsualType.Symbol
+///    oOrder := oOrder:ToString()
+/// endif
+/// </code>
+/// </example>
+/// <param name="oType">The type of the value to check</param>
+/// <returns>A value from the __UsualType enum</returns>
+FUNCTION SystemTypeToUsualType(oType as System.Type) AS __UsualType
+switch Type.GetTypeCode(oType)
+    case TypeCode.Boolean
+      return __UsualType.Logic
+    case TypeCode.Byte
+      return __UsualType.Byte
+    case TypeCode.Char
+      return __UsualType.Char
+    case TypeCode.DateTime
+      return __UsualType.DateTime // new in X#
+    case TypeCode.DBNull
+      return __UsualType.Null    // new in X#
+    case TypeCode.Decimal
+      return __UsualType.Decimal // new in X#
+    case TypeCode.Double
+      return __UsualType.Real8
+    case TypeCode.Empty
+      return __UsualType.Void
+    case TypeCode.Int16
+      return __UsualType.ShortInt
+    case TypeCode.Int32
+      return __UsualType.Long
+    case TypeCode.Int64
+      return __UsualType.Int64
+    case TypeCode.SByte
+      return __UsualType.Byte
+    case TypeCode.Single
+      return __UsualType.Real4
+    case TypeCode.UInt16
+      return __UsualType.Word
+    case TypeCode.UInt32
+      return __UsualType.DWord
+    case TypeCode.UInt64
+      return __UsualType.UInt64
+    case TypeCode.String
+      return __UsualType.String
+    otherwise
+        // use the type names because the types are defined in another assembly
+        switch oType:FullName:ToLower()
+        case "xsharp.__array"
+          return __UsualType.Array
+        case "xsharp.__binary"
+          return __UsualType.Binary // new in X#
+        case "xsharp.__codeblock"
+          return __UsualType.Codeblock
+        case "xsharp.__currency"
+          return __UsualType.Currency // new in X#
+        case "xsharp.__date"
+          return __UsualType.Date
+        case "xsharp.__float"
+          return __UsualType.Float
+        case "xsharp.__psz"
+          return __UsualType.Psz
+        case "xsharp.__symbol"
+          return __UsualType.Symbol
+        case "xsharp.__usual"
+          return __UsualType.Usual
+        case "system.intptr"
+          return __UsualType.Ptr
+
+      end switch
+    end switch
+    return __UsualType.Void

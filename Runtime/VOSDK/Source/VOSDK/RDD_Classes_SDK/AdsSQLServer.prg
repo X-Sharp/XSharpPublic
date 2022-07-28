@@ -26,8 +26,8 @@
 // #include "dbfaxs.vh"
 /// <include file="Rdd.xml" path="doc/AdsSQLServer/*" />
 CLASS AdsSQLServer INHERIT DBServer
-/// <include file="Rdd.xml" path="doc/AdsSQLServer.ctor/*" />
-CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
+/// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
+CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD, aParams )
     LOCAL cTemp AS STRING
     LOCAL cFileName AS STRING
 
@@ -35,6 +35,14 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
     // Set the query text, this is necessary because the VO runtime doesn't like
     // some of the special characters that are used in SQL queries
     RDDINFO( _SET_SQL_QUERY, oFile )
+
+
+    IF ( IsNil( aParams ) )
+		// Pass in an empty array.  Passing in NIL doesn't get to the RDD.
+		RDDINFO( _SET_SQL_PARAMETERS, {} )
+	ELSE
+      RDDINFO( _SET_SQL_PARAMETERS, aParams )
+	ENDIF
 
 
     // Some VO libraries have trouble with the alias as is.  So for the SQL RDDS,
@@ -63,6 +71,19 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
 
 
 RETURN
+
+METHOD Refresh( aParams ) CLASS AdsSQLServer
+	// This version of Refresh() accepts an array of SQL parameters
+	// for the query.  The array should be an array of parameter names and
+	// parameter values. For example:
+	//  {{ "lastname", "Smith" }, { "ID", 25 }}
+
+	// Set the parameters if provided.
+	IF aParams != nil
+      RDDINFO( _SET_SQL_PARAMETERS, aParams )
+	ENDIF
+
+   return SUPER:Refresh()
 
 
 END CLASS

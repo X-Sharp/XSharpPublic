@@ -1,23 +1,26 @@
-
+/// <include file="Gui.xml" path="doc/PushButton/*" />
 CLASS PushButton INHERIT Button
 
     PROPERTY ControlType AS ControlType GET ControlType.Button
 
-	CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle) 
+/// <include file="Gui.xml" path="doc/PushButton.ctor/*" />
+	CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle)
 		SUPER(oOwner, xID, oPoint, oDimension, cText, kStyle, FALSE)
 		IF IsInstanceOfUsual(xID,#ResourceID)
 			SELF:SetStyle(BS_PushButton)
 		ENDIF
-		RETURN 
+		RETURN
 
-	ACCESS __Button AS IVOButton 
+	ACCESS __Button AS IVOButton
 		RETURN (IVOButton) oCtrl
 
-	ACCESS Value() 
+/// <include file="Gui.xml" path="doc/PushButton.Value/*" />
+	ACCESS Value()
 		RETURN FALSE
 
-	ASSIGN Value(uNewValue) 
-		RETURN 
+/// <include file="Gui.xml" path="doc/PushButton.Value/*" />
+	ASSIGN Value(uNewValue)
+		RETURN
 
 END CLASS
 

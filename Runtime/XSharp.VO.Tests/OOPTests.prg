@@ -33,6 +33,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(NULL, oObject2:Param)
             oObject2 := CreateInstance(#TestStrong, oObject, oObject) // too many parameters passed
             Assert.Equal(oObject, oObject2:Param)
+            // New _CreateInstance that takes an USUAL[] for the parameters
+            var usuals := List<USUAL>{}{oObject, oObject}
+            oObject2 := _CreateInstance(#TestStrong, usuals:ToArray()) // too many parameters passed
+            Assert.Equal(oObject, oObject2:Param)
 
 
 		[Fact, Trait("Category", "OOP")];
@@ -583,25 +587,25 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u:InternalGet := "abc"
 			Assert.True( IVarGetSelf(u , "InternalGet") == "abc" )
 			Assert.True( u:InternalGet == "abc" )
-			
+
 			u:ProtectedGet := "123"
 			Assert.True( IVarGetSelf(u , "ProtectedGet") == "123" )
-			
+
 			u:PrivateGet := "456"
 			Assert.True( IVarGetSelf(u , "PrivateGet") == "456" )
-			
-			
+
+
 			u:InternalSET := "abc123"
 			Assert.True( IVarGet(u , "InternalSET") == "abc123" )
 
 			IVarPutSelf( u , "InternalSET" , "set")
 			Assert.True( IVarGetSelf(u , "InternalSET") == "set" )
 			Assert.True( u:InternalSET == "set" )
-			
+
 			IVarPutSelf( u , "ProtectedSET" , "SET")
 			Assert.True( IVarGet(u , "ProtectedSET") == "SET" )
 			Assert.True( u:ProtectedSET == "SET" )
-			
+
 			IVarPutSelf( u , "PrivateSET" , "abc")
 			Assert.True( u:PrivateSET == "abc" )
 			Assert.True( IVarGetSelf(u , "PrivateSET") == "abc" )
@@ -611,7 +615,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			PROPERTY InternalGet AS STRING AUTO INTERNAL GET SET
 			PROPERTY ProtectedGet AS STRING AUTO PROTECTED GET SET
 			PROPERTY PrivateGet AS STRING AUTO PRIVATE GET SET
-		
+
 			PROPERTY InternalSET AS STRING AUTO GET INTERNAL SET
 			PROPERTY ProtectedSET AS STRING AUTO GET PROTECTED SET
 			PROPERTY PrivateSET AS STRING AUTO GET PRIVATE SET

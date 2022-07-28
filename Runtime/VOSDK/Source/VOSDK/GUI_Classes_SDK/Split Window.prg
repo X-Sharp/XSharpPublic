@@ -968,13 +968,8 @@ ASSIGN Layout(oDimension)
 /// <include file="Gui.xml" path="doc/SplitWindow.Resize/*" />
 METHOD Resize(oResizeEvent)
 
-
-
-
 	SUPER:Resize(oResizeEvent)
 	SELF:__ResizeSplitView()
-
-
 	RETURN NIL
 
 

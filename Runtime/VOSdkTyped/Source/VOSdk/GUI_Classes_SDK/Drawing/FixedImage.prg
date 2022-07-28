@@ -1,10 +1,11 @@
-
+/// <include file="Gui.xml" path="doc/FixedImage/*" />
 
 PARTIAL ABSTRACT CLASS FixedImage INHERIT Control
 	PROTECT oImage AS OBJECT
 
     PROPERTY ControlType AS ControlType GET ControlType.FixedImage
 
+/// <include file="Gui.xml" path="doc/FixedImage.ctor/*" />
 	CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID)
 		IF  IsInstanceOfUsual(uID,#ResourceID)
 			SUPER(uOwner,uID,,,,,FALSE)
@@ -16,7 +17,7 @@ PARTIAL ABSTRACT CLASS FixedImage INHERIT Control
 				cWindowName:="#"+LTrim(AsString(uResID:ID))
 			ENDIF
 		ELSE
-			WCError{#Init,#FixedImage,__WCSTypeError}:@@Throw()
+			WCError{#Init,#FixedImage,__WCSTypeError}:Throw()
 		ENDIF
 
 		RETURN
@@ -27,7 +28,7 @@ PARTIAL ABSTRACT CLASS FixedImage INHERIT Control
 
 	ABSTRACT METHOD __SetImage(uResId AS USUAL) AS OBJECT STRICT
 
-	METHOD Destroy() AS USUAL 
+	METHOD Destroy() AS USUAL
 
 		IF (oImage != NULL_OBJECT)
 			oImage:Destroy()

@@ -118,7 +118,7 @@ CONSTRUCTOR(oOwner)
 	
 
 	IF !IsInstanceOfUsual(oOwner,#Window)
-		WCError{#Init,#DragDropClient,__WCSTypeError,oOwner,1}:@@Throw()
+		WCError{#Init,#DragDropClient,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 
 	IF !glShellDllLoaded
@@ -170,7 +170,7 @@ FUNCTION __LoadShellDll()
 	hDll := LoadLibrary(String2Psz( "SHELL32.DLL"))
 	IF (hDll == NULL_PTR)
 		rsFormat := ResourceString{__WCSLoadLibraryError}
-		WCError{#LoadShellDLL, #DragDropClient, VO_SPrintF(rsFormat:value, "SHELL32.DLL"),,,FALSE}:@@Throw()
+		WCError{#LoadShellDLL, #DragDropClient, VO_SPrintF(rsFormat:value, "SHELL32.DLL"),,,FALSE}:Throw()
 		RETURN FALSE
 	ENDIF
 	

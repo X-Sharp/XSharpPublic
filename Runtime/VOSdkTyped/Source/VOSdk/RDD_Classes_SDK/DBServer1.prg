@@ -33,7 +33,7 @@ METHOD Append( lReleaseLocks AS LOGIC) AS LOGIC
 				ENDIF
 				lRetCode := __DBSAPPEND( lLocks, nTries )
 				IF nEffectiveCCMode == ccStable
-					nLastLock := VoDbRecno( )
+					nLastLock := (LONG) VoDbRecno( )
 				ENDIF
 			ENDIF
 			siSelectionStatus := DBSELECTIONNULL
@@ -707,7 +707,7 @@ METHOD BLOBDirectPut( nPointer AS LONG, uBlob AS USUAL ) AS USUAL
 /// <include file="Rdd.xml" path="doc/DbServer.BLOBExport/*" />
 METHOD BLOBExport( uField AS USUAL, oFSTarget AS FileSpec, kMode := BLOB_EXPORT_OVERWRITE AS LONG) AS LOGIC
         RETURN SELF:BLOBExport(uField, oFSTarget:FullPath, kMode)
-
+ 
 
 /// <include file="Rdd.xml" path="doc/DbServer.BLOBExport/*" />
 METHOD BLOBExport( uField AS USUAL, cTarget AS STRING, kMode := BLOB_EXPORT_OVERWRITE AS LONG) AS LOGIC

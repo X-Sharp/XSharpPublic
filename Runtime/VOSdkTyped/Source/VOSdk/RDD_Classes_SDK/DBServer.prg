@@ -74,7 +74,7 @@ METHOD __AcceptSelectiveRelation( oDBParent AS DbServer, wParentWorkArea AS DWOR
 	IF Instr( "MDX", cIndexExt )
 		lSelectionActive := TRUE
 		siSelectionStatus := DBSELECTIONNULL
-		cbSelectionIndexingExpression := DBSelectionIndex{ SELF, __DBSDbOrderInfo( DBOI_EXPRESSION, "", 0 ), wWorkArea }
+		cbSelectionIndexingExpression := DBSelectionIndex{ SELF, __DBSDbOrderInfo( DBOI_EXPRESSION, "", 0 ), (LONG) wWorkArea }
 	ELSE
 		lCDXSelectionActive := TRUE
 	ENDIF
@@ -235,7 +235,7 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
 							IF nLastLock != 0
 								VoDbUnlock( nLastLock )
 							ENDIF
-							nLastLock := VoDbRecno( )
+							nLastLock := (INT) VoDbRecno( )
 							IF ! VoDbEof( )
 								lRetCode := VoDbRlock( nLastLock )
 							ELSE
@@ -507,7 +507,7 @@ METHOD __ProcessConcurrency( lBreak AS LOGIC) AS LOGIC STRICT
 				IF nLastLock != 0
 					VoDbUnlock( SELF:nLastLock )
 				ENDIF
-				nLastLock := VoDbRecno( )
+				nLastLock := (INT) VoDbRecno( )
 				IF ! VoDbEof( )
 					lRetCode := VoDbRlock( SELF:nLastLock )
 				ELSE
@@ -692,7 +692,7 @@ METHOD __SetupLocks( )  AS VOID STRICT
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
 		IF ! uFlock
-			nLastLock := (DWORD) SELF:RecNo
+			nLastLock := (LONG) SELF:RecNo
 			IF ! SELF:RLock( nLastLock )
 				nLastLock := 0
 				oHLStatus := SELF:Status
@@ -711,9 +711,6 @@ METHOD __SetupLocks( )  AS VOID STRICT
 			__CavoStr( __CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN ), nCCMode, "nCCMode" }
 		SELF:Error( oErrorInfo, #ConcurrencyControl )
 	ENDCASE
-
-
-
 
 	RETURN
 /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />

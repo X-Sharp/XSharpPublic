@@ -1,18 +1,20 @@
 
 USING System.Text
+/// <include file="Gui.xml" path="doc/ResourceString/*" />
 CLASS ResourceString INHERIT VObject
 	PROTECT iLength AS INT
 	PROTECT sBuffer AS STRING
 
-	METHOD AsString() 
+/// <include file="Gui.xml" path="doc/ResourceString.AsString/*" />
+	METHOD AsString()
 		RETURN sBuffer
 
-	CONSTRUCTOR(xResourceID, uMaxLen) 
+/// <include file="Gui.xml" path="doc/ResourceString.ctor/*" />
+	CONSTRUCTOR(xResourceID, nMaxLen)
 		LOCAL hInst AS IntPtr
 		LOCAL wID AS LONG
 		LOCAL ptrBuffer AS StringBuilder
 		LOCAL oResourceID as ResourceID
-		LOCAL nMaxLen as LONG
 
 		SUPER()
 
@@ -21,15 +23,15 @@ CLASS ResourceString INHERIT VObject
 		ELSEIF IsInstanceOfUsual(xResourceID, #ResourceID)
 			oResourceID := xResourceID
 		ELSE
-			WCError{#Init, #ResourceString, __WCSTypeError, xResourceID, 1}:@@Throw()
+			WCError{#Init, #ResourceString, __WCSTypeError, xResourceID, 1}:Throw()
 		ENDIF
 
-		IF IsNil(uMaxLen)
+		IF IsNil(nMaxLen)
 			nMaxLen := 256
 		ELSEIF !IsNumeric(nMaxLen)
-			WCError{#Init, #ResourceString, __WCSTypeError, nMaxLen, 2}:@@Throw()
+			WCError{#Init, #ResourceString, __WCSTypeError, nMaxLen, 2}:Throw()
 		ELSE
-			nMaxLen := (LONG) uMaxLen
+			NOP 
 		ENDIF
 
 		hInst := oResourceID:Handle()
@@ -43,7 +45,7 @@ CLASS ResourceString INHERIT VObject
 		IF hInst == GetNatDllHandle()
 			sBuffer := __CavoStr( (DWORD) wID )
 			RETURN
-		ENDIF   
+		ENDIF
 
 		ptrBuffer 	:= StringBuilder{(INT) nMaxLen+1}
 		iLength 	:= GuiWin32.LoadString(hInst, wID, ptrBuffer, nMaxLen)
@@ -51,11 +53,13 @@ CLASS ResourceString INHERIT VObject
 			sBuffer := ptrBuffer:ToString()
 		ENDIF
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/ResourceString.Length/*" />
 	ACCESS Length AS INT
 		RETURN iLength
 
+/// <include file="Gui.xml" path="doc/ResourceString.Value/*" />
 	ACCESS Value AS STRING
 		RETURN sBuffer
 

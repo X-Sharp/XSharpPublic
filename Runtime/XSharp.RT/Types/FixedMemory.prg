@@ -38,23 +38,23 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
         // Generate 2 dynamic methods for speedy MemSet and MemCopy
         // using IL instructions that C# and X# do not have.
         //VAR atts := MethodAttributes.Public | MethodAttributes.Static
-//        VAR dm := DynamicMethod{"Memset", atts, CallingConventions.Standard, NULL,  <System.Type> { TYPEOF(IntPtr), TYPEOF(BYTE), TYPEOF(DWORD) }, TYPEOF(FixedMemory), TRUE}
-//        VAR generator	  := dm:GetILGenerator()
-//        generator:Emit(OpCodes.Ldarg_0)
-//        generator:Emit(OpCodes.Ldarg_1)
-//        generator:Emit(OpCodes.Ldarg_2)
-//        generator:Emit(OpCodes.Initblk)
-//        generator:Emit(OpCodes.Ret)
-//        _memSetDelegate := (Action<IntPtr, BYTE, DWORD>) dm:CreateDelegate(TYPEOF(Action<IntPtr, BYTE, DWORD>))
-//
-//        VAR dm := DynamicMethod{"Memcopy", atts, CallingConventions.Standard, NULL,  <System.Type> { TYPEOF(IntPtr), TYPEOF(IntPtr), TYPEOF(DWORD) }, TYPEOF(FixedMemory), TRUE}
-//        VAR generator := dm:GetILGenerator()
-//        generator:Emit(OpCodes.Ldarg_0)
-//        generator:Emit(OpCodes.Ldarg_1)
-//        generator:Emit(OpCodes.Ldarg_2)
-//        generator:Emit(OpCodes.Cpblk)
-//        generator:Emit(OpCodes.Ret)
-//        _memCopyDelegate := (Action<IntPtr, IntPtr, DWORD>) dm:CreateDelegate(TYPEOF(Action<IntPtr, IntPtr, DWORD>))
+        //        VAR dm := DynamicMethod{"Memset", atts, CallingConventions.Standard, NULL,  <System.Type> { TYPEOF(IntPtr), TYPEOF(BYTE), TYPEOF(DWORD) }, TYPEOF(FixedMemory), TRUE}
+        //        VAR generator	  := dm:GetILGenerator()
+        //        generator:Emit(OpCodes.Ldarg_0)
+        //        generator:Emit(OpCodes.Ldarg_1)
+        //        generator:Emit(OpCodes.Ldarg_2)
+        //        generator:Emit(OpCodes.Initblk)
+        //        generator:Emit(OpCodes.Ret)
+        //        _memSetDelegate := (Action<IntPtr, BYTE, DWORD>) dm:CreateDelegate(TYPEOF(Action<IntPtr, BYTE, DWORD>))
+        //
+        //        VAR dm := DynamicMethod{"Memcopy", atts, CallingConventions.Standard, NULL,  <System.Type> { TYPEOF(IntPtr), TYPEOF(IntPtr), TYPEOF(DWORD) }, TYPEOF(FixedMemory), TRUE}
+        //        VAR generator := dm:GetILGenerator()
+        //        generator:Emit(OpCodes.Ldarg_0)
+        //        generator:Emit(OpCodes.Ldarg_1)
+        //        generator:Emit(OpCodes.Ldarg_2)
+        //        generator:Emit(OpCodes.Cpblk)
+        //        generator:Emit(OpCodes.Ret)
+        //        _memCopyDelegate := (Action<IntPtr, IntPtr, DWORD>) dm:CreateDelegate(TYPEOF(Action<IntPtr, IntPtr, DWORD>))
 
 
     INTERNAL STATIC METHOD AddGroup(nGroup AS DWORD) AS MemGroup
@@ -91,8 +91,8 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
             RETURN pMemBlockStart:dwGroup
         ENDIF
         RETURN 0
-     [MethodImpl(MethodImplOptions.AggressiveInlining)];
-     PRIVATE STATIC METHOD _GetMemBlockStart (pMemory AS IntPtr) AS FixedMemBlockStart PTR
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];
+    PRIVATE STATIC METHOD _GetMemBlockStart (pMemory AS IntPtr) AS FixedMemBlockStart PTR
         LOCAL pMemBlockStart  AS FixedMemBlockStart PTR
         LOCAL i64 as Int64
         IF Is32Bits
@@ -103,8 +103,8 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
         pMemBlockStart := (FixedMemBlockStart PTR) IntPtr{i64}:ToPointer()
         RETURN pMemBlockStart
 
-     [MethodImpl(MethodImplOptions.AggressiveInlining)];
-     PRIVATE STATIC METHOD _GetMemBlockEnd (pMemory AS IntPtr ) AS FixedMemBlockEnd PTR
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];
+    PRIVATE STATIC METHOD _GetMemBlockEnd (pMemory AS IntPtr ) AS FixedMemBlockEnd PTR
         VAR pMemBlockStart := _GetMemBlockStart (pMemory)
         LOCAL i64 as Int64
         IF Is32Bits
@@ -166,19 +166,19 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
                 Total -= nSize
                 oGroup := FindGroup(pMemBlockStart:dwGroup)
                 // Overwrite memory so it will not be valid anymore
-                Set(pMemBlockStart, 0xFF, (INT) nTotal)
-                IF oGroup != NULL_OBJECT
-                    oGroup:Allocated -= nSize
-                    Marshal.FreeHGlobal(pMemBlockStart)
-                    result := FixedMemory.SUCCESS
-                ENDIF
-			ELSE
-				// TODO: Throw an exception or log the result when FixedMemory.Free fails
-            ENDIF
-        CATCH
-            result := FixedMemory.FAILURE
-        END TRY
-        RETURN result
+    Set(pMemBlockStart, 0xFF, (INT) nTotal)
+        IF oGroup != NULL_OBJECT
+            oGroup:Allocated -= nSize
+            Marshal.FreeHGlobal(pMemBlockStart)
+            result := FixedMemory.SUCCESS
+        ENDIF
+    ELSE
+        // TODO: Throw an exception or log the result when FixedMemory.Free fails
+    ENDIF
+    CATCH
+        result := FixedMemory.FAILURE
+    END TRY
+    RETURN result
 
     STATIC METHOD Validate(pMem AS IntPtr) AS LOGIC
         LOCAL lValid := FALSE	AS LOGIC
@@ -331,7 +331,7 @@ STRUCTURE	 XSharp.FixedMemBlockStart
     CONST MAGIC  := 0x21522358 AS DWORD  // !R#X
 
     /// <exclude />
-   [MethodImpl(MethodImplOptions.AggressiveInlining)];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD Initialize(nGroup AS DWORD, nSize AS DWORD) AS VOID
         dwMagic := MAGIC
         dwCargo := 0
@@ -361,7 +361,7 @@ STRUCTURE XSharp.FixedMemBlockEnd
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD Initialize() AS VOID
         dwMagic := MAGIC
-		dwZero := 0
+        dwZero := 0
     /// <exclude/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
     METHOD IsValid() AS LOGIC

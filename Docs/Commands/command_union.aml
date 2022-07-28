@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="7bf12771-682c-4595-975e-d92b1a802255" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">UNION Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare a union entity and its member names.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[Modifiers] UNION &lt;idUnion&gt; [ALIGN 1|2|4|8]</para>
+<para>&#160;MEMBER &lt;idVarList&gt; AS | IS &lt;idType&gt; [ ,…]</para>
+<para>&#160;MEMBER DIM &lt;ArraySpec&gt; [ ,…] AS | IS &lt;idType&gt; [ ,…]</para>
+<para>&#160;[END UNION]</para>
+<para>&#160;</para>
+<para>Note:  The MEMBER statement is shown using two syntax diagrams for convenience. &#160;You can declare variables and dimensioned arrays using a single MEMBER statement if each definition is separated by a comma.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, STATIC, INTERNAL, EXPORT and UNSAFE. </entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idUnion&gt;</entry><entry>A valid identifier name for the union. &#160;A union is an entity and shares the same name space as other entities. &#160;This means that it is not possible to have a union and a constant, for example, with the same name.</entry></row></table><para>&#160;</para>
+<table><row><entry>MEMBER</entry><entry>Declares one or more union member variables or dimensioned arrays. &#160;You can specify multiple MEMBER declarations on separate lines.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idVarList&gt;</entry><entry>A comma-separated list of identifier names for the union member variables.</entry></row></table><para>&#160;</para>
+<table><row><entry>DIM &lt;ArraySpec&gt;</entry><entry>The specification for a dimensioned array to use as a union member. &#160;&lt;ArraySpec&gt; is one of the following:</entry></row></table><table><row><entry></entry><entry>&lt;idArray&gt;[&lt;nElements&gt;, &lt;nElements&gt;, &lt;nElements&gt;]</entry></row></table><table><row><entry></entry><entry>&lt;idArray&gt;[&lt;nElements&gt;],[&lt;nElements&gt;], [&lt;nElements&gt;]</entry></row></table><table><row><entry></entry><entry>All dimensions except the first are optional.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>&lt;nElements&gt; can be a literal numeric representation or a simple numeric expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (such as function calls) are not allowed.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type of the variable you are declaring (called <!-- TODO: Unknown topic link: strong-typing.html -->strong typing). &#160;For DIM arrays, declares the data type for all array elements. &#160;The AS &lt;idType&gt; is required for all union members.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>Refer to the CLASS entry for a list of valid values for &lt;idType&gt;. &#160;Note that the following data types are not supported in unions because they are dynamic types that require garbage collection:</entry></row></table><para>&#111;ARRAY</para><para>&#111;FLOAT</para><para>&#111;OBJECT</para><para>&#111;&lt;idClass&gt;</para><para>&#111;STRING</para><para>&#111;USUAL</para><para>&#111;</para><table><row><entry></entry><entry></entry></row></table><para>&#160;</para>
+<table><row><entry>IS &lt;idType&gt;</entry><entry>Specifies a union data type in which the memory needed to hold the union is allocated on the stack (i.e., &lt;idUnion&gt; is the only &lt;idType&gt; allowed with the IS keyword).</entry></row></table><para>&#160;</para>
+<table><row><entry>ALIGN 1|2|4|8</entry><entry>Specifies the memory alignment of the structure. The default is 4, which means that all members are aligned at DWORD boundaries, since that gives the best performance on a 32 bits platform and is also the default alignment for most C/C++ compilers. You may want to change this when you need to match a C/C++ structure that has been defined with a different alignment (the #pragma pack in a C/C++ header file). </entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>Note: The default alignment for C/C++ compilers is 4 as well, unless the structure contains doubles (REAL8 in XSharp). In that case the C/C++ compiler uses an alignment of 8. XSharp does NOT automatically choose an alignment of 8, so you must add the ALIGN 8 to your structure in these circumstances.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>UNIONs are like STRUCTUREs, but all members start at offset zero (0). &#160;In other words, assigning a value to a union member affects all other union members. &#160;As the size of the union is equal to the size of the biggest member, changing one member will change all of the others because they occupy the same memory.</para>
+<para>&#160;</para>
+<para>You use the UNION statement to mark the beginning of the definition of a union entity, followed by one or more MEMBER statements that define what the union looks like. &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>The following is a conversion example:</para>
+<para>&#160;</para>
+<para>UNION wb ALIGN 1<para/>
+&#160;MEMBER w AS WORD<para/>
+&#160;BYTE bLo AS BYTE<para/>
+&#160;BYTE bHi AS BYTE<para/>
+&#160;<para/>
+FUNCTION x<para/>
+ LOCAL u IS wb<para/>
+&#160;<para/>
+ u.w := 0x1234<para/>
+&#160;<para/>
+ ? u.bLo  // 52 (=0x34)<para/>
+ ? u.bHi  // 18 (=0x12)</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="a036b3f9-462c-4bf4-8db2-e01961c0d4e3">STRUCTURE</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

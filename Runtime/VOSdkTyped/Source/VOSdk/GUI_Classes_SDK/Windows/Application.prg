@@ -4,7 +4,7 @@
 
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
-
+/// <include file="Gui.xml" path="doc/App/*" />
 CLASS App INHERIT VObject
 	PROTECT liWindowCount AS LONGINT
 	PROTECT oDialogWnd AS VOPanel
@@ -20,6 +20,7 @@ CLASS App INHERIT VObject
 		END LOCK
 		RETURN hRet
 
+ /// <exclude />
 	ACCESS __HelpWndHandle AS VOForm STRICT
 		LOCAL hRet AS VOForm
 		BEGIN LOCK WC.CSApp
@@ -27,6 +28,7 @@ CLASS App INHERIT VObject
 		END LOCK
 		RETURN hRet
 
+ /// <exclude />
 	METHOD __SetHelpWind(hHandle AS VOForm, wMode AS LONGINT) AS App STRICT
 
 		BEGIN LOCK WC.CSApp
@@ -53,6 +55,7 @@ CLASS App INHERIT VObject
 
 		RETURN SELF
 
+ /// <exclude />
 	ACCESS __WindowCount AS LONGINT STRICT
 		LOCAL lRet AS LONGINT
 		BEGIN LOCK WC.CSApp
@@ -60,12 +63,14 @@ CLASS App INHERIT VObject
 		END LOCK
 		RETURN lRet
 
+ /// <exclude />
 	ASSIGN __WindowCount(nValue AS LONGINT)  STRICT
 		BEGIN LOCK WC.CSApp
 			liWindowCount := nValue
 		END LOCK
 		RETURN
 
+/// <include file="Gui.xml" path="doc/App.Exec/*" />
 	METHOD Exec(_kExecType)
 		IF PCount() > 0 .and. _kExecType == EXECWHILEEVENT
 			Application.DoEvents()
@@ -74,6 +79,7 @@ CLASS App INHERIT VObject
 		ENDIF
 		RETURN 0
 
+/// <include file="Gui.xml" path="doc/App.Handle/*" />
 	METHOD Handle() AS IntPtr STRICT
 		RETURN _GetInst()
 
@@ -103,10 +109,12 @@ CLASS App INHERIT VObject
 		RETURN
 
 
+/// <include file="Gui.xml" path="doc/App.Quit/*" />
 	METHOD Quit()
 		Application.Exit()
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/App.Run/*" />
 	METHOD Run(sCommand)
 		GuiWin32.WinExec(sCommand, SW_SHOWNORMAL)
 		RETURN NIL
@@ -182,7 +190,7 @@ FUNCTION ApplicationExec(kExecType)
 
 	RETURN NIL
 
-
+/// <exclude/>
 [Obsolete];
 FUNCTION SetAccelerator(hWnd AS IntPtr, hAccel AS IntPtr) AS LOGIC STRICT
 	RETURN TRUE

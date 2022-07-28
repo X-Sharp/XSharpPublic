@@ -1,21 +1,17 @@
-﻿using System
-using System.Collections.Generic
-using System.Linq
-using System.Text
-#pragma options("lb", on)
-class Test
-	public property Values as List<int> auto get set := List<int>{}
-end class
+﻿FUNCTION Start() AS VOID
 
-function Start() as void strict
-	local obj := Test{} as object
-	obj:Values:Add(1)
-	obj:Values:Add(2)
+    ? DbUseArea(TRUE,"DBFVFP","C:\Test\customers.dbf")
+    ? DbUseArea(TRUE,"DBFVFP","C:\Test2\employee.dbf")
+? DbUseArea(TRUE,"DBFVFP","C:\Test\orders.dbf")
 
-	foreach var i in obj:Values
-		Console.WriteLine(((int)i):ToString())
-	next
-	Console.ReadLine()
-	return
+? DbOrderInfo( DBOI_EXPRESSION )	// empty in VFP, "customerid" in VO dialect
+? DbOrderInfo( DBOI_CONDITION ) 	// empty in both
+? DbOrderInfo( DBOI_ISDESC ) 		// false in both
+? DbOrderInfo( DBOI_RECNO )  		// 1 in VFP, 0 in VO dialect
+? DbOrderInfo( DBOI_POSITION ) 		// 1 in VFP, 0 in VO dialect
 
-
+LOCAL ARRAY aDb[1]
+? ADatabases(aDb)
+ShowArray(aDb)
+DbCloseArea()
+WAIT

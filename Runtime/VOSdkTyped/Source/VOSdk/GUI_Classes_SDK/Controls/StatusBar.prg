@@ -7,8 +7,9 @@
 // The items on the StatusBar in dotNet are all ToolStripStatusLabel
 // Dotnet allows more types but these are not used.
 // The tag of the item contains the symbolic name
-// 
+//
 
+/// <include file="Gui.xml" path="doc/StatusBar/*" />
 CLASS StatusBar INHERIT Control
 	PROTECT aItems                AS ARRAY
 	PROTECT aMessages             AS ARRAY
@@ -39,17 +40,19 @@ CLASS StatusBar INHERIT Control
 	PROTECT oKeyColor             AS Color
 	PROTECT oDisabledColor        AS Color
 
-
+    /// <inheritdoc />
     PROPERTY ControlType AS ControlType GET ControlType.StatusBar
 
+    /// <inheritdoc />
 	METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		VAR oControl := (IVOStatusBar) oC
 		oControl:Stretch := TRUE
 		oControl:ShowItemToolTips := TRUE
 		oControl:CanOverflow := TRUE
-		RETURN 
+		RETURN
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
+/// <include file="Gui.xml" path="doc/StatusBar.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 		LOCAL dwStyle AS DWORD
 		aMessages := ArrayNew(4)
 		aItems := {}
@@ -69,9 +72,10 @@ CLASS StatusBar INHERIT Control
 			SUPER(oOwner, 0, Point{}, Dimension{}, STATUSCLASSNAME, dwStyle, FALSE)
 		ENDIF
 
-		RETURN 
+		RETURN
 
 
+ /// <exclude />
 
 	ACCESS __StatusStrip AS IVOStatusBar
 		IF oCtrl == NULL_OBJECT
@@ -80,7 +84,8 @@ CLASS StatusBar INHERIT Control
 		RETURN (IVOStatusBar) oCtrl
 
 
-	
+
+ /// <exclude />
 	METHOD __GetLabel(sName as STRING) as System.Windows.Forms.ToolStripStatusLabel
 		FOREACH Label as System.Windows.Forms.ToolStripStatusLabel in __StatusStrip:Items
 			IF Label:Name == sName
@@ -88,13 +93,14 @@ CLASS StatusBar INHERIT Control
 			ENDIF
 		NEXT
 		RETURN NULL_OBJECT
-	
 
-	METHOD __AutoSize() AS VOID STRICT 
+
+	METHOD __AutoSize() AS VOID STRICT
 		// Not needed
 		RETURN
 
-	METHOD __BuildItems() AS StatusBar STRICT 
+ /// <exclude />
+	METHOD __BuildItems() AS StatusBar STRICT
 		LOCAL dwCount       AS DWORD
 		LOCAL dwItemCount   AS DWORD
 		LOCAL oItem         AS StatusBarItem
@@ -107,7 +113,7 @@ CLASS StatusBar INHERIT Control
 
 		// Allocate a static array and fill it with StatusBarItem information
 		FOR dwCount := 1 UPTO dwItemCount
-			oItem := aItems[dwCount] 
+			oItem := aItems[dwCount]
 			oLabel := VOStatusItem{SELF}
 			oLabel:Name := oItem:NameSym
 			oLabel:Text := oItem:Value
@@ -120,17 +126,18 @@ CLASS StatusBar INHERIT Control
 				oLabel:BorderSides := System.Windows.Forms.ToolStripStatusLabelBorderSides.Right
 				oLabel:AutoSize := TRUE
 			ENDIF
-			
+
 			if oItem:Icon != null
 				oLabel:Image  := (System.Drawing.Image) (OBJECT) oItem:Icon:__Icon
 			ENDIF
-			__StatusStrip:Items:Add(oLabel)	
+			__StatusStrip:Items:Add(oLabel)
 		NEXT // dwCount
 		iInsertOn := iNumLockOn := iScrollOn := iCapsLockOn := -1
-		
+
 		RETURN SELF
 
-	METHOD __GetBorderWidths() AS StatusBar STRICT 
+ /// <exclude />
+	METHOD __GetBorderWidths() AS StatusBar STRICT
 		//Todo: BorderWidths
 		//local oPadding as System.Windows.Forms.Padding
 
@@ -141,13 +148,14 @@ CLASS StatusBar INHERIT Control
 
 		RETURN SELF
 
-	METHOD __GetItemFromSymbol(symItemName AS SYMBOL) AS DWORD STRICT 
+ /// <exclude />
+	METHOD __GetItemFromSymbol(symItemName AS SYMBOL) AS DWORD STRICT
 		LOCAL i, iLen AS DWORD
 		LOCAL oItem AS StatusBarItem
 
 		iLen := ALen(aItems)
-		FOR i:= 1 TO iLen              
-			oItem := aItems[i] 
+		FOR i:= 1 TO iLen
+			oItem := aItems[i]
 			IF oItem:NameSym == symItemName
 				RETURN i
 			ENDIF
@@ -155,7 +163,8 @@ CLASS StatusBar INHERIT Control
 		RETURN 0
 
 
-	METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT 
+ /// <exclude />
+	METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT
 		LOCAL aKeyStates AS BYTE[]
 		aKeyStates := BYTE[]{256}
 		GuiWin32.GetKeyboardState(aKeyStates)
@@ -165,15 +174,16 @@ CLASS StatusBar INHERIT Control
 
 		RETURN FALSE
 
-	METHOD __GetSymbolFromItem(dwIndex AS DWORD) AS SYMBOL STRICT 
+ /// <exclude />
+	METHOD __GetSymbolFromItem(dwIndex AS DWORD) AS SYMBOL STRICT
 		LOCAL oItem AS StatusBarItem
 		IF dwIndex <= ALen(aItems)
-			oItem :=aItems[dwIndex] 	
+			oItem :=aItems[dwIndex]
 			RETURN oItem:NameSym
 		ENDIF
 		RETURN NULL_SYMBOL
-
-	METHOD __GetText(symItemName := NIL AS USUAL) AS STRING STRICT 
+ /// <exclude />
+	METHOD __GetText(symItemName := NIL AS USUAL) AS STRING STRICT
 		LOCAL cText AS STRING
 		// Lookup message area index by default
 		Default(@symItemName, #MessageArea)
@@ -183,12 +193,14 @@ CLASS StatusBar INHERIT Control
 		ENDIF
 		RETURN AllTrim(cText)
 
-	METHOD __InitItems() AS StatusBar STRICT 
+ /// <exclude />
+	METHOD __InitItems() AS StatusBar STRICT
 		// Not needed
 		RETURN SELF
 
 
-	METHOD __SetKeyState(bKey AS BYTE, lTurnOn AS LOGIC) AS VOID STRICT 
+ /// <exclude />
+	METHOD __SetKeyState(bKey AS BYTE, lTurnOn AS LOGIC) AS VOID STRICT
 		LOCAL lCurrentlyOn AS LOGIC
 		lCurrentlyOn := SELF:__GetKeyState(bKey)
 		IF (lCurrentlyOn .AND. !lTurnOn) .OR. (!lCurrentlyOn .AND. lTurnOn)
@@ -197,7 +209,8 @@ CLASS StatusBar INHERIT Control
 		RETURN
 
 
-	METHOD __ToggleKeyState(bKey AS BYTE) AS VOID STRICT 
+ /// <exclude />
+	METHOD __ToggleKeyState(bKey AS BYTE) AS VOID STRICT
 		LOCAL aKeyStates AS BYTE[]
 		aKeyStates := BYTE[]{256}
 		GuiWin32.GetKeyboardState(aKeyStates)
@@ -211,12 +224,13 @@ CLASS StatusBar INHERIT Control
 
 		RETURN
 
-	METHOD __UpdateKeyStates() AS VOID STRICT 
+ /// <exclude />
+	METHOD __UpdateKeyStates() AS VOID STRICT
 		LOCAL iSet AS LONGINT
 		LOCAL aKeyStates AS BYTE[]
 		LOCAL Label as System.Windows.Forms.ToolStripStatusLabel
 		aKeyStates := BYTE[]{256}
-		
+
 
 		IF SELF:__GetItemFromSymbol(#InsArea) > 0
 
@@ -228,7 +242,7 @@ CLASS StatusBar INHERIT Control
 					Label:ForeColor := oKeyColor
 				ELSE
 					Label:ForeColor := oDisabledColor
-				ENDIF				
+				ENDIF
 				iInsertOn := iSet
 			ENDIF
 
@@ -238,7 +252,7 @@ CLASS StatusBar INHERIT Control
 					Label:ForeColor := oKeyColor
 				ELSE
 					Label:ForeColor := oDisabledColor
-				ENDIF				
+				ENDIF
 				iCapsLockOn := iSet
 			ENDIF
 
@@ -248,7 +262,7 @@ CLASS StatusBar INHERIT Control
 					Label:ForeColor := oKeyColor
 				ELSE
 					Label:ForeColor := oDisabledColor
-				ENDIF				
+				ENDIF
 				iNumLockOn := iSet
 			ENDIF
 
@@ -258,51 +272,59 @@ CLASS StatusBar INHERIT Control
 					Label:ForeColor := oKeyColor
 				ELSE
 					Label:ForeColor := oDisabledColor
-				ENDIF				
+				ENDIF
 				iScrollOn := iSet
 			ENDIF
 
 		ENDIF
 		RETURN
 
-	METHOD AddItem(oStatusBarItem) 
+/// <include file="Gui.xml" path="doc/StatusBar.AddItem/*" />
+	METHOD AddItem(oStatusBarItem)
 		AADD(aItems, oStatusBarItem)
 		SELF:__BuildItems()
 		RETURN NIL
 
-	NEW ACCESS AsString 
+	NEW ACCESS AsString
 		RETURN cLastPermanentMessage
 
-	NEW ASSIGN AsString(cMessage) 
+	NEW ASSIGN AsString(cMessage)
 		SELF:SetMessage(cLastPermanentMessage := cMessage, MESSAGEPERMANENT)
-		RETURN 
+		RETURN
 
-	METHOD ClearItems() 
+/// <include file="Gui.xml" path="doc/StatusBar.ClearItems/*" />
+	METHOD ClearItems()
 		FOREACH Label as System.Windows.Forms.ToolStripStatusLabel in __StatusStrip:Items
 			Label:Text := String.Empty
 		NEXT
 		RETURN SELF
 
+/// <include file="Gui.xml" path="doc/StatusBar.ControlText/*" />
 	ACCESS ControlText AS STRING
 		RETURN cLastControlMessage
 
-	ASSIGN ControlText(cMessage AS STRING) 
+/// <include file="Gui.xml" path="doc/StatusBar.ControlText/*" />
+	ASSIGN ControlText(cMessage AS STRING)
 		SELF:SetMessage(cLastControlMessage := cMessage, MESSAGECONTROL)
-		RETURN 
+		RETURN
 
 
-	METHOD Destroy() AS USUAL 
+/// <include file="Gui.xml" path="doc/StatusBar.Destroy/*" />
+	METHOD Destroy() AS USUAL
 		aMessages := NULL_ARRAY
 		aItems := NULL_ARRAY
 		RETURN SUPER:Destroy()
 
+/// <include file="Gui.xml" path="doc/StatusBar.DisabledKeyIndicatorColor/*" />
 	ACCESS DisabledKeyIndicatorColor As Color
 		RETURN oDisabledColor
 
-	ASSIGN DisabledKeyIndicatorColor(oColor As Color) 
+/// <include file="Gui.xml" path="doc/StatusBar.DisabledKeyIndicatorColor/*" />
+	ASSIGN DisabledKeyIndicatorColor(oColor As Color)
 		oDisabledColor := oColor
-		RETURN 
+		RETURN
 
+	/// <inheritdoc />
 	METHOD OnItemClicked(oItem as System.Windows.Forms.ToolStripItem) AS VOID
 		do CASE
 		CASE oItem == SELF:__GetLabel(#InsArea)
@@ -316,8 +338,9 @@ CLASS StatusBar INHERIT Control
 		ENDCASE
 		SELF:__UpdateKeyStates()
 		RETURN
-	
-	METHOD DisplayKeyboard() 
+
+/// <include file="Gui.xml" path="doc/StatusBar.DisplayKeyboard/*" />
+	METHOD DisplayKeyboard()
 		LOCAL dwCount AS DWORD
 		LOCAL dwItemCount AS DWORD
 		LOCAL oStatusBarItem AS StatusBarKeyItem
@@ -344,7 +367,8 @@ CLASS StatusBar INHERIT Control
 
 		RETURN SELF
 
-	METHOD DisplayMemory() 
+/// <include file="Gui.xml" path="doc/StatusBar.DisplayMemory/*" />
+	METHOD DisplayMemory()
 		LOCAL dwItemCount AS DWORD
 		LOCAL oStatusBarItem AS StatusBarItem
 
@@ -367,7 +391,8 @@ CLASS StatusBar INHERIT Control
 
 		RETURN SELF
 
-	METHOD DisplayMessage() 
+/// <include file="Gui.xml" path="doc/StatusBar.DisplayMessage/*" />
+	METHOD DisplayMessage()
 		LOCAL dwItemCount AS DWORD
 		// Make sure this section hasn't already been added
 		IF SELF:__GetItemFromSymbol(#MessageArea) > 0
@@ -387,11 +412,12 @@ CLASS StatusBar INHERIT Control
 
 		RETURN SELF
 
-	METHOD DisplayPosition() 
+/// <include file="Gui.xml" path="doc/StatusBar.DisplayPosition/*" />
+	METHOD DisplayPosition()
 		LOCAL dwItemCount AS DWORD
 		LOCAL oStatusBarItem AS StatusBarItem
 
-		
+
 
 		// Make sure this section hasn't already been added
 		IF SELF:__GetItemFromSymbol(#PositionArea) > 0
@@ -411,7 +437,8 @@ CLASS StatusBar INHERIT Control
 
 		RETURN SELF
 
-	METHOD DisplayTime() 
+/// <include file="Gui.xml" path="doc/StatusBar.DisplayTime/*" />
+	METHOD DisplayTime()
 		LOCAL dwItemCount AS DWORD
 		LOCAL oStatusBarItem AS StatusBarItem
 
@@ -434,24 +461,28 @@ CLASS StatusBar INHERIT Control
 
 		RETURN SELF
 
+/// <include file="Gui.xml" path="doc/StatusBar.ErrorMessageBeep/*" />
 	ACCESS ErrorMessageBeep AS LOGIC
 		RETURN lErrorMessageBeep
 
-	ASSIGN ErrorMessageBeep(lEnable as LOGIC) 
-		
+	ASSIGN ErrorMessageBeep(lEnable as LOGIC)
+
 
 		lErrorMessageBeep := lEnable
 
+/// <include file="Gui.xml" path="doc/StatusBar.ErrorText/*" />
 	ACCESS ErrorText( ) as String
 		RETURN cLastErrorMessage
 
-	ASSIGN ErrorText(cMessage as String) 
+/// <include file="Gui.xml" path="doc/StatusBar.ErrorText/*" />
+	ASSIGN ErrorText(cMessage as String)
 		SELF:SetMessage(cLastErrorMessage := cMessage, MESSAGEERROR)
 
-		RETURN 
+		RETURN
 
-	METHOD GetItemBoundingBox(symItemName) 
-		LOCAL sName as STRING		
+/// <include file="Gui.xml" path="doc/StatusBar.GetItemBoundingBox/*" />
+	METHOD GetItemBoundingBox(symItemName)
+		LOCAL sName as STRING
 		Default(@symItemName, #MessageArea)
 		sName := symItemName
 		LOCAL IMPLIED Label := SELF:__GetLabel(sName)
@@ -460,13 +491,14 @@ CLASS StatusBar INHERIT Control
 		ENDIF
 		RETURN BoundingBox{}
 
-	METHOD GetTipText(symItemName) 
+/// <include file="Gui.xml" path="doc/StatusBar.GetTipText/*" />
+	METHOD GetTipText(symItemName)
 		//SE-060526
 
 		LOCAL dwI, dwCount AS DWORD
 		LOCAL symName AS SYMBOL
 
-		
+
 
 		Default(@symItemName, #MessageArea)
 
@@ -486,29 +518,36 @@ CLASS StatusBar INHERIT Control
 		RETURN NULL_STRING
 
 
+/// <include file="Gui.xml" path="doc/StatusBar.HorizontalBorder/*" />
 	ACCESS HorizontalBorder  AS LONG
 		//SELF:__GetBorderWidths()
 		RETURN nHorizontalBorder
 
+/// <include file="Gui.xml" path="doc/StatusBar.InsertMode/*" />
 	ACCESS InsertMode AS LOGIC
 		RETURN SELF:__GetKeyState(VK_INSERT)
 
-	ASSIGN InsertMode(lEnable AS LOGIC) 
+/// <include file="Gui.xml" path="doc/StatusBar.InsertMode/*" />
+	ASSIGN InsertMode(lEnable AS LOGIC)
 		SELF:__SetKeyState(VK_INSERT, lEnable)
-		RETURN 
+		RETURN
 
-	ACCESS ItemBorder 
-		
+/// <include file="Gui.xml" path="doc/StatusBar.ItemBorder/*" />
+	ACCESS ItemBorder
+
 		//SELF:__GetBorderWidths()
 		RETURN nItemBorder
 
+/// <include file="Gui.xml" path="doc/StatusBar.KeyIndicatorColor/*" />
 	ACCESS KeyIndicatorColor as Color
-		RETURN oKeyColor 
+		RETURN oKeyColor
 
-	ASSIGN KeyIndicatorColor(oColor as Color) 
+/// <include file="Gui.xml" path="doc/StatusBar.KeyIndicatorColor/*" />
+	ASSIGN KeyIndicatorColor(oColor as Color)
 		oKeyColor := oColor
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/StatusBar.Length/*" />
 	ACCESS Length AS LONG
 		LOCAL IMPLIED Label := SELF:__GetLabel(#MessageArea)
 		IF Label != NULL_OBJECT
@@ -516,14 +555,16 @@ CLASS StatusBar INHERIT Control
 		ENDIF
 		RETURN 0
 
+/// <include file="Gui.xml" path="doc/StatusBar.MenuText/*" />
 	ACCESS MenuText AS STRING
 		RETURN cLastMenuMessage
 
-	ASSIGN MenuText(cMessage AS STRING) 
+/// <include file="Gui.xml" path="doc/StatusBar.MenuText/*" />
+	ASSIGN MenuText(cMessage AS STRING)
 		SELF:SetMessage(cLastMenuMessage := cMessage, MESSAGEMENU)
-		RETURN 
+		RETURN
 	//Todo: ODDrawItem
-	//METHOD ODDrawItem(oEvent) 
+	//METHOD ODDrawItem(oEvent)
 	//	LOCAL oEvt AS @@Event
 	//	LOCAL p1   AS _winDRAWITEMSTRUCT
 	//	LOCAL oStatusBarItem AS StatusBarItem
@@ -542,22 +583,26 @@ CLASS StatusBar INHERIT Control
 	//	RETURN SELF
 
 
+/// <include file="Gui.xml" path="doc/StatusBar.PermanentText/*" />
 	ACCESS PermanentText  AS STRING
 		RETURN cLastPermanentMessage
 
-	ASSIGN PermanentText(cMessage AS STRING) 
+/// <include file="Gui.xml" path="doc/StatusBar.PermanentText/*" />
+	ASSIGN PermanentText(cMessage AS STRING)
 		SELF:SetMessage(cLastPermanentMessage := cMessage, MESSAGEPERMANENT)
-		RETURN 
+		RETURN
 
-	ASSIGN Position(oPoint) 
-		
+/// <include file="Gui.xml" path="doc/StatusBar.Position/*" />
+	ASSIGN Position(oPoint)
+
 
 		SELF:SetPair(oPoint)
 
-		RETURN 
+		RETURN
 
-	METHOD RefreshMemoryDisplay(kMemoryType) 
-		
+/// <include file="Gui.xml" path="doc/StatusBar.RefreshMemoryDisplay/*" />
+	METHOD RefreshMemoryDisplay(kMemoryType)
+
 
 		// Default to SYSTEM_FREE (GetFreeSpace())
 		Default(@kMemoryType, MEMORY_SYSTEM_FREE)
@@ -567,8 +612,9 @@ CLASS StatusBar INHERIT Control
 		#endif
 		RETURN NIL
 
-	METHOD SetIcon(oIcon, symItemName) 
-		LOCAL sName as STRING		
+/// <include file="Gui.xml" path="doc/StatusBar.SetIcon/*" />
+	METHOD SetIcon(oIcon, symItemName)
+		LOCAL sName as STRING
 		Default(@symItemName, #MessageArea)
 		sName := symItemName
 		LOCAL IMPLIED Label := SELF:__GetLabel(sName)
@@ -577,7 +623,8 @@ CLASS StatusBar INHERIT Control
 		ENDIF
 		RETURN oIcon
 
-	METHOD SetMessage(cMessage, nMode) 
+/// <include file="Gui.xml" path="doc/StatusBar.setmessage/*" />
+	METHOD SetMessage(cMessage, nMode)
 		LOCAL lValidMessage AS LOGIC
 		LOCAL dwCount AS DWORD
 
@@ -592,19 +639,19 @@ CLASS StatusBar INHERIT Control
 			RETURN NIL
 		ENDIF
 
-		DO CASE
-		CASE (nMode == MESSAGEMENU)
+	SWITCH (INT) nMode
+	CASE MESSAGEMENU
 			cLastMenuMessage := cMessage
-		CASE (nMode == MESSAGECONTROL)
+	CASE MESSAGECONTROL
 			cLastControlMessage := cMessage
-		CASE (nMode == MESSAGEERROR)
+	CASE MESSAGEERROR
 			cLastErrorMessage := cMessage
 			IF NULL_STRING != AllTrim(cMessage) .AND. SELF:ErrorMessageBeep
 				GuiWin32.MessageBeep(0xFFFFFFFF)
 			ENDIF
-		CASE nMode == MESSAGEPERMANENT
+	CASE MESSAGEPERMANENT
 			cLastPermanentMessage := cMessage
-		END CASE
+	END SWITCH
 
 		IF !Empty(cMessage) .OR. (nMode == MESSAGEPERMANENT)
 			lValidMessage := TRUE
@@ -639,14 +686,16 @@ CLASS StatusBar INHERIT Control
 
 		RETURN NIL
 
-	METHOD SetPair(oPoint as Point) 
+/// <include file="Gui.xml" path="doc/StatusBar.SetPair/*" />
+	METHOD SetPair(oPoint as Point)
 		LOCAL cText AS STRING
 		cText := AllTrim(AsString(oPoint:X)) + ", " + AllTrim(AsString(oPoint:Y))
 		SELF:SetText(cText, #PositionArea)
 		RETURN NIL
 
 
-	METHOD SetText(cText, symItemName) 
+/// <include file="Gui.xml" path="doc/StatusBar.SetText/*" />
+	METHOD SetText(cText, symItemName)
 		LOCAL sName as STRING
 		Default(@symItemName, #MessageArea)
 		sName := symItemName
@@ -660,7 +709,7 @@ CLASS StatusBar INHERIT Control
 		ENDIF
 		RETURN cText
 
-	METHOD SetTipText(cTipText, symItemName) 
+	METHOD SetTipText(cTipText, symItemName)
 		//SE-060526
 		LOCAL dwI, dwCount AS DWORD
 		LOCAL symName AS SYMBOL
@@ -683,7 +732,8 @@ CLASS StatusBar INHERIT Control
 
 		RETURN SELF
 
-	METHOD SetValue(uValue, symItemName) 
+/// <include file="Gui.xml" path="doc/StatusBar.SetValue/*" />
+	METHOD SetValue(uValue, symItemName)
 		LOCAL sName as STRING
 		Default(@symItemName, #MessageArea)
 		sName := symItemName
@@ -694,31 +744,37 @@ CLASS StatusBar INHERIT Control
 		NEXT
 		RETURN uValue
 
+/// <include file="Gui.xml" path="doc/StatusBar.Show/*" />
 	METHOD Show()  AS VOID STRICT
 		SUPER:Show()
 		SELF:RefreshMemoryDisplay()
 		SELF:__UpdateKeyStates()
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/StatusBar.TextValue/*" />
 	ACCESS TextValue  AS STRING
 		RETURN SELF:__GetText()
 
-	ASSIGN TextValue(cText AS STRING) 
+/// <include file="Gui.xml" path="doc/StatusBar.TextValue/*" />
+	ASSIGN TextValue(cText AS STRING)
 		SELF:SetText(cText)
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/StatusBar.TimeOut/*" />
 	ACCESS TimeOut AS INT
 		RETURN nTimeOut
 
-	ASSIGN TimeOut(nNewTimeOut AS INT) 
+/// <include file="Gui.xml" path="doc/StatusBar.TimeOut/*" />
+	ASSIGN TimeOut(nNewTimeOut AS INT)
 		IF nNewTimeOut < 0
 			nNewTimeOut := 0
 		ENDIF
 		nTimeOut := nNewTimeOut
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/StatusBar.Timer/*" />
 	METHOD Timer  CLIPPER
 		SUPER:Timer()
 
@@ -737,33 +793,39 @@ CLASS StatusBar INHERIT Control
 
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/StatusBar.Transient/*" />
 	ACCESS Transient AS STRING
 		RETURN cLastErrorMessage
 
-	ASSIGN Transient(cMessage AS STRING) 
+/// <include file="Gui.xml" path="doc/StatusBar.Transient/*" />
+	ASSIGN Transient(cMessage AS STRING)
 		SELF:SetMessage(cLastErrorMessage := cMessage, MESSAGEERROR)
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/StatusBar.VerticalBorder/*" />
 	ACCESS VerticalBorder AS LONG
 		//SELF:__GetBorderWidths()
 		RETURN nVerticalBorder
-	
+
 END CLASS
 
+/// <include file="Gui.xml" path="doc/StatusBarItem/*" />
 CLASS StatusBarItem INHERIT VObject
 	PROTECT symItemName AS SYMBOL
 	PROTECT nWidth      AS INT
 	PROTECT dwStyle     AS LONG
 	PROTECT uValue      AS USUAL
-	PROTECT oSBIcon     AS Icon 
+	PROTECT oSBIcon     AS Icon
 
-	ASSIGN __Icon(oIcon AS Icon)  STRICT 
+	ASSIGN __Icon(oIcon AS Icon)  STRICT
 		oSBIcon := oIcon
 
+/// <include file="Gui.xml" path="doc/StatusBarItem.Icon/*" />
 	ACCESS Icon AS Icon
 		RETURN oSBIcon
 
-	CONSTRUCTOR(symName, nWidth, kStyle, oIcon) 
+/// <include file="Gui.xml" path="doc/StatusBarItem.ctor/*" />
+	CONSTRUCTOR(symName, nWidth, kStyle, oIcon)
 		SUPER()
 		SELF:NameSym := symName
 		SELF:Width := nWidth
@@ -773,42 +835,60 @@ CLASS StatusBarItem INHERIT VObject
 			oSBIcon := oIcon
 		ENDIF
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/StatusBarItem.NameSym/*" />
 	ACCESS NameSym AS SYMBOL
 		RETURN symItemName
 
-	ASSIGN NameSym(symNewItemName AS SYMBOL) 
+/// <include file="Gui.xml" path="doc/StatusBarItem.NameSym/*" />
+	ASSIGN NameSym(symNewItemName AS SYMBOL)
 		symItemName := symNewItemName
 
+/// <include file="Gui.xml" path="doc/StatusBarItem.Style/*" />
 	ACCESS Style AS LONG
 		RETURN dwStyle
 
-	ASSIGN Style(kStyle AS LONG) 
+/// <include file="Gui.xml" path="doc/StatusBarItem.Style/*" />
+	ASSIGN Style(kStyle AS LONG)
 		dwStyle := kStyle
 
-	ACCESS Value 
+/// <include file="Gui.xml" path="doc/StatusBarItem.Value/*" />
+	ACCESS Value
 		RETURN uValue
 
-	ASSIGN Value(uNewValue) 
+/// <include file="Gui.xml" path="doc/StatusBarItem.Value/*" />
+	ASSIGN Value(uNewValue)
 		uValue := uNewValue
 
+/// <include file="Gui.xml" path="doc/StatusBarItem.Width/*" />
 	ACCESS Width AS LONG
 		RETURN nWidth
 
-	ASSIGN Width(nNewWidth AS LONG) 
+/// <include file="Gui.xml" path="doc/StatusBarItem.Width/*" />
+	ASSIGN Width(nNewWidth AS LONG)
 		nWidth := nNewWidth
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/StatusBarKeyItem/*" />
 CLASS StatusBarKeyItem INHERIT StatusBarItem
 	PROTECT cKeyText AS STRING
 
-	CONSTRUCTOR(symName, nWidth, kStyle, oIcon) 
-		SUPER(symName, nWidth, kStyle, oIcon)
-		RETURN 
 
-	ASSIGN KeyText (cValue AS STRING) 
+/// <include file="Gui.xml" path="doc/StatusBarKeyItem.ctor/*" />
+CONSTRUCTOR(symName, nWidth, kStyle, oIcon)
+
+
+    SUPER(symName, nWidth, kStyle, oIcon)
+
+
+
+
+RETURN
+
+/// <include file="Gui.xml" path="doc/StatusBarKeyItem.KeyText/*" />
+	ASSIGN KeyText (cValue AS STRING)
 		cKeyText := cValue
 		SUPER:Value := cValue
 
@@ -820,6 +900,6 @@ CLASS VOStatusItem INHERIT System.Windows.Forms.ToolStripStatusLabel
 	CONSTRUCTOR(loSB AS StatusBar)
 		SUPER()
 		oSB := loSB
-	
+
 
 END CLASS

@@ -2,29 +2,31 @@
 
 
 USING System.Windows.Forms
+/// <include file="Gui.xml" path="doc/AppWindow/*" />
 CLASS AppWindow INHERIT Window
 	PROTECT oVertScroll AS WindowVerticalScrollBar
 	PROTECT oHorzScroll AS WindowHorizontalScrollBar
 	PROTECT oStatusBar AS StatusBar
 	PROTECT lQuitOnClose AS LOGIC
 
-
+ /// <exclude />
 	METHOD __CreateForm() AS VOForm STRICT
         RETURN GuiFactory.Instance:CreateAppWindow(SELF)
-	
-	
+
+
 	//PP-030828 Strong typing
-	METHOD __StatusMessageFromEvent(oEvent AS OBJECT, nType AS LONGINT) AS VOID STRICT 
+ /// <exclude />
+	METHOD __StatusMessageFromEvent(oEvent AS OBJECT, nType AS LONGINT) AS VOID STRICT
 		//PP-030828 Strong typing
 		LOCAL oHL AS HyperLabel
-		
+
 		oHL := oEvent:HyperLabel
 		IF (oHL != NULL_OBJECT)
 			SELF:@@StatusMessage(oHL, nType)
 		ENDIF
 		RETURN
-	
 
+ /// <inheritdoc />
     METHOD Activate(oEvent  AS Event)
         SUPER:Activate(oEvent)
         IF SELF:__Form:IsMdiChild
@@ -32,15 +34,17 @@ CLASS AppWindow INHERIT Window
             oSHell:Menu := SELF:__Form:Menu
         ENDIF
         RETURN NIL
-        
 
 
-	METHOD Default(oEvent AS Event) 
+
+/// <include file="Gui.xml" path="doc/AppWindow.Default/*" />
+	METHOD Default(oEvent AS Event)
 		RETURN SELF
-	
 
-	METHOD Destroy() AS USUAL 
-		
+
+/// <include file="Gui.xml" path="doc/AppWindow.Destroy/*" />
+	METHOD Destroy() AS USUAL
+
 		IF (oVertScroll != NULL_OBJECT)
 			oVertScroll:Destroy()
 			oVertScroll := NULL_OBJECT
@@ -53,25 +57,26 @@ CLASS AppWindow INHERIT Window
 			oStatusBar:Destroy()
 			oStatusBar := NULL_OBJECT
 		ENDIF
-		
+
 		IF SELF:lQuitOnClose .and. oApp != NULL_OBJECT
 			lQuitOnClose := FALSE
 			oApp:Quit()
 		ENDIF
 		SUPER:Destroy()
 		RETURN SELF
-	
-	METHOD Dispatch(oEvt AS @@Event) 
+
+/// <include file="Gui.xml" path="doc/AppWindow.Dispatch/*" />
+	METHOD Dispatch(oEvt AS @@Event)
 		//Todo Dispatch ?
 		//LOCAL oEvt := oEvent AS @@Event
 		//LOCAL dwMsg AS DWORD
-		
+
 		//LOCAL lHelpEnable AS LOGIC
-		
-		
+
+
 		//dwMsg := oEvt:Message
-		
-		
+
+
 		//CASE (dwMsg == WM_SETCURSOR)
 		//	IF lHelpOn
 		//		IF lHelpcursorOn
@@ -85,15 +90,15 @@ CLASS AppWindow INHERIT Window
 		//	// last par. changed from true (bug report l. atkins)
 		//	SELF:__HandlePointer(oEvt, lHelpEnable, FALSE)
 		//	RETURN SELF:EventReturnValue
-		
-		
+
+
 		//CASE (dwMsg == WM_NCLBUTTONDOWN)
 		//	IF lHelpOn
 		//		IF lHelpcursorOn
 		//			RETURN SELF:EventReturnValue
 		//		ENDIF
 		//	ENDIF
-		
+
 		//CASE (dwMsg == WM_LBUTTONDOWN)
 		//	// ***********************************
 		//	// Ignore if we're in Help Cursor mode
@@ -103,19 +108,21 @@ CLASS AppWindow INHERIT Window
 		//		//SELF:MouseButtonDown(__ObjectCastClassPtr(oEvt, __pCMouseEvent))
 		//	ENDIF
 		//	RETURN SELF:EventReturnValue
-		
+
 		//ENDCASE
-		
-		
+
+
 		RETURN SUPER:Dispatch(oEvt)
 
-    METHOD MenuSelect(oEvent AS MenuSelectEvent) 
+ /// <inheritdoc />
+    METHOD MenuSelect(oEvent AS MenuSelectEvent)
         SELF:__StatusMessageFromEvent(oEvent, MESSAGEMENU)
         RETURN NIL
 
-	
-	METHOD EnableBorder(kBorderStyle) 
-		
+
+/// <include file="Gui.xml" path="doc/AppWindow.EnableBorder/*" />
+	METHOD EnableBorder(kBorderStyle)
+
 		DEFAULT(@kBorderStyle, WINDOWSIZINGBORDER)
 		IF SELF:__IsValid
 			DO CASE
@@ -128,34 +135,37 @@ CLASS AppWindow INHERIT Window
 			END CASE
 		ENDIF
 		RETURN NIL
-	
 
+
+/// <include file="Gui.xml" path="doc/AppWindow.EnableHorizontalScroll/*" />
 	METHOD EnableHorizontalScroll(lEnable := TRUE AS LOGIC) AS VOID
-		IF oWnd IS VOAppForm VAR oAppForm 
+		IF oWnd IS VOAppForm VAR oAppForm
 			oAppForm:EnableHorizontalScroll(lEnable)
 		ENDIF
-		RETURN 
-	
+		RETURN
+
+/// <include file="Gui.xml" path="doc/AppWindow.EnableMaxBox/*" />
 	METHOD EnableMaxBox(lEnable := TRUE AS LOGIC) AS VOID
 		IF SELF:__IsValid
 			SELF:oWnd:MaximizeBox := lEnable
 		ENDIF
-		RETURN 
-	
+		RETURN
 
+
+/// <include file="Gui.xml" path="doc/AppWindow.EnableMinBox/*" />
 	METHOD EnableMinBox(lEnable:= TRUE AS LOGIC) AS VOID
 		IF SELF:__IsValid
 			SELF:oWnd:MinimizeBox := lEnable
 		ENDIF
-		RETURN 
-	
-
+		RETURN
+/// <include file="Gui.xml" path="doc/AppWindow.EnableOleDropTarget/*" />
 	METHOD EnableOleDropTarget(lEnable:= TRUE AS LOGIC) AS VOID
 		//Todo EnableOleDropTarget
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/AppWindow.EnableStatusBar/*" />
 	METHOD EnableStatusBar(lEnable:= TRUE AS LOGIC) AS StatusBar
-		
+
 		IF lEnable
 			IF (SELF:StatusBar == NULL_OBJECT)
 				SELF:StatusBar := StatusBar{SELF}
@@ -166,17 +176,19 @@ CLASS AppWindow INHERIT Window
 			SELF:StatusBar:Destroy()
 			SELF:StatusBar := NULL_OBJECT
 		ENDIF
-		
-		RETURN SELF:StatusBar
-	
 
+		RETURN SELF:StatusBar
+
+
+/// <include file="Gui.xml" path="doc/AppWindow.EnableSystemMenu/*" />
 	METHOD EnableSystemMenu(lEnable:= TRUE AS LOGIC) AS VOID
 		IF SELF:__IsValid
 			oWnd:ControlBox := lEnable
 		ENDIF
-		RETURN 
-	
+		RETURN
 
+
+/// <include file="Gui.xml" path="doc/AppWindow.EnableToolBar/*" />
 	METHOD EnableToolBar(lEnable:= TRUE AS LOGIC) AS VOID
 		IF (SELF:ToolBar != NULL_OBJECT)
 			IF lEnable
@@ -185,97 +197,116 @@ CLASS AppWindow INHERIT Window
 				SELF:ToolBar:Hide()
 			ENDIF
 		ENDIF
-		
-		RETURN 
-	
 
+		RETURN
+
+
+/// <include file="Gui.xml" path="doc/AppWindow.EnableVerticalScroll/*" />
 	METHOD EnableVerticalScroll(lEnable:= TRUE AS LOGIC) AS VOID
 		IF SELF:__IsValid .AND. oWnd IS VOAppForm VAR oAppForm
 			oAppForm:EnableVerticalScroll(lEnable)
 		ENDIF
-		RETURN 
-	
+		RETURN
 
-	METHOD EndWindow(lSendMsg) 
+
+/// <include file="Gui.xml" path="doc/AppWindow.EndWindow/*" />
+	METHOD EndWindow(lSendMsg)
 		IF SELF:__IsValid
 			IF IsLogic(lSendMsg) .AND. lSendMsg
-				oWnd:Close()	
+				oWnd:Close()
 			ELSE
 				GuiWin32.PostMessage(SELF:Handle(), WM_CLOSE, 0,0)
 			ENDIF
 		ENDIF
 		RETURN NIL
-	
-	METHOD ErrorMessage(uText) 
+
+/// <include file="Gui.xml" path="doc/AppWindow.ErrorMessage/*" />
+	METHOD ErrorMessage(uText)
 		ErrorBox{SELF, uText}
-		RETURN SELF   
-	
+		RETURN SELF
 
 
 
-	CONSTRUCTOR(oOwner) 
+
+/// <include file="Gui.xml" path="doc/AppWindow.ctor/*" />
+	CONSTRUCTOR(oOwner)
 		SUPER(oOwner)
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/AppWindow.OLEDragEnter/*" />
 	METHOD OLEDragEnter(oOleDragEvent)
 		//Also empty in GUI Classes
 		RETURN TRUE
 
+/// <include file="Gui.xml" path="doc/AppWindow.OLEDragLeave/*" />
 	METHOD OLEDragLeave(oOleDragEvent)
 		//Also empty in GUI Classes
 		RETURN TRUE
 
+/// <include file="Gui.xml" path="doc/AppWindow.OLEDragOver/*" />
 	METHOD OLEDragOver(oOleDragEvent)
 		//Also empty in GUI Classes
 		RETURN TRUE
 
+/// <include file="Gui.xml" path="doc/AppWindow.OLEDrop/*" />
 	METHOD OLEDrop(oOleDragEvent)
 		//Also empty in GUI Classes
 		RETURN TRUE
 
-	METHOD OLEInPlaceActivate() 
-		//Also empty in GUI Classes
-		RETURN NIL
-	
-	METHOD OLEInPlaceDeactivate() 
+
+/// <include file="Gui.xml" path="doc/AppWindow.OLEInPlaceActivate/*" />
+	METHOD OLEInPlaceActivate()
 		//Also empty in GUI Classes
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/AppWindow.OLEInPlaceDeactivate/*" />
+	METHOD OLEInPlaceDeactivate()
+		//Also empty in GUI Classes
+		RETURN NIL
+
+/// <include file="Gui.xml" path="doc/AppWindow.QuitOnClose/*" />
 	ACCESS QuitOnClose AS LOGIC
 		RETURN lQuitOnClose
 
-	ASSIGN QuitOnClose(lNewValue AS LOGIC) 
+/// <include file="Gui.xml" path="doc/AppWindow.QuitOnClose/*" />
+	ASSIGN QuitOnClose(lNewValue AS LOGIC)
 		lQuitOnClose := lNewValue
-	
-	METHOD ReportException(oRQ) 
+
+/// <include file="Gui.xml" path="doc/AppWindow.ReportException/*" />
+	METHOD ReportException(oRQ)
 		//Also empty in GUI Classes
 		RETURN NIL
 
-	METHOD ReportNotification(oRQ) 
+/// <include file="Gui.xml" path="doc/AppWindow.ReportNotification/*" />
+	METHOD ReportNotification(oRQ)
 		//Also empty in GUI Classes
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/AppWindow.Show/*" />
 	METHOD Show(nShowState AS LONG ) AS VOID
 		IF oStatusBar != NULL_OBJECT
 			oStatusBar:Show()
 		ENDIF
 		SUPER:Show(nShowState)
-		RETURN 
-	
+		RETURN
+
+/// <include file="Gui.xml" path="doc/AppWindow.StatusBar/*" />
 	ACCESS StatusBar AS StatusBar
 		RETURN oStatusBar
-	
-	ASSIGN StatusBar(oNewStatusBar AS StatusBar) 
-		oStatusBar := oNewStatusBar
-		RETURN 
 
-	METHOD @@StatusMessage(oHL, nType) 
+/// <include file="Gui.xml" path="doc/AppWindow.StatusBar/*" />
+	ASSIGN StatusBar(oNewStatusBar AS StatusBar)
+		oStatusBar := oNewStatusBar
+		RETURN
+
+/// <include file="Gui.xml" path="doc/AppWindow.StatusMessage/*" />
+	METHOD StatusMessage(oHL, nType)
 		LOCAL Message AS STRING
 		LOCAL oStatBar AS StatusBar
 		LOCAL oOwner AS OBJECT
-		
+
 		Default(@nType, MESSAGETRANSIENT)
-		
+
 		IF SELF:StatusBar != NULL_OBJECT
 			oStatBar := SELF:StatusBar
 		ELSE
@@ -284,7 +315,7 @@ CLASS AppWindow INHERIT Window
 				oStatBar := oOwner:StatusBar
 			ENDIF
 		ENDIF
-		
+
 		IF oStatBar != NULL_OBJECT
 			DO CASE
 			CASE IsInstanceOfUsual(oHL, #HyperLabel) .AND. IsString(((HyperLabel)oHL):Description)
@@ -294,16 +325,17 @@ CLASS AppWindow INHERIT Window
 			OTHERWISE
 				Message := ""
 			ENDCASE
-			
+
 			oStatBar:SetMessage(Message, nType)
 		ENDIF
 		RETURN NIL
-	
+
 	PROPERTY HorizontalScrollBar AS WindowHorizontalScrollBar GET oHorzScroll
 	PROPERTY VerticalScrollBar as WindowVerticalScrollBar GET oVertScroll
-	
-	
-	METHOD WarningMessage(aPlace1, aPlace2) 
+
+
+/// <include file="Gui.xml" path="doc/AppWindow.WarningMessage/*" />
+	METHOD WarningMessage(aPlace1, aPlace2)
 		RETURN WarningBox{SELF, aPlace1, aPlace2}:Show()
 
 END CLASS

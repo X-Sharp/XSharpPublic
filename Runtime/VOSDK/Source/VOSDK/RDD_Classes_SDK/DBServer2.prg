@@ -1634,7 +1634,7 @@ METHOD FieldGetFormatted( uField )
 		IF IsNil( aDataFields[wPos] )
 			aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
 		ENDIF
-        SELF:__DataField(wPos):__FieldSpec:Transform( uRetVal )
+        uRetVal := SELF:__DataField(wPos):__FieldSpec:Transform( uRetVal )
 
 
 	RECOVER USING oError

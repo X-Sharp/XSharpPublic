@@ -4,49 +4,57 @@
 
 USING System.Drawing.Printing
 USING System.Reflection
+/// <include file="Gui.xml" path="doc/PrintingDevice/*" />
 CLASS PrintingDevice INHERIT VObject
 	PROTECT oSettings AS System.Drawing.Printing.PrinterSettings
 	PROTECT cDriver AS STRING
 	PROTECT cDevice AS STRING
 	PROTECT cPort AS STRING
 
-	METHOD __FillDevMode() AS LOGIC STRICT 
+ /// <exclude />
+	METHOD __FillDevMode() AS LOGIC STRICT
 		RETURN TRUE
 
+
+/// <include file="Gui.xml" path="doc/PrintingDevice.Copies/*" />
 	ACCESS Copies AS SHORT
 		IF oSettings != NULL_OBJECT
 			RETURN oSettings:Copies
 		ENDIF
 		RETURN 0
 
-	ASSIGN Copies(nCopies AS SHORT) 
+/// <include file="Gui.xml" path="doc/PrintingDevice.Copies/*" />
+	ASSIGN Copies(nCopies AS SHORT)
 		IF oSettings != NULL_OBJECT
 			oSettings:Copies := nCopies
 		ENDIF
-		RETURN 
+		RETURN
 
-	METHOD Destroy() AS USUAL 
+/// <include file="Gui.xml" path="doc/PrintingDevice.Destroy/*" />
+	METHOD Destroy() AS USUAL
 		IF oSettings != NULL_OBJECT
 			oSettings := NULL_OBJECT
-		ENDIF		
+		ENDIF
 		RETURN  SELF
 
+/// <include file="Gui.xml" path="doc/PrintingDevice.Device/*" />
 	ACCESS Device  AS STRING
 		RETURN cDevice
 
-	METHOD DeviceCapabilities(wCapability) 
+/// <include file="Gui.xml" path="doc/PrintingDevice.DeviceCapabilities/*" />
+	METHOD DeviceCapabilities(wCapability)
 		LOCAL uReturn 			AS USUAL
 		//Todo
 		//LOCAL pWord				AS WORD PTR
 		//LOCAL pDWord			AS DWORD PTR
 		//LOCAL pLong				AS LONGINT PTR
-		//LOCAL pByte				AS BYTE PTR  
-		//LOCAL dwReturn			AS DWORD 
+		//LOCAL pByte				AS BYTE PTR
+		//LOCAL dwReturn			AS DWORD
 		//LOCAL dwTotal			AS DWORD
 		//LOCAL aReturn := {}	AS ARRAY
-		//LOCAL i, dwTrail, dwStart 	AS DWORD 
-		//LOCAL nElementSize	AS DWORD 
-		//LOCAL bSave				AS BYTE     
+		//LOCAL i, dwTrail, dwStart 	AS DWORD
+		//LOCAL nElementSize	AS DWORD
+		//LOCAL bSave				AS BYTE
 		//LOCAL pszData			AS PSZ
 
 		//// For DC_COPIES, DC_DRIVER, DC_DUPLEX, DC_EXTRA, DC_FIELDS, DC_MAXSIZE, DC_MINSIZE
@@ -65,7 +73,7 @@ CLASS PrintingDevice INHERIT VObject
 		//	AAdd(aReturn, LoWord(dwReturn))
 		//	AAdd(aReturn, HiWord(dwReturn))
 		//	uReturn := aReturn
-			
+
 		//ELSEIF (wCapability == DC_BINS) .OR. (wCapability == DC_PAPERS)
 		//	// array of words
 		//	pWord := MemAlloc(dwReturn* _SIZEOF(WORD))
@@ -81,49 +89,49 @@ CLASS PrintingDevice INHERIT VObject
 
 		//	ELSEIF  wCapability == DC_BINNAMES .OR. wCapability == DC_FILEDEPENDENCIES ;
 		//	.OR. wCapability == DC_PAPERNAMES .OR. wCapability == DC_MEDIATYPENAMES ;
-		//	.OR. wCapability == DC_PERSONALITY   
-		//		// Array of PSZs. 
+		//	.OR. wCapability == DC_PERSONALITY
+		//		// Array of PSZs.
 		//		// Set element size
 		//		nElementSize := 0
 		//		IF wCapability == DC_BINNAMES
-		//			nElementSize := CCHBINNAME 	// 24  
-					
+		//			nElementSize := CCHBINNAME 	// 24
+
 		//			ELSEIF  wCapability == DC_FILEDEPENDENCIES ;
 		//			.OR. wCapability == DC_PAPERNAMES;
 		//			.OR. wCapability == DC_MEDIATYPENAMES
 		//			nElementSize := CCHPAPERNAME	// 64
-					
+
 		//		ELSEIF wCapability == DC_PERSONALITY
 		//			nElementSize := 32
-					
+
 		//		ELSE
 		//			// What did I miss ?
-					
-		//		ENDIF     
+
+		//		ENDIF
 		//		IF nElementSize > 0
 		//			// array of nElementSize byte "c" strings
-		//			dwTotal := dwReturn * nElementSize 
+		//			dwTotal := dwReturn * nElementSize
 		//			pByte := MemAlloc(dwTotal+1)
 		//			PCALL(gpfnDeviceCapabilities,String2Psz(cDevice), String2Psz(cPort), WORD(wCapability),;
 		//			pByte, pDevMode)
-					
-		//			FOR i := 1 TO dwTotal STEP nElementSize   
+
+		//			FOR i := 1 TO dwTotal STEP nElementSize
 		//				// If the Element = nElementSize characters we have no 0 terminator !
-		//				// So make sure we set one 
+		//				// So make sure we set one
 		//				dwStart := i
 		//				dwTrail := dwStart + nElementSize
 		//				bSave   := pByte[dwTrail]
-		//				pByte[dwTrail] := 0      
-		//				pszData := pByte + dwStart -1        
-		//				AAdd(aReturn, Trim(Psz2String(pszData)))  
+		//				pByte[dwTrail] := 0
+		//				pszData := pByte + dwStart -1
+		//				AAdd(aReturn, Trim(Psz2String(pszData)))
 		//				pByte[dwTrail] := bSave
 		//			NEXT
 		//			MemFree(pByte)
 		//		ENDIF
 		//	uReturn := aReturn
 
-		//ELSEIF wCapability == DC_ENUMRESOLUTIONS 
-		//	// array of pairs of long ints  
+		//ELSEIF wCapability == DC_ENUMRESOLUTIONS
+		//	// array of pairs of long ints
 		//	pLong := MemAlloc(dwReturn * 2 * _SIZEOF(LONGINT))
 		//	PCALL(gpfnDeviceCapabilities,String2Psz(cDevice), String2Psz(cPort), WORD(wCapability),;
 		//	pLong, pDevMode)
@@ -135,7 +143,7 @@ CLASS PrintingDevice INHERIT VObject
 		//	uReturn := aReturn
 		//	MemFree(pLong)
 
-		//ELSEIF wCapability == DC_MEDIATYPES .OR. wCapability == DC_NUP 
+		//ELSEIF wCapability == DC_MEDIATYPES .OR. wCapability == DC_NUP
 		//	// array of DWORDS
 		//	pDWord := MemAlloc(dwReturn * _SIZEOF(DWORD))
 		//	PCALL(gpfnDeviceCapabilities,String2Psz(cDevice), String2Psz(cPort), WORD(wCapability),;
@@ -168,16 +176,19 @@ CLASS PrintingDevice INHERIT VObject
 
 		RETURN uReturn
 
+/// <include file="Gui.xml" path="doc/PrintingDevice.Driver/*" />
 	ACCESS Driver AS STRING
 		RETURN cDriver
 
+/// <include file="Gui.xml" path="doc/PrintingDevice.GetDevMode/*" />
 	METHOD GetDevMode() AS IntPtr
 		IF oSettings != NULL_OBJECT
 			RETURN oSettings:GetHdevmode()
 		ENDIF
 		RETURN IntPtr.Zero
 
-	CONSTRUCTOR(uName) 
+/// <include file="Gui.xml" path="doc/PrintingDevice.ctor/*" />
+	CONSTRUCTOR(uName)
 		SUPER()
 		oSettings := PrinterSettings{}
 		IF IsString(uName)
@@ -187,7 +198,7 @@ CLASS PrintingDevice INHERIT VObject
 			aElements := cName:Split(",":ToCharArray())
 			oSettings:PrinterName := aElements[1]
 		ENDIF
-		
+
 
 		//IF IsNil(uName)
 		//	ptrTemp := MemAlloc(256)
@@ -198,7 +209,7 @@ CLASS PrintingDevice INHERIT VObject
 		//	MemFree(ptrTemp)
 		//ELSE
 		//	IF !IsString(uName)
-		//		WCError{#Init,#PrintingDevice,__WCSTypeError,uName,1}:@@Throw()
+		//		WCError{#Init,#PrintingDevice,__WCSTypeError,uName,1}:Throw()
 		//	ENDIF
 		//	cTemp:=uName
 		//ENDIF
@@ -225,17 +236,19 @@ CLASS PrintingDevice INHERIT VObject
 
 		//SELF:__FillDevMode()
 
-		RETURN 
+		RETURN
 
-	METHOD IsValid() 
+/// <include file="Gui.xml" path="doc/PrintingDevice.IsValid/*" />
+	METHOD IsValid()
 		IF oSettings != NULL_OBJECT
 			RETURN oSettings:IsValid
 		ENDIF
 		RETURN FALSE
+/// <include file="Gui.xml" path="doc/PrintingDevice.Orientation/*" />
 
 	ACCESS Orientation AS LONG
 		IF oSettings != NULL_OBJECT
-			IF oSettings:DefaultPageSettings:Landscape 
+			IF oSettings:DefaultPageSettings:Landscape
 				RETURN 2
 			ELSE
 				RETURN 1
@@ -243,16 +256,18 @@ CLASS PrintingDevice INHERIT VObject
 		ENDIF
 
 		RETURN 0
+/// <include file="Gui.xml" path="doc/PrintingDevice.Orientation/*" />
 
-	ASSIGN Orientation(nOrientation AS LONG) 
+	ASSIGN Orientation(nOrientation AS LONG)
 		IF oSettings != NULL_OBJECT
 			oSettings:DefaultPageSettings:Landscape := nOrientation == 2
 		ENDIF
 		SELF:UpdateDevMode()
 
-		RETURN 
+		RETURN
 
 
+/// <include file="Gui.xml" path="doc/PrintingDevice.PaperHeight/*" />
 	ACCESS PaperHeight AS LONG
 		IF oSettings != NULL_OBJECT
 			RETURN oSettings:DefaultPageSettings:PaperSize:Height
@@ -260,23 +275,26 @@ CLASS PrintingDevice INHERIT VObject
 		RETURN 0
 
 
-	ASSIGN PaperHeight(nHeight AS LONG) 
+/// <include file="Gui.xml" path="doc/PrintingDevice.PaperHeight/*" />
+	ASSIGN PaperHeight(nHeight AS LONG)
 		IF oSettings != NULL_OBJECT
 			oSettings:DefaultPageSettings:PaperSize:Height := nHeight
 		ENDIF
 		SELF:UpdateDevMode()
 
-		RETURN 
+		RETURN
 
 
+/// <include file="Gui.xml" path="doc/PrintingDevice.PaperSize/*" />
 	ACCESS PaperSize AS LONG
 		IF oSettings != NULL_OBJECT
 			RETURN (LONG) oSettings:DefaultPageSettings:PaperSize:Kind
 		ENDIF
 		RETURN 0
 
-	ASSIGN PaperSize(nSize AS LONG) 
-		
+/// <include file="Gui.xml" path="doc/PrintingDevice.PaperSize/*" />
+	ASSIGN PaperSize(nSize AS LONG)
+
 		IF oSettings != NULL_OBJECT
 			FOREACH oSize AS PaperSize IN oSettings:PaperSizes
 				IF oSize:Kind == (PaperKind) nSize
@@ -287,26 +305,29 @@ CLASS PrintingDevice INHERIT VObject
 		ENDIF
 		SELF:UpdateDevMode()
 
-		RETURN 
+		RETURN
 
 	ACCESS PaperWidth AS LONG
 		IF oSettings != NULL_OBJECT
 			RETURN (LONG) oSettings:DefaultPageSettings:PaperSize:Width
 		ENDIF
-		RETURN 0	
+		RETURN 0
 
-	ASSIGN PaperWidth(nWidth AS LONG) 
+/// <include file="Gui.xml" path="doc/PrintingDevice.PaperWidth/*" />
+	ASSIGN PaperWidth(nWidth AS LONG)
 		IF oSettings != NULL_OBJECT
 			oSettings:DefaultPageSettings:PaperSize:Width := nWidth
 		ENDIF
 
 		SELF:UpdateDevMode()
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/PrintingDevice.Port/*" />
 	ACCESS Port AS STRING
 		RETURN cPort
 
+/// <include file="Gui.xml" path="doc/PrintingDevice.SetUp/*" />
 	METHOD SetUp() AS LOGIC
 		LOCAL oSetup AS System.Windows.Forms.PrintDialog
 		LOCAL lRetVal AS LOGIC
@@ -328,11 +349,12 @@ CLASS PrintingDevice INHERIT VObject
 			IF oPI != NULL_OBJECT
 				SELF:cPort := oPI:GetValue(oSettings, NULL)
 			ENDIF
-			
+
 		ENDIF
 		RETURN lRetVal
 
-	METHOD UpdateDevMode() 
+/// <include file="Gui.xml" path="doc/PrintingDevice.UpdateDevMode/*" />
+	METHOD UpdateDevMode()
 		RETURN TRUE
 
 

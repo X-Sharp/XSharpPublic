@@ -52,10 +52,7 @@ METHOD Destroy()  AS USUAL CLIPPER
 /// <include file="Gui.xml" path="doc/ControlWindow.Disable/*" />
 METHOD Disable()
 	oCtrl:Disable()
-
-
 	RETURN SELF
-
 
 /// <include file="Gui.xml" path="doc/ControlWindow.Dispatch/*" />
 METHOD Dispatch(oEvent)
@@ -71,15 +68,9 @@ METHOD Dispatch(oEvent)
 
 /// <include file="Gui.xml" path="doc/ControlWindow.Enable/*" />
 METHOD Enable()
-
-
-
-
 	oCtrl:Enable()
 
-
 	RETURN SELF
-
 
 /// <include file="Gui.xml" path="doc/ControlWindow.Hide/*" />
 METHOD Hide()
@@ -90,7 +81,6 @@ METHOD Hide()
 /// <include file="Gui.xml" path="doc/ControlWindow.HyperLabel/*" />
 ACCESS HyperLabel
 	RETURN oCtrl:HyperLabel
-
 
 /// <include file="Gui.xml" path="doc/ControlWindow.ctor/*" />
 CONSTRUCTOR(oControl)
@@ -137,7 +127,7 @@ ASSIGN Origin(oPoint)
 
 
 /// <include file="Gui.xml" path="doc/ControlWindow.Override/*" />
-METHOD @@Override()
+METHOD Override()
 	// for 1.0 compatibility only
 	RETURN NIL
 

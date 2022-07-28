@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="d95a3454-a077-4c2f-94dc-b90965fe99fe" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">COPY STRUCTURE Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Create an empty database file with field definitions from the current database file.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>COPY STRUCTURE [FIELDS &lt;idFieldList&gt;] TO &lt;xcTargetFile&gt;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>FIELDS &lt;idFieldList&gt;</entry><entry>The set of fields to copy to the new database structure in the order specified. &#160;The default is all fields.</entry></row></table><para>&#160;</para>
+<table><row><entry>TO &lt;xcTargetFile&gt;</entry><entry>The name of the target database file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD .</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>In this example, COPY STRUCTURE creates a temporary file. &#160;After the user enters data into the temporary file, the master database file is updated with the new information:</para>
+<para>&#160;</para>
+<para>USE sales NEW<para/>
+COPY STRUCTURE TO temp<para/>
+USE temp NEW<para/>
+lMore := TRUE<para/>
+DO WHILE lMore<para/>
+ &#160; APPEND BLANK<para/>
+ &#160; @ 10, 10 GET Temp-&gt;Salesman<para/>
+ &#160; @ 11, 11 GET Temp-&gt;Amount<para/>
+ &#160; READ<para/>
+ &#160; IF Updated()<para/>
+ &#160; &#160;  SELECT sales<para/>
+ &#160; &#160;  APPEND BLANK<para/>
+ &#160; &#160;  REPLACE Sales-&gt;Salesman WITH Temp-&gt;Salesman<para/>
+ &#160; &#160;  REPLACE Sales-&gt;Amount WITH Temp-&gt;Amount<para/>
+ &#160; &#160;  SELECT Temp<para/>
+ &#160; &#160;  ZAP<para/>
+ &#160; ELSE<para/>
+ &#160; &#160; &#160;lMore := FALSE<para/>
+ &#160; ENDIF<para/>
+ENDDO<para/>
+CLOSE DATABASES<para/>
+&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="266a52b5-1333-4fb2-b5ed-df54ff8a292a">COPY STRUCTURE EXTENDED</link>, <link xlink:href="443ff541-0d69-4158-9bb8-84636a435fdb">CREATE</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbCopyStruct.htm -->DbCopyStruct(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDefault.htm -->SetDefault(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetPath.htm -->SetPath()</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

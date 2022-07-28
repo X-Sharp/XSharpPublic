@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="9085df4a-da8f-4ed6-948a-db58aa0eeb27" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_index.html -->Index/Order&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">SET INDEX Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Open one or more index files and add their orders to the order list in the current work area.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>SET INDEX TO [&lt;xcIndexFileList&gt; [ADDITIVE]]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>TO &lt;xcIndexFileList&gt;</entry><entry>The names of the index files to open, including an optional drive, directory, and extension for each. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT). &#160;</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>If a file in the list does not exist, a runtime error is raised. &#160;If it exists, this command attempts to open the file in the same mode as the corresponding database file. &#160;If access is denied because, for example, another process is using the file and this one is asking for exclusive use, NetErr() is set to TRUE. &#160;Otherwise, the file open is successful, the command proceeds to the next file in the list.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>Concurrency conflicts with index files are rare since they should be used with only one database file. &#160;If a concurrency problem arises, it will normally be when you attempt to open the database file. &#160;</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>SET INDEX TO with no file name clears the current order list.</entry></row></table><para>&#160;</para>
+<table><row><entry>ADDITIVE</entry><entry>Adds the orders from the indicated index files to the current order list, leaving the controlling order intact. &#160;If not specified, a new order list is constructed from the indicated index files, replacing the current order list.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>If no order list exists for the work area or if SET INDEX is replacing the current order list, the type of RDD determines whether or not the controlling order is set. &#160;For RDDs that support only single-order index files (such as DBFNTX), the controlling order is set to the order in the specified index file. &#160;For RDDs that support multi-order index files (such as DBFMDX), you usually need to set the controlling order explicitly (using, for example, SET ORDER or <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetOrder.htm -->DbSetOrder() otherwise, the data file may be processed in natural order even though there is an order list in effect.</para>
+<para>&#160;</para>
+<para>After the new index files are opened, the work area is positioned to the first logical record in the controlling order and all subsequent database operations process the records using the controlling order.</para>
+<para>&#160;</para>
+<para>During database processing, all orders in the order list are updated whenever a key value is added or changed, respecting any for condition or unique flag in the order. &#160;To change the controlling order without affecting the current order list, use SET ORDER or DBSetOrder(). &#160;To find out information about a particular order or index file, use DBOrderInfo().</para>
+<para>&#160;</para>
+<para>SET INDEX TO when specified with an index file list is functionally equivalent to using several DBSetIndex() function calls. &#160;If no ADDITIVE clause is specified, the command calls DBClearFilter() first. &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example opens a database and several associated index files:</para>
+<para>&#160;</para>
+<para>USE sales NEW<para/>
+SET INDEX TO sales, sales1, sales2</para>
+<para>&#160;</para>
+<para>The next example opens an index file without closing any that are already open:</para>
+<para>&#160;</para>
+<para>SET INDEX TO sales3 ADDITIVE</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="01c5c1c9-fdc5-439f-b315-74a43eea5c13">CLOSE</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DBClearIndex.htm -->DBClearIndex(),<!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbOrderInfo.htm -->DbOrderInfo(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetIndex.htm -->DBSetIndex(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetOrder.htm -->DBSetOrder(),<link xlink:href="ed7dcc99-a2aa-4fad-8eb1-79d7e2ed9e3d">INDEX</link>, <link xlink:href="79edf21a-e6eb-4d50-abf8-a5284293d42b">REINDEX</link>, <link xlink:href="4d6305aa-62bf-4dce-8716-be94d777c277">SET ORDER</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDefault.htm -->SetDefault(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetPath.htm -->SetPath() <link xlink:href="9afbce44-d16f-4cde-a11e-74871ec4b08a">USE</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

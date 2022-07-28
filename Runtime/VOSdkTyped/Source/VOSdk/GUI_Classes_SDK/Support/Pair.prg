@@ -1,6 +1,7 @@
 
 
 USING System.Diagnostics
+/// <include file="Gui.xml" path="doc/Pair/*" />
 
 [DebuggerStepThrough];
 [DebuggerDisplay("{iInt1}, {iInt2}")];
@@ -9,19 +10,24 @@ CLASS Pair INHERIT VObject
 	PROTECT iInt2 AS INT
 	CONSTRUCTOR() STRICT
 		SUPER()
-	
-	CONSTRUCTOR(Int1 AS INT, Int2 AS INT) 
-		SUPER()   
+
+/// <include file="Gui.xml" path="doc/Pair.ctor/*" />
+	CONSTRUCTOR(Int1 AS INT, Int2 AS INT)
+		SUPER()
 		iInt1 := Int1
 		iInt2 := Int2
-		RETURN 
+		RETURN
 
+    /// <summary>
+    /// Is the pair empty ?(both values equal to 0)
+    /// </summary>
+    /// <value></value>
 	ACCESS Empty AS LOGIC
 		RETURN iInt1 == 0 .and. iInt2 == 0
 
 //   OPERATOR ==( lhs AS Pair, rhs AS Pair ) AS LOGIC
 //      RETURN lhs:Equals( rhs )
-      
+
 //   OPERATOR !=( lhs AS Pair, rhs AS Pair ) AS LOGIC
 //      RETURN ! lhs:Equals( rhs )
 
@@ -38,23 +44,28 @@ CLASS Pair INHERIT VObject
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/Dimension/*" />
 [DebuggerStepThrough];
 [DebuggerDisplay("Width: {Width}, Height: {Height}")];
 CLASS Dimension INHERIT Pair
 
+/// <include file="Gui.xml" path="doc/Dimension.ctor/*" />
 	CONSTRUCTOR() STRICT
 		SUPER()
 
-	CONSTRUCTOR(nWidth AS INT, nHeight AS INT) 
+/// <include file="Gui.xml" path="doc/Dimension.ctor/*" />
+	CONSTRUCTOR(nWidth AS INT, nHeight AS INT)
 		SUPER(nWidth, nHeight)
-		RETURN 
-
-	PROPERTY Width  AS LONGINT  GET iInt1 SET iInt1 := Value
+		RETURN
+/// <include file="Gui.xml" path="doc/Dimension.Height/*" />
 	PROPERTY Height  AS LONGINT  GET iInt2 SET iInt2 := Value
-	
+
+/// <include file="Gui.xml" path="doc/Dimension.Width/*" />
+	PROPERTY Width  AS LONGINT  GET iInt1 SET iInt1 := Value
+
 	METHOD Clone() AS Dimension
 		RETURN Dimension{SELF:Width, SELF:Height}
-		
+
 	OPERATOR IMPLICIT ( s AS System.Drawing.Size) AS Dimension
 		RETURN Dimension{s:Width, s:Height}
 
@@ -69,23 +80,25 @@ CLASS Dimension INHERIT Pair
 
 END CLASS
 
-
+/// <include file="Gui.xml" path="doc/Point/*" />
 [DebuggerStepThrough];
 [DebuggerDisplay("X: {X}, Y: {Y}")];
 CLASS Point INHERIT Pair
 
+/// <include file="Gui.xml" path="doc/Point.ctor/*" />
 	CONSTRUCTOR() STRICT
 		SUPER()
-		RETURN 
-
-	CONSTRUCTOR(nX AS INT, nY AS INT) 
+		RETURN
+/// <include file="Gui.xml" path="doc/Point.ctor/*" />
+	CONSTRUCTOR(nX AS INT, nY AS INT)
 		SUPER(nX, nY)
-		RETURN 
+		RETURN
+/// <include file="Gui.xml" path="doc/Point.ConvertToScreen/*" />
 
-	METHOD ConvertToScreen(hWnd AS IntPtr) AS LOGIC 
+	METHOD ConvertToScreen(hWnd AS IntPtr) AS LOGIC
 		RETURN SELF:ConvertToScreen(hWnd, TRUE)
 
-	METHOD ConvertToScreen(hWnd AS IntPtr, lWinRect AS LOGIC) AS LOGIC 
+	METHOD ConvertToScreen(hWnd AS IntPtr, lWinRect AS LOGIC) AS LOGIC
 		//Todo ConvertToScreen
 		LOCAL sPoint := WINPOINT{} AS WINPOINT
 
@@ -100,10 +113,10 @@ CLASS Point INHERIT Pair
 
 		iInt1 := sPoint:x
 		iInt2 := sPoint:y
-		
+
 		RETURN TRUE
 
-	METHOD ConvertToScreen(oWindow AS OBJECT) AS LOGIC  
+	METHOD ConvertToScreen(oWindow AS OBJECT) AS LOGIC
 		LOCAL hWnd   AS PTR
 		LOCAL lOk AS LOGIC
 		IF IsInstanceOfUsual(oWindow, #Window)
@@ -116,8 +129,9 @@ CLASS Point INHERIT Pair
 			lOk := FALSE
 		ENDIF
 		RETURN lOk
-
+/// <include file="Gui.xml" path="doc/Point.X/*" />
 	PROPERTY X  AS LONGINT  GET iInt1 SET iInt1 := Value
+/// <include file="Gui.xml" path="doc/Point.Y/*" />
 	PROPERTY Y  AS LONGINT  GET iInt2 SET iInt2 := Value
 
 	METHOD Clone() AS Point
@@ -153,18 +167,21 @@ CLASS Point INHERIT Pair
 			r:iInt1 -= p2:iInt1
 			r:iInt2 -= p2:iInt2
 			RETURN r
-		ENDIF		
+		ENDIF
 
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/Range/*" />
 [DebuggerStepThrough];
 [DebuggerDisplay("Min: {Min}, Max: {Max}")];
-CLASS Range INHERIT Pair        
-	CONSTRUCTOR(nMin, nMax) 
+CLASS Range INHERIT Pair
+/// <include file="Gui.xml" path="doc/Range.ctor/*" />
+	CONSTRUCTOR(nMin, nMax)
 		SUPER(nMin, nMax)
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/Range.IsInRange/*" />
 	METHOD IsInRange(nValue AS INT) AS LOGIC
 		LOCAL iVal AS INT
 		iVal := nValue
@@ -174,21 +191,26 @@ CLASS Range INHERIT Pair
 
 		RETURN FALSE
 
+	/// <include file="Gui.xml" path="doc/Range.Min/*" />
 	PROPERTY Min AS LONGINT  GET iInt1 SET iInt1 := Value
+	/// <include file="Gui.xml" path="doc/Range.Max/*" />
 	PROPERTY Max AS LONGINT  GET iInt2 SET iInt2 := Value
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/Selection/*" />
 [DebuggerStepThrough];
 [DebuggerDisplay("Start: {Start}, Finish: {Finish}")];
-CLASS Selection INHERIT Pair 
-
+CLASS Selection INHERIT Pair
+/// <include file="Gui.xml" path="doc/Selection.Finish/*" />
 	PROPERTY Start  AS LONGINT  GET iInt1 SET iInt1 := Value
+/// <include file="Gui.xml" path="doc/Selection.Finish/*" />
 	PROPERTY Finish AS LONGINT  GET iInt2 SET iInt2 := Value
 
-	CONSTRUCTOR(nStart, nFinish) 
+/// <include file="Gui.xml" path="doc/Selection.ctor/*" />
+	CONSTRUCTOR(nStart, nFinish)
 		SUPER(nStart, nFinish)
-		RETURN 
+		RETURN
 
 
 END CLASS

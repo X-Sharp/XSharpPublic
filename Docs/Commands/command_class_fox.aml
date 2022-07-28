@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="c6b4374e-7e31-423e-b481-6788ea32ecbd" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">CLASS Statement (FoxPro dialect)</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare a class name to the compiler.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[Attributes] DEFINE [Modifiers] CLASS &lt;idClass&gt; [AS &lt;idParentClass&gt;] &#160;[OF &lt;classLib&gt;] [OLEPUBLIC]<para/>
+&#160;[ClassMembers]</para>
+<para>&#160;(ENDDEFINE | END DEFINE)</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Attributes</entry><entry>An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method/function containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword.</entry></row></table><para>&#160;</para>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, PROTECTED, HIDDEN, INTERNAL, SEALED, ABSTRACT or STATIC.</entry></row></table><para>&#160;</para>
+<para>&#160;</para>
+<table><row><entry>&lt;idClass&gt;</entry><entry>A valid identifier name for the class. &#160;A class is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a class and a global variable, for example, with the same name.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idParentClass&gt;</entry><entry>The name of an existing class (called a superclass) from which the new class inherits methods and instance variables. <para/>
+The AS &lt;idParent&gt; clause is mandatory when compiled with /fox1+, and option when compiled with /fox1-.<para/>
+When compiled with /fox1+ the compiler assumes that the parent class is either the Custom class or a class derived from the Custom class.<para/>
+&#160;</entry></row></table><table><row><entry>OF &lt;classLib&gt;</entry><entry>This clause is parsed but ignored in X#.</entry></row></table><para>&#160;</para>
+<table><row><entry>OLEPUBLIC</entry><entry>This clause is parsed but ignored in X#.</entry></row></table><para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">ClassMembers</h1>
+<para><link xlink:href="3246e9b5-de8f-41a9-8bf9-cc797a57728c">Fields and Properties</link></para>
+<para><link xlink:href="71849326-2b2a-4fdb-ac64-f9f6ae2cfc51" /></para>
+<para><link xlink:href="56cb826e-96f3-4135-b64a-05189803b13e" /></para>
+<para><link xlink:href="8cc61ea8-a93d-4059-9210-d7825d90f7d6">COMMAttrib Clause</link></para>
+<para><link xlink:href="6d2ad4c1-1013-4e91-8a02-9ac65ae9cb0e">FUNCTIONS and PROCEDURES</link></para>
+<table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry></entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">&#160;</h1>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

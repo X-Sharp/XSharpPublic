@@ -1,11 +1,12 @@
-
+/// <include file="Gui.xml" path="doc/CheckBox/*" />
 [XSharp.Internal.TypesChanged];
 CLASS CheckBox INHERIT Button
 	PROTECT lSavedChecked AS LOGIC
 
     PROPERTY ControlType AS ControlType GET ControlType.CheckBox
 
-	CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle) 
+/// <include file="Gui.xml" path="doc/CheckBox.ctor/*" />
+	CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle)
 		SUPER(oOwner, xID, oPoint, oDimension, cText, kStyle, TRUE)
 
 		IF !IsInstanceOfUsual(xID, #ResourceID) .AND. IsNil(kStyle)
@@ -20,7 +21,7 @@ CLASS CheckBox INHERIT Button
 		RETURN
 
 
-	ACCESS __CheckBox AS IVOCheckBox 
+	ACCESS __CheckBox AS IVOCheckBox
 		RETURN (IVOCheckBox ) oCtrl
 
 	METHOD __SetImage(oNewImage AS VObject)  AS LOGIC
@@ -41,22 +42,23 @@ CLASS CheckBox INHERIT Button
 			SELF:__CheckBox:FlatStyle := System.Windows.Forms.FlatStyle.Flat
 			RETURN TRUE
 		ENDIF
-		
+
 		RETURN FALSE
 
-
+/// <include file="Gui.xml" path="doc/CheckBox.Checked/*" />
 	ACCESS Checked AS LOGIC
 		IF SELF:ValidateControl()
-			RETURN __CheckBox:Checked		
+			RETURN __CheckBox:Checked
 		ELSE
 			RETURN lSavedChecked
 		ENDIF
 
 
-	ASSIGN Checked(lChecked AS LOGIC) 
+/// <include file="Gui.xml" path="doc/CheckBox.Checked/*" />
+	ASSIGN Checked(lChecked AS LOGIC)
 		IF SELF:ValidateControl()
 			IF !IsLogic(lChecked)
-				WCError{#Checked,#CheckBox,__WCSTypeError,lChecked,1}:@@Throw()
+				WCError{#Checked,#CheckBox,__WCSTypeError,lChecked,1}:Throw()
 			ENDIF
 			__CheckBox:Checked := lChecked
 		ENDIF
@@ -64,28 +66,35 @@ CLASS CheckBox INHERIT Button
 		__lModified := TRUE
 		SELF:__Update()
 
-		RETURN 
+		RETURN
 
-	METHOD Destroy() AS USUAL 
-		IF SELF:__IsValid 
+/// <include file="Gui.xml" path="doc/CheckBox.Destroy/*" />
+	METHOD Destroy() AS USUAL
+		IF SELF:__IsValid
 			lSavedChecked := SELF:Checked
 		ENDIF
 
 		RETURN SUPER:Destroy()
 
+/// <include file="Gui.xml" path="doc/CheckBox.Image/*" />
 	ACCESS Image  AS VObject
 		RETURN SELF:__GetImage()
 
-	ASSIGN Image(oNewImage AS VObject) 
+
+/// <include file="Gui.xml" path="doc/CheckBox.Image/*" />
+	ASSIGN Image(oNewImage AS VObject)
 		IF ! SELF:__SetImage(oNewImage)
 			SUPER:Image := oNewImage
 		ENDIF
 
-		RETURN 
+		RETURN
 
 
 
 
+
+
+/// <include file="Gui.xml" path="doc/CheckBox.TextValue/*" />
 	ACCESS TextValue  AS STRING
 		LOCAL lTicked AS LOGIC
 		LOCAL cTickValue AS STRING
@@ -100,7 +109,8 @@ CLASS CheckBox INHERIT Button
 
 		RETURN cTickValue
 
-	ASSIGN TextValue(cNewValue  AS STRING) 
+/// <include file="Gui.xml" path="doc/CheckBox.TextValue/*" />
+	ASSIGN TextValue(cNewValue  AS STRING)
 		LOCAL lOldTicked AS LOGIC
 		LOCAL lTicked AS LOGIC
 		LOCAL uTicked AS USUAL
@@ -121,12 +131,13 @@ CLASS CheckBox INHERIT Button
 
 		IF (lTicked != lOldTicked)
 			SELF:Checked := lTicked
-			SELF:Modified := .T. 
+			SELF:Modified := .T.
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	ACCESS Value 
+/// <include file="Gui.xml" path="doc/CheckBox.Value/*" />
+	ACCESS Value
 		LOCAL uVal AS USUAL
 		IF SELF:Owner IS DataWindow
 			uValue := SELF:Checked

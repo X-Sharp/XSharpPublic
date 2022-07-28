@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="266a52b5-1333-4fb2-b5ed-df54ff8a292a" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">COPY STRUCTURE EXTENDED Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Copy the field definitions in a database file structure to a structure-extended file as data.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>COPY STRUCTURE EXTENDED TO &lt;xcTargetFile&gt;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>TO &lt;xcTargetFile&gt;</entry><entry>The name of the target structure-extended database file, including an optional drive, directory, and extension. See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD .</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>COPY STRUCTURE EXTENDED creates a database file whose contents is the structure of the current database file, with a record for the definition of each field. &#160;</para>
+<para>The structure-extended database file has the following structure:</para>
+<para>&#160;</para>
+<table><row><entry>Field Name</entry><entry>Type &#160; &#160; &#160; &#160;Length &#160; &#160; &#160; &#160;Decimals &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Field_Name</entry><entry>Character &#160; &#160; &#160; &#160;10 &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Field_Type</entry><entry>Character &#160; &#160; &#160; &#160;1 &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</entry></row></table><table><row><entry>Field_Len</entry><entry>Numeric &#160; &#160; &#160; &#160;3 &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;0</entry></row></table><table><row><entry>Field_Dec</entry><entry>Numeric &#160; &#160; &#160; &#160;3 &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;0</entry></row></table><para>&#160;</para>
+<para>Used in application programs, COPY STRUCTURE EXTENDED permits you to create or modify the structure of a database file programmatically. &#160;To create a new database file from the structure-extended file, use CREATE FROM. &#160;If you need an empty structure-extended file, use CREATE.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>Character field lengths greater than 255:  Field lengths greater than 255 are represented as a combination of the Field_Dec and Field_Len fields. &#160;After performing COPY STRUCTURE EXTENDED, you can use the following formula to determine the length of any character field:</para>
+<para>&#160;</para>
+<para>nFieldLen := IIf((Field_Type = &quot;C&quot; .AND.  ;<para/>
+&#160; &#160; &#160; &#160; &#160;Field_Dec != 0), Field_Dec * 256 + ;<para/>
+&#160; &#160; &#160; &#160; &#160;Field_Len, Field_Len)</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example creates STRUC.DBF from SALES.DBF as a structure-extended file, then lists the contents of STRUC.DBF to illustrate the typical layout of field definitions:</para>
+<para>&#160;</para>
+<para>USE sales NEW<para/>
+COPY STRUCTURE EXTENDED TO struc<para/>
+USE struc NEW<para/>
+LIST Field_Name, Field_Type, Field_Len, Field_Dec<para/>
+&#160;<para/>
+&#160;<para/>
+// Result:<para/>
+1 BRANCH &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;C &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;3 &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;0<para/>
+2 SALESMAN &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;C &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;4 &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;0<para/>
+3 CUSTOMER &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;C &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;4 &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;0<para/>
+4 PRODUCT &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;C &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;25 &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;0<para/>
+5 AMOUNT &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;N &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;8 &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;2<para/>
+6 NOTES &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;C &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;0 &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;125<para/>
+// Field length is 32,000 characters</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="d95a3454-a077-4c2f-94dc-b90965fe99fe">COPY STRUCTURE</link>, <link xlink:href="443ff541-0d69-4158-9bb8-84636a435fdb">CREATE</link>, <link xlink:href="3bc3d7fa-9b8a-4747-b728-0256869fd6bf">CREATE FROM</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_FieldName.htm -->FieldName(),  <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbCopyXStruct.htm -->DbCopyXStruct(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDefault.htm -->SetDefault(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetPath.htm -->SetPath(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Type.htm -->Type()</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

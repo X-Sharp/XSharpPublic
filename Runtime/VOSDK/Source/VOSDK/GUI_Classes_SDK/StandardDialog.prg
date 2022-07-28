@@ -664,11 +664,6 @@ ASSIGN ReadOnly(flag)
 METHOD SetFilter(uFilter, uFilterDesc, nIndex)
 	LOCAL i AS INT
 
-
-
-
-
-
 	IF IsLong(nIndex)
 		FltIndex := nIndex
 	ENDIF
@@ -691,11 +686,7 @@ METHOD SetFilter(uFilter, uFilterDesc, nIndex)
 /// <include file="Gui.xml" path="doc/StandardFileDialog.SetStyle/*" />
 METHOD SetStyle(kStyle, lOnOff)
 
-
-
-
 	DEFAULT(@lOnOff, TRUE)
-
 
 	IF (lOnOff)
 		Flags := _OR(Flags, DWORD(kStyle))
@@ -709,9 +700,6 @@ METHOD SetStyle(kStyle, lOnOff)
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.SetStyleEx/*" />
 METHOD SetStyleEx(kStyle, lOnOff)
-
-
-
 
 	DEFAULT(@lOnOff, TRUE)
 
@@ -1031,9 +1019,6 @@ CLASS StandardFontDialog INHERIT StandardDialog
 /// <include file="Gui.xml" path="doc/StandardFontDialog.EnableANSI/*" />
 METHOD EnableANSI(bOnOff)
 
-
-
-
 	DEFAULT(@bOnOff, TRUE)
 	IF bOnOff
 		// lANSIFlag := CF_ANSIONLY // obsolete (see Win32 SDK Help file)
@@ -1077,9 +1062,6 @@ METHOD EnableFixedPitch(bOnOff)
 /// <include file="Gui.xml" path="doc/StandardFontDialog.EnableTrueType/*" />
 METHOD EnableTrueType(bOnOff)
 
-
-
-
 	DEFAULT(@bOnOff, TRUE)
 	IF bOnOff
 		lTTYFlag := CF_TTONLY
@@ -1091,9 +1073,6 @@ METHOD EnableTrueType(bOnOff)
 
 /// <include file="Gui.xml" path="doc/StandardFontDialog.Flags/*" />
 ASSIGN Flags(lInt)
-
-
-
 
 	lFlags := _OR(lFlags, LONGINT(_CAST, lInt))
 	RETURN

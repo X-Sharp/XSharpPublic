@@ -28,7 +28,7 @@ CLASS LineObject INHERIT DrawObject
 		RETURN BoundingBox{Point{Min(EndX,OrgX), Min(EndY,OrgY)}, Dimension{Abs(EndX-OrgX),Abs(EndY-OrgY)}}
 
 /// <include file="Gui.xml" path="doc/LineObject.Destroy/*" />
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL CLIPPER
 
 		oPen:=NULL_OBJECT
 		oEnd:=NULL_OBJECT

@@ -47,7 +47,7 @@ CLASS TextObject INHERIT DrawObject
 	ASSIGN Color(oNewColor AS Color)
 		oColor := oNewColor
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL CLIPPER
 		oFont := NULL_OBJECT
 		oColor := NULL_OBJECT
 		cText := NULL_STRING

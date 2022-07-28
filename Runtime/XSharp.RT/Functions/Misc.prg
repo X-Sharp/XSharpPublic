@@ -57,8 +57,8 @@ FUNCTION Max(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
         RETURN IIF ((DateTime) uValue1 > (DateTime) uValue2, uValue1, uValue2)
 
     ELSEIF (uValue1:IsDateTime .OR. uValue1:IsDate) .AND. (uValue2:IsDateTime .OR. uValue2:IsDate)
-        var d1 := (DATE) uValue1
-        var d2 := (DATE) uValue2
+        var d1 := (DateTime) uValue1
+        var d2 := (DateTime) uValue2
         RETURN IIF (d1 > d2, d1, d2)
 
     ELSEIF uValue1:IsString .AND. uValue2:IsString
@@ -98,8 +98,8 @@ FUNCTION Min(uValue1 AS USUAL, uValue2 AS USUAL) AS USUAL
         RETURN IIF ((DateTime) uValue1 < (DateTime) uValue2, uValue1, uValue2)
 
     ELSEIF (uValue1:IsDateTime .OR. uValue1:IsDate) .AND. (uValue2:IsDateTime .OR. uValue2:IsDate)
-        var d1 := (DATE) uValue1
-        var d2 := (DATE) uValue2
+        var d1 := (DateTime) uValue1
+        var d2 := (DateTime) uValue2
         RETURN IIF ( d1 < d2, d1, d2)
 
     ELSEIF uValue1:IsString .AND. uValue2:IsString

@@ -501,7 +501,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 		IF (lRC)
 			// Insert/Add Column to array
 			IF (iCol != 0)
-				Ains(aColumn,iCol)
+				Ains(aColumn, (DWORD) iCol)
 				aColumn[iCol] := oDC
 			ELSE
 				aadd(aColumn, oDC)
@@ -2856,10 +2856,10 @@ CLASS DataColumn INHERIT VObject
 		RETURN oOldBrush
 
 	METHOD ChangeTextColor(oColor AS LONG, kWhere AS LONG) AS Color
-		RETURN SELF:ChangeTextColor(Color{oColor}, kWhere)
+		RETURN SELF:ChangeTextColor(Color{(DWORD) oColor}, kWhere)
 
 /// <include file="Gui.xml" path="doc/DataColumn.ChangeTextColor/*" />
-	METHOD ChangeTextColor(oColor AS COLOR, kWhere AS LONG) AS Color
+	METHOD ChangeTextColor(oColor AS Color, kWhere AS LONG) AS Color
 		LOCAL oOldColor AS VOSDK.Color
 		LOCAL oNewColor AS VOSDK.Color
 

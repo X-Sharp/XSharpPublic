@@ -1,29 +1,29 @@
 
 CLASS DrawObject INHERIT VObject
 	PROTECT oPoint AS Point
-	PROTECT wROP AS LONGINT    	
+	PROTECT wROP AS LONGINT
 	PROTECT oWnd AS Window
 
 
-	CONSTRUCTOR(oPoint AS Point) 
+	CONSTRUCTOR(oPoint AS Point)
 		SUPER()
 		SELF:oPoint:=oPoint
-		RETURN 
+		RETURN
 
-	METHOD __SetWindow(oWindow AS Window) AS Window STRICT 
+	METHOD __SetWindow(oWindow AS Window) AS Window STRICT
 		oWnd := oWindow
 		RETURN oWindow
 
 	ACCESS BoundingBox AS BoundingBox
 		RETURN BoundingBox{Point{0,0},Dimension{0,0}}
 
-	NEW METHOD Destroy() AS USUAL STRICT
+	NEW METHOD Destroy() AS USUAL CLIPPER
 		oPoint := NULL_OBJECT
 		oWnd := NULL_OBJECT
 		SUPER:Destroy()
 		RETURN NIL
 
-	METHOD Draw() 
+	METHOD Draw()
 		RETURN SELF
 
 	METHOD Handle(nHandleType := 0 AS LONG) AS IntPtr STRICT
@@ -51,21 +51,21 @@ CLASS DrawObject INHERIT VObject
 	ACCESS Origin AS Point
 		RETURN oPoint
 
-	ASSIGN Origin(oNewPoint AS Point) 
+	ASSIGN Origin(oNewPoint AS Point)
 		oPoint := Point{oNewPoint:X, oNewPoint:Y}
 
 	ACCESS RasterOperation AS LONG
 		RETURN wROP
 
-	ASSIGN RasterOperation(kRaster AS LONG) 
+	ASSIGN RasterOperation(kRaster AS LONG)
 		wROP := kRaster
 
 	ACCESS Size AS Dimension
 		RETURN Dimension{0,0}
 
-	ASSIGN Size(oNewSize AS Dimension) 
+	ASSIGN Size(oNewSize AS Dimension)
 
-		RETURN 
+		RETURN
 
 END CLASS
 

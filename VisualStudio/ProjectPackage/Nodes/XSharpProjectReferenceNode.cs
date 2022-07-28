@@ -23,20 +23,23 @@ namespace XSharp.Project
         public XSharpProjectReferenceNode(ProjectNode root, ProjectElement element)
            : base(root, element)
         {
-            XSharpProjectNode project = root as XSharpProjectNode;
-            if (project != null)
-                project.AddURL(this.Url, this);
-
+            AddProject();
         }
 
         public XSharpProjectReferenceNode(ProjectNode root, string referencedProjectName, string projectPath, string projectReference)
            : base(root, referencedProjectName, projectPath, projectReference)
         {
-            XSharpProjectNode project = root as XSharpProjectNode;
+            AddProject();
+        }
+
+        private void AddProject()
+        {
+            XSharpProjectNode project = this.ProjectMgr as XSharpProjectNode;
             if (project != null)
                 project.AddURL(this.Url, this);
-
+            project.ProjectModel.AddProjectReference(this.Url);
         }
+
 
         /// <summary>
         /// Checks if a reference can be added to the project.
@@ -59,7 +62,12 @@ namespace XSharp.Project
             }
             return true;
         }
-
+        public override void Remove(bool removeFromStorage)
+        {
+            XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
+            projectNode.ProjectModel.RemoveProjectReference(this.Url);
+            base.Remove(removeFromStorage);
+        }
         /// <summary>
         /// Gets a Project type string for a specified project instance guid
         /// </summary>

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="f6fe8ee8-c61d-405e-8da1-35f1f0564f84" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_memvar.html -->Memory Variable&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">PARAMETERS Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <para>The PARAMETERS statement is NOT available in the Core and Vulcan dialects and will only be enabled if the <!-- TODO: Unknown topic link: opt-memvar.html -->-memvar commandline option is specified.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Create private variables to receive passed values or references.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>PARAMETERS &lt;idPrivateList&gt;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;idPrivateList&gt;</entry><entry>One or more parameter variables separated by commas. These variables are used to receive arguments that you pass when you call the routine.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>When a PARAMETERS statement executes, all variables in the parameter list are created as private variables and all public or private variables with the same names are hidden until the current procedure or function terminates. A PARAMETERS statement is an executable statement and can, therefore, occur anywhere in a procedure or function.</para>
+<para>Parameters can also be declared as local variables if specified as a part of the PROCEDURE or FUNCTION declaration statement (see the example). Parameters specified in this way are referred to as formal parameters. Note that you cannot specify both formal parameters and a PARAMETERS statement within a procedure or function definition. </para>
+<para>Attempting to do this results in a compiler error.</para>
+<para>The number of receiving variables does not have to match the number of arguments passed by the calling routine. If you specify more arguments than parameters, the extra arguments are ignored. If you specify fewer arguments than parameters, the extra parameters are created with a NIL value. If you skip an argument, the corresponding parameter is initialized to NIL.</para>
+<para>The PCount() function returns the position of the last argument passed in the list of arguments. This is different than the number of parameters passed, since it includes skipped parameters.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This function receives values passed into private parameters with a PARAMETERS statement:</para>
+<para>FUNCTION MyFunc()<para/>
+PARAMETERS cOne, cTwo, cThree<para/>
+? cOne, cTwo, cThree</para>
+<para>The next example is similar, but receives values passed into local variables, by declaring the parameter variables within the FUNCTION declaration:</para>
+<para>FUNCTION MyFunc(cOne, cTwo, cThree)<para/>
+? cOne, cTwo, cThree</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

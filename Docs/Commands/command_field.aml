@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="da571189-a521-4066-b374-de88f72d37e8" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_vardecl.html -->Variable Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">FIELD Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare one or more database field names to be used by the current routine.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>FIELD &lt;idFieldList&gt; [IN &lt;idAlias&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;idFieldList&gt;</entry><entry>A list of names to declare as fields to the compiler.</entry></row></table><para>&#160;</para>
+<table><row><entry>IN &lt;idAlias&gt;</entry><entry>An alias to assume when there are unaliased references to the names specified in the &lt;idFieldList&gt;.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>When you use the FIELD statement to declare fields, unaliased references to variables in &lt;idFieldList&gt; are treated as if they were preceded by the special field alias (_FIELD-&gt;) or &lt;idAlias&gt;-&gt; if the IN clause is specified.</para>
+<para>&#160;</para>
+<para>Like other variable declaration statements (i.e., LOCAL and MEMVAR), you must place FIELD statements before any executable statements (including PRIVATE, PUBLIC, and PARAMETERS) in the routine you are defining. &#160;The FIELD statement has no effect on the macro operator, which always assumes memory variables.</para>
+<para>&#160;</para>
+<para>The FIELD statement neither opens a database file nor verifies the existence of the specified fields. &#160;It is useful primarily to ensure correct references to fields that are known to exist at runtime. &#160;Attempting to access the fields when the associated database is not in use will raise a runtime error.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This function includes statements to declare database field names in both the current and Employee work areas:</para>
+<para>&#160;</para>
+<para>FUNCTION DisplayRecord()<para/>
+&#160;FIELD CustNo, OrderNo, Orders<para/>
+&#160;FIELD EmpName, EmpCode IN Employee<para/>
+&#160;USE employee NEW<para/>
+&#160;USE orders NEW<para/>
+&#160;<para/>
+&#160;? CustNo &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;// Refers to Orders-&gt;CustNo<para/>
+&#160;? EmpName &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;// Refers to Employee-&gt;EmpName<para/>
+&#160;<para/>
+&#160;CLOSE orders<para/>
+&#160;CLOSE employee</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: function_dbfieldinfo.html -->DBFieldInfo(), <link xlink:href="d8822cca-7c06-4150-b83c-2dd9b531186d">LOCAL</link>, <link xlink:href="70df5af5-ce42-4ba8-afec-5b3a4de8d996">MEMVAR</link>, <link xlink:href="3910e899-798b-4188-834b-5046aaa0cd3c">STATIC</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

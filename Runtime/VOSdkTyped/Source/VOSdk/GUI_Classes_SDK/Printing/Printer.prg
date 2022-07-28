@@ -1,4 +1,4 @@
-
+/// <include file="Gui.xml" path="doc/Printer/*" />
 
 
 CLASS Printer INHERIT Window
@@ -17,7 +17,7 @@ CLASS Printer INHERIT Window
 //   HIDDEN PrinterAbortProcDelegate AS __PrinterAbortProcDelegate
 //#endif
 	//PP-030828 Strong typing
-	METHOD __GetDC() AS IntPtr STRICT 
+	METHOD __GetDC() AS IntPtr STRICT
 /*	//PP-030828 Strong typing
 	LOCAL hFont AS PTR
 	LOCAL oFont AS Font
@@ -25,7 +25,7 @@ CLASS Printer INHERIT Window
 	LOCAL oForeground AS Brush
 	LOCAL strucLogPen IS _WinLogPen
 
-	
+
 
 	IF (hDC == NULL_PTR)	 // Invalid printer
 		SELF:__ResetDCFlags()
@@ -88,9 +88,11 @@ CLASS Printer INHERIT Window
 
 	RETURN hDC*/
 	RETURN IntPtr.Zero
-METHOD __ResetDCFlags() AS Printer STRICT 
+
+ /// <exclude />
+METHOD __ResetDCFlags() AS Printer STRICT
 	//PP-030828 Strong typing
-	
+
 
 	DCInitialized := FALSE
 	DCPenNeeded := TRUE
@@ -102,25 +104,29 @@ METHOD __ResetDCFlags() AS Printer STRICT
 
 	RETURN SELF
 
-METHOD Abort() 
-	
+
+/// <include file="Gui.xml" path="doc/Printer.Abort/*" />
+METHOD Abort()
+
 
 	lprAbort := TRUE
 	RETURN SELF
 
-METHOD Aborted() 
-	
+
+/// <include file="Gui.xml" path="doc/Printer.Aborted/*" />
+METHOD Aborted()
+
 
 	RETURN lprAbort
 
-METHOD BeginDoc() 
+METHOD BeginDoc()
 	//LOCAL iRetVal AS INT
 	//LOCAL DocInfo IS _winDOCINFO
 
 	//MemSet(@DocInfo, 0, _SIZEOF(_winDOCINFO))
 	//DocInfo:cbSize := _SIZEOF(_winDOCINFO)
 
-	
+
 
 	////if (NULL_STRING != sJobName)
 	////	pszJob := String2Psz(sJobName)
@@ -144,6 +150,8 @@ METHOD BeginDoc()
 
 	RETURN lprValid
 
+
+/// <include file="Gui.xml" path="doc/Printer.CanvasArea/*" />
 ACCESS CanvasArea AS BoundingBox
 	RETURN BoundingBox{Point{0, 0}, Dimension{iWidth, iHeight}}
 
@@ -170,8 +178,10 @@ ACCESS CanvasArea AS BoundingBox
 
 	//RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/Printer.Handle/*" />
 METHOD Handle(ServiceID) AS IntPtr Clipper
-	
+
 
 	RETURN hDC
 
@@ -186,14 +196,22 @@ METHOD Handle(ServiceID) AS IntPtr Clipper
 	return hDC
 	endif */
 
-METHOD Idle() 
+
+/// <include file="Gui.xml" path="doc/Printer.Idle/*" />
+METHOD Idle()
+
+
+
+
 	IF (oApp != NULL_OBJECT)
 		oApp:Exec(ExecWhileEvent)
 	ENDIF
 
 	RETURN SELF
 
-	CONSTRUCTOR(cJobname, oDevice) 
+
+/// <include file="Gui.xml" path="doc/Printer.ctor/*" />
+CONSTRUCTOR(cJobname, oDevice)
 		SUPER()
 //	LOCAL cDevice AS STRING
 //	LOCAL cDriver AS STRING
@@ -201,7 +219,7 @@ METHOD Idle()
 //	LOCAL ptrDevMode AS PTR
 //	LOCAL oPrintingDev AS PrintingDevice
 
-	
+
 
 //	lprValid		:= FALSE
 //	lprAbort		:= FALSE
@@ -209,13 +227,13 @@ METHOD Idle()
 //	lDocStarted := FALSE
 //	aPrinterhDCPrinter := {}
 
-	
+
 
 //	SUPER()
 
 //	IF !IsNil(oDevice)
 //		IF !IsInstanceOfUsual(oDevice, #PrintingDevice)
-//			WCError{#Init,#Printer,__WCSTypeError,oDevice,2}:@@Throw()
+//			WCError{#Init,#Printer,__WCSTypeError,oDevice,2}:Throw()
 //		ENDIF
 //		oPrintingDev := oDevice
 //	ELSE
@@ -242,14 +260,14 @@ METHOD Idle()
 //#ifdef __VULCAN__
 //	  PrinterAbortProcDelegate := __PrinterAbortProcDelegate{ NULL, @__PrinterAbortProc() }
 //		SetAbortProc(hDC, System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate((System.Delegate) PrinterAbortProcDelegate ) )
-//#else		
+//#else
 //		SetAbortProc(hDC, @__PrinterAbortProc())
-//#endif		
+//#endif
 //		GetLastError()
 
 //		IF !IsNil(cJobName)
 //			IF !IsString(cJobname)
-//				WCError{#Init,#Printer, __WCStypeError, cJobname, 2}:@@Throw()
+//				WCError{#Init,#Printer, __WCStypeError, cJobname, 2}:Throw()
 //			ENDIF
 //			sJobName := cJobname
 //		ELSE
@@ -259,18 +277,23 @@ METHOD Idle()
 //		lprValid := TRUE
 //	ENDIF
 
-	RETURN 
+	RETURN
 
-METHOD IsValid() 
-	
+
+/// <include file="Gui.xml" path="doc/Printer.IsValid/*" />
+METHOD IsValid()
+
+
 	RETURN	lprValid
 
-METHOD NewPage() 
+
+/// <include file="Gui.xml" path="doc/Printer.NewPage/*" />
+METHOD NewPage()
 	//LOCAL error_val AS INT
 	//LOCAL repeat_flag AS LOGIC
 	//LOCAL repeatable AS LOGIC
 
-	
+
 
 	//IF lprValid
 	//	oPerr := PrinterErrorEvent{NULL_PTR,0,0,0,SELF}
@@ -330,15 +353,17 @@ METHOD NewPage()
 	//ENDIF
 	RETURN SELF
 
-METHOD PrinterError(oPerr) 
+
+/// <include file="Gui.xml" path="doc/Printer.PrinterError/*" />
+METHOD PrinterError(oPerr)
 	//LOCAL rsTitle AS ResourceString
 	//LOCAL rsError AS ResourceString
 	//LOCAL wErrorType AS WORD
 	//LOCAL mb AS TextBox
-	
+
 
 	//IF !IsNil(oPerr) .AND. !IsInstanceOfUsual(oPerr,#PrinterErrorEvent)
-	//	WCError{#PrinterError,#printer,__WCSTypeError,oPerr,1}:@@Throw()
+	//	WCError{#PrinterError,#printer,__WCSTypeError,oPerr,1}:Throw()
 	//ENDIF
 
 	//wErrorType := oPerr:ErrorType
@@ -356,15 +381,20 @@ METHOD PrinterError(oPerr)
 	//	RETURN FALSE
 	//ENDIF
 	RETURN FALSE
-METHOD PrinterExpose(oPrinterExposeEvt) 
-	
+
+
+/// <include file="Gui.xml" path="doc/Printer.PrinterExpose/*" />
+METHOD PrinterExpose(oPrinterExposeEvt)
+
 
 	IF !IsNil(oPrinterExposeEvt) .AND. !IsInstanceOfUsual(oPrinterExposeEvt,#PrinterExposeEvent)
-		WCError{#PrinterExpose,#printer,__WCSTypeError,oPrinterExposeEvt,1}:@@Throw()
+		WCError{#PrinterExpose,#printer,__WCSTypeError,oPrinterExposeEvt,1}:Throw()
 	ENDIF
 	RETURN TRUE
 
-METHOD Start(oRange) 
+
+/// <include file="Gui.xml" path="doc/Printer.Start/*" />
+METHOD Start(oRange)
 	//LOCAL iPageNum AS INT
 	//LOCAL lAnotherPage AS LOGIC
 	//LOCAL PEE AS PrinterExposeEvent
@@ -375,8 +405,8 @@ METHOD Start(oRange)
 
 	//IF !IsNil(oRange)
 	//	IF !IsInstanceOfUsual(oRange, #Range)
-	//		WCError{#Start,#Printer,__WCSTypeError,oRange,1}:@@Throw()
-	//	ENDIF           
+	//		WCError{#Start,#Printer,__WCSTypeError,oRange,1}:Throw()
+	//	ENDIF
 	//	iPageNum := oRange:Min
 	//ENDIF
 
@@ -395,8 +425,10 @@ METHOD Start(oRange)
 
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/Printer.WindowArea/*" />
 ACCESS WindowArea AS BoundingBox
-	
+
 
 	RETURN BoundingBox{Point{0, 0}, Dimension{iWidth, iHeight}}
 
@@ -423,6 +455,8 @@ END CLASS
 STATIC CLASS WC
 	STATIC PROTECTED aPrinterhDCPrinter AS ARRAY
 
+
+ /// <exclude />
 STATIC METHOD AddPrinterToArray(hDCPrinter AS PTR, oPrinter AS Printer) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -440,6 +474,8 @@ STATIC METHOD AddPrinterToArray(hDCPrinter AS PTR, oPrinter AS Printer) AS VOID
 
 	RETURN
 
+
+ /// <exclude />
 STATIC METHOD DelPrinterFromArray(hDCPrinter AS PTR) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -456,6 +492,8 @@ STATIC METHOD DelPrinterFromArray(hDCPrinter AS PTR) AS VOID
 
 	RETURN
 
+
+ /// <exclude />
 STATIC METHOD GetPrinterFromArray(hDCPrinter AS PTR) AS OBJECT
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD

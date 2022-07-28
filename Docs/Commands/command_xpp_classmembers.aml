@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="d82ca908-3507-4f4b-9da6-6d65ff2db61d" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration &gt; <link xlink:href="ca532dd1-d0fb-4ed2-813b-7a152a34dc08" />&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">Method declarations (Xbase++ dialect)</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare and implement methods for a class, both for instances and the class itself</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;Method forward declaration</para>
+<para>&#160;[Modifiers] METHOD &lt;MethodName,...&gt; [IS &lt;MethodName&gt;] [IN &lt;SuperClass&gt;] </para>
+<para>&#160;</para>
+<para>&#160;Access/Assign method forward declaration</para>
+<para>&#160;[Attributes] ACCESS ASSIGN [CLASS] METHOD &lt;MethodName&gt; [VAR &lt;VarName&gt;]  [AS &lt;idType&gt;]</para>
+<para>&#160;[Attributes] ACCESS | ASSIGN [CLASS] METHOD &lt;MethodName&gt; [VAR &lt;VarName&gt;]  [AS &lt;idType&gt;]</para>
+<para>&#160;</para>
+<para>&#160;Method inline declaration</para>
+<para>&#160;[Attributes] INLINE [CLASS] METHOD &lt;MethodName&gt;[ [([&lt;idParam&gt; [AS|REF|OUT|IN &lt;idType&gt;] [, ...])] ) [AS &lt;idType&gt;]<para/>
+&#160;[=&gt; &lt;expression&gt;] <para/>
+&#160;CRLF</para>
+<para>&#160;[&lt;Body&gt;]<para/>
+&#160;[END METHOD]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify info about the method. (DEFERRED , FINAL , INTRODUCE , OVERRIDE , CLASS , SYNC).</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;MethodName,...&gt; </entry><entry>is a comma separated list with the names of the instance methods being declared. The name for a method follows the same convention as function and variable names. It must begin with a underscore or a letter and must contain alpha numeric characters. </entry></row></table><para>&#160;</para>
+<table><row><entry>IS &lt;MethodName&gt;</entry><entry>The IS methodname clause is not supported by X#</entry></row></table><para>&#160;</para>
+<table><row><entry>IN &lt;SuperClass&gt;</entry><entry>The IN Superclass clause is not supported (and not needed) by X#</entry></row></table><para>&#160;</para>
+<table><row><entry>Attributes</entry><entry>An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method/function containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword.</entry></row></table><para>&#160;</para>
+<table><row><entry>CLASS</entry><entry>Optional modifier that specify that the declaration is for a class level method or class level property</entry></row></table><para>&#160;</para>
+<table><row><entry>ACCESS ASSIGN</entry><entry>Declares a Get/Set method for a property. You can to use one or both of these keywords.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;VarName&gt;</entry><entry>The Get/Set method may have a different name than the property that they implement.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><para>&#160;</para>
+<table><row><entry>INLINE</entry><entry>Specifies that the whole method is included between the CLASS .. ENDCLASS keywords (other methods are so called forward declarations)</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idParam&gt;</entry><entry>A &#160;parameter variable. &#160;A variable specified in this manner is automatically declared local. &#160;These variables, also called formal parameters, are used to receive arguments that you pass when you call the entity.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS | REF|OUT|IN &lt;idType&gt;</entry><entry>Specifies the data type of the parameter variable (called strong typing). &#160;AS indicates that the parameter must be passed by value, and REF indicates that it must be passed by reference with the @ operator. OUT is a special kind of REF parameter that does not have to be assigned before the call and must be assigned inside the body of the entity. IN parameters are passed as READONLY references.<para/>
+The last parameter in the list can also be declared as PARAMS &lt;idType&gt;[] which will tell the compiler that the function/method may receive zero or more optional parameters.<para/>
+Functions or Methods of the CLIPPER calling convention are compiled to a function with a single parameter that this declared as Args PARAMS USUAL[]<para/>
+&#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>=&gt; &lt;Expression&gt;</entry><entry>Single expression that replaces the multiline body for the entity. CANNOT be compiled with a body</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;Body&gt;</entry><entry>Program statements that form the code of this entity.<para/>
+The &lt;Body&gt; can contain one or more RETURN statements to return control to the calling routine and to serve as the function return value. &#160;If no return statement is specified, control passes back to the calling routine when the function definition ends, and the function will return a default value depending on the return value data type specified (NIL if the return value is not strongly typed).<para/>
+CANNOT be combined with an Expression Body</entry></row></table><para>&#160;</para>
+<table><row><entry>END METHOD</entry><entry>Optional end clause to indicate the end of the inline METHOD entity</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Note</h1>
+<para>The visibility of a method is determined by the visibility attribute set with one of the statements EXPORTED:, PROTECTED:, HIDDEN: or INTERNAL:</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Special method Names</h1>
+<para>In Xbase++ there are some reserved method names:</para>
+<para>&#160;</para>
+<table><row><entry>Init</entry><entry>This is the name of the constructor</entry></row></table><table><row><entry>InitClass</entry><entry>This is the name of the class constructor.</entry></row></table><para>&#160;</para>
+<para>The implementation of constructors in .Net is somewhat different from Xbase++. </para>
+<para>&#183;Therefore the class constructor cannot have any parameters. </para><para>&#183;The parameters of the Init() method become the constructor parameters.</para>
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

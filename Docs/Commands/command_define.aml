@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="a27c69ad-1651-48fd-93e1-5c184a48acde" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">DEFINE Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare a constant name and its value to the compiler.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>[Modifiers] DEFINE &lt;idConstant&gt; := &lt;uValue&gt; [AS &lt;idType&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, STATIC, INTERNAL, EXPORT and UNSAFE. </entry></row></table><table><row><entry>&lt;idConstant&gt;</entry><entry>A valid identifier name for the constant. &#160;A constant is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a constant and a global variable, for example, with the same name.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;uValue&gt;</entry><entry>A constant value that is assigned to &lt;idConstant&gt;. &#160;This value can be a literal representation of one of the data types listed below or a simple expression involving only operators, literals, and other DEFINE constants; however, more complicated expressions (including class instantiation) are not allowed.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><para>&#160;</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>Once the constant name and value is declared and initialized with the DEFINE statement, you can not change the value of &lt;idConstant&gt; without provoking a compiler error. &#160;The constant value &lt;uValue&gt; will be used whenever the &lt;idConstant&gt; identifier name is encountered in your application.</para>
+<para>&#160;</para>
+<para>You can hide a constant name from a routine by declaring a variable with the same name (with LOCAL, MEMVAR, or FIELD). &#160;The search order for a variable name is as follows:</para>
+<para>1. &#160; &#160; &#160; &#160;LOCALs, local parameters, MEMVARs, and FIELDs</para>
+<para>2. &#160; &#160; &#160; &#160;SELF instance variables (i.e., without &lt;idObject&gt;: &#160;prefix in class methods)</para>
+<para>3. &#160; &#160; &#160; &#160;GLOBALs and DEFINEs</para>
+<para>&#160;</para>
+<para>Tip:  You can perform a conditional build based on the value of a DEFINE constant. &#160;See the #ifdef and #ifndef statements in this chapter for more information and examples.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>The following example assigns an application name to the constant cAppName. &#160;This value is then displayed at the beginning and end of the application run:</para>
+<para>&#160;</para>
+<para>DEFINE cAppName := &quot;Accounts Payable&quot;<para/>
+...<para/>
+FUNCTION Start()<para/>
+ &#160; ? &quot;Start of &quot;, cAppName, &quot; application.&quot;<para/>
+ &#160; ...<para/>
+ &#160; ? &quot;End of &quot;, cAppName, &quot; application.&quot;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="command_ifdef">#ifdef</link>, <link xlink:href="command_ifndef">#ifndef</link>, <link xlink:href="2a900f41-b488-4d93-9c87-137df66f4503">GLOBAL</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

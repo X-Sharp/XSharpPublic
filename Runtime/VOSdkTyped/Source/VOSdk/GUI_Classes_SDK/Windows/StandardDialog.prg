@@ -2,10 +2,12 @@
 
 USING VOSDK := XSharp.VO.SDK
 
+/// <include file="Gui.xml" path="doc/OpenDialog/*" />
 CLASS OpenDialog INHERIT StandardFileDialog
 
 	PROTECT oOpen AS System.Windows.Forms.OpenFileDialog
 
+/// <include file="Gui.xml" path="doc/OpenDialog.ctor/*" />
 	CONSTRUCTOR(oOwnWnd,cInitPath,dwFlag)
 		SUPER(oOwnWnd,cInitPath,dwFlag)
 		oDlg := oOpen := System.Windows.Forms.OpenFileDialog{}
@@ -17,7 +19,7 @@ CLASS OpenDialog INHERIT StandardFileDialog
 		SELF:PostInit()
 		RETURN
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL CLIPPER
 		oOpen := NULL_OBJECT
 		RETURN SUPER:Destroy()
 
@@ -29,14 +31,16 @@ CLASS OpenDialog INHERIT StandardFileDialog
 		RETURN SUPER:Show()
 
 END CLASS
+/// <include file="Gui.xml" path="doc/PaletteDialog/*" />
 CLASS PaletteDialog INHERIT StandardColorDialog
 
+/// <include file="Gui.xml" path="doc/PaletteDialog.ctor/*" />
 	CONSTRUCTOR(uOwner,oColor)
 
 
 		IF !IsNil(uOwner)
 			IF !IsInstanceOfUsual(uOwner,#Window)
-				WCError{#Init,#PaletteDialog,__WCSTypeError,uOwner,1}:@@Throw()
+				WCError{#Init,#PaletteDialog,__WCSTypeError,uOwner,1}:Throw()
 			ENDIF
 		ENDIF
 		SUPER(oColor)
@@ -52,10 +56,12 @@ CLASS PaletteDialog INHERIT StandardColorDialog
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/SaveAsDialog/*" />
 CLASS SaveAsDialog INHERIT StandardFileDialog
 
 
 	PROTECT oSave AS System.Windows.Forms.SaveFileDialog
+/// <include file="Gui.xml" path="doc/SaveAsDialog.ctor/*" />
 
 	CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag)
 
@@ -69,7 +75,7 @@ CLASS SaveAsDialog INHERIT StandardFileDialog
 		SELF:PostInit()
 		RETURN
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL CLIPPER
 		oSave := NULL_OBJECT
 		RETURN SUPER:Destroy()
 
@@ -77,14 +83,16 @@ CLASS SaveAsDialog INHERIT StandardFileDialog
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/SelectDialog/*" />
 CLASS SelectDialog INHERIT StandardColorDialog
 
+/// <include file="Gui.xml" path="doc/SelectDialog.ctor/*" />
 	CONSTRUCTOR(uOwner,oColor)
 
 
 		IF !IsNil(uOwner)
 			IF !IsInstanceOfUsual(uOwner,#Window)
-				WCError{#Init,#SelectDialog,__WCSTypeError,uOwner,1}:@@Throw()
+				WCError{#Init,#SelectDialog,__WCSTypeError,uOwner,1}:Throw()
 			ENDIF
 		ENDIF
 		SUPER(oColor)
@@ -99,6 +107,7 @@ CLASS SelectDialog INHERIT StandardColorDialog
 END CLASS
 
 
+/// <include file="Gui.xml" path="doc/StandardColorDialog/*" />
 CLASS StandardColorDialog INHERIT StandardDialog
 	PROTECT liFlags AS LONGINT
 	PROTECT oDefColor AS Color
@@ -110,6 +119,7 @@ CLASS StandardColorDialog INHERIT StandardDialog
 	END CLASS
 
 	STATIC PROPERTY CustomColors AS INT[] AUTO
+/// <include file="Gui.xml" path="doc/StandardColorDialog.Color/*" />
 
 	METHOD Color()
 		RETURN oDefColor
@@ -117,6 +127,7 @@ CLASS StandardColorDialog INHERIT StandardDialog
 	//METHOD Destroy() AS USUAL STRICT
 		//RETURN SELF
 
+/// <include file="Gui.xml" path="doc/StandardColorDialog.ctor/*" />
 	CONSTRUCTOR(oColor)
 
 		SUPER()
@@ -124,13 +135,14 @@ CLASS StandardColorDialog INHERIT StandardDialog
 
 		IF !IsNil(oColor)
 			IF !IsInstanceOfUsual(oColor,#Color)
-				WCError{#Init,#StandardColorDialog,__WCSTypeError,oColor,1}:@@Throw()
+				WCError{#Init,#StandardColorDialog,__WCSTypeError,oColor,1}:Throw()
 			ENDIF
 			oDefColor := oColor
 		ENDIF
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardColorDialog.Show/*" />
 	METHOD Show()
 		LOCAL lRet AS LOGIC
 		LOCAL oColorDlg as VOColorDialog
@@ -166,13 +178,16 @@ CLASS StandardColorDialog INHERIT StandardDialog
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/StandardDialog/*" />
 CLASS StandardDialog INHERIT VObject
 
+/// <include file="Gui.xml" path="doc/StandardDialog.ctor/*" />
 	CONSTRUCTOR()
 		SUPER()
 		RETURN
 END CLASS
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog/*" />
 CLASS StandardFileDialog INHERIT StandardDialog
 	PROTECT cInitPath	AS STRING
 	PROTECT Flags		AS DWORD
@@ -181,6 +196,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 	PROTECT oOwner		AS Window
 	PROTECT oDlg		AS System.Windows.Forms.FileDialog
 
+ /// <exclude />
 	METHOD __AddFilter(sFilter AS STRING, sFilterDesc AS STRING) AS VOID STRICT
 		LOCAL sOldFilter as STRING
 		sOldFilter := oDlg:Filter
@@ -190,37 +206,46 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		oDlg:Filter := sOldFilter+sFilterDesc+"|"+sFilter
 		RETURN
 
+ /// <exclude />
 	METHOD __ClearFilters() AS VOID STRICT
 		oDlg:Filter := String.Empty
 		RETURN
 
+ /// <exclude />
 	ACCESS __Flags AS DWORD STRICT
 		RETURN Flags
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.Caption/*" />
 	ACCESS Caption  AS STRING
 		RETURN oDlg:Title
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.Caption/*" />
 	ASSIGN Caption(cNewCaption AS STRING)
 		oDlg:Title := cNewCaption
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.DefExt/*" />
 	ACCESS DefExt AS STRING
 		RETURN oDlg:DefaultExt
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.DefExt/*" />
 	ASSIGN DefExt( cNew  AS STRING)
 		//PP-040101
 		oDlg:DefaultExt := cNew
 
-	NEW METHOD Destroy() AS USUAL STRICT
+/// <include file="Gui.xml" path="doc/StandardFileDialog.Destroy/*" />
+	METHOD Destroy() AS USUAL CLIPPER
 		IF oDlg != null_OBJECT
 			oDlg:Dispose()
 			oDlg := NULL_OBJECT
 		ENDIF
 		RETURN SELF
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.Dispatch/*" />
 	METHOD Dispatch(oEvt, hDlg)
 		RETURN 0L
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.DlgStyle/*" />
 	ASSIGN DlgStyle(flag as LOGIC)
 		IF flag
 			Flags := _OR(Flags, DWORD(_CAST, OFN_EXPLORER))
@@ -230,15 +255,19 @@ CLASS StandardFileDialog INHERIT StandardDialog
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.FileName/*" />
 	ACCESS FileName AS STRING
 		RETURN oDlg:FileName
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.FilterIndex/*" />
 	ACCESS FilterIndex AS LONG
 		RETURN oDlg:FilterIndex
+/// <include file="Gui.xml" path="doc/StandardFileDialog.FilterIndex/*" />
 
 	ASSIGN  FilterIndex (nIndex AS LONG)
 		oDlg:FilterIndex := nIndex
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.help/*" />
 	METHOD Help()
 		RETURN NIL
 
@@ -246,6 +275,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		SELF:Help()
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.HideReadOnly/*" />
 	ASSIGN HideReadOnly(flag AS LOGIC)
 		IF flag
 			Flags := _OR(Flags, OFN_HIDEREADONLY)
@@ -256,13 +286,14 @@ CLASS StandardFileDialog INHERIT StandardDialog
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.ctor/*" />
 	CONSTRUCTOR(uOwner, uInitPath)
 
 
 		SUPER()
 		IF !IsNil(uOwner)
 			IF !IsInstanceOfUsual(uOwner,#Window)
-				WCError{#Init,#TextBox,__WCSTypeError,uOwner,1}:@@Throw()
+				WCError{#Init,#TextBox,__WCSTypeError,uOwner,1}:Throw()
 			ELSE
 				oOwner:=uOwner
 			ENDIF
@@ -320,9 +351,11 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		oDlg:FileName := cInitPath
 
 		RETURN
+/// <include file="Gui.xml" path="doc/StandardFileDialog.InitialDirectory/*" />
 
 	ACCESS InitialDirectory AS STRING
 		RETURN oDlg:InitialDirectory
+/// <include file="Gui.xml" path="doc/StandardFileDialog.InitialDirectory/*" />
 
 	ASSIGN InitialDirectory(cNewDir AS STRING)
 		IF ! empty(cNewDir)
@@ -333,9 +366,11 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		ENDIF
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.NoPlacesBar/*" />
 	ACCESS NoPlacesBar AS LOGIC
 		RETURN LOGIC(_CAST, _AND(FlagsEx, OFN_EX_NOPLACESBAR))
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.NoPlacesBar/*" />
 	ASSIGN NoPlacesBar(flag AS LOGIC)
 
 
@@ -347,9 +382,11 @@ CLASS StandardFileDialog INHERIT StandardDialog
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.ReadOnly/*" />
 	ACCESS ReadOnly AS LOGIC
 		RETURN LOGIC(_CAST, _AND(Flags, OFN_READONLY))
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.ReadOnly/*" />
 	ASSIGN ReadOnly(flag AS LOGIC)
 		IF flag
 			Flags := _OR(Flags, OFN_READONLY)
@@ -358,6 +395,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		ENDIF
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.SetFilter/*" />
 	METHOD SetFilter(uFilter, uFilterDesc, nIndex)
 		LOCAL i AS INT
 
@@ -366,7 +404,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 			SELF:__AddFilter(uFilter, uFilterDesc)
 		ELSEIF IsArray(uFilter) .AND. IsArray(uFilterDesc)
 			SELF:__ClearFilters()
-			FOR i:=1 TO Min(ALen(uFilter), ALen(uFilterDesc))
+			FOR i:=1 TO Math.Min(ALen(uFilter), ALen(uFilterDesc))
 				SELF:__AddFilter(AsString(uFilter[i]), AsString(uFilterDesc[i]))
 			NEXT
 		ENDIF
@@ -376,6 +414,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.SetStyle/*" />
 	METHOD SetStyle(kStyle AS LONG, lOnOff := TRUE AS LOGIC) AS VOID
 		IF (lOnOff)
 			Flags := _OR(Flags, DWORD(kStyle))
@@ -384,6 +423,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		ENDIF
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.SetStyleEx/*" />
 	METHOD SetStyleEx(kStyle AS LONG, lOnOff := TRUE AS LOGIC) AS VOID
 		IF (lOnOff)
 			FlagsEx := _OR(Flags, DWORD(kStyle))
@@ -392,6 +432,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		ENDIF
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFileDialog.Show/*" />
 	METHOD Show()
 		LOCAL oRes AS System.Windows.Forms.DialogResult
 		oDlg:CheckFileExists := _AND(Flags, OFN_FILEMUSTEXIST)  != 0
@@ -409,6 +450,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/StandardFolderDialog/*" />
 CLASS StandardFolderDialog INHERIT StandardDialog
 	PROTECT oOwner as Window
 	PROTECT sTitle AS STRING
@@ -416,13 +458,16 @@ CLASS StandardFolderDialog INHERIT StandardDialog
 	PROTECT dwType AS DWORD
 	PROTECT sResult AS STRING
 
+ /// <exclude />
 	ACCESS __StartFolder AS STRING STRICT
 		RETURN sStart
 
 
+/// <include file="Gui.xml" path="doc/StandardFolderDialog.FolderName/*" />
 	ACCESS FolderName AS STRING
 		RETURN sResult
 
+/// <include file="Gui.xml" path="doc/StandardFolderDialog.ctor/*" />
 	CONSTRUCTOR(uOwner, sCaption, sStartFolder, kType)
 		SUPER()
 		Default(@kType, BIF_RETURNONLYFSDIRS)
@@ -441,9 +486,11 @@ CLASS StandardFolderDialog INHERIT StandardDialog
 		ENDIF
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFolderDialog.Result/*" />
 	ACCESS Result AS STRING
 		RETURN sResult
 
+/// <include file="Gui.xml" path="doc/StandardFolderDialog.Show/*" />
 	METHOD Show()
 		LOCAL oDlg as System.Windows.Forms.FolderBrowserDialog
 		LOCAL oRes as System.Windows.Forms.DialogResult
@@ -470,6 +517,7 @@ CLASS StandardFolderDialog INHERIT StandardDialog
 
 END CLASS
 
+/// <include file="Gui.xml" path="doc/StandardFontDialog/*" />
 CLASS StandardFontDialog INHERIT StandardDialog
 	PROTECT lFlags AS LONGINT
 	PROTECT lFixPitchFlag AS LONGINT
@@ -483,6 +531,7 @@ CLASS StandardFontDialog INHERIT StandardDialog
 	//PROTECT oPrinter AS printer
 	PROTECT oOwner as Window
 
+/// <include file="Gui.xml" path="doc/StandardFontDialog.EnableANSI/*" />
 	METHOD EnableANSI(bOnOff := TRUE AS LOGIC) AS VOID
 		IF bOnOff
 			// lANSIFlag := CF_ANSIONLY // obsolete (see Win32 SDK Help file)
@@ -492,6 +541,7 @@ CLASS StandardFontDialog INHERIT StandardDialog
 		ENDIF
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFontDialog.EnableEffects/*" />
 	METHOD EnableEffects(bOnOff:= TRUE AS LOGIC) AS VOID
 		IF bOnOff
 			lEffectFlag := CF_EFFECTS
@@ -501,6 +551,7 @@ CLASS StandardFontDialog INHERIT StandardDialog
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFontDialog.EnableFixedPitch/*" />
 	METHOD EnableFixedPitch(bOnOff:= TRUE AS LOGIC) AS VOID
 		IF bOnOff
 			lFixPitchFlag := CF_FIXEDPITCHONLY
@@ -509,6 +560,7 @@ CLASS StandardFontDialog INHERIT StandardDialog
 		ENDIF
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFontDialog.EnableTrueType/*" />
 	METHOD EnableTrueType(bOnOff:= TRUE AS LOGIC) AS VOID
 		IF bOnOff
 			lTTYFlag := CF_TTONLY
@@ -517,17 +569,21 @@ CLASS StandardFontDialog INHERIT StandardDialog
 		ENDIF
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFontDialog.Flags/*" />
 	ASSIGN Flags(lInt as LONG)
 		lFlags := _OR(lFlags, LONGINT(_CAST, lInt))
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFontDialog.Font/*" />
 	PROPERTY Font		AS VOSDK.Font	GET oFont	SET oFont	:= VALUE
+/// <include file="Gui.xml" path="doc/StandardFontDialog.FontColor/*" />
 	PROPERTY FontColor  AS VOSDK.Color  GET oColor	SET oColor	:= VALUE
 
+/// <include file="Gui.xml" path="doc/StandardFontDialog.ctor/*" />
 	CONSTRUCTOR(uOwner)
 		IF !IsNil(uOwner)
 			IF !IsInstanceOfUsual(uOwner,#Window) .AND. IsInstanceOfUsual( uOwner,#Printer)
-				WCError{#Init,#StandardFontDialog,__WCSTypeError,uOwner,1}:@@Throw()
+				WCError{#Init,#StandardFontDialog,__WCSTypeError,uOwner,1}:Throw()
 			ENDIF
 			IF IsInstanceOf(uOwner, #Window)
 				oOwner := uOwner
@@ -550,6 +606,7 @@ CLASS StandardFontDialog INHERIT StandardDialog
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/StandardFontDialog.Show/*" />
 	METHOD Show()
 		LOCAL oDlg as System.Windows.Forms.FontDialog
 		LOCAL oRes as System.Windows.Forms.DialogResult

@@ -55,10 +55,8 @@ BEGIN NAMESPACE XSharp.RDD
                 local oValue := NULL as OBJECT
                 IF lOk .and. CoreDb.Info(DBI_RDD_OBJECT,REF oValue)
                     var oRDD := (IRdd) oValue
-                    var oProperty := oValue:GetType():GetProperty("ReturnRawData",;
-                        BindingFlags.FlattenHierarchy|BindingFlags.Public|BindingFlags.Instance| BindingFlags.IgnoreCase)
-                    if oProperty != NULL
-                        oProperty:SetValue(oRDD, TRUE)
+                    IF oRDD IS IRawData VAR oRaw
+                        oRaw:ReturnRawData := TRUE
                     ENDIF
                 ENDIF
                 IF lOk .and. lValidate
@@ -540,7 +538,12 @@ BEGIN NAMESPACE XSharp.RDD
           IF SUPER:Read()
                 SELF:Code   := (BYTE[]) SELF:ReadField(POS_CODE)
                 IF SELF:ObjectName == REC_SPSOURCE
-                    SELF:Source := RuntimeState.WinEncoding:GetString(SELF:Code, 8, SELF:Code:Length-8)
+                    IF SELF:Code != NULL .and. SELF:Code:Length > 8
+                        SELF:Source := RuntimeState.WinEncoding:GetString(SELF:Code, 8, SELF:Code:Length-8)
+                    ELSE
+                        SELF:Source := ""
+                    ENDIF
+
                 ENDIF
                 RETURN TRUE
           ENDIF

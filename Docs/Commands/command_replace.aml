@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="0a30ff7e-788b-4630-9e4b-b61279449f34" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">REPLACE Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Assign new values to the contents of one or more fields in the current record.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>REPLACE &lt;idField&gt; WITH &lt;uValue&gt; [, &lt;idField&gt; WITH &lt;uValue&gt;...] [&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] <para/>
+&#160;[FOR &lt;lCondition&gt;] &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;idField&gt;</entry><entry>The name of the field variable to assign a new value. &#160;If &lt;idField&gt; is prefaced with an alias or declared using FIELD &lt;idField&gt; IN &lt;idAlias&gt;, the assignment takes place in the designated work area. &#160;Otherwise, the current work area is assumed.</entry></row></table><para>&#160;</para>
+<table><row><entry>WITH &lt;uValue&gt;</entry><entry>Defines the value to assign to &lt;idField&gt;.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;Scope&gt;</entry><entry>The portion of the current database file to process. &#160;The default is all visible records. Scope is one or more clauses of:<para/>
+[NEXT &lt;NEXT&gt;] &#160; &#160; &#160; &#160;Optionally specifies the number of records to process starting <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;with the first record of the source file. <para/>
+[RECORD &lt;rec&gt;] &#160; &#160; &#160; &#160;An optional record ID If specified, the processing begins <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;with this data record in the source file. <para/>
+[&lt;rest:REST&gt;] &#160; &#160; &#160; &#160;The option REST specifies whether records are sequentially <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;searched only from the current up to the last record. <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;If a condition is specified, the option ALL is the default value.<para/>
+[ALL] &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;The option ALL specifies that all records from the source file are imported. <para/>
+ &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;This is the default setting. </entry></row></table><para>&#160;</para>
+<table><row><entry>FOR &lt;lCondition&gt;</entry><entry>A condition that each visible record within the scope must meet in order to be processed. &#160;If a record does not meet the specified condition, it is ignored and the next visible record is processed. &#160;If no &lt;Scope&gt; or WHILE clause is specified, having a for condition changes the default scope to all visible records.</entry></row></table><para>&#160;</para>
+<table><row><entry>WHILE &lt;lCondition&gt;</entry><entry>A condition that each visible record within the scope must meet, starting with the current record. &#160;As soon as the while condition fails, the process terminates. &#160;If no &lt;Scope&gt; is specified, having a while condition changes the default scope to the rest of the visible records in the file.</entry></row></table><para>&#160;</para>
+<table><row><entry>IN|ALIAS &lt;workarea&gt;</entry><entry>Specifies the work area for which the operation must be performed</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>REPLACE performs the same function as the assignment operator (:=) except that it assumes field variables. &#160;</para>
+<para>&#160;</para>
+<para>Warning! &#160;When you REPLACE a key field, the index is updated and the relative position of the record pointer within the index is changed. &#160;This means that replacing a key field with a scope or a condition can yield an erroneous result. &#160;To update a key field, suppress the controlling order (with, for example, SET ORDER TO 0 or DBSetOrder(0)) before the REPLACE. &#160;This insures that the record pointer moves sequentially in natural order and that all orders in the order list are updated properly.</para>
+<para>&#160;</para>
+<para>Shared mode:  For a shared database, this command requires all records that it operates on to be locked. &#160;You can accomplish this using one or more record locks or a file lock, depending on the scope of the command. &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example shows a simple use of REPLACE:</para>
+<para>&#160;</para>
+<para>USE customer NEW<para/>
+APPEND BLANK<para/>
+USE invoices NEW<para/>
+APPEND BLANK<para/>
+&#160;<para/>
+REPLACE Charges WITH Customer-&gt;Markup * Cost,;<para/>
+&#160;CustID WITH Customer-&gt;CustID,;<para/>
+&#160;Customer-&gt;TranDate WITH TODAY()</para>
+<para>&#160;</para>
+<para>Using assignment statements in place of the REPLACE command looks like this:</para>
+<para>&#160;</para>
+<para>Invoices-&gt;Charges := Customer-&gt;Markup * ;<para/>
+&#160;Invoices-&gt;Cost<para/>
+Invoices-&gt;CustID := Customer-&gt;CustID<para/>
+Customer-&gt;TranDate := TODAY()</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="4fe980e5-4554-4e15-a11c-f06c7836d8b8">COMMIT</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbRLock.htm -->DbRLock(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetOrder.htm -->DbSetOrder(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Flock.htm -->FLock(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_RLock.htm -->RLock(), <link xlink:href="4d6305aa-62bf-4dce-8716-be94d777c277">SET ORDER</link>, <!-- TODO: Unknown topic link: function_setfieldstore.html -->SetFieldStore()</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

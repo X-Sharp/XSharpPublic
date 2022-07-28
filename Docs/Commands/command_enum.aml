@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="34620539-dc0e-4e1b-a5ef-8ec6772b75c4" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">ENUM Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare an enum to &#160;the compiler.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[attributes] [Modifiers] </para>
+<para>&#160;ENUM &lt;idEnumName&gt; [AS type] &#160; </para>
+<para>&#160; &#160; &#160; &#160; &#160;memberName [:= value]</para>
+<para>&#160; &#160; &#160; &#160; &#160; &#160;[...]</para>
+<para>&#160;END [ENUM]</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Attributes</entry><entry>An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method/function containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword.</entry></row></table><para>&#160;</para>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, PROTECTED, HIDDEN, INTERNAL, SEALED, ABSTRACT or STATIC.</entry></row></table><para>&#160;</para>
+<table><row><entry>idEnum</entry><entry>A valid identifier name for the enum. &#160;Enum names must be unique within a namespace.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS type </entry><entry>The data type of the enumeration members (optional).</entry></row></table><para>&#160;</para>
+<table><row><entry>memberName </entry><entry>The name(s) of the enumeration members.</entry></row></table><para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>A type declared with the ENUM keyword is an &quot;enumeration&quot; type, a type that consists of a set of named constants which are called the enumerator list. Enumeration types implicitly inherit from System.Enum.</para>
+<para>&#160;</para>
+<para>An enumeration type has an underlying type, which is the type of the items in the enumerator list. The default underlying type is INT; if the AS clause is specified then the type can be any signed or unsigned integral type except System.Char.</para>
+<para>&#160;</para>
+<para>By default, the first member in the enumerator list has a value of 0. &#160;The value of every other member is the value of the previous member plus 1. An element&#39;s value can be explicitly set to any value in the range of the underlying type by using the assignment operator (:=) followed by either a literal integer value, or an expression that resolves to an integer value at compile time. &#160;Two or more members can explicitly set to the same value.</para>
+<para>&#160;</para>
+<para>The default value for an ENUM E is the expression (E)0., which may or may not represent a member of the enum type, depending on whether or not a member having the value of 0 exists.</para>
+<para>&#160;</para>
+<para>Enumeration members are referenced by specifying the name of the enumeration type and the name of the member, separated by a period. If the enumeration type was declared in the namespace currently being compiled, the name of the enumeration type is sufficient. Otherwise, either the fully-qualified name of the enumeration must be used (e.g. System.Windows.Forms.MessageBoxButtons) or the namespace must be imported using the USING directive.</para>
+<para>&#160;</para>
+<para>The System.FlagsAttribute attribute may be placed on an ENUM to indicate that the elements of the enum may be combined using a bitwise OR operation.</para>
+<para>&#160;</para>
+<para>The enum name may include one or more namespace names, separated by periods. If no period is found in the enum name, then the default namespace is assumed. The default namespace is the base name of the output assembly name, unless explicitly overridden by the /ns compiler option.</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Example</h1>
+<para>ENUM days<para/>
+ &#160; Sunday &#160; &#160; // 0<para/>
+ &#160; Monday &#160; &#160; // 1<para/>
+ &#160; Tuesday &#160;  // 2<para/>
+ &#160; Wednesday  // 3<para/>
+ &#160; Thursday &#160; // 4<para/>
+ &#160; Friday &#160; &#160; // 5<para/>
+ &#160; Saturday &#160; // 6<para/>
+END CLASS<para/>
+&#160;<para/>
+FUNCTION example1() AS VOID<para/>
+ &#160; LOCAL i AS INT<para/>
+ &#160; i := (INT) days.Friday<para/>
+ &#160; ? days.Friday, i &#160; &#160; // prints: Friday 5<para/>
+ &#160; <para/>
+ENUM direction<para/>
+ &#160; north &#160; &#160; &#160;  // has default value of 0<para/>
+ &#160; east &#160;:= 90<para/>
+ &#160; south := 180<para/>
+ &#160; west &#160;:= 270<para/>
+END ENUM<para/>
+&#160;<para/>
+FUNCTION example2( x AS direction ) AS VOID<para/>
+ &#160; IF x == direction.north<para/>
+ &#160; &#160; &#160;goNorth()<para/>
+ &#160; ELSEIF x == direction.east<para/>
+ &#160; &#160; &#160;goEast()<para/>
+ &#160; ELSEIF x == direction.south<para/>
+ &#160; &#160; &#160;goSouth()<para/>
+ &#160; ELSEIF x == direction.west<para/>
+ &#160; &#160; &#160;goWest()<para/>
+ &#160; ELSE<para/>
+ &#160; &#160; &#160;Debug.Assert( &quot;Unknown value for direction&quot; )<para/>
+ &#160; ENDIF<para/>
+ &#160; <para/>
+[System.FlagsAttribute];<para/>
+ENUM CarOptions<para/>
+ &#160; SunRoof &#160; &#160; &#160; := 0x1<para/>
+ &#160; Spoiler &#160; &#160; &#160; := 0x2<para/>
+ &#160; FogLights &#160; &#160; := 0x4<para/>
+ &#160; TintedWindows := 0x8<para/>
+END ENUM<para/>
+&#160;<para/>
+FUNCTION example3() AS VOID<para/>
+ &#160; LOCAL options AS CarOptions<para/>
+ &#160; options := CarOptions.SunRoof | CarOptions.FogLights<para/>
+ &#160; ? options &#160; &#160; &#160; // prints: SunRoof, FogLights<para/>
+ &#160; ? (INT) options // prints: 5</para>
+<para>In the first and third examples, note that using the ? statement on an enum type prints out the textual value of the enum. This is because the names of the enum members are stored in the assembly&#39;s metadata, and the ToString() method in System.Enum (which every enum type inherits from) uses the metadata to obtain and return the name of the enum member, rather than its underlying numerical value.</para>
+<para>&#160;</para>
+<para>Also note that even though the textual names of the enum members are returned from Enum.ToString(), the compiler uses the literal numeric values in the compiled code. So the expression IF x == direction.north for example actually compiles as IF x == 0, because the mapping between enumeration members and their underlying values occurs at compile time, not at runtime. &#160;This makes using enumeration types as efficient as #define, while providing much higher level of type safety and compile time error checking. However, this also means that changing the values of enum members can cause existing code that uses the enum to break unless it is recompiled.</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

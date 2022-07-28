@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="b058df06-6e00-4b17-82e2-a80610cadfc3" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_memvar.html -->Memory Variable&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">RESTORE Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Recreate public and private variables previously saved to a file and initialize them with their former values.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>RESTORE FROM &lt;xcSourceFile&gt; [ADDITIVE]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;xcSourceFile&gt;</entry><entry>The name of the memory file (created, for example, with SAVE), including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension is .MEM.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>This command attempts to open &lt;xcSourceFile&gt; in shared mode. &#160;If the file does not exist, a runtime error is raised. &#160;If the file is successfully opened, the operation proceeds. &#160;If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE. &#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>ADDITIVE</entry><entry>Causes memory variables loaded from the memory file to be added to the existing pool of memory variables.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>The scope of the variable is not saved with the variable but is instead established when the variable is restored. &#160;Arrays and declared variables cannot be saved or restored.</para>
+<para>&#160;</para>
+<para>When memory variables are restored, they are recreated as private variables with the scope of the current procedure or function unless they exist as public variables and you specify the ADDITIVE clause . &#160;If ADDITIVE is specified, public and private variables with the same names are overwritten unless hidden with PRIVATE. &#160;If ADDITIVE is not specified, all public and private variables are released before the memory file is loaded.</para>
+<para>&#160;</para>
+<para>When restoring variables that were saved in a CLIPPER program, the variable names are truncated to 10 characters. &#160;This is because CLIPPER honors only the first 10 characters and generates the .MEM file using only these characters. &#160;XSharp, however, honors all characters. &#160;For example, in CLIPPER, the two variable names ThisIsALongVariable and ThisIsALon refer to the same variable; this is not the case in XSharp.</para>
+<para>&#160;</para>
+<para>Note:  Declared variables are not affected by the RESTORE command. &#160;If a variable has been declared in the current routine, and a variable with the same name is restored, only the declared variable is visible unless references to the restored variable are prefaced with the _MEMVAR-&gt; alias.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example demonstrates a typical application of SAVE and RESTORE. &#160;Here memory variables containing screens are created using SAVE TO and RESTORE FROM:</para>
+<para>&#160;</para>
+<para>// Create and use a pseudo array of screens<para/>
+SAVE SCREEN TO cScreen1<para/>
+SAVE ALL LIKE cScreen* TO Screens<para/>
+&#160;<para/>
+&lt;Statements&gt;...<para/>
+&#160;<para/>
+RESTORE FROM Screens ADDITIVE<para/>
+nNumber = &quot;1&quot;<para/>
+RESTORE SCREEN FROM (&quot;cScreen&quot; + nNumber)</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="d8822cca-7c06-4150-b83c-2dd9b531186d">LOCAL</link>, <link xlink:href="167a7bca-5bea-4198-b685-3376fba16514">PRIVATE</link>, <link xlink:href="8d194317-f7c6-462f-bcfb-ccb8b195d6bf">PUBLIC</link>, <link xlink:href="90f76795-c5ca-4bfb-b6c4-21556ec416c0">SAVE</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDefault.htm -->SetDefault(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetPath.htm -->SetPath()</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

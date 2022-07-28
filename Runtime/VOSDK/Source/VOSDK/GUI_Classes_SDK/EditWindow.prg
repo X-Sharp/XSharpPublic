@@ -3,30 +3,24 @@ CLASS EditWindow INHERIT ControlWindow
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.AsString/*" />
-METHOD AsString() 
-	
-	
+METHOD AsString()
+
+
 
 
 	RETURN SELF:TextValue
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Clear/*" />
-METHOD Clear() 
-	
-	
+METHOD Clear()
 
 
 	oCtrl:Clear()
-
-
 	RETURN SELF
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Copy/*" />
-METHOD Copy() 
-	
-	
+METHOD Copy()
 
 
 	oCtrl:Copy()
@@ -36,9 +30,7 @@ METHOD Copy()
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Cut/*" />
-METHOD Cut() 
-	
-	
+METHOD Cut()
 
 
 	oCtrl:Cut()
@@ -46,14 +38,13 @@ METHOD Cut()
 
 	RETURN SELF
 
-
 /// <include file="Gui.xml" path="doc/EditWindow.Font/*" />
-ASSIGN Font(oNewFont) 
+ASSIGN Font(oNewFont)
 	LOCAL hFont AS PTR
 
 
-	
-	
+
+
 
 
 	IF (hWnd != NULL_PTR)
@@ -68,52 +59,52 @@ ASSIGN Font(oNewFont)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.GetLine/*" />
-METHOD GetLine(nLineNumber, nMaxLength) 
-	
-	
+METHOD GetLine(nLineNumber, nMaxLength)
+
+
 
 
 	RETURN oCtrl:GetLine(nLineNumber, nMaxLength)
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
+
+
 
 
 	SUPER(MultiLineEdit{oOwner,xID,oPoint,oDimension})
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Length/*" />
-ACCESS Length 
-	
-	
+ACCESS Length
+
+
 
 
 	RETURN oCtrl:Length
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.LineCount/*" />
-ACCESS LineCount 
-	
-	
+ACCESS LineCount
+
+
 
 
 	RETURN oCtrl:LineCount
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.LineDown/*" />
-METHOD LineDown() 
-	
-	
+METHOD LineDown()
+
+
 
 
 	oCtrl:LineDown()
@@ -123,9 +114,9 @@ METHOD LineDown()
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.LineUp/*" />
-METHOD LineUp() 
-	
-	
+METHOD LineUp()
+
+
 
 
 	oCtrl:LineUp()
@@ -135,9 +126,9 @@ METHOD LineUp()
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.PageDown/*" />
-METHOD PageDown() 
-	
-	
+METHOD PageDown()
+
+
 
 
 	oCtrl:PageDown()
@@ -147,9 +138,9 @@ METHOD PageDown()
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.PageUp/*" />
-METHOD PageUp() 
-	
-	
+METHOD PageUp()
+
+
 
 
 	oCtrl:PageUp()
@@ -159,9 +150,9 @@ METHOD PageUp()
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Paste/*" />
-METHOD Paste(cNewString) 
-	
-	
+METHOD Paste(cNewString)
+
+
 
 
 	oCtrl:Paste(cNewString)
@@ -171,9 +162,9 @@ METHOD Paste(cNewString)
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.ScrollHorizontal/*" />
-METHOD ScrollHorizontal(nChars) 
-	
-	
+METHOD ScrollHorizontal(nChars)
+
+
 
 
 	oCtrl:ScrollHorizontal(nChars)
@@ -183,9 +174,9 @@ METHOD ScrollHorizontal(nChars)
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.ScrollVertical/*" />
-METHOD ScrollVertical(nLines) 
-	
-	
+METHOD ScrollVertical(nLines)
+
+
 
 
 	oCtrl:ScrollVertical(nLines)
@@ -195,72 +186,72 @@ METHOD ScrollVertical(nLines)
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Selection/*" />
-ACCESS Selection 
-	
-	
+ACCESS Selection
+
+
 
 
 	RETURN oCtrl:Selection
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Selection/*" />
-ASSIGN Selection(oSelection) 
-	
-	
+ASSIGN Selection(oSelection)
+
+
 
 
 	RETURN oCtrl:Selection:=oSelection
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.TextLimit/*" />
-ASSIGN TextLimit(nChars) 
-	
-	
+ASSIGN TextLimit(nChars)
+
+
 
 
 	RETURN oCtrl:TextLimit:=nChars
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.TextValue/*" />
-ACCESS TextValue 
-	
-	
+ACCESS TextValue
+
+
 
 
 	RETURN oCtrl:TextValue
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.TextValue/*" />
-ASSIGN TextValue(cText) 
-	
-	
+ASSIGN TextValue(cText)
+
+
 
 
 	RETURN oCtrl:TextValue:=cText
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Undo/*" />
-METHOD Undo() 
-	
-	
+METHOD Undo()
+
+
 
 
 	RETURN oCtrl:Undo()
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Value/*" />
-ACCESS Value 
-	
-	
+ACCESS Value
+
+
 
 
 	RETURN SELF:TextValue
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.Value/*" />
-ASSIGN Value(uValue) 
-	
-	
+ASSIGN Value(uValue)
+
+
 
 
 	RETURN SELF:TextValue := AsString(uValue)

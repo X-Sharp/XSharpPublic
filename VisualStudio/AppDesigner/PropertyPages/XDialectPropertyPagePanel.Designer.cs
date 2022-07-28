@@ -55,13 +55,13 @@ namespace XSharp.Project
             this.chkVO5 = new System.Windows.Forms.CheckBox();
             this.chkVO6 = new System.Windows.Forms.CheckBox();
             this.chkVO15 = new System.Windows.Forms.CheckBox();
-            this.lblVFP = new System.Windows.Forms.Label();
-            this.chkFox1 = new System.Windows.Forms.CheckBox();
-            this.chkFox2 = new System.Windows.Forms.CheckBox();
             this.chkXPP1 = new System.Windows.Forms.CheckBox();
             this.lblXPP = new System.Windows.Forms.Label();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.chkFox2 = new System.Windows.Forms.CheckBox();
+            this.chkFox1 = new System.Windows.Forms.CheckBox();
+            this.lblVFP = new System.Windows.Forms.Label();
             this.chkVO17 = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -243,9 +243,9 @@ namespace XSharp.Project
             this.chkVO4.ForeColor = System.Drawing.Color.Black;
             this.chkVO4.Location = new System.Drawing.Point(3, 131);
             this.chkVO4.Name = "chkVO4";
-            this.chkVO4.Size = new System.Drawing.Size(143, 17);
+            this.chkVO4.Size = new System.Drawing.Size(158, 17);
             this.chkVO4.TabIndex = 6;
-            this.chkVO4.Text = "Implicit signed/unsigned ";
+            this.chkVO4.Text = "Implicit numeric conversions";
             this.chkVO4.UseVisualStyleBackColor = true;
             // 
             // chkVO2
@@ -314,39 +314,6 @@ namespace XSharp.Project
             this.chkVO15.Text = "Treat missing types as usual";
             this.chkVO15.UseVisualStyleBackColor = true;
             // 
-            // lblVFP
-            // 
-            this.lblVFP.AutoSize = true;
-            this.lblVFP.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVFP.ForeColor = System.Drawing.Color.Black;
-            this.lblVFP.Location = new System.Drawing.Point(3, 243);
-            this.lblVFP.Name = "lblVFP";
-            this.lblVFP.Size = new System.Drawing.Size(157, 13);
-            this.lblVFP.TabIndex = 22;
-            this.lblVFP.Text = "Visual Foxpro compatibility";
-            // 
-            // chkFox1
-            // 
-            this.chkFox1.AutoSize = true;
-            this.chkFox1.ForeColor = System.Drawing.Color.Black;
-            this.chkFox1.Location = new System.Drawing.Point(3, 259);
-            this.chkFox1.Name = "chkFox1";
-            this.chkFox1.Size = new System.Drawing.Size(143, 17);
-            this.chkFox1.TabIndex = 24;
-            this.chkFox1.Text = "Inherit from Custom class";
-            this.chkFox1.UseVisualStyleBackColor = true;
-            // 
-            // chkFox2
-            // 
-            this.chkFox2.AutoSize = true;
-            this.chkFox2.ForeColor = System.Drawing.Color.Black;
-            this.chkFox2.Location = new System.Drawing.Point(3, 282);
-            this.chkFox2.Name = "chkFox2";
-            this.chkFox2.Size = new System.Drawing.Size(150, 17);
-            this.chkFox2.TabIndex = 25;
-            this.chkFox2.Text = "Compatible Array Handling";
-            this.chkFox2.UseVisualStyleBackColor = true;
-            // 
             // chkXPP1
             // 
             this.chkXPP1.AutoSize = true;
@@ -369,9 +336,43 @@ namespace XSharp.Project
             this.lblXPP.TabIndex = 23;
             this.lblXPP.Text = "Xbase++ compatibility";
             // 
+            // chkFox2
+            // 
+            this.chkFox2.AutoSize = true;
+            this.chkFox2.ForeColor = System.Drawing.Color.Black;
+            this.chkFox2.Location = new System.Drawing.Point(3, 282);
+            this.chkFox2.Name = "chkFox2";
+            this.chkFox2.Size = new System.Drawing.Size(150, 17);
+            this.chkFox2.TabIndex = 25;
+            this.chkFox2.Text = "Compatible Array Handling";
+            this.chkFox2.UseVisualStyleBackColor = true;
+            // 
+            // chkFox1
+            // 
+            this.chkFox1.AutoSize = true;
+            this.chkFox1.ForeColor = System.Drawing.Color.Black;
+            this.chkFox1.Location = new System.Drawing.Point(3, 259);
+            this.chkFox1.Name = "chkFox1";
+            this.chkFox1.Size = new System.Drawing.Size(143, 17);
+            this.chkFox1.TabIndex = 24;
+            this.chkFox1.Text = "Inherit from Custom class";
+            this.chkFox1.UseVisualStyleBackColor = true;
+            // 
+            // lblVFP
+            // 
+            this.lblVFP.AutoSize = true;
+            this.lblVFP.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblVFP.ForeColor = System.Drawing.Color.Black;
+            this.lblVFP.Location = new System.Drawing.Point(3, 243);
+            this.lblVFP.Name = "lblVFP";
+            this.lblVFP.Size = new System.Drawing.Size(157, 13);
+            this.lblVFP.TabIndex = 22;
+            this.lblVFP.Text = "Visual Foxpro compatibility";
+            // 
             // chkVO17
             // 
             this.chkVO17.AutoSize = true;
+            this.chkVO17.ForeColor = System.Drawing.Color.Black;
             this.chkVO17.Location = new System.Drawing.Point(303, 223);
             this.chkVO17.Name = "chkVO17";
             this.chkVO17.Size = new System.Drawing.Size(190, 17);

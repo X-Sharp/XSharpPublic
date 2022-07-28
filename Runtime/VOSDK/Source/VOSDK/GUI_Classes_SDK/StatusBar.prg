@@ -1313,11 +1313,6 @@ METHOD setmessage(cMessage, nMode)
 METHOD SetPair(oPoint)
 	LOCAL cText AS STRING
 
-
-
-
-
-
 	cText := AllTrim(AsString(oPoint:X)) + ", " + AllTrim(AsString(oPoint:Y))
 	SELF:SetText(cText, #PositionArea)
 
@@ -1683,7 +1678,7 @@ ASSIGN Value(uNewValue)
 
 
 
-	RETURN (uValue := uNewValue)
+	uValue := uNewValue
 
 
 /// <include file="Gui.xml" path="doc/StatusBarItem.Width/*" />
@@ -1706,7 +1701,7 @@ ASSIGN Width(nNewWidth)
 	ENDIF
 
 
-	RETURN (nWidth := nNewWidth)
+	nWidth := nNewWidth
 
 
 END CLASS

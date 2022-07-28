@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="3246e9b5-de8f-41a9-8bf9-cc797a57728c" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration &gt; <link xlink:href="c6b4374e-7e31-423e-b481-6788ea32ecbd" />&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">Properties and Fields (FoxPro class syntax)</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare fields and or properties with optional initial values</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[FIELD] [modifiers] &lt;IdName&gt;, &lt;IdName&gt; ...] [AS &lt;idType&gt;]</para>
+<para>&#160;[[.]Object.] &lt;IdName&gt; = &lt;Expression&gt; ...] </para>
+<para>&#160;</para>
+<para>Both syntaxes to declare and/or initialize properties are supported. </para>
+<para>We have added an optional AS DataType clause. <para/>
+We have also added an optional FIELD clause that allows you to declare fields (opposed to properties)</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<para>&#160;</para>
+<table><row><entry>FIELD </entry><entry>When you include the FIELD keyword then the names will be the names of fields in the class</entry></row></table><para>&#160;</para>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the property, such as PUBLIC,. PROTECTED, HIDDEN.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;IdName&gt;</entry><entry>A valid identifier name for the fields or properties to declare.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><para>&#160;</para>
+<table><row><entry>Expression</entry><entry>The initial value to assign to the field/property</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Notes</h1>
+<para>&#160;</para>
+<para>The way in which properties are implemented depends on the value of the /fox1 compiler switch. When this switch is enabled, then all properties will read/write from a property collection that is declared in the Custom Object. When this switch is NOT enabled then &#39;normal&#39; auto properties will be declared with a backing field in this class.</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

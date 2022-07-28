@@ -106,6 +106,7 @@ namespace XSharp.CodeDom
         private bool useTabs;
         private int tabSize;
         private int indentSize;
+        private List<CodeObject> globalmembers;
 
         private string keywordBEGIN;
         private string keywordEND;
@@ -834,20 +835,27 @@ namespace XSharp.CodeDom
         }
         protected bool writeOriginalCode(CodeObject e, bool trim = false)
         {
+            var saveindent = this.Indent;
+            bool result = false;
+            this.Indent = 0;
             if (e.HasSourceCode())
             {
-                var saveindent = this.Indent;
-                this.Indent = 0;
+                
                 if (e.HasLeadingTrivia())
                     writeTrivia(e, false);
                 string sourceCode = e.GetSourceCode();
                 if (trim)
                     sourceCode = sourceCode.Trim();
                 this.Output.Write(sourceCode);
-                this.Indent = saveindent;
-                return true;
+                result = true;
             }
-            return false;
+            else if (e is CodeSnippetTypeMember snippet)
+            {
+                this.Output.Write(snippet.Text);
+                result = true;
+            }
+            this.Indent = saveindent;
+            return result;
         }
         protected override void GenerateLabeledStatement(CodeLabeledStatement e)
         {
@@ -991,8 +999,14 @@ namespace XSharp.CodeDom
         {
             bool generateComment = true;
             entryPoint = null;
+            lastTrivia = null;
             entryPointType = null;
             types = new Stack<CodeTypeDeclaration>();
+            var globals = e.GetGlobals();
+            if (globals != null)
+            {
+                globalmembers = globals as List<CodeObject>;
+            }
             readSettings();
             this.overrideTextWriter();
             // VerbatimOrder writes the members in the order in which they appear in the collection
@@ -1048,6 +1062,13 @@ namespace XSharp.CodeDom
             entryPointType = null;
             base.GenerateCompileUnitEnd(e);
             writeTrivia(e, true);
+            if (globalmembers != null)
+            {
+                foreach (var member in globalmembers)
+                {
+                    writeOriginalCode(member);
+                }
+            }
 
         }
 
@@ -1114,12 +1135,12 @@ namespace XSharp.CodeDom
                     if (! lTemp.StartsWith("//") && ! lTemp.StartsWith("#"))
                         l2.Add(l);
                 }
-                lastTrivia = String.Join("\r\n", l2);
+                //lastTrivia = String.Join("\r\n", l2);
                 return true;
             }
             else if (lastTrivia != null)
             {
-                _writeTrivia(lastTrivia);
+                //_writeTrivia(lastTrivia);
             }
             return false;
         }

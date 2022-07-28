@@ -3,6 +3,7 @@
 
 USING System.Reflection
 USING VOSDK := XSharp.VO.SDK
+/// <include file="Gui.xml" path="doc/Menu/*" />
 CLASS Menu INHERIT VObject
 	PROTECT oWindow			as Window
 	PROTECT oParent 		AS Menu
@@ -42,16 +43,20 @@ CLASS Menu INHERIT VObject
 		oItem:Select += OnItemSelect
 		oItem:Popup  += OnItemPopup
 		RETURN oItem
+/// <include file="Gui.xml" path="doc/Menu.Accelerator/*" />
 
 	PROPERTY Accelerator AS Accelerator GET oAccelerator SET oAccelerator := Value
 
+/// <include file="Gui.xml" path="doc/Menu.Items/*" />
 	ACCESS Items AS ARRAY
 		RETURN aItem
 
+/// <include file="Gui.xml" path="doc/Menu.AddChild/*" />
 	METHOD AddChild(oMenu as Menu) AS VOID
 		aadd(aChildren, oMenu)
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Menu.AppendItem/*" />
 	METHOD AppendItem(nItemID , xNewItem )
 		LOCAL cNewItem AS STRING
 		LOCAL oSubMenu	AS Menu
@@ -93,6 +98,7 @@ CLASS Menu INHERIT VObject
 
 		RETURN oItem != NULL_OBJECT
 
+/// <include file="Gui.xml" path="doc/Menu.CheckItem/*" />
 	METHOD CheckItem(nItemID )
 		IF IsSymbol(nItemID)
 			nItemID := SELF:GetMenuID((SYMBOL) nItemID)
@@ -108,6 +114,7 @@ CLASS Menu INHERIT VObject
 
 		RETURN oItem != NULL_OBJECT
 
+/// <include file="Gui.xml" path="doc/Menu.DeleteChild/*" />
 	METHOD DeleteChild(oMenu as Menu)  AS LOGIC
 		LOCAL dwI, dwCount AS DWORD
 
@@ -120,6 +127,7 @@ CLASS Menu INHERIT VObject
 		NEXT  // dwI
 		RETURN FALSE
 
+/// <include file="Gui.xml" path="doc/Menu.DeleteItem/*" />
 	METHOD DeleteItem(xItemIdOrMenu AS USUAL) AS LOGIC
 		LOCAL retVal AS LOGIC
 		LOCAL nItemID AS LONG
@@ -149,6 +157,7 @@ CLASS Menu INHERIT VObject
 		ENDIF
 		RETURN retVal
 
+/// <include file="Gui.xml" path="doc/Menu.Destroy/*" />
 
 	METHOD Destroy() AS USUAL
 		oMenu			:= NULL_OBJECT
@@ -160,6 +169,7 @@ CLASS Menu INHERIT VObject
 
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/Menu.DisableItem/*" />
 	METHOD DisableItem(nItemID )
 		IF IsSymbol(nItemID)
 			nItemID := SELF:GetMenuID((SYMBOL) nItemID)
@@ -174,11 +184,13 @@ CLASS Menu INHERIT VObject
 
 		RETURN oItem != NULL_OBJECT
 
+/// <include file="Gui.xml" path="doc/Menu.DisableAutoUpdate/*" />
 	METHOD DisableAutoUpdate() AS VOID CLIPPER
 		SELF:SetAutoUpdate(999)
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Menu.EnableItem/*" />
 	METHOD EnableItem(nItemID)
 		IF IsSymbol(nItemID)
 			nItemID := SELF:GetMenuID((SYMBOL) nItemID)
@@ -192,6 +204,7 @@ CLASS Menu INHERIT VObject
 		ENDIF
 		RETURN oItem != NULL_OBJECT
 
+/// <include file="Gui.xml" path="doc/Menu.GetAutoUpdate/*" />
 	METHOD GetAutoUpdate() AS LONG CLIPPER
 		RETURN iAutoPosition
 
@@ -208,9 +221,11 @@ CLASS Menu INHERIT VObject
 		RETURN oResult
 
 
+/// <include file="Gui.xml" path="doc/Menu.Handle/*" />
 	METHOD Handle() AS VOMenu STRICT
 		RETURN oMenu
 
+/// <include file="Gui.xml" path="doc/Menu.HyperLabel/*" />
 	METHOD HyperLabel(nItemID)
 		LOCAL dwIndex AS DWORD
 		LOCAL dwCount AS DWORD
@@ -238,6 +253,7 @@ CLASS Menu INHERIT VObject
 
 		RETURN NULL_OBJECT
 
+/// <include file="Gui.xml" path="doc/Menu.ctor/*" />
 	CONSTRUCTOR(xResourceID)
 
 		LOCAL oResMenu AS ResourceMenu
@@ -263,7 +279,7 @@ CLASS Menu INHERIT VObject
 				IF IsNumeric(xResourceID) .OR. IsPtr(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
 					oResourceID := ResourceID{xResourceID}
 				ELSEIF !IsInstanceOfUsual(xResourceID, #ResourceID)
-					WCError{#Init, #Menu, __WCSTypeError}:@@Throw()
+					WCError{#Init, #Menu, __WCSTypeError}:Throw()
 				ELSE
 					oResourceID := xResourceID
 				ENDIF
@@ -273,6 +289,7 @@ CLASS Menu INHERIT VObject
 		ENDIF
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Menu.InsertItem/*" />
 	METHOD InsertItem(nItemID AS USUAL, xNewItem AS USUAL, nBeforeID AS INT) AS LOGIC
 		LOCAL retVal AS LOGIC
 		LOCAL cNewItem AS STRING
@@ -316,11 +333,13 @@ CLASS Menu INHERIT VObject
 		RETURN retVal
 
 
+/// <include file="Gui.xml" path="doc/Menu.MakeMenuRtol/*" />
 	METHOD MakeMenuRtol(lRToL AS LOGIC)
 		//Todo MakeMenuRtol
 		RETURN SELF
 
 
+/// <include file="Gui.xml" path="doc/Menu.Name/*" />
 	METHOD Name(nItemID AS LONG)  AS STRING
 		LOCAL oHL AS HyperLabel
 
@@ -331,6 +350,7 @@ CLASS Menu INHERIT VObject
 
 		RETURN NULL_STRING
 
+/// <include file="Gui.xml" path="doc/Menu.NameSym/*" />
 	METHOD NameSym(nItemID AS LONG) AS SYMBOL
 		LOCAL oHL AS HyperLabel
 
@@ -342,12 +362,15 @@ CLASS Menu INHERIT VObject
 
 		RETURN NULL_SYMBOL
 
+/// <include file="Gui.xml" path="doc/Menu.PostInit/*" />
 	METHOD PostInit()
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/Menu.PreInit/*" />
 	METHOD PreInit()
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/Menu.RegisterItem/*" />
 	METHOD RegisterItem(nItemID, oHyperLabel ,  hParentMenu , nPosition ) AS LOGIC
 		// hParentMenu and nPosition are now ignored
 		LOCAL lResult AS LOGIC
@@ -378,10 +401,12 @@ CLASS Menu INHERIT VObject
 		lResult := TRUE
 		RETURN lResult
 
+/// <include file="Gui.xml" path="doc/Menu.SetAutoUpdate/*" />
 	METHOD SetAutoUpdate(nMenuNumber AS LONG) AS VOID
 		iAutoPosition := nMenuNumber
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Menu.SetParent/*" />
 	METHOD SetParent(oMenu AS Menu) AS VOID
 		oParent := oMenu
 		RETURN
@@ -405,6 +430,7 @@ CLASS Menu INHERIT VObject
 			SELF:__ClearShortCuts(oItem)
 		NEXT
 		RETURN
+/// <include file="Gui.xml" path="doc/Menu.ShowAsPopup/*" />
 
 	METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 		//Todo ShowAsPopup
@@ -422,7 +448,7 @@ CLASS Menu INHERIT VObject
 		//PP-041001 Update from S. Ebert
 
 		IF !IsInstanceOfUsual(oOwner, #Window) .AND. !IsInstanceOfUsual(oOwner, #Control)
-		WCError{#ShowPopup, #Menu, __WCSTypeError, oOwner, 1}:@@Throw()
+		WCError{#ShowPopup, #Menu, __WCSTypeError, oOwner, 1}:Throw()
 		ENDIF
 
 		Default(@kButton, PM_RIGHTBUTTON)
@@ -510,9 +536,11 @@ CLASS Menu INHERIT VObject
 		RETURN lRet
 		*/
 		RETURN FALSE
+/// <include file="Gui.xml" path="doc/Menu.ToolBar/*" />
 
 	PROPERTY ToolBar as ToolBar GET oToolBar SET oToolBar := Value
 
+/// <include file="Gui.xml" path="doc/Menu.UncheckItem/*" />
 	METHOD UncheckItem(nItemID)
 		IF IsSymbol(nItemID)
 			nItemID := SELF:GetMenuID((SYMBOL) nItemID)
@@ -523,6 +551,7 @@ CLASS Menu INHERIT VObject
 		ENDIF
 		RETURN oItem != NULL_OBJECT
 
+/// <include file="Gui.xml" path="doc/Menu.UnregisterItem/*" />
 	METHOD UnregisterItem(nItemID )
 		LOCAL dwIndex AS DWORD
 		LOCAL dwCount AS DWORD

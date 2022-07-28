@@ -492,7 +492,10 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
-                    BuildCompletionListMembers(location, compList, parentType, Modifiers.Protected, staticOnly, startWith);
+                    var nextVis = Modifiers.Protected;
+                    if (minVisibility == Modifiers.Internal || minVisibility == Modifiers.Public)
+                        nextVis = minVisibility;
+                    BuildCompletionListMembers(location, compList, parentType, nextVis, staticOnly, startWith);
                 }
                 foreach (var ifname in sourceType.Interfaces)
                 {
@@ -685,7 +688,7 @@ namespace XSharp.LanguageService
         /// </summary>
         /// <param name="tokenList"></param>
         /// <returns></returns>
-        internal string TokenListAsString(List<XSharpToken> tokenList)
+        internal string TokenListAsString(List<IToken> tokenList)
         {
             string retValue = "";
             for (int pos = 0; pos < tokenList.Count; pos++)

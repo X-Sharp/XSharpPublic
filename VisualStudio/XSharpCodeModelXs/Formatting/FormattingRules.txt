@@ -1,0 +1,133 @@
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+//------------------------------------------------------------------------------
+/*
+Formattingrules.txt
+Each line consists of one or more begin token(s) followed by a comma and the matching end token(s)
+Tokens that are followed by a question mark are optional. Per Token there can only be one questionmark
+After the end token there may be another comma and a list of "options"
+These options can be:
+- OPTIONAL (end token is optional)
+- MIDDLE   (marks the block where the end keyword is actually a middle token, such as CASE). 
+- CASE     (for special indenting rules for CASE blocks)
+- SINGLELINE (for rules that may be single line such as property)
+Section delimiters indicate the type of the tokens
+NAMESPACE
+TYPE
+MEMBER
+STATEMENT
+PREPROCESSOR
+
+The MIDDLE keywords are mostly used for generating blocks in the editor
+
+*/
+
+
+
+[NAMESPACE]
+BEGIN NAMESPACE,END NAMESPACE
+
+[TYPE]
+CLASS,END CLASS,NESTED
+STRUCTURE,END STRUCTURE,NESTED
+INTERFACE,END INTERFACE,NESTED
+ENUM,END ENUM,NESTED
+VOSTRUCT,END VOSTRUCT,OPTIONAL
+UNION,END UNION,OPTIONAL
+// XPP Class
+CLASS,ENDCLASS
+// VFP Class
+DEFINE CLASS,ENDDEFINE
+
+
+// Members with mandatory end
+[MEMBER]
+LOCAL FUNCTION,END FUNCTION
+LOCAL PROCEDURE,END PROCEDURE
+
+// Members with optional end
+FUNCTION,END FUNCTION,OPTIONAL
+PROCEDURE,END PROCEDURE,OPTIONAL
+ACCESS,END ACCESS,OPTIONAL
+ASSIGN,END ASSIGN,OPTIONAL
+METHOD,END METHOD,OPTIONAL
+CONSTRUCTOR,END CONSTRUCTOR,OPTIONAL
+DESTRUCTOR,END DESTRUCTOR,OPTIONAL
+OPERATOR,END OPERATOR,OPTIONAL
+GLOBAL,GLOBAL,SINGLELINE
+DEFINE,DEFINE,SINGLELINE
+
+PROPERTY,END PROPERTY,SINGLELINE
+EVENT,END EVENT,SINGLELINE
+GET,END GET,SINGLELINE
+SET,END SET,SINGLELINE
+INIT,END INIT,SINGLELINE
+ADD,END ADD,SINGLELINE
+REMOVE,END REMOVE,SINGLELINE
+
+
+// Conditional Statements
+[STATEMENT]
+DO CASE,CASE,CASE MIDDLE
+DO CASE,OTHERWISE,CASE MIDDLE
+DO CASE,ENDCASE,CASE
+DO CASE,END CASE?,CASE
+
+BEGIN? SWITCH,CASE,CASE MIDDLE
+BEGIN? SWITCH,OTHERWISE,CASE MIDDLE
+BEGIN? SWITCH,END SWITCH?,CASE
+// No need for DO? SWITCH. The single SWITCH keyword is already covered above
+DO SWITCH,CASE,MIDDLE CASE
+DO SWITCH,OTHERWISE,MIDDLE CASE
+DO SWITCH,END SWITCH?,CASE
+
+
+IF,ELSEIF,MIDDLE
+IF,ELSE,MIDDLE
+IF,ENDIF
+IF,END IF?
+
+
+// Loops
+FOR,NEXT
+FOREACH,NEXT
+
+DO WHILE,ENDDO
+DO WHILE,END DO?
+DO WHILE,END WHILE
+WHILE,ENDDO
+WHILE,END DO?
+WHILE,END WHILE
+
+REPEAT,UNTIL
+
+// Error blocks
+TRY,CATCH,MIDDLE
+TRY,FINALLY,MIDDLE
+TRY,END TRY?
+
+BEGIN SEQUENCE,RECOVER,MIDDLE
+BEGIN SEQUENCE,FINALLY,MIDDLE
+BEGIN SEQUENCE,END SEQUENCE?
+
+// Blocks
+BEGIN CHECKED,END CHECKED?
+BEGIN FIXED,END FIXED?
+BEGIN LOCK,END LOCK?
+BEGIN UNSAFE,END UNSAFE?
+BEGIN SCOPE,END SCOPE?
+BEGIN UNCHECKED,END UNCHECKED?
+BEGIN USING,END USING?
+WITH,END WITH?
+
+// Preprocessor
+[PREPROCESSOR]
+#REGION,#ENDREGION
+#IF,#ELSE,MIDDLE
+#IF,#ENDIF
+#IFDEF,#ENDIF
+#IFNDEF,#ENDIF
+#TEXT,#ENDTEXT

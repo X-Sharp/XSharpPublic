@@ -4,9 +4,9 @@ CLASS CheckBox INHERIT Button
 
 
 /// <include file="Gui.xml" path="doc/CheckBox.Checked/*" />
-ACCESS Checked 
-	
-	
+ACCESS Checked
+
+
 
 
 	IF SELF:ValidateControl()
@@ -19,9 +19,9 @@ ACCESS Checked
 
 
 /// <include file="Gui.xml" path="doc/CheckBox.Checked/*" />
-ASSIGN Checked(lChecked) 
-	
-	
+ASSIGN Checked(lChecked)
+
+
 
 
 	IF SELF:ValidateControl()
@@ -36,13 +36,13 @@ ASSIGN Checked(lChecked)
 	SELF:__Update()
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/CheckBox.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF IsWindow(hwnd)
@@ -54,26 +54,26 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/CheckBox.Image/*" />
-ACCESS Image 
+ACCESS Image
 	//PP-031002
 	RETURN SELF:__GetImage()
 
 
 /// <include file="Gui.xml" path="doc/CheckBox.Image/*" />
-ASSIGN Image(oNewImage) 
+ASSIGN Image(oNewImage)
 	//PP-031002
 	IF ! SELF:__SetImage(oNewImage)
 		SUPER:Image := oNewImage
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/CheckBox.ctor/*" />
-CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle) 
-	
-	
+CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle)
+
+
 
 
 	SUPER(oOwner, xID, oPoint, oDimension, cText, kStyle, TRUE)
@@ -84,17 +84,17 @@ CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/CheckBox.TextValue/*" />
-ACCESS TextValue 
+ACCESS TextValue
 	LOCAL lTicked AS LOGIC
 	LOCAL cTickValue AS STRING
 
 
-	
-	
+
+
 	lTicked := SELF:Checked
 
 
@@ -109,14 +109,12 @@ ACCESS TextValue
 
 
 /// <include file="Gui.xml" path="doc/CheckBox.TextValue/*" />
-ASSIGN TextValue(cNewValue) 
+ASSIGN TextValue(cNewValue)
 	LOCAL lOldTicked AS LOGIC
 	LOCAL lTicked AS LOGIC
 	LOCAL uTicked AS USUAL
 
 
-	
-	
 	IF !IsString(cNewValue)
 		WCError{#TextValue,#CheckBox,__WCSTypeError,cNewValue,1}:Throw()
 	ENDIF
@@ -139,22 +137,16 @@ ASSIGN TextValue(cNewValue)
 
 	IF (lTicked != lOldTicked)
 		SELF:Checked := lTicked
-		SELF:Modified := .T. 
+		SELF:Modified := .T.
 		// self:SetFocus()
 	ENDIF
 
-
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/CheckBox.Value/*" />
-ACCESS Value 
+ACCESS Value
 	LOCAL uVal AS USUAL
-
-
-	
-	
-
 
 	IF IsInstanceOf(SELF:Owner, #DataWindow)
 		//PP-041004  uVal below must always be NIL since it is a LOCAL

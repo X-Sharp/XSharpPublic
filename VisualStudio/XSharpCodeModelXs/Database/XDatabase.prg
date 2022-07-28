@@ -1583,6 +1583,7 @@ BEGIN NAMESPACE XSharpModel
 
 
         STATIC PROPERTY IsDbOpen AS LOGIC GET oConn != NULL_OBJECT .AND.  oConn:State == ConnectionState.Open
+        STATIC PROPERTY Connection as SQLiteConnection GET oConn
 
         STATIC METHOD Log(cMessage AS STRING) AS VOID
             IF XSettings.EnableDatabaseLog .AND. XSettings.EnableLogging

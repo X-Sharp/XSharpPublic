@@ -22,7 +22,7 @@ METHOD RddInfo( kRDDInfoType AS LONG, uRDDVal := NIL AS USUAL) AS USUAL
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbRddInfo( kRDDInfoType, REF uRDDVal )
+		IF ! VoDbRddInfo( (DWORD) kRDDInfoType, REF uRDDVal )
 			BREAK ErrorBuild( _VoDbErrInfoPtr() )
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -228,7 +228,7 @@ METHOD RecordInfo( kRecInfoType AS LONG, nRecordNumber:= 0 AS LONG, uRecVal := N
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbRecordInfo( kRecInfoType, nRecordNumber, REF uRecVal )
+		IF ! VoDbRecordInfo( (DWORD) kRecInfoType, nRecordNumber, REF uRecVal )
 			IF ! VoDbEof() .OR. ! Used()
 				BREAK DbError{ SELF, #RecordInfo, EG_ARG, "", kRecInfoType, "kRecInfoType" }
 			ENDIF
@@ -382,7 +382,7 @@ METHOD Relation( nRelation := 0 AS LONG) AS STRING
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
-		IF ! VoDbRelation( nRelation,  REF cRelation )
+		IF ! VoDbRelation( (DWORD) nRelation,  REF cRelation )
 			BREAK ErrorBuild( _VoDbErrInfoPtr() )
 		ENDIF
 
@@ -1131,7 +1131,7 @@ METHOD Skip( nRecordCount := 1 AS LONG) AS LOGIC
 					IF !(siSelectionStatus == DBSELECTIONBOF .OR. siSelectionStatus == DBSELECTIONEMPTY)
 						IF siSelectionStatus == DBSELECTIONEOF
 							IF wLastSelectionRec > 0
-								__DBSGoTo(wLastSelectionRec, nTries)
+								__DBSGoTo( (LONG) wLastSelectionRec, nTries)
 							ELSE
 								__DBSSeek(uSelectionValue, NIL, FALSE, nTries)
 							ENDIF

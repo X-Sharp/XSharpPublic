@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved. 
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Generic
@@ -23,7 +23,7 @@ INTERNAL STATIC METHOD IsNested(cTemp AS STRING) AS LOGIC
             CASE ' '
             CASE '\t'
                 LOOP
-            CASE '|' 
+            CASE '|'
                 IF ! inString
                     nCount++
                     IF nCount > 2
@@ -100,9 +100,9 @@ INTERNAL STATIC METHOD Expand(cMacro AS STRING) AS STRING
                 ELSE
                     inString := TRUE
                     endChar  := c
-                ENDIF                
+                ENDIF
             CASE '['
-                IF ! inString 
+                IF ! inString
                     IF IsBlockedString(lastChar)
                         inString := TRUE
                         endChar := ']'
@@ -115,7 +115,7 @@ INTERNAL STATIC METHOD Expand(cMacro AS STRING) AS STRING
             CASE '}'
                 IF ! inString
                     nestLevel -= 1
-                    IF nestLevel == 1 
+                    IF nestLevel == 1
                         elements:Add(sb:ToString())
                         sb:Clear()
                     ENDIF

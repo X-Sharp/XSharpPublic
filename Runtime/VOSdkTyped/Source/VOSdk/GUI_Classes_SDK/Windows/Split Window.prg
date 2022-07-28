@@ -1,9 +1,11 @@
 USING SWF := System.Windows.Forms
 
 
+/// <include file="Gui.xml" path="doc/SplitWindow/*" />
 CLASS SplitWindow INHERIT ChildAppWindow
 	PROTECT oSplitView	AS SplitView
 
+ /// <exclude />
 	METHOD __ResizeSplitView() AS VOID STRICT
         VAR oc := oSplitView:__Control
         IF SELF:IsVisible()
@@ -21,23 +23,28 @@ CLASS SplitWindow INHERIT ChildAppWindow
  		RETURN
 
 
+ /// <exclude />
 	PROPERTY __SplitView AS SplitView GET oSplitView
 
+/// <include file="Gui.xml" path="doc/SplitWindow.Background/*" />
 	ACCESS Background AS Brush
 		IF oSplitView != NULL_OBJECT
 			RETURN oSplitView:Background
 		ENDIF
 		RETURN NULL_OBJECT
 
-	ASSIGN Background(oBrush AS Brush) 
+/// <include file="Gui.xml" path="doc/SplitWindow.Background/*" />
+	ASSIGN Background(oBrush AS Brush)
 		oSplitView:Background := oBrush
         RETURN
 
-	METHOD ChangeBackground(oBrush, kWhere) 
+/// <include file="Gui.xml" path="doc/SplitWindow.ChangeBackground/*" />
+	METHOD ChangeBackground(oBrush, kWhere)
 		oSplitView:ChangeBackground(oBrush, kWhere)
 		RETURN SELF
 
-	METHOD Destroy() AS USUAL 
+/// <include file="Gui.xml" path="doc/SplitWindow.Destroy/*" />
+	METHOD Destroy() AS USUAL
 		// if not in garbage collection, destroy the split view control
 		IF oSplitView != NULL_OBJECT
 			oSplitView:Destroy()
@@ -47,6 +54,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
 
 		RETURN SELF
 
+/// <include file="Gui.xml" path="doc/SplitWindow.Dispatch/*" />
 	METHOD Dispatch(oEvent AS @@Event)
         LOCAL oEvt := oEvent AS Event
 		IF (oEvt:uMsg == WM_SETFOCUS) .AND. oSplitView != NULL_OBJECT
@@ -57,11 +65,13 @@ CLASS SplitWindow INHERIT ChildAppWindow
 		ENDIF
 		RETURN SUPER:Dispatch(oEvent)
 
+/// <include file="Gui.xml" path="doc/SplitWindow.EnableStatusBar/*" />
 	METHOD EnableStatusBar(lEnable AS LOGIC)  AS StatusBar
 		SUPER:EnableStatusBar(lEnable)
 		SELF:__ResizeSplitView()
 		RETURN SELF:StatusBar
 
+/// <include file="Gui.xml" path="doc/SplitWindow.GetAllChildren/*" />
 	METHOD GetAllChildren() AS ARRAY STRICT
 		LOCAL aChildren AS ARRAY
 		aChildren := SUPER:GetAllChildren()
@@ -70,23 +80,29 @@ CLASS SplitWindow INHERIT ChildAppWindow
 		ENDIF
 		RETURN aChildren
 
+/// <include file="Gui.xml" path="doc/SplitWindow.GetPaneClient/*" />
 	METHOD GetPaneClient(nPane AS LONG)  AS OBJECT
 		RETURN oSplitView:GetPaneClient(nPane)
 
+/// <include file="Gui.xml" path="doc/SplitWindow.GetPaneSize/*" />
 	METHOD GetPaneSize(nPane AS LONG) AS Dimension
 		RETURN oSplitView:GetPaneSize(nPane)
 
+/// <include file="Gui.xml" path="doc/SplitWindow.HidePane/*" />
 	METHOD HidePane(nPane AS LONG)  AS VOID
 		SELF:oSplitView:HidePane(nPane)
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/SplitWindow.HorizontalAlign/*" />
 	ACCESS HorizontalAlign AS LOGIC
 		RETURN oSplitView:HorizontalAlign
 
+/// <include file="Gui.xml" path="doc/SplitWindow.HorizontalDrag/*" />
     ACCESS HorizontalDrag  AS LOGIC
 		RETURN oSplitView:HorizontalDrag
 
-	CONSTRUCTOR(oOwner, lHorizontalDrag, lVerticalDrag, kAlignment) 
+/// <include file="Gui.xml" path="doc/SplitWindow.ctor/*" />
+	CONSTRUCTOR(oOwner, lHorizontalDrag, lVerticalDrag, kAlignment)
 		LOCAL oObject		AS OBJECT
 		LOCAL oBar			AS Control
 		LOCAL oPoint		AS Point
@@ -109,7 +125,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
 			ELSEIF IsInstanceOf(oOBject, #DialogWindow)
 				SUPER(oOwner)
 			ELSEIF IsInstanceOf(oObject, #Window)
-				WCError{#Init, #SplitWindow, __WCSTypeError, oOwner, 1}:@@Throw()
+				WCError{#Init, #SplitWindow, __WCSTypeError, oOwner, 1}:Throw()
 			ELSE
 				SUPER(oOwner)
 			ENDIF
@@ -141,68 +157,86 @@ CLASS SplitWindow INHERIT ChildAppWindow
         oSplitView:__Control:Anchor := System.Windows.Forms.AnchorStyles.Bottom+System.Windows.Forms.AnchorStyles.Left+System.Windows.Forms.AnchorStyles.Right+System.Windows.Forms.AnchorStyles.Top
         oSplitView:__Control:Location := Point{0,0}
         oSplitView:__Control:Size     := SELF:Size
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/SplitWindow.Layout/*" />
 	ACCESS Layout AS Dimension
 		RETURN oSplitView:Layout
 
-	ASSIGN Layout(oDimension AS Dimension) 
+/// <include file="Gui.xml" path="doc/SplitWindow.Layout/*" />
+	ASSIGN Layout(oDimension AS Dimension)
 		oSplitView:Layout := oDimension
 
-	METHOD Resize(oResizeEvent) 
+/// <include file="Gui.xml" path="doc/SplitWindow.Resize/*" />
+	METHOD Resize(oResizeEvent)
 		SUPER:Resize(oResizeEvent)
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/SplitWindow.RestoreUpdate/*" />
 	METHOD RestoreUpdate AS VOID
 		oSplitView:RestoreUpdate()
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/SplitWindow.SetPaneClient/*" />
 	METHOD SetPaneClient(oWindow AS IGuiObject, nPane AS LONG)  AS VOID
 		oSplitView:SetPaneClient(oWindow, nPane)
 
+/// <include file="Gui.xml" path="doc/SplitWindow.SetPaneSize/*" />
 	METHOD SetPaneSize(oDimension AS Dimension, nPane AS LONG) AS VOID
 		oSplitView:SetPaneSize(oDimension, nPane)
 
+/// <include file="Gui.xml" path="doc/SplitWindow.Show/*" />
     METHOD Show() AS VOID STRICT
         SELF:Show(SW_NORMAL, -1)
-        
+
+/// <include file="Gui.xml" path="doc/SplitWindow.Show/*" />
 	METHOD Show(nShowState AS LONG, nPane AS LONG) AS VOID
 		SUPER:Show(nShowState)
 	    oSplitView:ShowPane(nPane)
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/SplitWindow.ShowPane/*" />
 	METHOD ShowPane(nPane AS LONG)  AS VOID
 		SELF:oSplitView:ShowPane(nPane)
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/SplitWindow.SplitBarBackground/*" />
 	ACCESS SplitBarBackground AS Brush
 		RETURN oSplitView:SplitBarBackground
 
-	ASSIGN SplitBarBackground(oBrush AS Brush) 
+/// <include file="Gui.xml" path="doc/SplitWindow.SplitBarBackground/*" />
+	ASSIGN SplitBarBackground(oBrush AS Brush)
 		oSplitView:SplitBarBackground := oBrush
 
+/// <include file="Gui.xml" path="doc/SplitWindow.SplitBarFrameBackground/*" />
 	ACCESS SplitBarFrameBackground AS Brush
 		RETURN oSplitView:SplitBarFrameBackground
 
-	ASSIGN SplitBarFrameBackground(oBrush AS Brush) 
+/// <include file="Gui.xml" path="doc/SplitWindow.SplitBarFrameBackground/*" />
+	ASSIGN SplitBarFrameBackground(oBrush AS Brush)
 		 oSplitView:SplitBarFrameBackground := oBrush
 
+/// <include file="Gui.xml" path="doc/SplitWindow.SuspendUpdate/*" />
 	METHOD SuspendUpdate AS VOID
 		oSplitView:SuspendUpdate()
-		RETURN  
+		RETURN
 
-	ASSIGN ToolBar(oNewToolBar as Toolbar) 
+/// <include file="Gui.xml" path="doc/SplitWindow.ToolBar/*" />
+	ASSIGN ToolBar(oNewToolBar as Toolbar)
 		SUPER:Toolbar := oNewToolBar
         SELF:__ResizeSplitView()
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/SplitWindow.ToolBarHeightChanged/*" />
 	METHOD ToolBarHeightChanged(oControlNotifyEvent AS ControlNotifyEvent)
         SELF:__ResizeSplitView()
 		RETURN SELF
 
+/// <include file="Gui.xml" path="doc/SplitWindow.VerticalAlign/*" />
 	ACCESS VerticalAlign AS LOGIC
 		RETURN oSplitView:VerticalAlign
 
+/// <include file="Gui.xml" path="doc/SplitWindow.VerticalDrag/*" />
 	ACCESS VerticalDrag  AS LOGIC
 		RETURN oSplitView:VerticalDrag
 

@@ -275,6 +275,13 @@ END CLASS
             END GET
       END PROPERTY
 
+        METHOD Clone() AS IXMemberSymbol
+            SELF:Resolve()
+            var  clone := (XPEMethodSymbol) SUPER:Clone()
+            clone:_methoddef := NULL
+            clone:_resolved := TRUE
+            RETURN clone
+
 
    END CLASS
 
@@ -286,7 +293,7 @@ END CLASS
         PROTECTED  _generic     AS LOGIC
         PROPERTY  SubType      AS Kind AUTO
         PROPERTY  DeclaringType  AS STRING AUTO
-        PROPERTY  Signature     AS XMemberSignature  GET _signature
+        PROPERTY  Signature     AS XMemberSignature  GET _signature INTERNAL SET _signature := value
         PROPERTY  IsGeneric    AS LOGIC GET _generic
         ABSTRACT PROPERTY  ClassGenText      AS STRING GET
 
@@ -528,6 +535,7 @@ END CLASS
          RETURN result
 
      METHOD Clone() AS IXMemberSymbol
+        SELF:Resolve()
         var clone := (XPEMemberSymbol) SELF:MemberwiseClone()
         clone:_signature := SELF:_signature:Clone()
         RETURN (IXMemberSymbol) clone

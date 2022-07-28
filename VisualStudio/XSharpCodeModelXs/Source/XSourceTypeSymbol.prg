@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharpModel
       /// Model for Namespace, Class, Interface, Structure, Enum
    /// </summary>
    [DebuggerDisplay("{ToString(),nq}")];
-   CLASS XSourceTypeSymbol INHERIT XSourceEntity IMPLEMENTS IXTypeSymbol
+   CLASS XSourceTypeSymbol INHERIT XSourceEntity IMPLEMENTS IXTypeSymbol,IXSourceEntity
       PRIVATE _isPartial      AS LOGIC
       PRIVATE _members        AS List<XSourceMemberSymbol>
       PRIVATE _basemembers    AS List<IXMemberSymbol>

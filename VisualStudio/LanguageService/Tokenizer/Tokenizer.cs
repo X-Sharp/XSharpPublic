@@ -1,4 +1,11 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+//------------------------------------------------------------------------------
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,11 +34,11 @@ namespace XSharp.LanguageService
             return XSharpCompletionSource.StringEquals(lhs, rhs);
         }
 
-        internal static List<XSharpToken> GetTokenListBeforeCaret(XSharpSearchLocation location, out CompletionState state)
+        internal static List<IToken> GetTokenListBeforeCaret(XSharpSearchLocation location, out CompletionState state)
         {
             var tokens = GetTokenList(location, out state, false);
-            var result = new List<XSharpToken>();
-            foreach (var token in tokens)
+            var result = new List<IToken>();
+            foreach (XSharpToken token in tokens)
             {
                 if (token.Position <= location.Position)
                     result.Add(token);
@@ -52,15 +59,15 @@ namespace XSharp.LanguageService
             });
         }
 
-        static List<XSharpToken> getLineFromBuffer(XSharpSearchLocation location)
+        static List<IToken> getLineFromBuffer(XSharpSearchLocation location)
         {
-            var result = new List<XSharpToken>();
+            var result = new List<IToken>();
             ClassifyBuffer(location);
             var xdocument = location.GetDocument();
             var lastLine = location.Snapshot.LineCount;
             if (xdocument != null)
             {
-                var lines = xdocument.Lines;
+                var lines = xdocument.TokensPerLine;
                 var lineNumber = location.LineNumber;
                 while (result.Count == 0 || result.Last().Type != XSharpLexer.EOS)
                 {
@@ -81,7 +88,7 @@ namespace XSharp.LanguageService
             var line = location.LineNumber;
             var doc = location.GetDocument();
             var lineFlags = doc.LineState;
-            while (line >= 0 && lineFlags.Get(line).HasFlag(LineFlags.Continued))
+            while (line >= 0 && lineFlags.Get(line, out var flags) && flags.HasFlag(LineFlags.Continued))
             {
                 line--;
             }
@@ -90,7 +97,7 @@ namespace XSharp.LanguageService
         }
 
 
-        internal static IList<XSharpToken> GetTokensUnderCursor(XSharpSearchLocation location, out CompletionState state)
+        internal static IList<IToken> GetTokensUnderCursor(XSharpSearchLocation location, out CompletionState state)
         {
 
             var tokens = GetTokenList(location, out state, true, true).Where((t) => t.Channel == XSharpLexer.DefaultTokenChannel).ToList();
@@ -144,7 +151,7 @@ namespace XSharp.LanguageService
                 // If the token list contains with a RCURLY, RBRKT or RPAREN
                 // Then strip everything until the matching LCURLY, LBRKT or LPAREN is found
                 var list = new XSharpTokenList(tokens);
-                tokens = new List<XSharpToken>();
+                tokens = new List<IToken>();
                 while (!list.Eoi())
                 {
                     var token = list.ConsumeAndGet();
@@ -261,7 +268,7 @@ namespace XSharp.LanguageService
             return tokens;
         }
 
-        private static int findTokenInList(IList<XSharpToken> list, int startpos, int tokenToFind)
+        private static int findTokenInList(IList<IToken> list, int startpos, int tokenToFind)
         {
             for (var j = startpos; j < list.Count; j++)
             {
@@ -274,7 +281,7 @@ namespace XSharp.LanguageService
             return -1;
         }
 
-        internal static List<XSharpToken> GetTokenList(XSharpSearchLocation location, out CompletionState state,
+        internal static List<IToken> GetTokenList(XSharpSearchLocation location, out CompletionState state,
             bool includeKeywords = false, bool underCursor = false)
         {
             location = AdjustStartLineNumber(location);
@@ -285,7 +292,7 @@ namespace XSharp.LanguageService
                 return line;
             // if the token appears after comma or paren then strip the tokens 
             // now look forward and find the first token that is on or after the triggerpoint
-            var result = new List<XSharpToken>();
+            var result = new List<IToken>();
             var last = XSharpLexer.Eof;
             bool allowdot = location.Project?.ParseOptions?.AllowDotForInstanceMembers ?? false;
             var cursorPos = location.Position;
@@ -293,7 +300,8 @@ namespace XSharp.LanguageService
             var list = new XSharpTokenList(line);
             while (!done && !list.Eoi())
             {
-                var token = list.ConsumeAndGet();
+                IToken lasttoken = result.LastOrDefault();
+                var token = (XSharpToken) list.ConsumeAndGet();
                 int openToken = 0;
                 XSharpToken closeToken = null;
                 bool isHit = token.StartIndex <= cursorPos && token.StopIndex >= cursorPos && underCursor;
@@ -403,7 +411,7 @@ namespace XSharp.LanguageService
                         bool add = true;
                         if (result.Count > 0 && token == list.LastOrDefault)
                         {
-                            var lasttoken = result.Last();
+                            
                             if (lasttoken.Type == XSharpLexer.COLON ||
                                 lasttoken.Type == XSharpLexer.DOT)
                             {
@@ -437,8 +445,10 @@ namespace XSharp.LanguageService
                             state = CompletionState.None;
                         break;
                     case XSharpLexer.USING:
-                        if (isNotLast) // there has to be a space after the token
-                        {
+                         if (isNotLast) // there has to be a space after the token
+                         {
+                            list.Expect(XSharpLexer.WS);
+                            
                             if (list.Expect(XSharpLexer.STATIC))
                             {
                                 state = CompletionState.Namespaces | CompletionState.Types;
@@ -473,7 +483,7 @@ namespace XSharp.LanguageService
                             result.Add(token);
                         }
                         if (isNotLast) // there has to be a space after the token
-                           state = CompletionState.Namespaces | CompletionState.Types;
+                            state = CompletionState.Namespaces | CompletionState.Types;
                         else
                             state = CompletionState.None;
                         break;
@@ -491,11 +501,24 @@ namespace XSharp.LanguageService
                         result.Add(token);
                         break;
                     case XSharpLexer.DOT:
-                        if (!state.HasFlag(CompletionState.Namespaces))
+                        if (lasttoken != null)
                         {
-                            state = CompletionState.Namespaces | CompletionState.Types | CompletionState.StaticMembers;
-                            if (allowdot)
-                                state |= CompletionState.InstanceMembers;
+                            switch (lasttoken.Type)
+                            {
+                                // Dot after } should only list Instance Members
+                                case XSharpLexer.RCURLY:
+                                case XSharpLexer.RPAREN:
+                                case XSharpLexer.RBRKT:
+                                    state = CompletionState.InstanceMembers;
+                                    break;
+                                case XSharpLexer.ID:
+                                default:
+                                    if (!state.HasFlag(CompletionState.Namespaces))
+                                        state = CompletionState.Namespaces | CompletionState.Types | CompletionState.StaticMembers;
+                                    if (allowdot)
+                                        state |= CompletionState.InstanceMembers;
+                                    break;
+                            }
                         }
                         result.Add(token);
                         break;

@@ -624,19 +624,12 @@ ASSIGN LastFocus (oControl)
 	//PP-040419 S.Ebert
 
 
-
-
 	IF _AND(GetWindowLong(hWnd, GWL_STYLE), WS_CHILD) =  WS_CHILD
 		IF IsAssign(oParent, #LastFocus)
 			IVarPut(oParent, #LastFocus, oControl)
 		ENDIF
 	ENDIF
 	RETURN oLastFocus := oControl
-
-
-
-
-
 
 /// <include file="Gui.xml" path="doc/DialogWindow.ListBoxClick/*" />
 METHOD ListBoxClick(oControlEvent)
@@ -649,9 +642,6 @@ METHOD ListBoxClick(oControlEvent)
 		oListBox:__Update()
 	ENDIF
 	RETURN SELF
-
-
-
 
 /// <include file="Gui.xml" path="doc/DialogWindow.ListBoxSelect/*" />
 METHOD ListBoxSelect(oControlEvent)
@@ -666,9 +656,6 @@ METHOD ListBoxSelect(oControlEvent)
 	ENDIF
 	RETURN SELF
 
-
-
-
 /// <include file="Gui.xml" path="doc/DialogWindow.Owner/*" />
 ACCESS Owner
 	IF IsNil(oParent)
@@ -676,15 +663,9 @@ ACCESS Owner
 	ENDIF
 	RETURN oParent
 
-
-
-
 /// <include file="Gui.xml" path="doc/DialogWindow.PostShowDialog/*" />
 METHOD PostShowDialog()
 	RETURN NIL
-
-
-
 
 /// <include file="Gui.xml" path="doc/DialogWindow.Result/*" />
 ACCESS Result()

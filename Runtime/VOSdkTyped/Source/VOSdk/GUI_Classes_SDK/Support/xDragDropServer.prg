@@ -96,7 +96,7 @@ CONSTRUCTOR(oOwner)
 	
 
 	IF !IsInstanceOfUsual(oOwner,#Window)
-		WCError{#Init,#DragDropServer,__WCSTypeError,oOwner,1}:@@Throw()
+		WCError{#Init,#DragDropServer,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 
 	__LoadShellDll()
@@ -126,7 +126,7 @@ METHOD StartDrag(acFilesToDrag)
 	
 
 	IF !IsArray(acFilesToDrag)
-		WCError{#Init,#DragDropServer,__WCSTypeError,acFilesToDrag,1}:@@Throw()
+		WCError{#Init,#DragDropServer,__WCSTypeError,acFilesToDrag,1}:Throw()
 	ENDIF
 
 	dwArrlen := ALen(acFilesToDrag)

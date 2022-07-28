@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="79edf21a-e6eb-4d50-abf8-a5284293d42b" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_index.html -->Index/Order&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">REINDEX Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Rebuild all orders in the order list of the current work area.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>REINDEX [EVAL &lt;lCondition&gt; [EVERY &lt;nRecords&gt;]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>EVAL &lt;cbEval&gt;</entry><entry>A code block that is evaluated at intervals specified by EVERY &lt;nInterval&gt;. &#160;The default interval is 1. &#160;This is useful in producing a status bar or odometer that monitors the ordering progress. &#160;The return value of &lt;cbEval&gt; must be a logical value. &#160;If &lt;cbEval&gt; returns FALSE, indexing halts.</entry></row></table><para>&#160;</para>
+<table><row><entry>EVERY &lt;nInterval&gt;</entry><entry>A numeric expression that determines the number of times &lt;cbEval&gt; is evaluated. &#160;This option offers a performance enhancement by evaluating the condition at intervals instead of for every record processed. &#160;The EVERY keyword is ignored if you specify no EVAL clause.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>REINDEX is functionally equivalent to <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbReindex.htm -->DbReindex(). &#160;</para>
+<para>&#160;</para>
+<para>Caution!  REINDEX does not recreate the header of the index file when it recreates the index. &#160;Because of this, REINDEX does not help if there is corruption of the file header. &#160;To guarantee a valid index, always use INDEX ON in place of REINDEX to rebuild damaged index files</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>The following example reindexes the orders in the current work area:</para>
+<para>&#160;</para>
+<para>USE sales INDEX salesman, territory NEW<para/>
+REINDEX</para>
+<para>&#160;</para>
+<para>This example reindexes using a progress indicator:</para>
+<para>&#160;</para>
+<para>USE sales INDEX salesman, territory NEW<para/>
+REINDEX EVAL NtxProgress() EVERY 10<para/>
+&#160;<para/>
+FUNCTION NtxProgress()<para/>
+&#160;LOCAL cComplete := LTRIM(STR((RECNO() / ;<para/>
+&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;LastRec()) * 100))<para/>
+&#160;@ 23, 00 SAY &quot;Indexing...&quot; + cComplete + &quot;%&quot;<para/>
+RETURN TRUE</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<para>a</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbCreateIndex.htm -->DBCreateIndex(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbCreateOrder.htm -->DbCreateOrder(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbReindex.htm -->DbReindex(), <link xlink:href="ed7dcc99-a2aa-4fad-8eb1-79d7e2ed9e3d">INDEX</link>, <link xlink:href="db7d284d-ce1f-4ebc-bb02-0217e48b6449">PACK</link>, <link xlink:href="9085df4a-da8f-4ed6-948a-db58aa0eeb27">SET INDEX</link>, <link xlink:href="9afbce44-d16f-4cde-a11e-74871ec4b08a">USE</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

@@ -201,7 +201,7 @@ METHOD ApplyHotKey(oWindow)
 	Default(@oWindow, SELF:Owner)
 
 
-	dwHotKey := _AND(SendMessage(SELF:Handle(), HKM_GETHOTKEY, 0, 0),0xFFFF)
+	dwHotKey := (DWORD) _AND(SendMessage(SELF:Handle(), HKM_GETHOTKEY, 0, 0),0xFFFF)
 
 
 	RETURN SendMessage(oWindow:Handle(), WM_SETHOTKEY, dwHotKey, 0)

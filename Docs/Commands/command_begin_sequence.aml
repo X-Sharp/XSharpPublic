@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="8fc150d3-ff60-4982-ba29-ec8c86969a13" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_control.html -->Program Control&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">BEGIN SEQUENCE Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Define a sequence of statements for a BREAK.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>BEGIN SEQUENCE<para/>
+&#160;&lt;Statements&gt;...<para/>
+[BREAK [&lt;uValue&gt;]]<para/>
+&#160;&lt;Statements&gt;... &#160;<para/>
+[RECOVER [USING &lt;idVar&gt;]]<para/>
+&#160;&lt;Statements&gt;...<para/>
+END [SEQUENCE]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>BREAK &lt;uValue&gt;</entry><entry>Branches execution to the statement immediately following the nearest RECOVER statement if one is specified, or the nearest END SEQUENCE statement. &#160;&lt;uValue&gt; is the value returned into the &lt;idVar&gt; specified in the USING clause of the RECOVER statement.</entry></row></table><para>&#160;</para>
+<table><row><entry>RECOVER USING &lt;idVar&gt;</entry></row></table><table><row><entry></entry><entry>A recover point in the SEQUENCE construct where control branches after a BREAK statement. &#160;If this clause is specified, &lt;idVar&gt; receives the value returned by the BREAK statement. &#160;In general, this is an error object. &#160;&lt;idVar&gt; must be a declared variable and cannot be strongly typed.</entry></row></table><para>&#160;</para>
+<table><row><entry>END</entry><entry>The end point of the SEQUENCE control structure. &#160;If no RECOVER statement is specified, control branches to the first statement following the END statement after a BREAK.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>BEGIN SEQUENCE...END is a control structure used for exception and runtime error handling. &#160;It delimits a block of statements defining a discrete operation, including invoked procedures and functions. &#160;With the exception of the BREAK statement, the entire construct must fall within the same entity definition.</para>
+<para>&#160;</para>
+<para>When a BREAK is encountered anywhere in a block of statements following the BEGIN SEQUENCE statement up to the corresponding RECOVER statement, control branches to the program statement immediately following the RECOVER statement. &#160;If a RECOVER statement is not specified, control branches to the statement following the END statement, terminating the SEQUENCE. &#160;If control reaches a RECOVER statement without encountering a BREAK, it branches to the statement following the corresponding END.</para>
+<para>&#160;</para>
+<para>The RECOVER statement optionally receives a parameter passed by a BREAK statement that is specified with a return value. &#160;This is usually an error object, generated and returned by the current error handling block defined by ErrorBlock(). &#160;If an error object is returned, it can be sent messages to query information about the error. &#160;With this information, a runtime error can be handled within the context of the operation rather than in the current runtime error handler.</para>
+<para>&#160;</para>
+<para>You cannot RETURN, LOOP, or EXIT between a BEGIN SEQUENCE and RECOVER statement</para>
+<para>&#160;</para>
+<para>Control structures can be nested to any depth. &#160;The only requirement is that each control structure be properly nested.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This code fragment demonstrates a SEQUENCE construct in which the BREAK occurs within the current procedure:</para>
+<para>&#160;</para>
+<para>BEGIN SEQUENCE<para/>
+ &#160; &lt;Statements&gt;...<para/>
+ &#160; IF lBreakCond<para/>
+ &#160; &#160;  BREAK<para/>
+ &#160; ENDIF<para/>
+RECOVER<para/>
+ &#160; &lt;Recovery Statements&gt;...<para/>
+END<para/>
+&#160;<para/>
+&lt;Recovery Statements&gt;...</para>
+<para>&#160;</para>
+<para>This example demonstrates an error handler returning an error object to the variable specified in the USING clause of the RECOVER statement:</para>
+<para>&#160;</para>
+<para>LOCAL oLocal, bLastHandler<para/>
+// Save current and set new error handler<para/>
+bLastHandler := ErrorBlock({|oErr| ;<para/>
+ &#160; &#160; &#160;MyHandler(oErr, TRUE)})<para/>
+&#160;<para/>
+BEGIN SEQUENCE<para/>
+ &#160; .<para/>
+ &#160; . &#160;&lt;Operation that might fail&gt;...<para/>
+ &#160; .<para/>
+RECOVER USING oLocal<para/>
+&#160;<para/>
+ &#160; // Send messages to oLocal &amp; handle the error<para/>
+ &#160; ? &quot;Error: &#160;&quot;<para/>
+ &#160; IF oLocal:GenCode != 0<para/>
+ &#160; &#160; &#160;?? oLocal:Description<para/>
+ &#160; ENDIF<para/>
+ &#160; .<para/>
+ &#160; . &#160;<para/>
+ &#160; .<para/>
+END<para/>
+&#160;<para/>
+// Restore previous error handler<para/>
+ErrorBlock(bLastHandler)<para/>
+&#160;<para/>
+FUNCTION MyHandler(oError, lLocalHandler)<para/>
+ &#160; // Handle locally returning the error object<para/>
+ &#160; IF lLocalHandler<para/>
+ &#160; &#160;  BREAK oError<para/>
+ &#160; ENDIF<para/>
+ &#160; <para/>
+ &#160; &lt;Other statements to handle the error&gt;...</para>
+<para>&#160;</para>
+<para>This example re-executes a SEQUENCE statement block by issuing a LOOP from within the RECOVER statement block:</para>
+<para>&#160;</para>
+<para>DO WHILE TRUE<para/>
+ &#160; BEGIN SEQUENCE<para/>
+&#160;<para/>
+ &#160; &#160; &#160;&lt;Operation that may fail&gt;...<para/>
+&#160;<para/>
+ &#160; RECOVER<para/>
+ &#160; &#160;  IF PrintRecover()<para/>
+ &#160; &#160; &#160; &#160; &#160;  // Repeat the SEQUENCE statement block<para/>
+ &#160; &#160; &#160; &#160; LOOP<para/>
+ &#160; &#160;  ENDIF<para/>
+ &#160; END<para/>
+ &#160; EXIT &#160; &#160; &#160; &#160; // Escape from the operation<para/>
+&#160;<para/>
+ENDDO</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions__Break.htm -->_Break(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_CanBreak.htm -->CanBreak(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\T_XSharp_Error.htm -->Error Class, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_ErrorBlock.htm -->ErrorBlock(), <link xlink:href="70c94423-9322-4c94-aecc-907f367520ad">RETURN</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

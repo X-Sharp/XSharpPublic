@@ -41,6 +41,7 @@ namespace XSharp.Project
         internal const string enforceSelfCaption = "Enforce SELF";
         internal const string EnforceOverrideCaption = "Enforce VIRTUAL / OVERRIDE";
         internal const string allowDotCaption = "Allow DOT for instance members";
+        internal const string allowOldStyleCaption = "Allow Old Style assignments";
 
         internal const string CSDescription = "Enable/Disable case sensitivity (/cs)";
         internal const string AZDescription = "Use Zero Based Arrays (/az)";
@@ -64,6 +65,7 @@ namespace XSharp.Project
         internal const string EnforceSelfDescription = "Enforce the use of SELF inside members of a class. This helps to prevent ambiguity in your code (/enforceself)";
         internal const string EnforceOverrideDescription = "Enforce the use of VIRTUAL and OVERRIDE for members of a class. (/enforceoverride)";
         internal const string allowDotDescription = "Allow the DOT operator to access instance fields, properties and methods (/allowdot)";
+        internal const string allowOldStyleDescription = "Allow old style assignments with the '=' operator. This defaults to TRUE for the FoxPro dialect. (/allowoldstyleassignments)";
 
         internal const string CatGeneral = "General";
         internal const string CatNamespaces = "Namespaces";
@@ -144,6 +146,11 @@ namespace XSharp.Project
             chkAllowDot.Tag = XSharpProjectFileConstants.Allowdot;
             toolTip1.SetToolTip(chkAllowDot, allowDotDescription);
 
+
+            chkOldStyleAssignments.Text = allowOldStyleCaption;
+            chkOldStyleAssignments.Tag = XSharpProjectFileConstants.AllowOldStyleAssignments;
+            toolTip1.SetToolTip(chkOldStyleAssignments, allowOldStyleDescription);
+
             // hook up the form to both editors
             Color defaultBackground = SystemColors.ButtonFace;
             Color defaultForeground = SystemColors.WindowText;
@@ -178,11 +185,11 @@ namespace XSharp.Project
         }
         internal void SetDialectOptions(string dialect)
         {
-            dialect = dialect.ToLower();
-            bool Core = dialect == "core";
+            bool Core = dialect == XSharpProjectFileConstants.DialectCore;
             ThreadHelper.ThrowIfNotOnUIThread();
             chkMemVar.Enabled = !Core;
             chkLB.Enabled = !Core;
+            chkOldStyleAssignments.Checked = dialect == XSharpProjectFileConstants.DialectFoxPro; 
 
             if (!Core)
             {

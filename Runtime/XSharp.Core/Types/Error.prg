@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp
       END GET
       SET
         _ArgTypeType := value
-        _ArgType 	 := TypeToUsualType(value)
+        _ArgType 	 := (DWORD) TypeToUsualType(value)
       END SET
     END PROPERTY
 
@@ -77,7 +77,7 @@ BEGIN NAMESPACE XSharp
       END GET
       SET
         _ArgTypeReqType := value
-        _ArgTypeReq 	 := TypeToUsualType(value)
+        _ArgTypeReq 	 := (DWORD) TypeToUsualType(value)
       END SET
     END PROPERTY
     /// <summary>A numeric value representing the type of the new result that the error handler substitutes for the operation that produced the error condition.</summary>
@@ -483,66 +483,7 @@ BEGIN NAMESPACE XSharp
     #endregion
     /// <exclude />
     static method TypeToUsualType(oType as System.Type) as dword
-    switch Type.GetTypeCode(oType)
-    case TypeCode.Boolean
-      return __UsualType.Logic
-    case TypeCode.Byte
-      return __UsualType.Byte
-    case TypeCode.Char
-      return __UsualType.Char
-    case TypeCode.DateTime
-      return __UsualType.DateTime
-    case TypeCode.DBNull
-      return __UsualType.Object
-    case TypeCode.Decimal
-      return __UsualType.Decimal
-    case TypeCode.Double
-      return __UsualType.Real8
-    case TypeCode.Empty
-      return __UsualType.Void
-    case TypeCode.Int16
-      return __UsualType.ShortInt
-    case TypeCode.Int32
-      return __UsualType.Long
-    case TypeCode.Int64
-      return __UsualType.Int64
-    case TypeCode.SByte
-      return __UsualType.Byte
-    case TypeCode.Single
-      return __UsualType.Real4
-    case TypeCode.UInt16
-      return __UsualType.Word
-    case TypeCode.UInt32
-      return __UsualType.DWord
-    case TypeCode.UInt64
-      return __UsualType.UInt64
-    otherwise
-        // use the type names because we do not know the types at this moment
-        switch oType:FullName:ToLower()
-        case "xsharp.__array"
-          return __UsualType.Array
-        case "xsharp.__binary"
-          return __UsualType.Binary
-        case "xsharp.__codeblock"
-          return __UsualType.Codeblock
-        case "xsharp.__currency"
-          return __UsualType.Currency
-        case "xsharp.__date"
-          return __UsualType.Date
-        case "xsharp.__float"
-          return __UsualType.Float
-        case "xsharp.__psz"
-          return __UsualType.Psz
-        case "xsharp.__symbol"
-          return __UsualType.Symbol
-        case "xsharp.__usual"
-          return __UsualType.Usual
-        case "system.intptr"
-          return __UsualType.Ptr
-
-      end switch
-    end switch
-    return __UsualType.Void
+        Return (DWORD) SystemTypeToUsualType(oType)
 
     /// <exclude />
     static method UsualTypeToType(dwType as dword) as System.Type

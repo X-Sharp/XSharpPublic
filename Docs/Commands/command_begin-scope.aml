@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="08265969-6d42-40f6-8770-f900acda4e83" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: blocks2.html -->Blocks and Namespaces&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">BEGIN SCOPE</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<h1 class="p_Heading1" style="page-break-after: avoid;">The BEGIN SCOPE and END SCOPE keyword pairs declare a scope of visibility and lifetime of LOCAL variables</h1>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>BEGIN SCOPE<para/>
+ &#160; statements<para/>
+END SCOPE</para>
+<para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>statements </entry><entry>Code including one or more LOCAL declarations. </entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Remarks</h1>
+<para>BEGIN SCOPE...END SCOPE are used within a function/member body to define an area of restricted scope for LOCAL variables. Attempt to use a LOCAL variable that is declared with a BEGIN SCOPE...END SCOPE block outside the scope results in a compiler error.</para>
+<para>&#160;</para>
+<para>Example</para>
+<para>&#160;</para>
+<para>FUNCTION Test() AS VOID<para/>
+BEGIN SCOPE<para/>
+LOCAL n AS INT<para/>
+n++<para/>
+? n<para/>
+END SCOPE<para/>
+// n does not exist here</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

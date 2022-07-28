@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="725d43d7-d668-484b-9c95-ec2a7b9b4fd7" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_terminal.html -->Terminal Window&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><!-- TODO: Missing source image: btn_prev_n.gif --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><!-- TODO: Missing source image: btn_home_n.gif --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><!-- TODO: Missing source image: btn_next_n.gif --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">ACCEPT Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Take input from the keyboard and assign it to a memory variable.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>ACCEPT [&lt;uValuePrompt&gt;] TO &lt;idVar&gt;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;uValuePrompt&gt;</entry><entry>An optional prompt displayed before the input area.</entry></row></table><table><row><entry>TO &lt;idVar&gt;</entry><entry>The variable that will hold input from the keyboard. &#160;If there is no variable named &lt;idVar&gt; that is visible to the current routine, a private variable is created.</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>When ACCEPT is executed, it first performs a carriage return/linefeed, displays the prompt in the terminal window, and begins taking characters from the keyboard at the position immediately following the prompt.</para>
+<para>&#160;</para>
+<para>Up to 255 characters can be entered. &#160;When input reaches the edge of the window, as defined by MaxCol(), the cursor moves to the next line.</para>
+<para>&#160;</para>
+<para>ACCEPT supports only two editing keys: &#160;Backspace and Enter (Esc is not supported). &#160;Backspace deletes the last character typed. &#160;Enter confirms entry and is the only key that can terminate an ACCEPT. &#160;If Enter is the only key pressed, ACCEPT assigns a NULL_STRING to &lt;idVar&gt;.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>This example uses ACCEPT to get keyboard input from the user:</para>
+<para>&#160;</para>
+<para>LOCAL cVar<para/>
+ACCEPT &quot;Enter a value: &#160;&quot; TO cVar<para/>
+IF cVar = NULL_STRING<para/>
+&#160;? &quot;User pressed Enter&quot;<para/>
+ELSE<para/>
+&#160;? &quot;User input:&quot;, cVar<para/>
+ENDIF</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

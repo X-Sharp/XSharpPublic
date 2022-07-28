@@ -62,12 +62,12 @@ namespace XSharp.Project
             if (propertyName == XSharpProjectFileConstants.OutputType)
             {
                 var outputType = (OutputType) converterOutPut.ConvertFrom(value);
-                value = (string)converterOutPut.ConvertTo(outputType, typeof(System.String));
+                value = (string)converterOutPut.ConvertTo(outputType, typeof(string));
             }
             else if (propertyName == XSharpProjectFileConstants.Dialect)
             {
                 var dialect = (Dialect)converterDialect.ConvertFrom(value);
-                value = (string) converterDialect.ConvertTo(dialect, typeof(System.String));
+                value = (string) converterDialect.ConvertTo(dialect, typeof(string));
             }
             else if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
             {
@@ -119,6 +119,16 @@ namespace XSharp.Project
                             if (bAllowDot)
                                 base.SetProperty(XSharpProjectFileConstants.Allowdot, "false");
                             break;
+                    }
+                }
+                var strAllowOldStyle = base.GetProperty(XSharpProjectFileConstants.AllowOldStyleAssignments);
+                if (!string.IsNullOrEmpty(strAllowOldStyle))
+                {
+                    bool bAllowOldStyle;
+                    bAllowOldStyle = strAllowOldStyle.ToLower() == "true";
+                    if (dialect == Dialect.FoxPro && !bAllowOldStyle)
+                    {
+                        base.SetProperty(XSharpProjectFileConstants.AllowOldStyleAssignments, "true");
                     }
                 }
             }

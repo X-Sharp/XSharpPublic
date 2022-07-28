@@ -1081,9 +1081,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 recno  := SELF:_locateKey(bSearchKey, padLen, IIF(seekInfo:SoftSeek , SearchMode.SoftSeek , SearchMode.Left),recno)
                 result := SELF:_oRdd:__Goto(recno)
                 IF activeFilter
-                    SELF:Descending := oldDescend
                     SELF:_oRdd:SkipFilter(1)
-                    SELF:Descending := FALSE
                     recno := SELF:_RecNo
                 ENDIF
                 LOCAL found := FALSE AS LOGIC
@@ -1150,6 +1148,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             IF seekInfo:Last
                                 diff := strCmp
                                 recno := SELF:_nextKey(-1)
+                                IF activeFilter
+                                    recno := SELF:_skipFilter(recno, SkipDirection.Backward)
+                                ENDIF
                                 strCmp := SELF:__Compare(SELF:_newvalue:Key, currentKeyBuffer, len, 0, 0)
                                 found := (strCmp == 0)
                                 IF found
@@ -1174,8 +1175,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ELSE
                     found := FALSE
                 ENDIF
-                // if
-
 
                 IF !SELF:_oRdd:_isValid
                     SELF:ClearStack()

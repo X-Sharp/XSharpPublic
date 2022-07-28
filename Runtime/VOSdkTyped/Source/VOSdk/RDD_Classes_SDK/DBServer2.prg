@@ -1533,7 +1533,7 @@ METHOD FieldGetFormatted( uField AS USUAL) AS USUAL
 		IF IsNil( aDataFields[wPos] )
 			aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
 		ENDIF
-        SELF:DataField(wPos):FieldSpec:Transform( uRetVal )
+        uRetVal := SELF:DataField(wPos):FieldSpec:Transform( uRetVal )
 
 
 	RECOVER USING oError

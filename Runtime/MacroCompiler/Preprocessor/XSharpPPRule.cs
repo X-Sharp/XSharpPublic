@@ -1048,7 +1048,7 @@ namespace XSharp.MacroCompiler.Preprocessor
 
         bool IsStopToken(PPMatchToken mtoken, XSharpToken token)
         {
-            if (mtoken.RuleTokenType.HasStopTokens())
+            if (mtoken.StopTokens != null && mtoken.StopTokens.Length > 0)
             {
                 foreach (var stopToken in mtoken.StopTokens)
                 {
@@ -1239,6 +1239,10 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 while (iSource < tokens.Count && !done)
                 {
+                    if (level == 0 && IsStopToken(mToken, tokens[iSource]))
+                    {
+                        break;
+                    }
                     switch (tokens[iSource].Type)
                     {
                         case XSharpLexer.LPAREN:

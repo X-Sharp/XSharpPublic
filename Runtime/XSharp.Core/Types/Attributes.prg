@@ -1,12 +1,12 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 BEGIN NAMESPACE XSharp.Internal
-	
-	
-	
+
+
+
 	/// <summary>
 	/// This class is used to mark IntPtr _DLL arguments with the actual type
 	/// </summary>
@@ -15,12 +15,12 @@ BEGIN NAMESPACE XSharp.Internal
 		PRIVATE INITONLY _value AS System.Type
 		///<summary>The actual type of the parameter.</summary>
 		PROPERTY @@Value AS System.Type GET _value
-		/// <summary></summary>	
+		/// <summary></summary>
 		CONSTRUCTOR(@@Value AS System.Type)
 			_value := @@Value
-		
+
 	END CLASS
-	
+
 	/// <summary>
 	/// This class exposes the namespace and globalclass in an assembly
 	/// </summary>
@@ -32,47 +32,47 @@ BEGIN NAMESPACE XSharp.Internal
 		PROPERTY GlobalClassName AS STRING GET _globalClassName
         ///<summary>Default namespace of the assembly.</summary>
 		PROPERTY DefaultNameSpace AS STRING GET _defaultNameSpace
-		/// <summary></summary>	
+		/// <summary></summary>
 		CONSTRUCTOR(globalClassName AS STRING, defaultNameSpace AS STRING)
 			_globalClassName := globalClassName
 			_defaultNameSpace := defaultNameSpace
-		
+
 	END CLASS
-	
-	
+
+
 	/// <summary>
 	/// This class documents the parameter names for methods and functions
 	/// with Clipper calling convention
 	/// </summary>
-	
+
 	[AttributeUsage(AttributeTargets.Method|AttributeTargets.Constructor)];
 	SEALED CLASS ClipperCallingConventionAttribute INHERIT Attribute
 		PRIVATE INITONLY _parameterNames AS STRING[]
 		///<summary>List of parameter names for the method or constructor </summary>
 		PROPERTY ParameterNames AS STRING[] GET _parameterNames
-		/// <summary></summary>	
+		/// <summary></summary>
 		CONSTRUCTOR(parameterNames AS STRING[])
 			_parameterNames := parameterNames
-		
+
 	END CLASS
-	
-	
+
+
 	/// <summary>
 	/// This class records the compiler version used to build an assembly
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)];
 	SEALED CLASS CompilerVersionAttribute INHERIT Attribute
 		PRIVATE INITONLY _version AS STRING
-	    ///<summary>The version and dialect of the compiler that created the assembly.</summary>	
+	    ///<summary>The version and dialect of the compiler that created the assembly.</summary>
 		PROPERTY Version AS STRING GET _version
-		
-		/// <summary></summary>	
+
+		/// <summary></summary>
 		CONSTRUCTOR(version AS STRING)
 			_version := version
-		
+
 	END CLASS
-	
-	
+
+
 	/// <summary>
 	/// this class is used to mark default parameter values in the middle of a parameter list.
     /// </summary>
@@ -88,22 +88,29 @@ BEGIN NAMESPACE XSharp.Internal
 		PROPERTY @@Value AS OBJECT GET _value
         /// <summary>Flag indicating the type of the default parameter</summary>
         /// <remarks>
-	    /// 0 = Regular .Net default value 
-	    /// 1 = NIL
-	    /// 2 = Date (value is LONG ticks, empty for NULL_DATE)
-	    /// 3 = Symbol, value can be empty or a string
-	    /// 4 = PSZ, null = empty, or a string
-	    /// 5 = IntPtr (can be 0 for NullPtr)
+        /// <list type="table">
+        /// <listheader>
+        /// <term>Value</term>
+        /// <description>Description</description>
+        /// </listheader>
+	    /// <item><term>0</term><description>Regular .Net default value</description></item>
+	    /// <item><term>1</term><description>NIL</description></item>
+	    /// <item><term>2</term><description>Date (value is LONG ticks, empty for NULL_DATE)</description></item>
+	    /// <item><term>3</term><description>Symbol, value can be empty or a string</description></item>
+	    /// <item><term>4</term><description>PSZ, null = empty, or a string</description></item>
+	    /// <item><term>5</term><description>IntPtr (can be 0 for NullPtr)</description></item>
+        /// <item><term>6</term><description>Decimal (stored as string without 'm' suffix)</description></item>
+        /// </list>
 	    /// </remarks>
 		PROPERTY Flag  AS INT    GET _flag
-		
-		/// <summary></summary>	
+
+		/// <summary></summary>
 		CONSTRUCTOR(oValue AS OBJECT, flag AS INT)
 			_value := oValue
 			_flag  := flag
-		
+
 	END CLASS
-	
+
 	/// <summary>
 	/// This class is used to describe VOSTRUCT and UNION structures which have a different semantics
 	/// AS actually means Struct PTR. IS means Struct
@@ -113,16 +120,16 @@ BEGIN NAMESPACE XSharp.Internal
 	SEALED CLASS VoStructAttribute INHERIT Attribute
 		PRIVATE _size				AS INT
 		PRIVATE _largestMemberSize  AS INT
-		///<summary>Total size of the VOSTRUCT or UNION.</summary>	
+		///<summary>Total size of the VOSTRUCT or UNION.</summary>
 		PROPERTY Size				AS INT GET _size
-        ///<summary>Size of the largest member.</summary>	
+        ///<summary>Size of the largest member.</summary>
 		PROPERTY LargestMemberSize	AS INT GET _largestMemberSize
-		
-		/// <summary></summary>	
+
+		/// <summary></summary>
 		CONSTRUCTOR(size AS INT, largestMemberSize AS INT)
 			_size := size
 			_largestMemberSize := largestMemberSize
-		
+
 	END CLASS
 
 	/// <summary>
@@ -130,12 +137,12 @@ BEGIN NAMESPACE XSharp.Internal
     /// </summary>
 	[AttributeUsage(AttributeTargets.Field)];
 	SEALED CLASS IsInstanceAttribute INHERIT Attribute
-		
-		/// <summary></summary>	
-		CONSTRUCTOR() 
+
+		/// <summary></summary>
+		CONSTRUCTOR()
 			SUPER()
 			RETURN
-		
+
 	END CLASS
 
     /// <summary>
@@ -145,7 +152,7 @@ BEGIN NAMESPACE XSharp.Internal
 	SEALED CLASS AllowLateBindingAttribute INHERIT Attribute
 		CONSTRUCTOR()
 			SUPER()
-		
+
 	END CLASS
 
     /// <summary>
@@ -168,10 +175,10 @@ BEGIN NAMESPACE XSharp.Internal
 	SEALED CLASS NeedsAccessToLocalsAttribute INHERIT Attribute
         PRIVATE _writesToLocals := FALSE AS LOGIC
         PROPERTY WritesToLocals AS LOGIC GET _writesToLocals
-		/// <summary></summary>	
+		/// <summary></summary>
 		CONSTRUCTOR(lWrites AS LOGIC)
             _writesToLocals := lWrites
-		
+
 	END CLASS
 
 
@@ -185,7 +192,7 @@ BEGIN NAMESPACE XSharp.Internal
 		CONSTRUCTOR()
 			SUPER()
 	END CLASS
-    
+
 
 
 END NAMESPACE
@@ -203,13 +210,13 @@ BEGIN NAMESPACE XSharp
 	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple := true)];
 	SEALED CLASS ImplicitNamespaceAttribute INHERIT Attribute
 		PRIVATE INITONLY _namespace AS STRING
-	    ///<summary>Name of the implicit namespace.</summary>		
+	    ///<summary>Name of the implicit namespace.</summary>
 		PROPERTY Namespace AS STRING GET _namespace
-		
-		/// <summary></summary>	
+
+		/// <summary></summary>
 		CONSTRUCTOR(namespace AS STRING)
 			_namespace := namespace
-		
+
 	END CLASS
-	
+
 END NAMESPACE

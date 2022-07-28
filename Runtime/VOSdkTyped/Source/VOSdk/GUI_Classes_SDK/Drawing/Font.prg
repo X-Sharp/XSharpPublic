@@ -4,6 +4,7 @@
 #define __WCFixedPitch 1
 #define __WCVariablePitch 2
 USING System.Runtime.InteropServices
+/// <include file="Gui.xml" path="doc/Font/*" />
 CLASS Font INHERIT VObject
 	PROTECT oFont 			AS System.Drawing.Font
 	INTERNAL oLogFont		AS Font.LOGFONT
@@ -29,38 +30,46 @@ CLASS Font INHERIT VObject
 	METHOD __ToLogFont() AS VOID STRICT
 		IF oFont != NULL_OBJECT
 			oFont:ToLogFont(oLogFont)
-			iPointSize := (INT) oFont:SizeInPoints
+			iPointSize := Convert.ToInt32(oFont:SizeInPoints)
 		ENDIF
 
 
 	ACCESS __FontCharSet AS INT STRICT
 		RETURN oLogFont:CharSet
 
+ /// <exclude />
 	ACCESS __FontFaceName AS STRING STRICT
 		SELF:Create()
 		RETURN oFont:Name
 
+ /// <exclude />
 	ACCESS __FontHeight AS INT STRICT
 		SELF:Create()
 		RETURN oLogFont:Height
 
+ /// <exclude />
 	ACCESS __FontPitchAndFamily AS INT STRICT
 		SELF:Create()
 		RETURN oLogFont:PitchAndFamily
 
+ /// <exclude />
 	ACCESS __PointSize AS INT STRICT
 		RETURN iPointSize
 
+/// <include file="Gui.xml" path="doc/Font.PointSize/*" />
 	ACCESS PointSize AS INT STRICT
 		RETURN iPointSize
 
+ /// <exclude />
 	ASSIGN __PointSize(x AS INT)  STRICT
 		iPointSize := x
 		bFontChanged := TRUE
 
+/// <include file="Gui.xml" path="doc/Font.Bold/*" />
 	ACCESS Bold AS LOGIC
 		RETURN oLogFont:Weight == FontWeight.Heavy
 
+/// <include file="Gui.xml" path="doc/Font.Bold/*" />
 	ASSIGN Bold(lfState AS LOGIC)
 		LOCAL lfNewWeight AS WORD
 
@@ -77,13 +86,16 @@ CLASS Font INHERIT VObject
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Font.CharSet/*" />
 	ACCESS CharSet  AS BYTE
 		SELF:Create()
 		RETURN oLogFont:CharSet
 
+/// <include file="Gui.xml" path="doc/Font.ClipPrecision/*" />
 	ACCESS ClipPrecision AS BYTE
 		RETURN oLogFont:ClipPrecision
 
+/// <include file="Gui.xml" path="doc/Font.ClipPrecision/*" />
 	ASSIGN ClipPrecision(nNewClipPrecision AS BYTE)
 		IF oLogFont:ClipPrecision<>nNewClipPrecision
 			oLogFont:ClipPrecision := nNewClipPrecision
@@ -92,6 +104,7 @@ CLASS Font INHERIT VObject
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Font.ConvPntToDim/*" />
 	METHOD ConvPntToDim(nPntSize AS LONG, hDCConv AS IntPtr) AS Dimension
 		LOCAL hDC AS IntPtr
 		LOCAL wDim AS Dimension
@@ -107,6 +120,7 @@ CLASS Font INHERIT VObject
 
 		RETURN wDim
 
+/// <include file="Gui.xml" path="doc/Font.Create/*" />
 	METHOD Create(lPrinter, uhdc)
 		LOCAL oDim	  AS Dimension
 		LOCAL hdc	  AS IntPtr
@@ -178,7 +192,8 @@ CLASS Font INHERIT VObject
 		RETURN SELF
 
 
-	METHOD Destroy() AS USUAL 
+/// <include file="Gui.xml" path="doc/Font.Destroy/*" />
+	METHOD Destroy() AS USUAL
 
 		SUPER:Destroy()
 
@@ -189,22 +204,27 @@ CLASS Font INHERIT VObject
 
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/Font.Escapement/*" />
 	ACCESS Escapement AS INT
 		RETURN oLogFont:Escapement
 
+/// <include file="Gui.xml" path="doc/Font.FaceName/*" />
 	ACCESS FaceName AS STRING
 		SELF:Create()
 		RETURN oFont:Name
 
+/// <include file="Gui.xml" path="doc/Font.Handle/*" />
 	METHOD Handle() AS IntPtr STRICT
 		SELF:Create()
 		RETURN oFont:ToHfont()
 
+/// <include file="Gui.xml" path="doc/Font.Height/*" />
 	ACCESS Height AS INT
 		SELF:Create()
 		RETURN oLogFont:Height
 
 
+/// <include file="Gui.xml" path="doc/Font.Height/*" />
 	ASSIGN Height( liHeight  AS INT)
 		IF oLogFont:Height != liHeight
 			SELF:bFontChanged := TRUE
@@ -212,6 +232,7 @@ CLASS Font INHERIT VObject
 		ENDIF
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Font.ctor/*" />
 	CONSTRUCTOR(kFont, oDimension, sTypeFace)
 		SUPER()
 		oLogFont := Font.LOGFONT{}
@@ -273,9 +294,11 @@ CLASS Font INHERIT VObject
 		bFontChanged := TRUE
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Font.Italic/*" />
 	ACCESS Italic  AS LOGIC
 		RETURN oLogFont:Italic == 1
 
+/// <include file="Gui.xml" path="doc/Font.Italic/*" />
 	ASSIGN Italic(lfState AS LOGIC)
 		IF oLogFont:Italic != iif(lfState,1,0)
 			oLogFont:Italic := iif(lfState,1,0)
@@ -284,9 +307,11 @@ CLASS Font INHERIT VObject
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Font.Light/*" />
 	ACCESS Light  AS LOGIC
 		RETURN oLogFont:Weight == FontWeight.Light
 
+/// <include file="Gui.xml" path="doc/Font.Light/*" />
 	ASSIGN Light(lfState AS LOGIC)
 		LOCAL lfNewWeight AS WORD
 
@@ -303,9 +328,11 @@ CLASS Font INHERIT VObject
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Font.Normal/*" />
 	ACCESS Normal  AS LOGIC
 		RETURN oLogFont:Weight == FontWeight.Normal
 
+/// <include file="Gui.xml" path="doc/Font.Normal/*" />
 	ASSIGN Normal(lfState AS LOGIC)
 		LOCAL lfNewWeight AS WORD
 
@@ -321,12 +348,15 @@ CLASS Font INHERIT VObject
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Font.Orientation/*" />
 	ACCESS Orientation AS LONG
 		RETURN oLogFont:Orientation
 
+/// <include file="Gui.xml" path="doc/Font.OutPrecision/*" />
 	ACCESS OutPrecision  AS BYTE
 		RETURN oLogFont:OutPrecision
 
+/// <include file="Gui.xml" path="doc/Font.OutPrecision/*" />
 	ASSIGN OutPrecision(nNewOutPrecision AS BYTE)
 		IF oLogFont:OutPrecision<>nNewOutPrecision
 			oLogFont:OutPrecision := nNewOutPrecision
@@ -335,9 +365,11 @@ CLASS Font INHERIT VObject
 
 		RETURN
 
+/// <include file="Gui.xml" path="doc/Font.PitchAndFamily/*" />
 	ACCESS PitchAndFamily AS BYTE
 		RETURN oLogFont:PitchAndFamily
 
+/// <include file="Gui.xml" path="doc/Font.Family/*" />
 	ASSIGN Family(nFamily AS BYTE)
 		LOCAL lfNewPitchAndFamily	AS BYTE
 		LOCAL lfFamily				AS WORD
@@ -353,17 +385,21 @@ CLASS Font INHERIT VObject
 		RETURN
 
 
-	ACCESS @@PitchFixed  AS LOGIC
-		RETURN !SELF:@@PitchVariable
+/// <include file="Gui.xml" path="doc/Font.PitchFixed/*" />
+	ACCESS PitchFixed  AS LOGIC
+		RETURN !SELF:PitchVariable
 
-	ASSIGN @@PitchFixed(lfState AS LOGIC)
-		SELF:@@PitchVariable := ! lfState
+/// <include file="Gui.xml" path="doc/Font.PitchFixed/*" />
+	ASSIGN PitchFixed(lfState AS LOGIC)
+		SELF:PitchVariable := ! lfState
 		RETURN
 
-	ACCESS @@PitchVariable AS LOGIC
+/// <include file="Gui.xml" path="doc/Font.PitchVariable/*" />
+	ACCESS PitchVariable AS LOGIC
 		RETURN _AND(oLogFont:PitchAndFamily, 0x03) == 2
 
-	ASSIGN @@PitchVariable(lfState AS LOGIC)
+/// <include file="Gui.xml" path="doc/Font.PitchVariable/*" />
+	ASSIGN PitchVariable(lfState AS LOGIC)
 		LOCAL lfNewPitchAndFamily AS BYTE
 
 		IF lfState == TRUE

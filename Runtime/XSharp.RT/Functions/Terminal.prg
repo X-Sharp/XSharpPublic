@@ -225,7 +225,7 @@ FUNCTION ShowArray  (aTest as array, cPrefix := "" as STRING) AS VOID
     LOCAL cOutTemp := "" AS STRING
     IF aTest:GetType():FullName:ToLower() == "xsharp.__foxarray"
         IF __Array.FoxArrayHelpers:ShowArray != NULL
-            Eval(__Array.FoxArrayHelpers:ShowArray, aTest, cPrefix)
+            __Array.FoxArrayHelpers:ShowArray( aTest, cPrefix)
         ELSE
             _CallClipFunc(#ShowFoxArray, aTest, cPrefix)
         ENDIF

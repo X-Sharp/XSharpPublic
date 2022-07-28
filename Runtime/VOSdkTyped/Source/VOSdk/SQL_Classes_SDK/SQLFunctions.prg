@@ -416,7 +416,7 @@ END CLASS
 FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldName AS STRING) AS FieldSpec
 		LOCAL cName AS STRING
 		LOCAL oHL AS HyperLabel
-		LOCAL nLen, nDec AS LONG
+		LOCAL nLen, nDec AS DWORD
 		LOCAL cType AS STRING
 		LOCAL oType	AS System.Type
 		LOCAL TC AS TypeCode
@@ -430,7 +430,7 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 		SWITCH TC
 		CASE TypeCode.String
 			cType := "C"
-			nLen := oColumn:MaxLength
+			nLen := (DWORD) oColumn:MaxLength
 			// Automatically Convert Long Strings to Memos
 			IF nLen  > 255 .OR. nLen < 0
 				nLen 	:= 10
@@ -453,8 +453,8 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
             var ordinal := oColumn:Ordinal
 			IF oSchema:Rows:Count >= ordinal
 				oRow := oSchema:Rows[ordinal]
-				nDec := Convert.ToInt32(oRow:Item["NumericScale"])
-				nLen := Convert.ToInt32(oRow:Item["NumericPrecision"])
+				nDec := (DWORD) Convert.ToInt32(oRow:Item["NumericScale"])
+				nLen := (DWORD) Convert.ToInt32(oRow:Item["NumericPrecision"])
                 if nDec > nLen // This happens for some SQL providers
                     if TC == TypeCode.Decimal
                         nDec := 4
@@ -550,7 +550,7 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 
 		OTHERWISE
 			cType := "C"
-			nLen 	:= oColumn:MaxLength
+			nLen 	:= (DWORD) oColumn:MaxLength
 			IF (nLen > 0)
 				oFs	:= FieldSpec{oHL,"C",nLen,0}
 			ELSE

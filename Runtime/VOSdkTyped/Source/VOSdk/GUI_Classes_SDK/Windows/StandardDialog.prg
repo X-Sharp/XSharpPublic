@@ -19,7 +19,7 @@ CLASS OpenDialog INHERIT StandardFileDialog
 		SELF:PostInit()
 		RETURN
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL CLIPPER
 		oOpen := NULL_OBJECT
 		RETURN SUPER:Destroy()
 
@@ -75,7 +75,7 @@ CLASS SaveAsDialog INHERIT StandardFileDialog
 		SELF:PostInit()
 		RETURN
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL CLIPPER
 		oSave := NULL_OBJECT
 		RETURN SUPER:Destroy()
 
@@ -234,7 +234,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		oDlg:DefaultExt := cNew
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.Destroy/*" />
-	NEW METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL CLIPPER
 		IF oDlg != null_OBJECT
 			oDlg:Dispose()
 			oDlg := NULL_OBJECT

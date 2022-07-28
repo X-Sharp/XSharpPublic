@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -13,19 +13,19 @@ CLASS DataField
 
 
 /// <include file="System.xml" path="doc/DataField.ctor/*" />
-CONSTRUCTOR()
-    
-    
+CONSTRUCTOR() STRICT
+
+
 /// <include file="System.xml" path="doc/DataField.ctor/*" />
 CONSTRUCTOR( oHLName AS STRING, oFS := NULL AS FieldSpec)
     SELF(HyperLabel{ oHLName }, oFS)
 
 
 /// <include file="System.xml" path="doc/DataField.ctor/*" />
-CONSTRUCTOR( oHLName AS HyperLabel, oFS := NULL AS FieldSpec) 
+CONSTRUCTOR( oHLName AS HyperLabel, oFS := NULL AS FieldSpec)
 	oHyperLabel := oHLName
     oFieldSpec := oFS
-	RETURN 
+	RETURN
 
 
 /// <include file="System.xml" path="doc/DataField.FieldSpec/*" />

@@ -307,39 +307,37 @@ namespace Microsoft.CodeAnalysis.CSharp
             // USUAL -> WINBOOL, use LOGIC as intermediate type
             ConversionKind conversionKind = conversion.Kind;
             var usualType = rewrittenOperand.Type;
+            MethodSymbol m;
+            m = getImplicitOperatorByReturnType(usualType, rewrittenType);
+            if (m != null)
+            {
+                rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                rewrittenOperand.WasCompilerGenerated = true;
+                return ConversionKind.Identity;
+            }
             if (rewrittenType.IsWinBoolType())
             {
-                MethodSymbol m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_Boolean));
+                m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_Boolean));
                 rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
                 rewrittenOperand.WasCompilerGenerated = true;
                 return ConversionKind.Identity;
             }
             if (rewrittenType.IsWinDateType())
             {
-                MethodSymbol m = getImplicitOperatorByParameterType(_compilation.WinDateType(), _compilation.GetWellKnownType(WellKnownType.XSharp___Usual));
+                m = getImplicitOperatorByParameterType(_compilation.WinDateType(), _compilation.GetWellKnownType(WellKnownType.XSharp___Usual));
                 rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
                 rewrittenOperand.WasCompilerGenerated = true;
                 return ConversionKind.Identity;
             }
             if (rewrittenType.SpecialType == SpecialType.System_Decimal)
             {
-                if (_compilation.Options.XSharpRuntime)
-                {
-                    // Vulcan does not support this !
-                    MethodSymbol m = getImplicitOperatorByReturnType(usualType, rewrittenType);
-                    rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
-                    rewrittenOperand.WasCompilerGenerated = true;
-                }
-                else
-                {
-                    MethodSymbol m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_Double));
-                    rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
-                    rewrittenOperand.WasCompilerGenerated = true;
-                    rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: false, false);
-                }
+                // X# runtime should not get here. There is an implicit operator
+                m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_Double));
+                rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                rewrittenOperand.WasCompilerGenerated = true;
+                rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: false, false);
                 return ConversionKind.Identity;
             }
-
             if (rewrittenType.IsEnumType())
             {
                 var enumType = rewrittenType.GetEnumUnderlyingType();
@@ -351,63 +349,46 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 // Pointer types are not really boxed
                 // we call the appropriate implicit operator here
-                MethodSymbol m = null;
-                m = getImplicitOperatorByReturnType(usualType, rewrittenType);
-                if (m == null)
-                {
-                    m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_IntPtr));
-                }
-                if (m != null)
-                {
-                    rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
-                    rewrittenOperand.WasCompilerGenerated = true;
-                    return ConversionKind.ExplicitPointerToPointer;
-                }
+                m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_IntPtr));
+                rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                rewrittenOperand.WasCompilerGenerated = true;
+                return ConversionKind.ExplicitPointerToPointer;
             }
-            if (rewrittenType.SpecialType == SpecialType.System_DateTime)
-            {
-                rewrittenOperand = _factory.StaticCall(usualType, ReservedNames.ToObject, rewrittenOperand);
-                return ConversionKind.Unboxing;
-            }
-            else // System.Decimals, Objects and reference types, but not String
+            if (rewrittenType.IsInterfaceType())
             {
                 // check to see if we are casting to an interface that the usual type supports
-                if (rewrittenType.IsInterfaceType())
+                foreach (var interf in usualType.AllInterfacesNoUseSiteDiagnostics)
                 {
-                    foreach (var interf in usualType.AllInterfacesNoUseSiteDiagnostics)
+                    if (TypeSymbol.Equals(interf, rewrittenType))
                     {
-                        if (TypeSymbol.Equals(interf, rewrittenType))
-                        {
-                            return ConversionKind.ImplicitReference;
-                        }
+                        return ConversionKind.ImplicitReference;
                     }
                 }
-                // special case for __CastClass
-                var xnode = rewrittenOperand.Syntax.Parent?.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext;
-                if (xnode != null && xnode.IsCastClass())
-                {
-                    if (rewrittenType.IsUsualType())
-                        conversionKind = ConversionKind.Unboxing;
-                    else
-                        conversionKind = ConversionKind.Boxing;
-
-                }
+            }
+            // special case for __CastClass
+            var xnode = rewrittenOperand.Syntax.Parent?.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext;
+            if (xnode != null && xnode.IsCastClass())
+            {
+                if (rewrittenType.IsUsualType())
+                    conversionKind = ConversionKind.Unboxing;
                 else
+                    conversionKind = ConversionKind.Boxing;
+            }
+            else
+            {
+                rewrittenOperand = _factory.StaticCall(usualType, ReservedNames.ToObject, rewrittenOperand);
+                if (rewrittenType.IsObjectType())
                 {
-                    rewrittenOperand = _factory.StaticCall(usualType, ReservedNames.ToObject, rewrittenOperand);
-                    if (rewrittenType.IsObjectType())
-                    {
-                        conversionKind = ConversionKind.Identity;
-                    }
-                    else if (rewrittenType.IsReferenceType)
-                    {
-                        rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
-                        conversionKind = ConversionKind.ImplicitReference;
-                    }
-                    else if (!rewrittenType.IsWinDateType())
-                    {
-                        conversionKind = ConversionKind.Unboxing;
-                    }
+                    conversionKind = ConversionKind.Identity;
+                }
+                else if (rewrittenType.IsReferenceType)
+                {
+                    rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
+                    conversionKind = ConversionKind.ImplicitReference;
+                }
+                else if (!rewrittenType.IsWinDateType())
+                {
+                    conversionKind = ConversionKind.Unboxing;
                 }
             }
             return conversionKind;

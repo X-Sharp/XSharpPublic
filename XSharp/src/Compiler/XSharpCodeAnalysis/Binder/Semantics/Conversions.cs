@@ -298,7 +298,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (source.IsUsualType())
             {
-                if (dstType == SpecialType.System_Decimal)
+                if (dstType == SpecialType.System_Decimal ||
+                    dstType == SpecialType.System_DateTime)
                 // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
                 {
                     return Conversion.Special;

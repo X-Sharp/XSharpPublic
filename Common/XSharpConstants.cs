@@ -132,6 +132,7 @@ namespace XSharp
     internal static class XSharpProjectFileConstants
     {
         public const string Allowdot = nameof(Allowdot);
+        public const string AllowOldStyleAssignments = nameof(AllowOldStyleAssignments);
         public const string AssemblyName = nameof(AssemblyName);
         public const string AssemblyOriginatorKeyFile = nameof(AssemblyOriginatorKeyFile);
         public const string AutoGenerateBindingRedirects = nameof(AutoGenerateBindingRedirects);
@@ -145,6 +146,12 @@ namespace XSharp
         public const string DelaySign = nameof(DelaySign);
         public const string DevEnvDir = nameof(DevEnvDir);
         public const string Dialect = nameof(Dialect);
+        public const string DialectCore = "Core";
+        public const string DialectFoxPro = "FoxPro";
+        public const string DialectHarbour = "Harbour";
+        public const string DialectVO = "VO";
+        public const string DialectVulcan = "Vulcan.NET";
+        public const string DialectXPP = "Xbase++";
         public const string DisabledWarnings = nameof(DisabledWarnings);
         public const string DocumentationFile = nameof(DocumentationFile);
         public const string EnforceSelf = nameof(EnforceSelf);

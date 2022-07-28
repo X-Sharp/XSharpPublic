@@ -29,6 +29,7 @@ namespace XSharp.LanguageService
     // collected in the classifier
     internal sealed class BraceMatchingProvider : BraceMatchingBase
     {
+        public override string TextMarketTagType => ColorizerConstants.BraceFormatDefinition;
         public override Dictionary<char, char> BraceList { get; } = new Dictionary<char, char>()
         {
             { '{', '}' },
@@ -65,7 +66,13 @@ namespace XSharp.LanguageService
     }
 
 
-
+    
+    internal class KeyWordTag : TextMarkerTag
+    {
+        public KeyWordTag() : base(ColorizerConstants.KeyWordFormatDefinition)
+        {
+        }
+    }
     internal class KeywordMatchingTagger : ITagger<TextMarkerTag>
     {
         private readonly ITextView _view;
@@ -73,13 +80,12 @@ namespace XSharp.LanguageService
         private readonly IBufferTagAggregatorFactoryService _aggregator;
         private readonly ITagAggregator<IClassificationTag> _tagAggregator;
         private SnapshotPoint? _currentChar;
-        private readonly TextMarkerTag _tag = new TextMarkerTag("blue");
+        private readonly TextMarkerTag _tag = new KeyWordTag();
 
         internal KeywordMatchingTagger(ITextView view, IBufferTagAggregatorFactoryService aggregator)
         {
             _view = view;
             _buffer = view.TextBuffer;
-            _tag = new TextMarkerTag("blue");
             _aggregator = aggregator;
             _tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(_buffer);
 

@@ -96,7 +96,6 @@
             // chkIdentifierCase
             // 
             this.chkIdentifierCase.AutoSize = true;
-            this.chkIdentifierCase.Enabled = false;
             this.chkIdentifierCase.Location = new System.Drawing.Point(13, 82);
             this.chkIdentifierCase.Name = "chkIdentifierCase";
             this.chkIdentifierCase.Size = new System.Drawing.Size(171, 17);

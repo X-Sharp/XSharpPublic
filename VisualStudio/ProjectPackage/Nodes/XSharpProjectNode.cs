@@ -1071,6 +1071,14 @@ namespace XSharp.Project
         {
             // Nuget package references are added as child to the Reference Node.
             base.ProcessReferences();
+            var refContainer = GetReferenceContainer() as XSharpReferenceContainerNode;
+            foreach (var child in refContainer.EnumReferences())
+            {
+                if (child is XSharpAssemblyReferenceNode xasm)
+                {
+                    ProjectModel.AddAssemblyReference(xasm.AssemblyPath);
+                }
+            }
             this.LoadPackageReferences();
         }
 
@@ -2032,12 +2040,15 @@ namespace XSharp.Project
         {
             get
             {
+                if (this.IsClosed)
+                    return XSharpParseOptions.Default;
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    if (this.CurrentConfig != null)
+                    var config = this.CurrentConfig;
+                    if (config != null)
                     {
-                        var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
+                        var xoptions = GetProjectOptions(config.ConfigCanonicalName) as XSharpProjectOptions;
                         if (xoptions != null)
                         {
                             if (xoptions.ParseOptions == null)
@@ -2158,13 +2169,21 @@ namespace XSharp.Project
                 if (vers != null)
                 {
                     ok = vers.UnevaluatedValue == Constants.FileVersion;
-                    if (!ok)
+                    var version = vers.UnevaluatedValue.Split('.');
+                    if (version.Length == 4)
                     {
-                        ok = String.Compare(vers.UnevaluatedValue, "2.6.0.0") >= 0;
-                    }
-                    if (ok)
-                    {
-                        return VSConstants.S_OK;
+                        if (Int32.TryParse(version[0], out var ivers1))
+                        {
+                            ok = ivers1 >= 2;
+                        }
+                        if (ok && ivers1 == 2 && Int32.TryParse(version[1], out var ivers2))
+                        {
+                            ok = (ivers2 >= 6) ;
+                        }
+                        if (ok)
+                        {
+                            return VSConstants.S_OK;
+                        }
                     }
                 }
             }

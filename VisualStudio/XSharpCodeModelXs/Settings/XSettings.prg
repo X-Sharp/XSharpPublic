@@ -90,20 +90,21 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY CodeGeneratorPublicStyle         AS PublicStyle AUTO
         PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
 
-        PUBLIC STATIC PROPERTY IndentEntityContent               AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY IndentBlockContent                AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY IndentCaseContent                 AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY IndentCaseLabel                   AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY IndentContinuedLines              AS LOGIC AUTO
-
+        PUBLIC STATIC PROPERTY IndentTypeMembers               AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentStatements                AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentCaseContent               AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentCaseLabel                 AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentContinuedLines            AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentPreprocessorLines         AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentNamespace                 AS LOGIC AUTO
         PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO := Int32.MaxValue
-        PUBLIC STATIC PROPERTY CompleteNumChars               AS LONG AUTO := 4
+        PUBLIC STATIC PROPERTY CompleteNumChars                 AS LONG AUTO := 4
 
         PUBLIC STATIC PROPERTY ShellLink                        AS IXVsShellLink AUTO
         PUBLIC STATIC PROPERTY LanguageService                  AS OBJECT AUTO
 
-        PUBLIC STATIC PROPERTY DebuggerMode                AS DebuggerMode AUTO
-        PUBLIC STATIC PROPERTY DebuggerIsRunning           AS LOGIC GET DebuggerMode != DebuggerMode.Design
+        PUBLIC STATIC PROPERTY DebuggerMode                     AS DebuggerMode AUTO
+        PUBLIC STATIC PROPERTY DebuggerIsRunning                AS LOGIC GET DebuggerMode != DebuggerMode.Design
 
 
 

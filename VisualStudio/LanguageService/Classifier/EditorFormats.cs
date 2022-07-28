@@ -73,9 +73,55 @@ namespace XSharp.LanguageService
     {
         public XSharpTextEndTextFormat()
         {
-            this.DisplayName = "XSharp Text .. EndText";
+            this.DisplayName = "X# Text .. EndText";
             this.ForegroundColor = Colors.DarkSalmon;
         }
     }
 
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ColorizerConstants.BraceFormatDefinition)]
+    [UserVisible(true)]
+    internal class BraceFormatDefinition : MarkerFormatDefinition
+    {
+        /// <summary>
+        /// Color of matching braces
+        /// </summary>
+        public BraceFormatDefinition()
+        {
+            this.BackgroundColor = Colors.Tan;
+            this.DisplayName = "X# Brace Matching";
+            this.ZOrder = 5;
+        }
+    }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ColorizerConstants.KeyWordFormatDefinition)]
+    [UserVisible(true)]
+    internal class KeywordFormatDefinition : MarkerFormatDefinition
+    {
+        /// <summary>
+        /// The color of highlighted keyword (pairs)
+        /// </summary>
+        public KeywordFormatDefinition()
+        {
+            this.BackgroundColor = Colors.LightSalmon;
+            this.DisplayName = "X# Highlight Keyword";
+            this.ZOrder = 5;
+        }
+    }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ColorizerConstants.HighLightIdentifierFormatDefinition)]
+    [UserVisible(true)]
+    internal class HighLightIdentifierFormatDefinition : MarkerFormatDefinition
+    {
+        /// <summary>
+        /// Color of highlighted identifiers
+        /// </summary>
+        public HighLightIdentifierFormatDefinition()
+        {
+            this.BackgroundColor = Colors.Bisque;
+            this.DisplayName = "X# Highlight Identifier";
+            this.ZOrder = 5;
+        }
+    }
 }

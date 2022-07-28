@@ -478,11 +478,15 @@ CLASS xPorter
 		oModule:Analyze()
 
 		LOCAL oCode AS OutputCode
-		oCode := oModule:Generate()
+		oCode := oModule:Generate(glCreateFilePerClass)
 
 		IF oModule:Generated
 			xPorter.Message("  Generating module :" , oModule:Name)
-			File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName, oCode:GetContents() , System.Text.Encoding.UTF8)
+			IF glCreateFilePerClass
+				oModule:ExportFilesPerClass(cOutputFolder)
+			ELSE
+				File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName, oCode:GetContents() , System.Text.Encoding.UTF8)
+			ENDIF
 		END IF
 	RETURN TRUE
 
@@ -1167,28 +1171,8 @@ CLASS ApplicationDescriptor
 				xPorter.Message("  Generating module :" , oModule:Name)
 				
 				IF glCreateFilePerClass
-					LOCAL cModuleSubFolder AS STRING
-					cModuleSubFolder := MakePathLegal( oModule:Name )
-					Directory.CreateDirectory(cFolder + "\" + cModuleSubFolder)
-					FOREACH oClass AS KeyValuePair<STRING, OutputCode> IN oModule:GeneratedClasses
-						LOCAL cFileName AS STRING
-						cFileName := MakePathLegal( oClass:Key ) + ".prg"
-						File.WriteAllLines(cFolder + "\" + cModuleSubFolder + "\" + cFileName , oClass:Value:Lines , System.Text.Encoding.UTF8)
-						oModule:GeneratedSubFiles:Add(cModuleSubFolder + "\" + cFileName)
-					NEXT
 					
-					LOCAL oNonClass AS OutputCode
-					oNonClass := OutputCode{}
-					oNonClass:Combine(oModule:GeneratedDefines)
-					oNonClass:Combine(oModule:GeneratedGlobals)
-					oNonClass:Combine(oModule:GeneratedFuncs)
-					oNonClass:Combine(oModule:GeneratedRest)
-					IF oNonClass:Lines:Count != 0
-						LOCAL cFileName AS STRING
-						cFileName := "(Non-class)" + ".prg"
-						File.WriteAllLines(cFolder + "\" + cModuleSubFolder + "\" + cFileName , oNonClass:Lines , System.Text.Encoding.UTF8)
-						oModule:GeneratedSubFiles:Add(cModuleSubFolder + "\" + cFileName)
-					END IF
+					oModule:ExportFilesPerClass(cFolder)
 					
 					LOOP
 					
@@ -2012,6 +1996,8 @@ CLASS ModuleDescriptor
 	PROPERTY GeneratedRest AS OutputCode AUTO
 
 	METHOD Generate() AS OutputCode
+	RETURN SELF:Generate(FALSE)
+	METHOD Generate(lSortEntities AS LOGIC) AS OutputCode
 		LOCAL oCode AS OutputCode
 		LOCAL oClasses , oDefines , oTextblocks , oGlobals , oFuncs , oRest AS OutputCode
 
@@ -2028,10 +2014,17 @@ CLASS ModuleDescriptor
 
 		FOREACH oClassDescr AS ClassDescriptor IN SELF:_aClasses
 			LOCAL oClass AS OutputCode
+			IF lSortEntities
+				oClassDescr:Sort()
+			END IF
 			oClass := oClassDescr:Generate()
 			oClasses:Combine(oClass)
 			SELF:GeneratedClasses:Add(oClassDescr:Name, oClass)
 		NEXT
+		
+		IF lSortEntities
+			SELF:_aEntities:Sort({a AS EntityDescriptor, b AS EntityDescriptor => a:Name:CompareTo(b:Name)})
+		END IF
 
 		FOREACH oEntity AS EntityDescriptor IN SELF:_aEntities
 
@@ -2117,6 +2110,31 @@ CLASS ModuleDescriptor
 		NEXT
 	RETURN aResources
 
+	METHOD ExportFilesPerClass(cFolder AS STRING) AS VOID
+		LOCAL cModuleSubFolder AS STRING
+		cModuleSubFolder := MakePathLegal( SELF:Name )
+		Directory.CreateDirectory(cFolder + "\" + cModuleSubFolder)
+		FOREACH oClass AS KeyValuePair<STRING, OutputCode> IN SELF:GeneratedClasses
+			LOCAL cFileName AS STRING
+			cFileName := MakePathLegal( oClass:Key ) + ".prg"
+			File.WriteAllLines(cFolder + "\" + cModuleSubFolder + "\" + cFileName , oClass:Value:Lines , System.Text.Encoding.UTF8)
+			SELF:GeneratedSubFiles:Add(cModuleSubFolder + "\" + cFileName)
+		NEXT
+		
+		LOCAL oNonClass AS OutputCode
+		oNonClass := OutputCode{}
+		oNonClass:Combine(SELF:GeneratedDefines)
+		oNonClass:Combine(SELF:GeneratedGlobals)
+		oNonClass:Combine(SELF:GeneratedFuncs)
+		oNonClass:Combine(SELF:GeneratedRest)
+		IF oNonClass:Lines:Count != 0
+			LOCAL cFileName AS STRING
+			cFileName := "(Non-class)" + ".prg"
+			File.WriteAllLines(cFolder + "\" + cModuleSubFolder + "\" + cFileName , oNonClass:Lines , System.Text.Encoding.UTF8)
+			SELF:GeneratedSubFiles:Add(cModuleSubFolder + "\" + cFileName)
+		END IF
+	RETURN
+
 	METHOD AddVSrc(cResFileName AS STRING) AS VOID
 		SELF:_aVSrc:Add(cResFileName)
 	RETURN
@@ -2158,6 +2176,10 @@ CLASS ClassDescriptor
 	RETURN
 	METHOD HasNonPublicIVar(cIVar AS STRING) AS LOGIC
 	RETURN SELF:_aNonPublicIVars:ContainsKey(cIVar:ToUpper())
+	
+	METHOD Sort() AS VOID
+		SELF:_aMembers:Sort({a AS EntityDescriptor, b AS EntityDescriptor => a:Name:CompareTo(b:Name)})
+	RETURN
 
 	METHOD Generate() AS OutputCode
 		LOCAL oCode AS OutputCode

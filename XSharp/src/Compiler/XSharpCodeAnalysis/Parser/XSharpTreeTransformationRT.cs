@@ -1299,14 +1299,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             initializer = GenerateMethodCall(XSharpQualifiedFunctionNames.ArrayNew, MakeArgumentList(args.ToArray()), true);
                         }
-                        if (initializer != null)
+                        if (initializer == null && context.T.Type == XP.PUBLIC)
                         {
                             initializer = MakePublicInitializer(memvar.Id.GetText());
                         }
-                        exp = GenerateMemVarPut(context, varname, initializer);
-                        var stmt = GenerateExpressionStatement(exp, memvar);
-                        memvar.Put(stmt);
-                        stmts.Add(stmt);
+                        if (initializer != null)
+                        {
+                            exp = GenerateMemVarPut(context, varname, initializer);
+                            var stmt = GenerateExpressionStatement(exp, memvar);
+                            memvar.Put(stmt);
+                            stmts.Add(stmt);
+                        }
 
                     }
                     context.Put(MakeBlock(stmts));

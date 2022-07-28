@@ -141,16 +141,20 @@ namespace XSharp.LanguageService
         {
             if (!IsLexing)
             {
-                if (! IsStarted)
+                if (!IsStarted)
                 {
                     IsStarted = true;
-                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdle(LexAsync);
+                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdleShim(StartLex);
                 }
             }
             else
             {
                 Debug("Buffer_Changed: Suppress lexing because classifier is active");
             }
+    }
+        public async void StartLex()
+        {
+            await LexAsync();
         }
 
         private XDocument GetDocument()

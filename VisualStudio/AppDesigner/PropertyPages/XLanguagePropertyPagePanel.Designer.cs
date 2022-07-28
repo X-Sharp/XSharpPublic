@@ -62,6 +62,7 @@ namespace XSharp.Project
             this.tbStandardDefs = new System.Windows.Forms.TextBox();
             this.btnStandardHeader = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.chkOldStyleAssignments = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -97,6 +98,7 @@ namespace XSharp.Project
             this.tableLayoutPanel1.Controls.Add(this.lblStandardDefs, 1, 12);
             this.tableLayoutPanel1.Controls.Add(this.tbStandardDefs, 2, 12);
             this.tableLayoutPanel1.Controls.Add(this.btnStandardHeader, 3, 12);
+            this.tableLayoutPanel1.Controls.Add(this.chkOldStyleAssignments, 0, 12);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.ForeColor = System.Drawing.Color.Black;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -165,7 +167,7 @@ namespace XSharp.Project
             this.lblMemVar.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblMemVar.Name = "lblMemVar";
             this.lblMemVar.Size = new System.Drawing.Size(105, 13);
-            this.lblMemVar.TabIndex = 0;
+            this.lblMemVar.TabIndex = 25;
             this.lblMemVar.Text = "Memory variables";
             // 
             // lblGeneral
@@ -415,6 +417,18 @@ namespace XSharp.Project
             this.btnStandardHeader.UseVisualStyleBackColor = true;
             this.btnStandardHeader.Click += new System.EventHandler(this.btnStandardHeader_Click);
             // 
+            // chkOldStyleAssignments
+            // 
+            this.chkOldStyleAssignments.AutoSize = true;
+            this.chkOldStyleAssignments.ForeColor = System.Drawing.Color.Black;
+            this.chkOldStyleAssignments.Location = new System.Drawing.Point(5, 228);
+            this.chkOldStyleAssignments.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
+            this.chkOldStyleAssignments.Name = "chkOldStyleAssignments";
+            this.chkOldStyleAssignments.Size = new System.Drawing.Size(158, 17);
+            this.chkOldStyleAssignments.TabIndex = 11;
+            this.chkOldStyleAssignments.Text = "Allow Old Style Assignments";
+            this.chkOldStyleAssignments.UseVisualStyleBackColor = true;
+            // 
             // XLanguagePropertyPagePanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -458,5 +472,6 @@ namespace XSharp.Project
         private System.Windows.Forms.Button btnStandardHeader;
         private System.Windows.Forms.Button btnIncludePaths;
         private System.Windows.Forms.CheckBox chkEnforceOverride;
+        private System.Windows.Forms.CheckBox chkOldStyleAssignments;
     }
 }

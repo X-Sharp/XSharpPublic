@@ -18,6 +18,7 @@ namespace XSharp.CodeDom
         public static string USERDATA_ATTRIBUTES = "XSharp:Attributes"; // MemberAttributes
         public static string USERDATA_NOHEADER = "XSharp:NoHeader"; // Logical
         public static string USERDATA_WASWRITTEN = "XSharp:Waswritten"; // Logical value
+        public static string USERDATA_GLOBALS = "XSharp:Globals"; // Logical value
 
 
         public static bool HasLeadingTrivia(this CodeObject e)
@@ -71,8 +72,18 @@ namespace XSharp.CodeDom
                 return (bool) o.UserData[USERDATA_NOHEADER] ;
             return false;
         }
-       
-        
+
+        public static void SetGlobals(this CodeObject o,  object globals)
+        {
+            o.UserData[USERDATA_GLOBALS] = globals;
+        }
+        public static object GetGlobals(this CodeObject o)
+        {
+            if (o.UserData.Contains(USERDATA_GLOBALS))
+                return o.UserData[USERDATA_GLOBALS];
+            return null;
+        }
+
         public static void SetFromDesigner(this CodeObject o, bool set)
         {
             o.UserData[USERDATA_FROMDESIGNER] = set;

@@ -12,6 +12,7 @@ USING LanguageService.CodeAnalysis.XSharp
 
 BEGIN NAMESPACE XSharpModel
 
+
     /// <summary>An entity in a source file. </summary>
    [DebuggerDisplay("{Kind}, {Name,nq}")];
    CLASS XSourceEntity INHERIT XSourceSymbol IMPLEMENTS IXSymbol, IXSourceSymbol

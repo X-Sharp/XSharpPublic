@@ -18,10 +18,8 @@ namespace XSharp.LanguageService
     [Export(typeof(IClassifierProvider))]
     [ContentType(Constants.LanguageName)]
     [TextViewRole(PredefinedTextViewRoles.Document)]
-
     internal class XSharpClassifierProvider : IClassifierProvider
     {
-
         /// <summary>
         /// Classification registry to be used for getting a reference
         /// to the custom classification type later.
@@ -31,7 +29,6 @@ namespace XSharp.LanguageService
 
         [Import]
         readonly ITextDocumentFactoryService factory = null;
-
 
         #region IClassifierProvider
 
@@ -46,7 +43,7 @@ namespace XSharp.LanguageService
             if (!factory.IsXSharpDocument( buffer))
                 return null;
             return buffer.Properties.GetOrCreateSingletonProperty(creator: () =>
-                XSharpClassifier.GetColorizer(buffer, this.classificationRegistry, this.factory));
+                XSharpClassifier.Create(buffer, this.classificationRegistry, this.factory));
         }
 
         #endregion

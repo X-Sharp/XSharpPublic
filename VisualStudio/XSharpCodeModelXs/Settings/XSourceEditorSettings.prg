@@ -17,11 +17,13 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC PROPERTY TrimTrailingWhiteSpace     AS LOGIC AUTO
         PUBLIC PROPERTY InsertFinalNewline         AS LOGIC AUTO
 
-        PUBLIC PROPERTY IndentEntityContent        AS LOGIC AUTO
-        PUBLIC PROPERTY IndentBlockContent         AS LOGIC AUTO
+        PUBLIC PROPERTY IndentTypeMembers          AS LOGIC AUTO
+        PUBLIC PROPERTY IndentStatements           AS LOGIC AUTO
         PUBLIC PROPERTY IndentCaseContent          AS LOGIC AUTO
         PUBLIC PROPERTY IndentCaseLabel            AS LOGIC AUTO
         PUBLIC PROPERTY IndentContinuedLines       AS LOGIC AUTO
+        PUBLIC PROPERTY IndentPreprocessorLines    AS LOGIC AUTO
+        PUBLIC PROPERTY IndentNamespace            AS LOGIC AUTO
 
         CONSTRUCTOR()
             TabSize      := XSettings.EditorTabSize
@@ -34,11 +36,13 @@ BEGIN NAMESPACE XSharpModel
             IdentifierCase := XSettings.IdentifierCase
             TrimTrailingWhiteSpace := XSettings.EditorTrimTrailingWhiteSpace
             InsertFinalNewline := XSettings.EditorInsertFinalNewline
-            IndentEntityContent := XSettings.IndentEntityContent
-            IndentBlockContent := XSettings.IndentBlockContent
+            IndentTypeMembers := XSettings.IndentTypeMembers
+            IndentStatements := XSettings.IndentStatements
             IndentCaseContent := XSettings.IndentCaseContent
             IndentCaseLabel := XSettings.IndentCaseLabel
             IndentContinuedLines := XSettings.IndentContinuedLines
+            IndentPreprocessorLines := XSettings.IndentPreprocessorLines
+            IndentNamespace := XSettings.IndentNamespace
 
     END CLASS
 

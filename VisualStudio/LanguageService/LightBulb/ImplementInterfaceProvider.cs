@@ -1,4 +1,11 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+//------------------------------------------------------------------------------
+
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -12,6 +19,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using XSharpModel;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
@@ -222,16 +230,15 @@ namespace XSharp.LanguageService.Editors.LightBulb
             }
             var linesState = xDocument.LineState;
             //
-            var xLines = xDocument.Lines;
+            var xLines = xDocument.TokensPerLine;
             //
-            IList<XSharpToken> lineTokens = null;
-            List<XSharpToken> fulllineTokens = new List<XSharpToken>();
+            var fulllineTokens = new List<IToken>();
             var lineNumber = SearchRealStartLine();
-            var lineState = linesState.Get(lineNumber);
+            linesState.Get(lineNumber, out var lineState);
             // It must be a EntityStart
             if (lineState != LineFlags.EntityStart)
                 return false;
-            if (!xLines.TryGetValue(lineNumber, out lineTokens))
+            if (!xLines.TryGetValue(lineNumber, out var lineTokens))
                 return false;
             //
             fulllineTokens.AddRange(lineTokens);
@@ -239,8 +246,8 @@ namespace XSharp.LanguageService.Editors.LightBulb
             do
             {
                 lineNumber++;
-                lineState = linesState.Get(lineNumber);
-                if (lineState == LineFlags.Continued)
+                linesState.Get(lineNumber, out lineState);
+                if (lineState.HasFlag(LineFlags.Continued))
                 {
                     xLines.TryGetValue(lineNumber, out lineTokens);
                     if (lineTokens != null)
@@ -249,7 +256,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                         continue;
                     }
                 }
-            } while (lineState == LineFlags.Continued);
+            } while (lineState.HasFlag(LineFlags.Continued));
             // Now, search for IMPLEMENT
             bool found = false;
             foreach( var token in fulllineTokens)

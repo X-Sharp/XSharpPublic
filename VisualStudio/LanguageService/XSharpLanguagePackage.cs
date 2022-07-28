@@ -206,12 +206,13 @@ namespace XSharp.LanguageService
             XSettings.EditorInsertFinalNewline = _formattingPage.InsertFinalNewLine;
             XSettings.KeywordCase = _formattingPage.KeywordCase;
             // Indentation
-            XSettings.IndentEntityContent = _indentingPage.IndentEntityContent;
-            XSettings.IndentBlockContent = _indentingPage.IndentBlockContent;
+            XSettings.IndentTypeMembers = _indentingPage.IndentEntityContent;
+            XSettings.IndentStatements = _indentingPage.IndentBlockContent;
             XSettings.IndentCaseContent = _indentingPage.IndentCaseContent;
             XSettings.IndentCaseLabel = _indentingPage.IndentCaseLabel;
             XSettings.IndentContinuedLines = _indentingPage.IndentMultiLines;
-
+            XSettings.IndentPreprocessorLines = _indentingPage.IndentPreprocessorLines;
+            XSettings.IndentNamespace = _indentingPage.IndentNamespace;
             // Completion
             XSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
             XSettings.CompleteSelf = _completionOptionsPage.CompleteSelf;

@@ -172,7 +172,8 @@ namespace XSharp.LanguageService
                                     string startToken = extract.Substring(0, dotPos);
                                     filterText = extract.Substring(dotPos + 1);
                                     typedChar = '.';
-                                    tokenList[0].Text = startToken + ".";
+                                    var token = (XSharpToken)tokenList[0];
+                                    token.Text = startToken + ".";
                                 }
                             }
                             else
@@ -415,6 +416,14 @@ namespace XSharp.LanguageService
                 }
                 // Sort in alphabetical order
                 // and put in the SelectionList
+                if (compList.Values.Count == 1)
+                {
+                    var value = compList.Values.First();
+                    if (value.KeyText.ToLower() == filterText.ToLower())
+                    {
+                        compList.Clear();
+                    }    
+                }
                 var values = compList.Values;
                 // Create the All Tab
                 completionSets.Add(new CompletionSet("All", "All", applicableTo, values, Enumerable.Empty<Completion>()));

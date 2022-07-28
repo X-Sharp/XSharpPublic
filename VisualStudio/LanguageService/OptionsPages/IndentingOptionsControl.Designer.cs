@@ -32,9 +32,8 @@
             System.Windows.Forms.Label label1;
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
+            this.treeIndentStyle = new System.Windows.Forms.TreeView();
             this.codeSample = new System.Windows.Forms.RichTextBox();
-            this.listIndentStyle = new System.Windows.Forms.ListView();
             label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -51,24 +50,25 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.treeIndentStyle);
             this.panel1.Controls.Add(this.codeSample);
-            this.panel1.Controls.Add(this.listIndentStyle);
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(560, 357);
+            this.panel1.Size = new System.Drawing.Size(420, 290);
             this.panel1.TabIndex = 0;
             // 
-            // label2
+            // treeIndentStyle
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.treeIndentStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.Location = new System.Drawing.Point(13, 12);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(460, 18);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "These settings are ONLY used in the FormatDocument process";
+            this.treeIndentStyle.FullRowSelect = true;
+            this.treeIndentStyle.HideSelection = false;
+            this.treeIndentStyle.Location = new System.Drawing.Point(12, 14);
+            this.treeIndentStyle.Name = "treeIndentStyle";
+            this.treeIndentStyle.ShowLines = false;
+            this.treeIndentStyle.ShowRootLines = false;
+            this.treeIndentStyle.Size = new System.Drawing.Size(396, 129);
+            this.treeIndentStyle.TabIndex = 3;
             // 
             // codeSample
             // 
@@ -76,37 +76,22 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.codeSample.BackColor = System.Drawing.SystemColors.Window;
-            this.codeSample.Location = new System.Drawing.Point(16, 184);
+            this.codeSample.Location = new System.Drawing.Point(12, 148);
+            this.codeSample.Margin = new System.Windows.Forms.Padding(2);
             this.codeSample.Name = "codeSample";
             this.codeSample.ReadOnly = true;
-            this.codeSample.Size = new System.Drawing.Size(526, 153);
+            this.codeSample.Size = new System.Drawing.Size(396, 131);
             this.codeSample.TabIndex = 1;
             this.codeSample.Text = "";
             // 
-            // listIndentStyle
-            // 
-            this.listIndentStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listIndentStyle.CheckBoxes = true;
-            this.listIndentStyle.HideSelection = false;
-            this.listIndentStyle.Location = new System.Drawing.Point(16, 32);
-            this.listIndentStyle.Name = "listIndentStyle";
-            this.listIndentStyle.Size = new System.Drawing.Size(526, 133);
-            this.listIndentStyle.TabIndex = 0;
-            this.listIndentStyle.UseCompatibleStateImageBehavior = false;
-            this.listIndentStyle.View = System.Windows.Forms.View.List;
-            this.listIndentStyle.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listIndentStyle_ItemChecked);
-            this.listIndentStyle.SelectedIndexChanged += new System.EventHandler(this.listIndentStyle_SelectedIndexChanged);
-            // 
             // IndentingOptionsControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.Controls.Add(this.panel1);
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "IndentingOptionsControl";
-            this.Size = new System.Drawing.Size(580, 374);
+            this.Size = new System.Drawing.Size(435, 304);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -115,8 +100,7 @@
         #endregion
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.ListView listIndentStyle;
+        private System.Windows.Forms.TreeView treeIndentStyle;
         private System.Windows.Forms.RichTextBox codeSample;
-        private System.Windows.Forms.Label label2;
     }
 }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using static XSharp.XSharpConstants;
 using Microsoft.VisualStudio.Shell;
+using System.Globalization;
 
 // This now uses the HightLightWord code in the Community Toolkit
 
@@ -27,12 +28,67 @@ namespace XSharp.LanguageService.Editors.HighlightWord
 
         [Import] internal IClassifierAggregatorService _classifierService = null;
 
+        // following 2 methods copied from Roslyn
+
+        public static bool IsIdentifierStartCharacter(char ch)
+        {
+            // identifier-start-character:
+            //   letter-character
+            //   _ (the underscore character U+005F)
+
+            if (ch < 'a') // '\u0061'
+            {
+                if (ch < 'A') // '\u0041'
+                {
+                    return false;
+                }
+
+                return ch <= 'Z'  // '\u005A'
+                    || ch == '_'; // '\u005F'
+            }
+
+            if (ch <= 'z') // '\u007A'
+            {
+                return true;
+            }
+
+            if (ch <= '\u007F') // max ASCII
+            {
+                return false;
+            }
+
+            return IsLetterChar(CharUnicodeInfo.GetUnicodeCategory(ch));
+        }
+        private static bool IsLetterChar(UnicodeCategory cat)
+        {
+            // letter-character:
+            //   A Unicode character of classes Lu, Ll, Lt, Lm, Lo, or Nl 
+            //   A Unicode-escape-sequence representing a character of classes Lu, Ll, Lt, Lm, Lo, or Nl
+
+            switch (cat)
+            {
+                case UnicodeCategory.UppercaseLetter:
+                case UnicodeCategory.LowercaseLetter:
+                case UnicodeCategory.TitlecaseLetter:
+                case UnicodeCategory.ModifierLetter:
+                case UnicodeCategory.OtherLetter:
+                case UnicodeCategory.LetterNumber:
+                    return true;
+            }
+
+            return false;
+        }
+        public override string TextMarkerTagType => ColorizerConstants.HighLightIdentifierFormatDefinition;
 
         public override FindOptions FindOptions => FindOptions.WholeWord;
         public override bool ShouldHighlight(string text)
         {
             if (XSharpSyntax.KeywordNames.ContainsKey(text))
                 return false;
+
+            if (!IsIdentifierStartCharacter(text[0]))
+                return false;
+            
             if (_classifierService == null)
                 return true;
             return ThreadHelper.JoinableTaskFactory.Run(async delegate

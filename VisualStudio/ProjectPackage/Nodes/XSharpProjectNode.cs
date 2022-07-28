@@ -1071,6 +1071,14 @@ namespace XSharp.Project
         {
             // Nuget package references are added as child to the Reference Node.
             base.ProcessReferences();
+            var refContainer = GetReferenceContainer() as XSharpReferenceContainerNode;
+            foreach (var child in refContainer.EnumReferences())
+            {
+                if (child is XSharpAssemblyReferenceNode xasm)
+                {
+                    ProjectModel.AddAssemblyReference(xasm.AssemblyPath);
+                }
+            }
             this.LoadPackageReferences();
         }
 

@@ -110534,7 +110534,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R851 - Latebound property access of a FoxPro Property was translated to Workarea.Field
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION R852 - String2Psz and DWORD parameter *************
 Application = R852 - String2Psz and DWORD parameter
 IDEVersion = 1.06

@@ -3305,6 +3305,10 @@ namespace Microsoft.VisualStudio.Project
                 {
                     return child;
                 }
+                else if (String.Compare(child.Caption, name, StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    return child;
+                }
                 else
                 {
                     FileNode fileNode = child as FileNode;

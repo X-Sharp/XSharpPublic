@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="command_append_blank" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>APPEND BLANK Command</para>
+      
+<alert class="note">
+  <para>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. 
+  If you disable the standard header files then this command will not be available. 
+  If you tell the compiler to use a different standard header file then this command may also be not available</para>
+</alert>
+  </introduction>
+<section address="Purpose">
+	<title>Purpose</title>
+
+<para>Add a new record to the end of the current database file and make it the current record.</para>
+</section>
+<section address="Syntax">
+	<title>Syntax</title>
+<code language="X#">
+APPEND BLANK [[IN|ALIAS] &lt;workarea&gt;] 
+</code >
+</section>
+
+<section address="Arguments">
+	<title>Arguments</title>
+	<content>
+
+<table><row><entry>IN|ALIAS &lt;workarea&gt;</entry><entry>Specifies the work area for which the operation must be performed</entry></row></table>
+</content>
+</section>
+<section address="Description">
+	<title>Description</title>
+<content>
+<para>The new field values are initialized to the empty values for each data type: &#160;character fields are assigned with spaces; numeric fields are assigned 0; 
+logical fields are assigned FALSE; date fields are assigned NULL_DATE; and memo fields are left empty.</para>
+<para/>
+<para>For a shared database, APPEND BLANK automatically places a record lock on the new record. &#160;If the record cannot be locked, NetErr() is set to TRUE, indicating that the record was not added, and execution continues.</para>
+<para/>
+<para>Note:  APPEND BLANK will not release any file locks set by the current process.</para>
+<para>If NetErr() returns FALSE, the record was successfully added and locked, you can begin updating it. &#160;The newly appended record remains locked until you explicitly release the lock (for example, with UNLOCK), close the database file, or attempt another lock. &#160;</para>
+</content>
+</section>
+
+<section address="Examples">
+	<title>Examples</title>
+<content>
+<para>This example attempts to add a record to a shared database file and uses NetErr() to test if the operation succeeded:</para>
+<code language="X#">
+USE sales SHARED NEW
+&lt;Statements&gt;...
+APPEND BLANK
+IF !NetErr()
+ &#160; &lt;Update EMPTY record&gt;...
+ELSE
+ &#160; ? &quot;Append operation failed&quot;
+ &#160; BREAK
+ENDIF
+</code>
+</content>
+</section>
+<section address="Assembly">
+	<title>Assembly</title>
+<content>
+<para>XSharp.RT.DLL</para>
+</content>
+</section>
+    <relatedTopics>
+    <link xlink:href="ac449d30-9cb1-4c13-b775-b6eba943f6b1">APPEND FROM</link>
+    <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAppend(XSharp.__Usual)</codeEntityReference>
+    <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRLock(XSharp.__Usual)</codeEntityReference>
+    <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Flock</codeEntityReference>
+    <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RLock</codeEntityReference>
+    <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.NetErr</codeEntityReference>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

@@ -24,7 +24,6 @@ BEGIN NAMESPACE XSharpModel
 
 
    CLASS XsParser IMPLEMENTS VsParser.IErrorListener
-      PRIVATE  _stream       AS BufferedTokenStream
       PRIVATE  _list         AS XSharpTokenList
       PRIVATE  _file         AS XFile
       PRIVATE  _usings       AS IList<STRING>
@@ -106,7 +105,8 @@ BEGIN NAMESPACE XSharpModel
          VAR cSource  := System.IO.File.ReadAllText(_file:SourcePath)
          VAR options  := XSharpParseOptions.Default
          XSharp.Parser.VsParser.Lex(cSource, SELF:_file:SourcePath, options, SELF, OUT VAR stream, OUT VAR includeFiles)
-         SELF:Parse(stream, lBlocks, lLocals)
+         var bufStream := (BufferedTokenStream) stream
+         SELF:Parse(bufStream:GetTokens(), lBlocks, lLocals)
          RETURN
 
       METHOD AddCommentLine(comment AS STRING, token AS XSharpToken, cmtToken AS XCommentToken) AS VOID
@@ -121,17 +121,16 @@ BEGIN NAMESPACE XSharpModel
         ENDIF
 
 
-      METHOD Parse( tokenStream AS ITokenStream, lBlocks AS LOGIC, lLocals AS LOGIC) AS VOID
-         LOCAL aAttribs        AS IList<XSharpToken>
+      METHOD Parse( tokens AS IList<IToken>, lBlocks AS LOGIC, lLocals AS LOGIC) AS VOID
+         LOCAL aAttribs        AS IList<IToken>
          LOCAL cXmlDoc   := "" AS STRING
          VAR cmtTokens  := XSolution.CommentTokens
          Log(i"Start")
 
          _collectLocals := lLocals
          _collectBlocks := lBlocks
-         _stream        := (BufferedTokenStream) tokenStream
-         _tokens        := _stream:GetTokens()
-         VAR _input     := List<XSharpToken>{}
+         _tokens        := tokens
+         VAR _input     := List<IToken>{}
          FOREACH token AS XSharpToken IN _tokens
             SWITCH token:Channel
             CASE TokenConstants.HiddenChannel
@@ -398,7 +397,9 @@ BEGIN NAMESPACE XSharpModel
             LOCAL lastEntity          := SELF:_EntityList:Last() as XSourceEntity
             if lastEntity:Kind:IsClassMember(_dialect)
                 // if type has no end clause then also set the end
-                if lastEntity:Range:StartLine == lastEntity:Range:EndLine
+
+                if lastEntity:Range:StartLine == lastEntity:Range:EndLine .or. ;
+                    (lastEntity is IXSourceEntity var srcent .and. srcent:SourceCode:Contains(";"))
                     lastEntity:Range        := lastEntity:Range:WithEnd(lasttoken)
                     lastEntity:Interval     := lastEntity:Interval:WithEnd(lasttoken)
                 endif
@@ -424,6 +425,7 @@ BEGIN NAMESPACE XSharpModel
              IF SELF:SaveToDisk
                 _file:SaveToDatabase()
              ENDIF
+             _file:NofityClients()
          ENDIF
       PRIVATE METHOD AddNameSpaceToUsing(name as STRING) AS VOID
          var pos  := name:LastIndexOf(".")
@@ -582,10 +584,10 @@ using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoper
         DO WHILE SELF:La1 == XSharpLexer.UDC_KEYWORD
             switch Lt1:Text:ToUpper()
                 case "TEXT"
-                    Lt1:Type := XSharpLexer.PP_TEXT
+                    ((XSharpToken) Lt1):Type := XSharpLexer.PP_TEXT
                     return
                 case "ENDTEXT"
-                    Lt1:Type := XSharpLexer.PP_ENDTEXT
+                    ((XSharpToken) Lt1):Type := XSharpLexer.PP_ENDTEXT
                     return
                 otherwise
                     SELF:Consume()
@@ -593,7 +595,7 @@ using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoper
         ENDDO
         RETURN
 
-      PRIVATE METHOD ParseAttributes() AS IList<XSharpToken>
+      PRIVATE METHOD ParseAttributes() AS IList<IToken>
 /*
 attributes          : ( AttrBlk+=attributeBlock )+
                     ;
@@ -616,7 +618,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          // Please note that in the editor we do not check the contents of the attributes.
          // we simply parse LBRKT ... RBRKT groups until we find no more LBRKT
 
-         VAR tokens := List<XSharpToken>{}
+         VAR tokens := List<IToken>{}
          DO WHILE SELF:La1 == XSharpLexer.LBRKT .AND. ! SELF:Eos()
             tokens:Add(SELF:ConsumeAndGet())
             DO WHILE SELF:La1 != XSharpLexer.RBRKT .AND. ! SELF:Eos()
@@ -904,7 +906,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             else
                 xt := XKeyword{SELF:La1}
             endif
-            rule := XFormattingRule.GetStartRule(xt)
+            rule := XFormattingRule.GetFirstRuleByStart(xt)
             if rule != null .and. rule:Flags:HasFlag(XFormattingFlags.Statement)
                IF SELF:_collectBlocks
                    VAR block := XSourceBlock{ xt, SELF:Lt1}
@@ -924,9 +926,13 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                                 _BlockStack:Pop()
                             endif
                         endif
-                   endif
-                   _BlockList:Add(block)
-                   _BlockStack:Push(block)
+                    endif
+                    if XFormattingRule.IsMiddleKeyword(xt) .and. _BlockStack:Count > 0
+                        CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
+                    else
+                       _BlockList:Add(block)
+                       _BlockStack:Push(block)
+                    endif
                 ENDIF
                 IF SELF:_collectLocals
                     IF SELF:La1 == XSharpLexer.SET .OR. SELF:La1 == XSharpLexer.REMOVE .OR. SELF:La1 == XSharpLexer.ADD
@@ -939,45 +945,43 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                       VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
 
                       SELF:_locals:Add(xVar)
-                   ENDIF
-                   IF SELF:La1 == XSharpLexer.IF
-                      SELF:ParseForLocals()
-                   ELSE
-                      SELF:ParseForLocalDeclaration()
-                   ENDIF
+                    ENDIF
+                ENDIF
+                if XFormattingRule.IsMiddleKeyword(xt)
+                    IF SELF:_collectLocals
+                        SWITCH SELF:La1
+                        CASE XSharpLexer.CATCH
+
+                            IF SELF:IsId(SELF:La2)
+                                SELF:Consume()
+                                VAR start   := SELF:Lt1
+                                VAR id      := SELF:ParseIdentifier()
+                                VAR strType := "System.Exception"
+                                IF SELF:La1 == XSharpLexer.AS
+                                    strType := SELF:ParseDataType(FALSE)
+                                ENDIF
+
+                                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
+                                VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
+                                SELF:_locals:Add(xVar)
+                            ENDIF
+                        CASE XSharpLexer.ELSEIF
+                        CASE XSharpLexer.CASE
+                            SELF:ParseForLocals()
+                        OTHERWISE
+                            SELF:ReadLine()
+                        END SWITCH
+                    ELSE
+                       SELF:ReadLine()
+                    ENDIF
+                ELSEIF ! SELF:_collectLocals
+                    SELF:ReadLine()
+                ELSEIF SELF:La1 == XSharpLexer.IF
+                    SELF:ParseForLocals()
                 ELSE
-                   SELF:ReadLine()
+                    SELF:ParseForLocalDeclaration()
                 ENDIF
                 RETURN TRUE
-            elseif XFormattingRule.IsMiddleKeyword(xt)
-               IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
-                   CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
-               ENDIF
-               SWITCH SELF:La1
-                CASE XSharpLexer.CATCH
-                   IF SELF:_collectLocals
-                      IF SELF:IsId(SELF:La2)
-                         SELF:Consume()
-                         VAR start   := SELF:Lt1
-                         VAR id      := SELF:ParseIdentifier()
-                         VAR strType := "System.Exception"
-                         IF SELF:La1 == XSharpLexer.AS
-                             strType := SELF:ParseDataType(FALSE)
-                         ENDIF
-
-                         SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
-                         VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
-                         SELF:_locals:Add(xVar)
-                      ENDIF
-                   ENDIF
-                CASE XSharpLexer.ELSEIF
-                CASE XSharpLexer.CASE
-                    IF SELF:_collectLocals
-                         SELF:ParseForLocals()
-                    ENDIF
-                END SWITCH
-                SELF:ReadLine()
-                return TRUE
           elseif XFormattingRule.IsEndKeyword(xt)
             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
                CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
@@ -985,20 +989,6 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             ENDIF
             SELF:ReadLine()
             RETURN TRUE
-         elseif xt:Kw1 == XTokenType.End
-             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
-                var block := CurrentBlock
-                var start := block:XKeyword
-                rule := XFormattingRule.GetStartRule(start)
-                if (rule != null .and. rule:Flags:HasFlag(XFormattingFlags.End))
-                   CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
-                   _BlockStack:Pop()
-                   SELF:ReadLine()
-                   return TRUE
-
-                endif
-            ENDIF
-            SELF:ReadLine()
          endif
 
          RETURN FALSE
@@ -1122,17 +1112,17 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
       PRIVATE PROPERTY La1 AS INT => _list:La1
       PRIVATE PROPERTY La2 AS INT => _list:La2
       PRIVATE PROPERTY La3 AS INT => _list:La3
-      PRIVATE PROPERTY Lt1 AS XSharpToken => _list:Lt1
-      PRIVATE PROPERTY Lt2 AS XSharpToken => _list:Lt2
-      PRIVATE PROPERTY Lt3 AS XSharpToken => _list:Lt3
-      PRIVATE PROPERTY LastToken AS XSharpToken => _list:LastReadToken
+      PRIVATE PROPERTY Lt1 AS IToken => _list:Lt1
+      PRIVATE PROPERTY Lt2 AS IToken => _list:Lt2
+      PRIVATE PROPERTY Lt3 AS IToken => _list:Lt3
+      PRIVATE PROPERTY LastToken AS IToken => _list:LastReadToken
       PRIVATE METHOD La(nToken AS LONG) AS LONG => _list:La(nToken)
-      PRIVATE METHOD Lt(nToken AS LONG) AS XSharpToken => _list:Lt(nToken)
+      PRIVATE METHOD Lt(nToken AS LONG) AS IToken => _list:Lt(nToken)
       PRIVATE METHOD Eoi() AS LOGIC => _list:Eoi()
       PRIVATE METHOD Eos() AS LOGIC => _list:Eos()
       PRIVATE METHOD Consume() AS VOID =>_list:Consume()
-      PRIVATE METHOD ConsumeAndGet() AS XSharpToken => _list:ConsumeAndGet()
-      PRIVATE METHOD ConsumeAndGetAny(nTypes PARAMS LONG[]) AS XSharpToken => _list:ConsumeAndGetAny(nTypes)
+      PRIVATE METHOD ConsumeAndGet() AS IToken => _list:ConsumeAndGet()
+      PRIVATE METHOD ConsumeAndGetAny(nTypes PARAMS LONG[]) AS IToken => _list:ConsumeAndGetAny(nTypes)
       PRIVATE METHOD ConsumeAndGetText() AS STRING => _list:ConsumeAndGetText()
       PRIVATE METHOD Expect(nType AS LONG) AS LOGIC => _list:Expect(nType)
       PRIVATE METHOD ExpectAny(nTypes PARAMS LONG[]) AS LOGIC => _list:ExpectAny(nTypes)
@@ -1164,7 +1154,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          RETURN ""
 
 
-      PRIVATE METHOD ParseAttribute(aAttribs AS IList<XSharpToken>) AS XSourceEntity
+      PRIVATE METHOD ParseAttribute(aAttribs AS IList<IToken>) AS XSourceEntity
             VAR name := SELF:TokensAsString(aAttribs, FALSE)
             SELF:GetSourceInfo(aAttribs[0], aAttribs[aAttribs:Count-1], OUT VAR range, OUT VAR interval, OUT VAR source)
             VAR entity := XSourceMemberSymbol{name, Kind.Attribute, Modifiers.None,;
@@ -1186,7 +1176,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
 
       PRIVATE METHOD ParseQualifiedName() AS STRING
          LOCAL result := "" AS STRING
-         VAR Tokens := List<XSharpToken>{}
+         VAR Tokens := List<IToken>{}
          IF SELF:La1 == XSharpLexer.ID .OR. SELF:La1 == XSharpLexer.KWID
             Tokens:Add(SELF:ConsumeAndGet())
             DO WHILE SELF:La1 == XSharpLexer.DOT .AND.  SELF:IsId(SELF:La2) .AND. ! SELF:Eos()
@@ -1196,7 +1186,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          ENDIF
          RETURN SELF:TokensAsString(Tokens,FALSE)
 
-      PRIVATE METHOD TokensAsString(tokens AS IList<XSharpToken>, lAddTrivia := TRUE AS LOGIC) AS STRING
+      PRIVATE METHOD TokensAsString(tokens AS IList<IToken>, lAddTrivia := TRUE AS LOGIC) AS STRING
          LOCAL sb AS StringBuilder
          IF (tokens == NULL .or. tokens:Count == 0)
             RETURN ""
@@ -2238,7 +2228,7 @@ signature             : Id=identifier
          LOCAL cond AS DelEndToken
          cond := { token => IIF (lBracketed, token == XSharpLexer.RBRKT, token == XSharpLexer.RPAREN ) }
          DO WHILE !cond(SELF:La1) .AND. ! SELF:Eos()
-            LOCAL defaultExpr := NULL AS IList<XSharpToken>
+            LOCAL defaultExpr := NULL AS IList<IToken>
 
             VAR start := SELF:Lt1
             VAR atts := SELF:TokensAsString(ParseAttributes())
@@ -2466,7 +2456,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          ELSEIF SELF:La1 = XSharpLexer.QMARK
             RETURN SELF:ConsumeAndGetText()
          ELSEIF SELF:La1 == XSharpLexer.LBRKT .and. (SELF:La2 != XSharpLexer.ID .and. SELF:La2 != XSharpLexer.UDC_KEYWORD .and. ! XSharpLexer.IsKeyword(SELF:La2))
-            VAR tokens := List<XSharpToken>{}
+            VAR tokens := List<IToken>{}
             tokens:Add(SELF:ConsumeAndGet())
             LOCAL openCount := 1 as LONG
             LOCAL closed := FALSE AS LOGIC
@@ -2502,11 +2492,11 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          RETURN ""
 
 
-      PRIVATE METHOD ParseExpressionAsTokens AS IList<XSharpToken>
+      PRIVATE METHOD ParseExpressionAsTokens AS IList<IToken>
          // parse until SELF:Eos() or tokens such as AS, IS,
          LOCAL nested := 0 AS LONG
          LOCAL done  := FALSE AS LOGIC
-         VAR tokens := List<XSharpToken>{}
+         VAR tokens := List<IToken>{}
 
          DO WHILE ! SELF:Eos() .AND. ! done
             SWITCH SELF:La1
@@ -2580,7 +2570,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                   VAR start := SELF:Lt2
                   Consume()      // IMPLIED or VAR
                   VAR id    := SELF:ParseIdentifier()
-                  LOCAL expr AS IList<XSharpToken>
+                  LOCAL expr AS IList<IToken>
                   IF SELF:IsAssignOp(SELF:La1) .OR. SELF:La1 == XSharpLexer.IN
                      IF SELF:La1 == XSharpLexer.IN
                         kind := ImpliedKind.InCollection
@@ -2619,7 +2609,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
 
             ELSEIF SELF:La1 == XSharpLexer.LOCAL .AND. SELF:IsId(SELF:La2)
                VAR start := SELF:Lt1
-               LOCAL expression := List<XSharpToken>{} AS IList<XSharpToken>
+               LOCAL expression := List<IToken>{} AS IList<IToken>
                Consume()
                VAR id    := SELF:ParseIdentifier()
                IF SELF:ExpectAssignOp()
@@ -2865,7 +2855,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
 */
          LOCAL lConst   := FALSE AS LOGIC
          LOCAL lDim     := FALSE AS LOGIC
-         LOCAL expr     AS IList<XSharpToken>
+         LOCAL expr     AS IList<IToken>
          LOCAL start    := SELF:Lt1 AS IToken
          IF SELF:La1 == XSharpLexer.CONST
             lConst := TRUE
@@ -2891,11 +2881,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          ENDIF
          xVar:Expression := expr
          IF expr != NULL
-            var sb := StringBuilder{}
-            foreach var token in expr
-                sb:Append(token:TextWithTrivia)
-            next
-            xVar:Value := sb:ToString():Trim()
+            xVar:Value := SELF:TokensAsString(expr)
          endif
          RETURN xVar
 
@@ -2903,7 +2889,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          // impliedvar: (Const=CONST)? Id=identifier Op=assignoperator Expression=expression
          LOCAL lConst   := FALSE AS LOGIC
          LOCAL lDim     := FALSE AS LOGIC
-         LOCAL expr     AS IList<XSharpToken>
+         LOCAL expr     AS IList<IToken>
          LOCAL start    := SELF:Lt1 AS IToken
          IF SELF:La1 == XSharpLexer.CONST
             lConst := TRUE
@@ -2917,7 +2903,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          VAR xVar     := XSourceImpliedVariableSymbol{SELF:CurrentEntity, id,  range, interval}
          xVar:Expression := expr
          xVar:ImpliedKind := ImpliedKind.Assignment
-         xVar:TypeName    := Self:TokensAsString(expr):Trim()
+         xVar:Value := SELF:TokensAsString(expr)
          RETURN xVar
 
       PRIVATE METHOD ParseXBaseDeclarationStatement() AS LOGIC
@@ -3017,7 +3003,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                               ;
          */
          LOCAL lAmp     := FALSE AS LOGIC
-         LOCAL expr     AS IList<XSharpToken>
+         LOCAL expr     AS IList<IToken>
          LOCAL start    := SELF:Lt1 AS IToken
          IF SELF:La1 == XSharpLexer.AMP
             lAmp := TRUE
@@ -3035,8 +3021,8 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          xVar:Expression := expr
          if expr != NULL
                 var sb := StringBuilder{}
-                foreach var token in expr
-                    sb:Append(token:TextWithTrivia)
+                foreach token as XSharpToken in expr
+                    sb:Append( token:TextWithTrivia)
                 next
                 xVar:Value := sb:ToString()
          endif

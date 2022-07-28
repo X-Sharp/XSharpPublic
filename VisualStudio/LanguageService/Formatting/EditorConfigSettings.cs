@@ -15,11 +15,16 @@ namespace XSharp.LanguageService
         static EditorConfigParser configParser;
         private const string KEYWORDCASE = "keyword_case";
         private const string IDENTIFIERCASE = "identifier_case";
+        private const string INDENT_NAMESPACE = "indent_namespace";
         private const string INDENT_ENTITY_CONTENT = "indent_entity_content";
+        private const string INDENT_TYPE_MEMBERS  = "indent_type_members";
         private const string INDENT_BLOCK_CONTENT = "indent_block_content";
+        private const string INDENT_STATEMENTS = "indent_statements";
         private const string INDENT_CASE_CONTENT = "indent_case_content";
         private const string INDENT_CASE_LABEL = "indent_case_label";
-        private const string INDENT_CONTINUED_LINES = "indent_continued_lines"; private const string UDCCASE = "udc_case";
+        private const string INDENT_PREPROCESSOR = "indent_preprocessor";
+        private const string INDENT_CONTINUED_LINES = "indent_continued_lines";
+        private const string UDCCASE = "udc_case";
         private const string TRUE = "true";
         private const string UPPER = "upper";
         private const string LOWER = "lower";
@@ -85,12 +90,22 @@ namespace XSharp.LanguageService
                 if (configuration.Properties.ContainsKey(INDENT_ENTITY_CONTENT))
                 {
                     var temp = configuration.Properties[INDENT_ENTITY_CONTENT].ToLower();
-                    settings.IndentEntityContent = temp == TRUE;
+                    settings.IndentTypeMembers = temp == TRUE;
+                }
+                if (configuration.Properties.ContainsKey(INDENT_TYPE_MEMBERS))
+                {
+                    var temp = configuration.Properties[INDENT_TYPE_MEMBERS].ToLower();
+                    settings.IndentTypeMembers = temp == TRUE;
                 }
                 if (configuration.Properties.ContainsKey(INDENT_BLOCK_CONTENT))
                 {
                     var temp = configuration.Properties[INDENT_BLOCK_CONTENT].ToLower();
-                    settings.IndentBlockContent = temp == TRUE;
+                    settings.IndentStatements = temp == TRUE;
+                }
+                if (configuration.Properties.ContainsKey(INDENT_STATEMENTS))
+                {
+                    var temp = configuration.Properties[INDENT_STATEMENTS].ToLower();
+                    settings.IndentStatements = temp == TRUE;
                 }
                 if (configuration.Properties.ContainsKey(INDENT_CASE_CONTENT))
                 {
@@ -106,6 +121,16 @@ namespace XSharp.LanguageService
                 {
                     var temp = configuration.Properties[INDENT_CONTINUED_LINES].ToLower();
                     settings.IndentContinuedLines = temp == TRUE;
+                }
+                if (configuration.Properties.ContainsKey(INDENT_PREPROCESSOR))
+                {
+                    var temp = configuration.Properties[INDENT_PREPROCESSOR].ToLower();
+                    settings.IndentPreprocessorLines = temp == TRUE;
+                }
+                if (configuration.Properties.ContainsKey(INDENT_NAMESPACE))
+                {
+                    var temp = configuration.Properties[INDENT_NAMESPACE].ToLower();
+                    settings.IndentNamespace = temp == TRUE;
                 }
             }
             if (buffer.Properties.ContainsProperty(typeof(SourceCodeEditorSettings)))

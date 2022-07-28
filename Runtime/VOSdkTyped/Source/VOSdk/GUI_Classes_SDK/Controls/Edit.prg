@@ -1,4 +1,6 @@
 USING System.Reflection
+/// <include file="Gui.xml" path="doc/Edit/*" />
+
 [XSharp.Internal.TypesChanged];
 CLASS Edit INHERIT TextControl
 	PROTECT lNoNotify AS LOGIC
@@ -7,7 +9,8 @@ CLASS Edit INHERIT TextControl
     PROPERTY ControlType AS ControlType GET ControlType.Sle
 
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+/// <include file="Gui.xml" path="doc/Edit.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 		LOCAL dwStyle AS DWORD
 		IF !IsInstanceOfUsual(xID,#ResourceID)
 			dwStyle:= _OR(WS_CHILD, WS_CLIPSIBLINGS)
@@ -19,30 +22,33 @@ CLASS Edit INHERIT TextControl
 			SUPER(oOwner, xID, oPoint, oDimension, , kStyle, TRUE)
 		ENDIF
 
-		RETURN 
+		RETURN
 
 
 	ACCESS __TextBox AS IVOTextBox
 		RETURN (IVOTextBox) oCtrl
 
 
-	ASSIGN __ForceModFlag2True(lNewValue AS LOGIC)  STRICT 
+	ASSIGN __ForceModFlag2True(lNewValue AS LOGIC)  STRICT
 		lForceModFlag2True := lNewValue
 
-	ACCESS __NoNotify AS LOGIC STRICT 
+	ACCESS __NoNotify AS LOGIC STRICT
 		RETURN lNoNotify
 
-	METHOD CanUndo() 
-		IF SELF:ValidateControl() 
-			RETURN SELF:__TextBox:CanUndo			
+	/// <inheritdoc />
+	METHOD CanUndo()
+		IF SELF:ValidateControl()
+			RETURN SELF:__TextBox:CanUndo
 		ENDIF
 
 		RETURN FALSE
 
+	/// <inheritdoc />
 	ACCESS Caption AS STRING
 		RETURN cCaption
 
-	ASSIGN Caption(cNewCaption AS STRING) 
+	/// <inheritdoc />
+	ASSIGN Caption(cNewCaption AS STRING)
 		cCaption := cNewCaption
 
 	METHOD ValidateControl() AS USUAL // usual wtf
@@ -52,26 +58,30 @@ CLASS Edit INHERIT TextControl
 		ELSE
 			RETURN FALSE
 		ENDIF
-	
-	METHOD Clear() 
-		IF SELF:ValidateControl() 
+
+	/// <inheritdoc />
+	METHOD Clear()
+		IF SELF:ValidateControl()
 			SELF:__TextBox:Clear()
 		ENDIF
 		RETURN SELF
 
+	/// <inheritdoc />
 	METHOD Copy()  CLIPPER
 		IF SELF:ValidateControl()
 			SELF:__TextBox:Copy()
 		ENDIF
 		RETURN SELF
 
-	METHOD Cut() 
+	/// <inheritdoc />
+	METHOD Cut()
 		IF SELF:ValidateControl()
 			SELF:__TextBox:Cut()
 		ENDIF
 		RETURN SELF
 
-	METHOD Font(oNewFont, lRescal) 
+	/// <inheritdoc />
+	METHOD Font(oNewFont, lRescal)
 		LOCAL uRet AS USUAL
 		LOCAL oMargins AS Dimension
 
@@ -83,13 +93,14 @@ CLASS Edit INHERIT TextControl
 
 		RETURN uRet
 
-
-	METHOD IsPassword() 
+/// <include file="Gui.xml" path="doc/Edit.IsPassword/*" />
+	METHOD IsPassword()
 		IF SELF:ValidateControl()
 			RETURN __TextBox:UseSystemPasswordChar
 		ENDIF
 		RETURN _AND(dwStyle,ES_PASSWORD)!=0
 
+/// <include file="Gui.xml" path="doc/Edit.Margins/*" />
 	ACCESS Margins  AS Dimension
 		IF SELF:ValidateControl()
 			VAR nLeft := __TextBox:Margin:Left
@@ -97,8 +108,9 @@ CLASS Edit INHERIT TextControl
             RETURN Dimension{nLeft, nTop}
         ENDIF
         RETURN Dimension{0, 0}
-	
-	ASSIGN Margins(oNewMargins AS Dimension) 
+
+/// <include file="Gui.xml" path="doc/Edit.Margins/*" />
+	ASSIGN Margins(oNewMargins AS Dimension)
 		IF SELF:ValidateControl()
 			LOCAL oPadding AS System.Windows.Forms.Padding
 			oPadding := __TextBox:Margin
@@ -109,8 +121,9 @@ CLASS Edit INHERIT TextControl
 			ENDIF
 		ENDIF
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/Edit.Modified/*" />
 	ACCESS Modified AS LOGIC
 		IF SELF:ValidateControl()
 			IF lForceModFlag2True
@@ -122,20 +135,22 @@ CLASS Edit INHERIT TextControl
 
 		RETURN FALSE
 
-	ASSIGN Modified(lModified  AS LOGIC) 
+/// <include file="Gui.xml" path="doc/Edit.Modified/*" />
+	ASSIGN Modified(lModified  AS LOGIC)
 		IF SELF:ValidateControl()
 			SELF:__TextBox:Modified := lModified
 		ENDIF
-		RETURN 
+		RETURN
 
-	METHOD Paste(cNewString) 
+/// <include file="Gui.xml" path="doc/Edit.Paste/*" />
+	METHOD Paste(cNewString)
 		IF SELF:ValidateControl()
 			IF IsNil(cNewString)
 				SELF:__TextBox:Clear()
 				SELF:__TextBox:Paste()
 			ELSE
 				IF !IsString(cNewString)
-					WCError{#Paste,#Edit,__WCSTypeError,cNewString,1}:@@Throw()
+					WCError{#Paste,#Edit,__WCSTypeError,cNewString,1}:Throw()
 				ENDIF
 				SELF:__TextBox:SelectedText := cNewString
 			ENDIF
@@ -143,20 +158,27 @@ CLASS Edit INHERIT TextControl
 
 		RETURN SELF
 
+
+
+
+/// <include file="Gui.xml" path="doc/Edit.ReadOnly/*" />
 	ACCESS ReadOnly  AS LOGIC
 		IF SELF:ValidateControl()
 			RETURN SELF:__TextBox:ReadOnly
 		ENDIF
 		RETURN (_AND(dwStyle, ES_READONLY) > 0)
 
-	ASSIGN ReadOnly(lNewValue AS LOGIC) 
+
+/// <include file="Gui.xml" path="doc/Edit.ReadOnly/*" />
+	ASSIGN ReadOnly(lNewValue AS LOGIC)
 
 		IF SELF:ValidateControl()
 			SELF:__TextBox:ReadOnly := lNewValue
 		ENDIF
 		SELF:SetStyle(ES_READONLY, lNewValue)
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/Edit.SelectedText/*" />
 	ACCESS SelectedText AS STRING
 		LOCAL cReturn AS STRING
 
@@ -165,13 +187,15 @@ CLASS Edit INHERIT TextControl
 		ENDIF
 		RETURN cReturn
 
+/// <include file="Gui.xml" path="doc/Edit.SelectedText/*" />
 	ASSIGN SelectedText(cNewString AS STRING)
-		
+
 		IF SELF:ValidateControl()
 			__TextBox:SelectedText := cNewString
 		ENDIF
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/Edit.Selection/*" />
 	ACCESS Selection AS Selection
 		LOCAL dwStart AS LONG
 		LOCAL dwFinish AS LONG
@@ -184,23 +208,25 @@ CLASS Edit INHERIT TextControl
 
 		RETURN Selection{0,0}
 
-	ASSIGN Selection(oSel AS Selection) 
+/// <include file="Gui.xml" path="doc/Edit.Selection/*" />
+	ASSIGN Selection(oSel AS Selection)
 		IF SELF:ValidateControl()
 			IF oSel:Start == 0 .and. oSel:Finish == -1
 				SELF:__TextBox:SelectionStart  := 0
 				SELF:__TextBox:SelectionLength := SELF:__TextBox:Text:Length
 			ELSE
 				IF oSel:Finish - oSel:Start > 0
-					SELF:__TextBox:SelectionStart	:= MAX(oSel:Start-1 ,0)
+					SELF:__TextBox:SelectionStart	:= Math.MAX(oSel:Start-1 ,0)
 				ELSE
-					SELF:__TextBox:SelectionStart	:= MAX(oSel:Start ,0)
+					SELF:__TextBox:SelectionStart	:= Math.MAX(oSel:Start ,0)
 				ENDIF
 				SELF:__TextBox:SelectionLength  := oSel:Finish - oSel:Start
 			ENDIF
 		ENDIF
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/Edit.SelectAll/*" />
 	METHOD SelectAll()
 		// Selects the whole text in an edit control
 		IF SELF:ValidateControl()
@@ -209,7 +235,8 @@ CLASS Edit INHERIT TextControl
 		ENDIF
 
 		RETURN NIL
-	
+
+/// <include file="Gui.xml" path="doc/Edit.SelectNone/*" />
 	METHOD SelectNone()
 		// Deselects the text in an edit control
 		IF SELF:ValidateControl()
@@ -218,14 +245,16 @@ CLASS Edit INHERIT TextControl
 		ENDIF
 
 		RETURN NIL
-	
-	METHOD SetSelectionFocus() 
+
+/// <include file="Gui.xml" path="doc/Edit.SetSelectionFocus/*" />
+	METHOD SetSelectionFocus()
 		((Window) SELF:Owner):SetFocus()
 		SELF:SetFocus()
 		SELF:Selection := Selection{0,SLen(SELF:TextValue)+1}
 
 		RETURN NIL
 
+/// <include file="Gui.xml" path="doc/Edit.TextLimit/*" />
 	ACCESS TextLimit AS LONG
 		IF SELF:ValidateControl()
 			RETURN __TextBox:MaxLength
@@ -233,18 +262,21 @@ CLASS Edit INHERIT TextControl
 
 		RETURN 0
 
-	ASSIGN TextLimit(nChars AS LONG) 
+/// <include file="Gui.xml" path="doc/Edit.TextLimit/*" />
+	ASSIGN TextLimit(nChars AS LONG)
 
 		IF SELF:ValidateControl()
 			__TextBox:MaxLength := nChars
 		ENDIF
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/Edit.TextValue/*" />
 	ACCESS TextValue AS STRING
 		RETURN SELF:__GetText()
 
-	ASSIGN TextValue(cNewText AS STRING) 
+/// <include file="Gui.xml" path="doc/Edit.TextValue/*" />
+	ASSIGN TextValue(cNewText AS STRING)
 		LOCAL cTextValue AS STRING
 		LOCAL cOldValue AS STRING
 
@@ -259,9 +291,10 @@ CLASS Edit INHERIT TextControl
 
 		SELF:ValueChanged := !(cOldValue == AsString(uValue))
 
-		RETURN 
+		RETURN
 
-	METHOD Undo() 
+/// <include file="Gui.xml" path="doc/Edit.Undo/*" />
+	METHOD Undo()
 		IF SELF:ValidateControl()
 			__TextBox:Undo()
 		ENDIF
@@ -269,30 +302,31 @@ CLASS Edit INHERIT TextControl
 		RETURN FALSE
 END CLASS
 
-ENUM FocusSelect 
+ENUM FocusSelect
 	MEMBER Home     := FSEL_HOME
 	MEMBER @@End    := FSEL_END
 	MEMBER TrimEnd  := FSEL_TRIMEND
 	MEMBER Trim	    := FSEL_TRIM
 END ENUM
-	
-ENUM OverWriteMode 
+
+ENUM OverWriteMode
 	MEMBER Allways := OVERWRITE_ALWAYS
 	MEMBER OnKey   := OVERWRITE_ONKEY
 	MEMBER Never   := OVERWRITE_NEVER
 END ENUM
-	
-ENUM ScrollMode 
+
+ENUM ScrollMode
 	MEMBER Full := SCRMODE_FULL
 	MEMBER No   := SCRMODE_NO
 	MEMBER Part := SCRMODE_PART
 END ENUM
 
+/// <include file="Gui.xml" path="doc/SingleLineEdit/*" />
 CLASS SingleLineEdit INHERIT Edit
 	PROTECT oEditString			AS __FormattedString
-	PROTECT wOverWrite			AS OverWriteMode  		
-	PROTECT wScrMode			AS ScrollMode      	
-	PROTECT wFocusSel			AS FocusSelect        
+	PROTECT wOverWrite			AS OverWriteMode
+	PROTECT wScrMode			AS ScrollMode
+	PROTECT wFocusSel			AS FocusSelect
 	PROTECT lAllowSelection		AS LOGIC
 	PROTECT lAutoFocusChange	AS LOGIC
 	PROTECT _iStart				AS LONG // These 2 vars are used to save position and length of the selection
@@ -301,21 +335,21 @@ CLASS SingleLineEdit INHERIT Edit
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		VAR oTextBox := (IVOTextBox) oC
 		SELF:RegisterEvents(oTextBox)
-		RETURN 
+		RETURN
 
 	METHOD RegisterEvents(oTb AS IVOTextBox) AS VOID STRICT
 		oTb:KeyDown += OnKeyDown
 		oTb:KeyPress += OnKeyPress
 		oTb:GotFocus += OnGotFocus
 		oTb:MouseClick += OnMouseClick
-		RETURN		
-	
+		RETURN
+
 	METHOD UnRegisterEvents() AS VOID STRICT
 		oCtrl:KeyDown -= OnKeyDown
 		oCtrl:KeyPress -= OnKeyPress
 		oCtrl:GotFocus -= OnGotFocus
 		oCtrl:MouseClick -= OnMouseClick
-		RETURN		
+		RETURN
 
 	VIRTUAL METHOD OnKeyDown(Sender AS OBJECT, e AS System.Windows.Forms.KeyEventArgs) AS VOID
 		LOCAL lShiftOn AS LOGIC
@@ -323,39 +357,40 @@ CLASS SingleLineEdit INHERIT Edit
 		LOCAL lExtSel AS LOGIC
 		IF SELF:oEditString == NULL_OBJECT
 			RETURN
-		ENDIF		
+		ENDIF
 		lShiftOn := e:Shift
 		lCtrlOn  := e:Control
 		lExtSel := lShiftOn .AND. (e:KeyValue == VK_LEFT .or. ;
-				e:KeyValue == VK_RIGHT .or. ;								
-				e:KeyValue == VK_HOME .or. ;								
-				e:KeyValue == VK_END ) 
+				e:KeyValue == VK_RIGHT .or. ;
+				e:KeyValue == VK_HOME .or. ;
+				e:KeyValue == VK_END )
 		IF !((lAllowSelection .AND. lExtSel) .OR. lCtrlOn )
 			IF oEditString:ProcessKeyEvent(KeyEvent{e})
 				e:Handled := TRUE
 			ENDIF
 		ENDIF
-		RETURN 
+		RETURN
 
 	VIRTUAL METHOD OnKeyPress(Sender AS OBJECT, e AS System.Windows.Forms.KeyPressEventArgs) AS VOID
 		IF SELF:oEditString == NULL_OBJECT
 			RETURN
-		ENDIF		
+		ENDIF
 		IF oEditString:ProcessKeyEvent(KeyEvent{e})
 			e:Handled := TRUE
 		ENDIF
 		RETURN
 
 	PROPERTY __AllowSelection AS LOGIC GET lAllowSelection SET lAllowSelection := Value
-
-	ACCESS __CurPos AS LONGINT STRICT 
+ /// <exclude />
+	ACCESS __CurPos AS LONGINT STRICT
 		LOCAL liStart AS LONGINT
 		IF SELF:ValidateControl()
 			liStart := __TextBox:SelectionStart+1
 		ENDIF
 		RETURN liStart
 
-	ASSIGN __CurPos(iNewPos AS LONGINT)  STRICT 
+ /// <exclude />
+	ASSIGN __CurPos(iNewPos AS LONGINT)  STRICT
 		IF SELF:ValidateControl()
 			IF (iNewPos > 0)
 				__TextBox:SelectionStart := iNewPos-1
@@ -364,17 +399,20 @@ CLASS SingleLineEdit INHERIT Edit
 			ENDIF
 			__TextBox:SelectionLength := 0
 		ENDIF
-		RETURN 
+		RETURN
 
-	ACCESS __EditString AS __FormattedString STRICT  
+ /// <exclude />
+	ACCESS __EditString AS __FormattedString STRICT
 		RETURN oEditString
 
-	ACCESS __FSLength AS DWORD STRICT 
+ /// <exclude />
+	ACCESS __FSLength AS DWORD STRICT
 		IF (oFieldSpec != NULL_OBJECT)
 			RETURN oFieldSpec:Length
 		ENDIF
 		RETURN 0XFFFF
 
+ /// <exclude />
 	METHOD __Update() AS VOID STRICT
 		LOCAL cText,cNumText AS STRING
 		LOCAL cNewText AS STRING
@@ -415,10 +453,11 @@ CLASS SingleLineEdit INHERIT Edit
 			SELF:Modified := FALSE
 			SELF:ValueChanged := !(uOldValue == AsString(uValue))
 		ENDIF
-		RETURN 
+		RETURN
 
-	ASSIGN __Value(uNewValue AS USUAL)  STRICT 
-	
+ /// <exclude />
+	ASSIGN __Value(uNewValue AS USUAL)  STRICT
+
 		IF (oEditString != NULL_OBJECT .AND. (oFieldSpec == NULL_OBJECT))
 			oEditString:UsualValue := uNewValue
 			SELF:uValue := uNewValue
@@ -428,8 +467,9 @@ CLASS SingleLineEdit INHERIT Edit
 		ELSE
 			SUPER:__Value := uNewValue
 		ENDIF
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/SingleLineEdit.AutoFocusChange/*" />
 	PROPERTY AutoFocusChange  AS LOGIC GET lAutoFocusChange SET lAutoFocusChange := Value
 
 	METHOD Copy() CLIPPER
@@ -443,14 +483,15 @@ CLASS SingleLineEdit INHERIT Edit
 			SUPER:Cut()
 		ENDIF
 		RETURN SELF
-		
-	
-	METHOD CreateFormattedString(cPicture, cType, cDefTempl) 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.CreateFormattedString/*" />
+	METHOD CreateFormattedString(cPicture, cType, cDefTempl)
 		oEditString := __FormattedString{SELF, cPicture, cType, wOverWrite, cDefTempl, wScrMode}
 		RETURN SELF
 
 
-	ASSIGN FieldSpec(oNewFS as FieldSpec) 
+/// <include file="Gui.xml" path="doc/SingleLineEdit.FieldSpec/*" />
+	ASSIGN FieldSpec(oNewFS as FieldSpec)
 		LOCAL sPic AS STRING
 		LOCAL pos AS USUAL
 		LOCAL vt AS STRING
@@ -461,11 +502,11 @@ CLASS SingleLineEdit INHERIT Edit
 		vt := oFieldSpec:ValType
 		DO CASE
 		CASE (vt == "C")
-			sDefTempl := Replicate("X", Min(oFieldSpec:Length, MAX_FMTSTRING_LEN))
+			sDefTempl := Replicate("X", Math.Min(oFieldSpec:Length, MAX_FMTSTRING_LEN))
 		CASE (vt == "L")
 			sDefTempl := "L"
 		CASE oFieldSpec:ValType == "N"
-			sDefTempl := Replicate("#", Min(oFieldSpec:Length, MAX_FMTSTRING_LEN))
+			sDefTempl := Replicate("#", Math.Min(oFieldSpec:Length, MAX_FMTSTRING_LEN))
 			IF (oFieldSpec:Decimals > 0)
 				pos := oFieldSpec:Length - oFieldSpec:Decimals
 				sDefTempl := Left(sDefTempl, Pos - 1) + "." + Replicate("#", oFieldSpec:Decimals)
@@ -505,17 +546,17 @@ CLASS SingleLineEdit INHERIT Edit
 
 		SELF:Modified := FALSE
 
-		RETURN 
+		RETURN
 
-	METHOD OnMouseClick(sender AS OBJECT, e AS System.Windows.Forms.MouseEventArgs) AS VOID 
+	METHOD OnMouseClick(sender AS OBJECT, e AS System.Windows.Forms.MouseEventArgs) AS VOID
 		IF _iLen >= 0 .and. _iStart >= 0
 			SELF:__TextBox:SelectionStart := _iStart
 			SELF:__TextBox:SelectionLength := _iLen
 			_iStart := _iLen := -1
 		ENDIF
-		RETURN 
-		
-	METHOD OnGotFocus(sender AS OBJECT, e AS System.EventArgs) AS VOID 
+		RETURN
+
+	METHOD OnGotFocus(sender AS OBJECT, e AS System.EventArgs) AS VOID
 		LOCAL iPos AS INT
 		LOCAL iLen	AS INT
 		IF (oEditString != NULL_OBJECT)
@@ -531,7 +572,7 @@ CLASS SingleLineEdit INHERIT Edit
 				ENDIF
 				iPos--
 			ENDIF
-			
+
 		ELSEIF (wFocusSel == FocusSelect.End)
 			IF (oEditString != NULL_OBJECT)
 				iPos := oEditString:PrevEditPos(SELF:CurrentText:Length)
@@ -554,30 +595,35 @@ CLASS SingleLineEdit INHERIT Edit
 			_iStart := SELF:__TextBox:SelectionStart
 			_iLen   := SELF:__TextBox:SelectionLength
 		ENDIF
-		RETURN 
+		RETURN
+/// <include file="Gui.xml" path="doc/SingleLineEdit.FocusSelect/*" />
 
 	ACCESS FocusSelect AS LONG
 		RETURN (LONG) wFocusSel
+/// <include file="Gui.xml" path="doc/SingleLineEdit.FocusSelect/*" />
 
-	ASSIGN FocusSelect(wNewValue AS LONG) 
+	ASSIGN FocusSelect(wNewValue AS LONG)
 		IF (wNewValue < 0) .OR. (wNewValue > 4)
 			wNewValue := FSEL_TRIM
 		ENDIF
 		wFocusSel := (FocusSelect) wNewValue
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 		SUPER(oOwner, xID, oPoint, oDimension, kStyle)
 		wOverWrite      := OverwriteMode.Never
 		wScrMode        := ScrollMode.Full
 		wFocusSel       := FocusSelect.Trim
 		lAllowSelection := TRUE
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/SingleLineEdit.OverWrite/*" />
 	ACCESS OverWrite AS LONG
 		RETURN wOverWrite
 
-	ASSIGN OverWrite(wNewValue AS LONG) 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.OverWrite/*" />
+	ASSIGN OverWrite(wNewValue AS LONG)
 
 		IF (wNewValue < 0) .OR. (wNewValue > 2)
 			wNewValue := OVERWRITE_NEVER
@@ -588,7 +634,7 @@ CLASS SingleLineEdit INHERIT Edit
 			oEditString:wOverWrite := wOverWrite
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	METHOD Paste(sNewString)
 		IF SELF:oEditString != NULL_OBJECT
@@ -598,13 +644,15 @@ CLASS SingleLineEdit INHERIT Edit
 		ENDIF
 		RETURN SELF
 
+/// <include file="Gui.xml" path="doc/SingleLineEdit.Picture/*" />
 	ACCESS Picture AS STRING
 		IF oEditString == NULL_OBJECT
 			RETURN NULL_STRING
 		ENDIF
 		RETURN oEditString:Picture
 
-	ASSIGN Picture(cNewPicture AS STRING) 
+/// <include file="Gui.xml" path="doc/SingleLineEdit.Picture/*" />
+	ASSIGN Picture(cNewPicture AS STRING)
 		LOCAL uOldVal AS USUAL
 
 		IF (oEditString == NULL_OBJECT)
@@ -614,18 +662,20 @@ CLASS SingleLineEdit INHERIT Edit
 		ELSE
 			IF (cNewPicture == NULL_STRING)
 				oEditString := NULL_OBJECT
-				RETURN 
+				RETURN
 			ELSE
 				uOldVal := uValue // new for 2.0b, should allow picture change on the fly
 				oEditString:Picture := cNewPicture
 				oEditString:UsualValue := uOldVal // new for 2.0b
 			ENDIF
 		ENDIF
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/SingleLineEdit.ScrollMode/*" />
 	ACCESS ScrollMode AS LONG
 		RETURN (LONG) wScrMode
 
+/// <include file="Gui.xml" path="doc/SingleLineEdit.ScrollMode/*" />
 	ASSIGN ScrollMode(wNewValue AS LONG)
 		IF (wNewValue < 0) .OR. (wNewValue > 2)
 			wNewValue := SCRMODE_FULL
@@ -636,8 +686,9 @@ CLASS SingleLineEdit INHERIT Edit
 			oEditString:wScrMode := wScrMode
 		ENDIF
 
-		RETURN 
+		RETURN
 
+/// <include file="Gui.xml" path="doc/SingleLineEdit.TextValue/*" />
 	ACCESS TextValue AS STRING
 		LOCAL cText			AS STRING
 		LOCAL cOrigText		AS STRING
@@ -654,7 +705,7 @@ CLASS SingleLineEdit INHERIT Edit
 		cText := cOrigText
 		IF SELF:oFieldSpec<>NULL_OBJECT
 			IF SELF:oFieldSpec:ValType="D"				// When Date
-				IF !SELF:__TextBox:Focused 
+				IF !SELF:__TextBox:Focused
 					IF At2(" ",cText) <> 0			   // When space in cText
 						cFormat     := Upper(GetDateFormat())
 						nPosDay     := At("DD",cFormat)
@@ -683,7 +734,8 @@ CLASS SingleLineEdit INHERIT Edit
 
 		RETURN cText
 
-	ASSIGN TextValue(cNewText AS STRING) 
+/// <include file="Gui.xml" path="doc/SingleLineEdit.TextValue/*" />
+	ASSIGN TextValue(cNewText AS STRING)
 		SUPER:TextValue := cNewText
 
 		IF (oEditString != NULL_OBJECT)
@@ -695,9 +747,10 @@ CLASS SingleLineEdit INHERIT Edit
 			oEditString:UsualValue := uValue
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	METHOD Undo() 
+/// <include file="Gui.xml" path="doc/SingleLineEdit.Undo/*" />
+	METHOD Undo()
 		IF (oEditString != NULL_OBJECT)
 			RETURN oEditString:Undo()
 		ENDIF
@@ -705,6 +758,8 @@ CLASS SingleLineEdit INHERIT Edit
 
 END CLASS
 
+
+/// <exclude/>
 CLASS strucPictureFuncFlags
 	PROPERTY Flags       AS System.Collections.BitArray AUTO
 	PROPERTY lLeftJust   AS LOGIC GET Flags[0]
@@ -738,23 +793,23 @@ CLASS SpinnerEdit INHERIT SingleLineEdit
 		IF oProp != NULL_OBJECT
 			oTextBox := oProp:GetValue(oSpinner,NULL)
 		ENDIF
-		RETURN 
+		RETURN
 
 	ACCESS __TextBox AS IVOTextBox
 		RETURN SELF:oTextBox
 
 	PROPERTY __UpDownControl AS IVOSpinnerTextBox GET (VOSpinnerTextBox) oCtrl
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 		SUPER(oOwner, xID, oPoint, oDimension, kStyle)
-		
 
-	PROPERTY Client     AS SpinnerEdit GET SELF 
+
+	PROPERTY Client     AS SpinnerEdit GET SELF
 	PROPERTY IsHexBased AS LOGIC GET __UpDownControl:Hexadecimal SET __UpDownControl:Hexadecimal := Value
-	PROPERTY MaxValue	AS LONG GET (LONG) __UpDownControl:Maximum SET __UpDownControl:Maximum := Value
-	PROPERTY MinValue	AS LONG GET (LONG) __UpDownControl:Minimum SET __UpDownControl:Minimum := Value
-	PROPERTY Position	AS LONG GET (LONG) __UpDownControl:Value SET __UpDownControl:Value := (LONG) Max(min(Value, MaxValue), MinValue)
+	PROPERTY MaxValue	AS LONG GET (LONG) Convert.ToInt32(__UpDownControl:Maximum) SET __UpDownControl:Maximum := Value
+	PROPERTY MinValue	AS LONG GET (LONG) Convert.ToInt32(__UpDownControl:Minimum) SET __UpDownControl:Minimum := Value
+	PROPERTY Position	AS LONG GET (LONG) Convert.ToInt32(__UpDownControl:Value) SET __UpDownControl:Value := Math.Max(Math.min(Value, MaxValue), MinValue)
 	PROPERTY Range		AS Range
-		GET 
+		GET
 			RETURN Range{SELF:MinValue, SELF:MaxValue}
 		END GET
 		SET
@@ -762,9 +817,9 @@ CLASS SpinnerEdit INHERIT SingleLineEdit
 			SELF:MaxValue := Value:Max
 		END SET
 	END PROPERTY
-	PROPERTY ThumbPosition AS LONG GET (LONG) __UpDownControl:Value SET __UpDownControl:Value := Value
+	PROPERTY ThumbPosition AS LONG GET Convert.ToInt32(__UpDownControl:Value) SET __UpDownControl:Value := Value
 	PROPERTY Value		AS USUAL GET SELF:Position SET SELF:Position := (LONG) Value
-	
+
 END CLASS
 
 

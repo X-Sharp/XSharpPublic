@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="2a5aba7a-b709-40e1-9bd0-f31d73c511b7" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_entdecl.html -->Entity Declaration &gt; <!-- TODO: Unknown topic link: class-members2.html -->CLASS Members&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">ACCESS Statement</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Declare a method to access a non-exported or virtual instance variable.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>&#160;[Attributes] &#160;[Modifiers]  ACCESS &lt;idName&gt;</para>
+<para>&#160;[([&lt;idParam&gt; [AS | REF &lt;idType&gt;] [, ...])] </para>
+<para>&#160;[AS &lt;idType&gt;] [&lt;idConvention&gt;]</para>
+<para>&#160;[CLASS &lt;idClass&gt;]</para>
+<para>&#160;[=&gt; &lt;expression&gt;]</para>
+<para>&#160;CRLF</para>
+<para>&#160;[&lt;Body&gt;]</para>
+<para>&#160;[END ACCESS]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>Attributes</entry><entry>An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method/function containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword.</entry></row></table><para>&#160;</para>
+<table><row><entry>Modifiers</entry><entry>An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, PROTECTED, HIDDEN, INTERNAL, SEALED, ABSTRACT or STATIC.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idName&gt;</entry><entry>A valid identifier name for the instance variable whose access method you are defining. &#160;Like other methods, access methods are entities; however, the system uses a unique naming scheme for them to prevent collisions with other entity names. &#160;Access method names must be unique within a class, but can share the same name as other entities in your application.</entry></row></table><table><row><entry>TypeParameters</entry><entry>This is supported for methods with generic type arguments. This something like &lt;T&gt; for a method with one type parameter named T. Usually one of the parameters in the parameter list is then also of type T.</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idParam&gt;</entry><entry>A &#160;parameter variable. &#160;A variable specified in this manner is automatically declared local. &#160;These variables, also called formal parameters, are used to receive arguments that you pass when you call the entity.</entry></row></table><para>&#160;</para>
+<table><row><entry>AS | REF|OUT|IN &lt;idType&gt;</entry><entry>Specifies the data type of the parameter variable (called strong typing). &#160;AS indicates that the parameter must be passed by value, and REF indicates that it must be passed by reference with the @ operator. OUT is a special kind of REF parameter that does not have to be assigned before the call and must be assigned inside the body of the entity. IN parameters are passed as READONLY references.<para/>
+The last parameter in the list can also be declared as PARAMS &lt;idType&gt;[] which will tell the compiler that the function/method may receive zero or more optional parameters.<para/>
+Functions or Methods of the CLIPPER calling convention are compiled to a function with a single parameter that this declared as Args PARAMS USUAL[]<para/>
+&#160;</entry></row></table><para>&#160;</para>
+<table><row><entry>AS &lt;idType&gt;</entry><entry>Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</entry></row></table><para>&#160;</para>
+<table><row><entry>TypeParameterConstraints</entry><entry>Here you can specify constraints for the Type parameters, such as WHERE T IS SomeName or WHERE T IS New</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;idConvention&gt;</entry><entry>Specifies the calling convention for this entity. &#160;&lt;idConvention&gt; must be one of the following:</entry></row></table><para>&#111; &#160; &#160; &#160; &#160;CLIPPER</para><para>&#111; &#160; &#160; &#160; &#160;STRICT</para><para>&#111; &#160; &#160; &#160; &#160;PASCAL</para><para>&#111; &#160; &#160; &#160; &#160;CALLBACK</para><para>&#111; &#160; &#160; &#160; &#160;THISCALL</para><table><row><entry></entry><entry>Most calling conventions are for backward compatibility only. <para/>
+There are 2 exceptions:<para/>
+CLIPPER declares that a method has untyped parameters. This is usually only needed for methods without any declared parameters. Otherwise the compiler will assume CLIPPER calling convention when it detects untyped parameters. <para/>
+Methods and Functions in external DLL may have STRICT, PASCAL, CALLBACK</entry></row></table><para>&#160;</para>
+<table><row><entry>CLASS &lt;idClass&gt;</entry><entry>The class to which this method belongs. This clause is mandatory for entities declared outside of a CLASS .. END CLASS construct</entry></row></table><table><row><entry>=&gt; &lt;Expression&gt;</entry><entry>Single expression that replaces the multiline body for the entity. CANNOT be compiled with a body</entry></row></table><para>&#160;</para>
+<table><row><entry>&lt;Body&gt;</entry><entry>Program statements that form the code of this entity.<para/>
+The &lt;Body&gt; can contain one or more RETURN statements to return control to the calling routine and to serve as the function return value. &#160;If no return statement is specified, control passes back to the calling routine when the function definition ends, and the function will return a default value depending on the return value data type specified (NIL if the return value is not strongly typed).<para/>
+CANNOT be combined with an Expression Body</entry></row></table><para>&#160;</para>
+<table><row><entry>END ACCESS</entry><entry>Optional end clause to indicate the end of the ACCESS entity</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>ACCESS declares a special method, called an access method, that is automatically executed each time you access the named instance variable.</para>
+<para>&#160;</para>
+<para>You can define four types of instance variables in a CLASS declaration. &#160;All of these, except EXPORT, are called non-exported instance variables because they are not directly accessible externally (i.e., outside of the class).</para>
+<para>&#160;</para>
+<para>For example, if you want to access a non-exported instance variable of an object from a function, you must use a method. &#160;Indeed, this is the purpose of not exporting the variable: &#160;encapsulation by being able to control all references to it through a method. &#160;However, the syntax for referencing a method is obviously different from that of referencing a variable. &#160;This violates encapsulation and is just plain cumbersome, since users of the class must be aware of how a property of the class is implemented in order to know whether to use a functional style or a variable style of reference.</para>
+<para>&#160;</para>
+<para>For example, note the difference in accessing the instance variables x and y in the function UseClass() when the class uses a regular method for exporting the variable:</para>
+<para>&#160;</para>
+<para>CLASS Test<para/>
+&#160;EXPORT x := 100<para/>
+&#160;INSTANCE y := 10000<para/>
+&#160;<para/>
+METHOD GetValueY() CLASS Test<para/>
+&#160;RETURN y<para/>
+&#160;<para/>
+FUNCTION UseClass()<para/>
+&#160;LOCAL oTest AS Test<para/>
+&#160;oTest := Test{}<para/>
+&#160;? oTest:x<para/>
+&#160;? oTest:GetValueY() &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;// Access y using method</para>
+<para>&#160;</para>
+<para>If you replace the regular method with an access method, the syntax for accessing both variables is the same even though one of them is insulated by a method:</para>
+<para>&#160;</para>
+<para>ACCESS y CLASS Test<para/>
+&#160;RETURN y<para/>
+&#160;<para/>
+FUNCTION UseClass()<para/>
+&#160;LOCAL oTest AS Test<para/>
+&#160;oTest := Test{}<para/>
+&#160;? oTest:x<para/>
+&#160;? oTest:y &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;// Using ACCESS method</para>
+<para>&#160;</para>
+<para>Non-exported variables come in three categories, each with its own properties (see the CLASS statement entry in this guide for details):</para>
+<para>&#183; &#160; &#160; &#160; &#160;INSTANCE</para><para>&#183; &#160; &#160; &#160; &#160;PROTECT</para><para>&#183; &#160; &#160; &#160; &#160;HIDDEN</para><para>INSTANCE variables are specifically designed to work with access and assign methods which is the main reason for their late binding. &#160;By defining an access method with the same name as an INSTANCE variable, you effectively override the variable by causing all non-assignment references, both external and internal, to invoke the access method. &#160;</para>
+<para>&#160;</para>
+<para>The exception is that within an access (or assign) method, instance variables of the same name refer to the variable&#160;—&#160;otherwise, you would never get anywhere.</para>
+<para>For example:</para>
+<para>&#160;</para>
+<para>CLASS Person<para/>
+ &#160; INSTANCE Name, SSN<para/>
+&#160;<para/>
+ACCESS Name CLASS Person<para/>
+ &#160; RETURN Name &#160; &#160; &#160; &#160; // Refers to variable Name<para/>
+&#160;<para/>
+METHOD ShowName() CLASS Person<para/>
+ &#160; ? Name &#160; &#160; &#160; &#160; &#160; &#160; &#160; // Refers to ACCESS method</para>
+<para>You can also use PROTECT and HIDDEN variables in conjunction with access methods. &#160;By defining an access method with the same name as a PROTECT or HIDDEN variable, you can access the variable externally using the same syntax as you would inside the class. &#160;Internal references, however, always refer directly to the variable because of early binding.</para>
+<para>&#160;</para>
+<para>Of course, you do not have to give the access method and the instance variable the same name. &#160;This is only for your convenience. &#160;It is the return value of the method that is used when you access &lt;idVar&gt;. &#160;Thus, for PROTECT/HIDDEN variables, you can provide an access method with a different name. &#160;For example:</para>
+<para>&#160;</para>
+<para>CLASS Person<para/>
+ &#160; PROTECT Name_Protected<para/>
+&#160;<para/>
+ACCESS Name CLASS Person<para/>
+ &#160; RETURN Name_Protected</para>
+<para>A virtual variable is one that is not defined as part of the class but composed from other instance variables. &#160;In other words, it is a variable that is calculated based on the values of other instance variables. &#160;As with non-exported instance variables, you could use a regular method to compute virtual variables, but this means using a different syntax for accessing them. &#160;Access methods extend the syntax used for accessing instance variables to virtual variables.</para>
+<para>For example:</para>
+<para>&#160;</para>
+<para>CLASS Person<para/>
+ &#160; INSTANCE Name, SSN<para/>
+&#160;<para/>
+ACCESS Name CLASS Person<para/>
+ &#160; RETURN Name<para/>
+&#160;<para/>
+METHOD Init(cName, cSSN) CLASS Person<para/>
+ &#160; Name := cName<para/>
+ &#160; SSN := cSSN<para/>
+&#160;<para/>
+ACCESS FullID CLASS Person<para/>
+ &#160; RETURN Name + SSN<para/>
+&#160;<para/>
+FUNCTION UseClass()<para/>
+ &#160; LOCAL oFriend AS Person<para/>
+ &#160; oFriend := Person{&quot;Bill Brown&quot;, &quot;213-88-9546&quot;}<para/>
+ &#160; ? oFriend:Name &#160; &#160; &#160; &#160; // Bill Brown<para/>
+ &#160; ? oFriend:FullID &#160; &#160;  // Bill Brown213-88-9546</para>
+<para>EXPORT variables are a lot faster and easier to use than non-exported variables and access methods, but using them defies the encapsulation that you should strive for to further the integrity of your application. &#160;Using access and assign methods, you can use exported variables early in the prototyping stage of an application, and later protect the variables with methods without changing the class interface.</para>
+<para>&#160;</para>
+<para>ACCESS is a special case of METHOD and, except for the way you invoke it (i.e., without arguments, like an instance variable), its behavior is the same as any other method. &#160;See the METHOD statement in this guide for more details.</para>
+<para>&#160;</para>
+<para>Note:  Internal references to access methods that do not have a corresponding regular INSTANCE variable (e.g., virtual variables or public access to HIDDEN or PROTECT variables with different names) must use the SELF: &#160;prefix. &#160;Internal references means references from inside methods of the class or one of its subclasses. &#160;If the system does not find an instance variable, it assumes a memory variable (which can produce a compiler error depending on whether Allow Undeclared Variables has been chosen in the compiler settings), and it does not attempt to identify the reference as an access method, unless SELF: &#160;is used.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Strongly &#160;typed Methods</h1>
+<para>&#160;</para>
+<para>In addition to XSharp untyped method implementation, strong typing of method parameters and return values is now supported, providing you with a mechanism through which highly stable code can be obtained. &#160;The type information supplied enables the compiler to perform the necessary type checking and, thus, guarantee a much higher stable code quality.</para>
+<para>&#160;</para>
+<para>A further benefit obtained by utilizing strongly typed methods is that of performance. &#160;The implementation of typed methods presumes that when the programmer employs strongly typed messages, the compiler can effectively perform an early binding for the respective methods invocation. &#160;As a result of this implementation, typed methods invocations are somewhat faster than the respective untyped counterparts. &#160;These advantages are, however, attained at the price of losing the flexibility which untyped methods offer.</para>
+<para>&#160;</para>
+<para>It is, therefore, important to remember that interchangeably using both the typed and the untyped versions of a particular methods in an inheritance chain is neither permissible nor possible.</para>
+<para>&#160;</para>
+<para>XSharp allows strong typing of METHODs, ACCESSes and ASSIGNs. &#160;The programmer accomplishes the specification of the strongly typed methods with XSharp in two steps:</para>
+<para>&#160;</para>
+<table><row><entry>1.</entry><entry>A mandatory declaration of the typed method is given in its respective class.</entry></row></table><table><row><entry></entry><entry>This declaration is reponsible for declaring the order of the methods in the so-called virtual table which XSharp employs for the invocation of typed methods. &#160;A re-declaration of a method in a subclass is NOT permissible, since it would cause abiguity for the compiler.</entry></row></table><table><row><entry>2.</entry><entry>Define the strongly typed method. &#160;</entry></row></table><table><row><entry></entry><entry>Unlike strongly typed functions, method typing requires strongly typing of the method arguments, the method return value AND speficying a valid calling convention. &#160;<para/>
+The following calling conventions are valid for typed methods: STRICT, PASCAL or CALLBACK.</entry></row></table><para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>The following example uses ACCESS to perform a calculation based on the value of other instance variables:</para>
+<para>&#160;</para>
+<para>CLASS Rectangle<para/>
+ &#160; INSTANCE Length, Height AS INT<para/>
+&#160;<para/>
+METHOD Init(nX, nY) CLASS Rectangle<para/>
+ &#160; Length := nX<para/>
+ &#160; Height := nY<para/>
+ &#160; RETURN SELF<para/>
+&#160;<para/>
+ACCESS Area CLASS Rectangle<para/>
+ &#160; RETURN Length * Height<para/>
+&#160;<para/>
+FUNCTION FindArea()<para/>
+ &#160; LOCAL oShape AS Rectangle<para/>
+ &#160; oShape := Rectangle{3, 4}<para/>
+ &#160; ? oShape:Area &#160; &#160;  // Displays: &#160;12</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="91993c4b-eb98-471f-a272-3feaddceb3d0">ASSIGN</link>, <link xlink:href="e8707520-821f-41bc-857b-31cdf44b7886">CLASS</link>, <link xlink:href="77b4131b-7ffd-4fad-ae60-b9ca0ec84fc7">METHOD</link>, <link xlink:href="ef62a4ba-0422-4701-9e88-9cc105d382be">PROPERTY</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

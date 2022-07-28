@@ -16,6 +16,7 @@ BEGIN NAMESPACE XSharp.RDD
 [DebuggerDisplay("DBFVFP ({Alias,nq})")];
 CLASS DBFVFP INHERIT DBFCDX
     PRIVATE CONST VFP_BACKLINKSIZE := 262 AS LONG
+    PRIVATE oDbcTable as DbcTable
 	CONSTRUCTOR()
 		SUPER()
 		SELF:_AllowedFieldTypes := "BCDFGILMNPQTVWY0"
@@ -198,6 +199,7 @@ CLASS DBFVFP INHERIT DBFCDX
             var base := System.IO.Path.GetFileNameWithoutExtension(SELF:FileName)
             var oTable := oDb:FindTable(System.IO.Path.GetFileName(base))
             IF oTable != NULL
+                SELF:oDbcTable := oTable
                 // assign aliases
                 IF SELF:FieldCount == oTable:Fields:Count
                     LOCAL nPos AS LONG

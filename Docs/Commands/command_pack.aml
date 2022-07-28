@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="db7d284d-ce1f-4ebc-bb02-0217e48b6449" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">PACK Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Remove all records marked for deletion from the current database file, rebuild all active orders, and recover all physical space occupied by the deleted records. Note that this will not affect memo files. Unused space in memo files can only be recovered by using COPY.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>PACK &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<para>&#160;</para>
+<table><row><entry>IN|ALIAS &lt;workarea&gt;</entry><entry>Specifies the work area for which the operation must be performed</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>PACK is functionally equivalent to DBPack(). &#160;</para>
+<para>&#160;</para>
+<para>Warning!  PACK does not create backup files. &#160;You may want to make a backup of the file (using COPY FILE, for example) before issuing this command; otherwise, you will not be able to recover deleted records.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>The following shows the result of a simple PACK:</para>
+<para>&#160;</para>
+<para>USE sales NEW<para/>
+? LastRec() &#160; &#160; &#160; &#160; // Result: &#160;84<para/>
+&#160;<para/>
+DELETE RECORD 4<para/>
+PACK<para/>
+? LastRec() &#160; &#160; &#160; &#160; // Result: &#160;83</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbPack.htm -->DbPack(), <link xlink:href="d9b7ffae-c23b-4222-8767-577023d97475">DELETE</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Deleted.htm -->Deleted(), <link xlink:href="4884735d-06d9-4652-9887-45c4d8293bb7">RECALL</link>, <link xlink:href="79edf21a-e6eb-4d50-abf8-a5284293d42b">REINDEX</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDeleted.htm -->SetDeleted() , <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetExclusive.htm -->SetExclusive(), <link xlink:href="92d108ad-302f-48aa-aeac-d4329b05a943">ZAP</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

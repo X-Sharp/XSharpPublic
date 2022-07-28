@@ -5,6 +5,7 @@
    USING System.Runtime.InteropServices
 #endif
 
+/// <include file="Gui.xml" path="doc/IpcClient/*" />
 CLASS IpcClient INHERIT EventContext
 	PROTECT dwIdInst AS DWORD
 	PROTECT hServHstr AS PTR
@@ -16,15 +17,18 @@ CLASS IpcClient INHERIT EventContext
 	   //HIDDEN cbDelegate AS DDECallbackDelegate
 	#endif
 	//PP-030828 Strong typing
-	METHOD __UpdateClient(hData AS PTR, hTopicHstr AS PTR, hItemHstr AS PTR) AS VOID STRICT 
+ /// <exclude />
+	METHOD __UpdateClient(hData AS PTR, hTopicHstr AS PTR, hItemHstr AS PTR) AS VOID STRICT
 	//PP-030828 Strong typing
-	
+
 
 	oIpcDataUpdateEvent := IpcDataUpdateEvent{NULL_Ptr,0,NULL_Ptr, hTopicHstr, hItemHstr, hData, 0, 0, SELF}
 	SELF:DataUpdate(oIpcDataUpdateEvent)
 	RETURN
 
-METHOD ChangeData(cTopic, cItem, cStringData) 
+
+/// <include file="Gui.xml" path="doc/IpcClient.ChangeData/*" />
+METHOD ChangeData(cTopic, cItem, cStringData)
 	/*
 	LOCAL hItemHstr AS PTR
 	LOCAL dwLen AS DWORD
@@ -32,12 +36,12 @@ METHOD ChangeData(cTopic, cItem, cStringData)
 	LOCAL hConvTemp AS PTR
 	LOCAL hTopicHstr AS PTR
 
-	
+
 	IF !IsString(cItem)
-		WCError{#ChangData,#IpcClient,__WCSTypeError,cItem,2}:@@Throw()
+		WCError{#ChangData,#IpcClient,__WCSTypeError,cItem,2}:Throw()
 	ENDIF
 	IF !IsString(cStringData)
-		WCError{#ChangData,#IpcClient,__WCSTypeError,cStringData,3}:@@Throw()
+		WCError{#ChangData,#IpcClient,__WCSTypeError,cStringData,3}:Throw()
 	ENDIF
 
 	IF !Empty(cTopic)
@@ -59,11 +63,13 @@ METHOD ChangeData(cTopic, cItem, cStringData)
 	*/
 	RETURN SELF
 
-METHOD ClientError(oIpcClientErrorEvent) 
+
+/// <include file="Gui.xml" path="doc/IpcClient.ClientError/*" />
+METHOD ClientError(oIpcClientErrorEvent)
 	LOCAL selected AS DWORD
 	LOCAL __WCSIpcError AS DWORD
 
-	
+
 	selected := oIpcClientErrorEvent:ErrorType
 	DO CASE
 	CASE (selected == IPCSERVERNOTFOUND)
@@ -79,14 +85,18 @@ METHOD ClientError(oIpcClientErrorEvent)
 		__WCSIpcError := __WCSIpcItemNotFound
 
 	ENDCASE
-	WCError{#ClientError,#IpcClient,__WCSIpcError}:@@Throw()
+	WCError{#ClientError,#IpcClient,__WCSIpcError}:Throw()
 	RETURN SELF
 
-METHOD DataUpdate(oIpcDataUpdateEvent) 
-	
+
+/// <include file="Gui.xml" path="doc/IpcClient.DataUpdate/*" />
+METHOD DataUpdate(oIpcDataUpdateEvent)
+
 	RETURN SELF
 
-METHOD Destroy() AS USUAL 
+
+/// <include file="Gui.xml" path="doc/IpcClient.Destroy/*" />
+METHOD Destroy() AS USUAL
 	/*
 	LOCAL i, dwLen AS DWORD
 	LOCAL hConv AS PTR
@@ -114,14 +124,14 @@ METHOD Destroy() AS USUAL
 	SUPER:Destroy()
 
 	RETURN SELF
-
-	METHOD Dispatch(oEvent) 
+/// <inheritdoc />
+	METHOD Dispatch(oEvent)
 		/*
 	LOCAL oE AS IpcEvent
 	LOCAL dwType AS DWORD
 	LOCAL hConv AS PTR
 
-	
+
 
 	oE := oEvent //faster execution
 	dwType := oE:dwType
@@ -140,23 +150,24 @@ METHOD Destroy() AS USUAL
 	*/
 	RETURN 0L
 
-	METHOD Execute(cTopic, cItem,cCommand) 
+/// <include file="Gui.xml" path="doc/IpcClient.Execute/*" />
+	METHOD Execute(cTopic, cItem,cCommand)
 		/*
 	LOCAL dwLen AS DWORD
 	LOCAL pszTemp AS PSZ
 	LOCAL hTopicHstr AS PTR
 	LOCAL hConvTemp AS PTR
 
-	
+
 
 	IF !IsString(cTopic)
-		WCError{#ChangData,#IpcClient,__WCSTypeError,cTopic,1}:@@Throw()
+		WCError{#ChangData,#IpcClient,__WCSTypeError,cTopic,1}:Throw()
 	ENDIF
 	IF !IsString(cItem)
-		WCError{#ChangData,#IpcClient,__WCSTypeError,cItem,2}:@@Throw()
+		WCError{#ChangData,#IpcClient,__WCSTypeError,cItem,2}:Throw()
 	ENDIF
 	IF !IsString(cCommand)
-		WCError{#ChangData,#IpcClient,__WCSTypeError,cCommand,3}:@@Throw()
+		WCError{#ChangData,#IpcClient,__WCSTypeError,cCommand,3}:Throw()
 	ENDIF
 
 	IF !Empty(cTopic)
@@ -178,16 +189,18 @@ METHOD Destroy() AS USUAL
 	*/
 	RETURN SELF
 
-ACCESS IdInst 
-	
+/// <include file="Gui.xml" path="doc/IpcClient.IdInst/*" />
+ACCESS IdInst
+
 	RETURN dwIdInst
 
-CONSTRUCTOR(cServerName) 
-	
+/// <include file="Gui.xml" path="doc/IpcClient.ctor/*" />
+CONSTRUCTOR(cServerName)
+
 
 	SUPER()
 	IF !IsString(cServerName)
-		WCError{#Init, #IpcClient,__WCSTypeError,cServerName,1}:@@Throw()
+		WCError{#Init, #IpcClient,__WCSTypeError,cServerName,1}:Throw()
 	ENDIF
 /*
 #ifdef __VULCAN__
@@ -198,9 +211,10 @@ CONSTRUCTOR(cServerName)
 #endif
 	hServHstr := DdeCreateStringHandle(dwIdInst, String2Psz(cServerName), CP_WINANSI)
 	*/
-	RETURN 
+	RETURN
 
-METHOD RequestData(oIpcTopic, continuous) 
+/// <include file="Gui.xml" path="doc/IpcClient.RequestData/*" />
+METHOD RequestData(oIpcTopic, continuous)
 	/*
 	LOCAL iItemListLen AS INT
 	LOCAL liLoop AS LONGINT
@@ -211,7 +225,7 @@ METHOD RequestData(oIpcTopic, continuous)
 	LOCAL hData AS PTR
 	LOCAL dwErrorCode AS DWORD
 
-	
+
 
 	cTopicName := oIpcTopic:cTopicName
 	hTopicHstr := DdeCreateStringHandle(dwIdInst, String2Psz(cTopicName), CP_WINANSI)

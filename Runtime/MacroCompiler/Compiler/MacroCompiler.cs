@@ -34,6 +34,24 @@ namespace XSharp.Runtime
         {
             options = o;
             options.AllowSingleQuotedStrings = true;
+            XSharp.RuntimeState.DialectChanged += DialectChanged;
+        }
+
+        private void DialectChanged(XSharpDialect oldDialect, XSharpDialect newDialect)
+        {
+            if (oldDialect != newDialect)
+            {
+                if (newDialect == XSharpDialect.FoxPro)
+                {
+                    options = MacroOptions.FoxPro;
+                }
+                else
+                {
+                    options = MacroOptions.VisualObjects;
+                }
+                objectCompiler = null;
+                usualCompiler = null;
+            }
         }
 
         public static MacroCompiler GetScriptCompiler(XSharpDialect dialect = XSharpDialect.Core)

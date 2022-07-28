@@ -36,10 +36,6 @@ namespace XSharp.Project
         [DllImport("oleaut32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
         static extern int LoadTypeLib(string fileName, out System.Runtime.InteropServices.ComTypes.ITypeLib typeLib);
 
-
-
-
-
         #endregion
         #region Fields
         private string wrapperFileName;
@@ -52,6 +48,7 @@ namespace XSharp.Project
             ThreadHelper.ThrowIfNotOnUIThread();
             BindReferenceData();
         }
+        
         protected override void Dispose(bool disposing)
         {
             if (this.ProjectMgr is XSharpProjectNode)
@@ -94,10 +91,19 @@ namespace XSharp.Project
             ThreadHelper.ThrowIfNotOnUIThread();
             base.BindReferenceData();
             GetNamesFromWrapper();
+            XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
+            projectNode.ProjectModel.AddAssemblyReference(this.Url);
         }
         public override string Description
         {
             get { return this.description; }
+        }
+
+        public override void Remove(bool removeFromStorage)
+        {
+            XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
+            projectNode.ProjectModel.RemoveAssemblyReference(this.Url);
+            base.Remove(removeFromStorage);
         }
 
         public override string Url

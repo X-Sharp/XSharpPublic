@@ -66,9 +66,7 @@
         <param name="oDBFSTarget">The DBFileSpec object's target directory. Can be either optional or full path.</param>
         <param name="lIDX">Logical parameter. TRUE also moves any index files associated with SELF. The default is TRUE.</param>
         <param name="lName">Logical parameter. TRUE causes an auto-rename of the target file if a file conflict occurs during the copy. The default is FALSE. </param>
-        <returns>
-            TRUE if the file was successfully copied; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
         <example>
             <code language="X#">
                 // Copy the CUSTOMER.DBF file to C:\TEST directory:
@@ -98,9 +96,7 @@
         <param name="oFS">The drive and directory into which to copy SELF's files. Can also be an existing DBFileSpec object or FileSpec object.</param>
         <param name="cDriver">The target file's RDD.</param>
         <param name="lWantAnsi">Logical parameter. TRUE creates the target file in ANSI format. The default is the source DBFileSpec's ANSI setting.</param>
-        <returns>
-            TRUE if the file was successfully copied; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
         <example>
             The following examples illustrate copying a DBF file to different data formats:
             <code language="X#">
@@ -136,9 +132,7 @@
         <param name="cDriver">The RDD used to create the new DBF file structure if different from SELF's.</param>
         <param name="lWantAnsi">TRUE if this new DBF is to be an ANSI DBF (default). </param>
         <param name="aRdds">The 1-D array of 'hidden' RDDs required to open a DBF file, such as DBFMEMO. Defaults to SELF's.</param>
-        <returns>
-            TRUE if the file was successfully created; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
         <remarks>
             The DBFileSpec:Create() method is useful for generating a new DBF file given a file specification and path. The DBCreate() function is also useful to do the same thing, however this approach is more efficient.
             Note that the DBServer class does not contain a Create() method: instantiating a DBServer requires that the file exists already, so one cannot be created. The CopyDB() and CopyStructure() methods of the DBServer class often provide an easier way of copying the structure, completely or partially, of an existing file.
@@ -184,9 +178,7 @@
         <param name="xRDDs">The RDD used to open the target file defined in the DBFileSpec object.</param>
         <param name="xRdds">The RDD used to open the target file defined in the DBFileSpec object.</param>
         <param name="aHidden">The 1-D Array of 'hidden' RDDs required for target file defined in the DBFileSpec object.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <example>
             <code language="X#">
                 oDB := DBFileSpec{}
@@ -250,9 +242,7 @@
         <summary>
             Physically deletes all files that are associated with the DBFileSpec object, including memo files and any index files associated with the DBF through OrderSpec objects.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <example>
             <code language="X#">
                 oDB := DBFileSpec{ "C:\TEST\DELETE\STRING\TEST.DBF" }
@@ -288,9 +278,7 @@
         <summary>
             Locates the file defined in the DBFileSpec object using the current directory, SetDefault(), or SetPath(). Fills in the instance variables of the DBFileSpec if successful.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <example>
             <code language="X#">
                 // find the DBF
@@ -409,9 +397,7 @@
         <param name="oDBFSTarget">The drive and directory to move SELF's files into. Can also be an existing DBFileSpec object.</param>
         <param name="lIDX">Logical parameter. TRUE also moves any index files associated with SELF. The default is TRUE.</param>
         <param name="lName">Logical parameter. TRUE causes an auto-rename of the target file if a file conflict occurs during the move. The default is FALSE. </param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <example>
             <code language="X#">
                 // Move the CUSTOMER.DBF file to C:\TEST directory:
@@ -499,9 +485,7 @@
         </summary>
         <param name="oDBFSNewName">The new name for the DBF file.</param>
         <param name="lName">Logical parameter. TRUE causes an auto-rename of the target file if a file conflict occurs during the move. The default is FALSE. </param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <example>
             <code language="X#">
                 SetDefault("C:\CAVO2x\SAMPLES\GSTUTOR")
@@ -552,7 +536,7 @@
         <summary>
             Create a data server that can operate with existing .DBF database files and their associated index files.
         </summary>
-        <remarks>
+        <examples>
             Once a DBF table is opened in a DBServer object, it can be manipulated through the methods of the DBServer class, several of which are shown in the following examples:
             <code language="X#">
                 oDBCust := DBServer{"customer"}
@@ -609,6 +593,8 @@
                 ? "Number of orders:",oDBOrder:RecCount
                 ? "Total value:",oDBOrder:aSum[1]
             </code>
+            </examples>
+        <remarks>
             The following table lists the properties and methods that reflect the currently active selection:
             <list type="table">
                 <listheader>
@@ -893,17 +879,35 @@
             </note>
         </remarks>
     </DbServer>
-    <DbServer.ctor>
-        <summary>
-            Construct a DBServer object.
-        </summary>
-        <param name="oFile">
-            A String or a FileSpec object with the name of the file to open<br/>
+    <DbServer.LogicReturn>
+        <returns>
+            TRUE if successful; otherwise, FALSE (although some records still might have been processed).
+        </returns>        
+    </DbServer.LogicReturn>    
+    <DbServer.FileNameClause>
+        <span>
             This parameter identifies the DBF file that is to be opened.
             If a string is specified, it corresponds exactly to the file name parameter of the DBUseArea() function; it can contain a full path with drive and directories, or just a file name.
             If a FileSpec object is specified, its file name component is used as the file to open. It can also contain a full path with drive and directories, or just a file name.
             With either type of parameter, if only a file name is specified, the DBServer works the same way as the USE command or the DBUseArea() function with regard to default path—it is subject to SET PATH and SET DEFAULT, for example. The extension DBF is assumed by default.
             In either case, after the DBServer object has been successfully created, it contains a FileSpec object with the original file specification.
+        </span>
+    </DbServer.FileNameClause>
+    <DbServer.ctor>
+        <summary>
+            Construct a DBServer object.
+        </summary>
+        <param name="cFile">
+            The name of the file to open<br/>
+            <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*" />
+        </param>
+        <param name="oFS">
+            A FileSpec object with the name of the file to open<br/>
+            <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*" />
+        </param>
+        <param name="oFile">
+            A String or a FileSpec object with the name of the file to open<br/>
+            <include file="Rdd.xml" path="doc/DbServer.FileNameClause/*" />
         </param>
         <param name="lShareMode">Identifies whether the file should be opened in shared mode. Can be specified as a constant, DBSHARED (TRUE) or DBEXCLUSIVE (FALSE). If not specified, the default is determined by the SetExclusive() function, which in turn defaults to 'exclusive' or FALSE.</param>
         <param name="lReadOnlyMode">Identifies whether the file should be opened in read only mode. Can be specified as a constant, DBREADONLY (TRUE) DBREADWRITE (FALSE). If not specified, it defaults to read-write or FALSE.</param>
@@ -953,11 +957,10 @@
             Append a blank record to the table; this blank record becomes the current position and is ready for assignment of data values. The record is automatically locked if the Append() method returns TRUE.
         </summary>
         <param name="lReleaseLocks">Indicates if existing record locks should be released.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyAppend message, if successful.
+            Sends a NotifyIntentToMove message before the operation.
+            Sends a NotifyAppend message, if successful.
         </remarks>
     </DbServer.Append>
     <DbServer.AppendDB>
@@ -966,15 +969,13 @@
         </summary>
         <param name="oFSSource">
             A string or filespec object that specifies the source file, which is opened in shared, read-only mode, and can be open elsewhere in this or some other application.
-
             This function attempts to open <paramref name="oFSSource" /> in shared mode. If the file does not exist, a runtime error is raised. If the file is successfully opened, the operation proceeds. Refer to the 'Concurrency Control' chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
         </param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <returns>
-            TRUE if successful; otherwise, FALSE (although records still might have been appended).
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message, if any record was appended.
+            Sends a NotifyIntentToMove message before the operation.
+            Sends a NotifyFileChange message, if any record was appended.
         </remarks>
     </DbServer.AppendDB>
     <DbServer.AppendDelimited>
@@ -982,16 +983,15 @@
             Append new records to the table from a delimited file, such as the "comma-separated-value" (CSV) file format.
         </summary>
         <param name="oFSSource">
-            A string or filespec object that specifies the source file containing the records to be appended. 
+            A string or filespec object that specifies the source file containing the records to be appended.
             The source file is opened in shared, read-only mode, and can be open elsewhere in this or some other application.
         </param>
         <param name="cDelimiter">The delimiter for fields within a delimited database file. If omitted, the default is NULL_STRING.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <returns>
-            TRUE if successful; otherwise, FALSE (although records still might have been appended).
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message, if any record was appended.
+            Sends a NotifyIntentToMove message before the operation.
+            Sends a NotifyFileChange message, if any record was appended.
         </remarks>
     </DbServer.AppendDelimited>
     <DbServer.AppendSDF>
@@ -999,15 +999,14 @@
             Append new records to the table from an SDF-formatted file.
         </summary>
         <param name="oFSSource">
-            A string or filespec object that specifies the source file containing the records to be appended. 
+            A string or filespec object that specifies the source file containing the records to be appended.
             The source file is opened in shared, read-only mode, and can be open elsewhere in this or some other application.
         </param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <returns>
-            TRUE if successful; otherwise, FALSE (although this can still have caused records to be appended).
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message, if any record was appended.
+            Sends a NotifyIntentToMove message before the operation.
+            Sends a NotifyFileChange message, if any record was appended.
         </remarks>
     </DbServer.AppendSDF>
     <DbServer.Average>
@@ -1020,8 +1019,10 @@
             An array that contains the averages for each field or expression specified. If a single expression was specified, an array length of 1 is returned.
         </returns>
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
-            The Average() method allows several averages to be calculated in one pass through the database. On successful completion, the current record will be the last file record and EOF will be TRUE.
+            Sends a NotifyIntentToMove message before the operation.
+            Sends a NotifyRecordChange message upon completion.
+            The Average() method allows several averages to be calculated in one pass through the database.
+            On successful completion, the current record will be the last file record and EOF will be TRUE.
         </remarks>
     </DbServer.Average>
     <DbServer.BLOBDirectExport>
@@ -1047,9 +1048,7 @@
                 BLOB_EXPORT_OVERWRITE Overwrites the file—this is the default
             </pre>
         </param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <note type="tip">A BLOB file (.DBV or .FPT) is used for storing memo field information, as an alternative to the standard .DBT file mechanism supported by some RDDs. It is a more powerful and efficient mechanism for storing and retrieving large amounts of data than using .DBT files. X# supplies the DBFCDX driver, which uses the BLOB file storage mechanism by default, and the DBFBLOB driver, which you can use as an inherited driver with other RDDs. Refer to the "RDD Specifics" appendix in the Programmer's Guide for further information on using this driver.</note>
         </remarks>
@@ -1101,6 +1100,9 @@
             </note>
             DBServer:BLOBDirectGet() retrieves data stored in a BLOB file without the need to reference a particular field in the data server. It is particularly useful when accessing data that is larger than 64KB, (such as memo fields created with the BLOBImport() method).
         </remarks>
+          <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*" />
+    </DbServer.BLOBDirectGet>
+    <DbServer.BLOBDirectExample>
         <example>
             This example illustrates storing setup information in a BLOB file, then selectively retrieving the stored information:
             <code language="X#">
@@ -1126,7 +1128,8 @@
                 RETURN aColors
             </code>
         </example>
-    </DbServer.BLOBDirectGet>
+    </DbServer.BLOBDirectExample>
+
     <DbServer.BLOBDirectImport>
         <summary>
             Import a file into a BLOB file and return a pointer to the data.
@@ -1135,8 +1138,12 @@
             A pointer to the BLOB data which will be released after the import. This pointer can be obtained using DBServer:BLOBDirectPut(), DBServer:BLOBDirectImport(), or DBServer:FieldInfo(DBS_BLOB_POINTER, <paramref name="nFieldPos" />). Passing 0 disables the release of data.
             <br />Important! If specified, DBServer:BLOBDirectImport() releases the space associated with <paramref name="nOldPointer" /> for reuse by other data. Therefore, it is illegal to use <paramref name="nOldPointer" /> with any of the BLOB methods after passing it as an argument to this method. Use the method's return value to refer to the newly stored data.
         </param>
+        <param name="cSource">
+            The name of the file from which to read the BLOB data, including an optional drive, directory, and extension.
+            See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
+        </param>
         <param name="oFSSource">
-            A string or filespec object that specifies the name of the file from which to read the BLOB data, including an optional drive, directory, and extension. 
+            A string or filespec object that specifies the name of the file from which to read the BLOB data, including an optional drive, directory, and extension.
             See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
         </param>
         <returns>
@@ -1152,32 +1159,7 @@
                 DBServer:FieldInfo(DBS_BLOB_TYPE, <paramref name="nFieldPos" />) will return "C" (string) for any memo field created using DBServer:BLOBDirectImport().
             </note>
         </remarks>
-        <example>
-            This example imports a .BMP file to be part of an array of startup data. The data, stored in the root area of the BLOB file, could then be used to display the application's startup screen:
-            <code language="X#">
-                FUNCTION PutPix()
-                LOCAL cBMPFile AS STRING
-                LOCAL aSettings AS ARRAY
-                LOCAL oDBCust AS DBServer
-                cBMPFile := "logo.bmp"
-                aSettings := {}
-                // Customer database where startup parameters
-                // are stored for convenience
-                oDBCust := Customer{}
-                // Get default path settings
-                AAdd(aSettings, StartPaths())
-                // Get default color settings
-                AAdd(aSettings, DefaultColors())
-                // Get company logo for display at startup.
-                // There is nothing to free because this
-                // is the first time importing.
-                nPointer := oDBCust:BLOBDirectImport(0, cBMPFile)
-                AAdd(aSettings, nPointer)
-                // Store the settings in the root area of
-                // the customer.fpt file
-                oDBCust:BLOBRootPut(aSettings)
-            </code>
-        </example>
+        <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*" />
     </DbServer.BLOBDirectImport>
     <DbServer.BLOBDirectPut>
         <summary>
@@ -1196,37 +1178,14 @@
         <remarks>
             DBServer:BLOBDirectPut() stores variable length BLOB data without creating a link with a particular memo field in a data server. After adding data to a BLOB file using DBServer:BLOBDirectPut(), you should store the method's return value, as this is the only way to access the data from the BLOB file. It is up to you, the developer, to provide permanent storage for this reference (see DBServer:BLOBRootPut()).
         </remarks>
-        <example>
-            This example illustrates storing setup information in a BLOB file, then selectively retrieving the stored information:
-            <code language="X#">
-                FUNCTION PutSettings(aColors AS ARRAY,;
-                aPaths AS ARRAY, aPW AS ARRAY) AS VOID
-                LOCAL aSettings AS ARRAY
-                LOCAL oDBSetup AS DBServer
-                oDBSetup := Setup{}
-                aSettings := {}
-                AAdd(aSettings, oDBSetup:BLOBDirectPut(0, aColors))
-                AAdd(aSettings, oDBSetup:BLOBDirectPut(0, aPaths))
-                AAdd(aSettings, oDBSetup :BLOBDirectPut(0, aPW))
-                oDBSetup:BLOBRootPut(aSettings)
-                oDBSetup:Close()
-                FUNCTION GetColors() AS ARRAY
-                LOCAL aSettings AS ARRAY
-                LOCAL aColors AS ARRAY
-                LOCAL oDBSetup AS DBServer
-                oDBSetup := Setup{}
-                aSettings := oDBSetup:BLOBRootGet()
-                aColors := oDBSetup:BLOBDirectGet(aSettings[1])
-                oDBSetup:Close()
-                RETURN aColors
-            </code>
-        </example>
+        <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*" />
     </DbServer.BLOBDirectPut>
     <DbServer.BLOBExport>
         <summary>
             Copy the contents of a BLOB, identified by its memo field number, to a file.
         </summary>
         <param name="uField">The name, number, or symbol representing the position of the field in the database file structure.</param>
+        <param name="cTarget">The file to which the records is copied.</param>
         <param name="oFSTarget">
             A string or filespec object that specifies the name of the target file where the BLOB data will be written, including an optional drive, directory, and extension.
             See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
@@ -1242,9 +1201,7 @@
                 BLOB_EXPORT_OVERWRITE	Overwrites the file—this is the default
             </pre>
         </param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <example>
             This example exports the contents of a field that stores a picture to a .GIF file, so that the file can be programmatically displayed:
             <code language="X#">
@@ -1318,9 +1275,7 @@
         <param name="oFSSource">
             A string or filespec object that specifies the name of the file from which to read the BLOB data, including an optional drive, directory, and extension. See SetDefault() and SetPath() for file searching and creation rules. No default extension is assumed.
         </param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method attempts to open the source file in shared mode. If the file does not exist, a runtime error is raised. If the file is successfully opened, the operation proceeds. If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE and the data server's Status property is set. Refer to the 'Concurrency Control' chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
             <note type="tip">There are no restrictions on the size of the source file except that you must have enough disk space to make the copy.</note>
@@ -1364,65 +1319,17 @@
             DBServer:BLOBRootGet() allows the retrieval of a BLOB from the root of a BLOB file.
             <note type="tip">Because the root data does not reference a particular record in the data server, it is not affected by DBServer:RLock(), nor is it subject to the DataServer:ConcurrencyControl settings. Therefore, if the data server is opened in shared mode, you should use DBServer:BLOBRootLock() before calling DBServer:BLOBRootGet().</note>
         </remarks>
-        <example>
-            This example uses DBServer:BLOBRootGet() to read system settings from a BLOB file into an array, then demonstrates how to allow the user to modify the settings are restore them in the BLOB file:
-            <code language="X#">
-                FUNCTION UpdateSettings()
-                LOCAL aSettings AS ARRAY
-                LOCAL oDBCust AS DBServer
-                oDBCust := Customer{}
-                IF oDBCust:BLOBRootLock()
-                // Get any existing settings
-                aSettings := oDBCust:BLOBRootGet()
-                IF Empty(aSettings)
-                // This method would populate aSettings
-                // with default data
-                aSettings := oDBCust:GetDefaultSettings()
-                ENDIF
-                // This method would allow the user to
-                // modify the settings.
-                IF oDBCust:ModifySettings(aSettings)
-                // Finally, store the settings
-                oDBCust:BLOBRootPut(aSettings)
-                ENDIF
-                oDBCust:BLOBRootUnlock()
-                ELSE
-                aSettings := {}
-                Alert("Could not obtain a lock on the root")
-                ENDIF
-                oDBCust:Close()
-                RETURN aSettings
-            </code>
-        </example>
+        <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />    
     </DbServer.BLOBRootGet>
     <DbServer.BLOBRootLock>
         <summary>
             Obtain a lock on the root area of a BLOB file.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Use DBServer:BLOBRootLock() when accessing the data server in shared mode to obtain a lock on the root area of a BLOB file for reading from or writing to the root area.
         </remarks>
-        <example>
-            This example illustrates how to properly lock and unlock the root area of a BLOB file for a data server opened in shared mode.
-            <code language="X#">
-                FUNCTION GetSettings()
-                LOCAL aCustSettings AS ARRAY
-                LOCAL oDBCust AS DBServer
-                // Open a customer file in shared mode
-                oDBCust := Customer{}
-                IF oDBCust:BLOBRootLock()
-                aCustSettings := oDBCust:BLOBRootGet()
-                oDBCust:BLOBRootUnlock()
-                ELSE
-                Alert("Could not obtain root lock")
-                ENDIF
-                oDBCust:Close()
-                RETURN aCustSettings
-            </code>
-        </example>
+        <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />    
     </DbServer.BLOBRootLock>
     <DbServer.BLOBRootPut>
         <summary>
@@ -1431,9 +1338,7 @@
         <param name="uBlob">
             The data you want to put into the BLOB file's root area. <paramref name="uBLOB" /> can be any X# usual data type, except code block and object.
         </param>
-        <returns>
-            TRUE if successful; otherwise FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             DBServer:BLOBRootPut() allows the storage of one—and only one—piece of data to a BLOB file's root area (there is no size limitation on this one piece of data). After storing the new data, DBServer:BLOBRootPut() releases the space associated with any data previously stored in the BLOB file's root area.
             <note type="tip">Because the root data does not reference a particular record in the data server, it is not affected by DBServer:RLock(), nor is it subject to the DataServer:ConcurrencyControl settings. Therefore, if the data server is opened in shared mode, you should use DBServer:BLOBRootLock() before calling DBServer:BLOBRootGet().</note>
@@ -1446,28 +1351,48 @@
                 LOCAL oDBCust AS DBServer
                 oDBCust := Customer{}
                 IF oDBCust:BLOBRootLock()
-                // Get any existing settings
-                aSettings := oDBCust:BLOBRootGet()
-                IF Empty(aSettings)
-                // This function would populate 				// aSettings with default data
-                aSettings := oDBCust:GetDefaultSettings()
-                ENDIF
-                // This function would allow the user to
-                // modify the settings.
-                IF oDBCust:ModifySettings(aSettings)
-                // Finally, store the settings
-                oDBCust:BLOBRootPut(aSettings)
-                ENDIF
-                oDBCust:BLOBRootUnlock()
+                   // Get any existing settings
+                   aSettings := oDBCust:BLOBRootGet()
+                   IF Empty(aSettings)
+                      // This function would populate aSettings with default data
+                      aSettings := oDBCust:GetDefaultSettings()
+                   ENDIF
+                   // This function would allow the user to
+                   // modify the settings.
+                   IF oDBCust:ModifySettings(aSettings)
+                      // Finally, store the settings
+                      oDBCust:BLOBRootPut(aSettings)
+                   ENDIF
+                   oDBCust:BLOBRootUnlock()
                 ELSE
-                aSettings := {}
-                Alert("Could not obtain a lock on the root")
+                   aSettings := {}
+                   Alert("Could not obtain a lock on the root")
                 ENDIF
                 oDBCust:Close()
                 RETURN aSettings
             </code>
         </example>
     </DbServer.BLOBRootPut>
+    <DbServer.BLOBRootExample>
+        <example>
+            This example illustrates how to store information in the root of a BLOB file and how to use locking for a data server opened in shared mode.
+            <code language="X#">
+                FUNCTION GetSettings()
+                LOCAL aCustSettings AS ARRAY
+                LOCAL oDBCust AS DBServer
+                // Open a customer file in shared mode
+                oDBCust := Customer{}
+                IF oDBCust:BLOBRootLock()
+                   aCustSettings := oDBCust:BLOBRootGet()
+                   oDBCust:BLOBRootUnlock()
+                ELSE
+                   Alert("Could not obtain root lock")
+                ENDIF
+                oDBCust:Close()
+                RETURN aCustSettings
+            </code>
+        </example>
+    </DbServer.BLOBRootExample>
     <DbServer.BLOBRootUnlock>
         <summary>
             Release the lock on a BLOB file's root area.
@@ -1476,24 +1401,7 @@
             Use DBServer:BLOBRootUnlock() to release a lock previously obtained using DBServer:BLOBRootLock().
             <note type="tip">The only methods that require the use of DBServer:BLOBRootLock() or DBServer:BLOBRootUnlock() are DBServer:BLOBRootGet() and DBServer:BLOBRootPut().</note>
         </remarks>
-        <example>
-            This example illustrates how to properly lock and unlock the root area of a BLOB file for a data server opened in shared mode.
-            <code language="X#">
-                FUNCTION GetSettings()
-                LOCAL aCustSettings AS ARRAY
-                LOCAL oDBCust AS DBServer
-                // Open a customer file in shared mode
-                oDBCust := Customer{}
-                IF oDBCust:BLOBRootLock()
-                aCustSettings := oDBCust:BLOBRootGet()
-                oDBCust:BLOBRootUnlock()
-                ELSE
-                Alert("Could not obtain root lock")
-                ENDIF
-                oDBCust:Close()
-                RETURN aCustSettings
-            </code>
-        </example>
+        <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />    
     </DbServer.BLOBRootUnlock>
     <DbServer.BoF>
         <summary>
@@ -1522,9 +1430,7 @@
         <summary>
             Clear a filter condition specified with the DBServer:SetFilter() method.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, it returns FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </DbServer.ClearFilter>
     <DbServer.ClearIndex>
         <summary>
@@ -1532,17 +1438,13 @@
         </summary>
         <param name="uOrder">The name of an order, or the ordinal position of the order within the order list. A value of 0 specifies the controlling index, without regard to its actual position in the list.</param>
         <param name="cOrdBag">The name of the orderbag in which the order resides. </param>
-        <returns>
-            TRUE if successful; otherwise, it returns FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </DbServer.ClearIndex>
     <DbServer.ClearLocate>
         <summary>
             Clear the LOCATE condition of the server, if any.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, it returns FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </DbServer.ClearLocate>
     <DbServer.ClearOrderScope>
         <summary>
@@ -1556,25 +1458,19 @@
         <summary>
             Clear all active relations held by this server to other servers.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, it returns FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </DbServer.ClearRelation>
     <DbServer.ClearScope>
         <summary>
             Clear the settings that define the default scope for multi-record operations.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </DbServer.ClearScope>
     <DbServer.Close>
         <summary>
             Close the database file and its associated index files.
         </summary>
-        <returns>
-            TRUE if the operation was successful; FALSE if not.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             It will also help the garbage collector if you set the <paramref name="oDBServer" /> to NULL_OBJECT after closing it.
         </remarks>
@@ -1583,9 +1479,7 @@
         <summary>
             Commit all changes to disk from the buffer, ensuring that all buffers are flushed.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyCompletion message, if successful. If using in conjunction with an Unlock() method, then the Commit() method should be executed prior to the Unlock() method call. Using a Commit() when scanning numerous records can be a very slow process, thus you may want to limit your Commit() statements to every 10 or 20 records to speed up your process.
             Note that DBServer:Commit() can fail for many reasons, ranging from a lack of capability in the server to lock conflicts and technical problems, such as network crashes. Use the DBServer:Status property to determine the exact cause of the failure.
@@ -1658,8 +1552,10 @@
             TRUE if successful; otherwise, FALSE. After the operation, the DBServer:Found access can be used to determine if a record was found.
         </returns>
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion, whether successful or not.
-            Continue respects the FOR clause of the original Locate(), but ignores any WHILE clause and scope. If you want to continue searching with the WHILE clause of the original Locate() operation, set the scope to REST and do another Locate(). If DBServer:Found returns FALSE, the current record will be the last record and DBServer:EOF will be TRUE.
+            Sends a NotifyIntentToMove message before the operation.
+            Sends a NotifyRecordChange message upon completion, whether successful or not.
+            Continue respects the FOR clause of the original Locate(), but ignores any WHILE clause and scope. If you want to continue searching with the WHILE clause of the original Locate() operation, set the scope to REST and do another Locate().
+            If DBServer:Found returns FALSE, the current record will be the last record and DBServer:EOF will be TRUE.
         </remarks>
     </DbServer.Continue>
     <DbServer.CopyDB>
@@ -1668,11 +1564,10 @@
         </summary>
         <param name="oFSTarget">A string or filespec object that specifies the file to which the records is copied. This file is opened exclusively during the operation, so it should not be open elsewhere with write capability.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <returns>
-            TRUE if successful; otherwise, FALSE. Note that after a FALSE indication, records can still have been copied to the target: the operation can have failed halfway through because the disk had been filled or other problems.
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
+            Sends a NotifyIntentToMove message before the operation.
+            Sends a NotifyRecordChange message upon completion.
             This method does not open the new file, it simply creates the file on disk. If you want to open it afterwards, you simply instantiate it directly.
         </remarks>
         <example>
@@ -1693,11 +1588,10 @@
         <param name="oFSTarget">A string or filespec object that specifies the file to which the records is copied.</param>
         <param name="cDelimiter">The delimiter for fields within a delimited database file. If omitted, the default is NULL_STRING.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <returns>
-            TRUE if successful; otherwise, FALSE. Note that after a FALSE indication, records can still have been copied to the target: the operation can have failed halfway through because the disk had been filled or other problems.
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
-            Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
+            Sends a NotifyIntentToMove message before the operation.
+            Sends a NotifyRecordChange message upon completion.
         </remarks>
     </DbServer.CopyDelimited>
     <DbServer.CopySDF>
@@ -1706,9 +1600,7 @@
         </summary>
         <param name="oFSTarget">A string or filespec object that specifies the file to which the records is copied.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <returns>
-            TRUE if successful; otherwise, FALSE. Note that after a FALSE indication, records can still have been copied to the target: the operation can have failed halfway through because the disk had been filled or other problems.
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
         </remarks>
@@ -1717,11 +1609,10 @@
         <summary>
             Create a DBF file with the same record layout as the server object to which the message is sent.
         </summary>
-        <param name="oFSTarget">A string or filespec object that specifies the file to which the record is copied.</param>
+        <param name="cFileName">The file to which the record is copied.</param>
+        <param name="oFSTarget">A filespec object that specifies the file to which the record is copied.</param>
         <param name="aFieldList">An array of fields that are to be included in the records to be copied.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyCompletion message, if successful.
             This method does not open the new file; it simply creates the file on disk. If you want to open it afterwards, you simply instantiate it directly.
@@ -1765,9 +1656,7 @@
         <param name="cExpr">The indexing expression.</param>
         <param name="cbExpr">The indexing expression. If a code block is provided, it should match the string expression; if a code block is not provided, one is created from the string expression.</param>
         <param name="lUnique">Whether the index is unique. If not specified, the default is determined by SetUnique().</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message upon completion.
         </remarks>
@@ -1781,9 +1670,7 @@
         <param name="cExpr">The indexing expression.</param>
         <param name="cbExpr">The indexing expression. If a code block is provided, it should match the string expression; if a code block is not provided, one is created from the string expression.</param>
         <param name="lUnique">Whether the index is unique. If not specified, the default is determined by SetUnique().</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message upon completion.
 
@@ -1867,9 +1754,7 @@
             Delete the current record or the records specified with the scoping parameters.
         </summary>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <returns>
-            TRUE if successful; otherwise, FALSE. Note that after a FALSE indication of a scoped operation, some records can have been deleted: the operation can have failed halfway through because of lock conflicts or technical problems.
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
         <remarks>
             If called with a scope or if a server scope is active, Delete() sends a NotifyIntentToMove message before the operation, and a NotifyFileChange upon completion (regardless of the number of records actually deleted). If no scope is used and Delete() applies to the current record only, it sends a NotifyRecordChange message, if successful. If a scope is specified, on successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
             <br />Important! Since the scope is persistent, a scope left around from processing a method like CopyDB() or Average() could cause Delete() to process too many records. Remember to reset a scope after it has been used.
@@ -1881,9 +1766,7 @@
         <summary>
             Delete all records of the table.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE, but note that, even with FALSE, some records may have been deleted. This could happen if the operation failed halfway through because of lock conflicts or technical problems.
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message upon completion.
         </remarks>
@@ -1935,9 +1818,7 @@
         </summary>
         <param name="uOrder">The name or number of the order to be deleted.</param>
         <param name="cIndexFileName">The index file does not have to be specified if the order name specified is unique among all the opened orders, or if an order number is used. But if a non-unique order name is specified, the index file should also be specified.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </DbServer.DeleteOrder>
     <DbServer.Driver>
         <summary>
@@ -2037,9 +1918,7 @@
         </summary>
         <param name="cbBlock">The code block to execute for each record processed.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <returns>
-            TRUE if successful; otherwise, FALSE (but note that even in the case of a failure, some records may have been processed).
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message upon completion, whether successful or not.
             On successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
@@ -2440,9 +2319,7 @@
         <summary>
             Lock the table used by this server for exclusive access.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </DbServer.FLock>
     <DbServer.ForBlock>
         <summary>
@@ -2554,9 +2431,7 @@
         <summary>
             Position the data server at the last record.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyGoBottom message, if successful.
             If DBServer:RecNo is greater than DBServer:LastRec, the DBServer will be positioned at the last record and DBServer:EOF will be TRUE.
@@ -2567,9 +2442,7 @@
             Position the data server at a specified record number.
         </summary>
         <param name="nRecordNumber">The record number at which the server should be positioned.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message, if successful.
         </remarks>
@@ -2578,9 +2451,7 @@
         <summary>
             Position the data server at the first record.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyGoTop message, if successful.
         </remarks>
@@ -2825,9 +2696,7 @@
         <param name="oFSTarget">A string or filespec object that specifies the file into which results of the join operation is placed.</param>
         <param name="aFieldList">An array of fields to be included in the join operation.</param>
         <param name="cbForBlock">The condition evaluated for each record in the scope; if TRUE, the record is included in the processing. It provides the same functionality as the FOR clause of record processing commands.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE, although even with FALSE, some records may have been processed. This would happen if the operation failed halfway through because of lock conflicts or technical problems.
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message, if successful.
         </remarks>
@@ -2868,17 +2737,13 @@
         <summary>
             Lock the current record. This method is identical to invoking RLock() with the current record number as a parameter.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </DbServer.LockCurrentRecord>
     <DbServer.LockSelection>
         <summary>
             Lock all the records in the currently active selection.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE. If it fails, some records may remain locked; this allows the program to try again, incrementally locking more and more records as other applications free them. If the application gives up on the attempt, the locks should be explicitly released.
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             If a selection is not active, sends a NotifyIntentToMove message before the operation and functions the same as FLock().
         </remarks>
@@ -2928,9 +2793,7 @@
         </summary>
         <param name="symFieldName">The symbolic name of the variable that was referenced. In the standard usage of the method with the DBServer class, this is a field name.</param>
         <param name="uValue">The value to be assigned to the field. The data type of this value must match the data type of the field.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyFieldChange message if the variable reference was to a valid field of the server, and the assignment was successful.
             For DBServer, this method is used to intercept references to field names as exported variables, which ordinarily would not be allowed. If the field name is valid, it does a FieldPut() for the corresponding field name with the passed value, in effect turning database fields into assign methods of each DBServer object. See "Objects, Classes, and Methods" in the Programmer's Guide for more information on NoIVarGet().
@@ -2941,14 +2804,11 @@
             An event handler that responds to events that have occurred in methods of this server, or in other servers that are linked to this server in some way. The standard implementation notifies all the server's clients of the event.
             <br />Important! This method is automatically called by the various action methods of the data server, and should normally not be called by application code.
         </summary>
-        <param name="kNotification">Identifies the event, specified as one of the constants below.</param>
-        <param name="uDescription">Used only with some notification types.</param>
         <returns>
-            SELF, except if NOTIFYINTENTTOMOVE is specified for <paramref name="kNotifyName" />. In this case, the return value is TRUE if successful; otherwise, FALSE.
+            SELF, except if NOTIFYINTENTTOMOVE is specified for <paramref name="kNotifyName" />. 
+            In this case, the return value is TRUE if successful; otherwise, FALSE.
         </returns>
-        <remarks>
-            <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
-        </remarks>
+        <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
     </DbServer.Notify>
     <DbServer.OleExt>
         <summary>This returns the OLE extension of the file (if any). For example DFL.</summary>
@@ -2961,18 +2821,27 @@
         </summary>
         <value>A key value representing the record of the bottom boundary in the range of key values that will be included in the controlling order's current scope.</value>
     </DbServer.OrderBottomScope>
-    <DbServer.OrderDescend>
-        <summary>
-            Return and optionally change the descending flag of an order.
-        </summary>
+    <DbServer.OrderArgs>
         <param name="uOrder">
             The name of the order or a number representing its position in the order list. Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files. If omitted or NIL, the controlling order is assumed.
             Specifying an invalid value will raise a runtime error.
         </param>
+        <param name="cIndex">
+            The name of an index file, including an optional drive and directory (no extension should be specified).
+            Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
+            If <paramref name="cIndex" /> is not open by the current process, a runtime error is raised.
+        </param>
         <param name="oFSIndex">
-            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="cOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
+            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified).
+            Use this argument with <paramref name="cOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
             If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
         </param>
+    </DbServer.OrderArgs>
+    <DbServer.OrderDescend>
+        <summary>
+            Return and optionally change the descending flag of an order.
+        </summary>
+        <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
         <param name="lNew">TRUE dynamically turns on the descending flag for the order, resulting in descending order. FALSE dynamically turns the flag off, resulting in ascending order.</param>
         <returns>
             If <paramref name="lNew" /> is not specified, DBServer:OrderDescend() returns the current setting. If <paramref name="lNewDescend" /> is specified, the previous setting is returned.
@@ -3211,14 +3080,7 @@
         <summary>
             Return the status of the unique flag for a given order.
         </summary>
-        <param name="uOrder">
-            The name of the order or a number representing its position in the order list. Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files. If omitted or NIL, the controlling order is assumed.
-            Specifying an invalid order will raise a runtime error.
-        </param>
-        <param name="oFSIndex">
-            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
-            If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
-        </param>
+        <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
         <param name="cTarget">
             The name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
             If <paramref name="cTarget" /> is not open by the current process, a runtime error is raised.
@@ -3247,23 +3109,13 @@
         <summary>
             Add a key to a custom built order.
         </summary>
-        <param name="uOrder">
-            The name of the order or a number representing its position in the order list. Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files. If omitted or NIL, the controlling order is assumed.
-            Specifying an invalid order, such as one that is not custom built, will raise a runtime error.
-        </param>
-        <param name="oFSIndex">
-            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified).
-            Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
-            If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
-        </param>
+        <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
         <param name="uKeyValue">
             A specific key value that you want to add for the current record.
             The data type must match that of the order. If not specified, the order's key expression is evaluated for
             the current record and added to the order.
         </param>
-        <returns>
-            TRUE if successful; otherwise FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             A custom built order is one that is not automatically maintained by the DBFCDX driver. You can determine if an order is custom built using DBServer:OrderInfo(DBOI_CUSTOM, ...). When you create such an order, it is initially empty.
             You must manually add and delete keys using DBServer:OrderKeyAdd() and DBServer:OrderKeyDel().
@@ -3299,14 +3151,7 @@
         <summary>
             Return the number of keys in an order.
         </summary>
-        <param name="uOrder">
-            The name of the order or a number representing its position in the order list. Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files. If omitted or NIL, the controlling order is assumed.
-            Specifying an invalid order will raise a runtime error.
-        </param>
-        <param name="oFSIndex">
-            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified). Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
-            If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
-        </param>
+        <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
         <remarks>
             DBServer:OrderKeyCount() counts the keys in the specified order and returns the result as a numeric value. If the order is not conditional and no scope has been set for it, DBServer:OrderKeyCount() is identical to DBServer:RecCount, returning the number of records in the data server. However, for a conditional order, there may be fewer keys than there are records, since some records may not meet the order's for condition or may not fall inside the scope specified by DBServer:OrderScope()—in counting the keys, DBServer:OrderKeyCount() respects the currently defined scope and for condition.
             <note type="tip">
@@ -3342,18 +3187,8 @@
         <summary>
             Delete a key from a custom built order.
         </summary>
-        <param name="uOrder">
-            The name of the order or a number representing its position in the order list. Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files. If omitted or NIL, the controlling order is assumed.
-            Specifying an invalid order, such as one that is not custom built, will raise a runtime error.
-        </param>
-        <param name="oFSIndex">
-            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified).
-            Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
-            If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
-        </param>
-        <returns>
-            TRUE if successful; otherwise FALSE.
-        </returns>
+        <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             A custom built order is one that is not automatically maintained by the DBFCDX driver. You can determine if an order is custom built using DBServer:OrderInfo(DBOI_CUSTOM, ...). When you create such an order, it is initially empty.
             You must manually add and delete keys using DBServer:OrderKeyAdd() and DBServer:OrderKeyDel().
@@ -3393,9 +3228,7 @@
             Move to a record specified by its logical record number in the controlling order.
         </summary>
         <param name="nKeyNo">The logical record number. If the value specified does not satisfy the scope or for condition for the order, the record pointer is positioned at the end-of-file.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             DBServer:OrderKeyGoTo() is the complement to DBServer:OrderKeyNo(). DBServer:OrderKeyNo() returns the logical record number (i.e., its position in the controlling order) of the current record, and DBServer:OrderKeyGoTo() moves the record pointer to the specified logical record.
             DBServer:OrderKeyGoTo() sends a NotifyIntentToMove message before the operation. It also sends a NotifyRecordChange message upon successful completion.
@@ -3416,16 +3249,7 @@
         <summary>
             Get the logical record number of the current record.
         </summary>
-        <param name="uOrder">
-            The name of the order or a number representing its position in the order list.
-            Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files. If omitted or NIL, the controlling order is assumed.
-            Specifying an invalid order will raise a runtime error.
-        </param>
-        <param name="oFSIndex">
-            A string or filespec object that specifies the name of an index file, including an optional drive and directory (no extension should be specified).
-            Use this argument with <paramref name="uOrder" /> to remove ambiguity when there are two or more orders with the same name in different index files.
-            If <paramref name="oFSIndex" /> is not open by the current process, a runtime error is raised.
-        </param>
+        <include file="Rdd.xml" path="doc/DbServer.OrderArgs/*" />
         <returns>
             The relative position of the current record in the specified order, as a numeric value. DBServer:OrderKeyNo() respects the scope and for condition of the order by returning zero if the record pointer is positioned on an invalid record or if DBServer:EOF is TRUE.
         </returns>
@@ -3518,9 +3342,7 @@
             Move the record pointer to the next or previous unique key in the controlling order.
         </summary>
         <param name="nDirection">Specifies whether the method will skip to the next or previous key. Omitting this value or specifying it as 1 skips to the next unique key. Specifying a negative value skips to the previous key.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             DBServer:OrderSkipUnique() allows you to make a non-unique order look like a unique order. Each time you use DBServer:OrderSkipUnique(), you are moved to the next (or previous) unique key, exactly as if you were skipping through a unique order. This method eliminates the problems associated with maintaining a unique order, while providing you with fast access to unique keys.
             DBServer:OrderSkipUnique() sends a NotifyIntentToMove message before the operation.  It also sends a NotifyRecordChange message upon successful completion.
@@ -3557,9 +3379,7 @@
         <summary>
             Remove deleted records from a database file.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyFileChange message, if successful.
         </remarks>
@@ -3696,9 +3516,7 @@
             Recall those deleted records indicated by a specified scope.
         </summary>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <returns>
-            TRUE if successful; otherwise, FALSE. Note that after a FALSE indication of a scoped operation, some records can have been recalled: the operation can have failed halfway through because of lock conflicts or technical problems.
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
         <remarks>
             If no scope was passed and no scope was active, it sends a NotifyRecordChange, if the operation was successful; if a scope was used, it sends a NotifyFileChange message regardless of the number of records processed.
             If no server scope is set, it recalls the current record. On successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
@@ -3708,9 +3526,7 @@
         <summary>
             Recall all deleted records in the table.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE, although even with FALSE, some records may be recalled. This would happen if the operation failed halfway through because of lock conflicts or technical problems.
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message upon completion.
             On successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
@@ -3809,9 +3625,7 @@
         <summary>
             Reread the current record from the database, discarding any changes that have been made.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyRecordChange message, if successful.
             This command discards all changes to the current record. It is useful as a way of implementing Undo in an application. However, it cannot roll back changes that have been committed with the DBServer:Commit(). Also, note that it applies only to the current record; the data server and the drivers do not buffer changes made to multiple records.
@@ -3821,9 +3635,7 @@
         <summary>
             Recreate all active indexes for this server.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyCompletion message upon completion. Obviously all other users should be out of your system prior to executing this method.
         </remarks>
@@ -3847,9 +3659,7 @@
         </summary>
         <param name="acbExpression">The single expression to be evaluated to yield the replacement value or the array of expressions to be evaluated to yield the replacement values.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <returns>
-            TRUE if successful; otherwise, FALSE (although this can still have caused records to be modified).
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
         <remarks>
             If the specified scope is active, DBServer:Replace() sends a NotifyIntentToMove message before the operation. It also sends a NotifyFileChange message upon completion, whether successful or not.
             If no scope is used, on successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
@@ -3887,9 +3697,7 @@
             Lock a record for exclusive write access; other users can still make read-only reference to the record.
         </summary>
         <param name="nRecordNumber">The number of the record number to be locked. The indicated record is locked, and previous record locks are maintained. Note that this can be the current record: explicitly specifying the current record indicates that previous locks should be maintained. If omitted, or NIL, the current record is locked and all previous record locks are released.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE (including if the indicated record was successfully locked but other record locks cannot be maintained).
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
     </DbServer.RLock>
     <DbServer.RLockList>
         <summary>
@@ -3915,9 +3723,8 @@
         <summary>
             Determine if the current record in this data server has any pending updates and lock it for exclusive write access if there are none.
         </summary>
-        <returns>
-            TRUE if the record is unchanged and the lock was successfully taken; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
+        
         <remarks>
             This method checks for pending updates to the current record by comparing the values that were read to the record when the server was initially positioned on the record with the current values in the corresponding database record.
             If the values match, it signifies that no other user has modified the data since the user started working on it, and, therefore, that it is safe to lock the record and let the user continue with an update transaction. (Note that when locked, other users can still make read-only reference to the record.)
@@ -4011,9 +3818,7 @@
         </summary>
         <param name="nFieldPosition">The number of the desired field.</param>
         <param name="oDataField">The data field to assign.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             The new field is verified to be compatible with the actual database field, if one is open. This method is normally used only during instantiation of a data server, most often in Init() methods of subclasses. For example, the code generated by the DBServer Editor uses this method.
         </remarks>
@@ -4024,9 +3829,7 @@
         </summary>
         <param name="cbFilterBlock">The code block that expresses the filter condition in executable form. If the code block is omitted, the string version of the filter expression is macro-compiled into a code block.</param>
         <param name="cFilterText">The filter condition. If omitted, the DBServer:Filter access method returns a NULL_STRING.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Both arguments specify the filter expression, one in the form of a code block, one in the form of a string. Both arguments are optional, but at least one must be provided. The reason for specifying both versions is that a compiled code block is faster, while the string version can be reported back through the Filter access method. Obviously, if both forms are specified, they should define the same expression.
         </remarks>
@@ -4055,10 +3858,11 @@
         <param name="oFSIndex">
             A string or filespec object that specifies the index file. File type defaults to the native type for the driver (RDD).
         </param>
+        <param name="cIndexFileName">
+            The index file. File type defaults to the native type for the driver (RDD).
+        </param>
 
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message, if successful.
             If the index file contains more than one order, the first one is set as the controlling order. The server is positioned to the first logical record in the controlling order.
@@ -4081,12 +3885,11 @@
         <summary>
             Select an order from one of the open index files as the controlling order.
         </summary>
+
         <param name="uOrder">The order can be identified by an order number, the position of the order in the order list, or a name.</param>
         <param name="oFSIndex">If the order is specified by an order name that is not unique within the order list, the index file name can be specified, either as a FileSpec object or as a file name in string format, with or without file type. File type defaults to the native type for the driver (RDD). Note, however, that SetOrder() does not open the index file, it refers only to orders within already opened files.</param>
         <param name="cIndexFileName">If the order is specified by an order name that is not unique within the order list, the index file name can be specified, either as a FileSpec object or as a file name in string format, with or without file type. File type defaults to the native type for the driver (RDD). Note, however, that SetOrder() does not open the index file, it refers only to orders within already opened files.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyFileChange message, if successful.
             The server remains positioned on the same record after the controlling order is changed. Note that when a dbServer object is first instantiated, and the CDX index driver is used and auto-open indexes is set to TRUE, then the tag that will be opened will be the first tag identified alphabetically – NOT the sequence that you created the tags in. Thus a SetOrder() should typically be set before performing any sort of Seek() operation to ensure that the proper index tag is set.
@@ -4123,9 +3926,7 @@
         <param name="lCurrent">Specifies whether only records in the controlling order—and within the current range as specified by DBServer:OrderScope()—will be included in this order. TRUE specifies that the controlling order and range should be used to limit the scope of the newly created order. FALSE specifies that all records in the database file are included in the order. The default is FALSE.</param>
         <param name="lCustom">Specifies whether the new order will be a custom built order (for RDDs that this feature). TRUE specifies that a custom built order will be created. A custom built order is initially empty, giving you complete control over order maintenance. The system does not automatically add and delete keys from a custom built order. Instead, you explicitly add and delete keys using DBServer:OrderKeyAdd() and DBServer:OrderKeyDel(). FALSE specifies a standard, system-maintained order. The default is FALSE.</param>
         <param name="lNoOptimize">Specifies whether the FOR condition will be optimized (for RDDs that support this feature). TRUE optimizes the FOR condition, and FALSE does not. The default is FALSE.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </DbServer.SetOrderCondition>
     <DbServer.SetRelation>
         <summary>
@@ -4137,9 +3938,7 @@
         <param name="uRelation">The relation code block for the server or the name or symbol representing the field from this server; a code block is constructed and macro-compiled</param>
         <param name="cRelation">When the relation is specified as a code block, a string version of the code block can be provided as well; it is returned by the Relation() method.</param>
         <param name="lSelective">Should this be a selective relation ?</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyRecordChange message to the child server, if successful.
             As always, the child work area should have a controlling index that matches the expression.
@@ -4162,9 +3961,7 @@
         </param>
         <param name="uRelation">The relation code block for the server or the name or symbol representing the field from this server; a code block is constructed and macro-compiled</param>
         <param name="cRelation">When the relation is specified as a code block, a string version of the code block can be provided as well; it is returned by the Relation() method.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyRecordChange message to the child server, if successful.
             As always, the expression should match or be a partial index of the controlling index of the child's work area.
@@ -4207,9 +4004,7 @@
             Move the record pointer forward or backward a specified number of records.
         </summary>
         <param name="nRecordCount">The number of records to move, relative to the current record. A positive value means to move forward, and a negative value means to move backward. If omitted, +1 is assumed.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message, if a move was made.
             If DBServer:Skip() positions the DBServer beyond the last record, DBServer:EOF will be set and the DBServer will be positioned on the last record.
@@ -4219,11 +4014,11 @@
         <summary>
             Copy records to another database file in sorted order. If neither conditions nor scope is passed to the method, it is subject to the general server scope.
         </summary>
+        <param name="cTarget">The file to which the records is copied.</param>
         <param name="oFSTarget">A string or filespec object that specifies the file to which the records is copied.</param>
+        <param name="cTarget">The file to which the records is copied.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <returns>
-            TRUE if successful; otherwise, FALSE. Note that after a FALSE indication, some records can have been copied: the operation can have failed halfway through because of lock conflicts or technical problems.
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
             This method does not open the new file, it simply creates the file on disk. If you want to open it afterwards, you simply instantiate it directly:
@@ -4294,9 +4089,7 @@
         <param name="oFSTarget">A string or filespec object that specifies the file to which the summary data is written.</param>
         <param name="cbKeyField">The key field in this server that is the basis for the summarization. Note that for the summarization to produce correct results, the table should be indexed or sorted on this key field.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <returns>
-            TRUE if successful; otherwise, FALSE. Note that after a FALSE indication of a scoped operation, some records can have been written to the target file: the operation can have failed halfway through because of lock conflicts or technical problems.
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
         </remarks>
@@ -4316,9 +4109,7 @@
             Release a specified lock or all locks.
         </summary>
         <param name="nRecordNumber">The number of the desired record. If 0 or omitted, all locks for this server are released, record locks as well as file locks.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </DbServer.UnLock>
     <DbServer.Update>
         <summary>
@@ -4328,9 +4119,7 @@
         <param name="cbKey">The key field that defines how records are matched between the servers.</param>
         <param name="lRandomFlag">Indicates if the records in the other database are allowed to be in random order. If FALSE or not specified, the other database must be ordered on the specified key.</param>
         <param name="cbReplace">Code block that performs the update operations.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE, although even with FALSE, some records may have been updated. This can happen if the operation failed halfway through because of technical problems.
-        </returns>
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
         <remarks>
             <note type="tip">This method requires a file lock or exclusive access.</note>
             Sends a NotifyFileChange message upon completion.
@@ -4376,9 +4165,7 @@
         <summary>
             Permanently remove all records from the server and release the disk space.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <note type="tip">This method requires exclusive access.</note>
             Sends a NotifyFileChange message upon completion.
@@ -4562,9 +4349,7 @@
         </summary>
         <param name="oFS">A string or filespec object that specifies the full path to the index file or a FileSpec object of the index file.</param>
         <param name="uOrder">The order name or numeric position if using multi-order files.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <example>
             The following examples illustrate several different types of orders you can add:
             <code language="X#">
@@ -4606,9 +4391,7 @@
         <param name="cKeyValue">A string of the index key expression.</param>
         <param name="cbKeyValue">A code block of the index key expression.</param>
         <param name="lUnique">A logical to determine if this is to be a unique order.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <example>
             The following examples illustrate several different types of orders you can create:
             <code language="X#">
@@ -4673,9 +4456,7 @@
             Deletes orders from a multi-order file or a physical index file of a single-order file. NULLs out OrderSpec object information in the OrderSpec object and the DBFileSpec object specific to this order.
         </summary>
         <param name="uOrder">The numeric position or order name of the order to be deleted. Use order names unless the actual order position is known. The default is the first order of the index file.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <example>
             <code language="X#">
                 RDDSetDefault("DBFNTX")
@@ -4759,3 +4540,4 @@
         <summary>Get/Set the flag that determines if DbServer operations restore the current workarea </summary>
     </DbSetRestoreWorkarea>
 </doc>
+    

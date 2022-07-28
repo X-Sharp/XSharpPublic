@@ -1,95 +1,95 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 /// <include file="Console.xml" path="doc/Console/*" />
 [XSharp.Internal.TypesChanged];
 CLASS Console
-      
+
     /// <include file="Console.xml" path="doc/Console.ctor/*" />
     CONSTRUCTOR( ) STRICT
-        RETURN 
-      
+        RETURN
+
     /// <include file="Console.xml" path="doc/Console.ctor/*" />
-    CONSTRUCTOR( lNew AS LOGIC ) 
+    CONSTRUCTOR( lNew AS LOGIC )
         SELF()
-      
+
     /// <include file="Console.xml" path="doc/Console.Clear/*" />
     METHOD Clear( ) AS VOID STRICT
         System.Console.Clear()
         System.Console.SetCursorPosition(0,0)
         RETURN
-      
+
     /// <include file="Console.xml" path="doc/Console.CursorPos/*" />
-    PROPERTY CursorPos AS ConsoleCoord 
+    PROPERTY CursorPos AS ConsoleCoord
         GET
             RETURN ConsoleCoord{ System.Console.CursorLeft, System.Console.CursorTop }
         END GET
-        SET 
+        SET
             System.Console.CursorLeft := VALUE:X
             System.Console.CursorTop  := VALUE:Y
             RETURN
         END SET
     END PROPERTY
-      
+
     /// <include file="Console.xml" path="doc/Console.CursorSize/*" />
     PROPERTY CursorSize AS INT ;
         GET System.Console.CursorSize ;
         SET System.Console.CursorSize := VALUE
-      
+
     /// <include file="Console.xml" path="doc/Console.CursorVisible/*" />
     PROPERTY CursorVisible AS LOGIC ;
         GET System.Console.CursorVisible ;
         SET System.Console.CursorVisible := VALUE
-        
+
     /// <include file="Console.xml" path="doc/Console.Destroy/*" />
     METHOD Destroy( ) AS VOID STRICT
-        RETURN 
-            
+        RETURN
+
     /// <include file="Console.xml" path="doc/Console.Read/*" />
     METHOD Read( ) AS STRING STRICT
         RETURN System.Console.ReadLine()
-            
+
     /// <include file="Console.xml" path="doc/Console.Size/*" />
     PROPERTY Size AS ConsoleCoord
-        GET 
+        GET
             RETURN ConsoleCoord{ System.Console.BufferHeight, System.Console.BufferWidth}
         END GET
-        SET 
+        SET
             LOCAL coordW 			AS INT
             LOCAL coordH 			AS INT
             LOCAL bufferW           AS INT
             LOCAL bufferH           AS INT
             LOCAL oNewSize := VALUE as ConsoleCoord
-            
+
             // define the new console window size and scroll position
             coordW := System.Console.LargestWindowWidth
             coordH := System.Console.LargestWindowHeight
-            coordW := Min( oNewSize:X, coordW ) 
-            coordH := Min( oNewSize:Y, coordH ) 
-            
+            coordW := Math.Min( oNewSize:X, coordW )
+            coordH := Math.Min( oNewSize:Y, coordH )
+
             bufferW := System.Console.BufferWidth
             bufferH := System.Console.BufferHeight
-            
+
             // if the current buffer is larger than what we want, resize the
             // console window first, then the buffer
             IF ( coordW * coordH >  oNewSize:X * oNewSize:Y )
                 System.Console.SetWindowSize(coordW, coordH)
                 System.Console.SetBufferSize(bufferW,bufferH)
-                
-                
+
+
             ELSEIF ( coordW * coordH <  oNewSize:X * oNewSize:Y )
                 // if the current buffer is smaller than what we want, resize the
                 // buffer first, then the console window
                 System.Console.SetBufferSize(bufferW,bufferH)
                 System.Console.SetWindowSize(coordW, coordH)
             ENDIF
-            
+
             RETURN
         END SET
     END PROPERTY
-    
+
     /// <include file="Console.xml" path="doc/Console.TextAttribute/*" />
     PROPERTY TextAttribute AS WORD
     GET
@@ -101,12 +101,12 @@ CLASS Console
     END SET
     END PROPERTY
 
-    
+
     /// <include file="Console.xml" path="doc/Console.Title/*" />
     PROPERTY Title AS STRING ;
         GET System.Console.Title ;
         SET System.Console.Title := VALUE
-    
+
     /// <include file="Console.xml" path="doc/Console.Wait/*" />
     METHOD Wait AS STRING STRICT
         LOCAL info     AS System.ConsoleKeyInfo
@@ -115,21 +115,21 @@ CLASS Console
         cResult := info:KeyChar:ToString()
         SELF:Write(cResult)
         return cResult
-        
+
     /// <include file="Console.xml" path="doc/Console.Write/*" />
     METHOD Write( sMsg AS STRING ) AS VOID STRICT
         System.Console.Write(sMsg)
         RETURN
-        
+
     /// <include file="Console.xml" path="doc/Console.WriteError/*" />
     METHOD WriteError( sMsg AS STRING) AS VOID STRICT
         System.Console.Error:Write(sMsg)
-        RETURN 
-        
+        RETURN
+
     /// <include file="Console.xml" path="doc/Console.WriteLine/*" />
     METHOD WriteLine( sMsg AS STRING ) AS VOID STRICT
         System.Console.WriteLine(sMsg)
-        RETURN 
-        
+        RETURN
+
 END CLASS
 

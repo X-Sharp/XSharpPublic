@@ -275,3 +275,70 @@ FUNCTION SQrt(nNumber AS USUAL) AS FLOAT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tan/*" />
 FUNCTION Tan(nNum AS USUAL) AS FLOAT
     RETURN Math.Tan((REAL8)nNum)
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mod/*" />
+FUNCTION Mod(nDividend AS USUAL, nDivisor AS USUAL) AS USUAL
+local resType := __UsualType.Void as __UsualType
+switch nDividend:_usualType
+CASE __UsualType.Long
+    switch nDivisor:_usualType
+    CASE __UsualType.Long
+        resType := __UsualType.Long
+    CASE __UsualType.Int64
+        resType := __UsualType.Int64
+    CASE __UsualType.Float
+        resType := __UsualType.Float
+    CASE __UsualType.Currency
+        resType := __UsualType.Currency
+    CASE __UsualType.Decimal
+        resType := __UsualType.Decimal
+    end switch
+CASE __UsualType.Int64
+    switch nDivisor:_usualType
+    CASE __UsualType.Long
+    CASE __UsualType.Int64
+        resType := __UsualType.Int64
+    CASE __UsualType.Float
+        resType := __UsualType.Float
+    CASE __UsualType.Currency
+        resType := __UsualType.Currency
+    CASE __UsualType.Decimal
+        resType := __UsualType.Decimal
+    end switch
+CASE __UsualType.Float
+    switch nDivisor:_usualType
+    CASE __UsualType.Long
+    CASE __UsualType.Int64
+    CASE __UsualType.Float
+        resType := __UsualType.Float
+    CASE __UsualType.Currency
+        resType := __UsualType.Currency
+    CASE __UsualType.Decimal
+        resType := __UsualType.Decimal
+    end switch
+CASE __UsualType.Currency
+    resType := __UsualType.Currency
+CASE __UsualType.Decimal
+    resType := __UsualType.Decimal
+end switch
+
+switch resType
+CASE __UsualType.Long
+    RETURN (LONG) nDividend % (LONG) nDivisor
+CASE __UsualType.Int64
+    RETURN (INT64) nDividend % (INT64) nDivisor
+CASE __UsualType.Float
+    RETURN (FLOAT) nDividend % (FLOAT) nDivisor
+CASE __UsualType.Currency
+    RETURN (CURRENCY) nDividend % (CURRENCY) nDivisor
+CASE __UsualType.Decimal
+    RETURN (DECIMAL) nDividend % (DECIMAL) nDivisor
+end switch
+IF !IsNumeric(nDividend)
+    THROW Error.ArgumentError("Mod", nameof(nDividend),"nDividend must be numeric")
+endif
+THROW Error.ArgumentError("Mod", nameof(nDivisor),"nDivisor must be numeric")
+
+
+

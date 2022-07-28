@@ -1,15 +1,17 @@
 
 
 
+/// <include file="Gui.xml" path="doc/ImageList/*" />
 
 CLASS ImageList INHERIT VObject
 	PROTECT hDragWindow AS IntPtr
 	PROTECT iDragYOffset AS INT
 	PROTECT oImageList AS System.Windows.Forms.ImageList
-	
+
 	ACCESS __ImageList AS System.Windows.Forms.ImageList
 		RETURN oImageList
-	
+
+/// <include file="Gui.xml" path="doc/ImageList.Add/*" />
 	METHOD Add(oImage AS OBJECT)  AS LONG
 		LOCAL nReturnValue AS INT
 
@@ -21,13 +23,14 @@ CLASS ImageList INHERIT VObject
 				oImageList:Images:Add(((Icon) oImage):__Icon)
 				nReturnValue :=  oImageList:Images:Count
 			ELSE
-				WCError{#Add, #ImageList, __WCSTypeError, oImage, 1}:@@Throw()
+				WCError{#Add, #ImageList, __WCSTypeError, oImage, 1}:Throw()
 			ENDIF
 		ENDIF
 
 		RETURN nReturnValue
 
-	METHOD AddMask(oBitmap, oMaskColor) 
+/// <include file="Gui.xml" path="doc/ImageList.AddMask/*" />
+	METHOD AddMask(oBitmap, oMaskColor)
 		//Todo AddMask
 		//LOCAL dwColor AS DWORD
 
@@ -39,12 +42,14 @@ CLASS ImageList INHERIT VObject
 		//ENDIF
 		RETURN 0
 
-	METHOD BeginDrag(nIndex) 
+/// <include file="Gui.xml" path="doc/ImageList.BeginDrag/*" />
+	METHOD BeginDrag(nIndex)
 		//DEFAULT(@nIndex, 1)
 		//RETURN ImageList_BeginDrag(hImageList, nIndex - 1, 1, 1)
 		RETURN TRUE
 
-	METHOD CreateOverlayImage(nImageIndex, nListIndex) 
+/// <include file="Gui.xml" path="doc/ImageList.CreateOverlayImage/*" />
+	METHOD CreateOverlayImage(nImageIndex, nListIndex)
 		//Todo CreateOverlayImage
 		//Default(@nListIndex, 1)
 
@@ -65,33 +70,37 @@ CLASS ImageList INHERIT VObject
 
 		//RETURN NIL
 
-	METHOD DragEnter(oPoint, oWindow) 
+/// <include file="Gui.xml" path="doc/ImageList.DragEnter/*" />
+	METHOD DragEnter(oPoint, oWindow)
 		////SE-080520
 		//LOCAL liPointY AS LONG
-		
-		//liPointY     := oPoint:Y 
+
+		//liPointY     := oPoint:Y
 		//iDragYOffset := oWindow:Size:Height
-		
-		
+
+
 		//hDragWindow  := oWindow:Handle()
 
 		//RETURN ImageList_DragEnter(hDragWindow, oPoint:X, liPointY)
 		RETURN TRUE
 
-	METHOD DragLeave() 
+/// <include file="Gui.xml" path="doc/ImageList.DragLeave/*" />
+	METHOD DragLeave()
 		//RETURN ImageList_DragLeave(hDragWindow)
 		RETURN TRUE
-	METHOD DragMove(oPoint) 
-		////SE-080520 
+/// <include file="Gui.xml" path="doc/ImageList.DragMove/*" />
+	METHOD DragMove(oPoint)
+		////SE-080520
 		//LOCAL liPointY AS LONG
-		
-		//liPointY := oPoint:Y 
-		
-	
+
+		//liPointY := oPoint:Y
+
+
 		//RETURN ImageList_DragMove(oPoint:X, liPointY)
 		RETURN TRUE
 
-	METHOD EndDrag() 
+/// <include file="Gui.xml" path="doc/ImageList.EndDrag/*" />
+	METHOD EndDrag()
 		//ImageList_EndDrag()
 
 		//hDragWindow := NULL_PTR
@@ -99,15 +108,18 @@ CLASS ImageList INHERIT VObject
 
 		RETURN TRUE
 
+/// <include file="Gui.xml" path="doc/ImageList.Handle/*" />
 	METHOD Handle() AS IntPtr STRICT
 		RETURN oImageList:Handle
 
+/// <include file="Gui.xml" path="doc/ImageList.ImageCount/*" />
 	ACCESS ImageCount AS LONG
 		IF oImageList != NULL_OBJECT
 			RETURN oImageList:Images:Count
 		ENDIF
 		RETURN 0
 
+/// <include file="Gui.xml" path="doc/ImageList.ImageSize/*" />
 	ACCESS ImageSize AS Dimension
 		IF oImageList != NULL_OBJECT
 			RETURN (Dimension) oImageList:ImageSize
@@ -116,9 +128,10 @@ CLASS ImageList INHERIT VObject
 		RETURN NULL_OBJECT
 
 
-	CONSTRUCTOR(nImages, oDimension, oImage, wColor, nGrow) 
+/// <include file="Gui.xml" path="doc/ImageList.ctor/*" />
+	CONSTRUCTOR(nImages, oDimension, oImage, wColor, nGrow)
 		//LOCAL dwCol AS DWORD
-		
+
 		SUPER()
 
 		IF IsObject (nImages)
@@ -147,15 +160,15 @@ CLASS ImageList INHERIT VObject
 			SELF:Add(oImage)
 		ENDIF
 
-		
 
-		RETURN 
+
+		RETURN
 
 	OPERATOR IMPLICIT ( i AS System.Windows.Forms.ImageList) AS ImageList
 		RETURN ImageList{i}
 
 	OPERATOR IMPLICIT ( i AS ImageList ) AS System.Windows.Forms.ImageList
 		RETURN i:__ImageList
-	
+
 END CLASS
 

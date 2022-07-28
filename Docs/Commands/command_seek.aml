@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="47709958-9c2e-4f27-80f6-4317fc7f7bc2" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_index.html -->Index/Order&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">SEEK Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Search an order for the first key matching the specified expression, position the record pointer to the corresponding record, and set the <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Found.htm -->Found() flag.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>SEEK &lt;uKeyValue&gt; [SOFTSEEK] [LAST] &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>&lt;uKeyValue&gt;</entry><entry>An expression to match with an order key value.</entry></row></table><para>&#160;</para>
+<table><row><entry>SOFTSEEK</entry><entry>If SOFTSEEK is specified (or if <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetSoftSeek.htm -->SetSoftSeek() is TRUE), the record pointer is positioned to the record with the next higher key value, and Found() returns FALSE after an unsuccessful SEEK.  <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Eof.htm -->EoF() returns TRUE only if there are no keys in the order greater than &lt;uKeyValue&gt;.</entry></row></table><table><row><entry>&#160;</entry></row></table><table><row><entry></entry><entry>If SOFTSEEK is not specified and SetSoftSeek() is FALSE, the record pointer is positioned to <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_LastRec.htm -->LastRec() + 1, EOF() returns TRUE, and Found() returns FALSE after an unsuccessful SEEK.</entry></row></table><para>&#160;</para>
+<table><row><entry>LAST</entry><entry>If LAST is specified, SEEK finds the last occurrence of the specified key value. &#160;If LAST is not specified, SEEK finds the first occurrence.</entry></row></table><para>&#160;</para>
+<table><row><entry>IN|ALIAS &lt;workarea&gt;</entry><entry>Specifies the work area for which the operation must be performed</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>If the SEEK is successful, Found() is set to TRUE and the record pointer is positioned to the matching record.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Examples</h1>
+<para>The following example searches for &quot;Doe&quot; using the SEEK command:</para>
+<para>&#160;</para>
+<para>USE customer NEW<para/>
+SET INDEX TO customer<para/>
+SEEK &quot;Doe&quot;<para/>
+&#160;<para/>
+IF Found()<para/>
+&#160;.<para/>
+&#160;. &#160;&lt;Statements&gt;<para/>
+&#160;.<para/>
+ENDIF</para>
+<para>&#160;</para>
+<para>The following example performs a soft seek for &quot;Doe&quot; using SOFTSEEK clause of the SEEK command. &#160;Note that the SOFTSEEK clause does not have any effect of the SetSoftSeek() flag:</para>
+<para>&#160;</para>
+<para>USE customer NEW<para/>
+SET INDEX TO customer<para/>
+&#160;<para/>
+? SetSoftSeek() &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;// FALSE<para/>
+SEEK &quot;Doe&quot; SOFTSEEK<para/>
+? SetSoftSeek() &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;// Still FALSE<para/>
+&#160;<para/>
+IF !Found()<para/>
+&#160;? Customer-&gt;Name &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;// Returns next logical<para/>
+&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;// name after &quot;Doe&quot;<para/>
+ENDIF</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSeek.htm -->DbSeek(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetIndex.htm -->DbSetIndex(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetOrder.htm -->DbSetOrder(), <link xlink:href="9085df4a-da8f-4ed6-948a-db58aa0eeb27">SET INDEX</link>, <link xlink:href="4d6305aa-62bf-4dce-8716-be94d777c277">SET ORDER</link></para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

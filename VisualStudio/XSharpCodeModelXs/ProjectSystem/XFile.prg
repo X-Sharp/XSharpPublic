@@ -176,9 +176,6 @@ BEGIN NAMESPACE XSharpModel
                     SELF:_globalType := globalType
                 ENDIF
                 WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
-                IF ContentsChanged != NULL
-                    ContentsChanged()
-                ENDIF
             ENDIF
 
         METHOD FindType(typeName AS STRING, nameSpace := "" AS STRING) AS IXTypeSymbol
@@ -194,8 +191,13 @@ BEGIN NAMESPACE XSharpModel
                SELF:Project:ClearCache(SELF)
                IF ! SELF:Interactive
                   SELF:Clear()
-               ENDIF
+                ENDIF
             ENDIF
+        METHOD NofityClients as VOID
+            IF ContentsChanged != NULL
+                ContentsChanged()
+            ENDIF
+            RETURN
 
         METHOD ParseContents(cSource := "" AS STRING) AS VOID
             //

@@ -34,9 +34,7 @@ namespace XSharp.Project
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            string str = value as string;
-
-            if (str != null)
+            if (value is string str)
             {
                 if (String.Compare(str, "Always", true) == 0) return RunPostBuildEvent.Always;
                 if (String.Compare(str, "OnOutputUpdated", true) == 0) return RunPostBuildEvent.OnOutputUpdated;
@@ -50,7 +48,7 @@ namespace XSharp.Project
         {
             if (destinationType == typeof(string))
             {
-                string result = null;
+                string result;
                 // In some cases if multiple nodes are selected the windows form engine
                 // calls us with a null value if the selected node's property values are not equal
                 if (value != null)
@@ -108,9 +106,7 @@ namespace XSharp.Project
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            string str = value as string;
-
-            if (str != null)
+            if (value is string str)
             {
                 switch (str.ToLower())
                 {
@@ -140,7 +136,7 @@ namespace XSharp.Project
         {
             if (destinationType == typeof(string))
             {
-                string result = null;
+                string result;
                 // In some cases if multiple nodes are selected the windows form engine
                 // calls us with a null value if the selected node's property values are not equal
                 if (value != null)
@@ -148,25 +144,25 @@ namespace XSharp.Project
                     switch ((Dialect)value)
                     {
                         case Dialect.Core:
-                            result = "Core";
+                            result = XSharpProjectFileConstants.DialectCore;
                             break;
                         case Dialect.VO:
-                            result = "Visual Objects";
+                            result = XSharpProjectFileConstants.DialectVO; 
                             break;
                         case Dialect.Vulcan:
-                            result = "Vulcan.NET";
+                            result = XSharpProjectFileConstants.DialectVulcan;  
                             break;
                         case Dialect.Harbour:
-                            result = "Harbour";
+                            result = XSharpProjectFileConstants.DialectHarbour;
                             break;
                         case Dialect.FoxPro:
-                            result = "FoxPro";
+                            result = XSharpProjectFileConstants.DialectFoxPro;
                             break;
                         //case Dialect.dBase:
                         //    result = "dBase";
                         //    break;
                         case Dialect.XPP:
-                            result = "Xbase++";
+                            result = XSharpProjectFileConstants.DialectXPP;
                             break;
                         default:
                             result = ((Dialect)value).ToString();
@@ -222,15 +218,13 @@ namespace XSharp.Project
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            string str = value as string;
-
-            if (str != null)
+            if (value is string str)
             {
-                if (String.Compare(str, "x86", true) == 0) return Platform.x86;
-                if (String.Compare(str, "anycpu", true) == 0) return Platform.AnyCPU;
-                if (String.Compare(str, "x64", true) == 0) return Platform.x64;
-                if (String.Compare(str, "arm", true) == 0) return Platform.Arm;
-                if (String.Compare(str, "itanium", true) == 0) return Platform.Itanium;
+                if (string.Compare(str, "x86", true) == 0) return Platform.x86;
+                if (string.Compare(str, "anycpu", true) == 0) return Platform.AnyCPU;
+                if (string.Compare(str, "x64", true) == 0) return Platform.x64;
+                if (string.Compare(str, "arm", true) == 0) return Platform.Arm;
+                if (string.Compare(str, "itanium", true) == 0) return Platform.Itanium;
 
             }
             return Platform.AnyCPU;
@@ -240,7 +234,7 @@ namespace XSharp.Project
         {
             if (destinationType == typeof(string))
             {
-                string result = null;
+                string result;
                 // In some cases if multiple nodes are selected the windows form engine
                 // calls us with a null value if the selected node's property values are not equal
                 if (value != null)
@@ -295,16 +289,14 @@ namespace XSharp.Project
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            string str = value as string;
-
-            if (str != null)
+            if (value is string str)
             {
-                if (String.Compare(str, "none", true) == 0) return DebugType.None;
-                if (String.Compare(str, "full", true) == 0) return DebugType.Full;
-                if (String.Compare(str, "pdb-only", true) == 0) return DebugType.Pdbonly;
-                if (String.Compare(str, "pdbonly", true) == 0) return DebugType.Pdbonly;
-                if (String.Compare(str, "portable", true) == 0) return DebugType.Portable;
-                if (String.Compare(str, "embedded", true) == 0) return DebugType.Embedded;
+                if (string.Compare(str, "none", true) == 0) return DebugType.None;
+                if (string.Compare(str, "full", true) == 0) return DebugType.Full;
+                if (string.Compare(str, "pdb-only", true) == 0) return DebugType.Pdbonly;
+                if (string.Compare(str, "pdbonly", true) == 0) return DebugType.Pdbonly;
+                if (string.Compare(str, "portable", true) == 0) return DebugType.Portable;
+                if (string.Compare(str, "embedded", true) == 0) return DebugType.Embedded;
 
             }
             return DebugType.None;

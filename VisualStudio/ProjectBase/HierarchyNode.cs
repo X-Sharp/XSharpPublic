@@ -2925,9 +2925,16 @@ namespace Microsoft.VisualStudio.Project
         public virtual int IsItemDirty(uint itemId, IntPtr docData, out int isDirty)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-
-            IVsPersistDocData pd = (IVsPersistDocData)Marshal.GetObjectForIUnknown(docData);
-            return ErrorHandler.ThrowOnFailure(pd.IsDocDataDirty(out isDirty));
+            if (docData == IntPtr.Zero)
+            {
+                isDirty = VSConstants.S_FALSE;
+                return VSConstants.S_OK;
+            }
+            else
+            {
+                IVsPersistDocData pd = (IVsPersistDocData)Marshal.GetObjectForIUnknown(docData);
+                return ErrorHandler.ThrowOnFailure(pd.IsDocDataDirty(out isDirty));
+            }
         }
 
         /// <summary>
@@ -3295,6 +3302,10 @@ namespace Microsoft.VisualStudio.Project
                 // If it is a foldernode then it has a virtual name but we want to find folder nodes by the document moniker or url
                 else if ((String.IsNullOrEmpty(child.VirtualNodeName) || (child is FolderNode)) &&
                   (NativeMethods.IsSamePath(child.GetMkDocument(), name) || NativeMethods.IsSamePath(child.Url, name)))
+                {
+                    return child;
+                }
+                else if (String.Compare(child.Caption, name, StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     return child;
                 }

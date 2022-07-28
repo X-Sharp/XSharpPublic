@@ -236,6 +236,18 @@ namespace XSharp.LanguageService
         }
 
 
+        private static IXTypeSymbol GetArrayType(XSharpSearchLocation location, string elementName)
+        {
+            var oType = SearchType(location, "System.Array").FirstOrDefault();
+            if (oType is XPETypeSymbol peType)
+            {
+                oType = new XPEArrayTypeSymbol(peType, elementName);
+            }
+            return oType;
+        }
+
+        static Dictionary<string, IXTypeSymbol> arrayTypes = new Dictionary<string, IXTypeSymbol>();
+
         private static IXTypeSymbol GetTypeFromSymbol(XSharpSearchLocation location, IXSymbol symbol)
         {
             if (symbol is IXTypeSymbol ts)
@@ -243,19 +255,31 @@ namespace XSharp.LanguageService
             var name = GetTypeNameFromSymbol(location, symbol);
             if (name == null)
                 return null;
+            IXTypeSymbol oType;
             if (name.EndsWith("[]"))
             {
-                name = "System.Array";
+                name = name.Substring(0, name.Length - 2);
+                if (arrayTypes.ContainsKey(name))
+                    oType = arrayTypes[name];
+                else
+                {
+                    oType = GetArrayType(location, name);
+                    arrayTypes.Add(name, oType);
+                }
             }
-            return SearchType(location, name).FirstOrDefault();
+            else
+            {
+                oType = SearchType(location, name).FirstOrDefault();
+            }
+            return oType;
         }
 
         private static IXTypeSymbol ResolveImpliedLoop(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
         {
             //  Resolve the type of a loop variable. To do so we split the line in the part before and after the TO/UPTO/DOWNTO
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.LoopCounter);
-            var start = new List<XSharpToken>();
-            var end = new List<XSharpToken>();
+            var start = new List<IToken>();
+            var end = new List<IToken>();
             bool seento = false;
             foreach (var t in xVar.Expression)
             {
@@ -328,7 +352,7 @@ namespace XSharp.LanguageService
             var elementType = GetTypeNameFromSymbol(location, element);
             if (elementType.EndsWith("[]"))
             {
-                return SearchType(location, elementType.Substring(0, elementType.Length - 2)).FirstOrDefault();
+                return GetArrayType(location, elementType.Substring(0, elementType.Length - 2));
             }
             var type = GetTypeFromSymbol(location, element);
             var etype = getElementType(type, location, element);
@@ -397,9 +421,9 @@ namespace XSharp.LanguageService
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.OutParam);
             return null;
         }
-        private static IList<XSharpToken> DeleteNestedTokens(IList<XSharpToken> tokens)
+        private static IList<IToken> DeleteNestedTokens(IList<IToken> tokens)
         {
-            IList<XSharpToken> result = new List<XSharpToken>();
+            var result = new List<IToken>();
             if (tokens == null)
                 return result;
             int level = 0;
@@ -486,7 +510,7 @@ namespace XSharp.LanguageService
         /// <param name="state"></param>
         /// <param name="foundElement"></param>
         /// <returns></returns>
-        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> xtokenList,
+        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<IToken> xtokenList,
             CompletionState state, out string notProcessed,  bool forQuickinfo = false )
         {
             //
@@ -499,7 +523,7 @@ namespace XSharp.LanguageService
             IXTypeSymbol currentType = null;
             var startOfExpression = true;
             var findConstructor = false;
-            XSharpToken currentToken = null;
+            IToken currentToken = null;
             IXTypeSymbol startType = null;
             state = CompletionState.General;
             if (location.Member == null)
@@ -604,12 +628,7 @@ namespace XSharp.LanguageService
                                 // [] is followed by a ctor as in 
                                 // var aValue := string[]{
                                 var top = symbols.Peek();
-                                var typeName = top.FullName + "[]";
-                                var type = SearchType(location, typeName).FirstOrDefault();
-                                if (type == null)
-                                {
-                                    type = SearchType(location, "System.Array").FirstOrDefault();
-                                }
+                                var type = GetArrayType(location, top.FullName);
                                 if (type != null)
                                 {
                                     symbols.Push(type);
@@ -933,8 +952,17 @@ namespace XSharp.LanguageService
                     var symbol = symbols.Peek();
                 }
             }
-            result.Clear();
-            if (symbols.Count > 0)
+            if (result.Count == 0 && XSharpLexer.IsKeyword(currentToken.Type))
+            {
+                ((XSharpToken) currentToken).Text = XSettings.FormatKeyword(currentToken.Text);
+                var sym = new XSymbol(currentToken.Text, Kind.Keyword, Modifiers.Public);
+                result.Add(sym);
+            }
+            else
+            {
+                result.Clear();
+            }
+            if (result.Count == 0 && symbols.Count > 0 )
             {
                 result.Add(symbols.Pop());
                 if (result[0] is IXMemberSymbol xmember && xmember.ParentType != null && xmember.ParentType.IsGeneric && symbols.Count > 0)
@@ -961,7 +989,7 @@ namespace XSharp.LanguageService
                     result.AddRange(ctors);
                 }
             }
-            if (result.Count == 0)
+            if (result.Count == 0 )
             {
                 var namespaces = location.Project.AllNamespaces.Where(n => n == namespacePrefix);
                 if (namespaces.Count() > 0)
@@ -986,12 +1014,6 @@ namespace XSharp.LanguageService
                         result.Add(sym);
                     }
                 }
-            }
-            else if (result.Count == 0 && XSharpLexer.IsKeyword(currentToken.Type))
-            {
-                currentToken.Text = XSettings.FormatKeyword(currentToken.Text);
-                var sym = new XSymbol(currentToken.Text, Kind.Keyword, Modifiers.Public);
-                result.Add(sym);
             }
             else if (result.Count > 0 && result[0] != null)
             {
@@ -1058,7 +1080,7 @@ namespace XSharp.LanguageService
             }
             if (symbol.TypeName != null && symbol.TypeName.EndsWith("[]"))
             {
-                return SearchType(location, symbol.TypeName.Substring(0, symbol.TypeName.Length - 2)).FirstOrDefault();
+                return GetArrayType(location, symbol.TypeName.Substring(0, symbol.TypeName.Length - 2));
             }
             else
             {
@@ -1174,7 +1196,6 @@ namespace XSharp.LanguageService
             return typeName;
         }
 
-        private static List<IXMemberSymbol> _arrayConstructors = null;
         /// <summary>
         /// Search for the Constructor in the corresponding Type,
         /// no return value, the constructor is returned by foundElement
@@ -1190,23 +1211,9 @@ namespace XSharp.LanguageService
                 // The System.Array type does not have a constructor
                 WriteOutputMessage($"--> SearchConstructorIn {type?.FullName}");
                 //
-                if (type.FullName == "System.Array")
+                if (type is XPEArrayTypeSymbol peType)
                 {
-                    if (_arrayConstructors == null)
-                    {
-                        var methods = type.Members.Where(x => x.Name == "CreateInstance");
-                        _arrayConstructors = new List<IXMemberSymbol>();
-                        foreach (var method in methods)
-                        {
-                            var newmethod = method.Clone() as XPEMemberSymbol;
-                            // remove first parameter
-                            var pars = newmethod.Parameters.Where(p => p.Name != "Type");
-                            newmethod.Signature.Parameters = pars.ToList();
-                            newmethod.Kind = Kind.Constructor;
-                            _arrayConstructors.Add(newmethod);
-                        }
-                    }
-                    result.AddRange(_arrayConstructors);
+                    result.AddRange(peType.GetConstructors());
                 }
                 else
                 {
@@ -1218,7 +1225,7 @@ namespace XSharp.LanguageService
             return result;
         }
 
-        internal static IXTypeSymbol GetConstantType(XSharpToken token, XFile file)
+        internal static IXTypeSymbol GetConstantType(IToken token, XFile file)
         {
             IXTypeSymbol result;
             var project = file.Project;

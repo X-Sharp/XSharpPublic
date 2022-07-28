@@ -89,7 +89,7 @@ CLASS ResourceDialog INHERIT ResourceReader
 						oFont := System.Drawing.Font.FromHfont(hFont)
 						SELF:FontName	 := oFont:Name
 						SELF:FontItalic	 := iif(oFont:Italic,1,0)
-						SELF:FontPitch   := (WORD) oFont:SizeInPoints
+						SELF:FontPitch   := Convert.ToUInt16(oFont:SizeInPoints)
 						SELF:FontCharSet := oFont:GdiCharSet
 					ENDIF
 				CATCH  AS Exception

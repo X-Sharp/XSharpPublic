@@ -2,7 +2,7 @@
 CLASS TopAppWindow INHERIT AppWindow
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __ResizeChild() AS TopAppWindow STRICT 
+	METHOD __ResizeChild() AS TopAppWindow STRICT
 	//PP-030828 Strong typing
 	//PP-290404 Update S.Ebert
 	LOCAL hChild AS PTR
@@ -16,8 +16,8 @@ CLASS TopAppWindow INHERIT AppWindow
 	LOCAL oChild AS OBJECT
 
 
-	
-	
+
+
 
 
 	hchild := GetWindow(hWnd, GW_CHILD)
@@ -71,13 +71,9 @@ CLASS TopAppWindow INHERIT AppWindow
 
 
 /// <include file="Gui.xml" path="doc/TopAppWindow.ctor/*" />
-CONSTRUCTOR(oOwner) 
-	
-	
-
+CONSTRUCTOR(oOwner)
 
 	SUPER(oOwner)
-
 
 	IF __WCRegisterTopAppWindow(_GetInst())
 		hWnd := CreateWindowEx(0, String2Psz( __WCTopAppWindowClass), String2Psz(" "),;
@@ -91,18 +87,18 @@ CONSTRUCTOR(oOwner)
 	SELF:EnableMaxBox()
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/TopAppWindow.Resize/*" />
-METHOD Resize(oResizeEvent) 
+METHOD Resize(oResizeEvent)
 
 
    SUPER:Resize(oResizeEvent)
    SELF:__ResizeChild()
    RETURN SELF
 /// <inheritdoc />
-METHOD ToolBarHeightChanged() 
+METHOD ToolBarHeightChanged()
    SELF:__ResizeChild()
    RETURN SELF
 END CLASS
@@ -122,9 +118,9 @@ STATIC FUNCTION __WCRegisterTopAppWindow(hInst AS PTR) AS LOGIC
          WCTopAppWndProcDelegate := __WCTopAppWndProcDelegate{ NULL, @__WCTopAppWndProc() }
       ENDIF
 		wc:lpfnWndProc := System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) WCTopAppWndProcDelegate )
-#else		
+#else
 		wc:lpfnWndProc := PTR(_CAST, @__WCTopAppWndProc())
-#endif		
+#endif
 		wc:hInstance := hInst
 		wc:hIcon := LoadIcon(0, IDI_APPLICATION)
 		wc:hCursor := LoadCursor(0, IDC_ARROW)
@@ -138,12 +134,12 @@ STATIC FUNCTION __WCRegisterTopAppWindow(hInst AS PTR) AS LOGIC
 
 
 	RETURN lretVal
-	
-	
+
+
 #ifdef __VULCAN__
 /// <exclude/>
    DELEGATE __WCTopAppWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
-#endif	
+#endif
 
 
  /// <exclude />

@@ -1,17 +1,20 @@
 
 USING System.Collections.Generic
-
+/// <include file="Gui.xml" path="doc/SysLink/*" />
 CLASS SysLink INHERIT TextControl
 
+    /// <inheritdoc />
     PROPERTY ControlType AS ControlType GET ControlType.SysLink
 
     PROPERTY __LinkLabel AS IVOLinkLabel GET (IVOLinkLabel) oCtrl
 
+    /// <inheritdoc />
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
       LOCAL oLL := (IVOLinkLabel) oC AS IVOLinkLabel
       oLL:LinkClicked += LinkClicked
 
 
+ /// <exclude />
 
 	METHOD __StripTags(sHTML REF STRING) AS List<STRING>
 		LOCAL iPosOpen, iPosClose AS DWORD
@@ -38,7 +41,8 @@ CLASS SysLink INHERIT TextControl
 
 
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware) 
+/// <include file="Gui.xml" path="doc/SysLink.ctor/*" />
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 		LOCAL cClass AS USUAL
 		LOCAL lResID AS LOGIC
 
@@ -62,7 +66,7 @@ CLASS SysLink INHERIT TextControl
 			ENDIF
 		ENDIF
 
-		RETURN 
+		RETURN
 
     METHOD LinkClicked(sender AS OBJECT, e AS System.Windows.Forms.LinkLabelLinkClickedEventArgs) AS VOID
        ShellOpen(SELF:Owner, e:Link:LinkData)

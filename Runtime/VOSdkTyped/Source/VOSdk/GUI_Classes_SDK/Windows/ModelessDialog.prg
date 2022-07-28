@@ -1,8 +1,10 @@
+/// <include file="Gui.xml" path="doc/ModelessDialog/*" />
 CLASS ModelessDialog INHERIT DialogWindow
 
-	CONSTRUCTOR(oOwner, xResourceID) 
+/// <include file="Gui.xml" path="doc/ModelessDialog.ctor/*" />
+	CONSTRUCTOR(oOwner, xResourceID)
 		SUPER(oOwner, xResourceID, FALSE)
-		RETURN 
+		RETURN
 
 END CLASS
 

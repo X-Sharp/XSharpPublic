@@ -12,7 +12,7 @@ CLASS ListBox INHERIT BaseListBox
 
 
  /// <exclude />
-METHOD __AddItem(cItem AS STRING, uRetValue AS USUAL, dwPosition AS DWORD) AS VOID STRICT 
+METHOD __AddItem(cItem AS STRING, uRetValue AS USUAL, dwPosition AS DWORD) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL dwRetValLen, dwDispValLen AS DWORD
 
@@ -44,11 +44,11 @@ METHOD __AddItem(cItem AS STRING, uRetValue AS USUAL, dwPosition AS DWORD) AS VO
 
 
  /// <exclude />
-ASSIGN __CurrentItemNo(nItemNo AS INT)  STRICT 
+ASSIGN __CurrentItemNo(nItemNo AS INT)  STRICT
 	//PP-030828 Strong typing
 	//PP-040508 Update S.Ebert
-	
-	
+
+
 
 
 	IF SELF:ValidateControl()
@@ -64,11 +64,11 @@ ASSIGN __CurrentItemNo(nItemNo AS INT)  STRICT
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
  /// <exclude />
-METHOD __FindDisplayValue(cValue AS STRING) AS DWORD STRICT 
+METHOD __FindDisplayValue(cValue AS STRING) AS DWORD STRICT
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -85,7 +85,7 @@ METHOD __FindDisplayValue(cValue AS STRING) AS DWORD STRICT
 
 
  /// <exclude />
-METHOD __FindRetValue(cValue AS STRING) AS DWORD STRICT 
+METHOD __FindRetValue(cValue AS STRING) AS DWORD STRICT
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -102,15 +102,15 @@ METHOD __FindRetValue(cValue AS STRING) AS DWORD STRICT
 
 
  /// <exclude />
-METHOD __Update() AS Control STRICT 
+METHOD __Update() AS Control STRICT
 	//PP-030828 Strong typing
 	//SE-060526
 	LOCAL cOldValue AS STRING
 	LOCAL dwIndex AS DWORD
 	LOCAL cTemp AS STRING
 	//LOCAL liStyle AS LONGINT
-	
-	
+
+
 	IF SELF:Modified
 		cOldValue := AsString(uValue)
 		//RvdH 070320 Changed to make sure that for comboboxes VO does the following:
@@ -121,7 +121,7 @@ METHOD __Update() AS Control STRICT
 		// This should fix the problem that when someone has duplicate entries in the
 		// combobox VO always selects one and never the other
 		// Now remains the question why you would fill your combobox with duplicate values ?
-		IF IsInstanceOf(SELF, #ComboBox)  
+		IF IsInstanceOf(SELF, #ComboBox)
 			//liStyle := GetWindowLong(SELF:hWnd, GWL_STYLE)
 			dwIndex := SELF:CurrentItemNo
 			IF dwIndex > 0
@@ -132,14 +132,14 @@ METHOD __Update() AS Control STRICT
 				dwIndex := SELF:__FindDisplayValue(cTemp)		//RvdH 070514 It should have been like this...
 			ENDIF
 		ELSE
-			dwIndex := SELF:CurrentItemNo	
+			dwIndex := SELF:CurrentItemNo
 			IF dwIndex > 0
 				cTemp	:= SELF:aDisplayValues[dwIndex]
 			ELSE
 				cTemp := SELF:CurrentItem
 			ENDIF
 		ENDIF
-		IF (dwIndex > 0)			
+		IF (dwIndex > 0)
 			uValue := aRetValues[dwIndex]
 			SELF:__SetText(aDisplayValues[dwIndex])
 		ELSE
@@ -152,7 +152,7 @@ METHOD __Update() AS Control STRICT
 
 
  /// <exclude />
-ASSIGN __Value(uNewVal AS USUAL)  STRICT 
+ASSIGN __Value(uNewVal AS USUAL)  STRICT
 	//PP-030828 Strong typing
 	//SE-060526
 	LOCAL cSelValue AS STRING
@@ -160,8 +160,8 @@ ASSIGN __Value(uNewVal AS USUAL)  STRICT
 	LOCAL nFindItemNum AS INT
 
 
-	
-	
+
+
 
 
 	//PP-030924 allow value of NIL to reset control
@@ -209,13 +209,13 @@ ASSIGN __Value(uNewVal AS USUAL)  STRICT
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 
 
 /// <include file="Gui.xml" path="doc/ListBox.AddItem/*" />
-METHOD AddItem(cItem, nItemNumber, uRetValue) 
+METHOD AddItem(cItem, nItemNumber, uRetValue)
 	LOCAL dwPosition AS DWORD
 	IF (dwPosition := SUPER:AddItem(cItem, nItemNumber)) != 0
 		SELF:__AddItem(cItem, uRetValue, dwPosition)
@@ -226,12 +226,12 @@ METHOD AddItem(cItem, nItemNumber, uRetValue)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.Caption/*" />
-ACCESS Caption 
+ACCESS Caption
 	RETURN cCaption
 
 
 /// <include file="Gui.xml" path="doc/ListBox.Caption/*" />
-ASSIGN Caption(cNewCaption) 
+ASSIGN Caption(cNewCaption)
 	IF !IsString(cNewCaption)
 		WCError{#Caption,#ListBox,__WCSTypeError,cNewCaption,1}:Throw()
 	ENDIF
@@ -239,7 +239,7 @@ ASSIGN Caption(cNewCaption)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.ChangeSelected/*" />
-METHOD ChangeSelected(oRange, lEnabled) 
+METHOD ChangeSelected(oRange, lEnabled)
 	LOCAL lSet AS LOGIC
 	DEFAULT(@lEnabled, TRUE)
 
@@ -266,7 +266,7 @@ METHOD ChangeSelected(oRange, lEnabled)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.Clear/*" />
-METHOD Clear() 
+METHOD Clear()
 	aRetValues := {}
 	aDisplayValues := {}
 	//PP-030924 reset value
@@ -287,7 +287,7 @@ METHOD Clear()
 
 
 /// <include file="Gui.xml" path="doc/ListBox.ClearSelection/*" />
-METHOD ClearSelection() 
+METHOD ClearSelection()
 	//PP-040508 Update S.Ebert
 	IF SELF:ValidateControl()
 		SELF:__CurrentItemNo := 0
@@ -299,7 +299,7 @@ METHOD ClearSelection()
 
 
 /// <include file="Gui.xml" path="doc/ListBox.Create/*" />
-METHOD Create() 
+METHOD Create()
 	IF (hWnd == 0) .AND. !IsInstanceOf(SELF, #ComboBox)
 		SELF:SetStyle(_OR(LBS_Notify, LBS_NoIntegralHeight))
 	ENDIF
@@ -309,7 +309,7 @@ METHOD Create()
 
 
 /// <include file="Gui.xml" path="doc/ListBox.CurrentItem/*" />
-ACCESS CurrentItem 
+ACCESS CurrentItem
 	//long boxstyle = GetWindowLong(Handle(), GWL_STYLE)
 	//if ((boxstyle & LBS_MULTIPLESEL) .and. (!GetNoSelected()))
 	//	return False
@@ -321,18 +321,18 @@ ACCESS CurrentItem
 
 
 /// <include file="Gui.xml" path="doc/ListBox.CurrentItem/*" />
-ASSIGN CurrentItem(cValue) 
+ASSIGN CurrentItem(cValue)
 	IF !IsString(cValue)
 		WCError{#CurrentItem,#ListBox,__WCSTypeError,cValue,1}:Throw()
 	ENDIF
 	SELF:CurrentItemNo := SELF:FindItem(cValue)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListBox.CurrentItemNo/*" />
-ACCESS CurrentItemNo 
+ACCESS CurrentItemNo
 	//PP-040508 Update S.Ebert
 	LOCAL i AS LONGINT
 	LOCAL liLen AS LONGINT
@@ -393,15 +393,15 @@ ACCESS CurrentItemNo
 
 
 /// <include file="Gui.xml" path="doc/ListBox.CurrentItemNo/*" />
-ASSIGN CurrentItemNo(nItemNo) 
+ASSIGN CurrentItemNo(nItemNo)
 	//SE-060526
 	LOCAL cSelValue AS USUAL
 	LOCAL dwIndex   AS DWORD
 	LOCAL uOldValue AS USUAL
 
 
-	
-	
+
+
 	IF !IsLong(nItemNo)
 		WCError{#CurrentItemNo,#ListBox,__WCSTypeError,nItemNo,1}:Throw()
 	ENDIF
@@ -425,13 +425,13 @@ ASSIGN CurrentItemNo(nItemNo)
 	SELF:ValueChanged := !(AsString(uValue) == uOldValue)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListBox.CurrentText/*" />
-ASSIGN CurrentText(cNewText) 
-	
-	
+ASSIGN CurrentText(cNewText)
+
+
 	IF !IsString(cNewText)
 		WCError{#CurrentText,#ListBox,__WCSTypeError,cNewText,1}:Throw()
 	ENDIF
@@ -439,7 +439,7 @@ ASSIGN CurrentText(cNewText)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.DeleteItem/*" />
-METHOD DeleteItem(uItemNumber) 
+METHOD DeleteItem(uItemNumber)
 	LOCAL lReturnValue AS LOGIC
 
 
@@ -460,16 +460,16 @@ METHOD DeleteItem(uItemNumber)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.DeselectItem/*" />
-METHOD DeselectItem(nItemId) 
+METHOD DeselectItem(nItem)
 	LOCAL dwItem AS DWORD
 
 
-	IF !IsLong(nItemId)
-		WCError{#DeSelectItem,#ListBox,__WCSTypeError,nItemId,1}:Throw()
+	IF !IsLong(nItem)
+		WCError{#DeSelectItem,#ListBox,__WCSTypeError,nItem,1}:Throw()
 	ENDIF
 
 
-	dwItem := nItemId-1
+	dwItem := nItem-1
 	IF SELF:ValidateControl()
 		RETURN SendMessage(SELF:Handle(), LB_SELITEMRANGE, 0, LONGINT(_CAST, (dwItem<<16)+dwItem)) != LB_ERR
 	ENDIF
@@ -479,7 +479,7 @@ METHOD DeselectItem(nItemId)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.EnableItemDrag/*" />
-METHOD EnableItemDrag() 
+METHOD EnableItemDrag()
 	IF IsInstanceOf(oFormSurface, #DialogWindow)
 		Send(oFormSurface, #__SubClassForDragList)
 	ENDIF
@@ -488,7 +488,7 @@ METHOD EnableItemDrag()
 
 
 /// <include file="Gui.xml" path="doc/ListBox.FillUsing/*" />
-METHOD FillUsing(aContents, symField1, symField2) 
+METHOD FillUsing(aContents, symField1, symField2)
 	LOCAL wArrLen AS DWORD
 	LOCAL wElemLen AS DWORD
 	LOCAL wIndex AS DWORD
@@ -561,7 +561,7 @@ METHOD FillUsing(aContents, symField1, symField2)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.FirstSelected/*" />
-METHOD FirstSelected ( ) 
+METHOD FirstSelected ( )
 	LOCAL dwNumSelected AS DWORD
 	LOCAL iResult AS INT
 	LOCAL ptrSelected	AS LONGINT PTR
@@ -585,9 +585,9 @@ METHOD FirstSelected ( )
 
 
 /// <include file="Gui.xml" path="doc/ListBox.GetItemValue/*" />
-METHOD GetItemValue(nItemNumber) 
-	
-	
+METHOD GetItemValue(nItemNumber)
+
+
 	IF (nItemNumber == 0)
 		nItemNumber := SELF:CurrentItemNo
 	ENDIF
@@ -597,7 +597,7 @@ METHOD GetItemValue(nItemNumber)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	SUPER(oOwner, xID, oPoint, oDimension, kStyle, TRUE)
 	aRetValues := {}
 	aDisplayValues := {}
@@ -605,11 +605,11 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 
 	//fpListFiles := @DlgDirList()
 	//fpSelectedFile := @_DlgDirSelectEx()
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListBox.IsSelected/*" />
-METHOD IsSelected(iIdx) 
+METHOD IsSelected(iIdx)
 	//PP-040508 Update S.Ebert
 	LOCAL dwNumSelected AS DWORD
 	LOCAL lResult AS LOGIC
@@ -629,7 +629,7 @@ METHOD IsSelected(iIdx)
 			dwNumSelected := SELF:SelectedCount
 			ptrSelected    := MemAlloc(dwNumSelected * _SIZEOF(LONGINT))
 			IF SendMessage(hHandle, LB_GETSELITEMS, dwNumSelected, LONGINT(_CAST,ptrSelected)) != LB_ERR
-				dwPos := 1        
+				dwPos := 1
 				iIdx	-= 1
 				FOR dwPos := 1 TO dwNumSelected
 					IF ptrSelected[dwPos] == iIdx
@@ -647,13 +647,13 @@ METHOD IsSelected(iIdx)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.ItemCount/*" />
-ACCESS ItemCount 
+ACCESS ItemCount
 	//PP-030505 Bug:168
 	RETURN ALen(SELF:aRetValues)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.ListFiles/*" />
-METHOD ListFiles(sStartDir, oFixedText, FileTypes) 
+METHOD ListFiles(sStartDir, oFixedText, FileTypes)
 	LOCAL pPath AS PSZ
 	LOCAL i,iRet AS INT
 	LOCAL dwFileTypes AS DWORD
@@ -702,7 +702,7 @@ METHOD ListFiles(sStartDir, oFixedText, FileTypes)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.MultiSelection/*" />
-ACCESS MultiSelection 
+ACCESS MultiSelection
 	//PP-040508 from S.Ebert
 
 
@@ -717,7 +717,7 @@ ACCESS MultiSelection
 
 
 /// <include file="Gui.xml" path="doc/ListBox.NextSelected/*" />
-METHOD NextSelected() 
+METHOD NextSelected()
 	LOCAL dwNumSelected AS DWORD
 	LOCAL iResult AS INT
 	LOCAL ptrSelected		AS LONGINT PTR
@@ -731,7 +731,7 @@ METHOD NextSelected()
 		ptrSelected := MemAlloc(dwNumSelected * _SIZEOF(LONGINT))
 		IF SendMessage(hHandle, LB_GETSELITEMS, dwNumSelected, LONGINT(_CAST, ptrSelected)) != LB_ERR
 			wSelectNum 	:= wSelectNum + 1
-			iResult 		:= ptrSelected[wSelectNum]+1								
+			iResult 		:= ptrSelected[wSelectNum]+1
 		ENDIF
 		MemFree(ptrSelected)
 	ENDIF
@@ -741,7 +741,7 @@ METHOD NextSelected()
 
 
 /// <include file="Gui.xml" path="doc/ListBox.SelectedCount/*" />
-ACCESS SelectedCount 
+ACCESS SelectedCount
 	LOCAL liNumSelected AS LONGINT
 
 
@@ -757,7 +757,7 @@ ACCESS SelectedCount
 
 
 /// <include file="Gui.xml" path="doc/ListBox.SelectedFile/*" />
-ACCESS SelectedFile 
+ACCESS SelectedFile
 	LOCAL pPath AS PSZ
 	LOCAL sRet AS STRING
 
@@ -778,7 +778,7 @@ ACCESS SelectedFile
 
 
 /// <include file="Gui.xml" path="doc/ListBox.SelectItem/*" />
-METHOD SelectItem(nItemId) 
+METHOD SelectItem(nItemId)
 	LOCAL dwItem AS DWORD
 
 
@@ -799,7 +799,7 @@ METHOD SelectItem(nItemId)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.SetTabs/*" />
-METHOD SetTabs(aTabs) 
+METHOD SetTabs(aTabs)
 	LOCAL dwTabs AS DWORD
 	LOCAL pTabs  AS INT PTR
 	LOCAL dwI    AS DWORD
@@ -824,7 +824,7 @@ METHOD SetTabs(aTabs)
 
 
 /// <include file="Gui.xml" path="doc/ListBox.TextValue/*" />
-ACCESS TextValue 
+ACCESS TextValue
 	//SE-060526
 	LOCAL cDataBaseValue AS STRING
 	LOCAL dwIndex AS DWORD
@@ -856,7 +856,7 @@ ACCESS TextValue
 
 
 /// <include file="Gui.xml" path="doc/ListBox.TextValue/*" />
-ASSIGN TextValue(cNewText) 
+ASSIGN TextValue(cNewText)
 	//SE-060526
 	LOCAL cSelValue AS STRING
 	LOCAL dwIndex AS DWORD
@@ -888,7 +888,7 @@ ASSIGN TextValue(cNewText)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS

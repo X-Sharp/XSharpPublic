@@ -3,29 +3,21 @@ CLASS Clipboard INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/Clipboard.Clear/*" />
-METHOD Clear() 
-	
-	
-
-
+METHOD Clear()
 	IF OpenClipboard(NULL_PTR)
 		EmptyClipboard()
 		CloseClipboard()
 	ENDIF
 
-
 	RETURN SELF
 
-
 /// <include file="Gui.xml" path="doc/Clipboard.FileCount/*" />
-ACCESS FileCount 
+ACCESS FileCount
 	//PP-031115 S Ebert
 	LOCAL hClipData  AS PTR
 	LOCAL oDragEvent AS DragEvent
 
-
 	IF OpenClipboard(NULL_PTR)
-
 
 		hClipData := GetClipboardData(CF_HDROP)
 		IF (hClipData != NULL_PTR)
@@ -33,16 +25,13 @@ ACCESS FileCount
 			RETURN oDragEvent:FileCount
 		ENDIF
 
-
 		CloseClipboard()
 	ENDIF
 
-
 	RETURN 0
 
-
 /// <include file="Gui.xml" path="doc/Clipboard.GetItemSize/*" />
-METHOD GetItemSize(kFormat) 
+METHOD GetItemSize(kFormat)
 	LOCAL dwFormat AS DWORD
 	LOCAL dwSize AS DWORD
 	LOCAL strucBM IS _WinBitmap
@@ -51,14 +40,9 @@ METHOD GetItemSize(kFormat)
 	LOCAL hMemoryDC AS PTR
 
 
-	
-	
-
-
 	IF !IsLong(kFormat)
 		WCError{#GetItemSize,#Clipboard,__WCSTypeError,kFormat,1}:Throw()
 	ENDIF
-
 
 	DO CASE
 	CASE (kFormat == STRINGFORMAT)
@@ -69,16 +53,13 @@ METHOD GetItemSize(kFormat)
 		RETURN 0
 	ENDCASE
 
-
 	IF !IsClipboardFormatAvailable(dwFormat)
 		RETURN 0
 	ENDIF
 
-
 	IF !OpenClipboard(NULL_PTR)
 		RETURN 0
 	ENDIF
-
 
 	DO CASE
 	CASE (dwFormat == CF_TEXT)
@@ -102,27 +83,22 @@ METHOD GetItemSize(kFormat)
 		ENDIF
 	ENDCASE
 
-
 	CloseClipboard()
-
-
 	RETURN dwSize
 
-
 /// <include file="Gui.xml" path="doc/Clipboard.ctor/*" />
-CONSTRUCTOR() 
-    
-    
+CONSTRUCTOR()
+
+
     SUPER()
 
 
 
 
-RETURN 
-
+RETURN
 
 /// <include file="Gui.xml" path="doc/Clipboard.Insert/*" />
-METHOD Insert(xType) 
+METHOD Insert(xType)
 	LOCAL hGlobalMemory AS PTR
 	LOCAL hdc AS PTR
 	LOCAL hSrcDC AS PTR
@@ -132,11 +108,6 @@ METHOD Insert(xType)
 	LOCAL dwLen AS DWORD
 	LOCAL strucBM IS _WinBitmap
 
-
-	
-	
-
-
 	IF IsString(xType)
 		dwLen := SLen(xType)
 		hGlobalMemory := GlobalAlloc(_Or(DWORD(GMEM_MOVEABLE), GMEM_ZEROINIT), dwLen + 1)
@@ -145,13 +116,11 @@ METHOD Insert(xType)
 		IF (hGlobalMemory == NULL_PTR)
 			RETURN SELF
 		ENDIF
-
-
 		pszStr := GlobalLock (hGlobalMemory)
 		IF !OpenClipboard(NULL_PTR) .or. (pszStr == NULL_PSZ)
 			GlobalFree(hGlobalMemory)
 			RETURN SELF
-		ENDIF   
+		ENDIF
 		// RvdH 061204 Empty anything already there...
       EmptyClipboard()
 		MemCopyString(pszStr,xType,dwLen)
@@ -165,7 +134,7 @@ METHOD Insert(xType)
 
 		IF !OpenClipboard(NULL_PTR)
 			RETURN SELF
-		ENDIF           
+		ENDIF
 		// RvdH 061204 Empty anything already there...
       EmptyClipboard()
 		hdc := GetDC(NULL_PTR)
@@ -196,12 +165,10 @@ METHOD Insert(xType)
 		WCError{#Insert,#Clipboard,__WCSTypeError,xType,1}:Throw()
 	ENDIF
 
-
 	RETURN SELF
 
-
 /// <include file="Gui.xml" path="doc/Clipboard.InsertRTF/*" />
-METHOD InsertRTF(cText) 
+METHOD InsertRTF(cText)
 	//PP-030929 New method
 	STATIC LOCAL dwId AS DWORD
 	LOCAL hText AS PTR
@@ -214,48 +181,37 @@ METHOD InsertRTF(cText)
 		dwID := RegisterClipboardFormat(String2Psz("Rich Text Format"))
 	ENDIF
 
-
 	IF IsString(cText) .and. dwId > 0
 		// Allocate global memory for transfer...
 		dwLen := SLen(cTEXT)
 		hText := GlobalAlloc(_or(GMEM_MOVEABLE,GMEM_DDESHARE), dwLen+1)
 
-
 		// Put our string in the global memory...
 		pPTR := GlobalLock(hText)
-
 
 		IF ! OpenClipboard(NULL_PTR) .or. (PTR(_CAST,pPTR) == NULL_PTR)
 			GlobalFree(hText)
 			RETURN SELF
 		ENDIF
 
-
 		// Empty anything already there...
 		EmptyClipboard()
 		MemCopyString(pPTR,cText,dwLen)
 		GlobalUnlock(hText)
 
-
 		// Put data on the clipboard!
 		SetClipboardData(dwId, hText)
-
 
 		// Free memory...
 		// RvdH 061002 Memory may not be freed, is now owned by Clipboard
 		// GlobalFree(hText)
-
-
 		// Close clipboard...
 		CloseClipboard()
-
-
 	ENDIF
 	RETURN SELF
 
-
 /// <include file="Gui.xml" path="doc/Clipboard.RetrieveBitmap/*" />
-METHOD RetrieveBitmap(oBitmap) 
+METHOD RetrieveBitmap(oBitmap)
 	LOCAL hClipData AS PTR
 	LOCAL hdc AS PTR
 	LOCAL hSrcDC AS PTR
@@ -265,8 +221,8 @@ METHOD RetrieveBitmap(oBitmap)
 	LOCAL lRetVal AS LOGIC
 
 
-	
-	
+
+
 	IF !IsInstanceOfUsual(oBitmap,#Bitmap)
 		WCError{#RetrieveBitmap,#Clipboard,__WCSTypeError,oBitmap,1}:Throw()
 	ENDIF
@@ -314,7 +270,7 @@ METHOD RetrieveBitmap(oBitmap)
 
 
 /// <include file="Gui.xml" path="doc/Clipboard.RetrieveFiles/*" />
-METHOD RetrieveFiles(lMustExist) 
+METHOD RetrieveFiles(lMustExist)
 	//PP-031115 S Ebert
 	LOCAL aFiles AS ARRAY
 	LOCAL hClipData AS PTR
@@ -345,16 +301,13 @@ METHOD RetrieveFiles(lMustExist)
 			ENDIF
 		ENDIF
 
-
 		CloseClipboard()
 	ENDIF
 
-
 	RETURN aFiles
 
-
 /// <include file="Gui.xml" path="doc/Clipboard.RetrieveRTF/*" />
-METHOD RetrieveRTF(nStringLength) 
+METHOD RetrieveRTF(nStringLength)
 	//PP-030929 New method
 	LOCAL dwLen AS DWORD
 	LOCAL cRetVal AS STRING
@@ -372,11 +325,9 @@ METHOD RetrieveRTF(nStringLength)
 		dwLen := nStringLength
 	ENDIF
 
-
 	IF !OpenClipboard(NULL_PTR)
 		RETURN cRetVal
 	ENDIF
-
 
 	hClipData := GetClipboardData(dwID)
 	IF (hClipData != NULL_PTR)
@@ -388,24 +339,15 @@ METHOD RetrieveRTF(nStringLength)
 		GlobalUnlock(hClipData)
 	ENDIF
 
-
 	CloseClipboard()
-
-
 	RETURN cRetVal
 
-
 /// <include file="Gui.xml" path="doc/Clipboard.RetrieveString/*" />
-METHOD RetrieveString(nStringLength) 
+METHOD RetrieveString(nStringLength)
 	LOCAL dwLen AS DWORD
 	LOCAL cRetVal AS STRING
 	LOCAL pszStr AS PSZ
 	LOCAL hClipData AS PTR
-
-
-	
-	
-
 
 	IF !IsNil(nStringLength)
 		IF !IsLong(nStringLength)
@@ -414,11 +356,9 @@ METHOD RetrieveString(nStringLength)
 		dwLen := nStringLength
 	ENDIF
 
-
 	IF !OpenClipboard(NULL_PTR)
 		RETURN cRetVal
 	ENDIF
-
 
 	hClipData := GetClipboardData (CF_TEXT)
 	IF (hClipData != NULL_PTR)
@@ -430,12 +370,9 @@ METHOD RetrieveString(nStringLength)
 		GlobalUnlock(hClipData)
 	ENDIF
 
-
 	CloseClipboard()
 
-
 	RETURN cRetVal
-
 
 END CLASS
 

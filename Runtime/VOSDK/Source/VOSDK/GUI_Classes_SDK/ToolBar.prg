@@ -483,7 +483,7 @@ METHOD AddSubToolBarBand(symToolBar, iPos, iMinWidth, lFlat_dwStyle)
 	IF (hWnd != NULL_PTR)
 		IF IsNumeric(lFlat_dwStyle)
 			dwSubStyle := lFlat_dwStyle
-			dwSubStyle := _OR(LONGINT(dwSubStyle), WS_CHILD, WS_CLIPSIBLINGS, WS_VISIBLE, CCS_NORESIZE, CCS_NOPARENTALIGN, CCS_NODIVIDER)
+			dwSubStyle := (DWORD) _OR(LONGINT(dwSubStyle), WS_CHILD, WS_CLIPSIBLINGS, WS_VISIBLE, CCS_NORESIZE, CCS_NOPARENTALIGN, CCS_NODIVIDER)
 			IF IsThemeEnabled()
 				dwSubStyle := _OR(dwSubStyle, TBSTYLE_TRANSPARENT)
 			ENDIF
@@ -1128,7 +1128,7 @@ METHOD Create()
 
 			dwRebarStyle := _OR(WS_VISIBLE, WS_CHILD, WS_CLIPCHILDREN, WS_CLIPSIBLINGS, RBS_VARHEIGHT, RBS_BANDBORDERS)
 			IF ! SELF:Divider
-				dwRebarStyle := _OR(LONGINT(dwRebarStyle), CCS_NODIVIDER)
+				dwRebarStyle := (DWORD) _OR(LONGINT(dwRebarStyle), CCS_NODIVIDER)
 			ENDIF
 
 

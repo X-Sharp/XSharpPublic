@@ -1,6 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
     <members></members>
+    <notifyappend>
+        <summary>
+            A new record has been appended
+        </summary>
+    </notifyappend>
+    <notifyclose>
+        <summary>
+            The server is closed
+        </summary>
+    </notifyclose>
+    <notifyintenttomove>
+        <summary>
+            The server intents to move
+        </summary>
+    </notifyintenttomove>
+    <notifygobottom>
+        <summary>
+            The server has moved to the last (logical)  record
+        </summary>
+    </notifygobottom>
+    <notifydelete>
+        <summary>
+            The current record has been deleted
+        </summary>
+    </notifydelete>
+    <notifygotop>
+        <summary>
+            The server has moved to the first (logical)  record
+        </summary>
+    </notifygotop>
+
+    <notifycompletion>
+        <summary>
+            An operation has completed
+        </summary>
+    </notifycompletion>
+    <notifyrecordchange>
+        <summary>
+            The current record has changed
+        </summary>
+    </notifyrecordchange>
+    <notifyfieldchange>
+        <summary>
+            A field in the current record has changed
+        </summary>
+    </notifyfieldchange>
+    <notifyfilechange>
+        <summary>
+            An operation has finished that processed one or more records
+        </summary>
+    </notifyfilechange>
+    <notifyrelationchange>
+        <summary>
+            The parent record has changed, the child must change too
+        </summary>
+    </notifyrelationchange>
+    <notifyclearrelation>
+        <summary>
+            The relation between the parent and child was changed
+        </summary>
+    </notifyclearrelation>
+    <notifyconcurrencycontrolmode>
+        <summary>
+            Not used
+        </summary>
+    </notifyconcurrencycontrolmode>
     <DataField>
         <summary>
             Create a field, which is an object that holds information that defines a particular field in a data server (for example, the field's data type and length).
@@ -116,9 +182,7 @@
         <summary>
             Append a blank record to the end of this data server (the new record becomes the current position and is ready for assignment of data values).
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <note type="tip">The details of the implementation of this method, as well as how it interacts with other operations (such as unique indexes and concurrency control), depend on the particular data server subclass.</note>
         </remarks>
@@ -153,9 +217,7 @@
         <summary>
             Force all pending updates to this data server to be permanently written to disk.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             DataServer:Commit() can fail for many reasons, ranging from a lack of capability in the server to lock conflicts and technical problems, such as network crashes.  Use the DataServer:Status property to determine the exact cause of the failure.
             The exact implications of this action depend on the type of the data server.  With some database management systems, the method commits all servers using the same connection; with others, it commits only this server; and with yet others, the method does nothing.  In addition, some SQL servers have other implications of a commit operation (they can close cursors, for example).
@@ -247,9 +309,7 @@
         <summary>
             Delete the current record in this data server.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When executed successfully, this method sends a NotifyDelete message to this data server's clients.
             <note type="tip">The details of the implementation of this method, and its requirements on concurrency control, depend on the particular data server subclass.</note>
@@ -369,17 +429,13 @@
         <summary>
             Lock this entire data server for exclusive access.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </DataServer.FLOCK>
     <DataServer.GoBottom>
         <summary>
             Position this data server at the last record.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When executed successfully, this method sends a NotifyGoBottom message to this data server's clients.
         </remarks>
@@ -389,9 +445,7 @@
             Position this data server on a specified record number.
         </summary>
         <param name="nPosition">The record number to which the server should be positioned.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When executed successfully, this method sends a NotifyRecordChange message to this data server's clients.
             <note type="tip">Some types of data servers cannot support movement by record number.</note>
@@ -401,9 +455,7 @@
         <summary>
             Position this data server at the first record.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When executed successfully, this method sends a NotifyGoTop message to this data server's clients.
         </remarks>
@@ -455,9 +507,7 @@
         </summary>
         <param name="symFieldName">The symbolic name of the variable that was referenced.  In the standard usage of the method with the DBServer class, this is a field name.</param>
         <param name="uValue">The value to be assigned to the field.  The data type of this value must match the data type of the field.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When executed successfully, this method sends a NotifyFieldChange message to this data server's clients.
             For DataServer, this method is used to intercept references to field names as exported variables, which ordinarily would not be allowed.  If the field name is valid, it does a DataServer:FieldPut() for the corresponding field name with the passed value (in effect, turning database fields into assign methods of each DBServer object).  See "Objects, Classes, and Methods" in the Programmer's Guide for more information on NoIVarPut().
@@ -483,7 +533,7 @@
             Implement customized initialization code for the window.
         </summary>
         <remarks>
-            This method is used to customize the initialization code for a dataserver.  
+            This method is used to customize the initialization code for a dataserver.
             The customized initialization code will not be overridden by the generated default initialization code.
             A call to PostInit() is automatically generated at the end of the Init() method.
         </remarks>
@@ -493,9 +543,9 @@
             Implement customized initialization code for the server.
         </summary>
         <remarks>
-            This method is used to customize the initialization code for a server.  
+            This method is used to customize the initialization code for a server.
             The customized initialization code will not be overridden by the generated default initialization code.
-            A call to PreInit() is automatically generated at the beginning of the Init() method.  
+            A call to PreInit() is automatically generated at the beginning of the Init() method.
             The default implementation of PostInit() in this class is empty.
             <note type="tip">
                 In .Net it is normally not allowed or recommended to run code in a class before the parent constructor is called.
@@ -571,9 +621,7 @@
         <summary>
             Undo the changes made to this data server within the current transaction.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method can fail for many reasons, from a lack of capability in the server to lock conflicts to technical problems such as network crashes.  Use DataServer:Status to determine the exact cause of the failure.
             Note that not all servers support this operation, including the standard Xbase DBServer.  If the server does support it, the exact implications of a rollback vary with the server.  With some database management systems, the method rolls back all servers using the same connection; with others, it rolls back only this server.  In addition, some SQL servers have other implications of a rollback operation (they can close cursors, for example).
@@ -595,9 +643,7 @@
         </summary>
         <param name="nFieldPosition">The number of the data field.</param>
         <param name="oDataField">The data field to be assigned.</param>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             The data type of the new field must be compatible with the actual database field.
             This method is normally used only during instantiation of a data server (most often in Init() methods of subclasses).  For example, the code generated by the data server editors use this method.
@@ -647,9 +693,7 @@
         <summary>
             Remove all locks held on this data server.
         </summary>
-        <returns>
-            TRUE if successful; otherwise, FALSE.
-        </returns>
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
     </DataServer.UnLock>
     <DataServer.UnRegisterClient>
         <summary>
@@ -669,12 +713,12 @@
             Update this server with data from another server or table.
         </summary>
         <returns>
-            TRUE if successful; otherwise, FALSE, although even with FALSE, some records may have been updated.  
+            TRUE if successful; otherwise, FALSE, although even with FALSE, some records may have been updated.
             This can happen if the operation failed halfway through because of technical problems.
         </returns>
         <remarks>
             Sends a NotifyFileChange message upon completion.
-            There are two different formulations of the matching relationship between the two servers.  
+            There are two different formulations of the matching relationship between the two servers.
             If <paramref name="lRandomFlag" /> is TRUE, this server must be indexed on the specified key, but the other server can be in any order; if <paramref name="lRandomFlag" /> is not specified or is FALSE, both servers must be indexed or sorted on the specified key.  If there is more than one record in this server with matching key fields, only the first one is updated.
         </remarks>
     </DataServer.Update>
@@ -1119,7 +1163,9 @@
             The subdirectory to be appended, with or without leading and trailing slashes.  A list of subdirectories separated by slashes can also be appended.
         </param>
         <remarks>
-            <note type="tip">If the path was previously unknown (NIL), <paramref name="cDirectory" /> becomes the new path.</note>
+            <note type="tip">
+                If the path was previously unknown (NIL), <paramref name="cDirectory" /> becomes the new path.
+            </note>
         </remarks>
         <returns>
             The resulting path.
@@ -1524,7 +1570,9 @@
             Construct a hyperlabel.
         </summary>
         <param name="uName">The symbolic name that the program uses to refer to the object to which the hyperlabel attaches.  For example, if the hyperlabel attaches to a menu command, the symbolic name is the method (of the window that owns the menu) that the system invokes when the user executes that menu command.  If the hyperlabel attaches to a field, the symbol is the field's name.  In other words, the symbolic name is only useful to the program.  The other items, by contrast, are meaningful to the user.</param>
-        <param name="uCaption">The name of the object to which the hyperlabel attaches, as recognized by the user.  If the object is a control, the caption is the name shown beside, or on, the control.  If you supply the resource ID of a string, HyperLabel:Init() extracts the string.  if not specified, the default is the same as <paramref name="symName" />, if provided; otherwise, NULL_STRING.</param>
+        <param name="uCaption">
+            The name of the object to which the hyperlabel attaches, as recognized by the user.  If the object is a control, the caption is the name shown beside, or on, the control.  If you supply the resource ID of a string, HyperLabel:Init() extracts the string.  if not specified, the default is the same as <paramref name="symName" />, if provided; otherwise, NULL_STRING.
+        </param>
         <param name="uDescription">The purpose of the host object.  For a control, the purpose tells the user what the control is for.  By default, when a control gets focus, the system displays the control's hyperlabel's description upon the status bar.  Similarly, when the user drags the mouse across the menu, each time a new command is highlighted, its hyperlabel's description appears in the status bar.  If you supply the resource ID of a string, HyperLabel:Init() extracts the string.  If not specified, the default is NULL_STRING.</param>
         <param name="uHelpContext">The string that uniquely identifies the place to jump in the hypertext help system.  In the case of Windows, this is just the context name.  The system uses the object's hyperlabel's help context to decide where to jump when the user asks for in-context help about the host object.  If you supply the resource ID of a string, HyperLabel:Init() extracts the string.  If not specified, the default is NULL_STRING.</param>
     </HyperLabel.ctor>

@@ -48,7 +48,7 @@ CLASS BaseListBox INHERIT TextControl
 		LOCAL oValue AS OBJECT
 		LOCAL nIndex AS LONG
 		IF !IsString(uItem)
-			WCError{#AddItem,#BaseListBox,__WCSTypeError,uItem,1}:@@Throw()
+			WCError{#AddItem,#BaseListBox,__WCSTypeError,uItem,1}:Throw()
 		ENDIF
 		cItem := uItem
 		IF IsLong(uIndex)

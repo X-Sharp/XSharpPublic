@@ -2,13 +2,15 @@
 
 
 USING System.Windows.Forms
+/// <include file="Gui.xml" path="doc/TopAppWindow/*" />
 
 CLASS TopAppWindow INHERIT AppWindow
 
 	METHOD __CreateForm() AS VOForm STRICT
 		RETURN GuiFactory.Instance:CreateTopAppWindow(SELF)
 
-	METHOD __ResizeChild() AS TopAppWindow STRICT 
+ /// <exclude />
+	METHOD __ResizeChild() AS TopAppWindow STRICT
 		IF SELF:__IsValid .and. oWnd:MdiChildren:Length > 0
 			LOCAL oChild AS Form
 			oChild :=  oWnd:MdiChildren[1]
@@ -18,10 +20,10 @@ CLASS TopAppWindow INHERIT AppWindow
 		RETURN SELF
 
 
-
-	CONSTRUCTOR(oOwner) 
+/// <include file="Gui.xml" path="doc/TopAppWindow.ctor/*" />
+	CONSTRUCTOR(oOwner)
 		SUPER(oOwner)
-		
+
 		SELF:EnableSystemMenu()
 		SELF:EnableBorder()
 		SELF:EnableMinBox()
@@ -30,9 +32,10 @@ CLASS TopAppWindow INHERIT AppWindow
 			oApp:__WindowCount += 1
 		ENDIF
 
-		RETURN 
-	
-	METHOD Destroy() AS USUAL 
+		RETURN
+
+	/// <inheritdoc />
+	METHOD Destroy() AS USUAL
 		SUPER:Destroy()
 		// Tests if this is the last TopAppWindow
 		IF (oApp != NULL_OBJECT)
@@ -43,12 +46,13 @@ CLASS TopAppWindow INHERIT AppWindow
 		ENDIF
 		RETURN SELF
 
-	METHOD Resize(oResizeEvent) 
+/// <include file="Gui.xml" path="doc/TopAppWindow.Resize/*" />
+	METHOD Resize(oResizeEvent)
 		SUPER:Resize(oResizeEvent)
 		SELF:__ResizeChild()
 		RETURN SELF
 
-	METHOD ToolBarHeightChanged(oEvent AS ControlNotifyEvent) 
+	METHOD ToolBarHeightChanged(oEvent AS ControlNotifyEvent)
 		SELF:__ResizeChild()
 		RETURN SELF
 END CLASS

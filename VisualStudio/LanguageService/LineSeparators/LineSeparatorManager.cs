@@ -102,7 +102,7 @@ namespace XSharp.LanguageService
             if (doc == null)
                 return;
             var lineState = doc.LineState;
-            if (lineState.Snapshot.Version != snapshot.Version)
+            if (doc.SnapShot.Version != snapshot.Version)
                 return;
             var viewLines = _textView.TextViewLines;
 
@@ -127,7 +127,7 @@ namespace XSharp.LanguageService
                         // the separator is attached to the line before the entity
 
                         var line = snapshot.GetLineFromLineNumber(index - 1);
-                        // add one to the line length to include the eol. Otherwise empty lines before an entity
+                        // add one to the line length to include the end of line. Otherwise empty lines before an entity
                         // will not get a separator
                         var ssp = new SnapshotSpan(snapshot, line.Start, line.Length + 1);
                         // A text view can hide lines and then IntersectsBufferSpan returns false for invisible lines

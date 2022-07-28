@@ -36,6 +36,15 @@ namespace XSharp.Project
             ResolveAssemblyReference();
 
         }
+
+        protected override void BindReferenceData()
+        {
+            base.BindReferenceData();
+            XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
+            projectNode.ProjectModel.AddAssemblyReference(this.AssemblyPath);
+        }
+
+
         protected override void Dispose(bool disposing)
         {
             if (this.ProjectMgr is XSharpProjectNode)
@@ -48,12 +57,17 @@ namespace XSharp.Project
  
             base.Dispose(disposing);
         }
-
         protected override NodeProperties CreatePropertiesObject()
         {
             return new XSharpAssemblyReferenceNodeProperties(this);
         }
 
+        public override void Remove(bool removeFromStorage)
+        {
+            XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
+            projectNode.ProjectModel.RemoveAssemblyReference(this.AssemblyPath);
+            base.Remove(removeFromStorage);
+        }
         protected override void SetHintPathAndPrivateValue(ProjectInstance instance,ProjectItemInstance iteminstance)
         {
 

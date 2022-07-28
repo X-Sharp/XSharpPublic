@@ -3,9 +3,10 @@
 
 PARTIAL CLASS Window
 
-	METHOD Dispatch(oEvent AS @@Event) 
+/// <include file="Gui.xml" path="doc/Window.Dispatch/*" />
+	METHOD Dispatch(oEvent AS @@Event)
 		RETURN SELF:EventReturnValue
-		
+
 	//LOCAL msg IS _winMSG
 	//LOCAL uMsg AS DWORD
 	//LOCAL dwHiWord AS DWORD
@@ -27,21 +28,21 @@ PARTIAL CLASS Window
 	//LOCAL strHelpInfo AS _winHELPINFO
 	//LOCAL oMenuHL AS HyperLabel
 	//LOCAL wp AS DWORD
-	
-	
+
+
 	//oEvt := oEvent
 	//SELF:EventReturnValue := 0L
 	//uMsg := oEvt:uMsg
 	//wp   := oEvt:wParam
-	
-		
 
-	
+
+
+
 	//CASE (uMsg == WM_WCHELP)
 	//	SELF:__EnableHelpCursor(FALSE)
 	//	SELF:HelpRequest(HelpRequestEvent{oEvt})
 	//	RETURN SELF:EventReturnValue
-		
+
 	//CASE (uMsg == WM_HELP)
 	//	//SE-060522 S.Ebert
 	//	IF ! lHelpOn
@@ -58,7 +59,7 @@ PARTIAL CLASS Window
 	//		ENDIF
 	//		RETURN SELF:EventReturnValue
 	//	ENDIF
-		
+
 	//CASE (uMsg == WM_ACTIVATE)
 	//	IF LoWord(oEvt:wParam) != WA_INACTIVE    //FdW//20061202 // LoWord() added
 	//		IF lHelpOn .and. (oApp != NULL_OBJECT)
@@ -75,14 +76,14 @@ PARTIAL CLASS Window
 	//		SELF:DeActivate(oEvt)
 	//	ENDIF
 	//	RETURN SELF:EventReturnValue
-		
-		
+
+
 	//CASE (uMsg == WM_LBUTTONDOWN) .or. (uMsg == WM_RBUTTONDOWN) .or. (uMsg == WM_MBUTTONDOWN) .or. ;
 	//		uMsg == WM_XBUTTONDOWN
 	//	//PP-030904 Xbutton
 	//	SELF:MouseButtonDown(MouseEvent{oEvt})
 	//	RETURN SELF:EventReturnValue
-		
+
 	//CASE (uMsg == WM_HSCROLL) .or. (uMsg == WM_VSCROLL)
 	//	dwLParam := DWORD(_CAST,oEvt:lParam)
 	//	IF dwLParam != 0
@@ -108,30 +109,30 @@ PARTIAL CLASS Window
 	//	ELSE
 	//		oTempEvent := ScrollEvent{oEvt}
 	//		oScrollBar := oTempEvent:ScrollBar
-			
+
 	//		//if (sbi .and. CV_RunTime::ScrollBar_GetIgnore(sbi)
 	//		// .and. (CV_RunTime::Event_wParam(e) == SB_ENDSCROLL))
 	//		// CV_RunTime::ScrollBar_SetIgnore(sbi, 0)
 	//		// ((pDW)pRequestor) -> _Default(e)
 	//		//endif
-			
+
 	//		IF (uMsg == WM_HSCROLL)
 	//			SELF:HorizontalScroll(oTempEvent)
 	//		ELSE
 	//			SELF:VerticalScroll(oTempEvent)
 	//		ENDIF
-			
+
 	//		// Required for Windows 3.x onwards
 	//		//if (sbi .and. CV_RunTime ::Event_wParam(e) == SB_THUMBPOSITION)
 	//		// CV_RunTime::ScrollBar_SetIgnore(sbi, 1)
 	//		//endif
 	//	ENDIF
 	//	RETURN SELF:EventReturnValue
-		
+
 	//CASE (uMsg == WM_COMMAND)
-		
+
 	//	dwLParam := DWORD(_CAST, oEvt:lParam)
-		
+
 	//	IF (dwLParam != 0)
 	//		IF lHelpCursorOn
 	//			SELF:__EnableHelpCursor(FALSE)
@@ -142,13 +143,13 @@ PARTIAL CLASS Window
 	//				oChild :=__WCGetObjectByHandle(GetParent(PTR(_CAST, oEvt:lParam)))
 	//			ENDIF
 	//			dwHiWord := HiWord(oEvt:wParam)
-				
+
 	//				CASE (dwHiWord == BN_DOUBLECLICKED)
 	//					SELF:ButtonDoubleClick(oTempEvent)
 	//				OTHERWISE
 	//					SELF:Default(oEvt)
 	//				ENDCASE
-					
+
 	//			CASE IsInstanceOf(oChild, #BaseListBox)
 	//				IF IsInstanceOf(oChild, #ComboBox)
 	//					DO CASE
@@ -158,7 +159,7 @@ PARTIAL CLASS Window
 	//						//PP-030923 Tell the combobox that an edit change occurred
 	//						oChild:__EditChange()
 	//						SELF:EditChange(ControlEvent{oEvt})
-							
+
 	//					CASE dwHiWord == CBN_KILLFOCUS .or.;
 	//							dwHiWord == CBN_SETFOCUS
 	//						SELF:EditFocusChange(EditFocusChangeEvent{oEvt})
@@ -177,10 +178,10 @@ PARTIAL CLASS Window
 	//						SELF:Default(oEvt)
 	//					ENDCASE
 	//				ENDIF
-					
+
 	//			CASE (IsInstanceOf(oChild,#Edit) .and. !oChild:__NoNotify) .or. IsInstanceOf(oChild,#IPAddress)
 	//				dwHiWord:=HiWord(oEvt:wParam)
-					
+
 	//				DO CASE
 	//				CASE dwHiWord == EN_CHANGE
 	//					SELF:EditChange(ControlEvent{oEvt})
@@ -196,7 +197,7 @@ PARTIAL CLASS Window
 	//				OTHERWISE
 	//					SELF:Default(oEvt)
 	//				ENDCASE
-					
+
 	//			CASE IsInstanceOf(oChild, #ToolBar)
 	//				oObject := oChild:Owner
 	//				IF IsInstanceOfUsual(oChild:Owner, #Window) .and. !(IsInstanceOfUsual(oObject, #ShellWindow) .and. (IVarGet(oObject, #ChildToolbarLocation) == TBL_SHELL))
@@ -204,23 +205,23 @@ PARTIAL CLASS Window
 	//				ELSE
 	//					SELF:__PreMenuCommand(MenuCommandEvent{oEvt}:__SetMenu(SELF))
 	//				ENDIF
-					
+
 	//				RETURN SELF:EventReturnValue
-					
+
 	//				//PP-031115 ACN_START/ACN_STOP were in ControlNotify - should be here as WM_COMMAND
 	//			CASE IsInstanceOf(oChild, #AnimationControl)
 	//				oTempEvent := ControlEvent{oEvt}
-					
+
 	//				IF dwHiWord = ACN_START
 	//					SELF:AnimationStart(oTempEvent)
 	//				ELSEIF dwHiWord = ACN_STOP
 	//					SELF:AnimationStop(oTempEvent)
 	//				ENDIF
-					
+
 	//			OTHERWISE
 	//				SELF:Default(oEvt)
 	//			ENDCASE
-				
+
 	//			RETURN SELF:EventReturnValue
 	//		ENDIF
 	//	ELSEIF (dwLParam == 0) //Menu or Accel
@@ -234,7 +235,7 @@ PARTIAL CLASS Window
 	//		SELF:Default(oEvt)
 	//		RETURN SELF:EventReturnValue
 	//	ENDIF
-		
+
 	//CASE (uMsg == WM_SETCURSOR)
 	//	IF (oEvt:wParam) != (DWORD(_CAST, hWnd))
 	//		lclient := FALSE
@@ -252,7 +253,7 @@ PARTIAL CLASS Window
 	//	ENDIF
 	//	SELF:__HandlePointer(oEvt, lHelpEnable, lclient)
 	//	RETURN SELF:EventReturnValue
-		
+
 	//CASE (uMsg == WM_DESTROY)
 	//	SetMenu(hWnd, 0)
 	//	// SetAccelerator(Null_Ptr, Null_Ptr)
@@ -263,33 +264,33 @@ PARTIAL CLASS Window
 	//		UnRegisterAxit(SELF)
 	//		ptrSelfPtr:=Null_Ptr
 	//	ENDIF
-		
+
 	//	SELF:__ReleaseDC()
 	//	/*WCDCDelete(self)
 	//	ReleaseDC(hWnd,hDC)*/
 	//	RETURN SELF:EventReturnValue
-		
+
 	//CASE (uMsg == WM_INITMENU) .or. (uMsg == WM_INITMENUPOPUP)
 	//	SELF:MenuInit(MenuInitEvent{oEvt})
 	//	RETURN SELF:EventReturnValue
-		
+
 	//CASE (uMsg == WM_KEYDOWN) .or. (uMsg == WM_SYSKEYDOWN)
 	//	IF ! PeekMessage(@msg, hWnd, WM_CHAR, WM_CHAR, PM_NOREMOVE) //  == FALSE
 	//		SELF:KeyDown(KeyEvent{oEvt})
 	//		RETURN SELF:EventReturnValue
 	//	ENDIF
-		
+
 	//CASE (uMsg == WM_KEYUP) .or. (uMsg == WM_SYSKEYUP)
 	//	SELF:KeyUp(KeyEvent{oEvt})
 	//	SELF:EventReturnValue := 1
 	//	RETURN SELF:EventReturnValue
-		
+
 	//CASE (uMsg == WM_MENUSELECT)
 	//	IF (oEvt:lParam != 0)
 	//		SELF:MenuSelect(MenuSelectEvent{oEvt})
 	//		RETURN SELF:EventReturnValue
 	//	ENDIF
-		
+
 	//CASE (uMsg == WM_MOUSEMOVE)
 	//	//PP-040427 Issue 12909 Following was testing oEvt:wParam == MK_LBUTTON
 	//	// which allows for the only left button press without ctrl/shift - wParam is different values if ctrl/shift pressed
@@ -304,35 +305,35 @@ PARTIAL CLASS Window
 	//	ELSE
 	//		SELF:MouseMove(MouseEvent{oEvt})
 	//	ENDIF
-		
+
 	//	RETURN SELF:EventReturnValue
-		
+
 	//CASE (uMsg == WM_MOVE)
 	//	SELF:Move(MoveEvent{oEvt})
 	//	RETURN SELF:EventReturnValue
-		
+
 	//CASE (uMsg == WM_SIZE)
 	//	DCInitialized := FALSE
 	//	SELF:Resize(ResizeEvent{oEvt})
 	//	RETURN SELF:EventReturnValue
-		
+
 	//CASE (uMsg == WM_CLOSE)
 	//	IF SELF:QueryClose(oEvt)
 	//		SELF:__Close(oEvt)
 	//	ENDIF
 	//	RETURN SELF:EventReturnValue
-		
+
 	//CASE (uMsg == gdwDragListMsg)
 	//	SELF:__HandleListItemDrag(oEvt)
 	//	RETURN SELF:EventReturnValue
-		
-		
+
+
 	//CASE uMsg == WM_MENUCHAR
 	//	//PP-030319 owner draw support
 	//	//Used for owner drawn menus or controls
 	//	__Dispatch_MenuChar(oEvt, SELF)
 	//	RETURN SELF:EventReturnValue
-		
+
 	//	//PP-040425 New improved context menu support, following replaced with subsequent code
 	//	// 	CASE (uMsg == WM_CONTEXTMENU)
 	//	// 		IF IsInstanceOf(SELF, #ShellWindow) .and. (oContextMenu != NULL_OBJECT)
@@ -350,37 +351,37 @@ PARTIAL CLASS Window
 	//			RETURN (SELF:EventReturnValue := 1l)
 	//		ENDIF
 	//	ENDIF
-		
+
 
  //       // 081212 suggestion from Sven
  //   CASE uMsg == WM_SysCommand .AND. oEvt:wParam < 0x0000F000
  //       //SE-081122 SystemMenu call
  //       SELF:__PreMenuCommand(MenuCommandEvent{oEvt}:__SetMenu(SELF))
  //       RETURN SELF:EventReturnValue
-	  
- //   CASE uMsg == WM_TIMER 
+
+ //   CASE uMsg == WM_TIMER
  //        //SE-081122 Systemtimer event
  //        SELF:Timer(oEvt)
- //        RETURN SELF:EventReturnValue 
-		 
- //   CASE uMsg >= WM_APP 
+ //        RETURN SELF:EventReturnValue
+
+ //   CASE uMsg >= WM_APP
  //        IF IsMethod(SELF, #AppMessage)
- //            Send(SELF, #AppMessage, oEvt)      
- //            RETURN SELF:EventReturnValue 
+ //            Send(SELF, #AppMessage, oEvt)
+ //            RETURN SELF:EventReturnValue
  //        ENDIF
 	//OTHERWISE
 	//	IF IsMethod(SELF, #DispatchUnknown)
 	//		Send(SELF, #DispatchUnknown, oEvt)
 	//		RETURN SELF:EventReturnValue
 	//	ENDIF
-		
+
 	//ENDCASE
-	
-	
+
+
 	//SELF:Default(oEvt)
-	
+
 	//RETURN SELF:EventReturnValue
-	
+
 END CLASS
 
 

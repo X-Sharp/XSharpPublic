@@ -102,7 +102,12 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY File AS XFile               GET
       PROPERTY Range AS TextRange          GET
       PROPERTY Interval AS TextInterval    GET
-   END INTERFACE
+    END INTERFACE
+    INTERFACE IXSourceEntity
+        PROPERTY SourceCode AS STRING    GET
+    END INTERFACE
+
+
 
 
 

@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="c8ac4542-9a98-4c54-808e-781ed794489c" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">SCATTER Command &#160;(FoxPro)</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Assign new values to the contents of one or more fields in the current record.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>SCATTER [FIELDS &lt;idFieldList&gt; | FIELDS LIKE &lt;Skeleton&gt;<para/>
+ &#160; | FIELDS EXCEPT &lt;Skeleton&gt;] [MEMO] [BLANK]<para/>
+ &#160; | TO ArrayName | MEMVAR<para/>
+ &#160; | NAME ObjectName [ADDITIVE]</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>FIELDS &lt;idFieldList&gt;</entry><entry>The list of fields to process. The default is all fields with the exception of memo fields, unless the command supports the MEMO clause.</entry></row></table><table><row><entry></entry><entry>Only fields with the same names and types in both files are appended. &#160;If fields with the same name do not match in data type, a runtime error is raised.</entry></row></table><table><row><entry>FIELDS LIKE &lt;Skeleton&gt;</entry><entry>You can specify field names with a wild card, such as FIELDS LIKE *name</entry></row></table><para>FIELDS EXCEPT &lt;Skeleton&gt;You can exclude fields, such as for example the primary keys: FIELDS EXCEPT Id<para/>
+&lt;Skeleton&gt; supports wildcards (* and ?). For example, to replace all fields that begin with the letters A and P, use: <para/>
+FIELDS LIKE A*,P*</para>
+<para>&#160;</para>
+<para>Please note that you can combine FIELDS LIKE and FIELDS EXCEPT but you cannot combine a fields list with the LIKE and EXCEPT clauses.</para>
+<para>&#160;</para>
+<table><row><entry>MEMO</entry><entry>Specifies that the field list include one or more memo fields. </entry></row></table><para>&#160;</para>
+<table><row><entry>BLANK</entry><entry>Include the BLANK keyword to create a set of empty variables or to fill the array or object with empty values. Each variable is assigned the same name, data type, and size as its field. If a field list is included, a variable is created for each field in the field list.</entry></row></table><para>&#160;</para>
+<table><row><entry>TO &lt;ArrayName&gt;</entry><entry>Specifies an array to which the record contents are copied. Starting with the first field, SCATTER copies the contents of each field into each element of the array in sequential order.</entry></row></table><table><row><entry></entry><entry>SCATTER automatically creates a new array. The array elements have the same size and data types as the corresponding fields. </entry></row></table><para>&#160;</para>
+<table><row><entry>MEMVAR</entry><entry>Scatters the data to a set of variables instead of an array. SCATTER creates one variable for each field in the table and fills each variable with data from the corresponding field in the current record, assigning to the variable the same name, size, and type as its field.</entry></row></table><para>&#160;</para>
+<table><row><entry>NAME &lt;ObjectName&gt;</entry><entry>Creates an object whose properties have the same names as fields in the table. To copy the value of each field in the table to each object property, do not include the BLANK keyword. To leave the properties empty, include the BLANK keyword</entry></row></table><para>&#160;</para>
+<table><row><entry>ADDITIVE</entry><entry>To update the property values of an existing and valid Visual FoxPro object specified by ObjectName. Using BLANK with ADDITIVE omits the values for existing properties that have matching field names.</entry></row></table><para>&#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="f7451e68-caf8-41bd-967c-34c4860ebd45">GATHER</link>, <link xlink:href="ca9a9a9e-070c-4be5-9f07-26b70cebbe4e">COPY TO ARRAY</link>, <link xlink:href="758e4c7e-09b3-4ace-ab30-c361684ab5f7">APPEND FROM ARRAY</link></para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

@@ -1,4 +1,11 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+//------------------------------------------------------------------------------
+
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -12,6 +19,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using XSharpModel;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
@@ -149,97 +157,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return false;
         }
 
-        /// <summary>
-        /// Search a potential field-ID
-        /// </summary>
-        /// <returns></returns>
-        private bool SearchField_old()
-        {
-            if (m_textBuffer.Properties == null)
-                return false;
-            //
-            var xDocument = m_textBuffer.GetDocument();
-            if (xDocument == null)
-            {
-                return false;
-            }
-            var linesState = xDocument.LineState;
-            //
-            if (!xDocument.Complete)
-                return false;
-            //
-            var xLines = xDocument.Lines;
-            //
-            SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
-            ITextSnapshotLine line = caret.GetContainingLine();
-            //
-            IList<XSharpToken> lineTokens = null;
-            List<XSharpToken> fulllineTokens = new List<XSharpToken>();
-            var lineNumber = line.LineNumber;
-            var lineState = linesState.Get(lineNumber);
-            // Search the first line
-            while (lineState == LineFlags.Continued)
-            {
-                // Move back
-                lineNumber--;
-                lineState = linesState.Get(lineNumber);
-            }
-            // It must be a SingleLineEntity
-            if (lineState != LineFlags.SingleLineEntity)
-                return false;
-            if (!xLines.TryGetValue(lineNumber, out lineTokens))
-                return false;
-            //
-            fulllineTokens.AddRange(lineTokens);
-            // Check if the following line is continuing this one
-            do
-            {
-                lineNumber++;
-                lineState = linesState.Get(lineNumber);
-                if (lineState == LineFlags.Continued)
-                {
-                    xLines.TryGetValue(lineNumber, out lineTokens);
-                    if (lineTokens != null)
-                    {
-                        fulllineTokens.AddRange(lineTokens);
-                        continue;
-                    }
-                }
-            } while (lineState == LineFlags.Continued);
-            // Now, search for an ID, which is a Field... Here just check that we have an ID
-            // Todo : Let's say it MUST START with an underscore... We may have a setting for that
-            bool found = false;
-            bool foundID = false;
-            bool hasVisibility = false;
-            foreach (var token in fulllineTokens)
-            {
-                if ((token.Type == XSharpLexer.PUBLIC) ||
-                     (token.Type == XSharpLexer.EXPORT) ||
-                      (token.Type == XSharpLexer.PROTECTED) ||
-                       (token.Type == XSharpLexer.HIDDEN) ||
-                       (token.Type == XSharpLexer.PRIVATE) ||
-                       (token.Type == XSharpLexer.INTERNAL) ||
-                        (token.Type == XSharpLexer.INSTANCE))
-                {
-                    hasVisibility = true;
-                }
-                if (hasVisibility && (token.Type == XSharpLexer.ID))
-                {
-                    // TODO : Use a Setting
-                    if (token.Text.StartsWith("_"))
-                    {
-                        foundID = true;
-                    }
-                }
-                if (hasVisibility && foundID && (token.Type == XSharpLexer.AS))
-                {
-                    found = true;
-                    break;
-                }
-            }
-            return found;
-        }
-        
+         
         /// <summary>
         /// Search the item under the caret.
         /// If a Field, it is stored in _memberentity

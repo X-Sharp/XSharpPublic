@@ -16,13 +16,13 @@ BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
     CLASS XSourceBlock
         PROPERTY XKeyword AS XKeyword AUTO GET PRIVATE SET
-        PROPERTY Token    AS XSharpToken  AUTO GET PRIVATE SET
+        PROPERTY Token    AS IToken  AUTO GET PRIVATE SET
         PROPERTY Children AS IList<XSourceBlock> AUTO GET PRIVATE SET
         PROPERTY Text     AS STRING GET Token:ToString()
         PROPERTY Last     AS XSourceBlock GET IIF(Closed, SELF:Children:Last(), SELF)
         PROPERTY Closed   AS LOGIC  GET Children?:Count > 0
 
-        CONSTRUCTOR(xt as XKeyword, token as XSharpToken )
+        CONSTRUCTOR(xt as XKeyword, token as IToken )
             SELF:XKeyword   := xt
             SELF:Token    := token
             SELF:Children := List<XSourceBlock>{}

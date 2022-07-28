@@ -9,7 +9,7 @@
     <AssemblyName>XSharp.VOGUIClasses</AssemblyName>
     <Name>XSharp.VO.GUIClasses</Name>
     <OutputName>XSharpGUIClasses</OutputName>
-    <XSharpProjectversion>2.11.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.12.2.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -22,6 +22,7 @@
     <InitLocals>false</InitLocals>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
     <NoWin32Manifest>False</NoWin32Manifest>
+    <Vo14>False</Vo14>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

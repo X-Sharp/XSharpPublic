@@ -416,7 +416,7 @@ END CLASS
 FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldName AS STRING) AS FieldSpec
 		LOCAL cName AS STRING
 		LOCAL oHL AS HyperLabel
-		LOCAL nLen, nDec AS LONG
+		LOCAL nLen, nDec AS DWORD
 		LOCAL cType AS STRING
 		LOCAL oType	AS System.Type
 		LOCAL TC AS TypeCode
@@ -429,10 +429,8 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 		nDec    := 0
 		SWITCH TC
 		CASE TypeCode.String
-
-
 			cType := "C"
-			nLen := oColumn:MaxLength
+			nLen := (DWORD) oColumn:MaxLength
 			// Automatically Convert Long Strings to Memos
 			IF nLen  > 255 .OR. nLen < 0
 				nLen 	:= 10
@@ -447,63 +445,30 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 			oFs 		:= LogicFS{oHL}
 			oFs:Picture := "Y"
 
-
-
-
 		CASE TypeCode.Double
         CASE TypeCode.Single
         CASE TypeCode.Decimal
-            // .OR. (lTypeCodeIsInt .AND. oProviderType = ProviderType.Oracle)
-
-
-
-
 			cType		 := "N"
-			// 2.72 Changed size calculation:
-			// SQL handles precision like this
-			// Num 6,2 allows numbers -9999.99 thru 9999.99. So we need a VO Field N 8,2
-			// Num 3,0 allows numbers -999 thru 999 So we need a VO field N 4,0.
-			// So if Scale = 0 Length = Precision + 1
-			// So if Scale <> 0 Length = Precision + 2
-			// ...
-			// In Vewa f�hrt diese Modifikation zu Abweichungen, da hier mit den L�ngen der SQL-Datentypen
-			// gerechnet wird. So kommt es zum Beispiel vor, dass ein Feld, was in einer SQL-Struktur mit N,5,2
-			// definiert ist, in einer Makse nur mit XX,XX beschrieben werden kann. Dieses Problem ist so alt,
-			// das in einigen Einrichtungen sogar damit gerechnet wird, weswegen hier nichts ver�ndert
-			// werden sollte (siehe dazu auch Ticket #4126).
 			nDec := 1
-			IF oSchema:Rows:Count >= oColumn:Ordinal
-				oRow := oSchema:Rows[oColumn:Ordinal]
-				nDec := Convert.ToInt32(oRow:Item["NumericScale"])
-				nLen := Convert.ToInt32(oRow:Item["NumericPrecision"])
-//					lVersionLow := FALSE
-//					IF oProviderType == ProviderType.MySql
-//						iMyVersion := SupportFunctions.GetMySQLDataVersion()
-//						IF iMyVersion != NULL
-//							lVersionLow :=  !((iMyVersion[1] > 6) .OR. (iMyVersion[1] = 6 .AND. iMyVersion[2] > 9) .OR. (iMyVersion[1] = 6 .AND. iMyVersion[2] = 9 .AND. iMyVersion[3] >= 11))
-//						ENDIF
-//					ENDIF
-					// L�ngen von Zahlen ohne Dezimalstellen kommen um eine Stelle zu kurz an
-					//IF nDec = 0 .AND. oProviderType = ProviderType.MySql .AND. lVersionLow
-						// Dies ist ab 6.9.11 gefixt
-					//	nLen++
-					//ELSEIF nLen == 0
-                IF nLen == 0
-					// I have seen a case where nDec == 31 and nLen == 0
-					// Fix this to something usefull
-					nDec := 2
-					nLen := 10
-				ELSEIF nDec == 127
-					//IF nLen == 38 .AND. oProviderType = ProviderType.Oracle // Standardvalue for calculated fields in oracle-queries, cutting decimals leads to wrong results in that case
-					//	nDec := 10
-					//ELSE
-						nDec := 0 // Overflow abfangen
-					//ENDIF
-				ENDIF
+            var ordinal := oColumn:Ordinal
+			IF oSchema:Rows:Count >= ordinal
+				oRow := oSchema:Rows[ordinal]
+				nDec := (DWORD) Convert.ToInt32(oRow:Item["NumericScale"])
+				nLen := (DWORD) Convert.ToInt32(oRow:Item["NumericPrecision"])
+                if nDec > nLen // This happens for some SQL providers
+                    if TC == TypeCode.Decimal
+                        nDec := 4
+                    else
+                        nDec := 2
+                    endif
+                endif
+                if nLen < nDec + 2
+                    nLen := iif (nDec < 7, 10, nDec + 3)
+                endif
 			ELSE
 				nDec := 2
 				nLen := 10
-			ENDIF
+            ENDIF
 			oFs	:= NumberFS{oHL,nLen, nDec}
 
 
@@ -574,8 +539,6 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 				lIsDate     := cTypeName:Contains("DATE")
 			ENDIF
 			IF lIsDate
-
-
 				cType := "D"
 				nLen 	:= 8
 				oFs	:= DateFS{oHL}
@@ -585,10 +548,9 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 				oFs		:= FieldSpec{oHL,"C",10,0}
 			ENDIF
 
-
 		OTHERWISE
 			cType := "C"
-			nLen 	:= oColumn:MaxLength
+			nLen 	:= (DWORD) oColumn:MaxLength
 			IF (nLen > 0)
 				oFs	:= FieldSpec{oHL,"C",nLen,0}
 			ELSE

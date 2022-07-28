@@ -1,9 +1,9 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+USING System.Runtime.CompilerServices
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ampm/*" />
 FUNCTION AmPm(c24HrTime AS STRING) AS STRING
@@ -13,10 +13,10 @@ FUNCTION AmPm(c24HrTime AS STRING) AS STRING
 	IF String.IsNullOrEmpty(c24HrTime)
 		RETURN ""
 	ENDIF
-	nSeconds := Secs(c24HrTime) 
+	nSeconds := Secs(c24HrTime)
 	IF (nSeconds) > 86400
 		RETURN ""
-	ENDIF	
+	ENDIF
 	nSeconds := nSeconds % 86400
 	nHours   := nSeconds / 3600
 	nSeconds := nSeconds % 3600
@@ -50,7 +50,7 @@ FUNCTION ConTime(dwHour AS DWORD,dwMinute AS DWORD,dwSeconds AS DWORD) AS STRING
 /// <param name="dt">DateTime values that needs to be converted</param>
 /// <returns>A (military) time that corresponds to the passed arguments in the format HH:MM:SS without AM/PM notation.</returns>
 FUNCTION ConTime(dt AS DateTime) AS STRING
-	RETURN _TimeString((DWORD) dt:Hour,(DWORD) dt:Minute,(DWORD) dt:Second, FALSE, "","")   
+	RETURN _TimeString((DWORD) dt:Hour,(DWORD) dt:Minute,(DWORD) dt:Second, FALSE, "","")
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ntocdow/*" />
 FUNCTION NToCDoW(dwDayNum AS DWORD) AS STRING
@@ -60,8 +60,8 @@ FUNCTION NToCDoW(dwDayNum AS DWORD) AS STRING
 	ELSEIF RuntimeState.International == CollationMode.Clipper
 		result := __CavoStr(VOErrors.RT_MSG_DAY1 + dwDayNum -1)
 	ELSE
-		VAR culture := System.Globalization.CultureInfo.CurrentCulture 
-		result := culture:DateTimeFormat:GetDayName((DayOfWeek) (dwDayNum-1))   
+		VAR culture := System.Globalization.CultureInfo.CurrentCulture
+		result := culture:DateTimeFormat:GetDayName((DayOfWeek) (dwDayNum-1))
 	ENDIF
 	RETURN result
 
@@ -73,8 +73,8 @@ FUNCTION NToCMonth(dwMonthNum AS DWORD) AS STRING
 	ELSEIF RuntimeState.International == CollationMode.Clipper
 		result := __CavoStr(VOErrors.RT_MSG_MONTH1 + dwMonthNum -1)
 	ELSE
-		VAR culture := System.Globalization.CultureInfo.CurrentCulture 
-		result := culture:DateTimeFormat:GetMonthName((INT)dwMonthNum)   
+		VAR culture := System.Globalization.CultureInfo.CurrentCulture
+		result := culture:DateTimeFormat:GetMonthName((INT)dwMonthNum)
 	ENDIF
 	RETURN result
 
@@ -132,7 +132,7 @@ FUNCTION Seconds() AS REAL8
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/time/*" />
 FUNCTION Time() AS STRING
-   VAR d := DateTime.Now 
+   VAR d := DateTime.Now
    RETURN _TimeString(d)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/time24/*" />
@@ -143,7 +143,7 @@ FUNCTION Time24() AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tstring/*" />
 FUNCTION TString(nSeconds AS REAL8) AS STRING
-   RETURN TString( (DWORD) Math.Round( nSeconds, MidpointRounding.ToEven ) )   
+   RETURN TString( (DWORD) Math.Round( nSeconds, MidpointRounding.ToEven ) )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tstring/*" />
 FUNCTION TString(nSeconds AS DWORD) AS STRING
@@ -153,16 +153,16 @@ FUNCTION TString(nSeconds AS DWORD) AS STRING
    nSeconds := nSeconds % (24 * 60 * 60)
    dwHours   := nSeconds / (60 * 60)
    nSeconds := nSeconds % (60 * 60)
-   dwMinutes := nSeconds / 60 
-   nSeconds := nSeconds % 60 
+   dwMinutes := nSeconds / 60
+   nSeconds := nSeconds % 60
    RETURN _TimeString(dwHours, dwMinutes, nSeconds, GetAmPm(), GetAMExt(), GetPMExt())
 
 
-INTERNAL FUNCTION _TimeString( d AS DateTime ) AS STRING	
+INTERNAL FUNCTION _TimeString( d AS DateTime ) AS STRING
    RETURN _TimeString( (DWORD) d:Hour, (DWORD) d:Minute, (DWORD) d:Second, SetAmPm(), GetAMExt(), GetPMExt() )
 
 
-INTERNAL FUNCTION _TimeString( h AS DWORD, m AS DWORD, s AS DWORD, lAMPM AS LOGIC, cAM AS STRING, cPM AS STRING ) AS STRING	
+INTERNAL FUNCTION _TimeString( h AS DWORD, m AS DWORD, s AS DWORD, lAMPM AS LOGIC, cAM AS STRING, cPM AS STRING ) AS STRING
    LOCAL cTimeSep   AS STRING
    LOCAL lAfternoon AS LOGIC
    // no exceptions, vo simply returns an empty string
@@ -173,7 +173,7 @@ INTERNAL FUNCTION _TimeString( h AS DWORD, m AS DWORD, s AS DWORD, lAMPM AS LOGI
    ELSEIF s < 0 || s > 59
       RETURN ""
    ENDIF
-   
+
    IF s == 60
       s := 0
       m += 1
@@ -185,19 +185,19 @@ INTERNAL FUNCTION _TimeString( h AS DWORD, m AS DWORD, s AS DWORD, lAMPM AS LOGI
          h := 0
       ENDIF
    ENDIF
-   
+
    cTimeSep := Chr( GetTimeSep() )
-   
+
    lAfternoon := h >= 12
-   
-   IF lAMPM 
+
+   IF lAMPM
       IF h > 12
          h -= 12
       ELSEIF h == 0
          h := 12
-      ENDIF    
+      ENDIF
    ENDIF
-   
+
    RETURN String.Format( "{0:00}{3}{1:00}{3}{2:00}{4}", h, m, s, cTimeSep, IIF( lAMPM, IIF( lAfternoon, cPM, cAM ), "" ) )
 
 
@@ -252,7 +252,7 @@ STATIC FUNCTION _SplitDate(cDate AS STRING) AS STRING[]
 		aNums[nCurrent] := cCurrent
 	END IF
 RETURN aNums
-	
+
 
 /// <summary>
 /// Convert a Date string to DateTime.
@@ -318,17 +318,17 @@ FUNCTION CToDt(cDate AS STRING, cDateFormat AS STRING) AS DateTime
         ELSE
             dDate := DateTime.MinValue
         ENDIF
-	CATCH 
+	CATCH
 		dDate := DateTime.MinValue
 	END TRY
 	RETURN dDate
-  
+
 /// <summary>
 /// Convert an ANSI date string to DateTime
 /// </summary>
-/// <param name="cDate">A string in the ANSI form yyyy.mm.dd, where yy, mm, and dd represent year, month, and day respectively.  
-/// The year, month, and day can be separated by any character other than a number. 
-/// cDate is always interpreted as an ANSI string and is not dependent on SetDateFormat() or SetDateCountry().  
+/// <param name="cDate">A string in the ANSI form yyyy.mm.dd, where yy, mm, and dd represent year, month, and day respectively.
+/// The year, month, and day can be separated by any character other than a number.
+/// cDate is always interpreted as an ANSI string and is not dependent on SetDateFormat() or SetDateCountry().
 /// If the century digits are not specified, the century is determined by the rules of SetEpoch().</param>
 /// <returns>The date value that corresponds to the numbers specified in <paramref name="cDate"/>.  If cDate is not a valid ANSI date, CToDAnsi() returns a DateTime.MinValue.
 /// </returns>
@@ -344,7 +344,7 @@ FUNCTION CToDtAnsi(cDate AS STRING) AS DateTime
 /// A string representation of the given Date, formatted in the current Date format.
 /// </returns>
 FUNCTION DtToC(d AS DateTime) AS STRING
-	LOCAL result:="" AS STRING		
+	LOCAL result:="" AS STRING
 	LOCAL cFormat := XSharp.RuntimeState.GetValue<STRING>(Set.DateFormatNet) AS STRING
 	IF d != DateTime.MinValue
 		LOCAL dt := d AS DateTime
@@ -352,7 +352,7 @@ FUNCTION DtToC(d AS DateTime) AS STRING
 	ELSE
 		result := RuntimeState.NullDateString
 	ENDIF
-	RETURN result 
+	RETURN result
 
 /// <summary>
 /// Convert a DateTime value to a string formatted as string in ANSI format
@@ -362,13 +362,13 @@ FUNCTION DtToC(d AS DateTime) AS STRING
 /// An 8-character string in the format yyyymmdd.  If dDate is a DateTime.MinValue, a string of eight spaces is returned.  The return value is not affected by the current date format.
 /// </returns>
 FUNCTION DtToS(dDate AS DateTime) AS STRING
-	LOCAL result := NULL  AS STRING		
+	LOCAL result := NULL  AS STRING
 	IF dDate != DateTime.MinValue
 		result := dDate:ToString("yyyyMMdd")
     ELSE
-        result:="        " 
+        result:="        "
 	ENDIF
-	RETURN result 
+	RETURN result
 
 /// <summary>
 /// Convert an Date string to DateTime
@@ -385,7 +385,7 @@ FUNCTION SToDt(cDate AS STRING) AS DateTime
 			    // VO adjusts date strings like "00yyMMdd" to epoch-based year
 			    LOCAL dwY AS DWORD
 			    dwY := UInt32.Parse(cDate:Substring(0,4))
-			
+
 			    // same code as in ConDate(), probably better adjust SToD() to use ConDate() directly
 			    LOCAL lAfter AS LOGIC
 			    lAfter := dwY > XSharp.RuntimeState.EpochYear
@@ -393,30 +393,35 @@ FUNCTION SToDt(cDate AS STRING) AS DateTime
 			    IF lAfter
 				    dwY -= 100
 			    ENDIF
-			
+
 			    cDate := dwY:ToString():PadLeft(4 , c'0') + cDate:Substring(4)
     		END IF
 	    	convertedDate := DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
         ENDIF
-        
+
 	CATCH
 		convertedDate := DateTime.MinValue
 	END TRY
 	RETURN	 convertedDate
 
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/datetime/*" />
 FUNCTION @@DateTime() AS DateTime
     RETURN DateTime.Now
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/datetime/*" />
 FUNCTION @@DateTime(nYear AS INT, nMonth AS INT, nDay AS INT) AS DateTime
     RETURN System.DateTime{nYear, nMonth, nDay}
-    
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/datetime/*" />
 FUNCTION @@DateTime(nYear AS INT, nMonth AS INT, nDay AS INT, nHours AS INT) AS DateTime
     RETURN System.DateTime{nYear, nMonth, nDay,nHours, 0, 0}
-    
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/datetime/*" />
 FUNCTION @@DateTime(nYear AS INT, nMonth AS INT, nDay AS INT, nHours AS INT, nMinutes AS INT) AS DateTime
     RETURN System.DateTime{nYear, nMonth, nDay,nHours, nMinutes, 0}
-    
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/datetime/*" />
 FUNCTION @@DateTime(nYear AS INT, nMonth AS INT, nDay AS INT, nHours AS INT, nMinutes AS INT, nSeconds AS INT) AS DateTime
     RETURN System.DateTime{nYear, nMonth, nDay,nHours, nMinutes, nSeconds}
-            
+
+

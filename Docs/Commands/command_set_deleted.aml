@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="f0436f89-0075-41ac-965e-75a2b83c44c9" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>TODO: Move introduction text here</para>
+    </introduction>
+
+
+
+
+     
+     <para><legacyBold>Navigation:</legacyBold>&#160;
+     
+     <!-- TODO: Unknown topic link: xsharp.html -->X# Documentation &gt; <!-- TODO: Unknown topic link: chapter-2.html -->X# Language Reference &gt; <!-- TODO: Unknown topic link: commands-by-category.html -->Commands and Statements &gt; <!-- TODO: Unknown topic link: cmd_cat_database.html -->Database&#160;&gt;</para>
+
+     
+     <!-- TODO: Add named anchor: prev --><mediaLink><image xlink:href="btn_prev_n" /></mediaLink><!-- TODO: Add named anchor: main --><mediaLink><image xlink:href="btn_home_n" /></mediaLink><!-- TODO: Add named anchor: next --><mediaLink><image xlink:href="btn_next_n" /></mediaLink>
+    
+    <h1 class="p_Heading1" style="page-break-after: avoid;">SET DELETED Command</h1>
+
+  
+  <!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+  
+
+
+
+     <!--ZOOMRESTART-->
+     <table><row><entry>Note</entry><entry>This command is defined in a header file and will be preprocessed by the X# preprocessor to a function call. If you disable the standard header (<!-- TODO: Unknown topic link: opt-nostddefs.html -->-nostddefs) files then this command will not be available. If you tell the compiler to use a different standard header file (<!-- TODO: Unknown topic link: opt-stddefs.html -->-stddef&#160;) then this command may also be not available</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Purpose</h1>
+<para>Change the setting that determines whether to ignore or include records that are marked for deletion.</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Syntax</h1>
+<para>SET DELETED ON | OFF | (&lt;lToggle&gt;)</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Arguments</h1>
+<table><row><entry>ON </entry><entry>Specifies that commands that operate on records, including records in related tables, using a scope ignore records that are marked for deletion</entry></row></table><table><row><entry>OFF</entry><entry>Specifies that commands that operate on records, including records in related tables, using a scope can access records marked for deletion. (Default)</entry></row></table><table><row><entry>lToggle</entry><entry>A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</entry></row></table><h1 class="p_Heading1" style="page-break-after: avoid;">Description</h1>
+<para>SET DELETED is functionally equivalent to SetDeleted(). &#160;</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">Assembly</h1>
+<para>XSharp.RT.DLL</para>
+<h1 class="p_Heading1" style="page-break-after: avoid;">See Also</h1>
+<para><link xlink:href="d9b7ffae-c23b-4222-8767-577023d97475">DELETE</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_DbSetFilter.htm -->DbSetFilter(), <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\M_XSharp_RT_Functions_Deleted.htm -->Deleted(), <link xlink:href="4884735d-06d9-4652-9887-45c4d8293bb7">RECALL</link>, <link xlink:href="b599a490-b76f-4658-8844-348d51ae7120">SET FILTER</link>, <!-- TODO: Unknown topic link: ms-its:XSharpRef.chm::\html\Overload_XSharp_Core_Functions_SetDeleted.htm -->SetDeleted() </para>
+<para>&#160;</para>
+
+     <!--ZOOMSTOP-->
+
+<!-- TODO: Review markup -->
+<markup>
+<script>
+           var lastSlashPos = document.URL.lastIndexOf("/") > document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") : document.URL.lastIndexOf("\\");
+           if( document.URL.substring(lastSlashPos + 1, lastSlashPos + 4).toLowerCase() != "~hh" )
+	   $(document).ready(function(){
+		   $(window).bind('resize', function() {
+				var y = $('#header').height();
+				$('#content').css('margin-top', y);
+				$('.hmanchor').css('margin-top', -y-20);
+				$('.hmanchor').css('padding-top', y+20);
+			});
+		   $(window).triggerHandler('resize');	
+		   $(window).triggerHandler('resize');	
+                   
+		});
+</script>
+</markup>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

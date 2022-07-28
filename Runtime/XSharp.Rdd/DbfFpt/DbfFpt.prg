@@ -13,9 +13,9 @@ USING System.IO
 USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
-    CLASS DBFFPT INHERIT DBF
+    CLASS DBFFPT INHERIT DBF IMPLEMENTS IRawData
         PRIVATE _oFptMemo AS FPTMemo
-        PROPERTY ReturnRawData as LOGIC GET SET
+        PROPERTY ReturnRawData as LOGIC AUTO
         CONSTRUCTOR
             SUPER()
             SELF:ReturnRawData := FALSE
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD
                     RETURN SELF:_oFptMemo:DecodeValue(rawData)
                 else
                     IF SELF:ReturnRawData
-                        RETURN <BYTE>{0}
+                        RETURN <BYTE>{}
                     ENDIF
                     var column  := SELF:_GetColumn(nFldPos)
                     return column:BlankValue()

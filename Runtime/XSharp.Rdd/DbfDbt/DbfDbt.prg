@@ -9,9 +9,10 @@ USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFDBT RDD. For DBF/DBT. No index support at this level</summary>
-    CLASS DBFDBT INHERIT DBF
+    CLASS DBFDBT INHERIT DBF IMPLEMENTS IRawData
         PRIVATE _oDbtMemo AS DBTMemo
         PROPERTY Encoding AS Encoding GET SUPER:_Encoding
+        PROPERTY ReturnRawData as LOGIC AUTO
 
         CONSTRUCTOR
             SUPER()
@@ -26,12 +27,18 @@ BEGIN NAMESPACE XSharp.RDD
                 // At this level, the return value is the raw Data, in BYTE[]
                 buffer := (BYTE[])SUPER:GetValue(nFldPos)
                 IF ( buffer != NULL )
+                    IF ReturnRawData
+                        RETURN buffer
+                    ENDIF
                     LOCAL str AS STRING
                     str :=  SELF:Encoding:GetString(buffer)
                     // Convert to String and return
                     RETURN str
                 ELSE
                     // No Memo ?!, Empty String
+                    IF ReturnRawData
+                        RETURN <BYTE>{}
+                    ENDIF
                     RETURN String.Empty
                 ENDIF
             ENDIF

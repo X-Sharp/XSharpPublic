@@ -8,16 +8,21 @@ FUNCTION Start( ) AS VOID
 	local dValue as Date
 	local dtValue as DateTime
 	local wdValue AS __WINDATE
-	uValue := DateTime.Now
+	local dtStart as DateTime
+	dtStart := DateTime.Now
+	uValue := dtStart
 	dValue := uValue
 	dtValue := uValue
 	wdValue := uValue
-	? dValue, dtValue, wdValue
+	xAssert(dValue == ToDay())
+	xAssert(dtValue == dtStart)
+	xAssert(wdValue == Today())
 	uValue := ToDay()
 	dValue := uValue
 	dtValue := uValue
-	? dValue
-	? dtValue
+	xAssert(dValue == ToDay())
+	xAssert(dtValue == ToDay())
+
     local r8Value as real8
     local r4Value as real4
     local wValue as word
@@ -27,7 +32,7 @@ FUNCTION Start( ) AS VOID
     local curValue as Currency
     local decValue as Decimal
     LOCAL enumValue as TestEnum
-    uValue := 10
+    uValue := 42
     r8value := uValue
     r4value := uValue
     wvalue := uValue
@@ -37,9 +42,16 @@ FUNCTION Start( ) AS VOID
     decValue := uValue
     curValue := uValue
     enumValue := uValue
-    ? r8value, r4value, wvalue, sivalue, dwValue, liValue
-    ? decValue, curValue, enumValue:ToString()
-    uValue := "123"
+    xAssert(r8Value == 42.0)
+    xAssert(r4value == 42.0)
+    xAssert(wValue == 42)
+    xAssert(siValue == 42)
+    xAssert(dwValue == 42)
+    xAssert(liValue == 42)
+    xAssert(decValue == 42m)
+    xAssert(curValue == $42)
+    xAssert(enumValue == TestEnum.FortyTwo)
+    uValue := "A123"
     local binValue as Binary
     local strValue as string
     local symValue as Symbol
@@ -48,54 +60,65 @@ FUNCTION Start( ) AS VOID
     strValue := uValue
     symValue := uValue
     pszValue := uValue
-    ? binValue, strValue, symValue, pszValue
+    xAssert(binValue == 0h41313233)
+    xAssert(strValue == "A123")
+    xAssert(symValue == #A123)
+    xAssert(Psz2String(pszValue) == "A123")
     uValue := #abc
     strValue := uValue
     symValue := uValue
-    ? strValue, symValue, pszValue
+    xAssert(strValue == "ABC")
+    xAssert(symValue == #ABC)
+
     uValue :=  String2psz("pszValue")
     strValue := uValue
     symValue := uValue
     pszValue := uValue
-    ? strValue, symValue, pszValue
+    xAssert(strValue == "pszValue")
+    xAssert(symValue == #pszValue)
+    xAssert(Psz2String(pszValue) == "pszValue")
 
     local ptrValue as Ptr
     local i64Value as Int64
-    ptrValue := MemAlloc(10)
-    uValue := ptrValue
+    LOCAL pValue as Ptr
+    pValue := MemAlloc(10)
+    uValue := pValue
     ptrValue := uValue
     i64Value := uValue
-    ? ptrValue, i64Value:ToString("X")
+    xAssert(ptrValue == pValue)
+    xAssert(i64Value == (int64) pValue)
 
     uValue := CFoo{}
     local ifValue as IFoo
     ifValue := uValue
-    ? ifValue:ToString()
-    ? ifValue:Name
+    xAssert(ifValue:ToString() == "CFOO:Robert")
+    xAssert(ifValue:Name == "Robert")
 
 	LOCAL wbValue as __WInBool
 	LOCAL logValue as LOGIC
 	uValue := TRUE
 	wbValue := uValue
 	logValue := uValue
-	? wbValue, logValue
+	xAssert(wbValue)
+	xAssert(logValue)
 	uValue := FALSE
 	wbValue := uValue
 	logValue := uValue
-	? wbValue, logValue
+	xAssert(!wbValue)
+	xAssert(!logValue)
 
 	local strucTest IS TestStruct
     strucTest:First := 42
     uValue := @strucTest
     ptrValue := uValue
-    ? ptrValue
+    xAssert(ptrValue == @strucTest)
     local strucTest2 AS TestStruct
     strucTest2 := ptrValue
-    ? strucTest2
-    ? strucTest2:First
+    xAssert(strucTest2 == @strucTest)
+    xAssert(strucTest2:First == 42)
     strucTest2 := uValue
-     ? strucTest2
-    ? strucTest2:First
+    xAssert(strucTest2 == @strucTest)
+    xAssert(strucTest2:First == 42)
 
 
     catch e as Exception
@@ -106,10 +129,12 @@ RETURN
 
 ENUM TestEnum
     MEMBER Ten := 10
+    Member FortyTwo := 42
 END ENUM
 
 INTERFACE IFoo
     PROPERTY Name as STRING GET
+
 END INTERFACE
 CLASS CFoo implements IFoo
     PROPERTY Name as STRING AUTO GET PRIVATE SET
@@ -124,3 +149,13 @@ END CLASS
 
 VOSTRUCT TestStruct
     MEMBER First as LONG
+
+
+
+PROC xAssert(l AS LOGIC)  AS VOID
+	IF l
+		? "Assertion passed"
+	ELSE
+		THROW Exception{"Incorrect result"}
+	END IF
+RETURN

@@ -100048,7 +100048,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
@@ -112802,7 +112802,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R863 - Preprocessor issues
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R864 - FoxPro Public with type clause *************
 Application = R864 - FoxPro Public with type clause
 IDEVersion = 1.06

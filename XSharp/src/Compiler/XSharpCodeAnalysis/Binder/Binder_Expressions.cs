@@ -585,7 +585,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 {
                                     var start = loc.GetLineSpan().StartLinePosition;
                                     var curLine = expr.Syntax.Location.GetLineSpan().StartLinePosition;
-                                    suppress = (start == curLine);
+                                    suppress = (start.Line == curLine.Line  && error.Code == (int)ErrorCode.ERR_NoSuchMemberOrExtension);
                                 }
                                 if (!suppress)
                                     newDiag.Add(error);

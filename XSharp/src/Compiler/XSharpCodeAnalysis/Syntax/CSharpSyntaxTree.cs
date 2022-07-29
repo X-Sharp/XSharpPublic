@@ -58,7 +58,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth)))
                 {
                     var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(position);
-					// also exit for variabledeclation because the order of our declaration is quite different
+                    // also exit for variabledeclation because the order of our declaration is quite different
                     if (n == null || n == node || n is VariableDeclarationSyntax)
                         break;
                     node = n;
@@ -68,7 +68,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
-        private CSharpSyntaxNode GetStatement(CSharpSyntaxNode node )
+        private CSharpSyntaxNode GetStatement(CSharpSyntaxNode node)
         {
             if (node is ExpressionSyntax)
             {
@@ -92,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     node = node.Parent;
                 }
                 if (node == null)
-                { 
+                {
                     node = original;
                 }
             }
@@ -115,7 +115,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     node = GetStatement(node);
                 }
-                if (node!= null && node.XGenerated)
+                if (node != null && node.XGenerated)
                     return LineVisibility.Hidden;
             }
             return LineVisibility.Visible;
@@ -162,10 +162,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             var eof = (cs?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
             var eofPos = cs?.EndOfFileToken.Position;
             bool isUdc = false;
+            int line = -1;
+            int column = -1;
+            var length = 0;
             if (span.Start >= eofPos && eofPos != null)
             {
+                // this is mostly used when there are parser errors
                 var start = span.Start - (eofPos ?? 0);
-                var length = span.Length;
+                length = span.Length;
                 if (cs != null)
                 {
                     foreach (var lead in cs.EndOfFileToken.LeadingTrivia)
@@ -191,7 +195,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (length < 0)
                     length = 0;
-                if (start+ length > text.Length)
+                if (start + length > text.Length)
                 {
                     length = text.Length - start;
                 }
@@ -202,34 +206,34 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var snode = (CSharpSyntaxNode)root.ChildThatContainsPosition(span.Start);
                 while (!snode.Green.IsToken && (span.Start > snode.Position || span.Length < snode.FullWidth))
                 {
-                    var sn = (CSharpSyntaxNode)snode.ChildThatContainsPosition(span.Start);
-                    if (sn == null || sn == snode) // no child found
+                    var child = (CSharpSyntaxNode)snode.ChildThatContainsPosition(span.Start);
+                    if (child == null || child == snode) // no child found
                         break;
-                    if (span.Start == sn.Position && span.Length > sn.FullWidth)
+                    if (span.Start == child.Position && span.Length > child.FullWidth)
                     {
                         var en = (CSharpSyntaxNode)snode.ChildThatContainsPosition(span.End - 1);
                         if (en != null)
                         {
-                            snode = sn;
+                            snode = child;
                             break;
                         }
                     }
-                    snode = sn;
+                    snode = child;
                 }
                 var start = 0;
-                var length = 0;
                 string fn = file;
                 // correct several incorrect breakpoint positions due to different order of things
                 if (snode.Parent is VariableDeclarationSyntax)
                 {
                     snode = snode.Parent;
                 }
-                snode = GetStatement(snode);
                 if (snode.XNode != null)
                 {
                     var xNode = snode.XNode as XSharpParserRuleContext;
-                    start = xNode.Position ;
-                    length = xNode.FullWidth ;
+                    start = xNode.Position;
+                    length = xNode.FullWidth;
+                    line = xNode.Start.Line;
+                    column = xNode.Start.Column;
                     fn = xNode.SourceFileName;
                     if (xNode.SourceSymbol is XSharpToken symbol)
                     {
@@ -237,6 +241,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         start = symbol.StartIndex;
                         length = symbol.StopIndex - start + 1;
                         fn = symbol.InputStream.SourceName;
+                        line = symbol.Line;
+                        column = symbol.Column;
                         isUdc = true;
                     }
                 }
@@ -262,12 +268,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 span = new TextSpan(start, length);
             }
-            var s = text.Lines.GetLinePosition(span.Start);
-            var e = text.Lines.GetLinePosition(span.End);
-            if (e.Line > s.Line+1 || isUdc)
+            LinePosition s, e;
+            if (line > 0 && column >= 0)
             {
-                // prevent multi line break points
-                e = new LinePosition(s.Line + 1, 0);
+                // Roslyn wants zero based lines !
+                // Our line numbers are 1 based and column numbers are zero based..
+                s = new LinePosition(line - 1, column);
+                if (length > 0)
+                    e = new LinePosition(line - 1, column + length);
+                else
+                    e = new LinePosition(line - 1, column + 1);
+            }
+            else
+            {
+                s = text.Lines.GetLinePosition(span.Start);
+                e = text.Lines.GetLinePosition(span.End);
+            }
+            if (e.Line > s.Line + 1)
+            {
+                e = new LinePosition(s.Line, s.Character + 1);
             }
             //System.Diagnostics.Debug.WriteLine($" {span.Start} {file} {s.Line}");
             return new FileLinePositionSpan(file, s, e);

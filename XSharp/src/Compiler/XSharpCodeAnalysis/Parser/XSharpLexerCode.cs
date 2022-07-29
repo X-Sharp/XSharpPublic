@@ -131,6 +131,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         int _startLine;
         int _tokenType;
         int _tokenChannel;
+        bool _newLine = false;
 
         static readonly object kwlock = new();
         static readonly IDictionary<string, int>[] _kwids;       // for each dialect its own _kwids
@@ -373,6 +374,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return;
         }
 
+
         void parseToEol()
         {
             var la1 = La(1);
@@ -385,7 +387,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         bool tryParseNewLine()
         {
-            if (ExpectAny('\n', '\r'))
+            if (ExpectAny('\n','\r'))
             {
                 if (Expect('\r', '\n'))
                 {
@@ -393,8 +395,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     parseOne();
                 }
                 parseOne();
-                Interpreter.Line += 1;
-                Interpreter.Column = 0;
+                _newLine = true;
                 return true;
             }
             if (Eof())
@@ -492,6 +493,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return;
                     break;
             }
+
+
 
             var c = La(1);
             if (c > 0 && IsIdentifierStartCharacter((char)c))
@@ -814,6 +817,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
+        private void HandleNewLine()
+        {
+            if (_newLine)
+            {
+                Interpreter.Line += 1;
+                Interpreter.Column = 0;
+                _newLine = false;
+            }
+        }
         private void setLastToken(XSharpToken t)
         {
             if (t.Channel == TokenConstants.DefaultChannel)
@@ -1289,6 +1301,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 Interpreter.Column += (InputStream.Index - _startCharIndex);
                 t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
                 Emit(t);
+                HandleNewLine();
                 if (t.Type == ML_COMMENT)
                 {
                     if (!t.Text.EndsWith("*/"))

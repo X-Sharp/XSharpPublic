@@ -34,7 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
 
             var syntax = node.Syntax;
-            if (node.IsExpressionWithConstant() || syntax.XIsExplicitTypeCastInCode)
+            if (node.IsExpressionWithNumericConstant() || syntax.XIsExplicitTypeCastInCode)
             {
                 node.DisableWarnings();
             }

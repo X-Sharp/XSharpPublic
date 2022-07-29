@@ -18,8 +18,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private class ConstantWalker : BoundTreeWalker
         {
-            private bool hasConstant = false;
-            internal bool HasConstant => hasConstant;
+            private bool hasNumericConstant = false;
+            private bool hasStringConstant = false;
+            internal bool HasNumericConstant => hasNumericConstant;
+            internal bool HasStringConstant => hasStringConstant;
             public ConstantWalker() : base()
             {
             }
@@ -30,7 +32,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return null;
                 if (node is BoundExpression expr && expr.ConstantValue != null && !expr.ConstantValue.IsBad)
                 {
-                    hasConstant = true;
+                    if (expr.ConstantValue.SpecialType == SpecialType.System_String)
+                        hasStringConstant = true;
+                    if (expr.ConstantValue.SpecialType.IsNumericType())
+                        hasNumericConstant = true;
                     return node;
                 }
                 return base.Visit(node);
@@ -47,7 +52,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        internal static bool IsExpressionWithConstant(this BoundNode node)
+        internal static bool
+            IsExpressionWithNumericConstant(this BoundNode node)
         {
             switch (node)
             {
@@ -64,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var walker = new ConstantWalker();
             walker.Visit(node);
-            return walker.HasConstant;
+            return walker.HasNumericConstant;
         }
 
 

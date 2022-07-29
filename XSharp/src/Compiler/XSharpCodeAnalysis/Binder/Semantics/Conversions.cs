@@ -234,7 +234,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (srcType.IsIntegralType() && dstType.IsIntegralType())
                         {
                             // when both same # of bits and integral, use Identity conversion
-                            if (srcType.SizeInBytes() == dstType.SizeInBytes() && sourceExpression.IsExpressionWithConstant())
+                            if (srcType.SizeInBytes() == dstType.SizeInBytes() && sourceExpression.IsExpressionWithNumericConstant())
                                 result = Conversion.Identity;
                             else
                                 result = Conversion.ImplicitNumeric;

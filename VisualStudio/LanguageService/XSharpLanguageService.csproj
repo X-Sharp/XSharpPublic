@@ -34,7 +34,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <DefineConstants>NOASYNCCOMPLETION;XSHARP;DEV17</DefineConstants>
+    <DefineConstants>NOASYNCCOMPLETION;XSHARP</DefineConstants>
     <Optimize>true</Optimize>
     <DeployExtension>False</DeployExtension>
     <CreateVsixContainer>False</CreateVsixContainer>
@@ -223,7 +223,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.464</Version>
+      <Version>15.0.466</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.13.0</Version>

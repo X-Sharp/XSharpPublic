@@ -10,7 +10,7 @@ using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Roslyn.Utilities;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
-{ 
+{
     using TokenType = System.Int32;
     internal static class XSharpPPTokenExtensions
     {
@@ -302,7 +302,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.ASSIGN_RSHIFT:
                 case XSharpLexer.ASSIGN_SUB:
                 case XSharpLexer.ASSIGN_XOR:
-                case XSharpLexer.ASSIGN_QQMARK: 
+                case XSharpLexer.ASSIGN_QQMARK:
                     return true;
             }
             return false;
@@ -315,6 +315,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 case XSharpLexer.COLON:
                 case XSharpLexer.DOT:
+                case XSharpLexer.COLONCOLON:
                     return true;
             }
             return false;
@@ -325,8 +326,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return false;
             if (token.IsAssign())
                 return true;
-            if (token.IsMemberSeparator())
-                return true;
+            //if (token.IsMemberSeparator()) we allow DOT, COLON and COLONCOLON without left. With statement !
+            //    return true;
             if (token.IsPrefix())
                 return false;
             return token.IsBinary();
@@ -340,7 +341,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (token == null)
                 return false;
             // see xsharp.g4 binaryExpression
-            // tokens in same order 
+            // tokens in same order
             switch (token.Type)
             {
                 case XSharpLexer.EXP:
@@ -476,10 +477,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (token == null)
             {
-                return nextToken.IsName() || nextToken.IsLiteral() || nextToken.IsPrefix();
+                // we also allow DOT, COLON and COLONCOLON because these can
+                // be part of a WITH block
+                return nextToken.IsName() || nextToken.IsLiteral()
+                    || nextToken.IsPrefix() || nextToken.IsMemberSeparator();
             }
             // we allow .and. .not. and even .not. .not.
-            if (token.IsPrefix() || token.IsBinary())          
+            if (token.IsPrefix() || token.IsBinary())
                 return nextToken.IsPrimaryOrPrefix();
             if (nextToken.IsBinary() || nextToken.NeedsLeft() || nextToken.IsPostFix())
                 return token.IsPrimary() || token.IsClose();

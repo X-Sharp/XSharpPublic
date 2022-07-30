@@ -144,7 +144,11 @@ namespace XSharp.LanguageService
                 if (!IsStarted)
                 {
                     IsStarted = true;
+#if DEV17
+                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdle(LexAsync);
+#else
                     _ = ThreadHelper.JoinableTaskFactory.StartOnIdleShim(StartLex);
+#endif
                 }
             }
             else
@@ -152,11 +156,14 @@ namespace XSharp.LanguageService
                 Debug("Buffer_Changed: Suppress lexing because classifier is active");
             }
     }
+#if !DEV17
+#pragma warning disable VSTHRD100 // Avoid async void methods
         public async void StartLex()
+#pragma warning restore VSTHRD100 // Avoid async void methods
         {
             await LexAsync();
         }
-
+#endif
         private XDocument GetDocument()
         {
             lock (gate)
@@ -269,9 +276,9 @@ namespace XSharp.LanguageService
             }
         }
 
-        #endregion
+#endregion
 
-        #region Parser Methods
+#region Parser Methods
 
         private async Task ParseAsync()
         {
@@ -313,7 +320,7 @@ namespace XSharp.LanguageService
             }
             XSettings.LogMessage("<<-- XSharpClassifier.ParseAsync()");
         }
-        #endregion
+#endregion
 
         private void RegisterEntityBoundaries()
         {
@@ -1121,7 +1128,7 @@ namespace XSharp.LanguageService
 
 
 
-        #region IClassifier
+#region IClassifier
 
 #pragma warning disable 67
 
@@ -1172,7 +1179,7 @@ namespace XSharp.LanguageService
             return result;
         }
 
-        #endregion
+#endregion
 
         static internal XSharpClassifier Create(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
         {

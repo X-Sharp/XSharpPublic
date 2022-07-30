@@ -399,7 +399,7 @@ namespace XSharp.LanguageService
                         break;
                     index -= 1;
                 }
-                pts[0].iStartIndex = index;
+                pts[0].iStartIndex = index+1;
                 index = ta.index;
                 while (index < text.Length)
                 {

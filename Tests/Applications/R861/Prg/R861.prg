@@ -1,7 +1,7 @@
 
 FUNCTION Start() AS VOID STRICT
 Test{}
-
+TestArrays()
 CLASS Test
 	PUBLIC s := "asd" AS STRING
 
@@ -32,4 +32,14 @@ PROC xAssert(l AS LOGIC)  AS VOID
 	ELSE
 		THROW Exception{"Incorrect result"}
 	END IF
+RETURN
+
+
+PROC TestArrays
+LOCAL a1(10) AS ARRAY
+LOCAL a2[10]  AS ARRAY
+LOCAL ARRAY a3[10]
+? ALen(a1)
+? ALen(a2)
+? ALen(a3)
 RETURN

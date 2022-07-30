@@ -683,7 +683,13 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=varidentifier (LBRKT ArraySub=arraysub RBRKT)?
-                     (Op=assignoperator Expression=expression)? (As=(AS | IS) DataType=datatype (OF ClassLib=identifierName)?  )?
+                     (Op=assignoperator Expression=expression)?
+                     (As=(AS | IS) DataType=datatype (OF ClassLib=identifierName)?  )?
+                     // FoxPro: LOCAL arrayName(10) as array.
+                     // does not support CONST, DIM and Initializer
+                   | {IsFox}? Id=varidentifier LPAREN ArraySub=arraysub RPAREN
+                     (Op=assignoperator Expression=expression)?
+                     (As=(AS | IS) DataType=datatype (OF ClassLib=identifierName)?  )?
                    ;
 
 impliedvar         : (Const=CONST)? Id=varidentifier Op=assignoperator Expression=expression

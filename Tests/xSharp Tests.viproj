@@ -112393,6 +112393,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,0
 [R861 - FoxPro ThisForm chained dot operators Resources]
 [R861 - FoxPro ThisForm chained dot operators Native Resources]
 [R861 - FoxPro ThisForm chained dot operators License files]

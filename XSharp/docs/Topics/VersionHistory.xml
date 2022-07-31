@@ -47,6 +47,8 @@
       <li styleclass="Body Text">Fixed a bogus XS0460 error when using the PUBLIC keyword on a method (#1072)</li>
       <li styleclass="Body Text">Fixed incorrect behavior when enabling Named Arguments option (#1071)</li>
       <li styleclass="Body Text">Fixed Access violation when calling a function/method with DECIMAL argument with default value (#1075)</li>
+      <li styleclass="Body Text">Fixed some issues with #xtranslate not recognizing the Regular match marker in the preprocessor (#1077)</li>
+      <li styleclass="Body Text">Fixed some issues with declaring arrays in the VFP dialect (#848)</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>

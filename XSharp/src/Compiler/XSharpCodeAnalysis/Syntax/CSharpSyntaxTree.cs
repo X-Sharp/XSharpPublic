@@ -4,16 +4,8 @@
 // See License.txt in the project root for license information.
 //
 #nullable disable
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Roslyn.Utilities;
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
@@ -24,7 +16,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     public abstract partial class CSharpSyntaxTree : SyntaxTree
     {
-        // NOTE: 
+        // NOTE:
         // The spans and positions the we get here (when calculating breakpoint positions mostly)
         // have nothing to do with the real sourcecode.
         // Generated Using lines and generated static functions class also are included in the positions.
@@ -32,12 +24,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         // FUNCTION Start as VOID
         // Console.ReadLine()
         // RETURN
-        // will be represented by a tree like this 
+        // will be represented by a tree like this
         // using  static Functions  ;
         // using  System  ;
         // partial  public static class Functions
         // {
-        //   static public void Start() 
+        //   static public void Start()
         //   {
         //      Console.ReadLine();
         //      return;
@@ -207,7 +199,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 while (!snode.Green.IsToken && (span.Start > snode.Position || span.Length < snode.FullWidth))
                 {
                     var child = (CSharpSyntaxNode)snode.ChildThatContainsPosition(span.Start);
-                    if (child == null || child == snode) // no child found
+                    if (child == null || child == snode ) // no child found
                         break;
                     if (span.Start == child.Position && span.Length > child.FullWidth)
                     {
@@ -219,6 +211,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                     snode = child;
+                    if (snode is ExpressionSyntax)
+                        break;
                 }
                 var start = 0;
                 string fn = file;
@@ -237,7 +231,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     fn = xNode.SourceFileName;
                     if (xNode.SourceSymbol is XSharpToken symbol)
                     {
-                        // for a define or UDC we want the location in the source and not in the #include 
+                        // for a define or UDC we want the location in the source and not in the #include
                         start = symbol.StartIndex;
                         length = symbol.StopIndex - start + 1;
                         fn = symbol.InputStream.SourceName;

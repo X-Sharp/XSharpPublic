@@ -12,8 +12,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
-using MCT= Microsoft.CodeAnalysis.Text;
-using Antlr4.Runtime.Misc;
+using MCT = Microsoft.CodeAnalysis.Text;
 
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
@@ -314,7 +313,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     iBPLength = 1;
                 }
             }
-
         }
 
         public void SetSequencePoint(IToken next)
@@ -342,11 +340,39 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             SetSequencePoint(Start, Stop);
         }
 
+        IToken GetLastToken(IParseTree pt)
+        {
+            if (pt is XSharpParserRuleContext rule)
+                return rule.Stop;
+            else if (pt is TerminalNodeImpl tni)
+                return tni.Symbol;
+            return null;
+        }
+
+        IToken AdjustLastToken(IToken Stop)
+        {
+            if (Stop.Type == XSharpLexer.EOS)
+            {
+                var child = this.GetChild(this.ChildCount - 1);
+                Stop = GetLastToken(child);
+
+                if (Stop.Type == XSharpLexer.EOS && this.ChildCount > 1)
+                {
+                    child = this.GetChild(ChildCount - 2);
+                    Stop = GetLastToken(child);
+                }
+            }
+
+            return Stop;
+        }
+
         public void SetSequencePoint(ParserRuleContext end)
         {
             if (end is XSharpParser.EosContext)
             {
-                SetSequencePoint(this.Start, end.Start);
+                var token = end.Start;
+                token = AdjustLastToken(token);
+                SetSequencePoint(this.Start, token);
                 return;
             }
             else if (end != null)

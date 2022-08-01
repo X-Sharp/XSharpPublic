@@ -436,10 +436,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (Expect('*', '/'))
                     break;
-                if (!tryParseNewLine())
+                if (tryParseNewLine())
+                {
+                    HandleNewLine();
+                }
+                else
+                {
                     parseOne();
+                }
             }
-            parseType(ML_COMMENT);
+             parseType(ML_COMMENT);
             if (!Eof())
             {
                 // Eat the */

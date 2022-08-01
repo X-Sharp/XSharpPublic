@@ -388,7 +388,7 @@ namespace XSharp.LanguageService
 
         private void completeCurrentToken(uint nCmdID, char ch)
         {
-            if (CompletionNotAllowed(ch))
+            if (!CompletionAllowed(ch))
             {
                 return;
             }
@@ -614,7 +614,7 @@ namespace XSharp.LanguageService
                 if (!_completionSession.IsDismissed)
                     return false;
             }
-            if (CompletionNotAllowed(typedChar))
+            if (!CompletionAllowed(typedChar))
                 return false;
             SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
             ITextSnapshot snapshot = caret.Snapshot;
@@ -641,6 +641,8 @@ namespace XSharp.LanguageService
             try
             {
                 _completionSession.Start();
+                if (!CompletionAllowed(typedChar))
+                    _completionSession.Dismiss();
             }
             catch (Exception e)
             {
@@ -736,9 +738,13 @@ namespace XSharp.LanguageService
         private char prevChar()
         {
             // the caret is AFTER the last character !
+            // assume the text is   ABC:|DEF where the caret is represented by the |
+            // so pos = the next char 'D'
+            // pos -1 is the current char ':'
+            // and pos - 2 is the previous char 'C'
             var caret = _textView.Caret.Position.BufferPosition;
             var pos = caret.Position;
-            if (pos == 0)
+            if (pos < 2)
                 return '\0';
             return _textView.TextSnapshot.GetText(pos - 2,1)[0];
         }
@@ -764,14 +770,33 @@ namespace XSharp.LanguageService
             }
             return char.IsWhiteSpace(c);
         }
-        private bool CompletionNotAllowed(char c)
+        private bool CompletionAllowed(char c)
         {
             // := should never produce a list
             if (c == ':' && nextChar() == '=')
-                return true;
+                return false;
             // single character should not trigger completion
-            if (IsWs(prevChar()) && IsWs(nextChar()))
-                return true;
+            var p = prevChar();
+            var n = nextChar();
+            if (c == '\0')
+                c = curChar();
+            if (IsWs(p) && IsWs(n))
+            {
+                // no completion for single character
+                return false;
+            }
+            if (! IsWs(n))
+            {
+                if (c != ':' && c != '.')
+                {
+                    // only allow completion before a non whitespace
+                    // after a ':' or .'.'
+                    if (p != ':' || p != '.')
+                    {
+                        return false;
+                    }
+                }
+            }
             var caret = _textView.Caret.Position.BufferPosition;
             var line = caret.GetContainingLine();
             var pos = caret.Position - line.Start;
@@ -779,7 +804,7 @@ namespace XSharp.LanguageService
             var tags = _tagAggregator.GetTags(lineSpan);
             var tag = tags.LastOrDefault();
             var classification = tag?.Tag?.ClassificationType?.Classification;
-            return classification.IsClassificationCommentOrString();
+            return !classification.IsClassificationCommentOrString();
         }
        
         void formatKeyword(Completion completion)

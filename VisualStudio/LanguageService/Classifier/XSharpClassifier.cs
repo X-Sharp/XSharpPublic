@@ -179,13 +179,12 @@ namespace XSharp.LanguageService
         public async Task ClassifyWhenNeededAsync()
         {
             XDocument xDocument = GetDocument();
-            while (IsLexing)
+            if (!IsLexing)
             {
-                System.Threading.Thread.SpinWait(10);
-            }
-            if (xDocument == null || xDocument.SnapShot.Version != _buffer.CurrentSnapshot.Version)
-            {
-                await LexAsync();
+                if (xDocument == null || xDocument.SnapShot.Version != _buffer.CurrentSnapshot.Version)
+                {
+                    await LexAsync();
+                }
             }
         }
         private async Task LexAsync()

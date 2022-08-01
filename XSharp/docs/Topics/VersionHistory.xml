@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Runtime chapter</keyword>
@@ -23,10 +23,7 @@
     <para styleclass="Body Text" style="margin-left:13px;">We have made a change in build 2.13, to make sure that this difference is no longer determined at runtime for the X# numeric types but at compile time.<br/>In earlier builds this was handled inside conversion operators from the FLOAT and CURRENCY types in the runtime. <br/>These classes choose the rounding method based on the /vo11 setting from the main program which is stored in the <link displaytype="text" defaultstyle="true" type="topiclink" href="html\P_XSharp_RuntimeState_CompilerOptionVO11.htm" domain="XSharpRef.chm">RuntimeState</link> object.<br/>However that could lead to unwanted side effects when an assembly was compiled with /vo11 but the main program was not. <br/>This could happen for example with ReportPro or bBrowser.<br/>If the author of such a library now chooses to compile with /vo11 then he can be certain that all these conversions in his code will follow rounding to zero or rounding to the nearest even integer, depending on his choice.</para>
     <para styleclass="Body Text"></para>
     <list id="123" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">We have implemented a new compiler option /allowoldstyleassignments, which allows using the &quot;=&quot; operator instead of &quot;:=&quot; for assignments. This option is enabled by default in the VFP dialect and disabled by default in all other dialects.</li>
-    </list>
-    <para styleclass="Body Text"></para>
-    <list id="123" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">We have implemented a new compiler option /allowoldstyleassignments, which allows using the &quot;=&quot; operator instead of &quot;:=&quot; for assignments. <br/>This option is enabled by default in the VFP dialect and disabled by default in all other dialects.</li>
       <li styleclass="Body Text">Fixed a code generation issue with ASYNC/AWAIT (#1049)</li>
       <li styleclass="Body Text">Fixed an Internal compiler error with Evaluate() in CODEBLOCK in VFP dialect (#1043)</li>
       <li styleclass="Body Text">Fixed an Internal compiler error with UDCs incorrectly inserted after an END FUNCTION statement</li>
@@ -47,7 +44,7 @@
       <li styleclass="Body Text">Fixed a bogus XS0460 error when using the PUBLIC keyword on a method (#1072)</li>
       <li styleclass="Body Text">Fixed incorrect behavior when enabling Named Arguments option (#1071)</li>
       <li styleclass="Body Text">Fixed Access violation when calling a function/method with DECIMAL argument with default value (#1075)</li>
-      <li styleclass="Body Text">Fixed some issues with #xtranslate not recognizing the Regular match marker in the preprocessor (#1077)</li>
+      <li styleclass="Body Text">Fixed some issues with #xtranslate not recognizing the Regular match marker in the preprocessor. Also fixed an issue with recognizing the double colon (::) inside expression tokens in the preprocessor. (#1077)</li>
       <li styleclass="Body Text">Fixed some issues with declaring arrays in the VFP dialect (#848)</li>
     </list>
     <para styleclass="Heading2">Runtime</para>

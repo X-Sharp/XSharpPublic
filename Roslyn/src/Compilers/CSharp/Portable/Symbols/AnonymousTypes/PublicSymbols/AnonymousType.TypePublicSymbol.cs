@@ -105,7 +105,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 this.TypeDescriptor = new AnonymousTypeDescriptor(fields.ToImmutable(), location);
 
                 var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length - 1, default, false, 0).Construct(codeblockParams);
-                var lambda = new AnonymousTypeField(XSharpSpecialNames.CodeBlockLamda, location, TypeWithAnnotations.Create(codeblockDelegate));
+                var lambda = new AnonymousTypeField(XSharpSpecialNames.CodeBlockLambda, location, TypeWithAnnotations.Create(codeblockDelegate));
                 var source = new AnonymousTypeField(XSharpSpecialNames.CodeBlockSource, location, TypeWithAnnotations.Create(manager.System_String));
                 this.Properties = new[] {
                     new AnonymousTypePropertySymbol(this, lambda,0),

@@ -122,7 +122,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string DimSuffix = "$Dim";
 
         internal const string CodeBlockParameter = "Cb$Param$";
-        internal const string CodeBlockLamda = "Cb$Eval$";
+        internal const string CodeBlockLambda = "Cb$Eval$";
         internal const string CodeBlockSource = "Cb$Source$";
 
         internal const string DelegateNameSpace = "Xs$Delegates";
@@ -410,7 +410,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string NonSerialized = "global::System.NonSerializedAttribute";
         internal const string DBNull = "global::System.DBNull";
         internal const string DBNullValue = "global::System.DBNull.Value";
-    } 
+    }
 }
 
 

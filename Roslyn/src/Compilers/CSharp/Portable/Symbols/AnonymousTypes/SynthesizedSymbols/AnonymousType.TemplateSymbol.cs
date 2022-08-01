@@ -106,8 +106,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     var tDelegate = TypeWithAnnotations.Create(cbDelegate);
                     var tSource = TypeWithAnnotations.Create(manager.System_String);
                     // Add properties
-                    var eval = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", typeDescr.Location, tDelegate), tDelegate, 0);
-                    var source = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Src$", typeDescr.Location, tSource), tSource, 0);
+                    var eval = new AnonymousTypePropertySymbol(this, new AnonymousTypeField(XSharpSpecialNames.CodeBlockLambda, typeDescr.Location, tDelegate), tDelegate, 0);
+                    var source = new AnonymousTypePropertySymbol(this, new AnonymousTypeField(XSharpSpecialNames.CodeBlockSource, typeDescr.Location, tSource), tSource, 0);
 
                     this.Properties = new[] { eval, source }.ToImmutableArray();
 
@@ -551,6 +551,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // Escape open '{' with '\' to avoid parsing it as an embedded expression.
 
                 string displayString;
+#if XSHARP
+                if (this.BaseTypeNoUseSiteDiagnostics.IsCodeblockType())
+                {
+                    displayString = "{" + XSharpSpecialNames.CodeBlockSource + ",nq}";
+                    return Manager.Compilation.TrySynthesizeAttribute(
+                          WellKnownMember.System_Diagnostics_DebuggerDisplayAttribute__ctor,
+                          arguments: ImmutableArray.Create(new TypedConstant(Manager.System_String, TypedConstantKind.Primitive, displayString)),
+                          namedArguments: ImmutableArray.Create(new KeyValuePair<WellKnownMember, TypedConstant>(
+                                              WellKnownMember.System_Diagnostics_DebuggerDisplayAttribute__Type,
+                                              new TypedConstant(Manager.System_String, TypedConstantKind.Primitive, "<Codeblock>"))));
+                }
+#endif
                 if (this.Properties.Length == 0)
                 {
                     displayString = "\\{ }";

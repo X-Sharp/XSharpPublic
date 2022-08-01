@@ -26,7 +26,7 @@ namespace XSharp.LanguageService
         }
 
         private readonly Stack<blockindent> blocks;
-        private int firstDoccomment;
+        private int firstDoccomment; // line number of start of doc comment block
         private readonly XDocument document;
         private readonly XSharpLineKeywords lineKeywords;
         private SourceCodeEditorSettings _settings;
@@ -41,7 +41,7 @@ namespace XSharp.LanguageService
             _settings = settings;
         }
 
-        private int IndentEntityStart(XKeyword kw, int number, int startIndent)
+        private int IndentEntityStart(XKeyword kw, int lineNumber, int startIndent, bool singleLine)
         {
             while (blocks.Count > 0)
             {
@@ -65,7 +65,8 @@ namespace XSharp.LanguageService
                 }
                 if (_settings.IndentTypeMembers)
                 {
-                    if (XFormattingRule.IsMember(kw) && XFormattingRule.IsType(blocks.Peek().kw))
+                    bool isMember = XFormattingRule.IsMember(kw) || singleLine;
+                    if ( isMember && XFormattingRule.IsType(blocks.Peek().kw))
                     {
                         indentSize += 1;
                     }
@@ -86,10 +87,10 @@ namespace XSharp.LanguageService
             {
                 indentSize = startIndent;
             }
-            expectedIndent[number] = indentSize;
+            expectedIndent[lineNumber] = indentSize;
             if (firstDoccomment != -1)
             {
-                for (int i = firstDoccomment; i < number; i++)
+                for (int i = firstDoccomment; i < lineNumber; i++)
                 {
                     if (!document.HasLineState(i, LineFlags.Preprocessor))
                     {
@@ -97,10 +98,10 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            while (number > 0 && document.HasLineState(number, LineFlags.Continued))
+            while (lineNumber > 0 && document.HasLineState(lineNumber, LineFlags.Continued))
             {
-                number -= 1;
-                expectedIndent[number] = indentSize;
+                lineNumber -= 1;
+                expectedIndent[lineNumber] = indentSize;
             }
             return indentSize;
         }
@@ -189,6 +190,7 @@ namespace XSharp.LanguageService
         {
             expectedIndent = new int[endLine + 1];
             indentSize = startIndent;
+            ;
             foreach (var line in lines)
             {
                 var lineNumber = line.LineNumber;
@@ -209,8 +211,11 @@ namespace XSharp.LanguageService
                         continue;
 
                     }
+                    // Class variables are not easily recognizable.
+                    // Check the SingleLineEntity flag for them
+                    var singleLineEntityStart = document.HasLineState(lineNumber, LineFlags.SingleLineEntity);
                     expectedIndent[lineNumber] = indentSize;
-                    if (!lineKeywords.ContainsKey(lineNumber))
+                    if (!singleLineEntityStart && !lineKeywords.ContainsKey(lineNumber) )
                     {
                         // check for continuation
                         if (_settings.IndentContinuedLines && document.HasLineState(lineNumber, LineFlags.Continued))
@@ -221,9 +226,9 @@ namespace XSharp.LanguageService
                     }
                     lineKeywords.Get(lineNumber, out var kw);
 
-                    if (XFormattingRule.IsEntity(kw))
+                    if (XFormattingRule.IsEntity(kw) || singleLineEntityStart)
                     {
-                        indentSize = IndentEntityStart(kw, lineNumber, startIndent);
+                        indentSize = IndentEntityStart(kw, lineNumber, startIndent, singleLineEntityStart);
                         firstDoccomment = -1;
                     }
                     if (XFormattingRule.IsStartKeyword(kw))

@@ -312,7 +312,7 @@ namespace Mono.Cecil.Cil {
 			if (debug_info == null)
 				return;
 
-			// Local scopes store start/end pair of "instruction offsets". Instruction offset can be either resolved, in which case it 
+			// Local scopes store start/end pair of "instruction offsets". Instruction offset can be either resolved, in which case it
 			// has a reference to Instruction, or unresolved in which case it stores numerical offset (instruction offset in the body).
 			// Typically local scopes loaded from PE/PDB files will be resolved, but it's not a requirement.
 			// Each instruction has its own offset, which is populated on load, but never updated (this would be pretty expensive to do).
@@ -384,11 +384,16 @@ namespace Mono.Cecil.Cil {
 				// resolve by walking the instructions from start and don't cache the result.
 				int size = 0;
 				for (int i = 0; i < items.Length; i++) {
+					// The array can be larger than the actual size, in which case its padded with nulls at the end
+					// so when we reach null, treat it as an end of the IL.
+					if (items [i] == null)
+						return new InstructionOffset (i == 0 ? items [0] : items [i - 1]);
+
 					if (size == offset)
 						return new InstructionOffset (items [i]);
 
 					if (size > offset)
-						return new InstructionOffset (items [i - 1]);
+						return new InstructionOffset (i == 0 ? items [0] : items [i - 1]);
 
 					size += items [i].GetSize ();
 				}
@@ -407,15 +412,15 @@ namespace Mono.Cecil.Cil {
 					// Allow for trailing null values in the case of
 					// instructions.Size < instructions.Capacity
 					if (item == null)
-						break;
+						return new InstructionOffset (i == 0 ? items [0] : items [i - 1]);
 
 					cache.Instruction = item;
 
 					if (cache.Offset == offset)
 						return new InstructionOffset (cache.Instruction);
 
-					if (cache.Offset > offset)
-						return new InstructionOffset (items [i - 1]);
+					if (cache.Offset > offset) 
+						return new InstructionOffset (i == 0 ? items [0] : items [i - 1]);
 
 					size += item.GetSize ();
 				}

@@ -164,7 +164,7 @@ namespace XSharp.Project
                 }
                 // suppress generating the "generated code" header in the form.prg
                 formCCU.GenerateHeader = false;
-
+                designCCU.GenerateHeader = true;
                 CodeTypeDeclaration formClass = formCCU.GetFirstClass();
                 CodeTypeDeclaration designClass = designCCU.GetFirstClass();
                 // Now, remove the members

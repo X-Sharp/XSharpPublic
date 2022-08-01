@@ -891,7 +891,7 @@ namespace XSharp.CodeDom
             if ((this.IsCurrentClass || this.IsCurrentStruct) || this.IsCurrentInterface)
             {
                 writeTrivia(e);
-
+                textWriter.SuppressNewLine = false;
                 // Do we have some Source Code pushed here by our Parser ??
                 // this code contains the method declaration line as well
                 // and also the body of the method
@@ -1186,6 +1186,7 @@ namespace XSharp.CodeDom
             {
                 if (this.Indent >= 0)
                     this.Indent--;
+                textWriter.SuppressNewLine = false;
                 base.Output.WriteLine(keywordEND+ keywordNAMESPACE.TrimEnd());
             }
         }
@@ -1436,6 +1437,7 @@ namespace XSharp.CodeDom
         {
             if (!SuppressCodeGen)
             {
+                textWriter.SuppressNewLine = false;
                 if (!this.IsCurrentDelegate)
                 {
                     this.Indent--;

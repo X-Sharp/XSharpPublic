@@ -285,8 +285,10 @@ namespace XSharp.CodeDom
         public override void EnterClass_(XSharpParser.Class_Context context)
         {
             base.EnterClass_(context);
-            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
-            newClass.IsClass = true;
+            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText())
+            {
+                IsClass = true
+            };
             bool nested = CurrentType != null;
             pushCurrentType(newClass);
             addAttributes(newClass, context.Attributes);
@@ -318,12 +320,13 @@ namespace XSharp.CodeDom
         public override void EnterEnum_([NotNull] XSharpParser.Enum_Context context)
         {
             base.EnterEnum_(context);
-            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
-            newClass.IsEnum = true;
+            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText())
+            {
+                IsEnum = true
+            };
 
             pushCurrentType(newClass);
             addAttributes(newClass, context.Attributes);
-            writeTrivia(newClass, context);
             ContextToTypeModifiers(newClass, context.Modifiers);
             ContextToTypeAttributes(newClass, context.Modifiers);
             ClearMembers();
@@ -340,8 +343,10 @@ namespace XSharp.CodeDom
         public override void EnterDelegate_([NotNull] XSharpParser.Delegate_Context context)
         {
             base.EnterDelegate_(context);
-            var newClass = new XCodeTypeDelegate(context.Id.GetCleanText());
-            newClass.ReturnType = BuildDataType(context.Type);
+            var newClass = new XCodeTypeDelegate(context.Id.GetCleanText())
+            {
+                ReturnType = BuildDataType(context.Type)
+            };
             newClass.Parameters.AddRange(GetParametersList(context.ParamList));
             pushCurrentType(newClass);
             addAttributes(newClass, context.Attributes);
@@ -358,12 +363,13 @@ namespace XSharp.CodeDom
         public override void EnterInterface_([NotNull] XSharpParser.Interface_Context context)
         {
             base.EnterInterface_(context);
-            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
-            newClass.IsInterface = true;
+            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText())
+            {
+                IsInterface = true
+            };
 
             pushCurrentType(newClass);
             addAttributes(newClass, context.Attributes);
-            writeTrivia(newClass, context);
 
             ContextToTypeModifiers(newClass, context.Modifiers);
             ContextToTypeAttributes(newClass, context.Modifiers);
@@ -373,15 +379,16 @@ namespace XSharp.CodeDom
             //
             // Add the variables from this class to the Members collection and lookup table
             ClearMembers();
-            addFields(newClass, context);
             SaveSourceCode(newClass, context);
 
         }
         public override void EnterStructure_(XSharpParser.Structure_Context context)
         {
             base.EnterStructure_(context);
-            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
-            newClass.IsStruct = true;
+            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText())
+            {
+                IsStruct = true
+            };
 
             pushCurrentType(newClass);
             addAttributes(newClass, context.Attributes);
@@ -448,33 +455,19 @@ namespace XSharp.CodeDom
                 return;
 
             _locals.Clear();
-            var newMethod = new XCodeMemberMethod();
-            newMethod.Name = context.Sig.Id.GetCleanText();
-            newMethod.Attributes = MemberAttributes.Public;
+            var newMethod = new XCodeMemberMethod
+            {
+                Name = context.Sig.Id.GetCleanText(),
+                Attributes = MemberAttributes.Public
+            };
             newMethod.Parameters.AddRange(GetParametersList(context.Sig.ParamList));
-            FillCodeDomDesignerData(newMethod, context.Start.Line, context.Start.Column);
             var returnType = BuildDataType(context.Sig.Type);
             newMethod.ReturnType = returnType;
             //
             if (context.Modifiers != null)
             {
                 // Get standard Visibilities
-                newMethod.Attributes = ContextToMethodModifiers(context.Modifiers);
-                // Is it a NEW method ?
-                if (context.Modifiers.NEW().Length > 0)
-                    newMethod.Attributes |= MemberAttributes.New;
-                if (context.Modifiers.STATIC().Length > 0)
-                    newMethod.Attributes |= MemberAttributes.Static;
-                if (context.Modifiers.VIRTUAL().Length > 0)
-                {
-                    // According to MSDN, The absence of the Final flag makes a member virtual in C#, same for us
-                    newMethod.Attributes &= ~MemberAttributes.Final;
-                }
-                else
-                {
-                    // Other cases = FINAL
-                    newMethod.Attributes |= MemberAttributes.Final;
-                }
+                newMethod.Attributes = decodeMemberAttributes(context.Modifiers._Tokens,context.Modifiers.VIRTUAL());
             }
             // !!! WARNING !!!
             // If the method is InitializeComponent, we will have to find all CodeObjects, as the designer is using them
@@ -488,14 +481,13 @@ namespace XSharp.CodeDom
                 {
                     newMethod.CustomAttributes = GenerateAttributes(context.Attributes);
                 }
+                FillCodeDomDesignerData(newMethod, context.Start.Line, context.Start.Column);
             }
             else
             {
                 // no trivia needed. We write the complete source code including trivia
-                writeTrivia(newMethod, context);
                 if (context.StmtBlk != null)
                 {
-
                     // The designer will need to locate the code in the file, so we must add the location
                     // When there are no statements then we position on the line after the member declaration
                     int line = context.Start.Line + 1;
@@ -505,11 +497,10 @@ namespace XSharp.CodeDom
                         line = context.StmtBlk.Start.Line;
                         column = context.StmtBlk.Start.Column;
                     }
-                    FillCodeDomDesignerData(newMethod, line, column);
-                    // Copy all source code to User_Data
                     // --> See XSharpCodeGenerator.GenerateMethod for writing
+                    // Copy all source code to User_Data, this includes the leading comments !
                     SaveSourceCode(newMethod, context);
-
+                    FillCodeDomDesignerData(newMethod, line, column);
                 }
             }
             //
@@ -548,21 +539,8 @@ namespace XSharp.CodeDom
             if (context.Modifiers != null)
             {
                 // Get standard Visibilities
-                evt.Attributes = ContextToEventModifiers(context.Modifiers);
-                if (context.Modifiers.NEW().Length > 0)
-                    evt.Attributes |= MemberAttributes.New;
-                if (context.Modifiers.STATIC().Length > 0)
-                    evt.Attributes |= MemberAttributes.Static;
-                if (context.Modifiers.VIRTUAL().Length > 0)
-                {
-                    // According to MSDN, The absence of the Final flag makes a member virtual in C#, same for us
-                    evt.Attributes &= ~MemberAttributes.Final;
-                }
-                else
-                {
-                    // Other cases = FINAL
-                    evt.Attributes |= MemberAttributes.Final;
-                }
+                evt.Attributes = decodeMemberAttributes(context.Modifiers._Tokens, context.Modifiers.VIRTUAL());
+               
             }
             //
             this.CurrentType.Members.Add(evt);
@@ -577,17 +555,17 @@ namespace XSharp.CodeDom
             // Nested types are stored in Source code completely, so no need to analyze
             if (IsNested)
                 return;
-            var ctor = new XCodeConstructor();
-            writeTrivia(ctor, context);
-            ctor.Attributes = MemberAttributes.Public;
+            var ctor = new XCodeConstructor
+            {
+                Attributes = MemberAttributes.Public
+            };
             ctor.Parameters.AddRange(GetParametersList(context.ParamList));
             if (context.Modifiers != null)
             {
-                ctor.Attributes = ContextToConstructorModifiers(context.Modifiers);
+                ctor.Attributes = decodeMemberAttributes(context.Modifiers._Tokens);
             }
-            FillCodeDomDesignerData(ctor, context.Start.Line, context.Start.Column);
+            // Copy the whole source code in a Snippet Member including the leading trivia and codedom designer data
             SaveSourceCode(ctor, context);
-            // write original source for the attributes
             AddMemberAttributes(ctor, ctor.Attributes, context.Modifiers);
             this.CurrentType.Members.Add(ctor);
         }
@@ -597,10 +575,8 @@ namespace XSharp.CodeDom
             // Nested types are stored in Source code completely, so no need to analyze
             if (IsNested)
                 return;
-            // Ok, let's "cheat" : We will not analyze the element
-            // we will just copy the whole source code in a Snippet Member
+            // Copy the whole source code in a Snippet Member including the leading trivia and codedom designer data
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
-            //writeTrivia(snippet, context);
             this.CurrentType.Members.Add(snippet);
         }
 
@@ -609,12 +585,9 @@ namespace XSharp.CodeDom
             // Nested types are stored in Source code completely, so no need to analyze
             if (IsNested)
                 return;
-            // Ok, let's "cheat" : We will not analyze the element
-            // we will just copy the whole source code in a Snippet Member
+            // Copy the whole source code in a Snippet Member including the leading trivia and codedom designer data
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
-            //writeTrivia(snippet, context);
             this.CurrentType.Members.Add(snippet);
-
         }
 
         public override void EnterOperator_([NotNull] XSharpParser.Operator_Context context)
@@ -622,12 +595,9 @@ namespace XSharp.CodeDom
             // Nested types are stored in Source code completely, so no need to analyze
             if (IsNested)
                 return;
-            // Ok, let's "cheat" : We will not analyze the element
-            // we will just copy the whole source code in a Snippet Member
+            // Copy the whole source code in a Snippet Member including the leading trivia and codedom designer data
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
-            //writeTrivia(snippet, context);
             this.CurrentType.Members.Add(snippet);
-
         }
 
         public override void EnterLocalvar([NotNull] XSharpParser.LocalvarContext context)
@@ -678,8 +648,6 @@ namespace XSharp.CodeDom
             }
         }
 
-
-
         public override void EnterExpressionStmt([NotNull] XSharpParser.ExpressionStmtContext context)
         {
             // Nested types are stored in Source code completely, so no need to analyze
@@ -687,7 +655,7 @@ namespace XSharp.CodeDom
                 return;
             if (initComponent != null)
             {
-                CodeStatement stmt = new CodeStatement();
+                CodeStatement stmt ;
                 //
                 if (context._expression is XSharpParser.AssignmentExpressionContext aec)
                 {
@@ -705,9 +673,11 @@ namespace XSharp.CodeDom
 
         private CodeVariableDeclarationStatement BuildLocalVar(XSharpParser.LocalvarContext context, XCodeTypeReference localType)
         {
-            CodeVariableDeclarationStatement local = new CodeVariableDeclarationStatement();
-            local.Name = context.Id.GetCleanText();
-            local.Type = localType;
+            CodeVariableDeclarationStatement local = new CodeVariableDeclarationStatement
+            {
+                Name = context.Id.GetCleanText(),
+                Type = localType
+            };
             if (context.Expression != null)
             {
                 local.InitExpression = BuildExpression(context.Expression, false);

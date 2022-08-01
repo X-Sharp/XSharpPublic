@@ -1185,11 +1185,11 @@ namespace XSharp.CodeDom
             type.TypeAttributes = retValue;
             return;
         }
-        
+
         // memberModifiers     : (Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT |
         //                             INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN | OVERRIDE) )+
 
-        protected MemberAttributes decodeMemberAttributes(IList<IToken> tokens)
+        protected MemberAttributes decodeMemberAttributes(IList<IToken> tokens, ITerminalNode[] Virtual = null)
         {
             MemberAttributes retValue = MemberAttributes.Public;
             MemberAttributes modifiers = (MemberAttributes)0;
@@ -1239,23 +1239,21 @@ namespace XSharp.CodeDom
                         break;
                 }
             }
-            return retValue | modifiers;
-        }
-        protected MemberAttributes ContextToMethodModifiers(XSharpParser.MemberModifiersContext modifiers)
-        {
-            return decodeMemberAttributes(modifiers._Tokens);
-        }
-        protected MemberAttributes ContextToConstructorModifiers(XSharpParser.ConstructorModifiersContext modifiers)
-        {
-            var result = decodeMemberAttributes(modifiers._Tokens);
-            if (modifiers.STATIC().Length > 0)
-                result |= MemberAttributes.Static;
-            return result;
-        }
 
-        protected MemberAttributes ContextToEventModifiers(XSharpParser.MemberModifiersContext modifiers)
-        {
-            return decodeMemberAttributes(modifiers._Tokens);
+            if (Virtual != null)
+            {
+                if (Virtual.Length > 0)
+                {
+                    // According to MSDN, The absence of the Final flag makes a member virtual in C#, same for us
+                    modifiers &= ~MemberAttributes.Final;
+                }
+                else
+                {
+                    // Other cases = FINAL
+                    modifiers |= MemberAttributes.Final;
+                }
+            }
+            return retValue | modifiers;
         }
 
         protected bool IsEmpty(CodeNamespace nspace)
@@ -1341,13 +1339,7 @@ namespace XSharp.CodeDom
             if (xtoken.HasTrivia)
             {
                 var sb = new StringBuilder();
-                foreach (var t in xtoken.Trivia)
-                {
-                    if (t.Line == xtoken.Line)
-                    {
-                        sb.Append(t.Text);
-                    }
-                }
+                sb.Append(xtoken.TriviaAsText);
                 if (sb.Length > 0)
                 {
                     sb.Append(sourceCode);
@@ -1885,8 +1877,11 @@ namespace XSharp.CodeDom
                     trivia = context.GetEndingTrivia(_tokens);
                 else
                     trivia = context.GetLeadingTrivia(_tokens);
-                var key = end ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
-                o.UserData[key] = trivia;
+                if (trivia.Length > 0)
+                {
+                    var key = end ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
+                    o.UserData[key] = trivia;
+                }
             }
 
         }

@@ -465,7 +465,7 @@ BEGIN NAMESPACE XSharpModel
     SELF:Flags := GetFlags(line[1]:Text)
     RETURN
 
-    METHOD SplitPairs(line as IList<IToken>, tStart AS List<IToken>, tEnd AS List<IToken>, tOptions AS List<IToken>) AS LOGIC
+    METHOD SplitPairs(line as IList<IToken>, tStart AS IList<IToken>, tEnd AS IList<IToken>, tOptions AS IList<IToken>) AS LOGIC
     local section as int
 
     section := 1
@@ -603,7 +603,7 @@ BEGIN NAMESPACE XSharpModel
     return type
 
 
-    PRIVATE METHOD GetKeyword(tokens as List<IToken>, qmark as int, delete as logic) AS XKeyword
+    PRIVATE METHOD GetKeyword(tokens as IList<IToken>, qmark as int, delete as logic) AS XKeyword
     local kw as XKeyword
     Debug.Assert(tokens:Count == 3)
     Debug.Assert(qmark == 1 .or. qmark == 2)
@@ -623,7 +623,7 @@ BEGIN NAMESPACE XSharpModel
     endif
     return kw
 
-    PRIVATE METHOD GetKeyword(tokens as List<IToken>) AS XKeyword
+    PRIVATE METHOD GetKeyword(tokens as IList<IToken>) AS XKeyword
     local kw as XKeyword
     if tokens:Count == 1
         kw := XKeyword{GetTokentype(tokens[0])}
@@ -635,7 +635,7 @@ BEGIN NAMESPACE XSharpModel
     endif
     return kw
 
-    PRIVATE METHOD GetOptions(tOptions as List<IToken>) AS XFormattingFlags
+    PRIVATE METHOD GetOptions(tOptions as IList<IToken>) AS XFormattingFlags
     local kwFlags as XFormattingFlags
     kwFlags := SELF:Flags
     FOREACH VAR token in tOptions

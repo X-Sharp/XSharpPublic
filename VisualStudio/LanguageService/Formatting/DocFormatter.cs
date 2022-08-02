@@ -25,59 +25,59 @@ namespace XSharp.LanguageService
             }
         }
 
-        private readonly Stack<blockindent> blocks;
-        private int firstDoccomment; // line number of start of doc comment block
-        private readonly XDocument document;
-        private readonly XSharpLineKeywords lineKeywords;
+        private readonly Stack<blockindent> _blocks;
+        private int _firstDoccomment; // line number of start of doc comment block
+        private readonly XDocument _document;
+        private readonly XSharpLineKeywords _lineKeywords;
         private SourceCodeEditorSettings _settings;
-        private int[] expectedIndent;
-        private int indentSize;
+        private int[] _expectedIndent;
+        private int _indentSize;
         internal DocFormatter(XDocument document, SourceCodeEditorSettings settings)
         {
-            blocks = new Stack<blockindent>();
-            firstDoccomment = -1;
-            this.document = document;
-            lineKeywords = document.LineKeywords;
+            _blocks = new Stack<blockindent>();
+            _firstDoccomment = -1;
+            _document = document;
+            _lineKeywords = document.LineKeywords;
             _settings = settings;
         }
 
         private int IndentEntityStart(XKeyword kw, int lineNumber, int startIndent, bool singleLine)
         {
-            while (blocks.Count > 0)
+            while (_blocks.Count > 0)
             {
-                var top = blocks.Peek();
-                if (!XFormattingRule.IsEntity(top.kw))
+                var top = _blocks.Peek();
+                if (!top.kw.IsEntity())
                 {
-                    blocks.Pop();
+                    _blocks.Pop();
                 }
                 else
                 {
                     break;
                 }
             }
-            if (blocks.Count > 0)
+            if (_blocks.Count > 0)
             {
-                var block = blocks.Peek();
-                indentSize = block.indent;
+                var block = _blocks.Peek();
+                _indentSize = block.indent;
                 if (_settings.IndentNamespace && block.kw.Kw2 == XTokenType.Namespace)
                 {
-                    indentSize += 1;
+                    _indentSize += 1;
                 }
                 if (_settings.IndentTypeMembers)
                 {
-                    bool isMember = XFormattingRule.IsMember(kw) || singleLine;
-                    if ( isMember && XFormattingRule.IsType(blocks.Peek().kw))
+                    bool isMember = kw.IsMember() || singleLine;
+                    if ( isMember && _blocks.Peek().kw.IsType())
                     {
-                        indentSize += 1;
+                        _indentSize += 1;
                     }
 
                 }
 
                 // pop entities from the stack that are "Global"
-                while (XFormattingRule.IsGlobalEntity(blocks.Peek().kw))
+                while (_blocks.Peek().kw.IsGlobal())
                 {
-                    blocks.Pop();
-                    if (blocks.Count == 0)
+                    _blocks.Pop();
+                    if (_blocks.Count == 0)
                     {
                         break;
                     }
@@ -85,25 +85,25 @@ namespace XSharp.LanguageService
             }
             else
             {
-                indentSize = startIndent;
+                _indentSize = startIndent;
             }
-            expectedIndent[lineNumber] = indentSize;
-            if (firstDoccomment != -1)
+            _expectedIndent[lineNumber] = _indentSize;
+            if (_firstDoccomment != -1)
             {
-                for (int i = firstDoccomment; i < lineNumber; i++)
+                for (int i = _firstDoccomment; i < lineNumber; i++)
                 {
-                    if (!document.HasLineState(i, LineFlags.Preprocessor))
+                    if (!_document.HasLineState(i, LineFlags.Preprocessor))
                     {
-                        expectedIndent[i] = indentSize;
+                        _expectedIndent[i] = _indentSize;
                     }
                 }
             }
-            while (lineNumber > 0 && document.HasLineState(lineNumber, LineFlags.Continued))
+            while (lineNumber > 0 && _document.HasLineState(lineNumber, LineFlags.Continued))
             {
                 lineNumber -= 1;
-                expectedIndent[lineNumber] = indentSize;
+                _expectedIndent[lineNumber] = _indentSize;
             }
-            return indentSize;
+            return _indentSize;
         }
 
         void HandleStart(XKeyword kw, int lineNumber)
@@ -112,16 +112,16 @@ namespace XSharp.LanguageService
             var isEntity = rule.Flags.HasFlag(XFormattingFlags.Type) ||
                 rule.Flags.HasFlag(XFormattingFlags.Member);
 
-            blocks.Push(new blockindent(kw, indentSize, lineNumber));
+            _blocks.Push(new blockindent(kw, _indentSize, lineNumber));
             if (isEntity)
             {
                 // Only indent statements when the option is enabled
                 if (_settings.IndentStatements)
-                    indentSize += 1;
+                    _indentSize += 1;
             }
             else
             {
-                indentSize += 1;
+                _indentSize += 1;
             }
         }
 
@@ -130,31 +130,31 @@ namespace XSharp.LanguageService
             // This does not change the indent size
             // nut only adjusts the indent size for the current line
 
-            expectedIndent[lineNumber] = indentSize;
-            if (blocks.Count > 0)
+            _expectedIndent[lineNumber] = _indentSize;
+            if (_blocks.Count > 0)
             {
-                var top = blocks.Peek();
-                indentSize = top.indent;
+                var top = _blocks.Peek();
+                _indentSize = top.indent;
                 if (kw.Kw1 == XTokenType.Case || kw.Kw1 == XTokenType.Otherwise)
                 {
                     if (_settings.IndentCaseLabel)
-                        indentSize += 1;
-                    expectedIndent[lineNumber] = indentSize;
+                        _indentSize += 1;
+                    _expectedIndent[lineNumber] = _indentSize;
                     if (_settings.IndentCaseContent)
-                        indentSize += 1;
+                        _indentSize += 1;
                 }
                 else
                 {
-                    expectedIndent[lineNumber] = indentSize;
-                    indentSize += 1;
+                    _expectedIndent[lineNumber] = _indentSize;
+                    _indentSize += 1;
                 }
             }
         }
         void HandleEnd(XKeyword kw, int lineNumber)
         {
             var isType = false;
-            indentSize -= 1;
-            expectedIndent[lineNumber] = indentSize;
+            _indentSize -= 1;
+            _expectedIndent[lineNumber] = _indentSize;
             var rules = XFormattingRule.GetEndRules(kw);
             if (rules?.Count > 0)
             {
@@ -163,24 +163,24 @@ namespace XSharp.LanguageService
             }
             if (isType)
             {
-                while (blocks.Count > 0 && !XFormattingRule.IsType(blocks.Peek().kw))
+                while (_blocks.Count > 0 && !_blocks.Peek().kw.IsType())
                 {
-                    blocks.Pop();
+                    _blocks.Pop();
                 }
-                if (blocks.Count > 0)
+                if (_blocks.Count > 0)
                 {
-                    var top = blocks.Pop();
-                    indentSize = top.indent;
-                    expectedIndent[lineNumber] = indentSize;
+                    var top = _blocks.Pop();
+                    _indentSize = top.indent;
+                    _expectedIndent[lineNumber] = _indentSize;
                 }
             }
             else
             {
-                if (blocks.Count > 0)
+                if (_blocks.Count > 0)
                 {
-                    var top = blocks.Pop();
-                    indentSize = top.indent;
-                    expectedIndent[lineNumber] = indentSize;
+                    var top = _blocks.Pop();
+                    _indentSize = top.indent;
+                    _expectedIndent[lineNumber] = _indentSize;
                 }
             }
 
@@ -188,64 +188,64 @@ namespace XSharp.LanguageService
       
         internal int[] GetIndentSizes(IEnumerable<ITextSnapshotLine> lines, int startLine, int endLine, int startIndent)
         {
-            expectedIndent = new int[endLine + 1];
-            indentSize = startIndent;
+            _expectedIndent = new int[endLine + 1];
+            _indentSize = startIndent;
             ;
             foreach (var line in lines)
             {
                 var lineNumber = line.LineNumber;
                 if (lineNumber >= startLine && lineNumber <= endLine)
                 {
-                    if (document.HasLineState(lineNumber, LineFlags.Preprocessor))
+                    if (_document.HasLineState(lineNumber, LineFlags.Preprocessor))
                     {
                         if (!_settings.IndentPreprocessorLines)
                         {
-                            expectedIndent[lineNumber] = 0;
+                            _expectedIndent[lineNumber] = 0;
                             continue;
                         }
                     }
-                    if (document.HasLineState(lineNumber, LineFlags.DocComments))
+                    if (_document.HasLineState(lineNumber, LineFlags.DocComments))
                     {
-                        if (firstDoccomment == -1)
-                            firstDoccomment = lineNumber;
+                        if (_firstDoccomment == -1)
+                            _firstDoccomment = lineNumber;
                         continue;
 
                     }
                     // Class variables are not easily recognizable.
                     // Check the SingleLineEntity flag for them
-                    var singleLineEntityStart = document.HasLineState(lineNumber, LineFlags.SingleLineEntity);
-                    expectedIndent[lineNumber] = indentSize;
-                    if (!singleLineEntityStart && !lineKeywords.ContainsKey(lineNumber) )
+                    var singleLineEntityStart = _document.HasLineState(lineNumber, LineFlags.SingleLineEntity);
+                    _expectedIndent[lineNumber] = _indentSize;
+                    if (!singleLineEntityStart && !_lineKeywords.ContainsKey(lineNumber) )
                     {
                         // check for continuation
-                        if (_settings.IndentContinuedLines && document.HasLineState(lineNumber, LineFlags.Continued))
+                        if (_settings.IndentContinuedLines && _document.HasLineState(lineNumber, LineFlags.Continued))
                         {
-                            expectedIndent[lineNumber] = indentSize + 1;
+                            _expectedIndent[lineNumber] = _indentSize + 1;
                         }
                         continue;
                     }
-                    lineKeywords.Get(lineNumber, out var kw);
+                    _lineKeywords.Get(lineNumber, out var kw);
 
-                    if (XFormattingRule.IsEntity(kw) || singleLineEntityStart)
+                    if (kw.IsEntity() || singleLineEntityStart)
                     {
-                        indentSize = IndentEntityStart(kw, lineNumber, startIndent, singleLineEntityStart);
-                        firstDoccomment = -1;
+                        _indentSize = IndentEntityStart(kw, lineNumber, startIndent, singleLineEntityStart);
+                        _firstDoccomment = -1;
                     }
-                    if (XFormattingRule.IsStartKeyword(kw))
+                    if (kw.IsStart())
                     {
                         HandleStart(kw, lineNumber);
                     }
-                    else if (XFormattingRule.IsMiddleKeyword(kw))
+                    else if (kw.IsMiddle())
                     {
                         HandleMiddle(kw, lineNumber);
                     }
-                    else if (XFormattingRule.IsEndKeyword(kw))
+                    else if (kw.IsStop())
                     {
                         HandleEnd(kw, lineNumber);
                     }
                 }
             }
-            return expectedIndent;
+            return _expectedIndent;
         }
     }
 }

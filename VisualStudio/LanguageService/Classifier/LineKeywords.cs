@@ -1,5 +1,8 @@
 ﻿using XSharpModel;
 using Microsoft.VisualStudio.Text;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
+using System.Collections.Generic;
 
 namespace XSharp.LanguageService
 {
@@ -13,6 +16,64 @@ namespace XSharp.LanguageService
         internal XSharpLineKeywords() : base()
         {
         }
-        
+
+        internal static XKeyword Tokens2Keyword(IList<IToken> tokens)
+        {
+            IToken firstkw = null, secondkw = null;
+            bool startOfLine = true;
+            XKeyword kw = default;
+            if (tokens?.Count > 0)
+            {
+                foreach (var token in tokens)
+                {
+                    if (token.Type == XSharpLexer.WS)
+                        continue;
+                    if (XSharpLexer.IsComment(token.Type))
+                        continue;
+                    if (!XSharpLexer.IsModifier(token.Type) || token.Type == XSharpLexer.CLASS)
+                    {
+                        if (XSharpLexer.IsKeyword(token.Type))
+                        {
+                            if (firstkw == null)
+                            {
+                                firstkw = token;
+                            }
+                            else if (secondkw == null)
+                            {
+                                secondkw = token;
+                            }
+                            else
+                            {
+                                startOfLine = false;
+                            }
+                        }
+                        else
+                        {
+                            startOfLine = false;
+                        }
+                    }
+                    if (!startOfLine)
+                        break;
+                }
+                // encode keyword
+                if (firstkw != null)
+                {
+                    if (XFormattingRule.IsSingleKeyword(firstkw.Type))
+                    {
+                        kw = new XKeyword(firstkw.Type);
+                    }
+                    else if (secondkw != null)
+                    {
+                        kw = new XKeyword(firstkw.Type, secondkw.Type);
+                    }
+                    else
+                    {
+                        kw = new XKeyword(firstkw.Type);
+                    }
+                }
+            }
+            return kw;
+        }
+
     }
 }

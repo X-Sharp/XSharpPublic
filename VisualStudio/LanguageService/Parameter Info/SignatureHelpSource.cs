@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
-using System.Reflection;
 using XSharpModel;
-using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace XSharp.LanguageService
@@ -77,11 +75,8 @@ namespace XSharp.LanguageService
 
         internal static int CalculateCommaPosition(string sigText, int lastPos, ITextBuffer buffer)
         {
-
-            var classifier = buffer.GetClassifier();
-            var walker = classifier.SourceWalker;
-            var stream = walker.Lex(sigText);
-            var tokens = ((BufferedTokenStream)stream).GetTokens();
+            var doc = buffer.GetDocument();
+            var tokens = doc.GetTokens(sigText);
             int commaCount = 0;
             foreach (var token in tokens)
             {

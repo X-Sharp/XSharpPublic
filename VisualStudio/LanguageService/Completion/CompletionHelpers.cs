@@ -688,7 +688,7 @@ namespace XSharp.LanguageService
         /// </summary>
         /// <param name="tokenList"></param>
         /// <returns></returns>
-        internal string TokenListAsString(List<IToken> tokenList)
+        internal string TokenListAsString(IList<IToken> tokenList)
         {
             string retValue = "";
             for (int pos = 0; pos < tokenList.Count; pos++)
@@ -748,7 +748,7 @@ namespace XSharp.LanguageService
                 var XVar = new XSourceVariableSymbol(member, "SELF", member.Range, member.Interval, member.ParentName);
                 XVar.File = walker.File;
                 locals.Add(XVar);
-                if (! String.IsNullOrEmpty(member.ParentType.BaseTypeName))
+                if (member.ParentType != null && !String.IsNullOrEmpty(member.ParentType.BaseTypeName))
                 {
                     XVar = new XSourceVariableSymbol(member, "SUPER", member.Range, member.Interval, member.ParentType.BaseTypeName);
                     XVar.File = walker.File;

@@ -6,13 +6,8 @@
 //------------------------------------------------------------------------------
 
 using LanguageService.CodeAnalysis.Text;
-using LanguageService.CodeAnalysis.XSharp;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.SyntaxTree;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using XSharpModel;
 using static XSharp.Parser.VsParser;
 
@@ -71,10 +66,8 @@ namespace XSharp.LanguageService
                 }
             }
         }
-       
-   
-   
-      private bool CanEdit
+
+        private bool CanEdit
         {
             get
             {
@@ -103,7 +96,6 @@ namespace XSharp.LanguageService
                 return;
             WriteOutputMessage("FormatDocument() -->>");
             // Try to retrieve an already parsed list of Tags
-            var _ = _classifier.ClassifyWhenNeededAsync().ConfigureAwait(true);
             //
             WaitUntilBufferReady();
 
@@ -114,7 +106,7 @@ namespace XSharp.LanguageService
                 return;
             }
             // Format the full text, with an first Indentation set to 0
-            FormatSpan( 0, endLine, 0);
+            FormatSpan(0, endLine, 0);
             //
             WriteOutputMessage("FormatDocument() <<--");
         }
@@ -127,6 +119,13 @@ namespace XSharp.LanguageService
             {
                 editSession = _buffer.CreateEdit();
                 var document = _buffer.GetDocument();
+                document.NeedsKeywords = true;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+              {
+                  await _classifier.ForceClassifyAsync();
+              });
+
+                document.NeedsKeywords = false;
                 var formatter = new DocFormatter(document, _settings);
                 var expectedIndent = formatter.GetIndentSizes(lines, startLine, endLine, startIndent);
 
@@ -173,7 +172,7 @@ namespace XSharp.LanguageService
             int startLine = _buffer.CurrentSnapshot.GetLineNumberFromPosition(startPosition);
             int endLine = _buffer.CurrentSnapshot.GetLineNumberFromPosition(endPosition);
             //
-            FormatSpan( startLine, endLine, 0);
+            FormatSpan(startLine, endLine, 0);
         }
     }
 
@@ -193,5 +192,5 @@ namespace XSharp.LanguageService
         #endregion
     }
 
- 
+
 }

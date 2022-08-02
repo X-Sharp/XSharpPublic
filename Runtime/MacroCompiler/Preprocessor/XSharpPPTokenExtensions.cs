@@ -314,6 +314,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 case XSharpLexer.COLON:
                 case XSharpLexer.DOT:
+                case XSharpLexer.COLONCOLON:
                     return true;
             }
             return false;
@@ -324,8 +325,8 @@ namespace XSharp.MacroCompiler.Preprocessor
                 return false;
             if (token.IsAssign())
                 return true;
-            if (token.IsMemberSeparator())
-                return true;
+            //if (token.IsMemberSeparator()) we allow DOT, COLON and COLONCOLON without left. With statement !
+            //    return true;
             if (token.IsPrefix())
                 return false;
             return token.IsBinary();
@@ -475,7 +476,10 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             if (token == null)
             {
-                return nextToken.IsName() || nextToken.IsLiteral() || nextToken.IsPrefix();
+                // we also allow DOT, COLON and COLONCOLON because these can
+                // be part of a WITH block
+                return nextToken.IsName() || nextToken.IsLiteral()
+                    || nextToken.IsPrefix() || nextToken.IsMemberSeparator();
             }
             // we allow .and. .not. and even .not. .not.
             if (token.IsPrefix() || token.IsBinary())          

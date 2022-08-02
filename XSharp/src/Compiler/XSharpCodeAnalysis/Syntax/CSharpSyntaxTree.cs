@@ -153,7 +153,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             var cs = root as CompilationUnitSyntax;
             var eof = (cs?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
             var eofPos = cs?.EndOfFileToken.Position;
-            bool isUdc = false;
             int line = -1;
             int column = -1;
             var length = 0;
@@ -237,7 +236,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         fn = symbol.InputStream.SourceName;
                         line = symbol.Line;
                         column = symbol.Column;
-                        isUdc = true;
                     }
                 }
                 if (length < 0)

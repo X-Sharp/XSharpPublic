@@ -59,8 +59,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         VFP = 7,
         // The following are strictly not a target but
         // we use this in the OverloadResolution
-        VulcanRT = 8,    
-        VulcanRTFuncs = 9,  
+        VulcanRT = 8,
+        VulcanRTFuncs = 9,
         // XSharp SDK DLLs
         VOWin32Api = 10,
         VOSystemClasses = 11,
@@ -483,7 +483,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool result = defaultValue;
             if (context != null && options != null && options.Count > 0)
             {
-                var token = context.Start as XSharpToken;
+                var token = (XSharpToken) context.Start;
                 int line = token.Line;
                 if (token.SourceSymbol != null)
                     line = token.SourceSymbol.Line;

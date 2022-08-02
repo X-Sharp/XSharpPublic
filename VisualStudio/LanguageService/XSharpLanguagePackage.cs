@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#undef COMPLETION
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using System;
@@ -84,8 +84,10 @@ namespace XSharp.LanguageService
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
-    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), LanguageName, null, "Intellisense", pageNameResourceId: "205")]  
-    [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), LanguageName, null, "Settings Completion", pageNameResourceId: "204")]   
+    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), LanguageName, null, "Intellisense", pageNameResourceId: "205")]
+#if COMPLETION
+    [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), LanguageName, null, "Settings Completion", pageNameResourceId: "204")]
+#endif
     [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202")]
     [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), LanguageName, null, "Indentation", pageNameResourceId: "206")]
     [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Other", pageNameResourceId: "203")]       
@@ -118,7 +120,9 @@ namespace XSharp.LanguageService
         FormattingOptionsPage _formattingPage;
         IndentingOptionsPage _indentingPage;
         OtherOptionsPage _otherOptionsPage;
+#if COMPLETION
         CompletionOptionsPage _completionOptionsPage;
+#endif
         public void GetIntellisenseSettings()
         {
             if (_intellisensePage == null)
@@ -137,10 +141,12 @@ namespace XSharp.LanguageService
             {
                 _otherOptionsPage = (OtherOptionsPage)GetDialogPage(typeof(OtherOptionsPage));
             }
+#if COMPLETION
             if (_completionOptionsPage == null)
             {
                 _completionOptionsPage = (CompletionOptionsPage)GetDialogPage(typeof(CompletionOptionsPage));
             }
+#endif
             // Intellisense
             XSettings.EnableOutputWindowLogging = _intellisensePage.EnableOutputPane;
             XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
@@ -213,6 +219,7 @@ namespace XSharp.LanguageService
             XSettings.IndentContinuedLines = _indentingPage.IndentMultiLines;
             XSettings.IndentPreprocessorLines = _indentingPage.IndentPreprocessorLines;
             XSettings.IndentNamespace = _indentingPage.IndentNamespace;
+#if COMPLETION
             // Completion
             XSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
             XSettings.CompleteSelf = _completionOptionsPage.CompleteSelf;
@@ -229,6 +236,7 @@ namespace XSharp.LanguageService
             XSettings.CompleteFunctionsA = _completionOptionsPage.CompleteFunctionsA;
             XSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
             //XSettings.MaxCompletionEntries = _completionOptionsPage.MaxCompletionEntries;
+#endif
             // Other
             XSettings.EditorShowDividers = _otherOptionsPage.ShowDividers;
             XSettings.EditorShowSingleLineDividers = _otherOptionsPage.ShowSingleLineDividers;
@@ -400,7 +408,7 @@ namespace XSharp.LanguageService
             return;
         }
 
-        #region IVSDebuggerEvents
+#region IVSDebuggerEvents
         private void RegisterDebuggerEvents()
         {
             int hr;
@@ -450,7 +458,7 @@ namespace XSharp.LanguageService
             return (IComponentModel)GetGlobalService(typeof(SComponentModel));
         }
 
-        #region IOLEComponent
+#region IOLEComponent
         public int FReserved1(uint dwReserved, uint message, IntPtr wParam, IntPtr lParam)
         {
             return 1;
@@ -504,7 +512,7 @@ namespace XSharp.LanguageService
         {
             return IntPtr.Zero;
         }
-        #endregion
+#endregion
     }
 
 }

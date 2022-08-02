@@ -1743,8 +1743,12 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          VAR sType       := SELF:ParseDataType(FALSE)
          SELF:ParseExpressionBody()
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
-
-         VAR id := t1:GetText()+ IIF(t2 != NULL, t2:GetText(),"")
+         local id as string
+         if t1 != null
+            id := t1:GetText()+ IIF(t2 != NULL, t2:GetText(),"")
+         else
+            id := ""
+         endif
          SELF:ReadLine()
          VAR xMember := XSourceMemberSymbol{id, Kind.Operator, _attributes, range, interval,sType}
          xMember:SourceCode := source

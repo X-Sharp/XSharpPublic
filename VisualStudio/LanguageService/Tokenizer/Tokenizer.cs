@@ -34,7 +34,7 @@ namespace XSharp.LanguageService
             return XSharpCompletionSource.StringEquals(lhs, rhs);
         }
 
-        internal static List<IToken> GetTokenListBeforeCaret(XSharpSearchLocation location, out CompletionState state)
+        internal static IList<IToken> GetTokenListBeforeCaret(XSharpSearchLocation location, out CompletionState state)
         {
             var tokens = GetTokenList(location, out state, false);
             var result = new List<IToken>();
@@ -57,28 +57,6 @@ namespace XSharp.LanguageService
             {
                 await classifier.ClassifyWhenNeededAsync();
             });
-        }
-
-        static List<IToken> getLineFromBuffer(XSharpSearchLocation location)
-        {
-            var result = new List<IToken>();
-            ClassifyBuffer(location);
-            var xdocument = location.GetDocument();
-            var lastLine = location.Snapshot.LineCount;
-            if (xdocument != null)
-            {
-                var lines = xdocument.TokensPerLine;
-                var lineNumber = location.LineNumber;
-                while (result.Count == 0 || result.Last().Type != XSharpLexer.EOS)
-                {
-                    if (lines.ContainsKey(lineNumber))
-                        result.AddRange(lines[lineNumber]);
-                    lineNumber += 1;
-                    if (lineNumber >= lastLine)
-                        break;
-                }
-            }
-            return result;
         }
 
 
@@ -281,15 +259,17 @@ namespace XSharp.LanguageService
             return -1;
         }
 
-        internal static List<IToken> GetTokenList(XSharpSearchLocation location, out CompletionState state,
+        internal static IList<IToken> GetTokenList(XSharpSearchLocation location, out CompletionState state,
             bool includeKeywords = false, bool underCursor = false)
         {
             location = AdjustStartLineNumber(location);
-            var line = getLineFromBuffer(location);
+            var xdocument = location.GetDocument();
+            var tokens =  xdocument.GetTokensInLine(location.LineNumber);
+
             //
             state = CompletionState.General;
-            if (line.Count == 0)
-                return line;
+            if (tokens.Count == 0)
+                return tokens;
             // if the token appears after comma or paren then strip the tokens 
             // now look forward and find the first token that is on or after the triggerpoint
             var result = new List<IToken>();
@@ -297,7 +277,7 @@ namespace XSharp.LanguageService
             bool allowdot = location.Project?.ParseOptions?.AllowDotForInstanceMembers ?? false;
             var cursorPos = location.Position;
             var done = false;
-            var list = new XSharpTokenList(line);
+            var list = new XSharpTokenList(tokens);
             while (!done && !list.Eoi())
             {
                 IToken lasttoken = result.LastOrDefault();
@@ -351,7 +331,7 @@ namespace XSharp.LanguageService
                 {
                     // after these tokens we "restart" the list
                     case XSharpLexer.EOS:
-                        if (token.Position < cursorPos && token != line.Last())
+                        if (token.Position < cursorPos && token != tokens.Last())
                         {
                             // an EOS inside a line before the cursor
                             // so there are 2 or more statements on the same line

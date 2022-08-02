@@ -57,7 +57,7 @@ STRUCTURE XSharpModel.XKeyword IMPLEMENTS IEquatable<XKeyword>, IEqualityCompare
             RETURN Kw1:ToString()
         ENDIF
         RETURN Kw1:ToString()+"_"+Kw2:ToString()
-        
+
     METHOD Equals(x as XKeyword , y as XKeyword ) AS LOGIC
         RETURN x:Equals(y)
 
@@ -69,4 +69,29 @@ STRUCTURE XSharpModel.XKeyword IMPLEMENTS IEquatable<XKeyword>, IEqualityCompare
 
 END STRUCTURE
 
+STATIC CLASS XSharpModel.XKeywordExtensions
+    STATIC METHOD IsEntity(SELF kw as XKeyword) AS LOGIC
+        RETURN XFormattingRule.IsEntity(kw)
 
+    STATIC METHOD IsStart(SELF kw as XKeyword) AS LOGIC
+        RETURN XFormattingRule.IsStartKeyword(kw)
+
+    STATIC METHOD IsMiddle(SELF kw as XKeyword) AS LOGIC
+        RETURN XFormattingRule.IsMiddleKeyword(kw)
+
+    STATIC METHOD IsStop(SELF kw as XKeyword) AS LOGIC
+        RETURN XFormattingRule.IsEndKeyword(kw)
+
+    STATIC METHOD IsMember(SELF kw as XKeyword) AS LOGIC
+        RETURN XFormattingRule.IsMember(kw)
+
+    STATIC METHOD IsType(SELF kw as XKeyword) AS LOGIC
+        RETURN XFormattingRule.IsType(kw)
+
+    STATIC METHOD IsStatement(SELF kw as XKeyword) AS LOGIC
+        RETURN XFormattingRule.IsStatement(kw)
+
+    STATIC METHOD IsGlobal(SELF kw as XKeyword) AS LOGIC
+        RETURN XFormattingRule.IsGlobalEntity(kw)
+
+END CLASS

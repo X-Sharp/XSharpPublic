@@ -23,90 +23,36 @@ namespace XSharp.LanguageService
         readonly XFile _file;
         readonly SourceCodeEditorSettings _settings;
         private static int _lastIndentValue;    // in number of characters
-
-
-
+        // session buffer for tokens per line 
+        readonly Dictionary<int, IList<IToken>> _tokenBuffer; 
         internal LineFormatter(ITextBuffer buffer, SourceCodeEditorSettings settings)
         {
             _buffer = buffer;
             _document = buffer.GetDocument();
             _file = buffer.GetFile();
             _settings = settings;
+            _tokenBuffer = new Dictionary<int, IList<IToken>>();
+        }
+
+        private XKeyword GetFirstKeywordInLine(int lineNo)
+        {
+            var line = _buffer.CurrentSnapshot.GetLineFromLineNumber(lineNo);
+            return GetFirstKeywordInLine(line, out _, out _);
         }
         private XKeyword GetFirstKeywordInLine(ITextSnapshotLine line, out int minIndent, out IList<IToken> tokens)
         {
-            minIndent = -1;
-            string startOfLine = line.GetText();
+            minIndent = 0;
             XKeyword keyword = default;
-            int index = 0;
-            tokens = GetTokens(startOfLine);
+            tokens = _document.GetTokensInLine(line.LineNumber);
             if (tokens.Count > 0)
             {
+                keyword = XSharpLineKeywords.Tokens2Keyword(tokens);
                 if (tokens[0].Type == XSharpLexer.WS)
                 {
-                    index = 1;
                     minIndent = GetIndentTokenLength(tokens[0]);
                 }
-                else
-                {
-                    minIndent = 0;
-                }
-                while (index < tokens.Count)
-                {
-                    var token = tokens[index];
-                    if (token.Type == XSharpLexer.WS)
-                    {
-                        index++;
-                        continue;
-                    }
-                    if (XSharpLexer.IsKeyword(token.Type) || this.IsPPKeyword(token.Type))
-                    {
-                        // Skip modifiers at start of line
-                        if (XSharpLexer.IsModifier(token.Type) && token.Type != XSharpLexer.CLASS)
-                        {
-                            index++;
-                            keyword = default;
-                            continue;
-                        }
-                        keyword = new XKeyword(token.Type);
-                        // check for 2 keyword tokens
-                        if (index < tokens.Count - 2
-                            && !XFormattingRule.IsSingleKeyword(token.Type))
-                        {
-                            var token2 = tokens[index + 2];
-                            if (token2.Type != XSharpLexer.EOS
-                                && token2.Type != XSharpLexer.Eof)
-                            {
-                                keyword = new XKeyword(token.Type, token2.Type);
-                            }
-                            if (token.Type == XSharpLexer.LOCAL
-                                && (token2.Type == XSharpLexer.PROCEDURE || token2.Type == XSharpLexer.FUNCTION))
-                            {
-                                keyword = new XKeyword(token2.Type);
-                            }
-                            else if (token.Type == XSharpLexer.DEFINE && ParseOptions.Dialect == XSharpDialect.FoxPro)
-                            {
-                                index += 2;
-                                // skip modifiers between DEFINE and CLASS
-                                while ((XSharpLexer.IsModifier(token2.Type) || token2.Type == XSharpLexer.WS) && index < tokens.Count - 1)
-                                {
-                                    index++;
-                                    token2 = tokens[index];
-                                }
-                                if (token2.Type == XSharpLexer.CLASS)
-                                {
-                                    keyword = new XKeyword(token.Type, token2.Type);
-                                }
-                            }
-                        }
-                    }
-                    else if (XSharpLexer.IsComment(token.Type))
-                    {
-                        keyword = default;
-                    }
-                    break;
-                }
             }
+            
             return keyword;
         }
 
@@ -114,7 +60,8 @@ namespace XSharp.LanguageService
         {
             if (line.Length == 0)
                 return true;
-            if (_document.GetTokens(line.LineNumber, out var tokens))
+            var tokens = _document.GetTokensInLine(line.LineNumber);
+            if (tokens.Count > 0)
             {
                 var token = tokens.Where((t) => t.Type != XSharpLexer.WS).FirstOrDefault();
                 if (token == null)
@@ -134,24 +81,23 @@ namespace XSharp.LanguageService
             // We want to make sure that the previous line is properly indented
             // for example if the previous line closes a block such as FOR .. NEXT
             // We also want to adjust the starting whitespace based on the previous line.
-
+            _tokenBuffer.Clear();
             int lineNumber = line.LineNumber;
-            bool alignOnPrev = true;
             int prevIndent = -1;
             var previousLine = line.Snapshot.GetLineFromLineNumber(lineNumber - 1);
             if (CanChangeLine(previousLine))
             {
                 this.FormatLineCase(editSession, previousLine);
-                prevIndent = CalculatePreviousLineIndent(previousLine);
+                prevIndent = CalculateIndentForPreviousLine(previousLine);
                 SetIndentation(editSession, previousLine, prevIndent);
             }
             // calculate the indentation from the new current line
             if (line.Length == 0 || CanChangeLine(line))
             {
-                var indentation = GetDesiredIndentation(line, editSession, alignOnPrev, prevIndent);
+                var indentation = GetDesiredIndentation(line, editSession, prevIndent);
                 SetIndentation(editSession, line, indentation);
             }
-
+            _tokenBuffer.Clear();
         }
 
         private void SetIndentation(ITextEdit editSession, ITextSnapshotLine line, int indentation)
@@ -165,16 +111,16 @@ namespace XSharp.LanguageService
                 FormatLineIndent(editSession, line, indentation);
             }
         }
-
+       
         internal void FormatLineCase(ITextEdit editSession, ITextSnapshotLine line)
         {
             // get classification of the line.
             // when the line is part of a multi line comment then do nothing
             // to detect that we take the start of the line and check if it is in
-            int lineStart = line.Start.Position;
             if (line.Length == 0)
                 return;
-            var tokens = GetTokensInLine(line);
+            int lineStart = line.Start.Position;
+            var tokens = _document.GetTokensInLine(line.LineNumber);
             if (tokens.Count > 0)
             {
                 if (tokens[0].StartIndex < lineStart)
@@ -193,7 +139,6 @@ namespace XSharp.LanguageService
             {
                 FormatToken(editSession, lineStart, token);
             }
-
         }
 
         internal void FormatLineIndent(ITextEdit editSession, ITextSnapshotLine line, int desiredIndentation)
@@ -328,80 +273,64 @@ namespace XSharp.LanguageService
 
         #endregion
         #region Calculate Indention
-        private int CalculatePreviousLineIndent(ITextSnapshotLine line)
+        private int CalculateIndentForPreviousLine(ITextSnapshotLine line)
         {
-
             var lineNo = line.LineNumber;
-            var keyword = GetFirstKeywordInLine(line, out _, out _);
-            int prevIndentation = -1;
-
-            if (XFormattingRule.IsStartKeyword(keyword))
+            int prevIndentation = 0;
+            XKeyword kw = default;
+            while (lineNo >= 0)
             {
-                prevIndentation = IndentLine(keyword, lineNo);
-            }
-            else if (XFormattingRule.IsEndKeyword(keyword))
-            {
-                prevIndentation = OutdentLine(keyword, lineNo);
-            }
-            else if (XFormattingRule.IsMiddleKeyword(keyword))
-            {
-                prevIndentation = MiddleLine(keyword, lineNo);
-            }
-            else
-            {
-                var templine = lineNo - 1;
-                prevIndentation = 0;
-                IList<IToken> tokens;
-                do
+                kw = GetFirstKeywordInLine(lineNo);
+                    
+                if (kw.IsStart())
                 {
-                    if (_document.GetTokens(templine, out tokens))
-                    {
-                        if (tokens.Count <= 1)
-                            templine -= 1;
-                    }
+                    prevIndentation = IndentLine(kw, lineNo);
+                    break;
                 }
-                while (templine >= 0 && tokens?.Count <= 1);
-
-                if (tokens?.Count > 0)
+                else if (kw.IsStop())
                 {
-                    if (tokens[0].Type == XSharpLexer.WS)
+                    prevIndentation = OutdentLine(kw, lineNo);
+                    break;
+                }
+                else if (kw.IsMiddle())
+                {
+                    prevIndentation = MiddleLine(kw, lineNo);
+                    break;
+                }
+                else
+                {
+                    var tokens = _document.GetTokensInLine(lineNo);
+                    if (tokens.Count > 0 && tokens[0].Type == XSharpLexer.WS)
                     {
                         prevIndentation = GetIndentTokenLength(tokens[0]);
+                        break;
                     }
-                    else
-                    {
-                        prevIndentation = 0;
-                    }
+
                 }
-                if (_document.GetKeyword(templine, out keyword))
-                {
-                    if (XFormattingRule.IsMiddleKeyword(keyword) ||
-                        XFormattingRule.IsStartKeyword(keyword))
-                    {
-                        prevIndentation += _settings.IndentSize;
-                    }
-                }
+                lineNo -= 1;
             }
+
             return prevIndentation;
         }
      
-        private int GetDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession, bool alignOnPrev, int prevIndent)
+        private int GetDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession,  int prevIndent)
         {
             WriteOutputMessage($"getDesiredIndentation({line.LineNumber + 1})");
             try
             {
                 // How many spaces do we need ?
                 int indentValue = 0;
+                bool mustIndentAfterPreviousLine = false;
                 int lineNumber = line.LineNumber;
-                if (lineNumber > 1)
+                if (lineNumber > 0)
                 {
-                    // We need to analyze the Previous line
+                    // Derive the indentation from the previous line
                     ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber - 1);
-                    XKeyword prevLineKeyword = GetFirstKeywordInLine(prevLine, out indentValue, out var tokens);
-                    if (XFormattingRule.IsStartKeyword(prevLineKeyword) ||
-                        XFormattingRule.IsMiddleKeyword(prevLineKeyword))
+                    XKeyword prevLineKeyword = GetFirstKeywordInLine(prevLine, out _, out var tokens);
+                    indentValue = prevIndent;
+                    if (prevLineKeyword.IsStart() ||prevLineKeyword.IsMiddle())
                     {
-                        alignOnPrev = false;
+                        mustIndentAfterPreviousLine = true;
                     }
                     if (_settings.IndentContinuedLines)
                     {
@@ -409,10 +338,11 @@ namespace XSharp.LanguageService
                         if (lastToken != null && lastToken.Type == XSharpLexer.LINE_CONT)
                         {
                             indentValue += _settings.IndentSize;
+                            mustIndentAfterPreviousLine = false;
                         }
                     }
                     _lastIndentValue = indentValue;
-                    if (alignOnPrev)
+                    if (!mustIndentAfterPreviousLine)
                         return prevIndent;
 
                     if (prevLineKeyword.IsEmpty)
@@ -428,15 +358,18 @@ namespace XSharp.LanguageService
                     if (!prevLineKeyword.IsEmpty)
                     {
                         // Start of a block of code ?
-                        if (XFormattingRule.IsEntity(prevLineKeyword))
+                        if (prevLineKeyword.IsEntity())
                         {
-                            if (_settings.IndentTypeMembers)
+                            if (prevLineKeyword.IsType() && _settings.IndentTypeMembers)
+                            {
+                                indentValue += _settings.IndentSize;
+                            }
+                            else if (prevLineKeyword.IsMember() && _settings.IndentStatements)
                             {
                                 indentValue += _settings.IndentSize;
                             }
                         }
-                        else if (XFormattingRule.IsStartKeyword(prevLineKeyword) ||
-                            XFormattingRule.IsMiddleKeyword(prevLineKeyword))
+                        else if (prevLineKeyword.IsStart() || prevLineKeyword.IsMiddle())
                         {
                             indentValue = prevIndent + _settings.IndentSize;
 
@@ -540,15 +473,92 @@ namespace XSharp.LanguageService
         #region Indent/Outdent Line
         private int IndentLine(XKeyword keyword, int lineNo)
         {
-            var rule = XFormattingRule.GetFirstRuleByStart(keyword);
-            int prevIndentation;
-            if (_document.GetTokens(lineNo, out var tokens) && tokens[0].Type == XSharpLexer.WS)
+            int prevIndentation = 0;
+            IList<IToken> tokens;
+            if (keyword.IsEntity())
             {
-                prevIndentation = GetIndentTokenLength(tokens[0]);
+                if (keyword.IsType())
+                {
+                    // walk back to the last type or namespace
+                    // when we find a type, then copy its indentation
+                    // when we find a namespace then indent the type when needed
+                    var tempLine = lineNo - 1;
+                    bool done = false;
+                    prevIndentation = 0;
+                    while (! done && tempLine >= 0)
+                    {
+                        var kw = GetFirstKeywordInLine(tempLine);
+                        if (kw.IsType())
+                        {
+                            tokens = _document.GetTokensInLine(tempLine);
+                            if (tokens.Count > 0)
+                            {
+                                prevIndentation = GetIndentTokenLength(tokens[0]);
+                            }
+                            done = true;
+                        }
+                        else if (kw.Kw2 == XTokenType.Namespace && kw.Kw1 == XTokenType.Begin)
+                        {
+                            tokens = _document.GetTokensInLine(tempLine);
+                            if (tokens.Count > 0)
+                            {
+                                prevIndentation = GetIndentTokenLength(tokens[0]);
+                                if (_settings.IndentNamespace)
+                                {
+                                    prevIndentation += _settings.IndentSize;
+                                }
+                            }
+                            done = true;
+                        }
+                        tempLine -= 1;
+                    }
+                }
+                else if (keyword.IsMember())
+                {
+                    // walk back to last line that is also a member
+                    // and copy its indentation
+                    // if we find a type first then copy the indentation from the type +
+                    // indent the member when needed
+                    var tempLine = lineNo - 1;
+                    bool done = false;
+                    prevIndentation = 0;
+                    while (!done && tempLine >= 0)
+                    {
+                        var kw = GetFirstKeywordInLine(tempLine);
+                        if (kw.IsMember())
+                        {
+                            tokens = _document.GetTokensInLine(tempLine);
+                            if (tokens.Count > 0)
+                            {
+                                prevIndentation = GetIndentTokenLength(tokens[0]);
+                            }
+                            done = true;
+                        }
+                        else if (kw.IsType())
+                        {
+                            tokens = _document.GetTokensInLine(tempLine);
+                            if (tokens.Count > 0)
+                            {
+                                prevIndentation = GetIndentTokenLength(tokens[0]);
+                                if (_settings.IndentTypeMembers)
+                                {
+                                    prevIndentation += _settings.IndentSize;
+                                }
+                            }
+                            done = true;
+                        }//
+                        tempLine -= 1;
+                    }
+                }
+             
             }
             else
             {
-                prevIndentation = 0;
+                tokens = _document.GetTokensInLine(lineNo - 1);
+                if (tokens.Count > 0)
+                {
+                    prevIndentation = GetIndentTokenLength(tokens[0]);
+                }
             }
             return prevIndentation;
         }
@@ -562,7 +572,8 @@ namespace XSharp.LanguageService
             int nested = 0;
             while (lineNo >= 0 && !done)
             {
-                if (_document.GetKeyword(lineNo, out var prevkw))
+                var prevkw = GetFirstKeywordInLine(lineNo);
+                if (!prevkw.IsEmpty)
                 {
                     if (prevkw.Equals(keyword) || XFormattingRule.IsSynonym(keyword, prevkw))
                     {
@@ -583,7 +594,8 @@ namespace XSharp.LanguageService
                         else
                         {
                             done = true;
-                            if (_document.GetTokens(lineNo, out var tokens) && tokens[0].Type == XSharpLexer.WS)
+                            var tokens = _document.GetTokensInLine(lineNo);
+                            if (tokens.Count > 0  && tokens[0].Type == XSharpLexer.WS)
                             {
                                 prevIndentation = GetIndentTokenLength(tokens[0]);
                             }
@@ -614,7 +626,8 @@ namespace XSharp.LanguageService
             bool done = false;
             while (lineNo >= 0 && !done)
             {
-                if (_document.GetKeyword(lineNo, out var prevkw))
+                var prevkw = GetFirstKeywordInLine(lineNo);
+                if (! prevkw.IsEmpty)
                 {
                     foreach (var rule in rules)
                     {
@@ -624,7 +637,8 @@ namespace XSharp.LanguageService
                             continue;
                         }
                         done = true;
-                        if (_document.GetTokens(lineNo, out var tokens) && tokens[0].Type == XSharpLexer.WS)
+                        var tokens = _document.GetTokensInLine(lineNo);
+                        if (tokens.Count > 0 && tokens[0].Type == XSharpLexer.WS)
                         {
                             prevIndentation = GetIndentTokenLength(tokens[0]);
                         }
@@ -643,97 +657,47 @@ namespace XSharp.LanguageService
             }
             return prevIndentation;
         }
-        private int MemberToken(XKeyword keyword, int lineNo)
-        {
-            int prevIndentation = -1;
-            bool done = false;
-            lineNo = lineNo - 1;
-            var rule = XFormattingRule.GetFirstRuleByStart(keyword);
-            while (lineNo >= 0 && !done)
-            {
-                if (_document.GetKeyword(lineNo, out var prevKw))
-                {
-                    if (XFormattingRule.IsMember(prevKw))
-                    {
-                        prevIndentation = 0;
-                        done = true;
-                        if (_document.GetTokens(lineNo, out var tokens) && tokens[0].Type == XSharpLexer.WS)
-                        {
-                            prevIndentation = GetIndentTokenLength(tokens[0]);
-                        }
-                    }
-                    else if (XFormattingRule.IsType(prevKw))
-                    {
-                        prevIndentation = 0;
-                        done = true;
-                        if (_document.GetTokens(lineNo, out var tokens) && tokens[0].Type == XSharpLexer.WS)
-                        {
-                            prevIndentation = GetIndentTokenLength(tokens[0]);
-                            if (_settings.IndentTypeMembers)
-                            {
-                                prevIndentation += _settings.IndentSize;
-                            }
-                        }
-                    }
-                }
-                lineNo -= 1;
-            }
-            return prevIndentation;
-        }
+        //private int MemberToken(XKeyword keyword, int lineNo)
+        //{
+        //    int prevIndentation = -1;
+        //    bool done = false;
+        //    lineNo = lineNo - 1;
+        //    var rule = XFormattingRule.GetFirstRuleByStart(keyword);
+        //    while (lineNo >= 0 && !done)
+        //    {
+        //        if (_document.GetKeyword(lineNo, out var prevKw))
+        //        {
+        //            if (XFormattingRule.IsMember(prevKw))
+        //            {
+        //                prevIndentation = 0;
+        //                done = true;
+        //                if (_document.GetTokens(lineNo, out var tokens) && tokens[0].Type == XSharpLexer.WS)
+        //                {
+        //                    prevIndentation = GetIndentTokenLength(tokens[0]);
+        //                }
+        //            }
+        //            else if (XFormattingRule.IsType(prevKw))
+        //            {
+        //                prevIndentation = 0;
+        //                done = true;
+        //                if (_document.GetTokens(lineNo, out var tokens) && tokens[0].Type == XSharpLexer.WS)
+        //                {
+        //                    prevIndentation = GetIndentTokenLength(tokens[0]);
+        //                    if (_settings.IndentTypeMembers)
+        //                    {
+        //                        prevIndentation += _settings.IndentSize;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        lineNo -= 1;
+        //    }
+        //    return prevIndentation;
+        //}
         #endregion
-#region Token Handling
 
-        private IList<IToken> GetTokensInLine(ITextSnapshotLine line)
-        {
-            IList<IToken> tokens ;
-            if (_document.SnapShot.Version == _buffer.CurrentSnapshot.Version)
-            {
-                // Ok, use it
-                if (_document.GetTokens(line.LineNumber, out tokens))
-                {
-                    return tokens;
-                }
-            }
-            // Ok, do it now
-            var text = line.GetText();
-            tokens = GetTokens(text);
-            return tokens;
-            //
-        }
-        private IList<IToken> GetTokens(string text)
-        {
-            var tokens = new List<IToken>();
-            try
-            {
-                string fileName;
-                if (_file != null)
-                {
-                    fileName = _file.FullPath;
-                }
-                else
-                {
-                    fileName = "MissingFile.prg";
-                }
-                var reporter = new ErrorIgnorer();
-                bool ok = XSharp.Parser.VsParser.Lex(text, fileName, this.ParseOptions, reporter, out ITokenStream tokenStream);
-                var stream = tokenStream as BufferedTokenStream;
-                foreach (var token in stream.GetTokens())
-                {
-                    tokens.Add(token);
-                }
-                return tokens;
-            }
-            catch (Exception e)
-            {
-                XSettings.LogException(e, "GetTokens");
-            }
-            return tokens;
-        }
-        private bool IsPPKeyword(int kw)
-        {
-            return kw >= XSharpLexer.PP_FIRST && kw <= XSharpLexer.PP_LAST;
-        }
-#endregion
+       
+        
 
         internal void WriteOutputMessage(string strMessage)
         {
@@ -742,24 +706,7 @@ namespace XSharp.LanguageService
                 XSettings.LogMessage("XSharp.Formatting:" + strMessage);
             }
         }
-
-
-        public XSharpParseOptions ParseOptions
-        {
-            get
-            {
-                XSharpParseOptions parseoptions;
-                if (_file != null)
-                {
-                    parseoptions = _file.Project.ParseOptions;
-                }
-                else
-                {
-                    parseoptions = XSharpParseOptions.Default;
-                }
-                return parseoptions;
-            }
-        }
+       
 
 
     }

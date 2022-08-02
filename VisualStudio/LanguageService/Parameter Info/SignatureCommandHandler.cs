@@ -315,7 +315,7 @@ namespace XSharp.LanguageService
                 var pos = tokenList.IndexOf(openTokens.Peek());
                 if (pos >= 0)
                 {
-                    tokenList.RemoveRange(pos + 1, tokenList.Count - pos - 1);
+                    ((List<IToken>) tokenList).RemoveRange(pos + 1, tokenList.Count - pos - 1);
                 }
             }
             if (comma)

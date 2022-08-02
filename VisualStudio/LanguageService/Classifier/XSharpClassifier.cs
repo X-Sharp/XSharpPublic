@@ -175,7 +175,10 @@ namespace XSharp.LanguageService
             }
             return _document;
         }
-
+        public async Task ForceClassifyAsync()
+        {
+            await LexAsync();
+        }
         public async Task ClassifyWhenNeededAsync()
         {
             XDocument xDocument = GetDocument();
@@ -241,14 +244,16 @@ namespace XSharp.LanguageService
                     var tokens = tokenstream.GetTokens();
                     if (xDocument == null)
                     {
-                        xDocument = new XDocument(tokens, snapshot, _sourceWalker.IncludeFiles);
+                        xDocument = new XDocument(_buffer, tokens, snapshot);
                         _buffer.Properties[typeof(XDocument)] = xDocument;
                     }
                     else
                     {
-                        xDocument.SetData(tokens, snapshot, _sourceWalker.IncludeFiles);
+                        xDocument.SetTokens(tokens, snapshot);
                     }
-                    xDocument.SetData(lineState, lineKeywords, snapshot);
+                    xDocument.SetState(lineState, snapshot);
+                    xDocument.SetKeywords(lineKeywords);
+
 
                 }
             }
@@ -625,7 +630,7 @@ namespace XSharp.LanguageService
             var result = new List<ClassificationSpan>();
             if (_buffer.CurrentSnapshot != snapshot)
                 return result;
-
+            // Todo: base this on the Formatter Rules
             IClassificationType type = null;
             IClassificationType type2 = null;
             IToken startToken = null;
@@ -846,24 +851,14 @@ namespace XSharp.LanguageService
             }
         }
 
-        private void addKw(IToken firstkw, IToken secondkw, int iLastLine)
+        private void addKw(XKeyword kw, int iLine)
         {
-            XKeyword kw;
-            if (XFormattingRule.IsSingleKeyword(firstkw.Type))
-            {
-                kw = new XKeyword(firstkw.Type);
-            }
-            else if (secondkw != null)
-            {
-                kw = new XKeyword(firstkw.Type, secondkw.Type);
-            }
-            else
-            {
-                kw = new XKeyword(firstkw.Type);
-            }
-            var isStart = XFormattingRule.IsStartKeyword(kw);
-            var isEnd = XFormattingRule.IsEndKeyword(kw);
-            var isMiddle = XFormattingRule.IsMiddleKeyword(kw);
+            
+            if (kw.IsEmpty)
+                return;
+            var isStart = kw.IsStart();
+            var isEnd = kw.IsStop();
+            var isMiddle = kw.IsMiddle();
             if (isStart)
             {
                 var rule = XFormattingRule.GetFirstRuleByStart(kw);
@@ -872,7 +867,7 @@ namespace XSharp.LanguageService
 
             if (isEnd || isMiddle || isStart)
             {
-                lineKeywords.Set(iLastLine - 1, kw);
+                lineKeywords.Set(iLine, kw);
                 if (kw.IsSingle && kw.IsEnd && CurrentRule != null)
                 {
                     if (CurrentRule.Flags.HasFlag(XFormattingFlags.End))
@@ -910,13 +905,11 @@ namespace XSharp.LanguageService
                 int iLastSLComment = -1;
                 int iLastDocComment = -1;
                 int iLastUsing = -1;
+                XKeyword kw;
                 newtags = new XClassificationSpans();
                 IToken keywordContext = null;
                 IToken lastToken = null;
                 int iLastLine = -1;
-                IToken firstkw = null;
-                IToken secondkw = null;
-                bool firstInLine = false;
                 for (var iToken = 0; iToken < tokens.Count; iToken++)
                 {
                     var token = tokens[iToken];
@@ -932,14 +925,12 @@ namespace XSharp.LanguageService
                     if (token.Line != iLastLine)
                     {
                         // register the type for the previous line
-                        if (iLastLine != -1 && firstkw != null)
+                        if (currentLine?.Count > 0 && _document.NeedsKeywords)
                         {
-                            addKw(firstkw, secondkw, iLastLine);
+                            kw = XSharpLineKeywords.Tokens2Keyword(currentLine);
+                            addKw(kw, iLastLine-1);
                         }
                         iLastLine = token.Line;
-                        firstkw = null;
-                        secondkw = null;
-                        firstInLine = true;
                         if (!lineTokens.ContainsKey(line))
                         {
                             currentLine = new List<IToken>();
@@ -947,34 +938,7 @@ namespace XSharp.LanguageService
                         }
                     }
                     currentLine.Add(token);
-                    if ((token.Channel == XSharpLexer.DefaultTokenChannel) || (token.Channel == XSharpLexer.DEFOUTCHANNEL))
-                    {
-                        if (firstInLine)
-                        {
-                            if (!XSharpLexer.IsModifier(token.Type) || token.Type == XSharpLexer.CLASS)
-                            {
-                                if (XSharpLexer.IsKeyword(token.Type))
-                                {
-                                    if (firstkw == null)
-                                    {
-                                        firstkw = token;
-                                    }
-                                    else if (secondkw == null)
-                                    {
-                                        secondkw = token;
-                                    }
-                                    else
-                                    {
-                                        firstInLine = false;
-                                    }
-                                }
-                                else
-                                {
-                                    firstInLine = false;
-                                }
-                            }
-                        }
-                    }
+ 
                     // Orphan End ?
                     if ((keywordContext != null) && (keywordContext.Line != token.Line) && (keywordContext.Type == XSharpLexer.END))
                     {
@@ -1028,10 +992,12 @@ namespace XSharp.LanguageService
                         lastToken = token;
                     }
                 }
-                if (firstkw != null)
+                if (currentLine?.Count > 0 && _document.NeedsKeywords)
                 {
-                    addKw(firstkw, secondkw, iLastLine);
+                    kw = XSharpLineKeywords.Tokens2Keyword(currentLine);
+                    addKw(kw, iLastLine - 1);
                 }
+
                 // Orphan End ?
                 _document.SetTokens(lineTokens);
                 _document.SetIdentifiers(ids);

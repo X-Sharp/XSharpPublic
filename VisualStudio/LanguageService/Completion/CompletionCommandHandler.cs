@@ -89,7 +89,7 @@ namespace XSharp.LanguageService
             int result = VSConstants.S_OK;
             bool handled = false;
             Guid cmdGroup = pguidCmdGroup;
-            // 1. Pre-process
+            // 1. Pre-process before anybody else has a chance
             if (XSettings.DisableCodeCompletion)
             {
                 ;
@@ -125,7 +125,7 @@ namespace XSharp.LanguageService
                                     break;
 
                                 case '=':
-                                  CancelCompletionSession();
+                                    CancelCompletionSession();
                                     break;
                                 case '.':
                                     handled = CompleteCompletionSession(ch);
@@ -189,12 +189,12 @@ namespace XSharp.LanguageService
                     }
                 }
                 result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
-            }           // 3. Post process
+            }
+            // 3. Post process
             if (ErrorHandler.Succeeded(result) && !XSettings.DisableCodeCompletion)
             {
                 if (pguidCmdGroup == VSConstants.VSStd2K)
                 {
-
                     switch (nCmdID)
                     {
                         case (int)VSConstants.VSStd2KCmdID.BACKSPACE:
@@ -220,7 +220,7 @@ namespace XSharp.LanguageService
                                         InsertXMLDoc();
                                         break;
                                     default:
-                                        completeCurrentToken(nCmdID, ch);
+                                        //completeCurrentToken(nCmdID, ch);
                                         break;
                                 }
                             }
@@ -249,7 +249,7 @@ namespace XSharp.LanguageService
                 // Retrieve Position
                 SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
                 var line = caret.GetContainingLine();
-                if ((line.LineNumber >= _textView.TextSnapshot.LineCount - 1) || (line.LineNumber ==0))
+                if ((line.LineNumber >= _textView.TextSnapshot.LineCount - 1) || (line.LineNumber == 0))
                     return;
                 // Do not classify here. Not really needed yet
                 ITextSnapshotLine lineUp = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber - 1);
@@ -268,7 +268,7 @@ namespace XSharp.LanguageService
                     if (prevLine.Length >= count + 4)
                         prefix = prevLine.Substring(0, count + 4); // copy starting whitespace + /// + separator
                     else
-                        prefix = prevLine+" ";
+                        prefix = prevLine + " ";
                     _textView.TextBuffer.Insert(caret.Position, prefix);
                     // Move the Caret 
                     _textView.Caret.MoveTo(new SnapshotPoint(_textView.TextSnapshot, caret.Position + prefix.Length));
@@ -302,7 +302,7 @@ namespace XSharp.LanguageService
                     // when we're not next to a comment
                     var lineDown = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
                     var nextToAComment = lineDown.GetText().Trim().StartsWith("///");
-                    if (! nextToAComment && line.LineNumber > 0)
+                    if (!nextToAComment && line.LineNumber > 0)
                     {
                         var lineUp = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber - 1);
                         nextToAComment = lineUp.GetText().Trim().StartsWith("///");
@@ -746,16 +746,16 @@ namespace XSharp.LanguageService
             var pos = caret.Position;
             if (pos < 2)
                 return '\0';
-            return _textView.TextSnapshot.GetText(pos - 2,1)[0];
+            return _textView.TextSnapshot.GetText(pos - 2, 1)[0];
         }
         private char nextChar()
         {
             // the caret is AFTER the last character !
             var caret = _textView.Caret.Position.BufferPosition;
             var pos = caret.Position;
-            if (pos == _textView.TextSnapshot.Length) 
+            if (pos == _textView.TextSnapshot.Length)
                 return '\0';
-            return _textView.TextSnapshot.GetText(pos , 1)[0];
+            return _textView.TextSnapshot.GetText(pos, 1)[0];
         }
         private bool IsWs(char c)
         {
@@ -785,7 +785,7 @@ namespace XSharp.LanguageService
                 // no completion for single character
                 return false;
             }
-            if (! IsWs(n))
+            if (!IsWs(n))
             {
                 if (c != ':' && c != '.')
                 {
@@ -806,12 +806,12 @@ namespace XSharp.LanguageService
             var classification = tag?.Tag?.ClassificationType?.Classification;
             return !classification.IsClassificationCommentOrString();
         }
-       
+
         void formatKeyword(Completion completion)
         {
             completion.InsertionText = XSettings.FormatKeyword(completion.InsertionText);
         }
-        
+
     }
 }
 #endif

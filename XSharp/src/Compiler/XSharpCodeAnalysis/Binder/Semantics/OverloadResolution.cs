@@ -5,6 +5,7 @@
 //
 #nullable disable
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -245,9 +246,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        private BetterResult DetermineAssemblyPriority(AssemblySymbol asm1, AssemblySymbol asm2)
+        private BetterResult DetermineRTAssemblyPriority(AssemblySymbol asm1, AssemblySymbol asm2)
         {
-            // prefer overload in dialect specific over other assemblies
+            // prefer overload in dialect specific assembly over generic assemblies
             if (asm1.IsRTDLL(XSharpTargetDLL.VO) ||
                 asm1.IsRTDLL(XSharpTargetDLL.VFP) ||
                 asm1.IsRTDLL(XSharpTargetDLL.XPP))
@@ -268,10 +269,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BetterResult.Right;
                 }
             }
-            if (asm1.IsRT() && asm2.IsSdk())
-                return BetterResult.Right;
-            if (asm2.IsRT() && asm1.IsSdk())
-                return BetterResult.Left;
             return BetterResult.Neither;
         }
 
@@ -589,43 +586,43 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // we ignore the prototype of the function here
                     // This means that even when the function in XSharp.Core or XSharp.RT matches better
                     // then that function will still not be chosen.
+                    // we generate no warning when there are identical signature
+                    // assume that they know what they are doing
                     if (rt1 != rt2)
                     {
                         if (rt1)
                         {
                             result = BetterResult.Right;
-                            if (sig1 != sig2)
-                            {
-                                useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
-                            }
-                            return true;
                         }
                         else //  (rt2)
                         {
                             result = BetterResult.Left;
-                            if (sig1 != sig2)
-                            {
-                                useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
-                            }
-                            return true;
                         }
+                        return true;
                     }
-                    if (rt1 && rt2)
-                    {
-                        result = DetermineAssemblyPriority(asm1, asm2);
-                        if (result != BetterResult.Neither)
-                            return true;
-                    }
+                }
+                if (rt1 && rt2)
+                {
+                    // when function of same name in 2 runtime DLLs then determine
+                    // the priority
+                    result = DetermineRTAssemblyPriority(asm1, asm2);
+                    if (result != BetterResult.Neither)
+                        return true;
                 }
                 if (asm1 != asm2)
                 {
-                    if (asm1.IsFromCompilation(Compilation))
+                    var sys1 = rt2 && asm1.Name.StartsWith("System", StringComparison.OrdinalIgnoreCase);
+                    var sys2 = rt1 && asm2.Name.StartsWith("System", StringComparison.OrdinalIgnoreCase);
+                    // prefer our assembly or other assembly that is not a runtime and not a system assembly over runtime
+                    // the system check is needed because XSharp.RT has some Linq methods for Float and Currency
+                    // that need to have preference over the linq methods for real4, real8 and decimal.
+                    if (asm1.IsFromCompilation(Compilation) || (rt2 && !rt1 && !sys1))
                     {
                         result = BetterResult.Left;
                         useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
                         return true;
                     }
-                    if (asm2.IsFromCompilation(Compilation))
+                    if (asm2.IsFromCompilation(Compilation) || (rt1 && !rt2 && !sys2))
                     {
                         result = BetterResult.Right;
                         useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);

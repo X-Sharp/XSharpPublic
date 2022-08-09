@@ -1344,7 +1344,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (!CheckConstantBounds(destinationType, sourceValue, out bool maySucceedAtRuntime))
                 {
+#if XSHARP
+                    if (maySucceedAtRuntime || Compilation.Options.HasOption(CompilerOption.Vo4, syntax))
+#else
                     if (maySucceedAtRuntime)
+#endif
                     {
                         // Can be calculated at runtime, but is not a compile-time constant.
                         Error(diagnostics, ErrorCode.WRN_ConstOutOfRangeChecked, syntax, sourceValue.Value!, destination!);

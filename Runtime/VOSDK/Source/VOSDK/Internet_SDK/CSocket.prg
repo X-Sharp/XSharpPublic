@@ -25,7 +25,7 @@ CLASS CSocket
 METHOD __ConnectThread() AS LOGIC STRICT
 	LOCAL cMsg AS STRING
    	LOCAL phT AS System.Threading.Thread
-	LOCAL nWait AS DWORD
+	LOCAL nWait AS LONG
 	LOCAL condata IS _THREAD_DATA
 
 
@@ -38,7 +38,7 @@ METHOD __ConnectThread() AS LOGIC STRICT
 	MemCopy(@condata:ServerAddress:sin_family, @ServerAddress:sin_family, _SIZEOF(_WinSockAddr_IN))
 
 
-	nWait := DWORD(SELF:nTimeout)
+	nWait := SELF:nTimeout
 	phT := System.Threading.Thread{ System.Threading.ParameterizedThreadStart{ NULL, @__ConnectFunc() } }
 	phT:Start( (IntPtr) @condata )
 	phT:Join( nWait )
@@ -193,7 +193,7 @@ METHOD __SendRaw(cData AS STRING, dwSize REF DWORD) AS LOGIC STRICT
 	nLoops       := SELF:nTimeOutRetries
 	dwPos        := 0
 	dwSent       := 0
-	pData        := String2Psz(cData) 
+	pData        := String2Psz(cData)
 
 
 	#IFDEF __DEBUG__
@@ -572,7 +572,7 @@ METHOD Destroy() AS VOID
 		SELF:lCleanupRequired := .F.
 	ENDIF
 	UnregisterAxit(SELF)
-	RETURN 
+	RETURN
 
 
 /// <include file="Internet.xml" path="doc/CSocket.DisConnect/*" />
@@ -1112,7 +1112,7 @@ METHOD SendLineTo(cData AS STRING, cDest AS STRING, nRemPort AS WORD) AS INT STR
 	SELF:nCurrentStatus := SSTAT_CONNECTING
 
 
-	nRet := sendto( SELF:nSocket, @abBuffer[1], INT(nSize), 0, @sin, INT(nSinSize)) 
+	nRet := sendto( SELF:nSocket, @abBuffer[1], INT(nSize), 0, @sin, INT(nSinSize))
 
 
 	IF nRet = SOCKET_ERROR
@@ -1254,7 +1254,7 @@ ASSIGN TimeOut(nNew AS INT)  STRICT
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Internet.xml" path="doc/CSocket.TimeOutRetries/*" />
@@ -1265,7 +1265,7 @@ ACCESS TimeOutRetries() AS INT STRICT
 /// <include file="Internet.xml" path="doc/CSocket.TimeOutRetries/*" />
 ASSIGN TimeOutRetries(nNew AS INT)  STRICT
 	SELF:nTimeoutRetries := nNew
-	RETURN 
+	RETURN
 
 
 END CLASS

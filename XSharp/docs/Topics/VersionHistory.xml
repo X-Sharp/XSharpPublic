@@ -103,6 +103,7 @@
       <li styleclass="Body Text">Fixed a performance Issue when typing . for .and. (#1080)</li>
       <li styleclass="Body Text">Fixed a problem with the navigation bar while typing new classes/methods (#1041)</li>
       <li styleclass="Body Text">Fixed incorrect info tooltips on keywords (#979)</li>
+      <li styleclass="Body Text">The &apos;Use Shared Compiler&apos; option was not properly working inside VS.</li>
     </list>
     <para styleclass="Heading1">Changes in 2.12.2.0</para>
     <para styleclass="Heading2">Compiler</para>

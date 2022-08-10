@@ -19,6 +19,12 @@ namespace XSharp.Build
         /// </summary>
         protected abstract string ToolArguments { get; }
 
+        protected sealed override string GenerateCommandLineCommands()
+        {
+            var commandLineArguments = ToolArguments;
+            return commandLineArguments;
+        }
+
 #if NOTUSED
         protected abstract string PathToManagedTool { get; }
 
@@ -42,16 +48,7 @@ namespace XSharp.Build
         /// if dotnet needs to be executed and the managed assembly is the first argument,
         /// then this will contain the managed assembly followed by ToolArguments
         /// </summary>
-        protected sealed override string GenerateCommandLineCommands()
-        {
-            var commandLineArguments = ToolArguments;
-            if (IsManagedTool)
-            {
-                (_, commandLineArguments, _) = RuntimeHostInfo.GetProcessInfo(PathToManagedToolWithoutExtension, commandLineArguments);
-            }
-
-            return commandLineArguments;
-        }
+     
 
         /// <summary>
         /// This generates the path to the executable that is directly ran.

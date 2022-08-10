@@ -757,6 +757,7 @@ namespace XSharp.Build
         /// </summary>
         protected internal virtual void AddCommandLineCommands(CommandLineBuilderExtension commandLine)
         {
+            commandLine.AppendWhenTrue("/shared", _store, nameof(UseSharedCompilation));
             commandLine.AppendWhenTrue("/noconfig", _store, nameof(NoConfig));
         }
 

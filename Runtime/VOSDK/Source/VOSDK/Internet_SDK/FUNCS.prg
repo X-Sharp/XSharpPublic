@@ -1255,14 +1255,14 @@ FUNCTION ConvertFromCodePageToCodePage(cString AS STRING, dwFrom AS DWORD, dwTo 
    LOCAL nLen,nULen     AS LONGINT
    // Convert VO string from dynamic memory to fixed memory
    nLen     := LONGINT(SLen(cString))
-   pBuffer  := MemAlloc(nLen)
-   MemCopyString(pBuffer,cString,nLen)
+   pBuffer  := MemAlloc( (DWORD) nLen)
+   MemCopyString(pBuffer,cString,(DWORD) nLen)
 
 
    // Determine length of Unicode string
    // And allocate enough space to hold it
    nULen    := MultiByteToWideChar(CP_ACP,0,pBuffer,nLen,NULL_PTR, 0)
-   pUStr    := SysAllocStringLen(NULL_PTR,nULen)
+   pUStr    := SysAllocStringLen(NULL_PTR,(DWORD) nULen)
    // Convert Fixed memory Ansi string to Fixed memory Unicode string
    MultiByteToWideChar(dwFrom,0,pBuffer,nLen,pUStr,nULen)
 
@@ -1278,7 +1278,7 @@ FUNCTION ConvertFromCodePageToCodePage(cString AS STRING, dwFrom AS DWORD, dwTo 
 
 
    // Convert fixed memory buffer to dynamic memory string
-   cString  := Mem2String(pBuffer,nLen)
+   cString  := Mem2String(pBuffer,(DWORD) nLen)
    // Release fixed memory buffer
    MemFree(pBuffer)
    // Release the Unicode String

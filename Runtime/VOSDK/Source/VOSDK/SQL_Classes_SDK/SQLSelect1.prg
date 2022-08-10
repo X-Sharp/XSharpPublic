@@ -1023,7 +1023,7 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
          nColLength   := SQL_TIME_LEN      //RvdH 070501 1 byte extra for string delimiter
          nAllocLength := nColLength + 1
          IF nScale > 0                    // Time field with fractional seconds
-            nColLength += nScale + 1
+            nColLength += (DWORD) nScale + 1
          ENDIF
       CASE SQL_DATE
          nColLength   := SQL_DATE_LEN     //RvdH 070501 1 byte extra for string delimiter
@@ -1031,7 +1031,7 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       CASE SQL_TIMESTAMP
          nColLength := SQL_TIMESTAMP_LEN   //RvdH 070501 1 byte extra for string delimiter
          IF nScale > 0                    // Timestamp field with fractional seconds
-            nColLength += nScale + 1
+            nColLength += (DWORD) nScale + 1
          ENDIF
          nAllocLength := nColLength + 1
       END SWITCH

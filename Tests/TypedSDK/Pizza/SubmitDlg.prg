@@ -46,7 +46,7 @@ METHOD PostShowDialog() AS USUAL
 	
 
 method Wait() 
-	LOCAL l := DateTime.Now:Ticks AS DWORD
+	LOCAL l := DateTime.Now:Ticks AS INT64
 	
 	WHILE ((DateTime.Now:Ticks - l) < 25)
 	end	

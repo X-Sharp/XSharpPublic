@@ -72,7 +72,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 		[Fact, Trait("Category", "Types")];
 		METHOD xTypeTests() AS VOID
-
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
             DIMENSION arr[3]
             private c, n
 

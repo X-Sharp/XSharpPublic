@@ -65,7 +65,7 @@ class MySqlSelect inherit SqlSelect
 
 METHOD __InitColumnDesc() AS LOGIC STRICT
 
-        local nScaleColumn as LONG
+        local nScaleColumn := -1 as LONG
 
         foreach oColumn AS DataColumn in oSchema:Columns
 

@@ -13,17 +13,20 @@ CLASS DbLogger IMPLEMENTS IDbNotify
         ELSE
             ? "no area", e:Type:ToString(), e:Data
         ENDIF
-        
+
 END CLASS
 PROCEDURE Main AS VOID
     TRY
-    LOCAL aStruct := {{"NAME","C",10,0},{"CITY","C",10,0}}
+        LOCAL aStruct := {{"NAME","C",10,0},{"CITY","C",10,0}}
+        local b as CODEBLOCK
+            b := {||_FIELD->NAME} 
     RddSetDefault("AXDBFCDX")
     DbRegisterClient(DbLogger{})
-    ? DbCreate("test",aStruct)
-    ? DbUseArea(TRUE, ,"Test","test",TRUE)
+    ? DbCreate("test1",aStruct)
+    ? DbUseArea(TRUE, ,"Test1","test",TRUE)
     ? Header()
-    ? OrdCreate("test1","NAME",,{||_FIELD->NAME})
+
+    ? OrdCreate("test1","NAME",,b)
     ? OrdCreate("test2","CITY","CITY")
     ? OrdCreate("test3","NAMECITY","NAME+CITY")
     ? DbClearIndex()
@@ -51,7 +54,7 @@ PROCEDURE Main AS VOID
     DbSetFilter({||!empty(_FIELD->Name)})
     DbGoto(6)
     OrdSetFocus(0)
-    
+
     DbRLockList()
     ? Recno()
     ? DbCloseArea()

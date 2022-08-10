@@ -39,9 +39,9 @@ namespace XSharp.CodeDom
                 }
                 // HACK: prevent duplicate items: there is an error in their code
                 // or our code that adds duplicates. This 
-                if (member.HasSourceCode())
+                if (member is IXCodeObject)
                 {
-                    var source = member.GetSourceCode();
+                    var source = member.GetSourceCode().ToLower().Trim();
                     if (processed.Contains(source))
                         continue;
                    processed.Add(source);

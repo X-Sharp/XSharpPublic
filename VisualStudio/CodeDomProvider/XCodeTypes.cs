@@ -9,10 +9,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using XSharpModel;
+using Microsoft.VisualStudio.Shell.Design.Serialization;
 
 namespace XSharp.CodeDom
 {
-
     public interface IXCodeObject
     {
     }
@@ -80,10 +80,7 @@ namespace XSharp.CodeDom
                 {
                     ReferencedAssemblies.Add(name);
                 }
-                foreach (DictionaryEntry item in source.UserData)
-                {
-                    UserData.Add(item.Key, item.Value);
-                }
+                source.CopyUserData(this);
             }
         }
 
@@ -100,6 +97,7 @@ namespace XSharp.CodeDom
         }
         public XMergedCodeCompileUnit(CodeCompileUnit source) : base(source)
         {
+            source.CopyUserData(this);
         }
     }
 
@@ -117,7 +115,7 @@ namespace XSharp.CodeDom
     {
         public XCodeNamespace(string name) : base(name)
         {
-
+            
         }
     }
 

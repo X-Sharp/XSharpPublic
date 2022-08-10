@@ -83,41 +83,38 @@ namespace XSharp.Project
                 // So, we will guess the FileName to check if we have a .Designer.Prg file at the same place.
                 // If so, we will have to handle both .prg to produce two CodeCompileUnit, then we will merge the result into one, with markers in it
                 // so we can split again when the Designer is willing to save. ( See GenerateCodeFromCompileUnit )
-                if (codeStream is DocDataTextReader)
-                {
-                    // Anyway, we have that source, just parse it.
+                // Anyway, we have that source, just parse it.
 
-                    WriteOutputMessage("Start Parse " + this.FileName);
-                    compileUnit = ToXCodeCompileUnit(base.Parse(codeStream));
-                    WriteOutputMessage("End Parse " + this.FileName);
-                    // Now, we should check if we have a partial Class inside, if so, that's a Candidate for .Designer.prg
-                    CodeNamespace nameSpace;
-                    CodeTypeDeclaration className;
-                    if (XSharpCodeDomHelper.HasPartialClass(compileUnit, out nameSpace, out className))
+                WriteOutputMessage("Start Parse " + this.FileName);
+                compileUnit = ToXCodeCompileUnit(base.Parse(codeStream));
+                WriteOutputMessage("End Parse " + this.FileName);
+                // Now, we should check if we have a partial Class inside, if so, that's a Candidate for .Designer.prg
+                CodeNamespace nameSpace;
+                CodeTypeDeclaration className;
+                if (XSharpCodeDomHelper.HasPartialClass(compileUnit, out nameSpace, out className))
+                {
+                    // Ok, so get the Filename, to get the .Designer.prg
+                    DocDataTextReader ddtr = codeStream as DocDataTextReader;
+                    DocData dd = ((IServiceProvider)ddtr).GetService(typeof(DocData)) as DocData;
+                    Assumes.Present(dd);
+                    string prgFileName = dd.Name;
+                    // Build the Designer FileName
+                    string designerPrgFile = XSharpCodeDomHelper.BuildDesignerFileName(prgFileName);
+                    if (!string.IsNullOrEmpty(designerPrgFile) && File.Exists(designerPrgFile))
                     {
-                        // Ok, so get the Filename, to get the .Designer.prg
-                        DocDataTextReader ddtr = codeStream as DocDataTextReader;
-                        DocData dd = ((IServiceProvider)ddtr).GetService(typeof(DocData)) as DocData;
-                        Assumes.Present(dd);
-                        string prgFileName = dd.Name;
-                        // Build the Designer FileName
-                        string designerPrgFile = XSharpCodeDomHelper.BuildDesignerFileName(prgFileName);
-                        if (!string.IsNullOrEmpty(designerPrgFile) && File.Exists(designerPrgFile))
-                        {
-                            // Ok, we have a candidate !!!
-                            DocData docdata = new DocData(ddtr, designerPrgFile);
-                            DocDataTextReader reader = new XDocDataTextReader(docdata, className);
-                            // so parse
-                            WriteOutputMessage("Start Parse " + designerPrgFile);
-                            var designerCompileUnit = ToXCodeCompileUnit(base.Parse(reader));
-                            designerCompileUnit.FileName = designerPrgFile;
-                            WriteOutputMessage("End Parse " + designerPrgFile);
-                            // Now we have Two CodeCompileUnit, we must merge them
-                            WriteOutputMessage("Start merge compile Units " + this.FileName);
-                            var mergedCompileUnit = XSharpCodeDomHelper.MergeCodeCompileUnit(compileUnit, designerCompileUnit);
-                            WriteOutputMessage("End merge compile Units " + this.FileName);
-                            return mergedCompileUnit;
-                        }
+                        // Ok, we have a candidate !!!
+                        DocData docdata = new DocData(ddtr, designerPrgFile);
+                        DocDataTextReader reader = new XDocDataTextReader(docdata, className);
+                        // so parse
+                        WriteOutputMessage("Start Parse " + designerPrgFile);
+                        var designerCompileUnit = ToXCodeCompileUnit(base.Parse(reader));
+                        designerCompileUnit.FileName = designerPrgFile;
+                        WriteOutputMessage("End Parse " + designerPrgFile);
+                        // Now we have Two CodeCompileUnit, we must merge them
+                        WriteOutputMessage("Start merge compile Units " + this.FileName);
+                        var mergedCompileUnit = XSharpCodeDomHelper.MergeCodeCompileUnit(compileUnit, designerCompileUnit);
+                        WriteOutputMessage("End merge compile Units " + this.FileName);
+                        return mergedCompileUnit;
                     }
                 }
                 else
@@ -142,6 +139,59 @@ namespace XSharp.Project
             target.Name = source.Name;
             target.Attributes = source.Attributes;
         }
+        private void SaveSource(string filename, string source, Encoding encoding, bool SaveToDisk = true)
+        {
+            source = this._projectNode.SynchronizeKeywordCase(source, filename);
+
+            XSharpFileNode node = _fileNode.FindChild(filename) as XSharpFileNode;
+            bool done = false;
+            if (node != null)
+            {
+                // assign the source to the open buffer when possible
+                if (node.DocumentSetText(source))
+                {
+                    // then use automation to save the file, because that is much easier
+                    // since we do not have to worry about the docdata etc.
+                    var oaFile = (OAXSharpFileItem)node.GetAutomationObject();
+                    oaFile.Save(filename);
+                    done = true;
+                }
+            }
+            if (!done && SaveToDisk)
+            {
+                // File is not open in editor, so write to disk
+                var designerStream = new StreamWriter(filename, false, encoding);
+                designerStream.Write(source);
+                designerStream.Flush();
+                designerStream.Close();
+            }
+        }
+
+        private void UpdateUserDataForClass(CodeTypeDeclaration type, string source, string fileName, CodeTypeDeclaration mainClass)
+        {
+            XSharpCodeParser parser = new XSharpCodeParser(_projectNode, mainClass);
+            parser.FileName = fileName;
+            CodeCompileUnit tempUnit = parser.Parse(source);
+            CodeTypeDeclaration tempClass = XSharpCodeDomHelper.FindDesignerClass(tempUnit, mainClass);
+            if (tempClass != null)
+            {
+                tempClass.UpdateClassMemberUserData(type);
+            }
+        }
+
+        private string GetDocDataSource(DocDataTextWriter dtw)
+        {
+            var prop = dtw.GetType().GetProperty("DocData", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            if (prop == null)
+            {
+                throw new ApplicationException("CCU DocData property is null");
+            }
+            DocData docData = (DocData)prop.GetValue(dtw);
+            DocDataTextReader ddtr = new DocDataTextReader(docData);
+            // Retrieve
+            return ddtr.ReadToEnd();
+        }
+
         // Called by the WinForm designer at save time
         public override void GenerateCodeFromCompileUnit(CodeCompileUnit compileUnit, TextWriter writer, CodeGeneratorOptions options)
         {
@@ -157,8 +207,8 @@ namespace XSharp.Project
                 var formCCU = mergedUnit.FormUnit;
                 var designCCU = mergedUnit.DesignerUnit;
                 string designerPrgFile = designCCU.FileName;
-                var formMembers = new CodeTypeMemberCollection(formCCU.Members);
-                foreach (CodeTypeMember m in formMembers)
+                var originalFormMembers = new CodeTypeMemberCollection(formCCU.Members);
+                foreach (CodeTypeMember m in originalFormMembers)
                 {
                     m.SetWritten(false);
                 }
@@ -169,7 +219,15 @@ namespace XSharp.Project
                 CodeTypeDeclaration designClass = designCCU.GetFirstClass();
                 // Now, remove the members
                 CopyClassProperties(combinedClass, formClass);
+                foreach (CodeTypeMember member in formClass.Members)
+                {
+                    member.SetFromDesigner(false);
+                }
                 CopyClassProperties(combinedClass, designClass);
+                foreach (CodeTypeMember member in designClass.Members)
+                {
+                    member.SetFromDesigner(true);
+                }
                 combinedClass.IsPartial = true;
                 formClass.Members.Clear();
                 designClass.Members.Clear();
@@ -183,29 +241,29 @@ namespace XSharp.Project
                         if (ctm.GetFromDesigner())
                         {
                             // Comes from the Designer.prg file
-                            // so go back to Designer.prg
+                            // so write back to Designer.prg
                             designClass.Members.Add(ctm);
-                            ctm.SetWritten(true);
                         }
                         else
                         {
                             // Comes from the original Form file
                             formClass.Members.Add(ctm);
-                            foreach (CodeTypeMember member in formMembers)
+                            foreach (CodeTypeMember member in originalFormMembers)
                             {
-                                if (member == ctm)
+                                if (ctm == member || member.SourceEquals(ctm))
                                 {
                                     member.SetWritten(true);
-                                    formMembers.Remove(member);
+                                    originalFormMembers.Remove(member);
                                     break;
                                 }
                             }
                         }
+                        ctm.SetWritten(true);
                     }
                     else
                     {
-                        // This must be a member generated by the Designer !
-                        // So we will move Methods to the Form and all others to the Designer
+                        // Not an IXCodeObject, so this must be a member generated by the Designer !
+                        // We will move Methods to the Form and all others to the Designer
                         if (ctm is CodeMemberMethod)
                         {
                             formClass.Members.Add(ctm);
@@ -220,7 +278,7 @@ namespace XSharp.Project
                 }
 
                 // Check for members that are not written
-                foreach (CodeTypeMember member in formMembers)
+                foreach (CodeTypeMember member in originalFormMembers)
                 {
                     if (!member.WasWritten())
                     {
@@ -228,13 +286,7 @@ namespace XSharp.Project
                     }
                 }
 
-                // now, we must save both CodeCompileUnit
-                // The received TextWriter is pointing to the Form
-                // so we must create our own TextWriter for the Designer
-                // First, let's make in Memory
-                String generatedSource;
-                MemoryStream inMemory = new MemoryStream();
-                StreamWriter designerStream = new StreamWriter(inMemory, Encoding.UTF8);
+
                 //
                 // Backup original Form file and Form.Designer file
                 //
@@ -251,135 +303,61 @@ namespace XSharp.Project
                         Utilities.CopyFileSafe(designerPrgFile, bak);
                     }
                 }
+                // now, we must save both CodeCompileUnit
+                // The received TextWriter is pointing to the Form
+                // so we must create our own TextWriter for the Designer
+                // First, let's make in Memory
+                String generatedSource;
+                MemoryStream memStream = new MemoryStream();
 
-                base.GenerateCodeFromCompileUnit(designCCU, designerStream, options);
+                StreamWriter stream = new StreamWriter(memStream, Encoding.UTF8);
+                base.GenerateCodeFromCompileUnit(designCCU, stream, options);
                 // and force Flush
-                designerStream.Flush();
+                stream.Flush();
                 // Reset and read to String
-                inMemory.Position = 0;
-                StreamReader reader = new StreamReader(inMemory, Encoding.UTF8, true);
+                memStream.Position = 0;
+                StreamReader reader = new StreamReader(memStream, Encoding.UTF8, true);
                 generatedSource = reader.ReadToEnd();
-                generatedSource = this._projectNode.SynchronizeKeywordCase(generatedSource, prgFileName);
                 Encoding realencoding = reader.CurrentEncoding;
                 reader.Close();
-                designerStream.Close();
+                stream.Close();
+                SaveSource(designerPrgFile, generatedSource, realencoding);
 
-                XSharpFileNode node = _fileNode.FindChild(designerPrgFile) as XSharpFileNode;
-                bool done = false;
-                if (node != null )
-                {
-                    // assign the source to the open buffer when possible
-                    if (node.DocumentSetText(generatedSource))
-                    {
-                        // then use automation to save the file, because that is much easier
-                        // since we do not have to worry about the docdata etc.
-                        var oaFile = (OAXSharpFileItem)node.GetAutomationObject();
-                        oaFile.Save(designerPrgFile);
-                        done = true;
-                    }
-                }
-                if (! done)
-                {
-                    // File is not open in editor, so write to disk
-                    designerStream = new StreamWriter(designerPrgFile, false, realencoding);
-                    designerStream.Write(generatedSource);
-                    designerStream.Flush();
-                    designerStream.Close();
-                }
-                // The problem here, is that we "may" have some new members, like EvenHandlers, and we need to update their position (line/col)
-                XSharpCodeParser parser = new XSharpCodeParser(_projectNode, formClass);
-                parser.FileName = designerPrgFile;
-                CodeCompileUnit resultDesigner = parser.Parse(generatedSource);
-                CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindDesignerClass(resultDesigner);
-                // just to be sure...
-                if (resultClass != null)
-                {
-                    // Now push all elements from resultClass to designClass
-                    designClass.Members.Clear();
-                    foreach (CodeTypeMember ctm in resultClass.Members)
-                    {
-                        ctm.SetFromDesigner(true);
-                        designClass.Members.Add(ctm);
-                    }
-                }
-                // Ok,we MUST do the same thing for the Form file
+                // We "may" have some new members, like EvenHandlers,
+                // and we need to update their position (line/col)
+                UpdateUserDataForClass(combinedClass, generatedSource, designerPrgFile, formClass);
+                // Do the same thing for the Form file
                 base.GenerateCodeFromCompileUnit(formCCU, writer, options);
                 // BUT, the writer is hold by the Form Designer, don't close  it !!
                 writer.Flush();
                 // Now, we must re-read it and parse again
-                IServiceProvider provider = (DocDataTextWriter)writer;
-                DocData docData = (DocData)provider.GetService(typeof(DocData));
-                DocDataTextReader ddtr = new DocDataTextReader(docData);
-                // Retrieve
-                generatedSource = ddtr.ReadToEnd();
-                var newsource = this._projectNode.SynchronizeKeywordCase(generatedSource, prgFileName);
-
-                if (string.Compare(newsource, generatedSource) != 0)
+                if (writer is DocDataTextWriter dtw)
                 {
-                    // get DocDataTextWriter and update the source after the case has been synchronized
-                    generatedSource = newsource;
-                    DocDataTextWriter dtw = new DocDataTextWriter(docData);
-                    dtw.Write(generatedSource);
-                    dtw.Flush();
+                    generatedSource = GetDocDataSource(dtw);
+                    UpdateUserDataForClass(combinedClass, generatedSource, prgFileName, formClass);
                 }
-                // Don't forget to set the name of the file where the source is...
-                parser.FileName = prgFileName;
-                resultDesigner = parser.Parse(generatedSource);
-                resultClass = resultDesigner.GetFirstClass();
-                // just to be sure...
-                if (resultClass != null)
-                {
-                    // Now push all elements from resultClass to formClass
-                    formClass.Members.Clear();
-                    foreach (CodeTypeMember ctm in resultClass.Members)
-                    {
-                        ctm.SetFromDesigner(false);
-                        formClass.Members.Add(ctm);
-                    }
-                }
-                // Ok, it should be ok....
-                // We have updated the file and the types that are stored inside each CCU that have been merged in compileUnit
-                //XSharpCodeDomHelper.MergeCodeCompileUnit(compileUnit, formCCU, designCCU);
-                // And update...
-                combinedClass.Members.Clear();
-                combinedClass.Members.AddRange(designClass.Members);
-                combinedClass.Members.AddRange(formClass.Members);
+                
             }
             else
             {
                 var xcompileUnit = ToXCodeCompileUnit(compileUnit);
                 // suppress generating the "generated code" header
-                if (writer is  DocDataTextWriter)       // Form Editor
+                if (writer is DocDataTextWriter)       
                 {
-                    compileUnit.SetNoHeader();
+                    // The Form Editor is a DocDataTextWriter
+                    // other editors are different writer and should generate the Header
+                    xcompileUnit.SetNoHeader();
                 }
-                base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
+                base.GenerateCodeFromCompileUnit(xcompileUnit, writer, options);
                 writer.Flush();
                 // Designer gave us these informations
                 // Now, we must re-read it and parse again
-                if (writer is DocDataTextWriter)
+                if (writer is DocDataTextWriter dtw)
                 {
-                    CodeTypeDeclaration formClass = compileUnit.GetFirstClass();
-                    IServiceProvider provider = (DocDataTextWriter)writer;
-                    DocData docData = (DocData)provider.GetService(typeof(DocData));
-                    DocDataTextReader ddtr = new DocDataTextReader(docData);
-                    // Retrieve
-                    string generatedSource = ddtr.ReadToEnd();
-                    XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
-                    parser.FileName = xcompileUnit.FileName;
-                    generatedSource = _projectNode.SynchronizeKeywordCase(generatedSource, parser.FileName);
-                    CodeCompileUnit resultCcu = parser.Parse(generatedSource);
-                    CodeTypeDeclaration resultClass = resultCcu.GetFirstClass();
-                    // just to be sure...
-                    if (resultClass != null)
-                    {
-                        // Now push all elements from resultClass to formClass
-                        formClass.Members.Clear();
-                        foreach (CodeTypeMember ctm in resultClass.Members)
-                        {
-                            formClass.Members.Add(ctm);
-                        }
-                    }
+                    // The Form Editor is a DocDataTextWriter
+                    CodeTypeDeclaration formClass = xcompileUnit.GetFirstClass();
+                    string generatedSource = GetDocDataSource(dtw);
+                    UpdateUserDataForClass(formClass, generatedSource, xcompileUnit.FileName, formClass);
                 }
 
             }

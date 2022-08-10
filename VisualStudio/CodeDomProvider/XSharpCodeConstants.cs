@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,38 @@ namespace XSharp.CodeDom
         public static string USERDATA_GLOBALS = "XSharp:Globals"; // Logical value
 
 
+        public static void CopyUserData(this CodeObject source, CodeObject target)
+        {
+            target.UserData.Clear();
+            foreach (DictionaryEntry item in source.UserData)
+            {
+                target.UserData.Add(item.Key, item.Value);
+            }
+
+        }
+
+        public static void UpdateClassMemberUserData(this CodeTypeDeclaration source, CodeTypeDeclaration target)
+        {
+            foreach (CodeObject newmember in source.Members)
+            {
+                if (newmember.HasSourceCode())
+                {
+                    foreach (CodeObject oldmember in target.Members)
+                    {
+                        if (oldmember.HasSourceCode())
+                        {
+                            var src1 = newmember.GetSourceCode().ToLower().Trim();
+                            var src2 = oldmember.GetSourceCode().ToLower().Trim();
+                            if (string.Compare(src1, src2) == 0)
+                            {
+                                oldmember.CopyUserData(newmember);
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
         public static bool HasLeadingTrivia(this CodeObject e)
         {
             return e.UserData.Contains(USERDATA_LEADINGTRIVIA);
@@ -58,9 +91,21 @@ namespace XSharp.CodeDom
         {
             return o.UserData.Contains(USERDATA_FROMDESIGNER);
         }
+        public static bool SourceEquals(this CodeObject o, CodeObject other)
+        {
+            if (o.HasSourceCode() && other.HasSourceCode())
+            {
+                var src1 = o.GetSourceCode().Trim().ToLower();
+                var src2 = other.GetSourceCode().Trim().ToLower();
+                return String.Compare(src1, src2) == 0;
+            }
+            return false;
+        }
         public static bool GetFromDesigner(this CodeObject o)
         {
-            return (bool)o.UserData[USERDATA_FROMDESIGNER];
+            if (o.UserData.Contains(USERDATA_FROMDESIGNER))
+                return (bool)o.UserData[USERDATA_FROMDESIGNER];
+            return false;
         }
         public static void SetNoHeader(this CodeObject o)
         {

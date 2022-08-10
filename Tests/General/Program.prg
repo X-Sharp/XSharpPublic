@@ -13,5 +13,9 @@
 LOCAL ARRAY aDb[1]
 ? ADatabases(aDb)
 ShowArray(aDb)
-DbCloseArea()
+DbCloseAll()
 WAIT
+
+
+
+

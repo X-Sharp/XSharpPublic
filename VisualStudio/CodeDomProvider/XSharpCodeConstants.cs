@@ -24,10 +24,9 @@ namespace XSharp.CodeDom
 
         public static void CopyUserData(this CodeObject source, CodeObject target)
         {
-            target.UserData.Clear();
             foreach (DictionaryEntry item in source.UserData)
             {
-                target.UserData.Add(item.Key, item.Value);
+                target.UserData[item.Key] = item.Value;
             }
 
         }

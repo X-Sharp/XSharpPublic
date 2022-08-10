@@ -76,6 +76,11 @@ namespace XSharp.CodeDom
 
         }
 
+        internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, CodeTypeDeclaration masterClass)
+        {
+            CodeNamespace namespaceName;
+            return FindDesignerClass(ccu, out namespaceName, masterClass.Name);
+        }
         /// <summary>
         /// Reading the CodeCompileUnit, enumerate all NameSpaces, enumerate All Types, searching for the first Class that contains an InitializeComponent member
         /// </summary>
@@ -88,7 +93,7 @@ namespace XSharp.CodeDom
             return FindDesignerClass(ccu, out namespaceName);
         }
 
-        internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, out CodeNamespace namespaceName)
+        internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, out CodeNamespace namespaceName, string name = "")
         {
             namespaceName = null;
             // We search the first Class that has a Candidate for InitializeComponent
@@ -98,6 +103,10 @@ namespace XSharp.CodeDom
                 {
                     if (typeElement.IsClass)
                     {
+                        if (! string.IsNullOrEmpty(name) && String.Compare(typeElement.Name, name, true) == 0)
+                        {
+                            return typeElement;
+                        }
                         // Looking for InitializeComponent, returning a void, and with no Parameters
                         foreach (CodeTypeMember member in typeElement.Members)
                         {

@@ -4,18 +4,13 @@
 // See License.txt in the project root for license information.
 //
 //#define WRITE2LOGFILE
-using Microsoft.VisualStudio.Shell.Design.Serialization;
 using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.Collections;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace XSharp.CodeDom
 {
@@ -65,7 +60,6 @@ namespace XSharp.CodeDom
             return parser;
         }
 
-
         public override void GenerateCodeFromCompileUnit(CodeCompileUnit compileUnit, TextWriter writer, CodeGeneratorOptions options)
         {
 
@@ -112,6 +106,8 @@ namespace XSharp.CodeDom
     }
     public class XSharpCodeDomHelper1
     {
+        #region Dump Tools
+#if WRITE2LOGFILE
         static readonly String Delimiter = new String('-', 5);
         static void DumpUserData(IDictionary userData)
         {
@@ -127,6 +123,8 @@ namespace XSharp.CodeDom
             }
 
         }
+
+
         static public void DumpCodeCompileUnit(CodeCompileUnit ccu, string FileName, bool append)
         {
             //
@@ -159,7 +157,6 @@ namespace XSharp.CodeDom
                     WriteLine(Delimiter);
                     WriteLine("CodeTypeMember UserData :");
                     //
-                    DumpUserData(member.UserData);
                     if (member is CodeMemberField cmf)
                     {
                         WriteLine(" -=> CodeMemberField : " + cmf.Type.BaseType);
@@ -176,6 +173,11 @@ namespace XSharp.CodeDom
                         }
                         WriteLine(Delimiter);
                     }
+                    else
+                    {
+                        DumpUserData(member.UserData);
+
+                    }
                 }
             }
             finally
@@ -183,7 +185,6 @@ namespace XSharp.CodeDom
                 writer.Close();
             }
         }
-        #region Dump Tools
         static int _indent = 0;
         static StreamWriter writer;
 
@@ -423,7 +424,7 @@ namespace XSharp.CodeDom
             }
             return rstClass;
         }
-
+#endif
         #endregion
     }
 }

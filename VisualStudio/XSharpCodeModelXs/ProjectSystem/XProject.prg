@@ -232,6 +232,9 @@ BEGIN NAMESPACE XSharpModel
 
          METHOD AddAssemblyReference(path AS STRING) AS VOID
             IF ! String.IsNullOrEmpty(path)
+               IF _AssemblyReferences:Any( { asm as XAssembly => asm:FileName:ToLower() == path.ToLower()} )
+                    RETURN
+               endif
                SELF:LogReferenceMessage("AddAssemblyReference: "+path)
                SELF:_clearTypeCache()
                BEGIN LOCK _unprocessedAssemblyReferences

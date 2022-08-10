@@ -160,6 +160,8 @@ namespace XSharp.Project
                         return existing;
                     // file does not exist so this new node is better
                     existing.Remove(false);
+                    var xProjectNode = this.ProjectMgr as XSharpProjectNode;
+                    xProjectNode.ProjectModel.AddAssemblyReference(existingUrl);
               }
           }
           //
@@ -170,6 +172,8 @@ namespace XSharp.Project
               // The CreateFileComponent create and Add the project element
               // but as it is duplicated..Remove it !
               node.Remove(false);
+              var xProjectNode = this.ProjectMgr as XSharpProjectNode;
+              xProjectNode.ProjectModel.AddAssemblyReference(existing.Url);
               return existing;
           }
           return node;

@@ -17,7 +17,7 @@
     <TargetFrameworkProfile />
     <CS>true</CS>
     <VO3>true</VO3>
-    <XSharpProjectversion>2.12.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.13.0.5</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -56,6 +56,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\System.Data.SQLite.dll</HintPath>
     </Reference>
+    <Reference Include="System.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Management</Name>
+      <AssemblyName>System.Management.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Management.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.VSParser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VSParser</Name>
       <AssemblyName>XSharp.VSParser.dll</AssemblyName>
@@ -75,7 +82,7 @@
     <Compile Include="Database\XDbResult.prg" />
     <Compile Include="Database\XDbResultHelpers.prg" />
     <Compile Include="Formatting\XFormattingRules.Designer.prg">
-      <DependentUpon>Formatting\XFormattingRules.resx</DependentUpon>
+      <DependentUpon>XFormattingRules.resx</DependentUpon>
     </Compile>
     <Compile Include="Formatting\XFormattingRule.prg" />
     <Compile Include="Formatting\XKeyword.prg" />

@@ -32,23 +32,82 @@ namespace XSharp.CodeDom
 
         }
 
+        private static bool memberEquals(CodeObject oldmember, CodeObject newmember)
+        {
+            if (oldmember is IXCodeObject)
+            {
+                var src1 = newmember.GetSourceCode().ToLower().Trim();
+                var src2 = oldmember.GetSourceCode().ToLower().Trim();
+                if (string.Compare(src1, src2) == 0)
+                {
+                    return true;
+                }
+            }
+            if (oldmember is CodeMemberField oldfld &&
+                newmember is CodeMemberField newfld &&
+                oldfld.Name == newfld.Name)
+            {
+                return true;
+            }
+            if (oldmember is CodeMemberMethod oldmeth && newmember is CodeMemberMethod newmeth)
+            {
+                if (oldmeth.Name == newmeth.Name && oldmeth.ReturnType.BaseType == newmeth.ReturnType.BaseType)
+                {
+                    var oldPars = oldmeth.Parameters;
+                    var newPars = newmeth.Parameters;
+                    if (oldPars.Count == newPars.Count)
+                    {
+                        bool parsEqual = true;
+                        for (int i = 0; i < oldPars.Count; i++)
+                        {
+                            var oldPar = oldPars[i];
+                            var newPar = newPars[i];
+                            if (oldPar.Name != newPar.Name)
+                            {
+                                parsEqual = false;
+                            }
+                            else
+                            {
+                                if (oldPar.Type.BaseType != newPar.Type.BaseType)
+                                {
+                                    parsEqual = false;
+                                }
+                            }
+                            if (!parsEqual)
+                                break;
+                        }
+                        if (parsEqual)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            if (oldmember is CodeMemberEvent oldevt &&
+                newmember is CodeMemberEvent newevt &&
+                oldevt.Name == newevt.Name)
+            {
+                return true;
+            }
+            if (oldmember is CodeMemberProperty oldprop &&
+                newmember is CodeMemberProperty newprop &&
+                oldprop.Name == newprop.Name)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static void UpdateClassMemberUserData(this CodeTypeDeclaration source, CodeTypeDeclaration target)
         {
             foreach (CodeObject newmember in source.Members)
             {
-                if (newmember.HasSourceCode())
+                foreach (CodeObject oldmember in target.Members)
                 {
-                    foreach (CodeObject oldmember in target.Members)
+                    if (memberEquals(oldmember, newmember))
                     {
-                        if (oldmember.HasSourceCode())
-                        {
-                            var src1 = newmember.GetSourceCode().ToLower().Trim();
-                            var src2 = oldmember.GetSourceCode().ToLower().Trim();
-                            if (string.Compare(src1, src2) == 0)
-                            {
-                                oldmember.CopyUserData(newmember);
-                            }
-                        }
+                        newmember.CopyUserData(oldmember);
+                        break;
                     }
                 }
             }

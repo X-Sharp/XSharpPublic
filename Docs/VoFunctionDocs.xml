@@ -13770,21 +13770,18 @@
         <summary>
             Indicate whether the first expression in a series is repeated later in the series.
         </summary>
-
+        <param name="uValue">
+            The value that is looked up in the list. This can be any data type.
+        </param>
         <param name="uValueList">
             A list of expressions separated by commas.<br/>
-            The first expression can be any data type.<br/>
-            All other expressions should be the same data type as the first expression.<br/>
-            If the other expressions are not the same type as the first expression, a runtime error indicates a data type mismatch.
+            These expressions should be the same data type as the expression in <paramref name="uValue" /><br/>
+            If one or more of these expressions are not the same type as the first expression, 
+            a runtime error may happening indicating a data type mismatch.
         </param>
         <returns>
             TRUE if the first expression matches any of the other listed expressions; otherwise, FALSE.
         </returns>
-        <remarks>
-            InList() determines whether an expression is found in a series of expressions.<br/>
-            The first expression is compared to each of the other expressions until either a match is found or the entire list has been traversed.<br/>
-            For exact matching, use InListExact().
-        </remarks>
         <example>
             This examples use InList() to indicate whether the first expression in each series is repeated later in the series:
             <code language="X#">
@@ -13794,50 +13791,12 @@
                 nQueen := 12
                 nKing  := 13
                 nAce   := 14
-                ? InList(nJack, nQueen, nKing, nAce, nKing)
-                &#0009;// FALSE
-                ? InList(nJack, nAce, nJack, nJack, nQueen)
-                &#0009;// TRUE
+                ? InList(nJack, nQueen, nKing, nAce) &#0009;// FALSE
+                ? InList(nJack, nAce, nJack, nQueen, nKing) &#0009;// TRUE
             </code>
         </example>
-        <seealso cref='O:XSharp.RT.Functions.InListExact'>InListExact</seealso>
         <seealso cref='O:XSharp.Core.Functions.Instr'>InStr</seealso>
     </inlist>
-    <inlistexact>
-        <summary>
-            Indicate whether the first expression in a series is repeated in the exact same form later in the series.
-        </summary>
-
-        <param name="uValueList">
-            A list of expressions separated by commas.<br/>
-            The first expression can be any data type.<br/>
-            All other expressions should be the same data type as the first expression.<br/>
-            If the other expressions are not the same type as the first expression, a runtime error indicates a data type mismatch.
-        </param>
-        <returns>
-            TRUE if the first expression matches any of the other listed expressions; otherwise, FALSE.
-        </returns>
-        <remarks>
-            InListExact() is the same as InList() except that == is used for matching instead of =.
-        </remarks>
-        <example>
-            This example compares InList() and InListExact() when the left operand in a comparison is longer than the right operand of a comparison:
-            <code language="X#">
-                ? InList("longer", "long")&#0009;&#0009;// TRUE
-                ? InList("long  ", "long")&#0009;&#0009;// TRUE
-                ? InListExact("longer", "long")&#0009;// FALSE
-                ? InListExact("long  ", "long")&#0009;// FALSE
-            </code>
-            This example compares InList() and InListExact() when the right operand in a comparison is longer than the left operand of a comparison:
-            <code language="X#">
-                ? InList("long", "longer")&#0009;&#0009;// FALSE
-                ? InList("long", "long  ")&#0009;&#0009;// FALSE
-                ? InListExact("long", "longer")&#0009;// FALSE
-                ? InListExact("long", "long  ")&#0009;// FALSE
-            </code>
-        </example>
-        <seealso cref='O:XSharp.RT.Functions.InList'>InList</seealso>
-    </inlistexact>
     <instr>
         <summary>
             Indicate whether a substring is contained in a string.
@@ -13865,6 +13824,7 @@
         </example>
         <seealso cref='O:XSharp.Core.Functions.At'>At</seealso>
         <seealso cref='O:XSharp.RT.Functions.InList'>InList</seealso>
+        <seealso cref='O:XSharp.RT.Functions.InListExact'>InList</seealso>
         <seealso cref='O:XSharp.RT.Functions.SubStr'>Substr</seealso>
     </instr>
     <integer>

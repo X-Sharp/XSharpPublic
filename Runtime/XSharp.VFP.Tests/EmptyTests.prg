@@ -56,5 +56,13 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             RemoveProperty(o, "BestLanguage")
             RemoveProperty(o, "BestLanguage") // FoxPro does not throw an exception
             Assert.Throws( typeof(XSharp.VFP.PropertyNotFoundException), { => o:BestLanguage  := false})
+
+        [Fact, Trait("Category", "Empty Function")];
+        method EmptyFunctiontests() as void
+            local u
+            u := .NULL.
+            Assert.False(Empty(u))
+            u := DBNull.Value
+            Assert.False(Empty(u))
     END CLASS
 END NAMESPACE

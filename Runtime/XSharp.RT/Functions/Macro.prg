@@ -195,7 +195,11 @@ FUNCTION Type(cString AS STRING, nArray AS LONG) AS STRING
             ENDIF
 
         CATCH  AS Exception
+            IF RuntimeState.Dialect == XSharpDialect.FoxPro
+            cRet  := "U"
+            ELSE
             cRet  := "UE"
+            ENDIF
         END TRY
     ENDIF
     IF RuntimeState.Dialect == XSharpDialect.FoxPro

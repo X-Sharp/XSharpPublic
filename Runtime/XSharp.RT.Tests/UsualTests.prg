@@ -808,7 +808,7 @@ CLASS UsualTests
 
     [Fact, Trait("Category", "usual MinMax Tests")];
     METHOD UsualMinMaxTests() AS VOID
-        local u1,u2 as usual
+        LOCAL u1,u2 AS USUAL
         u1 := Today()
         u2 := Today() +1
         Assert.True(Min(u1,u2) == u1)
@@ -830,7 +830,7 @@ CLASS UsualTests
         Assert.True(Max(u1,u2) == u2)
 
 
-        u1 := ToDay()
+        u1 := Today()
         u2 := DateTime.Now:AddDays(1)
         // Datetime comparison
         Assert.True(Min(u1,u2) == u1)
@@ -866,21 +866,21 @@ CLASS UsualTests
 
     [Fact, Trait("Category", "Usual")];
     METHOD BetweenTests() AS VOID
-        local d1, d2, d3 as decimal
+        LOCAL d1, d2, d3 AS decimal
         d1 := 1m
         d2 := 2m
         d3 := 4m
         Assert.False(Between(d1,d2,d3))
         d1 := 3m
         Assert.True(Between(d1,d2,d3))
-        local dw1, dw2, dw3 as dword
+        LOCAL dw1, dw2, dw3 AS DWORD
         dw1 := 1u
         dw2 := 2u
         dw3 := 4u
         Assert.False(Between(dw1,dw2,dw3))
         dw1 := 3
         Assert.True(Between(dw1,dw2,dw3))
-        local l1, l2, l3 as long
+        LOCAL l1, l2, l3 AS LONG
         l1 := 1
         l2 := 2
         l3 := 4
@@ -889,14 +889,27 @@ CLASS UsualTests
         Assert.True(Between(l1,l2,l3))
         RETURN
 
-    [Fact, Trait("Category", "Usual")];
-    METHOD InListTests() as VOID
-        Assert.False(InList("AB", "ABC","AD"))
-        Assert.True(InList("ABC", "ABC","AD"))
-        Assert.True(InList("AD", "ABC","AD"))
+	[Fact, Trait("Category", "Usual")];
+    METHOD InListTests() AS VOID
+    	LOCAL lExact := SetExact() AS LOGIC
+    	
+		Assert.False(InList("AB", "ABC","AD"))
+		Assert.True(InList("ABC", "ABC","AD"))
+		Assert.True(InList("AD", "ABC","AD"))
+		
+		SetExact(TRUE)
+		Assert.False( InList("VOL", "VOLL", "FIBU") )
+		Assert.False( InList("VOLL123", "VOLL", "FIBU") )
+		Assert.True ( InList("VOLL", "VOLL", "FIBU") )
 
-
-
+		SetExact(FALSE)
+		Assert.False( InList("VOL", "VOLL", "FIBU") )
+		Assert.True ( InList("VOLL123", "VOLL", "FIBU") )
+		Assert.True ( InList("VOLL", "VOLL", "FIBU") )
+		
+		SetExact(lExact)
+		
+		
 END CLASS
 END NAMESPACE // XSharp.Runtime.Tests
 

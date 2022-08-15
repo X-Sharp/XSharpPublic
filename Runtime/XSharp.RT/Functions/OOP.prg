@@ -11,6 +11,7 @@ using XSharp.Internal
 using System.Reflection
 using System.Collections.Generic
 using System.Linq
+using System.Text
 using System.Runtime.CompilerServices
 using System.Diagnostics
 
@@ -278,9 +279,72 @@ internal static class OOPHelpers
         local cClass as string
         cClass := overloads:First():DeclaringType:Name
         var oError := Error.VOError( EG_AMBIGUOUSMETHOD, cFunction, "MethodName", 1, <object>{cClass+":"+overloads:First():Name})
-        oError:Description := oError:Message+" ' "+cFunction+"'"
+
+        local sb as StringBuilder
+        sb := StringBuilder{}
+        sb:AppendLine(oError:Message)
+        sb:AppendLine(i"Found {found:Count} overloads")
+        var current := 0
+
+        foreach var overload in found
+            current += 1
+            sb:Append( ei"{current}. {overload:DeclaringType:Name}:{overload:Name}")
+            var args := overload:GetGenericArguments()
+            if (args != null .and. args:Length > 0)
+                sb:Append(  "<")
+                var firstArg := true
+                foreach var type in args
+                    if firstArg
+                        firstArg := false
+                    else
+                        sb:Append( ", ")
+                    endif
+                    sb:Append( type:Name)
+                next
+                sb:Append( ">")
+            endif
+            sb:Append( "(")
+
+            var firstParam := true
+            foreach p as ParameterInfo in overload:GetParameters()
+                if firstParam
+                    firstParam := false
+                else
+                    sb:Append(  ", ")
+                endif
+                sb:Append( i"{p:Name} AS {GetTypename(p:ParameterType)}")
+            next
+            sb:AppendLine(")")
+        next
+        oError:Description := sb:ToString()
         throw oError
 
+    static method GetTypename(t as System.Type) as string
+        switch t:Name
+            case "__Array"
+                return "ARRAY"
+            case "__Binary"
+                return "BINARY"
+            case "__Currency"
+                return "CURRENCY"
+            case "__Date"
+                return "DATE"
+            case "__Float"
+                return "FLOAT"
+            case "__FoxArray"
+                return "ARRAY"
+            case "__Psz"
+                return "PSZ"
+            case "__Symbol"
+                return "SYMBOL"
+            case "__Usual"
+                return "USUAL"
+            case "__VoDate"
+                return "DATE"
+            case "__VoFloat"
+                return "FLOAT"
+        end switch
+        return t:Name
 
     static method MatchParameters<T>( methodinfo as T, args as usual[], hasByRef out logic) as object[] where T is MethodBase
         // args contains the list of arguments. The methodname has already been deleted when appropriated
@@ -733,6 +797,8 @@ internal static class OOPHelpers
                 endif
                 return result
             endif
+        catch as Error
+            throw
         catch e as TargetInvocationException
             if e:InnerException is WrappedException
                 throw e:InnerException
@@ -858,10 +924,10 @@ internal static class OOPHelpers
         local t := oObject?:GetType() as Type
         result := nil
         if t == null
-            throw Error.NullArgumentError( __function__, nameof(oObject), 1 )
+            throw Error.NullArgumentError( cMethod, nameof(oObject), 1 )
         endif
         if cMethod == null
-            throw Error.NullArgumentError( __function__, nameof(cMethod), 2 )
+            throw Error.NullArgumentError( cMethod, nameof(cMethod), 2 )
         endif
         local mi := null as MethodInfo
         cMethod := cMethod:ToUpperInvariant()
@@ -876,8 +942,10 @@ internal static class OOPHelpers
             try
                 if list:Count > 0
                     var mis := list:ToArray()
-                    mi := OOPHelpers.FindBestOverLoad(mis, "SendHelper",uArgs)
+                    mi := OOPHelpers.FindBestOverLoad(mis, cMethod,uArgs)
                 endif
+            catch as Error
+                throw
             catch as Exception
                 mi := null
             end try
@@ -915,6 +983,8 @@ internal static class OOPHelpers
                 if hasByRef
                     OOPHelpers.CopyByRefParameters( uArgs, oArgs, mi:GetParameters())
                 endif
+            catch as Error
+                throw
             catch e as TargetInvocationException
                 if e:InnerException is WrappedException
                     throw e:InnerException
@@ -1028,12 +1098,12 @@ internal static class OOPHelpers
             return oRet
         endif
 
-    static method DoSend(oObject as object, cMethod as string, args as usual[] ) as usual
+    static method DoSend(oObject as object, cMethod as string, args as usual[], cCaller AS STRING) as usual
         if oObject == null
-            throw Error.NullArgumentError( __function__, nameof(oObject), 1 )
+            throw Error.NullArgumentError( cCaller, nameof(oObject), 1 )
         endif
         if cMethod == null
-            throw Error.NullArgumentError( __function__, nameof(cMethod), 2 )
+            throw Error.NullArgumentError( cCaller, nameof(cMethod), 2 )
         endif
         if ! OOPHelpers.SendHelper(oObject, cMethod, args, out var result)
             local nomethodArgs as usual[]
@@ -1050,7 +1120,7 @@ internal static class OOPHelpers
                 Array.Copy( args, 0, nomethodArgs, 0, args:Length )
             endif
             if ! OOPHelpers.SendHelper(oObject, "NoMethod" , nomethodArgs, out result)
-                var oError := Error.VOError( EG_NOMETHOD, __function__, nameof(cMethod), 2, <object>{oObject, cMethod, args} )
+                var oError := Error.VOError( EG_NOMETHOD, cCaller, nameof(cMethod), 2, <object>{oObject, cMethod, args} )
                 oError:Description  := oError:Message + " '"+cMethod+"'"
                 throw oError
 
@@ -1166,8 +1236,8 @@ function _CreateInstance(symClassName as string, InitArgList as usual[]) as obje
             OOPHelpers.CopyByRefParameters(InitArgList, oArgs, ctor:GetParameters())
 
         endif
-    catch e as Error
-        throw e
+    catch as Error
+        throw
     catch e as Exception
         throw Error{e:GetInnerException()}
     end try
@@ -1469,7 +1539,7 @@ function Send(oObject as usual,symMethod as usual, MethodArgList params usual[])
     local oToSend := oObject as object
     local cMethod := symMethod as string
     local uResult as usual
-    uResult := OOPHelpers.DoSend(oToSend, cMethod, MethodArgList)
+    uResult := OOPHelpers.DoSend(oToSend, cMethod, MethodArgList, __Function__)
     return uResult
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/send/*" />
@@ -1496,7 +1566,7 @@ function _Send(oObject as object,symMethod as MethodInfo, MethodArgList params u
 /// <exclude />
 
 function __InternalSend( oObject as usual, cMethod as string, args params usual[] ) as usual
-    return OOPHelpers.DoSend(oObject, cMethod, args)
+    return OOPHelpers.DoSend(oObject, cMethod, args, __Function__)
 
 /// <summary>Helper function to convert ARRAY to USUAL[]</summary>
 /// <param name="args">X# array to convert</param>
@@ -1571,7 +1641,7 @@ function _ObjectArrayToUsualArray (args as object[]) as usual[]
 function _SendClassParams( oObject as object, cmethod as string, args as array ) as usual
     local uArgs as usual[]
     uArgs := _ArrayToUsualArray(args)
-    return OOPHelpers.DoSend(oObject, cmethod, uArgs )
+    return OOPHelpers.DoSend(oObject, cmethod, uArgs , __Function__)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mparamcount/*" />
@@ -1632,22 +1702,23 @@ function FParamCount(symFunction as string) as dword
 /// <param name="symFunction">The name of the function to call.</param>
 /// <param name="aArgs">The list of arguments to pass to the function</param>
 /// <returns>The return value of the function</returns>
-/// <remarks>Note that you can't call functions that are overloaded.</remarks>
+/// <remarks>Note that X# allows to call functions that are overloaded.</remarks>
 
 function _CallClipFunc(symFunction as string,aArgs as array) as usual
-    return	_CallClipFunc(symFunction, _ArrayToUsualArray(aArgs))
+    return _CallClipFunc(symFunction, _ArrayToUsualArray(aArgs))
 
 /// <summary>Call a function by name</summary>
 /// <param name="symFunction">The name of the function to call.</param>
 /// <param name="uArgs">The list of arguments to pass to the function</param>
 /// <returns>The return value of the function</returns>
-/// <remarks>Note that you can't call functions that are overloaded.</remarks>
-function _CallClipFunc(symFunction as string,uArgs params usual[]) as usual
+/// <remarks>Note that X# allows to call functions that are overloaded.</remarks>
+function _CallClipFunc(symFunction as string, uArgs params usual[]) as usual
     local aFuncs as MethodInfo[]
     local oMI as MethodInfo
 
     aFuncs := OOPHelpers.FindClipperFunctions(symFunction)
     // CLipper functions can't and shouldn't have overloads
+    // But we try to find the best overload anyway
     if aFuncs != null
         if aFuncs:Length == 1
             oMI		:= aFuncs:First()
@@ -1663,13 +1734,13 @@ function _CallClipFunc(symFunction as string,uArgs params usual[]) as usual
                     return result
                 endif
             endif
-            throw Error.VOError( EG_AMBIGUOUSMETHOD,  "_CallClipFunc", nameof(symFunction), 1, <object>{symFunction} )
+            throw Error.VOError( EG_AMBIGUOUSMETHOD,  __Function__, nameof(symFunction), 1, <object>{symFunction} )
         endif
     else
         throw Error.VOError( EG_NOFUNC,  "FParamCount", nameof(symFunction), 1, <object>{symFunction} )
     endif
-
     return  nil
+
 function _HasClipFunc(symFunction as string) as logic
     local aFuncs as MethodInfo[]
     aFuncs := OOPHelpers.FindClipperFunctions(symFunction)

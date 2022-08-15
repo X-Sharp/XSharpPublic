@@ -71,6 +71,7 @@
       <li styleclass="Body Text">Added a property to open a Sqlselect in readonly mode. This should prevent Append(), Delete() and FieldPut()</li>
       <li styleclass="Body Text">Implemented delay creating InsertCmd, DeleteCmd, UpdateCmd until really needed</li>
       <li styleclass="Body Text">Added callback mechanism so customers can override the commandtext for these command (and for example route them to stored Procedures)</li>
+      <li styleclass="Body Text">When a late bound method call cannot be resolved because the method is overloaded then a better error message is now generated that also includes the prototypes of the methods found.</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">FoxPro dialect</text></para>

@@ -813,7 +813,7 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">Miscellaneous</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="20" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="21" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
           <para styleclass="Normal">Option</para>
@@ -940,6 +940,14 @@
         </td>
         <td>
           <para styleclass="Normal">Syntax check only</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-shared">-shared</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Use the shared compiler</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

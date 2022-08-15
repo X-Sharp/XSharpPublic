@@ -33,6 +33,7 @@
       <li styleclass="Normal">If an even number of backslashes is followed by a double quotation mark, one backslash is put in the compiler options array for every pair of backslashes, and the double quotation mark is interpreted as a string delimiter.</li>
       <li styleclass="Normal">If an odd number of backslashes is followed by a double quotation mark, one backslash is put in the compiler options array for every pair of backslashes, and the double quotation mark is &quot;escaped&quot; by the remaining backslash. This causes a literal double quotation mark (&quot;) to be added in compiler options array.</li>
       <li styleclass="Normal">Commandline options can start with a hyphen (-) or a slash (/). On Non windows platforms the hyphen should be used because the slash may be seen as a path delimiter character</li>
+      <li styleclass="Normal">If you do not use the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-noconfig">/noconfig</link> compiler option then references to the assemblies listed in xsc.exe will be automatically included.</li>
     </list>
     <para styleclass="Heading2">Sample commands for the X# Compiler</para>
     <para styleclass="Normal"></para>

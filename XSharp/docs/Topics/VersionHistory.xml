@@ -3,6 +3,7 @@
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
+    <keyword>/shared</keyword>
     <keyword>Runtime chapter</keyword>
     <keyword>XS9082</keyword>
   </keywords>
@@ -103,7 +104,10 @@
       <li styleclass="Body Text">Fixed a performance Issue when typing . for .and. (#1080)</li>
       <li styleclass="Body Text">Fixed a problem with the navigation bar while typing new classes/methods (#1041)</li>
       <li styleclass="Body Text">Fixed incorrect info tooltips on keywords (#979)</li>
-      <li styleclass="Body Text">The &apos;Use Shared Compiler&apos; option was not properly working inside VS.</li>
+    </list>
+    <para styleclass="Heading2">Build System</para>
+    <list id="125" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">The XSharp.Build.Dll, which is responsible for creating the command line when compiling X# projects in VS, was not properly passing the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-noconfig">/noconfig</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-shared">/shared</link> compiler options to the compiler. As a result the shared compiler was not used, even when the project property to use the Shared Compiler was enabled. Also the compiler was automatically including references to all the assemblies that are listed inside the file xsc.rsp, which is located inside the XSharp\bin folder.<br/>You may experience now that assemblies will not compile because of missing types. This will happen if you are using a type that is inside an assembly that is listed inside xsc.rsp. You should add explicit references to these assemblies in your X# project now.</li>
     </list>
     <para styleclass="Heading1">Changes in 2.12.2.0</para>
     <para styleclass="Heading2">Compiler</para>

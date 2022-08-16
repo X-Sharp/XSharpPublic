@@ -16,7 +16,7 @@ FUNCTION Between(uValue AS USUAL, uMin AS USUAL, uMax AS USUAL) AS LOGIC
 /// The first expression is compared to each of the other expressions until either a match is
 /// found or the entire list has been traversed.
 /// For exact matching, use InListExact(). </remarks>
-/// <seealso cref='O:XSharp.RT.Functions.InList'>InListExact</seealso>
+/// <seealso cref='M:XSharp.RT.Functions.InListExact(XSharp.__Usual,XSharp.__Usual[])'>InListExact</seealso>
 FUNCTION InList(uValue AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
     RETURN _InListWorker(uValue, uValueList, {x,y => x = y})
 
@@ -36,13 +36,14 @@ FUNCTION InList(uValue AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
 /// ? InListExact("long  ", "long")&#0009;// FALSE
 /// </code>
 /// This example compares InList() and InListExact() when the right operand in a comparison is longer than the left operand of a comparison:
-/// code language="X#">
+/// <code language="X#">
 /// ? InList("long", "longer")&#0009;&#0009;// FALSE
 /// ? InList("long", "long  ")&#0009;&#0009;// FALSE
 /// ? InListExact("long", "longer")&#0009;// FALSE
 /// ? InListExact("long", "long  ")&#0009;// FALSE
 /// </code>
 /// </example>
+/// <seealso cref='M:XSharp.RT.Functions.InList(XSharp.__Usual,XSharp.__Usual[])'>InList</seealso>
 FUNCTION InListExact(uValue AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
     RETURN _InListWorker(uValue, uValueList, {x,y => x == y})
 

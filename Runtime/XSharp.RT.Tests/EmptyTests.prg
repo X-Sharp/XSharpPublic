@@ -63,6 +63,9 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			u := NULL_SYMBOL
 			Assert.Equal(TRUE, Empty(u))
 
+            u := DBNull.Value
+			Assert.Equal(false, Empty(u))
+
  		[Trait("Category", "Object")];
 		[Fact];
 		METHOD EmptyObjectTest() AS VOID

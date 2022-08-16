@@ -566,7 +566,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         CASE __UsualType.Psz
         CASE __UsualType.String		; RETURN EmptyString(_stringValue)
         CASE __UsualType.Symbol		; RETURN _symValue == 0
-        CASE __UsualType.Null       ; RETURN TRUE
+        CASE __UsualType.Null       ; RETURN FALSE // In FoxPro Empty(.NULL.) return false
         OTHERWISE
             Debug.Fail( "Unhandled data type in Usual:Empty()" )
         END SWITCH
@@ -3148,7 +3148,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         CASE __UsualType.String		; RETURN "C"
         CASE __UsualType.Object		; RETURN "O"
         CASE __UsualType.Symbol		; RETURN "#"
-        CASE __UsualType.Null       ; RETURN "X"
+        CASE __UsualType.Null       ; RETURN "X"  // FoxPro returns 'X' for VarType(.NULL.)
         CASE __UsualType.Void
             IF RuntimeState.Dialect == XSharpDialect.FoxPro
                 RETURN "L"

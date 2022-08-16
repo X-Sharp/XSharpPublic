@@ -63,6 +63,8 @@
       <li styleclass="Body Text">Fixed problem with SetOrder() failing with SYMBOL argument (#1070)</li>
       <li styleclass="Body Text">Reverted a previous incorrect change in the SDK in DBServer:FieldGetFormatted() (#1076)</li>
       <li styleclass="Body Text">Fixed several issues with StrEvaluate(), including not recognizing MEMVARs with underscores in their names (#1078)</li>
+      <li styleclass="Body Text">Fix for a problem with InList() and string values (#1095)</li>
+      <li styleclass="Body Text">The Empty() function now returns false for the values <text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">.NULL.</text> and <text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">DBNull.Value</text> to be compatible with FoxPro</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading3">New Features</para>
@@ -71,7 +73,7 @@
       <li styleclass="Body Text">Added a property to open a Sqlselect in readonly mode. This should prevent Append(), Delete() and FieldPut()</li>
       <li styleclass="Body Text">Implemented delay creating InsertCmd, DeleteCmd, UpdateCmd until really needed</li>
       <li styleclass="Body Text">Added callback mechanism so customers can override the commandtext for these command (and for example route them to stored Procedures)</li>
-      <li styleclass="Body Text">When a late bound method call cannot be resolved because the method is overloaded then a better error message is now generated that also includes the prototypes of the methods found.</li>
+      <li styleclass="Body Text">When a late bound method call cannot be resolved because the method is overloaded then a better error message is now generated that also includes the prototypes of the methods found (#1096)</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">FoxPro dialect</text></para>

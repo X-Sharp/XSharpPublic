@@ -200,16 +200,9 @@ FUNCTION DW2Bin(dwValue AS DWORD) AS STRING
 FUNCTION HiByte(wValue AS WORD) AS BYTE
     RETURN (BYTE) (wValue >> 8)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/hibyte/*" />
-FUNCTION HiByte(wValue AS SHORT) AS BYTE
-    RETURN (BYTE) (wValue >> 8)
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/hiword/*" />
 FUNCTION HiWord(dwValue AS DWORD) AS WORD
-    RETURN (WORD) (dwValue >> 16)
-
-// <include file="VoFunctionDocs.xml" path="Runtimefunctions/hiword/*" />
-FUNCTION HiWord(dwValue AS LONG) AS WORD
     RETURN (WORD) (dwValue >> 16)
 
 
@@ -220,29 +213,18 @@ FUNCTION I2Bin(siValue AS SHORT) AS STRING
     RETURN _bytes2String(byteArray)
 
 
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/l2bin/*" />
 FUNCTION L2Bin(liValue AS LONG) AS STRING
     LOCAL byteArray := BitConverter.GetBytes( liValue ) AS BYTE[]
     RETURN _bytes2String(byteArray)
 
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lobyte/*" />
 FUNCTION LoByte(wValue AS WORD) AS BYTE
-    RETURN (BYTE) _AND(wValue, 0x00FF)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lobyte/*" />
-FUNCTION LoByte(wValue AS SHORT) AS BYTE
     RETURN (BYTE) _AND(wValue, 0x00FF)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/loword/*" />
 FUNCTION LoWord(dwValue AS DWORD) AS WORD
     RETURN (WORD) _AND(dwValue , 0xFFFF)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/loword/*" />
-FUNCTION LoWord(dwValue AS INT) AS WORD
-    RETURN (WORD) _AND(dwValue , 0xFFFF)
-
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/logic2bin/*" />
 FUNCTION Logic2Bin(lValue AS LOGIC) AS STRING

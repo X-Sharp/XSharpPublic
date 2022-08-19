@@ -3140,7 +3140,7 @@ namespace XSharp.Project
                 case DeclaredSourceItems:
                 case DotNet:
                 case Managed:
-                //case PackageReferences:
+                case PackageReferences:
                 case Publish:
                 case UserSourceItems:
                 case WindowsXAML:
@@ -3159,7 +3159,6 @@ namespace XSharp.Project
                 case DynamicFileNesting:
                 case HideConnectedServicesNode:
                 case MicrosoftVisualStudioConnectedServicesVirtualNode:
-                case PackageReferences:
                 case PHP:
                 case Python:
                 case SharedAssetsProject:

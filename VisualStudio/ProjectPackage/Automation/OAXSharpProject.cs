@@ -55,6 +55,38 @@ namespace XSharp.Project
                 return this.properties;
             }
         }
-		
+        // do not name this "NuGet" because then the stack will contain NuGet
+        private bool MustReturnCSharp()
+        {
+            // HACK
+            var stack = new System.Diagnostics.StackTrace();
+            foreach (var frame in stack.GetFrames())
+            {
+                if (frame.GetMethod().DeclaringType.Name.Contains("NuGet"))
+                {
+                    return true;
+                }
+            }
+            return false;
+
+        }
+        const string CSharpProjectType = "{fae04ec0-301f-11d3-bf4b-00c04f79efbc}";
+        /// <summary>
+        /// Gets a GUID string indicating the kind or type of the object.
+        /// </summary>
+        
+        public override string Kind
+        {
+            get
+            {
+                if (MustReturnCSharp())
+                {
+                    // The Nuget Utility has a hard coded check for C#, VB and F#
+                    return CSharpProjectType;
+                }
+                return Project.ProjectGuid.ToString("B");
+            }
+        }
+
     }
  }

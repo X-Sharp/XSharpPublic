@@ -60,17 +60,9 @@ namespace XSharp.Project
         {
             // HACK
             var stack = new System.Diagnostics.StackTrace();
-            foreach (var frame in stack.GetFrames())
-            {
-                if (frame.GetMethod().DeclaringType.Name.Contains("NuGet"))
-                {
-                    return true;
-                }
-            }
-            return false;
-
+            return stack.ToString().Contains("NuGet");
         }
-        const string CSharpProjectType = "{fae04ec0-301f-11d3-bf4b-00c04f79efbc}";
+        const string CSharpProjectType = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
         /// <summary>
         /// Gets a GUID string indicating the kind or type of the object.
         /// </summary>

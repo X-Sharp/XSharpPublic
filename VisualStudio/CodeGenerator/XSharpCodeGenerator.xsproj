@@ -11,7 +11,7 @@
     <AssemblyName>XSharp.CodeGenerator</AssemblyName>
     <Dialect>Core</Dialect>
     <OutputName>CodeGenerator</OutputName>
-    <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.13.0.6</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">

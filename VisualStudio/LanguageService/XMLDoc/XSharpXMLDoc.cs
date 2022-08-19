@@ -24,17 +24,20 @@ namespace XSharp.LanguageService
     static public class XSharpXMLDocTools
     {
         static readonly Dictionary<string, IVsXMLMemberIndex> _memberIndexes = new Dictionary<string, IVsXMLMemberIndex>();
-        static IVsXMLMemberIndexService _XMLMemberIndexService;
+        static IVsXMLMemberIndexService _XMLMemberIndexService = null;
         static string coreLoc = "";
         static IVsXMLMemberIndex coreIndex = null;
-        static XSharpXMLDocTools()
+        static bool GetIndex()
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            if (_XMLMemberIndexService == null)
             {
-                _XMLMemberIndexService = await VS.GetServiceAsync<SVsXMLMemberIndexService, IVsXMLMemberIndexService>();
-            });
-            Assumes.Present(_XMLMemberIndexService);
-            return;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    _XMLMemberIndexService = await VS.GetServiceAsync<SVsXMLMemberIndexService, IVsXMLMemberIndexService>();
+                });
+            }
+            return _XMLMemberIndexService != null;
+
         }
         public static void Initialize()
         {
@@ -49,11 +52,14 @@ namespace XSharp.LanguageService
             coreLoc = Path.Combine(assemblies, "XSharp.Core.dll");
             coreIndex = null;
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            _XMLMemberIndexService.CreateXMLMemberIndex(coreLoc, out IVsXMLMemberIndex index);
-            if (index != null)
+            if (GetIndex())
             {
-                _memberIndexes.Add(coreLoc, index);
-                coreIndex = index;
+                _XMLMemberIndexService.CreateXMLMemberIndex(coreLoc, out IVsXMLMemberIndex index);
+                if (index != null)
+                {
+                    _memberIndexes.Add(coreLoc, index);
+                    coreIndex = index;
+                }
             }
             return;
         }
@@ -94,10 +100,13 @@ namespace XSharp.LanguageService
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        _XMLMemberIndexService.CreateXMLMemberIndex(location, out index);
-                        if (index != null)
+                        if (GetIndex())
                         {
-                            _memberIndexes.Add(location, index);
+                            _XMLMemberIndexService.CreateXMLMemberIndex(location, out index);
+                            if (index != null)
+                            {
+                                _memberIndexes.Add(location, index);
+                            }
                         }
                     });
                 }
@@ -129,7 +138,10 @@ namespace XSharp.LanguageService
                         ThreadHelper.JoinableTaskFactory.Run(async delegate
                         {
                             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                            _XMLMemberIndexService.CreateXMLMemberIndex(refasm, out index);
+                            if (GetIndex())
+                            {
+                                _XMLMemberIndexService.CreateXMLMemberIndex(refasm, out index);
+                            }
                         });
                         if (index != null)
                         {

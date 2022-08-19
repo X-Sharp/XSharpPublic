@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             XSharp.RuntimeState.Dialect := XSharpDialect.VO
             SetDefault(WorkDir())
             VAR cOld := SetDefault()
-            VAR cNew := "C:\NonExistingFolder"
+            VAR cNew := "C:\NonExistingFolder\"
             Assert.Equal(cOld, SetDefault(cNew))
             Assert.Equal(cNew, SetDefault())
 

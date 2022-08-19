@@ -13,10 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Roslyn.Utilities;
@@ -381,7 +378,12 @@ namespace XSharp.Build
         /// <returns>The file format of the output file.</returns>
         public string TargetType
         {
-            set { _store[nameof(TargetType)] = CultureInfo.InvariantCulture.TextInfo.ToLower(value); }
+            set
+            {
+                _store[nameof(TargetType)] = value != null
+                    ? CultureInfo.InvariantCulture.TextInfo.ToLower(value)
+                    : null;
+            }
             get { return (string)_store[nameof(TargetType)]; }
         }
 

@@ -200,7 +200,8 @@ namespace XSharp.Build
             get { return _store.GetOrDefault(nameof(VO14), false); }
         }
 
-        public bool VO15 {
+        public bool VO15
+        {
             set { _store[nameof(VO15)] = value; }
             get { return _store.GetOrDefault(nameof(VO15), false); }
         }
@@ -413,7 +414,7 @@ namespace XSharp.Build
         private bool useCRLF;
         private int errorCount;
         //private bool hasShownMaxErrorMsg;
-        override protected string ToolNameWithoutExtension
+        protected override string ToolNameWithoutExtension
         {
             get
             {
@@ -813,101 +814,6 @@ namespace XSharp.Build
             }
         }
 
-
-#region Methods from ManagedCompiler in ROslyn
-        /// <summary>
-        /// Adds a "/features:" switch to the command line for each provided feature.
-        /// </summary>
-        internal static void AddFeatures(XSharpCommandLineBuilder commandLine, string features)
-        {
-            if (string.IsNullOrEmpty(features))
-            {
-                return;
-            }
-            // Todo: Implement /features commandline option
-            //foreach (var feature in CompilerOptionParseUtilities.ParseFeatureFromMSBuild(features))
-            //{
-            //    commandLine.AppendSwitchIfNotNull("/features:", feature.Trim());
-            //}
-        }
-
-        /// <summary>
-        /// Adds a "/analyzer:" switch to the command line for each provided analyzer.
-        /// </summary>
-        internal static void AddAnalyzersToCommandLine(XSharpCommandLineBuilder commandLine, ITaskItem[] analyzers)
-        {
-            // If there were no analyzers passed in, don't add any /analyzer: switches
-            // on the command-line.
-            if (analyzers == null)
-            {
-                return;
-            }
-
-            foreach (ITaskItem analyzer in analyzers)
-            {
-                commandLine.AppendSwitchIfNotNull("/analyzer:", analyzer.ItemSpec);
-            }
-        }
-
-
-        /// <summary>
-        /// Adds a "/additionalfile:" switch to the command line for each additional file.
-        /// </summary>
-        private void AddAdditionalFilesToCommandLine(XSharpCommandLineBuilder commandLine)
-        {
-            // If there were no additional files passed in, don't add any /additionalfile: switches
-            // on the command-line.
-            if (AdditionalFiles == null)
-            {
-                return;
-            }
-
-            foreach (ITaskItem additionalFile in AdditionalFiles)
-            {
-                commandLine.AppendSwitchIfNotNull("/additionalfile:", additionalFile.ItemSpec);
-            }
-        }
-
-
-        /// <summary>
-        /// Configure the debug switches which will be placed on the compiler command-line.
-        /// The matrix of debug type and symbol inputs and the desired results is as follows:
-        ///
-        /// Debug Symbols              DebugType   Desired Results
-        ///          True               Full        /debug+ /debug:full
-        ///          True               PdbOnly     /debug+ /debug:PdbOnly
-        ///          True               None        /debug-
-        ///          True               Blank       /debug+
-        ///          False              Full        /debug- /debug:full
-        ///          False              PdbOnly     /debug- /debug:PdbOnly
-        ///          False              None        /debug-
-        ///          False              Blank       /debug-
-        ///          Blank              Full                /debug:full
-        ///          Blank              PdbOnly             /debug:PdbOnly
-        ///          Blank              None        /debug-
-        /// Debug:   Blank              Blank       /debug+ //Microsoft.common.targets will set this
-        /// Release: Blank              Blank       "Nothing for either switch"
-        ///
-        /// The logic is as follows:
-        /// If debugtype is none  set debugtype to empty and debugSymbols to false
-        /// If debugType is blank  use the debugsymbols "as is"
-        /// If debug type is set, use its value and the debugsymbols value "as is"
-        /// </summary>
-        private void ConfigureDebugProperties()
-        {
-            // If debug type is set we need to take some action depending on the value. If debugtype is not set
-            // We don't need to modify the EmitDebugInformation switch as its value will be used as is.
-            if (_store[nameof(DebugType)] != null)
-            {
-                // If debugtype is none then only show debug- else use the debug type and the debugsymbols as is.
-                if (string.Compare((string)_store[nameof(DebugType)], "none", StringComparison.OrdinalIgnoreCase) == 0)
-                {
-                    _store[nameof(DebugType)] = null;
-                    _store[nameof(EmitDebugInformation)] = false;
-                }
-            }
-        }
-        #endregion
         /// <summary>
         /// Mostly copied from the ManagedCompiler task in Roslyn
         /// </summary>
@@ -919,81 +825,25 @@ namespace XSharp.Build
             // overwrite the one resulting from the OutputAssembly member of the CompilerParameters class.
             // In that case, we should set the outputAssembly member based on the first source file.
             XSharpCommandLineBuilder commandLine = (XSharpCommandLineBuilder)cmdline;
-            if (
-                    (OutputAssembly == null) &&
-                    (Sources != null) &&
-                    (Sources.Length > 0) &&
-                    (ResponseFiles == null)    // The response file may already have a /out: switch in it, so don't try to be smart here.
-                )
-            {
-                try
-                {
-                    OutputAssembly = new TaskItem(Path.GetFileNameWithoutExtension(Sources[0].ItemSpec));
-                }
-                catch (ArgumentException e)
-                {
-                    throw new ArgumentException(e.Message, "Sources");
-                }
-                if (string.Compare(TargetType, "library", StringComparison.OrdinalIgnoreCase) == 0)
-                {
-                    OutputAssembly.ItemSpec += ".dll";
-                }
-                else if (string.Compare(TargetType, "module", StringComparison.OrdinalIgnoreCase) == 0)
-                {
-                    OutputAssembly.ItemSpec += ".netmodule";
-                }
-                else
-                {
-                    OutputAssembly.ItemSpec += ".exe";
-                }
-            }
-            commandLine.AppendSwitchIfNotNull("/addmodule:", AddModules, ",");
-            commandLine.AppendSwitchWithInteger("/codepage:", _store, nameof(CodePage));
-            ConfigureDebugProperties();
-
-            // The "DebugType" parameter should be processed after the "EmitDebugInformation" parameter
-            // because it's more specific.  Order matters on the command-line, and the last one wins.
-            // /debug+ is just a shorthand for /debug:full.  And /debug- is just a shorthand for /debug:none.
-
-            commandLine.AppendPlusOrMinusSwitch("/debug", _store, nameof(EmitDebugInformation));
-            commandLine.AppendSwitchIfNotNull("/debug:", DebugType);
-
-            commandLine.AppendPlusOrMinusSwitch("/delaysign", _store, nameof(DelaySign));
-
-            commandLine.AppendSwitchWithInteger("/filealign:", _store, nameof(FileAlignment));
-            commandLine.AppendSwitchIfNotNull("/keycontainer:", KeyContainer);
-            commandLine.AppendSwitchIfNotNull("/keyfile:", KeyFile);
-            // If the strings "LogicalName" or "Access" ever change, make sure to search/replace everywhere in vsproject.
-            commandLine.AppendSwitchIfNotNull("/linkresource:", LinkResources, new string[] { "LogicalName", "Access" });
-            commandLine.AppendWhenTrue("/nologo", _store, nameof(NoLogo));
-            commandLine.AppendWhenTrue("/nowin32manifest", _store, nameof(NoWin32Manifest));
-            commandLine.AppendPlusOrMinusSwitch("/optimize", _store, nameof(Optimize));
-            commandLine.AppendPlusOrMinusSwitch("/deterministic", _store, nameof(Deterministic));
-            commandLine.AppendSwitchIfNotNull("/pathmap:", PathMap);
-            commandLine.AppendSwitchIfNotNull("/out:", OutputAssembly);
-            commandLine.AppendSwitchIfNotNull("/ruleset:", CodeAnalysisRuleSet);
-            commandLine.AppendSwitchIfNotNull("/errorlog:", ErrorLog);
-            commandLine.AppendSwitchIfNotNull("/subsystemversion:", SubsystemVersion);
-            commandLine.AppendWhenTrue("/reportanalyzer", _store, nameof(ReportAnalyzer));
-            // If the strings "LogicalName" or "Access" ever change, make sure to search/replace everywhere in vsproject.
+            var resources = Resources;
+            var sources = Sources;
+            Sources = null;
             if (VulcanCompatibleResources)
+            {
+                // Do not let the resources be handled by the managedcompiler class
+                Resources = null;
+            }
+            base.AddResponseFileCommands(cmdline);
+            Resources = resources;
+            if (VulcanCompatibleResources)
+            {
+                Resources = resources;
                 commandLine.AppendSwitchIfNotNull("/resource:", Resources, new string[] { });
-            else
-                commandLine.AppendSwitchIfNotNull("/resource:", Resources, new string[] { "LogicalName", "Access" });
-
-            commandLine.AppendSwitchIfNotNull("/target:", TargetType);
-            commandLine.AppendPlusOrMinusSwitch("/warnaserror", _store, nameof(TreatWarningsAsErrors));
-            commandLine.AppendWhenTrue("/utf8output", _store, nameof(Utf8Output));
-            commandLine.AppendSwitchIfNotNull("/win32icon:", Win32Icon);
-            commandLine.AppendSwitchIfNotNull("/win32manifest:", Win32Manifest);
-
-            AddFeatures(commandLine, Features);
-            AddAnalyzersToCommandLine(commandLine, Analyzers);
-            AddAdditionalFilesToCommandLine(commandLine);
+            }
 
             // Append the sources.
-
-            commandLine.AppendFileNamesIfNotNull(Sources, useCRLF ? "\n " : " " );
+            Sources = sources;
+            commandLine.AppendFileNamesIfNotNull(Sources, useCRLF ? "\n " : " ");
             commandLine.AppendNewLine();
 
         }

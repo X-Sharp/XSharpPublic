@@ -267,6 +267,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             NS="$(NS)"
             Optimize="$(Optimize)"
             OutputAssembly="@(IntermediateAssembly)"
+            OutputRefAssembly="@(IntermediateRefAssembly)"
             OVF="$(OVF)"
             PathMap="$(PathMap)"
             PdbFile="$(PdbFile)"

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -81,6 +81,25 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			Assert.Equal("C:\*.", GetFMask("C:\*."))
 			Assert.Equal("*.*", GetFMask(NULL))
 
+		RETURN
+
+		[Fact, Trait("Category", "Misc")]; 
+		METHOD SetGetDefaultTest() AS VOID
+			LOCAL cDefault AS STRING
+			cDefault := GetDefault()
+
+			SetDefault("C:\test\")
+			Assert.Equal("C:\test\", GetDefault())
+			SetDefault("c:\notexist\")
+			Assert.Equal("c:\notexist\", GetDefault())
+			SetDefault("c:\test")
+			Assert.Equal("c:\test\", GetDefault())
+			SetDefault("c:\nested\test")
+			Assert.Equal("c:\nested\test\", GetDefault())
+			SetDefault("c:\")
+			Assert.Equal("c:\", GetDefault())
+
+			SetDefault(cDefault)
 		RETURN
 		//[Fact];
 		//METHOD DiskFreeTest() as void

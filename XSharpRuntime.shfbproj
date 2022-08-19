@@ -35,6 +35,7 @@
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.Xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
@@ -51,7 +52,6 @@
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSQLClasses.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.Xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.Xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSQLClasses.Xml" />
@@ -60,7 +60,7 @@
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOGUIClasses.Xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.13.0.6</HelpFileVersion>
+    <HelpFileVersion>2.13.0.7</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>

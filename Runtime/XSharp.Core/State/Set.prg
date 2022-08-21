@@ -160,7 +160,7 @@ FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
             err:Description := "Directory not found: '"+cPathSpec+"'"
             THROW err
         ENDIF
-    ELSE
+    ELSEIF XSharp.RuntimeState.Dialect == XSharpDialect.VO .or. XSharp.RuntimeState.Dialect == XSharpDialect.Vulcan
         IF cPathSpec:Length > 0
             var cLast := cPathSpec[cPathSpec:Length-1]
             SWITCH cLast

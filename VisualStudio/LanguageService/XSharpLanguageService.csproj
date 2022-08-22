@@ -30,7 +30,7 @@
     <DefineConstants>DEBUG;NOASYNCCOMPLETION;XSHARP</DefineConstants>
     <CreateVsixContainer>False</CreateVsixContainer>
     <DeployExtension>False</DeployExtension>
-    <NoWarn>618;4014;NU1603</NoWarn>
+    <NoWarn>618;4014;NU1603;NU1605</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -38,7 +38,7 @@
     <Optimize>true</Optimize>
     <DeployExtension>False</DeployExtension>
     <CreateVsixContainer>False</CreateVsixContainer>
-    <NoWarn>618;4014;NU1603</NoWarn>
+    <NoWarn>618;4014;NU1603;NU1605</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
@@ -240,6 +240,9 @@
     <PackageReference Include="VSLangProj150">
       <Version>16.7.30328.74</Version>
     </PackageReference>
+    <PackageReference Include="VSLangProj2">
+      <Version>7.0.5000</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="LightBulb\CtorParamsDlg.resx">
@@ -271,7 +274,7 @@
     <Content Include="Lookup\Notes.txt" />
     <Content Include="Parameter Info\Notes.txt" />
     <Content Include="QuickInfo\Notes.txt" />
-    <Content Include="$(Outdir)XSharpLanguageService.pkgdef" />
+    <Content Include="C:\XSharp\DevPublic\Binaries\2019\Debug\XSharpLanguageService.pkgdef" />
   </ItemGroup>
   <ItemGroup>
     <None Include="generatepkgdef.cmd" />
@@ -279,8 +282,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup>
-    <PostBuildEvent>$(ProjectDir)generatepkgdef.cmd $(ProjectDir) $(Configuration)
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -34,7 +34,6 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="ProjectBase" Path="|ProjectBase|" AssemblyName="|ProjectBase;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" Path="XSharpMonoCecil.dll" AssemblyName="XSharpMonoCecil, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e" />
         <Asset Type="DebuggerEngineExtension" d:Source="Project" d:ProjectName="%CurrentProject%" Path="XSharpDebugger.vsdconfig" />
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharpProject.pkgdef" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

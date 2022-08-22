@@ -42,25 +42,40 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 
         internal bool Generated { get; set; }
-        private CSharpSyntaxNode GetNode(CSharpSyntaxNode root, int position)
+        static CSharpSyntaxNode s_lastNode = null;
+        static int s_lastPos = 0;
+        static CSharpSyntaxNode s_lastResult = null;
+        static readonly object s_gate = new object();
+
+        private static CSharpSyntaxNode GetNode(CSharpSyntaxNode root, int position)
         {
-            if (root.XNode != null && position != 0)
+            lock (s_gate)
             {
-                var node = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(position);
-                while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth)))
+                if (root == s_lastNode && position == s_lastPos)
                 {
-                    var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(position);
-                    // also exit for variabledeclation because the order of our declaration is quite different
-                    if (n == null || n == node || n is VariableDeclarationSyntax)
-                        break;
-                    node = n;
+                    return s_lastResult;
                 }
-                return node;
+                if (root.XNode != null && position != 0)
+                {
+                    var node = (CSharpSyntaxNode)root.ChildThatContainsPosition(position);
+                    while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth)))
+                    {
+                        var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(position);
+                        // also exit for variabledeclation because the order of our declaration is quite different
+                        if (n == null || n == node || n is VariableDeclarationSyntax)
+                            break;
+                        node = n;
+                    }
+                    s_lastNode = root;
+                    s_lastPos = position;
+                    s_lastResult = node;
+                    return node;
+                }
+                return null;
             }
-            return null;
         }
 
-        private CSharpSyntaxNode GetStatement(CSharpSyntaxNode node)
+        private static CSharpSyntaxNode GetStatement(CSharpSyntaxNode node)
         {
             if (node is ExpressionSyntax)
             {
@@ -90,12 +105,32 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return node;
         }
+
+        static CompilationUnitSyntax GetEof(CSharpSyntaxNode root, out IXParseTree eof, out int eofPos)
+        {
+            eof = null;
+            eofPos = 0;
+            if (root is CompilationUnitSyntax cus)
+            {
+                var node = cus.EndOfFileToken.Node;
+                if (node is InternalSyntax.SyntaxToken st)
+                {
+                    eof = st.XNode;
+                }
+                eofPos = cus.EndOfFileToken.Position;
+                return cus;
+            }
+            return null;
+        }
         private LineVisibility GetXNodeVisibility(int position)
         {
-            var root = (CSharpSyntaxNode)GetRoot();
-            var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
-            var eofPos = (root as CompilationUnitSyntax)?.EndOfFileToken.Position;
-            if (position >= eofPos && eofPos != null)
+            var root = GetRoot();
+            if (root.XGenerated)
+            {
+                return LineVisibility.Hidden;
+            }
+            GetEof(root, out var eof, out var eofPos);
+            if (position >= eofPos)
             {
                 return LineVisibility.Hidden;
             }
@@ -116,12 +151,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         private LinePosition GetXNodePosition(int position)
         {
             var text = this.GetText();
-            var root = (CSharpSyntaxNode)GetRoot();
-            var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
-            var eofPos = (root as CompilationUnitSyntax)?.EndOfFileToken.Position;
-            if (position >= eofPos && eofPos != null)
+            var root = GetRoot();
+            GetEof(root, out var eof, out var eofPos);
+            if (position >= eofPos)
             {
-                position = position - (eofPos ?? 0);
+                position -= eofPos;
             }
             if (eof == null)
             {
@@ -149,17 +183,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             string file = this.FilePath;
             var text = this.GetText();
-            var root = (CSharpSyntaxNode)GetRoot();
-            var cs = root as CompilationUnitSyntax;
-            var eof = (cs?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
-            var eofPos = cs?.EndOfFileToken.Position;
+            var root = GetRoot();
+            var cs = GetEof(root, out var eof, out var eofPos);
             int line = -1;
             int column = -1;
             var length = 0;
-            if (span.Start >= eofPos && eofPos != null)
+            if (span.Start >= eofPos)
             {
                 // this is mostly used when there are parser errors
-                var start = span.Start - (eofPos ?? 0);
+                var start = span.Start - eofPos;
                 length = span.Length;
                 if (cs != null)
                 {
@@ -222,10 +254,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (snode.XNode != null)
                 {
+                    // Roslyn wants zero based lines !
+                    // Our line numbers are 1 based and column numbers are zero based..
                     var xNode = snode.XNode as XSharpParserRuleContext;
                     start = xNode.Position;
                     length = xNode.FullWidth;
-                    line = xNode.Start.Line;
+                    line = xNode.Start.Line - 1;
                     column = xNode.Start.Column;
                     fn = xNode.SourceFileName;
                     if (xNode.SourceSymbol is XSharpToken symbol)
@@ -234,7 +268,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         start = symbol.StartIndex;
                         length = symbol.StopIndex - start + 1;
                         fn = symbol.InputStream.SourceName;
-                        line = symbol.Line;
+                        line = symbol.Line - 1;
                         column = symbol.Column;
                     }
                 }
@@ -263,13 +297,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             LinePosition s, e;
             if (line > 0 && column >= 0)
             {
-                // Roslyn wants zero based lines !
-                // Our line numbers are 1 based and column numbers are zero based..
-                s = new LinePosition(line - 1, column);
+                s = new LinePosition(line, column);
                 if (length > 0)
-                    e = new LinePosition(line - 1, column + length);
+                    e = new LinePosition(line, column + length);
                 else
-                    e = new LinePosition(line - 1, column + 1);
+                    e = new LinePosition(line, column + 1);
             }
             else
             {

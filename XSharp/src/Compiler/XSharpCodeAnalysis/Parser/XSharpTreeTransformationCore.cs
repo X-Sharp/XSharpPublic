@@ -283,12 +283,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string globalClassName = t.GetGlobalClassName(options.TargetDLL);
 
             t.GlobalEntities.Members.Add(t.GenerateGlobalClass(globalClassName, false, true));
-            var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
             var cu = t._syntaxFactory.CompilationUnit(
                     t.GlobalEntities.Externs,
                     t.GlobalEntities.Usings,
                     t.GlobalEntities.Attributes,
-                    t.GlobalEntities.Members, eof);
+                    t.GlobalEntities.Members, SyntaxFactory.Token(SyntaxKind.EndOfFileToken));
             cu.XGenerated = true;
             var red = (Syntax.CompilationUnitSyntax)cu.CreateRed();
             return CSharpSyntaxTree.Create(red, options, "CompileGeneratedCode.prg", System.Text.Encoding.UTF8);

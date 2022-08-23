@@ -29,6 +29,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _usings			AS SynchronizedCollection<STRING>
         PRIVATE _usingStatics	AS SynchronizedCollection<STRING>
         PRIVATE _project        AS XProject
+        PRIVATE _includeFiles  AS List<XInclude>
         #endregion
         // Methods
         CONSTRUCTOR(fullPath AS STRING, project AS XProject)
@@ -39,6 +40,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_type := GetFileType(fullPath)
             SELF:_project := project
             SELF:_usings		:= SynchronizedCollection<STRING>{}
+            SELF:_includeFiles := List<XInclude>{}
             SELF:AddDefaultUsings()
             SELF:_usingStatics	:= SynchronizedCollection<STRING>{}
             SELF:_entityList    := SynchronizedCollection<XSourceEntity>{}
@@ -263,6 +265,7 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY GlobalType         AS XSourceTypeSymbol GET SELF:_globalType
         PROPERTY HasCode            AS LOGIC GET SELF:IsSource .OR. SELF:IsXaml .OR. SELF:IsHeader
         PROPERTY HasParseErrors     AS LOGIC AUTO
+        PROPERTY IncludeFiles       AS IList<XInclude> GET _includeFiles
         PROPERTY Interactive        AS LOGIC AUTO
         PROPERTY IsHeader           AS LOGIC GET SELF:_type == XFileType.Header
         PROPERTY IsSource           AS LOGIC GET SELF:_type == XFileType.SourceCode
@@ -270,6 +273,7 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY LastChanged        AS System.DateTime   AUTO GET INTERNAL SET
         PROPERTY Size               AS INT64              AUTO GET INTERNAL SET
         PROPERTY Name               AS STRING GET System.IO.Path.GetFileNameWithoutExtension(SELF:FullPath)
+            
         PROPERTY UpdatedOnDisk      AS LOGIC
             GET
                VAR fi                  := System.IO.FileInfo{SELF:FullPath}

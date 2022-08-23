@@ -135,6 +135,7 @@
     <Compile Include="List\ErrorList\ErrorListManager.cs" />
     <Compile Include="List\TaskList\TaskListProvider.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
@@ -179,14 +180,6 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
-    <Content Include="..\..\External\Debug\System.Collections.Immutable.dll">
-      <Link>System.Collections.Immutable.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="..\..\External\Debug\System.Reflection.Metadata.dll">
-      <Link>System.Reflection.Metadata.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="..\..\External\Debug\x64\SQLite.Interop.dll">
       <Link>x64\SQLite.Interop.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>

@@ -17,7 +17,7 @@
     <TargetFrameworkProfile />
     <CS>true</CS>
     <VO3>true</VO3>
-    <XSharpProjectversion>2.13.0.6</XSharpProjectversion>
+    <XSharpProjectversion>2.13.0.7</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -28,9 +28,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <DisabledWarnings>165,219,1030,9047,1701</DisabledWarnings>
+    <DisabledWarnings>165,219,1030,9047,1701,1591</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <DefineConstants>DEBUG</DefineConstants>
+    <DocumentationFile>XSharpModel.Xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
@@ -120,6 +121,7 @@
     <Compile Include="PE\XPESymbol.prg" />
     <Compile Include="PE\XPETypeSymbol.prg" />
     <Compile Include="ProjectSystem\XDictionary.prg" />
+    <Compile Include="ProjectSystem\XInclude.prg" />
     <Compile Include="Settings\XSourceEditorSettings.prg" />
     <Compile Include="Settings\XEditorSettings.prg" />
     <Compile Include="Settings\XLiterals.prg" />

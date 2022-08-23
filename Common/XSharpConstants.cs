@@ -126,6 +126,7 @@ namespace XSharp
         public const int TabOrder = 12;
         public const int FoxPro = 13;
         public const int NuGet = 14;
+        public const int Header = 15;
 
 
     }

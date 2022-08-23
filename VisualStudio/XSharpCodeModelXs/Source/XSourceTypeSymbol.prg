@@ -263,7 +263,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ClassType         AS XSharpDialect AUTO
 
       STATIC METHOD CreateGlobalType(xfile AS XFile) AS XSourceTypeSymbol
-         VAR globalType := XSourceTypeSymbol{XLiterals.GlobalName, Kind.Class, Modifiers.Public+Modifiers.Static, TextRange{0, 0, 0, 0}, TextInterval{}, xfile}
+         VAR globalType := XSourceTypeSymbol{XLiterals.GlobalName, Kind.Class, Modifiers.Public+Modifiers.Static, TextRange.Empty, TextInterval{}, xfile}
          globalType:IsPartial:=TRUE
          RETURN globalType
 

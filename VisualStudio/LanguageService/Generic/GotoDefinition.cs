@@ -147,7 +147,8 @@ namespace XSharp.LanguageService
                     orphProject.AddAssemblyReference(asm.FileName);
                 }
             }
-            XSettings.OpenDocument(xFile.FullPath, entity.Range.StartLine, 1, true);
+            // Note that the line numbers in the list are 0 based. OpenDocument also wants a 0 based line number
+            XSettings.OpenDocument(xFile.FullPath, entity.Range.StartLine, 0, true);
 
         }
 

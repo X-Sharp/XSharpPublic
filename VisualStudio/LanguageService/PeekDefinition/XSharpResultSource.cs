@@ -35,19 +35,21 @@ namespace XSharp.LanguageService
 
                 using (var displayInfo = new PeekResultDisplayInfo2(label: label, labelTooltip: this.peekableItem._gotoElement.File.FullPath, title: title, titleTooltip: this.peekableItem._gotoElement.File.FullPath, startIndexOfTokenInLabel: 0, lengthOfTokenInLabel: label.Length))
                 {
+                    var range = this.peekableItem._gotoElement.Range;
+
                     var result = peekableItem._peekResultFactory.Create
                     (
                         displayInfo,
                         default(ImageMoniker),
                         this.peekableItem._gotoElement.File.FullPath,
-                        this.peekableItem._gotoElement.Range.StartLine ,
-                        this.peekableItem._gotoElement.Range.StartColumn-1 ,
-                        this.peekableItem._gotoElement.Range.EndLine ,
-                        this.peekableItem._gotoElement.Range.EndColumn - 1,
-                        this.peekableItem._gotoElement.Range.StartLine ,
-                        this.peekableItem._gotoElement.Range.StartColumn - 1,
-                        this.peekableItem._gotoElement.Range.EndLine ,
-                        this.peekableItem._gotoElement.Range.EndColumn - 1,
+                        range.StartLine ,
+                        range.StartColumn ,
+                        range.EndLine ,
+                        range.EndColumn ,
+                        range.StartLine ,
+                        range.StartColumn ,
+                        range.EndLine ,
+                        range.EndColumn ,
                         false,
                         new Guid(XSharpConstants.EditorFactoryGuidString)
                     );

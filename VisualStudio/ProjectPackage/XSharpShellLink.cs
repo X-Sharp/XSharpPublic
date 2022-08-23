@@ -148,47 +148,63 @@ namespace XSharp.Project
             XSharpOutputPane.DisplayOutputMessage(message);
         }
 
-
+        /// <summary>
+        /// Open a document with 0 based line numbers
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <param name="column"></param>
+        /// <param name="preview"></param>
+        /// <returns></returns>
         private async System.Threading.Tasks.Task OpenDocumentAsync(string file, int line, int column, bool preview)
         {
-            DocumentView view;
-            if (preview)
+            try
             {
-                view = await VS.Documents.OpenInPreviewTabAsync(file);
-            }
-            else
-            {
-                view = await VS.Documents.OpenViaProjectAsync(file);
-                if (view == null)
+                DocumentView view;
+                if (preview)
                 {
-                    view = await VS.Documents.OpenAsync(file);
+                    view = await VS.Documents.OpenInPreviewTabAsync(file);
                 }
-            }
-            IVsTextView textView = null;
-            if (view != null)
-            {
-                 textView = await view.TextView.ToIVsTextViewAsync();
-            }
-            if (textView != null)
-            {
-                //
-                TextSpan span = new TextSpan();
-                span.iStartLine = line - 1;
-                span.iStartIndex = column - 1;
-                span.iEndLine = line - 1;
-                span.iEndIndex = column - 1;
-                //
-                textView.SetCaretPos(span.iStartLine, span.iStartIndex);
-                textView.EnsureSpanVisible(span);
-                if (span.iStartLine > 5)
-                    textView.SetTopLine(span.iStartLine - 5);
                 else
-                    textView.SetTopLine(0);
+                {
+                    view = await VS.Documents.OpenViaProjectAsync(file);
+                    if (view == null)
+                    {
+                        view = await VS.Documents.OpenAsync(file);
+                    }
+                }
+                IVsTextView textView = null;
+                if (view != null)
+                {
+                    textView = await view.TextView.ToIVsTextViewAsync();
+                }
+                if (textView != null)
+                {
+                    //
+                    TextSpan span = new TextSpan();
+                    span.iStartLine = line ;
+                    span.iStartIndex = column;
+                    span.iEndLine = line ;
+                    span.iEndIndex = column;
+                    //
+                    textView.SetCaretPos(span.iStartLine, span.iStartIndex);
+                    textView.EnsureSpanVisible(span);
+                    if (span.iStartLine > 5)
+                        textView.SetTopLine(span.iStartLine - 5);
+                    else
+                        textView.SetTopLine(0);
+                    textView.SetCaretPos(line, column);
+                }
+                if (preview)
+                    await VS.Documents.OpenInPreviewTabAsync(file);
+                else
+                    await VS.Documents.OpenAsync(file);
             }
-            if (preview)
-                await VS.Documents.OpenInPreviewTabAsync(file);
-            else
-                await VS.Documents.OpenAsync(file);
+            catch (Exception)
+            {
+
+                throw;
+            }
             
         }
 
@@ -199,6 +215,13 @@ namespace XSharp.Project
                 return await VS.Documents.IsOpenAsync(file);
             });
         }
+        /// <summary>
+        /// OPen a document with 0 based line/column numbers
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <param name="column"></param>
+        /// <param name="preview"></param>
         public void OpenDocument(string file, int line, int column, bool preview)
         {
             OpenDocumentAsync(file, line, column, preview).FireAndForget();

@@ -23,7 +23,8 @@ namespace XSharp.LanguageService.Editors.LightBulb
         private XSharpModel.TextRange _range;
         private bool _explicitly;
 
-        public ImplementInterfaceSuggestedAction(ITextView textView, ITextBuffer m_textBuffer, string intface, IXTypeSymbol entity, List<IXMemberSymbol> memberstoAdd, XSharpModel.TextRange range, bool fqn)
+        public ImplementInterfaceSuggestedAction(ITextView textView, ITextBuffer m_textBuffer, string intface,
+            IXTypeSymbol entity, List<IXMemberSymbol> memberstoAdd, XSharpModel.TextRange range, bool fqn)
             : base(textView)
         {
             m_interface = intface;

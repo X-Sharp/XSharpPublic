@@ -52,7 +52,7 @@ namespace XSharp.Project
         }
         protected int errors;
         protected int warnings;
-        protected bool didCompile = false;
+        protected bool mustRefresh = false;
 
         protected override void BuildStartedHandler(object sender, BuildStartedEventArgs buildEvent)
         {
@@ -61,7 +61,7 @@ namespace XSharp.Project
                 base.BuildStartedHandler(sender, buildEvent);
                 errorlistManager.ClearBuildErrors();
                 errors = warnings = 0;
-                didCompile = false;
+                mustRefresh = false;
                 Logger.Debug("Build Started");
             }
             catch (Exception e)
@@ -71,7 +71,7 @@ namespace XSharp.Project
         }
         protected override void BuildFinishedHandler(object sender, BuildFinishedEventArgs buildEvent)
         {
-            if (didCompile)
+            if (mustRefresh)
             {
                 try
                 {
@@ -117,13 +117,13 @@ namespace XSharp.Project
             {
                 base.ProjectFinishedHandler(sender, buildEvent);
                 Logger.Debug("Project Build Finished " + buildEvent.ProjectFile );
-                if (didCompile)
+                if (mustRefresh)
                 {
                     errorlistManager.Refresh();
                 }
                 if (this.ProjectNode is XSharpProjectNode  xprj)
                 {
-                    xprj.BuildEnded(didCompile);
+                    xprj.BuildEnded(mustRefresh);
                 }
             }
             catch (Exception e)
@@ -168,11 +168,11 @@ namespace XSharp.Project
                     var cmdLine = taskEvent.CommandLine.ToLower();
                     if (cmdLine.Contains("xsc.exe"))
                     {
-                        didCompile = true;
+                        mustRefresh = true;
                     }
                     else if (cmdLine.Contains("rc.exe"))
                     {
-                        didCompile = true;
+                        mustRefresh = true;
                     }
                 }
             }
@@ -185,6 +185,7 @@ namespace XSharp.Project
         {
             try
             {
+                mustRefresh = true;
                 string msg = $"{args.File} {args.LineNumber} {args.ColumnNumber} {args.Code} {args.Message}";
                 errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Error);
                 Logger.Debug("Build Error: "+ msg);
@@ -198,6 +199,7 @@ namespace XSharp.Project
         {
             try
             {
+                mustRefresh = true;
                 string msg = $"{args.File} {args.LineNumber} {args.ColumnNumber} {args.Code} {args.Message}";
                 errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Warning);
                 Logger.Debug("Build Warning: " + msg);

@@ -342,6 +342,8 @@ namespace XSharp.LanguageService
         {
             get
             {
+                if (_settings == null)
+                    return false;
                 if (_settings.IdentifierCase)
                     return true;
                 return _settings.KeywordCase != KeywordCase.None;

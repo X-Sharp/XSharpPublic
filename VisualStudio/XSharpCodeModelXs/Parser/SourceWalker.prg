@@ -78,7 +78,14 @@ BEGIN NAMESPACE XSharpModel
             LOCAL stream := NULL AS ITokenStream
             TRY
                 XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, SELF:ParseOptions, SELF, OUT stream, OUT VAR includeFiles)
-                SELF:_includeFiles := includeFiles
+                self:_includeFiles := null
+                if includeFiles != null
+                    self:_includeFiles := includeFiles
+                    SELF:_file:IncludeFiles:Clear()
+                    foreach var fileName in includeFiles
+                        SELF:_file:IncludeFiles:Add(XInclude{fileName})
+                    next
+                endif
             CATCH e AS Exception
                 WriteOutputMessage("Lex() Failed:")
                 WriteOutputMessage(SELF:SourcePath)

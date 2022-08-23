@@ -605,7 +605,7 @@ namespace XSharp.LanguageService
         private TextSpan TextRangeToTextSpan(TextRange tr)
         {
             // It seems that TextSpan is Zero-based
-            // where our TextRange is One-Based.
+            // and our TextRange is also Zero based
             // --> Make the move
             TextSpan ts = new TextSpan();
             ts.iStartLine = tr.StartLine;
@@ -613,13 +613,10 @@ namespace XSharp.LanguageService
             ts.iEndLine = tr.EndLine;
             ts.iEndIndex = tr.EndColumn;
             // validate values
-            if (ts.iStartLine < 0)
-                ts.iStartLine = 0;
-            if (ts.iStartIndex < 0)
-                ts.iStartIndex = 0;
-            if (ts.iEndLine < ts.iStartLine)
-                ts.iEndLine = ts.iStartLine;
-            if (ts.iEndIndex < ts.iStartLine && ts.iStartLine == ts.iEndLine)
+            if (ts.iStartLine < 0) ts.iStartLine = 0;
+            if (ts.iStartIndex < 0) ts.iStartIndex = 0;
+            if (ts.iEndLine < ts.iStartLine) ts.iEndLine = ts.iStartLine;
+            if (ts.iEndIndex < ts.iStartIndex && ts.iStartLine == ts.iEndLine)
                 ts.iEndIndex = ts.iStartIndex;
             return ts;
         }

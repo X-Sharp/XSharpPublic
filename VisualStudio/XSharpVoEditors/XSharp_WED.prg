@@ -372,7 +372,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		VAR source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, REF lOpen)
 
 		IF .NOT. lOpen
-            XSettings.OpenDocument(oFile:FullPath, 1,1, false)
+            XSettings.OpenDocument(oFile:FullPath, 0,0, false)
 		END IF
 		source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, REF lOpen)
 		IF .NOT. lOpen .OR. source == NULL
@@ -393,7 +393,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 			LOCAL cNew := VOWindowEditor.SubStituteTpl(cLine, cClass, oWindowDesign:cInitParams) AS STRING
 			oFile:Project:ProjectNode:DocumentInsertLine(oFile:FullPath, nLine, cNew)
         NEXT
-		XSettings.OpenDocument(oFile:FullPath, nLine,1, false)
+		XSettings.OpenDocument(oFile:FullPath, nLine-1,0, false)
 		XSharpModel.XSolution.WalkFile(oFile:FullPath)
 	RETURN
 

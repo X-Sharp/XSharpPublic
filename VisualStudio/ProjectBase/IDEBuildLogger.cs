@@ -348,7 +348,7 @@ namespace Microsoft.VisualStudio.Project
                 // We want to interactively report the output. But we dont want to dispatch
                 // more than one at a time, otherwise we might overflow the main thread's
                 // message queue. So, we only report the output if the queue was empty.
-                if (this.outputQueue.Count == 1)
+                if (this.outputQueue.Count == 1 && ThreadHelper.CheckAccess())
                 {
                     ReportQueuedOutput();
                 }

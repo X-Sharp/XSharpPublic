@@ -2629,13 +2629,12 @@ namespace Microsoft.VisualStudio.Project
             if (String.IsNullOrEmpty(cTarget))
                 cTarget = "null";
             XSettings.LogMessage("<<-- ProjectNode.Build("+cTarget+")");
-            BuildResult result = BuildResult.FAILED;
+            BuildResult result = BuildResult.FAILED; 
             lock (ProjectNode.BuildLock)
             {
-                bool engineLogOnlyCritical = BuildPrelude(output);
-                this.SetBuildConfigurationProperties(configCanonicalName);
-                result = this.InvokeMsBuild(target);
-
+            bool engineLogOnlyCritical = BuildPrelude(output);
+            this.SetBuildConfigurationProperties(configCanonicalName);
+            result = this.InvokeMsBuild(target);
             }
             XSettings.LogMessage("-->> ProjectNode.Build()");
             return result;
@@ -4507,6 +4506,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected virtual void FlushBuildLoggerContent()
         {
+            var logger = (IDEBuildLogger)BuildLogger;
+            logger.FlushBuildOutput();
         }
 #endregion
 
@@ -6240,6 +6241,24 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
         }
+
+        private void RunSafe(Func<int> function )
+        {
+            try
+            {
+                Marshal.ThrowExceptionForHR(function());
+            }
+            catch (Exception ex)
+            {
+                if (ErrorHandler.IsCriticalException(ex))
+                {
+                    throw;
+                }
+
+                Trace.TraceError(ex.ToString());
+            }
+        }
+
         /// <summary>
         /// Lets Visual Studio know that we're done with our design-time build so others can use the build manager.
         /// </summary>
@@ -6255,56 +6274,20 @@ namespace Microsoft.VisualStudio.Project
             if (this.buildManagerAccessor != null)
             {
                 // It's very important that we try executing all three end-build steps, even if errors occur partway through.
-                try
+                // RunSafe() sets up a try catch block
+                if (submission != null)
                 {
-                    if (submission != null)
-                    {
-                        Marshal.ThrowExceptionForHR(this.buildManagerAccessor.UnregisterLoggers(submission.SubmissionId));
-                    }
+                    RunSafe(() => buildManagerAccessor.UnregisterLoggers(submission.SubmissionId));
+                    
                 }
-                catch (Exception ex)
+                if (designTime)
                 {
-                    if (ErrorHandler.IsCriticalException(ex))
-                    {
-                        throw;
-                    }
-
-                    Trace.TraceError(ex.ToString());
+                    RunSafe(() => buildManagerAccessor.EndDesignTimeBuild());
                 }
-
-                try
-                {
-                    if (designTime)
-                    {
-                        Marshal.ThrowExceptionForHR(this.buildManagerAccessor.EndDesignTimeBuild());
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (ErrorHandler.IsCriticalException(ex))
-                    {
-                        throw;
-                    }
-
-                    Trace.TraceError(ex.ToString());
-                }
-
-
-                try
-                {
-                    if (requiresUIThread)
-                    {
-                        Marshal.ThrowExceptionForHR(this.buildManagerAccessor.ReleaseUIThreadForBuild());
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (ErrorHandler.IsCriticalException(ex))
-                    {
-                        throw;
-                    }
-
-                    Trace.TraceError(ex.ToString());
+                
+                if (requiresUIThread)
+                { 
+                    RunSafe(() => buildManagerAccessor.ReleaseUIThreadForBuild()  );
                 }
             }
             else

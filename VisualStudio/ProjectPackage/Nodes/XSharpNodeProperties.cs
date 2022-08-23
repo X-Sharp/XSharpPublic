@@ -20,7 +20,7 @@ using Microsoft.VisualStudio.Project;
 namespace XSharp.Project
 {
     [CLSCompliant(false), ComVisible(true)]
-    public class XSharpPropertiesFolderNodeProperties : NodeProperties
+    public class XSharpVirtualFolderNodeProperties : NodeProperties
     {
         #region properties
         [SRCategory(Microsoft.VisualStudio.Project.SR.Misc)]
@@ -68,7 +68,7 @@ namespace XSharp.Project
         #endregion
 
         #region ctors
-        public XSharpPropertiesFolderNodeProperties(HierarchyNode node)
+        public XSharpVirtualFolderNodeProperties(HierarchyNode node)
            : base(node)
         {
         }

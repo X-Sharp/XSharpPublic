@@ -61,10 +61,10 @@ namespace XSharp.Project
         /// Creates an object derived from <see cref="NodeProperties"/> that will be used to expose
         /// properties specific for this object to the property browser.
         /// </summary>
-        /// <returns>A new <see cref="XSharpPropertiesFolderNodeProperties"/> object.</returns>
+        /// <returns>A new <see cref="XSharpVirtualFolderNodeProperties"/> object.</returns>
         protected override NodeProperties CreatePropertiesObject()
         {
-            return new XSharpPropertiesFolderNodeProperties(this);
+            return new XSharpVirtualFolderNodeProperties(this);
 
         }
         public override int SortPriority => DefaultSortOrderNode.ProjectProperties;

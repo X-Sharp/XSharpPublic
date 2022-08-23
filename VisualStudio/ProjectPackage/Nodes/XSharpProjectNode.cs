@@ -1064,6 +1064,17 @@ namespace XSharp.Project
 
         #endregion
 
+        XSharpIncludeContainerNode includeNode = null;
+        protected void CreateIncludeFileFolder()
+        {
+            if (includeNode == null)
+            {
+                includeNode = new XSharpIncludeContainerNode(this);
+                this.AddChild(includeNode);
+            }
+        }
+
+
         #region PackageReferences
 
 
@@ -1283,7 +1294,47 @@ namespace XSharp.Project
                 }
                 _taskListManager.Refresh();
             }
+            RefreshIncludeFiles();
+
         }
+
+        private void RefreshIncludeFiles()
+        {
+            var currentChildren = new Dictionary<string, HierarchyNode>(StringComparer.OrdinalIgnoreCase);
+            var child = includeNode.FirstChild;
+            while (child != null)
+            {
+                currentChildren.Add(child.Url, child);
+                child = child.NextSibling;
+            }
+            var newIncludes = projectModel.IncludeFiles;
+            if (newIncludes.Count > 0)
+            {
+                foreach (var fileName in newIncludes)
+                {
+                    if (currentChildren.ContainsKey(fileName))
+                    {
+                        currentChildren.Remove(fileName);
+                    }
+                    else
+                    {
+                        var newChild = new XSharpIncludeFileNode(this, fileName);
+                        includeNode.AddChild(newChild);
+                    }
+                }
+            }
+            // delete includes that are no longer needed
+            if (currentChildren.Count > 0)
+            {
+                foreach (var file in currentChildren)
+                {
+                    var node = file.Value;
+                    node.OnItemDeleted();
+                    includeNode.RemoveChild(node);
+                }
+            }
+        }
+
 
         private void OnFileWalkComplete(XFile xfile)
         {
@@ -1299,6 +1350,7 @@ namespace XSharp.Project
                 _taskListManager.AddItem(task,this.ProjectIDGuid);
             }
             _taskListManager.Refresh();
+            RefreshIncludeFiles();
         }
 
         public void UpdateAssemblyReferencesModel()
@@ -1639,10 +1691,12 @@ namespace XSharp.Project
             Logger.Information("Reload");
             base.Reload();
             CreateListManagers();
+            this.CreateIncludeFileFolder();
             if (ResetDependencies())
             {
                 this.BuildProject.Save();
             }
+            RefreshIncludeFiles();
         }
 
         private void RefreshReferencesFromResponseFile()

@@ -155,6 +155,7 @@ namespace Microsoft.VisualStudio.Project
     public static class DefaultSortOrderNode
     {
         public const int ProjectProperties = 100;
+        public const int ProjectIncludeFiles = 150;
         public const int NestedProjectNode = 200;
         public const int ReferenceContainerNode = 300;
         public const int NuGetPackagesNode = 400;

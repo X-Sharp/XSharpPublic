@@ -11,6 +11,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using System.Diagnostics;
+using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Imaging;
 
 namespace XSharp.Project
 {
@@ -39,6 +41,8 @@ namespace XSharp.Project
                 project.AddURL(this.Url, this);
             project.ProjectModel.AddProjectReference(this.Url);
         }
+
+
 
 
         /// <summary>
@@ -82,17 +86,6 @@ namespace XSharp.Project
             ErrorHandler.ThrowOnFailure(hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_TypeName, out projectType));
             return projectType as string;
         }
-        public override int ImageIndex
-        {
-            get
-            {
-                if (this.CanShowDefaultIcon())
-                    return XSharpImageListIndex.Reference + XSharpProjectNode.imageOffset;
-                else
-                    return XSharpImageListIndex.DanglingReference + XSharpProjectNode.imageOffset;
-            }
-        }
-
        
         #region Dispose Methods
         protected override void Dispose(bool disposing)

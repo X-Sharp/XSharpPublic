@@ -320,7 +320,14 @@ namespace XSharp.Project
             base.SetProjectFileDirty(value);
             InvalidateOptions();
         }
-
+        public override void OnItemAdded(HierarchyNode parent, HierarchyNode child)
+        {
+            base.OnItemAdded(parent, child);
+            if (child is XSharpFileNode xfile)
+            {
+                xfile.SetSpecialPropertiesEx();
+            }
+        }
         public override ProjectOptions GetProjectOptions(ConfigCanonicalName configCanonicalName)
         {
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
@@ -665,6 +672,10 @@ namespace XSharp.Project
                     else
                     {
                         AddChild(fileNode);
+                    }
+                    if (fileId == (int)__PSFFILEID2.PSFFILEID_AssemblyResource)
+                    {
+                        fileNode.ItemNode.SetMetadata("CustomTool", "ResXFileCodeGenerator");
                     }
                 }
 

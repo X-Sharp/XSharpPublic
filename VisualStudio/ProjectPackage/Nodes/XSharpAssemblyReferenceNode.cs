@@ -44,7 +44,6 @@ namespace XSharp.Project
             projectNode.ProjectModel.AddAssemblyReference(this.AssemblyPath);
         }
 
-
         protected override void Dispose(bool disposing)
         {
             if (this.ProjectMgr is XSharpProjectNode)
@@ -157,18 +156,6 @@ namespace XSharp.Project
                 return;
             }
 
-        }
-  
-
-        public override int ImageIndex
-        {
-            get
-            {
-                if (this.CanShowDefaultIcon())
-                    return XSharpImageListIndex.Reference + XSharpProjectNode.imageOffset;
-                else
-                    return XSharpImageListIndex.DanglingReference + XSharpProjectNode.imageOffset;
-            }
         }
 
     }

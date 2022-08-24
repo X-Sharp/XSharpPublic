@@ -63,17 +63,6 @@ namespace XSharp.Project
             return false;
         }
 
-        // Called since the FileNode.ImageIndex returns -1 by default.
-        //
-        public override object GetIconHandle(bool open)
-        {
-            if (FileName.EndsWith( ".prg", StringComparison.InvariantCultureIgnoreCase))
-                return PackageUtilities.GetIntPointerFromImage(
-                    XSharpProjectNode.ImageList.Images[(int)XSharpImageListIndex.Source]);
-
-            return this.ProjectMgr.ImageHandler.GetIconHandle(this.ImageIndex);
-        }
-
         /// <summary>
         /// Disable certain commands for dependent file nodes
         /// </summary>

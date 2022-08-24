@@ -30,6 +30,7 @@ using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using XSharpModel;
+using Microsoft.VisualStudio.Imaging.Interop;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -174,6 +175,8 @@ namespace Microsoft.VisualStudio.Project
         {
             get { return NoImage; }
         }
+
+        protected virtual bool SupportsIconMonikers => false;
 
         /// <summary>
         /// Return an state icon index
@@ -576,6 +579,15 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
+        /// Returns the icon to use.
+        /// </summary>
+
+        protected virtual ImageMoniker GetIconMoniker(bool open)
+        {
+            return default(ImageMoniker);
+        }
+
+        /// <summary>
         /// AddChild - add a node, sorted in the right location.
         /// </summary>
         /// <param name="node">The node to add.</param>
@@ -718,7 +730,7 @@ namespace Microsoft.VisualStudio.Project
                 case __VSHPROPID.VSHPROPID_OpenFolderIconIndex:
                 case __VSHPROPID.VSHPROPID_IconIndex:
                     int index = this.ImageIndex;
-                    if(index != NoImage)
+                    if (index != NoImage)
                     {
                         result = index;
                     }
@@ -751,7 +763,7 @@ namespace Microsoft.VisualStudio.Project
                     break;
 
                 case __VSHPROPID.VSHPROPID_Parent:
-                    if(null == this.parentNode)
+                    if (null == this.parentNode)
                     {
                         unchecked { result = new IntPtr((int)VSConstants.VSITEMID_NIL); }
                     }
@@ -762,11 +774,11 @@ namespace Microsoft.VisualStudio.Project
                     break;
 
                 case __VSHPROPID.VSHPROPID_ParentHierarchyItemid:
-                    if(parentHierarchy != null)
+                    if (parentHierarchy != null)
                     {
                         unchecked
                         {
-                            result = (IntPtr) (int)parentHierarchyItemId; // VS requires VT_I4 | VT_INT_PTR
+                            result = (IntPtr)(int)parentHierarchyItemId; // VS requires VT_I4 | VT_INT_PTR
                         }
                     }
                     break;
@@ -785,11 +797,11 @@ namespace Microsoft.VisualStudio.Project
 
                 case __VSHPROPID.VSHPROPID_BrowseObject:
                     result = this.NodeProperties;
-                    if(result != null) result = new DispatchWrapper(result);
+                    if (result != null) result = new DispatchWrapper(result);
                     break;
 
                 case __VSHPROPID.VSHPROPID_EditLabel:
-                    if(this.ProjectMgr != null && !this.ProjectMgr.IsClosed && !this.ProjectMgr.IsCurrentStateASuppressCommandsMode())
+                    if (this.ProjectMgr != null && !this.ProjectMgr.IsClosed && !this.ProjectMgr.IsCurrentStateASuppressCommandsMode())
                     {
                         result = GetEditLabel();
                     }
@@ -801,7 +813,7 @@ namespace Microsoft.VisualStudio.Project
                     break;
 
                 case __VSHPROPID.VSHPROPID_ItemDocCookie:
-                    if(this.docCookie != 0) return (IntPtr)this.docCookie; //cast to IntPtr as some callers expect VT_INT
+                    if (this.docCookie != 0) return (IntPtr)this.docCookie; //cast to IntPtr as some callers expect VT_INT
                     break;
 
                 case __VSHPROPID.VSHPROPID_ExtObject:
@@ -811,7 +823,7 @@ namespace Microsoft.VisualStudio.Project
                 case __VSHPROPID.VSHPROPID_OverlayIconIndex:
                     if (this.ItemNode != null)
                     {
-                        if (this is FileNode )
+                        if (this is FileNode)
                         {
                             string link = this.ItemNode.GetMetadata(ProjectFileConstants.Link);
                             if (!String.IsNullOrEmpty(link) && System.IO.File.Exists(this.Url))
@@ -823,8 +835,8 @@ namespace Microsoft.VisualStudio.Project
                     break;
             }
 
-            __VSHPROPID2 id2 = (__VSHPROPID2)propId;
-            switch(id2)
+            var id2 = (__VSHPROPID2)propId;
+            switch (id2)
             {
                 case __VSHPROPID2.VSHPROPID_NoDefaultNestedHierSorting:
                     return true; // We are doing the sorting ourselves through VSHPROPID_FirstChild and VSHPROPID_NextSibling
@@ -832,12 +844,12 @@ namespace Microsoft.VisualStudio.Project
                     {
                         // If there is a browse object and it is a NodeProperties, then get it's CATID
                         object browseObject = this.GetProperty((int)__VSHPROPID.VSHPROPID_BrowseObject);
-                        if(browseObject != null)
+                        if (browseObject != null)
                         {
-                            if(browseObject is DispatchWrapper)
+                            if (browseObject is DispatchWrapper)
                                 browseObject = ((DispatchWrapper)browseObject).WrappedObject;
                             result = this.ProjectMgr.GetCATIDForType(browseObject.GetType()).ToString("B");
-                            if(String.CompareOrdinal(result as string, Guid.Empty.ToString("B")) == 0)
+                            if (String.CompareOrdinal(result as string, Guid.Empty.ToString("B")) == 0)
                                 result = null;
                         }
                         break;
@@ -846,19 +858,19 @@ namespace Microsoft.VisualStudio.Project
                     {
                         // If there is a extensibility object and it is a NodeProperties, then get it's CATID
                         object extObject = this.GetProperty((int)__VSHPROPID.VSHPROPID_ExtObject);
-                        if(extObject != null)
+                        if (extObject != null)
                         {
-                            if(extObject is DispatchWrapper)
+                            if (extObject is DispatchWrapper)
                                 extObject = ((DispatchWrapper)extObject).WrappedObject;
                             result = this.ProjectMgr.GetCATIDForType(extObject.GetType()).ToString("B");
-                            if(String.CompareOrdinal(result as string, Guid.Empty.ToString("B")) == 0)
+                            if (String.CompareOrdinal(result as string, Guid.Empty.ToString("B")) == 0)
                                 result = null;
                         }
                         break;
                     }
             }
 
-            __VSHPROPID4 id4 = (__VSHPROPID4)propId;
+            var id4 = (__VSHPROPID4)propId;
             switch (id4)
             {
                 case __VSHPROPID4.VSHPROPID_TargetFrameworkMoniker:
@@ -866,9 +878,33 @@ namespace Microsoft.VisualStudio.Project
                     result = this.ProjectMgr.TargetFrameworkMoniker.FullName;
                     break;
             }
+            // Support for Image Monikers
+            var id8 = (__VSHPROPID8)propId;
+            switch (id8)
+            {
+                case __VSHPROPID8.VSHPROPID_SupportsIconMonikers:
+                    result = this.SupportsIconMonikers;
+                    break;
+
+                case __VSHPROPID8.VSHPROPID_IconMonikerGuid:
+                    result = GetIconMoniker(false).Guid;
+                    break;
+
+                case __VSHPROPID8.VSHPROPID_IconMonikerId:
+                    result = GetIconMoniker(false).Id;
+                    break;
+
+                case __VSHPROPID8.VSHPROPID_OpenFolderIconMonikerGuid:
+                    result = GetIconMoniker(true).Guid;
+                    break;
+
+                case __VSHPROPID8.VSHPROPID_OpenFolderIconMonikerId:
+                    result = GetIconMoniker(true).Id;
+                    break;
+        }
 
 #if DEBUG
-            if(propId != LastTracedProperty)
+            if (propId != LastTracedProperty)
             {
                 string trailer = (result == null) ? "null" : result.ToString();
                 CCITracing.TraceCall(this.hierarchyId + "," + propId.ToString() + " = " + trailer);
@@ -937,6 +973,17 @@ namespace Microsoft.VisualStudio.Project
             if(propid == (int)__VSHPROPID.VSHPROPID_TypeGuid)
             {
                 guid = this.ItemTypeGuid;
+            }
+            var id8 = (__VSHPROPID8)propid;
+            switch (id8)
+            {
+                case __VSHPROPID8.VSHPROPID_IconMonikerGuid:
+                    guid = GetIconMoniker(false).Guid;
+                    break;
+
+                case __VSHPROPID8.VSHPROPID_OpenFolderIconMonikerGuid:
+                    guid = GetIconMoniker(true).Guid;
+                    break;
             }
 
             if (guid.Equals(Guid.Empty))
@@ -2382,7 +2429,7 @@ namespace Microsoft.VisualStudio.Project
 
 #region public methods
 
-        public void OnItemAdded(HierarchyNode parent, HierarchyNode child)
+        public virtual void OnItemAdded(HierarchyNode parent, HierarchyNode child) 
         {
             Utilities.ArgumentNotNull("parent", parent);
             Utilities.ArgumentNotNull("child", child);

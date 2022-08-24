@@ -16,6 +16,8 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using System.Globalization;
 using System.ComponentModel;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Imaging;
 
 namespace XSharp.Project
 {
@@ -25,7 +27,10 @@ namespace XSharp.Project
         public XSharpPropertiesFolderNode(XSharpProjectNode root, string directoryPath, ProjectElement element)
            : base(root, directoryPath, element,false)
         {
+               
         }
+        
+
         public override string Caption
         {
             get
@@ -50,13 +55,20 @@ namespace XSharp.Project
             return null;
         }
 
-        public override int ImageIndex
+        protected override bool SupportsIconMonikers => true;
+        protected override ImageMoniker GetIconMoniker(bool open)
         {
-            get
-            {
-                return XSharpImageListIndex.Properties+XSharpProjectNode.imageOffset;
-            }
+#if VS17
+            if (open)
+                return KnownMonikers.PropertiesFolderOpen;
+            else
+                return KnownMonikers.PropertiesFolderClosed;
+#else
+            // VS2019 does not have these image monikers
+            return KnownMonikers.Property;
+#endif
         }
+
         /// <summary>
         /// Creates an object derived from <see cref="NodeProperties"/> that will be used to expose
         /// properties specific for this object to the property browser.
@@ -107,6 +119,11 @@ namespace XSharp.Project
                 }
             }
             return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
+        }
+
+        protected override void DoDefaultAction()
+        {
+            ExecCommandOnNode(VsMenus.guidStandardCommandSet97, (uint) VsCommands.PropSheetOrProperties, 0, IntPtr.Zero, IntPtr.Zero);
         }
 
         /// <summary>
@@ -170,6 +187,15 @@ namespace XSharp.Project
         {
         }
 
+
+        public override void OnItemAdded(HierarchyNode parent, HierarchyNode child)
+        {
+            base.OnItemAdded(parent, child);
+            if (child is XSharpFileNode xfile)
+            {
+                xfile.SetSpecialPropertiesEx();
+            }
+        }
         /// <summary>
         /// Initializes a new instance of the <see cref="XSharpFolderNode"/> class.
         /// </summary>

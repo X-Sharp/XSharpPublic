@@ -839,15 +839,6 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        public override int ImageIndex
-        {
-            get
-            {
-                return (int)ProjectNode.ImageName.Application;
-            }
-        }
-
-
         #endregion
 
         #region virtual properties

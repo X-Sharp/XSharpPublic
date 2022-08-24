@@ -23,6 +23,8 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using XSharpModel;
 using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Imaging;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -136,10 +138,13 @@ namespace Microsoft.VisualStudio.Project
         }
 
 
-        public override object GetIconHandle(bool open)
+        protected override bool SupportsIconMonikers => true;
+        protected override ImageMoniker GetIconMoniker(bool open)
         {
-            int offset = (this.CanShowDefaultIcon() ? (int)ProjectNode.ImageName.Reference : (int)ProjectNode.ImageName.DanglingReference);
-            return this.ProjectMgr.ImageHandler.GetIconHandle(offset);
+            if (CanShowDefaultIcon())
+                return KnownMonikers.Reference;
+            else
+                return KnownMonikers.ReferenceWarning;
         }
 
         /// <summary>

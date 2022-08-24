@@ -204,7 +204,7 @@ namespace XSharp.LanguageService
         }
         internal class QuickInfoBase
         {
-            IXSymbol _symbol;
+            readonly IXSymbol _symbol;
             internal QuickInfoBase(IXSymbol symbol)
             {
                 _symbol = symbol;
@@ -246,7 +246,7 @@ namespace XSharp.LanguageService
                         case Kind.MemVar:
                             return KnownMonikers.LocalVariable;
                     }
-                    return KnownMonikers.None;
+                    return default;
                 }
             }
 
@@ -292,7 +292,7 @@ namespace XSharp.LanguageService
 
         internal class QuickInfoTypeMember : QuickInfoBase
         {
-            IXMemberSymbol typeMember;
+            readonly IXMemberSymbol typeMember;
 
             internal QuickInfoTypeMember(IXMemberSymbol tm) : base(tm)
             {
@@ -402,7 +402,7 @@ namespace XSharp.LanguageService
         }
         internal class QuickInfoVariable : QuickInfoBase
         {
-            IXVariableSymbol xVar;
+            readonly IXVariableSymbol xVar;
 
             internal QuickInfoVariable(IXVariableSymbol var) : base(var)
             {

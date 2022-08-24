@@ -111,24 +111,26 @@ namespace XSharp
     /// </summary>
     internal static class XSharpImageListIndex
     {
+        // Commented out entries are now handled with an ImageMoniker
         public const int Project = 0;
         public const int Source = 1;
-        public const int Form = 2;
-        public const int Server = 3;
-        public const int FieldSpec = 4;
-        public const int Menu = 5;
+        //public const int Form = 2;
+        //public const int Server = 3;
+        //public const int FieldSpec = 4;
+        //public const int Menu = 5;
         public const int VO = 6;
-        public const int Grid = 7;
-        public const int Test = 8;
-        public const int Properties = 9;
-        public const int Reference = 10;
-        public const int DanglingReference = 11;
+        //public const int Grid = 7;     
+        //public const int Test = 8;
+        //public const int Properties = 9;
+        //public const int Reference = 10;
+        //public const int DanglingReference = 11;
         public const int TabOrder = 12;
         public const int FoxPro = 13;
-        public const int NuGet = 14;
-        public const int Header = 15;
-
-
+        //public const int NuGet = 14;
+        //public const int Header = 15;
+        //public const int IncludeFolder = 16;
+        public const int ReferenceGroup = 17;   // VS2022 has an imagemoniker for this
+        public const int MissingFile = 18;      // VS2022 has an imagemoniker for this
     }
     internal static class XSharpProjectFileConstants
     {

@@ -9,6 +9,8 @@ using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using System.IO.Packaging;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
 
 namespace XSharp.Project
 {
@@ -23,7 +25,14 @@ namespace XSharp.Project
             _project = project;
             this.IsExpanded = false;
         }
-        public override int ImageIndex => (int)ProjectNode.ImageName.Folder;
+        protected override bool SupportsIconMonikers => true;
+        protected override ImageMoniker GetIconMoniker(bool open)
+        {
+            if (open)
+                return KnownMonikers.LinkedFolderOpened;
+            else
+                return KnownMonikers.LinkedFolderClosed;
+        }
 
         public override string Url => string.Empty;
 
@@ -91,7 +100,12 @@ namespace XSharp.Project
         {
             return VSConstants.S_FALSE;
         }
-        public override int ImageIndex => XSharpImageListIndex.Header + XProjectNode.imageOffset;
+
+        protected override bool SupportsIconMonikers => true;
+        protected override ImageMoniker GetIconMoniker(bool open)
+        {
+            return KnownMonikers.SymlinkFile;
+        }
 
         protected override NodeProperties CreatePropertiesObject()
         {

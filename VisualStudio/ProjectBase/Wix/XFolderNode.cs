@@ -14,6 +14,8 @@ using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Imaging;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -79,6 +81,18 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
+        protected override ImageMoniker GetIconMoniker(bool open)
+        {
+            if (IsNonMemberItem)
+            {
+                if (open)
+                    return KnownMonikers.HiddenFolderOpened;
+                else
+                    return KnownMonikers.HiddenFolderClosed;
+            }
+            return base.GetIconMoniker(open);
+        }
+
         /// <summary>
         /// Specifies if a Node is under source control.
         /// </summary>
@@ -118,18 +132,18 @@ namespace Microsoft.VisualStudio.Project
                 return this.isNonMemberItem;
             }
         }
+ 
+    // =========================================================================================
+    // Methods
+    // =========================================================================================
 
-        // =========================================================================================
-        // Methods
-        // =========================================================================================
-
-        /// <summary>
-        /// Sets the node property.
-        /// </summary>
-        /// <param name="propid">Property id.</param>
-        /// <param name="value">Property value.</param>
-        /// <returns>Returns success or failure code.</returns>
-        public override int SetProperty(int propid, object value)
+    /// <summary>
+    /// Sets the node property.
+    /// </summary>
+    /// <param name="propid">Property id.</param>
+    /// <param name="value">Property value.</param>
+    /// <returns>Returns success or failure code.</returns>
+    public override int SetProperty(int propid, object value)
         {
             int result;
             __VSHPROPID id = (__VSHPROPID)propid;

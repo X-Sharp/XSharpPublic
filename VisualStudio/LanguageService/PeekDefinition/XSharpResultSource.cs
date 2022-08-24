@@ -40,7 +40,7 @@ namespace XSharp.LanguageService
                     var result = peekableItem._peekResultFactory.Create
                     (
                         displayInfo,
-                        default(ImageMoniker),
+                        default,
                         this.peekableItem._gotoElement.File.FullPath,
                         range.StartLine ,
                         range.StartColumn ,

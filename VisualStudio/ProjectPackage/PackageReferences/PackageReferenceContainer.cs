@@ -1,6 +1,8 @@
 ﻿using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -35,7 +37,14 @@ namespace XSharp.Project
 
         public override string Caption => PackageReferencesNodeVirtualName;
 
-        public override int ImageIndex => (int)ProjectNode.ImageName.Nuget;
+        protected override bool SupportsIconMonikers => true;
+        protected override ImageMoniker GetIconMoniker(bool open)
+        {
+            if (open)
+                return KnownMonikers.PackageFolderOpened;
+            else
+                return KnownMonikers.PackageFolderClosed;
+        }
 
         public override int SortPriority => DefaultSortOrderNode.NuGetPackagesNode;
 

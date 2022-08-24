@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
@@ -20,7 +22,11 @@ namespace XSharp.Project
 
         private string _caption;
 
-        public override int ImageIndex => (int)ProjectNode.ImageName.Nuget;
+        protected override bool SupportsIconMonikers => true;
+        protected override ImageMoniker GetIconMoniker(bool open)
+        {
+            return KnownMonikers.PackageReference;
+        }
 
         public override object Object => this;
 

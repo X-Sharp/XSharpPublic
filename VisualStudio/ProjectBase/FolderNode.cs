@@ -22,6 +22,9 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using File = System.IO.File;
+using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Imaging;
+
 namespace Microsoft.VisualStudio.Project
 {
     [CLSCompliant(false)]
@@ -91,11 +94,14 @@ namespace Microsoft.VisualStudio.Project
             return new Automation.OAFolderItem(this.ProjectMgr.GetAutomationObject() as Automation.OAProject, this);
         }
 
-        public override object GetIconHandle(bool open)
+        protected override bool SupportsIconMonikers => true;
+        protected override ImageMoniker GetIconMoniker(bool open)
         {
-            return this.ProjectMgr.ImageHandler.GetIconHandle(open ? (int)ProjectNode.ImageName.OpenFolder : (int)ProjectNode.ImageName.Folder);
+            if (open)
+                return KnownMonikers.FolderOpened;
+            else
+                return KnownMonikers.FolderClosed;
         }
-
         /// <summary>
         /// Rename Folder
         /// </summary>

@@ -232,7 +232,7 @@ namespace XSharp.Project
                 }
 
                 EnvDTE.ProjectItem projectItem = fileNode.GetAutomationObject() as EnvDTE.ProjectItem;
-                if (projectItem != null && (this.ProjectMgr.FindChild(fileNode.FileName) == null))
+                if (projectItem != null && (this.ProjectMgr.FindChild(filePath) == null))
                 {
                     projectItem.ProjectItems.AddFromFile(filePath);
                 }

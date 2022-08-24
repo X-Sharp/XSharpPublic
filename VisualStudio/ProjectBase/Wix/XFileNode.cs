@@ -65,26 +65,7 @@ namespace Microsoft.VisualStudio.Project
         // Properties
         // =========================================================================================
 
-        /// <summary>
-        /// Gets an index into the default <b>ImageList</b> of the icon to show for this file.
-        /// </summary>
-        /// <value>An index into the default  <b>ImageList</b> of the icon to show for this file.</value>
-        public override int ImageIndex
-        {
-            get
-            {
-                if (this.IsNonMemberItem)
-                {
-                    return (int)ProjectNode.ImageName.ExcludedFile;
-                }
-                else if (!File.Exists(this.Url))
-                {
-                    return (int)ProjectNode.ImageName.MissingFile;
-                }
-
-                return base.ImageIndex;
-            }
-        }
+       
 
         /// <summary>
         /// Menu Command Id for File item.

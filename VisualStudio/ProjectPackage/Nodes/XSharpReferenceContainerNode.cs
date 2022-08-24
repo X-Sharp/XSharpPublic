@@ -6,9 +6,10 @@
 using System;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Project;
-using System.Diagnostics;
 using System.IO;
 using XSharpModel;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
 
 namespace XSharp.Project
 {
@@ -90,18 +91,23 @@ namespace XSharp.Project
           ComReferenceNode node = new XSharpComReferenceNode(this.ProjectMgr, selectorData, wrapperTool);
           return node;
       }
-    public override int ImageIndex
+#if VS17
+        protected override bool SupportsIconMonikers => true;
+        protected override ImageMoniker GetIconMoniker(bool open)
         {
-            get
-            {
-                if (this.CanShowDefaultIcon())
-                    return XSharpImageListIndex.Reference + XSharpProjectNode.imageOffset;
-                else
-                    return XSharpImageListIndex.DanglingReference + XSharpProjectNode.imageOffset;
-            }
-        }
+            if (open)
+                return KnownMonikers.ReferenceFolderOpened;
+            else
+                return KnownMonikers.ReferenceFolderClosed;
+    }
+#else
+        // VS2019 does not have these image monikers
+        protected override bool SupportsIconMonikers => false;
+        public override int ImageIndex => XSharpImageListIndex.ReferenceGroup + XProjectNode.imageOffset;
 
-        private bool isDuplicateNode( string nodeCaption, ref ReferenceNode ExistingNode)
+#endif
+
+    private bool isDuplicateNode( string nodeCaption, ref ReferenceNode ExistingNode)
       {
           if (nodeCaption != null)
           {

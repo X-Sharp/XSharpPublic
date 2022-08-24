@@ -11,15 +11,16 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using Microsoft.VisualStudio.Text;
 using System.Threading;
+using Microsoft.VisualStudio.Imaging;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
     internal class CreateStubSuggestedAction : ISuggestedAction
     {
-        private ITrackingSpan m_span;
-        private string m_upper;
-        private string m_display;
-        private ITextSnapshot m_snapshot;
+        private readonly ITrackingSpan m_span;
+        private readonly string m_upper;
+        private readonly string m_display;
+        private readonly ITextSnapshot m_snapshot;
 
         public CreateStubSuggestedAction(ITrackingSpan span)         {
             m_span = span;
@@ -51,7 +52,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
         public ImageMoniker IconMoniker
         {
-            get { return default(ImageMoniker); }
+            get { return KnownMonikers.IntellisenseLightBulb; }
         }
         public string IconAutomationText
         {
@@ -86,6 +87,16 @@ namespace XSharp.LanguageService.Editors.LightBulb
         public void Invoke(CancellationToken cancellationToken)
         {
             m_span.TextBuffer.Replace(m_span.GetSpan(m_snapshot), m_upper);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is CreateStubSuggestedAction action &&
+                   EqualityComparer<ITrackingSpan>.Default.Equals(m_span, action.m_span);
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

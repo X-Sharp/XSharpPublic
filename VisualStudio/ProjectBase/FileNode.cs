@@ -26,6 +26,8 @@ using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using XSharpModel;
 using Community.VisualStudio.Toolkit;
 using File = System.IO.File;
+using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Imaging;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -79,7 +81,8 @@ namespace Microsoft.VisualStudio.Project
     public class FileNode : HierarchyNode
     {
         #region static fields
-        private static Dictionary<string, int> extensionIcons;
+        //private static Dictionary<string, int> extensionIcons;
+        private static Dictionary<string, ImageMoniker> extensionMonikers;
         #endregion
 
         #region fields
@@ -106,33 +109,25 @@ namespace Microsoft.VisualStudio.Project
                 return caption;
             }
         }
-        public override int ImageIndex
+
+        protected override bool SupportsIconMonikers
         {
             get
             {
-                // Check if the file is there.
-                if (!this.CanShowDefaultIcon())
-                {
-                    return (int)ProjectNode.ImageName.MissingFile;
-                }
-
-                //Check for known extensions
-                int imageIndex;
                 string extension = System.IO.Path.GetExtension(this.FileName);
-                if ((String.IsNullOrEmpty(extension)) || (!extensionIcons.TryGetValue(extension, out imageIndex)))
-                {
-                    // Missing or unknown extension; let the base class handle this case.
-                    if (IsDependent)
-                    {
-                        return (int)ProjectNode.ImageName.DependentFile;
-                    }
-                    return base.ImageIndex;
-                }
-
-                // The file type is known and there is an image for it in the image list.
-                return imageIndex;
+                return extensionMonikers.ContainsKey(extension);
             }
         }
+        protected override ImageMoniker GetIconMoniker(bool open)
+        {
+            string extension = System.IO.Path.GetExtension(this.FileName);
+            if (extensionMonikers.ContainsKey(extension))
+            {
+                return extensionMonikers[extension];
+            }
+            return default;
+        }
+
         //  Link Support
         /// <summary>
         /// Gets a value indicating this item is a link.
@@ -211,45 +206,100 @@ namespace Microsoft.VisualStudio.Project
         {
             // Build the dictionary with the mapping between some well known extensions
             // and the index of the icons inside the standard image list.
-            extensionIcons = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            extensionIcons.Add(".aspx", (int)ProjectNode.ImageName.WebForm);
-            extensionIcons.Add(".asax", (int)ProjectNode.ImageName.GlobalApplicationClass);
-            extensionIcons.Add(".asmx", (int)ProjectNode.ImageName.WebService);
-            extensionIcons.Add(".ascx", (int)ProjectNode.ImageName.WebUserControl);
-            extensionIcons.Add(".asp", (int)ProjectNode.ImageName.ASPPage);
-            extensionIcons.Add(".config", (int)ProjectNode.ImageName.WebConfig);
-            extensionIcons.Add(".htm", (int)ProjectNode.ImageName.HTMLPage);
-            extensionIcons.Add(".html", (int)ProjectNode.ImageName.HTMLPage);
-            extensionIcons.Add(".css", (int)ProjectNode.ImageName.StyleSheet);
-            extensionIcons.Add(".xsl", (int)ProjectNode.ImageName.StyleSheet);
-            extensionIcons.Add(".vbs", (int)ProjectNode.ImageName.ScriptFile);
-            extensionIcons.Add(".js", (int)ProjectNode.ImageName.ScriptFile);
-            extensionIcons.Add(".wsf", (int)ProjectNode.ImageName.ScriptFile);
-            extensionIcons.Add(".txt", (int)ProjectNode.ImageName.TextFile);
-            extensionIcons.Add(".resx", (int)ProjectNode.ImageName.Resources);
-            extensionIcons.Add(".rc", (int)ProjectNode.ImageName.Resources);
-            extensionIcons.Add(".bmp", (int)ProjectNode.ImageName.Bitmap);
-            extensionIcons.Add(".ico", (int)ProjectNode.ImageName.Icon);
-            extensionIcons.Add(".gif", (int)ProjectNode.ImageName.Image);
-            extensionIcons.Add(".jpg", (int)ProjectNode.ImageName.Image);
-            extensionIcons.Add(".png", (int)ProjectNode.ImageName.Image);
-            extensionIcons.Add(".map", (int)ProjectNode.ImageName.ImageMap);
-            extensionIcons.Add(".wav", (int)ProjectNode.ImageName.Audio);
-            extensionIcons.Add(".mid", (int)ProjectNode.ImageName.Audio);
-            extensionIcons.Add(".midi", (int)ProjectNode.ImageName.Audio);
-            extensionIcons.Add(".avi", (int)ProjectNode.ImageName.Video);
-            extensionIcons.Add(".mov", (int)ProjectNode.ImageName.Video);
-            extensionIcons.Add(".mpg", (int)ProjectNode.ImageName.Video);
-            extensionIcons.Add(".mpeg", (int)ProjectNode.ImageName.Video);
-            extensionIcons.Add(".cab", (int)ProjectNode.ImageName.CAB);
-            extensionIcons.Add(".jar", (int)ProjectNode.ImageName.JAR);
-            extensionIcons.Add(".xslt", (int)ProjectNode.ImageName.XSLTFile);
-            extensionIcons.Add(".xsd", (int)ProjectNode.ImageName.XMLSchema);
-            extensionIcons.Add(".xml", (int)ProjectNode.ImageName.XMLFile);
-            extensionIcons.Add(".pfx", (int)ProjectNode.ImageName.PFX);
-            extensionIcons.Add(".snk", (int)ProjectNode.ImageName.SNK);
-            extensionIcons.Add(".settings", (int)ProjectNode.ImageName.SettingsFile);
-            extensionIcons.Add(".cur", (int)ProjectNode.ImageName.Cursor);
+            #region old
+            //extensionIcons.Add(".asax", (int)ProjectNode.ImageName.GlobalApplicationClass);
+            //extensionIcons.Add(".ascx", (int)ProjectNode.ImageName.WebUserControl);
+            //extensionIcons.Add(".asmx", (int)ProjectNode.ImageName.WebService);
+            //extensionIcons.Add(".asp", (int)ProjectNode.ImageName.ASPPage);
+            //extensionIcons.Add(".aspx", (int)ProjectNode.ImageName.WebForm);
+            //extensionIcons.Add(".avi", (int)ProjectNode.ImageName.Video);
+            //extensionIcons.Add(".bmp", (int)ProjectNode.ImageName.Bitmap);
+            //extensionIcons.Add(".cab", (int)ProjectNode.ImageName.CAB);
+            //extensionIcons.Add(".config", (int)ProjectNode.ImageName.WebConfig);
+            //extensionIcons.Add(".css", (int)ProjectNode.ImageName.StyleSheet);
+            //extensionIcons.Add(".cur", (int)ProjectNode.ImageName.Cursor);
+            //extensionIcons.Add(".gif", (int)ProjectNode.ImageName.Image);
+            //extensionIcons.Add(".htm", (int)ProjectNode.ImageName.HTMLPage);
+            //extensionIcons.Add(".html", (int)ProjectNode.ImageName.HTMLPage);
+            //extensionIcons.Add(".ico", (int)ProjectNode.ImageName.Icon);
+            //extensionIcons.Add(".jar", (int)ProjectNode.ImageName.JAR);
+            //extensionIcons.Add(".jpg", (int)ProjectNode.ImageName.Image);
+            //extensionIcons.Add(".js", (int)ProjectNode.ImageName.ScriptFile);
+            //extensionIcons.Add(".map", (int)ProjectNode.ImageName.ImageMap);
+            //extensionIcons.Add(".mid", (int)ProjectNode.ImageName.Audio);
+            //extensionIcons.Add(".midi", (int)ProjectNode.ImageName.Audio);
+            //extensionIcons.Add(".mov", (int)ProjectNode.ImageName.Video);
+            //extensionIcons.Add(".mpeg", (int)ProjectNode.ImageName.Video);
+            //extensionIcons.Add(".mpg", (int)ProjectNode.ImageName.Video);
+            //extensionIcons.Add(".pfx", (int)ProjectNode.ImageName.PFX);
+            //extensionIcons.Add(".png", (int)ProjectNode.ImageName.Image);
+            //extensionIcons.Add(".rc", (int)ProjectNode.ImageName.Resources);
+            //extensionIcons.Add(".resx", (int)ProjectNode.ImageName.Resources);
+            //extensionIcons.Add(".settings", (int)ProjectNode.ImageName.SettingsFile);
+            //extensionIcons.Add(".snk", (int)ProjectNode.ImageName.SNK);
+            //extensionIcons.Add(".txt", (int)ProjectNode.ImageName.TextFile);
+            //extensionIcons.Add(".vbs", (int)ProjectNode.ImageName.ScriptFile);
+            //extensionIcons.Add(".wav", (int)ProjectNode.ImageName.Audio);
+            //extensionIcons.Add(".wsf", (int)ProjectNode.ImageName.ScriptFile);
+            //extensionIcons.Add(".xml", (int)ProjectNode.ImageName.XMLFile);
+            //extensionIcons.Add(".xsd", (int)ProjectNode.ImageName.XMLSchema);
+            //extensionIcons.Add(".xsl", (int)ProjectNode.ImageName.StyleSheet);
+            //extensionIcons.Add(".xslt", (int)ProjectNode.ImageName.XSLTFile);
+            //extensionIcons = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            #endregion
+
+            extensionMonikers = new Dictionary<string, ImageMoniker>(StringComparer.OrdinalIgnoreCase);
+            AddExtension(".asax", KnownMonikers.ApplicationClass);
+            AddExtension(".ascx", KnownMonikers.WebUserControl);
+            AddExtension(".asmx", KnownMonikers.WebService);
+            AddExtension(".asp", KnownMonikers.ASPFile);
+            AddExtension(".aspx", KnownMonikers.ASPFile);
+            AddExtension(".avi", KnownMonikers.PlayVideo);
+            AddExtension(".bmp", KnownMonikers.Image);
+            AddExtension(".c", KnownMonikers.CFile);
+            AddExtension(".cab", KnownMonikers.BinaryFile);
+            AddExtension(".config", KnownMonikers.ConfigurationFile);
+            AddExtension(".cpp", KnownMonikers.CPPFileNode);
+            AddExtension(".cs", KnownMonikers.CSFileNode);
+            AddExtension(".css", KnownMonikers.StyleSheet);
+            AddExtension(".cur", KnownMonikers.CursorFile);
+            AddExtension(".fs", KnownMonikers.FSFileNode);
+            AddExtension(".gif", KnownMonikers.Image);
+            AddExtension(".htm", KnownMonikers.HTMLFile);
+            AddExtension(".html", KnownMonikers.HTMLFile);
+            AddExtension(".ico", KnownMonikers.IconFile);
+            AddExtension(".jar", KnownMonikers.JARFile);
+            AddExtension(".jpg", KnownMonikers.Image);
+            AddExtension(".js", KnownMonikers.JSScript);
+            AddExtension(".man", KnownMonikers.ManifestFile);
+            AddExtension(".mao", KnownMonikers.ImageMap);
+            AddExtension(".mid", KnownMonikers.AudioPlayback);
+            AddExtension(".midi", KnownMonikers.AudioPlayback);
+            AddExtension(".mov", KnownMonikers.PlayVideo);
+            AddExtension(".mpeg", KnownMonikers.PlayVideo);
+            AddExtension(".mpg", KnownMonikers.PlayVideo);
+            AddExtension(".pfx", KnownMonikers.BinaryFile);
+            AddExtension(".png", KnownMonikers.Image);
+            AddExtension(".py", KnownMonikers.PYFileNode);
+            AddExtension(".rb", KnownMonikers.TSFileNode);
+            AddExtension(".rc", KnownMonikers.ResourceTemplate);
+            AddExtension(".resx", KnownMonikers.SourceFileGroup);
+            AddExtension(".settings", KnownMonikers.Settings);
+            AddExtension(".snk", KnownMonikers.SignatureFile);
+            AddExtension(".ts", KnownMonikers.TSFileNode);
+            AddExtension(".txt", KnownMonikers.TextFile);
+            AddExtension(".vb", KnownMonikers.VBFileNode);
+            AddExtension(".vbs", KnownMonikers.Script);
+            AddExtension(".wsf", KnownMonikers.Script);
+            AddExtension(".xml", KnownMonikers.XMLFile);
+            AddExtension(".xsd", KnownMonikers.XMLSchema);
+            AddExtension(".xsl", KnownMonikers.StyleSheet);
+            AddExtension(".xslt", KnownMonikers.XSLTTemplate);
+        }
+
+        protected static void AddExtension(string ext, ImageMoniker moniker)
+        {
+            extensionMonikers[ext] = moniker;
         }
 
         /// <summary>

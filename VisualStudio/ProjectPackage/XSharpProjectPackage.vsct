@@ -451,19 +451,9 @@
     <GuidSymbol name="guidImages" value="{9f1c712d-4803-4aff-9153-28b74c34e1bf}">
       <IDSymbol name="bmpProject" value="1" />
       <IDSymbol name="bmpXSharp" value="2" />
-      <IDSymbol name="bmpForm" value="3" />
-      <IDSymbol name="bmpServer" value="4" />
-      <IDSymbol name="bmpFieldSpec" value="5" />
-      <IDSymbol name="bmpMenu" value="6" />
       <IDSymbol name="bmpVO" value="7" />
-      <IDSymbol name="bmpGrid" value="8" />
-      <IDSymbol name="bmpTest" value="9" />
-      <IDSymbol name="bmpProperties" value="10" />
-      <IDSymbol name="bmpReference" value="11" />
-      <IDSymbol name="bmpDanglingReference" value="12" />
       <IDSymbol name="bmpTabOrder" value="13" />
       <IDSymbol name="bmpFoxPro" value="14" />
-      <IDSymbol name="bmpNuGet" value="15" />
     </GuidSymbol>
 
     <GuidSymbol name="guidWinformsMenuGroup" value="{74D21312-2AEE-11D1-8BFB-00A0C90F26F7}">

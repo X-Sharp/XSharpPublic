@@ -270,7 +270,7 @@ namespace XSharp.LanguageService
             state = CompletionState.General;
             if (tokens.Count == 0)
                 return tokens;
-            // if the token appears after comma or paren then strip the tokens 
+            // if the token appears after comma or paren then strip the tokens
             // now look forward and find the first token that is on or after the triggerpoint
             var result = new List<IToken>();
             var last = XSharpLexer.Eof;
@@ -292,6 +292,7 @@ namespace XSharp.LanguageService
                     // so we can see if the id under the cursor is a method, constructor etc
                     switch (token.Type)
                     {
+                        case XSharpLexer.WS:
                         case XSharpLexer.LPAREN:
                         case XSharpLexer.LCURLY:
                         case XSharpLexer.LBRKT:
@@ -391,7 +392,7 @@ namespace XSharp.LanguageService
                         bool add = true;
                         if (result.Count > 0 && token == list.LastOrDefault)
                         {
-                            
+
                             if (lasttoken.Type == XSharpLexer.COLON ||
                                 lasttoken.Type == XSharpLexer.DOT)
                             {
@@ -428,7 +429,7 @@ namespace XSharp.LanguageService
                          if (isNotLast) // there has to be a space after the token
                          {
                             list.Expect(XSharpLexer.WS);
-                            
+
                             if (list.Expect(XSharpLexer.STATIC))
                             {
                                 state = CompletionState.Namespaces | CompletionState.Types;

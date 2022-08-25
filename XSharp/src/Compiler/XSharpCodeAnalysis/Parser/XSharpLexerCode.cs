@@ -772,6 +772,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 pushToken(WS, TokenConstants.HiddenChannel);
                 t.Type = LINE_CONT;
                 t.Channel = TokenConstants.HiddenChannel;
+                HandleNewLine();
                 return t;
             }
             // when we get here then the semi colon was a statement delimiter

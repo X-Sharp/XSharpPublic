@@ -1077,9 +1077,10 @@ STATIC CLASS XDatabase
                         crit := "name like $name"
                     ENDIF
                     oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE " + crit +  ;
-                        " AND Kind in ($kind1, $kind2, $kind3, $kind4,$kind5,$kind6) AND IdProject in ("+sProjectIds+") "+ ;
+                        " and typeName = $typename AND Kind in ($kind1, $kind2, $kind3, $kind4,$kind5,$kind6) AND IdProject in ("+sProjectIds+") "+ ;
                         " Order by FileName"
                     oCmd:Parameters:AddWithValue("$name", sLike)
+                    oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
                     oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
                     oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
                     oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.Method)

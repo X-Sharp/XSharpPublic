@@ -16,7 +16,7 @@
     <TargetFrameworkProfile />
     <NS>true</NS>
     <VO3>true</VO3>
-    <XSharpProjectversion>2.13.0.6</XSharpProjectversion>
+    <XSharpProjectversion>2.13.1.0</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
@@ -124,7 +124,6 @@
     <EmbeddedResource Include="cavotb.bmp" />
     <None Include="Designers\Readme.txt" />
     <None Include="Designers\VODesigners.xsproj" />
-    <None Include="Designers\VOWin32APILibrary.vh" />
     <None Include="Readme.txt" />
     <None Include="Templates\cavoded.tpl" />
     <None Include="Templates\cavofed.tpl" />

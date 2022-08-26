@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC PROPERTY InsertFinalNewline         AS LOGIC AUTO
 
         PUBLIC PROPERTY IndentTypeMembers          AS LOGIC AUTO
+        PUBLIC PROPERTY IndentTypeFields           AS LOGIC AUTO
         PUBLIC PROPERTY IndentStatements           AS LOGIC AUTO
         PUBLIC PROPERTY IndentCaseContent          AS LOGIC AUTO
         PUBLIC PROPERTY IndentCaseLabel            AS LOGIC AUTO
@@ -37,6 +38,7 @@ BEGIN NAMESPACE XSharpModel
             TrimTrailingWhiteSpace := XSettings.EditorTrimTrailingWhiteSpace
             InsertFinalNewline := XSettings.EditorInsertFinalNewline
             IndentTypeMembers := XSettings.IndentTypeMembers
+            IndentTypeFields := XSettings.IndentTypeFields
             IndentStatements := XSettings.IndentStatements
             IndentCaseContent := XSettings.IndentCaseContent
             IndentCaseLabel := XSettings.IndentCaseLabel

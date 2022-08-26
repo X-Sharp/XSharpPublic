@@ -65,8 +65,18 @@ namespace XSharp.LanguageService
                 }
                 if (_settings.IndentTypeMembers)
                 {
-                    bool isMember = kw.IsMember() || singleLine;
+                    bool isMember = kw.IsMember() && ! singleLine;
                     if ( isMember && _blocks.Peek().kw.IsType())
+                    {
+                        _indentSize += 1;
+                    }
+
+                }
+
+                if (_settings.IndentTypeFields)
+                {
+                    bool isMember = singleLine;
+                    if (isMember && _blocks.Peek().kw.IsType())
                     {
                         _indentSize += 1;
                     }
@@ -185,7 +195,7 @@ namespace XSharp.LanguageService
             }
 
         }
-      
+
         internal int[] GetIndentSizes(IEnumerable<ITextSnapshotLine> lines, int startLine, int endLine, int startIndent)
         {
             _expectedIndent = new int[endLine + 1];

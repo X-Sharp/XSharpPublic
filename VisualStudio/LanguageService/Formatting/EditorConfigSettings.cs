@@ -7,6 +7,9 @@ using XSharpModel;
 using System.Data.Common;
 using EditorConfig.Core;
 using Microsoft.VisualStudio.Text;
+using Community.VisualStudio.Toolkit;
+using MessagePack.Internal;
+using System.Text;
 
 namespace XSharp.LanguageService
 {
@@ -18,6 +21,7 @@ namespace XSharp.LanguageService
         private const string INDENT_NAMESPACE = "indent_namespace";
         private const string INDENT_ENTITY_CONTENT = "indent_entity_content";
         private const string INDENT_TYPE_MEMBERS  = "indent_type_members";
+        private const string INDENT_TYPE_FIELDS = "indent_type_fields";
         private const string INDENT_BLOCK_CONTENT = "indent_block_content";
         private const string INDENT_STATEMENTS = "indent_statements";
         private const string INDENT_CASE_CONTENT = "indent_case_content";
@@ -36,7 +40,7 @@ namespace XSharp.LanguageService
         }
         internal static SourceCodeEditorSettings ReadSettings(ITextBuffer buffer, string fileName)
         {
-            
+
             var configuration = configParser.Parse(fileName);
             var settings = new SourceCodeEditorSettings(); // this gets a copy of the current Tools/Options settings
             if (configuration.Properties.Count > 0)
@@ -77,69 +81,76 @@ namespace XSharp.LanguageService
                     }
 
                 }
-                if (configuration.Properties.ContainsKey(IDENTIFIERCASE))
-                {
-                    var temp = configuration.Properties[IDENTIFIERCASE].ToLower();
-                    settings.IdentifierCase = temp == TRUE;
-                }
-                if (configuration.Properties.ContainsKey(UDCCASE))
-                {
-                    var temp = configuration.Properties[UDCCASE].ToLower();
-                    settings.UDCKeywordCase = temp == TRUE;
-                }
-                if (configuration.Properties.ContainsKey(INDENT_ENTITY_CONTENT))
-                {
-                    var temp = configuration.Properties[INDENT_ENTITY_CONTENT].ToLower();
-                    settings.IndentTypeMembers = temp == TRUE;
-                }
-                if (configuration.Properties.ContainsKey(INDENT_TYPE_MEMBERS))
-                {
-                    var temp = configuration.Properties[INDENT_TYPE_MEMBERS].ToLower();
-                    settings.IndentTypeMembers = temp == TRUE;
-                }
-                if (configuration.Properties.ContainsKey(INDENT_BLOCK_CONTENT))
-                {
-                    var temp = configuration.Properties[INDENT_BLOCK_CONTENT].ToLower();
-                    settings.IndentStatements = temp == TRUE;
-                }
-                if (configuration.Properties.ContainsKey(INDENT_STATEMENTS))
-                {
-                    var temp = configuration.Properties[INDENT_STATEMENTS].ToLower();
-                    settings.IndentStatements = temp == TRUE;
-                }
-                if (configuration.Properties.ContainsKey(INDENT_CASE_CONTENT))
-                {
-                    var temp = configuration.Properties[INDENT_CASE_CONTENT].ToLower();
-                    settings.IndentCaseContent = temp == TRUE;
-                }
-                if (configuration.Properties.ContainsKey(INDENT_CASE_LABEL))
-                {
-                    var temp = configuration.Properties[INDENT_CASE_LABEL].ToLower();
-                    settings.IndentCaseLabel = temp == TRUE;
-                }
-                if (configuration.Properties.ContainsKey(INDENT_CONTINUED_LINES))
-                {
-                    var temp = configuration.Properties[INDENT_CONTINUED_LINES].ToLower();
-                    settings.IndentContinuedLines = temp == TRUE;
-                }
-                if (configuration.Properties.ContainsKey(INDENT_PREPROCESSOR))
-                {
-                    var temp = configuration.Properties[INDENT_PREPROCESSOR].ToLower();
-                    settings.IndentPreprocessorLines = temp == TRUE;
-                }
-                if (configuration.Properties.ContainsKey(INDENT_NAMESPACE))
-                {
-                    var temp = configuration.Properties[INDENT_NAMESPACE].ToLower();
-                    settings.IndentNamespace = temp == TRUE;
-                }
+                settings.IdentifierCase = GetSetting(configuration, settings.IdentifierCase, IDENTIFIERCASE);
+                settings.UDCKeywordCase = GetSetting(configuration, settings.UDCKeywordCase, UDCCASE);
+                // old syntax
+                settings.IndentTypeMembers = GetSetting(configuration, settings.IndentTypeMembers, INDENT_ENTITY_CONTENT);
+                // new syntax
+                settings.IndentTypeMembers = GetSetting(configuration, settings.IndentTypeMembers, INDENT_TYPE_MEMBERS);
+                settings.IndentTypeFields = GetSetting(configuration, settings.IndentTypeFields, INDENT_TYPE_FIELDS);
+                // old syntax
+                settings.IndentStatements = GetSetting(configuration, settings.IndentStatements, INDENT_BLOCK_CONTENT);
+                // new syntax
+                settings.IndentStatements = GetSetting(configuration, settings.IndentStatements, INDENT_STATEMENTS);
+                settings.IndentCaseContent = GetSetting(configuration, settings.IndentCaseContent, INDENT_CASE_CONTENT);
+                settings.IndentCaseLabel = GetSetting(configuration, settings.IndentCaseLabel, INDENT_CASE_LABEL);
+                settings.IndentContinuedLines = GetSetting(configuration, settings.IndentContinuedLines, INDENT_CONTINUED_LINES);
+                settings.IndentPreprocessorLines = GetSetting(configuration, settings.IndentPreprocessorLines, INDENT_PREPROCESSOR);
+                settings.IndentNamespace = GetSetting(configuration, settings.IndentNamespace, INDENT_NAMESPACE);
+
             }
             if (buffer.Properties.ContainsProperty(typeof(SourceCodeEditorSettings)))
                 buffer.Properties.RemoveProperty(typeof(SourceCodeEditorSettings));
             buffer.Properties.AddProperty(typeof(SourceCodeEditorSettings), settings);
             return settings;
         }
-        
 
+        string SaveSettings(SourceCodeEditorSettings settings)
+        {
+            var sb = new StringBuilder();
+            switch (settings.KeywordCase)
+            {
+                case KeywordCase.None:
+                    sb.AppendLine(KEYWORDCASE + " = none"  );
+                    break;
+                case KeywordCase.Upper:
+                    sb.AppendLine(KEYWORDCASE + " = "+ UPPER);
+                    break;
+                case KeywordCase.Lower:
+                    sb.AppendLine(KEYWORDCASE + " = "+LOWER );
+                    break;
+                case KeywordCase.Title:
+                    sb.AppendLine(KEYWORDCASE + " = " + TITLE);
+                    break;
+            }
+            sb.AppendLine("indent_style = " + (settings.TabsAsSpaces ? "space" : "tab"));
+            sb.AppendLine("tab_width = " + settings.TabSize.ToString());
+            sb.AppendLine("indent_size = " + settings.IndentSize.ToString());
+            sb.AppendLine("trim_trailing_whitespace = " + settings.TrimTrailingWhiteSpace.ToString());
+            sb.AppendLine("insert_final_newline = " + settings.InsertFinalNewline.ToString());
+            sb.AppendLine(IDENTIFIERCASE + " = " + settings.IdentifierCase.ToString());
+            sb.AppendLine(UDCCASE + " = " + settings.UDCKeywordCase.ToString());
+            sb.AppendLine(INDENT_TYPE_MEMBERS + " = " + settings.IndentTypeMembers.ToString());
+            sb.AppendLine(INDENT_TYPE_FIELDS + " = " + settings.IndentTypeFields.ToString());
+            sb.AppendLine(INDENT_STATEMENTS + " = " + settings.IndentStatements.ToString());
+            sb.AppendLine(INDENT_CASE_CONTENT + " = " + settings.IndentCaseContent.ToString());
+            sb.AppendLine(INDENT_CASE_LABEL + " = " + settings.IndentCaseLabel.ToString());
+            sb.AppendLine(INDENT_CONTINUED_LINES + " = " + settings.IndentContinuedLines.ToString());
+            sb.AppendLine(INDENT_PREPROCESSOR + " = " + settings.IndentPreprocessorLines.ToString());
+            sb.AppendLine(INDENT_NAMESPACE + " = " + settings.IndentNamespace.ToString());
+            return sb.ToString();
+        }
+
+
+        static bool GetSetting(FileConfiguration configuration, bool oldValue, string name)
+        {
+            if (configuration.Properties.ContainsKey(name))
+            {
+                var temp = configuration.Properties[name].ToLower();
+                return temp == TRUE;
+            }
+            return oldValue;
+        }
 
     }
 }

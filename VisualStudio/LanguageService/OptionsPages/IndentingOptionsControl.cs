@@ -17,9 +17,14 @@ namespace XSharp.LanguageService.OptionsPages
                 @"\cf1 BEGIN NAMESPACE \cf0 MyNs\par\cf1{tab} CLASS \cf0 MyClass \par \par {tab} \cf1 END CLASS \cf0\par\cf1 END NAMESPACE\par}" };
             this.treeIndentStyle.Nodes.Add(tvi);
             //
-            tvi = new TreeNode("Indent members inside types");
+            tvi = new TreeNode("Indent multiline members inside types");
             tvi.Tag = new string[] { "IndentEntityContent",
-                @"\cf1 CLASS \cf0 foo\par\cf1{tab} PUBLIC \cf0 x \cf1 AS INT\cf0\par\par\cf1{tab} METHOD \cf0 m1() \cf1 AS VOID\cf0\par}"};
+                @"\cf1 CLASS \cf0 foo\par\par\cf1{tab} METHOD \cf0 m1() \cf1 AS VOID\cf0\par\par\cf1{tab} CONSTRUCTOR \cf0 m1()\cf0\par}"};
+            this.treeIndentStyle.Nodes.Add(tvi);
+
+            tvi = new TreeNode("Indent single line members inside types");
+            tvi.Tag = new string[] { "IndentFieldContent",
+                @"\cf1 CLASS \cf0 foo\par\cf1{tab} PUBLIC \cf0 x \cf1 AS INT\cf0\par\par\cf1{tab} PROPERTY \cf0 y \cf1 AS STRING AUTO \cf0\par}"};
             this.treeIndentStyle.Nodes.Add(tvi);
             //
             tvi = new TreeNode("Indent statements inside entities");
@@ -153,6 +158,5 @@ namespace XSharp.LanguageService.OptionsPages
                 return @"{\rtf1\deftab400{\colortbl ;\red0\green77\blue187;}";
             }
         }
-
     }
 }

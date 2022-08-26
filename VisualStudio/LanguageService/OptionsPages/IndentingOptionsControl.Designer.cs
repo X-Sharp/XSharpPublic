@@ -54,7 +54,7 @@
             this.panel1.Controls.Add(this.codeSample);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(420, 290);
+            this.panel1.Size = new System.Drawing.Size(425, 311);
             this.panel1.TabIndex = 0;
             // 
             // treeIndentStyle
@@ -67,7 +67,7 @@
             this.treeIndentStyle.Name = "treeIndentStyle";
             this.treeIndentStyle.ShowLines = false;
             this.treeIndentStyle.ShowRootLines = false;
-            this.treeIndentStyle.Size = new System.Drawing.Size(396, 129);
+            this.treeIndentStyle.Size = new System.Drawing.Size(401, 129);
             this.treeIndentStyle.TabIndex = 3;
             // 
             // codeSample
@@ -80,7 +80,7 @@
             this.codeSample.Margin = new System.Windows.Forms.Padding(2);
             this.codeSample.Name = "codeSample";
             this.codeSample.ReadOnly = true;
-            this.codeSample.Size = new System.Drawing.Size(396, 131);
+            this.codeSample.Size = new System.Drawing.Size(401, 152);
             this.codeSample.TabIndex = 1;
             this.codeSample.Text = "";
             // 
@@ -91,7 +91,7 @@
             this.AutoScroll = true;
             this.Controls.Add(this.panel1);
             this.Name = "IndentingOptionsControl";
-            this.Size = new System.Drawing.Size(435, 304);
+            this.Size = new System.Drawing.Size(440, 327);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 

@@ -91,6 +91,7 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
 
         PUBLIC STATIC PROPERTY IndentTypeMembers               AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentTypeFields                AS LOGIC AUTO
         PUBLIC STATIC PROPERTY IndentStatements                AS LOGIC AUTO
         PUBLIC STATIC PROPERTY IndentCaseContent               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY IndentCaseLabel                 AS LOGIC AUTO

@@ -242,7 +242,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                     snode = child;
-                    if (snode is ExpressionSyntax)
+                    if (snode.XNode is XSharpParser.PrimaryExpressionContext)
                         break;
                 }
                 var start = 0;

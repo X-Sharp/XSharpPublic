@@ -67,7 +67,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             };
             id.Start = id.Stop = token;
             sig.AddChild(sig.Id);
-            ExitIdentifier(id);    // Generate SyntaxToken 
+            ExitIdentifier(id);    // Generate SyntaxToken
             if (string.Equals(name, _entryPoint, XSharpString.Comparison))
             {
                 sig.Type = new XP.DatatypeContext(func, 0)
@@ -203,7 +203,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     CurrentMember.Data.HasMemVars = true;
                     prefix = "M";
                 }
-                // List inside _Vars. 
+                // List inside _Vars.
                 foreach (var memvar in context._Vars)
                 {
                     var name = CleanVarName(memvar.Id.GetText());
@@ -213,7 +213,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else if (context.T.Type == XP.PUBLIC || context.T.Type == XP.PRIVATE)
             {
                 CurrentMember.Data.HasMemVars = true;
-                // List inside _XVars. 
+                // List inside _XVars.
                 foreach (var memvar in context._FoxVars)
                 {
                     var name = memvar.Id.GetText();
@@ -254,10 +254,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 (COMMA Vars+=varidentifierName XT=xbasedecltype? )* end=eos
                             // This only has a list of names
                             | T=(MEMVAR|PRIVATE|PUBLIC) XVars+=foxbasevar
-                                (COMMA XVars+=foxbasevar)*  end=eos      
+                                (COMMA XVars+=foxbasevar)*  end=eos
                             // Variations of LOCAL and PUBLIC with the ARRAY keyword
                             | T=(LOCAL|PUBLIC) ARRAY DimVars += dimensionVar
-                                (COMMA DimVars+=dimensionVar)*    end=eos  
+                                (COMMA DimVars+=dimensionVar)*    end=eos
 
          */
         public override void ExitFoxdecl([NotNull] XP.FoxdeclContext context)
@@ -305,11 +305,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.PRIVATE:
                     foreach (var memvar in context._FoxVars)
                     {
-                        // declare the private. FoxPro has no initializers 
+                        // declare the private. FoxPro has no initializers
                         var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
                         var exp = GenerateMemVarDecl(memvar, varname, true);
                         exp.XNode = memvar;
                         stmts.Add(GenerateExpressionStatement(exp, memvar));
+                        if (memvar.Expression != null)
+                        {
+                            var initializer = memvar.Expression.Get<ExpressionSyntax>();
+                            exp = GenerateMemVarPut(memvar, varname, initializer);
+                            exp.XNode = memvar;
+                            stmts.Add(GenerateExpressionStatement(exp, memvar));
+                        }
                     }
                     // no need to assign a default. The runtime takes care of that
                     break;
@@ -340,13 +347,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var exp = GenerateMemVarDecl(memvar, varname, false);
                             exp.XNode = memvar;
                             stmts.Add(GenerateExpressionStatement(exp, memvar));
-                            if (memvar.Amp == null)
+
+                            ExpressionSyntax initializer;
+                            if (memvar.Expression != null)
                             {
-                                var initializer = MakePublicInitializer(memvar.Id.GetText());
-                                exp = GenerateMemVarPut(memvar, varname, initializer);
-                                exp.XNode = memvar;
-                                stmts.Add(GenerateExpressionStatement(exp, memvar));
+                                initializer = memvar.Expression.Get<ExpressionSyntax>();
                             }
+                            else
+                            {
+                                initializer = MakePublicInitializer(memvar.Id.GetText());
+                            }
+                            exp = GenerateMemVarPut(memvar, varname, initializer);
+                            exp.XNode = memvar;
                             stmts.Add(GenerateExpressionStatement(exp, memvar));
                         }
                     }
@@ -670,7 +682,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.RealType == XP.ASSIGN)
             {
-                // Assign does not need a return. 
+                // Assign does not need a return.
                 // So do not add missing returns
                 returntype = VoidType();
             }
@@ -1132,7 +1144,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFoxdll([NotNull] XP.FoxdllContext context)
         {
-            // todo: declare and process attributes 
+            // todo: declare and process attributes
             string dllName = context.Dll.GetText();
             if (context.Extension != null)
             {
@@ -1210,7 +1222,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
             {
                 // Make sure we have a privates level in case we want to
-                // keep track of locals for the macro compiler or Type() 
+                // keep track of locals for the macro compiler or Type()
                 if (CurrentMember != null)
                 {
                     CurrentMember.Data.HasMemVars = true;

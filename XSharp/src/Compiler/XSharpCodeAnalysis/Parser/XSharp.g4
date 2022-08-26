@@ -753,6 +753,7 @@ xbasedecltype       : AS Type=datatype (OF ClassLib=identifierName)?
 
 // For the variable list for Private and Public
 foxbasevar          : (Amp=AMP)?  Id=varidentifierName
+                      (Op=assignoperator Expression=expression)?
                       XT=xbasedecltype?  // is ignored in FoxPro too
                     ;
 

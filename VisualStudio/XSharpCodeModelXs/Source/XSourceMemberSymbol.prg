@@ -171,7 +171,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameterList AS STRING               GET SELF:_signature:TypeParameterList
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
       PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
-      PROPERTY Location       AS STRING GET SELF:File:FullPath
+      PROPERTY Location       AS STRING GET SELF:File?:FullPath DEFAULT ""
+
 
       PROPERTY ModifiersKeyword as STRING
          GET

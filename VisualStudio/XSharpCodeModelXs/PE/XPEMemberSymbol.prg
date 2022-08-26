@@ -101,6 +101,13 @@ BEGIN NAMESPACE XSharpModel
          IF def:HasCustomAttributes
             SELF:_custatts       := def:CustomAttributes
          ENDIF
+            IF DeclaringType == asm:GlobalClassName
+                if self:Modifiers:HasFlag(Modifiers.Const) .or. self:Modifiers:HasFlag(Modifiers.InitOnly)
+                    self:Kind := Kind.VODefine
+                else
+                    self:Kind := Kind.VOGlobal
+                endif
+            ENDIF
 
       PROTECTED OVERRIDE METHOD Resolve() AS VOID
          SUPER:Resolve()
@@ -108,13 +115,21 @@ BEGIN NAMESPACE XSharpModel
 
      PROPERTY ClassGenText as STRING
             GET
-                var result := SELF:VisibilityKeyword + " "
-                result += SELF:ModifiersKeyword + " "
-                IF SELF:Kind != Kind.Field
-                    result += SELF:KindKeyword + " "
-                ENDIF
-                result += SELF:Prototype
+            if SELF:Kind == Kind.VODefine
+                var result := "DEFINE "+ SELF:Prototype
                 RETURN result:Replace("  ", " ")
+            elseif SELF:Kind == Kind.VOGlobal
+                var result := "GLOBAL "+ SELF:Prototype
+                RETURN result:Replace("  ", " ")
+            else
+                    var result := SELF:VisibilityKeyword + " "
+                    result += SELF:ModifiersKeyword + " "
+                    IF SELF:Kind != Kind.Field
+                        result += SELF:KindKeyword + " "
+                    ENDIF
+                    result += SELF:Prototype
+                    RETURN result:Replace("  ", " ")
+                 endif
             END GET
       END PROPERTY
 

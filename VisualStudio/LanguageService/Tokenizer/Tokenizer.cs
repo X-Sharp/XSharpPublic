@@ -93,9 +93,55 @@ namespace XSharp.LanguageService
                         break;
                     }
                 }
+                // when the cursor is on a closing token then subtract one
+                switch (tokens[tokenUnderCursor].Type)
+                {
+                    case XSharpLexer.RPAREN:
+                    case XSharpLexer.RCURLY:
+                    case XSharpLexer.RBRKT:
+                    case XSharpLexer.GT:
+                        tokenUnderCursor -= 1;
+                        break;
+                }
+
+                // check to see if there is an open token ('<', '(', '{', '[' ) to the left of this.
+                // when there is we want to delete everything up to and including the open token
+                // so when the cursor is on the word 'String' in List<System.String>
+                // then we delete "List<"
+                // When there is a closing token before cursor like in "MyFunction():DoSomething" (when the cursor is on DoSomething)
+                // then do not delete the expression before the colon
+                // however when it is "MyFunction(DoSomething)"
+                // then the token should be DoSomething and "MyFunction(" should be deleted
+                bool done = false;
+                for (int itoken = tokenUnderCursor - 1; itoken >= 0; itoken--)
+                {
+                    switch (tokens[itoken].Type)
+                    {
+                        case XSharpLexer.GT:
+                        case XSharpLexer.RPAREN:
+                        case XSharpLexer.RCURLY:
+                        case XSharpLexer.RBRKT:
+                            done = true;
+                            break;
+                        case XSharpLexer.LT:
+                        case XSharpLexer.COMMA:
+                        case XSharpLexer.LPAREN:
+                        case XSharpLexer.LCURLY:
+                        case XSharpLexer.LBRKT:
+                            // delete tokens upto and including this one
+                            tokens.RemoveRange(0, itoken + 1);
+                            tokenUnderCursor -= (itoken + 1); // adjust position
+                            done = true;
+                            break;
+                        default:
+                            break;
+                    }
+                    if (done)
+                        break;
+                }
                 var selectedToken = tokens[tokenUnderCursor];
                 var nextToken = tokenUnderCursor < tokens.Count - 1 ? tokens[tokenUnderCursor + 1] : null;
-                bool done = false;
+                done = false;
                 switch (selectedToken.Type)
                 {
                     case XSharpLexer.NAMEOF:
@@ -128,6 +174,7 @@ namespace XSharp.LanguageService
                 // SomeVar:Id                // Instance field or property
                 // If the token list contains with a RCURLY, RBRKT or RPAREN
                 // Then strip everything until the matching LCURLY, LBRKT or LPAREN is found
+                // So "MyFunction(a,b,c):D" becomes  "MyFunction():D"
                 var list = new XSharpTokenList(tokens);
                 tokens = new List<IToken>();
                 while (!list.Eoi())

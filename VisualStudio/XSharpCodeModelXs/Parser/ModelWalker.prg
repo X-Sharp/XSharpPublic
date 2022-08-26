@@ -120,8 +120,12 @@ BEGIN NAMESPACE XSharpModel
 
 
         STATIC METHOD Start  AS VOID
-            ModelWalker.suspendLevel  := 0
-            _state := WalkerthreadState.Running
+            IF ModelWalker.IsSuspended
+                ModelWalker.Resume()
+            ELSE
+                ModelWalker.suspendLevel  := 0
+                _state := WalkerthreadState.Running
+            ENDIF
 
         STATIC METHOD Resume() AS VOID
             ModelWalker.suspendLevel--
@@ -144,7 +148,7 @@ BEGIN NAMESPACE XSharpModel
                 IF _projects:TryPeek(REF project)
                     XSolution.SetStatusBarText("")
                 ENDIF
-        ENDIF
+            ENDIF
 
         STATIC METHOD Walk() AS VOID
             IF ModelWalker.suspendLevel <= 0 .AND. XSolution:IsOpen
@@ -153,7 +157,7 @@ BEGIN NAMESPACE XSharpModel
                         VAR start := System.Threading.ThreadStart{ null, @Walker() }
                         _WalkerThread := System.Threading.Thread{start}
                         _WalkerThread:IsBackground := TRUE
-                        _WalkerThread:Name := "ModelWalker"
+                        _WalkerThread:Name := "X# CodeModel Walker"
                         _WalkerThread:Start()
                     ENDIF
                 CATCH exception AS System.Exception
@@ -169,12 +173,8 @@ BEGIN NAMESPACE XSharpModel
             project := NULL
             IF  ! XSettings.IsVsBuilding
                 DO WHILE _projects:Count > 0
-                    if MustAbort
+                    if MustAbort .or. IsSuspended .or. ! HasWork
                         RETURN
-                    ENDIF
-                    IF IsSuspended .or. ! HasWork
-                        System.Threading.Thread.Sleep(1000)
-                        LOOP
                     ENDIF
                     IF _projects:Count == 0 .OR. ! _projects:TryDequeue( OUT project)
                         EXIT
@@ -252,11 +252,11 @@ BEGIN NAMESPACE XSharpModel
             RETURN
         PRIVATE STATIC METHOD Walker() AS VOID
             DO WHILE TRUE
-                if MustAbort
+                if MustAbort .or. IsSuspended
                     RETURN
                 ENDIF
                 WalkSource()
-                if MustAbort
+                if MustAbort .or. IsSuspended
                     RETURN
                 ENDIF
                 WalkReferences()
@@ -279,12 +279,9 @@ BEGIN NAMESPACE XSharpModel
                 RETURN
             ENDIF
             IF project:Loaded .AND. XSolution:IsOpen
-                DO WHILE XSettings:IsVsBuilding .or. ModelWalker.IsSuspended
-                    System.Threading.Thread.Sleep(1000)
-                    IF MustAbort
-                        RETURN
-                    ENDIF
-                ENDDO
+                IF ModelWalker.IsSuspended
+                    RETURN
+                ENDIF
                 UpdateProgress(fileName)
                 VAR file := project:FindXFile(fileName)
                 FileWalk(file)

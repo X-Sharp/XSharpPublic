@@ -120,7 +120,7 @@ namespace XSharp.Project
             {
                 int ret = -1;
                 if (SupportsIconMonikers)
-                    return ret; 
+                    return ret;
                 if (! File.Exists(Url))
                 {
                     return XSharpImageListIndex.MissingFile + XProjectNode.imageOffset;
@@ -239,7 +239,7 @@ namespace XSharp.Project
                                     SubType = typeNameToSubtype(btName);
                                     if (!String.IsNullOrEmpty(SubType))
                                         break;
-                                    type = mgr.ResolveExternalType(btName, usings); 
+                                    type = mgr.ResolveExternalType(btName, usings);
                                 }
                             }
                             else
@@ -441,30 +441,38 @@ namespace XSharp.Project
         protected override void SetSpecialProperties()
         {
             var type = this.FileType;
-            switch (type)
+            var msBuildItem = this.ItemNode?.Item;
+            if (msBuildItem != null)
             {
-                case XFileType.ManagedResource:
-                    if (string.IsNullOrEmpty(this.Generator))
-                    {
-                        this.SubType = ProjectFileAttributeValue.Designer;
-                        this.Generator = "ResXFileCodeGenerator";
-                    }
-                    break;
-                case XFileType.Settings:
-                    if (string.IsNullOrEmpty(this.Generator))
-                    {
-                        this.Generator = "SettingsSingleFileGenerator";
-                    }
-                    break;
-                case XFileType.TextTemplate:
-                    if (string.IsNullOrEmpty(this.Generator))
-                    {
-                        this.Generator = "TextTemplatingFileGenerator";
-                    }
-                    break;
-                default:
-                    DetermineSubType();
-                    break;
+                switch (type)
+                {
+                    case XFileType.ManagedResource:
+                        if (!msBuildItem.HasMetadata(ProjectFileConstants.Generator))
+                        {
+                            this.SubType = ProjectFileAttributeValue.Designer;
+                            this.Generator = "ResXFileCodeGenerator";
+                        }
+                        break;
+                    case XFileType.Settings:
+                        if (!msBuildItem.HasMetadata(ProjectFileConstants.Generator))
+                        {
+                            this.Generator = "SettingsSingleFileGenerator";
+                        }
+                        break;
+                    case XFileType.TextTemplate:
+                        if (!msBuildItem.HasMetadata(ProjectFileConstants.Generator))
+                        {
+                            this.Generator = "TextTemplatingFileGenerator";
+                        }
+                        break;
+                    default:
+                        var xproj = ProjectMgr as XSharpProjectNode;
+                        if (!xproj.IsLoading)
+                        {
+                            DetermineSubType();
+                        }
+                        break;
+                }
             }
 
         }
@@ -740,6 +748,15 @@ namespace XSharp.Project
 
             IVsWindowFrame frame;
             manager.Open(false, false, viewGuid, out frame, WindowFrameShowAction.Show);
+        }
+
+        public override void OnItemAdded(HierarchyNode parent, HierarchyNode child)
+        {
+            base.OnItemAdded(parent, child);
+            if (child is XSharpFileNode xfile)
+            {
+                xfile.SetSpecialPropertiesEx();
+            }
         }
 
         /// <summary>

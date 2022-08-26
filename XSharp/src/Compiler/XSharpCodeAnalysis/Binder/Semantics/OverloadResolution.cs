@@ -287,6 +287,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var argType = arguments[i].Type;
                 if (argType is not { })
                     continue;
+                if (parType.IsNullableType() && !argType.IsNullableType())
+                {
+                    parType = parType.GetNullableUnderlyingType();
+                }
                 var isConst = arg.ConstantValue != null;
 
                 if (TypeEquals(parType, argType, ref useSiteDiagnostics))
@@ -416,7 +420,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var hasUsualArg = arguments.Any(a => a.Type.IsUsualType());
             if (hasUsualArg)
             {
-                // when one of the arguments is a usual then 
+                // when one of the arguments is a usual then
                 // prefer the overload that has one or more usual arguments
                 var leftUsual = m1.GetParameters().Any(p => p.Type.IsUsualType());
                 var rightUsual = m2.GetParameters().Any(p => p.Type.IsUsualType());
@@ -656,7 +660,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (m1.Member.GetParameterCount() == m2.Member.GetParameterCount())
                 {
-                    // In case of 2 methods with the same # of parameters 
+                    // In case of 2 methods with the same # of parameters
                     // we have different / extended rules compared to C#
                     var parsLeft = m1.Member.GetParameters();
                     var parsRight = m2.Member.GetParameters();
@@ -712,7 +716,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         result = BetterResult.Right;
                         return true;
                     }
-                    // both methods have a different # of arguments 
+                    // both methods have a different # of arguments
                 }
                 // when both methods are in a functions class from different assemblies
                 // pick the first one in the references list

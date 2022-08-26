@@ -60,8 +60,10 @@ BEGIN NAMESPACE XSharpModel
                ENDIF
             ENDIF
          ENDIF
-         IF tm:Kind == Kind.VODefine .OR. tm:Kind == Kind.EnumMember
-            vars:Append(" "+tm:Value)
+         IF tm:Kind == Kind.VODefine .OR. tm:Kind == Kind.EnumMember .OR. tm:Kind == Kind.VOGlobal
+            IF tm:Value != NULL
+                vars:Append("  := "+tm:Value)
+            endif
          ENDIF
 
          IF ( tm:Kind == Kind.@@Constructor )

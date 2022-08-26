@@ -35,7 +35,7 @@ namespace XSharp.LanguageService
     /// </summary>
     /// <remarks>
     ///
-    
+
     [Guid(GuidStrings.guidXSharpLanguageServicePkgString)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string,PackageAutoLoadFlags.BackgroundLoad)]
@@ -90,7 +90,7 @@ namespace XSharp.LanguageService
 #endif
     [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202")]
     [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), LanguageName, null, "Indentation", pageNameResourceId: "206")]
-    [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Other", pageNameResourceId: "203")]       
+    [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Other", pageNameResourceId: "203")]
     public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
         private static XSharpLanguageService instance;
@@ -157,7 +157,7 @@ namespace XSharp.LanguageService
             XSettings.EnableQuickInfoLog = _intellisensePage.EnableQuickInfoLog;
             XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
             XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
-            
+
 
             XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
             XSettings.DisableBraceMatching = _intellisensePage.DisableBraceMatching;
@@ -213,6 +213,7 @@ namespace XSharp.LanguageService
             XSettings.KeywordCase = _formattingPage.KeywordCase;
             // Indentation
             XSettings.IndentTypeMembers = _indentingPage.IndentEntityContent;
+            XSettings.IndentTypeFields = _indentingPage.IndentFieldContent;
             XSettings.IndentStatements = _indentingPage.IndentBlockContent;
             XSettings.IndentCaseContent = _indentingPage.IndentCaseContent;
             XSettings.IndentCaseLabel = _indentingPage.IndentCaseLabel;
@@ -452,7 +453,7 @@ namespace XSharp.LanguageService
             return VSConstants.S_OK;
         }
 #endregion
-  
+
         internal static IComponentModel GetComponentModel()
         {
             return (IComponentModel)GetGlobalService(typeof(SComponentModel));

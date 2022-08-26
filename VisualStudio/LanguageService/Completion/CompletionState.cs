@@ -15,6 +15,7 @@ namespace XSharp.LanguageService
         Interfaces = 1 << 2,
         StaticMembers = 1 << 3,
         InstanceMembers = 1 << 4,
+        Members = StaticMembers | InstanceMembers,
         Constructors = 1 << 5,
         Brackets = 1 << 6,
         Keywords = 1 << 7,

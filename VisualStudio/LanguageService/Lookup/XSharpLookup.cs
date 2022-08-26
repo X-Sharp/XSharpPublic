@@ -35,7 +35,7 @@ namespace XSharp.LanguageService
             if (nestedSearches.Contains(name, StringComparer.OrdinalIgnoreCase)
                 || location?.Member == null)
             {
-                return null;
+                return result;
             }
             int nestedLevel = nestedSearches.Count();
             try
@@ -531,7 +531,7 @@ namespace XSharp.LanguageService
                 // This is a lookup outside code.
                 // Could be USING or USING STATIC statement.
                 // We allow the lookup of Namespaces or Types
-                // 
+                //
                 if (!state.HasFlag(CompletionState.Namespaces) && !state.HasFlag(CompletionState.Types))
                     return result;
                 StringBuilder sb = new StringBuilder();
@@ -625,7 +625,7 @@ namespace XSharp.LanguageService
 
                             if (nextType == XSharpLexer.LCURLY)
                             {
-                                // [] is followed by a ctor as in 
+                                // [] is followed by a ctor as in
                                 // var aValue := string[]{
                                 var top = symbols.Peek();
                                 var type = GetArrayType(location, top.FullName);
@@ -664,7 +664,7 @@ namespace XSharp.LanguageService
                         continue;
 
                     case XSharpLexer.COLON:
-                        state = CompletionState.InstanceMembers;
+                        state = CompletionState.Members;
                         resetState = false;
                         startOfExpression = false;
                         continue;
@@ -721,17 +721,18 @@ namespace XSharp.LanguageService
                     qualifiedName = list.La1 == XSharpLexer.DOT;
                     findMethod = list.La1 == XSharpLexer.LPAREN && ! isType;        // DWORD( is a cast and not a method call
                     findConstructor = list.La1 == XSharpLexer.LCURLY;
-                    if (state.HasFlag(CompletionState.StaticMembers) && !findMethod && result.Count == 0)
+                    // Find all fields and properties
+                    var props = SearchPropertyOrField(location, currentType, namespacePrefix + currentName, visibility);
+                    if (props != null )
                     {
-                        var props = SearchPropertyOrField(location, currentType, namespacePrefix + currentName, visibility).Where(m => m.IsStatic);
-                        if (props != null)
-                            result.AddRange(props);
-                    }
-                    if (state.HasFlag(CompletionState.InstanceMembers) && !findMethod && result.Count == 0)
-                    {
-                        var props = SearchPropertyOrField(location, currentType, namespacePrefix + currentName, visibility).Where(m => !m.IsStatic);
-                        if (props != null)
-                            result.AddRange(props);
+                        if (state.HasFlag(CompletionState.StaticMembers) )
+                        {
+                            result.AddRange(props.Where(p => p.IsStatic));
+                        }
+                        if (state.HasFlag(CompletionState.InstanceMembers) )
+                        {
+                            result.AddRange(props.Where(p => !p.IsStatic));
+                        }
                     }
                 }
                 if (literal)
@@ -741,95 +742,11 @@ namespace XSharp.LanguageService
                 }
                 else if (findMethod)
                 {
-                    // Do we already know in which Type we are ?
-                    if (currentToken.Type == XSharpLexer.SELF)  // SELF(..)
+                    FindMethod(result, currentToken,currentType, location, startOfExpression, currentName, visibility, state);
+                    if (list.Eoi())
                     {
-                        var ctors = SearchConstructors(currentType, Modifiers.Private);
-                        if (ctors != null)
-                            result.AddRange(ctors);
+                        return result;
                     }
-                    else if (currentToken.Type == XSharpLexer.SUPER) // SUPER(..)
-                    {
-                        if (currentType is XSourceTypeSymbol source)
-                        {
-                            var p = source.File.FindType(source.BaseTypeName, source.Namespace);
-                            var ctors = SearchConstructors(p, Modifiers.Protected);
-                            if (ctors != null)
-                                result.AddRange(ctors);
-                        }
-                        else
-                        {
-                            var p = location.FindType(currentType.BaseTypeName);
-                            var ctors = SearchConstructors(p, Modifiers.Protected);
-                            if (ctors != null)
-                                result.AddRange(ctors);
-                        }
-                    }
-                    else if (startOfExpression)
-                    {
-                        
-                        // The first token in the list can be a Function or a Procedure
-                        // Except if we already have a Type
-                        result.AddRange(SearchFunction(location, currentName));
-
-                        if (result.Count == 0 && currentType != null )
-                        {
-                            // no method lookup when enforceself is enabled
-                            if (! location.Project.ProjectNode.EnforceSelf)
-                                result.AddRange(SearchMethod(location, currentType, currentName, visibility, false));
-                        }
-                        if (result.Count == 0 )
-                        {
-                            result.AddRange(SearchMethodStatic(location, currentName));
-                        }
-                        if (result.Count == 0)
-                        {
-                            // Foo() could be a delegate call where Foo is a local or Field
-                            var delgs = SearchDelegateCall(location, currentName, currentType, visibility);
-                            if (delgs != null)
-                                result.AddRange(delgs);
-                        }
-                        if (result.Count == 0)
-                        {
-                            // Foo() can be a method call inside the current class
-                            var type = location?.Member?.ParentType ?? currentType;
-                            var meths = SearchMethod(location, type, currentName, visibility, false);
-                            if (meths != null)
-                                result.AddRange(meths);
-
-                        }
-
-                        if (list.Eoi())
-                        {
-                            return result;
-                        }
-                    }
-                    else if (currentType != null)
-                    {
-                        // Now, search for a Method. this will search the whole hierarchy
-                        // Respect the StaticMembers and InstanceMembers states
-                        if (state.HasFlag(CompletionState.StaticMembers))
-                        {
-                            var meths = SearchMethod(location, currentType, currentName, visibility, true);
-                            if (meths != null)
-                                result.AddRange(meths);
-                        }
-                        if (state.HasFlag(CompletionState.InstanceMembers))
-                        {
-                            var meths = SearchMethod(location, currentType, currentName, visibility, false);
-                            if (meths != null)
-                                result.AddRange(meths);
-                        }
-                    }
-                    
-                    if (result.Count == 0)
-                    {
-                        // Could it be Static Method with "Using Static"
-                        var mstatic = SearchMethodStatic(location, currentName);
-                        if (mstatic != null)
-                            result.AddRange(mstatic);
-                    }
-                    // method found ?
                     if (result.Count > 0)
                     {
                         symbols.Push(result[0]);
@@ -887,6 +804,18 @@ namespace XSharp.LanguageService
                             if (namespaces != null)
                                 result.AddRange(namespaces);
                         }
+                        if (result.Count == 0)
+                        {
+                            var globs = SearchGlobalField(location, currentName);
+                            if (globs != null)
+                                result.AddRange(globs);
+
+                        }
+                    }
+                    // if nothing found, check for a method with the same name
+                    if (result.Count == 0)
+                    {
+                        FindMethod(result, currentToken, currentType, location, startOfExpression, currentName, visibility, state);
                         if (result.Count > 0)
                             namespacePrefix = "";
                     }
@@ -912,7 +841,7 @@ namespace XSharp.LanguageService
                 {
                     state = CompletionState.General;
                     startOfExpression = true;
-                    
+
                 }
                 else if (currentToken.Type == XSharpLexer.CONSTRUCTOR)
                 {
@@ -1069,6 +998,97 @@ namespace XSharp.LanguageService
             return result;
         }
 
+        static private void FindMethod(List<IXSymbol> result, IToken currentToken, IXTypeSymbol currentType,
+            XSharpSearchLocation location, bool startOfExpression, string currentName, Modifiers visibility, CompletionState state)
+        {
+            // Do we already know in which Type we are ?
+            if (currentToken.Type == XSharpLexer.SELF)  // SELF(..)
+            {
+                var ctors = SearchConstructors(currentType, Modifiers.Private);
+                if (ctors != null)
+                    result.AddRange(ctors);
+            }
+            else if (currentToken.Type == XSharpLexer.SUPER) // SUPER(..)
+            {
+                if (currentType is XSourceTypeSymbol source)
+                {
+                    var p = source.File.FindType(source.BaseTypeName, source.Namespace);
+                    var ctors = SearchConstructors(p, Modifiers.Protected);
+                    if (ctors != null)
+                        result.AddRange(ctors);
+                }
+                else
+                {
+                    var p = location.FindType(currentType.BaseTypeName);
+                    var ctors = SearchConstructors(p, Modifiers.Protected);
+                    if (ctors != null)
+                        result.AddRange(ctors);
+                }
+            }
+            else if (startOfExpression)
+            {
+
+                // The first token in the list can be a Function or a Procedure
+                // Except if we already have a Type
+                result.AddRange(SearchFunction(location, currentName));
+
+                if (result.Count == 0 && currentType != null)
+                {
+                    // no method lookup when enforceself is enabled
+                    if (!location.Project.ProjectNode.EnforceSelf)
+                        result.AddRange(SearchMethod(location, currentType, currentName, visibility, false));
+                }
+                if (result.Count == 0)
+                {
+                    // Search Static methods based on static usings
+                    result.AddRange(SearchMethodStatic(location, currentName));
+                }
+                if (result.Count == 0)
+                {
+                    // Foo() could be a delegate call where Foo is a local or Field
+                    var delgs = SearchDelegateCall(location, currentName, currentType, visibility);
+                    if (delgs != null)
+                        result.AddRange(delgs);
+                }
+                if (result.Count == 0)
+                {
+                    // Foo() can be a method call inside the current class
+                    var type = location?.Member?.ParentType ?? currentType;
+                    var meths = SearchMethod(location, type, currentName, visibility, false);
+                    if (meths != null)
+                        result.AddRange(meths);
+
+                }
+            }
+            else if (currentType != null)
+            {
+                // Now, search for a Method. this will search the whole hierarchy
+                // Respect the StaticMembers and InstanceMembers states
+                var meths = SearchMethod(location, currentType, currentName, visibility, false);
+                if (meths != null)
+                {
+                    if (state.HasFlag(CompletionState.StaticMembers))
+                    {
+                        result.AddRange(meths.Where(m => m.IsStatic));
+                    }
+                    if (state.HasFlag(CompletionState.InstanceMembers))
+                    {
+                        result.AddRange(meths.Where(m => m.IsStatic));
+                    }
+                }
+            }
+
+            if (result.Count == 0)
+            {
+                // Could it be Static Method with "Using Static"
+                var mstatic = SearchMethodStatic(location, currentName);
+                if (mstatic != null)
+                    result.AddRange(mstatic);
+            }
+
+        }
+
+
         private static IXTypeSymbol FindElementType(IXSymbol symbol, XSharpSearchLocation location)
         {
             if (symbol.IsArray)
@@ -1119,7 +1139,7 @@ namespace XSharp.LanguageService
              * Item:Value is defined as TValue
              * We will probably have to get the next element on the stack, and extract its generic args
              * and then find the correct argument and resolve TKey to STRING and TValue to LONG
-             * 
+             *
              * We should also fix the parameter types for
              * LOCAL coll as Dictionary<STRING, LONG>
              * coll:Add()           // types are TKey and TValue and should become STRING and INT

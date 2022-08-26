@@ -80,14 +80,7 @@ INTERNAL CLASS AssemblyReader
              var globaltype := assembly:Types[assembly:GlobalClassName]
              var members := globaltype:XMembers:Where ({ m => m:IsPublic })
              foreach var mem in members
-                 if mem:Kind == Kind.Field
-                    if mem:Modifiers:HasFlag(Modifiers.Const) .or. mem:Modifiers:HasFlag(Modifiers.InitOnly)
-                        mem:Kind := Kind.VODefine
-                    else
-                        mem:Kind := Kind.VOGlobal
-                    endif
-                 endif
-                 assembly:GlobalMembers:Add(mem:Prototype, mem)
+                 assembly:GlobalMembers:TryAdd(mem:Name, mem)
              next
          endif
          RETURN

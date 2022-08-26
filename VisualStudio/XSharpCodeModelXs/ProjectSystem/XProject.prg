@@ -681,7 +681,7 @@ CLASS XProject
         VAR result := List<IXMemberSymbol>{}
         foreach var item in dbresult
             if _AssemblyDict:TryGetValue(item:IdAssembly, out var asm)
-                IF asm:GlobalMembers:TryGetValue(item:SourceCode, out var pem)
+                IF asm:GlobalMembers:TryGetValue(item:MemberName, out var pem)
 
                     result:Add(pem)
                 endif

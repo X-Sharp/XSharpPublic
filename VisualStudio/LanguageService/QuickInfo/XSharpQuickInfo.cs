@@ -100,12 +100,22 @@ namespace XSharp.LanguageService
                 lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
                 var lastToken = tokenList.LastOrDefault();
                 //
-                if (lookupresult.Count > 0)
+               if (lookupresult.Count > 0)
                 {
                     var element = lookupresult[0];
+                    if (state == CompletionState.Constructors && element is IXTypeSymbol ixtype)
+                    {
+                        // when the cursor is before a "{" then show the constructor and not the type
+                        var ctors = ixtype.GetConstructors();
+                        if (ctors.Length > 0)
+                        {
+                            element = ctors[0];
+                        }
+                    }
                     var qiContent = new List<object>();
 
-                    if (element.Kind == Kind.Constructor && lastToken?.Type != XSharpLexer.CONSTRUCTOR && lastToken?.Type != XSharpLexer.LPAREN)
+                    if (element.Kind == Kind.Constructor && lastToken?.Type != XSharpLexer.LCURLY &&
+                        lastToken?.Type != XSharpLexer.CONSTRUCTOR && lastToken?.Type != XSharpLexer.LPAREN)
                     {
                         if (element.Parent != null)
                         {

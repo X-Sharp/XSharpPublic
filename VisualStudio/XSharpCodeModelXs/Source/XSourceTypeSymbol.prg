@@ -115,7 +115,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameterList AS STRING               GET SELF:_signature:TypeParameterList
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
       PROPERTY TypeParameterConstraintsList  AS STRING   GET SELF:_signature:TypeParameterConstraintsList
-      PROPERTY Location                      AS STRING   GET SELF:File:FullPath
+      PROPERTY Location                      AS STRING   GET SELF:File?:FullPath DEFAULT ""
       PROPERTY OriginalTypeName              AS STRING   GET SELF:TypeName
       PROPERTY IsFunctionsClass              AS LOGIC    GET SELF:Name == XLiterals.GlobalName
       METHOD ClearMembers() AS VOID
@@ -186,7 +186,7 @@ BEGIN NAMESPACE XSharpModel
              var aIF := oClone:Interfaces:ToArray()
              SELF:SetInterfaces(aIF)
         ENDIF
-        IF SELF:_baseType == NULL .and. SELF:BaseTypeName != NULL
+        IF SELF:_baseType == NULL .and. SELF:BaseTypeName != NULL .and. SELF:File != NULL
             SELF:_baseType := SELF:File:Project:FindType(SELF:BaseTypeName, SELF:File:Usings)
             if self:_baseType != NULL
                 self:_basemembers:Clear()
@@ -216,8 +216,8 @@ BEGIN NAMESPACE XSharpModel
          ELSE
             clone := SELF
          ENDIF
-         VAR otherFile := otherType:File:FullPath:ToLower()
-         VAR thisFile  := SELF:File:FullPath:ToLower()
+         VAR otherFile := otherType:File?:FullPath:ToLower() DEFAULT ""
+         VAR thisFile  := SELF:File?:FullPath:ToLower()  DEFAULT ""
          IF otherFile != thisFile
             SELF:IsPartial := TRUE
             IF otherType != NULL

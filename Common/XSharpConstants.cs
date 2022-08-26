@@ -13,6 +13,7 @@ namespace XSharp
         public const string guidXSharpProjectPkgString = "e299fb7b-d273-4678-9acf-b37b4af04a12";
         public const string guidXSharpProjectCmdSetString = "32a7b1cd-3663-4a70-b855-486671f5839c";
         public const string guidXSharpProjectFactoryString = "aa6c8d78-22ff-423a-9c7c-5f2393824e04";
+        public const string guidXSharpProjectFactoryStringCurly = "{"+ guidXSharpProjectFactoryString+"}";
 
         public const string guidXSharpVOFormEditor = "fc9f8e69-f338-4fa6-aca3-aa41e445849a";
         public const string guidXSharpVOFormEditorCmdSet = "b9ce6f12-e66c-4e77-9be6-0491dfcdc2d3";
@@ -26,7 +27,7 @@ namespace XSharp
         public const string guidXSharpVOFieldSpecEditor = "8c5d0bae-7a69-437b-ad0e-1e1b89721ebd";
         public const string guidXSharpVOFieldSpecEditorCmdSet = "24ea5441-eb10-45e7-9a44-797df84f8775";
 
-        public const string guidVulcanLanguageServiceString = "8d3f6d25-c81c-4fd8-9599-2f72b5d4b0c9";
+        public const string guidVulcanLanguageServiceString = "{8d3f6d25-c81c-4fd8-9599-2f72b5d4b0c9}";
         public const string guidVulcanSourceCodeEditor = "{e6787d5e-718e-4810-9c26-7cc920baa335}";
         public const string guidVulcanFormEditor = "{e9eecf7e-7aa2-490e-affc-c55fa2acc5a3}";
         public const string guidVulcanMenuEditor = "{adee1755-5ac3-485b-b857-f82d902362ca}";
@@ -89,7 +90,7 @@ namespace XSharp
         public const string CompletionOptionsPageGuidString = "E37D51D4-30AA-4A28-81CA-1A486397640C";
         public const string FileNodePropertiesGuidString = "B7971A68-EA46-4814-AC67-1424A59DC7EB";
         public const string IndentingOptionsPageGuidString = "A8545AC1-4DD9-4A18-890C-C96CDC790950";
-        
+
         public const string WPFProjectFactory = "5ADB76EC-7017-476A-A8E0-25D4202FFCF0";
         public const string WPFFlavor = "14989543-69A4-4C47-A31C-74B6A6DB719B";
 
@@ -119,7 +120,7 @@ namespace XSharp
         //public const int FieldSpec = 4;
         //public const int Menu = 5;
         public const int VO = 6;
-        //public const int Grid = 7;     
+        //public const int Grid = 7;
         //public const int Test = 8;
         //public const int Properties = 9;
         //public const int Reference = 10;

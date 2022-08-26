@@ -621,19 +621,17 @@ namespace Microsoft.VisualStudio.Project
         /// Among other things, the Project framework uses this
         /// guid to find your project and item templates.
         /// </summary>
-        public abstract Guid ProjectGuid
-        {
-            get;
-        }
+        public abstract Guid ProjectGuid { get; }
+        /// <summary>
+        /// Direct access to the string version of the ProjectGuid
+        /// </summary>
+        public abstract string ProjectGuidString { get;}
 
         /// <summary>
         /// Returns a caption for VSHPROPID_TypeName.
         /// </summary>
         /// <returns></returns>
-        public abstract string ProjectType
-        {
-            get;
-        }
+        public abstract string ProjectType { get; }
         #endregion
 
         #region virtual properties
@@ -647,7 +645,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                return ThreadUtilities.runSafe( () => 
+                return ThreadUtilities.runSafe( () =>
                 {
                     EnvDTE.Project automationObject = this.GetAutomationObject() as EnvDTE.Project;
                     if (automationObject != null)
@@ -954,7 +952,10 @@ namespace Microsoft.VisualStudio.Project
         }
 
         #endregion
-
+        /// <summary>
+        ///  Cached unique name
+        /// </summary>
+        public string UniqueName { get; set; }
       /// <summary>
       /// Gets or sets a flag that allows multiple links to the same file in the project.
       /// </summary>
@@ -1294,7 +1295,7 @@ namespace Microsoft.VisualStudio.Project
                 return this.filename;
             }
         }
-        #pragma warning disable VSTHRD010 
+        #pragma warning disable VSTHRD010
         protected bool IsIdeInCommandLineMode
         {
             get
@@ -2104,7 +2105,7 @@ namespace Microsoft.VisualStudio.Project
                     EnvDTE.ProjectItem item = (EnvDTE.ProjectItem)automationObject;
                     contextParams[2] = item.ProjectItems;
                 }
-            
+
                 contextParams[3] = this.ProjectFolder;
 
                 contextParams[4] = itemName;
@@ -2620,7 +2621,7 @@ namespace Microsoft.VisualStudio.Project
             if (String.IsNullOrEmpty(cTarget))
                 cTarget = "null";
             XSettings.LogMessage("<<-- ProjectNode.Build("+cTarget+")");
-            BuildResult result = BuildResult.FAILED; 
+            BuildResult result = BuildResult.FAILED;
             lock (ProjectNode.BuildLock)
             {
             bool engineLogOnlyCritical = BuildPrelude(output);
@@ -2714,7 +2715,7 @@ namespace Microsoft.VisualStudio.Project
             });
         }
 
- 
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase")]
         public virtual ProjectOptions GetProjectOptions(ConfigCanonicalName configCanonicalName)
         {
@@ -3371,6 +3372,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="newFile">The full path of the new project file.</param>
         protected virtual void RenameProjectFile(string newFile)
         {
+            this.UniqueName = null;
             ThreadHelper.ThrowIfNotOnUIThread();
             IVsUIShell shell = this.Site.GetService(typeof(SVsUIShell)) as IVsUIShell;
             Debug.Assert(shell != null, "Could not get the ui shell from the project");
@@ -3552,7 +3554,7 @@ namespace Microsoft.VisualStudio.Project
 
             if (options != null && this.buildProject != null )
             {
-                // Make sure the project configuration is set properly
+
                 var opts = this.options;
                 this.SetConfiguration(config);
                 this.options = opts;
@@ -4101,7 +4103,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception )
             {
-                
+
                 //XSettings.DisplayException(e);
 
             }
@@ -5698,7 +5700,7 @@ namespace Microsoft.VisualStudio.Project
                     // Copy the file to the correct location.
                     // We will suppress the file change events to be triggered to this item, since we are going to copy over the existing file and thus we will trigger a file change event.
                     // We do not want the filechange event to ocur in this case, similar that we do not want a file change event to occur when saving a file.
-                    
+
                     IVsFileChangeEx fileChange = ThreadUtilities.runSafe (() =>
                         {
                         return this.site.GetService(typeof(SVsFileChangeEx)) as IVsFileChangeEx;
@@ -6269,15 +6271,15 @@ namespace Microsoft.VisualStudio.Project
                 if (submission != null)
                 {
                     RunSafe(() => buildManagerAccessor.UnregisterLoggers(submission.SubmissionId));
-                    
+
                 }
                 if (designTime)
                 {
                     RunSafe(() => buildManagerAccessor.EndDesignTimeBuild());
                 }
-                
+
                 if (requiresUIThread)
-                { 
+                {
                     RunSafe(() => buildManagerAccessor.ReleaseUIThreadForBuild()  );
                 }
             }
@@ -6719,7 +6721,7 @@ namespace Microsoft.VisualStudio.Project
             projectTypeGuids = this.GetProjectProperty(ProjectFileConstants.ProjectTypeGuids);
             // In case someone manually removed this from our project file, default to our project without flavors
             if (String.IsNullOrEmpty(projectTypeGuids))
-                projectTypeGuids = this.ProjectGuid.ToString("B");
+                projectTypeGuids = this.ProjectGuidString;
             return VSConstants.S_OK;
         }
 
@@ -7617,7 +7619,7 @@ namespace Microsoft.VisualStudio.Project
             if (! basePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
             {
                 basePath += Path.DirectorySeparatorChar;
-            }    
+            }
 
             Url url = new Url(basePath);
             return url.MakeRelative(new Url(subPath));

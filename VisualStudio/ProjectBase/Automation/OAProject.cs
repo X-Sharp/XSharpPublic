@@ -155,7 +155,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         public virtual string Kind
         {
-            get { return project.ProjectGuid.ToString("B"); }
+            get { return project.ProjectGuidString; }
         }
 
         /// <summary>
@@ -194,21 +194,24 @@ namespace Microsoft.VisualStudio.Project.Automation
                 }
                 else
                 {
-                    var  result = ThreadHelper.JoinableTaskFactory.Run(async delegate
-                    {
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    if (! string.IsNullOrEmpty(project.UniqueName))
+                        return project.UniqueName;
+                    var result = ThreadHelper.JoinableTaskFactory.Run(async delegate
+                   {
+                       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         // Get Solution service
                         IVsSolution solution = this.project.GetService(typeof(IVsSolution)) as IVsSolution;
-                        if (solution == null)
-                        {
-                            throw new InvalidOperationException();
-                        }
+                       if (solution == null)
+                       {
+                           throw new InvalidOperationException();
+                       }
 
                         // Ask solution for unique name of project
                         string uniqueName = string.Empty;
-                        ErrorHandler.ThrowOnFailure(solution.GetUniqueNameOfProject(this.project, out uniqueName));
-                        return uniqueName;
-                    });
+                       ErrorHandler.ThrowOnFailure(solution.GetUniqueNameOfProject(this.project, out uniqueName));
+                       return uniqueName;
+                   });
+                    project.UniqueName = result;
                     return result;
                 }
             }
@@ -272,14 +275,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    string filename;
-                    uint format;
-                    ErrorHandler.ThrowOnFailure(project.GetCurFile(out filename, out format));
-                    return filename;
-                });
+                return this.Project.Url;
             }
         }
 

@@ -346,6 +346,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             initializer = GenerateMethodCall(XSharpQualifiedFunctionNames.ArrayNew, MakeArgumentList(args.ToArray()), true);
                         }
                     }
+                    else if (memvar.Context is XP.FoxbasevarContext foxcontext)
+                    {
+                        if (foxcontext.Expression != null)
+                        {
+                            initializer = foxcontext.Expression.Get<ExpressionSyntax>();
+                        }
+                    }
                     if (initializer == null)
                     {
                         initializer = MakePublicInitializer(memvar.Name);
@@ -2202,7 +2209,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 // generate a default catch block
-                // the code inside generateRecoverBlock 
+                // the code inside generateRecoverBlock
                 // also takes care of compiler option /vo17
                 var emptyStmt = _syntaxFactory.EmptyStatement(null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 catchClause = generateRecoverBlock(context, MakeBlock(emptyStmt), null);
@@ -2262,7 +2269,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //
                 // else                                                                    // else it is always an exception
                 //   // wraps Exception in Vulcan.Error Object                             // Always true unless obj = NULL
-                //   
+                //
                 //   uValue := (USUAL)  Error._WrapRawException(obj1))                     // assign 3
                 // when /vo17 is enabled then this line will become
                 //   uValue := _SequenceError(obj)

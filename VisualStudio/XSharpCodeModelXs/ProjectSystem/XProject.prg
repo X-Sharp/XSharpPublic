@@ -778,10 +778,15 @@ CLASS XProject
                 IF xfile == NULL
                     xfile := XSolution.FindFullPath(element:FileName)
                 ENDIF
-                VAR xmember := XSourceMemberSymbol{element, xfile}
-                source += element:SourceCode+Environment.NewLine
-                members:Add(xmember)
-                file := xmember:File
+                if (xfile != null)
+                    file := xfile
+                    VAR xmember := XSourceMemberSymbol{element, xfile}
+                    source += element:SourceCode+Environment.NewLine
+                    members:Add(xmember)
+                    if xmember:File != null
+                        file := xmember:File
+                    endif
+                endif
             NEXT
             VAR walker := SourceWalker{file, FALSE}
             walker:Parse(source)

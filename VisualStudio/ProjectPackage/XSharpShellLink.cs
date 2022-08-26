@@ -11,7 +11,7 @@ namespace XSharp.Project
 
         bool building;
         bool success;
-        
+
 
         internal XSharpShellLink()
         {
@@ -30,7 +30,7 @@ namespace XSharp.Project
                VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
                VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
            });
-            
+
         }
 
         private void SolutionEvents_OnAfterRenameProject(Community.VisualStudio.Toolkit.Project obj)
@@ -98,17 +98,26 @@ namespace XSharp.Project
         private void BuildEvents_SolutionBuildCancelled()
         {
             building = false;
+            // Start or Resume the model walker
+            XSharpModel.ModelWalker.Start();
         }
 
         private void BuildEvents_SolutionBuildDone(bool result)
         {
             building = false;
             success = result;
+            // Start or Resume the model walker
+            XSharpModel.ModelWalker.Start();
         }
 
         private void BuildEvents_SolutionBuildStarted(object sender, EventArgs e)
         {
             building = true;
+            if (XSharpModel.ModelWalker.IsRunning)
+            {
+                // Do not walk while building
+                XSharpModel.ModelWalker.Suspend();
+            }
         }
 
         public void SetStatusBarAnimation(bool onOff, short id)
@@ -205,7 +214,7 @@ namespace XSharp.Project
 
                 throw;
             }
-            
+
         }
 
         public bool IsDocumentOpen(string file)

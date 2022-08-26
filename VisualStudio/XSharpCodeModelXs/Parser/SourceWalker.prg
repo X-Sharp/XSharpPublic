@@ -182,7 +182,9 @@ BEGIN NAMESPACE XSharpModel
             WriteOutputMessage("-->> Parse() "+SELF:SourcePath+" locals "+lIncludeLocals:ToString()+" )")
             TRY
                 VAR stream   := SELF:Lex(cSource)
-                SELF:ParseTokens(stream:GetTokens(), FALSE, lIncludeLocals)
+                if stream != null
+                    SELF:ParseTokens(stream:GetTokens(), FALSE, lIncludeLocals)
+                endif
             CATCH e AS Exception
                 WriteOutputMessage("Parse() Failed:")
                 WriteOutputMessage(SELF:SourcePath)

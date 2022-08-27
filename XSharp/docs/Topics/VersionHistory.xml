@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -76,6 +76,7 @@
       <li styleclass="Body Text">Implemented delay creating InsertCmd, DeleteCmd, UpdateCmd until really needed</li>
       <li styleclass="Body Text">Added callback mechanism so customers can override the commandtext for these command (and for example route them to stored Procedures)</li>
       <li styleclass="Body Text">When a late bound method call cannot be resolved because the method is overloaded then a better error message is now generated that also includes the prototypes of the methods found (#1096)</li>
+      <li styleclass="Body Text">Added GoTo record number functionality to the WorkareasWindow in the XSharp.RT.Debugger library</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">FoxPro dialect</text></para>

@@ -267,7 +267,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (idMethod == null)
                 {
-                    // so we have an id and we cannot find a static method call. 
+                    // so we have an id and we cannot find a static method call.
                     return BindIndexerOrVOArrayAccess(node, idVar, analyzedArguments, diagnostics);
                 }
                 // when we get here then we have found both a function and a (undeclared) variable
@@ -284,13 +284,32 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var type = new BoundTypeExpression(node, null, Compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions));
                 return MakeInvocationExpression(node, type, ReservedNames.FoxArrayAccess, args.ToImmutableArray(), diagnostics);
             }
-            // we may get here for expressions such as Foo.Bar(10)
-            if (expression.Kind != BoundKind.BadExpression)
+            if (node.Expression.Kind() == SyntaxKind.SimpleMemberAccessExpression
+                && node.Expression is MemberAccessExpressionSyntax maes &&
+                maes.Expression is IdentifierNameSyntax ins )
             {
-                var type = expression.Type;
-                if (type.IsArrayType() || type.IsUsualType() || type.IsFoxArrayType())
+                // oTest:DoSomething(1)
+                // this may be a method call or a array access
+                // we have to decide at runtime
+
+
+                var bag = DiagnosticBag.GetInstance();
+                var idVar = BindXSIdentifier(ins, invoked: false, indexed: false, diagnostics: bag, bindMethod: false, bindSafe: false);
+                if (idVar.Type.IsUsualType() || idVar.Type.IsObjectType())
                 {
-                    return BindIndexerOrVOArrayAccess(node.Expression, expression, analyzedArguments, diagnostics);
+
+                    var strName = maes.Name.Identifier.Text.Trim();       // DoSomething
+                    var name = ConstantValue.Create(strName);
+                    var args = new List<BoundExpression>();
+                    if (!Compilation.Options.HasOption(CompilerOption.LateBinding, node))
+                    {
+                        diagnostics.Add(new CSDiagnostic(new CSDiagnosticInfo(ErrorCode.WRN_UndeclaredMember, idVar.Type, strName, "property or method", "call"), node.Location));
+                    }
+                    args.Add(idVar);
+                    args.Add(new BoundLiteral(node, name, Compilation.GetSpecialType(SpecialType.System_String)));
+                    args.AddRange(analyzedArguments.Arguments);
+                    var type = new BoundTypeExpression(node, null, Compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions));
+                    return MakeInvocationExpression(node, type, ReservedNames.FoxIVarGetOrSend, args.ToImmutableArray(), diagnostics);
                 }
             }
             return null;
@@ -398,7 +417,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             SourceMethodSymbol methodSym = null;
             if (lookupResult.IsClear)
             {
-                // Cannot locate types pointer for pcall 
+                // Cannot locate types pointer for pcall
                 Error(diagnostics, ErrorCode.ERR_PCallTypedPointerName, node, method, methodName);
                 methodSym = null;
             }

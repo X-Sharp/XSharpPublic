@@ -253,6 +253,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FoxFillArray = "__FoxFillArray";
         internal const string FoxArrayAccess = "__FoxArrayAccess";
         internal const string FoxArrayAccessByName = "__FoxArrayAccessByName";
+        internal const string FoxIVarGetOrSend = "__IVarGetOrSend";
         internal const string UsualEnumerator = "__UsualEnumerator";
         internal const string FoxPushWithBlock = "__FoxPushWithBlock";
         internal const string FoxPopWithBlock = "__FoxPopWithBlock";

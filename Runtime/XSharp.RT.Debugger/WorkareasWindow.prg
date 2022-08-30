@@ -213,7 +213,7 @@ CLASS WorkareasWindow INHERIT System.Windows.Forms.Form
 		SWITCH eMove
 		CASE MovementType.GoTo
 			LOCAL nRecNo AS INT
-			Int32.TryParse(SELF:oRecNoText:Text , REF nRecNo)
+			Int32.TryParse(SELF:oRecNoText:Text , OUT nRecNo)
 			oRdd:GoTo(nRecNo)
 		CASE MovementType.GoTop
 			oRdd:GoTop()

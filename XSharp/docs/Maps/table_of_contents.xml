@@ -116,6 +116,12 @@
     <topicref type="topic" id="44178055698880" build="ALL" modified="2020-12-14T11:27:22.098Z" icon="0" href="__IncludeExpressionBody">
       <caption translate="true">__IncludeExpressionBody</caption>
     </topicref>
+    <topicref type="topic" id="448035777001592" build="ALL" modified="2022-08-30T12:29:23.239Z" icon="0" href="__TypeAndCLass">
+      <caption translate="true">__TypeAndCLass</caption>
+    </topicref>
+    <topicref type="topic" id="448034724814297" build="ALL" modified="2022-08-30T12:37:14.207Z" icon="0" href="__localSpec">
+      <caption translate="true">__localSpec</caption>
+    </topicref>
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
     <caption translate="true">X# Documentation</caption>
@@ -1169,8 +1175,8 @@
           <topicref type="topic" id="384614637434115" build="ALL" modified="2019-09-24T14:19:09.607Z" icon="0" href="command_CLEAR_MEMORY">
             <caption translate="true">CLEAR MEMORY Command</caption>
           </topicref>
-          <topicref type="topic" id="385414682643284" build="ALL" modified="2019-09-24T14:19:09.620Z" icon="0" href="command_DECLARE">
-            <caption translate="true">DECLARE Statement</caption>
+          <topicref type="topic" id="385414682643284" build="ALL" modified="2022-08-30T12:24:55.907Z" icon="0" href="command_DECLARE">
+            <caption translate="true">DECLARE / DIMENSION Statement</caption>
           </topicref>
           <topicref type="topic" id="385414626514556" build="ALL" modified="2019-09-24T14:19:09.629Z" icon="0" href="command_MEMVAR">
             <caption translate="true">MEMVAR Statement</caption>
@@ -1339,6 +1345,9 @@
           </topicref>
           <topicref type="topic" id="384615072995608" build="ALL" modified="2019-09-24T14:19:49.132Z" icon="0" href="command_LOCAL">
             <caption translate="true">LOCAL Statement</caption>
+          </topicref>
+          <topicref type="topic" id="448034202442935" build="ALL" modified="2022-08-30T12:40:59.530Z" icon="0" href="command_LPARAMETERS">
+            <caption translate="true">LPARAMETERS Statement</caption>
           </topicref>
           <topicref type="topic" id="384615064228400" build="ALL" modified="2019-09-24T14:19:49.149Z" icon="0" href="command_STATIC">
             <caption translate="true">STATIC Statement</caption>

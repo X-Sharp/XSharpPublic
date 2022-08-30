@@ -1,25 +1,28 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>DECLARE Statement</title>
+  <title>DECLARE / DIMENSION Statement</title>
   <keywords>
     <keyword>Declaration statements</keyword>
+    <keyword>DECLARE</keyword>
     <keyword>DECLARE statement</keyword>
+    <keyword>DIMENSION</keyword>
     <keyword>Runtime declaration</keyword>
     <keyword>Statements</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">DECLARE Statement</para>
+      <para styleclass="Heading1">DECLARE/DIMENSION Statement // FoxPro dialect only</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">Create and initialize private memory variables and arrays.</para>
+    <para styleclass="Normal">Create and initialize private &#160;variables of the FoxPro array type<br/>Note: &#160;and Declare are synonyms</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>DECLARE is a compatibility command and is no longer recommended. &#160;It is superseded by PRIVATE. &#160;See PRIVATE for more information.</para>
+    <para styleclass="Code with box">DIMENSION &lt;arrayName&gt; <text style="font-weight:bold;">(</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">)</text> [, &lt;arrayName&gt; ( &lt;nRows&gt; [, &lt;nColumns&gt;] ) ] &#160; &#160; // FoxPro dialect only<br/>DIMENSION &lt;arrayName&gt; <text style="font-weight:bold;">[</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">]</text> [, &lt;arrayName&gt; <text style="font-weight:bold;">[</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">]</text> ] &#160; &#160; // FoxPro dialect only<br/>DECLARE &#160; &lt;arrayName&gt; <text style="font-weight:bold;">(</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">)</text> [, &lt;arrayName&gt; ( &lt;nRows&gt; [, &lt;nColumns&gt;] ) ] &#160; &#160; // FoxPro dialect only<br/>DECLARE &#160; &lt;arrayName&gt; <text style="font-weight:bold;">[</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">]</text> [, &lt;arrayName&gt; <text style="font-weight:bold;">[</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">]</text> ] &#160; &#160; // FoxPro dialect only</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>DECLARE and DECLARE METHOD are two completely different statements! </para>
-        <para styleclass="Heading1"><text>See Also</text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_ArrayCreate.htm" domain="XSharpRef.chm">ArrayCreate()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE_METHOD">DECLARE METHOD</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link></para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">arrayName&gt;<tab />Variable name of array . The array will have the dimensions as declared with &lt;nRows&gt; and &lt;nColumns&gt;. The array may be declared with parentheses as delimiters but also with square brackets. <br/>&lt;nColumns&gt; is optional<br/>We recommend the use of square brackets.</para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

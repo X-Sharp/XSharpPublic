@@ -521,7 +521,7 @@ METHOD AddSubToolBarBand(symToolBar, iPos, iMinWidth, lFlat_dwStyle)
 		rbBand:wID        := 1042U + dwBandCount
 		rbBand:cx         := iMinWidth
 		rbBand:cxMinChild := iMinWidth
-		rbBand:cyMinChild := HiWord(SendMessage(hWndNewTB, TB_GETBUTTONSIZE, 0, 0)) + (DWORD) IIF(_AND(dwSubStyle, TBSTYLE_FLAT) = TBSTYLE_FLAT,2, 6)
+		rbBand:cyMinChild := HiWord((DWORD) SendMessage(hWndNewTB, TB_GETBUTTONSIZE, 0, 0)) + (DWORD) IIF(_AND(dwSubStyle, TBSTYLE_FLAT) = TBSTYLE_FLAT,2, 6)
 
 
 		IF SELF:__ButtonStyle != TB_ICONONLY

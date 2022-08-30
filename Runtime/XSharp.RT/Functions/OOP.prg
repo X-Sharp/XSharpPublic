@@ -408,7 +408,7 @@ internal static class OOPHelpers
                             if elementType:IsAssignableFrom(args[nArg]:SystemType)
                                 aVarArgs:SetValue(args[nArg], nArg-nPar)
                             else
-                                aVarArgs:SetValue(OOPHelpers.VOConvert(args[nArg], elementType), nArg-nPar)
+                                aVarArgs:SetValue(OOPHelpers.ValueConvert(args[nArg], elementType), nArg-nPar)
                             endif
                         catch
                             aVarArgs:SetValue(null, nArg-nPar)
@@ -421,7 +421,7 @@ internal static class OOPHelpers
                     // try to convert to the expected type, but don't do this for out parameters.
                     // We can leave the slot empty for out parameters
                     if ! pi:IsOut
-                        oArgs[nPar]  := OOPHelpers.VOConvert(args[nPar], parType)
+                        oArgs[nPar]  := OOPHelpers.ValueConvert(args[nPar], parType)
                     endif
                 endif
             next
@@ -840,14 +840,14 @@ internal static class OOPHelpers
                     visible := IsInternalVisible(propInfo)
                 endif
                 if visible
-                    oValue := OOPHelpers.VOConvert(oValue, propInfo:PropertyType)
+                    oValue := OOPHelpers.ValueConvert(oValue, propInfo:PropertyType)
                     propInfo:SetValue(oObject,oValue , null)
                     return
                 endif
             endif
             var fldInfo := OOPHelpers.FindField(t, cIVar, false, lSelf)
             if fldInfo != null_object
-                oValue := OOPHelpers.VOConvert(oValue, fldInfo:FieldType)
+                oValue := OOPHelpers.ValueConvert(oValue, fldInfo:FieldType)
                 fldInfo:SetValue(oObject, oValue)
                 return
             endif
@@ -1046,7 +1046,7 @@ internal static class OOPHelpers
         return null_object
 
 
-    static method VOConvert(uValue as usual,toType as System.Type) as object
+    static method ValueConvert(uValue as usual,toType as System.Type) as object
         local oValue := null as object
         if toType == TYPEOF(float)
             return (float) uValue
@@ -1084,10 +1084,19 @@ internal static class OOPHelpers
                 if oOperator != null_object
                     // oValue is either a boxed USUAL (for operators of the USUAL type)
                     // or the real thing, depending on the operator that was chosen
-                    return oOperator:Invoke(null, <object>{oValue})
+                    TRY
+                        return oOperator:Invoke(null, <object>{oValue})
+                    CATCH
+                        local ex as Error
+                        ex := Error{Gencode.EG_WRONGCLASS, "", "Could not convert value "+oValue:ToString() + " to type " + toType:Name}
+                        ex:FuncSym := __FUNCTION__
+                        ex:Stack := ErrorStack()
+                        throw ex
+
+                    END TRY
                 endif
             endif
-
+            // when we get here then there is no operator and we will try to change the type..
             local oRet as object
             try
                 oRet := uValue

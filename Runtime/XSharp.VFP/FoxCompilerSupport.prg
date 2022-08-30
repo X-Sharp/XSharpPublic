@@ -13,6 +13,7 @@ USING XSharp.Internal
 USING XSharp.RDD
 USING XSharp.RDD.Support
 USING System.Collections.Generic
+USING System.Reflection
 
 PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
     InitFoxState()
@@ -196,3 +197,39 @@ FUNCTION __FoxGetWithExpression() AS OBJECT
     error:FuncSym := ProcName(1)
     error:SetStackTrace(ErrorStack(1))
     THROW error
+
+
+function __IVarGetOrSend(oObj as usual, cName as string, nIndex as long) as usual
+    var members := __CheckParams(oObj, cName)
+    // this returns an array with at least one member (there may be more when the method is overloaded)
+    var mem := members[1]
+    if mem is MethodInfo
+        return __InternalSend(oObj, cName, nIndex)
+    endif
+    var aVar := IVarGet(oObj, cName)
+    return aVar[nIndex]
+
+function __IVarGetOrSend(oObj as usual, cName as string, nIndex1 as long, nIndex2 as long) as usual
+    var members := __CheckParams(oObj, cName)
+    // this returns an array with at least one member (there may be more when the method is overloaded)
+    var mem := members[1]
+    if mem is MethodInfo
+        return __InternalSend(oObj, cName, nIndex1, nIndex2)
+    endif
+    var aVar := IVarGet(oObj, cName)
+    return aVar[nIndex1, nIndex2]
+
+static function __CheckParams(oObj as object, cName as string) as MemberInfo[]
+ if oObj == null
+        Throw ArgumentException{"Parameter should not be null", nameof(oObj)}
+    endif
+    if String.IsNullOrEmpty(cName)
+        Throw ArgumentException{"Parameter should not be null or empty", nameof(cName)}
+    endif
+    local oType as System.Type
+    oType := oObj:GetType()
+    var members := oType:GetMember(cName, BindingFlags.Instance+BindingFlags.IgnoreCase+BindingFlags.Public)
+    if members:Length == 0
+        Throw Exception{i"Class '{oType:Name}' does not have a member with the name '{cName}'"}
+    endif
+    return members

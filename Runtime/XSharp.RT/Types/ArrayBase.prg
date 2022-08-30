@@ -242,7 +242,7 @@ PUBLIC CLASS __ArrayBase<T> ;
             LOCAL oProp    AS PropertyInfo
             oProp    := SELF:__GetIndexer(TRUE)
             IF oProp != NULL
-                oProp:SetValue(oElement, OOPHelpers.VOConvert(value, oProp:PropertyType), <OBJECT>{index2} )
+                oProp:SetValue(oElement, OOPHelpers.ValueConvert(value, oProp:PropertyType), <OBJECT>{index2} )
                 RETURN
             ENDIF
             THROW Error{ArgumentException{"Indexed property missing for type: "+oElement:GetType():FullName}}
@@ -287,7 +287,7 @@ PUBLIC CLASS __ArrayBase<T> ;
             LOCAL oProp    AS PropertyInfo
             oProp    := SELF:__GetIndexer(FALSE)
             IF oProp != NULL
-                oProp:SetValue(oElement, OOPHelpers.VOConvert(value, oProp:PropertyType), <OBJECT>{name} )
+                oProp:SetValue(oElement, OOPHelpers.ValueConvert(value, oProp:PropertyType), <OBJECT>{name} )
                 RETURN
             ENDIF
             oProp	 := SELF:__GetProperty( name)

@@ -156,7 +156,11 @@ CLASS BinaryEntity
 			oGroupNode := oDocument:CreateElement("ExProperties")
 			oParentNode:AppendChild(oGroupNode)
 			FOR n := 0 UPTO oItem:aProperties:Count - 1
-				AppendElement(oDocument , oGroupNode , oItem:aProperties:Get(n):Name , (STRING)oItem:aProperties:Get(n):Value)
+				TRY
+					AppendElement(oDocument , oGroupNode , oItem:aProperties:Get(n):Name , (STRING)oItem:aProperties:Get(n):Value)
+				CATCH e AS Exception
+					ShowWarning("There was an error while applying property named '" + oItem:aProperties:Get(n):Name + "' to a binary entity. Exception message:" + CRLF + CRLF + e:ToString())
+				END TRY
 			NEXT
 		END IF
 

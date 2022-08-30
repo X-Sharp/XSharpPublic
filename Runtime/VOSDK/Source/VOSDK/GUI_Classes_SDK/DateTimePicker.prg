@@ -308,9 +308,9 @@ METHOD SetDateTime(dNewDate AS DATE, sNewTime AS STRING) AS VOID STRICT
         // get current value from control and set the parts that are given
         SendMessage(SELF:Handle(), DTM_GETSYSTEMTIME, 0, LONG(_CAST, @sDate))
         IF dNewDate != NULL_DATE
-            sDate:wDay       := LoWord (dNewDate:Day )
-   	        sDate:wMonth     := LoWord (dNewDate:Month )
-       	    sDate:wYear      := LoWord (dNewDate:Year )
+            sDate:wDay       := LoWord ((DWORD) dNewDate:Day )
+   	        sDate:wMonth     := LoWord ((DWORD) dNewDate:Month )
+       	    sDate:wYear      := LoWord ((DWORD) dNewDate:Year )
         ENDIF
 
 
@@ -324,9 +324,9 @@ METHOD SetDateTime(dNewDate AS DATE, sNewTime AS STRING) AS VOID STRICT
 		    dNewDate := ConDate(sDate:wYear, sDate:wMonth, sDate:wDay)
 		    IF dNewDate == NULL_DATE
 	            dNewDate          := Today()
-	            sDate:wDay       := LoWord (dNewDate:Day )
-	   	        sDate:wMonth     := LoWord (dNewDate:Month )
-	       	    sDate:wYear      := LoWord (dNewDate:Year )
+	            sDate:wDay       := LoWord ((DWORD) dNewDate:Day )
+	   	        sDate:wMonth     := LoWord ((DWORD) dNewDate:Month )
+	       	    sDate:wYear      := LoWord ((DWORD) dNewDate:Year )
         	ENDIF
         	// End KHR
 

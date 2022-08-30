@@ -24,7 +24,6 @@ time to time, when the compiler changes.
 
 #Code formatting
 We have added an .EditorConfig in the root of this folder. This helps to ensure consistent code formatting .
-For Visual Studio 2017 you will need to load the EditorConfig LanguageService extension to enable this.
-For Visual Studio 2015 you will need to load the EditorConfig extension to enable this.
+For Visual Studio 2017 and earlier you will need to load the EditorConfig LanguageService extension to enable this.
 For more info see https://editorconfig.org/
 We intend to move the case synchronization setting to this file as well so you can easily ensure consistent case synchronization as well.

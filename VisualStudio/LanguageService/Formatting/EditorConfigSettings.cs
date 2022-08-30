@@ -8,7 +8,6 @@ using System.Data.Common;
 using EditorConfig.Core;
 using Microsoft.VisualStudio.Text;
 using Community.VisualStudio.Toolkit;
-using MessagePack.Internal;
 using System.Text;
 
 namespace XSharp.LanguageService

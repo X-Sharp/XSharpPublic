@@ -135,7 +135,9 @@
     <Compile Include="OptionsPages\FormattingOptionsControl.Designer.cs">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="OptionsPages\IndentingOptionsPage.cs" />
+    <Compile Include="OptionsPages\IndentingOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -148,10 +150,18 @@
     <Compile Include="OptionsPages\IntellisenseOptionsControl.Designer.cs">
       <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="OptionsPages\FormattingOptionsPage.cs" />
-    <Compile Include="OptionsPages\OtherOptionsPage.cs" />
-    <Compile Include="OptionsPages\IntellisenseOptionsPage.cs" />
-    <Compile Include="OptionsPages\XSDialogPage.cs" />
+    <Compile Include="OptionsPages\FormattingOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\OtherOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\IntellisenseOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\XSDialogPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="OptionsPages\XSharpSpecialOptions.cs">
       <SubType>Form</SubType>
     </Compile>

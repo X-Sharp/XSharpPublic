@@ -20,7 +20,7 @@
     // whether one file is newer than another.
     // This typically would change if we're generating a patch, otherwise it should be the same as VERSION_NUMBER
     #define FILEVERSION_NUMBER   "2.13.1.0"
-    #define INFORMATIONAL_NUMBER  "2.13 GA"
+    #define INFORMATIONAL_NUMBER  "2.13a GA"
 
     #ifdef __DEBUG__
         #define ASSEMBLY_CONFIGURATION "Debug"

@@ -1,0 +1,15 @@
+- Extract the Codegenerator from the CodeDomprovider in a separate DLL
+- Link the CodeDomprovider to this component
+- Create a WriteCodeFragment Task
+<UsingTask TaskName="WriteCodeFragment" AssemblyFile="$(FSharpBuildAssemblyFile)" />
+- Create this task from the example in the FSharp.Build.DLL and link the code generation to the new DLL
+
+- Test the build process with the BeforeCommonProps
+- Check 'old' style csproj to see what is imported
+- Make sure our projects import similar things
+- Check how the publishing of C# works and what's needed to do that for X#
+- Check how the build as single exe works
+- Check how Roslyn Nuget interacts with MsBuild and see if we can do it in a similar way with our nuget package
+- Same for creating Nuget packages
+
+

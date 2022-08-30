@@ -20,10 +20,10 @@ prevent name conflicts when assemblies of both origin are in memory at the same 
 
 After retrieving this source code, you need to perform the following steps to be able to compile your XSharp Compiler:
 
-- Make sure you have VS 2019 or 2017 installed. The preferred edition is Enterprise.
+- Make sure you have VS 2022 installed. The preferred edition is Enterprise. It also works on VS 2019
 - Make sure you have Java JDK on your machine and that you have the Java binaries folder in your Path. Java can be downloaded from https://jdk.java.net/.
 - Goto the root of the repository
-- If you do not have Vs 2019 Enterprise you can set 2 environment variables to the VS version and edition you have installed
+- If you do not have Vs 2022 Enterprise you can set 2 environment variables to the VS version and edition you have installed
   SET VSVERSION=2019  (2017 also works)
   SET VSEDITION=Enterprise (or whichever edition you have installed i.e. Professional, Community, BuildTools)
 - Run the cmd file ContinuousIntegrationBuild.cmd 
@@ -47,7 +47,7 @@ Of course we welcome all additions, bug fixes etc.
 Additional notes:
 - to open the projects in Visual Studio, you MUST have the correct .Net Core version loaded on your machine 
   The version number for this SDK is specified in the global.json files inside the Roslyn and XSharp folders. 
-  At this moment this version is 5.0.103
+  At this moment this version is 5.0.102
   This version number matches the version number in Roslyn\build\Targets\Tools.props and Roslyn\build\Targets\Tools.props.
 - The CI build process for Roslyn does not use this setting. This process uses the version defined in Roslyn\build\Targets\Tools.props 
   and downloads a copy of .Net core into the Roslyn\Binaries\Tools\dotnet folder. The dotnet.exe file in this folder is used for the CI build.

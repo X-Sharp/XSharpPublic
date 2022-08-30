@@ -16,13 +16,13 @@
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Else">#else</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endif">#endif</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Region">#endregion</link></para>
-    <para styleclass="Normal">#if</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-If">#if</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef">#ifdef</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef">#ifndef</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Include">#include</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Line">#line</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Region">#region</link></para>
-    <para styleclass="Normal">#stdout</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Stdout">#stdout</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Translate">#translate</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Undef">#undef</link></para>
     <para styleclass="Normal"></para>

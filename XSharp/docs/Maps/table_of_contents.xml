@@ -598,7 +598,7 @@
       <topicref type="topic" id="423891384096573" build="ALL" modified="2020-04-21T14:57:08.391Z" icon="0" href="XML-Documentation-Comments">
         <caption translate="true">XML Documentation Comments</caption>
       </topicref>
-      <topicref type="topic" id="437324895106794" modified="2020-04-21T20:51:50.288Z" icon="0" href="Strong-Typing">
+      <topicref type="topic" id="437324895106794" build="ALL" modified="2022-08-30T15:16:54.308Z" icon="0" href="Strong-Typing">
         <caption translate="true">Strong Typing</caption>
       </topicref>
       <topicref type="topic" id="443027840779407" build="ALL" modified="2021-04-16T16:01:08.770Z" icon="0" href="Runtime-Scripting">
@@ -785,7 +785,7 @@
         </topicref>
         <topicref type="topic" id="436964307295986" modified="2019-09-26T11:11:01.222Z" icon="0" href="cmd_cat_comment">
           <caption translate="true">Comment</caption>
-          <topicref type="topic" id="384614496544850" modified="2020-02-11T10:06:52.616Z" icon="0" href="command_NOTE">
+          <topicref type="topic" id="384614496544850" build="ALL" modified="2022-08-30T15:16:32.720Z" icon="0" href="command_NOTE">
             <caption translate="true">Comments</caption>
           </topicref>
         </topicref>
@@ -1319,7 +1319,7 @@
           <topicref type="topic" id="441616197923658" build="ALL" modified="2020-11-26T11:07:48.664Z" icon="0" href="Command_SET_CONSOLE">
             <caption translate="true">SET CONSOLE Command</caption>
           </topicref>
-          <topicref type="topic" id="441614633390246" modified="2020-11-26T12:00:37.680Z" icon="0" href="Command_SET_TEXTMERGE">
+          <topicref type="topic" id="441614633390246" build="ALL" modified="2022-08-30T15:16:03.941Z" icon="0" href="Command_SET_TEXTMERGE">
             <caption translate="true">SET TEXTMERGE Command</caption>
           </topicref>
           <topicref type="topic" id="441615750279407" build="ALL" modified="2022-03-29T16:22:10.726Z" icon="0" href="command_TEXT">
@@ -1403,6 +1403,18 @@
         </topicref>
         <topicref type="topic" id="423888894934256" build="ALL" modified="2019-08-09T12:35:20.228Z" icon="0" href="Workarea_Operators">
           <caption translate="true">Workarea</caption>
+        </topicref>
+        <topicref type="topic" id="448037249319543" build="ALL" modified="2022-08-30T15:25:05.659Z" icon="0" href="operator_IIF">
+          <caption translate="true">IIF Operator</caption>
+        </topicref>
+        <topicref type="topic" id="448037383456629" build="ALL" modified="2022-08-30T15:27:58.053Z" icon="0" href="SizeOf-Operator">
+          <caption translate="true">SizeOf Operator</caption>
+        </topicref>
+        <topicref type="topic" id="448037292972327" build="ALL" modified="2022-08-30T15:28:08.815Z" icon="0" href="TypeOf-operator">
+          <caption translate="true">TypeOf operator</caption>
+        </topicref>
+        <topicref type="topic" id="448037931033087" build="ALL" modified="2022-08-30T15:28:18.153Z" icon="0" href="NameOf-Operator">
+          <caption translate="true">NameOf Operator</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="423891454294167" build="ALL" modified="2016-01-19T22:47:35.715Z" icon="0" href="X-Preprocessor-Directives">

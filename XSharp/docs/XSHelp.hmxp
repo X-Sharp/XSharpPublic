@@ -192,7 +192,6 @@
       <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER</config-value>
       <config-value name="make5include">PRINT</config-value>
       <config-value name="make5status">*</config-value>
-      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -731,7 +730,6 @@
       <file-mod href="Disclaimer.xml"/>
       <file-mod href="__IncludeLibCore.xml"/>
       <file-mod href="cmd_cat_comment.xml"/>
-      <file-mod href="command_NOTE.xml"/>
       <file-mod href="__IncludeAttributes.xml"/>
       <file-mod href="__ExitLoop.xml"/>
       <file-mod href="__For.xml"/>
@@ -768,10 +766,8 @@
       <file-mod href="Strings.xml"/>
       <file-mod href="Types.xml"/>
       <file-mod href="Unsafe-Code-and-Pointers.xml"/>
-      <file-mod href="Strong-Typing.xml"/>
       <file-mod href="Debugger.xml"/>
       <file-mod href="__IncludeLibVFP.xml"/>
-      <file-mod href="Command_SET_TEXTMERGE.xml"/>
       <file-mod href="__FieldList.xml"/>
       <file-mod href="__FoxFieldList.xml"/>
       <file-mod href="__IncludeTypeParameterConstraints.xml"/>

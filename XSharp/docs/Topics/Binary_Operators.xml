@@ -19,7 +19,7 @@
     </header>
     <para styleclass="Normal">X# uses the following binary operators:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="8" colcount="3" style="width:auto;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="9" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
@@ -106,6 +106,15 @@
         </td>
         <td>
           <para styleclass="Body Text">When x is not null then x, otherwise y. Can be chained: x DEFAULT y DEFAULT z or x ?? y ?? z</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+          <para styleclass="Body Text"></para>
         </td>
       </tr>
     </table></para>

@@ -182,10 +182,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Body Text">??=</para>
+          <para styleclass="Body Text">?=</para>
         </td>
         <td>
-          <para styleclass="Body Text">a ??= &quot;somevalue&quot;</para>
+          <para styleclass="Body Text">a ?= &quot;somevalue&quot;</para>
         </td>
         <td>
           <para styleclass="Body Text">When a is NULL then it will be assigned &quot;somevalue&quot;. Otherwise a is not changed</para>

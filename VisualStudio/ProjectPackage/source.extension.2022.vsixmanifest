@@ -17,9 +17,8 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         </InstallationTarget>
     </Installation>
     <Assets>
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="Designers.pkgdef" TargetPath="|%CurrentProject%|" d:VsixSubPath="ProjectSystem" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharpDesigners.pkgdef" TargetPath="|%CurrentProject%|" d:VsixSubPath="ProjectSystem" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" d:ProjectName="%CurrentProject%" d:VsixSubPath="ProjectSystem" />
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharpDebugger.pkgdef" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|XSharpLanguageService2022|" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharpAppDesigner2022.pkgdef" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharpLanguageService2022.pkgdef" />

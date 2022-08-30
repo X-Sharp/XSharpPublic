@@ -10,7 +10,6 @@ function Start() as void strict
       catch e as Exception
           ? e:ToString()
      end try
-    console.ReadKey()
 
 return
 

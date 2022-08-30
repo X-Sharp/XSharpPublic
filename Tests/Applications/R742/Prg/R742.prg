@@ -93,7 +93,7 @@ CLASS Tester
     PROTECTED aValues AS ARRAY
     METHOD TestMethod
         This.aValues := {1,2,3}
-        xassert(This.aValues(1) == 1)
+        //xassert(This.aValues(1) == 1)
         xassert(This.aValues[1] == 1)
         RETURN  FALSE
 END CLASS

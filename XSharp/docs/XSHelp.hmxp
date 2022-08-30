@@ -729,7 +729,6 @@
       <file-mod href="__typeList.xml"/>
       <file-mod href="Disclaimer.xml"/>
       <file-mod href="__IncludeLibCore.xml"/>
-      <file-mod href="cmd_cat_comment.xml"/>
       <file-mod href="__IncludeAttributes.xml"/>
       <file-mod href="__ExitLoop.xml"/>
       <file-mod href="__For.xml"/>
@@ -764,7 +763,6 @@
       <file-mod href="Nullable-Types.xml"/>
       <file-mod href="Statements_-Expressions-and-Op.xml"/>
       <file-mod href="Strings.xml"/>
-      <file-mod href="Types.xml"/>
       <file-mod href="Unsafe-Code-and-Pointers.xml"/>
       <file-mod href="Debugger.xml"/>
       <file-mod href="__IncludeLibVFP.xml"/>

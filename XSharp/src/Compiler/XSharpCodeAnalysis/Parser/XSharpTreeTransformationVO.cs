@@ -4,13 +4,8 @@
 // See License.txt in the project root for license information.
 //
 #nullable disable
-using System;
 using System.Linq;
-using System.Collections.Generic;
-using Roslyn.Utilities;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using Microsoft.CodeAnalysis.PooledObjects;
@@ -147,7 +142,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     MakeSeparatedList(
                         isDim ? GenerateBuffer(context.Id.Get<SyntaxToken>(), MakeBracketedArgumentList(context.ArraySub._ArrayIndex.Select(e => _syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>())).ToArray()))
                         : GenerateVariable(context.Id.Get<SyntaxToken>()))),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))); 
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void EnterVounion([NotNull] XP.VounionContext context)

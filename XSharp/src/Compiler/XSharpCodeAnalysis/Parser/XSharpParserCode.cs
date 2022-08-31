@@ -2,7 +2,7 @@
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
-// 
+//
 #nullable disable
 
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
@@ -20,7 +20,7 @@ using System.Diagnostics;
 using MCT = Microsoft.CodeAnalysis.Text;
 using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
-#endif 
+#endif
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     internal class XSharpErrorListener : IAntlrErrorListener<IToken>
@@ -60,6 +60,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool AllowNamedArgs => Options.AllowNamedArguments;
         public bool IsXPP => Options.Dialect == XSharpDialect.XPP;
         public bool IsFox => Options.Dialect == XSharpDialect.FoxPro;
+        public bool IsVO => Options.Dialect == XSharpDialect.VO || Options.Dialect == XSharpDialect.Vulcan;
+        public bool HasMemVars => Options.SupportsMemvars;
         void unexpectedToken(string token)
         {
             if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)

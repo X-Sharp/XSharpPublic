@@ -4,6 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
+// This file is bested edited with VS Code and the ANTLR4 grammar extension mike-lischke.vscode-antlr4
+
 grammar XSharp;
 
 /*
@@ -37,7 +39,7 @@ macroScript         : ( CbExpr=codeblock | Code=codeblockCode ) EOS
 source              :  (Entities+=entity )* EOF
                     ;
 
-foxsource           :  (MemVars += filewidememvar)*
+foxsource           :  ({HasMemVars}? MemVars += filewidememvar)*
                        StmtBlk=statementBlock
                        (Entities+=entity )* EOF
                     ;
@@ -53,8 +55,8 @@ entity              : namespace_
                     | event_
                     | enum_
                     | globalAttributes          // Assembly attributes, Module attributes etc.
-                    | vostruct                  // Compatibility (unsafe) structure
-                    | vounion                   // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
+                    | {IsVO}? vostruct          // VO Compatibility (unsafe) structure
+                    | {IsVO}? vounion           // VO Compatibility (unsafe) structure with members aligned at FieldOffSet 0
                     // members of the functions class
                     | funcproc                  // This will become part of the 'Globals' class
                     | using_                    // Using Namespace
@@ -66,15 +68,13 @@ entity              : namespace_
                     | {IsXPP}? xppmethod        // XPP method, will be linked to XPP Class
                     | constructor               // Constructor Class xxx syntax
                     | destructor                // Destructor Class xxx syntax
-                    | filewidememvar            // memvar declared at file level
-                    | foxdll                    // FoxPro style of declaring Functions in External DLLs
+                    | {HasMemVars}? filewidememvar  // memvar declared at file level
+                    | {IsFox}? foxdll           // FoxPro style of declaring Functions in External DLLs
                     | eos                       // Blank Lines between entities
                     ;
 
-
 eos                 : EOS+
                     ;
-
 
 funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                         T=funcproctype Sig=signature
@@ -98,11 +98,9 @@ signature             : Id=identifier
                       ;
 
 
-
 vodummyclauses      :(EXPORT LOCAL)?                                       // Export Local exists in VO but is ignored in X#
-                    (DLLEXPORT STRING_CONST)?                             // The DLLEXPORT clause exists in VO but is ignored in X#
+                     (DLLEXPORT STRING_CONST)?                             // The DLLEXPORT clause exists in VO but is ignored in X#
                     ;
-
 
 callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CALLBACK | FASTCALL | THISCALL)
                     ;
@@ -128,7 +126,6 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
                       (	Ordinal=REAL_CONST
                        |  DOT Entrypoint=identifierString Address=ADDROF? Number=INT_CONST? (NEQ2 INT_CONST)?
                       )
-
                       ( CharSet=(AUTO | ID) )?  // ID must be either ANSI or UNICODE
                       EOS
                     ;
@@ -136,15 +133,12 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
 dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL | ASPEN | WINCALL | CALLBACK)
                     ;
 
-
-
                     // Note that when an alias is specified (AS) then that is the name that we should use and then the Id is the entrypoint
 foxdll              : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
                       DECLARE (Type=datatype)? Id=identifier IN Dll=identifier (DOT Extension=identifierString)? (AS Alias=identifier)?
                       ( Params+=foxdllparam (COMMA Params+=foxdllparam)* )?
                       EOS
                     ;
-
 
 foxdllparam         : (Attributes=attributes)? Type=datatype (Address=ADDROF)? (Name=identifier)?
                     ;
@@ -410,7 +404,7 @@ classmember         : Member=method                                 #clsmethod
                     | Member=enum_                                  #nestedEnum
                     | Member=event_                                 #nestedEvent
                     | Member=interface_                             #nestedInterface
-                    | Member=vodllmethod                            #clsdllmethod
+                    | {IsVO}? Member=vodllmethod                    #clsvodllmethod   //  old style declaration of methods inside external DLL
                     | eos                                           #clseos// Blank Lines between entities
                     ;
 
@@ -499,26 +493,28 @@ attribute           : Name=name (LPAREN (Params+=attributeParam (COMMA Params+=a
                     ;
 
 attributeParam      : Name=identifierName Op=assignoperator Expr=expression     #propertyAttributeParam
-                    | Expr=expression                                   #exprAttributeParam
+                    | Expr=expression                                           #exprAttributeParam
                     ;
 
 globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT EOS
                     ;
 
-globalAttributeTarget : Token=ID COLON      // We'll  check for ASSEMBLY and MODULE later
+globalAttributeTarget : Token=ID COLON      // We'll Check for ASSEMBLY and MODULE later
                       ;
 
+
 filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS
-                    | {!IsFox}? Token=PUBLIC XVars+=xbasevar (COMMA XVars+=xbasevar)*  end=EOS
-                    | {IsFox}?  Token=PUBLIC FoxVars+=foxbasevar (COMMA FoxVars+=foxbasevar)*  end=EOS
+                    | {!IsFox }? Token=PUBLIC XVars+=memvar (COMMA XVars+=memvar)*  end=EOS
+                    | {IsFox  }? Token=PUBLIC FoxVars+=foxmemvar (COMMA FoxVars+=foxmemvar)*  end=EOS
                     ;
 
 
-statement           : Decl=localdecl                        #declarationStmt
-                    | Decl=localfuncproc                    #localFunctionStmt
-                    | {!IsFox}? Decl=xbasedecl              #xbasedeclStmt  // Memvar declarations, not for FoxPro
-                    | Decl=fielddecl                        #fieldStmt
-                    | {IsFox}? Decl=foxdecl                 #foxdeclStmt    // Memvar declarations FoxPro specific
+statement           : Decl=localdecl                            #declarationStmt
+                    | {IsFox}? Decl=foxlocaldecl                #foxlocaldeclStmt    // Local declarations FoxPro specific
+                    | Decl=localfuncproc                        #localFunctionStmt
+                    | {!IsFox && HasMemVars}? Decl=memvardecl   #memvardeclStmt  // Memvar declarations, not for FoxPro
+                    | Decl=fielddecl                            #fieldStmt
+                    | {IsFox && HasMemVars}?  Decl=foxmemvardecl #foxmemvardeclStmt    // Memvar declarations FoxPro specific
                     | DO? w=WHILE Expr=expression end=eos
                       StmtBlk=statementBlock
                       ((e=END (DO|WHILE)? | e=ENDDO) eos)?	#whileStmt
@@ -675,10 +671,10 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                      Static=STATIC          LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl
                    // The following rules allow STATIC in the parser,
                    // but the treetransformation will produce an error 9044 for STATIC implied
-                   | Static=STATIC? VAR           ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
-                   | Static=STATIC LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
-                   | LOCAL Static=STATIC? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
-                   | Using=USING Static=STATIC? VAR ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*        end=eos #varLocalDecl
+                   | Static=STATIC? VAR           ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*   end=eos #varLocalDecl
+                   | Static=STATIC LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*   end=eos #varLocalDecl
+                   | LOCAL Static=STATIC? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*   end=eos #varLocalDecl
+                   | Using=USING Static=STATIC? VAR ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)* end=eos #varLocalDecl
                    | Using=USING Static=STATIC? LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    ;
 
@@ -701,63 +697,69 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
 
 // Old Style xBase declarations
 // FoxPro allows PRIVATE M.Name The M is only lexed in the FoxPro dialect. The varidentifierrule has the M DOT clause
-// Not for FoxPro !
+                    //  Not for FoxPro !
+                    //  NOTE: The parent rule already filters out so this is not called when MEMVARS are not enabled
                     // This is only the list of names
-xbasedecl           : T=(MEMVAR|PARAMETERS) Vars+=varidentifierName
-                      (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar
+memvardecl         : T=MEMVAR     Vars+=varidentifierName (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar
+                   | T=PARAMETERS Vars+=varidentifierName (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar
                       // This includes the optional initializer or array dimension
-                    | T=(PRIVATE|PUBLIC) XVars+=xbasevar
-                      (COMMA XVars+=xbasevar)*  end=eos
+                   |  T=PRIVATE   XVars+=memvar (COMMA XVars+=memvar)*  end=eos
+                   |  T=PUBLIC    XVars+=memvar (COMMA XVars+=memvar)*  end=eos
                     ;
 
 // For the variable list for Private and Public
-xbasevar            : (Amp=AMP)?  Id=varidentifierName
-                          (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
-                    ;
+memvar            : (Amp=AMP)?  Id=varidentifierName
+                      (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
+                  ;
 
 
 //
 // Only for the FoxPro dialect
 // LPARAMETERS may have AS Type clause
 // DIMENSION  may have AS Type clause and either parens or brackets (see DimensionVar)
+// The parent rule already filters out so this is not called when MEMVARS are not enabled
 
                     // This includes array indices and optional type per name
-foxdecl             : T=(DIMENSION|DECLARE) DimVars += dimensionVar
-                        (COMMA DimVars+=dimensionVar)*    end=eos
+foxmemvardecl       :  T=DIMENSION  DimVars += foxdimvar (COMMA DimVars+=foxdimvar)* end=eos
+                    |  T=DECLARE    DimVars += foxdimvar (COMMA DimVars+=foxdimvar)* end=eos
                     // This has names, and no ampersand
-                    | T=MEMVAR Vars+=varidentifierName
-                        (COMMA Vars+=varidentifierName)*  end=eos // FoxPro does not have MEMVAR but it does not hurt to declare it here
-                    // This has names and optional types
-                    | T=(PARAMETERS|LPARAMETERS) Vars+=varidentifierName XT=xbasedecltype?
-                        (COMMA Vars+=varidentifierName XT=xbasedecltype? )* end=eos
+                    // FoxPro does not have MEMVAR but it does not hurt to declare it here
+                    |  T=MEMVAR Vars+=varidentifierName XT=foxtypedecl?  (COMMA Vars+=varidentifierName XT=foxtypedecl? )*  end=eos
+                      // This has names and optional types
+                    |  T=PARAMETERS Vars+=varidentifierName (COMMA Vars+=varidentifierName XT=foxtypedecl?)* end=eos
                     // This has names and optional ampersands
-                    | T=(PRIVATE|PUBLIC) FoxVars+=foxbasevar       // FoxBaseVar also allows Ampersands
-                        (COMMA FoxVars+=foxbasevar)*  end=eos
-                    // Variations of LOCAL and PUBLIC with the ARRAY keyword
-                    | T=LOCAL Ar=ARRAY DimVars += dimensionVar
-                        (COMMA DimVars+=dimensionVar)*    end=eos
-                    | T=PUBLIC (Ar=ARRAY)? DimVars += dimensionVar
-                        (COMMA DimVars+=dimensionVar)*    end=eos
+                    |  T=PRIVATE FoxVars+=foxmemvar  (COMMA FoxVars+=foxmemvar)*  end=eos
+                    |  T=PUBLIC  FoxVars+=foxmemvar  (COMMA FoxVars+=foxmemvar)*  end=eos
+                    // This has names and dimensions
+                    |  T=PUBLIC (ARRAY)? DimVars += foxdimvar (COMMA DimVars+=foxdimvar)*    end=eos
                    ;
 
+
+
+                    // This includes array indices and optional type per name
+foxlocaldecl        : T=LPARAMETERS Vars+=varidentifierName XT=foxtypedecl? (COMMA Vars+=varidentifierName XT=foxtypedecl? )* end=eos
+                    // This has names and optional ampersands
+                    | T=LOCAL ARRAY DimVars += foxdimvar (COMMA DimVars+=foxdimvar)*    end=eos
+                    ;
+
                     // FoxPro dimension statement allows the AS Type per variable name
-dimensionVar        : (Amp=AMP)?  Id=varidentifierName
+                    // AS Type OF ClassLib is ignored in FoxPro too, except when calling COM components
+foxdimvar           : (Amp=AMP)?  Id=varidentifierName
                         ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
                         | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
-                        XT=xbasedecltype?  // is ignored in FoxPro too, except when calling COM components
+                        XT=foxtypedecl?
                     ;
 
-xbasedecltype       : AS Type=datatype (OF ClassLib=identifierName)?
-                    ;  // parsed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor
+                      // parsed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor
+foxtypedecl       : AS Type=datatype (OF ClassLib=identifierName)?
+                    ;
 
-
-// For the variable list for Private and Public
-foxbasevar          : (Amp=AMP)?  Id=varidentifierName
+                       // For the variable list for Private and Public
+                       // We have added the initializer that FoxPro does not have
+foxmemvar          : (Amp=AMP)?  Id=varidentifierName
                       (Op=assignoperator Expression=expression)?
-                      XT=xbasedecltype?  // is ignored in FoxPro too
+                      XT=foxtypedecl?  // is ignored in FoxPro too
                     ;
-
-
 
 localfuncproc       :  (Modifiers=localfuncprocModifiers)?
                         LOCAL T=funcproctype Sig=signature
@@ -880,7 +882,7 @@ boundExpression		  : Expr=boundExpression Op=(DOT | COLON) Name=simpleName      
                     | LBRKT ArgList=bracketedArgumentList RBRKT                         #bindArrayAccess
                     ;
 
-aliasExpression     : MEMVAR ALIAS VarName=identifier                           #aliasedMemvar        // MEMVAR->Name
+aliasExpression     : {HasMemVars}? MEMVAR ALIAS VarName=identifier                           #aliasedMemvar        // MEMVAR->Name
                     | FIELD ALIAS (Alias=identifier ALIAS)? Field=identifier    #aliasedField		      // _FIELD->CUSTOMER->NAME
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched, this is matched by aliasedExpr later
                       Alias=identifier ALIAS Field=identifier                   #aliasedField		      // CUSTOMER->NAME
@@ -973,10 +975,8 @@ identifierName      : Id=identifier
 varidentifier       : (FOX_M DOT)? Id=identifier
                     ;
 
-
 varidentifierName   : (FOX_M DOT)? Id=identifierName
                     ;
-
 
 datatype            : ARRAY OF TypeName=typeName                                    #arrayOfType
                     | TypeName=typeName PTR                                         #ptrDatatype

@@ -65,7 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 needsWork = false;
             }
-            if (needsWork && op2.Syntax.XNode is XP.DimensionVarContext)
+            if (needsWork && op2.Syntax.XNode is XP.FoxdimvarContext)
             {
                 needsWork = false;
             }

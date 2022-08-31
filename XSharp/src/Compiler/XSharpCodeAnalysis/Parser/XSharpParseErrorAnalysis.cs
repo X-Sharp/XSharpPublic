@@ -285,7 +285,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        public override void ExitDimensionVar([NotNull] XSharpParser.DimensionVarContext context)
+        public override void ExitFoxdimvar([NotNull] XSharpParser.FoxdimvarContext context)
         {
             // only comes here in the Fox dialect
             if (context._Dims.Count > 2)
@@ -844,7 +844,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return;
         }
-        public override void ExitXbasedecltype([NotNull] XSharpParser.XbasedecltypeContext context)
+        public override void ExitFoxtypedecl([NotNull] XSharpParser.FoxtypedeclContext context)
         {
             if (context.Type != null)
             {
@@ -882,7 +882,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             NotInCore(context, "Late bound member access");
             return;
         }
-        public override void ExitXbasedecl([NotNull] XSharpParser.XbasedeclContext context)
+        public override void ExitMemvardecl([NotNull] XSharpParser.MemvardeclContext context)
         {
 
             if (_options.Dialect == XSharpDialect.Core)
@@ -900,12 +900,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DynamicVariablesNotAllowed));
             }
         }
-        public override void ExitXbasevar([NotNull] XSharpParser.XbasevarContext context)
+        public override void ExitMemvar([NotNull] XSharpParser.MemvarContext context)
         {
             if (context.Expression != null && context.ArraySub != null)
             {
                 // can't have both an array specification and a initialization value
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_PublicInit));
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_MemvarInit));
             }
         }
 
@@ -929,7 +929,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _parseErrors.Add(new ParseErrorData(memvar, ErrorCode.ERR_UnexpectedCharacter, memvar.Amp.Text));
                     }
                 }
-
+                foreach (var memvar in context._FoxVars)
+                {
+                    if (memvar.Amp != null)
+                    {
+                        _parseErrors.Add(new ParseErrorData(memvar, ErrorCode.ERR_UnexpectedCharacter, memvar.Amp.Text));
+                    }
+                }
             }
         }
 

@@ -5,16 +5,15 @@
 //
 #nullable disable
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Roslyn.Utilities;
+using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using Microsoft.CodeAnalysis.PooledObjects;
+using Roslyn.Utilities;
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -330,7 +329,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     exp.XNode = memvar.Context;
                     stmts.Add(GenerateExpressionStatement(exp, memvar.Context));
                     ExpressionSyntax initializer = null;
-                    if (memvar.Context is XP.XbasevarContext context)
+                    if (memvar.Context is XP.MemvarContext context)
                     {
                         if (context.Expression != null)
                         {
@@ -346,7 +345,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             initializer = GenerateMethodCall(XSharpQualifiedFunctionNames.ArrayNew, MakeArgumentList(args.ToArray()), true);
                         }
                     }
-                    else if (memvar.Context is XP.FoxbasevarContext foxcontext)
+                    else if (memvar.Context is XP.FoxmemvarContext foxcontext)
                     {
                         if (foxcontext.Expression != null)
                         {
@@ -1117,7 +1116,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return name;
         }
-        public override void EnterXbasedecl([NotNull] XP.XbasedeclContext context)
+        public override void EnterMemvardecl([NotNull] XP.MemvardeclContext context)
         {
             // declare memvars
             context.SetSequencePoint(context.end);
@@ -1255,11 +1254,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return null;
         }
 
-        public override void ExitXbasedeclStmt([NotNull] XP.XbasedeclStmtContext context)
+        public override void ExitMemvardeclStmt([NotNull] XP.MemvardeclStmtContext context)
         {
             context.CsNode = context.Decl.CsNode; // in the case of script LPARAMEWTERS this is a list
         }
-        public override void ExitXbasedecl([NotNull] XP.XbasedeclContext context)
+        public override void ExitMemvardecl([NotNull] XP.MemvardeclContext context)
         {
             context.SetSequencePoint(context.end);
             var stmts = _pool.Allocate<StatementSyntax>();

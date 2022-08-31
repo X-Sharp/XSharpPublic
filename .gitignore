@@ -232,3 +232,4 @@ XSharp/src/Setup/Preprocessed.iss
 /XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharp.*
 launchsettings.json
 *.ch?
+/XSharp/src/Compiler/XSharpCodeAnalysis/Parser/.antlr

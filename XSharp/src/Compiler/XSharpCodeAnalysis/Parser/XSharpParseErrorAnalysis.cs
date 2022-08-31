@@ -846,7 +846,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitFoxtypedecl([NotNull] XSharpParser.FoxtypedeclContext context)
         {
-            if (context.Type != null)
+            if (context.Type != null && !(context.Parent is XSharpParser.FoxlparameterContext))
             {
                 _parseErrors.Add(new ParseErrorData(context.Type, ErrorCode.WRN_FoxUnsupportedClause, "AS <DataType>"));
             }

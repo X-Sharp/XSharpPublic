@@ -737,7 +737,7 @@ foxmemvardecl       :  T=DIMENSION  DimVars += foxdimvar (COMMA DimVars+=foxdimv
 
 
                     // This includes array indices and optional type per name
-foxlocaldecl        : T=LPARAMETERS Vars+=varidentifierName XT=foxtypedecl? (COMMA Vars+=varidentifierName XT=foxtypedecl? )* end=eos
+foxlocaldecl        : T=LPARAMETERS LParameters+=foxlparameter (COMMA LParameters+=foxlparameter )* end=eos
                     // This has names and optional ampersands
                     | T=LOCAL ARRAY DimVars += foxdimvar (COMMA DimVars+=foxdimvar)*    end=eos
                     ;
@@ -748,6 +748,9 @@ foxdimvar           : (Amp=AMP)?  Id=varidentifierName
                         ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
                         | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
                         XT=foxtypedecl?
+                    ;
+
+foxlparameter       :    Name=varidentifierName XT=foxtypedecl?
                     ;
 
                       // parsed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor

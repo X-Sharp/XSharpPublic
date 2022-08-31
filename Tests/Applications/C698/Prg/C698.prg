@@ -1,15 +1,23 @@
 // 698. Various problems with passing params by reference in FoxPro dialect
 FUNCTION Start() AS VOID
 	LOCAL l AS LOGIC
-	LOCAL x 
-	LOCAL i as LONG          
+	LOCAL x
+	LOCAL i as LONG
+
+	i := 42
+	l := TestReference( i,123 )
+	? i
+	xAssert(i == 42)
+	xAssert(l == FALSE)
+
 	i := 42
 	l := TestReference( @i,123 )
-	
+
+
 	? i
 	xAssert(i == 123)
-	xAssert(l == TRUE) 
-	x := "old"     
+	xAssert(l == TRUE)
+	x := "old"
 	TestParameters( @x )
 	? x
 	xAssert(x == "PARAMETERS")
@@ -22,16 +30,16 @@ FUNCTION Start() AS VOID
 	Test_L_Parameters( @x )
 	? x
 	xAssert(x == "LPARAMETERS")
-	x := 1
+	x := "1"
 	Test_L_Parameters( REF x )
 	? x
 	xAssert(x == "LPARAMETERS")
 
 	x:= "old"
-	DO TestReference WITH x 
+	DO TestReference WITH x
 	? x
 	xAssert(x == 123)
-	
+
 	x := 1
 	DO TestReference WITH REF x // works as well!
 	? x
@@ -54,21 +62,21 @@ FUNCTION Start() AS VOID
 	*/
 RETURN
 
-FUNCTION TestReference ( a ) 
+FUNCTION TestReference ( a )
 	LOCAL l AS LOGIC
 	l := IsByref(a)
 	a := 123
 RETURN l
-	
+
 END FUNCTION
-	
+
 FUNCTION TestParameters()
 	PARAMETERS a
 	a := "PARAMETERS"
-RETURN 0	
+RETURN 0
 
 PROCEDURE Test_L_Parameters()
-	LPARAMETERS a	
+	LPARAMETERS a AS STRING
 	a := "LPARAMETERS"
 RETURN 0
 

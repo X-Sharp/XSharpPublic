@@ -1144,17 +1144,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-            if (context.T.Type == XP.LPARAMETERS)
+            if (context.T.Type == XP.PARAMETERS)
             {
-                foreach (var memvar in context._Vars)
-                {
-                    var name = CleanVarName(memvar.Id.GetText());
-                    addFieldOrMemvar(name, XSharpSpecialNames.ClipperParamPrefix, memvar, true);
-                }
-            }
-            if (context.T.Type == XP.PARAMETERS || context.T.Type == XP.LPARAMETERS)
-            {
-                // parameters and lparameters assume CC
+                // parameters assumes Clipper Calling Convention
                 var member = CurrentMember;
                 member.Data.HasClipperCallingConvention = true;
                 if (member.Data.HasParametersStmt || member.Data.HasLParametersStmt || member.Data.HasFormalParameters)
@@ -1256,7 +1248,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitMemvardeclStmt([NotNull] XP.MemvardeclStmtContext context)
         {
-            context.CsNode = context.Decl.CsNode; // in the case of script LPARAMEWTERS this is a list
+            context.CsNode = context.Decl.CsNode; // in the case of script LPARAMETERS this is a list
         }
         public override void ExitMemvardecl([NotNull] XP.MemvardeclContext context)
         {
@@ -3483,6 +3475,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
             List<string> parameternames = new List<String>();
+            List<TypeSyntax> parameterTypes = new List<TypeSyntax>();
             if (_options.NoClipCall && body != null && !(context is XP.PropertyAccessorContext))
             {
                 // Bring body back to a simple "throw null" Assign xnode so we will have line numbers and a [Source] button in the docs.
@@ -3539,6 +3532,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (field.IsParameter && !parameternames.Contains(field.Name))
                             {
                                 parameternames.Add(field.Name);
+                                if (field.Context is XP.FoxlparameterContext flpc)
+                                {
+                                    parameterTypes.Add(getDataType(flpc.XT?.Type));
+                                }
+                                else
+                                {
+                                    parameterTypes.Add(_usualType);
+                                }
                             }
                         }
                     }
@@ -3549,6 +3550,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var parm = parameters.Parameters[i];
                             string name = parm.Identifier.Text;
                             parameternames.Add(name);
+                            parameterTypes.Add(_usualType);
                         }
                     }
 
@@ -3570,15 +3572,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // do not generate locals for parameters declared with the PARAMETERS statement
                     if (context.Data.HasFormalParameters || context.Data.HasLParametersStmt)
                     {
-                        int i = 1;
-                        foreach (var name in parameternames)
+                        for (int i = 0; i < parameternames.Count; i++)
                         {
-                            decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParam(GenerateLiteral(i), prc));
+                            var type = parameterTypes[i];
+                            var name = parameternames[i];
+                            decl = GenerateLocalDecl(name, type, GenerateGetClipperParam(GenerateLiteral(i + 1), prc));
                             decl.XGenerated = true;
                             var variable = decl.Declaration.Variables[0];
                             variable.XGenerated = true;
                             stmts.Add(decl);
-                            i++;
                         }
                     }
                     // Copy error messages from the declared parameters (for example when default values are defined)

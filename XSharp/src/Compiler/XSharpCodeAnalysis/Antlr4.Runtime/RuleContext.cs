@@ -127,6 +127,10 @@ namespace Antlr4.Runtime
             {
                 return parent;
             }
+            set
+            {
+                parent = value;
+            }
         }
 
         IRuleNode IRuleNode.Parent

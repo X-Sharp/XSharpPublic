@@ -2890,7 +2890,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-  
+
 
         public override void ExitEntity([NotNull] XP.EntityContext context)
         {
@@ -4348,7 +4348,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         parent.AddChild(cls);
                         cls.AddChild(context);
                         cls.Data.Partial = true;
-                        context.parent = cls;
+                        context.Parent = cls;
                         ce.AddVoPropertyAccessor(context,context.RealType, idName, isStatic);
                         context.Put(m); // this is needed by GenerateVOProperty
                         var vop = ce.VoProperties.Values.First();
@@ -7406,7 +7406,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
                     expr.XNoTypeWarning = true;
                     context.Put(expr);
-                    
+
                     break;
                 case XP.SUBSTR:
                     // Convert LHS $ RHS to RHS:IndexOf(LHS) >= 0

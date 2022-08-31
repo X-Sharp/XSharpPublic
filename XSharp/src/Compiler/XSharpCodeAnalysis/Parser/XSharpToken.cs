@@ -94,9 +94,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool CanHaveTrivia => Channel == TokenConstants.DefaultChannel || Channel == XSharpLexer.PREPROCESSORCHANNEL;
         private void copyToken(XSharpToken token)
         {
-            type = token.Type;
-            text = token.Text;
-            line = token.Line;
+            Type = token.Type;
+            Text = token.Text;
+            Line = token.Line;
             Column = token.Column;
             source = token.source;
             StartIndex = token.StartIndex;
@@ -124,15 +124,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         internal XSharpToken(int type, XSharpToken token) : base(type)
         {
             copyToken(token);
-            this.type = type;
+            this.Type = type;
             SourceSymbol = token;
 
         }
         internal XSharpToken(int type, string text, XSharpToken token) : base(type, text)
         {
             copyToken(token);
-            this.type = type;
-            this.text = text;
+            this.Type = type;
+            this.Text = text;
             SourceSymbol = token;
         }
 

@@ -75,6 +75,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2BB506D4-7596-4F79-9B25-1FAAE084BBA8}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		src\Compiler\XSharpCodeAnalysis\Antlr.props = src\Compiler\XSharpCodeAnalysis\Antlr.props
 		src\Common\BuildNumber.h = src\Common\BuildNumber.h
 		src\Common\CommonAssemblyInfo.cs = src\Common\CommonAssemblyInfo.cs
 		src\Compiler\CompilerCommon.props = src\Compiler\CompilerCommon.props

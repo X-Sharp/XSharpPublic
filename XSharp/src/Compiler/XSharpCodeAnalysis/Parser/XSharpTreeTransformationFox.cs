@@ -48,7 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Id = id
             };
             func.Sig = sig;
-            token.line = 1;
+            token.Line = 1;
             token.charPositionInLine = 1;
             func.T = new XP.FuncproctypeContext(func, 0)
             {
@@ -56,7 +56,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             };
             token = new XSharpToken(XP.ID, name)
             {
-                line = 1,
+                Line = 1,
                 charPositionInLine = 1
             };
             id.Start = id.Stop = token;
@@ -75,7 +75,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             func.Attributes = new XP.AttributesContext(func, 0);
             func.Attributes.PutList(MakeCompilerGeneratedAttribute());
             func.StmtBlk = context.StmtBlk;
-            context.StmtBlk.parent = func;
+            context.StmtBlk.Parent = func;
             func.Start = func.StmtBlk.Start;
             func.Stop = func.StmtBlk.Stop;
             func.AddChild(func.Sig);
@@ -250,10 +250,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var prefix = XSharpSpecialNames.ClipperParamPrefix;
                 // List inside _Vars.
-                foreach (var memvar in context._Vars)
+                foreach (var foxtypedvar in context._LParameters)
                 {
-                    var name = CleanVarName(memvar.Id.GetText());
-                    addFieldOrMemvar(name, prefix, memvar, context.T.Type == XP.LPARAMETERS);
+
+                    var name = CleanVarName(foxtypedvar.Name.Id.GetText());
+                    addFieldOrMemvar(name, prefix, foxtypedvar, context.T.Type == XP.LPARAMETERS);
                 }
 
                 // Function must be clipper calling convention.
@@ -450,10 +451,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // Inside scripts we will create local variables for the LPARAMETERS like this
                         var prc = (XSharpParserRuleContext)context;
                         int p_i = 1;
-                        foreach (var p in context._Vars)
+                        foreach (var p in context._LParameters)
                         {
-                            var name = p.Id.GetText();
-                            var decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParam(GenerateLiteral(p_i), prc));
+                            var name = p.Name.Id.GetText();
+                            var type = _usualType;
+                            if (p.XT != null && p.XT.Type != null)
+                            {
+                                type = getDataType(p.XT.Type);
+                            }
+
+                            var decl = GenerateLocalDecl(name, type, GenerateGetClipperParam(GenerateLiteral(p_i), prc));
                             decl.XGenerated = true;
                             var variable = decl.Declaration.Variables[0];
                             variable.XGenerated = true;

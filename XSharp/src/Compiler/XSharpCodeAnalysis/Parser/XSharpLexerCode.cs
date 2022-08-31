@@ -23,6 +23,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     // - add it to the keyword<dialect> rule in XSharp.g4 (so it will become a positional keyword)
     // - add it to the grammar in XSharp.g4
 
+    public class XSharpKeywords : Dictionary<string, int>
+    {
+        internal XSharpKeywords() : base(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer)
+        {
+
+        }
+    }
+
     public partial class XSharpLexer
     {
         #region Static Helper Methods
@@ -134,16 +142,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _newLine = false;
 
         static readonly object kwlock = new();
-        static readonly IDictionary<string, int>[] _kwids;       // for each dialect its own _kwids
-        static IDictionary<string, int> _symPPIds;
-        static XSharpLexer()
-        {
-            _kwids = new IDictionary<string, int>[(int)XSharpDialect.Last];
-            for (int i = 0; i < (int)XSharpDialect.Last; i++)
-            {
-                _kwids[i] = null;
-            }
-        }
+        static IDictionary<XSharpDialect, XSharpKeywords> _kwids = null ;       // for each dialect its own _kwids
+        static XSharpKeywords _symPPIds = null;
 
         #endregion
 
@@ -1853,16 +1853,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        private IDictionary<string, int> _getIds(XSharpDialect dialect)
+        private XSharpKeywords _getIds(XSharpDialect dialect)
         {
-            var ids = new Dictionary<string, int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
+            var ids = new XSharpKeywords(); ;
 
-            Dictionary<string, int> voKeywords;
+            XSharpKeywords voKeywords;
             if (IsMacroLexer)
             {
                 // short list of keywords used in Macro Expressions
                 // keywords for statements and entities are not included
-                voKeywords = new Dictionary<string, int>
+                voKeywords = new XSharpKeywords
                 {
                     {"_AND", VO_AND},
                     {"BREAK", BREAK},
@@ -1920,7 +1920,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             else
             {
-                voKeywords = new Dictionary<string, int>
+                voKeywords = new XSharpKeywords
             {
                 {"ACCESS", ACCESS},
                 {"ALIGN", ALIGN},
@@ -2080,7 +2080,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (dialect == XSharpDialect.XPP)
             {
                 // Xbase++ Keywords
-                var xppKeywords = new Dictionary<string, int>
+                var xppKeywords = new XSharpKeywords
                 {
                     // normal keywords
                     // {"ENDSEQUENCE", END }, Xbase++ redefines ENDSEQUENCE to END in STD.CH
@@ -2100,7 +2100,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"NOSAVE",  NOSAVE},
                     {"INTRODUCE",INTRODUCE }
                 };
-                var xppKeyWordAbbrev = new Dictionary<string, int>
+                var xppKeyWordAbbrev = new XSharpKeywords
                 {
                     {"RETURN ",RETURN },
                     {"PRIVATE ",PRIVATE  },
@@ -2136,7 +2136,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (dialect == XSharpDialect.FoxPro)
             {
                 // Visual FoxPro Keywords
-                var vfpKeywords = new Dictionary<string, int>
+                var vfpKeywords = new XSharpKeywords
                 {
                     // normal keywords
                     {"THIS", SELF},
@@ -2151,7 +2151,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"EACH", EACH },                // Only after FOR
                     {"M", FOX_M }                   // FoxPro allows LOCAL M.Name and PRIVATE M.Name
                 };
-                var vfpKeyWordAbbrev = new Dictionary<string, int>
+                var vfpKeyWordAbbrev = new XSharpKeywords
                 {
                     {"ENDDEFINE", ENDDEFINE },
                     {"ENDFOR", NEXT },
@@ -2187,10 +2187,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             //{
             //    ids.Add("ANY", USUAL);
             //}
-            Dictionary<string, int> keywords;
+            XSharpKeywords keywords;
             if (IsMacroLexer)
             {
-                keywords = new Dictionary<string, int>
+                keywords = new XSharpKeywords
                 {
                     // short list of keywords used in Macro Expressions
                     // keywords for statements and entities are not included
@@ -2228,7 +2228,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             else
             {
-                keywords = new Dictionary<string, int>
+                keywords = new XSharpKeywords
                 {
                     // VO keywords that cannot be abbreviated
 
@@ -2403,34 +2403,37 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (!ids.ContainsKey(text))
                     ids.Add(text, token);
             }
-            return ids.ToImmutableDictionary(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
+            return ids;
         }
 
-        public IDictionary<string, int> KwIds
+        public XSharpKeywords KwIds
         {
             get
             {
-                IDictionary<string, int> ids;
+                XSharpKeywords ids = null;
                 lock (kwlock)
                 {
-                    ids = _kwids[(int)Dialect];
+                    if (_kwids == null)
+                        _kwids = new Dictionary<XSharpDialect, XSharpKeywords>();
+                    if (_kwids.ContainsKey(Dialect))
+                        ids = _kwids[Dialect] ;
                 }
                 if (ids == null)
                 {
                     ids = _getIds(Dialect);
                     lock (kwlock)
                     {
-                        _kwids[(int)Dialect] = ids;
+                        _kwids[Dialect] = ids;
                     }
                 }
                 return ids;
             }
         }
 
-        private IDictionary<string, int> _getppIds()
+        private XSharpKeywords _getppIds()
         {
             // Macro lexer has no preprocessor keywords
-            var symIds = new Dictionary<string, int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer)
+            var symIds = new XSharpKeywords()
             {
                 {"#COMMAND", PP_COMMAND},		// #command   <matchPattern> => <resultPattern>
                 {"#DEFINE", PP_DEFINE},			// #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
@@ -2467,7 +2470,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (AllowFourLetterAbbreviations)
                 {
-                    var symFour = new Dictionary<string, int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
+                    var symFour = new XSharpKeywords();
                     foreach (var entry in symIds)
                     {
                         var name = entry.Key;       // '#' name
@@ -2486,10 +2489,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-            return symIds.ToImmutableDictionary(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
+            return symIds ;
         }
 
-        public IDictionary<string, int> SymPPIds
+        public XSharpKeywords SymPPIds
         {
             get
             {

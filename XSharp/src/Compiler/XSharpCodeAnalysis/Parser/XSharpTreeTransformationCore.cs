@@ -9890,7 +9890,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    tokenStream = new CommonTokenStream(new XSharpListTokenSource(lexer, tokenStream.tokens));
+                    tokenStream = new CommonTokenStream(new XSharpListTokenSource(lexer, tokenStream.GetTokens()));
                     tokenStream.Fill();
                 }
             }
@@ -9902,14 +9902,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             // adjust line numbers in generated tokens
             // this is needed because otherwise pragma options checks that use the line number will not work correctly
-            foreach (XSharpToken token in tokenStream.tokens)
+            foreach (XSharpToken token in tokenStream.GetTokens())
             {
                 token.Line += starttoken.Line - 1;
             }
             var parser = new XSharpParser(tokenStream);
             parser.Options = _options;
-            XSharpParserRuleContext tree = null;
-
+            XSharpParserRuleContext tree;
             try
             {
                 tree = parser.expression();

@@ -278,10 +278,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.ArraySub, ErrorCode.ERR_FeatureNotAvailableInDialect, "Indexed Local", _options.Dialect.ToString()));
             }
-            if (context.ClassLib != null)
-            {
-                _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.WRN_FoxUnsupportedClause, "OF <ClassLib>"));
-            }
 
         }
 
@@ -442,10 +438,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.BaseType == null && _options.fox1)
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxAsClauseMandatory));
-            }
-            if (context.Classlib != null)
-            {
-                _parseErrors.Add(new ParseErrorData(context.Classlib, ErrorCode.WRN_FoxUnsupportedClause, "OF ClassLib"));
             }
             if (context.OLEPUBLIC() != null)
             {
@@ -848,12 +840,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Type != null && !(context.Parent is XSharpParser.FoxlparameterContext))
             {
-                _parseErrors.Add(new ParseErrorData(context.Type, ErrorCode.WRN_FoxUnsupportedClause, "AS <DataType>"));
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxUnsupportedClause, context.As.Text + context.Type.SourceText));
             }
-            if (context.ClassLib != null)
-            {
-                _parseErrors.Add(new ParseErrorData(context.ClassLib, ErrorCode.WRN_FoxUnsupportedClause, "OF <ClassLib>"));
-            }
+        }
+
+        public override void ExitFoxclasslib([NotNull] XSharpParser.FoxclasslibContext context)
+        {
+            _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxUnsupportedClause, context.Of.Text + context.ClassLib.SourceText));
         }
 
         public override void ExitAliasedExpression([NotNull] XSharpParser.AliasedExpressionContext context)

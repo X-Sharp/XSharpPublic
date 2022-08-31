@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             };
             func.Sig = sig;
             token.Line = 1;
-            token.charPositionInLine = 1;
+            token.Column = 1;
             func.T = new XP.FuncproctypeContext(func, 0)
             {
                 Token = token
@@ -57,7 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             token = new XSharpToken(XP.ID, name)
             {
                 Line = 1,
-                charPositionInLine = 1
+                Column = 1
             };
             id.Start = id.Stop = token;
             sig.AddChild(sig.Id);

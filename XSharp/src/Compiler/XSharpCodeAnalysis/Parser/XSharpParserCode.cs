@@ -69,14 +69,19 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
             NotifyErrorListeners("Unexpected '" + token + "' token");
         }
-        void eosExpected(IToken token)
-        {
-            if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
-                unexpectedToken(token?.Text);
-            string msg = "Expecting end of statement, found '" + token?.Text + "'";
-            NotifyErrorListeners(token, msg, null);
 
+        bool ExpectToken(int type)
+        {
+            int icurrent = 1;
+            var la = InputStream.La(icurrent);
+            while (la != type && la != EOS && la != Eof)
+            {
+                icurrent += 1;
+                la = InputStream.La(icurrent);
+            }
+            return la == type;
         }
+
 
         bool IsTypeCastAllowed()
         {
@@ -104,6 +109,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         nestedlevel -= 1;
                         break;
                     case EOS:
+                    case Eof:
                         // EOS so no valid typecast
                         return false;
                     default:

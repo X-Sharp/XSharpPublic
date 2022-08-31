@@ -382,6 +382,10 @@ namespace Antlr4.Runtime
             {
                 return start;
             }
+            set
+            {
+                start = value;
+            }
         }
 
         /// <summary>Get the final token in this context.</summary>
@@ -395,6 +399,10 @@ namespace Antlr4.Runtime
             get
             {
                 return stop;
+            }
+            set
+            {
+                stop = value;
             }
         }
 

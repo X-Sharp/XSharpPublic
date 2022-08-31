@@ -605,16 +605,8 @@ statement           : Decl=localdecl                            #declarationStmt
                     | D=DO Id=identifier (WITH ArgList=argumentList)?    end=eos      #doStmt
 
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
-                      // The first ExpressonStmt rule matches a single expression
-                      // The second Rule matches a single expression with an extraneous RPAREN RCURLY or RBRKT
-                      // The third rule matches more than one expression
                       // validExpressionStmt checks for CONSTRUCTOR( or DESTRUCTOR(
-                   | {validExpressionStmt()}?
-                      Exprs+=expression  end=eos									                            #expressionStmt
-                    | {validExpressionStmt()}?
-                      Exprs+=expression t=(RPAREN|RCURLY|RBRKT)  end=eos {eosExpected($t);}		#expressionStmt
-                    | {validExpressionStmt()}?
-                      Exprs+=expression (COMMA Exprs+=expression)+  end=eos			              #expressionStmt
+                    | {validExpressionStmt()}? Exprs+=expression (COMMA Exprs+=expression)*  end=eos  #expressionStmt
 	                ;
 
 ifElseBlock         : Cond=expression Then=THEN? end=eos StmtBlk=statementBlock
@@ -680,12 +672,12 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=varidentifier (LBRKT ArraySub=arraysub RBRKT)?
                      (Op=assignoperator Expression=expression)?
-                     (As=(AS | IS) DataType=datatype (OF ClassLib=identifierName)?  )?
+                     (As=(AS | IS) DataType=datatype foxclasslib?  )?
                      // FoxPro: LOCAL arrayName(10) as array.
                      // does not support CONST, DIM and Initializer
                    | {IsFox}? Id=varidentifier LPAREN ArraySub=arraysub RPAREN
                      (Op=assignoperator Expression=expression)?
-                     (As=(AS | IS) DataType=datatype (OF ClassLib=identifierName)?  )?
+                     (As=(AS | IS) DataType=datatype foxclasslib?  )?
                    ;
 
 impliedvar         : (Const=CONST)? Id=varidentifier Op=assignoperator Expression=expression
@@ -750,11 +742,14 @@ foxdimvar           : (Amp=AMP)?  Id=varidentifierName
                         XT=foxtypedecl?
                     ;
 
-foxlparameter       :    Name=varidentifierName XT=foxtypedecl?
+foxclasslib        : Of=OF ClassLib=identifierName
+                   ;
+
+foxlparameter       : Name=varidentifierName XT=foxtypedecl?
                     ;
 
                       // parsed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor
-foxtypedecl       : AS Type=datatype (OF ClassLib=identifierName)?
+foxtypedecl         : As=AS Type=datatype foxclasslib?
                     ;
 
                        // For the variable list for Private and Public
@@ -847,29 +842,29 @@ primary             : Key=SELF                                                  
                     | CbExpr=codeblock                                          #codeblockExpression	// {| [id [, id...] | expr [, expr...] }
                     | AnoExpr=anonymousMethodExpression                         #codeblockExpression	// DELEGATE (x as Foo) { DoSomething(Foo) }
                     | Query=linqQuery                                           #queryExpression        // LINQ
-                    | Type=datatype LCURLY Obj=expression COMMA
+                    | {ExpectToken(LCURLY)}? Type=datatype LCURLY Obj=expression COMMA
                       ADDROF Func=name LPAREN RPAREN RCURLY                     #delegateCtorCall		// delegate{ obj , @func() }
-                    | Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?  #ctorCall   // id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
-                    | Type=datatype LCURLY ArgList=argumentList  RCURLY
+                    | {ExpectToken(LCURLY)}? Type=datatype LCURLY RCURLY  Init=objectOrCollectioninitializer?  #ctorCall   // id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
+                    | {ExpectToken(LCURLY)}? Type=datatype LCURLY ArgList=argumentList  RCURLY
                                                    Init=objectOrCollectioninitializer?  #ctorCall				// id{ expr [, expr...] } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | ch=(CHECKED|UNCHECKED) LPAREN Expr=expression  RPAREN     #checkedExpression		// checked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN                        #typeOfExpression		// typeof( typeORid )
                     | SIZEOF LPAREN Type=datatype RPAREN                        #sizeOfExpression		// sizeof( typeORid )
                     | DEFAULT LPAREN Type=datatype RPAREN                       #defaultExpression		// default( typeORid )
                     | Name=simpleName                                           #nameExpression			// generic name
-                    | Type=nativeType LPAREN Expr=expression RPAREN             #voConversionExpression	// nativetype( expr )
-                    | XType=xbaseType LPAREN Expr=expression RPAREN             #voConversionExpression	// xbaseType( expr )
-                    | Type=nativeType LPAREN CAST COMMA Expr=expression RPAREN  #voCastExpression		// nativetype(_CAST, expr )
-                    | XType=xbaseType LPAREN CAST COMMA Expr=expression RPAREN  #voCastExpression		// xbaseType(_CAST, expr )
+                    | {ExpectToken(LPAREN)}? Type=nativeType LPAREN Expr=expression RPAREN             #voConversionExpression	// nativetype( expr )
+                    | {ExpectToken(LPAREN)}? XType=xbaseType LPAREN Expr=expression RPAREN             #voConversionExpression	// xbaseType( expr )
+                    | {ExpectToken(LPAREN)}? Type=nativeType LPAREN CAST COMMA Expr=expression RPAREN  #voCastExpression		// nativetype(_CAST, expr )
+                    | {ExpectToken(LPAREN)}? XType=xbaseType LPAREN CAST COMMA Expr=expression RPAREN  #voCastExpression		// xbaseType(_CAST, expr )
                     | CASTCLASS LPAREN Type = nativeType COMMA Expr=expression RPAREN #voCastExpression		// __CastClass( nativetype, expression)
                     | CASTCLASS LPAREN XType = xbaseType COMMA Expr=expression RPAREN #voCastExpression		// __CastClass( xbaseType, expression)
                     | PTR LPAREN Type=datatype COMMA Expr=expression RPAREN     #voCastPtrExpression	// PTR( typeName, expr )
                     | Name=usualTypeName                                        #usualTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
                     | Type=typeName                                             #typeExpression			// Standard DotNet Types
                     | Expr=iif                                                  #iifExpression			// iif( expr, expr, expr )
-                    | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression
+                    |  Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression
                       (COMMA Exprs+=expression)* RPAREN                         #intrinsicExpression	// _Or(expr, expr, expr)
-                    | Expr=aliasExpression                                      #aliasedExpression    // Handles all expressions with the ALIAS operator
+                    | {ExpectToken(ALIAS)}? Expr=aliasExpression                                      #aliasedExpression    // Handles all expressions with the ALIAS operator
                     | AMP LPAREN Expr=expression RPAREN                         #macro					      // &(expr)          // parens are needed because otherwise &(string) == Foo will match everything until Foo
                     | AMP Name=identifierName                                   #macroName			      // &name            // macro with a variable name
                     | LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN #parenExpression		// ( expr[,expr,..] )
@@ -877,7 +872,7 @@ primary             : Key=SELF                                                  
                     ;
 
 boundExpression		  : Expr=boundExpression Op=(DOT | COLON) Name=simpleName             #boundAccessMember	// member access The ? is new
-                    | Expr=boundExpression LPAREN                       RPAREN          #boundMethodCall	// method call, no params
+                    | Expr=boundExpression LPAREN                      RPAREN           #boundMethodCall	// method call, no params
                     | Expr=boundExpression LPAREN ArgList=argumentList RPAREN           #boundMethodCall	// method call, with params
                     | Expr=boundExpression LBRKT ArgList=bracketedArgumentList RBRKT    #boundArrayAccess	// Array element access
                     | <assoc=right> Left=boundExpression Op=QMARK Right=boundExpression #boundCondAccessExpr	// expr ? expr
@@ -942,7 +937,7 @@ argumentList        :  Args+=namedArgument (COMMA Args+=namedArgument)*
                     ;
 
                     // NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
-namedArgument       :  {AllowNamedArgs}?   Name=identifierName Op=ASSIGN_OP  ( RefOut=(REF | OUT) )? Expr=expression?
+namedArgument       :  {AllowNamedArgs}? Name=identifierName Op=ASSIGN_OP  ( RefOut=(REF | OUT) )? Expr=expression?
                     |   RefOut=OUT Var=VAR Id=varidentifier
                     |   RefOut=OUT Id=varidentifier AS Type=datatype
                     |   RefOut=OUT Null=NULL
@@ -1022,9 +1017,9 @@ anonMember          : Name=identifierName Op=assignoperator Expr=expression
 
 // Codeblocks & Lambda Expressions
 
-codeblock       : LCURLY (Or=OR | P1=PIPE LambdaParamList=lambdaParameterList? P2=PIPE)	// Old codeblock Syntax
+codeblock         : LCURLY (Or=OR | P1=PIPE LambdaParamList=lambdaParameterList? P2=PIPE)	// Old codeblock Syntax
                     Code=codeblockCode RCURLY
-                | LCURLY (Or=OR | P1=PIPE? LambdaParamList=lambdaParameterList? P2=PIPE?) lambda=UDCSEP		// Alternative Lambda Syntax with pips that will trigger an error
+                  | LCURLY (Or=OR | P1=PIPE? LambdaParamList=lambdaParameterList? P2=PIPE?) lambda=UDCSEP		// Alternative Lambda Syntax with pips that will trigger an error
                    Code=codeblockCode RCURLY
                     ;
 
@@ -1356,7 +1351,7 @@ foxclass            : (Attributes=attributes)?
                       CLASS (Namespace=nameDot)? Id=identifier
                       TypeParameters=typeparameters?
                       (AS BaseType=datatype)?
-                      (OF Classlib=identifier) ?
+                      foxclasslib?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
                       (OLEPUBLIC) ?
                       e=eos

@@ -239,28 +239,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 
         }
-        public new IToken Stop
-        {
-            get
-            {
-                return this.stop;
-            }
-            set
-            {
-                this.stop = value;
-            }
-        }
-        public new IToken Start
-        {
-            get
-            {
-                return this.start;
-            }
-            set
-            {
-                this.start = value;
-            }
-        }
 
         int iBPLength = -1;
         int iBpStart = -1;

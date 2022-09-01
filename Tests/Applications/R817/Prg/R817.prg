@@ -6,17 +6,27 @@ FUNCTION Start() AS VOID STRICT
 	uName := Today() // intend for this example
 
 	o := TestClass{}
-	o:DoSomething("abc", uName)
+	xAssert(o:DoSomething("abc", uName) == Today())
 
 	RETURN
 
 CLASS TestClass
-	METHOD DoSomething(s AS STRING, symName AS SYMBOL) AS VOID STRICT
-		RETURN
-	METHOD DoSomething(s AS STRING, names AS ARRAY OF USUAL) AS VOID STRICT
-		RETURN
+	METHOD DoSomething(s AS STRING, symName AS SYMBOL) AS USUAL STRICT
+		RETURN s
+	METHOD DoSomething(s AS STRING, names AS ARRAY OF USUAL) AS USUAL STRICT
+		RETURN s
 // If you uncomment the next one then that will be called and no compiler error is thrown
-	METHOD DoSomething(s AS STRING, u AS USUAL) AS VOID STRICT
+	METHOD DoSomething(s AS STRING, u AS USUAL) AS USUAL STRICT
 	    ? u
-		RETURN
+		RETURN u
 END CLASS
+
+
+
+PROC xAssert(l AS LOGIC)  AS VOID
+	IF l
+		? "Assertion passed"
+	ELSE
+		THROW Exception{"Incorrect result"}
+	END IF
+RETURN

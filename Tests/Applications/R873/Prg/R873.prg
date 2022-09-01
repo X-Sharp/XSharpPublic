@@ -2,7 +2,7 @@ using System.Reflection
 // https://github.com/X-Sharp/XSharpPublic/issues/1108
 #pragma warnings( 9073, off)      // Variable 'oTest' has not been declared. Assuming this is a FIELD or a MEMVAR.
 FUNCTION Start( ) AS VOID
-	private oTest
+	private oTest as TestClass
 	otest := TestClass{}
     tester()
 RETURN

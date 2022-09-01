@@ -81,7 +81,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         __Usual.__InitUsual()
 
     INTERNAL STATIC METHOD __InitUsual() AS VOID
-        IF RuntimeState.Dialect  == XSharpDialect.FoxPro
+        IF _IsFoxPro
             _NIL := __Usual{__UsualType.Logic,FALSE}
         ELSE
             _NIL := __Usual{__UsualType.Void}
@@ -215,7 +215,12 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             VAR typeCode := System.Type.GetTypeCode(vartype)
             SWITCH typeCode
             CASE System.TypeCode.DBNull
-                SELF:_flags				:= UsualFlags{__UsualType.Null}
+                if _IsFoxPro
+                    SELF:_flags				:= UsualFlags{__UsualType.Null}
+                else
+                    // do nothing
+                    NOP
+                endif
 
             CASE System.TypeCode.Boolean
                 SELF:_flags				:= UsualFlags{__UsualType.Logic}
@@ -366,12 +371,13 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
 #endregion
 
-#region properties
+    #region properties
+    [NOSHOW];
+    PRIVATE STATIC PROPERTY _IsFoxPro AS LOGIC GET XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
     [NOSHOW];
     PRIVATE PROPERTY _isByRef		AS LOGIC	[NODEBUG] GET _flags:IsByRef
     [NOSHOW];
     INTERNAL PROPERTY _usualType	AS __UsualType [NODEBUG] GET _flags:UsualType
-
     /// No checks for typeflag. These private properties should always be accessed after checking the correct type
     [NOSHOW];
     INTERNAL PROPERTY _arrayValue    AS ARRAY			[NODEBUG] GET (ARRAY) _refData
@@ -1267,7 +1273,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <inheritdoc />
     [NODEBUG];
     PUBLIC OVERRIDE METHOD Equals(obj AS OBJECT) AS LOGIC
-        IF obj IS DBNull .or. SELF:IsNull
+        IF _IsFoxPro .and. (obj IS DBNull .or. SELF:IsNull)
             // comparison with Null always returns FALSE
             // In FoxPro this returns .NULL.
             RETURN FALSE
@@ -1487,14 +1493,14 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <remarks>This operator is only supported on usuals of integral types.</remarks>
     [NODEBUG];
     STATIC OPERATOR ~(u AS __Usual) AS __Usual
-        IF u:_usualType == __UsualType.Null
-            RETURN DBNull.Value
-        ENDIF
         IF u:_usualType == __UsualType.Long
             RETURN ~u:_intValue
         ENDIF
         IF u:_usualType == __UsualType.Int64
             RETURN ~u:_i64Value
+        ENDIF
+        IF u:_usualType == __UsualType.Null
+            RETURN DBNull.Value
         ENDIF
         THROW UnaryError("~", u)
 
@@ -1503,11 +1509,11 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     [NODEBUG];
     STATIC OPERATOR -(u AS __Usual) AS __Usual
         SWITCH u:_usualType
-        CASE __UsualType.Long		; RETURN -u:_intValue
+        CASE __UsualType.Long		   ; RETURN -u:_intValue
         CASE __UsualType.Int64		; RETURN -u:_i64Value
         CASE __UsualType.Float		; RETURN -u:_floatValue
         CASE __UsualType.Currency	; RETURN -u:_currencyValue
-        CASE __UsualType.Decimal	; RETURN -u:_decimalValue
+        CASE __UsualType.Decimal	   ; RETURN -u:_decimalValue
         CASE __UsualType.Null       ; RETURN DBNull.Value
         OTHERWISE
             THROW UnaryError("-", u)
@@ -3150,7 +3156,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         CASE __UsualType.Symbol		; RETURN "#"
         CASE __UsualType.Null       ; RETURN "X"  // FoxPro returns 'X' for VarType(.NULL.)
         CASE __UsualType.Void
-            IF RuntimeState.Dialect == XSharpDialect.FoxPro
+            IF _IsFoxPro
                 RETURN "L"
             ENDIF
             RETURN "U"
@@ -3428,7 +3434,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             // In FoxPro this returns .NULL.
             RETURN FALSE
         ELSEIF lhs:IsNil
-            IF RuntimeState.Dialect  == XSharpDialect.FoxPro
+            IF _IsFoxPro
                 // Fox throws an error
                 THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
             ELSE
@@ -3468,7 +3474,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             RETURN FALSE
         ENDIF
         IF lhs:IsNil
-            IF RuntimeState.Dialect  == XSharpDialect.FoxPro
+            IF _IsFoxPro
                 THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
             ELSE
                 RETURN TRUE         // one is NIL so notequals returns TRUE

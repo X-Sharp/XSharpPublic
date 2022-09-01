@@ -99,7 +99,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return;
         }
 
-        internal static bool IsXsCompilerGenerated(this Symbol symbol) 
+        internal static bool IsXsCompilerGenerated(this Symbol symbol)
         {
             if (symbol.Kind == SymbolKind.Local || symbol.Kind == SymbolKind.Parameter)
             {
@@ -134,23 +134,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case SpecialType.System_Single:
                 case SpecialType.System_Int16:
                 case SpecialType.System_UInt16:
+                case SpecialType.System_UInt32:
+                case SpecialType.System_UInt64:
                 case SpecialType.System_Byte:
                 case SpecialType.System_SByte:
                     return true;
             }
-            if (type.IsArrayType())
-                return true;
-            if (type.IsCodeblockType())
-                return true;
-            if (type.IsDateType())
-                return true;
-            if (type.IsFloatType())
-                return true;
-            if (type.IsSymbolType())
-                return true;
-            if (type.IsPszType())
-                return true;
-            return false;
+            return type.IsOurType();
         }
         internal static TypeSymbol LargestOperand(this BoundBinaryOperator binop, Compilation compilation)
         {

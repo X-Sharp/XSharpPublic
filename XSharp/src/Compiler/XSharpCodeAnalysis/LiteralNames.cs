@@ -22,6 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string SymbolType = "__Symbol";
         internal const string FloatType = "__Float";
         internal const string CurrencyType = "__Currency";
+        internal const string BinaryType = "__Binary";
         internal const string VnFloatType = "__VOFloat";
         internal const string DateType = "__Date";
         internal const string VnDateType = "__VODate";

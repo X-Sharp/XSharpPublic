@@ -242,7 +242,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                     snode = child;
-                    if (snode.XNode is XSharpParser.PrimaryExpressionContext)
+                    bool done = false;
+                    switch (snode.XNode)
+                    {
+                        case XSharpParser.StatementContext:
+                        case XSharpParser.LocaldeclContext:
+                        case XSharpParser.MemvardeclContext:
+                        case XSharpParser.FoxlocaldeclContext:
+                        case XSharpParser.FoxmemvardeclContext:
+                        case XSharpParser.AssignmentExpressionContext:
+                        case XSharpParser.PrimaryExpressionContext:
+                            done = true;
+                            break;
+                    }
+                    if (done)
                         break;
                 }
                 var start = 0;

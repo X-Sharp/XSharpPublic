@@ -133,6 +133,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return type is { } && (type.Name == OurTypeNames.CurrencyType);
         }
+        internal static bool IsBinaryType(this TypeSymbol type)
+        {
+            return type is { } && (type.Name == OurTypeNames.BinaryType);
+        }
+        internal static bool IsOurType(this TypeSymbol type)
+        {
+            if (type is { })
+            {
+                switch (type.Name)
+                {
+                    case OurTypeNames.ArrayType:
+                    case OurTypeNames.CodeBlockType:
+                    case OurTypeNames.DateType:
+                    case OurTypeNames.FloatType:
+                    case OurTypeNames.SymbolType:
+                    case OurTypeNames.PszType:
+                    case OurTypeNames.CurrencyType:
+                    case OurTypeNames.BinaryType:
+                    case OurTypeNames.FoxArrayType:
+                    case OurTypeNames.VnDateType:
+                    case OurTypeNames.VnFloatType:
+                        return true;
+                }
+            }
+            return false;
+        }
+
         internal static bool IsFractionalType(this TypeSymbol type)
         {
             if (type is null)

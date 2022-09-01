@@ -317,13 +317,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // usual argument prefers object or usual parameter type
                     if (argType.IsUsualType())
                     {
-                        score += isConst ? 90 : 100;
+                        score += 100;
                     }
-                    if (argType.IsValidVOUsualType(Compilation))
+                    else if (argType.IsValidVOUsualType(Compilation))
                     {
-                        score += isConst ? 45 : 50;
+                        score += isConst ? 50 : 55;
                     }
-                    if (parType.IsObjectType())
+                    else if (parType.IsObjectType())
                     {
                         // give a slight preference to usual parameters
                         score -= 1;
@@ -331,24 +331,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else if (argType.IsUsualType())
                 {
-                    // First prefer object variable
+                    // Prefer overload with object variable
+                    // Usual is never const
                     if (parType.IsObjectType())
                     {
-                        score += isConst ? 60 : 65;
-                    }
-                    // Prefer string types over all other usual types
-                    else if (parType.IsStringType())
-                    {
-                        score += isConst ? 55 : 60;
-                    }
-                    else if (parType.IsXNumericType() &&
-                        (parType.SpecialType == SpecialType.System_Double || parType.IsFloatType()))
-                    {
-                        score += isConst ? 50 : 55;
+                        score += 60;
                     }
                     else if (parType.IsValidVOUsualType(Compilation))
                     {
-                        score += isConst ? 45 : 50;
+                        score += 55;
+                    }
+                    // otherwise we have no preference, since we do not know what's in the usual
+                    else
+                    {
+                        score += 50;
                     }
                 }
                 else if (argType.IsDerivedFrom(parType, TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
@@ -757,10 +753,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+            var type1 = m1.Member.ContainingType;
+            var type2 = m2.Member.ContainingType;
 
             // generate warning that function takes precedence over static method
-            var func1 = m1.Member.IsStatic && m1.Member.ContainingType.IsFunctionsClass();
-            var func2 = m2.Member.IsStatic && m2.Member.ContainingType.IsFunctionsClass();
+            var func1 = m1.Member.IsStatic && type1.IsFunctionsClass();
+            var func2 = m2.Member.IsStatic && type2.IsFunctionsClass();
             if (func1 && !func2)
             {
                 result = BetterResult.Left;
@@ -772,6 +770,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 result = BetterResult.Right;
                 useSiteDiagnostics = GenerateFuncMethodWarning(m2.Member, m1.Member);
                 return true;
+            }
+            if (!Equals(type1, type2))
+            {
+                result = PreferMostDerived(m1, m2, ref useSiteDiagnostics);
+                if (result != BetterResult.Neither)
+                    return true;
+
             }
 
             return false;

@@ -13,6 +13,14 @@ RETURN nDec
 
 FUNCTION Start() AS VOID STRICT
 	? TestDecimalDefault() // access violation
+	xAssert(TestDecimalDefault() == 123.5m)
 RETURN
 
 
+PROC xAssert(l AS LOGIC)  AS VOID
+	IF l
+		? "Assertion passed"
+	ELSE
+		THROW Exception{"Incorrect result"}
+	END IF
+RETURN

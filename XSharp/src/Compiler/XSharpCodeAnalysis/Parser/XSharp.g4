@@ -193,7 +193,7 @@ method              : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       vodummyclauses
                       end=eos
                       StmtBlk=statementBlock
-                      (END T2=methodtype EOS)?
+                      (END T2=methodtype End=EOS)?
                     ;
 
 
@@ -209,7 +209,7 @@ vodefine            : (Modifiers=funcprocModifiers)?
 vostruct            : (Modifiers=votypeModifiers)?
                       V=VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? e=eos
                       (Members+=vostructmember)+
-                      (END VOSTRUCT EOS)?
+                      (END VOSTRUCT End=EOS)?
                     ;
 
 vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? eos
@@ -220,7 +220,7 @@ vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT
 vounion             : (Modifiers=votypeModifiers)?
                       U=UNION (Namespace=nameDot)? Id=identifier e=eos
                       (Members+=vostructmember)+
-                      (END UNION EOS)?
+                      (END UNION End=EOS)?
                     ;
 
 votypeModifiers     : ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) )+
@@ -229,7 +229,7 @@ votypeModifiers     : ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) 
 
 namespace_          : BEGIN NAMESPACE Name=name e=eos
                       (Entities+=entity)*
-                      END NAMESPACE EOS
+                      (END NAMESPACE End=EOS)?
                     ;
 
 interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
@@ -239,7 +239,7 @@ interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*              // Optional typeparameterconstraints for Generic Interface
                       e=eos
                       (Members+=classmember)*
-                      END INTERFACE EOS
+                      (END INTERFACE End=EOS)?
                     ;
 
 
@@ -251,7 +251,7 @@ class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
                       e=eos
                       (Members+=classmember)*
-                      END CLASS EOS
+                      (END CLASS End=EOS)?
                     ;
 
 classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
@@ -284,7 +284,7 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
                       (Members+=classmember)*
-                      END STRUCTURE EOS
+                      (END STRUCTURE End=EOS)?
                     ;
 
 
@@ -302,7 +302,7 @@ delegate_           : (Attributes=attributes)? (Modifiers=classModifiers)?
 enum_               : (Attributes=attributes)? (Modifiers=classModifiers)?
                       E=ENUM (Namespace=nameDot)? Id=identifier ((AS|INHERIT) Type=datatype)? e=eos
                       (Members+=enummember)+
-                      END ENUM? EOS
+                      (END ENUM? End=EOS)?
                     ;
 
 enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assignoperator Expr=expression)? eos
@@ -416,7 +416,7 @@ constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)
                         end=eos
                       (Chain=constructorchain)?
                       StmtBlk=statementBlock
-                      (END c2=CONSTRUCTOR EOS)?
+                      (END c2=CONSTRUCTOR End=EOS)?
                     ;
 
 constructorchain    : (SELF | SUPER)
@@ -437,7 +437,7 @@ destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
                       (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
-                      (END d2=DESTRUCTOR EOS)?
+                      (END d2=DESTRUCTOR End=EOS)?
                     ;
 
 destructorModifiers : ( Tokens+=EXTERN )+
@@ -469,7 +469,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
                       (UDCSEP ExpressionBody=expression)?             // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
-                     (END o1=OPERATOR EOS)?
+                     (END o1=OPERATOR End=EOS)?
 
                     ;
 

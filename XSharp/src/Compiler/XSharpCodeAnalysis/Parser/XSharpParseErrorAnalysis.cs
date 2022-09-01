@@ -932,6 +932,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
+        {
+            checkMissingKeyword(context.End, context, "END CLASS");
+        }
+        public override void ExitInterface_([NotNull] XSharpParser.Interface_Context context)
+        {
+            checkMissingKeyword(context.End, context, "END INTERFACE");
+        }
+        public override void ExitStructure_([NotNull] XSharpParser.Structure_Context context)
+        {
+            checkMissingKeyword(context.End, context, "END STRUCTURE");
+        }
+        public override void ExitEnum_([NotNull] XSharpParser.Enum_Context context)
+        {
+            checkMissingKeyword(context.End, context, "END [ENUM]");
+        }
+
+        public override void ExitNamespace_([NotNull] XSharpParser.Namespace_Context context)
+        {
+            checkMissingKeyword(context.End, context, "END NAMESPACE");
+        }
+
 
         public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
         {

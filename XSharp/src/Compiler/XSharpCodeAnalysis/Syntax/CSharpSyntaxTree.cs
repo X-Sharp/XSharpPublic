@@ -245,12 +245,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     bool done = false;
                     switch (snode.XNode)
                     {
-                        case XSharpParser.StatementContext:
-                        case XSharpParser.LocaldeclContext:
-                        case XSharpParser.MemvardeclContext:
-                        case XSharpParser.FoxlocaldeclContext:
-                        case XSharpParser.FoxmemvardeclContext:
-                        case XSharpParser.AssignmentExpressionContext:
+                        //case XSharpParser.StatementContext:
+                        //case XSharpParser.LocaldeclContext:
+                        //case XSharpParser.MemvardeclContext:
+                        //case XSharpParser.FoxlocaldeclContext:
+                        //case XSharpParser.FoxmemvardeclContext:
+                        //case XSharpParser.AssignmentExpressionContext:
                         case XSharpParser.PrimaryExpressionContext:
                             done = true;
                             break;

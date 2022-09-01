@@ -571,6 +571,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             int rightScore = 0;
             var asm1 = m1.Member.ContainingAssembly;
             var asm2 = m2.Member.ContainingAssembly;
+            var type1 = m1.Member.ContainingType;
+            var type2 = m2.Member.ContainingType;
             var rt1 = asm1.IsRT();
             var rt2 = asm2.IsRT();
             bool bothRT = rt1 && rt2;
@@ -606,6 +608,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // when function of same name in 2 runtime DLLs then determine
                     // the priority
                     result = DetermineRTAssemblyPriority(asm1, asm2);
+                    if (result != BetterResult.Neither)
+                        return true;
+                }
+
+                if (!Equals(type1, type2) && sig1 == sig2)
+                {
+                    result = PreferMostDerived(m1, m2, ref useSiteDiagnostics);
                     if (result != BetterResult.Neither)
                         return true;
                 }
@@ -753,8 +762,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
-            var type1 = m1.Member.ContainingType;
-            var type2 = m2.Member.ContainingType;
 
             // generate warning that function takes precedence over static method
             var func1 = m1.Member.IsStatic && type1.IsFunctionsClass();

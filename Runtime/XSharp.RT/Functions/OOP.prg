@@ -207,11 +207,12 @@ internal static class OOPHelpers
     static method CompareMethods(m1 as MethodBase, m2 as MethodBase, uArgs as usual[]) as long
         var p1 := m1:GetParameters()
         var p2 := m2:GetParameters()
-
-        if p1:Length != p2:Length
-            if p1:Length == uArgs:Length
+        var n1 := CountNonDefaultParameters(p1)
+        var n2 := CountNonDefaultParameters(p2)
+        if n1 != n2
+            if n1 == uArgs:Length
                 return 1
-            elseif p2:Length == uArgs:Length
+            elseif n2 == uArgs:Length
                 return 2
             endif
         endif
@@ -242,6 +243,16 @@ internal static class OOPHelpers
         next
         return 0
 
+    static method CountNonDefaultParameters(pars as IList<ParameterInfo>) AS LONG
+      for var i := 0 upto pars:Count -1
+        local oPar := pars[i] as ParameterInfo
+        var oArg    := OOPHelpers.GetDefaultValue(oPar)
+        if oArg != NULL
+            return i
+        endif
+     next
+     return pars:Count
+
     static method FindBestOverLoad<T>(overloads as T[], cFunction as string, uArgs as usual[]) as T where T is MethodBase
         if overloads:Length <= 1
             return overloads:FirstOrDefault()
@@ -250,8 +261,15 @@ internal static class OOPHelpers
         var found := List<T>{}
         // first look for methods with the same ! of parametes
         foreach var m in overloads
-            if m:GetParameters():Length == uArgs:Length
+            var pars := m:GetParameters()
+            if pars:Length == uArgs:Length
                 found:Add(m)
+            else
+                // check to see if there are default parameters for the method
+                var nonDefault := CountNonDefaultParameters(pars)
+                if uArgs:Length >= nonDefault
+                    found:Add(m)
+                endif
             endif
         next
         if found:Count == 1
@@ -259,19 +277,28 @@ internal static class OOPHelpers
         endif
         // then look for methods with
         found:Clear()
-        for var nMethod := 0 to overloads:Length -2
-            var m1     := overloads[nMethod]
-            var m2     := overloads[nMethod+1]
-            var result := OOPHelpers.CompareMethods(m1, m2, uArgs)
-            if result == 1
-                if ! found:Contains(m1)
-                    found:Add(m1)
+        foreach var m1 in overloads
+            foreach var m2 in overloads
+                if (m2 != m1)
+                    var result := OOPHelpers.CompareMethods(m1, m2, uArgs)
+                    if result == 1
+                        if ! found:Contains(m1)
+                            found:Add(m1)
+                        endif
+                    elseif result == 2
+                        if ! found:Contains(m2)
+                            found:Add(m2)
+                        endif
+                    else
+                        if ! found:Contains(m1)
+                            found:Add(m1)
+                        endif
+                        if ! found:Contains(m2)
+                            found:Add(m2)
+                        endif
+                    endif
                 endif
-            elseif result == 2
-                if ! found:Contains(m2)
-                    found:Add(m2)
-                endif
-            endif
+            next
         next
         if found:Count == 1
             return found:First()

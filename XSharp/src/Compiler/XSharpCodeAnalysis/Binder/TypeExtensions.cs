@@ -118,7 +118,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        internal static bool IsValidVOUsualType(this TypeSymbol type, CSharpCompilation compilation)
+        internal static bool IsValidVOUsualType(this TypeSymbol type)
         {
             switch (type.SpecialType)
             {
@@ -126,17 +126,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case SpecialType.System_Int64:
                 case SpecialType.System_Boolean:
                 case SpecialType.System_String:
-                case SpecialType.System_IntPtr:
-                case SpecialType.System_Decimal:
                 case SpecialType.System_DateTime:
                 case SpecialType.System_Object:
                 case SpecialType.System_Double:
                 case SpecialType.System_Single:
+                case SpecialType.System_Byte:
+                case SpecialType.System_IntPtr:
+                case SpecialType.System_Decimal:
                 case SpecialType.System_Int16:
                 case SpecialType.System_UInt16:
                 case SpecialType.System_UInt32:
                 case SpecialType.System_UInt64:
-                case SpecialType.System_Byte:
                 case SpecialType.System_SByte:
                     return true;
             }

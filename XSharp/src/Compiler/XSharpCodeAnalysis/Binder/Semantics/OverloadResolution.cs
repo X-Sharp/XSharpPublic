@@ -292,10 +292,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     parType = parType.GetNullableUnderlyingType();
                 }
                 var isConst = arg.ConstantValue != null;
-
+                var matchScore = isConst ? 90 : 100;
                 if (TypeEquals(parType, argType, ref useSiteDiagnostics))
                 {
-                    score += isConst ? 90 : 100;
+                    score += matchScore;
                     if (parType.IsArrayType())
                     {
                         // Make sure function with array argument have preference when array type is passed
@@ -319,9 +319,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         score += 100;
                     }
-                    else if (argType.IsValidVOUsualType(Compilation))
+                    else if (argType.IsValidVOUsualType())
                     {
-                        score += isConst ? 50 : 55;
+                        score += 55;
                     }
                     else if (parType.IsObjectType())
                     {
@@ -337,7 +337,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         score += 60;
                     }
-                    else if (parType.IsValidVOUsualType(Compilation))
+                    else if (parType.IsValidVOUsualType())
                     {
                         score += 55;
                     }
@@ -359,6 +359,42 @@ namespace Microsoft.CodeAnalysis.CSharp
                         baseType = baseType.BaseTypeNoUseSiteDiagnostics;
                     }
                     score += depth;
+                }
+                else if (parType.IsFloatType() || argType.IsFloatType())
+                {
+                    // they are NOT both Float
+                    if (parType.IsFloatType() && argType.SpecialType == SpecialType.System_Double)
+                    {
+                        // treat this as matching
+                        score += matchScore;
+                    }
+                    else if (argType.IsFloatType() && parType.SpecialType == SpecialType.System_Double)
+                    {
+                        // treat this as matching
+                        score += matchScore;
+                    }
+                    else
+                    {
+                        score += isConst ? 70 : 80;
+                    }
+                }
+                else if (parType.IsCurrencyType() || argType.IsCurrencyType())
+                {
+                    // they are NOT both Currency
+                    if (parType.IsCurrencyType() && argType.SpecialType == SpecialType.System_Decimal)
+                    {
+                        // treat this as matching
+                        score += matchScore;
+                    }
+                    else if (argType.IsCurrencyType() && parType.SpecialType == SpecialType.System_Decimal)
+                    {
+                        // treat this as matching
+                        score += matchScore;
+                    }
+                    else
+                    {
+                        score += isConst ? 70 : 80;
+                    }
                 }
                 else if (argType.IsXNumericType() && parType.IsXNumericType())
                 {

@@ -1073,7 +1073,7 @@ namespace XSharp.LanguageService
                     }
                     if (state.HasFlag(CompletionState.InstanceMembers))
                     {
-                        result.AddRange(meths.Where(m => m.IsStatic));
+                        result.AddRange(meths.Where(m => !m.IsStatic));
                     }
                 }
             }

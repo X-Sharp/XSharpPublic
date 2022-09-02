@@ -7,7 +7,7 @@
 USING System.Collections.Generic
 USING System.IO
 USING FabToolsNS
-
+STATIC DEFINE CRLF := e"\r\n"
 BEGIN NAMESPACE Fab_VO_Entities
 
     CLASS FabVNFile 	INHERIT	FabModuleBase

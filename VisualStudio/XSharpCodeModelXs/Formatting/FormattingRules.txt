@@ -11,7 +11,7 @@ Tokens that are followed by a question mark are optional. Per Token there can on
 After the end token there may be another comma and a list of "options"
 These options can be:
 - OPTIONAL (end token is optional)
-- MIDDLE   (marks the block where the end keyword is actually a middle token, such as CASE). 
+- MIDDLE   (marks the block where the end keyword is actually a middle token, such as CASE).
 - CASE     (for special indenting rules for CASE blocks)
 - SINGLELINE (for rules that may be single line such as property)
 Section delimiters indicate the type of the tokens
@@ -57,9 +57,11 @@ METHOD,END METHOD,OPTIONAL
 CONSTRUCTOR,END CONSTRUCTOR,OPTIONAL
 DESTRUCTOR,END DESTRUCTOR,OPTIONAL
 OPERATOR,END OPERATOR,OPTIONAL
-GLOBAL,GLOBAL,SINGLELINE
-DEFINE,DEFINE,SINGLELINE
-
+EXPORT,EXPORT,SINGLELINE
+PUBLIC,PUBLIC,SINGLELINE
+PROTECTED INTERNAL?,PROTECTED INTERNAL?,SINGLELINE
+HIDDEN,HIDDEN,SINGLELINE
+PRIVATE,PRIVATE,SINGLELINE
 PROPERTY,END PROPERTY,SINGLELINE
 EVENT,END EVENT,SINGLELINE
 GET,END GET,SINGLELINE
@@ -67,7 +69,8 @@ SET,END SET,SINGLELINE
 INIT,END INIT,SINGLELINE
 ADD,END ADD,SINGLELINE
 REMOVE,END REMOVE,SINGLELINE
-
+GLOBAL,GLOBAL,SINGLELINE
+DEFINE,DEFINE,SINGLELINE
 
 // Conditional Statements
 [STATEMENT]

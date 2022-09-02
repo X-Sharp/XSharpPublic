@@ -16,10 +16,10 @@ namespace XSharp
 #if RUNTIME
         internal const string Version = "2.6.0.0";
 #else
-        internal const string Version = "2.13.1.0";
+        internal const string Version = "2.13.2.0";
 #endif
-        internal const string FileVersion = "2.13.1.0";
-        internal const string ProductVersion = "2.13a GA";
+        internal const string FileVersion = "2.13.2.0";
+        internal const string ProductVersion = "2.13b GA";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2022";
 
@@ -30,7 +30,7 @@ namespace XSharp
         // Environment variable that points to the BIN folder where xsc.exe AND rc.exe are located
         internal const string EnvironmentXSharpBin = "XSHARPBINPATH";
         internal const string EnvironmentXSharp = "XSHARPPATH";
-        // Environment variable on _developers_ machine to override location of xsc.exe. 
+        // Environment variable on _developers_ machine to override location of xsc.exe.
         // This also enables the "magic" button on the tools-options dialog
         // and adds CRLF to the response file between the various commands to make it easier to read.
         internal const string EnvironmentXSharpDev = "XSHARPDEV";

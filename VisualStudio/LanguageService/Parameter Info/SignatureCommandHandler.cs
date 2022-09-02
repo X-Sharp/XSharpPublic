@@ -156,8 +156,7 @@ namespace XSharp.LanguageService
                                     }
                                     break;
                                 case ',':
-                                    StartSignatureSession(true, triggerchar: typedChar);
-                                    //MoveSignature();
+                                    StartSignatureSession(false, triggerchar: typedChar);
                                     break;
                                 case ':':
                                 case '.':
@@ -234,13 +233,14 @@ namespace XSharp.LanguageService
             ThreadHelper.ThrowIfNotOnUIThread();
             return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
-        IXMemberSymbol findElementAt(bool comma, SnapshotPoint ssp, XSharpSignatureProperties props)
+        IXMemberSymbol findElementAt(bool command, char triggerChar, SnapshotPoint ssp, XSharpSignatureProperties props)
         {
             // when coming from the completion list then there is no need to check a lot of stuff
             // we can then simply lookup the method and that is it.
             // Also no need to filter on visibility since that has been done in the completionlist already !
             // First, where are we ?
             var location = props.Location;
+            bool comma = triggerChar == ',';
             // When we have a multi line source line this is the line where the open paren or open curly is
 
             if (location.Member != null && location.Member.Range.StartLine == ssp.GetContainingLine().LineNumber)
@@ -266,12 +266,12 @@ namespace XSharp.LanguageService
                 // so skip the closing token
                 // the comma itself is usually not in the list yet because the tokens are from the previous
                 // snapshot.
-                if (token.Position == props.Location.Position && comma)
+                if (token.Position == props.Location.Position && (comma|| command))
                 {
                     if (token.Type == XSharpLexer.RPAREN ||
                         token.Type == XSharpLexer.RBRKT ||
                         token.Type == XSharpLexer.RCURLY)
-                    { 
+                    {
                         break;
                     }
                 }
@@ -299,13 +299,13 @@ namespace XSharp.LanguageService
                     case XSharpLexer.CHAR_CONST:
                         if (token.Position < location.Position && location.Position < token.Position+token.Text.Length)
                         {
-                            // comma inside literal !
-                            return null;
+                            if (comma)
+                                return null;
                         }
                         break;
                 }
             }
- 
+
             if (openTokens.Count == 0)
             {
                 tokenList.Clear();
@@ -318,7 +318,7 @@ namespace XSharp.LanguageService
                     ((List<IToken>) tokenList).RemoveRange(pos + 1, tokenList.Count - pos - 1);
                 }
             }
-            if (comma)
+            if (comma || command)
             {
                 // check to see if there is a lparen or lcurly before the comma
                 bool done = false;
@@ -392,12 +392,13 @@ namespace XSharp.LanguageService
 
         }
 
-        internal bool StartSignatureSession(bool comma, IXTypeSymbol type = null, string methodName = null, char triggerchar = '\0')
+        internal bool StartSignatureSession(bool command, IXTypeSymbol type = null, string methodName = null, char triggerchar = '\0')
         {
             WriteOutputMessage("StartSignatureSession()");
 
             if (_signatureSession != null)
                 return false;
+            bool comma = triggerchar == ',';
             IXMemberSymbol currentElement = null;
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
             if (triggerchar == '(' && ssp.Position < ssp.Snapshot.Length && ssp.GetChar() == ')')
@@ -419,7 +420,7 @@ namespace XSharp.LanguageService
             }
             else
             {
-                currentElement = findElementAt(comma, ssp, props);
+                currentElement = findElementAt(command, triggerchar, ssp, props);
             }
             if (currentElement == null)
                 return false;
@@ -433,7 +434,7 @@ namespace XSharp.LanguageService
             }
             else
             {
-                _signatureSession = _signatureBroker.CreateSignatureHelpSession(_textView, caretsnapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
+                _signatureSession = _signatureBroker.CreateSignatureHelpSession(_textView, caretsnapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), false);
             }
             _signatureSession.Properties[typeof(XSharpSignatureProperties)] = props;
 
@@ -449,7 +450,7 @@ namespace XSharp.LanguageService
             props.Element = currentElement;
             props.Start = ssp.Position;
             props.Length = _textView.Caret.Position.BufferPosition.Position - ssp.Position;
-            if (comma)
+            if (comma || command)
             {
                 var tokenList = XSharpTokenTools.GetTokenListBeforeCaret(location, out var state);
                 bool done = false;
@@ -501,7 +502,7 @@ namespace XSharp.LanguageService
             if (_signatureSession == null)
                 return false;
 
-            _signatureSession.Dismiss();
+           _signatureSession.Dismiss();
             return true;
         }
 

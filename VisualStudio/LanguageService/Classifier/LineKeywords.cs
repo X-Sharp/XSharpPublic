@@ -17,6 +17,20 @@ namespace XSharp.LanguageService
         {
         }
 
+        static bool IsInstanceVar(int keyword)
+        {
+            switch (keyword)
+            {
+                case XSharpLexer.EXPORT:
+                case XSharpLexer.HIDDEN:
+                case XSharpLexer.PUBLIC:
+                case XSharpLexer.PRIVATE:
+                case XSharpLexer.PROTECTED:
+                    return true;
+            }
+            return false;
+        }
+
         internal static XKeyword Tokens2Keyword(IList<IToken> tokens)
         {
             IToken firstkw = null, secondkw = null;
@@ -30,7 +44,9 @@ namespace XSharp.LanguageService
                         continue;
                     if (XSharpLexer.IsComment(token.Type))
                         continue;
-                    if (!XSharpLexer.IsModifier(token.Type) || token.Type == XSharpLexer.CLASS)
+
+                    var include = IsInstanceVar(token.Type) || !XSharpLexer.IsModifier(token.Type);
+                    if (include || token.Type == XSharpLexer.CLASS)
                     {
                         if (XSharpLexer.IsKeyword(token.Type))
                         {

@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using XSharpModel;
+using XSharpModel.Formatting;
 
 namespace XSharp.LanguageService
 {
@@ -23,8 +24,8 @@ namespace XSharp.LanguageService
         readonly XFile _file;
         readonly SourceCodeEditorSettings _settings;
         private static int _lastIndentValue;    // in number of characters
-        // session buffer for tokens per line 
-        readonly Dictionary<int, IList<IToken>> _tokenBuffer; 
+        // session buffer for tokens per line
+        readonly Dictionary<int, IList<IToken>> _tokenBuffer;
         internal LineFormatter(ITextBuffer buffer, SourceCodeEditorSettings settings)
         {
             _buffer = buffer;
@@ -52,7 +53,7 @@ namespace XSharp.LanguageService
                     minIndent = GetIndentTokenLength(tokens[0]);
                 }
             }
-            
+
             return keyword;
         }
 
@@ -65,7 +66,7 @@ namespace XSharp.LanguageService
             {
                 var token = tokens.Where((t) => t.Type != XSharpLexer.WS).FirstOrDefault();
                 if (token == null)
-                    return true;  // should not happen 
+                    return true;  // should not happen
                 if (XSharpLexer.IsComment(token.Type))
                     return false;
                 if (token.Type == XSharpLexer.TEXT_STRING_CONST)
@@ -111,7 +112,7 @@ namespace XSharp.LanguageService
                 FormatLineIndent(editSession, line, indentation);
             }
         }
-       
+
         internal void FormatLineCase(ITextEdit editSession, ITextSnapshotLine line)
         {
             // get classification of the line.
@@ -277,11 +278,16 @@ namespace XSharp.LanguageService
         {
             var lineNo = line.LineNumber;
             int prevIndentation = 0;
-            XKeyword kw = default;
+           ;
             while (lineNo >= 0)
             {
-                kw = GetFirstKeywordInLine(lineNo);
-                    
+                XKeyword kw = GetFirstKeywordInLine(lineNo);
+
+                if (kw.IsMember())
+                {
+                    prevIndentation = IndentLine(kw, lineNo);
+                    break;
+                }
                 if (kw.IsStart())
                 {
                     prevIndentation = IndentLine(kw, lineNo);
@@ -312,7 +318,7 @@ namespace XSharp.LanguageService
 
             return prevIndentation;
         }
-     
+
         private int GetDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession,  int prevIndent)
         {
             WriteOutputMessage($"getDesiredIndentation({line.LineNumber + 1})");
@@ -330,7 +336,8 @@ namespace XSharp.LanguageService
                     indentValue = prevIndent;
                     if (prevLineKeyword.IsStart() ||prevLineKeyword.IsMiddle())
                     {
-                        mustIndentAfterPreviousLine = true;
+                        if (! XFormattingRule.IsSingleLineEntity(prevLineKeyword))
+                            mustIndentAfterPreviousLine = true;
                     }
                     if (_settings.IndentContinuedLines)
                     {
@@ -550,7 +557,7 @@ namespace XSharp.LanguageService
                         tempLine -= 1;
                     }
                 }
-             
+
             }
             else
             {
@@ -696,8 +703,8 @@ namespace XSharp.LanguageService
         //}
         #endregion
 
-       
-        
+
+
 
         internal void WriteOutputMessage(string strMessage)
         {
@@ -706,7 +713,7 @@ namespace XSharp.LanguageService
                 XSettings.LogMessage("XSharp.Formatting:" + strMessage);
             }
         }
-       
+
 
 
     }

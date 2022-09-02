@@ -286,6 +286,9 @@ BEGIN NAMESPACE XSharpModel
     PUBLIC STATIC METHOD IsMember(token as XKeyword) AS LOGIC
     RETURN GetFlags(token):HasFlag(XFormattingFlags.Member)
 
+    PUBLIC STATIC METHOD IsSingleLineEntity(token as XKeyword) AS LOGIC
+    RETURN GetFlags(token):HasFlag(XFormattingFlags.SingleLine)
+
     PUBLIC STATIC METHOD IsStatement(token as XKeyword) AS LOGIC
     RETURN GetFlags(token):HasFlag(XFormattingFlags.Statement)
 

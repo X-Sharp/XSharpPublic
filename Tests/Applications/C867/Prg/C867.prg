@@ -27,21 +27,25 @@ Stack Trace :
 USING System.Windows.Forms
 #pragma options("lb", on)
 FUNCTION Start() AS VOID STRICT
-	LOCAL obj AS OBJECT 
+	LOCAL obj AS OBJECT
+	TRY
 	obj := MyClassOk{}
 	obj:Go(0)
 	xAssert(obj:Go(123) == 123)
 	xAssert(obj:Go() == 0)
 	xAssert(obj:Go("test") == "test")
-	
+
 	obj := MyClassError{}
 	obj:Go(0)
 	xAssert(obj:Go(123) == 123)
 	xAssert(obj:Go() == 0)
 	xAssert(obj:Go("test") == "test")
-	
+
 	obj := CustomForm{}
 	obj:Show()
+	CATCH  e as exception
+        ? e:ToString()
+	END TRY
 RETURN
 
 CLASS MyClassOK
@@ -64,6 +68,7 @@ END CLASS
 
 CLASS CustomForm INHERIT Form
 	NEW METHOD Show() AS VOID STRICT
+	    xAssert(TRUE)
 END CLASS
 
 

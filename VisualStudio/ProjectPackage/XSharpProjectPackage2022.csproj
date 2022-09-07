@@ -32,7 +32,6 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <VsixType>v3</VsixType>
-    <DeployExtension Condition=" '$(Configuration)' == 'Release' ">false</DeployExtension>
     <ContentSQLiteInteropFiles>false</ContentSQLiteInteropFiles>
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
@@ -68,7 +67,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>VSTHRD010;VSSDK006;1762</NoWarn>
-    <DeployExtension>True</DeployExtension>
+    <DeployExtension>False</DeployExtension>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -125,14 +124,21 @@
     <Compile Include="Commands\CommandXPorter.cs" />
     <Compile Include="Commands\CommandVoXPorter.cs" />
     <Compile Include="Commands\XSharpBaseCommand.cs" />
-    <Compile Include="List\ListManager.cs" />
+    <Compile Include="List\ErrorList\ErrorListItem.cs" />
+    <Compile Include="List\ErrorList\ErrorListManager.cs" />
+    <Compile Include="List\ErrorList\ErrorListProvider.cs" />
+     <Compile Include="List\ErrorList\ErrorMessageUtil.cs" />
     <Compile Include="List\IListItem.cs" />
+    <Compile Include="List\IListProvider.cs" />
+    <Compile Include="List\IListSinkManager.cs" />
     <Compile Include="List\ListFactory.cs" />
+    <Compile Include="List\ListManager.cs" />
     <Compile Include="List\ListProvider.cs" />
-    <Compile Include="List\TaskList\TaskListManager.cs" />
+    <Compile Include="List\ListSinkManager.cs" />
+    
     <Compile Include="List\ListSnapShot.cs" />
     <Compile Include="List\TaskList\TaskListItem.cs" />
-    <Compile Include="List\ErrorList\ErrorListManager.cs" />
+    <Compile Include="List\TaskList\TaskListManager.cs" />
     <Compile Include="List\TaskList\TaskListProvider.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
@@ -144,12 +150,6 @@
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
-    <Compile Include="List\ErrorList\ErrorListProvider.cs" />
-    <Compile Include="List\ListSinkManager.cs" />
-    <Compile Include="List\ErrorList\ErrorMessageUtil.cs" />
-    <Compile Include="List\ErrorList\ErrorListItem.cs" />
-    <Compile Include="List\IListProvider.cs" />
-    <Compile Include="List\IListSinkManager.cs" />
     <Compile Include="Nodes\XSharpFileNodeProperties.cs" />
     <Compile Include="Nodes\XSharpNodeProperties.cs" />
     <Compile Include="Editors\XSharpVOEditorPane.cs" />
@@ -159,6 +159,10 @@
     <Compile Include="PackageReferences\PackageReferencesNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Nodes\XSharpProjectNodeProperties.cs" />
+    <Content Include="XSharpDesigners.pkgdef">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavoded.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavofed.tpl" />
@@ -190,12 +194,14 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="XSharpDesigners.pkgdef">
+    <Content Include="app.config">
+      <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Editors\Todo.txt" />
     <Content Include="Snippets\SnippetsIndex.xml" />
+    <Content Include="source.extension.2019.vsixmanifest" />
     <Content Include="source.extension.2022.vsixmanifest" />
     <Content Include="Template.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -393,11 +399,6 @@
     <Compile Include="XSharpProjectPackage.cs" />
     <Compile Include="Nodes\XSharpReferenceContainerNode.cs" />
     <Compile Include="CodeDomProvider\XSharpVSMDProvider.cs" />
-    <Content Include="app.config">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.xsdbs" />
     <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.xsfs" />
     <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VOMenu.xsmnu" />
@@ -419,9 +420,6 @@
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.xsproj" />
-    <VSIXSourceItem Include="C:\XSharp\DevPublic\Binaries\2022\Debug\XSharpDebugger2022.vsdconfig">
-      <Link>XSharpDebugger2022.vsdconfig</Link>
-    </VSIXSourceItem>
     <None Include="Snippets\Snippets\case.snippet" />
     <None Include="Snippets\Snippets\class.snippet" />
     <None Include="Snippets\Snippets\classinherited.snippet" />

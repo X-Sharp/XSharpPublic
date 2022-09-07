@@ -210,7 +210,6 @@ namespace XSharp.LanguageService
                 int position = session.GetTriggerPoint(m_textBuffer).GetPosition(snapshot);
                 session.Properties.TryGetProperty(typeof(XSharpSignatureProperties) , out props);
                 m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(new Span(props.Start, props.Length), SpanTrackingMode.EdgeInclusive, 0);
-
                 object elt = props.Element;
                 if (elt is IXSymbol)
                 {

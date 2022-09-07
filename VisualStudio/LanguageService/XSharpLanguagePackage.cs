@@ -21,6 +21,7 @@ using Microsoft.Win32;
 using Microsoft;
 using Microsoft.VisualStudio.OLE.Interop;
 using Community.VisualStudio.Toolkit;
+using System.Collections.Generic;
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
@@ -212,6 +213,9 @@ namespace XSharp.LanguageService
             XSettings.EditorInsertFinalNewline = _formattingPage.InsertFinalNewLine;
             XSettings.KeywordCase = _formattingPage.KeywordCase;
             // Indentation
+
+            // validate indentation settings
+            _indentingPage.ValidateSettings();
             XSettings.IndentTypeMembers = _indentingPage.IndentEntityContent;
             XSettings.IndentTypeFields = _indentingPage.IndentFieldContent;
             XSettings.IndentStatements = _indentingPage.IndentBlockContent;
@@ -220,6 +224,7 @@ namespace XSharp.LanguageService
             XSettings.IndentContinuedLines = _indentingPage.IndentMultiLines;
             XSettings.IndentPreprocessorLines = _indentingPage.IndentPreprocessorLines;
             XSettings.IndentNamespace = _indentingPage.IndentNamespace;
+
 #if COMPLETION
             // Completion
             XSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
@@ -359,6 +364,22 @@ namespace XSharp.LanguageService
                     }
                 }
             }
+            /*
+            // our user text editor settings are stored inside ApplicationPrivateSettings\\TextEditor\\XSharp
+            using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_UserSettings))
+            {
+                var subkey = root.OpenSubKey("ApplicationPrivateSettings\\TextEditor\\XSharp");
+                {
+                    var names = subkey.GetValueNames();
+                    var list = new List<string>();
+                    foreach (var name in names)
+                    {
+                        list.Add(subkey.GetValue(name).ToString());
+                    }
+                }
+            }
+            */
+
 
         }
         public void Terminate()

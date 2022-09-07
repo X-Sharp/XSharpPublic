@@ -17,7 +17,7 @@
     <header>
       <para styleclass="Heading1">PUBLIC Statement</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="NotesBox"><snippet src="__NotInCoreVulcan" inline="false"/><text styleclass="Heading1">Purpose</text></para>
     <para styleclass="Normal">Creates variables and arrays visible to all routines in an application.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">PUBLIC &lt;memVarList&gt;<br/>PUBLIC &lt;idVar&gt; [:= &lt;uValue&gt;] | &lt;ArraySpec&gt; [, ...]<br/>PUBLIC &lt;idVar&gt; [:= &lt;uValue&gt;] [AS &lt;Type&gt; [OF &lt;ClassLibrary&gt;] ] &#160;<tab /><tab /><tab /><tab /><tab /><tab /> // FoxPro dialect only<br/>PUBLIC ARRAY &lt;arrayName&gt; <text style="font-weight:bold;">(</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">)</text> [, &lt;arrayName&gt; ( &lt;nRows&gt; [, &lt;nColumns&gt;] ) ] &#160; &#160; // FoxPro dialect only<br/>PUBLIC ARRAY &lt;arrayName&gt; <text style="font-weight:bold;">[</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">]</text> [, &lt;arrayName&gt; <text style="font-weight:bold;">[</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">]</text> ] &#160; &#160; // FoxPro dialect only</para>
@@ -34,6 +34,7 @@
     <para styleclass="List"><tab />&lt;idArray&gt; is a valid identifier name for the array to create. &#160;Array elements are initialized to NIL.</para>
     <para styleclass="List"><tab />&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</para>
     <para styleclass="List"><snippet src="__TypeAndCLass" inline="false"/></para>
+    <para styleclass="List"><tab /><text styleclass="Normal">The &lt;Type&gt; &#160;and &lt;ClassLibrary&gt; clauses are ignored because dynamic memory variables are always of type USUAL</text></para>
     <para styleclass="List">&lt;arrayName&gt;<tab />Variable name of array . The array will have the dimensions as declared with &lt;nRows&gt; and &lt;nColumns&gt;. The array may be declared with parentheses as delimiters but also with square brackets. <br/>&lt;nColumns&gt; is optional<br/>We recommend the use of square brackets.</para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">PUBLIC is an executable statement which means you must specify it after any variable declaration statements (i.e., FIELD, LOCAL, and MEMVAR) in the routine that you are defining.</para>

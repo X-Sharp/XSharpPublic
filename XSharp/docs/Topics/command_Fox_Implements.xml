@@ -6,6 +6,7 @@
     <header>
       <para styleclass="Heading1">FoxPro IMPLEMENTS clause</para>
     </header>
+    <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare an interface that the clause implements</para>
     <para styleclass="Heading1">Syntax</para>

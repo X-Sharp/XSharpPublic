@@ -6,6 +6,7 @@
     <header>
       <para styleclass="Heading1">METHOD implementations (Xbase ++ dialect)</para>
     </header>
+    <para styleclass="Heading1"><snippet src="__XppOnly" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Provide the implementation for methods that are forward defined between CLASS .. ENDCLASS</para>
     <para styleclass="Heading1">Syntax</para>

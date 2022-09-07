@@ -6,6 +6,7 @@
     <header>
       <para styleclass="Heading1">FoxPro COMAttrib clause</para>
     </header>
+    <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare COM attributes (not supported)</para>
     <para styleclass="Heading1">Syntax</para>

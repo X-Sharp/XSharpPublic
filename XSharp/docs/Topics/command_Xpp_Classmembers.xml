@@ -6,6 +6,7 @@
     <header>
       <para styleclass="Heading1">Method declarations (Xbase++ dialect)</para>
     </header>
+    <para styleclass="Heading1"><snippet src="__XppOnly" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare and implement methods for a class, both for instances and the class itself</para>
     <para styleclass="Heading1">Syntax</para>

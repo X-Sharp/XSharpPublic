@@ -6,6 +6,7 @@
     <header>
       <para styleclass="Heading1">FoxPro ADD OBJECT Clause</para>
     </header>
+    <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Adds objects from other classes to the class definition. </para>
     <para styleclass="Heading1">Syntax</para>

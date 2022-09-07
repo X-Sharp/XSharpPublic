@@ -6,6 +6,7 @@
     <header>
       <para styleclass="Heading1">FoxPro FUNCTION and PROCEDURE definition clauses</para>
     </header>
+    <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Defines method and event functions and procedures for the class definition. </para>
     <para styleclass="Heading1">Syntax</para>

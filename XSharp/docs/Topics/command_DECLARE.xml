@@ -12,8 +12,10 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">DECLARE/DIMENSION Statement // FoxPro dialect only</para>
+      <para styleclass="Heading1">DECLARE/DIMENSION Statement</para>
     </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Create and initialize private &#160;variables of the FoxPro array type<br/>Note: &#160;and Declare are synonyms</para>
     <para styleclass="Normal"></para>

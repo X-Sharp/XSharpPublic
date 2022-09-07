@@ -6,15 +6,16 @@
     <header>
       <para styleclass="Heading1">Fields (Xbase++ class syntax)</para>
     </header>
+    <para styleclass="Heading1"><snippet src="__XppOnly" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare fields/ instance variables with optional initial values</para>
-        <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><tab />[Visibility :]</para>
     <para styleclass="Body Text"><tab />[STATIC] VAR &lt;idVar,...&gt; [IS &lt;Name&gt;] [IN &lt;SuperClass&gt;] &#160;[AS &lt;idType&gt;]</para>
     <para styleclass="Normal"><tab />[SHARED]</para>
     <para styleclass="Normal"><tab />[READONLY]</para>
     <para styleclass="Normal"><tab /><text styleclass="Body Text">[ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] </text><br/><tab />[NOSAVE]</para>
-        <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">Visibility<tab />This sets the visibility for the variables on the line following the statement. This can <text styleclass="Body Text">be HIDDEN ,PROTECTED, EXPORTED or INTERNAL. The default visibility is HIDDEN.</text></para>
     <para styleclass="List"></para>
     <para styleclass="List">STATIC<tab />Declares that this is a class level field.</para>

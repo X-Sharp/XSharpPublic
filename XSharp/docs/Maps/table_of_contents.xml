@@ -113,14 +113,26 @@
     <topicref type="topic" id="441615025972125" modified="2020-11-26T20:46:32.013Z" icon="0" href="__TextMerge-Example">
       <caption translate="true">__TextMerge Example</caption>
     </topicref>
-    <topicref type="topic" id="44178055698880" build="ALL" modified="2020-12-14T11:27:22.098Z" icon="0" href="__IncludeExpressionBody">
+    <topicref type="topic" id="44178055698880" modified="2022-09-07T14:54:38.673Z" icon="0" href="__IncludeExpressionBody">
       <caption translate="true">__IncludeExpressionBody</caption>
     </topicref>
-    <topicref type="topic" id="448035777001592" build="ALL" modified="2022-08-30T12:29:23.239Z" icon="0" href="__TypeAndCLass">
+    <topicref type="topic" id="448035777001592" modified="2022-09-07T14:54:38.679Z" icon="0" href="__TypeAndCLass">
       <caption translate="true">__TypeAndCLass</caption>
     </topicref>
-    <topicref type="topic" id="448034724814297" build="ALL" modified="2022-08-30T12:37:14.207Z" icon="0" href="__localSpec">
+    <topicref type="topic" id="448034724814297" modified="2022-09-07T14:54:38.686Z" icon="0" href="__localSpec">
       <caption translate="true">__localSpec</caption>
+    </topicref>
+    <topicref type="topic" id="448114397104334" modified="2022-09-07T14:52:39.949Z" icon="0" href="__XppOnly">
+      <caption translate="true">__Xpp</caption>
+    </topicref>
+    <topicref type="topic" id="448115097407762" modified="2022-09-07T14:54:32.116Z" icon="0" href="__VoVulcanOnly">
+      <caption translate="true">__VoVulcan</caption>
+    </topicref>
+    <topicref type="topic" id="448114847869009" modified="2022-09-07T14:57:33.294Z" icon="0" href="__NotInCoreVulcan">
+      <caption translate="true">__NotInCoreVulcan</caption>
+    </topicref>
+    <topicref type="topic" id="448114788158439" modified="2022-09-07T14:49:53.067Z" icon="0" href="__FoxProOnly">
+      <caption translate="true">__FoxPro</caption>
     </topicref>
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
@@ -773,10 +785,10 @@
           <topicref type="topic" id="423890664256386" build="ALL" modified="2019-10-15T14:09:03.068Z" icon="0" href="command_BEGIN-USING">
             <caption translate="true">BEGIN USING</caption>
           </topicref>
-          <topicref type="topic" id="441767688590616" build="CHM,HTML,PDF,PRINT" modified="2021-04-17T00:22:23.425Z" icon="0" href="command_LOCAL-FUNCTION">
+          <topicref type="topic" id="441767688590616" build="ALL" modified="2022-09-07T14:50:50.377Z" icon="0" href="command_LOCAL-FUNCTION">
             <caption translate="true">LOCAL FUNCTION</caption>
           </topicref>
-          <topicref type="topic" id="441765218688099" build="CHM,HTML,PDF,PRINT" modified="2021-04-17T00:22:34.082Z" icon="0" href="command_LOCAL-PROCEDURE">
+          <topicref type="topic" id="441765218688099" build="ALL" modified="2022-09-07T14:50:54.096Z" icon="0" href="command_LOCAL-PROCEDURE">
             <caption translate="true">LOCAL PROCEDURE</caption>
           </topicref>
           <topicref type="topic" id="423886791199984" build="ALL" modified="2016-01-19T21:17:02.341Z" icon="0" href="USING">
@@ -1047,45 +1059,45 @@
             <caption translate="true">VOSTRUCT Statement</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436968382800624" build="CHM,HTML,PDF" modified="2020-02-25T16:41:41.872Z" icon="0" href="cmd_cat_set">
+        <topicref type="topic" id="436968382800624" build="ALL" modified="2022-09-07T14:51:30.547Z" icon="0" href="cmd_cat_set">
           <caption translate="true">Environment</caption>
-          <topicref type="topic" id="384613507102286" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.799Z" icon="0" href="command_SET_ANSI">
+          <topicref type="topic" id="384613507102286" build="ALL" modified="2022-09-07T14:51:30.553Z" icon="0" href="command_SET_ANSI">
             <caption translate="true">SET ANSI Command</caption>
           </topicref>
-          <topicref type="topic" id="43700395884884" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.807Z" icon="0" href="command_SET_CENTURY">
+          <topicref type="topic" id="43700395884884" build="ALL" modified="2022-09-07T14:51:30.562Z" icon="0" href="command_SET_CENTURY">
             <caption translate="true">SET CENTURY Command</caption>
           </topicref>
-          <topicref type="topic" id="436985524344551" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.814Z" icon="0" href="command_SET_DATE">
+          <topicref type="topic" id="436985524344551" build="ALL" modified="2022-09-07T14:51:30.567Z" icon="0" href="command_SET_DATE">
             <caption translate="true">SET DATE Command</caption>
           </topicref>
-          <topicref type="topic" id="385413837929920" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.820Z" icon="0" href="command_SET_DATE_FORMAT">
+          <topicref type="topic" id="385413837929920" build="ALL" modified="2022-09-07T14:51:30.575Z" icon="0" href="command_SET_DATE_FORMAT">
             <caption translate="true">SET DATE FORMAT Command</caption>
           </topicref>
-          <topicref type="topic" id="384613069718970" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.826Z" icon="0" href="command_SET_DECIMALS">
+          <topicref type="topic" id="384613069718970" build="ALL" modified="2022-09-07T14:51:30.580Z" icon="0" href="command_SET_DECIMALS">
             <caption translate="true">SET DECIMALS Command</caption>
           </topicref>
-          <topicref type="topic" id="385414395175438" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.834Z" icon="0" href="command_SET_DEFAULT">
+          <topicref type="topic" id="385414395175438" build="ALL" modified="2022-09-07T14:51:30.585Z" icon="0" href="command_SET_DEFAULT">
             <caption translate="true">SET DEFAULT Command</caption>
           </topicref>
-          <topicref type="topic" id="384614063710025" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.841Z" icon="0" href="command_SET_DIGITFIXED">
+          <topicref type="topic" id="384614063710025" build="ALL" modified="2022-09-07T14:51:30.591Z" icon="0" href="command_SET_DIGITFIXED">
             <caption translate="true">SET DIGITFIXED Command</caption>
           </topicref>
-          <topicref type="topic" id="384612814452770" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.847Z" icon="0" href="command_SET_DIGITS">
+          <topicref type="topic" id="384612814452770" build="ALL" modified="2022-09-07T14:51:30.597Z" icon="0" href="command_SET_DIGITS">
             <caption translate="true">SET DIGITS Command</caption>
           </topicref>
-          <topicref type="topic" id="385414484815343" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.853Z" icon="0" href="command_SET_DRIVER">
+          <topicref type="topic" id="385414484815343" build="ALL" modified="2022-09-07T14:51:30.602Z" icon="0" href="command_SET_DRIVER">
             <caption translate="true">SET DRIVER Command</caption>
           </topicref>
-          <topicref type="topic" id="385412955773853" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.859Z" icon="0" href="command_SET_EPOCH">
+          <topicref type="topic" id="385412955773853" build="ALL" modified="2022-09-07T14:51:30.608Z" icon="0" href="command_SET_EPOCH">
             <caption translate="true">SET EPOCH Command</caption>
           </topicref>
-          <topicref type="topic" id="384613116326190" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.865Z" icon="0" href="command_SET_EXACT">
+          <topicref type="topic" id="384613116326190" build="ALL" modified="2022-09-07T14:51:30.615Z" icon="0" href="command_SET_EXACT">
             <caption translate="true">SET EXACT Command</caption>
           </topicref>
-          <topicref type="topic" id="384612443430574" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.873Z" icon="0" href="command_SET_FIXED">
+          <topicref type="topic" id="384612443430574" build="ALL" modified="2022-09-07T14:51:30.621Z" icon="0" href="command_SET_FIXED">
             <caption translate="true">SET FIXED Command</caption>
           </topicref>
-          <topicref type="topic" id="385413402566730" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.879Z" icon="0" href="command_SET_PATH">
+          <topicref type="topic" id="385413402566730" build="ALL" modified="2022-09-07T14:51:30.626Z" icon="0" href="command_SET_PATH">
             <caption translate="true">SET PATH Command</caption>
           </topicref>
         </topicref>

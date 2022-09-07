@@ -20,6 +20,7 @@
     <header>
       <para styleclass="Heading1">VOSTRUCT Statement</para>
     </header>
+    <para styleclass="Heading1"><snippet src="__VoVulcanOnly" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text">Declare a data structure and its member names.</para>
     <para styleclass="Heading1">Syntax</para>

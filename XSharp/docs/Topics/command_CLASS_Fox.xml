@@ -32,6 +32,7 @@
     <header>
       <para styleclass="Heading1">CLASS Statement (FoxPro dialect)</para>
     </header>
+    <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare a class name to the compiler.</para>
     <para styleclass="Heading1">Syntax</para>

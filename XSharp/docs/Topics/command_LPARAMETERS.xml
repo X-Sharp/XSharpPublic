@@ -4,9 +4,11 @@
   <title>LPARAMETERS Statement</title>
   <body>
     <header>
-      <para styleclass="Heading1">LPARAMETERS Statement // FoxPro only</para>
+      <para styleclass="Heading1">LPARAMETERS Statement </para>
     </header>
-    <para styleclass="Body Text">The LPARAMETERS Statemenent is identical to the PARAMETERS statement. <br/>The Variables however will be created as LOCAL variables and not as Dynamic Memory Variables</para>
+    <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The LPARAMETERS Statemenent is identical to the PARAMETERS statement. <br/>The Variables however will be created as LOCAL variables and not as Dynamic Memory Variables and the optional &lt;Type&gt; clause is respected.</para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text">Create local variables to receive passed values or references.</para>
     <para styleclass="Heading1">Syntax</para>
@@ -15,6 +17,7 @@
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;<text styleclass="Code with box">idParameterList</text>&gt;<tab /><text styleclass="Body Text">One or more parameter variables separated by commas. These variables are used to receive arguments that you pass when you call the routine. The variables will be dynamic memory variables</text></para>
     <para styleclass="List"><snippet src="__TypeAndCLass" inline="false"/></para>
+    <para styleclass="List"><tab /><text styleclass="Normal">The &lt;ClassLibrary&gt; is ignored but the &lt;Type&gt; is enforced.</text></para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Body Text">When a LPARAMETERS statement executes, all variables in the parameter list are created as local variables.</para>
     <para styleclass="Body Text">Parameters can also be declared as local variables if specified as a part of the PROCEDURE or FUNCTION declaration statement (see the example). Parameters specified in this way are referred to as formal parameters. Note that you cannot specify both formal parameters and a PARAMETERS statement within a procedure or function definition. </para>

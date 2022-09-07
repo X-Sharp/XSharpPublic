@@ -160,7 +160,7 @@
       <config-value name="copyright" translate="true">© 2015- &lt;%YEAR%&gt; &lt;%AUTHOR%&gt;</config-value>
       <config-value name="versionmajor">2</config-value>
       <config-value name="versionminor">13</config-value>
-      <config-value name="versionbuild">1</config-value>
+      <config-value name="versionbuild">2</config-value>
       <config-value name="lcid" translate="true">en-us</config-value>
       <config-value name="charset" translate="true">ANSI_CHARSET</config-value>
       <config-value name="deffont">font-family:Verdana; font-size:10pt; color:#000000; </config-value>
@@ -744,9 +744,6 @@
       <file-mod href="__IncludeXPPMethodNames.xml"/>
       <file-mod href="X-Walkthroughs.xml"/>
       <file-mod href="__ByRef.xml"/>
-      <file-mod href="command_SET_ANSI.xml" build="CHM,HTML,PDF"/>
-      <file-mod href="command_SET_EXACT.xml" build="CHM,HTML,PDF"/>
-      <file-mod href="cmd_cat_set.xml" build="CHM,HTML,PDF"/>
       <file-mod href="Quick-Start.xml"/>
       <file-mod href="Arrays.xml"/>
       <file-mod href="Classes-and-Structures.xml"/>
@@ -775,6 +772,13 @@
       <file-mod href="__ConsoleExample.xml"/>
       <file-mod href="__TextMerge-Example.xml"/>
       <file-mod href="__IncludeLocalFunctionParameters.xml"/>
+      <file-mod href="__FoxProOnly.xml"/>
+      <file-mod href="__XppOnly.xml"/>
+      <file-mod href="__VoVulcanOnly.xml"/>
+      <file-mod href="__IncludeExpressionBody.xml"/>
+      <file-mod href="__TypeAndCLass.xml"/>
+      <file-mod href="__localSpec.xml"/>
+      <file-mod href="__NotInCoreVulcan.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

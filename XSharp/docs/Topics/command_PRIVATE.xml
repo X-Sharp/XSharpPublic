@@ -15,7 +15,7 @@
     <header>
       <para styleclass="Heading1">PRIVATE Statement</para>
     </header>
-    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="NotesBox"><snippet src="__NotInCoreVulcan" inline="false"/><text styleclass="Heading1">Purpose</text></para>
     <para styleclass="Normal">Create variables and arrays visible within current and invoked routines.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code with box">PRIVATE &lt;idVar&gt; [:= &lt;uValue&gt;] | &lt;ArraySpec&gt; [, ...]<br/>PRIVATE &lt;idVar&gt; [:= &lt;uValue&gt;] [AS &lt;Type&gt; [OF &lt;ClassLibrary&gt;] ] &#160;// FoxPro dialect</para>

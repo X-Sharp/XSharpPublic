@@ -14,7 +14,7 @@
     <header>
       <para styleclass="Heading1">PARAMETERS Statement</para>
     </header>
-    <para styleclass="NotesBox">The PARAMETERS statement is NOT available in the Core and Vulcan dialects and will only be enabled if the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar</link> commandline option is specified.</para>
+    <para styleclass="NotesBox"><snippet src="__NotInCoreVulcan" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text">Create private variables to receive passed values or references.</para>
     <para styleclass="Heading1">Syntax</para>

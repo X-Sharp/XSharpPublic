@@ -14,7 +14,7 @@
     <header>
       <para styleclass="Heading1">RELEASE Command</para>
     </header>
-    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="NotesBox"><snippet src="__NotInCoreVulcan" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Releases public and private memory variables visible to the current routine by assigning a NIL value to them.</para>
     <para styleclass="Heading1">Syntax</para>

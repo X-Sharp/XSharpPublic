@@ -241,6 +241,17 @@ internal static class OOPHelpers
                 endif
             endif
         next
+        var type1 := m1:DeclaringType
+        var type2 := m2:DeclaringType
+        if (type1 != type2)
+            if type1:IsAssignableFrom(type2)
+                return 2
+            elseif type2:IsAssignableFrom(type1)
+                return 1
+            endif
+        endif
+
+
         return 0
 
     static method CountNonDefaultParameters(pars as IList<ParameterInfo>) AS LONG
@@ -264,7 +275,7 @@ internal static class OOPHelpers
             var pars := m:GetParameters()
             if pars:Length == uArgs:Length
                 found:Add(m)
-            else
+            elseif pars:Length > 0
                 // check to see if there are default parameters for the method
                 var nonDefault := CountNonDefaultParameters(pars)
                 if uArgs:Length >= nonDefault
@@ -275,26 +286,27 @@ internal static class OOPHelpers
         if found:Count == 1
             return found:First() // collection, so 0 based !
         endif
+        var filtered := List<T>{}
+        filtered:AddRange(found)
         // then look for methods with
         found:Clear()
-        foreach var m1 in overloads
-            foreach var m2 in overloads
+        foreach var m1 in filtered
+            foreach var m2 in filtered
                 if (m2 != m1)
                     var result := OOPHelpers.CompareMethods(m1, m2, uArgs)
                     if result == 1
                         if ! found:Contains(m1)
                             found:Add(m1)
                         endif
+                        if found:Contains(m2)
+                            found:Remove(m2)
+                        endif
                     elseif result == 2
                         if ! found:Contains(m2)
                             found:Add(m2)
                         endif
-                    else
-                        if ! found:Contains(m1)
-                            found:Add(m1)
-                        endif
-                        if ! found:Contains(m2)
-                            found:Add(m2)
+                        if found:Contains(m1)
+                            found:Remove(m1)
                         endif
                     endif
                 endif

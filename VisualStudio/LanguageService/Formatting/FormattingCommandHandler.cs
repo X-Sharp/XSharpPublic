@@ -19,6 +19,7 @@ using XSharpModel;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Text.Classification;
+using Community.VisualStudio.Toolkit;
 
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 namespace XSharp.LanguageService
@@ -60,6 +61,7 @@ namespace XSharp.LanguageService
         private readonly XDocument _document;
         private readonly LineFormatter _lineFormatter;
         XSharpClassifier _classifier;
+        SourceCodeEditorSettings Settings => _buffer.GetSettings();
 
         bool _suspendSync = false;
         int currentLine = -1;
@@ -112,12 +114,12 @@ namespace XSharp.LanguageService
             }
             if (_file != null)
             {
-                _settings = EditorConfigReader.ReadSettings(_buffer, _file.FullPath);
+                EditorConfigReader.ReadSettings(_buffer, _file.FullPath);
             }
 
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
             registerClassifier();
-            _lineFormatter = new LineFormatter(_buffer, _settings);
+            _lineFormatter = new LineFormatter(_buffer);
 
         }
 
@@ -143,9 +145,9 @@ namespace XSharp.LanguageService
             ThreadHelper.ThrowIfNotOnUIThread();
             int result = VSConstants.S_OK;
             Guid cmdGroup = pguidCmdGroup;
-            bool completionActive = false; 
+            bool completionActive = false;
             registerClassifier();
-            _settings = _buffer.GetSettings();
+            var settings = _buffer.GetSettings();
             // 1. Pre-process
             if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
             {
@@ -154,7 +156,7 @@ namespace XSharp.LanguageService
                     case (int) VSConstants.VSStd97CmdID.Save:
                     case (int)VSConstants.VSStd97CmdID.SaveAs:
                     case (int)VSConstants.VSStd97CmdID.SaveProjectItem:
-                        if (_settings.InsertFinalNewline || _settings.TrimTrailingWhiteSpace)
+                        if (Settings.InsertFinalNewline || Settings.TrimTrailingWhiteSpace)
                         {
                             adjustWhiteSpace();
                         }
@@ -263,11 +265,12 @@ namespace XSharp.LanguageService
 
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var editSession = _buffer.CreateEdit();
+                var settings = Settings;
                 var changed = false;
                 try
                 {
                     var snapshot = editSession.Snapshot;
-                    if (_settings.InsertFinalNewline)
+                    if (settings.InsertFinalNewline)
                     {
                         var text = snapshot.GetText();
                         if (!text.EndsWith(Environment.NewLine))
@@ -278,7 +281,7 @@ namespace XSharp.LanguageService
                         }
 
                     }
-                    if (_settings.TrimTrailingWhiteSpace)
+                    if (settings.TrimTrailingWhiteSpace)
                     {
                         foreach (var line in snapshot.Lines)
                         {
@@ -342,15 +345,15 @@ namespace XSharp.LanguageService
         {
             get
             {
-                if (_settings == null)
+                if (Settings == null)
                     return false;
-                if (_settings.IdentifierCase)
+                if (Settings.IdentifierCase)
                     return true;
-                return _settings.KeywordCase != KeywordCase.None;
+                return Settings.KeywordCase != KeywordCase.None;
             }
         }
 
-       
+
         private void Textbuffer_Changed(object sender, TextContentChangedEventArgs e)
         {
             var snapshot = e.After;
@@ -432,7 +435,7 @@ namespace XSharp.LanguageService
 
             }
         }
-       
-       
+
+
     }
 }

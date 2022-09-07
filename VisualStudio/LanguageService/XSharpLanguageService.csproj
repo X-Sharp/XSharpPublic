@@ -222,6 +222,9 @@
     <PackageReference Include="Microsoft.VisualStudio.CoreUtility">
       <Version>15.6.27413</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Imaging">
+      <Version>15.0.26606</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Language">
       <Version>15.8.525</Version>
     </PackageReference>

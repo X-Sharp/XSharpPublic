@@ -32,7 +32,7 @@
 "GeneratesDesignTimeSource"=dword:00000001
 @="Microsoft DataSet Code Generator for X#"
 [$RootKey$\Generators\{AA6C8D78-22FF-423A-9C7C-5F2393824E04}\TextTemplatingFileGenerator]
-"GeneratesDesignTimeSource"=dword:00000001 
+"GeneratesDesignTimeSource"=dword:00000001
 "CLSID"="{b9c665d2-0451-4ae2-a38c-443b85d634f2}"
 @="Generator that uses the Text Templating engine"
 
@@ -49,7 +49,7 @@
 "Language"="X#"
 
 
-; Specifies the debug engines supported by the language. 
+; Specifies the debug engines supported by the language.
 ; Here we are specifying that X# can be used when Managed or Mixed Mode debugging.
 [$RootKey$\AD7Metrics\ExpressionEvaluator\{f579403a-d3d3-47a0-bf03-9709575bee69}\{363398fa-76ad-44bb-a750-0abdc02bf4de}\Engine]
 ; Managed Only

@@ -174,7 +174,17 @@ namespace XSharp.LanguageService
 
                         case (int)VSConstants.VSStd2KCmdID.LEFT:
                         case (int)VSConstants.VSStd2KCmdID.RIGHT:
-                            MoveSignature();
+                            if (_signatureSession != null)
+                            {
+                                MoveSignature();
+                            }
+                            break;
+                        case (int)VSConstants.VSStd2KCmdID.UP:
+                        case (int)VSConstants.VSStd2KCmdID.DOWN:
+                            if (_signatureSession != null && _signatureSession.Signatures.Count == 1)
+                            {
+                                CancelSignatureSession();
+                            }
                             break;
 
 

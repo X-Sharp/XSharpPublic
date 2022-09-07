@@ -32,5 +32,8 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile />
+    <MSBuildWarningsAsMessages>
+      $(MSBuildWarningsAsMessages);MSB3277;
+    </MSBuildWarningsAsMessages>
   </PropertyGroup>
 </Project>

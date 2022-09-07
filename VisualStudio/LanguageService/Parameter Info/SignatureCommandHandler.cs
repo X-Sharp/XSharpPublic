@@ -459,7 +459,8 @@ namespace XSharp.LanguageService
             _signatureSession.Dismissed += OnSignatureSessionDismiss;
             props.Element = currentElement;
             props.Start = ssp.Position;
-            props.Length = _textView.Caret.Position.BufferPosition.Position - ssp.Position;
+            var caretPos = _textView.Caret.Position.BufferPosition.Position;
+            props.Length = caretPos - ssp.Position;
             if (comma || command)
             {
                 var tokenList = XSharpTokenTools.GetTokenListBeforeCaret(location, out var state);
@@ -478,14 +479,14 @@ namespace XSharp.LanguageService
                             if (done)
                             {
                                 props.Start = token.Position;
-                                props.Length = _textView.Caret.Position.BufferPosition.Position - token.Position;
+                                props.Length = caretPos - token.Position;
                             }
                             nested -= 1;
                             break;
                         case XSharpLexer.RPAREN:
                         case XSharpLexer.RCURLY:
                         case XSharpLexer.RBRKT:
-                            if (last != i)
+                            if (token.Position < caretPos)
                             {
                                 nested += 1;
                             }
@@ -504,6 +505,7 @@ namespace XSharp.LanguageService
                 XSettings.LogException(e, "Start Signature session failed:");
             }
             //
+
             return true;
         }
         internal bool HasActiveSession => _signatureSession != null;

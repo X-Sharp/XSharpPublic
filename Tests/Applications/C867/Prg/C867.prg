@@ -28,7 +28,7 @@ USING System.Windows.Forms
 #pragma options("lb", on)
 FUNCTION Start() AS VOID STRICT
 	LOCAL obj AS OBJECT
-	TRY
+
 	obj := MyClassOk{}
 	obj:Go(0)
 	xAssert(obj:Go(123) == 123)
@@ -43,9 +43,7 @@ FUNCTION Start() AS VOID STRICT
 
 	obj := CustomForm{}
 	obj:Show()
-	CATCH  e as exception
-        ? e:ToString()
-	END TRY
+
 RETURN
 
 CLASS MyClassOK

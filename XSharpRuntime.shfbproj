@@ -60,7 +60,7 @@
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOGUIClasses.Xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.13.1.0</HelpFileVersion>
+    <HelpFileVersion>2.13.2.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -120,12 +120,15 @@
             </NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOGUIClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOGUIClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOInternetClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOInternetClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VOSystemClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOSystemClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VORDDClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VORDDClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOReportClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOReportClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOSQLClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOSQLClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp_VOGUIClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the XSharp.VOGUIClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp_VORDDClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the XSharp.VORDDClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp_VOSQLClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the XSharp.VOSQLClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp_VOSystemClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the XSharp.VOSystemClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="System.Linq" isDocumented="True">This namespace contains extension methods (Sum(), Min(), Max()) for the XSharp Numeric datatypes Float and Currency</NamespaceSummaryItem>
     </NamespaceSummaries>
     <ComponentConfigurations>
       <ComponentConfig id="Syntax Component" enabled="True">
@@ -207,7 +210,7 @@
     </PlugInConfigurations>
     <RootNamespaceTitle>X# Runtime and VO SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
-    <CopyrightText>Copyright &amp;#169%3b 2015-2022 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b 1993-2020 Computer Associates.</CopyrightText>
+    <CopyrightText>Copyright &amp;#169%3b 2015-2022 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b Computer Associates.</CopyrightText>
     <BuildLogFile>C:\XSharp\DevRt\Binaries\Obj\Help\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>
@@ -233,9 +236,11 @@
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VOGUIClasses_Functions.htm&amp;quot%3b&amp;gt%3bVOGUIClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VOInternetClasses_Functions.htm&amp;quot%3b&amp;gt%3bVOInternetClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VORDDClasses_Functions.htm&amp;quot%3b&amp;gt%3bVORDDClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
+            &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VOSystemClasses_Functions.htm&amp;quot%3b&amp;gt%3bVOSystemClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VOSQLClasses_Functions.htm&amp;quot%3b&amp;gt%3bVOSQLClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VOGUIClasses_Functions.htm&amp;quot%3b&amp;gt%3bXSharp_VOGUIClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VORDDClasses_Functions.htm&amp;quot%3b&amp;gt%3bXSharp_VORDDClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
+            &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VOSystemClasses_Functions.htm&amp;quot%3b&amp;gt%3bXSharp_VOSystemClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VOSQLClasses_Functions.htm&amp;quot%3b&amp;gt%3bXSharp_VOSQLClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
             &amp;lt%3b/list&amp;gt%3b
             There is no need to do anything special when writing code. The compiler will automatically resolve function calls, such as:

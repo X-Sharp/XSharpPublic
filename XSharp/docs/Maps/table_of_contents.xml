@@ -519,8 +519,8 @@
         <topicref type="topic" id="440465326848206" build="ALL" modified="2020-08-03T16:03:51.685Z" icon="0" href="editor-Snippets">
           <caption translate="true">Snippets</caption>
         </topicref>
-        <topicref type="topic" id="440463266528134" build="ALL" modified="2020-08-03T16:03:54.463Z" icon="0" href="editor-Intellisense-options">
-          <caption translate="true">Intellisense options</caption>
+        <topicref type="topic" id="440463266528134" build="ALL" modified="2022-09-07T16:50:16.833Z" icon="0" href="editor-Intellisense-options">
+          <caption translate="true">Text Editor Options</caption>
         </topicref>
         <topicref type="topic" id="440684277166773" build="ALL" modified="2020-08-25T12:58:59.687Z" icon="0" href="Highlight-words">
           <caption translate="true">Highlight words</caption>

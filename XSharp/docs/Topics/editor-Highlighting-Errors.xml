@@ -6,6 +6,6 @@
     <header>
       <para styleclass="Heading1">Highlighting Errors</para>
     </header>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">At this moments errors are not highlighted in the source code editor. This is planned for a future version of X#.</para>
   </body>
 </topic>

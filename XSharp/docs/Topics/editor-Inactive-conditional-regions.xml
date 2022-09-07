@@ -6,6 +6,9 @@
     <header>
       <para styleclass="Heading1">Inactive conditional regions</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Normal">If you use conditional compilation with #ifdef .. #endif regions then the inactive regions will be visible with different color in the editor:</para>
+    <para styleclass="Normal">Below is a piece of code from the CDX RDD. The CHECKVERSIONS define is not defined, so there is an inactive region in the editor, which is shown in light gray.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="InactiveRegion.png" scale="100.00%" styleclass="Image Caption"></image></para>
   </body>
 </topic>

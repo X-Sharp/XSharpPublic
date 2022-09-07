@@ -16,7 +16,7 @@ namespace XSharp.LanguageService
 {
     public static class Extensions
     {
-        
+
         public static bool IsClassificationCommentOrString(this string classification)
         {
             if (string.IsNullOrEmpty(classification))
@@ -53,13 +53,12 @@ namespace XSharp.LanguageService
             return new XsClassificationSpan(sspan, classificationType);
         }
 
-    
+
         public static XFile GetFile(this ITextBuffer buffer)
         {
-            XFile file;
             if (buffer == null)
                 return null;
-            if (buffer.Properties.TryGetProperty(typeof(XFile), out file))
+            if (buffer.Properties.TryGetProperty<XFile>(typeof(XFile), out var file))
             {
                 return file;
             }
@@ -74,18 +73,20 @@ namespace XSharp.LanguageService
 
         internal static XDocument GetDocument(this ITextBuffer buffer)
         {
-            XDocument tokens;
-            if (buffer.Properties.TryGetProperty(typeof(XDocument), out tokens))
+            if (buffer == null)
+                return null;
+            if (buffer.Properties.TryGetProperty<XDocument>(typeof(XDocument), out var document))
             {
-                return tokens;
+                return document;
             }
             return null;
         }
 
         public static XSharpClassifier GetClassifier(this ITextBuffer buffer)
         {
-            XSharpClassifier classifier;
-            if (buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out classifier))
+            if (buffer == null)
+                return null;
+            if (buffer.Properties.TryGetProperty<XSharpClassifier>(typeof(XSharpClassifier), out var classifier))
             {
                 return classifier;
             }
@@ -93,8 +94,9 @@ namespace XSharp.LanguageService
         }
         public static SourceCodeEditorSettings GetSettings(this ITextBuffer buffer)
         {
-            SourceCodeEditorSettings settings;
-            if (buffer.Properties.TryGetProperty(typeof(SourceCodeEditorSettings), out settings))
+            if (buffer == null)
+                return null;
+            if (buffer.Properties.TryGetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings), out var settings))
             {
                 return settings;
             }
@@ -103,8 +105,9 @@ namespace XSharp.LanguageService
 
         public static String GetXAMLFile(this ITextBuffer buffer)
         {
-            ITextDocument textDoc;
-            if (buffer.Properties.TryGetProperty(typeof(ITextDocument), out textDoc))
+            if (buffer == null)
+                return null;
+            if (buffer.Properties.TryGetProperty<ITextDocument>(typeof(ITextDocument), out var textDoc))
             {
                 return textDoc.FilePath;
             }
@@ -154,18 +157,31 @@ namespace XSharp.LanguageService
         }
         internal static XSourceEntity FindEntity(this ITextBuffer buffer, SnapshotPoint point)
         {
+            if (buffer == null)
+                return null;
             var file = buffer.GetFile();
+            if (file == null)
+                return null;
             return XSharpLookup.FindEntity(point.GetContainingLine().LineNumber, file);
         }
-        
+
         internal static XSourceMemberSymbol FindMember(this ITextBuffer buffer, SnapshotPoint point)
         {
+            if (buffer == null)
+                return null;
             var file = buffer.GetFile();
+            if (file == null)
+                return null;
+
             return XSharpLookup.FindMember(point.GetContainingLine().LineNumber, file);
         }
         internal static XSourceMemberSymbol FindMemberAtPosition(this ITextBuffer buffer, SnapshotPoint point)
         {
+            if (buffer == null)
+                return null;
             var file = buffer.GetFile();
+            if (file == null)
+                return null;
             return XSharpLookup.FindMemberAtPosition(point.Position, file);
         }
         internal static XSharpSearchLocation FindLocation(this ITextBuffer buffer, SnapshotPoint point)

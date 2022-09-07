@@ -16,8 +16,6 @@ namespace XSharp.LanguageService
     partial class XSharpFormattingCommandHandler
     {
 
-        SourceCodeEditorSettings _settings;
-
         private void WaitUntilBufferReady()
         {
             while (_buffer.EditInProgress)
@@ -40,7 +38,7 @@ namespace XSharp.LanguageService
                 var editSession = _buffer.CreateEdit();
                 try
                 {
-                    switch ((EnvDTE.vsIndentStyle)_settings.IndentStyle)
+                    switch ((EnvDTE.vsIndentStyle)Settings.IndentStyle)
                     {
                         case EnvDTE.vsIndentStyle.vsIndentStyleSmart:
                             if (lineNumber > 0)
@@ -115,6 +113,7 @@ namespace XSharp.LanguageService
         {
             var lines = _buffer.CurrentSnapshot.Lines;
             ITextEdit editSession = null;
+            var settings = Settings;
             try
             {
                 editSession = _buffer.CreateEdit();
@@ -126,7 +125,7 @@ namespace XSharp.LanguageService
               });
 
                 document.NeedsKeywords = false;
-                var formatter = new DocFormatter(document, _settings);
+                var formatter = new DocFormatter(document, settings);
                 var expectedIndent = formatter.GetIndentSizes(lines, startLine, endLine, startIndent);
 
                 // now process the lines
@@ -136,7 +135,7 @@ namespace XSharp.LanguageService
                     if (number >= startLine && number <= endLine)
                     {
                         var indent = expectedIndent[number];
-                        _lineFormatter.FormatLineIndent(editSession, line, indent * _settings.IndentSize);
+                        _lineFormatter.FormatLineIndent(editSession, line, indent * settings.IndentSize);
                         _lineFormatter.FormatLineCase(editSession, line);
                     }
                 }

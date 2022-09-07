@@ -15,26 +15,26 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <!-- SHFB properties -->
-    <FrameworkVersion>.NET Framework 4.6.2</FrameworkVersion>
+    <FrameworkVersion>.NET Framework 4.7.2</FrameworkVersion>
     <OutputPath>Binaries\Help\</OutputPath>
-    <HtmlHelpName>Test</HtmlHelpName>
+    <HtmlHelpName>XSharpRef</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.xml" /></DocumentationSources>
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.xml" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
+<DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.xml" /></DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.12.1.0</HelpFileVersion>
+    <HelpFileVersion>2.13.1.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
-    <SyntaxFilters>C#, X#</SyntaxFilters>
-    <PresentationStyle>VS2013</PresentationStyle>
+    <HelpFileFormat>Website</HelpFileFormat>
+    <SyntaxFilters>X#</SyntaxFilters>
+    <PresentationStyle>VS2013XSharp</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
@@ -42,10 +42,8 @@
     <BuildAssemblerVerbosity>OnlyErrors</BuildAssemblerVerbosity>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, PublicCompilerGenerated, NonBrowsable</VisibleItems>
     <ApiFilter>
-      <Filter entryType="Namespace" fullName="VOSystemClasses" isExposed="False" />
       <Filter entryType="Namespace" fullName="VOConsoleClasses" isExposed="False" />
       <Filter entryType="Namespace" fullName="(global)" isExposed="False" />
-      <Filter entryType="Namespace" fullName="XSharp_VOSystemClasses" isExposed="False" />
       <Filter entryType="Namespace" fullName="XSharp_VOConsoleClasses" isExposed="False" />
     </ApiFilter>
     <NamespaceSummaries>
@@ -158,10 +156,20 @@
     <SourceCodeBasePath>c:\XSharp\DevRt\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
     <PlugInConfigurations>
-      <PlugInConfig id="XSharp Function Output" enabled="False">
+      <PlugInConfig id="XSharp Function Output" enabled="True">
         <configuration />
       </PlugInConfig>
-<PlugInConfig id="XPath Reflection File Filter" enabled="True"><configuration><expressions><expression>//api[starts-with(apidata/@name,"$")]</expression><expression>//api[contains(@id,"XSharp.ADS.ACE")]</expression><expression>//api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression><expression>//api[contains(@id,"N:") and string-length(@id)=2]</expression></expressions></configuration></PlugInConfig></PlugInConfigurations>
+      <PlugInConfig id="XPath Reflection File Filter" enabled="True">
+        <configuration>
+          <expressions>
+            <expression>//api[starts-with(apidata/@name,"$")]</expression>
+            <expression>//api[contains(@id,"XSharp.ADS.ACE")]</expression>
+            <expression>//api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression>
+            <expression>//api[contains(@id,"N:") and string-length(@id)=2]</expression>
+          </expressions>
+        </configuration>
+      </PlugInConfig>
+    </PlugInConfigurations>
     <RootNamespaceTitle>X# Runtime and VO SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2015-2022 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b 1993-2020 Computer Associates.</CopyrightText>

@@ -253,9 +253,19 @@ namespace XSharp.Project
         }
 
 
-#endregion
+        #endregion
 
-#region Overriden implementation
+        #region Overriden implementation
+
+        internal static bool InContextMenu = false;
+
+        protected override int ShowContextMenu(int menuId, Guid menuGroup, POINTS points)
+        {
+            InContextMenu = true;
+            var result = base.ShowContextMenu(menuId, menuGroup, points);
+            InContextMenu = false;
+            return result;
+        }
         /// <summary>
         /// Gets the project GUID.
         /// </summary>
@@ -1589,6 +1599,7 @@ namespace XSharp.Project
         {
 
         }
+
         internal void BuildEnded(bool didCompile)
         {
             if (didCompile)

@@ -38,6 +38,7 @@
       <li styleclass="Normal"><text styleclass="Body Text">The lookup code for Peek definition, Goto definition etc. was filtering out instance methods and only returning static methods. This has been fixed (#1111, #1100)</text></li>
       <li styleclass="Normal"><text styleclass="Body Text">Several changes to fix issues with indentation while typing (#1094) </text></li>
       <li styleclass="Normal"><text styleclass="Body Text">Fixed several problems with parameter tips (#1098, #1066, #1110)</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">A recent change to support the wizard that converts packages.config to package references has had a negative impact on nuget restore operations during builds inside Visual Studio. This was fixed. (#1113)</text></li>
     </list>
     <para styleclass="Heading1">Changes in 2.13.1</para>
     <para styleclass="Heading2">Compiler</para>

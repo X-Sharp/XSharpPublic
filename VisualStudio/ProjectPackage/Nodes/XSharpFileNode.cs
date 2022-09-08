@@ -529,7 +529,7 @@ namespace XSharp.Project
                 if (_fileType == XFileType.Unknown)
                     _fileType  = XFileTypeHelpers.GetFileType(this.Url);
                 return _fileType;
-            }
+             }
         }
 
         private void CheckItemType()
@@ -769,6 +769,7 @@ namespace XSharp.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         protected override int QueryStatusOnNode(Guid guidCmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
+            CurrentItem = this;
             if (guidCmdGroup == Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet97)
             {
                 switch ((VsCommands)cmd)
@@ -806,7 +807,7 @@ namespace XSharp.Project
 
             return base.QueryStatusOnNode(guidCmdGroup, cmd, pCmdText, ref result);
         }
-
+        internal static XSharpFileNode CurrentItem = null;
 
         public override void Remove(bool removeFromStorage)
         {

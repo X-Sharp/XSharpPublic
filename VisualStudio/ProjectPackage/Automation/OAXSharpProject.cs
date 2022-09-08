@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Project.Automation;
 using System;
 using Microsoft.VisualStudio.Project;
+using Community.VisualStudio.Toolkit;
+using System.IO;
 
 namespace XSharp.Project
 {
@@ -85,12 +87,13 @@ namespace XSharp.Project
             get
             {
                 // When we are loading or building return the string fast
-                var xProject = (XSharpProjectNode)this.Project;
-                if (xProject.IsLoading || xProject.BuildInProgress)
-                    return Project.ProjectGuidString;
-                if (MustReturnCSharp())
+                if (XSharpProjectNode.InContextMenu &&
+                    XSharpFileNode.CurrentItem != null &&
+                    XSharpFileNode.CurrentItem.FileType == XSharpModel.XFileType.Config &&
+                    XSharpFileNode.CurrentItem.FileName.ToLower().EndsWith("packages.config") &&
+                    MustReturnCSharp() )
                 {
-                    // The Nuget Utility has a hard coded check for C#, VB and F#
+                    // The Nuget Utility to convert packages.confif has a hard coded check for C#, VB and F#
                     return CSharpProjectType;
                 }
                 return Project.ProjectGuidString;

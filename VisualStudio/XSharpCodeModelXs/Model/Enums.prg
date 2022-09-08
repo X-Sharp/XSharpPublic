@@ -189,24 +189,26 @@ BEGIN NAMESPACE XSharpModel
    END ENUM
 
    ENUM XFileType AS LONG
-      MEMBER Unknown          :=-1
-      MEMBER SourceCode       :=0
-      MEMBER PreprocessorOutput:=1
-      MEMBER Header           :=2
-      MEMBER VOForm           :=3
-      MEMBER VOMenu           :=4
-      MEMBER VODBServer       :=5
-      MEMBER VOIndex          :=6
-      MEMBER VOOrder          :=7
-      MEMBER VOFieldSpec      :=8
-      MEMBER NativeResource   :=9
-      MEMBER ManagedResource  :=10
-      MEMBER XAML             :=11
-      MEMBER Settings         :=12
-      MEMBER License          :=13
-      MEMBER Resource         := 14
-      MEMBER Template         := 15       // tpl and inf
-      MEMBER TextTemplate     := 16     // tt
+      MEMBER Unknown            := -1
+      MEMBER SourceCode         := 0
+      MEMBER PreprocessorOutput := 1
+      MEMBER Header             := 2
+      MEMBER VOForm             := 3
+      MEMBER VOMenu             := 4
+      MEMBER VODBServer         := 5
+      MEMBER VOIndex            := 6
+      MEMBER VOOrder            := 7
+      MEMBER VOFieldSpec        := 8
+      MEMBER NativeResource     := 9
+      MEMBER ManagedResource    := 10
+      MEMBER XAML               := 11
+      MEMBER Settings           := 12
+      MEMBER License            := 13
+      MEMBER Resource           := 14
+      MEMBER Template           := 15       // tpl and inf
+      MEMBER TextTemplate       := 16     // tt
+      MEMBER Config             := 17     // config for app.config and packages.config
+      MEMBER Other              := 99
    END ENUM
 
    ENUM ParamType

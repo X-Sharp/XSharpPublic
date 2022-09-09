@@ -5333,6 +5333,43 @@ RETURN
 		RETURN
 
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD Test_DBOI_SKIPUNIQUE() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1117
+
+			LOCAL nDirection := NIL AS USUAL
+			LOCAL cDbf AS STRING
+			LOCAL n AS INT
+
+			RddSetDefault ( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf, {{"FLD","N",5,0}} , {1,2,1,2,1,2,1,2})
+			DbCreateIndex(cDbf , "FLD")
+			FOR n := 1 UPTO 10
+				DbAppend()
+				FieldPut(1, iif(n<=5, 1 , 2))
+			NEXT
+			
+			DbGoTop()
+			
+			Assert.Equal(1, (INT)FieldGet(1) )
+			Assert.False( Eof() )
+			
+			VoDbOrderInfo( DBOI_SKIPUNIQUE, "", NIL, REF nDirection )
+
+			Assert.Equal(6, (INT)FieldGet(1) )
+			Assert.False( Eof() )
+
+			VoDbOrderInfo( DBOI_SKIPUNIQUE, "", NIL, REF nDirection )
+
+			Assert.True( Eof() )
+			
+			DbCloseArea()
+		RETURN
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

@@ -22,7 +22,7 @@
          _Properties := PropertyContainer{self}
       endif
 
-    method _AddProperty(cPropertyName as string, uValue as usual, nVisibility := 1 /*PropertyVisibility.Public*/ as long, cDescription := "" as string) as logic
+    method _AddProperty(cPropertyName as string, uValue as usual, nVisibility := PropertyVisibility.Public as long, cDescription := "" as string) as logic
         self:__InitProperties()
         return _Properties:Add(cPropertyName, uValue, nVisibility, cDescription) != null
 

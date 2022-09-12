@@ -19,6 +19,9 @@ BEGIN NAMESPACE XSharpModel
          SUPER(name, Kind.Parameter, Modifiers.Public)
          SELF:TypeName      := typeName
          SELF:Parent        := parent
+         if typeName:EndsWith("&")
+             SELF:TypeName := typeName:Substring(0, typeName:Length-1)
+         ENDIF
 
          // Properties
       PROPERTY Value        AS STRING AUTO

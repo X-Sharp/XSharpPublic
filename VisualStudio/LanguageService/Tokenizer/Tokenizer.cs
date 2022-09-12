@@ -139,6 +139,8 @@ namespace XSharp.LanguageService
                     if (done)
                         break;
                 }
+                if (tokenUnderCursor < 0)
+                    tokenUnderCursor = 0;
                 var selectedToken = tokens[tokenUnderCursor];
                 var nextToken = tokenUnderCursor < tokens.Count - 1 ? tokens[tokenUnderCursor + 1] : null;
                 done = false;
@@ -325,6 +327,8 @@ namespace XSharp.LanguageService
             var cursorPos = location.Position;
             var done = false;
             var list = new XSharpTokenList(tokens);
+            bool afterOut = false;
+
             while (!done && !list.Eoi())
             {
                 IToken lasttoken = result.LastOrDefault();
@@ -427,6 +431,10 @@ namespace XSharp.LanguageService
                         state = CompletionState.Brackets;
                         result.Add(token);
                         break;
+                    case XSharpLexer.VALUE:
+                        token.Type = XSharpLexer.ID;
+                        result.Add(token);
+                        break;
                     case XSharpLexer.ID:
                     case XSharpLexer.NAMEOF:
                     case XSharpLexer.TYPEOF:
@@ -497,12 +505,16 @@ namespace XSharp.LanguageService
                         else
                             state = CompletionState.None;
                         break;
+                    case XSharpLexer.OUT:
+                        afterOut = true;
+                        result.Add(token);
+                        break;
 
                     case XSharpLexer.AS:
                     case XSharpLexer.IS:
                     case XSharpLexer.REF:
                     case XSharpLexer.INHERIT:
-                        if (!isHit)
+                        if (!isHit && ! afterOut)
                         {
                             result.Clear();
                         }
@@ -570,6 +582,10 @@ namespace XSharp.LanguageService
                         state = CompletionState.Namespaces;
                         break;
                     case XSharpLexer.COMMA:
+                        afterOut = false;
+                        state = CompletionState.General;
+                        result.Add(token);
+                        break;
                     case XSharpLexer.ASSIGN_OP:
                     case XSharpLexer.COLONCOLON:
                     case XSharpLexer.SELF:

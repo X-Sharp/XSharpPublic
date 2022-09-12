@@ -372,7 +372,22 @@ namespace Microsoft.VisualStudio.Project
             // NOTE: This may run on a background thread!
             FlushBuildOutput();
         }
-
+#if DEV17
+        internal void FlushBuildOutput()
+        {
+            OutputQueueEntry output;
+            lock (outputQueue)
+            {
+                if (!outputQueue.IsEmpty)
+                {
+                    while (this.outputQueue.TryDequeue(out output))
+                    {
+                        output.Pane.OutputStringThreadSafe(output.Message);
+                    }
+                }
+            }
+        }
+#else
         internal void FlushBuildOutput()
         {
             ThreadHelper.JoinableTaskFactory.Run(async delegate
@@ -385,26 +400,22 @@ namespace Microsoft.VisualStudio.Project
                     {
                         while (this.outputQueue.TryDequeue(out output))
                         {
-#if DEV17
-                            output.Pane.OutputStringThreadSafe(output.Message);
-#else
                             output.Pane.OutputString(output.Message);
-#endif
                         }
                     }
                 }
             });
         }
-
+#endif
         private void ClearQueuedOutput()
         {
             // NOTE: This may run on a background thread!
             this.outputQueue = new ConcurrentQueue<OutputQueueEntry>();
         }
 
-        #endregion output queue
+#endregion output queue
 
-        #region task queue
+#region task queue
 
         class NavigableErrorTask : ErrorTask
         {
@@ -500,9 +511,9 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        #endregion task queue
+#endregion task queue
 
-        #region helpers
+#region helpers
 
         /// <summary>
         /// This method takes a MessageImportance and returns true if messages
@@ -603,9 +614,9 @@ namespace Microsoft.VisualStudio.Project
             this.haveCachedVerbosity = false;
         }
 
-        #endregion helpers
+#endregion helpers
 
-        #region exception handling helpers
+#region exception handling helpers
 
         /// <summary>
         /// Call Dispatcher.BeginInvoke, showing an error message if there was a non-critical exception.
@@ -650,7 +661,7 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        #endregion exception handling helpers
+#endregion exception handling helpers
         class OutputQueueEntry
         {
             public readonly string Message;

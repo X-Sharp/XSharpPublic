@@ -5345,7 +5345,8 @@ RETURN
 
 			cDbf := DbfTests.GetTempFileName()
 			
-			DbfTests.CreateDatabase(cDbf, {{"FLD","N",5,0}} , {1,2,1,2,1,2,1,2})
+			DbfTests.CreateDatabase(cDbf, {{"FLD","N",5,0}})
+			DbUseArea(TRUE,,cDbf)
 			DbCreateIndex(cDbf , "FLD")
 			FOR n := 1 UPTO 10
 				DbAppend()
@@ -5366,6 +5367,68 @@ RETURN
 
 			Assert.True( Eof() )
 			
+			DbCloseArea()
+		RETURN
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD Test_ScopeWide() AS VOID
+			// https://www.xsharp.eu/forum/public-product/3165-combobox-problem-with-values#23759
+
+			LOCAL cDbf AS STRING
+			LOCAL n AS INT
+
+			RddSetDefault ( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf, {{"FLD","N",5,0}} , {1,2,3,4,5,6,7,8,9,10})
+			DbCreateIndex(cDbf , "FLD")
+			
+			DbOrderInfo(DBOI_SCOPETOP, "", NIL, 5)
+			DbOrderInfo(DBOI_SCOPEBOTTOM, "", NIL, 15)
+			
+			DbGoTop()
+			Assert.Equal(5, (INT)FieldGet(1))
+			Assert.Equal(5, (INT)RecNo())
+			Assert.False( Eof() )
+
+			DbGoBottom()
+			Assert.Equal(10, (INT)FieldGet(1))
+			Assert.Equal(10, (INT)RecNo())
+			Assert.False( Eof() )
+			DbCloseArea()
+
+			DbUseArea(TRUE,,cDbf)
+			DbOrderInfo(DBOI_SCOPETOP, "", NIL, -5)
+			DbOrderInfo(DBOI_SCOPEBOTTOM, "", NIL, 15)
+
+			DbGoTop()
+			Assert.Equal(1, (INT)FieldGet(1))
+			Assert.Equal(1, (INT)RecNo())
+			Assert.False( Eof() )
+
+			DbGoBottom()
+			Assert.Equal(10, (INT)FieldGet(1))
+			Assert.Equal(10, (INT)RecNo())
+			Assert.False( Eof() )
+
+			DbCloseArea()
+
+			DbUseArea(TRUE,,cDbf)
+			DbOrderInfo(DBOI_SCOPETOP, "", NIL, -5)
+			DbOrderInfo(DBOI_SCOPEBOTTOM, "", NIL, 5)
+
+			DbGoTop()
+			Assert.Equal(1, (INT)FieldGet(1))
+			Assert.Equal(1, (INT)RecNo())
+			Assert.False( Eof() )
+
+			DbGoBottom()
+			Assert.Equal(5, (INT)FieldGet(1))
+			Assert.Equal(5, (INT)RecNo())
+			Assert.False( Eof() )
+
 			DbCloseArea()
 		RETURN
 

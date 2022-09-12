@@ -69,6 +69,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     PROPERTY BlockList  AS IList<XSourceBlock>    GET _BlockList
     PROPERTY Locals     AS IList<XSourceVariableSymbol> GET _locals
     PROPERTY SaveToDisk AS LOGIC AUTO
+    PROPERTY SupportsMemVars as LOGIC GET _file:Project:ParseOptions:SupportsMemvars
 
     CONSTRUCTOR(oFile AS XFile, dialect AS XSharpDialect)
         SELF:SaveToDisk := TRUE
@@ -336,9 +337,8 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 // Add Attribute
                 VAR attribute := ParseAttribute(aAttribs)
                 _EntityList:Add(attribute)
-            ELSEIF ParseBlock()
-                NOP
             ELSE
+                SELF:ParseBlock()
                 SELF:ParseStatement()
             ENDIF
         ENDDO
@@ -866,7 +866,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                         var txt := LastToken.Text.ToUpper()
                         if (txt == "PUBLIC" .or. txt == "PRIVATE")
                             IF CurrentEntity IS XSourceMemberSymbol VAR xDef .AND. ! xDef:SingleLine .AND. CurrentEntity.Kind:HasBody()
-                                if _file:Project:ParseOptions:SupportsMemvars
+                                if SELF:SupportsMemVars
                                     entityKind := Kind.Unknown
                                 endif
                             ENDIF
@@ -888,53 +888,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         RETURN entityKind != Kind.Unknown
 
 
-    PRIVATE METHOD ParseBlock() AS LOGIC
-        // Adds, updates or removes block token on the block tokens stack
-        // Start of block is also added to the _BlockList
-        SELF:ParseUdcTokens()  // Read UDC tokens on the current line
-
-
-        if !XSharpLexer.IsKeyword(La1) .and. ! XSharpLexer.IsPPKeyword(La1)
-            return FALSE
-        endif
-        local xt as XKeyword
-        LOCAL rule as XFormattingRule
-        if XFormattingRule.IsSingleKeyword(La1)
-            xt := XKeyword{SELF:La1}
-        elseif XSharpLexer.IsKeyword(La2)
-            xt := XKeyword{SELF:La1, SELF:La2}
-        else
-            xt := XKeyword{SELF:La1}
-        endif
-        rule := XFormattingRule.GetFirstRuleByStart(xt)
-        if rule != null .and. rule:Flags:HasFlag(XFormattingFlags.Statement)
-            // This means that the keyword is a start keyword of type statement
-            IF SELF:_collectBlocks
-                VAR block := XSourceBlock{ xt, SELF:Lt1}
-                // check for GET SET INIT blocks on a single line
-                // or ADD/REMOVE blocks on a single line
-                if (_BlockStack:Count > 0)
-                    var curblock := CurrentBlock
-                    if xt:Kw1 == XTokenType.Set .or. xt:Kw1 == XTokenType.Get .or. xt:Kw1 == XTokenType.Init
-                        if curblock:XKeyword:Kw1 == XTokenType.Set .or. ;
-                                curblock:XKeyword:Kw1 == XTokenType.Get .or.;
-                                curblock:XKeyword:Kw1 == XTokenType.Init
-                            _BlockStack:Pop()
-                        endif
-                    elseif xt:Kw1 == XTokenType.Add .or. xt:Kw1 == XTokenType.Remove
-                        if curblock:XKeyword:Kw1 == XTokenType.Add .or. ;
-                                curblock:XKeyword:Kw1 == XTokenType.Remove
-                            _BlockStack:Pop()
-                        endif
-                    endif
-                endif
-                if XFormattingRule.IsMiddleKeyword(xt) .and. _BlockStack:Count > 0
-                    CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
-                else
-                    _BlockList:Add(block)
-                    _BlockStack:Push(block)
-                endif
-            ENDIF
+    PRIVATE METHOD ParseBlockStart(rule as XFormattingRule, xt as XKeyword) AS VOID
+        // Does not process the tokens on the line !
+        IF rule:Flags:HasFlag(XFormattingFlags.Member)
             IF SELF:_collectLocals
                 // these are the start keywords that can introduce a local variable
                 SWITCH SELF:La1
@@ -951,48 +907,101 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                     SELF:GetSourceInfo(start, stop, OUT VAR range, OUT VAR interval, OUT VAR _)
                     VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
                     SELF:_locals:Add(xVar)
-                CASE XSharpLexer.IF // IF x IS SomeType VAR SomeVar
-                    SELF:ParseForLocals()
                 END SWITCH
+            endif
+            IF SELF:_collectBlocks
+                if (_BlockStack:Count > 0)
+                    var curblock := CurrentBlock
+                    if xt:Kw1 == XTokenType.Set .or. xt:Kw1 == XTokenType.Get .or. xt:Kw1 == XTokenType.Init
+                        if curblock:XKeyword:Kw1 == XTokenType.Set .or. ;
+                                curblock:XKeyword:Kw1 == XTokenType.Get .or.;
+                                curblock:XKeyword:Kw1 == XTokenType.Init
+                            _BlockStack:Pop()
+                        endif
+                    elseif xt:Kw1 == XTokenType.Add .or. xt:Kw1 == XTokenType.Remove
+                        if curblock:XKeyword:Kw1 == XTokenType.Add .or. ;
+                                curblock:XKeyword:Kw1 == XTokenType.Remove
+                            _BlockStack:Pop()
+                        endif
+                    endif
+                endif
             ENDIF
+        ELSEIF rule:Flags:HasFlag(XFormattingFlags.Statement)
+            // This means that the keyword is a start keyword of type statement
+            IF SELF:_collectBlocks
+                VAR block := XSourceBlock{ xt, SELF:Lt1}
+                // check for GET SET INIT blocks on a single line
+                // or ADD/REMOVE blocks on a single line
+                if XFormattingRule.IsMiddleKeyword(xt) .and. _BlockStack:Count > 0
+                    CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
+                else
+                    _BlockList:Add(block)
+                    _BlockStack:Push(block)
+                endif
+            ENDIF
+        ENDIF
+        RETURN
+
+    PRIVATE METHOD ParseBlockMiddle(xt as XKeyword) AS VOID
+        // Does not process the tokens on the line !
+        IF SELF:_collectLocals
+            SWITCH SELF:La1
+            CASE XSharpLexer.CATCH WHEN SELF:IsId(SELF:La2)
+                SELF:Consume()
+                VAR start   := SELF:Lt1
+                VAR id      := SELF:ParseIdentifier()
+                VAR strType := "System.Exception"
+                IF SELF:La1 == XSharpLexer.AS
+                    strType := SELF:ParseDataType(FALSE)
+                ENDIF
+
+                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
+                VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
+                SELF:_locals:Add(xVar)
+
+            CASE XSharpLexer.ELSEIF // These could be followed by an IS Type AS Id
+            CASE XSharpLexer.CASE
+                SELF:ParseForInlineLocals()
+
+            CASE XSharpLexer.RECOVER    // the possible ID has to be predeclared as local
+            CASE XSharpLexer.ELSE       // No Id allowed
+            CASE XSharpLexer.FINALLY    // No Id allowed
+            OTHERWISE
+                SELF:ReadLine()
+            END SWITCH
+
+        ENDIF
+        RETURN
+
+    PRIVATE METHOD ParseBlock() AS VOID
+        // Adds, updates or removes block token on the block tokens stack
+        // Start of block is also added to the _BlockList
+        // Does not process the tokens on the line !
+        SELF:ParseUdcTokens()  // Read UDC tokens on the current line
+        if !XSharpLexer.IsKeyword(La1) .and. ! XSharpLexer.IsPPKeyword(La1)
+            return
+        endif
+        local xt as XKeyword
+        LOCAL rule as XFormattingRule
+        if XFormattingRule.IsSingleKeyword(La1)
+            xt := XKeyword{SELF:La1}
+        elseif XSharpLexer.IsKeyword(La2)
+            xt := XKeyword{SELF:La1, SELF:La2}
+        else
+            xt := XKeyword{SELF:La1}
+        endif
+        rule := XFormattingRule.GetFirstRuleByStart(xt)
+        if rule != null
+            ParseBlockStart(rule, xt)
         elseif XFormattingRule.IsEndKeyword(xt)
             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
                 CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
                 _BlockStack:Pop()
             ENDIF
-            SELF:ReadLine()
-            RETURN TRUE
         ELSEIF XFormattingRule.IsMiddleKeyword(xt)
-            IF SELF:_collectLocals
-                SWITCH SELF:La1
-                CASE XSharpLexer.CATCH WHEN SELF:IsId(SELF:La2)
-                    SELF:Consume()
-                    VAR start   := SELF:Lt1
-                    VAR id      := SELF:ParseIdentifier()
-                    VAR strType := "System.Exception"
-                    IF SELF:La1 == XSharpLexer.AS
-                        strType := SELF:ParseDataType(FALSE)
-                    ENDIF
-
-                    SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
-                    VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, strType}
-                    SELF:_locals:Add(xVar)
-
-                CASE XSharpLexer.ELSEIF // These could be followed by an IS Type AS Id
-                CASE XSharpLexer.CASE
-                    SELF:ParseForLocals()
-
-                CASE XSharpLexer.RECOVER    // the possible ID has to be predeclared as local
-                CASE XSharpLexer.ELSE       // No Id allowed
-                CASE XSharpLexer.FINALLY    // No Id allowed
-                OTHERWISE
-                    SELF:ReadLine()
-                END SWITCH
-            ELSE
-                SELF:ReadLine()
-            ENDIF
+            ParseBlockMiddle(xt)
         ENDIF
-        RETURN FALSE
+        RETURN
 
 
     PRIVATE METHOD IsEndOfEntity(EntityKind OUT Kind) AS LOGIC
@@ -1131,7 +1140,14 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     PRIVATE METHOD Matches(nTypes PARAMS LONG[]) AS LOGIC => _list:Matches(nTypes)
     PRIVATE METHOD PushBack() AS VOID => _list:PushBack()
     PRIVATE METHOD ReadLine() AS VOID => _list:ReadLine()
+    PRIVATE METHOD ReadUntilEos() AS VOID
+        DO WHILE _list:La1 != XSharpLexer.EOS .and. !_list:Eoi()
+            _list:Consume()
+        ENDDO
 #endregion
+
+    PRIVATE METHOD ExpectOnThisLine(nType as LONG) AS LOGIC
+        return _list:ExpectOnThisLine(nType)
 
     PRIVATE METHOD ExpectAssignOp() AS LOGIC
         RETURN SELF:ExpectAny(XSharpLexer.ASSIGN_OP, XSharpLexer.EQ)
@@ -2548,13 +2564,8 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         CASE XSharpLexer.VAR
         CASE XSharpLexer.STATIC
             RETURN SELF:ParseDeclarationStatement()
-        CASE XSharpLexer.PUBLIC
-        CASE XSharpLexer.PRIVATE
-        CASE XSharpLexer.MEMVAR
-        CASE XSharpLexer.PARAMETERS
+
         CASE XSharpLexer.LPARAMETERS
-        CASE XSharpLexer.DIMENSION
-        CASE XSharpLexer.DECLARE
             RETURN SELF:ParseXBaseDeclarationStatement()
 
         CASE XSharpLexer.ID WHEN SELF:_firstTokenOnLine != NULL
@@ -2562,10 +2573,23 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             SWITCH SELF:_firstTokenOnLine:Type
             CASE XSharpLexer.PRIVATE
             CASE XSharpLexer.PUBLIC
-                SELF:ParseMemvarAllocationStatement(SELF:_firstTokenOnLine:Type)
+                IF SELF:SupportsMemVars
+                    SELF:ParseMemvarAllocationStatement(SELF:_firstTokenOnLine:Type)
+                ENDIF
                 RETURN TRUE
             END SWITCH
-
+         OTHERWISE
+            IF SELF:SupportsMemVars
+                SWITCH firstToken.Type
+                CASE XSharpLexer.PUBLIC
+                CASE XSharpLexer.PRIVATE
+                CASE XSharpLexer.MEMVAR
+                CASE XSharpLexer.PARAMETERS
+                CASE XSharpLexer.DIMENSION
+                CASE XSharpLexer.DECLARE
+                    RETURN SELF:ParseXBaseDeclarationStatement()
+                END SWITCH
+            ENDIF
         END SWITCH
 
         DO WHILE ! SELF:Eos()
@@ -2647,12 +2671,12 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                     SELF:_locals:Add(xVar)
                 ENDIF
             ELSE
-               Consume()
+                Consume()
             ENDIF
         ENDDO
         RETURN TRUE
 
-    PRIVATE METHOD ParseForLocals() AS VOID
+    PRIVATE METHOD ParseForInlineLocals() AS VOID
         // Check for method call with OUT VAR or OUT id AS TYPE
         // Check for <expr> IS <type> VAR <id>
         // also parses the EOS characters following the line
@@ -2670,11 +2694,12 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                     xVar:ImpliedKind  := ImpliedKind.TypeCheck
                     SELF:_locals:Add(xVar)
                 ENDIF
+
             ELSEIF SELF:La1 == XSharpLexer.OUT
                 // OUT Id AS Type
                 VAR start := SELF:Lt1
                 Consume() // OUT
-                IF SELF:IsId(SELF:La2) .AND. La3 == XSharpLexer.AS
+                IF SELF:IsId(SELF:La1) .AND. La2 == XSharpLexer.AS
                     VAR id   := SELF:ParseIdentifier()
                     VAR type := SELF:ParseDataType(FALSE)
                     SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
@@ -2706,9 +2731,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 Consume()
             ENDIF
         ENDDO
-        DO WHILE SELF:La1 == XSharpLexer.EOS
-            Consume() // Consume the EOS
-        ENDDO
+        SELF:ReadUntilEos()
 
 
     PRIVATE METHOD ParseStatement() AS VOID
@@ -2720,6 +2743,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             Consume()
         ENDDO
         SELF:ParseUdcTokens()  // Read UDC tokens on the current line
+        if SELF:ExpectOnThisLine(XSharpLexer.OUT)
+            SELF:ParseForInlineLocals()
+            RETURN
+        ENDIF
         SWITCH SELF:La1
         CASE XSharpLexer.FIELD
             IF !SELF:ParseFieldStatement()
@@ -2728,7 +2755,6 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
 
         CASE XSharpLexer.FOREACH
         CASE XSharpLexer.FOR
-            SELF:Consume()
             IF ! SELF:ParseForLocalDeclaration()
                 SELF:ReadLine()
             ENDIF
@@ -2738,26 +2764,31 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             IF ! SELF:ParseDeclarationStatement()
                 SELF:ReadLine()
             ENDIF
-        CASE XSharpLexer.MEMVAR
-        CASE XSharpLexer.PARAMETERS
         CASE XSharpLexer.LPARAMETERS
-        CASE XSharpLexer.DIMENSION
-        CASE XSharpLexer.DECLARE
             IF ! SELF:ParseXBaseDeclarationStatement()
                 SELF:ReadLine()
             ENDIF
+        CASE XSharpLexer.MEMVAR
+        CASE XSharpLexer.PARAMETERS
+        CASE XSharpLexer.DIMENSION
+        CASE XSharpLexer.DECLARE
+            IF SELF:SupportsMemVars
+                IF ! SELF:ParseXBaseDeclarationStatement()
+                    SELF:ReadLine()
+                ENDIF
+            ENDIF
         CASE XSharpLexer.ID
-            IF SELF:LastToken != NULL .AND. (SELF:LastToken:Type == XSharpLexer.PUBLIC .OR. SELF:LastToken:Type == XSharpLexer.PRIVATE)
+            IF SELF:SupportsMemVars .and. SELF:LastToken != NULL .AND. (SELF:LastToken:Type == XSharpLexer.PUBLIC .OR. SELF:LastToken:Type == XSharpLexer.PRIVATE)
                 SELF:PushBack()
                 IF ! SELF:ParseXBaseDeclarationStatement()
                     SELF:ReadLine()
                 ENDIF
             ELSE
-                SELF:ParseForLocals()
+                SELF:ParseForInlineLocals()
             ENDIF
 
         OTHERWISE
-            SELF:ParseForLocals()
+            SELF:ParseForInlineLocals()
         END SWITCH
         RETURN
 
@@ -3344,9 +3375,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             VAR type   := SELF:ParseTypeName()
             VAR noinit := Expect(XSharpLexer.NOINIT)
             // no need to parse the initializers here
-            DO WHILE SELF:La1 != XSharpLexer.EOS
-                Consume()
-            ENDDO
+            SELF:ReadUntilEos()
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
             SELF:ReadLine()
             VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval, type} {SingleLine := TRUE}

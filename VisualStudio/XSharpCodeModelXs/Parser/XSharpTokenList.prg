@@ -40,6 +40,7 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY LastReadToken as IToken => _lastReadToken
         PROPERTY FirstOrDefault as IToken => _list:FirstOrDefault()
         PROPERTY LastOrDefault  as IToken => _list:LastOrDefault()
+
     CONSTRUCTOR(list as IList<IToken>)
         _list  := list
         _count := list:Count
@@ -131,7 +132,8 @@ BEGIN NAMESPACE XSharpModel
                     RETURN TRUE
                 ENDIF
          ENDDO
-         RETURN FALSE
+          RETURN FALSE
+
       METHOD ConsumeAndGetAny(nTypes PARAMS LONG[]) AS IToken
          IF nTypes:Contains(SELF:La1)
             RETURN SELF:ConsumeAndGet()
@@ -172,6 +174,24 @@ BEGIN NAMESPACE XSharpModel
             SELF:Consume() // Consume the EOS
          ENDDO
          RETURN
+      METHOD ExpectOnThisLine(nType as LONG) AS LOGIC
+         local nIndex := 1 AS LONG
+         do while nIndex < _count
+           local nToken := La(nIndex) AS LONG
+           switch nToken
+            case XSharpLexer.EOS
+            case XSharpLexer.EOF
+                return false
+            otherwise
+                if (nToken == nType)
+                    return true
+                endif
+            end switch
+            nIndex +=1
+         enddo
+         return false
+
+
 
       METHOD Contains(nType as LONG) AS LOGIC
            var counter := _index

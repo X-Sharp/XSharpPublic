@@ -7,13 +7,13 @@ and ATagInfo() describes cursor properties, so this could go into a file Cursor.
 For each of the functions there is "lifted" documentation from the VFP help file in the file VFPDocs.Xml.
 Each function has its own entry inside this file. ACLASS is in the node <aclass>, ADATABASES in <adatabases> etc.
 
-We are using Sandcastle Help File Builder with a special plugin to document the code. 
+We are using Sandcastle Help File Builder with a special plugin to document the code.
 You must make sure that the parameter names in the code match the parameter names in the documentation.
 In the "lifted" documentation this not always right. Especially if the original docs contained the option to specify a workarea number or alias.
 In these cases the generated docs contain 2 parameters, where the function in XSharp.VFP has only one parameter.
 VFPDocs.Xml also contains docs for functions that are already implemented in XSharp.RT or XSHarp.Core. These docs can be ignored.
 
-At this moments all incomplete functions have 2 documentation tags: 
+At this moments all incomplete functions have 2 documentation tags:
   1) /// <summary>-- todo --</summary>
   2) <include file="VFPDocs.xml" path="Runtimefunctions/candidate/*" />
 
@@ -39,7 +39,7 @@ A table must be written like this:
           <description>The top and also the bottom scope. This is the <em>default</em>.</description>
         </item>
       </list>
-In theory you can also include tables in the <param> tags but that usually does not produce very nice documentation. 
+In theory you can also include tables in the <param> tags but that usually does not produce very nice documentation.
 We think it is better to include the tables in the <remarks> section and to refer to that section in the <param> tag.
 
 List of functions that need work:
@@ -48,8 +48,6 @@ List of functions that need work:
 ACLASS( )
 ADATABASES( )
 ADBOBJECTS( )
-ADDBS( )  
-AELEMENT( ) 
 AGETFILEVERSION( )
 ALINES( )
 AMEMBERS( )
@@ -76,11 +74,6 @@ CURSORGETPROP( )
 CURSORSETPROP( )
 CURSORTOXML( )
 CURVAL( )
-DBALIAS( )
-DBC( )
-DBGETPROP( )
-DBSETPROP( )
-DBUSED( )
 DEFAULTEXT( )
 DESCENDING( )
 DIFFERENCE( )

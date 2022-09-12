@@ -12,12 +12,7 @@ USING System.Reflection
 USING XSharp.RDD.Support
 USING XSharp.Internal
 
-[DebuggerDisplay("{Name,nq}={Value}")];
-INTERNAL STRUCTURE NameValuePair
-    INTERNAL Name  as STRING
-    internal @@Value as usual
 
-END STRUCTURE
 
 INTERNAL FUNCTION __GetFieldValues(aFieldList IN USUAL, lIncludeMemo AS LOGIC, lBlank AS LOGIC) AS NameValuePair[]
     var fields :=  __BuildFieldList(aFieldList, lIncludeMemo)
@@ -27,7 +22,7 @@ INTERNAL FUNCTION __GetFieldValues(aFieldList IN USUAL, lIncludeMemo AS LOGIC, l
         if lBlank
             uValue := EmptyUsual(UsualType(uValue))
         endif
-        values:Add( NameValuePair{} {Name := cName, Value := uValue})
+        values:Add( NameValuePair{cName, uValue})
     NEXT
 RETURN values:ToArray()
 

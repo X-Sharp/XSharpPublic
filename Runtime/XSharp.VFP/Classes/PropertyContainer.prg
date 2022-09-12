@@ -10,6 +10,18 @@ using System.Diagnostics
 using System.Linq
 using System.Reflection
 
+
+[DebuggerDisplay("{Name,nq}={Value}")];
+STRUCTURE XSharp.VFP.NameValuePair
+    PUBLIC Name    as STRING
+    PUBLIC @@Value as USUAL
+    CONSTRUCTOR(cName as STRING, uValue as USUAL)
+        SELF:Name  := cName
+        SELF:Value := uValue
+
+END STRUCTURE
+
+
 class XSharp.VFP.PropertyContainer
 
     static _PropertyCache as Dictionary<System.Type, IList<PropertyDescriptor> >
@@ -56,7 +68,7 @@ class XSharp.VFP.PropertyContainer
         return
 
        #region Property related
-    internal method Add(cName as string, uValue as usual, nVisibility as usual, cDescription as usual) as PropertyDescriptor
+     method Add(cName as string, uValue as usual, nVisibility as usual, cDescription as usual) as PropertyDescriptor
         // Note that we need to handle the syntax AddProperty("PropertyName(3)") which adds an array property with 3 elements
         if ! String.IsNullOrEmpty(cName)
             local cDims := String.Empty as string
@@ -102,7 +114,7 @@ class XSharp.VFP.PropertyContainer
         endif
         return null
 
-    internal method Remove(cPropertyName as string) as logic
+    method Remove(cPropertyName as string) as logic
         // FoxPro does not throw an error when non existing properties are removed
         // FoxPro does not require the dimensions when deleting an array property
         if _Values:ContainsKey(cPropertyName)
@@ -152,7 +164,7 @@ class XSharp.VFP.PropertyContainer
     #endregion
 
 
-     internal method GetProperties() as List<NameValuePair>
+     method GetProperties() as IList<NameValuePair>
         var result := List<NameValuePair>{}
         foreach var item in _Properties
             local desc as PropertyDescriptor
@@ -160,7 +172,7 @@ class XSharp.VFP.PropertyContainer
             desc := item:Value
             if desc:PropInfo == null .or. desc:PropInfo:PropertyType != typeof(PropertyContainer)
 
-                result:Add( NameValuePair{}{Name := item:Key, @@Value := uValue})
+                result:Add( NameValuePair{item:Key, uValue})
             endif
         next
         return result

@@ -70,13 +70,12 @@ namespace XSharp.LanguageService
         }
 
 
-#if DEBUG        
+#if DEBUG
         private void DocumentEvents_Opened(string document)
         {
             XSolution.WriteOutputMessage("DocumentEvents_Opened " + document ?? "(none)");
         }
-        
-        
+
         private void SolutionEvents_OnBeforeOpenSolution(string obj)
         {
             // we do not see this for the first solution that is opened
@@ -149,19 +148,10 @@ namespace XSharp.LanguageService
 
         private void SolutionEvents_OnBeforeCloseSolution()
         {
-            bool hasXsProject = false;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                var vsProjects = await VS.Solutions.GetAllProjectsAsync();
-                foreach (var prj in vsProjects)
-                {
-                    if (prj.IsXSharp())
-                    {
-                        hasXsProject = true;
-                        break;
-                    }
-                }
-            });
+            bool hasXsProject = XSolution.Projects.Count > 0;
+            XSharpXMLDocTools.Close();
+            XSolution.IsClosing = true;
+            XSolution.Close();
             // close OUR documents that are opened in design mode.
             if (!hasXsProject)
             {
@@ -169,11 +159,7 @@ namespace XSharp.LanguageService
             }
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-
-                XSolution.IsClosing = true;
-                XSolution.Close();
                 var frames = await VS.Windows.GetAllDocumentWindowsAsync();
-
                 if (frames != null)
                 {
                     foreach (var frame in frames.ToList())
@@ -192,8 +178,6 @@ namespace XSharp.LanguageService
 
         private void SolutionEvents_OnAfterCloseSolution()
         {
-            XSolution.Close();
-            XSharpXMLDocTools.Close();
             XSolution.IsClosing = false;
         }
 

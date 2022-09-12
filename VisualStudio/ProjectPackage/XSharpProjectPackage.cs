@@ -188,7 +188,7 @@ namespace XSharp.Project
             ModelScannerEvents.Start();
         }
 
-        private XSharpShellLink oShellLink ;
+
 
         // XSharpLanguageService _langService = null;
 #region Overridden Implementation
@@ -198,14 +198,12 @@ namespace XSharp.Project
         /// </summary>
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            // Give the codemodel a way to talk to the VS Shell 
-            oShellLink = new XSharpShellLink();
-            XSettings.ShellLink = oShellLink;
+            // Give the codemodel a way to talk to the VS Shell
+            XSettings.ShellLink = new XSharpShellLink();
 
             this.RegisterToolWindows();
 
-            XSharpProjectPackage.instance = this;
-            this.SolutionListeners.Add(new SolutionEvents(this));
+            instance = this;
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             // The project selector helps to choose between MPF and CPS projects
@@ -213,6 +211,8 @@ namespace XSharp.Project
             //await _projectSelector.InitAsync(this);
 
             this.settings = new XPackageSettings(this);
+
+            VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
             VS.Events.BuildEvents.ProjectConfigurationChanged += BuildEvents_ProjectConfigurationChanged;
 
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
@@ -236,12 +236,25 @@ namespace XSharp.Project
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
             _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
-            
+
             await this.RegisterCommandsAsync();
             await GetEditorOptionsAsync();
 
         }
 
+
+        #region SolutionEvents
+
+        private void SolutionEvents_OnAfterOpenSolution(Solution obj)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            // refresh the references for all projects
+            foreach (var xnode in XSharpProjectNode.AllProjects)
+            {
+                xnode.LoadPackageReferences();
+                xnode.UpdateReferencesInProjectModel();
+            }
+        }
         private void BuildEvents_ProjectConfigurationChanged(Community.VisualStudio.Toolkit.Project prj)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -252,10 +265,13 @@ namespace XSharp.Project
                 if (string.Compare(project.Url, prj?.FullPath, true) == 0)
                 {
                     project.CreateProjectOptions();
-                    
+
                 }
             }
         }
+
+
+        #endregion
 
 
         public async Task<bool> GetEditorOptionsAsync()

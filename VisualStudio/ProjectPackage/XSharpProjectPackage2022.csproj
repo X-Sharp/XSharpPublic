@@ -127,7 +127,7 @@
     <Compile Include="List\ErrorList\ErrorListItem.cs" />
     <Compile Include="List\ErrorList\ErrorListManager.cs" />
     <Compile Include="List\ErrorList\ErrorListProvider.cs" />
-     <Compile Include="List\ErrorList\ErrorMessageUtil.cs" />
+    <Compile Include="List\ErrorList\ErrorMessageUtil.cs" />
     <Compile Include="List\IListItem.cs" />
     <Compile Include="List\IListProvider.cs" />
     <Compile Include="List\IListSinkManager.cs" />
@@ -135,7 +135,6 @@
     <Compile Include="List\ListManager.cs" />
     <Compile Include="List\ListProvider.cs" />
     <Compile Include="List\ListSinkManager.cs" />
-    
     <Compile Include="List\ListSnapShot.cs" />
     <Compile Include="List\TaskList\TaskListItem.cs" />
     <Compile Include="List\TaskList\TaskListManager.cs" />
@@ -367,7 +366,6 @@
       <DependentUpon>RepositoryWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Resources.cs" />
-    <Compile Include="SolutionEvents.cs" />
     <Compile Include="XSharpShellLink.cs" />
     <Compile Include="XSharpDocumentWatcher.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />

@@ -118,7 +118,7 @@ BEGIN NAMESPACE XSharpModel
 
     #region Static Constructor that builds the tables
     STATIC CONSTRUCTOR()
-    _singleKeywords := BitArray{XSharpLexer.LAST}
+    _singleKeywords := BitArray{XSharpLexer.LAST, TRUE}
     var source := XSharpModel.Formatting.XFormattingRules.Rules
     var reader := RulesReader{source}
     var rules := reader:ReadRules()

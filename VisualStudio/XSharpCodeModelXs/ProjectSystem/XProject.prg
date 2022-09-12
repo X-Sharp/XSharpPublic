@@ -166,6 +166,8 @@ CLASS XProject
         return XDatabase.GetProjectIncludeFiles(SELF)
     END GET
     END PROPERTY
+    PROPERTY RootNamespace as STRING GET _projectNode:RootNameSpace
+
 
 
 #endregion
@@ -936,6 +938,7 @@ CLASS XProject
             myusings:Add(ns)
             typeName := typeName:Substring(pos+1)
         ENDIF
+        myusings:Add(SELF:RootNamespace)
         myusings:AddRange(usings)
         myusings:AddRange(SELF:ImplicitNamespaces)
         RETURN myusings

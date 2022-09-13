@@ -559,7 +559,12 @@ internal static class OOPHelpers
             if fi:IsPublic
                 return 2U
             elseif fi:IsFamily
-                return 1U
+                VAR att := TYPEOF( XSharp.Internal.IsInstanceAttribute )
+                var atts := fi:GetCustomAttributes(att,FALSE)
+                if (atts:Length > 0)
+                    return 1U
+                endif
+                RETURN 0U
             endif
         endif
 

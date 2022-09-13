@@ -13,7 +13,7 @@
     </header>
     <para styleclass="Body Text">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Heading1">Changes in 2.13.2</para>
+    <para styleclass="Heading1">Changes in 2.13.2.1</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
     <list id="123" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -24,6 +24,7 @@
     <list id="124" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Body Text">The PUBLIC and PRIVATE keywords are sometimes misinterpreted as memvar declarations when the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar" styleclass="Body Text">/memvar</link><text styleclass="Body Text"> compiler option is not even selected. We have added parser rules to prevent this from happening: when /memvar is not selected then PUBLIC and PRIVATE are only used as visibility modifiers</text></li>
       <li styleclass="Normal">Fix to an issue with selecting function and method overloads (#1096, #1101)</li>
+      <li styleclass="Normal">Build 2.13.2.0 introduced a problem that could cause a big performance problem for VERY large source files. This has been fixed in 2.13.2.1.</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2">Runtime</para>
@@ -31,6 +32,7 @@
     <list id="124" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Body Text">When the runtime cannot resolve a late bound call to an overloaded method it produces an error message that includes a list of all relevant overloads (#875, #1096).</text></li>
       <li styleclass="Normal"><text styleclass="Body Text">The .NULL. related behavior that was added for the FoxPro dialect was breaking existing code that involves usuals. In the FoxPro dialect DBNull.Value is now seen as .NULL. but in the other dialects as a NULL_OBJECT / NIL</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Several internal members of the PropertyContainer class in the VFP library are now public</text></li>
     </list>
     <para styleclass="Heading2">Visual Studio integration</para>
     <para styleclass="Heading3">Bug fixes</para>
@@ -38,7 +40,9 @@
       <li styleclass="Normal"><text styleclass="Body Text">The lookup code for Peek definition, Goto definition etc. was filtering out instance methods and only returning static methods. This has been fixed (#1111, #1100)</text></li>
       <li styleclass="Normal"><text styleclass="Body Text">Several changes to fix issues with indentation while typing (#1094) </text></li>
       <li styleclass="Normal"><text styleclass="Body Text">Fixed several problems with parameter tips (#1098, #1066, #1110)</text></li>
-      <li styleclass="Normal"><text styleclass="Body Text">A recent change to support the wizard that converts packages.config to package references has had a negative impact on nuget restore operations during builds inside Visual Studio. This was fixed. (#1113)</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">A recent change to support the wizard that converts packages.config to package references has had a negative impact on nuget restore operations during builds inside Visual Studio. This was fixed. (#1113 and #1114)</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed recognition of variables in lines such as CATCH, ELSEIF, FOR, FOREACH etc (#1118)</text></li>
+      <li styleclass="Normal"><text styleclass="Body Text">Fixed recognition of types in the default namespace (#1122)</text></li>
     </list>
     <para styleclass="Heading1">Changes in 2.13.1</para>
     <para styleclass="Heading2">Compiler</para>

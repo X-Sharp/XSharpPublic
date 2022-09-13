@@ -229,7 +229,7 @@ votypeModifiers     : ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) 
 
 namespace_          : BEGIN NAMESPACE Name=name e=eos
                       (Entities+=entity)*
-                      END NAMESPACE End=EOS
+                      (END NAMESPACE End=EOS)?
                     ;
 
 interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
@@ -239,6 +239,8 @@ interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*              // Optional typeparameterconstraints for Generic Interface
                       e=eos
                       (Members+=classmember)*
+                      // Do not make the next line optional. The parser will not know when a nested type starts or the next type
+                      // as a result the parser will become VERY slow
                       END INTERFACE End=EOS
                     ;
 
@@ -251,6 +253,8 @@ class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
                       e=eos
                       (Members+=classmember)*
+                      // Do not make the next line optional. The parser will not know when a nested type starts or the next type
+                      // as a result the parser will become VERY slow
                       END CLASS End=EOS
                     ;
 
@@ -284,6 +288,8 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* e=eos
                       (Members+=classmember)*
+                      // Do not make the next line optional. The parser will not know when a nested type starts or the next type
+                      // as a result the parser will become VERY slow
                       END STRUCTURE End=EOS
                     ;
 

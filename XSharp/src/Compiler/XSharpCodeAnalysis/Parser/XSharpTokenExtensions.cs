@@ -213,7 +213,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.NULL_PSZ:
                 case XSharpParser.NULL_PTR:
                     return null;
-                default: 
+                default:
                     return text;
             }
         }
@@ -1107,7 +1107,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.GlobalKeyword, text);
                     break;
                 case XSharpParser.INSTANCE:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.None);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ProtectedKeyword, text);
                     break;
                 case XSharpParser.ASCENDING:
                     r = SyntaxFactory.MakeToken(SyntaxKind.AscendingKeyword, text);

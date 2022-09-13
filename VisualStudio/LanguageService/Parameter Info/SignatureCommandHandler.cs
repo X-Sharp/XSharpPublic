@@ -174,6 +174,7 @@ namespace XSharp.LanguageService
 
                         case (int)VSConstants.VSStd2KCmdID.LEFT:
                         case (int)VSConstants.VSStd2KCmdID.RIGHT:
+                        case (int)VSConstants.VSStd2KCmdID.BACKSPACE:
                             if (_signatureSession != null)
                             {
                                 MoveSignature();
@@ -409,6 +410,7 @@ namespace XSharp.LanguageService
             if (_signatureSession != null)
                 return false;
             bool comma = triggerchar == ',';
+
             IXMemberSymbol currentElement = null;
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
             if (triggerchar == '(' && ssp.Position < ssp.Snapshot.Length && ssp.GetChar() == ')')

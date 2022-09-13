@@ -5,23 +5,23 @@
 //
 //------------------------------------------------------------------------------
 
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Editor;
+using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.TextManager.Interop;
+using Microsoft.VisualStudio.Utilities;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Utilities;
-using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.Text;
 using XSharpModel;
-using Microsoft.VisualStudio.Editor;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using System.Collections.Generic;
-using LanguageService.SyntaxTree;
 
 
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
@@ -86,12 +86,12 @@ namespace XSharp.LanguageService
             {
                 ;
             }
-            else if (pguidCmdGroup == VSConstants.VSStd2K )
+            else if (pguidCmdGroup == VSConstants.VSStd2K)
             {
                 switch (nCmdID)
                 {
                     case (int)VSConstants.VSStd2KCmdID.PARAMINFO:
-                        StartSignatureSession(true);
+                        StartSignatureSession();
                         break;
                     case (int)VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     case (int)VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
@@ -138,25 +138,25 @@ namespace XSharp.LanguageService
                     switch (nCmdID)
                     {
 
-                        case (int) VSConstants.VSStd2KCmdID.TYPECHAR:
+                        case (int)VSConstants.VSStd2KCmdID.TYPECHAR:
                             typedChar = (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
                             switch (typedChar)
                             {
                                 case '(':
                                 case '{':
                                     CancelSignatureSession();
-                                    StartSignatureSession(false, triggerchar:typedChar);
+                                    StartSignatureSession(triggerchar: typedChar);
                                     break;
                                 case ')':
                                 case '}':
                                     CancelSignatureSession();
                                     if (hasopenSignatureSession())
                                     {
-                                        StartSignatureSession(false, triggerchar: typedChar);
+                                        StartSignatureSession(triggerchar: typedChar);
                                     }
                                     break;
                                 case ',':
-                                    StartSignatureSession(false, triggerchar: typedChar);
+                                    StartSignatureSession(triggerchar: typedChar);
                                     break;
                                 case ':':
                                 case '.':
@@ -200,7 +200,7 @@ namespace XSharp.LanguageService
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
             var level = 0;
             bool done = false;
-            while (ssp.Position > 0 && ! done)
+            while (ssp.Position > 0 && !done)
             {
                 ssp = ssp - 1;
                 var ch = ssp.GetChar();
@@ -272,12 +272,12 @@ namespace XSharp.LanguageService
             var openTokens = new Stack<IToken>();
             for (int i = 0; i < tokenList.Count; i++)
             {
-                var token = (XSharpToken) tokenList[i];
+                var token = (XSharpToken)tokenList[i];
                 // comma right before closing token should still trigger the parameter tips
                 // so skip the closing token
                 // the comma itself is usually not in the list yet because the tokens are from the previous
                 // snapshot.
-                if (token.Position == props.Location.Position && (comma|| command))
+                if (token.Position == props.Location.Position && (comma || command))
                 {
                     if (token.Type == XSharpLexer.RPAREN ||
                         token.Type == XSharpLexer.RBRKT ||
@@ -308,7 +308,7 @@ namespace XSharp.LanguageService
                     case XSharpLexer.STRING_CONST:
                     case XSharpLexer.INTERPOLATED_STRING_CONST:
                     case XSharpLexer.CHAR_CONST:
-                        if (token.Position < location.Position && location.Position < token.Position+token.Text.Length)
+                        if (token.Position < location.Position && location.Position < token.Position + token.Text.Length)
                         {
                             if (comma)
                                 return null;
@@ -326,7 +326,7 @@ namespace XSharp.LanguageService
                 var pos = tokenList.IndexOf(openTokens.Peek());
                 if (pos >= 0)
                 {
-                    ((List<IToken>) tokenList).RemoveRange(pos + 1, tokenList.Count - pos - 1);
+                    ((List<IToken>)tokenList).RemoveRange(pos + 1, tokenList.Count - pos - 1);
                 }
             }
             if (comma || command)
@@ -334,9 +334,9 @@ namespace XSharp.LanguageService
                 // check to see if there is a lparen or lcurly before the comma
                 bool done = false;
                 nested = 0;
-                while (tokenList.Count > 0 && ! done)
+                while (tokenList.Count > 0 && !done)
                 {
-                    var token = tokenList[tokenList.Count-1];
+                    var token = tokenList[tokenList.Count - 1];
                     bool delete = false;
                     switch (token.Type)
                     {
@@ -382,7 +382,7 @@ namespace XSharp.LanguageService
                 if (currentElement.Kind == Kind.Constructor)
                 {
                     bool done = false;
-                    for (int i = tokenList.Count -1; ! done && i > 0; i--)
+                    for (int i = tokenList.Count - 1; !done && i > 0; i--)
                     {
                         var token = tokenList[i];
                         switch (token.Type)
@@ -403,17 +403,18 @@ namespace XSharp.LanguageService
 
         }
 
-        internal bool StartSignatureSession(bool command, IXTypeSymbol type = null, string methodName = null, char triggerchar = '\0')
+        internal bool StartSignatureSession(IXTypeSymbol type = null, string methodName = null, char triggerchar = '\0')
         {
             WriteOutputMessage("StartSignatureSession()");
 
             if (_signatureSession != null)
                 return false;
-            bool comma = triggerchar == ',';
-
+            bool command = triggerchar == '\0';
             IXMemberSymbol currentElement = null;
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
             if (triggerchar == '(' && ssp.Position < ssp.Snapshot.Length && ssp.GetChar() == ')')
+                ssp -= 1;
+            if (triggerchar == '{' && ssp.Position < ssp.Snapshot.Length && ssp.GetChar() == '}')
                 ssp -= 1;
             var location = _textView.FindLocation(ssp);
             if (location == null || location.Member == null)
@@ -423,7 +424,10 @@ namespace XSharp.LanguageService
 
             var props = new XSharpSignatureProperties(location);
             props.triggerChar = triggerchar;
-            props.triggerPosition = this._textView.Caret.Position.BufferPosition.Position;
+            var bufpos = this._textView.Caret.Position.BufferPosition;
+            props.triggerPosition = bufpos.Position;
+            props.triggerLine = bufpos.GetContainingLineNumber();
+
 
             if (type != null && methodName != null)
             {
@@ -463,44 +467,43 @@ namespace XSharp.LanguageService
             props.Start = ssp.Position;
             var caretPos = _textView.Caret.Position.BufferPosition.Position;
             props.Length = caretPos - ssp.Position;
-            if (comma || command)
+            var tokenList = XSharpTokenTools.GetTokenListBeforeCaret(location, out var state);
+            bool done = false;
+            int nested = 0;
+            var last = tokenList.Count - 1;
+            for (int i = last; i >= 0 && !done; i--)
             {
-                var tokenList = XSharpTokenTools.GetTokenListBeforeCaret(location, out var state);
-                bool done = false;
-                int nested = 0;
-                var last = tokenList.Count - 1;
-                for (int i = last; i >= 0 && ! done; i--)
+                var token = (XSharpToken)tokenList[i];
+                switch (token.Type)
                 {
-                    var token = (XSharpToken) tokenList[i];
-                    switch (token.Type)
-                    {
-                        case XSharpLexer.LPAREN:
-                        case XSharpLexer.LCURLY:
-                        case XSharpLexer.LBRKT:
-                            done = nested == 0;
-                            if (done)
-                            {
-                                props.Start = token.Position;
-                                props.Length = caretPos - token.Position;
-                            }
-                            nested -= 1;
-                            break;
-                        case XSharpLexer.RPAREN:
-                        case XSharpLexer.RCURLY:
-                        case XSharpLexer.RBRKT:
-                            if (token.Position < caretPos)
-                            {
-                                nested += 1;
-                            }
-                            break;
-                    }
+                    case XSharpLexer.LPAREN:
+                    case XSharpLexer.LCURLY:
+                    case XSharpLexer.LBRKT:
+                        done = nested == 0;
+                        if (done)
+                        {
+                            props.Start = token.Position;
+                        }
+                        nested -= 1;
+                        break;
+                    case XSharpLexer.RPAREN:
+                    case XSharpLexer.RCURLY:
+                    case XSharpLexer.RBRKT:
+                        if (token.Position < caretPos)
+                        {
+                            nested += 1;
+                        }
+                        break;
                 }
-
             }
 
+            var line = ssp.GetContainingLine();
+            var start = props.Start - line.Start;
+            props.Length = line.Length - start;
             try
             {
                 _signatureSession.Start();
+                MoveSignature();
             }
             catch (Exception e)
             {
@@ -516,7 +519,7 @@ namespace XSharp.LanguageService
             if (_signatureSession == null)
                 return false;
 
-           _signatureSession.Dismiss();
+            _signatureSession.Dismiss();
             return true;
         }
 
@@ -530,10 +533,23 @@ namespace XSharp.LanguageService
         {
             if (_signatureSession == null)
                 return false;
-            if (! _signatureSession.Properties.TryGetProperty(typeof(XSharpSignatureProperties), out XSharpSignatureProperties props))
+            var props = _signatureSession.GetSignatureProperties();
+            if (props == null)
                 return false;
+            var bufpos = this._textView.Caret.Position.BufferPosition;
+            if (bufpos.GetContainingLineNumber() != props.triggerLine)
+            {
+                CancelSignatureSession();
+                return false;
+            }
             var start = props.Start;
             int pos = this._textView.Caret.Position.BufferPosition.Position;
+            if (pos <= start)
+            {
+                CancelSignatureSession();
+                return false;
+            }
+
 
             ((XSharpVsSignature)_signatureSession.SelectedSignature).ComputeCurrentParameter(pos - start - 1);
 
@@ -548,5 +564,15 @@ namespace XSharp.LanguageService
             }
         }
 
+    }
+    internal static class SignatureExtensions
+    {
+        internal static XSharpSignatureProperties GetSignatureProperties(this ISignatureHelpSession session)
+        {
+            XSharpSignatureProperties props;
+            if (!session.Properties.TryGetProperty(typeof(XSharpSignatureProperties), out props))
+                return null;
+            return props;
+        }
     }
 }

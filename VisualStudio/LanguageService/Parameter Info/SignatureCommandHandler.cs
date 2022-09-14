@@ -426,7 +426,7 @@ namespace XSharp.LanguageService
             props.triggerChar = triggerchar;
             var bufpos = this._textView.Caret.Position.BufferPosition;
             props.triggerPosition = bufpos.Position;
-            props.triggerLine = bufpos.GetContainingLineNumber();
+            props.triggerLine = bufpos.GetContainingLine().LineNumber;
 
 
             if (type != null && methodName != null)
@@ -537,7 +537,7 @@ namespace XSharp.LanguageService
             if (props == null)
                 return false;
             var bufpos = this._textView.Caret.Position.BufferPosition;
-            if (bufpos.GetContainingLineNumber() != props.triggerLine)
+            if (bufpos.GetContainingLine().LineNumber != props.triggerLine)
             {
                 CancelSignatureSession();
                 return false;

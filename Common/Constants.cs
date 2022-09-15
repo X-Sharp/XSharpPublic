@@ -16,9 +16,9 @@ namespace XSharp
 #if RUNTIME
         internal const string Version = "2.6.0.0";
 #else
-        internal const string Version = "2.13.2.1";
+        internal const string Version = "2.13.2.2";
 #endif
-        internal const string FileVersion = "2.13.2.1";
+        internal const string FileVersion = "2.13.2.2";
         internal const string ProductVersion = "2.13b GA";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2022";

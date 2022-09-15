@@ -164,6 +164,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="XSharpLanguageService.pkgdef">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavoded.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavofed.tpl" />

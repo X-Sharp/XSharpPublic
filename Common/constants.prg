@@ -5,8 +5,8 @@
 //
 #include "buildnumber.h"
 BEGIN NAMESPACE XSharp
- 
-    STATIC INTERNAL CLASS Constants 
+
+    STATIC INTERNAL CLASS Constants
 
         INTERNAL CONST Company              := COMPANY_NAME			    AS STRING
         INTERNAL CONST RegCompany           := REG_COMPANY_NAME		    AS STRING

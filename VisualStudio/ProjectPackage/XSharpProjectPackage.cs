@@ -291,6 +291,7 @@ namespace XSharp.Project
             XEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
             XEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
             XEditorSettings.Disassembler = options.Disassembler;
+            XEditorSettings.HideIncludes = options.HideIncludes;
 
             StartLogging();
             return true;

@@ -1100,6 +1100,14 @@ namespace XSharp.Project
                 this.AddChild(includeNode);
             }
         }
+        protected void DeleteIncludeFileFolder()
+        {
+            if (includeNode != null)
+            {
+                includeNode.Remove(false);
+                includeNode = null;
+            }
+        }
 
 
         #region PackageReferences
@@ -1327,38 +1335,71 @@ namespace XSharp.Project
 
         private void RefreshIncludeFiles()
         {
-            var currentChildren = new Dictionary<string, HierarchyNode>(StringComparer.OrdinalIgnoreCase);
-            var child = includeNode.FirstChild;
-            while (child != null)
+            if (XEditorSettings.HideIncludes)
             {
-                currentChildren.Add(child.Url, child);
-                child = child.NextSibling;
+                DeleteIncludeFileFolder();
+                return;
             }
-            var newIncludes = projectModel.IncludeFiles;
-            if (newIncludes.Count > 0)
+            var oldEvents = this.EventTriggeringFlag;
+            bool hasChanged = false;
+            try
             {
-                foreach (var fileName in newIncludes)
+
+                var currentChildren = new Dictionary<string, HierarchyNode>(StringComparer.OrdinalIgnoreCase);
+                if (includeNode != null)
                 {
-                    if (currentChildren.ContainsKey(fileName))
+                    var child = includeNode.FirstChild;
+                    while (child != null)
                     {
-                        currentChildren.Remove(fileName);
+                        currentChildren.Add(child.Url, child);
+                        child = child.NextSibling;
                     }
-                    else
+                }
+                var newIncludes = projectModel.IncludeFiles;
+                CreateIncludeFileFolder();
+                if (currentChildren.Count == 0)
+                {
+                    this.EventTriggeringFlag = EventTriggering.DoNotTriggerHierarchyEvents;
+                }
+                if (newIncludes.Count > 0)
+                {
+                    foreach (var fileName in newIncludes)
                     {
-                        var newChild = new XSharpIncludeFileNode(this, fileName);
-                        includeNode.AddChild(newChild);
+                        if (currentChildren.ContainsKey(fileName))
+                        {
+                            currentChildren.Remove(fileName);
+                        }
+                        else
+                        {
+                            var newChild = new XSharpIncludeFileNode(this, fileName);
+                            includeNode.AddChild(newChild);
+                            hasChanged = true;
+                        }
+                    }
+                }
+                // delete includes that are no longer needed
+                if (currentChildren.Count > 0 && includeNode != null)
+                {
+                    foreach (var file in currentChildren)
+                    {
+                        var node = file.Value;
+                        node.OnItemDeleted();
+                        hasChanged = true;
+                        includeNode.RemoveChild(node);
                     }
                 }
             }
-            // delete includes that are no longer needed
-            if (currentChildren.Count > 0)
+            finally
             {
-                foreach (var file in currentChildren)
+                this.EventTriggeringFlag = oldEvents;
+                ThreadUtilities.runSafe(() =>
                 {
-                    var node = file.Value;
-                    node.OnItemDeleted();
-                    includeNode.RemoveChild(node);
-                }
+                    if (hasChanged )
+                    {
+                        this.OnItemsAppended(includeNode);
+                    }
+
+                });
             }
         }
 

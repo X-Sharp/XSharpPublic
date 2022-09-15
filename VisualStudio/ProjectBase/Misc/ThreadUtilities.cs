@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Microsoft.VisualStudio.Project
 {
-    internal static class ThreadUtilities
+    public static class ThreadUtilities
     {
-        internal static T runSafe<T>(Func<T> body)
+        public static T runSafe<T>(Func<T> body)
         {
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
@@ -17,7 +17,7 @@ namespace Microsoft.VisualStudio.Project
                 return body();
             });
         }
-        internal static void runSafe(Action body)
+        public static void runSafe(Action body)
         {
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {

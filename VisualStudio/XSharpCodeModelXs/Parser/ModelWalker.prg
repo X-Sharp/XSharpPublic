@@ -138,7 +138,7 @@ BEGIN NAMESPACE XSharpModel
             _WalkerThread := NULL
             Clear()
 
-        STATIC PROPERTY MustAbort as LOGIC GET _state == WalkerthreadState.Stopped
+ STATIC PROPERTY MustAbort as LOGIC GET _state == WalkerthreadState.Stopped
 
 
         STATIC METHOD Suspend() AS VOID
@@ -155,6 +155,7 @@ BEGIN NAMESPACE XSharpModel
                 TRY
                     IF _WalkerThread == NULL .or. ! _WalkerThread:IsAlive
                         VAR start := System.Threading.ThreadStart{ null, @Walker() }
+                        _state := WalkerthreadState.Running
                         _WalkerThread := System.Threading.Thread{start}
                         _WalkerThread:IsBackground := TRUE
                         _WalkerThread:Name := "X# CodeModel Walker"

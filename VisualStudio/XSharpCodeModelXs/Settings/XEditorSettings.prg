@@ -19,6 +19,7 @@ BEGIN NAMESPACE XSharpModel
         STATIC PROPERTY MenuParentClass AS STRING AUTO := "Menu"
         STATIC PROPERTY ToolbarParentClass AS STRING AUTO := "Menu"
         STATIC PROPERTY Disassembler AS STRING AUTO := ""
+        STATIC PROPERTY HideIncludes AS LOGIC AUTO := FALSE
 
     END CLASS
 

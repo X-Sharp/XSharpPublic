@@ -156,7 +156,15 @@ namespace XSharp.LanguageService
                                     }
                                     break;
                                 case ',':
-                                    StartSignatureSession(triggerchar: typedChar);
+                                    if (hasopenSignatureSession())
+                                    {
+                                        MoveSignature();
+                                    }
+                                    else
+                                    {
+                                        StartSignatureSession(triggerchar: typedChar);
+                                    }
+
                                     break;
                                 case ':':
                                 case '.':
@@ -408,7 +416,9 @@ namespace XSharp.LanguageService
             WriteOutputMessage("StartSignatureSession()");
 
             if (_signatureSession != null)
+            {
                 return false;
+            }
             bool command = triggerchar == '\0';
             IXMemberSymbol currentElement = null;
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;

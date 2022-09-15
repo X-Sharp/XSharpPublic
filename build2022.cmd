@@ -9,7 +9,11 @@ if /i "%1" == "Debug" goto Ok
 if /i "%1" == "Release" goto Ok
 goto Error
 :Ok
-Echo Building VsIntegration 2022  %1 Configuration
+Echo Building VsIntegration 32 bits  %1 Configuration
+"%msbuilddir%msbuild" VsIntegration.sln  /fl1 /flp1:Append;Verbosity=diag /p:Configuration=%1 /t:Rebuild  /m /v:q /nologo 
+if exist build2019-%1.log del build2019-%1.log
+rename msbuild1.log build2019-%1.log
+Echo Building VsIntegration 64 bits  %1 Configuration
 "%msbuilddir%msbuild" VsIntegration2022.sln  /fl2 /flp1:Append;Verbosity=diag /p:Configuration=%1 /t:Rebuild  /m /v:q /nologo 
 if exist build2022-%1.log del build2022-%1.log
 rename msbuild2.log build2022-%1.log

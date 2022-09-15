@@ -85,7 +85,7 @@ namespace XSharp.LanguageService
                 // The "parameters" coming from CommandFilter
                 uint cmd = 0;
                 char typedChar = '\0';
-                bool autoType = false;                
+                bool autoType = false;
                 session.Properties.TryGetProperty(XsCompletionProperties.Command, out cmd);
                 VSConstants.VSStd2KCmdID nCmdId = (VSConstants.VSStd2KCmdID)cmd;
                 session.Properties.TryGetProperty(XsCompletionProperties.Char, out typedChar);
@@ -148,6 +148,11 @@ namespace XSharp.LanguageService
                     return;
                 var tokenList = XSharpTokenTools.GetTokenList(location, out state, includeKeywords);
                 var lastToken = tokenList.LastOrDefault();
+                if (lastToken != null && (lastToken.Type == XSharpLexer.RPAREN || lastToken.Type == XSharpLexer.RCURLY))
+                {
+                    tokenList.RemoveAt(tokenList.Count - 1);
+                    lastToken = tokenList.LastOrDefault();
+                }
                 var addKeywords = typedChar != '.' && typedChar != ':';
 
 
@@ -194,7 +199,7 @@ namespace XSharp.LanguageService
                 var symbol = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General, out var notProcessed).FirstOrDefault();
                 if (symbol != null)
                 {
-                   
+
                     switch (lastToken.Type)
                     {
                         case XSharpLexer.DOT:
@@ -274,7 +279,7 @@ namespace XSharp.LanguageService
                     {
                         filterText = symbol.Name;
                     }
-                    
+
                     if (type != null)
                     {
                         switch (type.FullName)
@@ -422,7 +427,7 @@ namespace XSharp.LanguageService
                     if (value.KeyText.ToLower() == filterText.ToLower())
                     {
                         compList.Clear();
-                    }    
+                    }
                 }
                 var values = compList.Values;
                 // Create the All Tab

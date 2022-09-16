@@ -31,6 +31,8 @@ BEGIN NAMESPACE XSharpModel
             SystemToXSharp:Add(XSharpTypeNames.SystemUInt32, "DWORD")
             SystemToXSharp:Add(XSharpTypeNames.SystemUInt64, "UINT64")
             SystemToXSharp:Add(XSharpTypeNames.SystemVoid, "VOID")
+            SystemToXSharp:Add(XSharpTypeNames.SystemIntPtr, "PTR")
+
 
             SystemToXSharp:Add(XSharpTypeNames.VulcanCodeblock, "CODEBLOCK")
             SystemToXSharp:Add(XSharpTypeNames.VulcanArray, "ARRAY")

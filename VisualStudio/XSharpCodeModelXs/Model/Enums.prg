@@ -283,7 +283,8 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC CONST SystemUInt16:= "System.UInt16"     AS STRING
         PUBLIC CONST SystemUInt32:= "System.UInt32"     AS STRING
         PUBLIC CONST SystemUInt64:= "System.UInt64"     AS STRING
-        PUBLIC CONST SystemVoid := "System.Void"        AS STRING
+        PUBLIC CONST SystemVoid  := "System.Void"        AS STRING
+        PUBLIC CONST SystemIntPtr  := "System.IntPtr"        AS STRING
 
 
     END CLASS

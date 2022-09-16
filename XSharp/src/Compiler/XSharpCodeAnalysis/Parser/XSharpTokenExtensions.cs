@@ -15,6 +15,7 @@ using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using System.Security.Policy;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -1107,7 +1108,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.GlobalKeyword, text);
                     break;
                 case XSharpParser.INSTANCE:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.ProtectedKeyword, text);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.None);
                     break;
                 case XSharpParser.ASCENDING:
                     r = SyntaxFactory.MakeToken(SyntaxKind.AscendingKeyword, text);
@@ -1718,7 +1719,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             token.XGenerated = true;
             return token;
         }
-        public static void FixDefaultVisibility(this SyntaxListBuilder list)
+        public static void FixDefaultVisibility(this SyntaxListBuilder list, bool isInstance = false)
         {
             for (int i = 0; i < list.Count; i++)
             {
@@ -1726,7 +1727,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (SyntaxFacts.IsAccessibilityModifier((SyntaxKind)item.RawKind))
                     return;
             }
-            list.Add(makeGeneratedToken(SyntaxKind.PublicKeyword));
+            if (isInstance)
+                list.Add(makeGeneratedToken(SyntaxKind.ProtectedKeyword));
+            else
+                list.Add(makeGeneratedToken(SyntaxKind.PublicKeyword));
         }
 
         public static bool CanBeVirtual(this SyntaxListBuilder list)

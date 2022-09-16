@@ -114631,7 +114631,7 @@ Target = 0
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = VO
+Dialect = Vulcan
 Folder = %ProjectPath%\Applications\C868\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -114663,8 +114663,8 @@ FileType = Code
 CopyToBin = 0
 [C868 - INSTANCE iVars are incorrectly treated as public vars References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C868 - INSTANCE iVars are incorrectly treated as public vars Resources]
 [C868 - INSTANCE iVars are incorrectly treated as public vars Native Resources]
 [C868 - INSTANCE iVars are incorrectly treated as public vars License files]
@@ -114741,7 +114741,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
@@ -114776,8 +114776,8 @@ FileType = Code
 CopyToBin = 0
 [C869 - IVarGetInfo() returns incorrect results References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C869 - IVarGetInfo() returns incorrect results Resources]
 [C869 - IVarGetInfo() returns incorrect results Native Resources]
 [C869 - IVarGetInfo() returns incorrect results License files]
@@ -114854,7 +114854,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
@@ -114889,8 +114889,8 @@ FileType = Code
 CopyToBin = 0
 [C870 - Default() function with NULL_OBJECT incompatibility with VO References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 [C870 - Default() function with NULL_OBJECT incompatibility with VO Resources]
 [C870 - Default() function with NULL_OBJECT incompatibility with VO Native Resources]
 [C870 - Default() function with NULL_OBJECT incompatibility with VO License files]

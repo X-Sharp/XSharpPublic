@@ -5,10 +5,17 @@
 FUNCTION Start() AS VOID
 LOCAL o AS TestClass
 o := TestClass{}
-? o:iInstance
-o:iInstance := 123
-? o:iInstance
+// ? o:iInstance
+// o:iInstance := 123
+// ? o:iInstance
 
 CLASS TestClass
-INSTANCE iInstance := 555 AS INT
+
+    INSTANCE iInstance := 555 AS INT
+END CLASS
+
+CLASS SubClass INHERIT TestClass
+    CONSTRUCTOR
+        SUPER()
+        iInstance := 444
 END CLASS

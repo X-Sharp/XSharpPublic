@@ -5107,13 +5107,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClassvarModifiers([NotNull] XP.ClassvarModifiersContext context)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
+            bool isInstance = false;
             foreach (var m in context._Tokens)
             {
                 modifiers.AddCheckUnique(m.SyntaxKeyword());
                 if (m.Type == XP.FIXED && context._FIXED == null)
                     context._FIXED = m;
+                if (m.Type == XP.INSTANCE)
+                    isInstance = true;
             }
-            modifiers.FixDefaultVisibility();
+            modifiers.FixDefaultVisibility(isInstance);
             context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
         }

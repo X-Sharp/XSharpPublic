@@ -29,7 +29,7 @@ namespace XSharp.LanguageService
             _file = file;
             _settingIgnoreCase = ignoreCase;
         }
-       
+
         internal void AddTypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith,
             bool onlyInterfaces = false, bool afterDot = false)
         {
@@ -73,7 +73,7 @@ namespace XSharp.LanguageService
         internal void AddPETypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith,
             bool onlyInterfaces = false, bool afterDot = false)
         {
-            
+
             IList<XPETypeSymbol> types;
             if (afterDot)
                 types = location.Project.GetAssemblyTypesInNamespace(startWith, location.Usings.ToArray());
@@ -727,13 +727,17 @@ namespace XSharp.LanguageService
             var iCurrentLine = Math.Min(location.Snapshot.LineCount - 1, location.LineNumber);
             // create a walker with just the contents of the current member
             // use a new file object so we will not destroy the types in the existing object
-            
+
             var walker = new SourceWalker(new XFile(member.File.FullPath, member.File.Project), false);
             var start = member.Interval.Start;
             var end = member.Interval.Width;
             if (start + end > location.Snapshot.Length)
                 end = location.Snapshot.Length - start;
-            var memberSource = location.Snapshot.GetText(start, end);
+            string memberSource;
+            if (start < location.Snapshot.Length && end > 0 && end < location.Snapshot.Length)
+                memberSource = location.Snapshot.GetText(start, end);
+            else
+                memberSource = "";
 
             var locals = walker.ParseLocals(memberSource, member);
             // Add the normal locals for class members

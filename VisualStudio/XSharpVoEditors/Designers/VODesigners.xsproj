@@ -144,9 +144,6 @@
     <Folder Include="Templates\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Common\BuildNumber.h">
-      <Link>BuildNumber.h</Link>
-    </None>
     <None Include="Templates\cavoded.tpl" />
     <None Include="Templates\cavofed.tpl" />
     <None Include="Templates\cavowed.inf" />

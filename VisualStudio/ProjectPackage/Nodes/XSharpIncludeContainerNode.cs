@@ -1,16 +1,14 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using VsMenus = Microsoft.VisualStudio.Project.VsMenus;
-using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
-using System.IO.Packaging;
 using System.Runtime.InteropServices;
-using System.ComponentModel;
-using Microsoft.VisualStudio.Imaging;
-using Microsoft.VisualStudio.Imaging.Interop;
+using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
+using VsMenus = Microsoft.VisualStudio.Project.VsMenus;
 
 namespace XSharp.Project
 {
@@ -46,30 +44,6 @@ namespace XSharp.Project
         {
             return new XSharpVirtualFolderNodeProperties(this);
 
-        }
-        internal void SetExpanded(bool expanded)
-        {
-            this.IsExpanded = expanded;
-            ThreadHelper.ThrowIfNotOnUIThread();
-            this.SetProperty((int)__VSHPROPID.VSHPROPID_Expanded, expanded);
-
-            // If we are in automation mode then skip the ui part
-            if (!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
-            {
-                IVsUIHierarchyWindow uiWindow = UIHierarchyUtilities.GetUIHierarchyWindow(this.ProjectMgr.Site, SolutionExplorer);
-                if (null != uiWindow)
-                {
-                    ErrorHandler.ThrowOnFailure(uiWindow.ExpandItem(this.ProjectMgr, this.ID, expanded ? EXPANDFLAGS.EXPF_ExpandFolder : EXPANDFLAGS.EXPF_CollapseFolder));
-                }
-
-                // then post the expand command to the shell. Folder verification and creation will
-                // happen in the setlabel code...
-                IVsUIShell shell = XHelperMethods.GetService<IVsUIShell, SVsUIShell>(this.ProjectMgr.Site);
-
-                object dummy = null;
-                Guid cmdGroup = VsMenus.guidStandardCommandSet97;
-                ErrorHandler.ThrowOnFailure(shell.PostExecCommand(ref cmdGroup, (uint)(expanded ? VsCommands.Expand : VsCommands.Collapse), 0, ref dummy));
-            }
         }
 
     }

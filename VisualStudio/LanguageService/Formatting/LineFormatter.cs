@@ -140,9 +140,11 @@ namespace XSharp.LanguageService
                     lineStart = 0;
                 }
             }
+            IToken lastToken = null;
             foreach (var token in tokens)
             {
-                FormatToken(editSession, lineStart, token);
+                FormatToken(editSession, lineStart, token, lastToken);
+                lastToken = token;
             }
         }
 
@@ -204,7 +206,7 @@ namespace XSharp.LanguageService
         }
 
         private bool SyncKeywordCase => Settings.KeywordCase != KeywordCase.None;
-        private void FormatToken(ITextEdit editSession, int offSet, IToken token)
+        private void FormatToken(ITextEdit editSession, int offSet, IToken token, IToken lastToken)
         {
             if (token.Channel == XSharpLexer.Hidden ||
                 token.Channel == XSharpLexer.PREPROCESSORCHANNEL ||
@@ -212,32 +214,52 @@ namespace XSharp.LanguageService
                 return;
             bool syncKeyword = false;
             bool syncID = false;
-            // Some exceptions are (pseudo) functions. These should not be formatted
             switch (token.Type)
             {
                 case XSharpLexer.ID:
-                    syncID = XSettings.IdentifierCase;
+                    if (lastToken != null)
+                    {
+                        switch (lastToken.Type)
+                        {
+                            // do not sync case in Fields, Methods, Namespaces
+                            // These require a lookup in the Database.
+                            // We can do that later if we want.
+                            case XSharpLexer.COLON:
+                            case XSharpLexer.DOT:
+                                syncID = false;
+                                break;
+                            case XSharpLexer.WS:
+                            default:
+                                syncID = XSettings.IdentifierCase;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        syncID = XSettings.IdentifierCase;
+                    }
                     break;
-                case XSharpLexer.UDC_KEYWORD:
+                case XSharpLexer.UDC_KEYWORD:                   // This is a keyword but we handle
                     syncKeyword = XSettings.UDCKeywordCase;
                     break;
-                case XSharpLexer.NAMEOF:
-                case XSharpLexer.SIZEOF:
-                case XSharpLexer.TYPEOF:
-                    // these are keywords but should be excluded I think
-                    syncKeyword = false;
-                    break;
-                case XSharpLexer.TRUE_CONST:
-                case XSharpLexer.FALSE_CONST:
-                case XSharpLexer.MACRO:
-                case XSharpLexer.LOGIC_AND:
-                case XSharpLexer.LOGIC_OR:
-                case XSharpLexer.LOGIC_NOT:
-                case XSharpLexer.LOGIC_XOR:
-                case XSharpLexer.VO_AND:
-                case XSharpLexer.VO_OR:
-                case XSharpLexer.VO_NOT:
-                case XSharpLexer.VO_XOR:
+                //case XSharpLexer.NAMEOF:
+                //case XSharpLexer.SIZEOF:
+                //case XSharpLexer.TYPEOF:
+                //    // these are keywords but should be excluded I think
+                //    syncKeyword = false;
+                //    break;
+
+                case XSharpLexer.TRUE_CONST:        // Constant
+                case XSharpLexer.FALSE_CONST:       // Constant
+                case XSharpLexer.MACRO:             // __TERM__
+                case XSharpLexer.LOGIC_AND:         // Operator
+                case XSharpLexer.LOGIC_OR:          // Operator
+                case XSharpLexer.LOGIC_NOT:         // Operator
+                case XSharpLexer.LOGIC_XOR:         // Operator
+                case XSharpLexer.VO_AND:            // Operator
+                case XSharpLexer.VO_OR:             // Operator
+                case XSharpLexer.VO_NOT:            // Operator
+                case XSharpLexer.VO_XOR:            // Operator
                     syncKeyword = SyncKeywordCase;
                     break;
                 default:

@@ -37,7 +37,11 @@ namespace XSharp.Project.Options
         [Description("The full path to the disassembler path to use.")]
         public string Disassembler { get; set; } = "";
 
-
+        [Category("Solution  Explorer")]
+        [DisplayName("Hide Includes")]
+        [Description("Hide the include files node in the Solution Explorer.")]
+        [DefaultValue(false)]
+         public bool HideIncludes{ get; set; } = false;
 
     }
 }

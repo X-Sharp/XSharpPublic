@@ -270,7 +270,7 @@ namespace XSharp.LanguageService
                     else
                         prefix = prevLine + " ";
                     _textView.TextBuffer.Insert(caret.Position, prefix);
-                    // Move the Caret 
+                    // Move the Caret
                     _textView.Caret.MoveTo(new SnapshotPoint(_textView.TextSnapshot, caret.Position + prefix.Length));
                 }
             }
@@ -690,7 +690,7 @@ namespace XSharp.LanguageService
             }
             if (_signatureCommandHandler != null)
             {
-                _signatureCommandHandler.StartSignatureSession(true, type, method, triggerChar);
+                _signatureCommandHandler.StartSignatureSession( type, method, triggerChar);
             }
 
             //

@@ -2785,10 +2785,12 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 ENDIF
             ELSE
                 SELF:ParseForInlineLocals()
+                SELF:ReadLine( )
             ENDIF
 
         OTHERWISE
             SELF:ParseForInlineLocals()
+            SELF:ReadLine( )
         END SWITCH
         RETURN
 

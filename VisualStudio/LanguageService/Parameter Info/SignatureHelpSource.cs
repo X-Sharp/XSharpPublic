@@ -6,11 +6,13 @@ using Microsoft.VisualStudio.Text;
 using XSharpModel;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.Text.Editor;
+using System.Diagnostics;
 
 namespace XSharp.LanguageService
 {
     internal class XSharpSignatureProperties
     {
+        internal int triggerLine { get; set; }
         internal int Start { get; set; }
         internal IXMemberSymbol Element { get; set; }
         internal int Length { get; set; }
@@ -24,6 +26,7 @@ namespace XSharp.LanguageService
             Location = location;
         }
     }
+    [DebuggerDisplay("{Name}")]
     internal class XSharpVsParameter : IParameter
     {
         public string Documentation { get; private set; }
@@ -41,6 +44,7 @@ namespace XSharp.LanguageService
             Signature = signature;
         }
     }
+    [DebuggerDisplay("{Content}")]
     internal class XSharpVsSignature : ISignature
     {
         private ITextView m_textview;
@@ -206,21 +210,22 @@ namespace XSharp.LanguageService
                 m_session = session;
                 XSharpModel.ModelWalker.Suspend();
                 ITextSnapshot snapshot = m_textBuffer.CurrentSnapshot;
-                XSharpSignatureProperties props;
+                var props = session.GetSignatureProperties();
+                if (props == null)
+                    return;
                 int position = session.GetTriggerPoint(m_textBuffer).GetPosition(snapshot);
-                session.Properties.TryGetProperty(typeof(XSharpSignatureProperties) , out props);
                 m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(new Span(props.Start, props.Length), SpanTrackingMode.EdgeInclusive, 0);
                 object elt = props.Element;
                 if (elt is IXSymbol)
                 {
                     IXMemberSymbol element = elt as IXMemberSymbol;
-                    //
+                    var sigs = new List<ISignature>();
                     if (elt is IXMemberSymbol xMember)
                     {
                         var names = new List<string>();
                         var proto = getProto(xMember, props);
                         names.Add(proto);
-                        signatures.Add(CreateSignature(session, xMember, proto, ApplicableToSpan, xMember.Kind == XSharpModel.Kind.Constructor, m_file));
+                        sigs.Add(CreateSignature(session, xMember, proto, ApplicableToSpan, xMember.Kind == XSharpModel.Kind.Constructor, m_file));
                         var overloads = xMember.GetOverloads();
 
                         foreach (var member in overloads)
@@ -231,9 +236,14 @@ namespace XSharp.LanguageService
                             proto = getProto(member, props);
                             if (!names.Contains(proto))
                             {
-                                signatures.Add(CreateSignature(session, member, proto, ApplicableToSpan, member.Kind == XSharpModel.Kind.Constructor, m_file));
+                                sigs.Add(CreateSignature(session, member, proto, ApplicableToSpan, member.Kind == XSharpModel.Kind.Constructor, m_file));
                                 names.Add(proto);
                             }
+                        }
+                        sigs.Sort((x, y) => x.Parameters.Count - y.Parameters.Count);
+                        foreach (var sig in sigs)
+                        {
+                            signatures.Add(sig);
                         }
                     }
                     else if (element != null)
@@ -298,7 +308,9 @@ namespace XSharp.LanguageService
             var pars = methodSig.Split(new char[] { '(', '{', ',', '}',')' });
             List<IParameter> paramList = new List<IParameter>();
             int locusSearchStart = 0;
+            // the pars array has the method name and return type too:
             // i = 1 to skip the MethodName; Length-1 to Skip the ReturnType
+
             while (names.Count < pars.Length)
             {
                 names.Add("");
@@ -341,10 +353,10 @@ namespace XSharp.LanguageService
             return null;
         }
 
-        private bool nameEquals(string name, string compareWith)
-        {
-            return (name.ToLower().CompareTo(compareWith.ToLower()) == 0);
-        }
+        //private bool nameEquals(string name, string compareWith)
+        //{
+        //    return (name.ToLower().CompareTo(compareWith.ToLower()) == 0);
+        //}
 
         private bool m_isDisposed;
         public void Dispose()
@@ -396,9 +408,13 @@ namespace XSharp.LanguageService
             }
             else
             {
-                this.m_session.SelectedSignature = signatures[0];
-                var sig = this.m_session.SelectedSignature as XSharpVsSignature;
-                sig.CurrentParameter = signatures[0].Parameters[commaCount];
+
+               if (this.m_session.SelectedSignature != null && this.m_session.SelectedSignature.Parameters.Count < commaCount)
+                {
+                    this.m_session.SelectedSignature = signatures[0];
+                    var sig = this.m_session.SelectedSignature as XSharpVsSignature;
+                    sig.CurrentParameter = signatures[0].Parameters[commaCount];
+                }
             }
         }
     }

@@ -62,7 +62,7 @@ namespace XSharp.LanguageService.Editors.HighlightWord
         private static bool IsLetterChar(UnicodeCategory cat)
         {
             // letter-character:
-            //   A Unicode character of classes Lu, Ll, Lt, Lm, Lo, or Nl 
+            //   A Unicode character of classes Lu, Ll, Lt, Lm, Lo, or Nl
             //   A Unicode-escape-sequence representing a character of classes Lu, Ll, Lt, Lm, Lo, or Nl
 
             switch (cat)
@@ -88,7 +88,7 @@ namespace XSharp.LanguageService.Editors.HighlightWord
 
             if (!IsIdentifierStartCharacter(text[0]))
                 return false;
-            
+
             if (_classifierService == null)
                 return true;
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
@@ -96,13 +96,16 @@ namespace XSharp.LanguageService.Editors.HighlightWord
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var view = await VS.Documents.GetActiveDocumentViewAsync();
                 var caret = view.TextView.Caret;
-                var span = new SnapshotSpan(caret.Position.BufferPosition,1);
+                var pos = caret.Position.BufferPosition;
+                if (pos >= caret.Position.BufferPosition.Snapshot.Length)
+                    return false;
+                var span = new SnapshotSpan(pos,1);
                 if (isSpanInInactiveRegion(span))
                     return false;
                 return true;
             });
 
-            
+
         }
         public override IEnumerable<SnapshotSpan> FilterResults(IEnumerable<SnapshotSpan> results)
         {

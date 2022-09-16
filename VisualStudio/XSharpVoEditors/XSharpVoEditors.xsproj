@@ -16,8 +16,10 @@
     <TargetFrameworkProfile />
     <NS>true</NS>
     <VO3>true</VO3>
-    <XSharpProjectversion>2.13.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
+    <StartupObject />
+    <IncludePaths>$(SolutionDir)Common</IncludePaths>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <WarningLevel>4</WarningLevel>
@@ -54,12 +56,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
-      <Link>Properties\commonAssemblyInfo.prg</Link>
-    </Compile>
-    <Compile Include="..\..\Common\constants.prg">
-      <Link>Properties\constants.prg</Link>
-    </Compile>
     <Compile Include="Actions.prg" />
     <Compile Include="Designers\Base.prg" />
     <Compile Include="Designers\ControlOrder.prg">

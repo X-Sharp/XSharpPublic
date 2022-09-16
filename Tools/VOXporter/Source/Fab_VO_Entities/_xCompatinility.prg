@@ -176,7 +176,7 @@ FUNCTION Empty(c AS STRING) AS LOGIC
 		RETURN TRUE
 	ENDIF
 	FOR n := 0 UPTO c:Length - 1
-		nChar := (INT)c[n] 
+		nChar := (INT)c[n]
 		IF nChar != 9 .and. nChar != 10 .and. nChar != 13 .and. nChar != 32
 			RETURN FALSE
 		ENDIF

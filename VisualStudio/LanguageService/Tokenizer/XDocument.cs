@@ -60,7 +60,7 @@ namespace XSharp.LanguageService
         {
             return LineState.Get(line, out var flags ) && flags.HasFlag(flag);
         }
-       
+
         internal void SetTokens(Dictionary<int, IList<IToken>> tokens)
         {
             lock (this)
@@ -68,7 +68,7 @@ namespace XSharp.LanguageService
                 _tokensPerLine = tokens;
             }
         }
-       
+
         internal void SetState(XSharpLineState state, ITextSnapshot ss)
         {
             lock (this)
@@ -123,6 +123,7 @@ namespace XSharp.LanguageService
                 if (token is XSharpToken xt)
                 {
                     xt.StartIndex += offset;
+                    xt.StopIndex += offset;
                 }
             }
             return result;

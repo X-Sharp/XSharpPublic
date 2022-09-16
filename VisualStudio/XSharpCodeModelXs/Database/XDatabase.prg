@@ -868,7 +868,11 @@ STATIC CLASS XDatabase
                     if include:Id == -1
                         oCmd:CommandText := "SELECT Id from IncludeFiles where fileName = $fileName"
                         oCmd:Parameters:Clear()
-                        oCmd:Parameters:AddWithValue("$fileName", include:FileName)
+                        var fn := include:FileName
+                        if fn:Contains(".\")
+                            fn := System.IO.Path.GetFullPath(fn)
+                        endif
+                        oCmd:Parameters:AddWithValue("$fileName",fn)
                         using var rdr := oCmd:ExecuteReader()
                         if rdr:Read()
                             include:Id := rdr.GetInt64(0)
@@ -878,7 +882,7 @@ STATIC CLASS XDatabase
                                 " VALUES ($fileName) ;" +;
                                 " SELECT last_insert_rowid()"
                             oCmd:Parameters:Clear()
-                            oCmd:Parameters:AddWithValue("$fileName", include:FileName)
+                            oCmd:Parameters:AddWithValue("$fileName", fn)
                             VAR id := (INT64) oCmd:ExecuteScalar()
                             include:Id := id
                         endif
@@ -1018,7 +1022,7 @@ STATIC CLASS XDatabase
                         globalType := typeref
                     ENDIF
                 NEXT
-                IF globalType != NULL
+                IF oAssembly:GlobalMembers:Count > 0
                     // "CREATE TABLE ReferencedGlobals ("
                     // " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, "
                     // " FullName text NOT NULL, Kind integer NOT NULL, Attributes integer NOT NULL, Sourcecode text, ReturnType text, "
@@ -1034,7 +1038,8 @@ STATIC CLASS XDatabase
                         oCmd:Parameters:AddWithValue("$attributes", 0),;
                         oCmd:Parameters:AddWithValue("$source", ""),;
                         oCmd:Parameters:AddWithValue("$return", "")}
-                    FOREACH VAR xmember IN globalType:XMembers:Where( { m => m:Visibility == Modifiers.Public })
+                    FOREACH VAR item IN oAssembly:GlobalMembers
+                        var xmember := item:Value
                         pars[0]:Value := oAssembly:Id
                         pars[1]:Value := xmember:Name
                         pars[2]:Value := xmember:FullName

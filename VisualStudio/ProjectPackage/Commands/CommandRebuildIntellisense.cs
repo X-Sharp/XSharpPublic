@@ -21,9 +21,12 @@ namespace XSharp.Project
         }
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
-            await VS.StatusBar.ShowMessageAsync("Restarting Visual Studio to rebuild the XSharp intellisense database");
-            XDatabase.DeleteOnClose = true;
-            await VS.Shell.RestartAsync(false);
+            if (await VS.MessageBox.ShowConfirmAsync("Rebuild Intellisense Database", "This will close the current solution, shutdown Visual Studio and reopen the current solution.\r\nOK to restart Visual Studio?"))
+            {
+                await VS.StatusBar.ShowMessageAsync("Restarting Visual Studio to rebuild the XSharp intellisense database");
+                XDatabase.DeleteOnClose = true;
+                await VS.Shell.RestartAsync(false);
+            }
         }
     }
 }

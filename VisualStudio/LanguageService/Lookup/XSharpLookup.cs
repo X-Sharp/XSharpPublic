@@ -1443,7 +1443,7 @@ namespace XSharp.LanguageService
 
         private static IXTypeSymbol EnsureComplete(IXTypeSymbol type, XSharpSearchLocation location)
         {
-            if (type is XSourceTypeSymbol srcType && srcType.IsPartial)
+            if (type is XSourceTypeSymbol srcType && ! type.IsGlobalType() && srcType.IsPartial )
             {
                 var newtype = location.FindType(type.Name);
                 if (newtype != null)
@@ -1457,6 +1457,14 @@ namespace XSharp.LanguageService
             var result = new List<IXMemberSymbol>();
             if (location == null || location.File == null || type == null)
             {
+                return result;
+            }
+            if (type.IsGlobalType())
+            {
+                var funcs = SearchFunction(location, name);
+                result.AddRange(funcs);
+                var globals = SearchGlobalField(location, name);
+                result.AddRange(globals);
                 return result;
             }
             if (type is XSourceTypeSymbol)
@@ -1505,6 +1513,10 @@ namespace XSharp.LanguageService
             if (location == null || location.File == null || type == null)
             {
                 return result;
+            }
+            if (type.IsGlobalType())
+            {
+                return SearchFunction(location, name);
             }
             if (type is XSourceTypeSymbol)
             {

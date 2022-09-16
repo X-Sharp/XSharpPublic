@@ -82,6 +82,12 @@ INTERNAL CLASS AssemblyReader
              foreach var mem in members
                  assembly:GlobalMembers:TryAdd(mem:Name, mem)
              next
+         elseif assembly:Types:ContainsKey("Functions")
+             var globaltype := assembly:Types["Functions"]
+             var members := globaltype:XMembers:Where ({ m => m:IsPublic })
+             foreach var mem in members
+                 assembly:GlobalMembers:TryAdd(mem:Name, mem)
+             next
          endif
          RETURN
       ENDIF

@@ -785,10 +785,10 @@
           <topicref type="topic" id="423890664256386" build="ALL" modified="2019-10-15T14:09:03.068Z" icon="0" href="command_BEGIN-USING">
             <caption translate="true">BEGIN USING</caption>
           </topicref>
-          <topicref type="topic" id="441767688590616" build="ALL" modified="2022-09-07T14:50:50.377Z" icon="0" href="command_LOCAL-FUNCTION">
+          <topicref type="topic" id="441767688590616" build="CHM,HTML,PDF,PRINT" modified="2022-09-16T14:48:00.539Z" icon="0" href="command_LOCAL-FUNCTION">
             <caption translate="true">LOCAL FUNCTION</caption>
           </topicref>
-          <topicref type="topic" id="441765218688099" build="ALL" modified="2022-09-07T14:50:54.096Z" icon="0" href="command_LOCAL-PROCEDURE">
+          <topicref type="topic" id="441765218688099" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:48:13.488Z" icon="0" href="command_LOCAL-PROCEDURE">
             <caption translate="true">LOCAL PROCEDURE</caption>
           </topicref>
           <topicref type="topic" id="423886791199984" build="ALL" modified="2016-01-19T21:17:02.341Z" icon="0" href="USING">
@@ -1064,13 +1064,13 @@
           <topicref type="topic" id="384613507102286" build="ALL" modified="2022-09-07T14:51:30.553Z" icon="0" href="command_SET_ANSI">
             <caption translate="true">SET ANSI Command</caption>
           </topicref>
-          <topicref type="topic" id="43700395884884" build="ALL" modified="2022-09-07T14:51:30.562Z" icon="0" href="command_SET_CENTURY">
+          <topicref type="topic" id="43700395884884" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:49:12.457Z" icon="0" href="command_SET_CENTURY">
             <caption translate="true">SET CENTURY Command</caption>
           </topicref>
-          <topicref type="topic" id="436985524344551" build="ALL" modified="2022-09-07T14:51:30.567Z" icon="0" href="command_SET_DATE">
+          <topicref type="topic" id="436985524344551" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:49:54.928Z" icon="0" href="command_SET_DATE">
             <caption translate="true">SET DATE Command</caption>
           </topicref>
-          <topicref type="topic" id="385413837929920" build="ALL" modified="2022-09-07T14:51:30.575Z" icon="0" href="command_SET_DATE_FORMAT">
+          <topicref type="topic" id="385413837929920" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:49:54.934Z" icon="0" href="command_SET_DATE_FORMAT">
             <caption translate="true">SET DATE FORMAT Command</caption>
           </topicref>
           <topicref type="topic" id="384613069718970" build="ALL" modified="2022-09-07T14:51:30.580Z" icon="0" href="command_SET_DECIMALS">
@@ -1085,10 +1085,10 @@
           <topicref type="topic" id="384612814452770" build="ALL" modified="2022-09-07T14:51:30.597Z" icon="0" href="command_SET_DIGITS">
             <caption translate="true">SET DIGITS Command</caption>
           </topicref>
-          <topicref type="topic" id="385414484815343" build="ALL" modified="2022-09-07T14:51:30.602Z" icon="0" href="command_SET_DRIVER">
+          <topicref type="topic" id="385414484815343" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:51:34.236Z" icon="0" href="command_SET_DRIVER">
             <caption translate="true">SET DRIVER Command</caption>
           </topicref>
-          <topicref type="topic" id="385412955773853" build="ALL" modified="2022-09-07T14:51:30.608Z" icon="0" href="command_SET_EPOCH">
+          <topicref type="topic" id="385412955773853" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:49:54.940Z" icon="0" href="command_SET_EPOCH">
             <caption translate="true">SET EPOCH Command</caption>
           </topicref>
           <topicref type="topic" id="384613116326190" build="ALL" modified="2022-09-07T14:51:30.615Z" icon="0" href="command_SET_EXACT">
@@ -1118,10 +1118,10 @@
           <topicref type="topic" id="384613927016688" build="ALL" modified="2019-09-24T14:18:26.543Z" icon="0" href="command_RENAME">
             <caption translate="true">RENAME Command</caption>
           </topicref>
-          <topicref type="topic" id="384613828801244" build="ALL" modified="2019-09-24T14:18:26.548Z" icon="0" href="command_SET_DEFAULT">
+          <topicref type="topic" id="384613828801244" build="CHM,HTML,PDF,PRINT" modified="2022-09-16T14:52:39.628Z" icon="0" href="command_SET_DEFAULT">
             <caption translate="true">SET DEFAULT Command</caption>
           </topicref>
-          <topicref type="topic" id="384613704359085" build="ALL" modified="2019-09-24T14:18:26.554Z" icon="0" href="command_SET_PATH">
+          <topicref type="topic" id="384613704359085" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:53:20.637Z" icon="0" href="command_SET_PATH">
             <caption translate="true">SET PATH Command</caption>
           </topicref>
         </topicref>
@@ -1215,18 +1215,18 @@
             <caption translate="true">STORE Command</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436964407573243" build="ALL" modified="2019-09-24T13:44:42.200Z" icon="0" href="cmd_cat_num">
+        <topicref type="topic" id="436964407573243" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:54:31.752Z" icon="0" href="cmd_cat_num">
           <caption translate="true">Numeric</caption>
-          <topicref type="topic" id="385414610315142" build="ALL" modified="2019-09-24T14:19:16.413Z" icon="0" href="command_SET_DECIMALS">
+          <topicref type="topic" id="385414610315142" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:54:31.761Z" icon="0" href="command_SET_DECIMALS">
             <caption translate="true">SET DECIMALS Command</caption>
           </topicref>
-          <topicref type="topic" id="385412794601021" build="ALL" modified="2019-09-24T14:19:16.419Z" icon="0" href="command_SET_DIGITFIXED">
+          <topicref type="topic" id="385412794601021" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:54:31.767Z" icon="0" href="command_SET_DIGITFIXED">
             <caption translate="true">SET DIGITFIXED Command</caption>
           </topicref>
-          <topicref type="topic" id="385413909787819" build="ALL" modified="2019-09-24T14:19:16.425Z" icon="0" href="command_SET_DIGITS">
+          <topicref type="topic" id="385413909787819" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:54:31.774Z" icon="0" href="command_SET_DIGITS">
             <caption translate="true">SET DIGITS Command</caption>
           </topicref>
-          <topicref type="topic" id="385416098540798" build="ALL" modified="2019-09-24T14:19:16.430Z" icon="0" href="command_SET_FIXED">
+          <topicref type="topic" id="385416098540798" build="CHM,EBOOK,HTML,PDF,PRINT" modified="2022-09-16T14:54:31.781Z" icon="0" href="command_SET_FIXED">
             <caption translate="true">SET FIXED Command</caption>
           </topicref>
         </topicref>

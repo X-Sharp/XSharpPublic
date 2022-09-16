@@ -641,7 +641,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">2</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">6</config-value>
@@ -704,7 +704,7 @@
       <config-value name="template">$(HMSYS)Templates\Word\Word-Template-Simple-A4.docx</config-value>
     </config-group>
     <variables>
-      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.13.2.1)</variable>
+      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.13.2.2)</variable>
       <variable id="APP" type="text" translate="true">XSharp</variable>
     </variables>
     <helpcontext-numbers/>
@@ -779,6 +779,7 @@
       <file-mod href="__TypeAndCLass.xml"/>
       <file-mod href="__localSpec.xml"/>
       <file-mod href="__NotInCoreVulcan.xml"/>
+      <file-mod href="cmd_cat_num.xml" build="CHM,EBOOK,HTML,PDF,PRINT"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

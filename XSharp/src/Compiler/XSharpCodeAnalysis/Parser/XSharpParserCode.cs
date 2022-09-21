@@ -270,6 +270,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             string ShortName { get; }
         }
 
+        public interface IMultiVarsContext
+        {
+            int Count { get; }  
+        }
+
         public interface IXPPMemberContext : IMemberWithBodyContext, IBodyWithLocalFunctions
         {
 #if !VSPARSER
@@ -1118,6 +1123,40 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpper();
             internal string FieldName => Name.GetText().ToUpper();
         }
+        #region Rulešwitl multiple vars. The Count determines how breakpoints are set
+        public partial class CommonLocalDeclContext : IMultiVarsContext
+        {
+            public int Count => _LocalVars.Count;
+        }
+        public partial class VarLocalDeclContext : IMultiVarsContext
+        {
+            public int Count => _ImpliedVars.Count;
+        }
+        public partial class FoxlocaldeclContext : IMultiVarsContext
+        {
+            public int Count => this._LParameters.Count + this._DimVars.Count;
+        }
+        public partial class MemvardeclContext : IMultiVarsContext
+        {
+            public int Count => this._XVars.Count + this._Vars.Count;
+        }
+        public partial class FoxmemvardeclContext : IMultiVarsContext
+        {
+            public int Count => this._FoxVars.Count + this._Vars.Count+ this._DimVars.Count;
+        }
+        public partial class ClassvarsContext : IMultiVarsContext
+        {
+            public int Count => this._Vars.Count;
+        }
+        public partial class VoglobalContext : IMultiVarsContext
+        {
+            public int Count => this._Vars.Count;
+        }
+        public partial class FilewidememvarContext : IMultiVarsContext
+        {
+            public int Count => this._Vars.Count + this._XVars.Count + this._FoxVars.Count;
+        }
+        #endregion
     }
 
     [DebuggerDisplay("{DebuggerDisplay()}")]
@@ -1576,4 +1615,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return parent.isInStructure();
         }
     }
+
 }

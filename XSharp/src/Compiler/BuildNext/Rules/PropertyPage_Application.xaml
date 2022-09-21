@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule
+	Name="Application"
+	DisplayName="Application"
+    	Order="1"
+	PageTemplate="generic"
+      Description="Specifies the project's application settings and properties."
+	xmlns="http://schemas.microsoft.com/build/2009/properties">
+    <Rule.Categories>
+    <Category Name="General"
+              DisplayName="General"
+              Description="General settings for the application." />
+    <Category Name="Resources"
+              DisplayName="Resources"
+              Description="Resource settings for the application." />
+  </Rule.Categories>
+
+    <Rule.DataSource>
+    <DataSource Persistence="ProjectFile"
+                SourceOfDefaultValue="AfterContext"
+                HasConfigurationCondition="False" />
+    </Rule.DataSource>
+  <StringProperty Name="AssemblyName"
+                  DisplayName="Assembly name"
+                  Description="Specifies the name of the output file that will hold the assembly manifest."
+                  Category="General" />
+
+  <StringProperty Name="RootNamespace"
+                  DisplayName="Default namespace"
+                  Description="Specifies the base namespace for files added to the project."
+                  Category="General" />
+
+  <DynamicEnumProperty Name="TargetFrameworkMoniker"
+                       DisplayName="Target framework"
+                       Description="Specifies the version of .NET that the application targets. This option can have different values depending on which versions of .NET are installed on your computer."
+                       HelpUrl="https://docs.microsoft.com/en-us/visualstudio/ide/visual-studio-multi-targeting-overview"
+                       Category="General"
+                       EnumProvider="SupportedTargetFrameworksEnumProvider"
+                       MultipleValuesAllowed="False">
+    <DynamicEnumProperty.DataSource>
+      <DataSource PersistedName="TargetFrameworkMoniker"
+                  Persistence="ProjectFileWithInterception" />
+    </DynamicEnumProperty.DataSource>
+  </DynamicEnumProperty>
+
+    <EnumProperty Name="OutputType" 
+    	DisplayName="Output Type" 
+        Description="Specifies the type of application to build."
+	Default="Exe" 
+	Category="General">
+	
+        <EnumValue Name="Library" 
+		DisplayName="Class Library" />
+        <EnumValue Name="Exe" 
+		DisplayName="Console Application" />
+	    <EnumValue Name="WinExe"
+               DisplayName="Windows Application" />
+    </EnumProperty>
+  <DynamicEnumProperty Name="StartupObject"
+                       DisplayName="Startup object"
+                       Description="Defines the entry point to be called when the application loads. Generally this is set either to the main form in your application or to the 'Main' procedure that should run when the application starts. Class libraries do not define an entry point."
+                       Category="General"
+                       EnumProvider="StartupObjectsEnumProvider" />
+
+    <StringProperty Name="ApplicationIcon" 
+    	DisplayName="Application Icon" 
+	Category="Resources"  
+        Description="Sets the .ico file that you want to use as your program icon. Note you must specify the icon and manifest -or- a resource file."
+         Subtype="file" />
+
+  <EnumProperty Name="ApplicationManifest"
+                DisplayName="Manifest"
+                Description="Selects a manifest generation option when the application runs on Windows Vista or later under User Account Control (UAC). Options include a default manifest, no manifest, or a custom manifest provided by your project. Note you must specify the icon and manifest -or- a resource file."
+                Category="Resources" >
+    <EnumProperty.DataSource>
+      <DataSource HasConfigurationCondition="false"
+                  PersistedName="ApplicationManifest"
+                  Persistence="ProjectFileWithInterception" />
+    </EnumProperty.DataSource>
+    <EnumValue Name="NoManifest"
+               DisplayName="Create application without a manifest" />
+    <EnumValue Name="DefaultManifest"
+               DisplayName="Embed manifest with default settings" />
+  </EnumProperty>
+
+
+    <EnumProperty Name="Dialect" DisplayName="Dialect" Category="General" Default="Core" 
+    	Description="Select the compiler dialect to use when compiling this project">
+        <EnumValue Name="Core"      DisplayName="Core" />
+        <EnumValue Name="VO"        DisplayName="Visual Objects" />
+        <EnumValue Name="Vulcan"    DisplayName="Vulcan.NET" />
+        <EnumValue Name="Harbour"   DisplayName="Harbour" />
+        <EnumValue Name="Xpp"       DisplayName="Xbase++" />
+        <EnumValue Name="Foxpro"    DisplayName="Microsoft FoxPro" />
+        <EnumValue Name="dBase"     DisplayName="dBase" />-->
+     <EnumProperty.DataSource>
+      <DataSource HasConfigurationCondition="false"
+                  PersistedName="Dialect"
+                  Persistence="ProjectFileWithInterception" />
+    </EnumProperty.DataSource>
+
+  <StringProperty Name="Win32Resource"
+                  DisplayName="Resource file"
+                  Description="Specifies a resource file for the project. Note you must specify the icon and manifest -or- a resource file."
+                  HelpUrl="https://docs.microsoft.com/en-us/dotnet/framework/resources/creating-resource-files-for-desktop-apps"
+                  Category="Resources"
+                  Subtype="file" />
+</Rule>
+
+    

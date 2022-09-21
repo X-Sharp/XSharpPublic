@@ -30,6 +30,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
   <UsingTask TaskName="NativeResourceCompiler" AssemblyFile="$(XSharpBuildAssemblyFile)" />
 
   <PropertyGroup>
+     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
     <Language>XSharp</Language>
     <TargetRuntime>Managed</TargetRuntime>
@@ -170,7 +171,8 @@ Copyright (c) XSharp B.V.  All Rights Reserved
   <Target Name="GetTargetPath" DependsOnTargets="PrepareForBuild" Outputs="$(TargetPath)" />
 
 
-  <Target Name="XsCoreGenerateAssemblyInfo"
+  <Target Condition =" '$(GenerateAssemblyInfo)' == 'True'" 
+          Name="XsCoreGenerateAssemblyInfo"
           DependsOnTargets="CreateGeneratedAssemblyInfoInputsCacheFile"
           Inputs="$(GeneratedAssemblyInfoInputsCacheFile)"
           Outputs="$(GeneratedAssemblyInfoFile)">

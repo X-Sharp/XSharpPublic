@@ -1,27 +1,11 @@
-<!--
+﻿<!--
 ***********************************************************************************************
-XSharp.targets
+XSharp.Targets
+
+This file is no longer needed. It was included in earlier versions of XSharp but is now replaced by XSharp.Common.Targets
+The XSharp.Props file is automatically included by the XSharp.BeforeCommon.Props file. See that file for more comments.
 ***********************************************************************************************
 -->
-<Project>
-
-  <Choose>
-    <When Condition="'$(IsCrossTargetingBuild)' == 'true'">
-      <PropertyGroup>
-        <XSharpTargetsPath>$(MSBuildThisFileDirectory)\XSharp.CrossTargeting.targets</XSharpTargetsPath>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <XSharpTargetsPath>$(MSBuildThisFileDirectory)\XSharp.CurrentVersion.targets</XSharpTargetsPath>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-
-  <Import Project="$(MSBuildToolsPath)\Microsoft.Managed.Before.targets" />
-
-  <Import Project="$(XSharpTargetsPath)" />
-
-  <Import Project="$(MSBuildToolsPath)\Microsoft.Managed.After.targets" />
-
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 </Project>

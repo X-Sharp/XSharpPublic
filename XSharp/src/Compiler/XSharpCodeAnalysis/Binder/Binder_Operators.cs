@@ -986,14 +986,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 var index = bac.Indices[0];
                                 var local = new BoundLocal(expr.Syntax, dimlocal, null, dimlocal.Type);
-                                if (index.ConstantValue != null && index.ConstantValue.SpecialType == SpecialType.System_Int32)
-                                {
-                                    if (index.ConstantValue.Int32Value == 0)
-                                    {
-                                        return local;
-                                    }
-                                }
-                                return new BoundBinaryOperator(bac.Syntax, BinaryOperatorKind.IntAddition, local, index, null, null,
+                                return new BoundBinaryOperator(bac.Syntax, BinaryOperatorKind.PointerAndIntAddition, local, index, null, null,
                                     LookupResultKind.Viable, default, dimlocal.Type);
                             }
                         }

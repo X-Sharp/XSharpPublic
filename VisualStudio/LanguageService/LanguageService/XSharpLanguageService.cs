@@ -375,6 +375,8 @@ namespace XSharp.LanguageService
                     if (stopAtDelimiter)
                         return false; 
                     break;
+                case '_':
+                    return true;
                 default:
                     if (!System.Char.IsLetterOrDigit(c))
                         return false;

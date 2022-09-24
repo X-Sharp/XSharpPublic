@@ -165,7 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // Exception during Lexing 
                 parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                 // create empty token stream so we can continue the rest of the code
-                _lexerTokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, (IList<IToken>)new List<XSharpToken>()));
+                _lexerTokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, (IList<IToken>)new List<IToken>()));
             }
 #if DEBUG && DUMP_TIMES
             {
@@ -240,7 +240,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Exception during Preprocessing
                     parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                     // create empty token stream so we can continue the rest of the code
-                    _preprocessorTokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, (IList<IToken>)new List<XSharpToken>()));
+                    _preprocessorTokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, (IList<IToken>)new List<IToken>()));
                 }
             }
 #if DEBUG && DUMP_TIMES
@@ -372,6 +372,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (pp != null)
                     {
                         eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
+                    }
+                    else
+                    {
+                        eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, new Dictionary<string, SourceText>()));
                     }
                     if (tree != null)
                     {

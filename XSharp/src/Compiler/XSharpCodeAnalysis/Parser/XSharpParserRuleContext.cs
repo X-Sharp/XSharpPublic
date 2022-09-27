@@ -44,6 +44,24 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var modName = options.CommandLineArguments.CompilationOptions.ModuleName;
                 return ParseTrivia($"/// <summary>This compiler generated class contains all the functions, globals and defines that are defined in the {modName} assembly. </summary>");
             }
+            else if (node is MethodDeclarationSyntax mdecl && mdecl.Identifier.Text.Contains("$"))
+            {
+                var id = mdecl.Identifier.Text;
+                string summary;
+                if (id.Contains("$Init"))
+                {
+                    summary = "Compiler generated helper method that calls Init Procedures.";
+                }
+                else if (id.Contains("$Exit"))
+                {
+                    summary = "Compiler generated helper method that calls Exit Procedures.";
+                }
+                else
+                {
+                    summary = "Compiler generated helper method.";
+                }
+                return ParseTrivia("/// <summary>" + summary + "</summary>");
+            }
             return default;
         }
         public SyntaxTriviaList GetLeadingTrivia(CSharpSyntaxNode parent, CompilationUnitSyntax cu)

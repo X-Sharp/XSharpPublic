@@ -270,7 +270,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             string ShortName { get; }
         }
 
-        public interface IMultiVarsContext
+        public interface IMultiElementContext
         {
             int Count { get; }  
         }
@@ -1123,38 +1123,61 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpper();
             internal string FieldName => Name.GetText().ToUpper();
         }
-        #region Rulešwitl multiple vars. The Count determines how breakpoints are set
-        public partial class CommonLocalDeclContext : IMultiVarsContext
+        #region Ruleš with multiple vars or multiple expressions The Count determines how breakpoints are set
+
+        public partial class FoxexpressionStmtContext : IMultiElementContext
+        {
+            public int Count => _Exprs.Count;
+        }
+        public partial class ExpressionStmtContext : IMultiElementContext
+        {
+            public int Count => _Exprs.Count;
+        }
+
+        public partial class CommonLocalDeclContext : IMultiElementContext
         {
             public int Count => _LocalVars.Count;
         }
-        public partial class VarLocalDeclContext : IMultiVarsContext
+
+        public partial class VarLocalDeclContext : IMultiElementContext
         {
             public int Count => _ImpliedVars.Count;
         }
-        public partial class FoxlocaldeclContext : IMultiVarsContext
+        public partial class FoxlocaldeclContext : IMultiElementContext
         {
             public int Count => this._LParameters.Count + this._DimVars.Count;
         }
-        public partial class MemvardeclContext : IMultiVarsContext
+        public partial class MemvardeclContext : IMultiElementContext
         {
             public int Count => this._XVars.Count + this._Vars.Count;
         }
-        public partial class FoxmemvardeclContext : IMultiVarsContext
+        public partial class FoxmemvardeclContext : IMultiElementContext
         {
             public int Count => this._FoxVars.Count + this._Vars.Count+ this._DimVars.Count;
         }
-        public partial class ClassvarsContext : IMultiVarsContext
+        public partial class ClassvarsContext : IMultiElementContext
         {
             public int Count => this._Vars.Count;
         }
-        public partial class VoglobalContext : IMultiVarsContext
+        public partial class VoglobalContext : IMultiElementContext
         {
             public int Count => this._Vars.Count;
         }
-        public partial class FilewidememvarContext : IMultiVarsContext
+        public partial class FilewidememvarContext : IMultiElementContext
         {
             public int Count => this._Vars.Count + this._XVars.Count + this._FoxVars.Count;
+        }
+        public partial class ExpressionListContext : IMultiElementContext
+        {
+            public int Count => this._Exprs.Count;
+        }
+        public partial class ParenExpressionContext : IMultiElementContext
+        {
+            public int Count => this._Exprs.Count;
+        }
+        public partial class VariableDeclarationContext : IMultiElementContext
+        {
+            public int Count => this._Decl.Count;
         }
         #endregion
     }

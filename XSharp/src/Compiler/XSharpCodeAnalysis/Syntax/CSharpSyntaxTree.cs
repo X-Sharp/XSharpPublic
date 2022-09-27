@@ -276,12 +276,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var xNode = snode.XNode as XSharpParserRuleContext;
                     while (true)
                     {
-                        if (xNode.Parent is XP.IMultiVarsContext mvc && mvc.Count > 1)
+                        if (xNode.Parent is XP.IMultiElementContext mec && mec.Count > 1)
                         {
                             // declaration with possibly multiple variables
+                            // Or expression statement with multiple expressions
+                            // Set breakpoint on individual element when > 1 element
                             break;
                         }
-                        else if (xNode is XP.IMultiVarsContext)
+                        else if (xNode is XP.IMultiElementContext)
                         {
                             break;
                         }

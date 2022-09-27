@@ -12,10 +12,9 @@ but none of them are reported. After uncommenting the 2nd pragma, then the 1591 
 After removing all pragmas, then all warnings are being reported as expected
 */
 
+#pragma warning disable 1591
 PUBLIC CLASS ClassWithPragma
-    #pragma warning disable XS0414
 	PRIVATE test AS LOGIC
-//	#pragma warning restore XS0414
     PUBLIC METHOD Execute() AS VOID
         RETURN
 END CLASS

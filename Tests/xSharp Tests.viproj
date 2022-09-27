@@ -115196,7 +115196,7 @@ Target = 0
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = VO
+Dialect = Core
 Folder = %ProjectPath%\Applications\C872\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -115228,8 +115228,6 @@ FileType = Code
 CopyToBin = 0
 [C872 - #pragma warning disables more warnings than it should References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C872 - #pragma warning disables more warnings than it should Resources]
 [C872 - #pragma warning disables more warnings than it should Native Resources]
 [C872 - #pragma warning disables more warnings than it should License files]

@@ -253,7 +253,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public interface ITypeContext : IEntityContext
         {
 #if !VSPARSER
-            TypeData Data { get; }
+            TypeData TypeData { get; }
 #endif
         }
         public interface IMemberContext : IEntityContext
@@ -272,7 +272,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public interface IMultiElementContext
         {
-            int Count { get; }  
+            int Count { get; }
         }
 
         public interface IXPPMemberContext : IMemberWithBodyContext, IBodyWithLocalFunctions
@@ -866,22 +866,25 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements => StmtBlk;
             public IList<object> LocalFunctions { get; set; } = null;
         }
-        public partial class Delegate_Context : ITypeContext
+        public partial class Delegate_Context : ITypeContext, IMemberWithBodyContext
         {
 #if !VSPARSER
-            readonly TypeData data = new();
-            public TypeData Data => data;
+            readonly TypeData tdata = new();
+            readonly MemberData mdata = new();
+            public TypeData TypeData => tdata;
+            public MemberData Data => mdata;
 #endif
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public string Name => ParentName + ShortName;
             public string ShortName => this.Id.GetText();
+            public StatementBlockContext Statements => null;
         }
         public partial class Interface_Context : IPartialPropertyContext, ITypeContext
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
@@ -897,7 +900,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
@@ -912,7 +915,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
@@ -970,7 +973,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
 #endif
             public string Name => this.Id.GetText();
             public string ShortName => this.Id.GetText();
@@ -980,7 +983,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
 #endif
             public string Name => this.Id.GetText();
             public string ShortName => this.Id.GetText();
@@ -990,7 +993,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
 #endif
             public string Name => ParentName + ShortName;
             public string ShortName => Id.GetText();
@@ -1085,7 +1088,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
             List<IMethodContext> partialProperties = null;
 
             public List<IMethodContext> PartialProperties

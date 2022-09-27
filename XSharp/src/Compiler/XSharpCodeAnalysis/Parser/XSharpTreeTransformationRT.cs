@@ -1566,17 +1566,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // No need to create an instance constructor for a static class
             if (!classdecl.IsStatic())
             {
-                context.Data.HasInstanceCtor = false;
+                context.TypeData.HasInstanceCtor = false;
                 foreach (var m in members)
                 {
                     if (m is ConstructorDeclarationSyntax cds && !cds.IsStatic())
                     {
-                        context.Data.HasInstanceCtor = true;
+                        context.TypeData.HasInstanceCtor = true;
                         break;
                     }
                 }
 
-                if (!context.Data.Partial && !context.Data.HasInstanceCtor && _options.HasOption(CompilerOption.DefaultClipperContructors, context, PragmaOptions))
+                if (!context.TypeData.Partial && !context.TypeData.HasInstanceCtor && _options.HasOption(CompilerOption.DefaultClipperContructors, context, PragmaOptions))
                 {
 
                     var hasComImport = false;
@@ -1617,7 +1617,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             classdecl.SemicolonToken);
                         _pool.Free(newmembers);
                         context.Put(classdecl);
-                        context.Data.HasInstanceCtor = true;
+                        context.TypeData.HasInstanceCtor = true;
                     }
                 }
             }
@@ -3989,6 +3989,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.EnterVodll(context);
             Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Cc, context.Type);
         }
+        public override void EnterDelegate_([NotNull] XP.Delegate_Context context)
+        {
+            base.EnterDelegate_(context);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.ReturnType);
+        }
+
         #endregion
 
         #region Literals

@@ -811,7 +811,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            context.Data.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
+            context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
             var baseType = context.BaseType?.Get<TypeSyntax>();
             if (baseType != null)
@@ -950,7 +950,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             context.Put(m);
-            if (context.Data.Partial)
+            if (context.TypeData.Partial)
             {
                 GlobalEntities.NeedsProcessing = true;
             }

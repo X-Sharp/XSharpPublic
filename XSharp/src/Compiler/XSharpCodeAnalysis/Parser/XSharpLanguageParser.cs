@@ -779,11 +779,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var xnode = val.Type;
                         ctxt = xnode;
-                        if (xnode.Data.HasInstanceCtor)
+                        if (xnode.TypeData.HasInstanceCtor)
                         {
                             hasctor = true;
                         }
-                        if (xnode.Data.PartialProps)
+                        if (xnode.TypeData.PartialProps)
                         {
                             haspartialprop = true;
                         }
@@ -1036,7 +1036,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (xnode != null && xnode.ChildCount == 1)
             {
                 var cls = xnode.GetChild(0) as XP.IPartialPropertyContext;
-                if (cls != null && (cls.Data.Partial || cls.Data.PartialProps))
+                if (cls != null && (cls.TypeData.Partial || cls.TypeData.PartialProps))
                 {
                     var name = cls.Name;
                     if (!partialClasses.ContainsKey(name))

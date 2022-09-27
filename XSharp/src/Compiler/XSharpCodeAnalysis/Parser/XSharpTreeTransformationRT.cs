@@ -296,7 +296,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected ExpressionSyntax MakePublicInitializer(string name)
         {
             // Assign FALSE to PUBLIC variables or TRUE when the name is CLIPPER
-            bool publicValue = false;
+            bool publicValue;
             switch (name.ToUpper())
             {
                 case "FOX":
@@ -306,6 +306,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case "CLIPPER":
                     publicValue = _options.Dialect != XSharpDialect.FoxPro;
                     break;
+                default:
+                    return null;
             }
             return GenerateLiteral(publicValue);
         }

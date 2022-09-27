@@ -13,7 +13,6 @@ FUNCTION Start() AS VOID STRICT
 	st[3].x := 3
 	st[3].y := 6
 	TestFunc(@st[3],3)
-	WAIT
 
 	RETURN
 

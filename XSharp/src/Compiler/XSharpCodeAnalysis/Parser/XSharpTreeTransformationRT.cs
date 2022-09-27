@@ -358,7 +358,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         initializer = MakePublicInitializer(memvar.Name);
                     }
-                    exp = GenerateMemVarPut(memvar.Context, GenerateLiteral(name), initializer);
+                    if (initializer != null)
+                    {
+                        exp = GenerateMemVarPut(memvar.Context, GenerateLiteral(name), initializer);
+                    }
                     stmts.Add(GenerateExpressionStatement(exp, memvar.Context));
 
                 }

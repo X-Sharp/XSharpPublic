@@ -401,9 +401,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 initializer = MakePublicInitializer(memvar.Id.GetText());
                             }
-                            exp = GenerateMemVarPut(memvar, varname, initializer);
-                            exp.XNode = memvar;
-                            stmts.Add(GenerateExpressionStatement(exp, memvar));
+                            if (initializer != null)
+                            {
+                                exp = GenerateMemVarPut(memvar, varname, initializer);
+                                exp.XNode = memvar;
+                                stmts.Add(GenerateExpressionStatement(exp, memvar));
+                            }
                         }
                     }
                     break;

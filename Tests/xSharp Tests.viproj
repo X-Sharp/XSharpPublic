@@ -114732,7 +114732,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C868 - INSTANCE iVars are incorrectly treated as public vars
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C869 - IVarGetInfo() returns incorrect results *************
 Application = C869 - IVarGetInfo() returns incorrect results
 IDEVersion = 1.06
@@ -114845,7 +114845,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C869 - IVarGetInfo() returns incorrect results
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C870 - Default() function with NULL_OBJECT incompatibility with VO *************
 Application = C870 - Default() function with NULL_OBJECT incompatibility with VO
 IDEVersion = 1.06
@@ -115072,7 +115072,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R876 - Structure Pointer Artithmetic
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C871 - ICE with DELEGATE with default value in parameter *************
 Application = C871 - ICE with DELEGATE with default value in parameter
 IDEVersion = 1.06
@@ -115185,7 +115185,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C871 - ICE with DELEGATE with default value in parameter
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C872 - #pragma warning disables more warnings than it should *************
 Application = C872 - #pragma warning disables more warnings than it should
 IDEVersion = 1.06
@@ -115196,7 +115196,7 @@ Target = 0
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = Core
+Dialect = VO
 Folder = %ProjectPath%\Applications\C872\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -115228,6 +115228,8 @@ FileType = Code
 CopyToBin = 0
 [C872 - #pragma warning disables more warnings than it should References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
 [C872 - #pragma warning disables more warnings than it should Resources]
 [C872 - #pragma warning disables more warnings than it should Native Resources]
 [C872 - #pragma warning disables more warnings than it should License files]
@@ -115276,7 +115278,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   DefineDebug=1
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=0
+  WarningsErrors=1
   ForceConsole=0
   ForceX86=0
   Optimize=0
@@ -115296,7 +115298,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C872 - #pragma warning disables more warnings than it should
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C873 - Incompatible behavior with VO when declaring global MEMVAR *************
 Application = C873 - Incompatible behavior with VO when declaring global MEMVAR
 IDEVersion = 1.06
@@ -115339,8 +115341,8 @@ FileType = Code
 CopyToBin = 0
 [C873 - Incompatible behavior with VO when declaring global MEMVAR References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
 [C873 - Incompatible behavior with VO when declaring global MEMVAR Resources]
 [C873 - Incompatible behavior with VO when declaring global MEMVAR Native Resources]
 [C873 - Incompatible behavior with VO when declaring global MEMVAR License files]

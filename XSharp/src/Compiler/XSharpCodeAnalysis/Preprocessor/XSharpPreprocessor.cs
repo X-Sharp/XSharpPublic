@@ -2112,13 +2112,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // #pragma warnings enable  1 , 2 , 3
                     if (tokens.Count > 3)
                     {
-                        for (int i = 4; i < tokens.Count; i++)
+                        for (int i = 3; i < tokens.Count; i++)
                         {
                             if (tokens[i].Type != XSharpParser.COMMA)
                             {
                                 numbers.Add(tokens[i]);
                             }
                         }
+                    }
+                    else
+                    {
+                        error = ErrorCode.WRN_IllegalPragma;
+                        errortoken = tokens[0];
                     }
                 }
                 if (i1 == null)

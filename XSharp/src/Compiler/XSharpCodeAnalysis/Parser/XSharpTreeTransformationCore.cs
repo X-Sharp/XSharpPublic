@@ -1697,10 +1697,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // When one of the two is missing and we are in a partial class
                 // then we generate a normal method. Later from the LanguageParser
                 // we will generate a property and in its body we will call the generated method
-                if (context is XP.ITypeContext ent && ent.Data.Partial)
+                if (context is XP.ITypeContext ent && ent.TypeData.Partial)
                 {
                     MemberDeclarationSyntax result;
-                    ent.Data.PartialProps = true;
+                    ent.TypeData.PartialProps = true;
                     if (ent is XP.IPartialPropertyContext)
                     {
                         var cls = ent as XP.IPartialPropertyContext;
@@ -2919,7 +2919,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            context.Data.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
+            context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (generated.Members.Count > 0)
             {
                 members.AddRange(generated.Members);
@@ -2971,7 +2971,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "INTERFACE", m);
             }
             context.Put(m);
-            if (context.Data.Partial)
+            if (context.TypeData.Partial)
             {
                 GlobalEntities.NeedsProcessing = true;
             }
@@ -2988,7 +2988,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            context.Data.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
+            context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (generated.Members.Count > 0)
             {
                 members.AddRange(generated.Members);
@@ -3008,7 +3008,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // when an instant constructors then remember this
                 if (mem is ConstructorDeclarationSyntax cds && !cds.IsStatic())
                 {
-                    context.Data.HasInstanceCtor = true;
+                    context.TypeData.HasInstanceCtor = true;
                     break;
                 }
             }
@@ -3058,7 +3058,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "CLASS", m);
             }
             context.Put(m);
-            if (context.Data.Partial)
+            if (context.TypeData.Partial)
             {
                 GlobalEntities.NeedsProcessing = true;
             }
@@ -3075,7 +3075,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            context.Data.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
+            context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             if (generated.Members.Count > 0)
             {
                 members.AddRange(generated.Members);
@@ -3128,7 +3128,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = (MemberDeclarationSyntax)CheckForConflictBetweenTypeNameAndNamespaceName(context, "STRUCTURE", m);
             }
             context.Put(m);
-            if (context.Data.Partial)
+            if (context.TypeData.Partial)
             {
                 GlobalEntities.NeedsProcessing = true;
             }
@@ -3136,15 +3136,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitDelegate_([NotNull] XP.Delegate_Context context)
         {
+            var attributes = getAttributes(context.Attributes);
+            var parameters = getParameters(context.ParamList);
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            BlockSyntax body = null;
+            TypeSyntax returntype = getDataType(context.ReturnType);
+
             context.SetSequencePoint(context.D, context.e);
+            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
             MemberDeclarationSyntax m = _syntaxFactory.DelegateDeclaration(
-                attributeLists: getAttributes(context.Attributes),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                attributeLists: attributes,
+                modifiers: mods,
                 delegateKeyword: SyntaxFactory.MakeToken(SyntaxKind.DelegateKeyword),
-                returnType: getDataType(context.ReturnType),
+                returnType: returntype,
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
-                parameterList: getParameters(context.ParamList),
+                parameterList: parameters,
                 constraintClauses: getTypeConstraints(context._ConstraintsClauses),
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             if (context.Namespace != null)
@@ -4347,7 +4354,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         parent.children.Remove(context);
                         parent.AddChild(cls);
                         cls.AddChild(context);
-                        cls.Data.Partial = true;
+                        cls.TypeData.Partial = true;
                         context.Parent = cls;
                         ce.AddVoPropertyAccessor(context,context.RealType, idName, isStatic);
                         context.Put(m); // this is needed by GenerateVOProperty

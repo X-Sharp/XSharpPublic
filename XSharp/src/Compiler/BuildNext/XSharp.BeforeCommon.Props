@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+   This file goes to the %VS%\MSBuild\Current\Imports\Microsoft.Common.Props\ImportBefore" folder 
+   MSBuild automatically includes all files there 
+   It assumes there is an environment variable or property defined in the xsproj file with the name 
+   "XSharpMsBuildDir" that points to the folder with the XSharp MsBuild support files
+-->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.xsproj'">
-    <LanguageTargets Condition="'$(LanguageTargets )' == ''" >$(XSharpMsBuildDir)\XSharp.Targets</LanguageTargets>  
+    <LanguageTargets Condition="'$(LanguageTargets )' == ''" >$(XSharpMsBuildDir)\XSharp.Common.targets</LanguageTargets>  
 </PropertyGroup>
-<Import Condition="'$(MSBuildProjectExtension)' == '.xsproj' and '$(XSharpDefaultProps)' == '' " Project="$(XSharpMsBuildDir)\XSharp.Default.Props" />
+<Import Condition="'$(MSBuildProjectExtension)' == '.xsproj' and '$(XSharpDefaultProps)' == '' " Project="$(XSharpMsBuildDir)\XSharp.Props" />
 </Project>

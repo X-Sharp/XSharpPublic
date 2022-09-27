@@ -212,6 +212,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
             }
         }
+        public void SetDialect(XSharpDialect dialect)
+        {
+            Dialect = dialect;
+        }
+        public void SetNoStdDef(bool noStdDef)
+        {
+            NoStdDef = noStdDef;
+        }
     }
 
     public class PragmaBase

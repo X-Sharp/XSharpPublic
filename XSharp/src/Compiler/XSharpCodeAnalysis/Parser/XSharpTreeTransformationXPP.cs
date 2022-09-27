@@ -183,7 +183,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Modifiers != null)
             {
                 if (context.Modifiers._Tokens.Any(t => t.Type == XP.STATIC))
-                    context.Data.HasStatic = true;
+                    context.TypeData.HasStatic = true;
             }
             // check if all declared methods have been implemented
             // and if so, then add the methods to the members list
@@ -829,7 +829,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // when an instant constructors then remember this
                     if (mem is ConstructorDeclarationSyntax cds && !cds.IsStatic())
                     {
-                        current.Entity.Data.HasInstanceCtor = true;
+                        current.Entity.TypeData.HasInstanceCtor = true;
                         break;
                     }
                 }
@@ -861,7 +861,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ent.Put(classdecl);
 
                 // check to see if this is a static class. In that case we must add it to the static global members
-                if (xnode.Data.HasStatic)
+                if (xnode.TypeData.HasStatic)
                 {
                     addGlobalEntity(classdecl, true);
                 }

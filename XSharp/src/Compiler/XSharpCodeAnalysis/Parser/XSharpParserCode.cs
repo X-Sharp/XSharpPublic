@@ -253,7 +253,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public interface ITypeContext : IEntityContext
         {
 #if !VSPARSER
-            TypeData Data { get; }
+            TypeData TypeData { get; }
 #endif
         }
         public interface IMemberContext : IEntityContext
@@ -268,6 +268,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             string Name { get; }
             string ShortName { get; }
+        }
+
+        public interface IMultiElementContext
+        {
+            int Count { get; }
         }
 
         public interface IXPPMemberContext : IMemberWithBodyContext, IBodyWithLocalFunctions
@@ -861,22 +866,25 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements => StmtBlk;
             public IList<object> LocalFunctions { get; set; } = null;
         }
-        public partial class Delegate_Context : ITypeContext
+        public partial class Delegate_Context : ITypeContext, IMemberWithBodyContext
         {
 #if !VSPARSER
-            readonly TypeData data = new();
-            public TypeData Data => data;
+            readonly TypeData tdata = new();
+            readonly MemberData mdata = new();
+            public TypeData TypeData => tdata;
+            public MemberData Data => mdata;
 #endif
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public string Name => ParentName + ShortName;
             public string ShortName => this.Id.GetText();
+            public StatementBlockContext Statements => null;
         }
         public partial class Interface_Context : IPartialPropertyContext, ITypeContext
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
@@ -892,7 +900,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
@@ -907,7 +915,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
@@ -965,7 +973,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
 #endif
             public string Name => this.Id.GetText();
             public string ShortName => this.Id.GetText();
@@ -975,7 +983,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
 #endif
             public string Name => this.Id.GetText();
             public string ShortName => this.Id.GetText();
@@ -985,7 +993,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
 #endif
             public string Name => ParentName + ShortName;
             public string ShortName => Id.GetText();
@@ -1080,7 +1088,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
 #if !VSPARSER
             readonly TypeData data = new();
-            public TypeData Data => data;
+            public TypeData TypeData => data;
             List<IMethodContext> partialProperties = null;
 
             public List<IMethodContext> PartialProperties
@@ -1118,6 +1126,63 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpper();
             internal string FieldName => Name.GetText().ToUpper();
         }
+        #region Ruleš with multiple vars or multiple expressions The Count determines how breakpoints are set
+
+        public partial class FoxexpressionStmtContext : IMultiElementContext
+        {
+            public int Count => _Exprs.Count;
+        }
+        public partial class ExpressionStmtContext : IMultiElementContext
+        {
+            public int Count => _Exprs.Count;
+        }
+
+        public partial class CommonLocalDeclContext : IMultiElementContext
+        {
+            public int Count => _LocalVars.Count;
+        }
+
+        public partial class VarLocalDeclContext : IMultiElementContext
+        {
+            public int Count => _ImpliedVars.Count;
+        }
+        public partial class FoxlocaldeclContext : IMultiElementContext
+        {
+            public int Count => this._LParameters.Count + this._DimVars.Count;
+        }
+        public partial class MemvardeclContext : IMultiElementContext
+        {
+            public int Count => this._XVars.Count + this._Vars.Count;
+        }
+        public partial class FoxmemvardeclContext : IMultiElementContext
+        {
+            public int Count => this._FoxVars.Count + this._Vars.Count+ this._DimVars.Count;
+        }
+        public partial class ClassvarsContext : IMultiElementContext
+        {
+            public int Count => this._Vars.Count;
+        }
+        public partial class VoglobalContext : IMultiElementContext
+        {
+            public int Count => this._Vars.Count;
+        }
+        public partial class FilewidememvarContext : IMultiElementContext
+        {
+            public int Count => this._Vars.Count + this._XVars.Count + this._FoxVars.Count;
+        }
+        public partial class ExpressionListContext : IMultiElementContext
+        {
+            public int Count => this._Exprs.Count;
+        }
+        public partial class ParenExpressionContext : IMultiElementContext
+        {
+            public int Count => this._Exprs.Count;
+        }
+        public partial class VariableDeclarationContext : IMultiElementContext
+        {
+            public int Count => this._Decl.Count;
+        }
+        #endregion
     }
 
     [DebuggerDisplay("{DebuggerDisplay()}")]
@@ -1576,4 +1641,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return parent.isInStructure();
         }
     }
+
 }

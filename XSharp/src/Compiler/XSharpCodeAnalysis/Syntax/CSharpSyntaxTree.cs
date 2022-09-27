@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -264,12 +265,46 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (snode.Parent is VariableDeclarationSyntax)
                 {
                     snode = snode.Parent;
+                    if (snode.Parent is LocalDeclarationStatementSyntax)
+                        snode = snode.Parent;
                 }
                 if (snode.XNode != null)
                 {
                     // Roslyn wants zero based lines !
                     // Our line numbers are 1 based and column numbers are zero based..
+
                     var xNode = snode.XNode as XSharpParserRuleContext;
+                    while (true)
+                    {
+                        if (xNode.Parent is XP.IMultiElementContext mec && mec.Count > 1)
+                        {
+                            // declaration with possibly multiple variables
+                            // Or expression statement with multiple expressions
+                            // Set breakpoint on individual element when > 1 element
+                            break;
+                        }
+                        else if (xNode is XP.IMultiElementContext)
+                        {
+                            break;
+                        }
+                        else if (xNode is XP.IGlobalEntityContext)
+                        {
+                            break;
+                        }
+                        else if (xNode is XP.StatementContext)
+                        {
+                            break;
+                        }
+                        else if (xNode is XP.IEntityContext) // this includes IMemberContext and ITypeCOntext
+                        {
+                            break;
+                        }
+                        else if (xNode.Parent is null)
+                        {
+                            break;
+                        }
+                        xNode = xNode.Parent as XSharpParserRuleContext;
+                    }
                     start = xNode.Position;
                     length = xNode.FullWidth;
                     line = xNode.Start.Line - 1;

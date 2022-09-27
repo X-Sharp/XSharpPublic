@@ -53,8 +53,10 @@ namespace Microsoft.CodeAnalysis
         private EmbeddedText(string filePath, ImmutableArray<byte> checksum, SourceHashAlgorithm checksumAlgorithm, ImmutableArray<byte> blob)
         {
             Debug.Assert(filePath.Length > 0);
+#if !XSHARP
             Debug.Assert(SourceHashAlgorithms.IsSupportedAlgorithm(checksumAlgorithm));
             Debug.Assert(!blob.IsDefault && blob.Length >= sizeof(int));
+#endif
 
             FilePath = filePath;
             Checksum = checksum;
@@ -104,10 +106,12 @@ namespace Microsoft.CodeAnalysis
                 throw new ArgumentNullException(nameof(text));
             }
 
+#if !XSHARP
             if (!text.CanBeEmbedded)
             {
                 throw new ArgumentException(CodeAnalysisResources.SourceTextCannotBeEmbedded, nameof(text));
             }
+#endif
 
             if (!text.PrecomputedEmbeddedTextBlob.IsDefault)
             {
@@ -294,7 +298,9 @@ namespace Microsoft.CodeAnalysis
         private static ImmutableArray<byte> CreateBlob(SourceText text)
         {
             RoslynDebug.Assert(text != null);
+#if !XSHARP
             RoslynDebug.Assert(text.CanBeEmbedded);
+#endif
             RoslynDebug.Assert(text.Encoding != null);
             RoslynDebug.Assert(text.PrecomputedEmbeddedTextBlob.IsDefault);
 

@@ -165,7 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // Exception during Lexing 
                 parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                 // create empty token stream so we can continue the rest of the code
-                _lexerTokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, (IList<IToken>)new List<XSharpToken>()));
+                _lexerTokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, new List<IToken>()));
             }
 #if DEBUG && DUMP_TIMES
             {
@@ -240,7 +240,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Exception during Preprocessing
                     parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                     // create empty token stream so we can continue the rest of the code
-                    _preprocessorTokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, (IList<IToken>)new List<XSharpToken>()));
+                    _preprocessorTokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, new List<IToken>()));
                 }
             }
 #if DEBUG && DUMP_TIMES
@@ -372,6 +372,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (pp != null)
                     {
                         eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
+                    }
+                    else
+                    {
+                        eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, new Dictionary<string, SourceText>()));
                     }
                     if (tree != null)
                     {
@@ -775,11 +779,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var xnode = val.Type;
                         ctxt = xnode;
-                        if (xnode.Data.HasInstanceCtor)
+                        if (xnode.TypeData.HasInstanceCtor)
                         {
                             hasctor = true;
                         }
-                        if (xnode.Data.PartialProps)
+                        if (xnode.TypeData.PartialProps)
                         {
                             haspartialprop = true;
                         }
@@ -981,7 +985,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             dict.Add(name, list);
                         }
                     }
-                    // Collect quickly now. Deduplicate later.
+                    // Collect quickly now. Remove duplicates later.
                     tmpUsings.AddRange(clsctx.Usings);
                 }
             }
@@ -1032,7 +1036,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (xnode != null && xnode.ChildCount == 1)
             {
                 var cls = xnode.GetChild(0) as XP.IPartialPropertyContext;
-                if (cls != null && (cls.Data.Partial || cls.Data.PartialProps))
+                if (cls != null && (cls.TypeData.Partial || cls.TypeData.PartialProps))
                 {
                     var name = cls.Name;
                     if (!partialClasses.ContainsKey(name))

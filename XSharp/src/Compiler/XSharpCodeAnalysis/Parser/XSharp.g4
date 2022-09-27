@@ -301,6 +301,7 @@ delegate_           : (Attributes=attributes)? (Modifiers=classModifiers)?
                       ParamList=parameterList?
                       (AS Type=datatype)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*
+                      (CallingConvention=callingconvention)?
                       e=EOS
                     ;
 

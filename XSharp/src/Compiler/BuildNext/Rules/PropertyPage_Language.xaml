@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule
+	Name="LanguageSettings"
+	DisplayName="Language"
+	PageTemplate="generic"
+	Description="Language Settings"
+    Order="2"
+    SwitchPrefix="/"
+    xmlns="http://schemas.microsoft.com/build/2009/properties">
+    <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="True" />
+    </Rule.DataSource>
+
+    <Rule.Categories>
+      <Category Name="General"          DisplayName="General"/>
+      <Category Name="MemVar"           DisplayName="Memory Variables"/>
+      <Category Name="NS"               DisplayName="Namespaces"/>
+      <Category Name="Preprocessor"     DisplayName="Preprocessor"/>
+    </Rule.Categories>
+
+    <BoolProperty   Category="General"       Name="LB"                  DisplayName="Allow Late Binding"                          Visible="True" Description="/lb" Default="False" Switch="lb"/>
+    <BoolProperty   Category="General"       Name="NamedArgs"           DisplayName="Allow Named Arguments"                       Visible="True" Description="Allow Named Arguments (default = ON for dialect Core and OFF for other dialects)" Default="False"  Switch="namedargs"/>
+    <BoolProperty   Category="General"       Name="UnSafe"              DisplayName="Allow Unsafe Code"                           Visible="True" Description="Allow Unsafe code inside this assembly"   Default="False"  Switch="unsafe"/>
+    <BoolProperty   Category="General"       Name="CS"                  DisplayName="Case Sensitive"                              Visible="True" Description="Enable/Disable case sensitivity (/cs)"  Default="False"  Switch="cs"/>
+    <BoolProperty   Category="General"       Name="INITLOCALS"          DisplayName="Initialize Local variables"                  Visible="True" Description="Automatically initialize local variables without initialization expression. Please note that for locals of type string the initial value will depend on the 'Initialize strings' setting from the Dialect page.(/initlocals)"  Switch="initlocals"/>
+    <BoolProperty   Category="General"       Name="OVF"                 DisplayName="Overflow Exceptions"                         Visible="True" Description="Check for Overflow and Underflow (like the CHECKED keyword, /ovf)" Default="True"  Switch="ovf"/>
+    <BoolProperty   Category="General"       Name="AZ"                  DisplayName="Use Zero Based Arrays"                       Visible="True" Description="Zero Based Arrays (/az)"  Switch="az"/>
+    <BoolProperty   Category="General"       Name="EnforceSelf"         DisplayName="Enforce SELF to access instance members"     Visible="True" Description="Enforce the use of SELF: (or This. in the FoxPro dialect) to access instance members inside a class. (/enforceself)"  Switch="enforceself"/>
+
+
+    <BoolProperty   Category="MemVar"       Name="MEMVAR"               DisplayName="Enable Memvar support"                       Visible="True" Description="Enable support for memory variables (MEMVAR, PUBLIC, PRIVATE and PARAMETERS). (/memvar)\rPlease note that this is NOT supported for the Core and Vulcan dialects" Default="False"  Switch="memvar"/>
+    <BoolProperty   Category="MemVar"       Name="UNDECLARED"           DisplayName="Enable Undeclared variables support"         Visible="True" Description="Enable support for undeclared variables (these are resolved to MEMVARs). (/undeclared)\rPlease note that this requires /memvar to be enabled as well."  Default="False" Switch="undeclared"/>
+
+    <StringProperty Category="NS"            Name="INS"                 DisplayName="Enable Implicit Namespace lookup"            Visible="True" Description="Enable the implicit lookup of classes defined in assemblies with an Implicit Namespace attribute (/ins)"  Default="False"  Switch="ins"/>
+    <BoolProperty   Category="NS"            Name="NS"                  DisplayName="Prefix classes with default Namespace"       Visible="True" Description="Prefix all classes that do not have a namespace prefix and are not in a begin namespace ... end namespace block with the namespace of the assembly (/ns:&lt;Namespace&gt;)"  Default="False" Switch="ns"/>
+
+    <StringProperty Category="Preprocessor"  Name="IncludePaths"        DisplayName="Additional Include paths"                    Visible="True" Description="Additional include paths for the preprocessor (it also looks through the folders set with the include environment variable) (/i)"  Default="" Switch="i"/>
+    <StringProperty Category="Preprocessor"  Name="Stddefs"             DisplayName="ALternate standard header file"              Visible="True" Description="Name of an alternative standard header file (alternative for XSharpDefs.xh)  (/stddefs)"  Default="" Switch="stddefs"/>
+    <BoolProperty   Category="Preprocessor"  Name="NoStandardDefs"      DisplayName="Suppress standard header file"               Visible="True" Description="Include the standard header file in every file (/nostddef)"  Default="False" Switch="i"/>
+
+</Rule>
+

@@ -401,9 +401,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 initializer = MakePublicInitializer(memvar.Id.GetText());
                             }
-                            exp = GenerateMemVarPut(memvar, varname, initializer);
-                            exp.XNode = memvar;
-                            stmts.Add(GenerateExpressionStatement(exp, memvar));
+                            if (initializer != null)
+                            {
+                                exp = GenerateMemVarPut(memvar, varname, initializer);
+                                exp.XNode = memvar;
+                                stmts.Add(GenerateExpressionStatement(exp, memvar));
+                            }
                         }
                     }
                     break;
@@ -811,7 +814,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             var generated = ClassEntities.Pop();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
-            context.Data.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
+            context.TypeData.Partial = mods.Any((int)SyntaxKind.PartialKeyword);
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
             var baseType = context.BaseType?.Get<TypeSyntax>();
             if (baseType != null)
@@ -950,7 +953,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             context.Put(m);
-            if (context.Data.Partial)
+            if (context.TypeData.Partial)
             {
                 GlobalEntities.NeedsProcessing = true;
             }

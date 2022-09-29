@@ -61,9 +61,13 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			u := #SomeSymbol
 			Assert.Equal(FALSE, Empty(u))
 			u := NULL_SYMBOL
-			Assert.Equal(TRUE, Empty(u))
-
-            u := DBNull.Value
+         Assert.Equal(TRUE, Empty(u))
+         // In the FoxPro dialect .NULL. = DbNull.Value is not seen as empty
+         RuntimeState.Dialect := XSharpDialect.VO
+         u := DBNull.Value
+			Assert.Equal(true, Empty(u))
+         RuntimeState.Dialect := XSharpDialect.FoxPro
+         u := DBNull.Value
 			Assert.Equal(false, Empty(u))
 
  		[Trait("Category", "Object")];

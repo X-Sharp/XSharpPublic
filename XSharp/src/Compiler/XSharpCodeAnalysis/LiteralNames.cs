@@ -263,6 +263,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string SequenceError = "_SequenceError";
         internal const string ExecStatement = "_ExecStatement";
         internal const string ExecExpression = "_ExecExpression";
+        internal const string CallClipFunc = "_CallClipFunc";
     }
     internal static class VulcanQualifiedFunctionNames
     {

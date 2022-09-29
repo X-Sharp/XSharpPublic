@@ -609,7 +609,7 @@ statement           : Decl=localdecl                            #declarationStmt
                     // some statements that are only valid in FoxPro dialect
                     | Eq=EQ Exprs+=expression  end=eos		                          #foxexpressionStmt
                     | B=(BACKSLASH | BACKBACKSLASH) String=TEXT_STRING_CONST end=EOS  #foxtextoutStmt
-                    | D=DO Id=identifier (WITH ArgList=argumentList)?    end=eos      #doStmt
+                    | D=DO Amp=AMP? Id=varidentifierName (WITH ArgList=argumentList)?  end=eos      #doStmt
 
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // validExpressionStmt checks for CONSTRUCTOR( or DESTRUCTOR(

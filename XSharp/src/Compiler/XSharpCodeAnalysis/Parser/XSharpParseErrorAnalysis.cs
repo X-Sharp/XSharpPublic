@@ -147,6 +147,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             checkMissingKeyword(context.e, context, "END [WITH]");
         }
 
+        public override void ExitDoStmt([NotNull] XSharpParser.DoStmtContext context)
+        {
+            if (context.Amp != null)
+            {
+                NotInCore(context, "DO Statement with procedure name inside variable");
+            }
+        }
         public override void ExitDelegate_([NotNull] XSharpParser.Delegate_Context context)
         {
             //if (context.Type == null)

@@ -176,21 +176,21 @@ FUNCTION SubStrC(cExpression, nStartPosition , nCharactersReturned ) AS STRING C
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ratc/*" />
-FUNCTION RAtC(cSearchExpression AS STRING , cExpressionSearched AS STRING , nOccurrence := 1 AS INT ) AS INT	
-	RETURN RAt(cSearchExpression , cExpressionSearched , nOccurrence )
+FUNCTION RAtC(cSearchExpression AS STRING , cExpressionSearched AS STRING , dwOccurrence := 1 AS DWORD ) AS DWORD
+	RETURN RAt(cSearchExpression , cExpressionSearched , dwOccurrence )
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rat/*" />
-FUNCTION RAt(cSearchExpression AS STRING , cExpressionSearched AS STRING , nOccurrence := 1 AS INT ) AS INT
-    LOCAL iPosition  AS INT
-    LOCAL i , dwPosition, dwOccurred AS INT
+FUNCTION RAt(cSearchExpression AS STRING , cExpressionSearched AS STRING , dwOccurrence := 1 AS DWORD ) AS DWORD
+    LOCAL dwPosition, dwOccurred AS DWORD
+    LOCAL i , iPosition  AS INT
     dwOccurred := 0
  	dwPosition := 0
 	IF ! String.IsNullOrEmpty(cExpressionSearched) .AND. ! String.IsNullOrEmpty(cSearchExpression) 		
 	
 		iPosition := cExpressionSearched:Length 
 
-		FOR i := 1 UPTO nOccurrence
+		FOR i := 1 UPTO dwOccurrence
 				
      		IF ( iPosition := cExpressionSearched:LastIndexOf(cSearchExpression,iPosition,StringComparison.Ordinal) ) == -1 
 				EXIT 
@@ -199,9 +199,9 @@ FUNCTION RAt(cSearchExpression AS STRING , cExpressionSearched AS STRING , nOccu
 			dwOccurred++ 
 				
 
-			IF dwOccurred == nOccurrence
+			IF dwOccurred == dwOccurrence
 				// Assign the found position before leaving the loop. 
-				dwPosition := iPosition + 1
+				dwPosition := DWORD(iPosition + 1)
 				EXIT 
 			ENDIF
 					
@@ -267,15 +267,15 @@ FUNCTION ChrTran( cSearchIn AS STRING , cSearchFor AS STRING, cReplaceWith  AS S
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/at/*" />
-FUNCTION At(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
+FUNCTION At(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccurrence := 1 AS DWORD) AS DWORD
 	LOCAL position := 0 AS DWORD
 	IF ( cExpressionSearched != NULL .AND. cSearchExpression != NULL )
 		IF cExpressionSearched:Length != 0 .AND. cSearchExpression:Length != 0
-            DO WHILE nOccurrence  > 0
-                IF ( position := (DWORD) cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.Ordinal) + 1) == 0
+            DO WHILE dwOccurrence  > 0
+                IF ( position := (DWORD) ( cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.Ordinal) + 1 ) ) == 0
                     EXIT
                 ENDIF	
-                nOccurrence -= 1
+                dwOccurrence -= 1
             ENDDO
 		END IF
 	ENDIF
@@ -284,20 +284,20 @@ FUNCTION At(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurre
 /// <inheritdoc cref="At" />
 /// <remarks>This is an alias for the At() function. X# works with unicode and the difference
 /// between single byte and multi byte characters does not exist in Unicode</remarks> 
-FUNCTION At_C(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
-	RETURN At(cSearchExpression, cExpressionSearched, nOccurrence)
+FUNCTION At_C(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccurrence := 1 AS DWORD) AS DWORD
+	RETURN At(cSearchExpression, cExpressionSearched, dwOccurrence)
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atc/*" />
-FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
+FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccurrence := 1 AS DWORD) AS DWORD
 	LOCAL position := 0 AS DWORD
 	IF ( cExpressionSearched != NULL .AND. cSearchExpression != NULL )
 		IF cExpressionSearched:Length != 0 .AND. cSearchExpression:Length != 0
-            DO WHILE nOccurrence  > 0
-                IF ( position := (DWORD) cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.OrdinalIgnoreCase) + 1) == 0
+            DO WHILE dwOccurrence  > 0
+                IF ( position := (DWORD) ( cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.OrdinalIgnoreCase) + 1) ) == 0
                     EXIT
                 ENDIF	
-                nOccurrence -= 1
+                dwOccurrence -= 1
             ENDDO
 		END IF
 	ENDIF
@@ -307,8 +307,8 @@ FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurr
 /// <remarks>This is an alias for the AtC() function. X# works with unicode and the difference
 /// between single byte and multi byte characters does not exist in Unicode</remarks> 
 
-FUNCTION AtCC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
-	RETURN AtC(cSearchExpression, cExpressionSearched, nOccurrence)
+FUNCTION AtCC(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccurrence := 1 AS DWORD) AS DWORD
+	RETURN AtC(cSearchExpression, cExpressionSearched, dwOccurrence)
 
 /// <inheritdoc cref="M:XSharp.Core.Functions.AllTrim(System.String)" />
 /// <param name="Expression">Specifies an expression to remove leading and trailing spaces or 0 bytes from</param>

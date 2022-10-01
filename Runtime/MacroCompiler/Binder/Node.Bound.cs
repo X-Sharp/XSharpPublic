@@ -1167,8 +1167,9 @@ namespace XSharp.MacroCompiler.Syntax
             int a = 0;
             foreach(var p in b.DelegateType.GetMethod("Invoke").GetParameters())
             {
+                string paramName = (cb.Params?.Count > a) ? cb.Params[a].LookupName : p.Name;
                 ++a;
-                b.AddParam(p.Name ?? ("__arg"+a), Binder.FindType(p.ParameterType));
+                b.AddParam(paramName ?? ("__arg"+a), Binder.FindType(p.ParameterType));
             }
             tcb.Bind(b);
             return tcb;

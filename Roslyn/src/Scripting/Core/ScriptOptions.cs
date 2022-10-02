@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Scripting
 {
@@ -174,7 +175,27 @@ namespace Microsoft.CodeAnalysis.Scripting
             WarningLevel = warningLevel;
             ParseOptions = parseOptions;
 #if XSHARP
-            XsOptions = new CSharp.XSharpSpecificCompilationOptions() { Dialect = CSharp.XSharpDialect.VO, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true };
+            XsOptions = new CSharp.XSharpSpecificCompilationOptions() { Dialect = CSharp.XSharpDialect.VO,
+                RuntimeAssemblies = CSharp.RuntimeAssemblies.XSharpCore | CSharp.RuntimeAssemblies.XSharpRT,
+                NoStdDef = true, LateBinding = true, UndeclaredMemVars = true,
+                AllowOldStyleAssignments = true };
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var arefs = assemblies.Where(a => !a.IsDynamic && (a.Location.ToLower().Contains("xsharp.core.dll") || a.Location.ToLower().Contains("xsharp.rt.dll")));
+            if (arefs.IsEmpty())
+            {
+                arefs = assemblies.Where(a => !a.IsDynamic && (a.Location.ToLower().Contains("vulcanrt.dll") || a.Location.ToLower().Contains("vulcanrtfuncs.dll")));
+                XsOptions.Dialect = CSharp.XSharpDialect.Vulcan;
+                XsOptions.RuntimeAssemblies = CSharp.RuntimeAssemblies.VulcanRT | CSharp.RuntimeAssemblies.VulcanRTFuncs;
+            }
+            if (arefs.IsEmpty())
+            {
+                XsOptions.Dialect = CSharp.XSharpDialect.Core;
+                XsOptions.RuntimeAssemblies = CSharp.RuntimeAssemblies.None;
+            }
+            else
+            {
+                MetadataReferences = ConcatChecked(MetadataReferences, SelectChecked(arefs, nameof(references), CreateReferenceFromAssembly), nameof(references));
+            }
 #endif
         }
 

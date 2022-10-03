@@ -7705,7 +7705,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitDoStmt([NotNull] XP.DoStmtContext context)
         {
-            var name = context.Id.GetText();
+            var name = context.Id.Id.GetText();
+            var isAmp = context.Amp != null;
             ArgumentListSyntax argList;
             if (context.ArgList != null)
             {
@@ -7716,7 +7717,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 argList = EmptyArgumentList();
             }
             // DO .. WITH ...,... passes arguments by reference
-            if (argList.Arguments.Count > 0)
+            if (argList.Arguments.Count > 0 || isAmp)
             {
                 var newargs = new List<ArgumentSyntax>();
                 for (int iArg = 0; iArg < argList.Arguments.Count; iArg++)
@@ -7730,9 +7731,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     newargs.Add(arg);
                 }
+                if (isAmp)
+                {
+                    var funcName = MakeArgument(context.Id.Get<ExpressionSyntax>());
+                    newargs.Insert(0, funcName);
+                    name = ReservedNames.CallClipFunc;
+                }
                 argList = MakeArgumentList(newargs.ToArray());
-                context.ArgList.Put(argList);
+                if (context.ArgList != null)
+                {
+                    context.ArgList.Put(argList);
+                }
             }
+
             var expr = GenerateMethodCall(name, argList);
             context.Put(GenerateExpressionStatement(expr, context));
         }

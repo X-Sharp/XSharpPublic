@@ -2506,7 +2506,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitReturnStmt([NotNull] XP.ReturnStmtContext context)
         {
             context.SetSequencePoint(context.end);
-            if (context.IsInLambdaOrCodeBlock())
+            if (context.IsInLambdaOrCodeBlock() || (IsScript && CurrentMember == null))
             {
                 base.ExitReturnStmt(context);
                 return;

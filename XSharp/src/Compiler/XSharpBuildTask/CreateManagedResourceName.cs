@@ -12,9 +12,9 @@ using System.IO;
 using System.Security;
 using System.Text;
 
+#pragma warning disable RS0016
 namespace XSharp.Build
 {
-
 
     public abstract class CreateManifestResourceName : Task
     {

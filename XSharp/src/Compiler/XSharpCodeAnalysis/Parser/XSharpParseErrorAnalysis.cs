@@ -154,24 +154,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 NotInCore(context, "DO Statement with procedure name inside variable");
             }
         }
-        public override void ExitDelegate_([NotNull] XSharpParser.Delegate_Context context)
-        {
-            //if (context.Type == null)
-            //{
-            //    _parseErrors.Add(new ParseErrorData(context.Stop, ErrorCode.ERR_TypeExpected));
-            //}
-            //if (context.ParamList != null)
-            //{
-            //    foreach (var param in context.ParamList._Params)
-            //    {
-            //        // parameters for delegate should have type
-            //        if (param.Type == null)
-            //        {
-            //            _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_TypeExpected));
-            //        }
-            //    }
-            //}
-        }
 
         public override void ExitLocalfuncproc([NotNull] XSharpParser.LocalfuncprocContext context)
         {

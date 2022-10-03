@@ -15,7 +15,6 @@ using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using System.Security.Policy;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {

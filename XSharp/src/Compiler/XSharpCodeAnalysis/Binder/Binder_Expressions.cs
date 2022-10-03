@@ -788,7 +788,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool instance = false;
                 if (node.Parent is MemberAccessExpressionSyntax)
                 {
-                    instance = node.IsInstanceMemberAccess(false);
+                    instance = node.MustBeInstanceMemberAccess(false);
                 }
                 else if (aes is { } && aes.Left == node)
                 {
@@ -803,7 +803,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // Check for Messagebox.Show() which is class member access
                     // versions window:ToString() which is instance member access
-                    if (!node.IsInstanceMemberAccess(true))
+                    if (!node.MustBeInstanceMemberAccess(true))
                     {
                         nsOrTypesFirst = true;
                     }
@@ -1195,7 +1195,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal static class XsBoundExpressionExtensions
     {
-        internal static bool IsInstanceMemberAccess(this SimpleNameSyntax node, bool mustBeLHS)
+        internal static bool MustBeInstanceMemberAccess(this SimpleNameSyntax node, bool mustBeLHS)
         {
             bool instance = false;
             if (node?.Parent is MemberAccessExpressionSyntax)

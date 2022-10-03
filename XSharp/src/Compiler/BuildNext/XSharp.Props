@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Condition="Exists('$(MsBuildBinPath)\Microsoft.Common.props') and '$(XSharpSDKProject)'== '' " Project="$((MsBuildBinPath)\Microsoft.Common.props"  />
+    <Import Condition="Exists('$(MsBuildBinPath)\Microsoft.Common.props')" Project="$((MsBuildBinPath)\Microsoft.Common.props"  />
     <PropertyGroup>
       <XSharpDefaultProps>true</XSharpDefaultProps>
       <BuildInParallel Condition="'$(BuildInParallel)' == ''">true</BuildInParallel>  
       <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
+      <DefaultProjectTypeGuid Condition=" '$(DefaultProjectTypeGuid)' == '' ">{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</DefaultProjectTypeGuid>
       <ProjectSystemBase>$(MSBuildThisFileDirectory)</ProjectSystemBase>
         <ProjectName>$(MSBuildProjectName)</ProjectName>
         <ProjectExt>$(MSBuildProjectExtension)</ProjectExt>

@@ -16,10 +16,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 ***********************************************************************************************
 -->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
-
-
-  <Import Project="$(MSBuildThisFileDirectory)\XSharp.Default.targets" />
+  <Import Condition="'$(XSharpDefaultTargets)' == ''" Project="$(MSBuildThisFileDirectory)\XSharp.Default.targets" />
     <PropertyGroup>
         <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
         <XSharpBuildAssemblyFile Condition=" '$(XSharpBuildAssemblyFile)' =='' ">$(MSBuildThisFileDirectory)XSharp.Build.dll</XSharpBuildAssemblyFile>
@@ -28,9 +25,12 @@ Copyright (c) XSharp B.V.  All Rights Reserved
   <UsingTask TaskName="XSharp.Build.Xsc"  AssemblyFile="$(XSharpBuildAssemblyFile)" />
   <UsingTask TaskName="CreateXSharpManifestResourceName" AssemblyFile="$(XSharpBuildAssemblyFile)" />
   <UsingTask TaskName="NativeResourceCompiler" AssemblyFile="$(XSharpBuildAssemblyFile)" />
+  <!-- The next line replaces the defailt WriteCodeFragment task with our own task -->
+  <UsingTask TaskName="WriteCodeFragment" AssemblyFile="$(XSharpBuildAssemblyFile)" />
 
   <PropertyGroup>
-     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!-- The next line takes care of automatically including all PRG files when building a SDK project -->
+    <EnableDefaultCompileItems>$(UsingNETSdkDefaults)</EnableDefaultCompileItems>
     <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
     <Language>XSharp</Language>
     <TargetRuntime>Managed</TargetRuntime>

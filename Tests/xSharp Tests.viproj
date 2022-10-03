@@ -115411,7 +115411,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C873 - Incompatible behavior with VO when declaring global MEMVAR
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R877 - DoStmt with Amp *************
 Application = R877 - DoStmt with Amp
 IDEVersion = 1.06

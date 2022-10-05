@@ -106,7 +106,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
             Assert.Equal("U", Type ("c",1))
             Assert.Equal("U", Type ("n",1))
-            Assert.Equal("U", Type ("x",1))
+            Assert.Equal("U", Type ("X",1))
 
 
 

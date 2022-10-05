@@ -55,15 +55,22 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     PRIVATE INITONLY _refData  	AS OBJECT			// for GC data
 #endregion
 
-#region constants
+        #region constants
+    [NOSHOW];
     PRIVATE CONST STR_NIL  := "NIL" AS STRING
+    [NOSHOW];
     PRIVATE CONST STR_NULL := "Null" AS STRING
+    [NOSHOW];
     PRIVATE CONST STR_NULL_STRING := "NULL_STRING" AS STRING
+    [NOSHOW];
     PRIVATE CONST STR_NULL_PSZ := "NULL_PSZ" AS STRING
+    [NOSHOW];
     PRIVATE CONST STR_NULL_ARRAY := "NULL_ARRAY" AS STRING
+    [NOSHOW];
     PRIVATE CONST STR_NULL_CODEBLOCK := "NULL_CODEBLOCK" AS STRING
+    [NOSHOW];
     PRIVATE CONST STR_USUAL := "USUAL" AS STRING
-
+    
 #endregion
 
 #region constructors
@@ -489,7 +496,6 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     END GET
     END PROPERTY
     /// <summary>This property returns the __UsualType of the USUAL </summary>
-    [NOSHOW];
     PUBLIC PROPERTY Type		AS __UsualType [NODEBUG] GET _flags:UsualType
     /// <summary>This property returns TRUE when the USUAL is of type LONG, Int64, FLOAT or Decimal</summary>
     [NOSHOW];

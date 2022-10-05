@@ -627,6 +627,8 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| (BASE)->(NIKOS) == (BASE)->(NIKOS)}", Args(), true, typeof(logic))
         TestMacro(mc, e"{|| (BASE)->(NIKOS)}", Args(), "BASE->FieldGet(NIKOS)", typeof(string))
         TestMacro(mc, e"{|a| a := (BASE)->(NIKOS)}", Args(), "BASE->FieldGet(NIKOS)", typeof(string))
+        TestMacro(mc, "{|o| IIF(o == NIL, _FIELD->SOME, _FIELD->SOME := o) }", Args(), "FieldGet(SOME)", typeof(string))
+        TestMacro(mc, "{|o| IIF(o == NIL, _FIELD->SOME, _FIELD->SOME := o) }", Args(123), "FieldSet(SOME):123", typeof(string))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")

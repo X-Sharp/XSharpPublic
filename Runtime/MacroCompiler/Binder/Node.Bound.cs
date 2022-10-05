@@ -981,6 +981,11 @@ namespace XSharp.MacroCompiler.Syntax
                 Alias.RequireGetAccess();
                 var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGetWa) as MethodSymbol;
                 b.Convert(ref Alias, Binder.FindType(m.Parameters.Parameters[0].ParameterType));
+                Symbol = m;
+            }
+            else
+            {
+                Symbol = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGet) as MethodSymbol;
             }
             b.Bind(ref Field);
             Field.RequireGetAccess();
@@ -990,7 +995,11 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal static AliasExpr Bound(string fieldName)
         {
-            return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName)), Token.None) { Datatype = Compilation.Get(NativeType.Usual) };
+            return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName)), Token.None)
+            {
+                Symbol = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGet) as MethodSymbol,
+                Datatype = Compilation.Get(NativeType.Usual)
+            };
         }
         internal static AliasExpr Bound(string aliasName, string fieldName)
         {
@@ -998,11 +1007,18 @@ namespace XSharp.MacroCompiler.Syntax
                 LiteralExpr.Bound(Constant.Create(aliasName)),
                 LiteralExpr.Bound(Constant.Create(fieldName)),
                 Token.None)
-                { Datatype = Compilation.Get(NativeType.Usual) };
+                {
+                    Symbol = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGetWa) as MethodSymbol,
+                    Datatype = Compilation.Get(NativeType.Usual)
+                };
         }
         internal static AliasExpr Bound(Expr field)
         {
-            return new AliasExpr(null, field, Token.None) { Datatype = Compilation.Get(NativeType.Usual) };
+            return new AliasExpr(null, field, Token.None)
+            {
+                Symbol = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGet) as MethodSymbol,
+                Datatype = Compilation.Get(NativeType.Usual)
+            };
         }
         internal override void RequireGetAccess() => RequireValue();
         internal override void RequireSetAccess() => RequireValue();

@@ -531,11 +531,7 @@ namespace XSharp.MacroCompiler.Syntax
             if (Alias != null)
                 Alias.Emit(ilg);
             Field.Emit(ilg);
-            MethodSymbol m;
-            if (Alias != null)
-                m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGetWa) as MethodSymbol;
-            else
-                m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGet) as MethodSymbol;
+            MethodSymbol m = Symbol as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);

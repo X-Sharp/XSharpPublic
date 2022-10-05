@@ -22,6 +22,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 		[Fact, Trait("Category", "Types")];
 		METHOD VarTypeTests() AS VOID
             DIMENSION a[10]
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
             XSharp.RuntimeState.CompilerOptionFox2 := TRUE
             a = 123 // fill the array
 

@@ -193,10 +193,12 @@ namespace XSharp.Project
 
             if (!Core)
             {
-                EnableMemVars(); // this sets Undefined 
+                EnableMemVars(); // this sets Undefined
+                chkNamedArgs.Checked = false;
             }
             else
             {
+                chkNamedArgs.Checked = true;
                 chkUndefined.Enabled = false; 
                 chkMemVar.Checked = false;
                 chkUndefined.Checked = false;

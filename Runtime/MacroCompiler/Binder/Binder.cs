@@ -9,6 +9,7 @@ using System.Reflection.Emit;
 namespace XSharp.MacroCompiler
 {
     using Syntax;
+    using System.IO;
     using System.Reflection;
 
     internal enum BindAffinity
@@ -87,6 +88,8 @@ namespace XSharp.MacroCompiler
 
         internal static Binder<T, R> Create<T,R>(MacroOptions options) where R: Delegate
         {
+            if (options?.GenerateAssembly == true)
+                return new AssemblyBinder<T, R>(options);
             if (options?.StrictTypedSignature == true)
                 return new TypedBinder<T, R>(options);
             return new Binder<T, R>(options);
@@ -629,12 +632,10 @@ namespace XSharp.MacroCompiler
 
         internal abstract Binder CreateNested();
 
-        internal void MakeDynamicMethod(string source) => Method = CreateMethod(source);
-        internal DynamicMethod Method { get; private set; }
-        internal Delegate MakeMethodDelegate() => CreateDelegate(Method);
-
-        protected abstract DynamicMethod CreateMethod(string source);
-        protected abstract Delegate CreateDelegate(DynamicMethod dm);
+        internal abstract void GenerateMethod(string source);
+        internal virtual byte[] GetAssemblyBytes() => null;
+        internal abstract Delegate GenerateDelegate();
+        internal abstract ILGenerator GetILGenerator();
     }
 
     internal class Binder<T,R> : Binder where R: Delegate
@@ -670,7 +671,12 @@ namespace XSharp.MacroCompiler
             return new Binder<T,R>(Options);
         }
 
-        protected override DynamicMethod CreateMethod(string source)
+        private DynamicMethod Method { get; set; }
+        internal override void GenerateMethod(string source) => Method = CreateMethod(source);
+        internal override Delegate GenerateDelegate() => CreateDelegate(Method);
+        internal override ILGenerator GetILGenerator() => Method.GetILGenerator();
+
+        protected virtual DynamicMethod CreateMethod(string source)
         {
             if (HasNestedCodeblocks)
                 return new DynamicMethod(source, typeof(T), new Type[] { typeof(XSharp.Codeblock[]), typeof(T[]) });
@@ -678,7 +684,7 @@ namespace XSharp.MacroCompiler
                 return new DynamicMethod(source, typeof(T), new Type[] { typeof(T[]) });
         }
 
-        protected override Delegate CreateDelegate(DynamicMethod dm)
+        protected virtual Delegate CreateDelegate(DynamicMethod dm)
         {
             if (HasNestedCodeblocks)
             {
@@ -700,5 +706,57 @@ namespace XSharp.MacroCompiler
                 par.Insert(0, typeof(XSharp.Codeblock[]));
             return new DynamicMethod(source, mi.ReturnType, par.ToArray());
         }
+    }
+    internal class AssemblyBinder<T, R> : TypedBinder<T, R> where R : Delegate
+    {
+        internal AssemblyBinder(MacroOptions options) : base(options) { }
+
+        private string Name;
+        private AssemblyBuilder Assembly;
+        private ModuleBuilder AssemblyModule;
+        private TypeBuilder MethodType;
+        private MethodBuilder Method;
+        private Type CreatedType;
+        private byte[] AssemblyData;
+        internal override void GenerateMethod(string source)
+        {
+            //create the builder
+            AssemblyName assembly = new AssemblyName("QueryAssembly");
+            AppDomain appDomain = System.Threading.Thread.GetDomain();
+            Assembly = appDomain.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.Save, Path.GetTempPath());
+            Name = Path.GetFileName(Path.GetTempFileName());
+            AssemblyModule = Assembly.DefineDynamicModule(assembly.Name, Name);
+
+            //create the class
+            MethodType = AssemblyModule.DefineType("QueryClass", System.Reflection.TypeAttributes.Public | System.Reflection.TypeAttributes.Class, typeof(object));
+
+            //create the method
+            var mi = typeof(R).GetMethod("Invoke");
+            Method = MethodType.DefineMethod("QueryMethod", System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.Static, mi.ReturnType, mi.GetParameters().Select(p => p.ParameterType).ToArray());
+            //method.DefineParameter
+
+            CreatedType = null;
+        }
+        internal override byte[] GetAssemblyBytes()
+        {
+            if (AssemblyData == null)
+            {
+                MethodType.CreateType();
+                Assembly.Save(Name);
+                AssemblyData = System.IO.File.ReadAllBytes(AssemblyModule.FullyQualifiedName);
+            }
+            return AssemblyData;
+        }
+        internal override Delegate GenerateDelegate()
+        {
+            if (CreatedType == null)
+            {
+                var loadedAssembly = System.Reflection.Assembly.Load(GetAssemblyBytes());
+                CreatedType = loadedAssembly.GetType("QueryClass");
+            }
+            return CreatedType.GetMethod("QueryMethod").CreateDelegate(typeof(R));
+        }
+        internal override ILGenerator GetILGenerator() => Method.GetILGenerator();
+
     }
 }

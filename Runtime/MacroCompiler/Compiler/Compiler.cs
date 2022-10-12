@@ -15,8 +15,6 @@ namespace XSharp.MacroCompiler
         {
             if (options?.StrictTypedSignature == true)
                 throw new InternalError("Invalid StrictTypedSignature option without delegate type");
-            if (options?.ParseStatements == true)
-                return new ScriptCompilation<T, Func<T[], T>>(options);
             return new Compilation<T, Func<T[], T>>(options ?? MacroOptions.Default);
         }
 
@@ -24,8 +22,6 @@ namespace XSharp.MacroCompiler
         {
             if (options?.StrictTypedSignature == true)
                 return new TypedCompilation<T, R>(options);
-            if (options?.ParseStatements == true)
-                return new ScriptCompilation<T, R>(options);
             return new Compilation<T, R>(options ?? MacroOptions.Default);
         }
     }
@@ -36,6 +32,7 @@ namespace XSharp.MacroCompiler
         {
             public string Source;
             public R Macro;
+            public byte[] AssemblyBytes;
             internal Binder<T, R> Binder;
             internal Syntax.Node SyntaxTree;
             public int ParamCount { get => Binder.ParamCount; }
@@ -112,7 +109,7 @@ namespace XSharp.MacroCompiler
             // Declare locals
             if (ExternLocals != null)
                 foreach (var l in ExternLocals)
-                    (binder.LocalCache[l.Item1] as LocalSymbol)?.Declare(binder.Method.GetILGenerator());
+                    (binder.LocalCache[l.Item1] as LocalSymbol)?.Declare(binder.GetILGenerator());
         }
 
         public CompilationResult Compile(string source)
@@ -145,10 +142,15 @@ namespace XSharp.MacroCompiler
             }
         }
 
-        public R Emit(CompilationResult macro)
+        public R Emit(ref CompilationResult macro)
         {
             EmitInternal(ref macro);
             return macro.Macro;
+        }
+
+        public byte[] EmitAssembly(CompilationResult macro)
+        {
+            return EmitAssemblyInternal(ref macro);
         }
 
         internal virtual Syntax.Node Parse(string source)
@@ -157,11 +159,11 @@ namespace XSharp.MacroCompiler
             IList<Token> tokens = lexer.AllTokens();
             if (options.PreProcessor && options.ParseStatements)
             {
-                var pp = new Preprocessor.XSharpPreprocessor(lexer, options, null, Encoding.Default);
+                var pp = new Preprocessor.XSharpPreprocessor(lexer, options, "Macro", Encoding.Default);
                 tokens = pp.PreProcess();
             }
             var parser = new Parser(tokens, options);
-            return parser.ParseMacro();
+            return options.ParseStatements ? parser.ParseScript() : parser.ParseMacro();
         }
         internal virtual CompilationResult Bind(string source, Syntax.Node parseTree)
         {
@@ -182,35 +184,26 @@ namespace XSharp.MacroCompiler
         {
             if (macro.Macro == null && macro.SyntaxTree != null)
             {
-                macro.Binder.MakeDynamicMethod(macro.Source);
+                macro.Binder.GenerateMethod(macro.Source);
                 DeclareLocals(macro.Binder);
                 macro.Macro = macro.Binder.Emit(macro.SyntaxTree);
             }
+        }
+        internal virtual byte[] EmitAssemblyInternal(ref CompilationResult macro)
+        {
+            if (macro.AssemblyBytes == null && macro.SyntaxTree != null)
+            {
+                macro.Binder.GenerateMethod(macro.Source);
+                DeclareLocals(macro.Binder);
+                macro.AssemblyBytes = macro.Binder.EmitAssembly(macro.SyntaxTree);
+            }
+            return macro.AssemblyBytes;
         }
         internal virtual Binder<T, R> CreateBinder()
         {
             var binder = Binder.Create<T, R>(options);
             AddLocalsToBinder(binder);
             return binder;
-        }
-    }
-    public class ScriptCompilation<T, R> : Compilation<T, R> where R : Delegate
-    {
-        internal ScriptCompilation(MacroOptions o = null): base(o)
-        {
-            options.ParseMode = ParseMode.Statements;
-        }
-        internal override Syntax.Node Parse(string source)
-        {
-            var lexer = new Lexer(source, options);
-            IList<Token> tokens = lexer.AllTokens();
-            if (options.PreProcessor && options.ParseStatements)
-            {
-                var pp = new Preprocessor.XSharpPreprocessor(lexer, options, "Macro", Encoding.Default);
-                tokens = pp.PreProcess();
-            }
-            var parser = new Parser(tokens, options);
-            return parser.ParseScript();
         }
     }
     public class TypedCompilation<T, R> : Compilation<T, R> where R : Delegate

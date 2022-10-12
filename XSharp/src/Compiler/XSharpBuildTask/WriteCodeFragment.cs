@@ -8,6 +8,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+// Disable errors about public methods and properties that are not part of a declared API
 #pragma warning disable RS0016
 namespace XSharp.Build
 {

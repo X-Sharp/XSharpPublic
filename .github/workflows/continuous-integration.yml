@@ -17,7 +17,7 @@ jobs:
     runs-on: windows-2019 #Specify the OS to execute on
     
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: main
 #      - uses: actions/setup-dotnet@v1.7.2
@@ -30,12 +30,12 @@ jobs:
           echo "XSharpDir=./XSharp" >> $GITHUB_ENV
           call ContinuousIntegrationBuild.cmd
       - name: Upload Results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
             name: BuildResults
             path: ./XSharp/Artifacts/Zips/*.zip
       - name: Upload BuildLogs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
             name: BuildLogs
             path: ./XSharp/build*.Log
@@ -44,7 +44,7 @@ jobs:
         run: |
           call RunCompilertests.cmd 
       - name: Upload TestLogs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
             name: TestLogs
             path: ./XSharp/artifacts/Tests/*.Log

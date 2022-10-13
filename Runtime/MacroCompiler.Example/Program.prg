@@ -49,10 +49,12 @@ BEGIN NAMESPACE MacroCompilerTest
         var o := XSharp.MacroCompiler.MacroOptions.Default
         o:StrictTypedSignature := true
         o:GenerateAssembly := true
-        var tc := Compilation.Create<object, Func<int,int, int>>(o)
+        var tc := Compilation.Create<object, Delegate>(o)
         tc:AddExternLocal("x",typeof(int))
-        tc:SetParamNames("a","b")
-        var m := tc:Bind("Console.WriteLine(a+b+x), arg1+arg2+x")
+        tc:AddParameter("a",typeof(int))
+        tc:AddParameter("b",typeof(int))
+        tc:SetResultType(typeof(int))
+        var m := tc:Bind("Console.WriteLine(a+b+x), a+b+x")
         if m:Diagnostic != null
             ? m:Diagnostic:ErrorMessage
             wait

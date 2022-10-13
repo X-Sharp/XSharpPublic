@@ -53,10 +53,19 @@ namespace XSharp.LanguageService
         private void OnClosed(object sender, EventArgs e)
         {
             closed = true;
-            _textView.Closed -= OnClosed;
-            _textView.LayoutChanged -= OnLayoutChanged;
-            _classifier.LineStateChanged -= LineStateChanged;
-            _editorFormatMap.FormatMappingChanged -= FormatMappingChanged;
+            if (_textView != null)
+            {
+                _textView.Closed -= OnClosed;
+                _textView.LayoutChanged -= OnLayoutChanged;
+            }
+            if (_classifier != null)
+            {
+                _classifier.LineStateChanged -= LineStateChanged;
+            }
+            if (_editorFormatMap != null)
+            {
+                _editorFormatMap.FormatMappingChanged -= FormatMappingChanged;
+            }
 
         }
 

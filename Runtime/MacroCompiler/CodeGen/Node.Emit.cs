@@ -723,7 +723,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             // Emit nested codeblock
             var source = Token.ToString();
-            NestedBinder.MakeDynamicMethod(source);
+            NestedBinder.GenerateMethod(source);
             if (usualMacro)
             {
                 var dlg = NestedBinder.Emit(Codeblock) as UsualMacro.MacroCodeblockDelegate;

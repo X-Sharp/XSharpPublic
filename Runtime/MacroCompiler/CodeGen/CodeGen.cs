@@ -14,14 +14,19 @@ namespace XSharp.MacroCompiler
     {
         internal static R Emit<T,R>(this Binder<T,R> b, Node macro) where R: Delegate
         {
-            macro.Emit(b.Method.GetILGenerator());
-            return b.MakeMethodDelegate() as R;
+            macro.Emit(b.GetILGenerator());
+            return b.GenerateDelegate() as R;
         }
 
         internal static Delegate Emit(this Binder b, Node macro)
         {
-            macro.Emit(b.Method.GetILGenerator());
-            return b.MakeMethodDelegate();
+            macro.Emit(b.GetILGenerator());
+            return b.GenerateDelegate();
+        }
+        internal static byte[] EmitAssembly(this Binder b, Node macro)
+        {
+            macro.Emit(b.GetILGenerator());
+            return b.GetAssemblyBytes();
         }
     }
 }

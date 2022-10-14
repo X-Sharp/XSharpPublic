@@ -94,6 +94,19 @@ namespace XSharp.MacroCompiler
             ResultType = resultType;
         }
 
+        internal string NameOfAssembly;
+        internal string NameOfClass;
+        internal string NameOfMethod;
+        public void SetGeneratedNames(string nameOfMethod = null, string nameOfClass = null, string nameOfAssembly = null)
+        {
+            if (nameOfAssembly != null)
+                NameOfAssembly = nameOfAssembly;
+            if (nameOfClass != null)
+                NameOfClass = nameOfClass;
+            if (nameOfMethod != null)
+                NameOfMethod = nameOfMethod;
+        }
+
         internal void AddLocalsToBinder(Binder binder)
         {
             // Add params
@@ -120,6 +133,17 @@ namespace XSharp.MacroCompiler
             if (ExternLocals != null)
                 foreach (var l in ExternLocals)
                     binder.AddLocal(l.Item1, Binder.FindType(l.Item2));
+
+            // Set generated names
+            if (binder is AssemblyBinder<T> b)
+            {
+                if (NameOfAssembly != null)
+                    b.NameOfAssembly = NameOfAssembly;
+                if (NameOfClass != null)
+                    b.NameOfClass = NameOfClass;
+                if (NameOfMethod != null)
+                    b.NameOfMethod = NameOfMethod;
+            }
         }
         internal void DeclareLocals(Binder binder)
         {

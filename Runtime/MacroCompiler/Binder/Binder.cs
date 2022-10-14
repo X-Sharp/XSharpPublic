@@ -760,6 +760,10 @@ namespace XSharp.MacroCompiler
     {
         internal AssemblyBinder(MacroOptions options, Type delegateType) : base(options, delegateType) { }
 
+        internal string NameOfAssembly = "QueryAssembly";
+        internal string NameOfClass = "QueryClass";
+        internal string NameOfMethod = "QueryMethod";
+
         private string Name;
         private AssemblyBuilder Assembly;
         private ModuleBuilder AssemblyModule;
@@ -770,17 +774,18 @@ namespace XSharp.MacroCompiler
         internal override void GenerateMethod(string source)
         {
             //create the builder
-            AssemblyName assembly = new AssemblyName("QueryAssembly");
+            AssemblyName assembly = new AssemblyName(NameOfAssembly);
             AppDomain appDomain = System.Threading.Thread.GetDomain();
-            Assembly = appDomain.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.Save, Path.GetTempPath());
-            Name = Path.GetFileName(Path.GetTempFileName());
+            var tempName = Path.GetTempFileName();
+            Assembly = appDomain.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.Save, Path.GetDirectoryName(tempName));
+            Name = Path.GetFileName(tempName);
             AssemblyModule = Assembly.DefineDynamicModule(assembly.Name, Name);
 
             //create the class
-            MethodType = AssemblyModule.DefineType("QueryClass", System.Reflection.TypeAttributes.Public | System.Reflection.TypeAttributes.Class, typeof(object));
+            MethodType = AssemblyModule.DefineType(NameOfClass, System.Reflection.TypeAttributes.Public | System.Reflection.TypeAttributes.Class, typeof(object));
 
             //create the method
-            Method = MethodType.DefineMethod("QueryMethod", System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.Static,
+            Method = MethodType.DefineMethod(NameOfMethod, System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.Static,
                     ResultType.Type ?? typeof(void),
                     ParameterTypes?.Select(p => p.Type).ToArray() ?? new Type[0]);
             //method.DefineParameter
@@ -793,7 +798,8 @@ namespace XSharp.MacroCompiler
             {
                 MethodType.CreateType();
                 Assembly.Save(Name);
-                AssemblyData = System.IO.File.ReadAllBytes(AssemblyModule.FullyQualifiedName);
+                AssemblyData = File.ReadAllBytes(AssemblyModule.FullyQualifiedName);
+                File.Delete(AssemblyModule.FullyQualifiedName);
             }
             return AssemblyData;
         }
@@ -802,9 +808,9 @@ namespace XSharp.MacroCompiler
             if (CreatedType == null)
             {
                 var loadedAssembly = System.Reflection.Assembly.Load(GetAssemblyBytes());
-                CreatedType = loadedAssembly.GetType("QueryClass");
+                CreatedType = loadedAssembly.GetType(NameOfClass);
             }
-            return CreatedType.GetMethod("QueryMethod").CreateDelegate(DelegateType);
+            return CreatedType.GetMethod(NameOfMethod).CreateDelegate(DelegateType);
         }
         internal override ILGenerator GetILGenerator() => Method.GetILGenerator();
 

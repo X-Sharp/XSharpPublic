@@ -54,6 +54,7 @@ BEGIN NAMESPACE MacroCompilerTest
         tc:AddParameter("a",typeof(int))
         tc:AddParameter("b",typeof(int))
         tc:SetResultType(typeof(int))
+        tc:SetGeneratedNames("$MyMethod" , "$MyClass")
         var m := tc:Bind("Console.WriteLine(a+b+x), a+b+x")
         if m:Diagnostic != null
             ? m:Diagnostic:ErrorMessage
@@ -63,9 +64,9 @@ BEGIN NAMESPACE MacroCompilerTest
         //? m:Macro(123,456)
         var data := tc:EmitAssembly(m)
         var asm := System.Reflection.Assembly.Load(data)
-        var type := asm:GetType("QueryClass")
+        var type := asm:GetType("$MyClass")
         local macro as Func<int,int, int>
-        macro := (Func<int,int, int>)type:GetMethod("QueryMethod"):CreateDelegate(typeof(Func<int,int, int>))
+        macro := (Func<int,int, int>)type:GetMethod("$MyMethod"):CreateDelegate(typeof(Func<int,int, int>))
         ? macro(123,456)
         wait
 #endif

@@ -514,6 +514,12 @@ namespace XSharp.MacroCompiler
             return local;
         }
 
+        internal LocalSymbol AddAutoLocal(string name, TypeSymbol type)
+        {
+            var res = AddLocal(name, type);
+            res.IsAuto = true;
+            return res;
+        }
         internal ArgumentSymbol AddParam(string name, TypeSymbol type, bool first = false)
         {
             var arg = new ArgumentSymbol(name, type, first ? 0 : Args.Count);

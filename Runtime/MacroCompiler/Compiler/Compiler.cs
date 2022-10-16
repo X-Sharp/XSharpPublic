@@ -132,7 +132,7 @@ namespace XSharp.MacroCompiler
             // Add Locals
             if (ExternLocals != null)
                 foreach (var l in ExternLocals)
-                    binder.AddLocal(l.Item1, Binder.FindType(l.Item2));
+                    binder.AddAutoLocal(l.Item1, Binder.FindType(l.Item2));
 
             // Set generated names
             if (binder is AssemblyBinder<T> b)
@@ -144,13 +144,6 @@ namespace XSharp.MacroCompiler
                 if (NameOfMethod != null)
                     b.NameOfMethod = NameOfMethod;
             }
-        }
-        internal void DeclareLocals(Binder binder)
-        {
-            // Declare locals
-            if (ExternLocals != null)
-                foreach (var l in ExternLocals)
-                    (binder.LocalCache[l.Item1] as LocalSymbol)?.Declare(binder.GetILGenerator());
         }
 
         public CompilationResult<R> Compile<R>(string source) where R: Delegate
@@ -228,7 +221,7 @@ namespace XSharp.MacroCompiler
             if (macro.Macro == null && macro.SyntaxTree != null)
             {
                 macro.Binder.GenerateMethod(macro.Source);
-                DeclareLocals(macro.Binder);
+                macro.Binder.DeclareAutoLocals();
                 macro.Macro = macro.Binder.Emit(macro.SyntaxTree) as R;
             }
         }
@@ -237,7 +230,7 @@ namespace XSharp.MacroCompiler
             if (macro.AssemblyBytes == null && macro.SyntaxTree != null)
             {
                 macro.Binder.GenerateMethod(macro.Source);
-                DeclareLocals(macro.Binder);
+                macro.Binder.DeclareAutoLocals();
                 macro.AssemblyBytes = macro.Binder.EmitAssembly(macro.SyntaxTree);
             }
             return macro.AssemblyBytes;

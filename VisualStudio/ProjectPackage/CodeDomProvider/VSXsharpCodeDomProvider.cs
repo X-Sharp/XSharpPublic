@@ -89,9 +89,7 @@ namespace XSharp.Project
                 compileUnit = ToXCodeCompileUnit(base.Parse(codeStream));
                 WriteOutputMessage("End Parse " + this.FileName);
                 // Now, we should check if we have a partial Class inside, if so, that's a Candidate for .Designer.prg
-                CodeNamespace nameSpace;
-                CodeTypeDeclaration className;
-                if (XSharpCodeDomHelper.HasPartialClass(compileUnit, out nameSpace, out className))
+                if (XSharpCodeDomHelper.HasPartialClass(compileUnit, out _, out var className))
                 {
                     // Ok, so get the Filename, to get the .Designer.prg
                     DocDataTextReader ddtr = codeStream as DocDataTextReader;
@@ -207,6 +205,13 @@ namespace XSharp.Project
                 var formCCU = mergedUnit.FormUnit;
                 bool formWasChanged = false;
                 var designCCU = mergedUnit.DesignerUnit;
+                // make sure namespaces are the same
+                // C# does that too.
+                if (mergedUnit.DesignerNamespace != null && mergedUnit.FormNamespace != null)
+                {
+                    mergedUnit.DesignerNamespace.Name = mergedUnit.FormNamespace.Name;
+                }
+
                 string designerPrgFile = designCCU.FileName;
                 var originalFormMembers = new CodeTypeMemberCollection(formCCU.Members);
                 foreach (CodeTypeMember m in originalFormMembers)
@@ -287,7 +292,6 @@ namespace XSharp.Project
                         formClass.Members.Add(member);
                     }
                 }
-
 
                 //
                 // Backup original Form file and Form.Designer file

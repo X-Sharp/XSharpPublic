@@ -91,6 +91,8 @@ namespace XSharp.CodeDom
     {
         public XCodeCompileUnit FormUnit { get; set; }
         public XCodeCompileUnit DesignerUnit { get; set; }
+        public CodeNamespace FormNamespace { get; set; }
+        public CodeNamespace DesignerNamespace { get; set; }
         public XMergedCodeCompileUnit() : base()
         {
 

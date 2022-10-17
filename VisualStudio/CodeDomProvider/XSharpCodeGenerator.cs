@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.IO;
+using System.Runtime.InteropServices;
 // XSharpCodeGenerator
 // Used by Designers (WPF and WinForms at least)
 // !!!WARNING !!! XSharp does support "." or ":" as selector...
@@ -27,10 +28,6 @@ namespace XSharp.CodeDom
         internal XSharpIndentedTextWriter(TextWriter writer, string tabString) : base(writer, tabString)
         {
 
-        }
-        protected override void OutputTabs()
-        {
-            base.OutputTabs();
         }
         public override void Write(string s)
         {
@@ -165,7 +162,6 @@ namespace XSharp.CodeDom
         private string ws = " ";
         private string indentString = " ";
         private string tabString = " ";
-        private string lastTrivia = null;
         private CodeEntryPointMethod entryPoint = null;
         private CodeTypeDeclaration entryPointType = null;
         private Stack<CodeTypeDeclaration> types;
@@ -208,8 +204,16 @@ namespace XSharp.CodeDom
             useTabs = (int)Constants.GetSetting(Constants.RegistryUseTabs, 1) == 1;
             tabSize = (int)Constants.GetSetting(Constants.RegistryTabSize, 3) ;
             indentSize = (int)Constants.GetSetting(Constants.RegistryIndentSize, 3);
-            indentString = new string(' ', indentSize);
-            tabString = new string(' ', tabSize);
+            if (useTabs)
+            {
+                indentString = "\t";
+                tabString = "\t";
+            }
+            else
+            {
+                indentString = new string(' ', indentSize);
+                tabString = new string(' ', tabSize);
+            }
             ws = useTabs ? "\t" : " ";
             keywordBEGIN = formatKeyword("BEGIN ");
             keywordEND = formatKeyword("END ");
@@ -298,7 +302,7 @@ namespace XSharp.CodeDom
             }
             return value;
         }
-
+       
         protected override string CreateValidIdentifier(string value)
         {
             // Is is a reserved Keyword ?
@@ -374,6 +378,11 @@ namespace XSharp.CodeDom
             }
         }
 
+        protected virtual void writeIndent()
+        {
+            for (int i = 0; i < Indent; i++)
+                this.Output.Write(tabString);
+        }
 
         protected override void GenerateArrayIndexerExpression(CodeArrayIndexerExpression e)
         {
@@ -534,6 +543,7 @@ namespace XSharp.CodeDom
                     if (e.CustomAttributes.Count > 0)
                     {
                         this.GenerateAttributes(e.CustomAttributes);
+                        this.writeIndent();
                     }
                     writeMemberAccessModifier(e, e.Attributes, false);
                     base.Output.Write(keywordCONSTRUCTOR+"(");
@@ -624,9 +634,11 @@ namespace XSharp.CodeDom
             if (!this.IsCurrentDelegate && !this.IsCurrentEnum)
             {
                 writeTrivia(e);
+
                 if (e.CustomAttributes.Count > 0)
                 {
                     this.GenerateAttributes(e.CustomAttributes);
+                    this.writeIndent();
                 }
                 if (e.PrivateImplementationType == null)
                 {
@@ -682,6 +694,7 @@ namespace XSharp.CodeDom
             if (e.CustomAttributes.Count > 0)
             {
                 this.GenerateAttributes(e.CustomAttributes);
+                this.writeIndent();
             }
             this.OutputIdentifier(e.Name);
             if (e.InitExpression != null)
@@ -712,6 +725,7 @@ namespace XSharp.CodeDom
             if (e.CustomAttributes.Count > 0)
             {
                 this.GenerateAttributes(e.CustomAttributes);
+                writeIndent();
             }
 
             writeMemberAccessModifier(e, e.Attributes, false, true);
@@ -842,26 +856,24 @@ namespace XSharp.CodeDom
         }
         protected bool writeOriginalCode(CodeObject e, bool trim = false)
         {
-            var saveindent = this.Indent;
             bool result = false;
-            this.Indent = 0;
             if (e.HasSourceCode())
             {
-                
-                if (e.HasLeadingTrivia())
-                    writeTrivia(e, false);
+                var saveindent = this.Indent;
+                this.Indent = 0;
+                writeTrivia(e, false);
                 string sourceCode = e.GetSourceCode();
                 if (trim)
                     sourceCode = sourceCode.Trim();
                 this.Output.Write(sourceCode);
                 result = true;
+                this.Indent = saveindent;
             }
             else if (e is CodeSnippetTypeMember snippet)
             {
                 this.Output.Write(snippet.Text);
                 result = true;
             }
-            this.Indent = saveindent;
             return result;
         }
         protected override void GenerateLabeledStatement(CodeLabeledStatement e)
@@ -900,6 +912,7 @@ namespace XSharp.CodeDom
                     if (e.CustomAttributes.Count > 0)
                     {
                         this.GenerateAttributes(e.CustomAttributes);
+                        writeIndent();
                     }
 
                     if (e.ReturnTypeCustomAttributes.Count > 0)
@@ -1007,7 +1020,6 @@ namespace XSharp.CodeDom
         {
             bool generateComment = true;
             entryPoint = null;
-            lastTrivia = null;
             entryPointType = null;
             types = new Stack<CodeTypeDeclaration>();
             var globals = e.GetGlobals();
@@ -1082,8 +1094,6 @@ namespace XSharp.CodeDom
 
         protected override void GenerateMethodReferenceExpression(CodeMethodReferenceExpression e)
         {
-            var oldEscape = mustEscape;
-
             if (e.TargetObject != null)
             {
                 if (e.TargetObject is CodeBinaryOperatorExpression)
@@ -1135,20 +1145,11 @@ namespace XSharp.CodeDom
             {
                 string trivia = o.UserData[key] as string;
                 _writeTrivia(trivia);
-                var l1 = trivia.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                var l2 = new List<string>();
-                foreach (var l in l1)
-                {
-                    var lTemp = l.Trim();
-                    if (! lTemp.StartsWith("//") && ! lTemp.StartsWith("#"))
-                        l2.Add(l);
-                }
-                //lastTrivia = String.Join("\r\n", l2);
                 return true;
             }
-            else if (lastTrivia != null)
+            else
             {
-                //_writeTrivia(lastTrivia);
+                writeIndent();
             }
             return false;
         }
@@ -1243,6 +1244,7 @@ namespace XSharp.CodeDom
                 if (e.CustomAttributes.Count > 0)
                 {
                     this.GenerateAttributes(e.CustomAttributes);
+                    writeIndent();
                 }
 
                 if (!this.IsCurrentInterface)

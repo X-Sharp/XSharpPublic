@@ -205,6 +205,7 @@ namespace XSharp.Project
                 // Build the Designer FileName
                 // Retrieve Both CodeCompileUnit
                 var formCCU = mergedUnit.FormUnit;
+                bool formWasChanged = false;
                 var designCCU = mergedUnit.DesignerUnit;
                 string designerPrgFile = designCCU.FileName;
                 var originalFormMembers = new CodeTypeMemberCollection(formCCU.Members);
@@ -267,6 +268,7 @@ namespace XSharp.Project
                         if (ctm is CodeMemberMethod)
                         {
                             formClass.Members.Add(ctm);
+                            formWasChanged = true;
                             ctm.SetWritten(true);
                         }
                         else
@@ -327,7 +329,14 @@ namespace XSharp.Project
                 // and we need to update their position (line/col)
                 UpdateUserDataForClass(combinedClass, generatedSource, designerPrgFile, formClass);
                 // Do the same thing for the Form file
-                base.GenerateCodeFromCompileUnit(formCCU, writer, options);
+                if (formWasChanged)
+                {
+                    base.GenerateCodeFromCompileUnit(formCCU, writer, options);
+                }
+                else
+                {
+                    writer.Write(formCCU.GetSourceCode());
+                }
                 // BUT, the writer is hold by the Form Designer, don't close  it !!
                 writer.Flush();
                 // Now, we must re-read it and parse again
@@ -336,7 +345,6 @@ namespace XSharp.Project
                     generatedSource = GetDocDataSource(dtw);
                     UpdateUserDataForClass(combinedClass, generatedSource, prgFileName, formClass);
                 }
-                
             }
             else
             {

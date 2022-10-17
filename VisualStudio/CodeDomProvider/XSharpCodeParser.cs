@@ -46,13 +46,7 @@ namespace XSharp.CodeDom
                         continue;
                    processed.Add(source);
                 }
-                else
-                {
-                    if (member is CodeMemberField field)
-                    {
-                        newfields.Add(field);
-                    }
-                }
+ 
                 int line, col;
                 var data = member.GetDesignerData();
                 if (data != null)
@@ -63,6 +57,7 @@ namespace XSharp.CodeDom
                 else if (member is CodeMemberField field)
                 {
                     line = col = -1;
+                    newfields.Add(field);
                 }
                 else
                 {
@@ -74,31 +69,22 @@ namespace XSharp.CodeDom
                     items.Add(key, member);
                 }
             }
-            var fieldStart = false;
             if (! hasfields)
             {
                 foreach (var field in newfields)
                 {
                     result.Add(field);
                 }
+                newfields.Clear();
             }
             foreach (System.Collections.DictionaryEntry item in items)
             {
-                if (item.Value is CodeMemberField)
+                if (!(item.Value is CodeMemberField))
                 {
-                    if (!fieldStart)
+                    // Insert new fields before the methods in the source file.
+                    if (newfields.Count > 0)
                     {
-                        fieldStart = true;
-                    }
-                }
-                else
-                {
-                    if (fieldStart)
-                    {
-                        foreach (var field in newfields)
-                        {
-                            result.Add(field);
-                        }
+                        result.AddRange(newfields.ToArray());
                         newfields.Clear();
                     }
                 }

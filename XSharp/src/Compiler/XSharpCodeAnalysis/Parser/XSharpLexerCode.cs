@@ -796,6 +796,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 _trivia.Add(t);
             }
+#if VSPARSER
+            else if (t.Channel == PREPROCESSORCHANNEL)
+            {
+                // Make sure #region and #endregion lines are compiled as trivia
+                _trivia.Add(t);
+            }
+#endif
             else if (t.CanHaveTrivia && _trivia.Count > 0)
             {
                 t.Trivia = _trivia.ToImmutableArray();

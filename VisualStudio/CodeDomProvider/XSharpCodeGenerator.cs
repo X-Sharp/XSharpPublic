@@ -634,7 +634,6 @@ namespace XSharp.CodeDom
             if (!this.IsCurrentDelegate && !this.IsCurrentEnum)
             {
                 writeTrivia(e);
-
                 if (e.CustomAttributes.Count > 0)
                 {
                     this.GenerateAttributes(e.CustomAttributes);

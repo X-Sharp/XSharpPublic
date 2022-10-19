@@ -14,50 +14,14 @@ namespace XSharp.Build
 {
     public class WriteCodeFragment : Task
     {
-        #region Fields
-
-        internal ITaskItem _outputFile;
-        internal string _language;
-        internal ITaskItem[] _assemblyAttributes;
-
-        #endregion
 
         #region Public Properties
-        public string Language
-        {
-            get
-            {
-                return _language;
-            }
-            set
-            {
-                _language = value;
-            }
-        }
+        public string Language { get; set; }
 
-        public ITaskItem[] AssemblyAttributes
-        {
-            get
-            {
-                return _assemblyAttributes;
-            }
-            set
-            {
-                _assemblyAttributes = value;
-            }
-        }
+        public ITaskItem[] AssemblyAttributes { get; set; }
 
-        public ITaskItem OutputFile
-        {
-            get
-            {
-                return _outputFile;
-            }
-            set
-            {
-                _outputFile = value;
-            }
-        }
+        [Output]
+        public ITaskItem OutputFile { get; set; }
 
         #endregion
         public WriteCodeFragment() : base()
@@ -66,7 +30,7 @@ namespace XSharp.Build
 
         public override bool Execute()
         {
-            if (_outputFile == null)
+            if (OutputFile == null)
             {
                 base.Log.LogError("Output File must be set");
                 return false;
@@ -84,7 +48,7 @@ namespace XSharp.Build
             sb.AppendLine("// </auto-generated>");
 
             sb.Append(GenerateAttributes());
-            var fileName = _outputFile.ItemSpec;
+            var fileName = OutputFile.ItemSpec;
             File.WriteAllText(fileName, sb.ToString());
             return true;
         }
@@ -92,7 +56,7 @@ namespace XSharp.Build
         private string GenerateAttributes()
         {
             var sb = new StringBuilder();
-            foreach (var att in _assemblyAttributes)
+            foreach (var att in AssemblyAttributes)
             {
                 var name = att.ItemSpec;
                 if (name.EndsWith("Attribute"))

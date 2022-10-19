@@ -14,8 +14,8 @@
         <ProjectPath>$(MSBuildProjectDirectory)\$(MSBuildProjectFile)</ProjectPath>
         <TargetPlatformVersion>7.0</TargetPlatformVersion>
         <UseOSWinMdReferences>true</UseOSWinMdReferences>
-        <OutputType>exe</OutputType>
-        <OutputPath>bin\$(Configuration)\</OutputPath>
+        <OutputType Condition=" '$(OutputType)' == '' ">>exe</OutputType>
+        <OutputPath Condition=" '$(OutputPath)' == '' ">bin\$(Configuration)\</OutputPath>
         <DebuggerFlavor>XSharpDebugger</DebuggerFlavor>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <WinRTReferenceTabs>TAB_SDK_ALL</WinRTReferenceTabs>

@@ -64,8 +64,20 @@
     <None Include="rc.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
     </None>
+    <None Include="XSharp.BeforeCommon.Props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="XSharp.Common.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="XSharp.CrossTargeting.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="XSharp.CurrentVersion.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+    </None>
+    <None Include="XSharp.Default.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Xsharp.Net.Sdk.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

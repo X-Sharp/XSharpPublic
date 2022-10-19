@@ -30,25 +30,13 @@ namespace XSharp.CodeDom
             this.xsGenerator = new XSharpCodeGenerator();
         }
 
-        public override string FileExtension
-        {
-            get
-            {
-                return ".prg";
-            }
-        }
+        public override string FileExtension => ".prg";
 
         [Obsolete]
-        public override ICodeCompiler CreateCompiler()
-        {
-            return this.xsGenerator;
-        }
+        public override ICodeCompiler CreateCompiler() => this.xsGenerator;
 
         [Obsolete]
-        public override ICodeGenerator CreateGenerator()
-        {
-            return this.xsGenerator;
-        }
+        public override ICodeGenerator CreateGenerator() => this.xsGenerator;
 
         [Obsolete]
         public override ICodeParser CreateParser()
@@ -62,34 +50,31 @@ namespace XSharp.CodeDom
 
         public override void GenerateCodeFromCompileUnit(CodeCompileUnit compileUnit, TextWriter writer, CodeGeneratorOptions options)
         {
-
-            {
-                //
-                // validate to see if something has changed in the compileUnit
-                //
-                if (options == null)
-                    options = new CodeGeneratorOptions();
-                options.BlankLinesBetweenMembers = false;
-                // VerbatimOrder writes the members in the order in which they appear in the collection
-                options.VerbatimOrder = true;
-                base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
-                //
+            //
+            // validate to see if something has changed in the compileUnit
+            //
+            if (options == null)
+                options = new CodeGeneratorOptions();
+            options.BlankLinesBetweenMembers = false;
+            // VerbatimOrder writes the members in the order in which they appear in the collection
+            options.VerbatimOrder = true;
+            base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
+            //
 #if WRITE2LOGFILE
                 string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 path = Path.Combine(path, "XSharpDumpCodeCompileUnit_generate.log");
                 XSharpCodeDomHelper1.DumpCodeCompileUnit(compileUnit, path, true);
 #endif
-            }
         }
 
-		
+
 		XCodeCompileUnit ToXCodeCompileUnit(CodeCompileUnit unit)
 		{
 		if (unit is XCodeCompileUnit xccu)
                 return xccu;
             return new XCodeCompileUnit(unit);
 		}
-		
+
         // Called by the WinForm designer at load time
         public override CodeCompileUnit Parse(TextReader codeStream)
         {

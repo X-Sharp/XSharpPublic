@@ -12,23 +12,22 @@ namespace XSharp.CodeDom
 {
     public class XSharpCodeDomHelper
     {
-
         /// <summary>
-        /// Merge both CodeCompileUnit. The main type (class) will come from designerCompileUnit
+        /// Merge both CodeCompileUnit. The main type (class) will come from formCompileUnit
         /// </summary>
         /// <param name="compileUnit"></param>
         /// <param name="designerCompileUnit"></param>
         /// <returns></returns>
-        internal static XMergedCodeCompileUnit MergeCodeCompileUnit( XCodeCompileUnit compileUnit, XCodeCompileUnit designerCompileUnit)
+        internal static XMergedCodeCompileUnit MergeCodeCompileUnit( XCodeCompileUnit formCompileUnit, XCodeCompileUnit designerCompileUnit)
         {
             // Create the merged CodeCompileUnit
-            var mergedCodeCompileUnit = new XMergedCodeCompileUnit();
+            var mergedCodeCompileUnit = new XMergedCodeCompileUnit(formCompileUnit);
 
             CodeTypeDeclaration designerClass = FindDesignerClass(designerCompileUnit, out var designerNamespace);
             if (designerClass != null)
             {
                 // Do the same with the form
-                HasPartialClass(compileUnit, out var formNameSpace, out var formClass);
+                HasPartialClass(formCompileUnit, out var formNameSpace, out var formClass);
                 // and merge only if ...
                 if (string.Compare(designerClass.Name, formClass.Name, true) == 0)
                 {
@@ -64,11 +63,11 @@ namespace XSharp.CodeDom
                 else
                 {
                     // Something went wrong, return the designer CodeCompileUnit
-                    mergedCodeCompileUnit = new XMergedCodeCompileUnit(designerCompileUnit);
+                    mergedCodeCompileUnit = new XMergedCodeCompileUnit(formCompileUnit);
                 }
             }
-            mergedCodeCompileUnit.FormUnit = compileUnit;
-            mergedCodeCompileUnit.FileName = compileUnit.FileName;
+            mergedCodeCompileUnit.FormUnit = formCompileUnit;
+            mergedCodeCompileUnit.FileName = formCompileUnit.FileName;
             mergedCodeCompileUnit.DesignerUnit = designerCompileUnit;
             return mergedCodeCompileUnit;
 

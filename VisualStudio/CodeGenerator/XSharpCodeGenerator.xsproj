@@ -11,12 +11,14 @@
     <AssemblyName>XSharp.CodeGenerator</AssemblyName>
     <Dialect>Core</Dialect>
     <OutputName>CodeGenerator</OutputName>
-    <XSharpProjectversion>2.13.0.6</XSharpProjectversion>
+    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
+    <StartupObject />
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <DisabledWarnings>165</DisabledWarnings>
     <DelaySign>false</DelaySign>
   </PropertyGroup>

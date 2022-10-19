@@ -8,7 +8,6 @@ using Microsoft.VisualStudio.Project;
 using System;
 using System.Runtime.InteropServices;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
-using XSharp.LanguageService;
 using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.Project

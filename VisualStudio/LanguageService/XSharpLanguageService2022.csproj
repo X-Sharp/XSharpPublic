@@ -208,7 +208,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.473</Version>
+      <Version>17.0.475</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.13.0</Version>

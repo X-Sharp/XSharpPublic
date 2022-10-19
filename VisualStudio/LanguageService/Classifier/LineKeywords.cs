@@ -17,25 +17,12 @@ namespace XSharp.LanguageService
         {
         }
 
-        static bool IsInstanceVar(int keyword)
-        {
-            switch (keyword)
-            {
-                case XSharpLexer.EXPORT:
-                case XSharpLexer.HIDDEN:
-                case XSharpLexer.PUBLIC:
-                case XSharpLexer.PRIVATE:
-                case XSharpLexer.PROTECTED:
-                    return true;
-            }
-            return false;
-        }
-
         internal static XKeyword Tokens2Keyword(IList<IToken> tokens)
         {
             IToken firstkw = null, secondkw = null;
             bool startOfLine = true;
             XKeyword kw = default;
+            IToken lastModifier = null;
             if (tokens?.Count > 0)
             {
                 foreach (var token in tokens)
@@ -44,30 +31,35 @@ namespace XSharp.LanguageService
                         continue;
                     if (XSharpLexer.IsComment(token.Type))
                         continue;
-
-                    var include = IsInstanceVar(token.Type) || !XSharpLexer.IsModifier(token.Type);
-                    if (include || token.Type == XSharpLexer.CLASS)
+                    if (XSharpLexer.IsModifier(token.Type) && token.Type != XSharpLexer.CLASS)
                     {
-                        if (XSharpLexer.IsKeyword(token.Type))
+                        lastModifier = token;
+                        continue;
+                    }
+                    if (token.Type == XSharpLexer.ID && lastModifier != null)
+                    {
+                        firstkw = lastModifier;
+                    }
+                    else if (XSharpLexer.IsKeyword(token.Type))
+                    {
+                        if (firstkw == null)
                         {
-                            if (firstkw == null)
-                            {
-                                firstkw = token;
-                            }
-                            else if (secondkw == null)
-                            {
-                                secondkw = token;
-                            }
-                            else
-                            {
-                                startOfLine = false;
-                            }
+                            firstkw = token;
+                        }
+                        else if (secondkw == null)
+                        {
+                            secondkw = token;
                         }
                         else
                         {
                             startOfLine = false;
                         }
                     }
+                    else
+                    {
+                        startOfLine = false;
+                    }
+                    lastModifier = null;
                     if (!startOfLine)
                         break;
                 }

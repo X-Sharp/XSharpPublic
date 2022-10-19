@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+   This file goes to the %VS%\MSBuild\Current\Imports\Microsoft.Common.Props\ImportBefore" folder 
+   MSBuild automatically includes all files there 
+   It assumes there is an environment variable or property defined in the xsproj file with the name 
+   "XSharpMsBuildDir" that points to the folder with the XSharp MsBuild support files
+   You can also store this file in the folder %LOCALAPPDATA%\Microsoft\MSBuild\Current\Imports\Microsoft.Common.props\ImportBefore
+   or as Directory.Build.Props in the root of your solution.
+   I'm not sure of the best scenario here.
+   C#, VB and F# do not need this because the link between the their extensions and their LanguageTargets file is hardcoded 
+   inside the default MsBuild files.
+-->
+<Project>
+
+<PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.xsproj'">
+    <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == '' and '$(MSBuildExtensionsPath64)'=='' " >$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\XSharpBV\XSharp@XSharpPath)\MsBuild</XSharpMsBuildDir>
+    <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == '' and '$(MSBuildExtensionsPath64)'!='' " >$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\XSharpBV\XSharp@XSharpPath)\MsBuild</XSharpMsBuildDir>
+    <LanguageTargets Condition="'$(LanguageTargets )' == ''" >$(XSharpMsBuildDir)\XSharp.Common.targets</LanguageTargets>  
+</PropertyGroup>
+<Import Condition="'$(MSBuildProjectExtension)' == '.xsproj' and '$(XSharpDefaultProps)' == '' " Project="$(XSharpMsBuildDir)\XSharp.Props" />
+</Project>

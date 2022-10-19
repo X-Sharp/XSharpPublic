@@ -18,71 +18,23 @@ namespace XSharp.Build
 
     public abstract class CreateManifestResourceName : Task
     {
-        private ITaskItem[] _resourceFiles;
-
-        private string _rootNamespace;
-
-        private ITaskItem[] _manifestResourceNames;
-
-        private ITaskItem[] _resourceFilesWithManifestResourceNames;
-
-        private bool _prependCultureAsDirectory = true;
 
         protected Dictionary<string, ITaskItem> itemSpecToTaskitem = new Dictionary<string, ITaskItem>(StringComparer.OrdinalIgnoreCase);
 
-        public bool PrependCultureAsDirectory
-        {
-            get
-            {
-                return _prependCultureAsDirectory;
-            }
-            set
-            {
-                _prependCultureAsDirectory = value;
-            }
-        }
+        public bool PrependCultureAsDirectory { get; set; }
+
+        public bool UseDependentUponConvention { get; set; }
 
         [Required]
-        public ITaskItem[] ResourceFiles
-        {
-            get
-            {
-                Microsoft.Build.Shared.ErrorUtilities.VerifyThrowArgumentNull(_resourceFiles, "resourceFiles");
-                return _resourceFiles;
-            }
-            set
-            {
-                _resourceFiles = value;
-            }
-        }
+        public ITaskItem[] ResourceFiles { get; set; }
 
-        public string RootNamespace
-        {
-            get
-            {
-                return _rootNamespace;
-            }
-            set
-            {
-                _rootNamespace = value;
-            }
-        }
+        public string RootNamespace { get; set; }
 
         [Output]
-        public ITaskItem[] ManifestResourceNames => _manifestResourceNames;
+        public ITaskItem[] ManifestResourceNames { get; private set; }
 
         [Output]
-        public ITaskItem[] ResourceFilesWithManifestResourceNames
-        {
-            get
-            {
-                return _resourceFilesWithManifestResourceNames;
-            }
-            set
-            {
-                _resourceFilesWithManifestResourceNames = value;
-            }
-        }
+        public ITaskItem[] ResourceFilesWithManifestResourceNames { get; set; }
 
         protected abstract string CreateManifestName(string fileName, string linkFileName, string rootNamespaceName, string dependentUponFileName, Stream binaryStream);
 
@@ -95,53 +47,78 @@ namespace XSharp.Build
 
         internal bool Execute(CreateFileStream createFileStream)
         {
-            _manifestResourceNames = new TaskItem[ResourceFiles.Length];
-            _resourceFilesWithManifestResourceNames = new TaskItem[ResourceFiles.Length];
+            ManifestResourceNames = new TaskItem[ResourceFiles.Length];
+            ResourceFilesWithManifestResourceNames = new TaskItem[ResourceFiles.Length];
             bool result = true;
             int num = 0;
             if (RootNamespace != null)
             {
-                base.Log.LogMessage(MessageImportance.Low, "Root namespace \"{0}\"", _rootNamespace);
+                base.Log.LogMessage(MessageImportance.Low, "CreateManifestResourceName.RootNamespace \"{0}\"", RootNamespace);
             }
             else
             {
-                base.Log.LogMessage(MessageImportance.Low, "Root namespace is empty");
+                base.Log.LogMessage(MessageImportance.Low, "CreateManifestResourceName.RootNamespace is empty");
             }
-            ITaskItem[] resourceFiles = ResourceFiles;
+            var resourceFiles = ResourceFiles;
             foreach (ITaskItem taskItem in resourceFiles)
             {
                 try
                 {
                     string itemSpec = taskItem.ItemSpec;
-                    string metadata = taskItem.GetMetadata("DependentUpon");
-                    bool flag = metadata != null && metadata.Length > 0 && IsSourceFile(metadata);
-                    if (flag)
+                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(itemSpec);
+                    string dependentUpOn = taskItem.GetMetadata("DependentUpon");
+                    string type = taskItem.GetMetadata("Type");
+                    bool isResx = !string.IsNullOrEmpty(type) && type.ToLower() == "resx";
+                    if (string.IsNullOrEmpty(dependentUpOn))
                     {
-                        base.Log.LogMessage(MessageImportance.Low, "Resource file \"{0}\" depends on \"{1}\"", itemSpec, metadata);
+                        isResx = Path.GetExtension(itemSpec).ToLower() == ".resx";
+                    }
+                    if (isResx && UseDependentUponConvention && string.IsNullOrEmpty(dependentUpOn))
+                    {
+                        var temp = Path.ChangeExtension(Path.GetFileName(itemSpec), Constants.SourceFileExtension);
+                        if (taskItem.GetMetadata("WithCulture").ToLower() == "true")
+                        {
+                            string culture = taskItem.GetMetadata("Culture");
+                            if (!string.IsNullOrEmpty(culture))
+                            {
+                                int length = fileNameWithoutExtension.Length - culture.Length - 1;
+                                temp = fileNameWithoutExtension.Substring(0, length) + Constants.SourceFileExtension;
+                            }
+                        }
+                        if (File.Exists(Path.Combine(Path.GetDirectoryName(itemSpec), temp)))
+                        {
+                            dependentUpOn = temp;
+                        }
+                    }
+                    var exists = !string.IsNullOrEmpty(dependentUpOn) && IsSourceFile(dependentUpOn);
+                    if (exists)
+                    {
+                        base.Log.LogMessage(MessageImportance.Low, "Resource file \"{0}\" depends on \"{1}\"", itemSpec, dependentUpOn);
                     }
                     else
                     {
                         base.Log.LogMessage(MessageImportance.Low, "Resource file \"{0}\" doesn't depend on any other file", itemSpec);
                     }
                     Stream stream = null;
-                    if (flag)
+                    if (exists)
                     {
-                        string path = Path.Combine(Path.GetDirectoryName(itemSpec), metadata);
+                        string path = Path.Combine(Path.GetDirectoryName(itemSpec), dependentUpOn);
                         stream = createFileStream(path, FileMode.Open, FileAccess.Read);
                     }
                     itemSpecToTaskitem[taskItem.ItemSpec] = taskItem;
                     string text;
                     using (stream)
                     {
-                        text = CreateManifestName(itemSpec, taskItem.GetMetadata("TargetPath"), RootNamespace, flag ? metadata : null, stream);
+                        text = CreateManifestName(itemSpec, taskItem.GetMetadata("TargetPath"), RootNamespace, exists ? dependentUpOn : null, stream);
                     }
-                    _manifestResourceNames[num] = new TaskItem(taskItem);
-                    _manifestResourceNames[num].ItemSpec = text;
-                    _resourceFilesWithManifestResourceNames[num] = new TaskItem(taskItem);
-                    _resourceFilesWithManifestResourceNames[num].SetMetadata("ManifestResourceName", text);
-                    if (string.IsNullOrEmpty(_resourceFilesWithManifestResourceNames[num].GetMetadata("LogicalName")) && string.Equals(_resourceFilesWithManifestResourceNames[num].GetMetadata("Type"), "Non-Resx", StringComparison.OrdinalIgnoreCase))
+                    ManifestResourceNames[num] = new TaskItem(taskItem);
+                    ManifestResourceNames[num].ItemSpec = text;
+                    ResourceFilesWithManifestResourceNames[num] = new TaskItem(taskItem);
+                    var resFileItem = ResourceFilesWithManifestResourceNames[num];
+                    resFileItem.SetMetadata("ManifestResourceName", text);
+                    if (string.IsNullOrEmpty(resFileItem.GetMetadata("LogicalName")) && string.Equals(resFileItem.GetMetadata("Type"), "Non-Resx", StringComparison.OrdinalIgnoreCase))
                     {
-                        _resourceFilesWithManifestResourceNames[num].SetMetadata("LogicalName", text);
+                        resFileItem.SetMetadata("LogicalName", text);
                     }
                     base.Log.LogMessage(MessageImportance.Low, "MSB3041: Unable to create a manifest resource name for \"{0}\", {1}", itemSpec, text);
                 }

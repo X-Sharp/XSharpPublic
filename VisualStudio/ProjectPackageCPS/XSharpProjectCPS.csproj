@@ -4,6 +4,7 @@
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -20,8 +21,8 @@
     <AssemblyName>XSharpProjectCPS</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-<RuntimeIdentifier>win</RuntimeIdentifier>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
@@ -42,8 +43,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CreateVsixContainer>False</CreateVsixContainer>
-    <DeployExtension>False</DeployExtension>
+    <CreateVsixContainer>True</CreateVsixContainer>
+    <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -71,6 +72,9 @@
     </Compile>
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\XSharpConstants.cs">
+      <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="AppDesigner\AbstractProjectConfigurationProperties.cs" />
     <Compile Include="AppDesigner\ProjectDesignerPageMetadata.cs" />
@@ -166,38 +170,36 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Composition">
-      <Version>1.0.31</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.ProjectSystem">
-      <Version>15.8.243</Version>
+    <PackageReference Include="Community.VisualStudio.Toolkit.17">
+      <Version>17.0.475</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.SDK">
-      <Version>15.8.243</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>16.0.206</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK.VsixSuppression">
-      <Version>14.1.37</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
-      <Version>16.8.55</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
+      <Version>17.2.402-pre</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools">
-      <Version>16.9.1035</Version>
+      <Version>17.4.2118</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LanguageService\XSharpLanguageService.csproj">
-      <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7395}</Project>
-      <Name>XSharpLanguageService</Name>
+    <ProjectReference Include="..\AppDesigner\XSharpAppDesigner2022.csproj">
+      <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe1}</Project>
+      <Name>XSharpAppDesigner2022</Name>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
+    <ProjectReference Include="..\Debugger\XSharpDebugger2022.csproj">
+      <Project>{16272550-75e6-4b9d-91e3-653bd141c756}</Project>
+      <Name>XSharpDebugger2022</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LanguageService\XSharpLanguageService2022.csproj">
+      <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7396}</Project>
+      <Name>XSharpLanguageService2022</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectBase\ProjectBase2022.csproj">
+      <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
+      <Name>ProjectBase2022</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>XSharpModelXs</Name>
     </ProjectReference>

@@ -1486,7 +1486,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Refreshes references and redraws them correctly.
         /// </summary>
-        private void RefreshReferences()
+        public void RefreshReferences()
         {
             // RvdH Call ResolveAssemblyReferences task once and not for every reference
             var instance = this.config.ProjectMgr.ProjectInstance;

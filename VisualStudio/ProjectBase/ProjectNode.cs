@@ -7417,11 +7417,19 @@ namespace Microsoft.VisualStudio.Project
                         Guid outputPaneGuid = VSConstants.GUID_BuildOutputWindowPane;
                         if (outputWindow.GetPane(ref outputPaneGuid, out outputPane) >= 0 && outputPane != null)
                         {
+                            if (outputPane is IVsOutputWindowPaneNoPump nopump)
+                            {
+                                nopump.OutputStringNoPump(message);
+                            }
+                            else
+                            {
+
 #if DEV17
-                            Marshal.ThrowExceptionForHR(outputPane.OutputStringThreadSafe(message));
+                                Marshal.ThrowExceptionForHR(outputPane.OutputStringThreadSafe(message));
 #else
-                            Marshal.ThrowExceptionForHR(outputPane.OutputString(message));
+                                Marshal.ThrowExceptionForHR(outputPane.OutputString(message));
 #endif
+                            }
                         }
                     }
 

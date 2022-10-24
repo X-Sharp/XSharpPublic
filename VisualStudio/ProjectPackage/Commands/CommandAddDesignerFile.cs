@@ -6,7 +6,6 @@ using System;
 using System.Linq;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
-using Microsoft.VisualStudio.VCProjectEngine;
 using XSharp.CodeDom;
 using System.IO;
 using System.Text;

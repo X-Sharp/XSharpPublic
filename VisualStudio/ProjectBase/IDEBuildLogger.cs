@@ -372,7 +372,8 @@ namespace Microsoft.VisualStudio.Project
             // NOTE: This may run on a background thread!
             FlushBuildOutput();
         }
-#if DEV17
+
+
         internal void FlushBuildOutput()
         {
             OutputQueueEntry output;
@@ -382,31 +383,27 @@ namespace Microsoft.VisualStudio.Project
                 {
                     while (this.outputQueue.TryDequeue(out output))
                     {
-                        output.Pane.OutputStringThreadSafe(output.Message);
+                        if (output.Pane is IVsOutputWindowPaneNoPump nopump)
+                        {
+                            nopump.OutputStringNoPump(output.Message);
+                        }
+                        else
+                        {
+#if DEV17
+                            output.Pane.OutputStringThreadSafe(output.Message);
+#else
+                            ThreadHelper.JoinableTaskFactory.Run(async delegate
+                            {
+                                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                                output.Pane.OutputString(output.Message);
+                            });
+#endif
+                        }
                     }
                 }
             }
         }
-#else
-        internal void FlushBuildOutput()
-        {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                OutputQueueEntry output;
-                lock (outputQueue)
-                {
-                    if (!outputQueue.IsEmpty)
-                    {
-                        while (this.outputQueue.TryDequeue(out output))
-                        {
-                            output.Pane.OutputString(output.Message);
-                        }
-                    }
-                }
-            });
-        }
-#endif
+
         private void ClearQueuedOutput()
         {
             // NOTE: This may run on a background thread!

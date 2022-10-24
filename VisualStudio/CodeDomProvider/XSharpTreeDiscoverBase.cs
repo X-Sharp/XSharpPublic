@@ -1352,6 +1352,7 @@ namespace XSharp.CodeDom
             string sourceCode = GetRuleSource(context);
             XCodeSnippetTypeMember snippet = new XCodeSnippetTypeMember(sourceCode);
             FillCodeDomDesignerData(snippet, context.Start.Line, context.Start.Column);
+            SaveSourceCode(snippet, context);
             return snippet;
         }
 

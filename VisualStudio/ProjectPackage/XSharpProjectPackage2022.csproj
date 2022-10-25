@@ -141,6 +141,7 @@
     <Compile Include="List\TaskList\TaskListProvider.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
+    <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
     <Compile Include="OptionsPages\BaseOptionsPage.cs">

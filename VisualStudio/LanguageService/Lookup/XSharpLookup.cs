@@ -1088,6 +1088,17 @@ namespace XSharp.LanguageService
                     {
                         result.AddRange(meths.Where(m => !m.IsStatic));
                     }
+                    if (result.Count == 0)
+                    {
+                        // find extension methods
+                        var extensions = location.File.Project.GetExtensions(currentType.FullName);
+                        var selection = extensions.Where(x => String.Compare(x.Name, currentName, true) == 0);
+                        foreach (var element in selection)
+                        {
+                            element.Parent = currentType;
+                            result.Add(element);
+                        }
+                    }
                 }
             }
 

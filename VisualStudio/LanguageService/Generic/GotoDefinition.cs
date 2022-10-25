@@ -140,11 +140,20 @@ namespace XSharp.LanguageService
             return XSharpXMLDocMember.GetDoc(asmName, key);
         }
 
+        internal static XSourceEntity FindSystemElement(XPETypeSymbol petype, XPESymbol element)
+        {
+            if (element is XPEMemberSymbol mem && mem.IsExtension)
+            {
+                petype = mem.DeclaringTypeSym;
+            }
+            var xFile = CreateFileForSystemType(petype, element);
+            return FindElementInFile(xFile, petype, element);
+        }
 
         private static void GotoSystemType(ITextView TextView, XPETypeSymbol petype, XPESymbol element)
         {
-            var xFile = CreateFileForSystemType(petype, element);
-            var entity = FindElementInFile(xFile, petype, element);
+            var entity = FindSystemElement(petype, element);
+            var xFile = entity.File;
             var file = TextView.TextBuffer.GetFile();
             // Copy references to the Orphan file project so type lookup works as expected
             var orphProject = XSolution.OrphanedFilesProject;
@@ -162,7 +171,7 @@ namespace XSharp.LanguageService
 
         }
 
-        public static XSourceEntity FindElementInFile(XFile file, XPETypeSymbol petype, XSymbol element)
+        private static XSourceEntity FindElementInFile(XFile file, XPETypeSymbol petype, XSymbol element)
         {
             var walker = new SourceWalker(file, false);
             walker.Parse(false);
@@ -183,7 +192,7 @@ namespace XSharp.LanguageService
             {
                 foreach (var entity in entities)
                 {
-                    if (entity.FullName == element.FullName)
+                    if (entity.Prototype == element.Prototype)
                     {
                         result = entity;
                         break;
@@ -192,7 +201,7 @@ namespace XSharp.LanguageService
             }
             return result;
         }
-        internal static XFile CreateFileForSystemType(XPETypeSymbol petype, XPESymbol element)
+        private static XFile CreateFileForSystemType(XPETypeSymbol petype, XPESymbol element)
         {
             asmName = petype.Assembly;
             bool mustCreate = false;

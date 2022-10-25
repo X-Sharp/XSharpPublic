@@ -141,7 +141,11 @@ BEGIN NAMESPACE XSharpModel
          END SWITCH
          var sb := StringBuilder{}
          sb:Append(prefix)
-         sb:Append(tm:ParentType:FullName)
+         if tm:IsExtension .and. tm is XPEMemberSymbol var petm
+            sb:Append(petm:DeclaringTypeSym:FullName)
+         else
+            sb:Append(tm:ParentType:FullName)
+         endif
          sb:Append("."+name)
          IF tm:TypeParameters:Count > 0
             sb:Append("``"+tm:TypeParameters:Count:ToString())

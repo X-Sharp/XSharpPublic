@@ -69,8 +69,7 @@ namespace XSharp.LanguageService
                         {
                             return;
                         }
-                        var file = XSharpGotoDefinition.CreateFileForSystemType(petype, pesymbol);
-                        var entity = XSharpGotoDefinition.FindElementInFile(file, petype, pesymbol);
+                        var entity = XSharpGotoDefinition.FindSystemElement(petype, pesymbol);
                         if (entity != null)
                             peekableItems.Add(new XSharpDefinitionPeekItem(entity, _peekResultFactory));
 

@@ -240,7 +240,10 @@ END CLASS
                 FOREACH VAR attr IN def:CustomAttributes
                    SWITCH attr:AttributeType:FullName
                    CASE "System.Runtime.CompilerServices.ExtensionAttribute"
-                      SELF:Signature:IsExtension := TRUE
+                        SELF:Signature:IsExtension := TRUE
+                        if asm:Types:ContainsKey(SELF:DeclaringType)
+                            SELF:DeclaringTypeSym := asm:Types[SELF:DeclaringType]
+                        endif
                    CASE "XSharp.Internal.ClipperCallingConventionAttribute"
                    CASE "Vulcan.Internal.ClipperCallingConventionAttribute"
                       SELF:CallingConvention := CallingConvention.Clipper
@@ -308,6 +311,7 @@ END CLASS
         PROTECTED  _generic     AS LOGIC
         PROPERTY  SubType      AS Kind AUTO
         PROPERTY  DeclaringType  AS STRING AUTO
+        PROPERTY  DeclaringTypeSym as XPETypeSymbol AUTO
         PROPERTY  Signature     AS XMemberSignature  GET _signature INTERNAL SET _signature := value
         PROPERTY  IsGeneric    AS LOGIC GET _generic
         ABSTRACT PROPERTY  ClassGenText      AS STRING GET

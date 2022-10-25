@@ -715,12 +715,17 @@ namespace XSharp.LanguageService
                 var qualifiedName = false;
                 var findMethod = false;
                 var findType = state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.General);
+                if (findType && currentType != null)
+                {
+                    namespacePrefix = currentType.FullName + ".";
+                }
                 var literal = XSharpLexer.IsConstant(currentToken.Type);
                 if (isId)
                 {
                     qualifiedName = list.La1 == XSharpLexer.DOT;
                     findMethod = list.La1 == XSharpLexer.LPAREN && ! isType;        // DWORD( is a cast and not a method call
                     findConstructor = list.La1 == XSharpLexer.LCURLY;
+
                     // Find all fields and properties
                     var props = SearchPropertyOrField(location, currentType, namespacePrefix + currentName, visibility);
                     if (props != null )

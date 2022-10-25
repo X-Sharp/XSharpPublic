@@ -203,8 +203,14 @@ namespace XSharp.LanguageService
                     switch (lastToken.Type)
                     {
                         case XSharpLexer.DOT:
-                            if (symbol.Kind == Kind.Namespace)
+                            if (symbol.Kind == Kind.Namespace )
+                            {
                                 filterText = symbol.FullName + ".";
+                            }
+                            else if (symbol is IXTypeSymbol)
+                            {
+                                filterText = symbol.FullName + ".";
+                            }
                             break;
                         case XSharpLexer.COLON:
                             break;

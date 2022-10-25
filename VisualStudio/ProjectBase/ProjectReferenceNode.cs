@@ -80,7 +80,7 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        internal Guid ReferencedProjectGuid
+        public Guid ReferencedProjectGuid
         {
             get
             {

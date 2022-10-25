@@ -45,9 +45,9 @@ namespace XSharp.Project
     /// </summary>
     [DebuggerDisplay("{Caption}")]
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject,
+    public partial class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject,
         /*IVsDesignTimeAssemblyResolution, */IVsProject5, IProjectTypeHelper, IXsProjectDesigner
-    //, IVsReferenceManagerUser
+    , IVsReferenceManagerUser
     {
         static List<XSharpProjectNode> nodes = new List<XSharpProjectNode>();
 
@@ -1402,8 +1402,6 @@ namespace XSharp.Project
                 });
             }
         }
-
-
         private void OnFileWalkComplete(XFile xfile)
         {
             var tasks = this.ProjectModel.GetCommentTasks();
@@ -1421,24 +1419,24 @@ namespace XSharp.Project
             RefreshIncludeFiles();
         }
 
-        public void UpdateAssemblyReferencesModel()
-        {
-            // Add all references to the Type Controller
-            ProjectModel.ClearAssemblyReferences();
-            foreach (VSLangProj.Reference reference in this.VSProject.References)
-            {
-                // Our project references should not be added as AssemblyReference
-                if (reference is OAProjectReference)
-                {
-                    // no need to add, AddUrl already adds these projects
-                }
-                else
-                {
-                    // OAAssemblyReference or OACOMReference
-                    ProjectModel.AddAssemblyReference(reference.Path);
-                }
-            }
-        }
+        //public void UpdateAssemblyReferencesModel()
+        //{
+        //    // Add all references to the Type Controller
+        //    ProjectModel.ClearAssemblyReferences();
+        //    foreach (VSLangProj.Reference reference in this.VSProject.References)
+        //    {
+        //        // Our project references should not be added as AssemblyReference
+        //        if (reference is OAProjectReference)
+        //        {
+        //            // no need to add, AddUrl already adds these projects
+        //        }
+        //        else
+        //        {
+        //            // OAAssemblyReference or OACOMReference
+        //            ProjectModel.AddAssemblyReference(reference.Path);
+        //        }
+        //    }
+        //}
 
 
         public override void AddURL(String url, HierarchyNode node)
@@ -2889,322 +2887,7 @@ namespace XSharp.Project
         }
 
         #endregion
-        /*
-          public override int AddProjectReference()
-          {
-               var referenceManager = this.GetService(typeof(SVsReferenceManager)) as IVsReferenceManager;
-               if (referenceManager != null)
-               {
-                    var contextGuids = new[] {
-                          VSConstants.AssemblyReferenceProvider_Guid,
-                          VSConstants.ComReferenceProvider_Guid,
-                          VSConstants.ProjectReferenceProvider_Guid,
-                          VSConstants.FileReferenceProvider_Guid,
-                    };
-                    referenceManager.ShowReferenceManager(
-                          this,
-                          SR.GetString(SR.AddReferenceDialogTitle),
-                          "VS.ReferenceManager",
-                          contextGuids.First(),
-                          false
-                          );
-                    return VSConstants.S_OK;
-               }
-               else
-               {
-                    return VSConstants.E_NOINTERFACE;
-               }
-          }
-#region IVsReferenceManagerUser Members
-
-          void IVsReferenceManagerUser.ChangeReferences(uint operation, IVsReferenceProviderContext changedContext)
-          {
-               var op = (__VSREFERENCECHANGEOPERATION)operation;
-               __VSREFERENCECHANGEOPERATIONRESULT result;
-
-               try
-               {
-                    if (op == __VSREFERENCECHANGEOPERATION.VSREFERENCECHANGEOPERATION_ADD)
-                    {
-                          result = this.AddReferences(changedContext);
-                    }
-                    else
-                    {
-                          result = this.RemoveReferences(changedContext);
-                    }
-               }
-               catch (InvalidOperationException e)
-               {
-                    Debug.Fail(e.ToString());
-                    result = __VSREFERENCECHANGEOPERATIONRESULT.VSREFERENCECHANGEOPERATIONRESULT_DENY;
-               }
-
-               if (result == __VSREFERENCECHANGEOPERATIONRESULT.VSREFERENCECHANGEOPERATIONRESULT_DENY)
-               {
-                    throw new InvalidOperationException();
-               }
-          }
-
-          Array IVsReferenceManagerUser.GetProviderContexts()
-          {
-               return this.GetProviderContexts();
-          }
-
-#endregion
-
-#region IvsReferenceManagerUser implementation
-          protected virtual Array GetProviderContexts()
-          {
-               var referenceManager = this.GetService(typeof(SVsReferenceManager)) as IVsReferenceManager;
-
-               var contextProviders = new[] {
-                    CreateAssemblyReferenceProviderContext(referenceManager),
-                    CreateCOMReferenceProviderContext(referenceManager),
-                    CreateProjectReferenceProviderContext(referenceManager),
-                    CreateFileReferenceProviderContext(referenceManager),
-               };
-
-               return contextProviders;
-          }
-          private IVsReferenceProviderContext CreateAssemblyReferenceProviderContext(IVsReferenceManager mgr)
-          {
-               var context = mgr.CreateProviderContext(VSConstants.AssemblyReferenceProvider_Guid) as IVsAssemblyReferenceProviderContext;
-               context.TargetFrameworkMoniker = this.TargetFrameworkMoniker.ToString();
-               context.
-               var referenceContainer = this.GetReferenceContainer();
-               var references = referenceContainer
-                    .EnumReferences()
-                    .OfType<AssemblyReferenceNode>();
-               foreach (var reference in references)
-               {
-                    var newReference = context.CreateReference() as IVsAssemblyReference;
-                    newReference.Name = reference.AssemblyName.Name;
-                    newReference.FullPath = reference.Url;
-                    context.AddReference(newReference);
-               }
-
-               return context as IVsReferenceProviderContext;
-          }
-
-          private IVsReferenceProviderContext CreateCOMReferenceProviderContext(IVsReferenceManager mgr)
-          {
-               var context = mgr.CreateProviderContext(VSConstants.ComReferenceProvider_Guid) as IVsComReferenceProviderContext;
-
-               var referenceContainer = this.GetReferenceContainer();
-               var references = referenceContainer
-                    .EnumReferences()
-                    .OfType<ComReferenceNode>();
-               foreach (var reference in references)
-               {
-                    var newReference = context.CreateReference() as IVsComReference;
-                    newReference.MajorVersion = (ushort) reference.MajorVersionNumber;
-                    newReference.MinorVersion = (ushort) reference.MinorVersionNumber;
-                    newReference.Guid = reference.TypeGuid;
-                    newReference.FullPath = reference.Url;
-                    context.AddReference(newReference);
-               }
-
-               return context as IVsReferenceProviderContext;
-          }
-
-
-          private IVsReferenceProviderContext CreateProjectReferenceProviderContext(IVsReferenceManager mgr)
-          {
-               var context = mgr.CreateProviderContext(VSConstants.ProjectReferenceProvider_Guid) as IVsProjectReferenceProviderContext;
-               context.CurrentProject = this;
-
-               var referenceContainer = this.GetReferenceContainer();
-               var references = referenceContainer
-                    .EnumReferences()
-                    .OfType<ProjectReferenceNode>();
-               foreach (var reference in references)
-               {
-                    var newReference = context.CreateReference() as IVsProjectReference;
-                    newReference.Identity = reference.ReferencedProjectGuid.ToString("B");
-                    newReference.AlreadyReferenced = true;
-                    context.AddReference(newReference);
-               }
-
-               return context as IVsReferenceProviderContext;
-          }
-
-          private IVsReferenceProviderContext CreateFileReferenceProviderContext(IVsReferenceManager mgr)
-          {
-               var context = mgr.CreateProviderContext(VSConstants.FileReferenceProvider_Guid) as IVsFileReferenceProviderContext;
-
-               context.BrowseFilter = AddReferenceExtensions.Replace('|', '\0') + "\0";
-               return context as IVsReferenceProviderContext;
-          }
-
-          private __VSREFERENCECHANGEOPERATIONRESULT AddReferences(IVsReferenceProviderContext context)
-          {
-               var addedReferences = this.GetAddedReferences(context);
-
-               var referenceContainer = this.GetReferenceContainer();
-               foreach (var selectorData in addedReferences)
-               {
-                    referenceContainer.AddReferenceFromSelectorData(selectorData);
-               }
-
-               return __VSREFERENCECHANGEOPERATIONRESULT.VSREFERENCECHANGEOPERATIONRESULT_ALLOW;
-          }
-
-          protected virtual IEnumerable<VSCOMPONENTSELECTORDATA> GetAddedReferences(IVsReferenceProviderContext context)
-          {
-               var addedReferences = Enumerable.Empty<VSCOMPONENTSELECTORDATA>();
-
-               if (context.ProviderGuid == VSConstants.ProjectReferenceProvider_Guid)
-               {
-                    addedReferences = GetAddedReferences(context as IVsProjectReferenceProviderContext);
-               }
-               else if (context.ProviderGuid == VSConstants.FileReferenceProvider_Guid)
-               {
-                    addedReferences = GetAddedReferences(context as IVsFileReferenceProviderContext);
-               }
-               else if (context.ProviderGuid == VSConstants.AssemblyReferenceProvider_Guid)
-               {
-                    addedReferences = GetAddedReferences(context as IVsAssemblyReferenceProviderContext);
-               }
-               else if (context.ProviderGuid == VSConstants.ComReferenceProvider_Guid)
-               {
-                    addedReferences = GetAddedReferences(context as IVsComReferenceProviderContext);
-               }
-
-               return addedReferences;
-          }
-
-          private __VSREFERENCECHANGEOPERATIONRESULT RemoveReferences(IVsReferenceProviderContext context)
-          {
-               var removedReferences = this.GetRemovedReferences(context);
-
-               foreach (var refNode in removedReferences)
-               {
-                    refNode.Remove(true ); // delete from storage
-               }
-
-               return __VSREFERENCECHANGEOPERATIONRESULT.VSREFERENCECHANGEOPERATIONRESULT_ALLOW;
-          }
-
-          protected virtual IEnumerable<ReferenceNode> GetRemovedReferences(IVsReferenceProviderContext context)
-          {
-               var removedReferences = Enumerable.Empty<ReferenceNode>();
-
-               if (context.ProviderGuid == VSConstants.ProjectReferenceProvider_Guid)
-               {
-                    removedReferences = GetRemovedReferences(context as IVsProjectReferenceProviderContext);
-               }
-               else if (context.ProviderGuid == VSConstants.FileReferenceProvider_Guid)
-               {
-                    removedReferences = GetRemovedReferences(context as IVsFileReferenceProviderContext);
-               }
-
-               return removedReferences;
-          }
-
-          private IEnumerable<VSCOMPONENTSELECTORDATA> GetAddedReferences(IVsProjectReferenceProviderContext context)
-          {
-               var selectedReferences = context
-                    .References
-                    .OfType<IVsProjectReference>()
-                    .Select(reference => new VSCOMPONENTSELECTORDATA()
-                    {
-                          type = VSCOMPONENTTYPE.VSCOMPONENTTYPE_Project,
-                          bstrTitle = reference.Name,
-                          bstrFile = new FileInfo(reference.FullPath).Directory.FullName,
-                          bstrProjRef = reference.ReferenceSpecification,
-                    });
-
-               return selectedReferences;
-          }
-
-          private IEnumerable<VSCOMPONENTSELECTORDATA> GetAddedReferences(IVsAssemblyReferenceProviderContext context)
-          {
-               var selectedReferences = context
-                    .References
-                    .OfType<IVsAssemblyReference>()
-                    .Select(reference => new VSCOMPONENTSELECTORDATA()
-                    {
-                          type = VSCOMPONENTTYPE.VSCOMPONENTTYPE_ComPlus,
-                          bstrTitle = reference.Name,
-                          bstrFile = reference.FullPath,
-                    });
-
-               return selectedReferences;
-          }
-          private IEnumerable<VSCOMPONENTSELECTORDATA> GetAddedReferences(IVsComReferenceProviderContext context)
-          {
-               var selectedReferences = context
-                    .References
-                    .OfType<IVsComReference>()
-                    .Select(reference => new VSCOMPONENTSELECTORDATA()
-                    {
-                          type = VSCOMPONENTTYPE.VSCOMPONENTTYPE_Com2,
-                          bstrTitle = reference.Name,
-                          bstrFile = reference.FullPath,
-                          wFileMajorVersion = reference.MajorVersion,
-                          wFileMinorVersion = reference.MinorVersion,
-                          guidTypeLibrary = reference.Guid
-                    });
-
-               return selectedReferences;
-          }
-
-
-          private IEnumerable<ReferenceNode> GetRemovedReferences(IVsProjectReferenceProviderContext context)
-          {
-               var selectedReferences = context
-                    .References
-                    .OfType<IVsProjectReference>()
-                    .Select(asmRef => new Guid(asmRef.Identity));
-
-               var referenceContainer = this.GetReferenceContainer();
-               var references = referenceContainer
-                    .EnumReferences()
-                    .OfType<ProjectReferenceNode>()
-                    .Where(refNode => selectedReferences.Contains(refNode.ReferencedProjectGuid));
-
-               return references;
-          }
-
-          private IEnumerable<VSCOMPONENTSELECTORDATA> GetAddedReferences(IVsFileReferenceProviderContext context)
-          {
-               var selectedReferences = context
-                    .References
-                    .OfType<IVsFileReference>()
-                    .Select(reference => new VSCOMPONENTSELECTORDATA()
-                    {
-                          type = VSCOMPONENTTYPE.VSCOMPONENTTYPE_File,
-                          bstrFile = reference.FullPath,
-                    });
-
-               return selectedReferences;
-          }
-
-          private IEnumerable<ReferenceNode> GetRemovedReferences(IVsFileReferenceProviderContext context)
-          {
-               var selectedReferences = context
-                    .References
-                    .OfType<IVsFileReference>()
-                    .Select(fileRef => fileRef.FullPath);
-
-               var referenceContainer = this.GetReferenceContainer();
-               var references = referenceContainer
-                    .EnumReferences()
-                    .OfType<ReferenceNode>()
-                    .Where(refNode => selectedReferences.Contains(refNode.Url));
-
-               return references;
-          }
-
-          protected virtual string AddReferenceExtensions
-          {
-               get
-               {
-                    return "Assembly files|*.dll";
-               }
-          }
-#endregion
-    */
+ 
     }
 
 

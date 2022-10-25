@@ -22,10 +22,15 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ParameterList AS STRING
          GET
             VAR parameters := ""
+            var isExt := SELF:IsExtension
             FOREACH variable AS IXParameterSymbol IN SELF:Parameters
                IF (parameters:Length > 0)
                   parameters := parameters + ", "
                ENDIF
+               if isExt
+                   parameters += "SELF "
+                   isExt := FALSE
+               endif
                parameters += variable:Name
                IF !String.IsNullOrEmpty(variable:Value)
                   parameters += " := "+variable:Value

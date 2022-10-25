@@ -766,7 +766,15 @@ namespace XSharp.LanguageService
                     // 4) Namespaces
                     // Types first because when we have a nested type then the parent is also registered as a namespace
                     // but we want to find the type of course
-                    if (startOfExpression)
+                    if (findType || findConstructor)
+                    {
+                        var types = SearchType(location, namespacePrefix + currentName);
+                        if (types != null)
+                        {
+                            result.AddRange(types);
+                        }
+                    }
+                    if (startOfExpression && result.Count == 0)
                     {
                         // Search in Parameters, Locals, Field and Properties
                         if (currentName.EndsWith("."))

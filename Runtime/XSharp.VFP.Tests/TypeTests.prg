@@ -73,6 +73,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 		[Fact, Trait("Category", "Types")];
 		METHOD xTypeTests() AS VOID
+            var state := XSharp.RuntimeState.Dialect
             XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
             DIMENSION arr[3]
             private c, n
@@ -109,7 +110,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal("U", Type ("X",1))
 
 
-
+            XSharp.RuntimeState.Dialect := state
             RETURN
 
 

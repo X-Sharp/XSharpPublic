@@ -214,6 +214,8 @@ internal static class OOPHelpers
                 return 1
             elseif n2 == uArgs:Length
                 return 2
+            else
+                return 0
             endif
         endif
         // when we get here then the parameter counts are the same

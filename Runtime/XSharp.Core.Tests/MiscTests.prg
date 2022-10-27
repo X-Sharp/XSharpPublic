@@ -88,6 +88,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
          LOCAL cDefault AS STRING
 			cDefault := GetDefault()
          // VO does not complain about incorrect folder names
+        LOCAL eDialect := RuntimeState.Dialect AS XSharpDialect
          RuntimeState.Dialect := XSharpDialect.VO
 			SetDefault("C:\test\")
 			Assert.Equal("C:\test\", GetDefault())
@@ -110,6 +111,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			SetDefault("c:\")
 			Assert.Equal("c:\", GetDefault())
 			SetDefault(cDefault)
+         RuntimeState.Dialect := eDialect
 		RETURN
 		//[Fact];
 		//METHOD DiskFreeTest() as void

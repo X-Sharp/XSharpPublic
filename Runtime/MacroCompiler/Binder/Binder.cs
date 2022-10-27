@@ -10,6 +10,7 @@ namespace XSharp.MacroCompiler
 {
     using Syntax;
     using System.IO;
+    using System.Linq.Expressions;
     using System.Reflection;
 
     internal enum BindAffinity
@@ -64,7 +65,8 @@ namespace XSharp.MacroCompiler
         internal Stack<int> ScopeStack = new Stack<int>();
         internal Node Entity = null;
 
-        internal TypeSymbol ResultType => Binder.FindType(DelegateType.GetMethod("Invoke").ReturnType);
+        internal TypeSymbol ResultType = null;
+        internal TypeSymbol[] ParameterTypes = null;
 
         static Binder()
         {
@@ -73,7 +75,7 @@ namespace XSharp.MacroCompiler
 
         protected Binder(Type objectType, Type delegateType, MacroOptions options)
         {
-            Debug.Assert(delegateType.IsSubclassOf(typeof(Delegate)));
+            Debug.Assert(delegateType == null || delegateType.IsSubclassOf(typeof(Delegate)));
             if (TypeCache == null)
             {
                 lock (LoadedAssemblies)
@@ -84,14 +86,33 @@ namespace XSharp.MacroCompiler
             DelegateType = delegateType;
             Options = options;
             NestedCodeblocks = null;
+            if (delegateType != null)
+            {
+                var mi = delegateType.GetMethod("Invoke");
+                if (mi != null)
+                {
+                    ResultType = FindType(mi.ReturnType);
+                    var parameters = mi.GetParameters();
+                    ParameterTypes = parameters.Select(p => FindType(p.ParameterType)).ToArray();
+                }
+            }
         }
 
-        internal static Binder<T, R> Create<T,R>(MacroOptions options) where R: Delegate
+        internal static Binder<T> Create<T>(MacroOptions options, Type delegateType)
         {
             if (options?.GenerateAssembly == true)
-                return new AssemblyBinder<T, R>(options);
+                return new AssemblyBinder<T>(options, delegateType);
             if (options?.StrictTypedSignature == true)
-                return new TypedBinder<T, R>(options);
+                return new TypedBinder<T>(options, delegateType);
+            return new Binder<T>(options, delegateType);
+        }
+
+        internal static Binder<T> Create<T,R>(MacroOptions options) where R: Delegate
+        {
+            if (options?.GenerateAssembly == true)
+                return new AssemblyBinder<T>(options, typeof(Delegate) != typeof(R) ? typeof(R) : null);
+            if (options?.StrictTypedSignature == true)
+                return new TypedBinder<T>(options, typeof(Delegate) != typeof(R) ? typeof(R) : null);
             return new Binder<T, R>(options);
         }
 
@@ -493,6 +514,12 @@ namespace XSharp.MacroCompiler
             return local;
         }
 
+        internal LocalSymbol AddAutoLocal(string name, TypeSymbol type)
+        {
+            var res = AddLocal(name, type);
+            res.IsAuto = true;
+            return res;
+        }
         internal ArgumentSymbol AddParam(string name, TypeSymbol type, bool first = false)
         {
             var arg = new ArgumentSymbol(name, type, first ? 0 : Args.Count);
@@ -615,6 +642,19 @@ namespace XSharp.MacroCompiler
             return null;
         }
 
+        internal void GenerateDelegateTypeIfRequired()
+        {
+            if (DelegateType == null)
+            {
+                var types = new List<Type>();
+                if (ParameterTypes != null)
+                    foreach (var t in ParameterTypes)
+                        types.Add(t.Type);
+                types.Add(ResultType.Type ?? typeof(void));
+                DelegateType = Expression.GetDelegateType(types.ToArray());
+            }
+        }
+
         internal int AddNestedCodeblock(out Symbol argSym)
         {
             if (NestedCodeblocks == null)
@@ -638,9 +678,9 @@ namespace XSharp.MacroCompiler
         internal abstract ILGenerator GetILGenerator();
     }
 
-    internal class Binder<T,R> : Binder where R: Delegate
+    internal class Binder<T> : Binder
     {
-        internal Binder(MacroOptions options) : base(typeof(T),typeof(R), options) { }
+        internal Binder(MacroOptions options, Type delegateType) : base(typeof(T), delegateType, options) { }
 
         internal class NestedWrapper
         {
@@ -649,7 +689,8 @@ namespace XSharp.MacroCompiler
             XSharp.Codeblock[] nested_cbs_;
             EvalDelegate eval_func_;
 
-            internal NestedWrapper(XSharp.Codeblock[] nested_cbs, EvalDelegate eval_func) {
+            internal NestedWrapper(XSharp.Codeblock[] nested_cbs, EvalDelegate eval_func)
+            {
                 nested_cbs_ = nested_cbs;
                 eval_func_ = eval_func;
             }
@@ -660,7 +701,7 @@ namespace XSharp.MacroCompiler
             }
         }
 
-        internal U Bind<U>(U macro) where U: Node
+        internal U Bind<U>(U macro) where U : Node
         {
             Bind(ref macro);
             return macro;
@@ -668,7 +709,7 @@ namespace XSharp.MacroCompiler
 
         internal override Binder CreateNested()
         {
-            return new Binder<T,R>(Options);
+            return new Binder<T>(Options, DelegateType);
         }
 
         private DynamicMethod Method { get; set; }
@@ -689,27 +730,45 @@ namespace XSharp.MacroCompiler
             if (HasNestedCodeblocks)
             {
                 var eval_dlg = dm.CreateDelegate(typeof(NestedWrapper.EvalDelegate)) as NestedWrapper.EvalDelegate;
-                return Delegate.CreateDelegate(typeof(R), new NestedWrapper(NestedCodeblocks.ToArray(), eval_dlg), "Eval", false);
+                return Delegate.CreateDelegate(DelegateType, new NestedWrapper(NestedCodeblocks.ToArray(), eval_dlg), "Eval", false);
             }
             else
-                return dm.CreateDelegate(typeof(R));
+                return dm.CreateDelegate(DelegateType);
         }
     }
-    internal class TypedBinder<T, R> : Binder<T, R> where R : Delegate
+
+    internal class Binder<T,R> : Binder<T> where R: Delegate
     {
-        internal TypedBinder(MacroOptions options) : base(options) { }
+        internal Binder(MacroOptions options) : base(options, typeof(R)) { }
+        internal Binder(MacroOptions options, Type delegateType) : base(options, delegateType) { }
+
+        internal override Binder CreateNested()
+        {
+            return new Binder<T,R>(Options);
+        }
+    }
+    internal class TypedBinder<T> : Binder<T>
+    {
+        internal TypedBinder(MacroOptions options, Type delegateType) : base(options, delegateType) { }
+        internal override Binder CreateNested()
+        {
+            return new Binder<T, Func<T[], T>>(Options);
+        }
         protected override DynamicMethod CreateMethod(string source)
         {
-            var mi = typeof(R).GetMethod("Invoke");
-            var par = mi.GetParameters().Select(p => p.ParameterType).ToList();
+            var par = ParameterTypes?.Select(p => p.Type).ToList() ?? new List<Type>();
             if (HasNestedCodeblocks)
                 par.Insert(0, typeof(XSharp.Codeblock[]));
-            return new DynamicMethod(source, mi.ReturnType, par.ToArray());
+            return new DynamicMethod(source, ResultType.Type ?? typeof(void), par.ToArray());
         }
     }
-    internal class AssemblyBinder<T, R> : TypedBinder<T, R> where R : Delegate
+    internal class AssemblyBinder<T> : TypedBinder<T>
     {
-        internal AssemblyBinder(MacroOptions options) : base(options) { }
+        internal AssemblyBinder(MacroOptions options, Type delegateType) : base(options, delegateType) { }
+
+        internal string NameOfAssembly = "QueryAssembly";
+        internal string NameOfClass = "QueryClass";
+        internal string NameOfMethod = "QueryMethod";
 
         private string Name;
         private AssemblyBuilder Assembly;
@@ -721,18 +780,20 @@ namespace XSharp.MacroCompiler
         internal override void GenerateMethod(string source)
         {
             //create the builder
-            AssemblyName assembly = new AssemblyName("QueryAssembly");
+            AssemblyName assembly = new AssemblyName(NameOfAssembly);
             AppDomain appDomain = System.Threading.Thread.GetDomain();
-            Assembly = appDomain.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.Save, Path.GetTempPath());
-            Name = Path.GetFileName(Path.GetTempFileName());
+            var tempName = Path.GetTempFileName();
+            Assembly = appDomain.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.Save, Path.GetDirectoryName(tempName));
+            Name = Path.GetFileName(tempName);
             AssemblyModule = Assembly.DefineDynamicModule(assembly.Name, Name);
 
             //create the class
-            MethodType = AssemblyModule.DefineType("QueryClass", System.Reflection.TypeAttributes.Public | System.Reflection.TypeAttributes.Class, typeof(object));
+            MethodType = AssemblyModule.DefineType(NameOfClass, System.Reflection.TypeAttributes.Public | System.Reflection.TypeAttributes.Class, typeof(object));
 
             //create the method
-            var mi = typeof(R).GetMethod("Invoke");
-            Method = MethodType.DefineMethod("QueryMethod", System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.Static, mi.ReturnType, mi.GetParameters().Select(p => p.ParameterType).ToArray());
+            Method = MethodType.DefineMethod(NameOfMethod, System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.Static,
+                    ResultType.Type ?? typeof(void),
+                    ParameterTypes?.Select(p => p.Type).ToArray() ?? new Type[0]);
             //method.DefineParameter
 
             CreatedType = null;
@@ -743,7 +804,8 @@ namespace XSharp.MacroCompiler
             {
                 MethodType.CreateType();
                 Assembly.Save(Name);
-                AssemblyData = System.IO.File.ReadAllBytes(AssemblyModule.FullyQualifiedName);
+                AssemblyData = File.ReadAllBytes(AssemblyModule.FullyQualifiedName);
+                File.Delete(AssemblyModule.FullyQualifiedName);
             }
             return AssemblyData;
         }
@@ -752,9 +814,9 @@ namespace XSharp.MacroCompiler
             if (CreatedType == null)
             {
                 var loadedAssembly = System.Reflection.Assembly.Load(GetAssemblyBytes());
-                CreatedType = loadedAssembly.GetType("QueryClass");
+                CreatedType = loadedAssembly.GetType(NameOfClass);
             }
-            return CreatedType.GetMethod("QueryMethod").CreateDelegate(typeof(R));
+            return CreatedType.GetMethod(NameOfMethod).CreateDelegate(DelegateType);
         }
         internal override ILGenerator GetILGenerator() => Method.GetILGenerator();
 

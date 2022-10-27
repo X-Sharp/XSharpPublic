@@ -9,6 +9,7 @@ using System.Reflection.Emit;
 namespace XSharp.MacroCompiler
 {
     using Syntax;
+    using System.Runtime.CompilerServices;
 
     internal static partial class CodeGen
     {
@@ -27,6 +28,12 @@ namespace XSharp.MacroCompiler
         {
             macro.Emit(b.GetILGenerator());
             return b.GetAssemblyBytes();
+        }
+        internal static void DeclareAutoLocals(this Binder b)
+        {
+            if (b.Locals != null)
+                foreach (var l in b.Locals)
+                    if (l.IsAuto) l.Declare(b.GetILGenerator());
         }
     }
 }

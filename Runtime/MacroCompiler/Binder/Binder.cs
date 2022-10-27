@@ -274,7 +274,7 @@ namespace XSharp.MacroCompiler
 
             do
             {
-                foreach (var a in loadedAssemblies)
+                foreach (var a in loadedAssemblies.ToArray())
                 {
                     UpdateTypeCache(global, typeCache, a);
                 }
@@ -306,7 +306,7 @@ namespace XSharp.MacroCompiler
             var ina = Compilation.Get(WellKnownTypes.ImplicitNamespaceAttribute);
             if (cla != null && ina != null)
             {
-                foreach (var a in LoadedAssemblies)
+                foreach (var a in LoadedAssemblies.ToArray())
                 {
                     UpdateUsings(usings, rtFuncs, a, usedSymbols);
                 }

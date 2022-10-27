@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using static System.Diagnostics.Debug;
+using System.Linq.Expressions;
 
 namespace XSharp.MacroCompiler.Syntax
 {
@@ -1175,17 +1176,21 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 b.BindStmt(ref Body);
             }
+            b.GenerateDelegateTypeIfRequired();
             return null;
         }
         internal static TypedCodeblock Bound(Codeblock cb, Binder b)
         {
             var tcb = new TypedCodeblock(cb);
-            int a = 0;
-            foreach(var p in b.DelegateType.GetMethod("Invoke").GetParameters())
+            if (b.ParameterTypes != null)
             {
-                string paramName = (cb.Params?.Count > a) ? cb.Params[a].LookupName : p.Name;
-                ++a;
-                b.AddParam(paramName ?? ("__arg"+a), Binder.FindType(p.ParameterType));
+                int a = 0;
+                foreach (var p in b.ParameterTypes)
+                {
+                    string paramName = (cb.Params?.Count > a) ? cb.Params[a].LookupName : null;
+                    ++a;
+                    b.AddParam(paramName ?? ("__arg" + a), p);
+                }
             }
             tcb.Bind(b);
             return tcb;

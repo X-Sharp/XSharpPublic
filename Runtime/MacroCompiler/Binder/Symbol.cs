@@ -226,7 +226,7 @@ namespace XSharp.MacroCompiler
         internal override TypeSymbol Type { get; }
         internal int Index = -1;
         internal bool IsParam { get; set; }
-
+        internal bool IsAuto { get; set; }
         internal bool IsConst => !HasSetAccess;
         internal LocalSymbol(string name, TypeSymbol type) : base(AccessMode.All) { Name = name; Type = type; }
         internal LocalSymbol(TypeSymbol type, int index) : this(null, type) { Index = index; }

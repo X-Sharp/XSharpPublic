@@ -56,10 +56,18 @@ namespace XSharp.MacroCompiler.Syntax
             if (Expr != null)
             {
                 b.Bind(ref Expr);
-                if (!b.ResultType.IsVoid && !Expr.Datatype.IsVoid)
+                if (b.ResultType == null)
+                {
+                    b.ResultType = Expr.Datatype;
+                }
+                else if (!b.ResultType.IsVoid && !Expr.Datatype.IsVoid)
                 {
                     b.Convert(ref Expr, b.ResultType);
                 }
+            }
+            else if (b.ResultType == null)
+            {
+                b.ResultType = Compilation.Get(NativeType.Void);
             }
             if (!b.ResultType.IsVoid)
             {

@@ -315,6 +315,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // for a define or UDC we want the location in the source and not in the #include
                         start = symbol.StartIndex;
                         length = symbol.StopIndex - start + 1;
+                        var pos = symbol.OriginalTokenIndex;
+                        while (pos < cs.XTokens.Size)
+                        {
+                            var token = cs.XTokens.Get(pos);
+                            if (token.Type == XSharpLexer.EOS || token.Type == XSharpLexer.Eof)
+                            {
+                                length = token.Column - symbol.Column +1;
+                                break;
+                            }
+                            pos += 1;
+                        }
+
                         fn = symbol.InputStream.SourceName;
                         line = symbol.Line - 1;
                         column = symbol.Column;

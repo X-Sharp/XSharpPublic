@@ -131,17 +131,40 @@
       [; DbSetIndex( <(index1)> )]                  ;
       [; DbSetIndex( <(indexn)> )]
 
-**  Todo: [ORDER [TAG] <nIndex> | <cTagName> [ASCENDING | DESCENDING] [ADDITIVE]
+** Todo Handle Collate, Binary, Candidate, Compact clauses for Both INDEX ON commands
 
-#command INDEX ON <key> TO <(file)> [<u: UNIQUE>]   ;
-      => dbCreateIndex(                             ;
-                        <(file)>, <"key">, <{key}>, ;
-                        IIF( <.u.>, TRUE, NIL )      ;
-                      )
+#command INDEX ON <key>         										;
+     TAG <order>                										;
+     [BINARY <bin>]                  								    ;
+     [COLLATE <coll>]                								    ;
+     [OF <file>]                										;
+     [FOR <fo>]                 										;
+     [<u:UNIQUE>]               										;
+     [<cmp:COMPACT>]          										    ;
+     [<cand:CANDIDATE>]          										;
+     [<asd:ASCENDING>]          										;
+     [<dsd:DESCENDING>]         										;
+     [<lAdd:ADDITIVE>]          										;
+     [<lNop:NOOPTIMIZE>]        										;
+    => OrdCondSet( <"fo">, , , , , , 			                        ;
+       , , ,,[<.dsd.>],[<.lAdd.>], , , [<.lNop.>] )      				;;  ;
+       OrdCreate(<(file)>,<(order)>,<(key)>,,IF(<.u.>,.T., NIL))
 
-** Todo: TAG TagName [BINARY]
-**   [COLLATE cCollateSequence] [OF CDXFileName] [FOR lExpression]
-**   [COMPACT] [ASCENDING | DESCENDING] [UNIQUE | CANDIDATE] [ADDITIVE]
+#command INDEX ON <key>         										;
+     TO <(file)>                										;
+     [BINARY <bin>]                  								    ;
+     [COLLATE <coll>]                								    ;
+     [FOR <fo>]                 										;
+     [<u:UNIQUE>]               										;
+     [<cmp:COMPACT>]          										    ;
+     [<cand:CANDIDATE>]          										;
+     [<asd:ASCENDING>]          										;
+     [<dsd:DESCENDING>]         										;
+     [<lAdd:ADDITIVE>]          										;
+     [<lNop:NOOPTIMIZE>]        										;
+    => OrdCondSet( <"fo">, , , , , , 			                        ;
+	 , , ,,[<.dsd.>],[<.lAdd.>], , , [<.lNop.>] )      				;;  ;
+       dbCreateIndex( <(file)>, <"key">,, IIF( <.u.>, TRUE, NIL ))
 
 #command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>]  => dbSeek( <xpr> , <.soft.>, <.lst.>)
 ** Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING
@@ -181,7 +204,7 @@
          [<rest:REST>]                        ;
          [<noopt: NOOPTIMIZE>]                ;
          [__FOXLIST__ <fldlist>]              ;
-		 [__FOXWILD__ <fldwild> ]             ;
+         [__FOXWILD__ <fldwild> ]             ;
          [ALL]                                ;
                                               ;
       => DbSortFox(                           ;
@@ -232,7 +255,7 @@
 
 #command USE IN <(area)> => DbCloseArea(<(area)>)
 
-
+** Commands with an IN/ALIAS clause
 
 #command APPEND BLANK <x:IN,ALIAS> <(a)>        =>  (<(a)>) -> (DbAppend())
 #command PACK <x:IN,ALIAS> <(a)>                => (<(a)>) -> (DbPack())
@@ -432,7 +455,7 @@
          [__FOXWILD__ <fldwild> ]                                   ;
          [FOR <lfor>]                                                    ;
                                                                         ;
-      => DbAppendFromArray(<arrayName>, iif( <.fldlist.>, <!fldlist!>, <!fldwild!>), <{lfor}> )
+      => DbAppendFromArray(<arrayName>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>), <{lfor}> )
 
 
 

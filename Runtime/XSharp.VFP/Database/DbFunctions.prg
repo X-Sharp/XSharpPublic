@@ -435,10 +435,13 @@ FUNCTION DbAppDelimFox (cTargetFile, cDelim, cChar, aFields, cbForCondition, cbW
     RETURN DbAppDelim(cTargetFile, cDelim, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
 
 
-FUNCTION DbSort(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, nRecord, ;
-    lRest, lNoOpt, lDesc, aFields)   AS LOGIC CLIPPER
-    // Todo: Implement field list
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsort/*" />
+FUNCTION DbSortFox(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, nRecord, ;
+    lRest, lNoOpt, lDesc, acOutPutFields)   AS LOGIC CLIPPER
+    // acFields = the list of fields to sort on
+    // acOutPutFields = the list of fields to write
+    acOutPutFields := __BuildFieldList(acOutPutFields, TRUE)
     RETURN DbSort(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, nRecord, ;
-    lRest, lNoOpt, lDesc)
+        lRest, lNoOpt, lDesc, acOutPutFields)
 
 

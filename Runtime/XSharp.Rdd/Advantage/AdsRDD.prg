@@ -190,7 +190,13 @@ RETURN
 INTERNAL METHOD _Ansi2Unicode(source AS CHAR[], iLength AS LONG) AS STRING
     TRY
         VAR bytes := SELF:_Encoding:GetBytes(source, 0, iLength)
-        RETURN SELF:_Encoding:GetString(bytes)
+        // replace trailing chr(0) with space
+        iLength -= 1
+        do while iLength >= 0 && bytes[iLength] == 0
+            bytes[iLength] := 32
+            iLength -= 1
+        enddo
+        return SELF:_Encoding:GetString(bytes)
     CATCH
         RETURN String.Empty
     END TRY

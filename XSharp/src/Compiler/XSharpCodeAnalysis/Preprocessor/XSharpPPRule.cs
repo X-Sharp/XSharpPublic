@@ -1671,24 +1671,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Now mark the tokens that were matched with tokens in the UDC with the keyword color
             // Since our token may be a clone, we change the Type of the source token
 #if VSPARSER
-            for (int match = 0; match < _matchtokens.Length; match++)
+            foreach (var token in matchedWithToken)
             {
-                var mt = _matchtokens[match];
-                switch (mt.RuleTokenType)
+                if (!token.IsKeyword())
                 {
-                    case PPTokenType.Token:
-                    case PPTokenType.MatchRestricted:
-                        var info = matchInfo[match];
-                        if (info.IsToken)
-                        {
-                            var token = tokens[info.Start];
-                            token = token.Original;
-                            if (!token.IsKeyword())
-                            {
-                                token.Type = XSharpLexer.UDC_KEYWORD;
-                            }
-                        }
-                        break;
+                    token.Type = XSharpLexer.UDC_KEYWORD;
                 }
             }
 #endif

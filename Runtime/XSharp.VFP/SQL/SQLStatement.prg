@@ -824,7 +824,7 @@ METHOD ParseCommand(cCommand AS STRING, cParamChar AS CHAR, lIncludeParameterNam
 	NEXT
 	//
     SELF:_returnsRows := returns
-    RETURN result
+    RETURN result:ToString()
 
 
 END CLASS

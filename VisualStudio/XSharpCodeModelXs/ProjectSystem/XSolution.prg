@@ -21,6 +21,7 @@ BEGIN NAMESPACE XSharpModel
     STATIC PRIVATE _sqldb      AS STRING
     STATIC PRIVATE _commentTokens AS List<XCommentToken>
     STATIC PROPERTY IsClosing  AS LOGIC AUTO
+    STATIC PROPERTY IsShuttingDown  AS LOGIC AUTO
 
         // OrphanedFiles Project is always open, so at least 1
     STATIC PROPERTY HasProject AS  LOGIC GET _projects:Count > 1

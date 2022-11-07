@@ -58,8 +58,30 @@ BEGIN NAMESPACE XSharpModel
             RETURN TextInterval{SELF:Start, SELF:Stop}
         END GET
       END PROPERTY
+
+    INTERNAL PROPERTY XmlCommentsAsSource AS STRING
+        GET
+            if !String.IsNullOrEmpty(SELF:XmlComments)
+                var xml := SELF:XmlComments:Trim()
+                if xml:StartsWith("<doc>") .and. xml:EndsWith("</doc>")
+                    // length of <doc> and </doc> == 11
+                    xml := xml:Substring(5, xml:Length - 11)
+                    xml := xml:Replace(e"\r"," ")
+                    xml := xml:Replace(e"\n"," ")
+                    return "/// "+xml
+                endif
+            ENDIF
+            return ""
+        END GET
+    END PROPERTY
     INTERNAL METHOD DebuggerDisplay() AS STRING
         RETURN SELF:TypeName + iif(String.IsNullOrEmpty(SELF:MemberName),""," "+SELF:MemberName)
+
+    INTERNAL METHOD UpdateLocation(sym as XSourceMemberSymbol ) AS VOID
+        sym:Range        := SELF:TextRange
+        sym:Interval     := SELF:TextInterval
+        sym:XmlComments  := SELF:XmlComments
+
 
     END CLASS
 END NAMESPACE

@@ -212,11 +212,11 @@ BEGIN NAMESPACE XSharpModel
    END ENUM
 
    ENUM ParamType
-      MEMBER @@As		:= XSharpLexer.AS
+      MEMBER @@As       := XSharpLexer.AS
       MEMBER @@Ref      := XSharpLexer.REF
-      MEMBER @@Out	    := XSharpLexer.OUT
+      MEMBER @@Out      := XSharpLexer.OUT
       MEMBER @@Params   := XSharpLexer.PARAMS
-      MEMBER @@In  	    := XSharpLexer.IN
+      MEMBER @@In       := XSharpLexer.IN
    END ENUM
 
    ENUM LocalType

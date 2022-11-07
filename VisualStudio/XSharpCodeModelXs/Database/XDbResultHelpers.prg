@@ -69,10 +69,11 @@ BEGIN NAMESPACE XSharpModel
                     // If we don't set Interactive, the EntityList will be emptied after the Parse() operation
                     file:Interactive := TRUE
                     file:Id        := element:IdFile
-					VAR members := XDatabase.GetMembers(element:IdType)
+                    VAR members := XDatabase.GetMembers(element:IdType)
                     // now create a temporary source for the parser
                     VAR source     := XSourceTypeSymbol.GetTypeSource(element, members, file)
                     VAR walker := SourceWalker{file, FALSE}
+                    walker:Parse(source)
                     IF walker:EntityList:Count > 0
                         VAR xElement      := walker:EntityList:First()
                         IF xElement IS XSourceTypeSymbol VAR xtype
@@ -102,10 +103,10 @@ BEGIN NAMESPACE XSharpModel
             //
             TRY
                 // now create a temporary source for the parser
-                VAR source     := XSourceTypeSymbol.GetTypeSource( NULL, found, origin)
                 IF found:Count() == 0
                     RETURN result
                 ENDIF
+                VAR source     := XSourceTypeSymbol.GetTypeSource( NULL, found, origin)
                 VAR element := found:First()
                 VAR fileName := element:FileName
                 IF fileName == NULL

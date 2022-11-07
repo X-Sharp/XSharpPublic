@@ -612,30 +612,8 @@ namespace XSharp.LanguageService
                     selection = extensions.Where(x => nameStartsWith(x.Name, startWith));
                 }
                 if (selection.Count() > 0)
-                    FillMembers(location, compList, null, selection, Modifiers.Public, true);
-                foreach (var ifname in type.Interfaces)
                 {
-                    var lifname = ifname;
-                    var lookupproject = _file.Project;
-                    if (type is XSourceTypeSymbol sourceType)
-                    {
-                        var typedef = sourceType;
-                        var origfile = XSolution.FindFullPath(typedef.File.FullPath);
-                        lookupproject = origfile.Project;
-                        var reftype = SystemTypeController.FindType(lifname, typedef.FileUsings, lookupproject.AssemblyReferences);
-                        if (reftype != null)
-                        {
-                            lifname = reftype.FullName;
-                        }
-                    }
-                    extensions = lookupproject.GetExtensions(lifname);
-                    selection = extensions;
-                    if (!string.IsNullOrEmpty(startWith))
-                    {
-                        selection = extensions.Where(x => nameStartsWith(x.Name, startWith));
-                    }
-                    if (selection.Count() > 0)
-                        FillMembers(location, compList, null, selection, Modifiers.Public, true);
+                    FillMembers(location, compList, null, selection, Modifiers.Public, true);
                 }
             }
             //WriteOutputMessage($"FillExtensions complete for type {sType.FullName}");

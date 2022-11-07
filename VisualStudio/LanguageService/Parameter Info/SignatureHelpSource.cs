@@ -62,6 +62,21 @@ namespace XSharp.LanguageService
             m_documentation = doc;
             m_parameters = parameters;
             //m_subjectBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
+            if (content.IndexOf("SELF",StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                var pos = content.IndexOf("(");
+                var pos2 = content.IndexOf(",",pos);
+                if (pos2 > 0)
+                {
+                    content = content.Substring(0, pos + 1) + content.Substring(pos2 + 1);
+                }
+                else
+                {
+                    pos2 = content.IndexOf(")", pos);
+                    content = content.Substring(0, pos+ 1) + content.Substring(pos2 );
+                }
+                m_content = content;
+            }
         }
 
         public event EventHandler<CurrentParameterChangedEventArgs> CurrentParameterChanged;
@@ -290,6 +305,7 @@ namespace XSharp.LanguageService
 
             Debug($"XSharpSignatureHelpSource.CreateSignature( {methodSig})");
             var sig = new XSharpVsSignature(session.TextView, methodSig, doc, null);
+            methodSig = sig.Content; // this has SELF parameters stripped
             var names = new List<string>();
             var descriptions = new List<string>();
             if (member != null)

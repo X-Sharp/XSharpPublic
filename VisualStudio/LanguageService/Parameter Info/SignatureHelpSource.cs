@@ -96,14 +96,30 @@ namespace XSharp.LanguageService
         internal static int CalculateCommaPosition(string sigText, int lastPos, ITextBuffer buffer)
         {
             var doc = buffer.GetDocument();
-            var tokens = doc.GetTokens(sigText);
+            var tokens = doc.GetTokens(sigText.Substring(1)); // remove starting ( or {
             int commaCount = 0;
+            int inSub = 0;
             foreach (var token in tokens)
             {
-                if (token.Column > lastPos)
+                if (token.Column >= lastPos)
                     break;
-                if (token.Type == XSharpLexer.COMMA)
-                    commaCount += 1;
+                switch (token.Type)
+                {
+                    case XSharpLexer.COMMA:
+                        if (inSub == 0)
+                            commaCount += 1;
+                        break;
+                    case XSharpLexer.LPAREN:
+                    case XSharpLexer.LCURLY:
+                    case XSharpLexer.LBRKT:
+                        inSub += 1;
+                        break;
+                    case XSharpLexer.RPAREN:
+                    case XSharpLexer.RCURLY:
+                    case XSharpLexer.RBRKT:
+                        inSub -= 1;
+                        break;
+                }
             }
             return commaCount;
         }

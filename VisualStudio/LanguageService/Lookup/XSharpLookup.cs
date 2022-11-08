@@ -690,15 +690,15 @@ namespace XSharp.LanguageService
                         }
                         break;
                 }
-                bool isType = XSharpLexer.IsType(currentToken.Type);
-                var isId = currentToken.Type == XSharpLexer.ID ||
-                                  currentToken.Type == XSharpLexer.KWID ||
-                                  currentToken.Type == XSharpLexer.SELF ||
-                                  currentToken.Type == XSharpLexer.SUPER ||
-                                  currentToken.Type == XSharpLexer.TYPEOF ||
-                                  currentToken.Type == XSharpLexer.NAMEOF ||
-                                  currentToken.Type == XSharpLexer.SIZEOF ||
-                                  currentToken.Type == XSharpLexer.COLONCOLON ||
+                var tokenType = currentToken.Type;
+                bool isType = XSharpLexer.IsType(tokenType);
+
+                var isId = tokenType == XSharpLexer.ID ||
+                                  tokenType == XSharpLexer.KWID ||
+                                  tokenType == XSharpLexer.SELF ||
+                                  tokenType == XSharpLexer.SUPER ||
+                                  tokenType == XSharpLexer.COLONCOLON ||
+                                  XSharpLexer.IsPseudoFunction(tokenType) ||
                                   isType;
                 if (isId && !list.Eoi() && list.La1 == XSharpLexer.LT)
                 {

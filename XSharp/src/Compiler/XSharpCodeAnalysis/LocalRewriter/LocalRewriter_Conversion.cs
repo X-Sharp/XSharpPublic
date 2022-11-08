@@ -68,13 +68,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             var nts = rewrittenOperand?.Type as NamedTypeSymbol;
             if (nts is { })
             {
-                var usualType = _compilation.UsualType();
                 nts = nts.ConstructedFrom;
                 // Ticket C575: Assign Interface to USUAL
                 // Marked as Boxing in Conversions.cs
                 // Implementation here
                 if (nts.IsInterface && rewrittenType.IsUsualType())
                 {
+                    var usualType = _compilation.UsualType();
                     var m = getImplicitOperatorByParameterType(usualType, _compilation.GetSpecialType(SpecialType.System_Object));
                     if (m != null)
                     {
@@ -228,7 +228,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         ConversionKind XsRewriteSystemNumericType(ref BoundExpression rewrittenOperand, TypeSymbol rewrittenType, bool explicitcastincode, bool noError)
         {
-            if (!noError  && !explicitcastincode)
+            if (!noError && !explicitcastincode)
             {
                 var error = DetermineConversionError(rewrittenOperand.Type, rewrittenType);
                 if (error != ErrorCode.Void)
@@ -419,44 +419,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return ConversionKind.Identity;
             }
             return XsRewriteSystemNumericType(ref rewrittenOperand, rewrittenType, explicitCastInCode, true);
-            
-            //MethodSymbol m = getExplicitOperator(ourtype, rewrittenType);
-            //if (m != null)
-            //{
-            //    rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
-            //    rewrittenOperand.WasCompilerGenerated = true;
-            //    return ConversionKind.Identity;
-            //}
-            //m = getImplicitOperatorByReturnType(ourtype, rewrittenType);
-            //if (m != null)
-            //{
-            //    rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
-            //    rewrittenOperand.WasCompilerGenerated = true;
-            //    return ConversionKind.Identity;
-
-            //}
-            //if (rewrittenType.IsObjectType() || rewrittenType.IsUsualType())
-            //{
-            //    return ConversionKind.Boxing;
-
-            //}
-            //rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
-            //rewrittenOperand.WasCompilerGenerated = true;
-            //return ConversionKind.Identity;
         }
-        //private MethodSymbol getExplicitOperator(TypeSymbol srcType, TypeSymbol destType)
-        //{
-        //    var members = srcType.GetMembers(WellKnownMemberNames.ExplicitConversionName);
-        //    foreach (MethodSymbol m in members)
-        //    {
-        //        if (TypeSymbol.Equals(m.ReturnType, destType))
-        //        {
-        //            return m;
-        //        }
-
-        //    }
-        //    return null;
-        //}
-
     }
 }

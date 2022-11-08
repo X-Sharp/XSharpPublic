@@ -7414,7 +7414,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             MakeSeparatedList(MakeArgument(left),
                                 MakeArgument(right)),
                             SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
-                    expr.XNoTypeWarning = true;
+                    //expr.XNoTypeWarning = true;
                     context.Put(expr);
 
                     break;

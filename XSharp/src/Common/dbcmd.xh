@@ -60,7 +60,7 @@
       [; DbSetIndex( <(indexn)> )]
 
 #command INDEX ON <key>         										;
-     TAG <order>                										;
+     [TAG <order>]              										;
      [TO <file>]                										;
      [FOR <fo>]                 										;
      [<all:ALL>]                										;
@@ -84,8 +84,8 @@
 
 #command INDEX ON <key> TO <file> [<u:UNIQUE>]  						;
       =>  OrdCondSet()  ;;        										;
-          DbCreateIndex(<(file)>,<(key)>,,IF(<.u.>, .T., NIL))
-                      )
+		DbCreateIndex(<(file)>,<(key)>,,IIF(<.u.>, .T., NIL))
+
 
 #command REINDEX                => DbReindex()
 #command SET ORDER TO <n>       => DbSetOrder( <n> )
@@ -427,12 +427,12 @@
 
 
 // NOTE:  CLOSE <alias> must precede the others
-#command CLOSE <alias>              => <alias>->( DbCloseArea() )
-#command CLOSE &<alias>             => (<alias>)->( DbCloseArea() )
+#command CLOSE <alias>                 => <alias>->( DbCloseArea() )
+#command CLOSE &<alias>                => (<alias>)->( DbCloseArea() )
 
-#command CLOSE                      => DbCloseArea()
 #command CLOSE [al: DATABASES,ALL>] => DbCloseAll()
-#command CLOSE INDEXES              => DbClearIndex()
+#command CLOSE INDEXES                 => DbClearIndex()
+#command CLOSE                         => DbCloseArea()
 
 #endif
 

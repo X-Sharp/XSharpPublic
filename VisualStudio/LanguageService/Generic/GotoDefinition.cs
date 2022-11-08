@@ -192,7 +192,7 @@ namespace XSharp.LanguageService
             {
                 foreach (var entity in entities)
                 {
-                    if (entity.Prototype == element.Prototype)
+                    if (entity.FullName == element.FullName)
                     {
                         result = entity;
                         break;

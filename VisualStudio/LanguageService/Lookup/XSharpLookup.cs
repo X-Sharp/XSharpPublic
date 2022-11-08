@@ -813,7 +813,10 @@ namespace XSharp.LanguageService
                         if (result.Count == 0)
                         {
                             // 4) Namespaces
-                            var namespaces = SearchNamespaces(location, namespacePrefix + currentName);
+                            var namespaces = SearchNamespaces(location, currentName);
+                            if (namespaces != null)
+                                result.AddRange(namespaces);
+                            namespaces = SearchNamespaces(location, namespacePrefix + currentName);
                             if (namespaces != null)
                                 result.AddRange(namespaces);
                         }

@@ -62,16 +62,19 @@ namespace XSharp.LanguageService
 
         private static XSharpSearchLocation AdjustStartLineNumber(XSharpSearchLocation location)
         {
-            ClassifyBuffer(location);
-            var line = location.LineNumber;
-            var doc = location.GetDocument();
-            var lineFlags = doc.LineState;
-            while (line >= 0 && lineFlags.Get(line, out var flags) && flags.HasFlag(LineFlags.Continued))
-            {
-                line--;
-            }
-            return location.With(line, location.Position);
-
+            //if (ThreadHelper.JoinableTaskFactory.Context.IsOnMainThread)
+            //{
+            //    ClassifyBuffer(location);
+            //    var line = location.LineNumber;
+            //    var doc = location.GetDocument();
+            //    var lineFlags = doc.LineState;
+            //    while (line >= 0 && lineFlags.Get(line, out var flags) && flags.HasFlag(LineFlags.Continued))
+            //    {
+            //        line--;
+            //    }
+            //    return location.With(line, location.Position);
+            //}
+            return location;
         }
 
 
@@ -596,7 +599,11 @@ namespace XSharp.LanguageService
                     default:
                         if (state == CompletionState.None)
                             state = CompletionState.General;
-                        if (XSharpLexer.IsOperator(token.Type))
+                        if (XSharpLexer.IsPseudoFunction(token.Type))
+                        {
+                            result.Add(token);
+                        }
+                        else if (XSharpLexer.IsOperator(token.Type))
                         {
                             result.Add(token);
                         }

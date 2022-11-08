@@ -641,40 +641,6 @@ BEGIN NAMESPACE XSharp.RDD.Enums
         */
 	END	 ENUM
 
-	/// <summary>This enum specifies the various code pages that can appear in DBF files.</summary>
-	ENUM DbfHeaderCodepage AS BYTE
-		MEMBER CP_DBF_DOS_OLD:=0
-		MEMBER CP_DBF_DOS_US:=1
-		MEMBER CP_DBF_DOS_INTL:=2
-		MEMBER CP_DBF_WIN_ANSI:=3
-		MEMBER CP_DBF_MAC_STANDARD:=4
-		MEMBER CP_DBF_DOS_EEUROPEAN:=100
-		MEMBER CP_DBF_DOS_RUSSIAN:=101
-		MEMBER CP_DBF_DOS_NORDIC:=102
-		MEMBER CP_DBF_DOS_ICELANDIC:=103
-		MEMBER CP_DBF_DOS_KAMENICKY:=104
-		MEMBER CP_DBF_DOS_MAZOVIA:=105
-		MEMBER CP_DBF_DOS_GREEK:=106
-		MEMBER CP_DBF_DOS_TURKISH:=107
-		MEMBER CP_DBF_DOS_CANADIAN:=108
-        /// <summary>(Hong Kong SAR, Taiwan) </summary>
-		MEMBER CP_DBF_WIN_CHINESE_1:=120
-		MEMBER CP_DBF_WIN_KOREAN:=121
-        /// <summary>Chinese (PRC, Singapore) </summary>
-		MEMBER CP_DBF_WIN_CHINESE_2:=122
-		MEMBER CP_DBF_WIN_JAPANESE:=123
-		MEMBER CP_DBF_WIN_THAI:=124
-		MEMBER CP_DBF_WIN_HEBREW:=125
-		MEMBER CP_DBF_WIN_ARABIC:=126
-		MEMBER CP_DBF_MAC_RUSSIAN:=150
-		MEMBER CP_DBF_MAC_EEUROPEAN:=151
-		MEMBER CP_DBF_MAC_GREEK:=152
-		MEMBER CP_DBF_WIN_EEUROPEAN:=200
-		MEMBER CP_DBF_WIN_RUSSIAN:=201
-		MEMBER CP_DBF_WIN_TURKISH:=202
-		MEMBER CP_DBF_WIN_GREEK:=203
-	END	 ENUM
-
 	/// <summary>This enum specifies the various values that the RDDInfo method for the IRDD interface accepts.
 	/// <note type="tip">
 	/// These enums are also available as DEFINES and can therefore also be used without the "RDDInfo." prefix.

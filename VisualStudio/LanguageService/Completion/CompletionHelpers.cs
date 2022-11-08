@@ -530,6 +530,29 @@ namespace XSharp.LanguageService
                 return name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture);
             return false;
         }
+        private string CharToAdd(Kind kind)
+        {
+            if (kind.HasParameters() && kind != Kind.Constructor && !kind.IsProperty() && kind != Kind.Event)
+            {
+                return "(";
+            }
+            return "";
+        }
+
+        internal void FillEnumMembers(XSharpSearchLocation location, XCompletionList compList, IXTypeSymbol type, IEnumerable<IXMemberSymbol> members, Modifiers minVisibility, bool staticOnly)
+        {
+            if (staticOnly)
+            {
+                foreach (var elt in members)
+                {
+                    ImageSource icon = _glyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
+                    string toAdd = CharToAdd(elt.Kind);
+                    if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Prototype, icon, null, elt.Kind, elt.Value)))
+                        break;
+                }
+            }
+        }
+
         /// <summary>
         /// Add members to the completionlist
         /// </summary>
@@ -542,6 +565,11 @@ namespace XSharp.LanguageService
             if (members.Count() == 0)
                 return;
             WriteOutputMessage($"FillMembers {type?.FullName}: {members.Count()} members");
+            if (type.Kind == Kind.Enum)
+            {
+                FillEnumMembers(location, compList, type, members, minVisibility, staticOnly);
+                return;
+            }
             foreach (var elt in members)
             {
                 bool add = true;
@@ -573,17 +601,18 @@ namespace XSharp.LanguageService
                         }
                         break;
                 }
-                if (type != null && type.Kind == Kind.Enum && elt.DeclaringType != null && elt.DeclaringType != type.FullName && elt.Name != "HasFlag")
-                    add = false;
+                if (type.Kind == Kind.Enum)
+                {
+                    if (elt.Parent != type && elt.Name != "HasFlag")
+                    {
+                        add = false;
+                    }
+                }
                 if (!add)
                     continue;
                 //
                 ImageSource icon = _glyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
-                string toAdd = "";
-                if (elt.Kind.HasParameters() && elt.Kind != Kind.Constructor && !elt.Kind.IsProperty() && elt.Kind != Kind.Event)
-                {
-                   toAdd = "(";
-                }
+                string toAdd = CharToAdd(elt.Kind);
                 if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Prototype, icon, null, elt.Kind, elt.Value)))
                     break;
             }

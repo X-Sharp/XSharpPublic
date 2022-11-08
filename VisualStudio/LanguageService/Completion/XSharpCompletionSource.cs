@@ -197,6 +197,15 @@ namespace XSharp.LanguageService
                 int tokenType = XSharpLexer.UNRECOGNIZED;
 
                 var symbol = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General, out var notProcessed).FirstOrDefault();
+                var isInstance = true;
+                if (symbol is IXTypeSymbol)
+                {
+                    isInstance = false;
+                }
+                else
+                {
+                    isInstance = true;
+                }
                 if (symbol != null)
                 {
 
@@ -348,7 +357,7 @@ namespace XSharp.LanguageService
                             filterText = "";
                     }
                 }
-                if (showInstanceMembers )
+                if (showInstanceMembers && isInstance)
                 {
                     // Member call
                     if (type != null)

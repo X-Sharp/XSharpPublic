@@ -94,6 +94,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 return uncommon.lazyHasCompilerGeneratedAttribute.Value();
             }
         }
+        internal bool HasCompilerGlobalScopeAttribute
+        {
+            get
+            {
+                var uncommon = GetUncommonProperties();
+                if (uncommon == s_noUncommonProperties)
+                {
+                    return false;
+                }
+
+                if (!uncommon.lazyHasCompilerGlobalScopeAttribute.HasValue())
+                {
+                    uncommon.lazyHasCompilerGlobalScopeAttribute = ContainingPEModule.Module.HasCompilerGlobalScopeAttribute(_handle).ToThreeState();
+                }
+
+                return uncommon.lazyHasCompilerGlobalScopeAttribute.Value();
+            }
+        }
         bool _hasVoStructValues = false;
         bool _isVoStruct = false;
         int _voStructSize = 0;

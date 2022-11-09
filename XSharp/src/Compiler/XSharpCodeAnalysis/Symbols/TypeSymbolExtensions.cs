@@ -50,9 +50,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool IsFunctionsClass(this NamedTypeSymbol type)
         {
-            if (type.IsStatic && type.Name.EndsWith(XSharpSpecialNames.FunctionsClass))
+            if (type.Name.EndsWith(XSharpSpecialNames.FunctionsClass))
             {
-                if (type is PENamedTypeSymbol || type is SourceNamedTypeSymbol)
+                if (type is PENamedTypeSymbol petype)
+                    return petype.HasCompilerGeneratedAttribute || petype.HasCompilerGlobalScopeAttribute;
+                if (type is SourceNamedTypeSymbol)
                     return type.HasCompilerGeneratedAttribute;
             }
             return false;

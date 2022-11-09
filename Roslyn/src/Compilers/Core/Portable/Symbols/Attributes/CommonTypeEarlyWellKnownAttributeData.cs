@@ -54,6 +54,21 @@ namespace Microsoft.CodeAnalysis
                 SetDataStored();
             }
         }
+        private bool _hasCompilerGlobalScopeAttribute;
+        public bool HasCompilerGlobalScopeAttribute
+        {
+            get
+            {
+                VerifySealed(expected: true);
+                return _hasCompilerGlobalScopeAttribute;
+            }
+            set
+            {
+                VerifySealed(expected: false);
+                _hasCompilerGlobalScopeAttribute = value;
+                SetDataStored();
+            }
+        }
         #endregion
 #endif
 

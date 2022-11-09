@@ -1006,6 +1006,10 @@ namespace Microsoft.CodeAnalysis
         {
             return FindTargetAttribute(token, AttributeDescription.CompilerGeneratedAttribute).HasValue;
         }
+        internal bool HasCompilerGlobalScopeAttribute(EntityHandle token)
+        {
+            return FindTargetAttribute(token, AttributeDescription.CompilerGlobalScopeAttribute).HasValue;
+        }
 #endif
         internal bool HasDefaultMemberAttribute(EntityHandle token, out string memberName)
         {

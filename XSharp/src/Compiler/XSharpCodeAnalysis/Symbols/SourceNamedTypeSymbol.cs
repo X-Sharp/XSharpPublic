@@ -173,5 +173,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return new SynthesizedAttributeData(attributeConstructor, constructorArguments.ToImmutableAndFree(), ImmutableArray<KeyValuePair<string, TypedConstant>>.Empty);
         }
 
+        private CSharpAttributeData XsDecodeWellKnownAttribute(ref EarlyDecodeWellKnownAttributeArguments<EarlyWellKnownAttributeBinder, NamedTypeSymbol, AttributeSyntax, AttributeLocation> arguments)
+        {
+            bool hasAnyDiagnostics;
+            CSharpAttributeData boundAttribute;
+            if (CSharpAttributeData.IsTargetEarlyAttribute(arguments.AttributeType, arguments.AttributeSyntax, AttributeDescription.CompilerGeneratedAttribute))
+            {
+                boundAttribute = arguments.Binder.GetAttribute(arguments.AttributeSyntax, arguments.AttributeType, out hasAnyDiagnostics);
+                if (!boundAttribute.HasErrors)
+                {
+                    arguments.GetOrCreateData<CommonTypeEarlyWellKnownAttributeData>().HasCompilerGeneratedAttribute = true;
+                    if (!hasAnyDiagnostics)
+                    {
+                        return boundAttribute;
+                    }
+                }
+                return null;
+            }
+            if (CSharpAttributeData.IsTargetEarlyAttribute(arguments.AttributeType, arguments.AttributeSyntax, AttributeDescription.CompilerGlobalScopeAttribute))
+            {
+                boundAttribute = arguments.Binder.GetAttribute(arguments.AttributeSyntax, arguments.AttributeType, out hasAnyDiagnostics);
+                if (!boundAttribute.HasErrors)
+                {
+                    arguments.GetOrCreateData<CommonTypeEarlyWellKnownAttributeData>().HasCompilerGlobalScopeAttribute = true;
+                    if (!hasAnyDiagnostics)
+                    {
+                        return boundAttribute;
+                    }
+                }
+                return null;
+            }
+            return null;
+        }
+
     }
 }

@@ -148,6 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             internal ThreeState lazyHasEmbeddedAttribute = ThreeState.Unknown;
 #if XSHARP
             internal ThreeState lazyHasCompilerGeneratedAttribute = ThreeState.Unknown;
+            internal ThreeState lazyHasCompilerGlobalScopeAttribute = ThreeState.Unknown;
 #endif
 
 #if DEBUG
@@ -164,6 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     (object)lazyComImportCoClassType == (object)ErrorTypeSymbol.UnknownResultType &&
 #if XSHARP
                     !lazyHasCompilerGeneratedAttribute.HasValue() && 
+                    !lazyHasCompilerGlobalScopeAttribute.HasValue() && 
 #endif
                     !lazyHasEmbeddedAttribute.HasValue();
             }

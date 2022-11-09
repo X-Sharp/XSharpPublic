@@ -896,19 +896,9 @@ next:;
                 return null;
             }
 #if XSHARP
-            if (CSharpAttributeData.IsTargetEarlyAttribute(arguments.AttributeType, arguments.AttributeSyntax, AttributeDescription.CompilerGeneratedAttribute))
-            {
-                boundAttribute = arguments.Binder.GetAttribute(arguments.AttributeSyntax, arguments.AttributeType, out hasAnyDiagnostics);
-                if (!boundAttribute.HasErrors)
-                {
-                    arguments.GetOrCreateData<CommonTypeEarlyWellKnownAttributeData>().HasCompilerGeneratedAttribute = true;
-                    if (!hasAnyDiagnostics)
-                    {
-                        return boundAttribute;
-                    }
-                }
-                return null;
-            }
+            var att = this.XsDecodeWellKnownAttribute(ref arguments);
+            if (att != null)
+                return att;
 #endif
             if (CSharpAttributeData.IsTargetEarlyAttribute(arguments.AttributeType, arguments.AttributeSyntax, AttributeDescription.CodeAnalysisEmbeddedAttribute))
             {

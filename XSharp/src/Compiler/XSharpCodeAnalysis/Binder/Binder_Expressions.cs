@@ -776,7 +776,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // so we check here if we are called from a memberaccessexpression with a colon separator
             // so String.Compare will use different lookup options as SELF:ToString()
             var originalOptions = options;
-            var nsOrTypesFirst = false;
+            var bCouldBeNameSpaceOrType = false;
             // Here we add XSharp Specific options
             if (!bindMethod)
             {
@@ -805,7 +805,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // versions window:ToString() which is instance member access
                     if (!node.MustBeInstanceMemberAccess(true))
                     {
-                        nsOrTypesFirst = true;
+                        bCouldBeNameSpaceOrType = true;
                     }
                 }
             }
@@ -815,13 +815,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             // no need to look for our special names
             if (!memvarorfield)
             {
-                if (nsOrTypesFirst)
+                this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
+                if (bCouldBeNameSpaceOrType)
                 {
-                    this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: LookupOptions.NamespacesOrTypesOnly);
-                }
-                if (lookupResult.IsClear)
-                {
-                    this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
+                    // when there is a type and a local with the same name, then they will end up both in the resultSet
+                    // the compiler will later resolve the right one.
+                    var nsResult = LookupResult.GetInstance();
+                    this.LookupSymbolsWithFallback(nsResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: LookupOptions.NamespacesOrTypesOnly);
+                    if (!nsResult.IsClear)
+                    {
+                        lookupResult.MergeEqual(nsResult);
+                    }
                 }
                 // when no field or local found then try to find defines
                 if (lookupResult.IsClear && !bindMethod)

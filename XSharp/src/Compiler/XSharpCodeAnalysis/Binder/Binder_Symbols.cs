@@ -24,10 +24,32 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal partial class Binder
     {
+
+        bool PreferFirstOverSecond(Symbol first, Symbol second)
+        {
+            if (second.Kind == SymbolKind.NamedType)
+            {
+                if (first.Kind == SymbolKind.Local ||
+                    first.Kind == SymbolKind.Parameter ||
+                    first.Kind == SymbolKind.Property ||
+                    first.Kind == SymbolKind.Event ||
+                    first.Kind == SymbolKind.Field)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         internal Symbol XSharpResolveEqualSymbols(Symbol first, Symbol second, ImmutableArray<Symbol> originalSymbols, CSharpSyntaxNode where, DiagnosticBag diagnostics)
         {
             CSDiagnosticInfo info;
             bool usefirst = false;
+            if (PreferFirstOverSecond(first, second))
+                return first;
+            if (PreferFirstOverSecond(second, first))
+                return second;
+
             if (first.IsFromCompilation(Compilation) && !second.IsFromCompilation(Compilation))
             {
                 usefirst = true;

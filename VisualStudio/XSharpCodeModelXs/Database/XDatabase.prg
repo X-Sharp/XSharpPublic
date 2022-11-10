@@ -360,7 +360,6 @@ STATIC CLASS XDatabase
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
-
             stmt := "CREATE VIEW ProjectMembers AS SELECT m.*, p.IdProject, p.FileName, p.ProjectFileName " +;
                 " FROM TypeMembers m  JOIN ProjectFiles p ON m.IdFile = p.IdFile "
             cmd:CommandText := stmt
@@ -376,7 +375,7 @@ STATIC CLASS XDatabase
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
-            stmt := "CREATE VIEW AssemblyNamespaces AS select distinct T.IdAssembly, T.Namespace FROM ReferencedTypes T  "
+            stmt := "CREATE VIEW AssemblyNamespaces AS select distinct T.IdAssembly, T.AssemblyFileName, T.Namespace FROM AssemblyTypes T "
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
@@ -719,6 +718,20 @@ STATIC CLASS XDatabase
         IF ! IsDbOpen .or. oFile:TypeList == null
             RETURN
         ENDIF
+
+        // update parameters for extension methods before we lock the database
+        // This may also trigger another lock from another thread!
+        VAR xtypes := oFile:TypeList:Values:Where({ t=> t.Kind != Kind.Namespace })
+        FOREACH VAR typedef IN xtypes
+            FOREACH VAR xmember IN typedef:XMembers
+                if xmember:Signature:IsExtension .and. xmember:Parameters:Count > 0
+                    local parameter := (XSourceParameterSymbol) xmember:Parameters[0] as XSourceParameterSymbol
+                    if parameter:ResolvedType == null
+                            parameter:Resolve()
+                    endif
+                endif
+            NEXT
+        NEXT
         Log(i"Update File contents for file {oFile.FullPath}")
         BEGIN LOCK oConn
             TRY
@@ -844,9 +857,6 @@ STATIC CLASS XDatabase
                             if xmember:Signature:IsExtension .and. xmember:Parameters:Count > 0
                                 oCmd2:Parameters:Clear()
                                 local parameter := (XSourceParameterSymbol) xmember:Parameters[0] as XSourceParameterSymbol
-                                if parameter:ResolvedType == null
-                                    parameter:Resolve()
-                                endif
                                 oCmd2:Parameters:AddWithValue("$idmember", xmember:Id)
                                 oCmd2:Parameters:AddWithValue("$fullname", parameter:FullName)
                                 oCmd2:ExecuteNonQuery()
@@ -1468,7 +1478,7 @@ STATIC CLASS XDatabase
         RETURN result
 
     STATIC METHOD GetAssemblyNamespaces(sAssemblyIds AS STRING) AS IList<STRING>
-        VAR stmt := "Select Namespace from AssemblyNamespaces where IdAssembly in ("+sAssemblyIds+")"
+        VAR stmt := "Select distinct Namespace from AssemblyNamespaces where IdAssembly in ("+sAssemblyIds+")"
         VAR result := List<STRING>{}
         IF IsDbOpen
             BEGIN LOCK oConn
@@ -1488,6 +1498,28 @@ STATIC CLASS XDatabase
             END LOCK
         ENDIF
         Log(i"GetAssemblyNamespaces returns {result.Count} matches")
+        RETURN result
+
+
+    STATIC METHOD GetAssembliesContainingNamespace(sNamespace as string, sAssemblyIds as string) AS IList<String>
+        VAR stmt := "Select distinct AssemblyFileName from AssemblyNamespaces where Namespace='"+sNamespace+;
+            "' and idAssembly in ("+sAssemblyIds+")"
+        var result := List<string>{}
+        IF IsDbOpen
+            BEGIN LOCK oConn
+                TRY
+                    USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                    USING VAR rdr := oCmd:ExecuteReader()
+                    // No limit on the # of Namespaces
+                    DO WHILE rdr:Read()
+                        result:Add(rdr:GetString(0))
+                    ENDDO
+                CATCH e AS Exception
+                    XSettings.LogException(e, __FUNCTION__)
+                END TRY
+            END LOCK
+        ENDIF
+        Log(i"GetAssemblyNamespaceFiles returns {result.Count} matches")
         RETURN result
 
 

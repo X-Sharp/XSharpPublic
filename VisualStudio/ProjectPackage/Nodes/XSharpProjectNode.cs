@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#undef USEPROJECTVERSION
 using Community.VisualStudio.Toolkit;
 using EnvDTE;
 using LanguageService.CodeAnalysis;
@@ -26,6 +26,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using VSLangProj;
 using XSharp.CodeDom;
 using XSharp.LanguageService;
@@ -35,6 +36,7 @@ using File = System.IO.File;
 using MBC = Microsoft.Build.Construction;
 using MSBuild = Microsoft.Build.Evaluation;
 using VsParser = global::LanguageService.CodeAnalysis.XSharp;
+
 
 
 namespace XSharp.Project
@@ -374,7 +376,7 @@ namespace XSharp.Project
             // speeds up loading a bit
             base.PrepareBuild(config, cleanBuild);
         }
-        void IXsProjectDesigner.RemoveProjectProperty(string name)
+        public void RemoveProjectProperty(string name)
         {
             var prop = this.BuildProject.GetProperty(name);
             if (prop != null)
@@ -1870,7 +1872,7 @@ namespace XSharp.Project
             }
             return bOk;
         }
-        #region IProjectTypeHelper
+#region IProjectTypeHelper
         public IXTypeSymbol ResolveExternalType(string name, IList<string> usings)
         {
             switch (name.ToLower())
@@ -1916,8 +1918,8 @@ namespace XSharp.Project
         }
 
 
-        #endregion
-        #region IVsSingleFileGeneratorFactory
+#endregion
+#region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
 
         // Note that in stead of using the SingleFileGeneratorFactory we can also do everything here based on
@@ -1972,9 +1974,9 @@ namespace XSharp.Project
             return VSConstants.S_FALSE;
 
         }
-        #endregion
+#endregion
 
-        #region IVsDesignTimeAssemblyResolution
+#region IVsDesignTimeAssemblyResolution
 
         //private DesignTimeAssemblyResolution designTimeAssemblyResolution;
         private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", "AnyCPU");
@@ -2029,8 +2031,8 @@ namespace XSharp.Project
         //    return VSConstants.S_OK;
         //}
 
-        #endregion
-        #region TableManager
+#endregion
+#region TableManager
         //internal ITableManagerProvider tableManagerProvider { get; private set; }
         ErrorListManager _errorListManager = null;
         TaskListManager _taskListManager = null;
@@ -2084,7 +2086,7 @@ namespace XSharp.Project
             return;
         }
 
-        #endregion
+#endregion
 
 
         public void AddFileNode(string strFileName)
@@ -2287,7 +2289,8 @@ namespace XSharp.Project
                 File.WriteAllText(Url, changedSource);
                 ok = false;
             }
-            // we have added a projectversion property to makes checks easier in the future
+#if USEPROJECTVERSION
+            //we have added a projectversion property to makes checks easier in the future
             if (ok)
             {
                 var vers = this.BuildProject.Properties.Where(p => string.Compare(p.Name, ProjectVersion, StringComparison.OrdinalIgnoreCase) == 0).FirstOrDefault();
@@ -2312,6 +2315,9 @@ namespace XSharp.Project
                     }
                 }
             }
+#else
+            
+#endif
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
             var str = backup.ToString();
@@ -2444,6 +2450,7 @@ namespace XSharp.Project
 
         private void UpdateProjectVersion()
         {
+#if USEPROJECTVERSION
             var xml = BuildProject.Xml;
             var groups = xml.PropertyGroups.ToList();
             var grp = groups.Where(g => g.Condition.Trim().Length == 0).FirstOrDefault();
@@ -2451,6 +2458,9 @@ namespace XSharp.Project
             {
                 addProperty(grp, ProjectVersion, Constants.FileVersion);
             }
+#else
+            this.RemoveProjectProperty(ProjectVersion);
+#endif
         }
 
         private void FixProjectFile(string filename, bool dialectVO)
@@ -2597,7 +2607,7 @@ namespace XSharp.Project
             {
                 if (this.QueryEditProjectFile(true))
                 {
-                    UpdateProjectVersion();
+                    this.UpdateProjectVersion();
                     Utilities.DeleteFileSafe(filename);
                     BuildProject.Xml.Save(filename);
                     BuildProject.ReevaluateIfNecessary();
@@ -2816,7 +2826,7 @@ namespace XSharp.Project
 
 
 
-        #region IVsProject5
+#region IVsProject5
         public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)
         {
             var node = this.FindURL(pszMkDocument);
@@ -2886,7 +2896,7 @@ namespace XSharp.Project
             return false;
         }
 
-        #endregion
+#endregion
  
     }
 

@@ -10,6 +10,23 @@ FUNCTION XSharpBuiltInFunctions(location as string) as STRING
     sb:AppendLine("// Location: "+location)
     sb:AppendLine("// Version :  "+ asm:GetName():ToString())
     sb:AppendLine("")
+    var sLine1 := "/// <summary>Inline Conditional Expression</summary>"
+    var sLine2 := e"/// <param name=\"cond\">The condition. This should evaluate to TRUE or FALSE.</param>"
+    var sLine3 := e"/// <param name=\"trueExpr\">The expression to return when the condition evaluates to TRUE.</param>"
+    var sLine4 := e"/// <param name=\"falseExpr\">The expression to return when the condition evaluates to FALSE.</param>"
+    var sLine5 := "FUNCTION {0}(cond AS LOGIC, trueExpr as USUAL, falseExpr as USUAL) AS USUAL"
+    sb:AppendLine(sLine1)
+    sb:AppendLine(sLine2)
+    sb:AppendLine(sLine3)
+    sb:AppendLine(sLine4)
+    sb:AppendLine(String.Format(sLine5, "IIF"))
+    sb:AppendLine("")
+    sb:AppendLine(sLine1)
+    sb:AppendLine(sLine2)
+    sb:AppendLine(sLine3)
+    sb:AppendLine(sLine4)
+    sb:AppendLine(String.Format(sLine5, "IF"))
+    sb:AppendLine("")
     sb:AppendLine("/// <summary>Return the name of an identifier as a string</summary>")
     sb:AppendLine(e"/// <param name=\"expr\">An Identifier. This could be the name of a variable or type.</param>")
     sb:AppendLine("FUNCTION Nameof(expr AS OBJECT) AS STRING")

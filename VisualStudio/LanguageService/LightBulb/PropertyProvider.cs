@@ -5,21 +5,19 @@
 //
 //------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
+using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Utilities;
-using static XSharp.XSharpConstants;
-using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Operations;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.Utilities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using XSharpModel;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.SyntaxTree;
+using static XSharp.XSharpConstants;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
@@ -43,7 +41,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
     }
 
-    internal class PropertySuggestedActionsSource : CommonActionsSource,  ISuggestedActionsSource
+    internal class PropertySuggestedActionsSource : CommonActionsSource, ISuggestedActionsSource
     {
         private PropertySuggestedActionsSourceProvider m_factory;
 
@@ -54,7 +52,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         public event EventHandler<EventArgs> SuggestedActionsChanged;
 
         public PropertySuggestedActionsSource(PropertySuggestedActionsSourceProvider propertySuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer) :
-            base(textView, textBuffer)  
+            base(textView, textBuffer)
         {
             this.m_factory = propertySuggestedActionsSourceProvider;
             //
@@ -157,7 +155,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return false;
         }
 
-         
         /// <summary>
         /// Search the item under the caret.
         /// If a Field, it is stored in _memberentity
@@ -175,7 +172,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
             // LookUp for the BaseType, reading the TokenList (From left to right)
             var lookupresult = new List<IXSymbol>();
-            lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
+            lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
             //
             if (lookupresult.Count > 0)
             {

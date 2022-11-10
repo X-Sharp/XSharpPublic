@@ -23,7 +23,6 @@ namespace XSharp.LanguageService
                 WriteOutputMessage("CommandFilter.GotoDefn()");
                 ModelWalker.Suspend();
 
-
                 var snapshot = TextView.TextBuffer.CurrentSnapshot;
 
                 // We don't want to lex the buffer. So get the tokens from the last lex run
@@ -36,15 +35,14 @@ namespace XSharp.LanguageService
                 }
                 string currentNS = TextView.FindNamespace();
                 var location = TextView.FindLocation();
-                var state = CompletionState.General | CompletionState.Types | CompletionState.Namespaces;
-                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location,  out state);
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location,  out var state);
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 var result = new List<IXSymbol>();
 
-                result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed));
+                result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
                 //
-                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (result.Count > 0)
                 {
                     var element = result[0];
@@ -82,7 +80,7 @@ namespace XSharp.LanguageService
                     tokenList.Clear();
                     tokenList.Add(token);
                     location = location.With(currentNS);
-                    result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out notProcessed));
+                    result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
                 }
                 if (result.Count > 0)
                 {

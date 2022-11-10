@@ -46,7 +46,7 @@ namespace XSharp.LanguageService
                 CompletionState state;
                 var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
                 var result = new List<IXSymbol>();
-                result.AddRange( XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
+                result.AddRange( XSharpLookup.RetrieveElement(location, tokenList, state));
                 //
                 if (result.Count > 0 )
                 {

@@ -3,7 +3,7 @@ USING XSharpModel
 FUNCTION XSharpBuiltInFunctions(location as string) as STRING
     local sb as StringBuilder
     local asm as System.Reflection.Assembly
-    asm := System.Reflection.Assembly.GetAssembly(typeof(XAssembly))
+    asm := System.Reflection.Assembly.GetAssembly(TypeOf(XAssembly))
     sb := StringBuilder{1024}
     sb:AppendLine("//")
     sb:AppendLine("// Comments: This file contains the prototypes of the pseudo functions that are built into the compiler")
@@ -29,7 +29,7 @@ FUNCTION XSharpBuiltInFunctions(location as string) as STRING
     sb:AppendLine("")
     sb:AppendLine("/// <summary>Return the name of an identifier as a string</summary>")
     sb:AppendLine(e"/// <param name=\"expr\">An Identifier. This could be the name of a variable or type.</param>")
-    sb:AppendLine("FUNCTION Nameof(expr AS OBJECT) AS STRING")
+    sb:AppendLine("FUNCTION NameOf(expr AS OBJECT) AS STRING")
     sb:AppendLine("")
     sb:AppendLine("/// <summary>Convert an ASCII code to a character value. </summary>")
     sb:AppendLine("/// <remarks>Values between 1 and 127 are stored as literal by the compiler. Larger values are handled at runtime because they depend on the current codepage </remarks>")

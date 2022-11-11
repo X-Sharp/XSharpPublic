@@ -15,8 +15,6 @@ namespace XSharp.LanguageService
         {
             try
             {
-                if (XSettings.DisableGotoDefinition)
-                    return;
                 var file = TextView.TextBuffer.GetFile();
                 if (file == null || file.XFileType != XFileType.SourceCode)
                     return;
@@ -151,6 +149,8 @@ namespace XSharp.LanguageService
         private static void GotoSystemType(ITextView TextView, XPETypeSymbol petype, XPESymbol element)
         {
             var entity = FindSystemElement(petype, element);
+            if (entity == null || entity.File == null)
+                return;
             var xFile = entity.File;
             var file = TextView.TextBuffer.GetFile();
             // Copy references to the Orphan file project so type lookup works as expected
@@ -235,6 +235,7 @@ namespace XSharp.LanguageService
                     Semaphore = File.Create(semFile);
             }
             var ns = petype.Namespace + "." + petype.Assembly.Version;
+            ns = petype.Assembly.DisplayName+"\\"+ns;
             var name = petype.Name;
             var nspath = Path.Combine(WorkFolder, ns);
             if (!Directory.Exists(nspath))
@@ -242,7 +243,8 @@ namespace XSharp.LanguageService
                 Directory.CreateDirectory(nspath);
             }
             var temp = Path.Combine(nspath, petype.Name) + ".prg";
-            mustCreate = !File.Exists(temp);
+            var fi = new FileInfo(temp);
+            mustCreate = !fi.Exists || fi.Length < 10;
             if (mustCreate)
             {
                 VS.StatusBar.ShowMessageAsync("Generating reference source for " + petype.FullName).FireAndForget();

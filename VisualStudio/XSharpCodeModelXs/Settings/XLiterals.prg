@@ -73,6 +73,9 @@ BEGIN NAMESPACE XSharpModel
                 return "@@"+ name
             endif
             return name
+        static method GetKeywords() AS IEnumerable<String>
+            return _Keywords:Keys
+
     STATIC METHOD Choose(kw1 as string, kw2 as string, kw3 as string) as string
         SWITCH XSettings.KeywordCase
             CASE KeywordCase.Upper

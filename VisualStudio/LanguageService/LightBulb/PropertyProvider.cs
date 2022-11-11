@@ -69,29 +69,32 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            string searchFor;
-            bool generateProp;
-            // Do we have PROPERTY to Add ?
-            if (SearchField())
+            if (!XSettings.DisableLightBulb)
             {
-                if (SearchMissing(out searchFor, out generateProp))
+                string searchFor;
+                bool generateProp;
+                // Do we have PROPERTY to Add ?
+                if (SearchField())
                 {
-                    List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
-                    // Generate Property and Keep Field
-                    // Generate Property and Rename Field
+                    if (SearchMissing(out searchFor, out generateProp))
+                    {
+                        List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
+                        // Generate Property and Keep Field
+                        // Generate Property and Rename Field
 
-                    // Single line
-                    var PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, false, searchFor, !generateProp);
-                    suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { PropAction }));
-                    // Multi Line
-                    PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, true, searchFor, !generateProp);
-                    suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { PropAction }));
-                    //
-                    return suggest.ToArray();
-                }
-                else if (_memberEntity != null) // The Field exist, 
-                {
+                        // Single line
+                        var PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, false, searchFor, !generateProp);
+                        suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { PropAction }));
+                        // Multi Line
+                        PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, true, searchFor, !generateProp);
+                        suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { PropAction }));
+                        //
+                        return suggest.ToArray();
+                    }
+                    else if (_memberEntity != null) // The Field exist, 
+                    {
 
+                    }
                 }
             }
             return Enumerable.Empty<SuggestedActionSet>();

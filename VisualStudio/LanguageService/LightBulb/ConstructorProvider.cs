@@ -67,31 +67,34 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            try
+            if (!XSettings.DisableLightBulb)
             {
-                if (SearchCtor())
+                try
                 {
-                    List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
-                    if ((!_hasDefault) || (_fieldNProps?.Count > 0))
+                    if (SearchCtor())
                     {
-                        if (!_hasDefault)
+                        List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
+                        if ((!_hasDefault) || (_fieldNProps?.Count > 0))
                         {
-                            var ctorAction = new ConstructorSuggestedAction(this.m_textView, this.m_textBuffer, this._classEntity, this._insertionLine, null);
-                            suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ctorAction }));
-                        }
+                            if (!_hasDefault)
+                            {
+                                var ctorAction = new ConstructorSuggestedAction(this.m_textView, this.m_textBuffer, this._classEntity, this._insertionLine, null);
+                                suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ctorAction }));
+                            }
 
-                        if (_fieldNProps?.Count > 0)
-                        {
-                            var ctorAction = new ConstructorSuggestedAction(this.m_textView, this.m_textBuffer, this._classEntity, this._insertionLine, _fieldNProps, _existingCtor);
-                            suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ctorAction }));
+                            if (_fieldNProps?.Count > 0)
+                            {
+                                var ctorAction = new ConstructorSuggestedAction(this.m_textView, this.m_textBuffer, this._classEntity, this._insertionLine, _fieldNProps, _existingCtor);
+                                suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ctorAction }));
+                            }
+                            return suggest.ToArray();
                         }
-                        return suggest.ToArray();
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                WriteOutputMessage(e.Message);
+                catch (Exception e)
+                {
+                    WriteOutputMessage(e.Message);
+                }
             }
             return Enumerable.Empty<SuggestedActionSet>();
         }

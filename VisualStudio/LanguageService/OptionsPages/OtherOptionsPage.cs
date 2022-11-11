@@ -7,7 +7,7 @@ namespace XSharp.LanguageService.OptionsPages
 {
 
     [Guid(XSharpConstants.OtherOptionsPageGuidString)]
-    [SharedSettings("TextEditor.XSharp",false)]
+    [SharedSettings("TextEditor.XSharp", false)]
     [ComVisible(true)]
     class OtherOptionsPage : XSDialogPage<OtherOptionsControl>
     {
@@ -19,13 +19,49 @@ namespace XSharp.LanguageService.OptionsPages
         public bool ShowXmlComments { get; set; }
         [DefaultValue(false)]
         public bool LanguageServiceLogging { get; set; }
-        [DefaultValue(0)]
-        public int PublicStyle { get; set; }
-        [DefaultValue(0)]
-        public int PrivateStyle { get; set; }
         [DefaultValue(true)]
         public bool FormEditorMakeBackupFiles { get; set; }
 
+        [DefaultValue(true)]
+        public bool EnableHighlightWord { get; set; }
+        [DefaultValue(true)]
+        public bool EnableBraceMatching { get; set; }
 
+        [DefaultValue(true)]
+        public bool EnableKeywordmatching { get; set; }
+
+        [DefaultValue(true)]
+        public bool EnableLightBulbs { get; set; }
+
+        [DefaultValue(true)]
+        public bool EnableQuickInfo { get; set; }
+
+        [DefaultValue(true)]
+        public bool EnableParameterInfo { get; set; }
+
+        [DefaultValue(true)]
+        public bool EnableRegions { get; set; }
+        [DefaultValue(true)]
+        public bool EnableCodeCompletion { get; set; }
+
+        [DefaultValue(1)]
+        public int Initialized { get; set; }
+
+        public override void LoadSettingsFromStorage()
+        {
+            base.LoadSettingsFromStorage();
+            if (Initialized == 0)
+            {
+                EnableHighlightWord = true;
+                EnableBraceMatching = true;
+                EnableKeywordmatching = true;
+                EnableLightBulbs = true;
+                EnableQuickInfo = true;
+                EnableParameterInfo = true;
+                EnableCodeCompletion = true;
+                EnableRegions = true;
+                Initialized = 1;
+            }
+        }
     }
 }

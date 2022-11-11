@@ -30,13 +30,23 @@ namespace XSharp.LanguageService
     internal sealed class BraceMatchingProvider : BraceMatchingBase
     {
         public override string TextMarketTagType => ColorizerConstants.BraceFormatDefinition;
-        public override Dictionary<char, char> BraceList { get; } = new Dictionary<char, char>()
+        public override Dictionary<char, char> BraceList
         {
-            { '{', '}' },
-            { '(', ')' },
-            { '[', ']' },
-        };
-
+            get
+            {
+                var result = new Dictionary<char, char>()
+                {
+                    { '{', '}' },
+                    { '(', ')' },
+                    { '[', ']' },
+                };
+                if (XSettings.DisableBraceMatching)
+                {
+                    result.Clear();
+                }
+                return result;
+            }
+        }
 
     }
 
@@ -54,7 +64,7 @@ namespace XSharp.LanguageService
 
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
         {
-            if (XSettings.DisableBraceMatching)
+            if (XSettings.DisableKeywordMatching)
                 return null;
             if (textView == null || buffer == null)
                 return null;
@@ -66,7 +76,7 @@ namespace XSharp.LanguageService
     }
 
 
-    
+
     internal class KeyWordTag : TextMarkerTag
     {
         public KeyWordTag() : base(ColorizerConstants.KeyWordFormatDefinition)
@@ -145,7 +155,10 @@ namespace XSharp.LanguageService
 
             DateTime oStart, oEnd;
             TimeSpan timeSpan;
-
+            if (XSettings.DisableKeywordMatching)
+            {
+                yield break;
+            }
             oStart = DateTime.Now;
 
             if (spans.Count == 0 || _currentChar == null)   //there is no content in the buffer

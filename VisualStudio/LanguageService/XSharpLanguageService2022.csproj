@@ -137,6 +137,12 @@
     <Compile Include="OptionsPages\IndentingOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OptionsPages\GeneratorOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
+      <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -150,6 +156,9 @@
       <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionsPages\FormattingOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\GeneratorOptionsPage .cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="OptionsPages\OtherOptionsPage.cs">
@@ -232,6 +241,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\FormattingOptionsControl.resx">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsPages\GeneratorOptionsControl.resx">
+      <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\OtherOptionsControl.resx">
       <DependentUpon>OtherOptionsControl.cs</DependentUpon>

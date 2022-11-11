@@ -128,6 +128,14 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 string desc = this.GetModVis(mbr);
                 if (_explicitly)
                     desc += m_interface + ".";
+                if (mbr.Kind.IsMethod())
+                {
+                    desc += "METHOD ";
+                }
+                else if (mbr.Kind.IsProperty())
+                {
+                    desc += "PROPERTY ";
+                }
                 desc += mbr.Prototype;
                 //
                 if (mbr.Kind.IsMethod())

@@ -12,6 +12,8 @@ using System.ComponentModel.Composition;
 using static XSharp.XSharpConstants;
 using Microsoft.VisualStudio.Shell;
 using System.Globalization;
+using XSharpModel;
+using Microsoft.VisualStudio.Text.Editor;
 
 // This now uses the HightLightWord code in the Community Toolkit
 
@@ -27,6 +29,13 @@ namespace XSharp.LanguageService.Editors.HighlightWord
     {
 
         [Import] internal IClassifierAggregatorService _classifierService = null;
+
+        public new ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
+        {
+            if (XSettings.DisableHighLightWord)
+                return null;
+            return base.CreateTagger<T>(textView, buffer);
+        }
 
         // following 2 methods copied from Roslyn
 
@@ -83,6 +92,8 @@ namespace XSharp.LanguageService.Editors.HighlightWord
         public override FindOptions FindOptions => FindOptions.WholeWord;
         public override bool ShouldHighlight(string text)
         {
+            if (XSettings.DisableHighLightWord)
+                return false;
             if (XSharpSyntax.KeywordNames.ContainsKey(text))
                 return false;
 
@@ -109,7 +120,7 @@ namespace XSharp.LanguageService.Editors.HighlightWord
         }
         public override IEnumerable<SnapshotSpan> FilterResults(IEnumerable<SnapshotSpan> results)
         {
-            if (_classifierService == null)
+            if (_classifierService == null || XSettings.DisableHighLightWord)
                 return results;
 
             var filtered = new List<SnapshotSpan>();

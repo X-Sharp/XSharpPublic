@@ -79,7 +79,7 @@ namespace XSharp
         internal const string EditorName = "XSharp Source Code Editor";
         internal const string ProjectSystemName = "XSharp Project System";
 
-        internal const string ProjectExtension = ".xsproj";
+        internal const string ProjectExtension = "xsproj";
         internal const string ProjectExtensions = "xsproj;xsprj";   // the first version of X# has .xsprj (without o) as extension
         internal const string ProjectFileMask = LanguageName + " Project Files (*." + ProjectExtension + ");*." + ProjectExtension;
 
@@ -88,6 +88,7 @@ namespace XSharp
         public const string IntellisenseOptionsPageGuidString = "FDE6E4C9-FA8A-4B93-8B6D-88D9D2A5063E";
         public const string FormattingOptionsPageGuidString = "5A086A53-64B8-410A-BDC0-7D8D573F9B41";
         public const string OtherOptionsPageGuidString = "FC6059E3-9762-407B-83BB-A90D2C57D710";
+        public const string GeneratorOptionsPageGuidString = "A9C3281D-F068-4639-B573-82A2491E839F";
         public const string CompletionOptionsPageGuidString = "E37D51D4-30AA-4A28-81CA-1A486397640C";
         public const string FileNodePropertiesGuidString = "B7971A68-EA46-4814-AC67-1424A59DC7EB";
         public const string IndentingOptionsPageGuidString = "A8545AC1-4DD9-4A18-890C-C96CDC790950";

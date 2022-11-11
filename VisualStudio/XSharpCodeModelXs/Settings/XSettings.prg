@@ -26,22 +26,23 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EnableDebugLogging                 AS LOGIC AUTO
 
         PUBLIC STATIC PROPERTY DisableAssemblyReferences          AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY DisableBraceMatching               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableCaseSynchronization         AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableClassViewObjectView         AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableCodeCompletion              AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableEditorDropDowns             AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableEntityParsing               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableForeignProjectReferences    AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY DisableGotoDefinition              AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY DisableXSharpProjectReferences     AS LOGIC AUTO
+
+        // In the UI Now
         PUBLIC STATIC PROPERTY DisableHighLightWord               AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY DisableKeywordMatching             AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableLightBulb                   AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableParameterInfo               AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY DisablePeekDefinition              AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableQuickInfo                   AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableRegions                     AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableSyntaxHighlighting          AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY DisableXSharpProjectReferences     AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY DisableBraceMatching               AS LOGIC AUTO
 
         PUBLIC STATIC PROPERTY KeywordCase                        AS KeywordCase AUTO
         PUBLIC STATIC PROPERTY IdentifierCase                     AS LOGIC AUTO

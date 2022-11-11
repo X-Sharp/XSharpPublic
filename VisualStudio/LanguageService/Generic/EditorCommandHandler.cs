@@ -99,7 +99,7 @@ namespace XSharp.LanguageService
                 {
                     
                     case (int) VSConstants.VSStd97CmdID.GotoDefn:
-                        if (isSource && !XSettings.DisableGotoDefinition)
+                        if (isSource)
                         {
                             prgCmds[0].cmdf = (uint)OLECMDF.OLECMDF_ENABLED | (uint)OLECMDF.OLECMDF_SUPPORTED;
                             return VSConstants.S_OK;

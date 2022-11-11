@@ -21,21 +21,10 @@ namespace XSharp.LanguageService.OptionsPages
         }
         internal void loadSettings()
         {
-            
-            this.chkDisableParameters.Checked = _page.DisableParameterInfo;
             this.chkDisableEditorDropdowns.Checked = _page.DisableEditorDropdowns;
-            this.chkBraceMatching.Checked = _page.DisableBraceMatching;
             this.chkDisableClassViewObjectView.Checked = _page.DisableClassViewObjectView;
             this.chkDisableEntityParsing.Checked = _page.DisableEntityParsing;
-            this.chkDisableHighlightWord.Checked = _page.DisableHighLightWord;
-            this.chkDisableLigtBulb.Checked = _page.DisableLightBulb;
-            this.chkDisablePeekDefinition.Checked = _page.DisablePeekDefinition;
-            this.chkDisableQuickInfo.Checked = _page.DisableQuickInfo;
-            this.chkDisableRegions.Checked = _page.DisableRegions;
             this.chkDisableSyntaxColorization.Checked = _page.DisableSyntaxColorization;
-            this.chkDisableCaseSynchronization.Checked = _page.DisableCaseSynchronization;
-            this.chkDisableCodeCompletion.Checked = _page.DisableCodeCompletion;
-            this.chkDisableGotoDefinition.Checked = _page.DisableGotoDefinition;
             this.chkDisableAssemblyReferences.Checked = _page.DisableAssemblyReferences;
             this.chkDisableForeignProjectReferences.Checked = _page.DisableForeignProjectReferences;
             this.chkDisableXSharpProjectReferences.Checked = _page.DisableXSharpProjectReferences;
@@ -53,20 +42,10 @@ namespace XSharp.LanguageService.OptionsPages
         }
         internal void SaveSettings()
         {
-            _page.DisableParameterInfo = this.chkDisableParameters.Checked;
             _page.DisableEditorDropdowns = this.chkDisableEditorDropdowns.Checked;
-            _page.DisableBraceMatching = this.chkBraceMatching.Checked;
             _page.DisableClassViewObjectView = this.chkDisableClassViewObjectView.Checked;
             _page.DisableEntityParsing = this.chkDisableEntityParsing.Checked;
-            _page.DisableHighLightWord = this.chkDisableHighlightWord.Checked;
-            _page.DisableLightBulb = this.chkDisableLigtBulb.Checked;
-            _page.DisablePeekDefinition = this.chkDisablePeekDefinition.Checked;
-            _page.DisableQuickInfo = this.chkDisableQuickInfo.Checked;
-            _page.DisableRegions = this.chkDisableRegions.Checked;
             _page.DisableSyntaxColorization = this.chkDisableSyntaxColorization.Checked;
-            _page.DisableCaseSynchronization = this.chkDisableCaseSynchronization.Checked;
-            _page.DisableCodeCompletion = this.chkDisableCodeCompletion.Checked;
-            _page.DisableGotoDefinition = this.chkDisableGotoDefinition.Checked;
             _page.DisableAssemblyReferences = this.chkDisableAssemblyReferences.Checked;
             _page.DisableForeignProjectReferences = this.chkDisableForeignProjectReferences.Checked;
             _page.DisableXSharpProjectReferences = this.chkDisableXSharpProjectReferences.Checked;

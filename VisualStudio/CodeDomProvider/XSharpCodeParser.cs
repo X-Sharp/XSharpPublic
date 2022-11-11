@@ -1,22 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.IO;
-using LanguageService.CodeAnalysis.XSharp;
 using System.Diagnostics;
 using static XSharp.Parser.VsParser;
 using LanguageService.CodeAnalysis.Text;
 using LanguageService.SyntaxTree;
+using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 
 namespace XSharp.CodeDom
 {
 
     internal static class Helpers
     {
+        public static CodeDomDesignerData GetDesignerData(this CodeObject e)
+        {
+            if (e.UserData.Contains(typeof(CodeDomDesignerData)))
+            {
+                return (CodeDomDesignerData)e.UserData[typeof(CodeDomDesignerData)];
+            }
+            return null;
+        }
         /// <summary>
         /// Sort members on the line/column in which they are declared
         /// New members (without line/column) are sorted at the end of the list

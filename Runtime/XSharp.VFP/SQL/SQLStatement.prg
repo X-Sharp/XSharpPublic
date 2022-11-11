@@ -300,8 +300,10 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                     oDbParam:Value:= System.DateTime{dtValue:Year, dtValue:Month, dtValue:Day, dtValue:Hour, dtValue:Minute, dtValue:Second}
                 endif
             elseif oValue is Decimal
-                oDbParam:DbType:=DbType.Decimal
-                oDbParam:Value:= oValue
+                oDbParam:DbType:=DbType.String
+                // Ugly Hack : Some ODBC don't like decimal value, let's give them a String
+                // We could go Double, but may loose some accuracy (when related to currency)
+                oDbParam:Value:= oValue:ToString()
             elseif oValue is Currency
                 oDbParam:DbType:=DbType.Currency
                 oDbParam:Value:= oValue

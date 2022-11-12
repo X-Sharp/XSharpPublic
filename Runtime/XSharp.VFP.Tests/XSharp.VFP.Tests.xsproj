@@ -44,7 +44,7 @@
     <VO15>true</VO15>
     <VO16>false</VO16>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.12.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>false</NamedArgs>
@@ -55,6 +55,7 @@
     <NoWin32Manifest>False</NoWin32Manifest>
     <Allowdot>True</Allowdot>
     <Fox2>True</Fox2>
+    <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -66,12 +67,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings />
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>False</SignAssembly>
     <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
+    <AssemblyOriginatorKeyFile>$(Solutiondir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <CommandLineOption />
     <PPO>false</PPO>
     <Prefer32Bit>False</Prefer32Bit>
@@ -143,6 +144,7 @@
   <ItemGroup>
     <Compile Include="CopyToTests.prg" />
     <Compile Include="FinancialTests.prg" />
+    <Compile Include="SQLStatementTests.prg" />
     <Compile Include="TypeTests.prg" />
     <Compile Include="EmptyTests.prg" />
     <Compile Include="FoxArraytests.prg" />

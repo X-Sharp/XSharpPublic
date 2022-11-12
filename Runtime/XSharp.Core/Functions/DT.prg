@@ -4,6 +4,9 @@
 // See License.txt in the project root for license information.
 //
 USING System.Runtime.CompilerServices
+#define SECONDSPERMINUTE 60
+#define SECONDSPERHOUR (60*SECONDSPERMINUTE)
+#define SECONDSPERDAY (24*SECONDSPERHOUR)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ampm/*" />
 FUNCTION AmPm(c24HrTime AS STRING) AS STRING
@@ -14,14 +17,14 @@ FUNCTION AmPm(c24HrTime AS STRING) AS STRING
 		RETURN ""
 	ENDIF
 	nSeconds := Secs(c24HrTime)
-	IF (nSeconds) > 86400
+	IF (nSeconds) > SECONDSPERDAY
 		RETURN ""
 	ENDIF
-	nSeconds := nSeconds % 86400
-	nHours   := nSeconds / 3600
-	nSeconds := nSeconds % 3600
-	nMinutes := nSeconds / 60
-	nSeconds := nSeconds % 60
+	nSeconds := nSeconds % SECONDSPERDAY
+	nHours   := nSeconds / SECONDSPERHOUR
+	nSeconds := nSeconds % SECONDSPERHOUR
+	nMinutes := nSeconds / SECONDSPERMINUTE
+	nSeconds := nSeconds % SECONDSPERMINUTE
 	RETURN _TimeString(nHours, nMinutes, nSeconds, TRUE, GetAMExt(), GetPMExt())
 
 
@@ -33,7 +36,7 @@ FUNCTION ElapTime(cStartTime AS STRING,cEndTime AS STRING) AS STRING
 	nStart := Secs(cStartTime)
 	nEnd   := Secs(cEndTime)
 	IF nStart > nEnd
-		nDiff := 86400U + nEnd - nStart
+		nDiff := SECONDSPERDAY + nEnd - nStart
 	ELSE
 		nDiff := nEnd - nStart
 	ENDIF
@@ -109,18 +112,18 @@ FUNCTION Secs(cTime AS STRING) AS DWORD
 	CATCH
 		nSeconds := 0
 	END TRY
-	result := (DWORD) (nHours * 3600 + nMinutes * 60 + nSeconds)
+	result := (DWORD) (nHours * SECONDSPERHOUR + nMinutes * SECONDSPERMINUTE + nSeconds)
 	RETURN result
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/days/*" />
 FUNCTION Days(nSeconds AS REAL8) AS INT
-   RETURN (INT) (nSeconds / 84600) // 24*60*60
+   RETURN (INT) (nSeconds / SECONDSPERDAY) // 24*60*60
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seconds/*" />
 FUNCTION Seconds() AS REAL8
 	VAR dt := DateTime.Now
     LOCAL result AS REAL8
-    result := dt:Hour * 3600 + dt:Minute * 60 + dt:Second + (REAL8) (dt:Millisecond)/1000.0
+    result := dt:Hour * SECONDSPERHOUR + dt:Minute * SECONDSPERMINUTE + dt:Second + (REAL8) (dt:Millisecond)/1000.0
     IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
         result := Math.Round(result,3)
     ELSE
@@ -150,11 +153,11 @@ FUNCTION TString(nSeconds AS DWORD) AS STRING
    LOCAL dwHours AS DWORD
    LOCAL dwMinutes AS DWORD
    // truncate to one day
-   nSeconds := nSeconds % (24 * 60 * 60)
-   dwHours   := nSeconds / (60 * 60)
-   nSeconds := nSeconds % (60 * 60)
-   dwMinutes := nSeconds / 60
-   nSeconds := nSeconds % 60
+   nSeconds := nSeconds % (SECONDSPERDAY)
+   dwHours   := nSeconds / (SECONDSPERHOUR)
+   nSeconds := nSeconds % (SECONDSPERHOUR)
+   dwMinutes := nSeconds / SECONDSPERMINUTE
+   nSeconds := nSeconds % SECONDSPERMINUTE
    RETURN _TimeString(dwHours, dwMinutes, nSeconds, GetAmPm(), GetAMExt(), GetPMExt())
 
 

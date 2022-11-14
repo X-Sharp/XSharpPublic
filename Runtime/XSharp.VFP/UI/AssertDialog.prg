@@ -9,7 +9,7 @@ BEGIN NAMESPACE XSharp.VFP
 
 
 
-#region Windows Form Designer generated code
+
 
     /// <summary>
     /// Required method for Designer support - do not modify
@@ -38,8 +38,8 @@ BEGIN NAMESPACE XSharp.VFP
         SELF:Close()
         RETURN
 
+    PROPERTY Message as STRING GET lblMessage:Text SET lblMessage:Text := value
 
 
-#endregion
-END CLASS 
+END CLASS
 END NAMESPACE

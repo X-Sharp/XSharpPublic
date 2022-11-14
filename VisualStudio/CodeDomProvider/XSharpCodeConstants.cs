@@ -1,11 +1,6 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 namespace XSharp.CodeDom
 {
     public static class XSharpCodeConstants
@@ -13,7 +8,6 @@ namespace XSharp.CodeDom
         public static string USERDATA_SOURCECODE = "XSharp:Sourcecode"; // string
         public static string USERDATA_LEADINGTRIVIA = "XSharp:LeadingTrivia"; // string
         public static string USERDATA_ENDINGTRIVIA = "XSharp:EndingTrivia"; // string
-        public static string USERDATA_CODEBEFORE = "XSharp:CodeBefore"; // string
         public static string USERDATA_FROMDESIGNER = "XSharp:FromDesigner";// Logical value
         public static string USERDATA_MODIFIERS = "XSharp:Modifiers"; // string
         public static string USERDATA_ATTRIBUTES = "XSharp:Attributes"; // MemberAttributes
@@ -112,22 +106,49 @@ namespace XSharp.CodeDom
             }
 
         }
+
+        public static string GetString(this CodeObject e, string id)
+        {
+            if (e.UserData.Contains(id))
+            {
+                return (string)e.UserData[id];
+            }
+            return "";
+        }
+        public static bool GetBool(this CodeObject e, string id)
+        {
+            if (e.UserData.Contains(id))
+            {
+                return (bool)e.UserData[id];
+            }
+            return false;
+        }
+
         public static bool HasLeadingTrivia(this CodeObject e)
         {
             return e.UserData.Contains(USERDATA_LEADINGTRIVIA);
+        }
+        public static string GetLeadingTrivia(this CodeObject e)
+        {
+            return e.GetString(USERDATA_LEADINGTRIVIA);
+        }
+        public static void SetLeadingTrivia(this CodeObject e, string trivia)
+        {
+            e.UserData[USERDATA_LEADINGTRIVIA] = trivia;
         }
         public static bool HasEndingTrivia(this CodeObject e)
         {
             return e.UserData.Contains(USERDATA_ENDINGTRIVIA);
         }
-        public static CodeDomDesignerData GetDesignerData( this CodeObject e)
+        public static string GetEndingTrivia(this CodeObject e)
         {
-            if (e.UserData.Contains(typeof(CodeDomDesignerData)))
-            {
-                return (CodeDomDesignerData)e.UserData[typeof(CodeDomDesignerData)];
-            }
-            return null;
+            return e.GetString(USERDATA_ENDINGTRIVIA);
         }
+        public static void SetEndingTrivia(this CodeObject e, string trivia)
+        {
+            e.UserData[USERDATA_ENDINGTRIVIA] = trivia;
+        }
+
         public static bool HasSourceCode(this CodeObject e)
         {
             return e.UserData.Contains(USERDATA_SOURCECODE);
@@ -136,14 +157,9 @@ namespace XSharp.CodeDom
         {
             e.UserData[USERDATA_SOURCECODE] = source;
         }
-            public static string GetSourceCode(this CodeObject e)
+        public static string GetSourceCode(this CodeObject e)
         {
-            if (e.HasSourceCode())
-            {
-                var result = (string)e.UserData[USERDATA_SOURCECODE];
-                return result;
-            }
-            return "";
+            return e.GetString(USERDATA_SOURCECODE);
         }
         public static bool HasFromDesigner(this CodeObject o)
         {
@@ -171,12 +187,10 @@ namespace XSharp.CodeDom
         }
         public static bool GetNoHeader(this CodeObject o)
         {
-            if (o.UserData.Contains(USERDATA_NOHEADER))
-                return (bool) o.UserData[USERDATA_NOHEADER] ;
-            return false;
+            return o.GetBool(USERDATA_NOHEADER);
         }
 
-        public static void SetGlobals(this CodeObject o,  object globals)
+        public static void SetGlobals(this CodeObject o, object globals)
         {
             o.UserData[USERDATA_GLOBALS] = globals;
         }
@@ -191,22 +205,15 @@ namespace XSharp.CodeDom
         {
             o.UserData[USERDATA_FROMDESIGNER] = set;
         }
-        
         public static bool WasWritten(this CodeObject o)
         {
-            if (o.UserData.Contains(USERDATA_WASWRITTEN))
-                return (bool)o.UserData[USERDATA_WASWRITTEN];
-            return false;
+            return o.GetBool(USERDATA_WASWRITTEN);
         }
         public static void SetWritten(this CodeObject o, bool value)
         {
             o.UserData[USERDATA_WASWRITTEN] = value;
         }
 
-        public static bool HasCodeBefore(this CodeObject o)
-        {
-            return o.UserData.Contains(USERDATA_CODEBEFORE);
-        }
         public static bool HasModifiers(this CodeObject o)
         {
             return o.UserData.Contains(USERDATA_MODIFIERS) &&
@@ -234,13 +241,6 @@ namespace XSharp.CodeDom
             o.UserData[USERDATA_ATTRIBUTES] = a;
         }
 
-
-        public static string GetCodeBefore(this CodeObject o)
-        {
-            if (o.HasCodeBefore())
-                return (string)o.UserData[USERDATA_CODEBEFORE];
-            return "";
-        }
         public static CodeTypeDeclaration GetFirstClass(this CodeCompileUnit ccu)
         {
             foreach (CodeNamespace nameSpace in ccu.Namespaces)

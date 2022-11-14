@@ -9,6 +9,7 @@ USING System.Diagnostics
 USING System
 USING System.Linq
 USING LanguageService.CodeAnalysis.XSharp
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 BEGIN NAMESPACE XSharpModel
     ENUM PublicStyle
@@ -53,7 +54,28 @@ BEGIN NAMESPACE XSharpModel
             _refKeyword3       := " Ref "
             _outKeyword3       := " Out "
             _paramsKeyword3    := " Params "
+
+            var lexer := XSharpLexer.Create("", "rules.txt", XSharpParseOptions.Default)
+            var ruleNames := lexer:RuleNames
+            var keywords := XDictionary<STRING,STRING>{StringComparer.OrdinalIgnoreCase}
+            for var i := XSharpLexer.FIRST_KEYWORD+1 to XSharpLexer.LAST_KEYWORD-1
+                var rule := lexer:Vocabulary:GetSymbolicName(i)
+                if ! rule:Contains("_")
+                    keywords:Add(rule, rule)
+                endif
+            next
+            _Keywords := keywords
         RETURN
+        STATIC METHOD IsKeyword(name as string) as logic
+            return _Keywords:ContainsKey(name)
+        static method EscapeName(name as string) as string
+            if IsKeyword(name)
+                return "@@"+ name
+            endif
+            return name
+        static method GetKeywords() AS IEnumerable<String>
+            return _Keywords:Keys
+
     STATIC METHOD Choose(kw1 as string, kw2 as string, kw3 as string) as string
         SWITCH XSettings.KeywordCase
             CASE KeywordCase.Upper
@@ -65,6 +87,7 @@ BEGIN NAMESPACE XSharpModel
                 return kw3
         END SWITCH
 
+#region Fields
 
     STATIC PRIVATE _asKeyword1        AS STRING
     STATIC PRIVATE _asKeyword2        AS STRING
@@ -81,11 +104,17 @@ BEGIN NAMESPACE XSharpModel
     STATIC PRIVATE _paramsKeyword1    AS STRING
     STATIC PRIVATE _paramsKeyword2    AS STRING
     STATIC PRIVATE _paramsKeyword3    AS STRING
+    PRIVATE STATIC _Keywords    AS IDictionary<STRING,STRING>
+#endregion
+#region Properties
+
     STATIC PROPERTY AsKeyWord			AS STRING  GET Choose(_asKeyword1,_asKeyword2,_asKeyword3)
     STATIC PROPERTY IsKeyWord			AS STRING  GET Choose(_isKeyword1,_isKeyword2,_isKeyword3)
     STATIC PROPERTY RefKeyWord			AS STRING  GET Choose(_refKeyword1,_refKeyword2,_refKeyword3)
     STATIC PROPERTY OutKeyWord			AS STRING  GET Choose(_outKeyword1, _outKeyword2, _outKeyword3)
     STATIC PROPERTY ParamsKeyWord		AS STRING  GET Choose(_paramsKeyword1, _paramsKeyword2,_paramsKeyword3)
+#endregion
+#region Constants
     CONST PUBLIC ConstructorName := ".ctor" AS STRING
     CONST PUBLIC DestructorName := ".dtor" AS STRING
     CONST PUBLIC GlobalName := "(Global Scope)" AS STRING
@@ -94,7 +123,7 @@ BEGIN NAMESPACE XSharpModel
     CONST PUBLIC ObjectType := "OBJECT" AS STRING
     CONST PUBLIC NoType := "$NOTYPE$" AS STRING
     CONST PUBLIC XppDeclaration := "_declaration" AS STRING
-
+#endregion
     STATIC METHOD Capitalize( result as STRING) AS STRING
         SWITCH XSettings.KeywordCase
             CASE KeywordCase.Lower

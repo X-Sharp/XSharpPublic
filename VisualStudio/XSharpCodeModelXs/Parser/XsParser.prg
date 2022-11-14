@@ -195,6 +195,8 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
 
                     cDoc := cDoc:Replace("///","")
                     IF ! String.IsNullOrEmpty(cDoc)
+                        cDoc    := cDoc:Replace('\r',' ')
+                        cDoc    := cDoc:Replace('\n',' ')
                         cXmlDoc := "<doc>"+cDoc+"</doc>"
                     ELSE
                         cXmlDoc := NULL
@@ -1392,6 +1394,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         xType:SourceCode := source
         RETURN <XSourceEntity>{xType}
 
+    PRIVATE METHOD AddAsChild(xType as XSourceTypeSymbol) AS VOID
+        IF CurrentEntity != _globalType .AND. CurrentEntityKind:HasChildren()
+            xType:Parent := SELF:CurrentEntity
+        ENDIF
     PRIVATE METHOD ParseTypeDef() AS IList<XSourceEntity>
         /*
         interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?
@@ -1488,10 +1494,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 xType:AddTypeParameter(typepar)
             NEXT
         ENDIF
-        IF CurrentEntity != _globalType .AND. CurrentEntityKind:HasChildren()
-            xType:Parent := SELF:CurrentEntity
-        ENDIF
-
+        SELF:AddAsChild(xType)
         RETURN <XSourceEntity>{xType}
 
     PRIVATE METHOD ParseDelegate() AS IList<XSourceEntity>
@@ -1517,6 +1520,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         xType:SourceCode := source
         xType:TypeName := sig:DataType
         xType:File     := _file
+        SELF:AddAsChild(xType)
         VAR xMember  := XSourceMemberSymbol{sig, Kind.Delegate, _attributes, ;
             range, interval,_attributes:HasFlag(Modifiers.Static)} {SingleLine := TRUE}
         xMember:SourceCode := source
@@ -1905,6 +1909,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         SELF:ReadLine()
         VAR xType := XSourceTypeSymbol{id, Kind.Enum, _attributes, range, interval, _file} {BaseTypeName := type}
         xType:SourceCode := source
+        SELF:AddAsChild(xType)
         RETURN <XSourceEntity>{xType}
 
     PRIVATE METHOD ParseEnumMember() AS IList<XSourceEntity>
@@ -2010,6 +2015,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         IF String.IsNullOrEmpty(sAlign)
             xType:AddInterface(sAlign)
         ENDIF
+        SELF:AddAsChild(xType)
         RETURN <XSourceEntity>{xType}
 
     PRIVATE METHOD ParseVOUnion() AS IList<XSourceEntity>
@@ -2029,6 +2035,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         SELF:ReadLine()
         VAR xType := XSourceTypeSymbol{id, Kind.Union, _attributes, range, interval,_file}
         xType:SourceCode := source
+        SELF:AddAsChild(xType)
         RETURN <XSourceEntity>{xType}
 
     PRIVATE METHOD ParseVODLL() AS IList<XSourceEntity>
@@ -3200,6 +3207,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             NEXT
         ENDIF
         xType:ClassType := XSharpDialect.FoxPro
+        SELF:AddAsChild(xType)
         RETURN <XSourceEntity>{xType}
 
     PRIVATE METHOD ParseFoxMethod() AS IList<XSourceEntity>
@@ -3451,11 +3459,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             xType:BaseTypeName := baseType
         ENDIF
         xType:IsPartial := _attributes:HasFlag(Modifiers.Partial)
-        IF CurrentEntity != _globalType .AND. CurrentEntityKind:HasChildren()
-            xType:Parent := SELF:CurrentEntity
-        ENDIF
         xType:ClassType := XSharpDialect.XPP
         _xppVisibility := Modifiers.Public
+        SELF:AddAsChild(xType)
         RETURN <XSourceEntity>{xType}
 
     PRIVATE METHOD ParseXppClassVars() AS IList<XSourceEntity>

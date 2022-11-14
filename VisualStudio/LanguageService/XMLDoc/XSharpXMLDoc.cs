@@ -387,26 +387,61 @@ namespace XSharp.LanguageService
             else
                 return decodeAttributes(node);
         }
+        /// <summary>
+        /// Clean up HTML string: remove unneeded spaces and CR, LF, TAB chars.
+        /// Change Dot space to Dot Space CRLF
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         static string CleanUpResult(string source)
         {
             if (!string.IsNullOrEmpty(source))
             {
-                source = source.Replace("\n", "");
-                source = source.Replace("\r", "");
-                if (source.Contains("\t"))
+                source = source.Trim();
+                var sb = new StringBuilder();
+                var lastchar = '\0';
+                foreach (var ch in source)
                 {
-                    source = source.Replace("\t", " ");
+                    switch (ch)
+                    {
+                        case ' ':
+                            if (lastchar == '.')
+                            {
+                                sb.Append(ch);          // '.' ' ' will be followed by CRLF
+                                lastchar = ch;
+                                sb.Append("\r");
+                            }
+                            if (lastchar != ' ' && lastchar != '>')  // no space after '>' or after another space
+                            {
+                                lastchar = ' ';          
+                                sb.Append(lastchar);
+                            }
+                            break;
+                        case '\r':
+                        case '\n':
+                        case '\t':
+                            if (lastchar != ' ')
+                            {
+                                lastchar = ' ';
+                                sb.Append(lastchar);
+                            }
+                            break;
+                        case '<':
+                            if (lastchar == ' ')     // replace ' ' '<' with '<'
+                            {
+                                sb.Remove(sb.Length - 1, 1);
+                            }
+                            sb.Append(ch);
+                            lastchar = ch;
+                            break;
+                        default:
+                            sb.Append(ch);
+                            lastchar = ch;
+                            break;
+                    }
                 }
-                while (source.Contains("  "))
-                {
-                    source = source.Replace("  ", " ");
-                }
-                source = source.Replace(". ", ".\r");
-                
-                source = source.Replace("<br />", "\r");
-                source = source.Replace("\r\r", "\r");
-                source = source.Replace("\r ", "\r");
-                source = source.TrimStart();
+                sb.Replace("<br />", "\r");
+                source = sb.ToString();
             }
             return source;
         }

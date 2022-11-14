@@ -166,6 +166,7 @@ CLASS XProject
         return XDatabase.GetProjectIncludeFiles(SELF)
     END GET
     END PROPERTY
+
     PROPERTY RootNamespace as STRING GET _projectNode:RootNameSpace
 
 
@@ -183,8 +184,8 @@ CLASS XProject
         SELF:_ReferencedProjects := List<XProject>{}
         SELF:_StrangerProjects := List<Object>{}
         SELF:_projectNode := project
-        SELF:_SourceFilesDict   := XFileDictionary{}
-        SELF:_OtherFilesDict    := XFileDictionary{}
+        SELF:_SourceFilesDict   := XFileDictionary{SELF}
+        SELF:_OtherFilesDict    := XFileDictionary{SELF}
         SELF:_name              := System.IO.Path.GetFileNameWithoutExtension(project:Url)
         SELF:_lastRefCheck      := DateTime.MinValue
         SELF:_cachedAllNamespaces   := NULL
@@ -639,9 +640,9 @@ CLASS XProject
 
     METHOD FindXFile(fullPath AS STRING) AS XFile
         IF ! String.IsNullOrEmpty(fullPath)
-            VAR file := SELF:_SourceFilesDict:Find(fullPath,SELF)
+            VAR file := SELF:_SourceFilesDict:Find(fullPath)
             IF file == NULL
-                file := SELF:_OtherFilesDict:Find(fullPath,SELF)
+                file := SELF:_OtherFilesDict:Find(fullPath)
             ENDIF
             RETURN file
         ENDIF
@@ -1145,8 +1146,7 @@ CLASS XProject
                                     endif
                                 next
                             endif
-                            xmember:Range        := TextRange{melement:StartLine, melement:StartColumn, melement:EndLine, melement:EndColumn}
-                            xmember:Interval     := TextInterval{melement:Start, melement:Stop}
+                            melement:UpdateLocation(xmember)
                             if aFiles:ContainsKey(melement:IdFile)
                                 xmember:File         := aFiles[melement:IdFile]
                             ELSE
@@ -1154,7 +1154,6 @@ CLASS XProject
                                 aFiles:Add(melement:IdFile, file)
                                 xmember:File         := file
                             ENDIF
-                            xmember:XmlComments := melement:XmlComments
                         ELSE
                             NOP
                         ENDIF
@@ -1230,11 +1229,88 @@ CLASS XProject
         NEXT
         RETURN result
 
+    PRIVATE METHOD GetExtensionMethodsPerFile(list as IList<XDbResult>, oFile as XFile) AS IList<IXMemberSymbol>
+        VAR entities := List<IXMemberSymbol>{}
+        local sb as StringBuilder
+        local sLastType := "" as STRING
+
+        sb := StringBuilder{}
+        FOREACH VAR element IN list
+            if sLastType != element:TypeName
+                if ! String.IsNullOrEmpty(sLastType)
+                    sb:AppendLine("END CLASS")
+                endif
+                sb:AppendLine("PARTIAL STATIC CLASS "+element:TypeName)
+                sLastType := element:TypeName
+            endif
+            sb:AppendLine(element:SourceCode)
+
+        NEXT
+        sb:AppendLine("END CLASS")
+        VAR walker := SourceWalker{oFile, FALSE}
+        walker:Parse(sb:ToString())
+        foreach var entity in walker:EntityList
+            if entity is XSourceMemberSymbol var sms
+                entities:Add(sms)
+            endif
+        next
+        if entities:Count == list:Count
+            FOR var i := 0 to entities:Count-1
+                var entity := (XSourceMemberSymbol) entities[i]
+                var dbres  := list[i]
+                dbres:UpdateLocation(entity)
+            next
+        endif
+        RETURN entities
+
+    PRIVATE METHOD GetExtensionMethods(list as IList<XDbResult>) AS IList<IXMemberSymbol>
+        VAR entities := List<IXMemberSymbol>{}
+        var fileNames := List<String>{}
+        if list:Count > 0
+            foreach element as XDbResult in list
+                if !fileNames:Contains(element:FileName)
+                    fileNames:Add(element:FileName)
+                endif
+            next
+            foreach var fileName in fileNames
+                var entitiesPerFile := List<XDbResult>{}
+                foreach element as XDbResult in list:ToArray()
+                    if element:FileName == fileName
+                        entitiesPerFile:Add(element)
+                        list:Remove(element)
+                    endif
+                next
+                var oFile := SELF:FindXFile(fileName)
+                entities:AddRange(GetExtensionMethodsPerFile(entitiesPerFile, oFile))
+            next
+        endif
+        return entities
 
 
 
     METHOD GetExtensions( typeName AS STRING) AS IList<IXMemberSymbol>
-        RETURN SystemTypeController.LookForExtensions( typeName, SELF:_AssemblyReferences)
+        local result := List<IXMemberSymbol>{} as List<IXMemberSymbol>
+        local type as IXTypeSymbol
+        local names as List<String>
+        local usings as List<String>
+        usings := List<String>{}
+        names := List<String>{}
+        names:Add(typeName)
+        type := SELF:FindType(typeName, usings)
+        if type != null
+            foreach var ifname in type:Interfaces
+                var iftype := SELF:FindType(ifname, usings)
+                if iftype != null
+                    names:Add(iftype:FullName)
+                endif
+            next
+        endif
+        foreach var name in names
+            result:AddRange(SystemTypeController.LookForExtensions( name, SELF:_AssemblyReferences))
+            var dbList := XDatabase.GetExtensionMethods(SELF:DependentProjectList, name)
+            result:AddRange(GetExtensionMethods(dbList))
+        next
+        return result
 
     METHOD GetFileById(nId as INT64) AS XFile
         VAR name := SELF:_SourceFilesDict:FindById(nId)
@@ -1432,8 +1508,10 @@ CLASS XProject
 
     CLASS XFileDictionary
         PROTECTED dict AS ConcurrentDictionary<STRING, INT64>
-        CONSTRUCTOR()
+        PROTECTED prj as XProject
+        CONSTRUCTOR(project as XProject)
             dict := ConcurrentDictionary<STRING, INT64>{StringComparer.OrdinalIgnoreCase}
+            prj := project
 
         METHOD Clear() AS VOID
             SELF:dict:Clear()
@@ -1442,9 +1520,9 @@ CLASS XProject
                 dict:TryAdd(fileName,-1)
             ENDIF
 
-        METHOD Find(fileName AS STRING, project AS XProject) AS XFile
+        METHOD Find(fileName AS STRING) AS XFile
             IF dict:ContainsKey(fileName)
-                VAR result := XFile{fileName, project}
+                VAR result := XFile{fileName, prj}
                 XDatabase.Read(result)
                 dict[fileName] := result:Id
                 RETURN result
@@ -1465,6 +1543,11 @@ CLASS XProject
             ENDIF
             RETURN FALSE
         PROPERTY Keys AS ICollection<STRING> GET dict:Keys
+        METHOD First() as XFile
+            if dict:Count > 0
+                return SELF:Find(dict:Keys:First())
+            endif
+            return NULL
     END CLASS
 
 

@@ -15,14 +15,11 @@ namespace XSharp.LanguageService
         {
             try
             {
-                if (XSettings.DisableGotoDefinition)
-                    return;
                 var file = TextView.TextBuffer.GetFile();
                 if (file == null || file.XFileType != XFileType.SourceCode)
                     return;
                 WriteOutputMessage("CommandFilter.GotoDefn()");
                 ModelWalker.Suspend();
-
 
                 var snapshot = TextView.TextBuffer.CurrentSnapshot;
 
@@ -36,15 +33,14 @@ namespace XSharp.LanguageService
                 }
                 string currentNS = TextView.FindNamespace();
                 var location = TextView.FindLocation();
-                var state = CompletionState.General | CompletionState.Types | CompletionState.Namespaces;
-                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location,  out state);
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location,  out var state);
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 var result = new List<IXSymbol>();
 
-                result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed));
+                result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
                 //
-                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (result.Count > 0)
                 {
                     var element = result[0];
@@ -82,7 +78,7 @@ namespace XSharp.LanguageService
                     tokenList.Clear();
                     tokenList.Add(token);
                     location = location.With(currentNS);
-                    result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out notProcessed));
+                    result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
                 }
                 if (result.Count > 0)
                 {
@@ -140,11 +136,22 @@ namespace XSharp.LanguageService
             return XSharpXMLDocMember.GetDoc(asmName, key);
         }
 
+        internal static XSourceEntity FindSystemElement(XPETypeSymbol petype, XPESymbol element)
+        {
+            if (element is XPEMemberSymbol mem && mem.IsExtension)
+            {
+                petype = mem.DeclaringTypeSym;
+            }
+            var xFile = CreateFileForSystemType(petype, element);
+            return FindElementInFile(xFile, petype, element);
+        }
 
         private static void GotoSystemType(ITextView TextView, XPETypeSymbol petype, XPESymbol element)
         {
-            var xFile = CreateFileForSystemType(petype, element);
-            var entity = FindElementInFile(xFile, petype, element);
+            var entity = FindSystemElement(petype, element);
+            if (entity == null || entity.File == null)
+                return;
+            var xFile = entity.File;
             var file = TextView.TextBuffer.GetFile();
             // Copy references to the Orphan file project so type lookup works as expected
             var orphProject = XSolution.OrphanedFilesProject;
@@ -162,7 +169,7 @@ namespace XSharp.LanguageService
 
         }
 
-        public static XSourceEntity FindElementInFile(XFile file, XPETypeSymbol petype, XSymbol element)
+        private static XSourceEntity FindElementInFile(XFile file, XPETypeSymbol petype, XSymbol element)
         {
             var walker = new SourceWalker(file, false);
             walker.Parse(false);
@@ -192,7 +199,7 @@ namespace XSharp.LanguageService
             }
             return result;
         }
-        internal static XFile CreateFileForSystemType(XPETypeSymbol petype, XPESymbol element)
+        private static XFile CreateFileForSystemType(XPETypeSymbol petype, XPESymbol element)
         {
             asmName = petype.Assembly;
             bool mustCreate = false;
@@ -228,6 +235,7 @@ namespace XSharp.LanguageService
                     Semaphore = File.Create(semFile);
             }
             var ns = petype.Namespace + "." + petype.Assembly.Version;
+            ns = petype.Assembly.DisplayName+"\\"+ns;
             var name = petype.Name;
             var nspath = Path.Combine(WorkFolder, ns);
             if (!Directory.Exists(nspath))
@@ -235,7 +243,8 @@ namespace XSharp.LanguageService
                 Directory.CreateDirectory(nspath);
             }
             var temp = Path.Combine(nspath, petype.Name) + ".prg";
-            mustCreate = !File.Exists(temp);
+            var fi = new FileInfo(temp);
+            mustCreate = !fi.Exists || fi.Length < 10;
             if (mustCreate)
             {
                 VS.StatusBar.ShowMessageAsync("Generating reference source for " + petype.FullName).FireAndForget();

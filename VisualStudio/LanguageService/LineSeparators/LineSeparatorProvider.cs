@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
-
+using XSharpModel;
 
 namespace XSharp.LanguageService
 {
@@ -37,12 +37,15 @@ namespace XSharp.LanguageService
  
         protected override Task CreatedAsync(DocumentView docView)
         {
-            var buffer = Document.TextBuffer;
-            if (!buffer.Properties.TryGetProperty<LineSeparatorManager>(typeof(LineSeparatorManager),
-                out _))
+            if ( XSettings.EditorShowDividers)
             {
-                var lineSeparatorManager = new LineSeparatorManager(docView, this, tagAggregatorFactoryService, editorFormatMapService);
-                buffer.Properties.AddProperty(typeof(LineSeparatorManager), lineSeparatorManager);
+                var buffer = Document.TextBuffer;
+                if (!buffer.Properties.TryGetProperty<LineSeparatorManager>(typeof(LineSeparatorManager),
+                    out _))
+                {
+                    var lineSeparatorManager = new LineSeparatorManager(docView, this, tagAggregatorFactoryService, editorFormatMapService);
+                    buffer.Properties.AddProperty(typeof(LineSeparatorManager), lineSeparatorManager);
+                }
             }
             return Task.CompletedTask;
         }

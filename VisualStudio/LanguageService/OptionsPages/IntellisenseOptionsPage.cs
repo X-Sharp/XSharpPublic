@@ -22,20 +22,10 @@ namespace XSharp.LanguageService.OptionsPages
         public bool IncludeFieldsInNavigationBars { get; set; }
         public bool SortNavigationBars { get; set; }
         public bool ShowMembersOfCurrentTypeOnly { get; set; }
-        public bool DisableBraceMatching { get; set; }
-        public bool DisableLightBulb { get; set; }
-        public bool DisableHighLightWord { get; set; }
-        public bool DisableParameterInfo { get; set; }
-        public bool DisablePeekDefinition { get; set; }
-        public bool DisableQuickInfo { get; set; }
         public bool DisableSyntaxColorization { get; set; }
         public bool DisableEntityParsing { get; set; }
-        public bool DisableRegions { get; set; }
-        public bool DisableCaseSynchronization { get; set; }
         public bool DisableEditorDropdowns { get; set; }
         public bool DisableClassViewObjectView { get; set; }
-        public bool DisableCodeCompletion { get; set; }
-        public bool DisableGotoDefinition { get; set; }
         public bool DisableAssemblyReferences { get; set; }
         public bool DisableForeignProjectReferences { get; set; }
         public bool DisableXSharpProjectReferences { get; set; }

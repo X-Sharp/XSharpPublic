@@ -14,7 +14,6 @@ BEGIN NAMESPACE XSharpModel
 
    STATIC CLASS TypeMemberExtensions
 
-
       STATIC METHOD ClipperParameters(SELF tm as IXMemberSymbol) AS STRING
           IF tm:Kind:HasParameters()
                 VAR names := StringBuilder{}
@@ -22,7 +21,7 @@ BEGIN NAMESPACE XSharpModel
                     if names:Length > 0
                         names:Append(", ")
                     endif
-                    names:Append(param:Name)
+                    names:Append(XLiterals.EscapeName(param:Name))
                 NEXT
                 return names:ToString()
           ENDIF
@@ -35,7 +34,7 @@ BEGIN NAMESPACE XSharpModel
             FOREACH VAR typeParam IN tm:TypeParameters
                vars:Append(delim)
                delim := ","
-               vars:Append(typeParam)
+               vars:Append(XLiterals.EscapeName(typeParam))
             NEXT
             vars:Append(">")
          ENDIF
@@ -89,14 +88,14 @@ BEGIN NAMESPACE XSharpModel
          IF (tm:Kind != Kind.Field)
             desc := desc + tm:Kind:ToDisplayString()
             IF (tm:Kind == Kind.VODefine)
-               RETURN desc + tm:Name
+               RETURN desc + XLiterals.EscapeName(tm:Name)
             ENDIF
          ENDIF
          RETURN desc + " "+tm:GetProtoType()
 
       STATIC METHOD GetFullName(SELF tm as IXMemberSymbol) AS STRING
          IF (tm:Parent != NULL)
-            RETURN tm:Parent:FullName +"." + tm:Name
+            RETURN tm:Parent:FullName +"." + XLiterals.EscapeName(tm:Name)
          ENDIF
          RETURN tm:Name
 
@@ -141,7 +140,11 @@ BEGIN NAMESPACE XSharpModel
          END SWITCH
          var sb := StringBuilder{}
          sb:Append(prefix)
-         sb:Append(tm:ParentType:FullName)
+         if tm:IsExtension .and. tm is XPEMemberSymbol var petm
+            sb:Append(petm:DeclaringTypeSym:FullName)
+         else
+            sb:Append(tm:ParentType:FullName)
+         endif
          sb:Append("."+name)
          IF tm:TypeParameters:Count > 0
             sb:Append("``"+tm:TypeParameters:Count:ToString())

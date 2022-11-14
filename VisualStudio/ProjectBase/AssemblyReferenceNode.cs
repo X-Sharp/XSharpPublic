@@ -117,6 +117,10 @@ namespace Microsoft.VisualStudio.Project
 
             string include = this.ItemNode.GetMetadata(ProjectFileConstants.Include);
 
+            if (include.Contains("\\"))
+            {
+                include = System.IO.Path.GetFileNameWithoutExtension(include);
+            }
             this.CreateFromAssemblyName(new System.Reflection.AssemblyName(include));
         }
 

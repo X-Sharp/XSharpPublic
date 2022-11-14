@@ -1,22 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.IO;
-using LanguageService.CodeAnalysis.XSharp;
 using System.Diagnostics;
 using static XSharp.Parser.VsParser;
 using LanguageService.CodeAnalysis.Text;
 using LanguageService.SyntaxTree;
+using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 
 namespace XSharp.CodeDom
 {
 
     internal static class Helpers
     {
+        public static CodeDomDesignerData GetDesignerData(this CodeObject e)
+        {
+            if (e.UserData.Contains(typeof(CodeDomDesignerData)))
+            {
+                return (CodeDomDesignerData)e.UserData[typeof(CodeDomDesignerData)];
+            }
+            return null;
+        }
         /// <summary>
         /// Sort members on the line/column in which they are declared
         /// New members (without line/column) are sorted at the end of the list
@@ -46,13 +51,7 @@ namespace XSharp.CodeDom
                         continue;
                    processed.Add(source);
                 }
-                else
-                {
-                    if (member is CodeMemberField field)
-                    {
-                        newfields.Add(field);
-                    }
-                }
+ 
                 int line, col;
                 var data = member.GetDesignerData();
                 if (data != null)
@@ -63,6 +62,7 @@ namespace XSharp.CodeDom
                 else if (member is CodeMemberField field)
                 {
                     line = col = -1;
+                    newfields.Add(field);
                 }
                 else
                 {
@@ -74,31 +74,22 @@ namespace XSharp.CodeDom
                     items.Add(key, member);
                 }
             }
-            var fieldStart = false;
             if (! hasfields)
             {
                 foreach (var field in newfields)
                 {
                     result.Add(field);
                 }
+                newfields.Clear();
             }
             foreach (System.Collections.DictionaryEntry item in items)
             {
-                if (item.Value is CodeMemberField)
+                if (!(item.Value is CodeMemberField))
                 {
-                    if (!fieldStart)
+                    // Insert new fields before the methods in the source file.
+                    if (newfields.Count > 0)
                     {
-                        fieldStart = true;
-                    }
-                }
-                else
-                {
-                    if (fieldStart)
-                    {
-                        foreach (var field in newfields)
-                        {
-                            result.Add(field);
-                        }
+                        result.AddRange(newfields.ToArray());
                         newfields.Clear();
                     }
                 }

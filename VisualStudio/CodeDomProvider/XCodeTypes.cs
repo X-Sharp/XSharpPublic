@@ -61,12 +61,12 @@ namespace XSharp.CodeDom
     {
         public string FileName { get; set; } = "";
         public string Source { get; set; } = "";
-
+        public bool MustWrite { get; set; } = false;
         public CodeTypeMemberCollection Members { get; set; } = new CodeTypeMemberCollection();
         public bool GenerateHeader { get; set; }
         public XCodeCompileUnit() : base()
         {
-            
+
         }
         public XCodeCompileUnit(CodeCompileUnit source) : base()
         {
@@ -91,13 +91,17 @@ namespace XSharp.CodeDom
     {
         public XCodeCompileUnit FormUnit { get; set; }
         public XCodeCompileUnit DesignerUnit { get; set; }
+        public CodeNamespace FormNamespace { get; set; }
+        public CodeNamespace DesignerNamespace { get; set; }
         public XMergedCodeCompileUnit() : base()
         {
 
         }
-        public XMergedCodeCompileUnit(CodeCompileUnit source) : base(source)
+        public XMergedCodeCompileUnit(XCodeCompileUnit source) : base(source)
         {
             source.CopyUserData(this);
+            this.FileName = source.FileName;
+            this.FormUnit = source;
         }
     }
 

@@ -263,7 +263,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ClassType         AS XSharpDialect AUTO
 
       STATIC METHOD CreateGlobalType(xfile AS XFile) AS XSourceTypeSymbol
-         VAR globalType := XSourceTypeSymbol{XLiterals.GlobalName, Kind.Class, Modifiers.Public+Modifiers.Static, TextRange.Empty, TextInterval{}, xfile}
+         VAR globalType := XSourceTypeSymbol{XLiterals.GlobalName, Kind.Class, Modifiers.Public+Modifiers.Static, TextRange.Empty, TextInterval.Empty, xfile}
          globalType:IsPartial:=TRUE
          RETURN globalType
 
@@ -308,8 +308,15 @@ BEGIN NAMESPACE XSharpModel
                 sb:AppendLine("USING STATIC "+strusing)
             next
          ENDIF
-         sb:AppendLine(element:SourceCode)
+         if element != null
+            var xml    := element:XmlCommentsAsSource
+            if !String.IsNullOrEmpty(xml)
+                sb:AppendLine(xml)
+            endif
+            sb:AppendLine(element:SourceCode)
+         endif
          FOREACH VAR xmember IN members
+            var xml    := xmember:XmlCommentsAsSource
             var source := xmember:SourceCode
             // replace private with hidden to avoid confusion
             if source:ToLower():StartsWith("private")
@@ -318,8 +325,10 @@ BEGIN NAMESPACE XSharpModel
             if source:ToLower():StartsWith("public")
                source := "EXPORT "+source:Substring(6)
             endif
+            if !String.IsNullOrEmpty(xml)
+                sb:AppendLine(xml)
+            endif
             sb:AppendLine(source)
-
             SWITCH xmember:Kind
             CASE Kind.Property
                source := xmember:SourceCode:ToLower():Replace('\t',' ')
@@ -343,20 +352,22 @@ BEGIN NAMESPACE XSharpModel
                ENDIF
             END SWITCH
          NEXT
-         SWITCH element:Kind
-         CASE Kind.Class
-            IF element:ClassType == (INT) XSharpDialect.XPP
-               sb:AppendLine("ENDCLASS")
-            ELSEIF element:ClassType == (INT) XSharpDialect.FoxPro
-               sb:AppendLine("ENDDEFINE")
-            ELSE
-               sb:AppendLine("END CLASS")
-            ENDIF
-         CASE Kind.Structure
-            sb:AppendLine("END STRUCTURE")
-         CASE Kind.Interface
-            sb:AppendLine("END INTERFACE")
-         END SWITCH
+         IF element != NULL
+             SWITCH element:Kind
+             CASE Kind.Class
+                IF element:ClassType == (INT) XSharpDialect.XPP
+                   sb:AppendLine("ENDCLASS")
+                ELSEIF element:ClassType == (INT) XSharpDialect.FoxPro
+                   sb:AppendLine("ENDDEFINE")
+                ELSE
+                   sb:AppendLine("END CLASS")
+                ENDIF
+             CASE Kind.Structure
+                sb:AppendLine("END STRUCTURE")
+             CASE Kind.Interface
+                sb:AppendLine("END INTERFACE")
+             END SWITCH
+         ENDIF
          RETURN sb:ToString()
 
 END CLASS

@@ -447,10 +447,21 @@ namespace XSharp.Project
                 switch (type)
                 {
                     case XFileType.ManagedResource:
-                        if (!msBuildItem.HasMetadata(ProjectFileConstants.Generator))
+                        if (!this.Parent.HasDesigner)
                         {
-                            this.SubType = ProjectFileAttributeValue.Designer;
-                            this.Generator = "ResXFileCodeGenerator";
+                            if (!msBuildItem.HasMetadata(ProjectFileConstants.Generator))
+                            {
+                                this.SubType = ProjectFileAttributeValue.Designer;
+                                this.Generator = "ResXFileCodeGenerator";
+                            }
+                        }
+                        else
+                        {
+                            if (msBuildItem.HasMetadata(ProjectFileConstants.Generator))
+                            {
+                                this.SubType = null;
+                                this.Generator = null;
+                            }
                         }
                         break;
                     case XFileType.Settings:

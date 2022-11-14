@@ -486,16 +486,19 @@ namespace XSharp.LanguageService
                     // #define, #ifdef etc
                     lineState.SetFlags(token.Line - 1, LineFlags.Preprocessor);
                     result = Token2ClassificationSpan(token, snapshot, xsharpPPType);
-                    switch (token.Type)
+                    if (!XSettings.DisableRegions)
                     {
-                        case XSharpLexer.PP_REGION:
-                            regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
-                            break;
-                        case XSharpLexer.PP_ENDREGION:
-                            regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
-                            break;
-                        default:
-                            break;
+                        switch (token.Type)
+                        {
+                            case XSharpLexer.PP_REGION:
+                                regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
+                                break;
+                            case XSharpLexer.PP_ENDREGION:
+                                regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
+                                break;
+                            default:
+                                break;
+                        }
                     }
                     break;
                 case XSharpLexer.DEFOUTCHANNEL:                // code in an inactive #ifdef

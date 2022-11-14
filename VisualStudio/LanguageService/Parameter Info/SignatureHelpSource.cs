@@ -62,6 +62,21 @@ namespace XSharp.LanguageService
             m_documentation = doc;
             m_parameters = parameters;
             //m_subjectBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
+            if (content.IndexOf("SELF",StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                var pos = content.IndexOf("(");
+                var pos2 = content.IndexOf(",",pos);
+                if (pos2 > 0)
+                {
+                    content = content.Substring(0, pos + 1) + content.Substring(pos2 + 1);
+                }
+                else
+                {
+                    pos2 = content.IndexOf(")", pos);
+                    content = content.Substring(0, pos+ 1) + content.Substring(pos2 );
+                }
+                m_content = content;
+            }
         }
 
         public event EventHandler<CurrentParameterChangedEventArgs> CurrentParameterChanged;
@@ -81,14 +96,30 @@ namespace XSharp.LanguageService
         internal static int CalculateCommaPosition(string sigText, int lastPos, ITextBuffer buffer)
         {
             var doc = buffer.GetDocument();
-            var tokens = doc.GetTokens(sigText);
+            var tokens = doc.GetTokens(sigText.Substring(1)); // remove starting ( or {
             int commaCount = 0;
+            int inSub = 0;
             foreach (var token in tokens)
             {
-                if (token.Column > lastPos)
+                if (token.Column >= lastPos)
                     break;
-                if (token.Type == XSharpLexer.COMMA)
-                    commaCount += 1;
+                switch (token.Type)
+                {
+                    case XSharpLexer.COMMA:
+                        if (inSub == 0)
+                            commaCount += 1;
+                        break;
+                    case XSharpLexer.LPAREN:
+                    case XSharpLexer.LCURLY:
+                    case XSharpLexer.LBRKT:
+                        inSub += 1;
+                        break;
+                    case XSharpLexer.RPAREN:
+                    case XSharpLexer.RCURLY:
+                    case XSharpLexer.RBRKT:
+                        inSub -= 1;
+                        break;
+                }
             }
             return commaCount;
         }
@@ -290,6 +321,7 @@ namespace XSharp.LanguageService
 
             Debug($"XSharpSignatureHelpSource.CreateSignature( {methodSig})");
             var sig = new XSharpVsSignature(session.TextView, methodSig, doc, null);
+            methodSig = sig.Content; // this has SELF parameters stripped
             var names = new List<string>();
             var descriptions = new List<string>();
             if (member != null)

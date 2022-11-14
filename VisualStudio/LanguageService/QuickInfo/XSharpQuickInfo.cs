@@ -97,7 +97,7 @@ namespace XSharp.LanguageService
                 if (cancellationToken.IsCancellationRequested)
                     return null;
                 var lookupresult = new List<IXSymbol>();
-                lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
+                lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
                 var lastToken = tokenList.LastOrDefault();
                 //
                if (lookupresult.Count > 0)
@@ -358,6 +358,10 @@ namespace XSharp.LanguageService
                 if (!this.typeMember.Kind.IsGlobalTypeMember())
                 {
                     name = this.typeMember.Parent.Name;
+                    if (typeMember.IsExtension && typeMember is XPEMemberSymbol pesym)
+                    {
+                        name = pesym.DeclaringTypeSym.Name;
+                    }
                     var pos = name.IndexOfAny(new char[] { '`', '<' });
                     {
                         if (pos > 0)
@@ -374,6 +378,7 @@ namespace XSharp.LanguageService
                 content.addText(name);
                 if (this.typeMember.Kind.HasParameters())
                 {
+                    var isExt = typeMember.IsExtension;
                     content.addKeyword(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
                     bool first = true;
                     foreach (var var in this.typeMember.Parameters)
@@ -381,6 +386,11 @@ namespace XSharp.LanguageService
                         if (!first)
                         {
                             content.addText(", ");
+                        }
+                        if (isExt)
+                        {
+                            content.addKeyword("SELF ");
+                            isExt = false;
                         }
                         first = false;
                         addVarInfo(content, var);

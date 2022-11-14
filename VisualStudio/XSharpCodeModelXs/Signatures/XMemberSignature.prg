@@ -11,6 +11,7 @@ USING System.Linq
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
    CLASS XMemberSignature  INHERIT XBaseSignature
+
       PROPERTY Id                       AS STRING                   AUTO
       PROPERTY Parameters               AS List<IXParameterSymbol>  AUTO
       PROPERTY CallingConvention        AS CallingConvention        AUTO
@@ -22,11 +23,16 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ParameterList AS STRING
          GET
             VAR parameters := ""
+            var isExt := SELF:IsExtension
             FOREACH variable AS IXParameterSymbol IN SELF:Parameters
                IF (parameters:Length > 0)
                   parameters := parameters + ", "
                ENDIF
-               parameters += variable:Name
+               if isExt
+                   parameters += "SELF "
+                   isExt := FALSE
+               endif
+               parameters += XLiterals.EscapeName(variable:Name)
                IF !String.IsNullOrEmpty(variable:Value)
                   parameters += " := "+variable:Value
                ENDIF

@@ -6,19 +6,16 @@
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using LanguageService.SyntaxTree.Misc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LanguageService.SyntaxTree.Tree;
-using System.CodeDom;
-using System.Reflection;
 using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
-using System.Diagnostics;
-using System.IO;
-using XSharpModel;
+using System;
+using System.CodeDom;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using XSharpModel;
 
 namespace XSharp.CodeDom
 {
@@ -37,7 +34,7 @@ namespace XSharp.CodeDom
         internal Stack<ParserRuleContext> contextStack;
         internal ParserRuleContext currentContext;
         public CodeTypeDeclaration CurrentType { get; protected set; }
-       
+
 
 #if DUMPSNIPPETS
         const string SnippetsTxt = @"D:\Snippets.txt";
@@ -70,7 +67,7 @@ namespace XSharp.CodeDom
 
         }
 
-#region Members Cache
+        #region Members Cache
         protected Dictionary<string, XMemberType> _members;  // member cache for our members and parent class members
         protected void addClassMember(XMemberType mtype)
         {
@@ -199,7 +196,7 @@ namespace XSharp.CodeDom
             if (currentContext != null)
                 contextStack.Push(currentContext);
             currentContext = context;
-            if (! FieldList.ContainsKey(context))
+            if (!FieldList.ContainsKey(context))
             {
                 FieldList.Add(context, new List<XCodeMemberField>());
             }
@@ -288,7 +285,7 @@ namespace XSharp.CodeDom
         /// <param name="codeobject"></param>
         /// <param name="attributes"></param>
         /// <param name="context"></param>
-        protected void AddMemberAttributes( CodeObject codeobject, MemberAttributes attributes, XSharpParserRuleContext context)
+        protected void AddMemberAttributes(CodeObject codeobject, MemberAttributes attributes, XSharpParserRuleContext context)
         {
             string sourceText = "";
             if (context != null)
@@ -297,7 +294,7 @@ namespace XSharp.CodeDom
 
                 if (!string.IsNullOrWhiteSpace(sourceText))
                 {
-                   // Save original modifiers, so we can keep their preference
+                    // Save original modifiers, so we can keep their preference
                     codeobject.SetModifiers(attributes, sourceText);
                 }
             }
@@ -1053,7 +1050,7 @@ namespace XSharp.CodeDom
                         value = value.Substring(1);
                     }
                     if (value.Length == 3)
-                    { 
+                    {
                         value = value.Substring(1, 1);
                     }
                     else  // escaped notation
@@ -1100,7 +1097,7 @@ namespace XSharp.CodeDom
                 var type = findType(sName);
                 if (type != null)
                 {
-                   return new XCodeTypeReference(type);
+                    return new XCodeTypeReference(type);
                 }
             }
             if (context is XSharpParser.QualifiedNameContext qual)
@@ -1304,7 +1301,7 @@ namespace XSharp.CodeDom
         {
             CodeDomDesignerData data = new CodeDomDesignerData();
             //
-            data.CaretPosition = new System.Drawing.Point(col-1, line);
+            data.CaretPosition = new System.Drawing.Point(col - 1, line);
             data.FileName = this.CurrentFile;
             // point is where the designer will try to focus if the
             // user wants to add event handler stuff.
@@ -1355,6 +1352,7 @@ namespace XSharp.CodeDom
             string sourceCode = GetRuleSource(context);
             XCodeSnippetTypeMember snippet = new XCodeSnippetTypeMember(sourceCode);
             FillCodeDomDesignerData(snippet, context.Start.Line, context.Start.Column);
+            SaveSourceCode(snippet, context);
             return snippet;
         }
 
@@ -1372,12 +1370,12 @@ namespace XSharp.CodeDom
             // try to check if this literal has a Prefix
             try
             {
-                if ( context.Parent.Parent is XSharpParser.PrimaryExpressionContext prim)
+                if (context.Parent.Parent is XSharpParser.PrimaryExpressionContext prim)
                 {
-                    if ( prim.Parent is XSharpParser.PrefixExpressionContext )
+                    if (prim.Parent is XSharpParser.PrefixExpressionContext)
                     {
                         var pref = prim.Parent as XSharpParser.PrefixExpressionContext;
-                        if( pref.MINUS() != null )
+                        if (pref.MINUS() != null)
                         {
                             value = "-" + value;
                         }
@@ -1405,7 +1403,7 @@ namespace XSharp.CodeDom
                 {
                     if (len > 64)
                     {
-                       ret = double.NaN;
+                        ret = double.NaN;
                     }
                     else
                     {
@@ -1734,7 +1732,7 @@ namespace XSharp.CodeDom
                 usings = xsts.FileUsings;
             }
             else
-                usings = new string[]{ };
+                usings = new string[] { };
 
             var result = findInCache(name);
             if (result != null)
@@ -1838,8 +1836,8 @@ namespace XSharp.CodeDom
             //
             return expr;
         }
-#endregion
-#region Common Methods
+        #endregion
+        #region Common Methods
         private XCodeNamespace _currentNamespace;
         public XCodeNamespace CurrentNamespace
         {
@@ -1879,8 +1877,14 @@ namespace XSharp.CodeDom
                     trivia = context.GetLeadingTrivia(_tokens);
                 if (trivia.Length > 0)
                 {
-                    var key = end ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
-                    o.UserData[key] = trivia;
+                    if (end)
+                    {
+                        o.SetEndingTrivia(trivia);
+                    }
+                    else
+                    {
+                        o.SetLeadingTrivia(trivia);
+                    }
                 }
             }
 
@@ -1900,7 +1904,7 @@ namespace XSharp.CodeDom
                 }
                 else if (token is XSharpToken xtoken)
                 {
-                    if (! noComments)
+                    if (!noComments)
                     {
                         result.Append(xtoken.TriviaAsText);
                     }
@@ -1925,6 +1929,6 @@ namespace XSharp.CodeDom
             }
             return result.ToString();
         }
-       
+
     }
 }

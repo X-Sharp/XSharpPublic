@@ -17,18 +17,18 @@ using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.VS;
 
 [assembly: ProjectTypeRegistration(
-  projectTypeGuid: XSharpConstants.CpsProjectTypeGuid,
+  projectTypeGuid: GuidStrings.guidCpsProjectType,
     displayName: "#1",                      // "XSharp"
     displayProjectFileExtensions: "#2",     // "XSharp Project Files (*.xsproj);*.xsproj"
-    defaultProjectExtension: "xsproj",
+    defaultProjectExtension: XSharpConstants.ProjectExtension,
     language: XSharpConstants.LanguageName,
-    resourcePackageGuid: XSharpConstants.CPSPackageGuid,
+    resourcePackageGuid: GuidStrings.guidCpsProjectType,
     Capabilities = ProjectTypeCapabilities.XSharp,
     DisableAsynchronousProjectTreeLoad = true,
-    PossibleProjectExtensions = "xsproj",
+    PossibleProjectExtensions = XSharpConstants.ProjectExtension,
     NewProjectRequireNewFolderVsTemplate = true)]
-[assembly: ProvideDiffSupportedContentType(".xsproj", "")]   // Empty string because content type is not important, we just want to tell the diff that the file type is supported
-[assembly: ProvideEditorFactoryMapping("{f6819a78-a205-47b5-be1c-675b3c7f0b8e}", ".xsproj")] // Use the XML editor
+[assembly: ProvideDiffSupportedContentType(XSharpConstants.ProjectExtension, "")]   // Empty string because content type is not important, we just want to tell the diff that the file type is supported
+[assembly: ProvideEditorFactoryMapping("{f6819a78-a205-47b5-be1c-675b3c7f0b8e}", XSharpConstants.ProjectExtension)] // Use the XML editor
 
 namespace XSharp.ProjectSystem
 {
@@ -42,7 +42,7 @@ namespace XSharp.ProjectSystem
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Description("XSharp project type based on CPS")]
-    [Guid(XSharpConstants.CPSPackageGuid)]
+    [Guid(GuidStrings.guidCpsProjectType)]
 
     public sealed class XSharpCPSPackage : AsyncPackage
     {

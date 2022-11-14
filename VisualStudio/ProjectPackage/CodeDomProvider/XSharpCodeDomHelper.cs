@@ -12,31 +12,26 @@ namespace XSharp.CodeDom
 {
     public class XSharpCodeDomHelper
     {
-
         /// <summary>
-        /// Merge both CodeCompileUnit. The main type (class) will come from designerCompileUnit
+        /// Merge both CodeCompileUnit. The main type (class) will come from formCompileUnit
         /// </summary>
         /// <param name="compileUnit"></param>
         /// <param name="designerCompileUnit"></param>
         /// <returns></returns>
-        internal static XMergedCodeCompileUnit MergeCodeCompileUnit( XCodeCompileUnit compileUnit, XCodeCompileUnit designerCompileUnit)
+        internal static XMergedCodeCompileUnit MergeCodeCompileUnit( XCodeCompileUnit formCompileUnit, XCodeCompileUnit designerCompileUnit)
         {
             // Create the merged CodeCompileUnit
-            var mergedCodeCompileUnit = new XMergedCodeCompileUnit();
+            var mergedCodeCompileUnit = new XMergedCodeCompileUnit(formCompileUnit);
 
-            CodeNamespace designerNamespace;
-            CodeTypeDeclaration designerClass = FindDesignerClass(designerCompileUnit, out designerNamespace);
+            CodeTypeDeclaration designerClass = FindDesignerClass(designerCompileUnit, out var designerNamespace);
             if (designerClass != null)
             {
                 // Do the same with the form
-                CodeNamespace nameSpace;
-                CodeTypeDeclaration formClass;
-                HasPartialClass(compileUnit, out nameSpace, out formClass);
+                HasPartialClass(formCompileUnit, out var formNameSpace, out var formClass);
                 // and merge only if ...
-                if ((string.Compare(designerNamespace.Name, nameSpace.Name, true) == 0) &&
-                    (string.Compare(designerClass.Name, formClass.Name, true) == 0))
+                if (string.Compare(designerClass.Name, formClass.Name, true) == 0)
                 {
-                    // Ok, same Namespace & same Class : Merge !
+                    // Ignore the namespace of the designer.prg. C# does that too
 
                     // So, the "main" class is...
                     XCodeTypeDeclaration mergedType = new XCodeTypeDeclaration(formClass.Name);
@@ -56,21 +51,23 @@ namespace XSharp.CodeDom
                         mergedType.Members.Add(member);
                     }
                     // A class is always in a NameSpace
-                    XCodeNamespace mergedNamespace = new XCodeNamespace(nameSpace.Name);
+                    XCodeNamespace mergedNamespace = new XCodeNamespace(formNameSpace.Name);
                     mergedNamespace.Types.Add(mergedType);
                     // Now, add it to the CompileUnit
                     mergedCodeCompileUnit.Namespaces.Clear();
                     mergedCodeCompileUnit.Namespaces.Add(mergedNamespace);
+                    mergedCodeCompileUnit.FormNamespace = formNameSpace;
+                    mergedCodeCompileUnit.DesignerNamespace = designerNamespace;
                     //
                 }
                 else
                 {
                     // Something went wrong, return the designer CodeCompileUnit
-                    mergedCodeCompileUnit = new XMergedCodeCompileUnit(designerCompileUnit);
+                    mergedCodeCompileUnit = new XMergedCodeCompileUnit(formCompileUnit);
                 }
             }
-            mergedCodeCompileUnit.FormUnit = compileUnit;
-            mergedCodeCompileUnit.FileName = compileUnit.FileName;
+            mergedCodeCompileUnit.FormUnit = formCompileUnit;
+            mergedCodeCompileUnit.FileName = formCompileUnit.FileName;
             mergedCodeCompileUnit.DesignerUnit = designerCompileUnit;
             return mergedCodeCompileUnit;
 
@@ -78,8 +75,7 @@ namespace XSharp.CodeDom
 
         internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, CodeTypeDeclaration masterClass)
         {
-            CodeNamespace namespaceName;
-            return FindDesignerClass(ccu, out namespaceName, masterClass.Name);
+            return FindDesignerClass(ccu, out _, masterClass.Name);
         }
         /// <summary>
         /// Reading the CodeCompileUnit, enumerate all NameSpaces, enumerate All Types, searching for the first Class that contains an InitializeComponent member
@@ -89,8 +85,7 @@ namespace XSharp.CodeDom
         /// <returns></returns>
         internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu)
         {
-            CodeNamespace namespaceName;
-            return FindDesignerClass(ccu, out namespaceName);
+            return FindDesignerClass(ccu, out _);
         }
 
         internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, out CodeNamespace namespaceName, string name = "")
@@ -103,10 +98,12 @@ namespace XSharp.CodeDom
                 {
                     if (typeElement.IsClass)
                     {
-                        if (! string.IsNullOrEmpty(name) && String.Compare(typeElement.Name, name, true) == 0)
+                        // Find class by name
+                        if (! string.IsNullOrEmpty(name) && string.Compare(typeElement.Name, name, true) == 0)
                         {
                             return typeElement;
                         }
+                        // Find class by expected member InitializeComponent
                         // Looking for InitializeComponent, returning a void, and with no Parameters
                         foreach (CodeTypeMember member in typeElement.Members)
                         {

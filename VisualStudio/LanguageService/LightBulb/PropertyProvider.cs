@@ -5,21 +5,19 @@
 //
 //------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
+using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Utilities;
-using static XSharp.XSharpConstants;
-using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Operations;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.Utilities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using XSharpModel;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.SyntaxTree;
+using static XSharp.XSharpConstants;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
@@ -43,7 +41,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
     }
 
-    internal class PropertySuggestedActionsSource : CommonActionsSource,  ISuggestedActionsSource
+    internal class PropertySuggestedActionsSource : CommonActionsSource, ISuggestedActionsSource
     {
         private PropertySuggestedActionsSourceProvider m_factory;
 
@@ -54,7 +52,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         public event EventHandler<EventArgs> SuggestedActionsChanged;
 
         public PropertySuggestedActionsSource(PropertySuggestedActionsSourceProvider propertySuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer) :
-            base(textView, textBuffer)  
+            base(textView, textBuffer)
         {
             this.m_factory = propertySuggestedActionsSourceProvider;
             //
@@ -71,29 +69,32 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            string searchFor;
-            bool generateProp;
-            // Do we have PROPERTY to Add ?
-            if (SearchField())
+            if (!XSettings.DisableLightBulb)
             {
-                if (SearchMissing(out searchFor, out generateProp))
+                string searchFor;
+                bool generateProp;
+                // Do we have PROPERTY to Add ?
+                if (SearchField())
                 {
-                    List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
-                    // Generate Property and Keep Field
-                    // Generate Property and Rename Field
+                    if (SearchMissing(out searchFor, out generateProp))
+                    {
+                        List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
+                        // Generate Property and Keep Field
+                        // Generate Property and Rename Field
 
-                    // Single line
-                    var PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, false, searchFor, !generateProp);
-                    suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { PropAction }));
-                    // Multi Line
-                    PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, true, searchFor, !generateProp);
-                    suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { PropAction }));
-                    //
-                    return suggest.ToArray();
-                }
-                else if (_memberEntity != null) // The Field exist, 
-                {
+                        // Single line
+                        var PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, false, searchFor, !generateProp);
+                        suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { PropAction }));
+                        // Multi Line
+                        PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, true, searchFor, !generateProp);
+                        suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { PropAction }));
+                        //
+                        return suggest.ToArray();
+                    }
+                    else if (_memberEntity != null) // The Field exist, 
+                    {
 
+                    }
                 }
             }
             return Enumerable.Empty<SuggestedActionSet>();
@@ -157,7 +158,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return false;
         }
 
-         
         /// <summary>
         /// Search the item under the caret.
         /// If a Field, it is stored in _memberentity
@@ -175,7 +175,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
             // LookUp for the BaseType, reading the TokenList (From left to right)
             var lookupresult = new List<IXSymbol>();
-            lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
+            lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
             //
             if (lookupresult.Count > 0)
             {

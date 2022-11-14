@@ -53,10 +53,10 @@
       =>  #text := <varname>
 
 #xcommand  TEXT INTO <varname> WRAP [<lnbreak>] ;
-      =>  #text := <varname>, iif(<.lnbreak.>,<!lnbreak!>, CRLF)
+      =>  #text := <varname>, iif(<.lnbreak.>,(STRING) <!lnbreak!>, CRLF)
 
 #xcommand  TEXT INTO <varname> WRAP [<lnbreak>] TRIMMED ;
-      =>  #text := <varname>, iif(<.lnbreak.>,<!lnbreak!>, CRLF) , LTrim
+      =>  #text := <varname>, iif(<.lnbreak.>,(STRING) <!lnbreak!>, CRLF) , LTrim
 
 #xcommand  TEXT INTO <varname> TRIMMED ;
       =>  #text := <varname>,  , LTrim

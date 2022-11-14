@@ -24,6 +24,7 @@ PROCEDURE Main AS VOID
     DbRegisterClient(DbLogger{})
     ? DbCreate("test1",aStruct)
     ? DbUseArea(TRUE, ,"Test1","test",TRUE)
+    ? EoF()
     ? Header()
     ? DbInfo(DBI_LASTUPDATE)
 

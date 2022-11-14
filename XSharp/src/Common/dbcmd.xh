@@ -60,7 +60,7 @@
       [; DbSetIndex( <(indexn)> )]
 
 #command INDEX ON <key>         										;
-     [TAG <order>]              										;
+     TAG <order>                										;
      [TO <file>]                										;
      [FOR <fo>]                 										;
      [<all:ALL>]                										;
@@ -78,13 +78,13 @@
      [<lCus:CUSTOM>]            										;
      [<lNop:NOOPTIMIZE>]        										;
     => OrdCondSet( <"fo">, , [<.all.>], <{wh}>, <{ev}>, <evr>, 			;
-	 RecNo(), <nx>, <rec>,[<.rs.>],[<.dsd.>],<.lAdd.>,					;
-     [<.lCur.>], [<.lCus.>], [<.lNop.>] )      						;;  ;
+          RecNo(), <nx>, <rec>,[<.rs.>],[<.dsd.>],<.lAdd.>,					;
+          [<.lCur.>], [<.lCus.>], [<.lNop.>] )      						;;  ;
        OrdCreate(<(file)>,<(order)>,<(key)>,,IF(<.u.>,.T., NIL))
 
 #command INDEX ON <key> TO <file> [<u:UNIQUE>]  						;
       =>  OrdCondSet()  ;;        										;
-		DbCreateIndex(<(file)>,<(key)>,,IIF(<.u.>, .T., NIL))
+          DbCreateIndex(<(file)>,<(key)>,,IIF(<.u.>, .T., NIL))
 
 
 #command REINDEX                => DbReindex()
@@ -265,7 +265,7 @@
       => DbCopy(                                                        ;
                    <(file)>, <fields>,                                  ;
                    <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>       ;
-		   <rdd>, { <(hdnlist)> }, <.noopt.>)
+                   <rdd>, { <(hdnlist)> }, <.noopt.>)
 
 
 #command APPEND FROM <(file)> DELIMITED [WITH <*delim*>]                ;

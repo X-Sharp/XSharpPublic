@@ -430,7 +430,7 @@
 #command CLOSE <alias>                 => <alias>->( DbCloseArea() )
 #command CLOSE &<alias>                => (<alias>)->( DbCloseArea() )
 
-#command CLOSE [al: DATABASES,ALL>] => DbCloseAll()
+#command CLOSE [<al: DATABASES,ALL>]   => DbCloseAll()
 #command CLOSE INDEXES                 => DbClearIndex()
 #command CLOSE                         => DbCloseArea()
 

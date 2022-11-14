@@ -1,3 +1,13 @@
+///////////////////////////////////////////////////////////////////////////
+// Version.xh
+//
+// Common version attributes
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+// Caution: do not modify this file. It will be overwritten during product updates
+//
 #include "BuildNumber.h"
 [assembly: AssemblyVersionAttribute( VERSION_NUMBER )]
 [assembly: AssemblyFileVersionAttribute( FILEVERSION_NUMBER )]
@@ -6,4 +16,4 @@
 [assembly: AssemblyTrademarkAttribute( "XSharp is a registered Trademark of XSharp BV")]
 [assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION)]
 [assembly: AssemblyCompanyAttribute( COMPANY_NAME )]
-[assembly: AssemblyProductAttribute( PRODUCT_NAME )] 
+[assembly: AssemblyProductAttribute( PRODUCT_NAME )]

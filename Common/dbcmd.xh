@@ -78,14 +78,13 @@
      [<lCus:CUSTOM>]            										;
      [<lNop:NOOPTIMIZE>]        										;
     => OrdCondSet( <"fo">, , [<.all.>], <{wh}>, <{ev}>, <evr>, 			;
-	 RecNo(), <nx>, <rec>,[<.rs.>],[<.dsd.>],<.lAdd.>,					;
-     [<.lCur.>], [<.lCus.>], [<.lNop.>] )      						;;  ;
+          RecNo(), <nx>, <rec>,[<.rs.>],[<.dsd.>],<.lAdd.>,					;
+          [<.lCur.>], [<.lCus.>], [<.lNop.>] )      						;;  ;
        OrdCreate(<(file)>,<(order)>,<(key)>,,IF(<.u.>,.T., NIL))
 
 #command INDEX ON <key> TO <file> [<u:UNIQUE>]  						;
       =>  OrdCondSet()  ;;        										;
-          DbCreateIndex(<(file)>,<(key)>,,IF(<.u.>, .T., NIL))
-                      )
+          DbCreateIndex(<(file)>,<(key)>,,IIF(<.u.>, .T., NIL))
 
 #command REINDEX                => DbReindex()
 #command SET ORDER TO <n>       => DbSetOrder( <n> )
@@ -265,7 +264,7 @@
       => DbCopy(                                                        ;
                    <(file)>, <fields>,                                  ;
                    <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>       ;
-		   <rdd>, { <(hdnlist)> }, <.noopt.>)
+                   <rdd>, { <(hdnlist)> }, <.noopt.>)
 
 
 #command APPEND FROM <(file)> DELIMITED [WITH <*delim*>]                ;
@@ -427,12 +426,12 @@
 
 
 // NOTE:  CLOSE <alias> must precede the others
-#command CLOSE <alias>              => <alias>->( DbCloseArea() )
-#command CLOSE &<alias>             => (<alias>)->( DbCloseArea() )
+#command CLOSE <alias>                 => <alias>->( DbCloseArea() )
+#command CLOSE &<alias>                => (<alias>)->( DbCloseArea() )
 
-#command CLOSE                      => DbCloseArea()
-#command CLOSE [al: DATABASES,ALL>] => DbCloseAll()
-#command CLOSE INDEXES              => DbClearIndex()
+#command CLOSE [<al: DATABASES,ALL>] => DbCloseAll()
+#command CLOSE INDEXES                 => DbClearIndex()
+#command CLOSE                         => DbCloseArea()
 
 #endif
 

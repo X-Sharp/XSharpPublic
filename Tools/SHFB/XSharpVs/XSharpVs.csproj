@@ -351,7 +351,7 @@
     <Content Include="VS2013XSharp\Web\scripts\clipboard.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="VS2013XSharp\Web\scripts\jquery-3.3.1.min.js">
+    <Content Include="VS2013XSharp\Web\scripts\jquery-3.5.1.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="VS2013XSharp\Web\search.html">

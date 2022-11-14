@@ -1063,9 +1063,9 @@
 			<kw>END</kw>
 			<kw>ENDCASE</kw>
 			<kw>ENDCLASS</kw>
-      <kw>ENDDEFINE</kw>
-      <kw>ENDDO</kw>
-      <kw>ENDFOR</kw>
+			<kw>ENDDEFINE</kw>
+			<kw>ENDDO</kw>
+			<kw>ENDFOR</kw>
 			<kw>ENDIF</kw>
 			<kw>ENUM</kw>
 			<kw>EQUALS</kw>
@@ -1811,7 +1811,7 @@
 				</context>
 			</contexts>
 		</language>
-		<!-- C# language specification -->
+		<!-- X# language specification -->
 		<language id="xs" tabSize="4" name="X#">
 			<!-- Code contexts: default (most common) is code. -->
 			<contexts default="code">

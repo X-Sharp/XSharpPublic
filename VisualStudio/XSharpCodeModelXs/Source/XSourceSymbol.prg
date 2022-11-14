@@ -53,7 +53,10 @@ CLASS XSourceSymbol INHERIT XSymbol IMPLEMENTS IXSourceSymbol
             SELF:File := XSolution.FindFullPath(dbresult:FileName)
         ELSEIF !String.IsNullOrEmpty(dbresult:FileName)
             IF String.Compare(SELF:File:FullPath, dbresult:FileName, TRUE) != 0
-                SELF:File := XSolution.FindFullPath(dbresult:FileName)
+                var newFile := XSolution.FindFullPath(dbresult:FileName)
+                if newFile != null
+                    SELF:File := newFile
+                endif
             ENDIF
         ENDIF
 

@@ -113,6 +113,7 @@ namespace XSharp.LanguageService
         private void ShellEvents_ShutdownStarted()
         {
             XSolution.IsClosing = true;
+            XSolution.IsShuttingDown = true;
             XSolution.Close();
         }
 

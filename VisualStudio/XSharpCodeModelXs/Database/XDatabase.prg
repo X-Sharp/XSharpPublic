@@ -20,7 +20,7 @@ STATIC CLASS XDatabase
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 1.6 AS System.Double
+    PRIVATE CONST CurrentDbVersion := 1.7 AS System.Double
 
     STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
         LOCAL lValid := FALSE AS LOGIC
@@ -155,6 +155,7 @@ STATIC CLASS XDatabase
             cmd:CommandText += "DROP TABLE IF EXISTS ReferencedGlobals ;"
             cmd:CommandText += "DROP TABLE IF EXISTS ReferencedTypes ;"
             cmd:CommandText += "DROP TABLE IF EXISTS CommentTasks ;"
+            cmd:CommandText += "DROP TABLE IF EXISTS ExtensionMethods ;"
             cmd:ExecuteNonQuery()
 #endregion
 #region Table Projects
@@ -255,43 +256,43 @@ STATIC CLASS XDatabase
 
 
 #region Table Assemblies
-            stmt  	:= "CREATE TABLE Assemblies ("
-            stmt	+= " Id integer NOT NULL PRIMARY KEY, Name text NOT NULL COLLATE NOCASE, AssemblyFileName text NOT NULL COLLATE NOCASE, "
+            stmt    := "CREATE TABLE Assemblies ("
+            stmt    += " Id integer NOT NULL PRIMARY KEY, Name text NOT NULL COLLATE NOCASE, AssemblyFileName text NOT NULL COLLATE NOCASE, "
             stmt    += " LastChanged DateTime NOT NULL, Size integer "
-            stmt	+= ") ;"
-            stmt	+= "CREATE UNIQUE INDEX Assemblies_Pk   ON Assemblies (Id);"
-            stmt	+= "CREATE INDEX Assemblies_Name        ON Assemblies (Name);"
-            stmt	+= "CREATE INDEX Assemblies_FileName    ON Assemblies (AssemblyFileName); "
+            stmt    += ") ;"
+            stmt    += "CREATE UNIQUE INDEX Assemblies_Pk   ON Assemblies (Id);"
+            stmt    += "CREATE INDEX Assemblies_Name        ON Assemblies (Name);"
+            stmt    += "CREATE INDEX Assemblies_FileName    ON Assemblies (AssemblyFileName); "
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
 #endregion
 #region Table ReferencedTypes
-            stmt  	:= "CREATE TABLE ReferencedTypes ("
-            stmt	+= " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
+            stmt    := "CREATE TABLE ReferencedTypes ("
+            stmt    += " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
             stmt    += " FullName text NOT NULL COLLATE NOCASE, Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
             stmt    += " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"
-            stmt	+= ") ;"
-            stmt	+= "CREATE UNIQUE INDEX ReferencedTypes_Pk      ON ReferencedTypes (Id); "
-            stmt	+= "CREATE INDEX ReferencedTypes_Name           ON ReferencedTypes (Name); "
-            stmt	+= "CREATE INDEX ReferencedTypes_BaseTypeName   ON ReferencedTypes (BaseTypeName); "
-            stmt	+= "CREATE INDEX ReferencedTypes_FullName       ON ReferencedTypes (FullName); "
-            stmt	+= "CREATE INDEX ReferencedTypes_Kind           ON ReferencedTypes (Kind); "
-            stmt	+= "CREATE INDEX ReferencedTypes_Namespace      ON ReferencedTypes (Namespace); "
+            stmt    += ") ;"
+            stmt    += "CREATE UNIQUE INDEX ReferencedTypes_Pk      ON ReferencedTypes (Id); "
+            stmt    += "CREATE INDEX ReferencedTypes_Name           ON ReferencedTypes (Name); "
+            stmt    += "CREATE INDEX ReferencedTypes_BaseTypeName   ON ReferencedTypes (BaseTypeName); "
+            stmt    += "CREATE INDEX ReferencedTypes_FullName       ON ReferencedTypes (FullName); "
+            stmt    += "CREATE INDEX ReferencedTypes_Kind           ON ReferencedTypes (Kind); "
+            stmt    += "CREATE INDEX ReferencedTypes_Namespace      ON ReferencedTypes (Namespace); "
 
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 #endregion
 
 #region Table ReferencedGlobals
-            stmt  	:= "CREATE TABLE ReferencedGlobals ("
-            stmt	+= " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, "
+            stmt    := "CREATE TABLE ReferencedGlobals ("
+            stmt    += " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, "
             stmt    += " FullName text NOT NULL COLLATE NOCASE, Kind integer NOT NULL, Attributes integer NOT NULL, Sourcecode text, ReturnType text, "
             stmt    += " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"
-            stmt	+= ") ;"
-            stmt	+= "CREATE UNIQUE INDEX ReferencedGlobals_Pk      ON ReferencedGlobals (Id); "
-            stmt	+= "CREATE INDEX ReferencedGlobals_Name           ON ReferencedGlobals (Name); "
-            stmt	+= "CREATE INDEX ReferencedGlobals_Kind           ON ReferencedGlobals (Kind); "
+            stmt    += ") ;"
+            stmt    += "CREATE UNIQUE INDEX ReferencedGlobals_Pk      ON ReferencedGlobals (Id); "
+            stmt    += "CREATE INDEX ReferencedGlobals_Name           ON ReferencedGlobals (Name); "
+            stmt    += "CREATE INDEX ReferencedGlobals_Kind           ON ReferencedGlobals (Kind); "
 
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
@@ -299,17 +300,26 @@ STATIC CLASS XDatabase
 
 
 #region Table CommentTasks
-            stmt  	:=  "CREATE TABLE CommentTasks ("
-            stmt	+=  " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Line integer, Column integer, Priority integer,  "
+            stmt    :=  "CREATE TABLE CommentTasks ("
+            stmt    +=  " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Line integer, Column integer, Priority integer,  "
             stmt    +=  " Comment text NOT NULL, "
             stmt    +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
-            stmt	+= ") ;"
-            stmt	+= "CREATE UNIQUE INDEX CommentTasks_Pk ON CommentTasks (Id); "
-            stmt	+= "CREATE INDEX CommentTasks_File      ON CommentTasks (idFile); "
+            stmt    += ") ;"
+            stmt    += "CREATE UNIQUE INDEX CommentTasks_Pk ON CommentTasks (Id); "
+            stmt    += "CREATE INDEX CommentTasks_File      ON CommentTasks (idFile); "
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
+#endregion
 
-
+#region Table ExtensionMethods
+            stmt    :=  "CREATE TABLE ExtensionMethods ("
+            stmt    +=  " Id integer NOT NULL PRIMARY KEY, idMember integer NOT NULL, FullName text NOT NULL COLLATE NOCASE, "
+            stmt    +=  " FOREIGN KEY (idMember) REFERENCES Members (Id) ON DELETE CASCADE ON UPDATE CASCADE"
+            stmt    += ") ;"
+            stmt    += "CREATE UNIQUE INDEX ExtensionMethods_Pk ON ExtensionMethods (Id); "
+            stmt    += "CREATE INDEX ExtensionMethods_Type      ON ExtensionMethods (FullName); "
+            cmd:CommandText := stmt
+            cmd:ExecuteNonQuery()
 #endregion
             cmd:Parameters:Clear()
 
@@ -350,7 +360,6 @@ STATIC CLASS XDatabase
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
-
             stmt := "CREATE VIEW ProjectMembers AS SELECT m.*, p.IdProject, p.FileName, p.ProjectFileName " +;
                 " FROM TypeMembers m  JOIN ProjectFiles p ON m.IdFile = p.IdFile "
             cmd:CommandText := stmt
@@ -366,7 +375,7 @@ STATIC CLASS XDatabase
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
-            stmt := "CREATE VIEW AssemblyNamespaces AS select distinct T.IdAssembly, T.Namespace FROM ReferencedTypes T  "
+            stmt := "CREATE VIEW AssemblyNamespaces AS select distinct T.IdAssembly, T.AssemblyFileName, T.Namespace FROM AssemblyTypes T "
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
@@ -375,7 +384,10 @@ STATIC CLASS XDatabase
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 
-
+            stmt := " CREATE VIEW ProjectExtensionMethods as SELECT em.FullName, m.*  FROM ExtensionMethods em" + ;
+                " JOIN ProjectMembers m ON em.IdMember = m.Id"
+            cmd:CommandText := stmt
+            cmd:ExecuteNonQuery()
 #endregion
 
 #region Table DB_Version
@@ -558,6 +570,25 @@ STATIC CLASS XDatabase
         END LOCK
         CommitWhenNeeded()
 
+    STATIC METHOD GetFilename(idFile as Int64) AS STRING
+        local result := "" as string
+        BEGIN LOCK oConn
+            TRY
+                USING VAR cmd := SQLiteCommand{"", oConn}
+                cmd:CommandText := "SELECT FileName from Files where id = "+idFile:ToString()
+                USING VAR rdr := cmd:ExecuteReader()
+                if rdr:Read()
+                    result := rdr:GetString(0)
+                endif
+              CATCH e AS Exception
+                Log("File   : "+idFile:ToString())
+                XSettings.LogException(e, __FUNCTION__)
+
+            END TRY
+        END LOCK
+        return result
+
+
     STATIC METHOD Read(oFile AS XFile) AS VOID
         IF ! IsDbOpen .OR. String.IsNullOrEmpty(oFile:FullPath)
             RETURN
@@ -687,9 +718,31 @@ STATIC CLASS XDatabase
         IF ! IsDbOpen .or. oFile:TypeList == null
             RETURN
         ENDIF
+
+        // update parameters for extension methods before we lock the database
+        // This may also trigger another lock from another thread!
+        VAR xtypes := oFile:TypeList:Values:Where({ t=> t.Kind != Kind.Namespace })
+        FOREACH VAR typedef IN xtypes
+            FOREACH VAR xmember IN typedef:XMembers
+                if xmember:Signature:IsExtension .and. xmember:Parameters:Count > 0
+                    local parameter := (XSourceParameterSymbol) xmember:Parameters[0] as XSourceParameterSymbol
+                    if parameter:ResolvedType == null
+                            parameter:Resolve()
+                    endif
+                endif
+            NEXT
+        NEXT
         Log(i"Update File contents for file {oFile.FullPath}")
         BEGIN LOCK oConn
             TRY
+                /*
+                 CREATE TABLE ExtensionMethods ("
+                  Id integer NOT NULL PRIMARY KEY, idMember integer NOT NULL, FullName text NOT NULL COLLATE NOCASE "
+                  FOREIGN KEY (idMember) REFERENCES Members (Id) ON DELETE CASCADE ON UPDATE CASCADE)
+                 "
+                */
+                USING VAR oCmd2 := SQLiteCommand{"select 1", oConn}
+                oCmd2:CommandText := "insert into ExtensionMethods (IdMember, FullName) Values ($idmember,$fullname)"
                 USING VAR oCmd := SQLiteCommand{"DELETE FROM Members WHERE IdFile = "+oFile:Id:ToString(), oConn}
                 oCmd:ExecuteNonQuery()
 
@@ -801,6 +854,13 @@ STATIC CLASS XDatabase
                             pars[13]:Value := xmember:ReturnType
                             VAR id := (INT64) oCmd:ExecuteScalar()
                             xmember:Id := id
+                            if xmember:Signature:IsExtension .and. xmember:Parameters:Count > 0
+                                oCmd2:Parameters:Clear()
+                                local parameter := (XSourceParameterSymbol) xmember:Parameters[0] as XSourceParameterSymbol
+                                oCmd2:Parameters:AddWithValue("$idmember", xmember:Id)
+                                oCmd2:Parameters:AddWithValue("$fullname", parameter:FullName)
+                                oCmd2:ExecuteNonQuery()
+                            endif
                         CATCH e AS Exception
 
                             Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
@@ -844,27 +904,28 @@ STATIC CLASS XDatabase
                     END TRY
                 NEXT
 
-                oCmd:CommandText := "INSERT INTO CommentTasks (idFile, Line, Column, Priority,Comment) " +;
-                    " VALUES ($file, $line, $column, $priority, $comment) ;" +;
-                    " SELECT last_insert_rowid()"
-                oCmd:Parameters:Clear()
-                pars := List<SQLiteParameter>{} { ;
-                    oCmd:Parameters:AddWithValue("$file", oFile:Id),;
-                    oCmd:Parameters:AddWithValue("$line", 0),;
-                    oCmd:Parameters:AddWithValue("$column", 0),;
-                    oCmd:Parameters:AddWithValue("$priority", 0),;
-                    oCmd:Parameters:AddWithValue("$comment", "")}
-                FOREACH task AS XCommentTask IN oFile:CommentTasks
-                    pars[ 0]:Value := oFile:Id
-                    pars[ 1]:Value := task:Line
-                    pars[ 2]:Value := task:Column
-                    pars[ 3]:Value := task:Priority
-                    pars[ 4]:Value := task:Comment
-                    oCmd:ExecuteScalar()
-                NEXT
-
+                if oFile:CommentTasks != NULL
+                    oCmd:CommandText := "INSERT INTO CommentTasks (idFile, Line, Column, Priority,Comment) " +;
+                        " VALUES ($file, $line, $column, $priority, $comment) ;" +;
+                        " SELECT last_insert_rowid()"
+                    oCmd:Parameters:Clear()
+                    pars := List<SQLiteParameter>{} { ;
+                        oCmd:Parameters:AddWithValue("$file", oFile:Id),;
+                        oCmd:Parameters:AddWithValue("$line", 0),;
+                        oCmd:Parameters:AddWithValue("$column", 0),;
+                        oCmd:Parameters:AddWithValue("$priority", 0),;
+                        oCmd:Parameters:AddWithValue("$comment", "")}
+                    FOREACH task AS XCommentTask IN oFile:CommentTasks
+                        pars[ 0]:Value := oFile:Id
+                        pars[ 1]:Value := task:Line
+                        pars[ 2]:Value := task:Column
+                        pars[ 3]:Value := task:Priority
+                        pars[ 4]:Value := task:Comment
+                        oCmd:ExecuteScalar()
+                    NEXT
+                endif
                 // Update Includefile IDs and write to disk
-                foreach include as XInclude in oFile:IncludeFiles
+                foreach include as XInclude in oFile:IncludeFiles:ToArray()
                     if include:Id == -1
                         oCmd:CommandText := "SELECT Id from IncludeFiles where fileName = $fileName"
                         oCmd:Parameters:Clear()
@@ -1417,7 +1478,7 @@ STATIC CLASS XDatabase
         RETURN result
 
     STATIC METHOD GetAssemblyNamespaces(sAssemblyIds AS STRING) AS IList<STRING>
-        VAR stmt := "Select Namespace from AssemblyNamespaces where IdAssembly in ("+sAssemblyIds+")"
+        VAR stmt := "Select distinct Namespace from AssemblyNamespaces where IdAssembly in ("+sAssemblyIds+")"
         VAR result := List<STRING>{}
         IF IsDbOpen
             BEGIN LOCK oConn
@@ -1437,6 +1498,28 @@ STATIC CLASS XDatabase
             END LOCK
         ENDIF
         Log(i"GetAssemblyNamespaces returns {result.Count} matches")
+        RETURN result
+
+
+    STATIC METHOD GetAssembliesContainingNamespace(sNamespace as string, sAssemblyIds as string) AS IList<String>
+        VAR stmt := "Select distinct AssemblyFileName from AssemblyNamespaces where Namespace='"+sNamespace+;
+            "' and idAssembly in ("+sAssemblyIds+")"
+        var result := List<string>{}
+        IF IsDbOpen
+            BEGIN LOCK oConn
+                TRY
+                    USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                    USING VAR rdr := oCmd:ExecuteReader()
+                    // No limit on the # of Namespaces
+                    DO WHILE rdr:Read()
+                        result:Add(rdr:GetString(0))
+                    ENDDO
+                CATCH e AS Exception
+                    XSettings.LogException(e, __FUNCTION__)
+                END TRY
+            END LOCK
+        ENDIF
+        Log(i"GetAssemblyNamespaceFiles returns {result.Count} matches")
         RETURN result
 
 
@@ -1490,6 +1573,26 @@ STATIC CLASS XDatabase
         Log(i"GetTypesInFile returns {result.Count} matches")
         RETURN result
 
+
+    STATIC METHOD GetExtensionMethods (sProjectIds AS STRING, typeName as STRING) AS IList<XDbResult>
+       VAR stmt := "Select * from ProjectExtensionMethods where idProject IN ("+sProjectIds+") AND fullName = '"+typeName+"'"
+       VAR result := List<XDbResult>{}
+        IF IsDbOpen
+            BEGIN LOCK oConn
+                TRY
+                    USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                    USING VAR rdr := oCmd:ExecuteReader()
+                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                        result:Add(CreateMemberInfo(rdr))
+                    ENDDO
+                CATCH e AS Exception
+                    XSettings.LogException(e, __FUNCTION__)
+                END TRY
+
+            END LOCK
+        ENDIF
+        Log(i"GetExtensionMethods '{typeName}' returns {result.Count} matches")
+        RETURN result
 
     STATIC METHOD GetMembers(idType AS INT64) AS IList<XDbResult>
         VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()

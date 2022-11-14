@@ -46,7 +46,7 @@ namespace XSharp.LanguageService
                 CompletionState state;
                 var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
                 var result = new List<IXSymbol>();
-                result.AddRange( XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
+                result.AddRange( XSharpLookup.RetrieveElement(location, tokenList, state));
                 //
                 if (result.Count > 0 )
                 {
@@ -69,8 +69,7 @@ namespace XSharp.LanguageService
                         {
                             return;
                         }
-                        var file = XSharpGotoDefinition.CreateFileForSystemType(petype, pesymbol);
-                        var entity = XSharpGotoDefinition.FindElementInFile(file, petype, pesymbol);
+                        var entity = XSharpGotoDefinition.FindSystemElement(petype, pesymbol);
                         if (entity != null)
                             peekableItems.Add(new XSharpDefinitionPeekItem(entity, _peekResultFactory));
 

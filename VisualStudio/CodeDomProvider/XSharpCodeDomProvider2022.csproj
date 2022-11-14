@@ -45,6 +45,9 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\constantsMethods.cs">
+      <Link>constantsMethods.cs</Link>
+    </Compile>
     <Compile Include="IProjectTypeHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XCodeTypes.cs" />
@@ -55,7 +58,6 @@
     </Compile>
     <Compile Include="XSharpCodeGenerator.cs" />
     <Compile Include="XSharpCodeParser.cs" />
-    <Compile Include="XSharpKeywords.cs" />
     <Compile Include="XSharpTreeDiscoverBase.cs" />
     <Compile Include="XSharpTreeDiscoverClass.cs" />
     <Compile Include="XSharpTreeDiscoverFields.cs" />
@@ -63,7 +65,7 @@
   <ItemGroup />
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.473</Version>
+      <Version>17.0.480</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>

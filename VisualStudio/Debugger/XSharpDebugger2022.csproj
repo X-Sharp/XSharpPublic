@@ -57,6 +57,9 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\constantsMethods.cs">
+      <Link>constantsMethods.cs</Link>
+    </Compile>
     <Compile Include="AddressComparer.cs" />
     <Compile Include="ExpressionCompiler\XSharpExpressionCompiler.cs" />
     <Compile Include="Formatter\XSharpFormatter.cs" />
@@ -86,7 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.473</Version>
+      <Version>17.0.480</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine">
       <Version>17.0.2012801</Version>

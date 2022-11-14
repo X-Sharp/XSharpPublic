@@ -5,21 +5,21 @@
 //
 //------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Utilities;
-using static XSharp.XSharpConstants;
-using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Text.Operations;
-using System.Threading.Tasks;
-using System.Threading;
-using XSharpModel;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
+using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Text.Operations;
+using Microsoft.VisualStudio.Utilities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using XSharpModel;
+using static XSharp.XSharpConstants;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
@@ -83,22 +83,25 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            // Do we have members to Add ?
-            if (SearchMissingMembers())
+            if (!XSettings.DisableLightBulb)
             {
-                List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
-                foreach (KeyValuePair<string, List<IXMemberSymbol>> intfaces in _members)
+                // Do we have members to Add ?
+                if (SearchMissingMembers())
                 {
-                    // "Simple" Name
-                    var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range, false);
-                    suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
-                    // "Fully Qualified Name"
-                    ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range, true);
-                    suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
+                    List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
+                    foreach (KeyValuePair<string, List<IXMemberSymbol>> intfaces in _members)
+                    {
+                        // "Simple" Name
+                        var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range, false);
+                        suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
+                        // "Fully Qualified Name"
+                        ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range, true);
+                        suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
 
+                    }
+
+                    return suggest.ToArray();
                 }
-
-                return suggest.ToArray();
             }
             return Enumerable.Empty<SuggestedActionSet>();
         }
@@ -148,7 +151,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
 
 
-  
+
 
         private Dictionary<string, List<IXMemberSymbol>> BuildMissingMembers()
         {
@@ -174,7 +177,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                             // Is it already in classEntity ?
                             foreach (IXMemberSymbol entityMbr in _classEntity.Members)
                             {
-                                if ( mbr.Kind == entityMbr.Kind)
+                                if (mbr.Kind == entityMbr.Kind)
                                 {
                                     if (String.Compare(this.GetModVis(mbr), this.GetModVis(entityMbr), true) == 0)
                                     {
@@ -185,7 +188,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                                             break;
                                         }
                                         // Or it could be the Fully Qualified Name
-                                        else if (String.Compare(iftype.Name+"."+mbr.Prototype, entityMbr.Prototype, true) == 0)
+                                        else if (String.Compare(iftype.Name + "." + mbr.Prototype, entityMbr.Prototype, true) == 0)
                                         {
                                             found = true;
                                             break;
@@ -259,9 +262,9 @@ namespace XSharp.LanguageService.Editors.LightBulb
             } while (lineState.HasFlag(LineFlags.Continued));
             // Now, search for IMPLEMENT
             bool found = false;
-            foreach( var token in fulllineTokens)
+            foreach (var token in fulllineTokens)
             {
-                if ( token.Type == XSharpLexer.IMPLEMENTS )
+                if (token.Type == XSharpLexer.IMPLEMENTS)
                 {
                     found = true;
                     break;

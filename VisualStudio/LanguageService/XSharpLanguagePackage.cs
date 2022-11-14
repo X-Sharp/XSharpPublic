@@ -91,7 +91,8 @@ namespace XSharp.LanguageService
 #endif
     [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202")]
     [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), LanguageName, null, "Indentation", pageNameResourceId: "206")]
-    [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Other", pageNameResourceId: "203")]
+    [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Options", pageNameResourceId: "203")]
+    [ProvideLanguageEditorOptionPage(typeof(GeneratorOptionsPage), LanguageName, null, "Generator", pageNameResourceId: "207")]
     public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
         private static XSharpLanguageService instance;
@@ -121,6 +122,7 @@ namespace XSharp.LanguageService
         FormattingOptionsPage _formattingPage;
         IndentingOptionsPage _indentingPage;
         OtherOptionsPage _otherOptionsPage;
+        GeneratorOptionsPage _generatorOptionsPage;
 #if COMPLETION
         CompletionOptionsPage _completionOptionsPage;
 #endif
@@ -142,6 +144,14 @@ namespace XSharp.LanguageService
             {
                 _otherOptionsPage = (OtherOptionsPage)GetDialogPage(typeof(OtherOptionsPage));
             }
+            if (_otherOptionsPage == null)
+            {
+                _otherOptionsPage = (OtherOptionsPage)GetDialogPage(typeof(OtherOptionsPage));
+            }
+            if (_generatorOptionsPage == null)
+            {
+                _generatorOptionsPage = (GeneratorOptionsPage)GetDialogPage(typeof(GeneratorOptionsPage));
+            }
 #if COMPLETION
             if (_completionOptionsPage == null)
             {
@@ -161,20 +171,10 @@ namespace XSharp.LanguageService
 
 
             XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
-            XSettings.DisableBraceMatching = _intellisensePage.DisableBraceMatching;
-            XSettings.DisableCaseSynchronization = _intellisensePage.DisableCaseSynchronization;
             XSettings.DisableClassViewObjectView = _intellisensePage.DisableClassViewObjectView;
-            XSettings.DisableCodeCompletion = _intellisensePage.DisableCodeCompletion;
             XSettings.DisableEditorDropDowns = _intellisensePage.DisableEditorDropdowns;
             XSettings.DisableEntityParsing = _intellisensePage.DisableEntityParsing;
             XSettings.DisableForeignProjectReferences = _intellisensePage.DisableForeignProjectReferences;
-            XSettings.DisableGotoDefinition = _intellisensePage.DisableGotoDefinition;
-            XSettings.DisableHighLightWord = _intellisensePage.DisableHighLightWord;
-            XSettings.DisableLightBulb = _intellisensePage.DisableLightBulb;
-            XSettings.DisableParameterInfo = _intellisensePage.DisableParameterInfo;
-            XSettings.DisablePeekDefinition = _intellisensePage.DisablePeekDefinition;
-            XSettings.DisableQuickInfo = _intellisensePage.DisableQuickInfo;
-            XSettings.DisableRegions = _intellisensePage.DisableRegions;
             XSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
             XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
 
@@ -243,12 +243,23 @@ namespace XSharp.LanguageService
             XSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
             //XSettings.MaxCompletionEntries = _completionOptionsPage.MaxCompletionEntries;
 #endif
+            // Generator
+            XSettings.CodeGeneratorPrivateStyle = (PrivateStyle)_generatorOptionsPage.PrivateStyle;
+            XSettings.CodeGeneratorPublicStyle = (PublicStyle)_generatorOptionsPage.PublicStyle;
+            XSettings.CodeGeneratorShowXmlComments = _generatorOptionsPage.ShowXmlComments;
+
             // Other
             XSettings.EditorShowDividers = _otherOptionsPage.ShowDividers;
             XSettings.EditorShowSingleLineDividers = _otherOptionsPage.ShowSingleLineDividers;
-            XSettings.CodeGeneratorShowXmlComments = _otherOptionsPage.ShowXmlComments;
-            XSettings.CodeGeneratorPrivateStyle = (PrivateStyle)_otherOptionsPage.PrivateStyle;
-            XSettings.CodeGeneratorPublicStyle = (PublicStyle)_otherOptionsPage.PublicStyle;
+            XSettings.DisableHighLightWord = !_otherOptionsPage.EnableHighlightWord;
+            XSettings.DisableBraceMatching = !_otherOptionsPage.EnableBraceMatching;
+            XSettings.DisableKeywordMatching = !_otherOptionsPage.EnableKeywordmatching;
+            XSettings.DisableCodeCompletion = !_otherOptionsPage.EnableCodeCompletion;
+            XSettings.DisableLightBulb = !_otherOptionsPage.EnableLightBulbs;
+            XSettings.DisableParameterInfo = !_otherOptionsPage.EnableParameterInfo;
+            XSettings.DisableQuickInfo = !_otherOptionsPage.EnableQuickInfo;
+            XSettings.DisableRegions = !_otherOptionsPage.EnableRegions;
+
             XSettings.FormEditorMakeBackupFiles = _otherOptionsPage.FormEditorMakeBackupFiles;
             XSettings.EnableFileLogging = _otherOptionsPage.LanguageServiceLogging;
 

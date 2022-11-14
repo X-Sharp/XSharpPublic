@@ -415,7 +415,7 @@ namespace XSharp.LanguageService
 
             IXMemberSymbol currentElement = null;
             // We don't care of the corresponding Type, we are looking for the currentElement
-            var element = XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true).FirstOrDefault();
+            var element = XSharpLookup.RetrieveElement(location, tokenList, state).FirstOrDefault();
             if (element is IXMemberSymbol mem)
             {
                 currentElement = mem;

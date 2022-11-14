@@ -5490,7 +5490,8 @@ namespace Microsoft.VisualStudio.Project
             ThreadHelper.ThrowIfNotOnUIThread();
 
             // When Adding an item, pass true to let AddItemWithSpecific know to fire the tracker events.
-            return AddItemWithSpecific(itemIdLoc, op, itemName, filesToOpen, files, dlgOwner, editorFlags, ref editorType, physicalView, ref logicalView, result, true);
+            return AddItemWithSpecific(itemIdLoc, op, itemName, filesToOpen, files, dlgOwner, editorFlags,
+                ref editorType, physicalView, ref logicalView, result, true);
         }
 
         /// <summary>
@@ -5515,7 +5516,8 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>S_OK if it succeeds </returns>
         /// <remarks>The result array is initalized to failure.</remarks>
 #pragma warning disable VSTHRD010
-        public virtual int AddItemWithSpecific(uint itemIdLoc, VSADDITEMOPERATION op, string itemName, uint filesToOpen, string[] files, IntPtr dlgOwner, uint editorFlags, ref Guid editorType, string physicalView, ref Guid logicalView, VSADDRESULT[] result, bool bTrackChanges)
+        public virtual int AddItemWithSpecific(uint itemIdLoc, VSADDITEMOPERATION op, string itemName, uint filesToOpen,
+            string[] files, IntPtr dlgOwner, uint editorFlags, ref Guid editorType, string physicalView, ref Guid logicalView, VSADDRESULT[] result, bool bTrackChanges)
       {
             if (files == null || result == null || files.Length == 0 || result.Length == 0)
             {
@@ -7417,11 +7419,19 @@ namespace Microsoft.VisualStudio.Project
                         Guid outputPaneGuid = VSConstants.GUID_BuildOutputWindowPane;
                         if (outputWindow.GetPane(ref outputPaneGuid, out outputPane) >= 0 && outputPane != null)
                         {
+                            if (outputPane is IVsOutputWindowPaneNoPump nopump)
+                            {
+                                nopump.OutputStringNoPump(message);
+                            }
+                            else
+                            {
+
 #if DEV17
-                            Marshal.ThrowExceptionForHR(outputPane.OutputStringThreadSafe(message));
+                                Marshal.ThrowExceptionForHR(outputPane.OutputStringThreadSafe(message));
 #else
-                            Marshal.ThrowExceptionForHR(outputPane.OutputString(message));
+                                Marshal.ThrowExceptionForHR(outputPane.OutputString(message));
 #endif
+                            }
                         }
                     }
 

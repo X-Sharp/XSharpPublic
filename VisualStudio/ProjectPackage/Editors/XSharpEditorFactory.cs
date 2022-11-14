@@ -16,7 +16,6 @@ using Microsoft.VisualStudio.TextManager.Interop;
 
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using Microsoft.VisualStudio.Project;
-using XSharp.LanguageService;
 namespace XSharp.Project
 {
     /// <summary>

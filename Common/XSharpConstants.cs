@@ -13,8 +13,9 @@ namespace XSharp
         public const string guidXSharpProjectPkgString = "e299fb7b-d273-4678-9acf-b37b4af04a12";
         public const string guidXSharpProjectCmdSetString = "32a7b1cd-3663-4a70-b855-486671f5839c";
         public const string guidXSharpProjectFactoryString = "aa6c8d78-22ff-423a-9c7c-5f2393824e04";
+        //public const string guidCpsProjectType = "3FBE2663-470C-4908-A199-55B65642DFDB";
+        public const string guidCpsProjectType = guidXSharpProjectFactoryString;
         public const string guidXSharpProjectFactoryStringCurly = "{"+ guidXSharpProjectFactoryString+"}";
-
         public const string guidXSharpVOFormEditor = "fc9f8e69-f338-4fa6-aca3-aa41e445849a";
         public const string guidXSharpVOFormEditorCmdSet = "b9ce6f12-e66c-4e77-9be6-0491dfcdc2d3";
 
@@ -87,6 +88,7 @@ namespace XSharp
         public const string IntellisenseOptionsPageGuidString = "FDE6E4C9-FA8A-4B93-8B6D-88D9D2A5063E";
         public const string FormattingOptionsPageGuidString = "5A086A53-64B8-410A-BDC0-7D8D573F9B41";
         public const string OtherOptionsPageGuidString = "FC6059E3-9762-407B-83BB-A90D2C57D710";
+        public const string GeneratorOptionsPageGuidString = "A9C3281D-F068-4639-B573-82A2491E839F";
         public const string CompletionOptionsPageGuidString = "E37D51D4-30AA-4A28-81CA-1A486397640C";
         public const string FileNodePropertiesGuidString = "B7971A68-EA46-4814-AC67-1424A59DC7EB";
         public const string IndentingOptionsPageGuidString = "A8545AC1-4DD9-4A18-890C-C96CDC790950";

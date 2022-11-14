@@ -99,6 +99,9 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\constantsMethods.cs">
+      <Link>constantsMethods.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>
@@ -141,6 +144,7 @@
     <Compile Include="List\TaskList\TaskListProvider.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Nodes\XSharpIncludeContainerNode.cs" />
+    <Compile Include="Nodes\XSharpProjectNodeReferenceManager.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
@@ -703,7 +707,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.473</Version>
+      <Version>17.0.480</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>

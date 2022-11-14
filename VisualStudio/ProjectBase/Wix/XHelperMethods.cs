@@ -697,44 +697,6 @@ public static class XHelperMethods
         }
 
 
-       /// <summary>
-       /// Write the outputText to the General Output Window,
-       /// using a Tab named tabName.
-       /// </summary>
-       /// <param name="outputText"></param>
-       /// <param name="tabName"></param>
-        internal static void WriteOutputWindow(string outputText, string tabName)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            IVsOutputWindow outputWindow = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
-
-            // If we fail to get it we can exit now.
-            if (null == outputWindow)
-            {
-                return;
-            }
-            // Now get the window pane for the general output.
-            Guid guidGeneral = Microsoft.VisualStudio.VSConstants.GUID_OutWindowGeneralPane;
-            IVsOutputWindowPane windowPane = null;
-            if (Microsoft.VisualStudio.ErrorHandler.Failed(outputWindow.GetPane(ref guidGeneral, out windowPane)))
-            {
-                if (Microsoft.VisualStudio.ErrorHandler.Failed(outputWindow.CreatePane(ref guidGeneral, tabName, 1, 0)))
-                {
-                    return;
-                }
-                outputWindow.GetPane(ref guidGeneral, out windowPane);
-            }
-#if DEV17
-            if (Microsoft.VisualStudio.ErrorHandler.Failed(windowPane.OutputStringThreadSafe(outputText)))
-#else        
-            if (Microsoft.VisualStudio.ErrorHandler.Failed(windowPane.OutputString(outputText)))
-#endif
-            {
-            }
-                //
-        }
-
 
 
 
@@ -742,7 +704,7 @@ public static class XHelperMethods
         /// <summary>
         /// WaitCursor internal class.
         /// </summary>
-        private class WaitCursor : IDisposable
+      private class WaitCursor : IDisposable
       {
          private Cursor currentCursor;
 

@@ -75,26 +75,24 @@ namespace XSharp.Project
             //
             string mainFilePath = GetFilePath();
             // Are we are from the Designer ?
-            if (codeStream is DocDataTextReader)
-            {
-                this.FileName = mainFilePath;
-                // Do the parse
-                // If the TextReader is a DocDataTextReader, we should be running from VisualStudio, called by the designer
-                // So, we will guess the FileName to check if we have a .Designer.Prg file at the same place.
-                // If so, we will have to handle both .prg to produce two CodeCompileUnit, then we will merge the result into one, with markers in it
-                // so we can split again when the Designer is willing to save. ( See GenerateCodeFromCompileUnit )
-                // Anyway, we have that source, just parse it.
+            
+            this.FileName = mainFilePath;
+            // Do the parse
+            // If the TextReader is a DocDataTextReader, we should be running from VisualStudio, called by the designer
+            // So, we will guess the FileName to check if we have a .Designer.Prg file at the same place.
+            // If so, we will have to handle both .prg to produce two CodeCompileUnit, then we will merge the result into one, with markers in it
+            // so we can split again when the Designer is willing to save. ( See GenerateCodeFromCompileUnit )
+            // Anyway, we have that source, just parse it.
 
-                WriteOutputMessage("Start Parse " + this.FileName);
-                compileUnit = ToXCodeCompileUnit(base.Parse(codeStream));
-                WriteOutputMessage("End Parse " + this.FileName);
-                // Now, we should check if we have a partial Class inside, if so, that's a Candidate for .Designer.prg
-                CodeNamespace nameSpace;
-                CodeTypeDeclaration className;
-                if (XSharpCodeDomHelper.HasPartialClass(compileUnit, out nameSpace, out className))
+            WriteOutputMessage("Start Parse " + this.FileName);
+            compileUnit = ToXCodeCompileUnit(base.Parse(codeStream));
+            WriteOutputMessage("End Parse " + this.FileName);
+            // Now, we should check if we have a partial Class inside, if so, that's a Candidate for .Designer.prg
+            if (XSharpCodeDomHelper.HasPartialClass(compileUnit, out _, out var className))
+            {
+                if (codeStream is DocDataTextReader ddtr)
                 {
                     // Ok, so get the Filename, to get the .Designer.prg
-                    DocDataTextReader ddtr = codeStream as DocDataTextReader;
                     DocData dd = ((IServiceProvider)ddtr).GetService(typeof(DocData)) as DocData;
                     Assumes.Present(dd);
                     string prgFileName = dd.Name;
@@ -119,15 +117,12 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    var unit = base.Parse(codeStream);
-                    if (unit is XCodeCompileUnit xccu)
+                    if (compileUnit is XCodeCompileUnit xccu)
                         compileUnit = xccu;
                     else
-                        compileUnit = new XCodeCompileUnit(unit);
+                        compileUnit = new XCodeCompileUnit(compileUnit);
                 }
-
             }
-            //
             return compileUnit;
         }
 
@@ -205,7 +200,15 @@ namespace XSharp.Project
                 // Build the Designer FileName
                 // Retrieve Both CodeCompileUnit
                 var formCCU = mergedUnit.FormUnit;
+                bool mustWriteForm = formCCU.MustWrite;
                 var designCCU = mergedUnit.DesignerUnit;
+                // make sure namespaces are the same
+                // C# does that too.
+                if (mergedUnit.DesignerNamespace != null && mergedUnit.FormNamespace != null)
+                {
+                    mergedUnit.DesignerNamespace.Name = mergedUnit.FormNamespace.Name;
+                }
+
                 string designerPrgFile = designCCU.FileName;
                 var originalFormMembers = new CodeTypeMemberCollection(formCCU.Members);
                 foreach (CodeTypeMember m in originalFormMembers)
@@ -267,6 +270,7 @@ namespace XSharp.Project
                         if (ctm is CodeMemberMethod)
                         {
                             formClass.Members.Add(ctm);
+                            mustWriteForm = true;
                             ctm.SetWritten(true);
                         }
                         else
@@ -285,7 +289,6 @@ namespace XSharp.Project
                         formClass.Members.Add(member);
                     }
                 }
-
 
                 //
                 // Backup original Form file and Form.Designer file
@@ -327,7 +330,14 @@ namespace XSharp.Project
                 // and we need to update their position (line/col)
                 UpdateUserDataForClass(combinedClass, generatedSource, designerPrgFile, formClass);
                 // Do the same thing for the Form file
-                base.GenerateCodeFromCompileUnit(formCCU, writer, options);
+                if (mustWriteForm)
+                {
+                    base.GenerateCodeFromCompileUnit(formCCU, writer, options);
+                }
+                else
+                {
+                    writer.Write(formCCU.GetSourceCode());
+                }
                 // BUT, the writer is hold by the Form Designer, don't close  it !!
                 writer.Flush();
                 // Now, we must re-read it and parse again
@@ -336,7 +346,6 @@ namespace XSharp.Project
                     generatedSource = GetDocDataSource(dtw);
                     UpdateUserDataForClass(combinedClass, generatedSource, prgFileName, formClass);
                 }
-                
             }
             else
             {

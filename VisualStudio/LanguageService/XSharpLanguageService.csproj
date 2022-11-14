@@ -50,6 +50,9 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\constantsMethods.cs">
+      <Link>constantsMethods.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>
@@ -123,6 +126,15 @@
     <Compile Include="LightBulb\CreateStubProvider.cs" />
     <Compile Include="LightBulb\ImplementInterfaceAction.cs" />
     <Compile Include="LightBulb\ImplementInterfaceProvider.cs" />
+    <Compile Include="OptionsPages\GeneratorOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
+      <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionsPages\GeneratorOptionsPage .cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="OptionsPages\IndentingOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -214,7 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.473</Version>
+      <Version>15.0.480</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.13.0</Version>
@@ -242,6 +254,9 @@
   <ItemGroup>
     <EmbeddedResource Include="LightBulb\CtorParamsDlg.resx">
       <DependentUpon>CtorParamsDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsPages\GeneratorOptionsControl.resx">
+      <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\IndentingOptionsControl.resx">
       <DependentUpon>IndentingOptionsControl.cs</DependentUpon>

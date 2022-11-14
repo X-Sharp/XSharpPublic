@@ -33,9 +33,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             // Type(pPointer) -> Dereference pointer
             // Vulcan only allows this with pPointer is of type PTR (Void pointer)
-            if (node.XNode is PrimaryExpressionContext)
+            if (node.XNode is PrimaryExpressionContext pe)
             {
-                PrimaryExpressionContext pe = (PrimaryExpressionContext)node.XNode;
                 if (pe.Expr is VoConversionExpressionContext && operand.Type.IsPointerType())
                 {
                     var tType = targetType.Type;
@@ -59,8 +58,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         //var newConv = Conversions.ClassifyConversionForCast(operand, ptrtype, ref useSiteDiagnostics);
                         var newConv = Conversions.ClassifyConversionFromExpression(operand, ptrtype, ref useSiteDiagnostics, forCast: true);
                         var ptrconv = new BoundConversion(node, operand, newConv, true, false,
-                            conversionGroupOpt: default,
-                            constantValueOpt: default,
+                            conversionGroupOpt: null,
+                            constantValueOpt: null,
                             type: ptrtype)
                         { WasCompilerGenerated = true };
                         expression = new BoundPointerElementAccess(node, ptrconv, index, false, tType) { WasCompilerGenerated = true };
@@ -163,7 +162,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var indexedPropsType = Compilation.IndexedPropertiesType();
                 var arrayBaseType = Compilation.ArrayBaseType();
                 bool numericParams = false;
-                bool mustcast = false;
+                bool mustcast;
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
                 if (!TypeSymbol.Equals(cf, arrayType) && (cf.IsUsualType()
                     || TypeSymbol.Equals(cf.ConstructedFrom, arrayBaseType)
@@ -219,9 +218,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     foreach (var arg in analyzedArguments.Arguments)
                     {
                         BoundExpression newarg;
-                        bool mustBeNumeric = false;
                         ++argno;
-                        mustBeNumeric = true;
+                        bool mustBeNumeric = true;
                         if (Compilation.Options.XSharpRuntime && Equals(cf, namedIndexerType))
                         {
                             mustBeNumeric = argno == 1;
@@ -400,7 +398,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 Error(diagnostics, ErrorCode.ERR_BadArgType, arg.Syntax, i + 1, arg.Type, member.Parameters[i].Type);
                             }
-
                         }
                     }
                     if (isRefKindMismatch && !CheckValueKind(arg.Syntax, arg, BindValueKind.RefOrOut, checkingReceiver: false, diagnostics: diagnostics))
@@ -520,19 +517,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     if (!leftType.HasMembers(propName))
                     {
-                        string method;
-                        switch (node.Parent)
+                        var method = node.Parent switch
                         {
-                            case InvocationExpressionSyntax ies:
-                                method = "NoMethod";
-                                break;
-                            case AssignmentExpressionSyntax aes:
-                                method = "NoIVarPut";
-                                break;
-                            default:
-                                method = "NoIVarGet";
-                                break;
-                        }
+                            InvocationExpressionSyntax => "NoMethod",
+                            AssignmentExpressionSyntax => "NoIVarPut",
+                            _ => "NoIVarGet",
+                        };
                         if (leftType.HasMembers(method))
                         {
                             var returnType = Compilation.UsualType();
@@ -545,8 +535,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     indexed: indexed,
                                     type: returnType,
                                     hasErrors: false);
-
-
                             var hidewWarning = Compilation.Options.Dialect.AllowLateBindingForTypesWithTheAttribute() && leftType.HasLateBindingAttribute();
                             if (!hidewWarning)
                             {
@@ -585,7 +573,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 {
                                     var start = loc.GetLineSpan().StartLinePosition;
                                     var curLine = expr.Syntax.Location.GetLineSpan().StartLinePosition;
-                                    suppress = (start.Line == curLine.Line  && error.Code == (int)ErrorCode.ERR_NoSuchMemberOrExtension);
+                                    suppress = (start.Line == curLine.Line && error.Code == (int)ErrorCode.ERR_NoSuchMemberOrExtension);
                                 }
                                 if (!suppress)
                                     newDiag.Add(error);
@@ -646,8 +634,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return null;
                 }
             }
-            BoundExpression expression;
-            if (BindVOPointerDereference(node, TypeWithAnnotations.Create(targetType), operand, diagnostics, out expression))
+            if (BindVOPointerDereference(node, TypeWithAnnotations.Create(targetType), operand, diagnostics, out var expression))
             {
                 return expression;
             }
@@ -936,7 +923,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-
             // make sure that we do not resolve to a function call when we do not look for methods
             if (expression != null && !bindMethod && expression.Kind == BoundKind.MethodGroup && indexed)
             {
@@ -946,11 +932,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             // undeclared variables are allowed when the dialect supports memvars and memvars are enabled
             // or in the 'full' macro compiler
 
-
             bool isFoxMemberAccess = false;
-            var xnode = node?.XNode as XSharpParserRuleContext;
 
-            if (expression == null && xnode != null)
+            if (expression == null && node?.XNode is XSharpParserRuleContext xnode)
             {
                 // Foxpro member access is transformed in 2 ways:
                 // M.SomeVar is transformed to a SomeVar NameExpression node. The AccessMember context is then connected to SomeVar
@@ -1015,8 +999,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 get = GetCandidateMembers(type, ReservedNames.MemVarGet, LookupOptions.MustNotBeInstance, this);
                             }
                             set = GetCandidateMembers(type, ReservedNames.MemVarPut, LookupOptions.MustNotBeInstance, this);
-
-
                         }
                         else if (parts[0] == XSharpSpecialNames.FieldPrefix)
                         {
@@ -1050,17 +1032,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else if (Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, node) || declared || isFoxMemberAccess)
                 {
-                    if (get.Length == 1 && set.Length == 1 && get[0] is MethodSymbol && set[0] is MethodSymbol)
+                    if (get.Length == 1 && set.Length == 1 && get[0] is MethodSymbol getsym && set[0] is MethodSymbol setsym)
                     {
                         XsVariableSymbol ps;
                         var tUsual = TypeWithAnnotations.Create(Compilation.UsualType());
-                        if (!String.IsNullOrEmpty(alias))
+                        if (!string.IsNullOrEmpty(alias))
                         {
-                            ps = new XsVariableSymbol(alias, name, (MethodSymbol)get[0], (MethodSymbol)set[0], tUsual);
+                            ps = new XsVariableSymbol(alias, name, getsym, setsym, tUsual);
                         }
                         else
                         {
-                            ps = new XsVariableSymbol(name, (MethodSymbol)get[0], (MethodSymbol)set[0], tUsual);
+                            ps = new XsVariableSymbol(name, getsym, setsym, tUsual);
                         }
 
                         expression = new BoundPropertyAccess(node, null, ps, LookupResultKind.Viable, Compilation.UsualType());
@@ -1081,7 +1063,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 iec.Data.HasUndeclared = true;
                             }
                         }
-
                     }
                 }
             }
@@ -1155,7 +1136,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         SingleLookupResult single = new SingleLookupResult(LookupResultKind.Viable, sym, null);
                         tmp.MergeEqual(single);
                     }
-
                 }
                 result.Clear();
                 result.MergeEqual(tmp);
@@ -1207,12 +1187,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var xnode = node.Parent.XNode;
                 if (xnode != null)
                 {
-                    if (xnode is ArrayElementContext)
+                    if (xnode is ArrayElementContext aec)
                     {
-                        xnode = ((ArrayElementContext)xnode).Expr;
+                        xnode = aec.Expr;
                     }
-                    var amc = xnode as AccessMemberContext;
-                    if (amc != null && amc.Op.Text == ":")
+                    if (xnode is AccessMemberContext amc && amc.Op.Text == ":")
                     {
                         instance = true;
                         if (mustBeLHS)
@@ -1240,5 +1219,4 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
     }
-
 }

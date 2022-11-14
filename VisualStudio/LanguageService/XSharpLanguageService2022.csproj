@@ -47,6 +47,9 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\constantsMethods.cs">
+      <Link>constantsMethods.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>

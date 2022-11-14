@@ -1,4 +1,5 @@
 // 284. error XS1501: No overload for method 'Left' takes 2 arguments:
+#pragma warnings(9066, disable)
 CLASS TestClass
     METHOD Left(n AS INT) AS LOGIC
     RETURN FALSE
@@ -11,7 +12,7 @@ CLASS TestClass
         ? InstanceMethod()
         ? SELF:InstanceMethod()
     RETURN
-END CLASS 
+END CLASS
 
 FUNCTION Start() AS VOID
 TestClass{}:DoTest()

@@ -1,4 +1,5 @@
 // error XS0037: Cannot convert null to 'IntPtr' because it is a non-nullable value type
+#pragma warnings (9043,off)
 FUNCTION Start() AS VOID
 	LOCAL l:= FALSE AS LOGIC
 	IF l
@@ -17,7 +18,7 @@ RETURN
 _DLL FUNCTION TestDll(p AS PSZ) AS VOID PASCAL:KERNEL32.Nothing
 FUNCTION TestNonDll(p AS PSZ) AS VOID
 	? p
-RETURN 
+RETURN
 
 DEFINE LANG_NEUTRAL                   :=  0x00
 DEFINE FORMAT_MESSAGE_FROM_SYSTEM := 0x00001000

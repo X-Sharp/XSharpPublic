@@ -1,5 +1,5 @@
 // 439. error XS9002: Parser: unexpected input ':' expecting {COMMA, EOS}
-
+#pragma warnings (9043,off)
 #command @ <row>, <col> DOSAY <xpr>                                       ;
                         [PICTURE <pic>]                                 ;
                         [COLOR <color>]                                 ;
@@ -21,7 +21,7 @@
              )                                                          ;
        ;ATail(Getlist):reader := {|x|x} ;
        ;ATail(Getlist):cargo := ArrayCreate(100) ;
-      [; ATail(GetList):<msg>]                        
+      [; ATail(GetList):<msg>]
 
 // I think the last part is a comment?
 

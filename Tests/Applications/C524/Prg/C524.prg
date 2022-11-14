@@ -8,7 +8,7 @@ FUNCTION Start( ) AS VOID
 
 	FOREACH file AS TestClass IN aTest
 		? file:Code // ok
-	
+
 		LOCAL arr := {} AS ARRAY
 		AAdd(arr , file:Code) // ok
 		arr := {file:Code} // error XS0117

@@ -45,12 +45,12 @@ namespace XSharp.LanguageService.OptionsPages
         public bool EnableCodeCompletion { get; set; }
 
         [DefaultValue(1)]
-        public int Initialized { get; set; }
+        public int OptionsInitialized { get; set; }
 
         public override void LoadSettingsFromStorage()
         {
             base.LoadSettingsFromStorage();
-            if (Initialized == 0)
+            if (OptionsInitialized == 0)
             {
                 EnableHighlightWord = true;
                 EnableBraceMatching = true;
@@ -60,7 +60,7 @@ namespace XSharp.LanguageService.OptionsPages
                 EnableParameterInfo = true;
                 EnableCodeCompletion = true;
                 EnableRegions = true;
-                Initialized = 1;
+                OptionsInitialized = 1;
             }
         }
     }

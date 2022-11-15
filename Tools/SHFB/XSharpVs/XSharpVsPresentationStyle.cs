@@ -119,6 +119,7 @@ namespace XSharpVs
                 "Send via e-mail: mailto:YourEmailAddress@Domain.com"));
 
             // Add the plug-in dependencies
+
             this.PlugInDependencies.Add(new PlugInDependency("Lightweight Website Style", null));
         }
     }

@@ -1,10 +1,14 @@
 <!--
 ***********************************************************************************************
-XSharp.targets
+XSharp.Common.Targets
 ***********************************************************************************************
 -->
 <Project>
-
+  <PropertyGroup>
+    <XsMsBeforeTargets>$(MSBuildToolsPath)\Microsoft.Managed.Before.targets</XsMsBeforeTargets>
+    <XsMsAfterTargets>$(MSBuildToolsPath)\Microsoft.Managed.After.targets</XsMsAfterTargets>
+  </PropertyGroup>
+  
   <Choose>
     <When Condition="'$(IsCrossTargetingBuild)' == 'true'">
       <PropertyGroup>
@@ -18,10 +22,8 @@ XSharp.targets
     </Otherwise>
   </Choose>
 
-  <Import Project="$(MSBuildToolsPath)\Microsoft.Managed.Before.targets" />
-
+  <Import Condition="exists('$(XsMsBeforeTargets)')" Project="$(XsMsBeforeTargets)" />
   <Import Project="$(XSharpTargetsPath)" />
-
-  <Import Project="$(MSBuildToolsPath)\Microsoft.Managed.After.targets" />
+  <Import Condition="exists('$(XsMsAfterTargets)')" Project="$(XsMsAfterTargets)" />
 
 </Project>

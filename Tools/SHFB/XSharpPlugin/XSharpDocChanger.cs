@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace XSharpDocs
 {
@@ -129,6 +131,7 @@ namespace XSharpDocs
             string MsHelpViewerPath = @"Output\MsHelpViewer";
             string websitePath = @"Output\Website";
             string htmlPath = "html";
+            InitXSharpTypeNames();
             if (format == HelpFileFormats.HtmlHelp1)
             {
                 builder.ReportProgress("Editing htmlHelp1 files...");
@@ -151,7 +154,7 @@ namespace XSharpDocs
                     foreach (string hhc in hhcPaths)
                     {
                         EditHhc(hhc);
-                        EditXSharpTypeNames(hhc);
+                        EditXSharpTypeNames(builder, hhc);
                     }
                 }
                 else
@@ -165,7 +168,7 @@ namespace XSharpDocs
                     foreach (string hhk in hhkPaths)
                     {
                         EditHhk(hhk);
-                        EditXSharpTypeNames(hhk);
+                        EditXSharpTypeNames(builder, hhk);
                     }
                 }
                 else
@@ -288,7 +291,11 @@ namespace XSharpDocs
             string[] htmlFilesPaths = Directory.GetFiles(path, "*.htm", SearchOption.TopDirectoryOnly);
             // Then we classify the Files into different types
             var topics = new List<hhtopic>(htmlFilesPaths.Length);
-            foreach (string htmlFilePath in htmlFilesPaths)
+            InitXSharpTypeNames();
+            var options = new ParallelOptions();
+            int counter = 0;
+            options.MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount - 1,1);
+            Parallel.ForEach(htmlFilesPaths, options, (htmlFilePath) =>
             {
                 string htmlFileName = htmlFilePath.Remove(0, path.Length + 1);// +1 comes from backslash character in the path ending.
                 htmlFileName = htmlFileName.Remove(htmlFileName.Length - 4); // remove the .htm at the end of the string.
@@ -299,29 +306,27 @@ namespace XSharpDocs
                     var contents = File.ReadAllText(htmlFilePath);
                     strType = DetermineFieldType(contents);
                 }
-                if (fileType != FileType.Other)
+                if (fileType == FileType.Other)
                 {
-                    topics.Add(new hhtopic() { FileName = htmlFilePath, Type = fileType, FieldType = strType });
+                    EditXSharpTypeNames(builder, htmlFilePath);
                 }
-            }
-            //edit each html page
-            int counter = 0;
-            foreach (var topic in topics)
-            {
-                // edit the page itself
-                editWebPage(topic);
-                // edit all the typeNames on the page
-                EditXSharpTypeNames(topic.FileName);
-                if (format == HelpFileFormats.MSHelpViewer)
+                else
                 {
-                    editFileForMSHV(topic);
+                    var topic = new hhtopic() { FileName = htmlFilePath, Type = fileType, FieldType = strType };
+                    editWebPage(topic);
+                    // edit all the typeNames on the page
+                    EditXSharpTypeNames(builder, topic.FileName);
+                    if (format == HelpFileFormats.MSHelpViewer)
+                    {
+                        editFileForMSHV(topic);
+                    }
                 }
-                counter++;
+                Interlocked.Increment(ref counter);
                 if (counter % 500 == 0)
                 {
                     builder.ReportProgress("   Adjusted {0} pages", counter);
                 }
-            }
+            });
             builder.ReportProgress("   Finished adjusting {0} pages", counter);
             return;
         }
@@ -1064,59 +1069,91 @@ namespace XSharpDocs
         {
             string[] htmlFilesPaths = Directory.GetFiles(path, "*.htm", SearchOption.TopDirectoryOnly);
             int counter = 0;
-            foreach (string filePath in htmlFilesPaths)
+            var options = new ParallelOptions();
+            options.MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount - 1, 1);
+
+            Parallel.ForEach(htmlFilesPaths, options, (filePath) =>
             {
                 EditWebsiteTOC(filePath);
-                counter++;
+                Interlocked.Increment(ref counter);
                 if (counter % 500 == 0)
                 {
                     builder.ReportProgress("   Adjusted {0} pages", counter);
                 }
-            }
+            });
             builder.ReportProgress("   Finished adjusting {0} pages", counter);
         }
+        static object Gate = new object();
+        static string delimiters = null; // the start of all the delimiters
+        static string pattern = null;
+        static Dictionary<string, string> replacements = null;
+        static string Array = "__Array";
+        static string ArrayBase = "__ArrayBase";
+        static string Date = "__Date";
+        static string Float = "__Float";
+        static string FoxArray = "__FoxArray";
+        static string Symbol = "__Symbol";
+        static string Psz = "__Psz";
+        static string Usual = "__Usual";
+        static string Binary = "__Binary";
+        static string Currency = "__Currency";
+        static string ArrayReplace = "Array";
+        static string FoxArrayReplace = "FoxArray";
+        static string ArrayBaseReplace = "Array Of";
+        static string DateReplace = "Date";
+        static string SymbolReplace = "Symbol";
+        static string UsualReplace = "Usual";
+        static string BinaryReplace = "Binary";
+        static string CurrencyReplace = "Currency";
+        static string PszReplace = "Psz";
+        static string FloatReplace = "Float";
 
-        static public void EditXSharpTypeNames(string path)
+        static void InitXSharpTypeNames()
         {
-            string delimiters = "(>|&lt;|\\(|to |, |value=\"|content=\")"; // the start of all the delimiters
-            string Array = "__Array";
-            string ArrayBase = "__ArrayBase";
-            string Date = "__Date";
-            string Float = "__Float";
-            string FoxArray = "__FoxArray";
-            string Symbol = "__Symbol";
-            string Psz = "__Psz";
-            string Usual = "__Usual";
-            string Binary = "__Binary";
-            string Currency = "__Currency";
-            string ArrayReplace = "Array";
-            string FoxArrayReplace = "FoxArray";
-            string ArrayBaseReplace = "Array Of";
-            string DateReplace = "Date";
-            string SymbolReplace = "Symbol";
-            string UsualReplace = "Usual";
-            string BinaryReplace = "Binary";
-            string CurrencyReplace = "Currency";
-            string PszReplace = "Psz";
-            string FloatReplace = "Float";
-            Dictionary<string, string> replacements = new Dictionary<string, string>();
-            replacements.Add(ArrayBase, ArrayBaseReplace);
-            replacements.Add(Array, ArrayReplace);
-            replacements.Add(Date, DateReplace);
-            replacements.Add(Float, FloatReplace);
-            replacements.Add(FoxArray, FoxArrayReplace);
-            replacements.Add(Symbol, SymbolReplace);
-            replacements.Add(Psz, PszReplace);
-            replacements.Add(Usual, UsualReplace);
-            replacements.Add(Currency, CurrencyReplace);
-            replacements.Add(Binary, BinaryReplace);
-            replacements.Add("Int32", "Long");
-            replacements.Add("UInt32", "DWord");
-            replacements.Add("UInt16", "Word");
-            replacements.Add("Int16", "Short");
-            replacements.Add("Double", "Real8");
-            replacements.Add("Single", "Real4");
-            replacements.Add("Boolean", "Logic");
+            if (delimiters == null)
+            {
+                var delims = new string[]
+                {
+                    "<",
+                    ">",
+                    "&lt;",
+                    "&gt;",
+                    @"\(",
+                    "to ",
+                    ", ",
+                    "value=\"",
+                    "content=\""
+                };
+                delimiters = "(" + string.Join("|", delims) + ")";
+            }
+            if (replacements == null)
+            {
+                replacements = new Dictionary<string, string>
+                {
+                    { ArrayBase, ArrayBaseReplace },
+                    { Array, ArrayReplace },
+                    { Date, DateReplace },
+                    { Float, FloatReplace },
+                    { FoxArray, FoxArrayReplace },
+                    { Symbol, SymbolReplace },
+                    { Psz, PszReplace },
+                    { Usual, UsualReplace },
+                    { Currency, CurrencyReplace },
+                    { Binary, BinaryReplace },
+                    { "Int32", "Long" },
+                    { "UInt32", "DWord" },
+                    { "UInt16", "Word" },
+                    { "Int16", "Short" },
+                    { "Double", "Real8" },
+                    { "Single", "Real4" },
+                    { "Boolean", "Logic" }
+                };
+                pattern = delimiters + "(" + string.Join("|", new List<string>(replacements.Keys).ToArray()) + ")";
+            }
+        }
+        static public void EditXSharpTypeNames(BuildProcess builder, string path)
+        {
+            Regex regex = new Regex(pattern);
             string allText = File.ReadAllText(path);
             bool usualType = false;
             if (allText.IndexOf("__UsualType") >= 0)
@@ -1124,33 +1161,29 @@ namespace XSharpDocs
                 usualType = true;
                 allText = allText.Replace("__UsualType", "__XUsualType");
             }
-            string or = "|";
-            string pattern = delimiters + "(" + string.Join(or, new List<string>(replacements.Keys).ToArray()) + ")";
-            Regex regex = new Regex(pattern);
             MatchCollection coll = regex.Matches(allText);
-            string newText = "";
-            // regex lambda magic to replace using the dictionary
-            //System.Diagnostics.Debugger.Break();
-            newText = regex.Replace(allText, replace =>
+            if (coll.Count > 0)
             {
-                if (replacements.ContainsKey(replace.Groups[2].Value))
+                string newText = regex.Replace(allText, replace =>
                 {
-                    return replace.Groups[1].Value + replacements[replace.Groups[2].Value];
+                    if (replacements.ContainsKey(replace.Groups[2].Value))
+                        return replace.Groups[1].Value + replacements[replace.Groups[2].Value];
+                    else
+                        return replace.Value;
+                });
+
+                if (usualType)
+                {
+                    newText = newText.Replace("__XUsualType", "__UsualType");
                 }
-                else return replace.Value;
-            });
-            if (usualType)
-            {
-                newText = newText.Replace("__XUsualType", "__UsualType");
-            }
-            if (newText != allText)
-            {
-                var writer = new StreamWriter(path);
-                writer.Write(newText);
-                writer.Close();
+                if (newText != allText)
+                {
+                    var writer = new StreamWriter(path);
+                    writer.Write(newText);
+                    writer.Close();
+                }
             }
             return;
         }
     }
-
 }

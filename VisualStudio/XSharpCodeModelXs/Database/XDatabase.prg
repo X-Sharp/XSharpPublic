@@ -696,7 +696,7 @@ STATIC CLASS XDatabase
         IF oFile:Id == -1
             XDatabase.Read(oFile)
         ENDIF
-        IF oFile:IsSource
+        IF oFile:HasCode
             UpdateFileContents(oFile)
         ENDIF
         UpdateFileData(oFile)

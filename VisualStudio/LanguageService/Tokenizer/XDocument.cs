@@ -124,6 +124,7 @@ namespace XSharp.LanguageService
                 {
                     xt.StartIndex += offset;
                     xt.StopIndex += offset;
+                    xt.Line = lineNo;
                 }
             }
             return result;

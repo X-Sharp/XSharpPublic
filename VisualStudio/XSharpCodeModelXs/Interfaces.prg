@@ -20,7 +20,12 @@ BEGIN NAMESPACE XSharpModel
       METHOD DocumentGetText(file AS STRING, IsOpen REF LOGIC) AS STRING
       METHOD DocumentInsertLine(fileName AS STRING, line AS LONG, text AS STRING) AS LOGIC
       METHOD DocumentSetText(fileName AS STRING, text AS STRING) AS LOGIC
-      METHOD FindProject(sProject AS STRING) AS Object
+      /// <summary>
+      /// Return the EnvDte project for a url
+      /// </summary>
+      /// <param name="sUrl"></param>
+      /// <returns>EnvDte project</returns>
+      METHOD FindProject(sUrl AS STRING) AS Object
       METHOD GetIntellisenseErrorPos(fileName AS STRING) AS System.Collections.Generic.List<IXErrorPosition>
       METHOD HasFileNode(fileName AS STRING) AS LOGIC
       METHOD ShowIntellisenseErrors() AS VOID

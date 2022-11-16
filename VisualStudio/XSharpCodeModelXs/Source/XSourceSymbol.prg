@@ -40,7 +40,7 @@ CLASS XSourceSymbol INHERIT XSymbol IMPLEMENTS IXSourceSymbol
             IF SELF:File == NULL
                 RETURN ""
             ENDIF
-            RETURN SELF:File:FullPath + " (" + SELF:LineNumber:ToString()+" , "+SELF:ColumnNumber:ToString()+")"
+            RETURN SELF:File:SourcePath + " (" + SELF:LineNumber:ToString()+" , "+SELF:ColumnNumber:ToString()+")"
         END GET
     END PROPERTY
     CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers)

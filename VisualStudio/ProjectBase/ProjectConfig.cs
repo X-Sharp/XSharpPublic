@@ -9,177 +9,175 @@
  *
  * ***************************************************************************/
 
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Security;
-using System.IO;
 using System.Collections.Generic;
-using MSBuild = Microsoft.Build.Evaluation;
-using MSBuildExecution = Microsoft.Build.Execution;
-using MSBuildConstruction = Microsoft.Build.Construction;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Runtime.InteropServices;
 using XSharpModel;
+using MSBuild = Microsoft.Build.Evaluation;
+using MSBuildConstruction = Microsoft.Build.Construction;
 
 
 namespace Microsoft.VisualStudio.Project
 {
-	public struct ConfigCanonicalName
-	{
-		private static readonly StringComparer CMP = StringComparer.OrdinalIgnoreCase;
-		private readonly string myConfigName;
-		private readonly string myPlatform;
+    public struct ConfigCanonicalName
+    {
+        private static readonly StringComparer CMP = StringComparer.OrdinalIgnoreCase;
+        private readonly string myConfigName;
+        private readonly string myPlatform;
 
-		public ConfigCanonicalName(string configName, string platform)
-		{
-			myConfigName = configName;
-			if (CMP.Equals(platform, ProjectConfig.AnyCPU))
-				myPlatform = ProjectConfig.Any_CPU;
-			else
-				myPlatform = platform;
-		}
+        public ConfigCanonicalName(string configName, string platform)
+        {
+            myConfigName = configName;
+            if (CMP.Equals(platform, ProjectConfig.AnyCPU))
+                myPlatform = ProjectConfig.Any_CPU;
+            else
+                myPlatform = platform;
+        }
 
-		public ConfigCanonicalName(string configCanonicalName)
-		{
-			string platform;
-			TrySplitConfigurationCanonicalName(configCanonicalName, out myConfigName, out platform);
-			if (CMP.Equals(platform, ProjectConfig.AnyCPU))
-				myPlatform = ProjectConfig.Any_CPU;
-			else
-				myPlatform = platform;
-		}
+        public ConfigCanonicalName(string configCanonicalName)
+        {
+            string platform;
+            TrySplitConfigurationCanonicalName(configCanonicalName, out myConfigName, out platform);
+            if (CMP.Equals(platform, ProjectConfig.AnyCPU))
+                myPlatform = ProjectConfig.Any_CPU;
+            else
+                myPlatform = platform;
+        }
 
-		public string ConfigName { get { return myConfigName != null ? myConfigName : String.Empty; } }
-		public string Platform { get { return myPlatform != null ? myPlatform : String.Empty; } }
+        public string ConfigName { get { return myConfigName != null ? myConfigName : String.Empty; } }
+        public string Platform { get { return myPlatform != null ? myPlatform : String.Empty; } }
 
-		public bool MatchesPlatform(string platform)
-		{
-			return CMP.Equals(platform, myPlatform);
-		}
+        public bool MatchesPlatform(string platform)
+        {
+            return CMP.Equals(platform, myPlatform);
+        }
 
-		public bool MatchesConfigName(string configName)
-		{
-			return CMP.Equals(configName, myConfigName);
-		}
+        public bool MatchesConfigName(string configName)
+        {
+            return CMP.Equals(configName, myConfigName);
+        }
 
-		public string MSBuildPlatform
-		{
-			get
-			{
-				if (CMP.Equals(myPlatform, ProjectConfig.Any_CPU))
-					return ProjectConfig.AnyCPU;
-				else
-					return myPlatform != null ? myPlatform : String.Empty;
-			}
-		}
+        public string MSBuildPlatform
+        {
+            get
+            {
+                if (CMP.Equals(myPlatform, ProjectConfig.Any_CPU))
+                    return ProjectConfig.AnyCPU;
+                else
+                    return myPlatform != null ? myPlatform : String.Empty;
+            }
+        }
 
-		public string PlatformTarget
-		{
-			get { return MSBuildPlatform; }
-		}
+        public string PlatformTarget
+        {
+            get { return MSBuildPlatform; }
+        }
 
-		public override string ToString()
-		{
-			if (String.IsNullOrEmpty(myPlatform)) return myConfigName;
-			return String.Format("{0}|{1}", myConfigName, myPlatform);
-		}
+        public override string ToString()
+        {
+            if (String.IsNullOrEmpty(myPlatform)) return myConfigName;
+            return String.Format("{0}|{1}", myConfigName, myPlatform);
+        }
 
-		public string ToMSBuildCondition()
-		{
-			if (String.IsNullOrEmpty(myPlatform))
-			{
-				return String.Format(CultureInfo.InvariantCulture, " '$(Configuration)' == '{0}' ", myConfigName);
-			}
-			else
-			{
-				return String.Format(CultureInfo.InvariantCulture, " '$(Configuration)|$(Platform)' == '{0}|{1}' ", myConfigName, this.MSBuildPlatform);
-			}
-		}
+        public string ToMSBuildCondition()
+        {
+            if (String.IsNullOrEmpty(myPlatform))
+            {
+                return String.Format(CultureInfo.InvariantCulture, " '$(Configuration)' == '{0}' ", myConfigName);
+            }
+            else
+            {
+                return String.Format(CultureInfo.InvariantCulture, " '$(Configuration)|$(Platform)' == '{0}|{1}' ", myConfigName, this.MSBuildPlatform);
+            }
+        }
 
-		public override int GetHashCode()
-		{
-			return CMP.GetHashCode(ToString());
-		}
+        public override int GetHashCode()
+        {
+            return CMP.GetHashCode(ToString());
+        }
 
-		public bool Equals(ConfigCanonicalName other)
-		{
-			return CMP.Equals(myConfigName, other.myConfigName) && CMP.Equals(myPlatform, other.myPlatform);
-		}
+        public bool Equals(ConfigCanonicalName other)
+        {
+            return CMP.Equals(myConfigName, other.myConfigName) && CMP.Equals(myPlatform, other.myPlatform);
+        }
 
-		public override bool Equals(object obj)
-		{
-			if (!(obj is ConfigCanonicalName)) return false;
-			return Equals((ConfigCanonicalName)obj);
-		}
+        public override bool Equals(object obj)
+        {
+            if (!(obj is ConfigCanonicalName)) return false;
+            return Equals((ConfigCanonicalName)obj);
+        }
 
-		public static bool operator ==(ConfigCanonicalName left, ConfigCanonicalName right)
-		{
-			return left.Equals(right);
-		}
-		public static bool operator !=(ConfigCanonicalName left, ConfigCanonicalName right)
-		{
-			return !left.Equals(right);
-		}
+        public static bool operator ==(ConfigCanonicalName left, ConfigCanonicalName right)
+        {
+            return left.Equals(right);
+        }
+        public static bool operator !=(ConfigCanonicalName left, ConfigCanonicalName right)
+        {
+            return !left.Equals(right);
+        }
 
-		/// <summary>
-		/// Splits the canonical configuration name into platform and configuration name.
-		/// </summary>
-		/// <param name="canonicalName">The canonicalName name.</param>
-		/// <param name="configName">The name of the configuration.</param>
-		/// <param name="platformName">The name of the platform.</param>
-		/// <returns>true if successfull.</returns>
-		/*internal, but public for FSharp.Project.dll*/
-		private static bool TrySplitConfigurationCanonicalName(string canonicalName, out string configName, out string platformName)
-		{
-			// TODO rationalize this code with callers and ProjectNode.OnHandleConfigurationRelatedGlobalProperties, ProjectNode.TellMSBuildCurrentSolutionConfiguration, etc
-			configName = String.Empty;
-			platformName = String.Empty;
+        /// <summary>
+        /// Splits the canonical configuration name into platform and configuration name.
+        /// </summary>
+        /// <param name="canonicalName">The canonicalName name.</param>
+        /// <param name="configName">The name of the configuration.</param>
+        /// <param name="platformName">The name of the platform.</param>
+        /// <returns>true if successfull.</returns>
+        /*internal, but public for FSharp.Project.dll*/
+        private static bool TrySplitConfigurationCanonicalName(string canonicalName, out string configName, out string platformName)
+        {
+            // TODO rationalize this code with callers and ProjectNode.OnHandleConfigurationRelatedGlobalProperties, ProjectNode.TellMSBuildCurrentSolutionConfiguration, etc
+            configName = String.Empty;
+            platformName = String.Empty;
 
-			if (String.IsNullOrEmpty(canonicalName))
-			{
-				return false;
-			}
+            if (String.IsNullOrEmpty(canonicalName))
+            {
+                return false;
+            }
 
-			string[] splittedCanonicalName = canonicalName.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] splittedCanonicalName = canonicalName.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 
-			if (splittedCanonicalName == null || (splittedCanonicalName.Length != 1 && splittedCanonicalName.Length != 2))
-			{
-				return false;
-			}
+            if (splittedCanonicalName == null || (splittedCanonicalName.Length != 1 && splittedCanonicalName.Length != 2))
+            {
+                return false;
+            }
 
-			configName = splittedCanonicalName[0];
-			if (splittedCanonicalName.Length == 2)
-			{
-				platformName = splittedCanonicalName[1];
-			}
+            configName = splittedCanonicalName[0];
+            if (splittedCanonicalName.Length == 2)
+            {
+                platformName = splittedCanonicalName[1];
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		public static ConfigCanonicalName OfCondition(string condition)
-		{
-			const string confOnly = "'$(Configuration)'";
-			const string confAndPlatform = "'$(Configuration)|$(Platform)'";
-			condition = condition.Trim();
-			if (condition.StartsWith(confOnly, StringComparison.Ordinal) || condition.StartsWith(confAndPlatform, StringComparison.Ordinal))
-			{
-				var eqeqIdx = condition.IndexOf("==", StringComparison.Ordinal);
-				if (eqeqIdx < 0) return new ConfigCanonicalName();
-				var condTarget = condition.Substring(eqeqIdx + 2).Trim(' ');
-				if (condTarget.StartsWith("'", StringComparison.Ordinal)) condTarget = condTarget.Substring(1);
-				if (condTarget.EndsWith("'", StringComparison.Ordinal)) condTarget = condTarget.Substring(0, condTarget.Length - 1);
-				// In confOnly case condTarget now contains "ConfName"
-				// In confInPlatformCase condTarget now contains "ConfName|Platform"
-				// ConfigCanonicalName constructor is ok with both
-				return new ConfigCanonicalName(condTarget.Trim());
-			}
-			return new ConfigCanonicalName();
-		}
-	}
+        public static ConfigCanonicalName OfCondition(string condition)
+        {
+            const string confOnly = "'$(Configuration)'";
+            const string confAndPlatform = "'$(Configuration)|$(Platform)'";
+            condition = condition.Trim();
+            if (condition.StartsWith(confOnly, StringComparison.Ordinal) || condition.StartsWith(confAndPlatform, StringComparison.Ordinal))
+            {
+                var eqeqIdx = condition.IndexOf("==", StringComparison.Ordinal);
+                if (eqeqIdx < 0) return new ConfigCanonicalName();
+                var condTarget = condition.Substring(eqeqIdx + 2).Trim(' ');
+                if (condTarget.StartsWith("'", StringComparison.Ordinal)) condTarget = condTarget.Substring(1);
+                if (condTarget.EndsWith("'", StringComparison.Ordinal)) condTarget = condTarget.Substring(0, condTarget.Length - 1);
+                // In confOnly case condTarget now contains "ConfName"
+                // In confInPlatformCase condTarget now contains "ConfName|Platform"
+                // ConfigCanonicalName constructor is ok with both
+                return new ConfigCanonicalName(condTarget.Trim());
+            }
+            return new ConfigCanonicalName();
+        }
+    }
 
     [CLSCompliant(false), ComVisible(true)]
     public partial class ProjectConfig :
@@ -193,19 +191,19 @@ namespace Microsoft.VisualStudio.Project
         internal const string Debug = "Debug";
         internal const string Release = "Release";
         internal const string AnyCPU = "AnyCPU";
-		internal const string Any_CPU = "Any CPU";
+        internal const string Any_CPU = "Any CPU";
         #endregion
 
         #region fields
         private ProjectNode project;
-		private ConfigCanonicalName configCanonicalName;
-		private DateTime lastCache;
-		private string projectAssemblyNameCache; // null means invalid
-		private MSBuild.Project evaluatedProject = null;
+        private ConfigCanonicalName configCanonicalName;
+        private DateTime lastCache;
+        private string projectAssemblyNameCache; // null means invalid
+        private MSBuild.Project evaluatedProject = null;
         private List<OutputGroup> outputGroups;
         private IProjectConfigProperties configurationProperties;
-		private IVsProjectFlavorCfg flavoredCfg = null;
-		private BuildableProjectConfig buildableCfg = null;
+        private IVsProjectFlavorCfg flavoredCfg = null;
+        private BuildableProjectConfig buildableCfg = null;
         #endregion
 
         #region properties
@@ -217,135 +215,135 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-		public string ConfigName
-		{
-			get
-			{
-				return this.configCanonicalName.ConfigName;
-			}
-			set
-			{
-				this.configCanonicalName = new ConfigCanonicalName(value, this.configCanonicalName.Platform);
-				this.projectAssemblyNameCache = null;
-			}
-		}
+        public string ConfigName
+        {
+            get
+            {
+                return this.configCanonicalName.ConfigName;
+            }
+            set
+            {
+                this.configCanonicalName = new ConfigCanonicalName(value, this.configCanonicalName.Platform);
+                this.projectAssemblyNameCache = null;
+            }
+        }
 
-		public ConfigCanonicalName ConfigCanonicalName
-		{
-			get
-			{
-				return this.configCanonicalName;
-			}
-		}
+        public ConfigCanonicalName ConfigCanonicalName
+        {
+            get
+            {
+                return this.configCanonicalName;
+            }
+        }
 
-		// Debug property page properties
-		public string StartURL
-		{
-			get
-			{
+        // Debug property page properties
+        public string StartURL
+        {
+            get
+            {
                 ThreadHelper.ThrowIfNotOnUIThread();
                 return GetConfigurationProperty(ProjectFileConstants.StartURL, false);
-			}
-			set
-			{
+            }
+            set
+            {
                 ThreadHelper.ThrowIfNotOnUIThread();
                 SetConfigurationProperty(ProjectFileConstants.StartURL, value);
-			}
-		}
+            }
+        }
 
-		public string StartArguments
-		{
-			get
-			{
+        public string StartArguments
+        {
+            get
+            {
                 ThreadHelper.ThrowIfNotOnUIThread();
                 return GetConfigurationProperty(ProjectFileConstants.StartArguments, false);
-			}
-			set
-			{
+            }
+            set
+            {
                 ThreadHelper.ThrowIfNotOnUIThread();
                 SetConfigurationProperty(ProjectFileConstants.StartArguments, value);
-			}
-		}
+            }
+        }
 
-		public string StartWorkingDirectory
-		{
-			get
-			{
+        public string StartWorkingDirectory
+        {
+            get
+            {
                 ThreadHelper.ThrowIfNotOnUIThread();
                 return GetConfigurationProperty(ProjectFileConstants.StartWorkingDirectory, false);
-			}
-			set
-			{
+            }
+            set
+            {
                 ThreadHelper.ThrowIfNotOnUIThread();
                 SetConfigurationProperty(ProjectFileConstants.StartWorkingDirectory, value);
-			}
-		}
+            }
+        }
 
-		public string StartProgram
-		{
-			get
-			{
+        public string StartProgram
+        {
+            get
+            {
                 ThreadHelper.ThrowIfNotOnUIThread();
                 return GetConfigurationProperty(ProjectFileConstants.StartProgram, false);
-			}
-			set
-			{
+            }
+            set
+            {
                 ThreadHelper.ThrowIfNotOnUIThread();
                 SetConfigurationProperty(ProjectFileConstants.StartProgram, value);
-			}
-		}
+            }
+        }
 
-		public int StartAction
-		{
-			get
-			{
+        public int StartAction
+        {
+            get
+            {
                 ThreadHelper.ThrowIfNotOnUIThread();
 
                 string startAction = GetConfigurationProperty(ProjectFileConstants.StartAction, false);
 
-				if ("Program" == startAction)
-					return 1;
-				else if ("URL" == startAction)
-					return 2;
-				else // "Project"
-					return 0;
-			}
-			set
-			{
-				string startAction = "";
+                if ("Program" == startAction)
+                    return 1;
+                else if ("URL" == startAction)
+                    return 2;
+                else // "Project"
+                    return 0;
+            }
+            set
+            {
+                string startAction = "";
 
-				switch (value)
-				{
-					case 0:
-						startAction = "Project";
-						break;
-					case 1:
-						startAction = "Program";
-						break;
-					case 2:
-						startAction = "URL";
-						break;
-					default:
-						throw new ArgumentException("Invalid StartAction value");
-				}
+                switch (value)
+                {
+                    case 0:
+                        startAction = "Project";
+                        break;
+                    case 1:
+                        startAction = "Program";
+                        break;
+                    case 2:
+                        startAction = "URL";
+                        break;
+                    default:
+                        throw new ArgumentException("Invalid StartAction value");
+                }
                 ThreadHelper.ThrowIfNotOnUIThread();
                 SetConfigurationProperty(ProjectFileConstants.StartAction, startAction);
-			}
-		}
+            }
+        }
 
-		public virtual string Condition
-		{
-			get
-			{
-				return String.Format(CultureInfo.InvariantCulture, ConfigProvider.configString, this.ConfigName);
-			}
-		}
+        public virtual string Condition
+        {
+            get
+            {
+                return String.Format(CultureInfo.InvariantCulture, ConfigProvider.configString, this.ConfigName);
+            }
+        }
 
         public virtual object ConfigurationProperties
         {
             get
             {
-                if(this.configurationProperties == null)
+                if (this.configurationProperties == null)
                 {
                     this.configurationProperties = new ProjectConfigProperties(this);
                 }
@@ -357,7 +355,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                if(null == this.outputGroups)
+                if (null == this.outputGroups)
                 {
                     // Initialize output groups
                     this.outputGroups = new List<OutputGroup>();
@@ -367,10 +365,10 @@ namespace Microsoft.VisualStudio.Project
                     // it by simply overriding that method and providing the correct MSBuild target(s).
                     IList<KeyValuePair<string, string>> groupNames = project.GetOutputGroupNames();
 
-                    if(groupNames != null)
+                    if (groupNames != null)
                     {
                         // Populate the output array
-                        foreach(KeyValuePair<string, string> group in groupNames)
+                        foreach (KeyValuePair<string, string> group in groupNames)
                         {
                             OutputGroup outputGroup = CreateOutputGroup(project, group);
                             this.outputGroups.Add(outputGroup);
@@ -386,9 +384,9 @@ namespace Microsoft.VisualStudio.Project
         #region ctors
         internal ProjectConfig(ProjectNode project, ConfigCanonicalName configName)
         {
-			this.project = project;
-			this.configCanonicalName = configName;
-			this.lastCache = DateTime.MinValue;
+            this.project = project;
+            this.configCanonicalName = configName;
+            this.lastCache = DateTime.MinValue;
             ThreadHelper.ThrowIfNotOnUIThread();
 
             // Because the project can be aggregated by a flavor, we need to make sure
@@ -398,25 +396,25 @@ namespace Microsoft.VisualStudio.Project
             {
                 IVsProjectFlavorCfgProvider flavorCfgProvider = (IVsProjectFlavorCfgProvider)Marshal.GetTypedObjectForIUnknown(projectUnknown, typeof(IVsProjectFlavorCfgProvider));
                 ErrorHandler.ThrowOnFailure(flavorCfgProvider.CreateProjectFlavorCfg(this, out flavoredCfg));
-				if (flavoredCfg == null)
-					throw new COMException();
+                if (flavoredCfg == null)
+                    throw new COMException();
             }
             finally
             {
-                if(projectUnknown != IntPtr.Zero)
+                if (projectUnknown != IntPtr.Zero)
                     Marshal.Release(projectUnknown);
             }
             // if the flavored object support XML fragment, initialize it
             IPersistXMLFragment persistXML = flavoredCfg as IPersistXMLFragment;
-            if(null != persistXML)
+            if (null != persistXML)
             {
-				this.project.LoadXmlFragment(persistXML, this.DisplayName);
+                this.project.LoadXmlFragment(persistXML, this.DisplayName);
             }
         }
 
-		internal ProjectConfig(ProjectNode project, string configName, string platformName)
-			: this(project, new ConfigCanonicalName(configName, platformName))
-		{
+        internal ProjectConfig(ProjectNode project, string configName, string platformName)
+            : this(project, new ConfigCanonicalName(configName, platformName))
+        {
             ThreadHelper.ThrowIfNotOnUIThread();
 
         }
@@ -435,31 +433,30 @@ namespace Microsoft.VisualStudio.Project
             project.PrepareBuild(this.configCanonicalName, clean);
         }
 
-		public virtual string GetConfigurationProperty(string propertyName, bool resetCache)
-		{
+        public virtual string GetConfigurationProperty(string propertyName, bool resetCache)
+        {
             ThreadHelper.ThrowIfNotOnUIThread();
             MSBuild.ProjectProperty property = GetMsBuildProperty(propertyName, resetCache);
 
-			if (property == null)
-				return null;
+            if (property == null)
+                return null;
 
-			return property.EvaluatedValue;
-		}
-		protected string GetProjectAssemblyName()
-		{
-            ThreadHelper.ThrowIfNotOnUIThread();
+            return property.EvaluatedValue;
+        }
+        protected string GetProjectAssemblyName()
+        {
             if (this.lastCache < this.project.LastModifiedTime || this.projectAssemblyNameCache == null)
-			{
-				this.lastCache = this.project.LastModifiedTime;
-				this.projectAssemblyNameCache = this.project.GetAssemblyName(this.configCanonicalName);
-			}
-			return this.projectAssemblyNameCache;
-		}
+            {
+                this.lastCache = this.project.LastModifiedTime;
+                ThreadHelper.ThrowIfNotOnUIThread();
+                this.projectAssemblyNameCache = this.project.GetAssemblyName(this.configCanonicalName);
+            }
+            return this.projectAssemblyNameCache;
+        }
 
         public virtual string GetUnevaluatedConfigurationProperty(string propertyName)
-		{
-            ThreadHelper.ThrowIfNotOnUIThread();
-            String result;
+        {
+            string result;
             // Get properties for current configuration from project file and cache it
             this.project.SetConfiguration(this.configCanonicalName);
             this.project.BuildProject.ReevaluateIfNecessary();
@@ -474,7 +471,7 @@ namespace Microsoft.VisualStudio.Project
 
         public virtual void SetConfigurationProperty(string propertyName, string propertyValue)
         {
-            if(!this.project.QueryEditProjectFile(false))
+            if (!this.project.QueryEditProjectFile(false))
             {
                 throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
             }
@@ -482,11 +479,11 @@ namespace Microsoft.VisualStudio.Project
 
             SetPropertyUnderCondition(propertyName, propertyValue, Condition);
 
-			// property cache will need to be updated
-			this.evaluatedProject = null;
+            // property cache will need to be updated
+            this.evaluatedProject = null;
 
             // Signal the output groups that something is changed
-            foreach(OutputGroup group in this.OutputGroups)
+            foreach (OutputGroup group in this.OutputGroups)
             {
                 group.InvalidateGroup();
             }
@@ -508,7 +505,7 @@ namespace Microsoft.VisualStudio.Project
 
             if (conditionTrimmed.Length == 0)
             {
-				evaluatedProject.SetProperty(propertyName, propertyValue);
+                evaluatedProject.SetProperty(propertyName, propertyValue);
                 return;
             }
 
@@ -525,7 +522,7 @@ namespace Microsoft.VisualStudio.Project
             }
 
             MSBuildConstruction.ProjectPropertyGroupElement selectedGroup = null;
-            if (matchingGroups.Count == 1 )
+            if (matchingGroups.Count == 1)
             {
                 var props = new List<MSBuildConstruction.ProjectPropertyElement>();
                 selectedGroup = matchingGroups[0];
@@ -593,9 +590,9 @@ namespace Microsoft.VisualStudio.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             int isDirty = 0;
-            if(this.flavoredCfg != null && this.flavoredCfg is IPersistXMLFragment)
+            if (this.flavoredCfg != null && this.flavoredCfg is IPersistXMLFragment)
             {
-				((IPersistXMLFragment)this.flavoredCfg).IsFragmentDirty((uint)storageType, out isDirty);
+                ((IPersistXMLFragment)this.flavoredCfg).IsFragmentDirty((uint)storageType, out isDirty);
             }
             return isDirty;
         }
@@ -614,7 +611,7 @@ namespace Microsoft.VisualStudio.Project
             fragment = null;
             ThreadHelper.ThrowIfNotOnUIThread();
             int hr = VSConstants.S_OK;
-            if(this.flavoredCfg != null && this.flavoredCfg is IPersistXMLFragment)
+            if (this.flavoredCfg != null && this.flavoredCfg is IPersistXMLFragment)
             {
                 Guid flavorGuid = flavor;
                 hr = ((IPersistXMLFragment)this.flavoredCfg).Save(ref flavorGuid, (uint)storageType, out fragment, 1);
@@ -657,32 +654,32 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
-		private string DisplayName
-		{
-			get
-			{
-				return this.configCanonicalName.ToString();
-			}
-		}
-		public virtual int get_IsDebugOnly(out int fDebug)
-		{
-			fDebug = 0;
-			if (this.configCanonicalName.ConfigName == Debug)
-			{
-				fDebug = 1;
-			}
-			return VSConstants.S_OK;
-		}
-		public virtual int get_IsReleaseOnly(out int fRelease)
-		{
-			CCITracing.TraceCall();
-			fRelease = 0;
-			if (this.configCanonicalName.ConfigName == Release)
-			{
-				fRelease = 1;
-			}
-			return VSConstants.S_OK;
-		}
+        private string DisplayName
+        {
+            get
+            {
+                return this.configCanonicalName.ToString();
+            }
+        }
+        public virtual int get_IsDebugOnly(out int fDebug)
+        {
+            fDebug = 0;
+            if (this.configCanonicalName.ConfigName == Debug)
+            {
+                fDebug = 1;
+            }
+            return VSConstants.S_OK;
+        }
+        public virtual int get_IsReleaseOnly(out int fRelease)
+        {
+            CCITracing.TraceCall();
+            fRelease = 0;
+            if (this.configCanonicalName.ConfigName == Release)
+            {
+                fRelease = 1;
+            }
+            return VSConstants.S_OK;
+        }
         #endregion
 
         #region IVsProjectCfg methods
@@ -696,17 +693,17 @@ namespace Microsoft.VisualStudio.Project
         public virtual int get_BuildableProjectCfg(out IVsBuildableProjectCfg pb)
         {
             CCITracing.TraceCall();
-            if(buildableCfg == null)
+            if (buildableCfg == null)
                 buildableCfg = new BuildableProjectConfig(this);
             pb = buildableCfg;
             return VSConstants.S_OK;
         }
 
-		public virtual int get_CanonicalName(out string name)
-		{
+        public virtual int get_CanonicalName(out string name)
+        {
             ThreadHelper.ThrowIfNotOnUIThread();
             return ((IVsCfg)this).get_DisplayName(out name);
-		}
+        }
 
         public virtual int get_IsPackaged(out int pkgd)
         {
@@ -736,7 +733,7 @@ namespace Microsoft.VisualStudio.Project
             ThreadHelper.ThrowIfNotOnUIThread();
             IVsCfgProvider cfgProvider = null;
             this.project.GetCfgProvider(out cfgProvider);
-            if(cfgProvider != null)
+            if (cfgProvider != null)
             {
                 p = cfgProvider as IVsProjectCfgProvider;
             }
@@ -792,7 +789,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 string groupName;
                 group.get_CanonicalName(out groupName);
-                if(String.Compare(groupName, szCanonicalName, StringComparison.OrdinalIgnoreCase) == 0)
+                if (String.Compare(groupName, szCanonicalName, StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     ppIVsOutputGroup = group;
                     break;
@@ -807,29 +804,29 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.E_NOTIMPL;
         }
 
-		public virtual int get_CfgType(ref Guid iidCfg, out IntPtr ppCfg)
-		{
+        public virtual int get_CfgType(ref Guid iidCfg, out IntPtr ppCfg)
+        {
             // Delegate to the flavored configuration (to enable a flavor to take control)
             // Since we can be asked for Configuration we don't support, avoid throwing and return the HRESULT directly
             ThreadHelper.ThrowIfNotOnUIThread();
             int hr = flavoredCfg.get_CfgType(ref iidCfg, out ppCfg);
 
-			if(ppCfg != IntPtr.Zero)
-				return hr;
+            if (ppCfg != IntPtr.Zero)
+                return hr;
 
-			IntPtr pUnk = IntPtr.Zero;
-			try
-			{
-				pUnk = Marshal.GetIUnknownForObject(this);
-				return Marshal.QueryInterface(pUnk, ref iidCfg, out ppCfg);
-			}
-			finally
-			{
-				if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
-			}
-		}
+            IntPtr pUnk = IntPtr.Zero;
+            try
+            {
+                pUnk = Marshal.GetIUnknownForObject(this);
+                return Marshal.QueryInterface(pUnk, ref iidCfg, out ppCfg);
+            }
+            finally
+            {
+                if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
+            }
+        }
 
-		public virtual int get_IsPrivate(out int pfPrivate)
+        public virtual int get_IsPrivate(out int pfPrivate)
         {
             pfPrivate = 0;
             return VSConstants.S_OK;
@@ -838,9 +835,9 @@ namespace Microsoft.VisualStudio.Project
         public virtual int get_OutputGroups(uint celt, IVsOutputGroup[] rgpcfg, uint[] pcActual)
         {
             // Are they only asking for the number of groups?
-            if(celt == 0)
+            if (celt == 0)
             {
-                if((null == pcActual) || (0 == pcActual.Length))
+                if ((null == pcActual) || (0 == pcActual.Length))
                 {
                     throw new ArgumentNullException("pcActual");
                 }
@@ -849,23 +846,23 @@ namespace Microsoft.VisualStudio.Project
             }
 
             // Check that the array of output groups is not null
-            if((null == rgpcfg) || (rgpcfg.Length == 0))
+            if ((null == rgpcfg) || (rgpcfg.Length == 0))
             {
                 throw new ArgumentNullException("rgpcfg");
             }
 
             // Fill the array with our output groups
             uint count = 0;
-            foreach(OutputGroup group in OutputGroups)
+            foreach (OutputGroup group in OutputGroups)
             {
-                if(rgpcfg.Length > count && celt > count && group != null)
+                if (rgpcfg.Length > count && celt > count && group != null)
                 {
                     rgpcfg[count] = group;
                     ++count;
                 }
             }
 
-            if(pcActual != null && pcActual.Length > 0)
+            if (pcActual != null && pcActual.Length > 0)
                 pcActual[0] = count;
 
             // If the number asked for does not match the number returned, return S_FALSE
@@ -911,28 +908,28 @@ namespace Microsoft.VisualStudio.Project
 
         #region helper methods
 
-		private void EnsureCache()
-		{
+        private void EnsureCache()
+        {
             // Get properties for current configuration from project file and cache it
             ThreadHelper.ThrowIfNotOnUIThread();
             this.project.SetConfiguration(configCanonicalName);
-			this.evaluatedProject = this.project.BuildProject;
-		}
+            this.evaluatedProject = this.project.BuildProject;
+        }
 
-		public MSBuild.ProjectProperty GetMsBuildProperty(string propertyName, bool resetCache)
-		{
+        public MSBuild.ProjectProperty GetMsBuildProperty(string propertyName, bool resetCache)
+        {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (resetCache || this.evaluatedProject == null)
-			{
-				this.EnsureCache();
-			}
+            {
+                this.EnsureCache();
+            }
 
-			if (this.evaluatedProject == null)
-				throw new Exception("Failed to retrive properties");
+            if (this.evaluatedProject == null)
+                throw new Exception("Failed to retrive properties");
 
-			// return property asked for
-			return this.evaluatedProject.GetProperty(propertyName);
-		}
+            // return property asked for
+            return this.evaluatedProject.GetProperty(propertyName);
+        }
 
         /// <summary>
         /// Retrieves the configuration dependent property pages.
@@ -942,12 +939,12 @@ namespace Microsoft.VisualStudio.Project
         {
             // We do not check whether the supportsProjectDesigner is set to true on the ProjectNode.
             // We rely that the caller knows what to call on us.
-            if(pages == null)
+            if (pages == null)
             {
                 throw new ArgumentNullException("pages");
             }
 
-            if(pages.Length == 0)
+            if (pages.Length == 0)
             {
                 throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "pages");
             }
@@ -960,7 +957,7 @@ namespace Microsoft.VisualStudio.Project
             var guidsList = (string)variant;
 
             Guid[] guids = Utilities.GuidsArrayFromSemicolonDelimitedStringOfGuids(guidsList);
-            if(guids == null || guids.Length == 0)
+            if (guids == null || guids.Length == 0)
             {
                 pages[0] = new CAUUID();
                 pages[0].cElems = 0;
@@ -1002,7 +999,7 @@ namespace Microsoft.VisualStudio.Project
             // See if this is an interface we support
             if (iidCfg == typeof(IVsDebuggableProjectCfg).GUID)
                 ppCfg = Marshal.GetComInterfaceForObject(this, typeof(IVsDebuggableProjectCfg));
-            else if(iidCfg == typeof(IVsBuildableProjectCfg).GUID)
+            else if (iidCfg == typeof(IVsBuildableProjectCfg).GUID)
             {
                 IVsBuildableProjectCfg buildableConfig;
                 this.get_BuildableProjectCfg(out buildableConfig);
@@ -1010,7 +1007,7 @@ namespace Microsoft.VisualStudio.Project
             }
 
             // If not supported
-            if(ppCfg == IntPtr.Zero)
+            if (ppCfg == IntPtr.Zero)
                 return VSConstants.E_NOINTERFACE;
 
             return VSConstants.S_OK;
@@ -1019,17 +1016,17 @@ namespace Microsoft.VisualStudio.Project
         #endregion
     }
 
-	[CLSCompliant(false)]
-	[ComVisible(true)]
-	public class DebuggableProjectConfig :
-		XProjectConfig,
-		IVsDebuggableProjectCfg,
-		IVsQueryDebuggableProjectCfg
-	{
-		#region ctors
-		public DebuggableProjectConfig(ProjectNode project, ConfigCanonicalName conigName)
-			: base(project, conigName)
-		{
+    [CLSCompliant(false)]
+    [ComVisible(true)]
+    public class DebuggableProjectConfig :
+        XProjectConfig,
+        IVsDebuggableProjectCfg,
+        IVsQueryDebuggableProjectCfg
+    {
+        #region ctors
+        public DebuggableProjectConfig(ProjectNode project, ConfigCanonicalName conigName)
+            : base(project, conigName)
+        {
             ThreadHelper.ThrowIfNotOnUIThread();
 
         }
@@ -1157,96 +1154,96 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
-		/// <summary>
-		/// Determines whether the debugger can be launched, given the state of the launch flags.
-		/// </summary>
-		/// <param name="flags">Flags that determine the conditions under which to launch the debugger.
-		/// For valid grfLaunch values, see __VSDBGLAUNCHFLAGS or __VSDBGLAUNCHFLAGS2.</param>
-		/// <param name="fCanLaunch">true if the debugger can be launched, otherwise false</param>
-		/// <returns>S_OK if the method succeeds, otherwise an error code</returns>
-		public virtual int QueryDebugLaunch(uint flags, out int fCanLaunch)
-		{
+        /// <summary>
+        /// Determines whether the debugger can be launched, given the state of the launch flags.
+        /// </summary>
+        /// <param name="flags">Flags that determine the conditions under which to launch the debugger.
+        /// For valid grfLaunch values, see __VSDBGLAUNCHFLAGS or __VSDBGLAUNCHFLAGS2.</param>
+        /// <param name="fCanLaunch">true if the debugger can be launched, otherwise false</param>
+        /// <returns>S_OK if the method succeeds, otherwise an error code</returns>
+        public virtual int QueryDebugLaunch(uint flags, out int fCanLaunch)
+        {
             ThreadHelper.ThrowIfNotOnUIThread();
             CCITracing.TraceCall();
-			string assembly = GetProjectAssemblyName();
-			fCanLaunch = (assembly != null && assembly.ToUpperInvariant().EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) ? 1 : 0;
-			if (fCanLaunch == 0)
-			{
-				string property = GetConfigurationProperty("StartProgram", true);
-				fCanLaunch = (property != null && property.Length > 0) ? 1 : 0;
-			}
-			return VSConstants.S_OK;
-		}
-		#endregion
+            string assembly = GetProjectAssemblyName();
+            fCanLaunch = (assembly != null && assembly.ToUpperInvariant().EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) ? 1 : 0;
+            if (fCanLaunch == 0)
+            {
+                string property = GetConfigurationProperty("StartProgram", true);
+                fCanLaunch = (property != null && property.Length > 0) ? 1 : 0;
+            }
+            return VSConstants.S_OK;
+        }
+        #endregion
 
-		#region IVsQueryDebuggableProjectCfg
-		public virtual int QueryDebugTargets(uint grfLaunch, uint cTargets, VsDebugTargetInfo2[] debugTargetInfo, uint[] actualTargets)
-		{
+        #region IVsQueryDebuggableProjectCfg
+        public virtual int QueryDebugTargets(uint grfLaunch, uint cTargets, VsDebugTargetInfo2[] debugTargetInfo, uint[] actualTargets)
+        {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (debugTargetInfo == null) // caller only queries for number of targets
-			{
-				actualTargets[0] = 1;
-				return VSConstants.S_OK;
-			}
-			if (cTargets == 0)
-			{
-				actualTargets[0] = 1;
-				return VSConstants.E_FAIL;
-			}
+            {
+                actualTargets[0] = 1;
+                return VSConstants.S_OK;
+            }
+            if (cTargets == 0)
+            {
+                actualTargets[0] = 1;
+                return VSConstants.E_FAIL;
+            }
 
-			VsDebugTargetInfo targetInfo;
-			try
-			{
-				targetInfo = GetDebugTargetInfo(grfLaunch);
-			}
-			catch (ClassLibraryCannotBeStartedDirectlyException)
-			{
-				actualTargets[0] = 0;
-				return VSConstants.S_OK;
-			}
+            VsDebugTargetInfo targetInfo;
+            try
+            {
+                targetInfo = GetDebugTargetInfo(grfLaunch);
+            }
+            catch (ClassLibraryCannotBeStartedDirectlyException)
+            {
+                actualTargets[0] = 0;
+                return VSConstants.S_OK;
+            }
 
-			// Copying parameters from VsDebugTargetInfo to VsDebugTargetInfo2.
-			// Only relevant fields are copied (that is, those that are set by GetDebugTargetInfo)
-			var targetInfo2 = new VsDebugTargetInfo2()
-			{
-				cbSize = (uint)Marshal.SizeOf(typeof(VsDebugTargetInfo2)),
-				bstrArg = targetInfo.bstrArg,
-				bstrCurDir = targetInfo.bstrCurDir,
-				bstrEnv = targetInfo.bstrEnv,
-				bstrOptions = targetInfo.bstrOptions,
-				bstrExe = targetInfo.bstrExe,
-				bstrPortName = targetInfo.bstrPortName,
-				bstrRemoteMachine = targetInfo.bstrRemoteMachine,
+            // Copying parameters from VsDebugTargetInfo to VsDebugTargetInfo2.
+            // Only relevant fields are copied (that is, those that are set by GetDebugTargetInfo)
+            var targetInfo2 = new VsDebugTargetInfo2()
+            {
+                cbSize = (uint)Marshal.SizeOf(typeof(VsDebugTargetInfo2)),
+                bstrArg = targetInfo.bstrArg,
+                bstrCurDir = targetInfo.bstrCurDir,
+                bstrEnv = targetInfo.bstrEnv,
+                bstrOptions = targetInfo.bstrOptions,
+                bstrExe = targetInfo.bstrExe,
+                bstrPortName = targetInfo.bstrPortName,
+                bstrRemoteMachine = targetInfo.bstrRemoteMachine,
 #if DEV17
                 fSendToOutputWindow = targetInfo.fSendStdoutToOutputWindow != 0,
 #else
                 fSendToOutputWindow = targetInfo.fSendStdoutToOutputWindow,
 #endif
                 guidLaunchDebugEngine = targetInfo.clsidCustom,
-				LaunchFlags = targetInfo.grfLaunch,
-				dlo = (uint)targetInfo.dlo,
-			};
-			targetInfo2.dwDebugEngineCount = 1;
-			// Disposed by caller.
-			targetInfo2.pDebugEngines = Marshal.AllocCoTaskMem(Marshal.SizeOf(typeof(Guid)));
-			byte[] guidBytes = targetInfo.clsidCustom.ToByteArray();
-			Marshal.Copy(guidBytes, 0, targetInfo2.pDebugEngines, guidBytes.Length);
+                LaunchFlags = targetInfo.grfLaunch,
+                dlo = (uint)targetInfo.dlo,
+            };
+            targetInfo2.dwDebugEngineCount = 1;
+            // Disposed by caller.
+            targetInfo2.pDebugEngines = Marshal.AllocCoTaskMem(Marshal.SizeOf(typeof(Guid)));
+            byte[] guidBytes = targetInfo.clsidCustom.ToByteArray();
+            Marshal.Copy(guidBytes, 0, targetInfo2.pDebugEngines, guidBytes.Length);
 
-			debugTargetInfo[0] = targetInfo2;
-			actualTargets[0] = 1;
-			return VSConstants.S_OK;
-		}
-#endregion
+            debugTargetInfo[0] = targetInfo2;
+            actualTargets[0] = 1;
+            return VSConstants.S_OK;
+        }
+        #endregion
 
 
 
-		public string Platform { get { return this.ConfigCanonicalName.Platform; } }
-	}
+        public string Platform { get { return this.ConfigCanonicalName.Platform; } }
+    }
 
-	public class ClassLibraryCannotBeStartedDirectlyException : COMException
-	{
-		public ClassLibraryCannotBeStartedDirectlyException() : base(SR.GetString(SR.CannotStartLibraries)) { }
-	}
+    public class ClassLibraryCannotBeStartedDirectlyException : COMException
+    {
+        public ClassLibraryCannotBeStartedDirectlyException() : base(SR.GetString(SR.CannotStartLibraries)) { }
+    }
 
     //=============================================================================
     // NOTE: advises on out of proc build execution to maximize
@@ -1257,19 +1254,19 @@ namespace Microsoft.VisualStudio.Project
     [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Buildable")]
     public class BuildableProjectConfig : IVsBuildableProjectCfg
     {
-#region fields
+        #region fields
         ProjectConfig config = null;
         EventSinkCollection callbacks = new EventSinkCollection();
-#endregion
+        #endregion
 
-#region ctors
+        #region ctors
         public BuildableProjectConfig(ProjectConfig config)
         {
             this.config = config;
         }
-#endregion
+        #endregion
 
-#region IVsBuildableProjectCfg methods
+        #region IVsBuildableProjectCfg methods
 
         public virtual int AdviseBuildStatusCallback(IVsBuildStatusCallback callback, out uint cookie)
         {
@@ -1290,9 +1287,9 @@ namespace Microsoft.VisualStudio.Project
         public virtual int QueryStartBuild(uint options, int[] supported, int[] ready)
         {
             CCITracing.TraceCall();
-            if(supported != null && supported.Length > 0)
+            if (supported != null && supported.Length > 0)
                 supported[0] = 1;
-            if(ready != null && ready.Length > 0)
+            if (ready != null && ready.Length > 0)
                 ready[0] = (this.config.ProjectMgr.BuildInProgress) ? 0 : 1;
             return VSConstants.S_OK;
         }
@@ -1302,9 +1299,9 @@ namespace Microsoft.VisualStudio.Project
             CCITracing.TraceCall();
             ThreadHelper.ThrowIfNotOnUIThread();
             config.PrepareBuild(false);
-            if(supported != null && supported.Length > 0)
+            if (supported != null && supported.Length > 0)
                 supported[0] = 1;
-            if(ready != null && ready.Length > 0)
+            if (ready != null && ready.Length > 0)
                 ready[0] = (this.config.ProjectMgr.BuildInProgress) ? 0 : 1;
             return VSConstants.S_OK;
         }
@@ -1314,9 +1311,9 @@ namespace Microsoft.VisualStudio.Project
             CCITracing.TraceCall();
             ThreadHelper.ThrowIfNotOnUIThread();
             config.PrepareBuild(false);
-            if(supported != null && supported.Length > 0)
+            if (supported != null && supported.Length > 0)
                 supported[0] = 0; // TODO:
-            if(ready != null && ready.Length > 0)
+            if (ready != null && ready.Length > 0)
                 ready[0] = (this.config.ProjectMgr.BuildInProgress) ? 0 : 1;
             return VSConstants.S_OK;
         }
@@ -1383,9 +1380,9 @@ namespace Microsoft.VisualStudio.Project
 
             return VSConstants.E_NOTIMPL;
         }
-#endregion
+        #endregion
 
-#region helpers
+        #region helpers
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private bool NotifyBuildBegin()
@@ -1414,27 +1411,27 @@ namespace Microsoft.VisualStudio.Project
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-		private void NotifyBuildEnd(bool isSuccess)
-		{
-			int success = (isSuccess ? 1 : 0);
+        private void NotifyBuildEnd(bool isSuccess)
+        {
+            int success = (isSuccess ? 1 : 0);
             ThreadHelper.ThrowIfNotOnUIThread();
 
             foreach (IVsBuildStatusCallback cb in callbacks)
-			{
-				try
-				{
-					ErrorHandler.ThrowOnFailure(cb.BuildEnd(success));
-				}
-				catch (Exception e)
-				{
-					// If those who ask for status have bugs in their code it should not prevent the build/notification from happening
-					Debug.Fail(String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.BuildEventError, CultureInfo.CurrentUICulture), e.Message));
-				}
-			}
-		}
+            {
+                try
+                {
+                    ErrorHandler.ThrowOnFailure(cb.BuildEnd(success));
+                }
+                catch (Exception e)
+                {
+                    // If those who ask for status have bugs in their code it should not prevent the build/notification from happening
+                    Debug.Fail(String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.BuildEventError, CultureInfo.CurrentUICulture), e.Message));
+                }
+            }
+        }
 
-		public void Build(uint options, IVsOutputWindowPane output, string target)
-		{
+        public void Build(uint options, IVsOutputWindowPane output, string target)
+        {
             // We want to refresh the references if we are building with the Build or Rebuild target.
             bool shouldRepaintReferences = false; //  (target == null || target == MsBuildTarget.Build || target == MsBuildTarget.Rebuild);
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -1443,22 +1440,22 @@ namespace Microsoft.VisualStudio.Project
 
             try
             {
-				config.ProjectMgr.StartAsyncBuild(options, this.config.ConfigCanonicalName, output, target, (result, projectInstance) =>
-				{
-					this.BuildCoda(new BuildResult(result, projectInstance, null), output, shouldRepaintReferences);
-				});
+                config.ProjectMgr.StartAsyncBuild(options, this.config.ConfigCanonicalName, output, target, (result, projectInstance) =>
+                {
+                    this.BuildCoda(new BuildResult(result, projectInstance, null), output, shouldRepaintReferences);
+                });
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 XSettings.LogException(e, "Build");
                 this.BuildCoda(new BuildResult(MSBuildResult.Failed, null, null), output, shouldRepaintReferences);
                 throw;
             }
-		}
-		private void BuildCoda(BuildResult result, IVsOutputWindowPane output, bool shouldRepaintReferences)
-		{
-			try
-			{
+        }
+        private void BuildCoda(BuildResult result, IVsOutputWindowPane output, bool shouldRepaintReferences)
+        {
+            try
+            {
                 // Now repaint references if that is needed.
                 // We hardly rely here on the fact the ResolveAssemblyReferences target has been run as part of the build.
                 // One scenario to think at is when an assembly reference is renamed on disk thus becoming unresolvable,
@@ -1466,22 +1463,22 @@ namespace Microsoft.VisualStudio.Project
                 // Another one if the project was opened only for browsing and now the user chooses to build or rebuild.
                 ThreadHelper.ThrowIfNotOnUIThread();
                 if (shouldRepaintReferences && result.IsSuccessful)
-				{
-					this.RefreshReferences();
-				}
-			}
-			finally
-			{
-				try
-				{
-					ErrorHandler.ThrowOnFailure(output.FlushToTaskList());
-				}
-				finally
-				{
-					NotifyBuildEnd(result.IsSuccessful);
-				}
-			}
-		}
+                {
+                    this.RefreshReferences();
+                }
+            }
+            finally
+            {
+                try
+                {
+                    ErrorHandler.ThrowOnFailure(output.FlushToTaskList());
+                }
+                finally
+                {
+                    NotifyBuildEnd(result.IsSuccessful);
+                }
+            }
+        }
 
         /// <summary>
         /// Refreshes references and redraws them correctly.
@@ -1496,14 +1493,14 @@ namespace Microsoft.VisualStudio.Project
             // Refresh the reference container node for assemblies that could be resolved.
 
             IReferenceContainer referenceContainer = this.config.ProjectMgr.GetReferenceContainer();
-			this.config.ProjectMgr.DoInFixedScope(() =>
-			{
-				foreach (ReferenceNode referenceNode in referenceContainer.EnumReferences())
-				{
-					referenceNode.RefreshReference();
-				}
-			});
+            this.config.ProjectMgr.DoInFixedScope(() =>
+            {
+                foreach (ReferenceNode referenceNode in referenceContainer.EnumReferences())
+                {
+                    referenceNode.RefreshReference();
+                }
+            });
         }
-#endregion
+        #endregion
     }
 }

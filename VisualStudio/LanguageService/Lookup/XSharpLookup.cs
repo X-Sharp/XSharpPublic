@@ -540,7 +540,6 @@ namespace XSharp.LanguageService
             var findConstructor = false;
             IToken currentToken = null;
             IXTypeSymbol startType = null;
-            state = CompletionState.General;
             if (location.Member == null)
             {
                 // This is a lookup outside code.
@@ -608,6 +607,10 @@ namespace XSharp.LanguageService
                     {
                         namespacePrefix = top.Name + ".";
                     }
+                }
+                if (state.HasFlag(CompletionState.Inherit))
+                {
+                    namespacePrefix = "";
                 }
                 if (resetState)
                 {
@@ -734,9 +737,12 @@ namespace XSharp.LanguageService
                 var qualifiedName = false;
                 var findMethod = false;
                 var findType = state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.General);
-                if (findType && currentType != null)
+                if (!state.HasFlag(CompletionState.Inherit))
                 {
-                    namespacePrefix = currentType.FullName + ".";
+                    if (findType && currentType != null )
+                    {
+                        namespacePrefix = currentType.FullName;
+                    }
                 }
                 var literal = XSharpLexer.IsConstant(currentToken.Type);
                 if (isId)
@@ -792,6 +798,7 @@ namespace XSharp.LanguageService
                     // but we want to find the type of course
                     if (findType || findConstructor)
                     {
+                       
                         var types = SearchType(location, currentName, namespacePrefix);
                         if (types?.Count() > 0)
                         {
@@ -824,6 +831,7 @@ namespace XSharp.LanguageService
                     if (result.Count == 0 && (startOfExpression || findType || findConstructor || qualifiedName))
                     {
                         // 3) Types
+                        
                         var types = SearchType(location, currentName, namespacePrefix);
                         if (types != null)
                         {

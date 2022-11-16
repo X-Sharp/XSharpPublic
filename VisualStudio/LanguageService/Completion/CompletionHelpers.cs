@@ -541,6 +541,7 @@ namespace XSharp.LanguageService
 
         internal void FillEnumMembers(XSharpSearchLocation location, XCompletionList compList, IXTypeSymbol type, IEnumerable<IXMemberSymbol> members, Modifiers minVisibility, bool staticOnly)
         {
+            WriteOutputMessage($"FillEnumMembers {type?.FullName}: {members.Count()} members");
             foreach (var elt in members)
             {
                 if (elt.IsStatic != staticOnly)
@@ -567,12 +568,13 @@ namespace XSharp.LanguageService
         {
             if (members.Count() == 0)
                 return;
-            WriteOutputMessage($"FillMembers {type?.FullName}: {members.Count()} members");
-            if (type.Kind == Kind.Enum)
+            bool isEnum = type != null && type.Kind == Kind.Enum;
+            if (isEnum)
             {
                 FillEnumMembers(location, compList, type, members, minVisibility, staticOnly);
                 return;
             }
+            WriteOutputMessage($"FillMembers {type?.FullName}: {members.Count()} members");
             foreach (var elt in members)
             {
                 bool add = true;
@@ -605,13 +607,6 @@ namespace XSharp.LanguageService
                                 add = false;
                         }
                         break;
-                }
-                if (type.Kind == Kind.Enum)
-                {
-                    if (elt.Parent != type && elt.Name != "HasFlag")
-                    {
-                        add = false;
-                    }
                 }
                 if (!add)
                     continue;

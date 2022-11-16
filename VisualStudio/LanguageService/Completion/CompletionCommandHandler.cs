@@ -125,6 +125,7 @@ namespace XSharp.LanguageService
                                     break;
 
                                 case '=':
+                                    // typed :=
                                     CancelCompletionSession();
                                     break;
                                 case '.':
@@ -460,6 +461,11 @@ namespace XSharp.LanguageService
         {
             if (_completionSession == null)
             {
+                return false;
+            }
+            if (!_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected)
+            {
+                CancelCompletionSession();
                 return false;
             }
             bool commit = false;

@@ -95,6 +95,8 @@ namespace XSharp.LanguageService
 
         internal static int CalculateCommaPosition(string sigText, int lastPos, ITextBuffer buffer)
         {
+            if (string.IsNullOrEmpty(sigText))
+                return 0;
             var doc = buffer.GetDocument();
             var tokens = doc.GetTokens(sigText.Substring(1)); // remove starting ( or {
             int commaCount = 0;

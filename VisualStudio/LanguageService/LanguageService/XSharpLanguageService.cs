@@ -388,6 +388,9 @@ namespace XSharp.LanguageService
         {
             if (flags.HasFlag(WORDEXTFLAGS.WORDEXT_FINDTOKEN) && XSettings.DebuggerIsRunning)
             {
+                var callStack = Environment.StackTrace.ToString();
+                var quickinfo = callStack.IndexOf("quickinfo", StringComparison.OrdinalIgnoreCase) > 0;
+
                 string text;
                 pts[0].iStartLine = pts[0].iEndLine = ta.line;
 
@@ -397,7 +400,7 @@ namespace XSharp.LanguageService
                 while (index > 0)
                 {
                     char c = text[index];
-                    if (!IsWordChar(c, false))
+                    if (!IsWordChar(c, !quickinfo))
                         break;
                     index -= 1;
                 }

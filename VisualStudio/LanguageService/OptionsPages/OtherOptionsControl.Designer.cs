@@ -53,9 +53,9 @@
             this.chkSingleLineDividers.AutoSize = true;
             this.chkSingleLineDividers.Location = new System.Drawing.Point(20, 44);
             this.chkSingleLineDividers.Name = "chkSingleLineDividers";
-            this.chkSingleLineDividers.Size = new System.Drawing.Size(153, 17);
+            this.chkSingleLineDividers.Size = new System.Drawing.Size(147, 17);
             this.chkSingleLineDividers.TabIndex = 1;
-            this.chkSingleLineDividers.Text = "&Single line eEntity Dividers ";
+            this.chkSingleLineDividers.Text = "&Single line Entity Dividers ";
             this.toolTip1.SetToolTip(this.chkSingleLineDividers, "This applies to GLOBALs, DEFINEs, DELEGATES, CLASS Variables, MEMBERs of structur" +
         "es etc");
             this.chkSingleLineDividers.UseVisualStyleBackColor = true;
@@ -139,7 +139,6 @@
             this.chkQuickInfo.Text = "&Quick Info Tips";
             this.toolTip1.SetToolTip(this.chkQuickInfo, "Enable Quick Info tips with hints about identifiers");
             this.chkQuickInfo.UseVisualStyleBackColor = true;
-            this.chkQuickInfo.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // chkParameters
             // 

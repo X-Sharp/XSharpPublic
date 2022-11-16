@@ -32,11 +32,10 @@ namespace XSharp.LanguageService.OptionsPages
         private void chkShowDividers_CheckedChanged(object sender, EventArgs e)
         {
             chkSingleLineDividers.Enabled = chkShowDividers.Checked;
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-
+            if (!chkSingleLineDividers.Enabled)
+            {
+                chkSingleLineDividers.Checked = false;
+            }
         }
     }
 }

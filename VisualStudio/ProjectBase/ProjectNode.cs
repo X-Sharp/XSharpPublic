@@ -40,6 +40,7 @@ using System.Reflection;
 using XSharpModel;
 using Community.VisualStudio.Toolkit;
 using File = System.IO.File;
+using System.Runtime.Remoting.Messaging;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -663,50 +664,27 @@ namespace Microsoft.VisualStudio.Project
 
         // Gets the output file name depending on current OutputType.
         // View GeneralProperyPage
-        string _outputFile;
-        string _configName;
         public string OutputFile
         {
             get
             {
-                return ThreadUtilities.runSafe(() =>
-                {
-                    if (_outputFile == null && _configName != CurrentConfig.ConfigName)
-                    {
-                        _outputFile = this.GetProjectProperty(ProjectFileConstants.TargetPath);
-                        _configName = CurrentConfig.ConfigName;
-                    }
-                    return _outputFile;
-                });
+                return this.GetProjectProperty(ProjectFileConstants.TargetPath);
             }
             set
             {
-                _outputFile = value;
+                SetProjectProperty(ProjectFileConstants.TargetPath, value);
             }
         }
-
-        string _rootNamespace = null;
 
         public string RootNameSpace
         {
             get
             {
-                return ThreadUtilities.runSafe(() =>
-                {
-                    if (_rootNamespace == null)
-                    {
-
-                        lock (this)
-                        {
-                            _rootNamespace = GetProjectProperty(ProjectFileConstants.RootNamespace, false);
-                        }
-                    }
-                    return _rootNamespace;
-                });
+                return this.GetProjectProperty(ProjectFileConstants.RootNamespace);
             }
             set
             {
-                _rootNamespace = value;
+                SetProjectProperty(ProjectFileConstants.RootNamespace, value);
             }
         }
 
@@ -726,13 +704,7 @@ namespace Microsoft.VisualStudio.Project
                 if (this.projectIdGuid != value)
                 {
                     this.projectIdGuid = value;
-                    ThreadUtilities.runSafe( () =>
-                    {
-                        if (this.buildProject != null)
-                        {
-                            this.SetProjectProperty("ProjectGuid", this.projectIdGuid.ToString("B"));
-                        }
-                    });
+                    SetProjectProperty(ProjectFileConstants.ProjectGuid, this.projectIdGuid.ToString("B"));
                 }
             }
         }
@@ -2733,7 +2705,7 @@ namespace Microsoft.VisualStudio.Project
                     return this.options;
                 }
                 ProjectOptions options = this.options = CreateProjectOptions();
-                string targetFrameworkMoniker = GetProjectProperty("TargetFrameworkMoniker", false);
+                string targetFrameworkMoniker = GetProjectProperty("TargetFrameworkMoniker");
 
                 if (!string.IsNullOrEmpty(targetFrameworkMoniker))
                 {
@@ -2764,10 +2736,10 @@ namespace Microsoft.VisualStudio.Project
                 options.OutputAssembly = outputPath + this.Caption + ".exe";
                 options.ModuleKind = ModuleKindFlags.ConsoleApplication;
 
-                options.RootNamespace = GetProjectProperty(ProjectFileConstants.RootNamespace, false);
+                options.RootNamespace = this.RootNameSpace;
                 options.OutputAssembly = outputPath + this.GetAssemblyName(configCanonicalName);
 
-                string outputtype = GetProjectProperty(ProjectFileConstants.OutputType, false);
+                string outputtype = GetProjectProperty(ProjectFileConstants.OutputType);
                 if (!String.IsNullOrEmpty(outputtype))
                 {
                     outputtype = outputtype.ToLower(CultureInfo.InvariantCulture);
@@ -2783,8 +2755,8 @@ namespace Microsoft.VisualStudio.Project
                 else
                     options.ModuleKind = ModuleKindFlags.ConsoleApplication;
 
-                options.Win32Icon = GetProjectProperty("ApplicationIcon", false);
-                options.MainClass = GetProjectProperty("StartupObject", false);
+                options.Win32Icon = GetProjectProperty("ApplicationIcon");
+                options.MainClass = GetProjectProperty("StartupObject");
 
                 //    other settings from CSharp we may want to adopt at some point...
                 //    AssemblyKeyContainerName = ""  //This is the key file used to sign the interop assembly generated when importing a com object via add reference
@@ -4665,7 +4637,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="propertyName">Name of Property to retrieve</param>
         /// <returns>Evaluated value of property.</returns>
-        public string GetProjectProperty(string propertyName)
+        public virtual string GetProjectProperty(string propertyName)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             return this.GetProjectProperty(propertyName, true);

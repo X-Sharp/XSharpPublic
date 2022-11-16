@@ -26,7 +26,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using System.Xml.Linq;
 using VSLangProj;
 using XSharp.CodeDom;
 using XSharp.LanguageService;
@@ -84,6 +83,7 @@ namespace XSharp.Project
         private VSLangProj.VSProject vsProject;
         bool isLoading = false;
         XSharpModel.XProject projectModel;
+        Dictionary<string, string> _cachedProjectProperties;
 
 
         //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
@@ -98,7 +98,7 @@ namespace XSharp.Project
         public XSharpProjectNode(XSharpProjectPackage package)
         {
             this.package = package;
-            _dialectIsCached = false;
+            _cachedProjectProperties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             this.OnProjectPropertyChanged += XSharpProjectNode_OnProjectPropertyChanged;
             InitializeImageList();
             InitializeCATIDs();
@@ -118,6 +118,30 @@ namespace XSharp.Project
             }
         }
 
+        internal void ClearCache()
+        {
+            _cachedProjectProperties.Clear();
+        }
+
+        public override string GetProjectProperty(string propertyName)
+        {
+            if (_cachedProjectProperties.ContainsKey(propertyName))
+                return _cachedProjectProperties[propertyName];
+            var result = base.GetProjectProperty(propertyName);
+            if (result != null)
+                _cachedProjectProperties[propertyName] = result;
+            return result;
+        }
+
+        public override void SetProjectProperty(string propertyName, string propertyValue)
+        {
+            base.SetProjectProperty(propertyName, propertyValue);
+            if (propertyValue == null && _cachedProjectProperties.ContainsKey(propertyName))
+                _cachedProjectProperties.Remove(propertyName);
+            else if (propertyValue != null)
+                _cachedProjectProperties[propertyName] = propertyValue;
+        }
+
         private void XSharpProjectNode_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
             if (string.Compare(e.PropertyName, "dialect", true) == 0)
@@ -129,6 +153,7 @@ namespace XSharp.Project
                 }
                 _dialectIsCached = true;
             }
+            _cachedProjectProperties[e.PropertyName] = e.NewValue;
             this.options = null;
         }
 
@@ -1396,7 +1421,7 @@ namespace XSharp.Project
                 this.EventTriggeringFlag = oldEvents;
                 ThreadUtilities.runSafe(() =>
                 {
-                    if (hasChanged )
+                    if (hasChanged)
                     {
                         this.OnItemsAppended(includeNode);
                     }
@@ -1872,7 +1897,7 @@ namespace XSharp.Project
             }
             return bOk;
         }
-#region IProjectTypeHelper
+        #region IProjectTypeHelper
         public IXTypeSymbol ResolveExternalType(string name, IList<string> usings)
         {
             switch (name.ToLower())
@@ -1918,8 +1943,8 @@ namespace XSharp.Project
         }
 
 
-#endregion
-#region IVsSingleFileGeneratorFactory
+        #endregion
+        #region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
 
         // Note that in stead of using the SingleFileGeneratorFactory we can also do everything here based on
@@ -1974,9 +1999,9 @@ namespace XSharp.Project
             return VSConstants.S_FALSE;
 
         }
-#endregion
+        #endregion
 
-#region IVsDesignTimeAssemblyResolution
+        #region IVsDesignTimeAssemblyResolution
 
         //private DesignTimeAssemblyResolution designTimeAssemblyResolution;
         private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", "AnyCPU");
@@ -2031,8 +2056,8 @@ namespace XSharp.Project
         //    return VSConstants.S_OK;
         //}
 
-#endregion
-#region TableManager
+        #endregion
+        #region TableManager
         //internal ITableManagerProvider tableManagerProvider { get; private set; }
         ErrorListManager _errorListManager = null;
         TaskListManager _taskListManager = null;
@@ -2086,7 +2111,7 @@ namespace XSharp.Project
             return;
         }
 
-#endregion
+        #endregion
 
 
         public void AddFileNode(string strFileName)
@@ -2131,23 +2156,21 @@ namespace XSharp.Project
         }
         private bool _dialectIsCached = false;
         private VsParser.XSharpDialect _dialect;
+
         public VsParser.XSharpDialect Dialect
         {
             get
             {
                 if (_dialectIsCached)
                     return _dialect;
-                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+
+                var prop = GetProjectProperty("Dialect");
+                if (!Enum.TryParse(prop, true, out _dialect))
                 {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    var prop = GetProjectProperty("Dialect");
-                    if (!Enum.TryParse(prop, true, out _dialect))
-                    {
-                        _dialect = VsParser.XSharpDialect.Core;
-                    }
-                    _dialectIsCached = true;
-                    return _dialect;
-                });
+                    _dialect = VsParser.XSharpDialect.Core;
+                }
+                _dialectIsCached = true;
+                return _dialect;
             }
 
         }
@@ -2316,7 +2339,7 @@ namespace XSharp.Project
                 }
             }
 #else
-            
+
 #endif
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
@@ -2826,7 +2849,7 @@ namespace XSharp.Project
 
 
 
-#region IVsProject5
+        #region IVsProject5
         public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)
         {
             var node = this.FindURL(pszMkDocument);
@@ -2896,8 +2919,8 @@ namespace XSharp.Project
             return false;
         }
 
-#endregion
- 
+        #endregion
+
     }
 
 

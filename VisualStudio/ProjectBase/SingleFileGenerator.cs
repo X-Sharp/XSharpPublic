@@ -139,7 +139,9 @@ namespace Microsoft.VisualStudio.Project
                     int generateTempPE;
                     SingleFileGeneratorFactory factory = new SingleFileGeneratorFactory(this.projectMgr.ProjectGuid, this.projectMgr.Site);
                     ErrorHandler.ThrowOnFailure(factory.CreateGeneratorInstance(customToolProgID, out generateDesignTimeSource, out generateSharedDesignTimeSource, out generateTempPE, out generator));
-                    
+
+                    if (generator == null)
+                        return;
                     //Check to see if the generator supports siting
                     IObjectWithSite objWithSite = generator as IObjectWithSite;
                     if (objWithSite != null)

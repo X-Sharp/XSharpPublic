@@ -15,6 +15,7 @@ namespace Microsoft.VisualStudio.Project
 	using Microsoft.VisualStudio.Shell.Interop;
 	using System.Runtime.InteropServices;
     using Microsoft.VisualStudio.Shell;
+    using System.Runtime.CompilerServices;
 
 
     /// <summary>
@@ -58,7 +59,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 HierarchyNode node = nodeList[index];
                 HierarchyNode parent = node.Parent;
-
+                project.RemoveURL(node.Url);
                 node.OnItemDeleted();
                 parent.RemoveChild(node);
             }

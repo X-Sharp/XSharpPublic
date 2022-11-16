@@ -21,5 +21,6 @@ namespace XSharp.LanguageService
         Keywords = 1 << 7,
         Snippets = 1 << 8,
         General = 1 << 9,
+        Inherit = 1 << 10,
     }
 }

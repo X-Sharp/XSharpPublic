@@ -7,6 +7,7 @@ USING System.Collections.Concurrent
 USING System.Collections.Generic
 USING System.Collections.ObjectModel
 USING System
+USING System.IO
 USING System.Linq
 USING System.Diagnostics
 USING XSharpModel
@@ -272,11 +273,11 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY IsXaml             AS LOGIC GET SELF:_type == XFileType.XAML
         PROPERTY LastChanged        AS System.DateTime   AUTO GET INTERNAL SET
         PROPERTY Size               AS INT64              AUTO GET INTERNAL SET
-        PROPERTY Name               AS STRING GET System.IO.Path.GetFileNameWithoutExtension(SELF:FullPath)
-            
+        PROPERTY Name               AS STRING GET Path.GetFileNameWithoutExtension(SELF:FullPath)
+
         PROPERTY UpdatedOnDisk      AS LOGIC
             GET
-               VAR fi                  := System.IO.FileInfo{SELF:FullPath}
+               VAR fi                  := FileInfo{SELF:FullPath}
                RETURN SELF:LastChanged != fi:LastWriteTime .OR. SELF:Size != fi:Length
             END GET
         END PROPERTY
@@ -374,11 +375,12 @@ BEGIN NAMESPACE XSharpModel
             END SET
         END PROPERTY
 
-
         PROPERTY XamlCodeBehindFile AS STRING
             GET
                 VAR projectNode := SELF:Project:ProjectNode
-                RETURN System.IO.Path.ChangeExtension(System.IO.Path.Combine(projectNode:IntermediateOutputPath, System.IO.Path.GetFileName(SELF:FullPath)), ".g.prg")
+                var fn := Path.GetFileName(SELF:FullPath)
+                fn := Path.ChangeExtension( fn, ".g.i.prg")
+                return Path.Combine(projectNode:IntermediateOutputPath, fn)
             END GET
         END PROPERTY
 

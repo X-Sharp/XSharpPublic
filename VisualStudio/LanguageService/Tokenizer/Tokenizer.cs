@@ -317,7 +317,6 @@ namespace XSharp.LanguageService
             location = AdjustStartLineNumber(location);
             var xdocument = location.GetDocument();
             var tokens =  xdocument.GetTokensInLine(location.LineNumber);
-
             //
             state = CompletionState.General;
             if (tokens.Count == 0)
@@ -526,7 +525,7 @@ namespace XSharp.LanguageService
                             result.Add(token);
                         }
                         if (isNotLast) // there has to be a space after the token
-                            state = CompletionState.Namespaces | CompletionState.Types;
+                            state = CompletionState.Namespaces | CompletionState.Types | CompletionState.Inherit;
                         else
                             state = CompletionState.None;
                         break;

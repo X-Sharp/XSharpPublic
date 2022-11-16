@@ -35,6 +35,8 @@ namespace Microsoft.VisualStudio.Project
 
         private static readonly string[] macroNames =
               {
+                "BaseIntermediateOutputPath",
+                "BaseOutputPath",
                 "ConfigurationName",
                 "OutDir",
                 "PlatformName",

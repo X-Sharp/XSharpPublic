@@ -13,10 +13,9 @@ USING Mono.Cecil
 BEGIN NAMESPACE XSharpModel
 
    [DebuggerDisplay("{Kind}, {Name,nq}")];
-   CLASS XPESymbol INHERIT XSymbol IMPLEMENTS IXSymbol
+   ABSTRACT CLASS XPESymbol INHERIT XSymbol IMPLEMENTS IXSymbol
       #region Simple Properties
       PROPERTY Assembly AS XAssembly               AUTO
-
       PROPERTY Prototype         AS STRING         GET SELF:Name
       PROPERTY SingleLine        AS LOGIC          AUTO
       PROPERTY Value             AS STRING         AUTO
@@ -51,6 +50,8 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY IsTyped                 AS LOGIC    GET TRUE
       PROPERTY TypeName                AS STRING   AUTO
+      ABSTRACT PROPERTY IsSpecialName  AS LOGIC GET
+
 
       METHOD HasCustomAttribute(name AS STRING) AS LOGIC
         IF SELF:_custatts != NULL

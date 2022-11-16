@@ -24,6 +24,7 @@ CLASS XSourceSymbol INHERIT XSymbol IMPLEMENTS IXSourceSymbol
     /// Location in the source where the item is in start / end position
     /// </summary>
     /// <value></value>
+    PROPERTY Prototype as STRING GET SELF:KindKeyword+" "+SELF:Name
     PROPERTY Interval AS TextInterval     AUTO
     PROPERTY FileUsings AS IList<STRING>  GET  IIF(SELF:File != NULL, SELF:File:Usings, (IList<STRING>) STRING[]{0})
 

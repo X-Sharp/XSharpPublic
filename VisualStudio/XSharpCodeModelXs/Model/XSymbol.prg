@@ -12,7 +12,7 @@ USING LanguageService.SyntaxTree
 BEGIN NAMESPACE XSharpModel
      // an entity in the source code
     [DebuggerDisplay("{Kind}, {Name,nq}")];
-    CLASS XSymbol IMPLEMENTS IXSymbol
+    ABSTRACT CLASS XSymbol IMPLEMENTS IXSymbol
       PROPERTY Kind        AS Kind         AUTO
       PROPERTY Name        AS STRING       AUTO
       PROPERTY Attributes  AS Modifiers    AUTO
@@ -28,13 +28,13 @@ BEGIN NAMESPACE XSharpModel
 
       END PROPERTY
       PROPERTY Glyph                   AS LONG     GET Self:Kind:GetGlyph(self:Visibility)
-      PROPERTY ModifiersKeyword			AS STRING   GET SELF:Modifiers:ToDisplayString()
-      PROPERTY VisibilityKeyword			AS STRING   GET SELF:Visibility:ToDisplayString()
-      PROPERTY KindKeyword				   AS STRING   GET SELF:Kind:ToDisplayString()
+      PROPERTY ModifiersKeyword		   AS STRING   GET SELF:Modifiers:ToDisplayString()
+      PROPERTY VisibilityKeyword	   AS STRING   GET SELF:Visibility:ToDisplayString()
+      PROPERTY KindKeyword			   AS STRING   GET SELF:Kind:ToDisplayString()
       PROPERTY TypeName                AS STRING   AUTO
       PROPERTY Parent                  AS IXSymbol AUTO
       PROPERTY Description             AS STRING AUTO
-      PROPERTY Prototype               AS STRING GET ""
+      ABSTRACT PROPERTY Prototype      AS STRING GET 
       PROPERTY IsStatic                AS LOGIC AUTO
       PROPERTY IsArray                 AS LOGIC AUTO
       PROPERTY IsPublic                AS LOGIC GET SELF:Visibility >= Modifiers.Public

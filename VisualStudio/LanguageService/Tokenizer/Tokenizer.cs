@@ -703,7 +703,7 @@ namespace XSharp.LanguageService
                 {
                     name = name.Substring(0, pos);
                 }
-                XSourceTypeSymbol nSpace = new XSourceTypeSymbol(name, Kind.Namespace, Modifiers.Public, found.Range, found.Interval, file);
+                var nSpace = new XSourceNamespaceSymbol(name, found.Range, found.Interval, file);
                 return nSpace;
             }
 #if TRACE

@@ -760,6 +760,7 @@ namespace XSharp.CodeDom
                 base.Output.Write(" " + keywordAS);
                 this.OutputType(e.Type);
             }
+            textWriter.SuppressNewLine = false;
             base.Output.WriteLine();
 
         }
@@ -1163,7 +1164,7 @@ namespace XSharp.CodeDom
             }
             else
             {
-                WriteIndent();
+                //WriteIndent();
             }
             return false;
         }
@@ -1368,7 +1369,7 @@ namespace XSharp.CodeDom
         protected override void GenerateSnippetMember(CodeSnippetTypeMember e)
         {
             // the base class resets indent for Snippet Members
-            this.Indent = this.indentSave;
+            this.Indent = 0;  // this.indentSave;
             WriteTrivia(e);
             base.Output.Write(e.Text);
         }

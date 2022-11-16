@@ -115,7 +115,7 @@
             this.chkKeywordMatching.Size = new System.Drawing.Size(137, 17);
             this.chkKeywordMatching.TabIndex = 4;
             this.chkKeywordMatching.Text = "Highlight &Keyword Pairs";
-            this.toolTip1.SetToolTip(this.chkKeywordMatching, "Match braces");
+            this.toolTip1.SetToolTip(this.chkKeywordMatching, "Highlight keyword pairs, such as FOR and NEXT, IF and ENDIF etc.");
             this.chkKeywordMatching.UseVisualStyleBackColor = true;
             // 
             // chkLightBulbs

@@ -29,6 +29,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsTyped      AS LOGIC GET TRUE
       PROPERTY IsStatic     AS LOGIC GET FALSE
       PROPERTY OriginalTypeName as STRING AUTO
+      PROPERTY Location     AS STRING GET ""
       PROPERTY Description  AS STRING
          GET
             LOCAL prefix AS STRING

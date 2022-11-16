@@ -34,7 +34,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeName                AS STRING   AUTO
       PROPERTY Parent                  AS IXSymbol AUTO
       PROPERTY Description             AS STRING AUTO
-      ABSTRACT PROPERTY Prototype      AS STRING GET 
+      ABSTRACT PROPERTY Prototype      AS STRING GET
+      ABSTRACT PROPERTY Location       AS STRING GET
       PROPERTY IsStatic                AS LOGIC AUTO
       PROPERTY IsArray                 AS LOGIC AUTO
       PROPERTY IsPublic                AS LOGIC GET SELF:Visibility >= Modifiers.Public

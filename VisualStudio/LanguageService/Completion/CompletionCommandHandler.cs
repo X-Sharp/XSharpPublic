@@ -541,7 +541,7 @@ namespace XSharp.LanguageService
                     if (completion != null)
                     {
                         // Push the completion char into the InsertionText if needed
-                        if (!completion.InsertionText.EndsWith(ch.ToString()))
+                        if (ch != '\0' && !completion.InsertionText.EndsWith(ch.ToString()))
                         {
                             completion.InsertionText += ch;
                         }

@@ -863,33 +863,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 i++;
             }
-#if XSHARP
-            if (!trees.IsEmpty() && !Options.HasDefaultTree && !this.IsSubmission)
-            {
-                SyntaxTree? def = null ;
-                var parseOptions = (CSharpParseOptions)trees.First().Options;
-                var isApp = Options.OutputKind.IsApplication();
-                var noMain = isApp && string.IsNullOrEmpty(Options.MainTypeName);
-                if (Options.HasRuntime)
-                {
-                    if (noMain)
-                    {
-                        Options.MainTypeName = InternalSyntax.XSharpTreeTransformationRT.VOGlobalClassName(parseOptions);
-                    }
-                    def = InternalSyntax.XSharpTreeTransformationRT.DefaultRTSyntaxTree(trees, parseOptions);
-                }
-                else /* core dialect */
-                {
-                    if (noMain)
-                    {
-                        Options.MainTypeName = XSharpSpecialNames.FunctionsClass;
-                    }
-                    def = InternalSyntax.XSharpTreeTransformationCore.DefaultXSharpSyntaxTree(trees, parseOptions);
-                }
-                syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
-                Options.HasDefaultTree = true;
-            }
-#endif
             externalSyntaxTrees.Free();
 
             if (this.IsSubmission && i > 1)
@@ -898,7 +871,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(trees);
+#if XSHARP
+            AddXSharpSyntaxTree(trees, ref syntaxAndDeclarations);
 
+#endif
             return Update(_referenceManager, reuseReferenceManager, syntaxAndDeclarations);
         }
 

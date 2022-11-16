@@ -6,10 +6,14 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
+using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+
+
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -26,6 +30,35 @@ namespace Microsoft.CodeAnalysis.CSharp
         NamedTypeSymbol? _codeblockType = null;
         NamedTypeSymbol? _windateType = null;
         NamedTypeSymbol? _vfpFunctionsType = null;
+
+        private void AddXSharpSyntaxTree(IEnumerable<SyntaxTree> trees, ref SyntaxAndDeclarationManager syntaxAndDeclarations)
+        {
+            if (!trees.IsEmpty() && !Options.HasDefaultTree && !this.IsSubmission)
+            {
+                SyntaxTree? def;
+                var parseOptions = (CSharpParseOptions)trees.First().Options;
+                var isApp = Options.OutputKind.IsApplication();
+                var noMain = isApp && string.IsNullOrEmpty(Options.MainTypeName);
+                if (Options.HasRuntime)
+                {
+                    if (noMain)
+                    {
+                        Options.MainTypeName = InternalSyntax.XSharpTreeTransformationRT.VOGlobalClassName(parseOptions);
+                    }
+                    def = InternalSyntax.XSharpTreeTransformationRT.DefaultRTSyntaxTree(trees, parseOptions);
+                }
+                else /* core dialect */
+                {
+                    if (noMain)
+                    {
+                        Options.MainTypeName = XSharpSpecialNames.FunctionsClass;
+                    }
+                    def = InternalSyntax.XSharpTreeTransformationCore.DefaultXSharpSyntaxTree(trees, parseOptions);
+                }
+                syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
+                Options.HasDefaultTree = true;
+            }
+        }
 
         internal NamedTypeSymbol GetRtType(WellKnownType xsName, WellKnownType vulName)
         {

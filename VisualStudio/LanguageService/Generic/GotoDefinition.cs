@@ -174,15 +174,13 @@ namespace XSharp.LanguageService
             var walker = new SourceWalker(file, false);
             walker.Parse(false);
             var entities = walker.EntityList;
-            XSourceEntity result = null;
             if (petype.IsFunctionsClass)
             {
                 foreach (var entity in entities)
                 {
                     if (entity.Name == element.Name)
                     {
-                        result = entity;
-                        break;
+                        return entity;
                     }
                 }
             }
@@ -190,14 +188,20 @@ namespace XSharp.LanguageService
             {
                 foreach (var entity in entities)
                 {
-                    if (entity.FullName == element.FullName)
+                    if (entity.Name == element.Name)
                     {
-                        result = entity;
+                        if (entity is IXMemberSymbol m1 && m1.IsExtension && element is IXMemberSymbol m2)
+                        {
+                            if (m1.ParameterList == m2.ParameterList)
+                                return entity;
+                        }
+                        if (entity.FullName == element.FullName)
+                            return entity;
                         break;
                     }
                 }
             }
-            return result;
+            return null;
         }
         private static XFile CreateFileForSystemType(XPETypeSymbol petype, XPESymbol element)
         {

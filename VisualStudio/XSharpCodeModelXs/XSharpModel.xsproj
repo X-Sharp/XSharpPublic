@@ -17,7 +17,7 @@
     <TargetFrameworkProfile />
     <CS>true</CS>
     <VO3>true</VO3>
-    <XSharpProjectversion>2.13.0.7</XSharpProjectversion>
+    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -113,6 +113,8 @@
     <Compile Include="Formatting\XKeyword.prg" />
     <Compile Include="Formatting\XTokenType.prg" />
     <Compile Include="MetaData\BuiltInFunctions.prg" />
+    <Compile Include="Model\XNamespaceSymbol.prg" />
+    <Compile Include="Model\XKeywordSymbol.prg" />
     <Compile Include="Model\ClassGenerator.prg" />
     <Compile Include="Model\CommentTask.prg" />
     <Compile Include="Parser\XSharpTokenList.prg" />
@@ -129,6 +131,7 @@
     <Compile Include="Signatures\XBaseSignature.prg" />
     <Compile Include="Signatures\XMemberSignature.prg" />
     <Compile Include="Signatures\XTypeSignature.prg" />
+    <Compile Include="Source\XSourceNamespaceSymbol.prg" />
     <Compile Include="Source\XSourceImpliedVariableSymbol.prg" />
     <Compile Include="Source\XSourceBlock.prg" />
     <Compile Include="Source\XSourceSymbol.prg" />

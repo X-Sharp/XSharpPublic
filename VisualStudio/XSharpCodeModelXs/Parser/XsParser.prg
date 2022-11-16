@@ -1390,7 +1390,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         VAR id := SELF:ParseQualifiedName()
         SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
         SELF:ReadLine()
-        VAR xType := XSourceTypeSymbol{id, Kind.Namespace, _attributes, range, interval,_file}
+        VAR xType := XSourceNamespaceSymbol{id, range, interval,_file}
         xType:SourceCode := source
         RETURN <XSourceEntity>{xType}
 

@@ -10,8 +10,9 @@ BEGIN NAMESPACE XSharpModel
 
 
    CLASS XPEPropertySymbol INHERIT XPEMemberSymbol
-        PRIVATE _propdef      as PropertyDefinition
-        PROPERTY Accessors    AS AccessorKind AUTO
+        PRIVATE _propdef        as PropertyDefinition
+        PROPERTY Accessors      AS AccessorKind AUTO
+        PROPERTY IsSpecialName  AS LOGIC GET _propdef:IsSpecialName
 
 		CONSTRUCTOR(def AS PropertyDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Property, Modifiers.Public,  asm)
@@ -36,7 +37,6 @@ BEGIN NAMESPACE XSharpModel
          IF def:SetMethod != NULL
             SELF:Accessors |= AccessorKind.Set
          ENDIF
-
     PROPERTY ClassGenText as STRING
             GET
                 var result := SELF:VisibilityKeyword + " "
@@ -60,7 +60,8 @@ BEGIN NAMESPACE XSharpModel
    END CLASS
 
    CLASS XPEFieldSymbol INHERIT XPEMemberSymbol
-        PRIVATE _fielddef     as FieldDefinition
+        PRIVATE _fielddef       as FieldDefinition
+        PROPERTY IsSpecialName  AS LOGIC GET _fielddef:IsSpecialName
 
    STATIC METHOD ConvertAttributes (attributes AS FieldAttributes) as Modifiers
          var modifiers := Modifiers.None
@@ -136,9 +137,9 @@ BEGIN NAMESPACE XSharpModel
    END CLASS
 
    CLASS XPEEventSymbol INHERIT XPEMemberSymbol
-        PRIVATE _eventdef     as EventDefinition
-        PROPERTY Accessors    AS AccessorKind AUTO
-
+        PRIVATE _eventdef       as EventDefinition
+        PROPERTY Accessors      AS AccessorKind AUTO
+        PROPERTY IsSpecialName  AS LOGIC GET _eventdef:IsSpecialName
 		CONSTRUCTOR(def AS EventDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Event, Modifiers.Public,  asm)
          SELF:DeclaringType         := def:DeclaringType:GetXSharpTypeName()
@@ -181,9 +182,9 @@ BEGIN NAMESPACE XSharpModel
 END CLASS
 
    CLASS XPEMethodSymbol  INHERIT XPEMemberSymbol
-       PRIVATE _methoddef    as MethodDefinition
-       PRIVATE _ccAttrib     AS Mono.Cecil.CustomAttribute
-
+       PRIVATE _methoddef       as MethodDefinition
+       PRIVATE _ccAttrib        AS Mono.Cecil.CustomAttribute
+       PROPERTY IsSpecialName   AS LOGIC GET _methoddef:IsSpecialName
    STATIC METHOD ConvertAttributes (attributes AS MethodAttributes) as Modifiers
          var modifiers := Modifiers.None
          var visattributes := _AND(attributes, MethodAttributes.MemberAccessMask)

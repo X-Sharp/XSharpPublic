@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY TypeDef        AS TypeDefinition GET _typeDef
         PROPERTY GenericName    AS STRING AUTO
         PROPERTY TickedName     AS STRING GET _typeDef:Name
-
+        PROPERTY IsSpecialName  AS LOGIC GET _typeDef:IsSpecialName
         CONSTRUCTOR(typedef as TypeDefinition, asm as XAssembly)
             SUPER(typedef:Name, GetKind(typedef), ConvertAttributes(typedef:Attributes), asm)
             SELF:_typeDef        := typedef

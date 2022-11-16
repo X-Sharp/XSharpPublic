@@ -642,6 +642,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             IF mustSeek
+                SELF:_oRdd:_SetBOF(FALSE)
                 SELF:_oRdd:_SetEOF(FALSE)
                 seekInfo:Value      := obj
                 seekInfo:SoftSeek   := TRUE
@@ -746,6 +747,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:ClearStack()
                 RETURN 0
             ENDIF
+            SELF:_oRdd:_SetBOF(false)
+            SELF:_oRdd:_SetEOF(false)
             SELF:PushPage(page, 0)
             IF page IS CdxBranchPage VAR branchPage
                 LOCAL nChildPage AS LONG
@@ -793,6 +796,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:ClearStack()
                 RETURN 0
             ENDIF
+            SELF:_oRdd:_SetBOF(false)
+            SELF:_oRdd:_SetEOF(false)
             SELF:PushPage(page, (WORD) (page:NumKeys-1))
             IF page IS CdxBranchPage VAR branchPage
                 LOCAL nChildPage AS LONG

@@ -741,10 +741,10 @@ namespace XSharp.LanguageService
             if (start + end > location.Snapshot.Length)
                 end = location.Snapshot.Length - start;
             string memberSource;
-            if (start < location.Snapshot.Length && end > 0 && end < location.Snapshot.Length)
+            if (start < location.Snapshot.Length && end > 0 && end <= location.Snapshot.Length)
                 memberSource = location.Snapshot.GetText(start, end);
             else
-                memberSource = "";
+                memberSource = location.Snapshot.GetText();
 
             var locals = walker.ParseLocals(memberSource, member);
             // Add the normal locals for class members

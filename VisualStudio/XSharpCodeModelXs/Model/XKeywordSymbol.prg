@@ -18,5 +18,6 @@ BEGIN NAMESPACE XSharpModel
         SUPER(name, Kind.Keyword, Modifiers.Public)
         RETURN
     PROPERTY Prototype as STRING GET SELF:KindKeyword+" "+SELF:Name
+    PROPERTY Location AS STRING GET ""
 	END CLASS
 END NAMESPACE // XSharpModel.Model

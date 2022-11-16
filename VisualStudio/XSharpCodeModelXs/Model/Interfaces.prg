@@ -2,18 +2,14 @@
 
 BEGIN NAMESPACE XSharpModel
    /// <summary>Properties shared by all objects in the codemodel</summary>
-   INTERFACE IXSymbolBase
-      PROPERTY Name        as STRING GET
-      PROPERTY Kind        as Kind   GET
-      PROPERTY KindKeyword AS STRING GET
-      PROPERTY TypeName    AS STRING GET SET
-      PROPERTY Parent      AS IXSymbol GET SET
-      PROPERTY IsPublic    AS LOGIC GET
+   INTERFACE IXSymbol
+      PROPERTY Name         as STRING GET
+      PROPERTY Kind         as Kind   GET
+      PROPERTY KindKeyword  AS STRING GET
+      PROPERTY TypeName     AS STRING GET SET
+      PROPERTY Parent       AS IXSymbol GET SET
+      PROPERTY IsPublic     AS LOGIC GET
       PROPERTY IsExternalVisible AS LOGIC GET
-   END INTERFACE
-
-   /// <summary>Properties shared by all entities (types and members, internal and external) in the codemodel</summary>
-   INTERFACE IXSymbol   INHERIT IXSymbolBase
       PROPERTY Description  AS STRING GET
       PROPERTY ModVis       AS STRING GET
       PROPERTY Modifiers    AS Modifiers GET
@@ -27,6 +23,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Namespace    AS STRING GET
       PROPERTY FullName     AS STRING GET
       PROPERTY ResolvedType AS IXTypeSymbol AUTO
+      PROPERTY Location     AS STRING GET
+
       METHOD ForceComplete() AS VOID STRICT
 
    END INTERFACE
@@ -47,7 +45,6 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Interfaces  AS IList<STRING> GET
       PROPERTY IsGeneric   AS LOGIC GET
       PROPERTY OriginalTypeName  AS STRING GET
-      PROPERTY Location    AS STRING GET
       PROPERTY IsFunctionsClass as LOGIC GET
 
       METHOD   AddTypeParameter(name AS STRING) AS VOID
@@ -73,7 +70,6 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsExtension    AS LOGIC GET
       PROPERTY XMLSignature   AS STRING GET
       PROPERTY OriginalTypeName  AS STRING GET
-      PROPERTY Location       AS STRING GET
       PROPERTY IsGeneric      AS LOGIC GET
       PROPERTY CallingConvention AS CallingConvention GET
       METHOD Clone()          AS IXMemberSymbol

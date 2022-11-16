@@ -465,6 +465,7 @@ namespace XSharp.LanguageService
                         kind = "Field";
                     content.addKeyword(XSettings.FormatKeyword(kind + " "));
                     addVarInfo(content, xVar);
+                    content.addLocation(xVar.Location);
                     return content.ToArray();
                 }
 

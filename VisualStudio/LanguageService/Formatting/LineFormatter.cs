@@ -358,7 +358,12 @@ namespace XSharp.LanguageService
             var prevLineKeyword = GetFirstKeywordInLine(line);
             var indentValue = GetLineIndent(line);
             var settings = Settings;
-            if (prevLineKeyword.IsEntity())
+            var rule = XFormattingRule.GetFirstRuleByStart(prevLineKeyword);
+            if (rule != null && rule.Flags.HasFlag(XFormattingFlags.SingleLine))
+            {
+                ; // do nothing
+            }
+            else if (prevLineKeyword.IsEntity())
             {
                 if (prevLineKeyword.IsType() && settings.IndentTypeMembers)
                 {
@@ -560,6 +565,10 @@ namespace XSharp.LanguageService
                             }
                             done = true;
                         }//
+                        else if (kw.IsEnd)
+                        {
+                            done = true;
+                        }
                         tempLine -= 1;
                     }
                 }

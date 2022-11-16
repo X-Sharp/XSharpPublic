@@ -1484,10 +1484,6 @@ namespace XSharp.CodeDom
                         base.Output.Write(keywordENUM);
                     }
                     base.Output.WriteLine();
-                    if (e.HasEndingTrivia())
-                    {
-                        WriteTrivia(e, true);
-                    }
                 }
             }
             types.Pop();

@@ -226,14 +226,17 @@ namespace XSharp.Project
                 {
                     member.SetFromDesigner(false);
                 }
-                CopyClassProperties(combinedClass, designClass);
-                foreach (CodeTypeMember member in designClass.Members)
+                if (designClass != null)
                 {
-                    member.SetFromDesigner(true);
+                    CopyClassProperties(combinedClass, designClass);
+                    foreach (CodeTypeMember member in designClass.Members)
+                    {
+                        member.SetFromDesigner(true);
+                    }
+                    designClass.Members.Clear();
                 }
                 combinedClass.IsPartial = true;
                 formClass.Members.Clear();
-                designClass.Members.Clear();
                 // Now, split the members
                 // And make sure no members are deleted
                 foreach (CodeTypeMember ctm in combinedClass.Members)

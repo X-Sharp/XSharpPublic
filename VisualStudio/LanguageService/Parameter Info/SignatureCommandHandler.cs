@@ -473,6 +473,12 @@ namespace XSharp.LanguageService
             {
                 var findStatic = triggerchar == '.';
                 currentElement = XSharpLookup.SearchMethod(location, type, methodName, Modifiers.Private, findStatic).FirstOrDefault();
+                if (currentElement == null)
+                {
+                    var extensions = location.File.Project.GetExtensions(type.FullName);
+                    currentElement = extensions.FirstOrDefault();
+                }
+
             }
             else
             {

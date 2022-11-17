@@ -833,15 +833,23 @@ BEGIN NAMESPACE XSharp.RDD.Enums
         /// <summary>This message is sent after a new record has been appended. The Data parameter is the record number of the record.</summary>
         MEMBER RecordAppended
         /// <summary>This message is sent after a record has been deleted. The Data parameter is the record number of the record.</summary>
-        MEMBER RecordDeleted
+        MEMBER AfterRecordDeleted
+        /// <summary>This message is sent after a record has been deleted. The Data parameter is the record number of the record.</summary>
+        MEMBER RecordDeleted := AfterRecordDeleted
         /// <summary>This message is sent after a record has been recalled. The Data parameter is the record number of the record.</summary>
-        MEMBER RecordRecalled
+        MEMBER AfterRecordRecalled
+        /// <summary>This message is sent after a record has been recalled. The Data parameter is the record number of the record.</summary>
+        MEMBER RecordRecalled := AfterRecordRecalled
         /// <summary>This message is sent after a record has been locked. The Data parameter is the record number of the record.</summary>
         MEMBER RecordLocked
         /// <summary>This message is sent after a record has been unlocked. The Data parameter is the record number of the record.</summary>
         MEMBER RecordUnLocked
         /// <summary>This message is sent after a Workarea was commited. The Data parameter is the file name of area.</summary>
         MEMBER FileCommit
+        /// <summary>This message is sent before a record wil be deleted. The Data parameter is the record number of the record.</summary>
+        MEMBER BeforeRecordDeleted
+        /// <summary>This message is sent before a record wil be recalled. The Data parameter is the record number of the record.</summary>
+        MEMBER BeforeRecordRecalled
         /// <summary>This message is sent after an operation failed. The Data parameter is the description of the operation.</summary>
         MEMBER OperationFailed    := 99
     END ENUM

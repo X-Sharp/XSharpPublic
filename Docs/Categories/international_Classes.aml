@@ -1,24 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
 <topic id="cat-International_Classes" revisionNumber="1" title="International Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>International Classes</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Namespace</para></entry>
-<entry><para>Class</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.CollationMode</codeEntityReference></para></entry>
-<entry><para>This enum specifies the collation mode used to create and update index strings.</para></entry></row>
-<row><entry><para>XSharp</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Collations</codeEntityReference></para></entry>
-<entry><para>
+      <title>International Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.CollationMode</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This enum specifies the collation mode used to create and update index strings.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Collations</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
               A strongly-typed resource class, for looking up localized strings, etc.
-            </para></entry></row>
-</table>
-</content>
-     </section>
+            </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

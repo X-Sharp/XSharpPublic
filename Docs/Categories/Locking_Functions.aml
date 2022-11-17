@@ -1,164 +1,561 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:28 -->
 <topic id="cat-Locking_Functions" revisionNumber="1" title="Locking Functions">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>Locking Functions</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetAllLocks(System.IntPtr,System.UInt32[],System.UInt16@)</codeEntityReference></para></entry>
-<entry><para>See the ADS documentation for more information about this function.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetNumLocks(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
-<entry><para>See the ADS documentation for more information about this function.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsRecordLocked(System.IntPtr,System.UInt32,System.UInt16@)</codeEntityReference></para></entry>
-<entry><para>See the ADS documentation for more information about this function.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsTableLocked(System.IntPtr,System.UInt16@)</codeEntityReference></para></entry>
-<entry><para>See the ADS documentation for more information about this function.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsLockRecord(System.IntPtr,System.UInt32)</codeEntityReference></para></entry>
-<entry><para>See the ADS documentation for more information about this function.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsLockTable(System.IntPtr)</codeEntityReference></para></entry>
-<entry><para>See the ADS documentation for more information about this function.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetLockOwner(System.IntPtr,System.String,System.UInt32,System.IntPtr,System.UInt16@,System.UInt16@)</codeEntityReference></para></entry>
-<entry><para>See the ADS documentation for more information about this function.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetLocks(System.IntPtr,System.String,System.String,System.UInt16,System.IntPtr,System.UInt16@,System.UInt16@)</codeEntityReference></para></entry>
-<entry><para>See the ADS documentation for more information about this function.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsStmtSetTableLockType(System.IntPtr,System.UInt16)</codeEntityReference></para></entry>
-<entry><para>See the ADS documentation for more information about this function.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsUnlockRecord(System.IntPtr,System.UInt32)</codeEntityReference></para></entry>
-<entry><para>See the ADS documentation for more information about this function.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsUnlockTable(System.IntPtr)</codeEntityReference></para></entry>
-<entry><para>See the ADS documentation for more information about this function.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_AXSLocking</codeEntityReference></para></entry>
-<entry><para>Return the AXS locking status.</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBRootLock</codeEntityReference></para></entry>
-<entry><para>
+      <title>Locking Functions</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Assembly</para>
+              </entry>
+              <entry>
+                <para>Function</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetAllLocks(System.IntPtr,System.UInt32[],System.UInt16@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>See the ADS documentation for more information about this function.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsGetNumLocks(System.IntPtr,System.UInt16@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>See the ADS documentation for more information about this function.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsRecordLocked(System.IntPtr,System.UInt32,System.UInt16@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>See the ADS documentation for more information about this function.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsIsTableLocked(System.IntPtr,System.UInt16@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>See the ADS documentation for more information about this function.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsLockRecord(System.IntPtr,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>See the ADS documentation for more information about this function.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsLockTable(System.IntPtr)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>See the ADS documentation for more information about this function.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetLockOwner(System.IntPtr,System.String,System.UInt32,System.IntPtr,System.UInt16@,System.UInt16@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>See the ADS documentation for more information about this function.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsMgGetLocks(System.IntPtr,System.String,System.String,System.UInt16,System.IntPtr,System.UInt16@,System.UInt16@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>See the ADS documentation for more information about this function.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsStmtSetTableLockType(System.IntPtr,System.UInt16)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>See the ADS documentation for more information about this function.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsUnlockRecord(System.IntPtr,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>See the ADS documentation for more information about this function.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AdsUnlockTable(System.IntPtr)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>See the ADS documentation for more information about this function.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RDD.Functions.AX_AXSLocking</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Return the AXS locking status.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBRootLock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Obtain a lock on the root area of a BLOB file.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBRootUnlock</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.BLOBRootUnlock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Release the lock on a BLOB file's root area.
-        </para></entry></row>
-<row><entry><para>VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VORDDClasses.Functions.DbGetDefaultLockMode</codeEntityReference></para></entry>
-<entry><para>Get the default locking mode for the DbServer class</para></entry></row>
-<row><entry><para>XSharp.VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VORDDClasses.Functions.DbGetDefaultLockMode</codeEntityReference></para></entry>
-<entry><para>Get the default locking mode for the DbServer class</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRLock(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAutoLock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Automatically lock a record in the FoxPro dialect </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAutoUnLock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Automatically unlock a record in the FoxPro dialect </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VORDDClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VORDDClasses.Functions.DbGetDefaultLockMode</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get the default locking mode for the DbServer class</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VORDDClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VORDDClasses.Functions.DbGetDefaultLockMode</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get the default locking mode for the DbServer class</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRLock(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Lock a record in a shared database file, optionally retaining previous record locks.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRLockList</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRLockList</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Get a list of locked records.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRUnLock(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRUnLock(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Release all or specified record locks.
-        </para></entry></row>
-<row><entry><para>VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VORDDClasses.Functions.DbSetDefaultLockMode(System.UInt32)</codeEntityReference></para></entry>
-<entry><para>Get/Set the default locking mode for the DbServer class</para></entry></row>
-<row><entry><para>XSharp.VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VORDDClasses.Functions.DbSetDefaultLockMode(System.UInt32)</codeEntityReference></para></entry>
-<entry><para>Get/Set the default locking mode for the DbServer class</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbUnLock</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VORDDClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VORDDClasses.Functions.DbSetDefaultLockMode(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get/Set the default locking mode for the DbServer class</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VORDDClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VORDDClasses.Functions.DbSetDefaultLockMode(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get/Set the default locking mode for the DbServer class</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbUnLock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Release all locks for a work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbUnLockAll</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbUnLockAll</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Release all locks for all work areas.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Lock a portion of an open file.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFLock64(System.IntPtr,System.Int64,System.Int64)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFLock64(System.IntPtr,System.Int64,System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Lock a portion of an open file.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFUnLock(System.IntPtr,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFUnLock(System.IntPtr,System.UInt32,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             UnLock a portion of an opened file.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFUnLock64(System.IntPtr,System.Int64,System.Int64)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FFUnLock64(System.IntPtr,System.Int64,System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             UnLock a portion of an opened file.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Flock</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Flock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Lock an opened and shared database file.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.LockTries</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.LockTries</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return and optionally change the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NewLocks</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NewLocks</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
             Note:  NewLocks() is a compatibility function and therefore not recommended.
             It is superseded by the NewIndexLock() function, which allows you to change and retrieve the setting.  Refer to NewIndexLock() for more information.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RLock</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RLock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Lock the current record.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFlock</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFlock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Lock an opened and shared database file.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRlock(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRlock(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Lock the current record.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUnlock(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUnlock(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Release all locks for a work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUnLockAll</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUnLockAll</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Release all locks for all work areas.
-        </para></entry></row>
-</table>
-</content>
-     </section>
+        </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

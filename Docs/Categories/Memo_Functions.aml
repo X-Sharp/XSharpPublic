@@ -1,102 +1,282 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:28 -->
 <topic id="cat-Memo_Functions" revisionNumber="1" title="Memo Functions">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>Memo Functions</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.HardCR(System.String)</codeEntityReference></para></entry>
-<entry><para>
+      <title>Memo Functions</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Assembly</para>
+              </entry>
+              <entry>
+                <para>Function</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.HardCR(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Replace all soft carriage returns (Chr(141)) in a string with hard carriage returns (Chr(13)).
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemLines(System.String)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemLines(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Count the number of lines in a string or memo field.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoLine(System.String,System.UInt32,System.UInt32,System.UInt32,System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoLine(System.String,System.UInt32,System.UInt32,System.UInt32,System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Extract a line of text from a string.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoRead(System.String)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoRead(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the contents of a text file as a string.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoReadBinary(System.String)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoReadBinary(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the contents of a binary file as an array of bytes.
             Use this function in stead of MemoRead() to read the contents of a binary file.
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemoTran(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemoTran(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Replace carriage-return/linefeeds with a character that can be displayed.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoWrit(System.String,System.String)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoWrit(System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Write a string to a disk file.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoWritBinary(System.String,System.Byte[])</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MemoWritBinary(System.String,System.Byte[])</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Write binary data  o a disk file. Use this function for binary files instead of MemoWrit(). This day may be read with MemoReadBinary().
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MLCount(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MLCount(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Count the number of lines in a string.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLCount1(System.String)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLCount1(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Count the number of lines in a string.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLcToPos(System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLcToPos(System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the position of a character in a formatted string.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MLcToPos(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MLcToPos(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the position of a character in a formatted string.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLine(System.String,System.UInt32)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLine(System.String,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Extract a line of text from a string, specifying an optional offset argument.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLine3(System.String,System.UInt32,System.UInt32@)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLine3(System.String,System.UInt32,System.UInt32@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Extract a line of text from a string, specifying a required offset argument.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MLPos(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MLPos(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Determine the position of a line in a string.
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLPos2(System.String,System.UInt32)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.MLPos2(System.String,System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Determine the position of a line in a string.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MPosToLc(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MPosToLc(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the line and column position of a character in a formatted string.
-        </para></entry></row>
-</table>
-</content>
-     </section>
+        </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

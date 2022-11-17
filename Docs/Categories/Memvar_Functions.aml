@@ -1,155 +1,456 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:28 -->
 <topic id="cat-Memvar_Functions" revisionNumber="1" title="Memvar Functions">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>Memvar Functions</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MClear</codeEntityReference></para></entry>
-<entry><para>
+      <title>Memvar Functions</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Assembly</para>
+              </entry>
+              <entry>
+                <para>Function</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MClear</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Clear all memory variables (all public variables and the private variables of the current thread)
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MRelease(System.String,System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MRelease(System.String,System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Release variables that match a certain wildcard pattern
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MRestore(System.String,System.Boolean,System.String,System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MRestore(System.String,System.Boolean,System.String,System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Recreate public and private variables previously saved to a file and initialize them with their former values.
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MSave(System.String,System.String,System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MSave(System.String,System.String,System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Copy public and private memory variables visible within the current routine to a disk file.
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MxRelease(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._MxRelease(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Release one or more memory variables variables.
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PrivateCount(System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PrivateCount(System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Count private variables
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PrivateEnum(System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PrivateEnum(System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Enumerate private variables
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PrivateFirst(System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PrivateFirst(System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Enumerate private variables
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PrivateNext</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PrivateNext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Enumerate private variables
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PublicCount</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PublicCount</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Count public variables
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PublicEnum</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PublicEnum</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Enumerate public variables
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PublicFirst</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PublicFirst</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Enumerate public variables
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PublicNext</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._PublicNext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Enumerate public variables
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MAssign(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MAssign(System.String,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Perform an assignment to a variable whose name is stored in a specified string.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarBlock(System.String)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarBlock(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return a set-get code block for a given memory variable.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarBlockSym(XSharp.__Symbol)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarBlockSym(XSharp.__Symbol)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return a set-get code block for a given memory variable.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarClear(System.String)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarClear(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Release a memory variable
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarGet(System.String)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarGet(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the contents of a memory variable.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarGetSym(XSharp.__Symbol)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarGetSym(XSharp.__Symbol)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the contents of a memory variable.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarPut(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarPut(System.String,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Assign a value to a memory variable of a given name.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Assign a value to a memory variable of a given name.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarRelease(System.String)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarRelease(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Release a memory variable
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarTryGet(System.String,XSharp.__Usual@)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ShowPrivates(System.Boolean)</codeEntityReference></para></entry>
-<entry><para>Dump the currently defined privates to the terminal window</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ShowPublics</codeEntityReference></para></entry>
-<entry><para>Dump the currently defined publics to the terminal window</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarGet(System.String)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarTryGet(System.String,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ShowPrivates(System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Dump the currently defined privates to the terminal window</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ShowPublics</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Dump the currently defined publics to the terminal window</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarGet(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the contents of a field or a memory variable.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarGetSym(XSharp.__Symbol)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarGetSym(XSharp.__Symbol)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the contents of a field or a memory variable.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarPut(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarPut(System.String,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Assign a value to a field or a memory variable of a given name.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Assign a value to a field or a memory variable of a given name.
-        </para></entry></row>
-</table>
-</content>
-     </section>
+        </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

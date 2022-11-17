@@ -1,22 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:28 -->
 <topic id="cat-Support_Functions" revisionNumber="1" title="Support Functions">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>Support Functions</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.GetPartialEnumName(System.String,System.Type)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ReadOsVersionFromRegistry(System.Boolean)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-</table>
-</content>
-     </section>
+      <title>Support Functions</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Assembly</para>
+              </entry>
+              <entry>
+                <para>Function</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.GetPartialEnumName(System.String,System.Type)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ReadOsVersionFromRegistry(System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

@@ -1,174 +1,707 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
 <topic id="cat-ADS_Classes" revisionNumber="1" title="ADS Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>ADS Classes</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Namespace</para></entry>
-<entry><para>Class</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>Advantage</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.ADSADT</codeEntityReference></para></entry>
-<entry><para>This class allows to open the proprietry ADT format using the Advantage driver</para></entry></row>
-<row><entry><para>Advantage</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXDBFCDX</codeEntityReference></para></entry>
-<entry><para>Advantage.AXDBFCDX RDD </para></entry></row>
-<row><entry><para>Advantage</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXDBFNTX</codeEntityReference></para></entry>
-<entry><para>Advantage.AXDBFNTX RDD </para></entry></row>
-<row><entry><para>Advantage</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXDBFVFP</codeEntityReference></para></entry>
-<entry><para>Advantage.AXDBFVFP RDD </para></entry></row>
-<row><entry><para>Advantage</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXSQLADT</codeEntityReference></para></entry>
-<entry><para>This class allows to open the proprietry ADT format with SQL Syntax using the Advantage driver</para></entry></row>
-<row><entry><para>Advantage</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXSQLCDX</codeEntityReference></para></entry>
-<entry><para>Advantage.AXSQLCDX RDD </para></entry></row>
-<row><entry><para>Advantage</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXSQLNTX</codeEntityReference></para></entry>
-<entry><para>Advantage.AXSQLNTX RDD </para></entry></row>
-<row><entry><para>Advantage</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXSQLVFP</codeEntityReference></para></entry>
-<entry><para>Advantage.AXSQLVFP RDD </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.AdsSQLServer</codeEntityReference></para></entry>
-<entry><para>ADS Compatible DbServer class that received a Sql Select statement in its constructor</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AceError</codeEntityReference></para></entry>
-<entry><para>List of possible Advantage Error codes</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AceTrigEvent</codeEntityReference></para></entry>
-<entry><para>List of possible Trigger event codes</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AceTrigOptions</codeEntityReference></para></entry>
-<entry><para>List of possible Trigger option codes</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AceTrigType</codeEntityReference></para></entry>
-<entry><para>List of possible Trigger type codes</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AceValidate</codeEntityReference></para></entry>
-<entry><para>List of possible Validation codes</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADD_FIELD_DESC</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_ACTIVITY_INFO</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_COMM_STATS</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_CONFIG_MEMORY</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_CONFIG_PARAMS</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_INDEX_INFO</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_INSTALL_INFO</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_RECORD_INFO</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_TABLE_INFO</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_THREAD_ACTIVITY</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_UPTIME_INFO</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_USAGE_INFO</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_USER_INFO</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADSADT</codeEntityReference></para></entry>
-<entry><para>This class allows to open the proprietry ADT format using the Advantage driver</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsCharacterColumn</codeEntityReference></para></entry>
-<entry><para>Class for reading / writing String Columns</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsCharTypes</codeEntityReference></para></entry>
-<entry><para>
-            List of possible character types and collations. </para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsColumn</codeEntityReference></para></entry>
-<entry><para>Class for Ads Column reading / writing </para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsDateColumn</codeEntityReference></para></entry>
-<entry><para>Class for reading / writing Date Columns</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsError</codeEntityReference></para></entry>
-<entry><para>
+      <title>ADS Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>Advantage</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.ADSADT</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class allows to open the proprietry ADT format using the Advantage driver</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Advantage</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXDBFCDX</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage.AXDBFCDX RDD </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Advantage</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXDBFNTX</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage.AXDBFNTX RDD </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Advantage</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXDBFVFP</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage.AXDBFVFP RDD </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Advantage</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXSQLADT</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class allows to open the proprietry ADT format with SQL Syntax using the Advantage driver</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Advantage</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXSQLCDX</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage.AXSQLCDX RDD </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Advantage</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXSQLNTX</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage.AXSQLNTX RDD </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Advantage</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:Advantage.AXSQLVFP</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage.AXSQLVFP RDD </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.AdsSQLServer</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>ADS Compatible DbServer class that received a Sql Select statement in its constructor</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AceError</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>List of possible Advantage Error codes</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AceTrigEvent</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>List of possible Trigger event codes</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AceTrigOptions</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>List of possible Trigger option codes</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AceTrigType</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>List of possible Trigger type codes</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AceValidate</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>List of possible Validation codes</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADD_FIELD_DESC</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_ACTIVITY_INFO</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_COMM_STATS</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_CONFIG_MEMORY</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_CONFIG_PARAMS</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_INDEX_INFO</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_INSTALL_INFO</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_RECORD_INFO</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_TABLE_INFO</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_THREAD_ACTIVITY</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_UPTIME_INFO</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_USAGE_INFO</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADS_MGMT_USER_INFO</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADSADT</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class allows to open the proprietry ADT format using the Advantage driver</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsCharacterColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing String Columns</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsCharTypes</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            List of possible character types and collations. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for Ads Column reading / writing </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsDateColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing Date Columns</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsError</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             The AdsRDD class.
-            </para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsFieldType</codeEntityReference></para></entry>
-<entry><para>List of possible field types.</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADSIndex</codeEntityReference></para></entry>
-<entry><para>Advantage Index support.</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsLogicColumn</codeEntityReference></para></entry>
-<entry><para>Class for reading / writing Logic Columns</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADSMemo</codeEntityReference></para></entry>
-<entry><para>Advantage Memo support.</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsMemoColumn</codeEntityReference></para></entry>
-<entry><para>Class for reading / writing Memo Columns. </para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsNumericColumn</codeEntityReference></para></entry>
-<entry><para>Class for reading / writing Numeric Columns</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADSRDD</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsFieldType</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>List of possible field types.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADSIndex</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage Index support.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsLogicColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing Logic Columns</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADSMemo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage Memo support.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsMemoColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing Memo Columns. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AdsNumericColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class for reading / writing Numeric Columns</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.ADSRDD</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             The base AdsRDD class from which all Advantage RDDs for X# inherit.
-            </para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXDBFCDX</codeEntityReference></para></entry>
-<entry><para>Advantage.AXDBFCDX RDD </para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXDBFNTX</codeEntityReference></para></entry>
-<entry><para>Advantage.AXDBFNTX RDD </para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXDBFVFP</codeEntityReference></para></entry>
-<entry><para>Advantage.AXDBFVFP RDD </para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXSQLADT</codeEntityReference></para></entry>
-<entry><para>This class allows to open the proprietry ADT format with SQL Syntax using the Advantage driver</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXSQLCDX</codeEntityReference></para></entry>
-<entry><para>Advantage.AXSQLCDX RDD </para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXSQLNTX</codeEntityReference></para></entry>
-<entry><para>Advantage.AXSQLNTX RDD </para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXSQLRDD</codeEntityReference></para></entry>
-<entry><para>Base class for all advantage SQL RDDs.</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXSQLVFP</codeEntityReference></para></entry>
-<entry><para>Advantage.AXSQLVFP RDD </para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.CallbackFn</codeEntityReference></para></entry>
-<entry><para>Delegate used by some advantage progress functions</para></entry></row>
-<row><entry><para>XSharp.ADS</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.CallbackFn101</codeEntityReference></para></entry>
-<entry><para>Delegate used by some advantage progress functions</para></entry></row>
-<row><entry><para>XSharp.VO.SDK</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.AdsSQLServer</codeEntityReference></para></entry>
-<entry><para>ADS Compatible DbServer class that received a Sql Select statement in its constructor</para></entry></row>
-</table>
-</content>
-     </section>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXDBFCDX</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage.AXDBFCDX RDD </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXDBFNTX</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage.AXDBFNTX RDD </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXDBFVFP</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage.AXDBFVFP RDD </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXSQLADT</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class allows to open the proprietry ADT format with SQL Syntax using the Advantage driver</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXSQLCDX</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage.AXSQLCDX RDD </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXSQLNTX</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage.AXSQLNTX RDD </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXSQLRDD</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Base class for all advantage SQL RDDs.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.AXSQLVFP</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Advantage.AXSQLVFP RDD </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.CallbackFn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Delegate used by some advantage progress functions</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.ADS</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ADS.CallbackFn101</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Delegate used by some advantage progress functions</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VO.SDK</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.AdsSQLServer</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>ADS Compatible DbServer class that received a Sql Select statement in its constructor</para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

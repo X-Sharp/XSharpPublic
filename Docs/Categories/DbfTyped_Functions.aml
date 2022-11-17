@@ -1,389 +1,1212 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:28 -->
 <topic id="cat-DbfTyped_Functions" revisionNumber="1" title="DbfTyped Functions">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>DbfTyped Functions</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbAlias(System.UInt32)</codeEntityReference></para></entry>
-<entry><para>
+      <title>DbfTyped Functions</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Assembly</para>
+              </entry>
+              <entry>
+                <para>Function</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbAlias(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the alias of a specified work area as a string.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbAliasSym(System.UInt32)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbAliasSym(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the alias of a specified work area as a symbol.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbAppend(System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbAppend(System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Add a new record.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbBlobInfo(System.UInt32,System.UInt32,XSharp.__Usual@)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbBof</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbBlobInfo(System.UInt32,System.UInt32,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbBof</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Determine when beginning-of-file is encountered.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbBuffRefresh</codeEntityReference></para></entry>
-<entry><para>Refresh the buffer for the current Workarea, discarding any changes that were made.</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbClearFilter</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbBuffRefresh</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Refresh the buffer for the current Workarea, discarding any changes that were made.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbClearFilter</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Clear a logical filter condition.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbClearLocate</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbClearLocate</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Clear a locate condition by deleting the locate code block.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbClearRelation</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbClearRelation</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Clear any active relations.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbClearScope</codeEntityReference></para></entry>
-<entry><para>Clear the active locate condition.</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbCloseAll</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbClearScope</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Clear the active locate condition.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbCloseAll</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Close all files in all work areas.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbCloseArea</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbCloseArea</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Close all files in a work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbCommit</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbCommit</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Flush pending updates in one work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbCommitAll</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbCommitAll</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Flush pending updates in all work areas.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbContinue</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbContinue</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Resume a pending locate condition.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbCreate(System.String,XSharp.__Array,System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbCreate(System.String,XSharp.__Array,System.String,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create new file through the specified RDDs
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbDelete</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbDelete</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Mark the current record for deletion.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbDeleted</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbDeleted</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the deleted status of the current record.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbEof</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbEof</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Determine when end-of-file is encountered.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbEval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbEval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Evaluate a code block for each record that matches a specified scope and/or condition.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFieldGet(System.UInt32,XSharp.__Usual@)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFieldGet(System.UInt32,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Retrieve the value of a specified database field.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFieldGetBytes(System.UInt32,System.Byte[]@)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFieldGetBytes(System.UInt32,System.Byte[]@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Retrieve the value of a specified database field.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFieldInfo(System.UInt32,System.UInt32,XSharp.__Usual@)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFieldInfo(System.UInt32,System.UInt32,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Retrieve field definition information about a field.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFieldPut(System.UInt32,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFieldPut(System.UInt32,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Set the value of a specified database field.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFieldPutBytes(System.UInt32,System.Byte[])</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFieldPutBytes(System.UInt32,System.Byte[])</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Set the value of a specified database field.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFileGet(System.UInt32,System.String)</codeEntityReference></para></entry>
-<entry><para>Import contents from file into Memo field </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFilePut(System.UInt32,System.String)</codeEntityReference></para></entry>
-<entry><para>Export field contents from Memo field to file</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFilter</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFileGet(System.UInt32,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Import contents from file into Memo field </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFilePut(System.UInt32,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Export field contents from Memo field to file</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFilter</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return a filter.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFlock</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFlock</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Lock an opened and shared database file.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFound</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbFound</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Determine if the previous search operation succeeded.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGetScope</codeEntityReference></para></entry>
-<entry><para>Gets the current locate condition.</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGetSelect</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGetScope</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Gets the current locate condition.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGetSelect</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the work area number.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGoBottom</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGoBottom</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Move to the last logical record.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGoto(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGoto(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Move to a record specified by record number.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGoTop</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbGoTop</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Move to the first logical record.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbInfo(System.UInt32,XSharp.__Usual@)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbInfo(System.UInt32,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Retrieve information about a work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbJoinAppend(System.UInt32,XSharp._JoinList)</codeEntityReference></para></entry>
-<entry><para>Write values to destination Workarea in a JOIN operation</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbLastRec</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbJoinAppend(System.UInt32,XSharp._JoinList)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Write values to destination Workarea in a JOIN operation</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbLastRec</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the number of the last record in a database file.
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbLocate(XSharp.__Usual,XSharp.__Usual,System.Int32,XSharp.__Usual,System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbLocate(XSharp.__Usual,XSharp.__Usual,System.Int32,XSharp.__Usual,System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Search for the first record that matches a specified condition and scope.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbMemoExt(System.String)</codeEntityReference></para></entry>
-<entry><para>Return Memo File extension</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdBagExt</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbMemoExt(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Return Memo File extension</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdBagExt</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the default index file extension for a work area as defined by the its RDD.
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdCondSet(XSharp.RDD.Support.DbOrderCondInfo)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdCondSet(XSharp.RDD.Support.DbOrderCondInfo)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Set the condition and scope for an order.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdCreate(System.String,XSharp.__Usual,System.String,XSharp.__Usual,System.Boolean,XSharp.RDD.Support.DbOrderCondInfo)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdCreate(System.String,XSharp.__Usual,System.String,XSharp.__Usual,System.Boolean,XSharp.RDD.Support.DbOrderCondInfo)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create or replace an order in an index file.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdDestroy(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdDestroy(System.String,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Remove an order from an open index file.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrderInfo(System.UInt32,System.String,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrderInfo(System.UInt32,System.String,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return information about index files and the orders in them.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListAdd(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListAdd(System.String,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Open an index file and add all its orders to the order list in a work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListClear(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListClear(System.String,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Remove orders from the order list in a work area and close associated index files.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListRebuild</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListRebuild</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Rebuild all orders in the order list of a work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdSetFocus(System.String,XSharp.__Usual,System.String@)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdSetFocus(System.String,XSharp.__Usual,System.String@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Set the controlling order for a work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbPack</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbPack</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Remove all records that have been marked for deletion from a database file.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRddCount(System.UInt32)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRddInfo(System.UInt32,XSharp.__Usual@)</codeEntityReference></para></entry>
-<entry><para>Return and optionally change settings controlled directly by the RDD.</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRddList(XSharp._RddList,System.UInt32)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRddName</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRddCount(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRddInfo(System.UInt32,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Return and optionally change settings controlled directly by the RDD.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRddList</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRddName</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return an RDD name.
-            </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRddSetDefault(System.String)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRddSetDefault(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return and optionally change the default RDD for the application.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRecall</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRecall</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Restore the current record if it is marked for deletion.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRecno</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRecno</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the current record number.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRecordGet</codeEntityReference></para></entry>
-<entry><para>Get the contents of the current record as an array of bytes</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRecordInfo(System.UInt32,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRecordGet</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get the contents of the current record as an array of bytes</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRecordInfo(System.UInt32,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Retrieve information about a record.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRecordPut(System.Byte[])</codeEntityReference></para></entry>
-<entry><para>Update the current record from an array of bytes</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRelation(System.UInt32,System.String@)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRecordPut(System.Byte[])</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Update the current record from an array of bytes</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRelation(System.UInt32,System.String@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the linking expression of a specified relation.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRlock(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRlock(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Lock the current record.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRSelect(System.UInt32)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbRSelect(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return the work area number of a relation.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSeek(XSharp.__Usual,System.Boolean,System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSeek(XSharp.__Usual,System.Boolean,System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Move to the record having the specified key value.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSelect(System.UInt32,XSharp.__Usual@)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSelect(System.UInt32,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Select a new work area and retrieve the current work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetFilter(XSharp.__Usual,System.String)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetFilter(XSharp.__Usual,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Set a filter condition.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetFound(System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetFound(System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Set the found flag.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetLocate(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetLocate(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Specify the code block for a locate condition.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetRelation(System.String,XSharp.__Usual,System.String,System.String)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetRelation(System.String,XSharp.__Usual,System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Relate a specified work area to the current work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetScope(XSharp.RDD.Support.DbScopeInfo)</codeEntityReference></para></entry>
-<entry><para>Set the locate condition.</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetSelect(System.Int32)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetScope(XSharp.RDD.Support.DbScopeInfo)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Set the locate condition.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSetSelect(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Select a new work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSkip(System.Int32)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSkip(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Move the record pointer relative to the current record.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSkipScope(System.Int32,XSharp.RDD.Support.DbScopeInfo)</codeEntityReference></para></entry>
-<entry><para>Position the cursor relative to its current position within the current scope.</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSort(System.UInt32,XSharp._FieldNames,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,System.Boolean,XSharp._FieldNames)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSkipScope(System.Int32,XSharp.RDD.Support.DbScopeInfo)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Position the cursor relative to its current position within the current scope.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSort(System.UInt32,XSharp._FieldNames,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,System.Boolean,XSharp._FieldNames)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Copy records to a database file in sorted order.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSymSelect(XSharp.__Symbol)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbSymSelect(XSharp.__Symbol)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Select a new work area by specifying its alias as a symbol and return the number of the current work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbTrans(System.UInt32,XSharp._FieldNames,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbTrans(System.UInt32,XSharp._FieldNames,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Transfer records to an open database file.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbTransRec(System.UInt32,XSharp._FieldNames)</codeEntityReference></para></entry>
-<entry><para>Copy a single row from one work area to another.</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUnlock(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbTransRec(System.UInt32,XSharp._FieldNames)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Copy a single row from one work area to another.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUnlock(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Release all locks for a work area.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUnLockAll</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUnLockAll</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Release all locks for all work areas.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUseArea(System.Boolean,XSharp._RddList,System.String,System.String,System.Boolean,System.Boolean)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbUseArea(System.Boolean,XSharp._RddList,System.String,System.String,System.Boolean,System.Boolean)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Open a database file.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbZap</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbZap</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Remove all records from open files.
-        </para></entry></row>
-</table>
-</content>
-     </section>
+        </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

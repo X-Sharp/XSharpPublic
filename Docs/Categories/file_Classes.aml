@@ -1,31 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
 <topic id="cat-File_Classes" revisionNumber="1" title="File Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>File Classes</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Namespace</para></entry>
-<entry><para>Class</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.FileSearcher</codeEntityReference></para></entry>
-<entry><para>This delegate is used when you want to implement your own function for the logic behind the File() function. You can register your own FileSearcher by calling the RegisterFileSearch() function.</para></entry></row>
-<row><entry><para>XSharp</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.FileStreamExensions</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.IO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IO.XsBufferedFileStream</codeEntityReference></para></entry>
-<entry><para>This class performs buffered IO to files opened exclusively</para></entry></row>
-<row><entry><para>XSharp.IO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IO.XsFileStream</codeEntityReference></para></entry>
-<entry><para>Special Filestream class that sets the runtime IO Errorstate when an error occurs. </para></entry></row>
-<row><entry><para>XSharp.IO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IO.XsWin32FileStream</codeEntityReference></para></entry>
-<entry><para>This class is used for Shared diskaccess on Windows. </para></entry></row>
-</table>
-</content>
-     </section>
+      <title>File Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.FileSearcher</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This delegate is used when you want to implement your own function for the logic behind the File() function. You can register your own FileSearcher by calling the RegisterFileSearch() function.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.FileStreamExensions</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.IO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IO.XsBufferedFileStream</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class performs buffered IO to files opened exclusively</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.IO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IO.XsFileStream</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Special Filestream class that sets the runtime IO Errorstate when an error occurs. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.IO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IO.XsWin32FileStream</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class is used for Shared diskaccess on Windows. </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

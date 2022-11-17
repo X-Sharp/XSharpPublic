@@ -1,39 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:28 -->
 <topic id="cat-Dbc_Functions" revisionNumber="1" title="Dbc Functions">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>Dbc Functions</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ADBObjects(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>-- todo --</para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dbc</codeEntityReference></para></entry>
-<entry><para>
+      <title>Dbc Functions</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Assembly</para>
+              </entry>
+              <entry>
+                <para>Function</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ADBObjects(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Dbc</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Returns the name and path of the current database.
-        </para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbGetProp(System.String,System.String,System.String)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbGetProp(System.String,System.String,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Retrieves the value of a property for the current database or for fields, named connections, tables, or views in the current database.
                 You must open the database before you can retrieve its properties or those of its connections, tables, views, or fields.
                 However, you do not need to open a table or view before retrieving its properties.
-            </para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbSetProp(System.String,System.String,System.String,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbSetProp(System.String,System.String,System.String,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Sets a property for the current database or for fields, named connections, tables, or views in the current database.
-        </para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.InDbc(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>-- todo --</para></entry></row>
-</table>
-</content>
-     </section>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.InDbc(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

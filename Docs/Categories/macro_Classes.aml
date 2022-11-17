@@ -1,31 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
 <topic id="cat-Macro_Classes" revisionNumber="1" title="Macro Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>Macro Classes</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Namespace</para></entry>
-<entry><para>Class</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IMacroCompiler</codeEntityReference></para></entry>
-<entry><para>
+      <title>Macro Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IMacroCompiler</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This interface defines the Macro compiler subsystem
-            </para></entry></row>
-<row><entry><para>XSharp</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IMacroCompiler2</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.IMacroCompiler2</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This interface extends the Macro compiler and adds a method that is called to decide between ambigous methods or constructors
-            </para></entry></row>
-<row><entry><para>XSharp</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.MacroCompilerResolveAmbiguousMatch</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.MacroCompilerIncludeAssemblyInCache</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+            This delegate is used to decide if an assembly should be included in the type cache
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.MacroCompilerResolveAmbiguousMatch</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This delegate is used to decide between 2 ambigous methods, functions or constructors
-            </para></entry></row>
-</table>
-</content>
-     </section>
+            </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

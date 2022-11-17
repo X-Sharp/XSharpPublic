@@ -1,78 +1,198 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
 <topic id="cat-Attributes_Classes" revisionNumber="1" title="Attributes Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>Attributes Classes</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Namespace</para></entry>
-<entry><para>Class</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ImplicitNamespaceAttribute</codeEntityReference></para></entry>
-<entry><para>
+      <title>Attributes Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ImplicitNamespaceAttribute</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This class is used to tell the compiler that the assembly has types in a specific namespace.
             When the compiler is called with the /ins command line option, then the names specified with this attribute
             will be automatically included in the USING list when compiling.
-            </para></entry></row>
-<row><entry><para>XSharp.Internal</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.ActualTypeAttribute</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Internal</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.ActualTypeAttribute</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This class is used to mark IntPtr _DLL arguments with the actual type
-            </para></entry></row>
-<row><entry><para>XSharp.Internal</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.AllowLateBindingAttribute</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Internal</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.AllowLateBindingAttribute</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This class is used to mark type that allow LateBound calls without the need of the /lb compiler option
-            </para></entry></row>
-<row><entry><para>XSharp.Internal</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.ClassLibraryAttribute</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Internal</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.ClassLibraryAttribute</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This class exposes the namespace and globalclass in an assembly
-            </para></entry></row>
-<row><entry><para>XSharp.Internal</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.ClipperCallingConventionAttribute</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Internal</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.ClipperCallingConventionAttribute</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This class documents the parameter names for methods and functions
             with Clipper calling convention
-            </para></entry></row>
-<row><entry><para>XSharp.Internal</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.CompilerVersionAttribute</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Internal</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.CompilerVersionAttribute</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This class records the compiler version used to build an assembly
-            </para></entry></row>
-<row><entry><para>XSharp.Internal</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.DefaultParameterValueAttribute</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Internal</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.DefaultParameterValueAttribute</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             this class is used to mark default parameter values in the middle of a parameter list.
-            </para></entry></row>
-<row><entry><para>XSharp.Internal</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.IsInstanceAttribute</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Internal</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.IsInstanceAttribute</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This class is used to describe fields that have been declared with the INSTANCE modifier
-            </para></entry></row>
-<row><entry><para>XSharp.Internal</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.NeedsAccessToLocalsAttribute</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Internal</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.NeedsAccessToLocalsAttribute</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This class is used to mark methods, properties etc. that want access to Local Variables by name.
-            </para></entry></row>
-<row><entry><para>XSharp.Internal</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.TypesChangedAttribute</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Internal</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.TypesChangedAttribute</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This class is used to mark a class and indicate that the property types and or parameter types in this class were changed.
             When the compiler detects that a subclass does not have the right parameter or property types then the subclass will be automatically
             adjusted to preserved the types from the parent class.
-            </para></entry></row>
-<row><entry><para>XSharp.Internal</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.VoStructAttribute</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Internal</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Internal.VoStructAttribute</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This class is used to describe VOSTRUCT and UNION structures which have a different semantics
             AS actually means Struct PTR. IS means Struct
             Please note that the size assumes x86 (32 bits) OS.
-            </para></entry></row>
-</table>
-</content>
-     </section>
+            </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

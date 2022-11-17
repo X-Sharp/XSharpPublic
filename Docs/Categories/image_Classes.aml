@@ -1,36 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
 <topic id="cat-Image_Classes" revisionNumber="1" title="Image Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>Image Classes</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Namespace</para></entry>
-<entry><para>Class</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FixedBitmap</codeEntityReference></para></entry>
-<entry><para>
+      <title>Image Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FixedBitmap</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a FixedBitmap object. Unlike the bitmaps created by the Bitmap class, fixed bitmaps are static—they do not need to be redisplayed every time an ExposeEvent occurs. FixedBitmap objects can be created dynamically or from a resource entity.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FixedIcon</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FixedIcon</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a FixedIcon object. Unlike the icons created by the Icon class, fixed icons are static—they do not need to be redisplayed every time an ExposeEvent occurs. FixedIcon objects can be created dynamically or from a resource entity.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FixedImage</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FixedImage</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Provide the base class from which FixedBitmap and FixedIcon are subclassed.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MultiMediaContainer</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MultiMediaContainer</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Implement a container window for displaying multimedia data.
-        </para></entry></row>
-</table>
-</content>
-     </section>
+        </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

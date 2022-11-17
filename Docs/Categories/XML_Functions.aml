@@ -1,73 +1,274 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:28 -->
 <topic id="cat-XML_Functions" revisionNumber="1" title="XML Functions">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>XML Functions</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocClearErrors</codeEntityReference></para></entry>
-<entry><para>Clear all global XML Errors.</para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocClose(System.Int64)</codeEntityReference></para></entry>
-<entry><para>Close an XML document. </para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocCloseAll</codeEntityReference></para></entry>
-<entry><para>Close all open XML documents.</para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XmlDocExplainErrorMessage(System.Int32)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocGetErrorList(System.Int64,System.Int64)</codeEntityReference></para></entry>
-<entry><para>Get array of error descriptions. </para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocGetRootTag(System.Int64)</codeEntityReference></para></entry>
-<entry><para>Get the root tag of an XML document. </para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocOpenFile(System.String)</codeEntityReference></para></entry>
-<entry><para>Open an XML document. </para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocOpenString(System.String,XSharp.__Usual@)</codeEntityReference></para></entry>
-<entry><para>Create XML document from a string. </para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocProcess(System.Int64)</codeEntityReference></para></entry>
-<entry><para>Execute action code blocks for all tags. </para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocResetAction(System.Int64)</codeEntityReference></para></entry>
-<entry><para>Releases the action code blocks defined with XMLDocSetAction(). </para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocSetAction(System.Int64,System.String,XSharp.Codeblock)</codeEntityReference></para></entry>
-<entry><para>Set action code blocks for specific tags.</para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetAttribute(System.Int64,System.String)</codeEntityReference></para></entry>
-<entry><para>Get attribute value of an XML tag. </para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetChild(System.Int64,System.String)</codeEntityReference></para></entry>
-<entry><para>Get child of XML tag. </para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetChildren(System.Int64,System.String)</codeEntityReference></para></entry>
-<entry><para>Get array of children of an XML tag. </para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetParent(System.Int64)</codeEntityReference></para></entry>
-<entry><para>Get parent of XML tag.</para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetTag(System.Int64,XSharp.__Usual@)</codeEntityReference></para></entry>
-<entry><para>Get members of an XML tag node. </para></entry></row>
-<row><entry><para>XSharp.XPP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLSelectNodes(System.Int64,System.String,XSharp.__Usual@)</codeEntityReference></para></entry>
-<entry><para>Select specific nodes via xpath. </para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.XmlToCursor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>-- todo --</para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.XmlUpdatefram(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>-- todo --</para></entry></row>
-</table>
-</content>
-     </section>
+      <title>XML Functions</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Assembly</para>
+              </entry>
+              <entry>
+                <para>Function</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocClearErrors</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Clear all global XML Errors.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocClose(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Close an XML document. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocCloseAll</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Close all open XML documents.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XmlDocExplainErrorMessage(System.Int32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocGetErrorList(System.Int64,System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get array of error descriptions. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocGetRootTag(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get the root tag of an XML document. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocOpenFile(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Open an XML document. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocOpenString(System.String,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Create XML document from a string. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocProcess(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Execute action code blocks for all tags. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocResetAction(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Releases the action code blocks defined with XMLDocSetAction(). </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLDocSetAction(System.Int64,System.String,XSharp.Codeblock)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Set action code blocks for specific tags.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetAttribute(System.Int64,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get attribute value of an XML tag. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetChild(System.Int64,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get child of XML tag. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetChildren(System.Int64,System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get array of children of an XML tag. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetParent(System.Int64)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get parent of XML tag.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLGetTag(System.Int64,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get members of an XML tag node. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.XPP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.XMLSelectNodes(System.Int64,System.String,XSharp.__Usual@)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Select specific nodes via xpath. </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.XmlToCursor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VFP</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.XmlUpdatefram(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>-- todo --</para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

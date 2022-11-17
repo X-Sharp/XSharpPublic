@@ -95,3 +95,23 @@ FUNCTION TypeString( nType AS DWORD ) AS STRING
       ret := "UNKNOWN"
    END SWITCH
    RETURN ret
+
+
+FUNCTION __ErrString(resid AS DWORD , args PARAMS OBJECT[]) AS STRING
+    // Strings are stored in a Managed resource with a name
+    // the name matches the enum names
+    // convert the id to the enum and get its name
+    LOCAL strId  AS STRING
+    LOCAL strMessage AS STRING
+    strId := Enum.GetName( TYPEOF(VOErrors) , resid)
+    IF !String.IsNullOrEmpty(strId)
+        strMessage := XSharp.Messages.GetString( strId )
+        IF String.IsNullOrEmpty( strMessage )
+            strMessage := ": canot load string resource '" + strId + "'"
+        ELSEIF args != null .and. args:Length > 0
+            strMessage := String.Format(strMessage, args)
+        ENDIF
+    ELSE
+        strMessage := "Cannot find string for error number "+resid:ToString()
+    ENDIF
+    RETURN strMessage

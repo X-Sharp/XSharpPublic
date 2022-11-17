@@ -53,12 +53,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             locked := FALSE
             TRY
+                local done := FALSE AS LOGIC
                 IF SELF:HasBottomScope
                     IF SELF:_scopeEmpty .AND. ! SELF:Shared
                         RETURN TRUE
                     ENDIF
                     result := SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPEBOTTOM)
-                ELSE
+                    done := ! self:_oRdd:EoF
+                ENDIF
+                IF ! done
                     SELF:_oRdd:GoCold()
                     SELF:_oRdd:Top := FALSE
                     SELF:_oRdd:Bottom := TRUE
@@ -359,8 +362,26 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             END TRY
             RETURN result
-
-
+        PUBLIC METHOD SkipUnique(nDir as LONG) AS LONG
+            local moveDirection as SkipDirection
+            if nDir >= 0
+                moveDirection := SkipDirection.Forward
+            else
+                moveDirection := SkipDirection.Backward
+            endif
+            local currentKey as byte[]
+            currentKey := (byte[]) self:_currentvalue:Key:Clone()
+            do while true
+                IF SELF:_getNextKey(moveDirection) == 0
+                   SELF:_oRdd:_SetEOF(true)
+                   exit
+                endif
+                IF SELF:__Compare(currentKey, self:_currentvalue:Key, currentKey:Length,0, 0) != 0
+                    SELF:_GoToRecno( SELF:_currentvalue:Recno)
+                    EXIT
+                ENDIF
+            enddo
+            RETURN SELF:_oRdd:RecNo
         PRIVATE METHOD _getNextKey(moveDirection AS SkipDirection ) AS LONG
             LOCAL page  AS CdxTreePage
             LOCAL node  AS CdxPageNode
@@ -621,6 +642,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             IF mustSeek
+                SELF:_oRdd:_SetBOF(FALSE)
                 SELF:_oRdd:_SetEOF(FALSE)
                 seekInfo:Value      := obj
                 seekInfo:SoftSeek   := TRUE
@@ -725,6 +747,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:ClearStack()
                 RETURN 0
             ENDIF
+            SELF:_oRdd:_SetBOF(false)
+            SELF:_oRdd:_SetEOF(false)
             SELF:PushPage(page, 0)
             IF page IS CdxBranchPage VAR branchPage
                 LOCAL nChildPage AS LONG
@@ -772,6 +796,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:ClearStack()
                 RETURN 0
             ENDIF
+            SELF:_oRdd:_SetBOF(false)
+            SELF:_oRdd:_SetEOF(false)
             SELF:PushPage(page, (WORD) (page:NumKeys-1))
             IF page IS CdxBranchPage VAR branchPage
                 LOCAL nChildPage AS LONG

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -79,7 +79,7 @@ BEGIN NAMESPACE XSharp.ADS
 
         VIRTUAL METHOD PutValue(oValue AS OBJECT) AS LOGIC
             RETURN FALSE
-            
+
         PROTECTED METHOD PutNull() AS LOGIC
             SELF:RDD:ADSERROR(ACE.AdsSetEmpty(SELF:_Table, SELF:FieldPos),EG_WRITE)
             RETURN TRUE
@@ -144,7 +144,7 @@ BEGIN NAMESPACE XSharp.ADS
                 slength  := (DWORD) strValue:Length
                 result := ACE.AdsSetField(SELF:_Table, SELF:FieldPos, strValue, slength)
             OTHERWISE
-                // Should never happen. We filter on the type when creating the column object                
+                // Should never happen. We filter on the type when creating the column object
                 SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
             END SWITCH
             IF result != 0 .AND. result != ACE.AE_DATA_TRUNCATED
@@ -154,7 +154,7 @@ BEGIN NAMESPACE XSharp.ADS
 
 
         OVERRIDE METHOD Validate() AS LOGIC
-            IF SELF:Length == 0  .OR. SELF:Decimals > 0  .OR. SELF:Length > System.UInt16.MaxValue 
+            IF SELF:Length == 0  .OR. SELF:Decimals > 0  .OR. SELF:Length > System.UInt16.MaxValue
                 RETURN FALSE
             ENDIF
             RETURN TRUE
@@ -195,12 +195,12 @@ BEGIN NAMESPACE XSharp.ADS
             SWITCH result
             CASE 0
                 IF SELF:AdsType == AdsFieldType.NCHAR .OR. SELF:AdsType == AdsFieldType.NVARCHAR
-                    RETURN STRING{chars, 0, (INT) SELF:Length}
+                    RETURN STRING{chars, 0, SELF:Length}
                 ELSE
-                    RETURN SELF:RDD:_Ansi2Unicode(chars, (INT) SELF:Length)
+                    RETURN SELF:RDD:_Ansi2Unicode(chars, SELF:Length)
                 ENDIF
             CASE ACE.AE_NO_CURRENT_RECORD
-                RETURN STRING{' ', (INT) SELF:Length}
+                RETURN STRING{' ', SELF:Length}
             OTHERWISE
                 SELF:RDD:_CheckError(result,EG_READ)
             END SWITCH
@@ -230,7 +230,7 @@ BEGIN NAMESPACE XSharp.ADS
                     // this seems to always do the job
                     LOCAL wLength := ACE.ADS_MAX_DATEMASK+1 AS WORD
                     LOCAL chars := CHAR[] {SELF:Length+1} as CHAR[]
-                    result := ACEUNPUB.AdsConvertJulianToString(lJulian, chars, ref wLength) 
+                    result := ACEUNPUB.AdsConvertJulianToString(lJulian, chars, ref wLength)
                     IF result != 0
                         RETURN DbDate{0,0,0}
                     ELSE
@@ -238,7 +238,7 @@ BEGIN NAMESPACE XSharp.ADS
                         local year, month, day as int
                         if Int32.TryParse(cDate:Substring(0,4), out year) .and. ;
                             Int32.TryParse(cDate:Substring(4,2), out month) .and. ;
-                            Int32.TryParse(cDate:Substring(6,2), out day) 
+                            Int32.TryParse(cDate:Substring(6,2), out day)
                             RETURN DbDate{year, month, day}
                         else
                             RETURN DbDate{0,0,0}
@@ -246,7 +246,7 @@ BEGIN NAMESPACE XSharp.ADS
                     ENDIF
                 ENDIF
             CATCH
-            
+
             END TRY
             RETURN DbDate{0,0,0}
 
@@ -279,12 +279,12 @@ BEGIN NAMESPACE XSharp.ADS
                 LOCAL r8Julian AS REAL8
                 SELF:RDD:_CheckError(ACEUNPUB.AdsConvertStringToJulian(text, (WORD) text:Length, OUT r8Julian),EG_WRITE)
                 SELF:RDD:_CheckError(ACE.AdsSetJulian(SELF:_Table, SELF:FieldPos, (LONG) r8Julian),EG_WRITE)
-            ENDIF            
+            ENDIF
             RETURN TRUE
 
 
         OVERRIDE METHOD Validate() AS LOGIC
-            RETURN SELF:Length == 8  .AND.  SELF:Decimals == 0 
+            RETURN SELF:Length == 8  .AND.  SELF:Decimals == 0
 
 
     END CLASS
@@ -318,7 +318,7 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN TRUE
 
        OVERRIDE METHOD Validate() AS LOGIC
-            RETURN SELF:Length == 1  .AND.  SELF:Decimals == 0 
+            RETURN SELF:Length == 1  .AND.  SELF:Decimals == 0
     END CLASS
 
     /// <summary>Class for reading / writing Numeric Columns</summary>
@@ -350,7 +350,7 @@ BEGIN NAMESPACE XSharp.ADS
                     RETURN DbFloat{r8, SELF:Length, SELF:Decimals}
                 ENDIF
             CASE AdsFieldType.INT64
-                LOCAL i64 AS INT64        
+                LOCAL i64 AS INT64
                 result := ACE.AdsGetLongLong(SELF:_Table, SELF:FieldPos, OUT i64)
                 RETURN i64
             OTHERWISE
@@ -378,7 +378,7 @@ BEGIN NAMESPACE XSharp.ADS
                     LOCAL r8 AS REAL8
                     r8 := Convert.ToDouble(oValue)
                     SELF:RDD:_CheckError(ACE.AdsSetDouble(SELF:_Table, SELF:FieldPos, r8),EG_WRITE)
-                ENDIF        
+                ENDIF
             CATCH
                 SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Numeric value expected")
                 RETURN FALSE
@@ -389,10 +389,10 @@ BEGIN NAMESPACE XSharp.ADS
         RETURN TRUE
 
        OVERRIDE METHOD Validate() AS LOGIC
-           IF SELF:Length >= 1  .AND.  SELF:Length <= 255 
-                IF SELF:Decimals > 0 
+           IF SELF:Length >= 1  .AND.  SELF:Length <= 255
+                IF SELF:Decimals > 0
                     // We must check that we have enough space for DOT and decimal
-                    IF SELF:Length <= 2  .OR.  SELF:Decimals >= SELF:Length -1 
+                    IF SELF:Length <= 2  .OR.  SELF:Decimals >= SELF:Length -1
                         RETURN FALSE
                     ENDIF
                 ENDIF
@@ -412,12 +412,10 @@ BEGIN NAMESPACE XSharp.ADS
         // AdsFieldType.IMAGE
         // AdsFieldType.RAW
         // AdsFieldType.VARBINARY_FOX
-        
 
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.ADSRDD, type as AdsFieldType,nPos AS DWORD)
             SUPER(oInfo,oRDD,type,nPos)
             RETURN
-
 
         OVERRIDE METHOD GetValue() AS OBJECT
             LOCAL isEmpty   := 0 AS WORD
@@ -468,7 +466,7 @@ BEGIN NAMESPACE XSharp.ADS
                     SELF:RDD:_CheckError(ACE.AdsGetBinary(SELF:_Table, SELF:FieldPos, 0, bytes, REF mlength ),EG_READ)
                     RETURN bytes
                 END SWITCH
-            
+
             CASE AdsFieldType.RAW
             CASE AdsFieldType.VARBINARY_FOX
                 result := ACE.AdsIsEmpty(SELF:_Table, SELF:FieldPos, OUT isEmpty)
@@ -480,7 +478,7 @@ BEGIN NAMESPACE XSharp.ADS
                     SELF:RDD:_CheckError(result,EG_READ)
                 ENDIF
                 mlength := (DWORD) SELF:Length
-                bytes := BYTE[] {mlength}
+                bytes := BYTE[] {SELF:Length}
                 SELF:RDD:_CheckError(ACE.AdsGetBinary(SELF:_Table, SELF:FieldPos, 0, bytes, REF mlength ),EG_READ)
                 RETURN bytes
             OTHERWISE
@@ -488,7 +486,6 @@ BEGIN NAMESPACE XSharp.ADS
                 SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
             END SWITCH
             RETURN NULL
-
 
         OVERRIDE METHOD PutValue(oValue AS OBJECT) AS LOGIC
             IF oValue == NULL
@@ -509,7 +506,7 @@ BEGIN NAMESPACE XSharp.ADS
                 IF slength == 0
                     result := ACE.AdsSetEmpty(SELF:_Table, SELF:FieldPos)
                 ELSE
-                    IF SELF:AdsType == AdsFieldType.NMEMO 
+                    IF SELF:AdsType == AdsFieldType.NMEMO
                         result := ACE.AdsSetStringW(SELF:_Table, SELF:FieldPos, strValue, slength)
                     ELSE
                         result := ACE.AdsSetString(SELF:_Table, SELF:FieldPos, strValue, slength)
@@ -545,16 +542,14 @@ BEGIN NAMESPACE XSharp.ADS
             ENDIF
             RETURN TRUE
 
-
        OVERRIDE METHOD Validate() AS LOGIC
-            RETURN SELF:Length == 10 .AND.  SELF:Decimals == 0 
-
+            RETURN SELF:Length == 10 .AND.  SELF:Decimals == 0
 
     END CLASS
 
 
 
-     
+
 
 
 END NAMESPACE

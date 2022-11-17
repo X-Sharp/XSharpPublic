@@ -13,7 +13,7 @@
     <Unsafe>true</Unsafe>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.13.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />

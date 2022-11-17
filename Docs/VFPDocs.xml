@@ -3670,10 +3670,10 @@
                 <item>
                     <term>Connection</term>
                     <description>cName is a named connection in the current database.</description>
-                    <item>
-                        <term>Database</term>
-                        <description>cName is the current database</description>
-                    </item>
+                </item>
+                <item>
+                    <term>Database</term>
+                    <description>cName is the current database</description>
                 </item>
                 <item>
                     <term>Field</term>

@@ -2,6 +2,372 @@
 <doc>
     <members>
     </members>
+    <EditConstants>
+        <span>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Windows API Constan</description>
+                </listheader>
+                <item>
+                    <term>
+                        EDITAUTOHSCROLL
+                    </term>
+                    <description>ES_AUTOHSCROLL</description>
+                </item>
+                <item>
+                    <term>
+                        EDITAUTOVSCROLL
+                    </term>
+                    <description>ES_AUTOVSCROLL</description>
+                </item>
+                <item>
+                    <term>
+                        EDITBORDERED
+                    </term>
+                    <description>WS_BORDER</description>
+                </item>
+                <item>
+                    <term>
+                        EDITCENTER
+                    </term>
+                    <description>ES_CENTER</description>
+                </item>
+                <item>
+                    <term>
+                        EDITLEFT
+                    </term>
+                    <description>ES_LEFT</description>
+                </item>
+                <item>
+                    <term>
+                        EDITLOWERCASE
+                    </term>
+                    <description>ES_LOWERCASE</description>
+                </item>
+                <item>
+                    <term>
+                        EDITMULTILINE
+                    </term>
+                    <description>ES_MULTILINE</description>
+                </item>
+                <item>
+                    <term>
+                        EDITNOHIDESEL
+                    </term>
+                    <description>ES_NOHIDESEL</description>
+                </item>
+                <item>
+                    <term>
+                        EDITOEMCONVERT
+                    </term>
+                    <description>ES_OEMCONVERT</description>
+                </item>
+                <item>
+                    <term>
+                        EDITPASSWORD
+                    </term>
+                    <description>ES_PASSWORD</description>
+                </item>
+                <item>
+                    <term>
+                        EDITREADONLY
+                    </term>
+                    <description>ES_READONLY</description>
+                </item>
+                <item>
+                    <term>
+                        EDITRIGHT
+                    </term>
+                    <description>ES_RIGHT</description>
+                </item>
+                <item>
+                    <term>
+                        EDITUPPERCASE
+                    </term>
+                    <description>ES_UPPERCASE</description>
+                </item>
+                <item>
+                    <term>
+                        EDITWANTRETURN
+                    </term>
+                    <description>ES_WANTRETURN</description>
+                </item>
+            </list>
+        </span>
+    </EditConstants>
+    <Alignment>
+        <span>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>GBAALIGNCENTER</term>
+                    <description>Center aligned</description>
+                </item>
+                <item>
+                    <term>GBAALIGNLEFT</term>
+                    <description>
+                        Left aligned (This is the <b>default</b> for text.)
+                    </description>
+                </item>
+                <item>
+                    <term>GBAALIGNRIGHT</term>
+                    <description>
+                        Right aligned  (This is the <b>default</b> for numeric data.)
+                    </description>
+                </item>
+            </list>
+        </span>
+    </Alignment>
+    <BrowseStyle>
+        <span>
+
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>GBSCONTROL2D</term>
+                    <description>No sculpting, text on a flat rectangle.</description>
+                </item>
+                <item>
+                    <term>GBSCONTROL3D</term>
+                    <description>Sculpted three-dimensional buttons.</description>
+                </item>
+                <item>
+                    <term>GBSEDIT</term>
+                    <description>Make browser "editable" (turn off read-only style).</description>
+                </item>
+                <item>
+                    <term>GBSREADONLY</term>
+                    <description>Make browser read-only (text cannot be changed).</description>
+                </item>
+            </list>
+
+        </span>
+    </BrowseStyle>
+    <SplitBar>
+        <span>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>GBSSBLEFT</term>
+                    <description>Places the splitbar at the left-edge of the browser.</description>
+                </item>
+                <item>
+                    <term>GBSSBMIDDLE</term>
+                    <description>Places the splitbar in the middle of the browser.</description>
+                </item>
+                <item>
+                    <term>GBSSBRIGHT</term>
+                    <description>Places the splitbar at the right-edge of the browser.</description>
+                </item>
+            </list>
+        </span>
+    </SplitBar>
+    <Where>
+        <span>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>GBLCOLCAPTION</term>
+                    <description>The column caption area.</description>
+                </item>
+                <item>
+                    <term>GBLHITEXT</term>
+                    <description>Highlighted (selected) text in the data area.</description>
+                </item>
+                <item>
+                    <term>GBLTEXT</term>
+                    <description>Text in the data display area. This is the default.</description>
+                </item>
+            </list>
+        </span>
+    </Where>
+    <Colors>
+        <span>
+
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Color</description>
+                </listheader>
+                <item>
+                    <term>COLORBLACK</term>
+                    <description>Black</description>
+                </item>
+                <item>
+                    <term>COLORBLUE</term>
+                    <description>Blue</description>
+                </item>
+                <item>
+                    <term>COLORCYAN</term>
+                    <description>Cyan</description>
+                </item>
+                <item>
+                    <term>COLORGREEN</term>
+                    <description>Green</description>
+                </item>
+                <item>
+                    <term>COLORMAGENTA</term>
+                    <description>Magenta</description>
+                </item>
+                <item>
+                    <term>COLORRED</term>
+                    <description>Red</description>
+                </item>
+                <item>
+                    <term>COLORWHITE</term>
+                    <description>White</description>
+                </item>
+                <item>
+                    <term>COLORYELLOW</term>
+                    <description>Yellow</description>
+                </item>
+            </list>
+        </span>
+    </Colors>
+    <LBStyles>
+        <span>
+            Possible style values are:
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Windows API Constant</description>
+                </listheader>
+                <item>
+                    <term>LBOXDISABLENOSCROLL</term>
+                    <description>LBS_DISABLENOSCROLL</description>
+                </item>
+                <item>
+                    <term>LBOXEXTENDEDSEL</term>
+                    <description>LBS_EXTENDEDSEL</description>
+                </item>
+                <item>
+                    <term>LBOXHASSTRINGS</term>
+                    <description>LBS_HASSTRINGS</description>
+                </item>
+                <item>
+                    <term>LBOXMULTICOLUMN</term>
+                    <description>LBS_MULTICOLUMN</description>
+                </item>
+                <item>
+                    <term>LBOXMULTIPLESEL</term>
+                    <description>LBS_MULTIPLESEL</description>
+                </item>
+                <item>
+                    <term>LBOXNOINTEGRALHEIGHT</term>
+                    <description>LBS_NOINTEGRALHEIGHT</description>
+                </item>
+                <item>
+                    <term>LBOXNOREDRAW</term>
+                    <description>LBS_NOREDRAW</description>
+                </item>
+                <item>
+                    <term>LBOXNOTIFY</term>
+                    <description>LBS_NOTIFY</description>
+                </item>
+                <item>
+                    <term>LBOXOWNERDRAWFIXED</term>
+                    <description>LBS_OWNERDRAWFIXED</description>
+                </item>
+                <item>
+                    <term>LBOXOWNERDRAWVARIABLE</term>
+                    <description>LBS_OWNERDRAWVARIABLE</description>
+                </item>
+                <item>
+                    <term>LBOXSORT</term>
+                    <description>LBS_SORT</description>
+                </item>
+                <item>
+                    <term>LBOXSTANDARD</term>
+                    <description>
+                        LBS_STANDARD
+                    </description>
+                </item>
+                <item>
+                    <term>LBOXUSETABSTOPS</term>
+                    <description>LBS_USETABSTOPS</description>
+                </item>
+                <item>
+                    <term>LBOXWANTKEYBOARDINPUT</term>
+                    <description>LBS_WANTKEYBOARDINPUT</description>
+                </item>
+            </list>
+        </span>
+    </LBStyles>
+    <CBStyles>
+        <span>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                </listheader>
+                <item>
+                    <term>CBS_AUTOHSCROLL</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>CBS_DISABLENOSCROLL</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>CBS_DROPDOWN</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>CBS_DROPDOWNLIST</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>CBS_HASSTRINGS</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>CBS_LOWERCASE</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>CBS_NOINTEGRALHEIGHT</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>CBS_OEMCONVERT</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>CBS_OWNERDRAWFIXED</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>CBS_OWNERDRAWVARIABLE</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>CBS_SIMPLE</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>CBS_SORT</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>CBS_UPPERCASE</term>
+                    <description></description>
+                </item>
+            </list>
+
+        </span>
+    </CBStyles>
     <Callback>
         <span>
             <note type="tip">
@@ -546,19 +912,32 @@
         </summary>
         <param name="kExecType">
             The type of event handling loop to start, specified as one of the following constants
-            <pre>
-                Constant			  Description
-                EXECNORMAL		  Tells the system to continue to execute the application until either the user closes it
-                (by selecting the Close menu command or using the standard Windows accelerator Alt+F4)
-                or the application decides to close by deliberately invoking the App:Quit() method.
-                When the application terminates, the thread of control exits from App:Exec() to the
-                next statement in your code. This is the default.
-                EXECWHILEEVENT	Tells the system to continue to execute the application only while there are still events queued.
-                Once the system has dispatched the last event in the queue, the thread of control exits from App:Exec().
-                This gives you the opportunity to do some processing and then start another event loop by invoking
-                App:Exec() again. You should use this mechanism when you want to do some background processing
-                while the application is idle.
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>EXECNORMAL</term>
+                    <description>
+                        Tells the system to continue to execute the application until either the user closes it
+                        (by selecting the Close menu command or using the standard Windows accelerator Alt+F4)
+                        or the application decides to close by deliberately invoking the App:Quit() method.
+                        When the application terminates, the thread of control exits from App:Exec() to the
+                        next statement in your code. This is the default.
+                    </description>
+                </item>
+                <item>
+                    <term>EXECWHILEEVENT</term>
+                    <description>
+                        Tells the system to continue to execute the application only while there are still events queued.
+                        Once the system has dispatched the last event in the queue, the thread of control exits from App:Exec().
+                        This gives you the opportunity to do some processing and then start another event loop by invoking
+                        App:Exec() again. You should use this mechanism when you want to do some background processing
+                        while the application is idle.
+                    </description>
+                </item>
+            </list>
         </param>
         <param name="oObject">** missing parameter documentation **</param>
         <returns>
@@ -1290,70 +1669,7 @@
         <param name="lDataAware">A logical value specifying whether the list box is data aware.</param>
         <param name="nResourceID">The resource ID of the list box.</param>
         <remarks>
-            <list type="table">
-                <listheader>
-                    <term>Constant</term>
-                    <description>Windows API Constant</description>
-                </listheader>
-                <item>
-                    <term>LBOXDISABLENOSCROLL</term>
-                    <description>LBS_DISABLENOSCROLL</description>
-                </item>
-                <item>
-                    <term>LBOXEXTENDEDSEL</term>
-                    <description>LBS_EXTENDEDSEL</description>
-                </item>
-                <item>
-                    <term>LBOXHASSTRINGS</term>
-                    <description>LBS_HASSTRINGS</description>
-                </item>
-                <item>
-                    <term>LBOXMULTICOLUMN</term>
-                    <description>LBS_MULTICOLUMN</description>
-                </item>
-                <item>
-                    <term>LBOXMULTIPLESEL</term>
-                    <description>LBS_MULTIPLESEL</description>
-                </item>
-                <item>
-                    <term>LBOXNOINTEGRALHEIGHT</term>
-                    <description>LBS_NOINTEGRALHEIGHT</description>
-                </item>
-                <item>
-                    <term>LBOXNOREDRAW</term>
-                    <description>LBS_NOREDRAW</description>
-                </item>
-                <item>
-                    <term>LBOXNOTIFY</term>
-                    <description>LBS_NOTIFY</description>
-                </item>
-                <item>
-                    <term>LBOXOWNERDRAWFIXED</term>
-                    <description>LBS_OWNERDRAWFIXED</description>
-                </item>
-                <item>
-                    <term>LBOXOWNERDRAWVARIABLE</term>
-                    <description>LBS_OWNERDRAWVARIABLE</description>
-                </item>
-                <item>
-                    <term>LBOXSORT</term>
-                    <description>LBS_SORT</description>
-                </item>
-                <item>
-                    <term>LBOXSTANDARD</term>
-                    <description>
-                        LBS_STANDARD
-                    </description>
-                </item>
-                <item>
-                    <term>LBOXUSETABSTOPS</term>
-                    <description>LBS_USETABSTOPS</description>
-                </item>
-                <item>
-                    <term>LBOXWANTKEYBOARDINPUT</term>
-                    <description>LBS_WANTKEYBOARDINPUT</description>
-                </item>
-            </list>
+            <include file="Gui.xml" path="doc/LBStyles/*" />
         </remarks>
     </BaseListBox.ctor>
     <BaseListBox.AddItem>
@@ -1426,12 +1742,24 @@
         </summary>
         <param name="nItemNumber">
             The number of the desired item. Specify one of the following values:
-            <pre>
-                Value   Position
-                0       The currently selected item.
-                1       The first item.
-                n       The nth item.
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Value</term>
+                    <description>Position</description>
+                </listheader>
+                <item>
+                    <term>0</term>
+                    <description>The currently selected item.</description>
+                </item>
+                <item>
+                    <term>1</term>
+                    <description>The first item.</description>
+                </item>
+                <item>
+                    <term>n</term>
+                    <description> The nth item.</description>
+                </item>
+            </list>
         </param>
         <param name="nLength">Optional numeric value that indicates how long the returned string should be.</param>
         <returns>
@@ -2079,11 +2407,20 @@
         </summary>
         <param name="kFormat">
             The type of item to retrieve, specified as one of the following constants:
-            <pre>
-                Constant        Description
-                BITMAPFORMAT    The item is a bitmap object.
-                STRINGFORMAT    The item is a string.
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>BITMAPFORMAT</term>
+                    <description>The item is a bitmap object.</description>
+                </item>
+                <item>
+                    <term>STRINGFORMAT</term>
+                    <description>The item is a string.</description>
+                </item>
+            </list>
         </param>
     </Clipboard.GetItemSize>
     <Clipboard.Insert>
@@ -2185,17 +2522,7 @@
         <remarks>
             If the first and second argument are both numeric and the second argument is -1, VO will treat the first number as the colorref of the color object.
             In that case the first number indicates the standard color to create, specified as one of the following constants:
-            <pre>
-                Constant      Color
-                COLORBLACK    Black
-                COLORBLUE     Blue
-                COLORCYAN     Cyan
-                COLORGREEN    Green
-                COLORMAGENTA  Magenta
-                COLORRED      Red
-                COLORWHITE    White
-                COLORYELLOW   Yellow
-            </pre>
+            <include file="Gui.xml" path="doc/Colors/*" />
         </remarks>
         <example>
             The following example defines some colors:
@@ -2336,21 +2663,7 @@
                 </item>
             </list>
             Possible values for kStyle are:
-            <pre>
-                CBS_AUTOHSCROLL
-                CBS_DISABLENOSCROLL
-                CBS_DROPDOWN
-                CBS_DROPDOWNLIST
-                CBS_HASSTRINGS
-                CBS_LOWERCASE
-                CBS_NOINTEGRALHEIGHT
-                CBS_OEMCONVERT
-                CBS_OWNERDRAWFIXED
-                CBS_OWNERDRAWVARIABLE
-                CBS_SIMPLE
-                CBS_SORT
-                CBS_UPPERCASE
-            </pre>
+            <include file="Gui.xml" path="doc/CBStyles/*" />
         </remarks>
     </ComboBox.ctor>
     <ComboBox.CurrentItem>
@@ -2498,21 +2811,8 @@
                 </item>
             </list>
             Possible kStyle values are:
-            <pre>
-                CBS_AUTOHSCROLL
-                CBS_DISABLENOSCROLL
-                CBS_DROPDOWN
-                CBS_DROPDOWNLIST
-                CBS_HASSTRINGS
-                CBS_LOWERCASE
-                CBS_NOINTEGRALHEIGHT
-                CBS_OEMCONVERT
-                CBS_OWNERDRAWFIXED
-                CBS_OWNERDRAWVARIABLE
-                CBS_SIMPLE
-                CBS_SORT
-                CBS_UPPERCASE
-            </pre><note type="tip">Consult your Microsoft Win32 Software Development Kit documentation for detailed information about a particular style constant.</note>
+            <include file="Gui.xml" path="doc/CBStyles/*" />
+            <note type="tip">Consult your Microsoft Win32 Software Development Kit documentation for detailed information about a particular style constant.</note>
         </remarks>
     </ComboBoxEx.ctor>
     <ComboBoxEx.AddItem>
@@ -3066,7 +3366,7 @@
     <Control.MouseButtonDoubleClick>
         <summary>
             Provide a method that is invoked when the control has focus, the mouse pointer is positioned over the window, and a mouse button is double-clicked.<br /><br />
-            
+
         </summary>
         <param name="oMouseEvent">The MouseEvent object that contains information about the state of the mouse when the button was double-clicked.</param>
         <remarks>
@@ -3102,7 +3402,7 @@
         <remarks>
             <include file="Gui.xml" path="doc/Callback/*" />
         </remarks>
-        </Control.MouseDrag>
+    </Control.MouseDrag>
     <Control.MouseMove>
         <summary>
             Provide a method that is invoked when the control has focus and the mouse is moved in the control.
@@ -3362,7 +3662,7 @@
         <remarks>
             <include file="Gui.xml" path="doc/Callback/*" />
         </remarks>
-        
+
     </Control.Timer>
     <Control.ToolTipText>
         <summary>
@@ -3911,12 +4211,7 @@
         </param>
         <remarks>
             Indicates what part of the browser should be repainted, specified as one of the following constants:
-            <pre>
-                Constant      Description
-                GBLCOLCAPTION The column caption area.
-                GBLHITEXT     Highlighted (selected) text in the data area.
-                GBLTEXT       Text in the data display area.
-            </pre>
+            <include file="Gui.xml" path="doc/Where/*" />
             The background color can be set for different parts of the data browser as a whole, but not for individual columns. To set the background brush for individual columns, use DataColumn:ChangeBackground().
             As a rule, initial settings are picked up from the standard settings of the environment—under Windows, colors are set in the Control Panel. Note that while it is possible to alter the color of the caption and column caption areas, this is not recommended when a 3-dimensional, sculpted, "button look" is used—end users can be confused if buttons don't look like buttons.
         </remarks>
@@ -3935,11 +4230,8 @@
         <param name="oFont">The new font to be used.</param>
         <param name="kWhere">
             Indicates what part of the browser should be changed, specified as one of the following constants:
-            <pre>
-                Constant        Description
-                GBLCOLCAPTION   The column caption area.
-                GBLTEXT         Text in the data display area. This is the default.
-            </pre>
+            <include file="Gui.xml" path="doc/Where/*" />
+
         </param>
         <returns>
             The font previously assigned to the changed area.
@@ -3967,24 +4259,9 @@
         </returns>
         <remarks>
             Values for kColor
-            <pre>
-                Constant      Color
-                COLORBLACK    Black
-                COLORBLUE     Blue
-                COLORCYAN     Cyan
-                COLORGREEN    Green
-                COLORMAGENTA  Magenta
-                COLORRED      Red
-                COLORWHITE    White
-                COLORYELLOW   Yellow
-            </pre>
+            <include file="Gui.xml" path="doc/Colors/*" />
             Values for kWhere
-            <pre>
-                Constant      Description
-                GBLCOLCAPTION The column caption area.
-                GBLHITEXT     Highlighted (selected) text in the data area.
-                GBLTEXT       Text in the data display area. This is the default.
-            </pre>
+            <include file="Gui.xml" path="doc/Where/*" />
             The text color can be set for different parts of the data browser as a whole, but not for individual columns. To set the color for individual columns, use DataColumn:ChangeTextColor().
             As a rule, initial settings are picked up from the standard settings of the environment—under Windows, colors are set in the Control Panel.
         </remarks>
@@ -4219,15 +4496,11 @@
         </param>
         <param name="nMode">
             Initial splitbar positioning, specified as one of the following constants:
+            <include file="Gui.xml" path="doc/SplitBar/*" />
             If not specified, the initial splitbar position defaults to GBSSBMIDDLE.
         </param>
         <remarks>
-            <pre>
-                Constant      Description
-                GBSSBLEFT     Places the splitbar at the left-edge of the browser.
-                GBSSBMIDDLE   Places the splitbar in the middle of the browser.
-                GBSSBRIGHT    Places the splitbar at the right-edge of the browser.
-            </pre>
+            <include file="Gui.xml" path="doc/SplitBar/*" />
             A vertical splitbar allows the left and right parts of a window to be independently scrollable sideways. The position of the splitbar in the window is also adjustable with the mouse.
         </remarks>
     </DataBrowser.EnableVerticalSplit>
@@ -4414,28 +4687,7 @@
         <param name="kStyle">The style to set, specified as one of the following constants:</param>
         <remarks>
             <note type="tip">The DataBrowser:SetStandardStyle() method can be overridden by DataColumn:SetStandardStyle() for individual columns.</note>
-            <list type="table">
-                <listheader>
-                    <term>Constant</term>
-                    <description>Description</description>
-                </listheader>
-                <item>
-                    <term>GBSCONTROL2D</term>
-                    <description>No sculpting, text on a flat rectangle.</description>
-                </item>
-                <item>
-                    <term>GBSCONTROL3D</term>
-                    <description>Sculpted three-dimensional buttons.</description>
-                </item>
-                <item>
-                    <term>GBSEDIT</term>
-                    <description>Make browser "editable" (turn off read-only style).</description>
-                </item>
-                <item>
-                    <term>GBSREADONLY</term>
-                    <description>Make browser read-only (text cannot be changed).</description>
-                </item>
-            </list>
+            <include file="Gui.xml" path="doc/BrowseStyle/*" />
             If not specified, the default style is sculpted, three-dimensional, and "editable."
             Tip: To specify more than one style parameter, simply make more than one call.
             <note type="tip">The DataBrowserSetStandardStyle() can be overridden by the DataColumn:SetStandardStyle() for individual columns.</note>
@@ -4521,28 +4773,7 @@
         <value>One of the following constants representing the alignment of this data column:</value>
         <remarks>
             One of the following constants representing the alignment of this data column:
-            <list type="table">
-                <listheader>
-                    <term>Constant</term>
-                    <description>Description</description>
-                </listheader>
-                <item>
-                    <term>GBAALIGNCENTER</term>
-                    <description>Center aligned</description>
-                </item>
-                <item>
-                    <term>GBAALIGNLEFT</term>
-                    <description>
-                        Left aligned (This is the <b>default</b> for text.)
-                    </description>
-                </item>
-                <item>
-                    <term>GBAALIGNRIGHT</term>
-                    <description>
-                        Right aligned  (This is the <b>default</b> for numeric data.)
-                    </description>
-                </item>
-            </list>
+            <include file="Gui.xml" path="doc/Alignment/*" />
         </remarks>
     </DataColumn.Alignment>
     <DataColumn.AsString>
@@ -4616,11 +4847,7 @@
         <param name="oBrush">The new background brush to be used.</param>
         <param name="kWhere">
             Indicates what part of the data column should be repainted, specified as one of the following constants:
-            <pre>
-                Constant        Description
-                GBLCOLCAPTION   The column caption area.
-                GBLTEXT         Text in the data display area. This is the default.
-            </pre>
+            <include file="Gui.xml" path="doc/Where/*" />
         </param>
         <returns>
             The brush previously assigned to the changed area.
@@ -4653,23 +4880,9 @@
         </returns>
         <remarks>
             Possible values for kColor
-            <pre>
-                Constant      Color
-                COLORBLACK    Black
-                COLORBLUE     Blue
-                COLORCYAN     Cyan
-                COLORGREEN    Green
-                COLORMAGENTA  Magenta
-                COLORRED      Red
-                COLORWHITE    White
-                COLORYELLOW   Yellow
-            </pre>
+            <include file="Gui.xml" path="doc/Colors/*" />
             Possible values for kWhere
-            <pre>
-                Constant        Description
-                GBLCOLCAPTION   The column caption area.
-                GBLTEXT         Text in the data display area. This is the default.
-            </pre>
+            <include file="Gui.xml" path="doc/Where/*" />
             As a rule, initial settings are picked up from the standard settings of the environment—under Windows, colors are set in the Control Panel.
             The default is picked up from the standard settings of the environment; for example, under Windows the text color of buttons is set with the Control Panel. Although the button and caption area can be specified, the method refers only to this column.
         </remarks>
@@ -4868,13 +5081,7 @@
             One of the following constants representing the alignment of the caption for the data column:
         </param>
         <remarks>
-            <pre>
-                Constant        Description
-                GBAALIGNCENTER  Center aligned (This is the default.)
-                GBAALIGNLEFT    Left aligned
-                GBAALIGNRIGHT   Right aligned
-
-            </pre>
+            <include file="Gui.xml" path="doc/Alignment/*" />
             Setting a blank caption ("") causes the caption of the data column to be displayed with no caption. Setting a null caption causes the caption to be hidden.
             By embedding newline characters in the caption string, the caption field changes height to accommodate multiple lines.
         </remarks>
@@ -4890,14 +5097,10 @@
             Set the appearance of this data column's caption area.
         </summary>
         <param name="kStyle">
-            The style to set, specified as one of the  constants below
+            The style to set, specified as one of the constants below
         </param>
         <remarks>
-            Constant	Description
-            GBSCONTROL2D	No sculpting, text on a flat rectangle.
-            GBSCONTROL3D	Sculpted three-dimensional buttons.
-            GBSEDIT	Make browser 'editable' (turn off read-only style).
-            GBSREADONLY	Make browser read-only (text cannot be changed).
+            <include file="Gui.xml" path="doc/BrowseStyle/*" />
             Tip: To specify more than one style parameter, simply make more than one call
             <note type="tip">DataColumn:SetStandardStyle() can override the DataBrowser:SetStandardStyle() method for individual columns.</note>
         </remarks>
@@ -6236,11 +6439,20 @@
         </summary>
         <param name="symViewType">
             Specifies which view mode is to be used. Use one of these symbols:
-            <pre>
-                Symbol      Description
-                #BrowseView Several records are displayed at the same time, as rows in a spreadsheet-like table with each field corresponding to a column.
-                #FormView   A single record is viewed at a time, with its fields displayed in individual controls.
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Symbol</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>#BrowseView </term>
+                    <description>Several records are displayed at the same time, as rows in a spreadsheet-like table with each field corresponding to a column.</description>
+                </item>
+                <item>
+                    <term>#FormView </term>
+                    <description>A single record is viewed at a time, with its fields displayed in individual controls.</description>
+                </item>
+            </list>
         </param>
         <remarks>
             When a window is switched to a new view mode, a layout is automatically generated if one had not been defined previously.
@@ -6860,7 +7072,7 @@
         <param name="oScrollEvent">The ScrollEvent object that describes the scroll type and new position.</param>
         <remarks>
             <include file="Gui.xml" path="doc/Callback/*" />
-            The default behavior for this event handler is to update the thumb position; 
+            The default behavior for this event handler is to update the thumb position;
             this can be changed using your own implementation of the handler. This event handler only works for HorizontalScrollBar and WindowHorizontalScrollBar objects. If the application has horizontal scroll bars, use a HorizontalScrollBar event handler.
         </remarks>
     </DialogWindow.VerticalScroll>
@@ -7118,7 +7330,7 @@
         <summary>
             Display a DrawObject object.
         </summary>
-                
+
         <remarks>
             <include file="Gui.xml" path="doc/Callback/*" />
             <note type="tip">The default implementation of the DrawObject:Draw() method has no effect. You should derive your class from DrawObject and overload the Draw() method to contain the code to draw the new object. This method can then be called by Window:Draw().</note>
@@ -7229,21 +7441,7 @@
         <param name="kStyle">The style of the edit control, specified as one of the following constants:</param>
         <param name="nResourceID">The resource ID of the edit control.</param>
         <remarks>
-            Constant	Windows API Constant
-            EDITAUTOHSCROLL	ES_AUTOHSCROLL
-            EDITAUTOVSCROLL	ES_AUTOVSCROLL
-            EDITBORDERED	WS_BORDER
-            EDITCENTER	ES_CENTER
-            EDITLEFT	ES_LEFT
-            EDITLOWERCASE	ES_LOWERCASE
-            EDITMULTILINE	ES_MULTILINE
-            EDITNOHIDESEL	ES_NOHIDESEL
-            EDITOEMCONVERT	ES_OEMCONVERT
-            EDITPASSWORD	ES_PASSWORD
-            EDITREADONLY	ES_READONLY
-            EDITRIGHT	ES_RIGHT
-            EDITUPPERCASE	ES_UPPERCASE
-            EDITWANTRETURN	ES_WANTRETURN
+            <include file="Gui.xml" path="doc/EditConstants/*" />
         </remarks>
     </Edit.ctor>
     <Edit.CanUndo>
@@ -7640,7 +7838,7 @@
         </summary>
         <remarks>
             <include file="Gui.xml" path="doc/Callback/*" />
-        This method should not be invoked directly in the application code—it is invoked in X# by Window:Draw(). Refer to the EllipseObject class description for an example using the Draw() method.
+            This method should not be invoked directly in the application code—it is invoked in X# by Window:Draw(). Refer to the EllipseObject class description for an example using the Draw() method.
         </remarks>
     </EllipseObject.Draw>
     <Error>
@@ -12935,23 +13133,7 @@
         <param name="kStyle">The style of the list box, specified as one of the following constants listed below:</param>
         <param name="nResourceID">The resource ID of the list box.</param>
         <remarks>
-            <pre>
-                Constant	            	Windows API Constant
-                LBOXDISABLENOSCROLL	  	LBS_DISABLENOSCROLL
-                LBOXEXTENDEDSEL	      	LBS_EXTENDEDSEL
-                LBOXHASSTRINGS	      	LBS_HASSTRINGS
-                LBOXMULTICOLUMN	      	LBS_MULTICOLUMN
-                LBOXMULTIPLESEL	      	LBS_MULTIPLESEL
-                LBOXNOINTEGRALHEIGHT		LBS_NOINTEGRALHEIGHT
-                LBOXNOREDRAW	        	LBS_NOREDRAW
-                LBOXNOTIFY	          	LBS_NOTIFY
-                LBOXOWNERDRAWFIXED	  	LBS_OWNERDRAWFIXED
-                LBOXOWNERDRAWVARIABLE		LBS_OWNERDRAWVARIABLE
-                LBOXSORT	            	LBS_SORT
-                LBOXSTANDARD	        	LBS_STANDARD
-                LBOXUSETABSTOPS	      	LBS_USETABSTOPS
-                LBOXWANTKEYBOARDINPUT		LBS_WANTKEYBOARDINPUT
-            </pre>
+            <include file="Gui.xml" path="doc/LBStyles/*" />
         </remarks>
     </ListBox.ctor>
     <ListBox.AddItem>
@@ -13072,12 +13254,20 @@
         <param name="aContents">
             An array containing the values to be placed in the list box. A two-dimensional array may be used to define the values to be returned to the program when a list item is selected, separately from the text strings shown in the list; this 'other' value is what is returned in the ListBox:Value property, and what is stored in the database if the control is associated with a database field.
             Thus, the array may be specified in one of two formats:
-            <pre>
-                1. One-dimensional array containing the list of values.
-                2.  Array of two-element arrays, each containing the string to display in the list and the corresponding value returned to the program.
-                Note that the two dimensional array has the same structure as that returned by DBServer:GetLookupTable(), and the
-                one-dimensional array matches that returned by DBServer:GetArray(). or The data server that is to be used to provide the set of values.
-            </pre>
+            <list type="table">
+                <item>
+                    <term>1.</term>
+                    <description>One-dimensional array containing the list of values.</description>
+                </item>
+                <item>
+                    <term>2.</term>
+                    <description>
+                        Array of two-element arrays, each containing the string to display in the list and the corresponding value returned to the program.
+                        Note that the two dimensional array has the same structure as that returned by DBServer:GetLookupTable(), and the
+                        one-dimensional array matches that returned by DBServer:GetArray(). or The data server that is to be used to provide the set of values.
+                    </description>
+                </item>
+            </list>
         </param>
         <param name="symField1">The symbolic name of the field that is to be used for the display values. If not specified, the values of the first field are used.</param>
         <param name="symField2">The symbolic name of the field that is to be used for the values that are returned to the program. If not specified, the values of the first field are used.</param>
@@ -13344,11 +13534,20 @@
         <param name="cGroupName">group name</param>
         <param name="dwAlign">
             The group alignment. Available options are -
-            <pre>
-                LVGA_HEADER_LEFT
-                LVGA_HEADER_RIGHT
-                LVGA_HEADER_CENTER
-            </pre>
+            <list type="table">
+                <item>
+                    <term>LVGA_HEADER_LEFT</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>LVGA_HEADER_RIGHT</term>
+                    <description></description>
+                </item>
+                <item>
+                    <term>LVGA_HEADER_CENTER</term>
+                    <description></description>
+                </item>
+            </list>
         </param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
@@ -13400,13 +13599,28 @@
             TRUE if the item was arranged successfully; otherwise, FALSE.
         </returns>
         <remarks>
-            <pre>
-                Constant			Description
-                LVA_ALIGNLEFT		Aligns items along the left edge of the window.
-                LVA_ALIGNTOP		Aligns items along the top edge of the window.
-                LVA_DEFAULT		Aligns items according to the list view's current alignment styles (the default setting).
-                LVA_SNAPTOGRID	Items are snapped to the nearest grid position.
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>LVA_ALIGNLEFT</term>
+                    <description>Aligns items along the left edge of the window.</description>
+                </item>
+                <item>
+                    <term>LVA_ALIGNTOP</term>
+                    <description>Aligns items along the top edge of the window.</description>
+                </item>
+                <item>
+                    <term>LVA_DEFAULT</term>
+                    <description>Aligns items according to the list view's current alignment styles (the default setting).</description>
+                </item>
+                <item>
+                    <term>LVA_SNAPTOGRID</term>
+                    <description>Items are snapped to the nearest grid position.</description>
+                </item>
+            </list>
         </remarks>
     </ListView.Arrange>
     <ListView.BackgroundColor>
@@ -15639,23 +15853,7 @@
         <param name="kStyle">The style of the multiline edit control, specified as one of the following constants listed below.</param>
         <param name="nResourceID">The resource ID of the multiline edit control.</param>
         <remarks>
-            <pre>
-                Constant	Windows API Constant
-                EDITAUTOHSCROLL	ES_AUTOHSCROLL
-                EDITAUTOVSCROLL	ES_AUTOVSCROLL
-                EDITBORDERED	WS_BORDER
-                EDITCENTER	ES_CENTER
-                EDITLEFT	ES_LEFT
-                EDITLOWERCASE	ES_LOWERCASE
-                EDITMULTILINE	ES_MULTILINE
-                EDITNOHIDESEL	ES_NOHIDESEL
-                EDITOEMCONVERT	ES_OEMCONVERT
-                EDITPASSWORD	ES_PASSWORD
-                EDITREADONLY	ES_READONLY
-                EDITRIGHT	ES_RIGHT
-                EDITUPPERCASE	ES_UPPERCASE
-                EDITWANTRETURN	ES_WANTRETURN
-            </pre>
+            <include file="Gui.xml" path="doc/EditConstants/*" />
         </remarks>
     </MultiLineEdit.ctor>
     <MultiLineEdit.CurrentText>
@@ -16515,13 +16713,30 @@
         <value>A constant indicating the effect of the drag and drop operation:</value>
         <remarks>
             One of the following constants indicating the effect of the drag and drop operation:
-            <pre>
-                Constant	      	Meaning
-                DROPEFFECT_COPY	Copy operation
-                DROPEFFECT_LINK	Create a new link
-                DROPEFFECT_MOVE	Move operation
-                DROPEFFECT_NONE	No effect
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>DROPEFFECT_COPY</term>
+                    <description>Copy operation</description>
+                </item>
+                <item>
+                    <term>DROPEFFECT_LINK	</term>
+                    <description>
+                        Create a new link
+                    </description>
+                </item>
+                <item>
+                    <term>DROPEFFECT_MOVE	</term>
+                    <description>Move operation</description>
+                </item>
+                <item>
+                    <term>DROPEFFECT_NONE	</term>
+                    <description>No effect</description>
+                </item>
+            </list>
             OLEDragEvent:Effect controls the appearance of the drag and drop mouse cursor and can be set during the handling of an OLEDragEvent.
         </remarks>
     </OleDragEvent.Effect>
@@ -17185,17 +17400,40 @@
         </param>
         <param name="uWidth">The pen's width, in canvas coordinates. The default is 1.</param>
         <remarks>
-            <pre>
-                Constant			Description
-                LINECLEAR			Invisible, which can be used to simplify the program logic.
-                This is a shortcut to changing a point position without calling the MoveTo() and LineTo()
-                functions (as in the code example under Pen class).
-                LINEDASHDOT		Alternating dash/dot pattern.
-                LINEDASHDOTDOT	A repeating sequence of a dash followed by two dots.
-                LINEDASHED		Dashes.
-                LINEDOTTED		Dots.
-                LINESOLID			A continuous line. This is the default.
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>LINECLEAR</term>
+                    <description>
+                        Invisible, which can be used to simplify the program logic.
+                        This is a shortcut to changing a point position without calling the MoveTo() and LineTo()
+                        functions (as in the code example under Pen class).
+                    </description>
+                </item>
+                <item>
+                    <term>LINEDASHDOT</term>
+                    <description>Alternating dash/dot pattern.</description>
+                </item>
+                <item>
+                    <term>LINEDASHDOTDOT</term>
+                    <description>A repeating sequence of a dash followed by two dots.</description>
+                </item>
+                <item>
+                    <term>LINEDASHED</term>
+                    <description>Dashes.</description>
+                </item>
+                <item>
+                    <term>LINEDOTTED</term>
+                    <description>Dots.</description>
+                </item>
+                <item>
+                    <term>LINESOLID</term>
+                    <description>A continuous line. This is the default.</description>
+                </item>
+            </list>
         </remarks>
     </Pen.ctor>
     <Pen.Destroy>
@@ -18522,16 +18760,55 @@
     <ReportQueue.EventType>
         <summary>
             One of the following constants representing an event:
-            <pre>
-                Constant					Description
-                REPORTCLOSEEVENT			Current report has been closed.
-                REPORTCOMPLETEERROREVENT	A print or export task has aborted.
-                REPORTCOMPLETEEVENT		A print or export task has completed.
-                REPORTFILESAVEEVENT		A report definition has been closed.
-                REPORTOPENEVENT			Requested report has been opened.
-                REPORTSERVERCLOSEEVENT	Report Editor has been closed.
-                REPORTVIEWCLOSEEVENT		A report preview has been closed (but the report itself remains open).
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+
+                <item>
+                    <term>
+                        REPORTCLOSEEVENT
+                    </term>
+                    <description>Current report has been closed.</description>
+                </item>
+                <item>
+                    <term>
+                        REPORTCOMPLETEERROREVENT
+                    </term>
+                    <description> print or export task has aborted.</description>
+                </item>
+                <item>
+                    <term>
+                        REPORTCOMPLETEEVENT
+                    </term>
+                    <description>A print or export task has completed.</description>
+                </item>
+                <item>
+                    <term>
+                        REPORTFILESAVEEVENT
+                    </term>
+                    <description>A report definition has been closed.</description>
+                </item>
+                <item>
+                    <term>
+                        REPORTOPENEVENT
+                    </term>
+                    <description>Requested report has been opened.</description>
+                </item>
+                <item>
+                    <term>
+                        REPORTSERVERCLOSEEVENT
+                    </term>
+                    <description>Report Editor has been closed.</description>
+                </item>
+                <item>
+                    <term>
+                        REPORTVIEWCLOSEEVENT
+                    </term>
+                    <description>A report preview has been closed (but the report itself remains open).</description>
+                </item>
+            </list>
             It should be used only in any AppWindow:ReportNotification() method you add to your window class that owns this ReportQueue object.
         </summary>
         <value>
@@ -18562,16 +18839,45 @@
             One of the following constants representing the report style for the new report:
         </param>
         <remarks>
-            <pre>
-                Constant				Description
-                RPTSTYLE_CROSSTAB		Creates a cross-tabular report.
-                RPTSTYLE_FORM			Creates a form-based report
-                RPTSTYLE_FREESTYLE	Creates a free-style report
-                RPTSTYLE_LABEL		Creates a label report
-                RPTSTYLE_LETTER		Creates a letter report
-                RPTSTYLE_TABULAR		Creates a tabular report
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>RPTSTYLE_CROSSTAB		</term>
+                    <description>Creates a cross-tabular report.</description>
+                </item>
+                <item>
+                    <term>
+                        RPTSTYLE_FORM
+                    </term>
+                    <description>Creates a form-based report</description>
+                </item>
+                <item>
+                    <term>
+                        RPTSTYLE_FREESTYLE
+                    </term>
+                    <description>Creates a free-style report</description>
+                </item>
+                <item>
+                    <term>
+                        RPTSTYLE_LABEL
+                    </term>
+                    <description>Creates a label report</description>
+                </item>
+                <item>
+                    <term>
+                        RPTSTYLE_LETTER
+                    </term>
+                    <description>Creates a letter report</description>
+                </item>
+                <item>
+                    <term>RPTSTYLE_TABULAR		</term>
+                    <description>Creates a tabular report</description>
+                </item>
                 If no report style is specified, a dialog box containing all the above report styles will appear.
-            </pre>
+            </list>
             This method allows the user to edit the report definition (.RET) file and provides the same environment as the IDE.
         </remarks>
         <example>
@@ -18811,12 +19117,24 @@
             The state in which the Report Editor window area should be displayed. Specify one of the following constants:
         </param>
         <remarks>
-            <pre>
-                Constant		Description
-                SHOWICONIZED	Iconizes or minimizes the Report Editor window.
-                SHOWNORMAL	Normalizes the Report Editor window. This is the default.
-                SHOWZOOMED	Maximizes the Report Editor window to a full screen.
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>SHOWICONIZED</term>
+                    <description>Iconizes or minimizes the Report Editor window.</description>
+                </item>
+                <item>
+                    <term>SHOWNORMAL</term>
+                    <description>Normalizes the Report Editor window. This is the default.</description>
+                </item>
+                <item>
+                    <term>SHOWZOOMED</term>
+                    <description>Maximizes the Report Editor window to a full screen.</description>
+                </item>
+            </list>
         </remarks>
     </ReportQueue.Show>
     <ReportQueue.Size>
@@ -19400,13 +19718,28 @@
         <param name="kOption">One of the following constants representing the option you want to set:</param>
         <param name="symOperation">
             One of the following symbolic names representing the operation to perform:
-            <pre>
-                Operation		Description
-                #Add			Add this option to the current options. This is the default.
-                #Change		Change to this option, removing all other options
-                #Keep			Keep only this option
-                #Remove		Remove only this option
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Operation</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>#Add</term>
+                    <description>Add this option to the current options. This is the default.</description>
+                </item>
+                <item>
+                    <term>#Change</term>
+                    <description>Change to this option, removing all other options</description>
+                </item>
+                <item>
+                    <term>#Keep</term>
+                    <description>Keep only this option</description>
+                </item>
+                <item>
+                    <term>#Remove</term>
+                    <description>Remove only this option</description>
+                </item>
+            </list>
         </param>
         <remarks>
             <list type="table">
@@ -20174,17 +20507,7 @@
         <param name="kStyle">The style of the single-line edit control, specified as one of the following constants:</param>
         <param name="nResourceID">The resource ID of the single-line edit control.</param>
         <remarks>
-            <pre>
-                Constant			Windows API Constant
-                EDITAUTOHSCROLL	ES_AUTOHSCROLL
-                EDITBORDERED		WS_BORDER
-                EDITLOWERCASE		ES_LOWERCASE
-                EDITNOHIDESEL		ES_NOHIDESEL
-                EDITOEMCONVERT	ES_OEMCONVERT
-                EDITPASSWORD		ES_PASSWORD
-                EDITREADONLY		ES_READONLY
-                EDITUPPERCASE		ES_UPPERCASE
-            </pre>
+            <include file="Gui.xml" path="doc/EditConstants/*" />
             <note type="tip">In addition to the style constants specified above, you can use any Windows API style constant. Consult your Microsoft Win32 Software Development Kit documentation for detailed information about a particular constant.</note>
         </remarks>
     </SingleLineEdit.ctor>
@@ -20639,11 +20962,24 @@
             One of the following constants specifying how to align split bars in the split window:
         </param>
         <remarks>
-            <pre>
-                Constant			Description
-                SPLIT_HORZALIGN	Split bars are horizontally aligned
-                SPLIT_VERTALIGN	Split bars are vertically aligned
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>
+                        SPLIT_HORZALIGN
+                    </term>
+                    <description>Split bars are horizontally aligned</description>
+                </item>
+                <item>
+                    <term>
+                        SPLIT_VERTALIGN
+                    </term>
+                    <description>Split bars are vertically aligned</description>
+                </item>
+            </list>
             If omitted, the default alignment is vertical (SPLIT_VERTALIGN). Split bars can be aligned either horizontally or vertically, but not both.
 
         </remarks>
@@ -22138,23 +22474,78 @@
         </param>
         <param name="nType">
             The text box type. Valid types include the following button combinations and/or icons:
-            <pre>
-                Group 1: buttons
-                Constant            Button(s)
-                BOXABORTRETRYIGNORE Abort, Retry, and Ignore
-                BUTTONOKAY          OK (This is the default.)
-                BUTTONOKAYCANCEL    OK and Cancel
-                BUTTONRETRYCANCEL   Retry and Cancel
-                BUTTONYESNO         Yes and No
-                BUTTONYESNOCANCEL   Yes, No, and Cancel
+            Group 1: buttons
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Button(s)</description>
+                </listheader>
+                <item>
+                    <term>
+                        BOXABORTRETRYIGNORE
+                    </term>
+                    <description>
+                        Abort, Retry, and Ignore
+                    </description>
+                </item>
+                <item>
+                    <term>
+                        BUTTONOKAY
+                    </term>
+                    <description>OK (This is the default.)</description>
+                </item>
+                <item>
+                    <term>
+                        BUTTONOKAYCANCEL
+                    </term>
+                    <description>OK and Cancel</description>
+                </item>
+                <item>
+                    <term>
+                        BUTTONRETRYCANCEL
+                    </term>
+                    <description>Retry and Cancel</description>
+                </item>
+                <item>
+                    <term>
+                        BUTTONYESNO
+                    </term>
+                    <description>Yes and No</description>
+                </item>
+                <item>
+                    <term>BUTTONYESNOCANCEL   </term>
+                    <description>Yes, No, and Cancel</description>
+                </item>
+            </list>
 
-                Group 2: Standard Icons
-                Constant            Icon
-                BOXICONASTERISK     An icon consisting of a lowercase 'i' within a circle
-                BOXICONEXCLAMATION  An exclamation mark
-                BOXICONHAND         A warning icon
-                BOXICONQUESTIONMARK A question mark
-            </pre>
+            Group 2: Standard Icons
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Icon</description>
+                </listheader>
+
+                <item>
+                    <term>
+                        BOXICONASTERISK
+                    </term>
+                    <description>An icon consisting of a lowercase 'i' within a circle</description>
+                </item>
+                <item>
+                    <term>
+                        BOXICONEXCLAMATION
+                    </term>
+                    <description>An exclamation mark</description>
+                </item>
+                <item>
+                    <term>BOXICONHAND         </term>
+                    <description>A warning icon</description>
+                </item>
+                <item>
+                    <term>BOXICONQUESTIONMARK </term>
+                    <description>A question mark</description>
+                </item>
+            </list>
         </param>
     </TextBox.ctor>
     <TextBox.Beep>
@@ -22609,16 +23000,60 @@
         <param name="iMinWidth">Minimum width of the sub-toolbar band. The default is 100.</param>
         <param name="lFlat_dwStyle">
             You are now able to pass a DWORD value to this parameter which allows you to create ToolBars with different styles inside a ReBar control.
-            <pre>
-                TBSTYLE_TOOLTIPS:= 0x0100
-                TBSTYLE_WRAPABLE:= 0x0200
-                TBSTYLE_ALTDRAG:= 0x0400
-                TBSTYLE_FLAT:= 0x0800
-                TBSTYLE_LIST:= 0x1000
-                TBSTYLE_CUSTOMERASE:= 0x2000
-                TBSTYLE_REGISTERDROP:= 0x4000
-                TBSTYLE_TRANSPARENT:= 0x8000
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Style</term>
+                    <description>Value</description>
+                </listheader>
+                <item>
+                    <term>
+                        BSTYLE_TOOLTIPS
+                    </term>
+                    <description>0x0100</description>
+                </item>
+                <item>
+                    <term>
+                        TBSTYLE_WRAPABLE
+                    </term>
+                    <description>0x0200</description>
+                </item>
+                <item>
+                    <term>
+                        TBSTYLE_ALTDRAG
+                    </term>
+                    <description>0x0400</description>
+                </item>
+                <item>
+                    <term>
+                        TBSTYLE_FLAT
+                    </term>
+                    <description> 0x0800</description>
+                </item>
+                <item>
+                    <term>
+                        TBSTYLE_LIST
+                    </term>
+                    <description>0x1000</description>
+                </item>
+                <item>
+                    <term>
+                        TBSTYLE_CUSTOMERASE
+                    </term>
+                    <description> 0x2000</description>
+                </item>
+                <item>
+                    <term>
+                        TBSTYLE_REGISTERDROP
+                    </term>
+                    <description>0x4000</description>
+                </item>
+                <item>
+                    <term>
+                        TBSTYLE_TRANSPARENT
+                    </term>
+                    <description>0x8000</description>
+                </item>
+            </list>
         </param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
@@ -24574,7 +25009,7 @@
         </summary>
         <param name="oEvent">The event to be handled.</param>
         <seealso cref="T:VO.Event" />
-                <returns>
+        <returns>
             A numeric value representing the event handler to handle the event. This is usually the value of the EventReturnValue field.
         </returns>
         <remarks>
@@ -24793,14 +25228,39 @@
         </summary>
         <param name="dwStyle">
             The style to be set.
-            <pre>
-                Style               Description
-                ETDT_ENABLE         Enables dialog window background texturing. The texturing is defined by a visual style.
-                ETDT_ENABLETAB      Enables dialog window background texturing. The texture is the Tab control texture defined
-                by the visual style. This flag is equivalent to (ETDT_ENABLE | ETDT_USETABTEXTURE).
-                ETDT_DISABLE        Disables background texturing.
-                ETDT_USETABTEXTURE  Uses the Tab control texture for the background texture of a dialog window.
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Style</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>
+                        ETDT_ENABLE
+                    </term>
+                    <description>Enables dialog window background texturing. The texturing is defined by a visual style.</description>
+                </item>
+                <item>
+                    <term>
+                        ETDT_ENABLETAB
+                    </term>
+                    <description>
+                        Enables dialog window background texturing. The texture is the Tab control texture defined
+                        by the visual style. This flag is equivalent to (ETDT_ENABLE | ETDT_USETABTEXTURE).
+                    </description>
+                </item>
+                <item>
+                    <term>
+                        ETDT_DISABLE
+                    </term>
+                    <description>Disables background texturing.</description>
+                </item>
+                <item>
+                    <term>
+                        ETDT_USETABTEXTURE
+                    </term>
+                    <description>Uses the Tab control texture for the background texture of a dialog window.</description>
+                </item>
+            </list>
         </param>
         <remarks>
             This method allows the enabling and disableing of background themes in WinXP and later.
@@ -24967,16 +25427,55 @@
             is
             Menu_Save_As
             A HELPWINDOW request generates one of the keywords listed in the table below, depending on the window region that has focus:
-            <pre>
-                Keyword				Window Region
-                Window_Border		Border
-                Window_Caption		Title bar
-                Window_MaxBox		Maximize button
-                Window_MinBox		Minimize button
-                Window_SysMenuBox	System menu button
-                Window_Unknown		Any area of the window not explicitly identified in this table
-                Window_WindowCanvas	Canvas area
-            </pre><note type="tip">If the Window_Unknown keyword is generated, the default behavior of HelpRequest() is to display the Contents topic as defined in the HelpDisplay (that is, HelpDisplay:Show("HelpIndex")).</note>
+            <list type="table">
+                <listheader>
+                    <term>Keyword</term>
+                    <description>Window Region</description>
+                </listheader>
+                <item>
+                    <term>
+                        Window_Border
+                    </term>
+                    <description>Border</description>
+                </item>
+                <item>
+                    <term>
+                        Window_Caption
+                    </term>
+                    <description>Title bar</description>
+                </item>
+                <item>
+                    <term>
+                        Window_MaxBox
+                    </term>
+                    <description>Maximize button</description>
+                </item>
+                <item>
+                    <term>
+                        Window_MinBox
+                    </term>
+                    <description>Minimize button</description>
+                </item>
+                <item>
+                    <term>
+                        Window_SysMenuBox
+                    </term>
+                    <description>System menu button</description>
+                </item>
+                <item>
+                    <term>
+                        Window_Unknown
+                    </term>
+                    <description>Any area of the window not explicitly identified in this table</description>
+                </item>
+                <item>
+                    <term>
+                        Window_WindowCanvas
+                    </term>
+                    <description>Canvas area</description>
+                </item>
+            </list>
+            <note type="tip">If the Window_Unknown keyword is generated, the default behavior of HelpRequest() is to display the Contents topic as defined in the HelpDisplay (that is, HelpDisplay:Show("HelpIndex")).</note>
             If a HELPWINDOW request is received, while Window:HelpContext is defined, Window:HelpRequest() uses the HelpContext property, regardless of the window region that has focus.
             Refer to the "GUI Classes" chapter in the Programmer's Guide for more information on programming an online help system for your application.
         </remarks>
@@ -25497,12 +25996,28 @@
         <param name="oBoundingBox">The bounding box (group or character box) representing the window area to be painted, in canvas coordinates.</param>
         <param name="kPaintMode">
             The constant that represents how the window area is painted:
-            <pre>
-                Constant      Description
-                PAINTFILL     Fills the entire rectangle using the currently selected brush. This is the default.
-                PAINTFRAME    Frames the entire rectangle using the currently selected pen
-                PAINTINVERT   Inverts the entire rectangle
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>
+                        PAINTFILL
+                    </term>
+                    <description>Fills the entire rectangle using the currently selected brush. This is the default.</description>
+                </item>
+                <item>
+                    <term>
+                        PAINTFRAME
+                    </term>
+                    <description>Frames the entire rectangle using the currently selected pen</description>
+                </item>
+                <item>
+                    <term>PAINTINVERT   </term>
+                    <description>Inverts the entire rectangle</description>
+                </item>
+            </list>
         </param>
         <returns>NIL</returns>
     </Window.PaintBoundingBox>
@@ -25728,16 +26243,41 @@
         </summary>
         <param name="kShowState">The constant that represents how the window is shown. Valid values are:</param>
         <remarks>
-            <pre>
-                Constant		  Description
-                SHOWCENTERED	Shows the window centered within its owner window. If the owner is the desktop, the window is centered on the screen.
-                SHOWICONIZED	Shows the window initially as an icon
-                SHOWNORMAL	  Shows the window on its owner, in a size chosen by the owner. If the owner is the desktop,
-                the window appears quite large but may not fill the whole desktop. You can control the window's
-                size precisely, if you want, with Window:Size and Window:Origin. This is the default.
-                SHOWZOOMED    Shows the window at the maximum size allowed by its owner. If the owner is the desktop, the window occupies
-                the whole desktop.
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>
+                        SHOWCENTERED
+                    </term>
+                    <description>Shows the window centered within its owner window. If the owner is the desktop, the window is centered on the screen.</description>
+                </item>
+                <item>
+                    <term>
+                        SHOWICONIZED
+                    </term>
+                    <description>Shows the window initially as an icon</description>
+                </item>
+                <item>
+                    <term>
+                        SHOWNORMAL
+                    </term>
+                    <description>
+                        Shows the window on its owner, in a size chosen by the owner. If the owner is the desktop,
+                        the window appears quite large but may not fill the whole desktop. You can control the window's
+                        size precisely, if you want, with Window:Size and Window:Origin. This is the default.
+                    </description>
+                </item>
+                <item>
+                    <term>SHOWZOOMED</term>
+                    <description>
+                        Shows the window at the maximum size allowed by its owner. If the owner is the desktop, the window occupies
+                        the whole desktop.
+                    </description>
+                </item>
+            </list>
         </remarks>
         <returns>NIL</returns>
     </Window.Show>
@@ -25757,14 +26297,42 @@
         <param name="dwInfo">
             Flags that can be set to add an icon to a balloon ToolTip.
             Valid values are:
-            <pre>
-                Constant      Description
-                NIIF_ERROR    An error icon.
-                NIIF_INFO     An information icon.
-                NIIF_NONE     No icon.
-                NIIF_WARNING  A warning icon.
-                NIIF_NOSOUND  Do not play the associated sound.
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>
+                        NIIF_ERROR
+                    </term>
+                    <description>An error icon.</description>
+                </item>
+                <item>
+                    <term>
+                        NIIF_INFO
+                    </term>
+                    <description>An information icon.</description>
+                </item>
+                <item>
+                    <term>
+                        NIIF_NONE
+                    </term>
+                    <description>No icon.</description>
+                </item>
+                <item>
+                    <term>
+                        NIIF_WARNING
+                    </term>
+                    <description>A warning icon.</description>
+                </item>
+                <item>
+                    <term>
+                        NIIF_NOSOUND
+                    </term>
+                    <description>Do not play the associated sound.</description>
+                </item>
+            </list>
         </param>
         <returns>The result of the call to Shell_NotifyIcon() (see the WIN32 API)</returns>
     </Window.ShowBalloonTrayTip>

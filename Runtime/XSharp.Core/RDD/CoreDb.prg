@@ -41,7 +41,7 @@ CLASS XSharp.CoreDb
     STATIC METHOD CWA(cFunction AS STRING, lThrow := TRUE AS LOGIC) AS IRdd
         LOCAL oResult AS IRdd
         RuntimeState.LastRddError := NULL
-        oResult := RuntimeState.Workareas:CurrentWorkarea
+        oResult := RuntimeState.DataSession:CurrentWorkarea
         IF oResult != NULL_OBJECT
             RETURN oResult
         ENDIF
@@ -49,9 +49,10 @@ CLASS XSharp.CoreDb
             RddError.PostNoTableError(cFunction)
         ENDIF
         RETURN NULL
+
         /// <exclude />
     STATIC METHOD CWANum(cFunction AS STRING)  AS DWORD
-        VAR oWA := RuntimeState.Workareas:CurrentWorkarea
+        VAR oWA := RuntimeState.DataSession:CurrentWorkarea
         IF oWA != NULL
             RETURN oWA:Area
         ENDIF
@@ -86,6 +87,7 @@ CLASS XSharp.CoreDb
             NEXT
         ENDIF
         RETURN ret
+
         /// <exclude />
     INTERNAL STATIC METHOD BuildTrans( dbti AS DbTransInfo, lpfn AS _FieldNames, src AS IRdd, dst AS IRdd ) AS LOGIC
         LOCAL oTmp          AS OBJECT
@@ -139,7 +141,7 @@ CLASS XSharp.CoreDb
     INTERNAL STATIC METHOD TransSetInfo(oRdd AS IRdd, info AS DbTransInfo, cFunc AS STRING,nDest AS DWORD, fldNames AS _FieldNames,;
                                         uCobFor AS ICodeblock ,uCobWhile AS ICodeblock ,;
                                         nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS VOID
-        LOCAL oDest := RuntimeState.Workareas.GetRDD(nDest) AS IRdd
+        LOCAL oDest := RuntimeState.DataSession.GetRDD(nDest) AS IRdd
         IF oDest == NULL
             RddError.PostNoTableError(cFunc)
         ENDIF
@@ -197,12 +199,12 @@ CLASS XSharp.CoreDb
             IF lMakeUnique
                 LOCAL cTemp := cAlias AS STRING
                 LOCAL nCounter := 0 AS LONG
-                VAR Workareas := RuntimeState.Workareas
-                LOCAL nExistingArea := Workareas:FindAlias(cAlias) AS DWORD
+                VAR oSession  := RuntimeState.DataSession
+                LOCAL nExistingArea := oSession:FindAlias(cAlias) AS DWORD
                 DO WHILE nExistingArea != 0
                     nCounter++
                     cAlias := cTemp+"_"+nCounter:ToString()
-                    nExistingArea := Workareas:FindAlias(cAlias)
+                    nExistingArea := oSession:FindAlias(cAlias)
                 ENDDO
             ENDIF
         ENDIF
@@ -211,7 +213,7 @@ CLASS XSharp.CoreDb
 
         // Check if Alias is used for current thread
     INTERNAL STATIC METHOD IsAliasUnused( cAlias AS STRING ) AS LOGIC
-        RETURN RuntimeState.Workareas:FindAlias(cAlias) == 0
+        RETURN RuntimeState.DataSession:FindAlias(cAlias) == 0
 
         // Create RDD Object from RDD Type
     INTERNAL STATIC METHOD CreateRDDInstance( rddType AS Type , cAlias AS STRING) AS IRdd
@@ -227,7 +229,7 @@ CLASS XSharp.CoreDb
 
     INTERNAL STATIC METHOD Fail(e AS Exception) AS VOID
         RuntimeState.LastRddError := e
-        VAR oRdd := RuntimeState.Workareas:CurrentWorkarea
+        VAR oRdd := RuntimeState.DataSession:CurrentWorkarea
         LOCAL procName := ProcName(1) AS STRING
         IF procName == "COREDB:DO"
             procName := ProcName(2)
@@ -264,7 +266,7 @@ CLASS XSharp.CoreDb
         /// <remarks><note type="tip">Alias(), VoDbAlias() and CoreDb.Alias() are aliases</note></remarks>
     STATIC METHOD Alias(nArea AS DWORD) AS STRING
         RETURN CoreDb.Do ({ =>
-        RETURN RuntimeState.Workareas:GetAlias(nArea)
+        RETURN RuntimeState.DataSession:GetAlias(nArea)
         })
 
         /// <summary>
@@ -348,7 +350,7 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         BEFOREBULK
-        VAR result := oRdd:ClearFilter()
+            VAR result := oRdd:ClearFilter()
         AFTERBULK
         RETURN result
         })
@@ -376,7 +378,7 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         BEFOREBULK
-        VAR result := oRdd:ClearRel()
+            VAR result := oRdd:ClearRel()
         AFTERBULK
         RETURN result
         })
@@ -400,9 +402,10 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbCloseAll() and CoreDb.CloseAll() are aliases</note></remarks>
     STATIC METHOD CloseAll() AS LOGIC
         RETURN CoreDb.Do ({ =>
-        VAR oRdd := RuntimeState.Workareas:CurrentWorkarea  // needed for BEFOREBULK and AFTERBULK
+        var oSession := RuntimeState.DataSession
+        VAR oRdd := oSession:CurrentWorkarea  // needed for BEFOREBULK and AFTERBULK
         BEFOREBULK
-        VAR result := RuntimeState.Workareas:CloseAll()
+            VAR result := oSession:CloseAll()
         AFTERBULK
         RETURN result
         })
@@ -415,12 +418,12 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbCloseArea() and CoreDb.CloseArea() are aliases</note></remarks>
     STATIC METHOD CloseArea() AS LOGIC
         RETURN CoreDb.Do ({ =>
-            VAR Workareas := RuntimeState.Workareas
-            VAR uiNewArea := Workareas:CurrentWorkareaNO
-            VAR oRdd := Workareas:CurrentWorkarea
+            VAR oSession := RuntimeState.DataSession
+            VAR uiNewArea := oSession:CurrentWorkareaNO
+            VAR oRdd := oSession:CurrentWorkarea
             IF oRdd != NULL
                 RAISE FileClose  oRdd:Info(DbInfo.DBI_FULLPATH,NULL)
-                RETURN Workareas:CloseArea(uiNewArea)
+                RETURN oSession:CloseArea(uiNewArea)
             ENDIF
             RETURN FALSE
         })
@@ -470,9 +473,10 @@ CLASS XSharp.CoreDb
 
     STATIC METHOD CommitAll() AS LOGIC
         RETURN CoreDb.Do ({ =>
-        VAR oRdd := RuntimeState.Workareas:CurrentWorkarea
+        VAR oSession := RuntimeState.DataSession
+        VAR oRdd := oSession:CurrentWorkarea
         BEFOREBULK
-        VAR result := RuntimeState.Workareas:CommitAll()
+            VAR result := oSession:CommitAll()
         AFTERBULK
         RETURN result
         })
@@ -542,7 +546,7 @@ CLASS XSharp.CoreDb
         LOCAL uiOldArea := 0 AS DWORD
         LOCAL uiNewArea := 0 AS DWORD
         LOCAL ret   := FALSE   AS LOGIC
-        VAR Workareas := RuntimeState.Workareas
+        VAR oSession := RuntimeState.DataSession
         RuntimeState.LastRddError := NULL
         IF String.IsNullOrEmpty( cName )
             RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(cName), 1, <OBJECT>{ cName } )
@@ -554,13 +558,13 @@ CLASS XSharp.CoreDb
             ret := TRUE
         ENDIF
         IF lNew
-            uiNewArea := Workareas:FindEmptyArea(TRUE)
+            uiNewArea := oSession:FindEmptyArea(TRUE)
         ELSE
             // VO Closes the current Workarea
-            uiNewArea := Workareas:CurrentWorkareaNO
-            Workareas:CloseArea(uiNewArea)
+            uiNewArea := oSession:CurrentWorkareaNO
+            oSession:CloseArea(uiNewArea)
         ENDIF
-        Workareas:CurrentWorkareaNO := uiNewArea
+        oSession:CurrentWorkareaNO := uiNewArea
         IF ret .AND. String.IsNullOrEmpty( cAlias )
             ret := CoreDb.AliasFromFilename( cName, REF cAlias ,!lKeep)
             IF ! ret
@@ -603,7 +607,7 @@ CLASS XSharp.CoreDb
                 dboi:Alias     := cAlias
                 dboi:Workarea  := uiNewArea
                 oRdd:Alias     := cAlias
-                ret := Workareas:SetArea(uiNewArea, oRdd)
+                ret := oSession:SetArea(uiNewArea, oRdd)
                 IF lJustOpen
                     ret := oRdd:Open( dboi )
                 ELSE
@@ -613,14 +617,15 @@ CLASS XSharp.CoreDb
 
             ENDIF
             IF ret .AND. ! lKeep
-                Workareas:CloseArea(uiNewArea)
+                oSession:CloseArea(uiNewArea)
                 IF uiOldArea != 0
-                    Workareas:CurrentWorkareaNO := uiOldArea
+                    oSession:CurrentWorkareaNO := uiOldArea
                 ENDIF
             ENDIF
         ENDIF
         RETURN ret
         })
+
         /// <summary>Return the name of the alias.</summary>
         /// <remarks>In the FoxPro dialect the full path is returned.</remarks>
         STATIC METHOD Dbf AS STRING
@@ -641,13 +646,13 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBDelete().
     /// <include file="CoreComments.xml" path="Comments/LastError/*" />
     /// <note type="tip">VoDbDelete() and CoreDb.Delete() are aliases</note></remarks>
-
     /// <seealso cref="M:XSharp.RT.Functions.DbDelete">DbDelete Function</seealso>
     STATIC METHOD Delete() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+        RAISE BeforeRecordDeleted  oRdd:RecNo
         VAR result := oRdd:Delete()
-        RAISE RecordDeleted  oRdd:RecNo
+        RAISE AfterRecordDeleted  oRdd:RecNo
         RETURN result
 
         })
@@ -995,7 +1000,7 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbGetSelect() and CoreDb.GetSelect() are aliases</note></remarks>
 
     STATIC METHOD GetSelect() AS DWORD
-        RETURN RuntimeState.Workareas:CurrentWorkareaNO
+        RETURN RuntimeState.DataSession:CurrentWorkareaNO
         /// <summary>
         /// Move to the last logical record.
         /// </summary>
@@ -1107,15 +1112,15 @@ CLASS XSharp.CoreDb
         LOCAL oRddDest AS IRdd
         LOCAL oRddSrc AS IRdd
         LOCAL oValue  AS OBJECT
-        VAR Workareas := RuntimeState.Workareas
+        VAR oSession := RuntimeState.DataSession
         nCount := struList:Count
         nDestSel := struList:uiDestSel
-        oRddDest := Workareas:GetRDD(nDestSel)
+        oRddDest := oSession:GetRDD(nDestSel)
         IF oRddDest == NULL
             RddError.PostNoTableError(__FUNCTION__)
         ELSE
             FOR nFld := 0 TO nCount-1
-                oRddSrc := Workareas:GetRDD(struList:Fields[nFld]:Area)
+                oRddSrc := oSession:GetRDD(struList:Fields[nFld]:Area)
                 IF oRddSrc == NULL_OBJECT
                     RddError.PostNoTableError(__FUNCTION__)
                 ENDIF
@@ -1532,8 +1537,9 @@ CLASS XSharp.CoreDb
         LOCAL aList AS List<STRING>
         aList := List<STRING>{}
         LOCAL i AS DWORD
-        FOR i := 1 TO Workareas.MaxWorkareas
-            VAR oRdd := RuntimeState.Workareas.GetRDD(i)
+        var oSession := RuntimeState.DataSession
+        FOR i := 1 TO DataSession.MaxWorkareas
+            VAR oRdd := oSession.GetRDD(i)
             IF oRdd != NULL
                 LOCAL cName AS STRING
                 cName := oRdd:Driver
@@ -1584,8 +1590,9 @@ CLASS XSharp.CoreDb
     STATIC METHOD Recall() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+        RAISE BeforeRecordRecalled  oRdd:RecNo
         VAR result := oRdd:Recall()
-        RAISE RecordRecalled  oRdd:RecNo
+        RAISE AfterRecordRecalled  oRdd:RecNo
         RETURN result
         })
 
@@ -1758,16 +1765,16 @@ CLASS XSharp.CoreDb
     STATIC METHOD Select(nNew AS DWORD,nOld OUT DWORD ) AS LOGIC
         LOCAL nTemp := 0 as DWORD
         var result := CoreDb.Do ({ =>
-        VAR Workareas := RuntimeState.Workareas
-        nTemp := (DWORD) Workareas:CurrentWorkareaNO
+        VAR oSession := RuntimeState.DataSession
+        nTemp := oSession:CurrentWorkareaNO
         IF nNew != nTemp
             IF nNew == 0
-                nNew := (DWORD) Workareas:FindEmptyArea(TRUE)
+                nNew := oSession:FindEmptyArea(TRUE)
             ENDIF
-            IF nNew > Workareas.MaxWorkareas
+            IF nNew > DataSession.MaxWorkareas
                 RddError.PostArgumentError( __FUNCTION__, EDB_SELECT, nameof(nNew), 1, <OBJECT>{ nNew } )
             ELSE
-                Workareas:CurrentWorkareaNO :=  nNew
+                oSession:CurrentWorkareaNO :=  nNew
             ENDIF
         ENDIF
         RETURN TRUE
@@ -1847,12 +1854,12 @@ CLASS XSharp.CoreDb
     STATIC METHOD SetRelation(cAlias AS STRING,oKey  AS ICodeblock,cKey AS STRING, cName AS STRING) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-        VAR Workareas := RuntimeState.Workareas
-        LOCAL nDest := Workareas:FindAlias(cAlias) AS DWORD
+        VAR oSession := RuntimeState.DataSession
+        LOCAL nDest := oSession:FindAlias(cAlias) AS DWORD
         IF nDest == 0
             RddError.PostArgumentError(__FUNCTION__,EDB_SETRELATION, nameof(cAlias), 1, <OBJECT>{cAlias})
         ENDIF
-        LOCAL oDest := Workareas:GetRDD(nDest) AS IRdd
+        LOCAL oDest := oSession:GetRDD(nDest) AS IRdd
         IF oDest == NULL_OBJECT
             RddError.PostArgumentError(__FUNCTION__,EDB_SETRELATION, nameof(cAlias), 1, <OBJECT>{cAlias})
         ENDIF
@@ -1903,12 +1910,13 @@ CLASS XSharp.CoreDb
 
     STATIC METHOD SetSelect(siNew AS INT) AS DWORD
         RETURN CoreDb.Do ({ =>
+        VAR oSession := RuntimeState.DataSession
         IF siNew == -1
-            siNew := (INT) RuntimeState.Workareas:FindEmptyArea(FALSE)
+            siNew := (INT) oSession:FindEmptyArea(FALSE)
         ELSEIF siNew <= 0
-            siNew := (INT) RuntimeState.Workareas:FindEmptyArea(TRUE)
+            siNew := (INT) oSession:FindEmptyArea(TRUE)
         ENDIF
-        IF siNew > Workareas.MaxWorkareas
+        IF siNew > DataSession.MaxWorkareas
             siNew := 0
         ELSEIF siNew == 0
             RddError.PostArgumentError( __FUNCTION__, EDB_SELECT, nameof(siNew), 1, <OBJECT>{siNew})
@@ -2013,7 +2021,7 @@ CLASS XSharp.CoreDb
         IF String.IsNullOrEmpty(sAlias)
             ret := RuntimeState.CurrentWorkarea
         ELSE
-            ret := RuntimeState.Workareas:FindAlias( sAlias )
+            ret := RuntimeState.DataSession:FindAlias( sAlias )
             IF ret != 0
                 CoreDb.SetSelect( (INT) ret )
             ENDIF
@@ -2048,7 +2056,7 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
             LOCAL dbti := DbTransInfo{ fldNames:FieldCount} AS DbTransInfo
-            LOCAL oDest := RuntimeState.Workareas.GetRDD(nDest) AS IRdd
+            LOCAL oDest := RuntimeState.DataSession.GetRDD(nDest) AS IRdd
             IF oDest == NULL_OBJECT
                 RddError.PostNoTableError(__FUNCTION__)
             ENDIF
@@ -2094,9 +2102,10 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbUnlockAll() and CoreDb.UnlockAll() are aliases</note></remarks>
     STATIC METHOD UnlockAll() AS LOGIC
         RETURN CoreDb.Do ({ =>
-        VAR oRdd := RuntimeState.Workareas:CurrentWorkarea
+        VAR oSession := RuntimeState.DataSession
+        VAR oRdd := oSession:CurrentWorkarea
         BEFOREBULK
-        RuntimeState.Workareas:UnLockAll()
+            oSession:UnLockAll()
         AFTERBULK
         RETURN TRUE
         })
@@ -2157,7 +2166,7 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         LOCAL ret   := FALSE AS LOGIC
         LOCAL area  := 0    AS DWORD
-        VAR Workareas := RuntimeState.Workareas
+        VAR oSession := RuntimeState.DataSession
         IF String.IsNullOrEmpty( cName )
             RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(cName), 3 , <OBJECT>{NULL})
         ELSE
@@ -2176,17 +2185,17 @@ CLASS XSharp.CoreDb
             ENDIF
             cAlias := cAlias:ToUpperInvariant()
             IF lNew
-                area := Workareas:FindEmptyArea(TRUE)
-                IF area > Workareas.MaxWorkareas  .OR. area == 0
+                area := oSession:FindEmptyArea(TRUE)
+                IF area > DataSession.MaxWorkareas  .OR. area == 0
                     ret := FALSE
                 ELSE
-                    Workareas:CurrentWorkareaNO := area
+                    oSession:CurrentWorkareaNO := area
                 ENDIF
             ELSE
-                area := Workareas:CurrentWorkareaNO
+                area := oSession:CurrentWorkareaNO
             ENDIF
             IF ret
-                Workareas:CloseArea(area)
+                oSession:CloseArea(area)
                 LOCAL oRdd := CoreDb.CreateRDDInstance( rddType, cAlias ) AS IRdd
 
                 IF oRdd == NULL
@@ -2198,7 +2207,7 @@ CLASS XSharp.CoreDb
                 ELSE
                     LOCAL dboi := DbOpenInfo{} AS DbOpenInfo
                     LOCAL uiArea AS DWORD
-                    uiArea := Workareas:CurrentWorkareaNO
+                    uiArea           := oSession:CurrentWorkareaNO
                     var path         := Path.GetDirectoryName(cName)
                     dboi:FullName    := Path.Combine(path, System.IO.Path.GetFileName(cName))
                     dboi:Shared      := lShare
@@ -2206,7 +2215,7 @@ CLASS XSharp.CoreDb
                     dboi:Alias       := cAlias
                     dboi:Workarea    := uiArea
                     oRdd:Alias        := cAlias
-                    ret := Workareas:SetArea(uiArea, oRdd)
+                    ret := oSession:SetArea(uiArea, oRdd)
                     IF (ret)
                         TRY
                             RuntimeState.LastRddError := NULL
@@ -2219,13 +2228,12 @@ CLASS XSharp.CoreDb
                         END TRY
                     ENDIF
                     IF ! ret
-                        Workareas:CloseArea(uiArea)
+                        oSession:CloseArea(uiArea)
                     ENDIF
-                    Workareas:CurrentWorkareaNO := uiArea
+                    oSession:CurrentWorkareaNO := uiArea
                 ENDIF
             ENDIF
         ENDIF
-
         RETURN ret
         })
 
@@ -2240,7 +2248,7 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         BEFOREBULK
-        VAR result := oRdd:Zap()
+            VAR result := oRdd:Zap()
         AFTERBULK
         RETURN result
         })

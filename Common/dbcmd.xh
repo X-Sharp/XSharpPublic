@@ -11,6 +11,7 @@
 //             These functions should not be called directly.
 //
 // Caution: do not modify this file. It will be overwritten during product updates
+// Rules with more optional clauses should precede rules without these optional clauses, such as INDEX ON, REPLACE and DELETE
 //
 
 #ifndef DBCMD_XH
@@ -58,12 +59,32 @@
       [; DbSetIndex( <(index1)> )]                                      ;
       [; DbSetIndex( <(indexn)> )]
 
+#command INDEX ON <key>         										;
+     TAG <order>                										;
+     [TO <file>]                										;
+     [FOR <fo>]                 										;
+     [<all:ALL>]                										;
+     [WHILE <wh>]               										;
+     [NEXT <nx>]                										;
+     [RECORD <rec>]             										;
+     [<rs:REST>]                										;
+     [EVAL <ev>]                										;
+     [EVERY <evr>]              										;
+     [<u:UNIQUE>]               										;
+     [<asd:ASCENDING>]          										;
+     [<dsd:DESCENDING>]         										;
+     [<lCur:USECURRENT>]        										;
+     [<lAdd:ADDITIVE>]          										;
+     [<lCus:CUSTOM>]            										;
+     [<lNop:NOOPTIMIZE>]        										;
+    => OrdCondSet( <"fo">, , [<.all.>], <{wh}>, <{ev}>, <evr>, 			;
+          RecNo(), <nx>, <rec>,[<.rs.>],[<.dsd.>],<.lAdd.>,					;
+          [<.lCur.>], [<.lCus.>], [<.lNop.>] )      						;;  ;
+       OrdCreate(<(file)>,<(order)>,<(key)>,,IF(<.u.>,.T., NIL))
 
-#command INDEX ON <key> TO <(file)> [<u: UNIQUE>]                       ;
-      => dbCreateIndex(                                                 ;
-                        <(file)>, <"key">, <{key}>,                     ;
-                        IIF( <.u.>, TRUE, NIL )                           ;
-                      )
+#command INDEX ON <key> TO <file> [<u:UNIQUE>]  						;
+      =>  OrdCondSet()  ;;        										;
+          DbCreateIndex(<(file)>,<(key)>,,IIF(<.u.>, .T., NIL))
 
 #command REINDEX                => DbReindex()
 #command SET ORDER TO <n>       => DbSetOrder( <n> )
@@ -117,9 +138,9 @@
       => DbAutoLock(); _FIELD-><f1> := <v1> [; _FIELD-><fN> := <vN>]; DbAutoUnLock()
 
 #command DELETE                                                         ;
-         [FOR <lfor>]                                                    ;
-         [WHILE <lwhile>]                                                ;
-         [NEXT <nnext>]                                                  ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
@@ -243,7 +264,7 @@
       => DbCopy(                                                        ;
                    <(file)>, <fields>,                                  ;
                    <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>       ;
-		   <rdd>, { <(hdnlist)> }, <.noopt.>)
+                   <rdd>, { <(hdnlist)> }, <.noopt.>)
 
 
 #command APPEND FROM <(file)> DELIMITED [WITH <*delim*>]                ;
@@ -405,12 +426,12 @@
 
 
 // NOTE:  CLOSE <alias> must precede the others
-#command CLOSE <alias>              => <alias>->( DbCloseArea() )
-#command CLOSE &<alias>             => (<alias>)->( DbCloseArea() )
+#command CLOSE <alias>                 => <alias>->( DbCloseArea() )
+#command CLOSE &<alias>                => (<alias>)->( DbCloseArea() )
 
-#command CLOSE                      => DbCloseArea()
-#command CLOSE [al: DATABASES,ALL>] => DbCloseAll()
-#command CLOSE INDEXES              => DbClearIndex()
+#command CLOSE [<al: DATABASES,ALL>] => DbCloseAll()
+#command CLOSE INDEXES                 => DbClearIndex()
+#command CLOSE                         => DbCloseArea()
 
 #endif
 

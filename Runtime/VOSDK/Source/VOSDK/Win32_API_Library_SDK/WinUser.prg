@@ -531,7 +531,7 @@ VOSTRUCT _winDLGTEMPLATE ALIGN 2
 	MEMBER cy AS SHORTINT
 
 
-VOSTRUCT _winDLGITEMTEMPLATE ALIGN 2 
+VOSTRUCT _winDLGITEMTEMPLATE ALIGN 2
 	MEMBER  style AS DWORD
 	MEMBER  dwExtendedStyle AS DWORD
 	MEMBER  x AS SHORTINT
@@ -2169,7 +2169,7 @@ _DLL FUNCTION GetComboBoxInfo(hwndCombo AS PTR, pcbi AS _winCOMBOBOXINFO) AS LOG
 function XAmount
 function abc
 struct xyz
-*/ 
+*/
 FUNCTION POINTTOPOINTS(pt AS _winPOINT) AS LONGINT STRICT
 	LOCAL cx AS WORD
 	LOCAL cy AS WORD
@@ -2425,8 +2425,18 @@ DEFINE VK_F22                    := 0x85
 DEFINE VK_F23                    := 0x86
 DEFINE VK_F24                    := 0x87
 /*
- * 0x88 - 0x8F : unassigned
+ * 0x88 - 0x8F : UI navigation
  */
+
+DEFINE VK_NAVIGATION_VIEW   :=  0x88 // reserved
+DEFINE VK_NAVIGATION_MENU   :=  0x89 // reserved
+DEFINE VK_NAVIGATION_UP     :=  0x8A // reserved
+DEFINE VK_NAVIGATION_DOWN   :=  0x8B // reserved
+DEFINE VK_NAVIGATION_LEFT   :=  0x8C // reserved
+DEFINE VK_NAVIGATION_RIGHT  :=  0x8D // reserved
+DEFINE VK_NAVIGATION_ACCEPT :=  0x8E // reserved
+DEFINE VK_NAVIGATION_CANCEL :=  0x8F // reserved
+
 DEFINE VK_NUMLOCK            := 0x90
 DEFINE VK_SCROLL                 := 0x91
 DEFINE VK_OEM_SCROLL          := 0x91
@@ -2665,19 +2675,24 @@ DEFINE APPCOMMAND_SPELL_CHECK := 42
 DEFINE APPCOMMAND_DICTATE_OR_COMMAND_CONTROL_TOGGLE := 43
 DEFINE APPCOMMAND_MIC_ON_OFF_TOGGLE := 44
 DEFINE APPCOMMAND_CORRECTION_LIST := 45
-DEFINE APPCOMMAND_MEDIA_CHANNEL_DOWN := 52
-DEFINE APPCOMMAND_MEDIA_CHANNEL_UP := 51
 DEFINE APPCOMMAND_MEDIA_FASTFORWARD := 49
 DEFINE APPCOMMAND_MEDIA_PAUSE := 47
 DEFINE APPCOMMAND_MEDIA_PLAY := 46
 DEFINE APPCOMMAND_MEDIA_RECORD := 48
 DEFINE APPCOMMAND_MEDIA_REWIND := 50
+define APPCOMMAND_MEDIA_CHANNEL_UP    := 51
+define APPCOMMAND_MEDIA_CHANNEL_DOWN  := 52
+define APPCOMMAND_DELETE              := 53
+define APPCOMMAND_DWM_FLIP3D          := 54
+
 DEFINE FAPPCOMMAND_KEY := 0
 DEFINE FAPPCOMMAND_MOUSE := 0x8000
 DEFINE FAPPCOMMAND_OEM := 0x1000
 DEFINE FAPPCOMMAND_MASK := 0xF000
+
 DEFINE HKL_PREV                      := 0
 DEFINE HKL_NEXT                      := 1
+
 DEFINE KLF_ACTIVATE              := 0x00000001
 DEFINE KLF_SUBSTITUTE_OK     := 0x00000002
 DEFINE KLF_UNLOADPREVIOUS  := 0x00000004
@@ -2687,7 +2702,13 @@ DEFINE KLF_NOTELLSHELL       := 0x00000080
 DEFINE KLF_SETFORPROCESS   := 0x00000100
 DEFINE KLF_SHIFTLOCK       := 0x00010000
 DEFINE KLF_RESET           := 0x40000000
+
+DEFINE INPUTLANGCHANGE_SYSCHARSET := 0x0001
+DEFINE INPUTLANGCHANGE_FORWARD    := 0x0002
+DEFINE INPUTLANGCHANGE_BACKWARD   := 0x0004
+
 DEFINE KL_NAMELENGTH             := 9
+
 DEFINE DESKTOP_READOBJECTS               := 0x0001L
 DEFINE DESKTOP_CREATEWINDOW              := 0x0002L
 DEFINE DESKTOP_CREATEMENU                := 0x0004L
@@ -2697,7 +2718,9 @@ DEFINE DESKTOP_JOURNALPLAYBACK       := 0x0020L
 DEFINE DESKTOP_ENUMERATE                     := 0x0040L
 DEFINE DESKTOP_WRITEOBJECTS              := 0x0080L
 DEFINE DESKTOP_SWITCHDESKTOP             := 0x0100L
+
 DEFINE DF_ALLOWOTHERACCOUNTHOOK      := 0x0001L
+
 DEFINE WINSTA_ENUMDESKTOPS               := 0x0001L
 DEFINE WINSTA_READATTRIBUTES             := 0x0002L
 DEFINE WINSTA_ACCESSCLIPBOARD        := 0x0004L
@@ -2707,10 +2730,20 @@ DEFINE WINSTA_ACCESSGLOBALATOMS      := 0x0020L
 DEFINE WINSTA_EXITWINDOWS                := 0x0040L
 DEFINE WINSTA_ENUMERATE                      := 0x0100L
 DEFINE WINSTA_READSCREEN                     := 0x0200L
+DEFINE WINSTA_ALL_ACCESS           := (WINSTA_ENUMDESKTOPS  | WINSTA_READATTRIBUTES  | WINSTA_ACCESSCLIPBOARD | ;
+                                     WINSTA_CREATEDESKTOP | WINSTA_WRITEATTRIBUTES | WINSTA_ACCESSGLOBALATOMS | ;
+                                     WINSTA_EXITWINDOWS   | WINSTA_ENUMERATE       | WINSTA_READSCREEN)
+
+DEFINE CWF_CREATE_ONLY     := 0x00000001
 DEFINE WSF_VISIBLE                               := 0x0001L
 DEFINE UOI_FLAGS            :=  1
 DEFINE UOI_NAME             :=  2
 DEFINE UOI_TYPE             :=  3
+DEFINE UOI_USER_SID   :=  4
+DEFINE UOI_HEAPSIZE   :=  5
+DEFINE UOI_IO         :=  6
+DEFINE UOI_TIMERPROC_EXCEPTION_SUPPRESSION   :=      7
+
 DEFINE GWL_WNDPROC               := (-4)
 DEFINE GWL_HINSTANCE             := (-6)
 DEFINE GWL_HWNDPARENT        := (-8)
@@ -2718,6 +2751,7 @@ DEFINE GWL_STYLE                     := (-16)
 DEFINE GWL_EXSTYLE               := (-20)
 DEFINE GWL_USERDATA              := (-21)
 DEFINE GWL_ID                        := (-12)
+
 DEFINE GCL_MENUNAME              := (-8)
 DEFINE GCL_HBRBACKGROUND     := (-10)
 DEFINE GCL_HCURSOR               := (-12)
@@ -2729,6 +2763,7 @@ DEFINE GCL_WNDPROC               := (-24)
 DEFINE GCL_STYLE                     := (-26)
 DEFINE GCW_ATOM                      := (-32)
 DEFINE GCL_HICONSM               := (-34)
+
 DEFINE WM_NULL                                               := 0x0000
 DEFINE WM_CREATE                                             := 0x0001
 DEFINE WM_DESTROY                                        := 0x0002
@@ -2741,6 +2776,7 @@ DEFINE WM_ACTIVATE                                       := 0x0006
 DEFINE       WA_INACTIVE         := 0
 DEFINE       WA_ACTIVE           := 1
 DEFINE       WA_CLICKACTIVE  := 2
+
 DEFINE WM_SETFOCUS                                       := 0x0007
 DEFINE WM_KILLFOCUS                                      := 0x0008
 DEFINE WM_ENABLE                                             := 0x000A
@@ -2789,19 +2825,25 @@ DEFINE WM_SETHOTKEY                                      := 0x0032
 DEFINE WM_GETHOTKEY                                      := 0x0033
 DEFINE WM_QUERYDRAGICON                              := 0x0037
 DEFINE WM_COMPAREITEM                                := 0x0039
+
 DEFINE WM_GETOBJECT                    := 0x003D
+
 DEFINE WM_COMPACTING                                     := 0x0041
 DEFINE WM_COMMNOTIFY                                     := 0x0044
 DEFINE WM_WINDOWPOSCHANGING                      := 0x0046
 DEFINE WM_WINDOWPOSCHANGED                       := 0x0047
+
 DEFINE WM_POWER                                              := 0x0048
+
 DEFINE PWR_OK                        := 1
 DEFINE PWR_FAIL                      := (-1)
 DEFINE PWR_SUSPENDREQUEST  := 1
 DEFINE PWR_SUSPENDRESUME     := 2
 DEFINE PWR_CRITICALRESUME  := 3
+
 DEFINE WM_COPYDATA                                       := 0x004A
 DEFINE WM_CANCELJOURNAL                              := 0x004B
+
 DEFINE WM_NOTIFY                                             := 0x004E
 DEFINE WM_INPUTLANGCHANGEREQUEST             := 0x0050
 DEFINE WM_INPUTLANGCHANGE                        := 0x0051
@@ -2819,6 +2861,7 @@ DEFINE WM_STYLECHANGED                               := 0x007D
 DEFINE WM_DISPLAYCHANGE                              := 0x007E
 DEFINE WM_GETICON                                        := 0x007F
 DEFINE WM_SETICON                                        := 0x0080
+
 DEFINE WM_NCCREATE                                       := 0x0081
 DEFINE WM_NCDESTROY                                      := 0x0082
 DEFINE WM_NCCALCSIZE                                     := 0x0083
@@ -2837,10 +2880,14 @@ DEFINE WM_NCRBUTTONDBLCLK                        := 0x00A6
 DEFINE WM_NCMBUTTONDOWN                              := 0x00A7
 DEFINE WM_NCMBUTTONUP                                := 0x00A8
 DEFINE WM_NCMBUTTONDBLCLK                        := 0x00A9
+
 DEFINE WM_NCXBUTTONDOWN                := 0x00AB
 DEFINE WM_NCXBUTTONUP                  := 0x00AC
 DEFINE WM_NCXBUTTONDBLCLK              := 0x00AD
+
+define WM_INPUT_DEVICE_CHANGE          := 0x00FE
 DEFINE WM_INPUT                        := 0x00FF
+
 DEFINE WM_KEYFIRST                                       := 0x0100
 DEFINE WM_KEYDOWN                                        := 0x0100
 DEFINE WM_KEYUP                                              := 0x0101
@@ -2897,6 +2944,7 @@ DEFINE WM_CTLCOLORDLG                                := 0x0136
 DEFINE WM_CTLCOLORSCROLLBAR                      := 0x0137
 DEFINE WM_CTLCOLORSTATIC                             := 0x0138
 DEFINE MN_GETHMENU                     := 0x01E1
+
 DEFINE WM_MOUSEFIRST                                     := 0x0200
 DEFINE WM_MOUSEMOVE                                      := 0x0200
 DEFINE WM_LBUTTONDOWN                                := 0x0201
@@ -2912,10 +2960,14 @@ DEFINE WM_MOUSEWHEEL                := 0x020A
 DEFINE WM_XBUTTONDOWN           := 0x020B
 DEFINE WM_XBUTTONUP                 := 0x020C
 DEFINE WM_XBUTTONDBLCLK         := 0x020D
-DEFINE WM_MOUSELAST                   :=  0x020D
+DEFINE WM_MOUSEHWHEEL                 :=  0x020E
+DEFINE WM_MOUSELAST                   :=  0x020E
 DEFINE WHEEL_DELTA                    :=  120
 DEFINE WHEEL_PAGESCROLL               :=  (0xFFFFFFFF)
-DEFINE WM_PARENTNOTIFY                               := 0x0210
+
+DEFINE WM_PARENTNOTIFY                 := 0x0210
+
+
 DEFINE MENULOOP_WINDOW                               := 0
 DEFINE MENULOOP_POPUP                                := 1
 DEFINE WM_ENTERMENULOOP                              := 0x0211
@@ -2926,6 +2978,7 @@ DEFINE WM_CAPTURECHANGED                             := 0x0215
 DEFINE WM_MOVING                                             := 0x0216
 DEFINE WM_POWERBROADCAST                             := 0x0218
 DEFINE WM_DEVICECHANGE                               := 0x0219
+
 DEFINE WM_MDICREATE                                      := 0x0220
 DEFINE WM_MDIDESTROY                                     := 0x0221
 DEFINE WM_MDIACTIVATE                                := 0x0222
@@ -2957,6 +3010,13 @@ DEFINE WM_NCMOUSELEAVE                                      :=0x02A2
 DEFINE WM_WTSSESSION_CHANGE                                 :=0x02B1
 DEFINE WM_TABLET_FIRST                 := 0x02c0
 DEFINE WM_TABLET_LAST                  := 0x02df
+
+define WM_DPICHANGED                   := 0x02E0
+
+define WM_DPICHANGED_BEFOREPARENT      := 0x02E2
+define WM_DPICHANGED_AFTERPARENT       := 0x02E3
+define WM_GETDPISCALEDSIZE             := 0x02E4
+
 DEFINE WM_CUT                                                := 0x0300
 DEFINE WM_COPY                                               := 0x0301
 DEFINE WM_PASTE                                              := 0x0302
@@ -2976,21 +3036,38 @@ DEFINE WM_QUERYNEWPALETTE                        := 0x030F
 DEFINE WM_PALETTEISCHANGING                      := 0x0310
 DEFINE WM_PALETTECHANGED                             := 0x0311
 DEFINE WM_HOTKEY                                             := 0x0312
-DEFINE WM_PRINT                                              := 0x0317
+
+DEFINE WM_PRINT                                      := 0x0317
 DEFINE WM_PRINTCLIENT                                := 0x0318
+
 DEFINE WM_APPCOMMAND := 0x0319
+
 DEFINE WM_THEMECHANGED                :=  0x031A
+
+define WM_DWMCOMPOSITIONCHANGED        :=  0x031E
+define WM_DWMNCRENDERINGCHANGED        :=  0x031F
+define WM_DWMCOLORIZATIONCOLORCHANGED  :=  0x0320
+define WM_DWMWINDOWMAXIMIZEDCHANGE     :=  0x0321
+define WM_DWMSENDICONICTHUMBNAIL       :=    0x0323
+define WM_DWMSENDICONICLIVEPREVIEWBITMAP :=  0x0326
+
+define WM_GETTITLEBARINFOEX            := 0x033F
+
 DEFINE WM_HANDHELDFIRST                              := 0x0358
 DEFINE WM_HANDHELDLAST                               := 0x035F
+
 DEFINE WM_AFXFIRST                                       := 0x0360
 DEFINE WM_AFXLAST                                        := 0x037F
+
 DEFINE WM_PENWINFIRST                                := 0x0380
 DEFINE WM_PENWINLAST                                     := 0x038F
+
 DEFINE WM_APP                                                := 0x8000
 // RvdH Added 030902 to avoid conflicts between messages used by the runtime
 //      and messages used by VO users
 DEFINE WM_VOAPP                          := WM_APP + 0x1000
 DEFINE WM_USER                                               := 0x0400
+
 DEFINE WMSZ_LEFT                     := 1
 DEFINE WMSZ_RIGHT                := 2
 DEFINE WMSZ_TOP                      := 3
@@ -2999,8 +3076,12 @@ DEFINE WMSZ_TOPRIGHT             := 5
 DEFINE WMSZ_BOTTOM               := 6
 DEFINE WMSZ_BOTTOMLEFT       := 7
 DEFINE WMSZ_BOTTOMRIGHT      := 8
+
 DEFINE ST_BEGINSWP               := 0
 DEFINE ST_ENDSWP                     := 1
+/*
+ * WM_NCHITTEST and MOUSEHOOKSTRUCT Mouse Position Codes
+ */
 DEFINE HTERROR                       := (-2)
 DEFINE HTTRANSPARENT             := (-1)
 DEFINE HTNOWHERE                     := 0
@@ -3030,10 +3111,16 @@ DEFINE HTSIZELAST                := HTBOTTOMRIGHT
 DEFINE HTOBJECT                      := 19
 DEFINE HTCLOSE                       := 20
 DEFINE HTHELP                        := 21
+/*
+ * SendMessageTimeout values
+ */
 DEFINE SMTO_NORMAL               := 0x0000
 DEFINE SMTO_BLOCK                := 0x0001
 DEFINE SMTO_ABORTIFHUNG      := 0x0002
 DEFINE SMTO_NOTIMEOUTIFNOTHUNG := 0x0008
+/*
+ * WM_MOUSEACTIVATE Return Codes
+ */
 DEFINE MA_ACTIVATE               := 1
 DEFINE MA_ACTIVATEANDEAT     := 2
 DEFINE MA_NOACTIVATE             := 3
@@ -3043,17 +3130,25 @@ DEFINE MA_NOACTIVATEANDEAT := 4
  */
 DEFINE ICON_SMALL := 0
 DEFINE ICON_BIG   := 1
-// and also 'new' WM_ like
+/*
+ * WM_SIZE message wParam values
+ */
 DEFINE SIZE_RESTORED             := 0
 DEFINE SIZE_MINIMIZED        := 1
 DEFINE SIZE_MAXIMIZED        := 2
 DEFINE SIZE_MAXSHOW              := 3
 DEFINE SIZE_MAXHIDE              := 4
+/*
+ * Obsolete constant names
+ */
 DEFINE SIZENORMAL                := SIZE_RESTORED
 DEFINE SIZEICONIC                := SIZE_MINIMIZED
 DEFINE SIZEFULLSCREEN        := SIZE_MAXIMIZED
 DEFINE SIZEZOOMSHOW              := SIZE_MAXSHOW
 DEFINE SIZEZOOMHIDE              := SIZE_MAXHIDE
+/*
+ * WM_NCCALCSIZE "window valid rect" return values
+ */
 DEFINE WVR_ALIGNTOP              := 0x0010
 DEFINE WVR_ALIGNLEFT             := 0x0020
 DEFINE WVR_ALIGNBOTTOM       := 0x0040
@@ -3062,6 +3157,9 @@ DEFINE WVR_HREDRAW               := 0x0100
 DEFINE WVR_VREDRAW               := 0x0200
 DEFINE WVR_REDRAW                := 0x0300
 DEFINE WVR_VALIDRECTS        := 0x0400
+/*
+ * Key State Masks for Mouse Messages
+ */
 DEFINE MK_LBUTTON                := 0x0001
 DEFINE MK_RBUTTON                := 0x0002
 DEFINE MK_SHIFT                      := 0x0004
@@ -3090,15 +3188,33 @@ DEFINE WS_SYSMENU             := 0x00080000L
 DEFINE WS_THICKFRAME          := 0x00040000L
 DEFINE WS_GROUP               := 0x00020000L
 DEFINE WS_TABSTOP             := 0x00010000L
+
 DEFINE WS_MINIMIZEBOX        := 0x00020000L
 DEFINE WS_MAXIMIZEBOX        := 0x00010000L
+
 DEFINE WS_TILED                      := WS_OVERLAPPED
 DEFINE WS_ICONIC                     := WS_MINIMIZE
 DEFINE WS_SIZEBOX                := WS_THICKFRAME
 DEFINE WS_TILEDWINDOW        := WS_OVERLAPPEDWINDOW
-DEFINE WS_OVERLAPPEDWINDOW := 0x00CF0000L
-DEFINE WS_POPUPWINDOW        :=0X80880000L
+
+/*
+ * Common Window Styles
+ */
+DEFINE WS_OVERLAPPEDWINDOW := (WS_OVERLAPPED     | ;
+                             WS_CAPTION        | ;
+                             WS_SYSMENU        | ;
+                             WS_THICKFRAME     | ;
+                             WS_MINIMIZEBOX    | ;
+                             WS_MAXIMIZEBOX)
+
+DEFINE WS_POPUPWINDOW        :=(WS_POPUP          | ;
+                             WS_BORDER         | ;
+                             WS_SYSMENU)
+
 DEFINE WS_CHILDWINDOW        := (WS_CHILD)
+/*
+ * Extended Window Styles
+ */
 DEFINE WS_EX_DLGMODALFRAME  := 0x00000001L
 DEFINE WS_EX_NOPARENTNOTIFY := 0x00000004L
 DEFINE WS_EX_TOPMOST                := 0x00000008L
@@ -3118,11 +3234,16 @@ DEFINE WS_EX_RIGHTSCROLLBAR      := 0x00000000L
 DEFINE WS_EX_CONTROLPARENT       := 0x00010000L
 DEFINE WS_EX_STATICEDGE              := 0x00020000L
 DEFINE WS_EX_APPWINDOW               := 0x00040000L
-DEFINE WS_EX_OVERLAPPEDWINDOW := 0x00000300L
-DEFINE WS_EX_PALETTEWINDOW      := 0x00000188L
+DEFINE WS_EX_OVERLAPPEDWINDOW := (WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE)
+DEFINE WS_EX_PALETTEWINDOW      := (WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST)
 DEFINE WS_EX_LAYERED           := 0x00080000
-DEFINE WS_EX_NOINHERITLAYOUT   := 0x00100000L // Disable inheritence of mirroring by children
+DEFINE WS_EX_NOINHERITLAYOUT     := 0x00100000L // Disable inheritence of mirroring by children
+
+DEFINE WS_EX_NOREDIRECTIONBITMAP := 0x00200000L
+
 DEFINE WS_EX_LAYOUTRTL         := 0x00400000L // Right to left mirroring
+define WS_EX_COMPOSITED        := 0x02000000L
+define WS_EX_NOACTIVATE        := 0x08000000L
 /*
  * Class styles
  */
@@ -3141,43 +3262,49 @@ DEFINE CS_BYTEALIGNWINDOW  := 0x2000
 DEFINE CS_GLOBALCLASS        := 0x4000
 DEFINE CS_IME                        := 0x00010000
 DEFINE CS_DROPSHADOW      := 0x00020000
+
 DEFINE PRF_CHECKVISIBLE      := 0x00000001L
 DEFINE PRF_NONCLIENT             := 0x00000002L
 DEFINE PRF_CLIENT                := 0x00000004L
 DEFINE PRF_ERASEBKGND        := 0x00000008L
 DEFINE PRF_CHILDREN              := 0x00000010L
 DEFINE PRF_OWNED                     := 0x00000020L
+/* 3D border styles */
 DEFINE BDR_RAISEDOUTER := 0x0001
 DEFINE BDR_SUNKENOUTER := 0x0002
 DEFINE BDR_RAISEDINNER := 0x0004
 DEFINE BDR_SUNKENINNER := 0x0008
-DEFINE BDR_OUTER             := 0x0003
-DEFINE BDR_INNER             := 0x000c
-DEFINE BDR_RAISED        := 0x0005
-DEFINE BDR_SUNKEN        := 0x000a
-DEFINE EDGE_RAISED      := 0x0005
-DEFINE EDGE_SUNKEN      := 0x000A
-DEFINE EDGE_ETCHED      := 0x0006
-DEFINE EDGE_BUMP            := 0x0009
+DEFINE BDR_OUTER             := (BDR_RAISEDOUTER | BDR_SUNKENOUTER)
+DEFINE BDR_INNER             := (BDR_RAISEDINNER | BDR_SUNKENINNER)
+DEFINE BDR_RAISED        := (BDR_RAISEDOUTER | BDR_RAISEDINNER)
+DEFINE BDR_SUNKEN        := (BDR_SUNKENOUTER | BDR_SUNKENINNER)
+DEFINE EDGE_RAISED      := (BDR_RAISEDOUTER | BDR_RAISEDINNER)
+DEFINE EDGE_SUNKEN      :=(BDR_SUNKENOUTER | BDR_SUNKENINNER)
+DEFINE EDGE_ETCHED      := (BDR_SUNKENOUTER | BDR_RAISEDINNER)
+DEFINE EDGE_BUMP            := (BDR_RAISEDOUTER | BDR_SUNKENINNER)
+/* Border flags */
 DEFINE BF_LEFT               := 0x0001
 DEFINE BF_TOP                := 0x0002
 DEFINE BF_RIGHT              := 0x0004
 DEFINE BF_BOTTOM             := 0x0008
-DEFINE BF_TOPLEFT        := 0x0003
-DEFINE BF_TOPRIGHT       := 0x0006
-DEFINE BF_BOTTOMLEFT     := 0x0009
-DEFINE BF_BOTTOMRIGHT  := 0x000C
-DEFINE BF_RECT               := 0x000F
+DEFINE BF_TOPLEFT        := (BF_TOP | BF_LEFT)
+DEFINE BF_TOPRIGHT       := (BF_TOP | BF_RIGHT)
+DEFINE BF_BOTTOMLEFT     := (BF_BOTTOM | BF_LEFT)
+DEFINE BF_BOTTOMRIGHT  := (BF_BOTTOM | BF_LEFT)
+DEFINE BF_RECT               := (BF_LEFT | BF_TOP | BF_RIGHT | BF_BOTTOM)
 DEFINE BF_DIAGONAL       := 0x0010
-DEFINE BF_DIAGONAL_ENDTOPRIGHT       := 0x0016
-DEFINE BF_DIAGONAL_ENDTOPLEFT        := 0x0013
-DEFINE BF_DIAGONAL_ENDBOTTOMLEFT     := 0x0019
-DEFINE BF_DIAGONAL_ENDBOTTOMRIGHT  := 0x001C
+
+define BF_DIAGONAL_ENDTOPRIGHT    := (BF_DIAGONAL | BF_TOP | BF_RIGHT)
+define BF_DIAGONAL_ENDTOPLEFT     := (BF_DIAGONAL | BF_TOP | BF_LEFT)
+define BF_DIAGONAL_ENDBOTTOMLEFT  := (BF_DIAGONAL | BF_BOTTOM | BF_LEFT)
+define BF_DIAGONAL_ENDBOTTOMRIGHT := (BF_DIAGONAL | BF_BOTTOM | BF_RIGHT)
+
 DEFINE BF_MIDDLE             := 0x0800
 DEFINE BF_SOFT               := 0x1000
 DEFINE BF_ADJUST             := 0x2000
 DEFINE BF_FLAT               := 0x4000
 DEFINE BF_MONO               := 0x8000
+/* flags for DrawFrameControl */
 DEFINE DFC_CAPTION                       := 1
 DEFINE DFC_MENU                              := 2
 DEFINE DFC_SCROLL                        := 3
@@ -3208,22 +3335,28 @@ DEFINE DFCS_BUTTONPUSH               := 0x0010
 DEFINE DFCS_INACTIVE                     := 0x0100
 DEFINE DFCS_PUSHED                       := 0x0200
 DEFINE DFCS_CHECKED                      := 0x0400
+
 DEFINE DFCS_TRANSPARENT        := 0x0800
 DEFINE DFCS_HOT                := 0x1000
+
 DEFINE DFCS_ADJUSTRECT               := 0x2000
 DEFINE DFCS_FLAT                             := 0x4000
 DEFINE DFCS_MONO                             := 0x8000
+/* flags for DrawCaption */
 DEFINE DC_ACTIVE                     := 0x0001
 DEFINE DC_SMALLCAP               := 0x0002
 DEFINE DC_ICON                       := 0x0004
 DEFINE DC_TEXT                       := 0x0008
 DEFINE DC_INBUTTON                   := 0x0010
-// for DrawCaption():
 DEFINE DC_GRADIENT             := 0x0020
 DEFINE DC_BUTTONS          := 0x1000
+
 DEFINE IDANI_OPEN                := 1
 DEFINE IDANI_CLOSE               := 2
 DEFINE IDANI_CAPTION             := 3
+/*
+ * Predefined Clipboard Formats
+ */
 DEFINE CF_TEXT                       := 1
 DEFINE CF_BITMAP                     := 2
 DEFINE CF_METAFILEPICT       := 3
@@ -3247,25 +3380,45 @@ DEFINE CF_DSPTEXT                := 0x0081
 DEFINE CF_DSPBITMAP              := 0x0082
 DEFINE CF_DSPMETAFILEPICT  := 0x0083
 DEFINE CF_DSPENHMETAFILE     := 0x008E
+/*
+ * "Private" formats don't get GlobalFree()'d
+ */
 DEFINE CF_PRIVATEFIRST       := 0x0200
 DEFINE CF_PRIVATELAST        := 0x02FF
+
+/*
+ * "GDIOBJ" formats do get DeleteObject()'d
+ */
 DEFINE CF_GDIOBJFIRST        := 0x0300
 DEFINE CF_GDIOBJLAST             := 0x03FF
+/*
+ * Defines for the fVirt field of the Accelerator table structure.
+ */
 DEFINE FVIRTKEY  := TRUE
 DEFINE FNOINVERT := 0x02
 DEFINE FSHIFT    := 0x04
 DEFINE FCONTROL  := 0x08
 DEFINE FALT          := 0x10
+
 DEFINE WPF_SETMINPOSITION        := 0x0001
 DEFINE WPF_RESTORETOMAXIMIZED  := 0x0002
+/*
+ * Owner draw control types
+ */
 DEFINE ODT_MENU              := 1
 DEFINE ODT_LISTBOX       := 2
 DEFINE ODT_COMBOBOX      := 3
 DEFINE ODT_BUTTON        := 4
 DEFINE ODT_STATIC        := 5
+/*
+ * Owner draw actions
+ */
 DEFINE ODA_DRAWENTIRE  := 0x0001
 DEFINE ODA_SELECT        := 0x0002
 DEFINE ODA_FOCUS             := 0x0004
+/*
+ * Owner draw state
+ */
 DEFINE ODS_SELECTED      := 0x0001
 DEFINE ODS_GRAYED        := 0x0002
 DEFINE ODS_DISABLED      := 0x0004
@@ -3278,17 +3431,30 @@ DEFINE ODS_INACTIVE        := 0x0080
 DEFINE ODS_NOACCEL         := 0x0100
 DEFINE ODS_NOFOCUSRECT     := 0x0200
 /*
- * MEASUREITEMSTRUCT for ownerdraw
+ * PeekMessage() Options
  */
 DEFINE PM_NOREMOVE               := 0x0000
 DEFINE PM_REMOVE                     := 0x0001
 DEFINE PM_NOYIELD                := 0x0002
+
+define PM_QS_INPUT        :=  (QS_INPUT << 16)
+define PM_QS_POSTMESSAGE  :=  ((QS_POSTMESSAGE | QS_HOTKEY | QS_TIMER) << 16)
+define PM_QS_PAINT        :=  (QS_PAINT << 16)
+define PM_QS_SENDMESSAGE  :=  (QS_SENDMESSAGE << 16)
+
 DEFINE MOD_ALT               := 0x0001
 DEFINE MOD_CONTROL       := 0x0002
 DEFINE MOD_SHIFT             := 0x0004
 DEFINE MOD_WIN               := 0x0008
-DEFINE IDHOT_SNAPWINDOW              :=(-1)
-DEFINE IDHOT_SNAPDESKTOP                :=(-2)
+define MOD_NOREPEAT        := 0x4000
+
+DEFINE IDHOT_SNAPWINDOW              :=(-1) /* SHIFT-PRINTSCRN  */
+DEFINE IDHOT_SNAPDESKTOP                :=(-2) /* PRINTSCRN        */
+
+define ENDSESSION_CLOSEAPP       := 0x00000001
+define ENDSESSION_CRITICAL       := 0x40000000
+define ENDSESSION_LOGOFF         := 0x80000000
+
 DEFINE EW_RESTARTWINDOWS        := 0x0042L
 DEFINE EW_REBOOTSYSTEM          := 0x0043L
 DEFINE EW_EXITANDEXECAPP        := 0x0044L
@@ -3298,12 +3464,19 @@ DEFINE EWX_REBOOT    := 2
 DEFINE EWX_FORCE         := 4
 DEFINE EWX_POWEROFF  := 8
 DEFINE EWX_FORCEIFHUNG     := 0x00000010
+define EWX_QUICKRESOLVE    := 0x00000020
+define EWX_RESTARTAPPS     := 0x00000040
+define EWX_HYBRID_SHUTDOWN := 0x00400000
+define EWX_BOOTOPTIONS     := 0x01000000
+define EWX_ARSO            := 0x04000000
+//Broadcast Special Message Recipient list
 DEFINE BSM_ALLCOMPONENTS             := 0x00000000
 DEFINE BSM_VXDS                              := 0x00000001
 DEFINE BSM_NETDRIVER                     := 0x00000002
 DEFINE BSM_INSTALLABLEDRIVERS  := 0x00000004
 DEFINE BSM_APPLICATIONS              := 0x00000008
 DEFINE BSM_ALLDESKTOPS        := 0x00000010
+//Broadcast Special Message Flags
 DEFINE BSF_QUERY                             := 0x00000001
 DEFINE BSF_IGNORECURRENTTASK     := 0x00000002
 DEFINE BSF_FLUSHDISK                     := 0x00000004
@@ -3460,6 +3633,10 @@ DEFINE SM_TABLETPC             :=86
 DEFINE SM_MEDIACENTER          :=87
 DEFINE SM_STARTER              :=88
 DEFINE SM_SERVERR2             :=89
+DEFINE SM_MOUSEHORIZONTALWHEELPRESENT := 91
+DEFINE SM_CXPADDEDBORDER       :=92
+DEFINE SM_DIGITIZER            :=94
+DEFINE SM_MAXIMUMTOUCHES       :=95
 DEFINE SM_REMOTESESSION        :=0x1000
 DEFINE SM_SHUTTINGDOWN         :=0x2000
 DEFINE SM_REMOTECONTROL        :=0x2001

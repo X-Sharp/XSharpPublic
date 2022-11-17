@@ -48,15 +48,26 @@ BEGIN NAMESPACE MacroCompilerTest
         //var tc := TypedCompilation<object, XSharp.MacroCompiler.ObjectMacro.MacroCodeblockDelegate>{}
         var o := XSharp.MacroCompiler.MacroOptions.Default
         o:StrictTypedSignature := true
-        var tc := Compilation.Create<object, Func<int,int, int>>(o)
+        o:GenerateAssembly := true
+        var tc := Compilation.Create<object, Delegate>(o)
         tc:AddExternLocal("x",typeof(int))
-        tc:SetParamNames("a","b")
-        var m := tc:Compile("Console.WriteLine(a+b+x), arg1+arg2+x")
+        tc:AddParameter("a",typeof(int))
+        tc:AddParameter("b",typeof(int))
+        tc:SetResultType(typeof(int))
+        tc:SetGeneratedNames("$MyMethod" , "$MyClass")
+        var m := tc:Bind("Console.WriteLine(a+b+x), a+b+x")
         if m:Diagnostic != null
             ? m:Diagnostic:ErrorMessage
             wait
         endif
-        ? m:Macro(123,456)
+        //tc:Emit(m)
+        //? m:Macro(123,456)
+        var data := tc:EmitAssembly(m)
+        var asm := System.Reflection.Assembly.Load(data)
+        var type := asm:GetType("$MyClass")
+        local macro as Func<int,int, int>
+        macro := (Func<int,int, int>)type:GetMethod("$MyMethod"):CreateDelegate(typeof(Func<int,int, int>))
+        ? macro(123,456)
         wait
 #endif
 

@@ -29,6 +29,7 @@ INTERNAL FUNCTION InitFoxState() AS VOID
     XSharp.MemVar.Put := __FoxMemVarPut
     XSharp.RuntimeState.AutoLock    := __FoxAutoLock
     XSharp.RuntimeState.AutoUnLock  := __FoxAutoUnLock
+    XSharp.RuntimeState.DialectChanged += DialectChanged
 
     XSharp.__Array.FoxArrayHelpers.ADel         := XSharp.VFP.Functions.ADel
     XSharp.__Array.FoxArrayHelpers.ALen         := XSharp.VFP.Functions.FoxALen

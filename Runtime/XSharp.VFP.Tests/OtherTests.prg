@@ -17,6 +17,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 	    STATIC CONSTRUCTOR
             XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+            RegisterFoxMemVarSupport()
 
 
 		[Fact, Trait("Category", "Other")];
@@ -54,10 +55,12 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.False(InsMode())*/
         [Fact, Trait("Category", "Other")];
         METHOD TypeTests()  AS VOID
+            var state := XSharp.RuntimeState.Dialect
             XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
              Assert.True(type ( "x" ) == "U")
             XSharp.RuntimeState.Dialect := XSharpDialect.VO
              Assert.True(type ( "x" ) == "UE")
+             XSharp.RuntimeState.Dialect := state
 
         [Fact, Trait("Category", "Other")];
         METHOD EVLTests()  AS VOID

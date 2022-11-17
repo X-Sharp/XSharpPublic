@@ -4917,11 +4917,8 @@
         </param>
         <param name="acFields">
             The list of fields to append from <paramref name="cSourceFile" />.  <br/>
-
             The default is all fields.<br/>
-
             Only fields with the same names and types in both files are appended.  <br/>
-
             If fields with the same name do not match in data type, a runtime error is raised.
         </param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
@@ -4979,7 +4976,6 @@
         </param>
         <param name="acFields">
             A list of fields to copy from <paramref name="cSourceFile" />.  <br/>
-
             The default is all fields.
         </param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
@@ -7887,11 +7883,15 @@
             The name of the target database file to write the sorted records, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.<br/>
             The default extension for database files is determined by the RDD .<br/>
 
-            &#0009;If <paramref name="cTargetFile" /> does not exist, it is created.<br/>
+            If <paramref name="cTargetFile" /> does not exist, it is created.<br/>
             If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.<br/>
             If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.
         </param>
         <param name="acFields">The sort keys, specified as an array of field names.  You may optionally add, after the field name, /A (to sort in dictionary order), /C (to ignore capitalization), or /D (to sort in descending order). The default setting is /A.</param>
+        <param name="acOutPutFields">
+          A list of fields to copy to <paramref name="cTargetFile" />.<br/>
+          The default is all fields
+        </param>
         <param name="lNoOpt" >Disable (Rushmore) optimizations (not supported yet).</param>
         <param name="lDesc">Should the default sort order be Descending</param>
 

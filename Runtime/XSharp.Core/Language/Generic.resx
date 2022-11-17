@@ -2786,7 +2786,11 @@
   <data name="INVALID_FIELDNAME" xml:space="preserve">
     <value>Field '{0}' does not exist</value>
   </data>
-  
+  <data name="INDEX_EXPRESSION_ZEROLENGTH" xml:space="preserve">
+    <value>Index expression '{0}' results in a string with length 0 - cannot use AllTrim(), LTrim(), RTrim() and similar functions resulting to variable string length</value>
+  </data>
+
+
 
 
 

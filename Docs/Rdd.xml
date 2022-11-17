@@ -66,7 +66,7 @@
         <param name="oDBFSTarget">The DBFileSpec object's target directory. Can be either optional or full path.</param>
         <param name="lIDX">Logical parameter. TRUE also moves any index files associated with SELF. The default is TRUE.</param>
         <param name="lName">Logical parameter. TRUE causes an auto-rename of the target file if a file conflict occurs during the copy. The default is FALSE. </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <example>
             <code language="X#">
                 // Copy the CUSTOMER.DBF file to C:\TEST directory:
@@ -96,7 +96,7 @@
         <param name="oFS">The drive and directory into which to copy SELF's files. Can also be an existing DBFileSpec object or FileSpec object.</param>
         <param name="cDriver">The target file's RDD.</param>
         <param name="lWantAnsi">Logical parameter. TRUE creates the target file in ANSI format. The default is the source DBFileSpec's ANSI setting.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <example>
             The following examples illustrate copying a DBF file to different data formats:
             <code language="X#">
@@ -132,7 +132,7 @@
         <param name="cDriver">The RDD used to create the new DBF file structure if different from SELF's.</param>
         <param name="lWantAnsi">TRUE if this new DBF is to be an ANSI DBF (default). </param>
         <param name="aRdds">The 1-D array of 'hidden' RDDs required to open a DBF file, such as DBFMEMO. Defaults to SELF's.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             The DBFileSpec:Create() method is useful for generating a new DBF file given a file specification and path. The DBCreate() function is also useful to do the same thing, however this approach is more efficient.
             Note that the DBServer class does not contain a Create() method: instantiating a DBServer requires that the file exists already, so one cannot be created. The CopyDB() and CopyStructure() methods of the DBServer class often provide an easier way of copying the structure, completely or partially, of an existing file.
@@ -593,7 +593,7 @@
                 ? "Number of orders:",oDBOrder:RecCount
                 ? "Total value:",oDBOrder:aSum[1]
             </code>
-            </examples>
+        </examples>
         <remarks>
             The following table lists the properties and methods that reflect the currently active selection:
             <list type="table">
@@ -882,8 +882,8 @@
     <DbServer.LogicReturn>
         <returns>
             TRUE if successful; otherwise, FALSE (although some records still might have been processed).
-        </returns>        
-    </DbServer.LogicReturn>    
+        </returns>
+    </DbServer.LogicReturn>
     <DbServer.FileNameClause>
         <span>
             This parameter identifies the DBF file that is to be opened.
@@ -1042,11 +1042,24 @@
         </param>
         <param name="kMode">
             A constant defining the copy mode, as shown in the table below:
-            <pre>
-                Constant              Description
-                BLOB_EXPORT_APPEND    Appends to the file
-                BLOB_EXPORT_OVERWRITE Overwrites the file—this is the default
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>
+                        BLOB_EXPORT_APPEND
+                    </term>
+                    <description>Appends to the file</description>
+                </item>
+                <item>
+                    <term>
+                        BLOB_EXPORT_OVERWRITE
+                    </term>
+                    <description>Overwrites the file—this is the default</description>
+                </item>
+            </list>
         </param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
@@ -1100,7 +1113,7 @@
             </note>
             DBServer:BLOBDirectGet() retrieves data stored in a BLOB file without the need to reference a particular field in the data server. It is particularly useful when accessing data that is larger than 64KB, (such as memo fields created with the BLOBImport() method).
         </remarks>
-          <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*" />
+        <include file="RDD.xml" path="doc/DbServer.BLOBDirectExample/*" />
     </DbServer.BLOBDirectGet>
     <DbServer.BLOBDirectExample>
         <example>
@@ -1195,11 +1208,24 @@
         </param>
         <param name="kMode">
             A constant defining the copy mode, as shown in the table below:
-            <pre>
-                Constant				Description
-                BLOB_EXPORT_APPEND	Appends to the file
-                BLOB_EXPORT_OVERWRITE	Overwrites the file—this is the default
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Description</description>
+                </listheader>
+                <item>
+                    <term>
+                        BLOB_EXPORT_APPEND
+                    </term>
+                    <description>Appends to the file</description>
+                </item>
+                <item>
+                    <term>
+                        BLOB_EXPORT_OVERWRITE
+                    </term>
+                    <description>Overwrites the file—this is the default</description>
+                </item>
+            </list>
         </param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <example>
@@ -1319,7 +1345,7 @@
             DBServer:BLOBRootGet() allows the retrieval of a BLOB from the root of a BLOB file.
             <note type="tip">Because the root data does not reference a particular record in the data server, it is not affected by DBServer:RLock(), nor is it subject to the DataServer:ConcurrencyControl settings. Therefore, if the data server is opened in shared mode, you should use DBServer:BLOBRootLock() before calling DBServer:BLOBRootGet().</note>
         </remarks>
-        <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />    
+        <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />
     </DbServer.BLOBRootGet>
     <DbServer.BLOBRootLock>
         <summary>
@@ -1329,7 +1355,7 @@
         <remarks>
             Use DBServer:BLOBRootLock() when accessing the data server in shared mode to obtain a lock on the root area of a BLOB file for reading from or writing to the root area.
         </remarks>
-        <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />    
+        <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />
     </DbServer.BLOBRootLock>
     <DbServer.BLOBRootPut>
         <summary>
@@ -1351,22 +1377,22 @@
                 LOCAL oDBCust AS DBServer
                 oDBCust := Customer{}
                 IF oDBCust:BLOBRootLock()
-                   // Get any existing settings
-                   aSettings := oDBCust:BLOBRootGet()
-                   IF Empty(aSettings)
-                      // This function would populate aSettings with default data
-                      aSettings := oDBCust:GetDefaultSettings()
-                   ENDIF
-                   // This function would allow the user to
-                   // modify the settings.
-                   IF oDBCust:ModifySettings(aSettings)
-                      // Finally, store the settings
-                      oDBCust:BLOBRootPut(aSettings)
-                   ENDIF
-                   oDBCust:BLOBRootUnlock()
+                // Get any existing settings
+                aSettings := oDBCust:BLOBRootGet()
+                IF Empty(aSettings)
+                // This function would populate aSettings with default data
+                aSettings := oDBCust:GetDefaultSettings()
+                ENDIF
+                // This function would allow the user to
+                // modify the settings.
+                IF oDBCust:ModifySettings(aSettings)
+                // Finally, store the settings
+                oDBCust:BLOBRootPut(aSettings)
+                ENDIF
+                oDBCust:BLOBRootUnlock()
                 ELSE
-                   aSettings := {}
-                   Alert("Could not obtain a lock on the root")
+                aSettings := {}
+                Alert("Could not obtain a lock on the root")
                 ENDIF
                 oDBCust:Close()
                 RETURN aSettings
@@ -1383,10 +1409,10 @@
                 // Open a customer file in shared mode
                 oDBCust := Customer{}
                 IF oDBCust:BLOBRootLock()
-                   aCustSettings := oDBCust:BLOBRootGet()
-                   oDBCust:BLOBRootUnlock()
+                aCustSettings := oDBCust:BLOBRootGet()
+                oDBCust:BLOBRootUnlock()
                 ELSE
-                   Alert("Could not obtain root lock")
+                Alert("Could not obtain root lock")
                 ENDIF
                 oDBCust:Close()
                 RETURN aCustSettings
@@ -1401,7 +1427,7 @@
             Use DBServer:BLOBRootUnlock() to release a lock previously obtained using DBServer:BLOBRootLock().
             <note type="tip">The only methods that require the use of DBServer:BLOBRootLock() or DBServer:BLOBRootUnlock() are DBServer:BLOBRootGet() and DBServer:BLOBRootPut().</note>
         </remarks>
-        <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />    
+        <include file="RDD.xml" path="doc/DbServer.BLOBRootExample/*" />
     </DbServer.BLOBRootUnlock>
     <DbServer.BoF>
         <summary>
@@ -1600,7 +1626,7 @@
         </summary>
         <param name="oFSTarget">A string or filespec object that specifies the file to which the records is copied.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
         </remarks>
@@ -1754,7 +1780,7 @@
             Delete the current record or the records specified with the scoping parameters.
         </summary>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             If called with a scope or if a server scope is active, Delete() sends a NotifyIntentToMove message before the operation, and a NotifyFileChange upon completion (regardless of the number of records actually deleted). If no scope is used and Delete() applies to the current record only, it sends a NotifyRecordChange message, if successful. If a scope is specified, on successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
             <br />Important! Since the scope is persistent, a scope left around from processing a method like CopyDB() or Average() could cause Delete() to process too many records. Remember to reset a scope after it has been used.
@@ -1766,7 +1792,7 @@
         <summary>
             Delete all records of the table.
         </summary>
-        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message upon completion.
         </remarks>
@@ -2696,7 +2722,7 @@
         <param name="oFSTarget">A string or filespec object that specifies the file into which results of the join operation is placed.</param>
         <param name="aFieldList">An array of fields to be included in the join operation.</param>
         <param name="cbForBlock">The condition evaluated for each record in the scope; if TRUE, the record is included in the processing. It provides the same functionality as the FOR clause of record processing commands.</param>
-        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message, if successful.
         </remarks>
@@ -2805,7 +2831,7 @@
             <br />Important! This method is automatically called by the various action methods of the data server, and should normally not be called by application code.
         </summary>
         <returns>
-            SELF, except if NOTIFYINTENTTOMOVE is specified for <paramref name="kNotifyName" />. 
+            SELF, except if NOTIFYINTENTTOMOVE is specified for <paramref name="kNotifyName" />.
             In this case, the return value is TRUE if successful; otherwise, FALSE.
         </returns>
         <include file="VOSDK.xml" path="doc/commonblocks/notify/*" />
@@ -3516,7 +3542,7 @@
             Recall those deleted records indicated by a specified scope.
         </summary>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             If no scope was passed and no scope was active, it sends a NotifyRecordChange, if the operation was successful; if a scope was used, it sends a NotifyFileChange message regardless of the number of records processed.
             If no server scope is set, it recalls the current record. On successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
@@ -3526,7 +3552,7 @@
         <summary>
             Recall all deleted records in the table.
         </summary>
-        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyFileChange message upon completion.
             On successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
@@ -3659,7 +3685,7 @@
         </summary>
         <param name="acbExpression">The single expression to be evaluated to yield the replacement value or the array of expressions to be evaluated to yield the replacement values.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             If the specified scope is active, DBServer:Replace() sends a NotifyIntentToMove message before the operation. It also sends a NotifyFileChange message upon completion, whether successful or not.
             If no scope is used, on successful completion, the current record will be the last file record and DBServer:EOF will be TRUE.
@@ -3697,7 +3723,7 @@
             Lock a record for exclusive write access; other users can still make read-only reference to the record.
         </summary>
         <param name="nRecordNumber">The number of the record number to be locked. The indicated record is locked, and previous record locks are maintained. Note that this can be the current record: explicitly specifying the current record indicates that previous locks should be maintained. If omitted, or NIL, the current record is locked and all previous record locks are released.</param>
-        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
     </DbServer.RLock>
     <DbServer.RLockList>
         <summary>
@@ -3723,8 +3749,8 @@
         <summary>
             Determine if the current record in this data server has any pending updates and lock it for exclusive write access if there are none.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />        
-        
+        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+
         <remarks>
             This method checks for pending updates to the current record by comparing the values that were read to the record when the server was initially positioned on the record with the current values in the corresponding database record.
             If the values match, it signifies that no other user has modified the data since the user started working on it, and, therefore, that it is safe to lock the record and let the user continue with an update transaction. (Note that when locked, other users can still make read-only reference to the record.)
@@ -4018,7 +4044,7 @@
         <param name="oFSTarget">A string or filespec object that specifies the file to which the records is copied.</param>
         <param name="cTarget">The file to which the records is copied.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
             This method does not open the new file, it simply creates the file on disk. If you want to open it afterwards, you simply instantiate it directly:
@@ -4089,7 +4115,7 @@
         <param name="oFSTarget">A string or filespec object that specifies the file to which the summary data is written.</param>
         <param name="cbKeyField">The key field in this server that is the basis for the summarization. Note that for the summarization to produce correct results, the table should be indexed or sorted on this key field.</param>
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
-        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             Sends a NotifyIntentToMove message before the operation. Sends a NotifyRecordChange message upon completion.
         </remarks>
@@ -4119,7 +4145,7 @@
         <param name="cbKey">The key field that defines how records are matched between the servers.</param>
         <param name="lRandomFlag">Indicates if the records in the other database are allowed to be in random order. If FALSE or not specified, the other database must be ordered on the specified key.</param>
         <param name="cbReplace">Code block that performs the update operations.</param>
-        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />        
+        <include file="RDD.xml" path="doc/DbServer.LogicReturn/*" />
         <remarks>
             <note type="tip">This method requires a file lock or exclusive access.</note>
             Sends a NotifyFileChange message upon completion.
@@ -4540,4 +4566,3 @@
         <summary>Get/Set the flag that determines if DbServer operations restore the current workarea </summary>
     </DbSetRestoreWorkarea>
 </doc>
-    

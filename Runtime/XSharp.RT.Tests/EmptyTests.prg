@@ -19,10 +19,10 @@ BEGIN NAMESPACE XSharp.RT.Tests
  		[Trait("Category", "Usual")];
 		[Fact];
 		METHOD EmptyUsualTest() AS VOID
-			LOCAL u as USUAL
+			LOCAL u AS USUAL
 			u := ""
 			Assert.Equal(TRUE, Empty(u))
-			u := space(10)
+			u := Space(10)
 			Assert.Equal(TRUE, Empty(u))
 			u := e"\r\n"
 			Assert.Equal(TRUE, Empty(u))
@@ -61,18 +61,24 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			u := #SomeSymbol
 			Assert.Equal(FALSE, Empty(u))
 			u := NULL_SYMBOL
+         Assert.Equal(TRUE, Empty(u))
+         // In the FoxPro dialect .NULL. = DbNull.Value is not seen as empty
+         LOCAL eDialect := RuntimeState.Dialect AS XSharpDialect
+         RuntimeState.Dialect := XSharpDialect.VO
+         u := DBNull.Value
 			Assert.Equal(TRUE, Empty(u))
-
-            u := DBNull.Value
-			Assert.Equal(false, Empty(u))
+         RuntimeState.Dialect := XSharpDialect.FoxPro
+         u := DBNull.Value
+			Assert.Equal(FALSE, Empty(u))
+         RuntimeState.Dialect := eDialect
 
  		[Trait("Category", "Object")];
 		[Fact];
 		METHOD EmptyObjectTest() AS VOID
-            LOCAL o as OBJECT
+            LOCAL o AS OBJECT
 			o := ""
 			Assert.Equal(TRUE, Empty(o))
-			o := space(10)
+			o := Space(10)
 			Assert.Equal(TRUE, Empty(o))
 			o := e"\r\n"
 			Assert.Equal(TRUE, Empty(o))
@@ -116,7 +122,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
        [Trait("Category", "Object")];
 		[Fact];
 		METHOD EmptyOtherTests() AS VOID
-        var dt  := DateTime.MinValue
+        VAR dt  := DateTime.MinValue
         Assert.Equal(TRUE, Empty(dt))
         dt  := DateTime.MaxValue
         Assert.Equal(FALSE, Empty(dt))
@@ -126,54 +132,54 @@ BEGIN NAMESPACE XSharp.RT.Tests
         Assert.Equal(TRUE, Empty(aStr))
         AAdd(aStr, "")
         Assert.Equal(FALSE, Empty(aStr))
-        LOCAL d as Date
-        d := ToDay()
+        LOCAL d AS DATE
+        d := Today()
         Assert.Equal(FALSE, Empty(d))
         d := NULL_DATE
         Assert.Equal(TRUE, Empty(d))
 
-        LOCAL l as Long
+        LOCAL l AS LONG
         l := 0
         Assert.Equal(TRUE, Empty(l))
         l := 42
         Assert.Equal(FALSE, Empty(l))
 
-        LOCAL dw as DWORD
+        LOCAL dw AS DWORD
         dw := 0u
         Assert.Equal(TRUE, Empty(dw))
         dw := 42U
         Assert.Equal(FALSE, Empty(dw))
-        LOCAL fl as FLOAT
+        LOCAL fl AS FLOAT
         fl := 0.0
         Assert.Equal(TRUE, Empty(fl))
         fl := 42.42
         Assert.Equal(FALSE, Empty(fl))
 
-        LOCAL cu as CURRENCY
+        LOCAL cu AS CURRENCY
         cu := $0.0
         Assert.Equal(TRUE, Empty(cu))
         cu := $42.42
         Assert.Equal(FALSE, Empty(cu))
 
-        LOCAL log as LOGIC
+        LOCAL log AS LOGIC
         log := FALSE
         Assert.Equal(TRUE, Empty(log))
         log := TRUE
         Assert.Equal(FALSE, Empty(log))
 
-        LOCAL sym as SYMBOL
+        LOCAL sym AS SYMBOL
         sym := NULL_SYMBOL
         Assert.Equal(TRUE, Empty(sym))
         sym := #MisterData
         Assert.Equal(FALSE, Empty(sym))
 
-        LOCAL p1 as PTR
+        LOCAL p1 AS PTR
         p1 := NULL_PTR
         Assert.Equal(TRUE, Empty(p1))
         p1 := @p1
         Assert.Equal(FALSE, Empty(p1))
 
-        LOCAL p2 as PSZ
+        LOCAL p2 AS PSZ
         p2 := NULL_PSZ
         Assert.Equal(TRUE, Empty(p2))
         p2 := String2Psz("")
@@ -181,18 +187,18 @@ BEGIN NAMESPACE XSharp.RT.Tests
         p2 := String2Psz("abc")
         Assert.Equal(FALSE, Empty(p2))
 
-        LOCAL arrx := NULL as STRING[]
-        Assert.Equal(TRUE, empty(arrx))
+        LOCAL arrx := NULL AS STRING[]
+        Assert.Equal(TRUE, Empty(arrx))
         arrx := <STRING>{}
-        Assert.Equal(TRUE, empty(arrx))
+        Assert.Equal(TRUE, Empty(arrx))
         arrx := <STRING>{"aaa"}
-        Assert.Equal(FALSE, empty(arrx))
+        Assert.Equal(FALSE, Empty(arrx))
 
-        LOCAL listx := NULL as List<String>
-        Assert.Equal(TRUE, empty(listx))
-        listx := List<String>{}
-        Assert.Equal(TRUE, empty(listx))
+        LOCAL listx := NULL AS List<STRING>
+        Assert.Equal(TRUE, Empty(listx))
+        listx := List<STRING>{}
+        Assert.Equal(TRUE, Empty(listx))
         listx:Add("12345")
-        Assert.Equal(FALSE, empty(listx))
+        Assert.Equal(FALSE, Empty(listx))
     END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

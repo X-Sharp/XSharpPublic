@@ -14,7 +14,7 @@
     <Dialect>FoxPro</Dialect>
     <vo15>false</vo15>
     <OutputName>ConsoleApplication1</OutputName>
-    <XSharpProjectversion>2.13.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>
@@ -34,7 +34,7 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <NoWin32Manifest>False</NoWin32Manifest>
     <Vo2>True</Vo2>
-    <Fox2>True</Fox2>
+    <Fox2>False</Fox2>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

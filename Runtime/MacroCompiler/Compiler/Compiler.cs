@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using XSharp.MacroCompiler.Syntax;
@@ -15,33 +16,28 @@ namespace XSharp.MacroCompiler
         {
             if (options?.StrictTypedSignature == true)
                 throw new InternalError("Invalid StrictTypedSignature option without delegate type");
-            if (options?.ParseStatements == true)
-                return new ScriptCompilation<T, Func<T[], T>>(options);
             return new Compilation<T, Func<T[], T>>(options ?? MacroOptions.Default);
         }
 
         public static Compilation<T, R> Create<T, R>(MacroOptions options = null) where R: Delegate
         {
-            if (options?.StrictTypedSignature == true)
-                return new TypedCompilation<T, R>(options);
-            if (options?.ParseStatements == true)
-                return new ScriptCompilation<T, R>(options);
             return new Compilation<T, R>(options ?? MacroOptions.Default);
         }
     }
 
-    public partial class Compilation<T,R> where R: Delegate
+    public partial class Compilation<T>
     {
-        public struct CompilationResult
+        public struct CompilationResult<R> where R : Delegate
         {
             public string Source;
             public R Macro;
-            internal Binder<T, R> Binder;
+            public byte[] AssemblyBytes;
+            internal Binder<T> Binder;
             internal Syntax.Node SyntaxTree;
             public int ParamCount { get => Binder.ParamCount; }
             public bool CreatesAutoVars { get => Binder.CreatesAutoVars; }
             public CompilationError Diagnostic;
-            internal CompilationResult(string source, R macro, Binder<T, R> binder)
+            internal CompilationResult(string source, R macro, Binder<T> binder)
             {
                 Source = source;
                 Macro = macro;
@@ -49,7 +45,7 @@ namespace XSharp.MacroCompiler
                 Binder = binder;
                 Diagnostic = null;
             }
-            internal CompilationResult(string source, Syntax.Node syntaxTree, Binder<T, R> binder)
+            internal CompilationResult(string source, Syntax.Node syntaxTree, Binder<T> binder)
             {
                 Source = source;
                 Macro = null;
@@ -74,52 +70,87 @@ namespace XSharp.MacroCompiler
             options = o ?? MacroOptions.Default;
         }
 
-        public static Compilation<T, R> Create(MacroOptions options = null) => Compilation.Create<T, R>(options);
-
         internal List<Tuple<string, Type>> ExternLocals;
-        internal string[] ParamNames;
+        internal List<Tuple<string, Type>> Parameters;
+        internal Type ResultType;
         public void AddExternLocal(string name, Type type)
         {
             if (ExternLocals == null)
                 ExternLocals = new List<Tuple<string, Type>>();
             ExternLocals.Add(new Tuple<string, Type>(name, type));
         }
+        public void AddParameter(string name, Type type)
+        {
+            if (Parameters == null)
+                Parameters = new List<Tuple<string, Type>>();
+            Parameters.Add(new Tuple<string, Type>(name, type));
+        }
         public void SetParamNames(params string[] paramNames)
         {
-            ParamNames = paramNames;
+            Parameters = paramNames.Select(n => new Tuple<string, Type> (n, null)).ToList();
         }
+        public void SetResultType(Type resultType)
+        {
+            ResultType = resultType;
+        }
+
+        internal string NameOfAssembly;
+        internal string NameOfClass;
+        internal string NameOfMethod;
+        public void SetGeneratedNames(string nameOfMethod = null, string nameOfClass = null, string nameOfAssembly = null)
+        {
+            if (nameOfAssembly != null)
+                NameOfAssembly = nameOfAssembly;
+            if (nameOfClass != null)
+                NameOfClass = nameOfClass;
+            if (nameOfMethod != null)
+                NameOfMethod = nameOfMethod;
+        }
+
         internal void AddLocalsToBinder(Binder binder)
         {
             // Add params
-            if (ParamNames != null)
+            if (Parameters != null)
             {
+                if (binder.ParameterTypes == null)
+                    binder.ParameterTypes = Parameters.Select(p => Binder.FindType(p.Item2)).ToArray();
                 int a = 0;
-                foreach (var p in binder.DelegateType.GetMethod("Invoke").GetParameters())
+                foreach (var p in binder.ParameterTypes)
                 {
-                    if (a < ParamNames.Length)
-                        binder.AddParam(ParamNames[a], Binder.FindType(p.ParameterType), a);
+                    if (a < Parameters.Count)
+                        binder.AddParam(Parameters[a].Item1, p, a);
                     ++a;
                 }
+            }
+
+            // Set result type
+            if (ResultType != null && binder.ResultType == null)
+            {
+                binder.ResultType = Binder.FindType(ResultType);
             }
 
             // Add Locals
             if (ExternLocals != null)
                 foreach (var l in ExternLocals)
-                    binder.AddLocal(l.Item1, Binder.FindType(l.Item2));
-        }
-        internal void DeclareLocals(Binder binder)
-        {
-            // Declare locals
-            if (ExternLocals != null)
-                foreach (var l in ExternLocals)
-                    (binder.LocalCache[l.Item1] as LocalSymbol)?.Declare(binder.Method.GetILGenerator());
+                    binder.AddAutoLocal(l.Item1, Binder.FindType(l.Item2));
+
+            // Set generated names
+            if (binder is AssemblyBinder<T> b)
+            {
+                if (NameOfAssembly != null)
+                    b.NameOfAssembly = NameOfAssembly;
+                if (NameOfClass != null)
+                    b.NameOfClass = NameOfClass;
+                if (NameOfMethod != null)
+                    b.NameOfMethod = NameOfMethod;
+            }
         }
 
-        public CompilationResult Compile(string source)
+        public CompilationResult<R> Compile<R>(string source) where R: Delegate
         {
             try
             {
-                var res = Bind(source, Parse(source));
+                var res = Bind<R>(source, Parse(source));
                 EmitInternal(ref res);
                 return res;
             }
@@ -127,80 +158,36 @@ namespace XSharp.MacroCompiler
             {
                 if (e.Location.Line == 0)
                     e = new CompilationError(e, source);
-                return new CompilationResult(source, e);
+                return new CompilationResult<R>(source, e);
             }
         }
 
-        public CompilationResult Bind(string source)
+        public CompilationResult<R> Bind<R>(string source) where R : Delegate
         {
             try
             {
-                return Bind(source, Parse(source));
+                return Bind<R>(source, Parse(source));
             }
             catch (CompilationError e)
             {
                 if (e.Location.Line == 0)
                     e = new CompilationError(e, source);
-                return new CompilationResult(source, e);
+                return new CompilationResult<R>(source, e);
             }
         }
 
-        public R Emit(CompilationResult macro)
+        public R Emit<R>(ref CompilationResult<R> macro) where R : Delegate
         {
             EmitInternal(ref macro);
             return macro.Macro;
         }
 
+        public byte[] EmitAssembly<R>(ref CompilationResult<R> macro) where R : Delegate
+        {
+            return EmitAssemblyInternal(ref macro);
+        }
+
         internal virtual Syntax.Node Parse(string source)
-        {
-            var lexer = new Lexer(source, options);
-            IList<Token> tokens = lexer.AllTokens();
-            if (options.PreProcessor && options.ParseStatements)
-            {
-                var pp = new Preprocessor.XSharpPreprocessor(lexer, options, null, Encoding.Default);
-                tokens = pp.PreProcess();
-            }
-            var parser = new Parser(tokens, options);
-            return parser.ParseMacro();
-        }
-        internal virtual CompilationResult Bind(string source, Syntax.Node parseTree)
-        {
-            try
-            {
-                Binder<T, R> binder = CreateBinder();
-                var ast = binder.Bind(parseTree);
-                return new CompilationResult(source, ast, binder);
-            }
-            catch (CompilationError e)
-            {
-                if (e.Location.Line == 0)
-                    e = new CompilationError(e, source);
-                return new CompilationResult(source, e);
-            }
-        }
-        internal virtual void EmitInternal(ref CompilationResult macro)
-        {
-            if (macro.Macro == null && macro.SyntaxTree != null)
-            {
-                macro.Binder.MakeDynamicMethod(macro.Source);
-                DeclareLocals(macro.Binder);
-                macro.Macro = macro.Binder.Emit(macro.SyntaxTree);
-            }
-        }
-        internal virtual Binder<T, R> CreateBinder()
-        {
-            var binder = Binder.Create<T, R>(options);
-            AddLocalsToBinder(binder);
-            return binder;
-        }
-    }
-    public class ScriptCompilation<T, R> : Compilation<T, R> where R : Delegate
-    {
-        internal ScriptCompilation(MacroOptions o = null): base(o)
-        {
-            options.ParseMode = ParseMode.Statements;
-        }
-        internal override Syntax.Node Parse(string source)
         {
             var lexer = new Lexer(source, options);
             IList<Token> tokens = lexer.AllTokens();
@@ -210,28 +197,61 @@ namespace XSharp.MacroCompiler
                 tokens = pp.PreProcess();
             }
             var parser = new Parser(tokens, options);
-            return parser.ParseScript();
+            return options.ParseStatements ? parser.ParseScript() : parser.ParseMacro();
         }
-    }
-    public class TypedCompilation<T, R> : Compilation<T, R> where R : Delegate
-    {
-        internal TypedCompilation(MacroOptions o = null) : base(o)
-        {
-        }
-        internal override CompilationResult Bind(string source, Syntax.Node parseTree)
+        internal virtual CompilationResult<R> Bind<R>(string source, Syntax.Node parseTree) where R : Delegate
         {
             try
             {
-                Binder<T, R> binder = CreateBinder();
-                var ast = TypedCodeblock.Bound(parseTree as Syntax.Codeblock, binder);
-                return new CompilationResult(source, ast, binder);
+                Binder<T> binder = CreateBinder<R>();
+                var ast = options.StrictTypedSignature
+                    ? TypedCodeblock.Bound(parseTree as Syntax.Codeblock, binder)
+                    : binder.Bind(parseTree);
+                return new CompilationResult<R>(source, ast, binder);
             }
             catch (CompilationError e)
             {
                 if (e.Location.Line == 0)
                     e = new CompilationError(e, source);
-                return new CompilationResult(source, e);
+                return new CompilationResult<R>(source, e);
             }
         }
+        internal virtual void EmitInternal<R>(ref CompilationResult<R> macro) where R : Delegate
+        {
+            if (macro.Macro == null && macro.SyntaxTree != null)
+            {
+                macro.Binder.GenerateMethod(macro.Source);
+                macro.Binder.DeclareAutoLocals();
+                macro.Macro = macro.Binder.Emit(macro.SyntaxTree) as R;
+            }
+        }
+        internal virtual byte[] EmitAssemblyInternal<R>(ref CompilationResult<R> macro) where R : Delegate
+        {
+            if (macro.AssemblyBytes == null && macro.SyntaxTree != null)
+            {
+                macro.Binder.GenerateMethod(macro.Source);
+                macro.Binder.DeclareAutoLocals();
+                macro.AssemblyBytes = macro.Binder.EmitAssembly(macro.SyntaxTree);
+            }
+            return macro.AssemblyBytes;
+        }
+        internal virtual Binder<T> CreateBinder<R>() where R : Delegate
+        {
+            var binder = Binder.Create<T, R>(options);
+            AddLocalsToBinder(binder);
+            return binder;
+        }
+    }
+
+    public partial class Compilation<T,R> : Compilation<T> where R: Delegate
+    {
+        internal Compilation(MacroOptions o = null) : base(o) { }
+
+        public static Compilation<T, R> Create(MacroOptions options = null) => Compilation.Create<T, R>(options);
+
+        public CompilationResult<R> Compile(string source) => Compile<R>(source);
+        public CompilationResult<R> Bind(string source) => Bind<R>(source);
+        public R Emit(ref CompilationResult<R> macro) => Emit<R>(ref macro);
+        public byte[] EmitAssembly(ref CompilationResult<R> macro) => EmitAssembly<R>(ref macro);
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using static System.Diagnostics.Debug;
+using System.Linq.Expressions;
 
 namespace XSharp.MacroCompiler.Syntax
 {
@@ -981,6 +982,11 @@ namespace XSharp.MacroCompiler.Syntax
                 Alias.RequireGetAccess();
                 var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGetWa) as MethodSymbol;
                 b.Convert(ref Alias, Binder.FindType(m.Parameters.Parameters[0].ParameterType));
+                Symbol = m;
+            }
+            else
+            {
+                Symbol = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGet) as MethodSymbol;
             }
             b.Bind(ref Field);
             Field.RequireGetAccess();
@@ -990,7 +996,11 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal static AliasExpr Bound(string fieldName)
         {
-            return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName)), Token.None) { Datatype = Compilation.Get(NativeType.Usual) };
+            return new AliasExpr(null, LiteralExpr.Bound(Constant.Create(fieldName)), Token.None)
+            {
+                Symbol = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGet) as MethodSymbol,
+                Datatype = Compilation.Get(NativeType.Usual)
+            };
         }
         internal static AliasExpr Bound(string aliasName, string fieldName)
         {
@@ -998,11 +1008,18 @@ namespace XSharp.MacroCompiler.Syntax
                 LiteralExpr.Bound(Constant.Create(aliasName)),
                 LiteralExpr.Bound(Constant.Create(fieldName)),
                 Token.None)
-                { Datatype = Compilation.Get(NativeType.Usual) };
+                {
+                    Symbol = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGetWa) as MethodSymbol,
+                    Datatype = Compilation.Get(NativeType.Usual)
+                };
         }
         internal static AliasExpr Bound(Expr field)
         {
-            return new AliasExpr(null, field, Token.None) { Datatype = Compilation.Get(NativeType.Usual) };
+            return new AliasExpr(null, field, Token.None)
+            {
+                Symbol = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___FieldGet) as MethodSymbol,
+                Datatype = Compilation.Get(NativeType.Usual)
+            };
         }
         internal override void RequireGetAccess() => RequireValue();
         internal override void RequireSetAccess() => RequireValue();
@@ -1159,16 +1176,21 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 b.BindStmt(ref Body);
             }
+            b.GenerateDelegateTypeIfRequired();
             return null;
         }
         internal static TypedCodeblock Bound(Codeblock cb, Binder b)
         {
             var tcb = new TypedCodeblock(cb);
-            int a = 0;
-            foreach(var p in b.DelegateType.GetMethod("Invoke").GetParameters())
+            if (b.ParameterTypes != null)
             {
-                ++a;
-                b.AddParam(p.Name ?? ("__arg"+a), Binder.FindType(p.ParameterType));
+                int a = 0;
+                foreach (var p in b.ParameterTypes)
+                {
+                    string paramName = (cb.Params?.Count > a) ? cb.Params[a].LookupName : null;
+                    ++a;
+                    b.AddParam(paramName ?? ("__arg" + a), p);
+                }
             }
             tcb.Bind(b);
             return tcb;

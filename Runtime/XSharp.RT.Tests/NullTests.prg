@@ -22,6 +22,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 		[Fact, Trait("Category", "Null")];
 		METHOD UsualNullTests() AS VOID
             LOCAL u1, u2 as USUAL
+            RuntimeState.Dialect := XSharpDialect.FoxPro
             u1 := DBNull.Value
             u2 := 42
             // All comparisons involving a .Null. return FALSE

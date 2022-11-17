@@ -892,11 +892,11 @@ CLASS UsualTests
 	[Fact, Trait("Category", "Usual")];
     METHOD InListTests() AS VOID
     	LOCAL lExact := SetExact() AS LOGIC
-    	
+
 		Assert.False(InList("AB", "ABC","AD"))
 		Assert.True(InList("ABC", "ABC","AD"))
 		Assert.True(InList("AD", "ABC","AD"))
-		
+
 		SetExact(TRUE)
 		Assert.False( InList("VOL", "VOLL", "FIBU") )
 		Assert.False( InList("VOLL123", "VOLL", "FIBU") )
@@ -906,10 +906,19 @@ CLASS UsualTests
 		Assert.False( InList("VOL", "VOLL", "FIBU") )
 		Assert.True ( InList("VOLL123", "VOLL", "FIBU") )
 		Assert.True ( InList("VOLL", "VOLL", "FIBU") )
-		
-		SetExact(lExact)
-		
-		
+		local u as usual
+      u := "VOL"
+      Assert.False( InList(u, "VOLL", "FIBU") )
+      Assert.False( InList(1,2,3,4) )
+      Assert.True( InList(1,2,3,4,1) )
+      Assert.False( InList(1.0,2.0,3.0,4) )
+      var oldDelta := SetFloatDelta(0.0001)
+      Assert.True( InList(1.0,2.0,3.0,4,1.0000001) )
+      SetFloatDelta(oldDelta)
+      SetExact(lExact)
+      Assert.False( InList(ToDay(), Today()+1, Today()-1, 1000.01.01))
+      Assert.True( InList(ToDay(), Today()+1, Today()-1, 1000.01.01, ToDay()))
+      InList("abc",1,2,Today(), 1.0)
 END CLASS
 END NAMESPACE // XSharp.Runtime.Tests
 

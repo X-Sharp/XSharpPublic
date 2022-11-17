@@ -1,41 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
 <topic id="cat-Button_Classes" revisionNumber="1" title="Button Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>Button Classes</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Namespace</para></entry>
-<entry><para>Class</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Button</codeEntityReference></para></entry>
-<entry><para>
+      <title>Button Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Button</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Provide the base class from which all X# buttons are subclassed.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CheckBox</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CheckBox</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create check boxes, which are controls that can be toggled on or off by a user (or for 3-state check boxes, to a third state).
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.PushButton</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.PushButton</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a push button, which can be used to initiate an event and associated action when clicked on by the user.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.RadioButton</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.RadioButton</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a radio button.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.RadioButtonGroup</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.RadioButtonGroup</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             A group of radio buttons considered as a combination control, presenting a set of options and returning a single value.
-        </para></entry></row>
-</table>
-</content>
-     </section>
+        </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

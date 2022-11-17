@@ -1,98 +1,288 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
 <topic id="cat-Window_Classes" revisionNumber="1" title="Window Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>Window Classes</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Namespace</para></entry>
-<entry><para>Class</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ChildAppWindow</codeEntityReference></para></entry>
-<entry><para>
+      <title>Window Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ChildAppWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create child application windows.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ControlWindow</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ControlWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a control as part of the Window hierarchy, thereby allowing the behavior of the control to be customized using event handlers.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataDialog</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataDialog</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a data window that behaves like a modal dialog window (also commonly referred to as a dialog box).
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataWindow</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a data window which is capable of interacting intelligently with a data server.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DialogWindow</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DialogWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a dialog window (also commonly referred to as a dialog box), which allows the application and end user to interact. This type of dialog can be modal or modeless (see the description below).
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.EditWindow</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.EditWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create an edit control as part of the Window hierarchy, thereby allowing the behavior of the edit control to be customized using event handlers.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.EventContext</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.EventContext</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Provide the base class from which all X# event-handling classes are subclassed, embodying the elements needed by any objects that receive events.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ExplorerWindow</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ExplorerWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create an explorer window.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.OLEDataWindow</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.OLEDataWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a data window capable of hosting OLE objects.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.OLEShellWindow</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.OLEShellWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a specialized shell window that includes support for in-place active OLE objects.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ShellWindow</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ShellWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a shell window, which provides MDI support for your applications.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SplitWindow</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SplitWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a split window.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TopAppWindow</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TopAppWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a top-level application window.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Window</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Window</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Provide the base class from which all X# windows are subclassed.
-        </para></entry></row>
-<row><entry><para>XSharp</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ChildWinForm</codeEntityReference></para></entry>
-<entry><para>Special Subclass of ChildAppWindow to host a windows forms window in a VO GUI hierarchy</para></entry></row>
-<row><entry><para>XSharp</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VOWinFormApp</codeEntityReference></para></entry>
-<entry><para>Special App class to is used when hosting Windows Forms Forms in a VO GUI hierarchy</para></entry></row>
-<row><entry><para>XSharp</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.WinFormVOWindow</codeEntityReference></para></entry>
-<entry><para>This class is used to host a VO GUI Window in a Windows Forms UI Hierarchy</para></entry></row>
-<row><entry><para>XSharp</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.WinFormVOWindowHost</codeEntityReference></para></entry>
-<entry><para>This class is used to host a VO GUI Window in a Windows Forms UI Hierarchy</para></entry></row>
-</table>
-</content>
-     </section>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.ChildWinForm</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Special Subclass of ChildAppWindow to host a windows forms window in a VO GUI hierarchy</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VOWinFormApp</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Special App class to is used when hosting Windows Forms Forms in a VO GUI hierarchy</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.WinFormVOWindow</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class is used to host a VO GUI Window in a Windows Forms UI Hierarchy</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.WinFormVOWindowHost</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class is used to host a VO GUI Window in a Windows Forms UI Hierarchy</para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

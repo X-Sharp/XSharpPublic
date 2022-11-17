@@ -1,60 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
 <topic id="cat-DBC_Classes" revisionNumber="1" title="DBC Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>DBC Classes</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Namespace</para></entry>
-<entry><para>Class</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DatabasePropertyCollection</codeEntityReference></para></entry>
-<entry><para>This collection is used to store additional properties for fields and servers
-            such as captions, descriptions etc.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DatabasePropertyType</codeEntityReference></para></entry>
-<entry><para>Enum that matches the various FoxPro database properties, used in DbGetProp() and DbSetProp()</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Dbc</codeEntityReference></para></entry>
-<entry><para>Helper class to open, close and select a database</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcConnection</codeEntityReference></para></entry>
-<entry><para>Class that stores information about an ODBC connection in a DBC</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcDatabase</codeEntityReference></para></entry>
-<entry><para>Class that stores information about a database.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcField</codeEntityReference></para></entry>
-<entry><para>Class that stores information about a field in a DBC</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcIndex</codeEntityReference></para></entry>
-<entry><para>Class that stores information about an index in a DBC</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcManager</codeEntityReference></para></entry>
-<entry><para>This classes manages open database. Both databases that are opened explicitely and also databases that are opened
-            for "free" tables that have a backlink to a database</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcObject</codeEntityReference></para></entry>
-<entry><para>Base class for objects read from the Database Container</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbColumnInfo</codeEntityReference></para></entry>
-<entry><para>This class describes extended information for a field in a workarea, for fields that come from a SQL backend.</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcOther</codeEntityReference></para></entry>
-<entry><para>Class that stores other info about Databases, such as the source and object code for Database </para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcRelation</codeEntityReference></para></entry>
-<entry><para>Class that stores information about a relation in a DBC</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcTable</codeEntityReference></para></entry>
-<entry><para>Class that stores information about a table in a DBC</para></entry></row>
-<row><entry><para>XSharp.RDD</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcView</codeEntityReference></para></entry>
-<entry><para>Class that stores information about a view in a DBC</para></entry></row>
-</table>
-</content>
-     </section>
+      <title>DBC Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DatabasePropertyCollection</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This collection is used to store additional properties for fields and servers
+            such as captions, descriptions etc.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DatabasePropertyType</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Enum that matches the various FoxPro database properties, used in DbGetProp() and DbSetProp()</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.Dbc</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Helper class to open, close and select a database</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcConnection</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class that stores information about an ODBC connection in a DBC</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcDatabase</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class that stores information about a database.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcField</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class that stores information about a field in a DBC</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcIndex</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class that stores information about an index in a DBC</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcManager</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This classes manages open database. Both databases that are opened explicitely and also databases that are opened
+            for "free" tables that have a backlink to a database</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcObject</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Base class for objects read from the Database Container</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbColumnInfo</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>This class describes extended information for a field in a workarea, for fields that come from a SQL backend.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcOther</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class that stores other info about Databases, such as the source and object code for Database </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcRelation</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class that stores information about a relation in a DBC</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcTable</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class that stores information about a table in a DBC</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RDD</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.RDD.DbcView</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Class that stores information about a view in a DBC</para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

@@ -1,48 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:28 -->
 <topic id="cat-Debug_Functions" revisionNumber="1" title="Debug Functions">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>Debug Functions</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._DebOut32(System.String)</codeEntityReference></para></entry>
-<entry><para>
+      <title>Debug Functions</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Assembly</para>
+              </entry>
+              <entry>
+                <para>Function</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._DebOut32(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Write information to the Debug Terminal Program
-        </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.AltD</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.AltD</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Programmatically define a breakpoint in an application.
-        </para></entry></row>
-<row><entry><para>XSharp.RT.Debugger</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Debugger.Functions.DbgShowGlobals</codeEntityReference></para></entry>
-<entry><para>Open a window to show the (public) symbols in the running app and the other loaded assemblies</para></entry></row>
-<row><entry><para>XSharp.RT.Debugger</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Debugger.Functions.DbgShowMemvars</codeEntityReference></para></entry>
-<entry><para>Open a window to show the publics and privates for the current thread.</para></entry></row>
-<row><entry><para>XSharp.RT.Debugger</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Debugger.Functions.DbgShowSettings</codeEntityReference></para></entry>
-<entry><para>Open a window to show the global settings for the current thread.</para></entry></row>
-<row><entry><para>XSharp.RT.Debugger</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Debugger.Functions.DbgShowWorkAreas</codeEntityReference></para></entry>
-<entry><para>Open a window to display the open workareas/cursors for the current thread.</para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DebOut(XSharp.__Usual[])</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT.Debugger</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Debugger.Functions.DbgShowGlobals</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Open a window to show the (public) symbols in the running app and the other loaded assemblies</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT.Debugger</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Debugger.Functions.DbgShowMemvars</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Open a window to show the publics and privates for the current thread.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT.Debugger</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Debugger.Functions.DbgShowSettings</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Open a window to show the global settings for the current thread.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT.Debugger</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Debugger.Functions.DbgShowWorkAreas</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Open a window to display the open workareas/cursors for the current thread.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DebOut(XSharp.__Usual[])</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Write information to the Debug Terminal Program
-            </para></entry></row>
-<row><entry><para>XSharp.Core</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DebOut32(System.String)</codeEntityReference></para></entry>
-<entry><para>
+            </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.Core</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DebOut32(System.String)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Write information to the Debug Terminal Program
-        </para></entry></row>
-</table>
-</content>
-     </section>
+        </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

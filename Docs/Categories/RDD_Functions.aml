@@ -1,61 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:28 -->
 <topic id="cat-RDD_Functions" revisionNumber="1" title="RDD Functions">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>RDD Functions</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Assembly</para></entry>
-<entry><para>Function</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VORDDClasses.Functions.DbGetDefaultLockMode</codeEntityReference></para></entry>
-<entry><para>Get the default locking mode for the DbServer class</para></entry></row>
-<row><entry><para>VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VORDDClasses.Functions.DbSetDefaultLockMode(System.UInt32)</codeEntityReference></para></entry>
-<entry><para>Get/Set the default locking mode for the DbServer class</para></entry></row>
-<row><entry><para>VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VORDDClasses.Functions.DbSetRestoreWorkarea(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>Get/Set the flag that determines if DbServer operations restore the current workarea </para></entry></row>
-<row><entry><para>XSharp.VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VORDDClasses.Functions.DbSetRestoreWorkarea(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>Get/Set the flag that determines if DbServer operations restore the current workarea </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+      <title>RDD Functions</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Assembly</para>
+              </entry>
+              <entry>
+                <para>Function</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>VORDDClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VORDDClasses.Functions.DbGetDefaultLockMode</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get the default locking mode for the DbServer class</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VORDDClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:VORDDClasses.Functions.DbSetDefaultLockMode(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get/Set the default locking mode for the DbServer class</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.VORDDClasses</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VORDDClasses.Functions.DbSetDefaultLockMode(System.UInt32)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>Get/Set the default locking mode for the DbServer class</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return and optionally change the setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddCount</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddCount</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Get the number of currently loaded RDDs.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddInfo(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddInfo(XSharp.__Usual,XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return and optionally change settings controlled directly by the RDD.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddList</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddList</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Get a list of RDDs in use.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddName</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddName</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return an RDD name.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddSetDefault</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddSetDefault</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Return and optionally change the default RDD for the application.
-        </para></entry></row>
-<row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddVersion(XSharp.__Usual)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
-</table>
-</content>
-     </section>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>XSharp.RT</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RddVersion(XSharp.__Usual)</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
+              </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

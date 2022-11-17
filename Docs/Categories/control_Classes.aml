@@ -1,226 +1,646 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file was generated  on 17/11/2022 21:48:27 -->
 <topic id="cat-Control_Classes" revisionNumber="1" title="Control Classes">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <section address="Section1">
-	<title>Control Classes</title>
-      
-	<content><table><tableHeader>
-<row><entry><para>Namespace</para></entry>
-<entry><para>Class</para></entry>
-<entry><para>Description</para></entry>
-</row></tableHeader>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.AnimationControl</codeEntityReference></para></entry>
-<entry><para>
+      <title>Control Classes</title>
+      <content>
+        <table>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Namespace</para>
+              </entry>
+              <entry>
+                <para>Class</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.AnimationControl</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create an animation control.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.BaseListBox</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.BaseListBox</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Provide the base class from which all X# list boxes are subclassed.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ComboBox</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ComboBox</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a combo box, which is used when you need to provide the user with both a list of choices and an edit control (to optionally allow them to type in their own choice).
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ComboBoxEx</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ComboBoxEx</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Encapsulate a ComboBoxEx control.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ComboBoxExItem</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ComboBoxExItem</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             This class contains all properties of a ComboBoxEx item.
             It is used with the ComboBoxEx methods
             ComboBoxEx:SetItemAttributes()
             ComboBoxEx:GetItemAttributes()
             ComboBoxEx:InsertItem()
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Control</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Control</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Provide the base class from which all X# controls are subclassed.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CustomControl</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CustomControl</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Provide a base custom control class from which to derive specialized custom controls.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataBrowser</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataBrowser</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a data browser, which is a spreadsheet-like table for displaying information from a data server.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataColumn</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create columns for use in a data browser.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataListView</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataListView</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a data list view as a faster, read-only, standalone control and an alternative to a data browser.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DateTimePicker</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DateTimePicker</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Encapsulate a DateTimePicker control.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Edit</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Edit</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Provide the base class from which all X# edit controls are subclassed.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HorizontalScrollBar</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HorizontalScrollBar</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a horizontal scroll bar that is independent of its owner window.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HorizontalSelectionSlider</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HorizontalSelectionSlider</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a horizontal selection slider control.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HorizontalSlider</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HorizontalSlider</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a horizontal slider control.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HorizontalSpinner</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HorizontalSpinner</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a spinner with horizontal arrow buttons.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ListBox</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ListBox</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a list box.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ListView</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ListView</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a list view control.
             Important - Microsoft Note - Under visual styles GridLines are not always displayed correctly.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ListViewColumn</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ListViewColumn</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a list view column.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ListViewItem</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ListViewItem</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a list view item.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MonthCalendar</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MonthCalendar</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Encapsulate a standalone MonthCalendar control.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ProgressBar</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ProgressBar</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a progress bar.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ScrollBar</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ScrollBar</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Provide the base class from which all X# scroll bars are subclassed.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SelectionSlider</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SelectionSlider</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a selection slider.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Slider</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Slider</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a slider control.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Spinner</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Spinner</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a spinner.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StatusBar</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StatusBar</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a status bar for use in a window.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StatusBarItem</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StatusBarItem</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a status bar item.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StatusBarKeyItem</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StatusBarKeyItem</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a status bar item to display CapsLock, Numlock and Insert keys
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SysLink</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.SysLink</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a SysLink control.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TabControl</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TabControl</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a tab control.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ToolBar</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ToolBar</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a toolbar.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TreeView</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TreeView</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a tree view control.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TreeViewItem</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TreeViewItem</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a tree view item.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.VerticalScrollBar</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.VerticalScrollBar</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a vertical scroll bar.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.VerticalSelectionSlider</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.VerticalSelectionSlider</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a vertical selection slider control.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.VerticalSlider</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.VerticalSlider</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a vertical slider control.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.VerticalSpinner</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.VerticalSpinner</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a spinner with vertical arrow buttons.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.WindowHorizontalScrollBar</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.WindowHorizontalScrollBar</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a window horizontal scroll bar.
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.WindowScrollBar</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.WindowScrollBar</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Abstract class for Windows Scrollbars
-        </para></entry></row>
-<row><entry><para>VO</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.WindowVerticalScrollBar</codeEntityReference></para></entry>
-<entry><para>
+        </para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>VO</para>
+            </entry>
+            <entry>
+              <para>
+                <codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.WindowVerticalScrollBar</codeEntityReference>
+              </para>
+            </entry>
+            <entry>
+              <para>
             Create a window vertical scroll bar.
-        </para></entry></row>
-</table>
-</content>
-     </section>
+        </para>
+            </entry>
+          </row>
+        </table>
+      </content>
+    </section>
   </developerConceptualDocument>
 </topic>

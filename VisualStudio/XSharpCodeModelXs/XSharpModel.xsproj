@@ -17,7 +17,6 @@
     <TargetFrameworkProfile />
     <CS>true</CS>
     <VO3>true</VO3>
-    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -51,42 +50,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139">
-      <Name>System.Data.SQLite</Name>
-      <AssemblyName>System.Data.SQLite.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Debug\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IdentityModel">
-      <Name>System.IdentityModel</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.IdentityModel.dll</AssemblyName>
-    </Reference>
-    <Reference Include="System.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Management</Name>
-      <AssemblyName>System.Management.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\System.Management.dll</HintPath>
-    </Reference>
+    <Reference Include="System.IdentityModel" />
     <Reference Include="System.ServiceModel">
       <Name>System.ServiceModel</Name>
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>System.ServiceModel.dll</AssemblyName>
-    </Reference>
-    <Reference Include="System.ServiceModel.Primitives, Version=4.10.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.ServiceModel.Primitives</Name>
-      <AssemblyName>System.ServiceModel.Primitives.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\System.ServiceModel.Primitives.4.10.0\lib\net461\System.ServiceModel.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="VSLangProj2, Version=7.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>VSLangProj2</Name>
-      <AssemblyName>VSLangProj2.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\VSLangProj2.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.VSParser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VSParser</Name>
@@ -124,6 +92,7 @@
     <Compile Include="PE\XPETypeSymbol.prg" />
     <Compile Include="ProjectSystem\XDictionary.prg" />
     <Compile Include="ProjectSystem\XInclude.prg" />
+    <Compile Include="Settings\XCustomEditorSettings.prg" />
     <Compile Include="Settings\XSourceEditorSettings.prg" />
     <Compile Include="Settings\XEditorSettings.prg" />
     <Compile Include="Settings\XLiterals.prg" />
@@ -184,7 +153,6 @@
     </None>
     <None Include="App.config" />
     <None Include="Formatting\FormattingRules.txt" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
@@ -197,6 +165,15 @@
     <EmbeddedResource Include="Formatting\XFormattingRules.resx">
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Data.SQLite.Core">
+      <IncludeAssets>All</IncludeAssets>
+      <Version>1.0.116</Version>
+    </PackageReference>
+    <PackageReference Include="VSLangProj2">
+      <Version>7.0.5000</Version>
+    </PackageReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

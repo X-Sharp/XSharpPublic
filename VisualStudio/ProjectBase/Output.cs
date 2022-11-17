@@ -131,7 +131,7 @@ namespace Microsoft.VisualStudio.Project
             pbstrRelativePath = String.Empty;
             object variant;
             // get the corresponding property
-            if(ErrorHandler.Succeeded(this.get_Property("TargetPath", out variant)))
+            if(ErrorHandler.Succeeded(this.get_Property(ProjectFileConstants.TargetPath, out variant)))
             {
                 string var = variant as String;
 

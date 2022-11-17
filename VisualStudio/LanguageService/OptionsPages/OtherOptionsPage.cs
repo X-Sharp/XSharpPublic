@@ -11,6 +11,11 @@ namespace XSharp.LanguageService.OptionsPages
     [ComVisible(true)]
     class OtherOptionsPage : XSDialogPage<OtherOptionsControl>
     {
+
+        [DefaultValue(true)]
+        public bool AutoPairs { get; set; }
+        [DefaultValue(true)]
+        public bool AutoOpen { get; set; }
         [DefaultValue(true)]
         public bool ShowDividers { get; set; }
         [DefaultValue(false)]
@@ -60,6 +65,8 @@ namespace XSharp.LanguageService.OptionsPages
                 EnableParameterInfo = true;
                 EnableCodeCompletion = true;
                 EnableRegions = true;
+                AutoPairs = true;
+                AutoOpen = true;
                 OptionsInitialized = 1;
             }
         }

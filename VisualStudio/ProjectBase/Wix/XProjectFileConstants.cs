@@ -6,6 +6,7 @@
 
 namespace Microsoft.VisualStudio.Project
 {
+    using Microsoft.Build.Tasks;
     using System;
 
     /// <summary>
@@ -16,48 +17,17 @@ namespace Microsoft.VisualStudio.Project
     {
         public const int UnspecifiedValue = -1;
 
-        //public const string AdditionalCub = "AdditionalCub";
-        //public const string AllowIdenticalRows = "AllowIdenticalRows";
-        //public const string AllowUnresolvedReferences = "AllowUnresolvedReferences";
-        //public const string BackwardsCompatibleGuidGeneration = "BackwardsCompatibleGuidGeneration";
         public const string BaseInputPaths = "BaseInputPaths";
-        //public const string CabinetCachePath = "CabinetCachePath";
-        //public const string CabinetCreationThreadCount = "CabinetCreationThreadCount";
-        //public const string CompilerAdditionalOptions = "CompilerAdditionalOptions";
         public const string Cultures = "Cultures";
         public const string DefineDebugConstant = "DefineDebugConstant";
         public const string DefineConstants = "DefineConstants";
         public const string DevEnvDir = "DevEnvDir";
-        //public const string DoNotHarvest = "DoNotHarvest";
-        //public const string DropUnrealTables = "DropUnrealTables";
         public const string GetTargetPath = "GetTargetPath";
         public const string IncludeSearchPaths = "IncludeSearchPaths";
-        //public const string InstallerPlatform = "InstallerPlatform";
         public const string IntermediateOutputPath = "IntermediateOutputPath";
-        //public const string LeaveTemporaryFiles = "LeaveTemporaryFiles";
-        //public const string LibAdditionalOptions = "LibAdditionalOptions";
-        //public const string LibBindFiles = "LibBindFiles";
-        //public const string LibSuppressIntermediateFileVersionMatching = "LibSuppressIntermediateFileVersionMatching";
-        //public const string LibSuppressSchemaValidation = "LibSuppressSchemaValidation";
-        //public const string LibSuppressSpecificWarnings = "LibSuppressSpecificWarnings";
-        //public const string LibTreatWarningsAsErrors = "LibTreatWarningsAsErrors";
-        //public const string LibVerboseOutput = "LibVerboseOutput";
-        //public const string LinkerAdditionalOptions = "LinkerAdditionalOptions";
-        //public const string LinkerBaseInputPaths = "LinkerBaseInputPaths";
-        //public const string LinkerBindFiles = "LinkerBindFiles";
-        //public const string LinkerPedantic = "LinkerPedantic";
-        //public const string LinkerSuppressIntermediateFileVersionMatching = "LinkerSuppressIntermediateFileVersionMatching";
-        //public const string LinkerSuppressSchemaValidation = "LinkerSuppressSchemaValidation";
-        //public const string LinkerSuppressSpecificWarnings = "LinkerSuppressSpecificWarnings";
-        //public const string LinkerTreatWarningsAsErrors = "LinkerTreatWarningsAsErrors";
-        //public const string LinkerVerboseOutput = "LinkerVerboseOutput";
-        //public const string OnlyValidateDocuments = "OnlyValidateDocuments";
-        //public const string OutputAsXml = "OutputAsXml";
         public const string OutputName = "OutputName";
         public const string OutputPath = "OutputPath";
         public const string OutputType = "OutputType";
-        //public const string PdbOutputFile = "PdbOutputFile";
-        //public const string Pedantic = "Pedantic";
         public const string PostBuildEvent = "PostBuildEvent";
         public const string Project = "Project";
         public const string ProjectFiles = "ProjectFiles";
@@ -65,13 +35,11 @@ namespace Microsoft.VisualStudio.Project
         public const string PropertyGroup = "PropertyGroup";
         public const string PreBuildEvent = "PreBuildEvent";
         public const string ReferencePaths = "ReferencePaths";
-        //public const string ReuseCabinetCache = "ReuseCabinetCache";
         public const string RunPostBuildEvent = "RunPostBuildEvent";
         public const string SccProjectName = "SccProjectName";
         public const string SccLocalPath = "SccLocalPath";
         public const string SccAuxPath = "SccAuxPath";
         public const string SccProvider = "SccProvider";
-        //public const string SetMsiAssemblyNameFileVersion = "SetMsiAssemblyNameFileVersion";
         public const string ShowAllFiles = "ShowAllFiles";
         public const string ShowSourceTrace = "ShowSourceTrace";
         public const string SolutionDir = "SolutionDir";
@@ -79,22 +47,6 @@ namespace Microsoft.VisualStudio.Project
         public const string SolutionName = "SolutionName";
         public const string SolutionFileName = "SolutionFileName";
         public const string SolutionPath = "SolutionPath";
-        //public const string SuppressAclReset = "SuppressAclReset";
-        //public const string SuppressAllWarnings = "SuppressAllWarnings";
-        //public const string SuppressAssemblies = "SuppressAssemblies";
-        //public const string SuppressDefaultAdminSequenceActions = "SuppressDefaultAdminSequenceActions";
-        //public const string SuppressDefaultAdvSequenceActions = "SuppressDefaultAdvSequenceActions";
-        //public const string SuppressDefaultUISequenceActions = "SuppressDefaultUISequenceActions";
-        //public const string SuppressFileHashAndInfo = "SuppressFileHashAndInfo";
-        //public const string SuppressFiles = "SuppressFiles";
-        //public const string SuppressIces = "SuppressIces";
-        //public const string SuppressLayout = "SuppressLayout";
-        //public const string SuppressMsiAssemblyTableProcessing = "SuppressMsiAssemblyTableProcessing";
-        //public const string SuppressPdbOutput = "SuppressPdbOutput";
-        //public const string SuppressSchemaValidation = "SuppressSchemaValidation";
-        //public const string SuppressSpecificWarnings = "SuppressSpecificWarnings";
-        //public const string SuppressTagSectionIdAttributeOnTuples = "SuppressTagSectionIdAttributeOnTuples";
-        //public const string SuppressValidation = "SuppressValidation";
         public const string ToolsVersion = "ToolsVersion";
         public const string TreatWarningsAsErrors = "TreatWarningsAsErrors";
         public const string VerboseOutput = "VerboseOutput";

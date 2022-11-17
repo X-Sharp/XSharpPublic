@@ -14,7 +14,7 @@ namespace XSharp.LanguageService
     {
         public ISignatureHelpSource TryCreateSignatureHelpSource(ITextBuffer textBuffer)
         {
-            if (XSettings.DisableParameterInfo)
+            if (XEditorSettings.DisableParameterInfo)
                 return null;
             var file = textBuffer.GetFile();
             if (file == null || file.XFileType != XFileType.SourceCode)

@@ -10,7 +10,6 @@ namespace XSharp.LanguageService.OptionsPages
             InitializeComponent();
             chkShowDividers.Tag = nameof(OtherOptionsPage.ShowDividers);
             chkSingleLineDividers.Tag = nameof(OtherOptionsPage.ShowSingleLineDividers);
-            chkBackupForms.Tag = nameof(OtherOptionsPage.FormEditorMakeBackupFiles);
             chkHighlightWord.Tag = nameof(OtherOptionsPage.EnableHighlightWord);
             chkBraceMatching.Tag = nameof(OtherOptionsPage.EnableBraceMatching);
             chkKeywordMatching.Tag = nameof(OtherOptionsPage.EnableKeywordmatching);
@@ -20,6 +19,8 @@ namespace XSharp.LanguageService.OptionsPages
             chkParameters.Tag = nameof(OtherOptionsPage.EnableParameterInfo);
             chkCompletion.Tag = nameof(OtherOptionsPage.EnableCodeCompletion);
             chkRegions.Tag = nameof(OtherOptionsPage.EnableRegions);
+            chkAutoPairs.Tag = nameof(OtherOptionsPage.AutoPairs);
+            chkAutoOpen.Tag = nameof(OtherOptionsPage.AutoOpen);
         }
         internal OtherOptionsPage OurOptionsPage => (OtherOptionsPage) optionPage;
 

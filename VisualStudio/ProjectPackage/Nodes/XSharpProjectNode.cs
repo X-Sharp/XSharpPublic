@@ -349,7 +349,7 @@ namespace XSharp.Project
         internal void InvalidateOptions()
         {
             this.options = null;
-            this.OutputFile = null;
+            //this.OutputFile = null;
             this._outputPath = null;
 
         }
@@ -404,7 +404,7 @@ namespace XSharp.Project
         public void RemoveProjectProperty(string name)
         {
             var prop = this.BuildProject.GetProperty(name);
-            if (prop != null)
+            if (prop != null && ! prop.IsImported)
             {
                 this.BuildProject.RemoveProperty(prop);
             }
@@ -1362,7 +1362,7 @@ namespace XSharp.Project
 
         private void RefreshIncludeFiles()
         {
-            if (XEditorSettings.HideIncludes)
+            if (XSettings.HideIncludes)
             {
                 DeleteIncludeFileFolder();
                 return;
@@ -1445,26 +1445,6 @@ namespace XSharp.Project
             _taskListManager.Refresh();
             RefreshIncludeFiles();
         }
-
-        //public void UpdateAssemblyReferencesModel()
-        //{
-        //    // Add all references to the Type Controller
-        //    ProjectModel.ClearAssemblyReferences();
-        //    foreach (VSLangProj.Reference reference in this.VSProject.References)
-        //    {
-        //        // Our project references should not be added as AssemblyReference
-        //        if (reference is OAProjectReference)
-        //        {
-        //            // no need to add, AddUrl already adds these projects
-        //        }
-        //        else
-        //        {
-        //            // OAAssemblyReference or OACOMReference
-        //            ProjectModel.AddAssemblyReference(reference.Path);
-        //        }
-        //    }
-        //}
-
 
         public override void AddURL(String url, HierarchyNode node)
         {
@@ -1697,7 +1677,7 @@ namespace XSharp.Project
 
         public string SynchronizeKeywordCase(string code, string fileName)
         {
-            if (XSettings.KeywordCase == KeywordCase.None)
+            if (XEditorSettings.KeywordCase == KeywordCase.None)
                 return code;
             // we also normalize the line endings
             code = code.Replace("\n", "");
@@ -2278,14 +2258,14 @@ namespace XSharp.Project
         const string importPropsShort = @"XSharp.props";
         const string importTargetsShort = @"XSharp.targets";
         const string importTargetsFull = XSharpMsBuildDir + @"\XSharp.targets";
-        const string postBuildEvent = "PostBuildEvent";
-        const string preBuildEvent = "PreBuildEvent";
-        const string runPostBuildEvent = "RunPostBuildEvent";
-        const string ProjectVersion = "XSharpProjectversion";
-        const string IncludePaths = "Includepaths";
-        const string Nostandarddefs = "Nostandarddefs";
-        const string DocumentationFile = "Documentationfile";
-        const string XSharpProjectExtensionsPath = "XSharpProjectExtensionsPath";
+        const string PostBuildEvent = nameof(PostBuildEvent);
+        const string PreBuildEvent = nameof(PreBuildEvent);
+        const string RunPostBuildEvent = nameof(RunPostBuildEvent);
+        const string XSharpProjectVersion = nameof(XSharpProjectVersion);
+        const string IncludePaths = nameof(IncludePaths);
+        const string Nostandarddefs = nameof(Nostandarddefs);
+        const string DocumentationFile = nameof(DocumentationFile);
+        const string XSharpProjectExtensionsPath = nameof(XSharpProjectExtensionsPath);
         public override int UpgradeProject(uint grfUpgradeFlags)
         {
             bool silent;
@@ -2400,9 +2380,9 @@ namespace XSharp.Project
                 else
                 {
                     // prebuild and postbuild must be after Targets
-                    int iPrebuild = str.IndexOf(preBuildEvent, StringComparison.OrdinalIgnoreCase);
-                    int iPostbuild = str.IndexOf(postBuildEvent, StringComparison.OrdinalIgnoreCase);
-                    int iRunPostBuild = str.IndexOf(runPostBuildEvent, StringComparison.OrdinalIgnoreCase);
+                    int iPrebuild = str.IndexOf(PreBuildEvent, StringComparison.OrdinalIgnoreCase);
+                    int iPostbuild = str.IndexOf(PostBuildEvent, StringComparison.OrdinalIgnoreCase);
+                    int iRunPostBuild = str.IndexOf(RunPostBuildEvent, StringComparison.OrdinalIgnoreCase);
                     if (iPrebuild > -1 && iPrebuild < iTargets)
                         ok = false;
                     else if (iPostbuild > -1 && iPrebuild < iTargets)
@@ -2482,7 +2462,8 @@ namespace XSharp.Project
                 addProperty(grp, ProjectVersion, Constants.FileVersion);
             }
 #else
-            this.RemoveProjectProperty(ProjectVersion);
+            this.RemoveProjectProperty(XSharpProjectVersion);
+            this.RemoveProjectProperty(ProjectFileConstants.TargetPath);
 #endif
         }
 
@@ -2770,17 +2751,17 @@ namespace XSharp.Project
                     var p = c as MBC.ProjectPropertyElement;
                     if (p != null)
                     {
-                        if (string.Equals(p.Name, preBuildEvent, StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(p.Name, PreBuildEvent, StringComparison.OrdinalIgnoreCase))
                         {
                             prebuild = p;
                             found = true;
                         }
-                        if (string.Equals(p.Name, postBuildEvent, StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(p.Name, PostBuildEvent, StringComparison.OrdinalIgnoreCase))
                         {
                             prebuild = p;
                             found = true;
                         }
-                        if (string.Equals(p.Name, runPostBuildEvent, StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(p.Name, RunPostBuildEvent, StringComparison.OrdinalIgnoreCase))
                         {
                             runpostbuild = p;
                             found = true;
@@ -2832,15 +2813,15 @@ namespace XSharp.Project
                 var group = BuildProject.Xml.CreatePropertyGroupElement();
                 BuildProject.Xml.InsertAfterChild(group, BuildProject.Xml.LastChild);
                 group.Condition = conditionDebug;
-                group.AddProperty(preBuildEvent, prebuildValue);
-                group.AddProperty(postBuildEvent, postbuildValue);
-                group.AddProperty(runPostBuildEvent, runpostbuildValue);
+                group.AddProperty(PreBuildEvent, prebuildValue);
+                group.AddProperty(PostBuildEvent, postbuildValue);
+                group.AddProperty(RunPostBuildEvent, runpostbuildValue);
                 group = BuildProject.Xml.CreatePropertyGroupElement();
                 BuildProject.Xml.InsertAfterChild(group, BuildProject.Xml.LastChild);
                 group.Condition = conditionRelease;
-                group.AddProperty(preBuildEvent, prebuildValue);
-                group.AddProperty(postBuildEvent, postbuildValue);
-                group.AddProperty(runPostBuildEvent, runpostbuildValue);
+                group.AddProperty(PreBuildEvent, prebuildValue);
+                group.AddProperty(PostBuildEvent, postbuildValue);
+                group.AddProperty(RunPostBuildEvent, runpostbuildValue);
                 changed = true;
             }
             return changed;

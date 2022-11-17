@@ -1154,7 +1154,7 @@ STATIC CLASS XDatabase
                     oCmd:Parameters:AddWithValue("$kind5", (INT) Kind.LocalFunc)
                     oCmd:Parameters:AddWithValue("$kind6", (INT) Kind.LocalProc)
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         var mem := CreateMemberInfo(rdr)
                         if lUseLike
                             if mem:MemberName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
@@ -1205,7 +1205,7 @@ STATIC CLASS XDatabase
                     oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.VODefine)
                     oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         var mem := CreateMemberInfo(rdr)
                         if lUseLike
                             if mem:MemberName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
@@ -1253,7 +1253,7 @@ STATIC CLASS XDatabase
                     oCmd:Parameters:AddWithValue("$name", sLike)
                     oCmd:Parameters:AddWithValue("$kind1", (INT) nKind1)
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         // extra filter because they may be seeking for "FO_" and we do not want the _ character to be seen as wildcard
                         var mem := CreateAssemblyMemberInfo(rdr)
                         if mem:MemberName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
@@ -1290,7 +1290,7 @@ STATIC CLASS XDatabase
                     USING VAR oCmd := SQLiteCommand{stmt, oConn}
                     oCmd:Parameters:AddWithValue("$name", sName)
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         result:Add(CreateTypeInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
@@ -1311,7 +1311,7 @@ STATIC CLASS XDatabase
                     USING VAR oCmd := SQLiteCommand{stmt, oConn}
                     oCmd:Parameters:AddWithValue("$name", sLike)
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         var type := CreateTypeInfo(rdr)
                         if type:FullName:StartsWith(sName, StringComparison.OrdinalIgnoreCase) .or. type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
                             result:Add(type)
@@ -1334,7 +1334,7 @@ STATIC CLASS XDatabase
                     USING VAR oCmd := SQLiteCommand{stmt, oConn}
                     oCmd:Parameters:AddWithValue("$name", sName)
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         var type := CreateTypeInfo(rdr)
                         result:Add(type)
                     ENDDO
@@ -1356,7 +1356,7 @@ STATIC CLASS XDatabase
                     USING VAR oCmd := SQLiteCommand{stmt, oConn}
                     oCmd:Parameters:AddWithValue("$name", sName)
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         result:Add(CreateRefTypeInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
@@ -1376,7 +1376,7 @@ STATIC CLASS XDatabase
                     USING VAR oCmd := SQLiteCommand{stmt, oConn}
                     oCmd:Parameters:AddWithValue("$name", sLike)
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         var type := CreateRefTypeInfo(rdr)
                         if type:FullName:StartsWith(sName, StringComparison.OrdinalIgnoreCase) .or. type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
                             result:Add(type)
@@ -1398,7 +1398,7 @@ STATIC CLASS XDatabase
                     USING VAR oCmd := SQLiteCommand{stmt, oConn}
                     oCmd:Parameters:AddWithValue("$name", sName)
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         var type := CreateRefTypeInfo(rdr)
                         if type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
                             result:Add(type)
@@ -1444,7 +1444,7 @@ STATIC CLASS XDatabase
                     USING VAR oCmd := SQLiteCommand{stmt, oConn}
                     oCmd:Parameters:AddWithValue("$type",(INT) type)
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         result:Add(DbToString(rdr[0]))
                     ENDDO
                 CATCH e AS Exception
@@ -1562,7 +1562,7 @@ STATIC CLASS XDatabase
                 TRY
                     USING VAR oCmd := SQLiteCommand{stmt, oConn}
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         result:Add(CreateTypeInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
@@ -1582,7 +1582,7 @@ STATIC CLASS XDatabase
                 TRY
                     USING VAR oCmd := SQLiteCommand{stmt, oConn}
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         result:Add(CreateMemberInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
@@ -1603,7 +1603,7 @@ STATIC CLASS XDatabase
                 TRY
                     USING VAR oCmd := SQLiteCommand{stmt, oConn}
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         result:Add(CreateMemberInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
@@ -1648,7 +1648,7 @@ STATIC CLASS XDatabase
                 TRY
                     USING VAR oCmd := SQLiteCommand{stmt, oConn}
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         result:Add(CreateMemberInfo(rdr))
                     ENDDO
                 CATCH e AS Exception
@@ -1678,7 +1678,7 @@ STATIC CLASS XDatabase
                     oCmd:Parameters:AddWithValue("$kind5", (INT) Kind.VODefine)
                     oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
                     USING VAR rdr := oCmd:ExecuteReader()
-                    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                    DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         result:Add(CreateMemberInfo(rdr))
                     ENDDO
                 CATCH e AS Exception

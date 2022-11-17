@@ -99,8 +99,17 @@ namespace XSharp.Project
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
 
-    [ProvideOptionPage(typeof(Options.DialogPageProvider.WindowEditor), "X# Custom Editors", "Window Editor", 0, 0, true,Sort = 1)]
-    [ProvideOptionPage(typeof(Options.DialogPageProvider.OtherEditor), "X# Custom Editors", "Other Editors", 0, 0, true, Sort = 2)]
+    [ProvideOptionPage(typeof(Options.DialogPageProvider.WindowEditor), "X# Custom Editors", "VO Window Editor",
+        categoryResourceID: 200,
+        pageNameResourceID: 201,
+        keywordListResourceId: 301,
+        supportsAutomation: true,
+        Sort = 1 )]
+    [ProvideOptionPage(typeof(Options.DialogPageProvider.OtherEditor), "X# Custom Editors", "Other Editors",
+        categoryResourceID: 200,
+        pageNameResourceID: 202,
+        keywordListResourceId: 302,
+        supportsAutomation:true, Sort = 2)]
 
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),
@@ -278,22 +287,22 @@ namespace XSharp.Project
         public async Task<bool> GetEditorOptionsAsync()
         {
             var woptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
-            XEditorSettings.ShowGrid = woptions.ShowGrid;
-            XEditorSettings.GridX = woptions.GridX;
-            XEditorSettings.GridY = woptions.GridY;
-            XEditorSettings.PasteOffSetX = woptions.PasteOffSetX;
-            XEditorSettings.PasteOffSetY = woptions.PasteOffSetY;
-            XEditorSettings.PartialLasso = woptions.PartialLasso;
+            XCustomEditorSettings.ShowGrid = woptions.ShowGrid;
+            XCustomEditorSettings.GridX = woptions.GridX;
+            XCustomEditorSettings.GridY = woptions.GridY;
+            XCustomEditorSettings.PasteOffSetX = woptions.PasteOffSetX;
+            XCustomEditorSettings.PasteOffSetY = woptions.PasteOffSetY;
+            XCustomEditorSettings.PartialLasso = woptions.PartialLasso;
 
             var options = await Options.OtherEditorOptions.GetLiveInstanceAsync();
-            XEditorSettings.DbServerDefaultRDD = options.DbServerDefaultRDD;
-            XEditorSettings.DbServerParentClass = options.DbServerParentClass;
-            XEditorSettings.MenuParentClass = options.MenuParentClass;
-            XEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
-            XEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
-            XEditorSettings.Disassembler = options.Disassembler;
-            XEditorSettings.HideIncludes = options.HideIncludes;
-
+            XCustomEditorSettings.DbServerDefaultRDD = options.DbServerDefaultRDD;
+            XCustomEditorSettings.DbServerParentClass = options.DbServerParentClass;
+            XCustomEditorSettings.MenuParentClass = options.MenuParentClass;
+            XCustomEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
+            XCustomEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
+            XCustomEditorSettings.BackupFormFiles = options.BackupFormFiles;
+            XSettings.Disassembler = options.Disassembler;
+            XSettings.HideIncludes = options.HideIncludes;
             StartLogging();
             return true;
         }

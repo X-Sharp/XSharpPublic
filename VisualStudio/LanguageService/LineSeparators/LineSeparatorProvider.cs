@@ -37,7 +37,7 @@ namespace XSharp.LanguageService
  
         protected override Task CreatedAsync(DocumentView docView)
         {
-            if ( XSettings.EditorShowDividers)
+            if ( XEditorSettings.ShowDividers)
             {
                 var buffer = Document.TextBuffer;
                 if (!buffer.Properties.TryGetProperty<LineSeparatorManager>(typeof(LineSeparatorManager),

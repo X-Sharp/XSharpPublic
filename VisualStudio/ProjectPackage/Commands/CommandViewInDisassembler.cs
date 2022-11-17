@@ -29,7 +29,7 @@ namespace XSharp.Project
                 path = xsproject.ProjectNode.OutputFile;
                 if (System.IO.File.Exists(path))
                 {
-                    var disasm = XEditorSettings.Disassembler;
+                    var disasm = XSettings.Disassembler;
                     if (string.IsNullOrEmpty(disasm))
                     {
                         await VS.MessageBox.ShowWarningAsync("No disassembler defined.","Please setup the disassembler in Tools/Options/X# Customer Editors/Other Editors");

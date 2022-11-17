@@ -136,32 +136,100 @@
   <data name="3" xml:space="preserve">
     <value>XSharp Items</value>
   </data>
-  <data name="201" xml:space="preserve">
-    <value>Intellisense</value>
-    <comment>Caption of Intellisense Options page in Tools/Option/TextEditor/XSharp</comment>
-  </data>
   <data name="202" xml:space="preserve">
     <value>Formatting</value>
     <comment>Caption of Formatting Options page in Tools/Option/TextEditor/XSharp</comment>
+  </data>
+  <data name="302" xml:space="preserve">
+    <value>
+      Keyword Case;
+      UDC Case;
+      Identifier Case;
+      Trim Whitespace;
+      Final NewLine;
+    </value>
+    <comment>Keywords for Tools/Option/TextEditor/XSharp/Formatting</comment>
   </data>
   <data name="203" xml:space="preserve">
     <value>Options</value>
     <comment>Caption of Other Options page in Tools/Option/TextEditor/XSharp</comment>
   </data>
+  <data name="303" xml:space="preserve">
+    <value>
+      Entity Dividers;
+      Highlight Identifiers;
+      Brace Matching;
+      Brace Completion;
+      Highkight Keywords;
+      Lightbulbs;
+      QuickInfo;
+      Tooltips;
+      ParameterInfo;
+      ParameterTip;
+      Completion;
+      Regions;
+    </value>
+    <comment>Keywords for Tools/Option/TextEditor/XSharp/Options</comment>
+  </data>
   <data name="204" xml:space="preserve">
     <value>Settings Completion</value>
     <comment>Caption of Intellisense\Settings Options page in Tools/Option/TextEditor/XSharp</comment>
   </data>
+  <data name="304" xml:space="preserve">
+    <value>
+      Locals;
+      Field;
+      Members;
+      Inherited;
+      Types;
+      Namespaces;
+      Globals;
+      Functions;
+    </value>
+    <comment>Keywords for Tools/Option/TextEditor/XSharp/Settings Completion</comment>
+  </data>
   <data name="205" xml:space="preserve">
-    <value>General</value>
+    <value>IntelliSense</value>
     <comment>Caption of Intellisense\General Options page in Tools/Option/TextEditor/XSharp</comment>
+  </data>
+  <data name="305" xml:space="preserve">
+    <value>
+      CompletionList;
+      Navigation Bar;
+      Sort Items;
+      Members Combobox;
+    </value>
+    <comment>Keywords for Tools/Option/TextEditor/XSharp/Intellisense</comment>
   </data>
   <data name="206" xml:space="preserve">
     <value>Indentation</value>
     <comment>Caption of Intellisense\Indentation Options page in Tools/Option/TextEditor/XSharp</comment>
   </data>
+  <data name="306" xml:space="preserve">
+    <value>
+      Indentation; 
+      Entities;
+      Statements;
+      Members;
+      Blocks;
+      Case Label;
+      Preprocessor;
+      Multi Line;
+    </value>
+    <comment>Keywords for Tools/Option/TextEditor/XSharp/Indentation</comment>
+  </data>
   <data name="207" xml:space="preserve">
     <value>Generator</value>
     <comment>Caption of Other Options page in Tools/Option/TextEditor/XSharp</comment>
+  </data>
+  <data name="307" xml:space="preserve">
+    <value>
+      Generator; 
+      Public;
+      Export;
+      Private;
+      Hidden;
+    </value>
+    <comment>Keywords for Tools/Option/TextEditor/XSharp/Generator</comment>
   </data>
 </root>

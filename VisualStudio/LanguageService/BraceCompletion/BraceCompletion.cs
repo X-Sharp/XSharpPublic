@@ -31,7 +31,7 @@ namespace XSharp.LanguageService
     {
         protected override bool IsValidBraceCompletionContext(SnapshotPoint openingPoint)
         {
-            if (!XSettings.EditorCompletionAutoPairs)
+            if (!XEditorSettings.CompletionAutoPairs)
                 return false;
 
             IList<ClassificationSpan> spans = this.GetSpans(openingPoint);

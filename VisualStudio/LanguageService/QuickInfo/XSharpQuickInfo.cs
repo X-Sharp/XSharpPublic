@@ -53,7 +53,7 @@ namespace XSharp.LanguageService
 
         public async Task<QuickInfoItem> GetQuickInfoItemAsync(IAsyncQuickInfoSession session, CancellationToken cancellationToken)
         {
-            if (XSettings.DebuggerIsRunning || XSettings.DisableQuickInfo)
+            if (XSettings.DebuggerIsRunning || XEditorSettings.DisableQuickInfo)
             {
                 await session.DismissAsync();
                 return null;
@@ -376,7 +376,7 @@ namespace XSharp.LanguageService
                 }
                 name += this.typeMember.Name;
                 content.addText(name);
-                if (this.typeMember.Kind.HasParameters())
+                if (this.typeMember.Kind.HasParameters() && !this.typeMember.Kind.IsProperty())
                 {
                     var isExt = typeMember.IsExtension;
                     content.addKeyword(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "{" : "(");

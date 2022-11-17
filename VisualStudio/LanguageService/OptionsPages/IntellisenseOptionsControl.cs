@@ -14,7 +14,6 @@ namespace XSharp.LanguageService.OptionsPages
             chkSortNavBar.Tag = nameof(IntellisenseOptionsPage.SortNavigationBars);
             chkShowMembersOfCurrentType.Tag = nameof(IntellisenseOptionsPage.ShowMembersOfCurrentTypeOnly);
             commitChars.Tag = nameof(IntellisenseOptionsPage.CommitChars);
-            chkAutoPairs.Tag = nameof(IntellisenseOptionsPage.AutoPairs);
             chkExcludeMembersFromOtherfiles.Tag = nameof(IntellisenseOptionsPage.ExcludeMembersFromOtherFiles);
 
             if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev)))

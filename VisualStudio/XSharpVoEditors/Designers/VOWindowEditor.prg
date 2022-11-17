@@ -2369,8 +2369,8 @@ RETURN
 					LOOP
 				ENDIF
 
-				IF (XEditorSettings.PartialLasso .and. Control.ModifierKeys != Keys.Shift) .or. ;
-					(!XEditorSettings.PartialLasso .and. Control.ModifierKeys == Keys.Shift)
+				IF (XCustomEditorSettings.PartialLasso .and. Control.ModifierKeys != Keys.Shift) .or. ;
+					(!XCustomEditorSettings.PartialLasso .and. Control.ModifierKeys == Keys.Shift)
 					lInclude := oDesign:Control:Left <= xx .and. oDesign:Control:Top <= yy .and. oDesign:Control:Right >= x .and. oDesign:Control:Bottom >= y
 				ELSE
 					lInclude := oDesign:Control:Left >= x .and. oDesign:Control:Top >= y .and. oDesign:Control:Right <= xx .and. oDesign:Control:Bottom <= yy
@@ -3522,8 +3522,8 @@ RETURN
 			IF lNameConflict
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "Name" , SELF:GetNextName(oEntry:cName)})
 			END IF
-			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Left" , oEntry:x + XEditorSettings.PasteOffSetX * oEntry:nPasted})
-			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Top" , oEntry:y + XEditorSettings.PasteOffSetY * oEntry:nPasted})
+			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Left" , oEntry:x + XCustomEditorSettings.PasteOffSetX * oEntry:nPasted})
+			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Top" , oEntry:y + XCustomEditorSettings.PasteOffSetY * oEntry:nPasted})
 			IF SELF:ViewMode == ViewMode.Browse
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Deleted" , 1})
 			END IF

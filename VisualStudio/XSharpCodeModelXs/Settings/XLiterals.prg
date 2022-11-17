@@ -77,7 +77,7 @@ BEGIN NAMESPACE XSharpModel
             return _Keywords:Keys
 
     STATIC METHOD Choose(kw1 as string, kw2 as string, kw3 as string) as string
-        SWITCH XSettings.KeywordCase
+        SWITCH XEditorSettings.KeywordCase
             CASE KeywordCase.Upper
                 return kw1
             CASE KeywordCase.Lower
@@ -125,7 +125,7 @@ BEGIN NAMESPACE XSharpModel
     CONST PUBLIC XppDeclaration := "_declaration" AS STRING
 #endregion
     STATIC METHOD Capitalize( result as STRING) AS STRING
-        SWITCH XSettings.KeywordCase
+        SWITCH XEditorSettings.KeywordCase
             CASE KeywordCase.Lower
                 RETURN result:ToLower()
             CASE KeywordCase.Title

@@ -66,13 +66,13 @@ namespace XSharp.LanguageService
             WriteOutputMessage("-->> AugmentCompletionSessions");
             try
             {
-                if (XSettings.DisableCodeCompletion)
+                if (XEditorSettings.DisableCodeCompletion)
                     return;
                 XSharpModel.ModelWalker.Suspend();
                 if (_disposed)
                     throw new ObjectDisposedException("XSharpCompletionSource");
-                _showTabs = XSettings.EditorCompletionListTabs;
-                _keywordsInAll = XSettings.EditorKeywordsInAll;
+                _showTabs = XEditorSettings.CompletionListTabs;
+                _keywordsInAll = XEditorSettings.KeywordsInAll;
 
                 // Where does the StartSession has been triggered ?
                 ITextSnapshot snapshot = _buffer.CurrentSnapshot;

@@ -34,7 +34,7 @@ namespace XSharp.Project.Options
         public string FieldSpecParentClass { get; set; } = "FieldSpec";
         [Category("Disassembler")]
         [DisplayName("Program")]
-        [Description("The full path to the disassembler path to use.")]
+        [Description("The full path to the disassembler path to use, such as ILSpy or Reflector")]
         public string Disassembler { get; set; } = "";
 
         [Category("Solution  Explorer")]
@@ -43,6 +43,11 @@ namespace XSharp.Project.Options
         [DefaultValue(false)]
          public bool HideIncludes{ get; set; } = false;
 
+        [Category("Windows Forms Editor")]
+        [DisplayName("Backup Source Files")]
+        [Description("Backup the Form.Prg and Form.Designer.Prg when saving in the Windows Forms Editor.")]
+        [DefaultValue(false)]
+        public bool BackupFormFiles { get; set; } = false;
     }
 }
 

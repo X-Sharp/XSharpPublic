@@ -113,28 +113,41 @@ namespace XSharp.LanguageService
         {
             return _buffer.CurrentSnapshot.GetLineFromLineNumber(lineNo);
         }
+
         internal IList<IToken> GetTokensInLine(int lineNo)
         {
             var line = _buffer.CurrentSnapshot.GetLineFromLineNumber(lineNo);
-            var result = GetTokensInLine(line);
-            var offset = line.Start.Position;
-            foreach (var token in result)
+            return GetTokensInLine(line);
+        }
+
+        internal IList<IToken> GetTokensInLine(ITextSnapshotLine line)
+        {
+            List<IToken> tokens = new List<IToken>(); ;
+            if (line.Length == 0)
+                return tokens;
+            if (line.Snapshot.Version == this.SnapShot.Version)
             {
+                // When the snapshot matches, return a clone of the line we already have. 
+                // no need to lex again
+                tokens.AddRange(this._tokensPerLine[line.LineNumber]);
+                return tokens;
+            }
+            var text = line.GetText();
+            tokens.AddRange(GetTokens(text));
+            var offset = line.Start.Position;
+            foreach (var token in tokens)
+            {
+                // Since this is the result of lexing a single line we have to adjust the indices 
+                // and the linenumber
                 if (token is XSharpToken xt)
                 {
                     xt.StartIndex += offset;
                     xt.StopIndex += offset;
-                    xt.Line = lineNo;
+                    xt.Line = line.LineNumber;
                 }
             }
-            return result;
-        }
-        internal IList<IToken> GetTokensInLine(ITextSnapshotLine line)
-        {
-            if (line.Length == 0)
-                return new List<IToken>();
-            var text = line.GetText();
-            return GetTokens(text);
+            return tokens;
+
         }
         internal IList<IToken> GetTokens(string text)
         {

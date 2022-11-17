@@ -650,8 +650,9 @@ CLASS XSharp.CoreDb
     STATIC METHOD Delete() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+        RAISE BeforeRecordDeleted  oRdd:RecNo
         VAR result := oRdd:Delete()
-        RAISE RecordDeleted  oRdd:RecNo
+        RAISE AfterRecordDeleted  oRdd:RecNo
         RETURN result
 
         })
@@ -1589,8 +1590,9 @@ CLASS XSharp.CoreDb
     STATIC METHOD Recall() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+        RAISE BeforeRecordRecalled  oRdd:RecNo
         VAR result := oRdd:Recall()
-        RAISE RecordRecalled  oRdd:RecNo
+        RAISE AfterRecordRecalled  oRdd:RecNo
         RETURN result
         })
 

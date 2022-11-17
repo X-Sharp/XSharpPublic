@@ -13,7 +13,7 @@ namespace XSharp.LanguageService.OptionsPages
     public class IndentingOptionsPage : XSDialogPage<IndentingOptionsControl>
     {
         [DefaultValue(false)]
-        public bool Initialized { get; set; }
+        public bool IndentInitialized { get; set; }
         [DefaultValue(true)]
         public bool IndentEntityContent { get; set; }
         [DefaultValue(true)]
@@ -34,14 +34,14 @@ namespace XSharp.LanguageService.OptionsPages
 
         public void ValidateSettings()
         {
-            if (! Initialized )
+            if (!IndentInitialized)
             {
                 IndentEntityContent = true; // class members
                 IndentFieldContent = true;  // class fields
                 IndentBlockContent = true;  // statements
                 IndentCaseContent = true;   // statement block inside case
                 IndentMultiLines = true;    // Multi line statements
-                Initialized = true;
+                IndentInitialized = true;
                 this.SaveSettingsToStorage();
             }
         }

@@ -63,7 +63,7 @@
             this.chkTrimTrailngWhiteSpace.Location = new System.Drawing.Point(13, 105);
             this.chkTrimTrailngWhiteSpace.Name = "chkTrimTrailngWhiteSpace";
             this.chkTrimTrailngWhiteSpace.Size = new System.Drawing.Size(143, 17);
-            this.chkTrimTrailngWhiteSpace.TabIndex = 7;
+            this.chkTrimTrailngWhiteSpace.TabIndex = 4;
             this.chkTrimTrailngWhiteSpace.Text = "Trim Trailing Whitespace";
             this.toolTip1.SetToolTip(this.chkTrimTrailngWhiteSpace, "When you select this then all the lines will be \"trimmed\" when you save the file." +
         "");
@@ -75,7 +75,7 @@
             this.chkInsertFinalNewLine.Location = new System.Drawing.Point(13, 128);
             this.chkInsertFinalNewLine.Name = "chkInsertFinalNewLine";
             this.chkInsertFinalNewLine.Size = new System.Drawing.Size(122, 17);
-            this.chkInsertFinalNewLine.TabIndex = 8;
+            this.chkInsertFinalNewLine.TabIndex = 5;
             this.chkInsertFinalNewLine.Text = "Insert Final NewLine";
             this.toolTip1.SetToolTip(this.chkInsertFinalNewLine, "When you select this then the editor will add a CRLF after the last line of code " +
         "when needed.");
@@ -87,7 +87,7 @@
             this.chkSynchronizeUDCKeywords.Location = new System.Drawing.Point(13, 59);
             this.chkSynchronizeUDCKeywords.Name = "chkSynchronizeUDCKeywords";
             this.chkSynchronizeUDCKeywords.Size = new System.Drawing.Size(191, 17);
-            this.chkSynchronizeUDCKeywords.TabIndex = 1;
+            this.chkSynchronizeUDCKeywords.TabIndex = 2;
             this.chkSynchronizeUDCKeywords.Text = "Sychronize case of &UDC Keywords";
             this.toolTip1.SetToolTip(this.chkSynchronizeUDCKeywords, "When you enable this option then User Defined keywords inside UDCs will follow th" +
         "e capitalization rules for the built-in keywords");
@@ -99,7 +99,7 @@
             this.chkIdentifierCase.Location = new System.Drawing.Point(13, 82);
             this.chkIdentifierCase.Name = "chkIdentifierCase";
             this.chkIdentifierCase.Size = new System.Drawing.Size(171, 17);
-            this.chkIdentifierCase.TabIndex = 2;
+            this.chkIdentifierCase.TabIndex = 3;
             this.chkIdentifierCase.Text = "&Identifier Case Synchronization";
             this.toolTip1.SetToolTip(this.chkIdentifierCase, resources.GetString("chkIdentifierCase.ToolTip"));
             this.chkIdentifierCase.UseVisualStyleBackColor = true;
@@ -109,7 +109,7 @@
             this.panel1.Controls.Add(this.grpCase);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(381, 251);
+            this.panel1.Size = new System.Drawing.Size(381, 186);
             this.panel1.TabIndex = 0;
             // 
             // grpCase
@@ -122,7 +122,7 @@
             this.grpCase.Controls.Add(this.chkIdentifierCase);
             this.grpCase.Location = new System.Drawing.Point(3, 14);
             this.grpCase.Name = "grpCase";
-            this.grpCase.Size = new System.Drawing.Size(373, 221);
+            this.grpCase.Size = new System.Drawing.Size(373, 158);
             this.grpCase.TabIndex = 0;
             this.grpCase.TabStop = false;
             this.grpCase.Text = "Document Formatting";
@@ -136,7 +136,7 @@
             this.tbExample.Name = "tbExample";
             this.tbExample.ReadOnly = true;
             this.tbExample.Size = new System.Drawing.Size(103, 22);
-            this.tbExample.TabIndex = 9;
+            this.tbExample.TabIndex = 1;
             this.tbExample.TabStop = false;
             this.tbExample.Text = "FUNCTION";
             // 
@@ -208,7 +208,7 @@
             this.AutoScroll = true;
             this.Controls.Add(this.panel1);
             this.Name = "FormattingOptionsControl";
-            this.Size = new System.Drawing.Size(389, 281);
+            this.Size = new System.Drawing.Size(389, 204);
             this.panel1.ResumeLayout(false);
             this.grpCase.ResumeLayout(false);
             this.grpCase.PerformLayout();

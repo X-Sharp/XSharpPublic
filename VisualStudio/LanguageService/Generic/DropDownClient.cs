@@ -25,19 +25,19 @@ namespace XSharp.LanguageService
 
         internal DropdownSettings()
         {
-            CurrentTypeOnly = XSettings.EditorNavigationMembersOfCurrentTypeOnly;
-            IncludeFields = XSettings.EditorNavigationIncludeFields;
-            Sorted = XSettings.EditorNavigationSorted;
-            ExcludeOtherFiles = XSettings.EditorNavigationExcludeMembersFromOtherFiles;
+            CurrentTypeOnly = XEditorSettings.NavigationMembersOfCurrentTypeOnly;
+            IncludeFields = XEditorSettings.NavigationIncludeFields;
+            Sorted = XEditorSettings.NavigationSorted;
+            ExcludeOtherFiles = XEditorSettings.NavigationExcludeMembersFromOtherFiles;
         }
         internal bool Changed
         {
             get
             {
-                return CurrentTypeOnly != XSettings.EditorNavigationMembersOfCurrentTypeOnly ||
-                    IncludeFields != XSettings.EditorNavigationIncludeFields ||
-                    Sorted != XSettings.EditorNavigationSorted ||
-                    ExcludeOtherFiles != XSettings.EditorNavigationExcludeMembersFromOtherFiles;
+                return CurrentTypeOnly != XEditorSettings.NavigationMembersOfCurrentTypeOnly ||
+                    IncludeFields != XEditorSettings.NavigationIncludeFields ||
+                    Sorted != XEditorSettings.NavigationSorted ||
+                    ExcludeOtherFiles != XEditorSettings.NavigationExcludeMembersFromOtherFiles;
             }
 
         }

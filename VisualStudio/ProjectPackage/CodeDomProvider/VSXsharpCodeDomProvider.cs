@@ -296,7 +296,7 @@ namespace XSharp.Project
                 //
                 // Backup original Form file and Form.Designer file
                 //
-                if (XSharpModel.XSettings.FormEditorMakeBackupFiles)
+                if (XSharpModel.XCustomEditorSettings.BackupFormFiles)
                 {
                     if (File.Exists(prgFileName))
                     {

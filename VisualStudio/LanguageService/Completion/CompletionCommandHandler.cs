@@ -47,7 +47,7 @@ namespace XSharp.LanguageService
         internal IBufferTagAggregatorFactoryService BufferTagAggregatorFactoryService { get; set; }
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
-            if (XSettings.DisableCodeCompletion)
+            if (XEditorSettings.DisableCodeCompletion)
                 return;
             ITextView textView = AdapterService.GetWpfTextView(textViewAdapter);
             if (textView == null)
@@ -90,7 +90,7 @@ namespace XSharp.LanguageService
             bool handled = false;
             Guid cmdGroup = pguidCmdGroup;
             // 1. Pre-process before anybody else has a chance
-            if (XSettings.DisableCodeCompletion)
+            if (XEditorSettings.DisableCodeCompletion)
             {
                 ;
             }
@@ -146,7 +146,7 @@ namespace XSharp.LanguageService
                                     {
                                         ; // do nothing
                                     }
-                                    else if (XSettings.EditorCommitChars.Contains(ch))
+                                    else if (XEditorSettings.CommitChars.Contains(ch))
                                     {
                                         handled = CompleteCompletionSession(ch);
                                     }
@@ -192,7 +192,7 @@ namespace XSharp.LanguageService
                 result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             }
             // 3. Post process
-            if (ErrorHandler.Succeeded(result) && !XSettings.DisableCodeCompletion)
+            if (ErrorHandler.Succeeded(result) && !XEditorSettings.DisableCodeCompletion)
             {
                 if (pguidCmdGroup == VSConstants.VSStd2K)
                 {
@@ -410,10 +410,10 @@ namespace XSharp.LanguageService
                         break;
                     }
                     chars++;
-                    if (chars >= XSettings.CompleteNumChars)
+                    if (chars >= XEditorSettings.CompleteNumChars)
                         break;
                 }
-                if (chars >= XSettings.CompleteNumChars)
+                if (chars >= XEditorSettings.CompleteNumChars)
                 {
                     StartCompletionSession(nCmdID, '\0', true, true);
                 }
@@ -459,7 +459,7 @@ namespace XSharp.LanguageService
 
         bool CompleteCompletionSession(char ch)
         {
-            if (_completionSession == null)
+           if (_completionSession == null)
             {
                 return false;
             }
@@ -526,7 +526,7 @@ namespace XSharp.LanguageService
                 if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))
                 {
 
-                    if (XSettings.EditorCompletionAutoPairs)
+                    if (XEditorSettings.CompletionAutoPairs)
                     {
                         caret = _completionSession.TextView.Caret;
                         addDelim = true;
@@ -535,9 +535,12 @@ namespace XSharp.LanguageService
                         {
                             completion.InsertionText += "{";
                         }
-                        else if (kind.HasParameters() && !completion.InsertionText.EndsWith("("))
+                        else if (kind.HasParameters() && ! kind.IsProperty() && !completion.InsertionText.EndsWith("("))
                         {
-                            completion.InsertionText += "(";
+                            if (!XEditorSettings.DisableAutoOpen)
+                            {
+                                completion.InsertionText += "(";
+                            }
                         }
                     }
                     commit = true;
@@ -551,7 +554,7 @@ namespace XSharp.LanguageService
                         {
                             completion.InsertionText += ch;
                         }
-                        if (XSettings.EditorCompletionAutoPairs)
+                        if (XEditorSettings.CompletionAutoPairs)
                         {
                             caret = _completionSession.TextView.Caret;
                             addDelim = true;

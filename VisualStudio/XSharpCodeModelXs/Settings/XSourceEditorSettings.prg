@@ -27,24 +27,24 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC PROPERTY IndentNamespace            AS LOGIC AUTO
 
         CONSTRUCTOR()
-            TabSize      := XSettings.EditorTabSize
-            IndentSize   := XSettings.EditorIndentSize
-            TabsAsSpaces := XSettings.EditorTabsAsSpaces
-            IndentStyle  := XSettings.EditorIndentStyle
-            IndentFactor := XSettings.EditorIndentFactor
-            KeywordCase  := XSettings.KeywordCase
-            UDCKeywordCase := XSettings.UDCKeywordCase
-            IdentifierCase := XSettings.IdentifierCase
-            TrimTrailingWhiteSpace := XSettings.EditorTrimTrailingWhiteSpace
-            InsertFinalNewline := XSettings.EditorInsertFinalNewline
-            IndentTypeMembers := XSettings.IndentTypeMembers
-            IndentTypeFields := XSettings.IndentTypeFields
-            IndentStatements := XSettings.IndentStatements
-            IndentCaseContent := XSettings.IndentCaseContent
-            IndentCaseLabel := XSettings.IndentCaseLabel
-            IndentContinuedLines := XSettings.IndentContinuedLines
-            IndentPreprocessorLines := XSettings.IndentPreprocessorLines
-            IndentNamespace := XSettings.IndentNamespace
+            TabSize      := XEditorSettings.TabSize
+            IndentSize   := XEditorSettings.IndentSize
+            TabsAsSpaces := XEditorSettings.TabsAsSpaces
+            IndentStyle  := XEditorSettings.IndentStyle
+            IndentFactor := XEditorSettings.IndentFactor
+            KeywordCase  := XEditorSettings.KeywordCase
+            UDCKeywordCase := XEditorSettings.UDCKeywordCase
+            IdentifierCase := XEditorSettings.IdentifierCase
+            TrimTrailingWhiteSpace := XEditorSettings.TrimTrailingWhiteSpace
+            InsertFinalNewline := XEditorSettings.InsertFinalNewline
+            IndentTypeMembers := XEditorSettings.IndentTypeMembers
+            IndentTypeFields := XEditorSettings.IndentTypeFields
+            IndentStatements := XEditorSettings.IndentStatements
+            IndentCaseContent := XEditorSettings.IndentCaseContent
+            IndentCaseLabel := XEditorSettings.IndentCaseLabel
+            IndentContinuedLines := XEditorSettings.IndentContinuedLines
+            IndentPreprocessorLines := XEditorSettings.IndentPreprocessorLines
+            IndentNamespace := XEditorSettings.IndentNamespace
 
     END CLASS
 

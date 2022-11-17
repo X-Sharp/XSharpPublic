@@ -38,7 +38,7 @@ namespace XSharp.LanguageService
         internal IBufferTagAggregatorFactoryService BufferTagAggregatorFactoryService { get; set; }
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
-            if (XSettings.DisableCodeCompletion)
+            if (XEditorSettings.DisableCodeCompletion)
                 return;
             ITextView textView = AdapterService.GetWpfTextView(textViewAdapter);
             if (textView == null)
@@ -180,7 +180,7 @@ namespace XSharp.LanguageService
             // Let others do their thing
             result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             // 3. Post process
-            if (ErrorHandler.Succeeded(result) && !XSettings.DisableCodeCompletion)
+            if (ErrorHandler.Succeeded(result) && !XEditorSettings.DisableCodeCompletion)
             {
                 if (pguidCmdGroup == VSConstants.VSStd2K)
                 {

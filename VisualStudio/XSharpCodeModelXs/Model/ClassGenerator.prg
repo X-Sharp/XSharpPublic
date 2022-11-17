@@ -30,7 +30,7 @@ CLASS XClassCreator
 		SELF:aNameSpaces := SortedList<STRING,STRING>{}
         SELF:oDocProvider:= provider
         SELF:CreateCode(oType)
-        IF XSettings.EditorTabsAsSpaces
+        IF XEditorSettings.TabsAsSpaces
             _indent := " "
         ELSE
             _indent := e"\t"

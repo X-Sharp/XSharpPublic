@@ -182,12 +182,46 @@ http://www.xsharp.eu</value>
     <value>File has been changed outside the environment. Reload the new file?</value>
     <comment>Prompt when file changed outside of VS</comment>
   </data>
+  <data name="200" xml:space="preserve">
+    <value>X# Custom Editors</value>
+    <comment>Caption of option page category</comment>
+  </data>
   <data name="201" xml:space="preserve">
-    <value>Intellisense</value>
-    <comment>Caption of Intellisense Options page in Tools/Option/TextEditor</comment>
+    <value>VO Window Editor</value>
+    <comment>Caption of options page</comment>
+  </data>
+  <data name="301" xml:space="preserve">
+    <value>
+      Grid;
+      Distance;
+      X;
+      Y;
+      Paste;
+      Lasso;
+      Offset;
+    </value>
+    <comment>Keyword list Window Editor options</comment>
   </data>
   <data name="202" xml:space="preserve">
-    <value>Editor Options</value>
-    <comment>Text for the debug switches page</comment>
+    <value>Other Editors</value>
+    <comment>Caption of options page</comment>
+  </data>
+  <data name="302" xml:space="preserve">
+    <value>
+      Menu Editor;
+      Parent Class;
+      DbServer Editor;
+      Default RDD;
+      FieldSpec Editor;
+      Disassembler;
+      ILSpy;
+      Reflector;
+      Solution  Explorer;
+      Hide Includes;
+      Window Editor;
+      Make Backups;
+      Backup Source Files;
+    </value>
+    <comment>Keyword list Other Editor options</comment>
   </data>
 </root>

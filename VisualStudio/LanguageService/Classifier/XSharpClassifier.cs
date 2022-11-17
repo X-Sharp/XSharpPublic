@@ -229,7 +229,7 @@ namespace XSharp.LanguageService
 
         private void ClassifyBuffer()
         {
-            if (XSettings.DisableSyntaxHighlighting)
+            if (XEditorSettings.DisableSyntaxHighlighting)
                 return;
             var snapshot = _buffer.CurrentSnapshot;
             XDocument xDocument = GetDocument();
@@ -362,7 +362,7 @@ namespace XSharp.LanguageService
 
         private IList<ClassificationSpan> BuildRegionTags(IList<XSourceEntity> entities, IList<XSourceBlock> blocks, ITextSnapshot snapshot, IClassificationType _, IClassificationType _1)
         {
-            if (XSettings.DisableRegions)
+            if (XEditorSettings.DisableRegions)
             {
                 return new List<ClassificationSpan>();
             }
@@ -486,7 +486,7 @@ namespace XSharp.LanguageService
                     // #define, #ifdef etc
                     lineState.SetFlags(token.Line - 1, LineFlags.Preprocessor);
                     result = Token2ClassificationSpan(token, snapshot, xsharpPPType);
-                    if (!XSettings.DisableRegions)
+                    if (!XEditorSettings.DisableRegions)
                     {
                         switch (token.Type)
                         {
@@ -916,7 +916,7 @@ namespace XSharp.LanguageService
                 for (var iToken = 0; iToken < tokens.Count; iToken++)
                 {
                     var token = tokens[iToken];
-                    if (token.Type == XSharpLexer.ID && XSettings.IdentifierCase)
+                    if (token.Type == XSharpLexer.ID && XEditorSettings.IdentifierCase)
                     {
                         if (!ids.ContainsKey(token.Text))
                         {
@@ -962,7 +962,7 @@ namespace XSharp.LanguageService
                                 newtags.Add(item);
                         }
 
-                        if (!XSettings.DisableRegions)
+                        if (!XEditorSettings.DisableRegions)
                         {
                             // now look for Regions of similar code lines
                             switch (token.Type)

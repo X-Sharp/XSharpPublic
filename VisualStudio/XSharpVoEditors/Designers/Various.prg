@@ -91,9 +91,9 @@ CLASS WindowDesignerOptions
 		SELF:Default()
 	RETURN
 	METHOD Default() AS VOID
-		SELF:lUseGrid := XEditorSettings.ShowGrid
-		SELF:lShowGrid := XEditorSettings.ShowGrid
-		SELF:oGridSize := Size{XEditorSettings.GridX , XEditorSettings.GridY}
+		SELF:lUseGrid := XCustomEditorSettings.ShowGrid
+		SELF:lShowGrid := XCustomEditorSettings.ShowGrid
+		SELF:oGridSize := Size{XCustomEditorSettings.GridX , XCustomEditorSettings.GridY}
         IF SELF:oGridSize:Width < 1 .OR. SELF:oGridSize:Height < 1
             SELF:oGridSize := Size{8 , 8}
         ENDIF

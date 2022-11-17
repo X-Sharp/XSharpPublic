@@ -40,7 +40,7 @@ namespace XSharp.LanguageService
                     { '(', ')' },
                     { '[', ']' },
                 };
-                if (XSettings.DisableBraceMatching)
+                if (XEditorSettings.DisableBraceMatching)
                 {
                     result.Clear();
                 }
@@ -64,7 +64,7 @@ namespace XSharp.LanguageService
 
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
         {
-            if (XSettings.DisableKeywordMatching)
+            if (XEditorSettings.DisableKeywordMatching)
                 return null;
             if (textView == null || buffer == null)
                 return null;
@@ -155,7 +155,7 @@ namespace XSharp.LanguageService
 
             DateTime oStart, oEnd;
             TimeSpan timeSpan;
-            if (XSettings.DisableKeywordMatching)
+            if (XEditorSettings.DisableKeywordMatching)
             {
                 yield break;
             }

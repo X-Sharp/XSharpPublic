@@ -32,7 +32,7 @@ namespace XSharp.LanguageService.Editors.HighlightWord
 
         public new ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
         {
-            if (XSettings.DisableHighLightWord)
+            if (XEditorSettings.DisableHighLightWord)
                 return null;
             return base.CreateTagger<T>(textView, buffer);
         }
@@ -92,7 +92,7 @@ namespace XSharp.LanguageService.Editors.HighlightWord
         public override FindOptions FindOptions => FindOptions.WholeWord;
         public override bool ShouldHighlight(string text)
         {
-            if (XSettings.DisableHighLightWord)
+            if (XEditorSettings.DisableHighLightWord)
                 return false;
             if (XSharpSyntax.KeywordNames.ContainsKey(text))
                 return false;
@@ -120,7 +120,7 @@ namespace XSharp.LanguageService.Editors.HighlightWord
         }
         public override IEnumerable<SnapshotSpan> FilterResults(IEnumerable<SnapshotSpan> results)
         {
-            if (_classifierService == null || XSettings.DisableHighLightWord)
+            if (_classifierService == null || XEditorSettings.DisableHighLightWord)
                 return results;
 
             var filtered = new List<SnapshotSpan>();

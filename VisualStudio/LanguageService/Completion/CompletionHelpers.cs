@@ -126,7 +126,7 @@ namespace XSharp.LanguageService
         }
         internal static bool IsHiddenTypeName(string realTypeName)
         {
-            if (realTypeName.Length > 2 && realTypeName.StartsWith("__", StringComparison.Ordinal) && XSettings.EditorHideAdvancedMembers)
+            if (realTypeName.Length > 2 && realTypeName.StartsWith("__", StringComparison.Ordinal) && XEditorSettings.HideAdvancedMembers)
                 return true;
             if (realTypeName.IndexOf('$') >= 0)
                 return true;
@@ -138,7 +138,7 @@ namespace XSharp.LanguageService
 
         internal static bool IsHiddenMemberName(string realMemberName)
         {
-            if (realMemberName.Length > 2 && XSettings.EditorHideAdvancedMembers
+            if (realMemberName.Length > 2 && XEditorSettings.HideAdvancedMembers
                 && (realMemberName.StartsWith("__", StringComparison.Ordinal) || realMemberName.EndsWith("__", StringComparison.Ordinal)))
                 return true;
             // suppress SELF properties
@@ -232,56 +232,56 @@ namespace XSharp.LanguageService
 
         internal void AddGenericCompletion(XCompletionList compList, XSharpSearchLocation location, string startWith)
         {
-            if (XSettings.CompleteLocals && compList.Count < XSettings.MaxCompletionEntries)
+            if (XEditorSettings.CompleteLocals && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
                 AddGenericLocals(compList, location, startWith);
             }
-            if (XSettings.CompleteSelf && compList.Count < XSettings.MaxCompletionEntries)
+            if (XEditorSettings.CompleteSelf && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
                 AddGenericSelfMembers(compList, location, startWith);
             }
-            if (XSettings.CompleteParent && compList.Count < XSettings.MaxCompletionEntries)
+            if (XEditorSettings.CompleteParent && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
                 AddGenericInheritedMembers(compList, location, startWith);
             }
-            if (XSettings.CompleteNamespaces && compList.Count < XSettings.MaxCompletionEntries)
+            if (XEditorSettings.CompleteNamespaces && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
                 AddNamespaces(compList, location, startWith);
             }
-            if (XSettings.CompleteTypes && compList.Count < XSettings.MaxCompletionEntries)
+            if (XEditorSettings.CompleteTypes && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
                 AddTypeNames(compList, location, startWith);
             }
-            if (XSettings.CompleteFunctions && compList.Count < XSettings.MaxCompletionEntries)
+            if (XEditorSettings.CompleteFunctions && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
                 AddGenericFunctions(compList, location, startWith, true);
             }
-            if (XSettings.CompleteFunctionsP && compList.Count < XSettings.MaxCompletionEntries)
+            if (XEditorSettings.CompleteFunctionsP && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
                 AddGenericFunctions(compList, location, startWith, false);
             }
-            if (XSettings.CompleteFunctionsA && compList.Count < XSettings.MaxCompletionEntries)
+            if (XEditorSettings.CompleteFunctionsA && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
                 AddGenericFunctionsAssemblies(compList, location, startWith, false);
             }
-            if (XSettings.CompleteGlobals && compList.Count < XSettings.MaxCompletionEntries)
+            if (XEditorSettings.CompleteGlobals && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
                 AddGenericGlobals(compList, location, startWith, true);
             }
-            if (XSettings.CompleteGlobalsP && compList.Count < XSettings.MaxCompletionEntries)
+            if (XEditorSettings.CompleteGlobalsP && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
                 AddGenericGlobals(compList, location, startWith, false);
             }
-            if (XSettings.CompleteGlobalsA && compList.Count < XSettings.MaxCompletionEntries)
+            if (XEditorSettings.CompleteGlobalsA && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
                 AddGenericGlobalsAssemblies(compList, location, startWith, false);
 
             }
-            if (XSettings.CompleteSnippets)
+            if (XEditorSettings.CompleteSnippets)
             {
                 // todo: Add Snippets
             }
-            if (XSettings.CompleteKeywords)
+            if (XEditorSettings.CompleteKeywords)
             {
                 AddXSharpKeywords(compList, startWith);
             }
@@ -530,11 +530,25 @@ namespace XSharp.LanguageService
                 return name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture);
             return false;
         }
-        private string CharToAdd(Kind kind)
+        private string AddOpenParen(Kind kind)
         {
-            if (kind.HasParameters() && kind != Kind.Constructor && !kind.IsProperty() && kind != Kind.Event)
+            if (!XEditorSettings.DisableAutoOpen)
             {
-                return "(";
+                switch (kind)
+                {
+                    case Kind.Constructor:
+                    case Kind.Event:
+                    case Kind.Access:
+                    case Kind.Assign:
+                    case Kind.Property:
+                        return "";
+                    default:
+                        if (kind.HasParameters())
+                        {
+                            return "(";
+                        }
+                        break;
+                }
             }
             return "";
         }
@@ -551,8 +565,7 @@ namespace XSharp.LanguageService
                 if (elt is XPESymbol peSym && peSym.IsSpecialName)
                     continue;
                 ImageSource icon = _glyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
-                string toAdd = CharToAdd(elt.Kind);
-                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Prototype, icon, null, elt.Kind, elt.Value)))
+                if (!compList.Add(new XSCompletion(elt.Name, elt.Name, elt.Prototype, icon, null, elt.Kind, elt.Value)))
                     break;
             }
         }
@@ -612,7 +625,7 @@ namespace XSharp.LanguageService
                     continue;
                 //
                 ImageSource icon = _glyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
-                string toAdd = CharToAdd(elt.Kind);
+                string toAdd = AddOpenParen(elt.Kind);
                 if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Prototype, icon, null, elt.Kind, elt.Value)))
                     break;
             }

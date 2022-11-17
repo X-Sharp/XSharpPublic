@@ -33,7 +33,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
         public ISuggestedActionsSource CreateSuggestedActionsSource(ITextView textView, ITextBuffer textBuffer)
         {
-            if (XSettings.DisableLightBulb)
+            if (XEditorSettings.DisableLightBulb)
                 return null;
             if (textBuffer == null && textView == null)
             {
@@ -83,7 +83,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            if (!XSettings.DisableLightBulb)
+            if (!XEditorSettings.DisableLightBulb)
             {
                 // Do we have members to Add ?
                 if (SearchMissingMembers())

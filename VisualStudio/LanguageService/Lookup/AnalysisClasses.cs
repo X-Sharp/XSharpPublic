@@ -311,7 +311,7 @@ namespace XSharp.LanguageService
             get
             {
                 var content = new List<ClassifiedTextRun>();
-                if (Member.Kind.HasParameters())
+                if (Member.Kind.HasParameters() && Member.Kind.IsProperty())
                 {
                     content.addText(Name);
                     content.addKeyword(Member.Kind == Kind.Constructor ? "{" : "(");

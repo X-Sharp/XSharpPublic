@@ -42,7 +42,7 @@ namespace XSharp.LanguageService
 
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
-            if (XSettings.DisableParameterInfo)
+            if (XEditorSettings.DisableParameterInfo)
                 return;
 
             ITextView textView = AdapterService.GetWpfTextView(textViewAdapter);
@@ -82,7 +82,7 @@ namespace XSharp.LanguageService
 
             // 1. Pre-process
 
-            if (XSettings.DisableParameterInfo)
+            if (XEditorSettings.DisableParameterInfo)
             {
                 ;
             }
@@ -139,7 +139,7 @@ namespace XSharp.LanguageService
             // 2. Let others do their thing
             result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             // 3. Post process
-            if (ErrorHandler.Succeeded(result) && !XSettings.DisableParameterInfo)
+            if (ErrorHandler.Succeeded(result) && !XEditorSettings.DisableParameterInfo)
             {
                 if (pguidCmdGroup == VSConstants.VSStd2K)
                 {
@@ -468,7 +468,6 @@ namespace XSharp.LanguageService
             var bufpos = this._textView.Caret.Position.BufferPosition;
             props.triggerPosition = bufpos.Position;
             props.triggerLine = bufpos.GetContainingLine().LineNumber;
-
 
             if (type != null && methodName != null)
             {

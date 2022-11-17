@@ -230,17 +230,17 @@ namespace XSharp.LanguageService
                                 break;
                             case XSharpLexer.WS:
                             default:
-                                syncID = XSettings.IdentifierCase;
+                                syncID = XEditorSettings.IdentifierCase;
                                 break;
                         }
                     }
                     else
                     {
-                        syncID = XSettings.IdentifierCase;
+                        syncID = XEditorSettings.IdentifierCase;
                     }
                     break;
                 case XSharpLexer.UDC_KEYWORD:                   // This is a keyword but we handle
-                    syncKeyword = XSettings.UDCKeywordCase;
+                    syncKeyword = XEditorSettings.UDCKeywordCase;
                     break;
                 //case XSharpLexer.NAMEOF:
                 //case XSharpLexer.SIZEOF:

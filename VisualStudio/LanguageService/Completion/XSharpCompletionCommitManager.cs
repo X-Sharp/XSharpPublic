@@ -18,7 +18,7 @@ namespace XSharp.LanguageService
         }
 
 
-        public IEnumerable<char> PotentialCommitCharacters => XSharpModel.XSettings.EditorCommitChars;
+        public IEnumerable<char> PotentialCommitCharacters => XSharpModel.XEditorSettings.CommitChars;
 
         public bool ShouldCommitCompletion(IAsyncCompletionSession session, SnapshotPoint location, char typedChar, CancellationToken token)
         {

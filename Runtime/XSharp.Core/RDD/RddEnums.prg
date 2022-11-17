@@ -816,39 +816,39 @@ BEGIN NAMESPACE XSharp.RDD.Enums
         MEMBER IndexOpen
         /// <summary>This message is sent after an index was closed. The Data parameter is the name of the file that was closed.</summary>
         MEMBER IndexClose
-        /// <summary>This message is sent before a build operation is started. The Data parameter is a description of the operation.</summary>
+        /// <summary>This message is sent before a bulk operation is started. The Data parameter is a description of the operation.</summary>
         MEMBER BeforeBulkOperation
-        /// <summary>This message is sent after a build operation was completed. The Data parameter is a description of the operation.</summary>
+        /// <summary>This message is sent after a bulk operation was completed. The Data parameter is a description of the operation.</summary>
         MEMBER AfterBulkOperation
         /// <summary>This message is sent after an order was changed. The Data parameter is the name of the new order.</summary>
         MEMBER OrderChanged
-        /// <summary>This message is sent after a field was updated The Data parameter is the fieldname of the field that was updated.</summary>
+        /// <summary>This message is sent before a field is updated The Data parameter is the fieldname of the field that was updated.</summary>
         MEMBER BeforeFieldUpdate
         /// <summary>This message is sent after a field was updated The Data parameter is the fieldname of the field that was updated.</summary>
         MEMBER AfterFieldUpdate
         /// <summary>This message is sent before the record pointer is moved. The Data parameter indicates the reason for the move</summary>
         MEMBER BeforeMove
-        /// <summary>This message is sent after the record pointer is moved. The Data parameter indicates the reason for the move</summary>
+        /// <summary>This message is sent after the record pointer was moved. The Data parameter indicates the reason for the move</summary>
         MEMBER AfterMove
-        /// <summary>This message is sent after a new record has been appended. The Data parameter is the record number of the record.</summary>
+        /// <summary>This message is sent after a new record was appended. The Data parameter is the record number of the record.</summary>
         MEMBER RecordAppended
-        /// <summary>This message is sent after a record has been deleted. The Data parameter is the record number of the record.</summary>
+        /// <summary>This message is sent after a record was deleted. The Data parameter is the record number of the record.</summary>
         MEMBER AfterRecordDeleted
-        /// <summary>This message is sent after a record has been deleted. The Data parameter is the record number of the record.</summary>
+        /// <summary>This message is sent after a record was deleted. The Data parameter is the record number of the record.</summary>
         MEMBER RecordDeleted := AfterRecordDeleted
-        /// <summary>This message is sent after a record has been recalled. The Data parameter is the record number of the record.</summary>
+        /// <summary>This message is sent after a record was recalled. The Data parameter is the record number of the record.</summary>
         MEMBER AfterRecordRecalled
-        /// <summary>This message is sent after a record has been recalled. The Data parameter is the record number of the record.</summary>
+        /// <summary>This message is sent after a record was recalled. The Data parameter is the record number of the record.</summary>
         MEMBER RecordRecalled := AfterRecordRecalled
-        /// <summary>This message is sent after a record has been locked. The Data parameter is the record number of the record.</summary>
+        /// <summary>This message is sent after a record was locked. The Data parameter is the record number of the record.</summary>
         MEMBER RecordLocked
-        /// <summary>This message is sent after a record has been unlocked. The Data parameter is the record number of the record.</summary>
+        /// <summary>This message is sent after a record was unlocked. The Data parameter is the record number of the record.</summary>
         MEMBER RecordUnLocked
         /// <summary>This message is sent after a Workarea was commited. The Data parameter is the file name of area.</summary>
         MEMBER FileCommit
-        /// <summary>This message is sent before a record wil be deleted. The Data parameter is the record number of the record.</summary>
+        /// <summary>This message is sent before a record is deleted. The Data parameter is the record number of the record.</summary>
         MEMBER BeforeRecordDeleted
-        /// <summary>This message is sent before a record wil be recalled. The Data parameter is the record number of the record.</summary>
+        /// <summary>This message is sent before a record is recalled. The Data parameter is the record number of the record.</summary>
         MEMBER BeforeRecordRecalled
         /// <summary>This message is sent after an operation failed. The Data parameter is the description of the operation.</summary>
         MEMBER OperationFailed    := 99

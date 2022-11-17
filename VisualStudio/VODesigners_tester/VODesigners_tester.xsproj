@@ -17,7 +17,6 @@
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectversion>2.13.0.6</XSharpProjectversion>
     <Includepaths>$(Solutiondir)common</Includepaths>
     <NamedArgs>true</NamedArgs>
     <NoWin32Manifest>False</NoWin32Manifest>

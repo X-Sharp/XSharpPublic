@@ -16,7 +16,6 @@
     <TargetFrameworkProfile />
     <NS>true</NS>
     <VO3>true</VO3>
-    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
     <StartupObject />
     <IncludePaths>$(SolutionDir)Common</IncludePaths>

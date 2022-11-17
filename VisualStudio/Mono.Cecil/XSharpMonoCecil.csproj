@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
-    <TargetFrameworks>net48;net472</TargetFrameworks>
+    <TargetFrameworks>net48;net46</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ProjectInfo.cs" />

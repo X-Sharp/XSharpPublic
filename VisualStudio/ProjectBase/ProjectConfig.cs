@@ -445,10 +445,10 @@ namespace Microsoft.VisualStudio.Project
         }
         protected string GetProjectAssemblyName()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (this.lastCache < this.project.LastModifiedTime || this.projectAssemblyNameCache == null)
             {
                 this.lastCache = this.project.LastModifiedTime;
-                ThreadHelper.ThrowIfNotOnUIThread();
                 this.projectAssemblyNameCache = this.project.GetAssemblyName(this.configCanonicalName);
             }
             return this.projectAssemblyNameCache;
@@ -457,6 +457,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual string GetUnevaluatedConfigurationProperty(string propertyName)
         {
             string result;
+            ThreadHelper.ThrowIfNotOnUIThread();
             // Get properties for current configuration from project file and cache it
             this.project.SetConfiguration(this.configCanonicalName);
             this.project.BuildProject.ReevaluateIfNecessary();

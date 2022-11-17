@@ -1,16 +1,52 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Editor;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using XSharpModel;
+using static System.Windows.Forms.AxHost;
 using File = System.IO.File;
 
 namespace XSharp.LanguageService
 {
     class XSharpGotoDefinition
     {
+
+        internal static void Goto(IXSymbol element, ITextView TextView, CompletionState state)
+        {
+            if (state == CompletionState.Constructors && element is IXTypeSymbol xtype)
+            {
+                // when the cursor is before a "{" then goto the constructor and not the type
+                var ctors = xtype.GetConstructors();
+                if (ctors.Length > 0)
+                {
+                    element = ctors[0];
+                }
+            }
+
+            if (element is XSourceEntity source)
+            {
+                source.OpenEditor();
+            }
+            else if (element is XPETypeSymbol petype)
+            {
+                GotoSystemType(TextView, petype, petype);
+
+            }
+            else if (element is XPEMemberSymbol pemember)
+            {
+                var petype2 = pemember.Parent as XPETypeSymbol;
+                GotoSystemType(TextView, petype2, pemember);
+            }
+            else
+            {
+                VS.MessageBox.Show("Cannot navigate to the symbol under the cursor", "",
+                    icon: OLEMSGICON.OLEMSGICON_INFO,
+                    buttons: OLEMSGBUTTON.OLEMSGBUTTON_OK);
+            }
+        }
         internal static void GotoDefn(ITextView TextView)
         {
             try
@@ -43,31 +79,7 @@ namespace XSharp.LanguageService
                 ThreadHelper.ThrowIfNotOnUIThread();
                 if (result.Count > 0)
                 {
-                    var element = result[0];
-                    if (state == CompletionState.Constructors && element is IXTypeSymbol xtype)
-                    {
-                        // when the cursor is before a "{" then goto the constructor and not the type
-                        var ctors = xtype.GetConstructors();
-                        if (ctors.Length > 0)
-                        {
-                            element = ctors[0];
-                        }
-                    }
-
-                    if (element is XSourceEntity source)
-                    {
-                        source.OpenEditor();
-                    }
-                    else if (element is XPETypeSymbol petype)
-                    {
-                        GotoSystemType(TextView, petype, petype);
-
-                    }
-                    else if (element is XPEMemberSymbol pemember)
-                    {
-                        var petype2 = pemember.Parent as XPETypeSymbol;
-                        GotoSystemType(TextView, petype2, pemember);
-                    }
+                    Goto(result[0], TextView, state);
                     return;
                 }
                 //
@@ -82,15 +94,7 @@ namespace XSharp.LanguageService
                 }
                 if (result.Count > 0)
                 {
-                    var element = result[0];
-                    if (element is XSourceEntity source)
-                        source.OpenEditor();
-                    //else
-                    //{
-                    //    openInObjectBrowser(element.FullName);
-                    //}
-                    //return;
-
+                    Goto(result[0], TextView, state);
                 }
 
             }

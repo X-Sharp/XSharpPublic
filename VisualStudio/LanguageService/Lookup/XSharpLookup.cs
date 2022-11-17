@@ -540,6 +540,7 @@ namespace XSharp.LanguageService
             var findConstructor = false;
             IToken currentToken = null;
             IXTypeSymbol startType = null;
+            HashSet<string> additionalUsings = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             if (location.Member == null)
             {
                 // This is a lookup outside code.
@@ -582,7 +583,6 @@ namespace XSharp.LanguageService
                 }
             }
             Modifiers visibility = Modifiers.Private;
-            string namespacePrefix = "";
             var hasBracket = false;
             int count = -1;
             startType = currentType;
@@ -605,12 +605,16 @@ namespace XSharp.LanguageService
                     count = symbols.Count;
                     if (top != null && top.Kind == Kind.Namespace)
                     {
-                        namespacePrefix = top.Name + ".";
+                        var elements = top.FullName.Split('.');
+                        var ns = "";
+                        foreach (var element in elements)
+                        {
+                            if (ns.Length > 0)
+                                ns+= ".";
+                            ns += element;
+                            additionalUsings.Add(ns);
+                        }
                     }
-                }
-                if (state.HasFlag(CompletionState.Inherit))
-                {
-                    namespacePrefix = "";
                 }
                 if (resetState)
                 {
@@ -619,7 +623,7 @@ namespace XSharp.LanguageService
                 if (startOfExpression)
                 {
                     currentType = startType;
-                    namespacePrefix = "";
+                    additionalUsings.Clear();
                 }
 
 
@@ -739,9 +743,10 @@ namespace XSharp.LanguageService
                 var findType = state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.General);
                 if (!state.HasFlag(CompletionState.Inherit))
                 {
-                    if (findType && currentType != null )
+                    if (findType && currentType != null  && !currentType.IsGlobalType())
                     {
-                        namespacePrefix = currentType.FullName;
+                        // Add current typename, so we will find nested types 
+                        additionalUsings.Add(currentType.FullName);
                     }
                 }
                 var literal = XSharpLexer.IsConstant(currentToken.Type);
@@ -798,8 +803,7 @@ namespace XSharp.LanguageService
                     // but we want to find the type of course
                     if (findType || findConstructor)
                     {
-                       
-                        var types = SearchType(location, currentName, namespacePrefix);
+                        var types = SearchType(location, currentName, additionalUsings);
                         if (types?.Count() > 0)
                         {
                             result.AddRange(types);
@@ -831,8 +835,7 @@ namespace XSharp.LanguageService
                     if (result.Count == 0 && (startOfExpression || findType || findConstructor || qualifiedName))
                     {
                         // 3) Types
-                        
-                        var types = SearchType(location, currentName, namespacePrefix);
+                        var types = SearchType(location, currentName, additionalUsings);
                         if (types != null)
                         {
                             result.AddRange(types);
@@ -840,7 +843,7 @@ namespace XSharp.LanguageService
                         if (result.Count == 0)
                         {
                             // 4) Namespaces
-                            var namespaces = SearchNamespaces(location, currentName, namespacePrefix);
+                            var namespaces = SearchNamespaces(location, currentName, additionalUsings);
                             if (namespaces != null)
                                 result.AddRange(namespaces);
                         }
@@ -856,8 +859,6 @@ namespace XSharp.LanguageService
                     if (result.Count == 0)
                     {
                         FindMethod(result, currentToken, currentType, location, startOfExpression, currentName, visibility, state);
-                        if (result.Count > 0)
-                            namespacePrefix = "";
                     }
                     if (result.Count == 0 && currentToken.Type == XSharpLexer.ID)
                     {
@@ -960,7 +961,7 @@ namespace XSharp.LanguageService
             }
             if (result.Count == 0)
             {
-                var namespaces = location.Project.AllNamespaces.Where(n => n == namespacePrefix);
+                var namespaces = location.Project.AllNamespaces.Where(n => additionalUsings.Contains(n));
                 if (namespaces.Count() > 0)
                 {
                     var ns = namespaces.First();
@@ -1450,11 +1451,10 @@ namespace XSharp.LanguageService
         //}
 
 
-        private static IList<IXSymbol> SearchNamespaces(XSharpSearchLocation location, string name, string namespacePrefix = "")
+        private static IList<IXSymbol> SearchNamespaces(XSharpSearchLocation location, string name, IEnumerable<string> additionalUsings = null)
         {
             var result = new List<IXSymbol>();
-            var hasPrefix = !string.IsNullOrEmpty(namespacePrefix);
-            var prefixedName = namespacePrefix + name;
+            var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             if (location == null || location.File == null)
             {
                 return result;
@@ -1463,51 +1463,47 @@ namespace XSharp.LanguageService
             var namespaces = location.Project.AllNamespaces;
             foreach (var ns in namespaces)
             {
-                if (ns.StartsWith(name + ".", StringComparison.OrdinalIgnoreCase))
+                if (ns.StartsWith(name + ".", StringComparison.OrdinalIgnoreCase) )
                 {
-                    result.Add(new XNamespaceSymbol(name));
+                    names.Add(name);
                 }
                 else if (string.Compare(ns, name, true) == 0)
                 {
-                    result.Add(new XNamespaceSymbol(name));
+                    names.Add(name);
                 }
-                if (hasPrefix)
+                if (additionalUsings != null)
                 {
-                    if (ns.StartsWith(prefixedName + ".", StringComparison.OrdinalIgnoreCase))
+                    foreach (var u in additionalUsings)
                     {
-                        result.Add(new XNamespaceSymbol(prefixedName));
-                    }
-                    else if (string.Compare(ns, prefixedName, true) == 0)
-                    {
-                        result.Add(new XNamespaceSymbol(prefixedName));
+                        if (ns.StartsWith(u + "."+name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            names.Add(ns);
+                        }
                     }
 
                 }
             }
+            foreach (var n in names)
+            {
+                result.Add(new XNamespaceSymbol(n));
+            }
+            result.Sort((a, b) => String.Compare(a.FullName, b.FullName));
             DumpResults(result, $"SearchNamespaces in file {location.File.SourcePath} '{name}' ");
             return result;
         }
 
-        private static IList<IXTypeSymbol> SearchType(XSharpSearchLocation location, string name, string namespacePrefix = "")
+        private static IList<IXTypeSymbol> SearchType(XSharpSearchLocation location, string name, IEnumerable<string> additionalUsings = null)
         {
             var result = new List<IXTypeSymbol>();
             if (location == null || location.File == null)
             {
                 return result;
             }
-            WriteOutputMessage($"SearchType in file {location.File.SourcePath} '{name}' '{namespacePrefix}'");
+            WriteOutputMessage($"SearchType in file {location.File.SourcePath} '{name}' ");
             // translate out type names to system type names
             name = name.GetSystemTypeName(location.Project.ParseOptions.XSharpRuntime);
 
-            var type = location.FindType(name);
-            if (type != null && !string.IsNullOrEmpty(namespacePrefix) && !type.FullName.StartsWith(namespacePrefix, StringComparison.OrdinalIgnoreCase))
-            {
-                type = null;
-            }
-            if (type == null && !string.IsNullOrEmpty(namespacePrefix))
-            {
-                type = location.FindType(namespacePrefix + name);
-            }
+            var type = location.FindType(name, additionalUsings);
             if (type != null)
             {
                 result.Add(type);

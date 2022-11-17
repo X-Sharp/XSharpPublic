@@ -41,7 +41,6 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <Includepaths>$(SolutionDir)Common</Includepaths>
     <Nostandarddefs>True</Nostandarddefs>
     <Allowdot>True</Allowdot>
@@ -92,8 +91,6 @@
       <Private>True</Private>
       <HintPath>..\..\Dll\SDK_Defines.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <Name>System.Xml</Name>
@@ -176,6 +173,14 @@
       <Link>VOXPorter.ini</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Primitives">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
+    </PackageReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

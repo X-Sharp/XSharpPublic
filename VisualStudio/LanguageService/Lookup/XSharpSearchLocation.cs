@@ -84,12 +84,17 @@ namespace XSharp.LanguageService
             clone.Usings = clone.GetUsings();
             return clone;
         }
-        internal IXTypeSymbol FindType(string name)
+        internal IXTypeSymbol FindType(string name, IEnumerable<string> additionalUsings = null)
         {
             if (Project != null)
             {
-                var usings = Usings.ToList();
-                return Project.FindType(name, usings);
+                var usings = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                usings.AddRange(Usings);
+                if (additionalUsings != null)
+                {
+                    usings.AddRange(additionalUsings);
+                }
+                return Project.FindType(name, usings.ToList());
             }
             return null;
         }

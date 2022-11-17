@@ -13,12 +13,26 @@ USING LanguageService.SyntaxTree
 
 BEGIN NAMESPACE XSharpModel
 
+
+    STATIC CLASS SynchronizedExtensionMethods
+        STATIC METHOD AddRange<T>(SELF items as SynchronizedCollection<T> ,  newItems as IEnumerable<T> ) AS VOID
+            if newItems != null
+                FOREACH VAR item in newItems
+                    items:Add(item)
+                NEXT
+            endif
+            RETURN
+    END CLASS
+
     STATIC CLASS ExtensionMethods
 
-        STATIC METHOD AddRange<T>(SELF items as SynchronizedCollection<T> ,  newItems as IList<T> ) AS VOID
-            FOREACH VAR item in newItems
-                items:Add(item)
-            NEXT
+        STATIC METHOD AddRange<T>(SELF collection as HashSet<T>, newItems as IEnumerable<T>) as VOID
+            if newItems != null
+                FOREACH VAR item in newItems
+                    collection:Add(item)
+                NEXT
+            endif
+            RETURN
 
         STATIC METHOD CleanText(SELF token as IToken) AS STRING
             var result := token:Text

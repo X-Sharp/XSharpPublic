@@ -1169,17 +1169,17 @@ CLASS ApplicationDescriptor
 
 			IF oModule:Generated
 				xPorter.Message("  Generating module :" , oModule:Name)
-				
+
 				IF glCreateFilePerClass
-					
+
 					oModule:ExportFilesPerClass(cFolder)
-					
+
 					LOOP
-					
+
 				ELSE
 					File.WriteAllLines(cFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.UTF8)
 				ENDIF
-				
+
 			END IF
 
 			IF xPorter.ExportToXide
@@ -1574,7 +1574,7 @@ CLASS ApplicationDescriptor
 							oOutput:WriteLine("</Compile>")
 						ENDIF
 					END IF
-					
+
 					IF glCreateFilePerClass
 						LOOP
 					ENDIF
@@ -1789,7 +1789,7 @@ CLASS ModuleDescriptor
 	PROTECT _cXIDErc AS STRING
 
 	PROTECT _aDesigners AS List<Designer>
-	
+
 	PROTECT _aGeneratedSubFiles AS List<STRING>
 
 	CONSTRUCTOR(cName AS STRING , oApp AS ApplicationDescriptor , aCode AS STRING[])
@@ -2009,7 +2009,7 @@ CLASS ModuleDescriptor
 		oGlobals := OutputCode{}
 		oFuncs := OutputCode{}
 		oRest := OutputCode{}
-		
+
 		SELF:GeneratedClasses := SortedList<STRING, OutputCode> {SELF:_aClasses:Count}
 
 		FOREACH oClassDescr AS ClassDescriptor IN SELF:_aClasses
@@ -2021,7 +2021,7 @@ CLASS ModuleDescriptor
 			oClasses:Combine(oClass)
 			SELF:GeneratedClasses:Add(oClassDescr:Name, oClass)
 		NEXT
-		
+
 		IF lSortEntities
 			SELF:_aEntities:Sort({a AS EntityDescriptor, b AS EntityDescriptor => a:Name:CompareTo(b:Name)})
 		END IF
@@ -2051,7 +2051,7 @@ CLASS ModuleDescriptor
 				oRest:Combine(oEntity:Generate())
 			END CASE
 		NEXT
-		
+
 		SELF:GeneratedFuncs := oFuncs
 		SELF:GeneratedGlobals := oGlobals
 		SELF:GeneratedDefines := oDefines
@@ -2120,7 +2120,7 @@ CLASS ModuleDescriptor
 			File.WriteAllLines(cFolder + "\" + cModuleSubFolder + "\" + cFileName , oClass:Value:Lines , System.Text.Encoding.UTF8)
 			SELF:GeneratedSubFiles:Add(cModuleSubFolder + "\" + cFileName)
 		NEXT
-		
+
 		LOCAL oNonClass AS OutputCode
 		oNonClass := OutputCode{}
 		oNonClass:Combine(SELF:GeneratedDefines)
@@ -2176,7 +2176,7 @@ CLASS ClassDescriptor
 	RETURN
 	METHOD HasNonPublicIVar(cIVar AS STRING) AS LOGIC
 	RETURN SELF:_aNonPublicIVars:ContainsKey(cIVar:ToUpper())
-	
+
 	METHOD Sort() AS VOID
 		SELF:_aMembers:Sort({a AS EntityDescriptor, b AS EntityDescriptor => a:Name:CompareTo(b:Name)})
 	RETURN

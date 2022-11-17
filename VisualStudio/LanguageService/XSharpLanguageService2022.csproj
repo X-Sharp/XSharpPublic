@@ -199,10 +199,6 @@
     <Compile Include="Tokenizer\XDocument.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
@@ -233,6 +229,9 @@
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.ServiceModel.Primitives">
+      <Version>4.10.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

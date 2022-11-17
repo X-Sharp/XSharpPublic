@@ -932,7 +932,7 @@ CLASS XProject
 
     PRIVATE METHOD AdjustUsings(typeName REF STRING, usings AS IList<STRING>) AS IList<STRING>
         VAR pos := typeName:LastIndexOf(".")
-        VAR myusings := List<STRING>{}
+        VAR myusings := HashSet<string>{StringComparer.OrdinalIgnoreCase}
         // when we have a fully qualified typename then add that to the start of the list
         IF pos > 0
             VAR ns   := typeName:Substring(0,pos)
@@ -942,7 +942,7 @@ CLASS XProject
         myusings:Add(SELF:RootNamespace)
         myusings:AddRange(usings)
         myusings:AddRange(SELF:ImplicitNamespaces)
-        RETURN myusings
+        RETURN myusings:ToList()
 
 
     PRIVATE _lastFound := NULL AS XSourceTypeSymbol

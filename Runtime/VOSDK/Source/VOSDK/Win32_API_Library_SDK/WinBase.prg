@@ -385,7 +385,7 @@ _DLL FUNC InterlockedExchange(Target AS LONG PTR, longValue AS LONG) AS LONG PAS
 
 
 _DLL FUNCTION InterlockedCompareExchange(lpDestenation AS LONG PTR,liExchange AS LONGINT,liComperand AS LONGINT) AS LONG PASCAL:KERNEL32.InterlockedCompareExchange
- 
+
 _DLL FUNCTION InterlockedExchangeAdd(lpAddend AS LONG PTR,liAdd AS LONGINT) AS LONG PASCAL:KERNEL32.InterlockedExchangeAdd
 
 
@@ -1135,7 +1135,7 @@ _DLL FUNC FormatMessage(dwFlags AS DWORD, lpSource AS PTR, dwMessageId AS DWORD,
    // Vulcan needs an explicit overload, VO doesn't type check pointers so it doesn't care.
 // _DLL FUNCTION FormatMessage(dwFlags AS DWORD, lpSource AS PTR, dwMessageId AS DWORD, dwLanguageId AS DWORD, lpBuffer AS PSZ PTR, nSize AS DWORD, Arguments AS PSZ) AS DWORD PASCAL:KERNEL32.FormatMessageA
    _DLL FUNCTION FormatMessage(dwFlags AS DWORD, lpSource AS PTR, dwMessageId AS DWORD, dwLanguageId AS DWORD, lpBuffer AS PTR, nSize AS DWORD, Arguments AS PSZ) AS DWORD PASCAL:KERNEL32.FormatMessageA
-#endif	
+#endif
 
 
 FUNCTION GetSystemMessage(dwId AS DWORD) AS STRING
@@ -2218,9 +2218,11 @@ _DLL FUNC IsBadStringPtr(lpsz AS PSZ, ucchMax AS DWORD) AS LOGIC PASCAL:KERNEL32
 
 
 _DLL FUNC LookupAccountSid(lpSystemName AS PSZ, Sid AS PTR, Name AS PSZ,;
-	cbName AS DWORD PTR, ReferencedDomainName AS PSZ,;
-	cbReferencedDomainName AS DWORD PTR, peUse AS WORD) AS LOGIC PASCAL:ADVAPI32.lookupLookupAccountSidA
+    cbName AS DWORD PTR, ReferencedDomainName AS PSZ,;
+    cbReferencedDomainName AS DWORD PTR, peUse AS DWORD PTR) AS LOGIC PASCAL:ADVAPI32.lookupLookupAccountSidA
 
+_DLL FUNCTION ConvertSidToStringSid(pSid AS BYTE PTR, pcStringSid AS PSZ PTR) AS LOGIC PASCAL:Advapi32.ConvertSidToStringSidA
+_DLL FUNCTION ConvertStringSidToSid(pStringSid AS PSZ, pSid AS BYTE PTR) AS LOGIC PASCAL:Advapi32.ConvertStringSidToSidA
 
 
 // RvdH 041210 changed prototype below. Bug report 13150
@@ -2331,7 +2333,7 @@ _DLL FUNC SetSystemPowerState(fSuspend AS LOGIC, fForce AS LOGIC) AS LOGIC PASCA
 
 
 #region defines
-DEFINE INVALID_HANDLE_VALUE :=PTR (_CAST, 0xFFFFFFFF) 
+DEFINE INVALID_HANDLE_VALUE :=PTR (_CAST, 0xFFFFFFFF)
 DEFINE INVALID_FILE_SIZE := DWORD (_CAST, 0xFFFFFFFF)
 DEFINE INVALID_SET_FILE_POINTER := 0xFFFFFFFFU
 DEFINE INVALID_FILE_ATTRIBUTES := 0xFFFFFFFFU
@@ -2709,7 +2711,7 @@ DEFINE FILE_MAP_ALL_ACCESS  := SECTION_ALL_ACCESS
 DEFINE OF_READ                                                                      := 0x00000000
 DEFINE OF_WRITE                                                                 := 0x00000001
 DEFINE OF_READWRITE                                         := 0x00000002
-//DEFINE OF_SHARE_COMPAT                         := 0x00000000 
+//DEFINE OF_SHARE_COMPAT                         := 0x00000000
 //DEFINE OF_SHARE_EXCLUSIVE           := 0x00000010
 //DEFINE OF_SHARE_DENY_WRITE     := 0x00000020
 //DEFINE OF_SHARE_DENY_READ          := 0x00000030
@@ -2875,7 +2877,7 @@ DEFINE PRODUCT_UNDEFINED       := 0x00000000
 DEFINE PRODUCT_ULTIMATE        := 0x00000001
 DEFINE PRODUCT_ULTIMATE_N           := 0x0000001C
 DEFINE PRODUCT_WEB_SERVER       := 0x00000011
-DEFINE PRODUCT_WEB_SERVER_CORE     := 0x0000001D    
+DEFINE PRODUCT_WEB_SERVER_CORE     := 0x0000001D
 DEFINE PRODUCT_SMALLBUSINESS_SERVER_PRIME         := 0x00000021
 DEFINE PRODUCT_HOME_PREMIUM_SERVER                := 0x00000022
 DEFINE PRODUCT_SERVER_FOR_SMALLBUSINESS_V         := 0x00000023

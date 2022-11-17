@@ -255,6 +255,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE METHOD EvaluateExpressions(lCalculateSize as LOGIC) AS LOGIC
             LOCAL evalOk AS LOGIC
             LOCAL oKey AS OBJECT
+            local nRecno as Long
+            nRecno := SELF:_oRdd:RecNo
             evalOk := TRUE
             TRY
                 IF SELF:_KeyCodeBlock == NULL
@@ -266,12 +268,25 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             END TRY
 
             TRY
+                SELF:_oRdd:GoTo(0)  // Move to EOF
                 oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
             CATCH ex AS Exception
                 SELF:_oRdd:_dbfError( ex, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX, "DBFNTX.Compile")
                 evalOk := FALSE
                 oKey := NULL
+            FINALLY
+                SELF:_oRdd:GoTo(nRecno)
             END TRY
+            IF oKey IS STRING VAR strKey
+                IF strKey:Length > MAX_KEY_LEN
+                    SELF:_oRdd:_dbfError(Subcodes.EDB_EXPR_WIDTH,Gencode.EG_SYNTAX,  "DBFNTX.EvaluateExpressions", FALSE)
+                    evalOk := FALSE
+                elseif strKey:Length == 0
+                    var sMessage := __ErrString(VOErrors.INDEX_EXPRESSION_ZEROLENGTH,SELF:_KeyExpr)
+                    SELF:_oRdd:_dbfError(Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX, "DBFNTX.EvaluateExpressions",sMessage ,FALSE)
+                    evalOk := FALSE
+                endif
+            endif
             IF !evalOk
                 RETURN FALSE
             ENDIF
@@ -322,10 +337,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRdd:GoTo(1)
                 evalOk := TRUE
                 TRY
+                    SELF:_oRdd:GoTo(0)  // Move to EOF
                     VAR oValue := SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
                     evalOk     := SELF:_oRdd:_getUsualType(oValue) == __UsualType.Logic
                 CATCH
                     evalOk := FALSE
+                FINALLY
+                    SELF:_oRdd:GoTo(nRecno)
                 END TRY
                 IF !evalOk
                     SELF:_oRdd:_dbfError(Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFNTX.Compile")

@@ -7,7 +7,7 @@ USING System.Drawing
 USING VOSDK := XSharp.VO.SDK
 
 CLASS VOProperties
-	DELEGATE StyleChanged_Delegate() AS VOID
+	DELEGATE StyleChanged_Delegate() AS VOID STRICT
 	PROPERTY Style AS LONG      AUTO 
 	PROPERTY ExStyle AS  LONG   AUTO 
 	PROPERTY NotStyle AS LONG   AUTO 

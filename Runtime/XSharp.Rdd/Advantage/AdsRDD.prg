@@ -37,7 +37,8 @@ CLASS XSharp.ADS.ADSRDD INHERIT Workarea
     PRIVATE  _syncSettings AS LOGIC
     PRIVATE  _syncDeleted  AS LOGIC
     PRIVATE  _syncFolders  AS LOGIC
-
+    PRIVATE CONST CLIPPER_MIN_DATE := 2415386U AS DWORD	// 1901-01-01
+    PRIVATE CONST CLIPPER_MAX_DATE := 4606840U AS DWORD	// 7900-12-31
 
   #endregion
 
@@ -189,7 +190,13 @@ RETURN
 INTERNAL METHOD _Ansi2Unicode(source AS CHAR[], iLength AS LONG) AS STRING
     TRY
         VAR bytes := SELF:_Encoding:GetBytes(source, 0, iLength)
-        RETURN SELF:_Encoding:GetString(bytes)
+        // replace trailing chr(0) with space
+        iLength -= 1
+        do while iLength >= 0 && bytes[iLength] == 0
+            bytes[iLength] := 32
+            iLength -= 1
+        enddo
+        return SELF:_Encoding:GetString(bytes)
     CATCH
         RETURN String.Empty
     END TRY
@@ -1080,11 +1087,16 @@ OVERRIDE METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 
         aDate := CHAR[]{ACE.ADS_MAX_DATEMASK+1}
         DateLen := (WORD) aDate:Length
-        SELF:_CheckError(ACE.AdsSetDateFormat("MM/DD/YY"))
+        SELF:_CheckError(ACE.AdsSetDateFormat("MM/DD/YYYY"))
         SELF:_CheckError(ACE.AdsGetLastTableUpdate(SELF:_Table, aDate, REF DateLen))
-        SELF:_CheckError(ACEUNPUB.AdsConvertStringToJulian(aDate, DateLen, OUT VAR julDate))
         SELF:_CheckError(ACE.AdsSetDateFormat(RuntimeState.DateFormat))
-        RETURN (LONG)julDate
+        local sDate as string
+        sDate := String{aDate, 0, DateLen}
+        local month, day, year as int
+        month := Convert.ToInt32(sDate:Substring(0,2))
+        day   := Convert.ToInt32(sDate:Substring(3,2))
+        year  := Convert.ToInt32(sDate:Substring(6,4))
+        return DbDate{year, month, day}
 
     CASE DbInfo.DBI_GETLOCKARRAY
     CASE DbInfo.DBI_LOCKCOUNT

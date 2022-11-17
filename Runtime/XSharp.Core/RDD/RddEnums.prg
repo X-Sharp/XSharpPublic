@@ -641,40 +641,6 @@ BEGIN NAMESPACE XSharp.RDD.Enums
         */
 	END	 ENUM
 
-	/// <summary>This enum specifies the various code pages that can appear in DBF files.</summary>
-	ENUM DbfHeaderCodepage AS BYTE
-		MEMBER CP_DBF_DOS_OLD:=0
-		MEMBER CP_DBF_DOS_US:=1
-		MEMBER CP_DBF_DOS_INTL:=2
-		MEMBER CP_DBF_WIN_ANSI:=3
-		MEMBER CP_DBF_MAC_STANDARD:=4
-		MEMBER CP_DBF_DOS_EEUROPEAN:=100
-		MEMBER CP_DBF_DOS_RUSSIAN:=101
-		MEMBER CP_DBF_DOS_NORDIC:=102
-		MEMBER CP_DBF_DOS_ICELANDIC:=103
-		MEMBER CP_DBF_DOS_KAMENICKY:=104
-		MEMBER CP_DBF_DOS_MAZOVIA:=105
-		MEMBER CP_DBF_DOS_GREEK:=106
-		MEMBER CP_DBF_DOS_TURKISH:=107
-		MEMBER CP_DBF_DOS_CANADIAN:=108
-        /// <summary>(Hong Kong SAR, Taiwan) </summary>
-		MEMBER CP_DBF_WIN_CHINESE_1:=120
-		MEMBER CP_DBF_WIN_KOREAN:=121
-        /// <summary>Chinese (PRC, Singapore) </summary>
-		MEMBER CP_DBF_WIN_CHINESE_2:=122
-		MEMBER CP_DBF_WIN_JAPANESE:=123
-		MEMBER CP_DBF_WIN_THAI:=124
-		MEMBER CP_DBF_WIN_HEBREW:=125
-		MEMBER CP_DBF_WIN_ARABIC:=126
-		MEMBER CP_DBF_MAC_RUSSIAN:=150
-		MEMBER CP_DBF_MAC_EEUROPEAN:=151
-		MEMBER CP_DBF_MAC_GREEK:=152
-		MEMBER CP_DBF_WIN_EEUROPEAN:=200
-		MEMBER CP_DBF_WIN_RUSSIAN:=201
-		MEMBER CP_DBF_WIN_TURKISH:=202
-		MEMBER CP_DBF_WIN_GREEK:=203
-	END	 ENUM
-
 	/// <summary>This enum specifies the various values that the RDDInfo method for the IRDD interface accepts.
 	/// <note type="tip">
 	/// These enums are also available as DEFINES and can therefore also be used without the "RDDInfo." prefix.
@@ -850,32 +816,40 @@ BEGIN NAMESPACE XSharp.RDD.Enums
         MEMBER IndexOpen
         /// <summary>This message is sent after an index was closed. The Data parameter is the name of the file that was closed.</summary>
         MEMBER IndexClose
-        /// <summary>This message is sent before a build operation is started. The Data parameter is a description of the operation.</summary>
+        /// <summary>This message is sent before a bulk operation is started. The Data parameter is a description of the operation.</summary>
         MEMBER BeforeBulkOperation
-        /// <summary>This message is sent after a build operation was completed. The Data parameter is a description of the operation.</summary>
+        /// <summary>This message is sent after a bulk operation was completed. The Data parameter is a description of the operation.</summary>
         MEMBER AfterBulkOperation
         /// <summary>This message is sent after an order was changed. The Data parameter is the name of the new order.</summary>
         MEMBER OrderChanged
-        /// <summary>This message is sent after a field was updated The Data parameter is the fieldname of the field that was updated.</summary>
+        /// <summary>This message is sent before a field is updated The Data parameter is the fieldname of the field that was updated.</summary>
         MEMBER BeforeFieldUpdate
         /// <summary>This message is sent after a field was updated The Data parameter is the fieldname of the field that was updated.</summary>
         MEMBER AfterFieldUpdate
         /// <summary>This message is sent before the record pointer is moved. The Data parameter indicates the reason for the move</summary>
         MEMBER BeforeMove
-        /// <summary>This message is sent after the record pointer is moved. The Data parameter indicates the reason for the move</summary>
+        /// <summary>This message is sent after the record pointer was moved. The Data parameter indicates the reason for the move</summary>
         MEMBER AfterMove
-        /// <summary>This message is sent after a new record has been appended. The Data parameter is the record number of the record.</summary>
+        /// <summary>This message is sent after a new record was appended. The Data parameter is the record number of the record.</summary>
         MEMBER RecordAppended
-        /// <summary>This message is sent after a record has been deleted. The Data parameter is the record number of the record.</summary>
-        MEMBER RecordDeleted
-        /// <summary>This message is sent after a record has been recalled. The Data parameter is the record number of the record.</summary>
-        MEMBER RecordRecalled
-        /// <summary>This message is sent after a record has been locked. The Data parameter is the record number of the record.</summary>
+        /// <summary>This message is sent after a record was deleted. The Data parameter is the record number of the record.</summary>
+        MEMBER AfterRecordDeleted
+        /// <summary>This message is sent after a record was deleted. The Data parameter is the record number of the record.</summary>
+        MEMBER RecordDeleted := AfterRecordDeleted
+        /// <summary>This message is sent after a record was recalled. The Data parameter is the record number of the record.</summary>
+        MEMBER AfterRecordRecalled
+        /// <summary>This message is sent after a record was recalled. The Data parameter is the record number of the record.</summary>
+        MEMBER RecordRecalled := AfterRecordRecalled
+        /// <summary>This message is sent after a record was locked. The Data parameter is the record number of the record.</summary>
         MEMBER RecordLocked
-        /// <summary>This message is sent after a record has been unlocked. The Data parameter is the record number of the record.</summary>
+        /// <summary>This message is sent after a record was unlocked. The Data parameter is the record number of the record.</summary>
         MEMBER RecordUnLocked
         /// <summary>This message is sent after a Workarea was commited. The Data parameter is the file name of area.</summary>
         MEMBER FileCommit
+        /// <summary>This message is sent before a record is deleted. The Data parameter is the record number of the record.</summary>
+        MEMBER BeforeRecordDeleted
+        /// <summary>This message is sent before a record is recalled. The Data parameter is the record number of the record.</summary>
+        MEMBER BeforeRecordRecalled
         /// <summary>This message is sent after an operation failed. The Data parameter is the description of the operation.</summary>
         MEMBER OperationFailed    := 99
     END ENUM

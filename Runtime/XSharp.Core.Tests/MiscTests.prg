@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -16,15 +16,15 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 		//[Fact];
 		//METHOD AsSymbolTest() as void
-			//local u as usual 
+			//local u as usual
 			//u := "Testsymbol"
 			//Assert.Equal(true,AsSymbol(u)==#Testsymbol)
 		//RETURN
 		//[Fact];
 		//METHOD BetweenTest() as void
-			//local u1 as usual 
-			//local u2 as usual 
-			//local u3 as usual 
+			//local u1 as usual
+			//local u2 as usual
+			//local u3 as usual
 			//u1 := 3
 			//u2 := 1
 			//u3 := 8
@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		//[Fact];
 		//METHOD CheckInstanceOfTest() as void
 			//local u as usual
-			//u := 6 
+			//u := 6
 			//Assert.Equal(true,CheckInstanceOf(u,#__Usual))
 		//RETURN
 		//[Fact];
@@ -51,10 +51,10 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		    //local fi := System.IO.DriveInfo{"C"} as System.IO.DriveInfo
 			//Assert.Equal("DriveInfo",ClassName(fi))
 		//RETURN
-		[Fact, Trait("Category", "Misc")]; 
+		[Fact, Trait("Category", "Misc")];
 		METHOD CurDriveTest() AS VOID
 			Assert.Equal("C",CurDrive():ToUpper())
-		[Fact, Trait("Category", "Misc")]; 
+		[Fact, Trait("Category", "Misc")];
 		METHOD GetFAttrTest() AS VOID
 			Assert.Equal((DWORD) FA_VOLUME, GetFAttr("V"))
 			Assert.Equal((DWORD) FA_COMPRESSED, GetFAttr("C"))
@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			Assert.Equal((DWORD) FC_HIDDEN|FC_SYSTEM, String2FAttr("HS"))
 
 		RETURN
-		[Fact, Trait("Category", "Misc")]; 
+		[Fact, Trait("Category", "Misc")];
 		METHOD GetFMaskTest() AS VOID
 			Assert.Equal("C:*.*", GetFMask("C:"))
 			Assert.Equal("C:\*.*", GetFMask("C:\"))
@@ -83,11 +83,13 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 		RETURN
 
-		[Fact, Trait("Category", "Misc")]; 
+		[Fact, Trait("Category", "Misc")];
 		METHOD SetGetDefaultTest() AS VOID
-			LOCAL cDefault AS STRING
+         LOCAL cDefault AS STRING
 			cDefault := GetDefault()
-
+         // VO does not complain about incorrect folder names
+        LOCAL eDialect := RuntimeState.Dialect AS XSharpDialect
+         RuntimeState.Dialect := XSharpDialect.VO
 			SetDefault("C:\test\")
 			Assert.Equal("C:\test\", GetDefault())
 			SetDefault("c:\notexist\")
@@ -97,9 +99,19 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			SetDefault("c:\nested\test")
 			Assert.Equal("c:\nested\test\", GetDefault())
 			SetDefault("c:\")
+         Assert.Equal("c:\", GetDefault())
+         // FoxPro throws exceptions for incorrect folder names
+         RuntimeState.Dialect := XSharpDialect.FoxPro
+			SetDefault("C:\test\")
+         Assert.Equal("C:\test\", GetDefault())
+         Assert.Throws<Error>({ => SetDefault("c:\notexist\")})
+		   SetDefault("c:\test")
+			Assert.Equal("c:\test", GetDefault())
+			Assert.Throws<Error>({ => SetDefault("c:\nested\test")})
+			SetDefault("c:\")
 			Assert.Equal("c:\", GetDefault())
-
 			SetDefault(cDefault)
+         RuntimeState.Dialect := eDialect
 		RETURN
 		//[Fact];
 		//METHOD DiskFreeTest() as void

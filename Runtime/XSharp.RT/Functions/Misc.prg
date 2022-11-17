@@ -50,12 +50,16 @@ FUNCTION InListExact(uValue AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
 
 INTERNAL FUNCTION _InListWorker( u IN USUAL, args AS CONST USUAL[], compare as Func<USUAL, USUAL, LOGIC>) AS LOGIC
     LOCAL i, nLen AS INT
+    TRY
     nLen := args:Length
     FOR i := 1 TO nLen
         IF compare(u, args[i]) // make sure these are in the right order so that a shorter string search key does not match a longer string value in the list
             RETURN TRUE
         ENDIF
     NEXT
+    CATCH e as Exception
+        ? e:ToString()
+    END TRY
     RETURN FALSE
 
 

@@ -5344,7 +5344,7 @@ RETURN
 			RddSetDefault ( "DBFCDX" )
 
 			cDbf := DbfTests.GetTempFileName()
-			
+
 			DbfTests.CreateDatabase(cDbf, {{"FLD","N",5,0}})
 			DbUseArea(TRUE,,cDbf)
 			DbCreateIndex(cDbf , "FLD")
@@ -5352,21 +5352,60 @@ RETURN
 				DbAppend()
 				FieldPut(1, iif(n<=5, 1 , 2))
 			NEXT
-			
+
 			DbGoTop()
-			
+
 			Assert.Equal(1, (INT)FieldGet(1) )
 			Assert.False( Eof() )
-			
+
 			VoDbOrderInfo( DBOI_SKIPUNIQUE, "", NIL, REF nDirection )
 
-			Assert.Equal(6, (INT)FieldGet(1) )
+         Assert.Equal(6, (INT)RecNo() )
+			Assert.Equal(2, (INT)FieldGet(1) )
 			Assert.False( Eof() )
 
 			VoDbOrderInfo( DBOI_SKIPUNIQUE, "", NIL, REF nDirection )
 
 			Assert.True( Eof() )
-			
+
+			DbCloseArea()
+		RETURN
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD Test_DBOI_SKIPUNIQUE_2() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1117
+
+			LOCAL nDirection := NIL AS USUAL
+			LOCAL cDbf AS STRING
+			LOCAL n AS INT
+
+			RddSetDefault ( "DBFCDX" )
+
+			cDbf := DbfTests.GetTempFileName()
+
+			DbfTests.CreateDatabase(cDbf, {{"FLD","N",5,0}})
+			DbUseArea(TRUE,,cDbf)
+			FOR n := 1 UPTO 10
+				DbAppend()
+				FieldPut(1, iif(n%2==0, 1 , 2))
+			NEXT
+
+			DbCreateIndex(cDbf , "FLD")
+			DbGoTop()
+
+			Assert.Equal(1, (INT)FieldGet(1) )
+			Assert.Equal(2, (INT)RecNo() )
+
+			VoDbOrderInfo( DBOI_SKIPUNIQUE, "", NIL, REF nDirection )
+
+			Assert.Equal(2, (INT)FieldGet(1) )
+			Assert.Equal(1, (INT)RecNo() )
+
+			VoDbOrderInfo( DBOI_SKIPUNIQUE, "", NIL, REF nDirection )
+
+			Assert.True( Eof() )
+
 			DbCloseArea()
 		RETURN
 
@@ -5381,13 +5420,13 @@ RETURN
 			RddSetDefault ( "DBFCDX" )
 
 			cDbf := DbfTests.GetTempFileName()
-			
+
 			DbfTests.CreateDatabase(cDbf, {{"FLD","N",5,0}} , {1,2,3,4,5,6,7,8,9,10})
 			DbCreateIndex(cDbf , "FLD")
-			
+
 			DbOrderInfo(DBOI_SCOPETOP, "", NIL, 5)
 			DbOrderInfo(DBOI_SCOPEBOTTOM, "", NIL, 15)
-			
+
 			DbGoTop()
 			Assert.Equal(5, (INT)FieldGet(1))
 			Assert.Equal(5, (INT)RecNo())

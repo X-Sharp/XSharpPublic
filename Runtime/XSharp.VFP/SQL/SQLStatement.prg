@@ -120,8 +120,6 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
     PRIVATE METHOD _ReturnsRows(cCommand AS STRING) AS LOGIC
-        RETURN TRUE
-/*
         LOCAL aParts := cCommand:Split(" ()":ToCharArray()) AS STRING[]
         IF aParts:Length > 0
             LOCAL cWord := aParts[1]:ToLower() AS STRING
@@ -143,7 +141,6 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             END SWITCH
         ENDIF
         RETURN FALSE
-*/
 
 
     CONSTRUCTOR(cDataSource AS STRING, cUser AS STRING, cPassword AS STRING, lShared AS LOGIC)
@@ -303,8 +300,10 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                     oDbParam:Value:= System.DateTime{dtValue:Year, dtValue:Month, dtValue:Day, dtValue:Hour, dtValue:Minute, dtValue:Second}
                 endif
             elseif oValue is Decimal
-                oDbParam:DbType:=DbType.Decimal
-                oDbParam:Value:= oValue
+                oDbParam:DbType:=DbType.String
+                // Ugly Hack : Some ODBC don't like decimal value, let's give them a String
+                // We could go Double, but may loose some accuracy (when related to currency)
+                oDbParam:Value:= oValue:ToString()
             elseif oValue is Currency
                 oDbParam:DbType:=DbType.Currency
                 oDbParam:Value:= oValue
@@ -748,81 +747,88 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 /// if the character followed is '@', It is an output parameter
 /// if the character followed is '(', It is an VFP expression closed between  parenthesis
 /// If the parameter are variables, they need to be private or publics and initialized before
-    METHOD ParseCommand(cCommand AS STRING, cParamChar AS CHAR, lIncludeParameterNameInQuery AS LOGIC) AS STRING
+METHOD ParseCommand(cCommand AS STRING, cParamChar AS CHAR, lIncludeParameterNameInQuery AS LOGIC) AS STRING
+	LOCAL statements := List<STRING>{} AS List<STRING>
+	LOCAL aParams    := List<SQLParameter>{} AS List<SQLParameter>
+	LOCAL inString := FALSE AS LOGIC
+	LOCAL inParam  := FALSE AS LOGIC
+	LOCAL sb       := StringBuilder{cCommand:Length} AS StringBuilder
+	LOCAL sbParam  := StringBuilder{cCommand:Length} AS StringBuilder
+	LOCAL lParamByRef := FALSE AS LOGIC
+	FOREACH ch AS CHAR IN cCommand
+		IF !inString .AND. ch == cParamChar
+			inParam := TRUE
+			lParamByRef := FALSE
+			sb:Append(cParamChar)
+			LOOP
+		ENDIF
+		SWITCH ch
+		CASE c'\''
+			inString := ! inString
+			sb:Append(ch)
+		CASE c';'
+			IF (! inString)
+				IF inParam
+					IF lIncludeParameterNameInQuery
+						sb:Append(sbParam:ToString())
+					ENDIF
+					aParams:Add( SQLParameter{sbParam:ToString(), lParamByRef})
+					inParam := FALSE
+					sbParam:Clear()
+				ENDIF
+				statements:Add(sb:ToString())
+				sb:Clear()
+				LOOP
+			ENDIF
+			sb:Append(ch)
+		CASE c'@'
+			IF inParam
+				IF sbParam:Length == 0
+					lParamByRef := TRUE
+				ENDIF
+			ELSE
+				sb:Append(ch)
+			ENDIF
+		OTHERWISE
+			IF inParam
+				IF Char.IsLetterOrDigit(ch) .OR. ch == c'_'
+					sbParam:Append(ch)
+				ELSE
+					IF lIncludeParameterNameInQuery
+						sb:Append(sbParam:ToString())
+					ENDIF
+					aParams:Add( SQLParameter{sbParam:ToString(), lParamByRef})
+					inParam     := FALSE
+					sbParam:Clear()
+					sb:Append(ch)
+				ENDIF
+			ELSE
+				sb:Append(ch)
+			ENDIF
+		END SWITCH
+	NEXT
+	IF inParam
+		IF lIncludeParameterNameInQuery
+			sb:Append(sbParam:ToString())
+		ENDIF
+		aParams:Add( SQLParameter{sbParam:ToString(), lParamByRef})
+	ENDIF
+	statements:Add(sb:ToString())
+    SELF:_aParams := aParams
+	VAR result := StringBuilder{}
+	VAR returns := FALSE
+	FOREACH VAR stmt IN statements
+		IF result:Length > 0
+			result:Append( ';' )
+		ENDIF
+		result:Append( stmt )
+		returns := SELF:_ReturnsRows(stmt)
+	NEXT
+	//
+    SELF:_returnsRows := returns
+    RETURN result:ToString()
 
-        LOCAL aParams    := List<SQLParameter>{} AS List<SQLParameter>
-        LOCAL sb       := StringBuilder{cCommand:Length} AS StringBuilder
-        local sCmd := cCommand.Split( SELF:Connection:Factory:ParameterPrefix) as STRING[]
-        IF sCmd.Length>0
-           sb:= StringBuilder{}
-           local lsPartIndex:= 0 as int
 
-           FOREACH sPart AS STRING IN sCmd
-                 local li as int
-                 lsPartIndex++
-                 if lsPartIndex=1
-                    sb.Append(sPart)
-                 elseif Left(sPart,1) ='('
-                    local levelOpen:=0 as long
-                    local lExpression:= StringBuilder{} as StringBuilder
-                    foreach var ch in sPart
-                        if ch=c'('
-                           levelOpen++
-                           lExpression.Append(ch,1)
-                        elseif ch=c')'
-                           lExpression:Append(ch)
-                           if levelOpen>1
-                              levelOpen--
-                           elseif levelOpen=1 // expresion is finished
-                              exit
-                           else
-                              throw Error {"parsecommand error: ')' non expected"}
-                           endif
-                        else
-                           lExpression:Append(ch)
-                        endif
-                    endfor
-                    sb.Append(SELF:Connection:Factory:ParameterPrefix )
-                    var lParam:= SQLParameter {lExpression:ToString(), false}
-                    aParams:Add(lParam)
-                    if (sPart:Length> lExpression:Length)
-                       sb.Append(sPart:Substring(lExpression.Length ))
-                    endif
-                 elseif Char.IsLetter(sPart[0]) OR sPart[0] == c'_' OR sPart[0]== c'@'
-                    local lIsByRef:= false as logic
-                    if sPart[0]== c'@'
-                       lIsByRef:= true
-                    endif
-                    local sbVarName:= StringBuilder{} as StringBuilder
-                    if(!lIsByRef)
-                       sbVarName.Append(sPart[0])
-                    endif
-                    for li:= 1 to sPart.Length-1
-                       if Char.IsLetterOrDigit(sPart[li]) .OR. sPart[li] == c'_'
-                          sbVarName.Append(sPart[li])
-                       else
-                          exit
-                       endif
-                    endfor
-                    local sVarName:= sbVarName:ToString().ToUpper() as string
-                    sb.Append(SELF:Connection:Factory:ParameterPrefix)
-                    var lParam:= SQLParameter {sVarName, lIsByRef}
-                    aParams:Add(lParam)
-                    if (sPart.Length> sVarName.Length)
-                       sb.Append(sPart.Substring(sVarName.Length+iif(lIsByRef,1,0)))
-                    endif
-                 else
-                     // what happend???
-                     throw Error{"Parse Command error: what happend???"}
-                 endif
-           next
-           self:_aParams:= aParams
-           cCommand:= sb:ToString()
-        else
-            self:_aParams:= List<SQLParameter>{}
-        endif
-        SELF:_returnsRows:= true
-        RETURN cCommand
 END CLASS
 
 INTERNAL ENUM XSharp.VFP.AsyncState

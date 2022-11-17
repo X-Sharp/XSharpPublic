@@ -388,11 +388,19 @@ BEGIN NAMESPACE XSharp.RDD
                     SELF:_SetState(oState)
                 CASE DBOI_VALIDATE
                     // Validate integrity of the current Order
-                     VAR oState := SELF:_GetState()
+                    VAR oState := SELF:_GetState()
                     IF workOrder != NULL
                         info:Result := workOrder:_validate()
                     ENDIF
                     SELF:_SetState(oState)
+                CASE DBOI_SKIPUNIQUE
+                    IF workOrder != NULL
+                        local nToSkip := 1 as LONG
+                        if info:Result IS LONG VAR nNum
+                            nToSkip := nNum
+                        endif
+                        info:Result := workOrder:SkipUnique(nToSkip)
+                    ENDIF
                 OTHERWISE
                     SUPER:OrderInfo(nOrdinal, info)
                 END SWITCH

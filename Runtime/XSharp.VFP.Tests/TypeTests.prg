@@ -22,6 +22,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 		[Fact, Trait("Category", "Types")];
 		METHOD VarTypeTests() AS VOID
             DIMENSION a[10]
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
             XSharp.RuntimeState.CompilerOptionFox2 := TRUE
             a = 123 // fill the array
 
@@ -72,6 +73,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 		[Fact, Trait("Category", "Types")];
 		METHOD xTypeTests() AS VOID
+            var state := XSharp.RuntimeState.Dialect
             XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
             DIMENSION arr[3]
             private c, n
@@ -105,10 +107,10 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
             Assert.Equal("U", Type ("c",1))
             Assert.Equal("U", Type ("n",1))
-            Assert.Equal("U", Type ("x",1))
+            Assert.Equal("U", Type ("X",1))
 
 
-
+            XSharp.RuntimeState.Dialect := state
             RETURN
 
 

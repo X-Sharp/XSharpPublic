@@ -19,16 +19,18 @@ PROCEDURE Main AS VOID
     TRY
         LOCAL aStruct := {{"NAME","C",10,0},{"CITY","C",10,0}}
         local b as CODEBLOCK
-            b := {||_FIELD->NAME} 
+            b := {||_FIELD->NAME}
     RddSetDefault("AXDBFCDX")
     DbRegisterClient(DbLogger{})
     ? DbCreate("test1",aStruct)
     ? DbUseArea(TRUE, ,"Test1","test",TRUE)
+    ? EoF()
     ? Header()
+    ? DbInfo(DBI_LASTUPDATE)
 
     ? OrdCreate("test1","NAME",,b)
     ? OrdCreate("test2","CITY","CITY")
-    ? OrdCreate("test3","NAMECITY","NAME+CITY")
+    ? OrdCreate("test3","CITYNAME","CITY+NAME")
     ? DbClearIndex()
     SetDeleted(TRUE)
     ? DbSetIndex("test1")
@@ -41,16 +43,16 @@ PROCEDURE Main AS VOID
         ? index, aList[index], OrdSetFocus(index), OrdKey()
         ? index, "After change", OrdSetFocus()
     NEXT
-    DbAppend()
-    DbAppend()
-    DbAppend()
-    DbAppend()
-    DbAppend()
-    DbAppend()
-    DbAppend()
-    DbAppend()
-    DbAppend()
-    DbAppend()
+    DbAppend(); FieldPut(1, "AAA"); FieldPut(2, "ABC")
+    DbAppend(); FieldPut(1, "BBB"); FieldPut(2, "ABC")
+    DbAppend(); FieldPut(1, "CCC"); FieldPut(2, "ABC")
+    DbAppend(); FieldPut(1, "DDD"); FieldPut(2, "ABC")
+    DbAppend(); FieldPut(1, "EEE"); FieldPut(2, "ABC")
+    DbAppend(); FieldPut(1, "FFF"); FieldPut(2, "ABC")
+    DbAppend(); FieldPut(1, "GGG"); FieldPut(2, "ABC")
+    DbAppend(); FieldPut(1, "HHH"); FieldPut(2, "ABC")
+    DbAppend(); FieldPut(1, "III"); FieldPut(2, "ABC")
+    DbAppend(); FieldPut(1, "JJJ"); FieldPut(2, "ABC")
     DbSetFilter({||!empty(_FIELD->Name)})
     DbGoto(6)
     OrdSetFocus(0)

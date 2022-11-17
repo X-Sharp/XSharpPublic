@@ -152,14 +152,16 @@ FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
     SetPathArray(NULL)
     IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
         VAR cTemp := cPathSpec:Trim()
-        IF cTemp:EndsWith(System.IO.Path.DirectorySeparatorChar:ToString())
-            cTemp := cTemp:Substring(0, cTemp:Length-1)
-        ENDIF
-        IF ! System.IO.Directory.Exists(cTemp)
-            var err := Error.VOError(EG_ARG, __FUNCTION__, nameof(cPathSpec),1, <OBJECT>{cPathSpec})
-            err:Description := "Directory not found: '"+cPathSpec+"'"
-            THROW err
-        ENDIF
+        if !String.IsNullOrEmpty(cTemp)
+            IF cTemp:EndsWith(System.IO.Path.DirectorySeparatorChar:ToString())
+                cTemp := cTemp:Substring(0, cTemp:Length-1)
+            ENDIF
+            IF ! System.IO.Directory.Exists(cTemp)
+                var err := Error.VOError(EG_ARG, __FUNCTION__, nameof(cPathSpec),1, <OBJECT>{cPathSpec})
+                err:Description := "Directory not found: '"+cPathSpec+"'"
+                THROW err
+            ENDIF
+        endif
     ELSEIF XSharp.RuntimeState.Dialect == XSharpDialect.VO .or. XSharp.RuntimeState.Dialect == XSharpDialect.Vulcan
         IF cPathSpec:Length > 0
             var cLast := cPathSpec[cPathSpec:Length-1]

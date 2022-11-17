@@ -14,7 +14,7 @@
     <NS>true</NS>
     <vo15>true</vo15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.6.3.0</XSharpProjectversion>
+    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StartupObject />
@@ -138,5 +138,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-<Import Project="..\XmlDoc.Targets" />
+  <Import Project="..\XmlDoc.Targets" />
 </Project>

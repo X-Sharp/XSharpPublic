@@ -46,7 +46,7 @@ namespace XSharp.LanguageService
         {
             minIndent = 0;
             XKeyword keyword = default;
-            tokens = _document.GetTokensInLine(line.LineNumber);
+            tokens = _document.GetTokensInLine(line);
             if (tokens.Count > 0)
             {
                 keyword = XSharpLineKeywords.Tokens2Keyword(tokens);
@@ -63,7 +63,7 @@ namespace XSharp.LanguageService
         {
             if (line.Length == 0)
                 return true;
-            var tokens = _document.GetTokensInLine(line.LineNumber);
+            var tokens = _document.GetTokensInLine(line);
             if (tokens.Count > 0)
             {
                 var token = tokens.Where((t) => t.Type != XSharpLexer.WS).FirstOrDefault();
@@ -125,7 +125,7 @@ namespace XSharp.LanguageService
             if (line.Length == 0)
                 return;
             int lineStart = line.Start.Position;
-            var tokens = _document.GetTokensInLine(line.LineNumber);
+            var tokens = _document.GetTokensInLine(line);
             if (tokens.Count > 0)
             {
                 if (tokens[0].StartIndex < lineStart)
@@ -541,23 +541,23 @@ namespace XSharp.LanguageService
                     // and copy its indentation
                     // if we find a type first then copy the indentation from the type +
                     // indent the member when needed
-                    var tempLine = lineNo - 1;
+                    var tempLineNo = lineNo - 1;
                     bool done = false;
                     prevIndentation = 0;
-                    while (!done && tempLine >= 0)
+                    while (!done && tempLineNo >= 0)
                     {
-                        var kw = GetFirstKeywordInLine(tempLine);
+                        var kw = GetFirstKeywordInLine(tempLineNo);
                         if (kw.IsMember())
                         {
-                            prevIndentation = GetLineIndent(tempLine);
+                            prevIndentation = GetLineIndent(tempLineNo);
                             done = true;
                         }
                         else if (kw.IsType())
                         {
-                            tokens = _document.GetTokensInLine(tempLine);
+                            tokens = _document.GetTokensInLine(tempLineNo);
                             if (tokens.Count > 0)
                             {
-                                prevIndentation = GetLineIndent(tempLine);
+                                prevIndentation = GetLineIndent(tempLineNo);
                                 if (settings.IndentTypeMembers)
                                 {
                                     prevIndentation += settings.IndentSize;
@@ -569,7 +569,7 @@ namespace XSharp.LanguageService
                         {
                             done = true;
                         }
-                        tempLine -= 1;
+                        tempLineNo -= 1;
                     }
                 }
 

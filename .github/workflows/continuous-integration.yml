@@ -22,7 +22,7 @@ jobs:
           ref: main
 #      - uses: actions/setup-dotnet@v1.7.2
 #        with:
-#           dotnet-version: '3.1.402' # SDK Version to use; should match version in global.json and build/Targets/Tools.props
+#           dotnet-version: '6.0.402' # SDK Version to use; should match version in global.json and build/Targets/Tools.props
       - name: BuildCompiler
         shell: cmd
         run: |

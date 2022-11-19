@@ -60542,7 +60542,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C524 - Strange name conflict problem inside FOREACH and with array literal
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = A7EA751C-5EDA-4A5A-A8E0-B7D18B0CCB30
 ; ************** APPLICATION C525 - Name conflict between CLASS and LOCAL when used with "." *************
 Application = C525 - Name conflict between CLASS and LOCAL when used with "."
 IDEVersion = 1.06
@@ -104358,7 +104358,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R822 - FoxPro type of untyped variable in macro compiler
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
 ; ************** APPLICATION C822 - Internal Compiler Error with CLIPPER delegate *************
 Application = C822 - Internal Compiler Error with CLIPPER delegate
 IDEVersion = 1.06

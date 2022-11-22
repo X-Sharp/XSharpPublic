@@ -2637,7 +2637,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.DATE_CONST:
                         return _dateType;
                     case XP.DATETIME_CONST:
-                        return _dateTimeType;
+                        return GenerateQualifiedName(SystemQualifiedNames.DateTime);
                     case XP.NULL_SYMBOL:
                     case XP.SYMBOL_CONST:
                         return _symbolType;

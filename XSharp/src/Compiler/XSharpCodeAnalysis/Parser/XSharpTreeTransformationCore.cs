@@ -156,7 +156,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected readonly CSharpParseOptions _options;
         protected readonly TypeSyntax _impliedType;
         protected readonly TypeSyntax _ptrType = null;
-        protected readonly TypeSyntax _dateTimeType = null;
         protected readonly TypeSyntax _intType = null;
         protected readonly TypeSyntax _uintType = null;
         protected readonly TypeSyntax _decimalType = null;
@@ -270,7 +269,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
             _voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
             _ptrType = GenerateQualifiedName(SystemQualifiedNames.IntPtr);
-            _dateTimeType = GenerateQualifiedName(SystemQualifiedNames.DateTime);
             PragmaOptions = new List<PragmaOption>();
             PragmaWarnings = new List<PragmaWarningDirectiveTriviaSyntax>();
         }
@@ -4800,10 +4798,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 }
+                // we have this code here because roslyn does not allow '*' in file version and informational version
+                // vulcan did. We are compatible here with Vulcan.
+                // we leave the handling of '*' inside AssemblyVersion to the roslyn code
+                // if the version does not have a '*' character then we use the string that was passed by the user.
+                // this also allows for non numeric versions for InformationalVersion
                 if (context.Target.Token.Text.ToLower() == "assembly")
                 {
-                    string[] names = {  "AssemblyVersionAttribute","AssemblyVersion",
-                                        "AssemblyFileVersionAttribute","AssemblyFileVersion",
+                    string[] names = {  "AssemblyFileVersionAttribute","AssemblyFileVersion",
                                         "AssemblyInformationalVersionAttribute","AssemblyInformationalVersion"};
 
                     string sSRef = "System.Reflection.";
@@ -4814,7 +4816,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             XSharpString.Equals(ctxName, sSRef + name))
                         {
                             // check to see if the attribute has a wild card
-                            if (attrCtx._Params.Count == 1 && attrCtx._Params[0].Start.Type == XP.STRING_CONST)
+                            if (attrCtx._Params.Count == 1 && attrCtx._Params[0].Start.Type == XP.STRING_CONST && attrCtx._Params[0].Start.Text.IndexOf('*') > 0)
                             {
                                 string version = attrCtx._Params[0].Start.Text;
                                 if (version.StartsWith("\"") && version.EndsWith("\""))
@@ -4830,7 +4832,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         MakeAttributeArgumentList(arguments)));
                                     _pool.Free(arguments);
                                 }
-                                if (version.IndexOf('*') > 0 && _options.CommandLineArguments.CompilationOptions.Deterministic)
+                                if (_options.CommandLineArguments.CompilationOptions.Deterministic)
                                 {
                                     var node = attrCtx.CsNode as AttributeSyntax;
                                     node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidVersionFormatDeterministic));
@@ -9063,7 +9065,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var arg0 = MakeArgument(GenerateLiteral(elements[0]));
                         var arg1 = MakeArgument(GenerateLiteral(elements[1]));
                         var arg2 = MakeArgument(GenerateLiteral(elements[2]));
-                        var expr = CreateObject(_dateTimeType, MakeArgumentList(arg0, arg1, arg2));
+                        var dateTimeType = GenerateQualifiedName(SystemQualifiedNames.DateTime);
+                        var expr = CreateObject(dateTimeType, MakeArgumentList(arg0, arg1, arg2));
                         context.Put(expr);
                         return;
                     }
@@ -9074,7 +9077,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         try
                         {
-                              var dt = new DateTime(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5]);
+                            var dt = new DateTime(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5]);
                         }
                         catch (Exception e)
                         {
@@ -9089,7 +9092,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var arg3 = MakeArgument(GenerateLiteral(elements[3]));
                         var arg4 = MakeArgument(GenerateLiteral(elements[4]));
                         var arg5 = MakeArgument(GenerateLiteral(elements[5]));
-                        var expr = CreateObject(_dateTimeType, MakeArgumentList(arg0, arg1, arg2, arg3, arg4, arg5));
+                        var dateTimeType = GenerateQualifiedName(SystemQualifiedNames.DateTime);
+                        var expr = CreateObject(dateTimeType, MakeArgumentList(arg0, arg1, arg2, arg3, arg4, arg5));
                         context.Put(expr);
                         return;
                     }

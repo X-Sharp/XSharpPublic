@@ -30,6 +30,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 
   <PropertyGroup>
     <!-- The next line takes care of automatically including all PRG files when building a SDK project -->
+    <GenerateTargetFrameworkAttribute Condition="'$(UsingMicrosoftNETSdk)'!='true'">false</GenerateTargetFrameworkAttribute>
     <EnableDefaultCompileItems>$(UsingNETSdkDefaults)</EnableDefaultCompileItems>
     <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
     <Language>XSharp</Language>

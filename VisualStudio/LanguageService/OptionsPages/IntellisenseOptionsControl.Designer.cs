@@ -116,7 +116,7 @@
             this.chkCompletionListtabs.Size = new System.Drawing.Size(334, 17);
             this.chkCompletionListtabs.TabIndex = 0;
             this.chkCompletionListtabs.Text = "Organize in &tabs with different item types (properties, methods etc)";
-            this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your comletionlists in tabs, to make it easier to find a method or" +
+            this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your completionlists in tabs, to make it easier to find a method or" +
         " property in long completionlists");
             this.chkCompletionListtabs.UseVisualStyleBackColor = true;
             // 

@@ -14,19 +14,29 @@
     <INS>true</INS>
     <NamedArgs>true</NamedArgs>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
+    <StartupObject />
+    <ApplicationIcon />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <DisabledWarnings />
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <DisabledWarnings />
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>XSharp.RT.Debugger.Xml</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -49,13 +59,12 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-<Compile Include="..\..\Common\commonAssemblyInfo.prg">
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
       <Link>commonAssemblyInfo.prg</Link>
     </Compile>
     <Compile Include="..\..\Common\constants.prg">
       <Link>constants.prg</Link>
     </Compile>
-  
     <Compile Include="GlobalsWindow.prg" />
     <Compile Include="MemvarsWindow.prg" />
     <Compile Include="VariablesWindow.Designer.prg">
@@ -102,5 +111,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
-<Import Project="..\XmlDoc.Targets" />  
+  <Import Project="..\XmlDoc.Targets" />
 </Project>

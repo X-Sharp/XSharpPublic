@@ -303,6 +303,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             break;
                         }
+                        else if (xNode is XP.GlobalAttributesContext)
+                        {
+                            break;
+                        }
                         else if (xNode.Parent is null)
                         {
                             break;

@@ -18,6 +18,7 @@ using XSharpLanguage;
 using Microsoft.VisualStudio.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.ComponentModelHost;
+using System.Diagnostics;
 
 namespace XSharp.LanguageService
 {
@@ -389,31 +390,40 @@ namespace XSharp.LanguageService
             if (flags.HasFlag(WORDEXTFLAGS.WORDEXT_FINDTOKEN) && XSettings.DebuggerIsRunning)
             {
                 var callStack = Environment.StackTrace.ToString();
+                // when inside quick info in the debugger then we want to return a complete 
+                // expression like SELF:SomeProperty as a single word.
+                // when not in quick info then we want to select SomeProperty without also selecting
+                // SELF and ':'
                 var quickinfo = callStack.IndexOf("quickinfo", StringComparison.OrdinalIgnoreCase) > 0;
-
-                string text;
+                // this also works for the last line. Selecting ta.Line+1, 0 will not
                 pts[0].iStartLine = pts[0].iEndLine = ta.line;
-
-                pTextLayer.GetLineText(ta.line, 0, ta.line + 1, 0, out text);
-                var index = ta.index;
-                // find start token
-                while (index >= 0)
+                var ires = pTextLayer.GetLengthOfLine(ta.line, out int length);
+                Debug.Assert(ires == VSConstants.S_OK);
+                ires = pTextLayer.GetLineText(ta.line, 0, ta.line , length-1, out var text);
+                Debug.Assert(ires == VSConstants.S_OK);
+                if (!string.IsNullOrEmpty(text))
                 {
-                    char c = text[index];
-                    if (!IsWordChar(c, !quickinfo))
-                        break;
-                    index -= 1;
+                    var start = Math.Min(ta.index, text.Length - 1);
+                    var index = start;
+                    // find start token
+                    while (index >= 0)
+                    {
+                        char c = text[index];
+                        if (!IsWordChar(c, !quickinfo))
+                            break;
+                        index -= 1;
+                    }
+                    pts[0].iStartIndex = index + 1;
+                    index = start;
+                    while (index < text.Length)
+                    {
+                        char c = text[index];
+                        if (!IsWordChar(c, true))
+                            break;
+                        index += 1;
+                    }
+                    pts[0].iEndIndex = index;
                 }
-                pts[0].iStartIndex = index+1;
-                index = ta.index;
-                while (index < text.Length)
-                {
-                    char c = text[index];
-                    if (!IsWordChar(c, true))
-                        break;
-                    index += 1;
-                }
-                pts[0].iEndIndex = index;
                 return VSConstants.S_OK;
             }
             return VSConstants.S_FALSE;

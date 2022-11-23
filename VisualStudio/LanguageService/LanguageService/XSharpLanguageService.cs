@@ -397,7 +397,7 @@ namespace XSharp.LanguageService
                 pTextLayer.GetLineText(ta.line, 0, ta.line + 1, 0, out text);
                 var index = ta.index;
                 // find start token
-                while (index > 0)
+                while (index >= 0)
                 {
                     char c = text[index];
                     if (!IsWordChar(c, !quickinfo))

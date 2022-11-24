@@ -2,8 +2,8 @@
   "profiles": {
     "xsc": {
       "commandName": "Project",
-      "commandLineArgs": "@app.Rsp ",
-      "workingDirectory": "c:\\XSharp\\Dev\\tests",
+      "commandLineArgs": "@LastXSharpResponseFile.Rsp ",
+      "workingDirectory": "c:\\TestProjects\\Orbit\\ClassLibrary2 ",
       "nativeDebugging": false
     }
   }

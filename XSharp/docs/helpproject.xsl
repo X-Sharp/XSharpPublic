@@ -321,22 +321,12 @@ Snippet: <b><xsl:value-of select="@src"/></b>
 &#160;&#160;&#160;&#160;&#160;
 </xsl:template>
 
-<xsl:template match="linklist">
-<div style="width:100%;text-align:center;padding:4px;background-color:#E2E2E2;border:1px dashed #000000">
-Linklist: <b><xsl:value-of select="@type"/></b>
-</div>
-</xsl:template>
-
 <xsl:template match="embedded-image">
 <span style="border:2px dashed #000000;padding:2px;font-weight:bold;color:#FFFFFF;background-color:#FF0000">Embedded image</span>
 </xsl:template>
 
 <xsl:template match="embedded-olecontrol">
 <span style="border:2px dashed #000000;padding:2px;font-weight:bold;color:#FFFFFF;background-color:#FF0000">Embedded OLE control</span>
-</xsl:template>
-
-<xsl:template match="equation">
-<span style="border:2px dashed #000000;padding:2px;font-weight:bold;color:#FFFFFF;background-color:#FF0000">Equation object</span>
 </xsl:template>
 
 <xsl:template match="toggle">

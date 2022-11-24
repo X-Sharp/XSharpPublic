@@ -1,21 +1,36 @@
-using System.Reflection
+FUNCTION Start() AS VOID STRICT
 
- PUBLIC GLOBAL SQL_NULL_DATE      := "1900-01-01"
+	LOCAL DIM st[3] IS TEST_STRUCT
+    LOCAL p as TEST_STRUCT
+    p := @st
+	st[1].x := 1
+	st[1].y := 1
+	TestFunc(@st[1])
+	TestFunc(p)
 
-  PUBLIC GLOBAL SQL_NULL_DATETIME  := "1900-01-01 00:00:00"
+	st[2].x := 2
+	st[2].y := 2
+	TestFunc(@st[2])
+    p += 1
+	TestFunc(p)
 
-  PUBLIC GLOBAL SQL_BIG_DATE       := "2050-01-01"
 
-  PUBLIC GLOBAL dSQL_NULL_DATE       as date
+	st[3].x := 3
+	st[3].y := 3
+	TestFunc(@st[3])
+	p += 1
+	TestFunc(p)
 
-  PUBLIC GLOBAL dSQL_NULL_DATETIME := DateTime{1900,01,01,00,00,00} as datetime
+	WAIT
 
-  PUBLIC GLOBAL dSQL_BIG_DATE        as date
+	RETURN
 
- PUBLIC GLOBAL CAL_CODE_ALL         as string
+VOSTRUCT TEST_STRUCT
+	MEMBER x AS INT
+	MEMBER y AS INT
+END VOSTRUCT
 
-[Assembly: AssemblyVersion("751.3.0405.0")]
-
-[Assembly: AssemblyFileVersion("751.3.0405.0")]
-
-[Assembly: AssemblyInformationalVersionAttribute("751.3.0405.0")]
+FUNCTION TestFunc(p AS TEST_STRUCT) AS VOID STRICT
+	? p.x
+	? p.y
+	RETURN

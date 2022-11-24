@@ -6965,9 +6965,6 @@
     <navref href="XSharpRef.chm::\XSharpRef.hhc" build="ALL" id="432597435536033" modified="2018-06-08T13:40:36.423Z" merge="runtime">
       <caption translate="true">XSharpRef.chm::\XSharpRef.hhc</caption>
     </navref>
-    <topicref type="weblink" id="448897070922156" build="HTML" modified="2022-11-24T13:39:24.066Z" icon="0" href="https://www.xsharp.eu/runtimehelp/html/R_Project_XSharpRef.htm">
-      <caption translate="true">X# Class and Function Reference</caption>
-    </topicref>
     <topicref type="topic" id="424249573402452" build="ALL" modified="2016-02-24T19:47:40.194Z" icon="0" href="X-Examples">
       <caption translate="true">X# Examples</caption>
       <topicref type="topic" id="42424518616889" build="ALL" modified="2017-06-21T18:24:42.073Z" icon="0" href="Anonymous-Methods2">

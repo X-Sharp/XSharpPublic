@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<helpproject xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd" version="2.2" isskin="false" isrepository="false">
+<helpproject xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd" version="2.0" isskin="false" isrepository="false">
   <config>
     <namespaces/>
     <export-task-groups>
@@ -49,7 +49,7 @@
     <helpwindows>
       <helpwindow name="Main" left="86" top="51" width="800" height="600">
         <caption translate="true">(X#) XSharp Runtime Documentation</caption>
-        <window-options-chm navigation="true" navigationwidth="220" index="true" search="true" favorite="true" saveregistry="true" buttons="14462">
+        <window-options-chm navigation="true" navigationwidth="220" search="true" favorite="true" saveregistry="true" buttons="14462">
           <user-button name="jump1">
             <caption translate="true">jump1</caption>
           </user-button>
@@ -153,7 +153,6 @@
       <tablestyleclass name="Default">
         <style-set media="screen">width:auto; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;</style-set>
       </tablestyleclass>
-      <imagestyleclass name="Default"/>
     </styleclasses>
     <config-group name="project">
       <config-value name="title" translate="true">XSharp</config-value>
@@ -699,8 +698,6 @@
       <config-value name="insertseealso">0</config-value>
       <config-value name="insertseealsostyle">-1</config-value>
       <config-value name="tocname">Table of Contents</config-value>
-      <config-value name="printoptions">0</config-value>
-      <config-value name="printoptionscutmarks">0</config-value>
     </config-group>
     <config-group name="rtf">
       <config-value name="outputfile">XSHelp_manual.docx</config-value>

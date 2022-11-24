@@ -143,6 +143,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else
                     {
+                        if (value.StartsWith("\"") && value.EndsWith("\""))
+                            value = value.Substring(1, value.Length - 2).Replace(' ', '_');
                         options.NameSpace = value;
                     }
                     break;

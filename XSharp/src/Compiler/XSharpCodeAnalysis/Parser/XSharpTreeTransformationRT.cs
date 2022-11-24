@@ -139,7 +139,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 string filename = PathUtilities.GetFileName(name);
                 filename = PathUtilities.RemoveExtension(filename);
-                filename = filename.Replace('.', '_');
+                filename = filename.Replace('.', '_').Replace(' ', '_');
                 if (_options.CommandLineArguments?.CompilationOptions.OutputKind.IsApplication() == true)
                     name = filename + XSharpSpecialNames.VOExeFunctionsClass;
                 else

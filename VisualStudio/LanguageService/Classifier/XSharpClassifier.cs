@@ -145,9 +145,9 @@ namespace XSharp.LanguageService
                 {
                     IsStarted = true;
 #if DEV17
-                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdle(LexAsync);
+                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdle(LexAsync,VsTaskRunContext.UIThreadIdlePriority);
 #else
-                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdleShim(StartLex);
+                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdleShim(StartLex, VsTaskRunContext.UIThreadIdlePriority);
 #endif
                 }
             }
@@ -193,7 +193,7 @@ namespace XSharp.LanguageService
         private async Task LexAsync()
         {
             var success = false;
-            await TaskScheduler.Default;
+            //await TaskScheduler.Default;
             try
             {
                 IsLexing = true;
@@ -290,7 +290,7 @@ namespace XSharp.LanguageService
                 return;
             if (IsLexing)
                 return;
-
+            await TaskScheduler.Current;
             var snapshot = _buffer.CurrentSnapshot;
             var xDocument = GetDocument();
             if (xDocument == null) // should not happen
@@ -301,7 +301,7 @@ namespace XSharp.LanguageService
                 return;
             }
 
-            await TaskScheduler.Default;
+            //await TaskScheduler.Default;
             XSettings.LogMessage("-->> XSharpClassifier.ParseAsync()");
             // Note this runs in the background
             // parse for positional keywords that change the colors

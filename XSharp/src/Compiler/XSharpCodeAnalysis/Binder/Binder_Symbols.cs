@@ -84,15 +84,17 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             CSDiagnosticInfo GenerateWarning(Symbol s1, Symbol s2)
             {
+                var asm1 = s1.ContainingAssembly?.Name ?? "Unknown";
+                var asm2 = s2.ContainingAssembly?.Name ?? "Unknown";
                 return new CSDiagnosticInfo(ErrorCode.WRN_XSharpAmbiguous, originalSymbols,
                 new object[] {
                         where,
                         s1.Kind.ToString(),
                         new FormattedSymbol(s1, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                        s1.ContainingAssembly.Name,
+                        asm1,
                         s2.Kind.ToString(),
                         new FormattedSymbol(s2, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                        s2.ContainingAssembly.Name
+                        asm2
                 });
 
             }

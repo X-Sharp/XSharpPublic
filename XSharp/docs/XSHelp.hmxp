@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<helpproject xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd" version="2.0" isskin="false" isrepository="false">
+<helpproject xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd" version="2.2" isskin="false" isrepository="false">
   <config>
     <namespaces/>
     <export-task-groups>
@@ -19,7 +19,7 @@
               <task-config-value name="outputfile">..\artifacts\Help\HTML\index.html</task-config-value>
               <task-config-value name="skin">XSharp_WebHelp.hmskin</task-config-value>
               <task-config-value name="make3include">HTML</task-config-value>
-              <task-config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER</task-config-value>
+              <task-config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER,OPT_WEBFONTS</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -49,7 +49,7 @@
     <helpwindows>
       <helpwindow name="Main" left="86" top="51" width="800" height="600">
         <caption translate="true">(X#) XSharp Runtime Documentation</caption>
-        <window-options-chm navigation="true" navigationwidth="220" search="true" favorite="true" saveregistry="true" buttons="14462">
+        <window-options-chm navigation="true" navigationwidth="220" index="true" search="true" favorite="true" saveregistry="true" buttons="14462">
           <user-button name="jump1">
             <caption translate="true">jump1</caption>
           </user-button>
@@ -153,6 +153,7 @@
       <tablestyleclass name="Default">
         <style-set media="screen">width:auto; cell-padding:5px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;</style-set>
       </tablestyleclass>
+      <imagestyleclass name="Default"/>
     </styleclasses>
     <config-group name="project">
       <config-value name="title" translate="true">XSharp</config-value>
@@ -189,7 +190,7 @@
       <config-value name="make3status">*</config-value>
       <config-value name="tidyxml">1</config-value>
       <config-value name="contents">XSharp</config-value>
-      <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER</config-value>
+      <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER,OPT_WEBFONTS</config-value>
       <config-value name="make5include">PRINT</config-value>
       <config-value name="make5status">*</config-value>
     </config-group>
@@ -641,7 +642,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">3</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">6</config-value>

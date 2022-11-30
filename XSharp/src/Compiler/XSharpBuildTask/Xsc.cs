@@ -746,6 +746,10 @@ namespace XSharp.Build
 
             if (NS)     // Add Default Namespace
             {
+                if (this.RootNameSpace.Contains(" "))
+                {
+                    this.RootNameSpace = '"' + this.RootNameSpace + '"';
+                }
                 commandline.AppendSwitch("/ns:" + this.RootNameSpace);
             }
             commandline.AppendPlusOrMinusSwitch("/allowdot", _store, nameof(AllowDot));

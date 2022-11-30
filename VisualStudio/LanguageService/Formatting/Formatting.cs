@@ -8,6 +8,7 @@
 using LanguageService.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
+using System;
 using XSharpModel;
 using static XSharp.Parser.VsParser;
 
@@ -15,13 +16,21 @@ namespace XSharp.LanguageService
 {
     partial class XSharpFormattingCommandHandler
     {
-
-        private void WaitUntilBufferReady()
+        private bool WaitUntilBufferReady()
         {
-            while (_buffer.EditInProgress)
+            if (_buffer.EditInProgress)
             {
-                System.Threading.Thread.Sleep(100);
+                var end = DateTime.Now.AddSeconds(5);
+                while (_buffer.EditInProgress)
+                {
+                    System.Threading.Thread.Sleep(100);
+                    if (DateTime.Now > end)
+                    {
+                        return false;
+                    }
+                }
             }
+            return true;
         }
         private void FormatLine()
         {
@@ -33,7 +42,8 @@ namespace XSharp.LanguageService
             // we calculate the indent based on the previous line so we must be on the second line
             if (lineNumber > 0)
             {
-                WaitUntilBufferReady();
+                if (!WaitUntilBufferReady())
+                    return;
                 //var _ = _classifier.ClassifyWhenNeededAsync();
                 var editSession = _buffer.CreateEdit();
                 try
@@ -95,7 +105,8 @@ namespace XSharp.LanguageService
             WriteOutputMessage("FormatDocument() -->>");
             // Try to retrieve an already parsed list of Tags
             //
-            WaitUntilBufferReady();
+            if (!WaitUntilBufferReady())
+                return;
 
             var endLine = _buffer.CurrentSnapshot.LineCount - 1;
             if (endLine < 1)

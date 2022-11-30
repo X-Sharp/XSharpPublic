@@ -85,6 +85,9 @@ STATIC CLASS XSharpModel.XKeywordExtensions
     STATIC METHOD IsMember(SELF kw as XKeyword) AS LOGIC
         RETURN XFormattingRule.IsMember(kw)
 
+    STATIC METHOD IsAccessor(SELF kw as XKeyword) AS LOGIC
+        RETURN XFormattingRule.IsAccessor(kw)
+
     STATIC METHOD IsType(SELF kw as XKeyword) AS LOGIC
         RETURN XFormattingRule.IsType(kw)
 

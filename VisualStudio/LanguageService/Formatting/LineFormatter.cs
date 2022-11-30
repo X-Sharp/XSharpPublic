@@ -542,6 +542,7 @@ namespace XSharp.LanguageService
                     // if we find a type first then copy the indentation from the type +
                     // indent the member when needed
                     var tempLineNo = lineNo - 1;
+                    bool accessor = keyword.IsAccessor();
                     bool done = false;
                     prevIndentation = 0;
                     while (!done && tempLineNo >= 0)
@@ -550,6 +551,10 @@ namespace XSharp.LanguageService
                         if (kw.IsMember())
                         {
                             prevIndentation = GetLineIndent(tempLineNo);
+                            if (accessor)
+                            {
+                                prevIndentation += settings.IndentSize;
+                            }
                             done = true;
                         }
                         else if (kw.IsType())
@@ -567,6 +572,7 @@ namespace XSharp.LanguageService
                         }//
                         else if (kw.IsEnd)
                         {
+                            prevIndentation = GetLineIndent(tempLineNo);
                             done = true;
                         }
                         tempLineNo -= 1;

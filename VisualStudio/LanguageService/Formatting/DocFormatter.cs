@@ -70,6 +70,10 @@ namespace XSharp.LanguageService
                     {
                         _indentSize += 1;
                     }
+                    if (kw.IsAccessor() && _blocks.Peek().kw.IsMember())
+                    {
+                        _indentSize += 1;
+                    }
 
                 }
 
@@ -108,11 +112,11 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            while (lineNumber > 0 && _document.HasLineState(lineNumber, LineFlags.Continued))
-            {
-                lineNumber -= 1;
-                _expectedIndent[lineNumber] = _indentSize;
-            }
+            //while (lineNumber > 0 && _document.HasLineState(lineNumber, LineFlags.Continued))
+            //{
+            //    lineNumber -= 1;
+            //    _expectedIndent[lineNumber] = _indentSize;
+            //}
             return _indentSize;
         }
 

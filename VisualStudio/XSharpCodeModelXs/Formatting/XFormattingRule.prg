@@ -79,11 +79,15 @@ BEGIN NAMESPACE XSharpModel
     /// <summary>
     /// Does the rule allow to end with single END keyword
     /// </summary>
-    member @@End := 1 << 8
+    member @@End := 1 << 9
     /// <summary>
     /// (Combined with type) Can the type be nested
     /// </summary>
-    member @@Nested := 1 << 9
+    member @@Nested := 1 << 10
+    /// <summary>
+    ///  Token is an accessor
+    /// </summary>
+    member @@Accessor := 1 << 11
     end Enum
 
     /// <summary>
@@ -286,6 +290,9 @@ BEGIN NAMESPACE XSharpModel
     PUBLIC STATIC METHOD IsMember(token as XKeyword) AS LOGIC
     RETURN GetFlags(token):HasFlag(XFormattingFlags.Member)
 
+    PUBLIC STATIC METHOD IsAccessor(token as XKeyword) AS LOGIC 
+    RETURN GetFlags(token):HasFlag(XFormattingFlags.Accessor)
+
     PUBLIC STATIC METHOD IsSingleLineEntity(token as XKeyword) AS LOGIC
     RETURN GetFlags(token):HasFlag(XFormattingFlags.SingleLine)
 
@@ -457,6 +464,8 @@ BEGIN NAMESPACE XSharpModel
             flags := XFormattingFlags.Middle
         CASE "SINGLELINE"
             flags := XFormattingFlags.SingleLine
+        CASE "ACCESSOR"
+            flags := XFormattingFlags.Accessor
         otherwise
             XSettings.ShowMessageBox(i"Incorrect option {name} found")
             flags := XFormattingFlags.None

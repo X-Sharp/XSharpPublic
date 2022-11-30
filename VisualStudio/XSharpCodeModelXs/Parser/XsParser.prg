@@ -1001,6 +1001,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 _BlockStack:Pop()
             ENDIF
         ELSEIF XFormattingRule.IsMiddleKeyword(xt)
+            IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
+                CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
+            ENDIF
             ParseBlockMiddle(xt)
         ENDIF
         RETURN

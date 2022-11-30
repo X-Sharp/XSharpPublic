@@ -13,7 +13,7 @@ using System.Security
 
 #include "BuildNumber.h"    
 #undef  COPYRIGHT_STR
-#define COPYRIGHT_STR "Copyright © 1993-2021 Computer Associates & XSharp BV, All rights reserved"
+#define COPYRIGHT_STR "Copyright © 1993-2022 Computer Associates & XSharp BV, All rights reserved"
 
 [assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION )] 
 [assembly: AssemblyCompanyAttribute( COMPANY_NAME )]

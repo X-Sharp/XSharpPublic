@@ -399,7 +399,7 @@ namespace XSharp.LanguageService
                 pts[0].iStartLine = pts[0].iEndLine = ta.line;
                 var ires = pTextLayer.GetLengthOfLine(ta.line, out int length);
                 Debug.Assert(ires == VSConstants.S_OK);
-                ires = pTextLayer.GetLineText(ta.line, 0, ta.line , length-1, out var text);
+                ires = pTextLayer.GetLineText(ta.line, 0, ta.line , length, out var text);
                 Debug.Assert(ires == VSConstants.S_OK);
                 if (!string.IsNullOrEmpty(text))
                 {

@@ -160,7 +160,7 @@ CLASS XSharp.CoreDb
         ENDIF
         info:Scope:ForBlock     := uCobFor
         info:Scope:WhileBlock   := uCobWhile
-        IF nNext IS LONG
+        IF nNext IS LONG .or. nNext IS INT64
             TRY
                 info:Scope:NextCount := Convert.ToInt32(nNext)
             CATCH e AS Exception
@@ -1146,7 +1146,6 @@ CLASS XSharp.CoreDb
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN oRdd:RecCount
         })
-
         /// <summary>
         /// Search for the first record that matches a specified condition and scope.
         /// </summary>

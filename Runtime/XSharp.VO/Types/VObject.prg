@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -12,13 +12,14 @@ CLASS XSharp.VObject
     CONSTRUCTOR()
         SUPER()
         RETURN
-        
+
     DESTRUCTOR()
         SELF:Destroy()
         RETURN
-    /// <summary>Free memory resources allocated for a VObject object and its derived objects.</summary> 
-    VIRTUAL METHOD Destroy() AS USUAL CLIPPER
-        RETURN SELF
-        
-        
+
+    /// <summary>Free memory resources allocated for a VObject object and its derived objects.</summary>
+    VIRTUAL METHOD Destroy() AS USUAL STRICT
+        RETURN NIL
+
+
 END CLASS

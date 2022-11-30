@@ -70,7 +70,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     PRIVATE CONST STR_NULL_CODEBLOCK := "NULL_CODEBLOCK" AS STRING
     [NOSHOW];
     PRIVATE CONST STR_USUAL := "USUAL" AS STRING
-    
+
 #endregion
 
 #region constructors
@@ -109,7 +109,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         SELF:_refData   := NULL
 
     [NODEBUG] [INLINE];
-    PRIVATE CONSTRUCTOR(u AS __Usual)
+    PRIVATE CONSTRUCTOR(u IN __Usual)
         SELF:_flags     := u:_flags
         SELF:_valueData	:= u:_valueData
         SELF:_refData 	:= u:_refData
@@ -794,7 +794,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
     [NODEBUG];
-    STATIC OPERATOR >(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+    STATIC OPERATOR >(lhs IN __Usual, rhs IN __Usual) AS LOGIC
         IF !lhs:_initialized
             RETURN FALSE
         ENDIF
@@ -913,7 +913,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
     [NODEBUG];
-    STATIC OPERATOR >=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+    STATIC OPERATOR >=(lhs IN __Usual, rhs IN __Usual) AS LOGIC
         IF !lhs:_initialized
             RETURN lhs:_initialized == rhs:_initialized
         ENDIF
@@ -1030,7 +1030,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
     [NODEBUG] ;
-    STATIC OPERATOR <(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+    STATIC OPERATOR <(lhs IN __Usual, rhs IN __Usual) AS LOGIC
         IF !lhs:_initialized
             RETURN FALSE
         ENDIF
@@ -1144,7 +1144,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
     [NODEBUG];
-    STATIC OPERATOR <=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+    STATIC OPERATOR <=(lhs IN __Usual, rhs IN __Usual) AS LOGIC
         IF !lhs:_initialized
             RETURN lhs:_initialized == rhs:_initialized
         ENDIF
@@ -1303,13 +1303,13 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
     [NODEBUG];
-    STATIC OPERATOR ==(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+    STATIC OPERATOR ==(lhs IN __Usual, rhs IN __Usual) AS LOGIC
         RETURN lhs:UsualEquals(rhs, "==")
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />
     [NODEBUG];
-    STATIC OPERATOR !=(lhs AS __Usual, rhs AS __Usual) AS LOGIC
+    STATIC OPERATOR !=(lhs IN __Usual, rhs IN __Usual) AS LOGIC
         IF lhs:IsNull .or. rhs:IsNull
             // comparison with Null always returns FALSE
             // In FoxPro this returns .NULL.
@@ -1325,7 +1325,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
 
     [NODEBUG];
-    INTERNAL METHOD UsualEquals( rhs AS __Usual, op AS STRING) AS LOGIC
+    INTERNAL METHOD UsualEquals( rhs IN __Usual, op AS STRING) AS LOGIC
         IF SELF:IsNull .or. rhs:IsNull
             // comparison with Null always returns FALSE
             // In FoxPro this returns .NULL.
@@ -1489,7 +1489,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>This operator is only supported on usuals of type LOGIC.</remarks>
     [NODEBUG];
-    STATIC OPERATOR !(u AS __Usual) AS LOGIC
+    STATIC OPERATOR !(u IN __Usual) AS LOGIC
         IF u:_usualType == __UsualType.Logic
             RETURN !u:_logicValue
         ENDIF
@@ -1498,7 +1498,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>This operator is only supported on usuals of integral types.</remarks>
     [NODEBUG];
-    STATIC OPERATOR ~(u AS __Usual) AS __Usual
+    STATIC OPERATOR ~(u IN __Usual) AS __Usual
         IF u:_usualType == __UsualType.Long
             RETURN ~u:_intValue
         ENDIF
@@ -1513,7 +1513,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>This operator is only supported on usuals of numeric types.</remarks>
     [NODEBUG];
-    STATIC OPERATOR -(u AS __Usual) AS __Usual
+    STATIC OPERATOR -(u IN __Usual) AS __Usual
         SWITCH u:_usualType
         CASE __UsualType.Long		   ; RETURN -u:_intValue
         CASE __UsualType.Int64		; RETURN -u:_i64Value
@@ -1528,7 +1528,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>This operator is only supported on usuals of numeric types.</remarks>
     [NODEBUG];
-    STATIC OPERATOR +(u AS __Usual) AS __Usual
+    STATIC OPERATOR +(u IN __Usual) AS __Usual
         SWITCH u:_usualType
         CASE __UsualType.Long		; RETURN (INT) (+u:_intValue)
         CASE __UsualType.Int64		; RETURN (INT64) (+u:_i64Value)
@@ -1543,7 +1543,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>This operator is only supported on usuals of numeric types.</remarks>
     [NODEBUG];
-    STATIC OPERATOR --(u AS __Usual) AS __Usual
+    STATIC OPERATOR --(u IN __Usual) AS __Usual
         SWITCH u:_usualType
         CASE __UsualType.Long		; RETURN (INT) (u:_intValue - 1)
         CASE __UsualType.Int64		; RETURN (INT64) (u:_i64Value - 1)
@@ -1560,7 +1560,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>This operator is only supported on usuals of numeric types.</remarks>
     [NODEBUG];
-    STATIC OPERATOR ++(u AS __Usual) AS __Usual
+    STATIC OPERATOR ++(u IN __Usual) AS __Usual
         SWITCH u:_usualType
         CASE __UsualType.Long		; RETURN (INT) (u:_intValue + 1)
         CASE __UsualType.Int64		; RETURN (INT64) (u:_i64Value + 1)
@@ -1580,7 +1580,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <include file="RTComments.xml" path="Comments/UsualBinary/*" />
     [NODEBUG];
-    STATIC OPERATOR +(lhs AS __Usual, rhs AS __Usual) AS __Usual
+    STATIC OPERATOR +(lhs IN __Usual, rhs IN __Usual) AS __Usual
         IF lhs:IsNull .or. rhs:IsNull
             RETURN DBNull.Value
         ENDIF
@@ -1691,7 +1691,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <include file="RTComments.xml" path="Comments/UsualBinary/*" />
     [NODEBUG];
-    STATIC OPERATOR -(lhs AS __Usual, rhs AS __Usual) AS __Usual
+    STATIC OPERATOR -(lhs IN __Usual, rhs IN __Usual) AS __Usual
         IF lhs:IsNull .or. rhs:IsNull
             RETURN DBNull.Value
         ENDIF
@@ -1781,7 +1781,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <include file="RTComments.xml" path="Comments/UsualBinary/*" />
     [NODEBUG];
-    STATIC OPERATOR /(lhs AS __Usual, rhs AS __Usual) AS __Usual
+    STATIC OPERATOR /(lhs IN __Usual, rhs IN __Usual) AS __Usual
         IF lhs:IsNull .or. rhs:IsNull
             RETURN DBNull.Value
         ENDIF
@@ -1903,7 +1903,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <include file="RTComments.xml" path="Comments/UsualBinary/*" />
     [NODEBUG];
-    STATIC OPERATOR %(lhs AS __Usual, rhs AS __Usual) AS __Usual
+    STATIC OPERATOR %(lhs IN __Usual, rhs IN __Usual) AS __Usual
         IF lhs:IsNull .or. rhs:IsNull
             RETURN DBNull.Value
         ENDIF
@@ -1966,7 +1966,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <include file="RTComments.xml" path="Comments/UsualBinary/*" />
     [NODEBUG];
-    STATIC OPERATOR *(lhs AS __Usual, rhs AS __Usual) AS __Usual
+    STATIC OPERATOR *(lhs IN __Usual, rhs IN __Usual) AS __Usual
         IF lhs:IsNull .or. rhs:IsNull
             RETURN DBNull.Value
         ENDIF
@@ -2029,7 +2029,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>This operator is only supported on usuals containing integral values</remarks>
     [NODEBUG];
-    STATIC OPERATOR >>(lhs AS __Usual, rhs AS INT) AS __Usual
+    STATIC OPERATOR >>(lhs IN __Usual, rhs AS INT) AS __Usual
         IF lhs:IsNull
             RETURN DBNull.Value
         ENDIF
@@ -2044,7 +2044,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>This operator is only supported on usuals containing integral values</remarks>
     [NODEBUG];
-    STATIC OPERATOR <<(lhs AS __Usual, rhs AS LONG) AS __Usual
+    STATIC OPERATOR <<(lhs IN __Usual, rhs AS LONG) AS __Usual
         // Left shift
         IF lhs:IsNull
             RETURN DBNull.Value
@@ -2061,7 +2061,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>This operator is only supported on usuals containing integral values</remarks>
     [NODEBUG];
-    STATIC OPERATOR &(lhs AS __Usual, rhs AS __Usual) AS __Usual
+    STATIC OPERATOR &(lhs IN __Usual, rhs IN __Usual) AS __Usual
         // Bitwise And
         IF lhs:IsNull .or. rhs:IsNull
             RETURN DBNull.Value
@@ -2088,7 +2088,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>This operator is only supported on usuals containing integral values</remarks>
     [NODEBUG];
-    STATIC OPERATOR |(lhs AS __Usual, rhs AS __Usual) AS __Usual
+    STATIC OPERATOR |(lhs IN __Usual, rhs IN __Usual) AS __Usual
         // Bitwise or
         IF lhs:IsNull .or. rhs:IsNull
             RETURN DBNull.Value
@@ -2117,7 +2117,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS ARRAY
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS ARRAY
 
         IF u:IsNull  .or. !u:_initialized
             RETURN NULL_ARRAY
@@ -2137,7 +2137,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS CODEBLOCK
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS CODEBLOCK
         IF u:IsNull  .or. !u:_initialized
             RETURN NULL_CODEBLOCK
         ENDIF
@@ -2154,7 +2154,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>When the usual contains a numeric value then this checks if the value != 0.</remarks>
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS LOGIC
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS LOGIC
         IF u:IsNull  .or. !u:_initialized
             RETURN FALSE
         ENDIF
@@ -2170,7 +2170,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS DATE
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS DATE
         IF u:IsNull  .or. !u:_initialized
             RETURN NULL_DATE
         ENDIF
@@ -2184,7 +2184,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS DateTime
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS DateTime
         IF u:IsNull  .or. !u:_initialized
             RETURN DateTime.MinValue
         ENDIF
@@ -2198,7 +2198,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS IntPtr
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS IntPtr
         // Note Vulcan has a different implementation for USUAL -> PTR and USUAL -> IntPtr
         IF u:IsNull  .or. !u:_initialized
             RETURN IntPtr.Zero
@@ -2224,7 +2224,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>When the usual contains an integral value then this value is converted to an IntPtr</remarks>
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS PTR
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS PTR
         // Note Vulcan has a different implementation for USUAL -> PTR and USUAL -> IntPtr
         IF u:IsNull  .or. !u:_initialized
             RETURN NULL_PTR
@@ -2241,7 +2241,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS STRING
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS STRING
         IF u:IsNull  .or. !u:_initialized
             RETURN String.Empty
         ENDIF
@@ -2263,7 +2263,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>When the usual contains an numeric value then this value is considered to be an index in the symbol table.</remarks>
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS SYMBOL
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS SYMBOL
         IF u:IsNull  .or. !u:_initialized
             RETURN NULL_SYMBOL
         ENDIF
@@ -2282,7 +2282,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS PSZ
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS PSZ
         IF u:IsNull  .or. !u:_initialized
             RETURN NULL_PSZ
         ENDIF
@@ -2299,7 +2299,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>When the usual contains a value that does not fit inside a BYTE an overflow error will be generated, just like in VO.</remarks>
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS BYTE
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS BYTE
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN 0
@@ -2363,7 +2363,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>When the usual contains a value that does not fit inside a SHORT an overflow error will be generated, just like in VO.</remarks>
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS SHORT
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS SHORT
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN 0
@@ -2428,7 +2428,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <remarks>When the usual contains a value that does not fit inside a LONG an overflow error will be generated, just like in VO.</remarks>
 
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS LONG
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS LONG
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN 0
@@ -2503,7 +2503,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// This may seem not logical, but the VO SDK code is full of code that will not run if we change this behavior</remarks>
 
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS INT64
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS INT64
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN 0
@@ -2543,7 +2543,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS System.Decimal
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS System.Decimal
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN 0
@@ -2565,7 +2565,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     /// <remarks>When the usual contains a value that does not fit inside a SByte an overflow error will be generated, just like in VO.</remarks>
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS SByte
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS SByte
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN 0
@@ -2589,7 +2589,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// <remarks>When the usual contains a value that does not fit inside a WORD an overflow error will be generated, just like in VO.</remarks>
 
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS WORD
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS WORD
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN 0
@@ -2613,7 +2613,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// This may seem not logical, but the VO SDK code is full of code that will not run if we change this behavior</remarks>
 
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS DWORD
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS DWORD
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN 0
@@ -2666,7 +2666,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     /// This may seem not logical, but the VO SDK code is full of code that will not run if we change this behavior</remarks>
 
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS UINT64
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS UINT64
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN 0
@@ -2690,7 +2690,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         // Single, Double and FLoat
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS REAL4
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS REAL4
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN 0
@@ -2711,7 +2711,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS REAL8
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS REAL8
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN 0
@@ -2732,7 +2732,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS FLOAT
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS FLOAT
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN FLOAT{0,0}
@@ -2753,7 +2753,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS Currency
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS Currency
         TRY
             IF u:IsNull  .or. !u:_initialized
                 RETURN Currency{0.0}
@@ -2768,7 +2768,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(u AS __Usual) AS Binary
+    STATIC OPERATOR IMPLICIT(u IN __Usual) AS Binary
         IF u:IsNull  .or. !u:_initialized
             RETURN (Binary) String.Empty
         ENDIF
@@ -2910,12 +2910,12 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] [INLINE];
-    STATIC OPERATOR TRUE(u AS USUAL) AS LOGIC
+    STATIC OPERATOR TRUE(u IN USUAL) AS LOGIC
         RETURN (LOGIC) u
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] [INLINE];
-    STATIC OPERATOR FALSE(u AS USUAL)AS LOGIC
+    STATIC OPERATOR FALSE(u IN USUAL)AS LOGIC
         RETURN  ! (LOGIC) u
 
 #endregion
@@ -2972,7 +2972,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <exclude />
     [NODEBUG];
-    STATIC METHOD ToObject(u AS __Usual) AS OBJECT
+    STATIC METHOD ToObject(u IN __Usual) AS OBJECT
         IF u:IsNull
             RETURN DBNull.Value
         ELSEIF !u:_initialized
@@ -3175,7 +3175,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     END PROPERTY
 
 #region Error Methods
-    STATIC INTERNAL METHOD ConversionError(toTypeString AS STRING, toType AS System.Type, u AS __Usual) AS Error
+    STATIC INTERNAL METHOD ConversionError(toTypeString AS STRING, toType AS System.Type, u IN __Usual) AS Error
         VAR	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(u:Type), toTypeString)
         VAR err			:= Error{Gencode.EG_DATATYPE,STR_USUAL, cMessage}
         err:ArgTypeReqType:= toType
@@ -3185,7 +3185,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         err:Args        := <OBJECT>{u}
         RETURN err
 
-    STATIC INTERNAL METHOD ConversionError(typeNum AS DWORD, toType AS System.Type, u AS __Usual) AS Error
+    STATIC INTERNAL METHOD ConversionError(typeNum AS DWORD, toType AS System.Type, u IN __Usual) AS Error
         VAR	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(u:Type), TypeString(DWORD(typeNum)))
         VAR err			:= Error{Gencode.EG_DATATYPE,STR_USUAL, cMessage}
         err:ArgTypeReqType:= toType
@@ -3195,7 +3195,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         err:Args        := <OBJECT>{u}
         RETURN err
 
-    STATIC INTERNAL METHOD OverflowError(ex AS OverflowException, toTypeString AS STRING, toType AS System.Type, u AS __Usual) AS Error
+    STATIC INTERNAL METHOD OverflowError(ex AS OverflowException, toTypeString AS STRING, toType AS System.Type, u IN __Usual) AS Error
         VAR message      := VO_Sprintf(VOErrors.USUALOVERFLOWERR, TypeString(u:Type), toTypeString)
         VAR err			 := Error{Gencode.EG_NUMOVERFLOW, STR_USUAL, message}
         err:ArgTypeReqType := toType
@@ -3204,7 +3204,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         err:Args		 := <OBJECT>{u}
         RETURN err
 
-    STATIC INTERNAL METHOD BinaryError( cOperator AS STRING, message AS STRING, left AS LOGIC, lhs AS __Usual, rhs AS __Usual) AS Error
+    STATIC INTERNAL METHOD BinaryError( cOperator AS STRING, message AS STRING, left AS LOGIC, lhs IN __Usual, rhs IN __Usual) AS Error
         VAR err			 := Error{ArgumentException{}}
         err:Gencode		 := Gencode.EG_ARG
         err:ArgNum		 := (DWORD) IIF (left, 1, 2)
@@ -3214,7 +3214,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         err:Args         := <OBJECT> {lhs, rhs}
         RETURN err
 
-    STATIC INTERNAL METHOD UnaryError( cOperator AS STRING, u AS __Usual) AS Error
+    STATIC INTERNAL METHOD UnaryError( cOperator AS STRING, u IN __Usual) AS Error
         VAR err			 := Error{ArgumentException{}}
         err:Gencode		 := Gencode.EG_ARG
         err:ArgNum		 := 1
@@ -3423,7 +3423,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 #region Special methods used BY the compiler
     /// <summary>This method is used by the compiler for code that does an inexact comparison between two usuals.</summary>
     [NODEBUG];
-    STATIC METHOD __InexactEquals( lhs AS __Usual, rhs AS __Usual ) AS LOGIC
+    STATIC METHOD __InexactEquals( lhs IN __Usual, rhs IN __Usual ) AS LOGIC
         IF lhs:IsString .AND. rhs:IsString
             RETURN __StringEquals( lhs:_stringValue, rhs:_stringValue)
         ELSE
@@ -3432,7 +3432,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <summary>This method is used by the compiler for code that does an inexact comparison between a usual and a string.</summary>
     [NODEBUG];
-    STATIC METHOD __InexactEquals( lhs AS __Usual, rhs AS STRING ) AS LOGIC
+    STATIC METHOD __InexactEquals( lhs IN __Usual, rhs AS STRING ) AS LOGIC
         IF lhs:IsString
             RETURN __StringEquals( lhs:_stringValue, rhs)
         ELSEIF lhs:IsNull
@@ -3452,7 +3452,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
     [NODEBUG];
-    STATIC METHOD __InexactNotEquals( lhs AS __Usual, rhs AS __Usual ) AS LOGIC
+    STATIC METHOD __InexactNotEquals( lhs IN __Usual, rhs IN __Usual ) AS LOGIC
         IF lhs:IsNull .or. rhs:IsNull
             // comparison with Null always returns FALSE
             // In FoxPro this returns .NULL.
@@ -3474,7 +3474,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
     /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
     [NODEBUG];
-    STATIC METHOD __InexactNotEquals( lhs AS __Usual, rhs AS STRING ) AS LOGIC
+    STATIC METHOD __InexactNotEquals( lhs IN __Usual, rhs AS STRING ) AS LOGIC
         IF lhs:IsNull
             // In FoxPro this returns .NULL.
             RETURN FALSE
@@ -3560,7 +3560,7 @@ END NAMESPACE
 /// <param name="x"></param>
 /// <returns>
 /// </returns>
-FUNCTION UsualType(u AS __Usual) AS DWORD
+FUNCTION UsualType(u IN __Usual) AS DWORD
     RETURN (DWORD) u:Type
 
 /// <summary>
@@ -3569,7 +3569,7 @@ FUNCTION UsualType(u AS __Usual) AS DWORD
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-FUNCTION UsualVal(u AS __Usual) AS __Usual
+FUNCTION UsualVal(u IN __Usual) AS __Usual
     RETURN u
 
 /// <summary>
@@ -3578,7 +3578,7 @@ FUNCTION UsualVal(u AS __Usual) AS __Usual
 /// <param name="u"></param>
 /// <returns>
 /// </returns>
-FUNCTION ValType(u AS __Usual) AS STRING
+FUNCTION ValType(u IN __Usual) AS STRING
     RETURN u:ValType
 
 

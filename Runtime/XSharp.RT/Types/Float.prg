@@ -146,19 +146,19 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR ==(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
+    OPERATOR ==(lhs IN FLOAT, rhs IN FLOAT) AS LOGIC
         RETURN lhs:Equals(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR !=(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
+    OPERATOR !=(lhs IN FLOAT, rhs IN FLOAT) AS LOGIC
         RETURN ! lhs:Equals(rhs)
 #endregion
 
 #region Comparison Operators
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR >(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
+    OPERATOR >(lhs IN FLOAT, rhs IN FLOAT) AS LOGIC
         LOCAL delta AS REAL8
         LOCAL diff  AS REAL8
         delta := RuntimeState.FloatDelta
@@ -171,7 +171,7 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR <(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
+    OPERATOR <(lhs IN FLOAT, rhs IN FLOAT) AS LOGIC
         LOCAL delta AS REAL8
         LOCAL diff  AS REAL8
         delta := RuntimeState.FloatDelta
@@ -183,14 +183,14 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR >=(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
+    OPERATOR >=(lhs IN FLOAT, rhs IN FLOAT) AS LOGIC
         // call other operator methods for simplicity
         // we may want to optimize this later
         RETURN lhs > rhs .OR. lhs == rhs
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR <=(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
+    OPERATOR <=(lhs IN FLOAT, rhs IN FLOAT) AS LOGIC
         // call other operator methods for simplicity
         // we may want to optimize this later
         RETURN lhs < rhs .OR. lhs == rhs
@@ -273,53 +273,53 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
 #region Explicit Converters
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG] ;
-    STATIC OPERATOR EXPLICIT(fl  AS FLOAT) AS BYTE
+    STATIC OPERATOR EXPLICIT(fl IN FLOAT) AS BYTE
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToByte(fl:_value)
         ENDIF
         RETURN CHECKED((BYTE) fl:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG] ;
-    STATIC OPERATOR EXPLICIT(fl AS FLOAT) AS SByte
+    STATIC OPERATOR EXPLICIT(fl IN FLOAT) AS SByte
         RETURN CHECKED((SByte) fl:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG] ;
-    STATIC OPERATOR EXPLICIT(fl  AS FLOAT) AS SHORT
+    STATIC OPERATOR EXPLICIT(fl IN FLOAT) AS SHORT
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToInt16(fl:_value)
         ENDIF
         RETURN CHECKED((SHORT) fl:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG] ;
-    STATIC OPERATOR EXPLICIT(fl  AS FLOAT) AS WORD
+    STATIC OPERATOR EXPLICIT(fl IN FLOAT) AS WORD
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToUInt16(fl:_value)
         ENDIF
         RETURN CHECKED((WORD) fl:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG] ;
-    STATIC OPERATOR EXPLICIT(fl  AS FLOAT) AS LONG
+    STATIC OPERATOR EXPLICIT(fl IN FLOAT) AS LONG
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToInt32(fl:_value)
         ENDIF
         RETURN CHECKED((LONG) fl:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG] ;
-    STATIC OPERATOR EXPLICIT(fl  AS FLOAT) AS DWORD
+    STATIC OPERATOR EXPLICIT(fl IN FLOAT) AS DWORD
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToUInt32(fl:_value)
         ENDIF
         RETURN CHECKED((DWORD) fl:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG] ;
-    STATIC OPERATOR EXPLICIT(fl  AS FLOAT) AS INT64
+    STATIC OPERATOR EXPLICIT(fl IN FLOAT) AS INT64
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToInt64(fl:_value)
         ENDIF
         RETURN CHECKED((INT64) fl:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG] ;
-    STATIC OPERATOR EXPLICIT(fl  AS FLOAT) AS UINT64
+    STATIC OPERATOR EXPLICIT(fl IN FLOAT) AS UINT64
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToUInt64(fl:_value)
         ENDIF
@@ -330,12 +330,12 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
 #region Numeric Operators
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR +(fl  AS FLOAT) AS FLOAT
+    OPERATOR +(fl IN FLOAT) AS FLOAT
         RETURN fl
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR -(fl  AS FLOAT) AS FLOAT
+    OPERATOR -(fl IN FLOAT) AS FLOAT
         RETURN FLOAT{- fl:_value, fl:Digits, fl:Decimals}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
@@ -345,38 +345,38 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR+(lhs AS FLOAT, rhs AS USUAL) AS FLOAT
+    OPERATOR+(lhs IN FLOAT, rhs IN USUAL) AS FLOAT
         RETURN lhs:Add(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR+(lhs AS USUAL, rhs AS FLOAT) AS FLOAT
+    OPERATOR+(lhs IN USUAL, rhs IN FLOAT) AS FLOAT
         RETURN rhs:Add(lhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR-(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
+    OPERATOR-(lhs IN FLOAT, rhs IN FLOAT) AS FLOAT
         RETURN lhs:Subtract(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR-(lhs AS FLOAT, rhs AS USUAL) AS FLOAT
+    OPERATOR-(lhs IN FLOAT, rhs IN USUAL) AS FLOAT
         RETURN lhs:Subtract(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR-(lhs AS USUAL, rhs AS FLOAT) AS FLOAT
+    OPERATOR-(lhs IN USUAL, rhs IN FLOAT) AS FLOAT
         // set decimals for LHS to 0, so max decmals is decimals right
         RETURN FLOAT{lhs, 0}:Subtract(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR*(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
+    OPERATOR*(lhs IN FLOAT, rhs IN FLOAT) AS FLOAT
         RETURN FLOAT{ lhs:_value * rhs:_value, lhs:Decimals + rhs:Decimals}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     //[NODEBUG] ;
-    OPERATOR/(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
+    OPERATOR/(lhs IN FLOAT, rhs IN FLOAT) AS FLOAT
         VAR tmp := lhs:_value / rhs:_value
         IF System.Double.IsNaN(tmp) .or. System.Double.IsInfinity(tmp)
             THROW DivideByZeroException{}
@@ -385,19 +385,19 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR%(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
+    OPERATOR%(lhs IN FLOAT, rhs IN FLOAT) AS FLOAT
         RETURN FLOAT{ lhs:_value % rhs:_value, RuntimeState.Decimals}
 
 #endregion
 #region Unary Operators
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR ++ (fl  AS FLOAT) AS FLOAT
+    OPERATOR ++ (fl IN FLOAT) AS FLOAT
         RETURN FLOAT{fl:_value+1, fl:Digits, fl:Decimals}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG] ;
-    OPERATOR -- (fl  AS FLOAT) AS FLOAT
+    OPERATOR -- (fl IN FLOAT) AS FLOAT
         RETURN FLOAT{fl:_value-1, fl:Digits, fl:Decimals}
 #endregion
 
@@ -416,12 +416,12 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
 #region Add and Subtract
     /// <exclude />
     [NODEBUG] ;
-    METHOD Add(rhs AS FLOAT) AS FLOAT
+    METHOD Add(rhs IN FLOAT) AS FLOAT
         RETURN FLOAT{ SELF:_value + rhs:_value, Math.Max(SELF:_decimals, rhs:_decimals)}
 
     /// <exclude />
     [NODEBUG] ;
-    METHOD Add(rhs AS USUAL) AS FLOAT
+    METHOD Add(rhs IN USUAL) AS FLOAT
         LOCAL result AS FLOAT
         IF rhs:IsFloat
             result := SELF:Add (  rhs:_floatValue)
@@ -437,12 +437,12 @@ PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
 
     /// <exclude />
     [NODEBUG] ;
-    METHOD Subtract(rhs AS FLOAT) AS FLOAT
+    METHOD Subtract(rhs IN FLOAT) AS FLOAT
         RETURN FLOAT{ SELF:_value - rhs:_value, Math.Max(SELF:_decimals, rhs:_decimals)}
 
     /// <exclude />
     [NODEBUG] ;
-    METHOD Subtract(rhs AS USUAL) AS FLOAT
+    METHOD Subtract(rhs IN USUAL) AS FLOAT
         LOCAL result AS FLOAT
         IF rhs:IsFloat
             result := SELF:Subtract(  rhs:_floatValue)

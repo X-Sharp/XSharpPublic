@@ -91,30 +91,30 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
 
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR ==(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
+    OPERATOR ==(lhs IN CURRENCY, rhs IN CURRENCY) AS LOGIC
         RETURN lhs:Equals(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR !=(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
+    OPERATOR !=(lhs IN CURRENCY, rhs IN CURRENCY) AS LOGIC
         RETURN ! lhs:Equals(rhs)
 #endregion
 
 #region Comparison Operators
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR >(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
+    OPERATOR >(lhs IN CURRENCY, rhs IN CURRENCY) AS LOGIC
         RETURN lhs:_value > rhs:_value
 
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR <(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
+    OPERATOR <(lhs IN CURRENCY, rhs IN CURRENCY) AS LOGIC
         RETURN lhs:_value < rhs:_value
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR >=(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
+    OPERATOR >=(lhs IN CURRENCY, rhs IN CURRENCY) AS LOGIC
         RETURN lhs:_value >= rhs:_value
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR <=(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
+    OPERATOR <=(lhs IN CURRENCY, rhs IN CURRENCY) AS LOGIC
         RETURN lhs:_value <= rhs:_value
 
 #endregion
@@ -171,48 +171,48 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
         RETURN CURRENCY{r8}
 
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(fl AS FLOAT) AS CURRENCY
+    STATIC OPERATOR IMPLICIT(fl IN FLOAT) AS CURRENCY
         RETURN CURRENCY{fl:Value}
 
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(val AS System.Decimal) AS CURRENCY
+    STATIC OPERATOR IMPLICIT(val IN System.Decimal) AS CURRENCY
         RETURN CURRENCY{val}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS REAL8
+    STATIC OPERATOR IMPLICIT(c IN CURRENCY) AS REAL8
         RETURN CHECKED((REAL8) c:_value)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS REAL4
+    STATIC OPERATOR IMPLICIT(c IN CURRENCY) AS REAL4
         RETURN CHECKED((REAL4) c:_value)
 
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS FLOAT
+    STATIC OPERATOR IMPLICIT(c IN CURRENCY) AS FLOAT
         RETURN CHECKED(FLOAT{ (REAL8) c:_value, -1, 4})
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     [NODEBUG];
-    STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS System.Decimal
+    STATIC OPERATOR IMPLICIT(c IN CURRENCY) AS System.Decimal
         RETURN c:_value
 
 #endregion
 #region Explicit Converters
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG];
-    STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS BYTE
+    STATIC OPERATOR EXPLICIT(c IN CURRENCY) AS BYTE
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToByte(c:_value)
         ENDIF
         RETURN CHECKED((BYTE) c:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG];
-    STATIC OPERATOR EXPLICIT(c AS CURRENCY) AS SByte
+    STATIC OPERATOR EXPLICIT(c IN CURRENCY) AS SByte
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToSByte(c:_value)
         ENDIF
@@ -220,7 +220,7 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
 
     [NODEBUG];
-    STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS SHORT
+    STATIC OPERATOR EXPLICIT(c IN CURRENCY) AS SHORT
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToInt16(c:_value)
         ENDIF
@@ -228,28 +228,28 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
 
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG];
-    STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS WORD
+    STATIC OPERATOR EXPLICIT(c IN CURRENCY) AS WORD
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToUInt16(c:_value)
         ENDIF
         RETURN CHECKED((WORD) c:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG];
-    STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS LONG
+    STATIC OPERATOR EXPLICIT(c IN CURRENCY) AS LONG
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToInt32(c:_value)
         ENDIF
         RETURN CHECKED((LONG) c:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG];
-    STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS DWORD
+    STATIC OPERATOR EXPLICIT(c IN CURRENCY) AS DWORD
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToUInt32(c:_value)
         ENDIF
         RETURN (DWORD) c:_value
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG];
-    STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS INT64
+    STATIC OPERATOR EXPLICIT(c IN CURRENCY) AS INT64
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToInt64(c:_value)
         ENDIF
@@ -257,7 +257,7 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
 
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
     [NODEBUG];
-    STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS UINT64
+    STATIC OPERATOR EXPLICIT(c IN CURRENCY) AS UINT64
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToUInt64(c:_value)
         ENDIF
@@ -267,35 +267,35 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
 
 #region Numeric Operators
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR +(c  AS CURRENCY) AS CURRENCY
+    OPERATOR +(c IN CURRENCY) AS CURRENCY
         RETURN c
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR -(c  AS CURRENCY) AS CURRENCY
+    OPERATOR -(c IN CURRENCY) AS CURRENCY
         RETURN CURRENCY{ -c:_value}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR+(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
+    OPERATOR+(lhs IN CURRENCY, rhs IN CURRENCY) AS CURRENCY
         RETURN lhs:Add(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR+(lhs AS CURRENCY, rhs AS USUAL) AS CURRENCY
+    OPERATOR+(lhs IN CURRENCY, rhs IN USUAL) AS CURRENCY
         RETURN lhs:Add(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR+(lhs AS USUAL, rhs AS CURRENCY) AS CURRENCY
+    OPERATOR+(lhs IN USUAL, rhs IN CURRENCY) AS CURRENCY
         RETURN rhs:Add(lhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR-(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
+    OPERATOR-(lhs IN CURRENCY, rhs IN CURRENCY) AS CURRENCY
         RETURN lhs:Subtract(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR-(lhs AS CURRENCY, rhs AS USUAL) AS CURRENCY
+    OPERATOR-(lhs IN CURRENCY, rhs IN USUAL) AS CURRENCY
         RETURN lhs:Subtract(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR-(lhs AS USUAL, rhs AS CURRENCY) AS CURRENCY
+    OPERATOR-(lhs IN USUAL, rhs IN CURRENCY) AS CURRENCY
         // set decimals for LHS to 0, so max decmals is decimals right
         local lCurr AS Currency
         IF lhs:IsCurrency
@@ -306,26 +306,26 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
         RETURN lCurr:Subtract(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR*(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
+    OPERATOR*(lhs IN CURRENCY, rhs IN CURRENCY) AS CURRENCY
         RETURN CURRENCY{ lhs:_value * rhs:_value}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR/(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
+    OPERATOR/(lhs IN CURRENCY, rhs IN CURRENCY) AS CURRENCY
         RETURN CURRENCY{ lhs:_value / rhs:_value}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR%(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
+    OPERATOR%(lhs IN CURRENCY, rhs IN CURRENCY) AS CURRENCY
         RETURN CURRENCY{ lhs:_value % rhs:_value}
 
 #endregion
 #region Unary Operators
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR ++ (c  AS CURRENCY) AS CURRENCY
+    OPERATOR ++ (c IN CURRENCY) AS CURRENCY
         RETURN CURRENCY{c:_value+1}
 
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    OPERATOR -- (c  AS CURRENCY) AS CURRENCY
+    OPERATOR -- (c IN CURRENCY) AS CURRENCY
         RETURN CURRENCY{c:_value-1}
 #endregion
 
@@ -341,11 +341,11 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
 #endregion
 #region Add and Subtract
     /// <exclude />
-    METHOD Add(rhs AS CURRENCY) AS CURRENCY
+    METHOD Add(rhs IN CURRENCY) AS CURRENCY
         RETURN CURRENCY{ SELF:_value + rhs:_value}
 
     /// <exclude />
-    METHOD Add(rhs AS USUAL) AS CURRENCY
+    METHOD Add(rhs IN USUAL) AS CURRENCY
         LOCAL result AS CURRENCY
         IF rhs:IsFloat
             result := SELF:Add ( (CURRENCY) rhs)
@@ -362,11 +362,11 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
 
 
     /// <exclude />
-    METHOD Subtract(rhs AS CURRENCY) AS CURRENCY
+    METHOD Subtract(rhs IN CURRENCY) AS CURRENCY
         RETURN CURRENCY{ SELF:_value - rhs:_value}
 
     /// <exclude />
-    METHOD Subtract(rhs AS USUAL) AS CURRENCY
+    METHOD Subtract(rhs IN USUAL) AS CURRENCY
         LOCAL result AS CURRENCY
         IF rhs:IsFloat
             result := SELF:Subtract( (CURRENCY) rhs)

@@ -1,9 +1,9 @@
 ﻿// BuildNumber.h
 #ifndef BUILDNUMBER_H
     #define BUILDNUMBER_H
-    #define PRODUCT_NAME     "XSharp Cahors"
+    #define PRODUCT_NAME     "XSharp  Γαία (Gaia)"
     #define PRODUCT			 "XSharp"
-    #define COPYRIGHT_STR    "Copyright (c) XSharp BV 2015-2022."
+    #define COPYRIGHT_STR    "Copyright (c) XSharp BV 2015-2023."
     #define COMPANY_NAME     "XSharp BV"
     #define REG_COMPANY_NAME  "XSharpBV"
 
@@ -11,16 +11,16 @@
     // This generally changes when we release a new full build
     // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE CONSTANTS.CS FILE and the Versions.Props file
 #ifdef RUNTIME
-    #define VERSION_NUMBER     "2.6.0.0"
+    #define VERSION_NUMBER     "3.0.0.0"
 #else
-    #define VERSION_NUMBER     "2.14.0.1"
+    #define VERSION_NUMBER     "3.0.0.0"
 #endif
 
     // This is the file version number, which is ignored by .NET but used by Windows installer to determine
     // whether one file is newer than another.
     // This typically would change if we're generating a patch, otherwise it should be the same as VERSION_NUMBER
-    #define FILEVERSION_NUMBER   "2.14.0.1"
-    #define INFORMATIONAL_NUMBER  "2.14 GA"
+    #define FILEVERSION_NUMBER   "3.0.0.0"
+    #define INFORMATIONAL_NUMBER  "3.0 GA"
 
     #ifdef __DEBUG__
         #define ASSEMBLY_CONFIGURATION "Debug"

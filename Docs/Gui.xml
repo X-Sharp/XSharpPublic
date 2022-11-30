@@ -2707,18 +2707,12 @@
     <ComboBox.EnableAutoComplete>
         <exclude />
     </ComboBox.EnableAutoComplete>
-    <ComboBox.Font>
-        <exclude />
-    </ComboBox.Font>
     <ComboBox.Modified>
         <summary>
             A logical value indicating whether an editable combo box is in the process of being modified. While you are typing in new text, or moving the highlighted selection, it is set to TRUE. When the focus shifts away from the combo box, ComboBox:Modified is reset to FALSE.
         </summary>
         <value>A logical value indicating whether an editable combo box is in the process of being modified. While you are typing in new text, or moving the highlighted selection, it is set to TRUE. When the focus shifts away from the combo box, ComboBox:Modified is reset to FALSE.</value>
     </ComboBox.Modified>
-    <ComboBox.ReadOnly>
-        <exclude />
-    </ComboBox.ReadOnly>
     <ComboBox.RemoveEditBalloonTip>
         <exclude />
     </ComboBox.RemoveEditBalloonTip>

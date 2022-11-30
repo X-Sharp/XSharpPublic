@@ -136,7 +136,7 @@ BEGIN NAMESPACE XSharp.RDD
             cbWhile  := info:ScopeInfo:WhileBlock
             cbFor    := info:ScopeInfo:ForBlock
             cbEval   := info:Block
-            IF info:ScopeInfo:RecId != NULL
+            IF info:ScopeInfo:RecId IS LONG .or. info:ScopeInfo:RecId IS INT64
                 nRecno := Convert.ToInt32(info:ScopeInfo:RecId)
                 isOk   := SELF:GoTo(nRecno)
                 lLimit := TRUE
@@ -895,7 +895,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF SELF:_Relations:Count > 0
                     SELF:ForceRel()
                 ENDIF
-                IF info:Scope:RecId != NULL
+                IF info:Scope:RecId IS LONG .or. info:Scope:RecId IS INT64
                     nRecno := Convert.ToInt32(info:Scope:RecId)
                     result := SELF:GoTo(nRecno)
                     lLimit := TRUE
@@ -1185,7 +1185,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
 		/// <inheritdoc />
-		VIRTUAL PROPERTY RecCount AS INT GET 0
+		VIRTUAL PROPERTY RecCount AS LONG GET 0
 
 		/// <inheritdoc />
 		VIRTUAL PROPERTY RecId AS OBJECT GET NULL

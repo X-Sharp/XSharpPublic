@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD GoBottom() AS LOGIC
             LOCAL locked AS LOGIC
-            LOCAL result AS LOGIC
+            LOCAL result := FALSE AS LOGIC
             IF SELF:EmptyResultSet
                 RETURN TRUE
             ENDIF

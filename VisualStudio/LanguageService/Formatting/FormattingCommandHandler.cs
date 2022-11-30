@@ -392,7 +392,10 @@ namespace XSharp.LanguageService
                     Array.Sort(lines);
                 }
 
-                WaitUntilBufferReady();
+                if (!WaitUntilBufferReady())
+                {
+                    return;
+                }
 
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {

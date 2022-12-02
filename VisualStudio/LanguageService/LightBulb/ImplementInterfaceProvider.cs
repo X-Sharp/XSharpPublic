@@ -143,7 +143,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             // Ok, we know the class, now does it have an Interface..and does it need it ?
             if (_classEntity != null)
             {
-                _members = BuildMissingMembers();
+               _members = BuildMissingMembers();
                 if (_members != null)
                     return true;
             }
@@ -275,12 +275,12 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
         private string GetModVis(IXMemberSymbol mbr)
         {
-            string desc = mbr.ModVis;
-            if ((mbr is XPEMethodSymbol) || (mbr is XPEPropertySymbol))
+            string desc = mbr.ModVis.ToUpper();
+            if ((mbr is IXMemberSymbol) )
             {
-                desc = desc.Replace(" ABSTRACT ", "");
-                desc = desc.Replace(" NEW ", "");
-                desc = desc.Replace(" OVERRIDE ", "");
+                desc = desc.Replace(" ABSTRACT ", " ");
+                desc = desc.Replace(" NEW ", " ");
+                desc = desc.Replace(" OVERRIDE ", " ");
             }
             return desc;
         }

@@ -67,12 +67,13 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
         private string GetModVis(IXMemberSymbol mbr)
         {
-            string desc = mbr.ModVis;
-            if ((mbr is XPEMethodSymbol) || (mbr is XPEPropertySymbol))
+            string desc = mbr.ModVis.ToUpper();
+            if (mbr is IXMemberSymbol)
             {
-                desc = desc.Replace(" ABSTRACT ", "");
-                desc = desc.Replace(" NEW ", "");
-                desc = desc.Replace(" OVERRIDE ", "");
+                desc = desc.Replace(" ABSTRACT ", " ");
+                desc = desc.Replace(" NEW ", " ");
+                desc = desc.Replace(" OVERRIDE ", " ");
+                desc = desc.Replace("  ", " ");
             }
             return desc;
         }

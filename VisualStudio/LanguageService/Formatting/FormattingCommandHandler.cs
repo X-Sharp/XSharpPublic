@@ -5,21 +5,21 @@
 //
 //------------------------------------------------------------------------------
 
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Editor;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.TextManager.Interop;
+using Microsoft.VisualStudio.Threading;
+using Microsoft.VisualStudio.Utilities;
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.Text;
 using XSharpModel;
-using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Text.Tagging;
-using Microsoft.VisualStudio.Text.Classification;
-using Community.VisualStudio.Toolkit;
 
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 namespace XSharp.LanguageService
@@ -70,7 +70,7 @@ namespace XSharp.LanguageService
         {
             if (_classifier == null)
             {
-                _classifier  = _buffer.GetClassifier();
+                _classifier = _buffer.GetClassifier();
                 if (_classifier != null)
                 {
                     _classifier.ClassificationChanged += Classifier_ClassificationChanged;
@@ -153,7 +153,7 @@ namespace XSharp.LanguageService
             {
                 switch (nCmdID)
                 {
-                    case (int) VSConstants.VSStd97CmdID.Save:
+                    case (int)VSConstants.VSStd97CmdID.Save:
                     case (int)VSConstants.VSStd97CmdID.SaveAs:
                     case (int)VSConstants.VSStd97CmdID.SaveProjectItem:
                         if (Settings.InsertFinalNewline || Settings.TrimTrailingWhiteSpace)
@@ -187,7 +187,7 @@ namespace XSharp.LanguageService
 
                     switch (nCmdID)
                     {
-                        case (int) VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
+                        case (int)VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
                             try
                             {
                                 lock (_linesToSync)
@@ -374,6 +374,52 @@ namespace XSharp.LanguageService
             }
 
         }
+        private void ProcessLines(int[] lines)
+        {
+            if (!WaitUntilBufferReady())
+            {
+                return;
+            }
+
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                var editSession = _buffer.CreateEdit();
+                var snapshot = editSession.Snapshot;
+                try
+                {
+                    var end = DateTime.Now + new TimeSpan(0, 0, 2);
+                    int counter = 0;
+                    foreach (int nLine in lines)
+                    {
+                        if (nLine < snapshot.LineCount && nLine >= 0)
+                        {
+                            ITextSnapshotLine line = snapshot.GetLineFromLineNumber(nLine);
+                            _lineFormatter.FormatLineCase(editSession, line);
+                        }
+                        // when it takes longer than 2 seconds, then abort
+                        if (++counter > 100 && DateTime.Now > end)
+                            break;
+                    }
+                }
+                catch (Exception)
+                {
+                    ;
+                }
+                finally
+                {
+                    if (editSession.HasEffectiveChanges)
+                    {
+                        editSession.Apply();
+                    }
+                    else
+                    {
+                        editSession.Cancel();
+                    }
+                }
+            });
+        }
+
         private void ApplyPendingChanges()
         {
             if (!ChangeCase || !CanEdit)
@@ -383,62 +429,27 @@ namespace XSharp.LanguageService
 
             if (_linesToSync.Count > 0)
             {
-                int[] lines;
+                int[] lines = null;
                 lock (_linesToSync)
                 {
-                    lines = _linesToSync.ToArray();
-                    _linesToSync.Clear();
-                    _linesToSync.Add(this.getCurrentLine());
-                    Array.Sort(lines);
+                    int current = this.getCurrentLine();
+                    if (_linesToSync.Contains(current))
+                    {
+                        _linesToSync.Remove(current);
+                    }
+                    if (_linesToSync.Count > 0)
+                    {
+                        lines = _linesToSync.ToArray();
+                        _linesToSync.Clear();
+                        _linesToSync.Add(current);
+                        Array.Sort(lines);
+                    }
                 }
-
-                if (!WaitUntilBufferReady())
+                if (lines != null)
                 {
-                    return;
+                    ProcessLines(lines);
                 }
-
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    var editSession = _buffer.CreateEdit();
-                    var snapshot = editSession.Snapshot;
-                    try
-                    {
-                        var end = DateTime.Now + new TimeSpan(0, 0, 2);
-                        int counter = 0;
-                        foreach (int nLine in lines)
-                        {
-                            if (nLine < snapshot.LineCount && nLine >= 0)
-                            {
-                                ITextSnapshotLine line = snapshot.GetLineFromLineNumber(nLine);
-                                _lineFormatter.FormatLineCase(editSession, line);
-                            }
-                            // when it takes longer than 2 seconds, then abort
-                            if (++counter > 100 && DateTime.Now > end)
-                                break;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        ;
-                    }
-                    finally
-                    {
-                        if (editSession.HasEffectiveChanges)
-                        {
-                            editSession.Apply();
-                        }
-                        else
-                        {
-                            editSession.Cancel();
-                        }
-                    }
-                });
-
-
             }
         }
-
-
     }
 }

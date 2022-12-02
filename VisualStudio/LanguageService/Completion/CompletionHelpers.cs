@@ -401,7 +401,7 @@ namespace XSharp.LanguageService
             }
             // Then, look for Locals
             // line numbers in the range are 1 based. currentLine = 0 based !
-            foreach (var localVar in location.Member.GetLocals(location).Where(l => nameStartsWith(l.Name, startWith) && l.Range.StartLine - 1 <= location.LineNumber))
+            foreach (var localVar in location.Member.GetLocals(location).Where(l => nameStartsWith(l.Name, startWith) && l.Range.StartLine <= location.LineNumber))
             {
                 ImageSource icon = _glyphService.GetGlyph(localVar.getGlyphGroup(), localVar.getGlyphItem());
                 if (!compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Prototype, icon, null, Kind.Local, "")))

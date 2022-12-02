@@ -228,15 +228,13 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                         IF _hasXmlDoc
                             entity:XmlComments   := cXmlDoc
                             if firstDocCommentToken != null
-                                entity:StartOfXmlComments := firstDocCommentToken:Line
-                                entity:Range := entity:Range:WithStart(firstDocCommentToken)
+                                entity:StartOfXmlComments := firstDocCommentToken:Line-1
                             endif
                             if entity:Kind == Kind.Delegate .and. entity is XSourceTypeSymbol var xtype
                                 var invoke := xtype:XMembers:First()
                                 invoke:XmlComments := cXmlDoc
                                 if firstDocCommentToken != null
-                                    invoke:StartOfXmlComments := firstDocCommentToken:Line
-                                    invoke:Range := invoke:Range:WithStart(firstDocCommentToken)
+                                    invoke:StartOfXmlComments := firstDocCommentToken:Line-1
                                 endif
                             endif
                         ENDIF

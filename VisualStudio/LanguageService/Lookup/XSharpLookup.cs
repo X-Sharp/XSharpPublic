@@ -76,7 +76,7 @@ namespace XSharp.LanguageService
                     if (member.Kind.HasBody())
                     {
                         // in case more than one local exists, get the last local with the same name
-                        var local = member.GetLocals(location).Where(x => StringEquals(x.Name, name) && x.Range.StartLine - 1 <= location.LineNumber).LastOrDefault();
+                        var local = member.GetLocals(location).Where(x => StringEquals(x.Name, name) && x.Range.StartLine <= location.LineNumber).LastOrDefault();
                         if (local != null)
                         {
                             result.Add(local);
@@ -945,12 +945,14 @@ namespace XSharp.LanguageService
             {
                 result.Clear();
                 var ctors = SearchConstructors(xtype, Modifiers.Public);
-                if (ctors.Count == 0 && xtype is XSourceTypeSymbol)
+                if (ctors.Count == 0 && xtype is XSourceTypeSymbol xsts )
                 {
                     var ctor = new XSourceMemberSymbol(XLiterals.ConstructorName, Kind.Constructor, Modifiers.Public,
                         location.Member.Range, location.Member.Interval, "", false);
                     ctor.Parent = xtype;
+                    ctor.File = xsts.File;
                     ctor.DeclaringType = xtype.FullName;
+                    ctor.Range = xsts.Range;
 
                     result.Add(ctor);
                 }

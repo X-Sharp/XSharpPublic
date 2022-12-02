@@ -64,8 +64,10 @@
     <Compile Include="Classifier\XSharpClassifier.cs" />
     <Compile Include="Classifier\XSharpClassifierProvider.cs" />
     <Compile Include="Completion\CompletionHelpers.cs" />
+    <Compile Include="Completion\CompletionProvider.cs" />
     <Compile Include="Completion\CompletionState.cs" />
     <Compile Include="Completion\CompletionCommandHandler.cs" />
+    <Compile Include="Completion\CompletionXmlDoc.cs" />
     <Compile Include="Completion\XSharpCompletionCommitManager.cs" />
     <Compile Include="Completion\XSharpCompletionCommitManagerProvider.cs" />
     <Compile Include="Completion\XSharpCompletionSourceProvider.cs" />

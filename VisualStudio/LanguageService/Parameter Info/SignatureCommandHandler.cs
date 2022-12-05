@@ -270,7 +270,9 @@ namespace XSharp.LanguageService
         {
 #if !ASYNCCOMPLETION
             if (_completionCommandHandler == null)
-                _completionCommandHandler = _textView.Properties.GetProperty<XSharpCompletionCommandHandler>(typeof(XSharpCompletionCommandHandler));
+            {
+                _textView.Properties.TryGetProperty(typeof(XSharpCompletionCommandHandler), out _completionCommandHandler);
+            }
             if (_completionCommandHandler != null)
             {
                 return _completionCommandHandler.HasActiveSession;

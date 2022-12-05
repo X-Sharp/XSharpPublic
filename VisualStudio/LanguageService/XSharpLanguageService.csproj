@@ -61,8 +61,10 @@
     <Compile Include="Classifier\LineKeywords.cs" />
     <Compile Include="Classifier\LineState.cs" />
     <Compile Include="Completion\CompletionHelpers.cs" />
+    <Compile Include="Completion\CompletionProvider.cs" />
     <Compile Include="Completion\CompletionState.cs" />
     <Compile Include="Completion\CompletionCommandHandler.cs" />
+    <Compile Include="Completion\CompletionXmlDoc.cs" />
     <Compile Include="Completion\XSharpCompletionCommitManager.cs" />
     <Compile Include="Completion\XSharpCompletionCommitManagerProvider.cs" />
     <Compile Include="Completion\XSharpCompletionSourceProvider.cs" />

@@ -480,7 +480,7 @@ namespace XSharp.LanguageService
                     else
                         baseType = "System.Object";
                 }
-                var parentType = sourceType.File.FindType(baseType, sourceType.Namespace);
+               var parentType = sourceType.File.FindType(baseType, sourceType.Namespace);
                if (parentType != null && parentType.FullName == sourceType.FullName)
                 {
                     ; // recursion !
@@ -508,7 +508,8 @@ namespace XSharp.LanguageService
             }
             if (type is XPETypeSymbol && type.Children.Count > 0)
             {
-                AddTypeNames(compList, location, type.FullName, false);
+                // Add nested types. They start with the typename +"."
+                AddTypeNames(compList, location, type.FullName+".", false);
             }
             if (type is XSourceTypeSymbol)
             {

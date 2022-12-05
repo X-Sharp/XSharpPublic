@@ -5,6 +5,5 @@
     <PostBuildEvent>erase  $(ProjectDir)\*.Xml</PostBuildEvent>
     <RunPostBuildEvent />
   </PropertyGroup>
-
 </Project>
 

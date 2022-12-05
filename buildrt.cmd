@@ -1,8 +1,10 @@
 @echo off
-if "%VCINSTALLDIR"== "" goto setVsPath
+if "%VSVERSION%" == "" SET VSVERSION=2022
+if "%VSEDITION%" == "" SET VSEDITION=Enterprise
+if "%VsBatch%" == "" set VsBatch=C:\Program Files\Microsoft Visual Studio\%VSVERSION%\%VSEDITION%\Common7\Tools\VsDevCmd.bat
+if not exist "%VsBatch%" goto VsError
+if "%VSSDKINSTALL%" == "" call "%VsBatch%"
 goto rest
-:setVsPath
-call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
 :rest
 if "%libpath%" == "" goto NotFound
 if /i "%1" == "Debug" goto Ok

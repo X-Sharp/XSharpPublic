@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using XSharpModel;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
+#pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 #if !ASYNCCOMPLETION
 namespace XSharp.LanguageService
 {
@@ -23,11 +24,11 @@ namespace XSharp.LanguageService
     internal class XSharpCompletionProvider : IVsTextViewCreationListener
     {
         [Import]
-        internal IVsEditorAdaptersFactoryService AdapterService = null;
+        internal IVsEditorAdaptersFactoryService AdapterService;
         [Import]
-        internal ICompletionBroker CompletionBroker { get; set; } = null;
+        internal ICompletionBroker CompletionBroker { get; set; }
         [Import]
-        internal IBufferTagAggregatorFactoryService BufferTagAggregatorFactoryService { get; set; } = null;
+        internal IBufferTagAggregatorFactoryService BufferTagAggregatorFactoryService { get; set; }
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             if (XEditorSettings.DisableCodeCompletion)

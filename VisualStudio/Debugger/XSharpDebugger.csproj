@@ -92,6 +92,7 @@
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
       <Version>15.0.480</Version>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Metadata">
       <Version>15.9.28307</Version>

@@ -161,7 +161,7 @@
     <Compile Include="PackageReferences\PackageReferencesNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Nodes\XSharpProjectNodeProperties.cs" />
-    <Content Include="C:\XSharp\DevPublic\Binaries\2019\Debug\\x86\SQLite.Interop.dll">
+    <Content Include="$(Outdir)\x86\SQLite.Interop.dll">
       <Link>x86\SQLite.Interop.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

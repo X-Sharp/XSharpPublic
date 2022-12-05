@@ -410,7 +410,7 @@ namespace XSharp.LanguageService
             if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is bool lValue)
             {
                 // when modal window closes
-                if (!lValue && optionWasChanged)
+                if (!lValue )
                 {
                     GetIntellisenseSettings();
                     RefreshDocumentSettingsAsync().FireAndForget();

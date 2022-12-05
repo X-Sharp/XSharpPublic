@@ -21,7 +21,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 #if !ASYNCCOMPLETION
 namespace XSharp.LanguageService
 {
-    internal partial class XSharpCompletionCommandHandler : IOleCommandTarget
+    internal class XSharpCompletionCommandHandler : IOleCommandTarget
     {
         readonly ITextView _textView;
         readonly ICompletionBroker _completionBroker;
@@ -151,7 +151,7 @@ namespace XSharp.LanguageService
                 result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             }
             // 3. Post process
-            if (ErrorHandler.Succeeded(result) && !XEditorSettings.DisableCodeCompletion)
+            if (! handled && ErrorHandler.Succeeded(result) && !XEditorSettings.DisableCodeCompletion)
             {
                 if (pguidCmdGroup == VSConstants.VSStd2K)
                 {
@@ -199,6 +199,28 @@ namespace XSharp.LanguageService
             return result;
         }
 
+        private void InjectXMLDoc()
+        {
+            try
+            {
+                XSharpXMLCompletion.InjectXMLDoc(_textView);
+            }
+            catch (Exception e)
+            {
+                WriteOutputMessage("InjectXMLDoc: error " + e.Message);
+            }
+        }
+        private void InsertXMLDoc()
+        {
+            try
+            {
+                XSharpXMLCompletion.InsertXMLDoc(_textView);
+            }
+            catch (Exception e)
+            {
+                WriteOutputMessage("InsertXMLDoc: error " + e.Message);
+            }
+        }
         private void completeCurrentToken(uint nCmdID, char ch)
         {
             if (!CompletionAllowed(ch))

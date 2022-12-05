@@ -13,7 +13,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Threading;
-using Newtonsoft.Json.Bson;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -66,7 +65,6 @@ namespace XSharp.LanguageService
         private XSharpLineKeywords _lineKeywords;
         private bool IsLexing = false;
         private bool IsStarted = false;
-        private ITextVersion _version;
 
         #endregion
 
@@ -111,7 +109,6 @@ namespace XSharp.LanguageService
             _xtraKeywords = new List<string>();
             // Initialize our background workers
             _buffer.Changed += Buffer_Changed;
-            _version = _buffer.CurrentSnapshot.Version;
 
             if (xsharpKeywordType == null)
             {
@@ -141,16 +138,7 @@ namespace XSharp.LanguageService
         }
 
         #region Lexer Methods
-        private void Lex()
-        {
-            _version = _buffer.CurrentSnapshot.Version;
-#if DEV17
-            _ = ThreadHelper.JoinableTaskFactory.StartOnIdle(LexAsync, VsTaskRunContext.UIThreadIdlePriority);
-#else
-                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdleShim(StartLex, VsTaskRunContext.UIThreadIdlePriority);
-#endif
 
-        }
         private void Buffer_Changed(object sender, TextContentChangedEventArgs e)
         {
             if (!IsLexing)
@@ -158,7 +146,11 @@ namespace XSharp.LanguageService
                 if (!IsStarted)
                 {
                     IsStarted = true;
-                    Lex();
+#if DEV17
+                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdle(LexAsync,VsTaskRunContext.UIThreadIdlePriority);
+#else
+                    _ = ThreadHelper.JoinableTaskFactory.StartOnIdleShim(StartLex, VsTaskRunContext.UIThreadIdlePriority);
+#endif
                 }
             }
             else

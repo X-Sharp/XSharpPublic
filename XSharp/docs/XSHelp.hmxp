@@ -642,7 +642,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">3</config-value>
+          <config-value name="lastexport">0</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">6</config-value>
@@ -705,7 +705,7 @@
       <config-value name="template">$(HMSYS)Templates\Word\Word-Template-Simple-A4.docx</config-value>
     </config-group>
     <variables>
-      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.14.0.0)</variable>
+      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.14.0.4)</variable>
       <variable id="APP" type="text" translate="true">XSharp</variable>
     </variables>
     <helpcontext-numbers/>

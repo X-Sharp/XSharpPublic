@@ -381,6 +381,7 @@ namespace XSharp.MacroCompiler
     }
     internal partial class FieldSymbol : MemberSymbol
     {
+        internal bool IsStatic { get { return Field.IsStatic; } }
         internal FieldInfo Field { get { return (FieldInfo)base.Member; } }
         internal FieldSymbol(TypeSymbol contType, FieldInfo field) : base(contType, field, Binder.FindType(field.FieldType), field.MemberType, AccessMode.All) { }
     }

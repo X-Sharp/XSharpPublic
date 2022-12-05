@@ -108,6 +108,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(FALSE, "ABCDE"), "abcd", typeof(STRING))
         TestMacro(mc, e"{|a,b| asdgfafd(123) /*aaa*/ }", Args(), NULL, NULL,ErrorCode.NotAMethod)
 
+        // bug 1186
+        TestMacro(mc, e"{|| ctest.fld}", Args(), "Variable does not exist", typeof(XSharp.Error))
+        TestMacro(mc, "MyNS.StaticClass.Test", Args(), NULL, NULL, ErrorCode.NotAnExpression)
+
         mc:Options:UndeclaredVariableResolution := VariableResolution.Error
         TestMacro(mc, e"{|a,b| testtest__() }", Args(1,2,3), NULL, NULL, ErrorCode.IdentifierNotFound)
         TestMacro(mc, e"{|a,b,c| a[b,c] }", Args({{42,43,44},{45,46,47}},1,1) ,42, typeof(LONG))

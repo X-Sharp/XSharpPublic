@@ -247,6 +247,8 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 Expr.Symbol = t;
                 Symbol = b.Lookup(t, Member.LookupName) ?? ThrowError(Binder.LookupError(Expr, this));
+                if (Symbol is MemberSymbol && !Symbol.IsStaticMember())
+                    Symbol = null;
                 Datatype = Symbol.Type();
             }
             else if (s is NamespaceSymbol ns)

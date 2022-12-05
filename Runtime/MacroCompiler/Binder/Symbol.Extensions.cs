@@ -118,6 +118,11 @@ namespace XSharp.MacroCompiler
 
         internal static TypeSymbol Type(this Symbol s) => (s as TypedSymbol)?.Type;
 
+        internal static bool IsStaticMember(this Symbol s) => (s is FieldSymbol fs)? fs.IsStatic :
+            (s is MethodSymbol ms) ? ms.IsStatic :
+            (s is PropertySymbol ps) ? ps.IsStatic :
+            false;
+
         internal static string MemberName(this Symbol s)
         {
             return

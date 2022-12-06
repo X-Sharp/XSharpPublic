@@ -61,6 +61,12 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
+      <Link>commonAssemblyInfo.prg</Link>
+    </Compile>
+    <Compile Include="..\..\Common\constants.prg">
+      <Link>constants.prg</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>

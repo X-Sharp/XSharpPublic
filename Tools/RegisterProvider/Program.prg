@@ -1,9 +1,7 @@
-#include "BuildNumber.h"
-DEFINE PROVIDERVERSION := "XSharp.CodeDom.XSharpCodeDomProvider,XSharpCodeDomProvider, Version="+VERSION_NUMBER+", Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL" AS STRING
-    USING System.Collections.Generic
-    USING System.Xml
-    USING System.Linq
-    USING STATIC System.Console
+USING System.Collections.Generic
+USING System.Xml
+USING System.Linq
+USING STATIC System.Console
 FUNCTION Start(args as STRING[])  AS VOID
     LOCAL cCopy AS STRING
     LOCAL aFiles AS List<STRING>
@@ -21,6 +19,7 @@ FUNCTION Start(args as STRING[])  AS VOID
             cCopy :=System.IO.Path.ChangeExtension(cFile, ".X#Bak")
             VAR bakFiles := System.IO.Directory.GetFiles(System.IO.Path.GetDirectoryName(cCopy),"*.X#Bak*")
             FOREACH var sFile in bakFiles
+                WriteToLog("Deleting old backup "+sFile)
                 System.IO.File.Delete(sFile)
             NEXT
             WriteToLog("Writing backup to "+cCopy)
@@ -268,3 +267,4 @@ FUNCTION WriteToLog(sLine AS STRING) AS LOGIC
 
 
 
+DEFINE PROVIDERVERSION := "XSharp.CodeDom.XSharpCodeDomProvider,XSharpCodeDomProvider, Version="+XSharp.Constants.Version+", Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL" AS STRING

@@ -124,26 +124,11 @@ namespace XSharp.LanguageService
             // to detect that we take the start of the line and check if it is in
             if (line.Length == 0)
                 return;
-            int lineStart = line.Start.Position;
-            var tokens = _document.GetTokensInLine(line);
-            if (tokens.Count > 0)
-            {
-                if (tokens[0].StartIndex < lineStart)
-                {
-                    // The Tokens are coming from a single-line parsing
-                    // StartIndex is relative to the beginning of line
-                }
-                else
-                {
-                    // The Tokens comes from a full-source parsing
-                    // StartIndex is relative to the beginning of file
-                    lineStart = 0;
-                }
-            }
+            var tokens = _document.GetTokensInLine(line, false);
             IToken lastToken = null;
             foreach (var token in tokens)
             {
-                FormatToken(editSession, lineStart, token, lastToken);
+                FormatToken(editSession, token, lastToken);
                 lastToken = token;
             }
         }
@@ -206,7 +191,7 @@ namespace XSharp.LanguageService
         }
 
         private bool SyncKeywordCase => Settings.KeywordCase != KeywordCase.None;
-        private void FormatToken(ITextEdit editSession, int offSet, IToken token, IToken lastToken)
+        private void FormatToken(ITextEdit editSession,  IToken token, IToken lastToken)
         {
             if (token.Channel == XSharpLexer.Hidden ||
                 token.Channel == XSharpLexer.PREPROCESSORCHANNEL ||
@@ -267,9 +252,13 @@ namespace XSharp.LanguageService
                     {
                         syncKeyword = SyncKeywordCase;
                     }
+                    else if (XSharpLexer.IsPPKeyword(token.Type))
+                    {
+                        syncKeyword = false;
+                    }
                     else if (XSharpLexer.IsKeyword(token.Type))
                     {
-                        syncKeyword = token.Text[0] != '#';
+                        syncKeyword = SyncKeywordCase;
                     }
                     break;
             }
@@ -279,8 +268,7 @@ namespace XSharp.LanguageService
                 var transform = XSettings.FormatKeyword(keyword, Settings.KeywordCase);
                 if (string.Compare(transform, keyword) != 0)
                 {
-                    int startpos = offSet + token.StartIndex;
-                    editSession.Replace(startpos, transform.Length, transform);
+                    editSession.Replace(token.StartIndex, transform.Length, transform);
                 }
             }
             if (syncID)
@@ -293,8 +281,7 @@ namespace XSharp.LanguageService
                 }
                 if (string.Compare(transform, id) != 0)
                 {
-                    int startpos = offSet + token.StartIndex;
-                    editSession.Replace(startpos, transform.Length, transform);
+                    editSession.Replace(token.StartIndex, transform.Length, transform);
                 }
             }
         }

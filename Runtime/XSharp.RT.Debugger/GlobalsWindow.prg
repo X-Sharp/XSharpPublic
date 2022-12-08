@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -23,55 +23,41 @@ BEGIN NAMESPACE XSharp.Debugger
 	/// <seealso cref='T:XSharp.Internal.ClassLibraryAttribute' />
 
 	CLASS GlobalsWindow INHERIT VariablesWindow
- 
+
     CONSTRUCTOR()
         SELF:Text := "XSharp Runtime State - Globals"
          RETURN
     OVERRIDE PROTECTED METHOD LoadValues() AS VOID
-        FOREACH asm AS Assembly IN  AppDomain.CurrentDomain.GetAssemblies()
-            VAR att := TYPEOF( XSharp.Internal.ClassLibraryAttribute )
-            IF asm:IsDefined(  att, FALSE )
-                LOCAL cFunctionClass AS STRING
-                FOREACH VAR attribute IN asm:GetCustomAttributes(att,FALSE)
-                    VAR cla := (XSharp.Internal.ClassLibraryAttribute) attribute
-                    IF !String.IsNullOrEmpty(cla:GlobalClassName)
-                        cFunctionClass := cla:GlobalClassName
-                        LOCAL oType := asm:GetType(cFunctionClass,FALSE, TRUE) AS System.Type
-                        IF oType != NULL
-                            LOCAL aFields := oType:GetFields() AS FieldInfo[]
-                            LOCAL oGroup  := NULL AS ListViewGroup
-                            FOREACH oFld AS FieldInfo IN aFields
-                                IF oFld:IsStatic .AND. ;
-                                    ! oFld:Attributes:HasFlag(FieldAttributes.Literal) .AND. ; 
-                                    ! oFld:Attributes:HasFlag(FieldAttributes.InitOnly) .AND. ;
-                                    oFld:IsPublic
-                                    LOCAL sValue AS STRING
-                                    TRY
-                                        VAR oValue := oFld:GetValue(NULL)
-                                        IF oValue != NULL
-                                            sValue := oValue:ToString()
-                                        ELSE
-                                            sValue := "<empty>"
-                                        ENDIF
-                                        VAR oItem := ListViewItem{}
-                                        oItem:Text := oFld:Name
-                                        oItem:SubItems:Add(sValue)
-                                        IF oGroup == NULL
-                                            VAR name := asm:GetName()
-                                            oGroup := ListViewGroup{name:Name}
-                                            SELF:variablesListView:Groups:Add(oGroup)
-                                        ENDIF
-                                        SELF:variablesListView:Items:Add(oItem)
-                                        oItem:Group := oGroup 
-                                    CATCH
-                                        NOP
-                                    END TRY
-                                ENDIF
-                            NEXT
-                        ENDIF
-                    ENDIF
-                NEXT
-            ENDIF
+        local globals := XSharp.Globals.GetAllGlobals() AS IList<FieldInfo>
+        local aGroups as Dictionary<Assembly, ListViewGroup>
+        aGroups := Dictionary<Assembly, ListViewGroup>{}
+        foreach oFld as FieldInfo in globals
+            LOCAL asm := oFld:DeclaringType:Assembly as Assembly
+            LOCAL oGroup  := NULL AS ListViewGroup
+            if ! aGroups:ContainsKey(asm)
+                LOCAL name := asm:GetName() as AssemblyName
+                oGroup := ListViewGroup{name:Name}
+                SELF:variablesListView:Groups:Add(oGroup)
+                aGroups:Add(asm, oGroup)
+            ELSE
+                oGroup := aGroups[asm]
+            endif
+            LOCAL sValue AS STRING
+            TRY
+                VAR oValue := oFld:GetValue(NULL)
+                IF oValue != NULL
+                    sValue := oValue:ToString()
+                ELSE
+                    sValue := "<empty>"
+                ENDIF
+                VAR oItem := ListViewItem{}
+                oItem:Text := oFld:Name
+                oItem:SubItems:Add(sValue)
+                SELF:variablesListView:Items:Add(oItem)
+                oItem:Group := oGroup
+            CATCH
+                NOP
+            END TRY
         NEXT
        IF SELF:variablesListView:Items:Count == 0
             VAR oItem := ListViewItem{}
@@ -79,12 +65,12 @@ BEGIN NAMESPACE XSharp.Debugger
             SELF:variablesListView:Items:Add(oItem)
             SELF:variablesListView:ShowGroups := FALSE
         ENDIF
-        
+
         SELF:variablesListView:Sorting := SortOrder.Ascending
         SELF:variablesListView:Sort()
         SELF:variablesListView:AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent)
         SELF:variablesListView:AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize)
-        
+
         RETURN
 
 	END CLASS

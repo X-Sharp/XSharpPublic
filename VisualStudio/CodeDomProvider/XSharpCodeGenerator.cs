@@ -294,7 +294,10 @@ namespace XSharp.CodeDom
         protected override string CreateEscapedIdentifier(string value)
         {
             // Is is a reserved Keyword ?
-            value = XLiterals.EscapeName(value);
+            if (XSharpKeywords.Contains(value))
+            {
+                value = "@@" + value;
+            }
             return value;
         }
        

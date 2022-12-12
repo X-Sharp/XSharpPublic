@@ -1,26 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.CodeDom;
+using System.Collections;
 using System.CodeDom.Compiler;
 using System.IO;
+using System.Drawing;
 using System.Diagnostics;
 using static XSharp.Parser.VsParser;
 using LanguageService.CodeAnalysis.Text;
 using LanguageService.SyntaxTree;
-using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
+
 
 namespace XSharp.CodeDom
 {
 
     internal static class Helpers
     {
-        public static CodeDomDesignerData GetDesignerData(this CodeObject e)
+        public static Point GetDesignerData(this CodeObject e)
         {
-            if (e.UserData.Contains(typeof(CodeDomDesignerData)))
+            foreach (DictionaryEntry obj in e.UserData)
             {
-                return (CodeDomDesignerData)e.UserData[typeof(CodeDomDesignerData)];
+                if (obj.Key is System.Type type && type.Name == "CodeDomDesignerData")
+                {
+                    dynamic designerData = obj.Value;
+                    var caretPos = designerData.CaretPosition;
+                    return caretPos;
+                }
             }
-            return null;
+            return new Point(-1, -1);
         }
         /// <summary>
         /// Sort members on the line/column in which they are declared
@@ -52,21 +59,20 @@ namespace XSharp.CodeDom
                    processed.Add(source);
                 }
  
-                int line, col;
-                var data = member.GetDesignerData();
-                if (data != null)
+                var caretPos = member.GetDesignerData();
+                int line = caretPos.Y;
+                int col = caretPos.X;
+                if (line == -1 )
                 {
-                    line = data.CaretPosition.Y;
-                    col = data.CaretPosition.X;
-                }
-                else if (member is CodeMemberField field)
-                {
-                    line = col = -1;
-                    newfields.Add(field);
-                }
-                else
-                {
-                    line = col = 999_999_999;
+                    // New Member
+                    if (member is CodeMemberField field)
+                    {
+                        newfields.Add(field);
+                    }
+                    else
+                    {
+                        line = col = 999_999_999;
+                    }
                 }
                 if (line != -1)
                 {

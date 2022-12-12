@@ -7,7 +7,6 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using LanguageService.SyntaxTree.Misc;
 using LanguageService.SyntaxTree.Tree;
-using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -1290,6 +1289,9 @@ namespace XSharp.CodeDom
             return pList;
         }
 
+        static Type designType = null;
+        const string designerDLL = "Microsoft.VisualStudio.Shell.Design";
+        const string designerdataClassname = "Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom.CodeDomDesignerData";
 
         /// <summary>
         /// Save the location of the member in the UserData of the CodeObject, so the editor will open the right line when selecting an event.
@@ -1299,13 +1301,29 @@ namespace XSharp.CodeDom
         /// <param name="col"></param>
         protected void FillCodeDomDesignerData(CodeObject newElement, int line, int col)
         {
-            CodeDomDesignerData data = new CodeDomDesignerData();
+            if (designType == null)
+            {
+                var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (var asm in loadedAssemblies)
+                {
+                    if (asm.GetName().Name == designerDLL)
+                    {
+                        designType = asm.GetType(designerdataClassname); 
+                        break;
+                    }
+                }
+                if (designType == null)
+                {
+                    return;
+                }
+            }
+            dynamic data = Activator.CreateInstance(designType);
             //
             data.CaretPosition = new System.Drawing.Point(col - 1, line);
             data.FileName = this.CurrentFile;
             // point is where the designer will try to focus if the
             // user wants to add event handler stuff.
-            newElement.UserData[typeof(CodeDomDesignerData)] = data;
+            newElement.UserData[designType] = data;
             newElement.UserData[typeof(System.Drawing.Point)] = data.CaretPosition;
         }
 

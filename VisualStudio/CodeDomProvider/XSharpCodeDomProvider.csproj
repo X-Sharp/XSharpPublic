@@ -66,6 +66,7 @@
     </Compile>
     <Compile Include="XSharpCodeGenerator.cs" />
     <Compile Include="XSharpCodeParser.cs" />
+    <Compile Include="XSharpKeywords.cs" />
     <Compile Include="XSharpTreeDiscoverBase.cs" />
     <Compile Include="XSharpTreeDiscoverClass.cs" />
     <Compile Include="XSharpTreeDiscoverFields.cs" />

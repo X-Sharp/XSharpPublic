@@ -613,7 +613,9 @@ PROTECTED METHOD _lockDBFFile() AS LOGIC
 		ENDIF
 		SELF:_fLocked := SELF:_lockFile()
 #ifdef INPUTBUFFER
-		_inBuffer:Invalidate()
+		if _inBuffer != NULL_OBJECT
+			_inBuffer:Invalidate()
+		endif
 #endif
         // Invalidate Buffer
 		SELF:GoTo( SELF:RecNo )
@@ -889,7 +891,10 @@ OVERRIDE METHOD Close() 			AS LOGIC
 
         END TRY
         #ifdef INPUTBUFFER
-            SELF:_inBuffer:Close()
+            if (_inBuffer != null)
+                _inBuffer:Close()
+				_inBuffer := NULL_OBJECT
+            endif
         #endif
 		SELF:_hFile := F_ERROR
         SELF:_oStream := NULL

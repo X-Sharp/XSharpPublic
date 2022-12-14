@@ -8584,7 +8584,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (key == XSharpParser.SET)
                 {
                     // something like SELF:Value should not be lowercased
-                    if (!(context.Parent is XP.AccessMemberContext))
+                    bool mustChange = true;
+                    if (context.Parent is XP.SimpleNameContext snc && snc.Parent is XP.AccessMemberContext)
+                        mustChange = false;
+                    if (mustChange)
                     {
                         if (String.Compare(context.Start.Text, "value", true) == 0)
                         {

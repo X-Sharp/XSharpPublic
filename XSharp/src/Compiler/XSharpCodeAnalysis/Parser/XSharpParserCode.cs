@@ -55,13 +55,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
     public partial class XSharpParser
     {
-
         public CSharpParseOptions Options { get; set; }
         public bool AllowNamedArgs => Options.AllowNamedArguments;
         public bool IsXPP => Options.Dialect == XSharpDialect.XPP;
         public bool IsFox => Options.Dialect == XSharpDialect.FoxPro;
         public bool IsVO => Options.Dialect == XSharpDialect.VO || Options.Dialect == XSharpDialect.Vulcan;
         public bool HasMemVars => Options.SupportsMemvars;
+#if !VSPARSER
         void unexpectedToken(string token)
         {
             if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
@@ -69,7 +69,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
             NotifyErrorListeners("Unexpected '" + token + "' token");
         }
-
+#endif
         bool ExpectToken(int type)
         {
             int icurrent = 1;
@@ -220,7 +220,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public interface ILoopStmtContext : IBlockStmtContext
         {
         }
-        public interface IBlockStmtContext
+        public interface IBlockStmtContext : ISequencePointContext
         {
             StatementBlockContext Statements { get; }
         }
@@ -264,7 +264,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             DatatypeContext ReturnType { get; }
             ParameterListContext Params { get; }
         }
-        public interface IEntityContext : IRuleNode, IXParseTree
+        public interface IEntityContext : IRuleNode, IXParseTree, ISequencePointContext
         {
             string Name { get; }
             string ShortName { get; }
@@ -274,7 +274,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             int Count { get; }
         }
+        /// <summary>
+        /// This indicates that the entry can be a sequencepoint
+        /// </summary>
+        public interface ISequencePointContext
+        {
 
+        }
         public interface IXPPMemberContext : IMemberWithBodyContext, IBodyWithLocalFunctions
         {
 #if !VSPARSER
@@ -286,8 +292,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             void SetStatements(StatementBlockContext stmts);
             ExpressionContext ExprBody { get; }
         }
-#endregion
-#region Flags
+        #endregion
+#if !VSPARSER
+        #region Flags
         [Flags]
         enum TypeFlags : int
         {
@@ -328,49 +335,48 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         #endregion
 
-#if !VSPARSER
         public class TypeData
         {
-            static TypeFlags setFlag(TypeFlags oldFlag, TypeFlags newFlag, bool set)
+            void setFlags(TypeFlags newFlag, bool set)
             {
                 if (set)
-                    oldFlag |= newFlag;
+                    flags |= newFlag;
                 else
-                    oldFlag &= ~newFlag;
-                return oldFlag;
+                    flags &= ~newFlag;
+                return;
             }
             TypeFlags flags;
             public bool HasInstanceCtor
             {
                 get { return flags.HasFlag(TypeFlags.HasInstanceCtor); }
-                set { flags = setFlag(flags, TypeFlags.HasInstanceCtor, value); }
+                set { setFlags(TypeFlags.HasInstanceCtor, value); }
             }
             public bool Partial
             {
                 get { return flags.HasFlag(TypeFlags.Partial); }
-                set { flags = setFlag(flags, TypeFlags.Partial, value); }
+                set { setFlags(TypeFlags.Partial, value); }
             }
             public bool PartialProps
             {
                 get { return flags.HasFlag(TypeFlags.PartialProps); }
-                set { flags = setFlag(flags, TypeFlags.PartialProps, value); }
+                set { setFlags(TypeFlags.PartialProps, value); }
             }
             public bool HasStatic
             {
                 get { return flags.HasFlag(TypeFlags.HasStatic); }
-                set { flags = setFlag(flags, TypeFlags.HasStatic, value); }
+                set { setFlags(TypeFlags.HasStatic, value); }
             }
         }
 
         public class MemberData
         {
-            static MemberFlags setFlag(MemberFlags oldFlag, MemberFlags newFlag, bool set)
+            void setFlags(MemberFlags newFlag, bool set)
             {
                 if (set)
-                    oldFlag |= newFlag;
+                    flags |= newFlag;
                 else
-                    oldFlag &= ~newFlag;
-                return oldFlag;
+                    flags &= ~newFlag;
+                return;
             }
 
             MemberFlags flags;
@@ -378,120 +384,120 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public bool HasClipperCallingConvention
             {
                 get { return flags.HasFlag(MemberFlags.ClipperCallingConvention); }
-                set { flags = setFlag(flags, MemberFlags.ClipperCallingConvention, value); }
+                set { setFlags(MemberFlags.ClipperCallingConvention, value); }
             }
             public bool HasParametersStmt
             {
                 get { return flags.HasFlag(MemberFlags.HasParametersStmt); }
-                set { flags = setFlag(flags, MemberFlags.HasParametersStmt, value); }
+                set { setFlags(MemberFlags.HasParametersStmt, value); }
             }
             public bool HasLParametersStmt
             {
                 get { return flags.HasFlag(MemberFlags.HasLParametersStmt); }
-                set { flags = setFlag(flags, MemberFlags.HasLParametersStmt, value); }
+                set { setFlags(MemberFlags.HasLParametersStmt, value); }
             }
             public bool HasFormalParameters
             {
                 get { return flags.HasFlag(MemberFlags.HasFormalParameters); }
-                set { flags = setFlag(flags, MemberFlags.HasFormalParameters, value); }
+                set { setFlags(MemberFlags.HasFormalParameters, value); }
             }
             public bool HasMissingReturnType
             {
                 get { return flags.HasFlag(MemberFlags.MissingReturnType); }
-                set { flags = setFlag(flags, MemberFlags.MissingReturnType, value); }
+                set { setFlags(MemberFlags.MissingReturnType, value); }
             }
             public bool HasTypedParameter
             {
                 get { return flags.HasFlag(MemberFlags.HasTypedParameter); }
-                set { flags = setFlag(flags, MemberFlags.HasTypedParameter, value); }
+                set { setFlags(MemberFlags.HasTypedParameter, value); }
             }
             public bool UsesPSZ
             {
                 get { return flags.HasFlag(MemberFlags.UsesPSZ); }
-                set { flags = setFlag(flags, MemberFlags.UsesPSZ, value); }
+                set { setFlags(MemberFlags.UsesPSZ, value); }
             }
             public bool MustBeUnsafe
             {
                 get { return flags.HasFlag(MemberFlags.MustBeUnsafe); }
-                set { flags = setFlag(flags, MemberFlags.MustBeUnsafe, value); }
+                set { setFlags(MemberFlags.MustBeUnsafe, value); }
             }
 
             public bool MustBeVoid            // Assign, SET, Event Accessor
             {
                 get { return flags.HasFlag(MemberFlags.MustBeVoid); }
-                set { flags = setFlag(flags, MemberFlags.MustBeVoid, value); }
+                set { setFlags(MemberFlags.MustBeVoid, value); }
             }
             public bool IsInitAxit            // init or axit with /vo1
             {
                 get { return flags.HasFlag(MemberFlags.IsInitAxit); }
-                set { flags = setFlag(flags, MemberFlags.IsInitAxit, value); }
+                set { setFlags(MemberFlags.IsInitAxit, value); }
             }
 
             public bool HasDimVar
             {
                 get { return flags.HasFlag(MemberFlags.HasDimVar); }
-                set { flags = setFlag(flags, MemberFlags.HasDimVar, value); }
+                set { setFlags(MemberFlags.HasDimVar, value); }
             }
             public bool HasSync
             {
                 get { return flags.HasFlag(MemberFlags.HasSync); }
-                set { flags = setFlag(flags, MemberFlags.HasSync, value); }
+                set { setFlags(MemberFlags.HasSync, value); }
             }
             public bool HasAddressOf
             {
                 get { return flags.HasFlag(MemberFlags.HasAddressOf); }
-                set { flags = setFlag(flags, MemberFlags.HasAddressOf, value); }
+                set { setFlags(MemberFlags.HasAddressOf, value); }
             }
             public bool HasMemVars
             {
                 get { return flags.HasFlag(MemberFlags.HasMemVars); }
-                set { flags = setFlag(flags, MemberFlags.HasMemVars, value); }
+                set { setFlags(MemberFlags.HasMemVars, value); }
             }
             public bool HasUndeclared
             {
                 get { return flags.HasFlag(MemberFlags.HasUndeclared); }
-                set { flags = setFlag(flags, MemberFlags.HasUndeclared, value); }
+                set { setFlags(MemberFlags.HasUndeclared, value); }
             }
             public bool HasMemVarLevel
             {
                 get { return flags.HasFlag(MemberFlags.HasMemVarLevel); }
-                set { flags = setFlag(flags, MemberFlags.HasMemVarLevel, value); }
+                set { setFlags(MemberFlags.HasMemVarLevel, value); }
             }
             public bool UsesPCount
             {
                 get { return flags.HasFlag(MemberFlags.UsesPCount); }
-                set { flags = setFlag(flags, MemberFlags.UsesPCount, value); }
+                set { setFlags(MemberFlags.UsesPCount, value); }
             }
             public bool HasYield
             {
                 get { return flags.HasFlag(MemberFlags.HasYield); }
-                set { flags = setFlag(flags, MemberFlags.HasYield, value); }
+                set { setFlags(MemberFlags.HasYield, value); }
             }
             public bool IsInitProcedure
             {
                 get { return flags.HasFlag(MemberFlags.IsInitProcedure); }
-                set { flags = setFlag(flags, MemberFlags.IsInitProcedure, value); }
+                set { setFlags(MemberFlags.IsInitProcedure, value); }
             }
             public bool IsEntryPoint
             {
                 get { return flags.HasFlag(MemberFlags.IsEntryPoint); }
-                set { flags = setFlag(flags, MemberFlags.IsEntryPoint, value); }
+                set { setFlags(MemberFlags.IsEntryPoint, value); }
             }
 
             public bool ParameterAssign
             {
                 get { return flags.HasFlag(MemberFlags.ParameterAssign); }
-                set { flags = setFlag(flags, MemberFlags.ParameterAssign, value); }
+                set { setFlags(MemberFlags.ParameterAssign, value); }
             }
             public bool HasExplicitOverride
             {
                 get { return flags.HasFlag(MemberFlags.HasExplicitOverride); }
-                set { flags = setFlag(flags, MemberFlags.HasExplicitOverride, value); }
+                set { setFlags(MemberFlags.HasExplicitOverride, value); }
             }
             public bool HasExplicitVirtual
             {
                 get { return flags.HasFlag(MemberFlags.HasExplicitVirtual); }
-                set { flags = setFlag(flags, MemberFlags.HasExplicitVirtual, value); }
+                set { setFlags(MemberFlags.HasExplicitVirtual, value); }
             }
             internal Dictionary<string, MemVarFieldInfo> Fields = null;
             internal MemVarFieldInfo AddField(string Name, string Alias, XSharpParserRuleContext context)
@@ -539,6 +545,40 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public bool HasRefArguments;
         }
 
+        public partial class GlobalAttributesContext : ISequencePointContext
+        {
+
+        }
+        public partial class ClassmemberContext : ISequencePointContext
+        {
+
+        }
+        public partial class StatementContext : ISequencePointContext
+        {
+
+        }
+        public partial class BinaryExpressionContext : ISequencePointContext
+        {
+
+        }
+        public partial class LinqQueryContext : ISequencePointContext
+        {
+
+        }
+
+        public partial class CodeBlockContext : ISequencePointContext
+        {
+
+        }
+        public partial class IifContext : ISequencePointContext
+        {
+
+        }
+        public partial class AliasExpressionContext : ISequencePointContext
+        {
+
+        }
+
         public partial class SourceContext : ISourceContext
         {
             public IList<PragmaOption> PragmaOptions { get; set; }
@@ -568,7 +608,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public StatementBlockContext Statements { get { return StmtBlk; } }
         }
-
         public partial class SeqStmtContext : IFinallyBlockStmtContext
         {
             public StatementBlockContext Statements { get { return StmtBlk; } }
@@ -901,6 +940,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #if !VSPARSER
             readonly TypeData data = new();
             public TypeData TypeData => data;
+
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
@@ -1156,7 +1196,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class FoxmemvardeclContext : IMultiElementContext
         {
-            public int Count => this._FoxVars.Count + this._Vars.Count+ this._DimVars.Count;
+            public int Count => this._FoxVars.Count + this._Vars.Count + this._DimVars.Count;
         }
         public partial class ClassvarsContext : IMultiElementContext
         {
@@ -1641,5 +1681,4 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return parent.isInStructure();
         }
     }
-
 }

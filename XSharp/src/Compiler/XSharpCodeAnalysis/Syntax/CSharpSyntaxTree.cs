@@ -283,27 +283,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // Set breakpoint on individual element when > 1 element
                             break;
                         }
-                        else if (xNode is XP.IMultiElementContext)
-                        {
-                            break;
-                        }
-                        else if (xNode is XP.IGlobalEntityContext)
-                        {
-                            break;
-                        }
-                        else if (xNode is XP.StatementContext)
-                        {
-                            break;
-                        }
-                        else if (xNode is XP.IEntityContext) // this includes IMemberContext and ITypeCOntext
-                        {
-                            break;
-                        }
-                        else if (xNode is XP.ClassmemberContext)
-                        {
-                            break;
-                        }
-                        else if (xNode is XP.GlobalAttributesContext)
+                        else if (xNode is XP.ISequencePointContext)
                         {
                             break;
                         }

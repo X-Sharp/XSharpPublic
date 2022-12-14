@@ -28,7 +28,7 @@ using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using static Microsoft.CodeAnalysis.CSharp.Binder;
 #if XSHARP
-using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 #endif
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -1862,7 +1862,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else
                     {
+#if XSHARP
+                        diagnostics.Add(ErrorCode.ERR_NoMainInClass, AdjustMissingStartLocation(mainType.Locations.First()), mainType);
+#else
                         diagnostics.Add(ErrorCode.ERR_NoMainInClass, mainType.Locations.First(), mainType);
+#endif
                     }
                 }
                 else
@@ -2174,9 +2178,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             LazyInitializer.EnsureInitialized(ref _moduleInitializerMethods).Add(method);
         }
 
-        #endregion
+#endregion
 
-        #region Binding
+#region Binding
 
         /// <summary>
         /// Gets a new SyntaxTreeSemanticModel for the specified syntax tree.
@@ -2403,9 +2407,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        #endregion
+#endregion
 
-        #region Diagnostics
+#region Diagnostics
 
         internal override CommonMessageProvider MessageProvider
         {
@@ -2802,9 +2806,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result.ToReadOnlyAndFree<Diagnostic>();
         }
 
-        #endregion
+#endregion
 
-        #region Resources
+#region Resources
 
         protected override void AppendDefaultVersionResource(Stream resourceStream)
         {
@@ -2826,9 +2830,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 companyName: sourceAssembly.Company);
         }
 
-        #endregion
+#endregion
 
-        #region Emit
+#region Emit
 
         internal override byte LinkerMajorVersion => 0x30;
 
@@ -3251,9 +3255,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        #endregion
+#endregion
 
-        #region Common Members
+#region Common Members
 
         protected override Compilation CommonWithReferences(IEnumerable<MetadataReference> newReferences)
         {
@@ -3682,7 +3686,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 #pragma warning restore RS0026 // Do not add multiple public overloads with optional parameters
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Returns if the compilation has all of the members necessary to emit metadata about

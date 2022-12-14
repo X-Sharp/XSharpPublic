@@ -252,7 +252,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     GlobalEntities.Members, eof);
             cu.XGenerated = true;
             var red = (Syntax.CompilationUnitSyntax)cu.CreateRed();
-            return CSharpSyntaxTree.Create(red, _options, "CompileGeneratedCode.prg", System.Text.Encoding.UTF8);
+            CSharpSyntaxTree tree = (CSharpSyntaxTree ) CSharpSyntaxTree.Create(red, _options, XSharpSpecialNames.CompilerGeneratedCode, System.Text.Encoding.UTF8);
+            tree.Generated = true;
+            return tree;
         }
         public static SyntaxTree DefaultRTSyntaxTree(IEnumerable<SyntaxTree> trees, CSharpParseOptions options)
         {

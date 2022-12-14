@@ -288,7 +288,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     t.GlobalEntities.Members, SyntaxFactory.Token(SyntaxKind.EndOfFileToken));
             cu.XGenerated = true;
             var red = (Syntax.CompilationUnitSyntax)cu.CreateRed();
-            return CSharpSyntaxTree.Create(red, options, "CompileGeneratedCode.prg", System.Text.Encoding.UTF8);
+            CSharpSyntaxTree tree = (CSharpSyntaxTree) CSharpSyntaxTree.Create(red, options, XSharpSpecialNames.CompilerGeneratedCode, System.Text.Encoding.UTF8);
+            tree.Generated = true;
+            return tree;
         }
         internal T NotInDialect<T>(T node, string feature, string additional = "") where T : CSharpSyntaxNode
         {

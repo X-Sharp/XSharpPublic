@@ -111,6 +111,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal static class XSharpSpecialNames
     {
+        internal const string CompilerGeneratedCode = "CompilerGeneratedCode.prg";
         internal const string ImpliedTypeName = "Xs$var";
         internal const string ScriptDummy = "XS$dummy";
         internal const string StaticLocalFieldNamePrefix = "Xs$StaticLocal$";

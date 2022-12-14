@@ -225,7 +225,7 @@ namespace XSharp.Project
         #endregion
     }
 
-    [Guid(GuidStrings.guidXSharpVOFormEditor)]
+    [Guid(PackageGuids.guidVOFormEditorCmdSetString)]
     [ProvideView(LogicalView.Designer,"")]
     public sealed class VOFormEditorFactory : VOEditorFactoryBase
     {
@@ -260,7 +260,7 @@ namespace XSharp.Project
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;
-            pguidCmdUI = GuidStrings.guidVOFormEditorFactory;
+            pguidCmdUI = PackageGuids.guidVOFormEditorCmdSet;
             pgrfCDW = 0;
             pbstrEditorCaption = null;
 

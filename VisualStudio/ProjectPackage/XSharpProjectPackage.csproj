@@ -344,10 +344,10 @@
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <VSCTCompile Include="XSharpProjectPackage.vsct">
+    <VSCTCompile Include="Menus.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <Generator>VsctGenerator</Generator>
-      <LastGenOutput>XSharpProjectPackage1.cs</LastGenOutput>
+      <LastGenOutput>Menus.cs</LastGenOutput>
     </VSCTCompile>
     <Content Include="XSharpAppDesigner.pkgdef">
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -366,16 +366,21 @@
       <DependentUpon>RepositoryWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Resources.cs" />
+    <Compile Include="source.extension.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>source.extension.vsixmanifest</DependentUpon>
+    </Compile>
     <Compile Include="XSharpShellLink.cs" />
     <Compile Include="XSharpDocumentWatcher.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
-    <Compile Include="XSharpProjectPackage1.cs">
+    <Compile Include="Menus.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>XSharpProjectPackage.vsct</DependentUpon>
+      <DependentUpon>Menus.vsct</DependentUpon>
     </Compile>
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
@@ -581,7 +586,10 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
-    <None Include="source.extension.vsixmanifest" />
+    <None Include="source.extension.vsixmanifest">
+      <Generator>VsixManifestGenerator</Generator>
+      <LastGenOutput>source.extension.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <GetVsixSourceItemsDependsOn>$(GetVsixSourceItemsDependsOn);GetVsixTemplateItems</GetVsixSourceItemsDependsOn>

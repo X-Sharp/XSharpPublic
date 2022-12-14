@@ -14,7 +14,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using XSharp.LanguageService;
 using XSharp.Project.WPF;
 using System.ComponentModel;
-using static XSharp.XSharpConstants;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -87,7 +86,7 @@ namespace XSharp.Project
     /// </remarks>
     ///
     [InstalledProductRegistration("#110", "#112", XSharp.Constants.FileVersion, IconResourceID = 400)]
-    [Description(ProjectSystemName)]
+    [Description(XSharpConstants.ProjectSystemName)]
     // [PackageRegistration(UseManagedResourcesOnly = true)] <-- Standard Package loading
     // ++ Async Package
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
@@ -95,7 +94,7 @@ namespace XSharp.Project
     // -- Async Package
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideProjectFactory(typeof(XSharpProjectFactory),
-        LanguageName, ProjectFileMask, ProjectExtension, ProjectExtensions,
+        XSharpConstants.LanguageName, XSharpConstants.ProjectFileMask, XSharpConstants.ProjectExtension, XSharpConstants.ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
 
@@ -113,9 +112,9 @@ namespace XSharp.Project
 
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),
-         LanguageName,  // Name of language used as registry key.
+         XSharpConstants.LanguageName,  // Name of language used as registry key.
          1,         // Resource ID of localized name of language service.
-         LanguageName,  // language key used in snippet templates.
+         XSharpConstants.LanguageName,  // language key used in snippet templates.
          @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\SnippetsIndex.xml",  // Path to snippets index
          SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
@@ -127,20 +126,20 @@ namespace XSharp.Project
         null,
         null,
         null,
-        LanguageVsTemplate = LanguageName,
+        LanguageVsTemplate = XSharpConstants.LanguageName,
         TemplateGroupIDsVsTemplate = "WPF",
         ShowOnlySpecifiedTemplatesVsTemplate = false, SortPriority = 100)]
 
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
     // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ch", 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".rc", 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ch", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".rc", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
     // This tells VS that we support Code and Designer view
     // The guids are VS specific and should not be changed
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string)]

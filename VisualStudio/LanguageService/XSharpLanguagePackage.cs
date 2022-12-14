@@ -9,7 +9,6 @@ using Microsoft.VisualStudio;
 using System;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
-using static XSharp.XSharpConstants;
 using XSharp.LanguageService.OptionsPages;
 using System.Threading;
 using Microsoft.VisualStudio.TextManager.Interop;
@@ -41,7 +40,7 @@ namespace XSharp.LanguageService
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string,PackageAutoLoadFlags.BackgroundLoad)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
-    [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName, IsAsyncQueryable = false)]//
+    [ProvideService(typeof(XSharpLanguageService), ServiceName = XSharpConstants.LanguageServiceName, IsAsyncQueryable = false)]//
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".prg")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xs")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ppo")]
@@ -49,7 +48,7 @@ namespace XSharp.LanguageService
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xh")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ch")]
     [ProvideLanguageService(typeof(XSharpLanguageService),
-                         LanguageName,
+                         XSharpConstants.LanguageName,
                          1,                            // resource ID of localized language name
                          AutoOutlining = true,
                          CodeSense = true,             // Supports IntelliSense
@@ -77,22 +76,22 @@ namespace XSharp.LanguageService
                  )]
     [ProvideLanguageCodeExpansion(
          typeof(XSharpLanguageService),
-         LanguageName,  // Name of language used as registry key.
+         XSharpConstants.LanguageName,  // Name of language used as registry key.
          1,         // Resource ID of localized name of language service.
-         LanguageName,  // language key used in snippet templates.
+         XSharpConstants.LanguageName,  // language key used in snippet templates.
          @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\SnippetsIndex.xml",  // Path to snippets index
          SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
-    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202", keywordListResourceId: 302)]
-    [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Options", pageNameResourceId: "203", keywordListResourceId: 303)]
+    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), XSharpConstants.LanguageName, null, "Formatting", pageNameResourceId: "202", keywordListResourceId: 302)]
+    [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), XSharpConstants.LanguageName, null, "Options", pageNameResourceId: "203", keywordListResourceId: 303)]
 #if COMPLETION
-    [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), LanguageName, null, "Settings Completion", pageNameResourceId: "204",keywordListResourceId:304)]
+    [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), XSharpConstants.LanguageName, null, "Settings Completion", pageNameResourceId: "204",keywordListResourceId:304)]
 #endif
-    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), LanguageName, null, "Intellisense", pageNameResourceId: "205", keywordListResourceId: 305)]
-    [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), LanguageName, null, "Indentation", pageNameResourceId: "206", keywordListResourceId: 306)]
-    [ProvideLanguageEditorOptionPage(typeof(GeneratorOptionsPage), LanguageName, null, "Generator", pageNameResourceId: "207", keywordListResourceId: 307)]
+    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), XSharpConstants.LanguageName, null, "Intellisense", pageNameResourceId: "205", keywordListResourceId: 305)]
+    [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), XSharpConstants.LanguageName, null, "Indentation", pageNameResourceId: "206", keywordListResourceId: 306)]
+    [ProvideLanguageEditorOptionPage(typeof(GeneratorOptionsPage), XSharpConstants.LanguageName, null, "Generator", pageNameResourceId: "207", keywordListResourceId: 307)]
     public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
         private static XSharpLanguageService instance;

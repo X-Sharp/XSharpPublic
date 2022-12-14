@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.Text.BraceCompletion;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
-using static XSharp.XSharpConstants;
 using XSharpModel;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Text.Classification;
@@ -24,7 +23,7 @@ namespace XSharp.LanguageService
     [BracePair('{', '}')]
     [BracePair('"', '"')]
     [BracePair('\'', '\'')]
-    [ContentType(LanguageName)]
+    [ContentType(XSharpConstants.LanguageName)]
     [ProvideBraceCompletion(Constants.LanguageName)]
 
     internal sealed class BraceCompletionProvider : BraceCompletionBase

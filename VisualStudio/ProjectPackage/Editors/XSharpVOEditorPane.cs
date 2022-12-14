@@ -1578,7 +1578,7 @@ namespace XSharp.Project
         }
         protected override Guid _GetClassID()
         {
-            return GuidStrings.guidVOFormEditorFactory;
+            return PackageGuids.guidVOFormEditorCmdSet;
         }
         protected override string getFormatList()
         {
@@ -1719,17 +1719,17 @@ namespace XSharp.Project
 
 
                 // our own commands
-                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int)GuidStrings.cmdidShowGrid,
+                addCommand(mcs, PackageGuids.guidVOFormEditorCmdSet, (int)PackageIds.cmdidShowGrid,
                                 new EventHandler(onToggleGrid), new EventHandler(onQueryViewGrid));
 
-                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int)GuidStrings.cmdidTestDialog,
+                addCommand(mcs, PackageGuids.guidVOFormEditorCmdSet, (int)PackageIds.cmdidTestDialog,
                                 new EventHandler(onTestDialog), null);
 
-                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int)GuidStrings.cmdidTabOrder,
+                addCommand(mcs, PackageGuids.guidVOFormEditorCmdSet, (int)PackageIds.cmdIdXsTabOrder,
                                 new EventHandler(onTabOrder), null);
 
-                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int) GuidStrings.VOFormEditorToolbar, new EventHandler(onTabOrder), null);
-                addCommand(mcs, GuidStrings.guidVOFormEditorCmdSet, (int)GuidStrings.VOFormEditorToolbarGroup, new EventHandler(onTabOrder), null);
+                addCommand(mcs, PackageGuids.guidVOFormEditorCmdSet, (int)PackageIds.VOFormEditorToolbar, new EventHandler(onTabOrder), null);
+                addCommand(mcs, PackageGuids.guidVOFormEditorCmdSet, (int)PackageIds.VOFormEditorToolbarGroup, new EventHandler(onTabOrder), null);
             }
         }
         /// <summary>

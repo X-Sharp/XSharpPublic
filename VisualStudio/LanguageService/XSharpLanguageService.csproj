@@ -110,7 +110,6 @@
     <Compile Include="Formatting\Formatting.cs" />
     <Compile Include="HighlightWord\HighlightWord.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
-    <Compile Include="LanguageService\PkgCmdID.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
     <Compile Include="LanguageService\XSharpSource.cs" />
     <Compile Include="Library\HierarchyListener.cs" />
@@ -282,7 +281,6 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Completion\Notes.txt" />
-    <Content Include="LanguageService\LanguageService.vsct" />
     <Content Include="Lookup\Notes.txt" />
     <Content Include="Parameter Info\Notes.txt" />
     <Content Include="QuickInfo\Notes.txt" />

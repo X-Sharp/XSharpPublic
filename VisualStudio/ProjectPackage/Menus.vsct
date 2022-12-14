@@ -6,7 +6,7 @@
   <Extern href="vsshlids.h"/>
   <Extern href="vsdebugguids.h"/>
   <Include href="KnownImageIds.vsct"/>
-  <Include href="VSGlobals.vsct"/>
+  <Include href="VSGlobals.vsct"/> 
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
   <Commands package="guidProjectPackage">
@@ -455,7 +455,11 @@
       <IDSymbol name="bmpTabOrder" value="13" />
       <IDSymbol name="bmpFoxPro" value="14" />
     </GuidSymbol>
-
+   <!-- 
+    Next symbols are defined by Visual Studio
+    They are defined in the file WinformsDesignerMenus.vsct  that you can find 
+    in the VSSDK\VisualStudioIntegration\Common\Inc folder below the VS folder
+    -->
     <GuidSymbol name="guidWinformsMenuGroup" value="{74D21312-2AEE-11D1-8BFB-00A0C90F26F7}">
       <IDSymbol name="IDM_IF_TOOLBAR_FORMAT" value="0x0601" />
       <IDSymbol name="IDG_IF_KEYBOARD" value="0x0320" />

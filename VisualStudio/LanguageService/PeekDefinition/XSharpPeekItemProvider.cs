@@ -2,12 +2,11 @@
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Utilities;
-using static XSharp.XSharpConstants;
 using XSharpModel;
 namespace XSharp.LanguageService
 {
     [Export(typeof(IPeekableItemSourceProvider))]
-    [ContentType( LanguageName)]
+    [ContentType(XSharpConstants.LanguageName)]
     [Name("XSharp Class Peekable Item Provider")]
     [SupportsStandaloneFiles(true)]
     class XSharpPeekItemProvider : IPeekableItemSourceProvider

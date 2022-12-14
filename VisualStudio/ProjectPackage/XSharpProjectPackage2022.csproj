@@ -329,10 +329,10 @@
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <VSCTCompile Include="XSharpProjectPackage.vsct">
+    <VSCTCompile Include="Menus.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <Generator>VsctGenerator</Generator>
-      <LastGenOutput>XSharpProjectPackage1.cs</LastGenOutput>
+      <LastGenOutput>Menus.cs</LastGenOutput>
     </VSCTCompile>
     <Content Include="XSharpAppDesigner2022.pkgdef">
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -357,10 +357,10 @@
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
-    <Compile Include="XSharpProjectPackage1.cs">
+    <Compile Include="Menus.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>XSharpProjectPackage.vsct</DependentUpon>
+      <DependentUpon>Menus.vsct</DependentUpon>
     </Compile>
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />

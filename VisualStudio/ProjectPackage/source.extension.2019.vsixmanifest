@@ -10,6 +10,7 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <ReleaseNotes>https://www.xsharp.eu/itm-downloads?folder=general%252FReadme</ReleaseNotes>
         <Icon>XSharp.ico</Icon>
         <PreviewImage>XSharpVSIXLogo.png</PreviewImage>
+        <Tags>XSharp, XBase, FoxPro, Visual Objects, XBase++</Tags>
     </Metadata>
     <Installation AllUsers="true" SystemComponent="true">
         <InstallationTarget Version="[15.0,17.0)" Id="Microsoft.VisualStudio.Pro"  />

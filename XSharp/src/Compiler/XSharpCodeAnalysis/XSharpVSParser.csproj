@@ -79,6 +79,14 @@
     <EmbeddedResource Remove="Compilation\**" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Generated\XSharpParser.cs" >
+      <DependentUpon>Parser\Xsharp.g4</DependentUpon>
+    </Compile>
+    <Compile Update="Generated\XSharpLexer.cs" >
+      <DependentUpon>Parser\XsharpLexer.g4</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Remove="CodeAnalysisResources.resx" />
     <EmbeddedResource Remove="XSharpResources.resx" />
   </ItemGroup>

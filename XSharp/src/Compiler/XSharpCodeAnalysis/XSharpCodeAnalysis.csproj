@@ -63,6 +63,14 @@
     <None Include="Parser\XSharp.g4" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Generated\XSharpParser.cs" >
+      <DependentUpon>Parser\Xsharp.g4</DependentUpon>
+    </Compile>
+    <Compile Update="Generated\XSharpLexer.cs" >
+      <DependentUpon>Parser\XsharpLexer.g4</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="$(NuGetPackageRoot)\Microsoft.DiaSymReader.Native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>

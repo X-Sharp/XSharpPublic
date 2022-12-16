@@ -27,7 +27,6 @@
       -->
       <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.prg">AssemblyInfo.prg</ProjectItem>
       <ProjectItem ReplaceParameters="true" OpenInEditor="true">TestClass.prg</ProjectItem>
-      <ProjectItem OpenInEditor="false">Packages.config</ProjectItem>
     </Project>
   </TemplateContent>
 </VSTemplate>

@@ -1,7 +1,7 @@
 ﻿//
 // Note 1: If this does not compile then you need to restore the Nuget Packages for XUnit
 // You can do that by right clicking on the project item in the solution explorer
-// and choosing 'Manage Nuget packages' 
+// and choosing 'Manage Nuget packages'
 // You can also set a setting inside Visual Studio to make sure the Nuget Packages get restored
 // automatically. See: Tools - Nuget Package Manager - Package Manager Settings
 //
@@ -12,12 +12,12 @@ USING System
 USING System.Collections.Generic
 $if$ ($targetframeworkversion$ >= 3.5)USING System.Linq
 $endif$USING System.Text
-using XUnit
+using Xunit
 BEGIN NAMESPACE $safeprojectname$
 	CLASS TestClass
 	CONSTRUCTOR() STRICT
-		RETURN		
-		
+		RETURN
+
 	[Fact];
 	METHOD TestMethod1 AS VOID STRICT
 		Assert.Equal(1,1)

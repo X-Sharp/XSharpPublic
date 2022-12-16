@@ -3,7 +3,7 @@
   <TemplateData>
      <Name>VOWindow</Name>
      <Description>An empty VO Window</Description>
-     <Icon Package="{E299FB7B-D273-4678-9ACF-B37B4AF04A12}" ID="401" />
+      <Icon>VOWindow.PNG</Icon>
      <TemplateID>XSharp.VOWindow</TemplateID>
      <ProjectType>XSharp</ProjectType>
      <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

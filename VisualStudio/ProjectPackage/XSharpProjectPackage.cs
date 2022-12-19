@@ -87,8 +87,6 @@ namespace XSharp.Project
     ///
     [InstalledProductRegistration("#110", "#112", XSharp.Constants.FileVersion, IconResourceID = 400)]
     [Description(XSharpConstants.ProjectSystemName)]
-    // [PackageRegistration(UseManagedResourcesOnly = true)] <-- Standard Package loading
-    // ++ Async Package
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
     // -- Async Package
@@ -161,7 +159,7 @@ namespace XSharp.Project
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
-    [Guid(GuidStrings.guidXSharpProjectPkgString)]
+    [Guid(XSharpConstants.guidXSharpProjectPkgString)]
 #if REPOWINDOW
     [ProvideToolWindow(typeof(RepositoryWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
     [ProvideToolWindowVisibility(typeof(RepositoryWindow.Pane), VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string)]
@@ -204,7 +202,7 @@ namespace XSharp.Project
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             // Give the codemodel a way to talk to the VS Shell
             XSettings.ShellLink = new XSharpShellLink();

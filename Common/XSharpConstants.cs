@@ -8,7 +8,7 @@ using System;
 
 namespace XSharp
 {
-    internal static class GuidStrings
+    internal static class XSharpConstants
     {
         internal const string guidXSharpProjectPkgString = "e299fb7b-d273-4678-9acf-b37b4af04a12";
         internal const string guidXSharpProjectFactoryString = "aa6c8d78-22ff-423a-9c7c-5f2393824e04";
@@ -19,6 +19,8 @@ namespace XSharp
         internal const string guidVSXmlEditorString = "{fa3cd31e-987b-443a-9b81-186104e8dac1}";
         internal const string guidXSharpLanguageServicePkgString = "e9b6ee0f-9bfa-4cff-a60b-51a08bbc5050";
         internal const string EditorFactoryGuidString = "B4829761-2BFA-44B7-8F8F-D2625EBCF218";
+        internal const string guidCpsProjectTypeString = "AB494DCE-A11B-4583-851E-D4A86775B3F0";
+        internal const string guidProjectSelectorString = "DF89AA3B-6AE6-4971-8F78-1A03B346A7D5";
         internal static readonly Guid guidXSharpProjectFactory = new Guid(guidXSharpProjectFactoryString);
         internal static readonly Guid guidVOMenuEditorFactory = new Guid(guidXSharpVOMenuEditor);
         internal static readonly Guid guidVODbServerEditorFactory = new Guid(guidXSharpVODbServerEditor);
@@ -26,21 +28,17 @@ namespace XSharp
         internal static readonly Guid guidSourcecodeEditorFactory = new Guid(EditorFactoryGuidString);
         internal static readonly Guid guidLanguageService = new Guid(guidXSharpLanguageServicePkgString);
         internal static readonly Guid guidVSXmlEditor = new Guid(guidVSXmlEditorString);
-    }
-
-    internal static class XSharpConstants
-    {
-
+        internal static readonly Guid guidCpsProjectType = new Guid(guidCpsProjectTypeString);
         internal const string LanguageName = "XSharp";
         internal const string LanguageServiceName = "XSharp Language Service";
         internal const string EditorName = "XSharp Source Code Editor";
         internal const string ProjectSystemName = "XSharp Project System";
 
         internal const string ProjectExtension = "xsproj";
-        internal const string ProjectExtensions = "xsproj;xsprj";   // the first version of X# has .xsprj (without o) as extension
+        internal const string DottedProjectExtension = "." + ProjectExtension;
+        internal const string ProjectExtensions = "xsproj";   // the first version of X# has .xsprj (without o) as extension
         internal const string ProjectFileMask = LanguageName + " Project Files (*." + ProjectExtension + ");*." + ProjectExtension;
 
-        internal const string EditorFactoryGuidString = GuidStrings.EditorFactoryGuidString;
 
         internal const string IntellisenseOptionsPageGuidString = "FDE6E4C9-FA8A-4B93-8B6D-88D9D2A5063E";
         internal const string FormattingOptionsPageGuidString = "5A086A53-64B8-410A-BDC0-7D8D573F9B41";

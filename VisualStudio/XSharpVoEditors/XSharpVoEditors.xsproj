@@ -55,6 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
+      <Link>Properties\commonAssemblyInfo.prg</Link>
+    </Compile>
+    <Compile Include="..\..\Common\constants.prg">
+      <Link>Properties\constants.prg</Link>
+    </Compile>
     <Compile Include="Actions.prg" />
     <Compile Include="Designers\Base.prg" />
     <Compile Include="Designers\ControlOrder.prg">
@@ -113,12 +119,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Common\BuildNumber.h">
-      <Link>BuildNumber.h</Link>
-    </None>
     <EmbeddedResource Include="cavotb.bmp" />
     <None Include="Designers\Readme.txt" />
-    <None Include="Designers\VODesigners.xsproj" />
     <None Include="Readme.txt" />
     <None Include="Templates\cavoded.tpl" />
     <None Include="Templates\cavofed.tpl" />

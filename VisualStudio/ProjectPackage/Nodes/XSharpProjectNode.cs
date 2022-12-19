@@ -295,11 +295,11 @@ namespace XSharp.Project
         /// <value>The project GUID.</value>
         public override Guid ProjectGuid
         {
-            get { return GuidStrings.guidXSharpProjectFactory; }
+            get { return XSharpConstants.guidXSharpProjectFactory; }
         }
         public override string ProjectGuidString
         {
-            get { return GuidStrings.guidXSharpProjectFactoryStringCurly; }
+            get { return XSharpConstants.guidXSharpProjectFactoryStringCurly; }
         }
 
         /// <summary>
@@ -2960,7 +2960,8 @@ namespace XSharp.Project
             switch (symbol)
             {
                 case AssemblyReferences:
-                case CSharp:
+                //case CSharp:
+                case CPS:
                 case DeclaredSourceItems:
                 case DotNet:
                 case Managed:
@@ -2978,7 +2979,7 @@ namespace XSharp.Project
                 case AspNetCore:
                 case BuildAndroidTarget:
                 case BuildiOSProject:
-                case CPS:
+                //case CPS:
                 case DependenciesTree:
                 case DependencyPackageManagement:
                 case DNX:

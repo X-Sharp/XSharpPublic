@@ -15,7 +15,7 @@ namespace XSharp.Project
     /// <summary>
     /// Represent the methods for creating projects within the solution.
     /// </summary>
-    [Guid(GuidStrings.guidXSharpProjectFactoryString)]
+    [Guid(XSharpConstants.guidXSharpProjectFactoryString)]
     public class XSharpProjectFactory : ProjectFactory
     {
         #region Fields

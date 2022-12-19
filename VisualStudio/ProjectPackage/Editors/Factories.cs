@@ -283,7 +283,7 @@ namespace XSharp.Project
         }
     }
 
-    [Guid(GuidStrings.guidXSharpVOMenuEditor)]
+    [Guid(XSharpConstants.guidXSharpVOMenuEditor)]
     [ProvideView(LogicalView.Designer, "")]
     public sealed class VOMenuEditorFactory : VOEditorFactoryBase
     {
@@ -319,7 +319,7 @@ namespace XSharp.Project
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;
-            pguidCmdUI = GuidStrings.guidVOMenuEditorFactory;
+            pguidCmdUI = XSharpConstants.guidVOMenuEditorFactory;
             pgrfCDW = 0;
             pbstrEditorCaption = null;
 
@@ -347,7 +347,7 @@ namespace XSharp.Project
         }
     }
 
-    [Guid(GuidStrings.guidXSharpVOFieldSpecEditor)]
+    [Guid(XSharpConstants.guidXSharpVOFieldSpecEditor)]
     [ProvideView(LogicalView.Designer, "")]
     public sealed class VOFieldSpecEditorFactory : VOEditorFactoryBase
     {
@@ -384,7 +384,7 @@ namespace XSharp.Project
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;
-            pguidCmdUI = GuidStrings.guidVOFieldSpecEditorFactory;
+            pguidCmdUI = XSharpConstants.guidVOFieldSpecEditorFactory;
             pgrfCDW = 0;
             pbstrEditorCaption = null;
 
@@ -409,7 +409,7 @@ namespace XSharp.Project
     }
 
 
-    [Guid(GuidStrings.guidXSharpVODbServerEditor)]
+    [Guid(XSharpConstants.guidXSharpVODbServerEditor)]
     [ProvideView(LogicalView.Designer, "")]
     public sealed class VODBServerEditorFactory : VOEditorFactoryBase
     {
@@ -446,7 +446,7 @@ namespace XSharp.Project
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;
-            pguidCmdUI = GuidStrings.guidVODbServerEditorFactory;
+            pguidCmdUI = XSharpConstants.guidVODbServerEditorFactory;
             pgrfCDW = 0;
             pbstrEditorCaption = null;
 

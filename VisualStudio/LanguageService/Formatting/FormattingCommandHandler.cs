@@ -31,6 +31,9 @@ namespace XSharp.LanguageService
     [ContentType(XSharpConstants.LanguageName)]
     internal class XSharpFormattingProvider : IVsTextViewCreationListener
     {
+        [Import] IEditorOptionsFactoryService editorOptionsService;
+
+        private IEditorOptions editorOptions;
 
         [Import]
         internal IVsEditorAdaptersFactoryService AdapterService;
@@ -39,16 +42,21 @@ namespace XSharp.LanguageService
         internal IBufferTagAggregatorFactoryService BufferTagAggregatorFactoryService { get; set; }
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
-            if (XEditorSettings.DisableCodeCompletion)
-                return;
             ITextView textView = AdapterService.GetWpfTextView(textViewAdapter);
             if (textView == null)
                 return;
+            editorOptions = editorOptionsService.GetOptions(textView);
+            editorOptions.OptionChanged += EditorOptions_OptionChanged;
             textView.Properties.GetOrCreateSingletonProperty(
                  () => new XSharpFormattingCommandHandler(textViewAdapter,
                     textView,
                     BufferTagAggregatorFactoryService
                     ));
+        }
+
+        private void EditorOptions_OptionChanged(object sender, EditorOptionChangedEventArgs e)
+        {
+            return;
         }
     }
     internal partial class XSharpFormattingCommandHandler : IOleCommandTarget

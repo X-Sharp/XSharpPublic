@@ -183,13 +183,16 @@ namespace Microsoft.VisualStudio.Project
             // Load the project so we can extract the list of GUIDs
 
             this.buildProject = Utilities.ReinitializeMsBuildProject(this.buildEngine, file, this.buildProject);
+            if (buildProject != null)
+            {
+                // Retrieve the list of GUIDs, if it is not specify, make it our GUID
+                string guids = buildProject.GetPropertyValue(ProjectFileConstants.ProjectTypeGuids);
+                if (String.IsNullOrEmpty(guids))
+                    guids = this.GetType().GUID.ToString("B");
 
-            // Retrieve the list of GUIDs, if it is not specify, make it our GUID
-            string guids = buildProject.GetPropertyValue(ProjectFileConstants.ProjectTypeGuids);
-            if(String.IsNullOrEmpty(guids))
-                guids = this.GetType().GUID.ToString("B");
-
-            return guids;
+                return guids;
+            }
+            return "";
         }
         #endregion
 

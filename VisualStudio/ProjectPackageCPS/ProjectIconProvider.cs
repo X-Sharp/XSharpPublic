@@ -16,6 +16,10 @@ namespace XSharp.ProjectSystem
     [AppliesTo("XSharp")] // [Order(Order.Default)]
     internal class XSharpSourcesIconProvider : IProjectTreePropertiesProvider
     {
+        public XSharpSourcesIconProvider()
+        {
+            ;
+        }
         private static readonly Dictionary<string, ProjectImageMoniker> s_fileExtensionImageMap = new Dictionary<string, ProjectImageMoniker>(StringComparer.OrdinalIgnoreCase)
         {
             { ".prg",   XSharpImagesMonikers.FileImage.ToProjectSystemType() },

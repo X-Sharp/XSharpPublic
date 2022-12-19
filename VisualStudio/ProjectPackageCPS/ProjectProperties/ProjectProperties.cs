@@ -7,9 +7,11 @@
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.Properties;
+using Microsoft.VisualStudio.ProjectSystem.VS.Properties;
+
 namespace XSharp.ProjectSystem
 {
-
+    
     [Export]
     [AppliesTo(XSharpConstants.LanguageName)]
     internal partial class ProjectProperties : StronglyTypedPropertyAccess

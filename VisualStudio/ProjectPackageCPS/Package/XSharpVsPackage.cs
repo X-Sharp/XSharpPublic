@@ -7,28 +7,15 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio;
-using XSharp.ProjectSystem;
 using System.Threading;
-using System.ComponentModel.Composition;
-//using Microsoft.VisualStudio.LanguageServices;
-using XSharp;
 using Microsoft.VisualStudio.ProjectSystem;
-using Microsoft.VisualStudio.ProjectSystem.VS;
+using Community.VisualStudio.Toolkit;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.Threading;
 
-[assembly: ProjectTypeRegistration(
-  projectTypeGuid: GuidStrings.guidCpsProjectType,
-    displayName: "#1",                      // "XSharp"
-    displayProjectFileExtensions: "#2",     // "XSharp Project Files (*.xsproj);*.xsproj"
-    defaultProjectExtension: XSharpConstants.ProjectExtension,
-    language: XSharpConstants.LanguageName,
-    resourcePackageGuid: GuidStrings.guidCpsProjectType,
-    Capabilities = ProjectTypeCapabilities.XSharp,
-    DisableAsynchronousProjectTreeLoad = true,
-    PossibleProjectExtensions = XSharpConstants.ProjectExtension,
-    NewProjectRequireNewFolderVsTemplate = true)]
-[assembly: ProvideDiffSupportedContentType(XSharpConstants.ProjectExtension, "")]   // Empty string because content type is not important, we just want to tell the diff that the file type is supported
-[assembly: ProvideEditorFactoryMapping("{f6819a78-a205-47b5-be1c-675b3c7f0b8e}", XSharpConstants.ProjectExtension)] // Use the XML editor
+using Microsoft.VisualStudio.ComponentModelHost;
+using System.Collections.Generic;
+using Microsoft.VisualStudio;
 
 namespace XSharp.ProjectSystem
 {
@@ -40,32 +27,43 @@ namespace XSharp.ProjectSystem
     /// or localized resources for the strings that appear in the New Project and Open Project dialogs.
     /// Creating project extensions or project types does not actually require a VSPackage.
     /// </remarks>
-    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Description("XSharp project type based on CPS")]
-    [Guid(GuidStrings.guidCpsProjectType)]
-
-    public sealed class XSharpCPSPackage : AsyncPackage
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true, RegisterUsing = RegistrationMethod.Assembly)]
+    [Description("XSharp CPS based Project System")]
+    [Guid(XSharpConstants.guidCpsProjectTypeString)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
+    //[ProvideAutoLoad(ActivationContextGuid, PackageAutoLoadFlags.BackgroundLoad)]
+    //[ProvideUIContextRule(ActivationContextGuid,
+    //    name: "Load X# Managed Project Package",
+    //    expression: "dotnetcore",
+    //    termNames: new[] { "dotnetcore" },
+    //    termValues: new[] { "SolutionHasProjectCapability:.NET & CPS & XSharp" }
+    //    )]
+    public sealed class XSharpCPSPackage : ToolkitPackage
     {
-        /// <summary>
-        /// The file extension of this project type.  No preceding period.
-        /// </summary>
-        public const string ProjectExtension = XSharpConstants.ProjectExtension;
-
-        /// <summary>
-        /// The default namespace this project compiles with, so that manifest
-        /// resource names can be calculated for embedded resources.
-        /// </summary>
-        internal const string DefaultNamespace = XSharpConstants.LanguageName;
-
-        //[Import(typeof(VisualStudioWorkspace))]
-        //public VisualStudioWorkspace myWorkspace { get; set; }
-        protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
+        public const string ActivationContextGuid = "6634b40e-66e3-4f8d-af0f-b860354a9132";
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             // Suspend walking until Solution is opened.
             await base.InitializeAsync(cancellationToken, progress);
-
+            // The project selector helps to choose between MPF and CPS projects
+            await this.RegisterCommandsAsync();
+            // Register services that export IPackageService, such as the ProjectSelector
+            await this.RegisterServicesAsync();
+            return;
         }
+        async Task RegisterServicesAsync()
+        {
+            IComponentModel componentModel = await this.GetServiceAsync<SComponentModel, IComponentModel>();
 
+            IEnumerable<IPackageService> packageServices = componentModel.GetExtensions<IPackageService>();
+
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            foreach (IPackageService packageService in packageServices)
+            {
+                await packageService.InitializeAsync(this);
+            }
+        }
     }
     internal static class ProjectTypeCapabilities
     {
@@ -76,15 +74,15 @@ namespace XSharp.ProjectSystem
                                       ProjectCapability.PreserveFormatting + "; " +
                                       /*ProjectCapability.ProjectConfigurationsDeclaredDimensions + "; " +*/
                                       ProjectCapability.LanguageService + "; " +
-                                    ProjectCapabilities.SdkReferences + "; "+
+                                    ProjectCapabilities.SdkReferences + "; " +
                                     ProjectCapabilities.ProjectReferences + "; " +
                                     ProjectCapabilities.AssemblyReferences + "; " +
                                     ProjectCapabilities.ComReferences + "; " +
-                                    ProjectCapabilities.WinRTReferences+ "; " +
+                                    ProjectCapabilities.WinRTReferences + "; " +
                                       ProjectCapability.DotNet;
         public const string XSharp = Default + "; " +
                                      ProjectCapability.XSharp + "; " +
-                                     ProjectCapability.SortByDisplayOrder ;
+                                     ProjectCapability.SortByDisplayOrder;
 
     }
 
@@ -92,9 +90,6 @@ namespace XSharp.ProjectSystem
     {
         public const string XSharp = nameof(XSharp);
         public const string XSharpAppDesigner = XSharp + " & " + AppDesigner;
-        public const string CSharp = "XXCSharp";
-        public const string VB = "XXVisualBasic";
-        public const string VisualBasic = "XXVisualBasic";
 
         public const string AlwaysAvailable = ProjectCapabilities.AlwaysApplicable;
         public const string AppDesigner = nameof(AppDesigner);

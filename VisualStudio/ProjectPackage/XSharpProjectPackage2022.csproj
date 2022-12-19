@@ -153,6 +153,21 @@
       <Link>x64\SQLite.Interop.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="ProjectSelectors.pkgdef">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Code\Structure\Structure.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\Structure\Structure.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\Structure\Structure.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.png" />
+    <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODbServer.png" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.png" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VoMenu.png" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.png" />
     <Content Include="XSharpDesigners.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -172,8 +187,6 @@
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\cavowed.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.EmptyShellMenu.xsmnu" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.StandardShellMenu.xsmnu" />
-    <ZipProject Include="Templates\Projects\Test\TestNUnit\packages.config" />
-    <ZipProject Include="Templates\Projects\Test\TestXUnit\packages.config" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
@@ -643,6 +656,12 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
+    <ProjectReference Include="..\ProjectPackageCPS\XSharpProjectCPS.csproj">
+      <Project>{679502ac-264c-40ac-9e3a-587f2a27f08b}</Project>
+      <Name>XSharpProjectCPS</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>XSharpModel</Name>
@@ -688,7 +707,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.480</Version>
+      <Version>17.0.486</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>
@@ -703,7 +722,7 @@
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
       <IncludeAssets>All</IncludeAssets>
-      <Version>1.0.116</Version>
+      <Version>1.0.117</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>

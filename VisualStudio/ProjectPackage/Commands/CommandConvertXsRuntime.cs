@@ -26,12 +26,15 @@ namespace XSharp.Project
             {
                 var refs = await GetAssemblyReferencesAsync();
                 bool isVulcan = false;
-                foreach (var asmref in refs)
+                if (refs != null)
                 {
-                    if (asmref.FullName.Contains("Vulcan"))
+                    foreach (var asmref in refs)
                     {
-                        isVulcan = true;
-                        break;
+                        if (asmref.FullName.Contains("Vulcan"))
+                        {
+                            isVulcan = true;
+                            break;
+                        }
                     }
                 }
                 Command.Visible = isVulcan;

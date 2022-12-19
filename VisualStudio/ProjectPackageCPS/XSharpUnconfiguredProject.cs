@@ -17,12 +17,12 @@ namespace XSharp.ProjectSystem
 {
     [Export]
     [AppliesTo(XSharpConstants.LanguageName)]
-    [ProjectTypeRegistration(GuidStrings.guidCpsProjectType, "XSharp", "#2",
-        XSharpConstants.ProjectExtension, XSharpConstants.LanguageName,
-        resourcePackageGuid: GuidStrings.guidCpsProjectType,
-        PossibleProjectExtensions = XSharpConstants.ProjectExtension,
+    [ProjectTypeRegistration(XSharpConstants.guidCpsProjectTypeString, "XSharp", "#2",
+        XSharpConstants.DottedProjectExtension, XSharpConstants.LanguageName,
+        resourcePackageGuid: XSharpConstants.guidCpsProjectTypeString,
+        PossibleProjectExtensions = XSharpConstants.DottedProjectExtension,
         ProjectTemplatesDir = @"..\..\Templates\Projects\XSharp")]
-    [ProvideProjectItem(GuidStrings.guidCpsProjectType, "XSharp Items", @"..\..\Templates\ProjectItems", 500)]
+    [ProvideProjectItem(XSharpConstants.guidCpsProjectTypeString, "XSharp Items", @"..\..\Templates\ProjectItems", 500)]
     internal class XSharpUnconfiguredProject 
     {
         /// <summary>
@@ -37,21 +37,20 @@ namespace XSharp.ProjectSystem
             this.ProjectHierarchies = new OrderPrecedenceImportCollection<IVsHierarchy>(projectCapabilityCheckProvider: unconfiguredProject);
         }
 
+        [Import]
+        internal UnconfiguredProject UnconfiguredProject { get; set; }
 
         [Import]
-        internal UnconfiguredProject UnconfiguredProject { get; }
-
-        [Import]
-        internal IActiveConfiguredProjectSubscriptionService SubscriptionService { get; }
+        internal IActiveConfiguredProjectSubscriptionService SubscriptionService { get; set; }
 
         //[Import]
         //internal IThreadHandling ThreadHandling { get; }
 
         [Import]
-        internal ActiveConfiguredProject<ConfiguredProject> ActiveConfiguredProject { get; }
+        internal ActiveConfiguredProject<ConfiguredProject> ActiveConfiguredProject { get; set; }
 
         [Import]
-        internal ActiveConfiguredProject<XSharpConfiguredProject> MyActiveConfiguredProject { get; }
+        internal ActiveConfiguredProject<XSharpConfiguredProject> MyActiveConfiguredProject { get; set; }
 
         [ImportMany(ExportContractNames.VsTypes.IVsProject, typeof(IVsProject))]
         internal OrderPrecedenceImportCollection<IVsHierarchy> ProjectHierarchies { get; }

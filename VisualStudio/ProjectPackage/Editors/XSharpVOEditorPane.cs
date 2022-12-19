@@ -1896,7 +1896,7 @@ namespace XSharp.Project
         }
         protected override Guid _GetClassID()
         {
-            return GuidStrings.guidVOMenuEditorFactory;
+            return XSharpConstants.guidVOMenuEditorFactory;
         }
         protected override string getFormatList()
         {
@@ -1918,7 +1918,7 @@ namespace XSharp.Project
         }
         protected override Guid _GetClassID()
         {
-            return GuidStrings.guidVODbServerEditorFactory;
+            return XSharpConstants.guidVODbServerEditorFactory;
         }
         protected override string getFormatList()
         {
@@ -1940,7 +1940,7 @@ namespace XSharp.Project
         }
         protected override Guid _GetClassID()
         {
-            return GuidStrings.guidVOFieldSpecEditorFactory;
+            return XSharpConstants.guidVOFieldSpecEditorFactory;
         }
         protected override string getFormatList()
         {

@@ -36,7 +36,7 @@ namespace XSharp.LanguageService
     /// <remarks>
     ///
 
-    [Guid(GuidStrings.guidXSharpLanguageServicePkgString)]
+    [Guid(XSharpConstants.guidXSharpLanguageServicePkgString)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string,PackageAutoLoadFlags.BackgroundLoad)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
@@ -92,7 +92,7 @@ namespace XSharp.LanguageService
     [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), XSharpConstants.LanguageName, null, "Intellisense", pageNameResourceId: "205", keywordListResourceId: 305)]
     [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), XSharpConstants.LanguageName, null, "Indentation", pageNameResourceId: "206", keywordListResourceId: 306)]
     [ProvideLanguageEditorOptionPage(typeof(GeneratorOptionsPage), XSharpConstants.LanguageName, null, "Generator", pageNameResourceId: "207", keywordListResourceId: 307)]
-    public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
+    public sealed class XSharpLanguageService : ToolkitPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
         private static XSharpLanguageService instance;
         private IVsTextManager4 _txtManager;
@@ -188,7 +188,7 @@ namespace XSharp.LanguageService
             XEditorSettings.NavigationMembersOfCurrentTypeOnly = _intellisensePage.ShowMembersOfCurrentTypeOnly;
             XEditorSettings.NavigationExcludeMembersFromOtherFiles = _intellisensePage.ExcludeMembersFromOtherFiles;
             var languagePreferences = new LANGPREFERENCES3[1];
-            languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
+            languagePreferences[0].guidLang = XSharpConstants.guidLanguageService;
             int result = VSConstants.S_FALSE;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
@@ -284,6 +284,7 @@ namespace XSharp.LanguageService
 
             // register property changed event handler
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            await this.RegisterCommandsAsync();
             XSharpXMLDocTools.Initialize();
             var shell = await this.GetServiceAsync(typeof(SVsShell)) as IVsShell;
             if (shell != null)

@@ -6,7 +6,7 @@
   <Extern href="vsshlids.h"/>
   <Extern href="vsdebugguids.h"/>
   <Include href="KnownImageIds.vsct"/>
-  <Include href="VSGlobals.vsct"/> 
+  <Include href="VSGlobals.vsct"/>
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
   <Commands package="guidProjectPackage">
@@ -53,7 +53,7 @@
         <Parent guid="guidProjectPackage"  id="idExporterSubMenu"/>
         <GroupFlag />
       </Group>
-      
+
       <!--Group for the Debugger Items inside the Debug-XSharp menu-->
       <Group guid="guidProjectPackage" id="idDebuggerMenuGroup" priority="0x0600">
         <Parent guid="guidProjectPackage"  id="idDebuggerSubMenu"/>
@@ -61,11 +61,11 @@
       </Group>
       <!--Group for the items in the Help Menu-->
       <Group guid="guidProjectPackage" id="idHelpMenuGroup" priority="0x0600">
-        <Parent guid="VSMainMenu" id="Help" />
+        <Parent guid="VSMainMenu" id="Help.SupportGroup" />
       </Group>
       <!--Menu group for the Show Grid and Test-->
       <Group guid="guidProjectPackage" id="idViewMenuGroup" priority="0x0600">
-        <Parent guid="VSMainMenu" id="View" />
+        <Parent guid="VSMainMenu" id="View.ToolbarsGroup" />
       </Group>
       <!--Group for the Show Grid and Test on the toolbar -->
       <Group guid="guidVOFormEditorCmdSet" id="VOFormEditorToolbarGroup" priority="0x0600">
@@ -93,7 +93,7 @@
            priority, an image, a type, some visibility flags (optional) and a default text. -->
 
       <!--Below we define in which group(s) an item appears-->
-      
+
       <!--This will be on the ToolMenu in the ToolMenuGroup-->
       <Button guid="guidProjectPackage" id="idXporter" priority="0x0100" type="Button">
         <Icon guid="guidImages" id="bmpXSharp" />
@@ -144,7 +144,7 @@
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idViewRepo" priority="0x0100" type="Button">
-         <Icon guid="ImageCatalogGuid" id="ViewInBrowser" />
+        <Icon guid="ImageCatalogGuid" id="ViewInBrowser" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -248,7 +248,7 @@
 
       <!--Debugger buttons-->
       <Button guid="guidProjectPackage" id="idDbgWorkareaWindow" priority="0x0100" type="Button">
-              <Icon guid="ImageCatalogGuid" id="DatabaseColumn" />
+        <Icon guid="ImageCatalogGuid" id="DatabaseColumn" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -324,7 +324,7 @@
   </Commands>
   <CommandPlacements>
     <!--Group for Tools XSharp Menu-->
-      
+
     <CommandPlacement guid="guidProjectPackage" id="idXporter" priority="0x0100" >
       <Parent guid="guidProjectPackage" id="idExporterGroup" />
     </CommandPlacement>
@@ -427,7 +427,7 @@
       <IDSymbol name="idDbgMemvarsWindow" value="0x0106" />
       <IDSymbol name="idDbgWorkareaWindow" value="0x0107" />
       <IDSymbol name="idDbgSettingsWindow" value="0x0108" />
-      <IDSymbol name="idConvertXSharpRuntime" value="0x0109" /> 
+      <IDSymbol name="idConvertXSharpRuntime" value="0x0109" />
       <IDSymbol name="idAddDesignerFile" value="0x010A" />
       <IDSymbol name="idViewRepo" value="0x010B" />
       <IDSymbol name="idUDCTester" value="0x010C" />
@@ -455,7 +455,7 @@
       <IDSymbol name="bmpTabOrder" value="13" />
       <IDSymbol name="bmpFoxPro" value="14" />
     </GuidSymbol>
-   <!-- 
+    <!-- 
     Next symbols are defined by Visual Studio
     They are defined in the file WinformsDesignerMenus.vsct  that you can find 
     in the VSSDK\VisualStudioIntegration\Common\Inc folder below the VS folder
@@ -495,7 +495,7 @@
 
     <!-- This enables the same key bindings as the Winforms editor when the VO Window Editor has focus -->
     <VisibilityItem guid="guidWinformsMenuGroup" id="IDG_IF_KEYBOARD" context="guidVOFormEditorFactory" />
-    
+
     <!--This makes the Debugger windows only appear when debugging-->
     <VisibilityItem guid="guidProjectPackage"  id="idDebuggerMenuGroup" context="UICONTEXT_Debugging"/>
     <VisibilityItem guid="guidProjectPackage"  id="idDbgGlobalsWindow" context="UICONTEXT_Debugging"/>

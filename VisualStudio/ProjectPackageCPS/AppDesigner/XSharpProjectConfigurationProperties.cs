@@ -1,14 +1,17 @@
-﻿// Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE.md file in the project root for more information.
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 
 using System.ComponentModel.Composition;
-using VSLangProj110;
-using VSLangProj80;
 using Microsoft.VisualStudio.ProjectSystem;
 
 namespace XSharp.ProjectSystem
 {
     [Export(ExportContractNames.VsTypes.ConfiguredProjectPropertiesAutomationObject)]
-    [AppliesTo("XSharp")]
+    [AppliesTo(ProjectCapability.XSharp)]
     public class XSharpProjectConfigurationProperties : AbstractProjectConfigurationProperties
     {
         [ImportingConstructor]

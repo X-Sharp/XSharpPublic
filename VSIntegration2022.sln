@@ -57,6 +57,8 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "UDCTester", "Tools\UDCTeste
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpProjectCPS", "VisualStudio\ProjectPackageCPS\XSharpProjectCPS.csproj", "{679502AC-264C-40AC-9E3A-587F2A27F08B}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "DeployMsBuildSupport", "Tools\DeployMsBuildSupport\DeployMsBuildSupport.xsproj", "{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -283,6 +285,18 @@ Global
 		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Release|arm64.Build.0 = Release|arm64
 		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Release|x86.ActiveCfg = Release|x86
 		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Release|x86.Build.0 = Release|x86
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Debug|arm64.Build.0 = Debug|Any CPU
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Debug|x86.Build.0 = Debug|Any CPU
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Release|arm64.ActiveCfg = Release|Any CPU
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Release|arm64.Build.0 = Release|Any CPU
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Release|x86.ActiveCfg = Release|Any CPU
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -294,6 +308,7 @@ Global
 		{B9AA5DD9-28D1-445D-8FDD-6195DC479BCC} = {A6566CA0-CE3D-4F2E-A964-1D6BB3C3A9B1}
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25} = {A6566CA0-CE3D-4F2E-A964-1D6BB3C3A9B1}
 		{F9579349-9B33-44A3-A615-D091AB45DBB8} = {A6566CA0-CE3D-4F2E-A964-1D6BB3C3A9B1}
+		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981} = {A6566CA0-CE3D-4F2E-A964-1D6BB3C3A9B1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6F61AAF2-9C04-4D27-887F-8A475F079D9C}

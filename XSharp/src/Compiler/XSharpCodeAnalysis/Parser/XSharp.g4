@@ -1270,8 +1270,7 @@ xppisin             : (IS identifier)? (IN identifier)?                     //  
                     ;
 
 
-
-xppdeclareModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLASS | SYNC | ABSTRACT | NEW | STATIC) )+
+xppdeclareModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLASS | SYNC | ABSTRACT | NEW | STATIC | ASYNC | UNSAFE | EXTERN) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
@@ -1338,7 +1337,7 @@ xppinlineMethod     : Attributes=attributes?                                 // 
                       (END METHOD eos)?
                     ;
 
-xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
+xppmemberModifiers  : ( Tokens+=( CLASS | STATIC | ABSTRACT | UNSAFE | ASYNC | EXTERN) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 

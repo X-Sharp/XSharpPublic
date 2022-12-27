@@ -953,6 +953,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.OVERRIDE: // OVERRIDE METHOD is obvious
                         kw = SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword, m.Text);
                         break;
+                    case XP.ASYNC: //
+                        kw = SyntaxFactory.MakeToken(SyntaxKind.AsyncKeyword, m.Text);
+                        break;
+                    case XP.EXTERN: //
+                        kw = SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword, m.Text);
+                        break;
+                    case XP.UNSAFE: //
+                        kw = SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword, m.Text);
+                        break;
                     case XP.CLASS:
                     case XP.STATIC:
                         kw = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword, m.Text);
@@ -1001,13 +1010,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     switch (token.Type)
                     {
                         // Member Modifiers from XppMemberModifiers rule
+                        case XP.ASYNC:
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.AsyncKeyword, token.Text);
+                            break;
+                        case XP.EXTERN:
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword, token.Text);
+                            break;
+                        case XP.ABSTRACT:
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.AbstractKeyword, token.Text);
+                            break;
+                        case XP.UNSAFE:
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword, token.Text);
+                            break;
                         case XP.CLASS:
                             kw = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword, token.Text);
                             break;
                         case XP.STATIC:
                             // remove visibility modifiers
-                            // STATIC CLASS (Visibility only in the scope of the prg).
-                            // class becomes Internal and is added to the static globals class
+                            // STATIC member (Visibility only in the scope of the prg).
+                            // member becomes Internal 
                             kw = SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword, token.Text);
                             var tmp = modifiers.ToList();
                             modifiers.Clear();

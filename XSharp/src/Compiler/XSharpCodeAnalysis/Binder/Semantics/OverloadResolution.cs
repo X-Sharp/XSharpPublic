@@ -618,6 +618,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var sig2 = GetSignature(m2.Member);
                 var sdk1 = asm1.IsSdk();
                 var sdk2 = asm2.IsSdk();
+                if (type1.IsDerivedFrom(type2,TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
+                {
+                    result = BetterResult.Left;
+                    return true;
+                }
+                if (type2.IsDerivedFrom(type1, TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
+                {
+                    result = BetterResult.Right;
+                    return true;
+                }
                 if (asm1 != asm2 && sig1 == sig2)
                 {
                     // prefer non runtime over runtime to allow customers to override built-in functions

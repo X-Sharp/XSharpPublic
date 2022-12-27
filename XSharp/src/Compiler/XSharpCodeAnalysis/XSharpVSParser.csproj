@@ -97,18 +97,7 @@
   <ItemGroup>
     <Folder Include="Antlr4.Runtime\Properties\" />
   </ItemGroup>
-  
-  
-  
-
-  
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+   
   <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll') ">
     <MakeDir Directories="$(DevPublicDir)external\$(ConfigurationName)" /> 
     <MakeDir Directories="$(ZipsDir)" /> 

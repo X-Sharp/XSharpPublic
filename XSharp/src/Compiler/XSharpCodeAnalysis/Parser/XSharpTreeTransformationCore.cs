@@ -24,6 +24,7 @@ using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+    using Microsoft.CodeAnalysis.Text;
     using System.Net.Http.Headers;
     using System.Net.Mime;
 
@@ -8768,6 +8769,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool inString = false;
             int nestLevel = 0;
             char last = '\0';
+            SyntaxDiagnosticInfo info = null;
             foreach (char c in text)
             {
                 var charToAppend = c;
@@ -8807,8 +8809,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     sbCurrent = sbMask;
                                     expressions.Add(sbExpr.ToString());
                                     sbExpr.Clear();
-                                    last = c;
+                                    last = '\0';
                                     continue;
+                                }
+                                else
+                                {
+                                    info = new SyntaxDiagnosticInfo(ErrorCode.ERR_UnescapedCurly, '}');
                                 }
                             }
                             else
@@ -8866,6 +8872,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 sbCurrent.Append(charToAppend);
                 last = charToAppend;
+            }
+            if (info != null)
+            {
+                result = result.WithAdditionalDiagnostics(info);
+                return result;
             }
 
             if (nestLevel != 0)

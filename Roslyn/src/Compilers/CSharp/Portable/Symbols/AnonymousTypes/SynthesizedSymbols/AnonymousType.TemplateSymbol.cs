@@ -88,61 +88,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 _baseType = IsCodeblock ? manager.CodeblockType : manager.System_Object;
                 if (IsCodeblock)
                 {
-
-
-                    _baseType = manager.CodeblockType;
-
-                    int cbParamCount = typeDescr.Fields.Length;
-                    NamedTypeSymbol[] cbParameters = new NamedTypeSymbol[cbParamCount];
-                    for (int i = 0; i < cbParamCount; i++)
-                    {
-                        cbParameters[i] = manager.UsualType;
-                    }
-                    var cbDelegate = manager.SynthesizeDelegate(typeDescr.Fields.Length - 1, default , false, 0).Construct(cbParameters);
-
-                    Symbol[] cbMembers = new Symbol[7];
-                    int cbMemberIndex = 0;
-
-                    var tDelegate = TypeWithAnnotations.Create(cbDelegate);
-                    var tSource = TypeWithAnnotations.Create(manager.System_String);
-                    // Add properties
-                    var eval = new AnonymousTypePropertySymbol(this, new AnonymousTypeField(XSharpSpecialNames.CodeBlockLambda, typeDescr.Location, tDelegate), tDelegate, 0);
-                    var source = new AnonymousTypePropertySymbol(this, new AnonymousTypeField(XSharpSpecialNames.CodeBlockSource, typeDescr.Location, tSource), tSource, 0);
-
-                    this.Properties = new[] { eval, source }.ToImmutableArray();
-
-                    // Property related symbols
-                    cbMembers[cbMemberIndex++] = eval;
-                    cbMembers[cbMemberIndex++] = eval.BackingField;
-                    cbMembers[cbMemberIndex++] = eval.GetMethod;
-                    cbMembers[cbMemberIndex++] = source;
-                    cbMembers[cbMemberIndex++] = source.BackingField;
-                    cbMembers[cbMemberIndex++] = source.GetMethod;
-
-                    cbMembers[cbMemberIndex++] = new AnonymousTypeConstructorSymbol(this, new[] { eval, source }.ToImmutableArray());
-
+                    (Properties, _members, SpecialMembers) = manager.GetCodeBlockMembers(typeDescr, this, _nameToSymbols);
                     _typeParameters = ImmutableArray<TypeParameterSymbol>.Empty;
-
-                    _members = cbMembers.AsImmutable();
-
-                    Debug.Assert(cbMemberIndex == _members.Length);
-
-                    // fill nameToSymbols map
-                    foreach (var symbol in _members)
-                    {
-                        _nameToSymbols.Add(symbol.Name, symbol);
-                    }
-
-                    MethodSymbol[] cbSpecialMembers = new MethodSymbol[2];
-                    cbSpecialMembers[0] = new CodeblockEvalMethod(this);
-                    cbSpecialMembers[1] = new AnonymousTypeToStringMethodSymbol(this);
-                    this.SpecialMembers = cbSpecialMembers.AsImmutable();
-
                     return;
                 }
-
-                _baseType = manager.System_Object;
-
 #endif
                 int fieldsCount = typeDescr.Fields.Length;
                 int membersCount = fieldsCount * 3 + 1;
@@ -551,18 +500,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // Escape open '{' with '\' to avoid parsing it as an embedded expression.
 
                 string displayString;
-#if XSHARP
-                if (this.BaseTypeNoUseSiteDiagnostics.IsCodeblockType())
-                {
-                    displayString = "{" + XSharpSpecialNames.CodeBlockSource + ",nq}";
-                    return Manager.Compilation.TrySynthesizeAttribute(
-                          WellKnownMember.System_Diagnostics_DebuggerDisplayAttribute__ctor,
-                          arguments: ImmutableArray.Create(new TypedConstant(Manager.System_String, TypedConstantKind.Primitive, displayString)),
-                          namedArguments: ImmutableArray.Create(new KeyValuePair<WellKnownMember, TypedConstant>(
-                                              WellKnownMember.System_Diagnostics_DebuggerDisplayAttribute__Type,
-                                              new TypedConstant(Manager.System_String, TypedConstantKind.Primitive, "<Codeblock>"))));
-                }
-#endif
+
                 if (this.Properties.Length == 0)
                 {
                     displayString = "\\{ }";
@@ -598,7 +536,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     sb.Append(" }");
                     displayString = builder.ToStringAndFree();
                 }
-
+#if XSHARP
+                if (this.IsCodeblock)
+                {
+                    displayString = "{" + XSharpSpecialNames.CodeBlockSource + ",nq}";
+                }
+#endif
                 return Manager.Compilation.TrySynthesizeAttribute(
                     WellKnownMember.System_Diagnostics_DebuggerDisplayAttribute__ctor,
                     arguments: ImmutableArray.Create(new TypedConstant(Manager.System_String, TypedConstantKind.Primitive, displayString)),

@@ -30,21 +30,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal sealed class AnonymousTypePublicSymbol : NamedTypeSymbol
 #endif
         {
-#if XSHARP
-            internal readonly ImmutableArray<Symbol> _members;
-#else
             private readonly ImmutableArray<Symbol> _members;
-#endif
 
             /// <summary> Properties defined in the type </summary>
             internal readonly ImmutableArray<AnonymousTypePropertySymbol> Properties;
 
             /// <summary> Maps member names to symbol(s) </summary>
-#if XSHARP
-            internal readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>(XSharpString.Comparer);
-#else
             private readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>();
-#endif
 
             /// <summary> Anonymous type manager owning this template </summary>
             internal readonly AnonymousTypeManager Manager;
@@ -90,45 +82,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             protected override NamedTypeSymbol WithTupleDataCore(TupleExtraData newData)
                 => throw ExceptionUtilities.Unreachable;
 #if XSHARP
-            internal bool IsCodeblock { get; } = false;
-
+            // Additional constructor, used by codeblock subclass
             protected AnonymousTypePublicSymbol(AnonymousTypeManager manager, TypeSymbol[] codeblockParams, Location location)
             {
-                Debug.Assert(codeblockParams.Length > 0);
-
                 this.Manager = manager;
-                var fields = ArrayBuilder<AnonymousTypeField>.GetInstance(codeblockParams.Length + 2);
-                for (int i = 0; i < codeblockParams.Length; i++)
-                {
-                    fields.Add(new AnonymousTypeField(XSharpSpecialNames.CodeBlockParameter + i, location, TypeWithAnnotations.Create(codeblockParams[i])));
-                }
-                this.TypeDescriptor = new AnonymousTypeDescriptor(fields.ToImmutable(), location);
-
-                var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length - 1, default, false, 0).Construct(codeblockParams);
-                var lambda = new AnonymousTypeField(XSharpSpecialNames.CodeBlockLambda, location, TypeWithAnnotations.Create(codeblockDelegate));
-                var source = new AnonymousTypeField(XSharpSpecialNames.CodeBlockSource, location, TypeWithAnnotations.Create(manager.System_String));
-                this.Properties = new[] {
-                    new AnonymousTypePropertySymbol(this, lambda,0),
-                    new AnonymousTypePropertySymbol(this, source,0)
-                }.AsImmutableOrNull();
-
-                Symbol[] members = new Symbol[4];
-                int memberIndex = 0;
-                members[memberIndex++] = Properties[0];
-                members[memberIndex++] = Properties[1];
-                members[memberIndex++] = new AnonymousTypeConstructorSymbol(this, this.Properties);
-                members[memberIndex++] = new CodeblockEvalMethod(this);
-
-                _members = members.AsImmutableOrNull();
-                Debug.Assert(memberIndex == _members.Length);
-
-                //  fill nameToSymbols map
-                foreach (var symbol in _members)
-                {
-                    _nameToSymbols.Add(symbol.Name, symbol);
-                }
-
-                IsCodeblock = true;
+                (_members, Properties, TypeDescriptor) = manager.CreateCodeBlockType(this, codeblockParams, location, _nameToSymbols);
             }
 #endif
 

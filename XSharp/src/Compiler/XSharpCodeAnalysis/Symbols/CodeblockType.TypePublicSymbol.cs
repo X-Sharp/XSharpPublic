@@ -47,18 +47,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 return this.DeclaringCompilation.CodeBlockType();
             }
-            /*
-            internal override bool Equals(TypeSymbol t2, TypeCompareKind comparison)
-            {
-                if (ReferenceEquals(this, t2))
-                {
-                    return true;
-                }
-
-                var other = t2 as CodeblockTypePublicSymbol;
-                return (object)other != null && this.TypeDescriptor.Equals(other.TypeDescriptor, comparison);
-            }
-            */
         }
 
         private sealed partial class CodeblockEvalMethod : SynthesizedMethodBase

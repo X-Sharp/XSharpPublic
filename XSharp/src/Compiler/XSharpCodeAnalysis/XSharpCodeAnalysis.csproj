@@ -63,10 +63,10 @@
     <None Include="Parser\XSharp.g4" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Generated\XSharpParser.cs" >
+    <Compile Update="Generated\XSharpParser.cs">
       <DependentUpon>Parser\Xsharp.g4</DependentUpon>
     </Compile>
-    <Compile Update="Generated\XSharpLexer.cs" >
+    <Compile Update="Generated\XSharpLexer.cs">
       <DependentUpon>Parser\XsharpLexer.g4</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -81,6 +81,7 @@
     </Content>
     <Content Include="Preprocessor\harbourppdoc.txt" />
     <Content Include="Preprocessor\preprocessor.txt" />
+    <Content Include="Symbols\CodeBlock.txt" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="$(MicrosoftCodeAnalysisAnalyzersVersion)" Condition="'$(DotNetBuildFromSource)' != 'true'" PrivateAssets="ContentFiles" />

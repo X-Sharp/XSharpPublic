@@ -7639,6 +7639,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return true;
         }
 
+        private bool GenerateStackAlloc(XP.MethodCallContext context)
+        {
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            TypeSyntax baseType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword));
+            if (expr is GenericNameSyntax gns)
+            {
+                var count = gns.TypeArgumentList.Arguments.Count;
+                if (count != 1)
+                {
+                    context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(
+                                      new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, context.Expr.GetText(), count)));
+                    return true;
+                }
+                baseType = gns.TypeArgumentList.Arguments[0];
+            }
+            ArgumentListSyntax argList;
+            if (context.ArgList != null)
+            {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            }
+            else
+            {
+                argList = EmptyArgumentList();
+            }
+            if (argList.Arguments.Count != 1)
+            {
+                expr = GenerateLiteral(0).WithAdditionalDiagnostics(
+                    new SyntaxDiagnosticInfo(ErrorCode.ERR_BadStackAllocExpr));
+                context.Put(expr);
+                return true;
+            }
+            var sizes = MakeSeparatedList<ExpressionSyntax>(argList.Arguments[0].Expression);
+            var rank = _syntaxFactory.ArrayRankSpecifier(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                sizes,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)
+                );
+            var type = _syntaxFactory.ArrayType(baseType, rank);
+            expr = _syntaxFactory.StackAllocArrayCreationExpression(
+                SyntaxFactory.MakeToken(SyntaxKind.StackAllocKeyword), type, null);
+            context.Put(expr);
+            return true;
+        }
+
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {
             var expr = context.Expr.Get<ExpressionSyntax>();
@@ -7653,6 +7697,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             switch (name)
             {
+                case XSharpIntrinsicNames.StackAlloc:
+                    if (GenerateStackAlloc(context))
+                        return;
+                    break;
                 case XSharpIntrinsicNames.AltD:
                     if (GenerateAltD(context))
                         return;
@@ -7671,12 +7719,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (GenerateChr(context))
                         return;
                     break;
-                    //case "PCALL":
-                    //case "CCALL":
-                    //case "PCALLNATIVE":
-                    //case "CCALLNATIVE":
-                    //    expr = NotInDialect(expr, name + " pseudo function");
-                    //    break;
             }
             ArgumentListSyntax argList;
             if (context.ArgList != null)

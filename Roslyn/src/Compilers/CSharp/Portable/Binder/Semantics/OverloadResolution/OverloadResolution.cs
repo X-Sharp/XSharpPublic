@@ -1773,8 +1773,8 @@ outerDefault:
 
             BetterResult result = BetterResult.Neither;
 #if XSHARP
-            var found = VOBetterFunctionMember(m1, m2, arguments, out result, out useSiteDiagnostics);
-            if (found)
+            result = XsBetterFunctionMember1(m1, m2, arguments, out useSiteDiagnostics);
+            if (result != BetterResult.Neither)
             {
                 return result;
             }
@@ -2164,7 +2164,7 @@ outerDefault:
             result = PreferValOverInParameters(arguments, m1, m1LeastOverriddenParameters, m2, m2LeastOverriddenParameters);
             if (result == BetterResult.Neither)
             {
-                result = PreferMostDerived(m1, m2, ref useSiteDiagnostics);
+                result = XsBetterFunctionMember2(arguments, m1, m2, ref useSiteDiagnostics);
             }
             return result;
 #else
@@ -2438,7 +2438,7 @@ outerDefault:
                     }
                 }
 #if XSHARP
-                else if (refKind1 == RefKind.Ref || refKind1 == RefKind.Out)
+                else if (refKind1.IsByRef())
 #else
                 else if (refKind1 == RefKind.Ref)
 #endif
@@ -2747,6 +2747,7 @@ outerDefault:
 #if XSHARP
             if (Conversions.Compilation.Options.HasRuntime)
             {
+                // Prefer Object over Usual
                 if (type1.IsUsualType() && type2.IsObjectType())
                     return BetterResult.Right;
                 if (type1.IsObjectType() && type2.IsUsualType())
@@ -3212,7 +3213,8 @@ outerDefault:
             }
 
 #if XSHARP
-            if (allowRefOmittedArguments && paramRefKind == RefKind.Out && (argRefKind == RefKind.None || argRefKind == RefKind.Ref || argRefKind == RefKind.In) && !binder.InAttributeArgument)
+            if (allowRefOmittedArguments && paramRefKind == RefKind.Out && 
+                (argRefKind.IsByRef()) && !binder.InAttributeArgument)
             {
                 hasAnyRefOmittedArgument = argRefKind == RefKind.None;
                 return argRefKind;

@@ -205,31 +205,34 @@ namespace Microsoft.CodeAnalysis.CSharp
             return conversion;
         }
 
-        private static BetterResult PreferMostDerived<TMember>(MemberResolutionResult<TMember> m1, MemberResolutionResult<TMember> m2, ref HashSet<DiagnosticInfo> useSiteDiagnostics) where TMember : Symbol
+        private static BetterResult PreferMostDerived<TMember>(MemberResolutionResult<TMember> m1, MemberResolutionResult<TMember> m2,
+            ref HashSet<DiagnosticInfo> useSiteDiagnostics, bool equalLeft, bool equalRight) where TMember : Symbol
         {
             var t1 = m1.Member.ContainingType;
             var t2 = m2.Member.ContainingType;
 
-            if (t1.SpecialType != SpecialType.System_Object && t2.SpecialType == SpecialType.System_Object)
-                return BetterResult.Left;
-            if (t1.SpecialType == SpecialType.System_Object && t2.SpecialType != SpecialType.System_Object)
-                return BetterResult.Right;
-
-            if (t1.IsInterfaceType() && t2.IsInterfaceType())
+            if (equalLeft == equalRight)
             {
-                if (t1.AllInterfacesWithDefinitionUseSiteDiagnostics(ref useSiteDiagnostics).Contains((NamedTypeSymbol)t2))
+                if (t1.SpecialType != SpecialType.System_Object && t2.SpecialType == SpecialType.System_Object)
                     return BetterResult.Left;
-                if (t2.AllInterfacesWithDefinitionUseSiteDiagnostics(ref useSiteDiagnostics).Contains((NamedTypeSymbol)t1))
+                if (t1.SpecialType == SpecialType.System_Object && t2.SpecialType != SpecialType.System_Object)
                     return BetterResult.Right;
-            }
-            else if (t1.IsClassType() && t2.IsClassType())
-            {
-                if (t1.IsDerivedFrom(t2, TypeCompareKind.ConsiderEverything, useSiteDiagnostics: ref useSiteDiagnostics))
-                    return BetterResult.Left;
-                if (t2.IsDerivedFrom(t1, TypeCompareKind.ConsiderEverything, useSiteDiagnostics: ref useSiteDiagnostics))
-                    return BetterResult.Right;
-            }
 
+                if (t1.IsInterfaceType() && t2.IsInterfaceType())
+                {
+                    if (t1.AllInterfacesWithDefinitionUseSiteDiagnostics(ref useSiteDiagnostics).Contains((NamedTypeSymbol)t2))
+                        return BetterResult.Left;
+                    if (t2.AllInterfacesWithDefinitionUseSiteDiagnostics(ref useSiteDiagnostics).Contains((NamedTypeSymbol)t1))
+                        return BetterResult.Right;
+                }
+                else if (t1.IsClassType() && t2.IsClassType())
+                {
+                    if (t1.IsDerivedFrom(t2, TypeCompareKind.ConsiderEverything, useSiteDiagnostics: ref useSiteDiagnostics))
+                        return BetterResult.Left;
+                    if (t2.IsDerivedFrom(t1, TypeCompareKind.ConsiderEverything, useSiteDiagnostics: ref useSiteDiagnostics))
+                        return BetterResult.Right;
+                }
+            }
             return BetterResult.Neither;
         }
 
@@ -446,9 +449,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result.ToString();
         }
 
-        private bool MatchUsualParameters(Symbol m1, Symbol m2, ArrayBuilder<BoundExpression> arguments, out BetterResult result)
+        private BetterResult MatchUsualParameters(Symbol m1, Symbol m2, ArrayBuilder<BoundExpression> arguments)
         {
-            result = BetterResult.Neither;
             var hasUsualArg = arguments.Any(a => a.Type.IsUsualType());
             if (hasUsualArg)
             {
@@ -459,24 +461,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (leftUsual != rightUsual)
                 {
                     if (leftUsual)
-                        result = BetterResult.Left;
+                        return BetterResult.Left;
                     else
-                        result = BetterResult.Right;
-                    return true;
+                        return BetterResult.Right;
                 }
             }
-            return false;
+            return BetterResult.Neither; ;
         }
-        private bool MatchRefParameters(Symbol m1, Symbol m2, ArrayBuilder<BoundExpression> arguments, out HashSet<DiagnosticInfo> useSiteDiagnostics, out BetterResult result)
+        private BetterResult MatchRefParameters(Symbol m1, Symbol m2, ArrayBuilder<BoundExpression> arguments, out HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             useSiteDiagnostics = null;
-            result = BetterResult.Neither;
             var parsLeft = m1.GetParameters();
             var parsRight = m2.GetParameters();
             var leftHasRef = parsLeft.Any(p => p.RefKind.IsByRef());
             var rightHasRef = parsRight.Any(p => p.RefKind.IsByRef());
             if (!leftHasRef && !rightHasRef)
-                return false;
+                return BetterResult.Neither;
             var len = parsLeft.Length;
             if (arguments.Count < len)
                 len = arguments.Count;
@@ -502,24 +502,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Prefer the method with a more specific parameter which is not an array type over USUAL
                     if (leftType.IsUsualType() && argType.IsNotUsualType() && !rightType.IsArray())
                     {
-                        result = BetterResult.Right;
-                        return true;
+                        return BetterResult.Right;
                     }
                     if (rightType.IsUsualType() && argType.IsNotUsualType() && !leftType.IsArray())
                     {
-                        result = BetterResult.Left;
-                        return true;
+                        return BetterResult.Left;
                     }
                     // Prefer the method with Object type over the one with Object[] type
                     if (leftType.IsObjectType() && rightType.IsArray() && ((ArrayTypeSymbol)rightType).ElementType.IsObjectType())
                     {
-                        result = BetterResult.Left;
-                        return true;
+                        return BetterResult.Left;
                     }
                     if (rightType.IsObjectType() && leftType.IsArray() && ((ArrayTypeSymbol)leftType).ElementType.IsObjectType())
                     {
-                        result = BetterResult.Right;
-                        return true;
+                        return BetterResult.Right;
                     }
                     // Now check for REF parameters and possible REF arguments
                     if (argCanBeByRef)
@@ -528,25 +524,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var opType = op?.Operand?.Type;
                         if (refLeft == RefKind.Ref && Equals(opType, leftType))
                         {
-                            result = BetterResult.Left;
-                            return true;
+                            return BetterResult.Left;
                         }
                         if (refRight == RefKind.Ref && Equals(opType, rightType))
                         {
-                            result = BetterResult.Right;
-                            return true;
+                            return BetterResult.Right;
                         }
                         if (refLeft != refRight)
                         {
                             if (refLeft == RefKind.Ref)
                             {
-                                result = BetterResult.Left;
-                                return true;
+                                return BetterResult.Left;
                             }
                             if (refRight == RefKind.Ref)
                             {
-                                result = BetterResult.Right;
-                                return true;
+                                return BetterResult.Right;
                             }
                         }
                     }
@@ -554,28 +546,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         if (TypeEquals(leftType, argType, ref useSiteDiagnostics) && refLeft != RefKind.None && argCanBeByRef)
                         {
-                            result = BetterResult.Left;
-                            return true;
+                            return BetterResult.Left;
                         }
                         if (TypeEquals(rightType, argType, ref useSiteDiagnostics) && refRight != RefKind.None && argCanBeByRef)
                         {
-                            result = BetterResult.Right;
-                            return true;
+                            return BetterResult.Right;
                         }
                         if (TypeEquals(leftType, argType, ref useSiteDiagnostics) && refLeft == RefKind.None && !argCanBeByRef)
                         {
-                            result = BetterResult.Left;
-                            return true;
+                            return BetterResult.Left;
                         }
                         if (TypeEquals(rightType, argType, ref useSiteDiagnostics) && refRight == RefKind.None && !argCanBeByRef)
                         {
-                            result = BetterResult.Right;
-                            return true;
+                            return BetterResult.Right;
                         }
                     }
                 }
             }
-            return false;
+            return BetterResult.Neither;
         }
 
         /// <summary>
@@ -590,16 +578,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// <param name="result"></param>
         /// <param name="useSiteDiagnostics"></param>
         /// <returns></returns>
-        private bool VOBetterFunctionMember<TMember>(
+        private BetterResult XsBetterFunctionMember1<TMember>(
             MemberResolutionResult<TMember> m1,
             MemberResolutionResult<TMember> m2,
             ArrayBuilder<BoundExpression> arguments,
-            out BetterResult result,
             out HashSet<DiagnosticInfo> useSiteDiagnostics
             )
             where TMember : Symbol
         {
-            result = BetterResult.Neither;
+            BetterResult result = BetterResult.Neither;
             bool Ambiguous = false;
             // Prefer the member not declared in VulcanRT, if applicable
             useSiteDiagnostics = null;
@@ -612,21 +599,26 @@ namespace Microsoft.CodeAnalysis.CSharp
             var rt1 = asm1.IsRT();
             var rt2 = asm2.IsRT();
             bool bothRT = rt1 && rt2;
+            var parsLeft = m1.Member.GetParameters();
+            var parsRight = m2.Member.GetParameters();
+            bool equalLeft = checkMatchingParameters(parsLeft, arguments, ref leftScore, ref useSiteDiagnostics);
+            bool equalRight = checkMatchingParameters(parsRight, arguments, ref rightScore, ref useSiteDiagnostics);
             if (Compilation.Options.HasRuntime)
             {
                 var sig1 = GetSignature(m1.Member);
                 var sig2 = GetSignature(m2.Member);
                 var sdk1 = asm1.IsSdk();
                 var sdk2 = asm2.IsSdk();
-                if (type1.IsDerivedFrom(type2,TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
-                {
-                    result = BetterResult.Left;
-                    return true;
-                }
-                if (type2.IsDerivedFrom(type1, TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
-                {
-                    result = BetterResult.Right;
-                    return true;
+                if (sig1 == sig2)
+                { 
+                    if (type1.IsDerivedFrom(type2,TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
+                    {
+                        return BetterResult.Left;
+                    }
+                    if (type2.IsDerivedFrom(type1, TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
+                    {
+                        return BetterResult.Right;
+                    }
                 }
                 if (asm1 != asm2 && sig1 == sig2)
                 {
@@ -640,13 +632,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         if (rt1)
                         {
-                            result = BetterResult.Right;
+                            return BetterResult.Right;
                         }
                         else //  (rt2)
                         {
-                            result = BetterResult.Left;
+                            return BetterResult.Left;
                         }
-                        return true;
                     }
                 }
                 if (rt1 && rt2)
@@ -655,14 +646,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // the priority
                     result = DetermineRTAssemblyPriority(asm1, asm2);
                     if (result != BetterResult.Neither)
-                        return true;
+                        return result;
                 }
 
                 if (!Equals(type1, type2) && sig1 == sig2)
                 {
-                    result = PreferMostDerived(m1, m2, ref useSiteDiagnostics);
+                    result = PreferMostDerived(m1, m2, ref useSiteDiagnostics, equalLeft, equalRight);
                     if (result != BetterResult.Neither)
-                        return true;
+                        return result;
                 }
                 if (asm1 != asm2)
                 {
@@ -675,13 +666,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         result = BetterResult.Left;
                         useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
-                        return true;
+                        return result;
                     }
                     if (asm2.IsFromCompilation(Compilation) || (rt1 && !rt2 && !sys2))
                     {
                         result = BetterResult.Right;
                         useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
-                        return true;
+                        return result;
                     }
                 }
                 var m1Clipper = m1.Member.HasClipperCallingConvention();
@@ -698,59 +689,48 @@ namespace Microsoft.CodeAnalysis.CSharp
                         result = BetterResult.Left;
                         useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
                     }
-                    return true;
+                    return result;
                 }
                 if (sig1 == sig2)
                 {
                     // when a function is in one of the SDK dlls choose the other
                     if (sdk1 || sdk2)
                     {
-                        result = sdk1 ? BetterResult.Left : BetterResult.Right;
-                        return true;
+                        return sdk1 ? BetterResult.Left : BetterResult.Right;
                     }
                 }
                 if (m1.Member.GetParameterCount() == m2.Member.GetParameterCount())
                 {
-                    // In case of 2 methods with the same # of parameters
                     // we have different / extended rules compared to C#
-                    var parsLeft = m1.Member.GetParameters();
-                    var parsRight = m2.Member.GetParameters();
-
-                    // Now check for REF parameters and possible REF arguments
+                    // Check for REF parameters and possible REF arguments
                     // now fall back to original type (and not addressof type)
-                    if (MatchRefParameters(m1.Member, m2.Member, arguments, out useSiteDiagnostics, out result))
+                    result = MatchRefParameters(m1.Member, m2.Member, arguments, out useSiteDiagnostics);
+                    if (result != BetterResult.Neither)
                     {
-                        return true;
+                        return result;
                     }
-                    if (MatchUsualParameters(m1.Member, m2.Member, arguments, out result))
+                    result = MatchUsualParameters(m1.Member, m2.Member, arguments);
+                    if (result != BetterResult.Neither)
                     {
-                        return true;
+                        return result;
                     }
 
                     // check if all left and types are equal. The score is the # of matching types
-                    bool equalLeft = checkMatchingParameters(parsLeft, arguments, ref leftScore, ref useSiteDiagnostics);
-                    bool equalRight = checkMatchingParameters(parsRight, arguments, ref rightScore, ref useSiteDiagnostics);
                     // Only exit here when one of the two is better than the other
                     if (equalLeft != equalRight)
                     {
                         if (equalLeft)
-                            result = BetterResult.Left;
+                            return BetterResult.Left;
                         else
-                            result = BetterResult.Right;
-                        return true;
+                            return BetterResult.Right;
                     }
 
                     if (leftScore != rightScore)
                     {
                         if (leftScore > rightScore)
-                        {
-                            result = BetterResult.Left;
-                        }
+                            return BetterResult.Left;
                         else
-                        {
-                            result = BetterResult.Right;
-                        }
-                        return true;
+                            return BetterResult.Right;
                     }
                 }
                 else
@@ -759,13 +739,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // choose the one where the parameter count matches the #help of arguments
                     if (m1.Member.GetParameterCount() == arguments.Count)
                     {
-                        result = BetterResult.Left;
-                        return true;
+                        return BetterResult.Left;
                     }
                     if (m2.Member.GetParameterCount() == arguments.Count)
                     {
-                        result = BetterResult.Right;
-                        return true;
+                        return BetterResult.Right;
                     }
                     // both methods have a different # of arguments
                 }
@@ -803,7 +781,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
 
                             useSiteDiagnostics = GenerateAmbiguousWarning(r1, r2);
-                            return true;
+                            return result;
                         }
                     }
                 }
@@ -812,27 +790,28 @@ namespace Microsoft.CodeAnalysis.CSharp
             // generate warning that function takes precedence over static method
             var func1 = m1.Member.IsStatic && type1.IsFunctionsClass();
             var func2 = m2.Member.IsStatic && type2.IsFunctionsClass();
+
             if (func1 && !func2)
             {
                 result = BetterResult.Left;
                 useSiteDiagnostics = GenerateFuncMethodWarning(m1.Member, m2.Member);
-                return true;
+                return result;
             }
             else if (func2 && !func1)
             {
                 result = BetterResult.Right;
                 useSiteDiagnostics = GenerateFuncMethodWarning(m2.Member, m1.Member);
-                return true;
+                return result;
             }
             if (!Equals(type1, type2))
             {
-                result = PreferMostDerived(m1, m2, ref useSiteDiagnostics);
+                result = PreferMostDerived(m1, m2, ref useSiteDiagnostics, equalLeft, equalRight);
                 if (result != BetterResult.Neither)
-                    return true;
+                    return result;
 
             }
 
-            return false;
+            return BetterResult.Neither;
             // Local Functions
             HashSet<DiagnosticInfo> GenerateWarning(Symbol r1, Symbol r2, ErrorCode warning)
             {
@@ -864,6 +843,19 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
+        private BetterResult XsBetterFunctionMember2<TMember>(ArrayBuilder<BoundExpression> arguments,
+            MemberResolutionResult<TMember> m1,
+            MemberResolutionResult<TMember> m2,
+            ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+            where TMember : Symbol
+        {
+            var parsLeft = m1.Member.GetParameters();
+            var parsRight = m2.Member.GetParameters();
+            int score = 0;
+            bool equalLeft = checkMatchingParameters(parsLeft, arguments, ref score, ref useSiteDiagnostics);
+            bool equalRight = checkMatchingParameters(parsRight, arguments, ref score, ref useSiteDiagnostics);
+            return PreferMostDerived(m1, m2, ref useSiteDiagnostics, equalLeft, equalRight);
+        }
         private BetterResult VoBetterOperator(BinaryOperatorSignature op1, BinaryOperatorSignature op2, BoundExpression left, BoundExpression right, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             // When the binary operators are equal we inspect the types

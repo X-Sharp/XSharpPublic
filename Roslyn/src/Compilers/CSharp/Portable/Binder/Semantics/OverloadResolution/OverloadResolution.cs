@@ -2438,7 +2438,7 @@ outerDefault:
                     }
                 }
 #if XSHARP
-                else if (refKind1.IsByRef())
+                else if (refKind1 == RefKind.Ref || refKind1 == RefKind.Out)
 #else
                 else if (refKind1 == RefKind.Ref)
 #endif
@@ -3214,7 +3214,7 @@ outerDefault:
 
 #if XSHARP
             if (allowRefOmittedArguments && paramRefKind == RefKind.Out && 
-                (argRefKind.IsByRef()) && !binder.InAttributeArgument)
+                (argRefKind == RefKind.None || argRefKind == RefKind.Ref || argRefKind == RefKind.In) && !binder.InAttributeArgument)
             {
                 hasAnyRefOmittedArgument = argRefKind == RefKind.None;
                 return argRefKind;

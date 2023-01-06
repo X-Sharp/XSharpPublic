@@ -571,12 +571,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// The logic is VERY complicated and fragile
         /// In the code below m1 is called Left and m2 is called Right (to match the return BetterLeft and BetterRight)
         /// </summary>
-        /// <typeparam name="TMember"></typeparam>
-        /// <param name="m1"></param>
-        /// <param name="m2"></param>
-        /// <param name="arguments"></param>
-        /// <param name="result"></param>
-        /// <param name="useSiteDiagnostics"></param>
         /// <returns></returns>
         private BetterResult XsBetterFunctionMember1<TMember>(
             MemberResolutionResult<TMember> m1,

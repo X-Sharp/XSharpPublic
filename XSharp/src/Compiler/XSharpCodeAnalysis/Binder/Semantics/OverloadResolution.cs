@@ -296,14 +296,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 var isConst = arg.ConstantValue != null;
                 var matchScore = isConst ? 90 : 100;
+                if (parType.IsArrayType() && (argType.IsUsualType() || argType.IsArrayType() || argType.IsObjectType()))
+                {
+                    // Make sure function with array argument have preference when array type is passed
+                    score += 500;
+                    continue;
+                }
                 if (TypeEquals(parType, argType, ref useSiteDiagnostics))
                 {
                     score += matchScore;
-                    if (parType.IsArrayType())
-                    {
-                        // Make sure function with array argument have preference when array type is passed
-                        score += 500;
-                    }
                     continue;
                 }
                 if (parType.TypeKind == TypeKind.Enum)
@@ -659,13 +660,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (asm1.IsFromCompilation(Compilation) || (rt2 && !rt1 && !sys1))
                     {
                         result = BetterResult.Left;
-                        useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
+                        if (leftScore <= rightScore)
+                            useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
                         return result;
                     }
                     if (asm2.IsFromCompilation(Compilation) || (rt1 && !rt2 && !sys2))
                     {
                         result = BetterResult.Right;
-                        useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
+                        if (rightScore <= leftScore)
+                            useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
                         return result;
                     }
                 }
@@ -684,6 +687,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                         useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
                     }
                     return result;
+                }
+
+                // prefer __Array params over __ArrayBase<> params
+                if (leftScore != rightScore)
+                {
+                    if (leftScore > rightScore)
+                        return BetterResult.Left;
+                    else
+                        return BetterResult.Right;
                 }
                 if (sig1 == sig2)
                 {

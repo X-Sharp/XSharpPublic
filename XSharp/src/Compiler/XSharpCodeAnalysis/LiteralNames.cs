@@ -100,7 +100,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string String2Psz = "STRING2PSZ";
         internal const string Cast2Psz = "CAST2PSZ";
         internal const string GetInst = "_GETINST";
-        internal const string StackAlloc = "STACKALLOC";
         internal const string SLen = "SLEN";
         internal const string AltD = "ALTD";
         internal const string Chr = "CHR";

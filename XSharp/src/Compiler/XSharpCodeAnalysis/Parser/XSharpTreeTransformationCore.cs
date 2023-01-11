@@ -6178,7 +6178,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitRepeatStmt([NotNull] XP.RepeatStmtContext context)
         {
             context.SetSequencePoint(context.end);
-            context.Expr.SetSequencePoint();
+            context.Expr.SetSequencePoint(); 
             var doKwd = context.r.SyntaxKeyword();
             var doStmt = _syntaxFactory.DoStatement(
                 attributeLists: default,
@@ -7639,14 +7639,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return true;
         }
 
-        private bool GenerateStackAlloc(XP.MethodCallContext context)
+        public override void ExitStackAllocExpression([NotNull] XP.StackAllocExpressionContext context)
         {
             var expr = context.Expr.Get<ExpressionSyntax>();
+            // There are 2 variations
+            // SyntaxKind.StackAllocArrayCreationExpression          // for an explicitly typed array
+            // such as STACKALLOC <INT> {....}
+            // this is in our language a literalarray expression with a type prefix
+            // The literal array is parsed as an initializer
+            // and
+            // STACKALLOC INT[]{size}
+            // this is ctorcall with a datatype of type arrayDatatype
+            // SyntaxKind.ImplicitStackAllocArrayCreationExpression  // for an implicitly typed array
+
+            /*
             TypeSyntax baseType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword));
             if (expr is GenericNameSyntax gns)
             {
                 var count = gns.TypeArgumentList.Arguments.Count;
-                if (count != 1)
+                if (count != 1)`
                 {
                     context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(
                                       new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, context.Expr.GetText(), count)));
@@ -7681,6 +7692,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.StackAllocKeyword), type, null);
             context.Put(expr);
             return true;
+            */
         }
 
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
@@ -7697,10 +7709,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             switch (name)
             {
-                case XSharpIntrinsicNames.StackAlloc:
-                    if (GenerateStackAlloc(context))
-                        return;
-                    break;
                 case XSharpIntrinsicNames.AltD:
                     if (GenerateAltD(context))
                         return;

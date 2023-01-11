@@ -5,7 +5,7 @@
 //
 namespace XSharp
 {
-    internal class Constants
+    internal static partial class Constants
     {
         internal const string LanguageName = "XSharp";
         internal const string Company = "XSharp BV";

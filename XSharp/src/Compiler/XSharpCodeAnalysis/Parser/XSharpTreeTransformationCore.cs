@@ -27,6 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     using Microsoft.CodeAnalysis.Text;
     using System.Net.Http.Headers;
     using System.Net.Mime;
+    using System.Security.Cryptography;
 
     internal partial class XSharpTreeTransformationCore : XSharpBaseListener
     {
@@ -7641,87 +7642,47 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitStackAllocExpression([NotNull] XP.StackAllocExpressionContext context)
         {
-            bool ok = false;
             var expr = context.Expr;
             if (expr is XP.PrimaryExpressionContext prim)
             {
                 switch (prim.Expr)
                 {
                     case XP.LiteralArrayExpressionContext lit:
-                        ok = true;
-                        break;
-                    case XP.CtorCallContext ctor:
-                        ok = true;
-                        break;
-
+                        {
+                            var litArray = lit.LiteralArray;
+                            if (litArray.Type != null)
+                            {
+                                var acs = litArray.Get<ArrayCreationExpressionSyntax>();
+                                var saexpr = _syntaxFactory.StackAllocArrayCreationExpression(
+                                    SyntaxFactory.MakeToken(SyntaxKind.StackAllocKeyword), acs.Type, acs.Initializer);
+                                context.Put(saexpr);
+                                return;
+                            }
+                            else
+                            {
+                                var iacs = litArray.Get<ImplicitArrayCreationExpressionSyntax>();
+                                var saexpr = _syntaxFactory.ImplicitStackAllocArrayCreationExpression(
+                                SyntaxFactory.MakeToken(SyntaxKind.StackAllocKeyword), iacs.OpenBracketToken, iacs.CloseBracketToken, iacs.Initializer);
+                                context.Put(saexpr);
+                                return;
+                            }
+                        }
+                    case XP.CtorCallContext ctor when ctor.Type is XP.ArrayDatatypeContext adtc:
+                        { 
+                            var ace = ctor.Get<ArrayCreationExpressionSyntax>();
+                            var saexpr = _syntaxFactory.StackAllocArrayCreationExpression(
+                                SyntaxFactory.MakeToken(SyntaxKind.StackAllocKeyword), ace.Type, ace.Initializer);
+                            context.Put(saexpr);
+                            return;
+                        }
                 }
             }
-            if (!ok)
-            {
-                var res= GenerateLiteral(0).WithAdditionalDiagnostics(
-                    new SyntaxDiagnosticInfo(ErrorCode.ERR_BadStackAllocExpr));
-                    context.Put(res);
-            }
-            else
-            {
-                var res = context.Expr.Get<ExpressionSyntax>();
+            var res = GenerateLiteral(0).WithAdditionalDiagnostics(
+                new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidStackAlloc));
                 context.Put(res);
-            }
+            return;
         }
 
-
-            // There are 2 variations
-            // SyntaxKind.StackAllocArrayCreationExpression          // for an explicitly typed array
-            // such as STACKALLOC <INT> {....}
-            // this is in our language a literalarray expression with a type prefix
-            // The literal array is parsed as an initializer
-            // and
-            // STACKALLOC INT[]{size}
-            // this is ctorcall with a datatype of type arrayDatatype
-            // SyntaxKind.ImplicitStackAllocArrayCreationExpression  // for an implicitly typed array
-
-            /*
-            TypeSyntax baseType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword));
-            if (expr is GenericNameSyntax gns)
-            {
-                var count = gns.TypeArgumentList.Arguments.Count;
-                if (count != 1)`
-                {
-                    context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(
-                                      new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, context.Expr.GetText(), count)));
-                    return true;
-                }
-                baseType = gns.TypeArgumentList.Arguments[0];
-            }
-            ArgumentListSyntax argList;
-            if (context.ArgList != null)
-            {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            }
-            else
-            {
-                argList = EmptyArgumentList();
-            }
-            if (argList.Arguments.Count != 1)
-            {
-                expr = GenerateLiteral(0).WithAdditionalDiagnostics(
-                    new SyntaxDiagnosticInfo(ErrorCode.ERR_BadStackAllocExpr));
-                context.Put(expr);
-                return true;
-            }
-            var sizes = MakeSeparatedList<ExpressionSyntax>(argList.Arguments[0].Expression);
-            var rank = _syntaxFactory.ArrayRankSpecifier(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                sizes,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)
-                );
-            var type = _syntaxFactory.ArrayType(baseType, rank);
-            expr = _syntaxFactory.StackAllocArrayCreationExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.StackAllocKeyword), type, null);
-            context.Put(expr);
-            return true;
-            */
-        
 
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {

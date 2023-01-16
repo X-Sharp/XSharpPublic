@@ -2096,6 +2096,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_XPPAccessorCount = 9210,
         ERR_XPPPropertyDeclarationTypeMismatch = 9211,
 
+        ERR_InvalidStackAlloc = 9212,
+
         WRN_FoxUnsupportedClause = 9230,
         ERR_FoxAsClauseMandatory = 9231,
         ERR_FoxCtorDtor = 9232,

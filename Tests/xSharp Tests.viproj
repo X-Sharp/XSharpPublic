@@ -77219,8 +77219,8 @@ FileGUID = AF42739E-6D94-49E7-95ED-029782073C59
 FileType = Code
 CopyToBin = 0
 [C666 - Bogus evil warning with function named ToString in a library References]
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 ReferenceGAC = CLR4,mscorlib,1,0,4.0.0.0
 [C666 - Bogus evil warning with function named ToString in a library Resources]
 [C666 - Bogus evil warning with function named ToString in a library Native Resources]
@@ -83947,8 +83947,8 @@ FileType = Code
 CopyToBin = 0
 [C719 - VO incompatibilities with numeric opearations References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C719 - VO incompatibilities with numeric opearations Resources]
 [C719 - VO incompatibilities with numeric opearations Native Resources]
 [C719 - VO incompatibilities with numeric opearations License files]
@@ -88407,8 +88407,8 @@ FileType = Code
 CopyToBin = 0
 [C740 - Problem with passing VOSTRUCT when /vo7 is enabled References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C740 - Problem with passing VOSTRUCT when /vo7 is enabled Resources]
 [C740 - Problem with passing VOSTRUCT when /vo7 is enabled Native Resources]
 [C740 - Problem with passing VOSTRUCT when /vo7 is enabled License files]
@@ -88521,8 +88521,8 @@ FileType = Code
 CopyToBin = 0
 [C741 - Problems passing strongly typed vars by reference with the @ operator in late bound calls References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C741 - Problems passing strongly typed vars by reference with the @ operator in late bound calls Resources]
 [C741 - Problems passing strongly typed vars by reference with the @ operator in late bound calls Native Resources]
 [C741 - Problems passing strongly typed vars by reference with the @ operator in late bound calls License files]
@@ -96640,8 +96640,8 @@ FileType = Code
 CopyToBin = 0
 [C779 - Internal compiler error with Default(USUAL) used as argument References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C779 - Internal compiler error with Default(USUAL) used as argument Resources]
 [C779 - Internal compiler error with Default(USUAL) used as argument Native Resources]
 [C779 - Internal compiler error with Default(USUAL) used as argument License files]
@@ -97667,8 +97667,8 @@ FileType = Code
 CopyToBin = 0
 [C781 - Internal compiler error with DIM AS STRING and /vo2+ References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C781 - Internal compiler error with DIM AS STRING and /vo2+ Resources]
 [C781 - Internal compiler error with DIM AS STRING and /vo2+ Native Resources]
 [C781 - Internal compiler error with DIM AS STRING and /vo2+ License files]
@@ -98012,8 +98012,8 @@ FileType = Code
 CopyToBin = 0
 [R787 - FoxPro Null_Date References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [R787 - FoxPro Null_Date Resources]
 [R787 - FoxPro Null_Date Native Resources]
 [R787 - FoxPro Null_Date License files]
@@ -98126,9 +98126,9 @@ FileType = Code
 CopyToBin = 0
 [R788 - FoxPro LOCAL and Array References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.VFP.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
 [R788 - FoxPro LOCAL and Array Resources]
 [R788 - FoxPro LOCAL and Array Native Resources]
 [R788 - FoxPro LOCAL and Array License files]
@@ -98580,9 +98580,9 @@ FileType = Code
 CopyToBin = 0
 [R790 - FoxPro Parameters by reference References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.VFP.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
 [R790 - FoxPro Parameters by reference Resources]
 [R790 - FoxPro Parameters by reference Native Resources]
 [R790 - FoxPro Parameters by reference License files]
@@ -98695,8 +98695,8 @@ FileType = Code
 CopyToBin = 0
 [R791 - Trevors Problem with ADS Management API References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [R791 - Trevors Problem with ADS Management API Resources]
 [R791 - Trevors Problem with ADS Management API Native Resources]
 [R791 - Trevors Problem with ADS Management API License files]
@@ -108446,8 +108446,8 @@ FileType = Code
 CopyToBin = 0
 [C842 - Incorrect warnings with conversions when /vo4 or /vo11 are enabled References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
 [C842 - Incorrect warnings with conversions when /vo4 or /vo11 are enabled Resources]
 [C842 - Incorrect warnings with conversions when /vo4 or /vo11 are enabled Native Resources]
 [C842 - Incorrect warnings with conversions when /vo4 or /vo11 are enabled License files]
@@ -115337,9 +115337,9 @@ FileType = Code
 CopyToBin = 0
 [Tester References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VO,1,0,2.6.0.0
 [Tester Resources]
 [Tester Native Resources]
 [Tester License files]
@@ -116332,7 +116332,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
@@ -117466,7 +117466,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R882 - Interpolated strings with incorrect number of braces
 
-ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION R883 - StackAlloc Array *************
 Application = R883 - StackAlloc Array
 IDEVersion = 1.06
@@ -117736,8 +117736,8 @@ FileType = Code
 CopyToBin = 0
 [C878 - Preprocessor problem with the SUM UDC (with nested brackets) References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C878 - Preprocessor problem with the SUM UDC (with nested brackets) Resources]
 [C878 - Preprocessor problem with the SUM UDC (with nested brackets) Native Resources]
 [C878 - Preprocessor problem with the SUM UDC (with nested brackets) License files]
@@ -117807,7 +117807,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C878 - Preprocessor problem with the SUM UDC (with nested brackets)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C879 - Compiler incorrectly selects constructor overload with OBJECT[] parameter *************
 Application = C879 - Compiler incorrectly selects constructor overload with OBJECT[] parameter
 IDEVersion = 1.06
@@ -117851,8 +117851,8 @@ CopyToBin = 0
 [C879 - Compiler incorrectly selects constructor overload with OBJECT[] parameter References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Xml.Linq,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
 [C879 - Compiler incorrectly selects constructor overload with OBJECT[] parameter Resources]
 [C879 - Compiler incorrectly selects constructor overload with OBJECT[] parameter Native Resources]
 [C879 - Compiler incorrectly selects constructor overload with OBJECT[] parameter License files]

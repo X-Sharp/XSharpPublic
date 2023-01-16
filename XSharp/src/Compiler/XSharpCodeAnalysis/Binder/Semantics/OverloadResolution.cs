@@ -273,9 +273,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             return BetterResult.Neither;
         }
 
-        private bool checkMatchingParameters(ImmutableArray<ParameterSymbol> pars, ArrayBuilder<BoundExpression> arguments, ref int score, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        private bool checkMatchingParameters(ImmutableArray<ParameterSymbol> pars, ArrayBuilder<BoundExpression> arguments,
+            ref int score, ref HashSet<DiagnosticInfo> useSiteDiagnostics, out bool hasArrayPar, out bool hasArrayBasePar)
         {
             var equals = true;
+            hasArrayBasePar = hasArrayPar = false;
             int len = pars.Length;
             if (arguments.Count < len)
             {
@@ -284,6 +286,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             for (int i = 0; i < len; i++)
             {
                 var parType = pars[i].Type;
+                hasArrayBasePar |= parType.IsArrayBaseType();
+                hasArrayPar |= parType.IsArrayType();
                 var arg = arguments[i];
                 var argType = arguments[i].Type;
                 if (argType is not { })
@@ -297,12 +301,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (TypeEquals(parType, argType, ref useSiteDiagnostics))
                 {
                     score += matchScore;
-                    continue;
-                }
-                if (parType.IsArrayType() && (argType.IsUsualType() || argType.IsArrayType() || argType.IsObjectType()))
-                {
-                    // Make sure function with array argument have preference when array type is passed
-                    score += 80;
                     continue;
                 }
                 if (parType.TypeKind == TypeKind.Enum)
@@ -586,8 +584,16 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             int leftScore = 0;
             int rightScore = 0;
-            bool equalLeft = checkMatchingParameters(parsLeft, arguments, ref leftScore, ref useSiteDiagnostics);
-            bool equalRight = checkMatchingParameters(parsRight, arguments, ref rightScore, ref useSiteDiagnostics);
+            bool equalLeft = checkMatchingParameters(parsLeft, arguments, ref leftScore, ref useSiteDiagnostics, out var hasArrayParL, out var hasArrayBaseParL);
+            bool equalRight = checkMatchingParameters(parsRight, arguments, ref rightScore, ref useSiteDiagnostics, out var hasArrayParR, out var hasArrayBaseParR);
+            if (equalLeft && equalRight)
+            {
+                if (hasArrayParL && hasArrayBaseParR)
+                    return BetterResult.Left;
+                if (hasArrayParR && hasArrayBaseParL)
+                    return BetterResult.Right;
+
+            }
             bool Ambiguous = false;
             var asm1 = m1.Member.ContainingAssembly;
             var asm2 = m2.Member.ContainingAssembly;
@@ -890,8 +896,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             var parsLeft = m1.Member.GetParameters();
             var parsRight = m2.Member.GetParameters();
             int score = 0;
-            bool equalLeft = checkMatchingParameters(parsLeft, arguments, ref score, ref useSiteDiagnostics);
-            bool equalRight = checkMatchingParameters(parsRight, arguments, ref score, ref useSiteDiagnostics);
+            bool equalLeft = checkMatchingParameters(parsLeft, arguments, ref score, ref useSiteDiagnostics, out _, out _);
+            bool equalRight = checkMatchingParameters(parsRight, arguments, ref score, ref useSiteDiagnostics, out _, out _);
             return PreferMostDerived(m1, m2, ref useSiteDiagnostics, equalLeft, equalRight);
         }
         private BetterResult VoBetterOperator(BinaryOperatorSignature op1, BinaryOperatorSignature op2, BoundExpression left, BoundExpression right, ref HashSet<DiagnosticInfo> useSiteDiagnostics)

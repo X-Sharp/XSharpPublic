@@ -8846,15 +8846,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool afterBackSlash = false;
             bool inString = false;
             int nestLevel = 0;
-            char last = '\0';
+            bool skipNext = false;
             SyntaxDiagnosticInfo info = null;
-            foreach (char c in text)
+            //foreach (char c in text)
+            for (int i = 0; i < text.Length; i++)
             {
-                var charToAppend = c;
+                if (skipNext)
+                {
+                    skipNext = false;
+                    continue;
+                }
+                var c = text[i];
+                var nextChar = i < text.Length-1 ? text[i+1] : '\0';
                 if (inString && c != '\\' && !afterBackSlash)
                 {
                     sbCurrent.Append(c);
-                    last = c;
                     continue;
                 }
                 else
@@ -8862,24 +8868,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     switch (c)
                     {
                         case '{':
-                            if (last != '{')        // double { is escaped {
+                            if (nextChar != '{')
                             {
                                 nestLevel++;
                                 if (nestLevel == 1)
                                 {
                                     sbCurrent = sbExpr;
                                     sbMask.Append("{" + expressions.Count.ToString() + "}");
-                                    last = c;
                                     continue;
                                 }
                             }
                             else
                             {
-                                ;// normal processing so we add a {
+                                sbMask.Append("{{");
+                                skipNext = true;
+                                continue;
                             }
                             break;
                         case '}':
-                            if (last != '}')// double } is escaped }
+                            if (nextChar != '}')
                             {
                                 nestLevel--;
                                 if (nestLevel == 0)
@@ -8887,7 +8894,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     sbCurrent = sbMask;
                                     expressions.Add(sbExpr.ToString());
                                     sbExpr.Clear();
-                                    last = '\0';
                                     continue;
                                 }
                                 else
@@ -8897,7 +8903,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                ;// normal processing so we add a }
+                                sbMask.Append("}}");
+                                skipNext = true;
+                                continue;
                             }
                             break;
                         case '\\':
@@ -8911,7 +8919,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 else
                                 {
                                     afterBackSlash = true;
-                                    last = c;
                                     // do not add character
                                     continue;
                                 }
@@ -8928,15 +8935,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 if (c == 'n' || c == 'N')
                                 {
-                                    charToAppend = '\n';
+                                    c = '\n';
                                 }
                                 else if (c == 'r' || c == 'R')
                                 {
-                                    charToAppend = '\r';
+                                    c = '\r';
                                 }
                                 else if (c == 't' || c == 'T')
                                 {
-                                    charToAppend = '\t';
+                                    c = '\t';
                                 }
                                 else
                                 {
@@ -8948,8 +8955,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             break;
                     }
                 }
-                sbCurrent.Append(charToAppend);
-                last = charToAppend;
+                sbCurrent.Append(c);
             }
             if (info != null)
             {
@@ -8968,9 +8974,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int iparam = 0;
             string sMask = sbMask.ToString();
             ExpressionSyntax res;
-            bool allowDot = _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context,PragmaOptions);
+            bool allowDot = _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions);
             foreach (var e in expressions)
             {
+                if (e.Length == 0)
+                {
+                    var subexpr = GenerateLiteral("").WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExpressionExpected));
+                    subexpr.XNode = context;
+                    exprSyntax.Add(subexpr);
+                    continue;
+                }
                 string format = null;
                 string expr = e;
                 int pos = expr.IndexOf(':');

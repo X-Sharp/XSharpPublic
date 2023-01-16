@@ -117466,7 +117466,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R882 - Interpolated strings with incorrect number of braces
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R883 - StackAlloc Array *************
 Application = R883 - StackAlloc Array
 IDEVersion = 1.06

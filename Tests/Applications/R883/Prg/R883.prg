@@ -1,6 +1,7 @@
 FUNCTION Start() AS VOID STRICT
     VAR x := StackAlloc <dword>{1,2,3,4,5,6,7,8,9,10}
     VAR y := StackAlloc dword[]{10}
+    var z := STACKALLOC 10
     xAssert(x[1] == 1)
     xAssert(x[10] == 10)
     ? x[1], x[2], x[3], x[4]

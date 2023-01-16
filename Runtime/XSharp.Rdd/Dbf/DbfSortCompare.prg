@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -62,7 +62,7 @@ BEGIN NAMESPACE XSharp.RDD
                       ENDIF      
                         //
                     ELSE
-                        FOR VAR i := 0 TO iLen
+                        FOR VAR i := 0 TO iLen - 1
                             diff := recordBufferX[i + start] - recordBufferY[i + start]
                             IF diff != 0
                                 EXIT

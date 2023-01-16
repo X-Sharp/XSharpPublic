@@ -7641,7 +7641,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitStackAllocExpression([NotNull] XP.StackAllocExpressionContext context)
         {
-            var expr = context.Expr.Get<ExpressionSyntax>();
+            bool ok = false;
+            var expr = context.Expr;
+            if (expr is XP.PrimaryExpressionContext prim)
+            {
+                switch (prim.Expr)
+                {
+                    case XP.LiteralArrayExpressionContext lit:
+                        ok = true;
+                        break;
+                    case XP.CtorCallContext ctor:
+                        ok = true;
+                        break;
+
+                }
+            }
+            if (!ok)
+            {
+                var res= GenerateLiteral(0).WithAdditionalDiagnostics(
+                    new SyntaxDiagnosticInfo(ErrorCode.ERR_BadStackAllocExpr));
+                    context.Put(res);
+            }
+            else
+            {
+                var res = context.Expr.Get<ExpressionSyntax>();
+                context.Put(res);
+            }
+        }
+
+
             // There are 2 variations
             // SyntaxKind.StackAllocArrayCreationExpression          // for an explicitly typed array
             // such as STACKALLOC <INT> {....}
@@ -7693,7 +7721,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(expr);
             return true;
             */
-        }
+        
 
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {

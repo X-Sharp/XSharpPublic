@@ -1067,7 +1067,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitArrayOfType([NotNull] XP.ArrayOfTypeContext context)
         {
-            var type = MakeGenericName(OurTypeNames.ArrayBase, context.TypeName.Get<TypeSyntax>());
+            var type = MakeGenericName(OurTypeNames.ArrayBaseType, context.TypeName.Get<TypeSyntax>());
             var qtype = _syntaxFactory.QualifiedName(GenerateSimpleName("XSharp"),
                 SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                 type);

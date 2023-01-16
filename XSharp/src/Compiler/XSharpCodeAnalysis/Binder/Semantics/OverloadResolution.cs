@@ -67,7 +67,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             return normalResult;
         }
 
-
         private MemberAnalysisResult XsAddConstructorToCandidateSet(MemberAnalysisResult result, MethodSymbol constructor,
             AnalyzedArguments arguments, bool completeResults, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
@@ -236,7 +235,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             return BetterResult.Neither;
         }
 
-
         private bool TypeEquals(TypeSymbol parType, TypeSymbol argType, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             if (parType is { } && argType is { })
@@ -296,15 +294,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 var isConst = arg.ConstantValue != null;
                 var matchScore = isConst ? 90 : 100;
-                if (parType.IsArrayType() && (argType.IsUsualType() || argType.IsArrayType() || argType.IsObjectType()))
-                {
-                    // Make sure function with array argument have preference when array type is passed
-                    score += 500;
-                    continue;
-                }
                 if (TypeEquals(parType, argType, ref useSiteDiagnostics))
                 {
                     score += matchScore;
+                    continue;
+                }
+                if (parType.IsArrayType() && (argType.IsUsualType() || argType.IsArrayType() || argType.IsObjectType()))
+                {
+                    // Make sure function with array argument have preference when array type is passed
+                    score += 80;
                     continue;
                 }
                 if (parType.TypeKind == TypeKind.Enum)
@@ -467,7 +465,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return BetterResult.Right;
                 }
             }
-            return BetterResult.Neither; ;
+            return BetterResult.Neither;
         }
         private BetterResult MatchRefParameters(Symbol m1, Symbol m2, ArrayBuilder<BoundExpression> arguments, out HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
@@ -567,13 +565,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             return BetterResult.Neither;
         }
 
-        /// <summary>
-        /// This function tries to decide which of 2 overloads needs to be picked.
-        /// The logic is VERY complicated and fragile
-        /// In the code below m1 is called Left and m2 is called Right (to match the return BetterLeft and BetterRight)
-        /// </summary>
-        /// <returns></returns>
-        private BetterResult XsBetterFunctionMember1<TMember>(
+
+        private BetterResult XsBetterFunctionMemberImpl<TMember>(
             MemberResolutionResult<TMember> m1,
             MemberResolutionResult<TMember> m2,
             ArrayBuilder<BoundExpression> arguments,
@@ -581,32 +574,36 @@ namespace Microsoft.CodeAnalysis.CSharp
             )
             where TMember : Symbol
         {
-            BetterResult result = BetterResult.Neither;
-            bool Ambiguous = false;
-            // Prefer the member not declared in VulcanRT, if applicable
             useSiteDiagnostics = null;
-            int leftScore = 0;
-            int rightScore = 0;
-            var asm1 = m1.Member.ContainingAssembly;
-            var asm2 = m2.Member.ContainingAssembly;
+            BetterResult result = BetterResult.Neither;
+            var parsLeft = m1.Member.GetParameters();
+            var parsRight = m2.Member.GetParameters();
             var type1 = m1.Member.ContainingType;
             var type2 = m2.Member.ContainingType;
+
+             var func1 = m1.Member.IsStatic && type1.IsFunctionsClass();
+            var func2 = m2.Member.IsStatic && type2.IsFunctionsClass();
+
+            int leftScore = 0;
+            int rightScore = 0;
+            bool equalLeft = checkMatchingParameters(parsLeft, arguments, ref leftScore, ref useSiteDiagnostics);
+            bool equalRight = checkMatchingParameters(parsRight, arguments, ref rightScore, ref useSiteDiagnostics);
+            bool Ambiguous = false;
+            var asm1 = m1.Member.ContainingAssembly;
+            var asm2 = m2.Member.ContainingAssembly;
             var rt1 = asm1.IsRT();
             var rt2 = asm2.IsRT();
             bool bothRT = rt1 && rt2;
-            var parsLeft = m1.Member.GetParameters();
-            var parsRight = m2.Member.GetParameters();
-            bool equalLeft = checkMatchingParameters(parsLeft, arguments, ref leftScore, ref useSiteDiagnostics);
-            bool equalRight = checkMatchingParameters(parsRight, arguments, ref rightScore, ref useSiteDiagnostics);
+
+            var sig1 = GetSignature(m1.Member);
+            var sig2 = GetSignature(m2.Member);
+            var sdk1 = asm1.IsSdk();
+            var sdk2 = asm2.IsSdk();
             if (Compilation.Options.HasRuntime)
             {
-                var sig1 = GetSignature(m1.Member);
-                var sig2 = GetSignature(m2.Member);
-                var sdk1 = asm1.IsSdk();
-                var sdk2 = asm2.IsSdk();
                 if (sig1 == sig2)
-                { 
-                    if (type1.IsDerivedFrom(type2,TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
+                {
+                    if (type1.IsDerivedFrom(type2, TypeCompareKind.ConsiderEverything, ref useSiteDiagnostics))
                     {
                         return BetterResult.Left;
                     }
@@ -792,11 +789,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
-
             // generate warning that function takes precedence over static method
-            var func1 = m1.Member.IsStatic && type1.IsFunctionsClass();
-            var func2 = m2.Member.IsStatic && type2.IsFunctionsClass();
-
             if (func1 && !func2)
             {
                 result = BetterResult.Left;
@@ -816,9 +809,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return result;
 
             }
-
-            return BetterResult.Neither;
-            // Local Functions
             HashSet<DiagnosticInfo> GenerateWarning(Symbol r1, Symbol r2, ErrorCode warning)
             {
                 if (!bothRT)
@@ -847,6 +837,48 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return GenerateWarning(s1, s2, ErrorCode.WRN_FunctionsTakePrecedenceOverMethods);
             }
+            return BetterResult.Neither;
+        }
+
+        /// <summary>
+        /// This function tries to decide which of 2 overloads needs to be picked.
+        /// The logic is VERY complicated and fragile
+        /// In the code below m1 is called Left and m2 is called Right (to match the return BetterLeft and BetterRight)
+        /// </summary>
+        /// <returns></returns>
+        private BetterResult XsBetterFunctionMember1<TMember>(MemberResolutionResult<TMember> m1,
+            MemberResolutionResult<TMember> m2,
+            ArrayBuilder<BoundExpression> arguments,
+            out HashSet<DiagnosticInfo> useSiteDiagnostics
+            )
+        where TMember : Symbol
+        {
+            // Prefer the member not declared in VulcanRT, if applicable
+            useSiteDiagnostics = null;
+            var parsLeft = m1.Member.GetParameters();
+            var parsRight = m2.Member.GetParameters();
+            var type1 = m1.Member.ContainingType;
+            var type2 = m2.Member.ContainingType;
+
+            // we only want to use "our" logic when:
+            // a function is involved
+            // when one of the parameters or arguments is one or our types or an array of one of our types
+            // When one of the arguments is an enum (we allow more implicit conversions)
+            // are there any other situations?
+            var func1 = m1.Member.IsStatic && type1.IsFunctionsClass();
+            var func2 = m2.Member.IsStatic && type2.IsFunctionsClass();
+            var useOurLogic = func1 || func2 ||
+                parsLeft.Any((p) => p.Type.IsOurType() || p.RefKind.IsByRef()) ||
+                parsRight.Any((p) => p.Type.IsOurType() || p.RefKind.IsByRef()) ||
+                arguments.Any((p) => p.Type.IsOurType() ||
+                arguments.Any((p) => p.Type is { } && p.Type.IsEnumType()));
+
+            if (useOurLogic)
+            {
+                return XsBetterFunctionMemberImpl(m1, m2, arguments, out useSiteDiagnostics);
+            }
+            return BetterResult.Neither;
+            // Local Functions
         }
 
         private BetterResult XsBetterFunctionMember2<TMember>(ArrayBuilder<BoundExpression> arguments,
@@ -1011,10 +1043,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return BetterResult.Right;
                     if (right.Type.SpecialType == SpecialType.System_DateTime && left.Type.IsDateType())
                         return BetterResult.Left;
-
-
                 }
-
             }
             // Solve Literal operations such as generated by ForNext statement
             var literal = right.Kind == BoundKind.Literal;

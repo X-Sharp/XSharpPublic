@@ -16,7 +16,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         internal const string CodeBlockType = "Codeblock";
         internal const string UsualType = "__Usual";
-        internal const string ArrayBase = "__ArrayBase";
+        internal const string ArrayBaseType = "__ArrayBase";
         internal const string ArrayType = "__Array";
         internal const string PszType = "__Psz";
         internal const string SymbolType = "__Symbol";

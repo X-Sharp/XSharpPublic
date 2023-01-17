@@ -813,7 +813,8 @@ expression          : Expr=expression Op=(DOT | COLON) Name=simpleName         #
                     | {IsTypeCastAllowed() }? LPAREN Type=datatype RPAREN Expr=expression  #typeCast    // (typename) expr
                     | Expr=expression Op=(INC | DEC)                            #postfixExpression      // expr ++/--
                     | Op=AWAIT Expr=expression                                  #awaitExpression        // AWAIT expr
-                    | Op=STACKALLOC Expr=expression                             #stackAllocExpression   // STACKALLOC expr
+                    // The predicate prevents STACKALLOC(123) from being parsed as a STACKALLOC <ParenExpression>
+                    | {InputStream.La(2) != LPAREN }? Op=STACKALLOC Expr=expression  #stackAllocExpression   // STACKALLOC expr 
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
                     | Expr=expression Op=IS Type=datatype (VAR Id=varidentifier)? #typeCheckExpression    // expr IS typeORid [VAR identifier]
                     | Expr=expression Op=ASTYPE Type=datatype                   #typeCheckExpression    // expr AS TYPE typeORid

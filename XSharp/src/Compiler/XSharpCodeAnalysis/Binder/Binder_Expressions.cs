@@ -350,6 +350,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 // parameter declared with REF and argument passed with @
                                 adjust = true;
+                                isRefKindMismatch = false;
                             }
                             else if (parType.IsPointerType())
                             {
@@ -366,15 +367,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 arg = baoo.Operand;
                             }
                         }
-                        else if (arg is BoundLiteral bl && bl.IsLiteralNull())
-                        {
-                            adjust = false;
-                        }
                     }
                     if (isRefKindMismatch)
                     {
                         adjust = true;
                         Error(diagnostics, ErrorCode.WRN_AutomaticRefGeneration, arg.Syntax, i + 1, parRefKind);
+                    }
+                    if (arg is BoundLiteral bl && bl.IsLiteralNull())
+                    {
+                        adjust = false;
                     }
                     if (adjust)
                     {

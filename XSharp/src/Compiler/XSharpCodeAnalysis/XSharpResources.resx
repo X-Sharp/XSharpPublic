@@ -7672,6 +7672,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_InvalidStackAlloc" xml:space="preserve">
   <value>The STACKALLOC keyword needs to be followed by a literal array or an array creation expression.</value>
   </data>
+  <data name="ERR_DotForInstanceMember" xml:space="preserve">
+  <value>You cannot access the instance member '{0}' with the DOT '.' operator.</value>
+  </data>
 
 </root>
 

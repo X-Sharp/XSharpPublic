@@ -2081,6 +2081,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_BadAddressOfArg = 9109,
         WRN_String2PszMustBeAssignedToLocal = 9110,
         ERR_DefineIncorrectValue = 9111,
+        ERR_DotForInstanceMember = 9112,
+        ERR_InvalidStackAlloc = 9113,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,
@@ -2095,8 +2097,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_XPPClassNotFound = 9209,
         ERR_XPPAccessorCount = 9210,
         ERR_XPPPropertyDeclarationTypeMismatch = 9211,
-
-        ERR_InvalidStackAlloc = 9212,
 
         WRN_FoxUnsupportedClause = 9230,
         ERR_FoxAsClauseMandatory = 9231,

@@ -8,6 +8,10 @@ using System.Diagnostics;
 using Microsoft.VisualStudio.Debugger.ComponentInterfaces;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
+#if XSHARP
+using Microsoft.CodeAnalysis.PooledObjects;
+using XResources = LanguageService.CodeAnalysis.ExpressionEvaluator.Resources;
+#endif
 
 namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 {
@@ -66,7 +70,11 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                 declaredTypeAndInfo: elementTypeAndInfo,
                 useDebuggerDisplay: false,
                 value: value,
-                displayValue: wasExceptionThrown ? string.Format(Resources.InvalidPointerDereference, fullName ?? parent.Name) : null,
+#if XSHARP				
+                displayValue: wasExceptionThrown ? string.Format(XResources.InvalidPointerDereference, fullName ?? parent.Name) : null,
+#else				
+				displayValue: wasExceptionThrown ? string.Format(Resources.InvalidPointerDereference, fullName ?? parent.Name) : null,
+#endif			
                 expansion: expansion,
                 childShouldParenthesize: true,
                 fullName: fullName,

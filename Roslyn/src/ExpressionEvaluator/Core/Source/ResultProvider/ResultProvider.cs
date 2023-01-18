@@ -9,7 +9,9 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+#if !XSHARP
 using Microsoft.CodeAnalysis.ErrorReporting;
+#endif
 using Microsoft.VisualStudio.Debugger;
 using Microsoft.VisualStudio.Debugger.CallStack;
 using Microsoft.VisualStudio.Debugger.Clr;
@@ -17,6 +19,7 @@ using Microsoft.VisualStudio.Debugger.ComponentInterfaces;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
 using Microsoft.VisualStudio.Debugger.Metadata;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 using Type = Microsoft.VisualStudio.Debugger.Metadata.Type;
 

@@ -3047,7 +3047,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //remove the # from the string
             symbol = symbol.Substring(1);
             var expr = CreateObject(_symbolType, MakeArgumentList(MakeArgument(GenerateLiteral(symbol.ToUpper()))));
-            if (_options.MacroScript)
+            if (_options.MacroScript || _options.Kind == SourceCodeKind.Script)
                 return expr;
             var lsym = "_" + symbol.ToLower();
             if (!_literalSymbols.ContainsKey(lsym))

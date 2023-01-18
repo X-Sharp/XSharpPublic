@@ -5993,7 +5993,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var currentclass = ClassEntities.Peek();
                 var sName = _options.MacroScript ? "Xs$Macro" : CurrentEntity.ShortName;
-                staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + sName +"$"+context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix(context);
+                staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + sName + "$" + context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix(context);
                 initName = staticName + XSharpSpecialNames.StaticLocalInitFieldNameSuffix;
                 lockName = staticName + XSharpSpecialNames.StaticLocalLockFieldNameSuffix;
                 if (initExpr == null)

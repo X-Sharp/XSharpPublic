@@ -24,7 +24,10 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
         }
 
         internal override bool IgnoreCase => false;
-
+#if XSHARP
+        internal override Guid LanguageId => DkmLanguageId.@CSharp;
+#else
         internal override Guid LanguageId => DkmLanguageId.CSharp;
+#endif		
     }
 }

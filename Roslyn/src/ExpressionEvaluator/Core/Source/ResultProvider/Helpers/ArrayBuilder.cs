@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#if !XSHARP
 #nullable disable
 
 #pragma warning disable CA1825 // Avoid zero-length array allocations.
@@ -129,3 +130,4 @@ namespace Microsoft.CodeAnalysis
         }
     }
 }
+#endif

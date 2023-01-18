@@ -9,18 +9,28 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE;
 using Microsoft.CodeAnalysis.ExpressionEvaluator;
 using Microsoft.CodeAnalysis.Symbols;
-
+#if XSHARP
+using XMetadataDecoder = Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.MetadataDecoder;
+#endif
 namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
 {
     internal sealed class CSharpEESymbolProvider : EESymbolProvider<TypeSymbol, LocalSymbol>
     {
+#if XSHARP
+        private readonly XMetadataDecoder _metadataDecoder;
+#else
         private readonly MetadataDecoder _metadataDecoder;
+#endif
         private readonly SourceAssemblySymbol _sourceAssembly;
         private readonly PEMethodSymbol _method;
 
         public CSharpEESymbolProvider(SourceAssemblySymbol sourceAssembly, PEModuleSymbol module, PEMethodSymbol method)
         {
+#if XSHARP
+            _metadataDecoder = new XMetadataDecoder(module, method);
+#else
             _metadataDecoder = new MetadataDecoder(module, method);
+#endif
             _sourceAssembly = sourceAssembly;
             _method = method;
         }

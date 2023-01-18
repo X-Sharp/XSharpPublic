@@ -21,6 +21,9 @@ using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.DiaSymReader;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Roslyn.Utilities;
+#if XSHARP
+using XMetadataDecoder = Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.MetadataDecoder;
+#endif
 
 namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
 {
@@ -151,8 +154,11 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
             var currentFrame = compilation.GetMethod(moduleVersionId, methodHandle);
             RoslynDebug.AssertNotNull(currentFrame);
             var symbolProvider = new CSharpEESymbolProvider(compilation.SourceAssembly, (PEModuleSymbol)currentFrame.ContainingModule, currentFrame);
-
+#if XSHARP
+            var metadataDecoder = new XMetadataDecoder((PEModuleSymbol)currentFrame.ContainingModule, currentFrame);
+#else
             var metadataDecoder = new MetadataDecoder((PEModuleSymbol)currentFrame.ContainingModule, currentFrame);
+#endif
             var localInfo = metadataDecoder.GetLocalInfo(localSignatureHandle);
 
             var typedSymReader = (ISymUnmanagedReader3?)symReader;

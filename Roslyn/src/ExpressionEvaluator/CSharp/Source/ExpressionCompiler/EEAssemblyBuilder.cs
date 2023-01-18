@@ -129,8 +129,11 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
             {
                 _locals = locals;
             }
-
+#if XSHARP
+            public override void AddPreviousLocals(PooledObjects.ArrayBuilder<Cci.ILocalDefinition> builder)
+#else
             public override void AddPreviousLocals(ArrayBuilder<Cci.ILocalDefinition> builder)
+#endif
             {
                 builder.AddRange(_locals);
             }

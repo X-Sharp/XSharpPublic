@@ -13,7 +13,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using FieldInfo = Microsoft.VisualStudio.Debugger.Metadata.FieldInfo;
 using Type = Microsoft.VisualStudio.Debugger.Metadata.Type;
-
+#if XSHARP
+using Microsoft.CodeAnalysis.PooledObjects;
+#endif
 namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 {
     internal sealed class TupleExpansion : Expansion
@@ -342,8 +344,13 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                 declaringTypeAndInfo = restTypeAndInfo;
                 offset += TypeHelpers.TupleFieldRestPosition - 1;
             }
-
+#if XSHARP
+            var r = new ReadOnlyCollection<Field>(builder.ToArray());
+            builder.Free();
+            return new Fields(r, includeRawView);
+#else
             return new Fields(builder.ToImmutableAndFree(), includeRawView);
+#endif			
         }
 
         private static TypeAndCustomInfo GetTupleFieldTypeAndInfo(

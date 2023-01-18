@@ -8,6 +8,9 @@ using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+#if XSHARP
+using Microsoft.CodeAnalysis.PooledObjects;
+#endif
 
 namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 {

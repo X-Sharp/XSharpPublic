@@ -36,14 +36,14 @@ namespace XSharpDebugger.ExpressionCompiler
     {
         static void UpdateXSharpParseOptions()
         {
-            if (SyntaxHelpers.XSharpParseOptions == null)
+            if (SyntaxHelpers.ParseOptions == null)
             {
                 var xoptions = XSharpSpecificCompilationOptions.Default;
                 xoptions.SetDialect(XSharpDialect.VO);
                 xoptions.SetOption(CompilerOption.MemVars, true);
                 xoptions.SetOption(CompilerOption.UndeclaredMemVars, true);
                 xoptions.SetOption(CompilerOption.ArrayZero, false);
-                SyntaxHelpers.XSharpParseOptions = SyntaxHelpers.ParseOptions.WithKind(SourceCodeKind.Script).WithMacroScript(false).WithXSharpSpecificOptions(xoptions);
+                SyntaxHelpers.ParseOptions = XSharpParseOptions.Default.WithKind(SourceCodeKind.Script).WithMacroScript(false).WithXSharpSpecificOptions(xoptions);
             }
         }
 

@@ -114,11 +114,13 @@
     <Content Include="XSharp.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="XSharp.CodeAnalysis">
-      <HintPath>..\..\..\XSharpDev\XSharp\artifacts\bin\XSharpCodeAnalysis\Debug\net472\XSharp.CodeAnalysis.dll</HintPath>
+    <Reference Include="XSharp.CodeAnalysis, Version=2.15.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.Evaluator">
-      <HintPath>..\..\..\XSharpDev\XSharp\artifacts\bin\XSharpEvaluator\Debug\net472\XSharp.Evaluator.dll</HintPath>
+    <Reference Include="XSharp.Evaluator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
     </Reference>
   </ItemGroup>
   <PropertyGroup>

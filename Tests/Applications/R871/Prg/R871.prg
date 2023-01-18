@@ -3,10 +3,10 @@
 
 function Start() as void strict
      try
-      Dummy{}.Test(42)
-      xAssert(Dummy{}.Test(42) == 42)
-      Dummy{}.Test("abc")
-      xAssert(Dummy{}.Test("abc") == 0)
+      Dummy{}:Test(42)
+      xAssert(Dummy{}:Test(42) == 42)
+      Dummy{}:Test("abc")
+      xAssert(Dummy{}:Test("abc") == 0)
       catch e as Exception
           ? e:ToString()
      end try
@@ -20,7 +20,7 @@ class Dummy
 
         if (param is int)
             nParam := (int)param
-           self.test(nparam)
+           self:test(nparam)
         else
             ? "Param not an int :" + param:ToString()
         endif
@@ -28,7 +28,7 @@ class Dummy
         return 0
 
     method Test(param as int?) as int
-        ? "Param is int : " + (param ?? 0).toString()
+        ? "Param is int : " + (param ?? 0):toString()
         return param:Value
 end class
 

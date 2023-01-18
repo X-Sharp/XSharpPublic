@@ -2334,6 +2334,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "OVERRIDE", OVERRIDE},
                     { "REMOVE", REMOVE},
                     { "SELECT", SELECT},
+                    { "STACKALLOC", STACKALLOC},
                     { "SWITCH", SWITCH},
                     { "UNCHECKED", UNCHECKED},
                     { "UNSAFE", UNSAFE},

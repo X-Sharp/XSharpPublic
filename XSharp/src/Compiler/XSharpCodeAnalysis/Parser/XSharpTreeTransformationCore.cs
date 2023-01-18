@@ -27,6 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     using Microsoft.CodeAnalysis.Text;
     using System.Net.Http.Headers;
     using System.Net.Mime;
+    using System.Security.Cryptography;
 
     internal partial class XSharpTreeTransformationCore : XSharpBaseListener
     {
@@ -6178,7 +6179,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitRepeatStmt([NotNull] XP.RepeatStmtContext context)
         {
             context.SetSequencePoint(context.end);
-            context.Expr.SetSequencePoint();
+            context.Expr.SetSequencePoint(); 
             var doKwd = context.r.SyntaxKeyword();
             var doStmt = _syntaxFactory.DoStatement(
                 attributeLists: default,
@@ -7639,49 +7640,49 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return true;
         }
 
-        private bool GenerateStackAlloc(XP.MethodCallContext context)
+        public override void ExitStackAllocExpression([NotNull] XP.StackAllocExpressionContext context)
         {
-            var expr = context.Expr.Get<ExpressionSyntax>();
-            TypeSyntax baseType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword));
-            if (expr is GenericNameSyntax gns)
+            var expr = context.Expr;
+            if (expr is XP.PrimaryExpressionContext prim)
             {
-                var count = gns.TypeArgumentList.Arguments.Count;
-                if (count != 1)
+                switch (prim.Expr)
                 {
-                    context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(
-                                      new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, context.Expr.GetText(), count)));
-                    return true;
+                    case XP.LiteralArrayExpressionContext lit:
+                        {
+                            var litArray = lit.LiteralArray;
+                            if (litArray.Type != null)
+                            {
+                                var acs = litArray.Get<ArrayCreationExpressionSyntax>();
+                                var saexpr = _syntaxFactory.StackAllocArrayCreationExpression(
+                                    SyntaxFactory.MakeToken(SyntaxKind.StackAllocKeyword), acs.Type, acs.Initializer);
+                                context.Put(saexpr);
+                                return;
+                            }
+                            else
+                            {
+                                var iacs = litArray.Get<ImplicitArrayCreationExpressionSyntax>();
+                                var saexpr = _syntaxFactory.ImplicitStackAllocArrayCreationExpression(
+                                SyntaxFactory.MakeToken(SyntaxKind.StackAllocKeyword), iacs.OpenBracketToken, iacs.CloseBracketToken, iacs.Initializer);
+                                context.Put(saexpr);
+                                return;
+                            }
+                        }
+                    case XP.CtorCallContext ctor when ctor.Type is XP.ArrayDatatypeContext adtc:
+                        { 
+                            var ace = ctor.Get<ArrayCreationExpressionSyntax>();
+                            var saexpr = _syntaxFactory.StackAllocArrayCreationExpression(
+                                SyntaxFactory.MakeToken(SyntaxKind.StackAllocKeyword), ace.Type, ace.Initializer);
+                            context.Put(saexpr);
+                            return;
+                        }
                 }
-                baseType = gns.TypeArgumentList.Arguments[0];
             }
-            ArgumentListSyntax argList;
-            if (context.ArgList != null)
-            {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            }
-            else
-            {
-                argList = EmptyArgumentList();
-            }
-            if (argList.Arguments.Count != 1)
-            {
-                expr = GenerateLiteral(0).WithAdditionalDiagnostics(
-                    new SyntaxDiagnosticInfo(ErrorCode.ERR_BadStackAllocExpr));
-                context.Put(expr);
-                return true;
-            }
-            var sizes = MakeSeparatedList<ExpressionSyntax>(argList.Arguments[0].Expression);
-            var rank = _syntaxFactory.ArrayRankSpecifier(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                sizes,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)
-                );
-            var type = _syntaxFactory.ArrayType(baseType, rank);
-            expr = _syntaxFactory.StackAllocArrayCreationExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.StackAllocKeyword), type, null);
-            context.Put(expr);
-            return true;
+            var res = GenerateLiteral(0).WithAdditionalDiagnostics(
+                new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidStackAlloc));
+                context.Put(res);
+            return;
         }
+
 
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {
@@ -7697,10 +7698,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             switch (name)
             {
-                case XSharpIntrinsicNames.StackAlloc:
-                    if (GenerateStackAlloc(context))
-                        return;
-                    break;
                 case XSharpIntrinsicNames.AltD:
                     if (GenerateAltD(context))
                         return;
@@ -8810,15 +8807,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool afterBackSlash = false;
             bool inString = false;
             int nestLevel = 0;
-            char last = '\0';
+            bool skipNext = false;
             SyntaxDiagnosticInfo info = null;
-            foreach (char c in text)
+            //foreach (char c in text)
+            for (int i = 0; i < text.Length; i++)
             {
-                var charToAppend = c;
+                if (skipNext)
+                {
+                    skipNext = false;
+                    continue;
+                }
+                var c = text[i];
+                var nextChar = i < text.Length-1 ? text[i+1] : '\0';
                 if (inString && c != '\\' && !afterBackSlash)
                 {
                     sbCurrent.Append(c);
-                    last = c;
                     continue;
                 }
                 else
@@ -8826,24 +8829,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     switch (c)
                     {
                         case '{':
-                            if (last != '{')        // double { is escaped {
+                            if (nextChar != '{')
                             {
                                 nestLevel++;
                                 if (nestLevel == 1)
                                 {
                                     sbCurrent = sbExpr;
                                     sbMask.Append("{" + expressions.Count.ToString() + "}");
-                                    last = c;
                                     continue;
                                 }
                             }
                             else
                             {
-                                ;// normal processing so we add a {
+                                sbMask.Append("{{");
+                                skipNext = true;
+                                continue;
                             }
                             break;
                         case '}':
-                            if (last != '}')// double } is escaped }
+                            if (nextChar != '}')
                             {
                                 nestLevel--;
                                 if (nestLevel == 0)
@@ -8851,7 +8855,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     sbCurrent = sbMask;
                                     expressions.Add(sbExpr.ToString());
                                     sbExpr.Clear();
-                                    last = '\0';
                                     continue;
                                 }
                                 else
@@ -8861,7 +8864,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                ;// normal processing so we add a }
+                                sbMask.Append("}}");
+                                skipNext = true;
+                                continue;
                             }
                             break;
                         case '\\':
@@ -8875,7 +8880,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 else
                                 {
                                     afterBackSlash = true;
-                                    last = c;
                                     // do not add character
                                     continue;
                                 }
@@ -8892,15 +8896,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 if (c == 'n' || c == 'N')
                                 {
-                                    charToAppend = '\n';
+                                    c = '\n';
                                 }
                                 else if (c == 'r' || c == 'R')
                                 {
-                                    charToAppend = '\r';
+                                    c = '\r';
                                 }
                                 else if (c == 't' || c == 'T')
                                 {
-                                    charToAppend = '\t';
+                                    c = '\t';
                                 }
                                 else
                                 {
@@ -8912,8 +8916,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             break;
                     }
                 }
-                sbCurrent.Append(charToAppend);
-                last = charToAppend;
+                sbCurrent.Append(c);
             }
             if (info != null)
             {
@@ -8932,9 +8935,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int iparam = 0;
             string sMask = sbMask.ToString();
             ExpressionSyntax res;
-            bool allowDot = _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context,PragmaOptions);
+            bool allowDot = _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context, PragmaOptions);
             foreach (var e in expressions)
             {
+                if (e.Length == 0)
+                {
+                    var subexpr = GenerateLiteral("").WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExpressionExpected));
+                    subexpr.XNode = context;
+                    exprSyntax.Add(subexpr);
+                    continue;
+                }
                 string format = null;
                 string expr = e;
                 int pos = expr.IndexOf(':');

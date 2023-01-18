@@ -220,7 +220,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public interface ILoopStmtContext : IBlockStmtContext
         {
         }
-        public interface IBlockStmtContext : ISequencePointContext
+        public interface IBlockStmtContext 
         {
             StatementBlockContext Statements { get; }
         }
@@ -264,7 +264,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             DatatypeContext ReturnType { get; }
             ParameterListContext Params { get; }
         }
-        public interface IEntityContext : IRuleNode, IXParseTree, ISequencePointContext
+
+        public interface IEntityContext : IRuleNode, IXParseTree
         {
             string Name { get; }
             string ShortName { get; }
@@ -273,13 +274,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public interface IMultiElementContext
         {
             int Count { get; }
-        }
-        /// <summary>
-        /// This indicates that the entry can be a sequencepoint
-        /// </summary>
-        public interface ISequencePointContext
-        {
-
         }
         public interface IXPPMemberContext : IMemberWithBodyContext, IBodyWithLocalFunctions
         {
@@ -544,41 +538,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public bool HasRefArguments;
         }
-
-        public partial class GlobalAttributesContext : ISequencePointContext
-        {
-
-        }
-        public partial class ClassmemberContext : ISequencePointContext
-        {
-
-        }
-        public partial class StatementContext : ISequencePointContext
-        {
-
-        }
-        public partial class BinaryExpressionContext : ISequencePointContext
-        {
-
-        }
-        public partial class LinqQueryContext : ISequencePointContext
-        {
-
-        }
-
-        public partial class CodeBlockContext : ISequencePointContext
-        {
-
-        }
-        public partial class IifContext : ISequencePointContext
-        {
-
-        }
-        public partial class AliasExpressionContext : ISequencePointContext
-        {
-
-        }
-
         public partial class SourceContext : ISourceContext
         {
             public IList<PragmaOption> PragmaOptions { get; set; }

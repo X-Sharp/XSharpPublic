@@ -6496,7 +6496,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 options |= LookupOptions.MustBeInvocableIfMember;
             }
-
+#if XSHARP
+            if (node.XNode is XSharpParser.AccessMemberContext amc)
+            {
+                if (amc.Op.Type == XSharpLexer.DOT && ! leftType.IsVoStructOrUnion())
+                {
+                    if (! Compilation.Options.HasOption(CompilerOption.AllowDotForInstanceMembers, node))
+                    {
+                        Error(diagnostics, ErrorCode.ERR_DotForInstanceMember, node, right.ToString());
+                    }
+                }
+            }
+#endif            
             var lookupResult = LookupResult.GetInstance();
             try
             {

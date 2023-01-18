@@ -559,6 +559,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       StmtBlk=statementBlock
                       UNTIL Expr=expression
                       eos                                                 #repeatStmt
+
                     | (f=FOREACH | f=FOR EACH)
                       ( V=IMPLIED Id=varidentifier
                       | Id=varidentifier (AS Type=datatype)?
@@ -612,7 +613,7 @@ statement           : Decl=localdecl                            #declarationStmt
                     | D=DO Amp=AMP? Id=varidentifierName (WITH ArgList=argumentList)?  end=eos      #doStmt
 
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
-                      // validExpressionStmt checks for CONSTRUCTOR( or DESTRUCTOR(
+                      // validExpressionStmt check  for CONSTRUCTOR( or DESTRUCTOR(
                     | {validExpressionStmt()}? Exprs+=expression (COMMA Exprs+=expression)*  end=eos  #expressionStmt
 	                ;
 
@@ -809,9 +810,11 @@ expression          : Expr=expression Op=(DOT | COLON) Name=simpleName         #
                     | Left=expression Op=QMARK Right=boundExpression            #condAccessExpr         // expr ? expr
                     // The IsTypeCastAllowed function prevents the following from being seen as a typecast on an expression inside a with block: (n):ToString().
                     // it checks for a DOT or COLON after the RPAREN. When it finds that then IsTypeCastAllowed() return false.
-                    | {IsTypeCastAllowed() }? LPAREN Type=datatype RPAREN Expr=expression               #typeCast               // (typename) expr
+                    | {IsTypeCastAllowed() }? LPAREN Type=datatype RPAREN Expr=expression  #typeCast    // (typename) expr
                     | Expr=expression Op=(INC | DEC)                            #postfixExpression      // expr ++/--
                     | Op=AWAIT Expr=expression                                  #awaitExpression        // AWAIT expr
+                    // The predicate prevents STACKALLOC(123) from being parsed as a STACKALLOC <ParenExpression>
+                    | {InputStream.La(2) != LPAREN }? Op=STACKALLOC Expr=expression  #stackAllocExpression   // STACKALLOC expr 
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC) Expr=expression #prefixExpression   // +/-/~/&/++/-- expr
                     | Expr=expression Op=IS Type=datatype (VAR Id=varidentifier)? #typeCheckExpression    // expr IS typeORid [VAR identifier]
                     | Expr=expression Op=ASTYPE Type=datatype                   #typeCheckExpression    // expr AS TYPE typeORid
@@ -937,8 +940,9 @@ bracketedArgumentList : Args+=unnamedArgument (COMMA Args+=unnamedArgument)*
                       ;
 
                       // NOTE: Separate rule for bracketedarguments because they cannot use identifierName syntax
-unnamedArgument     :  Expr=expression?
+unnamedArgument     :  Expr=expression
                     ;
+
                     // NOTE: Optional argumentlist is handled in the rules that use this rule
 argumentList        :  Args+=namedArgument (COMMA Args+=namedArgument)*
                     ;
@@ -1024,11 +1028,10 @@ anonMember          : Name=identifierName Op=assignoperator Expr=expression
 
 // Codeblocks & Lambda Expressions
 
-codeblock         : LCURLY (Or=OR | P1=PIPE LambdaParamList=lambdaParameterList? P2=PIPE)	// Old codeblock Syntax
-                    Code=codeblockCode RCURLY
-                  | LCURLY (Or=OR | P1=PIPE? LambdaParamList=lambdaParameterList? P2=PIPE?) lambda=UDCSEP		// Alternative Lambda Syntax with pips that will trigger an error
-                   Code=codeblockCode RCURLY
-                    ;
+codeblock         : LCURLY Or=OR lambda=UDCSEP? Code=codeblockCode RCURLY                                                   // Lambda char will trigger warning
+                  | LCURLY P1=PIPE LambdaParamList=lambdaParameterList? P2=PIPE lambda=UDCSEP? Code=codeblockCode RCURLY    // Lambda char will trigger warning
+                  | LCURLY LambdaParamList=lambdaParameterList? lambda=UDCSEP Code=codeblockCode RCURLY                     // True Lambda expression
+                  ;
 
 codeblockCode     : Expr=expression?
                   | eos StmtBlk=statementBlock
@@ -1197,7 +1200,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     // The following did not exist in Vulcan
                     | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM
                     | GROUP | INIT | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE
-                    | SELECT | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME | NINT | NUINT
+                    | SELECT | STACKALLOC | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME | NINT | NUINT
                     // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
                     | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE

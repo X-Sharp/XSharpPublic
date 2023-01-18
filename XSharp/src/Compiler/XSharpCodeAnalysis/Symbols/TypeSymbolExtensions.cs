@@ -109,7 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         internal static bool IsArrayBaseType(this TypeSymbol type)
         {
-            return type is { } && type.Name == OurTypeNames.ArrayBase;
+            return type is { } && type.Name == OurTypeNames.ArrayBaseType;
         }
         internal static bool IsFloatType(this TypeSymbol type)
         {
@@ -143,20 +143,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             if (type is { })
             {
-                switch (type.Name)
+                if (type.Name.Length > 0 && type.Name[0] == '_')
                 {
-                    case OurTypeNames.ArrayType:
-                    case OurTypeNames.CodeBlockType:
-                    case OurTypeNames.DateType:
-                    case OurTypeNames.FloatType:
-                    case OurTypeNames.SymbolType:
-                    case OurTypeNames.PszType:
-                    case OurTypeNames.CurrencyType:
-                    case OurTypeNames.BinaryType:
-                    case OurTypeNames.FoxArrayType:
-                    case OurTypeNames.VnDateType:
-                    case OurTypeNames.VnFloatType:
-                        return true;
+                    switch (type.Name)
+                    {
+                        case OurTypeNames.ArrayType:
+                        case OurTypeNames.ArrayBaseType:
+                        case OurTypeNames.CodeBlockType:
+                        case OurTypeNames.DateType:
+                        case OurTypeNames.FloatType:
+                        case OurTypeNames.SymbolType:
+                        case OurTypeNames.PszType:
+                        case OurTypeNames.UsualType:
+                        case OurTypeNames.WinBoolType:
+                        case OurTypeNames.WinDateType:
+                        case OurTypeNames.CurrencyType:
+                        case OurTypeNames.BinaryType:
+                        case OurTypeNames.FoxArrayType:
+                        case OurTypeNames.VnDateType:
+                        case OurTypeNames.VnFloatType:
+                            return true;
+                    }
+                }
+                if (type is ArrayTypeSymbol ats)
+                {
+                    return ats.ElementType.IsOurType();
                 }
             }
             return false;
@@ -308,17 +319,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return elementSize;
         }
 
-
-        public static bool IsRTDLL(this AssemblySymbol _asm, XSharpTargetDLL wantedTarget)
+        /// <summary>
+        /// The assembly is one of our Runtime DLLs or one of the VO SDK DLLs(ours or Vulcans)
+        /// </summary>
+        /// <param name="asm"></param>
+        /// <param name="wantedTarget"></param>
+        /// <returns></returns>
+        public static bool IsRTDLL(this AssemblySymbol asm, XSharpTargetDLL wantedTarget)
         {
             XSharpTargetDLL target = XSharpTargetDLL.Other;
-            if (_asm is { } && s_dictionary.TryGetValue(_asm.Name, out target))
+            if (asm is { } && s_dictionary.TryGetValue(asm.Name, out target))
             {
                 return target == wantedTarget;
             }
             return false;
         }
-
+        /// <summary>
+        /// The assembly is one of our Runtime DLLs(ours or Vulcans)
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public static bool IsRt(this XSharpTargetDLL target)
         {
             switch (target)
@@ -337,6 +357,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return false;
         }
+        /// <summary>
+        /// The assembly is one of the VO SDK DLLs (ours or Vulcans)
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public static bool IsSdk(this XSharpTargetDLL target)
         {
             switch (target)

@@ -78,4 +78,10 @@
       <CustomToolNamespace></CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
+  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll')">
+    <ItemGroup>
+      <XsEvaluatorFiles Include="$(OutputPath)\XSharp*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(XsEvaluatorFiles)" DestinationFolder="$(DevPublicDir)external\$(ConfigurationName)" />
+  </Target>
 </Project>

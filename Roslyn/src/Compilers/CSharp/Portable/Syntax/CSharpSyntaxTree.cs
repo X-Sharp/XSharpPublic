@@ -480,6 +480,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 s = s.Replace("Microsoft.Cci", "LanguageService.Cci");
                 s = (new System.Text.RegularExpressions.Regex(@"(?<!\.)CSharpResources")).Replace(s, "LanguageService.CodeAnalysis.XSharp.XSharpResources");
                 s = (new System.Text.RegularExpressions.Regex(@"(?<!Microsoft[\._][A-Za-z0-9_\.]*)CSharp")).Replace(s, "XSharp");
+                s = s.Replace("@XSharp", "CSharp");
                 s = s.Replace("CodeAnalysisResources.", "LanguageService.CodeAnalysis.XSharp.XSharpResources.");
                 s = s.Replace("(Resources.", "(LanguageService.CodeAnalysis.XSharp.XSharpResources.");
                 s = s.Replace("Antlr4.Runtime", "LanguageService.SyntaxTree");

@@ -5,6 +5,8 @@
   </PropertyGroup>
   <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
   <PropertyGroup>
+    <CoreEvalSource>$(RoslynSrc)\ExpressionEvaluator\Core\Source\</CoreEvalSource>
+    <CSharpEvalSource>$(RoslynSrc)\ExpressionEvaluator\CSharp\Source\</CSharpEvalSource>
     <OutputType>Library</OutputType>
     <AssemblyName>XSharp.Evaluator</AssemblyName>
     <RootNamespace>LanguageService.CodeAnalysis.ExpressionEvaluator</RootNamespace>
@@ -38,10 +40,20 @@
     <DefineConstants>$(Genericdefines);XSHARP;NDEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Core\Source\FunctionResolver\VisualBasic\**" />
-    <EmbeddedResource Remove="Core\Source\FunctionResolver\VisualBasic\**" />
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs" Link="CommonAssemblyInfo.cs" />
+    <Compile Include="$(CoreEvalSource)**\*.cs">
+    <Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+   </Compile>
+    <Compile Remove="$(CoreEvalSource)FunctionResolver\VisualBasic\**\*.cs" />
+    <Compile Remove="$(CoreEvalSource)ResultProvider\NetFX20\**\*.cs" />
+    <Compile Remove="$(CoreEvalSource)ResultProvider\Helpers\ArrayBuilder.cs" />
+    <Compile Remove="$(CoreEvalSource)ResultProvider\SystemHelpers.cs" />
+      <Compile Include="$(CSharpEvalSource)**\*.cs">
+        <Link>CSharp\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+      </Compile>
+    <Compile Remove="$(CSharpEvalSource)ResultProvider\NetFX20\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
+   <ItemGroup>
     <PackageReference Include="Microsoft.DiaSymReader" Version="1.4.0" />
     <PackageReference Include="Microsoft.DiaSymReader.Native" Version="1.7.0" />
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine" Version="17.0.2012801" />
@@ -63,6 +75,7 @@
     <EmbeddedResource Update="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <CustomToolNamespace></CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

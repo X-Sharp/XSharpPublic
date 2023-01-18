@@ -13,7 +13,7 @@ namespace LanguageService.CodeAnalysis.CSharp.ExpressionEvaluator
         internal static T ParseDebuggerInternal<T>(string source, CSharpParseOptions parseoptions) where T : InternalSyntax.CSharpSyntaxNode
         {
             string _fileName = "";
-            var options = parseoptions ?? parseoptions.WithKind(SourceCodeKind.Script).WithMacroScript(false);
+            var options = parseoptions ?? CSharpParseOptions.Default.WithLanguageVersion(LanguageVersionFacts.CurrentVersion).WithKind(SourceCodeKind.Script).WithMacroScript(false);
 
             var parseErrors = ParseErrorData.NewBag();
 

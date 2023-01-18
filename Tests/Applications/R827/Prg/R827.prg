@@ -1,7 +1,7 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/770
 
 FUNCTION Start() AS VOID STRICT
-    TestClass{}.Test()
+    TestClass{}:Test()
     RETURN
 
 PUBLIC CLASS TestClass
@@ -12,7 +12,7 @@ PUBLIC CLASS TestClass
 
         LOCAL b := a?:B AS ClassB // without the question mark (i.e. "local b := a.B as ClassB") no exception is thrown
         xAssert(b:S == "X#rules")
-        b := a:B 
+        b := a:B
         xAssert(b:S == "X#rules")
         RETURN
 
@@ -44,5 +44,5 @@ IF .not. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
 END IF
 ? "Assertion passed"
-RETURN 
+RETURN
 

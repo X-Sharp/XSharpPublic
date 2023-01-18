@@ -16,7 +16,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         internal const string CodeBlockType = "Codeblock";
         internal const string UsualType = "__Usual";
-        internal const string ArrayBase = "__ArrayBase";
+        internal const string ArrayBaseType = "__ArrayBase";
         internal const string ArrayType = "__Array";
         internal const string PszType = "__Psz";
         internal const string SymbolType = "__Symbol";
@@ -100,7 +100,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string String2Psz = "STRING2PSZ";
         internal const string Cast2Psz = "CAST2PSZ";
         internal const string GetInst = "_GETINST";
-        internal const string StackAlloc = "STACKALLOC";
         internal const string SLen = "SLEN";
         internal const string AltD = "ALTD";
         internal const string Chr = "CHR";

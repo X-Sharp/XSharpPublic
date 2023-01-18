@@ -182,6 +182,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private FileLinePositionSpan GetXNodeSpan(TextSpan span)
         {
+            // Note that the span that we receive here is the location in the pseudo C# source code
+            // we need to locate the C# node first and then return the File/Line position of the matching X# code
+
             string file = this.FilePath;
             var text = this.GetText();
             var root = GetRoot();
@@ -231,7 +234,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 while (!snode.Green.IsToken && (span.Start > snode.Position || span.Length < snode.FullWidth))
                 {
                     var child = (CSharpSyntaxNode)snode.ChildThatContainsPosition(span.Start);
-                    if (child == null || child == snode ) // no child found
+                    if (child == null || child == snode) // no child found
                         break;
                     if (span.Start == child.Position && span.Length > child.FullWidth)
                     {
@@ -243,21 +246,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                     snode = child;
-                    bool done = false;
-                    switch (snode.XNode)
-                    {
-                        //case XSharpParser.StatementContext:
-                        //case XSharpParser.LocaldeclContext:
-                        //case XSharpParser.MemvardeclContext:
-                        //case XSharpParser.FoxlocaldeclContext:
-                        //case XSharpParser.FoxmemvardeclContext:
-                        //case XSharpParser.AssignmentExpressionContext:
-                        case XSharpParser.PrimaryExpressionContext:
-                            done = true;
-                            break;
-                    }
-                    if (done)
-                        break;
                 }
                 var start = 0;
                 string fn = file;
@@ -274,25 +262,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Our line numbers are 1 based and column numbers are zero based..
 
                     var xNode = snode.XNode as XSharpParserRuleContext;
-                    while (true)
+                    switch (xNode.Parent)
                     {
-                        if (xNode.Parent is XP.IMultiElementContext mec && mec.Count > 1)
-                        {
-                            // declaration with possibly multiple variables
-                            // Or expression statement with multiple expressions
-                            // Set breakpoint on individual element when > 1 element
+                        case XP.IMultiElementContext:
+                        case XP.AssignmentExpressionContext:
+                        case XP.BinaryExpressionContext:
+                        case XP.MethodCallContext:
+                        case XP.CtorCallContext:
+                        case XP.DelegateCtorCallContext:
+                        case XP.GlobalAttributesContext:
+                        case XP.StatementBlockContext:
+                        case XP.StatementContext:
+                        case XP.ClassmemberContext:
+                        case XP.IifContext:
+                        case XP.LinqQueryContext:
+                            xNode = (XSharpParserRuleContext)xNode.Parent;
                             break;
-                        }
-                        else if (xNode is XP.ISequencePointContext)
-                        {
-                            break;
-                        }
-                        else if (xNode.Parent is null)
-                        {
-                            break;
-                        }
-                        xNode = xNode.Parent as XSharpParserRuleContext;
+
                     }
+
                     start = xNode.Position;
                     length = xNode.FullWidth;
                     line = xNode.Start.Line - 1;
@@ -309,7 +297,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             var token = cs.XTokens.Get(pos);
                             if (token.Type == XSharpLexer.EOS || token.Type == XSharpLexer.Eof)
                             {
-                                length = token.Column - symbol.Column +1;
+                                length = token.Column - symbol.Column + 1;
                                 break;
                             }
                             pos += 1;

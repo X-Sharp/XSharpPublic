@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context is XSharpParserRuleContext xpr)
             {
-                xpr.ClearSequencePoint();
+                xpr.ClearSequencePoint(); 
             }
         }
     }

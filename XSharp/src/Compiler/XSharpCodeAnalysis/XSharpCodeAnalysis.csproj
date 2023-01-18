@@ -149,7 +149,11 @@
   <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
-  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll')">
+
+  <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll') ">
+    <MakeDir Directories="$(DevPublicDir)external\$(ConfigurationName)" /> 
+  </Target>
+  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll') and '$(TargetFramework)' == 'net472'">
     <ItemGroup>
       <XsCodeAnalysisFiles Include="$(OutputPath)\XSharp*.*" />
     </ItemGroup>

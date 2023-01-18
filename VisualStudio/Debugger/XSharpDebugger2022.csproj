@@ -113,6 +113,14 @@
     <Content Include="readme.txt" />
     <Content Include="XSharp.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="XSharp.CodeAnalysis">
+      <HintPath>..\..\..\XSharpDev\XSharp\artifacts\bin\XSharpCodeAnalysis\Debug\net472\XSharp.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Evaluator">
+      <HintPath>..\..\..\XSharpDev\XSharp\artifacts\bin\XSharpEvaluator\Debug\net472\XSharp.Evaluator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <PropertyGroup>
     <!--
     To specify a different registry root to register your package, uncomment the TargetRegistryRoot

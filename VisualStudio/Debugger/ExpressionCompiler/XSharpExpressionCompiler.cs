@@ -10,6 +10,10 @@ using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
+using LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator;
+using LanguageService.CodeAnalysis.XSharp;
+using LanguageService.CodeAnalysis;
 
 namespace XSharpDebugger.ExpressionCompiler
 {
@@ -30,6 +34,19 @@ namespace XSharpDebugger.ExpressionCompiler
     /// </summary>
     public sealed class XSharpExpressionCompiler : IDkmClrExpressionCompiler
     {
+        static void UpdateXSharpParseOptions()
+        {
+            if (SyntaxHelpers.XSharpParseOptions == null)
+            {
+                var xoptions = XSharpSpecificCompilationOptions.Default;
+                xoptions.SetDialect(XSharpDialect.VO);
+                xoptions.SetOption(CompilerOption.MemVars, true);
+                xoptions.SetOption(CompilerOption.UndeclaredMemVars, true);
+                xoptions.SetOption(CompilerOption.ArrayZero, false);
+                SyntaxHelpers.XSharpParseOptions = SyntaxHelpers.ParseOptions.WithKind(SourceCodeKind.Script).WithMacroScript(false).WithXSharpSpecificOptions(xoptions);
+            }
+        }
+
         /// <summary>
         /// This method is called by the debug engine to compile an expression that the user wants
         /// to evaluate.  Before the call, we have the text of the expression and information about
@@ -54,6 +71,11 @@ namespace XSharpDebugger.ExpressionCompiler
             out string error,
             out DkmCompiledClrInspectionQuery result)
         {
+#if true
+            UpdateXSharpParseOptions();
+            IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
+            e.CompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
+#else
             error = null;
             result = null;
             bool changed = false;
@@ -98,6 +120,7 @@ namespace XSharpDebugger.ExpressionCompiler
                 fi.SetValue(expression, originalExpr);
             }
             return;
+#endif
         }
 
         /// <summary>
@@ -162,10 +185,16 @@ namespace XSharpDebugger.ExpressionCompiler
         /// execute to perform the assignment.</param>
         void IDkmClrExpressionCompiler.CompileAssignment(DkmLanguageExpression expression, DkmClrInstructionAddress instructionAddress, DkmEvaluationResult lValue, out string error, out DkmCompiledClrInspectionQuery result)
         {
+#if true
+            UpdateXSharpParseOptions();
+            IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
+            e.CompileAssignment(expression, instructionAddress, lValue, out error, out result);
+#else
             // when the user assigns a value in the debugger then this method is called.
             // we may want to change an expression like "{1,2,3}" to "new object[] {1,2,3}"
             // and "2020.12.03" to "XSharp.RT.Functions.ConDate(2020,12,03)"
             expression.CompileAssignment(instructionAddress, lValue, out error, out result);
+#endif
         }
 /*
         private static string AdjustArrayIndices(string newexpr, ref bool changed)

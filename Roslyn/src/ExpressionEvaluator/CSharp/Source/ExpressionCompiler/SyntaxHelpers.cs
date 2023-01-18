@@ -208,6 +208,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
         private static InternalSyntax.ExpressionSyntax ParseDebuggerExpressionInternal(SourceText source, bool consumeFullText)
         {
 #if XSHARP
+            ParseOptions = ParseOptions.WithXSharpSpecificOptions(XSyntaxHelpers.XSharpOptions);
             return XSyntaxHelpers.ParseDebuggerInternal<InternalSyntax.ExpressionSyntax>(source.ToString(), ParseOptions);
 #else
             using var lexer = new InternalSyntax.Lexer(source, ParseOptions, allowPreprocessorDirectives: false);
@@ -223,6 +224,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
         private static StatementSyntax ParseDebuggerStatement(string text)
         {
 #if XSHARP
+            ParseOptions = ParseOptions.WithXSharpSpecificOptions(XSyntaxHelpers.XSharpOptions);
             var statement = XSyntaxHelpers.ParseDebuggerInternal<InternalSyntax.StatementSyntax>(text, ParseOptions);
             var syntaxTree = statement.CreateSyntaxTree(SourceText.From(text));
             return (StatementSyntax)syntaxTree.GetRoot();

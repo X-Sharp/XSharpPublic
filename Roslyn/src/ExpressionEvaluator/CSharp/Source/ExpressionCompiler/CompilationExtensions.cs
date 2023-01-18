@@ -117,6 +117,10 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
                 var resolver = new EEMetadataReferenceResolver(IdentityComparer, referencesBySimpleName);
                 options = options.WithMetadataReferenceResolver(resolver);
             }
+#if XSHARP
+            options = options.WithXSharpSpecificOptions(XSyntaxHelpers.XSharpOptions);
+#endif
+
             return CSharpCompilation.Create(
                 assemblyName: ExpressionCompilerUtilities.GenerateUniqueName(),
                 references: references,

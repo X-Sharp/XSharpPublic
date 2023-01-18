@@ -1,11 +1,12 @@
-// 181. error XS0121: The call is ambiguous between the following methods or properties: 
+// 181. error XS0121: The call is ambiguous between the following methods or properties:
 // 'TestClass.MyMethod(ref int)' and 'TestClass.MyMethod(ref double)'
-// vulcan allows passing params by reference without specifying REF in the caller code, 
-// so that must be fully supported in x# as well, but I think it would be btter to make 
-// the compiler report a warning in such calls with missing REF 
+// vulcan allows passing params by reference without specifying REF in the caller code,
+// so that must be fully supported in x# as well, but I think it would be btter to make
+// the compiler report a warning in such calls with missing REF
+#pragma warnings(9071, off)   //  Parameter needs a(n) 'Out' modifier. This modifier was automatically added.
 FUNCTION Start() AS VOID
 TestClass{}:CallMethod()
-	
+
 CLASS TestClass
 METHOD CallMethod() AS VOID
 LOCAL nInt := 0 AS INT

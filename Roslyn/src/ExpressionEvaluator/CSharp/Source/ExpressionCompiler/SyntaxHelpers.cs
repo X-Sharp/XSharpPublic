@@ -17,7 +17,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
     internal static class SyntaxHelpers
     {
 #if XSHARP
-        internal static CSharpParseOptions ParseOptions { get; set; } = null;
+        internal static CSharpParseOptions ParseOptions { get; set; } = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersionFacts.CurrentVersion).WithKind(SourceCodeKind.Script);
 #else
         internal static readonly CSharpParseOptions ParseOptions = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersionFacts.CurrentVersion);
 #endif

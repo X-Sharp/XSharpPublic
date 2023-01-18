@@ -320,12 +320,23 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
                 formatSpecifiers: formatSpecifiers);
         }
 
+#if XSHARP
+        private CSharpSyntaxNode? Parse(
+            string expr,
+            bool treatAsExpression,
+            DiagnosticBag diagnostics,
+            out ReadOnlyCollection<string>? formatSpecifiers)
+#else
         private static CSharpSyntaxNode? Parse(
             string expr,
             bool treatAsExpression,
             DiagnosticBag diagnostics,
             out ReadOnlyCollection<string>? formatSpecifiers)
+#endif
         {
+#if XSHARP
+            LanguageService.CodeAnalysis.CSharp.ExpressionEvaluator.XSyntaxHelpers.UpdateRuntimeAssemblies(Compilation);
+#endif
             if (!treatAsExpression)
             {
                 // Try to parse as a statement. If that fails, parse as an expression.
@@ -359,6 +370,9 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
             out ResultProperties resultProperties,
             CompilationTestData? testData)
         {
+#if XSHARP
+            LanguageService.CodeAnalysis.CSharp.ExpressionEvaluator.XSyntaxHelpers.UpdateRuntimeAssemblies(Compilation);
+#endif
             var assignment = target.ParseAssignment(expr, diagnostics);
             if (assignment == null)
             {

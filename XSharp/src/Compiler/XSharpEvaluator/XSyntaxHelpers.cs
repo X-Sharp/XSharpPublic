@@ -5,15 +5,21 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis;
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
+using System.Diagnostics;
+using Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator;
 
 namespace LanguageService.CodeAnalysis.CSharp.ExpressionEvaluator
 {
     internal static class XSyntaxHelpers
     {
+        internal static XSharpSpecificCompilationOptions XSharpOptions { get; set; } = XSharpSpecificCompilationOptions.Default;
+
         internal static T ParseDebuggerInternal<T>(string source, CSharpParseOptions parseoptions) where T : InternalSyntax.CSharpSyntaxNode
         {
             string _fileName = "";
-            var options = parseoptions ?? CSharpParseOptions.Default.WithLanguageVersion(LanguageVersionFacts.CurrentVersion).WithKind(SourceCodeKind.Script).WithMacroScript(false);
+            var options = parseoptions
+                .WithXSharpSpecificOptions(XSharpOptions)
+                .WithMacroScript(false);
 
             var parseErrors = ParseErrorData.NewBag();
 
@@ -130,6 +136,95 @@ namespace LanguageService.CodeAnalysis.CSharp.ExpressionEvaluator
             }
 
             return result;
+        }
+        internal static void SetOptionFromReference(string filename, ref XSharpSpecificCompilationOptions options)
+        {
+            switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLower())
+            {
+                case VulcanAssemblyNames.VulcanRTFuncs:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VulcanRTFuncs;
+                    break;
+                case VulcanAssemblyNames.VulcanRT:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VulcanRT;
+                    break;
+                case XSharpAssemblyNames.SdkDefines:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.SdkDefines;
+                    break;
+                case XSharpAssemblyNames.XSharpCore:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpCore;
+                    break;
+                case XSharpAssemblyNames.XSharpData:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpData;
+                    break;
+                case XSharpAssemblyNames.XSharpRT:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpRT;
+                    break;
+                case XSharpAssemblyNames.XSharpVO:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpVO;
+                    break;
+                case XSharpAssemblyNames.XSharpXPP:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpXPP;
+                    break;
+                case XSharpAssemblyNames.XSharpVFP:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpVFP;
+                    break;
+                case XSharpAssemblyNames.VoSystem:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoSystem;
+                    break;
+                case XSharpAssemblyNames.VoGui:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoGui;
+                    break;
+                case XSharpAssemblyNames.VoRdd:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoRdd;
+                    break;
+                case XSharpAssemblyNames.VoSql:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoSql;
+                    break;
+                case XSharpAssemblyNames.VoInet:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoInet;
+                    break;
+                case XSharpAssemblyNames.VoConsole:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoConsole;
+                    break;
+                case XSharpAssemblyNames.VoReport:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoReport;
+                    break;
+                case XSharpAssemblyNames.VoWin32:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.VoWin32;
+                    break;
+                case "mscorlib":
+                case "system":
+                    if (!options.ExplicitOptions.HasFlag(CompilerOption.ClrVersion))
+                    {
+                        if (filename.ToLower().Contains("\\v2") || filename.ToLower().Contains("\\2."))
+                        {
+                            options.ExplicitOptions |= CompilerOption.ClrVersion;
+                            options.ClrVersion = 2;
+                        }
+                        else if (filename.ToLower().Contains("\\v3") || filename.ToLower().Contains("\\3."))
+                        {
+                            options.ExplicitOptions |= CompilerOption.ClrVersion;
+                            options.ClrVersion = 2;
+                        }
+                        else if (filename.ToLower().Contains("\\v4") || filename.ToLower().Contains("\\4."))
+                        {
+                            options.ExplicitOptions |= CompilerOption.ClrVersion;
+                            options.ClrVersion = 4;
+                        }
+                    }
+                    break;
+            }
+        }
+        internal static void UpdateRuntimeAssemblies(CSharpCompilation compilation)
+        {
+            var xoptions = XSharpOptions;
+            xoptions.RuntimeAssemblies = RuntimeAssemblies.None;
+            foreach (var f in compilation.ReferencedAssemblyNames)
+            {
+                SetOptionFromReference(f.Name + ".dll", ref xoptions);
+            }
+            XSharpOptions = xoptions;
+Debug.WriteLine("Options runtime assemblies: {0}", XSharpOptions.RuntimeAssemblies);
         }
     }
 }

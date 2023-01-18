@@ -13,7 +13,9 @@ using Microsoft.VisualStudio.Debugger.ComponentInterfaces;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
 using Microsoft.VisualStudio.Debugger.Metadata;
-
+#if XSHARP
+using Microsoft.CodeAnalysis.PooledObjects;
+#endif
 namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 {
     /// <summary>

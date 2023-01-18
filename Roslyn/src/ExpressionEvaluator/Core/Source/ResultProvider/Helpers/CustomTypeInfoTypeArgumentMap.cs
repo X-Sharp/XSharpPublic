@@ -5,6 +5,9 @@
 #nullable disable
 
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
+#if XSHARP
+using Microsoft.CodeAnalysis.PooledObjects;
+#endif
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -165,8 +168,11 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                     i += n;
                 }
             }
-
+#if XSHARP
+            var result = (builder.Count == 0) ? null : new ReadOnlyCollection<string>(builder.ToArray());
+#else
             var result = (builder.Count == 0) ? null : builder.ToImmutable();
+#endif
             builder.Free();
             return result;
         }

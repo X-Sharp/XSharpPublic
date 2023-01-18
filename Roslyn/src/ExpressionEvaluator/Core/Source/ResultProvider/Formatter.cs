@@ -16,7 +16,6 @@ using Microsoft.VisualStudio.Debugger.ComponentInterfaces;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
 using Type = Microsoft.VisualStudio.Debugger.Metadata.Type;
-
 namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 {
     /// <summary>
@@ -254,7 +253,13 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
             var builder = ArrayBuilder<string>.GetInstance();
             builder.AddRange(formatSpecifiers);
             builder.Add(formatSpecifier);
+#if XSHARP
+            var r = new ReadOnlyCollection<string>(builder.ToArray());
+            builder.Free();
+            return r;
+#else
             return builder.ToImmutableAndFree();
+#endif
         }
 
         protected string RemoveLeadingAndTrailingContent(string expression, int start, int length, Predicate<char> leading, Predicate<char> trailing)

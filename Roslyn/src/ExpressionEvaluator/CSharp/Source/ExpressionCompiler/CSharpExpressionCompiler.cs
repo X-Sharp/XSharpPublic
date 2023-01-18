@@ -14,8 +14,11 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
     [DkmReportNonFatalWatsonException(ExcludeExceptionType = typeof(NotImplementedException)), DkmContinueCorruptingException]
     internal sealed class CSharpExpressionCompiler : ExpressionCompiler
     {
+#if XSHARP	
+        private static readonly DkmCompilerId s_compilerId = new DkmCompilerId(DkmVendorId.Microsoft, DkmLanguageId.@CSharp);
+#else
         private static readonly DkmCompilerId s_compilerId = new DkmCompilerId(DkmVendorId.Microsoft, DkmLanguageId.CSharp);
-
+#endif
         public CSharpExpressionCompiler() : base(new CSharpFrameDecoder(), new CSharpLanguageInstructionDecoder())
         {
         }

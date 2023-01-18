@@ -9,7 +9,10 @@ using System.Diagnostics;
 using Microsoft.VisualStudio.Debugger.ComponentInterfaces;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
-
+#if XSHARP
+using Microsoft.CodeAnalysis.PooledObjects;
+using XResources = LanguageService.CodeAnalysis.ExpressionEvaluator.Resources;
+#endif
 namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 {
     internal sealed class DynamicViewExpansion : Expansion
@@ -54,7 +57,11 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
             var expansion = CreateExpansion(inspectionContext, value, resultProvider);
             return (expansion != null) ?
                 expansion.CreateDynamicViewRow(inspectionContext, name, parent: null, fullNameProvider: resultProvider.FullNameProvider) :
+#if XSHARP
+                new EvalResult(name, XResources.DynamicViewNotDynamic, inspectionContext);
+#else
                 new EvalResult(name, Resources.DynamicViewNotDynamic, inspectionContext);
+#endif
         }
 
         private readonly DkmClrValue _proxyValue;
@@ -108,7 +115,11 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                 declaredTypeAndInfo: proxyTypeAndInfo,
                 useDebuggerDisplay: false,
                 value: _proxyValue,
+#if XSHARP
+                displayValue: XResources.DynamicViewValueWarning,
+#else
                 displayValue: Resources.DynamicViewValueWarning,
+#endif
                 expansion: _proxyMembers,
                 childShouldParenthesize: false,
                 fullName: fullName,

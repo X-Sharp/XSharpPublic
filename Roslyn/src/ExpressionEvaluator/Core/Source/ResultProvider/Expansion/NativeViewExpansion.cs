@@ -7,6 +7,10 @@
 using Microsoft.VisualStudio.Debugger;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
+#if XSHARP
+using Microsoft.CodeAnalysis.PooledObjects;
+using XResources = LanguageService.CodeAnalysis.ExpressionEvaluator.Resources;
+#endif
 using System;
 
 namespace Microsoft.CodeAnalysis.ExpressionEvaluator
@@ -50,7 +54,11 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
             catch (DkmException)
             {
                 // Native View requires native debugging to be enabled.
+#if XSHARP				
+                return new EvalResult(XResources.NativeView, XResources.NativeViewNotNativeDebugging, inspectionContext);
+#else				
                 return new EvalResult(Resources.NativeView, Resources.NativeViewNotNativeDebugging, inspectionContext);
+#endif			
             }
 
             var name = "(IUnknown*)0x" + string.Format(IntPtr.Size == 4 ? "{0:x8}" : "{0:x16}", comObject.NativeComPointer);

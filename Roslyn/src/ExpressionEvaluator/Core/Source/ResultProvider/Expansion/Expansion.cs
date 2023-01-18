@@ -7,7 +7,9 @@
 using System;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
-
+#if XSHARP
+using Microsoft.CodeAnalysis.PooledObjects;
+#endif
 namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 {
     [Flags]

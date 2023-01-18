@@ -6,6 +6,10 @@
 
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
+#if XSHARP
+using Microsoft.CodeAnalysis.PooledObjects;
+using XResources = LanguageService.CodeAnalysis.ExpressionEvaluator.Resources;
+#endif
 
 namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 {
@@ -49,7 +53,11 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                         var emptyMember = memberValue.Type.GetMemberByName("Empty");
                         memberValue = memberValue.GetMemberValue(emptyMember, inspectionContext);
                     }
+#if XSHARP
+                    var row = new EvalResult(XResources.ErrorName, (string)memberValue.HostObjectValue, inspectionContext);
+#else
                     var row = new EvalResult(Resources.ErrorName, (string)memberValue.HostObjectValue, inspectionContext);
+#endif
                     rows.Add(row);
                 }
                 index++;

@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
 using Microsoft.VisualStudio.Debugger.Metadata;
+#if XSHARP
+using Microsoft.CodeAnalysis.PooledObjects;
+#endif
 
 namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 {
@@ -85,7 +88,13 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
                     {
                         builder.Add((string)typedArg.Value);
                     }
+#if XSHARP
+                    var r = new ReadOnlyCollection<string>(builder.ToArray());
+                    builder.Free();
+                    return r;
+#else
                     return builder.ToImmutableAndFree();
+#endif					
                 }
             }
             return null;

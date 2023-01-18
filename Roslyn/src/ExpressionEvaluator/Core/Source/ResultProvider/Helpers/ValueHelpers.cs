@@ -9,7 +9,9 @@ using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
 using System.Diagnostics;
 using System.Text;
-
+#if XSHARP
+using XResources = LanguageService.CodeAnalysis.ExpressionEvaluator.Resources;
+#endif
 namespace Microsoft.CodeAnalysis.ExpressionEvaluator
 {
     internal static class ValueHelpers
@@ -36,7 +38,11 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
         internal static string GetExceptionMessage(this DkmClrValue value, DkmInspectionContext inspectionContext, string fullNameWithoutFormatSpecifiers)
         {
             var typeName = inspectionContext.GetTypeName(value.Type, null, Formatter.NoFormatSpecifiers);
-            return string.Format(Resources.ExceptionThrown, fullNameWithoutFormatSpecifiers, typeName);
+#if XSHARP			
+            return string.Format(XResources.ExceptionThrown, fullNameWithoutFormatSpecifiers, typeName);
+#else
+			return string.Format(Resources.ExceptionThrown, fullNameWithoutFormatSpecifiers, typeName);
+#endif	
         }
 
         internal static DkmClrValue GetMemberValue(this DkmClrValue value, MemberAndDeclarationInfo member, DkmInspectionContext inspectionContext)

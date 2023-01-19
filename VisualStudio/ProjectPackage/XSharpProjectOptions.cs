@@ -7,18 +7,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Project;
-using System.Diagnostics;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Shell;
-
-using System.IO;
-using MSBuild = Microsoft.Build.Evaluation;
-using System.Runtime.InteropServices;
 using Microsoft.Win32;
-using LanguageService.CodeAnalysis.XSharp;
 using System.Reflection;
-
+using LanguageService.CodeAnalysis.XSharp;
+using XSharp.Parser;
 namespace XSharp.Project
 {
 
@@ -152,7 +144,7 @@ namespace XSharp.Project
                 options.Add("nostddefs-");
             }
 
-            ParseOptions = XSharpParseOptions.FromVsValues(options);
+            ParseOptions = VSParseOptions.FromVsValues(options);
             if (this.ConfigCanonicalName != null && ConfigCanonicalName.ConfigName.ToUpper() == "DEBUG")
             {
                 // dirty trick to set property with private setter

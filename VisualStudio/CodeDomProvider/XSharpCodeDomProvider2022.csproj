@@ -8,7 +8,7 @@
     <ProjectGuid>{F9C94F84-D196-4BE7-AD67-0C9DBFC912B5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharpCodeDomProvider</RootNamespace>
-    <AssemblyName>XSharpCodeDomProvider2022</AssemblyName>
+    <AssemblyName>XSharp.CodeDomProvider2022</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <RuntimeIdentifier>win</RuntimeIdentifier>
     <FileAlignment>512</FileAlignment>
@@ -33,6 +33,10 @@
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="XSharp.CodeAnalysis, Version=2.15.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
@@ -66,7 +70,7 @@
   <ItemGroup />
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.486</Version>
+      <Version>17.0.490</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>

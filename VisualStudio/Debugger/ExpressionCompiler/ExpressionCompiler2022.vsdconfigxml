@@ -17,7 +17,7 @@
   <ManagedComponent
     ComponentId="guidXSharpExpressionCompilerCompId"
     ComponentLevel="9991900" 
-    AssemblyName="XSharpDebugger2022"
+    AssemblyName="XSharp.Debugger2022"
     Synchronized="true">   
   <!-- By setting the ComponentLevel to 9991900, which is higher than the level of the C# Expression Compiler (9991500) we get called after the C# expression compiler-->
     <Class Name="XSharpDebugger.ExpressionCompiler.XSharpExpressionCompiler">

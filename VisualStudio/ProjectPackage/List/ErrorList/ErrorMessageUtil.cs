@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using LanguageService.CodeAnalysis;
+using LanguageService.CodeAnalysis.XSharp;
 using Microsoft.VisualStudio.Shell.Interop;
 
 

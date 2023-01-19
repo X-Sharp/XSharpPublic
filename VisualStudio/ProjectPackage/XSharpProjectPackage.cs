@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using XSharpModel;
 using Community.VisualStudio.Toolkit;
+using Task = System.Threading.Tasks.Task;
 /*
 Substitution strings
 String	Description
@@ -53,18 +54,29 @@ $WINDIR$	The Windows folder.
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
 #if DEV17
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider2022.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDomProvider2022")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.AppDesigner2022")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.LanguageService2022")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.ProjectBase2022")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.Debugger2022")]
 #else
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDomProvider")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.AppDesigner")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.LanguageService")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.ProjectBase")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.Debugger")]
 #endif
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser")]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpModel")]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpMonoCecil")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.Evaluator")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.MonoCecil")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
 [assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite")]
 [assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
 [assembly: ProvideCodeBase(AssemblyName = "Serilog")]
 [assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.Debug")]
 [assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.File")]
+[assembly: ProvideCodeBase(AssemblyName = "Microsoft.DiaSymReader")]
 
 namespace XSharp.Project
 {
@@ -290,6 +302,8 @@ namespace XSharp.Project
             XCustomEditorSettings.PasteOffSetX = woptions.PasteOffSetX;
             XCustomEditorSettings.PasteOffSetY = woptions.PasteOffSetY;
             XCustomEditorSettings.PartialLasso = woptions.PartialLasso;
+            XCustomEditorSettings.SizeAdjustmentX = woptions.SizeAdjustmentX;
+            XCustomEditorSettings.SizeAdjustmentY = woptions.SizeAdjustmentY;
 
             var options = await Options.OtherEditorOptions.GetLiveInstanceAsync();
             XCustomEditorSettings.DbServerDefaultRDD = options.DbServerDefaultRDD;

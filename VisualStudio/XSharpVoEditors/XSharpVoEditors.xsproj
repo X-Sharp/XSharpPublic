@@ -7,7 +7,7 @@
     <ProjectGuid>7619db88-6286-4ef1-8273-2a08cc8ac70e</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.VOEditors</RootNamespace>
-    <AssemblyName>XSharpVoEditors</AssemblyName>
+    <AssemblyName>XSharp.VoEditors</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <Name>XSharp.VoEditors</Name>
     <Nologo>true</Nologo>

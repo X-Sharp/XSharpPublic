@@ -10,7 +10,7 @@ USING System.Text
 USING System.Threading.Tasks
 USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.XSharp
-
+using XSharp.Parser
 USING System.Diagnostics
 
 BEGIN NAMESPACE XSharpModel
@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharpModel
         CONSTRUCTOR()
             VAR options := List<STRING>{}
             options.Add("dialect:Core")
-            _parseOptions   := XSharpParseOptions.FromVsValues(options)
+            _parseOptions   := VSParseOptions.FromVsValues(options)
 
         METHOD AddFileNode(strFileName AS STRING) AS VOID
             RETURN

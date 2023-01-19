@@ -95,10 +95,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDIF
 
 #region IErrorListener
-    METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+    METHOD ReportError(fileName AS STRING, span AS VsParser.LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
         SELF:_errors:Add(XError{fileName, span, errorCode, message, args})
 
-    METHOD ReportWarning(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+    METHOD ReportWarning(fileName AS STRING, span AS VsParser.LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
         SELF:_errors:Add(XWarning{fileName, span, errorCode, message, args})
 #endregion
 

@@ -5,6 +5,6 @@ set config=%2
 set currentdir=%cd%
 rem echo The langservicedir is: %langservicedir%
 rem echo The currentdir is: %currentdir%
-"%vsdir%\VSSDK\VisualStudioIntegration\Tools\Bin\CreatePkgDef.exe" c:\XSharp\DevPublic\Binaries\2019\%config%\XSharpLanguageService.dll  /out=c:\XSharp\DevPublic\Binaries\2019\%config%\XSharpLanguageService.pkgdef /verbose /codebase
-copy %cd%\XSharpLanguageService.pkgdef  %1XSharpLanguageService.pkgdef
-copy %cd%\XSharpLanguageService.pkgdef  %1..\ProjectPackage\XSharpLanguageService.pkgdef
+"%vsdir%\VSSDK\VisualStudioIntegration\Tools\Bin\CreatePkgDef.exe" c:\XSharp\DevPublic\Binaries\2019\%config%\XSharp.LanguageService.dll  /out=c:\XSharp\DevPublic\Binaries\2019\%config%\XSharp.LanguageService.pkgdef /verbose /codebase
+copy %cd%\XSharp.LanguageService.pkgdef  %1XSharp.LanguageService.pkgdef
+copy %cd%\XSharp.LanguageService.pkgdef  %1..\ProjectPackage\XSharp.LanguageService.pkgdef

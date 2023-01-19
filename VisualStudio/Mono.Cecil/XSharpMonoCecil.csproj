@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
-	<AssemblyName>XSharp.MonoCecil</AssemblyName>
+    <TargetFrameworks>net46</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ProjectInfo.cs" />
@@ -12,9 +11,6 @@
     <Compile Include="Mono.Cecil.PE\*.cs" />
     <Compile Include="Mono.Collections.Generic\*.cs" />
     <Compile Include="Mono.Security.Cryptography\*.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Runtime" Version="4.3.1" />
   </ItemGroup>
 	<!-- Note that the lines below are needed to include the assebly in the VSIX-->
 	<Target Name="BuiltProjectOutputGroup" />

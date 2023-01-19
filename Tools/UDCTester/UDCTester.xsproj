@@ -68,6 +68,13 @@
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="XSharp.CodeAnalysis, Version=2.15.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.CodeAnalysis</Name>
+      <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.VSParser, Version=2.8.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VSParser</Name>
       <AssemblyName>XSharp.VSParser.dll</AssemblyName>

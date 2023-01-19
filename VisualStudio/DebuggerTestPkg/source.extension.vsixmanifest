@@ -22,6 +22,6 @@
     <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="System.Reflection.Metadata.dll" AssemblyName="System.Reflection.Metadata, Version=1.4.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="XSharp.Evaluator.dll" />
     <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="XSharp.CodeAnalysis.dll" />
-    <Asset Type="DebuggerEngineExtension" d:Source="Project" d:ProjectName="%CurrentProject%" Path="XSharpDebugger2022.vsdconfig" />
+    <Asset Type="DebuggerEngineExtension" d:Source="Project" d:ProjectName="%CurrentProject%" Path="XSharp.Debugger2022.vsdconfig" />
   </Assets>
 </PackageManifest>

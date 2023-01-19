@@ -3078,7 +3078,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             expr = CreateObject(_pszType, args);
             expr.XGenerated = true;
             expr.XNode = context;
-            if (_options.MacroScript)
+            if (_options.MacroScript || _options.Kind == SourceCodeKind.Script)
                 return false;
             var str = context.GetText();
             string fieldname = null;

@@ -8037,7 +8037,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     localFunctions = new List<object>();
                 }
                 string sname;
-                if (_options.MacroScript)
+                if (_options.MacroScript || _options.Kind == SourceCodeKind.Script)
                     sname = "Xs$macro";
                 else
                     sname = CurrentEntity.ShortName;

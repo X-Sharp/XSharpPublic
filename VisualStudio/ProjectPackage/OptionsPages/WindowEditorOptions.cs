@@ -39,6 +39,18 @@ namespace XSharp.Project.Options
         [DefaultValue(false)]
         public bool PartialLasso { get; set; } = false;
 
+        [Category("RC Files")]
+        [DisplayName("Size adjustment X")]
+        [Description("Correction factor for Size adjustment horizontally .")]
+        [DefaultValue(0)]
+        public int SizeAdjustmentX { get; set; } =0;
+
+        [Category("RC Files")]
+        [DisplayName("Size adjustment Y")]
+        [Description("Correction factor for Size adjustment vertically .")]
+        [DefaultValue(0)]
+        public int SizeAdjustmentY { get; set; } = 0;
+
     }
 
 

@@ -12,6 +12,8 @@ BEGIN NAMESPACE XSharpModel
         STATIC PROPERTY PasteOffSetX AS LONG AUTO := 8
         STATIC PROPERTY PasteOffSetY AS LONG AUTO := 8
         STATIC PROPERTY PartialLasso AS LOGIC AUTO := FALSE
+        STATIC PROPERTY SizeAdjustmentX AS LONG AUTO := 8
+        STATIC PROPERTY SizeAdjustmentY AS LONG AUTO := 8
 
         STATIC PROPERTY DbServerParentClass AS STRING AUTO := "DbServer"
         STATIC PROPERTY DbServerDefaultRDD AS STRING AUTO := "DBFNTX"

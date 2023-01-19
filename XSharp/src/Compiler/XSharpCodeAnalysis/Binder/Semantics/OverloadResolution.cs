@@ -579,7 +579,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var type1 = m1.Member.ContainingType;
             var type2 = m2.Member.ContainingType;
 
-             var func1 = m1.Member.IsStatic && type1.IsFunctionsClass();
+            var func1 = m1.Member.IsStatic && type1.IsFunctionsClass();
             var func2 = m2.Member.IsStatic && type2.IsFunctionsClass();
 
             int leftScore = 0;
@@ -664,14 +664,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         result = BetterResult.Left;
                         if (leftScore <= rightScore)
-                            useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
+                            useSiteDiagnostics = GenerateWarning(bothRT, m1.Member, m2.Member, ErrorCode.WRN_XSharpAmbiguous);
                         return result;
                     }
                     if (asm2.IsFromCompilation(Compilation) || (rt1 && !rt2 && !sys2))
                     {
                         result = BetterResult.Right;
                         if (rightScore <= leftScore)
-                            useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
+                            useSiteDiagnostics = GenerateWarning(bothRT, m2.Member, m1.Member, ErrorCode.WRN_XSharpAmbiguous);
                         return result;
                     }
                 }
@@ -682,12 +682,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (m1Clipper)
                     {
                         result = BetterResult.Right;
-                        useSiteDiagnostics = GenerateAmbiguousWarning(m2.Member, m1.Member);
+                        useSiteDiagnostics = GenerateWarning(bothRT, m2.Member, m1.Member, ErrorCode.WRN_XSharpAmbiguous);
                     }
                     else
                     {
                         result = BetterResult.Left;
-                        useSiteDiagnostics = GenerateAmbiguousWarning(m1.Member, m2.Member);
+                        useSiteDiagnostics = GenerateWarning(bothRT, m1.Member, m2.Member, ErrorCode.WRN_XSharpAmbiguous);
                     }
                     return result;
                 }
@@ -789,7 +789,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 r2 = m1.Member;
                             }
 
-                            useSiteDiagnostics = GenerateAmbiguousWarning(r1, r2);
+                            useSiteDiagnostics = GenerateWarning(bothRT, r1, r2, ErrorCode.WRN_XSharpAmbiguous);
                             return result;
                         }
                     }
@@ -799,13 +799,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (func1 && !func2)
             {
                 result = BetterResult.Left;
-                useSiteDiagnostics = GenerateFuncMethodWarning(m1.Member, m2.Member);
+                useSiteDiagnostics = GenerateWarning(bothRT, m1.Member, m2.Member, ErrorCode.WRN_FunctionsTakePrecedenceOverMethods);
                 return result;
             }
             else if (func2 && !func1)
             {
                 result = BetterResult.Right;
-                useSiteDiagnostics = GenerateFuncMethodWarning(m2.Member, m1.Member);
+                useSiteDiagnostics = GenerateWarning(bothRT, m2.Member, m1.Member, ErrorCode.WRN_FunctionsTakePrecedenceOverMethods);
                 return result;
             }
             if (!Equals(type1, type2))
@@ -813,15 +813,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 result = PreferMostDerived(m1, m2, ref useSiteDiagnostics, equalLeft, equalRight);
                 if (result != BetterResult.Neither)
                     return result;
-
             }
-            HashSet<DiagnosticInfo> GenerateWarning(Symbol r1, Symbol r2, ErrorCode warning)
+            return BetterResult.Neither;
+        }
+        HashSet<DiagnosticInfo> GenerateWarning(bool bothRT, Symbol r1, Symbol r2, ErrorCode warning)
+        {
+            if (!bothRT)
             {
-                if (!bothRT)
-                {
-                    var diag = new HashSet<DiagnosticInfo>();
-                    var info = new CSDiagnosticInfo(warning,
-                            new object[] {
+                var diag = new HashSet<DiagnosticInfo>();
+                var info = new CSDiagnosticInfo(warning,
+                        new object[] {
                             r1.Name,
                             r1.Kind.ToString(),
                             new FormattedSymbol(r1, SymbolDisplayFormat.CSharpErrorMessageFormat),
@@ -829,21 +830,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             r2.Kind.ToString(),
                             new FormattedSymbol(r2, SymbolDisplayFormat.CSharpErrorMessageFormat),
                             r2.ContainingAssembly.Name,
-                            });
-                    diag.Add(info);
-                    return diag;
-                }
-                return null;
+                        });
+                diag.Add(info);
+                return diag;
             }
-            HashSet<DiagnosticInfo> GenerateAmbiguousWarning(Symbol r1, Symbol r2)
-            {
-                return GenerateWarning(r1, r2, ErrorCode.WRN_XSharpAmbiguous);
-            }
-            HashSet<DiagnosticInfo> GenerateFuncMethodWarning(Symbol s1, Symbol s2)
-            {
-                return GenerateWarning(s1, s2, ErrorCode.WRN_FunctionsTakePrecedenceOverMethods);
-            }
-            return BetterResult.Neither;
+            return null;
         }
 
         /// <summary>
@@ -852,12 +843,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// In the code below m1 is called Left and m2 is called Right (to match the return BetterLeft and BetterRight)
         /// </summary>
         /// <returns></returns>
-        private BetterResult XsBetterFunctionMember1<TMember>(MemberResolutionResult<TMember> m1,
+        private BetterResult XsBetterFunctionMember<TMember>(MemberResolutionResult<TMember> m1,
             MemberResolutionResult<TMember> m2,
             ArrayBuilder<BoundExpression> arguments,
             out HashSet<DiagnosticInfo> useSiteDiagnostics
-            )
-        where TMember : Symbol
+            ) where TMember : Symbol
         {
             // Prefer the member not declared in VulcanRT, if applicable
             useSiteDiagnostics = null;
@@ -876,18 +866,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             var useOurLogic = func1 || func2 ||
                 parsLeft.Any((p) => p.Type.IsOurType() || p.RefKind.IsByRef()) ||
                 parsRight.Any((p) => p.Type.IsOurType() || p.RefKind.IsByRef()) ||
-                arguments.Any((p) => p.Type.IsOurType() ||
-                arguments.Any((p) => p.Type is { } && p.Type.IsEnumType()));
-
+                arguments.Any((a) => a.Type.IsOurType()) ||
+                arguments.Any((a) => a.IsLiteralNull()) ||
+                arguments.Any((a) => a.Type is { } && a.Type.IsEnumType());
             if (useOurLogic)
             {
                 return XsBetterFunctionMemberImpl(m1, m2, arguments, out useSiteDiagnostics);
             }
             return BetterResult.Neither;
-            // Local Functions
         }
 
-        private BetterResult XsBetterFunctionMember2<TMember>(ArrayBuilder<BoundExpression> arguments,
+        private BetterResult XsPreferMostDerived<TMember>(ArrayBuilder<BoundExpression> arguments,
             MemberResolutionResult<TMember> m1,
             MemberResolutionResult<TMember> m2,
             ref HashSet<DiagnosticInfo> useSiteDiagnostics)

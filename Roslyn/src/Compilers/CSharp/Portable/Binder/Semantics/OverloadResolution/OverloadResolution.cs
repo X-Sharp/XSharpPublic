@@ -1773,7 +1773,7 @@ outerDefault:
 
             BetterResult result = BetterResult.Neither;
 #if XSHARP
-            result = XsBetterFunctionMember1(m1, m2, arguments, out useSiteDiagnostics);
+            result = XsBetterFunctionMember(m1, m2, arguments, out useSiteDiagnostics);
             if (result != BetterResult.Neither)
             {
                 return result;
@@ -2164,7 +2164,7 @@ outerDefault:
             result = PreferValOverInParameters(arguments, m1, m1LeastOverriddenParameters, m2, m2LeastOverriddenParameters);
             if (result == BetterResult.Neither)
             {
-                result = XsBetterFunctionMember2(arguments, m1, m2, ref useSiteDiagnostics);
+                result = XsPreferMostDerived(arguments, m1, m2, ref useSiteDiagnostics);
             }
             return result;
 #else

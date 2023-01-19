@@ -657,9 +657,9 @@ BEGIN NAMESPACE XSharpModel
 
 
 
-    VIRTUAL METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+    VIRTUAL METHOD ReportError(fileName AS STRING, span AS VsParser.LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
     RETURN
-    VIRTUAL METHOD ReportWarning(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+    VIRTUAL METHOD ReportWarning(fileName AS STRING, span AS VsParser.LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
     RETURN
 
 

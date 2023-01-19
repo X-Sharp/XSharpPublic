@@ -26,7 +26,9 @@ using System.Collections.Generic;
 // They will be included in the generated PkgDef folder for the project system
 [assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser")]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpModel")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.MonoCecil")]
 namespace XSharp.LanguageService
 {
 

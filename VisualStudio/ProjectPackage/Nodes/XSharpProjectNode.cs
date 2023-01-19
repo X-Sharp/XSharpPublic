@@ -6,10 +6,7 @@
 #undef USEPROJECTVERSION
 using Community.VisualStudio.Toolkit;
 using EnvDTE;
-using LanguageService.CodeAnalysis;
-using LanguageService.CodeAnalysis.XSharp;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.SyntaxTree;
+
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
@@ -35,7 +32,10 @@ using File = System.IO.File;
 using MBC = Microsoft.Build.Construction;
 using MSBuild = Microsoft.Build.Evaluation;
 using VsParser = global::LanguageService.CodeAnalysis.XSharp;
-
+using LanguageService.CodeAnalysis;
+using LanguageService.CodeAnalysis.XSharp;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
 
 
 namespace XSharp.Project

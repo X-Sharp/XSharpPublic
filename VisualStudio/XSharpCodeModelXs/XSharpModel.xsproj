@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharpModel</RootNamespace>
-    <AssemblyName>XSharpModel</AssemblyName>
+    <AssemblyName>XSharp.CodeModel</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <Name>XSharpModel</Name>
     <Nologo>true</Nologo>
@@ -55,6 +55,13 @@
       <Name>System.ServiceModel</Name>
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>System.ServiceModel.dll</AssemblyName>
+    </Reference>
+    <Reference Include="XSharp.CodeAnalysis, Version=2.15.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.CodeAnalysis</Name>
+      <AssemblyName>XSharp.CodeAnalysis.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.VSParser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VSParser</Name>
@@ -152,13 +159,6 @@
     <None Include="Formatting\FormattingRules.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
-      <Name>XSharpMonoCecil</Name>
-      <Project>{c9e9f119-d5a7-493b-88c9-4b5dd5ad653f}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Formatting\XFormattingRules.resx">
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
@@ -168,6 +168,13 @@
       <IncludeAssets>All</IncludeAssets>
       <Version>1.0.117</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
+      <Name>XSharpMonoCecil</Name>
+      <Project>{c9e9f119-d5a7-493b-88c9-4b5dd5ad653f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

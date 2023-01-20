@@ -174,7 +174,11 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
 
     INTERNAL STATIC METHOD DbCmdError(cFuncSym AS STRING)  AS Error
         LOCAL oError    AS Error
-        oError := Error{RuntimeState.LastRddError}
+        if RuntimeState.LastRddError != NULL
+            oError := Error{RuntimeState.LastRddError}
+        else
+            oError := Error{}
+        endif
         oError:Gencode      := EG_NOTABLE
         oError:SubCode      := EDB_NOTABLE
         oError:SubSystem    := "DBCMD"

@@ -981,6 +981,11 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
                                 // valid in the original source but unnecessary.
                                 continue; // Don't add anything for this import.
                             }
+#if XSHARP
+                            else if (importRecord.Alias == null)
+                            {
+                            }
+#endif
                             else if (importRecord.Alias == null && !typeSymbol.IsStatic)
                             {
                                 // Only static types can be directly imported.

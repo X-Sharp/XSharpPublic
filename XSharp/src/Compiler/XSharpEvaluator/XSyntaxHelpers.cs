@@ -224,7 +224,6 @@ namespace LanguageService.CodeAnalysis.CSharp.ExpressionEvaluator
                 SetOptionFromReference(f.Name + ".dll", ref xoptions);
             }
             XSharpOptions = xoptions;
-Debug.WriteLine("Options runtime assemblies: {0}", XSharpOptions.RuntimeAssemblies);
         }
     }
 }

@@ -24,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
     <DisabledWarnings>165,649,168,170</DisabledWarnings>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <WarningLevel>4</WarningLevel>

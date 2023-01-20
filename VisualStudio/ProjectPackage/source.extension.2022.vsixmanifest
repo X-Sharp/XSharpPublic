@@ -31,7 +31,6 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="XSharpDebugger2022" Path="|XSharpDebugger2022|" AssemblyName="|XSharpDebugger2022;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="XSharpAppDesigner2022" Path="|XSharpAppDesigner2022|" AssemblyName="|XSharpAppDesigner2022;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="ProjectBase2022" Path="|ProjectBase2022|" AssemblyName="|ProjectBase2022;AssemblyName|" />
-        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="XSharpMonoCecil" Path="|XSharpMonoCecil|" AssemblyName="|XSharpMonoCecil;AssemblyName|"/>
         <Asset Type="DebuggerEngineExtension" d:Source="Project" d:ProjectName="%CurrentProject%" Path="XSharp.Debugger2022.vsdconfig" />
     </Assets>
     <Content>

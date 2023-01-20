@@ -28,7 +28,7 @@ using System.Collections.Generic;
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.MonoCecil")]
+[assembly: ProvideCodeBase(AssemblyName = "Mono.Cecil")]
 namespace XSharp.LanguageService
 {
 

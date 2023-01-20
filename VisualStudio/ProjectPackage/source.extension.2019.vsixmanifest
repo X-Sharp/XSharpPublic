@@ -31,7 +31,6 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="XSharpDebugger" Path="|XSharpDebugger|" AssemblyName="|XSharpDebugger;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="XSharpAppDesigner" Path="|XSharpAppDesigner|" AssemblyName="|XSharpAppDesigner;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="ProjectBase" Path="|ProjectBase|" AssemblyName="|ProjectBase;AssemblyName|" />
-        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="XSharpMonoCecil" Path="|XSharpMonoCecil|" AssemblyName="|XSharpMonoCecil;AssemblyName|"/>
         <Asset Type="DebuggerEngineExtension" d:Source="Project" d:ProjectName="%CurrentProject%" Path="XSharp.Debugger.vsdconfig" />
     </Assets>
     <Content>

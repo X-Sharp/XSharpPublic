@@ -35,7 +35,7 @@ FUNCTION StretchBitmap(hWnd AS IntPtr,cFileName AS STRING,cTitle AS STRING) AS L
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ptrlen/*" />
 FUNCTION PtrLen( lpv AS IntPtr ) AS DWORD
-    IF IntPtr.Size == 4 .AND. IsRunningOnWindows()
+    IF IntPtr.Size == 4 .AND. RuntimeState.RunningOnWindows
         LOCAL mbi IS _WINMEMORY_BASIC_INFORMATION
         LOCAL hProcess AS IntPtr
         hProcess := Win32.GetCurrentProcess()
@@ -52,7 +52,7 @@ FUNCTION PtrLen( lpv AS IntPtr ) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ptrlenwrite/*" />
 FUNCTION PtrLenWrite( lpv AS IntPtr ) AS DWORD
-    IF IntPtr.Size == 4 .AND. IsRunningOnWindows()
+    IF IntPtr.Size == 4 .AND. RuntimeState.RunningOnWindows
         LOCAL mbi IS _WINMEMORY_BASIC_INFORMATION
         LOCAL hProcess AS IntPtr
         hProcess := Win32.GetCurrentProcess()

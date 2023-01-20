@@ -96,7 +96,7 @@ BEGIN NAMESPACE XSharp.IO
         /// <summary>Create a XsFileStream object on Windows and a normal FileStream object on other OS-es</summary>
         STATIC METHOD CreateFileStream (path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
             IF share != FileShare.None
-                IF IsRunningOnWindows()
+                IF RuntimeState.RunningOnWindows
                     RETURN CreateWin32FileStream(path, mode, faccess, share, bufferSize, options)
                 ELSE
                     RETURN XsFileStream{path, mode, faccess, share, 0xFFFF, options}

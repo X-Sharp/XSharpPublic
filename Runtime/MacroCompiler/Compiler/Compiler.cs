@@ -44,6 +44,7 @@ namespace XSharp.MacroCompiler
                 SyntaxTree = null;
                 Binder = binder;
                 Diagnostic = null;
+                AssemblyBytes = null;
             }
             internal CompilationResult(string source, Syntax.Node syntaxTree, Binder<T> binder)
             {
@@ -52,6 +53,7 @@ namespace XSharp.MacroCompiler
                 SyntaxTree = syntaxTree;
                 Binder = binder;
                 Diagnostic = null;
+                AssemblyBytes = null;
             }
             internal CompilationResult(string source, CompilationError diagnostic)
             {
@@ -60,6 +62,7 @@ namespace XSharp.MacroCompiler
                 SyntaxTree = null;
                 Binder = null;
                 Diagnostic = diagnostic;
+                AssemblyBytes = null;
             }
         }
 

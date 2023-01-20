@@ -308,7 +308,7 @@ FUNCTION OS() AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/os/*" />
 FUNCTION OS(lExtended AS LOGIC) AS STRING
-    IF IsRunningOnWindows()
+    IF RuntimeState.RunningOnWindows
         RETURN ReadOsVersionFromRegistry(lExtended)
     ENDIF
     VAR o   := Environment.OSVersion
@@ -355,17 +355,7 @@ FUNCTION ReadOsVersionFromRegistry(lExtended AS LOGIC) AS STRING
     RETURN cOS
 
 FUNCTION IsRunningOnWindows() AS LOGIC
-    SWITCH System.Environment.OSVersion:Platform
-    CASE System.PlatformID.Win32NT
-    CASE System.PlatformID.Win32S               // No longer in use
-    CASE System.PlatformID.Win32Windows         // No longer in use
-    CASE System.PlatformID.WinCE                // No longer in use
-        RETURN TRUE
-    CASE System.PlatformID.Xbox
-    CASE System.PlatformID.Unix
-        RETURN FALSE
-    END SWITCH
-    RETURN FALSE
+    RETURN RuntimeState:RunningOnWindows
 
 
 FUNCTION TruePath( cFile AS STRING ) AS STRING PASCAL

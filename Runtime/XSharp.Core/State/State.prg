@@ -44,16 +44,28 @@ END CLASS
 CLASS XSharp.RuntimeState
 
 	// Static Fields
-	PRIVATE INITONLY STATIC initialState  AS RuntimeState
+    PRIVATE INITONLY STATIC _onWindows AS LOGIC
+	PRIVATE INITONLY STATIC _initialState  AS RuntimeState
 	PRIVATE INITONLY _thread AS Thread
 	PRIVATE STATIC _shutdown := FALSE AS LOGIC  // To prevent creating state when shutting down
 	// Static Methods and Constructor
-	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState>
+	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  _initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState>
 	STATIC CONSTRUCTOR
-		initialState	:= RuntimeState{TRUE}
+		_initialState	:= RuntimeState{TRUE}
         AutoLock        := DoNothing
         AutoUnLock      := DoNothing
         detectDialect()
+        SWITCH System.Environment.OSVersion:Platform
+        CASE System.PlatformID.Win32NT
+        CASE System.PlatformID.Win32S               // No longer in use
+        CASE System.PlatformID.Win32Windows         // No longer in use
+        CASE System.PlatformID.WinCE                // No longer in use
+            _onWindows := TRUE
+        OTHERWISE
+            _onWindows := FALSE
+        END SWITCH
+
+
 
     PRIVATE STATIC METHOD detectDialect() AS VOID
         LOCAL asm := Assembly.GetEntryAssembly() AS Assembly
@@ -83,6 +95,8 @@ CLASS XSharp.RuntimeState
             NEXT
         ENDIF
 
+    PUBLIC STATIC PROPERTY RunningOnWindows as LOGIC GET _onWindows
+
 	/// <summary>Retrieve the runtime state for the current thread</summary>
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
@@ -96,7 +110,6 @@ CLASS XSharp.RuntimeState
     /// <summary>The dictionary that stores most of the settings in the runtime state. The key to the index is the number from the Set Enum</summary>
     /// <seealso cref="Set" >Set Enum</seealso>
     PUBLIC PROPERTY Settings AS Dictionary<XSharp.Set, OBJECT> GET oSettings
-
 	PRIVATE CONSTRUCTOR(initialize AS LOGIC)
 		VAR oThread := Thread.CurrentThread
         SELF:_thread := oThread
@@ -117,7 +130,7 @@ CLASS XSharp.RuntimeState
 
             SELF:_SetThreadValue<Exception>(Set.Patharray,NULL)
             SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
-			IF IsRunningOnWindows()
+			IF RuntimeState.RunningOnWindows
                 SELF:_SetThreadValue<LONG>(Set.DosCodepage, Win32.GetDosCodePage())
                 SELF:_SetThreadValue<LONG>(Set.WinCodepage, Win32.GetWinCodePage())
             ELSE
@@ -132,15 +145,15 @@ CLASS XSharp.RuntimeState
     /// <exclude />
 	DESTRUCTOR()
 		// What do we need to clean ?
-        IF SELF == initialState
+        IF SELF == _initialState
             _shutdown := TRUE
         ENDIF
 
 
 	PRIVATE METHOD Clone() AS RuntimeState
 		LOCAL oNew AS RuntimeState
-        IF Thread.CurrentThread == initialState:_thread .OR. _shutdown
-            RETURN initialState
+        IF Thread.CurrentThread == _initialState:_thread .OR. _shutdown
+            RETURN _initialState
         ENDIF
 		oNew := RuntimeState{FALSE}
 		BEGIN LOCK oSettings
@@ -868,7 +881,7 @@ CLASS XSharp.RuntimeState
             ELSE
                 name := thread:Name
             ENDIF
-            IF inst == initialState
+            IF inst == _initialState
                 inst:_dataSession := DataSession{1, "Global datasession"}
             ELSE
                 inst:_dataSession := DataSession{"DataSession for Thread "+name}
@@ -1086,7 +1099,7 @@ CLASS XSharp.RuntimeState
         VAR mode := RuntimeState.CollationMode
         SWITCH mode
         CASE CollationMode.Windows
-            IF IsRunningOnWindows()
+            IF RuntimeState.RunningOnWindows
                 ret := XSharp.StringHelpers.CompareWindows(strLHS, strRHS)
             ELSE
                 ret := String.Compare(strLHS, strRHS)
@@ -1121,7 +1134,7 @@ CLASS XSharp.RuntimeState
         CASE CollationMode.Xpp
             RETURN XSharp.StringHelpers.CompareClipper(aLHS, aRHS, nLen)
         CASE CollationMode.Windows
-            IF IsRunningOnWindows()
+            IF RuntimeState.RunningOnWindows
                 RETURN XSharp.StringHelpers.CompareWindows(aLHS, aRHS, nLen)
             ELSE
                 VAR strLHS := RuntimeState.WinEncoding:GetString(aLHS, 0, nLen)

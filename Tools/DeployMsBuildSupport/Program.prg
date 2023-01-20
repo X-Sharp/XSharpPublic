@@ -9,7 +9,7 @@ FUNCTION Start(args as string[]) AS VOID STRICT
     local aFolders as List<String>
     local cPf as string
     local XSharpDir as string
-    local uninstall as logic
+    local uninstall := false as logic
     IF args?:Length > 0
         uninstall := args:Count( { sArg => sArg:ToUpper():Contains("UNINSTALL") }) > 0
     ENDIF

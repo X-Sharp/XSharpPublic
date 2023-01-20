@@ -32,8 +32,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBase", "VisualStudio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpAppDesigner", "VisualStudio\AppDesigner\XSharpAppDesigner.csproj", "{4484939E-DDA8-4033-8B1C-E8F60A2BAFE0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XSharpMonoCecil", "VisualStudio\Mono.Cecil\XSharpMonoCecil.csproj", "{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpLanguageService", "VisualStudio\LanguageService\XSharpLanguageService.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpProjectPackage", "VisualStudio\ProjectPackage\XSharpProjectPackage.csproj", "{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}"
@@ -110,14 +108,6 @@ Global
 		{4484939E-DDA8-4033-8B1C-E8F60A2BAFE0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4484939E-DDA8-4033-8B1C-E8F60A2BAFE0}.Release|x86.ActiveCfg = Release|Any CPU
 		{4484939E-DDA8-4033-8B1C-E8F60A2BAFE0}.Release|x86.Build.0 = Release|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Debug|x86.Build.0 = Debug|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|x86.ActiveCfg = Release|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|x86.Build.0 = Release|Any CPU
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|x86.ActiveCfg = Debug|Any CPU

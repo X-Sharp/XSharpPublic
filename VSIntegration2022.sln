@@ -27,8 +27,6 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpVoEditors", "VisualSt
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpCodeGenerator", "VisualStudio\CodeGenerator\XSharpCodeGenerator.xsproj", "{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XSharpMonoCecil", "VisualStudio\Mono.Cecil\XSharpMonoCecil.csproj", "{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBase2022", "VisualStudio\ProjectBase\ProjectBase2022.csproj", "{CACB60A9-1E76-4F92-8831-B134A658C696}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpLanguageService2022", "VisualStudio\LanguageService\XSharpLanguageService2022.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7396}"
@@ -54,8 +52,6 @@ EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XPorter", "Tools\XPorter\XPorter.xsproj", "{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "UDCTester", "Tools\UDCTester\UDCTester.xsproj", "{F9579349-9B33-44A3-A615-D091AB45DBB8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpProjectCPS", "VisualStudio\ProjectPackageCPS\XSharpProjectCPS.csproj", "{679502AC-264C-40AC-9E3A-587F2A27F08B}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "DeployMsBuildSupport", "Tools\DeployMsBuildSupport\DeployMsBuildSupport.xsproj", "{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}"
 EndProject
@@ -119,18 +115,6 @@ Global
 		{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}.Release|arm64.Build.0 = Release|Any CPU
 		{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}.Release|x86.ActiveCfg = Release|Any CPU
 		{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}.Release|x86.Build.0 = Release|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Debug|arm64.ActiveCfg = Debug|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Debug|arm64.Build.0 = Debug|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Debug|x86.Build.0 = Debug|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|arm64.ActiveCfg = Release|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|arm64.Build.0 = Release|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|x86.ActiveCfg = Release|Any CPU
-		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|x86.Build.0 = Release|Any CPU
 		{CACB60A9-1E76-4F92-8831-B134A658C696}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CACB60A9-1E76-4F92-8831-B134A658C696}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CACB60A9-1E76-4F92-8831-B134A658C696}.Debug|arm64.ActiveCfg = Debug|Any CPU
@@ -275,18 +259,6 @@ Global
 		{F9579349-9B33-44A3-A615-D091AB45DBB8}.Release|arm64.Build.0 = Release|Any CPU
 		{F9579349-9B33-44A3-A615-D091AB45DBB8}.Release|x86.ActiveCfg = Release|Any CPU
 		{F9579349-9B33-44A3-A615-D091AB45DBB8}.Release|x86.Build.0 = Release|Any CPU
-		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Debug|arm64.ActiveCfg = Debug|arm64
-		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Debug|arm64.Build.0 = Debug|arm64
-		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Debug|x86.ActiveCfg = Debug|x86
-		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Debug|x86.Build.0 = Debug|x86
-		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Release|arm64.ActiveCfg = Release|arm64
-		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Release|arm64.Build.0 = Release|arm64
-		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Release|x86.ActiveCfg = Release|x86
-		{679502AC-264C-40AC-9E3A-587F2A27F08B}.Release|x86.Build.0 = Release|x86
 		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6DEA3EA-186C-4868-859A-C2EBBEE0D981}.Debug|arm64.ActiveCfg = Debug|Any CPU

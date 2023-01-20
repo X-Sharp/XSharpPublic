@@ -136,9 +136,19 @@ namespace XSharp.Project
             }
         }
 
+        void EnableApplicationIcon()
+        {
+            var prjfile = ParentPropertyPage.ProjectMgr.ProjectFile;
+            var hasRcFiles = XDatabase.HasRCFiles(prjfile);
+            this.labelIcon.Enabled = !hasRcFiles;
+            this.tbAppIcon.Enabled = !hasRcFiles;
+            this.btnIcon.Enabled = !hasRcFiles;
+        }
+
         protected internal override void BindProperties()
         {
             this.GetStartupClasses();
+            this.EnableApplicationIcon();
             base.BindProperties();
         }
 

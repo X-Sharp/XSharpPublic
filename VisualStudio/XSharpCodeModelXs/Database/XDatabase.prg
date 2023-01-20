@@ -1615,6 +1615,23 @@ STATIC CLASS XDatabase
         Log(i"GetMembers '{idType}' returns {result.Count} matches")
         RETURN result
 
+
+    STATIC METHOD HasRCFiles(projectFile as string) AS LOGIC
+        IF IsDbOpen
+            BEGIN LOCK oConn
+                TRY
+                    var fileType := (Int) XFileType.NativeResource
+                    var stmt := "select count(*) from ProjectFiles where fileType = "+fileType:ToString()+" and ProjectFileName like '%" +projectFile+"'"
+                    USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                    var count := (Int64) oCmd:ExecuteScalar()
+                    RETURN count > 0
+                CATCH e AS Exception
+                    XSettings.LogException(e, __FUNCTION__)
+                END TRY
+            END LOCK
+        ENDIF
+        RETURN FALSE
+
     STATIC METHOD GetStartupClasses(projectFile as string) AS List<String>
         var result := List<String>{}
         IF IsDbOpen

@@ -4,15 +4,10 @@
     <PropertyGroup>
         <ProjectGuid>$guid1$</ProjectGuid>
         <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>$safeprojectname$</RootNamespace>
         <AssemblyName>$safeprojectname$</AssemblyName>
         <TargetFrameworkVersion>v$targetframeworkversion$</TargetFrameworkVersion>
         <Name>$safeprojectname$</Name>
-        <Nologo>true</Nologo>
-        <GenerateFullPaths>true</GenerateFullPaths>
-        <Dialect>Core</Dialect>
-        <vo15>false</vo15>
         <ProjectTypeGuids>{AA6C8D78-22FF-423A-9C7C-5F2393824E04}</ProjectTypeGuids>
         <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
         <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -20,25 +15,11 @@
         <IsCodedUITest>False</IsCodedUITest>
         <TestProjectType>UnitTest</TestProjectType>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
         <PlatformTarget>AnyCPU</PlatformTarget>
-        <EmitDebugInformation>true</EmitDebugInformation>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
         <PlatformTarget>AnyCPU</PlatformTarget>
-        <EmitDebugInformation>false</EmitDebugInformation>
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="mscorlib" />
@@ -64,12 +45,6 @@
     </ItemGroup>
     <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
     <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
-    <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
-    <ProjectExtensions>
-        <ProjectCapabilities>
-            <ProjectConfigurationsDeclaredAsItems />
-        </ProjectCapabilities>
-    </ProjectExtensions>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
         <PreBuildEvent />
         <PostBuildEvent />

@@ -6229,6 +6229,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     iterExpr = bin.Left.Get<ExpressionSyntax>();
                     initExpr = bin.Right.Get<ExpressionSyntax>();
                     assignExpr = MakeSimpleAssignment(iterExpr, initExpr);
+                    assignExpr.XGenerated = true;
                     iterExpr.XNode = bin.Left;
                     initExpr.XNode = bin.Right;
                 }
@@ -6240,6 +6241,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 initExpr = context.Expr.Get<ExpressionSyntax>();
                 assignExpr = MakeSimpleAssignment(iterExpr, initExpr);
                 assignExpr.XNode = context.Expr;
+                assignExpr.XGenerated = true;
                 initExpr.XNode = context.Expr;
                 context.Expr.SetSequencePoint();
                 context.ForIter.SetSequencePoint();
@@ -6264,6 +6266,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         iterExpr,
                         SyntaxFactory.MakeToken(SyntaxKind.MinusEqualsToken),
                         context.Step.Get<ExpressionSyntax>());
+                    incrExpr.XGenerated = true;
                     whileExpr.XNode = context.FinalExpr;
                     incrExpr.XNode = context.Step;
                     context.FinalExpr.SetSequencePoint();
@@ -6281,6 +6284,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 context.Step.Get<ExpressionSyntax>());
                     whileExpr.XNode = context.FinalExpr;
                     incrExpr.XNode = context.Step;
+                    incrExpr.XGenerated = true;
                     context.FinalExpr.SetSequencePoint();
                     context.Step.SetSequencePoint();
                     break;
@@ -6308,6 +6312,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     incrExpr.XGenerated = true;
                     whileExpr.XNode = context.FinalExpr;
                     incrExpr.XNode = context.Step;
+                    incrExpr.XGenerated = true;
                     context.FinalExpr.SetSequencePoint();
                     context.Step.SetSequencePoint();
                     break;

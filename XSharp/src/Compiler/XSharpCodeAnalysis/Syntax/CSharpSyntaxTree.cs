@@ -262,23 +262,26 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Our line numbers are 1 based and column numbers are zero based..
 
                     var xNode = snode.XNode as XSharpParserRuleContext;
-                    switch (xNode.Parent)
+                    if (xNode is not XP.StatementContext)
                     {
-                        case XP.IMultiElementContext:
-                        case XP.AssignmentExpressionContext:
-                        case XP.BinaryExpressionContext:
-                        case XP.MethodCallContext:
-                        case XP.CtorCallContext:
-                        case XP.DelegateCtorCallContext:
-                        case XP.GlobalAttributesContext:
-                        case XP.StatementBlockContext:
-                        case XP.StatementContext:
-                        case XP.ClassmemberContext:
-                        case XP.IifContext:
-                        case XP.LinqQueryContext:
-                            xNode = (XSharpParserRuleContext)xNode.Parent;
-                            break;
-
+                        switch (xNode.Parent)
+                        {
+                            case XP.IMultiElementContext:
+                            case XP.AccessMemberContext:
+                            case XP.AssignmentExpressionContext:
+                            case XP.BinaryExpressionContext:
+                            case XP.MethodCallContext:
+                            case XP.CtorCallContext:
+                            case XP.DelegateCtorCallContext:
+                            case XP.GlobalAttributesContext:
+                            case XP.StatementBlockContext:
+                            case XP.StatementContext:
+                            case XP.ClassmemberContext:
+                            case XP.IifContext:
+                            case XP.LinqQueryContext:
+                                xNode = (XSharpParserRuleContext)xNode.Parent;
+                                break;
+                        }
                     }
 
                     start = xNode.Position;

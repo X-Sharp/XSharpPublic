@@ -190,6 +190,18 @@ http://www.xsharp.eu</value>
     <value>VO Window Editor</value>
     <comment>Caption of options page</comment>
   </data>
+  <data name="202" xml:space="preserve">
+    <value>Other Editors</value>
+    <comment>Caption of options page</comment>
+  </data>
+  <data name="203" xml:space="preserve">
+  <value>Debugging</value>
+  <comment>Caption of debugging page category</comment>
+</data>
+  <data name="204" xml:space="preserve">
+  <value>X# Debugger</value>
+  <comment>Caption of debugger options page</comment>
+</data>
   <data name="301" xml:space="preserve">
     <value>
       Grid;
@@ -201,10 +213,6 @@ http://www.xsharp.eu</value>
       Offset;
     </value>
     <comment>Keyword list Window Editor options</comment>
-  </data>
-  <data name="202" xml:space="preserve">
-    <value>Other Editors</value>
-    <comment>Caption of options page</comment>
   </data>
   <data name="302" xml:space="preserve">
     <value>
@@ -224,4 +232,27 @@ http://www.xsharp.eu</value>
     </value>
     <comment>Keyword list Other Editor options</comment>
   </data>
+  <data name="304" xml:space="preserve">
+  <value>
+    Implicit;
+    Zero;
+    Array;
+    Memvar;
+    Memory;
+    Dynamic;
+    Undeclared;
+    Conversions;
+    Comparisons;
+    Float;
+    IIF;
+    Vo2;
+    Vo6;
+    Vo7;
+    Vo10;
+    Vo12;
+    Vo13;
+    Vo14;
+  </value>
+  <comment>Keyword list Debugger options</comment>
+</data>
 </root>

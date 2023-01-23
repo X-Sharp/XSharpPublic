@@ -15,7 +15,7 @@
   
   <ManagedComponent
     ComponentId="guidXSharpFrameDecoderCompId"
-    ComponentLevel="64000"
+    ComponentLevel="99000"
     AssemblyName="XSharp.Debugger2022"
     Synchronized="true">
 

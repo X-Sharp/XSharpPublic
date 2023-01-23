@@ -14,7 +14,7 @@ using System.Diagnostics;
 using LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator;
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis;
-
+using XSharpModel;
 namespace XSharpDebugger.ExpressionCompiler
 {
     /// <summary>
@@ -37,10 +37,17 @@ namespace XSharpDebugger.ExpressionCompiler
         static void UpdateXSharpParseOptions()
         {
             var xoptions = XSyntaxHelpers.XSharpOptions;
-            xoptions.SetDialect(XSharpDialect.VO);
-            xoptions.SetOption(CompilerOption.MemVars, true);
-            xoptions.SetOption(CompilerOption.UndeclaredMemVars, true);
-            xoptions.SetOption(CompilerOption.ArrayZero, false);
+            xoptions.SetDialect(XDebuggerSettings.Dialect);
+            xoptions.SetOption(CompilerOption.MemVars, XDebuggerSettings.MemVars);
+            xoptions.SetOption(CompilerOption.UndeclaredMemVars, XDebuggerSettings.UndeclaredMemvars);
+            xoptions.SetOption(CompilerOption.ArrayZero, XDebuggerSettings.ArrayZero);
+            xoptions.SetOption(CompilerOption.Vo4, XDebuggerSettings.Vo4);
+            xoptions.SetOption(CompilerOption.Vo6, XDebuggerSettings.Vo6);
+            xoptions.SetOption(CompilerOption.Vo7, XDebuggerSettings.Vo7);
+            xoptions.SetOption(CompilerOption.Vo10, XDebuggerSettings.Vo10);
+            xoptions.SetOption(CompilerOption.Vo12, XDebuggerSettings.Vo12);
+            xoptions.SetOption(CompilerOption.Vo13, XDebuggerSettings.Vo13);
+            xoptions.SetOption(CompilerOption.Vo14, XDebuggerSettings.Vo14);
             XSyntaxHelpers.XSharpOptions = xoptions;
         }
 

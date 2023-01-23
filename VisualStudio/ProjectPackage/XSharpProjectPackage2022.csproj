@@ -145,6 +145,7 @@
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OptionsPages\DebuggerOptions.cs" />
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
@@ -634,6 +635,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppDesigner\XSharpAppDesigner2022.csproj">
+      <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe1}</Project>
+      <Name>XSharpAppDesigner2022</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CodeGenerator\XSharpCodeGenerator.xsproj">
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
       <Name>XSharpCodeGenerator</Name>
@@ -647,12 +652,6 @@
     <ProjectReference Include="..\ProjectBase\ProjectBase2022.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
       <Name>ProjectBase2022</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
-    </ProjectReference>
-    <ProjectReference Include="..\AppDesigner\XSharpAppDesigner2022.csproj">
-      <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe1}</Project>
-      <Name>XSharpAppDesigner2022</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>

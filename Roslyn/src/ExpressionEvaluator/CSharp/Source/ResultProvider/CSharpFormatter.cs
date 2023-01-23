@@ -14,7 +14,11 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
     internal sealed partial class CSharpFormatter : Formatter
     {
         public CSharpFormatter()
+#if XSHARP
+            : base(defaultFormat: "{{{0}}}", nullString: "NULL", thisString: "SELF")
+#else
             : base(defaultFormat: "{{{0}}}", nullString: "null", thisString: "this")
+#endif
         {
         }
 

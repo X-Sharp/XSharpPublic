@@ -163,6 +163,19 @@ PUBLIC STATIC PARTIAL CLASS Funcs
         oRect:Y := (INT)((REAL8(oRect:Y * oInfo:nBaseUnitY) / (REAL8)(oInfo:tmHeight * 2) + (REAL8)0.5))
         oRect:Width := (INT)((REAL8(oRect:Width * oInfo:nBaseUnitX) / (REAL8)(oInfo:tmWidth * 2) + (REAL8)0.5))
         oRect:Height :=(INT)((REAL8(oRect:Height * oInfo:nBaseUnitY) / (REAL8)(oInfo:tmHeight * 2) + (REAL8)0.5))
+
+        LOCAL ix, iy AS INT
+        ix := XSharpModel.XCustomEditorSettings.SizeAdjustmentX
+        iy := XSharpModel.XCustomEditorSettings.SizeAdjustmentY
+        IF ix > 100 .and. iy > 100 .and. ix < 10000 .and. iy < 10000
+            LOCAL x := 0.75, y := 0.812 AS REAL8
+            x := (REAL8)ix / 1000.0
+            y := (REAL8)iy / 1000.0
+            oRect:X := (INT)(REAL8(oRect:X) * x + (REAL8)0.5)
+            oRect:Y := (INT)(REAL8(oRect:Y) * y + (REAL8)0.5)
+            oRect:Width := (INT)(REAL8(oRect:Width) * x + (REAL8)0.5)
+            oRect:Height := (INT)(REAL8(oRect:Height) * y + (REAL8)0.5)
+        endif
         RETURN oRect
 
     INTERNAL STATIC METHOD StringToColor(cColor AS STRING) AS Color

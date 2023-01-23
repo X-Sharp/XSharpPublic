@@ -2012,6 +2012,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"STEP", STEP},
                 {"STRICT", STRICT},
                 {"SUPER", SUPER},
+                {"THIS", SELF},
                 {"THISCALL", THISCALL},
                 {"TO", TO},
                 //{"_TYPEOF", TYPEOF},  VO does not allow 4 letter abbreviations
@@ -2159,7 +2160,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var vfpKeywords = new XSharpKeywords
                 {
                     // normal keywords
-                    {"THIS", SELF},
+                    //{"THIS", SELF},
                     {"THIS_ACCESS",THISACCESS },
                     {"HELPSTRING",HELPSTRING },
                     {"DIMENSION",DIMENSION},

@@ -18,7 +18,7 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <Includepaths>$(Solutiondir)common</Includepaths>
-    <NamedArgs>true</NamedArgs>
+    <NamedArgs>True</NamedArgs>
     <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">

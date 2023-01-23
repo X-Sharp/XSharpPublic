@@ -93,6 +93,11 @@ namespace XSharp.Project
         pageNameResourceID: 202,
         keywordListResourceId: 302,
         supportsAutomation:true, Sort = 2)]
+    [ProvideOptionPage(typeof(Options.DialogPageProvider.Debugger), "Debugging", "X# Debugger",
+     categoryResourceID: 203,
+     pageNameResourceID: 204,
+     keywordListResourceId: 304,
+     supportsAutomation: true)]
 
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),
@@ -269,6 +274,20 @@ namespace XSharp.Project
 
         public async Task<bool> GetEditorOptionsAsync()
         {
+            var doptions = await Options.DebuggerOptions.GetLiveInstanceAsync();
+            XDebuggerSettings.ArrayZero = doptions.ArrayZero;
+            XDebuggerSettings.AllowEditing = doptions.AllowEditing;
+            XDebuggerSettings.Dialect = doptions.Dialect;
+            XDebuggerSettings.MemVars = doptions.MemVars;
+            XDebuggerSettings.UndeclaredMemvars = doptions.UndeclaredMemvars;
+            XDebuggerSettings.Vo4 = doptions.Vo4;
+            XDebuggerSettings.Vo6 = doptions.Vo6;
+            XDebuggerSettings.Vo7 = doptions.Vo7;
+            XDebuggerSettings.Vo10 = doptions.Vo10;
+            XDebuggerSettings.Vo12 = doptions.Vo12;
+            XDebuggerSettings.Vo13 = doptions.Vo13;
+            XDebuggerSettings.Vo14 = doptions.Vo14;
+
             var woptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
             XCustomEditorSettings.ShowGrid = woptions.ShowGrid;
             XCustomEditorSettings.GridX = woptions.GridX;

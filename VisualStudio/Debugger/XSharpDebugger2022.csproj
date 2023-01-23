@@ -126,6 +126,12 @@
       <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>XSharpModel</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <!--
     To specify a different registry root to register your package, uncomment the TargetRegistryRoot

@@ -16,34 +16,14 @@ namespace XSharp.Project
     using System.ComponentModel;
     using Microsoft.VisualStudio.Project;
     using Microsoft.VisualStudio.Shell;
-
+    using XSharpModel;
     /// <summary>
     /// Property page contents for the Candle Settings page.
     /// </summary>
 
     internal partial class XDebugPropertyPagePanel : XPropertyPagePanel
     {
-        #region Constants
-        internal const string catGeneral = "General";
-        internal const string catSpecial = "Special";
-        internal const string captOutputPath = "Output Path";
-        internal const string descOutputPath = "Output Path (macros are allowed)";
-        internal const string captDebugType = "Generate Debug Information";
-        internal const string descDebugType = "Generate Debug Information (none, full, pdbonly)";
-        internal const string captDebuggerCommand = "Command";
-        internal const string descDebuggerCommand = "The debug command to execute";
-        internal const string captDebuggerCommandArguments = "Command Arguments";
-        internal const string descDebuggerCommandArguments = "The command line arguments to pass to the application";
-        internal const string captDebuggerWorkingDirectory = "Working Directory";
-        internal const string descDebuggerWorkingDirectory = "The application's working directory. By default, the directory containing the project file.";
-        internal const string captDebuggerAttach = "Attach";
-        internal const string descDebuggerAttach = "Specifies whether the debugger should attempt to attach to an existing process when debugging starts.";
-        internal const string captEnableUnmanagedDebugging = "Enable unmanaged debugging";
-        internal const string descEnableUnmanagedDebugging = "Enable unmanaged debugging";
-        internal const string captUseVSHostingProcess = "Enable the Visual Studio Hosting Process";
-        internal const string descUseVSHostingProcess = "Enable the Visual Studio Hosting Process";
-
-        #endregion
+       
 
         // =========================================================================================
         // Constructors
@@ -57,29 +37,29 @@ namespace XSharp.Project
             : base(parentPropertyPage)
         {
             this.InitializeComponent();
-            this.lblCommand.Text = captDebuggerCommand;
+            this.lblCommand.Text = DebugPropertyPagePanel.captDebuggerCommand;
             this.tbCommand.Tag = XSharpProjectFileConstants.DebuggerCommand;
-            this.toolTip1.SetToolTip(lblCommand, descDebuggerCommand);
-            this.toolTip1.SetToolTip(tbCommand, descDebuggerCommand);
+            this.toolTip1.SetToolTip(lblCommand, DebugPropertyPagePanel.descDebuggerCommand);
+            this.toolTip1.SetToolTip(tbCommand, DebugPropertyPagePanel.descDebuggerCommand);
 
-            this.lblCommandArguments.Text = captDebuggerCommandArguments;
+            this.lblCommandArguments.Text = DebugPropertyPagePanel.captDebuggerCommandArguments;
             this.tbArguments.Tag = XSharpProjectFileConstants.DebuggerCommandArguments;
-            this.toolTip1.SetToolTip(lblCommandArguments, descDebuggerCommandArguments);
-            this.toolTip1.SetToolTip(tbArguments, descDebuggerCommandArguments);
+            this.toolTip1.SetToolTip(lblCommandArguments, DebugPropertyPagePanel.descDebuggerCommandArguments);
+            this.toolTip1.SetToolTip(tbArguments, DebugPropertyPagePanel.descDebuggerCommandArguments);
 
-            this.lblDebugInfo.Text = captDebugType;
+            this.lblDebugInfo.Text = DebugPropertyPagePanel.captDebugType;
             this.comboDebugInfo.Tag = XSharpProjectFileConstants.DebugType;
-            this.toolTip1.SetToolTip(this.lblDebugInfo, descDebugType);
-            this.toolTip1.SetToolTip(this.comboDebugInfo, descDebugType);
+            this.toolTip1.SetToolTip(this.lblDebugInfo, DebugPropertyPagePanel.descDebugType);
+            this.toolTip1.SetToolTip(this.comboDebugInfo, DebugPropertyPagePanel.descDebugType);
 
-            this.lblWorkDir.Text = captDebuggerWorkingDirectory;
+            this.lblWorkDir.Text = DebugPropertyPagePanel.captDebuggerWorkingDirectory;
             this.tbWorkdir.Tag = XSharpProjectFileConstants.DebuggerWorkingDirectory;
-            this.toolTip1.SetToolTip(this.lblWorkDir, descDebuggerWorkingDirectory);
-            this.toolTip1.SetToolTip(this.tbWorkdir, descDebuggerWorkingDirectory);
+            this.toolTip1.SetToolTip(this.lblWorkDir, DebugPropertyPagePanel.descDebuggerWorkingDirectory);
+            this.toolTip1.SetToolTip(this.tbWorkdir, DebugPropertyPagePanel.descDebuggerWorkingDirectory);
 
-            this.chkUnmanagedDebugging.Text = captEnableUnmanagedDebugging;
+            this.chkUnmanagedDebugging.Text = DebugPropertyPagePanel.captEnableUnmanagedDebugging;
             this.chkUnmanagedDebugging.Tag = XSharpProjectFileConstants.EnableUnmanagedDebugging;
-            this.toolTip1.SetToolTip(chkUnmanagedDebugging, descEnableUnmanagedDebugging);
+            this.toolTip1.SetToolTip(chkUnmanagedDebugging, DebugPropertyPagePanel.descEnableUnmanagedDebugging);
 
             FillCombo(new DebugTypeConverter(), comboDebugInfo);
 
@@ -118,14 +98,14 @@ namespace XSharp.Project
         private void btnDebuggerWorkingDirectory_Click(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            showMacroDialog(tbWorkdir, descDebuggerWorkingDirectory);
+            showMacroDialog(tbWorkdir, DebugPropertyPagePanel.descDebuggerWorkingDirectory);
 
         }
 
         private void btnCommand_Click(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            showMacroDialog(tbCommand, descDebuggerCommand);
+            showMacroDialog(tbCommand, DebugPropertyPagePanel.descDebuggerCommand);
 
         }
     }

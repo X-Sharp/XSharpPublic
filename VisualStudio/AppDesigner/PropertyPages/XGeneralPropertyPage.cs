@@ -17,6 +17,7 @@ namespace XSharp.Project
     using Microsoft.VisualStudio.Shell;
     using System.Runtime.Versioning;
     using Microsoft.VisualStudio.Shell.Interop;
+    using XSharpModel;
 
     /// <summary>
     /// Property page for the build events.
@@ -80,7 +81,7 @@ namespace XSharp.Project
             if (propertyName == XSharpProjectFileConstants.StartupObject)
             {
                 if (string.IsNullOrEmpty(value))
-                    value = XGeneralPropertyPagePanel.DefaultValue;
+                    value = GeneralPropertyPagePanel.DefaultValue;
             }
 
             return value;
@@ -149,7 +150,7 @@ namespace XSharp.Project
             }
             else if (propertyName == XSharpProjectFileConstants.StartupObject)
             {
-                if (value == XGeneralPropertyPagePanel.DefaultValue)
+                if (value == GeneralPropertyPagePanel.DefaultValue)
                 {
                     value = "";
                 }

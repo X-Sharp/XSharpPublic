@@ -582,7 +582,7 @@ namespace XSharp.LanguageService
                     symbols.Push(currentType);
                 }
             }
-            Modifiers visibility = Modifiers.Private;
+            Modifiers visibility = Modifiers.Public;
             var hasBracket = false;
             int count = -1;
             startType = currentType;
@@ -726,6 +726,20 @@ namespace XSharp.LanguageService
                                   tokenType == XSharpLexer.COLONCOLON ||
                                   XSharpLexer.IsPseudoFunction(tokenType) ||
                                   isType;
+                // switch visibility
+                visibility = Modifiers.Public;
+                if (isId)
+                {
+                    if (tokenType == XSharpLexer.SELF || startOfExpression)
+                    {
+                        visibility = Modifiers.Private;
+                    }
+                    else if (tokenType == XSharpLexer.SUPER)
+                    {
+                        visibility = Modifiers.Protected;
+                    }
+
+                }
                 if (isId && !list.Eoi() && list.La1 == XSharpLexer.LT)
                 {
                     currentName += list.ConsumeAndGetText();
@@ -1617,6 +1631,11 @@ namespace XSharp.LanguageService
                     if (m is IXSourceSymbol source && source.File.Project == location.Project)
                         add = true;
                     else if (!m.IsVisible(minVisibility))
+                        add = false;
+                }
+                if (add && m.Visibility != Modifiers.Export)
+                {
+                    if (!m.IsVisible(minVisibility))
                         add = false;
                 }
                 if (add)

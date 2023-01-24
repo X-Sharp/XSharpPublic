@@ -57,14 +57,16 @@ BEGIN NAMESPACE XSharpModel
             XSharpToSystem  := XDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             VulcanToSystem  := XDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             FOREACH VAR pair IN SystemToXSharp
-                if pair:Key:StartsWith("Vulcan")
-                    IF ! VulcanToSystem:ContainsKey(pair:Value)
-                        VulcanToSystem:Add(pair:Value, pair:Key)
-                    ENDIF
-                else
-                    IF ! XSharpToSystem:ContainsKey(pair:Value)
-                        XSharpToSystem:Add(pair:Value, pair:Key)
-                    ENDIF
+                if !pair:Key:Contains("__WinBool")
+                    if pair:Key:StartsWith("Vulcan")
+                        IF ! VulcanToSystem:ContainsKey(pair:Value)
+                            VulcanToSystem:Add(pair:Value, pair:Key)
+                        ENDIF
+                    else
+                        IF ! XSharpToSystem:ContainsKey(pair:Value)
+                            XSharpToSystem:Add(pair:Value, pair:Key)
+                        ENDIF
+                    endif
                 endif
             NEXT
             XSharpToSystem:Add("LONG", "System.Int32")

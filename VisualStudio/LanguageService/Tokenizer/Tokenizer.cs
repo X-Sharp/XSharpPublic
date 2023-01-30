@@ -62,19 +62,14 @@ namespace XSharp.LanguageService
 
         private static XSharpSearchLocation AdjustStartLineNumber(XSharpSearchLocation location)
         {
-            //if (ThreadHelper.JoinableTaskFactory.Context.IsOnMainThread)
-            //{
-            //    ClassifyBuffer(location);
-            //    var line = location.LineNumber;
-            //    var doc = location.GetDocument();
-            //    var lineFlags = doc.LineState;
-            //    while (line >= 0 && lineFlags.Get(line, out var flags) && flags.HasFlag(LineFlags.Continued))
-            //    {
-            //        line--;
-            //    }
-            //    return location.With(line, location.Position);
-            //}
-            return location;
+            var line = location.LineNumber;
+            var doc = location.GetDocument();
+            var lineFlags = doc.LineState;
+            while (line > 0 && lineFlags.Get(line-1, out var flags) && flags.HasFlag(LineFlags.Continued))
+            {
+                line--;
+            }
+            return location.With(line, location.Position);
         }
 
 
@@ -385,7 +380,7 @@ namespace XSharp.LanguageService
                 {
                     // after these tokens we "restart" the list
                     case XSharpLexer.EOS:
-                        if (token.Position < cursorPos && token != tokens.Last())
+                        if (token.Position < cursorPos && token != tokens.Last() && last != XSharpLexer.LINE_CONT)
                         {
                             // an EOS inside a line before the cursor
                             // so there are 2 or more statements on the same line

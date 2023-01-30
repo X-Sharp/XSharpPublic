@@ -506,7 +506,7 @@ namespace XSharp.LanguageService
                 case XSharpLexer.Hidden:
                     if (token.Type == XSharpLexer.LINE_CONT)
                     {
-                        var line = token.Line;
+                        var line = token.Line-1;
                         _lineState.SetFlags(line, LineFlags.Continued);
                     }
                     if (XSharpLexer.IsComment(token.Type))

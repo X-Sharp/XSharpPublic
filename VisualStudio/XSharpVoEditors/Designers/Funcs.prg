@@ -164,13 +164,13 @@ PUBLIC STATIC PARTIAL CLASS Funcs
         oRect:Width := (INT)((REAL8(oRect:Width * oInfo:nBaseUnitX) / (REAL8)(oInfo:tmWidth * 2) + (REAL8)0.5))
         oRect:Height :=(INT)((REAL8(oRect:Height * oInfo:nBaseUnitY) / (REAL8)(oInfo:tmHeight * 2) + (REAL8)0.5))
 
-        LOCAL ix, iy AS INT
+        LOCAL ix, iy AS REAL8
         ix := XSharpModel.XCustomEditorSettings.SizeAdjustmentX
         iy := XSharpModel.XCustomEditorSettings.SizeAdjustmentY
-        IF ix > 100 .and. iy > 100 .and. ix < 10000 .and. iy < 10000
+        IF ix > 0.1 .and. iy > 0.1 .and. ix < 10.0  .and. iy < 10.0
             LOCAL x := 0.75, y := 0.812 AS REAL8
-            x := (REAL8)ix / 1000.0
-            y := (REAL8)iy / 1000.0
+            x := ix // (REAL8)ix / 1000.0
+            y := iy // (REAL8)iy / 1000.0
             oRect:X := (INT)(REAL8(oRect:X) * x + (REAL8)0.5)
             oRect:Y := (INT)(REAL8(oRect:Y) * y + (REAL8)0.5)
             oRect:Width := (INT)(REAL8(oRect:Width) * x + (REAL8)0.5)

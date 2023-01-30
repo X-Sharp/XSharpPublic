@@ -308,6 +308,7 @@ namespace XSharp.LanguageService
             //}
 
             RegisterDebuggerEvents();
+            
             addOurFileExtensionsForDiffAndPeek("Diff\\SupportedContentTypes");
             addOurFileExtensionsForDiffAndPeek("Peek\\SupportedContentTypes");
 

@@ -168,7 +168,7 @@ namespace XSharp.Project
         private uint shellCookie;
 
         public static XSharpProjectPackage XInstance = null;
-        private XSharpLanguageService _langservice;
+       // private XSharpLanguageService _langservice;
 
 
         // =========================================================================================
@@ -232,7 +232,7 @@ namespace XSharp.Project
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
-            _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
+            //_langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
 
             await this.RegisterCommandsAsync();
             await GetEditorOptionsAsync();

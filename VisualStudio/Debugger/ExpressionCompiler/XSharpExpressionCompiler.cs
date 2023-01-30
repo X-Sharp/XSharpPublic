@@ -15,6 +15,8 @@ using LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator;
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis;
 using XSharpModel;
+using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.Shell;
 namespace XSharpDebugger.ExpressionCompiler
 {
     /// <summary>
@@ -34,6 +36,15 @@ namespace XSharpDebugger.ExpressionCompiler
     /// </summary>
     public sealed class XSharpExpressionCompiler : IDkmClrExpressionCompiler
     {
+        static bool vs15 = false;
+        static XSharpExpressionCompiler()
+        {
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var vers = await VS.Shell.GetVsVersionAsync();
+                vs15 = vers.Major == 15;
+            });
+        }
         static void UpdateXSharpParseOptions()
         {
             var xoptions = XSyntaxHelpers.XSharpOptions;
@@ -75,11 +86,14 @@ namespace XSharpDebugger.ExpressionCompiler
             out string error,
             out DkmCompiledClrInspectionQuery result)
         {
-#if true
+            if (!vs15)
+            {
             UpdateXSharpParseOptions();
             IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
             e.CompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
-#else
+            }
+            else
+            {
             error = null;
             result = null;
             bool changed = false;
@@ -124,7 +138,7 @@ namespace XSharpDebugger.ExpressionCompiler
                 fi.SetValue(expression, originalExpr);
             }
             return;
-#endif
+            }
         }
 
         /// <summary>
@@ -142,7 +156,17 @@ namespace XSharpDebugger.ExpressionCompiler
         /// <returns>A local variables query</returns>
         DkmCompiledClrLocalsQuery IDkmClrExpressionCompiler.GetClrLocalVariableQuery(DkmInspectionContext inspectionContext, DkmClrInstructionAddress instructionAddress, bool argumentsOnly)
         {
-            var result = inspectionContext.GetClrLocalVariableQuery(instructionAddress, argumentsOnly);
+            DkmCompiledClrLocalsQuery result;
+            if (!vs15)
+            {
+                UpdateXSharpParseOptions();
+                IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
+                result = e.GetClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
+            }
+            else
+            {
+                result = inspectionContext.GetClrLocalVariableQuery(instructionAddress, argumentsOnly);
+            }
             var newlocals = new List<DkmClrLocalVariableInfo>();
             bool changed = false;
             foreach (var loc in result.LocalInfo)
@@ -189,65 +213,19 @@ namespace XSharpDebugger.ExpressionCompiler
         /// execute to perform the assignment.</param>
         void IDkmClrExpressionCompiler.CompileAssignment(DkmLanguageExpression expression, DkmClrInstructionAddress instructionAddress, DkmEvaluationResult lValue, out string error, out DkmCompiledClrInspectionQuery result)
         {
-#if true
+            if (!vs15)
+            {
             UpdateXSharpParseOptions();
             IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
             e.CompileAssignment(expression, instructionAddress, lValue, out error, out result);
-#else
-            // when the user assigns a value in the debugger then this method is called.
+            }
+            else
+            {
             // we may want to change an expression like "{1,2,3}" to "new object[] {1,2,3}"
             // and "2020.12.03" to "XSharp.RT.Functions.ConDate(2020,12,03)"
-            expression.CompileAssignment(instructionAddress, lValue, out error, out result);
-#endif
-        }
-/*
-        private static string AdjustArrayIndices(string newexpr, ref bool changed)
-        {
-            var sb = new System.Text.StringBuilder();
-            bool instring = false;
-            bool inindex = false;
-            foreach (var c in newexpr)
-            {
-                switch (c)
-                {
-                    case '[':
-                        if (!instring)
-                        {
-                            inindex = true;
-                        }
-                        sb.Append(c);
-                        break;
-                    case ',':
-                        if (!instring && inindex)
-                        {
-                            sb.Append("-1][");
-                            changed = true;
-                        }
-                        else
-                        {
-                            sb.Append(c);
-                        }
-                        break;
-                    case ']':
-                        if (!instring)
-                        {
-                            sb.Append("-1");
-                            changed = true;
-                            inindex = false;
-                        }
-                        sb.Append(c);
-                        break;
-                    case '"':
-                        instring = !instring;
-                        sb.Append(c);
-                        break;
-                    default:
-                        sb.Append(c);
-                        break;
-                }
+                expression.CompileAssignment(instructionAddress, lValue, out error, out result);
             }
-            return sb.ToString();
+
         }
-        */
     }
 }

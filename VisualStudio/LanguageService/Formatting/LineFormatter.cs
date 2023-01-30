@@ -380,6 +380,10 @@ namespace XSharp.LanguageService
                     }
                 }
             }
+            else if (line > 0)
+            {
+                return GetDesiredIndentationAfterLine(line - 1);
+            }
             return indentValue;
         }
 

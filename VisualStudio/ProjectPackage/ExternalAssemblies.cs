@@ -27,3 +27,7 @@ using Microsoft.VisualStudio.Shell;
 [assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.Debug")]
 [assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.File")]
 [assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite")]
+
+
+[assembly: ProvideCodeBase(AssemblyName = "System.Collections.Immutable")]
+[assembly: ProvideCodeBase(AssemblyName = "System.Reflection.Metadata")]

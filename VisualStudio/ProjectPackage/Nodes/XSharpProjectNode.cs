@@ -1382,7 +1382,7 @@ namespace XSharp.Project
                         child = child.NextSibling;
                     }
                 }
-                var newIncludes = projectModel.IncludeFiles;
+                var newIncludes = ProjectModel.IncludeFiles;
                 CreateIncludeFileFolder();
                 if (currentChildren.Count == 0)
                 {

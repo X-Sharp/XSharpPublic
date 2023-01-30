@@ -23,7 +23,6 @@
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
@@ -170,7 +169,6 @@
       <Version>0.11.4</Version>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
-      <IncludeAssets>All</IncludeAssets>
       <Version>1.0.117</Version>
     </PackageReference>
   </ItemGroup>

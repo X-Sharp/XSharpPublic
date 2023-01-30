@@ -379,8 +379,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
 
             IF ! typelist:ContainsKey(type:FullName)
                 type:File := _file
-
                 typelist:Add(type:FullName, type)
+            ELSE
+                var existing := typelist[type:FullName]
+                existing:AddMembers(type:XMembers)
             ENDIF
             last := type
         NEXT

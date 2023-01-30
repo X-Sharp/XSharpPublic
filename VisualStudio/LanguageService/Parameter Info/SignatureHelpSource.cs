@@ -101,9 +101,9 @@ namespace XSharp.LanguageService
             var tokens = doc.GetTokens(sigText.Substring(1)); // remove starting ( or {
             int commaCount = 0;
             int inSub = 0;
-            foreach (var token in tokens)
+            foreach (XSharpToken token in tokens)
             {
-                if (token.Column >= lastPos)
+                if (token.Position >= lastPos)
                     break;
                 switch (token.Type)
                 {

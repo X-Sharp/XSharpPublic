@@ -300,7 +300,7 @@ namespace XSharp.LanguageService
             {
                 XKeyword kw = GetFirstKeywordInLine(lineNo);
 
-                if (kw.IsMember())
+                if (kw.IsEntity())
                 {
                     prevIndentation = CalculateIndentForLine(kw, lineNo);
                     break;
@@ -509,15 +509,13 @@ namespace XSharp.LanguageService
                         {
                             prevIndentation = GetLineIndent(tempLine);
                             done = true;
-                        }
-                        else if (kw.Kw2 == XTokenType.Namespace && kw.Kw1 == XTokenType.Begin)
-                        {
-                            prevIndentation = GetLineIndent(tempLine);
-                            if (settings.IndentNamespace)
+                            if (kw.Kw2 == XTokenType.Namespace && kw.Kw1 == XTokenType.Begin)
                             {
-                                prevIndentation += settings.IndentSize;
+                                if (settings.IndentNamespace)
+                                {
+                                    prevIndentation += settings.IndentSize;
+                                }
                             }
-                            done = true;
                         }
                         tempLine -= 1;
                     }

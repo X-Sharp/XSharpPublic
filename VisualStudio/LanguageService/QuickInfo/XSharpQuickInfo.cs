@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.Core.Imaging;
 using Microsoft.VisualStudio.Imaging;
@@ -99,6 +100,11 @@ namespace XSharp.LanguageService
                 if (lookupresult.Count > 0)
                 {
                     var element = lookupresult[0];
+                    if (element.Name == location.Member.Name)
+                    {
+                        if (location.LineNumber == location.Member.FirstSourceLine(location.Document))
+                            element = location.Member;
+                    }
                     var lineTokens = document.GetTokensInLine(lastToken.Line - 1);
                     if (element is XSourceUndeclaredVariableSymbol ||
                         lineTokens.First()?.Type == XSharpLexer.UDC_KEYWORD)
@@ -546,6 +552,21 @@ namespace XSharp.LanguageService
         static internal void addReturnType(this List<ClassifiedTextRun> content, string typeName)
         {
             content.addPair(" " + XSettings.FormatKeyword("AS "), typeName.GetXSharpTypeName());
+        }
+
+        static internal int FirstSourceLine(this XSourceSymbol member, XDocument doc)
+        {
+            var range = member.Range;
+            var firstSource = range.StartLine - 1;
+            for (int i = firstSource; i < range.EndLine; i++)
+            {
+                doc.LineState.Get(i, out var flags);
+                if (flags.HasFlag(LineFlags.DocComments))
+                    firstSource = i + 1;
+                else
+                    break;
+            }
+            return firstSource;
         }
     }
 

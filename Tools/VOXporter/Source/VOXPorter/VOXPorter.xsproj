@@ -15,8 +15,6 @@
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
     <OutputName>VOXPorter</OutputName>
-    <StartupObject />
-    <ApplicationIcon />
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <AZ>false</AZ>
     <CS>false</CS>
@@ -44,6 +42,7 @@
     <Includepaths>$(SolutionDir)Common</Includepaths>
     <Nostandarddefs>True</Nostandarddefs>
     <Allowdot>True</Allowdot>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -127,6 +126,12 @@
     <Compile Include="WinFormsConverter.prg" />
     <Compile Include="xPorter.prg">
     </Compile>
+    <Compile Include="$(Solutiondir)Common\commonAssemblyInfo.prg">
+      <Link>Properties\commonAssemblyInfo.prg</Link>
+    </Compile>
+    <Compile Include="$(Solutiondir)Common\constants.prg">
+      <Link>Properties\constants.prg</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\VisualStudio\XSharpVoEditors\XSharpVoEditors.xsproj">
@@ -153,22 +158,22 @@
       <Link>ReadMe.rtf</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\Templates\template_VS.sln">
+    <Content Include="..\..\Templates\template_VS.sln">
       <Link>Templates\template_VS.sln</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Templates\template_VS.xsproj">
+    </Content>
+    <Content Include="..\..\Templates\template_VS.xsproj">
       <Link>Templates\template_VS.xsproj</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Templates\template_XIDE.xiapp">
+    </Content>
+    <Content Include="..\..\Templates\template_XIDE.xiapp">
       <Link>Templates\template_XIDE.xiapp</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\Templates\template_XIDE.xiproj">
+    </Content>
+    <Content Include="..\..\Templates\template_XIDE.xiproj">
       <Link>Templates\template_XIDE.xiproj</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="..\..\VOXPorter.ini">
       <Link>VOXPorter.ini</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

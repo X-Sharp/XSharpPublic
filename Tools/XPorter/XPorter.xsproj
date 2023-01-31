@@ -47,6 +47,7 @@
     <DisabledWarnings>1591</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NamedArgs>True</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <Optimize>false</Optimize>
@@ -78,7 +79,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <DisabledWarnings>1591</DisabledWarnings>
@@ -114,6 +115,12 @@
     </Compile>
     <Compile Include="SolutionConverter.prg" />
     <Compile Include="Start.prg" />
+    <Compile Include="$(Solutiondir)Common\commonAssemblyInfo.prg">
+      <Link>Properties\commonAssemblyInfo.prg</Link>
+    </Compile>
+    <Compile Include="$(Solutiondir)Common\constants.prg">
+      <Link>Properties\constants.prg</Link>
+    </Compile>
     <EmbeddedResource Include="frmXporter.resx">
       <DependentUpon>frmXporter.prg</DependentUpon>
     </EmbeddedResource>

@@ -6,8 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 USING System.Reflection
 using System.Runtime.InteropServices
-#include "constants.prg"
-#include "commonassemblyinfo.prg"
 [assembly: AssemblyTitleAttribute( "XSharp.XPorter" )]
 [assembly: AssemblyDescriptionAttribute( "XSharp.XPorter" )]
 

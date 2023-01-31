@@ -191,12 +191,12 @@ namespace XSharp.LanguageService
     public class ErrorIgnorer : IErrorListener
     {
         #region IErrorListener
-        public void ReportError(string fileName, VsParser.LinePositionSpan span, string errorCode, string message, object[] args)
+        public void ReportError(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
         {
             ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
         }
 
-        public void ReportWarning(string fileName, VsParser.LinePositionSpan span, string errorCode, string message, object[] args)
+        public void ReportWarning(string fileName, LinePositionSpan span, string errorCode, string message, object[] args)
         {
             ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
         }

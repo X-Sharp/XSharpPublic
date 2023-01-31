@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharpModel
         CONSTRUCTOR()
             VAR options := List<STRING>{}
             options.Add("dialect:Core")
-            _parseOptions   := VSParseOptions.FromVsValues(options)
+            _parseOptions   := XSharpParseOptions.FromVsValues(options)
 
         METHOD AddFileNode(strFileName AS STRING) AS VOID
             RETURN

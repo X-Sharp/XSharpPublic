@@ -14,13 +14,13 @@ namespace Microsoft.Cci
     internal sealed class DebugSourceDocument
     {
 #if XSHARP
-        internal static readonly Guid CorSymLanguageTypeXSharp = new Guid("{f579403a-d3d3-47a0-bf03-9709575bee69}");
+        internal static readonly Guid CorSymLanguageTypeXSharp = new Guid(XSharp.Constants.XSharpLanguageString);
 #else
         internal static readonly Guid CorSymLanguageTypeCSharp = new Guid("{3f5162f8-07c6-11d3-9053-00c04fa302a1}");
 #endif
         internal static readonly Guid CorSymLanguageTypeBasic = new Guid("{3a12d0b8-c26c-11d0-b442-00a0244a1dd2}");
 #if XSHARP
-        private static readonly Guid s_corSymLanguageVendorXSharp = new Guid("{363398fa-76ad-44bb-a750-0abdc02bf4de}");
+        private static readonly Guid s_corSymLanguageVendorXSharp = new Guid(XSharp.Constants.XSharpVendorString);
 #else
         private static readonly Guid s_corSymLanguageVendorMicrosoft = new Guid("{994b45c4-e6e9-11d2-903f-00c04fa302a1}");
 #endif

@@ -81,7 +81,7 @@
   <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll') ">
     <MakeDir Directories="$(DevPublicDir)external\$(ConfigurationName)" /> 
   </Target>
-  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll')">
+  <Target Name="CopyFiles" AfterTargets="Build" >
     <ItemGroup>
       <XsEvaluatorFiles Include="$(OutputPath)\XSharp*.*" />
     </ItemGroup>

@@ -23,6 +23,7 @@
     <ProjectPath>$(MSBuildProjectDirectory)\$(MSBuildProjectFile)</ProjectPath>
     <ProjectSystemBase>$(MSBuildThisFileDirectory)</ProjectSystemBase>
     <RootNamespace>$(Name)</RootNamespace>
+	<RuntimeIdentifiers>win</RuntimeIdentifiers>
     <SuppressRCWarnings>true</SuppressRCWarnings>
     <TargetPlatformVersion>7.0</TargetPlatformVersion>
     <UseNativeVersion>false</UseNativeVersion>

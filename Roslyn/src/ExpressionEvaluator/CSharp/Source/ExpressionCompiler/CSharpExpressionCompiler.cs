@@ -15,7 +15,9 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
     internal sealed class CSharpExpressionCompiler : ExpressionCompiler
     {
 #if XSHARP	
-        private static readonly DkmCompilerId s_compilerId = new DkmCompilerId(DkmVendorId.Microsoft, DkmLanguageId.@CSharp);
+        private static readonly Guid s_corSymLanguageVendorXSharp = new Guid(global::XSharp.Constants.XSharpVendorString);
+        private static readonly Guid s_CorSymLanguageTypeXSharp = new Guid(global::XSharp.Constants.XSharpLanguageString);
+        private static readonly DkmCompilerId s_compilerId = new DkmCompilerId(s_corSymLanguageVendorXSharp, s_CorSymLanguageTypeXSharp);
 #else
         private static readonly DkmCompilerId s_compilerId = new DkmCompilerId(DkmVendorId.Microsoft, DkmLanguageId.CSharp);
 #endif

@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#undef COMPLETION
+#define COMPLETION
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using System;
@@ -81,10 +81,11 @@ namespace XSharp.LanguageService
          XSharpConstants.LanguageName,  // Name of language used as registry key.
          1,         // Resource ID of localized name of language service.
          XSharpConstants.LanguageName,  // language key used in snippet templates.
-         @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\SnippetsIndex.xml",  // Path to snippets index
-         SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
+         @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\SnippetsIndex.xml",  // Path to snippets index
+         SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\Snippets;" +
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
+
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
     [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), XSharpConstants.LanguageName, null, "Formatting", pageNameResourceId: "202", keywordListResourceId: 302)]
     [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), XSharpConstants.LanguageName, null, "Options", pageNameResourceId: "203", keywordListResourceId: 303)]
@@ -103,6 +104,11 @@ namespace XSharp.LanguageService
         private uint m_componentID;
         private IOleComponentManager _oleComponentManager = null;
         internal bool optionWasChanged = false;
+
+        public XSharpLanguageService() : base()
+        {
+            ModelScannerEvents.Start();
+        }
 
         public static XSharpLanguageService Instance
         {
@@ -227,20 +233,20 @@ namespace XSharp.LanguageService
 
 #if COMPLETION
             // Completion
-            XSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
-            XSettings.CompleteSelf = _completionOptionsPage.CompleteSelf;
-            XSettings.CompleteParent = _completionOptionsPage.CompleteParent;
-            XSettings.CompleteNamespaces = _completionOptionsPage.CompleteNamespaces;
-            XSettings.CompleteTypes = _completionOptionsPage.CompleteTypes;
-            XSettings.CompleteKeywords = _completionOptionsPage.CompleteKeywords;
-            XSettings.CompleteSnippets = _completionOptionsPage.CompleteSnippets;
-            XSettings.CompleteGlobals = _completionOptionsPage.CompleteGlobals;
-            XSettings.CompleteGlobalsP = _completionOptionsPage.CompleteGlobalsP;
-            XSettings.CompleteGlobalsA = _completionOptionsPage.CompleteGlobalsA;
-            XSettings.CompleteFunctions = _completionOptionsPage.CompleteFunctions;
-            XSettings.CompleteFunctionsP = _completionOptionsPage.CompleteFunctionsP;
-            XSettings.CompleteFunctionsA = _completionOptionsPage.CompleteFunctionsA;
-            XSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
+            XEditorSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
+            XEditorSettings.CompleteSelf = _completionOptionsPage.CompleteSelf;
+            XEditorSettings.CompleteParent = _completionOptionsPage.CompleteParent;
+            XEditorSettings.CompleteNamespaces = _completionOptionsPage.CompleteNamespaces;
+            XEditorSettings.CompleteTypes = _completionOptionsPage.CompleteTypes;
+            XEditorSettings.CompleteKeywords = _completionOptionsPage.CompleteKeywords;
+            XEditorSettings.CompleteSnippets = _completionOptionsPage.CompleteSnippets;
+            XEditorSettings.CompleteGlobals = _completionOptionsPage.CompleteGlobals;
+            XEditorSettings.CompleteGlobalsP = _completionOptionsPage.CompleteGlobalsP;
+            XEditorSettings.CompleteGlobalsA = _completionOptionsPage.CompleteGlobalsA;
+            XEditorSettings.CompleteFunctions = _completionOptionsPage.CompleteFunctions;
+            XEditorSettings.CompleteFunctionsP = _completionOptionsPage.CompleteFunctionsP;
+            XEditorSettings.CompleteFunctionsA = _completionOptionsPage.CompleteFunctionsA;
+            XEditorSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
             //XSettings.MaxCompletionEntries = _completionOptionsPage.MaxCompletionEntries;
 #endif
             // Generator

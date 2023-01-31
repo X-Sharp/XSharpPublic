@@ -33,12 +33,13 @@ namespace XSharp.LanguageService.OptionsPages
                 "•\tafter certain keywords, such as AS, INHERIT, IMPLEMENTS, USING ",
                 "•\tat the start of an expression, such as at the start of a line or after an",
                 "\topening '(', '{' or '[' or after :=",
-                "The filling of these last \"generic\" completion lists will be started after",
-                "you have typed a few characters, but these lists could still be long",
-                "and filling the list could be time consuming.",
+                "The filling of these second \"generic\" completion lists will be NOT be automatically ",
+                "started, but you have to press the \"Complete Word\" key, which is usually assigned ",
+                "to the Ctrl-Space key.",
                 "",
                 "On this page you can control where the editor will look for completion." });
-
+            this.tbChars.Enabled = this.lblChars.Enabled = false;
+            this.chkSnippets.Enabled = false;
         }
 
 

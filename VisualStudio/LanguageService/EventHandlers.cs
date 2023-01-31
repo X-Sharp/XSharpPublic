@@ -22,7 +22,6 @@ namespace XSharp.LanguageService
     public class ModelScannerEvents
     {
         string solutionFile;
-        static Dictionary<string, string> changedProjectfiles;
 
         static ModelScannerEvents events = null;
 
@@ -32,7 +31,6 @@ namespace XSharp.LanguageService
                 events = new ModelScannerEvents();
         }
 
-        static public IDictionary<string, string> ChangedProjectFiles => changedProjectfiles;
         #region ctors
         public ModelScannerEvents()
         {
@@ -50,7 +48,6 @@ namespace XSharp.LanguageService
                 VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
 #endif
                 VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
-                changedProjectfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 XSharpModel.ModelWalker.Suspend();
             });
 
@@ -232,7 +229,7 @@ namespace XSharp.LanguageService
                 }
                 if (changed)
                 {
-                    changedProjectfiles.Add(fileName, original);
+                    XSolution.ChangedProjectFiles.Add(fileName, original);
                 }
             }
         }

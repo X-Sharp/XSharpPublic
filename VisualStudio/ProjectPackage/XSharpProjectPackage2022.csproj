@@ -74,9 +74,6 @@
     <Reference Include="Microsoft.Windows.Design.Host">
       <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.CodeAnalysis">
-      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
-    </Reference>
     <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
     <Reference Include="XSharp.Evaluator">
       <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>

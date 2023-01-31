@@ -11,7 +11,7 @@ BEGIN NAMESPACE XSharpModel
 	CLASS XError
 		
 		// Methods
-		CONSTRUCTOR(path AS STRING, span AS VsParser.LinePositionSpan, errCode AS STRING, message AS STRING, Parameters AS OBJECT[]);SUPER()
+		CONSTRUCTOR(path AS STRING, span AS LinePositionSpan, errCode AS STRING, message AS STRING, Parameters AS OBJECT[]);SUPER()
 			SELF:Path := path
 			SELF:Span := span
 			SELF:ErrCode := errCode
@@ -29,12 +29,12 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY Parameters AS OBJECT[] AUTO 
 		PROPERTY Path AS STRING AUTO 
 		PROPERTY Severity AS DiagnosticSeverity AUTO 
-		PROPERTY Span AS VsParser.LinePositionSpan AUTO 
+		PROPERTY Span AS LinePositionSpan AUTO 
 		
 	END CLASS
 	
 	CLASS XWarning INHERIT XError
-		CONSTRUCTOR(path AS STRING, span AS VsParser.LinePositionSpan, errCode AS STRING, message AS STRING, args AS OBJECT[])
+		CONSTRUCTOR(path AS STRING, span AS LinePositionSpan, errCode AS STRING, message AS STRING, args AS OBJECT[])
 			SUPER(path, span, errCode, message, args)
 			SUPER:Severity := DiagnosticSeverity.Warning
 		

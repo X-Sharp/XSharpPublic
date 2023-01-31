@@ -214,10 +214,10 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         WriteOutputMessage("<<-- Parse() "+SELF:SourcePath)
 
 #region Errors
-    VIRTUAL METHOD ReportError(fileName AS STRING, span AS VsParser.LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+    VIRTUAL METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
         SELF:_errors:Add(XError{fileName, span, errorCode, message, args})
 
-    VIRTUAL METHOD ReportWarning(fileName AS STRING, span AS VsParser.LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+    VIRTUAL METHOD ReportWarning(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
         SELF:_errors:Add(XWarning{fileName, span, errorCode, message, args})
 
 

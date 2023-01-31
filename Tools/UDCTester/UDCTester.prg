@@ -44,11 +44,11 @@ BEGIN NAMESPACE UDCTesterApp
          opt:Add("r:XSharp.RT.DLL")
          opt:Add("r:XSharp.Core.DLL")
          File.WriteAllText(Path.Combine(cFolder,"test.opt"), String.Join(e"\r\n", opt))
-         VAR options  := VsParseOptions.FromVsValues(opt)
+         VAR options  := XSharpParseOptions.FromVsValues(opt)
 
          IF oSettings:WriteLexTokens
             opt:Add("lexonly")
-            VAR options2  := VsParseOptions.FromVsValues(opt)
+            VAR options2  := XSharpParseOptions.FromVsValues(opt)
             XSharp.Parser.VsParser.Lex(source, "test.prg", options2, SELF, OUT VAR lextokenStream, OUT VAR _)
             _errors:Clear()
             SELF:WriteTokens((BufferedTokenStream) lextokenStream, Path.Combine(cFolder,"test.lextokens.csv"))
@@ -141,14 +141,14 @@ BEGIN NAMESPACE UDCTesterApp
 PRIVATE METHOD OkButton_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
    SELF:Close()
         RETURN
-    METHOD ReportError(fileName AS STRING, span AS VsParser.LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+    METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
      VAR msg := errorCode
      FOREACH VAR arg IN args
          msg += " "+arg:ToString()
      NEXT
      SELF:_errors:Add(msg)
 
-  METHOD ReportWarning(fileName AS STRING, span AS VsParser.LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+  METHOD ReportWarning(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
      VAR msg := errorCode
      FOREACH VAR arg IN args
          msg += " "+arg:ToString()

@@ -48,7 +48,7 @@ namespace XSharpDebugger.ExpressionCompiler
         static void UpdateXSharpParseOptions()
         {
             var xoptions = XSyntaxHelpers.XSharpOptions;
-            xoptions.SetDialect(XDebuggerSettings.Dialect);
+            xoptions.SetDialect((XSharpDialect) XDebuggerSettings.Dialect);
             xoptions.SetOption(CompilerOption.MemVars, XDebuggerSettings.MemVars);
             xoptions.SetOption(CompilerOption.UndeclaredMemVars, XDebuggerSettings.UndeclaredMemvars);
             xoptions.SetOption(CompilerOption.ArrayZero, XDebuggerSettings.ArrayZero);

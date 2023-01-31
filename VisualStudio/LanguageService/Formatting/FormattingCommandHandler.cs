@@ -17,8 +17,9 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.ComponentModel.Composition;
+using System.Linq;
 using XSharpModel;
 
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
@@ -30,6 +31,9 @@ namespace XSharp.LanguageService
     [ContentType(XSharpConstants.LanguageName)]
     internal class XSharpFormattingProvider : IVsTextViewCreationListener
     {
+        [Import] IEditorOptionsFactoryService editorOptionsService;
+
+        private IEditorOptions editorOptions;
 
         [Import]
         internal IVsEditorAdaptersFactoryService AdapterService;
@@ -38,16 +42,21 @@ namespace XSharp.LanguageService
         internal IBufferTagAggregatorFactoryService BufferTagAggregatorFactoryService { get; set; }
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
-            if (XEditorSettings.DisableCodeCompletion)
-                return;
             ITextView textView = AdapterService.GetWpfTextView(textViewAdapter);
             if (textView == null)
                 return;
+            editorOptions = editorOptionsService.GetOptions(textView);
+            editorOptions.OptionChanged += EditorOptions_OptionChanged;
             textView.Properties.GetOrCreateSingletonProperty(
                  () => new XSharpFormattingCommandHandler(textViewAdapter,
                     textView,
                     BufferTagAggregatorFactoryService
                     ));
+        }
+
+        private void EditorOptions_OptionChanged(object sender, EditorOptionChangedEventArgs e)
+        {
+            return;
         }
     }
     internal partial class XSharpFormattingCommandHandler : IOleCommandTarget
@@ -55,7 +64,7 @@ namespace XSharp.LanguageService
         readonly ITextView _textView;
         readonly IOleCommandTarget m_nextCommandHandler;
         readonly IBufferTagAggregatorFactoryService _aggregator;
-        readonly List<int> _linesToSync;
+        readonly ConcurrentDictionary<int,int> _linesToSync;
         readonly XFile _file;
         private readonly ITextBuffer _buffer;
         private readonly XDocument _document;
@@ -81,7 +90,6 @@ namespace XSharp.LanguageService
 
         private void OnClosed(object sender, EventArgs e)
         {
-
             _textView.Closed -= OnClosed;
             if (_buffer != null)
             {
@@ -101,7 +109,7 @@ namespace XSharp.LanguageService
             this._textView.Closed += OnClosed;
             this._aggregator = aggregator;
             //add this to the filter chain
-            _linesToSync = new List<int>();
+            _linesToSync = new ConcurrentDictionary<int, int>();
             //
             _buffer = _textView.TextBuffer;
             if (_buffer != null)
@@ -143,11 +151,9 @@ namespace XSharp.LanguageService
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            int result = VSConstants.S_OK;
             Guid cmdGroup = pguidCmdGroup;
             bool completionActive = false;
             registerClassifier();
-            var settings = _buffer.GetSettings();
             // 1. Pre-process
             if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
             {
@@ -178,7 +184,7 @@ namespace XSharp.LanguageService
             }
             // 2. Let others do their thing
             // Let others do their thing
-            result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            int result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             // 3. Post process
             if (ErrorHandler.Succeeded(result) && !XEditorSettings.DisableCodeCompletion)
             {
@@ -190,36 +196,44 @@ namespace XSharp.LanguageService
                         case (int)VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
                             try
                             {
-                                lock (_linesToSync)
-                                {
-                                    _suspendSync = true;
-                                    _linesToSync.Clear();
-                                }
+                                _linesToSync.Clear();
+                                _suspendSync = true;
                                 FormatDocument();
                             }
                             finally
                             {
-                                lock (_linesToSync)
+                                _linesToSync.Clear();
+                                _suspendSync = false;
+                            }
+                            break;
+
+                        case (int)VSConstants.VSStd2KCmdID.FORMATSELECTION:
+                            try
+                            {
+                                _suspendSync = true;
+                                FormatSelection();
+                            }
+                            finally
+                            {
+                                _suspendSync = false;
+                            }
+                            break;
+
+                        case (int)VSConstants.VSStd2KCmdID.RETURN:
+                            if (!completionActive)
+                            {
+                                try
                                 {
-                                    _linesToSync.Clear();
+                                    _suspendSync = true;
+                                    FormatLine();
+                                }
+                                finally
+                                {
                                     _suspendSync = false;
                                 }
                             }
                             break;
 
-                        case (int)VSConstants.VSStd2KCmdID.FORMATSELECTION:
-                            FormatSelection();
-                            break;
-
-                        case (int)VSConstants.VSStd2KCmdID.RETURN:
-                            if (!completionActive)
-                                FormatLine();
-                            break;
-
-                        //case (int)VSConstants.VSStd2KCmdID.TYPECHAR:
-                        //    if (!completionActive)
-                        //        FormatLine();
-                        //    break;
                         default:
                             break;
 
@@ -227,7 +241,7 @@ namespace XSharp.LanguageService
                 }
             }
             var line = getCurrentLine();
-            if (line != currentLine)
+            if (line != currentLine && ! _linesToSync.IsEmpty)
             {
                 currentLine = line;
                 ApplyPendingChanges();
@@ -235,11 +249,9 @@ namespace XSharp.LanguageService
             return result;
         }
 
-
-
         private void Textbuffer_Changing(object sender, TextContentChangingEventArgs e)
         {
-            if (XSettings.DebuggerIsRunning)
+            if (XSettings.DebuggerIsRunning && ! XDebuggerSettings.AllowEditing)  
             {
                 XSettings.ShowMessageBox("Cannot edit source code while debugging");
                 e.Cancel();
@@ -266,7 +278,6 @@ namespace XSharp.LanguageService
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var editSession = _buffer.CreateEdit();
                 var settings = Settings;
-                var changed = false;
                 try
                 {
                     var snapshot = editSession.Snapshot;
@@ -277,7 +288,6 @@ namespace XSharp.LanguageService
                         {
                             var line = snapshot.GetLineFromLineNumber(snapshot.LineCount - 1);
                             editSession.Insert(line.End.Position, Environment.NewLine);
-                            changed = true;
                         }
 
                     }
@@ -291,9 +301,7 @@ namespace XSharp.LanguageService
                                 var last = text[text.Length - 1];
                                 if (last == ' ' || last == '\t')
                                 {
-                                    text = text.TrimEnd();
-                                    editSession.Replace(line.Start.Position, line.Length, text);
-                                    changed = true;
+                                    editSession.Replace(line.Start.Position, line.Length, text.TrimEnd());
                                 }
                             }
                         }
@@ -305,17 +313,22 @@ namespace XSharp.LanguageService
                 }
                 finally
                 {
-                    if (changed)
-                        editSession.Apply();
-                    else
-                        editSession.Cancel();
-
+                    ApplyChanges(editSession);
                 }
             });
-
-
         }
 
+        private void ApplyChanges(ITextEdit editSession)
+        {
+            if (editSession.HasEffectiveChanges)
+            {
+                editSession.Apply();
+            }
+            else
+            {
+                editSession.Cancel();
+            }
+        }
         private void Classifier_ClassificationChanged(object sender, ClassificationChangedEventArgs e)
         {
             WriteOutputMessage("ClassificationChanged()");
@@ -327,10 +340,9 @@ namespace XSharp.LanguageService
         {
             if (!_suspendSync && ChangeCase)
             {
-                lock (_linesToSync)
+                if (!_linesToSync.ContainsKey(line))
                 {
-                    if (!_linesToSync.Contains(line))
-                        _linesToSync.Add(line);
+                    _linesToSync.TryAdd(line, line);
                 }
             }
         }
@@ -386,13 +398,14 @@ namespace XSharp.LanguageService
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var editSession = _buffer.CreateEdit();
                 var snapshot = editSession.Snapshot;
+                var curLine = getCurrentLine();
                 try
                 {
                     var end = DateTime.Now + new TimeSpan(0, 0, 2);
                     int counter = 0;
                     foreach (int nLine in lines)
                     {
-                        if (nLine < snapshot.LineCount && nLine >= 0)
+                        if (nLine < snapshot.LineCount && nLine >= 0 && nLine != curLine)
                         {
                             ITextSnapshotLine line = snapshot.GetLineFromLineNumber(nLine);
                             _lineFormatter.FormatLineCase(editSession, line);
@@ -408,14 +421,7 @@ namespace XSharp.LanguageService
                 }
                 finally
                 {
-                    if (editSession.HasEffectiveChanges)
-                    {
-                        editSession.Apply();
-                    }
-                    else
-                    {
-                        editSession.Cancel();
-                    }
+                    ApplyChanges(editSession);
                 }
             });
         }
@@ -429,25 +435,15 @@ namespace XSharp.LanguageService
 
             if (_linesToSync.Count > 0)
             {
-                int[] lines = null;
-                lock (_linesToSync)
+                int current = this.getCurrentLine();
+                var hasCurrent = _linesToSync.ContainsKey(current);
+                var lines = _linesToSync.Keys.ToArray();
+                Array.Sort(lines);
+                ProcessLines(lines);
+                _linesToSync.Clear();
+                if (hasCurrent)
                 {
-                    int current = this.getCurrentLine();
-                    if (_linesToSync.Contains(current))
-                    {
-                        _linesToSync.Remove(current);
-                    }
-                    if (_linesToSync.Count > 0)
-                    {
-                        lines = _linesToSync.ToArray();
-                        _linesToSync.Clear();
-                        _linesToSync.Add(current);
-                        Array.Sort(lines);
-                    }
-                }
-                if (lines != null)
-                {
-                    ProcessLines(lines);
+                    _linesToSync.TryAdd(current, current);
                 }
             }
         }

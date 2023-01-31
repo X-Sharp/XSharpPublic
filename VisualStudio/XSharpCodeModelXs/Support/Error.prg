@@ -5,6 +5,7 @@
 //
 USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.Text
+USING XSharp.Parser
 
 BEGIN NAMESPACE XSharpModel
 	CLASS XError

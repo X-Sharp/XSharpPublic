@@ -3,7 +3,7 @@
   <TemplateData>
      <Name>VOMenu</Name>
      <Description>An empty VO Menu</Description>
-     <Icon Package="{E299FB7B-D273-4678-9ACF-B37B4AF04A12}" ID="401" />
+      <Icon>VOMenu.PNG</Icon>
      <TemplateID>XSharp.VOMenu</TemplateID>
      <ProjectType>XSharp</ProjectType>
      <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

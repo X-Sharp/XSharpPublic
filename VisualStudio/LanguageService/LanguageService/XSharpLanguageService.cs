@@ -22,7 +22,7 @@ using System.Diagnostics;
 
 namespace XSharp.LanguageService
 {
-    [Guid(GuidStrings.guidXSharpLanguageServicePkgString)]
+    [Guid(XSharpConstants.guidXSharpLanguageServicePkgString)]
     public class XSharpLegacyLanguageService : Microsoft.VisualStudio.Package.LanguageService, IVsLanguageDebugInfo, IVsLanguageTextOps
     {
         private readonly IServiceContainer _serviceContainer;

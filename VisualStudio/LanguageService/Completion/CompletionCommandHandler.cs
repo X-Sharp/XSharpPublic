@@ -221,6 +221,7 @@ namespace XSharp.LanguageService
                 WriteOutputMessage("InsertXMLDoc: error " + e.Message);
             }
         }
+#if false
         private void completeCurrentToken(uint nCmdID, char ch)
         {
             if (!CompletionAllowed(ch))
@@ -253,6 +254,7 @@ namespace XSharp.LanguageService
                 }
             }
         }
+#endif
         private void FilterCompletionSession(char ch)
         {
 
@@ -453,7 +455,7 @@ namespace XSharp.LanguageService
                 if (!_completionSession.IsDismissed)
                     return false;
             }
-            if (!CompletionAllowed(typedChar))
+            if (!CompletionAllowed(typedChar, !autoType))
                 return false;
             SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
             ITextSnapshot snapshot = caret.Snapshot;
@@ -480,7 +482,7 @@ namespace XSharp.LanguageService
             try
             {
                 _completionSession.Start();
-                if (!CompletionAllowed(typedChar))
+                if (!CompletionAllowed(typedChar, !autoType))
                     _completionSession.Dismiss();
             }
             catch (Exception e)
@@ -603,7 +605,7 @@ namespace XSharp.LanguageService
             }
             return char.IsWhiteSpace(c);
         }
-        private bool CompletionAllowed(char c)
+        private bool CompletionAllowed(char c, bool onCommand)
         {
             // := should never produce a list
             if (c == ':' && nextChar() == '=')
@@ -613,12 +615,12 @@ namespace XSharp.LanguageService
             var n = nextChar();
             if (c == '\0')
                 c = curChar();
-            if (IsWs(p) && IsWs(n))
+            if (IsWs(p) && IsWs(n) && !onCommand)
             {
                 // no completion for single character
                 return false;
             }
-            if (!IsWs(n))
+            if (!IsWs(n) && !onCommand)
             {
                 if (c != ':' && c != '.')
                 {

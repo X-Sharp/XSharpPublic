@@ -11,15 +11,15 @@ using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 
-using XSharp.LanguageService;
+//using XSharp.LanguageService;
 using XSharp.Project.WPF;
 using System.ComponentModel;
-using static XSharp.XSharpConstants;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using XSharpModel;
 using Community.VisualStudio.Toolkit;
+using Task = System.Threading.Tasks.Task;
 /*
 Substitution strings
 String	Description
@@ -51,21 +51,6 @@ $System$	The Windows\system32 folder.
 $WINDIR$	The Windows folder.
 */
 
-// The following lines ensure that the right versions of the various DLLs are loaded.
-// They will be included in the generated PkgDef folder for the project system
-#if DEV17
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider2022.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
-#else
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
-#endif
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser")]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpModel")]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpMonoCecil")]
-[assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite")]
-[assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
-[assembly: ProvideCodeBase(AssemblyName = "Serilog")]
-[assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.Debug")]
-[assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.File")]
 
 namespace XSharp.Project
 {
@@ -87,15 +72,13 @@ namespace XSharp.Project
     /// </remarks>
     ///
     [InstalledProductRegistration("#110", "#112", XSharp.Constants.FileVersion, IconResourceID = 400)]
-    [Description(ProjectSystemName)]
-    // [PackageRegistration(UseManagedResourcesOnly = true)] <-- Standard Package loading
-    // ++ Async Package
+    [Description(XSharpConstants.ProjectSystemName)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
     // -- Async Package
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideProjectFactory(typeof(XSharpProjectFactory),
-        LanguageName, ProjectFileMask, ProjectExtension, ProjectExtensions,
+        XSharpConstants.LanguageName, XSharpConstants.ProjectFileMask, XSharpConstants.ProjectExtension, XSharpConstants.ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
 
@@ -110,16 +93,11 @@ namespace XSharp.Project
         pageNameResourceID: 202,
         keywordListResourceId: 302,
         supportsAutomation:true, Sort = 2)]
-
-    [ProvideLanguageCodeExpansionAttribute(
-         typeof(XSharpLanguageService),
-         LanguageName,  // Name of language used as registry key.
-         1,         // Resource ID of localized name of language service.
-         LanguageName,  // language key used in snippet templates.
-         @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\SnippetsIndex.xml",  // Path to snippets index
-         SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
-                  @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
-         )]
+    [ProvideOptionPage(typeof(Options.DialogPageProvider.Debugger), "Debugging", "X# Debugger",
+     categoryResourceID: 203,
+     pageNameResourceID: 204,
+     keywordListResourceId: 304,
+     supportsAutomation: true)]
 
     [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
         null,
@@ -127,20 +105,20 @@ namespace XSharp.Project
         null,
         null,
         null,
-        LanguageVsTemplate = LanguageName,
+        LanguageVsTemplate = XSharpConstants.LanguageName,
         TemplateGroupIDsVsTemplate = "WPF",
         ShowOnlySpecifiedTemplatesVsTemplate = false, SortPriority = 100)]
 
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
     // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ch", 0x42, DefaultName = EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".rc", 0x42, DefaultName = EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ch", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".rc", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
     // This tells VS that we support Code and Designer view
     // The guids are VS specific and should not be changed
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
@@ -162,7 +140,7 @@ namespace XSharp.Project
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
-    [Guid(GuidStrings.guidXSharpProjectPkgString)]
+    [Guid(XSharpConstants.guidXSharpProjectPkgString)]
 #if REPOWINDOW
     [ProvideToolWindow(typeof(RepositoryWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
     [ProvideToolWindowVisibility(typeof(RepositoryWindow.Pane), VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string)]
@@ -180,7 +158,7 @@ namespace XSharp.Project
         private uint shellCookie;
 
         public static XSharpProjectPackage XInstance = null;
-        private XSharpLanguageService _langservice;
+       // private XSharpLanguageService _langservice;
 
 
         // =========================================================================================
@@ -194,7 +172,6 @@ namespace XSharp.Project
         public XSharpProjectPackage() : base()
         {
             XInstance = this;
-            ModelScannerEvents.Start();
         }
 
 
@@ -205,7 +182,7 @@ namespace XSharp.Project
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             // Give the codemodel a way to talk to the VS Shell
             XSettings.ShellLink = new XSharpShellLink();
@@ -244,7 +221,7 @@ namespace XSharp.Project
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
-            _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
+            //_langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
 
             await this.RegisterCommandsAsync();
             await GetEditorOptionsAsync();
@@ -286,6 +263,20 @@ namespace XSharp.Project
 
         public async Task<bool> GetEditorOptionsAsync()
         {
+            var doptions = await Options.DebuggerOptions.GetLiveInstanceAsync();
+            XDebuggerSettings.ArrayZero = doptions.ArrayZero;
+            XDebuggerSettings.AllowEditing = doptions.AllowEditing;
+            XDebuggerSettings.Dialect = (int) doptions.Dialect;
+            XDebuggerSettings.MemVars = doptions.MemVars;
+            XDebuggerSettings.UndeclaredMemvars = doptions.UndeclaredMemvars;
+            XDebuggerSettings.Vo4 = doptions.Vo4;
+            XDebuggerSettings.Vo6 = doptions.Vo6;
+            XDebuggerSettings.Vo7 = doptions.Vo7;
+            XDebuggerSettings.Vo10 = doptions.Vo10;
+            XDebuggerSettings.Vo12 = doptions.Vo12;
+            XDebuggerSettings.Vo13 = doptions.Vo13;
+            XDebuggerSettings.Vo14 = doptions.Vo14;
+
             var woptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
             XCustomEditorSettings.ShowGrid = woptions.ShowGrid;
             XCustomEditorSettings.GridX = woptions.GridX;
@@ -293,6 +284,8 @@ namespace XSharp.Project
             XCustomEditorSettings.PasteOffSetX = woptions.PasteOffSetX;
             XCustomEditorSettings.PasteOffSetY = woptions.PasteOffSetY;
             XCustomEditorSettings.PartialLasso = woptions.PartialLasso;
+            XCustomEditorSettings.SizeAdjustmentX = woptions.SizeAdjustmentX;
+            XCustomEditorSettings.SizeAdjustmentY = woptions.SizeAdjustmentY;
 
             var options = await Options.OtherEditorOptions.GetLiveInstanceAsync();
             XCustomEditorSettings.DbServerDefaultRDD = options.DbServerDefaultRDD;

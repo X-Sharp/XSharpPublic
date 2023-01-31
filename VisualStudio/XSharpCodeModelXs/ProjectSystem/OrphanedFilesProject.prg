@@ -10,7 +10,7 @@ USING System.Text
 USING System.Threading.Tasks
 USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.XSharp
-
+using XSharp.Parser
 USING System.Diagnostics
 
 BEGIN NAMESPACE XSharpModel

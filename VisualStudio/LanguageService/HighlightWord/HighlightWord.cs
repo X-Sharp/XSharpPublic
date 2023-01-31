@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using static XSharp.XSharpConstants;
 using Microsoft.VisualStudio.Shell;
 using System.Globalization;
 using XSharpModel;
@@ -23,7 +22,7 @@ namespace XSharp.LanguageService.Editors.HighlightWord
 {
 
     [Export(typeof(IViewTaggerProvider))]
-    [ContentType(LanguageName)]
+    [ContentType(XSharpConstants.LanguageName)]
     [TagType(typeof(TextMarkerTag))]
     internal class HighlightWordTaggerProvider : SameWordHighlighterBase
     {

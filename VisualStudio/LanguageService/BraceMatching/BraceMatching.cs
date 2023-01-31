@@ -14,13 +14,12 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using XSharpModel;
-using static XSharp.XSharpConstants;
 
 namespace XSharp.LanguageService
 {
 
     [Export(typeof(IViewTaggerProvider))]
-    [ContentType(LanguageName)]
+    [ContentType(XSharpConstants.LanguageName)]
     [TagType(typeof(TextMarkerTag))]
 
     // we now have 2 separate taggers
@@ -54,7 +53,7 @@ namespace XSharp.LanguageService
 
 
     [Export(typeof(IViewTaggerProvider))]
-    [ContentType(LanguageName)]
+    [ContentType(XSharpConstants.LanguageName)]
     [TagType(typeof(TextMarkerTag))]
     internal class KeywordMatchingTaggerProvider : IViewTaggerProvider
     {

@@ -1198,11 +1198,12 @@ STATIC CLASS XDatabase
                         crit := "name like $name"
                     ENDIF
                     oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE "+crit+"  AND TypeName = $typename " + ;
-                        " AND Kind in ($kind1, $kind2) AND IdProject in ("+sProjectIds+")" +;
+                        " AND Kind in ($kind1, $kind2, $kind3) AND IdProject in ("+sProjectIds+")" +;
                         " Order by FileName"
                     oCmd:Parameters:AddWithValue("$name", sLike)
                     oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.VOGlobal)
                     oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.VODefine)
+                    oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.Define)
                     oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
@@ -1237,7 +1238,7 @@ STATIC CLASS XDatabase
         Log(i"FindGlobalOrDefineLike '{sName}' returns {result.Count} matches")
         RETURN result
 
-    STATIC METHOD _FindAssemblyWorker(sName AS STRING, sAssemblyIds AS STRING, nKind1 as Kind, like as LOGIC) AS IList<XDbResult>
+    STATIC METHOD _FindAssemblyWorker(sName AS STRING, sAssemblyIds AS STRING, nKind1 as Kind, nKind2 as Kind,nKind3 as Kind,like as LOGIC) AS IList<XDbResult>
         // search class members in the Types list
         VAR result := List<XDbResult>{}
         VAR sLike  := sName
@@ -1249,9 +1250,11 @@ STATIC CLASS XDatabase
                     ENDIF
                     USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
                     oCmd:CommandText := "SELECT * FROM AssemblyGlobals WHERE name like $name " + ;
-                        " AND Kind = $kind1 AND IdAssembly in ("+sAssemblyIds+")"
+                        " AND Kind in ($kind1,$kind2,$kind3) AND IdAssembly in ("+sAssemblyIds+")"
                     oCmd:Parameters:AddWithValue("$name", sLike)
                     oCmd:Parameters:AddWithValue("$kind1", (INT) nKind1)
+                    oCmd:Parameters:AddWithValue("$kind2", (INT) nKind2)
+                    oCmd:Parameters:AddWithValue("$kind3", (INT) nKind3)
                     USING VAR rdr := oCmd:ExecuteReader()
                     DO WHILE rdr:Read() .and. result:Count < XEditorSettings.MaxCompletionEntries
                         // extra filter because they may be seeking for "FO_" and we do not want the _ character to be seen as wildcard
@@ -1270,14 +1273,14 @@ STATIC CLASS XDatabase
 
     STATIC METHOD FindAssemblyGlobalOrDefine(sName AS STRING, sAssemblyIds AS STRING, lLike as LOGIC) AS IList<XDbResult>
         // search class members in the Types list
-        VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Field, lLike)
+        VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Field, Kind.VODefine, Kind.VOGlobal, lLike)
         Log(i"FindAssemblyGlobalOrDefine '{sName}' returns {result.Count} matches")
 
         RETURN result
 
     STATIC METHOD FindAssemblyFunction(sName AS STRING, sAssemblyIds AS STRING, lLike as LOGIC) AS IList<XDbResult>
         // search class members in the Types list
-        VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Function, lLike)
+        VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Function, Kind.Procedure, Kind.Procedure, lLike)
         Log(i"FindAssemblyFunction '{sName}' returns {result.Count} matches")
         RETURN result
 
@@ -1614,6 +1617,23 @@ STATIC CLASS XDatabase
         ENDIF
         Log(i"GetMembers '{idType}' returns {result.Count} matches")
         RETURN result
+
+
+    STATIC METHOD HasRCFiles(projectFile as string) AS LOGIC
+        IF IsDbOpen
+            BEGIN LOCK oConn
+                TRY
+                    var fileType := (Int) XFileType.NativeResource
+                    var stmt := "select count(*) from ProjectFiles where fileType = "+fileType:ToString()+" and ProjectFileName like '%" +projectFile+"'"
+                    USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                    var count := (Int64) oCmd:ExecuteScalar()
+                    RETURN count > 0
+                CATCH e AS Exception
+                    XSettings.LogException(e, __FUNCTION__)
+                END TRY
+            END LOCK
+        ENDIF
+        RETURN FALSE
 
     STATIC METHOD GetStartupClasses(projectFile as string) AS List<String>
         var result := List<String>{}

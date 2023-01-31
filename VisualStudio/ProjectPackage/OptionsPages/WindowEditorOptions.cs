@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using Community.VisualStudio.Toolkit;
+using System;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace XSharp.Project.Options
 {
@@ -39,7 +42,47 @@ namespace XSharp.Project.Options
         [DefaultValue(false)]
         public bool PartialLasso { get; set; } = false;
 
+        [Category("RC Files")]
+        [DisplayName("Size adjustment X")]
+        [Description("Correction factor for Size adjustment horizontally .")]
+        [DefaultValue(1.0)]
+        [TypeConverter(typeof(ScaleTypeConverter))]
+        public double SizeAdjustmentX { get; set; } =1.0;
+
+        [Category("RC Files")]
+        [DisplayName("Size adjustment Y")]
+        [Description("Correction factor for Size adjustment vertically .")]
+        [DefaultValue(1.0)]
+        [TypeConverter(typeof(ScaleTypeConverter))]
+        public double SizeAdjustmentY { get; set; } = 1.0;
+
     }
 
+    public class ScaleTypeConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext context,
+                                            Type sourceType)
+        {
+            return sourceType == typeof(string);
+        }
 
+        public override object ConvertFrom(ITypeDescriptorContext context,
+            CultureInfo culture, object value)
+        {
+            if (value is string s)
+            {
+                if (double.TryParse(s, NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands, culture, out var result))
+                    return result;
+                return 1.0;
+            }
+            return base.ConvertFrom(context, culture, value);
+        }
+        public override object ConvertTo(ITypeDescriptorContext context,
+            CultureInfo culture, object value, Type destinationType)
+        {
+            if (destinationType == typeof(string))
+                return ((double)value).ToString("0.0########", culture);
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+    }
 }

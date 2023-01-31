@@ -50,7 +50,7 @@ namespace XSharp.Project
                 case XFileType.NativeResource:
                 case XFileType.License:
                 case XFileType.Template:
-                    editorType = GuidStrings.guidSourcecodeEditorFactory;
+                    editorType = XSharpConstants.guidSourcecodeEditorFactory;
                     break;
                 case XFileType.VOForm:
                 case XFileType.VOMenu:
@@ -60,7 +60,7 @@ namespace XSharp.Project
                     // we only have to tell it what to do when we want to see the code.
                     if (logicalView == VSConstants.LOGVIEWID.Code_guid)
                     {
-                        editorType = GuidStrings.guidVSXmlEditor;
+                        editorType = XSharpConstants.guidVSXmlEditor;
                     }
                     break;
             }

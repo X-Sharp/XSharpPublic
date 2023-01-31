@@ -16,7 +16,7 @@
   <ManagedComponent
     ComponentId="guidXSharpXSharpResultProviderCompId"
     ComponentLevel="64000"
-    AssemblyName="XSharpDebugger"
+   AssemblyName="XSharp.Debugger"
     Synchronized="true">
     <!-- By setting the ComponentLevel to 64000, which is higher than the level of the C# ResultProvider (63000) we get called after the C# ResultProvider-->
     <Class Name="XSharpDebugger.ResultProvider.XSharpResultProvider">

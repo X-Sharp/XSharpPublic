@@ -294,7 +294,10 @@ namespace XSharp.CodeDom
         protected override string CreateEscapedIdentifier(string value)
         {
             // Is is a reserved Keyword ?
-            value = XLiterals.EscapeName(value);
+            if (XSharpKeywords.Contains(value))
+            {
+                value = "@@" + value;
+            }
             return value;
         }
        
@@ -1438,18 +1441,22 @@ namespace XSharp.CodeDom
             if (this.IsCurrentClass || this.IsCurrentStruct)
             {
                 WriteTrivia(e);
-                if (e.CustomAttributes.Count > 0)
+                if (!WriteOriginalCode(e))
                 {
-                    this.GenerateAttributes(e.CustomAttributes);
-                }
-                base.Output.WriteLine(keywordSTATIC+ keywordCONSTRUCTOR+"()");
-                this.Indent++;
-                this.GenerateStatements(e.Statements);
-                this.Indent--;
-                base.Output.WriteLine();
-                if (e.HasEndingTrivia())
-                {
-                    WriteTrivia(e, true);
+                    if (e.CustomAttributes.Count > 0)
+                    {
+                        this.GenerateAttributes(e.CustomAttributes);
+                        this.WriteIndent();
+                    }
+                    base.Output.WriteLine(keywordSTATIC + keywordCONSTRUCTOR + "()");
+                    this.Indent++;
+                    this.GenerateStatements(e.Statements);
+                    this.Indent--;
+                    base.Output.WriteLine();
+                    if (e.HasEndingTrivia())
+                    {
+                        WriteTrivia(e, true);
+                    }
                 }
             }
         }

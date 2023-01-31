@@ -9,13 +9,13 @@
  *
  * ***************************************************************************/
 using System;
-using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
-using System.Resources;
-
+#if DEV17
+[assembly: AssemblyTitle("XSharp.ProjectBase.17")]
+#else
 [assembly: AssemblyTitle("XSharp.ProjectBase")]
+#endif
 [assembly: AssemblyDescription("MPF Implementation of VS Projects enhanced with code from Wix")]
 
 [assembly: ComVisible(false)]

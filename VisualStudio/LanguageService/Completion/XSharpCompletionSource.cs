@@ -321,17 +321,17 @@ namespace XSharp.LanguageService
                     }
                     if (type == null && state.HasFlag(CompletionState.Namespaces))
                     {
-                        helpers.AddNamespaces(compList, location, filterText);
+                        helpers.AddNamespacesLike(compList, location, filterText);
                     }
                     if (state.HasFlag(CompletionState.Interfaces))
                     {
-                        helpers.AddTypeNames(compList, location, filterText,  afterDot: typedChar == '.', onlyInterfaces: true);
+                        helpers.AddTypeNamesLike(compList, location, filterText,  afterDot: typedChar == '.', onlyInterfaces: true);
                     }
                     if (state.HasFlag(CompletionState.Types)  )
                     {
-                        helpers.AddTypeNames(compList, location, filterText, afterDot: typedChar == '.', onlyInterfaces: false);
+                        helpers.AddTypeNamesLike(compList, location, filterText, afterDot: typedChar == '.', onlyInterfaces: false);
                         if (addKeywords)
-                            helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
+                            helpers.AddXSharpKeywordTypeNamesLike(kwdList, filterText);
                     }
                     if (state.HasFlag(CompletionState.StaticMembers))
                     {
@@ -395,7 +395,7 @@ namespace XSharp.LanguageService
                     {
                         case XSharpLexer.USING:
                             // It can be a namespace
-                            helpers.AddNamespaces(compList, location, filterText);
+                            helpers.AddNamespacesLike(compList, location, filterText);
                             break;
                         case XSharpLexer.AS:
                         case XSharpLexer.IS:
@@ -403,17 +403,17 @@ namespace XSharp.LanguageService
                         case XSharpLexer.INHERIT:
                         case XSharpLexer.PARAMS:
                             // It can be a namespace
-                            helpers.AddNamespaces(compList, location, filterText);
+                            helpers.AddNamespacesLike(compList, location, filterText);
                             // It can be Type, FullyQualified
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                            helpers.AddTypeNames(compList, location, filterText, onlyInterfaces: false, afterDot: false);
+                            helpers.AddTypeNamesLike(compList, location, filterText, onlyInterfaces: false, afterDot: false);
                             //
-                            helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
+                            helpers.AddXSharpKeywordTypeNamesLike(kwdList, filterText);
                             break;
                         case XSharpLexer.IMPLEMENTS:
                             // It can be a namespace
-                            helpers.AddNamespaces(compList, location, filterText);
-                            helpers.AddTypeNames(compList, location, filterText,onlyInterfaces: true, afterDot: false);
+                            helpers.AddNamespacesLike(compList, location, filterText);
+                            helpers.AddTypeNamesLike(compList, location, filterText,onlyInterfaces: true, afterDot: false);
                             break;
                         default:
                             if (state.HasFlag(CompletionState.General))

@@ -3,13 +3,12 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#undef COMPLETION
+#define COMPLETION
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using System;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
-using static XSharp.XSharpConstants;
 using XSharp.LanguageService.OptionsPages;
 using System.Threading;
 using Microsoft.VisualStudio.TextManager.Interop;
@@ -27,7 +26,9 @@ using System.Collections.Generic;
 // They will be included in the generated PkgDef folder for the project system
 [assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser")]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpModel")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
+[assembly: ProvideCodeBase(AssemblyName = "Mono.Cecil")]
 namespace XSharp.LanguageService
 {
 
@@ -37,11 +38,11 @@ namespace XSharp.LanguageService
     /// <remarks>
     ///
 
-    [Guid(GuidStrings.guidXSharpLanguageServicePkgString)]
+    [Guid(XSharpConstants.guidXSharpLanguageServicePkgString)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string,PackageAutoLoadFlags.BackgroundLoad)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
-    [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName, IsAsyncQueryable = false)]//
+    [ProvideService(typeof(XSharpLanguageService), ServiceName = XSharpConstants.LanguageServiceName, IsAsyncQueryable = false)]//
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".prg")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xs")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ppo")]
@@ -49,7 +50,7 @@ namespace XSharp.LanguageService
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xh")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ch")]
     [ProvideLanguageService(typeof(XSharpLanguageService),
-                         LanguageName,
+                         XSharpConstants.LanguageName,
                          1,                            // resource ID of localized language name
                          AutoOutlining = true,
                          CodeSense = true,             // Supports IntelliSense
@@ -77,23 +78,24 @@ namespace XSharp.LanguageService
                  )]
     [ProvideLanguageCodeExpansion(
          typeof(XSharpLanguageService),
-         LanguageName,  // Name of language used as registry key.
+         XSharpConstants.LanguageName,  // Name of language used as registry key.
          1,         // Resource ID of localized name of language service.
-         LanguageName,  // language key used in snippet templates.
-         @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\SnippetsIndex.xml",  // Path to snippets index
-         SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
+         XSharpConstants.LanguageName,  // language key used in snippet templates.
+         @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\SnippetsIndex.xml",  // Path to snippets index
+         SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\Snippets;" +
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
+
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
-    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202", keywordListResourceId: 302)]
-    [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Options", pageNameResourceId: "203", keywordListResourceId: 303)]
+    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), XSharpConstants.LanguageName, null, "Formatting", pageNameResourceId: "202", keywordListResourceId: 302)]
+    [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), XSharpConstants.LanguageName, null, "Options", pageNameResourceId: "203", keywordListResourceId: 303)]
 #if COMPLETION
-    [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), LanguageName, null, "Settings Completion", pageNameResourceId: "204",keywordListResourceId:304)]
+    [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), XSharpConstants.LanguageName, null, "Settings Completion", pageNameResourceId: "204",keywordListResourceId:304)]
 #endif
-    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), LanguageName, null, "Intellisense", pageNameResourceId: "205", keywordListResourceId: 305)]
-    [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), LanguageName, null, "Indentation", pageNameResourceId: "206", keywordListResourceId: 306)]
-    [ProvideLanguageEditorOptionPage(typeof(GeneratorOptionsPage), LanguageName, null, "Generator", pageNameResourceId: "207", keywordListResourceId: 307)]
-    public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
+    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), XSharpConstants.LanguageName, null, "Intellisense", pageNameResourceId: "205", keywordListResourceId: 305)]
+    [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), XSharpConstants.LanguageName, null, "Indentation", pageNameResourceId: "206", keywordListResourceId: 306)]
+    [ProvideLanguageEditorOptionPage(typeof(GeneratorOptionsPage), XSharpConstants.LanguageName, null, "Generator", pageNameResourceId: "207", keywordListResourceId: 307)]
+    public sealed class XSharpLanguageService : ToolkitPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
         private static XSharpLanguageService instance;
         private IVsTextManager4 _txtManager;
@@ -102,6 +104,11 @@ namespace XSharp.LanguageService
         private uint m_componentID;
         private IOleComponentManager _oleComponentManager = null;
         internal bool optionWasChanged = false;
+
+        public XSharpLanguageService() : base()
+        {
+            ModelScannerEvents.Start();
+        }
 
         public static XSharpLanguageService Instance
         {
@@ -189,7 +196,7 @@ namespace XSharp.LanguageService
             XEditorSettings.NavigationMembersOfCurrentTypeOnly = _intellisensePage.ShowMembersOfCurrentTypeOnly;
             XEditorSettings.NavigationExcludeMembersFromOtherFiles = _intellisensePage.ExcludeMembersFromOtherFiles;
             var languagePreferences = new LANGPREFERENCES3[1];
-            languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
+            languagePreferences[0].guidLang = XSharpConstants.guidLanguageService;
             int result = VSConstants.S_FALSE;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
@@ -226,20 +233,20 @@ namespace XSharp.LanguageService
 
 #if COMPLETION
             // Completion
-            XSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
-            XSettings.CompleteSelf = _completionOptionsPage.CompleteSelf;
-            XSettings.CompleteParent = _completionOptionsPage.CompleteParent;
-            XSettings.CompleteNamespaces = _completionOptionsPage.CompleteNamespaces;
-            XSettings.CompleteTypes = _completionOptionsPage.CompleteTypes;
-            XSettings.CompleteKeywords = _completionOptionsPage.CompleteKeywords;
-            XSettings.CompleteSnippets = _completionOptionsPage.CompleteSnippets;
-            XSettings.CompleteGlobals = _completionOptionsPage.CompleteGlobals;
-            XSettings.CompleteGlobalsP = _completionOptionsPage.CompleteGlobalsP;
-            XSettings.CompleteGlobalsA = _completionOptionsPage.CompleteGlobalsA;
-            XSettings.CompleteFunctions = _completionOptionsPage.CompleteFunctions;
-            XSettings.CompleteFunctionsP = _completionOptionsPage.CompleteFunctionsP;
-            XSettings.CompleteFunctionsA = _completionOptionsPage.CompleteFunctionsA;
-            XSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
+            XEditorSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
+            XEditorSettings.CompleteSelf = _completionOptionsPage.CompleteSelf;
+            XEditorSettings.CompleteParent = _completionOptionsPage.CompleteParent;
+            XEditorSettings.CompleteNamespaces = _completionOptionsPage.CompleteNamespaces;
+            XEditorSettings.CompleteTypes = _completionOptionsPage.CompleteTypes;
+            XEditorSettings.CompleteKeywords = _completionOptionsPage.CompleteKeywords;
+            XEditorSettings.CompleteSnippets = _completionOptionsPage.CompleteSnippets;
+            XEditorSettings.CompleteGlobals = _completionOptionsPage.CompleteGlobals;
+            XEditorSettings.CompleteGlobalsP = _completionOptionsPage.CompleteGlobalsP;
+            XEditorSettings.CompleteGlobalsA = _completionOptionsPage.CompleteGlobalsA;
+            XEditorSettings.CompleteFunctions = _completionOptionsPage.CompleteFunctions;
+            XEditorSettings.CompleteFunctionsP = _completionOptionsPage.CompleteFunctionsP;
+            XEditorSettings.CompleteFunctionsA = _completionOptionsPage.CompleteFunctionsA;
+            XEditorSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
             //XSettings.MaxCompletionEntries = _completionOptionsPage.MaxCompletionEntries;
 #endif
             // Generator
@@ -285,6 +292,7 @@ namespace XSharp.LanguageService
 
             // register property changed event handler
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            await this.RegisterCommandsAsync();
             XSharpXMLDocTools.Initialize();
             var shell = await this.GetServiceAsync(typeof(SVsShell)) as IVsShell;
             if (shell != null)
@@ -306,6 +314,7 @@ namespace XSharp.LanguageService
             //}
 
             RegisterDebuggerEvents();
+            
             addOurFileExtensionsForDiffAndPeek("Diff\\SupportedContentTypes");
             addOurFileExtensionsForDiffAndPeek("Peek\\SupportedContentTypes");
 

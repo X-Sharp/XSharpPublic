@@ -555,19 +555,28 @@ namespace XSharp.CodeDom
             // Nested types are stored in Source code completely, so no need to analyze
             if (IsNested)
                 return;
-            var ctor = new XCodeConstructor
-            {
-                Attributes = MemberAttributes.Public
-            };
-            ctor.Parameters.AddRange(GetParametersList(context.ParamList));
+            CodeTypeMember member;
+            MemberAttributes atts = MemberAttributes.Public;
             if (context.Modifiers != null)
             {
-                ctor.Attributes = decodeMemberAttributes(context.Modifiers._Tokens);
+                atts = decodeMemberAttributes(context.Modifiers._Tokens);
             }
+            if (atts.HasFlag(MemberAttributes.Static))
+            {
+                member = new XCodeTypeConstructor();
+            }
+            else
+            {
+                var ctor = new XCodeConstructor();
+                ctor.Parameters.AddRange(GetParametersList(context.ParamList));
+                member = ctor;
+            }
+            member.Attributes = atts;
             // Copy the whole source code in a Snippet Member including the leading trivia and codedom designer data
-            SaveSourceCode(ctor, context);
-            AddMemberAttributes(ctor, ctor.Attributes, context.Modifiers);
-            this.CurrentType.Members.Add(ctor);
+            SaveSourceCode(member, context);
+            // Copy the original Modifiers, so we will not add "Public" afterwards when it did not exist
+            AddMemberAttributes(member, member.Attributes, context.Modifiers);
+            this.CurrentType.Members.Add(member);
         }
 
         public override void EnterDestructor([NotNull] XSharpParser.DestructorContext context)

@@ -4,23 +4,18 @@
   <PropertyGroup>
     <!--Visual Studio will use the value of will use MinimumVisualStudioVersion to detect if a project needs to be updated.
     To allow the project to be loaded in multiple VS versions, conditionally check the project -->
-    <MinimumVisualStudioVersion Condition="'$(VisualStudioVersion)' == '15.0'">15.0</MinimumVisualStudioVersion>
-    <MinimumVisualStudioVersion Condition="'$(VisualStudioVersion)' != '15.0'">14.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}</ProjectGuid>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Ngen>true</Ngen>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <RootNamespace>XSharp.Project</RootNamespace>
-    <AssemblyName>XSharpProject</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-    <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}</ProjectGuid>
+    <AssemblyName>XSharp.Project</AssemblyName>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
@@ -28,6 +23,7 @@
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+    <Ngen>true</Ngen>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
     <ExtensionInstallationFolder>XSharp\Project</ExtensionInstallationFolder>
     <NuGetPackageImportStamp>
@@ -38,7 +34,7 @@
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
     <PlatformTarget>x86</PlatformTarget>
-    <CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
@@ -76,20 +72,20 @@
     <Reference Include="Microsoft.Windows.Design.Host">
       <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <Reference Include="XSharp.CodeAnalysis">
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+      <Aliases>codeanalysis</Aliases>
+    </Reference>
     <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
+    <Reference Include="XSharp.Evaluator">
+      <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
@@ -126,6 +122,7 @@
     <Compile Include="Commands\CommandXPorter.cs" />
     <Compile Include="Commands\CommandVoXPorter.cs" />
     <Compile Include="Commands\XSharpBaseCommand.cs" />
+    <Compile Include="ExternalAssemblies.cs" />
     <Compile Include="List\ErrorList\ErrorListItem.cs" />
     <Compile Include="List\ErrorList\ErrorListManager.cs" />
     <Compile Include="List\ErrorList\ErrorListProvider.cs" />
@@ -149,6 +146,7 @@
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OptionsPages\DebuggerOptions.cs" />
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
@@ -163,13 +161,6 @@
     <Compile Include="Nodes\XSharpProjectNodeProperties.cs" />
     <Content Include="$(Outdir)\x86\SQLite.Interop.dll">
       <Link>x86\SQLite.Interop.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="XSharpDesigners.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="XSharpLanguageService.pkgdef">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\Program.prg" />
@@ -187,19 +178,24 @@
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\cavowed.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.EmptyShellMenu.xsmnu" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.StandardShellMenu.xsmnu" />
-    <ZipProject Include="Templates\Projects\Test\TestNUnit\packages.config" />
-    <ZipProject Include="Templates\Projects\Test\TestXUnit\packages.config" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
+    <Content Include="$(OutDir)\XSharp.AppDesigner.pkgdef">
+      <Link>XSharp.AppDesigner.pkgdef</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="$(OutDir)\XSharp.LanguageService.pkgdef">
+      <Link>XSharp.LanguageService.pkgdef</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="app.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Editors\Todo.txt" />
-    <Content Include="Snippets\SnippetsIndex.xml" />
     <Content Include="source.extension.2019.vsixmanifest" />
     <Content Include="source.extension.2022.vsixmanifest" />
     <Content Include="Template.ico">
@@ -344,14 +340,14 @@
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <VSCTCompile Include="XSharpProjectPackage.vsct">
+    <VSCTCompile Include="Menus.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <Generator>VsctGenerator</Generator>
-      <LastGenOutput>XSharpProjectPackage1.cs</LastGenOutput>
+      <LastGenOutput>Menus.cs</LastGenOutput>
     </VSCTCompile>
-    <Content Include="XSharpAppDesigner.pkgdef">
-      <IncludeInVSIX>true</IncludeInVSIX>
+    <Content Include="XSharp.Designers.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -366,16 +362,21 @@
       <DependentUpon>RepositoryWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Resources.cs" />
+    <Compile Include="source.extension.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>source.extension.vsixmanifest</DependentUpon>
+    </Compile>
     <Compile Include="XSharpShellLink.cs" />
     <Compile Include="XSharpDocumentWatcher.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
-    <Compile Include="XSharpProjectPackage1.cs">
+    <Compile Include="Menus.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>XSharpProjectPackage.vsct</DependentUpon>
+      <DependentUpon>Menus.vsct</DependentUpon>
     </Compile>
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
@@ -418,34 +419,6 @@
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.xsproj" />
-    <None Include="Snippets\Snippets\case.snippet" />
-    <None Include="Snippets\Snippets\class.snippet" />
-    <None Include="Snippets\Snippets\classinherited.snippet" />
-    <None Include="Snippets\Snippets\equals.snippet" />
-    <None Include="Snippets\Snippets\exception.snippet" />
-    <None Include="Snippets\Snippets\fileheader.snippet" />
-    <None Include="Snippets\Snippets\for.snippet" />
-    <None Include="Snippets\Snippets\foreach.snippet" />
-    <None Include="Snippets\Snippets\for_down.snippet" />
-    <None Include="Snippets\Snippets\for_up.snippet" />
-    <None Include="Snippets\Snippets\if.snippet" />
-    <None Include="Snippets\Snippets\ifdef.snippet" />
-    <None Include="Snippets\Snippets\ifndef.snippet" />
-    <None Include="Snippets\Snippets\initproc.snippet" />
-    <None Include="Snippets\Snippets\mbox.snippet" />
-    <None Include="Snippets\Snippets\nunittestclass.snippet" />
-    <None Include="Snippets\Snippets\property.snippet" />
-    <None Include="Snippets\Snippets\region.snippet" />
-    <None Include="Snippets\Snippets\repeat.snippet" />
-    <None Include="Snippets\Snippets\sequence.snippet" />
-    <None Include="Snippets\Snippets\start.snippet" />
-    <None Include="Snippets\Snippets\struct.snippet" />
-    <None Include="Snippets\Snippets\switch.snippet" />
-    <None Include="Snippets\Snippets\tryc.snippet" />
-    <None Include="Snippets\Snippets\trycf.snippet" />
-    <None Include="Snippets\Snippets\tryf.snippet" />
-    <None Include="Snippets\Snippets\vostruct.snippet" />
-    <None Include="Snippets\Snippets\while.snippet" />
   </ItemGroup>
   <ItemGroup>
     <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\Resources.resx" />
@@ -581,7 +554,10 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
-    <None Include="source.extension.vsixmanifest" />
+    <None Include="source.extension.vsixmanifest">
+      <Generator>VsixManifestGenerator</Generator>
+      <LastGenOutput>source.extension.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <GetVsixSourceItemsDependsOn>$(GetVsixSourceItemsDependsOn);GetVsixTemplateItems</GetVsixSourceItemsDependsOn>
@@ -631,14 +607,6 @@
     <ProjectReference Include="..\LanguageService\XSharpLanguageService.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7395}</Project>
       <Name>XSharpLanguageService</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
-    </ProjectReference>
-    <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
-      <Project>{c9e9f119-d5a7-493b-88c9-4b5dd5ad653f}</Project>
-      <Name>XSharpMonoCecil</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bBuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\ProjectBase\ProjectBase.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c695}</Project>
@@ -703,13 +671,22 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.480</Version>
-      <PrivateAssets>all</PrivateAssets>
+      <Version>15.0.492</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.DiaSymReader">
+      <Version>1.4.0</Version>
+      <IncludeAssets>all</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading">
+      <Version>15.3.20</Version>
+    </PackageReference>
+    <PackageReference Include="Mono.Cecil">
+      <Version>0.11.4</Version>
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.Debug">
       <Version>2.0.0</Version>
@@ -718,11 +695,14 @@
       <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
-      <IncludeAssets>All</IncludeAssets>
-      <Version>1.0.116</Version>
+      <IncludeAssets>all</IncludeAssets>
+      <Version>1.0.117</Version>
     </PackageReference>
     <PackageReference Include="VSLangProj2">
-      <Version>7.0.5000</Version>
+      <Version>7.0.5001</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

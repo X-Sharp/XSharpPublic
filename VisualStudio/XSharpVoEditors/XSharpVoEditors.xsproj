@@ -7,7 +7,7 @@
     <ProjectGuid>7619db88-6286-4ef1-8273-2a08cc8ac70e</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.VOEditors</RootNamespace>
-    <AssemblyName>XSharpVoEditors</AssemblyName>
+    <AssemblyName>XSharp.VoEditors</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <Name>XSharp.VoEditors</Name>
     <Nologo>true</Nologo>
@@ -24,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
     <DisabledWarnings>165,649,168,170</DisabledWarnings>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <WarningLevel>4</WarningLevel>
@@ -55,6 +56,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
+      <Link>Properties\commonAssemblyInfo.prg</Link>
+    </Compile>
+    <Compile Include="..\..\Common\constants.prg">
+      <Link>Properties\constants.prg</Link>
+    </Compile>
     <Compile Include="Actions.prg" />
     <Compile Include="Designers\Base.prg" />
     <Compile Include="Designers\ControlOrder.prg">
@@ -113,12 +120,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Common\BuildNumber.h">
-      <Link>BuildNumber.h</Link>
-    </None>
     <EmbeddedResource Include="cavotb.bmp" />
     <None Include="Designers\Readme.txt" />
-    <None Include="Designers\VODesigners.xsproj" />
     <None Include="Readme.txt" />
     <None Include="Templates\cavoded.tpl" />
     <None Include="Templates\cavofed.tpl" />

@@ -3,14 +3,17 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using Community.VisualStudio.Toolkit;
+using LanguageService.CodeAnalysis.XSharp;
+using LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator;
 using Microsoft.VisualStudio.Debugger.Clr;
 using Microsoft.VisualStudio.Debugger.ComponentInterfaces;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
-using System.Collections.ObjectModel;
+using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-
+using System.Collections.ObjectModel;
+using XSharpModel;
 namespace XSharpDebugger.ExpressionCompiler
 {
     /// <summary>
@@ -30,6 +33,32 @@ namespace XSharpDebugger.ExpressionCompiler
     /// </summary>
     public sealed class XSharpExpressionCompiler : IDkmClrExpressionCompiler
     {
+        static bool vs15 = false;
+        static XSharpExpressionCompiler()
+        {
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var vers = await VS.Shell.GetVsVersionAsync();
+                vs15 = vers.Major == 15;
+            });
+        }
+        static void UpdateXSharpParseOptions()
+        {
+            var xoptions = XSyntaxHelpers.XSharpOptions;
+            xoptions.SetDialect((XSharpDialect)XDebuggerSettings.Dialect);
+            xoptions.SetOption(CompilerOption.MemVars, XDebuggerSettings.MemVars);
+            xoptions.SetOption(CompilerOption.UndeclaredMemVars, XDebuggerSettings.UndeclaredMemvars);
+            xoptions.SetOption(CompilerOption.ArrayZero, XDebuggerSettings.ArrayZero);
+            xoptions.SetOption(CompilerOption.Vo4, XDebuggerSettings.Vo4);
+            xoptions.SetOption(CompilerOption.Vo6, XDebuggerSettings.Vo6);
+            xoptions.SetOption(CompilerOption.Vo7, XDebuggerSettings.Vo7);
+            xoptions.SetOption(CompilerOption.Vo10, XDebuggerSettings.Vo10);
+            xoptions.SetOption(CompilerOption.Vo12, XDebuggerSettings.Vo12);
+            xoptions.SetOption(CompilerOption.Vo13, XDebuggerSettings.Vo13);
+            xoptions.SetOption(CompilerOption.Vo14, XDebuggerSettings.Vo14);
+            XSyntaxHelpers.XSharpOptions = xoptions;
+        }
+
         /// <summary>
         /// This method is called by the debug engine to compile an expression that the user wants
         /// to evaluate.  Before the call, we have the text of the expression and information about
@@ -53,6 +82,34 @@ namespace XSharpDebugger.ExpressionCompiler
             DkmInspectionContext inspectionContext,
             out string error,
             out DkmCompiledClrInspectionQuery result)
+        {
+            if (!vs15)
+            {
+                NewCompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
+            }
+            else
+            {
+                OldCompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
+            }
+        }
+        void NewCompileExpression(
+                    DkmLanguageExpression expression,
+                    DkmClrInstructionAddress instructionAddress,
+                    DkmInspectionContext inspectionContext,
+                    out string error,
+                    out DkmCompiledClrInspectionQuery result)
+        {
+            UpdateXSharpParseOptions();
+            IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
+            e.CompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
+        }
+
+        void OldCompileExpression(
+                    DkmLanguageExpression expression,
+                    DkmClrInstructionAddress instructionAddress,
+                    DkmInspectionContext inspectionContext,
+                    out string error,
+                    out DkmCompiledClrInspectionQuery result)
         {
             error = null;
             result = null;
@@ -79,13 +136,6 @@ namespace XSharpDebugger.ExpressionCompiler
                     newexpr = newexpr.Replace(':', '.');
                     changed = true;
                 }
-                // check for literal array
-                //var lbrkt = newexpr.IndexOf('[');
-                //var rbrkt = newexpr.IndexOf(']');
-                //if (lbrkt > 0 && rbrkt > 0 && lbrkt < rbrkt)
-                //{
-                //    newexpr = AdjustArrayIndices(newexpr, ref changed);
-                //}
                 if (changed && fi != null)
                 {
                     fi.SetValue(expression, newexpr);
@@ -99,6 +149,7 @@ namespace XSharpDebugger.ExpressionCompiler
             }
             return;
         }
+
 
         /// <summary>
         /// This method is called by the debug engine to retrieve the current local variables.
@@ -115,7 +166,15 @@ namespace XSharpDebugger.ExpressionCompiler
         /// <returns>A local variables query</returns>
         DkmCompiledClrLocalsQuery IDkmClrExpressionCompiler.GetClrLocalVariableQuery(DkmInspectionContext inspectionContext, DkmClrInstructionAddress instructionAddress, bool argumentsOnly)
         {
-            var result = inspectionContext.GetClrLocalVariableQuery(instructionAddress, argumentsOnly);
+            DkmCompiledClrLocalsQuery result;
+            if (!vs15)
+            {
+                result = NewClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
+            }
+            else
+            {
+                result = OldClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
+            }
             var newlocals = new List<DkmClrLocalVariableInfo>();
             bool changed = false;
             foreach (var loc in result.LocalInfo)
@@ -147,6 +206,18 @@ namespace XSharpDebugger.ExpressionCompiler
             return result;
         }
 
+        DkmCompiledClrLocalsQuery NewClrLocalVariableQuery(DkmInspectionContext inspectionContext, DkmClrInstructionAddress instructionAddress, bool argumentsOnly)
+        {
+            UpdateXSharpParseOptions();
+            IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
+            return e.GetClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
+        }
+        DkmCompiledClrLocalsQuery OldClrLocalVariableQuery(DkmInspectionContext inspectionContext, DkmClrInstructionAddress instructionAddress, bool argumentsOnly)
+        {
+            return inspectionContext.GetClrLocalVariableQuery(instructionAddress, argumentsOnly);
+        }
+
+
         /// <summary>
         /// This method is called by the debug engine when the user modifies the result of a
         /// previous evaluation.  The result of this call will be a query containing the IL code
@@ -162,59 +233,26 @@ namespace XSharpDebugger.ExpressionCompiler
         /// execute to perform the assignment.</param>
         void IDkmClrExpressionCompiler.CompileAssignment(DkmLanguageExpression expression, DkmClrInstructionAddress instructionAddress, DkmEvaluationResult lValue, out string error, out DkmCompiledClrInspectionQuery result)
         {
-            // when the user assigns a value in the debugger then this method is called.
-            // we may want to change an expression like "{1,2,3}" to "new object[] {1,2,3}"
-            // and "2020.12.03" to "XSharp.RT.Functions.ConDate(2020,12,03)"
+            if (!vs15)
+            {
+                NewCompileAssignment(expression, instructionAddress, lValue, out error, out result);
+            }
+            else
+            {
+                OldCompileAssignment(expression, instructionAddress, lValue, out error, out result);
+            }
+
+        }
+        void NewCompileAssignment(DkmLanguageExpression expression, DkmClrInstructionAddress instructionAddress, DkmEvaluationResult lValue, out string error, out DkmCompiledClrInspectionQuery result)
+        {
+            UpdateXSharpParseOptions();
+            IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
+            e.CompileAssignment(expression, instructionAddress, lValue, out error, out result);
+        }
+        void OldCompileAssignment(DkmLanguageExpression expression, DkmClrInstructionAddress instructionAddress, DkmEvaluationResult lValue, out string error, out DkmCompiledClrInspectionQuery result)
+        {
             expression.CompileAssignment(instructionAddress, lValue, out error, out result);
         }
-/*
-        private static string AdjustArrayIndices(string newexpr, ref bool changed)
-        {
-            var sb = new System.Text.StringBuilder();
-            bool instring = false;
-            bool inindex = false;
-            foreach (var c in newexpr)
-            {
-                switch (c)
-                {
-                    case '[':
-                        if (!instring)
-                        {
-                            inindex = true;
-                        }
-                        sb.Append(c);
-                        break;
-                    case ',':
-                        if (!instring && inindex)
-                        {
-                            sb.Append("-1][");
-                            changed = true;
-                        }
-                        else
-                        {
-                            sb.Append(c);
-                        }
-                        break;
-                    case ']':
-                        if (!instring)
-                        {
-                            sb.Append("-1");
-                            changed = true;
-                            inindex = false;
-                        }
-                        sb.Append(c);
-                        break;
-                    case '"':
-                        instring = !instring;
-                        sb.Append(c);
-                        break;
-                    default:
-                        sb.Append(c);
-                        break;
-                }
-            }
-            return sb.ToString();
-        }
-        */
+
     }
 }

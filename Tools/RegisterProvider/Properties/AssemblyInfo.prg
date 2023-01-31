@@ -9,8 +9,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 USING System.Reflection
 using System.Runtime.InteropServices
-#include "constants.prg"
-#include "commonassemblyinfo.prg"
 
 [assembly: AssemblyTitleAttribute( "RegisterProvider" )]
 [assembly: AssemblyDescriptionAttribute( "RegisterProvider" )]

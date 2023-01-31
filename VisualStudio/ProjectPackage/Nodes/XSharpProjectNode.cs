@@ -6,10 +6,7 @@
 #undef USEPROJECTVERSION
 using Community.VisualStudio.Toolkit;
 using EnvDTE;
-using LanguageService.CodeAnalysis;
-using LanguageService.CodeAnalysis.XSharp;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.SyntaxTree;
+
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
@@ -28,15 +25,17 @@ using System.Text;
 using System.Windows.Forms;
 using VSLangProj;
 using XSharp.CodeDom;
-using XSharp.LanguageService;
 using XSharp.Project.WPF;
 using XSharpModel;
 using File = System.IO.File;
 using MBC = Microsoft.Build.Construction;
 using MSBuild = Microsoft.Build.Evaluation;
 using VsParser = global::LanguageService.CodeAnalysis.XSharp;
-
-
+using LanguageService.CodeAnalysis;
+using LanguageService.CodeAnalysis.XSharp;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
+//using XSharp.LanguageService;
 
 namespace XSharp.Project
 {
@@ -295,11 +294,11 @@ namespace XSharp.Project
         /// <value>The project GUID.</value>
         public override Guid ProjectGuid
         {
-            get { return GuidStrings.guidXSharpProjectFactory; }
+            get { return XSharpConstants.guidXSharpProjectFactory; }
         }
         public override string ProjectGuidString
         {
-            get { return GuidStrings.guidXSharpProjectFactoryStringCurly; }
+            get { return XSharpConstants.guidXSharpProjectFactoryStringCurly; }
         }
 
         /// <summary>
@@ -1091,7 +1090,7 @@ namespace XSharp.Project
             // WAP ask the designer service for the CodeDomProvider corresponding to the project node.
             this.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
             this.OleServiceProvider.AddService(typeof(System.CodeDom.Compiler.CodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
-
+#if XSHARPLIBRARY
             // This will call the callback in PojectPackage
             IXSharpLibraryManager libraryManager = Site.GetService(typeof(IXSharpLibraryManager)) as IXSharpLibraryManager;
             // Be sure we have External/system types for Intellisense
@@ -1101,7 +1100,7 @@ namespace XSharp.Project
             {
                 libraryManager.RegisterHierarchy(this.InteropSafeHierarchy, this.ProjectModel, this);
             }
-
+#endif
             //If this is a WPFFlavor-ed project, then add a project-level DesignerContext service to provide
             //event handler generation (EventBindingProvider) for the XAML designer.
             this.OleServiceProvider.AddService(typeof(DesignerContext), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
@@ -1116,7 +1115,7 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
 
         XSharpIncludeContainerNode includeNode = null;
         protected void CreateIncludeFileFolder()
@@ -1137,7 +1136,7 @@ namespace XSharp.Project
         }
 
 
-        #region PackageReferences
+#region PackageReferences
 
 
         protected override void ProcessReferences()
@@ -1176,9 +1175,9 @@ namespace XSharp.Project
             ProjectElement item = CreateMsBuildFileItem(name, "PackageReference");
             return new XSharpPackageReferenceNode(this, item);
         }
-        #endregion
+#endregion
 
-        #region References Management Events
+#region References Management Events
 
         private void ReferencesEvents_ReferenceRemoved(VSLangProj.Reference pReference)
         {
@@ -1206,10 +1205,10 @@ namespace XSharp.Project
                     ProjectModel.UpdateAssemblyReference(pReference.Path);
             }
         }
-        #endregion
+#endregion
 
 
-        #region Private implementation
+#region Private implementation
 
         private void CreateListManagers()
         {
@@ -1310,7 +1309,7 @@ namespace XSharp.Project
         {
             return new XSharpProjectNodeProperties(this);
         }
-        #endregion
+#endregion
 
 
         public XSharpModel.XProject ProjectModel
@@ -1382,7 +1381,7 @@ namespace XSharp.Project
                         child = child.NextSibling;
                     }
                 }
-                var newIncludes = projectModel.IncludeFiles;
+                var newIncludes = ProjectModel.IncludeFiles;
                 CreateIncludeFileFolder();
                 if (currentChildren.Count == 0)
                 {
@@ -1657,7 +1656,7 @@ namespace XSharp.Project
 
 
 
-        #region IXSharpProject Interface
+#region IXSharpProject Interface
 
         bool _enforceSelf = false;
         public bool EnforceSelf
@@ -1761,7 +1760,7 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
 
 
         protected override void Reload()
@@ -1877,7 +1876,7 @@ namespace XSharp.Project
             }
             return bOk;
         }
-        #region IProjectTypeHelper
+#region IProjectTypeHelper
         public IXTypeSymbol ResolveExternalType(string name, IList<string> usings)
         {
             switch (name.ToLower())
@@ -1923,8 +1922,8 @@ namespace XSharp.Project
         }
 
 
-        #endregion
-        #region IVsSingleFileGeneratorFactory
+#endregion
+#region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
 
         // Note that in stead of using the SingleFileGeneratorFactory we can also do everything here based on
@@ -1979,9 +1978,9 @@ namespace XSharp.Project
             return VSConstants.S_FALSE;
 
         }
-        #endregion
+#endregion
 
-        #region IVsDesignTimeAssemblyResolution
+#region IVsDesignTimeAssemblyResolution
 
         //private DesignTimeAssemblyResolution designTimeAssemblyResolution;
         private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", "AnyCPU");
@@ -2036,8 +2035,8 @@ namespace XSharp.Project
         //    return VSConstants.S_OK;
         //}
 
-        #endregion
-        #region TableManager
+#endregion
+#region TableManager
         //internal ITableManagerProvider tableManagerProvider { get; private set; }
         ErrorListManager _errorListManager = null;
         TaskListManager _taskListManager = null;
@@ -2091,7 +2090,7 @@ namespace XSharp.Project
             return;
         }
 
-        #endregion
+#endregion
 
 
         public void AddFileNode(string strFileName)
@@ -2200,12 +2199,13 @@ namespace XSharp.Project
             Logger.Debug("Close " + this.ProjectFile);
             if (this.Site != null)
             {
-
+#if XSHARPLIBRARY
                 IXSharpLibraryManager libraryManager = (IXSharpLibraryManager)Site.GetService(typeof(IXSharpLibraryManager));
                 if (libraryManager != null)
                 {
                     libraryManager.UnregisterHierarchy(this.InteropSafeHierarchy);
                 }
+#endif
             }
             // CleanUp the CodeModel
             if (projectModel != null)
@@ -2274,10 +2274,10 @@ namespace XSharp.Project
             bool ok = true;
             ThreadHelper.ThrowIfNotOnUIThread();
             silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
-            if (ModelScannerEvents.ChangedProjectFiles.ContainsKey(this.Url))
+            if (XSolution.ChangedProjectFiles.ContainsKey(this.Url))
             {
-                var original = ModelScannerEvents.ChangedProjectFiles[this.Url];
-                ModelScannerEvents.ChangedProjectFiles.Remove(this.Url);
+                var original = XSolution.ChangedProjectFiles[this.Url];
+                XSolution.ChangedProjectFiles.Remove(this.Url);
                 var changedSource = File.ReadAllText(this.Url);
                 if (File.Exists(original))
                 {
@@ -2830,7 +2830,7 @@ namespace XSharp.Project
 
 
 
-        #region IVsProject5
+#region IVsProject5
         public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)
         {
             var node = this.FindURL(pszMkDocument);
@@ -2900,7 +2900,7 @@ namespace XSharp.Project
             return false;
         }
 
-        #endregion
+#endregion
 
     }
 
@@ -2960,7 +2960,8 @@ namespace XSharp.Project
             switch (symbol)
             {
                 case AssemblyReferences:
-                case CSharp:
+                //case CSharp:
+                case CPS:
                 case DeclaredSourceItems:
                 case DotNet:
                 case Managed:
@@ -2978,7 +2979,7 @@ namespace XSharp.Project
                 case AspNetCore:
                 case BuildAndroidTarget:
                 case BuildiOSProject:
-                case CPS:
+                //case CPS:
                 case DependenciesTree:
                 case DependencyPackageManagement:
                 case DNX:

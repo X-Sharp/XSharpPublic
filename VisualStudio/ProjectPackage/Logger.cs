@@ -87,12 +87,22 @@ namespace XSharp.Project
                     Log.Information("Current solution: " + sol.FullPath);
 
                     var children = EnumChildren(sol);
-                    foreach (var child in children)
+                    try
                     {
-                        if (child.Type == SolutionItemType.Project)
+                        if (children != null)
                         {
-                            Log.Information("Project " + child.FullPath);
+                            foreach (var child in children)
+                            {
+                                if (child is Community.VisualStudio.Toolkit.Project proj)
+                                {
+                                    Log.Information("Project " + child.FullPath);
+                                }
+                            }
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e.Message);
                     }
                     Log.Information(singleline);
 
@@ -118,14 +128,17 @@ namespace XSharp.Project
             var items = new List<SolutionItem>();
             foreach (var child in item.Children)
             {
-                items.Add(child);
-                try
+                if (child != null && child.Type != SolutionItemType.Unknown)
                 {
-                    items.AddRange(EnumChildren(child));
-                }
-                catch (Exception e)
-                {
-                    Exception(e, "EnumChildren");
+                    items.Add(child);
+                    try
+                    {
+                        items.AddRange(EnumChildren(child));
+                    }
+                    catch (Exception e)
+                    {
+                        Exception(e, "EnumChildren");
+                    }
                 }
             }
             return items;

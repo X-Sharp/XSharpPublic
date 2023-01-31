@@ -44,7 +44,7 @@
             this.rtfDescription = new System.Windows.Forms.RichTextBox();
             this.btnAll = new System.Windows.Forms.Button();
             this.btnNothing = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblChars = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tbChars = new System.Windows.Forms.NumericUpDown();
             this.chkNamespaces = new System.Windows.Forms.CheckBox();
@@ -55,19 +55,17 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(47, 27);
-            this.label1.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+            this.label1.Location = new System.Drawing.Point(20, 12);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 29);
+            this.label1.Size = new System.Drawing.Size(0, 13);
             this.label1.TabIndex = 1;
             // 
             // chkLocals
             // 
             this.chkLocals.AutoSize = true;
-            this.chkLocals.Location = new System.Drawing.Point(44, 370);
-            this.chkLocals.Margin = new System.Windows.Forms.Padding(7);
+            this.chkLocals.Location = new System.Drawing.Point(19, 166);
             this.chkLocals.Name = "chkLocals";
-            this.chkLocals.Size = new System.Drawing.Size(267, 33);
+            this.chkLocals.Size = new System.Drawing.Size(122, 17);
             this.chkLocals.TabIndex = 4;
             this.chkLocals.Text = "&Locals && Parameters";
             this.toolTip1.SetToolTip(this.chkLocals, "Include Locals and Parameters in the completion list");
@@ -76,10 +74,9 @@
             // chkFields
             // 
             this.chkFields.AutoSize = true;
-            this.chkFields.Location = new System.Drawing.Point(44, 417);
-            this.chkFields.Margin = new System.Windows.Forms.Padding(7);
+            this.chkFields.Location = new System.Drawing.Point(19, 187);
             this.chkFields.Name = "chkFields";
-            this.chkFields.Size = new System.Drawing.Size(388, 33);
+            this.chkFields.Size = new System.Drawing.Size(176, 17);
             this.chkFields.TabIndex = 5;
             this.chkFields.Text = "&Fields and methods current type";
             this.toolTip1.SetToolTip(this.chkFields, "Include fields and methods of the current type in the completionlist");
@@ -88,10 +85,9 @@
             // chkInherited
             // 
             this.chkInherited.AutoSize = true;
-            this.chkInherited.Location = new System.Drawing.Point(44, 464);
-            this.chkInherited.Margin = new System.Windows.Forms.Padding(7);
+            this.chkInherited.Location = new System.Drawing.Point(19, 208);
             this.chkInherited.Name = "chkInherited";
-            this.chkInherited.Size = new System.Drawing.Size(357, 33);
+            this.chkInherited.Size = new System.Drawing.Size(161, 17);
             this.chkInherited.TabIndex = 6;
             this.chkInherited.Text = "&Inherited Fields and methods";
             this.toolTip1.SetToolTip(this.chkInherited, "Include fields and methods of parent type(s) in the completionlist");
@@ -100,10 +96,9 @@
             // chkGlobalsProject
             // 
             this.chkGlobalsProject.AutoSize = true;
-            this.chkGlobalsProject.Location = new System.Drawing.Point(455, 317);
-            this.chkGlobalsProject.Margin = new System.Windows.Forms.Padding(7);
+            this.chkGlobalsProject.Location = new System.Drawing.Point(195, 142);
             this.chkGlobalsProject.Name = "chkGlobalsProject";
-            this.chkGlobalsProject.Size = new System.Drawing.Size(423, 33);
+            this.chkGlobalsProject.Size = new System.Drawing.Size(191, 17);
             this.chkGlobalsProject.TabIndex = 11;
             this.chkGlobalsProject.Text = "&Globals && Defines in current project";
             this.toolTip1.SetToolTip(this.chkGlobalsProject, "Include Globals and Defines from the current project in the completion list");
@@ -112,10 +107,9 @@
             // chkFunctions
             // 
             this.chkFunctions.AutoSize = true;
-            this.chkFunctions.Location = new System.Drawing.Point(455, 464);
-            this.chkFunctions.Margin = new System.Windows.Forms.Padding(7);
+            this.chkFunctions.Location = new System.Drawing.Point(195, 208);
             this.chkFunctions.Name = "chkFunctions";
-            this.chkFunctions.Size = new System.Drawing.Size(334, 33);
+            this.chkFunctions.Size = new System.Drawing.Size(154, 17);
             this.chkFunctions.TabIndex = 14;
             this.chkFunctions.Text = "&Functions in current project";
             this.toolTip1.SetToolTip(this.chkFunctions, "Include Functions from the current project in the completion list");
@@ -124,10 +118,9 @@
             // chkFunctionsSource
             // 
             this.chkFunctionsSource.AutoSize = true;
-            this.chkFunctionsSource.Location = new System.Drawing.Point(455, 511);
-            this.chkFunctionsSource.Margin = new System.Windows.Forms.Padding(7);
+            this.chkFunctionsSource.Location = new System.Drawing.Point(195, 229);
             this.chkFunctionsSource.Name = "chkFunctionsSource";
-            this.chkFunctionsSource.Size = new System.Drawing.Size(253, 33);
+            this.chkFunctionsSource.Size = new System.Drawing.Size(118, 17);
             this.chkFunctionsSource.TabIndex = 15;
             this.chkFunctionsSource.Text = "Functions in &source";
             this.toolTip1.SetToolTip(this.chkFunctionsSource, "Include Functions  from referenced X# projects in the completion list");
@@ -136,10 +129,9 @@
             // chkFunctionsExternal
             // 
             this.chkFunctionsExternal.AutoSize = true;
-            this.chkFunctionsExternal.Location = new System.Drawing.Point(455, 558);
-            this.chkFunctionsExternal.Margin = new System.Windows.Forms.Padding(7);
+            this.chkFunctionsExternal.Location = new System.Drawing.Point(195, 250);
             this.chkFunctionsExternal.Name = "chkFunctionsExternal";
-            this.chkFunctionsExternal.Size = new System.Drawing.Size(303, 33);
+            this.chkFunctionsExternal.Size = new System.Drawing.Size(137, 17);
             this.chkFunctionsExternal.TabIndex = 16;
             this.chkFunctionsExternal.Text = "Functions in assemblies";
             this.toolTip1.SetToolTip(this.chkFunctionsExternal, "Include Functions from referenced X# assemblies in the completion list. \r\nThis in" +
@@ -149,10 +141,9 @@
             // chkGlobalsSource
             // 
             this.chkGlobalsSource.AutoSize = true;
-            this.chkGlobalsSource.Location = new System.Drawing.Point(455, 370);
-            this.chkGlobalsSource.Margin = new System.Windows.Forms.Padding(7);
+            this.chkGlobalsSource.Location = new System.Drawing.Point(195, 166);
             this.chkGlobalsSource.Name = "chkGlobalsSource";
-            this.chkGlobalsSource.Size = new System.Drawing.Size(342, 33);
+            this.chkGlobalsSource.Size = new System.Drawing.Size(155, 17);
             this.chkGlobalsSource.TabIndex = 12;
             this.chkGlobalsSource.Text = "G&lobals && Defines in source";
             this.toolTip1.SetToolTip(this.chkGlobalsSource, "Include Globals and Defines from referenced X# projects in the completion list");
@@ -161,10 +152,9 @@
             // chkGlobalsExtern
             // 
             this.chkGlobalsExtern.AutoSize = true;
-            this.chkGlobalsExtern.Location = new System.Drawing.Point(455, 417);
-            this.chkGlobalsExtern.Margin = new System.Windows.Forms.Padding(7);
+            this.chkGlobalsExtern.Location = new System.Drawing.Point(195, 187);
             this.chkGlobalsExtern.Name = "chkGlobalsExtern";
-            this.chkGlobalsExtern.Size = new System.Drawing.Size(392, 33);
+            this.chkGlobalsExtern.Size = new System.Drawing.Size(174, 17);
             this.chkGlobalsExtern.TabIndex = 13;
             this.chkGlobalsExtern.Text = "Gl&obals && Defines in assemblies";
             this.toolTip1.SetToolTip(this.chkGlobalsExtern, "Include Globals and Defines from referenced X# assemblies in the completion list." +
@@ -174,10 +164,9 @@
             // chkKeywords
             // 
             this.chkKeywords.AutoSize = true;
-            this.chkKeywords.Location = new System.Drawing.Point(44, 558);
-            this.chkKeywords.Margin = new System.Windows.Forms.Padding(7);
+            this.chkKeywords.Location = new System.Drawing.Point(19, 250);
             this.chkKeywords.Name = "chkKeywords";
-            this.chkKeywords.Size = new System.Drawing.Size(152, 33);
+            this.chkKeywords.Size = new System.Drawing.Size(72, 17);
             this.chkKeywords.TabIndex = 9;
             this.chkKeywords.Text = "&Keywords";
             this.toolTip1.SetToolTip(this.chkKeywords, "Include keywords in the completionlist");
@@ -186,10 +175,9 @@
             // chkSnippets
             // 
             this.chkSnippets.AutoSize = true;
-            this.chkSnippets.Location = new System.Drawing.Point(252, 555);
-            this.chkSnippets.Margin = new System.Windows.Forms.Padding(7);
+            this.chkSnippets.Location = new System.Drawing.Point(108, 249);
             this.chkSnippets.Name = "chkSnippets";
-            this.chkSnippets.Size = new System.Drawing.Size(140, 33);
+            this.chkSnippets.Size = new System.Drawing.Size(67, 17);
             this.chkSnippets.TabIndex = 10;
             this.chkSnippets.Text = "&Snippets";
             this.toolTip1.SetToolTip(this.chkSnippets, "Include snipprts in the completionlist");
@@ -200,21 +188,19 @@
             this.rtfDescription.BackColor = System.Drawing.SystemColors.Control;
             this.rtfDescription.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.rtfDescription.BulletIndent = 5;
-            this.rtfDescription.Location = new System.Drawing.Point(23, -7);
-            this.rtfDescription.Margin = new System.Windows.Forms.Padding(7);
+            this.rtfDescription.Location = new System.Drawing.Point(10, -3);
             this.rtfDescription.Name = "rtfDescription";
             this.rtfDescription.ReadOnly = true;
-            this.rtfDescription.Size = new System.Drawing.Size(891, 310);
+            this.rtfDescription.Size = new System.Drawing.Size(382, 139);
             this.rtfDescription.TabIndex = 0;
             this.rtfDescription.TabStop = false;
             this.rtfDescription.Text = "";
             // 
             // btnAll
             // 
-            this.btnAll.Location = new System.Drawing.Point(817, 477);
-            this.btnAll.Margin = new System.Windows.Forms.Padding(7);
+            this.btnAll.Location = new System.Drawing.Point(350, 214);
             this.btnAll.Name = "btnAll";
-            this.btnAll.Size = new System.Drawing.Size(103, 51);
+            this.btnAll.Size = new System.Drawing.Size(44, 23);
             this.btnAll.TabIndex = 17;
             this.btnAll.Text = "&All";
             this.btnAll.UseVisualStyleBackColor = true;
@@ -222,37 +208,34 @@
             // 
             // btnNothing
             // 
-            this.btnNothing.Location = new System.Drawing.Point(817, 540);
-            this.btnNothing.Margin = new System.Windows.Forms.Padding(7);
+            this.btnNothing.Location = new System.Drawing.Point(350, 242);
             this.btnNothing.Name = "btnNothing";
-            this.btnNothing.Size = new System.Drawing.Size(103, 51);
+            this.btnNothing.Size = new System.Drawing.Size(44, 23);
             this.btnNothing.TabIndex = 18;
             this.btnNothing.Text = "&None";
             this.btnNothing.UseVisualStyleBackColor = true;
             this.btnNothing.Click += new System.EventHandler(this.btnNothing_Click);
             // 
-            // label2
+            // lblChars
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(40, 332);
-            this.label2.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(179, 29);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Chars required:";
-            this.toolTip1.SetToolTip(this.label2, "Number of characters required to start Generic CompletionList");
+            this.lblChars.AutoSize = true;
+            this.lblChars.Location = new System.Drawing.Point(17, 149);
+            this.lblChars.Name = "lblChars";
+            this.lblChars.Size = new System.Drawing.Size(78, 13);
+            this.lblChars.TabIndex = 2;
+            this.lblChars.Text = "Chars required:";
+            this.toolTip1.SetToolTip(this.lblChars, "Number of characters required to start Generic CompletionList");
             // 
             // tbChars
             // 
-            this.tbChars.Location = new System.Drawing.Point(236, 328);
-            this.tbChars.Margin = new System.Windows.Forms.Padding(7);
+            this.tbChars.Location = new System.Drawing.Point(101, 147);
             this.tbChars.Minimum = new decimal(new int[] {
             3,
             0,
             0,
             0});
             this.tbChars.Name = "tbChars";
-            this.tbChars.Size = new System.Drawing.Size(184, 35);
+            this.tbChars.Size = new System.Drawing.Size(79, 20);
             this.tbChars.TabIndex = 3;
             this.toolTip1.SetToolTip(this.tbChars, "Number of characters required to start Generic CompletionList. This must be a num" +
         "ber > 1");
@@ -265,10 +248,9 @@
             // chkNamespaces
             // 
             this.chkNamespaces.AutoSize = true;
-            this.chkNamespaces.Location = new System.Drawing.Point(44, 511);
-            this.chkNamespaces.Margin = new System.Windows.Forms.Padding(7);
+            this.chkNamespaces.Location = new System.Drawing.Point(19, 229);
             this.chkNamespaces.Name = "chkNamespaces";
-            this.chkNamespaces.Size = new System.Drawing.Size(187, 33);
+            this.chkNamespaces.Size = new System.Drawing.Size(88, 17);
             this.chkNamespaces.TabIndex = 7;
             this.chkNamespaces.Text = "&Namespaces";
             this.toolTip1.SetToolTip(this.chkNamespaces, "Include namespaces from the current project and all referenced projects and assem" +
@@ -278,10 +260,9 @@
             // chkTypes
             // 
             this.chkTypes.AutoSize = true;
-            this.chkTypes.Location = new System.Drawing.Point(252, 511);
-            this.chkTypes.Margin = new System.Windows.Forms.Padding(7);
+            this.chkTypes.Location = new System.Drawing.Point(108, 229);
             this.chkTypes.Name = "chkTypes";
-            this.chkTypes.Size = new System.Drawing.Size(112, 33);
+            this.chkTypes.Size = new System.Drawing.Size(55, 17);
             this.chkTypes.TabIndex = 8;
             this.chkTypes.Text = "&Types";
             this.toolTip1.SetToolTip(this.chkTypes, "Include types from the current assembly and all referenced projects and assemblie" +
@@ -290,13 +271,13 @@
             // 
             // CompletionOptionsControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 29F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.Controls.Add(this.chkTypes);
             this.Controls.Add(this.chkNamespaces);
             this.Controls.Add(this.tbChars);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lblChars);
             this.Controls.Add(this.btnNothing);
             this.Controls.Add(this.btnAll);
             this.Controls.Add(this.rtfDescription);
@@ -312,9 +293,8 @@
             this.Controls.Add(this.chkFields);
             this.Controls.Add(this.chkLocals);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(7);
             this.Name = "CompletionOptionsControl";
-            this.Size = new System.Drawing.Size(940, 680);
+            this.Size = new System.Drawing.Size(403, 305);
             ((System.ComponentModel.ISupportInitialize)(this.tbChars)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -338,7 +318,7 @@
         private System.Windows.Forms.RichTextBox rtfDescription;
         private System.Windows.Forms.Button btnAll;
         private System.Windows.Forms.Button btnNothing;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblChars;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.NumericUpDown tbChars;
         private System.Windows.Forms.CheckBox chkNamespaces;

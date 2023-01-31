@@ -18,22 +18,16 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <InstallationTarget Version="[15.0,17.0)" Id="Microsoft.VisualStudio.Enterprise" />
     </Installation>
     <Assets>
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharp.Designers.pkgdef" TargetPath="|%CurrentProject%|" d:VsixSubPath="ProjectSystem" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" d:ProjectName="%CurrentProject%" d:VsixSubPath="ProjectSystem" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|XSharpLanguageService|"  />
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharp.AppDesigner.pkgdef" />
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharp.LanguageService.pkgdef" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="XSharpLanguageService"  Path="|XSharpLanguageService|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
         <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
         <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-        <Asset Type="Microsoft.VisualStudio.Assembly" AssemblyName="XSharp.Evaluator.dll"/>
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="XSharpDebugger" Path="|XSharpDebugger|" AssemblyName="|XSharpDebugger;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="XSharpAppDesigner" Path="|XSharpAppDesigner|" AssemblyName="|XSharpAppDesigner;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="ProjectBase" Path="|ProjectBase|" AssemblyName="|ProjectBase;AssemblyName|" />
         <Asset Type="DebuggerEngineExtension" d:Source="Project" d:ProjectName="%CurrentProject%" Path="XSharp.Debugger.vsdconfig" />
-        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="System.Collections.Immutable.dll" AssemblyName="System.Collections.Immutable" />
-        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="System.Reflection.Metadata.dll" AssemblyName="System.Reflection.Metadata" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

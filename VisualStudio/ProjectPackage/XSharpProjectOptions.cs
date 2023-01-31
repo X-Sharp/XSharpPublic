@@ -144,7 +144,7 @@ namespace XSharp.Project
                 options.Add("nostddefs-");
             }
 
-            ParseOptions = VSParseOptions.FromVsValues(options);
+            ParseOptions = XSharpParseOptions.FromVsValues(options);
             if (this.ConfigCanonicalName != null && ConfigCanonicalName.ConfigName.ToUpper() == "DEBUG")
             {
                 // dirty trick to set property with private setter

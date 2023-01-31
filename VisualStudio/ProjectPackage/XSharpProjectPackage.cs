@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 
-using XSharp.LanguageService;
+//using XSharp.LanguageService;
 using XSharp.Project.WPF;
 using System.ComponentModel;
 using System.Threading;
@@ -99,16 +99,6 @@ namespace XSharp.Project
      keywordListResourceId: 304,
      supportsAutomation: true)]
 
-    [ProvideLanguageCodeExpansionAttribute(
-         typeof(XSharpLanguageService),
-         XSharpConstants.LanguageName,  // Name of language used as registry key.
-         1,         // Resource ID of localized name of language service.
-         XSharpConstants.LanguageName,  // language key used in snippet templates.
-         @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\SnippetsIndex.xml",  // Path to snippets index
-         SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
-                  @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
-         )]
-
     [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
         null,
         null,
@@ -182,7 +172,6 @@ namespace XSharp.Project
         public XSharpProjectPackage() : base()
         {
             XInstance = this;
-            ModelScannerEvents.Start();
         }
 
 
@@ -277,7 +266,7 @@ namespace XSharp.Project
             var doptions = await Options.DebuggerOptions.GetLiveInstanceAsync();
             XDebuggerSettings.ArrayZero = doptions.ArrayZero;
             XDebuggerSettings.AllowEditing = doptions.AllowEditing;
-            XDebuggerSettings.Dialect = doptions.Dialect;
+            XDebuggerSettings.Dialect = (int) doptions.Dialect;
             XDebuggerSettings.MemVars = doptions.MemVars;
             XDebuggerSettings.UndeclaredMemvars = doptions.UndeclaredMemvars;
             XDebuggerSettings.Vo4 = doptions.Vo4;

@@ -30,7 +30,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "Symbol")];
 		METHOD GreaterSymbolTest() AS VOID
 			VAR sym1 := #TestSymbol1
-			VAR sym2 := #TestSymbol2
+            VAR sym2 := #TestSymbol2
+            SetCollation(#Windows)
 			Assert.Equal(#Windows,SetCollation())
 			LOCAL uCollation AS USUAL
 			uCollation := SetCollation(#Ordinal)

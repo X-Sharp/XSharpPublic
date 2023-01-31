@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UseXSharpKey>true</UseXSharpKey>
+  </PropertyGroup>
+  <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
+  <Import Project="$(MSBuildThisFileDirectory)Antlr.props" />
+  <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XSharp.VSParser</RootNamespace>
+    <AssemblyName>XSharp.VSParser</AssemblyName>
+    <TargetFrameworks>net472</TargetFrameworks>
+    <!--Use the C# compiler created in this solution-->
+    <CSCToolExe>$(GeneratedCompilerPath)csc.exe</CSCToolExe>
+    <NoWarn>;1573;1591;1701;3008;3021;649;1574;NU5105;Nullable;RS0016</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+    <ErrorReport>prompt</ErrorReport>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenericDefines>COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER;NETSTANDARD20</GenericDefines>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Public|AnyCPU' "> 
+    <DefineConstants>$(GenericDefines);TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>$(GenericDefines);NDEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(CoreSource)CommandLine\CommandLineSourceFile.cs" Link="CommandLine\CommandLineSourceFile.cs" />
+    <Compile Include="$(CoreSource)InternalUtilities\NullableAttributes.cs" Link="Core\NullableAttributes.cs" />
+    <Compile Include="$(CoreSource)InternalUtilities\RoslynString.cs" Link="Core\RoslynString.cs" />
+    <Compile Include="$(CoreSource)InternalUtilities\UnicodeCharacterUtilities.cs" Link="Core\UnicodeCharacterUtilities.cs" />
+    <Compile Include="$(CSharpSource)CommandLine\CSharpCommandLineArguments.cs" Link="CommandLine\CSharpCommandLineArguments" />
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Constants.cs">
+      <Link>Properties\Constants.cs</Link>
+    </Compile>
+    <Compile Remove="Antlr4.Runtime\Properties\AssemblyInfo.cs" />
+    <Compile Remove="Assembly.cs" />
+    <Compile Remove="CodeAnalysisResources.Designer.cs" />
+    <Compile Remove="CommandLine\Compilation.cs" />
+    <Compile Remove="CSharpCompilation.cs" />
+    <Compile Remove="ParserTest.cs" />
+    <Compile Remove="Antlr4.Runtime\Misc\Array2DHashSet`1.cs" />
+    <Compile Remove="Antlr4.Runtime\Misc\DoubleKeyMap`3.cs" />
+    <Compile Remove="Antlr4.Runtime\Misc\RuleDependencyProcessor.cs" />
+    <Compile Remove="Antlr4.Runtime\Misc\TestRig.cs" />
+    <Compile Remove="Parser\XSharpLanguageParser.cs" />
+    <Compile Remove="Parser\XSharpParseErrorAnalysis.cs" />
+    <Compile Remove="Parser\XSharpClearSequences.cs" />
+    <Compile Remove="Parser\XSharpSyntaxTree.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+    <Compile Remove="Properties\AssemblyInfoPortable.cs" />
+    <Compile Remove="XSharpResources.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
+    <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.tokens" />
+    <None Include="Parser\*.g4" />
+    <None Include="Generated\*.*" />
+    <Compile Remove="Compilation\**" />
+    <Compile Remove="Parser\XSharpTree*.*" />
+    <Compile Remove="Binder\*.*" />
+    <Compile Remove="Binder\Semantics\*.*" />
+    <Compile Remove="LocalRewriter\*.*" />
+    <Compile Remove="Lowering\*.*" />
+    <Compile Remove="Symbols\*.*" />
+    <Compile Remove="Syntax\*.*" />
+    <EmbeddedResource Remove="Compilation\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="CodeAnalysisResources.resx" />
+    <EmbeddedResource Remove="XSharpResources.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Preprocessor\harbourppdoc.txt" />
+    <Content Include="Preprocessor\preprocessor.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Antlr4.Runtime\Properties\" />
+  </ItemGroup>
+  
+  
+  
+
+  
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll') ">
+    <MakeDir Directories="$(DevPublicDir)external\$(ConfigurationName)" /> 
+    <MakeDir Directories="$(ZipsDir)" /> 
+  </Target>
+  <Target Name="CopyFiles" AfterTargets="Build" >
+    <ItemGroup>
+      <VsparserFiles Include="$(OutputPath)\*.*" /> 
+    </ItemGroup> 
+    <Copy SourceFiles="@(VsparserFiles)" DestinationFolder="$(DevPublicDir)external\$(ConfigurationName)" />
+  </Target>
+  <Target Name="DeleteMsFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != '' ">
+    <ItemGroup>
+      <FilesToDelete Include="$(OutputPath)\Microsoft*.*" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+  <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' AND '$(CreateZips)' != '' ">
+     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
+    </Target>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup> 
+
+</Project> 

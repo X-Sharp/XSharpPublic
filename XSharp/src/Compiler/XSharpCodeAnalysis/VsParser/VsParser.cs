@@ -29,20 +29,14 @@ namespace XSharp.Parser
             }
 
         }
-        public struct LinePositionSpan
-        {
-            public int Line;
-            public int Column;
-            public string FileName;
-        }
 
         private static void ReportErrors(List<ParseErrorData> parseErrors, IErrorListener listener)
         {
             foreach (var error in parseErrors)
             {
 
-                string file = error.Node.SourceFileName;
-                var ls = new LinePositionSpan() { Line = error.Node.MappedLine, Column = error.Node.Position, FileName = file };
+                string file= error.Node.SourceFileName;
+                var ls = new LinePositionSpan() { Line = error.Node.MappedLine, Column = error.Node.Position, FileName = error.Node.SourceFileName };
                 var msg = ErrorFacts.GetMessage(error.Code, CultureInfo.CurrentCulture);
                 if (ErrorFacts.IsWarning(error.Code))
                 {

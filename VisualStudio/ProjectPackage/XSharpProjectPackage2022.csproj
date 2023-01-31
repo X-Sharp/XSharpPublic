@@ -74,6 +74,11 @@
     <Reference Include="Microsoft.Windows.Design.Host">
       <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
     </Reference>
+    <Reference Include="XSharp.CodeAnalysis, Version=2.15.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+      <Aliases>codeanalysis</Aliases>
+    </Reference>
     <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
     <Reference Include="XSharp.Evaluator">
       <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
@@ -155,7 +160,7 @@
     <Compile Include="PackageReferences\PackageReferencesNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Nodes\XSharpProjectNodeProperties.cs" />
-    <Content Include="$(Outdir)\x64\SQLite.Interop.dll">
+    <Content Include="$(OutDir)\x64\SQLite.Interop.dll">
       <Link>x64\SQLite.Interop.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -189,13 +194,20 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
+    <Content Include="$(OutDir)\XSharp.AppDesigner2022.pkgdef">
+      <Link>XSharp.AppDesigner2022.pkgdef</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="$(OutDir)\XSharp.LanguageService2022.pkgdef">
+      <Link>XSharp.LanguageService2022.pkgdef</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="app.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Editors\Todo.txt" />
-    <Content Include="Snippets\SnippetsIndex.xml" />
     <Content Include="source.extension.2019.vsixmanifest" />
     <Content Include="source.extension.2022.vsixmanifest" />
     <Content Include="Template.ico">
@@ -345,10 +357,6 @@
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>Menus.cs</LastGenOutput>
     </VSCTCompile>
-    <Content Include="XSharp.AppDesigner2022.pkgdef">
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="XSharp.Designers.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -423,34 +431,6 @@
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.xsproj" />
-    <None Include="Snippets\Snippets\case.snippet" />
-    <None Include="Snippets\Snippets\class.snippet" />
-    <None Include="Snippets\Snippets\classinherited.snippet" />
-    <None Include="Snippets\Snippets\equals.snippet" />
-    <None Include="Snippets\Snippets\exception.snippet" />
-    <None Include="Snippets\Snippets\fileheader.snippet" />
-    <None Include="Snippets\Snippets\for.snippet" />
-    <None Include="Snippets\Snippets\foreach.snippet" />
-    <None Include="Snippets\Snippets\for_down.snippet" />
-    <None Include="Snippets\Snippets\for_up.snippet" />
-    <None Include="Snippets\Snippets\if.snippet" />
-    <None Include="Snippets\Snippets\ifdef.snippet" />
-    <None Include="Snippets\Snippets\ifndef.snippet" />
-    <None Include="Snippets\Snippets\initproc.snippet" />
-    <None Include="Snippets\Snippets\mbox.snippet" />
-    <None Include="Snippets\Snippets\nunittestclass.snippet" />
-    <None Include="Snippets\Snippets\property.snippet" />
-    <None Include="Snippets\Snippets\region.snippet" />
-    <None Include="Snippets\Snippets\repeat.snippet" />
-    <None Include="Snippets\Snippets\sequence.snippet" />
-    <None Include="Snippets\Snippets\start.snippet" />
-    <None Include="Snippets\Snippets\struct.snippet" />
-    <None Include="Snippets\Snippets\switch.snippet" />
-    <None Include="Snippets\Snippets\tryc.snippet" />
-    <None Include="Snippets\Snippets\trycf.snippet" />
-    <None Include="Snippets\Snippets\tryf.snippet" />
-    <None Include="Snippets\Snippets\vostruct.snippet" />
-    <None Include="Snippets\Snippets\while.snippet" />
   </ItemGroup>
   <ItemGroup>
     <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\Resources.resx" />
@@ -643,8 +623,6 @@
     <ProjectReference Include="..\LanguageService\XSharpLanguageService2022.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7396}</Project>
       <Name>XSharpLanguageService2022</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\ProjectBase\ProjectBase2022.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
@@ -703,7 +681,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.490</Version>
+      <Version>17.0.492</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>

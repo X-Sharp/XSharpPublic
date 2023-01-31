@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
     <WinRTReferenceTabs>TAB_SDK_ALL</WinRTReferenceTabs>
     <XSharpDefaultProps>true</XSharpDefaultProps>
-    <nostddef>false</nostddef>
-    <lb>false</lb>
-    <vo15>false</vo15>
   </PropertyGroup>
   <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
   <PropertyGroup>

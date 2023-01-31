@@ -166,7 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.490</Version>
+      <Version>17.0.492</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">
       <Version>17.4.0</Version>
@@ -239,6 +239,11 @@
     <EmbeddedResource Include="Wix\XPropertyPagePanel.resx">
       <DependentUpon>XPropertyPagePanel.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XSharp.AppDesigner2022.pkgdef">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <!--

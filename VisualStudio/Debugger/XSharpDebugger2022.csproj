@@ -14,7 +14,7 @@
     <OutputType>Library</OutputType>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <RootNamespace>XSharp.Debugger</RootNamespace>
-    <AssemblyName>XSharpDebugger2022</AssemblyName>
+    <AssemblyName>XSharp.Debugger2022</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=v4.8</TargetFrameworkMoniker>
     <RuntimeIdentifier>win</RuntimeIdentifier>
@@ -46,7 +46,7 @@
     <NoWarn>1762;NU1603</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
-    <VsdConfigFile>$(OutputPath)\XSharpDebugger2022.vsdconfig</VsdConfigFile>
+    <VsdConfigFile>$(OutputPath)\XSharp.Debugger2022.vsdconfig</VsdConfigFile>
     <!--Root directory to Concord SDK install; includes the trailing backslash '\'.-->
     <ConcordSDKDir>$(VSSDKRoot)VisualStudioIntegration\</ConcordSDKDir>
   </PropertyGroup>
@@ -89,7 +89,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.480</Version>
+      <Version>17.0.492</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.DiaSymReader">
+      <Version>1.4.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine">
       <Version>17.0.2012801</Version>
@@ -112,6 +115,22 @@
   <ItemGroup>
     <Content Include="readme.txt" />
     <Content Include="XSharp.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="XSharp.CodeAnalysis, Version=2.15.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Evaluator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>XSharpModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <!--

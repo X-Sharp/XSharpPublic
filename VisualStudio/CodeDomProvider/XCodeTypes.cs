@@ -158,6 +158,14 @@ namespace XSharp.CodeDom
         }
     }
     [DebuggerDisplay("{Name,nq}")]
+    public class XCodeTypeConstructor : CodeTypeConstructor, IXCodeObject
+    {
+        public XCodeTypeConstructor() : base()
+        {
+
+        }
+    }
+    [DebuggerDisplay("{Name,nq}")]
     public class XCodeConstructor : CodeConstructor, IXCodeObject
     {
         public XCodeConstructor() : base()

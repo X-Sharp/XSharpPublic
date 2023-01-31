@@ -8,7 +8,7 @@
     <ProjectGuid>{F9C94F84-D196-4BE7-AD67-0C9DBFC912B5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharpCodeDomProvider</RootNamespace>
-    <AssemblyName>XSharpCodeDomProvider2022</AssemblyName>
+    <AssemblyName>XSharp.CodeDomProvider2022</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <RuntimeIdentifier>win</RuntimeIdentifier>
     <FileAlignment>512</FileAlignment>
@@ -58,6 +58,7 @@
     </Compile>
     <Compile Include="XSharpCodeGenerator.cs" />
     <Compile Include="XSharpCodeParser.cs" />
+    <Compile Include="XSharpKeywords.cs" />
     <Compile Include="XSharpTreeDiscoverBase.cs" />
     <Compile Include="XSharpTreeDiscoverClass.cs" />
     <Compile Include="XSharpTreeDiscoverFields.cs" />
@@ -65,7 +66,7 @@
   <ItemGroup />
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.480</Version>
+      <Version>17.0.492</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>

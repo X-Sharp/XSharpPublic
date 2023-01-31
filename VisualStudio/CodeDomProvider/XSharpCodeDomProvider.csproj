@@ -3,31 +3,24 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="..\Common2019.props" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ProjectGuid>{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharpCodeDomProvider</RootNamespace>
-    <AssemblyName>XSharpCodeDomProvider</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
+    <AssemblyName>XSharp.CodeDomProvider</AssemblyName>
     <RuntimeIdentifier>win</RuntimeIdentifier>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG</DefineConstants>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
     <NoWarn>1762;NU1603</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>NDEBUG</DefineConstants>
     <NoWarn>1762;NU1603</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -66,14 +59,14 @@
     </Compile>
     <Compile Include="XSharpCodeGenerator.cs" />
     <Compile Include="XSharpCodeParser.cs" />
+    <Compile Include="XSharpKeywords.cs" />
     <Compile Include="XSharpTreeDiscoverBase.cs" />
     <Compile Include="XSharpTreeDiscoverClass.cs" />
     <Compile Include="XSharpTreeDiscoverFields.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.480</Version>
+      <Version>15.0.492</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

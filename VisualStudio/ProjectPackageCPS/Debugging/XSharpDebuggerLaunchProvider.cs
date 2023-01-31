@@ -18,8 +18,7 @@ namespace XSharp.ProjectSystem
     [AppliesTo(XSharpConstants.LanguageName)]
     public class XSharpDebuggerLaunchProvider : DebugLaunchProviderBase
     {
-        // 
-        [ExportPropertyXamlRuleDefinition("XSharpProjectCPS, Version=" + Constants.Version + ", Culture=neutral, PublicKeyToken=9be6e469bc4921f1", "XamlRuleToCode:PropertyPage_Debugger.xaml", "Project")]
+        [ExportPropertyXamlRuleDefinition("XSharpProjectCPS, Version=" + Constants.Version + ", Culture=neutral, PublicKeyToken="+ Constants.PublicKey,"XamlRuleToCode:PropertyPage_Debugger.xaml", "Project")]
         [AppliesTo(XSharpConstants.LanguageName)]
         private object DebuggerXaml { get { throw new NotImplementedException(); } }
 

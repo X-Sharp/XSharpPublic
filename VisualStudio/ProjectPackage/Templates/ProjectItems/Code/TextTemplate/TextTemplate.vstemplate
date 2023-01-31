@@ -3,7 +3,7 @@
     <TemplateData>
         <Name>Text Template</Name>
         <Description>A template for the T4 text template transformation system</Description>
-        <Icon></Icon>
+        <Icon>TextTemplate.png</Icon>
         <TemplateID>XSharp.T4</TemplateID>
         <ProjectType>XSharp</ProjectType>
         <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

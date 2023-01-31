@@ -52,7 +52,7 @@ namespace XSharp.LanguageService
                 textlines.GetLanguageServiceID(out var langId);
                 // Note that this may get called after the classifier has been instantiated
 
-                if (langId == GuidStrings.guidLanguageService)          // is our language service active ?
+                if (langId == XSharpConstants.guidLanguageService)          // is our language service active ?
                 {
 
                     // Get XFile and assign it to the TextBuffer

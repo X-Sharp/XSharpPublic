@@ -30,19 +30,19 @@ namespace XSharp.LanguageService
             _settingIgnoreCase = ignoreCase;
         }
 
-        internal void AddTypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith,
+        internal void AddTypeNamesLike(XCompletionList compList, XSharpSearchLocation location, string startWith,
             bool onlyInterfaces = false, bool afterDot = false)
         {
 
             if (startWith == null)
                 return;
             // PE Types
-            AddPETypeNames(compList, location, startWith, onlyInterfaces, afterDot);
+            AddPETypeNamesLike(compList, location, startWith, onlyInterfaces, afterDot);
             // Find Source Types
-            AddSourceTypeNames(compList, location, startWith, onlyInterfaces, afterDot);
+            AddSourceTypeNamesLike(compList, location, startWith, onlyInterfaces, afterDot);
 
             // And our own Types
-            AddXSharpTypeNames(compList, location, startWith);
+            AddXSharpTypeNamesLike(compList, location, startWith);
 
         }
 
@@ -70,15 +70,15 @@ namespace XSharp.LanguageService
             return false;
         }
 
-        internal void AddPETypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith,
+        internal void AddPETypeNamesLike(XCompletionList compList, XSharpSearchLocation location, string startWith,
             bool onlyInterfaces = false, bool afterDot = false)
         {
 
             IList<XPETypeSymbol> types;
             if (afterDot)
-                types = location.Project.GetAssemblyTypesInNamespace(startWith, location.Usings.ToArray());
+                types = location.Project.GetAssemblyTypesInNamespaceLike(startWith, location.Usings.ToArray());
             else
-                types = location.Project.GetAssemblyTypes(startWith, location.Usings.ToArray());
+                types = location.Project.GetAssemblyTypesLike(startWith, location.Usings.ToArray());
 
 
             foreach (var type in types)
@@ -98,14 +98,14 @@ namespace XSharp.LanguageService
                     break;
             }
         }
-        internal void AddSourceTypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith,
+        internal void AddSourceTypeNamesLike(XCompletionList compList, XSharpSearchLocation location, string startWith,
             bool onlyInterfaces = false, bool afterDot = false)
         {
             IList<XSourceTypeSymbol> types;
             if (afterDot)
                 types = location.Project.GetProjectTypesInNamespace(startWith, location.Usings.ToArray());
             else
-                types = location.Project.GetTypes(startWith, location.Usings.ToArray());
+                types = location.Project.GetTypesLike(startWith, location.Usings.ToArray());
 
             foreach (var type in types)
             {
@@ -177,7 +177,7 @@ namespace XSharp.LanguageService
             return false;
         }
 
-        internal void AddXSharpKeywords(XCompletionList compList, string startWith)
+        internal void AddXSharpKeywordsLike(XCompletionList compList, string startWith)
         {
             foreach (var kw in XSharpSyntax.GetKeywords().Where(ti => nameStartsWith(ti.Name, startWith)))
             {
@@ -186,11 +186,11 @@ namespace XSharp.LanguageService
             }
         }
 
-        internal void AddXSharpTypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith, IList<string> usings = null, string NameToExclude = "")
+        internal void AddXSharpTypeNamesLike(XCompletionList compList, XSharpSearchLocation location, string startWith, IList<string> usings = null, string NameToExclude = "")
         {
             if (usings == null)
                 usings = location.Usings;
-            var list = location.Project.GetTypes(startWith, usings);
+            var list = location.Project.GetTypesLike(startWith, usings);
             foreach (var typeInfo in list)
             {
                  if (String.Compare(typeInfo.FullName, NameToExclude) == 0)
@@ -203,7 +203,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        internal void AddXSharpKeywordTypeNames(XCompletionList compList, string startWith)
+        internal void AddXSharpKeywordTypeNamesLike(XCompletionList compList, string startWith)
         {
             //
             int startLen = 0;
@@ -234,47 +234,47 @@ namespace XSharp.LanguageService
         {
             if (XEditorSettings.CompleteLocals && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
-                AddGenericLocals(compList, location, startWith);
+                AddGenericLocalsLike(compList, location, startWith);
             }
             if (XEditorSettings.CompleteSelf && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
-                AddGenericSelfMembers(compList, location, startWith);
+                AddGenericSelfMembersLike(compList, location, startWith);
             }
             if (XEditorSettings.CompleteParent && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
-                AddGenericInheritedMembers(compList, location, startWith);
+                AddGenericInheritedMembersLike(compList, location, startWith);
             }
             if (XEditorSettings.CompleteNamespaces && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
-                AddNamespaces(compList, location, startWith);
+                AddNamespacesLike(compList, location, startWith);
             }
             if (XEditorSettings.CompleteTypes && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
-                AddTypeNames(compList, location, startWith);
+                AddTypeNamesLike(compList, location, startWith);
             }
             if (XEditorSettings.CompleteFunctions && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
-                AddGenericFunctions(compList, location, startWith, true);
+                AddGenericFunctionsLike(compList, location, startWith, true);
             }
             if (XEditorSettings.CompleteFunctionsP && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
-                AddGenericFunctions(compList, location, startWith, false);
+                AddGenericFunctionsLike(compList, location, startWith, false);
             }
             if (XEditorSettings.CompleteFunctionsA && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
-                AddGenericFunctionsAssemblies(compList, location, startWith, false);
+                AddGenericFunctionsAssembliesLike(compList, location, startWith);
             }
             if (XEditorSettings.CompleteGlobals && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
-                AddGenericGlobals(compList, location, startWith, true);
+                AddGenericGlobalsLike(compList, location, startWith, true);
             }
             if (XEditorSettings.CompleteGlobalsP && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
-                AddGenericGlobals(compList, location, startWith, false);
+                AddGenericGlobalsLike(compList, location, startWith, false);
             }
             if (XEditorSettings.CompleteGlobalsA && compList.Count < XEditorSettings.MaxCompletionEntries)
             {
-                AddGenericGlobalsAssemblies(compList, location, startWith, false);
+                AddGenericGlobalsAssembliesLike(compList, location, startWith);
 
             }
             if (XEditorSettings.CompleteSnippets)
@@ -283,34 +283,34 @@ namespace XSharp.LanguageService
             }
             if (XEditorSettings.CompleteKeywords)
             {
-                AddXSharpKeywords(compList, startWith);
+                AddXSharpKeywordsLike(compList, startWith);
             }
         }
 
-        internal void AddGenericGlobals(XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
+        internal void AddGenericGlobalsLike(XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
         {
             var found = location.Project.FindGlobalMembersLike(startWith, onlyProject);
             FillMembers(location, compList, null, found, Modifiers.Public, false);
         }
-        internal void AddGenericGlobalsAssemblies(XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
+        internal void AddGenericGlobalsAssembliesLike(XCompletionList compList, XSharpSearchLocation location, string startWith)
         {
-            var found = location.Project.FindGlobalsInAssemblyReferences(startWith);
+            var found = location.Project.FindGlobalsInAssemblyReferences(startWith, true);
             FillMembers(location, compList, null, found, Modifiers.Public, false);
         }
 
-        internal void AddGenericFunctions(XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
+        internal void AddGenericFunctionsLike(XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
         {
             var found = location.Project.FindFunctionsLike(startWith, onlyProject);
             FillMembers(location, compList, null, found, Modifiers.Public, false);
 
         }
-        internal void AddGenericFunctionsAssemblies (XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
+        internal void AddGenericFunctionsAssembliesLike(XCompletionList compList, XSharpSearchLocation location, string startWith)
         {
-            var found = location.Project.FindFunctionsInAssemblyReferences(startWith);
+            var found = location.Project.FindFunctionsInAssemblyReferences(startWith, true);
             FillMembers(location, compList, null, found, Modifiers.Public, false);
         }
 
-        internal void AddNamespaces(XCompletionList compList, XSharpSearchLocation location, string startWith)
+        internal void AddNamespacesLike(XCompletionList compList, XSharpSearchLocation location, string startWith)
         {
             // We are looking for NameSpaces, in References
             if (startWith == null)
@@ -352,16 +352,16 @@ namespace XSharp.LanguageService
             }
             //
             // And our own Namespaces
-            AddXSharpNamespaces(compList, location, startWith, icon);
+            AddXSharpNamespacesLike(compList, location, startWith, icon);
             // We should also add the external NameSpaces
             var prjs = location.Project.ReferencedProjects;
             foreach (var prj in prjs)
             {
-                AddXSharpNamespaces(compList, location, startWith, icon);
+                AddXSharpNamespacesLike(compList, location, startWith, icon);
             }
         }
 
-        internal void AddXSharpNamespaces(XCompletionList compList, XSharpSearchLocation location, string startWith, ImageSource icon)
+        internal void AddXSharpNamespacesLike(XCompletionList compList, XSharpSearchLocation location, string startWith, ImageSource icon)
         {
             // Calculate the length we must remove
             int startLen = 0;
@@ -385,7 +385,7 @@ namespace XSharp.LanguageService
                     break;
             }
         }
-        internal void AddGenericLocals(XCompletionList compList, XSharpSearchLocation location, string startWith)
+        internal void AddGenericLocalsLike(XCompletionList compList, XSharpSearchLocation location, string startWith)
         {
             if (location.Member == null)
             {
@@ -410,7 +410,7 @@ namespace XSharp.LanguageService
             }
         }
 
-        internal void AddGenericSelfMembers(XCompletionList compList, XSharpSearchLocation location, string startWith )
+        internal void AddGenericSelfMembersLike(XCompletionList compList, XSharpSearchLocation location, string startWith )
         {
             if (location.Member == null)
             {
@@ -435,7 +435,7 @@ namespace XSharp.LanguageService
         }
 
 
-        internal void AddGenericInheritedMembers(XCompletionList compList, XSharpSearchLocation location, string startWith)
+        internal void AddGenericInheritedMembersLike(XCompletionList compList, XSharpSearchLocation location, string startWith)
         {
             if (location.Member == null)
             {
@@ -509,13 +509,13 @@ namespace XSharp.LanguageService
             if (type is XPETypeSymbol && type.Children.Count > 0)
             {
                 // Add nested types. They start with the typename +"."
-                AddTypeNames(compList, location, type.FullName+".", false);
+                AddTypeNamesLike(compList, location, type.FullName+".", false);
             }
             if (type is XSourceTypeSymbol)
             {
                 var usings = location.Usings.ToList();
                 usings.Add(type.FullName);
-                AddXSharpTypeNames(compList, location, type.FullName, usings, type.FullName);
+                AddXSharpTypeNamesLike(compList, location, type.FullName, usings, type.FullName);
             }
             if (!staticOnly)
             {

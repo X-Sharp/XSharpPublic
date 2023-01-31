@@ -3,7 +3,7 @@
   <TemplateData>
      <Name>VODBServer</Name>
      <Description>An empty DBServer</Description>
-     <Icon Package="{E299FB7B-D273-4678-9ACF-B37B4AF04A12}" ID="401" />
+      <Icon>VODBServer.PNG</Icon>
      <TemplateID>XSharp.VODBServer</TemplateID>
      <ProjectType>XSharp</ProjectType>
      <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

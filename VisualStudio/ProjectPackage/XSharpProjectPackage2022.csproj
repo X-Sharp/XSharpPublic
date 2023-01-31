@@ -9,13 +9,14 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Ngen>true</Ngen>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <RootNamespace>XSharp.Project</RootNamespace>
-    <AssemblyName>XSharpProject2022</AssemblyName>
+    <AssemblyName>XSharp.Project2022</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=v4.8</TargetFrameworkMoniker>
     <RuntimeIdentifier>win</RuntimeIdentifier>
@@ -32,11 +33,11 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <VsixType>v3</VsixType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
@@ -73,7 +74,15 @@
     <Reference Include="Microsoft.Windows.Design.Host">
       <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
     </Reference>
+    <Reference Include="XSharp.CodeAnalysis, Version=2.15.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+      <Aliases>codeanalysis</Aliases>
+    </Reference>
     <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
+    <Reference Include="XSharp.Evaluator">
+      <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
@@ -114,6 +123,7 @@
     <Compile Include="Commands\CommandXPorter.cs" />
     <Compile Include="Commands\CommandVoXPorter.cs" />
     <Compile Include="Commands\XSharpBaseCommand.cs" />
+    <Compile Include="ExternalAssemblies.cs" />
     <Compile Include="List\ErrorList\ErrorListItem.cs" />
     <Compile Include="List\ErrorList\ErrorListManager.cs" />
     <Compile Include="List\ErrorList\ErrorListProvider.cs" />
@@ -137,6 +147,7 @@
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OptionsPages\DebuggerOptions.cs" />
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
@@ -149,14 +160,21 @@
     <Compile Include="PackageReferences\PackageReferencesNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Nodes\XSharpProjectNodeProperties.cs" />
-    <Content Include="$(Outdir)\x64\SQLite.Interop.dll">
+    <Content Include="$(OutDir)\x64\SQLite.Interop.dll">
       <Link>x64\SQLite.Interop.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="XSharpDesigners.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Code\Structure\Structure.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\Structure\Structure.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\Structure\Structure.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.png" />
+    <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODbServer.png" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.png" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VoMenu.png" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.png" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavoded.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavofed.tpl" />
@@ -172,19 +190,24 @@
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\cavowed.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.EmptyShellMenu.xsmnu" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.StandardShellMenu.xsmnu" />
-    <ZipProject Include="Templates\Projects\Test\TestNUnit\packages.config" />
-    <ZipProject Include="Templates\Projects\Test\TestXUnit\packages.config" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
+    <Content Include="$(OutDir)\XSharp.AppDesigner2022.pkgdef">
+      <Link>XSharp.AppDesigner2022.pkgdef</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="$(OutDir)\XSharp.LanguageService2022.pkgdef">
+      <Link>XSharp.LanguageService2022.pkgdef</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="app.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Editors\Todo.txt" />
-    <Content Include="Snippets\SnippetsIndex.xml" />
     <Content Include="source.extension.2019.vsixmanifest" />
     <Content Include="source.extension.2022.vsixmanifest" />
     <Content Include="Template.ico">
@@ -329,14 +352,14 @@
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <VSCTCompile Include="XSharpProjectPackage.vsct">
+    <VSCTCompile Include="Menus.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <Generator>VsctGenerator</Generator>
-      <LastGenOutput>XSharpProjectPackage1.cs</LastGenOutput>
+      <LastGenOutput>Menus.cs</LastGenOutput>
     </VSCTCompile>
-    <Content Include="XSharpAppDesigner2022.pkgdef">
-      <IncludeInVSIX>true</IncludeInVSIX>
+    <Content Include="XSharp.Designers.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -351,16 +374,21 @@
       <DependentUpon>RepositoryWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Resources.cs" />
+    <Compile Include="source.extension.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>source.extension.vsixmanifest</DependentUpon>
+    </Compile>
     <Compile Include="XSharpShellLink.cs" />
     <Compile Include="XSharpDocumentWatcher.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
-    <Compile Include="XSharpProjectPackage1.cs">
+    <Compile Include="Menus.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>XSharpProjectPackage.vsct</DependentUpon>
+      <DependentUpon>Menus.vsct</DependentUpon>
     </Compile>
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
@@ -403,34 +431,6 @@
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.xsproj" />
-    <None Include="Snippets\Snippets\case.snippet" />
-    <None Include="Snippets\Snippets\class.snippet" />
-    <None Include="Snippets\Snippets\classinherited.snippet" />
-    <None Include="Snippets\Snippets\equals.snippet" />
-    <None Include="Snippets\Snippets\exception.snippet" />
-    <None Include="Snippets\Snippets\fileheader.snippet" />
-    <None Include="Snippets\Snippets\for.snippet" />
-    <None Include="Snippets\Snippets\foreach.snippet" />
-    <None Include="Snippets\Snippets\for_down.snippet" />
-    <None Include="Snippets\Snippets\for_up.snippet" />
-    <None Include="Snippets\Snippets\if.snippet" />
-    <None Include="Snippets\Snippets\ifdef.snippet" />
-    <None Include="Snippets\Snippets\ifndef.snippet" />
-    <None Include="Snippets\Snippets\initproc.snippet" />
-    <None Include="Snippets\Snippets\mbox.snippet" />
-    <None Include="Snippets\Snippets\nunittestclass.snippet" />
-    <None Include="Snippets\Snippets\property.snippet" />
-    <None Include="Snippets\Snippets\region.snippet" />
-    <None Include="Snippets\Snippets\repeat.snippet" />
-    <None Include="Snippets\Snippets\sequence.snippet" />
-    <None Include="Snippets\Snippets\start.snippet" />
-    <None Include="Snippets\Snippets\struct.snippet" />
-    <None Include="Snippets\Snippets\switch.snippet" />
-    <None Include="Snippets\Snippets\tryc.snippet" />
-    <None Include="Snippets\Snippets\trycf.snippet" />
-    <None Include="Snippets\Snippets\tryf.snippet" />
-    <None Include="Snippets\Snippets\vostruct.snippet" />
-    <None Include="Snippets\Snippets\while.snippet" />
   </ItemGroup>
   <ItemGroup>
     <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\Resources.resx" />
@@ -566,7 +566,10 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
-    <None Include="source.extension.vsixmanifest" />
+    <None Include="source.extension.vsixmanifest">
+      <Generator>VsixManifestGenerator</Generator>
+      <LastGenOutput>source.extension.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <GetVsixSourceItemsDependsOn>$(GetVsixSourceItemsDependsOn);GetVsixTemplateItems</GetVsixSourceItemsDependsOn>
@@ -609,6 +612,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppDesigner\XSharpAppDesigner2022.csproj">
+      <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe1}</Project>
+      <Name>XSharpAppDesigner2022</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CodeGenerator\XSharpCodeGenerator.xsproj">
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
       <Name>XSharpCodeGenerator</Name>
@@ -616,24 +623,10 @@
     <ProjectReference Include="..\LanguageService\XSharpLanguageService2022.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7396}</Project>
       <Name>XSharpLanguageService2022</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
-    </ProjectReference>
-    <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
-      <Project>{c9e9f119-d5a7-493b-88c9-4b5dd5ad653f}</Project>
-      <Name>XSharpMonoCecil</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bBuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\ProjectBase\ProjectBase2022.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
       <Name>ProjectBase2022</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
-    </ProjectReference>
-    <ProjectReference Include="..\AppDesigner\XSharpAppDesigner2022.csproj">
-      <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe1}</Project>
-      <Name>XSharpAppDesigner2022</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
@@ -688,12 +681,18 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.480</Version>
+      <Version>17.0.492</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.DiaSymReader">
+      <Version>1.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="Mono.Cecil">
+      <Version>0.11.4</Version>
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.Debug">
       <Version>2.0.0</Version>
@@ -703,7 +702,7 @@
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
       <IncludeAssets>All</IncludeAssets>
-      <Version>1.0.116</Version>
+      <Version>1.0.117</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
@@ -732,12 +731,13 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup>
-    <PreBuildEvent>copy $(ProjectDir)source.extension.2022.vsixmanifest  $(ProjectDir)source.extension.vsixmanifest
-	</PreBuildEvent>
+    <PreBuildEvent>
+      copy $(ProjectDir)source.extension.2022.vsixmanifest  $(ProjectDir)source.extension.vsixmanifest
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
+  -->
   <Target Name="AfterBuild">
   </Target>
-  -->
 </Project>

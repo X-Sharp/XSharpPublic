@@ -208,12 +208,12 @@ INTERNAL DEFINE DTS_RIGHTALIGN      := 0x0020 // right-align popup instead of le
 INTERNAL DEFINE ES_SAVESEL						:= 0x00008000
 INTERNAL DEFINE ES_SUNKEN			:= 0x00004000
 INTERNAL DEFINE ES_DISABLENOSCROLL		:= 0x00002000
-// Same as WS_MAXIMIZE, but that doesn't make sense so we re-use the value 
+    // Same as WS_MAXIMIZE, but that doesn't make sense so we re-use the value
 INTERNAL DEFINE ES_SELECTIONBAR			:= 0x01000000
-// Same as ES_UPPERCASE, but re-used to completely disable OLE drag'n'drop 
+    // Same as ES_UPPERCASE, but re-used to completely disable OLE drag'n'drop
 INTERNAL DEFINE ES_NOOLEDRAGDROP			:= 0x00000008
 INTERNAL DEFINE ES_EX_NOCALLOLEINIT		:= 0x01000000
-// These flags are used in FE Windows 
+    // These flags are used in FE Windows
 INTERNAL DEFINE ES_VERTICAL			:= 0x00400000
 INTERNAL DEFINE ES_NOIME			:= 0x00080000
 INTERNAL DEFINE ES_SELFIME			:= 0x00040000
@@ -365,5 +365,6 @@ INTERNAL DEFINE WM_NCXBUTTONUP                  := 0x00AC
 INTERNAL DEFINE WM_NCXBUTTONDBLCLK              := 0x00AD
 INTERNAL DEFINE WM_USER                         := 0x0400
 INTERNAL DEFINE WM_LBUTTONDOWN                  := 0x0201
+
 
 

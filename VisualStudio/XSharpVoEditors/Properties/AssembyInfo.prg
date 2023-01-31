@@ -13,5 +13,4 @@
 [assembly: AssemblyTitleAttribute( "XSharpVoEditors" )]
 [assembly: AssemblyDescriptionAttribute( "XSharpVoEditors" )]
 
-#include "constants.prg"
-#include "commonassemblyinfo.prg"
+

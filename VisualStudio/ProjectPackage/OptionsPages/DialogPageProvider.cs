@@ -11,5 +11,8 @@ namespace XSharp.Project.Options
         public class WindowEditor : BaseOptionPage<WindowEditorOptions> { }
         [ComVisible(true)]
         public class OtherEditor : BaseOptionPage<OtherEditorOptions> { }
+
+        [ComVisible(true)]
+        public class Debugger : BaseOptionPage<DebuggerOptions> { }
     }
 }

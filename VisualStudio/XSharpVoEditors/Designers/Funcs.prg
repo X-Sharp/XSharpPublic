@@ -17,49 +17,49 @@ INTERNAL _DLL FUNCTION GetTextExtentPoint32 ( hDC AS IntPtr , lpString AS STRING
 INTERNAL _DLL FUNC GetTextMetrics(hDC AS IntPtr, lpMetries REF _winTEXTMETRIC) AS LOGIC PASCAL:GDI32.GetTextMetricsA
 [StructLayout(LayoutKind.Sequential)];
 INTERNAL STRUCT _winTEXTMETRIC
-   EXPORT tmHeight AS LONG
-   EXPORT tmAscent AS LONG
-   EXPORT tmDescent AS LONG
-   EXPORT tmInternalLeading AS LONG
-   EXPORT tmExternalLeading AS LONG
-   EXPORT tmAveCharWidth AS LONG
-   EXPORT tmMaxCharWidth AS  LONG
-   EXPORT tmWeight AS LONG
-   EXPORT tmOverhang AS LONG
-   EXPORT tmDigitizedAspectX AS LONG
-   EXPORT tmDigitizedAspectY AS LONG
-   EXPORT tmFirstChar AS BYTE
-   EXPORT tmLastChar AS BYTE
-   EXPORT tmDefaultChar AS BYTE
-   EXPORT tmBreakChar AS BYTE
-   EXPORT tmItalic AS BYTE
-   EXPORT tmUnderlined AS BYTE
-   EXPORT tmStruckOut AS BYTE
-   EXPORT tmPitchAndFamily AS BYTE
-   EXPORT tmCharSet AS BYTE
+    EXPORT tmHeight AS LONG
+    EXPORT tmAscent AS LONG
+    EXPORT tmDescent AS LONG
+    EXPORT tmInternalLeading AS LONG
+    EXPORT tmExternalLeading AS LONG
+    EXPORT tmAveCharWidth AS LONG
+    EXPORT tmMaxCharWidth AS  LONG
+    EXPORT tmWeight AS LONG
+    EXPORT tmOverhang AS LONG
+    EXPORT tmDigitizedAspectX AS LONG
+    EXPORT tmDigitizedAspectY AS LONG
+    EXPORT tmFirstChar AS BYTE
+    EXPORT tmLastChar AS BYTE
+    EXPORT tmDefaultChar AS BYTE
+    EXPORT tmBreakChar AS BYTE
+    EXPORT tmItalic AS BYTE
+    EXPORT tmUnderlined AS BYTE
+    EXPORT tmStruckOut AS BYTE
+    EXPORT tmPitchAndFamily AS BYTE
+    EXPORT tmCharSet AS BYTE
 END STRUCTURE
 [StructLayout(LayoutKind.Sequential)];
 INTERNAL STRUCT _winSIZE
-   EXPORT cx AS Int32
-   EXPORT cy AS Int32
+    EXPORT cx AS Int32
+    EXPORT cy AS Int32
 END STRUCTURE
 
 INTERNAL STRUCTURE UnitTranslateInfo
-   EXPORT tmWidth AS INT
-   EXPORT tmHeight AS INT
-   EXPORT nBaseUnitX AS INT
-   EXPORT nBaseUnitY AS INT
+    EXPORT tmWidth AS INT
+    EXPORT tmHeight AS INT
+    EXPORT nBaseUnitX AS INT
+    EXPORT nBaseUnitY AS INT
 END STRUCTURE
 
 PUBLIC STATIC PARTIAL CLASS Funcs
-   STATIC PRIVATE cInstallTemplatesFolder AS STRING
-   STATIC ACCESS InstallTemplatesFolder AS STRING
-      IF cInstallTemplatesFolder == NULL
-         cInstallTemplatesFolder := ""
-      END IF
-   RETURN cInstallTemplatesFolder
+    STATIC PRIVATE cInstallTemplatesFolder AS STRING
+    STATIC ACCESS InstallTemplatesFolder AS STRING
+        IF cInstallTemplatesFolder == NULL
+            cInstallTemplatesFolder := ""
+        END IF
+        RETURN cInstallTemplatesFolder
 
-   STATIC CONSTRUCTOR
+    STATIC CONSTRUCTOR
         var node := Constants.RegistryKey
         if IntPtr.Size == 8
             node := Constants.RegistryKey64
@@ -68,270 +68,283 @@ PUBLIC STATIC PARTIAL CLASS Funcs
         var InstallPath := (string)Microsoft.Win32.Registry.GetValue(node, "XSharpPath", "")
         cInstallTemplatesFolder := InstallPath+"\Templates"
 
-   INTERNAL STATIC METHOD SetCreateParams(p AS CreateParams , oDesign AS DesignWindowItem) AS VOID
-      LOCAL nStyle , nExStyle AS INT
+    INTERNAL STATIC METHOD SetCreateParams(p AS CreateParams , oDesign AS DesignWindowItem) AS VOID
+        LOCAL nStyle , nExStyle AS INT
 
-      IF oDesign == NULL
-         RETURN
-      ENDIF
+        IF oDesign == NULL
+            RETURN
+        ENDIF
 
-      nStyle := p:Style
-      nExStyle := p:ExStyle
+        nStyle := p:Style
+        nExStyle := p:ExStyle
 
-      nExStyle := Funcs.ApplyVOStyle(oDesign , "Static Edge" , nExStyle)
-      nExStyle := Funcs.ApplyVOStyle(oDesign , "Client Edge" , nExStyle)
-      nExStyle := Funcs.ApplyVOStyle(oDesign , "Modal Frame" , nExStyle)
+        nExStyle := Funcs.ApplyVOStyle(oDesign , "Static Edge" , nExStyle)
+        nExStyle := Funcs.ApplyVOStyle(oDesign , "Client Edge" , nExStyle)
+        nExStyle := Funcs.ApplyVOStyle(oDesign , "Modal Frame" , nExStyle)
 
-      nStyle := Funcs.ApplyVOStyle(oDesign , "Border" , nStyle)
+        nStyle := Funcs.ApplyVOStyle(oDesign , "Border" , nStyle)
 
-      p:Style := _OR(p:Style , nStyle)
-      p:ExStyle := _OR(p:ExStyle , nExStyle)
-   RETURN
+        p:Style := _OR(p:Style , nStyle)
+        p:ExStyle := _OR(p:ExStyle , nExStyle)
+        RETURN
 
-   INTERNAL STATIC METHOD ApplyVOStyle(oDesign AS DesignWindowItem , cProp AS STRING , nStyle AS INT) AS INT
-      LOCAL oProp AS VODesignProperty
-      oProp := oDesign:GetProperty(cProp)
-      IF oProp != NULL
-         IF oProp:ValueLogic
-//				nStyle := _Or(nStyle , VODefines.GetValue(oProp:cEnumValues))
-            nStyle := _OR(nStyle , (INT)VODefines.GetDefineValue(oProp:aEnumValues[0]))
-/*			ELSE
-            nStyle := _AND(nStyle , 0xFFFFFFF - VODefines.GetValue(oProp:aEnumValues[0]))*/
-         ENDIF
-      ENDIF
-   RETURN nStyle
-
-   INTERNAL STATIC METHOD SplitString(cString AS STRING , cChar AS CHAR) AS List<STRING>
-   LOCAL aList AS List<STRING>
-   aList := List<STRING>{}
-   RETURN Funcs.SplitString(aList , cString , cChar)
-   INTERNAL STATIC METHOD SplitString(aList AS List<STRING> , cString AS STRING , cChar AS CHAR) AS List<STRING>
-   LOCAL nAt AS INT
-   DO WHILE cString:Length != 0
-      nAt := cString:IndexOf(cChar)
-      IF nAt == -1
-         aList:Add(cString)
-         cString := ""
-      ELSE
-         aList:Add(cString:Substring(0 , nAt))
-         cString := cString:Substring(nAt + 1)
-      ENDIF
-   END DO
-   RETURN aList
-   INTERNAL STATIC METHOD ListContainsList(aList1 AS List<STRING> , aList2 AS List<STRING>) AS LOGIC
-      LOCAL n,m AS INT
-      LOCAL lFound AS LOGIC
-      FOR n := 0 UPTO aList2:Count - 1
-         lFound := FALSE
-         FOR m := 0 UPTO aList1:Count - 1
-            IF aList1[m]:ToUpper() == aList2[n]:ToUpper()
-               lFound := TRUE
-               EXIT
+    INTERNAL STATIC METHOD ApplyVOStyle(oDesign AS DesignWindowItem , cProp AS STRING , nStyle AS INT) AS INT
+        LOCAL oProp AS VODesignProperty
+        oProp := oDesign:GetProperty(cProp)
+        IF oProp != NULL
+            IF oProp:ValueLogic
+                //				nStyle := _Or(nStyle , VODefines.GetValue(oProp:cEnumValues))
+                nStyle := _OR(nStyle , (INT)VODefines.GetDefineValue(oProp:aEnumValues[0]))
+                /*			ELSE
+                nStyle := _AND(nStyle , 0xFFFFFFF - VODefines.GetValue(oProp:aEnumValues[0]))*/
             ENDIF
-         NEXT
-         IF !lFound
-            RETURN FALSE
-         ENDIF
-      NEXT
-   RETURN TRUE
+        ENDIF
+        RETURN nStyle
 
-   INTERNAL STATIC METHOD MessageBox(cMessage AS STRING , cCaption AS STRING) AS VOID
-      System.Windows.Forms.MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Information)
-   RETURN
-   INTERNAL STATIC METHOD MessageBox(cMessage AS STRING) AS VOID
-      System.Windows.Forms.MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Information)
-   RETURN
-   INTERNAL STATIC METHOD WarningBox(cMessage AS STRING , cCaption AS STRING) AS VOID
-      System.Windows.Forms.MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Warning)
-   RETURN
-   INTERNAL STATIC METHOD WarningBox(cMessage AS STRING) AS VOID
-      System.Windows.Forms.MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Warning)
-   RETURN
-   INTERNAL STATIC METHOD ErrorBox(cMessage AS STRING , cCaption AS STRING) AS VOID
-      System.Windows.Forms.MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Error)
-   RETURN
-   INTERNAL STATIC METHOD ErrorBox(cMessage AS STRING) AS VOID
-      System.Windows.Forms.MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Error)
-   RETURN
-   INTERNAL STATIC METHOD QuestionBox(cMessage AS STRING , cCaption AS STRING) AS LOGIC
-   RETURN System.Windows.Forms.MessageBox.Show(cMessage , cCaption , MessageBoxButtons.YesNo , MessageBoxIcon.Question) == DialogResult.Yes
-   INTERNAL STATIC METHOD QuestionBox(cMessage AS STRING) AS LOGIC
-   RETURN System.Windows.Forms.MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.YesNo , MessageBoxIcon.Question) == DialogResult.Yes
-
-   INTERNAL STATIC METHOD PixelsToUnits(oRect AS Rectangle , oInfo AS UnitTranslateInfo) AS Rectangle
-      oRect:X := (INT)((REAL8(oRect:X * oInfo:nBaseUnitX) / (REAL8)(oInfo:tmWidth * 2) + (REAL8)0.5))
-      oRect:Y := (INT)((REAL8(oRect:Y * oInfo:nBaseUnitY) / (REAL8)(oInfo:tmHeight * 2) + (REAL8)0.5))
-      oRect:Width := (INT)((REAL8(oRect:Width * oInfo:nBaseUnitX) / (REAL8)(oInfo:tmWidth * 2) + (REAL8)0.5))
-      oRect:Height :=(INT)((REAL8(oRect:Height * oInfo:nBaseUnitY) / (REAL8)(oInfo:tmHeight * 2) + (REAL8)0.5))
-   RETURN oRect
-
-   INTERNAL STATIC METHOD StringToColor(cColor AS STRING) AS Color
-      LOCAL oColor AS Color
-      SWITCH cColor
-      CASE "COLORBLACK"
-         oColor := Color.Black
-      CASE "COLORBLUE"
-         oColor := Color.Blue
-      CASE "COLORCYAN"
-         oColor := Color.Cyan
-      CASE "COLORGREEN"
-         oColor := Color.Green
-      CASE "COLORMAGENTA"
-         oColor := Color.Magenta
-      CASE "COLORRED"
-         oColor := Color.Red
-      CASE "COLORYELLOW"
-         oColor := Color.Yellow
-      CASE "COLORWHITE"
-         oColor := Color.White
-      OTHERWISE
-         oColor := Color.Empty
-      END SWITCH
-   RETURN oColor
-
-   INTERNAL STATIC METHOD GetFileDir(cFileName AS STRING) AS STRING
-      LOCAL oFileInfo AS FileInfo
-      oFileInfo := FileInfo{cFileName}
-   RETURN oFileInfo:Directory:FullName
-
-   INTERNAL STATIC METHOD TranslateCaption(cCaption AS STRING , lCode AS LOGIC) AS STRING
-   RETURN TranslateCaption(cCaption , lCode , TRUE)
-   INTERNAL STATIC METHOD TranslateCaption(cCaption AS STRING , lCode AS LOGIC , lAddQuotesIfNoResource AS LOGIC) AS STRING
-      LOCAL cDefCaption AS STRING
-      LOCAL cIndex AS STRING
-      LOCAL cTemp AS STRING
-      LOCAL cRet AS STRING
-      LOCAL cDelim AS CHAR
-      LOCAL n AS INT
-      cTemp := cCaption:Trim()
-      IF lCode .AND. lAddQuotesIfNoResource
-         cCaption := e"\"" + cCaption + e"\""
-      ENDIF
-      IF cTemp:Length > 5 .AND. cTemp[0] == '<' .AND. cTemp[cTemp:Length - 1] == '>'
-         cTemp := cTemp:Substring(1 , cTemp:Length - 2):Trim()
-      ELSE
-         RETURN cCaption
-      ENDIF
-      cDelim := cTemp[0]
-      cDefCaption := NULL
-      IF cDelim == (CHAR)34 .OR. cDelim == (CHAR)39 .OR. cDelim == '['
-         IF cDelim == '['
-            cDelim := ']'
-         ENDIF
-         n := 1
-         DO WHILE n < cTemp:Length
-            IF cTemp[n] == cDelim
-               cDefCaption := cTemp:Substring(1 , n - 1)
-               IF cTemp:Length > n
-                  cTemp := cTemp:Substring(n + 1):Trim()
-               ELSE
-                  RETURN cCaption
-               ENDIF
-               EXIT
+    INTERNAL STATIC METHOD SplitString(cString AS STRING , cChar AS CHAR) AS List<STRING>
+        LOCAL aList AS List<STRING>
+        aList := List<STRING>{}
+        RETURN Funcs.SplitString(aList , cString , cChar)
+    INTERNAL STATIC METHOD SplitString(aList AS List<STRING> , cString AS STRING , cChar AS CHAR) AS List<STRING>
+        LOCAL nAt AS INT
+        DO WHILE cString:Length != 0
+            nAt := cString:IndexOf(cChar)
+            IF nAt == -1
+                aList:Add(cString)
+                cString := ""
             ELSE
-               n ++
+                aList:Add(cString:Substring(0 , nAt))
+                cString := cString:Substring(nAt + 1)
             ENDIF
-         END DO
-      ENDIF
-      IF cDefCaption == NULL .OR. cTemp:Length < 2
-         RETURN cCaption
-      ENDIF
+        END DO
+        RETURN aList
+    INTERNAL STATIC METHOD ListContainsList(aList1 AS List<STRING> , aList2 AS List<STRING>) AS LOGIC
+        LOCAL n,m AS INT
+        LOCAL lFound AS LOGIC
+        FOR n := 0 UPTO aList2:Count - 1
+            lFound := FALSE
+            FOR m := 0 UPTO aList1:Count - 1
+                IF aList1[m]:ToUpper() == aList2[n]:ToUpper()
+                    lFound := TRUE
+                    EXIT
+                ENDIF
+            NEXT
+            IF !lFound
+                RETURN FALSE
+            ENDIF
+        NEXT
+        RETURN TRUE
 
-      cIndex := NULL
-      IF cTemp[0] == ','
-         cIndex := cTemp:Substring(1):Trim()
-      ENDIF
-      IF cIndex == NULL .OR. cIndex:Length == 0
-         RETURN cCaption
-      ENDIF
-/*		FOR n := 0 UPTO cIndex:Length - 1
-         IF "0123456789":IndexOf(cIndex[n]) == -1
+    INTERNAL STATIC METHOD MessageBox(cMessage AS STRING , cCaption AS STRING) AS VOID
+        System.Windows.Forms.MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Information)
+        RETURN
+    INTERNAL STATIC METHOD MessageBox(cMessage AS STRING) AS VOID
+        System.Windows.Forms.MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Information)
+        RETURN
+    INTERNAL STATIC METHOD WarningBox(cMessage AS STRING , cCaption AS STRING) AS VOID
+        System.Windows.Forms.MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Warning)
+        RETURN
+    INTERNAL STATIC METHOD WarningBox(cMessage AS STRING) AS VOID
+        System.Windows.Forms.MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Warning)
+        RETURN
+    INTERNAL STATIC METHOD ErrorBox(cMessage AS STRING , cCaption AS STRING) AS VOID
+        System.Windows.Forms.MessageBox.Show(cMessage , cCaption , MessageBoxButtons.OK , MessageBoxIcon.Error)
+        RETURN
+    INTERNAL STATIC METHOD ErrorBox(cMessage AS STRING) AS VOID
+        System.Windows.Forms.MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Error)
+        RETURN
+    INTERNAL STATIC METHOD QuestionBox(cMessage AS STRING , cCaption AS STRING) AS LOGIC
+        RETURN System.Windows.Forms.MessageBox.Show(cMessage , cCaption , MessageBoxButtons.YesNo , MessageBoxIcon.Question) == DialogResult.Yes
+    INTERNAL STATIC METHOD QuestionBox(cMessage AS STRING) AS LOGIC
+        RETURN System.Windows.Forms.MessageBox.Show(cMessage , Resources.EditorName , MessageBoxButtons.YesNo , MessageBoxIcon.Question) == DialogResult.Yes
+
+    INTERNAL STATIC METHOD PixelsToUnits(oRect AS Rectangle , oInfo AS UnitTranslateInfo) AS Rectangle
+        oRect:X := (INT)((REAL8(oRect:X * oInfo:nBaseUnitX) / (REAL8)(oInfo:tmWidth * 2) + (REAL8)0.5))
+        oRect:Y := (INT)((REAL8(oRect:Y * oInfo:nBaseUnitY) / (REAL8)(oInfo:tmHeight * 2) + (REAL8)0.5))
+        oRect:Width := (INT)((REAL8(oRect:Width * oInfo:nBaseUnitX) / (REAL8)(oInfo:tmWidth * 2) + (REAL8)0.5))
+        oRect:Height :=(INT)((REAL8(oRect:Height * oInfo:nBaseUnitY) / (REAL8)(oInfo:tmHeight * 2) + (REAL8)0.5))
+
+        LOCAL ix, iy AS REAL8
+        ix := XSharpModel.XCustomEditorSettings.SizeAdjustmentX
+        iy := XSharpModel.XCustomEditorSettings.SizeAdjustmentY
+        IF ix > 0.1 .and. iy > 0.1 .and. ix < 10.0  .and. iy < 10.0
+            LOCAL x := 0.75, y := 0.812 AS REAL8
+            x := ix // (REAL8)ix / 1000.0
+            y := iy // (REAL8)iy / 1000.0
+            oRect:X := (INT)(REAL8(oRect:X) * x + (REAL8)0.5)
+            oRect:Y := (INT)(REAL8(oRect:Y) * y + (REAL8)0.5)
+            oRect:Width := (INT)(REAL8(oRect:Width) * x + (REAL8)0.5)
+            oRect:Height := (INT)(REAL8(oRect:Height) * y + (REAL8)0.5)
+        endif
+        RETURN oRect
+
+    INTERNAL STATIC METHOD StringToColor(cColor AS STRING) AS Color
+        LOCAL oColor AS Color
+        SWITCH cColor
+        CASE "COLORBLACK"
+            oColor := Color.Black
+        CASE "COLORBLUE"
+            oColor := Color.Blue
+        CASE "COLORCYAN"
+            oColor := Color.Cyan
+        CASE "COLORGREEN"
+            oColor := Color.Green
+        CASE "COLORMAGENTA"
+            oColor := Color.Magenta
+        CASE "COLORRED"
+            oColor := Color.Red
+        CASE "COLORYELLOW"
+            oColor := Color.Yellow
+        CASE "COLORWHITE"
+            oColor := Color.White
+        OTHERWISE
+            oColor := Color.Empty
+        END SWITCH
+        RETURN oColor
+
+    INTERNAL STATIC METHOD GetFileDir(cFileName AS STRING) AS STRING
+        LOCAL oFileInfo AS FileInfo
+        oFileInfo := FileInfo{cFileName}
+        RETURN oFileInfo:Directory:FullName
+
+    INTERNAL STATIC METHOD TranslateCaption(cCaption AS STRING , lCode AS LOGIC) AS STRING
+        RETURN TranslateCaption(cCaption , lCode , TRUE)
+    INTERNAL STATIC METHOD TranslateCaption(cCaption AS STRING , lCode AS LOGIC , lAddQuotesIfNoResource AS LOGIC) AS STRING
+        LOCAL cDefCaption AS STRING
+        LOCAL cIndex AS STRING
+        LOCAL cTemp AS STRING
+        LOCAL cRet AS STRING
+        LOCAL cDelim AS CHAR
+        LOCAL n AS INT
+        cTemp := cCaption:Trim()
+        IF lCode .AND. lAddQuotesIfNoResource
+            cCaption := e"\"" + cCaption + e"\""
+        ENDIF
+        IF cTemp:Length > 5 .AND. cTemp[0] == '<' .AND. cTemp[cTemp:Length - 1] == '>'
+            cTemp := cTemp:Substring(1 , cTemp:Length - 2):Trim()
+        ELSE
             RETURN cCaption
-         ENDIF
-      NEXT*/
+        ENDIF
+        cDelim := cTemp[0]
+        cDefCaption := NULL
+        IF cDelim == (CHAR)34 .OR. cDelim == (CHAR)39 .OR. cDelim == '['
+            IF cDelim == '['
+                cDelim := ']'
+            ENDIF
+            n := 1
+            DO WHILE n < cTemp:Length
+                IF cTemp[n] == cDelim
+                    cDefCaption := cTemp:Substring(1 , n - 1)
+                    IF cTemp:Length > n
+                        cTemp := cTemp:Substring(n + 1):Trim()
+                    ELSE
+                        RETURN cCaption
+                    ENDIF
+                    EXIT
+                ELSE
+                    n ++
+                ENDIF
+            END DO
+        ENDIF
+        IF cDefCaption == NULL .OR. cTemp:Length < 2
+            RETURN cCaption
+        ENDIF
 
-      IF lCode
-         cRet := e"LoadResString(\"" + cDefCaption + e"\" , " + cIndex + ")"
-      ELSE
-         cRet := cDefCaption
-      ENDIF
+        cIndex := NULL
+        IF cTemp[0] == ','
+            cIndex := cTemp:Substring(1):Trim()
+        ENDIF
+        IF cIndex == NULL .OR. cIndex:Length == 0
+            RETURN cCaption
+        ENDIF
+        /*		FOR n := 0 UPTO cIndex:Length - 1
+        IF "0123456789":IndexOf(cIndex[n]) == -1
+        RETURN cCaption
+        ENDIF
+        NEXT*/
 
-   RETURN cRet
+        IF lCode
+            cRet := e"LoadResString(\"" + cDefCaption + e"\" , " + cIndex + ")"
+        ELSE
+            cRet := cDefCaption
+        ENDIF
 
-   STATIC METHOD GetModuleNameFromBinary(cFileName AS STRING) AS STRING
-      LOCAL cModuleName , cModuleFilename AS STRING
-      IF SplitBinaryFilename(cFileName , cModuleName , cModuleFilename)
-         RETURN cModuleName
-      END IF
-   RETURN NULL
-   STATIC METHOD GetModuleFilenameFromBinary(cFileName AS STRING) AS STRING
-      LOCAL cModuleName , cModuleFilename AS STRING
-      IF SplitBinaryFilename(cFileName , cModuleName , cModuleFilename)
-         RETURN cModuleFilename
-      END IF
-   RETURN NULL
-   STATIC METHOD SplitBinaryFilename(cFileName AS STRING , cModuleName REF STRING , cModuleFilename REF STRING) AS LOGIC
-      LOCAL lOk AS LOGIC
-      LOCAL nAt AS INT
-      TRY
-         nAt := cFileName:LastIndexOf('.')
-         cFileName := cFileName:Substring(0 , nAt)
-         nAt := cFileName:LastIndexOf('.')
-         cFileName := cFileName:Substring(0 , nAt)
-         cModuleFilename := cFileName
-         nAt := cFileName:LastIndexOf('\\')
-         cFileName := cFileName:Substring(nAt + 1)
-         cModuleName := cFileName
-         lOk := TRUE
-      CATCH
-         NOP
-      END TRY
-   RETURN lOk
+        RETURN cRet
+
+    STATIC METHOD GetModuleNameFromBinary(cFileName AS STRING) AS STRING
+        LOCAL cModuleName , cModuleFilename AS STRING
+        IF SplitBinaryFilename(cFileName , cModuleName , cModuleFilename)
+            RETURN cModuleName
+        END IF
+        RETURN NULL
+    STATIC METHOD GetModuleFilenameFromBinary(cFileName AS STRING) AS STRING
+        LOCAL cModuleName , cModuleFilename AS STRING
+        IF SplitBinaryFilename(cFileName , cModuleName , cModuleFilename)
+            RETURN cModuleFilename
+        END IF
+        RETURN NULL
+    STATIC METHOD SplitBinaryFilename(cFileName AS STRING , cModuleName REF STRING , cModuleFilename REF STRING) AS LOGIC
+        LOCAL lOk AS LOGIC
+        LOCAL nAt AS INT
+        TRY
+            nAt := cFileName:LastIndexOf('.')
+            cFileName := cFileName:Substring(0 , nAt)
+            nAt := cFileName:LastIndexOf('.')
+            cFileName := cFileName:Substring(0 , nAt)
+            cModuleFilename := cFileName
+            nAt := cFileName:LastIndexOf('\\')
+            cFileName := cFileName:Substring(nAt + 1)
+            cModuleName := cFileName
+            lOk := TRUE
+        CATCH
+            NOP
+        END TRY
+        RETURN lOk
 
 
-   #region Xml Read/Write functions
+#region Xml Read/Write functions
 
-   STATIC METHOD AppendProperty(oDocument AS XmlDocument , oXmlNode AS XmlNode , oProp AS DesignProperty) AS VOID
-      LOCAL oElement AS XmlElement
-//		IF oProp:TextValue:Trim():Length != 0
-         oElement := oDocument:CreateElement(oProp:Name)
-         oElement:InnerText := oProp:TextValue:Trim()
-         oXmlNode:AppendChild(oElement)
-//		END IF
-   RETURN
+    STATIC METHOD AppendProperty(oDocument AS XmlDocument , oXmlNode AS XmlNode , oProp AS DesignProperty) AS VOID
+        LOCAL oElement AS XmlElement
+        //		IF oProp:TextValue:Trim():Length != 0
+        oElement := oDocument:CreateElement(oProp:Name)
+        oElement:InnerText := oProp:TextValue:Trim()
+        oXmlNode:AppendChild(oElement)
+        //		END IF
+        RETURN
 
-   STATIC METHOD ReadXmlProperty(oNode AS XmlNode , oDesign AS DesignItem) AS VOID
-      LOCAL oProp AS DesignProperty
-      oProp := oDesign:GetProperty(oNode:Name)
-      IF oProp != NULL
-         DO CASE
-         CASE oProp:Type == PropertyType.Numeric
-            oProp:Value := Int32.Parse(oNode:InnerText)
-         OTHERWISE
-            oProp:Value := oNode:InnerText
-         END CASE
-      END IF
-   RETURN
+    STATIC METHOD ReadXmlProperty(oNode AS XmlNode , oDesign AS DesignItem) AS VOID
+        LOCAL oProp AS DesignProperty
+        oProp := oDesign:GetProperty(oNode:Name)
+        IF oProp != NULL
+            DO CASE
+            CASE oProp:Type == PropertyType.Numeric
+                oProp:Value := Int32.Parse(oNode:InnerText)
+            OTHERWISE
+                oProp:Value := oNode:InnerText
+            END CASE
+        END IF
+        RETURN
 
-   #endregion
+#endregion
 
-//	#define CRLF Chr(13)+Chr(10)
-   #define CR Chr(13)
-   #define LF Chr(10)
-   STATIC METHOD BufferToLines(cBuffer AS STRING) AS List<STRING>
-      LOCAL c0 := e"\0" AS STRING
-      LOCAL aRet AS List<STRING>
-      LOCAL aLines AS STRING[]
-      LOCAL n AS INT
-      cBuffer := cBuffer:Replace(CRLF , c0)
-      cBuffer := cBuffer:Replace(CR , c0)
-      cBuffer := cBuffer:Replace(LF , c0)
-      aLines := cBuffer:Split(<CHAR>{'\0'})
-      aRet := List<STRING>{}
-      FOR n := 1 UPTO aLines:Length
-         aRet:Add(aLines[n])
-      NEXT
-   RETURN aRet
+        //	#define CRLF Chr(13)+Chr(10)
+#define CR Chr(13)
+#define LF Chr(10)
+    STATIC METHOD BufferToLines(cBuffer AS STRING) AS List<STRING>
+        LOCAL c0 := e"\0" AS STRING
+        LOCAL aRet AS List<STRING>
+        LOCAL aLines AS STRING[]
+        LOCAL n AS INT
+        cBuffer := cBuffer:Replace(CRLF , c0)
+        cBuffer := cBuffer:Replace(CR , c0)
+        cBuffer := cBuffer:Replace(LF , c0)
+        aLines := cBuffer:Split(<CHAR>{'\0'})
+        aRet := List<STRING>{}
+        FOR n := 1 UPTO aLines:Length
+            aRet:Add(aLines[n])
+        NEXT
+        RETURN aRet
 
 END CLASS
 

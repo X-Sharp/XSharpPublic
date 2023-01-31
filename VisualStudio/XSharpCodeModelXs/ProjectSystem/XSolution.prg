@@ -20,6 +20,7 @@ BEGIN NAMESPACE XSharpModel
     STATIC PRIVATE _fileName   AS STRING
     STATIC PRIVATE _sqldb      AS STRING
     STATIC PRIVATE _commentTokens AS List<XCommentToken>
+    STATIC PRIVATE _changedProjectFiles AS IDictionary<string, string>
     STATIC PROPERTY IsClosing  AS LOGIC AUTO
     STATIC PROPERTY IsShuttingDown  AS LOGIC AUTO
 
@@ -30,11 +31,13 @@ BEGIN NAMESPACE XSharpModel
     STATIC PROPERTY CommentTokens AS IList<XCommentToken> GET _commentTokens
     STATIC PROPERTY Projects AS IList<XProject> get _projects:Values:ToArray()
 
+    STATIC PROPERTY ChangedProjectFiles AS IDictionary<string, string> GET _changedProjectFiles
         // Methods
     STATIC CONSTRUCTOR
         _projects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase}
         IsClosing   := FALSE
         _commentTokens := List < XCommentToken >{}
+        _changedProjectFiles := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase}
 
     STATIC METHOD SetCommentTokens( aTokens AS IList<XCommentToken>) AS VOID
         _commentTokens:Clear()

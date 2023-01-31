@@ -12,7 +12,6 @@ using System.Text;
 using System.CodeDom;
 using System.Xml.Serialization;
 using System.CodeDom.Compiler;
-using System.Drawing.Drawing2D;
 using static System.Net.Mime.MediaTypeNames;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.Shell.Interop;

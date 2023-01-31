@@ -17,13 +17,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XSharpModel;
-using static XSharp.XSharpConstants;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
     [Export(typeof(ISuggestedActionsSourceProvider))]
     [Name("Property Suggested Action")]
-    [ContentType(LanguageName)]
+    [ContentType(XSharpConstants.LanguageName)]
     internal class PropertySuggestedActionsSourceProvider : ISuggestedActionsSourceProvider
     {
         [Import(typeof(ITextStructureNavigatorSelectorService))]

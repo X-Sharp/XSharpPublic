@@ -666,19 +666,20 @@ CLASS XProject
 #region Lookup Types and Functions
 
 
-    METHOD FindGlobalsInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
-        LogTypeMessage(i"FindGlobalsInAssemblyReferences {name} ")
-        var dbresult := XDatabase.FindAssemblyGlobalOrDefine(name, SELF:DependentAssemblyList, FALSE)
+    METHOD FindGlobalsInAssemblyReferences(name AS STRING, lLike := FALSE as LOGIC) AS IList<IXMemberSymbol>
+        LogTypeMessage(i"FindGlobalsInAssemblyReferences {name} {lLike}")
+        var dbresult := XDatabase.FindAssemblyGlobalOrDefine(name, SELF:DependentAssemblyList, lLike)
         var result := SELF:_MembersFromGlobalType(dbresult)
         LogTypeMessage(i"FindGlobalsInAssemblyReferences {name}, found {result.Count} occurences")
         RETURN result
 
-    METHOD FindFunctionsInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
-        LogTypeMessage(i"FindFunctionsInAssemblyReferences {name} ")
-        var dbresult := XDatabase.FindAssemblyFunction(name, SELF:DependentAssemblyList, FALSE)
+     METHOD FindFunctionsInAssemblyReferences(name AS STRING, lLike := FALSE as LOGIC) AS IList<IXMemberSymbol>
+        LogTypeMessage(i"FindFunctionsInAssemblyReferences {name} {lLike} ")
+        var dbresult := XDatabase.FindAssemblyFunction(name, SELF:DependentAssemblyList, lLike)
         var result := SELF:_MembersFromGlobalType(dbresult)
         LogTypeMessage(i"FindFunctionsInAssemblyReferences {name}, found {result.Count} occurences")
         RETURN result
+
 
     PRIVATE METHOD _MembersFromGlobalType(dbresult as IList<XDbResult>) AS IList<IXMemberSymbol>
         VAR result := List<IXMemberSymbol>{}
@@ -820,7 +821,7 @@ CLASS XProject
         return GetSourceTypes(result)
 
 
-    METHOD GetAssemblyTypesInNamespace(namespace AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
+    METHOD GetAssemblyTypesInNamespaceLike(namespace AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
         if namespace.EndsWith(".")
             namespace := namespace.Substring(0, namespace.Length-1)
         ENDIF
@@ -831,7 +832,7 @@ CLASS XProject
         result := FilterUsings(result, myUsings,"",false)
         RETURN GetPETypes(result)
 
-    METHOD GetAssemblyTypes(startWith AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
+    METHOD GetAssemblyTypesLike(startWith AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
         VAR result := XDatabase.GetAssemblyTypesLike(startWith, SELF:DependentAssemblyList )
         // convert the database objects to the PeTypeSymbols
         result := FilterUsings(result, usings,startWith,true)
@@ -948,7 +949,7 @@ CLASS XProject
     PRIVATE _lastFound := NULL AS XSourceTypeSymbol
     PRIVATE _lastName  := NULL AS STRING
 
-    METHOD GetTypes( startWith AS STRING, usings AS IList<STRING>) AS IList<XSourceTypeSymbol>
+    METHOD GetTypesLike( startWith AS STRING, usings AS IList<STRING>) AS IList<XSourceTypeSymbol>
         VAR result := XDatabase.GetProjectTypesLike(startWith, SELF:DependentProjectList)
         result := FilterUsings(result,usings,startWith,TRUE)
         RETURN SELF:GetSourceTypes(result)

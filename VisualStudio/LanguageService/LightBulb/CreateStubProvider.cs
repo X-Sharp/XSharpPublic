@@ -5,7 +5,6 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
-using static XSharp.XSharpConstants;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Operations;
 using System.Threading.Tasks;
@@ -15,7 +14,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
 {
     [Export(typeof(ISuggestedActionsSourceProvider))]
     [Name("Create stub Suggested Actions")]
-    [ContentType(LanguageName)]
+    [ContentType(XSharpConstants.LanguageName)]
     internal class CreateStubSuggestedActionsSourceProvider : ISuggestedActionsSourceProvider
     {
         [Import(typeof(ITextStructureNavigatorSelectorService))]

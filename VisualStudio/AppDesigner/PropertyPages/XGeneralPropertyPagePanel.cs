@@ -25,35 +25,6 @@ namespace XSharp.Project
     internal partial class XGeneralPropertyPagePanel : XPropertyPagePanel
     {
 
-        #region Constants
-        internal const string DefaultValue = "<default>";
-        internal const string captVulcanCompatibleResouces = "Vulcan Compatible Managed Resources";
-        internal const string descVulcanCompatibleResouces = "Use Vulcan Compatible Managed Resources (when 'True' then resources files are included in the assembly without namespace prefix. When 'False' then the resource files are prefixed with the namespace of the app, just like in other .Net languages, such as C#)";
-        internal const string captDialect = "Dialect";
-        internal const string descDialect = "Select the compiler dialect to use when compiling this project. Changing the dialect may also change the 'Allow NamedArguments' setting on the Language page.";
-        internal const string captWin32Manifest = "Suppress default Win32 manifest";
-        internal const string descWin32Manifest = "Suppress default Win32 manifest. You will have to supply your own Win32 manifest if you suppress the default one. (/nowin32manifest)";
-        internal const string catResources = "Resources";
-        internal const string captUseNativeVersion = "Prefer native version resource over managed version resource";
-        internal const string descUseNativeVersion = "When your application includes a native version resource, use this native version resource and do not generate a resource based on the global assembly properties such as AssemblyTitle, AssemblyVersion etc (/usenativeversion)";
-        internal const string captPreferNative = "Prefer native version resource info over managed version info";
-        internal const string descPreferNative = "Prefer native version resource over managed version info, The default behavior is to create a version resource based in the various [Assembly..] attributes.";
-        internal const string captBindingRedirects = "Auto-generate binding redirects";
-        internal const string descBindingRedirects = "The binding redirects are added to the output configuration (app.config) file when the app is compiled.";
-        internal const string captStartup = "Startup object:";
-        internal const string captOutputType = "Output Type:";
-        internal const string captTargetFramework = "Target Framework:";
-        internal const string captAppName = "Application Name";
-        internal const string captNamespace = "Default Namespace:";
-        internal const string descNamespace = "Specifies the base namespace for files added to the project.";
-        internal const string descAssembly = "Specifies the name of the output file that will hold the assembly manifest.";
-        internal const string descFramework = "Specifies the version of .NET that the application targets. This option can have different values depending on which versions of .NET are installed on your computer.";
-        internal const string descOutputType = "Specifies the type of application to build.";
-        internal const string descStartup = "Defines the entry point to be called when the application loads. Generally this is set either to the main form in your application or to the 'Start' function that should run when the application starts. Class libraries do not define an entry point.";
-        internal const string descIcon = "Sets the .ico file that you want to use as your program icon. Note you must specify the icon and manifest -or- a resource file.";
-        internal const string captIcon = "Application Icon:";
-        #endregion
-
         /// <summary>
         /// Initializes a new instance of the <see cref="XBuildEventsPropertyPagePanel"/> class.
         /// </summary>
@@ -75,41 +46,41 @@ namespace XSharp.Project
             this.comboOutputType.Tag = XSharpProjectFileConstants.OutputType;
             this.comboTargetFramework.Tag = XSharpProjectFileConstants.TargetFrameworkVersion;
 
-            lblDefaultNamespace.Text = captNamespace;
-            toolTip1.SetToolTip(lblDefaultNamespace, descNamespace);
-            toolTip1.SetToolTip(tbDefaultNamespace, descNamespace);
+            lblDefaultNamespace.Text = GeneralPropertyPagePanel.captNamespace;
+            toolTip1.SetToolTip(lblDefaultNamespace, GeneralPropertyPagePanel.descNamespace);
+            toolTip1.SetToolTip(tbDefaultNamespace, GeneralPropertyPagePanel.descNamespace);
 
-            lblApplicationName.Text = captAppName;
-            toolTip1.SetToolTip(lblApplicationName, descAssembly);
-            toolTip1.SetToolTip(tbAssemblyName, descAssembly);
-            labelIcon.Text = captIcon;
-            toolTip1.SetToolTip(labelIcon, descIcon);
-            toolTip1.SetToolTip(tbAppIcon, descIcon);
-            toolTip1.SetToolTip(btnIcon, descIcon);
-            labelStartupObject.Text = captStartup;
-            toolTip1.SetToolTip(labelStartupObject, descStartup);
-            toolTip1.SetToolTip(comboStartupObject, descStartup);
+            lblApplicationName.Text = GeneralPropertyPagePanel.captAppName;
+            toolTip1.SetToolTip(lblApplicationName, GeneralPropertyPagePanel.descAssembly);
+            toolTip1.SetToolTip(tbAssemblyName, GeneralPropertyPagePanel.descAssembly);
+            labelIcon.Text = GeneralPropertyPagePanel.captIcon;
+            toolTip1.SetToolTip(labelIcon, GeneralPropertyPagePanel.descIcon);
+            toolTip1.SetToolTip(tbAppIcon, GeneralPropertyPagePanel.descIcon);
+            toolTip1.SetToolTip(btnIcon, GeneralPropertyPagePanel.descIcon);
+            labelStartupObject.Text = GeneralPropertyPagePanel.captStartup;
+            toolTip1.SetToolTip(labelStartupObject, GeneralPropertyPagePanel.descStartup);
+            toolTip1.SetToolTip(comboStartupObject, GeneralPropertyPagePanel.descStartup);
 
-            chkSuppressDefaultManifest.Text = captWin32Manifest;
-            toolTip1.SetToolTip(chkSuppressDefaultManifest, descWin32Manifest);
+            chkSuppressDefaultManifest.Text = GeneralPropertyPagePanel.captWin32Manifest;
+            toolTip1.SetToolTip(chkSuppressDefaultManifest, GeneralPropertyPagePanel.descWin32Manifest);
 
-            chkPreferNativeVersion.Text = captPreferNative;
-            toolTip1.SetToolTip(chkPreferNativeVersion, descPreferNative);
-            chkVulcanCompatibleResources.Text = captVulcanCompatibleResouces;
-            toolTip1.SetToolTip(chkVulcanCompatibleResources, descVulcanCompatibleResouces);
-            chkAutoGenerateBindingRedirects.Text = captBindingRedirects;
-            toolTip1.SetToolTip(chkAutoGenerateBindingRedirects, descBindingRedirects);
+            chkPreferNativeVersion.Text = GeneralPropertyPagePanel.captPreferNative;
+            toolTip1.SetToolTip(chkPreferNativeVersion, GeneralPropertyPagePanel.descPreferNative);
+            chkVulcanCompatibleResources.Text = GeneralPropertyPagePanel.captVulcanCompatibleResouces;
+            toolTip1.SetToolTip(chkVulcanCompatibleResources, GeneralPropertyPagePanel.descVulcanCompatibleResouces);
+            chkAutoGenerateBindingRedirects.Text = GeneralPropertyPagePanel.captBindingRedirects;
+            toolTip1.SetToolTip(chkAutoGenerateBindingRedirects, GeneralPropertyPagePanel.descBindingRedirects);
 
 
             FillCombo(new DialectConverter() , comboDialect);
-            toolTip1.SetToolTip(lblDialect, descDialect);
-            toolTip1.SetToolTip(comboDialect, descDialect);
+            toolTip1.SetToolTip(lblDialect, GeneralPropertyPagePanel.descDialect);
+            toolTip1.SetToolTip(comboDialect, GeneralPropertyPagePanel.descDialect);
             FillCombo(new OutputTypeConverter(), comboOutputType);
-            toolTip1.SetToolTip(lblOutputType, descOutputType);
-            toolTip1.SetToolTip(comboOutputType, descOutputType);
+            toolTip1.SetToolTip(lblOutputType, GeneralPropertyPagePanel.descOutputType);
+            toolTip1.SetToolTip(comboOutputType, GeneralPropertyPagePanel.descOutputType);
             FillCombo(new FrameworkNameConverter(), comboTargetFramework);
-            toolTip1.SetToolTip(lblTargetFramework, descFramework);
-            toolTip1.SetToolTip(comboTargetFramework, descFramework);
+            toolTip1.SetToolTip(lblTargetFramework, GeneralPropertyPagePanel.descFramework);
+            toolTip1.SetToolTip(comboTargetFramework, GeneralPropertyPagePanel.descFramework);
 
 
             // hook up the form to both editors
@@ -121,7 +92,7 @@ namespace XSharp.Project
         void GetStartupClasses()
         {
             this.comboStartupObject.Items.Clear();
-            this.comboStartupObject.Items.Add(DefaultValue);
+            this.comboStartupObject.Items.Add(GeneralPropertyPagePanel.DefaultValue);
             var prjfile = ParentPropertyPage.ProjectMgr.ProjectFile;
             var list = XDatabase.GetStartupClasses(System.IO.Path.GetFileName(prjfile));
             foreach (var item in list)
@@ -130,15 +101,25 @@ namespace XSharp.Project
             }
             if (comboStartupObject.Items.Count == 1)
             {
-                comboStartupObject.SelectedItem = DefaultValue;
+                comboStartupObject.SelectedItem = GeneralPropertyPagePanel.DefaultValue;
                 this.comboStartupObject.Items.Add("");
                 comboStartupObject.Enabled = false;
             }
         }
 
+        void EnableApplicationIcon()
+        {
+            var prjfile = ParentPropertyPage.ProjectMgr.ProjectFile;
+            var hasRcFiles = XDatabase.HasRCFiles(prjfile);
+            this.labelIcon.Enabled = !hasRcFiles;
+            this.tbAppIcon.Enabled = !hasRcFiles;
+            this.btnIcon.Enabled = !hasRcFiles;
+        }
+
         protected internal override void BindProperties()
         {
             this.GetStartupClasses();
+            this.EnableApplicationIcon();
             base.BindProperties();
         }
 
@@ -167,7 +148,7 @@ namespace XSharp.Project
         private void btnIcon_Click(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            ShowOpenFileDialog(tbAppIcon, descIcon, "Icon Files (*.ico)|*.ico|All files (*.*)|*.*");
+            ShowOpenFileDialog(tbAppIcon, GeneralPropertyPagePanel.descIcon, "Icon Files (*.ico)|*.ico|All files (*.*)|*.*");
         }
     }
 }

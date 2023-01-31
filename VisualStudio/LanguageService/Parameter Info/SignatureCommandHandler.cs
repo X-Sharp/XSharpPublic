@@ -199,7 +199,7 @@ namespace XSharp.LanguageService
                         case (int)VSConstants.VSStd2KCmdID.BACKSPACE:
                             if (HasActiveSignatureSession)
                             {
-                                MoveSignature();
+                               MoveSignature();
                             }
                             break;
                         case (int)VSConstants.VSStd2KCmdID.UP:
@@ -220,17 +220,29 @@ namespace XSharp.LanguageService
         bool HasActiveSignatureSession => _signatureSession != null;
         bool cursorAfterOpenToken()
         {
+            var doc = this._textView.TextBuffer.GetDocument();
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
             var level = 0;
             bool done = false;
             bool inString = false;
             char closechar = '\0';
             int pos = ssp.Position;
-            var snapshot = ssp.Snapshot;
+            int curLine = ssp.GetContainingLine().LineNumber;
             while (!done && pos > 0)
             {
-                pos = pos - 1;
-                var ch = snapshot[pos];
+                int line = ssp.GetContainingLine().LineNumber;
+                if (line != curLine)
+                {
+                    doc.LineState.Get(line, out var state);
+                    if (!state.HasFlag(LineFlags.Continued))
+                    {
+                        done = true;
+                        continue;
+                    }
+                    curLine = line;
+                }
+                ssp = ssp - 1;
+                var ch = ssp.GetChar();
                 {
                     switch (ch)
                     {
@@ -255,11 +267,6 @@ namespace XSharp.LanguageService
                         case '}' when !inString:
                             level -= 1;
                             break;
-                        case '\r' when !inString:
-                        case '\n' when !inString:
-                            done = true;
-                            break;
-
                     }
                 }
             }
@@ -584,10 +591,20 @@ namespace XSharp.LanguageService
             if (props == null)
                 return false;
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
-            if (ssp.GetContainingLine().LineNumber != props.triggerLine)
+            var line = ssp.GetContainingLine().LineNumber;
+            if ( line != props.triggerLine)
             {
-                CancelSignatureSession();
-                return false;
+                var doc = this._textView.TextBuffer.GetDocument();
+                LineFlags flags;
+                if (line < props.triggerLine)
+                    doc.LineState.Get(line, out flags);
+                else
+                    doc.LineState.Get(props.triggerLine, out flags);
+                if (!flags.HasFlag(LineFlags.Continued))
+                {
+                    CancelSignatureSession();
+                    return false;
+                }
             }
             var start = props.Start;
             int pos = ssp.Position;

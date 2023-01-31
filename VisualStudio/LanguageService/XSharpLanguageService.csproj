@@ -11,17 +11,16 @@
     <ProjectGuid>{FFA0338A-27ED-42BA-B801-EC5AD32A7395}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.LanguageService</RootNamespace>
-    <AssemblyName>XSharpLanguageService</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
+    <AssemblyName>XSharp.LanguageService</AssemblyName>
     <RuntimeIdentifier>win</RuntimeIdentifier>
-    <GeneratePkgDefFile>false</GeneratePkgDefFile>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
     <Ngen>false</Ngen>
-    <TargetFrameworkProfile />
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,8 +57,14 @@
     </Compile>
     <Compile Include="BraceCompletion\BraceCompletion.cs" />
     <Compile Include="BraceMatching\BraceMatching.cs" />
+    <Compile Include="Classifier\ClassificationDefinitions.cs" />
+    <Compile Include="Classifier\ColorizerConstants.cs" />
+    <Compile Include="Classifier\EditorFormats.cs" />
+    <Compile Include="Classifier\LineInfo.cs" />
     <Compile Include="Classifier\LineKeywords.cs" />
     <Compile Include="Classifier\LineState.cs" />
+    <Compile Include="Classifier\XSharpClassifier.cs" />
+    <Compile Include="Classifier\XSharpClassifierProvider.cs" />
     <Compile Include="Completion\CompletionHelpers.cs" />
     <Compile Include="Completion\CompletionProvider.cs" />
     <Compile Include="Completion\CompletionState.cs" />
@@ -70,7 +75,6 @@
     <Compile Include="Completion\XSharpCompletionSourceProvider.cs" />
     <Compile Include="Completion\XSharpAsyncCompletionSource.cs" />
     <Compile Include="Completion\XSharpAsyncCompletionSourceProvider.cs" />
-    <Compile Include="EventHandlers.cs" />
     <Compile Include="Formatting\DocFormatter.cs" />
     <Compile Include="Formatting\EditorConfigSettings.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
@@ -78,7 +82,6 @@
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Formatting\LineFormatter.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
-    <Compile Include="Classifier\LineInfo.cs" />
     <Compile Include="LightBulb\CommonAction.cs" />
     <Compile Include="LightBulb\CommonActionProvider.cs" />
     <Compile Include="LightBulb\ConstructorAction.cs" />
@@ -98,22 +101,19 @@
     <Compile Include="LineSeparators\LineSeparatorTag.cs" />
     <Compile Include="Lookup\XSharpSearchLocation.cs" />
     <Compile Include="Lookup\XSharpLookup.cs" />
-    <Compile Include="Classifier\ClassificationDefinitions.cs" />
-    <Compile Include="Classifier\ColorizerConstants.cs" />
     <Compile Include="Generic\EditorCommandHandler.cs" />
     <Compile Include="Lookup\AnalysisClasses.cs" />
     <Compile Include="Completion\XAMLCompletionSource.cs" />
     <Compile Include="Completion\XSharpCompletionSource.cs" />
-    <Compile Include="Classifier\EditorFormats.cs" />
     <Compile Include="Errors\XSharpErrorColorizer.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Formatting\Formatting.cs" />
     <Compile Include="HighlightWord\HighlightWord.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
-    <Compile Include="LanguageService\PkgCmdID.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
     <Compile Include="LanguageService\XSharpSource.cs" />
     <Compile Include="Library\HierarchyListener.cs" />
+    <Compile Include="EventHandlers.cs" />
     <Compile Include="Generic\DropDownClient.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="Library\Library.cs" />
@@ -128,13 +128,13 @@
     <Compile Include="LightBulb\CreateStubProvider.cs" />
     <Compile Include="LightBulb\ImplementInterfaceAction.cs" />
     <Compile Include="LightBulb\ImplementInterfaceProvider.cs" />
-    <Compile Include="OptionsPages\GeneratorOptionsControl.cs">
+    <Compile Include="OptionsPages\CompletionOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
-      <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
+    <Compile Include="OptionsPages\CompletionOptionsControl.Designer.cs">
+      <DependentUpon>CompletionOptionsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="OptionsPages\GeneratorOptionsPage .cs">
+    <Compile Include="OptionsPages\CompletionOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="OptionsPages\IndentingOptionsControl.cs">
@@ -152,6 +152,12 @@
     <Compile Include="OptionsPages\IndentingOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OptionsPages\GeneratorOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
+      <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -165,6 +171,9 @@
       <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionsPages\FormattingOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\GeneratorOptionsPage .cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="OptionsPages\OtherOptionsPage.cs">
@@ -186,7 +195,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Parameter Info\SignatureCommandHandler.cs" />
-    <Compile Include="Tokenizer\XDocument.cs" />
     <Compile Include="XSharpLanguagePackage.cs" />
     <Compile Include="Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Parameter Info\SignatureHelpSourceProvider.cs" />
@@ -199,9 +207,8 @@
     <Compile Include="Tokenizer\Tokenizer.cs" />
     <Compile Include="Generic\EditorCommandProvider.cs" />
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
-    <Compile Include="Classifier\XSharpClassifier.cs" />
-    <Compile Include="Classifier\XSharpClassifierProvider.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
+    <Compile Include="Tokenizer\XDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -217,10 +224,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
-      <Project>{c9e9f119-d5a7-493b-88c9-4b5dd5ad653f}</Project>
-      <Name>XSharpMonoCecil</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>XSharpModel</Name>
@@ -228,12 +231,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.480</Version>
+      <Version>15.0.492</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.13.0</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.CoreUtility" Version="[15.6.27413,)" />
+    <PackageReference Include="Microsoft.VisualStudio.CoreUtility" Version="15.8.525" />
     <PackageReference Include="Microsoft.VisualStudio.Language">
       <Version>15.8.525</Version>
     </PackageReference>
@@ -242,6 +245,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.12.0">
       <Version>12.0.30112</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading">
+      <Version>15.3.20</Version>
+    </PackageReference>
+    <PackageReference Include="Mono.Cecil">
+      <Version>0.11.4</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
@@ -257,14 +266,17 @@
     <EmbeddedResource Include="LightBulb\CtorParamsDlg.resx">
       <DependentUpon>CtorParamsDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="OptionsPages\GeneratorOptionsControl.resx">
-      <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
+    <EmbeddedResource Include="OptionsPages\CompletionOptionsControl.resx">
+      <DependentUpon>CompletionOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\IndentingOptionsControl.resx">
       <DependentUpon>IndentingOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\FormattingOptionsControl.resx">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsPages\GeneratorOptionsControl.resx">
+      <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\OtherOptionsControl.resx">
       <DependentUpon>OtherOptionsControl.cs</DependentUpon>
@@ -282,20 +294,103 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Completion\Notes.txt" />
-    <Content Include="LanguageService\LanguageService.vsct" />
     <Content Include="Lookup\Notes.txt" />
     <Content Include="Parameter Info\Notes.txt" />
     <Content Include="QuickInfo\Notes.txt" />
-    <Content Include="C:\XSharp\DevPublic\Binaries\2019\Debug\XSharpLanguageService.pkgdef" />
+    <Content Include="$(Outdir)XSharp.LanguageService.pkgdef" />
+    <Content Include="Snippets\SnippetsIndex.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="generatepkgdef.cmd" />
+    <Content Include="Snippets\Snippets\case.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\class.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\classinherited.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\equals.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\exception.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\fileheader.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\for.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\foreach.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\for_down.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\for_up.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\if.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\ifdef.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\ifndef.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\initproc.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\mbox.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\nunittestclass.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\property.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\region.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\repeat.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\sequence.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\start.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\struct.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\switch.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\tryc.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\trycf.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\tryf.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\vostruct.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Snippets\Snippets\while.snippet">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
-  <PropertyGroup>
-    <PostBuildEvent>$(ProjectDir)\generatepkgdef.cmd  $(ProjectDir) $(ConfigurationName)</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

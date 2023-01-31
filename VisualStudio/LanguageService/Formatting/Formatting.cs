@@ -9,6 +9,7 @@ using LanguageService.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using System;
+using XSharp.Parser;
 using XSharpModel;
 using static XSharp.Parser.VsParser;
 

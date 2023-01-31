@@ -17,66 +17,13 @@ namespace XSharp.Project
     using Microsoft.VisualStudio.Project;
     using Microsoft.VisualStudio.Shell;
     using VSLangProj;
+    using XSharpModel;
 
     /// <summary>
     /// Property page contents for the Candle Settings page.
     /// </summary>
     internal partial class XBuildPropertyPagePanel : XPropertyPagePanel
     {
-        #region Constants
-        internal const string catSigning = "Code Signing";
-        internal const string catMisc = "Miscellaneous";
-        internal const string catWarnings = "Warnings";
-        internal const string catOutput = "\tOutput";
-        internal const string CatPreprocessor = "Preprocessor";
-        internal const string catXML = "XML Output";
-        internal const string captOutputPath = "Output Path";
-        internal const string descOutputPath = "Output Path (macros are allowed)";
-        internal const string captIntermediateOutputPath = "Intermediate Output Path";
-        internal const string descIntermediateOutputPath = "Intermediate Output Path  (macros are allowed)";
-        internal const string captDocumentationFile = "Generate XML doc comments file";
-        internal const string descDocumentationFile = "Generate XML doc comments file";
-        internal const string captDocumentationFileName = "XML doc comments file name";
-        internal const string descDocumentationFileName = "XML doc comments file name";
-        internal const string captOptimize = "Optimize";
-        internal const string descOptimize = "Should compiler optimize output? (/optimize)";
-        internal const string captUseSharedCompilation = "Use Shared Compiler";
-        internal const string descUseSharedCompilation = "Should the shared compiler be used to compile the project? (Faster, but may hide some compiler errors) (/shared)";
-        internal const string captDisabledWarnings = "Suppress Specific Warnings";
-        internal const string descDisabledWarnings = "Specify a list of warnings to suppress (/nowarn)";
-        internal const string captWarningLevel = "Warning Level";
-        internal const string descWarningLevel = "Set the warning level to a value between 0 and 4 (/warn)";
-        internal const string captTreatWarningsAsErrors = "Warnings As Errors";
-        internal const string descTreatWarningsAsErrors = "Treat warnings as errors (/warnaserror)";
-        internal const string captSignAssembly = "Sign the output assembly";
-        internal const string descSignAssembly = "Sign the assembly  (/keyfile)";
-        internal const string captDelaySign = "Delayed sign only";
-        internal const string descDelaySign = "Delayed signing (/delaysign)";
-        internal const string captAssemblyOriginatorKeyFile = "Code Signing KeyFile";
-        internal const string descAssemblyOriginatorKeyFile = "Choose a code signing key file (/keyfile)";
-        internal const string captRegisterForComInterop = "Register for COM Interop";
-        internal const string descRegisterForComInterop = "Register the output assembly for COM Interop (requires administrator rights)";
-
-        internal const string PPOCaption = "Generate preprocessor output";
-        internal const string PPODescription = "Save the output from the preprocessor to .ppo files  (/ppo)";
-        internal const string CmdLineCaption = "Extra Command Line Options";
-        internal const string CmdLineDescription = "User-Defined Command Line options";
-        internal const string DefCaption = "Defines for the preprocessor";
-        internal const string DefDescription = "Defines for the preprocessor (/define)";
-        internal const string captPrefer32Bit = "\tPrefer 32 Bit";
-        internal const string descPrefer32Bit = "Prefer 32 bit when AnyCpu platform is selected. (/platform)";
-        internal const string SuppressRCWarningsCaption = "Suppress Resource Compiler warnings";
-        internal const string SuppressRCWarningsDescription = "Suppress warnings from the Native Resource Compiler about duplicate defines (RC4005)";
-        internal const string captPlatFormTarget= "Platform Target";
-        internal const string descPlatFormTarget = "Select the platform target when compiling this project. This should be AnyCPU, X86, x64,Arm or Itanium (/platform)";
-        internal const string defaultOutputPath = @"bin\$(Configuration)\";
-        internal const string defaultIntermediatePath = @"obj\$(Configuration)\";
-
-        internal const string descSpecificWarnings = "Specific Warnings To Treat As Errors";
-
-
-
-        #endregion
 
 
         // =========================================================================================
@@ -92,89 +39,89 @@ namespace XSharp.Project
         {
             this.InitializeComponent();
 
-            this.chkPPO.Text = PPOCaption;
+            this.chkPPO.Text = BuildPropertyPagePanel.PPOCaption;
             this.chkPPO.Tag = "PPO";
-            this.toolTip1.SetToolTip(this.chkPPO, PPODescription);
+            this.toolTip1.SetToolTip(this.chkPPO, BuildPropertyPagePanel.PPODescription);
 
-            this.chkUseSharedCompilation.Text = captUseSharedCompilation;
+            this.chkUseSharedCompilation.Text = BuildPropertyPagePanel.captUseSharedCompilation;
             this.chkUseSharedCompilation.Tag = XSharpProjectFileConstants.UseSharedCompilation;
-            this.toolTip1.SetToolTip(this.chkUseSharedCompilation, descUseSharedCompilation);
+            this.toolTip1.SetToolTip(this.chkUseSharedCompilation, BuildPropertyPagePanel.descUseSharedCompilation);
 
-            this.chkPrefer32Bit.Text = captPrefer32Bit;
+            this.chkPrefer32Bit.Text = BuildPropertyPagePanel.captPrefer32Bit;
             this.chkPrefer32Bit.Tag = XSharpProjectFileConstants.Prefer32Bit;
-            this.toolTip1.SetToolTip(this.chkPrefer32Bit, descPrefer32Bit);
+            this.toolTip1.SetToolTip(this.chkPrefer32Bit, BuildPropertyPagePanel.descPrefer32Bit);
 
-            this.chkRegisterForComInterop.Text = captRegisterForComInterop;
+            this.chkRegisterForComInterop.Text = BuildPropertyPagePanel.captRegisterForComInterop;
             this.chkRegisterForComInterop.Tag = XSharpProjectFileConstants.RegisterForComInterop;
-            this.toolTip1.SetToolTip(this.chkRegisterForComInterop, descRegisterForComInterop);
+            this.toolTip1.SetToolTip(this.chkRegisterForComInterop, BuildPropertyPagePanel.descRegisterForComInterop);
 
-            this.chkXMLDocumentationFile.Text = captDocumentationFile;
+            this.chkXMLDocumentationFile.Text = BuildPropertyPagePanel.captDocumentationFile;
             this.txtXMLDocumentationFile.Tag = XSharpProjectFileConstants.DocumentationFile;
-            this.toolTip1.SetToolTip(chkXMLDocumentationFile, descDocumentationFile);
-            this.toolTip1.SetToolTip(txtXMLDocumentationFile, descDocumentationFileName);
+            this.toolTip1.SetToolTip(chkXMLDocumentationFile, BuildPropertyPagePanel.descDocumentationFile);
+            this.toolTip1.SetToolTip(txtXMLDocumentationFile, BuildPropertyPagePanel.descDocumentationFileName);
 
-            this.chkOptimize.Text =captOptimize;
+            this.chkOptimize.Text = BuildPropertyPagePanel.captOptimize;
             this.chkOptimize.Tag = XSharpProjectFileConstants.Optimize;
-            this.toolTip1.SetToolTip(this.chkOptimize, descOptimize);
+            this.toolTip1.SetToolTip(this.chkOptimize, BuildPropertyPagePanel.descOptimize);
 
-            this.chkSignAssembly.Text = captSignAssembly;
+            this.chkSignAssembly.Text = BuildPropertyPagePanel.captSignAssembly;
             this.chkSignAssembly.Tag = XSharpProjectFileConstants.SignAssembly;
-            this.toolTip1.SetToolTip(this.chkSignAssembly, descSignAssembly);
+            this.toolTip1.SetToolTip(this.chkSignAssembly, BuildPropertyPagePanel.descSignAssembly);
 
-            this.chkSuppressRCWarnings.Text = SuppressRCWarningsCaption;
+            this.chkSuppressRCWarnings.Text = BuildPropertyPagePanel.SuppressRCWarningsCaption;
             this.chkSuppressRCWarnings.Tag = XSharpProjectFileConstants.SuppressRCWarnings;
-            this.toolTip1.SetToolTip(this.chkSuppressRCWarnings, SuppressRCWarningsDescription);
+            this.toolTip1.SetToolTip(this.chkSuppressRCWarnings, BuildPropertyPagePanel.SuppressRCWarningsDescription);
 
-            this.chkDelaySign.Text = captDelaySign;
+            this.chkDelaySign.Text = BuildPropertyPagePanel.captDelaySign;
             this.chkDelaySign.Tag = XSharpProjectFileConstants.DelaySign;
-            this.toolTip1.SetToolTip(this.chkDelaySign, descDelaySign);
+            this.toolTip1.SetToolTip(this.chkDelaySign, BuildPropertyPagePanel.descDelaySign);
 
             this.txtDefineConstants.Tag = XSharpProjectFileConstants.DefineConstants;
-            this.lblDefineConstants.Text = DefCaption;
-            this.toolTip1.SetToolTip(this.txtDefineConstants, DefDescription);
-            this.toolTip1.SetToolTip(this.lblDefineConstants, DefDescription);
+            this.lblDefineConstants.Text = BuildPropertyPagePanel.DefCaption;
+            this.toolTip1.SetToolTip(this.txtDefineConstants, BuildPropertyPagePanel.DefDescription);
+            this.toolTip1.SetToolTip(this.lblDefineConstants, BuildPropertyPagePanel.DefDescription);
 
             this.txtCommandLineOption.Tag = XSharpProjectFileConstants.CommandLineOption;
-            this.lblCommandLineOption.Text = CmdLineCaption;
-            this.toolTip1.SetToolTip(txtCommandLineOption, CmdLineDescription);
-            this.toolTip1.SetToolTip(lblCommandLineOption, CmdLineDescription);
+            this.lblCommandLineOption.Text = BuildPropertyPagePanel.CmdLineCaption;
+            this.toolTip1.SetToolTip(txtCommandLineOption, BuildPropertyPagePanel.CmdLineDescription);
+            this.toolTip1.SetToolTip(lblCommandLineOption, BuildPropertyPagePanel.CmdLineDescription);
 
             this.txtDisabledWarnings.Tag = XSharpProjectFileConstants.DisabledWarnings;
-            this.lblDisabledWarnings.Text = captDisabledWarnings;
-            this.toolTip1.SetToolTip(lblDisabledWarnings, descDisabledWarnings);
-            this.toolTip1.SetToolTip(txtDisabledWarnings, descDisabledWarnings);
+            this.lblDisabledWarnings.Text = BuildPropertyPagePanel.captDisabledWarnings;
+            this.toolTip1.SetToolTip(lblDisabledWarnings, BuildPropertyPagePanel.descDisabledWarnings);
+            this.toolTip1.SetToolTip(txtDisabledWarnings, BuildPropertyPagePanel.descDisabledWarnings);
 
             this.txtOutputPath.Tag = XSharpProjectFileConstants.OutputPath;
-            this.lblOutputPath.Text = captOutputPath;
-            this.toolTip1.SetToolTip(txtOutputPath, descOutputPath);
-            this.toolTip1.SetToolTip(lblOutputPath, descOutputPath);
+            this.lblOutputPath.Text = BuildPropertyPagePanel.captOutputPath;
+            this.toolTip1.SetToolTip(txtOutputPath, BuildPropertyPagePanel.descOutputPath);
+            this.toolTip1.SetToolTip(lblOutputPath, BuildPropertyPagePanel.descOutputPath);
 
 
             this.txtIntermediateOutputPath.Tag = XSharpProjectFileConstants.IntermediateOutputPath;
-            this.lblIntermediateOutputPath.Text = captIntermediateOutputPath;
-            this.toolTip1.SetToolTip(txtIntermediateOutputPath, descIntermediateOutputPath);
-            this.toolTip1.SetToolTip(lblIntermediateOutputPath, descIntermediateOutputPath);
+            this.lblIntermediateOutputPath.Text = BuildPropertyPagePanel.captIntermediateOutputPath;
+            this.toolTip1.SetToolTip(txtIntermediateOutputPath, BuildPropertyPagePanel.descIntermediateOutputPath);
+            this.toolTip1.SetToolTip(lblIntermediateOutputPath, BuildPropertyPagePanel.descIntermediateOutputPath);
 
             this.txtAssemblyOriginatorKeyFile.Tag = XSharpProjectFileConstants.AssemblyOriginatorKeyFile;
-            this.lblAssemblyOriginatorKeyFile.Text = captAssemblyOriginatorKeyFile;
-            this.toolTip1.SetToolTip(txtAssemblyOriginatorKeyFile, descAssemblyOriginatorKeyFile);
-            this.toolTip1.SetToolTip(lblAssemblyOriginatorKeyFile, descAssemblyOriginatorKeyFile);
+            this.lblAssemblyOriginatorKeyFile.Text = BuildPropertyPagePanel.captAssemblyOriginatorKeyFile;
+            this.toolTip1.SetToolTip(txtAssemblyOriginatorKeyFile, BuildPropertyPagePanel.descAssemblyOriginatorKeyFile);
+            this.toolTip1.SetToolTip(lblAssemblyOriginatorKeyFile, BuildPropertyPagePanel.descAssemblyOriginatorKeyFile);
 
-            this.lblPlatformTarget.Text = captPlatFormTarget;
+            this.lblPlatformTarget.Text = BuildPropertyPagePanel.captPlatFormTarget;
             this.comboPlatformTarget.Tag = XSharpProjectFileConstants.PlatformTarget;
-            this.toolTip1.SetToolTip(lblPlatformTarget, descPlatFormTarget);
-            this.toolTip1.SetToolTip(comboPlatformTarget, descPlatFormTarget);
+            this.toolTip1.SetToolTip(lblPlatformTarget, BuildPropertyPagePanel.descPlatFormTarget);
+            this.toolTip1.SetToolTip(comboPlatformTarget, BuildPropertyPagePanel.descPlatFormTarget);
 
-            this.lblWarningLevel.Text = captWarningLevel;
+            this.lblWarningLevel.Text = BuildPropertyPagePanel.captWarningLevel;
             this.cboWarningLevel.Tag = XSharpProjectFileConstants.WarningLevel;
-            this.toolTip1.SetToolTip(lblWarningLevel, descWarningLevel);
-            this.toolTip1.SetToolTip(cboWarningLevel, descWarningLevel);
+            this.toolTip1.SetToolTip(lblWarningLevel, BuildPropertyPagePanel.descWarningLevel);
+            this.toolTip1.SetToolTip(cboWarningLevel, BuildPropertyPagePanel.descWarningLevel);
 
             this.rbWarningAll.Tag = XSharpProjectFileConstants.TreatWarningsAsErrors + "|True";
             this.rbWarningNone.Tag = XSharpProjectFileConstants.TreatWarningsAsErrors + "|False";
             this.rbWarningSpecific.Tag = XSharpProjectFileConstants.TreatWarningsAsErrors + "|False";
             this.txtSpecificWarnings.Tag = XSharpProjectFileConstants.WarningsAsErrors;
-            this.toolTip1.SetToolTip(txtSpecificWarnings, descSpecificWarnings);
+            this.toolTip1.SetToolTip(txtSpecificWarnings, BuildPropertyPagePanel.descSpecificWarnings);
 
             FillCombo(new PlatformConverter(), comboPlatformTarget);
 
@@ -208,13 +155,13 @@ namespace XSharp.Project
         private void btnOutputPathBrowse_Click(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            showMacroDialog(txtOutputPath, descOutputPath);
+            showMacroDialog(txtOutputPath, BuildPropertyPagePanel.descOutputPath);
         }
 
         private void btnIntermediateOutputPath_Click(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            showMacroDialog(txtIntermediateOutputPath, descIntermediateOutputPath);
+            showMacroDialog(txtIntermediateOutputPath, BuildPropertyPagePanel.descIntermediateOutputPath);
         }
         internal void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
@@ -302,7 +249,7 @@ namespace XSharp.Project
         private void btnKeyFile_Click(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            showMacroDialog(txtAssemblyOriginatorKeyFile, descAssemblyOriginatorKeyFile,
+            showMacroDialog(txtAssemblyOriginatorKeyFile, BuildPropertyPagePanel.descAssemblyOriginatorKeyFile,
                 "Key Files (*.snk; *.pfx)|*.snk;*.pfx|All files (*.*)|*.*");
 
         }

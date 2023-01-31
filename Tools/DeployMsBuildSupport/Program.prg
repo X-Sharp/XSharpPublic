@@ -13,15 +13,15 @@ FUNCTION Start(args as string[]) AS VOID STRICT
     IF args?:Length > 0
         uninstall := args:Count( { sArg => sArg:ToUpper():Contains("UNINSTALL") }) > 0
     ENDIF
-    var xsfile := "XSharp.BeforeCommon.Props"
-    cPf := System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles)
     if ! IsAdministrator()
         Console.WriteLine("This program must be run as administrator")
         return
     endif
+    var xsfile := "XSharp.BeforeCommon.Props"
+    cPf := System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles)
     GetSettingString("XSharpPath", out xsharpdir,"")
     if String.IsNullOrEmpty(xSharpDir)
-         Console.WriteLine("Could not locate XSharp Installation")
+        Console.WriteLine("Could not locate XSharp Installation")
         return
     endif
     xsharpDir := Path.Combine(xsharpdir, "MsBuild")+"\"
@@ -33,60 +33,84 @@ FUNCTION Start(args as string[]) AS VOID STRICT
     if uninstall
         Console.WriteLine("Removing X# MSBuild support from  VS folders and .Net folders")
     else
-        Console.WriteLine("Deploying X# MSBuild support to VS folders and .Net folders")
+        Console.WriteLine("Deploying X# MSBuild support")
         Console.WriteLine("Source file: "+sourcefile )
     endif
-    var dirs := Directory.GetDirectories(cPF+"\Microsoft Visual Studio")
     aFolders := List<String>{}
-    foreach var dir in dirs
-        var subdirs := Directory.GetDirectories(dir)
-        foreach var subdir in subdirs
-            if subdir:Contains("\20")
-                aFolders:Add(subdir+"\MsBuild\Current")
-            endif
-        next
-    next
-    cPf := System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86)
-    dirs := Directory.GetDirectories(cPF+"\Microsoft Visual Studio")
-    foreach var dir in dirs
-        var subdirs := Directory.GetDirectories(dir)
-        foreach var subdir in subdirs
-            if subdir:Contains("\20")
-                aFolders:Add(subdir+"\MsBuild\Current")
-            endif
-        next
-    next
+    if uninstall
+        var dirs := Directory.GetDirectories(cPF+"\Microsoft Visual Studio")
 
-    dirs := Directory.GetDirectories("c:\Program Files\dotnet\sdk")
-    foreach var dir in dirs
-        aFolders:Add(dir+"\Current")
-    next
+        foreach var dir in dirs
+            var subdirs := Directory.GetDirectories(dir)
+            foreach var subdir in subdirs
+                if subdir:Contains("\20")
+                    aFolders:Add(subdir+"\MsBuild\Current")
+                endif
+            next
+        next
+        cPf := System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86)
+        dirs := Directory.GetDirectories(cPF+"\Microsoft Visual Studio")
+        foreach var dir in dirs
+            var subdirs := Directory.GetDirectories(dir)
+            foreach var subdir in subdirs
+                if subdir:Contains("\20")
+                    aFolders:Add(subdir+"\MsBuild\Current")
+                endif
+            next
+        next
+        var dotNetDir := GetDotNetDir(TRUE)
+        if ! String.IsNullOrEmpty(dotNetDir)
+            dotNetDir := Path.Combine(dotNetDir, "sdk")
+            if Directory.Exists(dotNetDir)
+                dirs := Directory.GetDirectories(dotnetdir)
+                foreach var dir in dirs
+                    aFolders:Add(dir+"\Current")
+                next
+            endif
+        endif
+        dotNetDir := GetDotNetDir(FALSE)
+        if ! String.IsNullOrEmpty(dotNetDir)
+            dotNetDir := Path.Combine(dotNetDir, "sdk")
+            if Directory.Exists(dotNetDir)
+                dirs := Directory.GetDirectories(dotnetdir)
+                foreach var dir in dirs
+                    aFolders:Add(dir+"\Current")
+                next
+            endif
+        endif
+    endif
+    local cAppDir as string
+    cAppDir := System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData)
+    cAppDir := System.IO.Path.Combine(cAppDir, "Microsoft\MSBuild\Current")
+    aFolders:Add(cAppDir)
 
-    foreach var dir in aFolders
-        var path := dir+"\Imports\Microsoft.Common.Props\ImportBefore\"
-        if uninstall
-            if Directory.Exists(path)
-                IF File.Exists(path+xsfile)
-                    File.Delete(path+xsfile)
+    if uninstall
+        foreach var dir in aFolders
+            var cPath := dir+"\Imports\Microsoft.Common.Props\ImportBefore"
+            if Directory.Exists(cPath)
+                IF File.Exists(Path.Combine(cPath, xsfile))
+                    Console.WriteLine("Removing from "+ cPath)
+                    File.Delete(Path.Combine(cPath, xsfile))
                 ENDIF
-                RemoveTree(path)
+                RemoveTree(cPath)
             endif
-
-        else
-            if ! Directory.Exists(path)
-                Console.WriteLine("Creating "+path)
-                Directory.CreateDirectory(path)
-            endif
-            System.IO.File.Copy(sourceFile, path+xsfile,true)
+            cPath := cPath:Replace("Imports\Microsoft.Common.Props\ImportBefore\","")
+        next
+    else
+        if !Directory.Exists(cAppDir)
+            Directory.CreateDirectory(cAppDir)
         endif
-
-        path := path:Replace("Imports\Microsoft.Common.Props\ImportBefore\","")
-        if uninstall
-            Console.WriteLine("Removing from "+ path)
-        else
-            Console.WriteLine("Copying to "+ path)
+        cAppDir := Path.Combine(cAppDir, "Imports\Microsoft.Common.Props\ImportBefore")
+        if !Directory.Exists(cAppDir)
+            Directory.CreateDirectory(cAppDir)
         endif
-    next
+        System.IO.File.Copy(sourceFile, Path.Combine(cAppDir, xsfile), true)
+        Console.WriteLine("Copying to "+ cAppDir)
+    endif
+#ifdef DEBUG
+    Console.WriteLine("Press Enter")
+    Console.ReadLine()
+#endif
 
 function IsAdministrator() as logic
     var identity := WindowsIdentity.GetCurrent()
@@ -120,4 +144,27 @@ function RemoveTree(path as string) as void
         dirs  := Directory.GetDirectories(path)
     enddo
     return
+
+
+Function GetDotNetDir(lx64 as logic) as string
+    var key := Microsoft.Win32.Registry.LocalMachine
+    try
+        if IntPtr.Size == 8
+            if lx64
+                key := key:OpenSubKey("SOFTWARE\WOW6432Node\dotnet\Setup\InstalledVersions\x64")
+            else
+                key := key:OpenSubKey("SOFTWARE\WOW6432Node\dotnet\Setup\InstalledVersions\x86")
+            endif
+        else
+            if lx64
+                key := key:OpenSubKey("SOFTWARE\dotnet\Setup\InstalledVersions\x64")
+            else
+                key := key:OpenSubKey("SOFTWARE\dotnet\Setup\InstalledVersions\x86")
+            endif
+        endif
+        return (string) key:GetValue("InstallLocation")
+    catch e as Exception
+        Console.WriteLine(e:Message)
+    end try
+    return ""
 

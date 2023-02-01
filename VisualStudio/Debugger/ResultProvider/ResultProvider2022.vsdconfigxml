@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
+   Copyright (c) XSharp B.V.  All Rights Reserved.
+   Licensed under the Apache License, Version 2.0.
+   See License.txt in the project root for license information.
+.  For documentation of the vsdconfigxml format see:
 
-    Copyright (c) Microsoft. All rights reserved.
-    Licensed under the MIT license. See LICENSE file in the project root for full license information.
-       
-    This is a configuration file that tells the debug engine about the existence of our Frame
-    Decoder component.  For documentation of the vsdconfigxml format see:
-    https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Component-discovery-and-configuration    
+    https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Component-discovery-and-configuration 
 -->
 <Configuration xmlns="http://schemas.microsoft.com/vstudio/vsdconfig/2008">
 

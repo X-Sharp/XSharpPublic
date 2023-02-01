@@ -1154,7 +1154,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         internal static bool IsCastClass(this XSharpParserRuleContext node)
         {
-            return node.Start?.Type == XSharpLexer.CASTCLASS;
+            return node != null && node.Start?.Type == XSharpLexer.CASTCLASS;
         }
     }
 }

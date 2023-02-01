@@ -48,7 +48,14 @@ namespace XSharp.LanguageService
                 VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
 #endif
                 VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
-                XSharpModel.ModelWalker.Suspend();
+                var sol = await VS.Solutions.GetCurrentSolutionAsync();
+                if (sol is Solution)
+                {
+                    SolutionEvents_OnAfterOpenSolution(sol);
+                    XSharpModel.ModelWalker.Suspend();
+                }
+
+
             });
 
         }
@@ -128,12 +135,12 @@ namespace XSharp.LanguageService
         {
             // Restart scanning. Was suspended on opening of project system
             // or closing of previous solution
-            if (obj != null)
+            if (obj is Solution sol)
             {
 
                 // first check to see if there are any projects in the solution that have
                 // not been loaded
-                solutionFile = obj.FullPath;
+                solutionFile = sol.FullPath;
                 if (!string.IsNullOrEmpty(solutionFile))
                 {
                     XSolution.Open(solutionFile);

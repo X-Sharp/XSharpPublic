@@ -44,14 +44,14 @@ namespace XSharp.Project.Options
 
         [Category("RC Files")]
         [DisplayName("Size adjustment X")]
-        [Description("Correction factor for Size adjustment horizontally .")]
+        [Description("Correction multiplier for high DPI monitors horizontally. Adjusts control X-locations and widths written to resource (.rc) files to match the desired sizes.")]
         [DefaultValue(1.0)]
         [TypeConverter(typeof(ScaleTypeConverter))]
         public double SizeAdjustmentX { get; set; } =1.0;
 
         [Category("RC Files")]
         [DisplayName("Size adjustment Y")]
-        [Description("Correction factor for Size adjustment vertically .")]
+        [Description("Correction multiplier for high DPI monitors vertically. Adjusts control Y-locations and heights written to resource (.rc) files to match the desired sizes.")]
         [DefaultValue(1.0)]
         [TypeConverter(typeof(ScaleTypeConverter))]
         public double SizeAdjustmentY { get; set; } = 1.0;

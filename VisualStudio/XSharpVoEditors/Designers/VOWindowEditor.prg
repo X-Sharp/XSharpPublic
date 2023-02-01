@@ -365,9 +365,9 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         oGraphics := SELF:oWindow:CreateGraphics()
         hDC := oGraphics:GetHdc()
         hOldFont := SelectObject(hDC, oFont:ToHfont())
-        GetTextMetrics(hDC, sTextMetric)
+        GetTextMetrics(hDC, REF sTextMetric)
         cLine := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-        GetTextExtentPoint32(hDC, cLine, cLine:Length, sSize)
+        GetTextExtentPoint32(hDC, cLine, cLine:Length, REF sSize)
         oInfo:tmWidth := (sSize:cx / 26 + 1) / 2
         oInfo:tmHeight := sTextMetric:tmHeight
         SelectObject(hDC, hOldFont)
@@ -636,7 +636,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             ENDIF
             cLine += "}"
             aConstructor:Add(cLine)
-            SELF:GetCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name + ":" , aConstructor , lFontUsed)
+            SELF:GetCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name + ":" , aConstructor , REF lFontUsed)
             IF oDesign:cFullClass:ToUpper():StartsWith("CONTROL:TEXTCONTROL:RADIOBUTTONGROUP")
                 SELF:GetRadioGroupCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name , aRadioGroups)
             ENDIF
@@ -660,7 +660,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             aConstructor:Add(cLine)
         END IF
 
-        SELF:GetCode(SELF:oWindowDesign , "SELF:" , aConstructor , lFontUsed)
+        SELF:GetCode(SELF:oWindowDesign , "SELF:" , aConstructor , REF lFontUsed)
 
         oProp := SELF:oWindowDesign:GetProperty("Data Server")
         IF oProp != NULL .AND. (SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATAWINDOW") == 0 .OR. SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATADIALOG") == 0)
@@ -873,9 +873,9 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         oGraphics := SELF:oWindow:CreateGraphics()
         hDC := oGraphics:GetHdc()
         hOldFont := SelectObject(hDC, oFont:ToHfont())
-        GetTextMetrics(hDC, sTextMetric)
+        GetTextMetrics(hDC, REF sTextMetric)
         cLine := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-        GetTextExtentPoint32(hDC, cLine, cLine:Length, sSize)
+        GetTextExtentPoint32(hDC, cLine, cLine:Length, REF sSize)
         oInfo:tmWidth := (sSize:cx / 26 + 1) / 2
         oInfo:tmHeight := sTextMetric:tmHeight
         SelectObject(hDC, hOldFont)
@@ -1169,7 +1169,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             cLine += oDesign:GetVOStylesString(VOStyle.Style)
             cLine += ")"
             aConstructor:Add(cLine)
-            SELF:GetCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name + ":" , aConstructor , lFontUsed)
+            SELF:GetCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name + ":" , aConstructor , REF lFontUsed)
             IF oDesign:cFullClass:ToUpper():StartsWith("CONTROL:TEXTCONTROL:RADIOBUTTONGROUP")
                 SELF:GetRadioGroupCode(oDesign , "SELF:" + oDesign:cPrefix + oDesign:Name , aRadioGroups)
             ENDIF
@@ -1193,7 +1193,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             aConstructor:Add(cLine)
         END IF
 
-        SELF:GetCode(SELF:oWindowDesign , "SELF:" , aConstructor , lFontUsed)
+        SELF:GetCode(SELF:oWindowDesign , "SELF:" , aConstructor , REF lFontUsed)
 
         oProp := SELF:oWindowDesign:GetProperty("Data Server")
         IF oProp != NULL .AND. (SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATAWINDOW") == 0 .OR. SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATADIALOG") == 0)
@@ -1758,7 +1758,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         oRcStream := EditorStream{}
 
         oCode := SELF:GetCodeContents()
-        IF SELF:GetSaveFileStreams(cFileName , oVNFrmStream , oRCStream , oPrgStream , oVhStream , cVhName , lVnfrmOnly , lRcInSameFolder)
+        IF SELF:GetSaveFileStreams(cFileName , REF oVNFrmStream , oRCStream , oPrgStream , oVhStream , REF cVhName , lVnfrmOnly , REF lRcInSameFolder)
             //			SELF:SaveVNfrm(oVNFrmStream)
             SELF:SaveToXml(oVNFrmStream)
             IF !lVnfrmOnly

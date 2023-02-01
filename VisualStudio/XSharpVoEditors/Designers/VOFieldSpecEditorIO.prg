@@ -104,17 +104,17 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
         oReader:Close()
 
         nPos := 0
-        cValue := __ReadNextVNFsString(aBytes , nPos , 128)
+        cValue := __ReadNextVNFsString(aBytes , REF nPos , 128)
         oDesign:GetProperty("HLName"):Value := cValue
-        cValue := __ReadNextVNFsString(aBytes , nPos , 64)
+        cValue := __ReadNextVNFsString(aBytes , REF nPos , 64)
         oDesign:GetProperty("HLCaption"):Value := cValue
-        cValue := __ReadNextVNFsString(aBytes , nPos , 255)
+        cValue := __ReadNextVNFsString(aBytes , REF nPos , 255)
         oDesign:GetProperty("HLDescription"):Value := cValue
-        cValue := __ReadNextVNFsString(aBytes , nPos , 64)
+        cValue := __ReadNextVNFsString(aBytes , REF nPos , 64)
         oDesign:GetProperty("HLHelpContext"):Value := cValue
 
         //		oDesign:GetProperty("Type"):Value := __ReadNextVNFsString(aBytes , nPos , 1)
-        cValue := __ReadNextVNFsString(aBytes , nPos , 1)
+        cValue := __ReadNextVNFsString(aBytes , REF nPos , 1)
         SWITCH cValue
         CASE "C"
             oDesign:GetProperty("Type"):Value := 0
@@ -132,37 +132,37 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
             oDesign:GetProperty("Type"):Value := 6
         END SWITCH
 
-        oDesign:GetProperty("TypeDiag"):Value := __ReadNextVNFsString(aBytes , nPos , 128)
-        oDesign:GetProperty("TypeHelp"):Value := __ReadNextVNFsString(aBytes , nPos , 64)
+        oDesign:GetProperty("TypeDiag"):Value := __ReadNextVNFsString(aBytes , REF nPos , 128)
+        oDesign:GetProperty("TypeHelp"):Value := __ReadNextVNFsString(aBytes , REF nPos , 64)
 
-        oDesign:GetProperty("Len"):Value := __ReadNextVNFsInt16(aBytes , nPos)
-        oDesign:GetProperty("LenDiag"):Value := __ReadNextVNFsString(aBytes , nPos , 128)
-        oDesign:GetProperty("LenHelp"):Value := __ReadNextVNFsString(aBytes , nPos , 64)
+        oDesign:GetProperty("Len"):Value := __ReadNextVNFsInt16(aBytes , REF nPos)
+        oDesign:GetProperty("LenDiag"):Value := __ReadNextVNFsString(aBytes , REF nPos , 128)
+        oDesign:GetProperty("LenHelp"):Value := __ReadNextVNFsString(aBytes ,REF  nPos , 64)
 
-        oDesign:GetProperty("Dec"):Value := __ReadNextVNFsInt16(aBytes , nPos)
+        oDesign:GetProperty("Dec"):Value := __ReadNextVNFsInt16(aBytes , REF nPos)
 
-        oDesign:GetProperty("Required"):Value := iif(__ReadNextVNFsString(aBytes , nPos , 1) == "Y" , 0 , 1)
-        oDesign:GetProperty("ReqDiag"):Value := __ReadNextVNFsString(aBytes , nPos , 128)
-        oDesign:GetProperty("ReqHelp"):Value := __ReadNextVNFsString(aBytes , nPos , 64)
+        oDesign:GetProperty("Required"):Value := iif(__ReadNextVNFsString(aBytes , REF nPos , 1) == "Y" , 0 , 1)
+        oDesign:GetProperty("ReqDiag"):Value := __ReadNextVNFsString(aBytes , REF nPos , 128)
+        oDesign:GetProperty("ReqHelp"):Value := __ReadNextVNFsString(aBytes , REF nPos , 64)
 
-        oDesign:GetProperty("MinLen"):Value := __ReadNextVNFsInt16(aBytes , nPos)
-        oDesign:GetProperty("MinLenDiag"):Value := __ReadNextVNFsString(aBytes , nPos , 128)
-        oDesign:GetProperty("MinLenHelp"):Value := __ReadNextVNFsString(aBytes , nPos , 64)
+        oDesign:GetProperty("MinLen"):Value := __ReadNextVNFsInt16(aBytes , REF nPos)
+        oDesign:GetProperty("MinLenDiag"):Value := __ReadNextVNFsString(aBytes , REF nPos , 128)
+        oDesign:GetProperty("MinLenHelp"):Value := __ReadNextVNFsString(aBytes , REF nPos , 64)
 
-        oDesign:GetProperty("MinRange"):Value := __ReadNextVNFsString(aBytes , nPos , 128)
-        oDesign:GetProperty("MaxRange"):Value := __ReadNextVNFsString(aBytes , nPos , 128)
-        oDesign:GetProperty("RangeDiag"):Value := __ReadNextVNFsString(aBytes , nPos , 128)
-        oDesign:GetProperty("RangeHelp"):Value := __ReadNextVNFsString(aBytes , nPos , 64)
+        oDesign:GetProperty("MinRange"):Value := __ReadNextVNFsString(aBytes , REF nPos , 128)
+        oDesign:GetProperty("MaxRange"):Value := __ReadNextVNFsString(aBytes , REF nPos , 128)
+        oDesign:GetProperty("RangeDiag"):Value := __ReadNextVNFsString(aBytes , REF nPos , 128)
+        oDesign:GetProperty("RangeHelp"):Value := __ReadNextVNFsString(aBytes , REF nPos , 64)
 
-        oDesign:GetProperty("Validation"):Value := __ReadNextVNFsString(aBytes , nPos , 128)
-        oDesign:GetProperty("ValidDiag"):Value := __ReadNextVNFsString(aBytes , nPos , 128)
-        oDesign:GetProperty("ValidHelp"):Value := __ReadNextVNFsString(aBytes , nPos , 128)
+        oDesign:GetProperty("Validation"):Value := __ReadNextVNFsString(aBytes , REF nPos , 128)
+        oDesign:GetProperty("ValidDiag"):Value := __ReadNextVNFsString(aBytes , REF nPos , 128)
+        oDesign:GetProperty("ValidHelp"):Value := __ReadNextVNFsString(aBytes , REF nPos , 128)
 
-        oDesign:GetProperty("Picture"):Value := __ReadNextVNFsString(aBytes , nPos , 128)
+        oDesign:GetProperty("Picture"):Value := __ReadNextVNFsString(aBytes , REF nPos , 128)
 
         nPos += 4
         TRY
-            oDesign:GetProperty("superclass"):Value := __ReadNextVNFsString(aBytes , nPos , 80)
+            oDesign:GetProperty("superclass"):Value := __ReadNextVNFsString(aBytes , REF nPos , 80)
         CATCH
             NOP
         END TRY

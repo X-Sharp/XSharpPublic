@@ -198,12 +198,12 @@ CLASS BinaryEntity
 		cWedFile := cPrg + ".wed"
 
 		nPos := 1
-		cForm := VOMedItem.__ReadNextVNMnuString(aBytes , nPos)
+		cForm := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos)
 
 		aLines := List<STRING>{}
 		TRY
 			DO WHILE TRUE
-				oItem := VOMedItem.__ReadVNMnuItem(aBytes , nPos)
+				oItem := VOMedItem.__ReadVNMnuItem(aBytes , REF nPos)
 				IF oItem == NULL
 					EXIT
 				ENDIF
@@ -283,8 +283,8 @@ CLASS BinaryEntity
 
 			IF aBytes:Length > nPos + 5 .and. aBytes[nPos + 1] == 5 .and. aBytes[nPos + 2] == 7 .and. aBytes[nPos + 3] == 76
 				nPos += 4
-				oWriter:WriteLine("Inherit=" + VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
-				oWriter:WriteLine("ToolbarInherit=" + VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
+				oWriter:WriteLine("Inherit=" + VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos))
+				oWriter:WriteLine("ToolbarInherit=" + VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos))
 			END IF
 		END IF
 
@@ -318,12 +318,12 @@ CLASS BinaryEntity
 		oDescr := VOMenuDescription{}
 		nPos := 1
 
-		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos)
+		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos)
 		oDescr:cName := cValue
 		oDescr:oMainItem:aProperties:Add("Name" , cValue)
 
 		DO WHILE TRUE
-			oItem := VOMenuItem.__ReadVNMnuItem(aBytes , nPos)
+			oItem := VOMenuItem.__ReadVNMnuItem(aBytes , REF nPos)
 			IF oItem == NULL
 				EXIT
 			END IF
@@ -366,8 +366,8 @@ CLASS BinaryEntity
 
 		IF aBytes:Length > nPos + 5 .and. aBytes[nPos + 1] == 5 .and. aBytes[nPos + 2] == 7 .and. aBytes[nPos + 3] == 76
 			nPos += 4
-			oItem:aProperties:Add("Inherit" , VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
-			oItem:aProperties:Add("ToolbarInherit" , VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
+			oItem:aProperties:Add("Inherit" , VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos))
+			oItem:aProperties:Add("ToolbarInherit" , VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos))
 		ELSE
 			oItem:aProperties:Add("Inherit" , "")
 			oItem:aProperties:Add("ToolbarInherit" , "")
@@ -685,16 +685,16 @@ CLASS VOMedItem
 //			RETURN oItem
 			RETURN NULL
 		END IF
-		cValue := __ReadNextVNMnuString(aBytes , nPos , FALSE)
+		cValue := __ReadNextVNMnuString(aBytes , REF nPos , FALSE)
 		oItem:nDepth := Funcs.Val(cValue)
 
-		oItem:cCaption := __ReadNextVNMnuString(aBytes , nPos)
+		oItem:cCaption := __ReadNextVNMnuString(aBytes , REF nPos)
 
-		cValue := __ReadNextVNMnuString(aBytes , nPos) // Menu ID
+		cValue := __ReadNextVNMnuString(aBytes , REF nPos) // Menu ID
 //		oItem:cMenuID := cValue
 		oItem:nMenuID := Funcs.Val(cValue)
 
-		cValue := __ReadNextVNMnuString(aBytes , nPos)
+		cValue := __ReadNextVNMnuString(aBytes , REF nPos)
 		nAt := cValue:IndexOf('\t') + 1
 		IF nAt != 0
 			oItem:cEventName := Funcs.Left(cValue , (DWORD)nAt - 1):Trim()
@@ -704,18 +704,18 @@ CLASS VOMedItem
 			oItem:cID := ""
 		END IF
 
-		oItem:cDescription := __ReadNextVNMnuString(aBytes , nPos)
+		oItem:cDescription := __ReadNextVNMnuString(aBytes , REF nPos)
 
-		oItem:cHelpID := __ReadNextVNMnuString(aBytes , nPos)
+		oItem:cHelpID := __ReadNextVNMnuString(aBytes , REF nPos)
 
-		oItem:oAccelerator := __ReadNextVNMnuAccel(aBytes , nPos)
+		oItem:oAccelerator := __ReadNextVNMnuAccel(aBytes , REF nPos)
 
-		cValue := __ReadNextVNMnuString(aBytes , nPos , FALSE)
+		cValue := __ReadNextVNMnuString(aBytes , REF nPos , FALSE)
 		nValue := Funcs.Val(cValue)
 		oItem:lEnabled := (nValue & 2) != 0
 		oItem:lChecked := (nValue & 1) != 0
 
-		cValue := __ReadNextVNMnuString(aBytes , nPos , FALSE)
+		cValue := __ReadNextVNMnuString(aBytes , REF nPos , FALSE)
 		IF !cValue == "-1"
 			oItem:nButtonID := Funcs.Val(cValue)
 			IF oItem:nButtonID >= 1  .and. oItem:nButtonID < VOMenuProperties.VOMenuToolBar:Count + 1
@@ -727,7 +727,7 @@ CLASS VOMedItem
 			oItem:cButtonID := ""
 		ENDIF
 
-		cValue := __ReadNextVNMnuString(aBytes , nPos)
+		cValue := __ReadNextVNMnuString(aBytes , REF nPos)
 		IF cValue:Length > 8
 			cValue := cValue:Substring(8)
 		ELSE
@@ -735,7 +735,7 @@ CLASS VOMedItem
 		ENDIF
 		oItem:cButtonCaption := cValue
 
-		cValue := __ReadNextVNMnuString(aBytes , nPos)
+		cValue := __ReadNextVNMnuString(aBytes , REF nPos)
 		IF cValue:Length > 8
 			cValue := cValue:Substring(8)
 		ELSE
@@ -743,13 +743,13 @@ CLASS VOMedItem
 		ENDIF
 		oItem:cButtonTooltip := cValue
 
-		cValue := __ReadNextVNMnuString(aBytes , nPos , FALSE)
+		cValue := __ReadNextVNMnuString(aBytes , REF nPos , FALSE)
 		oItem:nButtonPosition := Funcs.Val(cValue)
 
 	RETURN oItem
 
 	STATIC METHOD __ReadNextVNMnuString(aBytes AS BYTE[] , nPos REF INT) AS STRING
-	RETURN __ReadNextVNMnuString(aBytes , nPos , TRUE)
+	RETURN __ReadNextVNMnuString(aBytes , REF nPos , TRUE)
 	STATIC METHOD __ReadNextVNMnuString(aBytes AS BYTE[] , nPos REF INT , lTranslate AS LOGIC) AS STRING
 		LOCAL oRead AS List<BYTE>
 		LOCAL cRet AS STRING
@@ -892,15 +892,15 @@ CLASS VOMenuItem
 		IF aBytes[nPos + 1] < 48 .or. aBytes[nPos + 1] > 57
 			RETURN NULL
 		END IF
-		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos , FALSE)
+		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos , FALSE)
 		oItem:nDepth := Funcs.Val(cValue)
 
-		oItem:aProperties:Add("Caption" , VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
+		oItem:aProperties:Add("Caption" , VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos))
 
-		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos) // Menu ID
+		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos) // Menu ID
 //		oItem:nMenuID := Funcs.Val(cValue)
 
-		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos)
+		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos)
 		nAt := cValue:IndexOf('\t') + 1
 		IF nAt != 0
 			oItem:aProperties:Add("EventName" , Funcs.Left(cValue , (DWORD)nAt - 1):Trim())
@@ -910,16 +910,16 @@ CLASS VOMenuItem
 			oItem:aProperties:Add("ID" , "")
 		END IF
 
-		oItem:aProperties:Add("Description" , VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
-		oItem:aProperties:Add("HelpContext" , VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
-		oItem:aProperties:Add("Accelerator" , VOMedItem.__ReadNextVNMnuAccel(aBytes , nPos):ToString())
+		oItem:aProperties:Add("Description" , VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos))
+		oItem:aProperties:Add("HelpContext" , VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos))
+		oItem:aProperties:Add("Accelerator" , VOMedItem.__ReadNextVNMnuAccel(aBytes , REF nPos):ToString())
 
-		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos , FALSE)
+		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos , FALSE)
 		nValue := Funcs.Val(cValue)
 		oItem:aProperties:Add("Enabled" , iif((nValue & 2) != 0 , "Yes" , "No"))
 		oItem:aProperties:Add("Checked" , iif((nValue & 1) != 0 , "Yes" , "No"))
 
-		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos , FALSE)
+		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos , FALSE)
 		IF !cValue == "-1"
 			nButtonID := Funcs.Val(cValue)
 			IF nButtonID >= 1  .and. nButtonID < VOMenuProperties.VOMenuToolBar:Count + 1
@@ -931,7 +931,7 @@ CLASS VOMenuItem
 			oItem:aProperties:Add("ButtonBmp" , "")
 		ENDIF
 
-		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos)
+		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos)
 		IF cValue:Length > 8
 			cValue := cValue:Substring(8)
 		ELSE
@@ -939,7 +939,7 @@ CLASS VOMenuItem
 		ENDIF
 		oItem:aProperties:Add("ButtonCaption" , cValue)
 
-		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos)
+		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos)
 		IF cValue:Length > 8
 			cValue := cValue:Substring(8)
 		ELSE
@@ -947,7 +947,7 @@ CLASS VOMenuItem
 		ENDIF
 		oItem:aProperties:Add("ButtonToolTip" , cValue)
 
-		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos , FALSE)
+		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos , FALSE)
 		oItem:aProperties:Add("ButtonPos" , cValue)
 
 	RETURN oItem

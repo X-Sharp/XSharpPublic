@@ -105,7 +105,7 @@ METHOD GetLine(nLine AS INT) AS LineObject
 
 METHOD EntityExists(eType AS EntityType,cName AS STRING,cClass AS STRING) AS LOGIC
 LOCAL nDummy AS INT
-SELF:FindEntity(eType,cName,cClass,nDummy)
+SELF:FindEntity(eType,cName,cClass,REF nDummy)
 RETURN nDummy!=0
 
 METHOD EntityExistsAnywhere(eType AS EntityType , cName AS STRING , cClass AS STRING) AS LOGIC
@@ -132,7 +132,7 @@ RETURN FALSE
 
 METHOD DeleteEntity(eType AS EntityType,cName AS STRING,cClass AS STRING) AS LOGIC
 	LOCAL nLine AS INT
-RETURN SELF:DeleteEntity(eType , cName ,cClass , nLine)
+RETURN SELF:DeleteEntity(eType , cName ,cClass , REF nLine)
 
 METHOD DeleteEntity(eType AS EntityType,cName AS STRING,cClass AS STRING,nLine REF Int32) AS LOGIC
 LOCAL oLine AS LineObject
@@ -140,7 +140,7 @@ LOCAL lExit AS LOGIC
 LOCAL nOldLine AS INT
 LOCAL cLine AS STRING
 nOldLine := nLine
-SELF:FindEntity(eType,cName,cClass,nLine)
+SELF:FindEntity(eType,cName,cClass,REF nLine)
 IF nLine == 0
 	nLine := nOldLine
 	RETURN FALSE
@@ -186,7 +186,7 @@ METHOD AddInclude(cInclude AS STRING) AS VOID
 		nLine := 1
 	ENDIF
 
-	SELF:AddWEDLine("#include " + e"\"" + cInclude + e"\"" , nLine)
+	SELF:AddWEDLine("#include " + e"\"" + cInclude + e"\"" , REF nLine)
 	SELF:ModifiedLine(nLine)
 RETURN
 
@@ -251,7 +251,7 @@ RETURN
 
 	METHOD FindEntity(eType AS EntityType , cName AS STRING , cClass AS STRING) AS INT
 		LOCAL nLine AS INT
-		SELF:FindEntity(eType , cName , cClass , nLine)
+		SELF:FindEntity(eType , cName , cClass , REF nLine)
 	RETURN nLine
 
 	METHOD WriteEntity(eType AS EntityType , cName AS STRING , cClass AS STRING , eOptions AS EntityOptions , aEntity AS List<STRING>) AS INT
@@ -403,14 +403,14 @@ RETURN
 		END IF
 
 		DO WHILE n < aEntity:Count
-			oLine := SELF:AddWEDLine(aEntity[n] , nLine)
+			oLine := SELF:AddWEDLine(aEntity[n] , REF nLine)
 			n ++
 		END DO
 		IF (eOptions & EntityOptions.AddUser) == EntityOptions.AddUser
 			IF eType == EntityType._Class
-				oLine := SELF:AddWEDLine(ceTab + cUser + cTagU , nLine)
+				oLine := SELF:AddWEDLine(ceTab + cUser + cTagU , REF nLine)
 			ELSE
-				oLine := SELF:AddWEDLine(cTab + cUser + cTagU , nLine)
+				oLine := SELF:AddWEDLine(cTab + cUser + cTagU , REF nLine)
 			END IF
 		END IF
 
@@ -418,7 +418,7 @@ RETURN
 			IF nLine <= SELF:aLines:Count
 				oLine := SELF:GetLine(nLine)
 				IF oLine:LineText:Trim() != ""
-					oLine := SELF:AddWEDLine("" , nLine)
+					oLine := SELF:AddWEDLine("" , REF nLine)
 				END IF
 			END IF
 		END IF
@@ -452,7 +452,7 @@ RETURN
 		NEXT
 
 		IF nLine != 0
-			SELF:AddWEDLine("END CLASS" , nLine)
+			SELF:AddWEDLine("END CLASS" , REF nLine)
 		END IF
 
 	RETURN

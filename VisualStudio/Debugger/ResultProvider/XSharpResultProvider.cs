@@ -4,12 +4,9 @@
 // See License.txt in the project root for license information.
 //
 using Microsoft.VisualStudio.Debugger;
-using Microsoft.VisualStudio.Debugger.CallStack;
 using Microsoft.VisualStudio.Debugger.Clr;
 using Microsoft.VisualStudio.Debugger.ComponentInterfaces;
 using Microsoft.VisualStudio.Debugger.Evaluation;
-using System;
-using System.Text;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
 using System.Collections.ObjectModel;
 

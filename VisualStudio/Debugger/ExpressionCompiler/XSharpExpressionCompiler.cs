@@ -3,14 +3,12 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using Community.VisualStudio.Toolkit;
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator;
 using Microsoft.VisualStudio.Debugger.Clr;
 using Microsoft.VisualStudio.Debugger.ComponentInterfaces;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
-using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using XSharpModel;
@@ -33,15 +31,6 @@ namespace XSharpDebugger.ExpressionCompiler
     /// </summary>
     public sealed class XSharpExpressionCompiler : IDkmClrExpressionCompiler
     {
-        static bool vs15 = false;
-        static XSharpExpressionCompiler()
-        {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                var vers = await VS.Shell.GetVsVersionAsync();
-                vs15 = vers.Major == 15;
-            });
-        }
         static void UpdateXSharpParseOptions()
         {
             var xoptions = XSyntaxHelpers.XSharpOptions;
@@ -83,7 +72,7 @@ namespace XSharpDebugger.ExpressionCompiler
             out string error,
             out DkmCompiledClrInspectionQuery result)
         {
-            if (!vs15)
+            if (!VsVersion.Vs15)
             {
                 NewCompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
             }
@@ -167,7 +156,7 @@ namespace XSharpDebugger.ExpressionCompiler
         DkmCompiledClrLocalsQuery IDkmClrExpressionCompiler.GetClrLocalVariableQuery(DkmInspectionContext inspectionContext, DkmClrInstructionAddress instructionAddress, bool argumentsOnly)
         {
             DkmCompiledClrLocalsQuery result;
-            if (!vs15)
+            if (!VsVersion.Vs15)
             {
                 result = NewClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
             }
@@ -233,7 +222,7 @@ namespace XSharpDebugger.ExpressionCompiler
         /// execute to perform the assignment.</param>
         void IDkmClrExpressionCompiler.CompileAssignment(DkmLanguageExpression expression, DkmClrInstructionAddress instructionAddress, DkmEvaluationResult lValue, out string error, out DkmCompiledClrInspectionQuery result)
         {
-            if (!vs15)
+            if (!VsVersion.Vs15)
             {
                 NewCompileAssignment(expression, instructionAddress, lValue, out error, out result);
             }

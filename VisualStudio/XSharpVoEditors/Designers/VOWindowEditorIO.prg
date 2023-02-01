@@ -397,7 +397,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         LOCAL lError AS LOGIC
         LOCAL lFileIsXml AS LOGIC
 
-        IF SELF:OpenXml(cFileName , lFileIsXml)
+        IF SELF:OpenXml(cFileName , REF lFileIsXml)
             RETURN TRUE
         ELSEIF lFileIsXml
             RETURN FALSE

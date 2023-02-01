@@ -1203,7 +1203,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
         oRcAccelStream := EditorStream{}
 
         oCode := SELF:GetCodeContents()
-        IF SELF:GetSaveFileStreams(cFileName , oVNFrmStream , oRCStream , oPrgStream , oVhStream , lVnfrmOnly , oRCAccelStream , cPathToVh)
+        IF SELF:GetSaveFileStreams(cFileName , REF oVNFrmStream , oRCStream , oPrgStream , oVhStream , lVnfrmOnly , oRCAccelStream , REF cPathToVh)
             //			SELF:SaveVNmnu(oVNFrmStream)
             IF .not. SELF:SaveToXml(oVNFrmStream)
                 RETURN FALSE

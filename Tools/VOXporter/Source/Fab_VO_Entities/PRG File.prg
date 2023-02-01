@@ -229,7 +229,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 		    IF (!lInComment .AND. Instr( "/*", cLine )) .OR. ;
 			    ( lInComment .AND. Instr( "*/", cLine ))
 			    //
-			    SELF:ExpurgateLine( cLine, lInComment )
+			    SELF:ExpurgateLine( REF cLine, REF lInComment )
 			    //
 			    IF Empty( cLine )
 				    LOOP

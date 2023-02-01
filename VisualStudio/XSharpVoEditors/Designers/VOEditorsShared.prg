@@ -119,28 +119,28 @@ PARTIAL CLASS VODBServerEditor
 
         aSorted := SortedList{}
 
-        cValue := __ReadNextVNDBString(aBytes , nPos , 128)
+        cValue := __ReadNextVNDBString(aBytes , REF nPos , 128)
         oDescr:cName := cValue
         oItem:aProperties:Add("classname" , cValue)
-        oItem:aProperties:Add("hlcaption" , __ReadNextVNDBString(aBytes , nPos , 64))
-        oItem:aProperties:Add("hldescription" , __ReadNextVNDBString(aBytes , nPos , 255))
-        oItem:aProperties:Add("hlhelpcontext" , __ReadNextVNDBString(aBytes , nPos , 64))
+        oItem:aProperties:Add("hlcaption" , __ReadNextVNDBString(aBytes , REF nPos , 64))
+        oItem:aProperties:Add("hldescription" , __ReadNextVNDBString(aBytes , REF nPos , 255))
+        oItem:aProperties:Add("hlhelpcontext" , __ReadNextVNDBString(aBytes , REF nPos , 64))
 
-        nValue := 2 - __ReadNextVNDBInt16(aBytes , nPos)
+        nValue := 2 - __ReadNextVNDBInt16(aBytes , REF nPos)
         IF nValue != 0
             oItem:aProperties:Add("share" , iif(nValue == 1 , "True" , "False"))
         END IF
-        nValue := 2 - __ReadNextVNDBInt16(aBytes , nPos)
+        nValue := 2 - __ReadNextVNDBInt16(aBytes , REF nPos)
         IF nValue != 0
             oItem:aProperties:Add("ro" , iif(nValue == 1 , "True" , "False"))
         END IF
 
-        oItem:aProperties:Add("rdd" , __ReadNextVNDBString(aBytes , nPos , 260))
-        oItem:aProperties:Add("filename" , __ReadNextVNDBString(aBytes , nPos , 260))
+        oItem:aProperties:Add("rdd" , __ReadNextVNDBString(aBytes , REF nPos , 260))
+        oItem:aProperties:Add("filename" , __ReadNextVNDBString(aBytes , REF nPos , 260))
 
-        oItem:aProperties:Add("noaccass" , iif(__ReadNextVNDBByte(aBytes , nPos) >= 128 , "Yes" , "No"))
-        __ReadNextVNDBInt16(aBytes , nPos)
-        oItem:aProperties:Add("superclass" , __ReadNextVNDBString(aBytes , nPos , 80))
+        oItem:aProperties:Add("noaccass" , iif(__ReadNextVNDBByte(aBytes , REF nPos) >= 128 , "Yes" , "No"))
+        __ReadNextVNDBInt16(aBytes , REF nPos)
+        oItem:aProperties:Add("superclass" , __ReadNextVNDBString(aBytes , REF nPos , 80))
 
         aFields := DBServerBinary.Get(oDescr:cName + "_" , DBServerItemType.Field)
         FOR n := 0 UPTO aFields:Count -1
@@ -148,21 +148,21 @@ PARTIAL CLASS VODBServerEditor
             aBytes := oBinary:Bytes
             nPos := 0
             oField := VODBServerItem{DBServerItemType.Field}
-            cValue := __ReadNextVNDBString(aBytes , nPos , 128)
+            cValue := __ReadNextVNDBString(aBytes , REF nPos , 128)
             oField:cName := cValue
             oField:aProperties:Add("fldname" , cValue)
-            __ReadNextVNDBString(aBytes , nPos , 128)
-            __ReadNextVNDBString(aBytes , nPos , 64)
-            __ReadNextVNDBString(aBytes , nPos , 255)
-            __ReadNextVNDBString(aBytes , nPos , 64)
-            oField:aProperties:Add("included" , __ReadNextVNDBByte(aBytes , nPos):ToString())
-            m := __ReadNextVNDBInt16(aBytes , nPos)
+            __ReadNextVNDBString(aBytes , REF nPos , 128)
+            __ReadNextVNDBString(aBytes , REF nPos , 64)
+            __ReadNextVNDBString(aBytes , REF nPos , 255)
+            __ReadNextVNDBString(aBytes , REF nPos , 64)
+            oField:aProperties:Add("included" , __ReadNextVNDBByte(aBytes , REF nPos):ToString())
+            m := __ReadNextVNDBInt16(aBytes , REF nPos)
             DO WHILE aSorted:ContainsKey(m)
                 m ++
             END DO
             oField:aProperties:Add("pos" , m:ToString())
             aSorted:Add(m , oField)
-            oField:aProperties:Add("FieldSpec" , __ReadNextVNDBString(aBytes , nPos , 128))
+            oField:aProperties:Add("FieldSpec" , __ReadNextVNDBString(aBytes , REF nPos , 128))
         NEXT
         FOR n := 0 UPTO aSorted:Count - 1
             oField := (VODBServerItem)aSorted:GetByIndex(n)
@@ -178,10 +178,10 @@ PARTIAL CLASS VODBServerEditor
             aBytes := oBinary:Bytes
             nPos := 0
             oIndex := VODBServerItem{DBServerItemType.Index}
-            cValue := __ReadNextVNDBString(aBytes , nPos , 128)
+            cValue := __ReadNextVNDBString(aBytes , REF nPos , 128)
             oIndex:cName := cValue
             oIndex:aProperties:Add("name" , cValue)
-            oIndex:aProperties:Add("filename" , __ReadNextVNDBString(aBytes , nPos , 260))
+            oIndex:aProperties:Add("filename" , __ReadNextVNDBString(aBytes , REF nPos , 260))
             oDescr:aIndexes:Add(oIndex)
 
             aOrders := DBServerBinary.Get(oDescr:cName + "_" + oIndex:cName + "_" , DBServerItemType.Order)
@@ -190,13 +190,13 @@ PARTIAL CLASS VODBServerEditor
                 aBytes := oBinary:Bytes
                 nPos := 0
                 oOrder := VODBServerItem{DBServerItemType.Order}
-                cValue := __ReadNextVNDBString(aBytes , nPos , 128)
+                cValue := __ReadNextVNDBString(aBytes , REF nPos , 128)
                 oOrder:cName := cValue
                 oOrder:aProperties:Add("tag" , cValue)
-                oOrder:aProperties:Add("Duplicate" , iif(__ReadNextVNDBByte(aBytes , nPos) == 1 , "Yes" , "No"))
-                oOrder:aProperties:Add("Ascending" , iif(__ReadNextVNDBByte(aBytes , nPos) == 1 , "Yes" , "No"))
-                oOrder:aProperties:Add("KeyExp" , __ReadNextVNDBString(aBytes , nPos , 256))
-                oOrder:aProperties:Add("ForExp" , __ReadNextVNDBString(aBytes , nPos , 256))
+                oOrder:aProperties:Add("Duplicate" , iif(__ReadNextVNDBByte(aBytes , REF nPos) == 1 , "Yes" , "No"))
+                oOrder:aProperties:Add("Ascending" , iif(__ReadNextVNDBByte(aBytes , REF nPos) == 1 , "Yes" , "No"))
+                oOrder:aProperties:Add("KeyExp" , __ReadNextVNDBString(aBytes , REF nPos , 256))
+                oOrder:aProperties:Add("ForExp" , __ReadNextVNDBString(aBytes , REF nPos , 256))
                 oIndex:aOrders:Add(oOrder)
             NEXT
 
@@ -368,12 +368,12 @@ PARTIAL CLASS VOMenuEditor
         oDescr := VOMenuDescription{}
         nPos := 1
 
-        cValue := __ReadNextVNMnuString(aBytes , nPos)
+        cValue := __ReadNextVNMnuString(aBytes , REF nPos)
         oDescr:cName := cValue
         oDescr:oMainItem:aProperties:Add("Name" , cValue)
 
         DO WHILE TRUE
-            oItem := __ReadVNMnuItem(aBytes , nPos)
+            oItem := __ReadVNMnuItem(aBytes , REF nPos)
             IF oItem == NULL
                 EXIT
             END IF
@@ -416,8 +416,8 @@ PARTIAL CLASS VOMenuEditor
 
         IF aBytes:Length > nPos + 5 .and. aBytes[nPos + 1] == 5 .and. aBytes[nPos + 2] == 7 .and. aBytes[nPos + 3] == 76
             nPos += 4
-            oItem:aProperties:Add("Inherit" , __ReadNextVNMnuString(aBytes , nPos))
-            oItem:aProperties:Add("ToolbarInherit" , __ReadNextVNMnuString(aBytes , nPos))
+            oItem:aProperties:Add("Inherit" , __ReadNextVNMnuString(aBytes , REF nPos))
+            oItem:aProperties:Add("ToolbarInherit" , __ReadNextVNMnuString(aBytes , REF nPos))
         ELSE
             oItem:aProperties:Add("Inherit" , "")
             oItem:aProperties:Add("ToolbarInherit" , "")
@@ -436,15 +436,15 @@ PARTIAL CLASS VOMenuEditor
         IF aBytes[nPos + 1] < 48 .or. aBytes[nPos + 1] > 57
             RETURN NULL
         END IF
-        cValue := __ReadNextVNMnuString(aBytes , nPos , FALSE)
+        cValue := __ReadNextVNMnuString(aBytes , REF nPos , FALSE)
         oItem:nDepth := Funcs.Val(cValue)
 
-        oItem:aProperties:Add("Caption" , __ReadNextVNMnuString(aBytes , nPos))
+        oItem:aProperties:Add("Caption" , __ReadNextVNMnuString(aBytes , REF nPos))
 
-        cValue := __ReadNextVNMnuString(aBytes , nPos) // Menu ID
+        cValue := __ReadNextVNMnuString(aBytes , REF nPos) // Menu ID
         //		oItem:nMenuID := Funcs.Val(cValue)
 
-        cValue := __ReadNextVNMnuString(aBytes , nPos)
+        cValue := __ReadNextVNMnuString(aBytes , REF nPos)
         nAt := cValue:IndexOf('\t') + 1
         IF nAt != 0
             oItem:aProperties:Add("EventName" , Left(cValue , (DWORD)nAt - 1):Trim())
@@ -454,16 +454,16 @@ PARTIAL CLASS VOMenuEditor
             oItem:aProperties:Add("ID" , "")
         END IF
 
-        oItem:aProperties:Add("Description" , __ReadNextVNMnuString(aBytes , nPos))
-        oItem:aProperties:Add("HelpContext" , __ReadNextVNMnuString(aBytes , nPos))
-        oItem:aProperties:Add("Accelerator" , __ReadNextVNMnuAccel(aBytes , nPos):ToString())
+        oItem:aProperties:Add("Description" , __ReadNextVNMnuString(aBytes , REF nPos))
+        oItem:aProperties:Add("HelpContext" , __ReadNextVNMnuString(aBytes , REF nPos))
+        oItem:aProperties:Add("Accelerator" , __ReadNextVNMnuAccel(aBytes , REF nPos):ToString())
 
-        cValue := __ReadNextVNMnuString(aBytes , nPos , FALSE)
+        cValue := __ReadNextVNMnuString(aBytes , REF nPos , FALSE)
         nValue := Funcs.Val(cValue)
         oItem:aProperties:Add("Enabled" , iif((nValue & 2) != 0 , "Yes" , "No"))
         oItem:aProperties:Add("Checked" , iif((nValue & 1) != 0 , "Yes" , "No"))
 
-        cValue := __ReadNextVNMnuString(aBytes , nPos , FALSE)
+        cValue := __ReadNextVNMnuString(aBytes , REF nPos , FALSE)
         IF !cValue == "-1"
             nButtonID := Funcs.Val(cValue)
             IF nButtonID >= 1  .and. nButtonID < VOMenuEditor.VOMenuToolBar:Count + 1
@@ -475,7 +475,7 @@ PARTIAL CLASS VOMenuEditor
             oItem:aProperties:Add("ButtonBmp" , "")
         ENDIF
 
-        cValue := __ReadNextVNMnuString(aBytes , nPos)
+        cValue := __ReadNextVNMnuString(aBytes , REF nPos)
         IF cValue:Length > 8
             cValue := cValue:Substring(8)
         ELSE
@@ -483,7 +483,7 @@ PARTIAL CLASS VOMenuEditor
         ENDIF
         oItem:aProperties:Add("ButtonCaption" , cValue)
 
-        cValue := __ReadNextVNMnuString(aBytes , nPos)
+        cValue := __ReadNextVNMnuString(aBytes , REF nPos)
         IF cValue:Length > 8
             cValue := cValue:Substring(8)
         ELSE
@@ -491,13 +491,13 @@ PARTIAL CLASS VOMenuEditor
         ENDIF
         oItem:aProperties:Add("ButtonTooltip" , cValue)
 
-        cValue := __ReadNextVNMnuString(aBytes , nPos , FALSE)
+        cValue := __ReadNextVNMnuString(aBytes , REF nPos , FALSE)
         oItem:aProperties:Add("ButtonPos" , cValue)
 
         RETURN oItem
 
     PROTECTED STATIC METHOD __ReadNextVNMnuString(aBytes AS BYTE[] , nPos REF INT) AS STRING
-        RETURN __ReadNextVNMnuString(aBytes , nPos , TRUE)
+        RETURN __ReadNextVNMnuString(aBytes , REF nPos , TRUE)
     PROTECTED STATIC METHOD __ReadNextVNMnuString(aBytes AS BYTE[] , nPos REF INT , lTranslate AS LOGIC) AS STRING
         LOCAL oRead AS List<BYTE>
         LOCAL cRet AS STRING
@@ -840,7 +840,7 @@ END CLASS
 STATIC PARTIAL CLASS Funcs
     INTERNAL STATIC METHOD Val(cValue AS STRING) AS INT
         LOCAL nRet AS INT
-        Int32.TryParse(cValue , nRet)
+        Int32.TryParse(cValue , OUT nRet)
         RETURN nRet
     STATIC METHOD ApplyNameAttribute(oDocument AS XmlDocument , oXmlNode AS XmlNode , cValue AS STRING) AS VOID
         LOCAL oAttribute AS XmlAttribute
@@ -1028,17 +1028,17 @@ PARTIAL CLASS VOFieldSpecEditor
         oItem:aProperties:Add("classname" , cName)
 
         nPos := 0
-        cValue := __ReadNextVNFsString(aBytes , nPos , 128)
+        cValue := __ReadNextVNFsString(aBytes , REF nPos , 128)
         oItem:aProperties:Add("HLName" , cValue)
-        cValue := __ReadNextVNFsString(aBytes , nPos , 64)
+        cValue := __ReadNextVNFsString(aBytes , REF nPos , 64)
         oItem:aProperties:Add("HLCaption" , cValue)
-        cValue := __ReadNextVNFsString(aBytes , nPos , 255)
+        cValue := __ReadNextVNFsString(aBytes , REF nPos , 255)
         oItem:aProperties:Add("HLDescription" , cValue)
-        cValue := __ReadNextVNFsString(aBytes , nPos , 64)
+        cValue := __ReadNextVNFsString(aBytes , REF nPos , 64)
         oItem:aProperties:Add("HLHelpContext" , cValue)
 
         //		oItem:aProperties:Add("Type" , __ReadNextVNFsString(aBytes , nPos , 1))
-        cValue := __ReadNextVNFsString(aBytes , nPos , 1)
+        cValue := __ReadNextVNFsString(aBytes , REF nPos , 1)
         SWITCH cValue
         CASE "C"
             cValue := "Character"
@@ -1057,37 +1057,37 @@ PARTIAL CLASS VOFieldSpecEditor
         END SWITCH
         oItem:aProperties:Add("Type" , cValue)
 
-        oItem:aProperties:Add("TypeDiag" , __ReadNextVNFsString(aBytes , nPos , 128))
-        oItem:aProperties:Add("TypeHelp" , __ReadNextVNFsString(aBytes , nPos , 64))
+        oItem:aProperties:Add("TypeDiag" , __ReadNextVNFsString(aBytes , REF nPos , 128))
+        oItem:aProperties:Add("TypeHelp" , __ReadNextVNFsString(aBytes , REF nPos , 64))
 
-        oItem:aProperties:Add("Len" , __ReadNextVNFsInt16(aBytes , nPos):ToString())
-        oItem:aProperties:Add("LenDiag" , __ReadNextVNFsString(aBytes , nPos , 128))
-        oItem:aProperties:Add("LenHelp" , __ReadNextVNFsString(aBytes , nPos , 64))
+        oItem:aProperties:Add("Len" , __ReadNextVNFsInt16(aBytes , REF nPos):ToString())
+        oItem:aProperties:Add("LenDiag" , __ReadNextVNFsString(aBytes , REF nPos , 128))
+        oItem:aProperties:Add("LenHelp" , __ReadNextVNFsString(aBytes , REF nPos , 64))
 
-        oItem:aProperties:Add("Dec" , __ReadNextVNFsInt16(aBytes , nPos):ToString())
+        oItem:aProperties:Add("Dec" , __ReadNextVNFsInt16(aBytes , REF nPos):ToString())
 
-        oItem:aProperties:Add("Required" , iif(__ReadNextVNFsString(aBytes , nPos , 1) == "Y" , "Yes" , "No"))
-        oItem:aProperties:Add("ReqDiag" , __ReadNextVNFsString(aBytes , nPos , 128))
-        oItem:aProperties:Add("ReqHelp" , __ReadNextVNFsString(aBytes , nPos , 64))
+        oItem:aProperties:Add("Required" , iif(__ReadNextVNFsString(aBytes , REF nPos , 1) == "Y" , "Yes" , "No"))
+        oItem:aProperties:Add("ReqDiag" , __ReadNextVNFsString(aBytes , REF nPos , 128))
+        oItem:aProperties:Add("ReqHelp" , __ReadNextVNFsString(aBytes , REF nPos , 64))
 
-        oItem:aProperties:Add("MinLen" , __ReadNextVNFsInt16(aBytes , nPos):ToString())
-        oItem:aProperties:Add("MinLenDiag" , __ReadNextVNFsString(aBytes , nPos , 128))
-        oItem:aProperties:Add("MinLenHelp" , __ReadNextVNFsString(aBytes , nPos , 64))
+        oItem:aProperties:Add("MinLen" , __ReadNextVNFsInt16(aBytes , REF nPos):ToString())
+        oItem:aProperties:Add("MinLenDiag" , __ReadNextVNFsString(aBytes , REF nPos , 128))
+        oItem:aProperties:Add("MinLenHelp" , __ReadNextVNFsString(aBytes , REF nPos , 64))
 
-        oItem:aProperties:Add("MinRange" , __ReadNextVNFsString(aBytes , nPos , 128))
-        oItem:aProperties:Add("MaxRange" , __ReadNextVNFsString(aBytes , nPos , 128))
-        oItem:aProperties:Add("RangeDiag" , __ReadNextVNFsString(aBytes , nPos , 128))
-        oItem:aProperties:Add("RangeHelp" , __ReadNextVNFsString(aBytes , nPos , 64))
+        oItem:aProperties:Add("MinRange" , __ReadNextVNFsString(aBytes , REF nPos , 128))
+        oItem:aProperties:Add("MaxRange" , __ReadNextVNFsString(aBytes , REF nPos , 128))
+        oItem:aProperties:Add("RangeDiag" , __ReadNextVNFsString(aBytes , REF nPos , 128))
+        oItem:aProperties:Add("RangeHelp" , __ReadNextVNFsString(aBytes , REF nPos , 64))
 
-        oItem:aProperties:Add("Validation" , __ReadNextVNFsString(aBytes , nPos , 128))
-        oItem:aProperties:Add("ValidDiag" , __ReadNextVNFsString(aBytes , nPos , 128))
-        oItem:aProperties:Add("ValidHelp" , __ReadNextVNFsString(aBytes , nPos , 128))
+        oItem:aProperties:Add("Validation" , __ReadNextVNFsString(aBytes , REF nPos , 128))
+        oItem:aProperties:Add("ValidDiag" , __ReadNextVNFsString(aBytes , REF nPos , 128))
+        oItem:aProperties:Add("ValidHelp" , __ReadNextVNFsString(aBytes , REF nPos , 128))
 
-        oItem:aProperties:Add("Picture" , __ReadNextVNFsString(aBytes , nPos , 128))
+        oItem:aProperties:Add("Picture" , __ReadNextVNFsString(aBytes , REF nPos , 128))
 
         nPos += 4
         TRY
-            oItem:aProperties:Add("superclass" , __ReadNextVNFsString(aBytes , nPos , 80))
+            oItem:aProperties:Add("superclass" , __ReadNextVNFsString(aBytes , REF nPos , 80))
         CATCH
             NOP
         END TRY

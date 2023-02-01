@@ -273,13 +273,13 @@ PUBLIC STATIC PARTIAL CLASS Funcs
 
     STATIC METHOD GetModuleNameFromBinary(cFileName AS STRING) AS STRING
         LOCAL cModuleName , cModuleFilename AS STRING
-        IF SplitBinaryFilename(cFileName , cModuleName , cModuleFilename)
+        IF SplitBinaryFilename(cFileName , REF cModuleName , REF cModuleFilename)
             RETURN cModuleName
         END IF
         RETURN NULL
     STATIC METHOD GetModuleFilenameFromBinary(cFileName AS STRING) AS STRING
         LOCAL cModuleName , cModuleFilename AS STRING
-        IF SplitBinaryFilename(cFileName , cModuleName , cModuleFilename)
+        IF SplitBinaryFilename(cFileName , REF cModuleName , REF cModuleFilename)
             RETURN cModuleFilename
         END IF
         RETURN NULL

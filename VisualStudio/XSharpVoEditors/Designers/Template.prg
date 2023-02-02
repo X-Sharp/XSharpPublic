@@ -80,6 +80,9 @@ STATIC CLASS VOWindowEditorTemplate
          CATCH
             NOP
         END TRY
+        IF !File.Exists(cCavoWed)
+            cCavoWed := Funcs.LocateTemplateInParentFolders("CAVOWED.INF" , cOrigDir)
+        ENDIF
 		IF !System.IO.File.Exists(cCavoWed)
 			MessageBox.Show("File Cavowed.inf was not found, please locate it on disk." , Resources.EditorName)
 		ENDIF

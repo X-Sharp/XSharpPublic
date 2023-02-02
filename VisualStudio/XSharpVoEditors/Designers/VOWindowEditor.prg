@@ -4130,6 +4130,9 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         END TRY
 
         IF !File.Exists(cCavoWed)
+            cCavoWed := Funcs.LocateTemplateInParentFolders("CAVOWED.TPL" , cOrigDir)
+        ENDIF
+        IF !File.Exists(cCavoWed)
             MessageBox.Show("File Cavowed.tpl was not found, please locate it on disk." , Resources.EditorName)
         ENDIF
         DO WHILE !File.Exists(cCavoWed)

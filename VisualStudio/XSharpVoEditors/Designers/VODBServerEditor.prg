@@ -2844,6 +2844,9 @@ CLASS DBServerCode
             NOP
         END TRY
         IF !File.Exists(cCavoWed)
+            cCavoWed := Funcs.LocateTemplateInParentFolders("CAVODED.TPL" , cOrigDir)
+        ENDIF
+        IF !File.Exists(cCavoWed)
             MessageBox.Show("File Cavoded.tpl was not found, please locate it on disk." , "DBServer Editor")
         ENDIF
         DO WHILE !File.Exists(cCavoWed)
@@ -2979,6 +2982,9 @@ CLASS DBServerCode
         CATCH
             NOP
         END TRY
+        IF !File.Exists(cCavoWed)
+            cCavoWed := Funcs.LocateTemplateInParentFolders("CAVOFED.TPL" , cOrigDir)
+        ENDIF
         IF !File.Exists(cCavoWed)
             MessageBox.Show("File Cavofed.tpl was not found, please locate it on disk." , "DBServer Editor")
         ENDIF

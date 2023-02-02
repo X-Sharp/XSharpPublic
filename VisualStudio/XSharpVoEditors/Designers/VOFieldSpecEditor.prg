@@ -1231,6 +1231,9 @@ CLASS FieldSpecCode
             NOP
         END TRY
         IF !File.Exists(cCavoWed)
+            cCavoWed := Funcs.LocateTemplateInParentFolders("CAVOFED.TPL" , cOrigDir)
+        ENDIF
+        IF !File.Exists(cCavoWed)
             MessageBox.Show("File Cavofed.tpl was not found, please locate it on disk." , Resources.EditorName)
         ENDIF
         DO WHILE !File.Exists(cCavoWed)

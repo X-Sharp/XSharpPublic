@@ -346,6 +346,35 @@ PUBLIC STATIC PARTIAL CLASS Funcs
         NEXT
         RETURN aRet
 
+    STATIC METHOD LocateTemplateInParentFolders(cFilename AS STRING, cFolder AS STRING) AS STRING
+    	TRY
+	   		LOCAL oDir AS DirectoryInfo
+	   		oDir := DirectoryInfo{cFolder}
+	   		DO WHILE .not. oDir == NULL
+	   			LOCAL cTest AS STRING
+	   			cTest := oDir:FullName + "\" + cFileName
+	   			IF Funcs.SafeFileExists(cTest)
+	   				RETURN cTest
+	   			END IF
+	   			cTest := oDir:FullName + "\Properties\" + cFileName
+	   			IF Funcs.SafeFileExists(cTest)
+	   				RETURN cTest
+	   			END IF
+	   			oDir := oDir:Parent
+	   		END DO
+    	CATCH
+    		NOP
+    	END TRY
+        RETURN cFolder + "\" + cFileName // default location
+
+    STATIC METHOD SafeFileExists(cFilename AS STRING) AS LOGIC
+        TRY
+            RETURN System.IO.File.Exists(cFilename)
+        CATCH
+            NOP
+        END TRY
+        RETURN FALSE
+
 END CLASS
 
 //FUNCTION ChrW(n AS DWORD) AS STRING

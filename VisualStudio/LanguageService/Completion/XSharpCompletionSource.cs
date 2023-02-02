@@ -148,50 +148,24 @@ namespace XSharp.LanguageService
                     return;
                 var tokenList = XSharpTokenTools.GetTokenList(location, out state, includeKeywords);
                 var lastToken = tokenList.LastOrDefault();
-                if (lastToken != null && (lastToken.Type == XSharpLexer.RPAREN || lastToken.Type == XSharpLexer.RCURLY))
+                if (lastToken != null) 
                 {
-                    tokenList.RemoveAt(tokenList.Count - 1);
-                    lastToken = tokenList.LastOrDefault();
+                    if (lastToken.Type != XSharpLexer.DOT && lastToken.Type != XSharpLexer.COLON)
+                    {
+                        if (lastToken.Type == XSharpLexer.ID || XSharpLexer.IsKeyword(lastToken.Type))
+                        {
+                            filterText = lastToken.Text;
+                            session.Properties[XsCompletionProperties.NumCharsToDelete] = filterText.Length;
+                        }
+                        tokenList.RemoveAt(tokenList.Count - 1);
+                        lastToken = tokenList.LastOrDefault();
+                        
+                    }
                 }
                 var addKeywords = typedChar != '.' && typedChar != ':';
 
 
-                // We might be here due to a COMPLETEWORD command, so we have no typedChar
-                // but we "may" have a incomplete word like System.String.To
-                // Try to Guess what TypedChar could be
-                if (typedChar == '\0' && (autoType || nCmdId == VSConstants.VSStd2KCmdID.COMPLETEWORD))
-                {
-                    if (tokenList.Count > 0)
-                    {
-                        string extract = tokenList[tokenList.Count - 1].Text;
-                        typedChar = extract[extract.Length - 1];
-                        if ((typedChar != '.') && (typedChar != ':'))
-                        {
-                            if (tokenList.Count == 1)
-                            {
-                                //
-                                filterText = tokenList[0].Text;
-                                int dotPos = extract.LastIndexOf(".");
-                                if (dotPos > -1)
-                                {
-                                    string startToken = extract.Substring(0, dotPos);
-                                    filterText = extract.Substring(dotPos + 1);
-                                    typedChar = '.';
-                                    var token = (XSharpToken)tokenList[0];
-                                    token.Text = startToken + ".";
-                                }
-                            }
-                            else
-                            {
-                                // So, we get the last Token as a Filter
-                                filterText = tokenList[tokenList.Count - 1].Text;
-                            }
-                            // Include the filter as the text to replace
-                            start -= filterText.Length;
-                            applicableTo = snapshot.CreateTrackingSpan(new SnapshotSpan(start, triggerPoint), SpanTrackingMode.EdgeInclusive);
-                        }
-                    }
-                }
+               
                 bool dotSelector = (typedChar == '.');
 
                 int tokenType = XSharpLexer.UNRECOGNIZED;
@@ -224,8 +198,6 @@ namespace XSharp.LanguageService
                         case XSharpLexer.COLON:
                             break;
                         default:
-                            filterText = symbol.Name;
-                            symbol = null;
                             break;
                     }
 
@@ -289,10 +261,6 @@ namespace XSharp.LanguageService
                             type = location.FindType(typeName);
                         }
                         memberName = xvar.Name;
-                    }
-                    else if (symbol.Kind == Kind.Keyword)
-                    {
-                        filterText = symbol.Name;
                     }
 
                     if (type != null)
@@ -418,11 +386,6 @@ namespace XSharp.LanguageService
                         default:
                             if (state.HasFlag(CompletionState.General))
                             {
-                                if (tokenList.Count == 1 && XSharpLexer.IsKeyword(tokenList[0].Type))
-                                {
-                                    notProcessed = tokenList[0].Text;
-                                }
-                                filterText = notProcessed;
                                 helpers.AddGenericCompletion(compList, location, filterText);
                             }
                             break;

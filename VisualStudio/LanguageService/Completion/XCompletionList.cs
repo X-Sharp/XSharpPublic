@@ -143,7 +143,7 @@ namespace XSharp.LanguageService
         public const string Overloads = nameof(Overloads);
         public const string AutoType = nameof(AutoType);
         public const string Filter = nameof(Filter);
-
+        public const string NumCharsToDelete = nameof(NumCharsToDelete);
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-01-31T18:34:27.728+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-02-02T11:40:57.787+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -31,16 +31,12 @@
       <li styleclass="Body Text">Fixed problem with using an iVar named &quot;Value&quot; inside a property setter, when option /cs is enabled (#1189)</li>
       <li styleclass="Body Text">Fixed incorrect file/line info reported in error message when the Start() function is missing (#1190)</li>
       <li styleclass="Body Text">Fixed bogus warning about ambiguous methods in some cases (#1191)</li>
-      <li styleclass="Body Text">Fixed a preprocessor problem with nested square brackets (#1194)</li>
+      <li styleclass="Body Text">Fixed a preprocessor problem with nested square brackets (in SUM and REPLACE commands) (#1194)</li>
       <li styleclass="Body Text">Fixed incorrect method overload resolution in some cases in the VO dialect (#1195)</li>
+      <li styleclass="Body Text">Fixed incorrect ambiguous call error with OBJECT/IntPtr parameters (#1197)</li>
       <li styleclass="Body Text">Fixed erratic debugging while stepping over code in some cases (#1200)</li>
-      <li styleclass="Body Text"></li>
     </list>
     <para styleclass="Heading2">Runtime</para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text"></li>
-    </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed runtime error in DBSort() (#1196)</li>
@@ -48,14 +44,22 @@
     <para styleclass="Heading2">Visual Studio integration</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Added VS option for the WED to manually adjust the x/y positions/sizes in the generated resource with multipliers (#1190)</li>
+      <li styleclass="Body Text">Added VS option for the WED to manually adjust the x/y positions/sizes in the generated resource with multipliers (#1199)</li>
       <li styleclass="Body Text">Added new options page to control where the editor looks for identifiers on the Complete Word (Ctrl+Space) command.</li>
+      <li styleclass="Body Text">A lot of improvements to the debugger expression evaluator (#1050)</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed previously broken automatic case synchronization, when using the cursor keys to move to a different line in the editor (#722)</li>
+      <li styleclass="Body Text">Fixed some issues with using Control+Space for code completion (#1044, #1140)</li>
+      <li styleclass="Body Text">Fixed an intellisense problem with typing &quot;:&quot; in some cases (#1061)</li>
+      <li styleclass="Body Text">Fixed parameter tooltips in a multiline expressions (method/function calls) (#1135)</li>
+      <li styleclass="Body Text">Fixed problem with Format Document and the PUBLIC modifier (#1137)</li>
+      <li styleclass="Body Text">Fixed a problem with Go to definition not working correctly with multiple partial classes defined in the same file (#1141)</li>
+      <li styleclass="Body Text">Fixed some issues with auto-indenting (#1142, #1143)</li>
       <li styleclass="Body Text">Fixed a problem with not showing values for identifiers in the beginning of a new line when debugging (#1157)</li>
-      <li styleclass="Body Text"></li>
+      <li styleclass="Body Text">Fixed Intellisense problem with LOGICs in some cases (#1185)</li>
+      <li styleclass="Body Text">Cleaned up several X# project templates, fixing problems with incorrect placement of Debug/Output folders (#1201)</li>
     </list>
     <para styleclass="Heading1"></para>
     <para styleclass="Heading1">Changes in 2.14.0.2, 3 &amp; 4</para>

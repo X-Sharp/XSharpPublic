@@ -1146,7 +1146,7 @@ namespace XSharp.LanguageService
                 }
             }
 
-            if (result.Count == 0)
+            if (result.Count == 0 && startOfExpression)
             {
                 // Could it be Static Method with "Using Static"
                 var mstatic = SearchMethodStatic(location, currentName);

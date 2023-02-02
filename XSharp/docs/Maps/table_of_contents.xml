@@ -1364,6 +1364,9 @@
           <topicref type="topic" id="384615064228400" build="ALL" modified="2019-09-24T14:19:49.149Z" icon="0" href="command_STATIC">
             <caption translate="true">STATIC Statement</caption>
           </topicref>
+          <topicref type="topic" id="449596176809893" build="ALL" modified="2023-02-02T13:10:29.848Z" icon="0" href="STACKALLOC">
+            <caption translate="true">STACKALLOC</caption>
+          </topicref>
         </topicref>
       </topicref>
       <topicref type="topic" id="423890338204503" build="ALL" modified="2019-10-15T13:46:32.053Z" icon="0" href="Expressions">

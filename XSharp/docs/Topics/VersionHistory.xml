@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-02T11:40:57.787+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-02-02T13:19:55.928+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
     <keyword>Runtime chapter</keyword>
+    <keyword>STACKALLOC</keyword>
     <keyword>XS9082</keyword>
   </keywords>
   <body>
@@ -18,7 +19,7 @@
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Implemented the STACKALLOC syntax for allocating a block of memory on the stack (instead of the heap) (#1084)</li>
+      <li styleclass="Body Text">Implemented the <link displaytype="text" defaultstyle="true" type="topiclink" href="STACKALLOC">STACKALLOC</link> syntax for allocating a block of memory on the stack (instead of the heap) (#1084)</li>
       <li styleclass="Body Text">Added ASYNC support to XBase++ methods (#1183)</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>

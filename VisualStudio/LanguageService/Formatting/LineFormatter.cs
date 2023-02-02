@@ -8,6 +8,7 @@
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Text;
 using System;
 using System.Collections.Generic;
@@ -339,13 +340,42 @@ namespace XSharp.LanguageService
 
             return prevIndentation;
         }
-
-        private int GetDesiredIndentationAfterLine(int line)
+        bool AllEmptyTokens(IList<IToken> tokens)
         {
-            var prevLineKeyword = GetFirstKeywordInLine(line);
-            var indentValue = GetLineIndent(line);
+            foreach (var token in tokens)
+            {
+                switch (token.Type)
+                {
+                    case XSharpLexer.WS:
+                    case XSharpLexer.EOS:
+                    case XSharpLexer.Eof:
+                    case XSharpLexer.SL_COMMENT:
+                    case XSharpLexer.ML_COMMENT:
+                    case XSharpLexer.DOC_COMMENT:
+                        continue;
+                    default:
+                        return false;
+                }
+            }
+            return true;
+        }
+        bool LineEndsWithContinuation(int lineNo)
+        {
+            return _document.HasLineState(lineNo, LineFlags.Continued);
+        }
+        private int GetDesiredIndentationAfterLine(int prevLineNo)
+        {
+            var line = _buffer.CurrentSnapshot.GetLineFromLineNumber(prevLineNo);
+            var prevLineKeyword = GetFirstKeywordInLine(line ,out _, out var prevTokens);
+            var indentValue = GetLineIndent(prevLineNo);
             var settings = Settings;
             var rule = XFormattingRule.GetFirstRuleByStart(prevLineKeyword);
+            var continued = LineEndsWithContinuation(prevLineNo);
+            if (continued)
+            {
+                // when this was already a continued line then we do not need to add another tab
+                continued = !LineEndsWithContinuation(prevLineNo-1);
+            }
             if (rule != null && rule.Flags.HasFlag(XFormattingFlags.SingleLine))
             {
                 ; // do nothing
@@ -388,11 +418,27 @@ namespace XSharp.LanguageService
                 // After an end keyword we copy its indentation
                 return indentValue;
             }
-            else if (line > 0)
+            if (continued)
+            {
+                return indentValue + settings.IndentSize;
+            }
+            else if (AllEmptyTokens(prevTokens))
             {
                 // Read the previous line until we find something that we can use
-                return GetDesiredIndentationAfterLine(line - 1);
+                return GetDesiredIndentationAfterLine(prevLineNo - 1);
             }
+            // if we are right after the last line of a group of continued lines then we want
+            // to copy the indent value of the first of this group of lines
+            // this last line is not continued, but its predecessors are
+            if (!LineEndsWithContinuation(prevLineNo))
+            {
+                while (LineEndsWithContinuation(prevLineNo - 1))
+                {
+                    prevLineNo -= 1;
+                }
+            }
+            // get the indent of the right line
+            indentValue = GetLineIndent(prevLineNo);
             return indentValue;
         }
 

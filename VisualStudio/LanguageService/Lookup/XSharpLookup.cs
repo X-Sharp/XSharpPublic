@@ -502,19 +502,7 @@ namespace XSharp.LanguageService
             return null;
         }
 
-        /// <summary>
-        /// Retrieve the CompletionType based on :
-        ///  The Token list returned by GetTokenList()
-        ///  The Token that stops the building of the Token List.
-        /// </summary>
-        /// <param name="location"></param>
-        /// <param name="tokenList"></param>
-        /// <param name="state"></param>
-        /// <returns></returns>
-        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<IToken> xtokenList, CompletionState state)
-        {
-            return RetrieveElement(location, xtokenList, state, out _);
-        }
+        
         /// <summary>
         /// Retrieve the CompletionType based on :
         ///  The Token list returned by GetTokenList()
@@ -525,11 +513,10 @@ namespace XSharp.LanguageService
         /// <param name="state"></param>
         /// <param name="notProcessed"></param>
         /// <returns></returns>
-        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<IToken> xtokenList,
-        CompletionState state, out string notProcessed)
+        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<IToken> xtokenList,CompletionState state)
         {
             //
-            notProcessed = "";
+            var notProcessed = "";
             var result = new List<IXSymbol>();
             if (xtokenList == null || xtokenList.Count == 0)
                 return result;

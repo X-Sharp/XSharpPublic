@@ -407,9 +407,10 @@ namespace XSharp.LanguageService
 
             }
             WriteOutputMessage(" --> Commit");
-            session.Properties.TryGetProperty(XsCompletionProperties.Type, out IXTypeSymbol type);
+            var props = session.GetCompletionProperties();
+            var type = props.Type;
+            var triggerChar = props.Char;
             string insertionText = completion.InsertionText;
-            session.Properties.TryGetProperty(XsCompletionProperties.Char, out char triggerChar);
             if (ch == '.' || ch == ':')
             {
                 if (insertionText.IndexOfAny("({".ToCharArray()) == -1)
@@ -417,20 +418,19 @@ namespace XSharp.LanguageService
                     completion.InsertionText += ch;
                 }
             }
-            session.Properties.TryGetProperty(XsCompletionProperties.NumCharsToDelete, out int numchars);
             var buffer = _completionSession.TextView.TextBuffer;
             int start = -1;
-            if (numchars != 0)
+            if (props.NumCharsToDelete != 0)
             {
                 start = _completionSession.GetTriggerPoint(buffer).GetPosition(buffer.CurrentSnapshot);
             }
             // We cannot change the triggerpoint for the session.
             // so commit first and delete later. 
             session.Commit();
-            if (numchars != 0)
+            if (props.NumCharsToDelete != 0)
             {
                 var editSession = buffer.CreateEdit();
-                editSession.Delete(start - numchars, numchars);
+                editSession.Delete(start - props.NumCharsToDelete, props.NumCharsToDelete);
                 editSession.Apply();
             }
             if (moveCursorBack)
@@ -455,12 +455,12 @@ namespace XSharp.LanguageService
             }
             if (!CompletionAllowed(typedChar, !autoType))
                 return false;
-            SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
-            ITextSnapshot snapshot = caret.Snapshot;
+            SnapshotPoint point = _textView.Caret.Position.BufferPosition;
+            ITextSnapshot snapshot = point.Snapshot;
 
             if (!_completionBroker.IsCompletionActive(_textView))
             {
-                _completionSession = _completionBroker.CreateCompletionSession(_textView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
+                _completionSession = _completionBroker.CreateCompletionSession(_textView, snapshot.CreateTrackingPoint(point, PointTrackingMode.Positive), true);
             }
             else
             {
@@ -470,14 +470,15 @@ namespace XSharp.LanguageService
             _completionSession.Dismissed += OnCompletionSessionDismiss;
             //_completionSession.Committed += OnCompletionSessionCommitted;
             _completionSession.SelectedCompletionSetChanged += SelectedCompletionSetChanged;
-
-            _completionSession.Properties[XsCompletionProperties.Command] = nCmdId;
-            _completionSession.Properties[XsCompletionProperties.Char] = typedChar;
-            _completionSession.Properties[XsCompletionProperties.AutoType] = autoType;
-            _completionSession.Properties[XsCompletionProperties.Type] = null;
-            _completionSession.Properties[XsCompletionProperties.IncludeKeywords] = includeKeywords;
-            _completionSession.Properties[XsCompletionProperties.Filter] = "";
-            _completionSession.Properties[XsCompletionProperties.NumCharsToDelete] = 0;
+            var props = _completionSession.GetCompletionProperties();
+            props.Command = nCmdId;
+            props.Position = point;
+            props.Char = typedChar;
+            props.AutoType = autoType;
+            props.Type = null;
+            props.IncludeKeywords = includeKeywords;
+            props.Filter = "";
+            props.NumCharsToDelete = 0;
             try
             {
                 _completionSession.Start();

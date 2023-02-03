@@ -69,7 +69,7 @@ FUNCTION __FoxAutoLock() AS VOID
             VAR lockInfo    := DbLockInfo{}
             lockInfo:Method := DbLockInfo.LockMethod.Exclusive
             lockInfo:RecId  := oRdd:RecNo
-            oRdd:Lock(lockInfo)
+            oRdd:Lock(REF lockInfo)
             IF ! lockInfo:Result
                 NOP
             ENDIF

@@ -971,7 +971,7 @@ CLASS XSharp.CoreDb
         dbli := DbLockInfo{}
         dbli:Result := FALSE
         dbli:Method := DbLockInfo.LockMethod.File
-        RETURN oRdd:Lock(dbli)
+        RETURN oRdd:Lock(REF dbli)
         })
 
         /// <summary>
@@ -1709,7 +1709,7 @@ CLASS XSharp.CoreDb
         ELSE
             lockInfo:Method  := DbLockInfo.LockMethod.Multiple
         ENDIF
-        VAR result := oRdd:Lock(lockInfo)
+        VAR result := oRdd:Lock(REF lockInfo)
         RAISE RecordLocked IIF(uRecId == NULL, oRdd:RecNo, uRecId)
         RETURN result
         })

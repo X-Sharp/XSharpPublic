@@ -56,7 +56,7 @@ FUNCTION FReadText3(ptrHandle AS IntPtr,pData AS IntPtr,dwBytes AS DWORD) AS DWO
 /// <include file="RTComments.xml" path="Comments/FileCompat/*" />
 FUNCTION FRead(ptrHandle AS IntPtr,cBufferVar REF USUAL,dwBytes AS DWORD) AS DWORD
     LOCAL strTemp := "" AS STRING
-	VAR dwResult := XSharp.Core.Functions.FReadText(ptrHandle, strTemp, dwBytes)	
+	VAR dwResult := XSharp.Core.Functions.FReadText(ptrHandle, REF strTemp, dwBytes)	
     cBufferVar := strTemp
     RETURN dwResult
 

@@ -418,7 +418,7 @@ OVERRIDE METHOD Lock( lockInfo REF DbLockInfo ) AS LOGIC
 	BEGIN LOCK SELF
 		IF lockInfo:@@Method == DbLockInfo.LockMethod.Exclusive  .OR. ;
             lockInfo:@@Method == DbLockInfo.LockMethod.Multiple
-			isOK := SELF:_lockRecord( lockInfo )
+			isOK := SELF:_lockRecord( REF lockInfo )
 		ELSEIF lockInfo:@@Method == DbLockInfo.LockMethod.File
 			isOK := SELF:_lockDBFFile( )
 		ELSE

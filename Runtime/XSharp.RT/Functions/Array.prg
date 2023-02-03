@@ -867,9 +867,9 @@ FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,c
         RETURN aTarget
     END IF
 
-    EnforceNumeric( nStart )
+    EnforceNumeric( REF nStart )
     @@Default( REF nCount, nLen - nStart + 1 )
-    EnforceNumeric( nCount )
+    EnforceNumeric( REF nCount )
 
     // Note: ASort() in VO accepts arguments out of bounds and translates them this way:
     IF nStart <= 0

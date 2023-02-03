@@ -285,7 +285,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                         ENDIF
                         IF mustPop
                             _EntityStack:Pop()
+                            canAddMembers  := CurrentEntityKind:HasMembers()
+                            canAddChildren := CurrentEntityKind:HasChildren()
                         ENDIF
+
                         IF entity:Kind:IsGlobalTypeMember() .AND. entity IS XSourceMemberSymbol VAR xGlobalMember
                             // GLOBAL, DEFINE, FUNCTION, PROCEDURE
                             // also #define, #command etc

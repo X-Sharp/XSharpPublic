@@ -255,6 +255,10 @@ namespace XSharp.LanguageService
             }
             return -1;
         }
+        /// <summary>
+        /// Select type or Namespace
+        /// </summary>
+        /// <param name="newLine">Zero based line number</param>
         private void SelectContainingMember(int newLine)
         {
             if (_file == null)
@@ -262,6 +266,12 @@ namespace XSharp.LanguageService
             XSourceEntity selectedElement = _file.FindMemberAtRow(newLine);
             if (selectedElement == null)
                 return;
+            // check if we are before the first element (in the using area)
+            if (selectedElement.Range.StartLine > newLine ||
+                selectedElement.Range.EndLine < newLine)
+            {
+                selectedElement = _file.GlobalType;
+            }
             XSourceTypeSymbol parentType = _file.GlobalType;
             if (selectedElement is XSourceMemberSymbol )
             {
@@ -422,9 +432,9 @@ namespace XSharp.LanguageService
             }
             foreach (XSourceTypeSymbol eltType in xList)
             {
-                if (eltType.Kind == Kind.Namespace)
-                    continue;
-                //
+                //if (eltType.Kind == Kind.Namespace)
+                //    continue;
+                
                 TextSpan sp = this.TextRangeToTextSpan(eltType.Range);
                 ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
                 string name = eltType.FullName;

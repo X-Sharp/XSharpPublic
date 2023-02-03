@@ -208,6 +208,10 @@ namespace XSharp.LanguageService
                             {
                                 CancelSignatureSession();
                             }
+                            // when we move to a new signature with Up/Down then we want to calculate
+                            // the parameter position again. That signature may have more or
+                            // or less parameters
+                            MoveSignature();
                             break;
 
 
@@ -477,11 +481,33 @@ namespace XSharp.LanguageService
             var bufpos = this._textView.Caret.Position.BufferPosition;
             props.triggerPosition = bufpos.Position;
             props.triggerLine = bufpos.GetContainingLine().LineNumber;
-
+            props.Visibility = Modifiers.Public;
+            if (type != null)
+            {
+                var member = location.Member;
+                if (member.Kind.IsGlobalTypeMember())
+                {
+                    props.Visibility = Modifiers.Public;
+                }
+                else
+                {
+                    if (member is IXMemberSymbol)
+                    {
+                        if (type.FullName == member.ParentType.FullName)
+                        {
+                            props.Visibility = Modifiers.Private;
+                        }
+                        else
+                        {
+                            props.Visibility = Modifiers.Public;
+                        }
+                    }
+                }
+            }
             if (type != null && methodName != null)
             {
                 var findStatic = triggerchar == '.';
-                currentElement = XSharpLookup.SearchMethod(location, type, methodName, Modifiers.Private, findStatic).FirstOrDefault();
+                currentElement = XSharpLookup.SearchMethod(location, type, methodName, props.Visibility, findStatic).FirstOrDefault();
                 if (currentElement == null)
                 {
                     var extensions = location.File.Project.GetExtensions(type.FullName);
@@ -492,6 +518,29 @@ namespace XSharp.LanguageService
             else
             {
                 currentElement = findElementAt(command, triggerchar, ssp, props);
+                if (currentElement is IXMemberSymbol mem)
+                {
+                    type = mem.ParentType;
+                    var member = location.Member;
+                    if (member.Kind.IsGlobalTypeMember())
+                    {
+                        props.Visibility = Modifiers.Public;
+                    }
+                    else
+                    {
+                        if (member is IXMemberSymbol)
+                        {
+                            if (type.FullName == member.ParentType.FullName)
+                            {
+                                props.Visibility = Modifiers.Private;
+                            }
+                            else
+                            {
+                                props.Visibility = Modifiers.Public;
+                            }
+                        }
+                    }
+                }
             }
             if (currentElement == null)
                 return false;
@@ -509,14 +558,6 @@ namespace XSharp.LanguageService
             }
             _signatureSession.Properties[typeof(XSharpSignatureProperties)] = props;
 
-            if (location.Member.Kind.IsGlobalTypeMember())
-            {
-                props.Visibility = Modifiers.Public;
-            }
-            else
-            {
-                props.Visibility = Modifiers.Protected;
-            }
             _signatureSession.Dismissed += OnSignatureSessionDismiss;
             props.Element = currentElement;
             props.Start = ssp.Position;

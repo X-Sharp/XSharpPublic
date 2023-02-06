@@ -502,11 +502,11 @@ CLASS SingleLineEdit INHERIT Edit
 		vt := oFieldSpec:ValType
 		DO CASE
 		CASE (vt == "C")
-			sDefTempl := Replicate("X", Math.Min(oFieldSpec:Length, MAX_FMTSTRING_LEN))
+			sDefTempl := Replicate("X", Math.Min((INT)  oFieldSpec:Length, MAX_FMTSTRING_LEN))
 		CASE (vt == "L")
 			sDefTempl := "L"
 		CASE oFieldSpec:ValType == "N"
-			sDefTempl := Replicate("#", Math.Min(oFieldSpec:Length, MAX_FMTSTRING_LEN))
+			sDefTempl := Replicate("#", Math.Min((INT) oFieldSpec:Length, MAX_FMTSTRING_LEN))
 			IF (oFieldSpec:Decimals > 0)
 				pos := oFieldSpec:Length - oFieldSpec:Decimals
 				sDefTempl := Left(sDefTempl, Pos - 1) + "." + Replicate("#", oFieldSpec:Decimals)

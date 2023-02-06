@@ -1,7 +1,7 @@
 ﻿// Win32Defines.prg
 // Created by    : robert
 // Creation Date : 5/5/2020 4:05:44 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : ARTEMIS
 
 #region defines
@@ -1144,8 +1144,8 @@ DEFINE SWP_DEFERERASE        := 0x2000
 DEFINE SWP_ASYNCWINDOWPOS  := 0x4000
 DEFINE HWND_TOP             := IntPtr{0}
 DEFINE HWND_BOTTOM          := IntPtr{1}
-DEFINE HWND_TOPMOST         := IntPtr{0xFFFFFFFF}
-DEFINE HWND_NOTOPMOST       := IntPtr{0xFFFFFFFE}
+DEFINE HWND_TOPMOST         := IntPtr{(INT) 0xFFFFFFFF}
+DEFINE HWND_NOTOPMOST       := IntPtr{(INT) 0xFFFFFFFE}
 DEFINE DLGWINDOWEXTRA := 30
 DEFINE KEYEVENTF_EXTENDEDKEY     :=  0x0001
 DEFINE KEYEVENTF_KEYUP               :=  0x0002
@@ -2854,7 +2854,7 @@ DEFINE TB_ISBUTTONINDETERMINATE := (WM_USER + 13)
 DEFINE TB_SETSTATE		:= (WM_USER + 17)
 DEFINE TB_GETSTATE		:= (WM_USER + 18)
 DEFINE TB_ADDBITMAP 		:= (WM_USER + 19)
-DEFINE HINST_COMMCTRL 		:= IntPtr{ 0xFFFFFFFF}
+DEFINE HINST_COMMCTRL 		:= IntPtr{ (INT) 0xFFFFFFFF}
 DEFINE IDB_STD_SMALL_COLOR	:= 0
 DEFINE IDB_STD_LARGE_COLOR	:= 1
 DEFINE IDB_VIEW_SMALL_COLOR 	:= 4
@@ -3326,7 +3326,7 @@ DEFINE LVCDI_ITEM      := 0x00000000
 DEFINE LVCDI_GROUP     := 0x00000001
 	// ListView custom draw return values
 DEFINE LVCDRF_NOSELECT             := 0x00010000
-DEFINE LVCDRF_NOGROUPFRAME         := 0x00020000  
+DEFINE LVCDRF_NOGROUPFRAME         := 0x00020000
 DEFINE LVN_ITEMCHANGING 		 := 	(LVN_FIRST-0)
 DEFINE LVN_ITEMCHANGED				:=	(LVN_FIRST-1)
 DEFINE LVN_INSERTITEM 					:=(LVN_FIRST-2)
@@ -3373,10 +3373,10 @@ DEFINE TVIS_OVERLAYMASK 			 := 0x0F00
 DEFINE TVIS_STATEIMAGEMASK		 := 0xF000
 DEFINE TVIS_USERMASK					 := 0xF000
 DEFINE I_CHILDRENCALLBACK 		:= (-1)
-DEFINE TVI_ROOT 							 := IntPtr{0xFFFF0000}
-DEFINE TVI_FIRST							 := IntPtr{0xFFFF0001}
-DEFINE TVI_LAST 							 := IntPtr{0xFFFF0002}
-DEFINE TVI_SORT 							 := IntPtr{0xFFFF0003}
+DEFINE TVI_ROOT 				 := IntPtr{(INT) 0xFFFF0000}
+DEFINE TVI_FIRST				 := IntPtr{(INT) 0xFFFF0001}
+DEFINE TVI_LAST 				 := IntPtr{(INT) 0xFFFF0002}
+DEFINE TVI_SORT 				 := IntPtr{(INT) 0xFFFF0003}
 DEFINE TVM_INSERTITEM 			 :=  (TV_FIRST + 0)
 DEFINE TVM_DELETEITEM 			 := 	(TV_FIRST + 1)
 DEFINE TVM_EXPAND 						 := (TV_FIRST + 2)
@@ -4511,39 +4511,39 @@ DEFINE PSD_NONETWORKBUTTON               := 0x00200000 // must be same as PD_*
 // Wingdi defines
 
 #region defines
-DEFINE R2_BLACK 	   := 1                /*  0       */   
-DEFINE R2_NOTMERGEPEN	   := 2          /* DPon     */   
-DEFINE R2_MASKNOTPEN	   := 3             /* DPna     */   
-DEFINE R2_NOTCOPYPEN	   := 4             /* PN       */   
-DEFINE R2_MASKPENNOT	   := 5             /* PDna     */   
-DEFINE R2_NOT		   := 6                /* Dn       */   
-DEFINE R2_XORPEN	   := 7                /* DPx      */   
-DEFINE R2_NOTMASKPEN	   := 8             /* DPan     */   
-DEFINE R2_MASKPEN	   := 9                /* DPa      */   
-DEFINE R2_NOTXORPEN 	   := 10            /* DPxn     */   
-DEFINE R2_NOP		   := 11               /* D        */   
-DEFINE R2_MERGENOTPEN	   := 12         /* DPno     */   
-DEFINE R2_COPYPEN	   := 13               /* P        */   
-DEFINE R2_MERGEPENNOT	   := 14         /* PDno     */   
-DEFINE R2_MERGEPEN	   := 15            /* DPo      */   
-DEFINE R2_WHITE 	   := 16               /*  1       */   
+DEFINE R2_BLACK 	   := 1                /*  0       */
+DEFINE R2_NOTMERGEPEN	   := 2          /* DPon     */
+DEFINE R2_MASKNOTPEN	   := 3             /* DPna     */
+DEFINE R2_NOTCOPYPEN	   := 4             /* PN       */
+DEFINE R2_MASKPENNOT	   := 5             /* PDna     */
+DEFINE R2_NOT		   := 6                /* Dn       */
+DEFINE R2_XORPEN	   := 7                /* DPx      */
+DEFINE R2_NOTMASKPEN	   := 8             /* DPan     */
+DEFINE R2_MASKPEN	   := 9                /* DPa      */
+DEFINE R2_NOTXORPEN 	   := 10            /* DPxn     */
+DEFINE R2_NOP		   := 11               /* D        */
+DEFINE R2_MERGENOTPEN	   := 12         /* DPno     */
+DEFINE R2_COPYPEN	   := 13               /* P        */
+DEFINE R2_MERGEPENNOT	   := 14         /* PDno     */
+DEFINE R2_MERGEPEN	   := 15            /* DPo      */
+DEFINE R2_WHITE 	   := 16               /*  1       */
 DEFINE R2_LAST		   := 16
 /* Ternary raster operations */
-DEFINE SRCCOPY		   :=  0x00CC0020U      /* dest = source                   */  
-DEFINE SRCPAINT 	   :=  0x00EE0086U      /* dest = source OR dest           */  
-DEFINE SRCAND		   :=  0x008800C6U      /* dest = source AND dest          */  
-DEFINE SRCINVERT	   :=  0x00660046U      /* dest = source XOR dest          */  
-DEFINE SRCERASE 	   :=  0x00440328U      /* dest = source AND (NOT dest )   */  
-DEFINE NOTSRCCOPY	   :=  0x00330008U      /* dest = (NOT source)             */  
-DEFINE NOTSRCERASE	:=  0x001100A6U      /* dest = (NOT src) AND (NOT dest) */  
-DEFINE MERGECOPY	   :=  0x00C000CAU      /* dest = (source AND pattern)     */  
-DEFINE MERGEPAINT	   :=  0x00BB0226U      /* dest = (NOT source) OR dest     */  
-DEFINE PATCOPY		   :=  0x00F00021U      /* dest = pattern                  */  
-DEFINE PATPAINT 	   :=  0x00FB0A09U      /* dest = DPSnoo                   */  
-DEFINE PATINVERT	   :=  0x005A0049U      /* dest = pattern XOR dest         */  
-DEFINE DSTINVERT	   :=  0x00550009U      /* dest = (NOT dest)               */  
-DEFINE BLACKNESS	   :=  0x00000042U      /* dest = BLACK                    */  
-DEFINE WHITENESS	   :=  0x00FF0062U      /* dest = WHITE                    */  
+DEFINE SRCCOPY		   :=  0x00CC0020U      /* dest = source                   */
+DEFINE SRCPAINT 	   :=  0x00EE0086U      /* dest = source OR dest           */
+DEFINE SRCAND		   :=  0x008800C6U      /* dest = source AND dest          */
+DEFINE SRCINVERT	   :=  0x00660046U      /* dest = source XOR dest          */
+DEFINE SRCERASE 	   :=  0x00440328U      /* dest = source AND (NOT dest )   */
+DEFINE NOTSRCCOPY	   :=  0x00330008U      /* dest = (NOT source)             */
+DEFINE NOTSRCERASE	:=  0x001100A6U      /* dest = (NOT src) AND (NOT dest) */
+DEFINE MERGECOPY	   :=  0x00C000CAU      /* dest = (source AND pattern)     */
+DEFINE MERGEPAINT	   :=  0x00BB0226U      /* dest = (NOT source) OR dest     */
+DEFINE PATCOPY		   :=  0x00F00021U      /* dest = pattern                  */
+DEFINE PATPAINT 	   :=  0x00FB0A09U      /* dest = DPSnoo                   */
+DEFINE PATINVERT	   :=  0x005A0049U      /* dest = pattern XOR dest         */
+DEFINE DSTINVERT	   :=  0x00550009U      /* dest = (NOT dest)               */
+DEFINE BLACKNESS	   :=  0x00000042U      /* dest = BLACK                    */
+DEFINE WHITENESS	   :=  0x00FF0062U      /* dest = WHITE                    */
 DEFINE NOMIRRORBITMAP  := 0x80000000U /* Do not Mirror the bitmap in this call */
 DEFINE CAPTUREBLT      := 0x40000000U /* Include layered windows */
 DEFINE GDI_ERROR   := 0xFFFFFFFFL
@@ -5560,8 +5560,8 @@ DEFINE DISPLAY_DEVICE_MIRRORING_DRIVER    := 0x00000008
 DEFINE DISPLAY_DEVICE_VGA_COMPATIBLE      := 0x00000010
 DEFINE DISPLAY_DEVICE_REMOVABLE           := 0x00000020
 DEFINE DISPLAY_DEVICE_MODESPRUNED         := 0x08000000
-DEFINE DISPLAY_DEVICE_REMOTE              := 0x04000000  
-DEFINE DISPLAY_DEVICE_DISCONNECT          := 0x02000000  
+DEFINE DISPLAY_DEVICE_REMOTE              := 0x04000000
+DEFINE DISPLAY_DEVICE_DISCONNECT          := 0x02000000
 /* Child device state */
 DEFINE DISPLAY_DEVICE_ACTIVE             :=  0x00000001
 DEFINE DISPLAY_DEVICE_ATTACHED           :=  0x00000002
@@ -5881,7 +5881,7 @@ DEFINE WGL_FONT_POLYGONS   := 1
 
 #region defines
 DEFINE cchTextLimitDefault := 32767
-// RichEdit messages 
+// RichEdit messages
 DEFINE WM_CONTEXTME 										:= 0x007B
 DEFINE EM_CANPASTE				 := (WM_USER + 50)
 DEFINE EM_DISPLAYBAND				 := (WM_USER + 51)
@@ -5915,7 +5915,7 @@ DEFINE EM_GETOPTIONS				 := (WM_USER + 78)
 DEFINE EM_FINDTEXTEX				 := (WM_USER + 79)
 DEFINE EM_GETWORDBREAKPROCEX			 := (WM_USER + 80)
 DEFINE EM_SETWORDBREAKPROCEX				 := (WM_USER + 81)
-// RichEdit 2.0 messages      
+// RichEdit 2.0 messages
 /*
 define EM_SETUNDOLIMIT			:= (WM_USER + 82)
 define EM_REDO					:= (WM_USER + 84)
@@ -5933,7 +5933,7 @@ define EM_GETTEXTLENGTHEX	:= (WM_USER + 95)
 */
 DEFINE EM_SHOWSCROLLBAR		:= (WM_USER + 96)
 DEFINE EM_SETTEXTEX			:= (WM_USER + 97)
-// East Asia specific messages 
+// East Asia specific messages
 DEFINE EM_SETPUNCTUATION				:=	(WM_USER + 100)
 DEFINE EM_GETPUNCTUATION				:=	(WM_USER + 101)
 DEFINE EM_SETWORDWRAPMODE				:=	(WM_USER + 102)
@@ -5948,19 +5948,19 @@ DEFINE EM_GETLANGOPTIONS		:= (WM_USER + 121)
 DEFINE EM_GETIMECOMPMODE		:= (WM_USER + 122)
 DEFINE EM_FINDTEXTW			:= (WM_USER + 123)
 DEFINE EM_FINDTEXTEXW		:= 	( WM_USER + 124)
-// RE3.0 FE messages 
+// RE3.0 FE messages
 DEFINE EM_RECONVERSION		:= 	(WM_USER + 125)
-DEFINE EM_SETIMEMODEBIAS	:= 	(WM_USER + 126)	
+DEFINE EM_SETIMEMODEBIAS	:= 	(WM_USER + 126)
 DEFINE EM_GETIMEMODEBIAS	:= 	(WM_USER + 127)
-// BiDi specific messages 
+// BiDi specific messages
 DEFINE EM_SETBIDIOPTIONS		:= (WM_USER + 200)
 DEFINE EM_GETBIDIOPTIONS		:= (WM_USER + 201)
 DEFINE EM_SETTYPOGRAPHYOPTIONS	:= (WM_USER + 202)
 DEFINE EM_GETTYPOGRAPHYOPTIONS	:= (WM_USER + 203)
-// Extended edit style specific messages 
+// Extended edit style specific messages
 DEFINE EM_SETEDITSTYLE			:= (WM_USER + 204)
 DEFINE EM_GETEDITSTYLE			:= (WM_USER + 205)
-// Extended edit style masks 
+// Extended edit style masks
 DEFINE SES_EMULATESYSEDIT	:= 	1
 DEFINE SES_BEEPONMAXTEXT		:= 2
 DEFINE SES_EXTENDBACKCOLOR	:= 	4
@@ -5985,7 +5985,7 @@ DEFINE SES_LBSCROLLNOTIFY		:= 0x0100000
 DEFINE SES_CTFALLOWEMBED		:= 0x0200000
 DEFINE SES_CTFALLOWSMARTTAG	:= 0x0400000
 DEFINE SES_CTFALLOWPROOFING	:= 0x0800000
-// Options for EM_SETLANGOPTIONS and EM_GETLANGOPTIONS 
+// Options for EM_SETLANGOPTIONS and EM_GETLANGOPTIONS
 DEFINE IMF_AUTOKEYBOARD		:= 0x0001
 DEFINE IMF_AUTOFONT				:= 0x0002
 DEFINE IMF_IMECANCELCOMPLETE	:= 0x0004	// High completes comp string when aborting, low cancels
@@ -5993,19 +5993,19 @@ DEFINE IMF_IMEALWAYSSENDNOTIFY := 0x0008
 DEFINE IMF_AUTOFONTSIZEADJUST	:= 0x0010
 DEFINE IMF_UIFONTS				:= 0x0020
 DEFINE IMF_DUALFONT			:= 0x0080
-// Values for EM_GETIMECOMPMODE 
+// Values for EM_GETIMECOMPMODE
 DEFINE ICM_NOTOPEN				:= 0x0000
 DEFINE ICM_LEVEL3				:= 0x0001
 DEFINE ICM_LEVEL2				:= 0x0002
 DEFINE ICM_LEVEL2_5				:= 0x0003
 DEFINE ICM_LEVEL2_SUI			:= 0x0004
 DEFINE ICM_CTF					:= 0x0005
-// Options for EM_SETTYPOGRAPHYOPTIONS 
+// Options for EM_SETTYPOGRAPHYOPTIONS
 DEFINE TO_ADVANCEDTYPOGRAPHY	:= 1
 DEFINE TO_SIMPLELINEBREAK		:= 2
 DEFINE TO_DISABLECUSTOMTEXTOUT	:= 4
 DEFINE TO_ADVANCEDLAYOUT			:= 8
-// Pegasus outline mode messages (RE 3.0) 
+// Pegasus outline mode messages (RE 3.0)
 // Outline mode message
 DEFINE EM_OUTLINE           :=    (WM_USER + 220)
 // Message for getting and restoring scroll pos
@@ -6088,15 +6088,15 @@ DEFINE EMO_EXPANDDOCUMENT      := 1
 DEFINE VM_NORMAL				:= 4		// Agrees with RTF \viewkindN
 DEFINE VM_OUTLINE				:= 2
 DEFINE VM_PAGE					:= 9		// Screen page view (not print layout)
-// New notifications 
+// New notifications
 DEFINE EN_MSGFILTER			:= 0x0700
 DEFINE EN_REQUESTRESIZE	:= 	0x0701
 DEFINE EN_SELCHANGE			:= 0x0702
 DEFINE EN_DROPFILES			:= 0x0703
 DEFINE EN_PROTECTED			:= 0x0704
-DEFINE EN_CORRECTTEXT		:= 	0x0705			// PenWin specific 
+DEFINE EN_CORRECTTEXT		:= 	0x0705			// PenWin specific
 DEFINE EN_STOPNOUNDO		:= 	0x0706
-DEFINE EN_IMECHANGE			:= 0x0707			// East Asia specific 
+DEFINE EN_IMECHANGE			:= 0x0707			// East Asia specific
 DEFINE EN_SAVECLIPBOARD	:= 	0x0708
 DEFINE EN_OLEOPFAILED		:= 	0x0709
 DEFINE EN_OBJECTPOSITIONS	:= 	0x070a
@@ -6107,7 +6107,7 @@ DEFINE EN_PAGECHANGE			:= 0x070e
 DEFINE EN_LOWFIRTF				:= 0x070f
 DEFINE EN_ALIGNLTR				:= 0x0710			// BiDi specific notification
 DEFINE EN_ALIGNRTL				:= 0x0711			// BiDi specific notification
-// Event notification masks 
+// Event notification masks
 DEFINE ENM_NONE						 := 0x00000000
 DEFINE ENM_CHANGE					 :=  0x00000001
 DEFINE ENM_UPDATE					 :=  0x00000002
@@ -6122,26 +6122,26 @@ DEFINE ENM_REQUESTRESIZE				 :=  0x00040000
 DEFINE ENM_SELCHANGE					 :=  0x00080000
 DEFINE ENM_DROPFILES					 :=  0x00100000
 DEFINE ENM_PROTECTED					 :=  0x00200000
-DEFINE ENM_CORRECTTEXT			:= 0x00400000		// PenWin specific 
+DEFINE ENM_CORRECTTEXT			:= 0x00400000		// PenWin specific
 DEFINE ENM_IMECHANGE			:= 0x00800000		// Used by RE1.0 compatibility
 DEFINE ENM_LANGCHANGE			:= 0x01000000
 DEFINE ENM_OBJECTPOSITIONS	:= 	0x02000000
 DEFINE ENM_LINK					:= 0x04000000
 DEFINE ENM_LOWFIRTF				:= 0x08000000
-// New edit control styles 
+// New edit control styles
 DEFINE ES_SAVESEL						:= 0x00008000
 DEFINE ES_SUNKEN			:= 0x00004000
 DEFINE ES_DISABLENOSCROLL		:= 0x00002000
-// Same as WS_MAXIMIZE, but that doesn't make sense so we re-use the value 
+// Same as WS_MAXIMIZE, but that doesn't make sense so we re-use the value
 DEFINE ES_SELECTIONBAR			:= 0x01000000
-// Same as ES_UPPERCASE, but re-used to completely disable OLE drag'n'drop 
+// Same as ES_UPPERCASE, but re-used to completely disable OLE drag'n'drop
 DEFINE ES_NOOLEDRAGDROP			:= 0x00000008
 DEFINE ES_EX_NOCALLOLEINIT		:= 0x01000000
-// These flags are used in FE Windows 
+// These flags are used in FE Windows
 DEFINE ES_VERTICAL			:= 0x00400000
 DEFINE ES_NOIME			:= 0x00080000
 DEFINE ES_SELFIME			:= 0x00040000
-// Edit control options 
+// Edit control options
 DEFINE ECO_AUTOWORDSELECTION						:= 0x00000001
 DEFINE ECO_AUTOVSCROLL			:= 0x00000040
 DEFINE ECO_AUTOHSCROLL			:= 0x00000080
@@ -6151,18 +6151,18 @@ DEFINE ECO_WANTRETURN			:= 0x00001000
 DEFINE ECO_SAVESEL			:= 0x00008000
 DEFINE ECO_SELECTIONBAR						:= 0x01000000
 DEFINE ECO_VERTICAL			:= 0x00400000
-// ECO operations 
+// ECO operations
 DEFINE ECOOP_SET			:= 0x0001
 DEFINE ECOOP_OR				:= 0x0002
 DEFINE ECOOP_AND			:= 0x0003
 DEFINE ECOOP_XOR			:= 0x0004
-// New word break function actions 
+// New word break function actions
 DEFINE WB_CLASSIFY			:= 3
 DEFINE WB_MOVEWORDLEFT						:= 4
 DEFINE WB_MOVEWORDRIGHT									:= 5
 DEFINE WB_LEFTBREAK									:= 6
 DEFINE WB_RIGHTBREAK						:= 7
-// East Asia specific flags 
+// East Asia specific flags
 DEFINE WB_MOVEWORDPREV		:= 4
 DEFINE WB_MOVEWORDNEXT		:= 5
 DEFINE WB_PREVBREAK		:= 6
@@ -6177,7 +6177,7 @@ DEFINE WBF_OVERFLOW		:= 0x040
 DEFINE WBF_LEVEL1		:= 0x080
 DEFINE WBF_LEVEL2		:= 0x100
 DEFINE WBF_CUSTOM		:= 0x200
-// East Asia specific flags 
+// East Asia specific flags
 DEFINE IMF_FORCENONE          := 0x0001
 DEFINE IMF_FORCEENABLE        := 0x0002
 DEFINE IMF_FORCEDISABLE       := 0x0004
@@ -6187,7 +6187,7 @@ DEFINE IMF_FORCEACTIVE        := 0x0040
 DEFINE IMF_FORCEINACTIVE      := 0x0080
 DEFINE IMF_FORCEREMEMBER      := 0x0100
 DEFINE IMF_MULTIPLEEDIT       := 0x0400
-// Word break flags (used with WB_CLASSIFY) 
+// Word break flags (used with WB_CLASSIFY)
 DEFINE WBF_CLASS		:= BYTE(_CAST,0x0F)
 DEFINE WBF_ISWHITE		:= BYTE(_CAST,0x10)
 DEFINE WBF_BREAKLINE		:= BYTE(_CAST,0x20)
@@ -6197,7 +6197,7 @@ DEFINE CFM_ITALIC						:= 0x00000002
 DEFINE CFM_UNDERLINE	:= 0x00000004
 DEFINE CFM_STRIKEOUT	:= 0x00000008
 DEFINE CFM_PROTECTED	:= 0x00000010
-DEFINE CFM_LINK		:= 0x00000020			// Exchange hyperlink extension 
+DEFINE CFM_LINK		:= 0x00000020			// Exchange hyperlink extension
 DEFINE CFM_SIZE							:= 0x80000000L
 DEFINE CFM_COLOR						:= 0x40000000L
 DEFINE CFM_FACE							:= 0x20000000L
@@ -6209,17 +6209,17 @@ DEFINE CFE_UNDERLINE	:= 0x0004
 DEFINE CFE_STRIKEOUT	:= 0x0008
 DEFINE CFE_PROTECTED	:= 0x0010
 DEFINE CFE_LINK		:= 0x0020
-DEFINE CFE_AUTOCOLOR	:= 0x40000000			// NOTE: this corresponds to 
-											// CFM_COLOR, which controls it 
+DEFINE CFE_AUTOCOLOR	:= 0x40000000			// NOTE: this corresponds to
+											// CFM_COLOR, which controls it
 // Masks and effects defined for CHARFORMAT2 -- an (*) indicates
 // that the data is stored by RichEdit 2.0/3.0, but not displayed
-DEFINE CFM_SMALLCAPS		:= 0x0040			// (*)	
-DEFINE CFM_ALLCAPS			:= 0x0080			// Displayed by 3.0	
-DEFINE CFM_HIDDEN			:= 0x0100			// Hidden by 3.0 
-DEFINE CFM_OUTLINE			:= 0x0200			// (*)	
-DEFINE CFM_SHADOW			:= 0x0400			// (*)	
-DEFINE CFM_EMBOSS			:= 0x0800			// (*)	
-DEFINE CFM_IMPRINT			:= 0x1000			// (*)	
+DEFINE CFM_SMALLCAPS		:= 0x0040			// (*)
+DEFINE CFM_ALLCAPS			:= 0x0080			// Displayed by 3.0
+DEFINE CFM_HIDDEN			:= 0x0100			// Hidden by 3.0
+DEFINE CFM_OUTLINE			:= 0x0200			// (*)
+DEFINE CFM_SHADOW			:= 0x0400			// (*)
+DEFINE CFM_EMBOSS			:= 0x0800			// (*)
+DEFINE CFM_IMPRINT			:= 0x1000			// (*)
 DEFINE CFM_DISABLED			:= 0x2000
 DEFINE CFM_REVISED			:= 0x4000
 DEFINE CFM_BACKCOLOR      := 0x04000000L
@@ -6231,13 +6231,13 @@ DEFINE CFM_KERNING        := 0x00100000L		/* (*)	*/
 DEFINE CFM_STYLE          := 0x00080000L		/* (*)	*/
 DEFINE CFM_ANIMATION      := 0x00040000L		/* (*)	*/
 DEFINE CFM_REVAUTHOR      := 0x00008000L
-DEFINE CFE_SUBSCRIPT		:= 0x00010000		// Superscript and subscript are 
-DEFINE CFE_SUPERSCRIPT		:= 0x00020000		//  mutually exclusive			 
+DEFINE CFE_SUBSCRIPT		:= 0x00010000		// Superscript and subscript are
+DEFINE CFE_SUPERSCRIPT		:= 0x00020000		//  mutually exclusive
 DEFINE CFM_SUBSCRIPT			:= CFE_SUBSCRIPT | CFE_SUPERSCRIPT
 DEFINE CFM_SUPERSCRIPT		:= CFM_SUBSCRIPT
 // CHARFORMAT "ALL" masks
 DEFINE CFM_EFFECTS := (CFM_BOLD | CFM_ITALIC | CFM_UNDERLINE | CFM_COLOR | CFM_STRIKEOUT | CFE_PROTECTED | CFM_LINK)
-DEFINE CFM_ALL := (CFM_EFFECTS | CFM_SIZE | CFM_FACE | CFM_OFFSET | CFM_CHARSET) 
+DEFINE CFM_ALL := (CFM_EFFECTS | CFM_SIZE | CFM_FACE | CFM_OFFSET | CFM_CHARSET)
 DEFINE CFM_EFFECTS2 := (CFM_EFFECTS | CFM_DISABLED | CFM_SMALLCAPS | CFM_ALLCAPS | CFM_HIDDEN  | CFM_OUTLINE | CFM_SHADOW | CFM_EMBOSS | CFM_IMPRINT | CFM_DISABLED | CFM_REVISED | CFM_SUBSCRIPT | CFM_SUPERSCRIPT | CFM_BACKCOLOR)
 DEFINE CFM_ALL2	:=  (CFM_ALL | CFM_EFFECTS2 | CFM_BACKCOLOR | CFM_LCID | CFM_UNDERLINETYPE | CFM_WEIGHT | CFM_REVAUTHOR | CFM_SPACING | CFM_KERNING | CFM_STYLE | CFM_ANIMATION)
 DEFINE CFE_SMALLCAPS		:= CFM_SMALLCAPS
@@ -6263,7 +6263,7 @@ DEFINE CFU_UNDERLINETHICKDASH			:= 14	// (*) display as dash
 DEFINE CFU_UNDERLINELONGDASH				:= 13	// (*) display as dash
 DEFINE CFU_UNDERLINEHEAVYWAVE			:= 12	// (*) display as wave
 DEFINE CFU_UNDERLINEDOUBLEWAVE			:= 11	// (*) display as wave
-DEFINE CFU_UNDERLINEHAIRLINE		:= 	10	// (*) display as single	
+DEFINE CFU_UNDERLINEHAIRLINE		:= 	10	// (*) display as single
 DEFINE CFU_UNDERLINETHICK			:= 	9
 DEFINE CFU_UNDERLINEWAVE			:= 	8
 DEFINE CFU_UNDERLINEDASHDOTDOT	:= 		7
@@ -6271,11 +6271,11 @@ DEFINE CFU_UNDERLINEDASHDOT		:= 	6
 DEFINE CFU_UNDERLINEDASH			:= 	5
 DEFINE CFU_UNDERLINEDOTTED		:= 		4
 DEFINE CFU_UNDERLINEDOUBLE		:= 		3	// (*) display as single
-DEFINE CFU_UNDERLINEWORD			:= 	2	// (*) display as single	
+DEFINE CFU_UNDERLINEWORD			:= 	2	// (*) display as single
 DEFINE CFU_UNDERLINE				:= 	1
 DEFINE CFU_UNDERLINENONE			:= 	0
 DEFINE yHeightCharPtsMost := 1638
-// EM_SETCHARFORMAT wParam masks 
+// EM_SETCHARFORMAT wParam masks
 DEFINE SCF_SELECTION	:= 0x0001
 DEFINE SCF_WORD		:= 0x0002
 DEFINE SCF_DEFAULT			:= 0x0000	// Set default charformat or paraformat
@@ -6294,27 +6294,27 @@ DEFINE SF_TEXT			:= 0x0001
 DEFINE SF_RTF			:= 0x0002
 DEFINE SF_RTFNOOBJS 						:= 0x0003
 DEFINE SF_TEXTIZED		:= 0x0004
-DEFINE SF_UNICODE			:= 0x0010		// Unicode file (UCS2 little endian) 
-DEFINE SF_USECODEPAGE	:= 0x0020		// CodePage given by high word 
-DEFINE SF_NCRFORNONASCII := 0x40		// Output /uN for nonASCII 
+DEFINE SF_UNICODE			:= 0x0010		// Unicode file (UCS2 little endian)
+DEFINE SF_USECODEPAGE	:= 0x0020		// CodePage given by high word
+DEFINE SF_NCRFORNONASCII := 0x40		// Output /uN for nonASCII
 DEFINE SFF_WRITEXTRAPAR  := 0x80		// Output \par at end
-// Flag telling stream operations to operate on selection only 
-// EM_STREAMIN  replaces current selection 
-// EM_STREAMOUT streams out current selection 
+// Flag telling stream operations to operate on selection only
+// EM_STREAMIN  replaces current selection
+// EM_STREAMOUT streams out current selection
 DEFINE SFF_SELECTION	:= 0x8000
-// Flag telling stream operations to ignore some FE control words 
-// having to do with FE word breaking and horiz vs vertical text. 
-// Not used in RichEdit 2.0 and later	
+// Flag telling stream operations to ignore some FE control words
+// having to do with FE word breaking and horiz vs vertical text.
+// Not used in RichEdit 2.0 and later
 DEFINE SFF_PLAINRTF	:= 0x4000
-// Flag telling file stream output (SFF_SELECTION flag not set) to persist 
-// \viewscaleN control word. 
+// Flag telling file stream output (SFF_SELECTION flag not set) to persist
+// \viewscaleN control word.
 DEFINE SFF_PERSISTVIEWSCALE := 0x2000
-// Flag telling file stream input with SFF_SELECTION flag not set not to 
-// close the document 
+// Flag telling file stream input with SFF_SELECTION flag not set not to
+// close the document
 DEFINE SFF_KEEPDOCINFO	:= 0x1000
-// Flag telling stream operations to output in Pocket Word format 
+// Flag telling stream operations to output in Pocket Word format
 DEFINE SFF_PWD			:= 0x0800
-// 3-bit field specifying the value of N - 1 to use for \rtfN or \pwdN 
+// 3-bit field specifying the value of N - 1 to use for \rtfN or \pwdN
 DEFINE SF_RTFVAL		:= 0x0700
 DEFINE MAX_TAB_STOPS := 32
 DEFINE lDefaultTab	 := 720
@@ -6325,7 +6325,7 @@ DEFINE PFM_ALIGNMENT			:= 0x00000008
 DEFINE PFM_TABSTOPS			:= 0x00000010
 DEFINE PFM_NUMBERING			:= 0x00000020
 DEFINE PFM_OFFSETINDENT		:= 0x80000000
-// PARAFORMAT 2.0 masks and effects 
+// PARAFORMAT 2.0 masks and effects
 DEFINE PFM_SPACEBEFORE     := 0x00000040L
 DEFINE PFM_SPACEAFTER      := 0x00000080L
 DEFINE PFM_LINESPACING     := 0x00000100L
@@ -6345,14 +6345,14 @@ DEFINE PFM_NOWIDOWCONTROL  := 0x00200000L	/* (*)	*/
 DEFINE PFM_DONOTHYPHEN     := 0x00400000L	/* (*)	*/
 DEFINE PFM_SIDEBYSIDE      := 0x00800000L	/* (*)	*/
 DEFINE PFM_TABLE           := 0xc0000000L	/* (*)	*/
-DEFINE PFM_TABLE_RE3			:= 0x40000000	// RE 3.0 
-DEFINE PFM_TEXTWRAPPINGBREAK:= 0x20000000	// RE 3.0 
-DEFINE PFM_TABLEROWDELIMITER:= 0x10000000	// RE 4.0 
+DEFINE PFM_TABLE_RE3			:= 0x40000000	// RE 3.0
+DEFINE PFM_TEXTWRAPPINGBREAK:= 0x20000000	// RE 3.0
+DEFINE PFM_TABLEROWDELIMITER:= 0x10000000	// RE 4.0
 // The following three properties are read only
-DEFINE PFM_COLLAPSED			:= 0x01000000	// RE 3.0 
-DEFINE PFM_OUTLINELEVEL		:= 0x02000000	// RE 3.0 
-DEFINE PFM_BOX					:= 0x04000000	// RE 3.0 
-DEFINE PFM_RESERVED2			:= 0x08000000	// RE 4.0 
+DEFINE PFM_COLLAPSED			:= 0x01000000	// RE 3.0
+DEFINE PFM_OUTLINELEVEL		:= 0x02000000	// RE 3.0
+DEFINE PFM_BOX					:= 0x04000000	// RE 3.0
+DEFINE PFM_RESERVED2			:= 0x08000000	// RE 4.0
 // PARAFORMAT "ALL" masks
 DEFINE PFM_ALL := (PFM_STARTINDENT | PFM_RIGHTINDENT | PFM_OFFSET	| ;
 				 PFM_ALIGNMENT   | PFM_TABSTOPS    | PFM_NUMBERING | ;
@@ -6366,38 +6366,38 @@ DEFINE PFM_ALL2	:= (PFM_ALL | PFM_EFFECTS | PFM_SPACEBEFORE | PFM_SPACEAFTER ;
 					| PFM_LINESPACING | PFM_STYLE | PFM_SHADING | PFM_BORDER ;
 					| PFM_NUMBERINGTAB | PFM_NUMBERINGSTART | PFM_NUMBERINGSTYLE)
 DEFINE PFE_RTLPARA				:= (PFM_RTLPARA		 >> 16)
-DEFINE PFE_KEEP					:= (PFM_KEEP			 >> 16)	// (*)	
-DEFINE PFE_KEEPNEXT				:= (PFM_KEEPNEXT		 >> 16)	// (*)	
-DEFINE PFE_PAGEBREAKBEFORE	:= 	(PFM_PAGEBREAKBEFORE >> 16)	// (*)	
-DEFINE PFE_NOLINENUMBER		:= (PFM_NOLINENUMBER	 >> 16)	// (*)	
-DEFINE PFE_NOWIDOWCONTROL		:= (PFM_NOWIDOWCONTROL	 >> 16)	// (*)	
-DEFINE PFE_SIDEBYSIDE			:= (PFM_SIDEBYSIDE		 >> 16)	// (*)	
-DEFINE PFE_TEXTWRAPPINGBREAK	:= (PFM_TEXTWRAPPINGBREAK>>16) // (*)	
+DEFINE PFE_KEEP					:= (PFM_KEEP			 >> 16)	// (*)
+DEFINE PFE_KEEPNEXT				:= (PFM_KEEPNEXT		 >> 16)	// (*)
+DEFINE PFE_PAGEBREAKBEFORE	:= 	(PFM_PAGEBREAKBEFORE >> 16)	// (*)
+DEFINE PFE_NOLINENUMBER		:= (PFM_NOLINENUMBER	 >> 16)	// (*)
+DEFINE PFE_NOWIDOWCONTROL		:= (PFM_NOWIDOWCONTROL	 >> 16)	// (*)
+DEFINE PFE_SIDEBYSIDE			:= (PFM_SIDEBYSIDE		 >> 16)	// (*)
+DEFINE PFE_TEXTWRAPPINGBREAK	:= (PFM_TEXTWRAPPINGBREAK>>16) // (*)
 // The following four effects are read only
-DEFINE PFE_COLLAPSED			:= (PFM_COLLAPSED		 >> 16)	// (+)	
-DEFINE PFE_BOX					:= (PFM_BOX			 >> 16)	// (+)	
-// PARAFORMAT numbering options 
+DEFINE PFE_COLLAPSED			:= (PFM_COLLAPSED		 >> 16)	// (+)
+DEFINE PFE_BOX					:= (PFM_BOX			 >> 16)	// (+)
+// PARAFORMAT numbering options
 DEFINE PFN_BULLET		:= 1		// tomListBullet
-// PARAFORMAT2 wNumbering options 
+// PARAFORMAT2 wNumbering options
 DEFINE PFN_ARABIC		:= 2		// tomListNumberAsArabic:   0, 1, 2,	...
 DEFINE PFN_LCLETTER		:= 3		// tomListNumberAsLCLetter: a, b, c,	...
 DEFINE PFN_UCLETTER	:= 4		// tomListNumberAsUCLetter: A, B, C,	...
 DEFINE PFN_LCROMAN		:= 5		// tomListNumberAsLCRoman:  i, ii, iii,	...
 DEFINE PFN_UCROMAN		:= 6		// tomListNumberAsUCRoman:  I, II, III,	...
-// PARAFORMAT2 wNumberingStyle options 
-DEFINE PFNS_PAREN		:= 0x000	// default, e.g.,				  1)	
-DEFINE PFNS_PARENS		:= 0x100	// tomListParentheses/256, e.g., (1)	
-DEFINE PFNS_PERIOD		:= 0x200	// tomListPeriod/256, e.g.,		  1.	
-DEFINE PFNS_PLAIN		:= 0x300	// tomListPlain/256, e.g.,		  1		
+// PARAFORMAT2 wNumberingStyle options
+DEFINE PFNS_PAREN		:= 0x000	// default, e.g.,				  1)
+DEFINE PFNS_PARENS		:= 0x100	// tomListParentheses/256, e.g., (1)
+DEFINE PFNS_PERIOD		:= 0x200	// tomListPeriod/256, e.g.,		  1.
+DEFINE PFNS_PLAIN		:= 0x300	// tomListPlain/256, e.g.,		  1
 DEFINE PFNS_NONUMBER	:= 0x400	// Used for continuation w/o number
-DEFINE PFNS_NEWNUMBER	:= 0x8000	// Start new number with wNumberingStart		
+DEFINE PFNS_NEWNUMBER	:= 0x8000	// Start new number with wNumberingStart
 								// (can be combined with other PFNS_xxx)
-// PARAFORMAT alignment options 
+// PARAFORMAT alignment options
 DEFINE PFA_LEFT	:= 0x0001
 DEFINE PFA_RIGHT	:= 0x0002
 DEFINE PFA_CENTER	:= 0x0003
-// PARAFORMAT2 alignment options 
-DEFINE PFA_JUSTIFY			 	:= 4	// New paragraph-alignment option 2.0 (*) 
+// PARAFORMAT2 alignment options
+DEFINE PFA_JUSTIFY			 	:= 4	// New paragraph-alignment option 2.0 (*)
 DEFINE PFA_FULL_INTERWORD	 	:= 4	// These are supported in 3.0 with advanced
 DEFINE PFA_FULL_INTERLETTER := 5	//  typography enabled
 DEFINE PFA_FULL_SCALED		 	:= 6
@@ -6445,5 +6445,5 @@ DEFINE SPS_HIDEROW              := 4
 DEFINE SPS_SHOWCOLUMN		:= 5
 DEFINE SPS_HIDECOLUMN		:= 6
 DEFINE SPS_SHOWALLPANES		:= 7
-DEFINE SPS_HIDEALLPANES		:= 8	
+DEFINE SPS_HIDEALLPANES		:= 8
 #endregion

@@ -1632,7 +1632,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 /// <include file="Gui.xml" path="doc/Window.Drop/*" />
-	METHOD Drop(oDE )
+	METHOD Drop(oDragEvent )
 		RETURN NIL
 
 /// <include file="Gui.xml" path="doc/Window.Enable/*" />
@@ -1957,10 +1957,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 /// <include file="Gui.xml" path="doc/Window.HorizontalSlide/*" />
-	METHOD HorizontalSlide(uSliderEvent AS SliderEvent)
+	METHOD HorizontalSlide(oSliderEvent AS SliderEvent)
 		LOCAL oSlider AS Slider
-		LOCAL oSliderEvent AS SliderEvent
-		oSliderEvent := uSliderEvent
 		oSlider := oSliderEvent:Slider
 		IF (oSlider != NULL_OBJECT)
 			oSlider:ThumbPosition := oSliderEvent:Position
@@ -1971,14 +1969,12 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 /// <include file="Gui.xml" path="doc/Window.HorizontalSpin/*" />
 	METHOD HorizontalSpin(oSpinnerEvent AS SpinnerEvent)
 		LOCAL oSpinner AS Spinner
-		LOCAL oEvt	:= oSpinnerEvent AS SpinnerEvent
-
-		oSpinner := oEvt:Spinner
+		oSpinner := oSpinnerEvent:Spinner
 		IF (oSpinner != NULL_OBJECT)
-			oSpinner:Position := oEvt:Position
+			oSpinner:Position := oSpinnerEvent:Position
 		ENDIF
 
-		RETURN SELF:Default(oEvt)
+		RETURN SELF:Default(oSpinnerEvent)
 
 
 /// <include file="Gui.xml" path="doc/Window.HyperLabel/*" />
@@ -2611,7 +2607,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 /// <include file="Gui.xml" path="doc/Window.SetExStyle/*" />
-	METHOD SetExStyle(dwSetExStyle, lEnable)
+	METHOD SetExStyle(dwSetStyle, lEnable)
 		LOCAL iWnd AS IVOForm
 		DEFAULT(@lEnable, TRUE)
 
@@ -2620,14 +2616,14 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			dwExStyle := GuiWin32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
 
 			IF lEnable
-				dwExStyle := _OR(dwExStyle, LONG(_CAST, dwSetExStyle))
-				iWnd:Properties:ExStyle |= dwSetExStyle
+				dwExStyle := _OR(dwExStyle, LONG(_CAST, dwSetStyle))
+				iWnd:Properties:ExStyle |= dwSetStyle
 			ELSE
-				dwExStyle := _AND(dwExStyle, _NOT(LONG(_CAST, dwSetExStyle)))
-				iWnd:Properties:NotExStyle |= dwSetExStyle
+				dwExStyle := _AND(dwExStyle, _NOT(LONG(_CAST, dwSetStyle)))
+				iWnd:Properties:NotExStyle |= dwSetStyle
 			ENDIF
 
-			GuiWin32.SetWindowLong(oWnd:Handle, GWL_EXSTYLE, dwExStyle)
+			GuiWin32.SetWindowLong(oWnd:Handle, GWL_EXSTYLE, dwSetStyle)
 		ENDIF
 
 		RETURN dwExStyle
@@ -2642,8 +2638,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 /// <include file="Gui.xml" path="doc/Window.SetHandle/*" />
-	METHOD SetHandle(oNewWnd AS VOForm)
-		oWnd := oNewWnd
+	METHOD SetHandle(hNewWnd AS VOForm)
+		oWnd := hNewWnd
 		RETURN oWnd
 
 
@@ -2768,16 +2764,16 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN
 /// <include file="Gui.xml" path="doc/Window.ShowBalloonTrayTip/*" />
 
-	METHOD ShowBalloonTrayTip(oIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo)
+	METHOD ShowBalloonTrayTip(oTrayIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo)
 		DEFAULT(@dwID,1)
 		DEFAULT(@sHeading,"")
 		DEFAULT(@sToolTip,"")
 		DEFAULT(@dwInfo,NIIF_NONE)
-		DEFAULT(@oIcon,NULL_OBJECT)
+		DEFAULT(@oTrayIcon,NULL_OBJECT)
 		DEFAULT(@dwTimeOut,10000)
 
 		IF oTrayIcon == NULL_OBJECT
-			SELF:__UpdateTrayIcon(0, oIcon, dwID, sToolTip)
+			SELF:__UpdateTrayIcon(0, oTrayIcon, dwID, sToolTip)
 		ENDIF
 		IF oTrayIcon != NULL_OBJECT
 			oTrayIcon:ShowBalloonTip(dwTimeOut, sHeading, sToolTip, dwInfo)
@@ -2984,10 +2980,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN SELF:Default(oEvt)
 
 /// <include file="Gui.xml" path="doc/Window.VerticalSlide/*" />
-	METHOD VerticalSlide(uSliderEvent AS SliderEvent)
+	METHOD VerticalSlide(oSliderEvent AS SliderEvent)
 		LOCAL oSlider AS Slider
-		LOCAL oSliderEvent AS SliderEvent
-		oSliderEvent := uSliderEvent
 		oSlider := oSliderEvent:Slider
 		IF (oSlider != NULL_OBJECT)
 			oSlider:ThumbPosition := oSliderEvent:Position
@@ -2997,14 +2991,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 /// <include file="Gui.xml" path="doc/Window.VerticalSpin/*" />
 	METHOD VerticalSpin(oSpinnerEvent AS SpinnerEvent)
 		LOCAL oSpinner AS Spinner
-		LOCAL oEvt	:= oSpinnerEvent AS SpinnerEvent
 
-		oSpinner := OBJECT(oEvt:Spinner)
+		oSpinner := oSpinnerEvent:Spinner
 		IF (oSpinner != NULL_OBJECT)
-			oSpinner:Position:=oEvt:Position
+			oSpinner:Position:=oSpinnerEvent:Position
 		ENDIF
 
-		RETURN SELF:Default(oEvt)
+		RETURN SELF:Default(oSpinnerEvent)
 
 /// <include file="Gui.xml" path="doc/Window.WindowArea/*" />
 	ACCESS WindowArea AS BoundingBox

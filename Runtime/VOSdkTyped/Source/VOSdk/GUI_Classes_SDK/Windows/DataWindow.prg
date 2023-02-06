@@ -1047,21 +1047,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
 /// <include file="Gui.xml" path="doc/DataWindow.ChangeFont/*" />
-	METHOD ChangeFont(uFont, lUpdate)
-		LOCAL oFont AS Font
-		IF !IsInstanceOfUsual(uFont,#Font)
-			WCError{#ChangeFont,#DataWindow,__WCSTypeError,uFont,1}:Throw()
-		ENDIF
-		oFont := uFont
-
-		IF !IsNil(lUpdate)
-			IF !IsLogic(lUpdate)
-				WCError{#ChangeFont,#DataWindow,__WCSTypeError,lUpdate,2}:Throw()
-			ENDIF
-		ELSE
-			lUpdate := FALSE
-		ENDIF
-
+	METHOD ChangeFont(oFont AS Font, lUpdate := FALSE AS LOGIC)
 		SELF:Font := oFont
 		IF oSurface != NULL_OBJECT
 			oSurface:Font := oFont:__Font

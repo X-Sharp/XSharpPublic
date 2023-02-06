@@ -184,7 +184,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		Assert.Equal("hello world",Lower("Hello World"))
 		Assert.Equal(NULL,Lower(NULL))
 		VAR s := "Hello World"
-		LowerA(s)
+		LowerA(REF s)
 		Assert.Equal("hello world",s)
 	RETURN
 
@@ -332,7 +332,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		LOCAL s:="Hello World" AS STRING
 		Assert.Equal("HELLO WORLD",Upper(s))
 		Assert.Equal(NULL,Upper(NULL))
-		UpperA(s)
+		UpperA(REF s)
 		Assert.Equal("HELLO WORLD",s)
 	RETURN
 

@@ -39,3 +39,4 @@ BEGIN NAMESPACE XSharp.RT.Tests
 		RETURN
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests
+

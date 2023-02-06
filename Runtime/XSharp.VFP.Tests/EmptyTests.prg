@@ -8,7 +8,7 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 USING XUnit
-
+#pragma options("fox2", off)
 
 // Array tests are not working correctly yet with the current build
 BEGIN NAMESPACE XSharp.VFP.Tests
@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
         [Fact, Trait("Category", "Empty Function")];
         method EmptyFunctiontests() as void
-            local u
+            local u AS USUAL
             u := .NULL.
             Assert.False(Empty(u))
             u := DBNull.Value

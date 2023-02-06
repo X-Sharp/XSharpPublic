@@ -738,8 +738,15 @@ FUNCTION RTrim(cString AS STRING) AS STRING
 
 FUNCTION SClone(cString AS STRING) AS STRING
 	LOCAL clonedString := NULL AS STRING
-	IF (cString != NULL)
-		clonedString := String.Copy( cString )
+    IF (cString != NULL)
+        // String.Copy is not supported on modern .Net
+        #ifdef NETNEXT
+           var sb := System.Text.StringBuilder{}
+           sb:Append(cString)
+           clonedString := sb:ToString()
+        #else
+           clonedString := String.Copy( cString )
+        #endif
 	ENDIF
 	RETURN clonedString
 

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Specific targets for SDK type projects-->
+<Project>
+  <Import Project="Runtime.Common.Targets" />
+  <Import Project="$(CommonInclude)\Version.Targets" />
+  <PropertyGroup>
+    <cs>True</cs>
+    <NS>true</NS>
+    <VulcanCompatibleResources>True</VulcanCompatibleResources>
+    <DefineConstants>$(DefineConstants);NETNEXT;RUNTIME</DefineConstants>
+    <TargetFrameworks>net472;net60</TargetFrameworks>
+    <TargetPlatFormIdentifier>windows</TargetPlatFormIdentifier>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'" Label="Configuration">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DisabledWarnings>165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</DisabledWarnings>
+    <CommandLineOption>/noclipcall</CommandLineOption>
+  </PropertyGroup>
+</Project>
+

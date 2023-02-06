@@ -43,8 +43,8 @@ CLASS HotKeyEdit INHERIT TextControl
 
  /// <exclude />
 	METHOD __SetRule(oNewRule AS HotKeyRule) AS VOID STRICT
-		LOCAL dwInvalidCombinations	AS DWORD
-		LOCAL wInvalidModifiers			AS DWORD
+		LOCAL dwInvalidCombinations	AS INT
+		LOCAL wInvalidModifiers	    AS INT
 
 		IF oNewRule:AltKeyInvalid
 			dwInvalidCombinations := _OR(dwInvalidCombinations, HKCOMB_A)

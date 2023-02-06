@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Targets" />
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>XSharp</RootNamespace>
+    <AssemblyName>XSharp.RT</AssemblyName>
+    <Dialect>VO</Dialect>
+    <Unsafe>True</Unsafe>
+    <NamedArgs>True</NamedArgs>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Types\psznew.prg" />
+    <Compile Include="$(CommonInclude)\Constants.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.Next.xsproj" />
+  </ItemGroup>
+</Project>

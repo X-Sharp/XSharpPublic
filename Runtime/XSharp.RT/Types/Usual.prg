@@ -70,7 +70,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     PRIVATE CONST STR_NULL_CODEBLOCK := "NULL_CODEBLOCK" AS STRING
     [NOSHOW];
     PRIVATE CONST STR_USUAL := "USUAL" AS STRING
-    
+
 #endregion
 
 #region constructors
@@ -3030,7 +3030,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
             result := __Usual{SELF:Value}
         CASE __UsualType.Psz
         CASE __UsualType.String
-            result := __Usual { String.Copy(SELF:_stringValue)}
+            result := __Usual { SClone(SELF:_stringValue)}
         CASE __UsualType.Array
             result := __Usual { AClone(SELF:_arrayValue) }
         OTHERWISE

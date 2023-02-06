@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Targets" />
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>XSharp</RootNamespace>
+    <AssemblyName>XSharp.Core</AssemblyName>
+    <Dialect>Core</Dialect>
+    <AZ>true</AZ>
+    <NamedArgs>True</NamedArgs>
+  </PropertyGroup>
+  <ItemGroup>
+    <compile Remove="CollationHelpers\*.prg" />
+    <compile Remove="Collations\*.prg" />
+    <compile Remove="Language\*.prg" />
+    <compile Remove="Types\Win32FileStream.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0"/>
+  </ItemGroup>
+</Project>

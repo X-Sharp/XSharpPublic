@@ -58,8 +58,8 @@ INTERNAL STATIC CLASS XSharp.ConversionHelpers
                 RETURN cChar
             END IF
         END DO
-    
-    
+
+
     STATIC METHOD AdjustPrecision(cNum15 AS STRING, cNum17 AS STRING) AS STRING
         LOCAL cDiff15 := "0", cDiff17 := "0" AS STRING
         LOCAL cResult AS STRING
@@ -98,7 +98,7 @@ INTERNAL STATIC CLASS XSharp.ConversionHelpers
                 END IF
             END IF
         END DO
-        
+
         // if the difference of the two numbers is the minimum one, then it was probably just a rounding issue in "G17" representation
         IF Math.Abs( Int32.Parse(cDiff15) - Int32.Parse(cDiff17) ) == 1
             RETURN cNum15
@@ -190,7 +190,7 @@ INTERNAL STATIC CLASS XSharp.ConversionHelpers
 
 END CLASS
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ashexstring/*" /> 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ashexstring/*" />
 /// <seealso cref='C2Hex(System.String)' >C2Hex</seealso>
 /// <seealso cref='_C2Hex(System.String,System.Boolean)' >_C2Hex</seealso>
 FUNCTION AsHexString(uValue AS USUAL) AS STRING
@@ -305,7 +305,7 @@ FUNCTION Descend(uValue AS USUAL) AS USUAL
     ELSEIF uValue:IsCurrency
         RETURN 0 - (__Currency) uValue
     ELSEIF uValue:IsDate
-        RETURN 5231808 - (DWORD)(DATE) uValue 
+        RETURN 5231808 - (DWORD)(DATE) uValue
     ENDIF
     RETURN uValue
 
@@ -547,7 +547,7 @@ FUNCTION _Str(nValue ,uLen ,uDec ) AS STRING CLIPPER
             ELSE
                 dwLen := (DWORD) nLen
             ENDIF
-            
+
             IF nDec < 0 .OR. RuntimeState.Fixed
                 dwDec := XSharp.RuntimeState.Decimals
             ELSE
@@ -669,7 +669,7 @@ INTERNAL FUNCTION _Str1(f AS FLOAT) AS STRING
     CASE Double.NegativeInfinity
         RETURN Double.NegativeInfinity:ToString()
     END SWITCH
-    
+
     IF nDecimals < 0 .OR. RuntimeState.Fixed
         nDecimals := (SHORT) RuntimeState.Decimals
     ENDIF
@@ -699,7 +699,7 @@ INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
   IF dwLen == 0 .OR. RuntimeState.DigitsFixed
       dwLen := (DWORD) RuntimeState.Digits
    ELSEIF dwLen  != UInt32.MaxValue
-      dwLen := Math.Min( dwLen, MAXDIGITS )
+      dwLen := Math.Min( (DWORD) dwLen, (DWORD) MAXDIGITS )
    ENDIF
    VAR nDecimals := f:Decimals
     IF nDecimals < 0 .OR. RuntimeState.DigitsFixed
@@ -727,12 +727,12 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
             dwDec := (DWORD) f:Decimals
         ENDIF
    ELSE
-      dwDec := Math.Min( dwDec, MAXDECIMALS )
+      dwDec := Math.Min( (DWORD) dwDec, (DWORD) MAXDECIMALS )
    ENDIF
-   
+
    // dwLen == UInt32.MaxValue     : Nil passed for 2nd param of Str()
    // dwLen == UInt32.MaxValue - 1 : Negative value for 2nd param of Str()
-    
+
    IF dwLen == 0 .OR. dwLen == UInt32.MaxValue .or. dwLen == UInt32.MaxValue - 1
         IF dwDec > 0
         	LOCAL nSignificant AS INT
@@ -751,7 +751,7 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
             dwLen := (DWORD) RuntimeState.Digits
         ENDIF
    ELSE
-      dwLen := Math.Min( dwLen, MAXDIGITS )
+      dwLen := Math.Min( (DWORD) dwLen, (DWORD) MAXDIGITS )
    ENDIF
 
 
@@ -782,7 +782,7 @@ FUNCTION Val(cNumber AS STRING) AS USUAL
     VAR result := _VOVal(cNumber)
     IF isCurrency
         RETURN __Currency{ (REAL8) result }
-    ENDIF        
+    ENDIF
     RETURN result
 
 //implements the quirks of VO's version of Val()
@@ -800,7 +800,7 @@ INTERNAL FUNCTION _VOVal(cNumber AS STRING) AS USUAL
     VAR lNoNumYet := TRUE
     VAR cPrev  := c' '
     VAR cDec   := (CHAR) RuntimeState.DecimalSep
-    
+
     IF cDec != c'.'
         cNumber := cNumber:Replace(c'.', cDec) // VO behavior...
         cNumber := cNumber:Replace(cDec, c'.')
@@ -925,7 +925,7 @@ INTERNAL FUNCTION _VOVal(cNumber AS STRING) AS USUAL
             ELSE
                 RETURN __Float{ (REAL8) iResult , 0 }
             ENDIF
-           
+
         ELSE
 
             style := NumberStyles.Integer
@@ -996,10 +996,10 @@ FUNCTION Bin2F(cFloat AS STRING) AS FLOAT
         RETURN FLOAT{val, 0, nDec}
     ENDIF
     RETURN 0.0
-    
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/f2bin/*" />
 FUNCTION F2Bin(fValue AS FLOAT) AS STRING
     RETURN Real82Bin(fValue:Value)+ e"\0\0" + W2Bin((WORD)fValue:Decimals)
-    
+
 

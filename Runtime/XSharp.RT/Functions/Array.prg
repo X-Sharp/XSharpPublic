@@ -235,7 +235,7 @@ INTERNAL STATIC CLASS ArrayHelpers
                 NEXT
             ELSE
 
-                last := (DWORD) Math.Max( 1, nStart + nCount + 1 )
+                last := (DWORD) Math.Max( (DWORD) 1, (DWORD) nStart + nCount + 1 )
 
                 FOR x := nStart DOWNTO last
                     result := Eval( cbBlock, aArray[x], x )

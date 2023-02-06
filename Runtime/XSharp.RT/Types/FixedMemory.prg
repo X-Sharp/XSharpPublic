@@ -14,7 +14,7 @@ USING System.Runtime.CompilerServices
 /// <summary>Delegate that a client needs to implement to use MemWalk.</summary>
 DELEGATE MemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC
 
-INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
+INTERNAL STATIC CLASS XSharp.FixedMemory
     PUBLIC CONST FAILURE := 65535 AS WORD
     PUBLIC CONST SUCCESS := 0 AS WORD
     INTERNAL INITONLY STATIC Is32Bits AS LOGIC

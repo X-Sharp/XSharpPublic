@@ -4,7 +4,7 @@ LOCAL nRecords := 0 AS INT
 LOCAL nSeconds AS REAL8
 cDbf := "g:\INDEXFIL"
 
-    DbUseArea(,"DBFCDX",cDbf,,TRUE)
+DbUseArea(,"DBFCDX",cDbf,,TRUE)
     if args:Length > 0
         ? "order 1"
     DbSetOrder(1)

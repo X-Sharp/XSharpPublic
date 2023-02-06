@@ -21,7 +21,7 @@ CLASS ScriptParameters
     PUBLIC PROPERTY __XSHARP__PCount AS INT GET __XSHARP__Args:Length
 END CLASS
 
-INTERNAL FUNCTION CompileScript(xsource AS STRING) AS Script          
+INTERNAL FUNCTION CompileScript(xsource AS STRING) AS Script
     LOCAL options AS XSharpSpecificCompilationOptions
     options := XSharpMacro.GetOptions((INT) RuntimeState.Dialect)
     options:SetOption(CompilerOption.Vo11, RuntimeState.CompilerOptionVO11)
@@ -31,7 +31,7 @@ INTERNAL FUNCTION CompileScript(xsource AS STRING) AS Script
 
     VAR references := System.AppDomain.CurrentDomain:GetAssemblies() ;
         :Where({a => !String.IsNullOrEmpty(a:Location)})
-    LOCAL scoptions AS ScriptOptions    
+    LOCAL scoptions AS ScriptOptions
     scoptions := ScriptOptions.Default ;
         :WithXSharpSpecificOptions(options) ;
         :WithReferences(references) ;
@@ -57,7 +57,7 @@ FUNCTION _ExecScript(source AS STRING, args PARAMS USUAL[]) AS USUAL
     LOCAL script AS Script
     IF CompiledScripts:ContainsKey(source)
         script := CompiledScripts[source]
-    ELSE                  
+    ELSE
         TRY
             script := GetInitialScript():ContinueWith(source)
         CATCH e AS Exception
@@ -76,6 +76,6 @@ FUNCTION _ExecScript(source AS STRING, args PARAMS USUAL[]) AS USUAL
     FINALLY
         XSharp.RT.Functions.__MemVarRelease(ScriptArgs:__XSHARP__PrivatesLevel)
         XSharp.Internal.CompilerServices.String2PszRelease(ScriptArgs:__XSHARP__PszLizt)
-        ScriptArgs:__XSHARP__PszLizt.Clear()
+        ScriptArgs:__XSHARP__PszLizt:Clear()
     END
 RETURN res

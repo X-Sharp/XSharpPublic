@@ -129,7 +129,7 @@
    <PackageReference Condition = "'$(Configuration)' == 'Release'" Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="$(MicrosoftCodeAnalysisNetAnalyzersVersion)" PrivateAssets="all" />
     <PackageReference Include="Roslyn.Diagnostics.Analyzers" Version="$(RoslynDiagnosticsAnalyzersVersion)" PrivateAssets="all" />
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="$(MicrosoftVisualStudioThreadingAnalyzersVersion)" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.PerformanceSensitiveAnalyzers" Version="$(MicrosoftCodeAnalysisPerformanceSensitiveAnalyzersVersion)" PrivateAssets="all" />
+    <!--<PackageReference Include="Microsoft.CodeAnalysis.PerformanceSensitiveAnalyzers" Version="$(MicrosoftCodeAnalysisPerformanceSensitiveAnalyzersVersion)" PrivateAssets="all" />-->
   </ItemGroup>
 
   <!-- Disable SDK supplied netanalyzers as we reference them from nugets instead -->
@@ -140,8 +140,8 @@
   <!-- 
      Code indexing targets to help generating LSIF from indexing builds.
   -->
-  <ItemGroup>
-    <PackageReference Include="RichCodeNav.EnvVarDump" Version="$(RichCodeNavEnvVarDumpVersion)" PrivateAssets="all" />
+  <ItemGroup> 
+    <!-- <PackageReference Include="RichCodeNav.EnvVarDump" Version="$(RichCodeNavEnvVarDumpVersion)" PrivateAssets="all" />  -->
   </ItemGroup>
 
   <!-- 

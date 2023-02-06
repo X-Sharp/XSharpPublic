@@ -27,6 +27,7 @@ set tmpXSharpDev=%XSharpDev%
 rem Reset the XSharpDev path so we will not use the compiler we are generating
 set XSharpDev=
 taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" >nul
+taskkill  /f /t /fi "IMAGENAME eq VBCSCompiler.exe" >nul
 rem Next line can help to debug where DotNet.exe finds the right SDK
 rem SET COREHOST_TRACE=1
 if "%XSHARPBUILDNESTED%" == "1" goto Build

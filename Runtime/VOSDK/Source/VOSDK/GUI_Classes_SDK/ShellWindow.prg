@@ -234,10 +234,6 @@ METHOD __UseChildMenu(oMenu AS Menu) AS ShellWindow STRICT
 /// <include file="Gui.xml" path="doc/ShellWindow.Arrange/*" />
 METHOD Arrange(kArrangeStyle)
 	LOCAL liStyle AS LONGINT
-
-
-
-
 	IF IsNil(kArrangeStyle)
 		liStyle := ArrangeCascade
 	ELSE
@@ -246,7 +242,6 @@ METHOD Arrange(kArrangeStyle)
 		ENDIF
 		liStyle := kArrangeStyle
 	ENDIF
-
 
 	SWITCH liStyle
 	CASE ARRANGEASICONS

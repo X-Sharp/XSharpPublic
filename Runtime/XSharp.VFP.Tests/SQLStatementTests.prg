@@ -18,10 +18,10 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 	[Fact, Trait("SQLStatement", "Insert")];
 		METHOD TestInsert AS VOID  STRICT
 			//
-			LOCAL lcString AS STRING
-            lcString := "INSERT INTO employees (FULLNAME,SALARY,ADDATE, ADTIME) VALUES (?vlFULLNAME,?vlSALARY,?vlADDATE, ?vlADTIME)"
+//			LOCAL lcString AS STRING
+//            lcString := "INSERT INTO employees (FULLNAME,SALARY,ADDATE, ADTIME) VALUES (?vlFULLNAME,?vlSALARY,?vlADDATE, ?vlADTIME)"
             //VAR cnt := CreateStatement()
-            //cnt:ParseCommand( lcString, 
+            //cnt:ParseCommand( lcString,
 //			VAR result := cnt:ParseCommand( lcString, '?' , false )
 //			// SQLCommand should change
 //			Assert.Equal( "INSERT INTO employees (FULLNAME,SALARY,ADDATE, ADTIME) VALUES (?,?,?, ?)", result:Item1:Trim(<char>{c'\n',c'\r'} ) )

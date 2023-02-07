@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Debugger.Clr;
 using Microsoft.VisualStudio.Debugger.ComponentInterfaces;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 using Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using XSharpModel;
@@ -88,9 +89,17 @@ namespace XSharpDebugger.ExpressionCompiler
                     out string error,
                     out DkmCompiledClrInspectionQuery result)
         {
-            UpdateXSharpParseOptions();
-            IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
-            e.CompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
+            try
+            {
+                UpdateXSharpParseOptions();
+                IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
+                e.CompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
+            }
+            catch (Exception e)
+            {
+                XSolution.WriteException(e, "Debugger:CompileExpression");
+                OldCompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
+            }
         }
 
         void OldCompileExpression(
@@ -197,9 +206,17 @@ namespace XSharpDebugger.ExpressionCompiler
 
         DkmCompiledClrLocalsQuery NewClrLocalVariableQuery(DkmInspectionContext inspectionContext, DkmClrInstructionAddress instructionAddress, bool argumentsOnly)
         {
-            UpdateXSharpParseOptions();
-            IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
-            return e.GetClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
+            try
+            {
+                UpdateXSharpParseOptions();
+                IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
+                return e.GetClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
+            }
+            catch (Exception e)
+            {
+                XSolution.WriteException(e, "Debugger:ClrLocalVariableQuery");
+                return OldClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
+            }
         }
         DkmCompiledClrLocalsQuery OldClrLocalVariableQuery(DkmInspectionContext inspectionContext, DkmClrInstructionAddress instructionAddress, bool argumentsOnly)
         {
@@ -234,9 +251,17 @@ namespace XSharpDebugger.ExpressionCompiler
         }
         void NewCompileAssignment(DkmLanguageExpression expression, DkmClrInstructionAddress instructionAddress, DkmEvaluationResult lValue, out string error, out DkmCompiledClrInspectionQuery result)
         {
-            UpdateXSharpParseOptions();
-            IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
-            e.CompileAssignment(expression, instructionAddress, lValue, out error, out result);
+            try
+            {
+                UpdateXSharpParseOptions();
+                IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
+                e.CompileAssignment(expression, instructionAddress, lValue, out error, out result);
+            }
+            catch (Exception e)
+            {
+                XSolution.WriteException(e, "Debugger:CompileAssignment");
+                OldCompileAssignment(expression, instructionAddress, lValue, out error, out result);
+            }
         }
         void OldCompileAssignment(DkmLanguageExpression expression, DkmClrInstructionAddress instructionAddress, DkmEvaluationResult lValue, out string error, out DkmCompiledClrInspectionQuery result)
         {

@@ -249,7 +249,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             {
                 lineNumber++;
                 linesState.Get(lineNumber, out lineState);
-                if (lineState.HasFlag(LineFlags.Continued))
+                if (lineState.HasFlag(LineFlags.IsContinued))
                 {
                     xLines.TryGetValue(lineNumber, out lineTokens);
                     if (lineTokens != null)
@@ -258,7 +258,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                         continue;
                     }
                 }
-            } while (lineState.HasFlag(LineFlags.Continued));
+            } while (lineState.HasFlag(LineFlags.IsContinued));
             // Now, search for IMPLEMENT
             bool found = false;
             foreach (var token in fulllineTokens)

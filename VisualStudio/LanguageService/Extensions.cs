@@ -110,15 +110,27 @@ namespace XSharp.LanguageService
             return result;
         }
 
-        public static IList<IXSymbol> GetSymbolUnderCursor(this ITextView TextView, out CompletionState state)
+        internal static IList<IXSymbol> GetSymbolUnderCursor(this ITextView TextView, out CompletionState state)
+        {
+            return TextView.GetSymbolUnderCursor(out state, out _, out _);
+        }
+
+        internal static IList<IXSymbol> GetSymbolUnderCursor(this ITextView TextView, out CompletionState state, out XSharpSearchLocation location)
+        {
+            return TextView.GetSymbolUnderCursor(out state, out location, out _);
+        }
+        internal static IList<IXSymbol> GetSymbolUnderCursor(this ITextView TextView, out CompletionState state, out XSharpSearchLocation location, out IList<IToken> tokenList)
         {
             var result = new List<IXSymbol>();
             state = CompletionState.None;
+            location = null;
+            tokenList = null;
+
             try
             {
                 ModelWalker.Suspend();
-                var location = TextView.FindLocation();
-                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
+                location = TextView.FindLocation();
+                tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
                 string currentNS = TextView.FindNamespace();
                 result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
                 if (result.Count == 0 && tokenList.Count > 1)

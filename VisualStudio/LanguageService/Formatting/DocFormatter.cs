@@ -232,7 +232,7 @@ namespace XSharp.LanguageService
                     if (!singleLineEntityStart && !_lineKeywords.ContainsKey(lineNumber) )
                     {
                         // check for continuation
-                        if (_settings.IndentContinuedLines && _document.HasLineState(lineNumber-1, LineFlags.Continued))
+                        if (_settings.IndentContinuedLines && _document.HasLineState(lineNumber, LineFlags.IsContinued))
                         {
                             _expectedIndent[lineNumber] = _indentSize + 1;
                         }

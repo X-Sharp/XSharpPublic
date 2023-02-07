@@ -8,9 +8,10 @@ using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Tagging;
 using System;
+using System.Collections.Generic;
 using XSharpModel;
+
 
 namespace XSharp.LanguageService
 {
@@ -80,6 +81,66 @@ namespace XSharp.LanguageService
                 return document;
             }
             return null;
+        }
+
+        public static IList<IToken> GetTokensUnderCursor(this ITextView TextView, out CompletionState state)
+        {
+            var result = new List<IToken>();
+            state = CompletionState.None;
+            ModelWalker.Suspend();
+            var buffer = TextView.TextBuffer;
+            // LookUp for the BaseType, reading the TokenList (From left to right)
+            var file = buffer.GetFile();
+            if (file == null || file.XFileType != XFileType.SourceCode)
+                return result;
+
+            var snapshot = buffer.CurrentSnapshot;
+            // We don't want to lex the buffer. So get the tokens from the last lex run
+            // and when these are too old, then simply bail out
+            var tokens = buffer.GetDocument();
+            if (tokens != null)
+            {
+                if (tokens.SnapShot.Version != snapshot.Version)
+                    return result;
+            }
+            string currentNS = TextView.FindNamespace();
+            var location = TextView.FindLocation();
+            var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
+            result.AddRange(tokenList);
+            return result;
+        }
+
+        public static IList<IXSymbol> GetSymbolUnderCursor(this ITextView TextView, out CompletionState state)
+        {
+            var result = new List<IXSymbol>();
+            state = CompletionState.None;
+            try
+            {
+                ModelWalker.Suspend();
+                var location = TextView.FindLocation();
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
+                string currentNS = TextView.FindNamespace();
+                result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
+                if (result.Count == 0 && tokenList.Count > 1)
+                {
+                    // try again with just the last element in the list
+                    var token = tokenList[tokenList.Count - 1];
+                    tokenList.Clear();
+                    tokenList.Add(token);
+                    location = location.With(currentNS);
+                    result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                XSettings.LogException(ex, "Goto failed");
+            }
+            finally
+            {
+                ModelWalker.Resume();
+            }
+            return result;
         }
 
         public static XSharpClassifier GetClassifier(this ITextBuffer buffer)

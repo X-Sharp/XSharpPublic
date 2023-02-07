@@ -52,7 +52,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
 
         /// <summary>
-        /// Based on the Caret line position, check if this is a continuig line
+        /// Based on the Caret line position, check if this is a continuing line
         /// </summary>
         /// <returns></returns>
         protected int SearchRealStartLine()
@@ -63,20 +63,13 @@ namespace XSharp.LanguageService.Editors.LightBulb
             {
                 return -1;
             }
-            var linesState = xDocument.LineState;
             SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
             //
             var lineNumber = line.LineNumber;
-            if (linesState.Get(lineNumber, out var lineState))
+            while (lineNumber >= 0 && xDocument.HasLineState(lineNumber, LineFlags.IsContinued))
             {
-                // Search the first line
-                while (lineState == LineFlags.Continued)
-                {
-                    // Move back
-                    lineNumber--;
-                    linesState.Get(lineNumber, out lineState);
-                }
+                lineNumber--;
             }
             return lineNumber;
         }

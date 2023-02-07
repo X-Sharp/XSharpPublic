@@ -238,7 +238,7 @@ namespace XSharp.LanguageService
                 if (line != curLine)
                 {
                     doc.LineState.Get(line, out var state);
-                    if (!state.HasFlag(LineFlags.Continued))
+                    if (!state.HasFlag(LineFlags.IsContinued))
                     {
                         done = true;
                         continue;
@@ -641,7 +641,7 @@ namespace XSharp.LanguageService
                     doc.LineState.Get(line, out flags);
                 else
                     doc.LineState.Get(props.triggerLine, out flags);
-                if (!flags.HasFlag(LineFlags.Continued))
+                if (!flags.HasFlag(LineFlags.IsContinued))
                 {
                     CancelSignatureSession();
                     return false;

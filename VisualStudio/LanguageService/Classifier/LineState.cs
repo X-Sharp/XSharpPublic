@@ -10,7 +10,7 @@ namespace XSharp.LanguageService
         /// <summary>
         /// This line is a continuation of the previous line
         /// </summary>
-        Continued = 1 << 0,
+        IsContinued = 1 << 0,
         /// <summary>
         /// This line is the start of an entity
         /// </summary>

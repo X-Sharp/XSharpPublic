@@ -506,8 +506,8 @@ namespace XSharp.LanguageService
                 case XSharpLexer.Hidden:
                     if (token.Type == XSharpLexer.LINE_CONT)
                     {
-                        var line = token.Line-1;
-                        _lineState.SetFlags(line, LineFlags.Continued);
+                        // the NEXT line is a continuation. The token Line number is 1 based. VS is 0 based.
+                        _lineState.SetFlags(token.Line , LineFlags.IsContinued);
                     }
                     if (XSharpLexer.IsComment(token.Type))
                     {

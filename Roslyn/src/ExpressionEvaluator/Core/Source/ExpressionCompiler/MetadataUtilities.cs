@@ -393,7 +393,11 @@ namespace Microsoft.CodeAnalysis.ExpressionEvaluator
         private static byte[] GetWindowsProxyBytes()
         {
             var assembly = typeof(ExpressionCompiler).GetTypeInfo().Assembly;
-            using (var stream = assembly.GetManifestResourceStream("Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.WindowsProxy.winmd"))
+#if XSHARP
+			using (var stream = assembly.GetManifestResourceStream("LanguageService.CodeAnalysis.ExpressionEvaluator.WindowsProxy.winmd"))
+#else
+			using (var stream = assembly.GetManifestResourceStream("Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.WindowsProxy.winmd"))
+#endif
             {
                 var bytes = new byte[stream.Length];
                 using (var memoryStream = new MemoryStream(bytes))

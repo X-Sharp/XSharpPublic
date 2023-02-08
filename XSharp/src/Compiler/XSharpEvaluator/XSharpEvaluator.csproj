@@ -40,10 +40,14 @@
     <DefineConstants>$(Genericdefines);XSHARP;NDEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="$(CoreEvalSource)ExpressionCompiler\Resources\WindowsProxy.winmd" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs" Link="CommonAssemblyInfo.cs" />
     <Compile Include="$(CoreEvalSource)**\*.cs">
     <Link>Core\%(RecursiveDir)\%(Filename)%(Extension)</Link>
    </Compile>
+
     <Compile Remove="$(CoreEvalSource)FunctionResolver\VisualBasic\**\*.cs" />
     <Compile Remove="$(CoreEvalSource)ResultProvider\NetFX20\**\*.cs" />
     <Compile Remove="$(CoreEvalSource)ResultProvider\Helpers\ArrayBuilder.cs" />

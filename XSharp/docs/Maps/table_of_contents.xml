@@ -764,7 +764,7 @@
           <topicref type="topic" id="423889269807360" build="ALL" modified="2019-10-15T14:08:49.096Z" icon="0" href="command_BEGIN-CHECKED">
             <caption translate="true">BEGIN (UN)CHECKED</caption>
           </topicref>
-          <topicref type="topic" id="426358377248357" build="ALL" modified="2019-10-15T14:08:51.786Z" icon="0" href="command_BEGIN-FIXED2">
+          <topicref type="topic" id="426358377248357" build="ALL" modified="2023-02-07T17:37:32.257Z" icon="0" href="command_BEGIN-FIXED">
             <caption translate="true">BEGIN FIXED</caption>
           </topicref>
           <topicref type="topic" id="423887192829292" build="ALL" modified="2019-10-15T14:08:54.154Z" icon="0" href="command_BEGIN-LOCK">
@@ -1366,6 +1366,9 @@
           </topicref>
           <topicref type="topic" id="449596176809893" build="ALL" modified="2023-02-02T13:10:29.848Z" icon="0" href="STACKALLOC">
             <caption translate="true">STACKALLOC</caption>
+          </topicref>
+          <topicref type="topic" id="449647588802199" build="ALL" modified="2023-02-07T17:45:18.016Z" icon="0" href="command_VAR">
+            <caption translate="true">VAR Statement</caption>
           </topicref>
         </topicref>
       </topicref>

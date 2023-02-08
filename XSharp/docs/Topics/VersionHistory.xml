@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-03T16:06:38.242+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-02-07T17:23:17.920+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
+    <keyword>Changes</keyword>
     <keyword>Runtime chapter</keyword>
     <keyword>STACKALLOC</keyword>
     <keyword>XS9082</keyword>
@@ -49,6 +50,7 @@
       <li styleclass="Body Text">Added new options page to control where the editor looks for identifiers on the Complete Word (Ctrl+Space) command.</li>
       <li styleclass="Body Text">A lot of improvements to the debugger expression evaluator (#1050). Please note that this debugger expression evaluator is only available in Visual Studio 2019 and later</li>
       <li styleclass="Body Text">Added a debugger options page that controls how expression are parsed by the new debugger expression evaluator. <br/>You can also change the setting here that disallows editing while debugging.</li>
+      <li styleclass="Body Text">We have added context help to the Visual Studio source code editor. When you press F1 on a symbol then we inspect the symbol. If it comes from X# then the relevant page in the help file is opened. When it comes from Microsoft then we open the relevant page from the Microsoft Documentation online.<br/>In a next build we will probably add an option for 3rd parties to register their help collections too.</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

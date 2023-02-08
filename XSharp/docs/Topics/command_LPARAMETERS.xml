@@ -1,7 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-02-07T17:46:23.101+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>LPARAMETERS Statement</title>
+  <keywords>
+    <keyword>Declaration statements</keyword>
+    <keyword>LOCAL statement</keyword>
+    <keyword>LPARAMETERS statement</keyword>
+    <keyword>Statements</keyword>
+    <keyword>Variable declaration</keyword>
+    <keyword>Variables<keyword>declaring</keyword></keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">LPARAMETERS Statement </para>

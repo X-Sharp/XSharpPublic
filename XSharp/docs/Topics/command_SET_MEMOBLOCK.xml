@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-02-07T14:59:43.837+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET MEMOBLOCK Command</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -23,7 +23,7 @@
     <para styleclass="Normal">SET MEMOBLOCK is functionally equivalent to calling RDDInfo(_SET_MEMOBLOCKSIZE, &lt;<text styleclass="Italic">nSize</text>&gt;). &#160;</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_RDDInfo">RDDInfo()</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_RddInfo.htm" domain="XSharpRef.chm">RDDInfo()</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

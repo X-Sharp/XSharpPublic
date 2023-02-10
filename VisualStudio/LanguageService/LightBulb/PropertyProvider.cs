@@ -168,13 +168,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             if (m_textBuffer.Properties == null)
                 return false;
             //
-            SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
-            var location = this.m_textBuffer.FindLocation(caret);
-            CompletionState state;
-            var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
-            // LookUp for the BaseType, reading the TokenList (From left to right)
-            var lookupresult = new List<IXSymbol>();
-            lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
+            var lookupresult = m_textView.GetSymbolUnderCursor(out _);
             //
             if (lookupresult.Count > 0)
             {

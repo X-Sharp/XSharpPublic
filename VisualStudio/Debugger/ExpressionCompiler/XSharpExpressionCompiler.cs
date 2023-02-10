@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+//#define XDEBUG
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator;
 using Microsoft.VisualStudio.Debugger.Clr;
@@ -13,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using XSharpModel;
+
 namespace XSharpDebugger.ExpressionCompiler
 {
     /// <summary>
@@ -73,6 +75,9 @@ namespace XSharpDebugger.ExpressionCompiler
             out string error,
             out DkmCompiledClrInspectionQuery result)
         {
+#if XDEBUG
+            XSolution.WriteOutputMessage("CompileExpression: " + expression.Text);
+#endif
             if (!VsVersion.Vs15)
             {
                 NewCompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
@@ -165,6 +170,9 @@ namespace XSharpDebugger.ExpressionCompiler
         DkmCompiledClrLocalsQuery IDkmClrExpressionCompiler.GetClrLocalVariableQuery(DkmInspectionContext inspectionContext, DkmClrInstructionAddress instructionAddress, bool argumentsOnly)
         {
             DkmCompiledClrLocalsQuery result;
+#if XDEBUG
+            XSolution.WriteOutputMessage("GetClrLocalVariableQuery ");
+#endif
             if (!VsVersion.Vs15)
             {
                 result = NewClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
@@ -239,6 +247,9 @@ namespace XSharpDebugger.ExpressionCompiler
         /// execute to perform the assignment.</param>
         void IDkmClrExpressionCompiler.CompileAssignment(DkmLanguageExpression expression, DkmClrInstructionAddress instructionAddress, DkmEvaluationResult lValue, out string error, out DkmCompiledClrInspectionQuery result)
         {
+#if XDEBUG
+            XSolution.WriteOutputMessage("CompileAssignment: "+expression.Text);
+#endif
             if (!VsVersion.Vs15)
             {
                 NewCompileAssignment(expression, instructionAddress, lValue, out error, out result);

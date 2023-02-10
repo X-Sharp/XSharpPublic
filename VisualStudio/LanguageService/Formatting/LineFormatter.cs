@@ -5,15 +5,13 @@
 //
 //------------------------------------------------------------------------------
 
-using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Shapes;
 using XSharpModel;
 using XSharpModel.Formatting;
 
@@ -45,8 +43,18 @@ namespace XSharp.LanguageService
         }
         private XKeyword GetFirstKeywordInLine(ITextSnapshotLine line, out int minIndent, out IList<IToken> tokens)
         {
+            // When line is a continued line, then walk back until the first line that is not a continued line
             minIndent = 0;
             XKeyword keyword = default;
+            int lineNo = line.LineNumber;
+            while (lineNo > 0 && LineIsContinuation(lineNo))
+            {
+                lineNo--;
+            }
+            if (lineNo != line.LineNumber)
+            {
+                line = line.Snapshot.GetLineFromLineNumber(lineNo);
+            }
             tokens = _document.GetTokensInLine(line);
             if (tokens.Count > 0)
             {
@@ -88,14 +96,13 @@ namespace XSharp.LanguageService
             _tokenBuffer.Clear();
             _lineIndent.Clear();
             int lineNumber = line.LineNumber;
-            int prevIndent = -1;
             var previousLine = line.Snapshot.GetLineFromLineNumber(lineNumber - 1);
             if (CanChangeLine(previousLine))
             {
-                this.FormatLineCase(editSession, previousLine);
-                prevIndent = CalculateIndentForPreviousLine(previousLine);
+                var prevIndent = CalculateIndentForPreviousLine(previousLine);
                 SetIndentation(editSession, previousLine, prevIndent);
                 _lineIndent[lineNumber - 1] = prevIndent;
+                this.FormatLineCase(editSession, previousLine);
             }
             // calculate the indentation from the new current line
             if (line.Length == 0 || CanChangeLine(line))
@@ -359,24 +366,42 @@ namespace XSharp.LanguageService
             }
             return true;
         }
-        bool LineEndsWithContinuation(int lineNo)
+        bool LineIsContinuation(int lineNo)
         {
-            return _document.HasLineState(lineNo, LineFlags.Continued);
+            return _document.HasLineState(lineNo, LineFlags.IsContinued);
         }
         private int GetDesiredIndentationAfterLine(int prevLineNo)
         {
+            if (prevLineNo < 0)
+                return 0;
+            int curLine = prevLineNo + 1;
             var line = _buffer.CurrentSnapshot.GetLineFromLineNumber(prevLineNo);
             var prevLineKeyword = GetFirstKeywordInLine(line ,out _, out var prevTokens);
             var indentValue = GetLineIndent(prevLineNo);
             var settings = Settings;
             var rule = XFormattingRule.GetFirstRuleByStart(prevLineKeyword);
-            var continued = LineEndsWithContinuation(prevLineNo);
-            if (continued)
+            if (LineIsContinuation(curLine))
             {
                 // when this was already a continued line then we do not need to add another tab
-                continued = !LineEndsWithContinuation(prevLineNo-1);
+                if (LineIsContinuation(prevLineNo))
+                {
+                    return indentValue;
+                }
+                // when we are the first continued line and the option is enabled
+                // then indent one tab
+                if (settings.IndentContinuedLines)
+                    return indentValue + settings.IndentSize;
+                // otherwise keep same indent as previous line
+                return indentValue;
             }
-            if (rule != null && rule.Flags.HasFlag(XFormattingFlags.SingleLine))
+            // if the previous line was an indentation then we have to unindent
+
+            if (LineIsContinuation(prevLineNo) && settings.IndentContinuedLines)
+            {
+                indentValue -= settings.IndentSize;
+                return indentValue;
+            }
+            if (rule != null && rule.Flags.IsSingleLine())
             {
                 ; // do nothing
             }
@@ -392,6 +417,7 @@ namespace XSharp.LanguageService
                 {
                     indentValue += settings.IndentSize;
                 }
+                return indentValue;
             }
             else if (prevLineKeyword.IsStart() || prevLineKeyword.IsMiddle())
             {
@@ -400,7 +426,6 @@ namespace XSharp.LanguageService
                 // Namespace is an exception. This depends on a setting
                 if (prevLineKeyword.Kw2 == XTokenType.Namespace && !settings.IndentNamespace)
                 {
-                    
                     indentValue -= settings.IndentSize;
                 }
                 // Check to see if we need to adjust CASE / OTHERWISE
@@ -412,15 +437,12 @@ namespace XSharp.LanguageService
                         indentValue -= settings.IndentSize;
                     }
                 }
+                return indentValue;
             }
             else if (prevLineKeyword.IsStop())
             {
-                // After an end keyword we copy its indentation
+                // Align to the same column as the end keyword
                 return indentValue;
-            }
-            if (continued)
-            {
-                return indentValue + settings.IndentSize;
             }
             else if (AllEmptyTokens(prevTokens))
             {
@@ -430,12 +452,9 @@ namespace XSharp.LanguageService
             // if we are right after the last line of a group of continued lines then we want
             // to copy the indent value of the first of this group of lines
             // this last line is not continued, but its predecessors are
-            if (!LineEndsWithContinuation(prevLineNo))
+            while (prevLineNo >= 0 && LineIsContinuation(prevLineNo))
             {
-                while (LineEndsWithContinuation(prevLineNo - 1))
-                {
-                    prevLineNo -= 1;
-                }
+                prevLineNo -= 1;
             }
             // get the indent of the right line
             indentValue = GetLineIndent(prevLineNo);
@@ -553,8 +572,9 @@ namespace XSharp.LanguageService
             var settings = Settings;
             if (keyword.IsEntity())
             {
-                if (keyword.IsType())
+                if (keyword.IsType()) // Type or namespace
                 {
+                    // Start of a type or of a namespace
                     // walk back to the last type or namespace
                     // when we find a type, then copy its indentation
                     // when we find a namespace then indent the type when needed
@@ -564,17 +584,25 @@ namespace XSharp.LanguageService
                     while (! done && tempLine >= 0)
                     {
                         var kw = GetFirstKeywordInLine(tempLine);
-                        if (kw.IsType())
+                        if (kw.IsType())    // note namespaces are also types
+                        {
+                            prevIndentation = GetLineIndent(tempLine);
+                            var rule = XFormattingRule.GetFirstRuleByStart(kw);
+                            if (rule.Flags.IsNested())
+                            {
+                                prevIndentation += settings.IndentSize;
+                            }
+                            done = true;
+                            if (settings.IndentNamespace && kw.IsNamespace() )
+                            {
+                                prevIndentation += settings.IndentSize;
+                            }
+
+                        }
+                        if (kw.IsEndOfType())
                         {
                             prevIndentation = GetLineIndent(tempLine);
                             done = true;
-                            if (kw.Kw2 == XTokenType.Namespace && kw.Kw1 == XTokenType.Begin)
-                            {
-                                if (settings.IndentNamespace)
-                                {
-                                    prevIndentation += settings.IndentSize;
-                                }
-                            }
                         }
                         tempLine -= 1;
                     }
@@ -622,7 +650,12 @@ namespace XSharp.LanguageService
                         tempLineNo -= 1;
                     }
                 }
-
+                else if (keyword.IsEndOfType())
+                {
+                    var tempLine = lineNo - 1;
+                    prevIndentation = GetLineIndent(tempLine);
+                    // align with the END <type> keyword
+                }
             }
             else
             {
@@ -642,37 +675,37 @@ namespace XSharp.LanguageService
             var settings = Settings;
             while (lineNo >= 0 && !done)
             {
-                var prevkw = GetFirstKeywordInLine(lineNo);
-                if (!prevkw.IsEmpty)
+                if (!LineIsContinuation(lineNo))
                 {
-                    if (prevkw.Equals(keyword) || XFormattingRule.IsSynonym(keyword, prevkw))
+                    var prevkw = GetFirstKeywordInLine(lineNo);
+                    if (!prevkw.IsEmpty)
                     {
-                        nested++;
-                        lineNo -= 1;
-                        continue;
-                    }
-                    foreach (var rule in rules)
-                    {
-                        // does this rule start with what we expect
-                        if (!prevkw.Equals(rule.Start))
+                        if (prevkw.Equals(keyword) || XFormattingRule.IsSynonym(keyword, prevkw))
+                        {
+                            nested++;
+                            lineNo -= 1;
                             continue;
-                        if (nested > 0)
-                        {
-                            if (!rule.Flags.HasFlag(XFormattingFlags.Middle))
-                                nested--;
                         }
-                        else
+                        foreach (var rule in rules)
                         {
-                            done = true;
-                            prevIndentation = GetLineIndent(lineNo);
-                            if (settings.IndentCaseLabel && rule.Flags.HasFlag(XFormattingFlags.Case))
+                            // does this rule start with what we expect
+                            if (!prevkw.Equals(rule.Start))
+                                continue;
+                            if (nested > 0)
                             {
-                                if (rule.Flags.HasFlag(XFormattingFlags.Middle))
+                                if (!rule.Flags.IsMiddle())
+                                    nested--;
+                            }
+                            else
+                            {
+                                done = true;
+                                prevIndentation = GetLineIndent(lineNo);
+                                if (settings.IndentCaseLabel && rule.Flags.IsMiddle() && rule.Flags.IsCase())
                                 {
                                     prevIndentation += settings.IndentSize;
+                                    break;
                                 }
                             }
-                            break;
                         }
                     }
                 }
@@ -701,12 +734,9 @@ namespace XSharp.LanguageService
                         }
                         done = true;
                         prevIndentation = GetLineIndent(lineNo);
-                        if (rule.Flags.HasFlag(XFormattingFlags.Case))
+                        if (settings.IndentCaseLabel && rule.Flags.IsCase())
                         {
-                            if (settings.IndentCaseLabel)
-                            {
-                                prevIndentation += settings.IndentSize;
-                            }
+                            prevIndentation += settings.IndentSize;
                         }
                         break;
                     }

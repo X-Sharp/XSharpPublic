@@ -28,7 +28,8 @@ STRUCTURE XSharpModel.XKeyword IMPLEMENTS IEquatable<XKeyword>, IEqualityCompare
     PROPERTY IsEmpty  as LOGIC => _code == 0
     PROPERTY IsBegin  as LOGIC => Kw1 == XTokenType.Begin
     PROPERTY IsEnd    as LOGIC => Kw1 == XTokenType.End
-    PROPERTY IsSingle as LOGIC => Kw2 == XTokenType.None
+    PROPERTY IsSingle AS LOGIC => Kw2 == XTokenType.None
+    PROPERTY Code     AS LONG => _code
 
     CONSTRUCTOR(kw1 as LONG, kw2 as LONG)
         SELF( (XTokenType) kw1, (XTokenType) kw2)
@@ -79,6 +80,9 @@ STATIC CLASS XSharpModel.XKeywordExtensions
     STATIC METHOD IsMiddle(SELF kw as XKeyword) AS LOGIC
         RETURN XFormattingRule.IsMiddleKeyword(kw)
 
+    STATIC METHOD IsJump(SELF kw as XKeyword) AS LOGIC
+        RETURN XFormattingRule.IsJumpKeyword(kw)
+
     STATIC METHOD IsStop(SELF kw as XKeyword) AS LOGIC
         RETURN XFormattingRule.IsEndKeyword(kw)
 
@@ -91,10 +95,15 @@ STATIC CLASS XSharpModel.XKeywordExtensions
     STATIC METHOD IsType(SELF kw as XKeyword) AS LOGIC
         RETURN XFormattingRule.IsType(kw)
 
+    STATIC METHOD IsNamespace(SELF kw as XKeyword) AS LOGIC
+        RETURN XFormattingRule.IsNamespace(kw)
+
     STATIC METHOD IsStatement(SELF kw as XKeyword) AS LOGIC
         RETURN XFormattingRule.IsStatement(kw)
 
     STATIC METHOD IsGlobal(SELF kw as XKeyword) AS LOGIC
-        RETURN XFormattingRule.IsGlobalEntity(kw)
+    RETURN XFormattingRule.IsGlobalEntity(kw)
 
+    STATIC METHOD IsEndOfType(SELF kw as XKeyword) AS LOGIC
+        RETURN XFormattingRule.IsEndOfType(kw)
 END CLASS

@@ -251,7 +251,7 @@ BEGIN NAMESPACE XSharpModel
 
          ENDIF
          VAR result := List<IXMemberSymbol>{}
-			FOREACH VAR assembly IN theirassemblies
+			FOREACH VAR assembly IN theirassemblies:ToList()
 				assembly:Refresh()
 				IF assembly:HasExtensions
                VAR ext := assembly:FindExtensionMethodsForType(typeName)

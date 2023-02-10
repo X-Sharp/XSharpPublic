@@ -56,6 +56,7 @@
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="BraceCompletion\BraceCompletion.cs" />
+    <Compile Include="BraceMatching\KeywordMatching.cs" />
     <Compile Include="BraceMatching\BraceMatching.cs" />
     <Compile Include="Classifier\ClassificationDefinitions.cs" />
     <Compile Include="Classifier\ColorizerConstants.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Formatting\LineFormatter.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
+    <Compile Include="Generic\HelpViewer.cs" />
     <Compile Include="LightBulb\CommonAction.cs" />
     <Compile Include="LightBulb\CommonActionProvider.cs" />
     <Compile Include="LightBulb\ConstructorAction.cs" />
@@ -208,7 +210,7 @@
     <Compile Include="Generic\EditorCommandProvider.cs" />
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
-    <Compile Include="Tokenizer\XDocument.cs" />
+    <Compile Include="Document\XDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

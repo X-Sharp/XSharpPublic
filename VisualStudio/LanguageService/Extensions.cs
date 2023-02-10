@@ -38,7 +38,7 @@ namespace XSharp.LanguageService
                 result = result.Substring(2);
             return result;
         }
-        public static XsClassificationSpan ToClassificationSpan(this TextSpan span, ITextSnapshot snapshot, IClassificationType classificationType)
+        public static ClassificationSpan ToClassificationSpan(this TextSpan span, ITextSnapshot snapshot, IClassificationType classificationType)
         {
             int start = span.Start;
             int length = span.Length;
@@ -51,7 +51,7 @@ namespace XSharp.LanguageService
             }
             length = length < 0 ? 0 : length;
             SnapshotSpan sspan = new SnapshotSpan(snapshot, start, length);
-            return new XsClassificationSpan(sspan, classificationType);
+            return new ClassificationSpan(sspan, classificationType);
         }
 
 

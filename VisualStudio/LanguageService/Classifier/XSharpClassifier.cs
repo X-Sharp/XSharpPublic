@@ -16,7 +16,6 @@ using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using XSharpModel;
@@ -45,8 +44,6 @@ namespace XSharp.LanguageService
         static private IClassificationType xsharpInactiveType;
         static private IClassificationType xsharpLiteralType;
         static private IClassificationType xsharpTextType;
-        static private IClassificationType xsharpKwOpenType;
-        static private IClassificationType xsharpKwCloseType;
         #endregion
 
         #region Private Fields
@@ -125,8 +122,6 @@ namespace XSharp.LanguageService
                 xsharpTextType = registry.GetClassificationType(ColorizerConstants.XSharpTextEndTextFormat);
                 xsharpRegionStart = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
                 xsharpRegionStop = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
-                xsharpKwOpenType = registry.GetClassificationType(ColorizerConstants.XSharpKwOpenFormat);
-                xsharpKwCloseType = registry.GetClassificationType(ColorizerConstants.XSharpKwCloseFormat);
             }
             // Run a synchronous scan to set the initial buffer colors
             _sourceWalker = new SourceWalker(file);
@@ -307,7 +302,7 @@ namespace XSharp.LanguageService
                 _sourceWalker.SaveToDisk = true;
                 // Parse the source using the tokens that we have already
                 // collected for the colorization
-                _sourceWalker.ParseTokens(xDocument.Tokens, true, false);
+                _sourceWalker.ParseBlocks(xDocument.Tokens);
                 RegisterEntityBoundaries();
                 var regionTags = BuildRegionTags(_sourceWalker.EntityList, _sourceWalker.BlockList, snapshot, xsharpRegionStart, xsharpRegionStop);
                 lock (gate)
@@ -378,6 +373,7 @@ namespace XSharp.LanguageService
                 var endPos = entity.Interval.Stop;
                 AddRegionSpan(regions, snapshot, startPos, endPos);
             }
+            _document.SetBlocks(blocks);
 
             foreach (var block in blocks)
             {
@@ -388,17 +384,30 @@ namespace XSharp.LanguageService
                 if (block.Children.Count > 1)
                 {
                     var lastline = block.Token.Line;
+                    var canJump = block.CanJump;
                     foreach (var child in block.Children)
                     {
-                        if (child.Token.Line > lastline + 1 && child.Token.Line >= 2)
+                        // Jump statements are also children of the block 
+                        // but should not result in a region
+                        // HACK
+                        // the two JUMP keywords are hard coded for simplicity
+                        bool addRegion = true;
+                        if (canJump)
                         {
-                            // the child is a line with CASE, ELSE, ELSEIF CATCH etc.
-                            // we want the last token of the previous like to be the end of the previous block
-                            endPos = snapshot.GetLineFromLineNumber(child.Token.Line - 2).End;
-                            AddRegionSpan(regions, snapshot, startPos, endPos);
+                            addRegion = child.Token.Type != XSharpLexer.EXIT && child.Token.Type != XSharpLexer.LOOP;
                         }
-                        startPos = child.Token.StartIndex;
-                        lastline = child.Token.Line;
+                        if (addRegion)
+                        {
+                            if (child.Token.Line > lastline + 1 && child.Token.Line >= 2)
+                            {
+                                // the child is a line with CASE, ELSE, ELSEIF CATCH etc.
+                                // we want the last token of the previous like to be the end of the previous block
+                                endPos = snapshot.GetLineFromLineNumber(child.Token.Line - 2).End;
+                                AddRegionSpan(regions, snapshot, startPos, endPos);
+                            }
+                            startPos = child.Token.StartIndex;
+                            lastline = child.Token.Line;
+                        }
                     }
                 }
             }
@@ -446,9 +455,7 @@ namespace XSharp.LanguageService
         private ClassificationSpan Token2ClassificationSpan(IToken start, IToken stop, ITextSnapshot snapshot, IClassificationType type)
         {
             TextSpan tokenSpan = new TextSpan(start.StartIndex, stop.StopIndex - start.StartIndex + 1);
-            XsClassificationSpan span = tokenSpan.ToClassificationSpan(snapshot, type);
-            span.startTokenType = start.Type;
-            span.endTokenType = stop.Type;
+            ClassificationSpan span = tokenSpan.ToClassificationSpan(snapshot, type);
             return span;
         }
 
@@ -459,19 +466,16 @@ namespace XSharp.LanguageService
         /// <param name="snapshot"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        private ClassificationSpan Token2ClassificationSpan(IToken token, ITextSnapshot snapshot, IClassificationType type)
+        private ClassificationSpan Token2ClassificationSpan(IToken token, ITextSnapshot snapshot, IClassificationType type )
         {
             if (token != null && snapshot != null)
             {
                 TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
-                XsClassificationSpan span = tokenSpan.ToClassificationSpan(snapshot, type);
-                span.startTokenType = token.Type;
-                span.endTokenType = -1;
+                ClassificationSpan span = tokenSpan.ToClassificationSpan(snapshot, type);
                 return span;
             }
             return default;
         }
-
 
         private ClassificationSpan ClassifyToken(IToken token, IList<ClassificationSpan> regionTags, ITextSnapshot snapshot, IToken lastToken)
         {
@@ -623,7 +627,7 @@ namespace XSharp.LanguageService
             return result;
         }
 
-
+#if FALSE
         private List<ClassificationSpan> ClassifyKeyword(IToken token, ITextSnapshot snapshot, ref IToken keywordContext)
         {
             var tokenType = token.Type;
@@ -835,7 +839,7 @@ namespace XSharp.LanguageService
             return result;
         }
 
-
+#endif
 
         private void ScanForRegion(IToken token, int iToken, IList<IToken> tokens,
             ref int iLast, ITextSnapshot snapshot, IList<ClassificationSpan> regionTags)
@@ -942,7 +946,7 @@ namespace XSharp.LanguageService
                     // Orphan End ?
                     if ((keywordContext != null) && (keywordContext.Line != token.Line) && (keywordContext.Type == XSharpLexer.END))
                     {
-                        newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
+                        newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKeywordType));
                         keywordContext = null;
                     }
                     var span = ClassifyToken(token, regionTags, snapshot, lastToken);
@@ -951,6 +955,7 @@ namespace XSharp.LanguageService
                     {
                         // don't forget the current one
                         newtags.Add(span);
+#if FALSE
                         // We can have some Open/Close keyword ( FOR..NEXT; WHILE...ENDDO; IF...ENDIF)
                         if (span.ClassificationType == xsharpKeywordType)
                         {
@@ -958,7 +963,7 @@ namespace XSharp.LanguageService
                             foreach (var item in list)
                                 newtags.Add(item);
                         }
-
+#endif
                         if (!XEditorSettings.DisableRegions)
                         {
                             // now look for Regions of similar code lines
@@ -1003,7 +1008,7 @@ namespace XSharp.LanguageService
                 _document.SetIdentifiers(ids);
                 if ((keywordContext != null) && (keywordContext.Type == XSharpLexer.END))
                 {
-                    newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
+                    newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKeywordType));
                     keywordContext = null;
                 }
             }
@@ -1159,7 +1164,7 @@ namespace XSharp.LanguageService
         }
     }
 
-
+#if FALSE
     [DebuggerDisplay("{Span} {ClassificationType.Classification,nq} ")]
     public class XsClassificationSpan : ClassificationSpan
     {
@@ -1173,7 +1178,7 @@ namespace XSharp.LanguageService
             endTokenType = -1;
         }
     }
-
+#endif
     internal class XClassificationSpans
     {
         private readonly IList<ClassificationSpan> _tags;

@@ -11,9 +11,6 @@ namespace XSharp.LanguageService
     {
         public const string XSharpRegionStartFormat = "xsharp.region.start";
         public const string XSharpRegionStopFormat = "xsharp.region.end";
-
-        public const string XSharpKwOpenFormat = "xsharp.keyword.open";
-        public const string XSharpKwCloseFormat = "xsharp.keyword.close";
         public const string XSharpTextEndTextFormat = "xsharp.text";
         public const string BraceFormatDefinition = "BraceFormatDefinition";
         public const string KeyWordFormatDefinition = "KeyWordFormatDefinition";

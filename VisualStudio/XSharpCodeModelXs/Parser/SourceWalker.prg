@@ -159,9 +159,10 @@ CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         NEXT
         RETURN result
 
+    METHOD ParseBlocks(tokens AS IList<IToken>) AS VOID
+        SELF:ParseTokens(tokens, TRUE, FALSE)
 
-
-    METHOD ParseTokens(tokens AS IList<IToken> , lIncludeRegions AS LOGIC, lIncludeLocals AS LOGIC) AS VOID
+    INTERNAL METHOD ParseTokens(tokens AS IList<IToken> , lIncludeRegions AS LOGIC, lIncludeLocals AS LOGIC) AS VOID
         IF SELF:ParseOptions == NULL
             RETURN
         ENDIF

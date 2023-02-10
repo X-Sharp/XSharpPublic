@@ -471,13 +471,13 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         CASE XSharpLexer.PP_ENDIF
             // end
             IF _PPBlockStack:Count > 0
-                _PPBlockStack:Peek():Children:Add( XSourceBlock{XKeyword{SELF:La1}, SELF:Lt1})
+                _PPBlockStack:Peek():Children:Add( XBlockChild{XKeyword{SELF:La1}, SELF:Lt1})
                 _PPBlockStack:Pop()
             ENDIF
         CASE XSharpLexer.PP_ELSE
             // middle
             IF _PPBlockStack:Count > 0
-                _PPBlockStack:Peek():Children:Add( XSourceBlock{XKeyword{SELF:La1}, SELF:Lt1})
+                _PPBlockStack:Peek():Children:Add( XBlockChild{XKeyword{SELF:La1}, SELF:Lt1})
             ENDIF
         CASE XSharpLexer.PP_INCLUDE
             var sb := StringBuilder{}
@@ -938,13 +938,21 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 // check for GET SET INIT blocks on a single line
                 // or ADD/REMOVE blocks on a single line
                 if XFormattingRule.IsMiddleKeyword(xt) .and. _BlockStack:Count > 0
-                    CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
+                    CurrentBlock:Children:Add( XBlockChild{xt, SELF:Lt1})
                 else
                     _BlockList:Add(block)
                     _BlockStack:Push(block)
                 endif
             ENDIF
         ENDIF
+        RETURN
+
+    PRIVATE METHOD ParseJumpStatement(xt AS XKeyword) AS VOID
+        SWITCH SELF:La1
+        CASE XSharpLexer.EXIT
+        CASE XSharpLexer.LOOP
+            SELF:Consume()
+        END SWITCH
         RETURN
 
     PRIVATE METHOD ParseBlockMiddle(xt as XKeyword) AS VOID
@@ -1000,17 +1008,29 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             ParseBlockStart(rule, xt)
         elseif XFormattingRule.IsEndKeyword(xt)
             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
-                CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
+                CurrentBlock:Children:Add( XBlockChild{xt, SELF:Lt1})
                 _BlockStack:Pop()
             ENDIF
         ELSEIF XFormattingRule.IsMiddleKeyword(xt)
             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
-                CurrentBlock:Children:Add( XSourceBlock{xt, SELF:Lt1})
+                CurrentBlock:Children:Add( XBlockChild{xt, SELF:Lt1})
             ENDIF
             ParseBlockMiddle(xt)
+        ELSEIF XFormattingRule.IsJumpKeyword(xt)
+            IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
+                IF _BlockStack:Count > 0
+                    VAR temp := _BlockStack:ToArray()
+                    FOREACH VAR item IN temp
+                        IF item:CanJump
+                            item:Children:Add(XBlockChild{xt, SELF:Lt1})
+                            EXIT
+                        ENDIF
+                    NEXT
+                ENDIF
+            ENDIF
+            ParseJumpStatement(xt)
         ENDIF
         RETURN
-
 
     PRIVATE METHOD IsEndOfEntity(EntityKind OUT Kind) AS LOGIC
         SWITCH SELF:La1

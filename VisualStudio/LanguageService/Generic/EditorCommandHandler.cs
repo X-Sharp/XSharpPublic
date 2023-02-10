@@ -6,9 +6,9 @@
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using System;
+using System.Linq;
 using XSharpModel;
 namespace XSharp.LanguageService
 {
@@ -19,19 +19,28 @@ namespace XSharp.LanguageService
 
         readonly XFile _file;
 
-   
+
         public XSharpEditorCommandHandler(IWpfTextView textView)
         {
             TextView = textView;
             _file = textView.TextBuffer.GetFile();
         }
 
- 
+
+        internal void ShowHelp(uint nCmdID)
+        {
+            var result = this.TextView.GetSymbolUnderCursor(out _, out _, out var tokens); ;
+            if (result.Count == 0 && tokens.Count > 0)
+            {
+                var token = tokens[0].Text;
+                HelpViewer.ShowHelp(TextView, nCmdID, token);
+            }
+            HelpViewer.ShowHelp(TextView, nCmdID, result.First());
+        }
+
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             var cmdGrp = pguidCmdGroup;
-            //
-            bool handled = false;
             int hresult = VSConstants.S_OK;
 
             // 1. Pre-process
@@ -41,7 +50,8 @@ namespace XSharp.LanguageService
                 {
                     case (int)VSConstants.VSStd2KCmdID.HELPKEYWORD:
                     case (int)VSConstants.VSStd2KCmdID.HELP:
-                        break;
+                        ShowHelp(nCmdID);
+                        return VSConstants.S_OK;
                 }
             }
             else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
@@ -50,10 +60,9 @@ namespace XSharp.LanguageService
                 {
                     case (int)VSConstants.VSStd97CmdID.F1Help:
                     case (int)VSConstants.VSStd97CmdID.WindowHelp:
-                        //handled = true;
-                        //Todo RvdH Call X# Help
-                        break;
-                    
+                        ShowHelp(nCmdID);
+                        return VSConstants.S_OK;
+
                     case (int)VSConstants.VSStd97CmdID.GotoDefn:
                         XSharpGotoDefinition.GotoDefn(TextView);
                         return VSConstants.S_OK;
@@ -61,33 +70,14 @@ namespace XSharp.LanguageService
             }
 
             // 2. Let others do their thing
-           ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+             {
+                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-                hresult = Next.Exec(ref cmdGrp, nCmdID, nCmdexecopt, pvaIn, pvaOut);
-            });
+                 hresult = Next.Exec(ref cmdGrp, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+             });
 
-            if (ErrorHandler.Succeeded(hresult))
-            {
-                // 3. Post process
-                if (pguidCmdGroup == Microsoft.VisualStudio.VSConstants.VSStd2K)
-                {
-                    switch (nCmdID)
-                    {
-  
-                        case (int) VSConstants.VSStd2KCmdID.HELP:
-                        case (int) VSConstants.VSStd2KCmdID.HELPKEYWORD:
-                            break;
-                        
-                    }
-                    //
-                    if (handled)
-                        return VSConstants.S_OK;
-                }
-            }
-            
-           return hresult;
+            return hresult;
         }
 
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
@@ -97,8 +87,8 @@ namespace XSharp.LanguageService
             {
                 switch (prgCmds[0].cmdID)
                 {
-                    
-                    case (int) VSConstants.VSStd97CmdID.GotoDefn:
+
+                    case (int)VSConstants.VSStd97CmdID.GotoDefn:
                         if (isSource)
                         {
                             prgCmds[0].cmdf = (uint)OLECMDF.OLECMDF_ENABLED | (uint)OLECMDF.OLECMDF_SUPPORTED;

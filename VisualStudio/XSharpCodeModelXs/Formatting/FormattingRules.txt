@@ -12,6 +12,7 @@ After the end token there may be another comma and a list of "options"
 These options can be:
 - OPTIONAL (end token is optional)
 - MIDDLE   (marks the block where the end keyword is actually a middle token, such as CASE).
+- JUMP     (exit, loop, no indenting required)
 - CASE     (for special indenting rules for CASE blocks)
 - SINGLELINE (for rules that may be single line such as property)
 Section delimiters indicate the type of the tokens
@@ -99,16 +100,26 @@ IF,END IF?
 
 // Loops
 FOR,NEXT
+FOR,EXIT,JUMP
+FOR,LOOP,JUMP
 FOREACH,NEXT
+FOREACH,EXIT,JUMP
+FOREACH,LOOP,JUMP
 
 DO WHILE,ENDDO
 DO WHILE,END DO?
 DO WHILE,END WHILE
+DO WHILE,EXIT,JUMP
+DO WHILE,LOOP,JUMP
 WHILE,ENDDO
 WHILE,END DO?
 WHILE,END WHILE
+WHILE,EXIT,JUMP
+WHILE,LOOP,JUMP
 
 REPEAT,UNTIL
+REPEAT,EXIT,JUMP
+REPEAT,LOOP,JUMP
 
 // Error blocks
 TRY,CATCH,MIDDLE

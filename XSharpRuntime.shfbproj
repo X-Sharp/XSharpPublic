@@ -163,7 +163,7 @@
         </component>
       </ComponentConfig>
     </ComponentConfigurations>
-    <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
+    <MissingTags>AutoDocumentCtors, Namespace, IncludeTargets, AutoDocumentDispose</MissingTags>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="logo100.jpg" />
       <Argument Key="logoHeight" Value="50" />

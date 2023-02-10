@@ -38,31 +38,6 @@ namespace XSharp.LanguageService
         }
     }
 
-    [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpKwOpenFormat)]
-    [Name(ColorizerConstants.XSharpKwOpenFormat)]
-    [UserVisible(false)]
-    [Order(After = Priority.Default)]
-    internal sealed class XSharpBraceOpenFormat : ClassificationFormatDefinition
-    {
-        public XSharpBraceOpenFormat()
-        {
-            this.DisplayName = "XSharp Keyword Open";
-        }
-    }
-
-    [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpKwCloseFormat)]
-    [Name(ColorizerConstants.XSharpKwCloseFormat)]
-    [UserVisible(false)]
-    [Order(After = Priority.Default)]
-    internal sealed class XSharpBraceCloseFormat : ClassificationFormatDefinition
-    {
-        public XSharpBraceCloseFormat()
-        {
-            this.DisplayName = "XSharp Keyword Close";
-        }
-    }
 
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpTextEndTextFormat)]

@@ -26,6 +26,7 @@ namespace XSharp.LanguageService
             _tokens = tokens;
             _snapShot = snapshot;
             _entities = null;
+            _blocks = null;
             _tokensPerLine = new Dictionary<int, IList<IToken>>();
             _lineKeywords = new XSharpLineKeywords();
             _lineState = new XSharpLineState();
@@ -42,7 +43,7 @@ namespace XSharp.LanguageService
         private ITextSnapshot _snapShot;
         private ConcurrentDictionary<string, string> _identifiers;
         private ITextBuffer _buffer;
-
+        private IList<XSourceBlock> _blocks;
 
         #endregion
         #region Properties
@@ -53,6 +54,7 @@ namespace XSharp.LanguageService
         internal XSharpLineState LineState => _lineState;
         internal XSharpLineKeywords LineKeywords => _lineKeywords;
         internal IDictionary<string, string> Identifiers => _identifiers;
+        internal IList<XSourceBlock> Blocks => _blocks;
         internal bool NeedsKeywords { get; set; }
         #endregion
 
@@ -67,6 +69,11 @@ namespace XSharp.LanguageService
             {
                 _tokensPerLine = tokens;
             }
+        }
+
+        internal void SetBlocks(IList<XSourceBlock> blocks)
+        {
+            _blocks = blocks;
         }
 
         internal void SetState(XSharpLineState state, ITextSnapshot ss)

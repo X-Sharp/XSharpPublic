@@ -574,7 +574,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		INTERNAL CLASS SymbolTest
 			EXPORT sym := "sym" AS SYMBOL
-			EXPORT symEmpty AS SYMBOL
+			EXPORT symEmpty := NULL_SYMBOL AS SYMBOL
 			EXPORT symUsual := #SymUsual AS USUAL
 		END CLASS
 

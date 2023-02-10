@@ -1,6 +1,6 @@
 [General]
 PROJECT = Runtime
-IDEVersion = 1.32
+IDEVersion = 1.33
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 3A2B95E7-CF54-4E77-B22D-FDA94582BA81
@@ -39,7 +39,7 @@ RecentReference = Browse:C:\xSharp\DevRt\Binaries\Release\Newtonsoft.Json.dll
 
 ; ************** APPLICATION XSharp.Core *************
 Application = XSharp.Core
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -534,6 +534,7 @@ LateBound=0
 Unsafe=1
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=1
@@ -573,7 +574,7 @@ ENDApplication = XSharp.Core
 
 ; ************** APPLICATION XSharp.VO *************
 Application = XSharp.VO
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -729,6 +730,7 @@ LateBound=0
 Unsafe=1
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -768,7 +770,7 @@ ENDApplication = XSharp.VO
 
 ; ************** APPLICATION Xide.Tests *************
 Application = Xide.Tests
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -852,6 +854,7 @@ LateBound=1
 Unsafe=1
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -891,7 +894,7 @@ ENDApplication = Xide.Tests
 
 ; ************** APPLICATION Xide.Unit *************
 Application = Xide.Unit
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -973,6 +976,7 @@ LateBound=0
 Unsafe=0
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -1012,7 +1016,7 @@ ENDApplication = Xide.Unit
 
 ; ************** APPLICATION XSharp.Core.Tests *************
 Application = XSharp.Core.Tests
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1140,6 +1144,7 @@ LateBound=0
 Unsafe=1
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -1179,7 +1184,7 @@ ENDApplication = XSharp.Core.Tests
 
 ; ************** APPLICATION XSharp.VO.Tests *************
 Application = XSharp.VO.Tests
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1279,6 +1284,7 @@ LateBound=0
 Unsafe=1
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -1318,7 +1324,7 @@ ENDApplication = XSharp.VO.Tests
 
 ; ************** APPLICATION XSharp.Rdd *************
 Application = XSharp.Rdd
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1873,6 +1879,7 @@ LateBound=0
 Unsafe=1
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -1912,7 +1919,7 @@ ENDApplication = XSharp.Rdd
 
 ; ************** APPLICATION XSharp.Rdd.Tests *************
 Application = XSharp.Rdd.Tests
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2001,6 +2008,7 @@ LateBound=0
 Unsafe=0
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -2040,7 +2048,7 @@ ENDApplication = XSharp.Rdd.Tests
 
 ; ************** APPLICATION XSharp.RT *************
 Application = XSharp.RT
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2360,6 +2368,11 @@ FileGUID = 5DE56E2C-F6E8-4A24-BD3C-C1BA293FA1F2
 FileFileGroup = 00DD17A9-70A3-4038-B43D-95D6279140D4
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Types\Globals.prg
+FileGUID = 65DABB6A-4985-436C-8B35-9BBD85E17419
+FileFileGroup = C27AABE3-AC76-41E9-91FF-ABB00CCCD821
+FileType = Code
+CopyToBin = 0
 [XSharp.RT References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
@@ -2397,6 +2410,7 @@ LateBound=0
 Unsafe=1
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -2436,7 +2450,7 @@ ENDApplication = XSharp.RT
 
 ; ************** APPLICATION XSharp.XPP *************
 Application = XSharp.XPP
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2594,6 +2608,7 @@ LateBound=0
 Unsafe=0
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -2633,7 +2648,7 @@ ENDApplication = XSharp.XPP
 
 ; ************** APPLICATION MacroCompiler *************
 Application = MacroCompiler
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2952,6 +2967,7 @@ LateBound=0
 Unsafe=0
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -2991,7 +3007,7 @@ ENDApplication = MacroCompiler
 
 ; ************** APPLICATION XSharp.Data *************
 Application = XSharp.Data
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3134,6 +3150,7 @@ LateBound=0
 Unsafe=0
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -3173,7 +3190,7 @@ ENDApplication = XSharp.Data
 
 ; ************** APPLICATION XSharp.VFP *************
 Application = XSharp.VFP
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3468,6 +3485,7 @@ LateBound=0
 Unsafe=1
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -3507,7 +3525,7 @@ ENDApplication = XSharp.VFP
 
 ; ************** APPLICATION XSharp.VFP.Tests *************
 Application = XSharp.VFP.Tests
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3614,6 +3632,7 @@ LateBound=1
 Unsafe=0
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -3653,7 +3672,7 @@ ENDApplication = XSharp.VFP.Tests
 
 ; ************** APPLICATION XSharp.RT.Tests *************
 Application = XSharp.RT.Tests
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3828,6 +3847,7 @@ LateBound=0
 Unsafe=1
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
@@ -3867,7 +3887,7 @@ ENDApplication = XSharp.RT.Tests
 
 ; ************** APPLICATION XSharp.XPP.Tests *************
 Application = XSharp.XPP.Tests
-IDEVersion = 1.32
+IDEVersion = 1.33
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3944,6 +3964,7 @@ LateBound=0
 Unsafe=1
 Undeclared=0
 EnforceSelf=0
+EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0

@@ -105,13 +105,13 @@ INTERNAL METHOD _CheckEofBof() AS VOID
     ENDIF
 
 
-INTERNAL METHOD _SetBOF(lNewValue as LOGIC) AS VOID
+INTERNAL METHOD _SetBOF(lNewValue AS LOGIC) AS VOID
     IF lNewValue != SELF:BoF
         SELF:BoF := lNewValue
     ENDIF
 
 
-INTERNAL METHOD _SetEOF(lNewValue as LOGIC) AS VOID
+INTERNAL METHOD _SetEOF(lNewValue AS LOGIC) AS VOID
     IF lNewValue != SELF:EoF
         SELF:EoF := lNewValue
         IF lNewValue
@@ -132,9 +132,9 @@ PRIVATE METHOD _AllocateBuffers() AS VOID
 		ENDIF
 	NEXT
 #ifdef INPUTBUFFER
-    if (_inBuffer != null)
+    IF (_inBuffer != NULL)
         _inBuffer:Close()
-    endif
+    ENDIF
 	_inBuffer := InputBuffer{SELF:_oStream, SELF:_HeaderLength, SELF:_RecordLength, SELF:Shared}
 #endif
 
@@ -281,7 +281,7 @@ RETURN result
     /// <inheritdoc />
 OVERRIDE METHOD SkipRaw(nToSkip AS INT) AS LOGIC
 	LOCAL isOK := TRUE AS LOGIC
-    LOCAL nNewRec as INT
+    LOCAL nNewRec AS INT
     //
 	IF nToSkip == 0
         // Refresh current Recno
@@ -362,7 +362,7 @@ OVERRIDE METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 //
 RETURN isOK
 
-PRIVATE METHOD _UpdateRecCount(nCount AS LONG) as LOGIC
+PRIVATE METHOD _UpdateRecCount(nCount AS LONG) AS LOGIC
 	SELF:_RecCount          := nCount
     SELF:_Header:RecCount   := nCount
     SELF:_wasChanged        := TRUE
@@ -418,7 +418,7 @@ OVERRIDE METHOD Lock( lockInfo REF DbLockInfo ) AS LOGIC
 	BEGIN LOCK SELF
 		IF lockInfo:@@Method == DbLockInfo.LockMethod.Exclusive  .OR. ;
             lockInfo:@@Method == DbLockInfo.LockMethod.Multiple
-			isOK := SELF:_lockRecord( lockInfo )
+			isOK := SELF:_lockRecord( REF lockInfo )
 		ELSEIF lockInfo:@@Method == DbLockInfo.LockMethod.File
 			isOK := SELF:_lockDBFFile( )
 		ELSE
@@ -435,7 +435,7 @@ OVERRIDE METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
 	IF lockMode == DbLockMode.Lock
         //? CurrentThreadId, "Start Header Lock", ProcName(1)
         LOCAL nTries := 0 AS LONG
-        var timer := LockTimer{}
+        VAR timer := LockTimer{}
         timer:Start()
         DO WHILE TRUE
             ++nTries
@@ -613,7 +613,9 @@ PROTECTED METHOD _lockDBFFile() AS LOGIC
 		ENDIF
 		SELF:_fLocked := SELF:_lockFile()
 #ifdef INPUTBUFFER
-		_inBuffer:Invalidate()
+		IF _inBuffer != NULL_OBJECT
+			_inBuffer:Invalidate()
+		ENDIF
 #endif
         // Invalidate Buffer
 		SELF:GoTo( SELF:RecNo )
@@ -889,7 +891,10 @@ OVERRIDE METHOD Close() 			AS LOGIC
 
         END TRY
         #ifdef INPUTBUFFER
-            SELF:_inBuffer:Close()
+            IF (_inBuffer != NULL)
+                _inBuffer:Close()
+				_inBuffer := NULL_OBJECT
+            ENDIF
         #endif
 		SELF:_hFile := F_ERROR
         SELF:_oStream := NULL
@@ -1176,7 +1181,7 @@ PROTECTED METHOD _readFieldsHeader() AS LOGIC
 		LOCAL nStart AS INT
 		nStart := 0
 		FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
-			local nPos := i*DbfField.SIZE as LONG
+			LOCAL nPos := i*DbfField.SIZE AS LONG
 			Array.Copy(fieldsBuffer, nPos, currentField:Buffer, 0, DbfField.SIZE )
 			IF ! SELF:Header:Version:UsesFlags()
 			   currentField:ClearFlags()
@@ -1193,11 +1198,11 @@ PROTECTED METHOD _readFieldsHeader() AS LOGIC
 	ENDIF
 RETURN isOK
 
-INTERNAL METHOD _readField(nOffSet as LONG, oField as DbfField) AS LOGIC
+INTERNAL METHOD _readField(nOffSet AS LONG, oField AS DbfField) AS LOGIC
     // Read single field. Called from AutoIncrement code to read the counter value
     RETURN _oStream:SafeReadAt(nOffSet,oField:Buffer,DbfField.SIZE)
 
-INTERNAL METHOD _writeField(nOffSet as LONG, oField as DbfField) AS LOGIC
+INTERNAL METHOD _writeField(nOffSet AS LONG, oField AS DbfField) AS LOGIC
     // Write single field in header. Called from AutoIncrement code to update the counter value
     RETURN  _oStream:SafeWriteAt(nOffSet, oField:Buffer, DbfField.SIZE)
 
@@ -1293,19 +1298,19 @@ OVERRIDE METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT
 			CASE DbFieldInfo.DBS_COUNTER
 			CASE DbFieldInfo.DBS_STEP
 				oResult := NULL
-				local oColumn as DbfColumn
+				LOCAL oColumn AS DbfColumn
 				oColumn := SELF:_GetColumn(nFldPos) ASTYPE DbfColumn
-				if oColumn != NULL
+				IF oColumn != NULL
 
 					IF nOrdinal == DbFieldInfo.DBS_ISNULL
 						oResult := oColumn:IsNull()
 					ELSEIF nOrdinal == DbFieldInfo.DBS_COUNTER
-						if oColumn IS DbfAutoIncrementColumn VAR dbfac
+						IF oColumn IS DbfAutoIncrementColumn VAR dbfac
 							dbfac:Read()
 							oResult := dbfac:Counter
-							if oNewValue != null
+							IF oNewValue != NULL
                                 // update counter
-								local iNewValue as Int32
+								LOCAL iNewValue AS Int32
 								iNewValue := Convert.ToInt32(oNewValue)
 								IF SELF:HeaderLock(DbLockMode.Lock)
 									dbfac:Counter := iNewValue
@@ -1315,12 +1320,12 @@ OVERRIDE METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT
 							ENDIF
 						ENDIF
 					ELSEIF nOrdinal == DbFieldInfo.DBS_STEP
-						if oColumn IS DbfAutoIncrementColumn VAR dbfac
+						IF oColumn IS DbfAutoIncrementColumn VAR dbfac
 							dbfac:Read()
 							oResult := dbfac:IncrStep
-							if oNewValue != null
+							IF oNewValue != NULL
                                 // update step
-								local iNewValue as Int32
+								LOCAL iNewValue AS Int32
 								iNewValue := Convert.ToInt32(oNewValue)
 								IF SELF:HeaderLock(DbLockMode.Lock)
 									dbfac:IncrStep := iNewValue
@@ -1828,7 +1833,7 @@ OVERRIDE METHOD OrderListRebuild() AS LOGIC
 	ENDIF
     /// <inheritdoc />
 OVERRIDE METHOD Seek(info AS DbSeekInfo) AS LOGIC
-    LOCAL result as LOGIC
+    LOCAL result AS LOGIC
 	IF _oIndex != NULL
 		result := _oIndex:Seek(info)
 	ELSE
@@ -1906,10 +1911,10 @@ OVERRIDE METHOD Compile(sBlock AS STRING) AS ICodeblock
 	LOCAL result AS ICodeblock
 	result := SUPER:Compile(sBlock)
 	IF result == NULL
-        if (RuntimeState:LastRddError != NULL_OBJECT)
+        IF (RuntimeState:LastRddError != NULL_OBJECT)
             SELF:_dbfError( RuntimeState:LastRddError, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile")
         ELSE
-            var msg := "Could not compile epression '"+sBlock+"'"
+            VAR msg := "Could not compile epression '"+sBlock+"'"
 		    SELF:_dbfError( Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile", msg )
         ENDIF
 	ENDIF
@@ -2040,7 +2045,7 @@ OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	CASE DbInfo.DBI_SCOPEDRELATION
 		oResult := FALSE
 	CASE DbInfo.DBI_TRIGGER
-		oResult := Null     // Todo Add DBI_TRIGGER
+		oResult := NULL     // Todo Add DBI_TRIGGER
 	CASE DbInfo.DBI_DECRYPT         // Todo Add DBI_DECRYPT
 	CASE DbInfo.DBI_ENCRYPT         // Todo Add DBI_ENCRYPT
 	CASE DbInfo.DBI_MEMOPACK
@@ -2173,7 +2178,7 @@ OVERRIDE METHOD Sort(info AS DbSortInfo) AS LOGIC
     //
 	i := 0
 	WHILE i < info:Items:Length
-		fieldPos := info:Items[i]:FieldNo
+		fieldPos := info:Items[i]:FieldNo - 1
 		isNum := 0
 		IF SELF:_Fields[fieldPos]:FieldType == DbFieldType.Number
 			isNum := 2

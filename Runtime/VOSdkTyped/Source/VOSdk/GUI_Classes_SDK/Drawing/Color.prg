@@ -41,25 +41,25 @@ CLASS Color INHERIT VObject
 
 		IF (nColor <= 8)
 			IF nColor=ColorRed .OR. ;
-			nColor=ColorMagenta .OR. ;
-			nColor=ColorYellow .OR. ;
-			nColor=ColorWhite
+			    nColor=ColorMagenta .OR. ;
+			    nColor=ColorYellow .OR. ;
+			    nColor=ColorWhite
 
 				dwRed:= 0XFF
 			ENDIF
 
 			IF nColor=ColorGreen .OR. ;
-			nColor=ColorCyan .OR. ;
-			nColor=ColorYellow .OR. ;
-			nColor=ColorWhite
+			    nColor=ColorCyan .OR. ;
+			    nColor=ColorYellow .OR. ;
+			    nColor=ColorWhite
 
 				dwGreen:= 0XFF
 			ENDIF
 
 			IF nColor=ColorBlue .OR. ;
-			nColor=ColorCyan .OR. ;
-			nColor=ColorMagenta .OR. ;
-			nColor=ColorWhite
+			    nColor=ColorCyan .OR. ;
+			    nColor=ColorMagenta .OR. ;
+			    nColor=ColorWhite
 
 				dwBlue:= 0XFF
 			ENDIF

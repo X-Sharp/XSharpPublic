@@ -13,7 +13,6 @@
     <Unsafe>true</Unsafe>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -85,6 +84,7 @@
     <Compile Include="Types\ArrayBase.prg" />
     <Compile Include="Types\CompilerServices.prg" />
     <Compile Include="Types\Binary.prg" />
+    <Compile Include="Types\Globals.prg" />
     <Compile Include="Types\WinDate.prg" />
     <Compile Include="Types\Currency.prg" />
     <Compile Include="Types\Date.prg" />

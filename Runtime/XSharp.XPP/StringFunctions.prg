@@ -134,7 +134,7 @@ FUNCTION PosChar(cString, uChar, nPosition ) AS STRING CLIPPER
         THROW Error.DataTypeError(ProcName(), nameof(uChar), 2, uChar, cMessage)
     ENDIF
     sSource := cString
-    @@Default(nPosition, SLen(sSource))
+    @@Default(REF nPosition, SLen(sSource))
     LOCAL sb AS StringBuilder
     sb := StringBuilder{sSource}
     IF nPosition <= sb:Length
@@ -161,7 +161,7 @@ FUNCTION PosDel(cString, nStartPos, nDeleteLen ) AS STRING CLIPPER
     LOCAL nDelete as LONG
     sSource := cString
     nDelete    := nDeleteLen
-    @@Default(nStartPos, SLen(sSource))
+    @@Default(REF nStartPos, SLen(sSource))
     LOCAL sb AS StringBuilder
     sb := StringBuilder{sSource}
     nDelete := Math.Min(sSource:Length - (int) nStartPos+1, nDelete)
@@ -186,7 +186,7 @@ FUNCTION PosIns(cString, cInsertString, nPosition ) AS STRING CLIPPER
     LOCAL sSource  AS STRING
     LOCAL nPos as LONG
     sSource := cString
-    @@Default(nPosition, SLen(sSource))   // not + 1, StringBuilder is zero based
+    @@Default(REF nPosition, SLen(sSource))   // not + 1, StringBuilder is zero based
     nPos := nPosition
     LOCAL sb AS StringBuilder
     sb := StringBuilder{sSource}
@@ -214,7 +214,7 @@ FUNCTION PosRepl(cString, cReplace, nStartPos ) AS STRING CLIPPER
     LOCAL nStart as LONG
     sSource     := cString
     sReplace    := cReplace
-    @@Default(nStartPos, sSource:Length - sReplace:Length+1)
+    @@Default(REF nStartPos, sSource:Length - sReplace:Length+1)
     nStart := nStartPos
     nStart := Math.Max((int) nStart, 1L)
     LOCAL sb AS StringBuilder

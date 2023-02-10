@@ -385,10 +385,10 @@ STATIC METHOD _BITANDORX (LogicalOp AS BitOperation, Arg1 AS BINARY, Arg2 PARAMS
     FOR ArgIndex := 1 TO Arg2.Length
         LOCAL Arg := 0h + Arg2[ArgIndex] AS BYTE[]
         IF Result.Length < Arg.Length
-            Array.Resize(Result, Arg.Length)
+            Array.Resize(REF Result, Arg.Length)
         ELSE
             IF Result.Length > Arg.Length
-                Array.Resize(Arg, Result.Length)
+                Array.Resize(REF Arg, Result.Length)
             ENDIF
         ENDIF
         LOCAL ByteIndex AS INT

@@ -19,7 +19,7 @@ FUNCTION NToM( nExpression AS FLOAT) AS CURRENCY
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sign/*" />
 FUNCTION Sign( nExpression AS USUAL) AS LONG
-    EnforceNumeric(nExpression)
+    EnforceNumeric(REF nExpression)
     IF nExpression < 0
         RETURN -1
     ELSEIF nExpression  > 0

@@ -12,7 +12,7 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-FUNCTION FoxArrayTest(a1, a2, a3) CLIPPER 
+FUNCTION FoxArrayTest(a1, a2, a3) CLIPPER
     local result := 42 as INT
     FOREACH var arg in _Args()
         IF IsLong(arg)
@@ -395,6 +395,11 @@ FUNCTION S_EnforceTypeC(uVar,cTyp) CLIPPER
     ENDIF
     RETURN NIL
 
-
+// bug 1186
+BEGIN NAMESPACE MyNS
+	CLASS StaticClass
+		EXPORT Test := 12345 AS INT
+	END CLASS
+END NAMESPACE
 
 

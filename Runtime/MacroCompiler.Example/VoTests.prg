@@ -12,6 +12,8 @@ USING System.Linq
 USING XSharp.Runtime
 USING XSharp.MacroCompiler
 
+GLOBAL MyGlobal := 42
+
 BEGIN NAMESPACE MacroCompilerTest
 
     FUNCTION ResetOverrides() AS VOID
@@ -29,6 +31,10 @@ BEGIN NAMESPACE MacroCompilerTest
     FUNCTION TestByRefPriv() AS VOID
         PRIVATE x
         VAR mc := CreateMacroCompiler()
+        // Access GLobal variables safely
+        TestMacro(mc, e"{|| MyGlobal }", Args(), 42, typeof(INT))
+        TestMacro(mc, e"{|| MyGlobal:= 84 }", Args(), 84, typeof(INT))
+        TestMacro(mc, e"{|| MyGlobal }", Args(), 84, typeof(INT))
 
         TestMacro(mc, "{|| System.Drawing.Size{1,2}}", Args(),System.Drawing.Size{1,2}, typeof(System.Drawing.Size))
         TestMacro(mc, "{|| System.Drawing.Size.Empty}", Args(),System.Drawing.Size.Empty, typeof(System.Drawing.Size))
@@ -107,6 +113,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(TRUE, "ABCDE"), "ABC", typeof(STRING))
         TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(FALSE, "ABCDE"), "abcd", typeof(STRING))
         TestMacro(mc, e"{|a,b| asdgfafd(123) /*aaa*/ }", Args(), NULL, NULL,ErrorCode.NotAMethod)
+
+        // bug 1186
+        TestMacro(mc, e"{|| ctest.fld}", Args(), "Variable does not exist", typeof(XSharp.Error))
+        TestMacro(mc, "MyNS.StaticClass.Test", Args(), NULL, NULL, ErrorCode.NotAnExpression)
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.Error
         TestMacro(mc, e"{|a,b| testtest__() }", Args(1,2,3), NULL, NULL, ErrorCode.IdentifierNotFound)
@@ -281,6 +291,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a| a := teststruct{222}, a:v1 }", Args(), 222, typeof(INT))
         TestMacro(mc, e"{|a| a := testclass{}, a:prop := 111 }", Args(), 111, typeof(INT))
         TestMacro(mc, e"{|a,b| b := testclass{}, b:prop := a, ++b:prop }", Args(55), 56, typeof(INT))
+
 
         // RvdH VO does not allow to access GLOBAL and DEFINE values in the macro compiler
         /*

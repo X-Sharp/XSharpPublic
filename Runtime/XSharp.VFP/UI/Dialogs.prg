@@ -21,7 +21,7 @@ FUNCTION GetColor( nDefaultColorNumber ) AS INT CLIPPER
     VAR iCustomColorsArr := INT[]{16} // contains the colorrefs of the sixteen user defined colors
 
 
-    IF IsRunningOnWindows()
+    IF RuntimeState.RunningOnWindows
 
         IF ( hRegKey := Registry.CurrentUser:OpenSubKey( cRegKeyName , TRUE )) != NULL
 
@@ -52,7 +52,7 @@ FUNCTION GetColor( nDefaultColorNumber ) AS INT CLIPPER
 
     VAR oDlg := ColorDialog{}
     oDlg:Color := ColorTranslator.FromWin32(nDefaultColorNumber)
-    IF IsRunningOnWindows()
+    IF RuntimeState.RunningOnWindows
         oDlg:CustomColors := iCustomColorsArr
     ENDIF
 
@@ -61,7 +61,7 @@ FUNCTION GetColor( nDefaultColorNumber ) AS INT CLIPPER
         iColorref := ColorTranslator.ToWin32(oDlg:Color)
 
 
-        IF IsRunningOnWindows()
+        IF RuntimeState.RunningOnWindows
 
             IF ( hRegKey := Registry.CurrentUser:OpenSubKey( cRegKeyName , TRUE )) != NULL
 

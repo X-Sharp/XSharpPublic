@@ -287,8 +287,8 @@ CLASS TreeView INHERIT TextControl
 		oDragImageList := oNewDragImageList
 
 /// <include file="Gui.xml" path="doc/TreeView.EditItemLabel/*" />
-	METHOD EditItemLabel(symItem AS SYMBOL) AS LOGIC
-		VAR oItem := SELF:__GetNode(symItem)
+	METHOD EditItemLabel(symName AS SYMBOL) AS LOGIC
+		VAR oItem := SELF:__GetNode(symName)
 		IF oItem != NULL_OBJECT
 			oItem:BeginEdit()
 			RETURN TRUE
@@ -306,8 +306,8 @@ CLASS TreeView INHERIT TextControl
 		RETURN
 
 /// <include file="Gui.xml" path="doc/TreeView.EnsureVisible/*" />
-	METHOD EnsureVisible(symItem AS SYMBOL) AS VOID
-		LOCAL IMPLIED oItem := SELF:__GetNode(symItem)
+	METHOD EnsureVisible(symName AS SYMBOL) AS VOID
+		LOCAL IMPLIED oItem := SELF:__GetNode(symName)
 		oItem:EnsureVisible()
 		RETURN
 
@@ -330,7 +330,6 @@ CLASS TreeView INHERIT TextControl
 	METHOD Expand(symName AS SYMBOL)
 		RETURN SELF:Expand(symName, FALSE, FALSE)
 
-
 /// <include file="Gui.xml" path="doc/TreeView.GetDropHighlight/*" />
 	METHOD GetDropHighlight() AS TreeViewItem
 		// Todo GetDropHighlight
@@ -339,11 +338,11 @@ CLASS TreeView INHERIT TextControl
 
 
 /// <include file="Gui.xml" path="doc/TreeView.GetFirstChildItem/*" />
-	METHOD GetFirstChildItem(oItem AS USUAL) AS TreeViewItem
-		IF IsSymbol(oItem)
-			RETURN SELF:GetFirstChildItem((SYMBOL) oItem )
-		ELSEIF IsObject(oItem)
-			RETURN SELF:GetFirstChildItem((TreeViewItem) oItem )
+	METHOD GetFirstChildItem(uItem AS USUAL) AS TreeViewItem
+		IF IsSymbol(uItem)
+			RETURN SELF:GetFirstChildItem((SYMBOL) uItem )
+		ELSEIF IsObject(uItem)
+			RETURN SELF:GetFirstChildItem((TreeViewItem) uItem )
 		ENDIF
 		RETURN NULL_OBJECT
 

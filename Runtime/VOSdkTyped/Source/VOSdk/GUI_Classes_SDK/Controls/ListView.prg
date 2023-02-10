@@ -662,10 +662,10 @@ CLASS ListView INHERIT TextControl
 		RETURN TRUE
 
 /// <include file="Gui.xml" path="doc/ListView.InsertItem/*" />
-	METHOD InsertItem(oLVItem AS ListViewItem, nInsertAfter := -1 AS LONG) AS LOGIC
+	METHOD InsertItem(oListViewItem AS ListViewItem, nInsertAfter := -1 AS LONG) AS LOGIC
 		LOCAL dwIndex AS LONG
 		LOCAL oListViewColumn	AS ListViewColumn
-		LOCAL oListViewItem		AS IVOListViewItem
+		LOCAL iListViewItem		AS IVOListViewItem
 		LOCAL cCaption AS STRING
 		// copy the usual values from the item to the column
 		IF ! SELF:ValidateControl()
@@ -673,38 +673,38 @@ CLASS ListView INHERIT TextControl
 		ENDIF
 
 		oListViewColumn := SELF:GetColumn(1)
-		cCaption := oLVItem:GetText(oListViewColumn:NameSym)
-		oListViewItem := oLVItem:__ListViewItem
+		cCaption := oListViewItem:GetText(oListViewColumn:NameSym)
+		iListViewItem := oListViewItem:__ListViewItem
 		IF nInsertAfter == -1
-			__ListView:Items:Add(oListViewItem:SWFItem)
+			__ListView:Items:Add(iListViewItem:SWFItem)
 		ELSE
-			 __ListView:Items:Insert(nInsertAfter,oListViewItem:SWFItem)
+			 __ListView:Items:Insert(nInsertAfter,iListViewItem:SWFItem)
 		ENDIF
 		FOR dwIndex := 1 TO __ListView:Columns:Count
 			LOCAL IMPLIED oCol := __ListView:Columns[dwIndex-1]
 			oListViewColumn := oCol:Tag
-			cCaption        := oLVItem:GetText(oListViewColumn:NameSym)
+			cCaption        := oListViewItem:GetText(oListViewColumn:NameSym)
 			IF String.IsNullOrEmpty(cCaption)
-				LOCAL IMPLIED uVal := oLVItem:GetValue(oListViewColumn:NameSym)
+				LOCAL IMPLIED uVal := oListViewItem:GetValue(oListViewColumn:NameSym)
 				IF uVal != NIL
 					cCaption  := AsString(uVal)
 				ENDIF
 			ENDIF
-			IF oListViewItem:SubItems:Count < dwIndex
-                VAR subItem := System.Windows.Forms.ListViewItem.ListViewSubItem{oListViewItem:SWFItem, cCaption}
-				oListViewItem:SubItems:Add(subItem)
+			IF iListViewItem:SubItems:Count < dwIndex
+                VAR subItem := System.Windows.Forms.ListViewItem.ListViewSubItem{iListViewItem:SWFItem, cCaption}
+				iListViewItem:SubItems:Add(subItem)
 			ELSE
-				oListViewItem:SubItems[dwIndex-1]:Text := cCaption
+				iListViewItem:SubItems[dwIndex-1]:Text := cCaption
 			ENDIF
 		NEXT
-		oListViewItem:Tag := oLVItem
-		oListViewItem:IndentCount := oLVItem:Indent
+		iListViewItem:Tag := oListViewItem
+		iListViewItem:IndentCount := oListViewItem:Indent
 
-		IF (oLVItem:StateImageIndex == 0) .AND. SELF:CheckBoxes
-			oLVItem:StateImageIndex := 1
+		IF (oListViewItem:StateImageIndex == 0) .AND. SELF:CheckBoxes
+			oListViewItem:StateImageIndex := 1
 		ENDIF
 		IF oTextBackColor != NULL_OBJECT
-			oListViewItem:BackColor := oTextBackColor
+			iListViewItem:BackColor := oTextBackColor
 		ENDIF
 		RETURN TRUE
 

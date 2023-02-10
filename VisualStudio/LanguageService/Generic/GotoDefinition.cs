@@ -51,30 +51,7 @@ namespace XSharp.LanguageService
         {
             try
             {
-                var file = TextView.TextBuffer.GetFile();
-                if (file == null || file.XFileType != XFileType.SourceCode)
-                    return;
-                WriteOutputMessage("CommandFilter.GotoDefn()");
-                ModelWalker.Suspend();
-
-                var snapshot = TextView.TextBuffer.CurrentSnapshot;
-
-                // We don't want to lex the buffer. So get the tokens from the last lex run
-                // and when these are too old, then simply bail out
-                var tokens = TextView.TextBuffer.GetDocument();
-                if (tokens != null)
-                {
-                    if (tokens.SnapShot.Version != snapshot.Version)
-                        return;
-                }
-                string currentNS = TextView.FindNamespace();
-                var location = TextView.FindLocation();
-                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location,  out var state);
-
-                // LookUp for the BaseType, reading the TokenList (From left to right)
-                var result = new List<IXSymbol>();
-
-                result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
+                var result = TextView.GetSymbolUnderCursor(out var state,out _, out _);
                 //
                 ThreadHelper.ThrowIfNotOnUIThread();
                 if (result.Count > 0)
@@ -82,21 +59,6 @@ namespace XSharp.LanguageService
                     Goto(result[0], TextView, state);
                     return;
                 }
-                //
-                if (tokenList.Count > 1)
-                {
-                    // try again with just the last element in the list
-                    var token = tokenList[tokenList.Count - 1];
-                    tokenList.Clear();
-                    tokenList.Add(token);
-                    location = location.With(currentNS);
-                    result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
-                }
-                if (result.Count > 0)
-                {
-                    Goto(result[0], TextView, state);
-                }
-
             }
             catch (Exception ex)
             {
@@ -108,13 +70,16 @@ namespace XSharp.LanguageService
             }
         }
 
-        private static void DeleteFolderRecursively(DirectoryInfo directory)
+        private static void DeleteFolderRecursively(DirectoryInfo directory, bool IncludeFiles)
         {
             // Scan all files in the current path
-            foreach (FileInfo file in directory.GetFiles())
+            if (IncludeFiles)
             {
-                file.Attributes &= ~FileAttributes.ReadOnly;
-                file.Delete();
+                foreach (FileInfo file in directory.GetFiles())
+                {
+                    file.Attributes &= ~FileAttributes.ReadOnly;
+                    file.Delete();
+                }
             }
 
             DirectoryInfo[] subDirectories = directory.GetDirectories();
@@ -123,7 +88,7 @@ namespace XSharp.LanguageService
             // again to go one level into the directory tree
             foreach (DirectoryInfo subDirectory in subDirectories)
             {
-                DeleteFolderRecursively(subDirectory);
+                DeleteFolderRecursively(subDirectory, true);
                 subDirectory.Attributes &= ~FileAttributes.ReadOnly;
 
                 subDirectory.Delete();
@@ -132,7 +97,6 @@ namespace XSharp.LanguageService
 
         static string WorkFolder = null;
         static Stream Semaphore = null;
-        const string folderName = "XSharp.Intellisense";
         const string semName = "XSharp.Busy";
         private static XAssembly asmName = null;
         private static string LookupXml(IXSymbol key)
@@ -215,8 +179,7 @@ namespace XSharp.LanguageService
             {
                 // we create a semaphore file in the workfolder to make sure that if 2 copies of VS are running
                 // that we will not delete the files from the other copy
-                var tempFolder = Path.GetTempPath();
-                tempFolder = Path.Combine(tempFolder, folderName);
+                var tempFolder = XSolution.TempFolder;
                 var semFile = Path.Combine(tempFolder, semName);
                 // clean up files from previous run
                 if (Directory.Exists(tempFolder))
@@ -226,7 +189,7 @@ namespace XSharp.LanguageService
                         try
                         {
                             File.Delete(semFile);
-                            DeleteFolderRecursively(new DirectoryInfo(tempFolder));
+                            DeleteFolderRecursively(new DirectoryInfo(tempFolder), false);
                         }
                         catch
                         {

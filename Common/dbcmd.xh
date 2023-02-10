@@ -119,10 +119,10 @@
        ;    DbSetFilter( <{x}>, <(x)> )                                 ;
        ; END
 
-#command REPLACE [ <f1> WITH <x1> [, <fn> WITH <xn>] ]                  ;
-         [FOR <lfor>]                                                    ;
-         [WHILE <lwhile>]                                                ;
-         [NEXT <nnext>]                                                  ;
+#command REPLACE <f1> WITH <x1> [, <fn> WITH <xn>]                      ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
@@ -390,7 +390,7 @@
                <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
-#command SUM  [<x1> [, <xn>]  TO  <v1> [, <vn>] ]                       ;
+#command SUM  <x1> [, <xn>]  TO  <v1> [, <vn>]                          ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;
          [NEXT <nnext>]                                                 ;

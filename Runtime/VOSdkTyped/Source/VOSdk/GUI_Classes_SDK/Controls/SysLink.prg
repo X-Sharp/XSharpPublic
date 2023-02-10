@@ -59,7 +59,7 @@ CLASS SysLink INHERIT TextControl
                 LOCAL sText := cText AS STRING
 				VAR links := SELF:__StripTags(REF sText)
                 IF links:Count > 0
-                    SELF:__LinkLabel:Links[0].LinkData := links[0]
+                    SELF:__LinkLabel:Links[0]:LinkData := links[0]
                 ENDIF
 				SELF:Caption := sText
 				cWindowName := cText

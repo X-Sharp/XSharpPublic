@@ -6,22 +6,22 @@
 // functions used by the compiler
 
 USING XSharp.Internal
-using System.Collections
+USING System.Collections
 
 /// <inheritdoc cref="XSharp.RuntimeState.StringCompare(System.String,System.String)" />
 FUNCTION __StringCompare(strLHS AS STRING, strRHS AS STRING) AS INT
     RETURN RuntimeState.StringCompare(strLHS, strRHS)
 
 
-    /// <summary>
-    /// Compare 2 strings. This function is used by the compiler for string comparisons
-    /// </summary>
-    /// <param name="strLHS">The first string .</param>
-    /// <param name="strRHS">The second string.</param>
-    /// <returns>
-    /// TRUE when the strings are equal, FALSE when they are not equal
-    /// This function respects SetExact()
-    /// </returns>
+/// <summary>
+/// Compare 2 strings. This function is used by the compiler for string comparisons
+/// </summary>
+/// <param name="strLHS">The first string .</param>
+/// <param name="strRHS">The second string.</param>
+/// <returns>
+/// TRUE when the strings are equal, FALSE when they are not equal
+/// This function respects SetExact()
+/// </returns>
 FUNCTION  __StringEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
     LOCAL IsEqual:= FALSE AS LOGIC
     LOCAL lengthRHS AS INT
@@ -42,15 +42,15 @@ FUNCTION  __StringEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
     ENDIF
     RETURN IsEqual
 
-    /// <summary>
-    /// Compare 2 strings. This function is used by the compiler for string comparisons
-    /// </summary>
-    /// <param name="strLHS">The first string .</param>
-    /// <param name="strRHS">The second string.</param>
-    /// <returns>
-    /// TRUE when the strings are not equal, FALSE when they are equal
-    /// This function respects SetExact()
-    /// </returns>
+/// <summary>
+/// Compare 2 strings. This function is used by the compiler for string comparisons
+/// </summary>
+/// <param name="strLHS">The first string .</param>
+/// <param name="strRHS">The second string.</param>
+/// <returns>
+/// TRUE when the strings are not equal, FALSE when they are equal
+/// This function respects SetExact()
+/// </returns>
 FUNCTION  __StringNotEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
     LOCAL notEquals := FALSE AS LOGIC
     LOCAL lengthRHS AS INT
@@ -90,9 +90,9 @@ FUNCTION __FieldGet( fieldName AS STRING ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     LOCAL ret := NULL AS OBJECT
     IF fieldpos == 0
-        THROW Error.VoDbError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  nameof(fieldName), 1, <OBJECT>{fieldName}  )
+        THROW Error.VoDbError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  NAMEOF(fieldName), 1, <OBJECT>{fieldName}  )
     ELSE
-         _DbThrowErrorOnFailure(__FUNCTION__, CoreDb.FieldGet( fieldpos, REF ret ))
+        _DbThrowErrorOnFailure(__FUNCTION__, CoreDb.FieldGet( fieldpos, REF ret ))
     ENDIF
     IF ret == NULL
         CoreDb.FieldInfo(DBS_BLANK, fieldpos, REF ret)
@@ -131,7 +131,7 @@ FUNCTION __FieldGetWa( area AS USUAL, fieldName AS STRING ) AS USUAL
             RuntimeState.CurrentWorkarea := curArea
         END TRY
     ELSE
-        THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area), 1, <OBJECT>{area}  )
+        THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, __FUNCTION__, NAMEOF(area), 1, <OBJECT>{area}  )
     ENDIF
     RETURN ret
 
@@ -165,7 +165,7 @@ FUNCTION __FieldGetWa2(wa AS STRING, fldName AS STRING, lAllowUndeclared AS LOGI
 FUNCTION __FieldSet( fieldName AS STRING, uValue AS USUAL ) AS USUAL
     LOCAL fieldpos := FieldPos( fieldName ) AS DWORD
     IF fieldpos == 0
-        THROW Error.VoDbError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  nameof(fieldName), 1, <OBJECT>{fieldName}  )
+        THROW Error.VoDbError( EG_ARG, EDB_FIELDNAME, __FUNCTION__,  NAMEOF(fieldName), 1, <OBJECT>{fieldName}  )
     ELSE
         _DbThrowErrorOnFailure(__FUNCTION__, CoreDb.FieldPut( fieldpos, uValue))
     ENDIF
@@ -204,7 +204,7 @@ FUNCTION __FieldSetWa( area AS USUAL, fieldName AS STRING, uValue AS USUAL ) AS 
             RuntimeState.CurrentWorkarea := curArea
         END TRY
     ELSE
-        THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, <OBJECT>{area}  )
+        THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, __FUNCTION__, NAMEOF(area),1, <OBJECT>{area}  )
     ENDIF
     // Note: must return the same value passed in, to allow chained assignment expressions
     RETURN uValue
@@ -249,7 +249,7 @@ FUNCTION __AreaEval<T>(area AS USUAL, action AS @@Func<T>) AS T
             RuntimeState.CurrentWorkarea := curArea
         END TRY
     ELSE
-        THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, <OBJECT>{area}  )
+        THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, __FUNCTION__, NAMEOF(area),1, <OBJECT>{area}  )
     ENDIF
     RETURN result
 
@@ -275,7 +275,7 @@ FUNCTION __AreaEval(area AS USUAL, action AS System.Action) AS LOGIC
             RuntimeState.CurrentWorkarea := curArea
         END TRY
     ELSE
-        THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, <OBJECT>{area}  )
+        THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, __FUNCTION__, NAMEOF(area),1, <OBJECT>{area}  )
     ENDIF
     RETURN result
 
@@ -322,9 +322,15 @@ FUNCTION __MemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
 /// </example>
 [NeedsAccessToLocals(FALSE)];
 FUNCTION __VarGet(cName AS STRING) AS USUAL
+    // first we try to access a field with this name
     IF FieldPos(cName) > 0
         RETURN __FieldGet(cName)
     ENDIF
+    // Then a global
+    IF Globals.Get(cName, OUT VAR result)
+        RETURN result
+    ENDIF
+    // And finally a memory variable
     RETURN __MemVarGet(cName)
 
 
@@ -338,9 +344,15 @@ FUNCTION __VarGet(cName AS STRING) AS USUAL
 /// </example>
 [NeedsAccessToLocals(FALSE)];
 FUNCTION __VarGetSafe(cName AS STRING) AS USUAL
+    // first we try to access a field with this name
     IF FieldPos(cName) > 0
         RETURN __FieldGet(cName)
     ENDIF
+    // Then a global
+    IF Globals.Get(cName, OUT VAR result)
+        RETURN result
+    ENDIF
+    // And finally a memory variable
     RETURN __MemVarGetSafe(cName)
 
 /// <summary>Assign a field in the current workarea or a dynamic variable.</summary>
@@ -352,9 +364,15 @@ FUNCTION __VarGetSafe(cName AS STRING) AS USUAL
 /// </example>
 [NeedsAccessToLocals(TRUE)];
 FUNCTION __VarPut(cName AS STRING, uValue AS USUAL) AS USUAL
+    // first we try to access a field with this name
     IF FieldPos(cName) > 0
         RETURN __FieldSet(cName, uValue)
     ENDIF
+    // Then a global
+    IF Globals.Put(cName, uValue)
+        RETURN uValue
+    ENDIF
+    // And finally a memory variable
     RETURN __MemVarPut(cName, uValue)
 
 
@@ -388,14 +406,14 @@ FUNCTION __popWorkarea() AS VOID
 /// <returns>The depth of the privates stack. This number must be passed to __MemVarRelease to release the newly created privates.</returns>
 /// <remarks>This function is automatically called by code generated by the compiler when a function or method declares private variables.</remarks>
 FUNCTION __MemVarInit() AS INT STRICT
-	RETURN XSharp.MemVar.InitPrivates(FALSE)
+    RETURN XSharp.MemVar.InitPrivates(FALSE)
 
 
 /// <summary>Register the current dept of the privates stack.</summary>
 /// <returns>The depth of the privates stack. This number must be passed to __MemVarRelease to release the newly created privates.</returns>
 /// <remarks>This function is automatically called by code generated by the compiler when a function or method declares private variables.</remarks>
 FUNCTION __MemVarInit(lFromRuntime AS LOGIC) AS INT STRICT
-	RETURN XSharp.MemVar.InitPrivates(lFromRuntime)
+    RETURN XSharp.MemVar.InitPrivates(lFromRuntime)
 
 
 /// <summary>Release private variables declared at a certain level.</summary>
@@ -403,7 +421,7 @@ FUNCTION __MemVarInit(lFromRuntime AS LOGIC) AS INT STRICT
 /// <returns>Always returns TRUE.</returns>
 /// <remarks>This function is automatically called by code generated by the compiler when a function or method ends that has declared new private variables.</remarks>
 FUNCTION __MemVarRelease(nLevel AS INT) AS LOGIC  STRICT
-	RETURN XSharp.MemVar.ReleasePrivates(nLevel)
+    RETURN XSharp.MemVar.ReleasePrivates(nLevel)
 
 
 
@@ -416,8 +434,8 @@ FUNCTION __MemVarRelease(nLevel AS INT) AS LOGIC  STRICT
 /// </example>
 /// <remarks>This function is automatically called by code generated by the compiler when you use a PUBLIC or PRIVATE statement in your code</remarks>
 FUNCTION __MemVarDecl(name AS STRING, _priv AS LOGIC) AS VOID  STRICT
-	XSharp.MemVar.Add(name, _priv)
-	RETURN
+    XSharp.MemVar.Add(name, _priv)
+    RETURN
 
 
 
@@ -428,7 +446,7 @@ FUNCTION __MemVarDecl(name AS STRING, _priv AS LOGIC) AS VOID  STRICT
 /// It is only used when the body of a method/function contains code that is marked with the NeedsAccessToLocalsAttribute attribute.</remarks>
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 FUNCTION __LocalPut(name AS STRING, uValue AS USUAL) AS VOID STRICT
-	XSharp.MemVar.LocalPut(name, uValue)
+    XSharp.MemVar.LocalPut(name, uValue)
 
 
 /// <summary>Clear the locals stack </summary>
@@ -450,7 +468,7 @@ FUNCTION __LocalsUpdated() AS LOGIC STRICT
 /// It is only used when the body of a method/function contains code that is marked with the NeedsAccessToLocalsAttribute attribute.</remarks>
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 FUNCTION __LocalGet(name AS STRING) AS USUAL STRICT
-	RETURN XSharp.MemVar.LocalGet(name)
+    RETURN XSharp.MemVar.LocalGet(name)
 
 
 /// <summary>Create an enumerator for the USUAL type or throw a runtime exception.</summary>
@@ -460,17 +478,15 @@ FUNCTION __UsualEnumerator(u AS USUAL) AS ARRAY
     IF u:IsArray
         RETURN (ARRAY) u
     ENDIF
-    local o := __Usual.ToObject(u) as Object
-    if o is System.Collections.IEnumerable var list
-        local a as array
+    LOCAL o := __Usual.ToObject(u) AS OBJECT
+    IF o IS System.Collections.IEnumerable VAR list
+        LOCAL a AS ARRAY
         a := ArrayNew()
-        foreach var oElement in list
+        FOREACH VAR oElement IN list
             AAdd(a, oElement)
-        next
-        return a
-    endif
-    VAR error := __Usual.ConversionError("ARRAY",typeof(ARRAY),u)
+        NEXT
+        RETURN a
+    ENDIF
+    VAR error := __Usual.ConversionError("ARRAY",TYPEOF(ARRAY),u)
     error:Description := "The usual value cannot be enumerated because it does not contain an array"
     THROW error
-
-

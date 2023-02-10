@@ -2508,8 +2508,12 @@
     </Color>
     <Color.ctor>
         <summary>
-            Construct a color using an RGB triplet.
+            Construct a color
         </summary>
+        <param name="nColor">
+            Construct a color using an single number. When the number &lt;= then it is assumed to be be one of the predefined colors, such as ColorRed, ColorMagenta etc.
+            Otherwise the color is the RGB number for the color.
+        </param>
         <param name="nRed">
             The amount of red to be used to create the color. This can be a value between 0 (lowest intensity) and 255 (highest intensity). The default value is 0.
         </param>
@@ -6185,6 +6189,9 @@
         <param name="lSoftSeek">
             Determines how the attached data server is positioned if the specified key value is not found: TRUE performs a soft seek; FALSE does not. If <paramref name="lSoftSeek" /> is omitted, the current SetSoftSeek() setting is used.
         </param>
+        <param name="lLast">
+            Should the last matching key be selected?
+        </param>
         <returns>
             TRUE if successful; otherwise, FALSE. Note that a FALSE value can indicate either that the value was not found or that the server does not support this search operation. Use the DataWindow:Status property to determine the exact cause of a failure.
         </returns>
@@ -6831,7 +6838,7 @@
         <summary>
             Change the font used by this dialog window.
         </summary>
-        <param name="New_Font">The new font to be used.</param>
+        <param name="oFont">The new font to be used.</param>
         <param name="lRescale">Specify TRUE to resize and reposition all controls in this dialog window and change their fonts; otherwise, FALSE. If omitted, the default is FALSE.</param>
         <returns>
             The font previously assigned to the dialog window.
@@ -13214,6 +13221,7 @@
             Remove an item from a list box.
         </summary>
         <param name="uItemNumber">The number of the item to be deleted. Specify one of values listed below</param>
+        <param name="nItem">The number of the item to be deleted. Specify one of values listed below</param>
         <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Value	Position
@@ -13251,6 +13259,7 @@
         <summary>
             Specify the set of values to be displayed in the list box, using an array or a data server. These values act as a constraint on the values that may be entered in the list box, and optionally as a translation between program values and display values.
         </summary>
+        <param name="oList">Sorted List of String/Usual pairs </param>
         <param name="aContents">
             An array containing the values to be placed in the list box. A two-dimensional array may be used to define the values to be returned to the program when a list item is selected, separately from the text strings shown in the list; this 'other' value is what is returned in the ListBox:Value property, and what is stored in the database if the control is associated with a database field.
             Thus, the array may be specified in one of two formats:
@@ -17354,6 +17363,8 @@
         </summary>
         <param name="uInt1">The first value of the pair. The default is 0.</param>
         <param name="uInt2">The second value of the pair. The default is 0.</param>
+        <param name="Int1">The first value of the pair. The default is 0.</param>
+        <param name="Int2">The second value of the pair. The default is 0.</param>
     </Pair.ctor>
     <PaletteDialog>
         <summary>
@@ -20311,7 +20322,7 @@
         <summary>
             Tile, iconize, or cascade all the child windows that are currently open in this shell window.
         </summary>
-        <param name="kArrangeStyle">** missing parameter documentation **</param>
+        <param name="kArrangeStyle">Number that indicates how the windows should be arranged. Can be ARRANGEASICONS, ARRANGECASCADE, ARRANGETILEVERTICAL, ARRANGETILEHORIZONTAL</param>
     </ShellWindow.Arrange>
     <ShellWindow.Background>
         <summary>
@@ -22959,7 +22970,11 @@
         <param name="xID">The unique ID of the toolbar (between 1 and 8000).</param>
         <param name="oPoint">The origin of the toolbar in canvas coordinates.</param>
         <param name="oDimension">The dimension of the toolbar in canvas coordinates.</param>
-        <param name="lEnableBands">A flag specifying whether the toolbar supports bands. Band support is disabled if the flag is set to FALSE or if the application is running on a system with an old version of the Common Controls library. In this case, the band-related methods (AddBand(), AddSubToolBarBand(), etc.) are not available. The default is TRUE.</param>
+        <param name="nButtonSize">The size of the toolbar buttons. The default is16.</param>
+        <param name="lEnableBands">A flag specifying whether the toolbar supports bands. 
+        Band support is disabled if the flag is set to FALSE or if the application is running on a 
+        system with an old version of the Common Controls library. 
+        In this case, the band-related methods (AddBand(), AddSubToolBarBand(), etc.) are not available. The default is TRUE.</param>
         <remarks>
             A toolbar is usually assigned to a window simply by attaching it to its corresponding menu; when the menu is assigned to the window, the toolbar is assigned as well. (It is also possible to explicitly assign a toolbar separately from its menu, using the AppWindow:ToolBar property.)
             Instantiating the toolbar does not make it visible and active. The toolbar becomes alive only when attached to a window in the same way as a menu. To reduce "visual noise"(undesirable blinking and flicker), the configuration of the buttons and layout of the toolbar should be completed before it is assigned to the window and made visible.
@@ -23810,7 +23825,8 @@
         <summary>
             Expand a tree view item, showing its child items.
         </summary>
-        <param name="symName">The symbolic name of the tree view item to be expanded or the TreeViewItem object representing the tree view item to be expanded.</param>
+        <param name="symName">The symbolic name of the tree view item to be expanded.</param>
+        <param name="oItem">The treeview item to be expanded.</param>
         <param name="lAll">If lAll is TRUE(default = FALSE), the operation is done for the complete subtree of the specified item.</param>
         <param name="lForceNotify">
             If lForceNotify is TRUE(default = FALSE), a notify message Window:TreeViewItemExpanding() and Window:TreeViewItemExpanded() is sent for each item whose expand state is changed.
@@ -23830,6 +23846,8 @@
         <summary>
             Return the first child tree view item.
         </summary>
+        <param name="uItem">The treeview item or the name of the treeview item from which to start the search.</param>
+        <param name="oItem">The treeview item from which to start the search.</param>
         <param name="symItem">
             The symbolic name of the tree view item from which to start the search. If omitted, the search starts from the root item.
             Or the TreeViewItem object representing the tree view item from which to start the search.

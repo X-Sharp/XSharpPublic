@@ -126,7 +126,7 @@ METHOD ButtonClick(oControlEvent)
 
 
 /// <include file="Gui.xml" path="doc/DialogWindow.ChangeFont/*" />
-METHOD ChangeFont(New_Font, lRescale)
+METHOD ChangeFont(oFont, lRescale)
 	LOCAL oOldFont AS Font
 	LOCAL hDCtmp AS PTR
 	LOCAL hfont AS PTR
@@ -158,8 +158,8 @@ METHOD ChangeFont(New_Font, lRescale)
 	ENDIF
 
 
-	IF !IsNil(New_Font) .AND. !IsInstanceOf(New_Font, #Font)
-		WCError{#ChangeFont, #DialogWindow, __WCStypeError, New_Font,1}:Throw()
+	IF !IsNil(oFont) .AND. !IsInstanceOf(oFont, #Font)
+		WCError{#ChangeFont, #DialogWindow, __WCStypeError, oFont,1}:Throw()
 	ENDIF
 
 
@@ -170,7 +170,7 @@ METHOD ChangeFont(New_Font, lRescale)
 
 
 	IF IsNil(lRescale) .OR. !lRescale
-		SUPER:Font:= New_Font
+		SUPER:Font:= oFont
 		RETURN oOldFont
 	ENDIF
 
@@ -189,10 +189,10 @@ METHOD ChangeFont(New_Font, lRescale)
 	hDCtmp := GetDC(hWnd)
 
 
-	IF (New_Font != NULL_OBJECT)
-		New_Font:Create(FALSE, hDCtmp)
-		dialogInfo:hFont := New_Font:Handle()
-		hfont := New_Font:handle()
+	IF (oFont != NULL_OBJECT)
+		oFont:Create(FALSE, hDCtmp)
+		dialogInfo:hFont := oFont:Handle()
+		hfont := oFont:handle()
 	ELSE
 		hfont := GetStockObject(DEFAULT_GUI_FONT)
 		IF (hfont == NULL_PTR)
@@ -438,9 +438,6 @@ METHOD EndDialog(iResult)
 
 /// <include file="Gui.xml" path="doc/DialogWindow.ExecModal/*" />
 METHOD ExecModal()
-	//PP-040101 S Ebert contribution
-
-
 	oApp:Exec(EXECNORMAL, SELF)
 	RETURN SELF
 

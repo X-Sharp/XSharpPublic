@@ -265,7 +265,7 @@ CLASS XSharp.XPP.ClassObject
             parent := typeof(XSharp.XPP.Abstract)
         ENDIF
 
-        VAR ctor := typeof(DebuggerDisplayAttribute).GetConstructor(<Type> { typeof(STRING) })
+        VAR ctor := typeof(DebuggerDisplayAttribute):GetConstructor(<Type> { typeof(STRING) })
         VAR arguments   := <OBJECT>{ oDesc:Name }
         VAR debuggerDisplay := CustomAttributeBuilder{ctor, arguments}
         
@@ -386,7 +386,7 @@ CLASS XSharp.XPP.ClassObject
                     IF oSuper IS XSharp.XPP.ClassObject VAR rtClass
                         cSuperClass := rtClass:Name
                     ELSE
-                        IF oSuper IS System.Type var st
+                        IF oSuper IS System.Type VAR st
                             oSuperType := st
                         ELSE
                             oSuperType := oSuper:GetType()

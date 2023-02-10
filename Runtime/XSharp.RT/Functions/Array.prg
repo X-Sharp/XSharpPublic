@@ -235,7 +235,7 @@ INTERNAL STATIC CLASS ArrayHelpers
                 NEXT
             ELSE
 
-                last := (DWORD) Math.Max( 1, nStart + nCount + 1 )
+                last := (DWORD) Math.Max( (DWORD) 1, (DWORD) nStart + nCount + 1 )
 
                 FOR x := nStart DOWNTO last
                     result := Eval( cbBlock, aArray[x], x )
@@ -867,9 +867,9 @@ FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,c
         RETURN aTarget
     END IF
 
-    EnforceNumeric( nStart )
+    EnforceNumeric( REF nStart )
     @@Default( REF nCount, nLen - nStart + 1 )
-    EnforceNumeric( nCount )
+    EnforceNumeric( REF nCount )
 
     // Note: ASort() in VO accepts arguments out of bounds and translates them this way:
     IF nStart <= 0

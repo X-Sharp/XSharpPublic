@@ -141,8 +141,8 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 
 
 /// <include file="Gui.xml" path="doc/DialogWindow.ChangeFont/*" />
-	METHOD ChangeFont(oNew_Font, lRescale)
-		SELF:Font := oNew_Font
+	METHOD ChangeFont(oFont, lRescale)
+		SELF:Font := oFont
 		RETURN TRUE
 
 	ACCESS ClipperKeys() AS LOGIC

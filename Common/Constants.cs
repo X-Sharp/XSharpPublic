@@ -35,6 +35,6 @@ namespace XSharp
         // and adds CRLF to the response file between the various commands to make it easier to read.
         internal const string EnvironmentXSharpDev = "XSHARPDEV";
         internal const string StandardHeaderFile = "XSharpDefs.xh";
-
+        internal const string SourceFileExtension = ".prg";
     }
 }

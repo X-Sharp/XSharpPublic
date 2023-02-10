@@ -52,6 +52,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN TRUE
             ENDIF
             locked := FALSE
+            result := FALSE
             TRY
                 local done := FALSE AS LOGIC
                 IF SELF:HasBottomScope

@@ -1,38 +1,38 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
 
 /// <exclude />
 PUBLIC CLASS XSharp.MemoHelpers
-    /// <exclude/>	
+    /// <exclude/>
 	CONST BLANK      := 0x20 AS INT
-    /// <exclude/>	
+    /// <exclude/>
 	CONST END_MEMO   := 0x1A AS INT // ^Z
-    /// <exclude/>	
+    /// <exclude/>
 	CONST MAX_WIDTH  := 254 AS INT
-    /// <exclude/>	
+    /// <exclude/>
 	CONST TAB		 := 9 AS INT
-    /// <exclude/>	
+    /// <exclude/>
 	CONST LINE_FEED  := 10 AS INT
-    /// <exclude/>	
+    /// <exclude/>
 	CONST HARD_CR    := 13 AS INT
-    /// <exclude/>	
+    /// <exclude/>
 	CONST SOFT_CR    := 141 AS INT
-    /// <exclude/>	
+    /// <exclude/>
 	CONST HARD_CR_LF := (HARD_CR << 8) | LINE_FEED AS INT
-    /// <exclude/>	
+    /// <exclude/>
 	CONST SOFT_CR_LF := (SOFT_CR << 8) | LINE_FEED AS INT
-    /// <exclude/>	
-	CONST STD_TAB_WIDTH	:= 4 AS INT	
-    /// <exclude/>	
+    /// <exclude/>
+	CONST STD_TAB_WIDTH	:= 4 AS INT
+    /// <exclude/>
 	CONST STD_MEMO_WIDTH	 := 79	AS INT
 
-    /// <exclude/>	
+    /// <exclude/>
 	STATIC METHOD  MLCount( cMemo AS STRING, nLineLen:= MemoHelpers.STD_MEMO_WIDTH AS INT, ;
-		nTabSize := MemoHelpers.STD_TAB_WIDTH AS INT,  lWrap := TRUE AS LOGIC) AS DWORD 
+		nTabSize := MemoHelpers.STD_TAB_WIDTH AS INT,  lWrap := TRUE AS LOGIC) AS DWORD
 		LOCAL nTempLen AS INT
 		LOCAL nLines := 0 AS DWORD
 		LOCAL nIndex := 0 AS INT
@@ -40,11 +40,11 @@ PUBLIC CLASS XSharp.MemoHelpers
 			RETURN 0
 		ENDIF
 		IF nLineLen > 0 .AND. nLineLen <= MemoHelpers.MAX_WIDTH
-	
+
 			IF nTabSize > nLineLen
 				nTabSize := nLineLen
 			ENDIF
-		
+
 			nTempLen := 1
 			DO WHILE nTempLen != 0
 				nTempLen := MemoHelpers.LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
@@ -56,10 +56,10 @@ PUBLIC CLASS XSharp.MemoHelpers
 		ENDIF
 		RETURN nLines
 
-    /// <exclude/>	
+    /// <exclude/>
 	STATIC METHOD GetTabPos( nPos AS INT, nTabSize AS INT ) AS INT
 		RETURN ( nPos + nTabSize ) - ( nPos % nTabSize )
-    /// <exclude/>	
+    /// <exclude/>
 	STATIC METHOD MPosToLc(cMemo AS STRING,nLineLen AS INT,nPos AS INT,nTabSize AS INT,lWrap AS LOGIC) AS Tuple<INT, INT>
 		LOCAL nLineNum := 0 AS INT
 		LOCAL nColumn := 0 AS INT
@@ -68,17 +68,17 @@ PUBLIC CLASS XSharp.MemoHelpers
 		LOCAL nCrLf := 0 AS INT
 		LOCAL nIndex:= 0  AS INT
 		LOCAL nSrc  := 0 AS INT
-		
-		
+
+
 		IF nPos <= cMemo:Length .AND. nLineLen > 0 .AND. nLineLen <= MemoHelpers.MAX_WIDTH
-		
+
 			IF nTabSize > nLineLen
 				nTabSize := nLineLen
 			ENDIF
-			
+
 			nTempLen := 1
 			nLineNum := 1
-			
+
 			DO WHILE nIndex < nPos .AND. nTempLen != 0
 				nTempLen := LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
 				nIndex += nTempLen
@@ -92,7 +92,7 @@ PUBLIC CLASS XSharp.MemoHelpers
 				DO CASE
 					CASE nChar == TAB
 						nColumn := GetTabPos( nColumn, nTabSize )
-					CASE IsCrLf( cMemo, nSrc, nCrLf )
+					CASE IsCrLf( cMemo, nSrc, REF nCrLf )
 						nColumn += 2
 					OTHERWISE
 						nColumn ++
@@ -100,44 +100,44 @@ PUBLIC CLASS XSharp.MemoHelpers
 				nSrc ++
 			ENDDO
 		ENDIF
-		
+
 		RETURN Tuple<INT,INT>{ nLineNum, nColumn }
-		
-		
-    /// <exclude/>	
-	STATIC METHOD  MLcToPos( cMemo AS STRING, nLineLen AS INT, nLineNum AS INT, nColumn AS INT, nTabSize AS INT, lWrap AS LOGIC) AS DWORD 
+
+
+    /// <exclude/>
+	STATIC METHOD  MLcToPos( cMemo AS STRING, nLineLen AS INT, nLineNum AS INT, nColumn AS INT, nTabSize AS INT, lWrap AS LOGIC) AS DWORD
 		LOCAL nTempLen	:= 0 AS INT
 		LOCAL nChar		:= 0 AS INT
 		LOCAL nCrLf		:= 0 AS INT
 		LOCAL nIndex	:= 0 AS INT
 		LOCAL nPos		:= 0 AS INT
-		
-		
+
+
 		IF  nLineNum > 0 .AND. nLineLen > 4 .AND. nLineLen <= MAX_WIDTH
-		
+
 			IF nTabSize >= nLineLen
 				nTabSize := nLineLen - 1
 			ENDIF
-			
+
 			nTempLen := 1
-			
+
 			nLineNum --
 			DO WHILE nLineNum != 0 .AND. nTempLen != 0
 				nTempLen := LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
 				nIndex += nTempLen
 				nLineNum --
 			ENDDO
-			
+
 			//  If a soft or hard CR falls just past the length in the
 			//  previous line it won't be counted.  We must add as two chars
 			//  to the buffer position in order for it to work out correctly.
-			
-			IF IsCrLf( cMemo, nIndex, nCrLf ) .AND. nCrLf == SOFT_CR_LF
+
+			IF IsCrLf( cMemo, nIndex, REF nCrLf ) .AND. nCrLf == SOFT_CR_LF
 				nIndex += 2
 			ENDIF
-			
+
 			DO WHILE nPos < nColumn
-			
+
 				IF nIndex < cMemo:Length
 					nChar := cMemo[(INT) nIndex]
 				ELSE
@@ -155,17 +155,17 @@ PUBLIC CLASS XSharp.MemoHelpers
 						nIndex += 1
 						nPos += 1
 				ENDCASE
-				
+
 			ENDDO
-			
+
 		ENDIF
-		
+
 		RETURN (DWORD) ( nIndex + 1 )
 
-    /// <exclude/>	
+    /// <exclude/>
 	STATIC METHOD IsCrLf( cMemo AS STRING, nPos AS INT, nCrLf REF INT ) AS LOGIC
 		LOCAL nChar AS INT
-		
+
 		nCrLf := 0
 		IF nPos + 1 < cMemo:Length .AND. (INT) cMemo[(INT) nPos + 1] == LINE_FEED
 			nChar := (INT) cMemo[(INT) nPos]
@@ -178,8 +178,8 @@ PUBLIC CLASS XSharp.MemoHelpers
 		ENDIF
 		RETURN nCrLf != 0
 
-		
-	/// <exclude/>	
+
+	/// <exclude/>
 	STATIC METHOD LineLen( cMemo AS STRING, nStart AS INT, nLineLen AS INT, nTabSize AS INT , lWrap AS LOGIC ) AS INT
 	   LOCAL lCont AS LOGIC
 		   LOCAL nChar AS INT
@@ -188,11 +188,11 @@ PUBLIC CLASS XSharp.MemoHelpers
 		   LOCAL nWidth := 0 AS INT
 		   LOCAL nLength AS INT
 		   LOCAL nCrLf := 0 AS INT
-   
+
 		   nLength	:= cMemo:Length
 		   nPos		:= nStart
 		   lCont	:= TRUE
-   
+
 		   DO WHILE lCont .AND. nPos < nLength .AND. nWidth <= nLineLen
 			  nChar := (INT) cMemo[nPos]
 			  DO CASE
@@ -202,7 +202,7 @@ PUBLIC CLASS XSharp.MemoHelpers
 			  CASE nChar == BLANK
 				 nWhite := nPos
 				 nWidth ++
-			  CASE IsCrLf( cMemo, nPos, nCrLf )
+			  CASE IsCrLf( cMemo, nPos, REF nCrLf )
 				 IF nCrLf == HARD_CR_LF
 					lCont := FALSE
 				 ELSE
@@ -216,7 +216,7 @@ PUBLIC CLASS XSharp.MemoHelpers
 			  END CASE
 			  nPos ++
 		   END DO
-   
+
 		   IF nWidth > nLineLen
 			  IF lWrap
 				 IF nWhite > 0
@@ -228,9 +228,9 @@ PUBLIC CLASS XSharp.MemoHelpers
 				 nPos --
 			  END IF
 		   ENDIF
-   
+
 		   RETURN nPos - nStart
-	/// <exclude/>	
+	/// <exclude/>
 	STATIC METHOD MLine( cMemo AS STRING, nLineNum AS INT, nLineLen AS INT, nTabSize AS INT, lWrap AS LOGIC, lJustCheck AS LOGIC, dOffset REF INT ) AS STRING
 		LOCAL oBuilder := NULL AS System.Text.StringBuilder
 		LOCAL nTempLen AS INT
@@ -239,13 +239,13 @@ PUBLIC CLASS XSharp.MemoHelpers
 		LOCAL nCrLf := 0 AS INT
 		LOCAL cRet AS STRING
 		LOCAL nIndex AS INT
-		
+
 		IF ! lJustCheck
 			oBuilder := System.Text.StringBuilder{ (INT) nLineLen }
 		END IF
-		
+
 		IF nLineNum > 0 .AND. nLineLen > 0 .AND. nLineLen <= MAX_WIDTH
-		
+
 			IF nTabSize > nLineLen
 				nTabSize := nLineLen
 			ENDIF
@@ -258,7 +258,7 @@ PUBLIC CLASS XSharp.MemoHelpers
 				dOffset += nTempLen
 				nLineNum --
 			ENDDO
-			
+
 			IF nLineNum == 0 .AND. nTempLen != 0
 				nTempLen := LineLen( cMemo, nIndex, nLineLen, nTabSize, lWrap )
 				nSrc := 0
@@ -286,7 +286,7 @@ PUBLIC CLASS XSharp.MemoHelpers
 				ENDDO
 			ENDIF
 		ENDIF
-		
+
 		IF lJustCheck
 			cRet := NULL
 		ELSE
@@ -295,26 +295,26 @@ PUBLIC CLASS XSharp.MemoHelpers
 			ENDIF
 			cRet := oBuilder:ToString()
 		ENDIF
-		
+
 		RETURN cRet
 		END		 CLASS
-		
-		
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline/*" />
 FUNCTION MLine(cString AS STRING,nLine AS DWORD) AS STRING
 	LOCAL nOffset := 0 AS DWORD
 	RETURN MLine3(cString, nLine, REF nOffset)
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline/*" />
 FUNCTION MLine(cString AS STRING,nLine AS DWORD,nOffset REF DWORD) AS STRING
 	RETURN MLine3(cString, nLine, REF nOffset)
-  
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline/*" />
 FUNCTION MLine(cString AS STRING,nLine AS DWORD,nOffset AS DWORD) AS STRING
 	RETURN MLine3(cString, nLine, REF nOffset)
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline3/*" />
 FUNCTION MLine3(cString AS STRING,dwLine AS DWORD,ptrN REF DWORD) AS STRING
 	LOCAL cResult AS STRING
@@ -326,8 +326,8 @@ FUNCTION MLine3(cString AS STRING,dwLine AS DWORD,ptrN REF DWORD) AS STRING
 	ENDIF
 	ptrN := (DWORD) iOffSet
 	RETURN cResult
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memoline/*" />
 FUNCTION MemoLine(cString AS STRING, nLineLength := MemoHelpers.STD_MEMO_WIDTH AS DWORD, nLineNumber := 1 AS DWORD,;
 nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
@@ -361,7 +361,7 @@ FUNCTION MemoRead(cFileName AS STRING) AS STRING
 		cResult := ""
 	END TRY
 	RETURN cResult
-	
+
 
 /// <summary>
 /// Return the contents of a binary file as an array of bytes.
@@ -387,8 +387,8 @@ FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 		bResult := BYTE[]{0}
 	END TRY
 	RETURN bResult
-	
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memowrit/*" />	
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memowrit/*" />
 /// <seealso cref='MemoWritBinary' >MemoWritBinary</seealso>
 FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
 	LOCAL lOk AS LOGIC
@@ -408,8 +408,8 @@ FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
 		lOk := FALSE
 	END TRY
 	RETURN lOk
-	
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memowrit/*" />	
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memowrit/*" />
 FUNCTION MemoWrit(cFileName AS STRING,cString AS BYTE[]) AS LOGIC
     RETURN MemoWritBinary(cFileName, cString)
 
@@ -438,32 +438,32 @@ FUNCTION MemoWritBinary(cFile AS STRING,bData AS BYTE[]) AS LOGIC
 		lOk := FALSE
 	END TRY
 	RETURN lOk
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mlpos2/*" />
 FUNCTION MLPos2(cString AS STRING,dwLine AS DWORD) AS DWORD
 	LOCAL nIndex := 0 AS INT
 	MemoHelpers.MLine( cString, (INT)  dwLine, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH, TRUE, TRUE, REF nIndex )
 	RETURN (DWORD) nIndex
-	
-	
-	
-	
-	
+
+
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mlcount1/*" />
-FUNCTION MLCount1( cString AS STRING) AS DWORD 
+FUNCTION MLCount1( cString AS STRING) AS DWORD
 	RETURN MemoHelpers.MLCount(cString, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH , TRUE)
-	
-	
-	
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memlines/*" />
 FUNCTION MemLines(cString AS STRING) AS DWORD
 	RETURN MemoHelpers.MLCount(cString, MemoHelpers.STD_MEMO_WIDTH, MemoHelpers.STD_TAB_WIDTH , TRUE)
-	
+
 /// <exclude />
 FUNCTION _MPosToLc(cMemo AS STRING,nLineLen AS DWORD,nPos AS DWORD,nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS Tuple<INT, INT>
 	RETURN MemoHelpers.MPosToLc(cMemo, (INT) nLineLen, (INT) nPos, (INT) nTabSize, lWrap)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mlctopos/*" />
-FUNCTION MLcToPos( cText AS STRING, nWidth AS DWORD, nLine AS DWORD, nCol AS DWORD, nTabSize AS DWORD, lWrap AS LOGIC) AS DWORD 
+FUNCTION MLcToPos( cText AS STRING, nWidth AS DWORD, nLine AS DWORD, nCol AS DWORD, nTabSize AS DWORD, lWrap AS LOGIC) AS DWORD
 	RETURN MemoHelpers.MLcToPos(cText, (INT) nWidth, (INT) nLine, (INT) nCol, (INT) nTabSize, lWrap)

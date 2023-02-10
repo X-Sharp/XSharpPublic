@@ -105,9 +105,9 @@ CLASS ShellWindow INHERIT AppWindow
 
 
 /// <include file="Gui.xml" path="doc/ShellWindow.Arrange/*" />
-	METHOD Arrange(liStyle := ArrangeCascade AS LONG)
+	METHOD Arrange(kArrangeStyle := ArrangeCascade AS LONG)
 		IF SELF:__IsValid
-			SWITCH liStyle
+			SWITCH kArrangeStyle
 			CASE ARRANGEASICONS
 				oWnd:LayoutMdi(SWF.MdiLayout.ArrangeIcons)
 			CASE ARRANGECASCADE
@@ -308,8 +308,8 @@ CLASS ShellWindow INHERIT AppWindow
 
 /// <include file="Gui.xml" path="doc/ShellWindow.Handle/*" />
 
-	METHOD Handle(nWhich) AS IntPtr  CLIPPER
-		IF IsNumeric(nWhich) .and. nWhich == 4 .and. SELF:__IsClientValid
+	METHOD Handle(nHandleType) AS IntPtr  CLIPPER
+		IF IsNumeric(nHandleType) .and. nHandleType == 4 .and. SELF:__IsClientValid
 			RETURN SELF:oWndClient:Handle
 		ELSE
 			RETURN SUPER:Handle()

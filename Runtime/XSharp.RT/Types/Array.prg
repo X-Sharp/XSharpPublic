@@ -33,8 +33,11 @@ BEGIN NAMESPACE XSharp
 [DebuggerDisplay("{DebuggerString(),nq}")] ;
 [Serializable];
 PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializable
+    [NOSHOW];
     PRIVATE CONST FoxArrayName := "XSharp.__FoxArray" AS STRING
+    [NOSHOW];
     STATIC FoxArrayHelpers := FoxArrayHelpers {} AS FoxArrayHelpers
+    [NOSHOW];
     INTERNAL PROPERTY __IsFoxArray AS LOGIC GET SELF:GetType():FullName == FoxArrayName
 
         [NOSHOW];

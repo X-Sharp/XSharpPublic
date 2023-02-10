@@ -858,7 +858,7 @@ CLASS UsualTests
         Assert.True(Max(u1,u2) == u2)
 
         u1 := 0h123456
-        u2 := 0h234567
+        u2 := 0h123457
         Assert.True(Min(u1,u2) == u1)
         Assert.True(Max(u1,u2) == u2)
 

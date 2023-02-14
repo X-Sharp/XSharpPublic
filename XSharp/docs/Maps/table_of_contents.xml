@@ -477,6 +477,36 @@
       </topicref>
       <topicref type="topic" id="423888873133831" build="ALL" modified="2020-07-10T11:19:04.992Z" icon="0" href="Source-Code-Editor">
         <caption translate="true">Source Code Editor</caption>
+        <topicref type="topic" id="449715537468985" build="ALL" modified="2023-02-14T14:19:12.283Z" icon="0" href="Text-Editor-Options">
+          <caption translate="true">Text Editor Options</caption>
+          <topicref type="topic" id="449716646372771" build="ALL" modified="2023-02-14T14:54:52.561Z" icon="0" href="Tools-Options-General">
+            <caption translate="true">General Options</caption>
+          </topicref>
+          <topicref type="topic" id="449714133225778" build="ALL" modified="2023-02-14T14:54:42.663Z" icon="0" href="Tools-Options-ScrollBars">
+            <caption translate="true">Scroll Bars</caption>
+          </topicref>
+          <topicref type="topic" id="449715059641745" build="ALL" modified="2023-02-14T14:54:37.430Z" icon="0" href="Tools-Options-Tabs">
+            <caption translate="true">Tabs</caption>
+          </topicref>
+          <topicref type="topic" id="449717387840789" build="ALL" modified="2023-02-14T14:56:45.708Z" icon="0" href="Tools-Options-Formatting">
+            <caption translate="true">Formatting</caption>
+          </topicref>
+          <topicref type="topic" id="44971563483802" build="ALL" modified="2023-02-14T14:56:33.633Z" icon="0" href="Tools-Options-Generator">
+            <caption translate="true">Generator</caption>
+          </topicref>
+          <topicref type="topic" id="449717263042614" build="ALL" modified="2023-02-14T14:56:29.881Z" icon="0" href="Tools-Options-Indentation">
+            <caption translate="true">Indentation</caption>
+          </topicref>
+          <topicref type="topic" id="449716955410252" build="ALL" modified="2023-02-14T14:56:25.738Z" icon="0" href="Tools-Options-Intellisense">
+            <caption translate="true">Intellisense</caption>
+          </topicref>
+          <topicref type="topic" id="449714536981035" build="ALL" modified="2023-02-14T14:56:20.793Z" icon="0" href="Tools-Options-Options">
+            <caption translate="true">Options</caption>
+          </topicref>
+          <topicref type="topic" id="449717882864970" build="ALL" modified="2023-02-14T14:56:56.131Z" icon="0" href="Tools-Options-Completion">
+            <caption translate="true">Settings Completion</caption>
+          </topicref>
+        </topicref>
         <topicref type="topic" id="423887361540682" build="ALL" modified="2020-08-03T16:03:11.426Z" icon="0" href="editor-Keyword-Coloring">
           <caption translate="true">Keyword Coloring</caption>
         </topicref>
@@ -513,21 +543,27 @@
         <topicref type="topic" id="440464174402296" build="ALL" modified="2020-08-03T16:03:44.029Z" icon="0" href="editor-Brace-matching">
           <caption translate="true">Brace matching</caption>
         </topicref>
-        <topicref type="topic" id="440466962334231" build="ALL" modified="2020-08-03T16:03:47.979Z" icon="0" href="editor-Formatting-code">
-          <caption translate="true">Formatting code</caption>
+        <topicref type="topic" id="440684277166773" build="ALL" modified="2023-02-14T14:58:02.118Z" icon="0" href="Highlight-words">
+          <caption translate="true">Highlight Identifiers</caption>
+        </topicref>
+        <topicref type="topic" id="449717492574977" build="ALL" modified="2023-02-14T14:57:55.895Z" icon="0" href="Keyword-Matching">
+          <caption translate="true">Highlight Keywords</caption>
+        </topicref>
+        <topicref type="topic" id="440466962334231" build="ALL" modified="2023-02-14T14:53:48.034Z" icon="0" href="editor-Formatting-code">
+          <caption translate="true">Indenting code</caption>
         </topicref>
         <topicref type="topic" id="440465326848206" build="ALL" modified="2020-08-03T16:03:51.685Z" icon="0" href="editor-Snippets">
           <caption translate="true">Snippets</caption>
         </topicref>
-        <topicref type="topic" id="440463266528134" build="ALL" modified="2022-09-07T16:50:16.833Z" icon="0" href="editor-Intellisense-options">
-          <caption translate="true">Text Editor Options</caption>
-        </topicref>
-        <topicref type="topic" id="440684277166773" build="ALL" modified="2020-08-25T12:58:59.687Z" icon="0" href="Highlight-words">
-          <caption translate="true">Highlight words</caption>
-        </topicref>
         <topicref type="topic" id="443027287321532" build="ALL" modified="2021-04-16T14:33:30.631Z" icon="0" href="_EditorConfig-files">
           <caption translate="true">.EditorConfig files</caption>
         </topicref>
+      </topicref>
+      <topicref type="topic" id="449715737811801" build="ALL" modified="2023-02-14T14:37:05.936Z" icon="0" href="Debugger2">
+        <caption translate="true">Debugger</caption>
+      </topicref>
+      <topicref type="topic" id="449718002903399" build="ALL" modified="2023-02-14T14:37:15.672Z" icon="0" href="Other-editors">
+        <caption translate="true">Other editors</caption>
       </topicref>
       <topicref type="topic" id="423890888167298" build="ALL" modified="2017-04-20T14:46:46.911Z" icon="0" href="Templates">
         <caption translate="true">Templates</caption>

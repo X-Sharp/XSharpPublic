@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-02-14T14:56:44.187+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Formatting</title>
+  <keywords>
+    <keyword>Formatting</keyword>
+    <keyword>Options</keyword>
+    <keyword>Tools Options</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">Formatting</para>
+    </header>
+    <para styleclass="Normal">This page X# specific settings w.r.t. source code formatting</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Tools-Options-Formatting.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

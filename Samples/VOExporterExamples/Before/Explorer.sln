@@ -1,7 +1,25 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{D308B89D-FB4F-4C5A-A8B5-3D4546FF8D12}") = "Explorer", "Explorer\Explorer.xsproj", "{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Explorer", "Explorer\Explorer.xsproj", "{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}"
 EndProject
-
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8BDE4265-67C7-4F92-9896-5F09B78D8919}
+	EndGlobalSection
+EndGlobal

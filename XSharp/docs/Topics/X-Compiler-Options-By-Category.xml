@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-02-14T13:23:55.695+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# Compiler Options By Category</title>
   <keywords>
     <keyword>compiler options</keyword>
@@ -32,7 +32,7 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">XBase Compatibility</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="43" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="44" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal">Option</para>
@@ -47,6 +47,14 @@
         </td>
         <td>
           <para styleclass="Normal">Allow the DOT (.) character as operator for instance members</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:33%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowoldstyleassignments" styleclass="Body Text">-allowoldstyleassignments</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Allow assignments with a single Equals operator (=)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

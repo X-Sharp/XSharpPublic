@@ -899,6 +899,7 @@ CLASS VOMenuItem
 
 		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos) // Menu ID
 //		oItem:nMenuID := Funcs.Val(cValue)
+		oItem:aProperties:Add("OriginalDefineValue" , cValue:Trim())
 
 		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos)
 		nAt := cValue:IndexOf('\t') + 1

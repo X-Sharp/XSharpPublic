@@ -5346,7 +5346,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                               Specify nullable context option enable|disable|warnings|annotations.
 
                         - XBASE COMPATIBILITY -
--allowdot[+|-]                 Control if the DOT operator can be used for instance members or not.
+-allowdot[+|-]                 Control if the DOT operator (.) can be used for instance members or not.
+-allowoldstyleassignments[+|-] Control if the Equals operator (=) can be used for assignments
 -az[+|-]                       Use Zero based arrays
 -cs[+|-]                       Case Sensitivity on/off
 -dialect:&lt;string&gt;              Specify xBase Dialect: Core, VO, Vulcan, dBase, FoxPro, xBase++, Harbour

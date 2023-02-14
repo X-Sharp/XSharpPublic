@@ -52,11 +52,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 bool haserrorinblock = false;
                 foreach (var error in _parseErrors)
                 {
-                    if (error.Node.Position > start && error.Node.Position < end)
+                    if (!ErrorFacts.IsWarning(error.Code))
                     {
-                        haserrorinblock = true;
-                        break;
+                        if (error.Node.Position > start && error.Node.Position < end)
+                        {
 
+                            haserrorinblock = true;
+                            break;
+                        }
                     }
                 }
                 if (!haserrorinblock)

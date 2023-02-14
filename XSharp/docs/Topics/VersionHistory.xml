@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-10T12:44:00.958+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-02-15T01:41:56.501+02:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -13,7 +13,7 @@
     <header>
       <para styleclass="Heading1">Version History</para>
     </header>
-    <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
+    <para styleclass="Body Text">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading1">Changes in 2.15.0.0</para>
@@ -69,6 +69,8 @@
       <li styleclass="Body Text">Fixed an issue where the completionlist could contain methods that were not visible from the spot where the completionlist was shown (#1188)</li>
       <li styleclass="Body Text">Fixed an issue with the display of nested types in the editor (#1198)</li>
       <li styleclass="Body Text">Cleaned up several X# project templates, fixing problems with incorrect placement of Debug/Output folders (#1201)</li>
+      <li styleclass="Body Text">Fixed problem with Undo not being available in the editor, after an automatic change of casing in a line of code (when keyword case sync is enabled) (#1205)</li>
+      <li styleclass="Body Text">Now the VO Menu Editor uses the same menu item DEFINE values, as those used in the original VO app (re-porting of the app is necessary for this to work) (#1207)</li>
     </list>
     <para styleclass="Heading1">Changes in 2.14.0.2, 3 &amp; 4</para>
     <para styleclass="Heading2">Visual Studio Integration</para>

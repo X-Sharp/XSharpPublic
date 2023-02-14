@@ -17,7 +17,7 @@ FUNCTION Start() AS VOID
     Console.ReadKey()
 
 
-CLASS TestClass	
+CLASS TestClass
 	STATIC PROTECT oLock AS OBJECT		// To make sure we synchronize the writing to the screen
 	STATIC CONSTRUCTOR
 		oLock := OBJECT{}
@@ -34,7 +34,7 @@ CLASS TestClass
 		webClient:DownloadProgressChanged += OnDownloadProgress
         webClient:Credentials := System.Net.CredentialCache.DefaultNetworkCredentials
 
-        AWAIT webClient:DownloadFileTaskAsync("http://www.xsharp.info/index.php", FileName)
+        AWAIT webClient:DownloadFileTaskAsync("http://www.xsharp.eu/index.php", FileName)
         VAR dirInfo      := System.IO.DirectoryInfo{System.IO.Path.GetTempPath()}
         VAR Files        := dirInfo:GetFiles("temp.txt")
         IF Files:Length > 0
@@ -49,4 +49,4 @@ CLASS TestClass
 		END LOCK
 		RETURN
 
-END CLASS 
+END CLASS

@@ -17,7 +17,7 @@ Function Start() as void
 	Conversion()
 	Strings()
 	Numeric()
-	DoWait() 
+	DoWait()
 	Arrays()
 	Symbols()
 	LateBinding()
@@ -47,13 +47,13 @@ FUNCTION DoWait() AS VOID
 
 FUNCTION DateSamples() AS VOID
 	ConsoleHeading("Dates")
-	LOCAL dToday := Today() AS DATE 
-	Console.WriteLine( i"Today is {dToday:d}"	)	// Interpolated string, short Date Format
-	Console.WriteLine( i"Today is {dToday:G}"	)	// Interpolated string, General Date Format
+	LOCAL dToday := Today() AS DATE
+	Console.WriteLine( i"Today is {dToday::d}"	)	// Interpolated string, short Date Format
+	Console.WriteLine( i"Today is {dToday::G}"	)	// Interpolated string, General Date Format
 
 	LOCAL dTomorrow AS __VODATE
 	dTomorrow := dToday + 1  // can perform VO date arithmetic
-	Console.WriteLine( i"Tomorrow is {dTomorrow:D}") // Long date format   
+	Console.WriteLine( i"Tomorrow is {dTomorrow::D}") // Long date format
 
 	LOCAL dNewYear AS DATE
     dNewYear := 2016.01.01
@@ -64,8 +64,8 @@ FUNCTION Conversion() AS VOID
 	ConsoleHeading("Conversion")
 	LOCAL sToday AS STRING
 	sToday := DTOS(Today()) // Convert date using VO function
-	Console.WriteLine(i"Today is {sToday}") 
-	
+	Console.WriteLine(i"Today is {sToday}")
+
 FUNCTION Strings() AS VOID
 	ConsoleHeading("Strings")
 	LOCAL s AS STRING

@@ -12,25 +12,25 @@ FUNCTION Start() AS INT
 RETURN 0
 
 CLASS XApp INHERIT App
-METHOD Start() 
+METHOD Start()
 	LOCAL oMainWindow AS PadShellWindow
 	LOCAL cParam AS STRING
 	LOCAL nStart AS INT
-	
+
 	cParam := _GetCmdLine()
-	nStart := At(" ", Trim(cParam))
+	nStart := (INT) At(" ", Trim(cParam))
 	oMainWindow := PadShellWindow{SELF}
-	
+
 	IF nStart != 0
 		oMainWindow:NewEditWindow(SubStr(cParam, nStart + 1))
-	ELSE	
+	ELSE
 		oMainWindow:FileNew()
-	ENDIF	
-	
+	ENDIF
+
 	oMainWindow:Show(SHOWCENTERED)
 	SELF:Exec()
-	
-	
+
+
 
 
 END CLASS

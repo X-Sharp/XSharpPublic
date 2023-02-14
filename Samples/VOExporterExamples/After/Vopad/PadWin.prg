@@ -109,8 +109,8 @@ METHOD Cut()
 
 
 METHOD EditChange(oControlEvent) 
-	LOCAL oControl AS Control
-	oControl := IIf(oControlEvent == NULL_OBJECT, NULL_OBJECT, oControlEvent:Control)
+	//LOCAL oControl AS Control
+	//oControl := IIf(oControlEvent == NULL_OBJECT, NULL_OBJECT, oControlEvent:Control)
 	SUPER:EditChange(oControlEvent)
 	//Put your changes here
 	SELF:lChange := TRUE

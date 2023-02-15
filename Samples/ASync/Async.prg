@@ -34,18 +34,23 @@ CLASS TestClass
 		webClient:DownloadProgressChanged += OnDownloadProgress
         webClient:Credentials := System.Net.CredentialCache.DefaultNetworkCredentials
 
-        AWAIT webClient:DownloadFileTaskAsync("http://www.xsharp.eu/index.php", FileName)
+        AWAIT webClient:DownloadFileTaskAsync("http://google.com", FileName)
         VAR dirInfo      := System.IO.DirectoryInfo{System.IO.Path.GetTempPath()}
         VAR Files        := dirInfo:GetFiles("temp.txt")
         IF Files:Length > 0
-			System.IO.File.Delete(FileName)
+            ? "Opening file ", FileName
+            System.Diagnostics.Process.Start(FileName)
             RETURN Files[1]:Length
         ENDIF
         RETURN 0
 
 	STATIC METHOD OnDownloadProgress (sender AS OBJECT, e AS System.Net.DownloadProgressChangedEventArgs) AS VOID
 		BEGIN LOCK oLock
-			? String.Format("{0,3} % Size: {1,8:N0} Thread {2}", 100*e:BytesReceived / e:TotalBytesToReceive , e:BytesReceived, System.Threading.Thread.CurrentThread:ManagedThreadId)
+            IF e:TotalBytesToReceive > e:BytesReceived
+			    ? String.Format("{0,3} % Size: {1,8:N0} Thread {2}", 100*e:BytesReceived / e:TotalBytesToReceive , e:BytesReceived, System.Threading.Thread.CurrentThread:ManagedThreadId)
+            ELSE
+			    ? String.Format("Size: {0,8:N0} Thread {1}", e:BytesReceived, System.Threading.Thread.CurrentThread:ManagedThreadId)
+            ENDIF
 		END LOCK
 		RETURN
 

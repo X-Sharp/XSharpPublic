@@ -1358,20 +1358,29 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 
 
     METHOD UpdateNames() AS VOID
-        LOCAL oDesign AS DesignMenuItem
         LOCAL aControls AS ArrayList
         //	LOCAL cOrigName AS STRING
         LOCAL cName AS STRING
         LOCAL lFound AS LOGIC
-        //	LOCAL n,m AS INT
-        LOCAL n AS INT
         LOCAL nID AS INT
 
-        nId := (INT)SELF:oMainNode:oDesign:GetProperty("BaseID"):Value
-
         aControls := SELF:GetAllDesignItems()
-        FOR n := 0 UPTO aControls:Count - 1
-            oDesign := (DesignMenuItem)aControls[n]
+
+        LOCAL nMaxOriginalDefineValue := 0 AS INT
+        FOREACH oDesign AS DesignMenuItem IN aControls
+            LOCAL nOriginalDefineValue := 0 AS INT
+            Int32.TryParse(oDesign:GetProperty("OriginalDefineValue"):TextValue, REF nOriginalDefineValue)
+            IF nOriginalDefineValue > nMaxOriginalDefineValue
+                nMaxOriginalDefineValue := nOriginalDefineValue
+            ENDIF
+        NEXT
+        IF nMaxOriginalDefineValue == 0
+            nId := (INT)SELF:oMainNode:oDesign:GetProperty("BaseID"):Value
+        ELSE
+            nId := nMaxOriginalDefineValue + 1
+        ENDIF
+
+        FOREACH oDesign AS DesignMenuItem IN aControls
             //		cOrigName := oDesign:Name
             cName := SELF:GetNameFromTree(oDesign:oNode)
             cName := SELF:AdjustName(cName)
@@ -1393,8 +1402,13 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
             /*		IF (INT)oDesign:GetProperty("MenuID"):Value == 0
             oDesign:GetProperty("MenuID"):Value := SELF:GetNewMenuID()
             END IF*/
-            oDesign:GetProperty("MenuID"):Value := nId
-            nId ++
+            LOCAL nValueToUse := 0 AS INT
+            Int32.TryParse(oDesign:GetProperty("OriginalDefineValue"):TextValue, REF nValueToUse)
+            IF nValueToUse == 0
+                nValueToUse := nId
+                nId ++
+            ENDIF
+            oDesign:GetProperty("MenuID"):Value := nValueToUse
 
             /*		IF !cName == cOrigName
             oDesign:PropertyValueSelected("Name" , cName)
@@ -2086,6 +2100,11 @@ CLASS DesignMenuItem INHERIT DesignItem
             SELF:AddProperty(VODesignProperty{"ButtonPos","Button Pos","ButtonPos",PropertyType.Numeric , PropertyStyles.NoAuto})
             SELF:AddProperty(VODesignProperty{"ID","ID","ID",PropertyType.Text})
             oProp := VODesignProperty{"MenuID","MenuID","MenuID",PropertyType.Numeric}
+            IF !SELF:oDesigner:StandAlone
+                oProp:cPage := "__Hidden"
+            END IF
+            SELF:AddProperty(oProp)
+            oProp := VODesignProperty{"OriginalDefineValue","OriginalDefineValue","OriginalDefineValue",PropertyType.Text}
             IF !SELF:oDesigner:StandAlone
                 oProp:cPage := "__Hidden"
             END IF

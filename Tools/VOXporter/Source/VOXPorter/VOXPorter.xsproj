@@ -174,6 +174,18 @@
       <Link>Templates\template_XIDE.xiproj</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="..\..\Templates\template_VS.sln">
+      <Link>Templates\template_VS.sln</Link>
+    </None>
+    <None Include="..\..\Templates\template_VS.xsproj">
+      <Link>Templates\template_VS.xsproj</Link>
+    </None>
+    <None Include="..\..\Templates\template_XIDE.xiapp">
+      <Link>Templates\template_XIDE.xiapp</Link>
+    </None>
+    <None Include="..\..\Templates\template_XIDE.xiproj">
+      <Link>Templates\template_XIDE.xiproj</Link>
+    </None>
     <None Include="..\..\VOXPorter.ini">
       <Link>VOXPorter.ini</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

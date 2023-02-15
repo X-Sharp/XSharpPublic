@@ -18,6 +18,8 @@ namespace XSharp.Project
     using Microsoft.VisualStudio.Language.Intellisense;
     using Microsoft.VisualStudio.Shell;
     using XSharpModel;
+    using Newtonsoft.Json.Linq;
+    using System.Reflection;
 
     /// <summary>
     /// Property page contents for the Candle Settings page.
@@ -145,6 +147,30 @@ namespace XSharp.Project
             }
         }
 
+        bool resetting = false;
+        protected override void HandleControlValidated(object sender, EventArgs e)
+        {
+            if (!resetting)
+            {
+                base.HandleControlValidated(sender, e);
+            }
+        }
+
+        internal void resetFramework(string value)
+        {
+            int index = 0;
+            resetting = true;
+            foreach (string item in comboTargetFramework.Items)
+            {
+                if (String.Compare(item, value,true)== 0)
+                {
+                    comboTargetFramework.SelectedIndex = index;
+                    break;
+                }
+                index++;
+            }
+            resetting = false;
+        }
         private void btnIcon_Click(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();

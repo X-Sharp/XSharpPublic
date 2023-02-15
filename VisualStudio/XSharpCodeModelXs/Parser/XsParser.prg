@@ -934,7 +934,11 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ELSEIF rule:Flags:HasFlag(XFormattingFlags.Statement)
             // This means that the keyword is a start keyword of type statement
             IF SELF:_collectBlocks
-                VAR block := XSourceBlock{ xt, SELF:Lt1}
+                LOCAL block AS XSourceBlock
+                block := XSourceBlock{ xt, SELF:Lt1}
+                IF ! xt:IsSingle
+                    block:Children:Add (XBlockChild{xt, SELF:Lt2})
+                ENDIF
                 // check for GET SET INIT blocks on a single line
                 // or ADD/REMOVE blocks on a single line
                 if XFormattingRule.IsMiddleKeyword(xt) .and. _BlockStack:Count > 0
@@ -1006,12 +1010,16 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         rule := XFormattingRule.GetFirstRuleByStart(xt)
         if rule != null
             ParseBlockStart(rule, xt)
-        elseif XFormattingRule.IsEndKeyword(xt)
+        ELSEIF XFormattingRule.IsEndKeyword(xt) .AND. KeywordMatchesBlock(xt, CurrentBlock)
             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
                 CurrentBlock:Children:Add( XBlockChild{xt, SELF:Lt1})
+                IF !xt:IsSingle
+                     // END DO, END CASE etc
+                     CurrentBlock:Children:Add( XBlockChild{xt, SELF:Lt2})
+                ENDIF
                 _BlockStack:Pop()
             ENDIF
-        ELSEIF XFormattingRule.IsMiddleKeyword(xt)
+        ELSEIF XFormattingRule.IsMiddleKeyword(xt) .AND. KeywordMatchesBlock(xt, CurrentBlock)
             IF SELF:_collectBlocks .AND. _BlockStack:Count > 0
                 CurrentBlock:Children:Add( XBlockChild{xt, SELF:Lt1})
             ENDIF
@@ -1031,6 +1039,14 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             ParseJumpStatement(xt)
         ENDIF
         RETURN
+    PRIVATE METHOD KeywordMatchesBlock(kw AS XKeyword, block AS XSourceBlock) AS LOGIC
+        VAR rules := XFormattingRule.GetStartRules(block:XKeyword)
+        FOREACH rule AS XFormattingRule IN rules
+            IF rule:Stop:Code == kw:Code
+                RETURN TRUE
+            ENDIF
+        NEXT
+        RETURN FALSE
 
     PRIVATE METHOD IsEndOfEntity(EntityKind OUT Kind) AS LOGIC
         SWITCH SELF:La1

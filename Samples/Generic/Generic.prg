@@ -35,7 +35,7 @@ FUNCTION Start AS VOID
 	RETURN                             
 
 
-CLASS Stack<T>  WHERE T IS STRUCT, NEW()
+CLASS Stack<T>  WHERE T IS STRUCT
 	PROTECT _Items 		AS T[] 
 	PROTECT _Size 		AS INT
 	PROTECT _Capacity 	AS INT  

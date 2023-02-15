@@ -51,7 +51,8 @@ namespace XSharp.Project
     {
         static List<XSharpProjectNode> nodes = new List<XSharpProjectNode>();
 
-        static Dictionary<string, string> dependencies;
+        static IDictionary<string, string> dependencies;
+        static IDictionary<string, string> _changedProjectFiles;
         static XSharpProjectNode()
         {
             // first the extension to look for, second the extension that can be the parent
@@ -68,8 +69,9 @@ namespace XSharp.Project
             catch (Exception)
             {
             }
+            _changedProjectFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
-
+        internal static IDictionary<string, string> ChangedProjectFiles => _changedProjectFiles;
         internal static XSharpProjectNode[] AllProjects => nodes.ToArray();
 
         #region Constants
@@ -403,7 +405,7 @@ namespace XSharp.Project
         public void RemoveProjectProperty(string name)
         {
             var prop = this.BuildProject.GetProperty(name);
-            if (prop != null && ! prop.IsImported)
+            if (prop != null && !prop.IsImported)
             {
                 this.BuildProject.RemoveProperty(prop);
             }
@@ -1115,7 +1117,7 @@ namespace XSharp.Project
         }
 
 
-#endregion
+        #endregion
 
         XSharpIncludeContainerNode includeNode = null;
         protected void CreateIncludeFileFolder()
@@ -1136,13 +1138,18 @@ namespace XSharp.Project
         }
 
 
-#region PackageReferences
+        #region PackageReferences
 
 
         protected override void ProcessReferences()
         {
             // Nuget package references are added as child to the Reference Node.
             base.ProcessReferences();
+            this.RegisterReferencesWithModel();
+            this.LoadPackageReferences();
+        }
+        internal void RegisterReferencesWithModel()
+        {
             var refContainer = GetReferenceContainer() as XSharpReferenceContainerNode;
             foreach (var child in refContainer.EnumReferences())
             {
@@ -1150,8 +1157,29 @@ namespace XSharp.Project
                 {
                     ProjectModel.AddAssemblyReference(xasm.AssemblyPath);
                 }
+                else if (child is XSharpProjectReferenceNode projref)
+                {
+                    var url = projref.Url;
+                    if (IsXSharpProjectFile(url))
+                    {
+                        this.ProjectModel.AddProjectReference(url);
+                    }
+                    else if (IsOtherProjectFile(url))
+                    {
+                        this.ProjectModel.AddStrangerProjectReference(url);
+                    }
+                }
             }
-            this.LoadPackageReferences();
+        }
+        internal void RegisterFilesWithModel()
+        {
+            foreach (var item in URLNodes)
+            {
+                if (item.Value is FileNode file)
+                {
+                    this.ProjectModel.AddFile(item.Key);
+                }
+            }
         }
 
 
@@ -1336,6 +1364,14 @@ namespace XSharp.Project
             {
                 projectModel = value;
             }
+        }
+        internal void ReloadProjectModel()
+        {
+            projectModel = null;
+            this.RegisterReferencesWithModel();
+            this.RegisterFilesWithModel();
+            this.RefreshIncludeFiles();
+            ModelWalker.AddProject(this.ProjectModel);
         }
 
         private void OnProjectWalkComplete(XProject xProject)
@@ -2274,10 +2310,10 @@ namespace XSharp.Project
             bool ok = true;
             ThreadHelper.ThrowIfNotOnUIThread();
             silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
-            if (XSolution.ChangedProjectFiles.ContainsKey(this.Url))
+            if (ChangedProjectFiles.ContainsKey(this.Url))
             {
-                var original = XSolution.ChangedProjectFiles[this.Url];
-                XSolution.ChangedProjectFiles.Remove(this.Url);
+                var original = ChangedProjectFiles[this.Url];
+                ChangedProjectFiles.Remove(this.Url);
                 var changedSource = File.ReadAllText(this.Url);
                 if (File.Exists(original))
                 {

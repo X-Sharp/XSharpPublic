@@ -228,3 +228,8 @@ Tools/Converter/PrjConvert.exe
 /Runtime/XSharp.Core/VoFunctionDocs.xml
 /Runtime/XSharp.Vo/VoFunctionDocs.xml
 *.exe
+/External/Public/XSharp.Evaluator.dll
+/External/Public/XSharp.Evaluator.dll.config
+/External/Public/XSharp.Evaluator.xml
+/External/Public/XSharp.VSParser.dll
+/External/Public/XSharp.VSParser.xml

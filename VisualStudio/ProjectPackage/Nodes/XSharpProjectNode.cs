@@ -51,7 +51,8 @@ namespace XSharp.Project
     {
         static List<XSharpProjectNode> nodes = new List<XSharpProjectNode>();
 
-        static Dictionary<string, string> dependencies;
+        static IDictionary<string, string> dependencies;
+        static IDictionary<string, string> _changedProjectFiles;
         static XSharpProjectNode()
         {
             // first the extension to look for, second the extension that can be the parent
@@ -68,8 +69,9 @@ namespace XSharp.Project
             catch (Exception)
             {
             }
+            _changedProjectFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
-
+        internal static IDictionary<string, string> ChangedProjectFiles => _changedProjectFiles;
         internal static XSharpProjectNode[] AllProjects => nodes.ToArray();
 
         #region Constants
@@ -2308,10 +2310,10 @@ namespace XSharp.Project
             bool ok = true;
             ThreadHelper.ThrowIfNotOnUIThread();
             silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
-            if (XSolution.ChangedProjectFiles.ContainsKey(this.Url))
+            if (ChangedProjectFiles.ContainsKey(this.Url))
             {
-                var original = XSolution.ChangedProjectFiles[this.Url];
-                XSolution.ChangedProjectFiles.Remove(this.Url);
+                var original = ChangedProjectFiles[this.Url];
+                ChangedProjectFiles.Remove(this.Url);
                 var changedSource = File.ReadAllText(this.Url);
                 if (File.Exists(original))
                 {

@@ -6,13 +6,8 @@
 
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using XSharpModel;
-using File = System.IO.File;
-
 
 namespace XSharp.LanguageService
 {
@@ -21,18 +16,8 @@ namespace XSharp.LanguageService
     /// </summary>
     public class ModelScannerEvents
     {
-        string solutionFile;
-
-        static ModelScannerEvents events = null;
-
+        static string solutionFile;
         public static void Start()
-        {
-            if (events == null)
-                events = new ModelScannerEvents();
-        }
-
-        #region ctors
-        public ModelScannerEvents()
         {
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
@@ -52,15 +37,12 @@ namespace XSharp.LanguageService
                 if (sol is Solution)
                 {
                     SolutionEvents_OnAfterOpenSolution(sol);
-                    XSharpModel.ModelWalker.Suspend();
                 }
-
-
             });
 
         }
 
-        private void DocumentEvents_Closed(string document)
+        private static void DocumentEvents_Closed(string document)
         {
             // Remove document from OrphanedFilesProject
             // So it can be opened in normal project afterwards
@@ -75,54 +57,33 @@ namespace XSharp.LanguageService
 
 
 #if DEBUG
-        private void DocumentEvents_Opened(string document)
+        private static void DocumentEvents_Opened(string document)
         {
             XSolution.WriteOutputMessage("DocumentEvents_Opened " + document ?? "(none)");
         }
 
-        private void SolutionEvents_OnBeforeOpenSolution(string obj)
+        private static void SolutionEvents_OnBeforeOpenSolution(string obj)
         {
-            // we do not see this for the first solution that is opened
-            // because we are usually not loaded then
             XSolution.WriteOutputMessage("SolutionEvents_OnBeforeOpenSolution " + obj ?? "(none)");
         }
 #endif
 
-        private void SolutionEvents_OnBeforeOpenProject(string obj)
+        private static void SolutionEvents_OnBeforeOpenProject(string obj)
         {
-
             XSolution.WriteOutputMessage("SolutionEvents_OnBeforeOpenProject " + obj ?? "(none)");
-            checkProjectFile(obj);
         }
 #if DEBUG
-        private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
+        private static void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
         {
             XSolution.WriteOutputMessage("SolutionEvents_OnAfterOpenProject " + project.FullPath ?? "(none)");
-            //if (project.IsXSharp())
-            //{
-            //var xProject = XSolution.FindProject(project.FullPath);
-            //if (xProject != null)
-            //{
-            //    addProjectFiles(xProject, project);
-            //    if (XSolution.IsOpen)
-            //    {
-            //        ModelWalker.AddProject(xProject);
-            //        ModelWalker.Walk();
-            //    }
-            //}
-            //}
         }
 #endif
-
-        private void ShellEvents_ShutdownStarted()
+        private static void ShellEvents_ShutdownStarted()
         {
             XSolution.IsClosing = true;
             XSolution.IsShuttingDown = true;
             XSolution.Close();
         }
-
-
-
 
         /// <summary>
         /// Called at load time when solution has finished opening.
@@ -131,15 +92,11 @@ namespace XSharp.LanguageService
         /// <param name="fNewSolution">true if this is a new solution</param>
         /// <returns></returns>
         ///
-        private void SolutionEvents_OnAfterOpenSolution(SolutionItem obj)
+        private static void SolutionEvents_OnAfterOpenSolution(SolutionItem obj)
         {
-            // Restart scanning. Was suspended on opening of project system
-            // or closing of previous solution
+            ModelWalker.Suspend();
             if (obj is Solution sol)
             {
-
-                // first check to see if there are any projects in the solution that have
-                // not been loaded
                 solutionFile = sol.FullPath;
                 if (!string.IsNullOrEmpty(solutionFile))
                 {
@@ -149,9 +106,7 @@ namespace XSharp.LanguageService
             }
         }
 
-
-
-        private void SolutionEvents_OnBeforeCloseSolution()
+        private static void SolutionEvents_OnBeforeCloseSolution()
         {
             bool hasXsProject = XSolution.Projects.Count > 0;
             XSharpXMLDocTools.Close();
@@ -181,99 +136,11 @@ namespace XSharp.LanguageService
             return;
         }
 
-        private void SolutionEvents_OnAfterCloseSolution()
+        private static void SolutionEvents_OnAfterCloseSolution()
         {
             XSolution.IsClosing = false;
         }
-
-        static bool hasEnvironmentvariable = false;
-        static ModelScannerEvents()
-        {
-            hasEnvironmentvariable = !String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("XSharpMsBuildDir"));
-        }
-        const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
-        const string newText = @"$(XSharpMsBuildDir)";
-        const string MsTestGuid = @"{3AC096D0-A1C2-E12C-1390-A8335801FDAB};";
-
-        private void checkProjectFile(string fileName)
-        {
-            if (fileName != null && fileName.ToLower().EndsWith("xsproj") && File.Exists(fileName))
-            {
-                string xml = File.ReadAllText(fileName);
-                var original = Path.ChangeExtension(fileName, ".original");
-                bool changed = false;
-                if (hasEnvironmentvariable)
-                {
-                    var pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
-                    if (pos >= 0)
-                    {
-                        while (pos > 0)
-                        {
-                            xml = xml.Substring(0, pos) + newText + xml.Substring(pos + oldText.Length);
-                            pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
-                        }
-                        DeleteFileSafe(original);
-                        File.Copy(fileName, original);
-                        DeleteFileSafe(fileName);
-                        File.WriteAllText(fileName, xml);
-                        changed = true;
-                    }
-                }
-                var testpos = xml.IndexOf(MsTestGuid, StringComparison.OrdinalIgnoreCase);
-                if (testpos >= 0)
-                {
-                    var left = xml.Substring(0, testpos);
-                    var right = xml.Substring(testpos + MsTestGuid.Length);
-                    if (!changed)
-                    {
-                        DeleteFileSafe(original);
-                        File.Copy(fileName, original);
-                    }
-                    xml = left + right;
-                    DeleteFileSafe(fileName);
-                    File.WriteAllText(fileName, xml);
-                    changed = true;
-                }
-                if (changed)
-                {
-                    XSolution.ChangedProjectFiles.Add(fileName, original);
-                }
-            }
-        }
-        public static bool DeleteFileSafe(string fileName)
-        {
-            try
-            {
-                if (File.Exists(fileName))
-                {
-                    File.SetAttributes(fileName, FileAttributes.Normal);
-                    File.Delete(fileName);
-
-                }
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.Message);
-                return false;
-            }
-            return true;
-
-        }
-        #endregion
-
     }
 }
-internal static class CVTProjectExtensions
-{
-    internal static bool IsXSharp(this Project project)
-    {
-        if (project != null)
-        {
-            var path = project.FullPath;
-            var ext = System.IO.Path.GetExtension(path).ToLower();
-            return ext == ".xsproj" || ext == ".xsprj";
-        }
-        return false;
-    }
-}
+
 

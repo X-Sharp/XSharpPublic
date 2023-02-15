@@ -225,6 +225,7 @@ CLASS BinaryEntity
 				aLines:Add("CONTROL=MENUITEM")
 				aLines:Add("GUID=" + NewGuid())
 
+				aLines:Add("OriginalDefineValue=" + oItem:cOriginalDefineValue)
 				aLines:Add("EventName=" + oItem:cEventName)
 				aLines:Add("Caption=" + oItem:cCaption)
 				aLines:Add("Description=" + oItem:cDescription)
@@ -668,7 +669,7 @@ CLASS VOMedItem
 	EXPORT cButtonTooltip AS STRING
 	EXPORT nButtonPosition AS INT
 
-	EXPORT nMenuID AS INT
+	EXPORT cOriginalDefineValue AS STRING
 
 	CONSTRUCTOR()
 	RETURN
@@ -691,8 +692,7 @@ CLASS VOMedItem
 		oItem:cCaption := __ReadNextVNMnuString(aBytes , REF nPos)
 
 		cValue := __ReadNextVNMnuString(aBytes , REF nPos) // Menu ID
-//		oItem:cMenuID := cValue
-		oItem:nMenuID := Funcs.Val(cValue)
+		oItem:cOriginalDefineValue := cValue
 
 		cValue := __ReadNextVNMnuString(aBytes , REF nPos)
 		nAt := cValue:IndexOf('\t') + 1
@@ -898,7 +898,6 @@ CLASS VOMenuItem
 		oItem:aProperties:Add("Caption" , VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos))
 
 		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos) // Menu ID
-//		oItem:nMenuID := Funcs.Val(cValue)
 		oItem:aProperties:Add("OriginalDefineValue" , cValue:Trim())
 
 		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , REF nPos)

@@ -370,7 +370,12 @@ namespace XSharp.LanguageService
         {
             var snapshot = e.After;
             var changes = e.Changes;
-            if (changes != null)
+            var tag = e.EditTag;
+            if (tag is IUndoEditTag)
+            {
+                ; // do nothing
+            }
+            else if (changes != null)
             {
                 foreach (var change in changes)
                 {

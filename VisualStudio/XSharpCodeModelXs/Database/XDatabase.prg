@@ -25,6 +25,7 @@ STATIC CLASS XDatabase
     STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
         LOCAL lValid := FALSE AS LOGIC
         LOCAL oDiskDb AS SQLiteConnection
+        Log(i"CreateOrOpen {cFileName}")
         currentFile := cFileName
         IF File.Exists(cFileName)
             oDiskDb := OpenFile(cFileName)
@@ -32,6 +33,7 @@ STATIC CLASS XDatabase
                 oDiskDb:Close()
                 oDiskDb:Dispose()
                 File.Delete(cFileName)
+                Log(i"Delete invalid {cFileName}")
             ELSE
                 lValid := TRUE
             ENDIF
@@ -60,10 +62,10 @@ STATIC CLASS XDatabase
         IF IsDbOpen
             SaveToDisk(oConn, cFile)
             oConn:Close()
-            if DeleteOnClose
+            IF DeleteOnClose
                 File.Delete(cFile)
                 DeleteOnClose := FALSE
-            endif
+            ENDIF
             RETURN TRUE
         ENDIF
         oConn := NULL

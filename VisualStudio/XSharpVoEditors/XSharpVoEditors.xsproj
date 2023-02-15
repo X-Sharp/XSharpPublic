@@ -16,7 +16,7 @@
     <TargetFrameworkProfile />
     <NS>true</NS>
     <VO3>true</VO3>
-    <NamedArgs>true</NamedArgs>
+    <NamedArgs>False</NamedArgs>
     <StartupObject />
     <IncludePaths>$(SolutionDir)Common</IncludePaths>
   </PropertyGroup>
@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
     <DisabledWarnings>165,649,168,170</DisabledWarnings>
     <DefineConstants>TRACE</DefineConstants>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

@@ -4,21 +4,22 @@
 // See License.txt in the project root for license information.
 //
 
+using System;
+using System.Linq;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Package;
+using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
+using System.Runtime.Versioning;
+using Microsoft.VisualStudio.Shell.Interop;
+using XSharpModel;
+using Community.VisualStudio.Toolkit;
+
 namespace XSharp.Project
 {
-    using System;
-    using System.Linq;
-    using System.Globalization;
-    using System.Runtime.InteropServices;
-    using System.Windows.Forms;
-    using Microsoft.VisualStudio;
-    using Microsoft.VisualStudio.Package;
-    using Microsoft.VisualStudio.Project;
-    using Microsoft.VisualStudio.Shell;
-    using System.Runtime.Versioning;
-    using Microsoft.VisualStudio.Shell.Interop;
-    using XSharpModel;
-
     /// <summary>
     /// Property page for the build events.
     /// </summary>
@@ -157,29 +158,30 @@ namespace XSharp.Project
             }
 
             ThreadHelper.ThrowIfNotOnUIThread();
-            var oldvalue = base.GetProperty(propertyName);
-            bool changed = value != oldvalue;
+            var oldvalueFromFile = base.GetProperty(propertyName);
+            bool changed = value != oldvalueFromFile;
 
             if (changed)
             {
-                base.SetProperty(propertyName, value);
                 if (propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
                 {
-                    var oldName = new FrameworkName(oldValue);
-                    var newName = new FrameworkName(newValue);
-                    var options = this.ProjectMgr.GetProjectOptions(this.ProjectMgr.CurrentConfig.ConfigCanonicalName);
-                    var retargetingService = this.ProjectMgr.GetService(typeof(SVsTrackProjectRetargeting)) as IVsTrackProjectRetargeting;
-                    if (retargetingService != null)
+                    string message = "Changing the target framework requires that the current project be closed and then reopened.\n"
+                     + "Any unsaved changes within the project will be automatically saved.\n\n"
+                     + "Changing Target Framework may require manual modification of project files in order to build\n\n"
+                     + "Are you sure you want to change the Target Framework for this project?";
+                    if (!VS.MessageBox.ShowConfirm(message))
                     {
-                        // We surround our batch retargeting request with begin/end because in individual project load
-                        // scenarios the solution load context hasn't done it for us.
-                        Marshal.ThrowExceptionForHR(retargetingService.BeginRetargetingBatch());
-                        Marshal.ThrowExceptionForHR(retargetingService.BatchRetargetProject(this.ProjectMgr, newName.FullName, true));
-                        Marshal.ThrowExceptionForHR(retargetingService.EndRetargetingBatch());
+                        var genPanel = PropertyPagePanel as XGeneralPropertyPagePanel;
+                        genPanel.resetFramework(oldValue);
+                        return;
                     }
-                    var buildCfg = new BuildableProjectConfig(ProjectMgr.CurrentConfig);
-                    buildCfg.RefreshReferences();
-
+                        
+                    base.SetProperty(propertyName, value);
+                    ProjectReloader.Reload(newValue, this.ProjectMgr);
+                }
+                else
+                {
+                    base.SetProperty(propertyName, value);
                 }
             }
         }
@@ -191,6 +193,34 @@ namespace XSharp.Project
         protected override XPropertyPagePanel CreatePropertyPagePanel()
         {
             return new XGeneralPropertyPagePanel(this);
+        }
+    }
+    internal static class ProjectReloader
+    {
+        internal static void Reload(string newValue, XProjectNode project)
+        {
+
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await VS.Commands.ExecuteAsync(KnownCommands.File_SaveAll);
+                var newName = new FrameworkName(newValue);
+                var retargetingService = await VS.GetRequiredServiceAsync<SVsTrackProjectRetargeting, IVsTrackProjectRetargeting2>();
+                if (retargetingService != null)
+                {
+                    // We surround our batch retargeting request with begin/end because in individual project load
+                    // scenarios the solution load context hasn't done it for us.
+
+                    var res = retargetingService.CheckForProjectRetarget(0, project);
+                    Marshal.ThrowExceptionForHR(retargetingService.BeginRetargetingBatch());
+                    Marshal.ThrowExceptionForHR(retargetingService.BatchRetargetProject(project, newName.FullName, true));
+                    Marshal.ThrowExceptionForHR(retargetingService.EndRetargetingBatch());
+                    var buildCfg = new BuildableProjectConfig(project.CurrentConfig);
+                    buildCfg.RefreshReferences();
+                }
+            });
+
+            
+
         }
     }
 }

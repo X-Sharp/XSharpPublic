@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
     <ProjectGuid>593E48A5-7BEA-4EEB-9302-D133BB98FF47</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -40,7 +40,6 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
-    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
     <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
@@ -75,7 +74,7 @@
     <PPO>false</PPO>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -173,8 +172,6 @@
       <SubType>Code</SubType>
     </Compile>
     <None Include="Properties\cavowed.inf" />
-    <None Include="Properties\saswed.inf" />
-    <None Include="Properties\GSGWED.INF" />
     <None Include="Properties\cavowed.tpl" />
     <None Include="Properties\cavoded.tpl" />
     <None Include="Properties\cavofed.tpl" />

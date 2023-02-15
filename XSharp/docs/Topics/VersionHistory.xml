@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-15T11:05:55.902+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-02-15T14:13:48.706+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -73,9 +73,8 @@
       <li styleclass="Body Text">Cleaned up several X# project templates, fixing problems with incorrect placement of Debug/Output folders (#1201)</li>
       <li styleclass="Body Text">Undoing a case synchronization in the VS editor was not working, because the editor would immediately synchronize the case again (#1205)</li>
       <li styleclass="Body Text">Rebuilding the intellisense database no longer restarts Visual Studio (#1206)</li>
-      <li styleclass="Body Text">VOXporter now writes the menu ids from VO menus to the exported .xsmnu files and these are reused inside X# (#1207)</li>
+      <li styleclass="Body Text">Now the VO Menu Editor uses the same menu item DEFINE values, as those used in the original VO app (re-porting of the app is necessary for this to work) (#1207)</li>
     </list>
-    <para styleclass="Body Text"></para>
     <para styleclass="Heading1">Changes in 2.14.0.2, 3 &amp; 4</para>
     <para styleclass="Heading2">Visual Studio Integration</para>
     <para styleclass="Heading3">Bug fixes</para>

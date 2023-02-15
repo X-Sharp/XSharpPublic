@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-10T12:44:00.958+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-02-15T11:05:55.902+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -37,6 +37,7 @@
       <li styleclass="Body Text">Fixed incorrect method overload resolution in some cases in the VO dialect (#1195)</li>
       <li styleclass="Body Text">Fixed incorrect ambiguous call error with OBJECT/IntPtr parameters (#1197)</li>
       <li styleclass="Body Text">Fixed erratic debugging while stepping over code in some cases (#1200, #1202)</li>
+      <li styleclass="Body Text">Fixed a problem where a missing &quot;end keyword&quot;, such as ENDIF, NEXT, ENDDO was not reported when the code between the start and end contained a compiler warning (#1203)</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>
@@ -54,6 +55,7 @@
       <li styleclass="Body Text">When a keyword is selected in the editor that is part of a block, such as CASE, OTHERWISE, ELSE, ELSEIF then the editor will now highlight all keywords from that block. </li>
       <li styleclass="Body Text">The Jump Keywords EXIT and LOOP are now also highlighted as part of the repeat block that they belong to.</li>
       <li styleclass="Body Text">When a RETURN keyword is selected in the editor, then the matching &quot;Entity&quot; keyword, such as FUNCTION, METHOD will be highlighted too.</li>
+      <li styleclass="Body Text">Added a warning to the <link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">Application project options </link>page, when switching the target framework.</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -69,7 +71,11 @@
       <li styleclass="Body Text">Fixed an issue where the completionlist could contain methods that were not visible from the spot where the completionlist was shown (#1188)</li>
       <li styleclass="Body Text">Fixed an issue with the display of nested types in the editor (#1198)</li>
       <li styleclass="Body Text">Cleaned up several X# project templates, fixing problems with incorrect placement of Debug/Output folders (#1201)</li>
+      <li styleclass="Body Text">Undoing a case synchronization in the VS editor was not working, because the editor would immediately synchronize the case again (#1205)</li>
+      <li styleclass="Body Text">Rebuilding the intellisense database no longer restarts Visual Studio (#1206)</li>
+      <li styleclass="Body Text">VOXporter now writes the menu ids from VO menus to the exported .xsmnu files and these are reused inside X# (#1207)</li>
     </list>
+    <para styleclass="Body Text"></para>
     <para styleclass="Heading1">Changes in 2.14.0.2, 3 &amp; 4</para>
     <para styleclass="Heading2">Visual Studio Integration</para>
     <para styleclass="Heading3">Bug fixes</para>

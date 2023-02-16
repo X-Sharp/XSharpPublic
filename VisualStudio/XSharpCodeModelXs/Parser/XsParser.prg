@@ -340,8 +340,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 // Add Attribute
                 VAR attribute := ParseAttribute(aAttribs)
                 _EntityList:Add(attribute)
-            ELSE
+            ELSEIF SELF:_collectBlocks
                 SELF:ParseBlock()
+                SELF:ParseStatement()
+            ELSE
                 SELF:ParseStatement()
             ENDIF
         ENDDO
@@ -1040,6 +1042,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDIF
         RETURN
     PRIVATE METHOD KeywordMatchesBlock(kw AS XKeyword, block AS XSourceBlock) AS LOGIC
+        IF block == NULL
+            RETURN FALSE
+        ENDIF
         VAR rules := XFormattingRule.GetStartRules(block:XKeyword)
         FOREACH rule AS XFormattingRule IN rules
             IF rule:Stop:Code == kw:Code

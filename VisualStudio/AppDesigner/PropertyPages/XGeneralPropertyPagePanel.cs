@@ -6,20 +6,12 @@
 
 namespace XSharp.Project
 {
-    using Microsoft.VisualStudio.PlatformUI;
-    using System;
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.Text;
-    using System.Collections.Generic;
-    using System.Windows.Forms;
-    using System.ComponentModel;
     using Microsoft.VisualStudio.Project;
-    using Microsoft.VisualStudio.Language.Intellisense;
     using Microsoft.VisualStudio.Shell;
+    using System;
+    using System.Drawing;
+    using System.Windows.Forms;
     using XSharpModel;
-    using Newtonsoft.Json.Linq;
-    using System.Reflection;
 
     /// <summary>
     /// Property page contents for the Candle Settings page.
@@ -74,7 +66,7 @@ namespace XSharp.Project
             toolTip1.SetToolTip(chkAutoGenerateBindingRedirects, GeneralPropertyPagePanel.descBindingRedirects);
 
 
-            FillCombo(new DialectConverter() , comboDialect);
+            FillCombo(new DialectConverter(), comboDialect);
             toolTip1.SetToolTip(lblDialect, GeneralPropertyPagePanel.descDialect);
             toolTip1.SetToolTip(comboDialect, GeneralPropertyPagePanel.descDialect);
             FillCombo(new OutputTypeConverter(), comboOutputType);
@@ -150,10 +142,15 @@ namespace XSharp.Project
         bool resetting = false;
         protected override void HandleControlValidated(object sender, EventArgs e)
         {
-            if (!resetting)
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                base.HandleControlValidated(sender, e);
-            }
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                if (!resetting)
+                {
+
+                    base.HandleControlValidated(sender, e);
+                }
+            });
         }
 
         internal void resetFramework(string value)
@@ -162,7 +159,7 @@ namespace XSharp.Project
             resetting = true;
             foreach (string item in comboTargetFramework.Items)
             {
-                if (String.Compare(item, value,true)== 0)
+                if (String.Compare(item, value, true) == 0)
                 {
                     comboTargetFramework.SelectedIndex = index;
                     break;

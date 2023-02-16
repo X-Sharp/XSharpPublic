@@ -202,6 +202,7 @@ namespace XSharp.Project
 
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 await VS.Commands.ExecuteAsync(KnownCommands.File_SaveAll);
                 var newName = new FrameworkName(newValue);
                 var retargetingService = await VS.GetRequiredServiceAsync<SVsTrackProjectRetargeting, IVsTrackProjectRetargeting2>();

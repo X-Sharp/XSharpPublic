@@ -9,7 +9,7 @@
     <RootNamespace>XSharp.VOEditors</RootNamespace>
     <AssemblyName>XSharp.VoEditors</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <Name>XSharp.VoEditors</Name>
+    <Name>VoEditors</Name>
     <Nologo>true</Nologo>
     <Dialect>Vulcan</Dialect>
     <OutputName>XSharp.VoEditors</OutputName>
@@ -109,13 +109,13 @@
     <Folder Include="Templates\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CodeGenerator\XSharpCodeGenerator.xsproj">
-      <Name>XSharpCodeGenerator</Name>
+    <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
+      <Name>CodeGenerator</Name>
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
-      <Name>XSharpModel</Name>
+    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
+      <Name>CodeModel</Name>
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Private>True</Private>
     </ProjectReference>

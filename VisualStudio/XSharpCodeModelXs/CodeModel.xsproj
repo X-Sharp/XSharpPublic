@@ -9,7 +9,7 @@
     <RootNamespace>XSharpModel</RootNamespace>
     <AssemblyName>XSharp.CodeModel</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <Name>XSharpModel</Name>
+    <Name>CodeModel</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>

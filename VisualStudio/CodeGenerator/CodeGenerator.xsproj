@@ -3,7 +3,7 @@
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <Import Project="..\Common.props" />
   <PropertyGroup>
-    <Name>XSharpCodeGenerator</Name>
+    <Name>CodeGenerator</Name>
     <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <ProjectGuid>b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc</ProjectGuid>
     <OutputType>Library</OutputType>

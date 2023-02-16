@@ -55,8 +55,8 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XSharpVoEditors\XSharpVoEditors.xsproj">
-      <Name>XSharpVoEditors</Name>
+    <ProjectReference Include="..\XSharpVoEditors\VoEditors.xsproj">
+      <Name>VoEditors</Name>
       <Project>{7619db88-6286-4ef1-8273-2a08cc8ac70e}</Project>
       <Private>True</Private>
     </ProjectReference>

@@ -375,12 +375,23 @@ CLASS XProject
 #endregion
 
 #region ProjectReferences
-
+    METHOD FindProjectReference(url AS STRING) AS XProject
+        FOREACH VAR prj IN SELF:_ReferencedProjects
+            IF String.Compare(prj:FileName, url, TRUE) == 0
+                RETURN prj
+            ENDIF
+        NEXT
+        RETURN NULL
     METHOD AddProjectReference(url AS STRING) AS LOGIC
         IF ! String.IsNullOrEmpty(url)
+            VAR prj := SELF:FindProjectReference(url)
+            IF (prj != NULL)
+                // Project has already been added and has been resolved
+                RETURN FALSE
+            ENDIF
             SELF:_clearTypeCache()
-            SELF:LogReferenceMessage("Add XSharp ProjectReference "+url)
             IF ! SELF:_unprocessedProjectReferences:Contains(url)
+                SELF:LogReferenceMessage("Add XSharp ProjectReference "+url)
                 SELF:_unprocessedProjectReferences:Add(url)
                 RETURN TRUE
             ENDIF

@@ -616,6 +616,10 @@
       <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe1}</Project>
       <Name>AppDesigner2022</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj">
+      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
+      <Name>CodeDomProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LanguageService\LanguageService2022.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7396}</Project>
       <Name>LanguageService2022</Name>
@@ -623,12 +627,6 @@
     <ProjectReference Include="..\ProjectBase\ProjectBase2022.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
       <Name>ProjectBase2022</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
-    </ProjectReference>
-    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider2022.csproj">
-      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b5}</Project>
-      <Name>CodeDomProvider2022</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>

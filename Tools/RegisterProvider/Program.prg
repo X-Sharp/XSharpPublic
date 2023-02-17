@@ -267,4 +267,4 @@ FUNCTION WriteToLog(sLine AS STRING) AS LOGIC
 
 
 
-DEFINE PROVIDERVERSION := "XSharp.CodeDom.XSharpCodeDomProvider,XSharpCodeDomProvider, Version="+XSharp.Constants.Version+", Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL" AS STRING
+DEFINE PROVIDERVERSION := "XSharp.CodeDom.XSharpCodeDomProvider,XSharp.CodeDomProvider, Version="+XSharp.Constants.Version+", Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL" AS STRING

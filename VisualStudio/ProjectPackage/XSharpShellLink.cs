@@ -25,7 +25,7 @@ namespace XSharp.Project
 
         internal XSharpShellLink()
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+           ThreadHelper.JoinableTaskFactory.Run(async delegate
            {
                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
@@ -39,6 +39,11 @@ namespace XSharp.Project
                VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
                VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
                VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
+               var sol = await VS.Solutions.GetCurrentSolutionAsync();
+               if (sol is Solution)
+               {
+                   SolutionEvents_OnAfterOpenSolution(sol);
+               }
            });
 
         }
@@ -164,6 +169,15 @@ namespace XSharp.Project
 
         private void SolutionEvents_OnAfterOpenSolution(Solution obj)
         {
+            if (obj is Solution sol)
+            {
+                var file = sol.FullPath;
+                if (!string.IsNullOrEmpty(file))
+                {
+                    XSolution.Open(file);
+                }
+            }
+
             Logger.SingleLine();
             Logger.Information("Opened Solution: " + obj?.FullPath ?? "");
             Logger.SingleLine();

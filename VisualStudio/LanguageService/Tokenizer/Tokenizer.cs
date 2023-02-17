@@ -696,7 +696,7 @@ namespace XSharp.LanguageService
                 {
                     name = name.Substring(0, pos);
                 }
-                var nSpace = new XSourceNamespaceSymbol(name, found.Range, found.Interval, file);
+                var nSpace = new XSourceNamespaceSymbol(name, found.Range, found.Interval, file,null);
                 return nSpace;
             }
 #if TRACE

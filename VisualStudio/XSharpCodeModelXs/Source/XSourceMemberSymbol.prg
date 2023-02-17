@@ -25,7 +25,7 @@ CLASS XSourceMemberSymbol INHERIT XSourceEntity IMPLEMENTS IXMemberSymbol,IXSour
 
 
     CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, ;
-            span AS TextRange, position AS TextInterval, returnType AS STRING, isStatic := FALSE AS LOGIC)
+            span AS TextRange, position AS TextInterval, returnType AS STRING, modifiers AS IList<IToken>, isStatic := FALSE AS LOGIC)
         SUPER(name, kind, attributes, span, position)
         SELF:Parent       := NULL
         SELF:ReturnType   := returnType
@@ -34,9 +34,12 @@ CLASS XSourceMemberSymbol INHERIT XSourceEntity IMPLEMENTS IXMemberSymbol,IXSour
             SELF:IsStatic := TRUE
         ENDIF
         SELF:_signature   := XMemberSignature{}
+        IF modifiers?:Count > 0
+            SELF:BlockTokens:AddRange(modifiers)
+        ENDIF
 
     CONSTRUCTOR(sig AS XMemberSignature, kind AS Kind, attributes AS Modifiers,  ;
-            span AS TextRange, position AS TextInterval, isStatic := FALSE AS LOGIC)
+            span AS TextRange, position AS TextInterval, modifiers AS IList<IToken>, isStatic := FALSE AS LOGIC)
         SUPER(sig:Id, kind, attributes, span, position)
         SELF:Parent       := NULL
         SELF:ReturnType   := sig:DataType
@@ -48,9 +51,11 @@ CLASS XSourceMemberSymbol INHERIT XSourceEntity IMPLEMENTS IXMemberSymbol,IXSour
         FOREACH var par in sig:Parameters
             par:Parent := SELF
         NEXT
-
+        IF modifiers?:Count > 0
+            SELF:BlockTokens:AddRange(modifiers)
+        ENDIF
     CONSTRUCTOR(dbresult AS XDbResult, file AS XFile)
-        SELF(dbresult:MemberName, dbresult:Kind, dbresult:Attributes, dbresult:TextRange, dbresult:TextInterval, dbresult:ReturnType, dbresult:Modifiers:HasFlag(Modifiers.Static))
+        SELF(dbresult:MemberName, dbresult:Kind, dbresult:Attributes, dbresult:TextRange, dbresult:TextInterval, dbresult:ReturnType, null, dbresult:Modifiers:HasFlag(Modifiers.Static))
         SELF:File        := file
         SELF:CopyValuesFrom(dbresult)
         SELF:SourceCode  := dbresult:SourceCode

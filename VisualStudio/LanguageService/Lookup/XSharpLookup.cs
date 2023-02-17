@@ -949,7 +949,7 @@ namespace XSharp.LanguageService
                 if (ctors.Count == 0 && xtype is XSourceTypeSymbol xsts )
                 {
                     var ctor = new XSourceMemberSymbol(XLiterals.ConstructorName, Kind.Constructor, Modifiers.Public,
-                        location.Member.Range, location.Member.Interval, "", false);
+                        location.Member.Range, location.Member.Interval, "", null, false);
                     ctor.Parent = xtype;
                     ctor.File = xsts.File;
                     ctor.DeclaringType = xtype.FullName;

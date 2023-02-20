@@ -348,7 +348,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN lOk
 
          INTERNAL METHOD FlushPages() AS LOGIC
-            RETURN SELF:_PageList:Flush(FALSE)
+            RETURN SELF:_PageList:Flush(TRUE)
 
          INTERNAL METHOD SavePages() AS LOGIC
             RETURN SELF:_PageList:Flush(TRUE)

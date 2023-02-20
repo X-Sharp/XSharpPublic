@@ -400,7 +400,6 @@
     <Compile Include="Nodes\XSharpAssemblyReferenceNode.cs" />
     <Compile Include="Nodes\XSharpCOMReferenceNode.cs" />
     <Compile Include="Nodes\XSharpDependentFileNode.cs" />
-    <Compile Include="Editors\XSharpEditorFactory.cs" />
     <Compile Include="XSharpConfigprovider.cs" />
     <Compile Include="Automation\OAXSharpFileItem.cs" />
     <Compile Include="Editors\XSharpProjectFactory.cs" />

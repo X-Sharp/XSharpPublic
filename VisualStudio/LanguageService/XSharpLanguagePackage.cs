@@ -42,14 +42,22 @@ namespace XSharp.LanguageService
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string,PackageAutoLoadFlags.BackgroundLoad)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
-    [ProvideService(typeof(XSharpLanguageService), ServiceName = XSharpConstants.LanguageServiceName, IsAsyncQueryable = false)]//
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".prg")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xs")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ppo")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".vh")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xh")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ch")]
-    [ProvideLanguageService(typeof(XSharpLanguageService),
+    [ProvideService(typeof(XSharpLegacyLanguageService), ServiceName = XSharpConstants.LanguageServiceName, IsAsyncQueryable = false)]//
+    // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ch", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".rc", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".prg")]
+    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".xs")]
+    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".ppo")]
+    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".vh")]
+    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".xh")]
+    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".ch")]
+    [ProvideLanguageService(typeof(XSharpLanguagePackage),
                          XSharpConstants.LanguageName,
                          1,                            // resource ID of localized language name
                          AutoOutlining = true,
@@ -77,7 +85,7 @@ namespace XSharp.LanguageService
                          SupportCopyPasteOfHTML = true
                  )]
     [ProvideLanguageCodeExpansion(
-         typeof(XSharpLanguageService),
+         typeof(XSharpLanguagePackage),
          XSharpConstants.LanguageName,  // Name of language used as registry key.
          1,         // Resource ID of localized name of language service.
          XSharpConstants.LanguageName,  // language key used in snippet templates.
@@ -89,15 +97,19 @@ namespace XSharp.LanguageService
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
     [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), XSharpConstants.LanguageName, null, "Formatting", pageNameResourceId: "202", keywordListResourceId: 302)]
     [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), XSharpConstants.LanguageName, null, "Options", pageNameResourceId: "203", keywordListResourceId: 303)]
+    // This tells VS that we support Code and Designer view
+    // The guids are VS specific and should not be changed
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Code_string, IsTrusted = true)]
 #if COMPLETION
     [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), XSharpConstants.LanguageName, null, "Settings Completion", pageNameResourceId: "204",keywordListResourceId:304)]
 #endif
     [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), XSharpConstants.LanguageName, null, "Intellisense", pageNameResourceId: "205", keywordListResourceId: 305)]
     [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), XSharpConstants.LanguageName, null, "Indentation", pageNameResourceId: "206", keywordListResourceId: 306)]
     [ProvideLanguageEditorOptionPage(typeof(GeneratorOptionsPage), XSharpConstants.LanguageName, null, "Generator", pageNameResourceId: "207", keywordListResourceId: 307)]
-    public sealed class XSharpLanguageService : ToolkitPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
+    public sealed class XSharpLanguagePackage : ToolkitPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
-        private static XSharpLanguageService instance;
+        private static XSharpLanguagePackage instance;
         private IVsTextManager4 _txtManager;
         private uint shellCookie;
         private XSharpLibraryManager _libraryManager;
@@ -105,14 +117,14 @@ namespace XSharp.LanguageService
         private IOleComponentManager _oleComponentManager = null;
         internal bool optionWasChanged = false;
 
-        public XSharpLanguageService() : base()
+        public XSharpLanguagePackage() : base()
         {
             ModelScannerEvents.Start();
         }
 
-        public static XSharpLanguageService Instance
+        public static XSharpLanguagePackage Instance
         {
-            get { return XSharpLanguageService.instance; }
+            get { return XSharpLanguagePackage.instance; }
         }
 
         private object CreateLibraryService(IServiceContainer container, Type serviceType)
@@ -297,7 +309,7 @@ namespace XSharp.LanguageService
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
-
+            this.RegisterEditorFactory(new XSharpEditorFactory(this));
             IServiceContainer serviceContainer = this as IServiceContainer;
             XSharpLegacyLanguageService languageService = new XSharpLegacyLanguageService(serviceContainer);
             languageService.SetSite(this);

@@ -18,6 +18,7 @@ namespace XSharp
         internal const string guidXSharpVOFieldSpecEditor = "8c5d0bae-7a69-437b-ad0e-1e1b89721ebd";
         internal const string guidVSXmlEditorString = "{fa3cd31e-987b-443a-9b81-186104e8dac1}";
         internal const string guidXSharpLanguageServicePkgString = "e9b6ee0f-9bfa-4cff-a60b-51a08bbc5050";
+        internal const string guidXSharpLegacyLanguageServiceString = "e9b6ee0f-9bfa-4cff-a60b-51a08bbc5051";
         internal const string EditorFactoryGuidString = "B4829761-2BFA-44B7-8F8F-D2625EBCF218";
         internal const string guidCpsProjectTypeString = "AB494DCE-A11B-4583-851E-D4A86775B3F0";
         internal const string guidProjectSelectorString = "DF89AA3B-6AE6-4971-8F78-1A03B346A7D5";

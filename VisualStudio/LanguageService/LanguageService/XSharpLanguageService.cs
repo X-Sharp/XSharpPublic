@@ -19,24 +19,27 @@ using Microsoft.VisualStudio.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.ComponentModelHost;
 using System.Diagnostics;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.LanguageService
 {
-    [Guid(XSharpConstants.guidXSharpLanguageServicePkgString)]
+    [Guid(XSharpConstants.guidXSharpLegacyLanguageServiceString)]
     public class XSharpLegacyLanguageService : Microsoft.VisualStudio.Package.LanguageService, IVsLanguageDebugInfo, IVsLanguageTextOps
     {
+        private readonly Guid _languageServiceId;
         private readonly IServiceContainer _serviceContainer;
         private readonly IComponentModel _componentModel;
         private readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
-        private LanguagePreferences m_preferences;
+        private LanguagePreferences _preferences;
 
         public XSharpLegacyLanguageService(IServiceContainer serviceContainer) : base()
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             _serviceContainer = serviceContainer;
-            _componentModel = XSharpLanguageService.GetComponentModel();
+            _componentModel = XSharpLanguagePackage.GetComponentModel();
             _editorAdaptersFactoryService = _componentModel.GetService<IVsEditorAdaptersFactoryService>();
             base.SetSite(serviceContainer);
+            _languageServiceId = GetType().GUID;
 
         }
 
@@ -65,23 +68,21 @@ namespace XSharp.LanguageService
             pbstrFilterList = GetFormatFilterList();
             return VSConstants.S_OK;
         }
+        /// <summary>
+        /// Set the default preferences for this language.
+        /// </summary>
         public override LanguagePreferences GetLanguagePreferences()
         {
-            if (m_preferences == null)
+            if (_preferences == null)
             {
-                m_preferences = new LanguagePreferences(this.Site,
-                                                        typeof(XSharpLanguageService).GUID,
-                                                        this.Name);
-                m_preferences.Init();
+                _preferences = new LanguagePreferences(Site,_languageServiceId,Name);
+                _preferences.Init();
             }
-            return m_preferences;
+            return _preferences;
         }
 
-        public override IScanner GetScanner(IVsTextLines buffer)
-        {
-            // no needed since we use MEF for this
-            return null;
-        }
+        public override IScanner GetScanner(IVsTextLines buffer) => null;
+     
 
         public override string Name
         {

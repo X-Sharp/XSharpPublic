@@ -85,6 +85,7 @@
     <Compile Include="Formatting\LineFormatter.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
     <Compile Include="Generic\HelpViewer.cs" />
+    <Compile Include="LanguageService\XSharpEditorFactory.cs" />
     <Compile Include="LightBulb\CommonAction.cs" />
     <Compile Include="LightBulb\CommonActionProvider.cs" />
     <Compile Include="LightBulb\ConstructorAction.cs" />

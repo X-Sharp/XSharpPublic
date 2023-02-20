@@ -129,9 +129,9 @@ namespace XSharp.LanguageService
                        string physicalView,
                        IVsHierarchy hierarchy,
                        uint itemid,
-                       System.IntPtr docDataExisting,
-                       out System.IntPtr docView,
-                       out System.IntPtr docData,
+                       IntPtr docDataExisting,
+                       out IntPtr docView,
+                       out IntPtr docData,
                        out string editorCaption,
                        out Guid commandUIGuid,
                        out int createDocumentWindowFlags)
@@ -149,7 +149,6 @@ namespace XSharp.LanguageService
 
             // Get a text buffer
             IVsTextLines textLines = GetTextBuffer(docDataExisting);
-            IVsTextBuffer textbuffer = textLines as IVsTextBuffer;
             if (docDataExisting != IntPtr.Zero)
             {
                 docData = docDataExisting;

@@ -10,8 +10,6 @@ using System.Security.Permissions;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Project.Automation;
-using Microsoft.VisualStudio.Project;
 
 namespace XSharp.Project
 {
@@ -250,13 +248,6 @@ namespace XSharp.Project
                         out int pgrfCDW)
         {
 
-            //if (CalledFromVulcanDLL())
-            //{
-            //    IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOFormEditorFactory", pszMkDocument) as IVsEditorFactory;
-            //    if (factory != null)
-            //        return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
-            //            out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
-            //}
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;
@@ -309,13 +300,6 @@ namespace XSharp.Project
                         out int pgrfCDW)
         {
 
-            //if (CalledFromVulcanDLL())
-            //{
-            //    IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOMenuEditorFactory", pszMkDocument) as IVsEditorFactory;
-            //    if (factory != null)
-            //        return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
-            //        out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
-            //}
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;
@@ -374,13 +358,6 @@ namespace XSharp.Project
                         out int pgrfCDW)
         {
 
-            //if (CalledFromVulcanDLL())
-            //{
-            //    IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOFieldSpecEditorFactory", pszMkDocument) as IVsEditorFactory;
-            //    if (factory != null)
-            //        return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
-            //        out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
-            //}
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;
@@ -436,13 +413,6 @@ namespace XSharp.Project
                         out int pgrfCDW)
         {
 
-            //if (CalledFromVulcanDLL())
-            //{
-            //    IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VODBServerEditorFactory", pszMkDocument) as IVsEditorFactory;
-            //    if (factory != null)
-            //        return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
-            //        out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
-            //}
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;

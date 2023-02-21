@@ -30,7 +30,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Nologo>true</Nologo>
-    <RuntimeIdentifiers>win</RuntimeIdentifiers>
     <UseSharedCompilation>true</UseSharedCompilation>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>

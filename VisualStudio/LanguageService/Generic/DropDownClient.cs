@@ -11,8 +11,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XSharpModel;
-using MVP = Microsoft.VisualStudio.Package;
 using File = System.IO.File;
+using MVP = Microsoft.VisualStudio.Package;
 using Task = System.Threading.Tasks.Task;
 namespace XSharp.LanguageService
 {
@@ -47,7 +47,7 @@ namespace XSharp.LanguageService
     public class XSharpDropDownClient : IVsDropdownBarClient
     {
 
-        static readonly  ImageList _imageList = new ImageList();
+        static readonly ImageList _imageList = new ImageList();
         private IVsDropdownBar _dropDownBar;
         readonly Dictionary<ITextView, ITextView> _textViews;
         ITextView _activeView = null;
@@ -100,32 +100,42 @@ namespace XSharp.LanguageService
 
         internal void addTextView(ITextView textView, IVsTextView textViewAdapter)
         {
-            if (! _textViews.ContainsKey(textView))
+            if (!_textViews.ContainsKey(textView))
             {
                 _textViews.Add(textView, textView);
                 textView.GotAggregateFocus += TextView_GotAggregateFocus;
                 textView.LostAggregateFocus += TextView_LostAggregateFocus;
                 textView.Closed += TextView_Closed;
                 InitializeAsync(textViewAdapter).FireAndForget();
-                
+
 
             }
         }
         // This moves the caret to trigger initial drop down load
         private Task InitializeAsync(IVsTextView textView)
         {
+#if DEV17
+            return ThreadHelper.JoinableTaskFactory.StartOnIdle(() =>
+            {
+                InitCaret(textView);
+            }).Task;
+#else
             return ThreadHelper.JoinableTaskFactory.StartOnIdleShim(() =>
             {
-                if (_textViews.Count > 0 && _activeView != null)
-                {
-                    textView.SendExplicitFocus();
-                    _activeView.Caret.MoveToNextCaretPosition();
-                    _activeView.Caret.PositionChanged += Caret_PositionChanged;
-                    _activeView.Caret.MoveToPreviousCaretPosition();
-                }
+                InitCaret(textView);
             }).Task;
+#endif
         }
-
+        void InitCaret(IVsTextView textView)
+        {
+            if (_textViews.Count > 0 && _activeView != null)
+            {
+                textView.SendExplicitFocus();
+                _activeView.Caret.MoveToNextCaretPosition();
+                _activeView.Caret.PositionChanged += Caret_PositionChanged;
+                _activeView.Caret.MoveToPreviousCaretPosition();
+            }
+        }
 
         private void TextView_Closed(object sender, EventArgs e)
         {
@@ -147,7 +157,7 @@ namespace XSharp.LanguageService
 
         private void TextView_LostAggregateFocus(object sender, EventArgs e)
         {
-            if (sender is ITextView textView &&  textView == _activeView)
+            if (sender is ITextView textView && textView == _activeView)
             {
                 //_activeView = null;
             }
@@ -217,7 +227,7 @@ namespace XSharp.LanguageService
         }
         private bool relatedFilesChanged
         {
-            get 
+            get
             {
                 // Check if we have other files with source that is shown in this editor
                 // and check their timestamps.
@@ -262,7 +272,7 @@ namespace XSharp.LanguageService
         private void SelectContainingMember(int newLine)
         {
             if (_file == null)
-                return ;
+                return;
             XSourceEntity selectedElement = _file.FindMemberAtRow(newLine);
             if (selectedElement == null)
                 return;
@@ -273,14 +283,14 @@ namespace XSharp.LanguageService
                 selectedElement = _file.GlobalType;
             }
             XSourceTypeSymbol parentType = _file.GlobalType;
-            if (selectedElement is XSourceMemberSymbol )
+            if (selectedElement is XSourceMemberSymbol)
             {
                 // For local functions the parent is a member
                 // and the type is the parent of the member
                 if (selectedElement.Kind.IsLocal())
                 {
                     var parent = selectedElement.Parent;
-                    while ( !(parent is XSourceTypeSymbol))
+                    while (!(parent is XSourceTypeSymbol))
                     {
                         parent = parent.Parent;
                     }
@@ -304,10 +314,10 @@ namespace XSharp.LanguageService
             // When the file has not changed and external files also have no changed
             // and when we are on the same type
             // then simply select another member
-            if (nothingChanged )
+            if (nothingChanged)
             {
                 _selectedTypeIndex = findSelectedType(parentType);
-                if ( newType && _settings.CurrentTypeOnly)
+                if (newType && _settings.CurrentTypeOnly)
                 {
                     // new Type and we only show members from current type
                     loadMemberCombos(_selectedTypeIndex);
@@ -333,14 +343,14 @@ namespace XSharp.LanguageService
         private IList<XSourceEntity> GetTypeMembers(XSourceTypeSymbol type)
         {
             var members = new List<XSourceEntity>();
-            if (type.IsPartial && ! type.IsGlobal && !_settings.ExcludeOtherFiles)
+            if (type.IsPartial && !type.IsGlobal && !_settings.ExcludeOtherFiles)
             {
                 // Load members from all partial type definitions inside this project
                 var usings = new List<string>();
                 usings.Add(type.Namespace);
                 var fullType = _file.Project.Lookup(type.Name, usings);
                 if (fullType != null)
-                { 
+                {
                     members.AddRange(fullType.XMembers);
                 }
             }
@@ -365,11 +375,11 @@ namespace XSharp.LanguageService
             {
                 _relatedFiles.Add(fileName);
                 if (changed > this._lastFileChanged)
-                { 
+                {
                     _lastFileChanged = changed;
                 }
             }
-            
+
         }
 
         private IList<XSourceEntity> GetAllMembers()
@@ -434,7 +444,7 @@ namespace XSharp.LanguageService
             {
                 //if (eltType.Kind == Kind.Namespace)
                 //    continue;
-                
+
                 TextSpan sp = this.TextRangeToTextSpan(eltType.Range);
                 ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
                 string name = eltType.FullName;
@@ -451,7 +461,7 @@ namespace XSharp.LanguageService
                     _lastType = eltType;
                 }
             }
-            return ;
+            return;
         }
 
         private string _getUniqueName(XSourceEntity entity)
@@ -473,7 +483,7 @@ namespace XSharp.LanguageService
         {
             if (selectedType >= _types.Count)
                 return;
-            var currentType = (XSourceTypeSymbol) (selectedType > -1 ? _types[selectedType].Entity : _types[0].Entity);
+            var currentType = (XSourceTypeSymbol)(selectedType > -1 ? _types[selectedType].Entity : _types[0].Entity);
             var globalType = _file.GlobalType;
             DROPDOWNFONTATTR ft;
             bool hasPartial = !currentType.IsGlobal && currentType.IsPartial;
@@ -507,7 +517,7 @@ namespace XSharp.LanguageService
             if (_settings.CurrentTypeOnly)
             {
                 // Add a 'root' element for the type.
-                if (currentType != globalType )
+                if (currentType != globalType)
                 {
                     if (currentType.Kind != Kind.Delegate)
                     {
@@ -537,7 +547,7 @@ namespace XSharp.LanguageService
                     spM = this.TextRangeToTextSpan(member.Range);
                     otherFile = false;
                     ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
-                    if (member.Parent is XSourceTypeSymbol typedef &&  typedef.IsPartial)
+                    if (member.Parent is XSourceTypeSymbol typedef && typedef.IsPartial)
                     {
                         otherFile = string.Compare(member.File.FullPath, _file.FullPath, true) != 0;
                     }
@@ -602,7 +612,7 @@ namespace XSharp.LanguageService
         private void reloadCombos(int nLine)
         {
             int temp = _selectedTypeIndex;
-            loadTypeCombos(nLine); 
+            loadTypeCombos(nLine);
             _selectedTypeIndex = temp;
             temp = _selectedMemberIndex;
             loadMemberCombos(_selectedTypeIndex);
@@ -639,9 +649,9 @@ namespace XSharp.LanguageService
         {
             try
             {
-                if (_dropDownBar != null && _file != null )
+                if (_dropDownBar != null && _file != null)
                 {
-                    if (_file.ContentHashCode != _lastHashCode  || _settings.Changed)
+                    if (_file.ContentHashCode != _lastHashCode || _settings.Changed)
                     {
                         reloadCombos(_lastLine);
                     }
@@ -671,7 +681,7 @@ namespace XSharp.LanguageService
             switch (combo)
             {
                 case 0: // types
-                    entries = (uint) _types.Count;
+                    entries = (uint)_types.Count;
                     break;
                 case 1: // members
                     entries = (uint)_members.Count;
@@ -703,7 +713,7 @@ namespace XSharp.LanguageService
                     break;
                 case 1:
                     if (index < _members.Count)
-                        attr = (uint) _members[index].FontAttr;
+                        attr = (uint)_members[index].FontAttr;
                     break;
                 default:
                     return VSConstants.E_INVALIDARG;
@@ -789,7 +799,7 @@ namespace XSharp.LanguageService
                 bool open = false;
                 if (entity.File.FullPath == this._file.FullPath)
                 {
-                    IVsTextView textView = ThreadHelper.JoinableTaskFactory.Run(GetActiveTextViewAsync); 
+                    IVsTextView textView = ThreadHelper.JoinableTaskFactory.Run(GetActiveTextViewAsync);
                     if (textView != null)
                     {
                         textView.SetCaretPos(entity.Range.StartLine, 0);
@@ -801,7 +811,7 @@ namespace XSharp.LanguageService
                         open = true;
                     }
                 }
-                if (! open)
+                if (!open)
                 {
                     entity.OpenEditor();
                 }
@@ -809,7 +819,7 @@ namespace XSharp.LanguageService
             return VSConstants.S_OK;
         }
 
-        private async Task<IVsTextView> GetActiveTextViewAsync( )
+        private async Task<IVsTextView> GetActiveTextViewAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             IVsTextManager textManager = await ServiceProvider.GetGlobalServiceAsync<SVsTextManager, IVsTextManager>();
@@ -861,6 +871,6 @@ namespace XSharp.LanguageService
             }
         }
 
-        
+
     }
 }

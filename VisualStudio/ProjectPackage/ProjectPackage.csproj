@@ -163,6 +163,17 @@
       <Link>x86\SQLite.Interop.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\Interface\Interface.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Code\Structure\Structure.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\Structure\Structure.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\Structure\Structure.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.png" />
+    <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODbServer.png" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.png" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VoMenu.png" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.png" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleCoreNet\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavoded.tpl" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavofed.tpl" />
@@ -388,7 +399,6 @@
     <Compile Include="Nodes\XSharpAssemblyReferenceNode.cs" />
     <Compile Include="Nodes\XSharpCOMReferenceNode.cs" />
     <Compile Include="Nodes\XSharpDependentFileNode.cs" />
-    <Compile Include="Editors\XSharpEditorFactory.cs" />
     <Compile Include="XSharpConfigprovider.cs" />
     <Compile Include="Automation\OAXSharpFileItem.cs" />
     <Compile Include="Editors\XSharpProjectFactory.cs" />
@@ -600,13 +610,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
-      <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
-      <Name>CodeGenerator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\LanguageService\LanguageService.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7395}</Project>
       <Name>LanguageService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AppDesigner\AppDesigner.csproj">
+      <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe0}</Project>
+      <Name>AppDesigner</Name>
     </ProjectReference>
     <ProjectReference Include="..\ProjectBase\ProjectBase.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c695}</Project>
@@ -614,17 +624,9 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\AppDesigner\AppDesigner.csproj">
-      <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe0}</Project>
-      <Name>AppDesigner</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
-    </ProjectReference>
     <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj">
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
       <Name>CodeDomProvider</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>

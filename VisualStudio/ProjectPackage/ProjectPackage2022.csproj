@@ -74,8 +74,7 @@
     <Reference Include="Microsoft.Windows.Design.Host">
       <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.CodeAnalysis, Version=2.15.0.1, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="XSharp.CodeAnalysis">
       <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
       <Aliases>codeanalysis</Aliases>
     </Reference>
@@ -611,17 +610,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppDesigner\AppDesigner2022.csproj">
-      <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe1}</Project>
-      <Name>AppDesigner2022</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj">
-      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
-      <Name>CodeDomProvider</Name>
-    </ProjectReference>
     <ProjectReference Include="..\LanguageService\LanguageService2022.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7396}</Project>
       <Name>LanguageService2022</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AppDesigner\AppDesigner2022.csproj">
+      <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe1}</Project>
+      <Name>AppDesigner2022</Name>
     </ProjectReference>
     <ProjectReference Include="..\ProjectBase\ProjectBase2022.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
@@ -629,18 +624,23 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
+    <ProjectReference Include="..\CodeDomProvider\CodeDomProvider.csproj">
+      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
+      <Name>CodeDomProvider</Name>
+    </ProjectReference>
+    
+    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>CodeModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Debugger\Debugger2022.csproj">
       <Project>{16272550-75E6-4B9D-91E3-653BD141C756}</Project>
       <Name>Debugger2022</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
-      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
-      <Name>CodeModel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XSharpVoEditors\VoEditors.xsproj">
-      <Project>{1772c19a-d9c8-4891-994b-5aac8059c780}</Project>
+      <Project>{7619db88-6286-4ef1-8273-2a08cc8ac70e}</Project>
       <Name>VoEditors</Name>
     </ProjectReference>
   </ItemGroup>

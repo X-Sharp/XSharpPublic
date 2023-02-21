@@ -18,7 +18,7 @@ namespace XSharp.LanguageService
 {
     class XSharpSource : Source
     {
-        public XSharpSource(XSharpLegacyLanguageService service,
+        public XSharpSource(XSharpLanguageService service,
                         IVsTextLines textLines,
                         Colorizer colorizer)
             : base(service, textLines, colorizer)

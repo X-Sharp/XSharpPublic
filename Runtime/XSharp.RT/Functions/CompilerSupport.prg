@@ -320,14 +320,20 @@ FUNCTION __MemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
 /// <example>
 /// ? UndeclaredName
 /// </example>
+
 [NeedsAccessToLocals(FALSE)];
 FUNCTION __VarGet(cName AS STRING) AS USUAL
     // first we try to access a field with this name
-    IF FieldPos(cName) > 0
-        RETURN __FieldGet(cName)
+    VAR nPos := FieldPos(cName)
+    LOCAL result AS USUAL
+    IF  nPos > 0
+        #pragma warnings (165, off) // result is not initialized
+        VoDb.FieldGet(nPos, REF result)
+        #pragma warnings (165, default)
+        RETURN result
     ENDIF
     // Then a global
-    IF Globals.Get(cName, OUT VAR result)
+    IF Globals.Get(cName, OUT result)
         RETURN result
     ENDIF
     // And finally a memory variable

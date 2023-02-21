@@ -414,12 +414,8 @@ BEGIN NAMESPACE XSharp.RDD
 			// close all parent relations
 			IF SELF:_Parents > 0
 				//
-				LOCAL max AS DWORD
-				max := Workareas.MaxWorkareas //<- what's wrong here ??
-				FOR VAR i := 1 TO max
-					VAR rdd := XSharp.RuntimeState.Workareas:GetRDD( (DWORD)i )
-					VAR wk := rdd ASTYPE Workarea
-					IF ( wk != NULL ) .AND. ( wk != SELF )
+				FOREACH VAR item IN XSharp.RuntimeState.DataSession:OpenRDDs
+					IF item:Value IS Workarea VAR wk .AND.  wk != SELF
 						wk:_Relations:RemoveAll( SELF:isChildPredicate )
 					ENDIF
 				NEXT
@@ -797,12 +793,12 @@ BEGIN NAMESPACE XSharp.RDD
 
 			/// <inheritdoc />
 			VIRTUAL METHOD ChildEnd(info AS DbRelInfo) AS LOGIC
-				SELF:_Parents --
+				SELF:_Parents--
 				RETURN TRUE
 
 				/// <inheritdoc />
 			VIRTUAL METHOD ChildStart(info AS DbRelInfo) AS LOGIC
-				SELF:_Parents ++
+				SELF:_Parents++
 				RETURN TRUE
 
 				/// <inheritdoc />
@@ -1026,17 +1022,17 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		VIRTUAL METHOD EvalBlock(oBlock AS ICodeblock) AS OBJECT
 				LOCAL currentWk AS DWORD
-				currentWk := XSharp.RuntimeState.Workareas:CurrentWorkareaNO
+				currentWk := XSharp.RuntimeState.DataSession:CurrentWorkareaNO
                 // Only switch Workarea when needed
-                SELF:_EvalResult := NULL
                 IF currentWk != SELF:Area
 				    TRY
 					    XSharp.RuntimeState.CurrentWorkarea := SELF:Area
                         SELF:_EvalResult := oBlock:EvalBlock()
                     CATCH
+                        SELF:_EvalResult := NULL
                         THROW
 				    FINALLY
-					    XSharp.RuntimeState.Workareas:CurrentWorkareaNO := currentWk
+					    XSharp.RuntimeState.DataSession:CurrentWorkareaNO := currentWk
                     END TRY
                 ELSE
                     SELF:_EvalResult := oBlock:EvalBlock()

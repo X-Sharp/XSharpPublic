@@ -3,12 +3,10 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-#define COMPLETION
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using System;
 using System.Runtime.InteropServices;
-using System.ComponentModel;
 using XSharp.LanguageService.OptionsPages;
 using System.Threading;
 using Microsoft.VisualStudio.TextManager.Interop;
@@ -20,7 +18,6 @@ using Microsoft.Win32;
 using Microsoft;
 using Microsoft.VisualStudio.OLE.Interop;
 using Community.VisualStudio.Toolkit;
-using System.Collections.Generic;
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
@@ -42,7 +39,7 @@ namespace XSharp.LanguageService
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string,PackageAutoLoadFlags.BackgroundLoad)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
-    [ProvideService(typeof(XSharpLegacyLanguageService), ServiceName = XSharpConstants.LanguageServiceName, IsAsyncQueryable = false)]//
+    [ProvideService(typeof(XSharpLanguagePackage), ServiceName = XSharpConstants.LanguageServiceName, IsAsyncQueryable = false)]//
     // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
@@ -101,13 +98,11 @@ namespace XSharp.LanguageService
     // The guids are VS specific and should not be changed
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Code_string, IsTrusted = true)]
-#if COMPLETION
     [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), XSharpConstants.LanguageName, null, "Settings Completion", pageNameResourceId: "204",keywordListResourceId:304)]
-#endif
     [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), XSharpConstants.LanguageName, null, "Intellisense", pageNameResourceId: "205", keywordListResourceId: 305)]
     [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), XSharpConstants.LanguageName, null, "Indentation", pageNameResourceId: "206", keywordListResourceId: 306)]
     [ProvideLanguageEditorOptionPage(typeof(GeneratorOptionsPage), XSharpConstants.LanguageName, null, "Generator", pageNameResourceId: "207", keywordListResourceId: 307)]
-    public sealed class XSharpLanguagePackage : ToolkitPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
+    public sealed class XSharpLanguagePackage : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
         private static XSharpLanguagePackage instance;
         private IVsTextManager4 _txtManager;
@@ -142,9 +137,7 @@ namespace XSharp.LanguageService
         IndentingOptionsPage _indentingPage;
         OtherOptionsPage _otherOptionsPage;
         GeneratorOptionsPage _generatorOptionsPage;
-#if COMPLETION
         CompletionOptionsPage _completionOptionsPage;
-#endif
         public void GetIntellisenseSettings()
         {
             if (_intellisensePage == null)
@@ -171,12 +164,10 @@ namespace XSharp.LanguageService
             {
                 _generatorOptionsPage = (GeneratorOptionsPage)GetDialogPage(typeof(GeneratorOptionsPage));
             }
-#if COMPLETION
             if (_completionOptionsPage == null)
             {
                 _completionOptionsPage = (CompletionOptionsPage)GetDialogPage(typeof(CompletionOptionsPage));
             }
-#endif
             // Intellisense
             XSettings.EnableOutputWindowLogging = _intellisensePage.EnableOutputPane;
             XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
@@ -243,7 +234,6 @@ namespace XSharp.LanguageService
             XEditorSettings.IndentPreprocessorLines = _indentingPage.IndentPreprocessorLines;
             XEditorSettings.IndentNamespace = _indentingPage.IndentNamespace;
 
-#if COMPLETION
             // Completion
             XEditorSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
             XEditorSettings.CompleteSelf = _completionOptionsPage.CompleteSelf;
@@ -260,7 +250,6 @@ namespace XSharp.LanguageService
             XEditorSettings.CompleteFunctionsA = _completionOptionsPage.CompleteFunctionsA;
             XEditorSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
             //XSettings.MaxCompletionEntries = _completionOptionsPage.MaxCompletionEntries;
-#endif
             // Generator
             XSettings.CodeGeneratorPrivateStyle = (PrivateStyle)_generatorOptionsPage.PrivateStyle;
             XSettings.CodeGeneratorPublicStyle = (PublicStyle)_generatorOptionsPage.PublicStyle;
@@ -311,10 +300,10 @@ namespace XSharp.LanguageService
             }
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             IServiceContainer serviceContainer = this as IServiceContainer;
-            XSharpLegacyLanguageService languageService = new XSharpLegacyLanguageService(serviceContainer);
+            XSharpLanguageService languageService = new XSharpLanguageService(serviceContainer);
             languageService.SetSite(this);
 
-            serviceContainer.AddService(typeof(XSharpLegacyLanguageService),
+            serviceContainer.AddService(typeof(XSharpLanguageService),
                                         languageService,
                                         true);
             //if (!XSettings.DisableClassViewObjectView)
@@ -471,7 +460,7 @@ namespace XSharp.LanguageService
                 if (m_debugger != null)
                 {
                     hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+                    ErrorHandler.ThrowOnFailure(hr);
                     // Get initial value
                     DBGMODE[] modeArray = new DBGMODE[1];
                     hr = m_debugger.GetMode(modeArray);

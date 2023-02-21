@@ -85,6 +85,12 @@
     <Compile Include="Formatting\LineFormatter.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
     <Compile Include="Generic\HelpViewer.cs" />
+    <Compile Include="LanguageService\LanguageServiceMenu.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LanguageServiceMenu.vsct</DependentUpon>
+    </Compile>
+    <Compile Include="LanguageService\PkgCmdID.cs" />
     <Compile Include="LanguageService\XSharpEditorFactory.cs" />
     <Compile Include="LightBulb\CommonAction.cs" />
     <Compile Include="LightBulb\CommonActionProvider.cs" />
@@ -284,6 +290,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Completion\Notes.txt" />
+    <Content Include="LanguageService\LanguageServiceMenu.vsct">
+      <Generator>VsctGenerator</Generator>
+      <LastGenOutput>LanguageServiceMenu.cs</LastGenOutput>
+    </Content>
     <Content Include="Lookup\Notes.txt" />
     <Content Include="Parameter Info\Notes.txt" />
     <Content Include="QuickInfo\Notes.txt" />

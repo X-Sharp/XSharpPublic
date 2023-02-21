@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 
-//using XSharp.LanguageService;
+using XSharp.LanguageService;
 using XSharp.Project.WPF;
 using System.ComponentModel;
 using System.Threading;
@@ -146,7 +146,7 @@ namespace XSharp.Project
         private uint shellCookie;
 
         public static XSharpProjectPackage XInstance = null;
-       // private XSharpLanguageService _langservice;
+        //private XSharpLanguageService _langservice;
 
 
         // =========================================================================================

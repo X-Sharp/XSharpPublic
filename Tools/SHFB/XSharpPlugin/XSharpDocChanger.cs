@@ -251,7 +251,10 @@ namespace XSharpDocs
             }
             else if (htmlName.StartsWith(pageSdkMethodPrefix))
             {
-                return FileType.Function;
+                if (htmlName.Contains("Functions"))
+                    return FileType.Function;
+                else
+                    return FileType.Other;
             }
             else if (htmlName.StartsWith(pageTypedSdkMethodPrefix))
             {

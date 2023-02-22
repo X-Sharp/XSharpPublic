@@ -287,7 +287,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             // Adjust Filename to handle 8 char DOS names
             SELF:_OpenInfo := _oRdd:_OpenInfo
-            SELF:_hFile    := FOpen(cFullName, _OpenInfo:FileMode | FO_UNBUFFERED)
+            SELF:_hFile    := FOpen(cFullName, _OpenInfo:FileMode)
             IF SELF:_hFile == F_ERROR
                 RETURN FALSE
             ENDIF

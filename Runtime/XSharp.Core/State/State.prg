@@ -51,7 +51,6 @@ CLASS XSharp.RuntimeState
 	// Static Methods and Constructor
 	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  _initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState>
 	STATIC CONSTRUCTOR
-		_initialState	:= RuntimeState{TRUE}
         AutoLock        := DoNothing
         AutoUnLock      := DoNothing
         detectDialect()
@@ -64,6 +63,8 @@ CLASS XSharp.RuntimeState
         OTHERWISE
             _onWindows := FALSE
         END SWITCH
+        // This depends on the _onWindow flag so it must be last
+        _initialState	:= RuntimeState{TRUE}
 
 
 
@@ -131,10 +132,12 @@ CLASS XSharp.RuntimeState
             SELF:_SetThreadValue<Exception>(Set.Patharray,NULL)
             SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
 			IF RuntimeState.RunningOnWindows
-                SELF:_SetThreadValue<LONG>(Set.DosCodepage, Win32.GetDosCodePage())
-                SELF:_SetThreadValue<LONG>(Set.WinCodepage, Win32.GetWinCodePage())
+                SELF:_SetThreadValue(Set.DosCodepage, Win32.GetDosCodePage())
+                SELF:_SetThreadValue(Set.WinCodepage, Win32.GetWinCodePage())
             ELSE
-                self:_SetThreadValue(Set.CollationMode, CollationMode.Unicode )
+                SELF:_SetThreadValue(Set.DosCodepage, 437L)  // US American
+                SELF:_SetThreadValue(Set.WinCodepage, 1252L) // Latin 1 / Western Europe
+                SELF:_SetThreadValue(Set.CollationMode, CollationMode.Unicode )
             ENDIF
 			// Date and time settings
 			SELF:_SetInternationalWindows()

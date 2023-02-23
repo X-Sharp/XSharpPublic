@@ -903,10 +903,10 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
 
 
         CASE Set.DosCodepage
-            RETURN 437L
+            RETURN 437L     // US American
 
         CASE Set.WinCodepage
-            RETURN 1250L
+            RETURN 1252L    // Latin 1 / Western Europe
 
         CASE Set.FieldDelimiter
             RETURN ","

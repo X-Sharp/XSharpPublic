@@ -21,9 +21,10 @@
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.xml" /></DocumentationSources>
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.xml" />
+    </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
     <HelpFileVersion>2.13.1.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
@@ -32,7 +33,7 @@
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <HelpFileFormat>Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>X#</SyntaxFilters>
     <PresentationStyle>VS2013XSharp</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>

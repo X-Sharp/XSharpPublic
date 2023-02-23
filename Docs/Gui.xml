@@ -745,7 +745,7 @@
             Open the AVI resource and display its first frame in the animation control.
         </summary>
         <param name="xID">The unique ID for the animation resource (between 1 and 8000), or a ResourceID object identifying the AVI resource.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </AnimationControl.OpenResource>
     <AnimationControl.Play>
         <summary>
@@ -754,20 +754,20 @@
         <param name="nFrom">The initial frame number. If omitted, playback begins from the first frame.</param>
         <param name="nTo">The final frame number. If omitted, playback continues to the last frame.</param>
         <param name="nRepeatCount">The number of times to play the AVI file. If omitted, playback is repeated indefinitely.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </AnimationControl.Play>
     <AnimationControl.Seek>
         <summary>
             Direct the animation control to display a particular frame in the AVI file.
         </summary>
         <param name="nFrame">The frame number to display.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </AnimationControl.Seek>
     <AnimationControl.Stop>
         <summary>
             Direct the animation control to stop the display of the AVI file.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </AnimationControl.Stop>
     <App>
         <summary>
@@ -910,6 +910,8 @@
         <summary>
             Start the event handling loop for the application.
         </summary>
+        <param name="uObject">The object (usually a dialogwindow) for which to process the message
+        </param>
         <param name="kExecType">
             The type of event handling loop to start, specified as one of the following constants
             <list type="table">
@@ -1218,7 +1220,7 @@
             Register the window as an OLE drop target.
         </summary>
         <param name="lEnable">A logical value specifying whether to enable (TRUE) or disable (FALSE) the window as a drop target.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             A window that is registered as an OLE drop target using AppWindow:EnableOLEDropTarget() can handle OLE drag and drop events and create new OLE objects in response to such events. In the associated handlers, an OLEDragEvent object is passed as a parameter that can be used to create a new OLE object by calling OLEObject:CreateFromOLEDragEvent().
         </remarks>
@@ -1305,7 +1307,7 @@
         <summary>
             Remove this application window from view (passing control back to the routine which created the application window).
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <param name="lSendMsg">
             A logical value that indicates if the class should use the SendMessage() function to close the window
             (which works immediately) or the PostMessage() function (which adds the message at the message event queue)
@@ -1709,7 +1711,7 @@
         <param name="0">The currently selected item. This is the default.</param>
         <param name="1">The first item.</param>
         <param name="n">The nth item.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </BaseListBox.DeleteItem>
     <BaseListBox.Destroy>
         <summary>
@@ -2336,7 +2338,7 @@
             Register the window as an OLE drop target.
         </summary>
         <param name="lEnable">A logical value specifying whether to enable (TRUE) or disable (FALSE) the window as a drop target.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             A window that is registered as an OLE drop target using ChildAppWindow:EnableOLEDropTarget() can handle OLE drag and drop events and create new OLE objects in response to such events. In the associated handlers, an OLEDragEvent object is passed as a parameter that can be used to create a new OLE object by calling OLEObject:CreateFromOLEDragEvent().
         </remarks>
@@ -2844,7 +2846,7 @@
             Remove an item from the ComboBox object.
         </summary>
         <param name="nItemNumber">The number of the item to be deleted. If omitted, defaults to the current item.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Overrides the DeleteItem() method of its parent class to implement the same behavior for ComboBoxEx objects.
         </remarks>
@@ -4157,7 +4159,7 @@
         </summary>
         <param name="oGColumn">The data column to be added or the array of data columns to be added.</param>
         <param name="nIndex">The column after which the new column or columns will be inserted. This value can be a string or symbol representing the name of the column, a number representing its column number, or an oDataColumn object identifying the column. If you specify a number, you should note that column numbering begins at 1 (which refers to the first column in the logical sequence, not necessarily the leftmost column from the visual viewpoint). If omitted, new columns are added after the last column.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When columns are inserted in the middle of the sequence, the reference numbers for any trailing columns are incremented. This is one reason why columns should be referenced by name, rather than number. Also, note that while columns can be repositioned from a visual viewpoint, they retain their logical position in the browser.
         </remarks>
@@ -4671,7 +4673,7 @@
             Set the column focus to a specified data column.
         </summary>
         <param name="oColumn">The column that the focus will be set to. If omitted, the default is NULL_OBJECT; the focus will not be changed.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </DataBrowser.SetColumnFocus>
     <DataBrowser.SetPointer>
         <summary>
@@ -4739,7 +4741,7 @@
             Connect the data browser to a data server in a client-server relationship.
         </summary>
         <param name="oServer">The data server to which this data browser should be connected. If the data browser is already connected to a server, it is disconnected first. If omitted, the data browser is disconnected from the data server.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <note type="tip">If the browser is used as a browse view of a data window, there is no reason to use this method; the browser is automatically connected to the server of the window it belongs to.</note>
             The DataBrowser:Use() method connects browser columns with fields of the data server based on matching names. Any column that does not have an explicitly provided field specification and hyperlabel inherits the FieldSpec and HyperLabel objects from its data server field.
@@ -5392,7 +5394,7 @@
         <summary>
             Append a blank record to the data server connected to this data window and position the window on this new record.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When executed successfully, the data server to which the new record was appended sends a NotifyAppend
             message to all of its clients, including this data window.
@@ -5457,7 +5459,7 @@
         <summary>
             Discard all information entered in this data window and close the window.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             The "cancel" operation is very clear and easily understood and might be profitably used on
             data windows when they are created as MDI children (unconventional or not).
@@ -5518,7 +5520,7 @@
         <summary>
             Clear all relations defined to this data window's server.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             In data windows, relations are used to manage relationships between windows that are linked to the same data server.
             Clearing a relation removes the link between the windows; in actuality, it clears the relations set for the data server to which this and any other windows are connected. Relations are set using DataWindow:SetRelation() and DataWindow:SetSelectiveRelation().
@@ -5536,7 +5538,7 @@
         </summary>
         <param name="oEvent">An event required to maintain the protocol that all event handlers have exactly one event as their argument.</param>
         <seealso cref="T:VO.Event" />
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <include file="Gui.xml" path="doc/Callback/*" />
             This method is not used to close a data window. Use DataWindow:Hide() to make a data window disappear from view,
@@ -5547,7 +5549,7 @@
         <summary>
             Force all pending updates to this data window's server to be permanently written to disk.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method also makes the changes visible to other users on other machines on a network, as well as to other
             applications on the same machine. Prior to DataWindow:Commit(), the changes are guaranteed to be visible
@@ -5683,7 +5685,7 @@
         <summary>
             Delete the current record in the attached server and update the window based on the change.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When executed successfully, the data server from which the record was deleted sends a NotifyDelete message to all of its clients, including this data window.
             With some servers (notably DBServer), a deleted record is not removed from the server but is simply marked as deleted. Marked records are removed only when the file is packed, and until such time can be recalled. (With DBServer, the current setting of the SetDeleted() function affects whether deleted records are visible.) Changes that have been made to fields are recorded in the record before it is deleted; if the field is subsequently recalled, it correctly reflects any changes made before the delete operation.
@@ -5696,7 +5698,7 @@
         <summary>
             Delete the current record in the attached server only if it passes its validation rules and update the window based on the change.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When executed successfully, the data server from which the record was deleted sends a NotifyDelete message to all of its clients, including this data window.
             This method checks validation status before allowing a delete operation. If the window contains invalid data, the user is asked if the data should be discarded or corrected before the delete operation is continued. If this behavior is not desired (perhaps because the application does not use recall or the window is to be used only with servers that do not support recall of deleted records), use DataWindow:Delete().
@@ -5851,7 +5853,7 @@
         <summary>
             Position the data server connected to this data window on the last logical record and update the window based on the change.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When executed successfully, the data server sends a NotifyGoBottom message to all of its clients, including this data window.
             DataWindow:GoBottom() can fail for many reasons, from a lack of capability in the server to lock conflicts to technical problems, such as network crashes. Use the DataServer:Status property to determine the exact cause of the failure.
@@ -5863,7 +5865,7 @@
             Position the data server connected to this data window on a specified record number and update the window based on the change.
         </summary>
         <param name="nRecNo">The record number to which the data window should be positioned.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When executed successfully, the data server sends a NotifyRecordChange message to all of its clients, including this data window.
             DataWindow:GoTo() can fail for many reasons, from a lack of capability in the server to lock conflicts to technical problems, such as network crashes. Use the DataServer:Status property to determine the exact cause of the failure.
@@ -5874,7 +5876,7 @@
         <summary>
             Position the data server connected to this data window on the first logical record and update the window based on the change.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When executed successfully, the data server sends a NotifyGoTop message to all of its clients, including this data window.
             DataWindow:GoTop() can fail for many reasons, from a lack of capability in the server to lock conflicts to technical problems, such as network crashes. Use the DataServer:Status property to determine the exact cause of the failure.
@@ -6028,7 +6030,7 @@
         <summary>
             Accept all information entered in this data window and close the window.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method checks the validation status of the window. If the data is valid and is correctly downloaded to the data server, it forces a commitment to the server and then closes the window.
             The "OK" operation is very clear and easily understood and might be profitably used on data windows used as MDI children (unconventional or not).
@@ -6236,7 +6238,7 @@
             When the relation is specified as a code block, a string version of the code block
             can be provided as well; it is returned by the Relation() method.
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <example>
             The API can take these forms:
             <code language="X#">
@@ -6272,7 +6274,7 @@
             When the relation is specified as a code block, a string version of the code block
             can be provided as well; it is returned by the Relation() method.
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <example>
             The API can take these forms:
             <code language="X#">
@@ -7581,7 +7583,7 @@
         <summary>
             Undo the last modification to the text in this edit control.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method only undoes the last change—undos are not nested.
         </remarks>
@@ -7800,7 +7802,7 @@
         <summary>
             Undo the last modification to the text in this edit window.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method only undoes the last change—undos are not nested.
         </remarks>
@@ -9629,7 +9631,7 @@
             Send the raw HTTP header and data for a specified image file to the client.
         </summary>
         <param name="cFile">Image file name, including drive letter and path.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             WriteImage() sends the specified image file and appropriate reply header to the client that made the request.
         </remarks>
@@ -9687,7 +9689,7 @@
             Delete a specified parameter from an argument list passed to that request.
         </summary>
         <param name="cValueName">String containing the name of the parameter that has to be removed.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method removes the specified parameter from the argument list that was created based upon the current query string.
         </remarks>
@@ -10273,7 +10275,7 @@
             Add a header to an HTTP response.
         </summary>
         <param name="cNewHeader">String containing the headers to be added.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This call method is used to add a header to an HTTP response.
         </remarks>
@@ -10513,7 +10515,7 @@
             Numeric value indicating the number of bytes available in the buffer. Defaults to the size of <paramref name="pBuffer" /> + 1.
         </param>
         <param name="cData">String containing data for secondary arguments.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method provides several support functions that are not covered directly by the standard callback functions of the _WINHTTP_FILTER_CONTEXT structure.
         </remarks>
@@ -10523,7 +10525,7 @@
             Send the raw HTTP entity data to the client.
         </summary>
         <param name="cHTTPEntity">String containing data that has to be sent to the client's Internet browser. If not specified, defaults to a line break, '&lt;br&gt;'.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method sends data present in the given buffer to the client that made the request.
         </remarks>
@@ -10599,7 +10601,7 @@
         <summary>
             Lock all variables of an IApplicationObject instance.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Prevents other clients from accessing the variables stored in an IApplicationObject object until the _Unlock() method has been called.
         </remarks>
@@ -10611,7 +10613,7 @@
         <summary>
             Release all variables of an IApplicationObject instance.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Releases variables stored in an IApplicationObject object previously locked by the _Lock() method.
         </remarks>
@@ -10865,7 +10867,7 @@
             Begin a drag operation on an image list.
         </summary>
         <param name="nIndex">The image list index of the image to be dragged. If omitted, the first image in the image list is used.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </ImageList.BeginDrag>
     <ImageList.CreateOverlayImage>
         <summary>
@@ -10873,7 +10875,7 @@
         </summary>
         <param name="nListIndex">The image list index of the image from which to create an overlay image.</param>
         <param name="nImageIndex">The index of the new overlay image. This can be a value from 1 to 4. If omitted, the new overlay image will be the first in the list.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             An overlay image is an image drawn over another image. This technique is commonly used in list view and tree view controls. An image list can have up to four overlay images.
         </remarks>
@@ -10887,13 +10889,13 @@
         </summary>
         <param name="oPoint">** missing parameter documentation **</param>
         <param name="oWindow">** missing parameter documentation **</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </ImageList.DragEnter>
     <ImageList.DragLeave>
         <summary>
             Ends a drag-and-drop operation.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </ImageList.DragLeave>
     <ImageList.DragMove>
         <summary>
@@ -10901,13 +10903,13 @@
         </summary>
         <param name="oPoint">The point to which to drag the image list.</param>
         <param name="oWindow">The window over which the image list is to be dragged.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </ImageList.DragMove>
     <ImageList.EndDrag>
         <summary>
             End a drag operation on an image list.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </ImageList.EndDrag>
     <ImageList.Handle>
         <summary>
@@ -11031,7 +11033,7 @@
         <param name="iFieldIndex">Index of the field for which the range is being set (between 1 and4).</param>
         <param name="iLower">Lower limit of the range.</param>
         <param name="iUpper">Upper limit of the range.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             SetRange allows you to set the allowed range of the four input fields individually.
         </remarks>
@@ -12075,7 +12077,7 @@
             Cause the browser to attempt to connect to a different URL.
         </summary>
         <param name="cNewURL">A new URL value as STRING.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method stops the server from processing the current script and then causes the browser to attempt to connect to <paramref name="cNewURL" />.
         </remarks>
@@ -12166,7 +12168,7 @@
             Set the current value of the Buffer flag property of an IResponse object.
         </summary>
         <param name="lNew">New value of the Buffer flag property.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method sets the value of the Buffer flag property of the IResponse object.
         </remarks>
@@ -12177,7 +12179,7 @@
         </summary>
         <param name="cType">The general content category.</param>
         <param name="cSubType">A specific content type.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method sets the value of the ContentType property of the IResponse object as a string describing the content type. This string is usually formatted, type/subtype where type is the general content category and subtype is the specific content type. For a full list of supported content types, see your Web browser documentation or the current HTTP specification.
         </remarks>
@@ -12203,7 +12205,7 @@
             Set the current value of the Expires property of an IResponse object.
         </summary>
         <param name="nMinutes">New expires value expressed in minutes.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method sets the current value of the Expires property of the IResponse object. This property specifies the length of time before a page cached on a browser expires. If the user returns to the same page before it expires, the cached version is displayed.
         </remarks>
@@ -12213,7 +12215,7 @@
             Set the current value of the Expires property of an IResponse object.
         </summary>
         <param name="dNew">New expires value as DATE.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method sets the new value for the ExpiresAbsolute property of the IResponse object. This property specifies the date at which a page cached on a browser expires. If the user returns to the same page before that date, the cached version is displayed. If a time is not specified, the page expires at midnight of that day. If a date is not specified, the page expires at the given time on the day that the script is run.
         </remarks>
@@ -12223,7 +12225,7 @@
             Set a new value for the Status property of an IResponse object.
         </summary>
         <param name="cNew">New status value as STRING.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method sets a new value to the Status property of the IResponse object. The status specifies the value of the status line returned by the server. Status values are defined in the HTTP specification.
         </remarks>
@@ -12451,7 +12453,7 @@
             Entry point for ASP components.
         </summary>
         <param name="pDispatch">Pointer to an IDispatch Interface object.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             When a user requests a Web page in an ASP-based application, the server calls the OnStartPage() method for all components on that page (except those with application scope). This method creates object instances for following built-in interfaces:
             ISessionObject
@@ -12519,7 +12521,7 @@
             Create HTML code to display images for ASP components.
         </summary>
         <param name="cFile">Image file name, including drive letter and path.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             WriteImage() creates HTML code for displaying images in ASP components.
         </remarks>
@@ -12670,7 +12672,7 @@
         <summary>
             Destroy all of the objects stored in the current session and release their resources.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method destroys all of the objects stored in the current session and releases their resources.
         </remarks>
@@ -12811,7 +12813,7 @@
             Set the Domain attribute of a cookie object.
         </summary>
         <param name="cDomain">New domain value as STRING.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method sets the new value for the Domain attribute of the IWriteCookie object. This attribute determines whether the cookie is sent only to requests to this domain.
         </remarks>
@@ -12821,7 +12823,7 @@
             Set the current value of the Expires property of a cookie object.
         </summary>
         <param name="dNew">New expires value as DATE.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method sets the new value for the Expires property of the IWriteCookie object. This property specifies the date at which a cookie expires.
         </remarks>
@@ -12835,7 +12837,7 @@
         <param name="aValue">
             Array with item values to add to the cookie. <paramref name="cName" /> is treated as the key name and the cookie as a dictionary cookie.
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method adds a new item to the IWriteCookie object. If the second argument is a STRING, then the cookie is treated as a simple cookie and <paramref name="cValue" /> is the cookie's value. Otherwise, the cookie is treated as a dictionary cookie and <paramref name="aValues" /> contains the values for the cookie's key, <paramref name="cName" />.
         </remarks>
@@ -12845,7 +12847,7 @@
             Set the Path attribute of a cookie object.
         </summary>
         <param name="cPath">New Path value as STRING.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method sets the new value for the Path attribute of the IWriteCookie object. This attribute determines whether the cookie is sent only to requests to this path. If this attribute is not set, the application path is used.
         </remarks>
@@ -12855,7 +12857,7 @@
             Set the Secure attribute of a cookie object.
         </summary>
         <param name="lSecure">Logical value with new Secure attribute.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method sets the new value for the Secure attribute of the IWriteCookie object. This attribute specifies whether the cookie is secure.
         </remarks>
@@ -13174,7 +13176,7 @@
         </summary>
         <param name="oRange">The Range object representing the selected items.</param>
         <param name="lEnabled">The state of the selected items. If not specified, the default is TRUE.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method is intended for use with a multiple selection list box (i.e., a list box created using the LBOXMULTIPLESEL style).
         </remarks>
@@ -13183,7 +13185,7 @@
         <summary>
             Clear a multiple selection list box of all selections.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method is intended for use with a multiple selection list box (i.e., a list box created using the LBOXMULTIPLESEL style).
         </remarks>
@@ -13222,7 +13224,7 @@
         </summary>
         <param name="uItemNumber">The number of the item to be deleted. Specify one of values listed below</param>
         <param name="nItem">The number of the item to be deleted. Specify one of values listed below</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Value	Position
             0	The currently selected item. This is the default.
@@ -13235,7 +13237,7 @@
             Turn off the selection of a specified item in a list box.
         </summary>
         <param name="nItem">The item number to be deselected. Zero (0) represents the current item.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Normally, the user turns selections off, but this method enables the program to do so also.
             This method is intended for use with a multiple selection list box (i.e., a list box created using the LBOXMULTIPLESEL style).
@@ -13253,7 +13255,7 @@
         <summary>
             Turn the list box into a drag list box.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </ListBox.EnableItemDrag>
     <ListBox.FillUsing>
         <summary>
@@ -13367,7 +13369,7 @@
             Set automatically to the fixed text of the drive/directory of <paramref name="sStartDir" />.
         </param>
         <param name="FileTypes">One of the following constants indicating the attributes of the files to be displayed:</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <list type="table">
                 <listheader>
@@ -13463,7 +13465,7 @@
             Turn on the selection of an item in a list box.
         </summary>
         <param name="nItemId">The item number to be selected. Zero (0) represents the current item.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Normally, the user turns selections on and off, but this method enables the program to do so also.
             This method is intended for use with a multiple selection list box (i.e., a list box created using the LBOXMULTIPLESEL style).
@@ -13558,7 +13560,7 @@
                 </item>
             </list>
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <note type="tip">
                 Listview grouping requires visual styles. If visual styles are not enabled or available these features have no effect.
@@ -13740,7 +13742,7 @@
             Set Group View on or off in a ListView control.
         </summary>
         <param name="lSetting">A logical value. TRUE turns Group View on, FALSE turns it off. The default is TRUE.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <note type="tip">
                 Listview grouping requires visual styles. If visual styles are not enabled or available these features have no effect.
@@ -13763,7 +13765,7 @@
         </summary>
         <param name="nItem">The index of the list view item to make visible.</param>
         <param name="lPartiallyVisible">A value of TRUE indicates that the specified item can be only partially visible. Specify FALSE if you want the item to be fully visible.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </ListView.EnsureVisible>
     <ListView.FullRowSelect>
         <summary>
@@ -14058,7 +14060,7 @@
             Redraw a range of list view items.
         </summary>
         <param name="oRange">The range of list view item indexes to redraw.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </ListView.RedrawRange>
     <ListView.RemoveAllGroups>
         <summary>
@@ -14076,7 +14078,7 @@
             Remove the group with the specified ID from a ListView control.
         </summary>
         <param name="iGroupId">The number of the group.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <note type="tip">
                 Listview grouping requires visual styles. If visual styles are not enabled or available these features have no effect.
@@ -14089,7 +14091,7 @@
             Scroll the contents of a list view.
         </summary>
         <param name="oDimension">The dimension representing the amount to scroll the list view. Positive width values scroll to the right, while negative width values scroll to the left. In addition, positive height values scroll upwards, while negative height values scroll downwards.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </ListView.Scroll>
     <ListView.SearchString>
         <summary>
@@ -14165,7 +14167,7 @@
         </param>
         <param name="xOffSet">controls the x placement of the image.</param>
         <param name="yOffSet">controls the y placement of the image.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <note type="tip">
                 The use of this method requires either the OLE library to be linked in or a call to CoInitialize().
@@ -14221,7 +14223,7 @@
             LVGA_HEADER_RIGHT
             LVGA_HEADER_CENTER
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <note type="tip">
                 Listview grouping requires visual styles. If visual styles are not enabled or available these features have no effect.
@@ -14290,7 +14292,7 @@
         </summary>
         <param name="nItem">The index of the list view item whose position you want to change.</param>
         <param name="oPoint">The new position of the list view item.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </ListView.SetItemPosition>
     <ListView.SetSelectedColumn>
         <summary>
@@ -14317,7 +14319,7 @@
         <summary>
             Sort the list view items using the user-defined sort method specified by EnableSort().
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </ListView.SortItems>
     <ListView.StateImageList>
         <summary>
@@ -14351,7 +14353,7 @@
             Update a list view item.
         </summary>
         <param name="nItem">The index of the list view item to update.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </ListView.Update>
     <ListView.ViewAs>
         <summary>
@@ -15081,7 +15083,7 @@
                 If <paramref name="nItemID" /> is specified as MENUSEPARATOR, the second parameter is not needed.
             </note>
         </remarks>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             After adding a new item to a menu, you must reassign the menu to the owner window's Menu property for the change to take effect.
         </remarks>
@@ -15112,7 +15114,7 @@
             Delete an item from this menu, removing it from memory. (To delete a bitmap or string, specify an ID; to delete a submenu, specify the Menu object.)
         </summary>
         <param name="xItemIdOrMenu">The ID of the menu item to be deleted or the submenu to be deleted.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </Menu.DeleteItem>
     <Menu.Destroy>
         <summary>
@@ -15191,7 +15193,7 @@
             <paramref name="oBitmap" />	The bitmap to appear for the new menu item.
         </param>
         <param name="nBeforeID">The ID of the menu item before which the new item should be inserted.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             After inserting a new item to a menu, you must reassign the menu to the owner window's Menu property for the change to take effect.
         </remarks>
@@ -16444,7 +16446,7 @@
         </summary>
         <param name="cProgID">The OLE control's program ID.</param>
         <param name="cLicKey">The license key for the OLE control's program.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Each object provided by an OLE server is uniquely identified by its program ID. These program IDs are stored in the system Registry as described in the OLE server's documentation. OLEControl:CreateEmbedding() creates an embedded OLE control from its program ID and loads it into an OLEControl container.
         </remarks>
@@ -16461,7 +16463,7 @@
             Create an OLEControl from an Application Doc File storage.
         </summary>
         <param name="oOLEAppDocStorage">The OLEAppDocStorage object containing the object.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             All OLE controls inserted into a form inside the Window Editor are saved inside a special file called the Application Doc File. When the OLE control is recreated at runtime, the persistent information, including the OLEAutoObject, is loaded from the Application Doc File using OLEControl:CreateFromAppDocStorage().
         </remarks>
@@ -16810,7 +16812,7 @@
         <summary>
             Activate the OLE object.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             The method puts the associated OLE object into the active state, which usually allows the user to edit the object.
         </remarks>
@@ -16834,7 +16836,7 @@
         </summary>
         <param name="hMenu">The handle of the existing menu.</param>
         <param name="iPos">The position at which the menu should be inserted.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             A OLE object usually supports several actions (called verbs) which a user can perform on the object. An AVI object, for example, can support a Play and an Edit verb. The object's verbs can be invoked via its verb menu, which is added using OLEObject:AddVerbMenu() into an existing menu and is fully managed by the object.
         </remarks>
@@ -16880,7 +16882,7 @@
             Create an OLE object from a program ID.
         </summary>
         <param name="cProgID">The OLE object's program ID.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Each object provided by an OLE server is uniquely identified by its program ID. These program IDs are stored in the system Registry as described in the OLE server's documentation. OLEObject:CreateEmbedding() creates an embedded OLE object from its program ID and loads it into an OLEObject container.
         </remarks>
@@ -16897,7 +16899,7 @@
             Create an OLE object from a file.
         </summary>
         <param name="cFileName">The file containing the object.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             If an OLE object is given as a file (such as a saved document). you use OLEObject:CreateEmbeddingFromFile() to create an embedded OLE object and load it into its OLEObject container.
         </remarks>
@@ -16914,7 +16916,7 @@
             Create an OLE object from an Application Doc File storage.
         </summary>
         <param name="oOLEAppDocStorage">The OLEAppDocStorage object containing the object.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             All OLE objects inserted into a form inside the Window Editor are saved inside a special file called the Application Doc File. When the OLE object is recreated at runtime, the persistent information is loaded from the Application Doc File using OLEObject:CreateFromAppDocStorage().
         </remarks>
@@ -16931,7 +16933,7 @@
             Create an OLE object from a database storage.
         </summary>
         <param name="oOLEDBStorage">The OLEDBStorage object describing the database storage.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             X# supports the ability to store an OLE object in a DBF database. To assign a new value to the OLEObject container, you pass an OLEDBStorage object to OLEObject:CreateFromDBStorage(). To save the persistent information of an OLE object in the database, you pass an OLEDBStorage object to OLEObject:SaveToDBStorage(). You usually get the OLEDBStorage object as a result of a FieldGet() call.
         </remarks>
@@ -16948,7 +16950,7 @@
         <summary>
             Create an OLE object from the standard Insert Object dialog.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             OLEObject:CreateFromInsertDialog() brings up the standard Insert Object dialog, allowing the user to select an object type which is then used to create a new OLE object for this OLEObject container.
         </remarks>
@@ -16973,7 +16975,7 @@
             Create an OLE object from an OLEDragEvent.
         </summary>
         <param name="oOLEDragEvent">The OLEDragEvent object.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             A window that is registered as an OLE drop target using ChileAppWindow:EnableOLEDropTarget() can handle OLE drag and drop events and create new OLE objects in response to such events. In the associated handlers, an OLEDragEvent object is passed as a parameter that can be used to create a new OLE object by calling OLEObject:CreateFromOLEDragEvent().
         </remarks>
@@ -17002,7 +17004,7 @@
         <summary>
             Create an OLE object from the standard Paste Special dialog.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             OLEObject:CreateFromPasteDialog() brings up the standard Paste Special dialog, allowing the user to select an object from the Clipboard which is then used to create a new OLE object for this OLEObject container.
         </remarks>
@@ -17029,7 +17031,7 @@
             Create an OLE object as a link to a file.
         </summary>
         <param name="cFileName">The name of file containing the OLE object.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             A linked OLE object is stored outside the container's storage. This allows other applications to use and change the OLE object as well. OLEObject:CreateLink() creates a new linked OLE object and loads it into the OLEObject container.
         </remarks>
@@ -17042,7 +17044,7 @@
         <summary>
             Deactivate an OLE object.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <example>
             The following code shows a push button's click event handler, which deactivates an OLEObject located on the same data window:
             <code language="X#">
@@ -17063,7 +17065,7 @@
         <summary>
             Remove a contained OLE object and cut the link to its server.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Since OLEObject serves as a container for any OLE object, it is possible to remove the current object, cut the link to its server, and load a new OLE object into the container by using one of the Create methods. In the process, OLEObject:DetachFromServer() removes the current OLE object and cuts the link to the object's server.
         </remarks>
@@ -17086,7 +17088,7 @@
             Exercise an OLE object's verb.
         </summary>
         <param name="iVerb">The verbs numerical ID.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             A OLE object usually supports several actions (called verbs) which a user can perform on the object. An AVI object, for example, can support a Play and an Edit verb. The object's verbs can be invoked via the objects verb menu or directly by calling OLEObject:DoVerb().
         </remarks>
@@ -17200,7 +17202,7 @@
         <summary>
             Cause the OLE object to redraw itself.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </OLEObject.Redraw>
     <OLEObject.Repaint>
         <summary>
@@ -17215,7 +17217,7 @@
             Save an OLE object into a database storage.
         </summary>
         <param name="oOLEDBStorage">The OLEDBStorage object to use for the save operation.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             X# supports the ability to store an OLE object in a DBF database. To assign a new value to the OLEObject container, you pass an OLEDBStorage object to OLEObject:CreateFromDBStorage(). To save the persistent information of an OLE object in the database, you pass an OLEDBStorage object to OLEObject:SaveToDBStorage(). You usually get the OLEDBStorage object as a result of a FieldGet() call.
         </remarks>
@@ -17242,7 +17244,7 @@
         </summary>
         <param name="cApp">The name of the container application.</param>
         <param name="cDoc">The name of the current document.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             These names are used during out-of-place editing in the server's window to identify the OLE object container application and the document in which it is located.
         </remarks>
@@ -17257,7 +17259,7 @@
         <summary>
             Update the container's toolbars.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Whenever an OLE object is in-place active, the server's toolbars can replace the X# container application's toolbars. In response to a resizing of the container application, OLEObject:UpdateToolbars() causes the OLE object server to rearrange its toolbars.
         </remarks>
@@ -18733,7 +18735,7 @@
         <param name="cDataSourceName">The name of the ODBC data source to connect to. If no data source is specified, a dialog box will appear so that one can be selected.</param>
         <param name="cUserName">The ODBC user name for this data source.</param>
         <param name="cPassword">The ODBC password or authorization string for this data source.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             The Report Editor requires an active database connection. Before opening a report, you must create a data source for the report database.
         </remarks>
@@ -19413,7 +19415,7 @@
         <param name="dwClipboardFormat">
             The specified Clipboard format. If not specified, it defaults to 0, meaning that the rich edit object will try any format currently on the Clipboard.
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <note type="tip">Refer to the SetClipboardData() function in your Microsoft Win32 Software Development Kit documentation for definitions of valid format constants.</note>
         </remarks>
@@ -19639,7 +19641,7 @@
         </summary>
         <param name="oPrintingDevice">The PrintingDevice object or printing device name that will receive the output. If omitted, a print dialog box is raised for the user to choose a print destination.</param>
         <param name="oRange">The range of characters to print. If omitted, the entire range of characters is printed.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </RichEdit.Print>
     <RichEdit.Protected>
         <summary>
@@ -20378,7 +20380,7 @@
             Control the status message display of an in-place active OLE object.
         </summary>
         <param name="lEnable">A logical value specifying whether to enable (TRUE) or disable (FALSE) the status message display.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             After calling ShellWindow:EnableOLEStatusMessage(TRUE), browsing through the menu items of an in-place active OLE object will call ShellWindow:OnOLEStatusMessage() with the status string as a parameter. By default, ShellWindow:OnOLEStatusMessage() displays the status string inside the shell window's status bar.
         </remarks>
@@ -20752,7 +20754,7 @@
             Sets the position of a tick mark in a slider control.
         </summary>
         <param name="nPosition">** missing parameter documentation **</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </Slider.SetTickPos>
     <Slider.ThumbBoundingBox>
         <summary>
@@ -21109,7 +21111,7 @@
         </summary>
         <param name="oDimension">A Dimension object representing the new size of the specified split window pane.</param>
         <param name="nPane">The index of the split window pane.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </SplitWindow.SetPaneSize>
     <SplitWindow.Show>
         <inheritdoc cref="M:VO.Window.Show(XSharp.__Usual)"/>
@@ -21186,7 +21188,7 @@
         <summary>
             Display a standard color dialog box. To retrieve the value that the user selected, use the StandardColorDialog:Color() method.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </StandardColorDialog.Show>
     <StandardDialog>
         <summary>
@@ -21416,7 +21418,7 @@
         <summary>
             Display a standard file dialog box. To retrieve the value that the user selected, use the StandardFileDialog:FileName property.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </StandardFileDialog.Show>
     <StandardFolderDialog>
         <summary>
@@ -21464,7 +21466,7 @@
         <summary>
             Display a standard folder dialog box. To retrieve the value that the user selected, use the relevant method of the specific subclass.
         </summary>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             The item selected by the user can be retrieved with the StandardFolderDialog:Result property.
         </remarks>
@@ -23070,7 +23072,7 @@
                 </item>
             </list>
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             The AddSubToolBarBand() method creates a new band holding its own toolbar. This way, you can create a toolbar that is divided into several bands, each holding a sub-toolbar.
         </remarks>
@@ -23107,7 +23109,7 @@
             An optional style flag for the toolbar item. By default the style is automatically derived from the other parameters. Passing a Windows API constant can, however, enforce a specific style. The default is TBSTYLE_BUTTON.
         </param>
         <param name="symTB">Symbolic name representing the toolbar to be used. Defaults to the main toolbar.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             <note type="tip">Consult your Microsoft Win32 Software Development Kit documentation for detailed information about a particular Windows API constant.</note>
             Both the event triggered, when the button is clicked, and the description that shows up in the status bar are based on the properties of the associated menu. Thus, the toolbar controls the action of the application indirectly, through its associated menu.
@@ -23300,7 +23302,7 @@
             Enable toolbar band support.
         </summary>
         <param name="lEnable">A logical value specifying whether or not toolbar separator bands are supported. The default is TRUE.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             This method enables or disables toolbar band support. If bands are enabled (the default), the toolbar uses internally a Rebar32 control and supports the management of several bands. If you do not need or want bands, issue EnableBands(FALSE) before the toolbar is shown/created.
             <note type="tip">If band support is disabled, the band-related methods, such as ToolBar:AddBand(), will not work.</note>
@@ -23421,7 +23423,7 @@
         <param name="bState">** missing parameter documentation **</param>
         <param name="bStyle">** missing parameter documentation **</param>
         <param name="symTB">Symbolic name representing the toolbar to be used. Defaults to the main toolbar.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>
             Both the event triggered when the button is clicked and the description that shows up in the status bar are based on the properties of the associated menu. Thus, the toolbar controls the action of the application indirectly, through its associated menu.
             Specifying a toolbar by calling this method for each button might seem cumbersome. The recommended way to define the toolbar is to use the Menu Editor, which automatically generates code to lay out the toolbar.
@@ -23754,7 +23756,7 @@
             If lForceNotify is TRUE(default = FALSE), a notify message Window:TreeViewItemExpanding() and Window:TreeViewItemExpanded() is sent for each item whose expand state is changed.
             Generally windows will only send these messages when an item is first expanded. It depends on the TVIS_EXPANDEDONCE state. (see in Platform SDK the TVM_EXPAND Message for more details.)
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </TreeView.Collapse>
     <TreeView.DeleteAll>
         <summary>
@@ -23819,7 +23821,7 @@
             Ensure that an item is visible in the tree view, expanding its parent item or scrolling the tree view if necessary.
         </summary>
         <param name="symName">The symbolic name of the tree view item which should be made visible or the TreeViewItem object representing the tree view item which should be made visible.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </TreeView.EnsureVisible>
     <TreeView.Expand>
         <summary>
@@ -23832,7 +23834,7 @@
             If lForceNotify is TRUE(default = FALSE), a notify message Window:TreeViewItemExpanding() and Window:TreeViewItemExpanded() is sent for each item whose expand state is changed.
             Generally windows will only send these messages when an item is first expanded. It depends on the TVIS_EXPANDEDONCE state. (see in Platform SDK the TVM_EXPAND Message for more details.)
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </TreeView.Expand>
     <TreeView.GetDropHighlight>
         <summary>
@@ -24006,7 +24008,7 @@
         <param name="oItem">The TreeViewItem object representing the tree view item to be selected.</param>
         <param name="symCode">The symbolic name of the type of selection. It can be one of the following values: #FirstVisible to scroll the item into view, or #DropHighlight to redraw the item. If omitted, the item is simply selected.</param>
         <param name="lSelect">The optional logical value to determine whether the specified tree view item is selected (TRUE) or deselected (FALSE). If omitted, defaults to TRUE.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </TreeView.SelectItem>
     <TreeView.SetItemAttributes>
         <summary>
@@ -24020,7 +24022,7 @@
         </summary>
         <param name="symParentName">The symbolic name of the tree view item whose children will be sorted.</param>
         <param name="oParentItem">TreeViewItem object representing the tree view item whose children will be sorted.</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </TreeView.SortChildren>
     <TreeView.StateImageList>
         <summary>
@@ -24038,7 +24040,7 @@
             If lForceNotify is TRUE(default = FALSE), a notify message Window:TreeViewItemExpanding() and Window:TreeViewItemExpanded() is sent for each item whose expand state is changed.
             Generally windows will only send these messages when an item is first expanded. It depends on the TVIS_EXPANDEDONCE state. (see in Platform SDK the TVM_EXPAND Message for more details.)
         </param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </TreeView.Toggle>
     <TreeView.VisibleCount>
         <summary>
@@ -24232,14 +24234,14 @@
         </summary>
         <param name="lAll">** missing parameter documentation **</param>
         <param name="lForceNotify">** missing parameter documentation **</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </TreeViewItem.Collapse>
     <TreeViewItem.Delete>
         <summary>
             Delete the tree view item.
         </summary>
         <param name="lChildsOnly">** missing parameter documentation **</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </TreeViewItem.Delete>
     <TreeViewItem.Disabled>
         <summary>
@@ -24259,7 +24261,7 @@
         </summary>
         <param name="lAll">** missing parameter documentation **</param>
         <param name="lForceNotify">** missing parameter documentation **</param>
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
     </TreeViewItem.Expand>
     <TreeViewItem.Expanded>
         <summary>
@@ -26102,7 +26104,7 @@
         </summary>
         <param name="oDevice">The PrintingDevice object that will receive the output. If omitted, the default printer driver is used.</param>
         <seealso cref="T:VO.PrintingDevice" />
-        <include file="VOSDK.xml" path="doc/ReturnsLogic/*" />
+        <include file="Gui.xml" path="doc/ReturnsLogic/*" />
         <remarks>The default implementation of this method creates a Butmap of the surface of the window and sends that to the default printer.</remarks>
     </Window.Print>
     <Window.QueryClose>

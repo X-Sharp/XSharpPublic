@@ -1261,7 +1261,7 @@ FUNCTION ConvertFromCodePageToCodePage(cString AS STRING, dwFrom AS DWORD, dwTo 
 
    // Determine length of Unicode string
    // And allocate enough space to hold it
-   nULen    := MultiByteToWideChar(CP_ACP,0,pBuffer,nLen,NULL_PTR, 0)
+   nULen    := MultiByteToWideChar(dwFrom,0,pBuffer,nLen,NULL_PTR, 0)
    pUStr    := SysAllocStringLen(NULL_PTR,(DWORD) nULen)
    // Convert Fixed memory Ansi string to Fixed memory Unicode string
    MultiByteToWideChar(dwFrom,0,pBuffer,nLen,pUStr,nULen)

@@ -1,12 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33027.164
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ED0EE32E-392F-4848-B0F6-5C13C628A4A9}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		Common\BuildNumber.h = Common\BuildNumber.h
+		VisualStudio\Common.props = VisualStudio\Common.props
+		VisualStudio\Common2019.props = VisualStudio\Common2019.props
+		VisualStudio\Common2022.props = VisualStudio\Common2022.props
 		Common\Constants.cs = Common\Constants.cs
 		Common\constants.prg = Common\constants.prg
 		Common\constantsMethods.cs = Common\constantsMethods.cs
@@ -17,25 +20,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Common\XSharpConstants.cs = Common\XSharpConstants.cs
 	EndProjectSection
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpModel", "VisualStudio\XSharpCodeModelXs\XSharpModel.xsproj", "{EED6843B-B727-4F08-AA32-CA0F48FDDE3F}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "CodeModel", "VisualStudio\XSharpCodeModelXs\CodeModel.xsproj", "{EED6843B-B727-4F08-AA32-CA0F48FDDE3F}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners_tester", "VisualStudio\VODesigners_tester\VODesigners_tester.xsproj", "{63D22C03-1D1A-4746-8E24-7BB1248696EE}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpVoEditors", "VisualStudio\XSharpVoEditors\XSharpVoEditors.xsproj", "{7619DB88-6286-4EF1-8273-2A08CC8AC70E}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VoEditors", "VisualStudio\XSharpVoEditors\VoEditors.xsproj", "{7619DB88-6286-4EF1-8273-2A08CC8AC70E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpCodeDomProvider", "VisualStudio\CodeDomProvider\XSharpCodeDomProvider.csproj", "{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeDomProvider", "VisualStudio\CodeDomProvider\CodeDomProvider.csproj", "{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpDebugger", "VisualStudio\Debugger\XSharpDebugger.csproj", "{16272550-75E6-4B9D-91E3-653BD141C755}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debugger", "VisualStudio\Debugger\Debugger.csproj", "{16272550-75E6-4B9D-91E3-653BD141C755}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpCodeGenerator", "VisualStudio\CodeGenerator\XSharpCodeGenerator.xsproj", "{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "CodeGenerator", "VisualStudio\CodeGenerator\CodeGenerator.xsproj", "{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBase", "VisualStudio\ProjectBase\ProjectBase.csproj", "{CACB60A9-1E76-4F92-8831-B134A658C695}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpAppDesigner", "VisualStudio\AppDesigner\XSharpAppDesigner.csproj", "{4484939E-DDA8-4033-8B1C-E8F60A2BAFE0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDesigner", "VisualStudio\AppDesigner\AppDesigner.csproj", "{4484939E-DDA8-4033-8B1C-E8F60A2BAFE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpLanguageService", "VisualStudio\LanguageService\XSharpLanguageService.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LanguageService", "VisualStudio\LanguageService\LanguageService.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpProjectPackage", "VisualStudio\ProjectPackage\XSharpProjectPackage.csproj", "{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectPackage", "VisualStudio\ProjectPackage\ProjectPackage.csproj", "{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vs2019", "Vs2019", "{6F24E18A-04D9-4CFC-9286-DEABE7D75A37}"
 EndProject
@@ -137,7 +140,7 @@ Global
 		{EED6843B-B727-4F08-AA32-CA0F48FDDE3F} = {676D01DB-6EC8-4A11-BD36-B415534D9BA5}
 		{63D22C03-1D1A-4746-8E24-7BB1248696EE} = {676D01DB-6EC8-4A11-BD36-B415534D9BA5}
 		{7619DB88-6286-4EF1-8273-2A08CC8AC70E} = {676D01DB-6EC8-4A11-BD36-B415534D9BA5}
-		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4} = {6F24E18A-04D9-4CFC-9286-DEABE7D75A37}
+		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4} = {676D01DB-6EC8-4A11-BD36-B415534D9BA5}
 		{16272550-75E6-4B9D-91E3-653BD141C755} = {6F24E18A-04D9-4CFC-9286-DEABE7D75A37}
 		{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC} = {676D01DB-6EC8-4A11-BD36-B415534D9BA5}
 		{CACB60A9-1E76-4F92-8831-B134A658C695} = {6F24E18A-04D9-4CFC-9286-DEABE7D75A37}

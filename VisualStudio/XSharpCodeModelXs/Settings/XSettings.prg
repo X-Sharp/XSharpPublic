@@ -46,6 +46,17 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY Disassembler AS STRING AUTO := ""
         PUBLIC STATIC PROPERTY HideIncludes AS LOGIC AUTO := FALSE
 
+        PUBLIC STATIC METHOD EnableAll() AS VOID
+             EnableBraceMatchLog           := TRUE
+             EnableCodeCompletionLog       := TRUE
+             EnableDatabaseLog             := TRUE
+             EnableParameterLog            := TRUE
+             EnableParseLog                := TRUE
+             EnableQuickInfoLog            := TRUE
+             EnableReferenceInfoLog        := TRUE
+             EnableTypelookupLog           := TRUE
+             RETURN
+
         PUBLIC STATIC METHOD LogMessage(message AS STRING) AS VOID
             IF EnableLogging .and. ShellLink != NULL
                 ShellLink:LogMessage(message)

@@ -19,13 +19,13 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
     </Installation>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" d:ProjectName="%CurrentProject%" d:VsixSubPath="ProjectSystem" />
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|XSharpLanguageService2022|" />
-        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="XSharpLanguageService2022" Path="|XSharpLanguageService2022|" />
-        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|LanguageService2022|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="LanguageService2022" Path="|LanguageService2022|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" /> 
         <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
         <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="XSharpDebugger2022" Path="|XSharpDebugger2022|" AssemblyName="|XSharpDebugger2022;AssemblyName|" />
-        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="XSharpAppDesigner2022" Path="|XSharpAppDesigner2022|" AssemblyName="|XSharpAppDesigner2022;AssemblyName|" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="Debugger2022" Path="|Debugger2022|" AssemblyName="|Debugger2022;AssemblyName|" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="AppDesigner2022" Path="|AppDesigner2022|" AssemblyName="|AppDesigner2022;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="ProjectBase2022" Path="|ProjectBase2022|" AssemblyName="|ProjectBase2022;AssemblyName|" />
         <Asset Type="DebuggerEngineExtension" d:Source="Project" d:ProjectName="%CurrentProject%" Path="XSharp.Debugger2022.vsdconfig" />
     </Assets>

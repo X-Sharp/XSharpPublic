@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
+  <Import Project="C:\XSharp\DevPublic\Tools\Common.props" Condition="'$(SolutionDir)'==''" />
+  <Import Project="$(SolutionDir)Tools\Common.props" Condition="'$(SolutionDir)'!=''" />
+  <PropertyGroup>
+    <ProjectGuid>7619db88-6286-4ef1-8273-2a08cc8ac70e</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>XSharp.VOEditors</RootNamespace>
+    <AssemblyName>XSharp.VoEditors</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <Name>VoEditors</Name>
+    <Nologo>true</Nologo>
+    <Dialect>Vulcan</Dialect>
+    <OutputName>XSharp.VoEditors</OutputName>
+    <TargetFrameworkProfile />
+    <NS>true</NS>
+    <VO3>true</VO3>
+    <NamedArgs>False</NamedArgs>
+    <StartupObject />
+    <IncludePaths>$(SolutionDir)Common</IncludePaths>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <WarningLevel>4</WarningLevel>
+    <DisabledWarnings>165,649,168,170</DisabledWarnings>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <WarningLevel>4</WarningLevel>
+    <DisabledWarnings>165,649,168,170</DisabledWarnings>
+    <DefineConstants>TRACE</DefineConstants>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="XSharp.Core, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Core</Name>
+      <AssemblyName>XSharp.Core.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="XSharp.RT, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.RT</Name>
+      <AssemblyName>XSharp.RT.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Drawing</Name>
+      <AssemblyName>System.Drawing.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
+      <Link>Properties\commonAssemblyInfo.prg</Link>
+    </Compile>
+    <Compile Include="..\..\Common\constants.prg">
+      <Link>Properties\constants.prg</Link>
+    </Compile>
+    <Compile Include="Actions.prg" />
+    <Compile Include="Designers\Base.prg" />
+    <Compile Include="Designers\ControlOrder.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Designers\Controls.prg" />
+    <Compile Include="Designers\Editor.prg" />
+    <Compile Include="Designers\EntityParser.prg" />
+    <Compile Include="Designers\FillUsing.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Designers\Funcs.prg" />
+    <Compile Include="Designers\Properties.prg" />
+    <Compile Include="Designers\PropGrid.prg" />
+    <Compile Include="Designers\Resources.prg" />
+    <Compile Include="Designers\Template.prg" />
+    <Compile Include="Designers\ToolBox.prg" />
+    <Compile Include="Designers\Various.prg" />
+    <Compile Include="Designers\VODBServerEditor.prg" />
+    <Compile Include="Designers\VODBServerEditorIO.prg" />
+    <Compile Include="Designers\VOEditorsShared.prg" />
+    <Compile Include="Designers\VOFieldSpecEditor.prg" />
+    <Compile Include="Designers\VOFieldSpecEditorIO.prg" />
+    <Compile Include="Designers\VOMenuEditor.prg" />
+    <Compile Include="Designers\VOMenuEditorIO.prg" />
+    <Compile Include="Designers\VOWEDControl.prg" />
+    <Compile Include="Designers\VOWindowEditor.prg" />
+    <Compile Include="Designers\VOWindowEditorIO.prg" />
+    <Compile Include="Designers\Win32.prg" />
+    <Compile Include="DesignWindowItem.prg" />
+    <Compile Include="Functions.prg" />
+    <Compile Include="XSharp_DED.prg" />
+    <Compile Include="XSharp_MED.prg" />
+    <Compile Include="XSharp_FED.prg" />
+    <Compile Include="Interfaces.prg" />
+    <Compile Include="Properties\AssembyInfo.prg" />
+    <Compile Include="XSharp_WedControl.prg" />
+    <Compile Include="XSharp_EditorStream.prg" />
+    <Compile Include="XSharp_WED.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Designers\" />
+    <Folder Include="Properties\" />
+    <Folder Include="Templates\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
+      <Name>CodeGenerator</Name>
+      <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
+      <Name>CodeModel</Name>
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="cavotb.bmp" />
+    <None Include="Designers\Readme.txt" />
+    <None Include="Readme.txt" />
+    <None Include="Templates\cavoded.tpl" />
+    <None Include="Templates\cavofed.tpl" />
+    <None Include="Templates\cavowed.inf" />
+    <None Include="Templates\cavowed.tpl" />
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+</Project>

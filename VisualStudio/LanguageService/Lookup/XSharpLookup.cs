@@ -610,6 +610,14 @@ namespace XSharp.LanguageService
                 if (startOfExpression)
                 {
                     currentType = startType;
+                    if (location.Member.Kind.IsClassMember(location.Project.Dialect))
+                    {
+                        visibility = Modifiers.Private;
+                    }
+                    else
+                    {
+                        visibility = Modifiers.Public;
+                    }
                     additionalUsings.Clear();
                 }
 
@@ -713,11 +721,9 @@ namespace XSharp.LanguageService
                                   tokenType == XSharpLexer.COLONCOLON ||
                                   XSharpLexer.IsPseudoFunction(tokenType) ||
                                   isType;
-                // switch visibility
-                visibility = Modifiers.Public;
                 if (isId)
                 {
-                    if (tokenType == XSharpLexer.SELF || startOfExpression)
+                    if (tokenType == XSharpLexer.SELF)
                     {
                         visibility = Modifiers.Private;
                     }

@@ -303,7 +303,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="generatepkgdef.cmd" />
     <Content Include="Snippets\Snippets\case.snippet">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -628,7 +628,6 @@
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
       <Name>CodeDomProvider</Name>
     </ProjectReference>
-    
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>CodeModel</Name>

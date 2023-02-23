@@ -60,7 +60,6 @@
     <Compile Include="XSharpDocChanger.cs" />
     <Compile Include="XSharpDocsPlugIn.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

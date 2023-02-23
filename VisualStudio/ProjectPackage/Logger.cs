@@ -69,39 +69,45 @@ namespace XSharp.Project
                 Log.Information(doubleline);
                 Log.Information("Started Logging");
                 string version = "";
+                bool isOpening = false;     // This is TRUE when we are opening VS with a solution from the commandline
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     var ver = await VS.Shell.GetVsVersionAsync();
+                    isOpening = await VS.Solutions.IsOpeningAsync();
                     version = ver.ToString();
                 });
                 Log.Information("Visual Studio Exe     : " + Process.GetCurrentProcess().MainModule.FileName);
                 Log.Information("Visual Studio version : " + version);
                 Log.Information("XSharp Project System : " + Constants.FileVersion);
+                Log.Information("Commandline           : " + Environment.CommandLine.ToString());
 
 
                 Log.Information(doubleline);
                 var sol = VS.Solutions.GetCurrentSolution();
-                if (sol != null)
+                if (sol != null )
                 {
                     Log.Information(singleline);
                     Log.Information("Current solution: " + sol.FullPath);
                     // we only want to enum projects when the solution explorer window is already visible
-                    bool enumProjects = false;
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    bool enumProjects = ! isOpening;
+                    if ( enumProjects)
                     {
-                        try
+                        ThreadHelper.JoinableTaskFactory.Run(async delegate
                         {
-                            var solwin = await VS.Windows.GetSolutionExplorerWindowAsync();
-                            enumProjects = solwin != null;
-                        }
-                        catch ( Exception)
-                        {
-                            // This happens when the solution explorer is not visible yet
-                            // do not enum the projects then
-                            enumProjects = false;
-                        }
+                            try
+                            {
+                                var solwin = await VS.Windows.GetSolutionExplorerWindowAsync();
+                                enumProjects = solwin != null;
+                            }
+                            catch (Exception)
+                            {
+                                // This happens when the solution explorer is not visible yet
+                                // do not enum the projects then
+                                enumProjects = false;
+                            }
 
-                    });
+                        });
+                    }
                     if (enumProjects)
                     {
                         var children = EnumChildren(sol, SolutionItemType.Project);

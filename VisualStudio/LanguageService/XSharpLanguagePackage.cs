@@ -38,7 +38,6 @@ namespace XSharp.LanguageService
     [Guid(XSharpConstants.guidXSharpLanguageServicePkgString)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string,PackageAutoLoadFlags.BackgroundLoad)]
-    [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideService(typeof(XSharpLanguagePackage), ServiceName = XSharpConstants.LanguageServiceName, IsAsyncQueryable = false)]//
     // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
@@ -48,6 +47,10 @@ namespace XSharp.LanguageService
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ch", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".rc", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    // This tells VS that we support Code and Designer view
+    // The guids are VS specific and should not be changed
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Code_string, IsTrusted = true)]
     [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".prg")]
     [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".xs")]
     [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".ppo")]
@@ -65,18 +68,18 @@ namespace XSharp.LanguageService
                          EnableAdvancedMembersOption = true,
                          EnableAsyncCompletion = true, // Supports background parsing
                          EnableCommenting = true,      // Supports commenting out code
+                         EnableFormatSelection = true,
                          EnableLineNumbers = true,
+                         HideAdvancedMembersByDefault = true,
                          MatchBraces = true,
                          MatchBracesAtCaret = true,
                          MaxErrorMessages = 10,
                          QuickInfo = true,
-                         RequestStockColors = false,   // Supplies custom colors
+                         RequestStockColors = true,   // Supplies custom colors
                          ShowCompletion = true,
                          ShowDropDownOptions = true,    // Supports NavigationBar
                          ShowMatchingBrace = true,
                          ShowSmartIndent = true,
-                         EnableFormatSelection = true,
-                         HideAdvancedMembersByDefault = true,
                          SingleCodeWindowOnly = false,
                          ShowHotURLs = true,
                          SupportCopyPasteOfHTML = true
@@ -94,10 +97,6 @@ namespace XSharp.LanguageService
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
     [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), XSharpConstants.LanguageName, null, "Formatting", pageNameResourceId: "202", keywordListResourceId: 302)]
     [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), XSharpConstants.LanguageName, null, "Options", pageNameResourceId: "203", keywordListResourceId: 303)]
-    // This tells VS that we support Code and Designer view
-    // The guids are VS specific and should not be changed
-    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
-    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Code_string, IsTrusted = true)]
     [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), XSharpConstants.LanguageName, null, "Settings Completion", pageNameResourceId: "204",keywordListResourceId:304)]
     [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), XSharpConstants.LanguageName, null, "Intellisense", pageNameResourceId: "205", keywordListResourceId: 305)]
     [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), XSharpConstants.LanguageName, null, "Indentation", pageNameResourceId: "206", keywordListResourceId: 306)]

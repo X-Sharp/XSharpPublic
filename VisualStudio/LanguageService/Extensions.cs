@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using LanguageService.CodeAnalysis.Text;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
@@ -137,10 +138,13 @@ namespace XSharp.LanguageService
                 {
                     // try again with just the last element in the list
                     var token = tokenList[tokenList.Count - 1];
-                    tokenList.Clear();
-                    tokenList.Add(token);
-                    location = location.With(currentNS);
-                    result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
+                    if (token.Type == XSharpLexer.ID)
+                    {
+                        tokenList.Clear();
+                        tokenList.Add(token);
+                        location = location.With(currentNS);
+                        result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
+                    }
                 }
                 return result;
             }

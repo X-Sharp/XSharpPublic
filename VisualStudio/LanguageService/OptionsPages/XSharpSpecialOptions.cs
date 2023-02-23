@@ -58,7 +58,7 @@ namespace XSharp.LanguageService.OptionsPages
             _page.EnableQuickInfoLog = this.chkEnableQuickInfoLog.Checked;
             _page.EnableTypelookupLog = this.chkEnableTypeLookupLog.Checked;
             _page.EnableReferenceInfoLog = this.chkEnableReferenceLog.Checked;
-            XSharpLanguageService.Instance.optionWasChanged = true;
+            XSharpLanguagePackage.Instance.optionWasChanged = true;
             Constants.WriteSetting("Log2Debug", chkLogToDebug.Checked ? 1 : 0);
             Constants.WriteSetting("Log2File", chkLogToFile.Checked ? 1 : 0);
 

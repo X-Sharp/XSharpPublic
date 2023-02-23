@@ -105,6 +105,13 @@ BEGIN NAMESPACE XSharpModel
 
     STATIC METHOD Open(cFile as STRING) AS VOID
         WriteOutputMessage("XModel.Solution.OpenSolution() "+cFile)
+        IF IsOpen
+            IF String.Compare(_fileName, cFile, TRUE) == 0
+                WriteOutputMessage("XModel.Solution.OpenSolution() File was already open"+cFile)
+                RETURN
+            ENDIF
+            Close()
+        ENDIF
         _fileName := cFile
         var folder := Path.GetDirectoryName(_fileName)
         folder     := Path.Combine(folder, ".vs")

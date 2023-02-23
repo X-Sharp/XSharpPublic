@@ -37,7 +37,7 @@ namespace XSharp.LanguageService.OptionsPages
             initControl();
             control.SaveValues();
             base.SaveSettingsToStorage();
-            XSharpLanguageService.Instance.optionWasChanged = true;
+            XSharpLanguagePackage.Instance.optionWasChanged = true;
         }
         public override void ResetSettings()
         {

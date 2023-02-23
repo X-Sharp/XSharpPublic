@@ -431,6 +431,15 @@ BEGIN NAMESPACE XSharpModel
             END SWITCH
         RETURN (LONG) imgK + (LONG)imgO
 
+        STATIC METHOD AddRange<T>(SELF list AS IList<T>, items AS IEnumerable<T> ) AS VOID WHERE T IS CLASS
+            IF list IS List<T> VAR ListT
+                ListT:AddRange(items)
+            ELSE
+                FOREACH VAR item IN items
+                    list:Add(item)
+                NEXT
+            ENDIF
+            RETURN
 
     END CLASS
 END NAMESPACE

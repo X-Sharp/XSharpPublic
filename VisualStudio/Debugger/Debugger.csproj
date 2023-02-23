@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <Import Project="..\Common2019.props" />
+  <PropertyGroup>
+    <!--Visual Studio will use the value of will use MinimumVisualStudioVersion to detect if a project needs to be updated.
+    To allow the project to be loaded in multiple VS versions, conditionally check the project -->
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputType>Library</OutputType>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <RootNamespace>XSharp.Debugger</RootNamespace>
+    <AssemblyName>XSharp.Debugger</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
+    <ProjectGuid>{16272550-75E6-4B9D-91E3-653BD141C755}</ProjectGuid>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GeneratePkgDefFile>false</GeneratePkgDefFile>
+    <ExtensionInstallationFolder>XSharp\Project</ExtensionInstallationFolder>
+    <CreateVsixContainer>False</CreateVsixContainer>
+    <DeployExtension>False</DeployExtension>
+    <DeployExtension Condition=" '$(Configuration)' == 'Release' ">false</DeployExtension>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;XSHARP</DefineConstants>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>1762;NU1603</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>XSHARP</DefineConstants>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>1762;NU1603</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VsdConfigFile>$(OutputPath)\XSharp.Debugger.vsdconfig</VsdConfigFile>
+    <!--Root directory to Concord SDK install; includes the trailing backslash '\'.-->
+    <ConcordSDKDir>$(VSSDKRoot)VisualStudioIntegration\</ConcordSDKDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Constants.cs">
+      <Link>Constants.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\constantsMethods.cs">
+      <Link>constantsMethods.cs</Link>
+    </Compile>
+    <Compile Include="AddressComparer.cs" />
+    <Compile Include="ExpressionCompiler\XSharpExpressionCompiler.cs" />
+    <Compile Include="Formatter\XSharpFormatter.cs" />
+    <Compile Include="FrameDecoder\XSharpFrameDecoder.cs" />
+    <Compile Include="Import\ImportedField.cs" />
+    <Compile Include="Import\ImportedFile.cs" />
+    <Compile Include="Import\ImportedMember.cs" />
+    <Compile Include="Import\ImportedMethod.cs" />
+    <Compile Include="Import\ImportedModule.cs" />
+    <Compile Include="Import\ImportedType.cs" />
+    <Compile Include="Import\Importer.cs" />
+    <Compile Include="Import\XSharpTypeProvider.cs" />
+    <Compile Include="LocalVariable.cs" />
+    <Compile Include="ResultProvider\XSharpResultProvider.cs" />
+    <Compile Include="TypeSystem.cs" />
+    <Compile Include="Variable.cs" />
+    <Compile Include="InspectionScope.cs" />
+    <Compile Include="InspectionSession.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility.cs" />
+    <Compile Include="VsVersion.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <VsdConfigXmlFiles Include="ResultProvider\ResultProvider.vsdconfigxml" />
+    <VsdConfigXmlFiles Include="ExpressionCompiler\ExpressionCompiler.vsdconfigxml" />
+    <VsdConfigXmlFiles Include="Formatter\Formatter.vsdconfigxml" />
+    <VsdConfigXmlFiles Include="FrameDecoder\FrameDecoder.vsdconfigxml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.Toolkit.15">
+      <Version>15.0.492</Version>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.DiaSymReader">
+      <Version>1.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Debugger.Metadata">
+      <Version>15.9.28307</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.Debugger.VSDConfigTool">
+      <Version>16.10.1051404</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Metadata">
+      <Version>7.0.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="readme.txt" />
+    <Content Include="XSharp.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="XSharp.CodeAnalysis">
+      <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Evaluator">
+      <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>CodeModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <!--
+    To specify a different registry root to register your package, uncomment the TargetRegistryRoot
+    tag and specify a registry root in it.
+    <TargetRegistryRoot></TargetRegistryRoot>
+    -->
+    <RegisterOutputPackage>true</RegisterOutputPackage>
+    <RegisterWithCodebase>true</RegisterWithCodebase>
+  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

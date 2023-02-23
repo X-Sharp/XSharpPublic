@@ -2997,7 +2997,6 @@ namespace XSharp.Project
             {
                 case AssemblyReferences:
                 //case CSharp:
-                case CPS:
                 case DeclaredSourceItems:
                 case DotNet:
                 case Managed:
@@ -3015,7 +3014,7 @@ namespace XSharp.Project
                 case AspNetCore:
                 case BuildAndroidTarget:
                 case BuildiOSProject:
-                //case CPS:
+                case CPS:
                 case DependenciesTree:
                 case DependencyPackageManagement:
                 case DNX:

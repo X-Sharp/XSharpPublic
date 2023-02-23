@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 
-//using XSharp.LanguageService;
+using XSharp.LanguageService;
 using XSharp.Project.WPF;
 using System.ComponentModel;
 using System.Threading;
@@ -111,19 +111,7 @@ namespace XSharp.Project
 
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
-    // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ch", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".rc", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
-    // This tells VS that we support Code and Designer view
-    // The guids are VS specific and should not be changed
-    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
-    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Code_string, IsTrusted = true)]
-
+ 
     // Editors for VOBinaries
     [ProvideEditorExtension(typeof(VOFormEditorFactory), ".xsfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
     [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".xsmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
@@ -158,7 +146,7 @@ namespace XSharp.Project
         private uint shellCookie;
 
         public static XSharpProjectPackage XInstance = null;
-       // private XSharpLanguageService _langservice;
+        //private XSharpLanguageService _langservice;
 
 
         // =========================================================================================
@@ -203,7 +191,6 @@ namespace XSharp.Project
 
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
             // Indicate how to open the different source files : SourceCode or Designer ??
-            this.RegisterEditorFactory(new XSharpEditorFactory(this));
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
             // editors for the binaries

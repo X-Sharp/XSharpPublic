@@ -26,15 +26,16 @@
  <MicrosoftNetCompilersToolsetVersion>3.11.0</MicrosoftNetCompilersToolsetVersion>
   </PropertyGroup>
   <PropertyGroup>
+    <_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
     <!-- Versions used by several individual references below -->
     <RoslynDiagnosticsNugetPackageVersion>3.3.2-beta1.20562.1</RoslynDiagnosticsNugetPackageVersion>
-    <MicrosoftCodeAnalysisNetAnalyzersVersion>7.0.0</MicrosoftCodeAnalysisNetAnalyzersVersion>
+    <MicrosoftCodeAnalysisNetAnalyzersVersion>6.0.0</MicrosoftCodeAnalysisNetAnalyzersVersion>
     <MicrosoftCodeAnalysisTestingVersion>1.0.1</MicrosoftCodeAnalysisTestingVersion>
     <CodeStyleAnalyzerVersion>3.8.0</CodeStyleAnalyzerVersion>
     <VisualStudioEditorPackagesVersion>16.8.181</VisualStudioEditorPackagesVersion>
-    <ILToolsPackageVersion>5.0.0-alpha1.19409.1</ILToolsPackageVersion>
+    <ILToolsPackageVersion>5.0.0</ILToolsPackageVersion>
     <MicrosoftVisualStudioLanguageServerProtocolPackagesVersion>16.9.150</MicrosoftVisualStudioLanguageServerProtocolPackagesVersion>
-    <MicrosoftVisualStudioShellPackagesVersion>16.8.30406.65-pre</MicrosoftVisualStudioShellPackagesVersion>
+    <MicrosoftVisualStudioShellPackagesVersion>16.8.30709.123</MicrosoftVisualStudioShellPackagesVersion>
     <!-- The version of Roslyn we build Source Generators against that are built in this
          repository. This must be lower than MicrosoftNetCompilersToolsetVersion,
          but not higher than our minimum dogfoodable Visual Studio version, or else

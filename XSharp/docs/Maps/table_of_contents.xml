@@ -137,9 +137,6 @@
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
     <caption translate="true">X# Documentation</caption>
-    <topicref type="topic" id="423888143662582" build="ALL" modified="2016-05-04T10:32:31.762Z" icon="0" href="VersionHistory">
-      <caption translate="true">Version History</caption>
-    </topicref>
     <topicref type="topic" id="423889533736020" build="ALL" modified="2016-01-30T22:08:40.876Z" icon="0" href="Introduction">
       <caption translate="true">Getting Started with X#</caption>
       <topicref type="topic" id="425165252463386" build="ALL" modified="2016-05-26T08:37:03.149Z" icon="0" href="Dialects">
@@ -274,6 +271,9 @@
       <topicref type="topic" id="428708026773084" build="ALL" modified="2020-02-25T17:03:05.673Z" icon="0" href="Acknowledgements">
         <caption translate="true">Acknowledgements</caption>
       </topicref>
+    </topicref>
+    <topicref type="topic" id="423888143662582" build="ALL" modified="2016-05-04T10:32:31.762Z" icon="0" href="VersionHistory">
+      <caption translate="true">Version History</caption>
     </topicref>
     <topicref type="topic" id="428984094992566" build="ALL" modified="2017-06-12T12:42:21.816Z" icon="0" href="MigratingappsfromVOtoX">
       <caption translate="true">Migrating apps from VO to X#</caption>

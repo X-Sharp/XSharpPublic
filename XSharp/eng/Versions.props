@@ -10,6 +10,12 @@ See License.txt in the project root for license information.
   <!--
     XSharp version
   -->
+  <!--This next propertygroup fixes the issue that the solution cannot be loaded in VS2022-->
+  <PropertyGroup>
+    <CommandLineArgsForDesignTimeEvaluation>-langversion:$(LangVersion)</CommandLineArgsForDesignTimeEvaluation>
+    <CommandLineArgsForDesignTimeEvaluation Condition="'$(DefineConstants)' != ''">$(CommandLineArgsForDesignTimeEvaluation) -define:$(DefineConstants)</CommandLineArgsForDesignTimeEvaluation>
+  </PropertyGroup>
+  <!--End of fix-->
   <PropertyGroup>
     <MajorVersion>2</MajorVersion>
     <MinorVersion>15</MinorVersion>
@@ -29,7 +35,7 @@ See License.txt in the project root for license information.
   </PropertyGroup>
   <PropertyGroup>
     <!-- Versions used by several individual references below -->
-	<_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
+    <_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
     <RoslynDiagnosticsNugetPackageVersion>3.3.2</RoslynDiagnosticsNugetPackageVersion>
     <MicrosoftCodeAnalysisNetAnalyzersVersion>6.0.0</MicrosoftCodeAnalysisNetAnalyzersVersion>
     <MicrosoftCodeAnalysisTestingVersion>1.0.1</MicrosoftCodeAnalysisTestingVersion>

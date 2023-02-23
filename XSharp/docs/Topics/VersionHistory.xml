@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-21T16:20:15.062+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-02-23T14:09:28.563+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -45,7 +45,7 @@
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed runtime error in DBSort() (#1196)</li>
       <li styleclass="Body Text">Fixed error in the ConvertFromCodePageToCodePage function</li>
-      <li styleclass="Body Text">A Changed in the startup code for the XSharp.RuntimeState could lead to incorrect codepages</li>
+      <li styleclass="Body Text">A change in the startup code for the XSharp.RuntimeState could lead to incorrect codepages</li>
     </list>
     <para styleclass="Heading2">Visual Studio integration</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
@@ -78,6 +78,14 @@
       <li styleclass="Body Text">Rebuilding the intellisense database no longer restarts Visual Studio (#1206)</li>
       <li styleclass="Body Text">Now the VO Menu Editor uses the same menu item DEFINE values, as those used in the original VO app (re-porting of the app is necessary for this to work) (#1207)</li>
       <li styleclass="Body Text">A Change to our project system and language service could lead to broken &quot;Find in Files&quot; functionality in some versions of Visual Studio. &#160;This has been fixed.</li>
+      <li styleclass="Body Text">Fixed an issue where goto definition was not working for protected or private members</li>
+      <li styleclass="Body Text">Fixed an issue where for certain files the Dropdown combo boxes on top of the editor were not correctly synchronized.</li>
+    </list>
+    <para styleclass="Heading2">Documentation</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Changes</text></para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Some methods in the typed SDK were documented as Function. They are now properly documented as Method</li>
+      <li styleclass="Body Text">Property Lists and Method lists for classes now include references to methods that are inherited from parent classes. Methods that are inherited from .Net classes, such as ToString() from System.Object are NOT included.</li>
     </list>
     <para styleclass="Heading1">Changes in 2.14.0.2, 3 &amp; 4</para>
     <para styleclass="Heading2">Visual Studio Integration</para>

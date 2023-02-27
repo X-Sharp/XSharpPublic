@@ -138,10 +138,12 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
         VAR oCode := SUPER:GetCodeContents()
         // remove IDM_MenuName
         oCode:aDefines:RemoveAt(0)
+        oCode:aDefinesMenuRc:RemoveAt(0)
         oCode:aDefineValues:RemoveAt(0)
         IF SELF:HasAccelerators .and. oCode:aDefines[0]:Startswith("IDA_")
             // remove IDA_MenuName
             oCode:aDefines:RemoveAt(0)
+            oCode:aDefinesMenuRc:RemoveAt(0)
             oCode:aDefineValues:RemoveAt(0)
         ENDIF
         RETURN oCode
@@ -186,8 +188,8 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 
     METHOD _WriteDefines(oGenerator AS CodeGenerator, oCode AS CodeContents ) AS VOID
         // in x#, always add the #defines in the .rc header, no need to put them in a .vh anymore
-        FOR VAR nDef := 0 UPTO oCode:aDefines:Count - 1
-            oGenerator:AddLine("#define " +oCode:aDefines[nDef] +" "+ oCode:aDefineValues[nDef])
+        FOR VAR nDef := 0 UPTO oCode:aDefinesMenuRc:Count - 1
+            oGenerator:AddLine("#define " +oCode:aDefinesMenuRc[nDef] +" "+ oCode:aDefineValues[nDef])
         NEXT
 
     METHOD SaveRC(oStream AS XSharp_EditorStream , oAccelStream AS XSharp_EditorStream , oCode AS CodeContents ) AS LOGIC

@@ -260,6 +260,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!this.State.Alive &&
                 !this.State.Reported &&
                 !statement.WasCompilerGenerated &&
+#if XSHARP
+                !statement.Syntax.XGenerated && 
+#endif
                 statement.Syntax.Span.Length != 0)
             {
                 var firstToken = statement.Syntax.GetFirstToken();

@@ -526,6 +526,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       StmtBlk=statementBlock
                       ((e=END (DO|WHILE)? | e=ENDDO) eos)?	#whileStmt
                     | NOP (LPAREN RPAREN )? end=eos					#nopStmt
+
                     | f=FOR
                         ( AssignExpr=expression
                         | (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier Op=assignoperator Expr=expression
@@ -534,12 +535,18 @@ statement           : Decl=localdecl                            #declarationStmt
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=eos
                       StmtBlk=statementBlock
-                      ((e = NEXT | e = END FOR)? eos)?	      #forStmt
-                    | i=IF IfStmt=ifElseBlock
-                      ((e=END IF? | e=ENDIF)   eos)?			#ifStmt
+                      ((e = NEXT | e = END FOR)? eos)?	                  #forStmt
+
+                    | i=IF IfBlocks += condBlock[$i]
+                      (e=ELSEIF IfBlocks += condBlock[$e])*
+                      (ELSE eos ElseStmtBlk=statementBlock)? 
+                      ((e=END IF? | e=ENDIF)   eos)?                      #ifStmt
+
                     | DO CASE end=eos
-                      CaseStmt=caseBlock?
+                      (c=CASE CaseBlocks +=condBlock[$c])*
+                      (OTHERWISE end=eos OtherwiseStmtBlk=statementBlock)?
                       ((e=END CASE? | e=ENDCASE)   eos)?                  #caseStmt
+
                     | Key=EXIT end=eos                                    #jumpStmt
                     | Key=LOOP end=eos                                    #jumpStmt
                     | Key=BREAK Expr=expression? end=eos                  #jumpStmt
@@ -547,6 +554,7 @@ statement           : Decl=localdecl                            #declarationStmt
                     | Q=(QMARK | QQMARK)
                        (Exprs+=expression (COMMA Exprs+=expression)*)?
                        end=eos                                            #qoutStmt
+
                     | BEGIN SEQUENCE end=eos
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
@@ -568,11 +576,14 @@ statement           : Decl=localdecl                            #declarationStmt
                       IN Container=expression end=eos
                       StmtBlk=statementBlock
                       ((e=NEXT |e=END FOR)? eos)?	    #foreachStmt
+
                     | Key=THROW Expr=expression? end=eos                  #jumpStmt
+
                     | T=TRY end=eos StmtBlk=statementBlock
                       (CATCH CatchBlock+=catchBlock?)*
                       (F=FINALLY eos FinBlock=statementBlock)?
                       (e=END TRY? eos)?								                    #tryStmt
+
                     | BEGIN Key=LOCK Expr=expression end=eos
                       StmtBlk=statementBlock
                       (e=END LOCK? eos)?						                      #blockStmt
@@ -617,14 +628,9 @@ statement           : Decl=localdecl                            #declarationStmt
                     | {validExpressionStmt()}? Exprs+=expression (COMMA Exprs+=expression)*  end=eos  #expressionStmt
 	                ;
 
-ifElseBlock         : Cond=expression Then=THEN? end=eos StmtBlk=statementBlock
-                      ( ELSEIF ElseIfBlock=ifElseBlock
-                    | ELSE eos ElseBlock=statementBlock)?
-                    ;
+condBlock[IToken st = null] : Cond=expression Then=THEN? end=eos StmtBlk=statementBlock
+                         ;
 
-caseBlock           : Key=CASE Cond=expression end=eos StmtBlk=statementBlock NextCase=caseBlock?
-                    | Key=OTHERWISE end=eos StmtBlk=statementBlock
-                    ;
 
 // Note that literalValue is not enough. We also need to support members of enums
 switchBlock         : (
@@ -1342,7 +1348,6 @@ xppinlineMethod     : Attributes=attributes?                                 // 
 
 xppmemberModifiers  : ( Tokens+=( CLASS | STATIC | ABSTRACT | UNSAFE | ASYNC | EXTERN) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
-
 
 
 /// FoxPro Parser definities

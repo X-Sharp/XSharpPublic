@@ -1322,9 +1322,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 case XP.MEMVAR:
                     // handled in the Enter method
-                    context.Put(_syntaxFactory.EmptyStatement(
-                        attributeLists: default,
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    context.Put(GenerateEmptyStatement());
                     break;
                 default:
                     Debug.Assert(false, "Unknown type in XbaseDecl", "Type = " + context.T.Text);
@@ -2209,7 +2207,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // generate a default catch block
                 // the code inside generateRecoverBlock
                 // also takes care of compiler option /vo17
-                var emptyStmt = _syntaxFactory.EmptyStatement(null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                var emptyStmt = GenerateEmptyStatement();
                 catchClause = generateRecoverBlock(context, MakeBlock(emptyStmt), null);
             }
             if (context.FinBlock != null)
@@ -2301,17 +2299,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var assignstmt3 = GenerateExpressionStatement(assign3, context, true);
 
                 // else block that calls _SequenceError  or assigns the Exception to uValue
-                var elseClause = _syntaxFactory.ElseClause(
-                    SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
-                    assignstmt3);
+                var elseClause = GenerateElseClause(assignstmt3);
 
                 // if 2
                 var ifstmt = GenerateIfStatement(condition2, assignstmt2, elseClause);
                 ifstmt.XGenerated = true;
                 // if 2 is assigned to the else block of if 1
-                elseClause = _syntaxFactory.ElseClause(
-                    SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
-                    ifstmt);
+                elseClause = GenerateElseClause(ifstmt);
                 // if 1
                 ifstmt = GenerateIfStatement(condition1, assignstmt1, elseClause);
                 ifstmt.XGenerated = true;
@@ -2331,7 +2325,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //
                 // endif
                 var exprstmt3 = GenerateExpressionStatement(callRtError, context, true);
-                var elseclause = _syntaxFactory.ElseClause(SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword), exprstmt3);
+                var elseclause = GenerateElseClause(exprstmt3);
                 var exprstmt1 = GenerateExpressionStatement(callRecover, context, true);
 
                 var ifstmt = GenerateIfStatement(condition1, exprstmt1, elseclause);
@@ -2385,42 +2379,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (jmpstmt.Key.Type == XP.BREAK)
                         return false;
                     break;
+
                 case XP.IfStmtContext ifstmt:
-                    var ifelsestmt = ifstmt.IfStmt;
-                    var elsestmt = ifelsestmt?.ElseBlock;
-                    // The first ifelsestmt should always have a value, but better safe than sorry
-                    // process to the end of the list
-                    // when there is no else, then we need a break
-                    // otherwise process every statement list
-                    while (ifelsestmt != null)                     //
+                    foreach (var block in ifstmt._IfBlocks)
                     {
-                        if (NeedsReturn(ifelsestmt.StmtBlk._Stmts))
-                        {
+                        if (NeedsReturn(block.StmtBlk._Stmts))
                             return true;
-                        }
-                        elsestmt = ifelsestmt.ElseBlock;
-                        ifelsestmt = ifelsestmt.ElseIfBlock;
                     }
-                    // No Else, so there is at least one block that does not end with a RETURN etc
-                    if (elsestmt == null || elsestmt._Stmts?.Count == 0)
-                    {
+                    if (ifstmt.ElseStmtBlk == null)
                         return true;
-                    }
-                    return NeedsReturn(elsestmt._Stmts);
+                    return NeedsReturn(ifstmt.ElseStmtBlk._Stmts);
 
                 case XP.CaseStmtContext docasestmt:
-                    var casestmt = docasestmt.CaseStmt;     // CaseBlock, there may be no blocks at all.
-                    int lastkey = XP.CASE;
-                    while (casestmt != null)                // otherwise is also a CaseBlock stored in NextCase
+                    foreach (var block in docasestmt._CaseBlocks)
                     {
-                        if (NeedsReturn(casestmt.StmtBlk._Stmts))
+                        if (NeedsReturn(block.StmtBlk._Stmts))
                             return true;
-                        lastkey = casestmt.Key.Type;
-                        casestmt = casestmt.NextCase;
                     }
-                    return lastkey == XP.CASE; // There is no otherwise
+                    if (docasestmt.OtherwiseStmtBlk == null)
+                        return true;
+                    return NeedsReturn(docasestmt.OtherwiseStmtBlk._Stmts);
                                                // all branches end with a return  statement
-
                 case XP.SwitchStmtContext swstmt:
                     bool hasdefault = false;
                     foreach (var swBlock in swstmt._SwitchBlock)
@@ -4224,7 +4203,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Workarea and Macro
         public override void ExitFielddecl([NotNull] XP.FielddeclContext context)
         {
-            var stmt = _syntaxFactory.EmptyStatement(attributeLists: default, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            var stmt = GenerateEmptyStatement();
             context.SetSequencePoint();
             context.Put(stmt);
             return;

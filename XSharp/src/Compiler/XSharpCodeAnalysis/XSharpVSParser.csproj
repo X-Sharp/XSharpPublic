@@ -64,10 +64,16 @@
     <Compile Remove="XSharpResources.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Generated\XSharpParser.cs">
+      <DependentUpon>Parser\XSharp.g4</DependentUpon>
+    </Compile>
+    <Compile Update="Generated\XSharpLexer.cs">
+      <DependentUpon>Parser\XSharpLexer.g4</DependentUpon>
+    </Compile>
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.tokens" />
     <None Include="Parser\*.g4" />
-    <None Include="Generated\*.*" />
+    <None Include="Generated\*.tokens" />
     <Compile Remove="Compilation\**" />
     <Compile Remove="Parser\XSharpTree*.*" />
     <Compile Remove="Binder\*.*" />

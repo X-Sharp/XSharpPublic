@@ -311,8 +311,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitCaseStmt([NotNull] XSharpParser.CaseStmtContext context)
         {
-            checkMissingKeyword(context.CaseStmt?.Start, context, "CASE or OTHERWISE");
+            if (context._CaseBlocks.Count == 0)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_EmptyCase));
+            }
             checkMissingKeyword(context.e, context, "END[CASE]");
+        }
+        public override void ExitCondBlock([NotNull] XSharpParser.CondBlockContext context)
+        {
+            if (context.Then != null && context.st != null && context.st.Type == XSharpLexer.CASE)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.Then));
+            }
         }
         public override void ExitTryStmt([NotNull] XSharpParser.TryStmtContext context)
         {

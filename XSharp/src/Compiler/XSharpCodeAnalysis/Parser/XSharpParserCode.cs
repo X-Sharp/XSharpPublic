@@ -559,11 +559,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public StatementBlockContext Statements { get { return StmtBlk; } }
         }
-        public partial class CaseBlockContext : IBlockStmtContext
-        {
-            public StatementBlockContext Statements { get { return StmtBlk; } }
-        }
-        public partial class IfElseBlockContext : IBlockStmtContext
+        public partial class CondBlockContext : IBlockStmtContext
         {
             public StatementBlockContext Statements { get { return StmtBlk; } }
         }

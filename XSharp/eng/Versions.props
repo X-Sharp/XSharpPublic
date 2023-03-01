@@ -10,12 +10,6 @@ See License.txt in the project root for license information.
   <!--
     XSharp version
   -->
-  <!--This next propertygroup fixes the issue that the solution cannot be loaded in VS2022-->
-  <PropertyGroup>
-    <CommandLineArgsForDesignTimeEvaluation>-langversion:$(LangVersion)</CommandLineArgsForDesignTimeEvaluation>
-    <CommandLineArgsForDesignTimeEvaluation Condition="'$(DefineConstants)' != ''">$(CommandLineArgsForDesignTimeEvaluation) -define:$(DefineConstants)</CommandLineArgsForDesignTimeEvaluation>
-  </PropertyGroup>
-  <!--End of fix-->
   <PropertyGroup>
     <MajorVersion>2</MajorVersion>
     <MinorVersion>15</MinorVersion>

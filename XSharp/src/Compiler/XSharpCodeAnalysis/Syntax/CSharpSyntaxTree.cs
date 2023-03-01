@@ -262,10 +262,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Our line numbers are 1 based and column numbers are zero based..
 
                     var xNode = snode.XNode as XSharpParserRuleContext;
-                    if (xNode is not XP.StatementContext)
+                    if (xNode is not XP.StatementContext )
                     {
                         switch (xNode.Parent)
                         {
+                            case XP.CaseStmtContext:
+                            case XP.IfStmtContext:
+                                // sequence point on the block condition
+                                // do not set the breakpoint on the top level
+                                break;
                             case XP.IMultiElementContext:
                             case XP.AccessMemberContext:
                             case XP.AssignmentExpressionContext:

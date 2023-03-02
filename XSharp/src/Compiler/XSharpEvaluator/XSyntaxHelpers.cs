@@ -224,6 +224,7 @@ namespace LanguageService.CodeAnalysis.CSharp.ExpressionEvaluator
                 SetOptionFromReference(f.Name + ".dll", ref xoptions);
             }
             XSharpOptions = xoptions;
+            compilation.Options.SetXSharpSpecificOptions(xoptions);
         }
     }
 }

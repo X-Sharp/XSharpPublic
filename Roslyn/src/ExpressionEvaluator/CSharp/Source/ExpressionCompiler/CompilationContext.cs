@@ -54,7 +54,9 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
             // could be cached.  
             // (Catch: what happens in a type context without a method def?)
             Compilation = GetCompilationWithExternAliases(compilation, methodDebugInfo.ExternAliasRecords);
-
+#if XSHARP
+            Compilation.Options.SetXSharpSpecificOptions(XSyntaxHelpers.XSharpOptions);
+#endif
             // Each expression compile should use a unique compilation
             // to ensure expression-specific synthesized members can be
             // added (anonymous types, for instance).

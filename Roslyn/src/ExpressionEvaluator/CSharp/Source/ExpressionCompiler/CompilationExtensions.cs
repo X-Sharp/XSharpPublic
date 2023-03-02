@@ -14,7 +14,7 @@ using Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE;
 using Microsoft.CodeAnalysis.ExpressionEvaluator;
 using Microsoft.CodeAnalysis.PooledObjects;
 #if XSHARP
-using XMetadataDecoder = Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.MetadataDecoder;
+using MetadataDecoder = Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.MetadataDecoder;
 #endif
 
 namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
@@ -23,11 +23,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
     {
         private static PENamedTypeSymbol GetType(PEModuleSymbol module, TypeDefinitionHandle typeHandle)
         {
-#if XSHARP
-            var metadataDecoder = new XMetadataDecoder(module);
-#else
             var metadataDecoder = new MetadataDecoder(module);
-#endif
             return (PENamedTypeSymbol)metadataDecoder.GetTypeOfToken(typeHandle);
         }
 
@@ -39,11 +35,8 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
         internal static PEMethodSymbol GetSourceMethod(this CSharpCompilation compilation, Guid moduleVersionId, MethodDefinitionHandle methodHandle)
         {
             var method = GetMethod(compilation, moduleVersionId, methodHandle);
-#if XSHARP
-            var metadataDecoder = new XMetadataDecoder((PEModuleSymbol)method.ContainingModule);
-#else
             var metadataDecoder = new MetadataDecoder((PEModuleSymbol)method.ContainingModule);
-#endif
+
             var containingType = method.ContainingType;
             string sourceMethodName;
             if (GeneratedNames.TryParseSourceMethodNameFromGeneratedName(containingType.Name, GeneratedNameKind.StateMachineType, out sourceMethodName))
@@ -75,11 +68,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
             var reader = module.Module.MetadataReader;
             var typeHandle = reader.GetMethodDefinition(methodHandle).GetDeclaringType();
             var type = GetType(module, typeHandle);
-#if XSHARP
-            var method = (PEMethodSymbol)new XMetadataDecoder(module, type).GetMethodSymbolForMethodDefOrMemberRef(methodHandle, type);
-#else
             var method = (PEMethodSymbol)new MetadataDecoder(module, type).GetMethodSymbolForMethodDefOrMemberRef(methodHandle, type);
-#endif
             return method;
         }
 
@@ -118,6 +107,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator
                 options = options.WithMetadataReferenceResolver(resolver);
             }
 #if XSHARP
+            // Make sure latest options are used to support late bounding etc.
             options = options.WithXSharpSpecificOptions(XSyntaxHelpers.XSharpOptions);
 #endif
 

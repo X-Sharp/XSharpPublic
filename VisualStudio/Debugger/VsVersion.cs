@@ -8,7 +8,7 @@ using Community.VisualStudio.Toolkit;
 
 namespace XSharpDebugger
 {
-    internal static class VsVersion
+    public static class VsVersion
     {
 
         static bool _vs15 = false;
@@ -17,16 +17,13 @@ namespace XSharpDebugger
         internal static bool Vs15 => _vs15;
         internal static bool Vs16 => _vs16;
         internal static bool Vs17 => _vs17;
-        static VsVersion()
+        public static async Task<bool> GetVersionAsync()
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                var vers = await VS.Shell.GetVsVersionAsync();
-                _vs15 = vers.Major == 15;
-                _vs16 = vers.Major == 16;
-                _vs17 = vers.Major == 17;
-            });
+            var vers = await VS.Shell.GetVsVersionAsync();
+            _vs15 = vers.Major == 15;
+            _vs16 = vers.Major == 16;
+            _vs17 = vers.Major == 17;
+            return true;
         }
-
     }
 }

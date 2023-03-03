@@ -118,6 +118,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             // Handle PCall() and Chr() in this special method
             BoundExpression result;
+            var originalErrors = diagnostics.AsEnumerable().ToArray();
             if (TryBindNameofOperator(node, diagnostics, out result))
             {
                 return result; // all of the binding is done by BindNameofOperator
@@ -184,6 +185,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             analyzedArguments.Free();
+            // Sometimes the /vo4 rules cause an ERR_AmbigCall
+            // When there was no other error then we try again
+            // See https://github.com/X-Sharp/XSharpPublic/issues/1211
+            if (diagnostics.HasAnyErrors() && Compilation.Options.HasOption(CompilerOption.Vo4, node))
+            {
+                var hasAmbigCall = diagnostics.AsEnumerable().Where(e => e.Code == (int)ErrorCode.ERR_AmbigCall).Any();
+                if (hasAmbigCall)
+                {
+                    // We have saved errors that were there before resolving the invocation expression in an array
+                    try
+                    {
+                        diagnostics.Clear();
+                        Compilation.Options.SuppressVo4 = true;
+                        result = BindXsInvocationExpression(node, diagnostics);
+                    }
+                    finally
+                    {
+                        diagnostics.AddRange(originalErrors);
+                        Compilation.Options.SuppressVo4 = false;
+                    }
+                }
+            }
             return result;
 
         }

@@ -154,11 +154,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics)
         {
             BoundExpression result;
-#if XSHARP
-            result = BindXsInvocationExpression(node, diagnostics);
-            if (result != null)
-               return result;
-#endif
+
             if (TryBindNameofOperator(node, diagnostics, out result))
             {
                 return result; // all of the binding is done by BindNameofOperator

@@ -27,6 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         #endregion
 
+        internal bool SuppressVo4;
         public bool MacroScript { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         //public bool VOAllowMissingReturns { get; private set; }  // Handled in the parser
@@ -149,7 +150,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CheckOption(option, VirtualInstanceMethods, syntax);
 
                 case CompilerOption.Vo4: // vo4
-                    return CheckOption(option, VOSignedUnsignedConversion, syntax);
+                    return !SuppressVo4 && CheckOption(option, VOSignedUnsignedConversion, syntax);
 
                 case CompilerOption.Vo6: //  ResolveTypedFunctionPointersToPtr: // vo6
                     return CheckOption(option, VOResolveTypedFunctionPointersToPtr, syntax);

@@ -2128,7 +2128,8 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         IF ! Expect(XSharpLexer.DLL)
             RETURN NULL
         ENDIF
-        IF ! ParseFuncProcType (OUT VAR kind)
+        LOCAL kind AS Kind
+        IF ! ParseFuncProcType (OUT kind)
             RETURN NULL
         ENDIF
         SELF:Consume()
@@ -3301,7 +3302,8 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         */
         LOCAL hs := "" AS STRING
         LOCAL thisId := "" AS STRING
-        IF ! ParseFuncProcType (OUT VAR kind)
+        LOCAL kind AS Kind
+        IF ! ParseFuncProcType (OUT kind)
             RETURN NULL
         ENDIF
         _modifiers:Add(SELF:Lt1)

@@ -328,6 +328,8 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
                     oOrder:InitValues((STRING)aIndexes[1,3,n,1])
                     SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oOrder:cGuid , "keyexp" , (STRING)aIndexes[1,3,n,2]})
                 NEXT
+            CATCH
+                NOP
             END TRY
         END IF
 

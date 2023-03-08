@@ -10,35 +10,35 @@ DoTest_2()
 ?
 DoTest_3()
 
+?
+DoTest_4()
+
 PROCEDURE DoTest_1()
 	? "No MEMVAR statement"
 	gcMemVarName := "MyMemVar_1"
 	CreateMemVarInAFunction_1( )
 
-	LOCAL lException := FALSE AS LOGIC
 	TRY
-		lException := TRUE
 		? "Memvar outside the function:"
-		? MemVarGet( gcMemVarName ) // testing123, exception in VO
-		lException := FALSE
+		? MemVarGet( gcMemVarName ) // Should throw exception
+		xAssert(FALSE)
+	CATCH
+	    xAssert(TRUE)
 	END TRY
-	xAssert(lException)
+
 
 PROCEDURE CreateMemVarInAFunction_1( )
 	MemVarPut( gcMemVarName, "testing123" )
 	? "Memvar inside the function it was created:"
 	? MemVarGet( gcMemVarName ) // testing123, OK
 	CheckInChild_1()
-
 PROCEDURE CheckInChild_1()
-	LOCAL lException := FALSE AS LOGIC
 	TRY
-		lException := TRUE
 		? "Memvar in a child function:"
-		? MemVarGet( gcMemVarName ) // testing123, exception in VO
-		lException := FALSE
+		? MemVarGet( gcMemVarName ) // testing123, exception in VO  ?
+	CATCH
+    	xAssert(FALSE)
 	END TRY
-	xAssert(lException)
 
 
 
@@ -46,18 +46,16 @@ PROCEDURE CheckInChild_1()
 PROCEDURE DoTest_2()
 	gcMemVarName := "MyMemVar_2"
 	? "using MEMVAR JustARandomMemvar"
-	
+
 	CreateMemVarInAFunction_2( )
 
-	LOCAL lException := FALSE AS LOGIC
 	TRY
-		lException := TRUE
 		? "Memvar outside the function:"
-		? MemVarGet( gcMemVarName ) // exception in both X# and VO
-		lException := FALSE
+		? MemVarGet( gcMemVarName ) // Should throw exception
+		xAssert(FALSE)
+	CATCH
+    	xAssert(TRUE)
 	END TRY
-	xAssert(lException)
-
 PROCEDURE CreateMemVarInAFunction_2( )
 	MEMVAR JustARandomMemvar
 	MemVarPut( gcMemVarName, "testing123" )
@@ -66,14 +64,13 @@ PROCEDURE CreateMemVarInAFunction_2( )
 	CheckInChild_2()
 
 PROCEDURE CheckInChild_2()
-	LOCAL lException := FALSE AS LOGIC
 	TRY
-		lException := TRUE
 		? "Memvar in a child function:"
-		? MemVarGet( gcMemVarName ) // testing123, exception in VO
-		lException := FALSE
+		? MemVarGet( gcMemVarName ) // Should throw exception
+		xAssert(TRUE)
+	CATCH
+	    XAssert(FALSE)
 	END TRY
-	xAssert(lException)
 
 
 
@@ -82,14 +79,13 @@ PROCEDURE DoTest_3()
 	gcMemVarName := "MyMemVar_3"
 	CreateMemVarInAFunction_3( )
 
-	LOCAL lException := FALSE AS LOGIC
 	TRY
-		lException := TRUE
 		? "Memvar outside the function:"
-		?  MemVarGet( gcMemVarName ) // exception in both X# and VO
-		lException := FALSE
+		?  MemVarGet( gcMemVarName ) // Should throw exception
+		xAssert(TRUE)
+	CATCH
+	    XAssert(TRUE)
 	END TRY
-	xAssert(lException)
 
 PROCEDURE CreateMemVarInAFunction_3( )
 	MEMVAR MyMemVar_3
@@ -99,23 +95,56 @@ PROCEDURE CreateMemVarInAFunction_3( )
 	CheckInChild_3()
 
 PROCEDURE CheckInChild_3()
-	LOCAL lException := FALSE AS LOGIC
 	TRY
-		lException := TRUE
 		? "Memvar in a child function:"
-		? MemVarGet( gcMemVarName ) // testing123, exception in VO
-		lException := FALSE
+		? MemVarGet( gcMemVarName ) // Should throw exception
+		xAssert(TRUE)
+	CATCH
+    	xAssert(FALSE)
 	END TRY
-	xAssert(lException)
+
+PROCEDURE DoTest_4()
+	gcMemVarName := "MyMemVar_2"
+	? "Create Memvar with codeblock"
+	MacroTest()
+
+	TRY
+		? "Memvar outside the function:"
+		? MemVarGet( gcMemVarName ) // Should throw exception
+		xAssert(FALSE)
+	CATCH
+    	xAssert(TRUE)
+	END TRY
+    PUBLIC &gcMemVarName
+	MacroTest()
+
+	TRY
+		? "Try again with Public "
+		? MemVarGet( gcMemVarName ) // Should throw exception
+		xAssert(TRUE)
+	CATCH
+    	xAssert(FALSE)
+	END TRY
 
 
+PROCEDURE MacroTest
+    local oCodeBlock as CodeBlock
+    oCodeBlock := GetCodeBlock()
+    oCodeBlock:Eval()
+    ? MemVarGet( gcMemVarName ) // testinblock, OK
+
+FUNCTION GetCodeBlock() AS CodeBlock
+    return {||MemVarPut(gcMemVarName,"testinblock")}
 
 
 PROC xAssert(l AS LOGIC)  AS VOID
 	IF l
 		? "Assertion passed"
 	ELSE
-//		THROW Exception{"Incorrect result"}
 		? "Incorrect result!!!!!!"
 	END IF
 RETURN
+
+FUNCTION DoNothing() AS String
+    // This should not generate a MemVarInit()
+    RETURN "Nothing"

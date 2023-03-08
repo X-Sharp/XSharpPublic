@@ -1260,6 +1260,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMemvardecl([NotNull] XP.MemvardeclContext context)
         {
             context.SetSequencePoint(context.end);
+            if (_options.SupportsMemvars)
+            {
+                CurrentMember.Data.HasMemVars = true;
+            }
             var stmts = _pool.Allocate<StatementSyntax>();
             switch (context.T.Type)
             {
@@ -3152,6 +3156,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 name = ins.Identifier.Text.ToUpper();
                 switch (name)
                 {
+                    case "MEXEC":
+                    case "MEMVARGET":
+                    case "MEMVARPUT":
+                    case "VARPUT":
+                    case "VARGET":
+                    case "__MEMVARPUT":
+                    case "__MEMVARGET":
+                    case "__VARPUT":
+                    case "__VARGET":
+                        if (_options.SupportsMemvars)
+                        {
+                            CurrentMember.Data.HasMemVars = true;
+                        }
+                        break;
                     case XSharpIntrinsicNames.PCall:
                     case XSharpIntrinsicNames.CCall:
                         if (GeneratePCCall(context, name == XSharpIntrinsicNames.PCall))
@@ -3234,7 +3252,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(_syntaxFactory.InvocationExpression(expr, argList));
                 return;
             }
-            else if (_options.VoInitAxitMethods && expr is MemberAccessExpressionSyntax)
+            else if (expr is MemberAccessExpressionSyntax maes)
+            {
+                var memname = maes.Name.Identifier.Text.ToUpper();
+                if (memname == "EVAL" && _options.SupportsMemvars)
+                {
+                    CurrentMember.Data.HasMemVars = true;
+                }
+            }
+            if (_options.VoInitAxitMethods && expr is MemberAccessExpressionSyntax)
             {
                 var mac = expr as MemberAccessExpressionSyntax;
                 var mName = mac.Name as IdentifierNameSyntax;
@@ -3497,7 +3523,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(attrs);
             }
 
-            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ || context.Data.HasMemVars || _options.HasOption(CompilerOption.UndeclaredMemVars, prc, PragmaOptions))
+            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ || _options.SupportsMemvars)
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
                 var finallystmts = _pool.Allocate<StatementSyntax>();
@@ -3607,7 +3633,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         finallystmts.Add(updatestmt);
 
                     }
-                    if (context.Data.HasMemVars || _options.HasOption(CompilerOption.UndeclaredMemVars, prc, PragmaOptions))
+                    if (_options.SupportsMemvars)
                     {
                         // VAR Xs$PrivatesLevel := XSharp.RT.Functions.__MemVarInit()
                         // in the finally
@@ -4372,7 +4398,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     | LPAREN Area=identifier RPAREN ALIAS AMP Field=expression  #aliasedFieldLate	    // (nCust)->&fldName
 
             */
-
             var fieldName = context.Field.Get<ExpressionSyntax>();
             if (context.Area != null)
             {
@@ -4395,6 +4420,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             | ( Id=identifier | LPAREN Alias=expression RPAREN)
                 ALIAS ( (LPAREN Expr=expression RPAREN) | Expr=expression )
            */
+            if (_options.SupportsMemvars)
+            {
+                CurrentMember.Data.HasMemVars = true;
+            }
             ExpressionSyntax alias;
             // check if Expr is simple name
 
@@ -4454,6 +4483,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMacro([NotNull] XP.MacroContext context)
         {
             // & LPAREN expression RPAREN
+            if (_options.SupportsMemvars)
+            {
+                CurrentMember.Data.HasMemVars = true;
+            }
             ExpressionSyntax expr;
             expr = context.Expr.Get<ExpressionSyntax>();
             var args = MakeArgumentList(MakeArgument(expr));
@@ -4466,6 +4499,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMacroName([NotNull] XP.MacroNameContext context)
         {
             // &identifierName
+            if (_options.SupportsMemvars)
+            {
+                CurrentMember.Data.HasMemVars = true;
+            }
             context.SetSequencePoint();
             if (_options.SupportsMemvars && context.Name.GetText().IndexOf(".") > 0)
             {
@@ -4487,6 +4524,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // expression:&(expression)
             // needs to translate to either IVarGet() or IVarPut() when the parent is a assignment expression
+            if (_options.SupportsMemvars)
+            {
+                CurrentMember.Data.HasMemVars = true;
+            }
             var left = context.Left.Get<ExpressionSyntax>();
             var right = context.Right.Get<ExpressionSyntax>();
             var args = MakeArgumentList(MakeArgument(left), MakeArgument(right));
@@ -4505,6 +4546,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             | Left=expression Op=(DOT | COLON) AMP Name=identifierName  #accessMemberLateName
                 // aa:&Name  Expr must evaluate to a string which is the ivar name
             */
+            if (_options.SupportsMemvars)
+            {
+                CurrentMember.Data.HasMemVars = true;
+            }
             var left = context.Left.Get<ExpressionSyntax>();
             var right = getMacroNameExpression(context.Name);
             var args = MakeArgumentList(MakeArgument(left), MakeArgument(right));

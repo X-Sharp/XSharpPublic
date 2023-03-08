@@ -206,6 +206,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(baseType));
             }
+            else if (_options.HasOption(CompilerOption.Xpp1, context, PragmaOptions))
+            {
+                baseTypes.Add(_syntaxFactory.SimpleBaseType(GenerateQualifiedName(XSharpQualifiedTypeNames.XppAbstract)));
+            }
             foreach (var iCtx in context._Implements)
             {
                 if (baseTypes.Count > 0)
@@ -1086,6 +1090,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             base.ExitMethodCall(context);
+        }
+        public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
+        {
+            if (context.Op.Type == XP.COLONCOLON)
+            {
+                if (CurrentEntity is XP.IXPPMemberContext mem)
+                {
+                    // for static members we translate :: to ParentName.
+                    if (mem.IsStatic)
+                    {
+                        var info = mem.Info;
+                        var parent = info.Parent;
+                        var parentName = GenerateSimpleName(parent.Name);
+                        context.Put(MakeSimpleMemberAccess(
+                            parentName,
+                            context.Name.Get<SimpleNameSyntax>()));
+                        return;
+                    }
+                }
+            }
+            base.ExitAccessMember(context);
         }
     }
 }

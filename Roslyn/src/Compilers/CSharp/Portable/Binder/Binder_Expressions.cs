@@ -7289,6 +7289,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (!symbol.RequiresInstanceReceiver())
             {
+#if XSHARP
+                if (node.XNode is XSharpParser.AccessMemberContext amc && 
+                    Compilation.Options.Dialect == XSharpDialect.XPP && 
+                    amc.Op.Type == XSharpLexer.COLONCOLON)
+                {
+                    return false;
+                }
+#endif
                 if (instanceReceiver == true)
                 {
                     ErrorCode errorCode = this.Flags.Includes(BinderFlags.ObjectInitializerMember) ?

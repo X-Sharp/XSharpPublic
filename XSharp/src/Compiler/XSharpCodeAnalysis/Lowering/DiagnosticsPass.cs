@@ -56,14 +56,19 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private void XsCheckStaticMemberAccess(BoundNode node, XSharpParser.AccessMemberContext amc, Symbol symbol)
         {
-            if (amc.Op.Type != XSharpLexer.DOT && !node.HasErrors())
+            if (_compilation.Options.Dialect != XSharpDialect.XPP)
             {
-                Error(ErrorCode.ERR_ColonForStaticMember, node, symbol);
+                if (amc.Op.Type != XSharpLexer.DOT && amc.Op.Type != XSharpLexer.COLONCOLON && !node.HasErrors())
+                {
+                    Error(ErrorCode.ERR_ColonForStaticMember, node, symbol);
+                }
             }
         }
         private void XsCheckInstanceMemberAccess(BoundNode node, XSharpParser.AccessMemberContext amc, Symbol symbol)
         {
-            if (amc.Op.Type != XSharpLexer.COLON && !node.HasErrors() && !_compilation.Options.HasOption(CompilerOption.AllowDotForInstanceMembers, node.Syntax))
+            if (amc.Op.Type != XSharpLexer.COLON &&
+                amc.Op.Type != XSharpLexer.COLONCOLON &&
+                !node.HasErrors() && !_compilation.Options.HasOption(CompilerOption.AllowDotForInstanceMembers, node.Syntax))
             {
                 Error(ErrorCode.ERR_DotForInstanceMember, node, symbol);
             }

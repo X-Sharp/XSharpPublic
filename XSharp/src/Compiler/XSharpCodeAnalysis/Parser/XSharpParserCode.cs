@@ -277,6 +277,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public interface IXPPMemberContext : IMemberWithBodyContext, IBodyWithLocalFunctions
         {
+            bool IsStatic { get; }
 #if !VSPARSER
             InternalSyntax.XppDeclaredMethodInfo Info { get; }
 #endif
@@ -1000,6 +1001,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public partial class XppmethodContext : IXPPMemberContext
         {
+            public bool IsStatic => this.Modifiers != null && this.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.CLASS || t.Type == XSharpLexer.CLASS);
 #if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
@@ -1026,6 +1028,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class XppinlineMethodContext : IXPPMemberContext, IBodyWithLocalFunctions
         {
+            public bool IsStatic => this.Modifiers != null && this.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.CLASS || t.Type == XSharpLexer.CLASS);
 #if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
@@ -1062,6 +1065,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class XpppropertyContext : IMemberContext
         {
+            public bool IsStatic => this.Modifiers != null && this.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.CLASS || t.Type == XSharpLexer.CLASS);
 #if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;

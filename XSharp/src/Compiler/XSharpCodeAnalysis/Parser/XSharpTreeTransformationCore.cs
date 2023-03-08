@@ -8936,12 +8936,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             break;
                         case '"':
-                        case 'r':
-                        case 't':
+                            if (afterBackSlash)
+                            {
+                                afterBackSlash = false;
+                            }
+                            else
+                            {
+                                // normal processing add "
+                                inString = !inString;
+                            }
+                            break;
+                        case 'N':
                         case 'n':
                         case 'R':
+                        case 'r':
                         case 'T':
-                        case 'N':
+                        case 't':
                             if (afterBackSlash)
                             {
                                 if (c == 'n' || c == 'N')
@@ -8955,11 +8965,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 else if (c == 't' || c == 'T')
                                 {
                                     c = '\t';
-                                }
-                                else
-                                {
-                                    // normal processing add "
-                                    inString = !inString;
                                 }
                                 afterBackSlash = false;
                             }

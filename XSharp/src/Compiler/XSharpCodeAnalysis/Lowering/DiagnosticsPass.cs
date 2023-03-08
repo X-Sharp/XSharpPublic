@@ -56,56 +56,82 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private void XsCheckStaticMemberAccess(BoundNode node, XSharpParser.AccessMemberContext amc, Symbol symbol)
         {
-            if (amc.Op.Type != XSharpLexer.DOT)
+            if (amc.Op.Type != XSharpLexer.DOT && !node.HasErrors())
             {
                 Error(ErrorCode.ERR_ColonForStaticMember, node, symbol);
             }
         }
+        private void XsCheckInstanceMemberAccess(BoundNode node, XSharpParser.AccessMemberContext amc, Symbol symbol)
+        {
+            if (amc.Op.Type != XSharpLexer.COLON && !node.HasErrors() && !_compilation.Options.HasOption(CompilerOption.AllowDotForInstanceMembers, node.Syntax))
+            {
+                Error(ErrorCode.ERR_DotForInstanceMember, node, symbol);
+            }
+        }
+
         private void XsVisitFieldAccess(BoundFieldAccess node)
         {
-            if (node.FieldSymbol.IsStatic && node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
+            if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckStaticMemberAccess(node, amc, node.FieldSymbol);
+                if (node.FieldSymbol.IsStatic)
+                    XsCheckStaticMemberAccess(node, amc, node.FieldSymbol);
+                else
+                    XsCheckInstanceMemberAccess(node, amc, node.FieldSymbol);
             }
             return;
         }
         private void XsVisitPropertyAccess(BoundPropertyAccess node)
         {
-            if (node.PropertySymbol.IsStatic && node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
+            if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckStaticMemberAccess(node, amc, node.PropertySymbol);
+                if (node.PropertySymbol.IsStatic)
+                    XsCheckStaticMemberAccess(node, amc, node.PropertySymbol);
+                else
+                    XsCheckInstanceMemberAccess(node, amc, node.PropertySymbol);
             }
             return;
         }
         private void XsVisitIndexerAccess(BoundIndexerAccess node)
         {
-            if (node.Indexer.IsStatic && node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
+            if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckStaticMemberAccess(node, amc, node.Indexer);
+                if (node.Indexer.IsStatic )
+                    XsCheckStaticMemberAccess(node, amc, node.Indexer);
+                else
+                    XsCheckInstanceMemberAccess(node, amc, node.Indexer);
             }
             return;
         }
         private void XsVisitCall(BoundCall node)
         {
-            if (node.Method.IsStatic && node.Syntax?.XNode is XSharpParser.MethodCallContext mcc && mcc.Expr is XSharpParser.AccessMemberContext amc)
+            if (node.Syntax?.XNode is XSharpParser.MethodCallContext mc && mc.Expr is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckStaticMemberAccess(node, amc, node.Method);
+                if (node.Method.IsStatic)
+                    XsCheckStaticMemberAccess(node, amc, node.Method);
+                else
+                    XsCheckInstanceMemberAccess(node, amc, node.Method);
+                return;
             }
-            return;
         }
         public void XsVisitEventAssignmentOperator(BoundEventAssignmentOperator node)
         {
-            if (node.Event.IsStatic && node.Syntax?.XNode is XSharpParser.AssignmentExpressionContext aec && aec.Left is XSharpParser.AccessMemberContext amc)
+            if (node.Syntax?.XNode is XSharpParser.AssignmentExpressionContext aec && aec.Left is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckStaticMemberAccess(node, amc, node.Event);
+                if (node.Event.IsStatic)
+                    XsCheckStaticMemberAccess(node, amc, node.Event);
+                else
+                    XsCheckInstanceMemberAccess(node, amc, node.Event);
             }
             return;
         }
         public void XsVisitEventAccess(BoundEventAccess node)
         {
-            if (node.EventSymbol.IsStatic && node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
+            if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckStaticMemberAccess(node, amc, node.EventSymbol);
+                if (node.EventSymbol.IsStatic )
+                    XsCheckStaticMemberAccess(node, amc, node.EventSymbol);
+                else
+                    XsCheckInstanceMemberAccess(node, amc, node.EventSymbol);
             }
             return;
         }

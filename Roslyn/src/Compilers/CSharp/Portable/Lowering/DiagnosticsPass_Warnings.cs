@@ -911,6 +911,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public override BoundNode VisitFieldAccess(BoundFieldAccess node)
         {
+#if XSHARP
+            XsVisitFieldAccess(node);
+#endif
             CheckReceiverIfField(node.ReceiverOpt);
             return base.VisitFieldAccess(node);
         }

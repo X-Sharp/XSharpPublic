@@ -257,6 +257,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public override BoundNode VisitEventAccess(BoundEventAccess node)
         {
+#if XSHARP
+            XsVisitEventAccess(node);
+#endif
             // Don't bother reporting an obsolete diagnostic if the access is already wrong for other reasons
             // (specifically, we can't use it as a field here).
             if (node.IsUsableAsField)
@@ -270,6 +273,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public override BoundNode VisitEventAssignmentOperator(BoundEventAssignmentOperator node)
         {
+#if XSHARP
+            XsVisitEventAssignmentOperator(node);
+#endif
             if (_inExpressionLambda)
             {
                 Error(ErrorCode.ERR_ExpressionTreeContainsAssignment, node);
@@ -434,6 +440,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public override BoundNode VisitCall(BoundCall node)
         {
+#if XSHARP
+            XsVisitCall(node);
+#endif
             VisitCall(node.Method, null, node.Arguments, node.ArgumentRefKindsOpt, node.ArgumentNamesOpt, node.DefaultArguments, node);
             CheckReceiverIfField(node.ReceiverOpt);
             CheckReferenceToMethodIfLocalFunction(node, node.Method);
@@ -478,6 +487,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public override BoundNode VisitIndexerAccess(BoundIndexerAccess node)
         {
+#if XSHARP
+            XsVisitIndexerAccess(node);
+#endif
             var indexer = node.Indexer;
             var method = indexer.GetOwnOrInheritedGetMethod() ?? indexer.GetOwnOrInheritedSetMethod();
             if ((object)method != null)
@@ -498,6 +510,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public override BoundNode VisitPropertyAccess(BoundPropertyAccess node)
         {
+#if XSHARP
+            XsVisitPropertyAccess(node);
+#endif
             var property = node.PropertySymbol;
             CheckRefReturningPropertyAccess(node, property);
             CheckReceiverIfField(node.ReceiverOpt);

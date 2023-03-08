@@ -7676,6 +7676,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_DotForInstanceMember" xml:space="preserve">
   <value>You cannot access the instance member '{0}' with the DOT '.' operator.</value>
   </data>
-
+  <data name="ERR_ColonForStaticMember" xml:space="preserve">
+  <value>You cannot access the static member '{0}' with the COLON ':' operator.</value>
+  </data>
+  
 </root>
 

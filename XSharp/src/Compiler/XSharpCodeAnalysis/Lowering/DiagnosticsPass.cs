@@ -5,6 +5,7 @@
 //
 #nullable disable
 
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -53,7 +54,61 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
         }
-
+        private void XsCheckStaticMemberAccess(BoundNode node, XSharpParser.AccessMemberContext amc, Symbol symbol)
+        {
+            if (amc.Op.Type != XSharpLexer.DOT)
+            {
+                Error(ErrorCode.ERR_ColonForStaticMember, node, symbol);
+            }
+        }
+        private void XsVisitFieldAccess(BoundFieldAccess node)
+        {
+            if (node.FieldSymbol.IsStatic && node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
+            {
+                XsCheckStaticMemberAccess(node, amc, node.FieldSymbol);
+            }
+            return;
+        }
+        private void XsVisitPropertyAccess(BoundPropertyAccess node)
+        {
+            if (node.PropertySymbol.IsStatic && node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
+            {
+                XsCheckStaticMemberAccess(node, amc, node.PropertySymbol);
+            }
+            return;
+        }
+        private void XsVisitIndexerAccess(BoundIndexerAccess node)
+        {
+            if (node.Indexer.IsStatic && node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
+            {
+                XsCheckStaticMemberAccess(node, amc, node.Indexer);
+            }
+            return;
+        }
+        private void XsVisitCall(BoundCall node)
+        {
+            if (node.Method.IsStatic && node.Syntax?.XNode is XSharpParser.MethodCallContext mcc && mcc.Expr is XSharpParser.AccessMemberContext amc)
+            {
+                XsCheckStaticMemberAccess(node, amc, node.Method);
+            }
+            return;
+        }
+        public void XsVisitEventAssignmentOperator(BoundEventAssignmentOperator node)
+        {
+            if (node.Event.IsStatic && node.Syntax?.XNode is XSharpParser.AssignmentExpressionContext aec && aec.Left is XSharpParser.AccessMemberContext amc)
+            {
+                XsCheckStaticMemberAccess(node, amc, node.Event);
+            }
+            return;
+        }
+        public void XsVisitEventAccess(BoundEventAccess node)
+        {
+            if (node.EventSymbol.IsStatic && node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
+            {
+                XsCheckStaticMemberAccess(node, amc, node.EventSymbol);
+            }
+            return;
+        }
         private void XsCheckConversion(BoundConversion node)
         {
             var syntax = node.Syntax;

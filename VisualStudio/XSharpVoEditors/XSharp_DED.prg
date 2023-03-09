@@ -251,7 +251,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
         oTempStream := XSharp_EditorStream{}
         oTempStream:Load(aLines)
         //oTempGenerator := CodeGenerator{oTempStream:Editor}
-        VAR oEntity := oTempStream:Editor:GetEntityObject(1)
+        VAR oEntity := oTempStream:Editor.GetEntityObject(1)
         IF oEntity != NULL
             IF lAdd
                 oGenerator:WriteEntity(oEntity:eType , oEntity:cName , cClass , EntityOptions.None, aLines)

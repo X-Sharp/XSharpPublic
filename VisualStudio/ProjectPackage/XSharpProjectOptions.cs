@@ -97,7 +97,6 @@ namespace XSharp.Project
             }
 
             var defines = "";
-            var value = "";
             if (DefinedPreprocessorSymbols != null)
             {
                 foreach (var d in DefinedPreprocessorSymbols)
@@ -107,7 +106,7 @@ namespace XSharp.Project
             }
             options.Add("d:" + defines);
             var include = _prjNode.GetProjectProperty("IncludePaths");
-            if (!String.IsNullOrEmpty(include))
+            if (!string.IsNullOrEmpty(include))
             {
                 include = include + ";" + _includedirs;
             }
@@ -121,6 +120,7 @@ namespace XSharp.Project
                 "vo10" , "vo11" , "vo12", "vo13", "vo14", "vo15","vo16",
                 "cs", "az","ins", "lb","memvar","namedargs","undeclared","unsafe","xpp1","xpp2","fox1",
                 "allowdot","enforceself","enforcevirtual"};
+            string value;
             foreach (var flag in flags)
             {
                 value = _prjNode.GetProjectProperty(flag);

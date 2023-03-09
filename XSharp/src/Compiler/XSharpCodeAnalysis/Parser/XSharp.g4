@@ -120,7 +120,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                     //
 
 vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
-                      D=DLL T=funcproctype Id=identifier ParamList=parameterList (AS Type=datatype)?
+                      D=DLL T=funcproctype Id=identifier (ParamList=parameterList)? (AS Type=datatype)?
                       (CallingConvention=dllcallconv)? COLON
                       Dll=identifierString (DOT Extension=identifierString)?
                       (	Ordinal=REAL_CONST

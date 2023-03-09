@@ -5611,8 +5611,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             ExpressionSyntax dllExpr = GenerateLiteral(dllName);
             ExpressionSyntax entrypointExpr;
-            string entrypoint = context.Entrypoint.GetText();
-
+            string entrypoint;
+            entrypoint = context.Entrypoint.GetText();
+            if (context.Entrypoint.STRING_CONST() != null)
+            {
+                entrypoint = entrypoint.Substring(1, entrypoint.Length - 2);
+            }
             // the whole string from entrypointExpr - @int is the entrypoint
             if (context.Address != null && context.Number != null)
             {

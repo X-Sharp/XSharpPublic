@@ -118352,7 +118352,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   DefineDebug=1
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=0
+  WarningsErrors=1
   ForceConsole=0
   ForceX86=0
   Optimize=0
@@ -118372,7 +118372,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C883 - Compiler incorrectly allows accessing static members with a colon instead of dot
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C884 - MemVarPut()/MemVarGet() incorrect visibility *************
 Application = C884 - MemVarPut()/MemVarGet() incorrect visibility
 IDEVersion = 1.06
@@ -118486,7 +118486,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C884 - MemVarPut()/MemVarGet() incorrect visibility
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R884 - _DLL with quoted entrypoint name *************
 Application = R884 - _DLL with quoted entrypoint name
 IDEVersion = 1.06

@@ -8,6 +8,7 @@
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -54,23 +55,42 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
         }
-        private void XsCheckStaticMemberAccess(BoundNode node, XSharpParser.AccessMemberContext amc, Symbol symbol)
+        private void XsCheckMemberAccess(BoundNode node, XSharpParser.AccessMemberContext amc, Symbol symbol)
         {
-            if (_compilation.Options.Dialect != XSharpDialect.XPP)
+            var contType = symbol.ContainingType;
+            if (!node.HasErrors())
             {
-                if (amc.Op.Type != XSharpLexer.DOT && amc.Op.Type != XSharpLexer.COLONCOLON && !node.HasErrors())
+                switch (amc.Op.Type)
                 {
-                    Error(ErrorCode.ERR_ColonForStaticMember, node, symbol);
+                    case XSharpLexer.COLONCOLON:
+                        if (_compilation.Options.Dialect != XSharpDialect.XPP && symbol.IsStatic)
+                        {
+                            // XPP allows static and instance, other dialects only instance
+                            Error(ErrorCode.WRN_ColonForStaticMember, node, symbol);
+                        }
+                        break;
+                    case XSharpLexer.DOT:
+                        if (symbol.IsStatic || contType.IsVoStructOrUnion() ||
+                            _compilation.Options.HasOption(CompilerOption.AllowDotForInstanceMembers, node.Syntax)
+                            )
+                        {
+                            ; // Ok
+                        }
+                        else
+                        {
+                            Error(ErrorCode.WRN_DotForInstanceMember, node, symbol);
+                        }
+                        break;
+                    case XSharpLexer.COLON:
+                        if (symbol.IsStatic && !contType.IsFunctionsClass()) // For late bound code where member access is redirected to function
+                        {
+                            Error(ErrorCode.WRN_ColonForStaticMember, node, symbol);
+                        }
+                        break;
+                    default:
+                        RoslynDebug.Assert(false, $"Unexpected MemberAccess token  '{amc.Op.Text}'");
+                        break;
                 }
-            }
-        }
-        private void XsCheckInstanceMemberAccess(BoundNode node, XSharpParser.AccessMemberContext amc, Symbol symbol)
-        {
-            if (amc.Op.Type != XSharpLexer.COLON &&
-                amc.Op.Type != XSharpLexer.COLONCOLON &&
-                !node.HasErrors() && !_compilation.Options.HasOption(CompilerOption.AllowDotForInstanceMembers, node.Syntax))
-            {
-                Error(ErrorCode.ERR_DotForInstanceMember, node, symbol);
             }
         }
 
@@ -78,10 +98,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                if (node.FieldSymbol.IsStatic)
-                    XsCheckStaticMemberAccess(node, amc, node.FieldSymbol);
-                else
-                    XsCheckInstanceMemberAccess(node, amc, node.FieldSymbol);
+                XsCheckMemberAccess(node, amc, node.FieldSymbol);
             }
             return;
         }
@@ -89,10 +106,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                if (node.PropertySymbol.IsStatic)
-                    XsCheckStaticMemberAccess(node, amc, node.PropertySymbol);
-                else
-                    XsCheckInstanceMemberAccess(node, amc, node.PropertySymbol);
+                XsCheckMemberAccess(node, amc, node.PropertySymbol);
             }
             return;
         }
@@ -100,10 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                if (node.Indexer.IsStatic )
-                    XsCheckStaticMemberAccess(node, amc, node.Indexer);
-                else
-                    XsCheckInstanceMemberAccess(node, amc, node.Indexer);
+                XsCheckMemberAccess(node, amc, node.Indexer);
             }
             return;
         }
@@ -111,21 +122,19 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.MethodCallContext mc && mc.Expr is XSharpParser.AccessMemberContext amc)
             {
-                if (node.Method.IsStatic)
-                    XsCheckStaticMemberAccess(node, amc, node.Method);
-                else
-                    XsCheckInstanceMemberAccess(node, amc, node.Method);
+                if (!node.Method.IsExtensionMethod && !node.Method.IsOperator())
+                {
+                    XsCheckMemberAccess(node, amc, node.Method);
+                }
                 return;
             }
         }
         public void XsVisitEventAssignmentOperator(BoundEventAssignmentOperator node)
         {
-            if (node.Syntax?.XNode is XSharpParser.AssignmentExpressionContext aec && aec.Left is XSharpParser.AccessMemberContext amc)
+            if (node.Syntax?.XNode is XSharpParser.AssignmentExpressionContext aec &&
+                aec.Left is XSharpParser.AccessMemberContext amc)
             {
-                if (node.Event.IsStatic)
-                    XsCheckStaticMemberAccess(node, amc, node.Event);
-                else
-                    XsCheckInstanceMemberAccess(node, amc, node.Event);
+                XsCheckMemberAccess(node, amc, node.Event);
             }
             return;
         }
@@ -133,10 +142,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                if (node.EventSymbol.IsStatic )
-                    XsCheckStaticMemberAccess(node, amc, node.EventSymbol);
-                else
-                    XsCheckInstanceMemberAccess(node, amc, node.EventSymbol);
+                XsCheckMemberAccess(node, amc, node.EventSymbol);
             }
             return;
         }

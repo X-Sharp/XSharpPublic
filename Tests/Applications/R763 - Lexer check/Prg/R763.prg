@@ -10,27 +10,27 @@ FUNCTION TestSemiColons() AS LONG
     LOCAL oFoo AS Test
     oFoo := Test{}{Foo := 42}
     SWITCH oFoo:Foo
-    CASE testEnum:One; RETURN oFoo:Foo
-    CASE testEnum:FortyTwo; RETURN - oFoo:Foo
-    OTHERWISE 
+    CASE testEnum.One; RETURN oFoo:Foo
+    CASE testEnum.FortyTwo; RETURN - oFoo:Foo
+    OTHERWISE
         RETURN 0
     END SWITCH
 
 
 CLASS Test
     PROPERTY Foo AS LONG AUTO
-END CLASS    
+END CLASS
 
 
 ENUM testEnum
     MEMBER One := 1
     MEMBER FortyTwo := 42
-END ENUM    
+END ENUM
 
-PROC xAssert(l AS LOGIC) 
+PROC xAssert(l AS LOGIC)
 IF .NOT. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
 END IF
-? "Assertion passed"   
+? "Assertion passed"
 RETURN
 

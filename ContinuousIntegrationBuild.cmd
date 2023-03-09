@@ -2,7 +2,7 @@
 if "%VSVERSION%" == "" SET VSVERSION=2022
 if "%VSEDITION%" == "" SET VSEDITION=Enterprise
 if "%VsBatch%" == "" set VsBatch=C:\Program Files\Microsoft Visual Studio\%VSVERSION%\%VSEDITION%\Common7\Tools\VsDevCmd.bat
-if not exist %VsBatch% goto Error
+if not exist "%VsBatch%" goto Error
 call "%VsBatch%"
 rem echo Start restoring Roslyn ...
 rem call "%~dp0\Roslyn\Restore.cmd"

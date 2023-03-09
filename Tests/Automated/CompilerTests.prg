@@ -25,8 +25,8 @@ FUNCTION Start() AS VOID
 	LOCAL cConfigName AS STRING
 	LOCAL cLogFilename AS STRING
 
-	
-	// options here	
+
+	// options here
 	gcCompilerFilename := Environment.GetEnvironmentVariable("XSCOMPILER")?:Trim()
 	cProjectFile       := Environment.GetEnvironmentVariable("XSTESTPROJECT")?:Trim()
 	gcRuntimeFolder    := Environment.GetEnvironmentVariable("XSRUNTIMEFOLDER")?:Trim()
@@ -49,7 +49,7 @@ FUNCTION Start() AS VOID
 		RETURN
 	ENDIF
 	lTestTheFixedOnes := cTestTheFixedOnes:ToUpper() == "TRUE"
-	
+
 
 
 	IF lTestTheFixedOnes
@@ -59,11 +59,11 @@ FUNCTION Start() AS VOID
 		aGroupsToBuild := List<STRING>{}{"A95A4D23-3574-40FD-B873-22D28ACCA212"} // MUST REPORT ERROR
 	ENDIF
 //	aGroupsToBuild := List<STRING>{}{"B9CFE839-D401-428D-94E9-E9D21E9F772D"} // NEW
-	
+
 	oXide := XideHelper{}
 	oProject := ProjectClass{cProjectFile}
 	oXide:LoadProject(oProject)
-	
+
 	Message( "Total apps: " +oProject:GetAppCount():ToString())
 	Message( "" )
 
@@ -80,37 +80,37 @@ FUNCTION DoRuntimeTests(oXide AS XideHelper, cConfigName AS STRING) AS INT
 	LOCAL oProcess AS Process
 	LOCAL oApp AS AppClass
 	LOCAL nFail AS INT
-	
+
 	oProject := oXide:Project
-	
+
 	oApp := oProject:GetAppFromGuid("B098889A-A74F-46CE-8771-3AAEEECA0F99")
 	gaCompilerMessages := List<STRING>{}
 	oApp:aCompilerMessages := gaCompilerMessages
-	Message("Compiling test: " + oApp:cName) 
+	Message("Compiling test: " + oApp:cName)
 	oOptions := oXide:GetCompileOptions(oApp, cConfigName)
-	
+
 	oProcess := CreateProcess()
 	oOptions:cSwitches := oOptions:cSwitches:Replace(":GUI",":NOGUI")
 	oProcess:StartInfo:Arguments := oOptions:cSwitches + " /fullpaths /noconfig /shared"
 	oApp:cCompilerOptions := oOptions:cSwitches
-	
+
 	oProcess:Start()
 	oProcess:BeginErrorReadLine()
 	oProcess:BeginOutputReadLine()
-	
+
 	IF oProcess:WaitForExit(20000)
 		Message( "Exit code compiling runtime tests: " + oProcess:ExitCode:ToString() )
 	ELSE
 		Message( "Timed out compiling runtime tests!" )
 	ENDIF
 	Message( "" )
-	oProcess:Dispose()	
+	oProcess:Dispose()
 
 	oProcess := CreateProcess()
-	
+
 	LOCAL oConfig AS ProjectConfigClass
 	oConfig := oProject:oConfigs:Get( iif(cConfigName:ToUpper() == "DEBUG" , 1 , 2) )
-	
+
 	oProcess:StartInfo:FileName := oApp:GetOutputFileName(oConfig:cSubFolder,FALSE)
 	oProcess:StartInfo:Arguments := ""
 
@@ -124,25 +124,25 @@ FUNCTION DoRuntimeTests(oXide AS XideHelper, cConfigName AS STRING) AS INT
 		Message( "Timed out running runtime tests!" )
 	ENDIF
 	Message( "" )
-	
+
 	FOREACH cMessage AS STRING IN gaCompilerMessages
 		Message(cMessage)
 	NEXT
 RETURN nFail
-	
-	
+
+
 PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigName AS STRING, lTestTheFixedOnes AS LOGIC)
 	LOCAL nCount, nFail, nSuccess, nCrash AS INT
 	LOCAL oProject AS ProjectClass
 	LOCAL aFailed AS List<AppClass>
 	LOCAL oProcess AS Process
-	
+
 	Message("Running tests, expecting them to " + iif(lTestTheFixedOnes , "succeed" , "fail"))
 	Message("")
 
 	aFailed := List<AppClass>{}
 	oProject := oXide:Project
-	
+
 	LOCAL aApps AS SortedList<STRING,AppClass>
 	aApps := SortedList<STRING,AppClass>{}
 	FOR LOCAL nApp := 1 AS INT UPTO oProject:GetAppCount()
@@ -154,14 +154,14 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 		cKey += "_" + oApp:cName
 		aApps:Add(cKey ,oApp)
 	NEXT
-	
+
 	FOREACH oPair AS KeyValuePair<STRING,AppClass> IN aApps
 		LOCAL oApp AS AppClass
 		oApp := oPair:Value
 		gaCompilerMessages := List<STRING>{}
 		oApp:aCompilerMessages := gaCompilerMessages
 		IF IsAppInGroups(oApp, aGroupsToBuild)
-			Message("Compiling test: " + oApp:cName) 
+			Message("Compiling test: " + oApp:cName)
 			IF oApp:eLanguage == ApplicationLanguage.VulcanNet
 				IF oApp:cName:ToUpper():Contains("HELPER")
 					LOOP
@@ -173,10 +173,10 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 //				Console.ReadLine()
 				LOOP
 			END IF
-			
+
 			LOCAL oOptions AS CompileOptions
 			oOptions := oXide:GetCompileOptions(oApp, cConfigName)
-		
+
 			oProcess := CreateProcess()
 			oProcess:StartInfo:Arguments := oOptions:cSwitches + " /fullpaths /noconfig /shared"
 			oApp:cCompilerOptions := oOptions:cSwitches
@@ -222,7 +222,7 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 			oProcess:Dispose()
 		END IF
 	NEXT
-	
+
 	Message("")
 	Message("End of compiling tests, now performing runtime tests")
 	Message("")
@@ -233,7 +233,7 @@ PROCEDURE DoTests(oXide AS XideHelper, aGroupsToBuild AS List<STRING>, cConfigNa
 	Message("")
 	Message("End of runtime tests")
 	Message("")
-	
+
 	Message( "===============================" )
 	Message( "Total tests: " + nCount:ToString() )
 	Message( "Success: " + nSuccess:ToString() )
@@ -281,7 +281,7 @@ FUNCTION CreateProcess() AS Process
 	oProcess:OutputDataReceived += CompilerMessageReceived
 RETURN oProcess
 
-	
+
 PROCEDURE CompilerMessageReceived(o AS OBJECT, e AS DataReceivedEventArgs) AS VOID
 	BEGIN LOCK gaCompilerMessages
 		gaCompilerMessages:Add(e:Data)
@@ -306,7 +306,7 @@ PROCEDURE Message(cMessage AS STRING)
 	? cMessage
 	gaLog:Add(cMessage)
 RETURN
-	
+
 
 
 BEGIN NAMESPACE Xide
@@ -351,20 +351,20 @@ TRY
 		oFileStream := FileStream{cFile , FileMode.Open ,FileAccess.ReadWrite , FileShare.ReadWrite}
     ENDIF
    	oStream:=StreamReader{oFileStream,System.Text.Encoding.GetEncoding(0)}
-   	
+
    	oProject:cFolder := Fun.GetDirectory(oProject:cProjectFile)
-    
+
     SELF:LoadProject(oProject , oStream , lInitOnly)
-	
+
 	IF !lInitOnly
 		oProject:oConfigs:AddDebugRelease()
 		oProject:UpdateAppConfigs()
-		
+
 		IF SELF:cSelectedConfig == ""
 			SELF:cSelectedConfig := oProject:oConfigs:GetDebug():cGuid
 		ENDIF
 	ENDIF
-	
+
 	oProject:cFolder := Fun.GetDirectory(oProject:cProjectFile)
 	IF lInitOnly
 		oStream:Close()
@@ -394,11 +394,11 @@ METHOD LoadProject(oProject AS ProjectClass,oStream AS StreamReader,lInitOnly AS
 	LOCAL n AS INT
 
 	cNewLine := NULL
-	
+
 	oProject:cFileStatusGuid := ""
 	oProject:cCustomControlsGuid := ""
 	oProject:cDefaultPropertiesGuid := ""
-	
+
 	aAppGroups := SortedList<STRING,ApplicationGroupClass>{}
 
 	DO WHILE oStream:Peek()!=-1
@@ -436,7 +436,7 @@ METHOD LoadProject(oProject AS ProjectClass,oStream AS StreamReader,lInitOnly AS
 	    	IF !lInitOnly
 				oApp:oConfigs:AddDebugRelease()
 	    	ENDIF
-	    	
+
 	    CASE sLine:cParam=="PRGENCODING"
 /*	    	TRY
 		    	oProject:oPrgEncoding := Glo.gaEncodings[System.Array.IndexOf(Glo.gaEncodingTexts , sLine:cValue) + 1]
@@ -627,7 +627,7 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader, lInitOnly AS LO
 	LOCAL nAt AS DWORD
 	LOCAL oEvent AS BuildEvent
 	LOCAL n AS INT
-	
+
 	LOCAL lHasRefRT AS LOGIC
 	LOCAL lHasRefVO AS LOGIC
 
@@ -666,7 +666,7 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader, lInitOnly AS LO
 		ELSE
 		    Fun.LoadConfigOption(cLine,oAppConfig:oOptions)
 		ENDIF
-		
+
 		oApp:oExport:ReadOptions(sLine)
 
 		LOCAL cUpper AS STRING
@@ -796,8 +796,8 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader, lInitOnly AS LO
 	    	oEvent:lWait := ! sLine:cValue:Trim() == "0"
 	    CASE sLine:cParam=="BUILDEVENTHIDDEN" .and. oEvent != NULL
 	    	oEvent:lHidden := ! sLine:cValue:Trim() == "0"
-	    	
-	    	
+
+
 
 	    CASE sLine:cParam=="SIGNASSEMBLY"
 	    	oApp:lSignAssembly := ! sLine:cValue:Trim() == "0"
@@ -880,7 +880,7 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader, lInitOnly AS LO
 		    END CASE
 	    CASE sLine:cParam=="COPYTOBIN"
 	    	oFile:lCopyToBin := ! sLine:cValue:Trim() == "0"
-	
+
 	    CASE sLine:cParam=="FILEGROUP"
 	    	oFileGroup:=FileGroupClass{oApp,sLine:cValue}
 	    	oApp:AddFileGroup(oFileGroup)
@@ -953,7 +953,7 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader, lInitOnly AS LO
 	    	oResFile:AddResource(oRes)
 	    CASE sLine:cParam=="RESOURCEGUID"
 	    	oRes:cGuid:=sLine:cValue:Trim()
-	
+
 	    CASE sLine:cParam=="REFERENCEGAC"
 	    	LOCAL eClr AS ClrType
 	    	eClr := ClrType.v4
@@ -1018,8 +1018,8 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader, lInitOnly AS LO
 	    	oRef:cFileName := cRef
 	    	ReadReference(oRef , cLine)
 	    	oApp:AddReference(oRef)
-	
-	
+
+
 	    CASE sLine:cParam=="FRAMEWORKS"
 	    	n := sLine:nValue
 	    	DO CASE
@@ -1032,7 +1032,7 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader, lInitOnly AS LO
 	    	END CASE
 	    CASE sLine:cParam == "APPCONFIG"
 	    	TRY
-	    		cLine := sLine:cValue 
+	    		cLine := sLine:cValue
 		    	nAt:=At(",",cLine)
 		    	cConfig := Left(cLine,nAt-1):Trim()
 		    	cGuid := SubStr(cLine,nAt + 1):Trim()
@@ -1040,8 +1040,8 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader, lInitOnly AS LO
 	    		oAppConfig:cGuid := cGuid
 	    		oApp:oConfigs:Add(oAppConfig)
 	    	END TRY
-	
-	
+
+
 	    CASE sLine:cParam == "FOLDER"
 	    	oApp:cFolder := sLine:cValue
 	    CASE sLine:cParam == "PRGSUBFOLDER"
@@ -1054,24 +1054,24 @@ METHOD LoadApplication(oApp AS AppClass,oStream AS StreamReader, lInitOnly AS LO
 	    	oApp:cDescription := Fun.TagLineToCRLF(sLine:cValue)
 	    CASE sLine:cParam == "GUID"
 	    	oApp:cGuid := sLine:cValue:Trim()
-	
+
 		END CASE
 
 	ENDDO
-	
+
 	IF oApp:aPreBuild:Count == 1 .and. ((BuildEvent)oApp:aPreBuild[0]):cEvent:Trim() == ""
 		oApp:aPreBuild:Clear()
 	ENDIF
 	IF oApp:aPostBuild:Count == 1 .and. ((BuildEvent)oApp:aPostBuild[0]):cEvent:Trim() == ""
 		oApp:aPostBuild:Clear()
 	ENDIF
-	
+
 	SELF:LoadApplication_ResolveFileGroups(oApp)
 
 	IF lHasRefVO .and. .not. lHasRefRT
 		oApp:AddGacReference("XSharp.RT")
-	END IF	
-	
+	END IF
+
 RETURN ""
 
 METHOD LoadApplication_ResolveFileGroups(oApp AS AppClass) AS VOID
@@ -1185,7 +1185,7 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 			ENDIF
 		END IF
 	NEXT
-	
+
 	FOR n := 1 UPTO oApp:GetResourceFileCount()
 		oRes := oApp:GetResourceFile(n)
 		cRef := oRes:cFileName
@@ -1198,7 +1198,7 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 			oCompile:cSwitches += ChrW(13) + ChrW(10)
 		ENDIF
 	NEXT
-	
+
 	FOR n := 1 UPTO oApp:GetReferenceCount()
 		oRef := oApp:GetReference(n)
 /*		IF (lCF .and. _And( INT(oRef:eFrameworks) , INT(Frameworks.CF)) == 0) .or. ;
@@ -1208,7 +1208,7 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 		DO CASE
 		CASE oRef:eType==ReferenceType.GAC
 			cDll := oRef:cName:Trim()
-			
+
 /*			IF glReplaceVulcanRuntimeWithXSharp
 				IF cDll:ToUpperInvariant():Contains("VULCAN")
 					cDll := cDll:ToUpperInvariant()
@@ -1230,7 +1230,7 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 					END CASE
 				END IF
 			END IF*/
-			
+
 			IF !Right(cDll , 4):ToLower() == ".dll"
 				cDll += ".dll"
 			ENDIF
@@ -1300,7 +1300,7 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 		END CASE
 
 		cOutSwitch := "/out:" + e"\"" + oApp:GetOutputFileName(oConfig:cSubFolder,lCF) + e"\"" + " "
-		
+
 		oCompile:cFullOut := oApp:GetOutputFileName(oConfig:cSubFolder,lCF)
 /*	ENDIF*/
 
@@ -1326,7 +1326,7 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 			oCompile:cSwitches += ChrW(13) + ChrW(10)
 		ENDIF
 	ENDIF
-	
+
 	IF !oApp:cIncludePaths:Trim() == ""
 		cTemp := oApp:cIncludePaths:Trim()
 		cTemp := Fun.GetAppFileNameNewER(oApp , cTemp)
@@ -1336,7 +1336,7 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 			oCompile:cSwitches += ChrW(13) + ChrW(10)
 		ENDIF
 	ENDIF
-	
+
 /*	IF oCompile:eLanguage != ApplicationLanguage.CSharp
 		cTemp := Application.StartupPath + "\Config"
 		IF Fun.SafeFileExists(cTemp + "\VOWin32APILibrary.vh")
@@ -1346,7 +1346,7 @@ VIRTUAL METHOD GetCompileOptions(oApp AS AppClass, cConfigName AS STRING) AS Com
 			ENDIF
 		END IF
 	ENDIF*/
-	
+
 	// moved to Compile() etc
 //	oCompile:cSwitches += "/noconfig "
 
@@ -1415,7 +1415,7 @@ CASE oCompile:eLanguage == ApplicationLanguage.CSharp
 		ELSE
 			oCompile:cOut+=".exe"
 		ENDIF
-	CASE nTarget==1	
+	CASE nTarget==1
 		oCompile:cSwitches:=" /t:winexe " + oCompile:cSwitches
 		IF oApp != NULL .and. oApp:cExtension:Trim() != ""
 			oCompile:cOut += "." + oApp:cExtension
@@ -1426,14 +1426,14 @@ CASE oCompile:eLanguage == ApplicationLanguage.CSharp
 		oCompile:cSwitches:=" /t:library " + oCompile:cSwitches
 		oCompile:cOut+=".dll"
 	END CASE
-	
+
 	DO CASE
 	CASE ePlatform == Platform.x86 .or. (oApp != NULL .and. oConfigOptions:lForceX86)
 		oCompile:cSwitches += " /platform:x86"
 	CASE ePlatform == Platform.x64
 		oCompile:cSwitches += " /platform:x64"
 	END CASE
-	
+
 	IF oOptions:lUnsafe
 		oCompile:cSwitches+=" /unsafe+"
 	END IF
@@ -1467,7 +1467,7 @@ CASE oCompile:eLanguage == ApplicationLanguage.XSharp
 		ELSE
 			oCompile:cOut+=".exe"
 		ENDIF
-	CASE nTarget==1	
+	CASE nTarget==1
 		oCompile:cSwitches+="/t:winexe "
 		IF oApp != NULL .and. oApp:cExtension:Trim() != ""
 			oCompile:cOut += "." + oApp:cExtension
@@ -1500,7 +1500,7 @@ CASE oCompile:eLanguage == ApplicationLanguage.XSharp
 	CASE ePlatform == Platform.x64
 		oCompile:cSwitches += " /platform:x64"
 	END CASE
-	
+
 	IF oCompile:lDebug
 		oCompile:cSwitches+=" /debug+ "
 	END IF
@@ -1649,10 +1649,10 @@ CASE oCompile:eLanguage == ApplicationLanguage.XSharp
 /*	IF Glo.glCompileSharedMode .and. .not. oCompile:cSwitches:ToUpper():Contains("/SHARED")
 		oCompile:cSwitches += " /shared"
 	ENDIF*/
-	
+
 	oCompile:cSwitches += " /utf8output"
-	
-	
+
+
 /*	IF oApp != NULL .and. oApp:eDialect == ApplicationDialect.Vulcan
 		IF .not. oCompile:cSwitches:ToUpper():Contains("/VO15")
 			oCompile:cSwitches += " /vo15+ "
@@ -1697,17 +1697,17 @@ CLASS CompileOptions
 	EXPORT lForResponse AS LOGIC
 	EXPORT lAlreadyCompiled AS LOGIC
 	EXPORT lResponseOnly AS LOGIC
-	
+
 	EXPORT oCompileApp AS AppClass
-	
+
 	EXPORT eLanguage AS ApplicationLanguage
 
 	EXPORT lDebug AS LOGIC
 	EXPORT lToRun AS LOGIC
-	
+
 //	EXPORT cOriginalSwitches AS STRING
 	EXPORT cConfigGuid AS STRING
-	
+
 	EXPORT lCompileInsteadOfRun AS LOGIC
 	CONSTRUCTOR()
 		SELF:cCmdLine:=""
@@ -1926,7 +1926,7 @@ END CLASS
 
 CLASS ProjectClass INHERIT GeneralProjectClass IMPLEMENTS IApplicationContainer //,IAppGroupContainer
 	PROTECT aApps AS List<AppClass>
-	
+
 	EXPORT cProjectFile AS STRING
 	EXPORT cPrimaryApp AS STRING
 	EXPORT cOutputFolder AS STRING
@@ -1936,44 +1936,44 @@ CLASS ProjectClass INHERIT GeneralProjectClass IMPLEMENTS IApplicationContainer 
 	EXPORT lLocked AS LOGIC
 	EXPORT lNotFound AS LOGIC
 	EXPORT lNoAppFileCreate AS LOGIC
-	
+
 	EXPORT cExportDir AS STRING
 	EXPORT cExportAppsDir AS STRING
 	EXPORT cExportFilesDir AS STRING
 	EXPORT cImportAppsDir AS STRING
 	EXPORT cImportFilesDir AS STRING
 	EXPORT cAddFilesDir AS STRING
-	
+
 	EXPORT oExport AS ExportOptions
 	EXPORT cFileStatusGuid , cDefaultPropertiesGuid , cCustomControlsGuid AS STRING
 	EXPORT aLayouts AS ArrayList
 	PROTECT aAppGroups AS List<ApplicationGroupClass>
 	EXPORT oPrgEncoding AS System.Text.Encoding
-	
+
 	EXPORT cAutoExportFolder AS STRING
 	EXPORT nAutoExportType AS INT
 	EXPORT nAutoExportOn AS INT
 	EXPORT nAutoExportInterval AS INT
 	EXPORT nAutoExportInclude AS INT
 	EXPORT lDirtySinceAutoExport AS LOGIC
-	
+
 	EXPORT cCopyAssembliesToFolder AS STRING
 	EXPORT cDebugExecutable AS STRING
-	
+
 	CONSTRUCTOR(_cFile AS STRING)
 	SUPER()
 	SELF:cName:=""
 	SELF:eType:=ProjectType.Project
 	SELF:cFolder:=""
 	SELF:cDescription:=""
-	
+
 	SELF:cExportDir := ""
 	SELF:cExportAppsDir := ""
 	SELF:cExportFilesDir := ""
 	SELF:cImportAppsDir := ""
 	SELF:cImportFilesDir := ""
 	SELF:cAddFilesDir := ""
-	
+
 	SELF:cProjectFile:=_cFile
 	SELF:cPrimaryApp:=""
 	SELF:aApps:=List<AppClass>{}
@@ -1981,26 +1981,26 @@ CLASS ProjectClass INHERIT GeneralProjectClass IMPLEMENTS IApplicationContainer 
 	SELF:cOutputFolder := "%ProjectPath%\Bin\"
 	SELF:cOutputFolderCF := "%ProjectPath%\BinCF\"
 	SELF:oExport := ExportOptions{ProjectType.Project}
-	
+
 	SELF:cFileStatusGuid := Fun.NewGuid()
 	SELF:cDefaultPropertiesGuid := Fun.NewGuid()
 	SELF:cCustomControlsGuid := Fun.NewGuid()
-	
+
 	SELF:aAppGroups := List<ApplicationGroupClass>{}
-	
+
 	SELF:aLayouts := ArrayList{}
 	SELF:oPrgEncoding := System.Text.Encoding.Default
-	
+
 	SELF:cAutoExportFolder := "%ProjectPath%\Export"
-	
+
 	SELF:cCopyAssembliesToFolder := ""
 	SELF:cDebugExecutable := ""
 	RETURN
-	
+
 	STATIC METHOD AdjustProjectPath(oProject AS ProjectClass , cDir REF STRING) AS LOGIC
 		LOCAL cProjDir AS STRING
 		LOCAL cRet AS STRING
-	
+
 		cProjDir := oProject:cFolder
 		cProjDir := Fun.PathAddSlash(cProjDir)
 		IF Left(Upper(cDir),SLen(cProjDir))==Upper(cProjDir)
@@ -2011,9 +2011,9 @@ CLASS ProjectClass INHERIT GeneralProjectClass IMPLEMENTS IApplicationContainer 
 			cRet:="%ProjectPath%" + cRet
 			cDir := cRet
 		END IF
-	
+
 	RETURN At("%ProjectPath%" , cDir) == 1
-	
+
 	VIRTUAL METHOD AddApp(oApp AS AppClass) AS VOID
 		IF !SELF:aApps:Contains(oApp)
 			SELF:aApps:Add(oApp)
@@ -2021,7 +2021,7 @@ CLASS ProjectClass INHERIT GeneralProjectClass IMPLEMENTS IApplicationContainer 
 		ENDIF
 		oApp:oParent := SELF // etsi ki'alliws, mporei prin na htan se AppGroup
 	RETURN
-	
+
 //	 kaleitai mono apo to ProjectPropertiesDlg, ilithiodws ginetai add kathe app
 //	 sto neo project class, xwris na kseroume akoma an tha ginei OK to dialog.
 //	 Opote to oApp:oParent := SELF den prepei na ekteleitai
@@ -2031,13 +2031,13 @@ CLASS ProjectClass INHERIT GeneralProjectClass IMPLEMENTS IApplicationContainer 
 			// oxi oApp := self akome, giati AddApp() xrhsimopoiei to ProjectPropertiesDlg
 		ENDIF
 	RETURN
-	
+
 	VIRTUAL METHOD RemoveApp(oApp AS AppClass) AS VOID
 		IF SELF:aApps:Contains(oApp)
 			SELF:aApps:Remove(oApp)
 		ENDIF
 	RETURN
-	
+
 	VIRTUAL METHOD GetPrimaryApp() AS AppClass
 	LOCAL n AS INT
 	FOR n:=0 UPTO SELF:aApps:Count - 1
@@ -2068,14 +2068,14 @@ CLASS ProjectClass INHERIT GeneralProjectClass IMPLEMENTS IApplicationContainer 
 		END IF
 	RETURN
 
-	// apo ProjectPropertiesDlg, gia na mhn ekteleitai to oGroup:oParent := SELF akoma, giati 
+	// apo ProjectPropertiesDlg, gia na mhn ekteleitai to oGroup:oParent := SELF akoma, giati
 	// mporei to dialog na ginei cancel
 	VIRTUAL METHOD AddAppGroup_Hack(oGroup AS ApplicationGroupClass) AS VOID
 		IF .not. SELF:aAppGroups:Contains(oGroup)
 			SELF:aAppGroups:Add(oGroup)
 		END IF
 	RETURN
-	
+
 VIRTUAL METHOD UpdateSubItems() AS VOID
 	LOCAL n AS INT
 	FOR n:=1 UPTO SELF:GetAppCount()
@@ -2176,7 +2176,7 @@ METHOD FindAppGroup(cGroupGuid AS STRING, oAppGroupParent AS ApplicationGroupCla
 			RETURN oAppGroupParent:GetAppGroup(nChildGroup)
 		END IF
 	NEXT
-RETURN NULL		
+RETURN NULL
 
 END CLASS
 
@@ -2213,26 +2213,26 @@ CLASS AppClass INHERIT GeneralProjectClass
 	EXPORT cIconFileName AS STRING
 	EXPORT eLanguage AS ApplicationLanguage
 	EXPORT eClr AS ClrType
-	
+
 	EXPORT eDialect AS ApplicationDialect
 
 	EXPORT aPostBuild AS ArrayList
 	EXPORT aPreBuild AS ArrayList
-	
+
 	EXPORT lSignAssembly AS LOGIC
 	EXPORT cKeyFile AS STRING
-	
+
 	EXPORT lFileGroupFolders AS LOGIC
 	EXPORT cIncludePaths AS STRING
 	EXPORT cStdDefsFile AS STRING
-	
+
 	EXPORT dLastTouched AS DateTime
 	EXPORT dRealSavedTime AS DateTime
-	
+
 	EXPORT lDirtySinceAutoExport AS LOGIC
 
 	EXPORT cAppToRun AS STRING
-	
+
 	EXPORT aCompilerMessages := List<STRING>{} AS List<STRING>
 	EXPORT cCompilerOptions AS STRING
 
@@ -2265,21 +2265,21 @@ CONSTRUCTOR(_oProject AS ProjectClass,_cName AS STRING)
 	SELF:eClr := ClrType.v4
 	SELF:eDialect := ApplicationDialect.None
 	SELF:cKeyFile := ""
-	
+
 	SELF:aPostBuild := ArrayList{}
 	SELF:aPreBuild := ArrayList{}
-	
+
 	SELF:aReferences := ArrayList{}
 	SELF:aResourceFiles := ArrayList{}
 	SELF:aLicenseFiles := ArrayList{}
 	SELF:oExport := ExportOptions{ProjectType.Application}
-	
+
 	SELF:cIncludePaths := ""
 	SELF:cStdDefsFile := ""
-	
+
 //	SELF:dLastTouched := DateTime.MaxValue
 	SELF:dLastTouched := DateTime.Now
-	
+
 	SELF:dRealSavedTime := DateTime.MinValue
 
 	SELF:cAppToRun := ""
@@ -2364,19 +2364,19 @@ IF String.IsNullOrEmpty(SELF:cOutputFolder)
 	cName:=Fun.ConnectPaths(cName,cSubFolder)
 ELSE
 	cName := SELF:cOutputFolder
-	Fun.ReplaceText(cName , "%ProjectOutputPath%" , iif(lCF , SELF:oProject:cOutputFolderCF , SELF:oProject:cOutputFolder))
-	Fun.ReplaceText(cName , "%ProjectOutputCFPath%" , SELF:oProject:cOutputFolderCF)
-	Fun.ReplaceText(cName , "%ProjectOutputFolder%" , iif(lCF , SELF:oProject:cOutputFolderCF , SELF:oProject:cOutputFolder))
-	Fun.ReplaceText(cName , "%ProjectOutputCFFolder%" , SELF:oProject:cOutputFolderCF)
-	Fun.ReplaceText(cName , "%AppPath%" , SELF:cFolder)
-	Fun.ReplaceText(cName , "%AppFolder%" , SELF:cFolder)
+	Fun.ReplaceText(REF cName , "%ProjectOutputPath%" , iif(lCF , SELF:oProject:cOutputFolderCF , SELF:oProject:cOutputFolder))
+	Fun.ReplaceText(REF cName , "%ProjectOutputCFPath%" , SELF:oProject:cOutputFolderCF)
+	Fun.ReplaceText(REF cName , "%ProjectOutputFolder%" , iif(lCF , SELF:oProject:cOutputFolderCF , SELF:oProject:cOutputFolder))
+	Fun.ReplaceText(REF cName , "%ProjectOutputCFFolder%" , SELF:oProject:cOutputFolderCF)
+	Fun.ReplaceText(REF cName , "%AppPath%" , SELF:cFolder)
+	Fun.ReplaceText(REF cName , "%AppFolder%" , SELF:cFolder)
 	// output paths above may contain %OutputPath% tokens themselves, so need to be examined first
-	Fun.ReplaceText(cName , "%ProjectPath%" , SELF:oProject:cFolder)
-	Fun.ReplaceText(cName , "%ProjectFolder%" , SELF:oProject:cFolder)
-	Fun.ReplaceText(cName , "%ConfigPath%" , cSubFolder)
+	Fun.ReplaceText(REF cName , "%ProjectPath%" , SELF:oProject:cFolder)
+	Fun.ReplaceText(REF cName , "%ProjectFolder%" , SELF:oProject:cFolder)
+	Fun.ReplaceText(REF cName , "%ConfigPath%" , cSubFolder)
 	cSubFolder := cSubFolder:Replace("\" , "")
 	cSubFolder := cSubFolder:Replace("/" , "")
-	Fun.ReplaceText(cName , "%ConfigFolder%" , cSubFolder)
+	Fun.ReplaceText(REF cName , "%ConfigFolder%" , cSubFolder)
 END IF
 //cName:=Fun.ConnectPathAndFileName(cName,SELF:cName)
 IF SELF:cAssembly:Trim() == ""
@@ -2421,7 +2421,7 @@ VIRTUAL METHOD GetFileFromGuid(cGuid AS STRING) AS FileClass
 			RETURN oFile:oVhPrg
 		END IF
 	NEXT
-RETURN NULL	
+RETURN NULL
 VIRTUAL METHOD GetResFileFromGuid(cGuid AS STRING) AS ResourceFileClass
 	LOCAL oFile AS ResourceFileClass
 	LOCAL n AS INT
@@ -2431,7 +2431,7 @@ VIRTUAL METHOD GetResFileFromGuid(cGuid AS STRING) AS ResourceFileClass
 			RETURN oFile
 		ENDIF
 	NEXT
-RETURN NULL	
+RETURN NULL
 VIRTUAL METHOD GetResourceFromGuid(cGuid AS STRING) AS ResourceClass
 	LOCAL oFile AS ResourceFileClass
 	LOCAL oRes AS ResourceClass
@@ -2443,7 +2443,7 @@ VIRTUAL METHOD GetResourceFromGuid(cGuid AS STRING) AS ResourceClass
 			RETURN oRes
 		ENDIF
 	NEXT
-RETURN NULL	
+RETURN NULL
 
 VIRTUAL METHOD GetFile(nFile AS INT) AS FileClass
 RETURN (FileClass)SELF:aFiles[nFile - 1]
@@ -2612,7 +2612,7 @@ RETURN
 VIRTUAL METHOD UpdateConfigsFromProject(lMessages AS LOGIC) AS VOID
 	LOCAL oConfig,oProjConfig,oAppConfig AS ProjectConfigClass
 	LOCAL n AS INT
-	
+
 	FOR n:=1 UPTO SELF:oProject:oConfigs:Count
 		oProjConfig := SELF:oProject:oConfigs:@@Get(n)
 		oConfig := SELF:oConfigs:@@Get( oProjConfig:cGuid)
@@ -2628,7 +2628,7 @@ VIRTUAL METHOD UpdateConfigsFromProject(lMessages AS LOGIC) AS VOID
 			oConfig:cName := oProjConfig:cName
 		ENDIF
 	NEXT
-	
+
 	n:=1
 	DO WHILE n <= SELF:oConfigs:Count
 		oAppConfig := SELF:oConfigs:@@Get(n)
@@ -2638,7 +2638,7 @@ VIRTUAL METHOD UpdateConfigsFromProject(lMessages AS LOGIC) AS VOID
 			n++
 		ENDIF
 	ENDDO
-	
+
 RETURN
 
 VIRTUAL METHOD UpdateSubItems() AS VOID
@@ -3086,7 +3086,7 @@ VIRTUAL METHOD ResourceKeyExists(oTest AS ResourceClass) AS LOGIC
 		cTest := Fun.GetFileName(oTest:cFileName)
 	ENDIF
 	cTest := cTest:ToUpper()
-	
+
 	FOR n := 1 UPTO SELF:GetResourceCount()
 		oRes := SELF:GetResource(n)
 		IF oRes:IsSWF
@@ -3357,7 +3357,7 @@ CLASS ProjectConfigurations
 				RETURN
 			ENDIF
 		NEXT
-	RETURN	
+	RETURN
 	METHOD Remove(cGuid AS STRING) AS VOID
 		LOCAL nConfig AS INT
 		FOR nConfig := 0 UPTO SELF:aConfigs:Count - 1
@@ -3366,13 +3366,13 @@ CLASS ProjectConfigurations
 				RETURN
 			ENDIF
 		NEXT
-	RETURN	
+	RETURN
 	METHOD Remove(nConfig AS INT) AS VOID
 		IF nConfig != 0 .and. nConfig <= SELF:aConfigs:Count
 			SELF:aConfigs:RemoveAt(nConfig - 1)
 		ENDIF
-	RETURN	
-	
+	RETURN
+
 	METHOD GetDebug() AS ProjectConfigClass
 	RETURN (ProjectConfigClass)SELF:aConfigs[0]
 	METHOD GetRelease() AS ProjectConfigClass
@@ -3444,9 +3444,9 @@ CLASS Options // reto update CloneOptions()
 	EXPORT lUndeclared AS LOGIC
 	EXPORT lMemVar AS LOGIC
 	EXPORT lUseNativeVersion AS LOGIC
-	
+
 	EXPORT lOvf,lFOvf AS LOGIC
-	
+
 	EXPORT lVO1 AS LOGIC
 	EXPORT lVO2 AS LOGIC
 	EXPORT lVO3 AS LOGIC
@@ -3469,7 +3469,7 @@ CLASS Options // reto update CloneOptions()
 
 	EXPORT lXPP1 AS LOGIC
 //	EXPORT lIntegerDivisions AS LOGIC
-	
+
 	EXPORT oEmptyConfig AS ProjectConfigClass
 	CONSTRUCTOR()
 		SELF:oEmptyConfig := ProjectConfigClass{"" , ""}
@@ -3490,10 +3490,10 @@ CLASS Options // reto update CloneOptions()
 		SELF:lMemVar := FALSE
 		SELF:lImplicitNamespace := FALSE
 		SELF:lUseNativeVersion := FALSE
-		
+
 		SELF:lOvf := FALSE
 		SELF:lFOvf := FALSE
-		
+
 		SELF:lVO1 := FALSE
 		SELF:lVO2 := FALSE
 		SELF:lVO3 := FALSE
@@ -3514,9 +3514,9 @@ CLASS Options // reto update CloneOptions()
 		SELF:lFOX1 := FALSE
 		SELF:lFOX2 := FALSE
 		SELF:lXPP1 := FALSE
-		
+
 //		SELF:lIntegerDivisions := FALSE
-		
+
 		SELF:oEmptyConfig:oOptions:lDebug := TRUE
 		SELF:oEmptyConfig:oOptions:lDebugInit := FALSE
 		SELF:oEmptyConfig:oOptions:lWarningsErrors := FALSE
@@ -3581,14 +3581,14 @@ CLASS Fun
 		cString:=StrTran(cString,ChrW(13)," ")
 		cString:=StrTran(cString,ChrW(10)," ")
 	RETURN cString
-	
+
 	STATIC METHOD CRLFToTagLine(cString AS STRING) AS STRING
 		cString:=StrTran(cString,ChrW(13)+ChrW(10),"`")
 		cString:=StrTran(cString,ChrW(10)+ChrW(13),"`")
 		cString:=StrTran(cString,ChrW(13),"`")
 		cString:=StrTran(cString,ChrW(10),"`")
 	RETURN cString
-	
+
 	STATIC METHOD TagLineToCRLF(cString AS STRING) AS STRING
 		cString:=StrTran(cString,"`",ChrW(13)+ChrW(10))
 	RETURN cString
@@ -3604,7 +3604,7 @@ CLASS Fun
 				DO CASE
 				CASE sLine:cParam=="SWITCHES"
 					oOptions:cSwitches:=Fun.TagLineToCRLF(sLine:cValue)
-/*				Case sLine:cParam=="TARGET" 
+/*				Case sLine:cParam=="TARGET"
 					oOptions:nTarget:=sLine:nValue
 					If (oOptions:nTarget<0) .or. (oOptions:nTarget>3)
 						oOptions:nTarget:=0
@@ -3637,10 +3637,10 @@ CLASS Fun
 					oOptions:lFOvf:=sLine:lValue
 //				CASE sLine:cParam=="INTEGERDIVISIONS"
 //					oOptions:lIntegerDivisions := sLine:lValue
-			
+
 //				CASE sLine:cParam=="VO"
 //					oOptions:lVO:=sLine:lValue
-			
+
 				CASE sLine:cParam=="VO1"
 					oOptions:lVO1:=sLine:lValue
 				CASE sLine:cParam=="VO2"
@@ -3673,23 +3673,23 @@ CLASS Fun
 					oOptions:lVO15:=sLine:lValue*/
 				CASE sLine:cParam=="VO16"
 					oOptions:lVO16:=sLine:lValue
-			
+
 				CASE sLine:cParam=="FOX1"
 					oOptions:lFOX1:=sLine:lValue
 				CASE sLine:cParam=="FOX2"
 					oOptions:lFOX2:=sLine:lValue
 				CASE sLine:cParam=="XPP1"
 					oOptions:lXPP1:=sLine:lValue
-			
+
 				OTHERWISE
 					lNoOption:=TRUE
 				END CASE
-				
+
 /*				// Default /vo14 to true, when other /vo options are enabled
 				IF sLine:cParam:StartsWith("VO") .and. "123567890":IndexOf(sLine:cParam[sLine:cParam:Length - 1]) != 0 .and. sLine:lValue
 					oOptions:lVO14 := TRUE
 				END IF*/
-				
+
 			END IF
 		END TRY
 	RETURN !lNoOption
@@ -3711,7 +3711,7 @@ CLASS Fun
 					oOptions:cCommandLine:=sLine:cValue
 				CASE sLine:cParam=="COMMANDLINECF"
 					oOptions:cCommandLineCF:=sLine:cValue
-/*				Case sLine:cParam=="TARGET" 
+/*				Case sLine:cParam=="TARGET"
 					oOptions:nTarget:=sLine:nValue
 					If (oOptions:nTarget<0) .or. (oOptions:nTarget>3)
 						oOptions:nTarget:=0
@@ -3779,7 +3779,7 @@ CLASS Fun
 		cRet := cFileName
 	END IF
 	RETURN cRet
-	
+
 	STATIC METHOD GetProjectFileNameNew(oProject AS ProjectClass,cFileName AS STRING) AS STRING
 //	 kai xwris \ sto telos
 	LOCAL cRet AS STRING
@@ -3817,7 +3817,7 @@ CLASS Fun
 		IF oApp == NULL
 			RETURN cFileName
 		END IF
-		
+
 		LOCAL aValues AS NameValueCollection
 		aValues := NameValueCollection{}
 		aValues:Add("%APPPATH%" , iif(oApp == NULL , "%ApPath%" , Fun.PathNoSlash(oApp:cFolder) ) )
@@ -3837,7 +3837,7 @@ CLASS Fun
 /*		IF !cLine:Contains("%")
 			RETURN cLine
 		END IF*/
-		
+
 		cUpper := cLine:ToUpper()
 		cRet := cLine
 		REPEAT
@@ -3863,7 +3863,7 @@ CLASS Fun
 				END IF
 			NEXT
 		UNTIL ! lDidAction // in case there are multiple occurences of the same tag
-		
+
 	RETURN cRet
 
 	STATIC METHOD ConnectPaths(cPath1 AS STRING,cPath2 AS STRING) AS STRING
@@ -3912,35 +3912,35 @@ CLASS Fun
 		ENDIF
 		RETURN cFile
 	ENDIF
-	SplitPath( cFile, sDrive, sDir, sFile, sExt)
+	SplitPath( cFile, REF sDrive, REF sDir, REF sFile, REF sExt)
 	RETURN sDrive+sDir
 	STATIC METHOD GetDrive(cFile AS STRING) AS STRING
 	LOCAL sDrive:="", sDir:="", sFile:="", sExt:=""  AS STRING
 	IF cFile:Trim():Length == 0
 		RETURN ""
 	END IF
-	SplitPath( cFile, sDrive, sDir, sFile, sExt)
+	SplitPath( cFile, REF sDrive, REF sDir, REF sFile, REF sExt)
 	RETURN sDrive
 	STATIC METHOD GetFileName(cFile AS STRING) AS STRING
 	LOCAL sDrive:="", sDir:="", sFile:="", sExt:=""  AS STRING
 	IF cFile:Trim():Length == 0
 		RETURN ""
 	END IF
-	SplitPath( cFile, sDrive, sDir, sFile, sExt)
+	SplitPath( cFile, REF sDrive, REF sDir, REF sFile, REF sExt)
 	RETURN sFile+sExt
 	STATIC METHOD GetFileNameNoExt(cFile AS STRING) AS STRING
 	LOCAL sDrive:="", sDir:="", sFile:="", sExt:=""  AS STRING
 	IF cFile:Trim():Length == 0
 		RETURN "Unnamed"
 	END IF
-	SplitPath( cFile, sDrive, sDir, sFile, sExt)
+	SplitPath( cFile, REF sDrive, REF sDir, REF sFile, REF sExt)
 	RETURN sFile
 	STATIC METHOD GetExt(cFile AS STRING) AS STRING
 	LOCAL sDrive:="", sDir:="", sFile:="", sExt:=""  AS STRING
 	IF cFile:Trim():Length == 0
 		RETURN "Unnamed"
 	END IF
-	SplitPath( cFile, sDrive, sDir, sFile, sExt)
+	SplitPath( cFile, REF sDrive, REF sDir, REF sFile, REF sExt)
 	IF Left(sExt , 1) == "."
 		sExt :=SubStr(sExt , 2)
 	ENDIF
@@ -3950,9 +3950,9 @@ CLASS Fun
 	IF cFile:Trim():Length == 0
 		RETURN "Unnamed"
 	END IF
-	SplitPath( cFile, sDrive, sDir, sFile, sExt)
+	SplitPath( cFile, REF sDrive, REF sDir, REF sFile, REF sExt)
 	RETURN sDrive+sDir+sFile
-	
+
 	STATIC METHOD AnalyzeFileLine(cLine AS STRING) AS FileLine
 	LOCAL strFileLine AS FileLine
 	LOCAL nAt AS INT
@@ -4102,7 +4102,7 @@ CLASS NameValueCollection IMPLEMENTS ICollection
 
 	METHOD ContainsName(cName AS STRING) AS LOGIC
 	RETURN SELF:GetNameIndex(cName) != -1
-	
+
 	VIRTUAL ACCESS Count() AS INT
 	RETURN SELF:aCollection:Count
 	VIRTUAL ACCESS IsSynchronized() AS LOGIC
@@ -4139,9 +4139,9 @@ CLASS GACClass
 	STATIC CONSTRUCTOR()
 		Load()
 	RETURN
-	
+
 	STATIC METHOD Load() AS VOID
-		
+
 		GACClass.aGAC := SortedList{}
 /*		IF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINDOWS\ASSEMBLY\GAC_32")
 			GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINDOWS\ASSEMBLY\GAC_32" , ClrType.v2)
@@ -4153,7 +4153,7 @@ CLASS GACClass
 		ELSEIF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINNT\ASSEMBLY\GAC_MSIL")
 			GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINNT\ASSEMBLY\GAC_MSIL" , ClrType.v2)
 		END IF*/
-		
+
 		IF TRUE
 			IF System.IO.Directory.Exists(Glo.gcDotNetInstallDrive + ":\WINDOWS\Microsoft.NET\ASSEMBLY\GAC_32")
 				GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINDOWS\Microsoft.NET\ASSEMBLY\GAC_32" , ClrType.v4)
@@ -4166,9 +4166,9 @@ CLASS GACClass
 				GACClass.LoadFromDir(Glo.gcDotNetInstallDrive + ":\WINNT\Microsoft.NET\ASSEMBLY\GAC_MSIL" , ClrType.v4)
 			END IF
 		END IF
-		
+
 	RETURN
-	
+
 	STATIC METHOD GetAllReferences() AS ReferenceObject[]
 		LOCAL aRef AS ReferenceObject[]
 		LOCAL n AS INT
@@ -4176,7 +4176,7 @@ CLASS GACClass
 		FOR n := 1 UPTO aRef:Length
 			aRef[n] := ((ReferenceObject)GACClass.aGAC:GetByIndex(n - 1)):Clone()
 		NEXT
-	RETURN aRef	
+	RETURN aRef
 
 	STATIC METHOD GetClosestReference(oRef AS ReferenceObject) AS ReferenceObject
 		LOCAL oRet AS ReferenceObject
@@ -4223,7 +4223,7 @@ CLASS GACClass
 			ENDIF
 		NEXT
 	RETURN oRet
-	
+
 	STATIC METHOD LoadFromDir(cFolder AS STRING , eClr AS ClrType) AS VOID
 		LOCAL aFiles AS STRING[]
 		LOCAL aDirs AS STRING[]
@@ -4287,9 +4287,9 @@ CLASS GACClass
 					ENDIF
 				ENDIF
 			NEXT
-			
+
 		NEXT
-		
+
 	RETURN
 
 END CLASS
@@ -4328,49 +4328,49 @@ FUNCTION SubStr(c AS STRING , nStart AS DWORD , dwLen AS DWORD) AS STRING
 RETURN SubStr(c , (INT)nStart , (INT)dwLen)
 FUNCTION SubStr(c AS STRING , nStart AS INT , dwLen AS INT) AS STRING
 	LOCAL cReturn AS STRING
-	
+
 	cReturn := ""
-	
+
 	IF nStart == 0
 		nStart := 1
 	ENDIF
-	
+
 	IF nStart < 0
 		nStart := c:Length+nStart+1
 	ENDIF
-	
+
 	IF dwLen < 0
 		dwLen := c:Length
 	ENDIF
-	
+
 	IF nStart <= c:Length .and. nStart > 0
 		dwLen := Math.Min( c:Length - nStart + 1, dwLen )
 		cReturn := c:Substring( nStart - 1, dwLen )
 	ENDIF
-	
+
 RETURN cReturn
 
 FUNCTION SubStr(c AS STRING , nStart AS DWORD) AS STRING
 RETURN SubStr(c , (INT)nStart)
 FUNCTION SubStr(c AS STRING , nStart AS INT) AS STRING
 	LOCAL cReturn AS STRING
-	
+
 	cReturn := ""
-	
+
 	IF nStart == 0
 		nStart := 1
 	ENDIF
-	
+
 	IF nStart < 0
 		nStart := c:Length+nStart+1
 	ENDIF
-	
+
 	LOCAL nLength AS INT
 	IF nStart <= c:Length .and. nStart > 0
 		nLength := Math.Min( c:Length - nStart + 1, c:Length )
 		cReturn := c:Substring( nStart - 1, nLength )
 	ENDIF
-	
+
 RETURN cReturn
 
 FUNCTION At(cSearch AS STRING , c AS STRING) AS DWORD
@@ -4384,11 +4384,11 @@ FUNCTION At3(cSearch AS STRING , c AS STRING , dwOff AS DWORD) AS DWORD
 	IF String.IsNullOrEmpty( cSearch )
 		RETURN 0
 	ENDIF
-	
+
 	IF dwOff < (DWORD)c:Length
 		RETURN (DWORD)c:IndexOf(cSearch,(INT)dwOff,StringComparison.Ordinal) + 1
 	ENDIF
-	
+
 RETURN 0
 FUNCTION RAt(cSearch AS STRING , c AS STRING) AS DWORD
 	IF String.IsNullOrEmpty( cSearch )
@@ -4404,11 +4404,11 @@ RETURN Occurs(cSearch[0] , c)
 FUNCTION Occurs(cSearch AS Char , c AS STRING) AS DWORD
 	LOCAL nCount AS DWORD
 	LOCAL n AS INT
-	
+
 	IF String.IsNullOrEmpty(c)
 		RETURN 0
 	ENDIF
-	
+
 	FOR n := 0 UPTO c:Length - 1
 		IF c[n] == cSearch
 			nCount ++
@@ -4491,7 +4491,7 @@ FUNCTION Empty(c AS STRING) AS LOGIC
 		RETURN TRUE
 	ENDIF
 	FOR n := 0 UPTO c:Length - 1
-		nChar := (INT)c[n] 
+		nChar := (INT)c[n]
 		IF nChar != 9 .and. nChar != 10 .and. nChar != 13 .and. nChar != 32
 			RETURN FALSE
 		ENDIF

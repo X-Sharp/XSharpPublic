@@ -22,7 +22,7 @@ PROCEDURE DoTest_1()
 		? "Memvar outside the function:"
 		? MemVarGet( gcMemVarName ) // Should throw exception
 		xAssert(FALSE)
-	CATCH
+	CATCH e AS XSharp.Error
 	    xAssert(TRUE)
 	END TRY
 
@@ -35,8 +35,8 @@ PROCEDURE CreateMemVarInAFunction_1( )
 PROCEDURE CheckInChild_1()
 	TRY
 		? "Memvar in a child function:"
-		? MemVarGet( gcMemVarName ) // testing123, exception in VO  ?
-	CATCH
+		? MemVarGet( gcMemVarName ) // testing123
+	CATCH e AS XSharp.Error
     	xAssert(FALSE)
 	END TRY
 
@@ -53,7 +53,7 @@ PROCEDURE DoTest_2()
 		? "Memvar outside the function:"
 		? MemVarGet( gcMemVarName ) // Should throw exception
 		xAssert(FALSE)
-	CATCH
+	CATCH e AS XSharp.Error
     	xAssert(TRUE)
 	END TRY
 PROCEDURE CreateMemVarInAFunction_2( )
@@ -66,9 +66,9 @@ PROCEDURE CreateMemVarInAFunction_2( )
 PROCEDURE CheckInChild_2()
 	TRY
 		? "Memvar in a child function:"
-		? MemVarGet( gcMemVarName ) // Should throw exception
+		? MemVarGet( gcMemVarName )
 		xAssert(TRUE)
-	CATCH
+	CATCH e AS XSharp.Error
 	    XAssert(FALSE)
 	END TRY
 
@@ -82,8 +82,8 @@ PROCEDURE DoTest_3()
 	TRY
 		? "Memvar outside the function:"
 		?  MemVarGet( gcMemVarName ) // Should throw exception
-		xAssert(TRUE)
-	CATCH
+		xAssert(FALSE)
+	CATCH e AS XSharp.Error
 	    XAssert(TRUE)
 	END TRY
 
@@ -97,9 +97,9 @@ PROCEDURE CreateMemVarInAFunction_3( )
 PROCEDURE CheckInChild_3()
 	TRY
 		? "Memvar in a child function:"
-		? MemVarGet( gcMemVarName ) // Should throw exception
+		? MemVarGet( gcMemVarName )
 		xAssert(TRUE)
-	CATCH
+	CATCH e AS XSharp.Error
     	xAssert(FALSE)
 	END TRY
 
@@ -112,7 +112,7 @@ PROCEDURE DoTest_4()
 		? "Memvar outside the function:"
 		? MemVarGet( gcMemVarName ) // Should throw exception
 		xAssert(FALSE)
-	CATCH
+	CATCH e AS XSharp.Error
     	xAssert(TRUE)
 	END TRY
     PUBLIC &gcMemVarName
@@ -120,21 +120,21 @@ PROCEDURE DoTest_4()
 
 	TRY
 		? "Try again with Public "
-		? MemVarGet( gcMemVarName ) // Should throw exception
+		? MemVarGet( gcMemVarName )
 		xAssert(TRUE)
-	CATCH
+	CATCH e AS XSharp.Error
     	xAssert(FALSE)
 	END TRY
 
 
 PROCEDURE MacroTest
-    local oCodeBlock as CodeBlock
+    LOCAL oCodeBlock AS CODEBLOCK
     oCodeBlock := GetCodeBlock()
     oCodeBlock:Eval()
     ? MemVarGet( gcMemVarName ) // testinblock, OK
 
-FUNCTION GetCodeBlock() AS CodeBlock
-    return {||MemVarPut(gcMemVarName,"testinblock")}
+FUNCTION GetCodeBlock() AS CODEBLOCK
+    RETURN {||MemVarPut(gcMemVarName,"testinblock")}
 
 
 PROC xAssert(l AS LOGIC)  AS VOID
@@ -142,9 +142,10 @@ PROC xAssert(l AS LOGIC)  AS VOID
 		? "Assertion passed"
 	ELSE
 		? "Incorrect result!!!!!!"
+		THROW Exception{"Incorrect result"}
 	END IF
 RETURN
 
-FUNCTION DoNothing() AS String
+FUNCTION DoNothing() AS STRING
     // This should not generate a MemVarInit()
     RETURN "Nothing"

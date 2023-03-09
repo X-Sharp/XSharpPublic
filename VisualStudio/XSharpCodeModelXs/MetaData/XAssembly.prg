@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharpModel
          VAR reader := AssemblyReader{FileName}
          SELF:Initialize()
          reader:Read(SELF)
-         XDatabase:Read(SELF)
+         XDatabase.Read(SELF)
          VAR fi := FileInfo{FileName}
          IF SELF:Size != fi:Length .OR. SELF:LastChanged != fi:LastWriteTime
             // update assembly info and type names in the database

@@ -4,6 +4,7 @@ using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TextManager.Interop;
 using System.IO;
+using System.Linq;
 
 namespace XSharp.Project
 {
@@ -39,6 +40,8 @@ namespace XSharp.Project
                VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
                VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
                VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
+               VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
+               _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
                var sol = await VS.Solutions.GetCurrentSolutionAsync();
                if (sol is Solution)
                {
@@ -48,34 +51,59 @@ namespace XSharp.Project
 
         }
 
-        private void SolutionEvents_OnAfterRenameProject(Community.VisualStudio.Toolkit.Project obj)
+        private void DocumentEvents_Opened(string strDocument)
+        {
+            var xFile = XSolution.FindFile(strDocument);
+            if (xFile != null)
+            {
+                xFile.Project.ResolveReferences();
+            }
+        }
+        private CommandProgression CloseDesignerWindows()
+        {
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var documents = await VS.Windows.GetAllDocumentWindowsAsync();
+                foreach (var doc in documents.ToArray())
+                {
+                    var caption = doc.Caption;
+                    if (caption.IndexOf("[") >= 0 && caption.IndexOf("]") >= 0)
+                    {
+                        await doc.CloseFrameAsync(FrameCloseOption.SaveIfDirty);
+                    }
+                }
+            });
+            return CommandProgression.Continue;
+        }
+
+        private void SolutionEvents_OnAfterRenameProject(Community.VisualStudio.Toolkit.Project project)
         {
             Logger.SingleLine();
-            Logger.Information("Renamed project: " + obj?.FullPath ?? "");
+            Logger.Information("Renamed project: " + project?.FullPath ?? "");
             Logger.SingleLine();
         }
 
-        private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project obj)
+        private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
         {
             Logger.SingleLine();
-            Logger.Information("Closing project: " + obj?.FullPath ?? "");
+            Logger.Information("Closing project: " + project?.FullPath ?? "");
             Logger.SingleLine();
 
         }
 
-        private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project obj)
+        private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
         {
             Logger.SingleLine();
-            Logger.Information("Opened project: " + obj?.FullPath ?? "");
+            Logger.Information("Opened project: " + project?.FullPath ?? "");
             Logger.SingleLine();
         }
 
-        private void SolutionEvents_OnBeforeOpenProject(string obj)
+        private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
             Logger.SingleLine();
-            Logger.Information("Opening project: " + obj ?? "");
+            Logger.Information("Opening project: " + projectFileName ?? "");
             Logger.SingleLine();
-            checkProjectFile(obj);
+            checkProjectFile(projectFileName);
         }
         const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
         const string newText = @"$(XSharpMsBuildDir)";
@@ -153,6 +181,7 @@ namespace XSharp.Project
         string solutionName = "";
         private void SolutionEvents_OnBeforeCloseSolution()
         {
+           
             Logger.SingleLine();
             Logger.Information("Closing solution: " + solutionName);
             Logger.SingleLine();
@@ -167,9 +196,9 @@ namespace XSharp.Project
             solutionName = "";
         }
 
-        private void SolutionEvents_OnAfterOpenSolution(Solution obj)
+        private void SolutionEvents_OnAfterOpenSolution(Solution solution)
         {
-            if (obj is Solution sol)
+            if (solution is Solution sol)
             {
                 var file = sol.FullPath;
                 if (!string.IsNullOrEmpty(file))
@@ -179,17 +208,17 @@ namespace XSharp.Project
             }
 
             Logger.SingleLine();
-            Logger.Information("Opened Solution: " + obj?.FullPath ?? "");
+            Logger.Information("Opened Solution: " + solution?.FullPath ?? "");
             Logger.SingleLine();
-            solutionName = obj?.FullPath;
+            solutionName = solution?.FullPath;
         }
 
-        private void SolutionEvents_OnBeforeOpenSolution(string obj)
+        private void SolutionEvents_OnBeforeOpenSolution(string solutionFileName)
         {
             Logger.SingleLine();
-            Logger.Information("Opening Solution: " + obj ?? "");
+            Logger.Information("Opening Solution: " + solutionFileName ?? "");
             Logger.SingleLine();
-            solutionName = obj;
+            solutionName = solutionFileName;
         }
 
         private void BuildEvents_SolutionBuildCancelled()

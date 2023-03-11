@@ -20,7 +20,7 @@ STATIC CLASS XDatabase
     STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-    PRIVATE CONST CurrentDbVersion := 1.7 AS System.Double
+    PRIVATE CONST CurrentDbVersion := 1.8 AS System.Double
 
     STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
         LOCAL lValid := FALSE AS LOGIC
@@ -158,6 +158,7 @@ STATIC CLASS XDatabase
             cmd:CommandText += "DROP TABLE IF EXISTS ReferencedTypes ;"
             cmd:CommandText += "DROP TABLE IF EXISTS CommentTasks ;"
             cmd:CommandText += "DROP TABLE IF EXISTS ExtensionMethods ;"
+            cmd:CommandText += "DROP TABLE IF EXISTS OpenDesignerFiles ;"
             cmd:ExecuteNonQuery()
 #endregion
 #region Table Projects
@@ -323,6 +324,16 @@ STATIC CLASS XDatabase
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()
 #endregion
+#region Table ExtensionMethods
+            stmt    :=  "CREATE TABLE OpenDesignerFiles ("
+            stmt    +=  " Id integer NOT NULL PRIMARY KEY, FullName text NOT NULL COLLATE NOCASE "
+            stmt    += ") ;"
+            stmt    += "CREATE UNIQUE INDEX OpenDesignerFiles_Pk    ON OpenDesignerFiles (Id); "
+            stmt    += "CREATE UNIQUE INDEX OpenDesignerFiles_Name  ON OpenDesignerFiles (FullName); "
+            cmd:CommandText := stmt
+            cmd:ExecuteNonQuery()
+#endregion
+
             cmd:Parameters:Clear()
 
 #region views
@@ -464,6 +475,42 @@ STATIC CLASS XDatabase
         Log(i" Deleted OrphanFiles")
         RETURN result
 
+    STATIC METHOD GetOpenDesignerFiles() AS List<STRING>
+      VAR result := List<STRING>{}
+      IF IsDbOpen
+          BEGIN LOCK oConn
+              USING VAR cmd := SQLiteCommand{"SELECT FullName from OpenDesignerFiles", oConn}
+              USING VAR rdr := cmd:ExecuteReader()
+              DO WHILE rdr:Read()
+                  VAR name := rdr:GetString(0)
+                  result:Add(name)
+              ENDDO
+          END LOCK
+      ENDIF
+      Log(i"GetOpenDesignerFiles returned {result.Count} names")
+      RETURN result
+    STATIC METHOD SaveOpenDesignerFiles(files AS List<STRING>) AS LOGIC
+      VAR result := TRUE
+      IF IsDbOpen
+          BEGIN LOCK oConn
+        TRY      
+              USING VAR cmd := SQLiteCommand{"DELETE from OpenDesignerFiles", oConn}
+              cmd:ExecuteNonQuery()
+              cmd:CommandText := "Insert into OpenDesignerFiles(FullName) values ($name);"
+              FOREACH VAR file IN files
+                  cmd:Parameters:Clear()
+                  cmd:Parameters:AddWithValue("$name",file)
+                  cmd:ExecuteNonQuery()
+              NEXT
+          CATCH e AS Exception
+                XSettings.LogException(e, __FUNCTION__)
+                result := FALSE
+         END TRY       
+         END LOCK
+      ENDIF
+      Log(i"SaveOpenDesignerFiles returned {result}")
+      RETURN result
+;
 
     STATIC METHOD GetProjectFileNames() AS List<STRING>
         VAR result := List<STRING>{}

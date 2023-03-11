@@ -5,6 +5,10 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TextManager.Interop;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Text.Tagging;
+using System.Reflection.Metadata;
 
 namespace XSharp.Project
 {
@@ -41,7 +45,7 @@ namespace XSharp.Project
                VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
                VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
                VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
-               _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
+//               _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
                var sol = await VS.Solutions.GetCurrentSolutionAsync();
                if (sol is Solution)
                {
@@ -59,19 +63,35 @@ namespace XSharp.Project
                 xFile.Project.ResolveReferences();
             }
         }
+        private string getFileName(WindowFrame doc)
+        {
+            var type = doc.GetType();
+            var frame = (IVsWindowFrame)doc;
+            frame.GetProperty((int)__VSFPROPID.VSFPROPID_pszMkDocument, out var docName);
+            if (docName is string strDoc)
+            {
+                return strDoc;
+            }
+            return null;
+        }
         private CommandProgression CloseDesignerWindows()
         {
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 var documents = await VS.Windows.GetAllDocumentWindowsAsync();
+                var files = new List<string>();
                 foreach (var doc in documents.ToArray())
                 {
                     var caption = doc.Caption;
                     if (caption.IndexOf("[") >= 0 && caption.IndexOf("]") >= 0)
                     {
+                        var fileName = getFileName(doc)+"|"+doc.Editor.ToString();
                         await doc.CloseFrameAsync(FrameCloseOption.SaveIfDirty);
+                        if (!string.IsNullOrEmpty(fileName))
+                            files.Add(fileName);
                     }
                 }
+                XDatabase.SaveOpenDesignerFiles(files);
             });
             return CommandProgression.Continue;
         }
@@ -181,7 +201,7 @@ namespace XSharp.Project
         string solutionName = "";
         private void SolutionEvents_OnBeforeCloseSolution()
         {
-           
+            CloseDesignerWindows();
             Logger.SingleLine();
             Logger.Information("Closing solution: " + solutionName);
             Logger.SingleLine();

@@ -243,9 +243,6 @@
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.12.0">
       <Version>17.4.33103.184</Version>
     </PackageReference>
-    <PackageReference Include="Mono.Cecil">
-      <Version>0.11.4</Version>
-    </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
     </PackageReference>
@@ -283,6 +280,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Mono.Cecil\XSharp.MonoCecil.csproj">
+      <Project>{7f02316e-cc0c-49f4-862e-c80fb6bc4a0e}</Project>
+      <Name>XSharp.MonoCecil</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>CodeModel</Name>

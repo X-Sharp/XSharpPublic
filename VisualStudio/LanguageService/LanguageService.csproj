@@ -226,6 +226,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="XSharp.MonoCecil">
+      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>

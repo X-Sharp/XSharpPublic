@@ -71,6 +71,9 @@
     <DeployExtension>False</DeployExtension>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="XSharp.MonoCecil">
+      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
+    </Reference>  
     <Reference Include="Microsoft.Windows.Design.Host">
       <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
     </Reference>
@@ -348,6 +351,11 @@
       <LastGenOutput>TextTemplate.cs</LastGenOutput>
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.vstemplate" />
+    <Content Include="$(SOlutionDir)\External\$(Configuration)\XSharp.MonoCecil.dll">
+      <Link>XSharp.MonoCecil.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -616,10 +624,6 @@
     <ProjectReference Include="..\AppDesigner\AppDesigner2022.csproj">
       <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe1}</Project>
       <Name>AppDesigner2022</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Mono.Cecil\XSharp.MonoCecil.csproj">
-      <Project>{7f02316e-cc0c-49f4-862e-c80fb6bc4a0e}</Project>
-      <Name>XSharp.MonoCecil</Name>
     </ProjectReference>
     <ProjectReference Include="..\ProjectBase\ProjectBase2022.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>

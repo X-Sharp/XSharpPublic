@@ -64,6 +64,9 @@ EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VoEditors", "VisualStudio\XSharpVoEditors\VoEditors.xsproj", "{7619DB88-6286-4EF1-8273-2A08CC8AC70E}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "CodeModel", "VisualStudio\XSharpCodeModelXs\CodeModel.xsproj", "{EED6843B-B727-4F08-AA32-CA0F48FDDE3F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7F02316E-CC0C-49F4-862E-C80FB6BC4A0E} = {7F02316E-CC0C-49F4-862E-C80FB6BC4A0E}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeDomProvider", "VisualStudio\CodeDomProvider\CodeDomProvider.csproj", "{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}"
 EndProject

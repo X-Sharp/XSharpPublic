@@ -16,6 +16,7 @@ using Microsoft.VisualStudio.Shell;
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDomProvider")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.MonoCecil")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.Evaluator")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser")]
 

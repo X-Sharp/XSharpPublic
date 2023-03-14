@@ -99,7 +99,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal( "  1234.567"			, Str(1234.567) )
 			Assert.Equal( "  1234.5678"			, Str(1234.5678) )
 			Assert.Equal( "  1234.5679012345"	, Str(1234.5679012345) )
-			Assert.Equal( "123456.78901234568"	, Str(123456.78901234567) )
+			Assert.Equal( "123456.78901234567"	, Str(123456.78901234567) )
 			Assert.Equal( "999999" , Str(999999) )
 			Assert.Equal( "******" , Str(1000000) )
 

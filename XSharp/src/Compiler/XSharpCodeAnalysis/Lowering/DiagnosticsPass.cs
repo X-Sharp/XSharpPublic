@@ -55,10 +55,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
         }
-        private void XsCheckMemberAccess(BoundNode node, XSharpParser.AccessMemberContext amc, Symbol symbol)
+        private void XsCheckMemberAccess(BoundNode node, XSharpParser.AccessMemberContext amc, TypeSymbol type, Symbol symbol)
         {
             var contType = symbol.ContainingType;
-            if (!node.HasErrors())
+            // check for the type to makes sure that an assignment such as
+            // CLASS TestClass
+            // EXPORT Test1 := DateTime.Now AS DateTime
+            // does not trigger an error on the Test1.
+            // There is no receiver on Test1, and roslyn (we?) associates the := DateTime.Now node (EqualsValue Clause) to the Test1 symbol
+
+            if (!node.HasErrors() && type.Equals(contType))
             {
                 switch (amc.Op.Type)
                 {
@@ -66,7 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (_compilation.Options.Dialect != XSharpDialect.XPP && symbol.IsStatic)
                         {
                             // XPP allows static and instance, other dialects only instance
-                            Error(ErrorCode.WRN_ColonForStaticMember, node, symbol);
+                            Error(ErrorCode.ERR_ColonForStaticMember, node, symbol);
                         }
                         break;
                     case XSharpLexer.DOT:
@@ -78,13 +84,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         else
                         {
-                            Error(ErrorCode.WRN_DotForInstanceMember, node, symbol);
+                            Error(ErrorCode.ERR_DotForInstanceMember, node, symbol);
                         }
                         break;
                     case XSharpLexer.COLON:
                         if (symbol.IsStatic && !contType.IsFunctionsClass()) // For late bound code where member access is redirected to function
                         {
-                            Error(ErrorCode.WRN_ColonForStaticMember, node, symbol);
+                            Error(ErrorCode.ERR_ColonForStaticMember, node, symbol);
                         }
                         break;
                     default:
@@ -98,7 +104,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckMemberAccess(node, amc, node.FieldSymbol);
+                XsCheckMemberAccess(node, amc, node.Type, node.FieldSymbol);
             }
             return;
         }
@@ -106,7 +112,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckMemberAccess(node, amc, node.PropertySymbol);
+                XsCheckMemberAccess(node, amc, node.Type, node.PropertySymbol);
             }
             return;
         }
@@ -114,7 +120,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckMemberAccess(node, amc, node.Indexer);
+                XsCheckMemberAccess(node, amc, node.Type, node.Indexer);
             }
             return;
         }
@@ -124,7 +130,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (!node.Method.IsExtensionMethod && !node.Method.IsOperator())
                 {
-                    XsCheckMemberAccess(node, amc, node.Method);
+                    XsCheckMemberAccess(node, amc, node.Type, node.Method);
                 }
                 return;
             }
@@ -134,7 +140,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (node.Syntax?.XNode is XSharpParser.AssignmentExpressionContext aec &&
                 aec.Left is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckMemberAccess(node, amc, node.Event);
+                XsCheckMemberAccess(node, amc, node.Type, node.Event);
             }
             return;
         }
@@ -142,7 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckMemberAccess(node, amc, node.EventSymbol);
+                XsCheckMemberAccess(node, amc, node.Type, node.EventSymbol);
             }
             return;
         }

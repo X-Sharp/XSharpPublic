@@ -7673,11 +7673,11 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_InvalidStackAlloc" xml:space="preserve">
   <value>The STACKALLOC keyword needs to be followed by a literal array or an array creation expression.</value>
   </data>
-  <data name="WRN_DotForInstanceMember" xml:space="preserve">
-  <value>You should not access the instance member '{0}' with the DOT '.' operator.</value>
+  <data name="ERR_DotForInstanceMember" xml:space="preserve">
+  <value>Can't access the instance member '{0}' with the DOT '.' operator.</value>
   </data>
-  <data name="WRN_ColonForStaticMember" xml:space="preserve">
-  <value>You should not access the static member '{0}' with the COLON ':' operator.</value>
+  <data name="ERR_ColonForStaticMember" xml:space="preserve">
+  <value>Can't access the static member '{0}' with the COLON ':' operator.</value>
   </data>
   
 </root>

@@ -2081,9 +2081,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_BadAddressOfArg = 9109,
         WRN_String2PszMustBeAssignedToLocal = 9110,
         ERR_DefineIncorrectValue = 9111,
-        WRN_DotForInstanceMember = 9112,
+        ERR_DotForInstanceMember = 9112,
         ERR_InvalidStackAlloc = 9113,
-        WRN_ColonForStaticMember = 9114,
+        ERR_ColonForStaticMember = 9114,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

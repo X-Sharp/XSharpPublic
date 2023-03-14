@@ -340,8 +340,6 @@
                 case ErrorCode.WRN_PropertyTypeChangedInParentType:
                 case ErrorCode.WRN_MissingWithStatement:
                 case ErrorCode.WRN_String2PszMustBeAssignedToLocal:
-                case ErrorCode.WRN_DotForInstanceMember:
-                case ErrorCode.WRN_ColonForStaticMember:
                 case ErrorCode.WRN_XPPSuperIVarsAlwaysShared:
                 case ErrorCode.WRN_XPPFreezeNotSupported:
                 case ErrorCode.WRN_XPPVarIsInNotSupported:

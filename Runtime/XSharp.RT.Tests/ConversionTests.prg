@@ -33,8 +33,12 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
 			LOCAL p AS PTR
 			p := @p
-			Assert.Equal(AsString(p), "0x" + AsHexString(p) )
-			Assert.Equal(10, AsString(p):Length)
+            Assert.Equal(AsString(p), "0x" + AsHexString(p) )
+            IF Intptr.Size == 4
+                Assert.Equal(10, AsString(p):Length)
+            ELSE
+                Assert.Equal(18, AsString(p):Length)
+            ENDIF
 			p := NULL_PTR
 			Assert.Equal("0x00000000", AsString(p))
 			Assert.Equal("00000000", AsHexString(p))
@@ -295,7 +299,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			LOCAL d AS System.Decimal
 			LOCAL u AS USUAL
 			LOCAL f AS FLOAT
-			
+
 			f := 123.456
 			Assert.Equal( 3, f:Decimals )
 			Assert.Equal( "123,456", Str(f,-1) )

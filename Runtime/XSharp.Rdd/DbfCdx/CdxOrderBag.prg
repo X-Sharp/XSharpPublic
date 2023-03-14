@@ -348,7 +348,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN lOk
 
          INTERNAL METHOD FlushPages() AS LOGIC
-            RETURN SELF:_PageList:Flush(FALSE)
+            RETURN SELF:_PageList:Flush(TRUE)
 
          INTERNAL METHOD SavePages() AS LOGIC
             RETURN SELF:_PageList:Flush(TRUE)
@@ -416,9 +416,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN BYTE[]{CDXPAGE_SIZE *nSize}
 
         METHOD Read(nPage AS LONG, buffer AS BYTE[]) AS LOGIC
+            SELF:ThrowIfNeedsLock()
             RETURN SELF:_stream:SafeReadAt(nPage, buffer)
 
         METHOD Read(oPage AS CdxPage) AS LOGIC
+            SELF:ThrowIfNeedsLock()
             IF SELF:_root != NULL
                 oPage:Generation := SELF:_root:RootVersion
             ENDIF
@@ -507,7 +509,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _useFoxLock     := FALSE AS LOGIC
         PRIVATE _sharedLocks    := 0 AS LONG
         PRIVATE _exclusiveLocks := 0 AS LONG
+        PRIVATE _needsLock := FALSE AS LOGIC
+        PRIVATE _lastLockTick   := 0 AS INT
         STATIC PRIVATE rand := Random{100} AS System.Random
+
+        INTERNAL PROPERTY LockNeedsRefresh AS LOGIC
+            GET
+                VAR refresh := XSharp.RuntimeState.GetValue<REAL8>(Set.Refresh)
+                IF refresh <= 0
+                    RETURN TRUE
+                ENDIF
+                VAR tick := System.Environment.TickCount
+                IF refresh > 0 .AND. (DWORD)(tick - _lastLockTick) >= 1000*refresh
+                    RETURN TRUE
+                ENDIF
+                RETURN FALSE
+            END GET
+        END PROPERTY
 
         PRIVATE METHOD _LockRetry(nOffSet AS INT64, nLen AS INT64,sPrefix AS STRING) AS VOID
             LOCAL result := FALSE AS LOGIC
@@ -527,7 +545,34 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             //ENDIF
             RETURN res
 
+        INTERNAL PROPERTY IsLocked AS LOGIC
+            GET
+                BEGIN LOCK SELF
+                    RETURN SELF:_exclusiveLocks > 0 .OR. SELF:_sharedLocks > 0
+                END LOCK
+            END GET
+        END PROPERTY
+
+        INTERNAL METHOD NeedsLock() AS VOID
+            IF SELF:Shared && !IsLocked
+                SELF:_needsLock := TRUE
+            ENDIF
+            RETURN
+
+        INTERNAL METHOD NeedsNoLock() AS VOID
+            IF SELF:Shared
+                SELF:_needsLock := FALSE
+            ENDIF
+            RETURN
+
+        INTERNAL METHOD ThrowIfNeedsLock() AS VOID
+            IF SELF:_needsLock && SELF:Shared
+                THROW CdxLockException{}
+            ENDIF
+            RETURN
+
         INTERNAL METHOD SLock() AS LOGIC
+            SELF:_needsLock := FALSE
             IF !SELF:Shared
                 RETURN TRUE
             ENDIF
@@ -547,6 +592,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         INTERNAL METHOD XLock() AS LOGIC
+            SELF:_needsLock := FALSE
             IF !SELF:Shared
                 RETURN TRUE
             ENDIF
@@ -570,6 +616,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         INTERNAL METHOD UnLock() AS VOID
+            SELF:_needsLock := FALSE
             IF !SELF:Shared
                 RETURN
             ENDIF
@@ -581,6 +628,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_UnLockComix()
                 ENDIF
             END LOCK
+            _lastLockTick := System.Environment.TickCount
             RETURN
 #endregion
     #region FoxPro compatible locking

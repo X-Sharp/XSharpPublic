@@ -121,7 +121,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
                 RETURN iCurrentWorkarea
             ENDIF
             RETURN 0
-
+        INTERNAL PROPERTY OpenRDDs AS Dictionary<DWORD, IRdd> GET RDDs
     #endregion
     /// <exclude />
     CONSTRUCTOR()

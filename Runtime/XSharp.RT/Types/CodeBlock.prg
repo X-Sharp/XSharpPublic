@@ -157,7 +157,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
             ENDIF
             oRes := SELF:_innerBlock:EvalBlock(oArgs)
             uRes := __Usual{oRes}
-            SELF:ResultType := if(oRes == NULL , __UsualType:Void, uRes:Type)
+            SELF:ResultType := if(oRes == NULL , __UsualType.Void, uRes:Type)
         FINALLY
             IF _addsMemVars
                 XSharp.MemVar.ReleasePrivates(iLevel)

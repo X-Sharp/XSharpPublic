@@ -87,7 +87,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:IsHot := FALSE
             RETURN lOk
 
-    	INTERNAL VIRTUAL METHOD Read() AS LOGIC
+        INTERNAL VIRTUAL METHOD Read() AS LOGIC
 			VAR lOk :=  _bag:Read(SELF)
             SELF:IsHot := FALSE
             RETURN lOk

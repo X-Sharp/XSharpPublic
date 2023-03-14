@@ -554,8 +554,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         END PROPERTY
 
         INTERNAL METHOD NeedsLock() AS VOID
-            IF SELF:Shared
+            IF SELF:Shared && !IsLocked
                 SELF:_needsLock := TRUE
+            ENDIF
+            RETURN
+
+        INTERNAL METHOD NeedsNoLock() AS VOID
+            IF SELF:Shared
+                SELF:_needsLock := FALSE
             ENDIF
             RETURN
 

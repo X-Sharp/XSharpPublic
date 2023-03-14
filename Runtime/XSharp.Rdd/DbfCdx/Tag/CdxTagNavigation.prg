@@ -386,6 +386,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             CATCH ex AS Exception
                SELF:ThrowException(ex, Subcodes.EDB_SKIP,Gencode.EG_CORRUPTION,  "CdxTag.SkipRaw")
             FINALLY
+                SELF:NeedsNoLock()
                 IF locked
                     result := SELF:UnLock() .AND. result
                 ENDIF

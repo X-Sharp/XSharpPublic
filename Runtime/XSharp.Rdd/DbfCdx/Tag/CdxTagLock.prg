@@ -28,6 +28,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD NeedsLock() AS VOID
             _bag:NeedsLock()
 
+        INTERNAL METHOD NeedsNoLock() AS VOID
+            _bag:NeedsNoLock()
+
         // Methods for NTX Locking
         INTERNAL METHOD Slock AS LOGIC
             var result := SELF:_bag:SLock()

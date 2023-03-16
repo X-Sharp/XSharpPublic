@@ -664,14 +664,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         void parseString()
         {
+            bool allow_esc = false;
             parseType(STRING_CONST);
             if (!AllowSingleQuotedStrings && Expect('\''))
             {
                 parseType(CHAR_CONST);
+                allow_esc = true;
             }
             else if (ExpectAny('C', 'c'))
             {
                 parseOne(CHAR_CONST);
+                allow_esc = true;
             }
             else if (Expect('['))
             {
@@ -682,12 +685,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (ExpectAny('E', 'e'))
                 {
                     parseOne(ESCAPED_STRING_CONST);
+                    allow_esc = true;
                 }
                 if (ExpectAny('I', 'i'))
                 {
                     parseOne(INTERPOLATED_STRING_CONST);
                     if (ExpectAny('E', 'e'))
+                    {
+                        allow_esc = true;
                         parseOne();
+                    }
                 }
             }
             int q = La(1);
@@ -696,8 +703,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 q = ']';
             }
             parseOne();
-            bool allow_esc = parseType() == CHAR_CONST ?
-                La(1) == '\\' && La(3) == q : parseType() != STRING_CONST;
             bool esc = false;
             bool eos = false;
             while (!eos)
@@ -719,7 +724,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             else
                                 eos = true;
                         }
-                        esc = allow_esc && !esc && La(1) == '\\';
+                        if (allow_esc)
+                        {
+                            esc = !esc && La(1) == '\\';
+                        }
                         parseOne();
                         if (eat2)
                         {

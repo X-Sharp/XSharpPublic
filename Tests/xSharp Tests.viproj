@@ -118599,7 +118599,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R884 - _DLL with quoted entrypoint name
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C885 - Problems with interpolated/escaped literal strings *************
 Application = C885 - Problems with interpolated/escaped literal strings
 IDEVersion = 1.06

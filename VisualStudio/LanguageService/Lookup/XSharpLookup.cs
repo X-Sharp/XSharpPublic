@@ -610,6 +610,14 @@ namespace XSharp.LanguageService
                 if (startOfExpression)
                 {
                     currentType = startType;
+                    if (location.Member.Kind.IsClassMember(location.Project.Dialect))
+                    {
+                        visibility = Modifiers.Private;
+                    }
+                    else
+                    {
+                        visibility = Modifiers.Public;
+                    }
                     additionalUsings.Clear();
                 }
 
@@ -713,11 +721,9 @@ namespace XSharp.LanguageService
                                   tokenType == XSharpLexer.COLONCOLON ||
                                   XSharpLexer.IsPseudoFunction(tokenType) ||
                                   isType;
-                // switch visibility
-                visibility = Modifiers.Public;
                 if (isId)
                 {
-                    if (tokenType == XSharpLexer.SELF || startOfExpression)
+                    if (tokenType == XSharpLexer.SELF)
                     {
                         visibility = Modifiers.Private;
                     }
@@ -949,7 +955,7 @@ namespace XSharp.LanguageService
                 if (ctors.Count == 0 && xtype is XSourceTypeSymbol xsts )
                 {
                     var ctor = new XSourceMemberSymbol(XLiterals.ConstructorName, Kind.Constructor, Modifiers.Public,
-                        location.Member.Range, location.Member.Interval, "", false);
+                        location.Member.Range, location.Member.Interval, "", null, false);
                     ctor.Parent = xtype;
                     ctor.File = xsts.File;
                     ctor.DeclaringType = xtype.FullName;

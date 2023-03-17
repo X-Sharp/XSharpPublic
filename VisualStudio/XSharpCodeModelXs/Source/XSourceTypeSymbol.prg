@@ -9,6 +9,7 @@ USING System.Collections.Generic
 USING LanguageService.CodeAnalysis.Text
 USING LanguageService.CodeAnalysis.XSharp
 USING System.Diagnostics
+USING LanguageService.SyntaxTree
 
 BEGIN NAMESPACE XSharpModel
    /// <summary>
@@ -35,7 +36,7 @@ BEGIN NAMESPACE XSharpModel
         END GET
       END PROPERTY
 
-      CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, span AS TextRange, position AS TextInterval, oFile AS XFile)
+      CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, span AS TextRange, position AS TextInterval, oFile AS XFile, modifiers AS IList<IToken>)
          SUPER(name, kind, attributes, span, position)
          SELF:_members     := List<XSourceMemberSymbol>{}
          SELF:_basemembers := List<IXMemberSymbol>{}
@@ -50,9 +51,12 @@ BEGIN NAMESPACE XSharpModel
             SELF:_isPartial := TRUE
          ENDIF
          SELF:File := oFile
+         IF modifiers?:Count > 0
+             SELF:BlockTokens:AddRange(modifiers)
+         ENDIF
 
         CONSTRUCTOR(dbresult AS XDbResult, file AS XFile)
-            SELF(dbresult:TypeName, dbresult:Kind, dbresult:Attributes, dbresult:TextRange, dbresult:TextInterval, file)
+            SELF(dbresult:TypeName, dbresult:Kind, dbresult:Attributes, dbresult:TextRange, dbresult:TextInterval, file,NULL)
             SELF:CopyValuesFrom(dbresult)
 
 
@@ -61,7 +65,7 @@ BEGIN NAMESPACE XSharpModel
             /// </summary>
          /// <returns></returns>
       CONSTRUCTOR( oOther AS XSourceTypeSymbol)
-         SELF(oOther:Name, oOther:Kind, oOther:Attributes, oOther:Range, oOther:Interval, oOther:File)
+         SELF(oOther:Name, oOther:Kind, oOther:Attributes, oOther:Range, oOther:Interval, oOther:File,oOther:BlockTokens)
          SELF:Parent    := oOther:Parent
          SELF:BaseTypeName  := oOther:BaseTypeName
          SELF:IsPartial := oOther:IsPartial
@@ -262,7 +266,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ClassType         AS XSharpDialect AUTO
 
       STATIC METHOD CreateGlobalType(xfile AS XFile) AS XSourceTypeSymbol
-         VAR globalType := XSourceTypeSymbol{XLiterals.GlobalName, Kind.Class, Modifiers.Public+Modifiers.Static, TextRange.Empty, TextInterval.Empty, xfile}
+         VAR globalType := XSourceTypeSymbol{XLiterals.GlobalName, Kind.Class, Modifiers.Public+Modifiers.Static, TextRange.Empty, TextInterval.Empty, xfile, NULL}
          globalType:IsPartial:=TRUE
          RETURN globalType
 

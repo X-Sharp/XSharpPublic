@@ -9,7 +9,7 @@ USING System.Diagnostics
 USING System
 USING System.Linq
 USING LanguageService.CodeAnalysis.XSharp
-
+USING LanguageService.SyntaxTree
 BEGIN NAMESPACE XSharpModel
 
 
@@ -18,22 +18,22 @@ BEGIN NAMESPACE XSharpModel
 CLASS XSourceEntity INHERIT XSourceSymbol IMPLEMENTS IXSymbol, IXSourceSymbol
 #region Simple Properties
 
-    PROPERTY FullName                AS STRING            GET SELF:Name
-    PROPERTY Namespace               AS STRING            AUTO
+    PROPERTY FullName                AS STRING           GET SELF:Name
+    PROPERTY Namespace               AS STRING           AUTO
 
-    PROPERTY ParentName              AS STRING            GET SELF:Parent?:FullName
-    PROPERTY ComboPrototype          AS STRING            GET SELF:FullName
-    PROPERTY Prototype               AS STRING            GET SELF:FullName
-    PROPERTY Dialect                 AS XSharpDialect     AUTO
-    PROPERTY CustomAttributes        AS STRING            AUTO
-    PROPERTY SingleLine              AS LOGIC             AUTO
-    PROPERTY Value                   AS STRING            AUTO
-    PROPERTY XmlComments             AS STRING            AUTO
+    PROPERTY ParentName              AS STRING           GET SELF:Parent?:FullName
+    PROPERTY ComboPrototype          AS STRING           GET SELF:FullName
+    PROPERTY Prototype               AS STRING           GET SELF:FullName
+    PROPERTY Dialect                 AS XSharpDialect    AUTO
+    PROPERTY CustomAttributes        AS STRING           AUTO
+    PROPERTY SingleLine              AS LOGIC            AUTO
+    PROPERTY Value                   AS STRING           AUTO
+    PROPERTY XmlComments             AS STRING           AUTO
     PRIVATE _typeName                AS STRING
     PROPERTY IsGeneric               AS LOGIC            GET GenericArgs != NULL
     PROPERTY GenericArgs             AS STRING[]         AUTO GET PRIVATE SET
     PROPERTY StartOfXmlComments      AS LONG             AUTO
-
+    PROPERTY BlockTokens             AS IList<IToken>     AUTO := List<IToken>{}
 #endregion
 
 

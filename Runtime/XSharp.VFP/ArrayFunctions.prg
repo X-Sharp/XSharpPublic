@@ -82,11 +82,11 @@ FUNCTION ADel(foxArray AS __FoxArray, nElementNumber AS LONG, nDeleteType := 2 A
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adel/*" />
 /// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
 FUNCTION ADel(ArrayName AS ARRAY, nElementNumber AS LONG, nDeleteType AS LONG) AS DWORD
-    IF ! ArrayName IS __FoxArray VAR foxArray
-        XSharp.RT.Functions.ADel(ArrayName, (DWORD) nElementNumber )
-        RETURN 1
+    IF ArrayName IS __FoxArray VAR foxArray
+        RETURN __FoxADel(foxArray, nElementNumber, nDeleteType)
     ENDIF
-    RETURN __FoxADel(foxArray, nElementNumber, nDeleteType)
+    XSharp.RT.Functions.ADel(ArrayName, (DWORD) nElementNumber )
+    RETURN 1
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asubscript/*" />
@@ -161,30 +161,31 @@ FUNCTION AIns(ArrayName AS __FoxArray, nElementNumber AS DWORD, nInsertType := 1
 
 
 INTERNAL FUNCTION FoxAIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertType AS DWORD) AS DWORD
-    IF ! ArrayName IS __FoxArray VAR foxArray
-        XSharp.RT.Functions.AIns(ArrayName, nElementNumber)
-        RETURN 1
+    IF ArrayName IS __FoxArray VAR foxArray
+        RETURN __FoxAIns(foxArray, nElementNumber, nInsertType)
     ENDIF
-    RETURN __FoxAIns(foxArray, nElementNumber, nInsertType)
+    XSharp.RT.Functions.AIns(ArrayName, nElementNumber)
+    RETURN 1
+
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*" />
 /// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
 FUNCTION AIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertType AS DWORD) AS DWORD
-    IF ! ArrayName IS __FoxArray VAR foxArray
-        XSharp.RT.Functions.AIns(ArrayName, nElementNumber)
-        RETURN 1
+    IF ArrayName IS __FoxArray VAR foxArray
+        RETURN __FoxAIns(foxArray, nElementNumber, nInsertType)
     ENDIF
-    RETURN __FoxAIns(foxArray, nElementNumber, nInsertType)
+    XSharp.RT.Functions.AIns(ArrayName, nElementNumber)
+    RETURN 1
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asize/*" />
 /// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
 FUNCTION ASize(ArrayName AS ARRAY, nSize AS DWORD) AS ARRAY
-    IF ! ArrayName IS __FoxArray VAR foxArray
-        RETURN XSharp.RT.Functions.ASize(ArrayName, nSize)
+    IF ArrayName IS __FoxArray VAR foxArray
+        foxArray:Resize((LONG) nSize)
+        RETURN foxArray
     ENDIF
-    foxArray:Resize((LONG) nSize)
-    RETURN foxArray
+    RETURN XSharp.RT.Functions.ASize(ArrayName, nSize)
 
 
 /// <inheritdoc cref="ShowArray" />

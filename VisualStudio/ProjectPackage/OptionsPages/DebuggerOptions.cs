@@ -78,6 +78,11 @@ namespace XSharp.Project.Options
         [Description(DialectPropertyPagePanel.VO14Description)]
         [DefaultValue(false)]
         public bool Vo14 { get; set; } = false;
+        [Category(Options)]
+        [DisplayName(LanguagePropertyPagePanel.LBCaption)]
+        [Description(LanguagePropertyPagePanel.LBDescription)]
+        [DefaultValue(false)]
+        public bool LateBinding { get; set; } = false;
     }
 }
 

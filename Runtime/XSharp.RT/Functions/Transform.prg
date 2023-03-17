@@ -348,7 +348,7 @@ INTERNAL STATIC CLASS TransformHelpers
         LOCAL nDest  := __ARRAYBASE__ AS INT
         LOCAL nSrcLen := cValue:Length AS INT
         LOCAL nDestLen:= cTemplate:Length AS INT
-        LOCAL lBritish := nPictures:HasFlag(TransformPictures:British) AS LOGIC
+        LOCAL lBritish := nPictures:HasFlag(TransformPictures.British) AS LOGIC
         DO WHILE nSrc < nSrcLen .AND. nDest -__ARRAYBASE__ < nDestLen
             VAR templChar := cTemplate[nTempl++]
             VAR srcChar   := cValue[nSrc]
@@ -378,7 +378,7 @@ INTERNAL STATIC CLASS TransformHelpers
                     // Normal template literal. For numeric or @R pictures no change to the src pointer
                     // otherwise increase src pointer
                     result[nDest++] := templChar
-                    IF nPictures:HasFlag(TransformPictures:NonTemplate) .OR. cType == c'N'
+                    IF nPictures:HasFlag(TransformPictures.NonTemplate) .OR. cType == c'N'
                         NOP
                     ELSE
                         nSrc++
@@ -401,10 +401,10 @@ INTERNAL STATIC CLASS TransformHelpers
                     IF lBritish .AND. cType == c'N' .AND. srcChar == c'.'
                         result[nDest++] := c','
                         nSrc++
-                    ELSEIF nPictures:HasFlag(TransformPictures:Upper) .OR. templChar == c'!'
+                    ELSEIF nPictures:HasFlag(TransformPictures.Upper) .OR. templChar == c'!'
                         result[nDest++] := Char.ToUpper(srcChar)
                         nSrc++
-                    ELSEIF nPictures:HasFlag(TransformPictures:ZeroBlank) .AND. cType == c'N' .AND. srcChar == c'0'
+                    ELSEIF nPictures:HasFlag(TransformPictures.ZeroBlank) .AND. cType == c'N' .AND. srcChar == c'0'
                         LOCAL lHasDig := FALSE AS LOGIC
                         FOR VAR x := __ARRAYBASE__ TO nDest
                             IF Char.IsDigit(result[x])
@@ -418,7 +418,7 @@ INTERNAL STATIC CLASS TransformHelpers
                             result[nDest++] := c' '
                         ENDIF
                         nSrc++
-                    ELSEIF nPictures:HasFlag(TransformPictures:YesNo) .AND. cType == c'L'
+                    ELSEIF nPictures:HasFlag(TransformPictures.YesNo) .AND. cType == c'L'
                         result[nDest++] := TransformHelpers.GetLogicLiteral(srcChar == c'T', TRUE)
                         nSrc++
                     ELSE

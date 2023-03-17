@@ -221,8 +221,9 @@ CLASS XSharp.RuntimeState
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PRIVATE METHOD _SetThreadValue<T>(nSetting AS XSharp.Set, oValue AS T) AS T
 		LOCAL result AS T
-		BEGIN LOCK oSettings
-			IF oSettings:TryGetValue(nSetting, OUT VAR oResult)
+        BEGIN LOCK oSettings
+            LOCAL oResult AS object
+			IF oSettings:TryGetValue(nSetting, OUT oResult)
 				result := (T) oResult
 			ELSE
 				result := DEFAULT(T)
@@ -413,7 +414,7 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="Set.DateCountry" />
    STATIC PROPERTY DateCountry AS DWORD ;
         GET (DWORD) GetValue<XSharp.DateCountry>(Set.DateCountry);
-        SET RuntimeState:GetInstance():_SetDateCountry( (XSharp.DateCountry) value)
+        SET RuntimeState.GetInstance():_SetDateCountry( (XSharp.DateCountry) value)
 
 	/// <summary>The current Date format</summary>
 	/// <remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br/>

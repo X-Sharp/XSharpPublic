@@ -14,8 +14,8 @@ BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{ToString(),nq}")];
    CLASS XSourceNamespaceSymbol INHERIT XSourceTypeSymbol
 
-    CONSTRUCTOR(name AS STRING, span AS TextRange, position AS TextInterval, oFile AS XFile)
-        SUPER(name, Kind.Namespace, Modifiers.Public, span, position, oFile)
+    CONSTRUCTOR(name AS STRING, span AS TextRange, position AS TextInterval, oFile AS XFile, modifiers as IList<IToken>)
+        SUPER(name, Kind.Namespace, Modifiers.Public, span, position, oFile, modifiers)
         RETURN
 	END CLASS
 END NAMESPACE // XSharpModel.Model

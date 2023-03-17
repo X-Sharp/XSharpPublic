@@ -25,17 +25,13 @@ namespace XSharp.LanguageService
 {
     internal class XSharpQuickInfoSource : IAsyncQuickInfoSource
     {
-        private XSharpQuickInfoSourceProvider _provider;
         private ITextBuffer _textBuffer;
         private static readonly ImageId _icon = KnownMonikers.Class.ToImageId();
-        private XFile _file;
 
 
-        public XSharpQuickInfoSource(XSharpQuickInfoSourceProvider provider, ITextBuffer textBuffer, XFile file)
+        public XSharpQuickInfoSource( ITextBuffer textBuffer)
         {
-            _provider = provider;
             _textBuffer = textBuffer;
-            _file = file;
         }
 
         internal void WriteOutputMessage(string message)
@@ -225,7 +221,7 @@ namespace XSharp.LanguageService
                 var file = textBuffer.GetFile();
                 if (file == null || file.XFileType != XFileType.SourceCode)
                     return null;
-                return new XSharpQuickInfoSource(this, textBuffer, file);
+                return new XSharpQuickInfoSource(textBuffer);
             }
 
 

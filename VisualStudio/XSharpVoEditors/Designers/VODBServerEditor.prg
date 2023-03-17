@@ -224,18 +224,16 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
         RETURN
     METHOD ImportDbf() AS LOGIC
         LOCAL oDesign AS DBEDesignDBServer
-        //		LOCAL oOrder AS DBEDesignDBServer
+        LOCAL oOrder AS DBEDesignDBServer
         LOCAL eResult AS DialogResult
         LOCAL oDlg AS OpenFileDialog
         LOCAL lDeleteOld AS LOGIC
         LOCAL cFileName AS STRING
         LOCAL cDriver AS STRING
-        //		LOCAL aIndexes AS ARRAY
+        LOCAL aIndexes AS ARRAY
         LOCAL aStruct AS List<OBJECT>
         LOCAL cType AS STRING
         LOCAL nType AS INT
-        //		LOCAL d AS DWORD
-        //		LOCAL n AS INT
 
         oDlg := OpenFileDialog{}
         oDlg:Filter := "Dbf files (*.dbf)|*.dbf"
@@ -257,19 +255,19 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
         //			AAdd(aStruct , {FieldName(d), DBFieldInfo(2,d), DBFieldInfo(3,d), DBFieldInfo(4,d)})
         //		NEXT
 
-        /*		aIndexes := {}
+        aIndexes := {}
         TRY
-        LOCAL nOrders AS INT
-        IF DBOrderInfo(DBOI_NAME , 1) != NIL .and. .not. String.IsNullOrEmpty(DBOrderInfo(DBOI_INDEXNAME , 1))
-        AAdd(aIndexes , {DBOrderInfo(DBOI_INDEXNAME , 1) , DBOrderInfo(DBOI_FULLPATH , 1) , {} })
-        nOrders := DBOrderInfo(DBOI_ORDERCOUNT , 1)
-        FOR n := 1 UPTO nOrders
-        AAdd(aIndexes[1,3] , {DBOrderInfo(DBOI_NAME , NIL , n) , DBOrderInfo(DBOI_EXPRESSION , NIL , n)})
-        NEXT
-        END IF
+            LOCAL nOrders AS INT
+            IF DBOrderInfo(DBOI_NAME , 1) != NIL .AND. .NOT. String.IsNullOrEmpty(DBOrderInfo(DBOI_INDEXNAME , 1))
+                AAdd(aIndexes , {DBOrderInfo(DBOI_INDEXNAME , 1) , DBOrderInfo(DBOI_FULLPATH , 1) , {} })
+                nOrders := DBOrderInfo(DBOI_ORDERCOUNT , 1)
+                FOR LOCAL n := 1 AS INT UPTO nOrders
+                    AAdd(aIndexes[1,3] , {DBOrderInfo(DBOI_NAME , NIL , n) , DBOrderInfo(DBOI_EXPRESSION , NIL , n)})
+                NEXT
+            END IF
         CATCH
-        ASize(aIndexes , 0)
-        END TRY*/
+            ASize(aIndexes , 0)
+        END TRY
 
         DBHelpers.DBH_DBCloseArea()
 
@@ -317,22 +315,23 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 
         SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:oMainDesign:cGuid , "filename" , cFileName})
 
-#warning Index import not implemented yet
-        /*		IF ALen(aIndexes) != 0
-        DO WHILE SELF:oIndexList:Items:Count != 0
-        SELF:StartAction(DesignerBasicActionType.Remove , ActionData{((DBEDesignListViewItem)SELF:oIndexList:Items[0]):oDesign:cGuid})
-        END DO
-        TRY
-        oDesign := (DBEDesignDBServer)SELF:StartAction(DesignerBasicActionType.Create , ActionData{NULL , "0" , DBServerItemType.Index})
-        oDesign:InitValues((STRING)aIndexes[1,1])
-        SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "filename" , (STRING)aIndexes[1,2]})
-        FOR n := 1 UPTO ALen(aIndexes[1,3])
-        oOrder := (DBEDesignDBServer)SELF:StartAction(DesignerBasicActionType.Create , ActionData{NULL , oDesign:aOrders:Count:ToString() , oDesign:cGuid})
-        oOrder:InitValues((STRING)aIndexes[1,3,n,1])
-        SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oOrder:cGuid , "keyexp" , (STRING)aIndexes[1,3,n,2]})
-        NEXT
-        END TRY
-        END IF*/
+        IF ALen(aIndexes) != 0
+            DO WHILE SELF:oIndexList:Items:Count != 0
+                SELF:StartAction(DesignerBasicActionType.Remove , ActionData{((DBEDesignListViewItem)SELF:oIndexList:Items[0]):oDesign:cGuid})
+            END DO
+            TRY
+                oDesign := (DBEDesignDBServer)SELF:StartAction(DesignerBasicActionType.Create , ActionData{NULL , "0" , DBServerItemType.Index})
+                oDesign:InitValues((STRING)aIndexes[1,1])
+                SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "filename" , (STRING)aIndexes[1,2]})
+                FOR LOCAL n := 1 AS INT UPTO ALen(aIndexes[1,3])
+                    oOrder := (DBEDesignDBServer)SELF:StartAction(DesignerBasicActionType.Create , ActionData{NULL , oDesign:aOrders:Count:ToString() , oDesign:cGuid})
+                    oOrder:InitValues((STRING)aIndexes[1,3,n,1])
+                    SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oOrder:cGuid , "keyexp" , (STRING)aIndexes[1,3,n,2]})
+                NEXT
+            CATCH
+                NOP
+            END TRY
+        END IF
 
         SELF:EndAction()
 

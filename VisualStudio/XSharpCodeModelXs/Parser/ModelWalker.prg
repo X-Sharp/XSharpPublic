@@ -151,7 +151,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
 
         STATIC METHOD Walk() AS VOID
-            IF ModelWalker.suspendLevel <= 0 .AND. XSolution:IsOpen
+            IF ModelWalker.suspendLevel <= 0 .AND. XSolution.IsOpen
                 TRY
                     IF _WalkerThread == NULL .or. ! _WalkerThread:IsAlive
                         VAR start := System.Threading.ThreadStart{ null, @Walker() }
@@ -234,7 +234,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN
         PRIVATE STATIC METHOD WalkReferences() AS VOID
-            IF _projectsForTypeResolution:Count != 0 .AND. ! XSettings:IsVsBuilding
+            IF _projectsForTypeResolution:Count != 0 .AND. ! XSettings.IsVsBuilding
                 DO WHILE _projectsForTypeResolution:Count > 0
                     if MustAbort
                         RETURN
@@ -279,7 +279,7 @@ BEGIN NAMESPACE XSharpModel
             IF MustAbort .or. project == NULL
                 RETURN
             ENDIF
-            IF project:Loaded .AND. XSolution:IsOpen
+            IF project:Loaded .AND. XSolution.IsOpen
                 IF ModelWalker.IsSuspended
                     RETURN
                 ENDIF

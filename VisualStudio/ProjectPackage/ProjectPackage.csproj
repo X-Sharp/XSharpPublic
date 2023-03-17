@@ -68,6 +68,9 @@
     <DeployExtension>False</DeployExtension>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="XSharp.MonoCecil">
+      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Windows.Design.Host">
       <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
@@ -687,9 +690,11 @@
     <PackageReference Include="Microsoft.VisualStudio.Threading">
       <Version>15.3.20</Version>
     </PackageReference>
-    <PackageReference Include="Mono.Cecil">
-      <Version>0.11.4</Version>
-    </PackageReference>
+    <Content Include="$(SOlutionDir)\External\$(Configuration)\XSharp.MonoCecil.dll">
+      <Link>XSharp.MonoCecil.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <PackageReference Include="Newtonsoft.Json">
       <Version>8.0.3</Version>
     </PackageReference>

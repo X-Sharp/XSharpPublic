@@ -16,12 +16,12 @@ using Microsoft.VisualStudio.Shell;
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDomProvider")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.MonoCecil")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.Evaluator")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser")]
 
 [assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
 [assembly: ProvideCodeBase(AssemblyName = "Microsoft.DiaSymReader")]
-[assembly: ProvideCodeBase(AssemblyName = "Mono.Cecil")]
 [assembly: ProvideCodeBase(AssemblyName = "Serilog")]
 [assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.Debug")]
 [assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.File")]

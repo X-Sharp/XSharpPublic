@@ -226,6 +226,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="XSharp.MonoCecil">
+      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
@@ -246,9 +249,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.12.0">
       <Version>12.0.30112</Version>
-    </PackageReference>
-    <PackageReference Include="Mono.Cecil">
-      <Version>0.11.4</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
@@ -310,6 +310,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(SOlutionDir)\External\$(Configuration)\XSharp.MonoCecil.dll">
+      <Link>XSharp.MonoCecil.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="generatepkgdef.cmd" />
     <Content Include="Snippets\Snippets\case.snippet">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

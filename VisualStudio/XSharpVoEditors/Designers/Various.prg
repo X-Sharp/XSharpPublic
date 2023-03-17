@@ -132,6 +132,7 @@ END CLASS
 
 CLASS CodeContents
     EXPORT aDefines AS List<STRING>
+    EXPORT aDefinesMenuRc AS List<STRING>
     EXPORT aDefineValues AS List<STRING>
     EXPORT aResource AS List<STRING>
     EXPORT aClass AS List<STRING>
@@ -149,6 +150,7 @@ CLASS CodeContents
     CONSTRUCTOR()
         SUPER()
         aDefines := List<STRING>{}
+        aDefinesMenuRc := List<STRING>{}
         aDefineValues := List<STRING>{}
         aResource := List<STRING>{}
         aClass := List<STRING>{}

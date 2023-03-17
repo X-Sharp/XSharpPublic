@@ -55,6 +55,13 @@
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>System.ServiceModel.dll</AssemblyName>
     </Reference>
+    <Reference Include="XSharp.MonoCecil, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+      <Name>XSharp.MonoCecil</Name>
+      <AssemblyName>XSharp.MonoCecil.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.VSParser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VSParser</Name>
       <AssemblyName>XSharp.VSParser.dll</AssemblyName>
@@ -158,9 +165,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Mono.Cecil">
-      <Version>0.11.4</Version>
-    </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
       <Version>1.0.117</Version>
     </PackageReference>

@@ -17,6 +17,18 @@ ENUM ViewMode
     MEMBER Browse
 END ENUM
 
+INTERNAL CLASS MultiPropertyDescriptor
+	CONSTRUCTOR(cName AS STRING, nLineInCode AS INT)
+		SELF:Name := cName
+		SELF:LineInCode := nLineInCode
+		SELF:SubProperties := ArrayList{}
+	RETURN
+
+	PROPERTY Name AS STRING AUTO GET PRIVATE SET
+	PROPERTY LineInCode AS INT AUTO GET PRIVATE SET
+	PROPERTY SubProperties AS ArrayList AUTO GET PRIVATE SET
+END CLASS
+
 PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
     PROTECT oWindowDesign AS DesignWindowItem
     PROTECT oWindow AS Control
@@ -1355,8 +1367,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
         LOCAL oProp AS VODesignProperty
         LOCAL oTemp AS VODesignProperty
         LOCAL cValue AS STRING
-        //		LOCAL aMultiple AS Dictionary<STRING,ArrayList>
-        LOCAL aMultiple AS SortedList<STRING,ArrayList>
+        LOCAL aMultiple AS Dictionary<STRING,MultiPropertyDescriptor>
         LOCAL aList AS ArrayList
         LOCAL cMap AS STRING
         LOCAL n AS INT
@@ -1365,8 +1376,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             RETURN
         ENDIF
 
-        //		aMultiple := Dictionary<STRING,ArrayList>{}
-        aMultiple := SortedList<STRING,ArrayList>{}
+        aMultiple := Dictionary<STRING,MultiPropertyDescriptor>{}
         FOR n := 0 UPTO oDesign:aProperties:Count - 1
             oProp := (VODesignProperty)oDesign:aProperties[n]
             //			IF oProp:eVOStyle == VOStyle.None  .and. !oProp:lNoCode .and. !oProp:IsAuto .and. oProp:Name[0] != '_'
@@ -1375,10 +1385,13 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
                 IF oProp:lMultiple
                     IF oProp:nMultiPos != 0
                         IF aMultiple:ContainsKey(oProp:cMember)
-                            aList := aMultiple[oProp:cMember]
+                            aList := aMultiple[oProp:cMember]:SubProperties
                         ELSE
-                            aList := ArrayList{}
-                            aMultiple:Add(oProp:cMember , aList)
+							aCode:Add("") // create an empty line code, placeholder to be filled later
+							LOCAL oMulti AS MultiPropertyDescriptor
+							oMulti := MultiPropertyDescriptor{oProp:cMember, aCode:Count}
+							aList := oMulti:SubProperties
+							aMultiple:Add(oProp:cMember , oMulti)
                         ENDIF
                         DO WHILE aList:Count < oProp:nMultiPos
                             aList:Add("")
@@ -1483,13 +1496,11 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
             ENDIF
         NEXT
 
-        LOCAL m AS INT
-        LOCAL lAuto AS LOGIC
-        FOR n := 0 UPTO aMultiple:Count - 1
-            aList := aMultiple:Values[n]
+        FOREACH oMulti AS MultiPropertyDescriptor IN aMultiple:Values
+            aList := oMulti:SubProperties
             cValue := ""
-            lAuto := TRUE
-            FOR m := 0 UPTO aList:Count - 1
+            LOCAL lAuto := TRUE AS LOGIC
+            FOR LOCAL m := 0 AS INT UPTO aList:Count - 1
                 IF m != 0
                     cValue += " , "
                 ENDIF
@@ -1499,8 +1510,8 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
                 ENDIF
             NEXT
             IF !lAuto
-                cValue := aMultiple:Keys[n] + "{" + cValue + "}"
-                aCode:Add(e"\t" + cVar + aMultiple:Keys[n] + " := " + cValue + e"")
+                cValue := oMulti:Name + "{" + cValue + "}"
+                aCode[oMulti:LineInCode-1] := e"\t" + cVar + oMulti:Name + " := " + cValue + e""
             END IF
         NEXT
 

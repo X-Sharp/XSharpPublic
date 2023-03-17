@@ -229,6 +229,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
     </Reference>
+    <Reference Include="XSharp.MonoCecil">
+      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
@@ -242,9 +245,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.12.0">
       <Version>17.4.33103.184</Version>
-    </PackageReference>
-    <PackageReference Include="Mono.Cecil">
-      <Version>0.11.4</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
@@ -300,6 +300,11 @@
     <Content Include="$(Outdir)XSharp.LanguageService2022.pkgdef" />
     <Content Include="Snippets\SnippetsIndex.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(SOlutionDir)\External\$(Configuration)\XSharp.MonoCecil.dll">
+      <Link>XSharp.MonoCecil.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
   <ItemGroup>

@@ -324,7 +324,7 @@ CLASS XProject
     GET
         var now := DateTime.Now
         LOCAL diff := now - SELF:_lastRefCheck as TimeSpan
-        if diff:Seconds < 15
+        IF diff:TotalSeconds < 15
             RETURN FALSE
         ENDIF
         SELF:_lastRefCheck := now

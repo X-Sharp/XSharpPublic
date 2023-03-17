@@ -671,6 +671,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
         LOCAL nDesign AS INT
 
         LOCAL aDefines AS List<STRING>
+        LOCAL aDefinesRc AS List<STRING>
         LOCAL aDefineValues AS List<STRING>
         LOCAL aResource AS List<STRING>
         LOCAL aClass AS List<STRING>
@@ -695,13 +696,16 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
         // defines
 
         aDefines := oCode:aDefines
+        aDefinesRc := oCode:aDefinesMenuRc
         aDefineValues := oCode:aDefineValues
 
         oDesign := SELF:oMainNode:oDesign
         aDefines:Add("IDM_" + oDesign:Name)
+        aDefinesRc:Add("IDM_" + oDesign:Name)
         aDefineValues:Add(e"\"" + oDesign:Name + e"\"")
         IF lAccelerators
             aDefines:Add("IDA_" + oDesign:Name)
+            aDefinesRc:Add("IDA_" + oDesign:Name)
             aDefineValues:Add(e"\"" + oDesign:Name + e"\"")
         END IF
 
@@ -711,13 +715,14 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
             IF !oDesign:IsSeparator
                 lFound := FALSE
                 FOR m := 0 UPTO aDefines:Count - 1
-                    IF aDefines[m]:ToUpper() == oDesign:GetVODefine():ToUpper()
+                    IF aDefines[m]:ToUpper() == oDesign:GetVODefineCode():ToUpper()
                         lFound := TRUE
                         EXIT
                     END IF
                 NEXT
                 IF !lFound
-                    aDefines:Add(oDesign:GetVODefine())
+                    aDefines:Add(oDesign:GetVODefineCode())
+                    aDefinesRc:Add(oDesign:GetVODefineRc())
                     aDefineValues:Add(oDesign:GetProperty("MenuID"):TextValue)
                 END IF
             END IF
@@ -739,7 +744,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
                 IF !oAccelerator:IsEmpty
                     cLine := e"\t"
                     cLine += oAccelerator:KeyValue:ToString() + ", "
-                    cLine += oDesign:GetVODefine() + ", "
+                    cLine += oDesign:GetVODefineRc() + ", "
                     //					cLine += oDesign:GetProperty("MenuID"):TextValue + ", "
                     IF oAccelerator:Control
                         cLine += "CONTROL ,"
@@ -786,7 +791,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
             IF oDesign:IsSeparator
                 cLine += "MENUITEM SEPARATOR"
             ELSEIF oNode:Nodes:Count == 0
-                cLine += e"MENUITEM \"" + Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , FALSE ) + cAccelerator + e"\" , " + oDesign:GetVODefine()
+                cLine += e"MENUITEM \"" + Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , FALSE ) + cAccelerator + e"\" , " + oDesign:GetVODefineRc()
                 //				cLine += e"MENUITEM \"" + oDesign:GetProperty("Caption"):TextValue + cAccelerator + e"\" , " + oDesign:GetProperty("MenuID"):TextValue
             ELSE
                 cLine += e"POPUP \"" + Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , FALSE ) + e"\""
@@ -902,12 +907,12 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
                 LOOP
             ENDIF
 
-            cLine := e"\tSELF:RegisterItem(" + oDesign:GetVODefine() + ", ;"
+            cLine := e"\tSELF:RegisterItem(" + oDesign:GetVODefineCode() + ", ;"
             aConstructor:Add(cLine)
             cEventName := oDesign:GetProperty("EventName"):TextValue:Trim()
             IF cEventName == ""
                 //				cEventName := oDesign:Name
-                cEventName := oDesign:cNameID
+                cEventName := oDesign:cNameIDcode
             ENDIF
             oAccelerator := (MenuAccelerator)oDesign:GetProperty("Accelerator"):Value
             IF oAccelerator:IsEmpty
@@ -1045,8 +1050,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
                             //							m := Int32.Parse(cButtonBmp)
                             m := VOMenuEditor.VOMenuToolBar:GetNameIndex(cButtonBmp)
                             IF m != -1
-                                //	                            cIdt := (STRING)VOMenuEditor.VOMenuToolBar:GetValue(m-1) + " , " + oDesign:GetVODefine()
-                                cIdt := (STRING)VOMenuEditor.VOMenuToolBar:GetValue(m) + " , " + oDesign:GetVODefine()
+                                cIdt := (STRING)VOMenuEditor.VOMenuToolBar:GetValue(m) + " , " + oDesign:GetVODefineCode()
                                 cCaption := oDesign:GetProperty("ButtonCaption"):TextValue
                                 cToolTip := oDesign:GetProperty("ButtonToolTip"):TextValue
                                 aButtons:Add(VOTBButton{cIdt , cCaption , cToolTip})
@@ -1135,10 +1139,10 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
         FOR n := 0 UPTO aDesign:Count - 1
             oDesign := (DesignMenuItem)aDesign[n]
             IF !oDesign:GetProperty("Enabled"):ValueLogic
-                aConstructor:Add(e"\tSELF:DisableItem(" + oDesign:GetVODefine() + ")")
+                aConstructor:Add(e"\tSELF:DisableItem(" + oDesign:GetVODefineCode() + ")")
             END IF
             IF oDesign:GetProperty("Checked"):ValueLogic
-                aConstructor:Add(e"\tSELF:CheckItem(" + oDesign:GetVODefine() + ")")
+                aConstructor:Add(e"\tSELF:CheckItem(" + oDesign:GetVODefineCode() + ")")
             END IF
         NEXT
 
@@ -1359,9 +1363,9 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 
     METHOD UpdateNames() AS VOID
         LOCAL aControls AS ArrayList
-        //	LOCAL cOrigName AS STRING
+        // LOCAL cOrigName AS STRING
         LOCAL cName AS STRING
-        LOCAL lFound AS LOGIC
+        // LOCAL lFound AS LOGIC
         LOCAL nID AS INT
 
         aControls := SELF:GetAllDesignItems()
@@ -1383,21 +1387,23 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
         FOREACH oDesign AS DesignMenuItem IN aControls
             //		cOrigName := oDesign:Name
             cName := SELF:GetNameFromTree(oDesign:oNode)
+            oDesign:cNameIDcode := MenuCharMap.Get(cName)
+
             cName := SELF:AdjustName(cName)
-            lFound := TRUE
+            /*lFound := TRUE
             DO WHILE lFound
                 lFound := FALSE
-                /*			FOR m := 1 UPTO n - 1
+                FOR m := 1 UPTO n - 1
                 IF ((DesignMenuItem)aControls[m]):Name:ToUpper() == cName:ToUpper()
                 lFound := TRUE
                 EXIT
                 ENDIF
-                NEXT*/
+                NEXT
                 IF lFound
                     cName := SELF:GetNextNumName(cName)
                 ENDIF
-            END DO
-            oDesign:cNameID := cName
+            END DO*/
+            oDesign:cNameIDrc := cName
 
             /*		IF (INT)oDesign:GetProperty("MenuID"):Value == 0
             oDesign:GetProperty("MenuID"):Value := SELF:GetNewMenuID()
@@ -1496,13 +1502,28 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
     METHOD GetNameFromTree(oNode AS TreeNode) AS STRING
         RETURN SELF:GetNameFromTree(oNode , oNode:Text)
     METHOD GetNameFromTree(oNode AS TreeNode , cName AS STRING) AS STRING
+
+        LOCAL FUNCTION PrefixName(c AS STRING) AS STRING
+            IF c:Length == 0
+                RETURN c
+            ENDIF
+
+            LOCAL cFirst AS CHAR
+            cFirst := c[0]
+            IF cFirst == '_' .OR. (cFirst >= 'A' .AND. cFirst <= 'Z') .OR. (cFirst >= 'a' .AND. cFirst <= 'z')
+                RETURN c
+            ENDIF
+
+            RETURN "_" + c
+        END FUNCTION
+
+        cName := PrefixName(cName)
         DO WHILE !oNode:Parent == NULL
             oNode := oNode:Parent
-            cName := oNode:Text + "_" + cName
-            //		cName := StrTran(cName , " " , "_")
-            cName := cName:Replace(' ' , '_')
+            cName := PrefixName(oNode:Text) + "_" + cName
         ENDDO
-        RETURN cName
+        cName := cName:Replace(' ' , '_')
+    RETURN cName
 
     STATIC METHOD GetNextNode(oNode AS TreeNode , lIncludeChildren AS LOGIC) AS TreeNode
         LOCAL oParent AS TreeNode
@@ -2046,7 +2067,8 @@ CLASS DesignMenuItem INHERIT DesignItem
     EXPORT lDeleted AS LOGIC
     PROTECT oEditor AS VOMenuEditor
 
-    EXPORT cNameID AS STRING
+    EXPORT cNameIDcode := "" AS STRING
+    EXPORT cNameIDrc := "" AS STRING
     CONSTRUCTOR(_nType AS INT , _oNode AS DesignTreeNode , _oEditor AS VOMenuEditor)
 
         SUPER(_oEditor)
@@ -2150,11 +2172,11 @@ CLASS DesignMenuItem INHERIT DesignItem
 
     METHOD GetMenuID() AS STRING
         RETURN SELF:GetProperty("MenuID"):TextValue
-    METHOD GetVODefine() AS STRING
+    METHOD GetVODefineRc() AS STRING
         LOCAL cDefine AS STRING
         cDefine := "IDM_"
         //		cDefine += SELF:Name
-        cDefine += SELF:cNameID
+        cDefine += SELF:cNameIDrc
         IF SELF:oNode:Parent != NULL
             cDefine += "_ID"
         ENDIF
@@ -2178,6 +2200,15 @@ CLASS DesignMenuItem INHERIT DesignItem
         NEXT
         cDefine := cTemp
 
+        RETURN cDefine
+
+    METHOD GetVODefineCode() AS STRING
+        LOCAL cDefine AS STRING
+        cDefine := "IDM_"
+        cDefine += SELF:cNameIDcode
+        IF SELF:oNode:Parent != NULL
+            cDefine += "_ID"
+        ENDIF
         RETURN cDefine
 
     METHOD GetNestLevel() AS INT
@@ -2211,3 +2242,69 @@ INTERNAL CLASS VOTBButton
         RETURN
 END CLASS
 
+
+INTERNAL CLASS MenuCharMap
+	STATIC PROTECT map AS System.Collections.Generic.Dictionary<CHAR,STRING>
+	STATIC CONSTRUCTOR
+		map := System.Collections.Generic.Dictionary<CHAR,STRING>{128}
+		FOR LOCAL nChar := 0 AS INT UPTO 31
+			map:Add((CHAR)nChar, "_")
+		NEXT
+		FOR LOCAL nChar := 32 AS INT UPTO 127
+			map:Add((CHAR)nChar, ((CHAR)nChar):ToString())
+		NEXT
+		map[c' '] := "_"
+		map[c'!'] := "12"
+		map[c'"'] := "22"
+		map[c'#'] := "32"
+		map[c'$'] := "42"
+		map[c'%'] := "52"
+		map[c'&'] := ""
+		map[c'\''] := "72"
+		map[c'('] := ""
+		map[c')'] := ""
+		map[c'*'] := "a2"
+		map[c'+'] := "b2"
+		map[c','] := "c2"
+		map[c'-'] := ""
+		map[c'.'] := ""
+		map[c'/'] := "f2"
+
+		map[c':'] := "a3"
+		map[c';'] := "b3"
+		map[c'<'] := "c3"
+		map[c'='] := "d3"
+		map[c'>'] := "e3"
+		map[c'?'] := "f3"
+		map[c'@'] := "04"
+
+		map[c'['] := "b5"
+		map[c'\\'] := "c5"
+		map[c']'] := "d5"
+		map[c'^'] := "e5"
+		map[c'_'] := "_"
+		map[c'`'] := "06"
+
+		map[c'{'] := "b7"
+		map[c'|'] := "c7"
+		map[c'}'] := "d7"
+		map[c'~'] := "e7"
+		map[(CHAR)127] := "_"
+	END CONSTRUCTOR
+
+	STATIC METHOD Get(nChar AS INT) AS STRING
+	RETURN map[(CHAR)nChar]
+	STATIC METHOD Get(cChar AS CHAR) AS STRING
+	RETURN map[cChar]
+	STATIC METHOD Get(cString AS STRING) AS STRING
+		STATIC LOCAL sb := System.Text.StringBuilder{} AS System.Text.StringBuilder
+		sb:Length := 0
+		FOREACH cChar AS CHAR IN cString
+			IF (DWORD)cChar < 128
+				sb:Append(map[cChar])
+			ELSE
+				sb:Append(cChar)
+			END IF
+		NEXT
+	RETURN sb:ToString()
+END CLASS

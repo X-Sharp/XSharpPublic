@@ -63,16 +63,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             // EXPORT Test1 := DateTime.Now AS DateTime
             // does not trigger an error on the Test1.
             // There is no receiver on Test1, and roslyn (we?) associates the := DateTime.Now node (EqualsValue Clause) to the Test1 symbol
-
-            if (!node.HasErrors() && type.Equals(contType))
+            if (!node.HasErrors() && (type is null || type.Equals(contType)))
             {
+                var errorCode = ErrorCode.Unknown;
                 switch (amc.Op.Type)
                 {
                     case XSharpLexer.COLONCOLON:
                         if (_compilation.Options.Dialect != XSharpDialect.XPP && symbol.IsStatic)
                         {
                             // XPP allows static and instance, other dialects only instance
-                            Error(ErrorCode.ERR_ColonForStaticMember, node, symbol);
+                            errorCode = ErrorCode.ERR_ColonForStaticMember;
                         }
                         break;
                     case XSharpLexer.DOT:
@@ -84,18 +84,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         else
                         {
-                            Error(ErrorCode.ERR_DotForInstanceMember, node, symbol);
+                            errorCode = ErrorCode.ERR_DotForInstanceMember;
                         }
                         break;
                     case XSharpLexer.COLON:
                         if (symbol.IsStatic && !contType.IsFunctionsClass()) // For late bound code where member access is redirected to function
                         {
-                            Error(ErrorCode.ERR_ColonForStaticMember, node, symbol);
+                            errorCode = ErrorCode.ERR_ColonForStaticMember;
                         }
                         break;
                     default:
-                        RoslynDebug.Assert(false, $"Unexpected MemberAccess token  '{amc.Op.Text}'");
+                        RoslynDebug.Assert(false, $"Unexpected MemberAccess token {XSharpLexer.DefaultVocabulary.GetSymbolicName(amc.Op.Type)}  '{amc.Op.Text}'");
                         break;
+                }
+                if (errorCode != ErrorCode.Unknown)
+                {
+                    Error(errorCode, node, symbol, XSharpLexer.DefaultVocabulary.GetSymbolicName(amc.Op.Type), amc.Op.Text);
                 }
             }
         }
@@ -130,7 +134,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (!node.Method.IsExtensionMethod && !node.Method.IsOperator())
                 {
-                    XsCheckMemberAccess(node, amc, node.Type, node.Method);
+                    // For methods node.Type is the return type of the method
+                    //XsCheckMemberAccess(node, amc, node.Type, node.Method);
+                    XsCheckMemberAccess(node, amc, null, node.Method);
                 }
                 return;
             }

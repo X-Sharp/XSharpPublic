@@ -139,15 +139,13 @@ namespace XSharp.Project
     {
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
-        //private XSharpDocumentWatcher _documentWatcher;
         private IErrorList _errorList = null;
         private ITaskList _taskList = null;
         //private XSharpProjectSelector _projectSelector = null;
         private uint shellCookie;
 
         public static XSharpProjectPackage XInstance = null;
-        //private XSharpLanguageService _langservice;
-
+ 
 
         // =========================================================================================
         // Properties
@@ -164,7 +162,6 @@ namespace XSharp.Project
 
 
 
-        // XSharpLanguageService _langService = null;
 #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -199,7 +196,6 @@ namespace XSharp.Project
             base.RegisterEditorFactory(new VODBServerEditorFactory(this));
             base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
 
-            //this._documentWatcher = new XSharpDocumentWatcher(this);
             _errorList = await VS.GetRequiredServiceAsync<SVsErrorList, IErrorList>();
             _taskList = await VS.GetRequiredServiceAsync<SVsTaskList, ITaskList>();
 
@@ -208,7 +204,6 @@ namespace XSharp.Project
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
-            //_langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
 
             await this.RegisterCommandsAsync();
             await GetEditorOptionsAsync();

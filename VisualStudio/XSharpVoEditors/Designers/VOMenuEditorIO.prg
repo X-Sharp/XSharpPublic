@@ -230,7 +230,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
         RETURN TRUE
 
     METHOD SaveVh(oStream AS EditorStream , oCode AS CodeContents) AS LOGIC
-        oStream:Editor:ReplaceDefines(oCode:aDefines, oCode:aDefineValues, TRUE)
+        oStream:Editor:ReplaceDefines(oCode:aDefinesMenuRc, oCode:aDefineValues, TRUE)
         //		oStream:Editor:DeleteDefines(oCode:aDefines)
         oStream:Save()
         RETURN TRUE

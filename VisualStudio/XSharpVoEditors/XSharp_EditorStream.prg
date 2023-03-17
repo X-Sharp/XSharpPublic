@@ -110,7 +110,7 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 				oWriter:Flush()
 				lSuccess := TRUE
 			CATCH e AS Exception
-                IF System.Diagnostics.Debugger:IsAttached
+                IF System.Diagnostics.Debugger.IsAttached
 					System.Diagnostics.Debug.WriteLine(e:Message)
 				ENDIF
 			FINALLY

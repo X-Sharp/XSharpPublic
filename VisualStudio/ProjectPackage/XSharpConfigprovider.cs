@@ -61,7 +61,7 @@ namespace XSharp.Project
         public override string GetConfigurationProperty(string propertyName, bool resetCache)
         {
             string result = base.GetConfigurationProperty(propertyName, resetCache);
-            if (String.IsNullOrEmpty(result))
+            if (string.IsNullOrEmpty(result))
             {
                 foreach (MSBuild.ProjectProperty prop in this._project.BuildProject.Properties)
                 {
@@ -166,7 +166,7 @@ namespace XSharp.Project
                     info.fSendStdoutToOutputWindow = 0;
                 }
 
-                if (String.IsNullOrEmpty(info.bstrRemoteMachine))
+                if (string.IsNullOrEmpty(info.bstrRemoteMachine))
                 {
                     if (!File.Exists(info.bstrExe))
                     {

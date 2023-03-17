@@ -11,15 +11,13 @@ namespace XSharp.Project
 {
     class XSharpDocumentWatcher : IVsRunningDocTableEvents, IDisposable
     {
-        private IServiceProvider provider;
         private uint runningDocTableCookie = 0;
-        private IVsRunningDocumentTable rdt = null;
+        private readonly IVsRunningDocumentTable rdt = null;
         private List<uint> knownCookies;
 
 		// todo: we can probably delete this code.
         public XSharpDocumentWatcher(IServiceProvider provider)
         {
-            this.provider = provider;
             knownCookies = new List<uint>();
             ThreadHelper.ThrowIfNotOnUIThread();
             rdt = provider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;

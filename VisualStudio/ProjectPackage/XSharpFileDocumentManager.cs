@@ -38,7 +38,6 @@ namespace XSharp.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public override int Open(bool newFile, bool openWith, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame windowFrame, WindowFrameShowAction windowFrameAction)
         {
-            windowFrame = null;
             Guid editorType = VSConstants.LOGVIEWID_Primary;
             string fullPath = this.GetFullPathForDocument();
             XFileType type = XFileTypeHelpers.GetFileType(fullPath);
@@ -63,6 +62,11 @@ namespace XSharp.Project
                         editorType = XSharpConstants.guidVSXmlEditor;
                     }
                     break;
+            }
+            var xNode = this.Node.ProjectMgr as XSharpProjectNode;
+            if (xNode.ProjectModel != null)
+            {
+                xNode.ProjectModel.ResolveReferences();
             }
             return base.Open(newFile, openWith, 0, ref editorType, null, ref logicalView, docDataExisting, out windowFrame, windowFrameAction);
         }

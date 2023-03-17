@@ -1,9 +1,13 @@
-﻿using System;
-using XSharpModel;
-using Community.VisualStudio.Toolkit;
+﻿using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using XSharpModel;
 
 namespace XSharp.Project
 {
@@ -25,57 +29,177 @@ namespace XSharp.Project
 
         internal XSharpShellLink()
         {
-           ThreadHelper.JoinableTaskFactory.Run(async delegate
-           {
-               await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-               VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
-               VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
-               VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
-               VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
-               VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
-               VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
-               VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
-               VS.Events.SolutionEvents.OnAfterRenameProject += SolutionEvents_OnAfterRenameProject;
-               VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
-               VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
-               VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
-               var sol = await VS.Solutions.GetCurrentSolutionAsync();
-               if (sol is Solution)
-               {
-                   SolutionEvents_OnAfterOpenSolution(sol);
-               }
-           });
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
+                VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
+                VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
+                VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
+                VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
+                VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
+                VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
+                VS.Events.SolutionEvents.OnAfterRenameProject += SolutionEvents_OnAfterRenameProject;
+                VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += SolutionEvents_OnAfterBackgroundSolutionLoadComplete;
+                VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
+                VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
+                VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
+                VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
+                _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
+                _ = await VS.Commands.InterceptAsync(KnownCommands.File_Exit, CloseDesignerWindows);
+                VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
+                var sol = await VS.Solutions.GetCurrentSolutionAsync();
+                if (sol is Solution)
+                {
+                    SolutionEvents_OnAfterOpenSolution(sol);
+                }
+            });
 
         }
 
-        private void SolutionEvents_OnAfterRenameProject(Community.VisualStudio.Toolkit.Project obj)
+        private CommandProgression CloseDesignerWindows()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            SaveDesignerWindows();
+            return CommandProgression.Continue;
+        }
+
+        private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            RestoreDesignerWindows();
+        }
+
+        private void ShellEvents_ShutdownStarted()
         {
             Logger.SingleLine();
-            Logger.Information("Renamed project: " + obj?.FullPath ?? "");
+            Logger.Information("Shutdown VS");
             Logger.SingleLine();
         }
 
-        private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project obj)
+        private void DocumentEvents_Opened(string strDocument)
+        {
+            Logger.Information("Opened " + strDocument);
+        }
+
+
+        private void SaveDesignerWindows()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var files = GetAllDesignerWindows(false);
+            XDatabase.SaveOpenDesignerFiles(files);
+        }
+        private void CloseAllDesignerWindows()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            GetAllDesignerWindows(true);
+        }
+        private List<string> GetAllDesignerWindows(bool close = false)
+        {
+            var files = new List<string>();
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                
+                var documents = await VS.Windows.GetAllDocumentWindowsAsync();
+                foreach (var doc in documents.ToArray())
+                {
+                    var caption = doc.Caption;
+                    if (caption.IndexOf("[") >= 0 && caption.IndexOf("]") >= 0)
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        if (doc is IVsWindowFrame frame)
+                        {
+                            frame.GetProperty((int)__VSFPROPID.VSFPROPID_pszMkDocument, out var docName);
+                            if (docName is string fileName)
+                            {
+                                if (close)
+                                {
+                                    await doc.CloseFrameAsync(FrameCloseOption.NoSave);
+                                }
+                                files.Add(fileName);
+                            }
+                        }
+                    }
+                }
+            });
+            return files;
+        }
+
+        private void RestoreDesignerWindows()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                Logger.SingleLine();
+                Logger.Information("Start restoring windows in [Design] mode");
+                Logger.SingleLine();
+                CloseAllDesignerWindows();
+                var files = XDatabase.GetOpenDesignerFiles();
+                var selection = await VS.Solutions.GetActiveItemsAsync();
+                if (files.Count > 0  )
+                {
+                    foreach (var file in files)
+                    {
+                        try
+                        {
+                            Logger.SingleLine();
+                            Logger.Information("Restoring " + file);
+                            Logger.SingleLine();
+                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                            VsShellUtilities.OpenDocument(ServiceProvider.GlobalProvider, file, VSConstants.LOGVIEWID_Designer, out _, out _, out _);
+
+                            Logger.SingleLine();
+                            Logger.Information("Restored " + file);
+                            Logger.SingleLine();
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.DoubleLine();
+                            Logger.Exception(e, "Restoring [Design] mode windows");
+                            Logger.DoubleLine();
+                        }
+                    }
+                    var sel = selection.Where(s => s.Type == SolutionItemType.PhysicalFile).FirstOrDefault();
+                    if (sel != null)
+                    {
+                        _ = await VS.Documents.OpenAsync(sel.FullPath);
+                    }
+                    Logger.SingleLine();
+                    Logger.Information("End restoring windows in [Design] mode");
+                    Logger.SingleLine();
+                }
+            });
+        }
+
+        private void SolutionEvents_OnAfterRenameProject(Community.VisualStudio.Toolkit.Project project)
         {
             Logger.SingleLine();
-            Logger.Information("Closing project: " + obj?.FullPath ?? "");
+            Logger.Information("Renamed project: " + project?.FullPath ?? "");
+            Logger.SingleLine();
+        }
+
+        private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
+        {
+            Logger.SingleLine();
+            Logger.Information("Closing project: " + project?.FullPath ?? "");
             Logger.SingleLine();
 
         }
 
-        private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project obj)
+        private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
         {
             Logger.SingleLine();
-            Logger.Information("Opened project: " + obj?.FullPath ?? "");
+            Logger.Information("Opened project: " + project?.FullPath ?? "");
             Logger.SingleLine();
         }
 
-        private void SolutionEvents_OnBeforeOpenProject(string obj)
+        private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
             Logger.SingleLine();
-            Logger.Information("Opening project: " + obj ?? "");
+            Logger.Information("Opening project: " + projectFileName ?? "");
             Logger.SingleLine();
-            checkProjectFile(obj);
+            checkProjectFile(projectFileName);
         }
         const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
         const string newText = @"$(XSharpMsBuildDir)";
@@ -167,9 +291,9 @@ namespace XSharp.Project
             solutionName = "";
         }
 
-        private void SolutionEvents_OnAfterOpenSolution(Solution obj)
+        private void SolutionEvents_OnAfterOpenSolution(Solution solution)
         {
-            if (obj is Solution sol)
+            if (solution is Solution sol)
             {
                 var file = sol.FullPath;
                 if (!string.IsNullOrEmpty(file))
@@ -179,17 +303,17 @@ namespace XSharp.Project
             }
 
             Logger.SingleLine();
-            Logger.Information("Opened Solution: " + obj?.FullPath ?? "");
+            Logger.Information("Opened Solution: " + solution?.FullPath ?? "");
             Logger.SingleLine();
-            solutionName = obj?.FullPath;
+            solutionName = solution?.FullPath;
         }
 
-        private void SolutionEvents_OnBeforeOpenSolution(string obj)
+        private void SolutionEvents_OnBeforeOpenSolution(string solutionFileName)
         {
             Logger.SingleLine();
-            Logger.Information("Opening Solution: " + obj ?? "");
+            Logger.Information("Opening Solution: " + solutionFileName ?? "");
             Logger.SingleLine();
-            solutionName = obj;
+            solutionName = solutionFileName;
         }
 
         private void BuildEvents_SolutionBuildCancelled()
@@ -288,9 +412,9 @@ namespace XSharp.Project
                 {
                     //
                     TextSpan span = new TextSpan();
-                    span.iStartLine = line ;
+                    span.iStartLine = line;
                     span.iStartIndex = column;
-                    span.iEndLine = line ;
+                    span.iEndLine = line;
                     span.iEndIndex = column;
                     //
                     textView.SetCaretPos(span.iStartLine, span.iStartIndex);

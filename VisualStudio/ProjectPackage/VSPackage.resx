@@ -154,10 +154,6 @@ http://www.xsharp.eu</value>
   <data name="3" xml:space="preserve">
     <value>XSharp Items</value>
   </data>
-  <data name="109" xml:space="preserve">
-    <value>XSharp Source Code Editor</value>
-    <comment>Text that apears in Open With dialog editors list</comment>
-  </data>
   <data name="80110" xml:space="preserve">
     <value>XSharp VO Form Editor</value>
     <comment>Text that apears in Open With dialog editors list</comment>
@@ -195,13 +191,13 @@ http://www.xsharp.eu</value>
     <comment>Caption of options page</comment>
   </data>
   <data name="203" xml:space="preserve">
-  <value>Debugging</value>
-  <comment>Caption of debugging page category</comment>
-</data>
+    <value>Debugging</value>
+    <comment>Caption of debugging page category</comment>
+  </data>
   <data name="204" xml:space="preserve">
-  <value>X# Debugger</value>
-  <comment>Caption of debugger options page</comment>
-</data>
+    <value>X# Debugger</value>
+    <comment>Caption of debugger options page</comment>
+  </data>
   <data name="301" xml:space="preserve">
     <value>
       Grid;
@@ -233,7 +229,7 @@ http://www.xsharp.eu</value>
     <comment>Keyword list Other Editor options</comment>
   </data>
   <data name="304" xml:space="preserve">
-  <value>
+    <value>
     Implicit;
     Zero;
     Array;
@@ -253,6 +249,6 @@ http://www.xsharp.eu</value>
     Vo13;
     Vo14;
   </value>
-  <comment>Keyword list Debugger options</comment>
-</data>
+    <comment>Keyword list Debugger options</comment>
+  </data>
 </root>

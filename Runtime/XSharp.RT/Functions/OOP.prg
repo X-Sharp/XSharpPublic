@@ -1159,29 +1159,29 @@ internal static class OOPHelpers
         endif
         if cMethod == null
             throw Error.NullArgumentError( cCaller, nameof(cMethod), 2 )
-        endif
-        if ! OOPHelpers.SendHelper(oObject, cMethod, args, out var result)
-            local nomethodArgs as usual[]
+        ENDIF
+        LOCAL result AS USUAL
+        IF ! OOPHelpers.SendHelper(oObject, cMethod, args, OUT result)
+            LOCAL nomethodArgs AS USUAL[]
             cMethod := cMethod:ToUpperInvariant()
             RuntimeState.NoMethod := cMethod   // For NoMethod() function
-            if XSharp.RuntimeState.Dialect == XSharpDialect.Vulcan
+            IF XSharp.RuntimeState.Dialect == XSharpDialect.Vulcan
                 // vulcan includes the method name
-                nomethodArgs := usual[]{ args:Length+1 }
+                nomethodArgs := USUAL[]{ args:Length+1 }
                 nomethodArgs[0] := cMethod
                 Array.Copy( args, 0, nomethodArgs, 1, args:Length )
-            else
+            ELSE
                 // other dialects do not include the method name
-                nomethodArgs := usual[]{ args:Length }
+                nomethodArgs := USUAL[]{ args:Length }
                 Array.Copy( args, 0, nomethodArgs, 0, args:Length )
-            endif
-            if ! OOPHelpers.SendHelper(oObject, "NoMethod" , nomethodArgs, out result)
-                var oError := Error.VOError( EG_NOMETHOD, cCaller, nameof(cMethod), 2, <object>{oObject, cMethod, args} )
+            ENDIF
+            IF ! OOPHelpers.SendHelper(oObject, "NoMethod" , nomethodArgs, OUT result)
+                VAR oError := Error.VOError( EG_NOMETHOD, cCaller, NAMEOF(cMethod), 2, <OBJECT>{oObject, cMethod, args} )
                 oError:Description  := oError:Message + " '"+cMethod+"'"
-                throw oError
-
-            endif
-        endif
-        return result
+                THROW oError
+            ENDIF
+        ENDIF
+        RETURN result
 
 end class
 

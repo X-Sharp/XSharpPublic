@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\Common2022.props" />
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <RootNamespace>XSharp.Project</RootNamespace>
+    <AssemblyName>XSharp.AppDesigner2022</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
+    <ProjectGuid>{4484939E-DDA8-4033-8B1C-E8F60A2BAFE1}</ProjectGuid>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <ExtensionInstallationFolder>XSharp\Project</ExtensionInstallationFolder>
+    <VsixType>v3</VsixType>
+    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CreateVsixContainer>True</CreateVsixContainer>
+    <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>
+    <UseCodebase>true</UseCodebase>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE;DEBUG;XSHARP;DEV17</DefineConstants>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>1762</NoWarn>
+    <DeployExtension>True</DeployExtension>
+    <RegisterForComInterop>false</RegisterForComInterop>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;XSHARP;DEV17</DefineConstants>
+    <CreateVsixContainer>False</CreateVsixContainer>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Constants.cs">
+      <Link>Constants.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\XSharpConstants.cs">
+      <Link>XSharpConstants.cs</Link>
+    </Compile>
+    <Compile Include="IXsProjectDesigner.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyPages\Enums.cs" />
+    <Compile Include="PropertyPages\XBuildPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XBuildPropertyPagePanel.Designer.cs">
+      <DependentUpon>XBuildPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XBuildPropertyPage.cs" />
+    <Compile Include="PropertyPages\XDebugPropertyPage.cs" />
+    <Compile Include="PropertyPages\XDebugPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XDebugPropertyPagePanel.Designer.cs">
+      <DependentUpon>XDebugPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XGeneralPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XGeneralPropertyPagePanel.Designer.cs">
+      <DependentUpon>XGeneralPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XDialectPropertyPage.cs" />
+    <Compile Include="PropertyPages\XLanguagePropertyPage.cs" />
+    <Compile Include="PropertyPages\XGeneralPropertyPage.cs" />
+    <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
+    <Compile Include="PropertyPages\XDialectPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XDialectPropertyPagePanel.Designer.cs">
+      <DependentUpon>XDialectPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XLanguagePropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XLanguagePropertyPagePanel.Designer.cs">
+      <DependentUpon>XLanguagePropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XBuildEventsPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XBuildEventsPropertyPagePanel.Designer.cs">
+      <DependentUpon>XBuildEventsPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XSharpMLEPropertyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XSharpMLEPropertyForm.Designer.cs">
+      <DependentUpon>XSharpMLEPropertyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XSharpSLEPropertyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XSharpSLEPropertyForm.Designer.cs">
+      <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resources.cs" />
+    <Compile Include="Wix\FolderBrowserTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wix\FolderBrowserTextBox.Designer.cs">
+      <DependentUpon>FolderBrowserTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Wix\FoldersSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wix\FoldersSelector.Designer.cs">
+      <DependentUpon>FoldersSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Wix\projectproperty.cs" />
+    <Compile Include="Wix\projectpropertyargumentexception.cs" />
+    <Compile Include="Wix\PropertyValidator.cs" />
+    <Compile Include="Wix\XBuildEventEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wix\XBuildEventEditor.Designer.cs">
+      <DependentUpon>XBuildEventEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Wix\XBuildEventEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Wix\XBuildEventEditorForm.Designer.cs">
+      <DependentUpon>XBuildEventEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Wix\XBuildEventTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Wix\XColorUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wix\XColorUserControl.Designer.cs">
+      <DependentUpon>XColorUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Wix\XGroupBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Wix\XGroupLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Wix\XPropertyPage.cs" />
+    <Compile Include="Wix\XPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wix\XPropertyPagePanel.Designer.cs">
+      <DependentUpon>XPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectBase\ProjectBase2022.csproj">
+      <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
+      <Name>ProjectBase2022</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>CodeModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.Toolkit.17">
+      <Version>17.0.492</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Build">
+      <Version>17.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Build.Tasks.Core">
+      <Version>17.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CSharp">
+      <Version>4.7.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.ComponentModel">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PropertyPages\XDebugPropertyPagePanel.resx">
+      <DependentUpon>XDebugPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyPages\XDialectPropertyPagePanel.resx">
+      <DependentUpon>XDialectPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyPages\XBuildPropertyPagePanel.resx">
+      <DependentUpon>XBuildPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyPages\XGeneralPropertyPagePanel.resx">
+      <DependentUpon>XGeneralPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyPages\XLanguagePropertyPagePanel.resx">
+      <DependentUpon>XLanguagePropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyPages\XBuildEventsPropertyPagePanel.resx">
+      <DependentUpon>XBuildEventsPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyPages\XSharpMLEPropertyForm.resx">
+      <DependentUpon>XSharpMLEPropertyForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyPages\XSharpSLEPropertyForm.resx">
+      <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <DependentUpon>Resources.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wix\FolderBrowserTextBox.resx">
+      <DependentUpon>FolderBrowserTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wix\FoldersSelector.resx">
+      <DependentUpon>FoldersSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wix\XBuildEventEditor.resx">
+      <DependentUpon>XBuildEventEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wix\XBuildEventEditorForm.resx">
+      <DependentUpon>XBuildEventEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wix\XBuildEventTextBox.resx">
+      <DependentUpon>XBuildEventTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wix\XColorUserControl.resx">
+      <DependentUpon>XColorUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wix\XGroupBox.resx">
+      <DependentUpon>XGroupBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wix\XGroupLabel.resx">
+      <DependentUpon>XGroupLabel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wix\XPropertyPagePanel.resx">
+      <DependentUpon>XPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XSharp.AppDesigner2022.pkgdef">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <PropertyGroup>
+    <!--
+    To specify a different registry root to register your package, uncomment the TargetRegistryRoot
+    tag and specify a registry root in it.
+    <TargetRegistryRoot></TargetRegistryRoot>
+    -->
+    <RegisterOutputPackage>true</RegisterOutputPackage>
+    <RegisterWithCodebase>true</RegisterWithCodebase>
+  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

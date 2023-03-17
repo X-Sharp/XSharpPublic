@@ -683,7 +683,9 @@ PROTECTED METHOD _lockRecord( lockInfo REF DbLockInfo ) AS LOGIC
                 // Now, lock the one
 				isOK := SELF:_lockRecord( (LONG)nToLock )
                 // Go to there
-				SELF:GoTo( (LONG)nToLock )
+                IF SELF:RecNo != nToLock
+                    SELF:GoTo( (LONG)nToLock )
+                ENDIF
 			ENDIF
 		ENDIF
 	ENDIF

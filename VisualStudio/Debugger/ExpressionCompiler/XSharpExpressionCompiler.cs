@@ -34,7 +34,7 @@ namespace XSharpDebugger.ExpressionCompiler
     /// </summary>
     public sealed class XSharpExpressionCompiler : IDkmClrExpressionCompiler
     {
-        static void UpdateXSharpParseOptions()
+        static void UpdateXSharpParseOptions(bool lAllowDot = false)
         {
             var xoptions = XSyntaxHelpers.XSharpOptions;
             xoptions.SetDialect((XSharpDialect)XDebuggerSettings.Dialect);
@@ -48,6 +48,8 @@ namespace XSharpDebugger.ExpressionCompiler
             xoptions.SetOption(CompilerOption.Vo12, XDebuggerSettings.Vo12);
             xoptions.SetOption(CompilerOption.Vo13, XDebuggerSettings.Vo13);
             xoptions.SetOption(CompilerOption.Vo14, XDebuggerSettings.Vo14);
+            xoptions.SetOption(CompilerOption.LateBinding, XDebuggerSettings.LateBinding);
+            xoptions.SetOption(CompilerOption.AllowDotForInstanceMembers, lAllowDot);
             XSyntaxHelpers.XSharpOptions = xoptions;
         }
 
@@ -264,7 +266,7 @@ namespace XSharpDebugger.ExpressionCompiler
         {
             try
             {
-                UpdateXSharpParseOptions();
+                UpdateXSharpParseOptions(true);
                 IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
                 e.CompileAssignment(expression, instructionAddress, lValue, out error, out result);
             }

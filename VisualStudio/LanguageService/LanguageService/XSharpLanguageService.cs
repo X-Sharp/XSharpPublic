@@ -19,22 +19,23 @@ using Microsoft.VisualStudio.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.ComponentModelHost;
 using System.Diagnostics;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.LanguageService
 {
     [Guid(XSharpConstants.guidXSharpLanguageServicePkgString)]
-    public class XSharpLegacyLanguageService : Microsoft.VisualStudio.Package.LanguageService, IVsLanguageDebugInfo, IVsLanguageTextOps
+    public class XSharpLanguageService: Microsoft.VisualStudio.Package.LanguageService, IVsLanguageDebugInfo, IVsLanguageTextOps
     {
         private readonly IServiceContainer _serviceContainer;
         private readonly IComponentModel _componentModel;
         private readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
         private LanguagePreferences m_preferences;
 
-        public XSharpLegacyLanguageService(IServiceContainer serviceContainer) : base()
+        public XSharpLanguageService(IServiceContainer serviceContainer) : base()
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
             _serviceContainer = serviceContainer;
-            _componentModel = XSharpLanguageService.GetComponentModel();
+            _componentModel = XSharpLanguagePackage.GetComponentModel();
             _editorAdaptersFactoryService = _componentModel.GetService<IVsEditorAdaptersFactoryService>();
             base.SetSite(serviceContainer);
 
@@ -65,34 +66,30 @@ namespace XSharp.LanguageService
             pbstrFilterList = GetFormatFilterList();
             return VSConstants.S_OK;
         }
+        /// <summary>
+        /// Set the default preferences for this language.
+        /// </summary>
         public override LanguagePreferences GetLanguagePreferences()
         {
             if (m_preferences == null)
             {
                 m_preferences = new LanguagePreferences(this.Site,
-                                                        typeof(XSharpLanguageService).GUID,
+                                                        typeof(XSharpLanguagePackage).GUID,
                                                         this.Name);
                 m_preferences.Init();
             }
             return m_preferences;
         }
 
-        public override IScanner GetScanner(IVsTextLines buffer)
-        {
-            // no needed since we use MEF for this
-            return null;
-        }
+        public override IScanner GetScanner(IVsTextLines buffer) => null;
+        public override AuthoringScope ParseSource(ParseRequest req) => null;
 
         public override string Name
         {
             get { return XSharpConstants.LanguageName; }
         }
 
-        public override AuthoringScope ParseSource(ParseRequest req)
-        {
-            // no needed since we use MEF for this
-            return null;
-        }
+        
         public override ViewFilter CreateViewFilter(CodeWindowManager mgr, IVsTextView newView)
         {
             // still needed for snippets. Once that is moved to MEF then this can disappear
@@ -161,10 +158,7 @@ namespace XSharp.LanguageService
             return VSConstants.S_OK;
         }
 
-        //public override TypeAndMemberDropdownBars CreateDropDownHelper(IVsTextView forView)
-        //{
-        //    return new XSharpTypeAndMemberDropDownBars( this, forView );
-        //}
+        public override TypeAndMemberDropdownBars CreateDropDownHelper(IVsTextView forView) => null;
        #region IVsLanguageDebugInfo Members
 
         int IVsLanguageDebugInfo.GetLanguageID(IVsTextBuffer pBuffer, int iLine, int iCol, out Guid pguidLanguageID)
@@ -379,7 +373,7 @@ namespace XSharp.LanguageService
                 case '_':
                     return true;
                 default:
-                    if (!System.Char.IsLetterOrDigit(c))
+                    if (!char.IsLetterOrDigit(c))
                         return false;
                     break;
             }
@@ -387,7 +381,7 @@ namespace XSharp.LanguageService
         }
         public int GetWordExtent(IVsTextLayer pTextLayer, TextAddress ta, WORDEXTFLAGS flags, TextSpan[] pts)
         {
-            if (flags.HasFlag(WORDEXTFLAGS.WORDEXT_FINDTOKEN) && XSettings.DebuggerIsRunning)
+            if (flags.HasFlag(WORDEXTFLAGS.WORDEXT_FINDTOKEN) && this.IsDebugging)
             {
                 var callStack = Environment.StackTrace.ToString();
                 // when inside quick info in the debugger then we want to return a complete 

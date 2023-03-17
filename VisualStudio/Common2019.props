@@ -3,13 +3,13 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-     <VSTarget>2019</VSTarget>
-     <CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
+    <VSTarget>2019</VSTarget>
+    <CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
 
   </PropertyGroup>
-<Import Project="Common.props" />
+  <Import Project="Common.props" />
 
 </Project>

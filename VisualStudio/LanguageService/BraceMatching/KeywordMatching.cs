@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using Community.VisualStudio.Toolkit;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
@@ -135,38 +136,68 @@ namespace XSharp.LanguageService
             var spans = new List<SnapshotSpan>();
             var snapshot = _buffer.CurrentSnapshot;
             spans.Add(MakeSnapshotSpan(token, snapshot));
-            var start = entity.Range.StartLine;
-            for (int i = start; i <= entity.Range.EndLine; i++)
+            foreach (var t in entity.BlockTokens)
             {
-                if (i > start && !_document.HasLineState(i, LineFlags.IsContinued))
-                    break;
-                var lineTokens = _document.GetTokensInLine(i);
-                foreach (var t2 in lineTokens)
-                {
-                    switch (t2.Type)
-                    {
-                        case XSharpLexer.FUNCTION:
-                        case XSharpLexer.PROCEDURE:
-                        case XSharpLexer.METHOD:
-                        case XSharpLexer.ACCESS:
-                        case XSharpLexer.ASSIGN:
-                        case XSharpLexer.PROPERTY:
-                        case XSharpLexer.OPERATOR:
-                        case XSharpLexer.EVENT:
-                        case XSharpLexer.CONSTRUCTOR:
-                        case XSharpLexer.DESTRUCTOR:
-                            spans.Add(MakeSnapshotSpan(t2, snapshot));
-                            return spans;
-                    }
-                }
-
+                spans.Add(MakeSnapshotSpan(t, snapshot));
             }
-            return null;
+            return spans;
         }
 
         bool matchesPosition(IToken token)
         {
             return token.StartIndex <= _currentChar && token.StopIndex >= _currentChar;
+        }
+
+        IList<SnapshotSpan> GetBlockSpans(IEnumerable<XSourceBlock> blocks)
+        {
+            foreach (var block in blocks)
+            {
+                if (matchesPosition(block.Token))
+                {
+                    return GetSpansForBlock(block);
+                }
+                if (matchesPosition(block.Last.Token))
+                {
+                    return GetSpansForBlock(block);
+                }
+                foreach (var child in block.Children)
+                {
+                    if (matchesPosition(child.Token))
+                    {
+                        return GetSpansForBlock(block);
+                    }
+                }
+            }
+            return null;
+        }
+        IList<SnapshotSpan> GetEntitySpans(IEnumerable<XSourceEntity> entities)
+        {
+            // The blockTokens contains the start and end tokens for an entity
+            // like CLASS .. END CLASS
+            // When one of them is on the cursor location we mark them all
+            foreach (var entity in entities)
+            {
+                // if the number of non modifier tokens <= 1 then we have no start and end tokens
+                // but only PUBLIC METHOD or STATIC FUNCTION
+                // in that case we do not want to match the keywords
+                if (entity.BlockTokens.Count(t => t.Type == XSharpLexer.CLASS ||  !XSharpLexer.IsModifier(t.Type)) <= 1)
+                    continue;
+
+                foreach (var token in entity.BlockTokens)
+                {
+                    if (matchesPosition(token))
+                    {
+                        var spans = new List<SnapshotSpan>();
+                        var snapshot = _buffer.CurrentSnapshot;
+                        foreach (var t in entity.BlockTokens)
+                        {
+                            spans.Add(MakeSnapshotSpan(t, snapshot));
+                        }
+                        return spans;
+                    }
+                }
+            }
+            return null;
         }
 
         public IEnumerable<ITagSpan<TextMarkerTag>> GetTags(NormalizedSnapshotSpanCollection spans)
@@ -206,43 +237,23 @@ namespace XSharp.LanguageService
             if (char.IsWhiteSpace(ch))
                 yield break;
 
-            int currentLine = _currentChar.Value.GetContainingLine().LineNumber + 1; // our tokens have 1 based line numbers
-
+            int currentLine = _currentChar.Value.GetContainingLine().LineNumber; 
+            int tokenLine = currentLine + 1;// our tokens have 1 based line numbers
             IList<ITagSpan<TextMarkerTag>> result = new List<ITagSpan<TextMarkerTag>>();
             try
             {
                 // get all the blocks that surround the current position
-                var blocks = _document.Blocks.Where(b => b.Token.Line <= currentLine && b.Last.Token.Line >= currentLine);
-                IList<SnapshotSpan> foundSpans = null;
-                foreach (var block in blocks)
-                {
-                    if (matchesPosition(block.Token))
-                    {
-                        foundSpans = GetSpansForBlock(block);
-                        break;
-                    }
-                    if (matchesPosition(block.Last.Token))
-                    {
-                        foundSpans = GetSpansForBlock(block);
-                        break;
-                    }
-                    foreach (var child in block.Children)
-                    {
-                        if (matchesPosition(child.Token))
-                        {
-                            foundSpans = GetSpansForBlock(block);
-                            break;
-                        }
-                    }
-                    if (foundSpans != null)
-                    {
-                        break;
-                    }
-                }
+                var blocks = _document.Blocks.Where(b => b.Token.Line <= tokenLine && b.Last.Token.Line >= tokenLine);
+                IList<SnapshotSpan> foundSpans = GetBlockSpans(blocks);
                 if (foundSpans == null)
                 {
+                    var ents = _document.Entities.Where(e => e.Range.StartLine <= currentLine && e.Range.EndLine >= currentLine && e.BlockTokens.Count > 1);
+                    foundSpans = GetEntitySpans(ents);
+                }
+                if (foundSpans == null || foundSpans.Count == 0)
+                {
                     // when we are on a RETURN token then we match the return line with the current entity
-                    var lineTokens = _document.GetTokensInLine(currentLine - 1);
+                    var lineTokens = _document.GetTokensInLine(currentLine);
                     foreach (var token in lineTokens)
                     {
                         if (token.Type == XSharpLexer.RETURN)
@@ -251,13 +262,16 @@ namespace XSharp.LanguageService
                             {
                                 // find current location
                                 // add spans for the return keyword and the METHOD/ACCESS/FUNCTION
-                                var entity = _document.Entities.Where(e => !e.Kind.IsType() && e.Interval.ContainsInclusive(_currentChar.Value.Position)).FirstOrDefault();
-                                if (entity != null)
+                                var ents = _document.Entities.Where(e => e is XSourceMemberSymbol
+                                    && e.Interval.ContainsInclusive(_currentChar.Value.Position));
+                                foreach (var entity in ents)
                                 {
                                     foundSpans = GetSpansForEntity(token, entity);
-                                    break;
+                                    if (foundSpans != null)
+                                        break;
                                 }
                             }
+                            break;
                         }
                     }
 

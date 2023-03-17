@@ -81,6 +81,7 @@ BEGIN NAMESPACE XSharpModel
         sym:Range        := SELF:TextRange
         sym:Interval     := SELF:TextInterval
         sym:XmlComments  := SELF:XmlComments
+        sym:File         := XSolution.FindFile(SELF:FileName)
 
 
     END CLASS

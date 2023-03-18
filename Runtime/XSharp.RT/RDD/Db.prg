@@ -1221,11 +1221,11 @@ FUNCTION EmptyField( n AS DWORD ) AS LOGIC
 
 /// <summary>Automatically lock a record in the FoxPro dialect </summary>
 FUNCTION DbAutoLock() AS VOID
-    XSharp.RuntimeState.AutoLock()
+    XSharp.RuntimeState:AutoLock()
     RETURN
 
 /// <summary>Automatically unlock a record in the FoxPro dialect </summary>
 FUNCTION DbAutoUnLock() AS VOID
-    XSharp.RuntimeState.AutoUnLock()
+    XSharp.RuntimeState:AutoUnLock()
     RETURN
 

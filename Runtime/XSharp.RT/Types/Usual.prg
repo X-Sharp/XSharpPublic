@@ -3083,7 +3083,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                 THROW InvalidCastException{}
             END SWITCH
         ELSE
-            VAR o := __Usual:ToObject(SELF)
+            VAR o := __Usual.ToObject(SELF)
             IF conversionType:IsAssignableFrom(o:GetType())
                 RETURN o
             ELSEIF o IS IConvertible VAR ic

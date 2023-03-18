@@ -1028,7 +1028,7 @@ CLASS XSharp.RuntimeState
 		    ENDIF
         ENDIF
         IF _macrocompilerType != NULL_OBJECT
-            _macrocompiler := Activator:CreateInstance(_macrocompilerType) ASTYPE IMacroCompiler
+            _macrocompiler := Activator.CreateInstance(_macrocompilerType) ASTYPE IMacroCompiler
             IF _macrocompiler IS IMacroCompiler2 VAR mc
                 mc:Resolver := _macroresolver
             endif

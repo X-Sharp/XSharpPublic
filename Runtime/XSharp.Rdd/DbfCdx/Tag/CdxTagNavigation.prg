@@ -284,8 +284,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR orgRecNo := SELF:_oRdd:RecNo
                 VAR orgStack := SELF:Stack:Clone()
 
-                VAR dirty := (LOGIC)SELF:_oRdd:Info(DbInfo.DBI_DIRTYREAD, NULL) .OR. RuntimeState.GetValue<LOGIC>((XSharp.Set)RddInfo.RDDI_DIRTYREAD)
-                IF !dirty .OR. SELF:LockNeedsRefresh
+                IF !SELF:_oRdd:_dirtyRead .OR. SELF:LockNeedsRefresh
                     locked := SELF:Slock()
                     IF !locked
                         RETURN FALSE
@@ -344,7 +343,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 ENDIF
                             ENDIF
                         ENDIF
-                    CATCH e AS CdxLockException
+                    CATCH AS CdxLockException
                         SELF:_oRdd:__Goto(orgRecNo)
                         SELF:_oRdd:_SetBOF(orgBof)
                         SELF:_oRdd:_SetEOF(orgEof)

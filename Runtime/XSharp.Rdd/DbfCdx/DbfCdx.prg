@@ -26,6 +26,7 @@ BEGIN NAMESPACE XSharp.RDD
     [DebuggerDisplay("DBFCDX ({Alias,nq})")];
     CLASS DBFCDX INHERIT DBFFPT
         INTERNAL _indexList  AS CdxOrderBagList
+        INTERNAL _dirtyRead AS LOGIC
         INTERNAL PROPERTY CurrentOrder AS CdxTag GET _indexList:CurrentOrder
         OVERRIDE PROPERTY Driver  AS STRING GET nameof(DBFCDX)
         INTERNAL PROPERTY MustForceRel AS LOGIC GET _RelInfoPending != NULL
@@ -36,6 +37,7 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR()
             SUPER()
             _indexList := CdxOrderBagList{SELF}
+            _dirtyRead := !RuntimeState.GetValue<LOGIC>(Set.StrictRead)
             RETURN
 
 
@@ -66,7 +68,23 @@ BEGIN NAMESPACE XSharp.RDD
                     SELF:_fieldList:Add(nFldPos)
                 ENDIF
                 RETURN SUPER:GetValue(nFldPos)
-
+            OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+	            LOCAL oResult AS OBJECT
+                oResult := NULL
+                IF nOrdinal == DbInfo.DBI_DIRTYREAD
+                    oResult := SELF:_dirtyRead
+                    IF oNewValue IS LOGIC VAR lValue
+                        SELF:_dirtyRead := lValue
+                    ENDIF
+                    RETURN oResult
+                ELSEIF nOrdinal == DbInfo.DBI_STRICTREAD
+                    oResult := !SELF:_dirtyRead
+                    IF oNewValue IS LOGIC VAR lValue
+                        SELF:_dirtyRead := !lValue
+                    ENDIF
+                    RETURN oResult
+                ENDIF
+                RETURN SUPER:Info(nOrdinal, oNewValue)
             OVERRIDE METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
                 VAR result := SELF:_indexList:Create(orderInfo)
                 if result

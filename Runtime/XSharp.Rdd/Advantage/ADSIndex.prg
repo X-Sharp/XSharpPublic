@@ -489,6 +489,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                     SELF:_CheckError(ACE.AdsGetIndexFilename(indices[i], ACE.ADS_BASENAME, pathName, REF wLen),EG_OPEN)
                     IF String.Compare(cIndexName, STRING{pathName, 0, wLen}, TRUE) == 0
                         SELF:Index := indices[i]
+                        result := ACE.AE_SUCCESS
                         EXIT
                     ENDIF
                 NEXT

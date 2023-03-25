@@ -246,7 +246,7 @@ BEGIN NAMESPACE XSharp.ADS
                     ENDIF
                 ENDIF
             CATCH
-
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Error converting Julian Number")
             END TRY
             RETURN DbDate{0,0,0}
 

@@ -1504,6 +1504,9 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
     METHOD GetNameFromTree(oNode AS TreeNode , cName AS STRING) AS STRING
 
         LOCAL FUNCTION PrefixName(c AS STRING) AS STRING
+            DO WHILE c:Length != 0 .AND. c[0] == '&'
+                c := c:Substring(1)
+            END DO
             IF c:Length == 0
                 RETURN c
             ENDIF

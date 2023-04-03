@@ -11,6 +11,7 @@ USING System.Diagnostics
 USING System.Reflection
 USING XSharp
 USING System.Runtime.Serialization
+USING System.Runtime.CompilerServices
 
 #include "attributes.xh"
 BEGIN NAMESPACE XSharp

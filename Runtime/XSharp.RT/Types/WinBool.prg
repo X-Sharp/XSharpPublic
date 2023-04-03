@@ -8,7 +8,7 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Diagnostics
 USING System.Runtime.Serialization
-
+USING System.Runtime.CompilerServices
 #include "attributes.xh"
 
 BEGIN NAMESPACE XSharp

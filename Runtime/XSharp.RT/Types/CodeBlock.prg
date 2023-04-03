@@ -10,16 +10,7 @@ USING System.Diagnostics
 
 USING System.Runtime.CompilerServices
 
-#define USEATTRIB
-#ifdef USEATTRIB
-#XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
-#XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
-#XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
-#else
-#XTRANSLATE \[NOSHOW\] =>
-#XTRANSLATE \[INLINE\] =>
-#XTRANSLATE \[NODEBUG\] =>
-#endif
+#include "attributes.xh"
 
 /// <summary>Internal type that implements the VO Compatible CODEBLOCK type<br/>
 /// This type has methods that normally are never directly called from user code.
@@ -29,8 +20,7 @@ USING System.Runtime.CompilerServices
 ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
     PRIVATE INITONLY _pcount AS INT
 
-    [NOSHOW];
-        PRIVATE STATIC nullArgs AS USUAL[]
+    [NOSHOW] PRIVATE STATIC nullArgs AS USUAL[]
 
     STATIC CONSTRUCTOR
         nullArgs := USUAL[]{0}
@@ -42,7 +32,7 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
 
     /// <summary>This constructor is used by the Compiler for compile time codeblocks.</summary>
     /// <param name="pCount">Number of parameters defined in the compile time codeblock.</param>
-    [NODEBUG] ;
+    [NODEBUG] [INLINE];
     PROTECTED CONSTRUCTOR (pCount AS INT)
         _pcount := pCount
 
@@ -114,8 +104,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
     /// <exclude />
     INITONLY PROTECT _addsMemVars AS LOGIC
 
-    [NOSHOW];
-    STATIC PRIVATE nullArgs AS OBJECT[]
+    [NOSHOW] STATIC PRIVATE nullArgs AS OBJECT[]
 
     STATIC CONSTRUCTOR
         nullArgs := OBJECT[]{0}

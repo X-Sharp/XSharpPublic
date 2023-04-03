@@ -357,6 +357,18 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			uVal := yVal
 			? Transform(uVal, "@R{9999}")
 		RETURN
+		[Fact, Trait("Category", "Psz")];
+        METHOD PSZConversions() AS VOID
+            LOCAL p AS PSZ
+            LOCAL s AS STRING
+            p := String2Psz("Test")
+            s := p
+            Assert.Equal(s, "Test")
+            p := NULL_PSZ
+            s := p
+            Assert.Equal(s, NULL)
+
+
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

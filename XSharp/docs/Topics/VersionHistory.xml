@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-23T14:09:28.563+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-04-03T11:37:22.022+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -16,6 +16,40 @@
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
+    <para styleclass="Heading1">Changes in 2.16.0.0</para>
+    <para styleclass="Heading2">Compiler</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text"></li>
+    </list>
+    <para styleclass="Heading3">Bug fixes</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed some method overload resolution issues in the VO dialect (#1211)</li>
+      <li styleclass="Body Text">Fixed internal compiler error (insufficient stack) with huge DO CASE statement (#1214)</li>
+      <li styleclass="Body Text">Fixed some issues with accessing static class members in the XBase++ dialect (#1215)</li>
+      <li styleclass="Body Text">Fixed a problem with the Interpolated/Extended string syntax (#1218)</li>
+      <li styleclass="Body Text">Fixed some issues with incorrectly allowing accessing static class members with the colon operator or instance members with the dot operator (#1219,#1220)</li>
+      <li styleclass="Body Text">Fixed Incorrect visibility of MEMVARs created with MemVarPut() (#1223)</li>
+      <li styleclass="Body Text">Fixed problem with _DLL FUNCTION with name in Quotes not working correctly (#1225)</li>
+    </list>
+    <para styleclass="Heading2">Runtime</para>
+    <para styleclass="Heading3">Bug fixes</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed a problem with DbSetRelation() and RLock() (#1226)</li>
+      <li styleclass="Body Text">Adjusted implicit conversion from NULL_PSZ to string to now return NULL instead of an empty string</li>
+      <li styleclass="Body Text">Some initialization code is now moved from _INIT procedures to the static constructor of the SQLConnection Class, in order to make it easier to use this class from non-X# apps</li>
+    </list>
+    <para styleclass="Heading2">Visual Studio integration</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text"></li>
+    </list>
+    <para styleclass="Heading3">Bug fixes</para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed a problem with incorrectly showing member list in the editor for the &quot;:=&quot; operator (#1061)</li>
+      <li styleclass="Body Text">Fixed VOMED generation of menu item DEFINE names that were different to the ones generated by VO (#1208)</li>
+      <li styleclass="Body Text">Fixed VOWED incorrect order of generated lines of code in some cases (#1217)</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.15.0.3</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>

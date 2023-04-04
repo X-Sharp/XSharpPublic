@@ -788,9 +788,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public override BoundNode VisitNameOfOperator(BoundNameOfOperator node)
         {
+#if XSHARP
+            return base.VisitNameOfOperator(node);
+#else
             // The nameof(...) operator collapses to a constant in an expression tree,
             // so it does not matter what is recursively within it.
             return node;
+#endif
         }
 
         public override BoundNode VisitNullCoalescingOperator(BoundNullCoalescingOperator node)

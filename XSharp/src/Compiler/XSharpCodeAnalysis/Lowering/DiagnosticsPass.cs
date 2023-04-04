@@ -18,6 +18,39 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     internal sealed partial class DiagnosticsPass
     {
+        public void GenerateColonWarning(BoundNode node, Symbol symbol, string text)
+        {
+            Error(ErrorCode.ERR_ColonForTypeOrNs, node, symbol is TypeSymbol ? "Type" : "Namespace", text);
+        }
+
+        public override BoundNode VisitTypeExpression(BoundTypeExpression node)
+        {
+            var syntax = node.Syntax;
+            var xnode = syntax.XNode as XSharpParserRuleContext;
+            if (xnode != null && xnode is not XSharpParser.QoutStmtContext qout)
+            {
+                var text = xnode.GetText().Trim().Replace("::", ".");
+                if (text.Contains(":"))
+                {
+                    GenerateColonWarning(node, node.Type, text);
+                }
+            }
+            return base.VisitTypeExpression(node);
+        }
+        public override BoundNode VisitNamespaceExpression(BoundNamespaceExpression node)
+        {
+            var syntax = node.Syntax;
+            var xnode = syntax.XNode as XSharpParserRuleContext;
+            if (xnode != null && xnode is not XSharpParser.QoutStmtContext qout)
+            {
+                var text = xnode.GetText().Trim().Replace("::", ".");
+                if (text.Contains(":"))
+                {
+                    GenerateColonWarning(node, node.NamespaceSymbol, text);
+                }
+            }
+            return base.VisitNamespaceExpression(node);
+        }
         private void XsCheckCompoundAssignmentOperator(BoundCompoundAssignmentOperator node)
         {
             var syntax = node.Syntax;
@@ -55,7 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
         }
-        private void XsCheckMemberAccess(BoundNode node, XSharpParser.AccessMemberContext amc, TypeSymbol type, Symbol symbol)
+        private void XsCheckMemberAccess(BoundNode node, BoundNode receiver, XSharpParser.AccessMemberContext amc, TypeSymbol type, Symbol symbol)
         {
             var contType = symbol.ContainingType;
             // check for the type to makes sure that an assignment such as
@@ -108,7 +141,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckMemberAccess(node, amc, node.Type, node.FieldSymbol);
+                XsCheckMemberAccess(node, node.ReceiverOpt, amc, node.Type, node.FieldSymbol);
             }
             return;
         }
@@ -116,7 +149,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckMemberAccess(node, amc, node.Type, node.PropertySymbol);
+                XsCheckMemberAccess(node, node.ReceiverOpt, amc, node.Type, node.PropertySymbol);
             }
             return;
         }
@@ -124,7 +157,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckMemberAccess(node, amc, node.Type, node.Indexer);
+                XsCheckMemberAccess(node, node.ReceiverOpt, amc, node.Type, node.Indexer);
             }
             return;
         }
@@ -136,7 +169,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // For methods node.Type is the return type of the method
                     //XsCheckMemberAccess(node, amc, node.Type, node.Method);
-                    XsCheckMemberAccess(node, amc, null, node.Method);
+                    XsCheckMemberAccess(node, node.ReceiverOpt, amc, null, node.Method);
                 }
                 return;
             }
@@ -146,7 +179,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (node.Syntax?.XNode is XSharpParser.AssignmentExpressionContext aec &&
                 aec.Left is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckMemberAccess(node, amc, node.Type, node.Event);
+                XsCheckMemberAccess(node, node.ReceiverOpt, amc, node.Type, node.Event);
             }
             return;
         }
@@ -154,7 +187,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Syntax?.XNode is XSharpParser.AccessMemberContext amc)
             {
-                XsCheckMemberAccess(node, amc, node.Type, node.EventSymbol);
+                XsCheckMemberAccess(node, node.ReceiverOpt, amc, node.Type, node.EventSymbol);
             }
             return;
         }

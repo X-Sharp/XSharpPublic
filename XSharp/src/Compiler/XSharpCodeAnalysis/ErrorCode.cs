@@ -2084,6 +2084,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_DotForInstanceMember = 9112,
         ERR_InvalidStackAlloc = 9113,
         ERR_ColonForStaticMember = 9114,
+        ERR_ColonForTypeOrNs = 9115,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

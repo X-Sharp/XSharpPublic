@@ -22,6 +22,7 @@ INTERNAL STATIC CLASS TransformHelpers
         MEMBER ParenRight  := 256
         MEMBER Upper       := 512
         MEMBER YesNo       := 1024
+        MEMBER Scroll      := 2048
     END ENUM
 
     STATIC METHOD SplitPict(cSayPicture AS STRING, cPic OUT STRING, cFunc OUT STRING) AS LOGIC
@@ -449,7 +450,7 @@ INTERNAL STATIC CLASS TransformHelpers
     		END IF
     		cResult := cResult:Substring(0, nMaxLength)
     	END IF
-    	
+
     	RETURN cResult
 
     STATIC METHOD TransformS(cValue AS STRING, cPicture AS STRING) AS STRING
@@ -460,7 +461,10 @@ INTERNAL STATIC CLASS TransformHelpers
             cTemplate := System.String{c'#', cValue:Length}
         ENDIF
         cResult := TransformHelpers.MergeValueAndTemplate(c'C', cValue, cTemplate, nPicFunc)
-        RETURN TransformHelpers.AdjustLength(cResult, nMaxLength)
+        IF nPicFunc:HasFlag(TransformPictures.Scroll)
+            cResult := TransformHelpers.AdjustLength(cResult, nMaxLength)
+        ENDIF
+        RETURN cResult
 
     STATIC METHOD TransformL( lValue AS LOGIC, cPicture AS STRING ) AS STRING
         LOCAL cTemplate AS STRING
@@ -476,7 +480,10 @@ INTERNAL STATIC CLASS TransformHelpers
             ENDIF
         ENDIF
         cResult := TransformHelpers.MergeValueAndTemplate(c'L', IIF(lValue, "T", "F"), cTemplate, nPicFunc)
-        RETURN TransformHelpers.AdjustLength(cResult, nMaxLength)
+        IF nPicFunc:HasFlag(TransformPictures.Scroll)
+            cResult := TransformHelpers.AdjustLength(cResult, nMaxLength)
+        ENDIF
+        RETURN cResult
 
 
 
@@ -512,7 +519,10 @@ INTERNAL STATIC CLASS TransformHelpers
         cTemplate := cTemplate:Replace("D","9"):Replace("M","9"):Replace("Y","9")
         cValue := DToC(dValue)
         cResult := TransformHelpers.MergeValueAndTemplate(c'D', cValue, cTemplate, nPicFunc)
-        RETURN TransformHelpers.AdjustLength(cResult, nMaxLength)
+        IF nPicFunc:HasFlag(TransformPictures.Scroll)
+            cResult := TransformHelpers.AdjustLength(cResult, nMaxLength)
+        ENDIF
+        RETURN cResult
 
         // check if the character is a valid literal character or a template character
     STATIC METHOD IsPictureLiteral(cType AS CHAR, cChar AS CHAR) AS LOGIC
@@ -701,10 +711,12 @@ INTERNAL STATIC CLASS TransformHelpers
             cReturn := cReturn:TrimStart():PadRight( nLen,c' ')
         ENDIF
 
-        RETURN TransformHelpers.AdjustLength(cReturn, nMaxLength)
+        IF nPicFunc:HasFlag(TransformPictures.Scroll)
+            cReturn := TransformHelpers.AdjustLength(cReturn, nMaxLength)
+        ENDIF
+        RETURN cReturn
 
     PRIVATE STATIC METHOD ParseTemplate( cPicture AS STRING, nPicFunc OUT TransformPictures, nMaxLength OUT INT ) AS STRING
-        LOCAL cMaxLength := "" AS STRING
         LOCAL cTemplate AS STRING
         LOCAL done := FALSE AS LOGIC
         nPicFunc  := TransformPictures.None
@@ -719,13 +731,14 @@ INTERNAL STATIC CLASS TransformHelpers
                 cTemplate := ""
                 cPicture  := cPicture:Substring(1)
             ENDIF
-            
+
             LOCAL lInMaxLength := FALSE AS LOGIC
-            
+
             FOREACH cChar AS CHAR IN cPicture
             	IF lInMaxLength
-            		IF cChar >= c'0' .AND. cChar <= c'9'
-            			cMaxLength += cChar:ToString()
+                    IF cChar >= c'0' .AND. cChar <= c'9'
+                        nMaxLength := nMaxLength * 10
+                        nMaxLength += (cChar - (INT) c'0')
             		ELSE
             			lInMaxLength := FALSE
             		END IF
@@ -755,7 +768,8 @@ INTERNAL STATIC CLASS TransformHelpers
                 CASE c'Y'; CASE c'y'
                     nPicFunc |= TransformPictures.YesNo
                 CASE c'S'; CASE c's'
-                	IF cMaxLength:Length == 0
+                    nPicFunc |= TransformPictures.Scroll
+                	IF nMaxLength == 0
                 		lInMaxLength := TRUE
                 	END IF
                 CASE c' '
@@ -772,10 +786,7 @@ INTERNAL STATIC CLASS TransformHelpers
         ELSE
             cTemplate := cPicture
         ENDIF
-        
-        IF cMaxLength:Length != 0
-        	Int32.TryParse(cMaxLength, REF nMaxLength)
-        END IF
+
 
         RETURN cTemplate
 

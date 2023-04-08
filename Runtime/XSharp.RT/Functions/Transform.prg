@@ -442,18 +442,31 @@ INTERNAL STATIC CLASS TransformHelpers
 
         RETURN System.String{result}
 
+    STATIC METHOD AdjustLength(cResult AS STRING, nMaxLength AS INT) AS STRING
+    	IF nMaxLength > 0
+    		IF nMaxLength > cResult:Length
+    			nMaxLength := cResult:Length
+    		END IF
+    		cResult := cResult:Substring(0, nMaxLength)
+    	END IF
+    	
+    	RETURN cResult
+
     STATIC METHOD TransformS(cValue AS STRING, cPicture AS STRING) AS STRING
         LOCAL cTemplate AS STRING
-        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc )
+        LOCAL cResult AS STRING
+        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc, OUT VAR nMaxLength )
         IF String.IsNullOrEmpty(cTemplate)
             cTemplate := System.String{c'#', cValue:Length}
         ENDIF
-        RETURN TransformHelpers.MergeValueAndTemplate(c'C', cValue, cTemplate, nPicFunc)
+        cResult := TransformHelpers.MergeValueAndTemplate(c'C', cValue, cTemplate, nPicFunc)
+        RETURN TransformHelpers.AdjustLength(cResult, nMaxLength)
 
     STATIC METHOD TransformL( lValue AS LOGIC, cPicture AS STRING ) AS STRING
         LOCAL cTemplate AS STRING
+        LOCAL cResult AS STRING
 
-        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc )
+        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc, OUT VAR nMaxLength )
 
         IF cTemplate == ""  // for VO compatiblity, an empty picture string returns T or F
             IF nPicFunc:HasFlag(TransformPictures.YesNo)
@@ -462,7 +475,8 @@ INTERNAL STATIC CLASS TransformHelpers
                 cTemplate := "L"
             ENDIF
         ENDIF
-        RETURN TransformHelpers.MergeValueAndTemplate(c'L', IIF(lValue, "T", "F"), cTemplate, nPicFunc)
+        cResult := TransformHelpers.MergeValueAndTemplate(c'L', IIF(lValue, "T", "F"), cTemplate, nPicFunc)
+        RETURN TransformHelpers.AdjustLength(cResult, nMaxLength)
 
 
 
@@ -488,7 +502,8 @@ INTERNAL STATIC CLASS TransformHelpers
     STATIC METHOD TransformD( dValue AS DATE, cPicture AS STRING ) AS STRING
         LOCAL cValue   AS STRING
         LOCAL cTemplate AS STRING
-        cTemplate := TransformHelpers.ParseTemplate(cPicture, OUT VAR nPicFunc )
+        LOCAL cResult AS STRING
+        cTemplate := TransformHelpers.ParseTemplate(cPicture, OUT VAR nPicFunc, OUT VAR nMaxLength )
         IF nPicFunc:HasFlag(TransformPictures.British)
            cTemplate := IIF(SetCentury(), "DD/MM/YYYY", "DD/MM/YY")
         ELSEIF String.IsNullOrEmpty(cTemplate)
@@ -496,7 +511,8 @@ INTERNAL STATIC CLASS TransformHelpers
         ENDIF
         cTemplate := cTemplate:Replace("D","9"):Replace("M","9"):Replace("Y","9")
         cValue := DToC(dValue)
-        RETURN TransformHelpers.MergeValueAndTemplate(c'D', cValue, cTemplate, nPicFunc)
+        cResult := TransformHelpers.MergeValueAndTemplate(c'D', cValue, cTemplate, nPicFunc)
+        RETURN TransformHelpers.AdjustLength(cResult, nMaxLength)
 
         // check if the character is a valid literal character or a template character
     STATIC METHOD IsPictureLiteral(cType AS CHAR, cChar AS CHAR) AS LOGIC
@@ -553,7 +569,7 @@ INTERNAL STATIC CLASS TransformHelpers
         nWhole := nDecimal := 0
         lIsFloat := ! lIsInt
 
-        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc )
+        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc, OUT VAR nMaxLength )
         cOrigTemplate := cTemplate
 
         IF  nPicFunc:HasFlag( TransformPictures.Date )
@@ -685,12 +701,14 @@ INTERNAL STATIC CLASS TransformHelpers
             cReturn := cReturn:TrimStart():PadRight( nLen,c' ')
         ENDIF
 
-        RETURN cReturn
+        RETURN TransformHelpers.AdjustLength(cReturn, nMaxLength)
 
-    PRIVATE STATIC METHOD ParseTemplate( cPicture AS STRING, nPicFunc OUT TransformPictures ) AS STRING
+    PRIVATE STATIC METHOD ParseTemplate( cPicture AS STRING, nPicFunc OUT TransformPictures, nMaxLength OUT INT ) AS STRING
+        LOCAL cMaxLength := "" AS STRING
         LOCAL cTemplate AS STRING
         LOCAL done := FALSE AS LOGIC
         nPicFunc  := TransformPictures.None
+        nMaxLength := 0
 
         IF cPicture:Length > 1 .AND. cPicture[0] == c'@'
             VAR nIndex := cPicture:IndexOf(" ")
@@ -701,7 +719,18 @@ INTERNAL STATIC CLASS TransformHelpers
                 cTemplate := ""
                 cPicture  := cPicture:Substring(1)
             ENDIF
+            
+            LOCAL lInMaxLength := FALSE AS LOGIC
+            
             FOREACH cChar AS CHAR IN cPicture
+            	IF lInMaxLength
+            		IF cChar >= c'0' .AND. cChar <= c'9'
+            			cMaxLength += cChar:ToString()
+            		ELSE
+            			lInMaxLength := FALSE
+            		END IF
+            	END IF
+
                 SWITCH cChar
                 CASE c'B' ; CASE c'b'
                      nPicFunc |= TransformPictures.Left
@@ -725,6 +754,10 @@ INTERNAL STATIC CLASS TransformHelpers
                     nPicFunc |= TransformPictures.Upper
                 CASE c'Y'; CASE c'y'
                     nPicFunc |= TransformPictures.YesNo
+                CASE c'S'; CASE c's'
+                	IF cMaxLength:Length == 0
+                		lInMaxLength := TRUE
+                	END IF
                 CASE c' '
                 CASE c'\t'
                     done := TRUE
@@ -739,6 +772,10 @@ INTERNAL STATIC CLASS TransformHelpers
         ELSE
             cTemplate := cPicture
         ENDIF
+        
+        IF cMaxLength:Length != 0
+        	Int32.TryParse(cMaxLength, REF nMaxLength)
+        END IF
 
         RETURN cTemplate
 

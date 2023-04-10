@@ -18,37 +18,29 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     internal sealed partial class DiagnosticsPass
     {
-        public void GenerateColonWarning(BoundNode node, Symbol symbol, string text)
+        public void GenerateColonWarning(BoundNode node, Symbol symbol, IXParseTree xnode)
         {
-            Error(ErrorCode.ERR_ColonForTypeOrNs, node, symbol is TypeSymbol ? "Type" : "Namespace", text);
-        }
-
-        public override BoundNode VisitTypeExpression(BoundTypeExpression node)
-        {
-            var syntax = node.Syntax;
-            var xnode = syntax.XNode as XSharpParserRuleContext;
-            if (xnode != null && xnode is not XSharpParser.QoutStmtContext qout)
+            if (xnode is XSharpParser.AccessMemberContext || xnode is XSharpParser.DatatypeContext)
             {
                 var text = xnode.GetText().Trim().Replace("::", ".");
                 if (text.Contains(":"))
                 {
-                    GenerateColonWarning(node, node.Type, text);
+                    Error(ErrorCode.ERR_ColonForTypeOrNs, node, symbol is TypeSymbol ? "Type" : "Namespace", text);
                 }
+            }
+        }
+
+        public override BoundNode VisitTypeExpression(BoundTypeExpression node)
+        {
+            if (!node.Type.IsFunctionsClass())
+            {
+                GenerateColonWarning(node, node.Type, node.Syntax.XNode);
             }
             return base.VisitTypeExpression(node);
         }
         public override BoundNode VisitNamespaceExpression(BoundNamespaceExpression node)
         {
-            var syntax = node.Syntax;
-            var xnode = syntax.XNode as XSharpParserRuleContext;
-            if (xnode != null && xnode is not XSharpParser.QoutStmtContext qout)
-            {
-                var text = xnode.GetText().Trim().Replace("::", ".");
-                if (text.Contains(":"))
-                {
-                    GenerateColonWarning(node, node.NamespaceSymbol, text);
-                }
-            }
+            GenerateColonWarning(node, node.NamespaceSymbol, node.Syntax.XNode);
             return base.VisitNamespaceExpression(node);
         }
         private void XsCheckCompoundAssignmentOperator(BoundCompoundAssignmentOperator node)

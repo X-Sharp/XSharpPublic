@@ -6135,6 +6135,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var variable = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
                 (context.Expression == null) ? null :
                 _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expression.Get<ExpressionSyntax>()));
+            context.Put(variable);
             variables.Add(variable);
             if (isConst)
                 context.AddError(new ParseErrorData(context, ErrorCode.ERR_ImplicitlyTypedVariableCannotBeConst));
@@ -8807,6 +8808,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(context.Literal.Get<ExpressionSyntax>());
         }
+        public override void ExitParserLiteralExpression([NotNull] XP.ParserLiteralExpressionContext context)
+        {
+            context.Put(context.Literal.Get<ExpressionSyntax>());
+        }
 
         public override void ExitLiteralArrayExpression([NotNull] XP.LiteralArrayExpressionContext context)
         {
@@ -9091,9 +9096,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             if (args.Length == 7)
                             {
-                                bool pm = args[6].Trim().ToLower().StartsWith("p");
-                                if (pm && hour < 12)
-                                    hour += 12;
+                                var suffix = args[6].Trim().ToLower();
+                                if (suffix == "am" || suffix == "pm")
+                                {
+                                    bool pm = suffix == "pm";
+                                    if (pm && hour < 12)
+                                        hour += 12;
+                                }
+                                else
+                                {
+                                    return null;
+                                }
                             }
                             return new int[] { year, month, day, hour, mins, secs };
                         }
@@ -9278,6 +9291,68 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
+        public override void ExitParserLiteralValue([NotNull] XP.ParserLiteralValueContext context)
+        {
+            var elements = DecodeDateTimeConst(context.SourceText);
+            bool ok = false;
+            if (elements != null)
+            {
+                if (elements.Length >= 6)
+                {
+                    try
+                    {
+                        var dt = new DateTime(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5]);
+                    }
+                    catch (Exception e)
+                    {
+                        var result = GenerateLiteral(0);
+                        result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidLiteral, "DateTime", context.SourceText, e.Message));
+                        context.Put(result);
+                        return;
+                    }
+                    var arg0 = MakeArgument(GenerateLiteral(elements[0]));
+                    var arg1 = MakeArgument(GenerateLiteral(elements[1]));
+                    var arg2 = MakeArgument(GenerateLiteral(elements[2]));
+                    var arg3 = MakeArgument(GenerateLiteral(elements[3]));
+                    var arg4 = MakeArgument(GenerateLiteral(elements[4]));
+                    var arg5 = MakeArgument(GenerateLiteral(elements[5]));
+                    var dateTimeType = GenerateQualifiedName(SystemQualifiedNames.DateTime);
+                    var expr = CreateObject(dateTimeType, MakeArgumentList(arg0, arg1, arg2, arg3, arg4, arg5));
+                    context.Put(expr);
+                    ok = true;
+                }
+                else if (elements.Length == 3)
+                {
+                    try
+                    {
+                        var dt = new DateTime(elements[0], elements[1], elements[2]);
+                    }
+                    catch (Exception e)
+                    {
+                        var result = GenerateLiteral(0);
+                        result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidLiteral, "DateTime", context.SourceText, e.Message));
+                        context.Put(result);
+                        return;
+                    }
+                    var arg0 = MakeArgument(GenerateLiteral(elements[0]));
+                    var arg1 = MakeArgument(GenerateLiteral(elements[1]));
+                    var arg2 = MakeArgument(GenerateLiteral(elements[2]));
+                    var dateTimeType = GenerateQualifiedName(SystemQualifiedNames.DateTime);
+                    var expr = CreateObject(dateTimeType, MakeArgumentList(arg0, arg1, arg2));
+                    context.Put(expr);
+                    ok = true;
+                }
+            }
+            if (! ok)
+            {
+                var result = GenerateLiteral(0);
+                result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidLiteral, "DATETIME", context.SourceText, ""));
+                context.Put(result);
+
+            }
+            return;
+        }
+
         public override void ExitLiteralArray([NotNull] XP.LiteralArrayContext context)
         {
             TypeSyntax type = null;

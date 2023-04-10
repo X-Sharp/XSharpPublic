@@ -853,6 +853,7 @@ expression          : Expr=expression Op=(DOT | COLON) Name=simpleName         #
 primary             : Key=SELF                                                  #selfExpression
                     | Key=SUPER                                                 #superExpression
                     | Literal=literalValue                                      #literalExpression		// literals
+                    | Literal=parserLiteralValue                                #parserLiteralExpression		// literals created by the preprocessor
                     | LiteralArray=literalArray                                 #literalArrayExpression	// { expr [, expr] }
                     | AnonType=anonType                                         #anonTypeExpression		// CLASS { id := expr [, id := expr] }
                     | CbExpr=codeblock                                          #codeblockExpression	// {| [id [, id...] | expr [, expr...] }
@@ -1190,6 +1191,13 @@ literalValue        : Token=
                     | NULL_FOX )
                     ;
 
+                    // The following rule matches DateTime literals that are the result of a preprocessor rule
+parserLiteralValue  : Year=INT_CONST DOT Month=INT_CONST DOT Day=INT_CONST
+                    | LCURLY EXP Year=INT_CONST MINUS Month=INT_CONST MINUS Day=INT_CONST
+                      ( Hours=INT_CONST (COLON Minutes=INT_CONST (COLON Seconds=INT_CONST)?)? )?
+                      .*? RCURLY
+                    ;
+                    
 
 keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | DLL | DO
                     | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FOR | FUNCTION

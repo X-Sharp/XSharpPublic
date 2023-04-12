@@ -14,7 +14,6 @@
     <NS>true</NS>
     <vo15>true</vo15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StartupObject />
@@ -47,19 +46,22 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
-      <Link>commonAssemblyInfo.prg</Link>
-    </Compile>
-    <Compile Include="..\..\Common\constants.prg">
-      <Link>constants.prg</Link>
-    </Compile>
-    <Compile Include="Abstract.prg" />
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg" />
+    <Compile Include="..\..\Common\constants.prg" />
     <Compile Include="DbFunctions.prg" />
+    <Compile Include="RuntimeClasses.prg" />
+    <Compile Include="Types\Abstract.prg" />
+    <Compile Include="Types\ClassObject.prg" />
+    <Compile Include="Types\Collations.prg" />
+    <Compile Include="Types\DataObject.prg" />
+    <Compile Include="Types\RuntimeClasses.prg" />
+    <Compile Include="Types\XAction.prg" />
+    <Compile Include="Types\XError.prg" />
+    <Compile Include="Types\XDocument.prg" />
     <Compile Include="XPPCollations.Designer.prg">
       <DependentUpon>XPPCollations.resx</DependentUpon>
     </Compile>
     <Compile Include="International.prg" />
-    <Compile Include="DataObject.prg" />
     <Compile Include="Defines.prg" />
     <Compile Include="Defines\AppEvent_CH.prg" />
     <Compile Include="Defines\asxml_ch.prg" />
@@ -71,15 +73,14 @@
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RuntimeClasses.prg" />
     <Compile Include="StringFunctions.prg" />
-    <Compile Include="XMLDocument.prg" />
     <Compile Include="XMLFunctions.prg" />
     <Compile Include="_StartupCode.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Defines" />
     <Folder Include="Collations" />
+    <Folder Include="Types" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -102,7 +103,6 @@
     <None Include="Collations\Spanish.collation" />
     <None Include="Collations\Swedish.collation" />
     <None Include="Collations\User.collation" />
-    <None Include="XPPComments.Xml" />
     <None Include="WhatToDoWith.txt" />
   </ItemGroup>
   <ItemGroup>

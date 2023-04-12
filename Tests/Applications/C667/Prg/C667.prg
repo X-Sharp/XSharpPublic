@@ -1,5 +1,5 @@
 #ifndef __XSHARP__
-#translate AS <type> => 
+#translate AS <type> =>
 #endif
 
 CLASS Developer
@@ -7,7 +7,7 @@ CLASS Developer
 	CLASS VAR nextid  AS INT
 	CLASS VAR random  AS Random
 PROTECTED:
-	VAR id AS INT NOSAVE     
+	VAR id AS INT NOSAVE
 EXPORTED:
 	VAR FirstName     AS STRING
 	VAR LastName      AS STRING
@@ -30,20 +30,20 @@ EXPORTED:
 		::id := nextid
 		nextid += 1
 		AAdd(list, SELF)
-		RETURN 
+		RETURN
 	INLINE METHOD FullName() AS STRING
 		RETURN ::FirstName + " " + ::LastName
 
   INLINE METHOD Fire() AS LOGIC
     LOCAL nPos AS DWORD
     nPos := AScan(list, SELF)
-    IF nPos > 0	
+    IF nPos > 0
         ADel(list, nPos)
         ASize(list, ALen(list)-1)
         RETURN TRUE
     ENDIF
     RETURN FALSE
-	SYNC METHOD LivesIn 
+	SYNC METHOD LivesIn
 	ACCESS CLASS METHOD Length AS DWORD
 	ACCESS METHOD Age AS INT
 ENDCLASS
@@ -55,10 +55,10 @@ METHOD Age() AS INT
 	LOCAL nAge AS INT
 	nAge  := random:@@Next(25,60)
 	RETURN nAge
-	
+
 CLASS METHOD Length AS DWORD
 	RETURN ALen(list)
-	
+
 FUNCTION Main(a) AS INT
   LOCAL oDeveloper  AS Developer
   LOCAL aDevs := {} AS ARRAY

@@ -113,7 +113,7 @@ BEGIN NAMESPACE XSharp.VFP
     INTERNAL CLASS GetDotNetWhite INHERIT GetVfpDefault
 
         OVERRIDE METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
-            RETURN System:Char.IsWhiteSpace(tc2Check)
+            RETURN System.Char.IsWhiteSpace(tc2Check)
 
         CONSTRUCTOR(toParent AS GetWordHandler) AS VOID
             SUPER(toParent)

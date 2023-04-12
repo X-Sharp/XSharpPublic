@@ -160,7 +160,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (!node.Method.IsExtensionMethod && !node.Method.IsOperator())
                 {
                     // For methods node.Type is the return type of the method
-                    //XsCheckMemberAccess(node, amc, node.Type, node.Method);
                     XsCheckMemberAccess(node, node.ReceiverOpt, amc, null, node.Method);
                 }
                 return;

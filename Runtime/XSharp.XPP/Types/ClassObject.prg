@@ -8,12 +8,22 @@ using System.Linq
 using XSharp.RT
 #pragma options("az", on)
 
+/// <summary>
+/// This class returns the ClasssObject for classes created at compile time
+/// This object allows to access static members and methods late bound
+/// Such as <code>Example():Fieldname</code>
+/// </summary>
 class XSharp.XPP.StaticClassObject implements ILateBound
     hidden type as System.Type
 
     CONSTRUCTOR(t AS System.Type)
         SELF:type := t
 
+    /// <summary>
+    /// Create a new instance of the class.
+    /// </summary>
+    /// <returns>new object</returns>
+    /// <remarks>The compiler compiled <code>SomeClass():New(....)</code> directly into <code>SomeClass{....}</code> </remarks>
     METHOD New() AS OBJECT CLIPPER
         // This is normally not called. The compiler
         // converts Foo():New(...)
@@ -95,7 +105,7 @@ class XSharp.XPP.StaticClassObject implements ILateBound
     /// <summary>
     /// Late bound calls for Static/Class methods.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Result of Method Call</returns>
     METHOD NoMethod() AS USUAL CLIPPER
         // Lookup class method and call it.
         VAR cMethod := XSharp.RT.Functions.NoMethod()

@@ -48,14 +48,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             };
         }
 
-        public static bool IsFunctionsClass(this NamedTypeSymbol type)
+        public static bool IsFunctionsClass(this TypeSymbol type)
         {
             if (type.Name.EndsWith(XSharpSpecialNames.FunctionsClass))
             {
                 if (type is PENamedTypeSymbol petype)
                     return petype.HasCompilerGeneratedAttribute || petype.HasCompilerGlobalScopeAttribute;
-                if (type is SourceNamedTypeSymbol)
-                    return type.HasCompilerGeneratedAttribute;
+                if (type is SourceNamedTypeSymbol sts)
+                    return sts.HasCompilerGeneratedAttribute;
             }
             return false;
         }

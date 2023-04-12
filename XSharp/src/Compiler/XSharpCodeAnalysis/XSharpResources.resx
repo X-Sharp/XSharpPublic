@@ -7680,7 +7680,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <value>Can't access the static member '{0}' with the {1} operator '{2}'.</value>
   </data>
   <data name="ERR_ColonForTypeOrNs" xml:space="preserve">
-  <value>Can't use the COLON operator ':' in the {0} '{1}' </value>
+  <value>Can't use the COLON operator ':' as delimiter in the {0} '{1}'</value>
  </data>
 </root>
 

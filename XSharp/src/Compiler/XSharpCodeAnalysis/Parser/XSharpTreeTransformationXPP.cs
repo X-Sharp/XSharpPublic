@@ -217,7 +217,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }
 
-            MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(
+            MemberDeclarationSyntax c = _syntaxFactory.ClassDeclaration(
                 attributeLists: getAttributes(context.Attributes),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
@@ -231,12 +231,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: null);
             _pool.Free(members);
             _pool.Free(baseTypes);
-            context.Put(m);
+            context.Put(c);
             _currentClass = null;
+
+            // Generate XBase++ Class Function
+            var expr = _syntaxFactory.TypeOfExpression(SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
+                                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                    GenerateSimpleName(context.Id.GetText()),
+                                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            var args = MakeArgumentList(MakeArgument(expr));
+            var result = GenerateMethodCall(ReservedNames.GetXppClassObject, args, true);
+            var stmt = GenerateReturn(result, true);
+            var body = MakeBlock(stmt);
+            body.XGenerated = true;
+
+            var func = _syntaxFactory.MethodDeclaration(
+                attributeLists: MakeCompilerGeneratedAttribute(true),
+                modifiers: TokenListWithDefaultVisibility(false, SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword),
+                returnType: _usualType,
+                explicitInterfaceSpecifier: null,
+                identifier: context.Id.Get<SyntaxToken>(),
+                typeParameterList: null,
+                parameterList: EmptyParameterList(),
+                constraintClauses: null,
+                body: body,
+                expressionBody: null,
+                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            func.XGenerated = true;
+            GlobalClassEntities.Members.Add(func);
         }
         public override void EnterXppdeclareMethod([NotNull] XP.XppdeclareMethodContext context)
         {
             // add method to list of declared methods in the class
+
             // use the current visibility saved with declMethodVis
             // and include the IsIn property for rerouting methods (should we support that ?)
             if (_currentClass == null)
@@ -623,11 +650,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 implementConstructor(context);
                 return;
             }
-            var modifiers = decodeXppMemberModifiers(context.Info.Visibility, false, context.Modifiers?._Tokens);
+            List<IToken> tokens = new List<IToken>();
+            if (context.Info.ModifierTokens != null)
+            {
+                tokens.AddRange(context.Info.ModifierTokens);
+            }
+            if (context.Modifiers != null)
+            {
+                tokens.AddRange(context.Modifiers._Tokens);
+            }
+            var modifiers = decodeXppMemberModifiers(context.Info.Visibility, false, tokens);
             if (context.Info.IsProperty)
             {
                 // the backing method becomes private
-                modifiers = decodeXppMemberModifiers(XP.PRIVATE, false, context.Modifiers?._Tokens);
+                modifiers = decodeXppMemberModifiers(XP.PRIVATE, false, tokens);
             }
             TypeSyntax returnType = getDataType(context.Type);
             var attributes = getAttributes(context.Attributes);
@@ -1027,6 +1063,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             kw = SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword, token.Text);
                             break;
                         case XP.CLASS:
+                            if (modifiers.Any((int)SyntaxKind.StaticKeyword))
+                                continue;
                             kw = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword, token.Text);
                             break;
                         case XP.STATIC:
@@ -1048,7 +1086,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     case SyntaxKind.InternalKeyword:
                                         break;
                                     default:
-                                        modifiers.Add(mod);
+                                        modifiers.AddCheckUnique(mod);
                                         break;
                                 }
                             }

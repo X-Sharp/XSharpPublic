@@ -171,6 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             switch (dialect)
             {
                 case XSharpDialect.FoxPro:
+                case XSharpDialect.XPP:
                     return true;
                 default:
                     return false;

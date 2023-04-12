@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp.XPP
     /// <summary>Helper class that is used by the XML functions</summary>
 
 	CLASS XDocument
-#region Static 
+#region Static
         PROTECTED STATIC aDocuments AS List<XDocument>
         PROTECTED STATIC aErrors    AS List<XError>
         PROTECTED STATIC nextHandle AS INT64
@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharp.XPP
             aDocuments := List<XDocument>{}
             aErrors    := List<XError>{}
             nextHandle := 1
-            RETURN 
+            return
 
         /// <summary>Find an open XDocument object by its unique handle</summary>
         STATIC METHOD GetDocument (nHandle AS INT64) AS XDocument
@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharp.XPP
             BEGIN LOCK gate
                 RETURN nextHandle++
             END LOCK
-            
+
         /// <summary>Find error by ID</summary>
         STATIC METHOD FindError(nError AS INT64) AS XError
             RETURN aErrors:Where( {x => x:Id == nError}):FirstOrDefault()
@@ -72,7 +72,7 @@ BEGIN NAMESPACE XSharp.XPP
                 ENDIF
             ENDIF
             RETURN 0
-                
+
        /// <summary>Get XML node and document by ID</summary>
         STATIC PRIVATE METHOD FindNode(nID AS INT64, oDocResult OUT XDocument) AS XmlNode
             LOCAL oFoundNode := NULL AS XmlNode
@@ -105,7 +105,7 @@ BEGIN NAMESPACE XSharp.XPP
             ELSE
                 RETURN FindAllChildTags(nId, cChildName)
             ENDIF
-            
+
         /// <summary>Find a child tag in an XML Node</summary>
         STATIC METHOD FindFirstChildTag(nId AS INT64, cChildName AS STRING) AS INT64
             LOCAL oNode AS XmlNode
@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp.XPP
                     ENDIF
                 NEXT
             ENDIF
-            // When not found we return -1 
+            // When not found we return -1
             RETURN -1
 
         STATIC METHOD FindAllChildTags(nId AS INT64, cChildName AS STRING) AS ARRAY
@@ -183,7 +183,7 @@ BEGIN NAMESPACE XSharp.XPP
        STATIC METHOD ClearAllErrors() AS LOGIC
             aErrors:Clear()
             RETURN TRUE
-            
+
 #endregion
         /// <summary>Unique handle for the document.</summary>
         INTERNAL  PROPERTY DocHandle AS INT64 AUTO
@@ -231,7 +231,7 @@ BEGIN NAMESPACE XSharp.XPP
         PRIVATE METHOD ClearError() AS VOID
             LastError  := 0
 
-        PRIVATE METHOD Read(oReader AS System.IO.TextReader) AS LOGIC 
+        private method Read(oReader as System.IO.TextReader) as logic
             LOCAL lOk := FALSE AS LOGIC
             TRY
                 oDoc := XmlDocument{}
@@ -251,7 +251,7 @@ BEGIN NAMESPACE XSharp.XPP
                     ENDIF
                 END LOCK
                 lOk := FALSE
-            END TRY            
+            end try
             RETURN lOk
 
          /// <summary>Open an XML File</summary>
@@ -303,7 +303,7 @@ BEGIN NAMESPACE XSharp.XPP
                 lOk := TRUE
             ENDIF
             RETURN lOk
-            
+
 
         /// <summary>Process an opened XML document</summary>
         METHOD Process() AS VOID
@@ -358,7 +358,7 @@ BEGIN NAMESPACE XSharp.XPP
                         AAdd(aResult, SELF:Nodes[node])
                     NEXT
                 ENDIF
-            CATCH 
+            catch
                 RETURN NULL_ARRAY
             END TRY
             RETURN aResult
@@ -387,7 +387,7 @@ BEGIN NAMESPACE XSharp.XPP
                 NEXT
             ENDIF
             nResult := Eval(bBlock, sb:ToString(), oNode:InnerXml, aAttributes, nTag)
-            IF IsLong(nResult) 
+            if IsLong(nResult)
                 IF nResult == XML_PROCESS_ABORT
                     RETURN FALSE
                 ENDIF
@@ -395,7 +395,7 @@ BEGIN NAMESPACE XSharp.XPP
                 RETURN FALSE
             ENDIF
             RETURN TRUE
-  
+
 
         /// <summary>Walk all nodes and add them to the collections on the document class</summary>
         METHOD WalkNode(oNode AS XmlNode) AS VOID
@@ -425,50 +425,8 @@ BEGIN NAMESPACE XSharp.XPP
 
 	END CLASS
 
-    /// <summary>Helper class that stores errors for an XML document</summary>
-    CLASS XError
-        /// <summary>Filename where the error occurred.</summary>
-        PROPERTY FileName AS STRING AUTO
-        /// <summary>Linenumber where the error occurred.</summary>
-        PROPERTY Line     AS LONG AUTO
-        /// <summary>Column where the error occurred.</summary>
-        PROPERTY Column   AS LONG AUTO
-        /// <summary>Id for the node where the error occurred.</summary>
-        PROPERTY Id       AS INT64 AUTO
-        /// <summary>Additional info about the error.</summary>
-        PROPERTY Additional AS USUAL AUTO
-        /// <summary>Document Handle for which the error occurred.</summary>
-        PROPERTY DocHandle AS INT64 AUTO
-        /// <summary>Error Handle.</summary>
-        PROPERTY Handle    AS INT64 AUTO
-        CONSTRUCTOR(cFile AS STRING, nId AS INT64)
-            SELF:FileName := cFile
-            SELF:Id       := nId
-            SELF:Additional := ""
-            SELF:Handle := XDocument.NewHandle()
-        /// <summary>Convert error object to XBase++ compatible error array.</summary>
-        METHOD ToArray() AS ARRAY
-            VAR aResult := ArrayNew(XML_ERROR_ADDINFO) 
-            aResult[XML_ERROR_ID]       := SELF:Id
-            aResult[XML_ERROR_FILE]     := SELF:FileName
-            aResult[XML_ERROR_LINE]     := SELF:Line
-            aResult[XML_ERROR_COLUMN]   := SELF:Column
-            aResult[XML_ERROR_ADDINFO]  := SELF:Additional
-            RETURN aResult
-
-    END CLASS
 
 
-    /// <summary>Helper class that stores actions (codeblocks) for XML nodes</summary>
-    CLASS XAction
-        /// <summary>XML node name for which the action runs.</summary>
-        PROPERTY Name AS STRING AUTO
-        /// <summary>Codeblock to run for the action</summary>
-        PROPERTY Block AS CODEBLOCK AUTO
-        CONSTRUCTOR(cName AS STRING, oBlock AS CODEBLOCK)
-            Name := cName
-            Block := oBlock
-            RETURN
-    END CLASS
+
 
 END NAMESPACE // XML

@@ -1329,7 +1329,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                             refKind: refArg);
 
                         SymbolDistinguisher distinguisher = new SymbolDistinguisher(binder.Compilation, displayArg, UnwrapIfParamsArray(parameter, isLastParameter));
+#if XSHARP
+                        if (argument.Syntax.XIsNil)
+                        {
+                            diagnostics.Add(
+                                ErrorCode.ERR_BadArgType,
+                                sourceLocation,
+                                symbols,
+                                arg + 1,
+                                "NIL",
+                                distinguisher.Second);
 
+                        }
+                        else
+#endif
                         // CS1503: Argument {0}: cannot convert from '{1}' to '{2}'
                         diagnostics.Add(
                             ErrorCode.ERR_BadArgType,

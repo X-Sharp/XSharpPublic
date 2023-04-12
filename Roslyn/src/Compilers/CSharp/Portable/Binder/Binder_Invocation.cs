@@ -1308,7 +1308,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
 
 #if XSHARP
-            argumentsBuilder = XsGetDefaultArguments(argumentsBuilder, parameters);
+            argumentsBuilder = XsGetDefaultArguments(argumentsBuilder, parameters, diagnostics);
 #endif
             var visitedParameters = BitVector.Create(parameters.Length);
             for (var i = 0; i < argumentsBuilder.Count; i++)
@@ -1406,7 +1406,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 if (!parameter.IsOptional && (defaultConstantValue == null || defaultConstantValue.IsBad))
                 {
-                    defaultValue = XsDefaultValue(parameter, syntax, Compilation);
+                    defaultValue = XsDefaultValue(parameter, syntax, Compilation, diagnostics);
                     if (defaultValue != null)
                         return defaultValue;
                 }

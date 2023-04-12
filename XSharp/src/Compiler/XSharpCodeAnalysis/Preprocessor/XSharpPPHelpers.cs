@@ -259,8 +259,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Length = 1;
                 _children = null;
             }
-            else
-            {
+            else if (Start != pos) // prevent adding duplicate
+            { 
                 IsToken = true;
                 if (Children == null)
                 {

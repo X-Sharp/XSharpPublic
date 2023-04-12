@@ -7525,7 +7525,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_AutomaticRefGeneration" xml:space="preserve">
     <value>Parameter {0} needs a(n) '{1}' modifier. This modifier was automatically added.</value>
   </data>
-    <data name="ERR_DefaultParameterValueWithClipperCallingConvention" xml:space="preserve">
+  <data name="ERR_DefaultParameterValueWithClipperCallingConvention" xml:space="preserve">
     <value>Parameters with CLIPPER calling convention cannot have default values.</value>
   </data>
   <data name="WRN_UndeclaredVariable" xml:space="preserve">
@@ -7654,7 +7654,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_FoxDimensionDeclaration" xml:space="preserve">
     <value>FoxPro DIMENSION statement or LOCAL ARRAY statement supports 1 or 2 dimensions, not more.</value>
   </data>
- <data name="ERR_FoxDimensionNeedsMemvars" xml:space="preserve">
+  <data name="ERR_FoxDimensionNeedsMemvars" xml:space="preserve">
     <value>FoxPro Array support requires the /memvar compiler option.</value>
   </data>
   <data name="ERR_NILByRefOrOut" xml:space="preserve">
@@ -7679,6 +7679,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_ColonForStaticMember" xml:space="preserve">
   <value>Can't access the static member '{0}' with the {1} operator '{2}'.</value>
   </data>
-  
+  <data name="ERR_ColonForTypeOrNs" xml:space="preserve">
+  <value>Can't use the COLON operator ':' as delimiter in the {0} '{1}'</value>
+ </data>
 </root>
 

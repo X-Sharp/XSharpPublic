@@ -265,6 +265,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ExecStatement = "_ExecStatement";
         internal const string ExecExpression = "_ExecExpression";
         internal const string CallClipFunc = "_CallClipFunc";
+        internal const string GetXppClassObject = "__GetXppClassObject";
     }
     internal static class VulcanQualifiedFunctionNames
     {

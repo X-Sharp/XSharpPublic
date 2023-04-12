@@ -912,7 +912,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 break;
                             }
                         }
-                        if (La(2) == '^')
+                        if (La(2) == '^' && La(3) >= '0' && La(3) <= '9')
                         {
                             parseFoxProDate();
                         }

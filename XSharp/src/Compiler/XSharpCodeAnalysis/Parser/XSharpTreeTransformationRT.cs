@@ -856,10 +856,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal ExpressionSyntax GenerateMemVarPut(XSharpParserRuleContext context, ExpressionSyntax memvar, ExpressionSyntax right)
         {
             var arg1 = MakeArgument(memvar);
+            arg1.XNode = memvar.XNode;
             var arg2 = MakeArgument(right);
+            arg2.XNode = right.XNode;
             var args = MakeArgumentList(arg1, arg2);
             var name = XSharpQualifiedFunctionNames.MemVarPut;
             var expr = GenerateMethodCall(name, args, true);
+            context.Put(expr);
             return expr;
         }
 
@@ -867,17 +870,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // this is now only used in the aliasedFieldLate rule.
             var arg1 = MakeArgument(memvar);
+            arg1.XNode = memvar.XNode;
             var args = MakeArgumentList(arg1);
             var expr = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarGet, args, true);
+            context.Put(expr);
             return expr;
         }
         internal ExpressionSyntax GenerateMemVarDecl(XSharpParserRuleContext context, ExpressionSyntax memvar, bool isprivate)
         {
             var arg1 = MakeArgument(memvar);
+            arg1.XNode = memvar.XNode;
             var arg2 = MakeArgument(GenerateLiteral(isprivate));
             var args = MakeArgumentList(arg1, arg2);
             var expr = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarDecl, args, true);
             expr.XGenerated = true;
+            context.Put(expr);
             return expr;
         }
 
@@ -887,9 +894,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (string.IsNullOrEmpty(alias))
             {
                 var argField = MakeArgument(field);
+                argField.XNode = field.XNode;
                 var method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.FieldGet : VulcanQualifiedFunctionNames.FieldGet;
                 var args = MakeArgumentList(argField);
-                return GenerateMethodCall(method, args, true);
+                var expr = GenerateMethodCall(method, args, true);
+                context.Put(expr);
+                return expr;
             }
             else
             {
@@ -906,10 +916,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             ArgumentListSyntax args;
             var argField = MakeArgument(field);
+            argField.XNode = field.XNode;
             var argWA = MakeArgument(area);
+            argWA.XNode = area.XNode;
             var method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.FieldGetWa : VulcanQualifiedFunctionNames.FieldGetWa;
             args = MakeArgumentList(argWA, argField);
             var expr = GenerateMethodCall(method, args, true);
+            context.Put(expr);
             return expr;
         }
 
@@ -917,11 +930,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             ArgumentListSyntax args;
             var argField = MakeArgument(field);
+            argField.XNode = field.XNode;
             var argWA = MakeArgument(area);
+            argWA.XNode = area.XNode;
             var argValue = MakeArgument(value);
+            argValue.XNode = value.XNode;
             var method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.FieldSetWa : VulcanQualifiedFunctionNames.FieldSetWa;
             args = MakeArgumentList(argWA, argField, argValue);
-            return GenerateMethodCall(method, args, true);
+            var expr = GenerateMethodCall(method, args, true);
+            context.Put(expr);
+            return expr;
 
         }
 
@@ -4176,6 +4194,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
             base.ExitLiteralValue(context);
+        }
+        public override void ExitParserLiteralValue([NotNull] XP.ParserLiteralValueContext context)
+        {
+            if (context.Hours == null)
+            {
+                var elements = DecodeDateConst(context.SourceText);
+                if (elements != null)
+                {
+                    var arg0 = MakeArgument(GenerateLiteral(elements[0]));
+                    var arg1 = MakeArgument(GenerateLiteral(elements[1]));
+                    var arg2 = MakeArgument(GenerateLiteral(elements[2]));
+                    var expr = CreateObject(_dateType, MakeArgumentList(arg0, arg1, arg2));
+                    context.Put(expr);
+                    return;
+                }
+            }
+            base.ExitParserLiteralValue(context);
         }
 
         #endregion

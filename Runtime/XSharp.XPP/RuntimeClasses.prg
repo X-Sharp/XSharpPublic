@@ -3,7 +3,6 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using XSharp.XPP
 
 /// <summary>Retrieves the class object of class. </summary>
 /// <param name="cClassName">The name of the class whose class object should be returned. </param>
@@ -61,13 +60,7 @@ function ClassCreate(cClassName , aSuperClasses , aMember , aMethod ) as usual c
     EnforceType(ref aMethod, array)
     var descriptor := ClassObject.CreateClassDescriptor(cClassName, aSuperClasses, aMember, aMethod)
     return ClassObject.ImplementClass(descriptor)
-    /*
-      // Return class object for database in the current work area
-      // and create it if necessary.
-
-
-    */
-
+   
 
 
 

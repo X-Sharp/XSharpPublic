@@ -114,4 +114,31 @@ INTERFACE IRtCodeblock INHERIT ICodeblock2
     /// <returns>The value of the last expression in the codeblock.</returns>
     METHOD Eval(args PARAMS USUAL[]) AS USUAL
 END INTERFACE
+
+/// <summary>
+/// This interface described the methods needed for a LateBound object <br/>
+/// When an object implements this interface then the X# runtime will not use
+/// reflection to implement late bound calls to properties or methods
+/// but will call these methods instead.
+/// </summary>
+INTERFACE ILateBound
+    /// <summary>
+    /// Method to read a field or property late bound.
+    /// </summary>
+    /// <param name="cName">Field/Property Name</param>
+    /// <returns>Current value of Field/Property</returns>
+    METHOD NoIvarGet(cName AS STRING) AS USUAL
+    /// <summary>
+    /// Method to update a field or property late bound.
+    /// </summary>
+    /// <param name="cName">Field/Property Name</param>
+    /// <param name="uValue">New value for field/property</param>
+    METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
+    /// <summary>
+    /// Call a method in the type late bound. Arguments are passed as Clipper calling convention parameters.
+    /// The method name is passed as first parameter.
+    /// </summary>
+    /// <returns>Result of MethodCall</returns>
+    METHOD NoMethod() AS USUAL CLIPPER
+END INTERFACE
 END NAMESPACE

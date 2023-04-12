@@ -28,7 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal partial class Binder
     {
 
-        ArrayBuilder<BoundExpression> XsGetDefaultArguments(ArrayBuilder<BoundExpression> arguments, ImmutableArray<ParameterSymbol> parameters)
+        ArrayBuilder<BoundExpression> XsGetDefaultArguments(ArrayBuilder<BoundExpression> arguments, ImmutableArray<ParameterSymbol> parameters, DiagnosticBag diagnostics)
         {
             if (parameters.Length == 0)
             {
@@ -43,7 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (i < parameters.Length && !parameters[i].IsParams)
                     {
                         var parameter = parameters[i];
-                        arguments[i] = XsDefaultValue(parameter, arg.Syntax, Compilation);
+                        arguments[i] = XsDefaultValue(parameter, arg.Syntax, Compilation, diagnostics);
                     }
                     else
                     {
@@ -64,7 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 
-        private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation)
+        private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation,DiagnosticBag diagnostics)
         {
             TypeSymbol parameterType = parameter.Type;
             var defaultExpr = parameter.GetVODefaultParameter(syntax, compilation);
@@ -72,6 +72,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
             if (!Equals(defaultExpr.Type, parameterType))
             {
+                if (defaultExpr.Type.IsUsualType() && parameterType.IsSymbolType())
+                {
+                    if (defaultExpr is BoundFieldAccess bfa && bfa.FieldSymbol.Name == "_NIL")
+                    {
+                        Error(diagnostics, ErrorCode.ERR_BadArgType, syntax.Location, parameter.Ordinal + 1, "NIL", parameterType);
+                    }
+                }
                 var implicitop = LocalRewriter.getImplicitOperatorByParameterType(parameterType, defaultExpr.Type);
                 if (implicitop != null)
                 {

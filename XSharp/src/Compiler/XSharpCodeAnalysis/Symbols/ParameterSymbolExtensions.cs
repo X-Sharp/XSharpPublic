@@ -110,7 +110,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 break;
                             case 1:
                                 // NIL. We should not get here.
-                                return new BoundDefaultExpression(syntax, param.Type);
+                                var type = compilation.UsualType();
+                                var fld = type.GetMembers("_NIL").FirstOrDefault();
+                                var fa = new BoundFieldAccess(syntax, null, (FieldSymbol)fld, null, false);
+                                return fa;
+
                             case 2:
                                 // Date, value should be long of ticks. Return DateTime
                                 var longValue = arg.DecodeValue<long>(SpecialType.System_Int64);

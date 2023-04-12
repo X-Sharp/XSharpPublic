@@ -293,6 +293,15 @@ namespace Microsoft.CodeAnalysis
                 return false;
             }
         }
+        internal bool XIsNil
+        {
+            get
+            {
+                var n = XNode;
+                return n is XSharpParserRuleContext prc && prc.Start.Type == XSharpLexer.NIL;
+            }
+
+        }
         internal bool XIsCodeBlock
         {
             get

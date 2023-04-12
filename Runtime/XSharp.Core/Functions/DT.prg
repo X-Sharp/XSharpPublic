@@ -309,7 +309,7 @@ FUNCTION CToDt(cDate AS STRING, cDateFormat AS STRING) AS DateTime
         nMonth := aNums[nMonthPos]
         nYear := aNums[nYearPos]
         IF nDay != 0 .AND. nMonth != 0 .AND. nYear != 0
-		    IF aNums[nYearPos] < 100
+		    IF aNums[nYearPos] < 100 .and. cDate:Length != 10
 			    // Century missing ?
 			    dDate := ConDateTime((DWORD)nYear, (DWORD)nMonth, (DWORD)nDay)
 		    ELSE

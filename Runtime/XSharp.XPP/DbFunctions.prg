@@ -5,7 +5,6 @@
 //
 // Aliases to functions in XSharp.RT
 USING System
-USING XSharp.RDD
 
 /// <summary>Checks if the order for navigation is descending </summary>
 /// <returns>The return value of DbDescend() is TRUE when the in the current work area is descending, otherwise FALSE is returned. </returns>
@@ -40,7 +39,7 @@ FUNCTION DbSetDescend(lNewDescend AS LOGIC) AS LOGIC
 FUNCTION DbCargo(xNewValue) AS USUAL CLIPPER
     LOCAL nArea AS DWORD
     LOCAL old   AS OBJECT
-    LOCAL wa := XSharp.RuntimeState.Workareas AS Workareas
+    var wa := XSharp.RuntimeState.Workareas 
     nArea   := wa:CurrentWorkareaNO
     old     := wa:GetCargo(nArea) 
     IF PCOUNT() != 0

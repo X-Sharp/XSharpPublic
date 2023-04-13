@@ -87,8 +87,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             // CLASS TestClass
             // EXPORT Test1 := DateTime.Now AS DateTime
             // does not trigger an error on the Test1.
-            // There is no receiver on Test1, and roslyn (we?) associates the := DateTime.Now node (EqualsValue Clause) to the Test1 symbol
-            if (!node.HasErrors() && (type is null || type.Equals(contType)))
+            // There is no receiver on Test1, and Roslyn (we?) associates the := DateTime.Now node (EqualsValue Clause) to the Test1 symbol
+            if (!node.HasErrors())
             {
                 var errorCode = ErrorCode.Unknown;
                 switch (amc.Op.Type)
@@ -97,7 +97,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (_compilation.Options.Dialect != XSharpDialect.XPP && symbol.IsStatic)
                         {
                             // XPP allows static and instance, other dialects only instance
-                            errorCode = ErrorCode.ERR_ColonForStaticMember;
+                            if (string.Compare(symbol.Name, amc.Name.GetText(), true) == 0)
+                            {
+                                errorCode = ErrorCode.ERR_ColonForStaticMember;
+                            }
                         }
                         break;
                     case XSharpLexer.DOT:
@@ -107,7 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             ; // Ok
                         }
-                        else
+                        else if (string.Compare(symbol.Name, amc.Name.GetText(), true) == 0)
                         {
                             errorCode = ErrorCode.ERR_DotForInstanceMember;
                         }
@@ -115,7 +118,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case XSharpLexer.COLON:
                         if (symbol.IsStatic && !contType.IsFunctionsClass()) // For late bound code where member access is redirected to function
                         {
-                            errorCode = ErrorCode.ERR_ColonForStaticMember;
+                            if (string.Compare(symbol.Name, amc.Name.GetText(), true) == 0)
+                            {
+                                errorCode = ErrorCode.ERR_ColonForStaticMember;
+                            }
                         }
                         break;
                     default:

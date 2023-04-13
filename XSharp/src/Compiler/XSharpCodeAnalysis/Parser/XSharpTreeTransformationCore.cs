@@ -2901,9 +2901,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-
-
-
         public override void ExitEntity([NotNull] XP.EntityContext context)
         {
             _exitEntity(context);
@@ -6965,7 +6962,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 case XP.CaseStmtContext docasestmt:
                     foreach (var block in docasestmt._CaseBlocks)
-                    { 
+                    {
                         if (NeedsBreak(block.StmtBlk._Stmts))
                             return true;
                     }
@@ -7737,7 +7734,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(res);
             return;
         }
-
 
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {
@@ -9343,7 +9339,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ok = true;
                 }
             }
-            if (! ok)
+            if (!ok)
             {
                 var result = GenerateLiteral(0);
                 result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidLiteral, "DATETIME", context.SourceText, ""));

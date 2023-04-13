@@ -1,36 +1,42 @@
-FUNCTION Start() AS VOID STRICT
+// 883. Compiler incorrectly allows accessing static members with a colon instead of dot
+// There should be 6 errors reported on the following code:
+#pragma options("allowdot", false)
+FUNCTION Start( ) AS VOID
+    TestClass2.TestExport:Invoke(123) // OK
+    TestClass2.TestExport.Invoke(123) // error, OK
+	TestClass2.TestExport(123) // no Error, OK
+	TestClass2.TestProperty:Invoke(123) // OK
+	TestClass2.TestProperty.Invoke(123) // error, OK
+	TestClass2.TestProperty(123) // no Error, OK
 
-	LOCAL DIM st[3] IS TEST_STRUCT
-    LOCAL p as TEST_STRUCT
-    p := @st
-	st[1].x := 1
-	st[1].y := 1
-	TestFunc(@st[1])
-	TestFunc(p)
+	TestClass:StaticExport := 123 // error, OK
+	TestClass:StaticProperty := 123 // error, OK
+	TestClass:StaticMethod(123) // error, OK
+	TestClass.StaticExport := 123 // no error, OK
+	TestClass.StaticProperty := 123 // no error, OK
+	TestClass.StaticMethod(123) // no error, OK
 
-	st[2].x := 2
-	st[2].y := 2
-	TestFunc(@st[2])
-    p += 1
-	TestFunc(p)
+	TestClass:DoSomething += MyEventHandler // error, OK
+	? System.Environment:CurrentDirectory // error, OK
+	? System.Environment:CurrentDirectory:Length // error, OK
 
+FUNCTION MyEventHandler(sender AS OBJECT, args AS EventArgs) AS VOID
 
-	st[3].x := 3
-	st[3].y := 3
-	TestFunc(@st[3])
-	p += 1
-	TestFunc(p)
+CLASS TestClass
+	STATIC METHOD StaticMethod(n AS INT) AS INT
+	    DoSomething(n, EventArgs.Empty)
+	RETURN n * 2
+	STATIC EXPORT StaticExport AS INT
+	STATIC PROPERTY StaticProperty AS INT AUTO GET SET
+	STATIC EVENT DoSomething AS EventHandler
+END CLASS
 
-	WAIT
+CLASS TestClass2
+	STATIC EXPORT TestExport AS TestDelegate
+	STATIC PROPERTY TestProperty AS TestDelegate AUTO
+END CLASS
+DELEGATE TestDelegate(n AS INT) AS VOID
 
-	RETURN
-
-VOSTRUCT TEST_STRUCT
-	MEMBER x AS INT
-	MEMBER y AS INT
-END VOSTRUCT
-
-FUNCTION TestFunc(p AS TEST_STRUCT) AS VOID STRICT
-	? p.x
-	? p.y
-	RETURN
+CLASS TestClass3
+EXPORT Test1 := DateTime.Now AS DateTime
+END CLASS

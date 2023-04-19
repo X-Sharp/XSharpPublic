@@ -66,8 +66,8 @@ PUBLIC STRUCTURE __Symbol ;
 
 #endregion
     INTERNAL STATIC METHOD Find(sValue AS STRING ) AS __Symbol
-        IF SymbolTable:LookupTable:ContainsKey(sValue)
-            VAR index := __Symbol.SymbolTable:LookupTable[sValue]
+        IF SymbolTable.LookupTable:ContainsKey(sValue)
+            VAR index := __Symbol.SymbolTable.LookupTable[sValue]
             RETURN __Symbol{index}
         ENDIF
         RETURN __Symbol{0}

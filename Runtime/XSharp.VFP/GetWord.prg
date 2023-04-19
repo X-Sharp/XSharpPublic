@@ -328,9 +328,9 @@ BEGIN NAMESPACE XSharp.VFP
                 ELSE
                     SELF:iMethod := 1
                 ENDIF
-            ELSEIF  tcDelimiter:Length=3 and tcDelimiter:IndexOf(GetVfpDefault:_cSpace)>=0 ;
-                and tcDelimiter:IndexOf(GetVfpDefault:_c_LinF)>=0 ;
-                and tcDelimiter:IndexOf(GetVfpDefault:_c__Tab)>=0
+            ELSEIF  tcDelimiter:Length=3 and tcDelimiter:IndexOf(GetVfpDefault._cSpace)>=0 ;
+                and tcDelimiter:IndexOf(GetVfpDefault._c_LinF)>=0 ;
+                and tcDelimiter:IndexOf(GetVfpDefault._c__Tab)>=0
                 *-- ToDo: find most efficient check for Permutations of Tab, LF, Space(1)
                 *-- Will switcg over to correct subobject
                 *-- min() taking usuals not an option

@@ -22,7 +22,7 @@ FUNCTION MemVarBlock(cMemvarName AS STRING) AS OBJECT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarget/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MemVarGet(cVarName AS STRING) AS USUAL
-    RETURN XSharp.MemVar:Get(cVarName)
+    RETURN XSharp.MemVar.Get(cVarName)
     
 
 FUNCTION MemVarTryGet(cVarName AS STRING, uValue OUT USUAL) AS LOGIC
@@ -33,7 +33,7 @@ FUNCTION MemVarTryGet(cVarName AS STRING, uValue OUT USUAL) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarput/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MemVarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
-    RETURN XSharp.MemVar:Put(cVarName, uValue) 
+    RETURN XSharp.MemVar.Put(cVarName, uValue) 
     
 
 
@@ -46,7 +46,7 @@ FUNCTION MemVarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
 /// </remarks>
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 FUNCTION MemVarClear(symVar AS STRING) AS VOID 
-	XSharp.MemVar:Put(symVar, NIL)
+	XSharp.MemVar.Put(symVar, NIL)
 	RETURN
 
 
@@ -92,12 +92,12 @@ FUNCTION MemVarBlockSym(symMemvarName AS SYMBOL) AS OBJECT
 /// <inheritdoc cref='MemVarGet' />
 /// <param name="symVar">The name of the variable .</param>
 FUNCTION MemVarGetSym(symVar AS SYMBOL) AS USUAL 
-    RETURN XSharp.MemVar:Get(symVar)
+    RETURN XSharp.MemVar.Get(symVar)
     
 /// <inheritdoc cref='MemVarPut' /> 
 /// <param name="symVar">The name of the variable you want to assign to.</param>
 FUNCTION MemVarPutSym(symVar AS SYMBOL, uValue AS USUAL) AS USUAL  
-    RETURN XSharp.MemVar:Put(symVar, uValue) 
+    RETURN XSharp.MemVar.Put(symVar, uValue) 
 
 
 /// <summary>

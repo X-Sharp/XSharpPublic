@@ -355,7 +355,7 @@ FUNCTION ReadOsVersionFromRegistry(lExtended AS LOGIC) AS STRING
     RETURN cOS
 
 FUNCTION IsRunningOnWindows() AS LOGIC
-    RETURN RuntimeState:RunningOnWindows
+    RETURN RuntimeState.RunningOnWindows
 
 
 FUNCTION TruePath( cFile AS STRING ) AS STRING PASCAL

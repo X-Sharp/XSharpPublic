@@ -1917,8 +1917,8 @@ OVERRIDE METHOD Compile(sBlock AS STRING) AS ICodeblock
 	LOCAL result AS ICodeblock
 	result := SUPER:Compile(sBlock)
 	IF result == NULL
-        IF (RuntimeState:LastRddError != NULL_OBJECT)
-            SELF:_dbfError( RuntimeState:LastRddError, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile")
+        IF (RuntimeState.LastRddError != NULL_OBJECT)
+            SELF:_dbfError( RuntimeState.LastRddError, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile")
         ELSE
             VAR msg := "Could not compile epression '"+sBlock+"'"
 		    SELF:_dbfError( Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile", msg )

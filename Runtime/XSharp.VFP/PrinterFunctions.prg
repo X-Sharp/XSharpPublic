@@ -15,7 +15,7 @@ LOCAL iCount AS INT
 
 	Default ( @nValue , 0 )
 
-	IF ( iCount := PrinterSettings:InstalledPrinters:Count ) > 0
+	IF ( iCount := PrinterSettings.InstalledPrinters:Count ) > 0
 
 		IF ! IsArray( ArrayName ) .or. ( IsArray ( ArrayName ) .and. ! ArrayName IS __FoxArray )
 			THROW ArgumentException {"parameter must be a Fox Array", nameof ( ArrayName ) }
@@ -37,7 +37,7 @@ LOCAL iCount AS INT
 
 		FOR VAR i := 0 TO iCount - 1
 
-			cPrinterName := PrinterSettings:InstalledPrinters[i]
+			cPrinterName := PrinterSettings.InstalledPrinters[i]
 			VAR oProperty := ManagementObject{"Win32_Printer.DeviceID='" + cPrinterName + "'"}
 
 			ArrayName [ i + __ARRAYBASE__ , __ARRAYBASE__ ]     := cPrinterName

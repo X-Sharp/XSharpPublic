@@ -640,7 +640,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF CoreDb.FieldGet(nField, REF oValue)
                 RETURN oValue
             ENDIF
-            THROW RuntimeState:LastRddError
+            THROW RuntimeState.LastRddError
 
         METHOD DecodeProperties() AS VOID
             var oValue := SELF:ReadField(POS_PROPERTY)

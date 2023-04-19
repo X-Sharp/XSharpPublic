@@ -245,7 +245,7 @@ PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
     /// <inheritdoc cref="System.Double.ToString"/>
     PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
         IF sFormat == "G"
-            RETURN RuntimeState:WinEncoding:GetString(SELF:_value)
+            RETURN RuntimeState.WinEncoding:GetString(SELF:_value)
         ENDIF
         VAR sb := StringBuilder{}
         sb:Append("0h")

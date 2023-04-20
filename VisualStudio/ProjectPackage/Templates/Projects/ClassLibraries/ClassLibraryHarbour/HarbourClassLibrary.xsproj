@@ -3,18 +3,17 @@
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
     <ProjectGuid>$guid1$</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>$safeprojectname$</RootNamespace>
     <AssemblyName>$safeprojectname$</AssemblyName>
     <TargetFrameworkVersion>v$targetframeworkversion$</TargetFrameworkVersion>
     <Name>$safeprojectname$</Name>
-    <Dialect>XPP</Dialect>
+    <Dialect>Harbour</Dialect>
     <ins>true</ins>
     <unsafe>true</unsafe>
     <vo2>true</vo2>
     <vo3>true</vo3>
     <vo4>true</vo4>
-    <vo5>true</vo5>
     <vo6>true</vo6>
     <vo7>true</vo7>
     <vo9>true</vo9>
@@ -23,11 +22,6 @@
     <vo14>true</vo14>
     <vo15>true</vo15>
     <vo16>true</vo16>
-    <lb>true</lb>
-    <memvar>true</memvar>
-    <undeclared>true</undeclared>
-    <initlocals>true</initlocals>
-    <fox1>true</fox1>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,16 +40,14 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="XSharp.Core" />
-    <Reference Include="XSharp.RT" />
-    <Reference Include="XSharp.XPP" />
+    <Reference Include="XSharp.Rt" />
     $endif$
   </ItemGroup>
-  
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Program.prg">
+    <Compile Include="Class1.prg">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

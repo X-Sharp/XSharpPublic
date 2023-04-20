@@ -890,18 +890,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
                 // update class declaration, add external methods
-                var xnode = current.Entity;
                 classdecl = classdecl.Update(classdecl.AttributeLists, classdecl.Modifiers,
                     classdecl.Keyword, classdecl.Identifier, classdecl.TypeParameterList, classdecl.BaseList,
                     classdecl.ConstraintClauses, classdecl.OpenBraceToken, members, classdecl.CloseBraceToken, classdecl.SemicolonToken);
                 _pool.Free(members);
-                xnode.Put(classdecl);
+
+                classdecl = GenerateDefaultClipperCtor(classdecl, current.Entity);
+                current.Entity.Put(classdecl);
                 // by binding the classdecl to the EntityContext it will be generated later
-                var ent = xnode.Parent as XP.EntityContext;
+                var ent = current.Entity.Parent as XP.EntityContext;
                 ent.Put(classdecl);
 
                 // check to see if this is a static class. In that case we must add it to the static global members
-                if (xnode.TypeData.HasStatic)
+                if (current.Entity.TypeData.HasStatic)
                 {
                     addGlobalEntity(classdecl, true);
                 }

@@ -1531,7 +1531,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return varType;
         }
 
-        public override ConstructorDeclarationSyntax GenerateDefaultCtor(SyntaxToken id, XP.Class_Context classctx,
+        public override ConstructorDeclarationSyntax GenerateDefaultCtor(SyntaxToken id, XSharpParserRuleContext classctx,
             SyntaxListBuilder<UsingDirectiveSyntax> usingslist, List<XSharpLanguageParser.PartialPropertyElement> elements)
         {
             ParameterListSyntax pars = GetClipperParameters();
@@ -1602,53 +1602,59 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     }
                 }
-
-                if (!context.TypeData.Partial && !context.TypeData.HasInstanceCtor && _options.HasOption(CompilerOption.DefaultClipperContructors, context, PragmaOptions))
-                {
-
-                    var hasComImport = false;
-                    foreach (var attlist in classdecl.AttributeLists)
-                    {
-                        for (int iAtt = 0; iAtt < attlist.Attributes.Count && !hasComImport; iAtt++)
-                        {
-                            var att = attlist.Attributes[iAtt];
-                            if (XSharpString.Compare(att.Name.ToString(), "ComImport") == 0)
-                            {
-                                hasComImport = true;
-                            }
-                        }
-                    }
-                    //
-                    // generate new class constructor
-                    //
-                    if (!hasComImport)
-                    {
-                        var ctor = GenerateDefaultCtor(classdecl.Identifier, context, default, null);
-                        var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
-                        newmembers.AddRange(classdecl.Members);
-                        if (ctor != null)
-                        {
-                            newmembers.Add(ctor);
-                        }
-                        classdecl = classdecl.Update(
-                            classdecl.AttributeLists,
-                            classdecl.Modifiers,
-                            classdecl.Keyword,
-                            classdecl.Identifier,
-                            classdecl.TypeParameterList,
-                            classdecl.BaseList,
-                            classdecl.ConstraintClauses,
-                            classdecl.OpenBraceToken,
-                            newmembers,
-                            classdecl.CloseBraceToken,
-                            classdecl.SemicolonToken);
-                        _pool.Free(newmembers);
-                        context.Put(classdecl);
-                        context.TypeData.HasInstanceCtor = true;
-                    }
-                }
+                classdecl = GenerateDefaultClipperCtor(classdecl, context);
             }
         }
+
+        protected ClassDeclarationSyntax GenerateDefaultClipperCtor(ClassDeclarationSyntax classdecl, XP.ITypeContext context)
+        {
+            if (!context.TypeData.Partial && !context.TypeData.HasInstanceCtor &&
+                _options.HasOption(CompilerOption.DefaultClipperContructors, (XSharpParserRuleContext) context, PragmaOptions))
+            {
+                var hasComImport = false;
+                foreach (var attlist in classdecl.AttributeLists)
+                {
+                    for (int iAtt = 0; iAtt < attlist.Attributes.Count && !hasComImport; iAtt++)
+                    {
+                        var att = attlist.Attributes[iAtt];
+                        if (XSharpString.Compare(att.Name.ToString(), "ComImport") == 0)
+                        {
+                            hasComImport = true;
+                        }
+                    }
+                }
+                //
+                // generate new class constructor
+                //
+                if (!hasComImport)
+                {
+                    var ctor = GenerateDefaultCtor(classdecl.Identifier, (XSharpParserRuleContext) context, default, null);
+                    var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
+                    newmembers.AddRange(classdecl.Members);
+                    if (ctor != null)
+                    {
+                        newmembers.Add(ctor);
+                    }
+                    classdecl = classdecl.Update(
+                        classdecl.AttributeLists,
+                        classdecl.Modifiers,
+                        classdecl.Keyword,
+                        classdecl.Identifier,
+                        classdecl.TypeParameterList,
+                        classdecl.BaseList,
+                        classdecl.ConstraintClauses,
+                        classdecl.OpenBraceToken,
+                        newmembers,
+                        classdecl.CloseBraceToken,
+                        classdecl.SemicolonToken);
+                    _pool.Free(newmembers);
+                    context.Put(classdecl);
+                    context.TypeData.HasInstanceCtor = true;
+                }
+            }
+            return classdecl;
+        }
+
         public override void ExitConstructor([NotNull] XP.ConstructorContext context)
         {
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();

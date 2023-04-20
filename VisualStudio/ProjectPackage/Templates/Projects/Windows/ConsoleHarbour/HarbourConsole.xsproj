@@ -8,26 +8,8 @@
     <AssemblyName>$safeprojectname$</AssemblyName>
     <TargetFrameworkVersion>v$targetframeworkversion$</TargetFrameworkVersion>
     <Name>$safeprojectname$</Name>
-    <Dialect>XPP</Dialect>
-    <ins>true</ins>
-    <unsafe>true</unsafe>
-    <vo2>true</vo2>
-    <vo3>true</vo3>
-    <vo4>true</vo4>
-    <vo5>true</vo5>
-    <vo6>true</vo6>
-    <vo7>true</vo7>
-    <vo9>true</vo9>
-    <vo10>true</vo10>
-    <vo13>true</vo13>
-    <vo14>true</vo14>
-    <vo15>true</vo15>
-    <vo16>true</vo16>
-    <lb>true</lb>
-    <memvar>true</memvar>
-    <undeclared>true</undeclared>
-    <initlocals>true</initlocals>
-    <fox1>true</fox1>
+    <Dialect>Harbour</Dialect>
+    <vo15>True</vo15>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,10 +29,9 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="XSharp.Core" />
     <Reference Include="XSharp.RT" />
-    <Reference Include="XSharp.XPP" />
     $endif$
   </ItemGroup>
-  
+
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>

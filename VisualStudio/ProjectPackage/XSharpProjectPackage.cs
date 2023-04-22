@@ -259,7 +259,7 @@ namespace XSharp.Project
             XDebuggerSettings.Vo12 = doptions.Vo12;
             XDebuggerSettings.Vo13 = doptions.Vo13;
             XDebuggerSettings.Vo14 = doptions.Vo14;
-            XDebuggerSettings.LateBinding = doptions.LateBinding;
+            XDebuggerSettings.NoLateBinding = doptions.NoLateBinding;
 
             var woptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
             XCustomEditorSettings.ShowGrid = woptions.ShowGrid;

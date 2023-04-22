@@ -79,10 +79,12 @@ namespace XSharp.Project.Options
         [DefaultValue(false)]
         public bool Vo14 { get; set; } = false;
         [Category(Options)]
-        [DisplayName(LanguagePropertyPagePanel.LBCaption)]
-        [Description(LanguagePropertyPagePanel.LBDescription)]
+        [DisplayName(NoLBCaption)]
+        [Description(NoLBDescription)]
         [DefaultValue(false)]
-        public bool LateBinding { get; set; } = false;
+        public bool NoLateBinding { get; set; } = false;
+        private const string NoLBCaption = "Disable Late Binding";
+        private const string NoLBDescription = "Disable property access and method calls on expressions of type OBJECT and USUAL (/lb-)";
     }
 }
 

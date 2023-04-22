@@ -48,7 +48,7 @@ namespace XSharpDebugger.ExpressionCompiler
             xoptions.SetOption(CompilerOption.Vo12, XDebuggerSettings.Vo12);
             xoptions.SetOption(CompilerOption.Vo13, XDebuggerSettings.Vo13);
             xoptions.SetOption(CompilerOption.Vo14, XDebuggerSettings.Vo14);
-            xoptions.SetOption(CompilerOption.LateBinding, XDebuggerSettings.LateBinding);
+            xoptions.SetOption(CompilerOption.LateBinding, !XDebuggerSettings.NoLateBinding);
             xoptions.SetOption(CompilerOption.AllowDotForInstanceMembers, lAllowDot);
             XSyntaxHelpers.XSharpOptions = xoptions;
         }

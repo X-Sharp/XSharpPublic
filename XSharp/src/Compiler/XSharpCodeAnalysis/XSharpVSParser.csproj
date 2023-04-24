@@ -4,8 +4,8 @@
     <UseXSharpKey>true</UseXSharpKey>
   </PropertyGroup>
   <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
-  <Import Project="$(MSBuildThisFileDirectory)Antlr.props" />
   <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)Antlr.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -20,16 +20,16 @@
     <ErrorReport>prompt</ErrorReport>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenericDefines>COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER;NETSTANDARD20</GenericDefines>
-    <VsExternalDir>$(DevPublicDir)\external\$(ConfigurationName)</VsExternalDir>
+    <VsExternalDir>$(DevPublicDir)external\$(Configuration)</VsExternalDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>
+    <DefineConstants>$(GenericDefines);XSHARP;;TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Public|AnyCPU' "> 
-    <DefineConstants>$(GenericDefines);TRACE</DefineConstants>
+    <DefineConstants>$(GenericDefines);XSHARP;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DefineConstants>$(GenericDefines);NDEBUG</DefineConstants>
+    <DefineConstants>$(GenericDefines);XSHARP;NDEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -100,24 +100,16 @@
   
   
   
-
-  
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll') ">
+  <Target Name="CreateDirectories" AfterTargets="BeforeBuild" >
+    <Message Importance="high" Text="Create folder $(VsExternalDir) when needed" />
     <MakeDir Directories="$(VsExternalDir)" /> 
     <MakeDir Directories="$(ZipsDir)" /> 
   </Target>
-  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(VsExternalDir)')">
+  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(VsExternalDir)') and '$(IsCrossTargetingBuild)' != 'true'" >
     <ItemGroup>
       <VsparserFiles Include="$(OutputPath)\*.*" /> 
     </ItemGroup>
-    <Message Importance="high" Text="Copy output files to $(VsExternalDir)" />
+    <Message Importance="high" Text="Copy output files for $(ProjectName) to $(VsExternalDir)" />
     <Copy SourceFiles="@(VsparserFiles)" DestinationFolder="$(DevPublicDir)external\$(ConfigurationName)" />
   </Target>
   <Target Name="DeleteMsFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != '' ">

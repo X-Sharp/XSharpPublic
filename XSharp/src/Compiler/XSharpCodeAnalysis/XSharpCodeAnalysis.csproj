@@ -27,7 +27,7 @@
     <GenericDefines>COMPILERCORE;NET45PLUS;NET40PLUS;NET35PLUS;PORTABLE;NETSTANDARD20;NETSTANDARD;COMMITHASH</GenericDefines>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Configurations>Debug;Release;Public</Configurations>
-    <VsExternalDir>$(DevPublicDir)\external\$(ConfigurationName)</VsExternalDir>
+    <VsExternalDir>$(DevPublicDir)external\$(Configuration)</VsExternalDir>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -161,13 +161,15 @@
   <Import Project="$(RoslynSrc)Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
 
-  <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll') ">
-    <MakeDir Directories="$(VsExternalDir)" /> 
+  <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="'$(TargetFramework)' == 'net472' ">
+    <Message Importance="high" Text="Create folder $(VsExternalDir) when needed" />
+    <MakeDir Directories="$(VsExternalDir)" />  
   </Target>
-  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll') and '$(TargetFramework)' == 'net472'">
+  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(VsExternalDir)') and '$(TargetFramework)' == 'net472'">
     <ItemGroup>
-      <XsCodeAnalysisFiles Include="$(OutputPath)\XSharp*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(XsCodeAnalysisFiles)" DestinationFolder="$(VsExternalDir)" />
+      <XSharpCodeAnalysisFiles Include="$(OutputPath)\XSharp*.*" />
+    </ItemGroup> 
+    <Message Importance="high" Text="Copy output files for $(ProjectName) to $(VsExternalDir)" />
+    <Copy SourceFiles="@(XSharpCodeAnalysisFiles)" DestinationFolder="$(VsExternalDir)" />
   </Target>
 </Project>

@@ -28,8 +28,8 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Configurations>Debug;Release;Public</Configurations>
     <TargetFrameworks>net472</TargetFrameworks>
+    <VsExternalDir>$(DevPublicDir)external\$(Configuration)</VsExternalDir>
   </PropertyGroup>
-  
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>$(Genericdefines);XSHARP;DEBUG;TRACE;</DefineConstants>
   </PropertyGroup>
@@ -82,13 +82,14 @@
       <CustomToolNamespace></CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll') ">
-    <MakeDir Directories="$(DevPublicDir)external\$(ConfigurationName)" /> 
+  <Target Name="CreateDirectories" AfterTargets="BeforeBuild">
+    <MakeDir Directories="$(VsExternalDir)" /> 
   </Target>
-  <Target Name="CopyFiles" AfterTargets="Build" >
+  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(VsExternalDir)') and '$(IsCrossTargetingBuild)' != 'true'" >
+    <Message Importance="high" Text="Copy output files for $(ProjectName) to $(VsExternalDir)" />
     <ItemGroup>
       <XsEvaluatorFiles Include="$(OutputPath)\XSharp*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(XsEvaluatorFiles)" DestinationFolder="$(DevPublicDir)external\$(ConfigurationName)" />
+    <Copy SourceFiles="@(XsEvaluatorFiles)" DestinationFolder="$(VsExternalDir)" />
   </Target>
 </Project>

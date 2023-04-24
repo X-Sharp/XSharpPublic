@@ -2365,7 +2365,7 @@ namespace XSharp.Project
             {
                 return VSConstants.S_OK;
             }
-            var str2 = System.Text.RegularExpressions.Regex.Replace(str, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var str2 = str.ReplaceWithComparison( "anycpu", "AnyCPU", StringComparison.OrdinalIgnoreCase);
             if (str2 != str)
             {
                 ok = false;

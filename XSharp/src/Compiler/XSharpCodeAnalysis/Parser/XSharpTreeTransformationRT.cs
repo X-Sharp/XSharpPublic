@@ -561,7 +561,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var arrayName = _syntaxFactory.IdentifierName(arrayId);
                 var typeparam = _syntaxFactory.TypeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
                     MakeSeparatedList(_usualType), SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken));
-                AddUsingWhenMissing(GlobalEntities.Usings, GenerateQualifiedName("System.Collections.Generic"), false, null);
+                AddUsingWhenMissing(GenerateQualifiedName("System.Collections.Generic"), false, null);
 
                 var genlist = _syntaxFactory.GenericName(SyntaxFactory.Identifier("List"), typeparam);
                 var createExpr = _syntaxFactory.ObjectCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),

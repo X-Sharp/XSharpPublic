@@ -47,8 +47,8 @@ foxsource           :  ({HasMemVars}? MemVars += filewidememvar)*
 entity              : namespace_
                     // types
                     | class_
-                    | foxclass                  // FoxPro Class definition*/
-                    | xppclass                  // XPP Class definition
+                    | {IsFox}? foxclass                  // FoxPro Class definition*/
+                    | {IsXPP}? xppclass                  // XPP Class definition
                     | structure_
                     | interface_
                     | delegate_
@@ -1266,14 +1266,14 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
 xppmethodvis        : Vis=xppvisibility COLON eos
                     ;
 
-xppvisibility       : Token=(HIDDEN | PROTECTED | EXPORTED | INTERNAL | PUBLIC | PRIVATE )
+xppvisibility       : Token=(HIDDEN | PROTECTED | EXPORTED | INTERNAL | PUBLIC | PRIVATE ) // The first 3 are XPP. The others are X# extensions/synonyms
                     ;
 
 xppdeclareMethod    : Attributes=attributes?                                  // NEW Optional Attributes
-                      Modifiers=xppdeclareModifiers?                          // [DEFERRED |FINAL | INTRODUCE | OVERRIDE] [CLASS]
+                      Modifiers=xppmemberModifiers?                           // [DEFERRED |FINAL | INTRODUCE | OVERRIDE] [CLASS]
                       METHOD Methods+=identifier xppdeclmethodparams?         // METHOD <MethodName,...>
                       (
-                          Is=xppisin                                           //  [IS <Name>] [IN <SuperClass>]
+                          Is=xppisin                                          //  [IS <Name>] [IN <SuperClass>]
                           | (COMMA Methods+=identifier xppdeclmethodparams?)* // or an optional comma seperated list of other names
                       )
                       eos
@@ -1287,7 +1287,8 @@ xppisin             : (IS identifier)? (IN identifier)?                     //  
                     ;
 
 
-xppdeclareModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLASS | SYNC | ABSTRACT | NEW | STATIC | ASYNC | UNSAFE | EXTERN) )+
+xppmemberModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLASS | SYNC | STATIC // Xbase++ modifiers
+                        | ABSTRACT | NEW | ASYNC | UNSAFE | EXTERN |VIRTUAL) )+ // Our modifiers. ABSTRACT = DEFERRED, NEW = INTRODUCE, SEALED = FINAL
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
@@ -1353,9 +1354,6 @@ xppinlineMethod     : Attributes=attributes?                                 // 
                       StmtBlk=statementBlock
                       (END METHOD eos)?
                     ;
-
-xppmemberModifiers  : ( Tokens+=( CLASS | STATIC | ABSTRACT | UNSAFE | ASYNC | EXTERN) )+
-                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
 /// FoxPro Parser definities

@@ -20,6 +20,7 @@
     <ErrorReport>prompt</ErrorReport>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenericDefines>COMPILERCORE;XSHARP;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;VSPARSER;NETSTANDARD20</GenericDefines>
+    <VsExternalDir>$(DevPublicDir)\external\$(ConfigurationName)</VsExternalDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>$(GenericDefines);TRACE;DEBUG</DefineConstants>
@@ -55,6 +56,7 @@
     <Compile Remove="Antlr4.Runtime\Misc\DoubleKeyMap`3.cs" />
     <Compile Remove="Antlr4.Runtime\Misc\RuleDependencyProcessor.cs" />
     <Compile Remove="Antlr4.Runtime\Misc\TestRig.cs" />
+    <Compile Remove="Parser\XSharpCompilerGeneratedCode.cs" />
     <Compile Remove="Parser\XSharpLanguageParser.cs" />
     <Compile Remove="Parser\XSharpParseErrorAnalysis.cs" />
     <Compile Remove="Parser\XSharpClearSequences.cs" />
@@ -108,13 +110,14 @@
   </Target>
   -->
   <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="Exists('$(DevPublicDir)binaries\2022\$(Configuration)\XSharpModel.dll') ">
-    <MakeDir Directories="$(DevPublicDir)external\$(ConfigurationName)" /> 
+    <MakeDir Directories="$(VsExternalDir)" /> 
     <MakeDir Directories="$(ZipsDir)" /> 
   </Target>
-  <Target Name="CopyFiles" AfterTargets="Build" >
+  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(VsExternalDir)')">
     <ItemGroup>
       <VsparserFiles Include="$(OutputPath)\*.*" /> 
-    </ItemGroup> 
+    </ItemGroup>
+    <Message Importance="high" Text="Copy output files to $(VsExternalDir)" />
     <Copy SourceFiles="@(VsparserFiles)" DestinationFolder="$(DevPublicDir)external\$(ConfigurationName)" />
   </Target>
   <Target Name="DeleteMsFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != '' ">
@@ -124,8 +127,8 @@
     <Delete Files="@(FilesToDelete)" />
   </Target>
   <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' AND '$(CreateZips)' != '' ">
-     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
-    </Target>
+    <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
+  </Target>  
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup> 

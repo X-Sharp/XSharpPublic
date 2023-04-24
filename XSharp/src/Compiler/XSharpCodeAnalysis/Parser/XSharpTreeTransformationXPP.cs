@@ -18,6 +18,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using System.Diagnostics;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
+    using Roslyn.Utilities;
 
     [DebuggerDisplay("{Name}")]
     public class XppClassInfo
@@ -180,10 +181,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 members.AddRange(generated.Members);
             }
-            if (context.Modifiers != null)
+            if (context.Modifiers != null && context.Modifiers._Tokens.Any(t => t.Type == XP.STATIC))
             {
-                if (context.Modifiers._Tokens.Any(t => t.Type == XP.STATIC))
-                    context.TypeData.HasStatic = true;
+                context.TypeData.HasStatic = true;
             }
             // check if all declared methods have been implemented
             // and if so, then add the methods to the members list
@@ -232,6 +232,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(members);
             _pool.Free(baseTypes);
             context.Put(c);
+
             _currentClass = null;
 
             // Generate XBase++ Class Function
@@ -258,7 +259,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expressionBody: null,
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             func.XGenerated = true;
-            GlobalClassEntities.Members.Add(func);
+            if (context.TypeData.HasStatic)
+            {
+                GlobalEntities.StaticGlobalClassMembers.Add(func);
+            }
+            else
+            {
+                GlobalEntities.GlobalClassMembers.Add(func);
+            }
         }
         public override void EnterXppdeclareMethod([NotNull] XP.XppdeclareMethodContext context)
         {
@@ -397,7 +405,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 varList.Add(variable);
                 // calculate modifiers
                 // each field is added separately so we can later decide which field to keep and which one to delete when they are duplicated by a 
-                var modifiers = decodeXppMemberModifiers(context.Visibility, false, context.Modifiers?._Tokens);
+                var modifiers = decodeXppMemberModifiers(context, context.Visibility, false, context.Modifiers?._Tokens, false);
                 if (varList.Count > 0)
                 {
                     var decl = _syntaxFactory.VariableDeclaration(
@@ -414,7 +422,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     fieldList.Add(fdecl);
                 }
             }
-            context.PutList(MakeList<FieldDeclarationSyntax>(fieldList));
+            context.PutList(MakeList(fieldList));
             _pool.Free(varList);
             _pool.Free(attributeLists);
         }
@@ -517,11 +525,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
             var attributes = getAttributes(context.Attributes);
-            var modifiers = decodeXppMemberModifiers(context.Info.Visibility, false, context.Modifiers?._Tokens);
+            var modifiers = decodeXppMemberModifiers(context, context.Info.Visibility, false, context.Modifiers?._Tokens, true);
             if (context.Info.IsProperty)
             {
                 // the backing method becomes private
-                modifiers = decodeXppMemberModifiers(XP.PRIVATE, false, context.Modifiers?._Tokens);
+                modifiers = decodeXppMemberModifiers(context, XP.PRIVATE, false, context.Modifiers?._Tokens, true);
             }
             TypeSyntax returnType = getReturnType(context);
             var parameters = getParameters(context.ParamList);
@@ -606,7 +614,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var idName = context.ShortName;
             var classCtor = XSharpString.Compare(idName, XSharpIntrinsicNames.InitClassMethod) == 0;
             // find method in the declarations and find the visibility
-            var mods = decodeXppMemberModifiers(context.Info.Visibility, classCtor, classCtor ? null : context.Mods?._Tokens);
+            var mods = decodeXppMemberModifiers((XSharpParserRuleContext)context, context.Info.Visibility, classCtor, classCtor ? null : context.Mods?._Tokens, false);
             if (mods.Any((int)SyntaxKind.StaticKeyword))
             {
                 context.Data.HasClipperCallingConvention = false;
@@ -659,11 +667,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 tokens.AddRange(context.Modifiers._Tokens);
             }
-            var modifiers = decodeXppMemberModifiers(context.Info.Visibility, false, tokens);
+            var modifiers = decodeXppMemberModifiers(context, context.Info.Visibility, false, tokens, true);
             if (context.Info.IsProperty)
             {
                 // the backing method becomes private
-                modifiers = decodeXppMemberModifiers(XP.PRIVATE, false, tokens);
+                modifiers = decodeXppMemberModifiers(context, XP.PRIVATE, false, tokens, true);
             }
             TypeSyntax returnType = getDataType(context.Type);
             var attributes = getAttributes(context.Attributes);
@@ -741,7 +749,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 propType = methType;
             }
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
-            var modifiers = decodeXppMemberModifiers(propDecl.Visibility, false, propDecl.ModifierTokens);
+            var modifiers = decodeXppMemberModifiers((XSharpParserRuleContext)propDecl.Entity, propDecl.Visibility, false, propDecl.ModifierTokens, true);
             bool isStatic = false;
             if (method.Mods != null)
             {
@@ -904,7 +912,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // check to see if this is a static class. In that case we must add it to the static global members
                 if (current.Entity.TypeData.HasStatic)
                 {
-                    addGlobalEntity(classdecl, true);
+                    var nsName = XSharpSpecialNames.XppStaticClassPrefix + GetStaticGlobalClassname();
+                    AddUsingWhenMissing(nsName, false, null);
+                    var ns = GenerateNamespace(nsName, MakeList<MemberDeclarationSyntax>(classdecl));
+                    ent.Put(ns);
                 }
             }
             return;
@@ -967,72 +978,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);
-
         }
-        public override void ExitXppdeclareModifiers([NotNull] XP.XppdeclareModifiersContext context)
-        {
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            bool hasFinal = false;
-            bool noOverRide = false;
-            foreach (var m in context._Tokens)
-            {
-                SyntaxToken kw = null;
-                switch (m.Type)
-                {
-                    case XP.DEFERRED: // DEFERRED METHOD becomes ABSTRACT METHOD
-                    case XP.ABSTRACT: // 
-                        kw = SyntaxFactory.MakeToken(SyntaxKind.AbstractKeyword, m.Text);
-                        break;
-                    case XP.FINAL: // FINAL METHOD will generate non virtual method, even when the Default Virtual is on
-                        hasFinal = true;
-                        break;
-                    case XP.INTRODUCE: //  INTRODUCE METHOD will generate NEW METHOD
-                    case XP.NEW:
-                        kw = SyntaxFactory.MakeToken(SyntaxKind.NewKeyword, m.Text);
-                        noOverRide = true;
-                        break;
-                    case XP.OVERRIDE: // OVERRIDE METHOD is obvious
-                        kw = SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword, m.Text);
-                        break;
-                    case XP.ASYNC: //
-                        kw = SyntaxFactory.MakeToken(SyntaxKind.AsyncKeyword, m.Text);
-                        break;
-                    case XP.EXTERN: //
-                        kw = SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword, m.Text);
-                        break;
-                    case XP.UNSAFE: //
-                        kw = SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword, m.Text);
-                        break;
-                    case XP.CLASS:
-                    case XP.STATIC:
-                        kw = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword, m.Text);
-                        break;
-                    case XP.SYNC:   // Handled later
-                        break;
-                    default:
-                        break;
-                }
-                if (kw != null)
-                {
-                    modifiers.AddCheckUnique(kw);
-                }
-            }
-            bool enforceOverride = _options.HasOption(CompilerOption.EnforceOverride, context, PragmaOptions);
-            if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions) && !hasFinal)
-            {
-                modifiers.FixVirtual(enforceOverride);
-            }
-            else if (!noOverRide && !hasFinal)
-            {
-                modifiers.FixOverride(enforceOverride);
-            }
-            context.PutList(modifiers.ToList<SyntaxToken>());
-            _pool.Free(modifiers);
 
-        }
         #endregion
 
-        private SyntaxList<SyntaxToken> decodeXppMemberModifiers(int visibility, bool isStatic, IList<IToken> tokens = null)
+        private SyntaxList<SyntaxToken> decodeXppMemberModifiers(XSharpParserRuleContext context,
+            int visibility, bool isStatic, IList<IToken> tokens, bool isMethod)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
             if (isStatic)
@@ -1043,36 +994,54 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 modifiers.Add(DecodeVisibility(visibility));
             }
+            bool hasFinal = false;
+            bool noOverride = false;
             if (tokens != null)
             {
-                foreach (var token in tokens)
+                foreach (var m in tokens)
                 {
                     SyntaxToken kw = null;
-                    switch (token.Type)
+                    switch (m.Type)
                     {
-                        // Member Modifiers from XppMemberModifiers rule
-                        case XP.ASYNC:
-                            kw = SyntaxFactory.MakeToken(SyntaxKind.AsyncKeyword, token.Text);
+                        case XP.DEFERRED: // DEFERRED METHOD becomes ABSTRACT METHOD
+                        case XP.ABSTRACT: // 
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.AbstractKeyword, m.Text);
                             break;
-                        case XP.EXTERN:
-                            kw = SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword, token.Text);
+                        case XP.FINAL: // FINAL METHOD will generate non virtual method, even when the Default Virtual is on
+                        case XP.SEALED:
+                            hasFinal = true;
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.SealedKeyword, m.Text);
                             break;
-                        case XP.ABSTRACT:
-                            kw = SyntaxFactory.MakeToken(SyntaxKind.AbstractKeyword, token.Text);
+                        case XP.INTRODUCE: //  INTRODUCE METHOD will generate NEW METHOD
+                        case XP.NEW:
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.NewKeyword, m.Text);
+                            noOverride = true;
                             break;
-                        case XP.UNSAFE:
-                            kw = SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword, token.Text);
+                        case XP.OVERRIDE: // OVERRIDE METHOD is obvious
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword, m.Text);
+                            break;
+                        case XP.ASYNC: //
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.AsyncKeyword, m.Text);
+                            break;
+                        case XP.EXTERN: //
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword, m.Text);
+                            break;
+                        case XP.UNSAFE: //
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword, m.Text);
                             break;
                         case XP.CLASS:
-                            if (modifiers.Any((int)SyntaxKind.StaticKeyword))
-                                continue;
-                            kw = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword, token.Text);
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword, m.Text);
+                            break;
+                        case XP.VIRTUAL:
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword, m.Text);
+                            break;
+                        case XP.SYNC:   // Handled later
                             break;
                         case XP.STATIC:
                             // remove visibility modifiers
                             // STATIC member (Visibility only in the scope of the prg).
                             // member becomes Internal 
-                            kw = SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword, token.Text);
+                            kw = SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword, m.Text);
                             var tmp = modifiers.ToList();
                             modifiers.Clear();
 
@@ -1092,11 +1061,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 }
                             }
                             break;
+                        default:
+                            break;
                     }
                     if (kw != null)
                     {
                         modifiers.AddCheckUnique(kw);
                     }
+                }
+            }
+            bool enforceOverride = _options.HasOption(CompilerOption.EnforceOverride, context, PragmaOptions);
+            if (isMethod && !hasFinal && !noOverride)
+            {
+                if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions))
+                {
+                    modifiers.FixVirtual(enforceOverride);
+                }
+                else
+                {
+                    modifiers.FixOverride(enforceOverride);
                 }
             }
             var result = modifiers.ToList<SyntaxToken>();

@@ -14,7 +14,7 @@
 
   <ManagedComponent
     ComponentId="guidXSharpFormatterCompId"
-    ComponentLevel="99000"
+    ComponentLevel="64000"
     AssemblyName="XSharp.Debugger2022"
     Synchronized="true">
     <!-- By setting the ComponentLevel to 64000, which is higher than the level of the C# Formatter (63000) we get called after the C# Formatter-->

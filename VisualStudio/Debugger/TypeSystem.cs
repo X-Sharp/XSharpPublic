@@ -51,6 +51,7 @@ namespace XSharpDebugger
         internal static XSharpType Psz;
         internal static XSharpType Symbol ;
         internal static XSharpType Usual;
+        internal static XSharpType UsualType;
         internal static XSharpType Invalid;
 
         private static readonly Dictionary<XSharpType, ArrayType> s_arrayTypes = new Dictionary<XSharpType, ArrayType>();
@@ -116,6 +117,7 @@ namespace XSharpDebugger
             Psz = new XSharpType("Psz", true);
             Symbol = new XSharpType("Symbol", true);
             Usual = new XSharpType("Usual", true);
+            UsualType = new XSharpType("UsualType", true);
             // types below are sorted by name
             s_types.Add("System.Boolean", XSharpType.Logic);
             s_types.Add("System.Byte", XSharpType.Byte);
@@ -133,10 +135,12 @@ namespace XSharpDebugger
             s_types.Add("System.UInt32", XSharpType.DWord);
             s_types.Add("System.UInt64", XSharpType.UInt64);
             s_types.Add("System.Void", XSharpType.Void);
+            s_types.Add("System.Void*", XSharpType.Ptr);
 
             s_types.Add("Vulcan.__Array", XSharpType.Array);
             s_types.Add("Vulcan.__Psz", XSharpType.Psz);
             s_types.Add("Vulcan.__Usual", XSharpType.Usual);
+            s_types.Add("Vulcan.UsualType", XSharpType.UsualType);
             s_types.Add("Vulcan.__Symbol", XSharpType.Symbol);
             s_types.Add("Vulcan.__VODate", XSharpType.Date);
             s_types.Add("Vulcan.__VOFloat", XSharpType.Float);
@@ -151,6 +155,7 @@ namespace XSharpDebugger
             s_types.Add("XSharp.__Psz", XSharpType.Psz);
             s_types.Add("XSharp.__Symbol", XSharpType.Symbol);
             s_types.Add("XSharp.__Usual", XSharpType.Usual);
+            s_types.Add("XSharp.__UsualType", XSharpType.UsualType);
             s_types.Add("XSharp.__VODate", XSharpType.Date);
             s_types.Add("XSharp.__VOFloat", XSharpType.Float);
         }

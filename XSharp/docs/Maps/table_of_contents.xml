@@ -559,7 +559,7 @@
           <caption translate="true">.EditorConfig files</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="449715737811801" build="ALL" modified="2023-02-14T14:37:05.936Z" icon="0" href="Debugger2">
+      <topicref type="topic" id="449715737811801" build="ALL" modified="2023-04-24T14:39:56.399Z" icon="0" href="optPage-Debugger">
         <caption translate="true">Debugger</caption>
       </topicref>
       <topicref type="topic" id="449718002903399" build="ALL" modified="2023-02-14T14:37:15.672Z" icon="0" href="Other-editors">
@@ -573,9 +573,6 @@
         <topicref type="topic" id="423888912108340" build="ALL" modified="2016-01-19T21:24:54.613Z" icon="0" href="Item-Templates">
           <caption translate="true">Item Templates</caption>
         </topicref>
-      </topicref>
-      <topicref type="topic" id="423887105698173" modified="2020-04-21T20:58:41.469Z" icon="0" href="Debugger">
-        <caption translate="true">Debugger</caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="423889242125195" build="ALL" modified="2019-01-27T16:06:07.284Z" icon="0" href="X-Programming-guide">

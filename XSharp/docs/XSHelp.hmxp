@@ -160,7 +160,7 @@
       <config-value name="author" translate="true">XSharp BV</config-value>
       <config-value name="copyright" translate="true">© 2015- &lt;%YEAR%&gt; &lt;%AUTHOR%&gt;</config-value>
       <config-value name="versionmajor">2</config-value>
-      <config-value name="versionminor">15</config-value>
+      <config-value name="versionminor">16</config-value>
       <config-value name="versionbuild">0</config-value>
       <config-value name="lcid" translate="true">en-us</config-value>
       <config-value name="charset" translate="true">ANSI_CHARSET</config-value>
@@ -193,6 +193,7 @@
       <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER,OPT_WEBFONTS</config-value>
       <config-value name="make5include">PRINT</config-value>
       <config-value name="make5status">*</config-value>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -764,7 +765,6 @@
       <file-mod href="Statements_-Expressions-and-Op.xml"/>
       <file-mod href="Strings.xml"/>
       <file-mod href="Unsafe-Code-and-Pointers.xml"/>
-      <file-mod href="Debugger.xml"/>
       <file-mod href="__IncludeLibVFP.xml"/>
       <file-mod href="__FieldList.xml"/>
       <file-mod href="__FoxFieldList.xml"/>

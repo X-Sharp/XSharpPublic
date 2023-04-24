@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-14T14:43:07.745+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-04-24T14:39:54.109+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Debugger</title>
   <keywords>
     <keyword>Debugger</keyword>
@@ -16,6 +16,6 @@
     <para styleclass="Normal"><image src="Tools-Options-Debugger.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Most options that you see on the screen are identical to compiler options that we have.</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal">By default the debugger expression evaluator allows &quot;late binding&quot;. If this causes negative side effects then you can disable that option in this dialog.</para>
   </body>
 </topic>

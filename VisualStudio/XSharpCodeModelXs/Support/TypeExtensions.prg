@@ -212,3 +212,23 @@ BEGIN NAMESPACE XSharpModel
 
 END NAMESPACE
 
+
+BEGIN NAMESPACE System
+CLASS StringExtensions
+    STATIC METHOD ReplaceEx(SELF input AS STRING, search AS STRING, replace AS STRING, comparison AS System.StringComparison) AS STRING
+        VAR stringBuilder := System.Text.StringBuilder{}
+        VAR lastIndex := 0
+        VAR currIndex := input:IndexOf(search, comparison)
+        DO WHILE currIndex != -1
+
+            stringBuilder:Append(input:Substring(lastIndex, currIndex - lastIndex))
+            stringBuilder:Append(replace)
+            currIndex += search.Length
+            lastIndex := currIndex
+            currIndex := input:IndexOf(search, currIndex, comparison)
+        ENDDO
+        stringBuilder:Append(input.Substring(lastIndex))
+        RETURN stringBuilder.ToString()
+END CLASS
+END NAMESPACE
+

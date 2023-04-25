@@ -1695,8 +1695,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     // Properties that are generated from an ACCESS and ASSIGN need special handling
                                     // for their location. We have added a ErrorLocation property for this.
                                     // We also suppress the error for fields with the [IsInstance] attribute
-                                    bool suppressError = lastSym.Kind == SymbolKind.Field &&
-                                        lastSym.GetAttributes().Any(a => a.AttributeClass.IsInstanceAttribute());
+                                    bool suppressError = lastSym.Kind == SymbolKind.Field && lastSym.HasInstanceAttribute();
                                     if (!suppressError)
                                     {
                                         if (symbol is SourcePropertySymbol ps)

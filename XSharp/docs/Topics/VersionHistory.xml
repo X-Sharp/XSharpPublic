@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-04-24T15:31:37.836+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-04-25T21:43:51.444+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -19,7 +19,9 @@
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">In the XBase++ dialect we now generate a class function for all classes. This returns the same object as the ClassObject() method for Xbase++ classes. From the Class function you can access class variables and class methods (#1235)</li>
+      <li styleclass="Body Text">In the Xbase++ dialect we now generate a class function for all classes. This returns the same object as the ClassObject() method for Xbase++ classes. <br/>From the Class function you can access class variables and class methods. <br/>This class function is generated, regardless of the /xpp1 compiler option. <br/>The Class function depends on the function __GetXppClassObject and the XSharp.XPP.StaticClassObject class that both can be found in the XSharp.XPP assembly(#1235)</li>
+      <li styleclass="Body Text">In Xbase++ you can have fields (VAR) and properties (ACCESS / ASSIGN METHOD) with the same name, even with same visibility. Previously this was not supported.<br/>The compiler now automatically makes the field private and marks it with the [IsInstance] attribute. Inside the code of the class the name will resolve to the field. In code outside of the class the name will resolve to the property.</li>
+      <li styleclass="Body Text">Inside Visual Objects you could declare fields with the INSTANCE keyword and add ACCESS/ASSIGN methods with the same name as the INSTANCE field.<br/>In previous builds of X# this was not supported. <br/>The compiler now handles this correctly and resolves the name to the field in code inside methods/properties of the class and resolves the name to the property in code outside of the class.</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

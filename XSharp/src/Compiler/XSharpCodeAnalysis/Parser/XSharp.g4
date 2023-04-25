@@ -1107,6 +1107,8 @@ identifier          : ID            // No names, we use the Start property to ac
                     | keywordxs
                     | keywordxpp
                     | keywordfox
+                    | xbaseType
+                    | nativeType
                     ;
 
 identifierString    : ID            // No names, we use the Start property to access the token
@@ -1114,6 +1116,8 @@ identifierString    : ID            // No names, we use the Start property to ac
                     | keywordxs
                     | keywordxpp
                     | keywordfox
+                    | xbaseType
+                    | nativeType
                     ;
 
 
@@ -1214,7 +1218,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     // The following did not exist in Vulcan
                     | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM
                     | GROUP | INIT | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE
-                    | SELECT | STACKALLOC | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME | NINT | NUINT
+                    | SELECT | STACKALLOC | UNCHECKED | VAR | VOLATILE | WHEN | WHERE
                     // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
                     | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE
@@ -1260,7 +1264,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                     | Member=xppclassvars                           #xppclsvars
                     | Member=xppinlineMethod                        #xppclsinlinemethod
                     | Member=xppdeclareMethod                       #xppclsdeclaremethod
-                    | Member=xppproperty                            #xppclsproperty
+                    | Member=xppdeclareproperty                     #xppclsproperty
                     ;
 
 xppmethodvis        : Vis=xppvisibility COLON eos
@@ -1310,8 +1314,8 @@ xppclassvars        : Modifiers=xppmemberModifiers?                             
 
 xppvarassignment    : ASSIGNMENT xppvisibility                                    // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED]
                     ;
-xppproperty         : Attributes=attributes?                                      // NEW Optional Attributes
-                      Accessors=xppaccessors?                                     // [ACCESS | ASSIGN]
+xppdeclareproperty  : Attributes=attributes?                                      // NEW Optional Attributes
+                      Accessors=xppaccessors                                     // [ACCESS | ASSIGN]
                       Modifiers=xppmemberModifiers?                               // [CLASS | STATIC]
                       M=METHOD Id=identifier                                      // METHOD <MethodName>
                       (VAR VarName=identifier)?                                   // [VAR <VarName>]
@@ -1325,7 +1329,7 @@ xppaccessors        : ( Tokens+=(ACCESS | ASSIGN ) )+
 
 
 xppmethod           : Attributes=attributes?                                // NEW Optional Attributes
-                      Accessors=xppaccessors?                               // [ACCESS | ASSIGN]
+                      Accessors=xppaccessors?                               // [ACCESS | ASSIGN]. These are ignored by Xbase++
                       Modifiers=xppmemberModifiers?                         // [CLASS]
                       M=METHOD (ClassId=identifier COLON)? Id=identifier    // [<ClassName>:] <MethodName>
                       // no type parameters
@@ -1341,7 +1345,7 @@ xppmethod           : Attributes=attributes?                                // N
 
 xppinlineMethod     : Attributes=attributes?                                 // NEW Optional Attributes
                       I=INLINE
-                      Accessors=xppaccessors?                                // [ACCESS | ASSIGN]
+                      Accessors=xppaccessors?                                // [ACCESS | ASSIGN] 
                       Modifiers=xppmemberModifiers?                          // [CLASS]
                       METHOD  Id=identifier                                  // METHOD <MethodName>
                       // no type parameters

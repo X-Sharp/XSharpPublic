@@ -39,8 +39,8 @@ CLASS XSharp.MacroCompiler IMPLEMENTS XSharp.IMacroCompiler
 	       	RETURN cache[cMacro]
         ENDIF
         IF options == NULL
-            options := ScriptOptions:Default:WithReferences( ;
-			System.AppDomain:CurrentDomain:GetAssemblies():Where({a => !String.IsNullOrEmpty(a:Location)}) ;
+            options := ScriptOptions.Default:WithReferences( ;
+			System.AppDomain.CurrentDomain:GetAssemblies():Where({a => !String.IsNullOrEmpty(a:Location)}) ;
 			)
         ENDIF
 

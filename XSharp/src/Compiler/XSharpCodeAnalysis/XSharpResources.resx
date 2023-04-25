@@ -7479,6 +7479,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_XPPMultipleInheritance" xml:space="preserve">
     <value>XPP Multiple Inheritance is not supported by the .Net Runtime.</value>
   </data>
+  <data name="ERR_XPPFieldPropertySameName" xml:space="preserve">
+    <value>.Net Classes cannot have a field and a property with the same name {0}.</value>
+  </data>
   <data name="WRN_XPPSuperIVarsAlwaysShared" xml:space="preserve">
     <value>XPP The 'FROM' clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime.</value>
   </data>

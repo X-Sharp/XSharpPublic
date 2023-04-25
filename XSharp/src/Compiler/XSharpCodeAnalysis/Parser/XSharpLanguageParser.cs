@@ -391,6 +391,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     try
                     {
                         walker.Walk(treeTransform, tree);
+                        if (treeTransform.ParseErrors.Count > 0)
+                        {
+                            parseErrors.AddRange(treeTransform.ParseErrors);
+                        }
                     }
                     catch (Exception e)
                     {

@@ -176,9 +176,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal Stack<SyntaxClassEntities> ClassEntities = new();
         internal Stack<XP.IEntityContext> Entities = new();
 
+        protected List<ParseErrorData> _parseErrors = ParseErrorData.NewBag();
+
         #endregion
 
         #region Properties
+
+        public List<ParseErrorData> ParseErrors
+        {
+            get { return _parseErrors; }
+        }
+
         protected XP.IEntityContext CurrentEntity
         {
             get
@@ -2189,69 +2197,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Entities.Push(ent);
 
         }
-        private void setErrorsInList<TNode>(ParserRuleContext ctxt, SyntaxList<TNode> list) where TNode : CSharpSyntaxNode
-        {
-            var context = ctxt as XSharpParserRuleContext;
-            var item = list[0];
-            foreach (var e in context.ErrorData)
-            {
-                item = item.WithAdditionalDiagnostics(
-                    new SyntaxDiagnosticInfo(item.GetLeadingTriviaWidth(), item.Width, e.Code, e.Args));
-                item.XNode = context;
-            }
-            var stmts = _pool.Allocate<TNode>();
-            stmts.Add(item);
-            for (int i = 1; i < list.Count; i++)
-            {
-                stmts.Add(list[i]);
-            }
-            context.PutList<TNode>(stmts);
-            _pool.Free(stmts);
-        }
-        public override void ExitEveryRule([NotNull] ParserRuleContext ctxt)
-        {
-            var context = ctxt as XSharpParserRuleContext;
-            if (context.HasErrors() && context.CsNode != null)
-            {
-                if (context.CsNode is CSharpSyntaxNode csNode)
-                {
-                    foreach (var e in context.ErrorData)
-                    {
-                        csNode = csNode.WithAdditionalDiagnostics(
-                            new SyntaxDiagnosticInfo(csNode.GetLeadingTriviaWidth(), csNode.Width, e.Code, e.Args));
-                    }
-                    context.Put(csNode);
-                }
-                else if (context.CsNode is SyntaxList<StatementSyntax> list)
-                {
-                    setErrorsInList(context, list);
-                }
-                else if (context.CsNode is SyntaxList<AttributeListSyntax> alist)
-                {
-                    setErrorsInList(context, alist);
-                }
-                else if (context.CsNode is SyntaxList<SyntaxToken> slist)
-                {
-                    setErrorsInList(context, slist);
-                }
-                else if (context.CsNode is SyntaxList<FieldDeclarationSyntax> flist)
-                {
-                    setErrorsInList(context, flist);
-                }
-                else
-                {
-                    Debug.Assert(false, "UnHandled SyntaxList of type " + context.CsNode.GetType());
-                }
-            }
-#if DEBUG && DUMP_TREE
-            var s = context.GetType().ToString();
-            s = s.Substring(s.LastIndexOfAny(".+".ToCharArray())+1);
-            s = s.Replace("Context","");
-            Debug.WriteLine("{0}<= ({1},{2}) {3} '{4}'",new string(' ',context.Depth()),context.Start.Line,context.Start.Column,s,context.Start.Text);
-#endif
-            if (context is XP.IEntityContext && CurrentEntity == context)
-                Entities.Pop();
-        }
         #endregion
 
         #region Main Entrypoints
@@ -2312,7 +2257,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 if (s is NamespaceDeclarationSyntax)
                 {
-                    context.AddError(new ParseErrorData(context.Entity, ErrorCode.ERR_NamespaceNotAllowedInScript));
+                    ParseErrors.Add(new ParseErrorData(context.Entity, ErrorCode.ERR_NamespaceNotAllowedInScript));
                     GlobalEntities.Members.Add(s as MemberDeclarationSyntax);
                 }
                 else if (s is MemberDeclarationSyntax)
@@ -2324,7 +2269,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (s is AttributeListSyntax)
                 {
-                    context.AddError(new ParseErrorData(context.Entity, ErrorCode.ERR_AttributesNotAllowed));
+                    ParseErrors.Add(new ParseErrorData(context.Entity, ErrorCode.ERR_AttributesNotAllowed));
                     GlobalEntities.Attributes.Add(s as AttributeListSyntax);
                 }
                 else if (s is ExternAliasDirectiveSyntax)
@@ -2770,7 +2715,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     usings.Add(s as UsingDirectiveSyntax);
                 else if (s is AttributeListSyntax)
                     //Attributes.Add(s as AttributeListSyntax);
-                    context.AddError(new ParseErrorData(entityCtx, ErrorCode.ERR_AttributesNotAllowed));
+                    ParseErrors.Add(new ParseErrorData(entityCtx, ErrorCode.ERR_AttributesNotAllowed));
                 else if (s is ExternAliasDirectiveSyntax)
                     externs.Add(s as ExternAliasDirectiveSyntax);
             }
@@ -3706,7 +3651,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (isAuto)
                 {
-                    context.AddError(new ParseErrorData(context.Auto, ErrorCode.ERR_SyntaxError, SyntaxFactory.MakeToken(SyntaxKind.GetKeyword)));
+                    ParseErrors.Add(new ParseErrorData(context.Auto, ErrorCode.ERR_SyntaxError, SyntaxFactory.MakeToken(SyntaxKind.GetKeyword)));
                 }
                 // Make sure that a property with the name "Item" is treated as a SELF property
                 // There is a lot of code in Roslyn that checks for this
@@ -4706,13 +4651,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(list);
                     if (list.Attributes.Count == 0)
                     {
-                        context.AddError(new ParseErrorData(context, ErrorCode.ERR_BadAttributeArgument, source));
+                        ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_BadAttributeArgument, source));
                     }
                     return;
                 }
                 catch
                 {
-                    context.AddError(new ParseErrorData(context, ErrorCode.ERR_BadAttributeArgument, source));
+                    ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_BadAttributeArgument, source));
                 }
             }
             var attributes = _pool.AllocateSeparated<AttributeSyntax>();
@@ -4758,7 +4703,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(_syntaxFactory.AttributeTargetSpecifier(id, SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
                     break;
                 default:
-                    context.AddError(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.Token.Text));
+                    ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.Token.Text));
                     break;
             }
         }
@@ -4868,7 +4813,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var text = context.Token.Text.ToLower();
             if (text != "assembly" && text != "module")
             {
-                context.AddError(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.Token.Text));
+                ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_UnexpectedToken, context.Token.Text));
             }
             else
             {
@@ -6128,7 +6073,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var field = CurrentMember?.Data.GetField(name);
             if (field != null && !field.IsLocal)
             {
-                context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
+                ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
             }
             var variable = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
                 (context.Expression == null) ? null :
@@ -6136,9 +6081,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(variable);
             variables.Add(variable);
             if (isConst)
-                context.AddError(new ParseErrorData(context, ErrorCode.ERR_ImplicitlyTypedVariableCannotBeConst));
+                ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_ImplicitlyTypedVariableCannotBeConst));
             if (isStatic)
-                context.AddError(new ParseErrorData(context, ErrorCode.ERR_ImplicitlyTypedVariableCannotBeStatic));
+                ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_ImplicitlyTypedVariableCannotBeStatic));
             context.Put(_syntaxFactory.LocalDeclarationStatement(
                         attributeLists: default,
                         awaitKeyword: null,
@@ -6218,7 +6163,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (assign == null && bin == null)
                 {
                     context.Put(GenerateEmptyStatement());
-                    context.AddError(new ParseErrorData(context.Dir, ErrorCode.ERR_SyntaxError, ":="));
+                    ParseErrors.Add(new ParseErrorData(context.Dir, ErrorCode.ERR_SyntaxError, ":="));
                     return;
                 }
                 if (assign != null)
@@ -6235,7 +6180,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (bin.Op.Type != XP.EQ)
                     {
                         context.Put(GenerateEmptyStatement());
-                        context.AddError(new ParseErrorData(context.Dir, ErrorCode.ERR_SyntaxError, ":="));
+                        ParseErrors.Add(new ParseErrorData(context.Dir, ErrorCode.ERR_SyntaxError, ":="));
                         return;
                     }
                     context.AssignExpr.SetSequencePoint();
@@ -7262,7 +7207,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.LBRKT:
                     break;
                 default:
-                    context.AddError(new ParseErrorData(context.Right.Start,ErrorCode.ERR_SyntaxError,"."));
+                    ParseErrors.Add(new ParseErrorData(context.Right.Start,ErrorCode.ERR_SyntaxError,"."));
                     break;
             }
 #endif
@@ -7907,16 +7852,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 int ranks = rankSpecifiers[0].Sizes.Count;
                 if (ranks != context.ArgList?._Args?.Count)
-                    context.AddError(new ParseErrorData(context, ErrorCode.ERR_BadCtorArgCount, context.Type.GetText(), context.ArgList?._Args?.Count ?? 0));
+                    ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_BadCtorArgCount, context.Type.GetText(), context.ArgList?._Args?.Count ?? 0));
                 var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
                 if (context.ArgList?._Args != null)
                 {
                     foreach (var size in context.ArgList?._Args)
                     {
                         if (size.Name != null)
-                            context.AddError(new ParseErrorData(size, ErrorCode.ERR_BadNamedArgument, size));
+                            ParseErrors.Add(new ParseErrorData(size, ErrorCode.ERR_BadNamedArgument, size));
                         if (size.RefOut != null)
-                            context.AddError(new ParseErrorData(size, ErrorCode.ERR_BadTypeArgument, size));
+                            ParseErrors.Add(new ParseErrorData(size, ErrorCode.ERR_BadTypeArgument, size));
                         if (sizes.Count > 0)
                             sizes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                         sizes.Add(size.Expr.Get<ExpressionSyntax>());
@@ -7958,7 +7903,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else
                     {
                         fname = _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("<missing>"));
-                        context.AddError(new ParseErrorData(fCtx, ErrorCode.ERR_IdentifierExpected));
+                        ParseErrors.Add(new ParseErrorData(fCtx, ErrorCode.ERR_IdentifierExpected));
                     }
                 }
                 context.Put(MakeCastTo(
@@ -8201,7 +8146,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context._Exprs.Count > 1)
                 {
-                    context.AddError(new ParseErrorData(context.COMMA()[0], ErrorCode.ERR_CloseParenExpected));
+                    ParseErrors.Add(new ParseErrorData(context.COMMA()[0], ErrorCode.ERR_CloseParenExpected));
                 }
                 context.Put(_syntaxFactory.PrefixUnaryExpression(
                     kind,
@@ -8225,7 +8170,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                 {
                     context.Put(e);
-                    context.AddError(new ParseErrorData(context.Op, ErrorCode.ERR_MissingArgument));
+                    ParseErrors.Add(new ParseErrorData(context.Op, ErrorCode.ERR_MissingArgument));
                 }
             }
         }

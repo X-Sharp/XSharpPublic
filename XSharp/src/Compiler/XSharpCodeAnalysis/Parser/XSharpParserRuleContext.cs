@@ -131,11 +131,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public string SourceFileName { get { return (Start as XSharpToken).SourceName; } }
         public string MappedFileName { get { return (Start as XSharpToken).MappedFileName; } }
 
-        internal List<ParseErrorData> ErrorData;
-        internal bool HasErrors()
-        {
-            return (ErrorData != null) && ErrorData.Count > 0;
-        }
 #if !VSPARSER
 
         internal bool ContainsCast
@@ -247,15 +242,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     addChildren(ctree, tokens);
                 }
             }
-        }
-
-        internal void AddError(ParseErrorData e)
-        {
-            if (ErrorData == null)
-                ErrorData = new List<ParseErrorData>();
-            ErrorData.Add(e);
-
-
         }
 
         int iBPLength = -1;

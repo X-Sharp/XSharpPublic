@@ -1063,7 +1063,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public bool XSharpRuntime;
         }
-        public partial class XpppropertyContext : IMemberContext
+        public partial class XppdeclarepropertyContext : IMemberContext
         {
             public bool IsStatic => this.Modifiers != null && this.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.CLASS || t.Type == XSharpLexer.CLASS);
 #if !VSPARSER
@@ -1117,7 +1117,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             MemberAccess = 1,
             MPrefix = 2,
         }
-        public partial class AccessMemberContext
+        public partial class AccessMemberContext 
         {
             internal FoxFlags foxFlags = FoxFlags.None;
             internal bool IsFox => foxFlags != FoxFlags.None;

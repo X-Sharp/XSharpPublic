@@ -2099,6 +2099,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_XPPClassNotFound = 9209,
         ERR_XPPAccessorCount = 9210,
         ERR_XPPPropertyDeclarationTypeMismatch = 9211,
+        ERR_XPPFieldPropertySameName = 9212,
 
         WRN_FoxUnsupportedClause = 9230,
         ERR_FoxAsClauseMandatory = 9231,

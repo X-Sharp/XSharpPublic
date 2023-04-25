@@ -17,6 +17,7 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     using System.Diagnostics;
+    using System.Xml.Linq;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
     using Roslyn.Utilities;
 
@@ -40,9 +41,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             foreach (var decl in Methods)
             {
-                if (!decl.IsProperty)
+                if (XSharpString.Equals(name, decl.Name))
+                    return decl;
+                if (decl.IsProperty)
                 {
-                    if (XSharpString.Equals(name, decl.Name))
+                    if (XSharpString.Equals(name, decl.AccessMethod))
+                        return decl;
+                    if (XSharpString.Equals(name, decl.AssignMethod))
                         return decl;
                 }
             }
@@ -60,22 +65,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             name = name.ToLower();
             return Properties.Contains(name);
-        }
-        internal XppDeclaredMethodInfo FindPropertyMethod(string name)
-        {
-            foreach (var decl in Methods)
-            {
-                if (decl.IsProperty)
-                {
-                    if (XSharpString.Equals(name, decl.Name))
-                        return decl;
-                    if (XSharpString.Equals(name, decl.AccessMethod))
-                        return decl;
-                    if (XSharpString.Equals(name, decl.AssignMethod))
-                        return decl;
-                }
-            }
-            return null;
         }
     }
     [DebuggerDisplay("{Name}")]
@@ -170,7 +159,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             info.Entity = context;
             _currentClass = info;
         }
-        public override void ExitXppclass([NotNull] XP.XppclassContext context)
+        public override void ExitXppclass([NotNull] XP.XppclassContext context) 
         {
             context.SetSequencePoint(context.C, context.e.Stop);
             var members = _pool.Allocate<MemberDeclarationSyntax>();
@@ -195,7 +184,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XppClassInfo thisClass = FindClassInfo(className);
             if (thisClass == null || thisClass.Entity != context)
             {
-                context.AddError(new ParseErrorData(context, ErrorCode.ERR_ParserError, "Could not locate ClassInfo for class " + className));
+                ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_ParserError, "Could not locate ClassInfo for class " + className));
                 return;
             }
 
@@ -300,7 +289,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Visibility = _currentClass.CurrentVisibility;
         }
 
-        public override void EnterXppproperty([NotNull] XP.XpppropertyContext context)
+        public override void EnterXppdeclareproperty([NotNull] XP.XppdeclarepropertyContext context)
         {
             // When [VAR <VarName>] is missing then this is a declaration of an ACCESS or ASSIGN method.
             // In that case treat implementation like VO Access/assign
@@ -356,7 +345,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             declInfo.HasVarName = hasVarName;
             CheckAccessors(context.Accessors, declInfo, context.Id.GetText());
         }
-        public override void ExitXppproperty([NotNull] XP.XpppropertyContext context)
+        public override void ExitXppdeclareproperty([NotNull] XP.XppdeclarepropertyContext context)
         {
             context.SetSequencePoint(context.M, context.end.Stop);
 
@@ -417,7 +406,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         modifiers: modifiers,
                         declaration: decl,
                         semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-
+                    fdecl.XNode = id;
                     ClassEntities.Peek().Members.Add(fdecl);
                     fieldList.Add(fdecl);
                 }
@@ -455,7 +444,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Data.IsInitAxit = true;     // class constructor
                 context.Data.HasClipperCallingConvention = false;
             }
-        }
+        } 
 
         private static void CheckAccessors(XP.XppaccessorsContext context, XppDeclaredMethodInfo decl, string Id)
         {
@@ -503,7 +492,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.I, context.end.Stop);
             if (context.Info == null)   // This should not happen
             {
-                context.AddError(new ParseErrorData(context, ErrorCode.WRN_XPPMethodNotDeclared, context.ShortName));
+                ParseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_XPPMethodNotDeclared, context.ShortName));
                 // setup dummy declaration
                 context.Info = new XppDeclaredMethodInfo()
                 {
@@ -560,7 +549,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 current = FindClassInfo(name);
                 if (current == null)
                 {
-                    context.AddError(new ParseErrorData(context, ErrorCode.ERR_XPPClassNotFound, name));
+                    ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_XPPClassNotFound, name));
                 }
                 current = _classes.LastOrDefault();
             }
@@ -570,12 +559,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // link to method
                 name = context.Id.GetText();
                 var decl = current.FindMethod(name);
-                if (decl == null)
+                if (decl is null)
                 {
-                    decl = current.FindPropertyMethod(name);
-                }
-                if (decl == null)
-                {
+                    ParseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_XPPMethodNotDeclared, name));
                     decl = new XppDeclaredMethodInfo()
                     {
                         Name = name,
@@ -590,7 +576,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     };
                     current.Methods.Add(decl);
                 }
-                CheckAccessors(context.Accessors, decl, name);
+                // Xbase++ ignores the modifiers for the external method
+                //CheckAccessors(context.Accessors, decl, name);
                 if (decl.IsProperty)
                 {
                     if (XSharpString.Equals(decl.AccessMethod, name))
@@ -639,7 +626,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.M, context.end.Stop);
             if (context.Info == null)
             {
-                context.AddError(new ParseErrorData(context, ErrorCode.WRN_XPPMethodNotDeclared, context.ShortName));
+                ParseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_XPPMethodNotDeclared, context.ShortName));
                 // setup dummy declaration
                 context.Info = new XppDeclaredMethodInfo()
                 {
@@ -665,7 +652,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.Modifiers != null)
             {
-                tokens.AddRange(context.Modifiers._Tokens);
+                foreach (var token in context.Modifiers._Tokens)
+                {
+                    if (!tokens.Any(t => t.Type == token.Type))
+                        tokens.Add(token);
+                }
             }
             var modifiers = decodeXppMemberModifiers(context, context.Info.Visibility, false, tokens, true);
             if (context.Info.IsProperty)
@@ -848,12 +839,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     bool addMember = true;
                     // Add a check to see if we do not add a field with the same name as a property
-                    if (member is FieldDeclarationSyntax)
+                    if (member is FieldDeclarationSyntax fd)
                     {
-                        var fd = member as FieldDeclarationSyntax;
+                        var xnode = member.XNode as XSharpParserRuleContext;
                         var name = fd.Declaration.Variables[0].Identifier.Text;
                         if (current.HasProperty(name))
+                        {
                             addMember = false;
+                            ParseErrors.Add(new ParseErrorData(xnode.Start, ErrorCode.ERR_XPPFieldPropertySameName, name));
+                        }
                     }
                     if (addMember)
                     {
@@ -865,7 +859,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var entity = method.Entity;
                     if (entity == null)
                     {
-                        current.Entity.AddError(new ParseErrorData((IErrorNode)(method.Declaration), ErrorCode.WRN_XPPMethodNotImplemented, method.Name));
+                        ParseErrors.Add(new ParseErrorData(method.Declaration.Start, ErrorCode.WRN_XPPMethodNotImplemented, method.Name));
                     }
                     else
                     {
@@ -887,7 +881,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var entity = method.Entity;
                     if (entity == null)
                     {
-                        current.Entity.AddError(new ParseErrorData((IErrorNode)(method.Declaration), ErrorCode.WRN_XPPMethodNotImplemented, method.Name));
+                        ParseErrors.Add(new ParseErrorData(method.Declaration.Start, ErrorCode.WRN_XPPMethodNotImplemented, method.Name));
                     }
                     else
                     {

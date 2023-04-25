@@ -448,15 +448,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private static void CheckAccessors(XP.XppaccessorsContext context, XppDeclaredMethodInfo decl, string Id)
         {
-            if (context != null && context._Tokens.Any((t) => t.Type == XSharpLexer.ACCESS))
+            if (context != null)
             {
-                decl.AccessMethod = Id;
-                decl.IsProperty = true;
-            }
-            if (context != null && context._Tokens.Any((t) => t.Type == XSharpLexer.ASSIGN))
-            {
-                decl.AssignMethod = Id;
-                decl.IsProperty = true;
+                if (context._Tokens.Any((t) => t.Type == XSharpLexer.ACCESS))
+                {
+                    decl.AccessMethod = Id;
+                    decl.IsProperty = true;
+                    
+                }
+                if (context._Tokens.Any((t) => t.Type == XSharpLexer.ASSIGN))
+                {
+                    decl.AssignMethod = Id;
+                    decl.IsProperty = true;
+                }
             }
         }
 
@@ -479,8 +483,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Attributes = context.Attributes,
                 ModifierTokens = context.Modifiers?._Tokens
             };
-
-            CheckAccessors(context.Accessors, decl, context.Id.GetText());
+            var name = context.Id.GetText();
+            CheckAccessors(context.Accessors, decl, name);
+            if (decl.IsProperty)
+            {
+                _currentClass.AddProperty(name);
+            }
             context.Info = decl;
             _currentClass.Methods.Add(decl);
         }
@@ -577,7 +585,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     current.Methods.Add(decl);
                 }
                 // Xbase++ ignores the modifiers for the external method
-                //CheckAccessors(context.Accessors, decl, name);
+                CheckAccessors(context.Accessors, decl, name);
                 if (decl.IsProperty)
                 {
                     if (XSharpString.Equals(decl.AccessMethod, name))
@@ -846,7 +854,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (current.HasProperty(name))
                         {
                             addMember = false;
-                            ParseErrors.Add(new ParseErrorData(xnode.Start, ErrorCode.ERR_XPPFieldPropertySameName, name));
+                            var atts = fd.AttributeLists;
+                            atts = MakeIsInstanceAttribute(atts);
+
+                            var modifiers = fd.Modifiers;
+                            if (modifiers.Any((int)SyntaxKind.PublicKeyword))
+                            {
+                                var list = new List<SyntaxToken>();
+                                list.Add(SyntaxFactory.MakeGeneratedToken(SyntaxKind.PrivateKeyword));
+                                foreach (var mod in modifiers)
+                                {
+                                    if (!SyntaxFacts.IsAccessibilityModifier(mod.Kind))
+                                        list.Add(mod);
+                                }
+                                modifiers = MakeList(list);
+                            }
+                            fd = fd.Update(atts, modifiers, fd.Declaration, fd.SemicolonToken);
+                            xnode.Put(fd);
+                            members.Add(fd);
                         }
                     }
                     if (addMember)

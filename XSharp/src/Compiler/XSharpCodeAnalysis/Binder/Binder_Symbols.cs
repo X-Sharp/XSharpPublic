@@ -24,9 +24,15 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal partial class Binder
     {
-
         bool PreferFirstOverSecond(Symbol first, Symbol second)
         {
+            if (first.Kind != second.Kind && first.Kind == SymbolKind.Field)
+            {
+                if (first.HasInstanceAttribute())
+                {
+                    return true;
+                }
+            }
             if (second.Kind == SymbolKind.NamedType)
             {
                 if (first.Kind == SymbolKind.Local ||
@@ -49,7 +55,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return first;
             if (PreferFirstOverSecond(second, first))
                 return second;
-
             if (first.IsFromCompilation(Compilation) && !second.IsFromCompilation(Compilation))
             {
                 usefirst = true;
@@ -131,3 +136,4 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
     }
 }
+

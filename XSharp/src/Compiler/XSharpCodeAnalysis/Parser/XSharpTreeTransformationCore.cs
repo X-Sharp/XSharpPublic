@@ -3371,6 +3371,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     locCtx.DataType = t;
             }
         }
+        protected SyntaxList<AttributeListSyntax> MakeIsInstanceAttribute(SyntaxList<AttributeListSyntax> atts)
+        {
+            var attr = _pool.Allocate<AttributeListSyntax>();
+            attr.AddRange(atts);
+            GenerateAttributeList(attr, _options.XSharpRuntime ? XSharpQualifiedTypeNames.IsInstance : VulcanQualifiedTypeNames.IsInstance);
+            atts = attr.ToList();
+            _pool.Free(attr);
+            return atts;
+        }
 
         public override void ExitClassvars([NotNull] XP.ClassvarsContext context)
         {
@@ -3387,11 +3396,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     bool isInstance = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.INSTANCE);
                     if (isInstance)
                     {
-                        var attr = _pool.Allocate<AttributeListSyntax>();
-                        attr.AddRange(atts);
-                        GenerateAttributeList(attr, _options.XSharpRuntime ? XSharpQualifiedTypeNames.IsInstance : VulcanQualifiedTypeNames.IsInstance);
-                        atts = attr.ToList();
-                        _pool.Free(attr);
+                        atts = MakeIsInstanceAttribute(atts);
                     }
                 }
                 var vardecl = varCtx.Get<VariableDeclarationSyntax>();

@@ -1712,12 +1712,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return oldFlag;
         }
 
-        private static SyntaxToken makeGeneratedToken(SyntaxKind kind)
-        {
-            var token = SyntaxFactory.MakeToken(kind);
-            token.XGenerated = true;
-            return token;
-        }
         public static void FixDefaultVisibility(this SyntaxListBuilder list, bool isInstance = false)
         {
             for (int i = 0; i < list.Count; i++)
@@ -1727,9 +1721,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return;
             }
             if (isInstance)
-                list.Add(makeGeneratedToken(SyntaxKind.ProtectedKeyword));
+                list.Add(SyntaxFactory.MakeGeneratedToken(SyntaxKind.ProtectedKeyword));
             else
-                list.Add(makeGeneratedToken(SyntaxKind.PublicKeyword));
+                list.Add(SyntaxFactory.MakeGeneratedToken(SyntaxKind.PublicKeyword));
         }
 
         public static bool CanBeVirtual(this SyntaxListBuilder list)
@@ -1750,13 +1744,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             if (!list.Any((int)SyntaxKind.VirtualKeyword))
             {
-                list.Add(makeGeneratedToken(SyntaxKind.VirtualKeyword));
+                list.Add(SyntaxFactory.MakeGeneratedToken(SyntaxKind.VirtualKeyword));
             }
             if (list.Any((int)SyntaxKind.NewKeyword))
                 return;
             if (!enforceOverride && !list.Any((int)SyntaxKind.OverrideKeyword))
             {
-                list.Add(makeGeneratedToken(SyntaxKind.OverrideKeyword));
+                list.Add(SyntaxFactory.MakeGeneratedToken(SyntaxKind.OverrideKeyword));
             }
         }
 
@@ -1767,7 +1761,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 list.Any((int)SyntaxKind.OverrideKeyword) ||
                 list.Any((int)SyntaxKind.NewKeyword))
                 return;
-            list.Add(makeGeneratedToken(SyntaxKind.OverrideKeyword));
+            list.Add(SyntaxFactory.MakeGeneratedToken(SyntaxKind.OverrideKeyword));
         }
 
         public static int GetVisibilityLevel(this SyntaxListBuilder list)

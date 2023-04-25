@@ -36,6 +36,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string AllowLateBindingAttribute = "AllowLateBindingAttribute";
         internal const string NeedAccessToLocals = "NeedsAccessToLocalsAttribute";
         internal const string TypesChanged = "TypesChangedAttribute";
+        internal const string IsInstance = "IsInstanceAttribute";
+        internal const string IsVoInstance = "IsVOInstanceAttribute";
     }
     internal static class VulcanQualifiedTypeNames
     {

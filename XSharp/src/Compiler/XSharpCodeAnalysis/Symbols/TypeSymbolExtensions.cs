@@ -76,6 +76,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return IsUsualType(type) || (type is { } && type.IsObjectType()) || type.IsXNumericType();
 
         }
+
+        internal static bool HasInstanceAttribute(this Symbol symbol)
+        {
+            return symbol is { } && symbol.GetAttributes().Any(a => a.AttributeClass.IsInstanceAttribute());
+        }
+
+        internal static bool IsInstanceAttribute(this TypeSymbol type)
+        {
+            return type is { } &&
+                type.ContainingAssembly.IsRT() &&
+                (type.Name == OurTypeNames.IsInstance || type.Name == OurTypeNames.IsVoInstance);
+        }
         internal static bool IsUsualType(this TypeSymbol type)
         {
             return type is { } && type.Name == OurTypeNames.UsualType;

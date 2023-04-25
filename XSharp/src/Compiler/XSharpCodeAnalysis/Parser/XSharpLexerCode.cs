@@ -1579,6 +1579,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 case ALIAS:
                 case COLON:
+                case COLONCOLON:
                 case DOT:
                     return ID;
             }

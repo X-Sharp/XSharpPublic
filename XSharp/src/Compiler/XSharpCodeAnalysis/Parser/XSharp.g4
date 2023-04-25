@@ -1103,21 +1103,21 @@ queryContinuation   : I=INTO Id=identifier Body=queryBody
 
 
 // All New Vulcan and X# keywords can also be recognized as Identifier
-identifier          : ID            // No names, we use the Start property to access the token
+identifier          : ID            // No rule names, we use the Start property to access the token
                     | keywordxs
                     | keywordxpp
                     | keywordfox
-                    | xbaseType
-                    | nativeType
+                    | {IsXPP || IsFox}? xbaseType     // VO, Vulcan and Core allow TYPE(something)
+                    | {IsXPP || IsFox}? nativeType    // VO, Vulcan and Core allow TYPE(something)
                     ;
 
-identifierString    : ID            // No names, we use the Start property to access the token
+identifierString    : ID            // No rule names, we use the Start property to access the token
                     | STRING_CONST
                     | keywordxs
                     | keywordxpp
                     | keywordfox
-                    | xbaseType
-                    | nativeType
+                    | xbaseType    
+                    | nativeType   
                     ;
 
 
@@ -1218,7 +1218,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     // The following did not exist in Vulcan
                     | ADD | ARGLIST | ASCENDING | ASTYPE | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM
                     | GROUP | INIT | INTO | JOIN | LET | NAMEOF | OF | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE
-                    | SELECT | STACKALLOC | UNCHECKED | VAR | VOLATILE | WHEN | WHERE
+                    | SELECT | STACKALLOC | UNCHECKED | VAR | VOLATILE | WHEN | WHERE | BINARY | CHAR | CURRENCY | DECIMAL | DATETIME | NINT | NUINT
                     // Added as XS keywords to allow them to be treated as IDs
                     // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
                     | DELEGATE | ENUM | GLOBAL | INHERIT | STRUCTURE

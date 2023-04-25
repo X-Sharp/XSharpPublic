@@ -27,7 +27,7 @@ FUNCTION Start( ) AS VOID
 
 FUNCTION CreatePublicArray() AS VOID
     PUBLIC ARRAY pubarray [2,2]    // With ARRAY keyword and brackets
-    PUBLIC pubarray (2,2)          // Without ARRAY keyword and with parentheses
+    PUBLIC pubarray2 (2,2)          // Without ARRAY keyword and with parentheses
 	RETURN
 
 

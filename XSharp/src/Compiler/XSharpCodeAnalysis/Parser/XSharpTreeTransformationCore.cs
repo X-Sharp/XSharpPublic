@@ -613,6 +613,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        protected AccessorListSyntax MakeAccessorList(IEnumerable<AccessorDeclarationSyntax> accessors)
+        {
+            return _syntaxFactory.AccessorList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                    MakeList(accessors),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+        }
+        protected AccessorListSyntax MakeAccessorList(params AccessorDeclarationSyntax[] accessors)
+        {
+            return MakeAccessorList(accessors.ToList());
+        }
+
         protected SyntaxList<T> MakeList<T>(IEnumerable<IXParseTree> t)
             where T : InternalSyntax.CSharpSyntaxNode
         {
@@ -1055,7 +1067,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected MemberAccessExpressionSyntax MakeSimpleMemberAccess(ExpressionSyntax lhs, SimpleNameSyntax rhs)
         {
             return _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, lhs,
-                                                        SyntaxFactory.MakeToken(SyntaxKind.DotToken), rhs);
+                                                        SyntaxFactory.MakeGeneratedToken(SyntaxKind.DotToken), rhs);
         }
         protected TypeOfExpressionSyntax MakeTypeOf(TypeSyntax type)
         {
@@ -1907,7 +1919,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 voPropArgs = Array.Empty<ArgumentSyntax>();
             }
             #endregion
-            var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
+            var accessors = new List<AccessorDeclarationSyntax>();
             IXParseTree xnode = null;
             bool paramMatch = true;
             #region ACCESS = Get Accessor
@@ -2134,8 +2146,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             #endregion
             BasePropertyDeclarationSyntax prop;
-            var accessorList = _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                        accessors, SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            var accessorList = MakeAccessorList(accessors);
             // A Property in Roslyn is either an Indexer (when there are parameters)
             // or a property
             if (voPropParams != null)
@@ -2165,7 +2176,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             }
 
-            _pool.Free(accessors);
             _pool.Free(getMods);
             _pool.Free(setMods);
             _pool.Free(outerMods);
@@ -3214,10 +3224,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (singleLine)         // Single Line Syntax
             {
-                var acclist = _syntaxFactory.AccessorList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                    MakeList<AccessorDeclarationSyntax>(context._LineAccessors),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                var acclist = MakeList<AccessorDeclarationSyntax>(context._LineAccessors);
                 MemberDeclarationSyntax decl = _syntaxFactory.EventDeclaration(
                     attributeLists: attrLists,
                     modifiers: mods,
@@ -3225,16 +3232,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     type: type_,
                     explicitInterfaceSpecifier: explif,
                     identifier: context.Id.Get<SyntaxToken>(),
-                    accessorList: acclist,
+                    accessorList: MakeAccessorList(acclist.Nodes),
                     semicolonToken: null);
                 context.Put(decl);
             }
             else if (multiLine)        // Multi line Syntax
             {
-                var acclist = _syntaxFactory.AccessorList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                    MakeList<AccessorDeclarationSyntax>(context._Accessors),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                var acclist = MakeList<AccessorDeclarationSyntax>(context._Accessors);
                 MemberDeclarationSyntax decl = _syntaxFactory.EventDeclaration(
                     attributeLists: attrLists,
                     modifiers: mods,
@@ -3242,7 +3246,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     type: type_,
                     explicitInterfaceSpecifier: explif,
                     identifier: context.Id.Get<SyntaxToken>(),
-                    accessorList: acclist,
+                    accessorList: MakeAccessorList(acclist.Nodes),
                     semicolonToken: null);
                 context.Put(decl);
             }
@@ -3286,10 +3290,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         ),
                                     expressionBody: null,
                                     semicolonToken: null);
-                    var acclist = _syntaxFactory.AccessorList(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                        MakeList(add_, remove_),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+                    var acclist = MakeAccessorList(add_, remove_);
                     MemberDeclarationSyntax decl = _syntaxFactory.EventDeclaration(
                         attributeLists: attrLists,
                         modifiers: mods,
@@ -3596,10 +3597,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 list = MakeList<AccessorDeclarationSyntax>(context._Accessors);
             }
-            var accessorList = _syntaxFactory.AccessorList(
-                                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                                    list,
-                                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            var accessorList = MakeAccessorList(list.Nodes);
             var explicitif = context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
                         dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken));

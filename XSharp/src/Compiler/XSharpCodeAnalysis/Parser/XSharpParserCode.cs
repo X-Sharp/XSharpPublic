@@ -59,17 +59,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool AllowNamedArgs => Options.AllowNamedArguments;
         public bool IsXPP => Options.Dialect == XSharpDialect.XPP;
         public bool IsFox => Options.Dialect == XSharpDialect.FoxPro;
-        public bool IsVO => Options.Dialect == XSharpDialect.VO || Options.Dialect == XSharpDialect.Vulcan;
+        public bool IsVO => Options.Dialect switch { XSharpDialect.VO => true, XSharpDialect.Vulcan => true, _ => false };
+        public bool IsCoreVO => Options.Dialect switch { XSharpDialect.Core => true, XSharpDialect.VO => true, XSharpDialect.Vulcan => true, _ => false };
         public bool HasMemVars => Options.SupportsMemvars;
-#if !VSPARSER
-        void unexpectedToken(string token)
-        {
-            if (Interpreter.PredictionMode == Antlr4.Runtime.Atn.PredictionMode.Sll)
-                throw new ParseCanceledException("Unexpected '" + token + "'token");
 
-            NotifyErrorListeners("Unexpected '" + token + "' token");
-        }
-#endif
         bool ExpectToken(int type)
         {
             int icurrent = 1;

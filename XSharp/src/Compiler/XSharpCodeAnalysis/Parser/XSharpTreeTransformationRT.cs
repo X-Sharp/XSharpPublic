@@ -3289,7 +3289,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var mac = expr as MemberAccessExpressionSyntax;
                 var mName = mac.Name as IdentifierNameSyntax;
                 string methodName = mName?.Identifier.Text;
-                if (XSharpString.Equals(methodName, XSharpIntrinsicNames.InitMethod))
+                if (string.Equals(methodName, XSharpIntrinsicNames.InitMethod, StringComparison.OrdinalIgnoreCase))
                 {
                     var mExpr = mac.Expression;
                     if (mExpr is ThisExpressionSyntax || mExpr is BaseExpressionSyntax)
@@ -3309,7 +3309,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     }
                 }
-                else if (XSharpString.Equals(methodName, XSharpIntrinsicNames.AxitMethod))
+                else if (string.Equals(methodName, XSharpIntrinsicNames.AxitMethod, StringComparison.OrdinalIgnoreCase))
                 {
                     var result = GenerateNIL();
                     result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_CallingFinalizeDeprecated));

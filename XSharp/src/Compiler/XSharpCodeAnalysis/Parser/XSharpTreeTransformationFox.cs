@@ -974,7 +974,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private MemberDeclarationSyntax createProperty(string fldName, TypeSyntax type, XSharpParserRuleContext context, XP.ClassvarModifiersContext modifiers)
         {
-            var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
+            var accessors = new List<AccessorDeclarationSyntax>();
             var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
                     default, default,
                     SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
@@ -994,9 +994,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             accessor.XGenerated = true;
             accessors.Add(accessor);
             var id = SyntaxFactory.MakeIdentifier(fldName);
-            var accessorList = _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                        accessors, SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
-            _pool.Free(accessors);
+            var accessorList = MakeAccessorList(accessors);
             var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, false);
             var prop = _syntaxFactory.PropertyDeclaration(
                    attributeLists: default,

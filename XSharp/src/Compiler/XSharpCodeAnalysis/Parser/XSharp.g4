@@ -1107,8 +1107,8 @@ identifier          : ID            // No rule names, we use the Start property 
                     | keywordxs
                     | keywordxpp
                     | keywordfox
-                    | {IsXPP || IsFox}? xbaseType     // VO, Vulcan and Core allow TYPE(something)
-                    | {IsXPP || IsFox}? nativeType    // VO, Vulcan and Core allow TYPE(something)
+                    | {!IsCoreVO}? xbaseType     // VO, Vulcan and Core allow TYPE(something)
+                    | {!IsCoreVO}? nativeType    // VO, Vulcan and Core allow TYPE(something)
                     ;
 
 identifierString    : ID            // No rule names, we use the Start property to access the token

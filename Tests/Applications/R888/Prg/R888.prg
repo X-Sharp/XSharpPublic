@@ -13,9 +13,17 @@ procedure main()
     xAssert(o:GetA()  == 3)
     ? o:GetB()
     xAssert(o:GetB()  == 4)
+    xAssert(o:BaseClass:GetA() == 3)    // BaseClass returns Super
+    xAssert(o:BaseClass:GetB() == 4)
     return
 
 class DerivedClass from BaseClass
+exported:
+    inline method Init(a, b)
+    ::BaseClass:Init(a,b)
+    xAssert(::BaseClass:GetA() == a)
+    xAssert(::BaseClass:GetB() == b)
+    return self
 endclass
 
 class BaseClass

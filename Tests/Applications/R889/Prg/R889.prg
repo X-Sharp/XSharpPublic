@@ -6,19 +6,24 @@
 // XPP The 'FROM' clause is interpreted as SHARING because variables in parent classes are always shared in the .Net Runtime.
 procedure Main()
     local o
-
+    local p
     o := DerivedExample():new()
     ? o:SayHello()
     xAssert(o:SayHello() == "Hello, I am DerivedExample")
+    o:Example:SayHello()
+    ? Example():Test()
+    xAssert(Example():Test() == "Test")
+    ? Example():ClassVar
+    xAssert(Example():ClassVar == 42)
+    p := PartList():New()
+    p:Add("a",11)
+    p:Add("b",20)
+    p:Add("c",33)
+    ? p:TotalCost()
+    xAssert(p:TotalCost() == 64)
+    ? p:AverageCost()
+    xAssert(p:AverageCost() == 64/3)
 
-    o := PartList():New()
-    o:Add("a",11)
-    o:Add("b",20)
-    o:Add("c",33)
-    ? o:TotalCost()
-    xAssert(o:TotalCost() == 64)
-    ? o:AverageCost()
-    xAssert(o:AverageCost() == 64/3)
     return
 
 
@@ -31,6 +36,11 @@ endclass
 
 class Example
 exported:
+    inline class method Test()
+        return "Test"
+    class var ClassVar
+    inline class method InitClass
+        ::ClassVar := 42
     inline method Name()
         return "Example"
 

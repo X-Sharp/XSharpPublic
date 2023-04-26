@@ -193,7 +193,6 @@
       <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER,OPT_WEBFONTS</config-value>
       <config-value name="make5include">PRINT</config-value>
       <config-value name="make5status">*</config-value>
-      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>

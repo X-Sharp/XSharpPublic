@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-04-25T21:43:51.444+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-04-26T16:20:30.871+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -17,17 +17,26 @@
     <para styleclass="Body Text"></para>
     <para styleclass="Heading1">Changes in 2.16.0.0</para>
     <para styleclass="Heading2">Compiler</para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features Xbase++ dialect</text></para>
+    <para styleclass="Body Text">We have made several changes in the way how Xbase++ class definitions are generated. Please check your code extensively with this new build !</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">In the Xbase++ dialect we now generate a class function for all classes. This returns the same object as the ClassObject() method for Xbase++ classes. <br/>From the Class function you can access class variables and class methods. <br/>This class function is generated, regardless of the /xpp1 compiler option. <br/>The Class function depends on the function __GetXppClassObject and the XSharp.XPP.StaticClassObject class that both can be found in the XSharp.XPP assembly(#1235)</li>
-      <li styleclass="Body Text">In Xbase++ you can have fields (VAR) and properties (ACCESS / ASSIGN METHOD) with the same name, even with same visibility. Previously this was not supported.<br/>The compiler now automatically makes the field private and marks it with the [IsInstance] attribute. Inside the code of the class the name will resolve to the field. In code outside of the class the name will resolve to the property.</li>
+      <li styleclass="Body Text">We now generate a class function for all classes. This returns the same object as the ClassObject() method for Xbase++ classes. <br/>This class function is generated, regardless of the /xpp1 compiler option. <br/>The Class function depends on the function __GetXppClassObject and the XSharp.XPP.StaticClassObject class that both can be found in the XSharp.XPP assembly(#1235).<br/>From the Class function you can access class variables and class methods. </li>
+      <li styleclass="Body Text">In Xbase++ you can have fields (VAR) and properties (ACCESS / ASSIGN METHOD) with the same name, even with same visibility. Previously this was not supported.<br/>The compiler now automatically makes the field protected (or private for FINAL classes) and marks it with the [IsInstance] attribute. <br/>Inside the code of the class the compiler will now resolve the name to the field. In code outside of the class the compiler will resolve the name to the property.</li>
+      <li styleclass="Body Text">For derived classes the compiler now automatically generates a property with the name of the parentclass, that is declared as the parent class and returns the equivalent to SUPER.</li>
+      <li styleclass="Body Text">We have fixed an issue with the FINAL, INTRODUCE and OVERRIDE keywords for Xbase++ methods (#1244)</li>
+      <li styleclass="Body Text">We have fixed some issues with accessing static class members in the XBase++ dialect (#1215)</li>
+      <li styleclass="Body Text">You can now use the &quot;::&quot; prefix to access class variables and class methods inside class methods. </li>
+      <li styleclass="Body Text">When a class is declared as subclass from another class then the compiler generates a (typed) property in the subclass to access the parent class, like Xbase++ does. This property returns the value &quot;super&quot;.</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features other dialects</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Inside Visual Objects you could declare fields with the INSTANCE keyword and add ACCESS/ASSIGN methods with the same name as the INSTANCE field.<br/>In previous builds of X# this was not supported. <br/>The compiler now handles this correctly and resolves the name to the field in code inside methods/properties of the class and resolves the name to the property in code outside of the class.</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed some method overload resolution issues in the VO dialect (#1211)</li>
       <li styleclass="Body Text">Fixed internal compiler error (insufficient stack) with huge DO CASE statement (#1214)</li>
-      <li styleclass="Body Text">Fixed some issues with accessing static class members in the XBase++ dialect (#1215)</li>
       <li styleclass="Body Text">Fixed a problem with the Interpolated/Extended string syntax (#1218)</li>
       <li styleclass="Body Text">Fixed some issues with incorrectly allowing accessing static class members with the colon operator or instance members with the dot operator (#1219,#1220)</li>
       <li styleclass="Body Text">Fixed Incorrect visibility of MEMVARs created with MemVarPut() (#1223)</li>
@@ -35,7 +44,6 @@
       <li styleclass="Body Text">If the preprocessor generated date and/or datetime literals then these were not recognized. This has been fixed (#1232)</li>
       <li styleclass="Body Text">Fixed a problem with the preprocessor matching of the last optional token (#1241)</li>
       <li styleclass="Body Text">Fixed a problem with recognizing the ENDSEQUENCE keyword in the Xbase++ dialect (#1243)</li>
-      <li styleclass="Body Text">Fixed an issue with the FINAL, INTRODUCE and OVERRIDE keywords for Xbase++ methods (#1244)</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>

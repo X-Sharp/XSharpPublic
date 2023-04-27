@@ -782,20 +782,20 @@ BEGIN NAMESPACE MacroCompilerTest
         RETURN RuntimeState.MacroCompiler
 
     FUNCTION ReportMemory(description AS STRING) AS VOID
-        Console.WriteLine("Memory: {0} ({1})", GC:GetTotalMemory(TRUE),description)
+        Console.WriteLine("Memory: {0} ({1})", GC.GetTotalMemory(TRUE),description)
         Console.WriteLine()
         RETURN
 
     FUNCTION TestMacroCompiler(mc AS IMacroCompiler, source AS STRING, iterations AS INT, check_mem AS LOGIC, compile AS LOGIC) AS VOID
         Console.WriteLine("Start {0} {1} ({2} iterations) ...", IIF(compile,"compiler","parser"), IIF(check_mem,"memory test","benchmark"), iterations);
 
-        VAR m := GC:GetTotalMemory(TRUE)
+        VAR m := GC.GetTotalMemory(TRUE)
         VAR t := DateTime.Now
 
         FOR VAR i := 0 TO iterations
             LOCAL m0 := 0 AS INT64
             IF (check_mem)
-                m0 := GC:GetTotalMemory(FALSE)
+                m0 := GC.GetTotalMemory(FALSE)
             END
 
             IF (compile)
@@ -805,7 +805,7 @@ BEGIN NAMESPACE MacroCompilerTest
             END
 
             IF (check_mem)
-                Console.WriteLine("  Iteration {0} memory: +{1} bytes", i+1, GC:GetTotalMemory(FALSE) - m0)
+                Console.WriteLine("  Iteration {0} memory: +{1} bytes", i+1, GC.GetTotalMemory(FALSE) - m0)
             END
         NEXT
 
@@ -813,7 +813,7 @@ BEGIN NAMESPACE MacroCompilerTest
         t += dt
         IF (!check_mem)
             Console.WriteLine("  Completed in {0} ({1} ms/iter, {2:#} iters/sec)", dt, dt:TotalMilliseconds/iterations, iterations/dt:TotalSeconds)
-            Console.WriteLine("  Memory: +{0} bytes", GC:GetTotalMemory(FALSE) - m)
+            Console.WriteLine("  Memory: +{0} bytes", GC.GetTotalMemory(FALSE) - m)
         END
 
         Console.WriteLine()

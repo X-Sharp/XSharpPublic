@@ -20688,71 +20688,15 @@
 
         <param name="kInfoType">
             Specifies the setting.<br/>
-            The initial default of a setting depends on the RDD.<br/>
-
-            &#0009;The constants are described in the Constants section below.  Note, however, that not all constants are supported for all RDDs.<br/>
-
-            &#0009;Important!  _SET_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters.  Values less than _SET_USER are reserved for CA development.
+            <include file="RTComments.xml" path="Comments/RddInfoParam/*"  />
         </param>
         <param name="uNewSetting">
             If specified, this parameter is used to change the value of a setting.<br/>
             The data type (and whether <paramref name="uNewSetting" /> can be specified), depends on the <paramref name="kInfoType" /> constant and is documented in the Constants section below.<br/>
-
-            <br/>
-
-
-
-            &#0009;_SET_AUTOOPEN&#0009;Returns and optionally changes the logical flag that determines whether the RDD will open production indexes automatically when a database file is opened.<br/>
-            A TRUE setting indicates that the production index is opened automatically.<br/>
-
-            &#0009;_SET_AUTOORDER&#0009;Returns and optionally changes the numeric setting that determines whether the production index will set a controlling order.<br/>
-            A setting of 1 indicates that the first order in the production index will be the controlling order.<br/>
-            A setting of 0 indicates that database files will be processed in natural order when the production index is initially opened.<br/>
-
-            &#0009;_SET_AUTOSHARE&#0009;Returns and optionally changes the numeric setting that determines the automatic sharing mode.<br/>
-
-            &#0009;A setting of 0 completely disables automatic sharing control.<br/>
-            This is primarily useful when developing network applications in a stand-alone environment.<br/>
-
-            &#0009;A setting of 1 causes the RDD to determine at runtime whether the application is running in a network environment.<br/>
-            If not, the RDD automatically opens all files in exclusive mode.<br/>
-            This allows you to write code that is network-aware, while still getting optimal performance when you application is running in single-user mode.<br/>
-
-            &#0009;A setting of 2 opens all files in exclusive mode, regardless of the current environment.<br/>
-            Using this mode, you can easily convert an application designed for a network environment to work as a single-user application.<br/>
-            This is useful if you prefer to deliver separate stand-alone and LAN versions of the application.<br/>
-
-            &#0009;_SET_BLOB_CIRCULAR_ARRAY_REF<br/>
-
-            &#0009;Returns and optionally sets the logical flag indicating whether to check for circular array references when storing and retrieving arrays to and from BLOB fields.<br/>
-            A FALSE setting indicates that the RDD will not check for circular references.<br/>
-
-            &#0009;The algorithm for storing/retrieving arrays uses a recursive process which will call itself indefinitely if the array has a circular reference, quickly exhausting the program's stack.  You can set RDDInfo(_SET_BLOB_CIRCULAR_ARRAY_REF, TRUE) to cause the algorithm to check for and correctly process circular references.  Note, however, that the checking takes extra time and is unnecessary unless there are circular references.<br/>
-
-            &#0009;_SET_DEFAULTRDD&#0009;Returns the name of the default RDD, specified as a string.<br/>
-
-            &#0009;_SET_HPLOCKING&#0009;Returns and optionally changes the logical flag that determines whether to use the High Performance (HP) locking schema for newly created index files.<br/>
-            A FALSE setting indicates that the HP locking schema is not used.<br/>
-
-            &#0009;_SET_MEMOBLOCKSIZE<br/>
-
-            &#0009;Returns and optionally changes the numeric value specifying block size (in bytes) for memo files.<br/>
-
-            &#0009;_SET_MEMOEXT&#0009;Returns and optionally changes the string value indicating the default memo file extension.<br/>
-
-            &#0009;_SET_NEWINDEXLOCK<br/>
-
-            &#0009;Returns and optionally changes the logical flag that determines the locking offset flag for newly created index files.<br/>
-            A FALSE setting indicates a locking offset that is compatible with Xbase applications but more restrictive than the offset that will be used if this flag is set to TRUE.<br/>
-
-            &#0009;_SET_OPTIMIZE&#0009;Returns and optionally changes the logical flag that determines whether optimization will be used when filtering records in the database files.<br/>
-            A TRUE setting indicates that the RDD will use the available orders in a work area to make processing a filtered database as efficient as possible.<br/>
-
-            &#0009;_SET_STRICTREAD&#0009;Returns and optionally changes the logical flag that determines whether the RDD will read records directly from disk when creating orders.<br/>
-
-            &#0009;A FALSE setting indicates that the RDD will read records directly from disk when creating orders, which is the most efficient setting.  However, if you are using a DBF RDD layer that encrypts the database file, this setting will give incorrect results because the RDD will see the encrypted value rather than the actual value of the records.  In order to use the RDD with encryption packages, use RDDInfo(_SET_STRICTREAD, TRUE).<br/>
-            This setting lets the DBF RDD layer read the records when creating an order.
         </param>
+        <remarks>
+            <include file="RTComments.xml" path="Comments/RddInfoRemarks/*"  />
+        </remarks>
         <returns>
             If <paramref name="uNewSetting" /> is not specified, RDDInfo() returns the current setting.<br/>
             If <paramref name="uNewSetting" /> is specified, the previous setting is returned.
@@ -22687,6 +22631,21 @@
         </example>
         <seealso cref='O:XSharp.RT.Functions.Between'>Between</seealso>
     </setfloatdelta>
+    <setrefresh>
+        <summary>
+            Retrieve and optionally set the time for which the RDD system caches data.
+        </summary>
+
+        <param name="nNewSetting">The acceptable difference between 2 numbers.</param>
+        <returns>
+            If <paramref name="nNewSetting" /> is not specified, SetRefresh() returns the current setting.<br/>
+            If <paramref name="nNewSetting" /> is specified, the previous setting is returned.
+        </returns>
+        <remarks>
+            SetRefresh() determines the time in seconds that the RDD system keeps data in memory before checking for changes by other users.
+        </remarks>
+        <seealso cref='O:XSharp.Core.Functions.SetRefresh'>SetRefresh</seealso>
+    </setrefresh>
     <setinternational>
         <summary>
             Return and optionally change the setting that determines the international mode for the application.

@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 //#define XDEBUG
+using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator;
 using Microsoft.VisualStudio.Debugger.Clr;
@@ -50,6 +51,7 @@ namespace XSharpDebugger.ExpressionCompiler
             xoptions.SetOption(CompilerOption.Vo14, XDebuggerSettings.Vo14);
             xoptions.SetOption(CompilerOption.LateBinding, !XDebuggerSettings.NoLateBinding);
             xoptions.SetOption(CompilerOption.AllowDotForInstanceMembers, lAllowDot);
+            XSharpString.CaseSensitive = XDebuggerSettings.CaseSensitive;
             XSyntaxHelpers.XSharpOptions = xoptions;
         }
 

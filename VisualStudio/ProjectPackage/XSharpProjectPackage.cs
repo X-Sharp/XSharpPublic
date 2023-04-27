@@ -260,6 +260,7 @@ namespace XSharp.Project
             XDebuggerSettings.Vo13 = doptions.Vo13;
             XDebuggerSettings.Vo14 = doptions.Vo14;
             XDebuggerSettings.NoLateBinding = doptions.NoLateBinding;
+            XDebuggerSettings.CaseSensitive = doptions.CaseSensitive;
 
             var woptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
             XCustomEditorSettings.ShowGrid = woptions.ShowGrid;

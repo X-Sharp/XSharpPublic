@@ -14,7 +14,9 @@ namespace XSharp.Project.Options
         public bool AllowEditing { get; set; } = false;
 
         const string Options = "Options";
-        [Category(Options)]
+        const string General = "General";
+        const string Variables = "Variables";
+        [Category(General)]
         [DisplayName(GeneralPropertyPagePanel.captDialect)]
         [Description(GeneralPropertyPagePanel.descDialect)]
         [DefaultValue(XD.XSharpDialect.VO)]
@@ -25,13 +27,13 @@ namespace XSharp.Project.Options
         [DefaultValue(false)]
         public bool ArrayZero { get; set; } = false;
 
-        [Category(Options)]
+        [Category(Variables)]
         [DisplayName(LanguagePropertyPagePanel.MemVarCaption)]
         [Description(LanguagePropertyPagePanel.MemVarDescription)]
         [DefaultValue(false)]
         public bool MemVars { get; set; } = false;
 
-        [Category(Options)]
+        [Category(Variables)]
         [DisplayName(LanguagePropertyPagePanel.UndeclaredCaption)]
         [Description(LanguagePropertyPagePanel.UndeclaredDescription)]
         [DefaultValue(false)]
@@ -73,12 +75,17 @@ namespace XSharp.Project.Options
         [DefaultValue(false)]
         public bool Vo6 { get; set; } = false;
 
+        [Category(General)]
+        [DisplayName(LanguagePropertyPagePanel.CSCaption)]
+        [Description(LanguagePropertyPagePanel.CSDescription)]
+        [DefaultValue(false)]
+        public bool CaseSensitive { get; set; } = false;
         [Category(Options)]
         [DisplayName(DialectPropertyPagePanel.VO14Caption)]
         [Description(DialectPropertyPagePanel.VO14Description)]
         [DefaultValue(false)]
         public bool Vo14 { get; set; } = false;
-        [Category(Options)]
+        [Category(General)]
         [DisplayName(NoLBCaption)]
         [Description(NoLBDescription)]
         [DefaultValue(false)]

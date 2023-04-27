@@ -578,3 +578,14 @@ FUNCTION SetCollation(symNewSetting AS STRING)  AS STRING
 FUNCTION SetTimeFormat(timeformat AS STRING) AS VOID
     RuntimeState.GetInstance():_SetTimeFormat(timeformat)
 
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setrefresh/*" />
+FUNCTION SetRefresh(nNewSetting AS REAL8) AS REAL8
+	VAR result := RuntimeState.Refresh
+	RuntimeState.Refresh := nNewSetting
+	RETURN result
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setrefresh/*" />
+FUNCTION SetRefresh() AS REAL8
+	RETURN RuntimeState.Refresh

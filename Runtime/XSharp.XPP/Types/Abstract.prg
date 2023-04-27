@@ -8,12 +8,8 @@ USING System.Reflection
 USING System.Collections.Generic
 USING XSharp.Internal
 
-FUNCTION __GetXppClassObject(type AS System.Type) AS ILateBound
-    RETURN Abstract.GetClassObject(type)
-
-
 [AllowLateBinding];
-abstract class XSharp.XPP.Abstract 
+abstract class XSharp.XPP.Abstract
     PRIVATE inSend := FALSE AS LOGIC
     PRIVATE STATIC classObjects AS Dictionary<System.Type, ILateBound>
 

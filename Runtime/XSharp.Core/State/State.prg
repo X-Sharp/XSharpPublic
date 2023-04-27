@@ -651,6 +651,15 @@ CLASS XSharp.RuntimeState
         GET GetValue<LOGIC>(Set.Optimize);
         SET SetValue<LOGIC>(Set.Optimize, value)
 
+
+    /// <summary>The current SetRefresh flag.</summary>
+   /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+   /// <seealso cref="SetRefresh" />
+   /// <seealso cref="Set.Refresh" />
+   STATIC PROPERTY Refresh AS REAL8 ;
+       GET GetValue<REAL8>(Set.Refresh);
+       SET SetValue<REAL8>(Set.Refresh, value)
+
 	/// <summary>The current SetSafety flag.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="SetSafety" />

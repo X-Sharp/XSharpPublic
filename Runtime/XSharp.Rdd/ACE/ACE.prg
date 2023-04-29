@@ -711,6 +711,8 @@ BEGIN NAMESPACE XSharp.ADS
     PUBLIC CONST ADS_CURDOUBLE := 17 AS WORD    /* IEEE 8 byte floating point currency */
     PUBLIC CONST ADS_MONEY := 18 AS WORD        /* 8 byte, 4 implied decimal Currency Field */
     PUBLIC CONST ADS_INT64  := 19 AS WORD       /* 8 byte integer */
+    PUBLIC CONST ADS_LONGINT  := 19 AS WORD     /* 8 byte integer */
+    PUBLIC CONST ADS_LONGLONG  := 19 AS WORD    /* 8 byte integer. Deprecated. Use ADS_LONGINT instead. */
     PUBLIC CONST ADS_CISTRING := 20 AS WORD     /* CaSe INSensiTIVE character data */
     PUBLIC CONST ADS_ROWVERSION := 21 AS WORD   /* 8 byte integer, incremented for every update, unique to entire table */
     PUBLIC CONST ADS_MODTIME := 22 AS WORD      /* 8 byte timestamp, updated when record is updated */
@@ -2121,7 +2123,7 @@ BEGIN NAMESPACE XSharp.ADS
         RETURN delGetLastError(OUT pulErrCode, strBuf, REF pusBufLen)
 
     PUBLIC STATIC METHOD AdsGetMemoLength(hTable AS IntPtr, lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD
-        RETURN delGetMemoLengthD(hTable, lFieldOrdinal, OUT pulLength) 
+        RETURN delGetMemoLengthD(hTable, lFieldOrdinal, OUT pulLength)
 
     PUBLIC STATIC METHOD AdsGetMemoLength(hTable AS IntPtr, strFldName as STRING, pulLength OUT DWORD ) AS DWORD
         IF Is32Bits

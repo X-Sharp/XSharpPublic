@@ -227,9 +227,9 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
                             // clear end of block
                             LOCAL pClear AS IntPtr
                             IF Is32Bits
-                                pClear := (IntPtr) pMem:ToInt32()+ nOldSize
+                                pClear := (IntPtr) pMem:ToInt32()+ nNewSize
                             ELSE
-                                pClear := (IntPtr) pMem:ToInt64()+ nOldSize
+                                pClear := (IntPtr) pMem:ToInt64()+ nNewSize
                             ENDIF
                             Clear( pClear, (INT) (nOldSize - (INT) nNewSize))
                             pResult := pMem

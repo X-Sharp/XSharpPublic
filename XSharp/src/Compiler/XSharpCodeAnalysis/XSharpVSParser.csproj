@@ -23,7 +23,7 @@
     <VsExternalDir>$(DevPublicDir)external\$(Configuration)</VsExternalDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>$(GenericDefines);XSHARP;;TRACE;DEBUG</DefineConstants>
+    <DefineConstants>$(GenericDefines);XSHARP;TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Public|AnyCPU' "> 
     <DefineConstants>$(GenericDefines);XSHARP;TRACE</DefineConstants>
@@ -46,16 +46,10 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Properties\Constants.cs</Link>
     </Compile>
-    <Compile Remove="Antlr4.Runtime\Properties\AssemblyInfo.cs" />
     <Compile Remove="Assembly.cs" />
     <Compile Remove="CodeAnalysisResources.Designer.cs" />
     <Compile Remove="CommandLine\Compilation.cs" />
     <Compile Remove="CSharpCompilation.cs" />
-    <Compile Remove="ParserTest.cs" />
-    <Compile Remove="Antlr4.Runtime\Misc\Array2DHashSet`1.cs" />
-    <Compile Remove="Antlr4.Runtime\Misc\DoubleKeyMap`3.cs" />
-    <Compile Remove="Antlr4.Runtime\Misc\RuleDependencyProcessor.cs" />
-    <Compile Remove="Antlr4.Runtime\Misc\TestRig.cs" />
     <Compile Remove="Parser\XSharpCompilerGeneratedCode.cs" />
     <Compile Remove="Parser\XSharpLanguageParser.cs" />
     <Compile Remove="Parser\XSharpParseErrorAnalysis.cs" />
@@ -66,16 +60,6 @@
     <Compile Remove="XSharpResources.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Generated\XSharpParser.cs">
-      <DependentUpon>Parser\XSharp.g4</DependentUpon>
-    </Compile>
-    <Compile Update="Generated\XSharpLexer.cs">
-      <DependentUpon>Parser\XSharpLexer.g4</DependentUpon>
-    </Compile>
-    <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
-    <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.tokens" />
-    <None Include="Parser\*.g4" />
-    <None Include="Generated\*.tokens" />
     <Compile Remove="Compilation\**" />
     <Compile Remove="Parser\XSharpTree*.*" />
     <Compile Remove="Binder\*.*" />
@@ -94,30 +78,15 @@
     <Content Include="Preprocessor\harbourppdoc.txt" />
     <Content Include="Preprocessor\preprocessor.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Antlr4.Runtime\Properties\" />
-  </ItemGroup>
   
-  
-  
-  <Target Name="CreateDirectories" AfterTargets="BeforeBuild" >
-    <Message Importance="high" Text="Create folder $(VsExternalDir) when needed" />
-    <MakeDir Directories="$(VsExternalDir)" /> 
-    <MakeDir Directories="$(ZipsDir)" /> 
-  </Target>
-  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(VsExternalDir)') and '$(IsCrossTargetingBuild)' != 'true'" >
-    <ItemGroup>
-      <VsparserFiles Include="$(OutputPath)\*.*" /> 
-    </ItemGroup>
-    <Message Importance="high" Text="Copy output files for $(ProjectName) to $(VsExternalDir)" />
-    <Copy SourceFiles="@(VsparserFiles)" DestinationFolder="$(DevPublicDir)external\$(ConfigurationName)" />
-  </Target>
+  <Import Project="Extra.Targets" />
   <Target Name="DeleteMsFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != '' ">
     <ItemGroup>
       <FilesToDelete Include="$(OutputPath)\Microsoft*.*" />
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
   </Target>
+
   <Target Name="ZipOutputPath" AfterTargets="DeleteMsFiles" Condition="'$(TargetFramework)' != '' AND '$(CreateZips)' != '' ">
     <ZipDirectory SourceDirectory="$(OutputPath)" DestinationFile="$(ZipsDir)\$(MSBuildProjectName).$(TargetFramework).$(Configuration).zip" Overwrite="true" />
   </Target>  

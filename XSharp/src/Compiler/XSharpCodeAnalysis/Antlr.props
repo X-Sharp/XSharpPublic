@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
   <PropertyGroup>
     <AntlrDir>$(Solutiondir)eng\</AntlrDir>
     <AntlrCall>java -jar $(AntlrDir)antlr4-csharp-4.6.1-SNAPSHOT-complete.jar</AntlrCall>
@@ -16,14 +15,28 @@
     <TicksL2>$([System.IO.File]::GetLastWriteTime('$(AntlrLexerOut)').Ticks)</TicksL2>
     <TicksP1>$([System.IO.File]::GetLastWriteTime('$(AntlrParserIn)').Ticks)</TicksP1>
     <TicksP2>$([System.IO.File]::GetLastWriteTime('$(AntlrParserOut)').Ticks)</TicksP2>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath);$(AntlrLexerIn);$(AntlrParserIn)</MSBuildAllProjects>
   </PropertyGroup>
   <!--These tasks will only run when needed. We compare filedates for the input and output-->
-  <Target Name="AntlrLexer" BeforeTargets="CoreCompile" Condition="$(TicksL1) > $(TicksL2)" >
+  <Target Name="AntlrLexer" BeforeTargets="DispatchToInnerBuilds" Condition="$(TicksL1) > $(TicksL2)" >
     <Message Importance="high" Text="Building Lexer" />
     <Exec Command="$(AntlrCall) $(AntlrParams) $(AntlrLexerIn)" />
   </Target>
-  <Target Name="AntlrParser" BeforeTargets="CoreCompile" Condition="$(TicksP1) > $(TicksP2)" >
-    <Message Importance="high" Text="Building Parser" />
+  <Target Name="AntlrParser" BeforeTargets="DispatchToInnerBuilds" Condition="$(TicksP1) > $(TicksP2) " >
+    <Message Importance="high" Text="Building Parser" /> 
     <Exec Command="$(AntlrCall) $(AntlrParams) $(AntlrParserIn)" />
-  </Target>
+  </Target> 
+  <ItemGroup>
+    <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
+    <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.tokens" />
+    <None Include="Parser\*.g4" />
+    <None Include="Generated\*.tokens" />
+    <Compile Remove="ParserTest.cs" />
+    <Compile Remove="Antlr4.Runtime\Properties\AssemblyInfo.cs" />
+    <Compile Remove="Antlr4.Runtime\Misc\Array2DHashSet`1.cs" />
+    <Compile Remove="Antlr4.Runtime\Misc\DoubleKeyMap`3.cs" />
+    <Compile Remove="Antlr4.Runtime\Misc\RuleDependencyProcessor.cs" />
+    <Compile Remove="Antlr4.Runtime\Misc\TestRig.cs" />
+
+  </ItemGroup>
 </Project>

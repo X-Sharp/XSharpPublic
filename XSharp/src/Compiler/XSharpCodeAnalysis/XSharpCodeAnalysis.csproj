@@ -41,41 +41,15 @@
   </PropertyGroup>
    
   <ItemGroup>
-    <Compile Update="Generated\XSharpParser.cs">
-      <DependentUpon>Parser\XSharp.g4</DependentUpon>
-    </Compile>
-    <Compile Update="Generated\XSharpLexer.cs">
-      <DependentUpon>Parser\XSharpLexer.g4</DependentUpon>
-    </Compile>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Properties\Constants.cs</Link>
     </Compile>
-    <Compile Remove="Antlr4.Runtime\Properties\AssemblyInfo.cs" />
     <Compile Remove="CodeAnalysisResources.Designer.cs" />
-    <Compile Remove="ParserTest.cs" />
-    <Compile Remove="Antlr4.Runtime\Misc\Array2DHashSet`1.cs" />
-    <Compile Remove="Antlr4.Runtime\Misc\DoubleKeyMap`3.cs" />
-    <Compile Remove="Antlr4.Runtime\Misc\RuleDependencyProcessor.cs" />
-    <Compile Remove="Antlr4.Runtime\Misc\TestRig.cs" />
     <Compile Remove="Properties\AssemblyInfoPortable.cs" />
     <Compile Remove="XSharpResources.Designer.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
-    <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.tokens" />
-    <None Include="Parser\XSharpLexer.g4" />
-    <None Include="Parser\XSharp.g4" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Generated\XSharpParser.cs">
-      <DependentUpon>Parser\Xsharp.g4</DependentUpon>
-    </Compile>
-    <Compile Update="Generated\XSharpLexer.cs">
-      <DependentUpon>Parser\XsharpLexer.g4</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(NuGetPackageRoot)\Microsoft.DiaSymReader.Native\$(MicrosoftDiaSymReaderNativeVersion)\runtimes\win\native\Microsoft.DiaSymReader.Native.x86.dll">
@@ -137,10 +111,6 @@
     <Compile Remove="VsParser\**" />
     <EmbeddedResource Remove="Declarations\**" />
     <EmbeddedResource Remove="VsParser\**" />
-    <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
-    <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.tokens" />
-    <None Include="Parser\*.g4" />
-    <None Include="Generated\*.tokens" />    
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="CodeAnalysisResources.resx" />
@@ -153,23 +123,10 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Antlr4.Runtime\Properties\" />
-  </ItemGroup>
   <Import Project="$(CSharpSource)..\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(CoreSource)..\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems" Label="Shared" />
   <Import Project="$(RoslynSrc)Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems" Label="Shared" />
 
-  <Target Name="CreateDirectories" AfterTargets="BeforeBuild" Condition="'$(TargetFramework)' == 'net472' ">
-    <Message Importance="high" Text="Create folder $(VsExternalDir) when needed" />
-    <MakeDir Directories="$(VsExternalDir)" />  
-  </Target>
-  <Target Name="CopyFiles" AfterTargets="Build" Condition="Exists('$(VsExternalDir)') and '$(TargetFramework)' == 'net472'">
-    <ItemGroup>
-      <XSharpCodeAnalysisFiles Include="$(OutputPath)\XSharp*.*" />
-    </ItemGroup> 
-    <Message Importance="high" Text="Copy output files for $(ProjectName) to $(VsExternalDir)" />
-    <Copy SourceFiles="@(XSharpCodeAnalysisFiles)" DestinationFolder="$(VsExternalDir)" />
-  </Target>
+  <Import Project="Extra.Targets" />
 </Project>

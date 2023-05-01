@@ -25,7 +25,6 @@ See License.txt in the project root for license information.
   <PropertyGroup>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <!-- Note: All directories in this list end with a back slash, with the exception of the ZipsDir -->
     <DevPublicDir>$(Solutiondir)..\..\DevPublic\</DevPublicDir>
     <DevRtDir>$(Solutiondir)..\..\DevRt\</DevRtDir>

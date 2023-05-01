@@ -104,7 +104,15 @@ namespace XSharp.CodeDom
                 field.Attributes = classVarModifiers;
                 if (varContext.Initializer != null)
                 {
-                    field.InitExpression = BuildExpression(varContext.Initializer, false);
+                    try
+                    {
+                        field.InitExpression = BuildExpression(varContext.Initializer, false);
+                    }
+                    catch
+                    {
+                        field.InitExpression = BuildSnippetExpression(varContext.Initializer);
+                    }
+
                     SaveSourceCode(field.InitExpression, varContext.Initializer);
                 }
                 FillCodeDomDesignerData(field, varContext.Start.Line, varContext.Start.Column);

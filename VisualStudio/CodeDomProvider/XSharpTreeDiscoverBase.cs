@@ -802,17 +802,20 @@ namespace XSharp.CodeDom
 
         private bool findMemberInBaseTypes(string name, MemberTypes mtype)
         {
-            var baseTypes = this.CurrentType.BaseTypes;
-            if (baseTypes.Count == 0 && _typeInOtherFile != null)
-                baseTypes = _typeInOtherFile.BaseTypes;
-
-            foreach (XCodeTypeReference basetype in baseTypes)
+            if (this.CurrentType != null)
             {
-                string typeName = basetype.BaseType;
-                var baseType = findType(typeName);
-                if (baseType != null && hasClassMember(baseType, name, mtype))
+                var baseTypes = this.CurrentType.BaseTypes;
+                if (baseTypes.Count == 0 && _typeInOtherFile != null)
+                    baseTypes = _typeInOtherFile.BaseTypes;
+
+                foreach (XCodeTypeReference basetype in baseTypes)
                 {
-                    return true;
+                    string typeName = basetype.BaseType;
+                    var baseType = findType(typeName);
+                    if (baseType != null && hasClassMember(baseType, name, mtype))
+                    {
+                        return true;
+                    }
                 }
             }
             return false;

@@ -73,7 +73,7 @@
     <PPO>False</PPO>
     <Prefer32Bit>False</Prefer32Bit>
     <RegisterForComInterop>False</RegisterForComInterop>
-    <EnableUnmanagedDebugging>True</EnableUnmanagedDebugging>
+    <EnableUnmanagedDebugging>False</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>

@@ -12,16 +12,7 @@ USING System.Runtime.CompilerServices
 USING System.Runtime.Serialization
 
 
-#define USEATTRIB
-#ifdef USEATTRIB
-#XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
-#XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
-#XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
-#else
-#XTRANSLATE \[NOSHOW\] =>
-#XTRANSLATE \[INLINE\] =>
-#XTRANSLATE \[NODEBUG\] =>
-#endif
+#include "attributes.xh"
 
 BEGIN NAMESPACE XSharp
 /// <summary>Internal type that implements the XBase Compatible SYMBOL type.<br/>
@@ -42,10 +33,8 @@ PUBLIC STRUCTURE __Symbol ;
         ISerializable
 
 #region fields
-    [NOSHOW];
-        PRIVATE INITONLY _index		AS DWORD
-    [NOSHOW];
-        PRIVATE STATIC _PszDict		AS Dictionary<DWORD, PSZ>
+    [NOSHOW] PRIVATE INITONLY _index		AS DWORD
+    [NOSHOW] PRIVATE STATIC _PszDict		AS Dictionary<DWORD, PSZ>
 #endregion
 
 #region constrúctors
@@ -54,12 +43,12 @@ PUBLIC STRUCTURE __Symbol ;
         SymbolTable.Initialize()
 
     /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     CONSTRUCTOR(sValue AS STRING)
         SELF(sValue, TRUE)
 
     /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     CONSTRUCTOR(sValue AS STRING,  upperCase AS LOGIC)
         IF sValue != NULL
             IF (upperCase)
@@ -71,26 +60,24 @@ PUBLIC STRUCTURE __Symbol ;
         ENDIF
         RETURN
 
-    [INLINE];
+    [NODEBUG] [INLINE];
     PRIVATE CONSTRUCTOR (dwValue AS DWORD)
         SELF:_index := dwValue
 
 #endregion
     INTERNAL STATIC METHOD Find(sValue AS STRING ) AS __Symbol
-        IF SymbolTable:LookupTable:ContainsKey(sValue)
-            VAR index := __Symbol.SymbolTable:LookupTable[sValue]
+        IF SymbolTable.LookupTable:ContainsKey(sValue)
+            VAR index := __Symbol.SymbolTable.LookupTable[sValue]
             RETURN __Symbol{index}
         ENDIF
         RETURN __Symbol{0}
 
-    [NOSHOW];
-    INTERNAL PROPERTY _value AS STRING
+    [NOSHOW] INTERNAL PROPERTY _value AS STRING
     GET
         RETURN SymbolTable.GetString(SELF:_index)
     END GET
     END PROPERTY
-    [NOSHOW];
-    INTERNAL STATIC PROPERTY PszDict AS Dictionary<DWORD, PSZ>
+    [NOSHOW] INTERNAL STATIC PROPERTY PszDict AS Dictionary<DWORD, PSZ>
     GET
         IF _PszDict == NULL
             _PszDict := Dictionary<DWORD, PSZ>{}
@@ -150,46 +137,57 @@ PUBLIC STRUCTURE __Symbol ;
 #region Operators
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR ==(lhs AS SYMBOL, rhs AS SYMBOL) AS LOGIC
         RETURN lhs:_index == rhs:_index
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR !=(a AS SYMBOL, b AS SYMBOL) AS LOGIC
         RETURN a:_index != b:_index
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR ==(lhs AS SYMBOL, rhs AS STRING) AS LOGIC
         RETURN lhs:_value == rhs
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR !=(lhs AS SYMBOL, rhs AS STRING) AS LOGIC
         RETURN lhs:_value != rhs
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR ==(lhs AS STRING, rhs AS SYMBOL) AS LOGIC
         RETURN lhs == rhs:_value
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR !=(lhs AS STRING, rhs AS SYMBOL) AS LOGIC
         RETURN lhs != rhs:_value
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR ==(lhs AS SYMBOL, rhs AS DWORD) AS LOGIC
         RETURN lhs:_index == rhs
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR !=(lhs AS SYMBOL, rhs AS DWORD) AS LOGIC
         RETURN lhs:_index != rhs
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR ==(lhs AS DWORD, rhs AS SYMBOL) AS LOGIC
         RETURN lhs == rhs:_index
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR !=(lhs AS DWORD, rhs AS SYMBOL) AS LOGIC
         RETURN lhs != rhs:_index
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR EXPLICIT(dwValue AS DWORD) AS SYMBOL
         IF dwValue <= SymbolTable.Count
             RETURN SYMBOL{dwValue}
@@ -197,65 +195,80 @@ PUBLIC STRUCTURE __Symbol ;
         RETURN SYMBOL{0}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR EXPLICIT(symValue AS SYMBOL) AS DWORD
         RETURN symValue:_index
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR IMPLICIT(sValue AS STRING) AS SYMBOL
         RETURN SYMBOL{sValue, TRUE}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR IMPLICIT(symValue AS SYMBOL) AS STRING
         RETURN symValue:_value
 
         // relative comparisons
         // compare symbols or symbols and strings
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR >(lhs AS SYMBOL, rhs AS SYMBOL) AS LOGIC
         RETURN __StringCompare(lhs:_value, rhs:_value) > 0
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR >(lhs AS SYMBOL, rhs AS STRING) AS LOGIC
         RETURN __StringCompare(lhs:_value, rhs) > 0
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR >(lhs AS STRING, rhs AS SYMBOL) AS LOGIC
         RETURN __StringCompare(lhs, rhs:_value) > 0
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR <(lhs AS SYMBOL, rhs AS SYMBOL) AS LOGIC
         RETURN __StringCompare(lhs:_value, rhs:_value) < 0
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR <(lhs AS SYMBOL, rhs AS STRING) AS LOGIC
         RETURN __StringCompare(lhs:_value, rhs) < 0
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR <(lhs AS STRING, rhs AS SYMBOL) AS LOGIC
         RETURN __StringCompare(lhs, rhs:_value) < 0
 
         // or Equals
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR >=(lhs AS SYMBOL, rhs AS SYMBOL) AS LOGIC
         RETURN __StringCompare(lhs:_value, rhs:_value) >= 0
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR >=(lhs AS SYMBOL, rhs AS STRING) AS LOGIC
         RETURN __StringCompare(lhs:_value, rhs) >= 0
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR >=(lhs AS STRING, rhs AS SYMBOL) AS LOGIC
         RETURN __StringCompare(lhs, rhs:_value) >= 0
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR <=(lhs AS SYMBOL, rhs AS SYMBOL) AS LOGIC
         RETURN __StringCompare(lhs:_value, rhs:_value) <= 0
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR <=(lhs AS SYMBOL, rhs AS STRING) AS LOGIC
         RETURN __StringCompare(lhs:_value, rhs) <= 0
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR <=(lhs AS STRING, rhs AS SYMBOL) AS LOGIC
         RETURN __StringCompare(lhs, rhs:_value) <= 0
 

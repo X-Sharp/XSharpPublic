@@ -1,27 +1,41 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
 USING System.Reflection
+USING System.Collections.Generic
 USING XSharp.Internal
 
 [AllowLateBinding];
-ABSTRACT CLASS XSharp.XPP.Abstract 
+abstract class XSharp.XPP.Abstract
     PRIVATE inSend := FALSE AS LOGIC
-    
+    PRIVATE STATIC classObjects AS Dictionary<System.Type, ILateBound>
+
+    INTERNAL STATIC METHOD GetClassObject(type AS System.Type) AS ILateBound
+        IF classObjects:ContainsKey(type)
+            RETURN classObjects[type]
+        ENDIF
+        var result := XSharp.XPP.StaticClassObject{type}
+        classObjects:Add(type, result)
+        RETURN result
+
+
+    STATIC CONSTRUCTOR
+        classObjects := Dictionary<System.Type, ILateBound>{}
+
     /// <summary>Retrieves the name of the class an object belongs to.</summary>
     /// <returns>The method returns a character string representing the name of a class.</returns>
     METHOD ClassName() AS STRING
         RETURN SELF:GetType():Name
-        
+
         /// <summary>Retrieves the class object (System.Type) of a class.</summary>
         /// <returns>The method returns the class object of a class.</returns>
         /// <remarks>The X# XPP implementation returns a System.Type object as class object.</remarks>
-    METHOD ClassObject AS OBJECT
-        RETURN SELF:GetType()
-        
+    METHOD ClassObject() AS OBJECT STRICT
+        RETURN Abstract.GetClassObject(SELF:GetType())
+
     METHOD Eval(uBlock) AS USUAL CLIPPER
         IF pCount() > 0
             LOCAL aParams AS USUAL[]
@@ -37,7 +51,7 @@ ABSTRACT CLASS XSharp.XPP.Abstract
     VIRTUAL METHOD HasIVar(cName AS STRING) AS LOGIC
         RETURN IVarGetInfo(SELF, cName) != 0
 
-    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL 
+    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL
         IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
             RETURN XSharp.XPP.ClassObject.CallIVarGet(SELF, cName)
         ENDIF
@@ -47,22 +61,22 @@ ABSTRACT CLASS XSharp.XPP.Abstract
         IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
             XSharp.XPP.ClassObject.CallIVarPut(SELF, cName, uValue)
         ENDIF
-        RETURN 
+        RETURN
 
         /// <summary>Handles assign operations to undefined instance variables. </summary>
         /// <param name="cName">The fieldname to assign.</param>
         /// <param name="uValue">The value of an assignment. </param>
         /// <returns>The return value of the method is ignored.</returns>
-    METHOD SetNoIVar(cName AS USUAL , uValue  AS USUAL) AS VOID 
+    METHOD SetNoIVar(cName AS USUAL , uValue  AS USUAL) AS VOID
         SELF:NoIvarPut(cName, uValue)
-        RETURN 
-        
+        RETURN
+
         /// <summary>Handles access operations to undefined instance variables. </summary>
         /// <param name="cName">The fieldname to access.</param>
         /// <returns></returns>
     METHOD GetNoIVar(cName AS USUAL ) AS USUAL STRICT
         RETURN SELF:NoIvarGet(cName)
-        
+
     /// <summary>Handles calls to undefined methods.</summary>
     /// <param name="uParams">The parameters to send to the method.</param>
     /// <returns>The return value will be interpreted as the return value of the called undefined method. </returns>
@@ -90,7 +104,7 @@ ABSTRACT CLASS XSharp.XPP.Abstract
     /// <remarks>There is no need in X# to include the header files. The defines are included as part of the X# runtime.</remarks>
     METHOD Notify(nEvent, nNotification) AS USUAL CLIPPER
         RETURN SELF
-        
+
     /// <summary>Checks if an object belongs to or is derived from a particular class.</summary>
     /// <param name="uParent">A character string containing the name of the class an object belongs to or is derived from. Alternatively, the class object (System.Type) can be passed instead of the class name.</param>
     /// <returns>The method returns .T. (true) if the object executing the method belongs to or is derived from the specified class. </returns>
@@ -101,13 +115,13 @@ ABSTRACT CLASS XSharp.XPP.Abstract
             oType := XSharp.RT.Functions.FindClass(uParent)
             RETURN oType:IsAssignableFrom(SELF:GetType())
         ELSEIF IsObject(uParent)
-            IF ((OBJECT) uParent) IS System.Type 
+            IF ((OBJECT) uParent) IS System.Type
                 oType := (System.Type) uParent
                 RETURN oType:IsAssignableFrom(SELF:GetType())
             ENDIF
         ENDIF
-        RETURN FALSE 
-        
+        RETURN FALSE
+
     /// <include file="XPPComments.xml" path="Comments/ClassDescribe/*" />
     VIRTUAL METHOD ClassDescribe(uInfo) AS ARRAY CLIPPER
         LOCAL aResult AS ARRAY
@@ -158,8 +172,8 @@ ABSTRACT CLASS XSharp.XPP.Abstract
             RETURN {}
         END SWITCH
         RETURN {}
-        
-        
+
+
     STATIC PRIVATE METHOD EncodeFieldAttributes(attr AS FieldAttributes) AS LONG
         LOCAL result := 0 AS LONG
         IF attr:HasFlag(FieldAttributes.Public)
@@ -175,7 +189,7 @@ ABSTRACT CLASS XSharp.XPP.Abstract
             result +=VAR_INSTANCE
         ENDIF
         RETURN result
-        
+
     STATIC PRIVATE METHOD EnCodeMethodAttributes(attr AS MethodAttributes) AS LONG
         LOCAL result := 0 AS LONG
         IF attr:HasFlag(MethodAttributes.Public)
@@ -191,6 +205,6 @@ ABSTRACT CLASS XSharp.XPP.Abstract
             result +=METHOD_INSTANCE
         ENDIF
         RETURN result
-        
-        
+
+
 END CLASS

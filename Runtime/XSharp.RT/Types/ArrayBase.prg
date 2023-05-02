@@ -11,17 +11,9 @@ USING System.Diagnostics
 USING System.Reflection
 USING XSharp
 USING System.Runtime.Serialization
+USING System.Runtime.CompilerServices
 
-#define USEATTRIB
-#ifdef USEATTRIB
-#XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
-#XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
-#XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
-#else
-#XTRANSLATE \[NOSHOW\] =>
-#XTRANSLATE \[INLINE\] =>
-#XTRANSLATE \[NODEBUG\] =>
-#endif
+#include "attributes.xh"
 BEGIN NAMESPACE XSharp
 /// <summary>Internal type that implements the new TYPED ARRAY type.<br/>
 /// This type has methods and properties that normally are never directly called from user code.
@@ -32,10 +24,8 @@ BEGIN NAMESPACE XSharp
 PUBLIC CLASS __ArrayBase<T> ;
         IMPLEMENTS INamedIndexer, IEnumerable<T>, ISerializable
 
-    [NOSHOW];
-        PROTECTED INTERNAL _internalList AS List<T>
-    [NOSHOW];
-        PRIVATE _islocked AS LOGIC
+    [NOSHOW] PROTECTED INTERNAL _internalList AS List<T>
+    [NOSHOW] PRIVATE _islocked AS LOGIC
 #region constructors
     /// <summary>Create an empty array</summary>
     CONSTRUCTOR()
@@ -86,17 +76,14 @@ PUBLIC CLASS __ArrayBase<T> ;
 
 #region properties
     /// <summary>Is the array empty.</summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsEmpty AS LOGIC GET _internalList:Count == 0
+    [NOSHOW] PUBLIC PROPERTY IsEmpty AS LOGIC [INLINE] GET _internalList:Count == 0
     /// <summary>Length of the array.</summary>
-    PUBLIC PROPERTY Length AS DWORD GET (DWORD) _internalList:Count
+    PUBLIC PROPERTY Length AS DWORD [INLINE] GET (DWORD) _internalList:Count
     /// <summary>Length of the array as integer.</summary>
-    [NOSHOW];
-    PUBLIC PROPERTY Count AS INT GET _internalList:Count
+    [NOSHOW] PUBLIC PROPERTY Count AS INT [INLINE] GET _internalList:Count
 
     /// <summary>Returns the default value for array elements when arrays are resized or initialized.</summary>
-    [NOSHOW];
-    PUBLIC VIRTUAL PROPERTY DefaultValue AS T GET DEFAULT(T)
+    [NOSHOW] PUBLIC VIRTUAL PROPERTY DefaultValue AS T GET DEFAULT(T)
 #endregion
 
 #region Enumerators

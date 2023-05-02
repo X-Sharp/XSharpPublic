@@ -280,58 +280,85 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             TRY
                 orgToSkip := nToSkip
                 SELF:_oRdd:GoCold()
-                locked := SELF:Slock()
-                IF !locked
-                    RETURN FALSE
-                ENDIF
-                IF SELF:Descending
-                    nToSkip := - nToSkip
-                ENDIF
-                IF !SELF:_oRdd:_isValid // we're at EOF
-                    IF nToSkip < 0
-                        IF !SELF:Descending
-                            SELF:GoBottom()
-                        ELSE
-                            SELF:GoTop()
-                        ENDIF
-                        nToSkip ++
-                        recno := SELF:_oRdd:RecNo
-                        SELF:_oRdd:_SetBOF(recno == 0)
-                        SELF:_oRdd:_SetEOF(recno == 0)
-                    ELSE
-                        recno := 0
-                        nToSkip := 0
-                    ENDIF
-                ELSE
-                    IF SELF:Stack:Empty
-                        SELF:_GoToRecno( SELF:_RecNo)
+                SELF:NeedsLock()
+                VAR orgRecNo := SELF:_oRdd:RecNo
+                VAR orgStack := SELF:Stack:Clone()
+
+                IF !SELF:_oRdd:_dirtyRead .OR. SELF:LockNeedsRefresh
+                    locked := SELF:Slock()
+                    IF !locked
+                        RETURN FALSE
                     ENDIF
                 ENDIF
 
-                IF orgToSkip != 0
-                    IF SELF:HasScope
-                        isBof := SELF:_oRdd:BoF
-                        isEof := SELF:_oRdd:EoF
-                        var newrec := SELF:_ScopeSkip(nToSkip)
-                        IF newrec != -1 // -1  means that there was nothing to do
-                            recno := newrec
+                VAR doRetry := TRUE
+                WHILE doRetry
+                    doRetry := FALSE
+                    TRY
+                        IF SELF:Descending
+                            nToSkip := - nToSkip
                         ENDIF
-                        IF isBof != SELF:_oRdd:BoF
-                            isBof := SELF:_oRdd:BoF
-                        ENDIF
-                        IF isEof != SELF:_oRdd:EoF
-                            isEof := SELF:_oRdd:EoF
-                        ENDIF
-                    ELSE
-                        IF nToSkip != 0
-                            recno := SELF:_nextKey(nToSkip)
-                            IF recno == -1
-                                recno := SELF:_locateFirst(SELF:_rootPage)
-                                isBof := TRUE
+                        IF !SELF:_oRdd:_isValid // we're at EOF
+                            IF nToSkip < 0
+                                IF !SELF:Descending
+                                    SELF:GoBottom()
+                                ELSE
+                                    SELF:GoTop()
+                                ENDIF
+                                nToSkip ++
+                                recno := SELF:_oRdd:RecNo
+                                SELF:_oRdd:_SetBOF(recno == 0)
+                                SELF:_oRdd:_SetEOF(recno == 0)
+                            ELSE
+                                recno := 0
+                                nToSkip := 0
+                            ENDIF
+                        ELSE
+                            IF SELF:Stack:Empty
+                                SELF:_GoToRecno( SELF:_RecNo)
                             ENDIF
                         ENDIF
-                    ENDIF
-                ENDIF
+
+                        IF orgToSkip != 0
+                            IF SELF:HasScope
+                                isBof := SELF:_oRdd:BoF
+                                isEof := SELF:_oRdd:EoF
+                                VAR newrec := SELF:_ScopeSkip(nToSkip)
+                                IF newrec != -1 // -1  means that there was nothing to do
+                                    recno := newrec
+                                ENDIF
+                                IF isBof != SELF:_oRdd:BoF
+                                    isBof := SELF:_oRdd:BoF
+                                ENDIF
+                                IF isEof != SELF:_oRdd:EoF
+                                    isEof := SELF:_oRdd:EoF
+                                ENDIF
+                            ELSE
+                                IF nToSkip != 0
+                                    recno := SELF:_nextKey(nToSkip)
+                                    IF recno == -1
+                                        recno := SELF:_locateFirst(SELF:_rootPage)
+                                        isBof := TRUE
+                                    ENDIF
+                                ENDIF
+                            ENDIF
+                        ENDIF
+                    CATCH AS CdxLockException
+                        SELF:_oRdd:__Goto(orgRecNo)
+                        SELF:_oRdd:_SetBOF(orgBof)
+                        SELF:_oRdd:_SetEOF(orgEof)
+                        locked := SELF:Slock()
+                        IF locked
+                            nToSkip := orgToSkip
+                            SELF:Stack:Restore(orgStack)
+                            doRetry := TRUE
+                        ELSE
+                            RETURN FALSE
+                        ENDIF
+                    CATCH
+                        THROW
+                    END TRY
+                END WHILE
                 result := SELF:_oRdd:__Goto(recno)
                 IF orgToSkip == 0
                     SELF:_oRdd:_SetBOF(orgBof)
@@ -358,6 +385,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             CATCH ex AS Exception
                SELF:ThrowException(ex, Subcodes.EDB_SKIP,Gencode.EG_CORRUPTION,  "CdxTag.SkipRaw")
             FINALLY
+                SELF:NeedsNoLock()
                 IF locked
                     result := SELF:UnLock() .AND. result
                 ENDIF

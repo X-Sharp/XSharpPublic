@@ -1423,7 +1423,7 @@ METHOD Commit( )
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		SELF:__OptimisticFlush( )
-		lRetCode := __DBSCommit( nTries )
+        lRetCode := __DBSCommit( nTries )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 
 
@@ -1443,10 +1443,10 @@ METHOD Commit( )
 	SELF:__Notify( NotifyCompletion, #Commit )
 
 
-	IF lRetCode
-		IF ! SELF:lShared
-			SELF:__InitRecordBuf( )
-		ENDIF
+    IF lRetCode
+   	    IF ! SELF:lShared
+	 	    SELF:__InitRecordBuf( )
+	    ENDIF
 	ELSE
 		lErrorFlag := TRUE
 		oHLStatus := oHLTemp

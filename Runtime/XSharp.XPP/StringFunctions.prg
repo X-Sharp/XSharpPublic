@@ -228,3 +228,60 @@ FUNCTION PosRepl(cString, cReplace, nStartPos ) AS STRING CLIPPER
     sb:Remove(nStart, nToDel)
     sb:Insert(nStart, sReplace, 1)
     RETURN sb:ToString()
+
+
+
+function Var2Char(uValue as usual) as string
+    switch UsualType(uValue)
+    case __UsualType.Array
+        local aValue as array
+        aValue := uValue
+        var sb := StringBuilder{}
+        sb:Append("{")
+        var first := true
+        foreach var element in aValue
+            if (! first)
+                sb:Append(", ")
+            else
+                first := false
+            endif
+            sb:Append(Var2Char(element))
+        next
+        sb:Append("}")
+        return sb:ToString()
+
+    case __UsualType.Binary
+        return ((binary) uValue):ToString()
+    case __UsualType.Codeblock
+        return ((codeblock) uValue):ToString()
+    case __UsualType.Currency
+        return ((currency) uValue):ToString()
+    case __UsualType.Date
+        return DToS( (date) uValue)
+    case __UsualType.DateTime
+        return ((System.DateTime) uValue):ToString()
+    case __UsualType.Decimal
+        return ((decimal) uValue):ToString()
+    case __UsualType.Float
+        return _Str((float) uValue):TrimStart()
+    case __UsualType.Int64
+        return ((int64) uValue):ToString()
+    case __UsualType.Logic
+        return iif(uValue, ".T.",".F.")
+    case __UsualType.Long
+        return ((long) uValue):ToString()
+    case __UsualType.Object
+        local oValue as object
+        oValue := uValue
+        return oValue:GetType():Name
+    case __UsualType.String
+        return (string) uValue
+    case __UsualType.Symbol
+        return "#"+ (string) uValue
+    case __UsualType.Void
+        return "NIL"
+    otherwise
+        return uValue:ToString()
+    end switch
+
+

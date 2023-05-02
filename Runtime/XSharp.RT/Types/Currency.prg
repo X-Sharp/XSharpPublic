@@ -10,17 +10,7 @@ USING System.Diagnostics
 USING System.Runtime.Serialization
 
 
-#define USEATTRIB
-#ifdef USEATTRIB
-#XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
-#XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
-#XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
-#else
-#XTRANSLATE \[NOSHOW\] =>
-#XTRANSLATE \[INLINE\] =>
-#XTRANSLATE \[NODEBUG\] =>
-#endif
-
+#include "attributes.xh"
 
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
@@ -40,8 +30,7 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
         IComparable,            ;
         ISerializable
 
-    [NOSHOW];
-        PRIVATE INITONLY _value AS System.Decimal
+    [NOSHOW] PRIVATE INITONLY _value AS System.Decimal
 
 #region constructors
     /// <include file="RTComments.xml" path="Comments/Constructor/*" />
@@ -51,7 +40,7 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
         SELF:_value    := Math.Round((Decimal)r8,4)
 
     /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     CONSTRUCTOR (d AS System.Decimal)
         SELF:_value    := Math.Round(d,4)
     /// <include file="RTComments.xml" path="Comments/Constructor/*" />
@@ -62,8 +51,7 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
 #endregion
 #region Properties
     /// <summary>Decimal (System.Decimal) value</summary>
-    [NOSHOW];
-    PROPERTY @@Value    AS System.Decimal	GET _value
+    [NOSHOW] PROPERTY @@Value    AS System.Decimal	GET _value
 #endregion
 
 #region Equality Operators
@@ -121,97 +109,97 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
 
 #region Implicit Converters
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(b AS BYTE) AS CURRENCY
         RETURN CURRENCY{(Decimal) b}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(sb AS SByte) AS CURRENCY
         RETURN CURRENCY{(Decimal) sb}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(si AS SHORT) AS CURRENCY
         RETURN CURRENCY{(Decimal)si}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(w AS WORD) AS CURRENCY
         RETURN CURRENCY{(Decimal)w}
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
 
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(i AS INT) AS CURRENCY
         RETURN CURRENCY{(Decimal)i}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(dw AS DWORD) AS CURRENCY
         RETURN CURRENCY{(Decimal)dw}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(i64 AS INT64) AS CURRENCY
         RETURN CURRENCY{(Decimal)i64}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(ui64 AS UINT64) AS CURRENCY
         RETURN CURRENCY{(Decimal)ui64}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(r4 AS REAL4) AS CURRENCY
         RETURN CURRENCY{(REAL8)r4}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(r8 AS REAL8) AS CURRENCY
         RETURN CURRENCY{r8}
 
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(fl AS FLOAT) AS CURRENCY
         RETURN CURRENCY{fl:Value}
 
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(val AS System.Decimal) AS CURRENCY
         RETURN CURRENCY{val}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS REAL8
         RETURN CHECKED((REAL8) c:_value)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS REAL4
         RETURN CHECKED((REAL4) c:_value)
 
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS FLOAT
         RETURN CHECKED(FLOAT{ (REAL8) c:_value, -1, 4})
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS System.Decimal
         RETURN c:_value
 
 #endregion
 #region Explicit Converters
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS BYTE
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToByte(c:_value)
         ENDIF
         RETURN CHECKED((BYTE) c:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR EXPLICIT(c AS CURRENCY) AS SByte
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToSByte(c:_value)
@@ -219,7 +207,7 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
         RETURN CHECKED((SByte) c:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
 
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS SHORT
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToInt16(c:_value)
@@ -227,28 +215,28 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
         RETURN CHECKED((SHORT)c:_value)
 
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS WORD
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToUInt16(c:_value)
         ENDIF
         RETURN CHECKED((WORD) c:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS LONG
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToInt32(c:_value)
         ENDIF
         RETURN CHECKED((LONG) c:_value)
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS DWORD
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToUInt32(c:_value)
         ENDIF
         RETURN (DWORD) c:_value
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS INT64
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToInt64(c:_value)
@@ -256,7 +244,7 @@ PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
         RETURN CHECKED((INT64) c:_value)
 
     /// <include file="RTComments.xml" path="Comments/Converter/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS UINT64
         IF RuntimeState.CompilerOptionVO11
             RETURN Convert.ToUInt64(c:_value)

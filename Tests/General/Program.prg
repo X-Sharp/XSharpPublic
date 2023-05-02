@@ -1,27 +1,24 @@
-﻿FUNCTION Start(args as string[]) AS VOID
-LOCAL cDbf AS STRING
-LOCAL nRecords := 0 AS INT
-LOCAL nSeconds AS REAL8
-cDbf := "g:\INDEXFIL"
+﻿FUNCTION Start as VOID
+    LOCAL p AS BYTE PTR
+    MemTrace(TRUE)
+    p := MemAlloc(10)
+    MemGrpEnum(1, MemWalker)
+    p[1] := 42
+    //? p, p[1], MemTotal()
+    p := MemRealloc(p, 8)
+    MemGrpEnum(1, MemWalker)
+    //? p, p[1], MemTotal()
+    p := MemRealloc(p, 10)
+    MemGrpEnum(1, MemWalker)
+    //? p, p[1], MemTotal()
+    p := MemRealloc(p, 1)
+    MemGrpEnum(1, MemWalker)
+    //? p, p[1], MemTotal()
 
-DbUseArea(,"DBFCDX",cDbf,,TRUE)
-    if args:Length > 0
-        ? "order 1"
-    DbSetOrder(1)
-else
-        ? "order o"
-    DbSetOrder(0)
-endif
+    WAIT
+    RETURN
 
-nSeconds := Seconds()
-DbSetFilter({||_FIELD->FileType = "BOOKING"})
-DbGoTop()
-? "Recno after setting filter:", RecNo()
-DO WHILE .not. Eof()
-	nRecords ++
-	DbSkip()
-END DO
-? "Records in filter:", nRecords
-? "Time passed:", Seconds() - nSeconds
-DbCloseArea()
-wait
+
+FUNCTION MemWalker(pMem as IntPtr, nSize as DWORD) AS LOGIC
+    ? "Walk", pMem, nSize
+    RETURN TRUE

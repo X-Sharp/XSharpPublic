@@ -649,8 +649,8 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 
 	VODBSetSelect(LONGINT(dwFrom1 ) )
 
-
-	IF Empty( aStruct := __TargetFields( cAlias, aFields, OUT VAR pJoinList ) )
+    LOCAL pJoinList AS _JoinList
+	IF Empty( aStruct := __TargetFields( cAlias, aFields, OUT pJoinList ) )
 		BREAK DbError{ NIL, #JOIN, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFIELDMATCH ), aFields, "aFields" }
 	ENDIF
 

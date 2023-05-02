@@ -48,8 +48,8 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
         IF oMod == NULL_OBJECT
             XSharp.RuntimeState.AppModule := TYPEOF(XSharp.Core.Functions):Module
         ENDIF
-        IF XSharp.RuntimeState:MacroResolver == NULL
-            XSharp.RuntimeState:MacroResolver := DefaultMacroAmbigousMatchResolver
+        IF XSharp.RuntimeState.MacroResolver == NULL
+            XSharp.RuntimeState.MacroResolver := DefaultMacroAmbigousMatchResolver
         ENDIF
         LOCAL oResult AS XSharp._Codeblock
         VAR cMacro := cString // MPrepare(cString)
@@ -188,7 +188,7 @@ FUNCTION Type(cString AS STRING, nArray AS LONG) AS STRING
                 // Ok, this is not a memvar or local name. Let's evaluate it
                 uValue := Evaluate(cString)
             ENDIF
-            IF RuntimeState:Dialect == XSharpDialect.FoxPro .and. uValue == NULL
+            IF RuntimeState.Dialect == XSharpDialect.FoxPro .and. uValue == NULL
                 cRet := "L"
             ELSE
                 cRet   := ValType(uValue)

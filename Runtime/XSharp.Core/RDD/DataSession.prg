@@ -49,13 +49,13 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
     /// <summary>Remove a DataSession from the list of open datasessions</summary>
     /// <param name="session">The DataSession to remove </param>
      STATIC METHOD Close(session as DataSession) AS VOID
-         var old := RuntimeState:SetDataSession(session)
+         var old := RuntimeState.SetDataSession(session)
          TRY
              session:CloseAll()
          CATCH ex as Exception
              System.Diagnostics.Debug.WriteLine("Error in CloseOneSession: "+ex:ToString())
          FINALLY
-            RuntimeState:SetDataSession(old)
+            RuntimeState.SetDataSession(old)
          END TRY
          RETURN
 
@@ -105,7 +105,7 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
 
                     Close(session)
                 NEXT
-                RuntimeState:SetDataSession(NULL)
+                RuntimeState.SetDataSession(NULL)
                 sessions:Clear()
             END LOCK
         ENDIF

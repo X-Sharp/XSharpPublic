@@ -13,7 +13,8 @@ INTERNAL STATIC CLASS ArrayHelpers
 
     STATIC METHOD AScan<T>(aTarget AS __ArrayBase<T>, element  AS T , nStart AS LONG, nCount AS LONG) AS DWORD
         ARRAYNOTNULL aTarget
-        IF ! ArrayHelpers.ValidateArrayParams(aTarget, REF nStart, REF nCount, OUT VAR nSize)
+        LOCAL nSize AS DWORD
+        IF ! ArrayHelpers.ValidateArrayParams(aTarget, REF nStart, REF nCount, OUT nSize)
             RETURN 0
         ENDIF
         LOCAL nItem AS LONG
@@ -43,7 +44,8 @@ INTERNAL STATIC CLASS ArrayHelpers
 
     STATIC METHOD AScan<T>(aTarget AS __ArrayBase<T>, bAction AS @@Func<T, LOGIC> , nStart AS LONG, nCount AS LONG) AS DWORD
         ARRAYNOTNULL aTarget
-        IF ! ArrayHelpers.ValidateArrayParams(aTarget, REF nStart, REF nCount, OUT VAR nSize)
+        LOCAL nSize AS DWORD
+        IF ! ArrayHelpers.ValidateArrayParams(aTarget, REF nStart, REF nCount, OUT nSize)
             RETURN 0
         ENDIF
         LOCAL nItem AS LONG
@@ -75,7 +77,8 @@ INTERNAL STATIC CLASS ArrayHelpers
 
 
     STATIC METHOD AScan( aTarget AS USUAL, x AS USUAL, uStart AS USUAL, uCount AS USUAL, lExact AS LOGIC ) AS DWORD
-        IF ! ArrayHelpers.ValidateArrayParams(REF aTarget, REF uStart, REF uCount, OUT VAR nSize)
+        LOCAL nSize AS DWORD
+        IF ! ArrayHelpers.ValidateArrayParams(REF aTarget, REF uStart, REF uCount, OUT nSize)
             RETURN 0
         ENDIF
         LOCAL a := aTarget AS ARRAY

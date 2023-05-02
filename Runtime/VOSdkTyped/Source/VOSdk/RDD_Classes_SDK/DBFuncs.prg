@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -40,7 +40,7 @@ FUNCTION __DBSAPPEND( lRelease AS LOGIC, nTries := 1 AS DWORD ) AS LOGIC STRICT
 		ENDIF
 		// Append always retries. Does not check for NetErr()!
 		nTries --
-   ENDDO     
+   ENDDO
    IF (! lOk)
 		NetErr(TRUE)
    ENDIF
@@ -94,8 +94,8 @@ FUNCTION __DBSDBAPP( cFile, aFields, uCobFor, uCobWhile,  nNext, nRec, lRest, cD
 	aRdds := __RDDList( cDriver, aRDD )
 	rddList := __AllocRddList( aRdds )
 	lRetCode := VoDbUseArea( TRUE, rddList, cFile, __UniqueAlias( cFile ), TRUE, TRUE )
-  
-  
+
+
 
 
 	IF !lRetCode
@@ -438,7 +438,7 @@ FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  n
 		BREAK DbError{ NIL, #CopyDelimited, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADFILENAME ),  ;
 			cFile, "cFile" }
 	ENDIF
-	IF At( ".", cFile ) == 0 
+	IF At( ".", cFile ) == 0
 		cFile := cFile + ".TXT"
 	ENDIF
 
@@ -526,7 +526,7 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,
 		BREAK DbError{ NIL, #CopySDF, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADFILENAME ),  ;
 			cFile, "cFile" }
 	ENDIF
-	IF At( ".", cFile ) == 0 
+	IF At( ".", cFile ) == 0
 		cFile := cFile + ".TXT"
 	ENDIF
 
@@ -580,8 +580,8 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,
 
 
 	RETURN lRetCode
-	
-	
+
+
 /// <exclude/>
 FUNCTION __DBSDBINFO( nOrdinal AS DWORD , xNewVal := NIL AS USUAL, nTries := 1 AS DWORD) AS USUAL STRICT
    LOCAL lOk := FALSE AS LOGIC
@@ -591,7 +591,7 @@ FUNCTION __DBSDBINFO( nOrdinal AS DWORD , xNewVal := NIL AS USUAL, nTries := 1 A
 			EXIT
 		ENDIF
 	   nTries--
-   ENDDO     
+   ENDDO
    IF ! lOk
    	BREAK ErrorBuild(_VoDbErrInfoPtr())
    ENDIF
@@ -627,8 +627,8 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 
 	VoDbSetSelect(LONGINT(dwFrom1 ) )
 
-
-	IF Empty( aStruct := __TargetFields( cAlias, aFields, OUT VAR pJoinList ) )
+    LOCAL pJoinList AS _JoinList
+	IF Empty( aStruct := __TargetFields( cAlias, aFields, OUT pJoinList ) )
 		BREAK DbError{ NIL, #JOIN, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFIELDMATCH ), aFields, "aFields" }
 	ENDIF
 
@@ -695,7 +695,7 @@ FUNCTION __DBSDbOrderInfo( nOrdinal AS DWORD, cBagName := NULL_STRING AS STRING,
 
 
 	IF nOrdinal == DBOI_KEYVAL
-		lKeyVal  := .T. 
+		lKeyVal  := .T.
 		nOrdinal := DBOI_EXPRESSION
 	ENDIF
 
@@ -817,7 +817,7 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec, lR
 	LOCAL fldNames AS _FieldNames
 	LOCAL aRdds AS ARRAY
 	LOCAL rddList AS _RddList
-	LOCAL nCountMemos AS DWORD  
+	LOCAL nCountMemos AS DWORD
 
 
 	IF ! lRest
@@ -847,7 +847,7 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec, lR
 	n := ALen( aStruct )
 	FOR i := n DOWNTO 1
 		IF aStruct[i, DBS_TYPE] = "M"
-			nCountMemos += 1    
+			nCountMemos += 1
 			ADel( aStruct, i )
 		ENDIF
 	NEXT
@@ -909,7 +909,7 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec, lR
 				IF lSomething
 					VoDbSetSelect(LONGINT(dwTo ) )
 					FOR i := 1 UPTO n
-						IF ! VoDbFieldPut( FieldPos(aFields[i]), aNum[i] ) 
+						IF ! VoDbFieldPut( FieldPos(aFields[i]), aNum[i] )
 							BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 						ENDIF
 					NEXT  // i
@@ -1162,7 +1162,7 @@ FUNCTION __DBSSetSelect(dwNew AS DWORD) AS DWORD STRICT
    RETURN dwNew
 
 
-STATIC GLOBAL __glRestoreWorkarea := FALSE AS LOGIC 
+STATIC GLOBAL __glRestoreWorkarea := FALSE AS LOGIC
 
 
 /// <exclude/>
@@ -1243,7 +1243,7 @@ FUNCTION __MakeErrObj( nTries ) AS USUAL  CLIPPER
 	ENDIF
 
 
-	RETURN oError     
+	RETURN oError
 
 
 /// <summary>Get/Set the flag that determines if DbServer operations restore the current workarea </summary>
@@ -1343,9 +1343,9 @@ FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) A
     LOCAL dwType AS DWORD
     LOCAL cType  AS STRING
     LOCAL lOK    AS LOGIC
-    
-    
-    dwType := Asc(aField[DBS_TYPE]) 
+
+
+    dwType := Asc(aField[DBS_TYPE])
     SWITCH dwType
     CASE 67 // "C"
         lOK := IsString(uValue)
@@ -1354,24 +1354,24 @@ FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) A
     CASE 78 // "N"
         lOK := IsNumeric(uValue)
     CASE 76 // "L"
-        lOK := IsLogic(uValue) 
+        lOK := IsLogic(uValue)
     CASE 77 // "M"
         lOK := TRUE
     END SWITCH
     IF lOK
         IF dwType = 67 // "C"
             IF SLen(uValue) != aField[DBS_LEN]
-                uValue := PadR(uValue, aField[DBS_LEN]) 
+                uValue := PadR(uValue, aField[DBS_LEN])
             ENDIF
         ELSEIF dwType = 78 // "N"
             IF Instr("*", Str3(uValue, aField[DBS_LEN], aField[DBS_DEC]))
-                lOK     := FALSE   
+                lOK     := FALSE
                 uError  := { EG_DATAWIDTH, __CAVOSTR_DBFCLASS_INVALIDLENGTH, NTrim(aField[DBS_LEN]) + "(decimals "+NTrim(aField[DBS_DEC]) + ")"}
-                
-                
+
+
             ENDIF
-        ENDIF 
-    ELSE             
+        ENDIF
+    ELSE
         SWITCH dwType
         CASE 67 // "C"
             cType := "STRING"
@@ -1384,8 +1384,8 @@ FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) A
         END SWITCH
         uError := {EG_DATATYPE, __CAVOSTR_DBFCLASS_INVALIDTYPE, cType}
     ENDIF
-    
-    
+
+
     RETURN lOK
 STATIC GLOBAL sgLockMode := ccOptimistic AS DWORD
 
@@ -1398,8 +1398,8 @@ FUNCTION DbSetDefaultLockMode(dwLockMode AS DWORD) AS DWORD PASCAL
     dwOld := sgLockMode
     sgLockMode := dwLockMode
     RETURN dwOld
-    
-    
+
+
 /// <summary>Get the default locking mode for the DbServer class</summary>
 /// <returns>The current locking mode</returns>
 FUNCTION DbGetDefaultLockMode() AS DWORD PASCAL

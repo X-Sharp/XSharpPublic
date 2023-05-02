@@ -351,6 +351,16 @@
       <LastGenOutput>TextTemplate.cs</LastGenOutput>
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.vstemplate" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\Class1.prg" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\HarbourClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\HarbourClassLibrary.vstemplate" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\HarbourClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\HabourConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\HarbourConsole.png" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\HarbourConsole.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\Program.prg" />
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

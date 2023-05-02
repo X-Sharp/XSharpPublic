@@ -11,16 +11,7 @@ USING System.Diagnostics
 USING System.Runtime.Serialization
 #pragma options ("az", ON)
 
-#define USEATTRIB
-#ifdef USEATTRIB
-#XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
-#XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
-#XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
-#else
-#XTRANSLATE \[NOSHOW\] =>
-#XTRANSLATE \[INLINE\] =>
-#XTRANSLATE \[NODEBUG\] =>
-#endif
+#include "attributes.xh"
 
 BEGIN NAMESPACE XSharp
 /// <summary>Internal type that implements the FoxPro Compatible BINARY type.<br/>
@@ -36,8 +27,7 @@ PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
         IComparable,           ;
         ISerializable
 
-    [NOSHOW];
-        PRIVATE INITONLY _value AS BYTE[]
+    [NOSHOW] PRIVATE INITONLY _value AS BYTE[]
 
 #region constructors
     /// <include file="RTComments.xml" path="Comments/Constructor/*" />
@@ -117,10 +107,12 @@ PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
 
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR ==(lhs AS __Binary, rhs AS __Binary) AS LOGIC
         RETURN lhs:Equals(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR !=(lhs AS __Binary, rhs AS __Binary) AS LOGIC
         RETURN ! lhs:Equals(rhs)
 #endregion
@@ -175,23 +167,23 @@ PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
 
 #region Implicit Converters
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(b AS BYTE[]) AS __Binary
         RETURN __Binary{(BYTE[])b:Clone()}
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(b AS __Binary) AS BYTE[]
         RETURN b:Value
 
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(bytes AS __Binary) AS STRING
         RETURN RuntimeState.WinEncoding:GetString(bytes:_value)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [NODEBUG];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR IMPLICIT(s AS STRING) AS __Binary
         RETURN __Binary{ s }
 
@@ -253,7 +245,7 @@ PUBLIC STRUCTURE __Binary IMPLEMENTS IFormattable, ;
     /// <inheritdoc cref="System.Double.ToString"/>
     PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
         IF sFormat == "G"
-            RETURN RuntimeState:WinEncoding:GetString(SELF:_value)
+            RETURN RuntimeState.WinEncoding:GetString(SELF:_value)
         ENDIF
         VAR sb := StringBuilder{}
         sb:Append("0h")

@@ -13,7 +13,6 @@
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>XPP</Dialect>
     <OutputName>AdsTest</OutputName>
-    <XSharpProjectversion>2.12.0.0</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs />
     <VO1>false</VO1>
@@ -23,7 +22,7 @@
     <VO5>false</VO5>
     <VO6>false</VO6>
     <VO7>true</VO7>
-    <VO8>false</VO8>
+    <VO8>True</VO8>
     <VO9>false</VO9>
     <VO10>false</VO10>
     <VO11>false</VO11>

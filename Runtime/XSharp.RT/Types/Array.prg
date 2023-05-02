@@ -12,16 +12,7 @@ USING System.Text
 USING System.Runtime.Serialization
 USING XSharp
 
-#define USEATTRIB
-#ifdef USEATTRIB
-#XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
-#XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
-#XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
-#else
-#XTRANSLATE \[NOSHOW\] =>
-#XTRANSLATE \[INLINE\] =>
-#XTRANSLATE \[NODEBUG\] =>
-#endif
+#include "attributes.xh"
 
 BEGIN NAMESPACE XSharp
 /// <summary>Internal type that implements the VO Compatible ARRAY type.<br/>
@@ -33,15 +24,10 @@ BEGIN NAMESPACE XSharp
 [DebuggerDisplay("{DebuggerString(),nq}")] ;
 [Serializable];
 PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializable
-    [NOSHOW];
-    PRIVATE CONST FoxArrayName := "XSharp.__FoxArray" AS STRING
-    [NOSHOW];
-    STATIC FoxArrayHelpers := FoxArrayHelpers {} AS FoxArrayHelpers
-    [NOSHOW];
-    INTERNAL PROPERTY __IsFoxArray AS LOGIC GET SELF:GetType():FullName == FoxArrayName
-
-        [NOSHOW];
-            INTERNAL STATIC SuppressArrayIndexErrors := FALSE AS LOGIC  // used for Get_Element to emulate strange VO behaviour
+    [NOSHOW] PRIVATE CONST FoxArrayName := "XSharp.__FoxArray" AS STRING
+    [NOSHOW] STATIC FoxArrayHelpers := FoxArrayHelpers {} AS FoxArrayHelpers
+    [NOSHOW] INTERNAL PROPERTY __IsFoxArray AS LOGIC GET SELF:GetType():FullName == FoxArrayName
+    [NOSHOW] INTERNAL STATIC SuppressArrayIndexErrors := FALSE AS LOGIC  // used for Get_Element to emulate strange VO behaviour
 
     /// <inheritdoc />
     CONSTRUCTOR()

@@ -54,7 +54,7 @@ FUNCTION MAINx(A,B,C) AS VOID clipper
 	RETURN
 
     FUNCTION ReportMemory(description AS STRING) AS VOID
-        Console.WriteLine("Memory: {0} ({1})", GC:GetTotalMemory(TRUE),description)
+        Console.WriteLine("Memory: {0} ({1})", GC.GetTotalMemory(TRUE),description)
         Console.WriteLine()
         RETURN
 

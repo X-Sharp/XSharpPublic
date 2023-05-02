@@ -97,10 +97,11 @@ PROTECTED METHOD ConvertToMemory() AS LOGIC
      RETURN FALSE
 */
 INTERNAL METHOD _CheckEofBof() AS VOID
-    IF SELF:RecCount == 0
+    VAR nRecs := SELF:_RecCount
+    IF nRecs == 0
         SELF:_SetEOF(TRUE)
         SELF:_SetBOF(TRUE)
-    ELSEIF SELF:RecNo > SELF:RecCount
+    ELSEIF SELF:RecNo > nRecs
         SELF:_SetEOF(TRUE)
     ENDIF
 
@@ -266,7 +267,7 @@ OVERRIDE METHOD Skip(nToSkip AS INT) AS LOGIC
 				    SELF:BoF := TRUE
                 ENDIF
                 // when we land at EOF then do not reset the EOF flag
-			    IF nToSkip < 0 .and. SELF:RecNo < SELF:RecCount
+			    IF nToSkip < 0 .AND. SELF:RecNo < SELF:_RecCount
 				    SELF:_SetEOF(FALSE)
 			    ELSEIF nToSkip > 0
 				    SELF:BoF := FALSE
@@ -682,7 +683,9 @@ PROTECTED METHOD _lockRecord( lockInfo REF DbLockInfo ) AS LOGIC
                 // Now, lock the one
 				isOK := SELF:_lockRecord( (LONG)nToLock )
                 // Go to there
-				SELF:GoTo( (LONG)nToLock )
+                IF SELF:RecNo != nToLock
+                    SELF:GoTo( (LONG)nToLock )
+                ENDIF
 			ENDIF
 		ENDIF
 	ENDIF
@@ -1145,9 +1148,12 @@ PRIVATE METHOD _readHeader() AS LOGIC
 		ENDIF
 		SELF:_RecCount := SELF:_Header:RecCount
         SELF:_Encoding := System.Text.Encoding.GetEncoding( CodePageExtensions.ToCodePage( SELF:_Header:CodePage )  )
-
         // Move to top, after header
         isOK := SELF:_readFieldsHeader()
+        IF SELF:Shared
+            VAR nRecs := SELF:_calculateRecCount()
+            SELF:_UpdateRecCount(nRecs)
+        ENDIF
 	ENDIF
 RETURN isOK
 
@@ -1352,7 +1358,7 @@ RETURN oResult
 VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
 	LOCAL isOK AS LOGIC
     // Buffer is supposed to be correct
-	IF SELF:_BufferValid == TRUE .OR. SELF:EoF .OR. SELF:RecNo > SELF:RecCount
+	IF SELF:_BufferValid == TRUE .OR. SELF:EoF .OR. SELF:RecNo > SELF:_RecCount
 		RETURN TRUE
 	ENDIF
     // File Ok ?
@@ -1911,8 +1917,8 @@ OVERRIDE METHOD Compile(sBlock AS STRING) AS ICodeblock
 	LOCAL result AS ICodeblock
 	result := SUPER:Compile(sBlock)
 	IF result == NULL
-        IF (RuntimeState:LastRddError != NULL_OBJECT)
-            SELF:_dbfError( RuntimeState:LastRddError, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile")
+        IF (RuntimeState.LastRddError != NULL_OBJECT)
+            SELF:_dbfError( RuntimeState.LastRddError, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile")
         ELSE
             VAR msg := "Could not compile epression '"+sBlock+"'"
 		    SELF:_dbfError( Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBF.Compile", msg )

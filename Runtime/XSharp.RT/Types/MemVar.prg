@@ -266,7 +266,8 @@ PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadIn
     /// <summary>Update a private variable. Does NOT add a new variable</summary>
     STATIC METHOD PrivatePut(name AS STRING, uValue AS USUAL) AS LOGIC
         VAR current := CheckCurrent()
-        IF current != NULL .AND. current:TryGetValue(name, OUT VAR oMemVar)
+        LOCAL oMemVar AS XSharp.MemVar
+        IF current != NULL .AND. current:TryGetValue(name, OUT oMemVar)
             oMemVar:Value := uValue
             RETURN TRUE
         ENDIF

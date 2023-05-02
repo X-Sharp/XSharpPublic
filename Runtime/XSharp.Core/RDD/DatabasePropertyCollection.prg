@@ -87,12 +87,12 @@ CLASS XSharp.RDD.DatabasePropertyCollection INHERIT Dictionary<DatabasePropertyT
                     SELF:Add(dbProp, nValue)
                 CASE "C"
                     if pos+len <= bProps:Length
-                        VAR strValue := RuntimeState:WinEncoding:GetString(bProps, pos+7, len-8)
+                        VAR strValue := RuntimeState.WinEncoding:GetString(bProps, pos+7, len-8)
                         SELF:Add(dbProp, strValue)
                     endif
                 OTHERWISE
                     if pos+len <= bProps:Length
-                        VAR strValue := RuntimeState:WinEncoding:GetString(bProps, pos+7, len-8)
+                        VAR strValue := RuntimeState.WinEncoding:GetString(bProps, pos+7, len-8)
                         SELF:Add(dbProp, strValue)
                     endif
                 END SWITCH
@@ -130,7 +130,7 @@ CLASS XSharp.RDD.DatabasePropertyCollection INHERIT Dictionary<DatabasePropertyT
                     oWriter:Write(nLen)
                     oWriter:Write(bTrue)
                     oWriter:Write(SwapBytes(nType))
-                    oWriter:Write(RuntimeState:WinEncoding:GetBytes(sData))
+                    oWriter:Write(RuntimeState.WinEncoding:GetBytes(sData))
 
                 ELSEIF oData IS LONG VAR liValue
                     nLen    += 4

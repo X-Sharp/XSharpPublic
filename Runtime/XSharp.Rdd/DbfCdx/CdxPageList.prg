@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _bag   AS CdxOrderBag
         PRIVATE _hDump AS IntPtr
         INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
-        INTERNAL CONST CDXPAGE_MAXCOUNT    := 64 AS WORD
+        INTERNAL CONST CDXPAGE_MAXCOUNT    := 10000 AS WORD
 
         INTERNAL METHOD _FindPage( offset AS LONG ) AS CdxPage
             LOCAL node AS LinkedListNode<CdxPage>

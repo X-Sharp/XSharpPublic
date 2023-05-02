@@ -12,17 +12,7 @@ USING System.Runtime.CompilerServices
 USING XSharp
 USING System.Diagnostics
 
-
-#define USEATTRIB
-#ifdef USEATTRIB
-#XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
-#XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
-#XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
-#else
-#XTRANSLATE \[NOSHOW\] =>
-#XTRANSLATE \[INLINE\] =>
-#XTRANSLATE \[NODEBUG\] =>
-#endif
+#include "attributes.xh"
 #pragma warnings(171, off)   // field must be fully assigned before control is returned to the caller
 
 BEGIN NAMESPACE XSharp
@@ -71,8 +61,7 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
 
 #region datetime conversions
     /// <summary>Return DATE value as DateTime.</summary>
-    [NOSHOW];
-    PUBLIC PROPERTY Value AS System.DateTime
+    [NOSHOW] PUBLIC PROPERTY Value AS System.DateTime
     GET
         IF (_ymd == 0)
             RETURN System.DateTime.MinValue
@@ -97,7 +86,7 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
         _dtCalc     := DateTime{1901,1,1}
         RETURN
     /// <summary>Construct a date from a DateTime value.</summary>
-    [INLINE];
+    [NODEBUG] [INLINE];
     CONSTRUCTOR(dt AS System.DateTime)
         IF dt != DateTime.MinValue
             _year  := (WORD) dt:Year
@@ -109,7 +98,7 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
         RETURN
 
     /// <summary>Construct a date from another IDate type.</summary>
-    [INLINE];
+    [NODEBUG] [INLINE];
     CONSTRUCTOR(d AS IDate)
         _year  := (WORD) d:Year
         _month := (BYTE) d:Month
@@ -117,25 +106,25 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
         RETURN
 
     /// <summary>Construct a date from a number of Ticks.</summary>
-    [INLINE];
+    [NODEBUG] [INLINE];
     CONSTRUCTOR(ticks AS INT64)
         SELF(System.DateTime{ticks})
         RETURN
 
     /// <summary>Construct a date from a string. This assumes the string is in current Date format</summary>
-    [INLINE];
+    [NODEBUG] [INLINE];
     CONSTRUCTOR(strDate AS STRING)
         LOCAL dValue := CToD(strDate) AS DATE
         _ymd := dValue:_ymd
 
     /// <summary>Construct a date from a string using the specified Date Format.</summary>
-    [INLINE];
+    [NODEBUG] [INLINE];
     CONSTRUCTOR(strDate AS STRING, strFormat AS STRING)
         LOCAL dValue := CToD(strDate,strFormat) AS DATE
         _ymd := dValue:_ymd
 
     /// <summary>Construct a date from year, month, day </summary>
-    [INLINE];
+    [NODEBUG] [INLINE];
     CONSTRUCTOR(year AS INT, month AS INT, day AS INT)
         _ymd := 0
         IF year != 0 .AND. month != 0 .AND. day != 0
@@ -162,7 +151,7 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
         RETURN
 
     /// <summary>Construct a date from year, month, day </summary>
-    [INLINE];
+    [NODEBUG] [INLINE];
     CONSTRUCTOR(year AS DWORD, month AS DWORD, day AS DWORD)
         // Chain to Int constructor
         SELF( (INT) year, (INT) month, (INT) day)
@@ -190,22 +179,22 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
 #endregion
 #region Operators
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR ++(lhs AS DATE) AS DATE
         RETURN lhs:Add(1)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR +(lhs AS DATE, days AS USUAL) AS DATE
         RETURN lhs:Add(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR +(lhs AS DATE, days AS REAL8) AS DATE
         RETURN lhs:Add(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR +(lhs AS DATE, days AS LONG) AS DATE
         RETURN lhs:Add(days)
 
@@ -218,57 +207,57 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
         RETURN lhs:Add(ts)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR +(lhs AS DATE, days AS DWORD) AS DATE
         RETURN lhs:Add(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR +(lhs AS DATE, days AS UINT64) AS DATE
         RETURN lhs:Add(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR --(lhs AS DATE) AS DATE
         RETURN lhs:Subtract(1)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR -(lhs AS DATE, rhs AS DATE) AS LONG
         RETURN lhs:Subtract(rhs)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR -(lhs AS DATE, days AS USUAL) AS USUAL
         RETURN lhs:Subtract(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR -(lhs AS DATE, days AS REAL8) AS DATE
         RETURN lhs:Subtract(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR -(lhs AS DATE, days AS LONG) AS DATE
         RETURN lhs:Subtract(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR -(lhs AS DATE, days AS INT64) AS DATE
         RETURN lhs:Subtract(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR -(lhs AS DATE, ts AS System.TimeSpan) AS DATE
         RETURN lhs:Subtract(ts)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR -(lhs AS DATE, days AS DWORD) AS DATE
         RETURN lhs:Subtract(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG] [INLINE];
     STATIC OPERATOR -(lhs AS DATE, days AS UINT64) AS DATE
         RETURN lhs:Subtract(days)
 
@@ -441,48 +430,48 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
             THROW Error.ArgumentError(__FUNCTION__,NAMEOF(days),1, "Incompatible argument for Date:Add()",{days})
         ENDIF
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Add(days AS REAL8) AS DATE
         VAR res := SELF:Value:AddDays(days)
         RETURN DATE{res}
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Add(days AS LONG) AS DATE
         VAR res := SELF:Value:AddDays(days)
         RETURN DATE{res}
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Add(days AS INT64) AS DATE
         VAR res := SELF:Value:AddDays(days)
         RETURN DATE{res}
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Add(span AS System.TimeSpan) AS DATE
         VAR res := SELF:Value:Add(span)
         RETURN DATE{res}
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Add(days AS DWORD) AS DATE
         VAR res := SELF:Value:AddDays(days)
         RETURN DATE{res}
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Add(days AS UINT64) AS DATE
         VAR res := SELF:Value:AddDays(days)
         RETURN DATE{res}
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Subtract(lhs AS DATE) AS LONG
         LOCAL span AS System.TimeSpan
         span := (System.TimeSpan)(SELF:Value - lhs:Value)
         RETURN span:Days
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Subtract(days AS USUAL) AS USUAL
         IF days:IsInteger
             RETURN SELF:Subtract( (INT64) days)
@@ -495,33 +484,33 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
         ENDIF
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Subtract(days AS REAL8) AS DATE
         RETURN SELF:Add(-days)
 
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Subtract(days AS LONG) AS DATE
         RETURN SELF:Add(-days)
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Subtract(days AS INT64) AS DATE
         RETURN SELF:Add(-days)
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Subtract(ts AS System.TimeSpan) AS DATE
         RETURN SELF:Add(-ts)
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Subtract(days AS DWORD) AS DATE
         RETURN SELF:Add(-days)
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG] [INLINE];
     METHOD Subtract(days AS UINT64) AS DATE
         RETURN SELF:Add(-(INT64)days)
 #endregion
@@ -648,8 +637,7 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
 #region properties
 
     /// <inheritdoc />
-    [NOSHOW];
-    PROPERTY IsEmpty AS LOGIC
+    [NOSHOW] PROPERTY IsEmpty AS LOGIC
     GET
         RETURN _ymd == 0
     END GET
@@ -661,18 +649,10 @@ PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
     /// <inheritdoc />
     PROPERTY Day	AS INT GET _day
         // Next properties for easy access in right type
-    [NOSHOW];
-    INTERNAL PROPERTY DYear		AS DWORD GET _year
-
-    [NOSHOW];
-    INTERNAL PROPERTY DMonth	AS DWORD GET _month
-
-    [NOSHOW];
-    INTERNAL PROPERTY DDay		AS DWORD GET _day
-
-    [NOSHOW];
-    INTERNAL PROPERTY YMD AS DWORD GET ;
-            (SELF:DYear * 0xFFFF)  + (SELF:DMonth *0xFF) + _day
+    [NOSHOW] INTERNAL PROPERTY DYear	AS DWORD GET _year
+    [NOSHOW] INTERNAL PROPERTY DMonth	AS DWORD GET _month
+    [NOSHOW] INTERNAL PROPERTY DDay	    AS DWORD GET _day
+    [NOSHOW] INTERNAL PROPERTY YMD      AS DWORD GET (SELF:DYear * 0xFFFF)  + (SELF:DMonth *0xFF) + _day
 
     INTERNAL METHOD ToDebugString() AS STRING
         IF (_ymd == 0)

@@ -353,12 +353,13 @@ METHOD __GenerateStatusHL( oError AS  Error) AS HyperLabel STRICT
 METHOD __InitRecordBuf( ) AS VOID STRICT
 	LOCAL i AS DWORD
 	LOCAL x AS USUAL
-
+    local dwCurrentWorkArea as DWORD
 
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
 
+    VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 	FOR i := 1 TO SELF:wFieldCount
 		IF VODBFieldGet( i, REF x )
@@ -376,7 +377,7 @@ METHOD __InitRecordBuf( ) AS VOID STRICT
 		ENDIF
 		aCurrentBuffer[BUFFER_IS_CHANGED, i] := FALSE
 	NEXT  // i
-
+   __DBSSetSelect( dwCurrentWorkArea )
 
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRet))

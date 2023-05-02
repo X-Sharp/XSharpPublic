@@ -246,7 +246,7 @@ BEGIN NAMESPACE XSharp.ADS
                     ENDIF
                 ENDIF
             CATCH
-
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Error converting Julian Number")
             END TRY
             RETURN DbDate{0,0,0}
 
@@ -452,7 +452,7 @@ BEGIN NAMESPACE XSharp.ADS
                         bytes := BYTE[] {mlength}
                         result := ACE.AdsGetBinary(SELF:_Table, SELF:FieldPos, 0, bytes, REF mlength )
                         SELF:RDD:_CheckError(result)
-                        return RuntimeState:WinEncoding:GetString(bytes, 0, bytes:Length)
+                        return RuntimeState.WinEncoding:GetString(bytes, 0, bytes:Length)
                     ENDIF
                     SELF:RDD:_CheckError(result,EG_READ)
                     RETURN SELF:RDD:_Ansi2Unicode(chars, (INT) mlength)

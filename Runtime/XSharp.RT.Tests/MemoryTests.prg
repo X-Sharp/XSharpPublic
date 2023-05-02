@@ -80,5 +80,28 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.True( MemInt(pMem, -1, 25)== pMem)
 			Assert.True( MemShort(pMem, -1, 50) == pMem)
 
+        [Fact, Trait("Category", "Memory")];
+        UNSAFE METHOD MemoryTest3() AS VOID
+            LOCAL pBytes AS BYTE PTR
+            LOCAL pBytes2 AS BYTE PTR
+	        pBytes := MemAlloc(10)
+            MemSet(pBytes, 42, 10)
+            FOR VAR i := 1 to 10
+                Assert.True(pBytes[i] == 42)
+            NEXT
+            pBytes2 := MemRealloc(pBytes, 5)
+            Assert.True(pBytes == pBytes2)
+            FOR VAR i := 1 to 5
+                Assert.True(pBytes2[i] == 42)
+            NEXT
+            pBytes2 := MemRealloc(pBytes, 10)
+            Assert.True(pBytes != pBytes2)
+            FOR VAR i := 1 to 5
+                Assert.True(pBytes2[i] == 42)
+            NEXT
+            FOR VAR i := 6 to 10
+                Assert.True(pBytes2[i] == 0)
+            NEXT
+
 	END CLASS
 END NAMESPACE

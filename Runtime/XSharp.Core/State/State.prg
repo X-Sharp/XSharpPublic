@@ -221,8 +221,9 @@ CLASS XSharp.RuntimeState
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PRIVATE METHOD _SetThreadValue<T>(nSetting AS XSharp.Set, oValue AS T) AS T
 		LOCAL result AS T
-		BEGIN LOCK oSettings
-			IF oSettings:TryGetValue(nSetting, OUT VAR oResult)
+        BEGIN LOCK oSettings
+            LOCAL oResult AS object
+			IF oSettings:TryGetValue(nSetting, OUT oResult)
 				result := (T) oResult
 			ELSE
 				result := DEFAULT(T)
@@ -413,7 +414,7 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="Set.DateCountry" />
    STATIC PROPERTY DateCountry AS DWORD ;
         GET (DWORD) GetValue<XSharp.DateCountry>(Set.DateCountry);
-        SET RuntimeState:GetInstance():_SetDateCountry( (XSharp.DateCountry) value)
+        SET RuntimeState.GetInstance():_SetDateCountry( (XSharp.DateCountry) value)
 
 	/// <summary>The current Date format</summary>
 	/// <remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br/>
@@ -649,6 +650,15 @@ CLASS XSharp.RuntimeState
     STATIC PROPERTY Optimize AS LOGIC ;
         GET GetValue<LOGIC>(Set.Optimize);
         SET SetValue<LOGIC>(Set.Optimize, value)
+
+
+    /// <summary>The current SetRefresh flag.</summary>
+   /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+   /// <seealso cref="SetRefresh" />
+   /// <seealso cref="Set.Refresh" />
+   STATIC PROPERTY Refresh AS REAL8 ;
+       GET GetValue<REAL8>(Set.Refresh);
+       SET SetValue<REAL8>(Set.Refresh, value)
 
 	/// <summary>The current SetSafety flag.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -1027,7 +1037,7 @@ CLASS XSharp.RuntimeState
 		    ENDIF
         ENDIF
         IF _macrocompilerType != NULL_OBJECT
-            _macrocompiler := Activator:CreateInstance(_macrocompilerType) ASTYPE IMacroCompiler
+            _macrocompiler := Activator.CreateInstance(_macrocompilerType) ASTYPE IMacroCompiler
             IF _macrocompiler IS IMacroCompiler2 VAR mc
                 mc:Resolver := _macroresolver
             endif

@@ -494,8 +494,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     Fields = new Dictionary<string, MemVarFieldInfo>(XSharpString.Comparer);
                 }
-                var info = new MemVarFieldInfo(Name, Alias, context);
-                Fields.Add(info.Name, info);
+                MemVarFieldInfo info;
+                if (Fields.ContainsKey(Name))
+                {
+                    info = Fields[Name];
+                }
+                else
+                {
+                    info = new MemVarFieldInfo(Name, Alias, context);
+                    Fields.Add(info.Name, info);
+                }
                 if (!info.IsMacroMemvar)
                 {
                     if (info.Name != info.FullName && !Fields.ContainsKey(info.FullName))
@@ -1335,7 +1343,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             IsFileWidePublic,
             IsCreated,
             IsParameter,
-            IsWritten
+            IsWritten,
+            IsPublic
         }
         private readonly MemvarType _fieldType;
         public string Name { get; private set; }
@@ -1388,6 +1397,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             get { return _flags.HasFlag(FieldFlags.IsCreated); }
             set { _flags = setFlag(_flags, FieldFlags.IsCreated, value); }
+        }
+        public bool IsPublic
+        {
+            get { return _flags.HasFlag(FieldFlags.IsPublic); }
+            set { _flags = setFlag(_flags, FieldFlags.IsPublic, value); }
         }
         public XSharpParserRuleContext Context { get; private set; }
         internal MemVarFieldInfo(string name, string alias, XSharpParserRuleContext context, bool filewidepublic = false)

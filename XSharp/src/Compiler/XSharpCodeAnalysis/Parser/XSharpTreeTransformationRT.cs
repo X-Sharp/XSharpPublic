@@ -252,7 +252,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     GlobalEntities.Members, eof);
             cu.XGenerated = true;
             var red = (Syntax.CompilationUnitSyntax)cu.CreateRed();
-            CSharpSyntaxTree tree = (CSharpSyntaxTree ) CSharpSyntaxTree.Create(red, _options, XSharpSpecialNames.CompilerGeneratedCode, System.Text.Encoding.UTF8);
+            CSharpSyntaxTree tree = (CSharpSyntaxTree)CSharpSyntaxTree.Create(red, _options, XSharpSpecialNames.CompilerGeneratedCode, System.Text.Encoding.UTF8);
             tree.Generated = true;
             return tree;
         }
@@ -1103,33 +1103,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        protected void AddAmpbasedMemvar(XSharpParserRuleContext context, string name, string alias, IToken amp)
+        protected void AddAmpbasedMemvar(XSharpParserRuleContext context, string name,
+            string alias, IToken amp, bool isPublic = false)
         {
             name = CleanVarName(name);
             if (amp == null) // normal DIMENSION foo (1,2)
             {
-                addFieldOrMemvar(name, alias, context, false);
+                addFieldOrMemvar(name, alias, context, false, isPublic);
             }
             else // DIMENSION &foo(1,2)
             {
                 // Make name unique because they can use &name multiple times
                 name += ":" + context.Position.ToString();
-                addFieldOrMemvar(name, "&", context, false);
+                addFieldOrMemvar(name, "&", context, false, isPublic);
             }
         }
 
-        protected MemVarFieldInfo addFieldOrMemvar(string name, string prefix, XSharpParserRuleContext context, bool isParameter)
+        protected MemVarFieldInfo addFieldOrMemvar(string name, string prefix,
+            XSharpParserRuleContext context, bool isParameter, bool isPublic = false)
         {
-            if (CurrentMember.Data.GetField(name) != null)
+            var field = CurrentMember.Data.GetField(name);
+            if (field != null)
             {
+                if (field.IsPublic)
+                    return field;
                 ParseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
                 return null;
             }
             else
             {
-
                 var info = CurrentMember.Data.AddField(name, prefix, context);
                 info.IsParameter = isParameter;
+                info.IsPublic = isPublic;
                 return info;
             }
         }
@@ -1165,7 +1170,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var memvar in context._XVars)
                     {
                         var name = memvar.Id.GetText();
-                        AddAmpbasedMemvar(memvar, name, "M", memvar.Amp);
+                        AddAmpbasedMemvar(memvar, name, "M", memvar.Amp, context.T.Type == XP.PUBLIC);
                     }
                 }
             }
@@ -1204,6 +1209,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 var name = CleanVarName(memvar.Id.GetText());
                                 var mv = new MemVarFieldInfo(name, "M", memvar, true);
+                                mv.IsPublic = true;
                                 _filewideMemvars.Add(mv.Name, mv);
                                 GlobalEntities.FileWidePublics.Add(mv);
                             }
@@ -1218,6 +1224,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 var name = CleanVarName(memvar.Id.GetText());
                                 var mv = new MemVarFieldInfo(name, "M", memvar, true);
+                                mv.IsPublic = true;
                                 _filewideMemvars.Add(mv.Name, mv);
                                 GlobalEntities.FileWidePublics.Add(mv);
                             }
@@ -1233,6 +1240,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var name = CleanVarName(memvar.Id.GetText());
                         var mv = new MemVarFieldInfo(name, "M", memvar, true);
+                        mv.IsPublic = false;
                         _filewideMemvars.Add(mv.Name, mv);
                     }
                 }
@@ -1337,7 +1345,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             memvar.Put(stmt);
                             stmts.Add(stmt);
                         }
-
                     }
                     context.Put(MakeBlock(stmts));
                     break;
@@ -1609,7 +1616,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected ClassDeclarationSyntax GenerateDefaultClipperCtor(ClassDeclarationSyntax classdecl, XP.ITypeContext context)
         {
             if (!context.TypeData.Partial && !context.TypeData.HasInstanceCtor &&
-                _options.HasOption(CompilerOption.DefaultClipperContructors, (XSharpParserRuleContext) context, PragmaOptions))
+                _options.HasOption(CompilerOption.DefaultClipperContructors, (XSharpParserRuleContext)context, PragmaOptions))
             {
                 var hasComImport = false;
                 foreach (var attlist in classdecl.AttributeLists)
@@ -1628,7 +1635,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //
                 if (!hasComImport)
                 {
-                    var ctor = GenerateDefaultCtor(classdecl.Identifier, (XSharpParserRuleContext) context, default, null);
+                    var ctor = GenerateDefaultCtor(classdecl.Identifier, (XSharpParserRuleContext)context, default, null);
                     var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
                     newmembers.AddRange(classdecl.Members);
                     if (ctor != null)
@@ -2427,7 +2434,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (docasestmt.OtherwiseStmtBlk == null)
                         return true;
                     return NeedsReturn(docasestmt.OtherwiseStmtBlk._Stmts);
-                                               // all branches end with a return  statement
                 case XP.SwitchStmtContext swstmt:
                     bool hasdefault = false;
                     foreach (var swBlock in swstmt._SwitchBlock)
@@ -3610,6 +3616,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         for (int i = 0; i < parameternames.Count; i++)
                         {
+                            context.Data.UsesPCount = true;
                             var type = parameterTypes[i];
                             var name = parameternames[i];
                             decl = GenerateLocalDecl(name, type, GenerateGetClipperParam(GenerateLiteral(i + 1), prc));

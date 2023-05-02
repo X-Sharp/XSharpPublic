@@ -209,12 +209,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var memvar in context._FoxVars)
                     {
                         var name = memvar.Id.GetText();
-                        AddAmpbasedMemvar(memvar, name, "M", memvar.Amp);
+                        AddAmpbasedMemvar(memvar, name, "M", memvar.Amp, true);
                     }
                     foreach (var dimvar in context._DimVars)
                     {
                         var name = dimvar.Id.GetText();
-                        AddAmpbasedMemvar(dimvar, name, "M", dimvar.Amp);
+                        AddAmpbasedMemvar(dimvar, name, "M", dimvar.Amp, true);
                     }
                     break;
             }

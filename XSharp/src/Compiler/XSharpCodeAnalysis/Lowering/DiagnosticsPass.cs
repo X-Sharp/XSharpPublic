@@ -193,6 +193,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             var syntax = node.Syntax;
             var sourceType = node.Operand.Type;
             var targetType = node.Type;
+            if (node.Conversion.Kind == ConversionKind.ImplicitUserDefined)
+            {
+                if (node.Type.SpecialType == SpecialType.System_String &&
+                    node.Operand.Type.IsPszType())
+                {
+                    Error(ErrorCode.WRN_DangerousConversion, node, node.Operand.Type, node.Type);
+                }
+            }
             if (syntax is BinaryExpressionSyntax binexp)
             {
                 // determine original expression type

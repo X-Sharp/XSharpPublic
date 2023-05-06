@@ -2085,7 +2085,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_InvalidStackAlloc = 9113,
         ERR_ColonForStaticMember = 9114,
         ERR_ColonForTypeOrNs = 9115,
-        WRN_DangerousConversion = 9116,
+        WRN_NullPszForStringArgument = 9116,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

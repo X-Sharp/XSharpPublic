@@ -195,10 +195,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             var targetType = node.Type;
             if (node.Conversion.Kind == ConversionKind.ImplicitUserDefined)
             {
+                // Produce a warning when a NULL_PSZ is passed as argument to a function or method that expects a STRING
+
                 if (node.Type.SpecialType == SpecialType.System_String &&
-                    node.Operand.Type.IsPszType())
+                    node.Operand.Type.IsPszType() &&
+                    node.Syntax.XNode is XSharpParserRuleContext context &&
+                    context.Start.Type == XSharpParser.NULL_PSZ)
                 {
-                    Error(ErrorCode.WRN_DangerousConversion, node, node.Operand.Type, node.Type);
+                    if (context.Parent is XSharpParser.NamedArgumentContext ||
+                        context.Parent is XSharpParser.UnnamedArgumentContext)
+                    {
+                        Error(ErrorCode.WRN_NullPszForStringArgument, node, node.Operand.Type, node.Type);
+                    }
                 }
             }
             if (syntax is BinaryExpressionSyntax binexp)

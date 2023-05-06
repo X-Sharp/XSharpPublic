@@ -7685,7 +7685,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_ColonForTypeOrNs" xml:space="preserve">
   <value>Can't use the COLON operator ':' as delimiter in the {0} '{1}'</value>
  </data>
-  <data name="WRN_DangerousConversion" xml:space="preserve">
-  <value>Possibly dangerous implicit conversion '{0}' -&gt; '{1}'</value>
+  <data name="WRN_NullPszForStringArgument" xml:space="preserve">
+  <value>Passing a NULL_PSZ for an argument declared as 'string' may have unexpected results when the code checks for a string with the value NULL.</value>
  </data>
 </root>

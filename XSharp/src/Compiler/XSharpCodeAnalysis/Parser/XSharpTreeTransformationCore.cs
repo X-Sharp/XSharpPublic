@@ -6444,6 +6444,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return stmt;
         }
+
+        private void CreateSimpleIfStatement(XSharpParserRuleContext context, XP.CondBlockContext ifcond, XP.StatementBlockContext elseBlock)
+        {
+            var cond = ifcond.Cond.Get<ExpressionSyntax>();
+            var ifblock = ifcond.StmtBlk.Get<StatementSyntax>();
+            ElseClauseSyntax elseClause = null;
+            if (elseBlock != null)
+            {
+                elseClause = GenerateElseClause(elseBlock.Get<StatementSyntax>());
+            }
+            var stmt = GenerateIfStatement(cond, ifblock, elseClause);
+            context.Put(stmt);
+        }
+
         private void ExitConditionalStatement(XSharpParserRuleContext context, IList<XP.CondBlockContext> conditions, XP.StatementBlockContext elseBlock)
         {
             // Convert CASE blocks and ELSEIF blocks to avoid nesting too deep which may cause a stack error
@@ -6479,6 +6493,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // {
             //    otherwisestatements
             // }
+            if (conditions.Count == 1)
+            {
+                CreateSimpleIfStatement(context, conditions.First(), elseBlock);
+                return;
+            }
             StatementSyntax stmt = null;
             string label = "$Label" + context.Start.StartIndex.ToString();
             var last = conditions.LastOrDefault();
@@ -6491,7 +6510,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             gotoStmt.XGenerated = true;
             bool needLabel = false;
-            var condStmts = new List<StatementSyntax>();
+            var condStmts = _pool.Allocate<StatementSyntax>();
             foreach (var block in conditions)
             {
                 if (block == last)
@@ -6547,7 +6566,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 labelStatement.XGenerated = true;
                 condStmts.Add(labelStatement);
             }
-            context.Put(MakeBlock(condStmts));
+            context.PutList(condStmts.ToList());
+            _pool.Free(condStmts);
         }
         public override void ExitSwitchStmt([NotNull] XP.SwitchStmtContext context)
         {

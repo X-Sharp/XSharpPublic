@@ -89,6 +89,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return true;
             return false;
         }
+        public static bool IsMemberOperator(int iToken)
+        {
+            switch (iToken)
+            {
+                case DOT:
+                case COLON:
+                case ALIAS:
+                case COLONCOLON:
+                    return true;
+            }
+            return false;
+        }
 
         public static bool IsString(int iToken)
         {
@@ -1575,13 +1587,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         private int fixPositionalKeyword(int keyword, int lastToken, string text)
         {
             // after the following tokens we treat everything as ID
-            switch (lastToken)
+            if (IsMemberOperator(lastToken))
             {
-                case ALIAS:
-                case COLON:
-                case COLONCOLON:
-                case DOT:
-                    return ID;
+                return ID;
             }
             switch (keyword)
             {

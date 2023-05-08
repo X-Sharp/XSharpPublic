@@ -13,9 +13,14 @@
     <INS>true</INS>
     <vo15>True</vo15>
     <OutputName>GeneralTestsVulcan</OutputName>
+    <StartupObject />
+    <Vo7>True</Vo7>
+    <Vo9>True</Vo9>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PlatformTarget>x86</PlatformTarget>

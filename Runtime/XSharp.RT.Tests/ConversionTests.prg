@@ -361,13 +361,20 @@ BEGIN NAMESPACE XSharp.RT.Tests
         METHOD PSZConversions() AS VOID
             LOCAL p AS PSZ
             LOCAL s AS STRING
+            LOCAL u AS USUAL
             p := String2Psz("Test")
             s := p
             Assert.Equal(s, "Test")
             p := NULL_PSZ
             s := p
-            Assert.Equal(s, NULL)
+            Assert.Equal(s, "")
 
+            s := NULL_PSZ
+            Assert.Equal(s, "")
+
+            u := NULL_PSZ
+            s := u
+            Assert.Equal(s, "")
 
 
 	END CLASS

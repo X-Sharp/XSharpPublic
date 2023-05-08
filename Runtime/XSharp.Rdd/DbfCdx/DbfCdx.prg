@@ -27,6 +27,7 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DBFCDX INHERIT DBFFPT
         INTERNAL _indexList  AS CdxOrderBagList
         INTERNAL _dirtyRead AS LOGIC
+        INTERNAL _recordList AS CdxRecordList
         INTERNAL PROPERTY CurrentOrder AS CdxTag GET _indexList:CurrentOrder
         OVERRIDE PROPERTY Driver  AS STRING GET nameof(DBFCDX)
         INTERNAL PROPERTY MustForceRel AS LOGIC GET _RelInfoPending != NULL
@@ -36,6 +37,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         CONSTRUCTOR()
             SUPER()
+            _recordList := CdxRecordList{}
             _indexList := CdxOrderBagList{SELF}
             _dirtyRead := !RuntimeState.GetValue<LOGIC>(Set.StrictRead)
             RETURN
@@ -396,6 +398,11 @@ BEGIN NAMESPACE XSharp.RDD
                         info:Result := FALSE
                     ENDIF
 
+                CASE DBOI_USER + 1
+                    info:Result := RLHitCount
+                CASE DBOI_USER + 2
+                    info:Result := RLMissCount
+
                 CASE DBOI_USER + 42
                 CASE DBOI_DUMP
                     // Dump Cdx to Txt file
@@ -463,6 +470,7 @@ BEGIN NAMESPACE XSharp.RDD
 
             isOk := SUPER:Pack()
             IF isOk
+                ClearRecordList()
                 isOk := SELF:OrderListRebuild()
             ENDIF
             RETURN isOk
@@ -472,6 +480,7 @@ BEGIN NAMESPACE XSharp.RDD
 
             isOk := SUPER:Zap()
             IF isOk
+                ClearRecordList()
                 isOk := SELF:OrderListRebuild()
             ENDIF
             RETURN isOk
@@ -674,6 +683,9 @@ BEGIN NAMESPACE XSharp.RDD
                 IF !isOk
                     RETURN isOk
                 ENDIF
+                IF SELF:_FilterInfo:Active
+                    _recordList.Items[SELF:RecNo] := CdxRecordList.RecordState.Unknown
+                ENDIF
                 RETURN SELF:_indexList:GoHot()
             END LOCK
 
@@ -687,6 +699,38 @@ BEGIN NAMESPACE XSharp.RDD
             END LOCK
 
         #endregion
+
+        #REGION Record list
+        PUBLIC RLHitCount := 0 AS INT
+        PUBLIC RLMissCount := 0 AS INT
+
+        PROTECTED METHOD ClearRecordList() AS VOID
+            SELF:_recordList:Clear()
+            RLHitCount := 0
+            RLMissCount := 0
+            RETURN
+
+        OVERRIDE METHOD ClearFilter( ) AS LOGIC
+            ClearRecordList()
+			RETURN SUPER:ClearFilter()
+
+        OVERRIDE METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
+            ClearRecordList()
+            RETURN SUPER:SetFilter(info)
+
+        OVERRIDE METHOD EvalFilter(oBlock AS ICodeblock) AS LOGIC
+            VAR rli := _recordList.Items[SELF:RecNo]
+            VAR res := rli == CdxRecordList.RecordState.Visible
+            IF rli == CdxRecordList.RecordState.Unknown
+                res := (LOGIC) SELF:EvalBlock(oBlock)
+                _recordList.Items[SELF:RecNo] := IIF(res, CdxRecordList.RecordState.Visible, CdxRecordList.RecordState.Hidden)
+                RLMissCount++
+            ELSE
+                RLHitCount++
+            ENDIF
+            RETURN res
+
+        #ENDREGION
 
         INTERNAL METHOD _GetState() AS CdxState
             RETURN CdxState{} {EoF := SELF:EoF, BoF := SELF:BoF, RecNo := SELF:RecNo}

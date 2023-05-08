@@ -367,6 +367,12 @@
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\HarbourClassLibrary.png" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\HarbourClassLibrary.vstemplate" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\HarbourClassLibrary.xsproj" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassXpp\ClassXpp.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassXpp\Class.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassXpp\ClassXpp.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassFox\Class.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.vstemplate" />
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

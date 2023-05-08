@@ -74,6 +74,7 @@
     <Compile Include="DbfCdx\CdxHelpers.prg" />
     <Compile Include="DbfCdx\DbfCdx.prg" />
     <Compile Include="DbfCdx\Pages\CdxTagList.prg" />
+    <Compile Include="DbfCdx\CdxRecordList.prg" />
     <Compile Include="DbfCdx\Tag\CdxTag.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagCreate.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagLock.prg" />

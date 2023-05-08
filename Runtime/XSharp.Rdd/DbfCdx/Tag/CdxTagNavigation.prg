@@ -1064,7 +1064,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
 
                     IF ! recordHidden .AND. cbFilter != NULL
-                        recordHidden := ! (LOGIC) SELF:_oRdd:EvalBlock(cbFilter)
+                        recordHidden := ! SELF:_oRdd:EvalFilter(cbFilter)
                     ENDIF
                     IF recordHidden
                         recno := SELF:_getNextKey(direction)

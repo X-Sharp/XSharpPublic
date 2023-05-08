@@ -13,6 +13,8 @@ USING System.Diagnostics
 
 //#define TESTCDX
 
+//#define RECLISTDEBUG
+
 #ifdef TESTCDX
     GLOBAL LOGGING := TRUE AS LOGIC
     GLOBAL VALIDATETREE := FALSE AS LOGIC
@@ -398,10 +400,14 @@ BEGIN NAMESPACE XSharp.RDD
                         info:Result := FALSE
                     ENDIF
 
+                #if RECLISTDEBUG
                 CASE DBOI_USER + 1
                     info:Result := RLHitCount
                 CASE DBOI_USER + 2
                     info:Result := RLMissCount
+                CASE DBOI_USER + 3
+                    info:Result := _recordList:Length
+                #endif
 
                 CASE DBOI_USER + 42
                 CASE DBOI_DUMP

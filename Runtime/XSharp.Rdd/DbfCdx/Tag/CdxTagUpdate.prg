@@ -869,9 +869,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF page:NumKeys > 0
                 VAR pageNo  := page:LastNode:ChildPageNo
                 page    := (CdxTreePage) SELF:OrderBag:GetPage(pageNo, _keySize, SELF)
-                IF page IS CdxLeafPage VAR leaf
+                IF page IS CdxLeafPage VAR leaf2
                     SELF:PushPage(page, 0)
-                    RETURN leaf
+                    RETURN leaf2
                 ENDIF
             ENDIF
             RETURN NULL

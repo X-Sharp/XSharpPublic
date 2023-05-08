@@ -1329,8 +1329,8 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 			!(SELF IS DataBrowser) .AND.;
 			IsMethod(oParent, #__SetUpDataControl)
 		oParent:__SetupDataControl(SELF)
-	ELSEIF oParent IS DataWindow VAR oDW
-		oDw:__SetupNonDataControl(SELF)
+	ELSEIF oParent IS DataWindow VAR oDW2
+		oDw2:__SetupNonDataControl(SELF)
 	ENDIF
 
 

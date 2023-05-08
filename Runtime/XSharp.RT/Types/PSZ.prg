@@ -356,9 +356,10 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
         // PSZ -> STRING
     [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS PSZ ) AS STRING
-        IF p:_value == NULL // NULL_PSZ
-            RETURN NULL
-        ENDIF
+        // Rolled back fix for #1234 because it causes side effects
+        //IF p:_value == NULL // NULL_PSZ
+        //    RETURN NULL
+        //ENDIF
         RETURN p:ToString()
 
         // PSZ -> INT

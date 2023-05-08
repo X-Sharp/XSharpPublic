@@ -32,8 +32,8 @@ BEGIN NAMESPACE $safeprojectname$
 
     CLASS METHOD Class1:initClass()
         // This is the type constructor. it gets called only once
-        listOfObjects := List<Class1>{}     // You can use the "new" syntax with curly braces to create an objec
-        someObject    := Object():new()     // but also use Type():New() syntax.
+        ::listOfObjects := List<Class1>{}     // You can use the "new" syntax with curly braces to create an objec
+        ::someObject    := Object():new()     // but also use Type():New() syntax.
 
     METHOD Class1:init()
         ::var1 := "First String"

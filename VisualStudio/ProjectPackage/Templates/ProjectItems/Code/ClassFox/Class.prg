@@ -13,9 +13,9 @@ $endif$USING System.Text
 BEGIN NAMESPACE $rootnamespace$
 
 	/// <summary>
-    /// The Class1 class.
+    /// The $safeitemrootname$ class.
     /// </summary>
-    DEFINE CLASS Class1
+    DEFINE CLASS $safeitemrootname$
     PROTECTED prop1         AS STRING // X# allows types
     HIDDEN hiddenprop1      AS DATE
     // CONSTRUCTOR

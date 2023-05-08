@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-01T17:00:59.608+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-08T10:58:10.454+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -15,7 +15,7 @@
     </header>
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Heading1">Changes in 2.16.0.0</para>
+    <para styleclass="Heading1">Changes in 2.16.0.1</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features Xbase++ dialect</text></para>
     <para styleclass="Body Text">We have made several changes in the way how Xbase++ class definitions are generated. Please check your code extensively with this new build !</para>
@@ -36,7 +36,7 @@
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed some method overload resolution issues in the VO dialect (#1211)</li>
-      <li styleclass="Body Text">Fixed internal compiler error (insufficient stack) with huge DO CASE statement (#1214)</li>
+      <li styleclass="Body Text">Fixed internal compiler error (insufficient stack) with huge DO CASE statements and huge IF ELSEIF statements (#1214)</li>
       <li styleclass="Body Text">Fixed a problem with the Interpolated/Extended string syntax (#1218)</li>
       <li styleclass="Body Text">Fixed some issues with incorrectly allowing accessing static class members with the colon operator or instance members with the dot operator (#1219,#1220)</li>
       <li styleclass="Body Text">Fixed Incorrect visibility of MEMVARs created with MemVarPut() (#1223)</li>
@@ -80,6 +80,8 @@
       <li styleclass="Body Text">Added support for importing Indexes in the DbServer editor.</li>
       <li styleclass="Body Text">The X# project system now remembers which Windows were opened in the Windows editor in design mode and reopens them correctly when a solution is reopened.</li>
       <li styleclass="Body Text">We have added templates for a Harbour console application and Harbour class library</li>
+      <li styleclass="Body Text">We have added item templates for FoxPro syntax classes and Xbase++ syntax classes</li>
+      <li styleclass="Body Text">The Class templates for the FoxPro and XBase++ dialect now include a class definition in that dialect </li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

@@ -350,7 +350,8 @@
                 case ErrorCode.WRN_XPPMethodNotDeclared:
                 case ErrorCode.WRN_FoxUnsupportedClause:
                 case ErrorCode.WRN_NullPszForStringArgument:
-                    return true;
+                case ErrorCode.WRN_ConversionFromNilNotSupported:
+                        return true;
                 default:
                     return false;
             }

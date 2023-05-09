@@ -7688,4 +7688,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_NullPszForStringArgument" xml:space="preserve">
   <value>Passing a NULL_PSZ for an argument declared as 'string' may have unexpected results when the code checks for a string with the value NULL.</value>
  </data>
+  <data name="WRN_ConversionFromNilNotSupported" xml:space="preserve">
+  <value>A conversion from NIL to '{0}' is not supported and may have unwanted results.</value>
+ </data>
 </root>
+

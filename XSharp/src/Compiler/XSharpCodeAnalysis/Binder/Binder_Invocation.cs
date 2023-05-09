@@ -76,7 +76,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (defaultExpr is BoundFieldAccess bfa && bfa.FieldSymbol.Name == "_NIL")
                     {
-                        Error(diagnostics, ErrorCode.ERR_BadArgType, syntax.Location, parameter.Ordinal + 1, "NIL", parameterType);
+                        Error(diagnostics, ErrorCode.WRN_ConversionFromNilNotSupported, syntax.Location, parameterType);
                     }
                 }
                 var implicitop = LocalRewriter.getImplicitOperatorByParameterType(parameterType, defaultExpr.Type);

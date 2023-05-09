@@ -2701,6 +2701,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 switch (token.Type)
                 {
                     case XP.NIL:
+                        {
+                            bool Ok;
+                            Ok = datatype is XP.SimpleDatatypeContext sdtc1 && sdtc1.TypeName.Start.Type == XP.USUAL;
+                            var typename = datatype.GetText();
+                            Ok = Ok || typename.ToLower().EndsWith(OurTypeNames.UsualType.ToLower());
+                            if (!Ok)
+                            {
+                                _parseErrors.Add(new ParseErrorData(initexpr, ErrorCode.WRN_ConversionFromNilNotSupported, typename));
+                            }
+                        }
                         return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(1));               // 1 = NIL
                     case XP.NULL_DATE:
                         return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(2));               // 2 = Date

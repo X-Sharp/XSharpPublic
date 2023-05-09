@@ -205,7 +205,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (context.Parent is XSharpParser.NamedArgumentContext ||
                         context.Parent is XSharpParser.UnnamedArgumentContext)
                     {
-                        Error(ErrorCode.WRN_NullPszForStringArgument, node, node.Operand.Type, node.Type);
+                        Error(ErrorCode.WRN_NullPszForStringArgument, node);
+                    }
+                }
+                if (node.Type.IsSymbolType() &&
+                    node.Operand.Type.IsUsualType() &&
+                    node.Syntax.XNode is XSharpParserRuleContext context2 &&
+                    context2.Start.Type == XSharpParser.NIL)
+                {
+                    if (context2.Parent is XSharpParser.NamedArgumentContext ||
+                        context2.Parent is XSharpParser.UnnamedArgumentContext||
+                        context2.Parent is XSharpParser.AssignmentExpressionContext)
+                    {
+                        Error(ErrorCode.WRN_ConversionFromNilNotSupported, node, node.Type);
                     }
                 }
             }

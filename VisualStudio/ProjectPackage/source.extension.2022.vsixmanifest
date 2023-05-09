@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="XSharp.ProjectSystem.2022" Version="2.16.0.0" Language="en-US" Publisher="XSharp BV" />
+        <Identity Id="XSharp.ProjectSystem.2022" Version="2.16.0.2" Language="en-US" Publisher="XSharp BV" />
         <DisplayName>XSharp VS Integration for 2022 and later</DisplayName>
         <Description xml:space="preserve">X# Visual Studio Integration.
 Includes a Project System, Language Service , Debugger Support, Custom Editors etc.</Description>
@@ -10,7 +10,7 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <ReleaseNotes>https://www.xsharp.eu/itm-downloads?folder=general%252FReadme</ReleaseNotes>
         <Icon>XSharp.ico</Icon>
         <PreviewImage>XSharpVSIXLogo.png</PreviewImage>
-        <Tags>XSharp, XBase, FoxPro, Visual Objects, XBase++</Tags>
+        <Tags>XSharp, XBase, FoxPro, Visual Objects, Xbase++, Harbour</Tags>
     </Metadata>
     <Installation AllUsers="true" SystemComponent="true">
         <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Community" >

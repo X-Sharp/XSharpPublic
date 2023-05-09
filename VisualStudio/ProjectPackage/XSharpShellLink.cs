@@ -134,8 +134,11 @@ namespace XSharp.Project
                 Logger.SingleLine();
                 Logger.Information("Start restoring windows in [Design] mode");
                 Logger.SingleLine();
-                CloseAllDesignerWindows();
                 var files = XDatabase.GetOpenDesignerFiles();
+                if (files.Count > 0)
+                {
+                    CloseAllDesignerWindows();
+                }
                 var selection = await VS.Solutions.GetActiveItemsAsync();
                 if (files.Count > 0  )
                 {

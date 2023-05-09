@@ -5,7 +5,11 @@
 
 FUNCTION Start() AS VOID
 
-zGEDBComboNew( .F. , "SSUsers" , "SSUserSU" , "UserId" , NIL ,"UserId" , "SSUserSU" , .t. )    
+zGEDBComboNew( ;
+                            .F.,;
+                            "SSUsers", "SSUserSU", ;
+                            "UserId", NIL,"UserId",;
+                            "SSUserSU", .t.)
 
 /*
 Harbour and build 11 preprocess it to:

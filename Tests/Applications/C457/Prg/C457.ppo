@@ -26,6 +26,6 @@ RETURN NIL
 
 
 FUNCTION Start() AS VOID
-DoTest( , ,{||3} )
+DoTest(,,{||3})
 RETURN
 

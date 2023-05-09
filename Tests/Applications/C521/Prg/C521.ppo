@@ -38,7 +38,7 @@ FUNCTION Start() AS VOID
 		THROW Exception{"Ppo file C521.ppo incorrectly contains a codeblock marker " + cCbText}
 	END IF
 	
-DoTest({|| 1==1} ) 
+DoTest({||1==1})
 
 RETURN
 

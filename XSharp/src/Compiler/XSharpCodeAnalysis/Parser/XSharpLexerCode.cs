@@ -1235,11 +1235,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case 'E':
                         if (La(2) == '"') // escaped string
                         {
-                            goto case '\'';
+                            goto case '\"';
                         }
                         if (ExpectLower("ei\"")) // escaped interpolated string
                         {
-                            goto case '\'';
+                            goto case '\"';
                         }
                         goto case 'a';
                     case 'i':

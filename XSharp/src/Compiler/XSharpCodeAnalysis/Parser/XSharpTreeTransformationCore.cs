@@ -8799,6 +8799,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
+                // must have been ei".." or ie".."
                 text = text.Substring(3, text.Length - 4);
                 extended = true;
             }
@@ -8813,7 +8814,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     text = "e\"" + text + "\"";
                     result = GenerateLiteral(TokenExtensions.EscapedStringValue(text));
                 }
-
                 return result;
             }
             if (pos1 == -1 || pos2 == -1 || pos1 > pos2)
@@ -8838,7 +8838,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int nestLevel = 0;
             bool skipNext = false;
             SyntaxDiagnosticInfo info = null;
-            //foreach (char c in text)
+            // use for next loop because we also want to read the next character
             for (int i = 0; i < text.Length; i++)
             {
                 if (skipNext)
@@ -8901,20 +8901,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         case '\\':
                             if (extended)
                             {
+                                afterBackSlash = !afterBackSlash;
                                 if (afterBackSlash)
                                 {
-                                    afterBackSlash = false;
-                                    // normal processing so we add a \
-                                }
-                                else
-                                {
-                                    afterBackSlash = true;
-                                    // do not add character
                                     continue;
                                 }
                             }
                             break;
                         case '"':
+                            if (!extended)
+                            {
+                                // in that case there were originally two characters but the lexer has
+                                // deleted one of them. So we add the string to the result and do not switch inString
+                                sbCurrent.Append(c);
+                                continue;
+                            }
                             if (afterBackSlash)
                             {
                                 afterBackSlash = false;
@@ -9026,12 +9027,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // now we have a list of expression syntax node and a mask, so we can call String.Format
             var args = new List<ArgumentSyntax>();
-            args.Add(MakeArgument(GenerateLiteral(sMask)));
-            foreach (var expr in exprSyntax)
+            if (exprSyntax.Count > 0)
             {
-                args.Add(MakeArgument(expr));
+                args.Add(MakeArgument(GenerateLiteral(sMask)));
+                foreach (var expr in exprSyntax)
+                {
+                    args.Add(MakeArgument(expr));
+                }
+                result = GenerateMethodCall("String.Format", MakeArgumentList(args.ToArray()), true);
             }
-            result = GenerateMethodCall("String.Format", MakeArgumentList(args.ToArray()), true);
+            // when no arguments, return the literal expression
+            else if (extended)
+            {
+                text = "e\"" + text + "\"";
+                result = GenerateLiteral(TokenExtensions.EscapedStringValue(text));
+            }
             return result;
         }
 

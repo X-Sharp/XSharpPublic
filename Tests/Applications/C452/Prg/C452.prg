@@ -4,8 +4,8 @@
 #command @ <one>, <two> THREE <three> [FOUR <four>] [FIVE <five>] => Test(<one>, <two> , <three> , <four> , <five> , 6)
 
 
-#command TEST1 [LEFT <a>] [RIGHT <b>] => Test()
-#command TEST2 [LEFT <a>] [RIGHT <b>] => TEST1 RIGHT LEFT
+#command TEST1 [LEFT [<a>]] [RIGHT [<b>]] => Test()
+#command TEST2 [LEFT [<a>]] [RIGHT [<b>]] => TEST1 RIGHT LEFT
 
 
 FUNCTION Test(a,b,c,d,e,f) CLIPPER

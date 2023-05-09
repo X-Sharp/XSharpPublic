@@ -51862,6 +51862,10 @@ File = %AppPath%\Prg\C452.prg
 FileGUID = 8BEFB129-38C0-462D-9B1A-C74814F42479
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Prg\C452.ppo
+FileGUID = 9E65DC85-84C3-4BFD-9063-2FF80661D3C6
+FileType = Text
+CopyToBin = 0
 [C452 - Preprocessor error with different order of clauses in #command References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
@@ -51870,7 +51874,7 @@ ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C452 - Preprocessor error with different order of clauses in #command Native Resources]
 [C452 - Preprocessor error with different order of clauses in #command License files]
 [C452 - Preprocessor error with different order of clauses in #command General Options]
-Switches=
+Switches=/ppo
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -51900,7 +51904,7 @@ EnforceSelf=0
 EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ResponseOnly=0

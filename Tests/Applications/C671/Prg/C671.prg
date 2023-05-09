@@ -3,12 +3,12 @@ FUNCTION Start() AS VOID
 	LOCAL o AS TestClass
 	o := TestClass{}
 	IF o IS TestClass VAR oo
-		? oo:Test()
+		xAssertTrue( oo:Test() == 123)
 		o := NULL
 	END IF
 	xAssertTrue(o == NULL)
 
-	IF o IS TestClass VAR oo
+	IF o IS TestClass //VAR oo
 		THROW Exception{"Should not be here"}
 	END IF
 

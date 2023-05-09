@@ -13,6 +13,5 @@
   <UsingTask TaskName="XSharp.Build.Xsc" AssemblyFile="$(XSharpTasksAssembly)" />
   <UsingTask TaskName="CreateXSharpManifestResourceName" AssemblyFile="$(XSharpTasksAssembly)"/>
   <UsingTask TaskName="NativeResourceCompiler" AssemblyFile="$(XSharpTasksAssembly)"/>
-  <Import Condition="'$(MSBuildRuntimeType)' != 'Core'" Project="$(_XSharpTasksDirectory)XSharp.Default.Props" />
-  <Import Condition="'$(MSBuildRuntimeType)' == 'Core'" Project="$(_XSharpTasksDirectory)XSharp.Net.Sdk.Props" />
+  <Import Project="$(_XSharpTasksDirectory)XSharp.BeforeCommon.Props" />
 </Project>

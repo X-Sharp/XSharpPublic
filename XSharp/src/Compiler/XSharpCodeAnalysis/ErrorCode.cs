@@ -2086,6 +2086,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ColonForStaticMember = 9114,
         ERR_ColonForTypeOrNs = 9115,
         WRN_NullPszForStringArgument = 9116,
+        WRN_ConversionFromNilNotSupported = 9117,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

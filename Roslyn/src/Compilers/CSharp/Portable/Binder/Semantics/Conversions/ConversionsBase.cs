@@ -127,15 +127,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             conversion = GetImplicitUserDefinedConversion(sourceExpression, sourceType, destination, ref useSiteDiagnostics);
-#if XSHARP
-            if (sourceType.IsUsualType() && destination.IsSymbolType())
-            {
-                if (sourceExpression.Syntax.XIsNil)
-                {
-                    return Conversion.NoConversion;
-                }
-            }
-#endif
             if (conversion.Exists)
             {
                 return conversion;

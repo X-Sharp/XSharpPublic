@@ -400,7 +400,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                     }
-                    if (!parseErrors.IsEmpty() && pp != null)
+                    if (parseErrors.Count > 0 && pp != null)
                     {
                         eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
                     }
@@ -506,7 +506,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ForceEndOfFile(); // force the scanner to report that it is at the end of the input.
             return fileAsTrivia;
         }
-        
+
         private SkippedTokensTriviaSyntax ParserErrorsAsTrivia(List<ParseErrorData> parseErrors, IDictionary<string, SourceText> includes)
         {
             // create one syntax token per error
@@ -557,7 +557,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             textNode = textNode.WithAdditionalDiagnostics(diag);
                         }
-                        if (node.SourceSymbol != null)
+                        if (node.SourceSymbol != null && !ErrorFacts.IsWarning(e.Code))
                         {
                             // an error for a define could be on another location
                             var sym = node.SourceSymbol as XSharpToken;

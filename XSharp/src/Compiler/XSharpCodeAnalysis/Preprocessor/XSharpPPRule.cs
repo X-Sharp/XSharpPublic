@@ -663,6 +663,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 stopTokens.Add(next.Token);
                                 marker.StopTokens = stopTokens.ToArray();
                             }
+                            else if (next.Children != null)
+                            {
+                                // the tokens of the optional follower
+                                // should end the expression parsing of this token
+                                var stopTokens = new List<XSharpToken>();
+                                foreach (var child in next.Children)
+                                {
+                                    if (child.RuleTokenType == PPTokenType.Token)
+                                    {
+                                        stopTokens.Add(child.Token);
+                                    }
+                                }
+                                marker.StopTokens = stopTokens.ToArray();
+                            }
                         }
                     }
                     if (marker.IsOptional && !marker.IsWholeUDC)
@@ -726,9 +740,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (canAddStopToken(stoptokens, next.Token))
                         {
                             stoptokens.Add(next.Token);
+                            if (onlyFirstNonOptional)
+                                done = true;
                         }
-                        if (onlyFirstNonOptional)
-                            done = true;
                         break;
                 }
             }

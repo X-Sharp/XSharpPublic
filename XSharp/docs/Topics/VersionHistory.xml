@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-08T10:58:10.454+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-09T10:49:05.482+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -44,10 +44,12 @@
       <li styleclass="Body Text">If the preprocessor generated date and/or datetime literals then these were not recognized. This has been fixed (#1232)</li>
       <li styleclass="Body Text">Fixed a problem with the preprocessor matching of the last optional token (#1241)</li>
       <li styleclass="Body Text">Fixed a problem with recognizing the ENDSEQUENCE keyword in the Xbase++ dialect (#1242)</li>
+      <li styleclass="Body Text">Using a default parameter value of NIL is now only supported for parameters of type USUAL. Using NIL for other parameter types will generate a (new) warning <link displaytype="text" defaultstyle="true" type="topiclink" href="XS9117">XS9117</link>&#32;Assigning NIL to a Symbol or using NIL as parameter to a function call that expects a SYMBOL will now also generate that warning (#1231)</li>
+      <li styleclass="Body Text">Fixed a problem in the preprocessor where two adjacent tokens were not merged into one token in the result stream. ( #1247)</li>
+      <li styleclass="Body Text">Fixed a problem in the preprocessor where the preprocessor was not detecting an optional element when the element started with a Left parenthesis ( #1250)</li>
     </list>
     <para styleclass="Heading3">Breaking changes</para>
     <para styleclass="Normal">If you are using our parser to parse source code, please check your code. We have made some changes to the language definition for the handling of if ... else statements as well as for the case statements (a new condBlock rule that is shared by both rules). This removes some recursion in the language. Also some of the XBase++ specific rules have been changed. Please check the <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpDev/blob/main/XSharp/src/Compiler/XSharpCodeAnalysis/Parser/XSharp.g4" target="_blank">language definition online</link></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

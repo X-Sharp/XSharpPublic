@@ -20,7 +20,6 @@
     #define VERSION_NUMBER     FILEVERSION_NUMBER
 #endif
 
-
     #define INFORMATIONAL_NUMBER  "2.16 GA"
 
     #ifdef __DEBUG__

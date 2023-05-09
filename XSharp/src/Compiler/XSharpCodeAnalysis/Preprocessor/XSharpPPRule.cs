@@ -7,8 +7,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -661,6 +663,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 stopTokens.Add(next.Token);
                                 marker.StopTokens = stopTokens.ToArray();
                             }
+                            else if (next.Children != null)
+                            {
+                                // the tokens of the optional follower
+                                // should end the expression parsing of this token
+                                var stopTokens = new List<XSharpToken>();
+                                foreach (var child in next.Children)
+                                {
+                                    if (child.RuleTokenType == PPTokenType.Token)
+                                    {
+                                        stopTokens.Add(child.Token);
+                                    }
+                                }
+                                marker.StopTokens = stopTokens.ToArray();
+                            }
                         }
                     }
                     if (marker.IsOptional && !marker.IsWholeUDC)
@@ -724,9 +740,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (canAddStopToken(stoptokens, next.Token))
                         {
                             stoptokens.Add(next.Token);
+                            if (onlyFirstNonOptional)
+                                done = true;
                         }
-                        if (onlyFirstNonOptional)
-                            done = true;
                         break;
                 }
             }
@@ -797,20 +813,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var max = resultTokens.Length;
             List<XSharpToken> more;
             XSharpToken name;
-            int lastTokenIndex = -1;
-            ITokenSource lastTokenSource = null;
+            IToken lastToken = null;
             for (int i = 0; i < resultTokens.Length; i++)
             {
                 var token = resultTokens[i];
-                if (token.TokenSource == lastTokenSource && token.TokenIndex > lastTokenIndex + 1)
+                if (token.HasTrivia)
                 {
-                    // whitespace tokens have been skipped
-                    var ppWs = new XSharpToken(token, XSharpLexer.WS, " ");
-                    ppWs.Channel = ppWs.OriginalChannel = Channel.Hidden;
-                    result.Add(new PPResultToken(ppWs, PPTokenType.Token));
+                    // Add trivia tokens to result 
+                    result.AddRange(token.Trivia.Select(x => new PPResultToken(x, PPTokenType.Token)));
                 }
-                lastTokenIndex = token.TokenIndex;
-                lastTokenSource = token.TokenSource;
                 switch (token.Type)
                 {
                     case XSharpLexer.NEQ2:
@@ -954,7 +965,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         result.Add(new PPResultToken(token, PPTokenType.Token));
                         break;
                 }
-
+                var current = token;
+                if (current != null && lastToken != null && lastToken.Type == XSharpLexer.ID)
+                {
+                    // No whitespace after an ID. We will joined IDs when possible
+                    if (lastToken.StopIndex == current.StartIndex - 1)
+                    {
+                        var last = result.LastOrDefault();
+                        if (last != null)
+                        {
+                            last.CombineWithPrevious = true;
+                        }
+                    }
+                }
+                lastToken = resultTokens[i];
             }
             var resulttokens = new PPResultToken[result.Count];
             result.CopyTo(resulttokens);
@@ -1752,7 +1776,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     t.SourceSymbol = source;
                 }
             }
-            result.TrimLeadingSpaces();
+            //result.TrimLeadingSpaces();
             // after certain tokens (->, and . for example) keywords must be changed to identifiers
             adjustKeywordsToIdentifiers(result);
             return result;
@@ -1766,15 +1790,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (token.IsKeyword())
                     {
-                        // after ALIAS and DOT we change the token to an ID
-                        switch (lasttoken.Type)
+                        if (XSharpLexer.IsMemberOperator(lasttoken.type))
                         {
-                            case XSharpLexer.ALIAS:
-                            case XSharpLexer.ID:
-                                token.Type = XSharpLexer.ID;
-                                // This makes sure that the token in the editor has the ID color
-                                token.Original.Type = XSharpLexer.ID;
-                                break;
+                            token.Type = XSharpLexer.ID;
+                            // This makes sure that the token in the editor has the ID color
+                            token.Original.Type = XSharpLexer.ID;
                         }
                     }
                     if (token.Type == XSharpLexer.DOT)
@@ -1862,10 +1882,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (!range.Empty)
             {
+                // when a regular result marker is prefixed with another token without whitespace
+                // then combine the two. The type becomes the type of the first
+                bool combine = resultToken.CombineWithPrevious;
                 for (int i = range.Start; i <= range.End && i < tokens.Count; i++)
                 {
                     var token = tokens[i];
-                    result.Add(token);
+                    var last = result.LastOrDefault();
+                    if (combine)
+                    {
+                        if (last != null && last.Type == XSharpLexer.ID)
+                        {
+                            last.Text += token.Text;
+                        }
+                        combine = false;
+                    }
+                    else
+                    {
+                        result.Add(token);
+                    }
                 }
             }
             else if (resultToken.RuleTokenType == PPTokenType.ResultNotEmpty)

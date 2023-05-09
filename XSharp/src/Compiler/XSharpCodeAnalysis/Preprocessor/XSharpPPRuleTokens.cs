@@ -172,12 +172,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal class PPResultToken : PPRuleToken
     {
         #region Properties
+        internal bool CombineWithPrevious { get; set; }
         internal PPMatchToken MatchMarker { get; set; }
         internal PPResultToken[] OptionalElements { get; set; }
         #endregion
         internal PPResultToken(XSharpToken token, PPTokenType type) : base(token, type)
         {
             MatchMarker = null;
+            CombineWithPrevious = false;
         }
         internal PPResultToken(XSharpToken token, PPTokenType type, string key) : this(token, type)
         {

@@ -2207,6 +2207,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Entities.Push(ent);
 
         }
+        public override void ExitEveryRule([NotNull] ParserRuleContext context)
+        {
+            if (context is XP.IEntityContext && CurrentEntity == context)
+                Entities.Pop();
+        }
         #endregion
 
         #region Main Entrypoints

@@ -781,10 +781,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     _parseErrors.Add(new ParseErrorData(context.Shared, ErrorCode.WRN_XPPSharedIsDefault));
                 }
-                if (context.ReadOnly != null)
-                {
-                    _parseErrors.Add(new ParseErrorData(context.ReadOnly, ErrorCode.WRN_XPPReadonlyClause));
-                }
             }
         }
         public override void ExitXppclassModifiers([NotNull] XSharpParser.XppclassModifiersContext context)

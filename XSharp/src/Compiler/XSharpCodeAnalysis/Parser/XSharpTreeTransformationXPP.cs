@@ -429,9 +429,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 varList.Clear();
                 var variable = GenerateVariable(id.Get<SyntaxToken>());
                 varList.Add(variable);
+                SyntaxToken isReadonly = null;
+                if (context.ReadOnly != null)
+                {
+                    isReadonly = SyntaxFactory.MakeToken(SyntaxKind.ReadOnlyKeyword, context.ReadOnly.Text);
+                }
                 // calculate modifiers
                 // each field is added separately so we can later decide which field to keep and which one to delete when they are duplicated by a 
-                var modifiers = decodeXppMemberModifiers(context, context.Visibility, false, context.Modifiers?._Tokens, false);
+                var modifiers = decodeXppMemberModifiers(context, context.Visibility, false,
+                    context.Modifiers?._Tokens, false, isReadonly);
                 if (varList.Count > 0)
                 {
                     var decl = _syntaxFactory.VariableDeclaration(
@@ -1033,7 +1039,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         private SyntaxList<SyntaxToken> decodeXppMemberModifiers(XSharpParserRuleContext context,
-            int visibility, bool isStatic, IList<IToken> tokens, bool isMethod)
+            int visibility, bool isStatic, IList<IToken> tokens, bool isMethod, SyntaxToken optionalToken = null)
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
             if (isStatic)
@@ -1132,6 +1138,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers.FixOverride(enforceOverride);
                 }
             }
+            if (optionalToken != null)
+                modifiers.Add(optionalToken);
             var result = modifiers.ToList<SyntaxToken>();
             _pool.Free(modifiers);
             return result;

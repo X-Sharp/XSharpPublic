@@ -153,8 +153,8 @@
         <topicref type="topic" id="437984592024388" build="ALL" modified="2019-12-13T11:26:03.865Z" icon="0" href="dialect_Vulcan">
           <caption translate="true">Vulcan</caption>
         </topicref>
-        <topicref type="topic" id="437983730828770" build="ALL" modified="2019-12-13T11:26:09.629Z" icon="0" href="dialect_XPP">
-          <caption translate="true">XBase++</caption>
+        <topicref type="topic" id="437983730828770" build="ALL" modified="2023-05-09T23:23:03.332Z" icon="0" href="dialect_XPP">
+          <caption translate="true">Xbase++</caption>
         </topicref>
         <topicref type="topic" id="437983412535081" build="ALL" modified="2019-12-13T11:26:13.282Z" icon="0" href="dialect_FoxPro">
           <caption translate="true">FoxPro</caption>
@@ -249,8 +249,8 @@
         <topicref type="topic" id="423999741385489" build="ALL" modified="2019-01-24T16:49:54.154Z" icon="0" href="new-feat-VAR">
           <caption translate="true">VAR</caption>
         </topicref>
-        <topicref type="topic" id="434413139318325" build="ALL" modified="2019-01-24T16:51:58.120Z" icon="0" href="new-feat-XBase-class-declarations">
-          <caption translate="true">XBase++ class declarations</caption>
+        <topicref type="topic" id="434413139318325" build="ALL" modified="2023-05-09T23:23:27.872Z" icon="0" href="new-feat-XBase-class-declarations">
+          <caption translate="true">Xbase++ class declarations</caption>
         </topicref>
         <topicref type="topic" id="424000672684667" build="ALL" modified="2019-01-24T16:50:10.529Z" icon="0" href="new-feat-YIELD">
           <caption translate="true">YIELD </caption>

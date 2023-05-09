@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-14T13:23:55.695+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-09T23:21:51.346+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>X# Compiler Options By Category</title>
   <keywords>
     <keyword>compiler options</keyword>
@@ -27,7 +27,7 @@
           <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-dialect">-dialect</link></para>
         </td>
         <td>
-          <para styleclass="Normal">Specifies the dialect to use when compiling. The following values are supported: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour. Work on the VO and Vulcan dialects has started.</para>
+          <para styleclass="Normal">Specifies the dialect to use when compiling. The following values are supported: Core, VO, Vulcan, dBase, FoxPro, Xbase++ and Harbour. Work on the VO and Vulcan dialects has started.</para>
         </td>
       </tr>
     </table></para>

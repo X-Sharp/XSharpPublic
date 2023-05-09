@@ -115336,18 +115336,22 @@ File = %AppPath%\Prg\tester.prg
 FileGUID = 7B4DD920-5928-4A7C-B3B6-F0E0C9FF09F3
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Prg\tester.ppo
+FileGUID = 8D50FE6F-3194-4227-9BAC-7925EE12398F
+FileType = Text
+CopyToBin = 0
 [Tester References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.XPP.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.XPP.dll,1,1
 [Tester Resources]
 [Tester Native Resources]
 [Tester License files]
 [Tester General Options]
-Switches=/allowdot
+Switches=/ppo
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -115359,13 +115363,13 @@ VO5=0
 VO6=0
 VO7=0
 VO8=0
-VO9=0
+VO9=1
 VO10=0
 VO11=0
 VO12=0
 VO13=0
 VO14=0
-VO16=0
+VO16=1
 VO17=0
 FOX1=0
 FOX2=0
@@ -115377,7 +115381,7 @@ EnforceSelf=0
 EnforceOverride=0
 UseNativeVersion=0
 MemVar=0
-IgnoreStdDefs=0
+IgnoreStdDefs=1
 Ovf=0
 FOvf=0
 ResponseOnly=0
@@ -119294,6 +119298,121 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R889 - XPP Default Virtual
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION R890 *************
+Application = R890
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\R890\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R890
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = FC6B320A-ABB1-478E-B4C8-4206DAF60EE5
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R890 FileGroups]
+[R890 Files]
+File = %AppPath%\Prg\R890.prg
+FileGUID = FACB107B-883A-4D33-BCEE-45D9DFDA59DB
+FileType = Code
+CopyToBin = 0
+[R890 References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
+[R890 Resources]
+[R890 Native Resources]
+[R890 License files]
+[R890 General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+VO17=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+EnforceOverride=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R890 Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R890
 [EndApplications]
 
 [Configurations]

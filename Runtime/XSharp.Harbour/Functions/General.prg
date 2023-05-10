@@ -4,12 +4,12 @@
 // See License.txt in the project root for license information.
 //
 
-PROCEDURE InitializeForHarbour INIT2
+INTERNAL PROCEDURE __InitializeForHarbour INIT2
 InitHarbour()
 
 FUNCTION InitHarbour() AS VOID
     SetDecimal(0)
-    SetDigit(10)
-    SetFixed(TRUE)
+    SetDigit(10) 
+    SetFixed(TRUE) 
     RETURN
 

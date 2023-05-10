@@ -231,6 +231,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpTargetDLL.VFP:
                     className = XSharpSpecialNames.XSharpVFPFunctionsClass;
                     break;
+                case XSharpTargetDLL.Harbour:
+                    className = XSharpSpecialNames.XSharpHarbourFunctionsClass;
+                    break;
                 default:
                     className = XSharpSpecialNames.FunctionsClass;
                     break;

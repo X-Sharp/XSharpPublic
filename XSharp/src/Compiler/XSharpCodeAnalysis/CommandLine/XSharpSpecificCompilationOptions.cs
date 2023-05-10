@@ -4,11 +4,11 @@
 // See License.txt in the project root for license information.
 //
 #nullable disable
-using Antlr4.Runtime;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Antlr4.Runtime;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     /// <summary>
@@ -94,12 +94,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool XSharpVOIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO);
         public bool XSharpCoreIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         public bool XSharpXPPIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpXPP);
+        public bool XSharpHarbourIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpHarbour);
         internal RuntimeAssemblies RuntimeAssemblies { get; set; } = RuntimeAssemblies.None;
         public bool Overflow { get; internal set; } = false;
         public bool MemVars { get; internal set; } = false;
         public bool AllowUnsafe { get; internal set; } = false;
         public bool UndeclaredMemVars { get; internal set; } = false;
-        public CompilerOption ExplicitOptions { get ; internal set; } = CompilerOption.None;
+        public CompilerOption ExplicitOptions { get; internal set; } = CompilerOption.None;
         public bool UseNativeVersion { get; internal set; } = false;
         public string PreviousArgument { get; internal set; } = string.Empty;
         public TextWriter ConsoleOutput { get; internal set; }
@@ -209,6 +210,88 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.None:
                 default:
                     // n/a
+                    break;
+            }
+        }
+
+        public void SetOptionFromReference(string filename)
+        {
+            switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLower())
+            {
+                case VulcanAssemblyNames.VulcanRTFuncs:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.VulcanRTFuncs;
+                    break;
+                case VulcanAssemblyNames.VulcanRT:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.VulcanRT;
+                    break;
+                case XSharpAssemblyNames.SdkDefines:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.SdkDefines;
+                    break;
+                case XSharpAssemblyNames.XSharpCore:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.XSharpCore;
+                    break;
+                case XSharpAssemblyNames.XSharpData:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.XSharpData;
+                    break;
+                case XSharpAssemblyNames.XSharpRT:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.XSharpRT;
+                    break;
+                case XSharpAssemblyNames.XSharpVO:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.XSharpVO;
+                    break;
+                case XSharpAssemblyNames.XSharpXPP:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.XSharpXPP;
+                    break;
+                case XSharpAssemblyNames.XSharpVFP:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.XSharpVFP;
+                    break;
+                case XSharpAssemblyNames.XSharpHarbour:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.XSharpHarbour;
+                    break;
+                case XSharpAssemblyNames.VoSystem:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.VoSystem;
+                    break;
+                case XSharpAssemblyNames.VoGui:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.VoGui;
+                    break;
+                case XSharpAssemblyNames.VoRdd:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.VoRdd;
+                    break;
+                case XSharpAssemblyNames.VoSql:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.VoSql;
+                    break;
+                case XSharpAssemblyNames.VoInet:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.VoInet;
+                    break;
+                case XSharpAssemblyNames.VoConsole:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.VoConsole;
+                    break;
+                case XSharpAssemblyNames.VoReport:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.VoReport;
+                    break;
+                case XSharpAssemblyNames.VoWin32:
+                    this.RuntimeAssemblies |= RuntimeAssemblies.VoWin32;
+                    break;
+                case "mscorlib":
+                case "system":
+                    if (!this.ExplicitOptions.HasFlag(CompilerOption.ClrVersion))
+                    {
+                        if (filename.ToLower().Contains("\\v2") || filename.ToLower().Contains("\\2."))
+                        {
+                            this.ExplicitOptions |= CompilerOption.ClrVersion;
+                            this.ClrVersion = 2;
+                        }
+                        else if (filename.ToLower().Contains("\\v3") || filename.ToLower().Contains("\\3."))
+                        {
+                            this.ExplicitOptions |= CompilerOption.ClrVersion;
+                            this.ClrVersion = 2;
+                        }
+                        else if (filename.ToLower().Contains("\\v4") || filename.ToLower().Contains("\\4."))
+                        {
+                            this.ExplicitOptions |= CompilerOption.ClrVersion;
+                            this.ClrVersion = 4;
+                        }
+                    }
                     break;
             }
         }
@@ -530,7 +613,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
     }
 
-    public enum Pragmastate: byte
+    public enum Pragmastate : byte
     {
         Default = 0,
         On = 1,

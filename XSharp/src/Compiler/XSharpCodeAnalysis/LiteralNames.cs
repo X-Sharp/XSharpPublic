@@ -172,6 +172,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string XSharpVOFunctionsClass = "XSharp.VO.Functions";
         internal const string XSharpXPPFunctionsClass = "XSharp.XPP.Functions";
         internal const string XSharpVFPFunctionsClass = "XSharp.VFP.Functions";
+        internal const string XSharpHarbourFunctionsClass = "XSharp.Harbour.Functions";
         internal const string VODllFunctionsClass = ".Functions";
         internal const string ModuleName = "<Module>";
         internal const string RTDialect = "Dialect";
@@ -370,6 +371,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string XSharpRDD = "xsharp.rdd";
         internal const string XSharpXPP = "xsharp.xpp";
         internal const string XSharpVFP = "xsharp.vfp";
+        internal const string XSharpHarbour = "xsharp.harbour";
         internal const string SdkDefines = "sdkdefines";
         internal const string VoGui = "voguiclasses";
         internal const string VoSystem = "vosystemclasses";

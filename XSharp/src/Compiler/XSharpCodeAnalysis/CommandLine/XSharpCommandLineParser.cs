@@ -212,6 +212,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             case XSharpAssemblyNames.XSharpVFP:
                                 options.TargetDLL = XSharpTargetDLL.VFP;
                                 break;
+                            case XSharpAssemblyNames.XSharpHarbour:
+                                options.TargetDLL = XSharpTargetDLL.Harbour;
+                                break;
                             case XSharpAssemblyNames.VoWin32:
                                 options.TargetDLL = XSharpTargetDLL.VOWin32Api;
                                 break;
@@ -276,12 +279,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             foreach (var fname in ParseSeparatedPaths(value).Where((path) => !string.IsNullOrWhiteSpace(path)))
                             {
-                                SetOptionFromReference(fname);
+                                options.SetOptionFromReference(fname);
                             }
                         }
                         else
                         {
-                            SetOptionFromReference(filename);
+                            options.SetOptionFromReference(filename);
                         }
                     }
                     handled = false;
@@ -429,84 +432,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return handled;
         }
-        private void SetOptionFromReference(string filename)
-        {
-            switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLower())
-            {
-                case VulcanAssemblyNames.VulcanRTFuncs:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.VulcanRTFuncs;
-                    break;
-                case VulcanAssemblyNames.VulcanRT:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.VulcanRT;
-                    break;
-                case XSharpAssemblyNames.SdkDefines:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.SdkDefines;
-                    break;
-                case XSharpAssemblyNames.XSharpCore:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpCore;
-                    break;
-                case XSharpAssemblyNames.XSharpData:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpData;
-                    break;
-                case XSharpAssemblyNames.XSharpRT:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpRT;
-                    break;
-                case XSharpAssemblyNames.XSharpVO:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpVO;
-                    break;
-                case XSharpAssemblyNames.XSharpXPP:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpXPP;
-                    break;
-                case XSharpAssemblyNames.XSharpVFP:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpVFP;
-                    break;
-                case XSharpAssemblyNames.VoSystem:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.VoSystem;
-                    break;
-                case XSharpAssemblyNames.VoGui:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.VoGui;
-                    break;
-                case XSharpAssemblyNames.VoRdd:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.VoRdd;
-                    break;
-                case XSharpAssemblyNames.VoSql:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.VoSql;
-                    break;
-                case XSharpAssemblyNames.VoInet:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.VoInet;
-                    break;
-                case XSharpAssemblyNames.VoConsole:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.VoConsole;
-                    break;
-                case XSharpAssemblyNames.VoReport:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.VoReport;
-                    break;
-                case XSharpAssemblyNames.VoWin32:
-                    options.RuntimeAssemblies |= RuntimeAssemblies.VoWin32;
-                    break;
-                case "mscorlib":
-                case "system":
-                    if (!options.ExplicitOptions.HasFlag(CompilerOption.ClrVersion))
-                    {
-                        if (filename.ToLower().Contains("\\v2") || filename.ToLower().Contains("\\2."))
-                        {
-                            options.ExplicitOptions |= CompilerOption.ClrVersion;
-                            options.ClrVersion = 2;
-                        }
-                        else if (filename.ToLower().Contains("\\v3") || filename.ToLower().Contains("\\3."))
-                        {
-                            options.ExplicitOptions |= CompilerOption.ClrVersion;
-                            options.ClrVersion = 2;
-                        }
-                        else if (filename.ToLower().Contains("\\v4") || filename.ToLower().Contains("\\4."))
-                        {
-                            options.ExplicitOptions |= CompilerOption.ClrVersion;
-                            options.ClrVersion = 4;
-                        }
-                    }
-                    break;
-            }
-        }
+
         private static bool TryParseDialect(string str, XSharpDialect defaultDialect, out XSharpDialect dialect)
         {
             if (str == null)
@@ -576,6 +502,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 newDialect = XSharpDialect.VO;  // the runtime uses the VO syntax for classes
             }
+            if (newDialect == XSharpDialect.Harbour && options.TargetDLL == XSharpTargetDLL.Harbour)
+            {
+                newDialect = XSharpDialect.VO;  // the runtime uses the VO syntax for classes
+            }
             if (newDialect.NeedsRuntime())
             {
                 if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded && options.Dialect != XSharpDialect.XPP && options.Dialect != XSharpDialect.FoxPro)
@@ -590,14 +520,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else if (options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD ||
                     options.TargetDLL == XSharpTargetDLL.XPP || options.TargetDLL == XSharpTargetDLL.RT ||
-                    options.TargetDLL == XSharpTargetDLL.VFP)
+                    options.TargetDLL == XSharpTargetDLL.VFP || options.TargetDLL == XSharpTargetDLL.Harbour)
                 {
                     // Ok
                     withRT = true;
                 }
                 else
                 {
-                    if (options.Dialect == XSharpDialect.XPP || options.Dialect == XSharpDialect.FoxPro)
+                    if (options.Dialect == XSharpDialect.XPP ||
+                        options.Dialect == XSharpDialect.FoxPro ||
+                        options.Dialect == XSharpDialect.Harbour)
                     {
                         AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(),
                             "XSharp.Core.DLL and XSharp.RT.DLL");

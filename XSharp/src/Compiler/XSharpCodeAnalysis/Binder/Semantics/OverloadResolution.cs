@@ -250,9 +250,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BetterResult DetermineRTAssemblyPriority(AssemblySymbol asm1, AssemblySymbol asm2)
         {
             // prefer overload in dialect specific assembly over generic assemblies
-            if (asm1.IsRTDLL(XSharpTargetDLL.VO) ||
-                asm1.IsRTDLL(XSharpTargetDLL.VFP) ||
-                asm1.IsRTDLL(XSharpTargetDLL.XPP))
+            if (asm1.IsDialectSpecificDLL())
             {
                 if (asm2.IsRTDLL(XSharpTargetDLL.Core) ||
                     asm2.IsRTDLL(XSharpTargetDLL.RT))
@@ -260,9 +258,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BetterResult.Left;
                 }
             }
-            if (asm2.IsRTDLL(XSharpTargetDLL.VO) ||
-                asm2.IsRTDLL(XSharpTargetDLL.VFP) ||
-                asm2.IsRTDLL(XSharpTargetDLL.XPP))
+            if (asm2.IsDialectSpecificDLL())
             {
                 if (asm1.IsRTDLL(XSharpTargetDLL.Core) ||
                     asm1.IsRTDLL(XSharpTargetDLL.RT))

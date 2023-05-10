@@ -35,7 +35,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         VoInet = 0x2000,
         VoConsole = 0x4000,
         VoReport = 0x8000,
-        VoWin32 = 0x10000
+        VoWin32 = 0x10000,
+        XSharpHarbour = 0x20000
     }
 
     [Flags]
@@ -50,36 +51,38 @@ namespace Microsoft.CodeAnalysis.CSharp
     public enum XSharpTargetDLL : Byte
     {
         Other = 0,
-        Core = 1,
-        Data = 2,
-        RDD = 3,
-        RT = 4,
-        VO = 5,
-        XPP = 6,
-        VFP = 7,
+        Core, 
+        Data,
+        RDD,
+        RT,
+        VO,
+        XPP,
+        VFP,
+        Harbour,
         // The following are strictly not a target but
         // we use this in the OverloadResolution
-        VulcanRT = 8,
-        VulcanRTFuncs = 9,
+        VulcanRT,
+        VulcanRTFuncs,
+        // All Dlls before VOWin32API will use "spoecial" function class names
         // XSharp SDK DLLs
-        VOWin32Api = 10,
-        VOSystemClasses = 11,
-        VORDDClasses = 12,
-        VOSQLClasses = 13,
-        VOGuiClasses = 14,
-        VOInternetClasses = 15,
-        VOConsoleClasses = 16,
-        RTDebugger = 17,
-        VOReportClasses = 18,
+        VOWin32Api,
+        VOSystemClasses,
+        VORDDClasses,
+        VOSQLClasses,
+        VOGuiClasses,
+        VOInternetClasses,
+        VOConsoleClasses,
+        RTDebugger,
+        VOReportClasses,
         // Vulcan SDK DLLs
-        VulcanVOWin32Api = 20,
-        VulcanVOSystemClasses = 21,
-        VulcanVORDDClasses = 22,
-        VulcanVOSQLClasses = 23,
-        VulcanVOGuiClasses = 24,
-        VulcanVOInternetClasses = 25,
-        VulcanVOConsoleClasses = 26,
-        VulcanVOReportClasses = 28,
+        VulcanVOWin32Api,
+        VulcanVOSystemClasses,
+        VulcanVORDDClasses,
+        VulcanVOSQLClasses,
+        VulcanVOGuiClasses,
+        VulcanVOInternetClasses,
+        VulcanVOConsoleClasses,
+        VulcanVOReportClasses,
     }
 
     public sealed partial class CSharpParseOptions

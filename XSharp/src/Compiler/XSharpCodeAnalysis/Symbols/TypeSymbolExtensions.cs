@@ -27,6 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {XSharpAssemblyNames.XSharpRT,XSharpTargetDLL.RT},
                 {XSharpAssemblyNames.XSharpXPP,XSharpTargetDLL.XPP},
                 {XSharpAssemblyNames.XSharpVFP,XSharpTargetDLL.VFP},
+                {XSharpAssemblyNames.XSharpHarbour,XSharpTargetDLL.Harbour},
                 {XSharpAssemblyNames.VoConsole,XSharpTargetDLL.VOConsoleClasses},
                 {XSharpAssemblyNames.VoGui,XSharpTargetDLL.VOGuiClasses},
                 {XSharpAssemblyNames.VoWin32,XSharpTargetDLL.VOWin32Api},
@@ -330,6 +331,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return elementSize;
         }
+        /// <summary>
+        /// The assembly is one of our Dialect Specific Runtime DLLs
+        /// </summary>
+        /// <param name="asm"></param>
+        /// <returns></returns>
+        public static bool IsDialectSpecificDLL(this AssemblySymbol asm)
+        {
+            XSharpTargetDLL target = XSharpTargetDLL.Other;
+            if (asm is { } && s_dictionary.TryGetValue(asm.Name, out target))
+            {
+                switch (target)
+                {
+                    case XSharpTargetDLL.VO:
+                    case XSharpTargetDLL.XPP:
+                    case XSharpTargetDLL.VFP:
+                    case XSharpTargetDLL.Harbour:
+                        return true;
+                }
+            }
+            return false;
+        }
 
         /// <summary>
         /// The assembly is one of our Runtime DLLs or one of the VO SDK DLLs(ours or Vulcans)
@@ -362,6 +384,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 case XSharpTargetDLL.Data:
                 case XSharpTargetDLL.XPP:
                 case XSharpTargetDLL.VFP:
+                case XSharpTargetDLL.Harbour:
                 case XSharpTargetDLL.RTDebugger:
                 case XSharpTargetDLL.VulcanRT:
                 case XSharpTargetDLL.VulcanRTFuncs:

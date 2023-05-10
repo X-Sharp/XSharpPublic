@@ -45,7 +45,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
             {
                 case XSharpDialect.VO:
                 case XSharpDialect.Vulcan:
-                case XSharpDialect.Harbour:
                     result.RuntimeAssemblies |= RuntimeAssemblies.XSharpVO;
                     break;
                 case XSharpDialect.XPP:
@@ -53,6 +52,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
                     break;
                 case XSharpDialect.FoxPro:
                     result.RuntimeAssemblies |= RuntimeAssemblies.XSharpVFP;
+                    break;
+                case XSharpDialect.Harbour:
+                    result.RuntimeAssemblies |= RuntimeAssemblies.XSharpHarbour;
                     break;
                 default:
                     break;

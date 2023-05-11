@@ -1,4 +1,4 @@
-// R777 IS Pattern Check with USUAL values  
+// R777 IS Pattern Check with USUAL values
 // Also Switch Pattern Check with USUAL values
 // #https://github.com/X-Sharp/XSharpPublic/issues/636
 
@@ -15,14 +15,14 @@ FUNCTION Start( ) AS VOID
         xAssert(i == 2)
     ENDIF
     SWITCH uValue
-    CASE oError AS Error WHEN oError:Message == "Error"
-        ? "Error 1", oError:Message 
+    CASE oError1 AS Error WHEN oError1:Message == "Error"
+        ? "Error 1", oError1:Message
         xAssert(i == 3)
-    CASE oError AS Error WHEN oError:Message == "test"
-        ? "Error 2", oError:Message
+    CASE oError2 AS Error WHEN oError2:Message == "test"
+        ? "Error 2", oError2:Message
         xAssert(i == 1)
-    CASE strValue AS STRING 
-        ? "String", strValue
+    CASE strValue1 AS STRING
+        ? "String", strValue1
         xAssert(i == 2)
     END SWITCH
     NEXT
@@ -42,11 +42,11 @@ FUNCTION GetObject(nType AS INT) AS USUAL
     CASE 2
         RETURN "abc"
     END SWITCH
-    RETURN OBJECT{}        
-    
+    RETURN OBJECT{}
+
 PROC xAssert(l AS LOGIC)
 IF .not. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
 END IF
 ? "Assertion passed"
-RETURN       
+RETURN

@@ -628,7 +628,7 @@ statement           : Decl=localdecl                            #declarationStmt
                     | {validExpressionStmt()}? Exprs+=expression (COMMA Exprs+=expression)*  end=eos  #expressionStmt
 	                ;
 
-condBlock[IToken st = null] : Cond=expression Then=THEN? end=eos StmtBlk=statementBlock
+condBlock[IToken st] : Cond=expression Then=THEN? end=eos StmtBlk=statementBlock
                          ;
 
 

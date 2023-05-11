@@ -6435,6 +6435,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCondBlock([NotNull] XP.CondBlockContext context)
         {
             context.SetSequencePoint(context.st, context.end.Start);
+            context.Start = context.st;
         }
 
         public override void ExitCaseStmt([NotNull] XP.CaseStmtContext context)
@@ -6442,25 +6443,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExitConditionalStatement(context, context._CaseBlocks, context.OtherwiseStmtBlk);
         }
 
-        private StatementSyntax wrapIfCondition(StatementSyntax stmt, ExpressionSyntax condition)
-        {
-            if (condition is IsPatternExpressionSyntax)
-            {
-                var stmts = new List<StatementSyntax>();
-                stmts.Add(stmt);
-                stmt = MakeBlock(stmts);
-            }
-            return stmt;
-        }
-
-        private void CreateSimpleIfStatement(XSharpParserRuleContext context, XP.CondBlockContext ifcond, XP.StatementBlockContext elseBlock)
+      private void CreateSimpleIfStatement(XSharpParserRuleContext context, XP.CondBlockContext ifcond, XP.StatementBlockContext elseBlock)
         {
             var cond = ifcond.Cond.Get<ExpressionSyntax>();
             var ifblock = ifcond.StmtBlk.Get<StatementSyntax>();
+            ifcond.Put(ifblock);
             ElseClauseSyntax elseClause = null;
             if (elseBlock != null)
             {
                 elseClause = GenerateElseClause(elseBlock.Get<StatementSyntax>());
+                elseBlock.Put(elseClause);
             }
             var stmt = GenerateIfStatement(cond, ifblock, elseClause);
             context.Put(stmt);
@@ -6501,12 +6493,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // {
             //    otherwisestatements
             // }
+            //
             if (conditions.Count == 1)
             {
                 CreateSimpleIfStatement(context, conditions.First(), elseBlock);
                 return;
             }
-            StatementSyntax stmt = null;
+            StatementSyntax stmt;
             string label = "$Label" + context.Start.StartIndex.ToString();
             var last = conditions.LastOrDefault();
             var gotoStmt = _syntaxFactory.GotoStatement(
@@ -6525,11 +6518,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 needLabel = true;
                 var cond = block.Cond.Get<ExpressionSyntax>();
-                var stmts = new List<StatementSyntax>();
-                stmts.Add(block.StmtBlk.Get<StatementSyntax>());
-                stmts.Add(gotoStmt);
+                block.Cond.SetSequencePoint(block.Start, block.end.Stop);
+                var stmts = new List<StatementSyntax>
+                {
+                    block.StmtBlk.Get<StatementSyntax>(),
+                    gotoStmt
+                };
                 stmt = GenerateIfStatement(cond, MakeBlock(stmts), null);
-                stmt = wrapIfCondition(stmt, cond);
                 block.Put(stmt);
                 condStmts.Add(stmt);
             }
@@ -6538,12 +6533,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (last != null)
                 {
+
                     var elseClause = GenerateElseClause(elseBlock.Get<StatementSyntax>());
                     var cond = last.Cond.Get<ExpressionSyntax>();
-                    var stmts = new List<StatementSyntax>();
-                    stmts.Add(last.StmtBlk.Get<StatementSyntax>());
+                    last.Cond.SetSequencePoint(last.Start, last.end.Stop);
+                    var stmts = new List<StatementSyntax>
+                    {
+                        last.StmtBlk.Get<StatementSyntax>()
+                    };
                     stmt = GenerateIfStatement(cond, MakeBlock(stmts), elseClause);
-                    stmt = wrapIfCondition(stmt, cond);
+                    elseBlock.Put(stmt);
                     condStmts.Add(stmt);
                 }
                 else
@@ -6555,11 +6554,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 var cond = last.Cond.Get<ExpressionSyntax>();
-                var stmts = new List<StatementSyntax>();
-                stmts.Add(last.StmtBlk.Get<StatementSyntax>());
+                var stmts = new List<StatementSyntax>
+                {
+                    last.StmtBlk.Get<StatementSyntax>()
+                };
                 stmt = GenerateIfStatement(cond,
                         MakeBlock(stmts), null);
-                stmt = wrapIfCondition(stmt, cond);
+                last.Put(stmt);
                 condStmts.Add(stmt);
             }
             if (needLabel)

@@ -11,7 +11,6 @@ using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
 
-
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     /// <summary>
@@ -113,7 +112,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return sResult;
             }
         }
-
 
         #endregion
         internal string GetDebuggerDisplay()

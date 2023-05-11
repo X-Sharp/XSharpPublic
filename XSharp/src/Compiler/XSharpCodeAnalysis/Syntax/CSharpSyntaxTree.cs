@@ -40,13 +40,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         // in the tree it will be a much larger number !
         // therefore we find the C# node in the tree first
         // and then use the X# node attached to it to find the real source location
-
-
         internal bool Generated { get; set; }
         static CSharpSyntaxNode s_lastNode = null;
         static int s_lastPos = 0;
         static CSharpSyntaxNode s_lastResult = null;
-        static readonly object s_gate = new object();
+        static readonly object s_gate = new ();
 
         private static CSharpSyntaxNode GetNode(CSharpSyntaxNode root, int position)
         {
@@ -173,8 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         file = (node.XNode.SourceSymbol as XSharpToken).SourceName;
                     }
                 }
-                SourceText ntext;
-                if (!string.IsNullOrEmpty(file) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(file, out ntext))
+                if (!string.IsNullOrEmpty(file) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(file, out var ntext))
                     text = ntext;
             }
             return text.Lines.GetLinePosition(position);
@@ -210,8 +207,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 continue;
                             }
                             string fn = f.XNode?.SourceFileName;
-                            SourceText ntext;
-                            if (!string.IsNullOrEmpty(fn) && cs.IncludedFiles.TryGetValue(fn, out ntext))
+                            if (!string.IsNullOrEmpty(fn) && cs.IncludedFiles.TryGetValue(fn, out var ntext))
                             {
                                 text = ntext;
                                 file = fn;
@@ -318,8 +314,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (length < 0)
                     length = 0;
-                SourceText ntext;
-                if (!string.IsNullOrEmpty(fn) && cs.IncludedFiles.TryGetValue(fn, out ntext))
+                if (!string.IsNullOrEmpty(fn) && cs.IncludedFiles.TryGetValue(fn, out var ntext))
                 {
                     text = ntext;
                     file = fn;

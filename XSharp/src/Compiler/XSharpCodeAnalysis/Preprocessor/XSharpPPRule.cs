@@ -30,7 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly PPUDCType _type;
         private PPMatchToken[] _matchtokens;
         private PPMatchToken[] _matchTokensFlattened;
-        private int tokenCount = 0;
+        private int _tokenCount = 0;
         private PPResultToken[] _resulttokens;
         private readonly PPErrorMessages _errorMessages;
         internal PPRuleFlags _flags;
@@ -38,7 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal bool hasRepeats => _flags.HasFlag(PPRuleFlags.HasRepeats);
         internal bool hasOptionalResult => _flags.HasFlag(PPRuleFlags.HasOptionalResult);
         internal bool hasOptionalMatch => _flags.HasFlag(PPRuleFlags.HasOptionalMatch);
-        internal int firstOptionalMatchToken = -1;
+        internal int _firstOptionalMatchToken = -1;
         internal bool hasMultiKeys => _matchtokens.Length > 0 && _matchtokens[0].RuleTokenType == PPTokenType.MatchRestricted;
         private readonly CSharpParseOptions _options;
         internal PPUDCType Type { get { return _type; } }
@@ -207,7 +207,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var linearlist = new List<PPMatchToken>();
             addMatchTokens(_matchtokens, linearlist);
             _matchTokensFlattened = linearlist.ToArray();
-            tokenCount = _matchTokensFlattened.Length;
+            _tokenCount = _matchTokensFlattened.Length;
             _resulttokens = resultTokens.ToArray();
             checkMatchingTokens(_resulttokens, markers);
             return _errorMessages == null || _errorMessages.Count == 0;
@@ -554,8 +554,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                          * [...]
                          */
                         _flags |= PPRuleFlags.HasOptionalMatch;
-                        if (firstOptionalMatchToken == -1)
-                            firstOptionalMatchToken = i;
+                        if (_firstOptionalMatchToken == -1)
+                            _firstOptionalMatchToken = i;
                         more = getNestedTokens(i, max, matchTokens);
                         if (more != null)
                         {
@@ -634,8 +634,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var linearlist = new List<PPMatchToken>();
                 addMatchTokens(mt, linearlist);
                 _matchTokensFlattened = linearlist.ToArray();
-                tokenCount = _matchTokensFlattened.Length;
-                for (int i = 0; i < tokenCount; i++)
+                _tokenCount = _matchTokensFlattened.Length;
+                for (int i = 0; i < _tokenCount; i++)
                 {
                     var marker = _matchTokensFlattened[i];
                     if (marker.RuleTokenType.HasStopTokens() || marker.IsRepeat)
@@ -654,13 +654,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     if (marker.RuleTokenType.HasSingleStopToken())
                     {
-                        if (i < tokenCount - 1)
+                        if (i < _tokenCount - 1)
                         {
                             var next = _matchTokensFlattened[i + 1];
                             if (!next.IsOptional)
                             {
-                                var stopTokens = new List<XSharpToken>();
-                                stopTokens.Add(next.Token);
+                                var stopTokens = new List<XSharpToken>
+                                {
+                                    next.Token
+                                };
                                 marker.StopTokens = stopTokens.ToArray();
                             }
                             else if (next.Children != null)
@@ -1118,6 +1120,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case PPUDCType.XTranslate:
                 case PPUDCType.Define:
                     return string.Equals(lhs, rhs, mode);
+                default:
+                    break;
             }
             return false;
         }
@@ -1129,13 +1133,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool found = false;
             for (int iChild = iSource; iChild < tokens.Count; iChild++)
             {
-                bool add = false;
                 var token = tokens[iChild];
                 var stopTokenFound = IsStopToken(mToken, token);
                 if (stopTokenFound)
                 {
                     break;
                 }
+                bool add;
                 switch (token.Type)
                 {
                     case XSharpLexer.COMMA:
@@ -1256,7 +1260,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else if (tokens[iStart].IsString())
             {
                 matchInfo[mToken.Index].SetPos(iStart, iStart);
-                iSource = iSource + 1;
+                iSource++;
                 found = true;
             }
             else
@@ -1618,7 +1622,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             int iRule = 0;
             int iSource = 0;
-            matchInfo = new PPMatchRange[tokenCount];
+            matchInfo = new PPMatchRange[_tokenCount];
             List<XSharpToken> matchedWithToken = new List<XSharpToken>();
             int firstOptional = -1;
             bool hasSkippedMarkers = false;
@@ -1691,7 +1695,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             matchInfo[wholeUdc.Index].SetPos(0, last);
 
-
             // Now mark the tokens that were matched with tokens in the UDC with the keyword color
             // Since our token may be a clone, we change the Type of the source token
 #if VSPARSER
@@ -1708,13 +1711,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal IList<XSharpToken> Replace(IList<XSharpToken> tokens, PPMatchRange[] matchInfo)
         {
-            Debug.Assert(matchInfo.Length == tokenCount);
+            Debug.Assert(matchInfo.Length == _tokenCount);
             return Replace(_resulttokens, tokens, matchInfo);
 
         }
         internal IList<XSharpToken> Replace(PPResultToken[] resulttokens, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, int offset = 0, bool isLast = true)
         {
-            Debug.Assert(matchInfo.Length == tokenCount);
+            Debug.Assert(matchInfo.Length == _tokenCount);
             List<XSharpToken> result = new List<XSharpToken>();
             foreach (var resultToken in resulttokens)
             {
@@ -1907,14 +1910,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (_options.Dialect.NeedsRuntime())
                 {
-                    var NilToken = new XSharpToken(XSharpLexer.NIL, "NIL");
-                    result.Add(NilToken);
+                    var nilToken = new XSharpToken(XSharpLexer.NIL, "NIL");
+                    result.Add(nilToken);
                 }
                 else
                 {
                     // in core dialect this generates a NULL
-                    var NullToken = new XSharpToken(XSharpLexer.NULL, "NULL");
-                    result.Add(NullToken);
+                    var nullToken = new XSharpToken(XSharpLexer.NULL, "NULL");
+                    result.Add(nullToken);
                 }
             }
         }
@@ -2024,7 +2027,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-
         bool matchAmpersandToken(PPMatchToken mToken, IList<XSharpToken> tokens, int start, ref int end)
         {
             end = -1;
@@ -2045,6 +2047,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.BACKSLASH:
                 case XSharpLexer.DOT:
                     return true;
+                default:
+                    break;
             }
             return false;
         }
@@ -2235,7 +2239,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         result.Add(joinTokensToString(tokens, start, end));
                     }
                     break;
-
 
                 case PPTokenType.ResultSmartStringify:
                     // Only works when input text is delimited with parentheses
@@ -2470,5 +2473,3 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
     }
 }
-
-

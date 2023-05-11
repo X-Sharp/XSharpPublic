@@ -17,6 +17,7 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+    using Microsoft.CodeAnalysis.CSharp.Symbols;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
 
     internal class XSharpTreeTransformationRT : XSharpTreeTransformationCore
@@ -2680,6 +2681,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private AttributeSyntax EncodeDefaultParameter(XP.ExpressionContext initexpr, XP.DatatypeContext datatype)
         {
             bool negative = false;
+            if (datatype == null)
+            {
+                // FUNCTION Test (a := NIL,b := NIL as USUAL)
+                // find the next parameter and its datatype
+                // When we get here then params have a type
+                if (CurrentMember != null && CurrentMember.Params != null)
+                {
+                    var pars = CurrentMember.Params._Params;
+                    for (int i = 0; i < pars.Count && datatype == null; i++ )
+                    {
+                        var par = pars[i];
+                        if (par.Default == initexpr)
+                        {
+                            for (int j = i + 1; j < pars.Count && datatype == null ; j++ )
+                            {
+                                if (pars[j].Type != null)
+                                {
+                                    datatype = pars[j].Type;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (datatype == null)
+                {
+                    return null;
+                }
+            }
             if (initexpr is XP.PrefixExpressionContext)
             {
                 var prefix = initexpr as XP.PrefixExpressionContext;

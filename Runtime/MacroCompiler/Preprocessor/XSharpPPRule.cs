@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using XSharp.MacroCompiler.Syntax;
 
 namespace XSharp.MacroCompiler.Preprocessor
@@ -661,6 +662,20 @@ namespace XSharp.MacroCompiler.Preprocessor
                                 stopTokens.Add(next.Token);
                                 marker.StopTokens = stopTokens.ToArray();
                             }
+                            else if (next.Children != null)
+                            {
+                                // the tokens of the optional follower
+                                // should end the expression parsing of this token
+                                var stopTokens = new List<XSharpToken>();
+                                foreach (var child in next.Children)
+                                {
+                                    if (child.RuleTokenType == PPTokenType.Token)
+                                    {
+                                        stopTokens.Add(child.Token);
+                                    }
+                                }
+                                marker.StopTokens = stopTokens.ToArray();
+                            }
                         }
                     }
                     if (marker.IsOptional && !marker.IsWholeUDC)
@@ -724,9 +739,9 @@ namespace XSharp.MacroCompiler.Preprocessor
                         if (canAddStopToken(stoptokens, next.Token))
                         {
                             stoptokens.Add(next.Token);
+                            if (onlyFirstNonOptional)
+                                done = true;
                         }
-                        if (onlyFirstNonOptional)
-                            done = true;
                         break;
                 }
             }
@@ -797,8 +812,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var max = resultTokens.Length;
             List<XSharpToken> more;
             XSharpToken name;
-            int lastTokenIndex = -1;
-            TokenSource lastTokenSource = null;
+            XSharpToken lastToken = null;
             for (int i = 0; i < resultTokens.Length; i++)
             {
                 var token = resultTokens[i];
@@ -809,8 +823,6 @@ namespace XSharp.MacroCompiler.Preprocessor
                     ppWs.Channel = Channel.Hidden;
                     result.Add(new PPResultToken(ppWs, PPTokenType.Token));
                 }*/
-                lastTokenIndex = token.Index;
-                lastTokenSource = token.Source;
                 switch (token.Type)
                 {
                     case XSharpLexer.NEQ2:
@@ -954,7 +966,20 @@ namespace XSharp.MacroCompiler.Preprocessor
                         result.Add(new PPResultToken(token, PPTokenType.Token));
                         break;
                 }
-
+                var current = token;
+                if (current != null && lastToken != null && lastToken.Type == XSharpLexer.ID)
+                {
+                    // No whitespace after an ID. We will joined IDs when possible
+                    if (lastToken.end == current.Start - 1)
+                    {
+                        var last = result.LastOrDefault();
+                        if (last != null)
+                        {
+                            last.CombineWithPrevious = true;
+                        }
+                    }
+                }
+                lastToken = resultTokens[i];
             }
             var resulttokens = new PPResultToken[result.Count];
             result.CopyTo(resulttokens);
@@ -1671,24 +1696,11 @@ namespace XSharp.MacroCompiler.Preprocessor
             // Now mark the tokens that were matched with tokens in the UDC with the keyword color
             // Since our token may be a clone, we change the Type of the source token
 #if VSPARSER
-            for (int match = 0; match < _matchtokens.Length; match++)
+            foreach (var token in matchedWithToken)
             {
-                var mt = _matchtokens[match];
-                switch (mt.RuleTokenType)
+                if (!token.IsKeyword())
                 {
-                    case PPTokenType.Token:
-                    case PPTokenType.MatchRestricted:
-                        var info = matchInfo[match];
-                        if (info.IsToken)
-                        {
-                            var token = tokens[info.Start];
-                            token = token.Original;
-                            if (!token.IsKeyword())
-                            {
-                                token.Type = XSharpLexer.UDC_KEYWORD;
-                            }
-                        }
-                        break;
+                    token.Type = XSharpLexer.UDC_KEYWORD;
                 }
             }
 #endif
@@ -1765,7 +1777,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     t.SourceSymbol = source;
                 }
             }
-            result.TrimLeadingSpaces();
+            //result.TrimLeadingSpaces();
             // after certain tokens (->, and . for example) keywords must be changed to identifiers
             adjustKeywordsToIdentifiers(result);
             return result;
@@ -1779,15 +1791,11 @@ namespace XSharp.MacroCompiler.Preprocessor
                 {
                     if (token.IsKeyword())
                     {
-                        // after ALIAS and DOT we change the token to an ID
-                        switch (lasttoken.Type)
+                        if (lasttoken.IsMemberOperator())
                         {
-                            case XSharpLexer.ALIAS:
-                            case XSharpLexer.ID:
-                                token.Type = XSharpLexer.ID;
-                                // This makes sure that the token in the editor has the ID color
+                            token.Type = XSharpLexer.ID;
+                            // This makes sure that the token in the editor has the ID color
 // nvk                                token.Original.type = XSharpLexer.ID; 
-                                break;
                         }
                     }
                     if (token.Type == XSharpLexer.DOT)
@@ -1876,10 +1884,25 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             if (!range.Empty)
             {
+                // when a regular result marker is prefixed with another token without whitespace
+                // then combine the two. The type becomes the type of the first
+                bool combine = resultToken.CombineWithPrevious;
                 for (int i = range.Start; i <= range.End && i < tokens.Count; i++)
                 {
                     var token = tokens[i];
-                    result.Add(token);
+                    var last = result.LastOrDefault();
+                    if (combine)
+                    {
+                        if (last != null && last.Type == XSharpLexer.ID)
+                        {
+                            last.Value += token.Text;
+                        }
+                        combine = false;
+                    }
+                    else
+                    {
+                        result.Add(token);
+                    }
                 }
             }
             else if (resultToken.RuleTokenType == PPTokenType.ResultNotEmpty)

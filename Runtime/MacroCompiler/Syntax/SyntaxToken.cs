@@ -255,6 +255,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal Token(TokenType type) : this(type, TokenType.UNRECOGNIZED, -1, -1, type.ToString(), Channel.Default) { }
         internal Token(TokenType type, string value) : this(type, TokenType.UNRECOGNIZED, -1, -1, value, Channel.Default) { }
         internal Token(Token o, TokenType type, string value) : this(o) { this.Type = type; this.Value = value; }
+        internal Token(TokenType type, string value, Token o) : this(o) { this.Type = type; this.Value = value; }
         internal static readonly Token None = new Token(TokenType.UNRECOGNIZED, TokenType.UNRECOGNIZED, -1, 0, null, Channel.Default);
         internal int end => Start + Length;
         public override string ToString() => ( !string.IsNullOrEmpty(Value) ? Value : TokenAttr.TokenText(Type) ) ;
@@ -1031,5 +1032,18 @@ namespace XSharp.MacroCompiler.Syntax
             }
         }
         internal static SourceLocation Location(this Token token) => new SourceLocation(token.Source.SourceText, token.Start);
+        public static bool IsMemberOperator(this Token token)
+        {
+            switch (token.Type)
+            {
+                case TokenType.DOT:
+                case TokenType.COLON:
+                case TokenType.ALIAS:
+                case TokenType.COLONCOLON:
+                    return true;
+            }
+            return false;
+        }
+
     }
 }

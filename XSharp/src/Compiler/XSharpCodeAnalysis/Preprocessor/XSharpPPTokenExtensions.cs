@@ -36,7 +36,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result.ToArray();
         }
 
-
         internal static TokenType La(this XSharpToken[] tokens, int pos)
         {
             if (pos >= 0 && pos < tokens.Length)
@@ -284,6 +283,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
+
         internal static bool IsAssign(this XSharpToken token)
         {
             if (token == null)

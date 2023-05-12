@@ -3,15 +3,15 @@
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <Import Project="..\Runtime.Targets" />
   <PropertyGroup>
-    <ProjectGuid>06099C3D-1697-4EB1-9F53-8A9A50B9EACD</ProjectGuid>
-    <RootNamespace>XSharp.VO</RootNamespace>
-    <AssemblyName>XSharp.VO</AssemblyName>
-    <Name>XSharp.VO</Name>
+    <ProjectGuid>{eaee04e4-d7f6-46ac-b65a-e1b416b8d635}</ProjectGuid>
+    <RootNamespace>XSharp.Harbour</RootNamespace>
+    <AssemblyName>XSharp.Harbour</AssemblyName>
+    <Name>XSharp.Harbour</Name>
     <Dialect>VO</Dialect>
-    <OutputName>XSharp.VO</OutputName>
+    <OutputName>XSharp.Harbour</OutputName>
     <CS>true</CS>
     <Unsafe>true</Unsafe>
-    <NS>false</NS>
+    <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
@@ -24,27 +24,15 @@
     <DisabledWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>XSharp.VO.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.Harbour.Xml</DocumentationFile>
+    <DefineConstants>DEBUG;TRACE;RUNTIME;DOCUMENTATION</DefineConstants>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Drawing</Name>
-      <AssemblyName>System.Drawing.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Windows.Forms</Name>
-      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">
@@ -53,24 +41,12 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>constants.prg</Link>
     </Compile>
+    <Compile Include="Functions\Array.prg" />
     <Compile Include="Functions\General.prg" />
-    <Compile Include="Functions\International.prg" />
-    <Compile Include="Functions\International2.prg" />
-    <Compile Include="Functions\Obsolete.prg" />
-    <Compile Include="Functions\Registry.prg" />
-    <Compile Include="Functions\String.prg" />
-    <Compile Include="Functions\unsafe.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="Types\ErrorDialog.prg" />
-    <Compile Include="Types\NamedArg.prg" />
-    <Compile Include="Types\OleAutoObject.prg" />
-    <Compile Include="Types\OleAutoObjectFromFile.prg" />
-    <Compile Include="Types\OleDateTime.prg" />
-    <Compile Include="Types\VObject.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Functions\" />
-    <Folder Include="Types" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -101,5 +77,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-<Import Project="..\XmlDoc.Targets" />
+  <Import Project="..\XmlDoc.Targets" />
 </Project>

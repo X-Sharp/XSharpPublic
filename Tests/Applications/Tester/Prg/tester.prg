@@ -1,5 +1,5 @@
-#command TEST <x> => /*aaa*/ LOCAL /*bb*/   _<x>  /*cc*/   :=   42
+FUNCTION Start() AS VOID
 
-function Start as Void
-    TEST x
-    ? _x
+
+FUNCTION Test (a := NIL,b := NIL as USUAL)
+    return a * b

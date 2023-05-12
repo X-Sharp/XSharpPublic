@@ -15,14 +15,14 @@ FUNCTION Start( ) AS VOID
         xAssert(i == 2)
     ENDIF
     SWITCH uValue
-    CASE oError1 AS Error WHEN oError1:Message == "Error"
-        ? "Error 1", oError1:Message
+    CASE oError AS Error WHEN oError:Message == "Error"
+        ? "Error 1", oError:Message
         xAssert(i == 3)
-    CASE oError2 AS Error WHEN oError2:Message == "test"
-        ? "Error 2", oError2:Message
+    CASE oError AS Error WHEN oError:Message == "test"
+        ? "Error 2", oError:Message
         xAssert(i == 1)
-    CASE strValue1 AS STRING
-        ? "String", strValue1
+    CASE strValue AS STRING
+        ? "String", strValue
         xAssert(i == 2)
     END SWITCH
     NEXT

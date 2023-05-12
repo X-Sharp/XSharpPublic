@@ -6443,6 +6443,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExitConditionalStatement(context, context._CaseBlocks, context.OtherwiseStmtBlk);
         }
 
+        private StatementSyntax wrapIfCondition(StatementSyntax stmt, ExpressionSyntax condition)
+        {
+            if (condition is IsPatternExpressionSyntax)
+            {
+                var stmts = new List<StatementSyntax>();
+                stmts.Add(stmt);
+                stmt = MakeBlock(stmts);
+            }
+            return stmt;
+        }
+
       private void CreateSimpleIfStatement(XSharpParserRuleContext context, XP.CondBlockContext ifcond, XP.StatementBlockContext elseBlock)
         {
             var cond = ifcond.Cond.Get<ExpressionSyntax>();
@@ -6525,6 +6536,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     gotoStmt
                 };
                 stmt = GenerateIfStatement(cond, MakeBlock(stmts), null);
+                stmt = wrapIfCondition(stmt, cond);
                 block.Put(stmt);
                 condStmts.Add(stmt);
             }
@@ -6542,6 +6554,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         last.StmtBlk.Get<StatementSyntax>()
                     };
                     stmt = GenerateIfStatement(cond, MakeBlock(stmts), elseClause);
+                    stmt = wrapIfCondition(stmt, cond);
                     elseBlock.Put(stmt);
                     condStmts.Add(stmt);
                 }
@@ -6560,6 +6573,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 };
                 stmt = GenerateIfStatement(cond,
                         MakeBlock(stmts), null);
+                stmt = wrapIfCondition(stmt, cond);
                 last.Put(stmt);
                 condStmts.Add(stmt);
             }

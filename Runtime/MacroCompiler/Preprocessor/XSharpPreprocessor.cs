@@ -69,8 +69,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 }
                 foreach (var key in oldkeys)
                 {
-                    PPIncludeFile oldFile;
-                    cache.TryRemove(key, out oldFile);
+                    cache.TryRemove(key, out PPIncludeFile _);
                 }
             }
 
@@ -88,7 +87,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                             timeStamp = DateTime.MinValue;
                         if (file.LastWritten != timeStamp)
                         {
-                            cache.TryRemove(fileName, out file);
+                            cache.TryRemove(fileName, out _);
                             file = null;
                         }
                         else
@@ -103,16 +102,14 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             internal static PPIncludeFile Add(string fileName, IList<IToken> tokens, SourceText text, bool mustBeProcessed, ref bool newFile)
             {
-                PPIncludeFile file;
-                cache.TryGetValue(fileName, out file);
+                cache.TryGetValue(fileName, out PPIncludeFile file);
                 if (file == null)
                 {
                     newFile = true;
                     file = new PPIncludeFile(fileName, tokens, text, mustBeProcessed);
                     if (!cache.TryAdd(fileName, file))
                     {
-                        PPIncludeFile oldFile;
-                        if (cache.TryGetValue(fileName, out oldFile))
+                        if (cache.TryGetValue(fileName, out PPIncludeFile oldFile))
                         {
                             file = oldFile;
                             newFile = false;
@@ -797,7 +794,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 if (_files.Count > 0)
                 {
                     inputs = _files.Pop();
-                    var token = inputs.Lt();
+                    //var token = inputs.Lt();
                     //writeToPPO($"#line {token..Line} \"{token.Source.SourceName}\"" , true);
                 }
             }
@@ -1008,8 +1005,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 return;
             }
             var cmd = udc[0];
-            PPErrorMessages errorMsgs;
-            var rule = new PPRule(cmd, udc, out errorMsgs, _options);
+            var rule = new PPRule(cmd, udc, out PPErrorMessages errorMsgs, _options);
             if (rule.Type == PPUDCType.None)
             {
                 if (errorMsgs.Count > 0)
@@ -1092,7 +1088,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         private bool isObsoleteIncludeFile(string includeFileName, XSharpToken token)
         {
             string file = Path.GetFileName(includeFileName).ToLower();
-            bool obsolete = false;
+            bool obsolete;
             string assemblyName = "";
             bool sdkdefs = _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.SdkDefines);
             switch (file)
@@ -1796,7 +1792,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         IList<XSharpToken> doEndTextDirective(IList<XSharpToken> original, bool write2PPO)
         {
             Debug.Assert(original.Count > 0 && original[0].Type == XSharpLexer.PP_ENDTEXT);
-            var anchor = original[0];
+            //var anchor = original[0];
             var result = new List<XSharpToken>();
             if (_textProps == null)
             {
@@ -2445,8 +2441,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 for (int i = 0; i < line.Count; i++)
                 {
                     var token = line[i];
-                    IList<XSharpToken> deflist = null;
-                    if (isDefineAllowed(line, i) && token.Text != null && _symbolDefines.TryGetValue(token.Text, out deflist))
+                    if (isDefineAllowed(line, i) && token.Text != null && _symbolDefines.TryGetValue(token.Text, out IList<IToken> deflist))
                     {
                         if (tempResult == null)
                         {
@@ -2466,22 +2461,21 @@ namespace XSharp.MacroCompiler.Preprocessor
                                 tempResult.Add(t2);
                             }
                         }
-/*nvk                        else
-                        {
-                            // add a space so error messages look proper
-                            var t2 = new XSharpToken(XSharpLexer.WS, " <RemovedToken> ")
-                            {
-                                Channel = Channel.Hidden,
-                                SourceSymbol = token
-                            };
-                            tempResult.Add(t2);
-                        }*/
+                        /*nvk                        else
+                                                {
+                                                    // add a space so error messages look proper
+                                                    var t2 = new XSharpToken(XSharpLexer.WS, " <RemovedToken> ")
+                                                    {
+                                                        Channel = Channel.Hidden,
+                                                        SourceSymbol = token
+                                                    };
+                                                    tempResult.Add(t2);
+                                                }*/
                     }
                     else if (token.Type == XSharpLexer.MACRO)
                     {
                         // Macros that cannot be found are changed to ID
-                        Func<XSharpToken, XSharpToken> ft;
-                        if (_macroDefines.TryGetValue(token.Text, out ft))
+                        if (_macroDefines.TryGetValue(token.Text, out var ft))
                         {
                             var nt = ft(token);
                             if (nt != null)
@@ -2514,8 +2508,7 @@ namespace XSharp.MacroCompiler.Preprocessor
 
         private XSharpToken getMacroValue(XSharpToken token)
         {
-            Func<XSharpToken, XSharpToken> ft;
-            if (_macroDefines.TryGetValue(token.Text, out ft))
+            if (_macroDefines.TryGetValue(token.Text, out var ft))
             {
                 var nt = ft(token);
                 if (nt != null)
@@ -2534,8 +2527,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var usedRules = new PPUsedRules(this, MaxUDCDepth);
             while (temp.Count > 0)
             {
-                PPMatchRange[] matchInfo = null;
-                var rule = _transRules.FindMatchingRule(temp, out matchInfo);
+                var rule = _transRules.FindMatchingRule(temp, out var matchInfo);
                 if (rule != null)
                 {
                     temp = doReplace(temp, rule, matchInfo);
@@ -2598,8 +2590,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var usedRules = new PPUsedRules(this, MaxUDCDepth);
             while (true)
             {
-                PPMatchRange[] matchInfo = null;
-                var rule = _cmdRules.FindMatchingRule(result, out matchInfo);
+                var rule = _cmdRules.FindMatchingRule(result, out var matchInfo);
                 if (rule == null)
                 {
                     // nothing to do, so exit. Leave changed the way it is. This does not have to be the first iteration
@@ -2614,8 +2605,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 }
                 // the UDC may have introduced a new semi colon and created more than one sub statement
                 // so check to see and then process every statement
-                IList<XSharpToken> separators;
-                var cmds = splitCommands(result, out separators);
+                var cmds = splitCommands(result, out var separators);
                 Debug.Assert(cmds.Count == separators.Count + 1);
                 if (cmds.Count <= 1)
                 {

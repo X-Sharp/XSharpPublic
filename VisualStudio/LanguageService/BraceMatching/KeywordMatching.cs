@@ -213,7 +213,7 @@ namespace XSharp.LanguageService
             {
                 yield break;
             }
-            if (_document.Blocks == null)
+            if (_document == null || _document.Blocks == null)
             {
                 yield break;
             }

@@ -25,7 +25,7 @@ using Community.VisualStudio.Toolkit;
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
-[assembly: ProvideCodeBase(AssemblyName = "Mono.Cecil")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.MonoCecil")]
 namespace XSharp.LanguageService
 {
 

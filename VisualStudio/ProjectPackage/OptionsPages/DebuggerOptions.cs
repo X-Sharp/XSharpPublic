@@ -13,9 +13,10 @@ namespace XSharp.Project.Options
         [DefaultValue(false)]
         public bool AllowEditing { get; set; } = false;
 
-        const string Options = "Options";
         const string General = "General";
+        /*
         const string Variables = "Variables";
+        const string Options = "Options";
         [Category(General)]
         [DisplayName(GeneralPropertyPagePanel.captDialect)]
         [Description(GeneralPropertyPagePanel.descDialect)]
@@ -85,6 +86,7 @@ namespace XSharp.Project.Options
         [Description(DialectPropertyPagePanel.VO14Description)]
         [DefaultValue(false)]
         public bool Vo14 { get; set; } = false;
+        */
         [Category(General)]
         [DisplayName(NoLBCaption)]
         [Description(NoLBDescription)]

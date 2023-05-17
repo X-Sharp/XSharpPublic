@@ -124,6 +124,12 @@ namespace XSharp.Project
             _cachedProjectProperties.Clear();
         }
 
+        public bool GetLogicProjectProperty(string propertyName)
+        {
+            var prop = GetProjectProperty(propertyName);
+            return prop != null && String.Compare(prop, "true",true) == 0;
+        }
+
         public override string GetProjectProperty(string propertyName)
         {
             if (_cachedProjectProperties.ContainsKey(propertyName))
@@ -145,7 +151,7 @@ namespace XSharp.Project
 
         private void XSharpProjectNode_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
-            if (string.Compare(e.PropertyName, "dialect", true) == 0)
+            if (string.Compare(e.PropertyName, XSharpProjectFileConstants.Dialect, true) == 0)
             {
                 var prop = e.NewValue;
                 if (!Enum.TryParse(prop, true, out _dialect))
@@ -2179,7 +2185,7 @@ namespace XSharp.Project
                 if (_dialectIsCached)
                     return _dialect;
 
-                var prop = GetProjectProperty("Dialect");
+                var prop = GetProjectProperty(XSharpProjectFileConstants.Dialect);
                 if (!Enum.TryParse(prop, true, out _dialect))
                 {
                     _dialect = VsParser.XSharpDialect.Core;

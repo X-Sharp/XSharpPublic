@@ -247,20 +247,20 @@ namespace XSharp.Project
         public async Task<bool> GetEditorOptionsAsync()
         {
             var doptions = await Options.DebuggerOptions.GetLiveInstanceAsync();
-            XDebuggerSettings.ArrayZero = doptions.ArrayZero;
+            //XDebuggerSettings.ArrayZero = doptions.ArrayZero;
             XDebuggerSettings.AllowEditing = doptions.AllowEditing;
-            XDebuggerSettings.Dialect = (int) doptions.Dialect;
-            XDebuggerSettings.MemVars = doptions.MemVars;
-            XDebuggerSettings.UndeclaredMemvars = doptions.UndeclaredMemvars;
-            XDebuggerSettings.Vo4 = doptions.Vo4;
-            XDebuggerSettings.Vo6 = doptions.Vo6;
-            XDebuggerSettings.Vo7 = doptions.Vo7;
-            XDebuggerSettings.Vo10 = doptions.Vo10;
-            XDebuggerSettings.Vo12 = doptions.Vo12;
-            XDebuggerSettings.Vo13 = doptions.Vo13;
-            XDebuggerSettings.Vo14 = doptions.Vo14;
+            //XDebuggerSettings.Dialect = (int) doptions.Dialect;
+            //XDebuggerSettings.MemVars = doptions.MemVars;
+            //XDebuggerSettings.UndeclaredMemvars = doptions.UndeclaredMemvars;
+            //XDebuggerSettings.Vo4 = doptions.Vo4;
+            //XDebuggerSettings.Vo6 = doptions.Vo6;
+            //XDebuggerSettings.Vo7 = doptions.Vo7;
+            //XDebuggerSettings.Vo10 = doptions.Vo10;
+            //XDebuggerSettings.Vo12 = doptions.Vo12;
+            //XDebuggerSettings.Vo13 = doptions.Vo13;
+            //XDebuggerSettings.Vo14 = doptions.Vo14;
             XDebuggerSettings.NoLateBinding = doptions.NoLateBinding;
-            XDebuggerSettings.CaseSensitive = doptions.CaseSensitive;
+            //XDebuggerSettings.CaseSensitive = doptions.CaseSensitive;
 
             var woptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
             XCustomEditorSettings.ShowGrid = woptions.ShowGrid;

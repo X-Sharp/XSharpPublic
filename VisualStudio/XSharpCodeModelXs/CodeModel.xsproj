@@ -21,8 +21,10 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
+    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <NuGetPackageImportStamp></NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>

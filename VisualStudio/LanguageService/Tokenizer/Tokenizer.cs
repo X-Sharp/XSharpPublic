@@ -75,7 +75,8 @@ namespace XSharp.LanguageService
         internal static IList<IToken> GetTokensUnderCursor(XSharpSearchLocation location, out CompletionState state)
         {
 
-            var tokens = GetTokenList(location, out state, true, true).Where((t) => t.Channel == XSharpLexer.DefaultTokenChannel).ToList();
+            var tokens = GetTokenList(location, out state, true, true).Where((t) =>
+            t.Channel == XSharpLexer.DefaultTokenChannel || t.Channel == XSharpLexer.PREPROCESSORCHANNEL).ToList();
             // Find "current" token
 
             if (tokens.Count > 0)
@@ -310,14 +311,17 @@ namespace XSharp.LanguageService
         {
             location = AdjustStartLineNumber(location);
             var xdocument = location.GetDocument();
+            state = CompletionState.General;
+            var result = new List<IToken>();
+            if (xdocument == null)
+                return result;
             var tokens =  xdocument.GetTokensInLine(location.LineNumber);
             //
-            state = CompletionState.General;
+            
             if (tokens.Count == 0)
-                return tokens;
+                return result;
             // if the token appears after comma or paren then strip the tokens
             // now look forward and find the first token that is on or after the triggerpoint
-            var result = new List<IToken>();
             var last = XSharpLexer.Eof;
             bool allowdot = location.Project?.ParseOptions?.AllowDotForInstanceMembers ?? false;
             var cursorPos = location.Position;

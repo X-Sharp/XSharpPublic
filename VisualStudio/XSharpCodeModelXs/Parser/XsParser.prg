@@ -63,7 +63,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     END GET
     END PROPERTY
     PRIVATE PROPERTY CurrentBlock       AS XSourceBlock   GET IIF(_BlockStack:Count > 0, _BlockStack:Peek(), NULL_OBJECT)
-    PRIVATE PROPERTY CurrentEntityKind  AS Kind     GET IIF(_EntityStack:Count > 0, CurrentEntity:Kind, Kind.Unknown)
+    PRIVATE PROPERTY CurrentEntityKind  AS Kind     GET IIF(CurrentEntity != null , CurrentEntity:Kind, Kind.Unknown)
     PRIVATE PROPERTY InFoxClass AS LOGIC GET CurrentType != NULL .AND. CurrentType:ClassType == XSharpDialect.FoxPro
     PRIVATE PROPERTY InXppClass AS LOGIC GET CurrentType != NULL .AND. CurrentType:ClassType == XSharpDialect.XPP
     PROPERTY EntityList AS IList<XSourceEntity>  GET _EntityList
@@ -88,8 +88,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         _locals        := List<XSourceVariableSymbol>{}
         _file:Clear()
         _globalType    := _file:GlobalType
-        _globalType:ClearMembers()
-        _EntityStack:Push(_globalType)
+        if (_globalType != null)
+            _globalType:ClearMembers()
+            _EntityStack:Push(_globalType)
+        endif
         _missingType := XLiterals.ObjectType
         _modifiers     := List<IToken>{}
         IF SELF:_file:Project != NULL .AND. SELF:_file:Project:ParseOptions:Dialect != XSharpDialect.Core

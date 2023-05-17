@@ -43,7 +43,9 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>True</Prefer32Bit>
     <ErrorReport>prompt</ErrorReport>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
+    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <DisabledWarnings>1591</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

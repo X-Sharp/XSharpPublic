@@ -11,6 +11,9 @@
     <AssemblyName>XSharp.CodeGenerator</AssemblyName>
     <Dialect>Core</Dialect>
     <OutputName>CodeGenerator</OutputName>
+    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
+    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <NamedArgs>true</NamedArgs>
     <StartupObject />
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>

@@ -49,8 +49,8 @@ namespace XSharpDebugger.ExpressionCompiler
             xoptions.SetOption(CompilerOption.Vo12, XDebuggerSettings.Vo12);
             xoptions.SetOption(CompilerOption.Vo13, XDebuggerSettings.Vo13);
             xoptions.SetOption(CompilerOption.Vo14, XDebuggerSettings.Vo14);
-            xoptions.SetOption(CompilerOption.LateBinding, !XDebuggerSettings.NoLateBinding);
-            xoptions.SetOption(CompilerOption.AllowDotForInstanceMembers, lAllowDot);
+            xoptions.SetOption(CompilerOption.LateBinding, XDebuggerSettings.LateBinding && !XDebuggerSettings.NoLateBinding);
+            xoptions.SetOption(CompilerOption.AllowDotForInstanceMembers, lAllowDot || XDebuggerSettings.AllowDot);
             XSharpString.CaseSensitive = XDebuggerSettings.CaseSensitive;
             XSyntaxHelpers.XSharpOptions = xoptions;
         }

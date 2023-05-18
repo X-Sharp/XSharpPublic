@@ -13,8 +13,6 @@ USING System.Diagnostics
 
 //#define TESTCDX
 
-//#define RECLISTDEBUG
-
 #ifdef TESTCDX
     GLOBAL LOGGING := TRUE AS LOGIC
     GLOBAL VALIDATETREE := FALSE AS LOGIC
@@ -400,14 +398,16 @@ BEGIN NAMESPACE XSharp.RDD
                         info:Result := FALSE
                     ENDIF
 
-                #if RECLISTDEBUG
-                CASE DBOI_USER + 1
+                CASE DBOI_USER + 1 // returns hit count
                     info:Result := RLHitCount
-                CASE DBOI_USER + 2
+                CASE DBOI_USER + 2 // returns miss count
                     info:Result := RLMissCount
-                CASE DBOI_USER + 3
-                    info:Result := _recordList:Length
-                #endif
+                CASE DBOI_USER + 3 // returns RL length
+                    info:Result := _recordList?:Length
+                CASE DBOI_USER + 4 // enables and clears RL
+                    ClearRecordList()
+                CASE DBOI_USER + 5 // disables RL
+                    _recordList := NULL
 
                 CASE DBOI_USER + 42
                 CASE DBOI_DUMP
@@ -689,7 +689,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF !isOk
                     RETURN isOk
                 ENDIF
-                IF SELF:_FilterInfo:Active
+                IF SELF:_FilterInfo:Active && _recordList != NULL
                     _recordList.Items[SELF:RecNo] := CdxRecordList.RecordState.Unknown
                 ENDIF
                 RETURN SELF:_indexList:GoHot()
@@ -711,7 +711,7 @@ BEGIN NAMESPACE XSharp.RDD
         PUBLIC RLMissCount := 0 AS INT
 
         PROTECTED METHOD ClearRecordList() AS VOID
-            SELF:_recordList:Clear()
+            SELF:_recordList?:Clear()
             RLHitCount := 0
             RLMissCount := 0
             RETURN
@@ -725,6 +725,9 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SUPER:SetFilter(info)
 
         OVERRIDE METHOD EvalFilter(oBlock AS ICodeblock) AS LOGIC
+            IF _recordList == NULL
+                RETURN (LOGIC) SELF:EvalBlock(oBlock)
+            ENDIF
             VAR rli := _recordList.Items[SELF:RecNo]
             VAR res := rli == CdxRecordList.RecordState.Visible
             IF rli == CdxRecordList.RecordState.Unknown

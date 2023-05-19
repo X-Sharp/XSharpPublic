@@ -130,7 +130,7 @@ namespace XSharp.Project
             XDebuggerSettings.UndeclaredMemvars = project.GetLogicProjectProperty(XSharpProjectFileConstants.Undeclared);
             XDebuggerSettings.LateBinding = project.GetLogicProjectProperty(XSharpProjectFileConstants.LB);
             XDebuggerSettings.CaseSensitive = project.GetLogicProjectProperty(XSharpProjectFileConstants.CS);
-            XDebuggerSettings.AllowDot = project.GetLogicProjectProperty(XSharpProjectFileConstants.Allowdot);
+            XDebuggerSettings.DebuggingXSharpExe = true;
 
         }
         public override int DebugLaunch(uint grfLaunch)

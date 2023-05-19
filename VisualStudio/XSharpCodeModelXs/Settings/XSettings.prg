@@ -40,9 +40,6 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY ShellLink                        AS IXVsShellLink AUTO
         PUBLIC STATIC PROPERTY LanguageService                  AS OBJECT AUTO
 
-        PUBLIC STATIC PROPERTY DebuggerMode                     AS DebuggerMode AUTO
-        PUBLIC STATIC PROPERTY DebuggerIsRunning                AS LOGIC GET DebuggerMode != DebuggerMode.Design
-
         PUBLIC STATIC PROPERTY Disassembler AS STRING AUTO := ""
         PUBLIC STATIC PROPERTY HideIncludes AS LOGIC AUTO := FALSE
 

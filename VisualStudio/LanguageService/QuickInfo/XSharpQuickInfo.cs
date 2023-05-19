@@ -46,7 +46,7 @@ namespace XSharp.LanguageService
 
         public async Task<QuickInfoItem> GetQuickInfoItemAsync(IAsyncQuickInfoSession session, CancellationToken cancellationToken)
         {
-            if (XSettings.DebuggerIsRunning || XEditorSettings.DisableQuickInfo)
+            if (XDebuggerSettings.DebuggerIsRunning || XEditorSettings.DisableQuickInfo)
             {
                 await session.DismissAsync();
                 return null;

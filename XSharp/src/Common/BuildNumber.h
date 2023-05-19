@@ -9,7 +9,7 @@
    // This is the file version number, which is ignored by .NET but used by Windows installer to determine
     // whether one file is newer than another.
     // This typically would change if we're generating a patch, otherwise it should be the same as VERSION_NUMBER
-#define FILEVERSION_NUMBER   "2.16.0.3"
+#define FILEVERSION_NUMBER   "2.16.0.4"
 
     // This is used for the assembly version number, which the CLR uses to determine binding
     // This generally changes when we release a new full build

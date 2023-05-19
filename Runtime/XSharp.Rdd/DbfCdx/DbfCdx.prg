@@ -73,20 +73,42 @@ BEGIN NAMESPACE XSharp.RDD
             OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	            LOCAL oResult AS OBJECT
                 oResult := NULL
-                IF nOrdinal == DbInfo.DBI_DIRTYREAD
+                BEGIN SWITCH nOrdinal
+                CASE DbInfo.DBI_DIRTYREAD
                     oResult := SELF:_dirtyRead
                     IF oNewValue IS LOGIC VAR lValue
                         SELF:_dirtyRead := lValue
                     ENDIF
                     RETURN oResult
-                ELSEIF nOrdinal == DbInfo.DBI_STRICTREAD
+                CASE DbInfo.DBI_STRICTREAD
                     oResult := !SELF:_dirtyRead
                     IF oNewValue IS LOGIC VAR lValue
                         SELF:_dirtyRead := !lValue
                     ENDIF
                     RETURN oResult
-                ENDIF
-                RETURN SUPER:Info(nOrdinal, oNewValue)
+                CASE DbInfo.DBI_RL_HITS
+                    RETURN RLHitCount
+                CASE DbInfo.DBI_RL_MISSES
+                    RETURN  RLMissCount
+                CASE DbInfo.DBI_RL_LEN
+                    RETURN _recordList?:Length
+                CASE DbInfo.DBI_RL_CLEAR
+                    ClearRecordList()
+                CASE DbInfo.DBI_RL_ENABLE
+                    IF (LOGIC)oNewValue != (_recordList != NULL)
+                        ClearRecordList()
+                        IF (LOGIC)oNewValue
+                            _recordList := CdxRecordList{}
+                        ELSE
+                            _recordList := NULL
+                        ENDIF
+                        RETURN TRUE
+                    ENDIF
+                    RETURN FALSE
+                OTHERWISE
+                    RETURN SUPER:Info(nOrdinal, oNewValue)
+                END SWITCH
+                RETURN oResult
             OVERRIDE METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
                 VAR result := SELF:_indexList:Create(orderInfo)
                 if result
@@ -397,17 +419,6 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSE
                         info:Result := FALSE
                     ENDIF
-
-                CASE DBOI_USER + 1 // returns hit count
-                    info:Result := RLHitCount
-                CASE DBOI_USER + 2 // returns miss count
-                    info:Result := RLMissCount
-                CASE DBOI_USER + 3 // returns RL length
-                    info:Result := _recordList?:Length
-                CASE DBOI_USER + 4 // enables and clears RL
-                    ClearRecordList()
-                CASE DBOI_USER + 5 // disables RL
-                    _recordList := NULL
 
                 CASE DBOI_USER + 42
                 CASE DBOI_DUMP

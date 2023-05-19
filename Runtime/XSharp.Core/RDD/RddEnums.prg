@@ -381,6 +381,12 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		/// <summary>Clipmore extension: </summary>
 		MEMBER DBI_RL_TEST 			:= 1019
 
+		/// <summary>Recordlist extension: </summary>
+		MEMBER DBI_RL_HITS 			:= 1020
+		/// <summary>Recordlist extension: </summary>
+		MEMBER DBI_RL_MISSES    	:= 1021
+		/// <summary>Recordlist extension: </summary>
+		MEMBER DBI_RL_ENABLE		:= 1022
 
 		// advantage
 		MEMBER DBI_GET_ACE_TABLE_HANDLE  := DBI_USER + 110

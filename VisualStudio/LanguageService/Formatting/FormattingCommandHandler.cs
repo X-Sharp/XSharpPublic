@@ -251,7 +251,7 @@ namespace XSharp.LanguageService
 
         private void Textbuffer_Changing(object sender, TextContentChangingEventArgs e)
         {
-            if (XSettings.DebuggerIsRunning && ! XDebuggerSettings.AllowEditing)  
+            if (XDebuggerSettings.DebuggerIsRunning && ! XDebuggerSettings.AllowEditing)  
             {
                 XSettings.ShowMessageBox("Cannot edit source code while debugging");
                 e.Cancel();

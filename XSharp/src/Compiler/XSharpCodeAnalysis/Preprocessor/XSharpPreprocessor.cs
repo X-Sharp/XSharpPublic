@@ -446,7 +446,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var t in tokens)
                 {
                     // Exclude comments from header files
-                    if (ProcessingIncludeFile && t.IsComment())
+                    if (t.FromInclude && t.IsComment())
                         continue;
                     // Copy the trivia from the original first symbol on the line so the UDC has the proper indent level
                     if (first && t.SourceSymbol != null && t.SourceSymbol.HasTrivia && t.SourceSymbol.Type == XSharpLexer.UDC_KEYWORD)
@@ -618,7 +618,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     line = ProcessLine(line, this._preprocessorOutput);
                     if (line != null && line.Count > 0)
                     {
-                        result.AddRange(line);
+                        result.AddRange(line.Where(t => !t.FromInclude || !t.IsComment()));
                     }
                 }
                 else
@@ -741,6 +741,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             var temp = stripWs(line);
                             line = doNormalLine(temp, write2ppo);
+                            _textProps = null;
                         }
                         else
                         {
@@ -1318,8 +1319,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 #endif
                 bool newFile = false;
-                //var tokens = removeIncludeFileComments(ct.GetTokens());
                 var tokens = ct.GetTokens();
+                foreach (XSharpToken token in tokens)
+                {
+                    token.FromInclude = true;
+                }
                 includeFile = PPIncludeFile.Add(resolvedIncludeFileName, tokens, text, lexer.MustBeProcessed, ref newFile);
 #if FULLCOMPILER
                 if (_options.Verbose)
@@ -1359,39 +1363,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        private IList<IToken> removeIncludeFileComments(IList<IToken> source)
-        {
-            List<IToken> tokens = new List<IToken>();
-            var aftercomment = false;
-            var lastToken = XSharpLexer.LAST;
-            foreach (XSharpToken token in source)
-            {
-                switch (token.Type)
-                {
-                    case XSharpLexer.WS:
-                    case XSharpLexer.NL:
-                        if (aftercomment || lastToken == XSharpLexer.NL)
-                        {
-                            aftercomment = false;
-                            lastToken = token.Type;
-                            continue;
-                        }
-                        aftercomment = false;
-                        break;
-                    default:
-                        if (token.IsComment())
-                        {
-                            aftercomment = true;
-                            continue;
-                        }
-                        aftercomment = false;
-                        break;
-                }
-                tokens.Add(token);
-                lastToken = token.Type;
-            }
-            return tokens;
-        }
+       
         private bool IsDefined(string define, XSharpToken token)
         {
             // Handle /VO8 compiler option:
@@ -1650,17 +1622,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result.AddRange(_textProps.textLineFunc);
                 }
                 var sb = new StringBuilder();
-                sb.Append("`"); // the backtick is not really a string delimiter but the backend does not care.
-                                // This helps to write the ppo file.
+                sb.Append("\""); 
                 foreach (var token in original)
                 {
-                    sb.Append(token.Text);
+                     sb.Append(token.Text);
 #if VSPARSER
                     //mark tokens with new type to give them a different color in the editor
                     token.Type = XSharpLexer.TEXT_STRING_CONST;
 #endif
                 }
-                sb.Append("`");
+                sb.Append("\"");
                 result.Add(new XSharpToken(XSharpLexer.STRING_CONST, sb.ToString(), original[0]));
                 if (_textProps.textDelim?.Count > 0)
                 {

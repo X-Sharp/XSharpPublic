@@ -19,12 +19,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     public class XSharpToken : CommonToken, IFormattable
     {
         //internal string SourceFileName;
+        public bool FromInclude { get; set; } = false;
         internal string MappedFileName;
         internal int OriginalChannel;
         private int _originalTokenIndex = -1;
         internal int MappedLine = -1;
         internal XSharpToken SourceSymbol;
         private XSharpToken _original = null;
+
         #region Wrappers for compatibility with Macro compiler
         internal string Value
 
@@ -102,6 +104,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             StartIndex = token.StartIndex;
             StopIndex = token.StopIndex;
             Trivia = token.Trivia;
+            FromInclude = token.FromInclude;
         }
         internal XSharpToken(IToken t) : base(t)
         {

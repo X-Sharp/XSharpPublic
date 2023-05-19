@@ -1,7 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-02T13:21:47.801+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-19T12:49:09.571+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>METHOD Declarations</title>
+  <keywords>
+    <keyword>ACCESS</keyword>
+    <keyword>ACCESS METHOD</keyword>
+    <keyword>ASSIGN METHOD</keyword>
+    <keyword>CLASS METHOD</keyword>
+    <keyword>END METHOD</keyword>
+    <keyword>METHOD</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Method declarations (Xbase++ dialect)</para>

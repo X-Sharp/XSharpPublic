@@ -1,11 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-19T12:47:49.741+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>PROCEDURE Statement</title>
   <keywords>
+    <keyword>_INIT1</keyword>
+    <keyword>_INIT2</keyword>
+    <keyword>_INIT3</keyword>
     <keyword>Compiledeclaration</keyword>
     <keyword>Declaration statements</keyword>
     <keyword>Entity declaration</keyword>
+    <keyword>EXIT</keyword>
+    <keyword>PROCEDURE</keyword>
     <keyword>PROCEDURE statement</keyword>
     <keyword>Statements</keyword>
     <keyword>STATIC PROCEDURE statement</keyword>
@@ -17,7 +22,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare a procedure name and formal parameters. When used inside a FoxPro DEFINE CLASS .. ENDDEFINE this declares a method.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <tab /><text style="font-weight:bold;">PROCEDURE</text> &#160;&lt;<text styleclass="Italic">idProcedure</text>&gt; </para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">PROCEDURE</text> &#160;&lt;<text styleclass="Italic">idProcedure</text>&gt; </para>
     <para styleclass="Normal"><tab />[Typeparameters]</para>
     <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF|OUT|IN &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
     <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
@@ -43,7 +48,7 @@
     <para styleclass="List"><text styleclass="Normal">ENDPROC | END PROCEDURE</text><tab /><text styleclass="Normal">These (optional)keywords indicate the logical end of the function.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">You must follow the guidelines below when specifying an INIT procedure:</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">No arguments are allowed</text></li>
     </list>
     <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>

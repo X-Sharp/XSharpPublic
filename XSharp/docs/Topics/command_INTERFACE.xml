@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-19T12:47:16.521+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>INTERFACE Statement</title>
   <keywords>
     <keyword>Binding of instance variables</keyword>
@@ -10,8 +10,10 @@
     <keyword>Classes<keyword>declaring Class names</keyword><keyword>inheritance</keyword><keyword>object instantiation</keyword></keyword>
     <keyword>Compile-time declaration</keyword>
     <keyword>Declaration statements</keyword>
+    <keyword>END INTERFACE</keyword>
     <keyword>Entity declaration</keyword>
     <keyword>INHERIT clause</keyword>
+    <keyword>INTERFACE</keyword>
     <keyword>INTERFACE statement</keyword>
   </keywords>
   <body>

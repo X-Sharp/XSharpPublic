@@ -1,9 +1,17 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-19T12:45:46.320+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>User defined Types</title>
   <keywords>
+    <keyword>CLASS</keyword>
+    <keyword>CLASS (FoxPro syntax)</keyword>
     <keyword>CLASS (Xbase++ syntax)</keyword>
+    <keyword>DELEGATE</keyword>
+    <keyword>ENUM</keyword>
+    <keyword>INTERFACE</keyword>
+    <keyword>STRUCTURE</keyword>
+    <keyword>UNION</keyword>
+    <keyword>VOSTRUCT</keyword>
   </keywords>
   <body>
     <header>

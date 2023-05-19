@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-19T12:46:26.582+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>CLASS Statement (FoxPro dialect)</title>
   <keywords>
     <keyword>Binding of instance variables</keyword>
+    <keyword>CLASS</keyword>
     <keyword>Class names<keyword>declaring</keyword></keyword>
     <keyword>CLASS statement</keyword>
     <keyword>Classes</keyword>
@@ -11,6 +12,9 @@
     <keyword>Classes<keyword>declaring Class names</keyword><keyword>inheritance</keyword><keyword>object instantiation</keyword></keyword>
     <keyword>Compile-time declaration</keyword>
     <keyword>Declaration statements</keyword>
+    <keyword>DEFINE</keyword>
+    <keyword>END DEFINE</keyword>
+    <keyword>ENDDEFINE</keyword>
     <keyword>Entity declaration</keyword>
     <keyword>EXPORT clause</keyword>
     <keyword>EXPORT INSTANCE clause</keyword>
@@ -23,6 +27,7 @@
     <keyword>Instance variables</keyword>
     <keyword>Instance variables<keyword>binding</keyword><keyword>declaring</keyword><keyword>exporting</keyword><keyword>hiding</keyword></keyword>
     <keyword>Object instantiation</keyword>
+    <keyword>OLEPUBLIC</keyword>
     <keyword>PROTECT clause</keyword>
     <keyword>PROTECT INSTANCE clause</keyword>
     <keyword>Statements</keyword>

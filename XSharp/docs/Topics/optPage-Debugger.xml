@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-04-24T14:39:54.109+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-19T12:16:28.049+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Debugger</title>
   <keywords>
     <keyword>Debugger</keyword>
@@ -12,6 +12,7 @@
     </header>
     <para styleclass="Normal">The debugger inside Visual Studio is language agnostic. We have added support for our X# language, so you will see variables in the locals and autos windows with X# specific types and so you can enter expressions for breakpoint conditions, in the watch window and in the intermediate window in X# (case insensitive for example).</para>
     <para styleclass="Normal">There is an options page from where you can control how the X# debugger Expression evaluator parses and compiles expressions.</para>
+    <para styleclass="Normal">Normally the debugger works with the settings from the main application. However when the startup application is not a X# application then the settings below are used.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><image src="Tools-Options-Debugger.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"></para>

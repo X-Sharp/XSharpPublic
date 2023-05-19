@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-19T12:48:12.345+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>VOSTRUCT Statement</title>
   <keywords>
     <keyword>ALIGN</keyword>
@@ -9,11 +9,13 @@
     <keyword>Compiletime declaration</keyword>
     <keyword>Data structures<keyword>alignment</keyword><keyword>declaring</keyword><keyword>specifying members</keyword></keyword>
     <keyword>Declaration statements</keyword>
+    <keyword>END VOSTRUCT</keyword>
     <keyword>Entity declaration</keyword>
     <keyword>MEMBER clause</keyword>
     <keyword>Statements</keyword>
     <keyword>STATIC VOSTRUCT statement</keyword>
     <keyword>Structure<keyword>Alignment</keyword></keyword>
+    <keyword>VOSTRUCT</keyword>
     <keyword>VOSTRUCT statement</keyword>
   </keywords>
   <body>
@@ -67,7 +69,7 @@
     <para styleclass="List"><tab />.</para>
     <para styleclass="Heading1">Notes</para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">AS vs. IS: &#160;</text>Once you have defined a structure, you can use its name to declare variables (see GLOBAL and LOCAL statements in this guide) designed to hold instances of a specific structure. &#160;When you declare a <text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">structure variable</text>, you have the choice of using AS or IS typing. &#160;The difference between these two declaration methods is as follows:</para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">IS automatically allocates the memory needed to hold the structure on the stack and deallocates the memory when the declaring entity returns.</text></li>
       <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">AS requires that you allocate memory using MemAlloc() when you initialize structure variables. &#160;You must also deallocate the memory used by the structure variable using MemFree() before the declaring entity returns.</text></li>
     </list>
@@ -103,7 +105,7 @@
     <para styleclass="Heading1">Default VoStruct Alignment</para>
     <para styleclass="Normal">You can choose to specify an alignment clause in the structure definition or let &lt;%app%&gt; determine the best alignment for you.</para>
     <para styleclass="Normal">The default alignment uses the following mechanism:</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">Each member of a size &lt;= 8 gets a memory address inside the structure that is a multiple of its size. So WORD and SHORT members get aligned on EVEN boundaries, DWORD, LONG, PTR, PSZ members get aligned to 4-byte boundaries and REAL8 members get aligned to 8- byte boundaries. Byte members are not aligned, they can appear everywhere in the structure.</li>
       <li styleclass="Normal">The total size of the structure is aligned to the size of the largest member. This is done to make sure that a dim array of structures (multiple structures adjacent in memory) also align properly</li>
       <li styleclass="Normal">When a structure contains an sub-structure (an IS declaration) &#160;the alignment of the outer structure uses the information from the inner structure.</li>

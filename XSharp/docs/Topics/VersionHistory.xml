@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-12T11:26:30.734+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-19T12:35:00.925+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -15,7 +15,7 @@
     </header>
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Heading1">Changes in 2.16.0.3</para>
+    <para styleclass="Heading1">Changes in 2.16.0.4</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features Xbase++ dialect</text></para>
     <para styleclass="Body Text">We have made several changes in the way how Xbase++ class definitions are generated. Please check your code extensively with this new build !</para>
@@ -54,6 +54,8 @@
       <li styleclass="Body Text">A warning generated at parse time could lead to another warning about a preprocessor define even when that is not needed. This has been fixed.</li>
       <li styleclass="Body Text">Fixed issue with default parameter values for parameters declared as &quot;a := NIL,b := NIL as USUAL&quot; introduced in 2.16</li>
       <li styleclass="Body Text">Fixed issue with erratic debugger behavior introduced in 2.16</li>
+      <li styleclass="Body Text">When you are referring to a type in an external assembly that depends on another external assembly, but you did not have a reference to that other external assembly, then compilation could fail without proper explanation. Now we are producing the normal error that you need to add a reference to that other assembly.</li>
+      <li styleclass="Body Text">Omitting the type of the last parameter from a function was allowed. This now produces a new error XS9118</li>
     </list>
     <para styleclass="Heading3">Breaking changes</para>
     <para styleclass="Normal">If you are using our parser to parse source code, please check your code. We have made some changes to the language definition for the handling of if ... else statements as well as for the case statements (a new condBlock rule that is shared by both rules). This removes some recursion in the language. Also some of the Xbase++ specific rules have been changed. Please check the <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpDev/blob/main/XSharp/src/Compiler/XSharpCodeAnalysis/Parser/XSharp.g4" target="_blank">language definition online</link></para>
@@ -83,14 +85,21 @@
       <li styleclass="Body Text">Global arrays in the SDK classes are now initialized from the class constructor of the SQLConnection class to fix problems when the main app does not include a link to the SQL Classes assembly.</li>
     </list>
     <para styleclass="Heading2">Visual Studio integration</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Debugger</text></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">The debugger expression evaluator now also evaluates late bound properties and fields (if that compiler option is enabled inside your project). <br/>If this causes negative side effects then you can disable that in the &quot;Tools/Options Debugging/X# Debugger options screen&quot;.</li>
+      <li styleclass="Body Text">The debugger expression evaluator now is initialized with the compiler options from your main application (if that application is an X# project). The settings on the <link displaytype="text" defaultstyle="true" type="topiclink" href="optPage-Debugger">Debugger Options dialog</link> are now only used when debugging DLLs that are loaded by a non X# startup project.</li>
+      <li styleclass="Body Text">The debugger expression evaluator now always accepts a &apos;.&apos; character for instance fields, properties and methods, regardless of the setting in the project options. <br/>This is needed because several windows in the VS debugger automatically insert &apos;.&apos; characters when adding expressions to the watch window or when changing values for properties or fields.</li>
+    </list>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">The debugger expression evaluator now also evaluates late bound properties and fields. If this causes negative side effects then you can disable that in the &quot;Tools/Options Debugging/X# Debugger options screen&quot;.<br/>The debugger expression evaluator is case Insensitive by default. You can switch on case sensitivity when you want. See the <link displaytype="text" defaultstyle="true" type="topiclink" href="optPage-Debugger">Debugger Options dialog</link> for all the possible options that can be set.</li>
       <li styleclass="Body Text">Added support for importing Indexes in the DbServer editor.</li>
       <li styleclass="Body Text">The X# project system now remembers which Windows were opened in the Windows editor in design mode and reopens them correctly when a solution is reopened.</li>
       <li styleclass="Body Text">We have added templates for a Harbour console application and Harbour class library</li>
       <li styleclass="Body Text">We have added item templates for FoxPro syntax classes and Xbase++ syntax classes</li>
       <li styleclass="Body Text">The Class templates for the FoxPro and XBase++ dialect now include a class definition in that dialect </li>
+      <li styleclass="Body Text">We have improved the support for PPO files in the VS Editor</li>
+      <li styleclass="Body Text"></li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

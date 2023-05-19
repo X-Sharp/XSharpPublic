@@ -1,7 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-02-02T13:24:42.271+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-19T12:49:41.349+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>METHOD Implementation</title>
+  <keywords>
+    <keyword>ACCESS</keyword>
+    <keyword>ACCESS METHOD</keyword>
+    <keyword>ASSIGN METHOD</keyword>
+    <keyword>CLASS METHOD</keyword>
+    <keyword>END METHOD</keyword>
+    <keyword>METHOD</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">METHOD implementations (Xbase ++ dialect)</para>
@@ -11,7 +19,7 @@
     <para styleclass="Normal">Provide the implementation for methods that are forward defined between CLASS .. ENDCLASS</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><tab />[Attributes] <text styleclass="Body Text"> [ACCESS|ASSIGN] [Modifiers] METHOD [&lt;ClassName&gt;:] &lt;MethodName&gt;[ </text>[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS|REF|OUT|IN &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] <text styleclass="Body Text">) </text>[AS &lt;<text styleclass="Italic">idType</text>&gt;]<br/><tab />[=&gt; &lt;expression&gt;] <br/><tab /><text style="font-weight:bold;">CRLF</text></para>
+    <para styleclass="Normal"><tab />[Attributes] <text styleclass="Body Text"> [ACCESS | ASSIGN] [Modifiers] METHOD [&lt;ClassName&gt;:] &lt;MethodName&gt;[ </text>[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS|REF|OUT|IN &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] <text styleclass="Body Text">) </text>[AS &lt;<text styleclass="Italic">idType</text>&gt;]<br/><tab />[=&gt; &lt;expression&gt;] <br/><tab /><text style="font-weight:bold;">CRLF</text></para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]<br/><tab />[END METHOD]?</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">Modifiers<tab />An optional list of one or more modifiers. CLASS, STATIC, ABSTRACT, UNSAFE, ASYNC, EXTERN<br/>STATIC is a synonym for CLASS.</para>

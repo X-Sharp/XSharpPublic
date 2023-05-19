@@ -3487,6 +3487,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     }
                 }
+                if (bHasTypedParameter)
+                {
+                    var last = parameters.Last();
+                    if (last.Type == null)
+                    {
+                        _parseErrors.Add(new ParseErrorData(last, ErrorCode.ERR_AllParametersMustBeTyped));
+                    }
+                }
                 context.Data.HasTypedParameter = bHasTypedParameter;
                 if (!context.Data.HasClipperCallingConvention && !isEntryPoint && !hasConvention && _options.HasOption(CompilerOption.UntypedAllowed, (XSharpParserRuleContext)context, PragmaOptions))
                     context.Data.HasClipperCallingConvention = !bHasTypedParameter;

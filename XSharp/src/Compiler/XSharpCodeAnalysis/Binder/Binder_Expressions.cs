@@ -927,9 +927,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 expression = null;
             }
 
-            if (expression != null && expression.Type.IsErrorType())
+            if (expression != null && expression.Type is not null && expression.Type.IsErrorType())
             {
-                Error(diagnostics, ErrorCode.ERR_NoTypeDef, node, expression.Type, expression.Type.ContainingAssembly);
+                if (expression.Type.ContainingAssembly != null)
+                {
+                    Error(diagnostics, ErrorCode.ERR_NoTypeDef, node, expression.Type, expression.Type.ContainingAssembly);
+                }
                 return BadExpression(node);
             }
 

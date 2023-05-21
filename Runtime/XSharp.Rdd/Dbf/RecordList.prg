@@ -13,7 +13,7 @@ USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD
 
-PUBLIC CLASS CdxRecordList
+PUBLIC CLASS RecordList
     PUBLIC ENUM RecordState
         MEMBER Unknown := 0
         MEMBER Hidden := 1

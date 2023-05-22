@@ -25,7 +25,7 @@ using Community.VisualStudio.Toolkit;
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
-[assembly: ProvideCodeBase(AssemblyName = "Mono.Cecil")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.MonoCecil")]
 namespace XSharp.LanguageService
 {
 
@@ -101,7 +101,7 @@ namespace XSharp.LanguageService
     [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), XSharpConstants.LanguageName, null, "Intellisense", pageNameResourceId: "205", keywordListResourceId: 305)]
     [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), XSharpConstants.LanguageName, null, "Indentation", pageNameResourceId: "206", keywordListResourceId: 306)]
     [ProvideLanguageEditorOptionPage(typeof(GeneratorOptionsPage), XSharpConstants.LanguageName, null, "Generator", pageNameResourceId: "207", keywordListResourceId: 307)]
-    public sealed class XSharpLanguagePackage : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
+    public sealed class XSharpLanguagePackage : AsyncPackage, IVsShellPropertyEvents, IOleComponent
     {
         private static XSharpLanguagePackage instance;
         private IVsTextManager4 _txtManager;
@@ -311,8 +311,6 @@ namespace XSharp.LanguageService
             //    serviceContainer.AddService(typeof(IXSharpLibraryManager), callback, true);
             //}
 
-            RegisterDebuggerEvents();
-            
             addOurFileExtensionsForDiffAndPeek("Diff\\SupportedContentTypes");
             addOurFileExtensionsForDiffAndPeek("Peek\\SupportedContentTypes");
 
@@ -344,7 +342,6 @@ namespace XSharp.LanguageService
             try
             {
 
-                this.UnRegisterDebuggerEvents();
                 if (null != _libraryManager)
                 {
                     _libraryManager.Dispose();
@@ -448,50 +445,6 @@ namespace XSharp.LanguageService
             return;
         }
 
-#region IVSDebuggerEvents
-        private void RegisterDebuggerEvents()
-        {
-            int hr;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                m_debugger = await VS.GetServiceAsync<SVsShellDebugger,IVsDebugger>();
-                if (m_debugger != null)
-                {
-                    hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
-                    ErrorHandler.ThrowOnFailure(hr);
-                    // Get initial value
-                    DBGMODE[] modeArray = new DBGMODE[1];
-                    hr = m_debugger.GetMode(modeArray);
-                    XSettings.DebuggerMode = (DebuggerMode)modeArray[0];
-                }
-            });
-        }
-        private void UnRegisterDebuggerEvents()
-        {
-            int hr;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                if (m_debugger != null && m_Debuggercookie != 0)
-                {
-                    hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
-                }
-            });
-            m_Debuggercookie = 0;
-            m_debugger = null;
-        }
-        private IVsDebugger m_debugger = null;
-        private uint m_Debuggercookie = 0;
-
-        public int OnModeChange(DBGMODE dbgmodeNew)
-        {
-            XSettings.DebuggerMode = (DebuggerMode)dbgmodeNew;
-            return VSConstants.S_OK;
-        }
-#endregion
 
         internal static IComponentModel GetComponentModel()
         {

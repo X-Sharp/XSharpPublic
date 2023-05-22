@@ -929,7 +929,8 @@ namespace XSharp.LanguageService
                     var symbol = symbols.Peek();
                 }
             }
-            if (result.Count == 0 && XSharpLexer.IsKeyword(currentToken.Type))
+            if (result.Count == 0 && (XSharpLexer.IsKeyword(currentToken.Type) ||
+                XSharpLexer.IsPPKeyword(currentToken.Type) ))
             {
                 ((XSharpToken)currentToken).Text = XSettings.FormatKeyword(currentToken.Text);
                 var sym = new XKeywordSymbol(currentToken.Text);
@@ -989,8 +990,11 @@ namespace XSharp.LanguageService
                 {
                     if (currentToken.Type == XSharpLexer.ID)
                     {
-                        var sym = new XSourceUndeclaredVariableSymbol(location.Member, notProcessed, location.Member.Range, location.Member.Interval);
-                        result.Add(sym);
+                        if (currentToken.Channel == XSharpLexer.DefaultTokenChannel)
+                        {
+                            var sym = new XSourceUndeclaredVariableSymbol(location.Member, notProcessed, location.Member.Range, location.Member.Interval);
+                            result.Add(sym);
+                        }
                     }
                 }
             }

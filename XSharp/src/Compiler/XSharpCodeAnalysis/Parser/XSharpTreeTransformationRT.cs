@@ -3497,7 +3497,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    if (!context.Data.HasClipperCallingConvention)
+                    if (hasConvention && !context.Data.HasClipperCallingConvention)
                     {
                         _parseErrors.Add(new ParseErrorData(context.Params._Params.First(), ErrorCode.ERR_AllParametersMustBeTyped));
                     }

@@ -104259,7 +104259,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = x86
+Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
 Dialect = FoxPro
@@ -104295,8 +104295,8 @@ CopyToBin = 0
 [R822 - FoxPro type of untyped variable in macro compiler References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.MacroCompiler.dll,1,1
 [R822 - FoxPro type of untyped variable in macro compiler Resources]
@@ -115307,7 +115307,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = x86
+Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
@@ -115340,30 +115340,28 @@ File = %AppPath%\Prg\tester.prg
 FileGUID = 7B4DD920-5928-4A7C-B3B6-F0E0C9FF09F3
 FileType = Code
 CopyToBin = 0
-File = %AppPath%\Prg\tester.ppo
-FileGUID = 8D50FE6F-3194-4227-9BAC-7925EE12398F
-FileType = Text
-CopyToBin = 0
 [Tester References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\VOWin32APILibrary.dll,1,1
 [Tester Resources]
 [Tester Native Resources]
 [Tester License files]
 [Tester General Options]
-Switches=
+Switches=/ppo
 ZeroArrays=0
 CaseSensitive=0
-ImplicitNamespace=0
+ImplicitNamespace=1
 VO1=0
 VO2=0
 VO3=0
 VO4=0
 VO5=0
-VO6=0
-VO7=0
+VO6=1
+VO7=1
 VO8=0
 VO9=0
 VO10=0
@@ -115377,7 +115375,7 @@ FOX1=0
 FOX2=0
 XPP1=0
 LateBound=0
-Unsafe=0
+Unsafe=1
 Undeclared=0
 EnforceSelf=0
 EnforceOverride=0
@@ -119687,9 +119685,9 @@ FileType = Code
 CopyToBin = 0
 [C886 - VO incompatibility with assigning NIL to SYMBOL References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VO,1,0,2.6.0.0
 [C886 - VO incompatibility with assigning NIL to SYMBOL Resources]
 [C886 - VO incompatibility with assigning NIL to SYMBOL Native Resources]
 [C886 - VO incompatibility with assigning NIL to SYMBOL License files]
@@ -119802,9 +119800,9 @@ FileType = Code
 CopyToBin = 0
 [C887 - INSTANCE vs PROTECT and ACCESS References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VO,1,0,2.6.0.0
 [C887 - INSTANCE vs PROTECT and ACCESS Resources]
 [C887 - INSTANCE vs PROTECT and ACCESS Native Resources]
 [C887 - INSTANCE vs PROTECT and ACCESS License files]

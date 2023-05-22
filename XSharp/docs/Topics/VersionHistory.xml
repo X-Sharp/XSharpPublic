@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:35:00.925+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-19T14:18:25.024+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -55,7 +55,7 @@
       <li styleclass="Body Text">Fixed issue with default parameter values for parameters declared as &quot;a := NIL,b := NIL as USUAL&quot; introduced in 2.16</li>
       <li styleclass="Body Text">Fixed issue with erratic debugger behavior introduced in 2.16</li>
       <li styleclass="Body Text">When you are referring to a type in an external assembly that depends on another external assembly, but you did not have a reference to that other external assembly, then compilation could fail without proper explanation. Now we are producing the normal error that you need to add a reference to that other assembly.</li>
-      <li styleclass="Body Text">Omitting the type of the last parameter from a function was allowed. This now produces a new error XS9118</li>
+      <li styleclass="Body Text">Omitting the type of the last parameter from a function was allowed. This now produces a new error <link displaytype="text" defaultstyle="true" type="topiclink" href="XS9118">XS9118</link></li>
     </list>
     <para styleclass="Heading3">Breaking changes</para>
     <para styleclass="Normal">If you are using our parser to parse source code, please check your code. We have made some changes to the language definition for the handling of if ... else statements as well as for the case statements (a new condBlock rule that is shared by both rules). This removes some recursion in the language. Also some of the Xbase++ specific rules have been changed. Please check the <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpDev/blob/main/XSharp/src/Compiler/XSharpCodeAnalysis/Parser/XSharp.g4" target="_blank">language definition online</link></para>
@@ -99,7 +99,6 @@
       <li styleclass="Body Text">We have added item templates for FoxPro syntax classes and Xbase++ syntax classes</li>
       <li styleclass="Body Text">The Class templates for the FoxPro and XBase++ dialect now include a class definition in that dialect </li>
       <li styleclass="Body Text">We have improved the support for PPO files in the VS Editor</li>
-      <li styleclass="Body Text"></li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

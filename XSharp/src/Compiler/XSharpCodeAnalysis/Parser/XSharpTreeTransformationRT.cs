@@ -3490,15 +3490,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (bHasTypedParameter)
                 {
                     var last = parameters.Last();
-                    if (last.Type == null)
+                    if (last.Type == null && last.Ellipsis == null)
                     {
                         _parseErrors.Add(new ParseErrorData(last, ErrorCode.ERR_AllParametersMustBeTyped));
                     }
                 }
+                else
+                {
+                    if (!context.Data.HasClipperCallingConvention)
+                    {
+                        _parseErrors.Add(new ParseErrorData(context.Params._Params.First(), ErrorCode.ERR_AllParametersMustBeTyped));
+                    }
+
+                }
                 context.Data.HasTypedParameter = bHasTypedParameter;
                 if (!context.Data.HasClipperCallingConvention && !isEntryPoint && !hasConvention && _options.HasOption(CompilerOption.UntypedAllowed, (XSharpParserRuleContext)context, PragmaOptions))
                     context.Data.HasClipperCallingConvention = !bHasTypedParameter;
-                if (!bHasTypedParameter)
+                if (!bHasTypedParameter && context.Data.HasClipperCallingConvention)
                 {
                     foreach (XP.ParameterContext par in parameters)
                     {

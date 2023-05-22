@@ -35,7 +35,7 @@ namespace XSharpDebugger.ExpressionCompiler
     /// </summary>
     public sealed class XSharpExpressionCompiler : IDkmClrExpressionCompiler
     {
-        static void UpdateXSharpParseOptions(bool lAllowDot = false)
+        static void UpdateXSharpParseOptions()
         {
             var xoptions = XSyntaxHelpers.XSharpOptions;
             xoptions.SetDialect((XSharpDialect)XDebuggerSettings.Dialect);
@@ -49,8 +49,8 @@ namespace XSharpDebugger.ExpressionCompiler
             xoptions.SetOption(CompilerOption.Vo12, XDebuggerSettings.Vo12);
             xoptions.SetOption(CompilerOption.Vo13, XDebuggerSettings.Vo13);
             xoptions.SetOption(CompilerOption.Vo14, XDebuggerSettings.Vo14);
-            xoptions.SetOption(CompilerOption.LateBinding, !XDebuggerSettings.NoLateBinding);
-            xoptions.SetOption(CompilerOption.AllowDotForInstanceMembers, lAllowDot);
+            xoptions.SetOption(CompilerOption.LateBinding, XDebuggerSettings.LateBinding && !XDebuggerSettings.NoLateBinding);
+            xoptions.SetOption(CompilerOption.AllowDotForInstanceMembers, true);
             XSharpString.CaseSensitive = XDebuggerSettings.CaseSensitive;
             XSyntaxHelpers.XSharpOptions = xoptions;
         }
@@ -268,7 +268,7 @@ namespace XSharpDebugger.ExpressionCompiler
         {
             try
             {
-                UpdateXSharpParseOptions(true);
+                UpdateXSharpParseOptions();
                 IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
                 e.CompileAssignment(expression, instructionAddress, lValue, out error, out result);
             }

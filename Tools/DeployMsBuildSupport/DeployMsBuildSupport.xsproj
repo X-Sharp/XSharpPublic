@@ -18,7 +18,9 @@
     <IncludePaths>$(SolutionDir)\Common</IncludePaths>
     <NoStandardDefs>true</NoStandardDefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
+    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">

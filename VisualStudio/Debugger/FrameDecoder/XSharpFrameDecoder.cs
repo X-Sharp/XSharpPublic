@@ -163,8 +163,8 @@ namespace XSharpDebugger.FrameDecoder
             return result.ReplaceEx(clArgs, clipperArgs, StringComparison.OrdinalIgnoreCase);
         }
 
-        const string clipperArgs = " [ClipperArguments] ";
-        const string clArgs = "Xs$Args AS USUAL[]";
+        const string clipperArgs = "[Arguments]";
+        const string clArgs = "Xs$Args";
         private static ImportedMethod TryGetCurrentMethod(DkmInspectionContext inspectionContext, DkmStackWalkFrame frame)
         {
             InspectionSession session = InspectionSession.GetInstance(inspectionContext.InspectionSession);

@@ -269,7 +269,7 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY IncludeFiles       AS IList<XInclude> GET _includeFiles
         PROPERTY Interactive        AS LOGIC AUTO
         PROPERTY IsHeader           AS LOGIC GET SELF:_type == XFileType.Header
-        PROPERTY IsSource           AS LOGIC GET SELF:_type == XFileType.SourceCode
+        PROPERTY IsSource           AS LOGIC GET SELF:_type == XFileType.SourceCode .or. SELF:_type == XFileType.PreprocessorOutput
         PROPERTY IsXaml             AS LOGIC GET SELF:_type == XFileType.XAML
         PROPERTY LastChanged        AS System.DateTime   AUTO GET INTERNAL SET
         PROPERTY Size               AS INT64              AUTO GET INTERNAL SET

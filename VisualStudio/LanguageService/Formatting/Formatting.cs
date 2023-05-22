@@ -82,7 +82,7 @@ namespace XSharp.LanguageService
             {
                 if (_buffer == null || _classifier == null)
                     return false;
-                if (XSettings.DebuggerIsRunning)
+                if (XDebuggerSettings.DebuggerIsRunning)
                     return false;
                 if (_buffer.CurrentSnapshot.Length == 0)
                 {

@@ -217,6 +217,9 @@ BEGIN NAMESPACE XSharp
                 RETURN nRow
             ENDIF
 
+        /// <inheritdoc />
+        PUBLIC OVERRIDE PROPERTY DefaultValue AS USUAL GET Usual{__UsualType.Logic, FALSE}
+
         /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>

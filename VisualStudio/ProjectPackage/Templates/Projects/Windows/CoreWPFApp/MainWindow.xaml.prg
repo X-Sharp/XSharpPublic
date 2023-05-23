@@ -26,4 +26,4 @@ BEGIN NAMESPACE $safeprojectname$
         END CONSTRUCTOR
 
     END CLASS
-END NAMESPACE
+END NAMESPACE // $safeprojectname$

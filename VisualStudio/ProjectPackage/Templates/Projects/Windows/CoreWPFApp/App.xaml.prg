@@ -16,4 +16,4 @@ BEGIN NAMESPACE $safeprojectname$
 
    END CLASS
 
-END NAMESPACE
+END NAMESPACE // $safeprojectname$

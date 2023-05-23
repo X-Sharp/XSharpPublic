@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T14:18:25.024+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-23T10:53:01.543+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -99,6 +99,7 @@
       <li styleclass="Body Text">We have added item templates for FoxPro syntax classes and Xbase++ syntax classes</li>
       <li styleclass="Body Text">The Class templates for the FoxPro and XBase++ dialect now include a class definition in that dialect </li>
       <li styleclass="Body Text">We have improved the support for PPO files in the VS Editor</li>
+      <li styleclass="Body Text">We have updated some of the project templates</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

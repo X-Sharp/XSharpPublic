@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-23T10:53:01.543+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-24T10:44:38.292+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -15,7 +15,7 @@
     </header>
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Heading1">Changes in 2.16.0.4</para>
+    <para styleclass="Heading1">Changes in 2.16.0.5</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features Xbase++ dialect</text></para>
     <para styleclass="Body Text">We have made several changes in the way how Xbase++ class definitions are generated. Please check your code extensively with this new build !</para>
@@ -37,48 +37,48 @@
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Fixed some method overload resolution issues in the VO dialect (#1211)</li>
-      <li styleclass="Body Text">Fixed internal compiler error (insufficient stack) with huge DO CASE statements and huge IF ELSEIF statements (#1214)</li>
-      <li styleclass="Body Text">Fixed a problem with the Interpolated/Extended string syntax (#1218)</li>
-      <li styleclass="Body Text">Fixed some issues with incorrectly allowing accessing static class members with the colon operator or instance members with the dot operator (#1219,#1220)</li>
-      <li styleclass="Body Text">Fixed Incorrect visibility of MEMVARs created with MemVarPut() (#1223)</li>
-      <li styleclass="Body Text">Fixed problem with _DLL FUNCTION with name in Quotes not working correctly (#1225)</li>
-      <li styleclass="Body Text">If the preprocessor generated date and/or datetime literals then these were not recognized. This has been fixed (#1232)</li>
+      <li styleclass="Body Text">Fixed some method overload resolution issues in the VO dialect (#1211).</li>
+      <li styleclass="Body Text">Fixed internal compiler error (insufficient stack) with huge DO CASE statements and huge IF ELSEIF statements (#1214).</li>
+      <li styleclass="Body Text">Fixed a problem with the Interpolated/Extended string syntax (#1218).</li>
+      <li styleclass="Body Text">Fixed some issues with incorrectly allowing accessing static class members with the colon operator or instance members with the dot operator (#1219,#1220).</li>
+      <li styleclass="Body Text">Fixed Incorrect visibility of MEMVARs created with MemVarPut() (#1223).</li>
+      <li styleclass="Body Text">Fixed problem with _DLL FUNCTION with name in Quotes not working correctly (#1225).</li>
+      <li styleclass="Body Text">If the preprocessor generated date and/or datetime literals, then these were not recognized. This has been fixed (#1232).</li>
       <li styleclass="Body Text">Fixed a problem with the preprocessor matching of the last optional token (#1241)</li>
-      <li styleclass="Body Text">Fixed a problem with recognizing the ENDSEQUENCE keyword in the Xbase++ dialect (#1242)</li>
-      <li styleclass="Body Text">Using a default parameter value of NIL is now only supported for parameters of type USUAL. Using NIL for other parameter types will generate a (new) warning <link displaytype="text" defaultstyle="true" type="topiclink" href="XS9117">XS9117</link>&#32;<br/>Also assigning NIL to a Symbol or using NIL as parameter to a function/method call that expects a SYMBOL will now also generate that warning (#1231)</li>
-      <li styleclass="Body Text">Fixed a problem in the preprocessor where two adjacent tokens were not merged into one token in the result stream. ( #1247)</li>
-      <li styleclass="Body Text">Fixed a problem in the preprocessor where the preprocessor was not detecting an optional element when the element started with a Left parenthesis ( #1250)</li>
+      <li styleclass="Body Text">Fixed a problem with recognizing the ENDSEQUENCE keyword in the Xbase++ dialect (#1242).</li>
+      <li styleclass="Body Text">Using a default parameter value of NIL is now only supported for parameters of type USUAL. Using NIL for other parameter types will generate a (new) warning <link displaytype="text" defaultstyle="true" type="topiclink" href="XS9117">XS9117</link> .<br/>Also assigning NIL to a Symbol or using NIL as parameter to a function/method call that expects a SYMBOL will now also generate that warning (#1231).</li>
+      <li styleclass="Body Text">Fixed a problem in the preprocessor where two adjacent tokens were not merged into one token in the result stream. (#1247).</li>
+      <li styleclass="Body Text">Fixed a problem in the preprocessor where the preprocessor was not detecting an optional element when the element started with a Left parenthesis (#1250)</li>
       <li styleclass="Body Text">Fixed a problem with interpolated strings that contained literal double quotes like in <text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">i</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#0000ff;">&quot;SomeText&quot;&quot;{iNum}&quot;&quot; &quot;</text></li>
-      <li styleclass="Body Text">Fixed a problem that was introduced in 2.16 with local functions / procedures</li>
+      <li styleclass="Body Text">Fixed a problem that was introduced in an earlier build of 2.16 with local functions / procedures.</li>
       <li styleclass="Body Text">A warning generated at parse time could lead to another warning about a preprocessor define even when that is not needed. This has been fixed.</li>
-      <li styleclass="Body Text">Fixed issue with default parameter values for parameters declared as &quot;a := NIL,b := NIL as USUAL&quot; introduced in 2.16</li>
-      <li styleclass="Body Text">Fixed issue with erratic debugger behavior introduced in 2.16</li>
+      <li styleclass="Body Text">Fixed issue with default parameter values for parameters declared as &quot;a := NIL,b := NIL as USUAL&quot; introduced in an earlier build of &#160;2.16</li>
+      <li styleclass="Body Text">Fixed issue with erratic debugger behavior introduced in an earlier build of &#160;2.16.</li>
       <li styleclass="Body Text">When you are referring to a type in an external assembly that depends on another external assembly, but you did not have a reference to that other external assembly, then compilation could fail without proper explanation. Now we are producing the normal error that you need to add a reference to that other assembly.</li>
-      <li styleclass="Body Text">Omitting the type of the last parameter from a function was allowed. This now produces a new error <link displaytype="text" defaultstyle="true" type="topiclink" href="XS9118">XS9118</link></li>
+      <li styleclass="Body Text">Omitting types for parameter from a function that did not have the CLIPPER calling convention was allowed. Previously these parameters were assumed to be of type USUAL. This now produces a new error <link displaytype="text" defaultstyle="true" type="topiclink" href="XS9118">XS9118</link>. If you want the parameters to be of type USUAL you will have to explicitly declare them with that type.</li>
     </list>
     <para styleclass="Heading3">Breaking changes</para>
     <para styleclass="Normal">If you are using our parser to parse source code, please check your code. We have made some changes to the language definition for the handling of if ... else statements as well as for the case statements (a new condBlock rule that is shared by both rules). This removes some recursion in the language. Also some of the Xbase++ specific rules have been changed. Please check the <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpDev/blob/main/XSharp/src/Compiler/XSharpCodeAnalysis/Parser/XSharp.g4" target="_blank">language definition online</link></para>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Added the DOY() function</li>
-      <li styleclass="Body Text">Addeding missing ADS_LONG and ADS_LONGLONG defines</li>
+      <li styleclass="Body Text">Added the DOY() function.</li>
+      <li styleclass="Body Text">Addeding missing ADS_LONG and ADS_LONGLONG defines.</li>
     </list>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Improved the speed of CDX skip operations on network drives (#1165)</li>
+      <li styleclass="Body Text">Improved the speed of CDX skip operations on network drives (#1165).</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Fixed a problem with DbSetRelation() and RLock() (#1226)</li>
-      <li styleclass="Body Text">Adjusted implicit conversion from NULL_PSZ to string to now return NULL instead of an empty string</li>
-      <li styleclass="Body Text">Some initialization code is now moved from _INIT procedures to the static constructor of the SQLConnection Class, in order to make it easier to use this class from non-X# apps</li>
-      <li styleclass="Body Text">Fixed an issue with the visibility of dynamic memory variables that were created with the MemVarPut function (#1223)</li>
-      <li styleclass="Body Text">Fixed a problem with the DbServer class in exclusive mode (#1230)</li>
-      <li styleclass="Body Text">Implicit conversions from NULL_PSZ to string were returning an empty string and not NULL (#1234)</li>
-      <li styleclass="Body Text">Fixed a problem in the CTOD() function when the day, month or year were prefixed with spaces </li>
+      <li styleclass="Body Text">Fixed a problem with DbSetRelation() and RLock() (#1226).</li>
+      <li styleclass="Body Text">Adjusted implicit conversion from NULL_PSZ to string to now return NULL instead of an empty string.</li>
+      <li styleclass="Body Text">Some initialization code is now moved from _INIT procedures to the static constructor of the SQLConnection Class, in order to make it easier to use this class from non-X# apps.</li>
+      <li styleclass="Body Text">Fixed an issue with the visibility of dynamic memory variables that were created with the MemVarPut function (#1223).</li>
+      <li styleclass="Body Text">Fixed a problem with the DbServer class in exclusive mode (#1230).</li>
+      <li styleclass="Body Text">Implicit conversions from NULL_PSZ to string were returning an empty string and not NULL (#1234).</li>
+      <li styleclass="Body Text">Fixed a problem in the CTOD() function when the day, month or year were prefixed with spaces.</li>
       <li styleclass="Body Text">Fixed an issue with OrderListAdd() in the ADS RDD. When the index is already open, then the RDD no longer returns an error.</li>
-      <li styleclass="Body Text">Fixed an issue with MemRealloc where the second call on the same pointer would return NULL_PTR (#1248)</li>
+      <li styleclass="Body Text">Fixed an issue with MemRealloc where the second call on the same pointer would return NULL_PTR (#1248).</li>
     </list>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">VOSDK</text></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -88,26 +88,26 @@
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Debugger</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The debugger expression evaluator now also evaluates late bound properties and fields (if that compiler option is enabled inside your project). <br/>If this causes negative side effects then you can disable that in the &quot;Tools/Options Debugging/X# Debugger options screen&quot;.</li>
-      <li styleclass="Body Text">The debugger expression evaluator now is initialized with the compiler options from your main application (if that application is an X# project). The settings on the <link displaytype="text" defaultstyle="true" type="topiclink" href="optPage-Debugger">Debugger Options dialog</link> are now only used when debugging DLLs that are loaded by a non X# startup project.</li>
+      <li styleclass="Body Text">The debugger expression evaluator now is initialized with the compiler options from your main application (if that application is an X# project). <br/>The settings on the <link displaytype="text" defaultstyle="true" type="topiclink" href="optPage-Debugger">Debugger Options dialog</link> are now only used when debugging DLLs that are loaded by a non X# startup project.</li>
       <li styleclass="Body Text">The debugger expression evaluator now always accepts a &apos;.&apos; character for instance fields, properties and methods, regardless of the setting in the project options. <br/>This is needed because several windows in the VS debugger automatically insert &apos;.&apos; characters when adding expressions to the watch window or when changing values for properties or fields.</li>
     </list>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added support for importing Indexes in the DbServer editor.</li>
       <li styleclass="Body Text">The X# project system now remembers which Windows were opened in the Windows editor in design mode and reopens them correctly when a solution is reopened.</li>
-      <li styleclass="Body Text">We have added templates for a Harbour console application and Harbour class library</li>
-      <li styleclass="Body Text">We have added item templates for FoxPro syntax classes and Xbase++ syntax classes</li>
-      <li styleclass="Body Text">The Class templates for the FoxPro and XBase++ dialect now include a class definition in that dialect </li>
-      <li styleclass="Body Text">We have improved the support for PPO files in the VS Editor</li>
-      <li styleclass="Body Text">We have updated some of the project templates</li>
+      <li styleclass="Body Text">We have added templates for a Harbour console application and Harbour class library.</li>
+      <li styleclass="Body Text">We have added item templates for FoxPro syntax classes and Xbase++ syntax classes.</li>
+      <li styleclass="Body Text">The Class templates for the FoxPro and XBase++ dialect now include a class definition in that dialect. </li>
+      <li styleclass="Body Text">We have improved the support for PPO files in the VS Editor.</li>
+      <li styleclass="Body Text">We have updated some of the project templates.</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Fixed a problem with incorrectly showing member list in the editor for the &quot;:=&quot; operator (#1061)</li>
-      <li styleclass="Body Text">Fixed VOMED generation of menu item DEFINE names that were different to the ones generated by VO (#1208)</li>
-      <li styleclass="Body Text">Fixed VOWED incorrect order of generated lines of code in some cases (#1217)</li>
-      <li styleclass="Body Text">Switched back to our own version of Mono.Cecil to avoid issues on computers that have the Xamarin (MAUI ) workload in Visual Studio.</li>
-      <li styleclass="Body Text">Fixed a problem opening a form in the Form Designer that contains fields that are initialized with a function call (#1251)</li>
+      <li styleclass="Body Text">Fixed a problem with incorrectly showing member list in the editor for the &quot;:=&quot; operator (#1061).</li>
+      <li styleclass="Body Text">Fixed VOMED generation of menu item DEFINE names that were different to the ones generated by VO (#1208).</li>
+      <li styleclass="Body Text">Fixed VOWED incorrect order of generated lines of code in some cases (#1217).</li>
+      <li styleclass="Body Text">Switched back to our own version of Mono.Cecil to avoid issues on computers that have the Xamarin (MAUI) workload in Visual Studio.</li>
+      <li styleclass="Body Text">Fixed a problem opening a form in the Form Designer that contains fields that are initialized with a function call (#1251).</li>
       <li styleclass="Body Text">Windows that were in [Design] mode when a solution is closed, are now properly opened in [Design] mode when the solution is reopened.</li>
     </list>
     <para styleclass="Heading1">Changes in 2.15.0.3</para>
@@ -540,7 +540,7 @@
     </list>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Heading3" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Heading3"><text styleclass="Body Text">You</text><text styleclass="List">&#32;</text><text styleclass="Body Text">can now register a delegate in the runtime state that allows you to control how the macro compiler caches types from loaded assemblies( #998).</text><br/><text styleclass="Body Text">This delegate has to have the format:</text><br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">DELEGATE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> MacroCompilerIncludeAssemblyInCache(ass </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">Assembly</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">LOGIC</text><br/><br/><text styleclass="Body Text">Example:</text><br/><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">XSharp.RuntimeState.MacroCompilerIncludeAssemblyInCache := { a &#160;=&gt; &#160;DoNotCacheDevExpress(a)}</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> DoNotCacheDevExpress(ass </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">Assembly</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">LOGIC</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">)</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:italic; color:#339966;">// do not cache DevExpress assemblies</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> ass:Location:IndexOf(&quot;devexpress&quot;, StringComparison.OrdinalIgnoreCase) == -1</text></li>
+      <li styleclass="Heading3"><text styleclass="Body Text">You</text><text styleclass="List">&#32;</text><text styleclass="Body Text">can now register a delegate in the runtime state that allows you to control how the macro compiler caches types from loaded assemblies(#998).</text><br/><text styleclass="Body Text">This delegate has to have the format:</text><br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">DELEGATE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> MacroCompilerIncludeAssemblyInCache(ass </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">Assembly</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">LOGIC</text><br/><br/><text styleclass="Body Text">Example:</text><br/><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">XSharp.RuntimeState.MacroCompilerIncludeAssemblyInCache := { a &#160;=&gt; &#160;DoNotCacheDevExpress(a)}</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> DoNotCacheDevExpress(ass </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">Assembly</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">LOGIC</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">)</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:italic; color:#339966;">// do not cache DevExpress assemblies</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> ass:Location:IndexOf(&quot;devexpress&quot;, StringComparison.OrdinalIgnoreCase) == -1</text></li>
     </list>
     <para styleclass="Heading2">Compatible VO SDK</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -578,8 +578,8 @@
       <li styleclass="Body Text">Fixed a problem with the form designer generating sometimes invalid code with #regions (#1020, #935)</li>
       <li styleclass="Body Text">The WinForms designer now by default adds the OVERRIDE keyword modifier to the generated Dispose() method (was added in the template) (#1004)</li>
       <li styleclass="Body Text">Due to a changed threading model inside the latest VS2022 releases, error messages were sometimes not shown in the output window and the error list. This has been fixed</li>
-      <li styleclass="Body Text">Fixed a problem in the windows forms designer code generation with nested classes inside the main form class (#1031)</li>
-      <li styleclass="Body Text">Fixed problem with windows forms editor failing to open form with command based on UDC (#1037)</li>
+      <li styleclass="Body Text">Fixed a problem in the windows forms designer code generation with nested classes inside the main form class (#1031).</li>
+      <li styleclass="Body Text">Fixed problem with windows forms editor failing to open form with command based on UDC (#1037).</li>
     </list>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Sourcecode Editor</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -602,7 +602,7 @@
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added options to insert page and reorder pages in a tabcontrol, in the VOWED (#1024)</li>
       <li styleclass="Body Text">We have updated the WPF Application template. The Main window is now called &#160;&quot;MainWindow&quot;.</li>
-      <li styleclass="Body Text">Added the following new settings to the .editorconfig file to set indentation options ( #999).</li>
+      <li styleclass="Body Text">Added the following new settings to the .editorconfig file to set indentation options (#999).</li>
     </list>
     <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="text-indent:-13px; margin-left:40px; line-height:1.00; tabstops:2880px left,3600px left ; font-family:Symbol; font-size:12pt; color:#000000;">
       <li styleclass="List" style="text-indent:-13px; margin-left:40px; line-height:1.00; tabstops:2880px left,3600px left ;"><text style="font-family:&apos;Times New Roman&apos;; font-size:12pt; vertical-align:baseline; color:#000000;">indent_entity_content (true or false)</text></li>

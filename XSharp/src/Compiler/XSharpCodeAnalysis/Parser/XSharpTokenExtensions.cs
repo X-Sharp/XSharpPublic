@@ -1276,8 +1276,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-
-
         public static SyntaxKind ConstraintKind(this IToken token)
         {
             SyntaxKind r;
@@ -1338,9 +1336,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return r;
         }
-
-
-
 
         public static SyntaxKind ExpressionKindLiteral(this IToken token)
         {
@@ -1781,7 +1776,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return 3;
             return 0;
         }
-
 
         public static IToken GetLiteralToken(this IParseTree expr)
         {

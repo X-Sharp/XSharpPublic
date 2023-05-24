@@ -2691,7 +2691,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return "$" + filename + "$";
         }
 
-
         public void FinalizeGlobalEntities()
         {
             if (GlobalEntities.GlobalClassMembers.Count > 0)
@@ -6454,7 +6453,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return stmt;
         }
 
-      private void CreateSimpleIfStatement(XSharpParserRuleContext context, XP.CondBlockContext ifcond, XP.StatementBlockContext elseBlock)
+        private void CreateSimpleIfStatement(XSharpParserRuleContext context, XP.CondBlockContext ifcond, XP.StatementBlockContext elseBlock)
         {
             var cond = ifcond.Cond.Get<ExpressionSyntax>();
             var ifblock = ifcond.StmtBlk.Get<StatementSyntax>();

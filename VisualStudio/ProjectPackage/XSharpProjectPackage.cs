@@ -176,6 +176,10 @@ namespace XSharp.Project
             instance = this;
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            // make sure the debugger has the version from the main thread
+            XSharpDebugger.VsVersion.GetVersion();
+
             // The project selector helps to choose between MPF and CPS projects
             //_projectSelector = new XSharpProjectSelector();
             //await _projectSelector.InitAsync(this);
@@ -407,8 +411,12 @@ namespace XSharp.Project
             this.UnRegisterDebuggerEvents();
             if (shell != null)
             {
-                shell.UnadviseShellPropertyChanges(shellCookie);
-                shellCookie = 0;
+                JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    shell.UnadviseShellPropertyChanges(shellCookie);
+                    shellCookie = 0;
+                });
             }
         }
     }

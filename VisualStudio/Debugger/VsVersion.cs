@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Threading;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace XSharpDebugger
 {
@@ -15,6 +16,7 @@ namespace XSharpDebugger
         {
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 vers = await VS.Shell.GetVsVersionAsync();
             });
         }
@@ -22,5 +24,6 @@ namespace XSharpDebugger
         internal static bool Vs15 => vers.Major == 15;
         internal static bool Vs16 => vers.Major == 16;
         internal static bool Vs17 => vers.Major == 17;
+        public static Version GetVersion() => vers;
     }
 }

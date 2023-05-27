@@ -2704,10 +2704,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                 }
-                if (datatype == null)
-                {
-                    return null;
-                }
             }
             if (initexpr is XP.PrefixExpressionContext)
             {
@@ -2730,6 +2726,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 switch (token.Type)
                 {
                     case XP.NIL:
+                        if (datatype != null)
                         {
                             bool Ok;
                             Ok = datatype is XP.SimpleDatatypeContext sdtc1 && sdtc1.TypeName.Start.Type == XP.USUAL;
@@ -2778,7 +2775,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.NULL_CODEBLOCK:
                         return MakeDefaultParameter(GenerateLiteralNull(), zero);                          // 0 = regular .Net Value
                     case XP.INT_CONST:
-                        var ts = datatype.Get<TypeSyntax>();
                         text = token.Text;
                         switch (text[text.Length - 1])
                         {
@@ -2814,6 +2810,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         expr1 = GenerateLiteral(Convert.ToDouble(iValue));
                                         break;
                                     default:
+                                        var ts = datatype.Get<TypeSyntax>();
                                         if (sdtc.TypeName.NativeType != null)
                                             expr1 = MakeCastTo(ts, expr1);
                                         break;
@@ -3463,8 +3460,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Data.MustBeVoid = true;
                 }
             }
+            string convention = "STRICT";
             if (Convention != null)
             {
+                convention = Convention.Text;
                 context.Data.HasClipperCallingConvention = (Convention.Type == XP.CLIPPER);
                 hasConvention = true;
             }
@@ -3474,12 +3473,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Function Foo or Function Foo() without convention
             if (paramCount == 0 && !hasConvention)
             {
-                context.Data.HasClipperCallingConvention = _options.HasOption(CompilerOption.ClipperCallingConvention, (XSharpParserRuleContext)context, PragmaOptions) && !isEntryPoint;
+                context.Data.HasClipperCallingConvention =
+                    _options.HasOption(CompilerOption.ClipperCallingConvention, (XSharpParserRuleContext)context, PragmaOptions) && !isEntryPoint;
             }
             if (paramCount > 0)
             {
-                bool bHasTypedParameter = false;
-                foreach (XP.ParameterContext par in parameters)
+                var bHasTypedParameter = false;
+                foreach (var par in parameters)
                 {
                     if (par.Type != null || par.Self != null)
                     {
@@ -3492,16 +3492,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var last = parameters.Last();
                     if (last.Type == null && last.Ellipsis == null)
                     {
-                        _parseErrors.Add(new ParseErrorData(last, ErrorCode.ERR_AllParametersMustBeTyped));
+                        _parseErrors.Add(new ParseErrorData(last, ErrorCode.WRN_ParameterMustBeTyped, last.Id.GetText(), convention));
                     }
                 }
-                else
+                else if (hasConvention && !context.Data.HasClipperCallingConvention)
                 {
-                    if (hasConvention && !context.Data.HasClipperCallingConvention)
+                    // no typed parameters and not clipper.
+                    // Warning for each of the parameters
+                    foreach (var par in parameters)
                     {
-                        _parseErrors.Add(new ParseErrorData(context.Params._Params.First(), ErrorCode.ERR_AllParametersMustBeTyped));
+                        _parseErrors.Add(new ParseErrorData(par, ErrorCode.WRN_ParameterMustBeTyped, par.Id.GetText(), convention));
                     }
-
                 }
                 context.Data.HasTypedParameter = bHasTypedParameter;
                 if (!context.Data.HasClipperCallingConvention && !isEntryPoint && !hasConvention && _options.HasOption(CompilerOption.UntypedAllowed, (XSharpParserRuleContext)context, PragmaOptions))

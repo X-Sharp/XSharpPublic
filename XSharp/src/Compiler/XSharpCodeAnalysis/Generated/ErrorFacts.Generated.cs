@@ -351,6 +351,7 @@
                 case ErrorCode.WRN_FoxUnsupportedClause:
                 case ErrorCode.WRN_NullPszForStringArgument:
                 case ErrorCode.WRN_ConversionFromNilNotSupported:
+                case ErrorCode.WRN_ParameterMustBeTyped:
                         return true;
                 default:
                     return false;

@@ -7691,8 +7691,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_ConversionFromNilNotSupported" xml:space="preserve">
   <value>A conversion from NIL to '{0}' is not supported and may have unwanted results.</value>
  </data>
-  <data name="ERR_AllParametersMustBeTyped" xml:space="preserve">
-  <value>All parameters must be typed.</value>
+  <data name="WRN_ParameterMustBeTyped" xml:space="preserve">
+  <value>Untyped parameter '{0}' and '{1}' calling convention, assuming 'USUAL' type.</value>
  </data>
 </root>
 

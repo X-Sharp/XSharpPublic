@@ -2087,7 +2087,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ColonForTypeOrNs = 9115,
         WRN_NullPszForStringArgument = 9116,
         WRN_ConversionFromNilNotSupported = 9117,
-        ERR_AllParametersMustBeTyped = 9118,
+        WRN_ParameterMustBeTyped = 9118,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

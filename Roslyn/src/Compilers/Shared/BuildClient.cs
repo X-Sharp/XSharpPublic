@@ -448,20 +448,16 @@ namespace LanguageService.CodeAnalysis.CSharp.CommandLine
                 VulcanIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
             }
             catch (Exception) { }
-            if (!String.IsNullOrEmpty(XSharpIncludeDir))
+            if (!string.IsNullOrEmpty(XSharpIncludeDir))
             {
-                if (!XSharpIncludeDir.EndsWith("\\"))
-                    XSharpIncludeDir += @"\";
-                XSharpIncludeDir += @"Include\";
+                XSharpIncludeDir =Path.Combine(XSharpIncludeDir,@"Include\");
             }
 
-            if (!String.IsNullOrEmpty(VulcanIncludeDir))
+            if (!string.IsNullOrEmpty(VulcanIncludeDir))
             {
-                if (!VulcanIncludeDir.EndsWith("\\"))
-                    VulcanIncludeDir += @"\";
-                VulcanIncludeDir += @"Include\";
+                VulcanIncludeDir = Path.Combine(VulcanIncludeDir, @"Include\");
             }
-            if (String.IsNullOrEmpty(includeDir))
+            if (string.IsNullOrEmpty(includeDir))
                 includeDir = XSharpIncludeDir;
             else
                 includeDir += ";" + XSharpIncludeDir;

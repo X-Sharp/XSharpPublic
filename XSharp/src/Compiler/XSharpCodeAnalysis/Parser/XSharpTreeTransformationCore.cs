@@ -6554,7 +6554,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     };
                     stmt = GenerateIfStatement(cond, MakeBlock(stmts), elseClause);
                     stmt = wrapIfCondition(stmt, cond);
-                    elseBlock.Put(stmt);
+                    last.Put(stmt);
                     condStmts.Add(stmt);
                 }
                 else

@@ -156,6 +156,8 @@ namespace XSharp.LanguageService
             {
                 foreach (var entity in entities)
                 {
+                    if (element is IXTypeSymbol && entity is IXTypeSymbol)
+                        return entity;
                     if (entity.Name == element.Name)
                     {
                         if (entity is IXMemberSymbol m1 && m1.IsExtension && element is IXMemberSymbol m2)
@@ -213,7 +215,12 @@ namespace XSharp.LanguageService
             {
                 Directory.CreateDirectory(nspath);
             }
-            var temp = Path.Combine(nspath, petype.Name) + ".prg";
+            var fileName = petype.Name;
+            foreach (var c in Path.GetInvalidFileNameChars())
+            {
+                fileName = fileName.Replace(c, '_');
+            }
+            var temp = Path.Combine(nspath, fileName) + ".prg";
             var fi = new FileInfo(temp);
             mustCreate = !fi.Exists || fi.Length < 10;
             if (mustCreate)

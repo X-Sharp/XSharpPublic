@@ -5,18 +5,11 @@
 //
 //------------------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.Text;
 using XSharpModel;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.CodeAnalysis.XSharp;
-using System.Collections.Immutable;
-using static XSharp.Parser.VsParser;
-using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.LanguageService
@@ -290,6 +283,14 @@ namespace XSharp.LanguageService
                     }
                 }
             }
+            if (state == CompletionState.Constructors)
+            {
+                state = CompletionState.General;
+                if (tokens.Last().Type == XSharpLexer.LCURLY)
+                {
+                    tokens.RemoveAt(tokens.Count - 1);
+                }
+            }
             return tokens;
         }
 
@@ -304,6 +305,11 @@ namespace XSharp.LanguageService
                 }
             }
             return -1;
+        }
+
+        static bool IsType(int type)
+        {
+            return type == XSharpLexer.ID || XSharpLexer.IsType(type);
         }
 
         internal static IList<IToken> GetTokenList(XSharpSearchLocation location, out CompletionState state,
@@ -326,7 +332,7 @@ namespace XSharp.LanguageService
             bool allowdot = location.Project?.ParseOptions?.AllowDotForInstanceMembers ?? false;
             var cursorPos = location.Position;
             var done = false;
-            var list = new XSharpTokenList(tokens);
+            var list = new XSharpTokenList(tokens.Where( t=> t.Channel == XSharpLexer.DefaultTokenChannel).ToList());
             bool afterOut = false;
 
             while (!done && !list.Eoi())
@@ -343,32 +349,28 @@ namespace XSharp.LanguageService
                     // so we can see if the id under the cursor is a method, constructor etc
                     switch (token.Type)
                     {
-                        case XSharpLexer.WS:
                         case XSharpLexer.LPAREN:
                         case XSharpLexer.LCURLY:
                         case XSharpLexer.LBRKT:
                             break;
                         case XSharpLexer.LT:
                             // if this is a generic type
-                            // then add the complete
+                            // then add the complete type list 
                             bool first = true;
                             bool endoflist = false;
                             while (!endoflist)
                             {
                                 endoflist = true;
-                                if (list.La1 == XSharpLexer.ID || XSharpLexer.IsType(list.La1))
+                                if (IsType(list.La1) && (list.La2 == XSharpLexer.GT || list.La2 == XSharpLexer.COMMA))
                                 {
-                                    if (list.La2 == XSharpLexer.GT || list.La2 == XSharpLexer.COMMA)
+                                    if (first)
                                     {
-                                        if (first)
-                                        {
-                                            result.Add(token);
-                                            first = false;
-                                        }
-                                        result.Add(list.ConsumeAndGet()); // la1
-                                        result.Add(list.ConsumeAndGet()); // la2
-                                        endoflist = false;
+                                        result.Add(token);
+                                        first = false;
                                     }
+                                    result.Add(list.ConsumeAndGet()); // la1
+                                    result.Add(list.ConsumeAndGet()); // la2
+                                    endoflist = false;
                                 }
                             }
                             continue;

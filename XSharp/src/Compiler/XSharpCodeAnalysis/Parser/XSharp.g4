@@ -345,7 +345,7 @@ classvars           : (Attributes=attributes)? Modifiers=classvarModifiers
                       eos
                     ;
 
-classvarModifiers   : ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED) )+
+classvarModifiers   : ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED | NEW) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?

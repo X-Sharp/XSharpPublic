@@ -5,6 +5,7 @@
 //
 #nullable disable
 using System;
+using System.IO;
 using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.Text;
@@ -24,6 +25,13 @@ namespace Microsoft.CodeAnalysis
 
         void GetSpans(IToken start, IToken end, out FileLinePositionSpan lineSpan, out TextSpan sourceSpan)
         {
+            if (start.Type == XSharpLexer.EOF && end.Type == XSharpLexer.EOF)
+            {
+                var lp = new LinePosition(0, 0);
+                sourceSpan = new TextSpan(start.StartIndex, 0);
+                lineSpan = new FileLinePositionSpan(start.InputStream.SourceName, new LinePositionSpan(lp, lp));
+                return;
+            }
             var lp1 = new LinePosition(start.Line - 1, start.Column);
             var lp2 = new LinePosition(end.Line - 1, end.Column + end.Text.Length - 1);
             var width = end.StopIndex - start.StartIndex;

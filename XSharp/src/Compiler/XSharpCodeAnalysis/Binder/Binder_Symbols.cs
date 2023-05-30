@@ -5,13 +5,11 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class BoundCall
@@ -24,13 +22,68 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal partial class Binder
     {
+
+        bool IsInsidePropertyAccess(string propName)
+        {
+            if (this.IsInMethodBody)
+            {
+                var binder = this.Next;
+                while (binder is not InMethodBinder && binder != null)
+                {
+                    binder = binder.Next;
+                }
+                if (binder is InMethodBinder imb && imb.ContainingMemberOrLambda.IsAccessor())
+                {
+                    if (imb.ContainingMemberOrLambda is SourcePropertyAccessorSymbol spa)
+                    {
+                        var name = spa.AssociatedSymbol.Name;
+                        if (string.Compare(name, propName, true) == 0)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         bool PreferFirstOverSecond(Symbol first, Symbol second)
         {
-            if (first.Kind != second.Kind && first.Kind == SymbolKind.Field)
+            if (first.Kind != second.Kind)
             {
-                if (first.HasInstanceAttribute())
+                if (first.Kind == SymbolKind.Field && second.Kind == SymbolKind.Property)
                 {
-                    return true;
+                    if (first.DeclaredAccessibility <= Accessibility.Protected)
+                    {
+                        // when protected then we are inside the class itself.
+                        if (first.HasInstanceAttribute() )
+                        {
+                            // inside the property we return the INSTANCE field
+                            // otherwise we return the property
+                            return IsInsidePropertyAccess(first.Name);
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                }
+                if (second.Kind == SymbolKind.Field && first.Kind == SymbolKind.Property)
+                {
+                    if (second.DeclaredAccessibility <= Accessibility.Protected)
+                    {
+                        // when protected then we are inside the class itself.
+                        if (second.HasInstanceAttribute())
+                        {
+                            // inside the property we return the INSTANCE field
+                            // otherwise we return the property
+                            return !IsInsidePropertyAccess(second.Name);
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
                 }
             }
             if (second.Kind == SymbolKind.NamedType)

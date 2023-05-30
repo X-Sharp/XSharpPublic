@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-24T10:44:38.292+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-05-29T10:22:45.496+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -55,7 +55,7 @@
       <li styleclass="Body Text">Fixed issue with default parameter values for parameters declared as &quot;a := NIL,b := NIL as USUAL&quot; introduced in an earlier build of &#160;2.16</li>
       <li styleclass="Body Text">Fixed issue with erratic debugger behavior introduced in an earlier build of &#160;2.16.</li>
       <li styleclass="Body Text">When you are referring to a type in an external assembly that depends on another external assembly, but you did not have a reference to that other external assembly, then compilation could fail without proper explanation. Now we are producing the normal error that you need to add a reference to that other assembly.</li>
-      <li styleclass="Body Text">Omitting types for parameter from a function that did not have the CLIPPER calling convention was allowed. Previously these parameters were assumed to be of type USUAL. This now produces a new error <link displaytype="text" defaultstyle="true" type="topiclink" href="XS9118">XS9118</link>. If you want the parameters to be of type USUAL you will have to explicitly declare them with that type.</li>
+      <li styleclass="Body Text">Omitting the type for a parameter for a function or method &#160;that does not have the CLIPPER calling convention is allowed. These parameters are assumed to be of type USUAL. <br/>This now produces a new warning <link displaytype="text" defaultstyle="true" type="topiclink" href="XS9118">XS9118</link>. </li>
     </list>
     <para styleclass="Heading3">Breaking changes</para>
     <para styleclass="Normal">If you are using our parser to parse source code, please check your code. We have made some changes to the language definition for the handling of if ... else statements as well as for the case statements (a new condBlock rule that is shared by both rules). This removes some recursion in the language. Also some of the Xbase++ specific rules have been changed. Please check the <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpDev/blob/main/XSharp/src/Compiler/XSharpCodeAnalysis/Parser/XSharp.g4" target="_blank">language definition online</link></para>

@@ -58,7 +58,7 @@ INTERNAL CLASS AssemblyReader
                   var arg2 := att:ConstructorArguments[1]:Value:ToString()
 			      assembly:GlobalClassName := arg1
 				  IF ! String.IsNullOrEmpty(arg2)
-					  assembly:ImplicitNamespaces:Add(arg2)
+					  assembly:ImplicitNamespaces:AddUnique(arg2)
                   ENDIF
                   assembly:IsXSharp := TRUE
                ENDIF
@@ -66,7 +66,7 @@ INTERNAL CLASS AssemblyReader
 			CASE KnownTypes.XSharpImplicitNS
 			    IF att:ConstructorArguments:Count >= 1
                     VAR ns := att:ConstructorArguments[0]:Value:ToString()
-				    assembly:ImplicitNamespaces:Add(ns)
+				    assembly:ImplicitNamespaces:AddUnique(ns)
                     assembly:IsXSharp := TRUE
 			    ENDIF
    			END SWITCH

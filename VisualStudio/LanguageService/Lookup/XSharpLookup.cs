@@ -475,6 +475,24 @@ namespace XSharp.LanguageService
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.Assignment || xVar.ImpliedKind == ImpliedKind.Using);
             var tokenList = xVar.Expression;
             // delete tokens between {} and other operators so we get the return type of the outer construct
+            if (tokenList.First().Type == XSharpLexer.LPAREN)
+            {
+                // starts with typecast
+                var temp = new List<IToken>();
+                for (int i = 1; i < tokenList.Count; i++)
+                {
+                    var token = tokenList[i];
+                    if (token.Type != XSharpLexer.RPAREN)
+                    {
+                        temp.Add(token);
+                    }
+                    else
+                    {
+                        tokenList.Clear();
+                        tokenList.AddRange(temp);
+                    }
+                }
+            }
             tokenList = DeleteNestedTokens(tokenList);
             var result = RetrieveElement(location, tokenList, CompletionState.General);
             var element = result.FirstOrDefault();

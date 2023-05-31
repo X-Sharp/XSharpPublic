@@ -17,43 +17,43 @@ BEGIN NAMESPACE XSharpModel
         // Methods
         STATIC CONSTRUCTOR()
             SystemToXSharp  := XDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
-            SystemToXSharp:Add(XSharpTypeNames.SystemBoolean, "LOGIC")
-            SystemToXSharp:Add(XSharpTypeNames.SystemByte, "BYTE")
-            SystemToXSharp:Add(XSharpTypeNames.SystemChar, "CHAR")
-            SystemToXSharp:Add(XSharpTypeNames.SystemDouble, "REAL8")
-            SystemToXSharp:Add(XSharpTypeNames.SystemInt16, "SHORT")
-            SystemToXSharp:Add(XSharpTypeNames.SystemInt32, "INT")
-            SystemToXSharp:Add(XSharpTypeNames.SystemInt64, "INT64")
-            SystemToXSharp:Add(XSharpTypeNames.SystemObject, "OBJECT")
-            SystemToXSharp:Add(XSharpTypeNames.SystemSingle, "REAL4")
-            SystemToXSharp:Add(XSharpTypeNames.SystemString, "STRING")
-            SystemToXSharp:Add(XSharpTypeNames.SystemUInt16, "WORD")
-            SystemToXSharp:Add(XSharpTypeNames.SystemUInt32, "DWORD")
-            SystemToXSharp:Add(XSharpTypeNames.SystemUInt64, "UINT64")
-            SystemToXSharp:Add(XSharpTypeNames.SystemVoid, "VOID")
-            SystemToXSharp:Add(XSharpTypeNames.SystemIntPtr, "PTR")
+            SystemToXSharp:Add(KnownTypes.SystemBoolean, "LOGIC")
+            SystemToXSharp:Add(KnownTypes.SystemByte, "BYTE")
+            SystemToXSharp:Add(KnownTypes.SystemChar, "CHAR")
+            SystemToXSharp:Add(KnownTypes.SystemDouble, "REAL8")
+            SystemToXSharp:Add(KnownTypes.SystemInt16, "SHORT")
+            SystemToXSharp:Add(KnownTypes.SystemInt32, "INT")
+            SystemToXSharp:Add(KnownTypes.SystemInt64, "INT64")
+            SystemToXSharp:Add(KnownTypes.SystemObject, "OBJECT")
+            SystemToXSharp:Add(KnownTypes.SystemSingle, "REAL4")
+            SystemToXSharp:Add(KnownTypes.SystemString, "STRING")
+            SystemToXSharp:Add(KnownTypes.SystemUInt16, "WORD")
+            SystemToXSharp:Add(KnownTypes.SystemUInt32, "DWORD")
+            SystemToXSharp:Add(KnownTypes.SystemUInt64, "UINT64")
+            SystemToXSharp:Add(KnownTypes.SystemVoid, "VOID")
+            SystemToXSharp:Add(KnownTypes.SystemIntPtr, "PTR")
 
 
-            SystemToXSharp:Add(XSharpTypeNames.VulcanCodeblock, "CODEBLOCK")
-            SystemToXSharp:Add(XSharpTypeNames.VulcanArray, "ARRAY")
-            SystemToXSharp:Add(XSharpTypeNames.VulcanDate, "DATE")
-            SystemToXSharp:Add(XSharpTypeNames.VulcanFloat, "FLOAT")
-            SystemToXSharp:Add(XSharpTypeNames.VulcanPSZ, "PSZ")
-            SystemToXSharp:Add(XSharpTypeNames.VulcanSymbol, "SYMBOL")
-            SystemToXSharp:Add(XSharpTypeNames.VulcanUsual, "USUAL")
-            SystemToXSharp:Add(XSharpTypeNames.VulcanWinBool, "LOGIC")
+            SystemToXSharp:Add(KnownTypes.VulcanCodeblock, "CODEBLOCK")
+            SystemToXSharp:Add(KnownTypes.VulcanArray, "ARRAY")
+            SystemToXSharp:Add(KnownTypes.VulcanDate, "DATE")
+            SystemToXSharp:Add(KnownTypes.VulcanFloat, "FLOAT")
+            SystemToXSharp:Add(KnownTypes.VulcanPSZ, "PSZ")
+            SystemToXSharp:Add(KnownTypes.VulcanSymbol, "SYMBOL")
+            SystemToXSharp:Add(KnownTypes.VulcanUsual, "USUAL")
+            SystemToXSharp:Add(KnownTypes.VulcanWinBool, "LOGIC")
 
-            SystemToXSharp:Add(XSharpTypeNames.XSharpCodeblock, "CODEBLOCK")
-            SystemToXSharp:Add(XSharpTypeNames.XSharpArray, "ARRAY")
-            SystemToXSharp:Add(XSharpTypeNames.XSharpBinary, "BINARY")
-            SystemToXSharp:Add(XSharpTypeNames.XSharpCurr, "CURRENCY")
-            SystemToXSharp:Add(XSharpTypeNames.XSharpDate, "DATE")
-            SystemToXSharp:Add(XSharpTypeNames.XSharpFloat, "FLOAT")
-            SystemToXSharp:Add(XSharpTypeNames.XSharpPSZ, "PSZ")
-            SystemToXSharp:Add(XSharpTypeNames.XSharpSymbol, "SYMBOL")
-            SystemToXSharp:Add(XSharpTypeNames.XSharpUsual, "USUAL")
-            SystemToXSharp:Add(XSharpTypeNames.XSharpWinBool, "LOGIC")
-            SystemToXSharp:Add(XSharpTypeNames.XSharpWinDate, "DATE")
+            SystemToXSharp:Add(KnownTypes.XSharpCodeblock, "CODEBLOCK")
+            SystemToXSharp:Add(KnownTypes.XSharpArray, "ARRAY")
+            SystemToXSharp:Add(KnownTypes.XSharpBinary, "BINARY")
+            SystemToXSharp:Add(KnownTypes.XSharpCurrency, "CURRENCY")
+            SystemToXSharp:Add(KnownTypes.XSharpDate, "DATE")
+            SystemToXSharp:Add(KnownTypes.XSharpFloat, "FLOAT")
+            SystemToXSharp:Add(KnownTypes.XSharpPSZ, "PSZ")
+            SystemToXSharp:Add(KnownTypes.XSharpSymbol, "SYMBOL")
+            SystemToXSharp:Add(KnownTypes.XSharpUsual, "USUAL")
+            SystemToXSharp:Add(KnownTypes.XSharpWinBool, "LOGIC")
+            SystemToXSharp:Add(KnownTypes.XSharpWinDate, "DATE")
             XSharpToSystem  := XDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             VulcanToSystem  := XDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             FOREACH VAR pair IN SystemToXSharp
@@ -69,9 +69,9 @@ BEGIN NAMESPACE XSharpModel
                     endif
                 endif
             NEXT
-            XSharpToSystem:Add("LONG", "System.Int32")
-            XSharpToSystem:Add("LONGINT", "System.Int32")
-            XSharpToSystem:Add("SHORTINT", "System.Int16")
+            XSharpToSystem:Add("LONG", KnownTypes.SystemInt32)
+            XSharpToSystem:Add("LONGINT", KnownTypes.SystemInt32)
+            XSharpToSystem:Add("SHORTINT", KnownTypes.SystemInt16)
 
         STATIC METHOD IsXSharpTypeName( SELF typeName as STRING) AS LOGIC
             RETURN XSharpToSystem:ContainsKey(typeName) .or. VulcanToSystem:ContainsKey(typeName)
@@ -86,7 +86,7 @@ BEGIN NAMESPACE XSharpModel
                     return XSharpToSystem[typename]
                 endif
                 IF typename:ToLower():StartsWith("array<")
-                    typename := "XSharp.__ArrayBase<"+typename:Substring(6)
+                    typename := KnownTypes.XSharpArrayBase+"<"+typename:Substring(6)
                 ENDIF
 
             ELSE

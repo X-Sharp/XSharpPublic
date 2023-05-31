@@ -1327,15 +1327,15 @@ namespace XSharp.LanguageService
                 case XSharpLexer.INT_CONST:
                     if (token.Text.ToUpper().EndsWith("L"))
                     {
-                        result = project.FindSystemType("System.Int32", susings);
+                        result = project.FindSystemType(KnownTypes.SystemInt32, susings);
                     }
                     else if (token.Text.ToUpper().EndsWith("U"))
                     {
-                        result = project.FindSystemType("System.UInt32", susings);
+                        result = project.FindSystemType(KnownTypes.SystemUInt32, susings);
                     }
                     else
                     {
-                        result = project.FindSystemType("System.Int32", susings);
+                        result = project.FindSystemType(KnownTypes.SystemInt32, susings);
                     }
                     break;
                 case XSharpLexer.DATE_CONST:
@@ -1343,28 +1343,28 @@ namespace XSharp.LanguageService
                     result = project.FindSystemType("__Date", xusings);
                     break;
                 case XSharpLexer.DATETIME_CONST:
-                    result = project.FindSystemType("System.DateTime", susings);
+                    result = project.FindSystemType(KnownTypes.SystemDateTime, susings);
                     break;
                 case XSharpLexer.REAL_CONST:
                     if (token.Text.ToUpper().EndsWith("M"))
                     {
-                        result = project.FindSystemType("System.Decimal", susings);
+                        result = project.FindSystemType(KnownTypes.SystemDecimal, susings);
                     }
                     else if (token.Text.ToUpper().EndsWith("S"))
                     {
-                        result = project.FindSystemType("System.Single", susings);
+                        result = project.FindSystemType(KnownTypes.SystemSingle, susings);
                     }
                     else // if (token.Text.ToUpper().EndsWith("D"))
                     {
-                        result = project.FindSystemType("System.Double", susings);
+                        result = project.FindSystemType(KnownTypes.SystemDouble, susings);
                     }
                     break;
                 case XSharpLexer.SYMBOL_CONST:
                 case XSharpLexer.NULL_SYMBOL:
-                    result = project.FindSystemType("__Symbol", xusings);
+                    result = project.FindSystemType(KnownTypes.SymbolType, xusings);
                     break;
                 case XSharpLexer.CHAR_CONST:
-                    result = project.FindSystemType("System.Char", susings);
+                    result = project.FindSystemType(KnownTypes.SystemChar, susings);
                     break;
                 case XSharpLexer.STRING_CONST:
                 case XSharpLexer.ESCAPED_STRING_CONST:
@@ -1374,27 +1374,27 @@ namespace XSharp.LanguageService
                 case XSharpLexer.BRACKETED_STRING_CONST:
                 case XSharpLexer.NULL_STRING:
                 case XSharpLexer.MACRO:
-                    result = project.FindSystemType("System.String", susings);
+                    result = project.FindSystemType(KnownTypes.SystemString, susings);
                     break;
                 case XSharpLexer.BINARY_CONST:
-                    result = project.FindSystemType("__Binary", xusings);
+                    result = project.FindSystemType(KnownTypes.BinaryType, xusings);
                     break;
 
                 case XSharpLexer.NULL_ARRAY:
-                    result = project.FindSystemType("__Array", xusings);
+                    result = project.FindSystemType(KnownTypes.ArrayType, xusings);
                     break;
                 case XSharpLexer.NULL_CODEBLOCK:
-                    result = project.FindSystemType("CodeBlock", xusings);
+                    result = project.FindSystemType(KnownTypes.CodeBlockType, xusings);
                     break;
                 case XSharpLexer.NULL_PSZ:
-                    result = project.FindSystemType("__Psz", xusings);
+                    result = project.FindSystemType(KnownTypes.PszType, xusings);
                     break;
                 case XSharpLexer.NULL_PTR:
-                    result = project.FindSystemType("System.IntPtr", susings);
+                    result = project.FindSystemType(KnownTypes.SystemIntPtr, susings);
                     break;
                 case XSharpLexer.NULL_OBJECT:
                 default:
-                    result = project.FindSystemType("System.Object", susings);
+                    result = project.FindSystemType(KnownTypes.SystemObject, susings);
                     break;
             }
             return result;

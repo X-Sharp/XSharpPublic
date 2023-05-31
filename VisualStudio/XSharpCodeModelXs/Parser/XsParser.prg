@@ -177,7 +177,8 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             IF ParsePPLine()
                 LOOP
             ENDIF
-            IF SELF:ParseUsing()
+            IF SELF:ParseUsing( OUT VAR memUsing)
+                _EntityList:Add(memUsing)
                 LOOP
             ENDIF
             LOCAL firstDocCommentToken := NULL AS XSharpToken
@@ -564,13 +565,13 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDIF
         RETURN TRUE
 
-    PRIVATE METHOD ParseUsing() AS LOGIC
+    PRIVATE METHOD ParseUsing(entUsing out XSourceMemberSymbol) AS LOGIC
         /*
         using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoperator)? Name=name EOS
         ;
 
         */
-
+        entUsing := NULL
         IF SELF:La1 != XSharpLexer.USING
             RETURN FALSE
         ENDIF
@@ -594,7 +595,19 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ELSE
             SELF:_usings:Add(name)
         ENDIF
+        var endToken := Self:Lt1
         SELF:ReadLine()
+        var mods := Modifiers.None
+        if (isStatic)
+            mods := Modifiers.Static
+        endif
+        SELF:GetSourceInfo(startToken, endToken , OUT VAR range, OUT VAR interval, OUT VAR source)
+        VAR entity := XSourceMemberSymbol{name, Kind.Using, mods, range,interval,"",_modifiers,FALSE}
+        entity:SourceCode := source
+        entity:File := _file
+        entity:SingleLine := TRUE
+        _globalType:AddMember(entity)
+        entUsing := entity
         RETURN TRUE
     PRIVATE METHOD ParseUdcTokens() AS VOID
         DO WHILE SELF:La1 == XSharpLexer.UDC_KEYWORD

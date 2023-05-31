@@ -321,7 +321,7 @@ namespace XSharp.LanguageService
             var result = new List<IToken>();
             if (xdocument == null)
                 return result;
-            var tokens =  xdocument.GetTokensInLine(location.LineNumber);
+            var tokens =  xdocument.GetTokensInLineAndFollowing(location.LineNumber);
             //
             
             if (tokens.Count == 0)

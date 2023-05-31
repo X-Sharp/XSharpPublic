@@ -55,7 +55,7 @@ namespace XSharp.LanguageService
             {
                 line = line.Snapshot.GetLineFromLineNumber(lineNo);
             }
-            tokens = _document.GetTokensInLine(line);
+            tokens = _document.GetTokensInSingleLine(line, true);
             if (tokens.Count > 0)
             {
                 keyword = XSharpLineKeywords.Tokens2Keyword(tokens);
@@ -72,7 +72,7 @@ namespace XSharp.LanguageService
         {
             if (line.Length == 0)
                 return true;
-            var tokens = _document.GetTokensInLine(line);
+            var tokens = _document.GetTokensInSingleLine(line, true);
             if (tokens.Count > 0)
             {
                 var token = tokens.Where((t) => t.Type != XSharpLexer.WS).FirstOrDefault();
@@ -132,7 +132,7 @@ namespace XSharp.LanguageService
             // to detect that we take the start of the line and check if it is in
             if (line.Length == 0)
                 return;
-            var tokens = _document.GetTokensInLine(line, false);
+            var tokens = _document.GetTokensInSingleLine(line, false);
             IToken lastToken = null;
             foreach (var token in tokens)
             {
@@ -510,7 +510,7 @@ namespace XSharp.LanguageService
             int indent = 0;
             if (_lineIndent.ContainsKey(line))
                 return _lineIndent[line];
-            var tokens = _document.GetTokensInLine(line);
+            var tokens = _document.GetTokensInLineAndFollowing(line);
             if (tokens.Count > 0 && tokens[0].Type == XSharpLexer.WS)
             {
                 indent = GetIndentTokenLength(tokens[0]);
@@ -631,7 +631,7 @@ namespace XSharp.LanguageService
                         }
                         else if (kw.IsType())
                         {
-                            tokens = _document.GetTokensInLine(tempLineNo);
+                            tokens = _document.GetTokensInLineAndFollowing(tempLineNo);
                             if (tokens.Count > 0)
                             {
                                 prevIndentation = GetLineIndent(tempLineNo);

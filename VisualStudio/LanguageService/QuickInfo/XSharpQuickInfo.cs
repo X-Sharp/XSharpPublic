@@ -101,7 +101,7 @@ namespace XSharp.LanguageService
                         if (location.LineNumber == location.Member.FirstSourceLine(location.Document))
                             element = location.Member;
                     }
-                    var lineTokens = document.GetTokensInLine(lastToken.Line - 1);
+                    var lineTokens = document.GetTokensInLineAndFollowing(lastToken.Line - 1);
                     if (element is XSourceUndeclaredVariableSymbol ||
                         lineTokens.First()?.Type == XSharpLexer.UDC_KEYWORD)
                     {

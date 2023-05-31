@@ -828,6 +828,14 @@ namespace XSharp.LanguageService
                     // but we want to find the type of course
                     if (findType || findConstructor)
                     {
+                        if (currentName.ToLower() == "array" && symbols.Count > 0)
+                        {
+                            var top = symbols.Peek();
+                            if (top.Kind == Kind.Namespace && top.Name == "System")
+                            {
+                                currentName = "System.Array";
+                            }
+                        }
                         var types = SearchType(location, currentName, additionalUsings);
                         if (types?.Count() > 0)
                         {

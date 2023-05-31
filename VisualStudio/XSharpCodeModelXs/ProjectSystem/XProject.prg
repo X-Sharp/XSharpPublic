@@ -1001,7 +1001,7 @@ CLASS XProject
         // lookup Type definition in this project and X# projects referenced by this project
         LogTypeMessage(i"Lookup {typeName}")
         VAR originalName := typeName
-        IF originalName == _lastName .and. _lastFound != null
+        IF originalName == _lastName .and. _lastFound != null && _lastFound.Name == typeName
             RETURN _lastFound
         ENDIF
         usings := AdjustUsings(REF typeName, usings)
@@ -1022,8 +1022,16 @@ CLASS XProject
         endif
         _lastFound  := tmp
         _lastName   := originalName
+        if _lastFound == null .and. originalName.IndexOf('.') > 0
+            // Nested type?
+            var elements := originalName:Split(".":ToCharArray())
+            var first := SELF:Lookup(elements.First(), usings)
+            if first != NULL
+                typeName := first:FullName + "." + typeName
+                return SELF:Lookup(typeName, usings)
+            endif
+        endif
         LogTypeMessage(ie"Lookup {typeName}, result {iif(_lastFound != NULL, _lastFound.FullName, \"not found\" } ")
-
         RETURN _lastFound
 
 
@@ -1115,12 +1123,13 @@ CLASS XProject
         VAR walker        := SourceWalker{file, FALSE}
         walker:SaveToDisk := FALSE
         walker:Parse(source) // we are not interested in locals but we also do not want to update the database here
-        IF walker:EntityList:Count > 0
+        var entities := walker:EntityList:Where({ e => e:Kind != Kind.Using })
+        IF entities:Count() > 0
             namespace      := oType:Namespace
             fullTypeName   := oType:Namespace+"."+oType:TypeName
             idProject      := oType:IdProject
             VAR name       := oType:TypeName
-            VAR xElement      := walker:EntityList:First()
+            VAR xElement   := entities:First()
             LOCAL xtype AS XSourceTypeSymbol
             IF xElement IS XSourceTypeSymbol VAR xE
                 xtype := xE

@@ -87,6 +87,15 @@ namespace XSharp.LanguageService
                 {
                     if (variable.File == null)
                         variable.File = member.File;
+                    if (variable.ResolvedType == null)
+                    {
+                        var types = SearchType(location, variable.TypeName, location.Usings);
+                        variable.ResolvedType = types.FirstOrDefault();
+                        if (variable.ResolvedType != null)
+                        {
+                            variable.TypeName = variable.ResolvedType.FullName;
+                        }
+                    }
                 }
                 if (result.Count == 0)
                 {

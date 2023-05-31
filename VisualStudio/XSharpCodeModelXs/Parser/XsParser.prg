@@ -248,12 +248,12 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                         ENDIF
                         VAR lastEntity := _EntityList:LastOrDefault()
                         IF lastEntity != NULL
-                            if tokenBefore.Type == XSharpLexer.WS
+                            if tokenBefore.Channel != XSharpLexer.DefaultTokenChannel
                                 var index := _tokens:IndexOf(tokenBefore)
                                 repeat
                                     tokenBefore := (XSharpToken) _tokens[index]
                                     index -= 1
-                                until index == 0 .or. tokenBefore.Type != XSharpLexer.WS
+                                until index == 0 .or. tokenBefore.Channel == Lexer.DefaultTokenChannel
                             endif
                             if lastEntity:Kind:IsLocal()
                                 lastEntity := lastEntity:Parent astype XSourceEntity

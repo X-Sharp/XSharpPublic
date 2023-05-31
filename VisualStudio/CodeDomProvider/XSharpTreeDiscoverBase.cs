@@ -1017,7 +1017,7 @@ namespace XSharp.CodeDom
             }
             else
             {
-                typeRef = new XCodeTypeReference("XSharp.__Array");
+                typeRef = new XCodeTypeReference(KnownTypes.XSharpArray);
             }
             ac = new CodeArrayCreateExpression(typeRef, elements.ToArray());
             return ac;

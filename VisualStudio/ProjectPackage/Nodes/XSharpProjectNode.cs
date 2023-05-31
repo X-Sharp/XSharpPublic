@@ -1925,19 +1925,19 @@ namespace XSharp.Project
             {
                 case "object":
                 case "system.object":
-                    name = "System.Object";
+                    name = KnownTypes.SystemObject;
                     break;
                 case "void":
                 case "system.void":
-                    name = "System.Void";
+                    name = KnownTypes.SystemVoid;
                     break;
                 case "boolean":
                 case "system.boolean":
-                    name = "System.Boolean";
+                    name = KnownTypes.SystemBoolean;
                     break;
                 case "string":
                 case "system.string":
-                    name = "System.String";
+                    name = KnownTypes.SystemString;
                     break;
             }
             var model = this.ProjectModel;

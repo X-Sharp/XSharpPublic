@@ -246,8 +246,8 @@ namespace XSharp.LanguageService
                     {
                         switch (type.FullName)
                         {
-                            case XSharpTypeNames.XSharpUsual:
-                            case XSharpTypeNames.VulcanUsual:
+                            case KnownTypes.XSharpUsual:
+                            case KnownTypes.VulcanUsual:
                                 type = null;
                                 break;
                         }

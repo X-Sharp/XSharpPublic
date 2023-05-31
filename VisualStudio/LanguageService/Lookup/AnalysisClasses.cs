@@ -15,6 +15,8 @@ using Microsoft.VisualStudio.Text.Adornments;
 using Microsoft.VisualStudio.Core.Imaging;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
+using System.Linq;
+using System.Reflection;
 
 namespace XSharp.LanguageService
 {
@@ -240,6 +242,20 @@ namespace XSharp.LanguageService
                         }
                     }
                 }
+                if (Type.Kind == Kind.Delegate)
+                {
+                    var mem = Type.Members.First();
+                    var memana = new XMemberAnalysis(mem);
+                    var desc = memana.WPFPrototype;
+                    var name = mem.Name;
+                    // skip first element: Invoke
+                    for (int i = 1; i < desc.Length; i++) 
+                    {
+                        var element = desc[i];
+                        content.Add(element);
+                    }
+
+                }
                 //
                 string returns;
                 string remarks;
@@ -311,7 +327,7 @@ namespace XSharp.LanguageService
             get
             {
                 var content = new List<ClassifiedTextRun>();
-                if (Member.Kind.HasParameters() && Member.Kind.IsProperty())
+                if (Member.Kind.HasParameters() /*&& Member.Kind.IsProperty()*/)
                 {
                     content.addText(Name);
                     content.addKeyword(Member.Kind == Kind.Constructor ? "{" : "(");

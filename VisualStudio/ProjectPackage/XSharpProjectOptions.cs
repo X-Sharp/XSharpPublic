@@ -150,9 +150,9 @@ namespace XSharp.Project
             foreach (var flag in flags)
             {
                 if (_prjNode.GetLogicProjectProperty(flag))
-                    options.Add(flag + "+");
+                    options.Add(flag.ToLower() + "+");
                 else
-                    options.Add(flag + "-");
+                    options.Add(flag.ToLower() + "-");
             }
             string value = _prjNode.GetProjectProperty(XSharpProjectFileConstants.StandardDefs);
             if (value != null && value.Trim().Length > 0)

@@ -53,7 +53,14 @@ BEGIN NAMESPACE XSharpModel
                 RETURN dict:Item[key]
             ENDIF
         RETURN DEFAULT (TValue)
-
+        STATIC METHOD AddUnique<TKey>( SELF list AS IList<TKey>, key AS TKey) AS VOID
+            IF list != NULL .AND. key != NULL
+                IF ! list:Contains(key)
+                    list:Add(key)
+                    RETURN 
+                ENDIF
+            ENDIF
+            RETURN 
 
         STATIC METHOD DisplayName( SELF elementKind AS Kind) AS STRING
             SWITCH elementKind

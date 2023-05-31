@@ -191,16 +191,19 @@ namespace XSharp.LanguageService
                     }
                     else if (symbol is IXMemberSymbol xmember)
                     {
-                        var typeName = xmember.TypeName;
-                        if (xmember is XSourceMemberSymbol sourcemem)
+                        if (xmember.Kind.HasParameters() && tokenList.Count( t => t.Type == XSharpLexer.LPAREN) > 0)
                         {
-                            type = sourcemem.File.FindType(typeName);
+                            var typeName = xmember.TypeName;
+                            if (xmember is XSourceMemberSymbol sourcemem)
+                            {
+                                type = sourcemem.File.FindType(typeName);
+                            }
+                            else
+                            {
+                                type = location.FindType(typeName);
+                            }
+                            memberName = xmember.Name;
                         }
-                        else
-                        {
-                            type = location.FindType(typeName);
-                        }
-                        memberName = xmember.Name;
                     }
                     else if (symbol is IXVariableSymbol xvar)
                     {

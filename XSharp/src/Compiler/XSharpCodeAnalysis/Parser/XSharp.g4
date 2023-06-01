@@ -524,7 +524,7 @@ statement           : Decl=localdecl                            #declarationStmt
                     | {IsFox && HasMemVars}?  Decl=foxmemvardecl #foxmemvardeclStmt    // Memvar declarations FoxPro specific
                     | DO? w=WHILE Expr=expression end=eos
                       StmtBlk=statementBlock
-                      ((e=END (DO|WHILE)? | e=ENDDO) eos)?	#whileStmt
+                      (e=END (DO|WHILE)? | e=ENDDO) eos	#whileStmt
                     | NOP (LPAREN RPAREN )? end=eos					#nopStmt
 
                     | f=FOR
@@ -535,17 +535,17 @@ statement           : Decl=localdecl                            #declarationStmt
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=eos
                       StmtBlk=statementBlock
-                      ((e = NEXT | e = END FOR)? eos)?	                  #forStmt
+                      (e = NEXT | e = END FOR)? eos	                  #forStmt
 
                     | i=IF IfBlocks += condBlock[$i]
                       (e=ELSEIF IfBlocks += condBlock[$e])*
                       (ELSE eos ElseStmtBlk=statementBlock)? 
-                      ((e=END IF? | e=ENDIF)   eos)?                      #ifStmt
+                      (e=END IF? | e=ENDIF)   eos                      #ifStmt
 
                     | DO CASE end=eos
                       (c=CASE CaseBlocks +=condBlock[$c])*
                       (OTHERWISE end=eos OtherwiseStmtBlk=statementBlock)?
-                      ((e=END CASE? | e=ENDCASE)   eos)?                  #caseStmt
+                      (e=END CASE? | e=ENDCASE)   eos                  #caseStmt
 
                     | Key=EXIT end=eos                                    #jumpStmt
                     | Key=LOOP end=eos                                    #jumpStmt
@@ -559,7 +559,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
                       (FINALLY eos FinBlock=statementBlock)?
-                      (e=END (SEQUENCE)? eos)?                            #seqStmt
+                      e=END (SEQUENCE)? eos                            #seqStmt
                     //
                     // New in Vulcan
                     //
@@ -575,48 +575,40 @@ statement           : Decl=localdecl                            #declarationStmt
                       )
                       IN Container=expression end=eos
                       StmtBlk=statementBlock
-                      ((e=NEXT |e=END FOR)? eos)?	    #foreachStmt
+                      (e=NEXT |e=END FOR)? eos	    #foreachStmt
 
                     | Key=THROW Expr=expression? end=eos                  #jumpStmt
 
                     | T=TRY end=eos StmtBlk=statementBlock
                       (CATCH CatchBlock+=catchBlock?)*
                       (F=FINALLY eos FinBlock=statementBlock)?
-                      (e=END TRY? eos)?								                    #tryStmt
+                      e=END TRY? eos								                    #tryStmt
 
                     | BEGIN Key=LOCK Expr=expression end=eos
                       StmtBlk=statementBlock
-                      (e=END LOCK? eos)?						                      #blockStmt
-                    | BEGIN Key=SCOPE end=eos
-                      StmtBlk=statementBlock
-                      (e=END SCOPE? eos)?						                      #blockStmt
+                      e=END LOCK? eos						                        #blockStmt
                     //
                     // New XSharp Statements
                     //
-                    | Y=YIELD R=RETURN (VOID | Expr=expression)? end=eos			#yieldStmt
-                    | Y=YIELD Break=(BREAK|EXIT) end=eos							      #yieldStmt
+                    | Y=YIELD R=RETURN (VOID | Expr=expression)? end=eos  #yieldStmt
+                    | Y=YIELD Break=(BREAK|EXIT) end=eos							    #yieldStmt
                     | (BEGIN|DO)? S=SWITCH Expr=expression end=eos
                       (SwitchBlock+=switchBlock)+
-                      (e=END SWITCH? eos)?					                      #switchStmt
+                      e=END SWITCH? eos					                          #switchStmt
                     | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=eos
                         StmtBlk=statementBlock
-                      (e=END USING? eos)?						                      #blockStmt
-                    | BEGIN Key=UNSAFE end=eos
-                      StmtBlk=statementBlock
-                      (e=END UNSAFE? eos)?						                    #blockStmt
-                    | BEGIN Key=CHECKED end=eos
-                      StmtBlk=statementBlock
-                      (e=END CHECKED? eos)?						                    #blockStmt
-                    | BEGIN Key=UNCHECKED end=eos
-                      StmtBlk=statementBlock
-                      (e=END UNCHECKED? eos)?					                    #blockStmt
+                      e=END USING? eos						                        #blockStmt
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=eos
                       StmtBlk=statementBlock
-                      (e=END FIXED? eos)?						                      #blockStmt
+                      e=END FIXED? eos						                        #blockStmt
 
                     | WITH Expr=expression end=eos
                       StmtBlk=statementBlock
-                      (e=END WITH? eos)?                                  #withBlock
+                      e=END WITH? eos                                  #withBlock
+
+                    | BEGIN Key1=blockTokens end=eos
+                      StmtBlk=statementBlock
+                      e=END (Key2=blockTokens)? eos	                      #blockStmt
 
                     // some statements that are only valid in FoxPro dialect
                     | Eq=EQ Exprs+=expression  end=eos		                          #foxexpressionStmt
@@ -626,7 +618,10 @@ statement           : Decl=localdecl                            #declarationStmt
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // validExpressionStmt check  for CONSTRUCTOR( or DESTRUCTOR(
                     | {validExpressionStmt()}? Exprs+=expression (COMMA Exprs+=expression)*  end=eos  #expressionStmt
-	                ;
+	            ;
+
+blockTokens          : Token=(SCOPE|CHECKED|UNCHECKED|UNSAFE)
+                     ;
 
 condBlock[IToken st] : Cond=expression Then=THEN? end=eos StmtBlk=statementBlock
                          ;

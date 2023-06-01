@@ -138,18 +138,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        // Check for missing end keywords for statement blocks
-
-        public override void ExitWhileStmt([NotNull] XSharpParser.WhileStmtContext context)
-        {
-            checkMissingKeyword(context.e, context, "END[DO]");
-        }
-
-        public override void ExitWithBlock([NotNull] XSharpParser.WithBlockContext context)
-        {
-            checkMissingKeyword(context.e, context, "END [WITH]");
-        }
-
         public override void ExitDoStmt([NotNull] XSharpParser.DoStmtContext context)
         {
             if (context.Amp != null)
@@ -284,7 +272,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitForStmt([NotNull] XSharpParser.ForStmtContext context)
         {
-            checkMissingKeyword(context.e, context, "NEXT");
             IToken Op = null;
             if (context.AssignExpr is XSharpParser.BinaryExpressionContext)
             {
@@ -301,21 +288,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_AssignmentOperatorExpected));
             }
         }
-        public override void ExitForeachStmt([NotNull] XSharpParser.ForeachStmtContext context)
-        {
-            checkMissingKeyword(context.e, context, "NEXT");
-        }
-        public override void ExitIfStmt([NotNull] XSharpParser.IfStmtContext context)
-        {
-            checkMissingKeyword(context.e, context, "END[IF]");
-        }
         public override void ExitCaseStmt([NotNull] XSharpParser.CaseStmtContext context)
         {
             if (context._CaseBlocks.Count == 0)
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_EmptyCase));
             }
-            checkMissingKeyword(context.e, context, "END[CASE]");
         }
         public override void ExitCondBlock([NotNull] XSharpParser.CondBlockContext context)
         {
@@ -326,26 +304,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitTryStmt([NotNull] XSharpParser.TryStmtContext context)
         {
-            checkMissingKeyword(context.e, context, "END [TRY]");
             if (context._CatchBlock?.Count == 0 && context.FinBlock == null)
             {
                 var errdata = new ParseErrorData(context, ErrorCode.WRN_TryWithoutCatch);
                 _parseErrors.Add(errdata);
             }
         }
-        public override void ExitSwitchStmt([NotNull] XSharpParser.SwitchStmtContext context)
-        {
-            checkMissingKeyword(context.e, context, "END [SWITCH]");
-        }
         public override void ExitSeqStmt([NotNull] XSharpParser.SeqStmtContext context)
         {
             NotInCore(context, "BEGIN SEQUENCE statement");
-            checkMissingKeyword(context.e, context, "END SEQUENCE");
         }
 
         public override void ExitBlockStmt([NotNull] XSharpParser.BlockStmtContext context)
         {
-            checkMissingKeyword(context.e, context, "END [" + context.Key.Text + "]");
+            if (context.Key2 != null)
+            {
+                if (context.Key1.Token.Type != context.Key2.Token.Type)
+                {
+                    _parseErrors.Add(new ParseErrorData(context.Key2, ErrorCode.ERR_UnexpectedToken, context.Key2.Token.Text));
+                }
+            }
         }
 
         public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)

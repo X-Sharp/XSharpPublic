@@ -7183,49 +7183,53 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitBlockStmt([NotNull] XP.BlockStmtContext context)
         {
             context.SetSequencePoint(context.end);
-            StatementSyntax node;
-            switch (context.Key.Type)
+            StatementSyntax node = null;
+            IToken token = context.Key;
+            if (context.Key1 != null)
             {
-                case XP.SCOPE:
-                    node = context.StmtBlk.Get<BlockSyntax>();
-                    break;
-                case XP.LOCK:
-                    node = MakeLock(context.Expr.Get<ExpressionSyntax>(),
-                        context.StmtBlk.Get<BlockSyntax>(), context.Key);
-                    break;
-                case XP.UNSAFE:
-                    node = _syntaxFactory.UnsafeStatement(attributeLists: default, context.Key.SyntaxKeyword(),
-                        context.StmtBlk.Get<BlockSyntax>());
-                    break;
-                case XP.CHECKED:
-                    node = _syntaxFactory.CheckedStatement(SyntaxKind.CheckedStatement, attributeLists: default,
-                        context.Key.SyntaxKeyword(),
-                        context.StmtBlk.Get<BlockSyntax>());
-                    break;
-                case XP.FIXED:
-                    node = _syntaxFactory.FixedStatement(attributeLists: default, context.Key.SyntaxKeyword(),
-                           SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                           context.VarDecl?.Get<VariableDeclarationSyntax>(),
-                           SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                        context.StmtBlk.Get<BlockSyntax>());
-                    break;
-                case XP.UNCHECKED:
-                    node = _syntaxFactory.CheckedStatement(SyntaxKind.UncheckedStatement, attributeLists: default,
-                        context.Key.SyntaxKeyword(),
-                        context.StmtBlk.Get<BlockSyntax>());
-                    break;
-                case XP.USING:
-                    node = _syntaxFactory.UsingStatement(attributeLists: default, awaitKeyword: null, context.Key.SyntaxKeyword(),
-                           SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                           context.VarDecl?.Get<VariableDeclarationSyntax>(),
-                           context.Expr?.Get<ExpressionSyntax>(),
-                           SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                           context.StmtBlk.Get<BlockSyntax>());
-                    break;
-                default:
-                    // what else;
-                    node = null;
-                    break;
+                token = context.Key1.Token;
+            }
+            if (token != null)
+            {
+                switch (token.Type)
+                {
+                    case XP.SCOPE:
+                        node = context.StmtBlk.Get<BlockSyntax>();
+                        break;
+                    case XP.LOCK:
+                        node = MakeLock(context.Expr.Get<ExpressionSyntax>(),
+                            context.StmtBlk.Get<BlockSyntax>(), token);
+                        break;
+                    case XP.UNSAFE:
+                        node = _syntaxFactory.UnsafeStatement(attributeLists: default, token.SyntaxKeyword(),
+                            context.StmtBlk.Get<BlockSyntax>());
+                        break;
+                    case XP.CHECKED:
+                    case XP.UNCHECKED:
+                        var kind = token.Type == XP.CHECKED ? SyntaxKind.CheckedStatement : SyntaxKind.UncheckedStatement;
+                        node = _syntaxFactory.CheckedStatement(kind, attributeLists: default,
+                            token.SyntaxKeyword(),
+                            context.StmtBlk.Get<BlockSyntax>());
+                        break;
+                    case XP.FIXED:
+                        node = _syntaxFactory.FixedStatement(attributeLists: default, token.SyntaxKeyword(),
+                               SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                               context.VarDecl?.Get<VariableDeclarationSyntax>(),
+                               SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                            context.StmtBlk.Get<BlockSyntax>());
+                        break;
+                    case XP.USING:
+                        node = _syntaxFactory.UsingStatement(attributeLists: default, awaitKeyword: null, token.SyntaxKeyword(),
+                               SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                               context.VarDecl?.Get<VariableDeclarationSyntax>(),
+                               context.Expr?.Get<ExpressionSyntax>(),
+                               SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                               context.StmtBlk.Get<BlockSyntax>());
+                        break;
+                    default:
+                        // what else;
+                        break;
+                }
             }
             if (node != null)
             {

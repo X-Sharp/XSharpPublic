@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 name = name.Substring(0, name.Length - 1);
             }
-            switch (name)
+            switch (name.ToLower())
             {
                 case "allowoldstyleassignments":
                     options.AllowOldStyleAssignments = positive;

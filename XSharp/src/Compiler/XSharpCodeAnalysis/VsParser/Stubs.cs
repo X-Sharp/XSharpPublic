@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace System.Collections.Immutable
@@ -16,14 +17,7 @@ namespace System.Collections.Immutable
     {
         public static IList<T> ToImmutableArray<T>(this IList<T> source)
         {
-            var list = new List<T>();
-            list.AddRange(source);
-            return list.AsReadOnly();
-        }
-
-        public static IDictionary<T, U> ToImmutableDictionary<T, U>(this IDictionary<T, U> source, IEqualityComparer<T> comparer)
-        {
-            return new ReadOnlyDictionary<T, U>(source);
+            return source.ToArray();
         }
     }
 }
@@ -198,6 +192,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     name = opt;
                     value = "";
                 }
+                name = name.ToLower();
                 if (name == "d")
                 {
                     var defs = value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);

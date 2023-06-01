@@ -23,6 +23,7 @@ using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+    using System.ComponentModel;
     using Microsoft.CodeAnalysis.Syntax.InternalSyntax;
     using Microsoft.CodeAnalysis.Text;
 
@@ -3511,6 +3512,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Properties
         public override void EnterProperty([NotNull] XP.PropertyContext context)
         {
+            context.Data.IsProperty = true;
             CheckVirtualOverride(context, context.Modifiers?._Tokens);
         }
         public override void ExitProperty([NotNull] XP.PropertyContext context)
@@ -4014,6 +4016,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.RealType = context.T.Token.Type;
             context.Data.MustBeVoid = context.RealType == XP.ASSIGN;
+            context.Data.IsProperty = context.RealType != XP.METHOD;
             CheckVirtualOverride(context, context.Modifiers?._Tokens);
         }
 
@@ -4063,17 +4066,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
             }
             ExitAttributes(attributes);
-        }
-        protected static bool IsAccessAssign(int t)
-        {
-            switch (t)
-            {
-                case XP.ASSIGN:
-                case XP.ACCESS:
-                    return true;
-                default:
-                    return false;
-            }
         }
 
         private static XP.IEntityContext GetMethodParent(XP.MethodContext context)
@@ -4131,10 +4123,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 idName = SyntaxFactory.MakeIdentifier(mName);
             }
-            bool isAccessAssign = IsAccessAssign(context.RealType);
             var attributes = getAttributes(context.Attributes);
             bool hasExtensionAttribute = false;
-            if (isAccessAssign)
+            if (context.Data.IsProperty)
             {
                 var vomods = _pool.Allocate();
                 vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword));
@@ -4306,7 +4297,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     MemberDeclarationSyntax mem = null;
                     var ce = new SyntaxClassEntities(_pool);
-                    if (isAccessAssign && context.Parent is XP.EntityContext)
+                    if (context.Data.IsProperty && context.Parent is XP.EntityContext)
                     {
                         var parent = (ParserRuleContext)context.Parent;
                         // replace context in parent with new Class_Context
@@ -4348,9 +4339,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Put(m);
             }
-            if (isAccessAssign && !separateMethod)
+            if (context.Data.IsProperty && !separateMethod)
             {
-                if (context.Data.HasClipperCallingConvention && context.CallingConvention != null)
+                if (context.Data.HasClipperCallingConvention && context.CC != null)
                 {
                     m = m.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(
                                     ErrorCode.ERR_NoClipperCallingConventionForAccessAssign));
@@ -4931,7 +4922,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return EmptyParameterList();
             var result = _syntaxFactory.ParameterList(
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                MakeSeparatedList<ParameterSyntax>(parameters.ToArray()),
+                MakeSeparatedList(parameters.ToArray()),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
             return result;
         }
@@ -4948,9 +4939,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var @params = _pool.AllocateSeparated<ParameterSyntax>();
             foreach (var paramCtx in context._Params)
             {
+                var paramNode = paramCtx.Get<ParameterSyntax>();
+                if (paramCtx.Type == null && paramCtx.Ellipsis == null &&
+                    !CurrentMember.Data.HasClipperCallingConvention && !CurrentMember.Data.IsProperty)
+                {
+                    var parType = "USUAL";
+                    var dt = _getNextParameterDataType(paramCtx);
+                    if (dt != null)
+                    {
+                        parType = dt.GetText();
+                        var type = dt.Get<TypeSyntax>();
+                        paramNode = paramNode.Update(paramNode.AttributeLists, paramNode.Modifiers, type, paramNode.Identifier, paramNode.Default);
+                    }
+                    var callconv = "strict";
+                    if (CurrentMember is XP.IMemberWithCC mcc && mcc.CC != null)
+                    {
+                        callconv = mcc.CC.GetText();
+                    }
+                    _parseErrors.Add(new ParseErrorData(paramCtx, ErrorCode.WRN_ParameterMustBeTyped, paramCtx.Id.GetText(), callconv, parType));
+                }
+
                 if (@params.Count > 0)
                     @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                @params.Add(paramCtx.Get<ParameterSyntax>());
+
+                @params.Add(paramNode);
             }
             context.Put(_syntaxFactory.ParameterList(
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
@@ -4967,6 +4979,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        protected XP.DatatypeContext _getNextParameterDataType([NotNull] XP.ParameterContext context)
+        {
+            var list = (XP.ParameterListContext)context.Parent;
+            bool found = false;
+            foreach (var param in list._Params)
+            {
+                if (found && param.Type != null)
+                {
+                    return param.Type;
+                }
+                if (param == context)
+                {
+                    found = true;
+                }
+            }
+            return null;
+        }
         protected virtual TypeSyntax _getParameterType([NotNull] XP.ParameterContext context)
         {
             TypeSyntax type = context.Type?.Get<TypeSyntax>();

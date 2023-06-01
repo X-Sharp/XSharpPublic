@@ -3460,10 +3460,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Data.MustBeVoid = true;
                 }
             }
-            string convention = "STRICT";
             if (Convention != null)
             {
-                convention = Convention.Text;
                 context.Data.HasClipperCallingConvention = (Convention.Type == XP.CLIPPER);
                 hasConvention = true;
             }
@@ -3485,23 +3483,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         bHasTypedParameter = true;
                         break;
-                    }
-                }
-                if (bHasTypedParameter)
-                {
-                    var last = parameters.Last();
-                    if (last.Type == null && last.Ellipsis == null)
-                    {
-                        _parseErrors.Add(new ParseErrorData(last, ErrorCode.WRN_ParameterMustBeTyped, last.Id.GetText(), convention));
-                    }
-                }
-                else if (hasConvention && !context.Data.HasClipperCallingConvention)
-                {
-                    // no typed parameters and not clipper.
-                    // Warning for each of the parameters
-                    foreach (var par in parameters)
-                    {
-                        _parseErrors.Add(new ParseErrorData(par, ErrorCode.WRN_ParameterMustBeTyped, par.Id.GetText(), convention));
                     }
                 }
                 context.Data.HasTypedParameter = bHasTypedParameter;

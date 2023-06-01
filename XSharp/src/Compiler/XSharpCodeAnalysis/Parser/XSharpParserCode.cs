@@ -213,7 +213,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public interface ILoopStmtContext : IBlockStmtContext
         {
         }
-        public interface IBlockStmtContext 
+        public interface IBlockStmtContext
         {
             StatementBlockContext Statements { get; }
         }
@@ -320,6 +320,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             ParameterAssign = 1 << 20,
             HasExplicitVirtual = 1 << 21,
             HasExplicitOverride = 1 << 22,
+            IsProperty = 1 << 23,
         }
         #endregion
 
@@ -471,7 +472,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get { return flags.HasFlag(MemberFlags.IsEntryPoint); }
                 set { setFlags(MemberFlags.IsEntryPoint, value); }
             }
-
+            public bool IsProperty
+            {
+                get { return flags.HasFlag(MemberFlags.IsProperty); }
+                set { setFlags(MemberFlags.IsProperty, value); }
+            }
             public bool ParameterAssign
             {
                 get { return flags.HasFlag(MemberFlags.ParameterAssign); }
@@ -637,6 +642,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
             public ParameterListContext ParamList => Sig.ParamList;
             public CallingconventionContext CallingConvention => Sig.CallingConvention;
+
 #if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
@@ -657,6 +663,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             ParameterListContext ParamList { get; }
             MemberModifiersContext Mods { get; }
             ExpressionContext ExpressionBody { get; }
+
             bool IsInInterface { get; }
             bool IsInStructure { get; }
             int RealType { get; }
@@ -669,6 +676,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public ParameterListContext ParamList => Sig.ParamList;
             public DatatypeContext ReturnType => Sig.Type;
             public CallingconventionContext CallingConvention => Sig.CallingConvention;
+
             public bool IsInInterface => this.isInInterface();
             public bool IsInStructure => this.isInStructure();
 #if !VSPARSER
@@ -708,6 +716,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public DatatypeContext ReturnType => Sig.Type;
             public CallingconventionContext CallingConvention => Sig.CallingConvention;
             public MemberModifiersContext Mods => this.Modifiers;
+
             public bool IsInInterface => false;
             public bool IsInStructure => false;
 
@@ -1118,7 +1127,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             MemberAccess = 1,
             MPrefix = 2,
         }
-        public partial class AccessMemberContext 
+        public partial class AccessMemberContext
         {
             internal FoxFlags foxFlags = FoxFlags.None;
             internal bool IsFox => foxFlags != FoxFlags.None;

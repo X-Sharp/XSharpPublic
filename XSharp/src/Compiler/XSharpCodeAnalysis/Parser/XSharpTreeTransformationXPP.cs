@@ -381,6 +381,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             declInfo.HasVarName = hasVarName;
             CheckAccessors(context.Accessors, declInfo, context.Id.GetText());
+            context.Data.IsProperty = declInfo.IsProperty;
         }
         public override void ExitXppdeclareproperty([NotNull] XP.XppdeclarepropertyContext context)
         {

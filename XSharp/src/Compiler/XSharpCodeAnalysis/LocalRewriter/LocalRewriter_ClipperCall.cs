@@ -416,13 +416,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                 }
-                var mcall = ies.XNode as XSharpParser.MethodCallContext;
-                var dostmt = ies.XNode as XSharpParser.DoStmtContext;
-                if (mcall == null && dostmt == null)
+                var icall = ies.XNode as XSharpParser.ICallContext;
+                if (icall == null)
                     return null;
-                if (mcall != null && !mcall.HasRefArguments)
-                    return null;
-                if (dostmt != null && !dostmt.HasRefArguments)
+                if (!icall.HasRefArguments)
                     return null;
                 if (node.Method.EndsWithUsualParams())
                     isClipperCall = true;
@@ -431,7 +428,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return RewriteMemvarsWithByRefParams(node);
             }
-            if (!isClipperCall )
+            if (!isClipperCall)
                 return null;
 
             BoundExpression rewrittenReceiver = VisitExpression(node.ReceiverOpt);

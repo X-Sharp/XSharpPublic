@@ -681,12 +681,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
                 context.Data.MustBeVoid = true;
                 context.RealType = XP.ASSIGN;
+                context.Data.IsProperty = true;
             }
             else if (name.EndsWith("_ACCESS"))
             {
                 context.Data.HasClipperCallingConvention = false;
                 context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
                 context.RealType = XP.ACCESS;
+                context.Data.IsProperty = true;
             }
             else
             {
@@ -714,10 +716,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mName = mName.Substring(0, mName.Length - "_ASSIGN".Length);
             }
             idName = SyntaxFactory.MakeIdentifier(mName);
-            bool isAccessAssign = IsAccessAssign(context.RealType);
             var attributes = getAttributes(context.Attributes);
             bool hasExtensionAttribute = false;
-            if (isAccessAssign)
+            if (context.Data.IsProperty)
             {
                 var vomods = _pool.Allocate();
                 vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword));
@@ -797,9 +798,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             bool separateMethod = false;
             context.Put(m);
-            if (isAccessAssign && !separateMethod)
+            if (context.Data.IsProperty && !separateMethod)
             {
-                if (context.Data.HasClipperCallingConvention && context.CallingConvention != null)
+                if (context.Data.HasClipperCallingConvention && context.CC != null)
                 {
                     m = m.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(
                                     ErrorCode.ERR_NoClipperCallingConventionForAccessAssign));

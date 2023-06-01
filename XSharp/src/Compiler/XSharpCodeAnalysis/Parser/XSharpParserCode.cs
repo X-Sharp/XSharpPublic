@@ -258,6 +258,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             ParameterListContext Params { get; }
         }
 
+        public interface ICallContext
+        {
+            public bool HasRefArguments { get; set; }
+        }
+        public interface IMemberWithCC
+        {
+            public CallingconventionContext CC { get; }
+        }
         public interface IEntityContext : IRuleNode, IXParseTree
         {
             string Name { get; }
@@ -268,7 +276,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             int Count { get; }
         }
-        public interface IXPPMemberContext : IMemberWithBodyContext, IBodyWithLocalFunctions
+        public interface IXPPMemberContext : IMemberWithBodyContext, IBodyWithLocalFunctions, ITypeParametersContext
         {
             bool IsStatic { get; }
 #if !VSPARSER
@@ -276,9 +284,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #endif
             AttributesContext Atts { get; }
             XppmemberModifiersContext Mods { get; }
-            ParameterListContext Parameters { get; }
             void SetStatements(StatementBlockContext stmts);
-            ExpressionContext ExprBody { get; }
+            ExpressionContext ExpressionBody { get; }
         }
         #endregion
 #if !VSPARSER
@@ -532,18 +539,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public string ShortName => null;
         }
 
-        public partial class MethodCallContext
+        public partial class MethodCallContext : ICallContext
         {
-            public bool HasRefArguments;
+            public bool HasRefArguments { get; set; }
         }
-        public partial class CtorCallContext
+        public partial class CtorCallContext: ICallContext
         {
-            public bool HasRefArguments;
+            public bool HasRefArguments { get; set; }
         }
 
-        public partial class DoStmtContext
+        public partial class DoStmtContext: ICallContext
         {
-            public bool HasRefArguments;
+            public bool HasRefArguments { get; set; }
         }
         public partial class SourceContext : ISourceContext
         {
@@ -619,14 +626,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public TypeparametersContext TypeParameters => Sig.TypeParameters;
             public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
             public ParameterListContext ParamList => Sig.ParamList;
-            public CallingconventionContext CallingConvention => Sig.CallingConvention;
+            public DatatypeContext ReturnType => Sig.Type;
 #if !VSPARSER
 
             readonly MemberData data = new();
             public MemberData Data => data;
 #endif
             public ParameterListContext Params => this.ParamList;
-            public DatatypeContext ReturnType => Sig.Type;
             public string Name => ParentName + ShortName;
             public string ShortName => this.Id.GetText();
             public LocalfuncprocModifiersContext LocalFuncProcModifiers => Modifiers;
@@ -634,21 +640,21 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public IList<object> LocalFunctions { get; set; } = null;
         }
 
-        public partial class FuncprocContext : IMemberWithBodyContext, IGlobalEntityContext, IBodyWithLocalFunctions, ITypeParametersContext
+        public partial class FuncprocContext : IMemberWithBodyContext, IGlobalEntityContext, IBodyWithLocalFunctions, ITypeParametersContext, IMemberWithCC
         {
 
             public IdentifierContext Id => this.Sig.Id;
             public TypeparametersContext TypeParameters => Sig.TypeParameters;
             public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
             public ParameterListContext ParamList => Sig.ParamList;
-            public CallingconventionContext CallingConvention => Sig.CallingConvention;
+            public CallingconventionContext CC => Sig.CallingConvention;
+            public DatatypeContext ReturnType => Sig.Type;
 
 #if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
 #endif
             public ParameterListContext Params => this.ParamList;
-            public DatatypeContext ReturnType => Sig.Type;
             public string Name => ParentName + ShortName;
             public string ShortName => this.Id.GetText();
             public FuncprocModifiersContext FuncProcModifiers => Modifiers;
@@ -668,14 +674,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             bool IsInStructure { get; }
             int RealType { get; }
         }
-        public partial class MethodContext : IMethodContext, IBodyWithLocalFunctions, ITypeParametersContext
+        public partial class MethodContext : IMethodContext, IBodyWithLocalFunctions, ITypeParametersContext, IMemberWithCC
         {
             public IdentifierContext Id => Sig.Id;
             public TypeparametersContext TypeParameters => Sig.TypeParameters;
             public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
             public ParameterListContext ParamList => Sig.ParamList;
             public DatatypeContext ReturnType => Sig.Type;
-            public CallingconventionContext CallingConvention => Sig.CallingConvention;
+            public CallingconventionContext CC => Sig.CallingConvention;
+            public ExpressionContext ExpressionBody => Sig.ExpressionBody;
 
             public bool IsInInterface => this.isInInterface();
             public bool IsInStructure => this.isInStructure();
@@ -686,7 +693,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public ParameterListContext Params => this.ParamList;
             public MemberModifiersContext Mods => this.Modifiers;
             public string ShortName => this.Id.GetText();
-            public ExpressionContext ExpressionBody => Sig.ExpressionBody;
             public string Name
             {
                 get
@@ -707,15 +713,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         }
 
-        public partial class FoxmethodContext : IMethodContext, IBodyWithLocalFunctions, ITypeParametersContext
+        public partial class FoxmethodContext : IMethodContext, IBodyWithLocalFunctions, ITypeParametersContext, IMemberWithCC
         {
             public IdentifierContext Id => Sig.Id;
             public TypeparametersContext TypeParameters => Sig.TypeParameters;
             public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
             public ParameterListContext ParamList => Sig.ParamList;
             public DatatypeContext ReturnType => Sig.Type;
-            public CallingconventionContext CallingConvention => Sig.CallingConvention;
+            public CallingconventionContext CC => Sig.CallingConvention;
             public MemberModifiersContext Mods => this.Modifiers;
+            public string ShortName => this.Sig.Id.GetText();
+            public ParameterListContext Params => this.Sig.ParamList;
+            public ExpressionContext ExpressionBody => Sig.ExpressionBody;
 
             public bool IsInInterface => false;
             public bool IsInStructure => false;
@@ -724,9 +733,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             readonly MemberData data = new();
             public MemberData Data => data;
 #endif
-            public ParameterListContext Params => this.Sig.ParamList;
-            public string ShortName => this.Sig.Id.GetText();
-            public ExpressionContext ExpressionBody => Sig.ExpressionBody;
             public string Name
             {
                 get
@@ -775,17 +781,19 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             readonly MemberData data = new();
             public MemberData Data => data;
 #endif
+            public CallingconventionContext CC => null;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public string Name => ParentName + Key.Text;
             public string ShortName => ParentName + Key.Text;
         }
-        public partial class ConstructorContext : IMemberWithBodyContext, IBodyWithLocalFunctions
+        public partial class ConstructorContext : IMemberWithBodyContext, IBodyWithLocalFunctions, IMemberWithCC
         {
 #if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
 #endif
+            public CallingconventionContext CC => CallingConvention;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => null;
             public string Name => ParentName + ShortName;
@@ -836,6 +844,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             readonly MemberData data = new();
             public MemberData Data => data;
 #endif
+            public CallingconventionContext CC => null;
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Type;
             public string Name => ParentName + ShortName;
@@ -853,6 +862,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             readonly MemberData data = new();
             public MemberData Data => data;
 #endif
+            public CallingconventionContext CC => null;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public string Name => ParentName + ShortName;
@@ -879,6 +889,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public TypeData TypeData => tdata;
             public MemberData Data => mdata;
 #endif
+            public CallingconventionContext CC => null;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public string Name => ParentName + ShortName;
@@ -938,6 +949,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             readonly MemberData data = new();
             public MemberData Data => data;
 #endif
+            public CallingconventionContext CC => null;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public string Name => this.Id.GetText();
@@ -1009,7 +1021,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public int Visibility { get; set; }
         }
 
-        public partial class XppmethodContext : IXPPMemberContext
+        public partial class XppmethodContext : IXPPMemberContext, IMemberWithCC, ITypeParametersContext
         {
             public bool IsStatic => this.Modifiers != null && this.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.CLASS || t.Type == XSharpLexer.CLASS);
 #if !VSPARSER
@@ -1019,24 +1031,27 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #endif
             public AttributesContext Atts => this.Attributes;
             public XppmemberModifiersContext Mods => this.Modifiers;
-            public ParameterListContext Params => this.ParamList;
-            public DatatypeContext ReturnType => this.Type;
-            public string ShortName => this.Id.GetText();
+            public CallingconventionContext CC => Sig.CallingConvention;
+            public ParameterListContext Params => Sig.ParamList;
+            public DatatypeContext ReturnType => Sig.Type;
+            public TypeparametersContext TypeParameters => Sig.TypeParameters;
+            public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
+            public ParameterListContext ParamList => Sig.ParamList;
+            public string ShortName => Sig.Id.GetText();
             public string Name
             {
                 get
                 {
-                    string name = this.Id.GetText() + "()";
+                    string name = Sig.Id.GetText() + "()";
                     return ParentName + name;
                 }
             }
             public StatementBlockContext Statements => StmtBlk;
             public void SetStatements(StatementBlockContext stmts) => this.StmtBlk = stmts;
-            public ParameterListContext Parameters => this.ParamList;
             public IList<object> LocalFunctions { get; set; } = null;
-            public ExpressionContext ExprBody { get { return this.ExpressionBody; } }
+            public ExpressionContext ExpressionBody => Sig.ExpressionBody;
         }
-        public partial class XppinlineMethodContext : IXPPMemberContext, IBodyWithLocalFunctions
+        public partial class XppinlineMethodContext : IXPPMemberContext, IBodyWithLocalFunctions, IMemberWithCC, ITypeParametersContext
         {
             public bool IsStatic => this.Modifiers != null && this.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.CLASS || t.Type == XSharpLexer.CLASS);
 #if !VSPARSER
@@ -1047,22 +1062,25 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public AttributesContext Atts => this.Attributes;
             public XppmemberModifiersContext Mods => this.Modifiers;
 
-            public ParameterListContext Params => this.ParamList;
-            public DatatypeContext ReturnType => this.Type;
-            public string ShortName => this.Id.GetText();
+            public ParameterListContext Params => Sig.ParamList;
+            public DatatypeContext ReturnType => Sig.Type;
+            public string ShortName => Sig.Id.GetText();
+            public ExpressionContext ExpressionBody => Sig.ExpressionBody;
+            public CallingconventionContext CC => Sig.CallingConvention;
+            public TypeparametersContext TypeParameters => Sig.TypeParameters;
+            public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
+            public ParameterListContext ParamList => Sig.ParamList;
             public string Name
             {
                 get
                 {
-                    string name = this.Id.GetText() + "()";
+                    string name = Sig.Id.GetText() + "()";
                     return ParentName + name;
                 }
             }
             public StatementBlockContext Statements => StmtBlk;
             public void SetStatements(StatementBlockContext stmts) => this.StmtBlk = stmts;
-            public ParameterListContext Parameters => this.ParamList;
             public IList<object> LocalFunctions { get; set; } = null;
-            public ExpressionContext ExprBody { get { return this.ExpressionBody; } }
         }
 
         public partial class WithBlockContext

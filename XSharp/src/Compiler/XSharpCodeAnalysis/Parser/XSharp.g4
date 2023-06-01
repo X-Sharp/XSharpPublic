@@ -618,7 +618,7 @@ statement           : Decl=localdecl                            #declarationStmt
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // validExpressionStmt check  for CONSTRUCTOR( or DESTRUCTOR(
                     | {validExpressionStmt()}? Exprs+=expression (COMMA Exprs+=expression)*  end=eos  #expressionStmt
-	            ;
+	                ;
 
 blockTokens          : Token=(SCOPE|CHECKED|UNCHECKED|UNSAFE)
                      ;
@@ -1240,12 +1240,13 @@ keywordxpp         : Token=(SHARING| SHARED| ASSIGNMENT| EXPORTED| READONLY| NOS
 
 xppclass           :  Attributes=attributes?                                // NEW Optional Attributes
                       Modifiers=xppclassModifiers?                          // [STATIC|FREEZE|FINAL]
-                       C=CLASS (Namespace=nameDot)? Id=identifier               // CLASS <ClassName>
+                       C=CLASS (Namespace=nameDot)? Id=identifier           // CLASS <ClassName>
+                       TypeParameters=typeparameters?                       // Optional Type Parameters
                        (
                           From=(FROM| SHARING) BaseTypes+=datatype (COMMA BaseTypes+=datatype)*  // [FROM <SuperClass,...>] ;
                        )?                                                                   // [SHARING <SuperClass,...>]
                        (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)? // NEW Implements
-                       // No type parameters and type parameter constraints
+                       (ConstraintsClauses+=typeparameterconstraintsclause)*             // Optional typeparameterconstraints for Generic Class
                       e=eos
                       Members+=xppclassMember*
                       ENDCLASS
@@ -1326,13 +1327,8 @@ xppaccessors        : ( Tokens+=(ACCESS | ASSIGN ) )+
 xppmethod           : Attributes=attributes?                                // NEW Optional Attributes
                       Accessors=xppaccessors?                               // [ACCESS | ASSIGN]. These are ignored by Xbase++
                       Modifiers=xppmemberModifiers?                         // [CLASS]
-                      M=METHOD (ClassId=identifier COLON)? Id=identifier    // [<ClassName>:] <MethodName>
-                      // no type parameters
-                      ParamList=parameterList?                            // Optional Parameters
-                      (AS Type=datatype)?                                   // NEW Optional return type
-                      // no type constraints
-                      // no calling convention
-                      (UDCSEP ExpressionBody=expression)?                   // New: Expression Body
+                      M=METHOD (ClassId=identifier COLON)?
+                      Sig=signature
                       end=eos
                       StmtBlk=statementBlock
                       (END METHOD eos)?
@@ -1342,13 +1338,7 @@ xppinlineMethod     : Attributes=attributes?                                 // 
                       I=INLINE
                       Accessors=xppaccessors?                                // [ACCESS | ASSIGN] 
                       Modifiers=xppmemberModifiers?                          // [CLASS]
-                      METHOD  Id=identifier                                  // METHOD <MethodName>
-                      // no type parameters
-                      (ParamList=parameterList)?                             // Optional Parameters
-                      (AS Type=datatype)?                                    // NEW Optional return type
-                      // no type constraints
-                      // no calling convention
-                      (UDCSEP ExpressionBody=expression)?                    // New: Expression Body
+                      METHOD Sig=signature
                       end=eos
                       StmtBlk=statementBlock
                       (END METHOD eos)?

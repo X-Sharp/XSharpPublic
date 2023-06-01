@@ -4028,7 +4028,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterMethod([NotNull] XP.MethodContext context)
         {
             base.EnterMethod(context);
-            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.ReturnType);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CC?.Convention, context.ReturnType);
             switch (context.RealType)
             {
                 case XP.ACCESS:
@@ -4055,19 +4055,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterFuncproc([NotNull] XP.FuncprocContext context)
         {
             base.EnterFuncproc(context);
-            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.ReturnType);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CC?.Convention, context.ReturnType);
         }
 
         public override void EnterConstructor([NotNull] XP.ConstructorContext context)
         {
             base.EnterConstructor(context);
-            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, null);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CC?.Convention, null);
         }
 
         public override void EnterVodll([NotNull] XP.VodllContext context)
         {
             base.EnterVodll(context);
-            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Cc, context.Type);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention.Cc, context.Type);
         }
         public override void EnterDelegate_([NotNull] XP.Delegate_Context context)
         {

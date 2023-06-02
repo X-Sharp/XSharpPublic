@@ -1,17 +1,27 @@
 ﻿using Community.VisualStudio.Toolkit;
+using Microsoft.ServiceHub.Framework;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.RpcContracts.Settings;
+using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Shell.ServiceBroker;
+using Microsoft.VisualStudio.Threading;
+using Microsoft.Win32;
+using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 #pragma warning disable VSTHRD012 
 namespace XSharp.LanguageService.OptionsPages
 {
     [ComVisible(true)]
-    public class XSDialogPage<T> : DialogPage where T: XSUserControl, new()
+    public class XSDialogPage<T, U> : DialogPage where T: XSUserControl, new() where U : OptionsBase, new()
     {
-        internal XSDialogPage() : base()
+        internal XSDialogPage() : base(ThreadHelper.JoinableTaskContext)
         {
-           
+            Options = new U();
         }
         protected override void OnActivate(CancelEventArgs e)
         {
@@ -29,15 +39,15 @@ namespace XSharp.LanguageService.OptionsPages
             base.LoadSettingsFromStorage();
             if (control != null)
             {
-                control.ReadValues();
+                control.ReadValues(Options);
             }
         }
         public override void SaveSettingsToStorage()
         {
             initControl();
-            control.SaveValues();
-            base.SaveSettingsToStorage();
-            XSharpLanguagePackage.Instance.optionWasChanged = true;
+            control.SaveValues(Options);
+            SetOptions(Options);
+            Options.WriteToSettings();
         }
         public override void ResetSettings()
         {
@@ -45,7 +55,7 @@ namespace XSharp.LanguageService.OptionsPages
         }
         protected override void SaveSetting(PropertyDescriptor property)
         {
-            base.SaveSetting(property);
+            // We no longer save here. The controls save directly to the options object
         }
         protected override void LoadSettingFromStorage(PropertyDescriptor prop)
         {
@@ -60,11 +70,33 @@ namespace XSharp.LanguageService.OptionsPages
                 {
                     optionPage = this
                 };
-                control.ReadValues();
+                control.ReadValues(Options);
             }
         }
 
         XSUserControl control = null;
+        public U Options { get; private set; }
+        /// <summary>
+        /// Set the properties of the page from the Options object
+        /// </summary>
+        /// <param name="options"></param>
+        public void SetOptions(U options)
+        {
+            Options = options;
+            foreach (var prop in this.GetType().GetProperties())
+            {
+                var name = prop.Name;
+                try
+                {
+                    var optprop = options.GetType().GetProperty(name);
+                    prop.SetValue(this, optprop.GetValue(options));
+                }
+                catch
+                {
+
+                }
+            }
+        }
         protected override IWin32Window Window
         {
             get

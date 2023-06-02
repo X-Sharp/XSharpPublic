@@ -9,14 +9,12 @@ namespace XSharp.LanguageService.OptionsPages
     [Guid(XSharpConstants.GeneratorOptionsPageGuidString)]
     [SharedSettings("TextEditor.XSharp",false)]
     [ComVisible(true)]
-    class GeneratorOptionsPage : XSDialogPage<GeneratorOptionsControl>
+    class GeneratorOptionsPage : XSDialogPage<GeneratorOptionsControl, GeneratorOptions>
     {
-        [DefaultValue(true)]
         public bool ShowXmlComments { get; set; }
-        [DefaultValue(0)]
         public int PublicStyle { get; set; }
-        [DefaultValue(0)]
         public int PrivateStyle { get; set; }
-    
+
+
     }
 }

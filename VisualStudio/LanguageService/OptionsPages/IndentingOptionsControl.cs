@@ -6,7 +6,6 @@ namespace XSharp.LanguageService.OptionsPages
     public partial class IndentingOptionsControl : XSUserControl
     {
 
-        private IndentingOptionsPage OurOptionPage => (IndentingOptionsPage)optionPage;
         public IndentingOptionsControl()
         {
             InitializeComponent();
@@ -62,8 +61,9 @@ namespace XSharp.LanguageService.OptionsPages
             ShowCodeSample(e.Node);
         }
 
-        internal override void ReadValues()
+        internal override void ReadValues(object options)
         {
+            base.ReadValues(options);
             foreach (TreeNode tvi in this.treeIndentStyle.Nodes)
             {
                 ReadItem(tvi);
@@ -95,8 +95,9 @@ namespace XSharp.LanguageService.OptionsPages
             }
         }
 
-        internal override void SaveValues()
+        internal override void SaveValues(object options)
         {
+            base.SaveValues(options);
             foreach (TreeNode tvi in this.treeIndentStyle.Nodes)
             {
                 SaveItem(tvi);

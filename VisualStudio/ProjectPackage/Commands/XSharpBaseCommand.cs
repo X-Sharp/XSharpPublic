@@ -47,6 +47,8 @@ namespace XSharp.Project
                 info.FileName = process;
                 if (! string.IsNullOrEmpty(parameters))
                 {
+                    if (parameters.IndexOf(' ') > -1)
+                        parameters = "\""+parameters+"\"";
                     info.Arguments = parameters;
                 }
                 info.WorkingDirectory = System.IO.Path.GetDirectoryName(process);

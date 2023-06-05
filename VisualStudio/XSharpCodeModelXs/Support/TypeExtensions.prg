@@ -97,6 +97,9 @@ BEGIN NAMESPACE XSharpModel
                     return XSharpToSystem[typename]
                 endif
             ENDIF
+            if typename:EndsWith("]") .and. typename:Contains("[")
+                return KnownTypes.SystemArray
+            endif
             var index := typename:IndexOf("<")
             if index > 0 && index < typename:Length
                 var left     := typename:Substring(0, index)
@@ -122,9 +125,10 @@ BEGIN NAMESPACE XSharpModel
     STATIC METHOD GetTypeSuffix(typeName REF STRING) AS STRING
         LOCAL suffix AS STRING
         suffix := ""
-        if typeName:EndsWith("[]")
-            typeName := typeName:Substring(0, typeName:Length -2)
-            suffix := "[]"
+        if typeName:EndsWith("]")
+            var pos := typeName:IndexOf("[")
+            suffix  := typeName:Substring(pos)
+            typeName := typeName:Substring(0, pos)
         endif
         if typeName:EndsWith("&")
             typeName := typeName:Substring(0, typeName:Length -1)
@@ -153,7 +157,7 @@ BEGIN NAMESPACE XSharpModel
             IF pos > 0
                 lhs := lhs:Substring(0,pos)
             ENDIF
-            VAR parts := rhs:Split(<CHar>{',','>'},StringSplitOptions.RemoveEmptyEntries)
+            VAR parts := rhs:Split(<Char>{',','>'},StringSplitOptions.RemoveEmptyEntries)
             VAR delim := "<"
             FOREACH VAR part IN parts
                 lhs += delim

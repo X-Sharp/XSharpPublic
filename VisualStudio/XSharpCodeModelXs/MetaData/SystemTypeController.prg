@@ -117,7 +117,7 @@ BEGIN NAMESPACE XSharpModel
 					typeName := baseName + "`" + elements:Length:ToString()
 				ENDIF
             ENDIF
-            IF typeName:EndsWith("[]")
+            IF typeName:EndsWith("]") .and. typeName:Contains("[")
                 RETURN KnownTypes.SystemArray
             ENDIF
             RETURN typeName

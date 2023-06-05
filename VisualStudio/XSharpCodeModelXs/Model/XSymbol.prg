@@ -45,8 +45,9 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ResolvedType            AS IXTypeSymbol AUTO
       PROPERTY ElementType AS STRING
             GET
-                IF SELF:TypeName:EndsWith("[]")
-                    RETURN SELF:TypeName:Substring(0, SELF:TypeName:Length -2)
+                IF SELF:TypeName:EndsWith("]")
+                    var pos := SELF:TypeName:IndexOf("[")
+                    RETURN SELF:TypeName:Substring(0, pos)
                 ENDIF
                  var index := SELF:TypeName:IndexOf("<")
                 IF index > 0

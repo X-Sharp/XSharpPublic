@@ -1024,7 +1024,7 @@ CLASS XProject
         _lastName   := originalName
         if _lastFound == null .and. originalName.IndexOf('.') > 0
             // Nested type?
-            var elements := originalName:Split(".":ToCharArray())
+            var elements := originalName:Split(<char>{'.'})
             var first := SELF:Lookup(elements.First(), usings)
             if first != NULL
                 typeName := first:FullName + "." + typeName

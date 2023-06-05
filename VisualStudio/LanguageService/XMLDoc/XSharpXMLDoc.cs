@@ -164,7 +164,7 @@ namespace XSharp.LanguageService
         public static IEnumerable<string> MemoLines(this string str, int maxLength)
         {
             str = str.Replace("\r\n", "\r");
-            var tokens = str.Split(" \t".ToCharArray());
+            var tokens = str.Split(new char[]{' ','\t'});
             var result = "";
             foreach (var token in tokens)
             {

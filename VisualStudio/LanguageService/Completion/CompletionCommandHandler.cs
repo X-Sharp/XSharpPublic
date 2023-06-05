@@ -413,7 +413,7 @@ namespace XSharp.LanguageService
             string insertionText = completion.InsertionText;
             if (ch == '.' || ch == ':')
             {
-                if (insertionText.IndexOfAny("({".ToCharArray()) == -1)
+                if (insertionText.IndexOfAny(new char[] { '(', '{' } ) == -1)
                 {
                     completion.InsertionText += ch;
                 }

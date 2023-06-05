@@ -51,7 +51,8 @@ STATIC CLASS KnownTypes
     PUBLIC CONST XSharpVOFloat      := "XSharp.__VOFloat" AS STRING
     PUBLIC CONST XSharpWinBool      := "XSharp.__WinBool" AS STRING
     PUBLIC CONST XSharpWinDate      := "XSharp.__WinDate" AS STRING
-
+    
+    PUBLIC CONST SystemArray        := "System.Array"  AS STRING
     PUBLIC CONST SystemBoolean      := "System.Boolean"  AS STRING
     PUBLIC CONST SystemByte         := "System.Byte"     AS STRING
     PUBLIC CONST SystemChar         := "System.Char"     AS STRING

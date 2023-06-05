@@ -292,8 +292,9 @@ namespace XSharp.LanguageService
                 list.addText(name + " ");
                 if (hasValue && var.Kind != Kind.DbField) // default value
                 {
-                    var text = " :=  " + var.Value + " ";
-                    list.addText(text);
+                    var text = " :=  ";
+                    list.addOperator(text);
+                    list.addText(var.Value + " ");
 
                 }
                 if (var is IXParameterSymbol xps)
@@ -385,16 +386,34 @@ namespace XSharp.LanguageService
                 }
                 name += this.typeMember.Name;
                 content.addText(name);
+                if (this.typeMember.TypeParameters?.Count > 0)
+                {
+                    bool first = true;
+                    foreach (var str in this.typeMember.TypeParameters)
+                    {
+                        if (first)
+                        {
+                            content.addOperator("<");
+                        }
+                        else
+                        {
+                            content.addOperator(",");
+                        }
+                        content.addText(str);
+                        first = false;
+                    }
+                    content.addOperator(">");
+                }
                 if (this.typeMember.Kind.HasParameters() && !this.typeMember.Kind.IsProperty())
                 {
                     var isExt = typeMember.IsExtension;
-                    content.addKeyword(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
+                    content.addOperator(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
                     bool first = true;
                     foreach (var var in this.typeMember.Parameters)
                     {
                         if (!first)
                         {
-                            content.addText(", ");
+                            content.addOperator(", ");
                         }
                         if (isExt)
                         {
@@ -404,14 +423,15 @@ namespace XSharp.LanguageService
                         first = false;
                         addVarInfo(content, var);
                     }
-                    content.addKeyword(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
+                    content.addOperator(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
                 }
                 //
                 //
                 if (!String.IsNullOrEmpty(this.typeMember.Value))
                 {
-                    var text = " := " + this.typeMember.Value;
-                    content.addText(text);
+                    var text = " := ";
+                    content.addOperator(text);
+                    content.addText(this.typeMember.Value);
                 }
                 if (this.typeMember.Kind.HasReturnType() && !String.IsNullOrEmpty(this.typeMember.TypeName))
                 {
@@ -495,6 +515,11 @@ namespace XSharp.LanguageService
             var temp = new ClassifiedTextRun(PredefinedClassificationTypeNames.WhiteSpace, " ");
             content.Add(temp);
 
+        }
+        static internal void addOperator(this List<ClassifiedTextRun> content, string kw)
+        {
+            var temp = new ClassifiedTextRun(PredefinedClassificationTypeNames.Operator, kw);
+            content.Add(temp);
         }
         static internal void addKeyword(this List<ClassifiedTextRun> content, string kw)
         {

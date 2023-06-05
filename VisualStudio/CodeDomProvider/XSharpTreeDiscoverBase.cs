@@ -1711,7 +1711,7 @@ namespace XSharp.CodeDom
                 if (name.IndexOf("`") == -1)
                 {
                     var parts = typeName.Substring(index);
-                    var genargs = parts.Split(",".ToCharArray());
+                    var genargs = parts.Split(new char[]{ ','});
                     name = name + "`" + genargs.Length.ToString();
                 }
             }

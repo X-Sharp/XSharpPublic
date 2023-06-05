@@ -153,7 +153,7 @@ BEGIN NAMESPACE XSharpModel
             IF pos > 0
                 lhs := lhs:Substring(0,pos)
             ENDIF
-            VAR parts := rhs:Split(",>":ToCharArray(),StringSplitOptions.RemoveEmptyEntries)
+            VAR parts := rhs:Split(<CHar>{',','>'},StringSplitOptions.RemoveEmptyEntries)
             VAR delim := "<"
             FOREACH VAR part IN parts
                 lhs += delim

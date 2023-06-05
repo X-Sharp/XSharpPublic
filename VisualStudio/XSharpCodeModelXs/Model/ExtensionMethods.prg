@@ -26,6 +26,19 @@ BEGIN NAMESPACE XSharpModel
 
     STATIC CLASS ExtensionMethods
 
+        static method GetTickedname(SELF name as STRING) AS STRING
+             IF name:StartsWith("@@")
+                name := name:Substring(2)
+            ENDIF
+            var pos := name:IndexOf('<')
+            if pos > 0
+                var rest := name.Substring(pos)
+                name := name.Substring(0, pos )
+                var types := rest.Split(<char>{',','>','<'}, StringSplitOptions.RemoveEmptyEntries)
+                name += "`" + types.Length.ToString()
+            endif
+            return name
+
         STATIC METHOD AddRange<T>(SELF collection as HashSet<T>, newItems as IEnumerable<T>) as VOID
             if newItems != null
                 FOREACH VAR item in newItems
@@ -57,10 +70,10 @@ BEGIN NAMESPACE XSharpModel
             IF list != NULL .AND. key != NULL
                 IF ! list:Contains(key)
                     list:Add(key)
-                    RETURN 
+                    RETURN
                 ENDIF
             ENDIF
-            RETURN 
+            RETURN
 
         STATIC METHOD DisplayName( SELF elementKind AS Kind) AS STRING
             SWITCH elementKind

@@ -40,7 +40,7 @@ namespace XSharp.Project
         {
             if (name.IndexOf("|") >= 0)
             {
-                var elements = name.Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                var elements = name.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                 name = elements[0];
                 platName = elements[1];
             }

@@ -843,7 +843,7 @@ namespace XSharp.LanguageService
                             var top = symbols.Peek();
                             if (top.Kind == Kind.Namespace && top.Name == "System")
                             {
-                                currentName = "System.Array";
+                                currentName = KnownTypes.SystemArray;
                             }
                         }
                         var types = SearchType(location, currentName, additionalUsings);
@@ -1630,6 +1630,7 @@ namespace XSharp.LanguageService
         internal static IList<IXMemberSymbol> SearchMethod(XSharpSearchLocation location, IXTypeSymbol type, string name, Modifiers minVisibility, bool staticOnly)
         {
             var result = new List<IXMemberSymbol>();
+            
             if (location == null || location.File == null || type == null)
             {
                 return result;

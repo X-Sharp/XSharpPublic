@@ -975,7 +975,7 @@ namespace XSharp.LanguageService
                 _tags.Add(span);
                 int start = span.Span.Start.GetContainingLine().LineNumber;
                 int end = span.Span.End.GetContainingLine().LineNumber;
-                if (end > start + 1)
+                if (end > start)
                 {
                     _multilineTokens.Add(span);
                 }

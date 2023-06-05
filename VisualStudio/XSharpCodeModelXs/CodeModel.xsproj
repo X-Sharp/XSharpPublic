@@ -26,13 +26,14 @@
     <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <DisabledWarnings>165,219,1030,9047,1701,1591</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <DefineConstants>DEBUG</DefineConstants>
-    <DocumentationFile>XSharpModel.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.CodeModel.Xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>

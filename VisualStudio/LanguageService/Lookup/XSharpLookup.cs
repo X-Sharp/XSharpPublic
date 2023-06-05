@@ -91,7 +91,7 @@ namespace XSharp.LanguageService
                     {
                         var types = SearchType(location, variable.TypeName, location.Usings);
                         variable.ResolvedType = types.FirstOrDefault();
-                        if (variable.ResolvedType != null)
+                        if (variable.ResolvedType != null && variable.ResolvedType.FullName != KnownTypes.SystemArray)
                         {
                             variable.TypeName = variable.ResolvedType.FullName;
                         }
@@ -252,7 +252,7 @@ namespace XSharp.LanguageService
 
         private static IXTypeSymbol GetArrayType(XSharpSearchLocation location, string elementName)
         {
-            var oType = SearchType(location, "System.Array").FirstOrDefault();
+            var oType = SearchType(location, KnownTypes.SystemArray).FirstOrDefault();
             if (oType is XPETypeSymbol peType)
             {
                 oType = new XPEArrayTypeSymbol(peType, elementName);
@@ -660,8 +660,11 @@ namespace XSharp.LanguageService
                         startOfExpression = true;
                         continue;
                     case XSharpLexer.LBRKT:
+                        if (symbols.Peek().TypeName != KnownTypes.SystemArray)
+                        {
+                            startOfExpression = true;
+                        }
                         hasBracket = true;
-                        startOfExpression = true;
                         continue;
                     case XSharpLexer.RPAREN:
                     case XSharpLexer.RCURLY:
@@ -689,7 +692,13 @@ namespace XSharp.LanguageService
                                 var top = symbols.Peek();
                                 var type = FindElementType(top, location);
                                 if (type != null)
-                                    symbols.Push(type);
+                                {
+                                    var loc = new TextRange(currentToken, currentToken);
+                                    var pos = new TextInterval(currentToken, currentToken);
+                                    var parent = location.Member;
+                                    var element = new XSourceVariableSymbol(parent, "array-element", loc, pos, type.FullName);
+                                    symbols.Push(element);
+                                }
                             }
                         }
                         else if (symbols.Count > 0)

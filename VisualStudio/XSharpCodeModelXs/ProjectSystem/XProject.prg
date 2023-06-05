@@ -678,17 +678,17 @@ CLASS XProject
 
 
     METHOD FindGlobalsInAssemblyReferences(name AS STRING, lLike := FALSE as LOGIC) AS IList<IXMemberSymbol>
-        LogTypeMessage(i"FindGlobalsInAssemblyReferences {name} {lLike}")
+        SELF:LogTypeMessage(i"FindGlobalsInAssemblyReferences {name} {lLike}")
         var dbresult := XDatabase.FindAssemblyGlobalOrDefine(name, SELF:DependentAssemblyList, lLike)
         var result := SELF:_MembersFromGlobalType(dbresult)
-        LogTypeMessage(i"FindGlobalsInAssemblyReferences {name}, found {result.Count} occurences")
+        SELF:LogTypeMessage(i"FindGlobalsInAssemblyReferences {name}, found {result.Count} occurences")
         RETURN result
 
      METHOD FindFunctionsInAssemblyReferences(name AS STRING, lLike := FALSE as LOGIC) AS IList<IXMemberSymbol>
-        LogTypeMessage(i"FindFunctionsInAssemblyReferences {name} {lLike} ")
+        SELF:LogTypeMessage(i"FindFunctionsInAssemblyReferences {name} {lLike} ")
         var dbresult := XDatabase.FindAssemblyFunction(name, SELF:DependentAssemblyList, lLike)
         var result := SELF:_MembersFromGlobalType(dbresult)
-        LogTypeMessage(i"FindFunctionsInAssemblyReferences {name}, found {result.Count} occurences")
+        SELF:LogTypeMessage(i"FindFunctionsInAssemblyReferences {name}, found {result.Count} occurences")
         RETURN result
 
 
@@ -705,7 +705,7 @@ CLASS XProject
         RETURn result
 
     METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<IXMemberSymbol>
-        LogTypeMessage(i"FindGlobalMembersLike {name} Current Project {lCurrentProject}")
+        SELF:LogTypeMessage(i"FindGlobalMembersLike {name} Current Project {lCurrentProject}")
         VAR result := List<IXMemberSymbol>{}
         var projList := ""
         if lCurrentProject
@@ -724,11 +724,11 @@ CLASS XProject
             var xmember := XSourceMemberSymbol{element, xFile}
             result:Add(xmember)
         next
-        LogTypeMessage(i"FindGlobalMembersLike {name}, found {result.Count} occurences")
+        SELF:LogTypeMessage(i"FindGlobalMembersLike {name}, found {result.Count} occurences")
         RETURN result
 
     METHOD FindFunctionsLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<IXMemberSymbol>
-        LogTypeMessage(i"FindFunctionsLike {name} Current Project {lCurrentProject}")
+        SELF:LogTypeMessage(i"FindFunctionsLike {name} Current Project {lCurrentProject}")
         VAR result := List<IXMemberSymbol>{}
         var projList := ""
         if lCurrentProject
@@ -747,35 +747,35 @@ CLASS XProject
             var xmember := XSourceMemberSymbol{element, xFile}
             result:Add(xmember)
         next
-        LogTypeMessage(i"FindFunctionsLike {name}, found {result.Count} occurences")
+        SELF:LogTypeMessage(i"FindFunctionsLike {name}, found {result.Count} occurences")
         RETURN result
 
 
     METHOD FindFunction(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMemberSymbol
         // we look in the project references and assembly references
         // pass the list of ProjectIds and AssemblyIds to the database engine
-        LogTypeMessage(ie"FindFunction {name} ")
+        SELF:LogTypeMessage(ie"FindFunction {name} ")
 
         VAR projectIds    := SELF:Id:ToString()
         IF lRecursive
             projectIds    := SELF:DependentProjectList
         ENDIF
         VAR result := XDatabase.FindFunction(name, projectIds)
-        VAR xmember := GetGlobalMember(result)
-        LogTypeMessage(ie"FindFunction {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\"} ")
+        VAR xmember := SELF:GetGlobalMember(result)
+        SELF:LogTypeMessage(ie"FindFunction {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\"} ")
         RETURN xmember
 
     METHOD FindGlobalOrDefine(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMemberSymbol
         // we look in the project references and assembly references
         // pass the list of ProjectIds and AssemblyIds to the database engine
-        LogTypeMessage(ie"FindGlobalOrDefine {name}")
+        SELF:LogTypeMessage(ie"FindGlobalOrDefine {name}")
         VAR projectIds    := SELF:Id:ToString()
         IF lRecursive
             projectIds    := SELF:DependentProjectList
         ENDIF
         VAR result := XDatabase.FindProjectGlobalOrDefine(name, projectIds)
-        VAR xmember := GetGlobalMember(result)
-        LogTypeMessage(ie"FindGlobalOrDefine {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\"} ")
+        VAR xmember := SELF:GetGlobalMember(result)
+        SELF:LogTypeMessage(ie"FindGlobalOrDefine {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\"} ")
         RETURN xmember
 
     PRIVATE METHOD GetGlobalMember(result AS IList<XDbResult>) AS IXMemberSymbol
@@ -829,7 +829,7 @@ CLASS XProject
         ENDIF
         VAR result := XDatabase.GetProjectTypesInNamespace(namespace, SELF:DependentProjectList )
         // convert the database objects to the SourceTypeSymbols
-        return GetSourceTypes(result)
+        return SELF:GetSourceTypes(result)
 
 
     METHOD GetAssemblyTypesInNamespaceLike(namespace AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
@@ -840,14 +840,14 @@ CLASS XProject
         myUsings:Add(namespace)
         VAR result := XDatabase.GetAssemblyTypesInNamespace(namespace, SELF:DependentAssemblyList )
         // convert the database objects to the PeTypeSymbols
-        result := FilterUsings(result, myUsings,"",false)
-        RETURN GetPETypes(result)
+        result := SELF:FilterUsings(result, myUsings,"",false)
+        RETURN SELF:GetPETypes(result)
 
     METHOD GetAssemblyTypesLike(startWith AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
         VAR result := XDatabase.GetAssemblyTypesLike(startWith, SELF:DependentAssemblyList )
         // convert the database objects to the PeTypeSymbols
-        result := FilterUsings(result, usings,startWith,true)
-        RETURN GetPETypes(result)
+        result := SELF:FilterUsings(result, usings,startWith,true)
+        RETURN SELF:GetPETypes(result)
 
     PRIVATE METHOD FindAssemblyById(IdAssembly as INT64) AS XAssembly
 
@@ -875,7 +875,7 @@ CLASS XProject
             endif
             IdAssembly   := element:IdAssembly
             if (lastAsm == null .or. lastAsm:Id != IdAssembly)
-                lastAsm := FindAssemblyById(IdAssembly)
+                lastAsm := SELF:FindAssemblyById(IdAssembly)
             ENDIF
             if lastAsm != null .and. lastAsm:Types:ContainsKey(fullTypeName)
                 var peType := lastAsm:Types[fullTypeName]
@@ -894,24 +894,24 @@ CLASS XProject
         RETURN SELF:_AssemblyTypeCache != NULL .and. SELF:_AssemblyTypeCache:TryGetValue(typeName, out result)
 
     METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS XPETypeSymbol
-        LogTypeMessage("FindSystemType() "+name)
+        SELF:LogTypeMessage("FindSystemType() "+name)
         IF ! XSettings.DisableForeignProjectReferences
             SELF:RefreshStrangerProjectDLLOutputFiles()
         ENDIF
         SELF:ResolveReferences()
-        IF GetTypeFromCache(name, out var petype)
+        IF SELF:GetTypeFromCache(name, out var petype)
             return petype
         endif
         // lookup the type in the Database now
         var result := XDatabase.GetAssemblyTypes(name, SELF:DependentAssemblyList)
-        result     := FilterUsings(result, usings, name, FALSE)
-        var peTypes := GetPETypes(result)
+        result     := SELF:FilterUsings(result, usings, name, FALSE)
+        var peTypes := SELF:GetPETypes(result)
         LOCAL type as XPETypeSymbol
         type := peTypes:FirstOrDefault()
         IF type != NULL
-            LogTypeMessage("FindSystemType() "+name+" found "+type:FullName)
+            SELF:LogTypeMessage("FindSystemType() "+name+" found "+type:FullName)
         ELSE
-            LogTypeMessage("FindSystemType() "+name+" not found ")
+            SELF:LogTypeMessage("FindSystemType() "+name+" not found ")
         ENDIF
         RETURN type
 
@@ -962,7 +962,7 @@ CLASS XProject
 
     METHOD GetTypesLike( startWith AS STRING, usings AS IList<STRING>) AS IList<XSourceTypeSymbol>
         VAR result := XDatabase.GetProjectTypesLike(startWith, SELF:DependentProjectList)
-        result := FilterUsings(result,usings,startWith,TRUE)
+        result := SELF:FilterUsings(result,usings,startWith,TRUE)
         RETURN SELF:GetSourceTypes(result)
 
     METHOD ClearCache(file as XFile) AS VOID
@@ -995,24 +995,24 @@ CLASS XProject
 
     METHOD Lookup(typeName AS STRING) AS XSourceTypeSymbol
         VAR usings := List<STRING>{}
-        RETURN Lookup(typeName, usings)
+        RETURN SELF:Lookup(typeName, usings)
 
     METHOD Lookup(typeName AS STRING, usings AS IList<STRING>) AS XSourceTypeSymbol
         // lookup Type definition in this project and X# projects referenced by this project
-        LogTypeMessage(i"Lookup {typeName}")
+        SELF:LogTypeMessage(i"Lookup {typeName}")
         VAR originalName := typeName
         IF originalName == _lastName .and. _lastFound != null && _lastFound.Name == typeName
             RETURN _lastFound
         ENDIF
-        usings := AdjustUsings(REF typeName, usings)
+        usings := SELF:AdjustUsings(REF typeName, usings)
         VAR pos := typeName:IndexOf('<')
         IF pos > 0
             typeName := typeName:Substring(0, pos)
         ENDIF
         VAR result  := XDatabase.GetProjectTypes(typeName, SELF:DependentProjectList)
-        result      := FilterUsings(result,usings, typeName, FALSE)
+        result      := SELF:FilterUsings(result,usings, typeName, FALSE)
 
-        var tmp  := GetType(result)
+        var tmp  := SELF:GetType(result)
         // RvdH make sure that the full typename matches if we are looking with a fully qualified type
         // So when looking for the Type Foo.SomeType (defined in an external assembly) we should not return
         // Bar.SomeType (defined in code).
@@ -1031,14 +1031,14 @@ CLASS XProject
                 return SELF:Lookup(typeName, usings)
             endif
         endif
-        LogTypeMessage(ie"Lookup {typeName}, result {iif(_lastFound != NULL, _lastFound.FullName, \"not found\" } ")
+        SELF:LogTypeMessage(ie"Lookup {typeName}, result {iif(_lastFound != NULL, _lastFound.FullName, \"not found\" } ")
         RETURN _lastFound
 
 
     METHOD FilterUsings(list AS IList<XDbResult> , usings AS IList<STRING>, typeName AS STRING, partial AS LOGIC) AS IList<XDbResult>
         VAR result := List<XDbResult>{}
         VAR checkCase := SELF:ParseOptions:CaseSensitive
-        usings := AdjustUsings(REF typeName, usings)
+        usings := SELF:AdjustUsings(REF typeName, usings)
         FOREACH VAR element IN list
             IF checkCase
                 IF partial
@@ -1161,7 +1161,7 @@ CLASS XProject
                             var xmember := list:First()
                             if list:Count > 1
                                 foreach var m in list
-                                    if EqualSourceCode(m, melement)
+                                    if SELF:EqualSourceCode(m, melement)
                                         xmember := m
                                         exit
                                     endif
@@ -1302,7 +1302,7 @@ CLASS XProject
                     endif
                 next
                 var oFile := SELF:FindXFile(fileName)
-                entities:AddRange(GetExtensionMethodsPerFile(entitiesPerFile, oFile))
+                entities:AddRange(SELF:GetExtensionMethodsPerFile(entitiesPerFile, oFile))
             next
         endif
         return entities
@@ -1329,7 +1329,7 @@ CLASS XProject
         foreach var name in names
             result:AddRange(SystemTypeController.LookForExtensions( name, SELF:_AssemblyReferences))
             var dbList := XDatabase.GetExtensionMethods(SELF:DependentProjectList, name)
-            result:AddRange(GetExtensionMethods(dbList))
+            result:AddRange(SELF:GetExtensionMethods(dbList))
         next
         return result
 
@@ -1365,14 +1365,14 @@ CLASS XProject
 
     METHOD Walk() AS VOID
         IF XSettings.EnableParseLog
-            WriteOutputMessage("Walk() ")
+            SELF:WriteOutputMessage("Walk() ")
         ENDIF
         ModelWalker.AddProject(SELF)
 
     METHOD WalkFile(file AS XFile, lNotify := FALSE AS LOGIC) AS VOID
         ModelWalker.FileWalk(file)
         IF FileWalkComplete != NULL .AND. lNotify
-            FileWalkComplete(file)
+            SELF:FileWalkComplete(file)
         ENDIF
 
     PUBLIC DELEGATE OnFileWalkComplete(xFile AS XFile) AS VOID

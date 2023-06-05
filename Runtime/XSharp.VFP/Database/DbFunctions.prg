@@ -319,11 +319,13 @@ FUNCTION DbCopyToArray(uSource, aFieldList, cbForCondition, cbWhileCondition, nN
         ENDIF
         IF lMulti
             nRows := Min(ALen(aResult), nRows)
+            aSource:Resize( (LONG) nRows)
             FOR VAR nRow := 1 TO nRows
                 FOR VAR nCol := 1 TO nColumns
                     aSource[nRow, nCol] := aResult[nRow, nCol]
                 NEXT
             NEXT
+
         ELSE
             aResult := aResult[1]
             FOR VAR nCol := 1 TO nColumns

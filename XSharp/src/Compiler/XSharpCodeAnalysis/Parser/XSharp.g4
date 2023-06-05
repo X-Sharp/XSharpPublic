@@ -874,7 +874,7 @@ primary             : Key=SELF                                                  
                     | Name=usualTypeName                                        #usualTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
                     | Type=typeName                                             #typeExpression			// Standard DotNet Types
                     | Expr=iif                                                  #iifExpression			// iif( expr, expr, expr )
-                    |  Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression
+                    |  Op=(BIT_AND | BIT_OR | BIT_XOR | BIT_NOT) LPAREN Exprs+=expression
                       (COMMA Exprs+=expression)* RPAREN                         #intrinsicExpression	// _Or(expr, expr, expr)
                     | {ExpectToken(ALIAS)}? Expr=aliasExpression                                      #aliasedExpression    // Handles all expressions with the ALIAS operator
                     | AMP LPAREN Expr=expression RPAREN                         #macro					      // &(expr)          // parens are needed because otherwise &(string) == Foo will match everything until Foo
@@ -1202,7 +1202,7 @@ keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST 
                     | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FOR | FUNCTION
                     | HIDDEN | IF | IIF | IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
                     | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SIZEOF | SUPER
-                    | TYPEOF | WHILE | TRY | VO_AND | VO_NOT | VO_OR | VO_XOR
+                    | TYPEOF | WHILE | TRY | BIT_AND | BIT_NOT | BIT_OR | BIT_XOR
                     // The following new keywords cannot be in the keywordxs list because it will match an expression when used on their own
                     | REPEAT | CONSTRUCTOR | CATCH | DESTRUCTOR | FINALLY
                     )

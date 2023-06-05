@@ -812,7 +812,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.FOX_AND:
                     r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandAmpersandToken);
                     break;
-                case XSharpParser.VO_AND:
+                case XSharpParser.BIT_AND:
                     r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
                     break;
                 case XSharpParser.OR:
@@ -820,13 +820,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.FOX_OR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BarBarToken);
                     break;
-                case XSharpParser.VO_OR:
+                case XSharpParser.BIT_OR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BarToken);
                     break;
-                case XSharpParser.VO_NOT:
+                case XSharpParser.BIT_NOT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.TildeToken);
                     break;
-                case XSharpParser.VO_XOR:
+                case XSharpParser.BIT_XOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
                     break;
 
@@ -1469,7 +1469,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.FOX_AND:
                     r = SyntaxKind.LogicalAndExpression;
                     break;
-                case XSharpParser.VO_AND:
+                case XSharpParser.BIT_AND:
                     r = SyntaxKind.BitwiseAndExpression;
                     break;
                 case XSharpParser.OR:
@@ -1477,17 +1477,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.FOX_OR:
                     r = SyntaxKind.LogicalOrExpression;
                     break;
-                case XSharpParser.VO_OR:
+                case XSharpParser.BIT_OR:
                     r = SyntaxKind.BitwiseOrExpression;
                     break;
                 case XSharpParser.LOGIC_XOR:
                 case XSharpParser.FOX_XOR:
                     r = SyntaxKind.ExclusiveOrExpression;
                     break;
-                case XSharpParser.VO_NOT:
+                case XSharpParser.BIT_NOT:
                     r = SyntaxKind.BitwiseNotExpression;
                     break;
-                case XSharpParser.VO_XOR:
+                case XSharpParser.BIT_XOR:
                     r = SyntaxKind.ExclusiveOrExpression;
                     break;
 

@@ -33,9 +33,21 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
     public partial class XSharpLexer
     {
+
+        #region constants
+        public const int VO_AND = BIT_AND;
+        public const int VO_NOT = BIT_NOT;
+        public const int VO_OR  = BIT_OR ;
+        public const int VO_XOR = BIT_XOR;
+        #endregion                          
         #region Static Helper Methods
         // Several Help methods that can be used for colorizing in an editor
         public const int EOF = IntStreamConstants.Eof;
+        /// <summary>
+        /// Is the token IF, IIF, NAMEOF, TYPEOF or SIZEOF
+        /// </summary>
+        /// <param name="iToken"></param>
+        /// <returns></returns>
         public static bool IsPseudoFunction(int iToken)
         {
             switch (iToken)
@@ -53,6 +65,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return iToken > FIRST_KEYWORD && iToken < LAST_KEYWORD;
         }
+        /// <summary>
+        /// Returns TRUE when the token is a comparisons operator, logical operator
+        /// but also when it is a symbol like LPAREN, LCURLY, COMMA, PIPE
+        /// </summary>
+        /// <param name="iToken"></param>
+        /// <returns></returns>
         public static bool IsOperator(int iToken)
         {
             return (iToken > FIRST_OPERATOR && iToken < LAST_OPERATOR)
@@ -63,6 +81,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return IsLiteral(iToken);
         }
+        /// <summary>
+        ///  Returns true If the token one of the literals, NULL_ variations or a MACRO like __ENTITY__
+        /// </summary>
+        /// <param name="iToken"></param>
+        /// <returns></returns>
         public static bool IsLiteral(int iToken)
         {
             return (iToken > FIRST_CONSTANT && iToken < LAST_CONSTANT)
@@ -77,6 +100,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             return (iToken > FIRST_TYPE && iToken < LAST_TYPE);
         }
+        /// <summary>
+        /// Return true when the keyword has been added recently and may also be used as identifier
+        /// Examples are words like ABSTRACT, VIRTUAL, YIELD etc.
+        /// </summary>
+        /// <param name="iToken"></param>
+        /// <returns></returns>
         public static bool IsPositionalKeyword(int iToken)
         {
             if (iToken > FIRST_POSITIONAL_KEYWORD && iToken < LAST_POSITIONAL_KEYWORD)
@@ -89,6 +118,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return true;
             return false;
         }
+        /// <summary>
+        /// Return true if the operator can be used between 2 identifiers, such as 
+        /// DOT, COLON, ALIAS, COLONCOLON
+        /// </summary>
+        /// <param name="iToken"></param>
+        /// <returns></returns>
         public static bool IsMemberOperator(int iToken)
         {
             switch (iToken)
@@ -823,6 +858,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         }
 
+#if VSPARSER
+        int regionLine = -1;
+#endif
         private void handleTrivia(XSharpToken t)
         {
             if (t.IsTrivia)
@@ -832,8 +870,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #if VSPARSER
             else if (t.Channel == PREPROCESSORCHANNEL)
             {
-                // Make sure #region and #endregion lines are compiled as trivia
-                _trivia.Add(t);
+                if (t.Type == PP_REGION)
+                {
+                    // Make sure #region and #endregion lines are compiled as trivia
+                    _trivia.Add(t);
+                    regionLine = t.Line;
+                }
+                else if (t.Type == PP_ENDREGION || t.Line == regionLine)
+                {
+                    _trivia.Add(t);
+                }
+                else
+                {
+                    // skip other preprocessor tokens
+                }
             }
 #endif
             else if (t.CanHaveTrivia && _trivia.Count > 0)
@@ -1901,7 +1951,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 // keywords for statements and entities are not included
                 voKeywords = new XSharpKeywords
                 {
-                    {"_AND", VO_AND},
+                    {"_AND", BIT_AND},
                     {"BREAK", BREAK},
                     {"_CAST", CAST},
                     {"EXPORT", EXPORT},
@@ -1911,9 +1961,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"IS", IS},
                     {"MEMVAR", MEMVAR},
                     {"_MEMVAR", MEMVAR},
-                    {"_NOT", VO_NOT},
-                    {"_OR", VO_OR},
-                    {"_XOR", VO_XOR},
+                    {"_NOT", BIT_NOT},
+                    {"_OR", BIT_OR},
+                    {"_XOR", BIT_XOR},
 
                     // Predefined types
                     {"ARRAY", ARRAY},
@@ -1961,7 +2011,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 {"ACCESS", ACCESS},
                 {"ALIGN", ALIGN},
-                {"_AND", VO_AND},
+                {"_AND", BIT_AND},
                 {"AS", AS},
                 {"ASPEN", ASPEN},
                 {"ASSIGN", ASSIGN},
@@ -2010,8 +2060,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"MEMVAR", MEMVAR},
                 {"METHOD", METHOD},
                 {"NEXT", NEXT},
-                {"_NOT", VO_NOT},
-                {"_OR", VO_OR},
+                {"_NOT", BIT_NOT},
+                {"_OR", BIT_OR},
                 {"OTHERWISE", OTHERWISE},
                 {"PARAMETERS", PARAMETERS},
                 {"PASCAL", PASCAL},
@@ -2038,7 +2088,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"USING", USING},
                 {"_WINCALL", WINCALL},
                 {"WHILE", WHILE},
-                {"_XOR", VO_XOR},
+                {"_XOR", BIT_XOR},
 
                 // Predefined types
                 {"ARRAY", ARRAY},

@@ -278,6 +278,12 @@ namespace XSharp.LanguageService
             protected void addVarInfo(List<ClassifiedTextRun> list, IXVariableSymbol var)
             {
                 var name = var.Name;
+                var kw = var.ModifiersKeyword;
+                if (!string.IsNullOrEmpty(kw))
+                {
+                    list.addKeyword(kw);
+                    list.addWs();
+                }
                 var hasValue = !string.IsNullOrEmpty(var.Value);
                 if (hasValue && var.Kind == Kind.DbField)
                 {

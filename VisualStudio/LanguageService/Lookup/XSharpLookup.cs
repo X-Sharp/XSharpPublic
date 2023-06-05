@@ -726,6 +726,7 @@ namespace XSharp.LanguageService
                         state = CompletionState.General;
                         break;
                     case XSharpLexer.VAR:
+                    case XSharpLexer.STEP:
                         startOfExpression = true;
                         state = CompletionState.General;
                         break;

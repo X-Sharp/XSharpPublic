@@ -158,6 +158,7 @@ namespace XSharp.LanguageService
                 else
                 {
                     isInstance = true;
+                    state = CompletionState.Members;
                 }
                 if (symbol != null)
                 {

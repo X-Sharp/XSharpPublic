@@ -1036,7 +1036,8 @@ CLASS XProject
 
 
     METHOD FilterUsings(list AS IList<XDbResult> , usings AS IList<STRING>, typeName AS STRING, partial AS LOGIC) AS IList<XDbResult>
-        VAR result := List<XDbResult>{}
+        VAR result  := List<XDbResult>{}
+        VAR emptyNs := List<XDbResult>{}
         VAR checkCase := SELF:ParseOptions:CaseSensitive
         usings := SELF:AdjustUsings(REF typeName, usings)
         FOREACH VAR element IN list
@@ -1052,7 +1053,7 @@ CLASS XProject
                 ENDIF
             ENDIF
             IF String.IsNullOrEmpty(element:Namespace)
-                result:Add(element)
+                emptyNs:Add(element)
             ELSE
                 FOREACH VAR using IN usings
                     // when we have USING System.IO we want to include types in System.IO and System.
@@ -1064,6 +1065,9 @@ CLASS XProject
                 NEXT
             ENDIF
         NEXT
+        if result:Count == 0 .and. emptyNs:Count > 0
+            result:AddRange(emptyNs)
+        endif
         RETURN result
 
     PRIVATE METHOD GetType(found AS IList<XDbResult>) AS XSourceTypeSymbol

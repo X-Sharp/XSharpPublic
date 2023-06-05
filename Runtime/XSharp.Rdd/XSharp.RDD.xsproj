@@ -95,6 +95,7 @@
     <Compile Include="DbfVfp\DbfVfp.prg" />
     <Compile Include="DbfVfp\DBFVFPSQL.prg" />
     <Compile Include="Dbf\AbstractMemo.prg" />
+    <Compile Include="Dbf\RecordList.prg" />
     <Compile Include="Dbf\DbfField.prg" />
     <Compile Include="Dbf\DbfHeader.prg" />
     <Compile Include="Dbf\DbfLocking.prg" />

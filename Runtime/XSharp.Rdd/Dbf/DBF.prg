@@ -83,6 +83,8 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     INTERNAL _inBuffer AS InputBuffer
 #endif
 
+    INTERNAL _recordList AS RecordList
+
 /*
 PROTECTED METHOD ConvertToMemory() AS LOGIC
      IF !SELF:_OpenInfo:Shared
@@ -148,6 +150,7 @@ CONSTRUCTOR()
 	SELF:_numformat:NumberDecimalSeparator := "."
 	SELF:_RelInfoPending    := NULL
 	SELF:_AllowedFieldTypes := "CDLMN"
+    SELF:_recordList := RecordList{}
 
             /// <inheritdoc />
 OVERRIDE METHOD GoTop() AS LOGIC
@@ -241,8 +244,14 @@ RETURN result
 
 /// <inheritdoc />
 OVERRIDE METHOD SetFilter(info AS DbFilterInfo) AS LOGIC
+    ClearRecordList()
 	SELF:ForceRel()
 RETURN SUPER:SetFilter(info)
+
+/// <inheritdoc />
+OVERRIDE METHOD ClearFilter( ) AS LOGIC
+    ClearRecordList()
+	RETURN SUPER:ClearFilter()
 
     /// <inheritdoc />
 OVERRIDE METHOD Skip(nToSkip AS INT) AS LOGIC
@@ -823,6 +832,7 @@ OVERRIDE METHOD Pack() AS LOGIC
 		SELF:_UpdateRecCount(nTotal) // writes the reccount to the header as well
 		SELF:Flush()
         SELF:_CheckEofBof()
+        SELF:ClearRecordList()
         //
 	ENDIF
 RETURN isOK
@@ -851,6 +861,7 @@ OVERRIDE METHOD Zap() AS LOGIC
         // Zap means, set the RecCount to zero, so any other write with overwrite datas
 		SELF:_UpdateRecCount(0) // writes the reccount to the header as well
 		SELF:Flush()
+        SELF:ClearRecordList()
         // Memo File ?
 		IF SELF:_HasMemo
             // Zap Memo
@@ -1689,7 +1700,12 @@ OVERRIDE METHOD GoHot()			AS LOGIC
 				SELF:_Hot := TRUE
 			ENDIF
 		END LOCK
-	ENDIF
+    ENDIF
+    IF ret
+        IF SELF:_FilterInfo:Active && SELF:_recordList != NULL
+            SELF:_recordList.Items[SELF:RecNo] := RecordList.RecordState.Unknown
+        ENDIF
+    ENDIF
 RETURN ret
 
 /// <summary>Is the current row </summary>
@@ -2073,6 +2089,25 @@ OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	CASE DbInfo.DBI_RM_COUNT
 	CASE DbInfo.DBI_RM_HANDLE
 		RETURN FALSE
+    CASE DbInfo.DBI_RL_HITS
+        oResult := RLHitCount
+    CASE DbInfo.DBI_RL_MISSES
+        oResult := RLMissCount
+    CASE DbInfo.DBI_RL_LEN
+        oResult := _recordList?:Length
+    CASE DbInfo.DBI_RL_CLEAR
+        ClearRecordList()
+    CASE DbInfo.DBI_RL_ENABLE
+        oResult := FALSE
+        IF (LOGIC)oNewValue != (_recordList != NULL)
+            ClearRecordList()
+            IF (LOGIC)oNewValue
+                _recordList := RecordList{}
+            ELSE
+                _recordList := NULL
+            ENDIF
+            oResult := TRUE
+        ENDIF
 	OTHERWISE
 		oResult := SUPER:Info(nOrdinal, oNewValue)
 	END SWITCH
@@ -2305,6 +2340,34 @@ ELSE
     result := SUPER:TransRec(info)
 ENDIF
 RETURN result
+
+#REGION Record list
+PUBLIC RLHitCount := 0 AS INT
+PUBLIC RLMissCount := 0 AS INT
+
+PROTECTED METHOD ClearRecordList() AS VOID
+    SELF:_recordList?:Clear()
+    RLHitCount := 0
+    RLMissCount := 0
+    RETURN
+
+OVERRIDE METHOD EvalFilter(oBlock AS ICodeblock) AS LOGIC
+    IF _recordList == NULL
+        RETURN (LOGIC) SELF:EvalBlock(oBlock)
+    ENDIF
+    VAR rli := _recordList.Items[SELF:RecNo]
+    VAR res := rli == RecordList.RecordState.Visible
+    IF rli == RecordList.RecordState.Unknown
+        res := (LOGIC) SELF:EvalBlock(oBlock)
+        _recordList.Items[SELF:RecNo] := IIF(res, RecordList.RecordState.Visible, RecordList.RecordState.Hidden)
+        RLMissCount++
+    ELSE
+        RLHitCount++
+    ENDIF
+    RETURN res
+
+#ENDREGION
+
 
 
 INTERNAL METHOD Validate() AS VOID

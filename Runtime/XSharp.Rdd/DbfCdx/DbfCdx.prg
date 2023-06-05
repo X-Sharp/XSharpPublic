@@ -71,20 +71,21 @@ BEGIN NAMESPACE XSharp.RDD
             OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	            LOCAL oResult AS OBJECT
                 oResult := NULL
-                IF nOrdinal == DbInfo.DBI_DIRTYREAD
+                BEGIN SWITCH nOrdinal
+                CASE DbInfo.DBI_DIRTYREAD
                     oResult := SELF:_dirtyRead
                     IF oNewValue IS LOGIC VAR lValue
                         SELF:_dirtyRead := lValue
                     ENDIF
-                    RETURN oResult
-                ELSEIF nOrdinal == DbInfo.DBI_STRICTREAD
+                CASE DbInfo.DBI_STRICTREAD
                     oResult := !SELF:_dirtyRead
                     IF oNewValue IS LOGIC VAR lValue
                         SELF:_dirtyRead := !lValue
                     ENDIF
-                    RETURN oResult
-                ENDIF
-                RETURN SUPER:Info(nOrdinal, oNewValue)
+                OTHERWISE
+                    oResult := SUPER:Info(nOrdinal, oNewValue)
+                END SWITCH
+                RETURN oResult
             OVERRIDE METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
                 VAR result := SELF:_indexList:Create(orderInfo)
                 if result

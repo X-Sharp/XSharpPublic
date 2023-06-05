@@ -311,6 +311,13 @@ DEFINE DBI_RL_SETFILTER := DbInfo.DBI_RL_SETFILTER
 /// <exclude />
 DEFINE DBI_RL_TEST 		:= DbInfo.DBI_RL_TEST
 
+/// <exclude />
+DEFINE DBI_RL_HITS 			:= DbInfo.DBI_RL_HITS
+/// <exclude />
+DEFINE DBI_RL_MISSES    	:= DbInfo.DBI_RL_MISSES
+/// <exclude />
+DEFINE DBI_RL_ENABLE		:= DbInfo.DBI_RL_ENABLE
+
 
 /// <exclude />
 DEFINE DBI_USER 				:= DbInfo.DBI_USER	// Start of user definable DBI_ values

@@ -23,10 +23,6 @@ BEGIN NAMESPACE XSharp.RDD
 
 
         /// <inheritdoc />
-        OVERRIDE METHOD ClearFilter() 	AS LOGIC
-            RETURN SUPER:ClearFilter()
-
-        /// <inheritdoc />
 		OVERRIDE METHOD ClearRel() AS LOGIC
             RETURN SUPER:ClearRel()
 

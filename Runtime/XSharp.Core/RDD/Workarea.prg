@@ -266,7 +266,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
 
                 IF ! recordHidden .AND. cbFilter != NULL
-                    recordHidden := ! (LOGIC) SELF:EvalBlock(cbFilter)
+                    recordHidden := ! SELF:EvalFilter(cbFilter)
                 ENDIF
                 IF recordHidden
                     result := SELF:SkipRaw(nToSkip)
@@ -1043,6 +1043,13 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_EvalResult := NULL
             ENDIF
             RETURN SELF:_EvalResult
+
+			/// <inheritdoc />
+        VIRTUAL METHOD EvalFilter(oBlock AS ICodeblock) AS LOGIC
+            // Refer to EvalBlock for compatibility.
+            // Can be overriden by children to support
+            // features like filtered record lists.
+            RETURN (LOGIC) SELF:EvalBlock(oBlock)
 
 			/// <inheritdoc />
 		VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT

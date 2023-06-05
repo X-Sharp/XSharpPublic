@@ -25,7 +25,7 @@ PUBLIC CLASS RecordList
     PRIVATE _bits AS BitArray
 
     PUBLIC PROPERTY Items[recNo AS LONG] AS RecordState GET GetRecState(recNo) SET SetRecState(recNo,VALUE)
-    PUBLIC PROPERTY Length AS LONG GET _bits:Length/2 SET SetLength(VALUE)
+    PUBLIC PROPERTY Length               AS LONG GET _bits:Length/2 SET SetLength(VALUE)
 
     PUBLIC CONSTRUCTOR()
         SELF:_bits := BitArray{0}
@@ -34,10 +34,11 @@ PUBLIC CLASS RecordList
         IF recNo < 1 .OR. recNo > Length
             RETURN RecordState.Unknown
         END IF
-        IF _bits[(recNo-1)*2]
+        var pos := (recNo-1)*2
+        IF _bits[pos]
             RETURN RecordState.Hidden
         END IF
-        IF _bits[(recNo-1)*2+1]
+        IF _bits[pos+1]
             RETURN RecordState.Visible
         END IF
         RETURN RecordState.Unknown
@@ -49,15 +50,16 @@ PUBLIC CLASS RecordList
         IF recNo > Length
             Length := (recNo + ALLOC_QUANTUM - 1) & ~(ALLOC_QUANTUM - 1)
         END IF
+        var pos := (recNo-1)*2
         IF state == RecordState.Visible
-            _bits[(recNo-1)*2] := False
-            _bits[(recNo-1)*2+1] := True
+            _bits[pos] := False
+            _bits[pos+1] := True
         ELSEIF state == RecordState.Hidden
-            _bits[(recNo-1)*2] := True
-            _bits[(recNo-1)*2+1] := False
+            _bits[pos] := True
+            _bits[pos+1] := False
         ELSE
-            _bits[(recNo-1)*2] := False
-            _bits[(recNo-1)*2+1] := False
+            _bits[pos] := False
+            _bits[pos+1] := False
         END IF
         RETURN
 

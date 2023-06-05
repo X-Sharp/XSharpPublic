@@ -611,12 +611,13 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         RETURN TRUE
     PRIVATE METHOD ParseUdcTokens() AS VOID
         DO WHILE SELF:La1 == XSharpLexer.UDC_KEYWORD
-            switch Lt1:Text:ToUpper()
+            var token := (XSharpToken) SELF:Lt1
+            switch token:Text:ToUpper()
             case "TEXT"
-                ((XSharpToken) Lt1):Type := XSharpLexer.PP_TEXT
+                token:Type := XSharpLexer.PP_TEXT
                 return
             case "ENDTEXT"
-                ((XSharpToken) Lt1):Type := XSharpLexer.PP_ENDTEXT
+                token:Type := XSharpLexer.PP_ENDTEXT
                 return
             otherwise
                 SELF:Consume()
@@ -1215,6 +1216,17 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     PRIVATE METHOD Expect(nType AS LONG) AS LOGIC => _list:Expect(nType)
     PRIVATE METHOD ExpectAny(nTypes PARAMS LONG[]) AS LOGIC => _list:ExpectAny(nTypes)
     PRIVATE METHOD ExpectAndGet(nType AS LONG, t OUT IToken) AS LOGIC => _list:ExpectAndGet(nType, OUT t)
+    /// <summary>
+    /// return TRUE when the token matches the type
+    /// </summary>
+    /// <param name="nType"></param>
+    /// <returns></returns>
+    PRIVATE METHOD Matches(nType AS LONG) AS LOGIC => _list:La1 == nType
+    /// <summary>
+    /// return TRUE when the one of the tokens matches the type
+    /// </summary>
+    /// <param name="nType"></param>
+    /// <returns></returns>
     PRIVATE METHOD Matches(nTypes PARAMS LONG[]) AS LOGIC => _list:Matches(nTypes)
     PRIVATE METHOD PushBack() AS VOID => _list:PushBack()
     PRIVATE METHOD ReadLine() AS VOID => _list:ReadLine()
@@ -1227,6 +1239,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
     PRIVATE METHOD ExpectOnThisLine(nType as LONG) AS LOGIC
         return _list:ExpectOnThisLine(nType)
 
+    /// <summary>
+    /// Return TRUE when next token = ':=' or '='
+    /// </summary>
+    /// <returns></returns>
     PRIVATE METHOD ExpectAssignOp() AS LOGIC
         RETURN SELF:ExpectAny(XSharpLexer.ASSIGN_OP, XSharpLexer.EQ)
 
@@ -2031,22 +2047,25 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         | (Attributes=attributes)? Static=STATIC (Const=CONST)? Vars=classVarList end=EOS
         ;
         */
-        IF ! Expect(XSharpLexer.GLOBAL)
+        IF ! SELF:Expect(XSharpLexer.GLOBAL)
             RETURN NULL
         ENDIF
-        Expect(XSharpLexer.CONST)
+        var lConst := SELF:Expect(XSharpLexer.CONST)
         VAR result := List<XSourceEntity>{}
         VAR classVars := List<XSourceMemberSymbol>{}
-        VAR classVar := ParseClassVar(Kind.VOGlobal)
+        VAR classVar := SELF:ParseClassVar(Kind.VOGlobal)
         classVar:SourceCode := classVar:ModVis+" GLOBAL "+ classVar:SourceCode
         classVars:Add(classVar)
-        DO WHILE Expect(XSharpLexer.COMMA)
-            classVar := ParseClassVar(Kind.VOGlobal)
+        DO WHILE SELF:Expect(XSharpLexer.COMMA)
+            classVar := SELF:ParseClassVar(Kind.VOGlobal)
             classVar:SourceCode := classVar:ModVis+" GLOBAL "+ classVar:SourceCode
             classVars:Add(classVar)
+            if lConst
+                classVar:Attributes |= Modifiers.Const
+            endif
         ENDDO
         SELF:ReadLine()
-        CopyClassVarTypes(classVars)
+        SELF:CopyClassVarTypes(classVars)
         result:AddRange(classVars)
         RETURN result
 
@@ -2174,19 +2193,19 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ENDIF
 
         LOCAL sBracket AS STRING
-        VAR isArray := Expect(XSharpLexer.DIM)
+        VAR isDim  := SELF:Expect(XSharpLexer.DIM)
         VAR id := SELF:ParseQualifiedName()
 
-        IF isArray
+        IF isDim .or. SELF:Matches(XSharpLexer.LBRKT)
             sBracket := SELF:ParseArraySub()
         ENDIF
         VAR sType := SELF:ParseDataType(TRUE)
         SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
         SELF:ReadLine()
-        IF isArray
+        IF isDim
             sType += "[]"
         ENDIF
-        VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval, sType, _modifiers} {SingleLine := TRUE, IsArray := isArray}
+        VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval, sType, _modifiers} {SingleLine := TRUE, IsArray := isDim}
         xMember:File := SELF:_file
         xMember:SourceCode := source
         RETURN <XSourceEntity>{xMember}
@@ -2203,16 +2222,14 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         (As=(AS | IS) DataType=datatype)?
         ;
         */
-        LOCAL isDim  := FALSE  AS LOGIC
-        LOCAL sId        AS STRING
         LOCAL sDefault   AS STRING
         LOCAL startToken AS IToken
         LOCAL endToken   AS IToken
         startToken := SELF:Lt1
-        isDim := Expect(XSharpLexer.DIM)
-        sId  := SELF:ParseIdentifier()
+        VAR isDim       := SELF:Expect(XSharpLexer.DIM)
+        VAR sId         := SELF:ParseIdentifier()
         VAR sBracket  := SELF:ParseArraySub()
-        IF ExpectAssignOp()
+        IF SELF:ExpectAssignOp()
             sDefault := SELF:ParseExpression()
         ENDIF
         VAR sType := SELF:ParseDataType(TRUE)
@@ -2777,12 +2794,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         // Check for <expr> IS <type> VAR <id>
         // also parses the EOS characters following the line
         DO WHILE ! SELF:Eos()
-            IF SELF:La1 == XSharpLexer.IS
-                VAR start := SELF:Lt1
-                Consume() // IS token
+            VAR start := SELF:Lt1
+            IF SELF:Expect(XSharpLexer.IS)
                 VAR type := SELF:ParseTypeName()
-                IF SELF:La1 == XSharpLexer.VAR
-                    Consume()   // VAR
+                IF SELF:Expect(XSharpLexer.VAR)
                     VAR id            := SELF:ParseIdentifier()
                     SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
                     VAR xVar          := XSourceImpliedVariableSymbol{SELF:CurrentEntity, id, range, interval}
@@ -2791,19 +2806,16 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                     SELF:_locals:Add(xVar)
                 ENDIF
 
-            ELSEIF SELF:La1 == XSharpLexer.OUT
+            ELSEIF SELF:Expect(XSharpLexer.OUT)
                 // OUT Id AS Type
-                VAR start := SELF:Lt1
-                Consume() // OUT
                 IF SELF:IsId(SELF:La1) .AND. La2 == XSharpLexer.AS
                     VAR id   := SELF:ParseIdentifier()
                     VAR type := SELF:ParseDataType(FALSE)
                     SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
                     VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, iif(type == "", _missingType, type)}
                     SELF:_locals:Add(xVar)
-                ELSEIF SELF:La1 == XSharpLexer.VAR
+                ELSEIF SELF:Expect(XSharpLexer.VAR)
                     // OUT VAR Id, when Id = '_' then discard and do not create a local
-                    Consume()   // Var
                     VAR id         := SELF:ParseIdentifier()
                     IF id          != "_"
                         SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
@@ -2812,19 +2824,18 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                         // Todo: Get Expression for OUT variable
                         SELF:_locals:Add(xVar)
                     ENDIF
-                ELSEIF SELF:La2 == XSharpLexer.NULL
+                ELSEIF SELF:Expect(XSharpLexer.NULL)
                     // OUT NULL, also discard
-                    Consume()
+                    NOP
                 ENDIF
             ELSEIF LastToken:Type == XSharpLexer.CASE .and. SELF:IsId(SELF:La1) .and. SELF:La2 == XSharpLexer.AS       // CASE x as SomeType
-                VAR start := SELF:Lt1
                 VAR id    := SELF:ParseIdentifier()
                 VAR type  := SELF:ParseDataType(FALSE)
                 SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
                 VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, iif(type == "", _missingType, type)}
                 SELF:_locals:Add(xVar)
             ELSE
-                Consume()
+                SELF:Consume()
             ENDIF
         ENDDO
         SELF:ReadUntilEos()
@@ -2874,7 +2885,10 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                 ENDIF
             ENDIF
         CASE XSharpLexer.ID
-            IF SELF:SupportsMemVars .and. SELF:LastToken != NULL .AND. (SELF:LastToken:Type == XSharpLexer.PUBLIC .OR. SELF:LastToken:Type == XSharpLexer.PRIVATE)
+            // STATIC ID
+            if SELF:LastToken:Type == XSharpLexer.STATIC
+                SELF:ParseDeclarationStatement()
+            elseIF SELF:SupportsMemVars .and. SELF:LastToken != NULL .AND. (SELF:LastToken:Type == XSharpLexer.PUBLIC .OR. SELF:LastToken:Type == XSharpLexer.PRIVATE)
                 SELF:PushBack()
                 IF ! SELF:ParseXBaseDeclarationStatement()
                     SELF:ReadLine()
@@ -2902,61 +2916,47 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         //                   | STATIC=STATIC LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  END=eos #varLocalDecl
 
 
-        LOCAL lStatic AS LOGIC
+        LOCAL lStatic := LastToken:Type == XSharpLexer.STATIC AS LOGIC
         LOCAL lImplied := FALSE AS LOGIC
-        IF SELF:La1 == XSharpLexer.LOCAL
-            Consume()
-            IF SELF:La1 == XSharpLexer.STATIC
-                lStatic := TRUE
-                Consume()
-            ENDIF
-            IF SELF:La1 == XSharpLexer.IMPLIED
-                lImplied := TRUE
-                Consume()
-            ENDIF
-            IF SELF:La1 == XSharpLexer.STATIC
-                lStatic := TRUE
-                Consume()
+        IF SELF:Expect(XSharpLexer.LOCAL)
+            lStatic  := SELF:Expect(XSharpLexer.STATIC)
+            lImplied := SELF:Expect(XSharpLexer.IMPLIED)
+            if !lStatic
+                lStatic  := SELF:Expect(XSharpLexer.STATIC)
             ENDIF
             IF SELF:La1 == XSharpLexer.ARRAY .and. _dialect == XSharpDialect.FoxPro
-                Consume()
+                SELF:Consume()
             ENDIF
-        ELSEIF SELF:La1 == XSharpLexer.STATIC
+        ELSEIF SELF:Expect(XSharpLexer.STATIC)
             lStatic := TRUE
-            Consume()
             IF SELF:La1 == XSharpLexer.LOCAL
-                Consume()
-            ELSEIF SELF:La1 == XSharpLexer.VAR
-                Consume()
+                SELF:Consume()
+            ELSEIF SELF:Expect(XSharpLexer.VAR)
                 lImplied  := TRUE
             ELSEIF XSharpLexer.IsKeyword(SELF:La1)      // STATIC Keyword should exit
                 RETURN FALSE
             ENDIF
-            IF SELF:La1 == XSharpLexer.IMPLIED
+            IF SELF:Expect(XSharpLexer.IMPLIED)
                 lImplied := TRUE
-                Consume()
             ENDIF
-        ELSEIF SELF:La1 == XSharpLexer.VAR
-            Consume()
+        ELSEIF SELF:Expect(XSharpLexer.VAR)
             lImplied  := TRUE
-        ELSE
+        ELSEIF ! lStatic
             RETURN FALSE
         ENDIF
         VAR result := List<XSourceVariableSymbol>{}
         IF lImplied
-            VAR xVar := SELF:ParseImpliedVar()
+            VAR xVar := SELF:ParseImpliedVar(lStatic)
             result:Add(xVar)
-            DO WHILE SELF:La1 == XSharpLexer.COMMA
-                Consume()
-                xVar := SELF:ParseImpliedVar()
+            DO WHILE SELF:Expect(XSharpLexer.COMMA)
+                xVar := SELF:ParseImpliedVar(lStatic)
                 result:Add(xVar)
             ENDDO
         ELSE
-            VAR xVar := SELF:ParseLocalVar()
+            VAR xVar := SELF:ParseLocalVar(lStatic)
             result:Add(xVar)
-            DO WHILE SELF:La1 == XSharpLexer.COMMA
-                Consume()
-                xVar := SELF:ParseLocalVar()
+            DO WHILE SELF:Expect(XSharpLexer.COMMA)
+                xVar := SELF:ParseLocalVar(lStatic)
                 result:Add(xVar)
             ENDDO
         ENDIF
@@ -2981,27 +2981,20 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         SELF:ReadLine()
         RETURN TRUE
 
-    PRIVATE METHOD ParseLocalVar AS XSourceVariableSymbol
+    PRIVATE METHOD ParseLocalVar(lStatic as logic) AS XSourceVariableSymbol
         /*
         //localvar           : (CONST=CONST)? ( DIM=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?
         //                     (Op=assignoperator Expression=expression)? (AS=(AS | IS) DataType=datatype)?
-        //                   ;
+        //
+        // The location of the local is linked to the Id and not to the LOCAL keyword
         */
-        LOCAL lConst   := FALSE AS LOGIC
-        LOCAL lDim     := FALSE AS LOGIC
-        LOCAL expr     AS IList<IToken>
-        LOCAL start    := SELF:Lt1 AS IToken
-        IF SELF:La1 == XSharpLexer.CONST
-            lConst := TRUE
-            Consume()
-        ENDIF
-        IF SELF:La1 == XSharpLexer.DIM
-            lDim := TRUE
-            Consume()
-        ENDIF
-        VAR id := SELF:ParseIdentifier()
+        LOCAL expr  AS IList<IToken>
+        LOCAL start := SELF:Lt1 AS IToken
+        VAR lConst  := SELF:Expect(XSharpLexer.CONST)
+        VAR lDim    := SELF:Expect(XSharpLexer.DIM)
+        VAR id      := SELF:ParseIdentifier()
         VAR arraysub := SELF:ParseArraySub()
-        IF ExpectAssignOp()
+        IF SELF:ExpectAssignOp()
             expr       := SELF:ParseExpressionAsTokens()
         ENDIF
         VAR type     := SELF:ParseDataType(TRUE)
@@ -3014,28 +3007,37 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             xVar:IsArray := TRUE
         ENDIF
         xVar:Expression := expr
+        if lConst
+            xVar:Attributes |= Modifiers.Const
+        endif
+        if lStatic
+            xVar:Attributes |= Modifiers.Static
+        endif
         IF expr != NULL
             xVar:Value := SELF:TokensAsString(expr)
         endif
         RETURN xVar
 
-    PRIVATE METHOD ParseImpliedVar() AS XSourceVariableSymbol
+    PRIVATE METHOD ParseImpliedVar(lStatic as LOGIC) AS XSourceVariableSymbol
         // impliedvar: (Const=CONST)? Id=identifier Op=assignoperator Expression=expression
-        LOCAL lConst   := FALSE AS LOGIC
-        LOCAL lDim     := FALSE AS LOGIC
+        // The location of the local is linked to the Id and not to the VAR or IMPLIED keyword
+
         LOCAL expr     AS IList<IToken>
-        LOCAL start    := SELF:Lt1 AS IToken
-        IF SELF:La1 == XSharpLexer.CONST
-            lConst := TRUE
-            Consume()
-        ENDIF
-        VAR id := SELF:ParseIdentifier()
-        IF ExpectAssignOp()
+        LOCAL start := SELF:Lt1 AS IToken
+        VAR lConst  := SELF:Expect(XSharpLexer.CONST)
+        VAR id      := SELF:ParseIdentifier()
+        IF SELF:ExpectAssignOp()
             expr := SELF:ParseExpressionAsTokens()
         ENDIF
         SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
         VAR xVar     := XSourceImpliedVariableSymbol{SELF:CurrentEntity, id,  range, interval}
         xVar:Expression := expr
+        if lConst
+            xVar:Attributes |= Modifiers.Const
+        endif
+        if lStatic
+            xVar:Attributes |= Modifiers.Static
+        endif
         xVar:ImpliedKind := ImpliedKind.Assignment
         xVar:Value := SELF:TokensAsString(expr)
         RETURN xVar

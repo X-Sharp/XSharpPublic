@@ -89,7 +89,6 @@
     <Compile Include="$(Solutiondir)Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
-
     <Compile Include="AEF File.prg" />
     <Compile Include="Application Abstract.prg" />
     <Compile Include="Base Object.prg" />
@@ -110,6 +109,11 @@
     <Folder Include="Properties" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DotNet.ReproducibleBuilds">
+      <Version>1.1.1</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
     </PackageReference>

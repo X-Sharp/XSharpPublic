@@ -308,7 +308,7 @@ namespace XSharp.LanguageService
                 return false;
             }
             bool moveCursorBack = false;
-            ITextCaret caret = session.TextView.Caret; ;
+            ITextCaret caret = session.TextView.Caret;
             WriteOutputMessage("CompleteCompletionSession()");
             bool addClose = false;
             Kind kind = Kind.Unknown;
@@ -411,6 +411,14 @@ namespace XSharp.LanguageService
             var type = props.Type;
             var triggerChar = props.Char;
             string insertionText = completion.InsertionText;
+            if (props.Filter?.Length > 0)
+            {
+                if (completion.InsertionText.StartsWith(props.Filter, StringComparison.OrdinalIgnoreCase))
+                {
+                    moveCursorBack = true;
+                    props.NumCharsToDelete = props.Filter.Length;
+                }
+            }
             if (ch == '.' || ch == ':')
             {
                 if (insertionText.IndexOfAny(new char[] { '(', '{' } ) == -1)

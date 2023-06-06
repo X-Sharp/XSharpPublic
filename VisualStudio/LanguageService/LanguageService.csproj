@@ -167,6 +167,7 @@
     <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
       <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptionsPages\Options.cs" />
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -236,10 +237,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.492</Version>
+      <Version>15.0.503</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
-      <Version>0.13.0</Version>
+      <Version>0.14.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Language">
       <Version>15.8.525</Version>
@@ -252,9 +253,6 @@
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.ServiceModel.Primitives">
-      <Version>4.10.0</Version>
     </PackageReference>
     <PackageReference Include="VSLangProj150">
       <Version>16.7.30328.74</Version>

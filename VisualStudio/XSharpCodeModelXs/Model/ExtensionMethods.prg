@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharpModel
 
 
     STATIC CLASS SynchronizedExtensionMethods
-        STATIC METHOD AddRange<T>(SELF items as SynchronizedCollection<T> ,  newItems as IEnumerable<T> ) AS VOID
+        STATIC METHOD AddRange<T>(SELF items as ICollection<T> ,  newItems as IEnumerable<T> ) AS VOID
             if newItems != null
                 FOREACH VAR item in newItems
                     items:Add(item)

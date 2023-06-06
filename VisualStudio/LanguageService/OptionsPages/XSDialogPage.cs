@@ -1,17 +1,6 @@
-﻿using Community.VisualStudio.Toolkit;
-using Microsoft.ServiceHub.Framework;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.RpcContracts.Settings;
-using Microsoft.VisualStudio.Settings;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Shell.ServiceBroker;
-using Microsoft.VisualStudio.Threading;
-using Microsoft.Win32;
-using System;
+﻿using Microsoft.VisualStudio.Shell;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 #pragma warning disable VSTHRD012 
 namespace XSharp.LanguageService.OptionsPages

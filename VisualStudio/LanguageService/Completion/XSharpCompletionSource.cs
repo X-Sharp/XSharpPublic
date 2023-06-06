@@ -129,7 +129,7 @@ namespace XSharp.LanguageService
                 if (location == null)
                     return;
                 var tokenList = XSharpTokenTools.GetTokenList(location, out state, includeKeywords);
-                var lastToken = tokenList.LastOrDefault();
+                var lastToken = tokenList.LastOrDefault(t => t.StopIndex < location.Position);
                 if (lastToken != null) 
                 {
                     if (lastToken.Type != XSharpLexer.DOT && lastToken.Type != XSharpLexer.COLON)
@@ -151,17 +151,23 @@ namespace XSharp.LanguageService
 
                 var symbol = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General).FirstOrDefault();
                 var isInstance = true;
-                if (symbol is IXTypeSymbol)
+                var memberName = "";
+                if (symbol is XSourceUndeclaredVariableSymbol)
                 {
-                    isInstance = false;
+                    symbol = null;
                 }
-                else
+                else if (symbol != null)
                 {
-                    isInstance = true;
-                    state = CompletionState.Members;
-                }
-                if (symbol != null)
-                {
+                    if (symbol is IXTypeSymbol xtype)
+                    {
+                        isInstance = false;
+                        type = xtype;
+                    }
+                    else
+                    {
+                        isInstance = true;
+                        state = CompletionState.Members;
+                    }
 
                     switch (lastToken.Type)
                     {
@@ -180,17 +186,7 @@ namespace XSharp.LanguageService
                         default:
                             break;
                     }
-
-                }
-                var memberName = "";
-                // Check for members, locals etc and convert the type of these to IXTypeSymbol
-                if (symbol != null)
-                {
-                    if (symbol is IXTypeSymbol xtype)
-                    {
-                        type = xtype;
-                    }
-                    else if (symbol is IXMemberSymbol xmember)
+                    if (symbol is IXMemberSymbol xmember)
                     {
                         if (xmember.Kind.HasParameters() && tokenList.Count( t => t.Type == XSharpLexer.LPAREN) > 0)
                         {
@@ -267,7 +263,7 @@ namespace XSharp.LanguageService
                     if (string.IsNullOrEmpty(filterText) && type ==null)
                     {
                         filterText = helpers.TokenListAsString(tokenList);
-                        if (filterText.Length > 0 && !filterText.EndsWith(".") && state != CompletionState.General)
+                        if (filterText.Length > 0 && !filterText.EndsWith(".") && symbol != null && state != CompletionState.General)
                             filterText += ".";
                     }
                     if (type == null && state.HasFlag(CompletionState.Namespaces))

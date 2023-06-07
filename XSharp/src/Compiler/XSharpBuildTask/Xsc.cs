@@ -738,7 +738,7 @@ namespace XSharp.Build
         {
             // VO Compatibility switches
             commandline.AppendPlusOrMinusSwitch("/nostddefs", _store, nameof(NoStandardDefs));
-            if (! NoStandardDefs && ! string.IsNullOrEmpty(StandardDefs))
+            if (!string.IsNullOrEmpty(StandardDefs))
             {
                 commandline.AppendSwitchIfNotNull("/stddefs:", StandardDefs);
             }

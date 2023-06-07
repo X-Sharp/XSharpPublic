@@ -340,7 +340,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _macroDefines.Add(option, (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token.Text) { SourceSymbol = token }); 
             }
 
-            if (!_options.NoStdDef)
+            if (!_options.NoStdDef || !String.IsNullOrEmpty(_options.StdDefs))
             {
                 // when the compiler option nostddefs is not set:
                 // read XSharpDefs.xh from the XSharp Include folder,
@@ -539,10 +539,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var ppoStream = new FileStream(ppoFile, FileMode.Create, FileAccess.Write, FileShare.None);
                             _ppoWriter = new StreamWriter(ppoStream, this._encoding);
                         }
+#if !VSPARSER
                         else if (File.Exists(ppoFile))
                         {
                             File.Delete(ppoFile);
                         }
+#endif
                     }
                 }
                 catch (Exception e)
@@ -552,7 +554,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     Error(token, ErrorCode.ERR_PreProcessorError, "Error processing PPO file: " + e.Message);
                 }
 #endif
-            }
+                    }
             // Add default IncludeDirs;
             if (!string.IsNullOrEmpty(options.DefaultIncludeDir))
             {

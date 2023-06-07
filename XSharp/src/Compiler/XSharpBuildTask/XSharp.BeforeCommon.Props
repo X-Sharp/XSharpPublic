@@ -12,6 +12,7 @@
 <Project>
 
 <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.xsproj'">
+    <XSharpMsBuildDir Condition="'$(_XSharpTasksDirectory)' != ''">$(_XSharpTasksDirectory)</XSharpMsBuildDir>
     <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == '' and '$(MSBuildExtensionsPath64)'=='' " >$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\XSharpBV\XSharp@XSharpPath)\MsBuild</XSharpMsBuildDir>
     <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == '' and '$(MSBuildExtensionsPath64)'!='' " >$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\XSharpBV\XSharp@XSharpPath)\MsBuild</XSharpMsBuildDir>
     <XSharpMsBuildDir Condition="'$(XSharpMsBuildDir)' == ''" >$(MSBuildProgramFiles32)\XSharp\MsBuild</XSharpMsBuildDir>

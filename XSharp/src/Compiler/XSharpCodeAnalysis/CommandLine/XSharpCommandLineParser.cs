@@ -486,6 +486,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             bool withRT = false;
             var newDialect = options.Dialect;
+            if (options.NoStdDef && !string.IsNullOrEmpty(options.StdDefs))
+            {
+                // if a StdDefs override is specified, then we do not allow NoStdDef
+                options.NoStdDef = false;
+            }
             if (options.Dialect == XSharpDialect.Core)
             {
                 if (!options.ExplicitOptions.HasFlag(CompilerOption.AllowNamedArgs))

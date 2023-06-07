@@ -987,6 +987,11 @@ namespace Mono.Cecil {
 			var map = new TextMap ();
 			map.AddMap (TextSegment.ImportAddressTable, module.Architecture == TargetArchitecture.I386 ? 8 : 0);
 			map.AddMap (TextSegment.CLIHeader, 0x48, 8);
+			var pe64 = module.Architecture == TargetArchitecture.AMD64 || module.Architecture == TargetArchitecture.IA64 || module.Architecture == TargetArchitecture.ARM64;
+			// Alignment of the code segment must be set before the code is written
+			// These alignment values are probably not necessary, but are being left in
+			// for now in case something requires them.
+			map.AddMap (TextSegment.Code, 0, !pe64 ? 4 : 16);
 			return map;
 		}
 
@@ -2192,6 +2197,7 @@ namespace Mono.Cecil {
 			case ElementType.None:
 			case ElementType.Var:
 			case ElementType.MVar:
+			case ElementType.GenericInst:
 				signature.WriteInt32 (0);
 				break;
 			case ElementType.String:
@@ -2922,8 +2928,11 @@ namespace Mono.Cecil {
 			if (parameters.Count != arguments.Count)
 				throw new InvalidOperationException ();
 
-			for (int i = 0; i < arguments.Count; i++)
-				WriteCustomAttributeFixedArgument (parameters [i].ParameterType, arguments [i]);
+			for (int i = 0; i < arguments.Count; i++) {
+				var parameterType = GenericParameterResolver.ResolveParameterTypeIfNeeded (
+					attribute.Constructor, parameters [i]);
+				WriteCustomAttributeFixedArgument (parameterType, arguments [i]);
+			}
 		}
 
 		void WriteCustomAttributeFixedArgument (TypeReference type, CustomAttributeArgument argument)

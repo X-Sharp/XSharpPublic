@@ -1,8 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net40</TargetFrameworks>
-    <VsExternalDir>$(SolutionDir)\external\$(ConfigurationName)</VsExternalDir>
-
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ProjectInfo.cs" />
@@ -14,13 +12,4 @@
     <Compile Include="Mono.Collections.Generic\*.cs" />
     <Compile Include="Mono.Security.Cryptography\*.cs" />
   </ItemGroup>
- <Target Name="CreateDirectories" AfterTargets="BeforeBuild" >
-    <MakeDir Directories="$(VsExternalDir)" /> 
-  </Target>
-  <Target Name="CopyFiles" AfterTargets="Build" >
-    <ItemGroup>
-      <MonoCecilFiles Include="$(OutputPath)\XSharp.Mono.Cecil*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(MonoCecilFiles)" DestinationFolder="$(VsExternalDir)" />
-  
 </Project>

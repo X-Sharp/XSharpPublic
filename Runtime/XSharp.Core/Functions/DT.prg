@@ -332,72 +332,72 @@ FUNCTION CToDt(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 // We introduce a special version of the function that handles many of VO's strange behaviors when year is specified 
 // last in the date format template. If the year is not specified last, then the behavior is yet again very different
 STATIC FUNCTION _CToDt_YearAtTheEnd(cDate AS STRING, nDayPos AS INT, nMonthPos AS INT, nYearPos AS INT) AS DateTime
-
+	
 	LOCAL FUNCTION Local_SplitDate(cDate AS STRING) AS INT[]
 		LOCAL aNums := INT[]{3} AS INT[]
-	    LOCAL nCurChar := 0 AS INT
+		LOCAL nCurChar := 0 AS INT
 		LOCAL nCurGroup := 0 AS INT
-	    LOCAL nCurLength := 0 AS INT
-	    LOCAL cChar AS Char
-	    cDate := cDate:Trim()
-	    DO WHILE nCurChar < cDate:Length
-	    	cChar := cDate[nCurChar]
-	    	nCurChar ++
-	        IF cChar >= '0' .AND. cChar <= '9'
-	            nCurLength ++
-	            IF nCurLength > 2
-	            	RETURN NULL
-	            END IF
-	            aNums[nCurGroup] *= 10
-	            aNums[nCurGroup] += (cChar - c'0')
+		LOCAL nCurLength := 0 AS INT
+		LOCAL cChar AS Char
+		cDate := cDate:Trim()
+		DO WHILE nCurChar < cDate:Length
+			cChar := cDate[nCurChar]
+			nCurChar ++
+			IF cChar >= '0' .AND. cChar <= '9'
+				nCurLength ++
+				IF nCurLength > 2
+					RETURN NULL
+				END IF
+				aNums[nCurGroup] *= 10
+				aNums[nCurGroup] += (cChar - c'0')
 			ELSE
-	            // Next number group, so also space after numbers is separator
+		            // Next number group, so also space after numbers is separator
 				nCurGroup ++
 				nCurLength := 0
 				IF nCurGroup > 1 // we handle the year part below
 					EXIT
-	            END IF
+				END IF
 			END IF
-	    END DO
-	    
-	    LOCAL cYear := cDate:Substring(nCurChar) AS STRING
-	    LOCAL nYear := 0 AS INT
-	    LOCAL nYearLength := 0 AS INT
-	    LOCAL nMultiplier := 1 AS INT
-	    nCurChar := cYear:Length - 1
-	    DO WHILE nCurChar >= 0
-	    	cChar := cYear[nCurChar]
-	    	nCurChar --
-	    	IF cChar >= '0' .AND. cChar <= '9'
-	    		nYearLength ++
-	    		IF nYearLength > 4
-	    			RETURN NULL
-	    		END IF
-	    		nYear += (cChar - c'0') * nMultiplier
-	    		nMultiplier *= 10
-	    	ELSE
-	    		EXIT
-	    	END IF
-	    ENDDO
-	    
-	    SWITCH nYearLength
-	    CASE 1
-	    CASE 2
-	    	// VO behavior...
-	    	IF (nYearLength == 1 .and. cYear:Length > 2) .or. (nYearLength == 2 .and. cYear:Length > 3)
-	    		RETURN NULL
-	    	END IF
-		    aNums[2] := - nYear // use SetEpoch() setting
-	    CASE 3
-	    	RETURN NULL
-	    CASE 4
-	    	aNums[2] := nYear
-	    OTHERWISE
-	    	RETURN NULL
-	    	// actually, if no year is specified, then VO uses the middle number also for the year!
-	    	// so CToD("05.05") results to 05.05.2005
-	    	// but this is too stupid, we will not emulate it
-	    END SWITCH
+		END DO
+		
+		LOCAL cYear := cDate:Substring(nCurChar) AS STRING
+		LOCAL nYear := 0 AS INT
+		LOCAL nYearLength := 0 AS INT
+		LOCAL nMultiplier := 1 AS INT
+		nCurChar := cYear:Length - 1
+		DO WHILE nCurChar >= 0
+			cChar := cYear[nCurChar]
+			nCurChar --
+			IF cChar >= '0' .AND. cChar <= '9'
+				nYearLength ++
+				IF nYearLength > 4
+					RETURN NULL
+				END IF
+				nYear += (cChar - c'0') * nMultiplier
+				nMultiplier *= 10
+			ELSE
+				EXIT
+			END IF
+		ENDDO
+		
+		SWITCH nYearLength
+		CASE 1
+		CASE 2
+		    	// VO behavior...
+			IF (nYearLength == 1 .and. cYear:Length > 2) .or. (nYearLength == 2 .and. cYear:Length > 3)
+				RETURN NULL
+			END IF
+			aNums[2] := - nYear // use SetEpoch() setting
+		CASE 3
+			RETURN NULL
+		CASE 4
+			aNums[2] := nYear
+		OTHERWISE
+			RETURN NULL
+		    	// actually, if no year is specified, then VO uses the middle number also for the year!
+		    	// so CToD("05.05") results to 05.05.2005
+		    	// but this is too stupid, we will not emulate it
+		END SWITCH
 		RETURN aNums
 	END FUNCTION
 
@@ -410,24 +410,24 @@ STATIC FUNCTION _CToDt_YearAtTheEnd(cDate AS STRING, nDayPos AS INT, nMonthPos A
 		IF aNums == NULL
 			RETURN DateTime.MinValue
 		END IF
-        nDay := aNums[nDayPos]
-        nMonth := aNums[nMonthPos]
-        nYear := aNums[nYearPos]
-        IF nDay != 0 .AND. nMonth != 0
-		    IF nYear <= 0
-			    // Century missing ?
-			    nYear := - nYear
-			    dDate := ConDateTime((DWORD)nYear, (DWORD)nMonth, (DWORD)nDay)
-		    ELSE
-			    dDate := System.DateTime{nYear, nMonth, nDay}
-            ENDIF
-        ELSE
-            dDate := DateTime.MinValue
-        ENDIF
+		nDay := aNums[nDayPos]
+		nMonth := aNums[nMonthPos]
+		nYear := aNums[nYearPos]
+		IF nDay != 0 .AND. nMonth != 0
+			IF nYear <= 0
+				    // Century missing ?
+				nYear := - nYear
+				dDate := ConDateTime((DWORD)nYear, (DWORD)nMonth, (DWORD)nDay)
+			ELSE
+				dDate := System.DateTime{nYear, nMonth, nDay}
+			ENDIF
+		ELSE
+			dDate := DateTime.MinValue
+		ENDIF
 	CATCH
 		dDate := DateTime.MinValue
 	END TRY
-	RETURN dDate
+RETURN dDate
 
 
 /// <summary>

@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			SetDateFormat("dd/mm/yyyy")
 			Assert.Equal(2016.01.01 ,CToD("01/01/2016"))
             Assert.Equal(2016.02.13 ,CToD("13/02/2016"))
-            Assert.Equal(2016.02.13 ,CToD("   13/   02/   2016"))
+            Assert.Equal(NULL_DATE , CToD("   13/   02/   2016"))
 			Assert.Equal(0001.01.02 ,CToD("02/01/0001"))
 			Assert.Equal(1901.01.01 ,CToD("01/01/01"))
 			SetDateFormat("mm/dd/yyyy")
@@ -42,10 +42,58 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal(2016.12.05 ,CToD(" 5 12 2016"))
 			Assert.Equal(2016.12.05 ,CToD("   5 12 2016"))
 			Assert.Equal(2016.12.05 ,CToD("   5 12 2016   "))
-			Assert.Equal(2016.12.05 ,CToD("5  12 2016") )
+			Assert.Equal(NULL_DATE , CToD("5  12 2016") )
 			Assert.Equal(2016.12.05 ,CToD("5 12  2016") )
-			Assert.Equal(2016.12.05 ,CToD(e"\t5 12  2016") )
+
+			Assert.Equal(2016.12.05 ,CToD(e"\t5 12 2016") )
 			Assert.Equal(2016.01.01 ,CToD("   1 1 2016   "))
+
+			SetDateFormat("DD.MM.YYYY")
+			SetEpoch(1940)
+
+			Assert.Equal(2023.02.01 ,CToD("01.02.23"))
+			Assert.Equal(2023.02.01 ,CToD("01.02.2023"))
+			Assert.Equal(2023.02.01 ,CToD("01.02.23 "))
+			Assert.Equal(2023.02.01 ,CToD("01.02.23  "))
+			Assert.Equal(2023.02.01 ,CToD("01.02.23   "))
+			Assert.Equal(NULL_DATE  ,CToD("01.02.2023  $$"))
+			Assert.Equal(NULL_DATE  ,CToD("01.02.23    $$"))
+			Assert.Equal(2023.02.01 ,CToD("01.02. 2023"))
+			Assert.Equal(2023.02.01 ,CToD("01.02.  2023"))
+			Assert.Equal(2023.02.01 ,CToD("01.02.   2023"))
+			Assert.Equal(2023.02.01 ,CToD("01.02.    2023"))
+			Assert.Equal(2023.02.01 ,CToD("01.02%^%!@&2023"))
+			Assert.Equal(2023.02.01 ,CToD("01.02%^ ! 2023  "))
+			Assert.Equal(2023.03.02 ,CToD("2+3.1 1/%%%2023  "))
+			Assert.Equal(2023.02.01 ,CToD("01.02.a2023  "))
+			Assert.Equal(2023.02.01 ,CToD("01.02.a 2023"))
+			Assert.Equal(2023.02.01 ,CToD("01.02.a a1234 2023"))
+			
+			Assert.Equal(NULL_DATE  ,CToD("01.02.  23"))
+			Assert.Equal(NULL_DATE  ,CToD("01.02.  3"))
+			Assert.Equal(2023.02.01 ,CToD("01.02. 23"))
+			Assert.Equal(2023.02.01 ,CToD("01.02.a23"))
+			Assert.Equal(2023.02.01 ,CToD("01.02aa23"))
+			Assert.Equal(2003.02.01 ,CToD("01.02. 3"))
+			Assert.Equal(2003.02.01 ,CToD("01.02.a3"))
+			Assert.Equal(2003.02.01 ,CToD("01.02aa3"))
+
+			Assert.Equal(2000.02.01 ,CToD("01.02.0"))
+			Assert.Equal(2000.02.01 ,CToD("01.02.00"))
+			Assert.Equal(NULL_DATE  ,CToD("01.02.000"))
+			Assert.Equal(2000.02.01 ,CToD("01.02.0000"))
+			Assert.Equal(NULL_DATE  ,CToD("01.02.00000"))
+
+			Assert.Equal(2009.02.01 ,CToD("01.02.9"))
+			Assert.Equal(2009.02.01 ,CToD("01.02.09"))
+			Assert.Equal(NULL_DATE  ,CToD("01.02.009"))
+			Assert.Equal(0009.02.01 ,CToD("01.02.0009"))
+			Assert.Equal(NULL_DATE  ,CToD("01.02.00009"))
+
+			Assert.Equal(0019.02.01 ,CToD("01.02.0019"))
+			Assert.Equal(0219.02.01 ,CToD("01.02.0219"))
+
+
             SetDateFormat(cFormat)
             SetEpoch(nEpoch)
 
@@ -392,11 +440,11 @@ BEGIN NAMESPACE XSharp.RT.Tests
         [Trait("Category", "DateTime")];
 		[Fact];
 		METHOD MinMax() AS VOID
-            var dt1 := DateTime{2021,1,4}  // use the constructor
-            var dt2 := DateTime(2022,1,1)  // use the DateTime function
+            VAR dt1 := DateTime{2021,1,4}  // use the constructor
+            VAR dt2 := DateTime(2022,1,1)  // use the DateTime function
             Assert.Equal((DateTime) Min(dt1, dt2), dt1)
             Assert.Equal((DateTime) Max(dt1, dt2), dt2)
-            var dTest := dt1:AddDays(1)
+            VAR dTest := dt1:AddDays(1)
             Assert.True(Between(dt1, dt1, dt2))
             Assert.True(Between(dTest, dt1, dt2))
             Assert.False(Between(dt1, dt2, dt1))

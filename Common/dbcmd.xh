@@ -61,7 +61,7 @@
 
 #command INDEX ON <key>         										;
      TAG <order>                										;
-     [TO <file>]                										;
+     [<To:TO,OF> <file>]                								;
      [FOR <fo>]                 										;
      [<all:ALL>]                										;
      [WHILE <wh>]               										;
@@ -77,15 +77,33 @@
      [<lAdd:ADDITIVE>]          										;
      [<lCus:CUSTOM>]            										;
      [<lNop:NOOPTIMIZE>]        										;
+     [Binary <bin>]                  								    ;
+     [COLLATE <coll>]                								    ;
+     [<cmp:COMPACT>]          										    ;
+     [<cand:CANDIDATE>]          										;
     => OrdCondSet( <"fo">, , [<.all.>], <{wh}>, <{ev}>, <evr>, 			;
-          RecNo(), <nx>, <rec>,[<.rs.>],[<.dsd.>],<.lAdd.>,					;
-          [<.lCur.>], [<.lCus.>], [<.lNop.>] )      						;;  ;
-       OrdCreate(<(file)>,<(order)>,<(key)>,,IF(<.u.>,.T., NIL))
-
-#command INDEX ON <key> TO <file> [<u:UNIQUE>]  						;
-      =>  OrdCondSet()  ;;        										;
-          DbCreateIndex(<(file)>,<(key)>,,IIF(<.u.>, .T., NIL))
-
+          RecNo(), <nx>, <rec>,[<.rs.>],[<.dsd.>],<.lAdd.>,				;
+          [<.lCur.>], [<.lCus.>], [<.lNop.>] ,      					;
+          [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;;             ;
+       OrdCreate(<(file)>,<(order)>,<(key)>,,IIF(<.u.>,.T., NIL))
+    
+#command INDEX ON <key>         										;
+     To <(file)>                										;
+     [Binary <bin>]                  								    ;
+     [COLLATE <coll>]                								    ;
+     [For <fo>]                 										;
+     [<u:UNIQUE>]               										;
+     [<cmp:COMPACT>]          										    ;
+     [<cand:CANDIDATE>]          										;
+     [<asd:ASCENDING>]          										;
+     [<dsd:DESCENDING>]         										;
+     [<lAdd:ADDITIVE>]          										;
+     [<lNop:NOOPTIMIZE>]        										;
+    => OrdCondSet(<"fo">, , , , , , ,                                   ;
+        , , ,,[<.dsd.>],[<.lAdd.>], , , [<.lNop.>],                     ;
+        [<.bin.>], [<"coll">], [<.cand.>], [<.cmp.>] ) ;;               ;
+       dbCreateIndex( <(file)>, <(key)>,, IIF( <.u.>, .T., NIL ))
+    
 #command REINDEX                => DbReindex()
 #command SET ORDER TO <n>       => DbSetOrder( <n> )
 #command SET ORDER TO           => DbSetOrder(0)

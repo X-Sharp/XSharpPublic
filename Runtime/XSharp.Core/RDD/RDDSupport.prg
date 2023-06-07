@@ -191,7 +191,25 @@ CLASS DbOrderCondInfo
 	/// <summary>A code block defining the while condition to use for the creation of the order.  An empty value indicates that no while condition is being imposed.</summary>
 	PUBLIC WhileBlock		AS ICodeblock
 	/// <summary>A string defining the for while condition to use for the creation and maintenance of the order.</summary>
-	PUBLIC WhileExpression	AS STRING
+    PUBLIC WhileExpression	AS STRING
+
+    /// <summary>
+    /// Collation for the FoxPro INDEX ON command
+    /// </summary>
+    PUBLIC Collation        AS STRING
+    /// <summary>
+    /// Binary option for the FoxPro INDEX ON command
+    /// </summary>
+    PUBLIC IsBinary         AS LOGIC
+    /// <summary>
+    /// Candidate option for the FoxPro INDEX ON command
+    /// </summary>
+    PUBLIC IsCandidate      AS LOGIC
+    /// <summary>
+    /// Compact option for the FoxPro INDEX ON command
+    /// </summary>
+    PUBLIC IsCompact      := TRUE  AS LOGIC
+
 
     METHOD Compile(oRDD AS IRdd) AS VOID
         IF SELF:WhileBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:WhileExpression)

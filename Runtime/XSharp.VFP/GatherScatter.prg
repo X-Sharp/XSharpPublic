@@ -32,11 +32,14 @@ RETURN cSource:Split(<Char>{c' ',c',',c'\t'}, StringSplitOptions.RemoveEmptyEntr
 
 INTERNAL FUNCTION __BuildFieldList(aFieldList IN USUAL, lIncludeMemo as LOGIC) AS IList<String>
 VAR selected := List<string>{}
-IF IsArray(aFieldList) .and. ALen(aFieldList) > 0
-    FOREACH cFld AS STRING in aFieldList
-        selected:Add(cFld:ToString())
-    NEXT
-	RETURN selected
+IF IsArray(aFieldList)
+    var aFlds := (ARRAY) aFieldList
+    IF aFlds:Length > 0
+        FOREACH cFld AS STRING in aFieldList
+            selected:Add(cFld:ToString())
+        NEXT
+        RETURN selected
+    ENDIF
 ENDIF
     LOCAL fCount as DWORD
     fCount := FCount()

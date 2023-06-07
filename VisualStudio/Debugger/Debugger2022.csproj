@@ -101,6 +101,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Metadata">
       <Version>17.0.2012801</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading">
+      <Version>17.0.64</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.Debugger.VSDConfigTool">
       <Version>17.0.2012801</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

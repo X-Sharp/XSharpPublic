@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using XSharpModel;
+using Microsoft.VisualStudio.Shell;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -12,17 +13,7 @@ namespace XSharp.LanguageService.OptionsPages
         {
             Options = new U();
         }
-        protected override void OnActivate(CancelEventArgs e)
-        {
-            base.OnActivate(e);
-            
-        }
 
-        protected override void OnApply(PageApplyEventArgs e)
-        {
-            base.OnApply(e);
-
-        }
         public override void LoadSettingsFromStorage()
         {
             base.LoadSettingsFromStorage();
@@ -33,25 +24,16 @@ namespace XSharp.LanguageService.OptionsPages
         }
         public override void SaveSettingsToStorage()
         {
-            initControl();
-            control.SaveValues(Options);
-            SetOptions(Options);
+            CreateControl();
+            if (control != null)
+            {
+                control.SaveValues(Options);
+            }
+            base.SaveSettingsToStorage();
             Options.WriteToSettings();
         }
-        public override void ResetSettings()
-        {
-            base.ResetSettings();
-        }
-        protected override void SaveSetting(PropertyDescriptor property)
-        {
-            // We no longer save here. The controls save directly to the options object
-        }
-        protected override void LoadSettingFromStorage(PropertyDescriptor prop)
-        {
-            base.LoadSettingFromStorage(prop);
-        }
 
-        private void initControl()
+        private void CreateControl()
         {
             if (control == null)
             {
@@ -64,33 +46,20 @@ namespace XSharp.LanguageService.OptionsPages
         }
 
         XSUserControl control = null;
-        public U Options { get; private set; }
+        public U Options { get; private set; } = null;
         /// <summary>
         /// Set the properties of the page from the Options object
         /// </summary>
         /// <param name="options"></param>
-        public void SetOptions(U options)
+        internal void SetOptions(U options)
         {
             Options = options;
-            foreach (var prop in this.GetType().GetProperties())
-            {
-                var name = prop.Name;
-                try
-                {
-                    var optprop = options.GetType().GetProperty(name);
-                    prop.SetValue(this, optprop.GetValue(options));
-                }
-                catch
-                {
-
-                }
-            }
         }
         protected override IWin32Window Window
         {
             get
             {
-                initControl();
+                CreateControl();
                 return control;
             }
         }

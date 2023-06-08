@@ -53,12 +53,8 @@ namespace XSharp.LanguageService
 
         }
     }
-    public abstract class OptionsBase
-    {
-        public abstract void WriteToSettings();
 
-    }
-    public class Options : OptionsBase
+    public class LanguageServiceOptions : OptionsBase
     {
         #region Properties
         public IntellisenseOptions IntellisenseOptions { get; set; } 
@@ -70,7 +66,7 @@ namespace XSharp.LanguageService
         public TabOptions TabOptions { get; set; }
 
         #endregion
-        public Options()
+        public LanguageServiceOptions()
         {
             TabOptions = new TabOptions();
             IntellisenseOptions = new IntellisenseOptions();
@@ -91,19 +87,13 @@ namespace XSharp.LanguageService
             OtherOptions.WriteToSettings();
             TabOptions.WriteToSettings();
         }
-        public static string GetPath()
-        {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            path = System.IO.Path.Combine(path, "XSharp");
-            return path;
-        }
-        public bool Save(string sFile)
+        public bool Save()
         {
             try
             {
                 var str = JsonConvert.SerializeObject(this, Formatting.Indented);
-                System.IO.Directory.CreateDirectory(GetPath());
-                sFile = System.IO.Path.Combine(GetPath(), sFile);
+                CreatePath();
+                var sFile = System.IO.Path.Combine(GetPath(), SETTINGS);
                 System.IO.File.WriteAllText(sFile, str);
                 return true;
             }
@@ -112,15 +102,16 @@ namespace XSharp.LanguageService
                 return false;
             }
         }
-        public static Options Load(string sFile)
+        private const string SETTINGS = "EditorSettings.json";
+        public static LanguageServiceOptions Load()
         {
             try
             {
-                sFile = System.IO.Path.Combine(GetPath(), sFile);
+                var sFile = System.IO.Path.Combine(GetPath(), SETTINGS);
                 if (System.IO.File.Exists(sFile))
                 {
                     var str = System.IO.File.ReadAllText(sFile);
-                    return JsonConvert.DeserializeObject<Options>(str);
+                    return JsonConvert.DeserializeObject<LanguageServiceOptions>(str);
                 }
             }
             catch
@@ -264,8 +255,6 @@ namespace XSharp.LanguageService
         public bool AutoOpen { get; set; }
         public bool ShowDividers { get; set; }
         public bool ShowSingleLineDividers { get; set; }
-        public bool ShowXmlComments { get; set; }
-        public bool LanguageServiceLogging { get; set; }
         public bool FormEditorMakeBackupFiles { get; set; }
         public bool EnableHighlightWord { get; set; }
         public bool EnableBraceMatching { get; set; }
@@ -291,8 +280,6 @@ namespace XSharp.LanguageService
             EnableRegions = true;
             ShowDividers = true;
             ShowSingleLineDividers = true;
-            ShowXmlComments = true;
-            LanguageServiceLogging = false;
             FormEditorMakeBackupFiles = true;
         }
         public override void WriteToSettings()
@@ -310,7 +297,6 @@ namespace XSharp.LanguageService
             XEditorSettings.DisableParameterInfo = !EnableParameterInfo;
             XEditorSettings.DisableQuickInfo = !EnableQuickInfo;
             XEditorSettings.DisableRegions = !EnableRegions;
-            XSettings.EnableFileLogging = LanguageServiceLogging;
 
         }
 

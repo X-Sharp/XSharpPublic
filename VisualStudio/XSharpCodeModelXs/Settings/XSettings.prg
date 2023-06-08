@@ -139,6 +139,7 @@ BEGIN NAMESPACE XSharpModel
             END SWITCH
             RETURN XSettings.FormatKeyword(keyword:ToString(),nKeywordCase)
 
+
     END CLASS
 
 END NAMESPACE

@@ -1,30 +1,57 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
-using XSharpModel;
 
 namespace XSharp.LanguageService.OptionsPages
 {
 
-    [SharedSettings("TextEditor.XSharp",false)]
+    [SharedSettings("TextEditor.XSharp", false)]
     [Guid(XSharpConstants.IndentingOptionsPageGuidString)]
     [ComVisible(true)]
     public class IndentingOptionsPage : XSDialogPage<IndentingOptionsControl, IndentingOptions>
     {
-        public bool IndentInitialized { get; set; }
-        public bool IndentEntityContent { get; set; }
-        public bool IndentFieldContent { get; set; }
-        public bool IndentBlockContent { get; set; }
-        public bool IndentCaseContent { get; set; }
-        public bool IndentMultiLines { get; set; }
-        public bool IndentCaseLabel { get; set; }
-        public bool IndentPreprocessorLines { get; set; }
-        public bool IndentNamespace { get; set; }
-
-        public void ValidateSettings()
+        #region Properties that are delegated to the Options object
+        public bool IndentEntityContent
         {
-            this.SaveSettingsToStorage();
+            get => Options.IndentEntityContent;
+            set => Options.IndentEntityContent = value;
         }
+
+        public bool IndentFieldContent
+        {
+            get => Options.IndentFieldContent;
+            set => Options.IndentFieldContent = value;
+        }
+        public bool IndentBlockContent
+        {
+            get => Options.IndentBlockContent;
+            set => Options.IndentBlockContent = value;
+        }
+        public bool IndentCaseContent
+        {
+            get => Options.IndentCaseContent;
+            set => Options.IndentCaseContent = value;
+        }
+        public bool IndentMultiLines
+        {
+            get => Options.IndentMultiLines;
+            set => Options.IndentMultiLines = value;
+        }
+        public bool IndentCaseLabel
+        {
+            get => Options.IndentCaseLabel;
+            set => Options.IndentCaseLabel = value;
+        }
+        public bool IndentPreprocessorLines
+        {
+            get => Options.IndentPreprocessorLines;
+            set => Options.IndentPreprocessorLines = value;
+        }
+        public bool IndentNamespace
+        {
+            get => Options.IndentNamespace;
+            set => Options.IndentNamespace = value;
+        }
+        #endregion
     }
 }

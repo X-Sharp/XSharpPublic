@@ -142,9 +142,9 @@ namespace XSharp.LanguageService
             return (T)base.GetDialogPage(typeof(T));
         }
 
-        private Options GetOptions()
+        private LanguageServiceOptions GetOptions()
         {
-            // pages in alfabetical order
+            // pages in alphabetical order
             if (_completionOptionsPage == null)
             {
                 _completionOptionsPage = GetDialogPage<CompletionOptionsPage>();
@@ -169,7 +169,11 @@ namespace XSharp.LanguageService
             {
                 _otherOptionsPage = GetDialogPage<OtherOptionsPage>();
             }
-            var options = new Options();
+            return GetOptionsFromPages();
+        }
+        private LanguageServiceOptions GetOptionsFromPages()
+        {
+            var options = new LanguageServiceOptions();
             options.CompletionOptions = _completionOptionsPage.Options;
             options.GeneratorOptions = _generatorOptionsPage.Options;
             options.FormattingOptions = _formattingPage.Options;
@@ -178,17 +182,20 @@ namespace XSharp.LanguageService
             options.OtherOptions = _otherOptionsPage.Options;
             _txtManager.GetSettings(options.TabOptions);
             return options;
+
         }
         public void GetIntellisenseSettings(bool load)
         {
-            var options = GetOptions();
+            LanguageServiceOptions options = GetOptions();
             if (load)
             {
-                var newoptions = Options.Load("EditorSettings.json");
-                if (newoptions != null)
+                options = LanguageServiceOptions.Load();
+                if (options == null)
                 {
-                    options = newoptions;
-                    RemoveRegistryKey("ApplicationPrivateSettings\\TextEditor\\XSharp");
+                    options = GetOptionsFromPages();
+                }
+                else
+                {
                     _completionOptionsPage.SetOptions(options.CompletionOptions);
                     _generatorOptionsPage.SetOptions(options.GeneratorOptions);
                     _formattingPage.SetOptions(options.FormattingOptions);
@@ -200,7 +207,7 @@ namespace XSharp.LanguageService
             }
             else
             {
-                options.Save("EditorSettings.json");
+                options.Save();
             }
             options.WriteToSettings();
             options.WriteToRegistry();

@@ -102,6 +102,7 @@ namespace XSharp.LanguageService
             try
             {
                 var str = JsonConvert.SerializeObject(this, Formatting.Indented);
+                System.IO.Directory.CreateDirectory(GetPath());
                 sFile = System.IO.Path.Combine(GetPath(), sFile);
                 System.IO.File.WriteAllText(sFile, str);
                 return true;

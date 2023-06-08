@@ -158,12 +158,17 @@ namespace XSharp.LanguageService
                 }
                 else if (symbol != null)
                 {
-                    if (symbol is IXTypeSymbol xtype)
+                    if (symbol is IXTypeSymbol xtype )
                     {
                         isInstance = false;
                         type = xtype;
                     }
-                    else
+                    else if (symbol.Kind == Kind.Namespace)
+                    {
+                        isInstance = false;
+                        state = CompletionState.Namespaces | CompletionState.Types;
+                    }
+                    else 
                     {
                         isInstance = true;
                         state = CompletionState.Members;

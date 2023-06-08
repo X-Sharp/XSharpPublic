@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace XSharp.LanguageService.OptionsPages
@@ -11,10 +10,23 @@ namespace XSharp.LanguageService.OptionsPages
     [ComVisible(true)]
     class GeneratorOptionsPage : XSDialogPage<GeneratorOptionsControl, GeneratorOptions>
     {
-        public bool ShowXmlComments { get; set; }
-        public int PublicStyle { get; set; }
-        public int PrivateStyle { get; set; }
+        #region Properties that are delegated to the Options object
+        public bool ShowXmlComments
+        {
+            get => Options.ShowXmlComments;
+            set => Options.ShowXmlComments = value;
+        }
+        public int PublicStyle
+        {
+            get => Options.PublicStyle;
+            set => Options.PublicStyle = value;
+        }
+        public int PrivateStyle
+        {
+            get => Options.PrivateStyle;
+            set => Options.PrivateStyle = value;
+        }
 
-
+        #endregion
     }
 }

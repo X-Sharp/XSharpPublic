@@ -6,43 +6,142 @@ namespace XSharp.LanguageService.OptionsPages
 {
 
     [Guid(XSharpConstants.IntellisenseOptionsPageGuidString)]
-    [SharedSettings("TextEditor.XSharp",false)]
+    [SharedSettings("TextEditor.XSharp", false)]
     [ComVisible(true)]
     public class IntellisenseOptionsPage : XSDialogPage<IntellisenseOptionsControl, IntellisenseOptions>
     {
-        public bool CompletionListTabs { get; set; }
-        public String CommitChars { get; set; }
-        public bool ExcludeMembersFromOtherFiles { get; set; }
-        public bool KeywordsInAll { get; set; }
+        #region Properties that are delegated to the Options object
+        public bool CompletionListTabs
+        {
+            get => Options.CompletionListTabs;
+            set => Options.CompletionListTabs = value;
+        }
+        public String CommitChars
+        {
+            get => Options.CommitChars;
+            set => Options.CommitChars = value;
+        }
+        public bool ExcludeMembersFromOtherFiles
+        {
+            get => Options.ExcludeMembersFromOtherFiles;
+            set => Options.ExcludeMembersFromOtherFiles = value;
+        }
+        public bool KeywordsInAll
+        {
+            get => Options.KeywordsInAll;
+            set => Options.KeywordsInAll = value;
+        }
+        public bool ShowAfterChar
+        {
+            get => Options.ShowAfterChar;
+            set => Options.ShowAfterChar = value;
+        }
+        public XSharpModel.KeywordCase KeywordCase
+        {
+            get => Options.KeywordCase;
+            set => Options.KeywordCase = value;
+        }
+        public bool IncludeFieldsInNavigationBars
+        {
+            get => Options.IncludeFieldsInNavigationBars;
+            set => Options.IncludeFieldsInNavigationBars = value;
+        }
+        public bool SortNavigationBars
+        {
+            get => Options.SortNavigationBars;
+            set => Options.SortNavigationBars = value;
+        }
+        public bool ShowMembersOfCurrentTypeOnly
+        {
+            get => Options.ShowMembersOfCurrentTypeOnly;
+            set => Options.ShowMembersOfCurrentTypeOnly = value;
+        }
+        public bool DisableSyntaxColorization
+        {
+            get => Options.DisableSyntaxColorization;
+            set => Options.DisableSyntaxColorization = value;
+        }
+        public bool DisableEntityParsing
+        {
+            get => Options.DisableEntityParsing;
+            set => Options.DisableEntityParsing = value;
+        }
+        public bool DisableEditorDropdowns
+        {
+            get => Options.DisableEditorDropdowns;
+            set => Options.DisableEditorDropdowns = value;
+        }
+        public bool DisableClassViewObjectView
+        {
+            get => Options.DisableClassViewObjectView;
+            set => Options.DisableClassViewObjectView = value;
+        }
+        public bool DisableAssemblyReferences
+        {
+            get => Options.DisableAssemblyReferences;
+            set => Options.DisableAssemblyReferences = value;
+        }
+        public bool DisableForeignProjectReferences
+        {
+            get => Options.DisableForeignProjectReferences;
+            set => Options.DisableForeignProjectReferences = value;
+        }
+        public bool DisableXSharpProjectReferences
+        {
+            get => Options.DisableXSharpProjectReferences;
+            set => Options.DisableXSharpProjectReferences = value;
+        }
+        public bool EnableOutputPane
+        {
+            get => Options.EnableOutputPane;
+            set => Options.EnableOutputPane = value;
+        }
+        public bool EnableDatabaseLog
+        {
+            get => Options.EnableDatabaseLog;
+            set => Options.EnableDatabaseLog = value;
+        }
+        public bool EnableParserLog
+        {
+            get => Options.EnableParserLog;
+            set => Options.EnableParserLog = value;
+        }
+        public bool EnableCodeCompletionLog
+        {
+            get => Options.EnableCodeCompletionLog;
+            set => Options.EnableCodeCompletionLog = value;
+        }
+        public bool EnableParameterLog
+        {
+            get => Options.EnableParameterLog;
+            set => Options.EnableParameterLog = value;
+        }
+        public bool EnableBraceMatchLog
+        {
+            get => Options.EnableBraceMatchLog;
+            set => Options.EnableBraceMatchLog = value;
+        }
+        public bool EnableQuickInfoLog
+        {
+            get => Options.EnableQuickInfoLog;
+            set => Options.EnableQuickInfoLog = value;
+        }
+        public bool EnableTypelookupLog
+        {
+            get => Options.EnableTypelookupLog;
+            set => Options.EnableTypelookupLog = value;
+        }
+        public bool EnableReferenceInfoLog
+        {
+            get => Options.EnableReferenceInfoLog;
+            set => Options.EnableReferenceInfoLog = value;
+        }
+        #endregion
 
-        public bool ShowAfterChar { get; set; }
-
-        public XSharpModel.KeywordCase KeywordCase { get; set; }
-        public bool IncludeFieldsInNavigationBars { get; set; }
-        public bool SortNavigationBars { get; set; }
-        public bool ShowMembersOfCurrentTypeOnly { get; set; }
-        public bool DisableSyntaxColorization { get; set; }
-        public bool DisableEntityParsing { get; set; }
-        public bool DisableEditorDropdowns { get; set; }
-        public bool DisableClassViewObjectView { get; set; }
-        public bool DisableAssemblyReferences { get; set; }
-        public bool DisableForeignProjectReferences { get; set; }
-        public bool DisableXSharpProjectReferences { get; set; }
-        public bool EnableOutputPane { get; set; }
-        public bool EnableDatabaseLog { get; set; }
-        public bool EnableParserLog { get; set; }
-        public bool EnableCodeCompletionLog { get; set; }
-        public bool EnableParameterLog { get; set; }
-        public bool EnableBraceMatchLog { get; set; }
-        public bool EnableQuickInfoLog { get; set; }
-        public bool EnableTypelookupLog { get; set; }
-        public bool EnableReferenceInfoLog { get; set; }
-
-        public bool HideAdvancemembers { get; set; } // not on control. Is already on another page.
 
         private void SetDefaultCommitChars()
         {
-            if (Options.CommitChars == null || string.IsNullOrEmpty(Options.CommitChars) )
+            if (Options.CommitChars == null || string.IsNullOrEmpty(Options.CommitChars))
             {
                 Options.CommitChars = IntellisenseOptions.DefaultCommitChars;
             }

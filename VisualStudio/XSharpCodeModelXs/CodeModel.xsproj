@@ -106,6 +106,7 @@
     <Compile Include="PE\XPETypeSymbol.prg" />
     <Compile Include="ProjectSystem\XDictionary.prg" />
     <Compile Include="ProjectSystem\XInclude.prg" />
+    <Compile Include="Settings\OptionsBase.prg" />
     <Compile Include="Settings\Strings.prg" />
     <Compile Include="Settings\XDebuggerSettings.prg" />
     <Compile Include="Settings\XCustomEditorSettings.prg" />

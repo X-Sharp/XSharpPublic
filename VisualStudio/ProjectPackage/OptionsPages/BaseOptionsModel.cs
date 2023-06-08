@@ -12,19 +12,30 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell.Settings;
 using Microsoft.VisualStudio.Threading;
 using Task = System.Threading.Tasks.Task;
+using XSharpModel;
+using System.ComponentModel;
 
 namespace XSharp.Project.Options
 {
     /// <summary>
     /// A base class for specifying options
     /// </summary>
-    internal abstract class BaseOptionModel<T> where T : BaseOptionModel<T>, new()
+    public abstract class BaseOptionModel<T> : OptionsBase where T : BaseOptionModel<T>, new()
     {
         private static AsyncLazy<T> _liveModel = new AsyncLazy<T>(CreateAsync, ThreadHelper.JoinableTaskFactory);
         private static AsyncLazy<ShellSettingsManager> _settingsManager = new AsyncLazy<ShellSettingsManager>(GetSettingsManagerAsync, ThreadHelper.JoinableTaskFactory);
 
         protected BaseOptionModel()
-        { }
+        {
+            foreach (var prop in GetOptionProperties())
+            {
+                dynamic defvalue = prop.GetCustomAttribute( typeof(DefaultValueAttribute));
+                if (defvalue != null)
+                {
+                    prop.SetValue(this, defvalue.Value);
+                }
+            }
+        }
 
         /// <summary>
         /// A singleton instance of the options. MUST be called from UI thread only.

@@ -6,7 +6,7 @@ namespace XSharp.LanguageService.OptionsPages
 {
     public class XSUserControl : UserControl  
     {
-        public DialogPage optionPage;
+        internal DialogPage optionPage;
 
         private void ReadControl(Control c, object options)
         {

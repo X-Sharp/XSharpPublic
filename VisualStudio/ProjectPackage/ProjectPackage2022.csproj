@@ -153,6 +153,7 @@
     <Compile Include="OptionsPages\DebuggerOptions.cs" />
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
+    <Compile Include="OptionsPages\ProjectSystemOptions.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
     <Compile Include="Nodes\XSharpFileNodeProperties.cs" />
     <Compile Include="Nodes\XSharpNodeProperties.cs" />

@@ -1639,7 +1639,7 @@ namespace XSharp.LanguageService
         internal static IList<IXMemberSymbol> SearchMethod(XSharpSearchLocation location, IXTypeSymbol type, string name, Modifiers minVisibility, bool staticOnly)
         {
             var result = new List<IXMemberSymbol>();
-            
+            var isTicked = name.IndexOfAny(new char[] { '`', '<' }) > 0;
             if (location == null || location.File == null || type == null)
             {
                 return result;
@@ -1655,14 +1655,24 @@ namespace XSharp.LanguageService
 
             WriteOutputMessage($" SearchMethod {type.FullName} , '{name}'");
             IList<IXMemberSymbol> tmp;
+            // when a search does not find a method
+            // then check for a generic method (wihout passing the # of type arguments)
             if (type.IsFunctionsClass)
             {
                 tmp = type.GetMembers(name, true).Where(x => x.Kind == Kind.Function).ToList();
+                if (tmp.Count == 0 && !isTicked)
+                {
+                    tmp = type.GetMembers(name + "`").Where(x => x.Kind == Kind.Function).ToList();
+                }
                 staticOnly = false;
             }
             else
             {
                 tmp = type.GetMembers(name, true).Where(x => x.Kind.IsClassMethod(location.Dialect)).ToList();
+                if (tmp.Count == 0 && !isTicked) 
+                {
+                    tmp = type.GetMembers(name + "`").Where(x => x.Kind.IsClassMethod(location.Dialect)).ToList();
+                }
             }
             foreach (var m in tmp)
             {

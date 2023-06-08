@@ -556,9 +556,12 @@ namespace XSharp.LanguageService
                                 case XSharpLexer.ID:
                                 default:
                                     if (!state.HasFlag(CompletionState.Namespaces))
+                                    {
+                                         // do nothing when state is already looking for namespaces
                                         state = CompletionState.Namespaces | CompletionState.Types | CompletionState.StaticMembers;
-                                    if (allowdot)
-                                        state |= CompletionState.InstanceMembers;
+                                        if (allowdot)
+                                            state |= CompletionState.InstanceMembers;
+                                    }
                                     break;
                             }
                         }

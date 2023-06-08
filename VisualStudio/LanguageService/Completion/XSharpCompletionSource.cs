@@ -166,7 +166,10 @@ namespace XSharp.LanguageService
                     else if (symbol.Kind == Kind.Namespace)
                     {
                         isInstance = false;
-                        state = CompletionState.Namespaces | CompletionState.Types;
+                        if (! state.HasFlag(CompletionState.Namespaces))
+                        { 
+                            state = CompletionState.Namespaces | CompletionState.Types;
+                        }
                     }
                     else 
                     {

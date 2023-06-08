@@ -653,6 +653,8 @@ namespace XSharp.LanguageService
                 var lastToken = currentToken;
                 switch (currentToken.Type)
                 {
+                    #region Tokens that require no further processing, so they all end with a continue
+
                     case XSharpLexer.LPAREN:
                         startOfExpression = true;
                         continue;
@@ -730,6 +732,18 @@ namespace XSharp.LanguageService
                         startOfExpression = false;
                         state = CompletionState.Namespaces;
                         continue;
+                    #endregion 
+                    case XSharpLexer.CLASS:
+                    case XSharpLexer.STRUCTURE:
+                    case XSharpLexer.VOSTRUCT:
+                    case XSharpLexer.UNION:
+                    case XSharpLexer.INTERFACE:
+                    case XSharpLexer.ENUM:
+                    case XSharpLexer.DELEGATE:
+                        // After these keywords we expect an ID or a Namespace.ID
+                        startOfExpression = true;
+                        state = CompletionState.Types | CompletionState.Namespaces;
+                        break;
                     case XSharpLexer.COMMA:
                         startOfExpression = true;
                         state = CompletionState.General;
@@ -822,7 +836,7 @@ namespace XSharp.LanguageService
                 else if (findMethod)
                 {
                     FindMethod(result, currentToken, currentType, location, startOfExpression, currentName, visibility, state);
-                    if (list.Eoi())
+                    if (list.Eoi() && result.Count > 0)
                     {
                         return result;
                     }
@@ -832,8 +846,26 @@ namespace XSharp.LanguageService
                     }
                     else
                     {
-                        symbols.Clear();
-                        break;
+                        // This could be the declaration of a delegate
+                        if (state.HasFlag(CompletionState.Types))
+                        {
+                            var types = SearchType(location, currentName, additionalUsings).Where(t => t.Kind == Kind.Delegate);
+                            if (types.Count() > 0)
+                            {
+                                result.Add(types.First());
+                                symbols.Push(result[0]);
+                            }
+                            else
+                            {
+                                symbols.Clear();
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            symbols.Clear();
+                            break;
+                        }
                     }
                 }
                 else if (isId)

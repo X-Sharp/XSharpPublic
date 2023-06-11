@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-29T10:22:45.496+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-06-12T01:37:24.133+03:00" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>/shared</keyword>
@@ -15,11 +15,50 @@
     </header>
     <para styleclass="Body Text" style="tabstops:96px left,144px left,240px left,488px left,1998px left ;">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
     <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading1">Changes in 2.16.0.6 (or 2.17)</para>
+    <para styleclass="Heading2">Compiler</para>
+    <para styleclass="Heading3">Bug fixes</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed /vo3 option not working correctly in XBase++ dialect. Also added support for modifiers <text styleclass="Normal" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; text-decoration:none; vertical-align:baseline; color:#000000;">final, introduce </text>and<text styleclass="Normal" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; text-decoration:none; vertical-align:baseline; color:#000000;"> override</text> (#1244)</li>
+      <li styleclass="Body Text">Fixed problem with using the NEW modifier on class fields (#1246)</li>
+      <li styleclass="Body Text">Fixed several preprocessor issues with XPP dialect UDCs (#1247 )</li>
+      <li styleclass="Body Text">Fixed VO incompatibility with special handling of INSTANCE fields in methods and properties (#1253)</li>
+      <li styleclass="Body Text">Fixed problem with the debugger erratically stepping to incorrect lines (#1254, #1264)</li>
+      <li styleclass="Body Text">Fixed problem with showing the wrong error line number in some cases with nested statements (#1268)</li>
+    </list>
+    <para styleclass="Heading2">Runtime</para>
+    <para styleclass="Heading3">Bug fixes</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed several problems (incompatibilities with VO) in CToD() (#1275)</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading2">Visual Studio integration</para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug fixes</text></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed member completion issue with Type[,] arrays (#980)</li>
+      <li styleclass="Body Text">Fixed missing member completion in class inside namespace when same named class exists without namespace (#1204)</li>
+      <li styleclass="Body Text">Fixed intellisense problems with static members in some cases (#1212)</li>
+      <li styleclass="Body Text">Fixed some intellisense issues with code or declarations spanning in multiple lines (#1221, #1260)</li>
+      <li styleclass="Body Text">Fixed intellisense problem with nested classes inside a namespace (#1222)</li>
+      <li styleclass="Body Text">Fixed incorrect resolving of VAR local type, when using a type cast (#1224)</li>
+      <li styleclass="Body Text">Fixed several problems with collapsing/expanding code in the editor (#1233)</li>
+      <li styleclass="Body Text">Fixed showing of bogus member completion list with unknown types (#1255)</li>
+      <li styleclass="Body Text">Fixed some problems with auto typing text with Ctrl + Space (complete Word) (#1256) <text style="font-weight:bold;">UNCONFIRMED</text></li>
+      <li styleclass="Body Text">Fixed coloring of Text .. EndText statements (#1257) <text style="font-weight:bold;">UNCONFIRMED</text></li>
+      <li styleclass="Body Text">Fixed several issues with tooltip hints with generic types (#1258, #1259, #1273) <text style="font-weight:bold;">1273</text>&#32;<text style="font-weight:bold;">UNCONFIRMED</text></li>
+      <li styleclass="Body Text">Fixed problem with delegate signature not showing in intellisense tooltips (#1265) <text style="font-weight:bold;">UNCONFIRMED</text></li>
+      <li styleclass="Body Text">Fixed invalid coloring of code with multiline comments (#1269)</li>
+      <li styleclass="Body Text">Fixed invalid entries in member completion after typing &quot;self.&quot; (#1270)</li>
+      <li styleclass="Body Text">Fixed problem with calling the disassembler when path specified (in option X# Custom Editors\Other Editors\Disassembler) with spaces (#1271)</li>
+      <li styleclass="Body Text">Fixed editor coloring completely stopping when using some UDC calls (#1272)</li>
+      <li styleclass="Body Text">Fixed problem with hint not showing on CONSTANT locals in FOR statements (#1274)<br/></li>
+    </list>
     <para styleclass="Heading1">Changes in 2.16.0.5</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features Xbase++ dialect</text></para>
     <para styleclass="Body Text">We have made several changes in the way how Xbase++ class definitions are generated. Please check your code extensively with this new build !</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">We now generate a class function for all classes. This returns the same object as the ClassObject() method for Xbase++ classes. <br/>This class function is generated, regardless of the /xpp1 compiler option. <br/>The Class function depends on the function __GetXppClassObject and the XSharp.XPP.StaticClassObject class that both can be found in the XSharp.XPP assembly(#1235).<br/>From the Class function you can access class variables and class methods. </li>
       <li styleclass="Body Text">In Xbase++ you can have fields (VAR) and properties (ACCESS / ASSIGN METHOD) with the same name, even with same visibility. Previously this was not supported.<br/>The compiler now automatically makes the field protected (or private for FINAL classes) and marks it with the [IsInstance] attribute. <br/>Inside the code of the class the compiler will now resolve the name to the field. In code outside of the class the compiler will resolve the name to the property.</li>
       <li styleclass="Body Text">For derived classes the compiler now automatically generates a property with the name of the parentclass, that is declared as the parent class and returns the equivalent to SUPER.</li>
@@ -31,12 +70,12 @@
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features other dialects</text></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Inside Visual Objects you could declare fields with the INSTANCE keyword and add ACCESS/ASSIGN methods with the same name as the INSTANCE field.<br/>In previous builds of X# this was not supported. <br/>The compiler now handles this correctly and resolves the name to the field in code inside methods/properties of the class and resolves the name to the property in code outside of the class.</li>
       <li styleclass="Body Text">The PPO file now contains the original white space from user defined commands and translates.</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed some method overload resolution issues in the VO dialect (#1211).</li>
       <li styleclass="Body Text">Fixed internal compiler error (insufficient stack) with huge DO CASE statements and huge IF ELSEIF statements (#1214).</li>
       <li styleclass="Body Text">Fixed a problem with the Interpolated/Extended string syntax (#1218).</li>
@@ -65,11 +104,11 @@
       <li styleclass="Body Text">Added the DOY() function.</li>
       <li styleclass="Body Text">Addeding missing ADS_LONG and ADS_LONGLONG defines.</li>
     </list>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Improved the speed of CDX skip operations on network drives (#1165).</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed a problem with DbSetRelation() and RLock() (#1226).</li>
       <li styleclass="Body Text">Adjusted implicit conversion from NULL_PSZ to string to now return NULL instead of an empty string.</li>
       <li styleclass="Body Text">Some initialization code is now moved from _INIT procedures to the static constructor of the SQLConnection Class, in order to make it easier to use this class from non-X# apps.</li>
@@ -81,7 +120,7 @@
       <li styleclass="Body Text">Fixed an issue with MemRealloc where the second call on the same pointer would return NULL_PTR (#1248).</li>
     </list>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">VOSDK</text></para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Global arrays in the SDK classes are now initialized from the class constructor of the SQLConnection class to fix problems when the main app does not include a link to the SQL Classes assembly.</li>
     </list>
     <para styleclass="Heading2">Visual Studio integration</para>
@@ -113,12 +152,12 @@
     <para styleclass="Heading1">Changes in 2.15.0.3</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Implemented the <link displaytype="text" defaultstyle="true" type="topiclink" href="STACKALLOC">STACKALLOC</link> syntax for allocating a block of memory on the stack (instead of the heap) (#1084)</li>
       <li styleclass="Body Text">Added ASYNC support to XBase++ methods (#1183)</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed missing compiler error in a few specific cases when using the dot for accessing instance members, when /allowdot is disabled (#1109)</li>
       <li styleclass="Body Text">Fixed some issues with passing parameters by reference (#1166)</li>
       <li styleclass="Body Text">Fixed some issues with interpolated strings (#1184)</li>
@@ -136,7 +175,7 @@
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed runtime error in DBSort() (#1196)</li>
       <li styleclass="Body Text">Fixed error in the ConvertFromCodePageToCodePage function</li>
       <li styleclass="Body Text">A change in the startup code for the XSharp.RuntimeState could lead to incorrect codepages</li>
@@ -184,7 +223,7 @@
     <para styleclass="Heading1">Changes in 2.14.0.2, 3 &amp; 4</para>
     <para styleclass="Heading2">Visual Studio Integration</para>
     <para styleclass="Heading3">Bug fixes</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed an exception in the X# Editor when opening a PRG file in VS 2017</li>
       <li styleclass="Body Text">Selecting a member from a completion list with the Enter key on a line immediately after an entry that has an XML comment could lead to extra triple slash (///) characters to be inserted in the editor</li>
       <li styleclass="Body Text">The triple slash command to insert XML comments was not working. This has been fixed.</li>
@@ -202,19 +241,19 @@
     <para styleclass="Heading1">Changes in 2.14.0.1</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="Heading3">Bug fixes</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed a problem with date literals resulting in a message about an unknown alias &quot;gloal&quot; (#1178)</li>
       <li styleclass="Body Text">Fixed a problem that leading 0 characters in AssemblyFileVersion and AssemblyInformationalVersion were lost. If the attribute does not have the wildcard &apos;*&apos; then these leading zeros are preserved (#1179)</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">Bug fixes</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The runtime DLLs for 2.14.0.0 were marked with the TargetFramework Attribute. This caused problems. The attribute is no longer set on the runtime DLLs (#1177)</li>
     </list>
     <para styleclass="Heading1">Changes in 2.14.0.0</para>
     <para styleclass="Heading2">Compiler</para>
     <para styleclass="Heading3">Bug fixes</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed a problem resolving methods when a type &#160;and a local have the same name (#922)</li>
       <li styleclass="Body Text">Improved XML doc messages for methods implicitly generated by the compiler (INITs, implicit constructors) (#1128)</li>
       <li styleclass="Body Text">Fixed an internal compiler error with DELEGATEs with default parameter values (#1129)</li>
@@ -232,11 +271,11 @@
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New Features</text></para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added 2 new values to the DbNotificationType enum: BeforeRecordDeleted and BeforeRecordRecalled. Also added AfterRecordDeleted and AfterRecordRecalled which are aliases for the already existent RecordDeleted and RecordRecalled (#1174)</li>
     </list>
     <para styleclass="Heading3">Bug fixes</para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added/updated several defines in the Win32API SDK library (#696)</li>
       <li styleclass="Body Text">Fixed a problem with &quot;SkipUnique&quot; not working correctly (#1117)</li>
       <li styleclass="Body Text">Fixed an RDD scope problem when the bottom scope is larger than the highest available key value (#1121)</li>

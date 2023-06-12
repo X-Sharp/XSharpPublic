@@ -5,6 +5,7 @@
 //
 
 using Community.VisualStudio.Toolkit;
+using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
@@ -17,6 +18,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using XSharp.LanguageService;
+using XSharp.Project.DebugWindows;
 using XSharp.Project.Options;
 using XSharp.Project.WPF;
 using XSharpModel;
@@ -134,6 +136,8 @@ namespace XSharp.Project
     [ProvideToolWindow(typeof(RepositoryWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
     [ProvideToolWindowVisibility(typeof(RepositoryWindow.Pane), VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string)]
 #endif
+    [ProvideToolWindow(typeof(ShowMemvarsWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
+    [ProvideToolWindowVisibility(typeof(ShowMemvarsWindow.Pane), VSConstants.UICONTEXT.Debugging_string)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
     public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IDisposable
@@ -145,6 +149,8 @@ namespace XSharp.Project
         //private XSharpProjectSelector _projectSelector = null;
         private uint shellCookie;
         IVsShell shell = null;
+        DTE2 m_dte;
+        internal DTE2 Dte => m_dte;
 
         public static XSharpProjectPackage XInstance = null;
 
@@ -179,6 +185,8 @@ namespace XSharp.Project
             instance = this;
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            m_dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE.DTE));
 
             // make sure the debugger has the version from the main thread
             XSharpDebugger.VsVersion.GetVersion();
@@ -350,7 +358,7 @@ namespace XSharp.Project
         {
             int hr;
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            m_debugger = await VS.GetServiceAsync<SVsShellDebugger, IVsDebugger>();
+            m_debugger = await VS.Services.GetDebuggerAsync();
             if (m_debugger != null)
             {
                 hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
@@ -372,7 +380,7 @@ namespace XSharp.Project
                 if (m_debugger != null && m_Debuggercookie != 0)
                 {
                     hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+                    ErrorHandler.ThrowOnFailure(hr);
                 }
             });
             m_Debuggercookie = 0;
@@ -404,6 +412,11 @@ namespace XSharp.Project
             else if (dbgmodeNew == DBGMODE.DBGMODE_Design)
             {
                 XDebuggerSettings.DebuggingXSharpExe = false;
+            }
+            if (dbgmodeNew == DBGMODE.DBGMODE_Break ||
+                dbgmodeNew == DBGMODE.DBGMODE_Run)
+            {
+                XSharp.Project.DebugWindows.Support.RefreshWindows();
             }
             return VSConstants.S_OK;
         }

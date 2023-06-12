@@ -27,6 +27,10 @@ namespace XSharp.LanguageService
             {
                 foreach (var token in tokens)
                 {
+                    if (token.Type == XSharpLexer.LBRKT)
+                    {
+                        firstkw = token;
+                    }
                     if (token.Type == XSharpLexer.WS)
                         continue;
                     if (XSharpLexer.IsComment(token.Type))

@@ -727,6 +727,10 @@ namespace XSharp.LanguageService
                         {
                             currentLine = new List<IToken>();
                             lineTokens.Add(line, currentLine);
+                            if (token.Type == XSharpLexer.LBRKT)
+                            {
+                                _lineState.Set(token.Line-1, LineFlags.StartsWithAttribute);
+                            }
                         }
                     }
                     currentLine.Add(token);

@@ -257,7 +257,7 @@ namespace XSharp.LanguageService
 #endif
         private void FilterCompletionSession(char ch)
         {
-
+            
             WriteOutputMessage("FilterCompletionSession()");
             if (_completionSession == null)
                 return;
@@ -273,6 +273,9 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
+                    var props = _completionSession.GetCompletionProperties();
+                    if (ch != '\0')
+                        props.Filter += ch;
                     WriteOutputMessage(" --> Selecting ");
                     _completionSession.SelectedCompletionSet.SelectBestMatch();
                     _completionSession.SelectedCompletionSet.Recalculate();
@@ -307,7 +310,6 @@ namespace XSharp.LanguageService
                 CancelCompletionSession();
                 return false;
             }
-            bool moveCursorBack = false;
             ITextCaret caret = session.TextView.Caret;
             WriteOutputMessage("CompleteCompletionSession()");
             bool addClose = false;
@@ -388,19 +390,16 @@ namespace XSharp.LanguageService
             {
                 if (completion.InsertionText.EndsWith("("))
                 {
-                    moveCursorBack = true;
                     completion.InsertionText += ")";
                     triggerSignatureHelp = true;
                 }
                 else if (completion.InsertionText.EndsWith("{"))
                 {
-                    moveCursorBack = true;
                     completion.InsertionText += "}";
                     triggerSignatureHelp = true;
                 }
                 else if (completion.InsertionText.EndsWith("["))
                 {
-                    moveCursorBack = true;
                     completion.InsertionText += "]";
                     triggerSignatureHelp = false;
                 }
@@ -411,14 +410,7 @@ namespace XSharp.LanguageService
             var type = props.Type;
             var triggerChar = props.Char;
             string insertionText = completion.InsertionText;
-            if (props.Filter?.Length > 0)
-            {
-                if (completion.InsertionText.StartsWith(props.Filter, StringComparison.OrdinalIgnoreCase))
-                {
-                    moveCursorBack = true;
-                    props.NumCharsToDelete = props.Filter.Length;
-                }
-            }
+            // When completing by typing '.' or ':' we want to add that token as well
             if (ch == '.' || ch == ':')
             {
                 if (insertionText.IndexOfAny(new char[] { '(', '{' } ) == -1)
@@ -426,28 +418,12 @@ namespace XSharp.LanguageService
                     completion.InsertionText += ch;
                 }
             }
-            var buffer = _completionSession.TextView.TextBuffer;
-            int start = -1;
-            if (props.NumCharsToDelete != 0)
-            {
-                start = _completionSession.GetTriggerPoint(buffer).GetPosition(buffer.CurrentSnapshot);
-            }
-            // We cannot change the triggerpoint for the session.
-            // so commit first and delete later. 
             session.Commit();
-            if (props.NumCharsToDelete != 0)
-            {
-                var editSession = buffer.CreateEdit();
-                editSession.Delete(start - props.NumCharsToDelete, props.NumCharsToDelete);
-                editSession.Apply();
-            }
-            if (moveCursorBack)
-            {
-                caret.MoveToPreviousCaretPosition();
-            }
             // if a method or constructor was chosen, then trigger the signature help
             if (triggerSignatureHelp)
             {
+                if (addClose)
+                    caret.MoveToPreviousCaretPosition();
                 TriggerSignatureHelp(type, insertionText, triggerChar);
             }
             return true;

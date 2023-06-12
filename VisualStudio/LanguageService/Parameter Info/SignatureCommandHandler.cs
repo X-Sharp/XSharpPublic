@@ -245,6 +245,8 @@ namespace XSharp.LanguageService
                     }
                     curLine = line;
                 }
+                if (ssp.Position == 0)
+                    break;
                 ssp = ssp - 1;
                 var ch = ssp.GetChar();
                 {

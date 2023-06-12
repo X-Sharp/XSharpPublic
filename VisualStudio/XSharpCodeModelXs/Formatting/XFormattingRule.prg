@@ -201,7 +201,9 @@ CLASS XFormattingRule
                 VAR startrules := _rulesByStart[kwstart]
                 IF startrules:Count > 1
                     FOREACH VAR startrule IN startrules
-                        IF !startrule:Stop:Equals(key) .AND. ! startrule:Flags:HasFlag(XFormattingFlags.Middle)
+                        IF !startrule:Stop:Equals(key) .AND. ;
+                            ! startrule:Flags:HasFlag(XFormattingFlags.Middle) .and. ;
+                            ! startrule:Flags:HasFlag(XFormattingFlags.Jump)
                             IF first
                                 _synonyms:Add(key, List<XKeyword>{})
                                 first := FALSE

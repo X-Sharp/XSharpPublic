@@ -168,6 +168,7 @@
     <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
       <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptionsPages\TabOptions.cs" />
     <Compile Include="OptionsPages\Options.cs" />
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
       <SubType>UserControl</SubType>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
+using XSharpModel;
 
 namespace XSharp.LanguageService.OptionsPages
 {
@@ -10,23 +11,27 @@ namespace XSharp.LanguageService.OptionsPages
     [ComVisible(true)]
     class GeneratorOptionsPage : XSDialogPage<GeneratorOptionsControl, GeneratorOptions>
     {
-        #region Properties that are delegated to the Options object
-        public bool ShowXmlComments
-        {
-            get => Options.ShowXmlComments;
-            set => Options.ShowXmlComments = value;
-        }
-        public int PublicStyle
-        {
-            get => Options.PublicStyle;
-            set => Options.PublicStyle = value;
-        }
-        public int PrivateStyle
-        {
-            get => Options.PrivateStyle;
-            set => Options.PrivateStyle = value;
-        }
-
+        // The base class exposes the AutomationObject that contains the values
+    }
+    public class GeneratorOptions : OptionsBase
+    {
+        #region Properties
+        public bool ShowXmlComments { get; set; }
+        public int PublicStyle { get; set; }
+        public int PrivateStyle { get; set; }
         #endregion
+        public GeneratorOptions()
+        {
+            ShowXmlComments = true;
+            PublicStyle = 0;
+            PrivateStyle = 0;
+        }
+        public override void WriteToSettings()
+        {
+            XSettings.CodeGeneratorPrivateStyle = (PrivateStyle)PrivateStyle;
+            XSettings.CodeGeneratorPublicStyle = (PublicStyle)PublicStyle;
+            XSettings.CodeGeneratorShowXmlComments = ShowXmlComments;
+
+        }
     }
 }

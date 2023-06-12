@@ -9,6 +9,10 @@ namespace XSharp.LanguageService.OptionsPages
     [ComVisible(true)]
     public class XSDialogPage<T, U> : DialogPage where T: XSUserControl, new() where U : OptionsBase, new()
     {
+        #region Properties
+        public override object AutomationObject => Options;
+        public U Options { get; private set; } = null;
+        #endregion
         internal XSDialogPage() : base(ThreadHelper.JoinableTaskContext)
         {
             Options = new U();
@@ -46,7 +50,6 @@ namespace XSharp.LanguageService.OptionsPages
         }
 
         XSUserControl control = null;
-        public U Options { get; private set; } = null;
         /// <summary>
         /// Set the properties of the page from the Options object
         /// </summary>

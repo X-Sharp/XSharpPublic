@@ -106,4 +106,7 @@ STATIC CLASS XSharpModel.XKeywordExtensions
 
     STATIC METHOD IsEndOfType(SELF kw as XKeyword) AS LOGIC
         RETURN XFormattingRule.IsEndOfType(kw)
+    STATIC METHOD IsAttribute(SELF kw as XKeyword) AS LOGIC
+        RETURN kw.Kw1 == XTokenType.Lbrkt 
+
 END CLASS

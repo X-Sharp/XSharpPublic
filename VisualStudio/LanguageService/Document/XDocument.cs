@@ -62,7 +62,19 @@ namespace XSharp.LanguageService
         {
             return LineState.Get(line, out var flags ) && flags.HasFlag(flag);
         }
-
+        internal bool LineAfterAttribute(int line)
+        {
+            while (line > 0)
+            {
+                line -= 1;
+                LineState.Get(line, out var flags);
+                if (flags.HasFlag(LineFlags.StartsWithAttribute))
+                    return true;
+                if (!flags.HasFlag(LineFlags.IsContinued))
+                    return false;
+            }
+            return false;
+        }
         internal void SetTokens(Dictionary<int, IList<IToken>> tokens)
         {
             lock (this)

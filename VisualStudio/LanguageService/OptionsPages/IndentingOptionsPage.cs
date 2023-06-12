@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
+using XSharpModel;
 
 namespace XSharp.LanguageService.OptionsPages
 {
@@ -10,48 +12,51 @@ namespace XSharp.LanguageService.OptionsPages
     [ComVisible(true)]
     public class IndentingOptionsPage : XSDialogPage<IndentingOptionsControl, IndentingOptions>
     {
-        #region Properties that are delegated to the Options object
-        public bool IndentEntityContent
-        {
-            get => Options.IndentEntityContent;
-            set => Options.IndentEntityContent = value;
-        }
-
-        public bool IndentFieldContent
-        {
-            get => Options.IndentFieldContent;
-            set => Options.IndentFieldContent = value;
-        }
-        public bool IndentBlockContent
-        {
-            get => Options.IndentBlockContent;
-            set => Options.IndentBlockContent = value;
-        }
-        public bool IndentCaseContent
-        {
-            get => Options.IndentCaseContent;
-            set => Options.IndentCaseContent = value;
-        }
-        public bool IndentMultiLines
-        {
-            get => Options.IndentMultiLines;
-            set => Options.IndentMultiLines = value;
-        }
-        public bool IndentCaseLabel
-        {
-            get => Options.IndentCaseLabel;
-            set => Options.IndentCaseLabel = value;
-        }
-        public bool IndentPreprocessorLines
-        {
-            get => Options.IndentPreprocessorLines;
-            set => Options.IndentPreprocessorLines = value;
-        }
-        public bool IndentNamespace
-        {
-            get => Options.IndentNamespace;
-            set => Options.IndentNamespace = value;
-        }
-        #endregion
+        // The base class exposes the AutomationObject that contains the values
     }
+    public class IndentingOptions : OptionsBase
+    {
+        #region Properties
+        [DefaultValue(true)]
+        public bool IndentEntityContent { get; set; }
+        [DefaultValue(true)]
+        public bool IndentFieldContent { get; set; }
+        [DefaultValue(true)]
+        public bool IndentBlockContent { get; set; }
+        [DefaultValue(true)]
+        public bool IndentCaseContent { get; set; }
+        [DefaultValue(true)]
+        public bool IndentMultiLines { get; set; }
+        [DefaultValue(false)]
+
+        public bool IndentCaseLabel { get; set; }
+        [DefaultValue(false)]
+        public bool IndentPreprocessorLines { get; set; }
+        [DefaultValue(false)]
+        public bool IndentNamespace { get; set; }
+        #endregion
+        public IndentingOptions()
+        {
+            IndentEntityContent = true; // class members
+            IndentFieldContent = true;  // class fields
+            IndentBlockContent = true;  // statements
+            IndentCaseContent = true;   // statement block inside case
+            IndentMultiLines = true;    // Multi line statements
+            IndentCaseLabel = false;
+            IndentPreprocessorLines = false;
+            IndentNamespace = false;
+        }
+        public override void WriteToSettings()
+        {
+            XEditorSettings.IndentTypeMembers = IndentEntityContent;
+            XEditorSettings.IndentTypeFields = IndentFieldContent;
+            XEditorSettings.IndentStatements = IndentBlockContent;
+            XEditorSettings.IndentCaseContent = IndentCaseContent;
+            XEditorSettings.IndentCaseLabel = IndentCaseLabel;
+            XEditorSettings.IndentContinuedLines = IndentMultiLines;
+            XEditorSettings.IndentPreprocessorLines = IndentPreprocessorLines;
+            XEditorSettings.IndentNamespace = IndentNamespace;
+        }
+    }
+
 }

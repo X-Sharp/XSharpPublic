@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
+using XSharpModel;
 
 namespace XSharp.LanguageService.OptionsPages
 {
@@ -9,79 +10,60 @@ namespace XSharp.LanguageService.OptionsPages
     [SharedSettings("TextEditor.XSharp", false)]
     public class CompletionOptionsPage : XSDialogPage<CompletionOptionsControl, CompletionOptions>
     {
-        #region Properties that are delegated to the Options object
-        public int CompleteNumChars
-        {
-            get => Options.CompleteNumChars;
-            set => Options.CompleteNumChars = value;    
-        }
-
-        public bool CompleteLocals
-        {
-            get => Options.CompleteLocals;
-            set => Options.CompleteLocals = value;
-        }
-
-        public bool CompleteSelf
-        {
-            get => Options.CompleteSelf;
-            set => Options.CompleteSelf = value;
-        }
-        public bool CompleteParent
-        {
-            get => Options.CompleteParent;
-            set => Options.CompleteParent = value;
-        }
-        public bool CompleteNamespaces
-        {
-            get => Options.CompleteNamespaces;
-            set => Options.CompleteNamespaces = value;
-        }
-        public bool CompleteTypes
-        {
-            get => Options.CompleteTypes;
-            set => Options.CompleteTypes = value;
-        }
-        public bool CompleteKeywords
-        {
-            get => Options.CompleteKeywords;
-            set => Options.CompleteKeywords = value;
-        }
-        public bool CompleteSnippets
-        {
-            get => Options.CompleteSnippets;
-            set => Options.CompleteSnippets = value;
-        }
-        public bool CompleteGlobals
-        {
-            get => Options.CompleteGlobals;
-            set => Options.CompleteGlobals = value;
-        }
-        public bool CompleteGlobalsP
-        {
-            get => Options.CompleteGlobalsP;
-            set => Options.CompleteGlobalsP = value;
-        }
-        public bool CompleteGlobalsA
-        {
-            get => Options.CompleteGlobalsA;
-            set => Options.CompleteGlobalsA = value;
-        }
-        public bool CompleteFunctions
-        {
-            get => Options.CompleteFunctions;
-            set => Options.CompleteFunctions = value;
-        }
-        public bool CompleteFunctionsP
-        {
-            get => Options.CompleteFunctionsP;
-            set => Options.CompleteFunctionsP = value;
-        }
-        public bool CompleteFunctionsA
-        {
-            get => Options.CompleteFunctionsA;
-            set => Options.CompleteFunctionsA = value;
-        }
-        #endregion
+        // The base class exposes the AutomationObject that contains the values
     }
+    public class CompletionOptions : OptionsBase
+    {
+        #region Properties
+        public int CompleteNumChars { get; set; }
+        public bool CompleteLocals { get; set; }
+        public bool CompleteSelf { get; set; }
+        public bool CompleteParent { get; set; }
+        public bool CompleteNamespaces { get; set; }
+        public bool CompleteTypes { get; set; }
+        public bool CompleteKeywords { get; set; }
+        public bool CompleteSnippets { get; set; }
+        public bool CompleteGlobals { get; set; }
+        public bool CompleteGlobalsP { get; set; }
+        public bool CompleteGlobalsA { get; set; }
+        public bool CompleteFunctions { get; set; }
+        public bool CompleteFunctionsP { get; set; }
+        public bool CompleteFunctionsA { get; set; }
+        #endregion
+        public CompletionOptions()
+        {
+            CompleteNumChars = 4;
+            CompleteLocals = true;
+            CompleteSelf = true;
+            CompleteParent = true;
+            CompleteNamespaces = true;
+            CompleteTypes = true;
+            CompleteKeywords = true;
+            CompleteSnippets = true;
+            CompleteGlobals = true;
+            CompleteGlobalsA = true;
+            CompleteGlobalsP = true;
+            CompleteFunctions = true;
+            CompleteFunctionsA = true;
+            CompleteFunctionsP = true;
+        }
+        public override void WriteToSettings()
+        {
+            XEditorSettings.CompleteLocals = CompleteLocals;
+            XEditorSettings.CompleteSelf = CompleteSelf;
+            XEditorSettings.CompleteParent = CompleteParent;
+            XEditorSettings.CompleteNamespaces = CompleteNamespaces;
+            XEditorSettings.CompleteTypes = CompleteTypes;
+            XEditorSettings.CompleteKeywords = CompleteKeywords;
+            XEditorSettings.CompleteSnippets = CompleteSnippets;
+            XEditorSettings.CompleteGlobals = CompleteGlobals;
+            XEditorSettings.CompleteGlobalsP = CompleteGlobalsP;
+            XEditorSettings.CompleteGlobalsA = CompleteGlobalsA;
+            XEditorSettings.CompleteFunctions = CompleteFunctions;
+            XEditorSettings.CompleteFunctionsP = CompleteFunctionsP;
+            XEditorSettings.CompleteFunctionsA = CompleteFunctionsA;
+            XEditorSettings.CompleteNumChars = CompleteNumChars;
+        }
+    }
+
 }

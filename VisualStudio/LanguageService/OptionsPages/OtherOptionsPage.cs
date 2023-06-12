@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using XSharpModel;
 
 namespace XSharp.LanguageService.OptionsPages
 {
@@ -11,77 +12,59 @@ namespace XSharp.LanguageService.OptionsPages
     [ComVisible(true)]
     class OtherOptionsPage : XSDialogPage<OtherOptionsControl, OtherOptions>
     {
-        public bool AutoPairs
+        // The base class exposes the AutomationObject that contains the values
+    }
+    public class OtherOptions : OptionsBase
+    {
+        #region Properties
+        public bool AutoPairs { get; set; }
+        public bool AutoOpen { get; set; }
+        public bool ShowDividers { get; set; }
+        public bool ShowSingleLineDividers { get; set; }
+        public bool FormEditorMakeBackupFiles { get; set; }
+        public bool EnableHighlightWord { get; set; }
+        public bool EnableBraceMatching { get; set; }
+        public bool EnableKeywordmatching { get; set; }
+        public bool EnableLightBulbs { get; set; }
+        public bool EnableQuickInfo { get; set; }
+        public bool EnableParameterInfo { get; set; }
+        public bool EnableRegions { get; set; }
+        public bool EnableCodeCompletion { get; set; }
+
+        #endregion
+        public OtherOptions()
         {
-            get => Options.AutoPairs;
-            set => Options.AutoPairs = value;
+            AutoPairs = true;
+            AutoOpen = true;
+            EnableHighlightWord = true;
+            EnableBraceMatching = true;
+            EnableKeywordmatching = true;
+            EnableLightBulbs = true;
+            EnableQuickInfo = true;
+            EnableParameterInfo = true;
+            EnableCodeCompletion = true;
+            EnableRegions = true;
+            ShowDividers = true;
+            ShowSingleLineDividers = true;
+            FormEditorMakeBackupFiles = true;
         }
-        public bool AutoOpen
+        public override void WriteToSettings()
         {
-            get => Options.AutoOpen;
-            set => Options.AutoOpen = value;
+            // Other
+            XEditorSettings.ShowDividers = ShowDividers;
+            XEditorSettings.CompletionAutoPairs = AutoPairs;
+            XEditorSettings.ShowSingleLineDividers = ShowSingleLineDividers;
+            XEditorSettings.DisableAutoOpen = !AutoOpen;
+            XEditorSettings.DisableHighLightWord = !EnableHighlightWord;
+            XEditorSettings.DisableBraceMatching = !EnableBraceMatching;
+            XEditorSettings.DisableKeywordMatching = !EnableKeywordmatching;
+            XEditorSettings.DisableCodeCompletion = !EnableCodeCompletion;
+            XEditorSettings.DisableLightBulb = !EnableLightBulbs;
+            XEditorSettings.DisableParameterInfo = !EnableParameterInfo;
+            XEditorSettings.DisableQuickInfo = !EnableQuickInfo;
+            XEditorSettings.DisableRegions = !EnableRegions;
+
         }
-        public bool ShowDividers
-        {
-            get => Options.ShowDividers;
-            set => Options.ShowDividers = value;
-        }
-        public bool ShowSingleLineDividers
-        {
-            get => Options.ShowSingleLineDividers;
-            set => Options.ShowSingleLineDividers = value;
-        }
-        
-      
-        public bool FormEditorMakeBackupFiles
-        {
-            get => Options.FormEditorMakeBackupFiles;
-            set => Options.FormEditorMakeBackupFiles = value;
-        }
-        public bool EnableHighlightWord
-        {
-            get => Options.EnableHighlightWord;
-            set => Options.EnableHighlightWord = value;
-        }
-        public bool EnableBraceMatching
-        {
-            get => Options.EnableBraceMatching;
-            set => Options.EnableBraceMatching = value;
-        }
-        public bool EnableKeywordmatching
-        {
-            get => Options.EnableKeywordmatching;
-            set => Options.EnableKeywordmatching = value;
-        }
-        public bool EnableLightBulbs
-        {
-            get => Options.EnableLightBulbs;
-            set => Options.EnableLightBulbs = value;
-        }
-        public bool EnableQuickInfo
-        {
-            get => Options.EnableQuickInfo;
-            set => Options.EnableQuickInfo = value;
-        }
-        public bool EnableParameterInfo
-        {
-            get => Options.EnableParameterInfo;
-            set => Options.EnableParameterInfo = value;
-        }
-        public bool EnableRegions
-        {
-            get => Options.EnableRegions;
-            set => Options.EnableRegions = value;
-        }
-        public bool EnableCodeCompletion
-        {
-            get => Options.EnableCodeCompletion;
-            set => Options.EnableCodeCompletion = value;
-        }
-        public override void LoadSettingsFromStorage()
-        {
-            base.LoadSettingsFromStorage();
-           
-        }
+
     }
 }

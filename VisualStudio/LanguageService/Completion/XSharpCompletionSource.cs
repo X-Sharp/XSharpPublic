@@ -8,12 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
-using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Utilities;
 using XSharpModel;
-using Microsoft.VisualStudio.Shell;
-using System.Windows.Media;
-using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
 using LanguageService.CodeAnalysis.XSharp;
@@ -30,7 +25,6 @@ namespace XSharp.LanguageService
 
         private XFile _file;
         private bool _showTabs;
-        private bool _keywordsInAll;
         private readonly ITagAggregator<IClassificationTag> _tagAggregator;
 
         private XSharpDialect _dialect;
@@ -74,7 +68,6 @@ namespace XSharp.LanguageService
                     throw new ObjectDisposedException("XSharpCompletionSource");
                 XSharpModel.ModelWalker.Suspend();
                 _showTabs = XEditorSettings.CompletionListTabs;
-                _keywordsInAll = XEditorSettings.KeywordsInAll;
                 var props = session.GetCompletionProperties();
                 var triggerPoint = props.Position;
                 var line = triggerPoint.GetContainingLine();
@@ -182,11 +175,11 @@ namespace XSharp.LanguageService
                         case XSharpLexer.DOT:
                             if (symbol.Kind == Kind.Namespace )
                             {
-                                filterText = symbol.FullName + ".";
+                                filterText = symbol.FullName + "." + filterText;
                             }
                             else if (symbol is IXTypeSymbol)
                             {
-                                filterText = symbol.FullName + ".";
+                                filterText = symbol.FullName + "." + filterText;
                             }
                             break;
                         case XSharpLexer.COLON:
@@ -343,7 +336,20 @@ namespace XSharp.LanguageService
                     }
                 }
                 //
-
+                if (filterText?.Length > 0 && !filterText.EndsWith("."))
+                {
+                    var pos = filterText.IndexOf(".");
+                    if (pos >= 0)
+                    {
+                        var st = start - filterText.Length + pos+1;
+                        applicableTo = triggerPoint.Snapshot.CreateTrackingSpan(new SnapshotSpan(st, triggerPoint), SpanTrackingMode.EdgeInclusive);
+                    }
+                    else
+                    {
+                        var st = start - filterText.Length;
+                        applicableTo = triggerPoint.Snapshot.CreateTrackingSpan(new SnapshotSpan(st, triggerPoint), SpanTrackingMode.EdgeInclusive);
+                    }
+                }
                 if (!dotSelector && !showInstanceMembers)
                 {
                     switch (tokenType)
@@ -379,7 +385,7 @@ namespace XSharp.LanguageService
                     }
                 }
                 props.Filter = filterText;
-                if ((kwdList.Count > 0) && _keywordsInAll /*&& XSettings.CompleteKeywords*/)
+                if ((kwdList.Count > 0) && XEditorSettings.KeywordsInAll)
                 {
                     foreach (var item in kwdList.Values)
                         compList.Add(item,true);
@@ -402,7 +408,7 @@ namespace XSharp.LanguageService
                     helpers.BuildTabs(compList, completionSets, applicableTo);
                 }
                 // Keywords are ALWAYS in a separate Tab anyway
-                if (kwdList.Count > 0)
+                if (kwdList.Count > 0 && !XEditorSettings.KeywordsInAll)
                 {
                     completionSets.Add(new CompletionSet("Keywords", "Keywords", applicableTo, kwdList.Values, Enumerable.Empty<Completion>()));
                 }

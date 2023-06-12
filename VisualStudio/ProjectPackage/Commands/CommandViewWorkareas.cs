@@ -11,13 +11,13 @@ namespace XSharp.Project
     {
         protected override void BeforeQueryStatus(EventArgs e)
         {
-            Command.Enabled = false; // XSettings.DebuggerMode == DebuggerMode.Break;
+            Command.Enabled = XDebuggerSettings.DebuggerMode == DebuggerMode.Break;
             base.BeforeQueryStatus(e);
         }
         protected override Task InitializeCompletedAsync()
         {
             Command.Enabled = false;
-            Command.Supported = false;
+            Command.Supported = true;
             return base.InitializeCompletedAsync();
         }
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)

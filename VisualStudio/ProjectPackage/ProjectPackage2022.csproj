@@ -74,6 +74,11 @@
     <Reference Include="Microsoft.Windows.Design.Host">
       <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
     <Reference Include="XSharp.CodeAnalysis">
       <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
       <Aliases>codeanalysis</Aliases>
@@ -126,6 +131,11 @@
     <Compile Include="Commands\CommandXPorter.cs" />
     <Compile Include="Commands\CommandVoXPorter.cs" />
     <Compile Include="Commands\XSharpBaseCommand.cs" />
+    <Compile Include="DebugWindows\ShowMemvarsWindow.cs" />
+    <Compile Include="DebugWindows\ShowMemvarsControl.xaml.cs">
+      <DependentUpon>ShowMemvarsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DebugWindows\Support.cs" />
     <Compile Include="ExternalAssemblies.cs" />
     <Compile Include="List\ErrorList\ErrorListItem.cs" />
     <Compile Include="List\ErrorList\ErrorListManager.cs" />
@@ -723,6 +733,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="DebugWindows\ShowMemvarsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="RepositoryWindow\ToolWindows\RepositoryWindowControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -56,7 +56,18 @@ namespace XSharp.LanguageService.OptionsPages
         /// <param name="options"></param>
         internal void SetOptions(U options)
         {
-            Options = options;
+            if (Options == null)
+            {
+                Options = options;
+            }
+            else
+            {
+                foreach (var prop in typeof(U).GetProperties())
+                {
+                    var value = prop.GetValue(options, null);
+                    prop.SetValue(Options, value, null);
+                }
+            }
         }
         protected override IWin32Window Window
         {

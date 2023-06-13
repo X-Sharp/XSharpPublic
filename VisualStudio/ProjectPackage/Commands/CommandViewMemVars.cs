@@ -1,7 +1,6 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
 using System;
-using XSharp.Project.DebugWindows;
 using XSharpModel;
 using Task = System.Threading.Tasks.Task;
 
@@ -24,7 +23,7 @@ namespace XSharp.Project
         }
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
-            await ShowMemvarsWindow.ShowAsync();
+            await XSharp.Debugger.UI.MemvarsWindow.ShowAsync();
         }
     }
 }

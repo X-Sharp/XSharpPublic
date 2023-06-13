@@ -11,6 +11,7 @@ namespace XSharp
     internal static class XSharpConstants
     {
         internal const string guidXSharpProjectPkgString = "e299fb7b-d273-4678-9acf-b37b4af04a12";
+        internal const string guidXSharpDebuggerUIPkgString = "39DAE239-87B5-4B97-8E5E-9E6854F2499A";
         internal const string guidXSharpProjectFactoryString = "aa6c8d78-22ff-423a-9c7c-5f2393824e04";
         internal const string guidXSharpProjectFactoryStringCurly = "{"+ guidXSharpProjectFactoryString+"}";
         internal const string guidXSharpVOMenuEditor = "e4ae4582-98ae-40c8-9e48-6f3be61ebf79";

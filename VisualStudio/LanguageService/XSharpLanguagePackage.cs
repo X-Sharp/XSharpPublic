@@ -230,6 +230,7 @@ namespace XSharp.LanguageService
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
+            XSettings.Version = await VS.Shell.GetVsVersionAsync();
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             IServiceContainer serviceContainer = this as IServiceContainer;
             XSharpLanguageService languageService = new XSharpLanguageService(serviceContainer);

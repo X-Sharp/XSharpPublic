@@ -118,24 +118,19 @@
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
     <Compile Include="Commands\CommandRebuildIntellisense.cs" />
     <Compile Include="Commands\CommandEditProjectFile.cs" />
-    <Compile Include="Commands\CommandViewInDisassembler.cs" />
-    <Compile Include="Commands\CommandViewRepo.cs" />
-    <Compile Include="Commands\CommandViewWorkareas.cs" />
-    <Compile Include="Commands\CommandViewSettings.cs" />
-    <Compile Include="Commands\CommandViewMemVars.cs" />
     <Compile Include="Commands\CommandViewGlobals.cs" />
+    <Compile Include="Commands\CommandViewInDisassembler.cs" />
+    <Compile Include="Commands\CommandViewMemVars.cs" />
+    <Compile Include="Commands\CommandViewRepo.cs" />
     <Compile Include="Commands\CommandUDCTester.cs" />
     <Compile Include="Commands\CommandFoxXPorter.cs" />
+    <Compile Include="Commands\CommandViewSettings.cs" />
+    <Compile Include="Commands\CommandViewWorkareas.cs" />
     <Compile Include="Commands\CommandXsWebsite.cs" />
     <Compile Include="Commands\CommandXsHelp.cs" />
     <Compile Include="Commands\CommandXPorter.cs" />
     <Compile Include="Commands\CommandVoXPorter.cs" />
     <Compile Include="Commands\XSharpBaseCommand.cs" />
-    <Compile Include="DebugWindows\ShowMemvarsWindow.cs" />
-    <Compile Include="DebugWindows\ShowMemvarsControl.xaml.cs">
-      <DependentUpon>ShowMemvarsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DebugWindows\Support.cs" />
     <Compile Include="ExternalAssemblies.cs" />
     <Compile Include="List\ErrorList\ErrorListItem.cs" />
     <Compile Include="List\ErrorList\ErrorListManager.cs" />
@@ -645,6 +640,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Debugger.UI\Debugger.UI2022.csproj">
+      <Project>{960714E8-FF93-4A42-B9BA-610B0F2014DB}</Project>
+      <Name>Debugger.UI2022</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\LanguageService\LanguageService2022.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7396}</Project>
       <Name>LanguageService2022</Name>
@@ -716,7 +717,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
-      <Version>2.0.0</Version>
+      <Version>1.4.0</Version>
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.Debug">
       <Version>2.0.0</Version>
@@ -733,10 +734,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DebugWindows\ShowMemvarsControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="RepositoryWindow\ToolWindows\RepositoryWindowControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

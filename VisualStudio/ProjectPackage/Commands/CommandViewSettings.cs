@@ -23,7 +23,7 @@ namespace XSharp.Project
         }
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
-            await VS.MessageBox.ShowAsync("Not ready yet");
+            await XSharp.Debugger.UI.SettingsWindow.ShowAsync();
         }
     }
 }

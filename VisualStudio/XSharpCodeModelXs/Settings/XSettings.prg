@@ -11,6 +11,7 @@ USING System
 BEGIN NAMESPACE XSharpModel
     STATIC CLASS XSettings
         // Fields
+
         PUBLIC STATIC PROPERTY EnableLogging                      AS LOGIC GET EnableFileLogging .or. EnableOutputWindowLogging .or. EnableDebugLogging
         PUBLIC STATIC PROPERTY EnableBraceMatchLog                AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EnableCodeCompletionLog            AS LOGIC AUTO
@@ -42,6 +43,11 @@ BEGIN NAMESPACE XSharpModel
 
         PUBLIC STATIC PROPERTY Disassembler AS STRING AUTO := ""
         PUBLIC STATIC PROPERTY HideIncludes AS LOGIC AUTO := FALSE
+        PUBLIC STATIC Property Version as Version AUTO := Version{}
+
+        PUBLIC STATIC PROPERTY IsVs15 AS LOGIC => Version:Major == 15
+        PUBLIC STATIC PROPERTY IsVs16 AS LOGIC => Version:Major == 16
+        PUBLIC STATIC PROPERTY IsVs17 AS LOGIC => Version:Major == 17
 
         PUBLIC STATIC METHOD EnableAll() AS VOID
              EnableBraceMatchLog           := TRUE

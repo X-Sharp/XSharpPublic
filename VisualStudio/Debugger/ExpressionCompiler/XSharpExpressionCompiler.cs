@@ -82,7 +82,7 @@ namespace XSharpDebugger.ExpressionCompiler
 #if XDEBUG
             XSolution.WriteOutputMessage("CompileExpression: " + expression.Text);
 #endif
-            if (!VsVersion.Vs15)
+            if (!XSettings.IsVs15)
             {
                 NewCompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
             }
@@ -177,7 +177,7 @@ namespace XSharpDebugger.ExpressionCompiler
 #if XDEBUG
             XSolution.WriteOutputMessage("GetClrLocalVariableQuery ");
 #endif
-            if (!VsVersion.Vs15)
+            if (!XSettings.IsVs15)
             {
                 result = NewClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
             }
@@ -254,7 +254,7 @@ namespace XSharpDebugger.ExpressionCompiler
 #if XDEBUG
             XSolution.WriteOutputMessage("CompileAssignment: "+expression.Text);
 #endif
-            if (!VsVersion.Vs15)
+            if (!XSettings.IsVs15)
             {
                 NewCompileAssignment(expression, instructionAddress, lValue, out error, out result);
             }

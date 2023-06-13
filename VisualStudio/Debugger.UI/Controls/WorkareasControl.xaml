@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="XSharp.Debugger.UI.WorkareasControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+             toolkit:Themes.UseVsTheme="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,10,0">
+            <TextBlock Text="Selected RDD:" VerticalAlignment="Center" Margin="5,5,10,5"/>
+            <ComboBox ItemsSource="{Binding RDDs}" SelectedItem="{Binding SelectedRDD}" Padding="5,0" Width="250" />
+            <Separator Grid.Row="1" />
+        </StackPanel>
+        <Separator Grid.Row="1" />
+        <ListView Grid.Row="2" Name="lvAreas" Width="Auto" ItemsSource="{Binding SelectedItems}">
+            <ListView.Resources>
+                <Style TargetType="{x:Type GridViewColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                    <Setter Property="Visibility" Value="Visible" />
+                </Style>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Memory Variables">
+                    <GridViewColumn Width="50" Header="Selected" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Selected}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="125" Header="Area" DisplayMemberBinding="{Binding Area}" />
+                    <GridViewColumn Width="125" Header="Alias" DisplayMemberBinding="{Binding Alias}" />
+                    <GridViewColumn Width="125" Header="RDD" DisplayMemberBinding="{Binding RDD}" />
+                </GridView>
+            </ListView.View>
+
+        </ListView>
+    </Grid>
+</UserControl>

@@ -51,31 +51,42 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\ConstantsMethods.cs">
+      <Link>ConstantsMethods.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="DebuggerUIPackage.cs" />
-    <Compile Include="Windows\GlobalsControl.xaml.cs">
+    <Compile Include="Controls\GlobalsControl.xaml.cs">
       <DependentUpon>GlobalsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\MemvarsControl.xaml.cs">
+    <Compile Include="Views\WorkareasView.cs" />
+    <Compile Include="Views\MemvarsView.cs" />
+    <Compile Include="Views\SettingsView.cs" />
+    <Compile Include="Views\GlobalsView.cs" />
+    <Compile Include="Controls\MemvarsControl.xaml.cs">
       <DependentUpon>MemvarsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\GlobalsWindow.cs" />
     <Compile Include="Windows\MemvarsWindow.cs" />
-    <Compile Include="Windows\SettingsControl.xaml.cs">
+    <Compile Include="Controls\SettingsControl.xaml.cs">
       <DependentUpon>SettingsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\WorkareasWindow.cs" />
     <Compile Include="Windows\SettingsWindow.cs" />
     <Compile Include="Support\Support.cs" />
+    <Compile Include="Controls\WorkareasControl.xaml.cs">
+      <DependentUpon>WorkareasControl.xaml</DependentUpon>
+    </Compile>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
@@ -84,25 +95,26 @@
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine">
       <Version>17.0.2012801</Version>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.3</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Windows\GlobalsControl.xaml">
+    <Page Include="Controls\GlobalsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\MemvarsControl.xaml">
+    <Page Include="Controls\MemvarsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\SettingsControl.xaml">
+    <Page Include="Controls\SettingsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\WorkareasControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -135,4 +147,11 @@
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

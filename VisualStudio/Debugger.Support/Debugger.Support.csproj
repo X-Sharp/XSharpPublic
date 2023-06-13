@@ -36,6 +36,7 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="DTO\WorkareaItem.cs" />
     <Compile Include="RTLink\RtLink.cs" />
     <Reference Include="System" />
     <Reference Include="System.Core" />

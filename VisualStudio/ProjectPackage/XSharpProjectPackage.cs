@@ -5,7 +5,6 @@
 //
 
 using Community.VisualStudio.Toolkit;
-using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
@@ -17,8 +16,6 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using XSharp.LanguageService;
-using XSharp.Project.DebugWindows;
 using XSharp.Project.Options;
 using XSharp.Project.WPF;
 using XSharpModel;
@@ -136,11 +133,8 @@ namespace XSharp.Project
     [ProvideToolWindow(typeof(RepositoryWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
     [ProvideToolWindowVisibility(typeof(RepositoryWindow.Pane), VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string)]
 #endif
-    [ProvideToolWindow(typeof(ShowMemvarsWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
-    [ProvideToolWindowVisibility(typeof(ShowMemvarsWindow.Pane), VSConstants.UICONTEXT.Debugging_string)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IDisposable
+    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents, IDisposable
     {
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
@@ -149,9 +143,7 @@ namespace XSharp.Project
         //private XSharpProjectSelector _projectSelector = null;
         private uint shellCookie;
         IVsShell shell = null;
-        DTE2 m_dte;
-        internal DTE2 Dte => m_dte;
-
+ 
         public static XSharpProjectPackage XInstance = null;
 
 
@@ -179,18 +171,14 @@ namespace XSharp.Project
         {
             // Give the codemodel a way to talk to the VS Shell
             XSettings.ShellLink = new XSharpShellLink();
-
+            XSettings.Version = await VS.Shell.GetVsVersionAsync();
             this.RegisterToolWindows();
 
             instance = this;
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            m_dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE.DTE));
-
-            // make sure the debugger has the version from the main thread
-            XSharpDebugger.VsVersion.GetVersion();
-
+ 
             // The project selector helps to choose between MPF and CPS projects
             //_projectSelector = new XSharpProjectSelector();
             //await _projectSelector.InitAsync(this);
@@ -218,7 +206,6 @@ namespace XSharp.Project
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
-            await this.RegisterDebuggerEventsAsync();
             await this.RegisterCommandsAsync();
             await GetOptionsAsync();
         }
@@ -354,77 +341,9 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-        private async Task<bool> RegisterDebuggerEventsAsync()
-        {
-            int hr;
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            m_debugger = await VS.Services.GetDebuggerAsync();
-            if (m_debugger != null)
-            {
-                hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
-                ErrorHandler.ThrowOnFailure(hr);
-                // Get initial value
-                DBGMODE[] modeArray = new DBGMODE[1];
-                hr = m_debugger.GetMode(modeArray);
-                XDebuggerSettings.DebuggerMode = (DebuggerMode)modeArray[0];
-            }
-            return true;
-        }
-        private void UnRegisterDebuggerEvents()
-        {
-            int hr;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                if (m_debugger != null && m_Debuggercookie != 0)
-                {
-                    hr = m_debugger.UnadviseDebuggerEvents(m_Debuggercookie);
-                    ErrorHandler.ThrowOnFailure(hr);
-                }
-            });
-            m_Debuggercookie = 0;
-            m_debugger = null;
-        }
-        private IVsDebugger m_debugger = null;
-        private uint m_Debuggercookie = 0;
-
-        public int OnModeChange(DBGMODE dbgmodeNew)
-        {
-            var wasrunning = XDebuggerSettings.DebuggerIsRunning;
-            XDebuggerSettings.DebuggerMode = (DebuggerMode)dbgmodeNew;
-            if (! wasrunning)
-            {
-                if (XDebuggerSettings.DebuggingXSharpExe)
-                {
-                    // no need to set the settings
-                }
-                else
-                {
-                    JoinableTaskFactory.Run(async delegate
-                    {
-                        await GetOptionsAsync();
-                    });
-
-                }
-                
-            }
-            else if (dbgmodeNew == DBGMODE.DBGMODE_Design)
-            {
-                XDebuggerSettings.DebuggingXSharpExe = false;
-            }
-            if (dbgmodeNew == DBGMODE.DBGMODE_Break ||
-                dbgmodeNew == DBGMODE.DBGMODE_Run)
-            {
-                XSharp.Project.DebugWindows.Support.RefreshWindows();
-            }
-            return VSConstants.S_OK;
-        }
-
         public void Dispose()
         {
             Logger.Stop();
-            this.UnRegisterDebuggerEvents();
             if (shell != null)
             {
                 JoinableTaskFactory.Run(async delegate

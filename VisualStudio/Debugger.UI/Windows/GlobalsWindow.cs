@@ -1,47 +1,52 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Imaging;
-using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace XSharp.Project.DebugWindows
+namespace XSharp.Debugger.UI
 {
-    public class ShowMemvarsWindow : BaseToolWindow<ShowMemvarsWindow>
+    public class GlobalsWindow : BaseToolWindow<GlobalsWindow>
     {
-        public override string GetTitle(int toolWindowId) => "Dynamic Memory Variables";
+        public override string GetTitle(int toolWindowId) => "Global Variables";
 
         public override Type PaneType => typeof(Pane);
-        public ShowMemvarsControl Control = null;
+        public GlobalsControl Control = null;
 
 
         public override async Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
             Support.RegisterWindow(this);
             Version version = await VS.Shell.GetVsVersionAsync();
-            Control = new ShowMemvarsControl();
+            Control = new GlobalsControl();
+            Control.Initialized += Control_Initialized; 
             return Control;
         }
+
+        private void Control_Initialized(object sender, EventArgs e)
+        {
+            this.Refresh();
+        }
+
 
         internal void Refresh()
         {
             Control.Refresh();
         }
+        internal void Clear()
+        {
+            Control.Clear();
+        }
 
 
-        [Guid("7C2FC14E-4BBE-4B95-B0CB-B3B7E0658A23")]
+        [Guid("53B7968B-251B-44E0-BDF5-A225BF0DBC77")]
         internal class Pane : ToolkitToolWindowPane
         {
             public Pane()
             {
-                BitmapImageMoniker = KnownMonikers.LocalsWindow;
-                //ToolBar = new CommandID(PackageGuids.guidProjectPackage, PackageIds.idDbgGlobalsWindow);
+                BitmapImageMoniker = KnownMonikers.AutosWindow;
             }
         }
 

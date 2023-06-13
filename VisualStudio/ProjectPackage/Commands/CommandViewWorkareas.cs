@@ -7,7 +7,7 @@ using Task = System.Threading.Tasks.Task;
 namespace XSharp.Project
 {
     [Command(PackageIds.idDbgWorkareaWindow)]
-    internal sealed class ComandViewWorkareas : BaseCommand<ComandViewWorkareas>
+    internal sealed class CommandViewWorkareas : BaseCommand<CommandViewWorkareas>
     {
         protected override void BeforeQueryStatus(EventArgs e)
         {

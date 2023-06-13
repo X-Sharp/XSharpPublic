@@ -89,14 +89,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.503</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine">
-      <Version>17.0.2012801</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +127,11 @@
     <EmbeddedResource Include="DebuggerUIPackage.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.Toolkit.17">
+      <Version>17.0.503</Version>
+    </PackageReference>
   </ItemGroup>
   <PropertyGroup>
     <!--

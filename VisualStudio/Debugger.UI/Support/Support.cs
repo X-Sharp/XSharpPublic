@@ -76,20 +76,16 @@ namespace XSharp.Debugger.UI
             return StripResult(result);
         }
 
-        internal static async Task<string> LoadAssemblyAsync( string fileName)
-        {
-            var loaded = await ExecExpressionAsync("System.Reflection.Assembly.LoadFile(\"" + fileName + "\")");
-            return loaded;
-        }
-        static async Task<DkmProcess> LoadSupportDLLAsync()
+
+        static async Task<object> LoadSupportDLLAsync()
         {
             var proc = DkmProcess.GetProcesses().FirstOrDefault();
             if (proc != currentProcess)
             {
                 currentProcess = proc;
                 var path = System.IO.Path.GetDirectoryName(typeof(Support).Assembly.Location);
-                var support = System.IO.Path.Combine(path, "XSharp.Debugger.Support.dll");
-                var loaded = await LoadAssemblyAsync(support);
+                var fileName = System.IO.Path.Combine(path, "XSharp.Debugger.Support.dll");
+                var loaded = await ExecExpressionAsync("System.Reflection.Assembly.LoadFile(\"" + fileName + "\")");
             }
             return proc;
         }
@@ -108,7 +104,7 @@ namespace XSharp.Debugger.UI
             }
             var dkmsf = DkmStackFrame.ExtractFromDTEObject(sf);
             var thr = dkmsf.Thread;
-            var proc = await LoadSupportDLLAsync();
+            var proc = (DkmProcess) await LoadSupportDLLAsync();
             var expr = DkmLanguageExpression.Create(language, DkmEvaluationFlags.None, source, null);
             var wl = DkmWorkList.Create(null);
             var insp = DkmInspectionSession.Create(proc, null);
@@ -171,22 +167,10 @@ namespace XSharp.Debugger.UI
         }
         internal static void ClearWindows()
         {
-            if (memvarsWindow != null )
-            {
-                memvarsWindow.Clear();
-            }
-            if (settingsWindow != null)
-            {
-                settingsWindow.Clear();
-            }
-            if (globalsWindow != null)
-            {
-                globalsWindow.Clear();
-            }
-            if (workareasWindow != null )
-            {
-                workareasWindow.Clear();
-            }
+            memvarsWindow?.Clear();
+            settingsWindow?.Clear();
+            globalsWindow?.Clear();
+            workareasWindow?.Clear();
         }
         
     }

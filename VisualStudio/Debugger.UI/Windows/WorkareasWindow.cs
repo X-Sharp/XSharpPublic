@@ -13,22 +13,23 @@ using System.Windows;
 
 namespace XSharp.Debugger.UI
 {
-    public class SettingsWindow: BaseToolWindow<SettingsWindow>
+    public class WorkareasWindow: BaseToolWindow<WorkareasWindow>
     {
-        public override string GetTitle(int toolWindowId) => "X# Settings";
+        public override string GetTitle(int toolWindowId) => "X# Workareas";
 
         public override Type PaneType => typeof(Pane);
-        public SettingsControl Control = null;
+        public WorkareasControl Control = null;
 
 
         public override async Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
             Support.RegisterWindow(this);
             Version _ = await VS.Shell.GetVsVersionAsync();
-            Control = new SettingsControl() { DataContext = new SettingsView() };
+            Control = new WorkareasControl { DataContext = new WorkareasView() };
             Control.Refresh();
             return Control;
         }
+
 
         internal void Refresh()
         {
@@ -40,12 +41,12 @@ namespace XSharp.Debugger.UI
         }
 
 
-        [Guid("F7ED7826-137A-462D-8757-37A02BEF4DCF")]
+        [Guid("B5B41BAB-62F9-48E0-80D8-947F2F14D1C5")]
         internal class Pane : ToolkitToolWindowPane
         {
             public Pane()
             {
-                BitmapImageMoniker = KnownMonikers.Settings;
+                BitmapImageMoniker = KnownMonikers.DatabaseGroup;
             }
             public override void OnToolWindowCreated()
             {

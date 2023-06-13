@@ -1,4 +1,9 @@
-﻿using Community.VisualStudio.Toolkit;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Imaging;
 using System;
 using System.Runtime.InteropServices;
@@ -10,7 +15,7 @@ namespace XSharp.Debugger.UI
 {
     public class MemvarsWindow : BaseToolWindow<MemvarsWindow>
     {
-        public override string GetTitle(int toolWindowId) => "Dynamic Memory Variables";
+        public override string GetTitle(int toolWindowId) => "X# Public and Privates";
 
         public override Type PaneType => typeof(Pane);
         public MemvarsControl Control = null;
@@ -19,16 +24,13 @@ namespace XSharp.Debugger.UI
         public override async Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
             Support.RegisterWindow(this);
-            Version version = await VS.Shell.GetVsVersionAsync();
-            Control = new MemvarsControl();
-            Control.Initialized += Control_Initialized;
+            Version _ = await VS.Shell.GetVsVersionAsync();
+            Control = new MemvarsControl { DataContext = new MemvarsView() };
+            Control.Refresh();
             return Control;
         }
 
-        private void Control_Initialized(object sender, EventArgs e)
-        {
-            this.Refresh();
-        }
+       
 
         internal void Refresh()
         {
@@ -48,6 +50,17 @@ namespace XSharp.Debugger.UI
                 BitmapImageMoniker = KnownMonikers.LocalsWindow;
                 //ToolBar = new CommandID(PackageGuids.guidProjectPackage, PackageIds.idDbgGlobalsWindow);
             }
+            public override void OnToolWindowCreated()
+            {
+                base.OnToolWindowCreated();
+                Support.RefreshWindows();
+            }
+            protected override void OnCreate()
+            {
+                base.OnCreate();
+                Support.RefreshWindows();
+            }
+
         }
 
     }

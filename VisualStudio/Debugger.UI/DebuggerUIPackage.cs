@@ -1,4 +1,10 @@
-﻿using Community.VisualStudio.Toolkit;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+using Community.VisualStudio.Toolkit;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
@@ -16,38 +22,6 @@ using System.Runtime.InteropServices;
 // See License.txt in the project root for license information.
 //
 
-/*
-Substitution strings
-String	Description
-$=RegistryEntry$	The value of the RegistryEntry entry. If the registry entry string
-ends in a backslash (\), then the default value of the registry subkey is used.
-For example, the substitution string $=HKEY_CURRENT_USER\Environment\TEMP$ is expanded
-to the temporary folder of the current user.
-$AppName$	        The qualified name of the application that is passed to the AppEnv.dll entry points.
-The qualified name consists of the application name, an underscore, and the class identifier
-(CLSID) of the application automation object, which is also recorded as the value of the
-ThisVersion CLSID setting in the project .pkgdef file.
-$AppDataLocalFolder	The subfolder under %LOCALAPPDATA% for this application.
-$BaseInstallDir$	The full path of the location where Visual Studio was installed.
-$CommonFiles$	    The value of the %CommonProgramFiles% environment variable.
-$MyDocuments$	    The full path of the My Documents folder of the current user.
-$PackageFolder$	    The full path of the directory that contains the package assembly files for the application.
-$ProgramFiles$	    The value of the %ProgramFiles% environment variable.
-$RootFolder$	    The full path of the root directory of the application.
-$RootKey$	        The root registry key for the application. By default the root is in
-HKEY_CURRENT_USER\Software\CompanyName\ProjectName\VersionNumber (when the application
-is running, _Config is appended to this key). It is set by the RegistryRoot value in
-the SolutionName.pkgdef file.
-The $RootKey$ string can be used to retrieve a registry value under the application subkey.
-For example, the string "$=$RootKey$\AppIcon$" will return the value of the AppIcon entry
-under the application root subkey.
-The parser processes the .pkgdef file sequentially, and can access a registry entry under the application subkey only if the entry has been previously defined
-$ShellFolder$	The full path of the location where Visual Studio was installed.
-$System$	The Windows\system32 folder.
-$WINDIR$	The Windows folder.
-*/
-
-
 namespace XSharp.Debugger.UI
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
@@ -59,6 +33,8 @@ namespace XSharp.Debugger.UI
     [ProvideToolWindowVisibility(typeof(SettingsWindow.Pane), VSConstants.UICONTEXT.Debugging_string)]
     [ProvideToolWindow(typeof(GlobalsWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
     [ProvideToolWindowVisibility(typeof(GlobalsWindow.Pane), VSConstants.UICONTEXT.Debugging_string)]
+    [ProvideToolWindow(typeof(WorkareasWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
+    [ProvideToolWindowVisibility(typeof(WorkareasWindow.Pane), VSConstants.UICONTEXT.Debugging_string)]
     [Guid(XSharpConstants.guidXSharpDebuggerUIPkgString)]
     public sealed class XSharpDebuggerUIPackage : ToolkitPackage,  IVsDebuggerEvents, IDisposable
     {
@@ -145,13 +121,12 @@ namespace XSharp.Debugger.UI
                 {
                     case DBGMODE.DBGMODE_Design:
                         XDebuggerSettings.DebuggingXSharpExe = false;
-                        Support.InitializeWindows();
+                        Support.ClearWindows();
                         break;
                     case DBGMODE.DBGMODE_Break:
                         Support.RefreshWindows();
                         break;
                     case DBGMODE.DBGMODE_Run:
-                        Support.InitializeWindows();
                         break;
                     case DBGMODE.DBGMODE_Enc:
                         break;

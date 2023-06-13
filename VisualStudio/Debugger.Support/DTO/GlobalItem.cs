@@ -1,9 +1,11 @@
 ﻿
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Debugger.Support
 {
+    [DebuggerDisplay("{Name,nq} {Value,nq}")]
     public sealed class GlobalItem
     {
         public string Name { get; set; }

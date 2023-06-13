@@ -17,6 +17,8 @@ namespace XSharp.Debugger.Support
         const string AssemblyNotFound = ErrorPrefix + "Assembly {0} not found";
         const string CouldNotReadState = ErrorPrefix + "Could not read the RuntimeState";
         const string CouldNotReadSettings = ErrorPrefix + "Could not read the Settings in the RuntimeState";
+        const string CouldNotReadDataSession = ErrorPrefix + "Could not read the DataSession in the RuntimeState";
+        const string CouldNotReadRDDs = ErrorPrefix + "Could not read the RDDs property in the DataSession";
         const string ExceptionOccurred = ErrorPrefix + "Exception occurred during reading Runtime Info {0}";
         static HashSet<Assembly> LoadedAssemblies = new HashSet<Assembly>();
         static Type memvarType = null;
@@ -63,7 +65,7 @@ namespace XSharp.Debugger.Support
                 string error;
                 if (globalsType == null)
                 {
-                    globalsType = FindType("XSharp.Globals", "xsharp.rt", out error);
+                    globalsType = FindType("XSharp.Globals", "XSharp.RT", out error);
 
                     if (globalsType == null)
                         return error;
@@ -99,7 +101,7 @@ namespace XSharp.Debugger.Support
         static Type FindType(string name, string asmName, out string error)
         {
             error = null;
-            var asm = LoadedAssemblies.First(a => a.FullName.ToLower().Contains(asmName));
+            var asm = LoadedAssemblies.First(a => a.FullName.ToLower().Contains(asmName.ToLower()));
             if (asm == null)
             {
                 error = String.Format(AssemblyNotFound, asmName);
@@ -141,7 +143,7 @@ namespace XSharp.Debugger.Support
                 string error;
                 if (memvarType == null)
                 {
-                    memvarType = FindType("XSharp.MemVar", "xsharp.rt", out error);
+                    memvarType = FindType("XSharp.MemVar", "XSharp.RT", out error);
                     if (memvarType == null)
                         return error;
                 }
@@ -199,7 +201,7 @@ namespace XSharp.Debugger.Support
                 string error;
                 if (stateType == null)
                 {
-                    stateType = FindType(typeName, "xsharp.core", out error);
+                    stateType = FindType(typeName, "XSharp.Core", out error);
                     if (stateType == null)
                         return error;
                 }
@@ -223,9 +225,66 @@ namespace XSharp.Debugger.Support
                     var first = kvp.Key;
                     var second = kvp.Value;
                     var setting = new SettingsItem();
+                    setting.Key = (int)first;
                     setting.Name = first != null ? first.ToString() : "";
                     setting.Value = second != null ? second.ToString() : "";
                     result.Add(setting);
+                }
+                return result.Serialize();
+            }
+            catch (Exception e)
+            {
+                return String.Format(ExceptionOccurred, e.ToString());
+            }
+        }
+        public static string GetWorkareas()
+        {
+            try
+            {
+                if (!IsRTLoaded())
+                    return RTNotLoaded;
+                string typeName = "XSharp.RuntimeState";
+                string error;
+                if (stateType == null)
+                {
+                    stateType = FindType(typeName, "XSharp.Core", out error);
+                    if (stateType == null)
+                        return error;
+                }
+                var prop = FindProperty(stateType, "CurrentWorkarea", out error);
+                if (prop == null)
+                    return error;
+                var selectedArea = (uint)prop.GetValue(null);
+                var mi1 = FindMethod(stateType, "GetInstance", out error);
+                if (mi1 == null)
+                    return error;
+                prop = FindProperty(stateType, "Workareas", out error);
+                if (prop == null)
+                    return error;
+                var state = mi1.Invoke(null, null);
+                if (state == null)
+                    return CouldNotReadState;
+                var was = prop.GetValue(null);
+                if (was == null)
+                    return CouldNotReadDataSession;
+                var type = was.GetType();
+                var propRDDs = type.GetProperty("OpenRDDs",BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+                if (propRDDs == null)
+                    return CouldNotReadRDDs;
+                var rdds = propRDDs.GetValue(was);
+                var dict = (IEnumerable)rdds;
+                var result = new WorkareaItems();
+                foreach (var item in dict)
+                {
+                    dynamic kvp = item;
+                    var first = kvp.Key;    // DWORD
+                    dynamic second = kvp.Value; // IRdd
+                    var waitem = new WorkareaItem();
+                    waitem.Area = (int) first;
+                    waitem.Alias = second.Alias;
+                    waitem.RDD = second.Driver;
+                    waitem.Selected = waitem.Area == (int)selectedArea;
+                    result.Add(waitem);
                 }
                 return result.Serialize();
             }

@@ -1,4 +1,10 @@
-﻿using Community.VisualStudio.Toolkit;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Imaging;
 using System;
 using System.Runtime.InteropServices;
@@ -10,7 +16,7 @@ namespace XSharp.Debugger.UI
 {
     public class GlobalsWindow : BaseToolWindow<GlobalsWindow>
     {
-        public override string GetTitle(int toolWindowId) => "Global Variables";
+        public override string GetTitle(int toolWindowId) => "X# Globals";
 
         public override Type PaneType => typeof(Pane);
         public GlobalsControl Control = null;
@@ -19,15 +25,10 @@ namespace XSharp.Debugger.UI
         public override async Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
             Support.RegisterWindow(this);
-            Version version = await VS.Shell.GetVsVersionAsync();
-            Control = new GlobalsControl();
-            Control.Initialized += Control_Initialized; 
+            Version _ = await VS.Shell.GetVsVersionAsync();
+            Control = new GlobalsControl { DataContext = new GlobalsView() };
+            Control.Refresh();
             return Control;
-        }
-
-        private void Control_Initialized(object sender, EventArgs e)
-        {
-            this.Refresh();
         }
 
 
@@ -47,6 +48,16 @@ namespace XSharp.Debugger.UI
             public Pane()
             {
                 BitmapImageMoniker = KnownMonikers.AutosWindow;
+            }
+            public override void OnToolWindowCreated()
+            {
+                base.OnToolWindowCreated();
+                Support.RefreshWindows();
+            }
+            protected override void OnCreate()
+            {
+                base.OnCreate();
+                Support.RefreshWindows();
             }
         }
 

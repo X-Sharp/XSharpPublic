@@ -20,7 +20,6 @@
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <BinariesDir>$(SolutionDir)Binaries\$(VSTarget)\</BinariesDir>
-    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
     <GenerateFullPaths>true</GenerateFullPaths>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

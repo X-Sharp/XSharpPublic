@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.Debugger.Clr;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Windows;
 using XSharpModel;
+using XSharp.Debugger.Support;
 
 namespace XSharp.Debugger.UI
 {
@@ -24,6 +25,7 @@ namespace XSharp.Debugger.UI
         internal static MemvarsWindow memvarsWindow = null;
         internal static SettingsWindow settingsWindow = null;
         internal static GlobalsWindow globalsWindow = null;
+        internal static WorkareasWindow workareasWindow = null;
         internal static DkmProcess currentProcess = null;
 
 
@@ -35,30 +37,78 @@ namespace XSharp.Debugger.UI
             language = DkmLanguage.Create(lang_name, new DkmCompilerId(vend_id, lang_id));
             debugger = XSharpDebuggerUIPackage.XInstance.Dte.Debugger;
         }
+        internal static string StripResult(string str)
+        {
+            if (str != null )
+            {
+                if (str.IndexOf(RtLink.ErrorPrefix) == -1)
+                {
+                    if (str.StartsWith("\"") && str.EndsWith("\""))
+                    {
+                        str = str.Substring(1, str.Length - 2);
+                    }
+                }
+                else
+                {
+                    str = "";
+                }
+            }
+            return str;
+        }
+        internal static async Task<string> GetMemVarsAsync()
+        {
+            var result = await Support.ExecExpressionAsync("XSharp.Debugger.Support.RtLink.GetMemVars()");
+            return StripResult(result);
+        }
+        internal static async Task<string> GetGlobalsAsync()
+        {
+            var result = await Support.ExecExpressionAsync("XSharp.Debugger.Support.RtLink.GetGlobals()");
+            return StripResult(result);
+        }
+        internal static async Task<string> GetSettingsAsync()
+        {
+            var result = await Support.ExecExpressionAsync("XSharp.Debugger.Support.RtLink.GetSettings()");
+            return StripResult(result);
+        }
+        internal static async Task<string> GetWorkareasAsync()
+        {
+            var result = await Support.ExecExpressionAsync("XSharp.Debugger.Support.RtLink.GetWorkareas()");
+            return StripResult(result);
+        }
 
         internal static async Task<string> LoadAssemblyAsync( string fileName)
         {
-            var path = System.IO.Path.GetDirectoryName(typeof(Support).Assembly.Location);
-            var support = System.IO.Path.Combine(path, fileName);
-            var loaded = await ExecExpressionAsync("System.Reflection.Assembly.LoadFile(\"" + support + "\")");
+            var loaded = await ExecExpressionAsync("System.Reflection.Assembly.LoadFile(\"" + fileName + "\")");
             return loaded;
         }
-        internal static async Task<string> ExecExpressionAsync(string source)
+        static async Task<DkmProcess> LoadSupportDLLAsync()
         {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var sf = debugger.CurrentStackFrame;
-            var dkmsf = DkmStackFrame.ExtractFromDTEObject(sf);
-            var thr = dkmsf.Thread;
             var proc = DkmProcess.GetProcesses().FirstOrDefault();
             if (proc != currentProcess)
             {
                 currentProcess = proc;
-                var loaded = await LoadAssemblyAsync("XSharp.Debugger.Support.dll");
-                if (loaded == null)
-                {
-                    return "";
-                }
+                var path = System.IO.Path.GetDirectoryName(typeof(Support).Assembly.Location);
+                var support = System.IO.Path.Combine(path, "XSharp.Debugger.Support.dll");
+                var loaded = await LoadAssemblyAsync(support);
             }
+            return proc;
+        }
+
+        internal static async Task<string> ExecExpressionAsync(string source)
+        {
+            if (XDebuggerSettings.DebuggerMode != DebuggerMode.Break)
+            {
+                return "";
+            }
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var sf = debugger.CurrentStackFrame;
+            if (sf == null)
+            {
+                return "";
+            }
+            var dkmsf = DkmStackFrame.ExtractFromDTEObject(sf);
+            var thr = dkmsf.Thread;
+            var proc = await LoadSupportDLLAsync();
             var expr = DkmLanguageExpression.Create(language, DkmEvaluationFlags.None, source, null);
             var wl = DkmWorkList.Create(null);
             var insp = DkmInspectionSession.Create(proc, null);
@@ -91,6 +141,9 @@ namespace XSharp.Debugger.UI
                 case GlobalsWindow gw:
                     globalsWindow = gw;
                     break;
+                case WorkareasWindow ww:
+                    workareasWindow = ww;
+                    break;
 
             }
         }
@@ -110,9 +163,13 @@ namespace XSharp.Debugger.UI
                 {
                     globalsWindow.Refresh();
                 }
+                if (workareasWindow != null && workareasWindow.Control.IsVisible)
+                {
+                    workareasWindow.Refresh();
+                }
             }
         }
-        internal static void InitializeWindows()
+        internal static void ClearWindows()
         {
             if (memvarsWindow != null )
             {
@@ -126,6 +183,11 @@ namespace XSharp.Debugger.UI
             {
                 globalsWindow.Clear();
             }
+            if (workareasWindow != null )
+            {
+                workareasWindow.Clear();
+            }
         }
+        
     }
 }

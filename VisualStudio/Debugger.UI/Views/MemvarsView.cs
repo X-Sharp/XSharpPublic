@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace XSharp.Debugger.UI
 {
-    internal class MemvarsView : ObservableObject
+    internal class MemvarsView : BaseView
     {
 
         bool _publics;

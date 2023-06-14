@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace XSharp.Debugger.UI
 {
-    internal class WorkareasView : ObservableObject
+    internal class WorkareasView : BaseView
     {
         internal const string AllRDDs = "All RDDs";
         private void FilterItems()

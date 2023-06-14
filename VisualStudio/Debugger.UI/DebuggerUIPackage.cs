@@ -85,10 +85,7 @@ namespace XSharp.Debugger.UI
             {
                 hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
                 ErrorHandler.ThrowOnFailure(hr);
-                // Get initial value
-                DBGMODE[] modeArray = new DBGMODE[1];
-                hr = m_debugger.GetMode(modeArray);
-                XDebuggerSettings.DebuggerMode = (DebuggerMode)modeArray[0];
+                XDebuggerSettings.DebuggerMode = DebuggerMode.Design;
             }
             return true;
         }
@@ -114,6 +111,7 @@ namespace XSharp.Debugger.UI
         public int OnModeChange(DBGMODE dbgmodeNew)
         {
             var changed = XDebuggerSettings.DebuggerMode != (DebuggerMode)dbgmodeNew;
+            var oldMode = XDebuggerSettings.DebuggerMode;
             XDebuggerSettings.DebuggerMode = (DebuggerMode)dbgmodeNew;
             if (changed || dbgmodeNew == DBGMODE.DBGMODE_Break)
             {
@@ -127,6 +125,9 @@ namespace XSharp.Debugger.UI
                         Support.RefreshWindows();
                         break;
                     case DBGMODE.DBGMODE_Run:
+                        // Just started? 
+                        if (oldMode == DebuggerMode.Design)
+                            Support.RefreshWindows();
                         break;
                     case DBGMODE.DBGMODE_Enc:
                         break;

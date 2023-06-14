@@ -10,20 +10,21 @@ namespace XSharp.Debugger.Support
     public static class RtLink
     {
         public const string ErrorPrefix = "XSharp Debugger Error:";
-        const string RTNotLoaded = ErrorPrefix+"RT not Loaded";
-        const string TypeNotFound = ErrorPrefix + "Type {0} not found";
-        const string MethodNotFound = ErrorPrefix + "Method {0} not found";
-        const string PropertyNotFound = ErrorPrefix + "Property {0} not found";
-        const string AssemblyNotFound = ErrorPrefix + "Assembly {0} not found";
+        const string RTNotLoaded = ErrorPrefix+" XSharp Runtime not Loaded";
+        const string TypeNotFound = ErrorPrefix + "Type '{0}' not found";
+        const string MethodNotFound = ErrorPrefix + "Method '{0}' not found";
+        const string PropertyNotFound = ErrorPrefix + "Property '{0}' not found";
+        const string AssemblyNotFound = ErrorPrefix + "Assembly '{0}' not found";
         const string CouldNotReadState = ErrorPrefix + "Could not read the RuntimeState";
         const string CouldNotReadSettings = ErrorPrefix + "Could not read the Settings in the RuntimeState";
         const string CouldNotReadDataSession = ErrorPrefix + "Could not read the DataSession in the RuntimeState";
-        const string CouldNotReadRDDs = ErrorPrefix + "Could not read the RDDs property in the DataSession";
-        const string ExceptionOccurred = ErrorPrefix + "Exception occurred during reading Runtime Info {0}";
+        const string ExceptionOccurred = ErrorPrefix + "Exception occurred during reading Runtime Info: {0}";
         static HashSet<Assembly> LoadedAssemblies = new HashSet<Assembly>();
         static Type memvarType = null;
         static Type globalsType = null;
         static Type stateType = null;
+        public static readonly BindingFlags BFPublicStatic = BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase;
+        public static readonly BindingFlags BFPublicInstance= BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase;
 
         static RtLink()
         {
@@ -39,6 +40,7 @@ namespace XSharp.Debugger.Support
 
         }
 
+
         private static void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)
         {
             lock (LoadedAssemblies)
@@ -50,6 +52,44 @@ namespace XSharp.Debugger.Support
             }
         }
 
+        #region Find Types and Members
+        static Type FindType(string name, string asmName, out string error)
+        {
+            error = null;
+            var asm = LoadedAssemblies.First(a => a.FullName.ToLower().Contains(asmName.ToLower()));
+            if (asm == null)
+            {
+                error = string.Format(AssemblyNotFound, asmName);
+                return null;
+            }
+            var type = asm.GetType(name);
+            if (type == null)
+            {
+                error = string.Format(TypeNotFound, name);
+            }
+            return type;
+        }
+        static MethodInfo FindMethod(this Type type, string Name, BindingFlags flags, out string error)
+        {
+            error = "";
+            var mi = type.GetMethod(Name, flags);
+            if (mi == null)
+            {
+                error = string.Format(MethodNotFound, Name) ;
+            }
+            return mi;
+        }
+        static PropertyInfo FindProperty(this Type type, string Name, BindingFlags flags, out string error)
+        {
+            error = "";
+            var pi = type.GetProperty(Name,flags);
+            if (pi == null)
+            {
+                error = string.Format(PropertyNotFound, Name);
+            }
+            return pi;
+        }
+        #endregion
         public static bool IsRTLoaded()
         {
             return LoadedAssemblies.Any(a => a.FullName.ToLower().Contains("xsharp.rt")) &&
@@ -70,7 +110,7 @@ namespace XSharp.Debugger.Support
                     if (globalsType == null)
                         return error;
                 }
-                var mi = FindMethod(globalsType, "GetAllGlobals", out error);
+                var mi = globalsType.FindMethod("GetAllGlobals", BFPublicStatic, out error);
                 if (mi == null)
                     return error;
                 var fields = mi.Invoke(null, null) as IList<FieldInfo>;
@@ -94,46 +134,12 @@ namespace XSharp.Debugger.Support
             }
             catch (Exception e)
             {
-                return String.Format(ExceptionOccurred, e.ToString());
+                return string.Format(ExceptionOccurred, e.ToString());
             }
         }
 
-        static Type FindType(string name, string asmName, out string error)
-        {
-            error = null;
-            var asm = LoadedAssemblies.First(a => a.FullName.ToLower().Contains(asmName.ToLower()));
-            if (asm == null)
-            {
-                error = String.Format(AssemblyNotFound, asmName);
-                return null;
-            }
-            var type = asm.GetType(name);
-            if (type == null)
-            {
-                error = String.Format(TypeNotFound, name);
-            }
-            return type;
-        }
-        static MethodInfo FindMethod(Type type, string Name, out string error)
-        {
-            error = "";
-            var mi = type.GetMethod(Name);
-            if (mi == null)
-            {
-                error = String.Format(MethodNotFound, Name);
-            }
-            return mi;
-        }
-        static PropertyInfo FindProperty(Type type, string Name, out string error)
-        {
-            error = "";
-            var pi = type.GetProperty(Name);
-            if (pi == null)
-            {
-                error = String.Format(PropertyNotFound, Name);
-            }
-            return pi;
-        }
+     
+        
         static public string GetMemVars()
         {
             try
@@ -147,13 +153,13 @@ namespace XSharp.Debugger.Support
                     if (memvarType == null)
                         return error;
                 }
-                var mi1 = FindMethod(memvarType, "DbgPublicsFirst", out error);
+                var mi1 = memvarType.FindMethod("DbgPublicsFirst", BFPublicStatic, out error);
                 if (mi1 == null)
                     return error;
-                var mi2 = FindMethod(memvarType, "DbgPublicsNext", out error);
+                var mi2 = memvarType.FindMethod("DbgPublicsNext", BFPublicStatic, out error);
                 if (mi2 == null)
                     return error;
-                var mi3 = FindMethod(memvarType, "DbgGetVar", out error);
+                var mi3 = memvarType.FindMethod("DbgGetVar", BFPublicStatic, out error);
                 if (mi3 == null)
                     return error;
 
@@ -167,10 +173,10 @@ namespace XSharp.Debugger.Support
                     result.Add(new MemvarItem() { Name = name.ToString(), Type = MemvarType.Public, Value = value.ToString() });
                     name = mi2.Invoke(null, null);
                 }
-                mi1 = FindMethod(memvarType, "DbgPrivatesFirst", out error);
+                mi1 = memvarType.FindMethod("DbgPrivatesFirst", BFPublicStatic, out error);
                 if (mi1 == null)
                     return error;
-                mi2 = FindMethod(memvarType, "DbgPrivatesNext", out error);
+                mi2 = memvarType.FindMethod("DbgPrivatesNext", BFPublicStatic, out error);
                 if (mi2 == null)
                     return error;
                 name = mi1.Invoke(null, null);
@@ -187,9 +193,26 @@ namespace XSharp.Debugger.Support
             }
             catch (Exception e)
             {
-                return String.Format(ExceptionOccurred, e.ToString());
+                return string.Format(ExceptionOccurred, e.ToString());
             }
 
+        }
+
+        public static object GetState( out string error)
+        {
+            if (stateType == null)
+            {
+                stateType = FindType("XSharp.RuntimeState", "XSharp.Core", out error);
+                if (stateType == null)
+                    return null;
+            }
+            var mi1 = stateType.FindMethod( "GetInstance", BFPublicStatic, out error);
+            if (mi1 == null)
+                return error;
+            var state = mi1.Invoke(null, null);
+            if (state == null)
+                error = CouldNotReadState;
+            return state;
         }
         public static string GetSettings()
         {
@@ -197,30 +220,22 @@ namespace XSharp.Debugger.Support
             {
                 if (!IsRTLoaded())
                     return RTNotLoaded;
-                string typeName = "XSharp.RuntimeState";
                 string error;
-                if (stateType == null)
-                {
-                    stateType = FindType(typeName, "XSharp.Core", out error);
-                    if (stateType == null)
-                        return error;
-                }
-                var mi1 = FindMethod(stateType, "GetInstance", out error);
-                if (mi1 == null)
+                
+               
+                var state = GetState(out error);
+                if (state == null)
                     return error;
-                var prop = FindProperty(stateType, "Settings", out error);
+                var prop = stateType.FindProperty("Settings", BFPublicInstance, out error);
                 if (prop == null)
                     return error;
-                var state = mi1.Invoke(null, null);
-                if (state == null)
-                    return CouldNotReadState;
                 var propValue = prop.GetValue(state);
                 if (propValue == null)
                     return CouldNotReadSettings;
-                var dict = (IEnumerable)propValue;
                 var result = new SettingItems();
-                foreach (var item in dict)
+                foreach (var item in (IEnumerable) propValue)
                 {
+                    // use dynamic here. The type is too complicated to resolve here.
                     dynamic kvp = item;
                     var first = kvp.Key;
                     var second = kvp.Value;
@@ -234,7 +249,7 @@ namespace XSharp.Debugger.Support
             }
             catch (Exception e)
             {
-                return String.Format(ExceptionOccurred, e.ToString());
+                return string.Format(ExceptionOccurred, e.ToString());
             }
         }
         public static string GetWorkareas()
@@ -243,39 +258,29 @@ namespace XSharp.Debugger.Support
             {
                 if (!IsRTLoaded())
                     return RTNotLoaded;
-                string typeName = "XSharp.RuntimeState";
                 string error;
-                if (stateType == null)
-                {
-                    stateType = FindType(typeName, "XSharp.Core", out error);
-                    if (stateType == null)
-                        return error;
-                }
-                var prop = FindProperty(stateType, "CurrentWorkarea", out error);
+                var state = GetState(out error);
+                if (state == null)
+                    return error;
+                var prop = FindProperty(stateType, "CurrentWorkarea", BFPublicStatic, out error);
                 if (prop == null)
                     return error;
                 var selectedArea = (uint)prop.GetValue(null);
-                var mi1 = FindMethod(stateType, "GetInstance", out error);
-                if (mi1 == null)
-                    return error;
-                prop = FindProperty(stateType, "Workareas", out error);
+                prop = stateType.FindProperty( "DataSession", BFPublicStatic, out error);
                 if (prop == null)
                     return error;
-                var state = mi1.Invoke(null, null);
-                if (state == null)
-                    return CouldNotReadState;
                 var was = prop.GetValue(null);
                 if (was == null)
                     return CouldNotReadDataSession;
                 var type = was.GetType();
-                var propRDDs = type.GetProperty("OpenRDDs",BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+                var propRDDs = type.FindProperty("OpenRDDs",BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy, out error);
                 if (propRDDs == null)
-                    return CouldNotReadRDDs;
+                    return error;
                 var rdds = propRDDs.GetValue(was);
-                var dict = (IEnumerable)rdds;
                 var result = new WorkareaItems();
-                foreach (var item in dict)
+                foreach (var item in (IEnumerable)rdds)
                 {
+                    // use dynamic here. The type is too complicated to resolve here.
                     dynamic kvp = item;
                     var first = kvp.Key;    // DWORD
                     dynamic second = kvp.Value; // IRdd
@@ -290,7 +295,7 @@ namespace XSharp.Debugger.Support
             }
             catch (Exception e)
             {
-                return String.Format(ExceptionOccurred, e.ToString());
+                return string.Format(ExceptionOccurred, e.ToString());
             }
         }
     }

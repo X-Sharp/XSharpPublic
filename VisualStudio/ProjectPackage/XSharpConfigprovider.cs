@@ -109,6 +109,7 @@ namespace XSharp.Project
 
         public int OnBeforeDebugLaunch(uint grfLaunch)
         {
+            XDebuggerSettings.DebuggerMode = DebuggerMode.Design;
             return VSConstants.S_OK;
         }
 

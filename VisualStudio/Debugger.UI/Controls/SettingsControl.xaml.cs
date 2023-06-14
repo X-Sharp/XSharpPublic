@@ -48,17 +48,30 @@ namespace XSharp.Debugger.UI
         }
         internal void Clear()
         {
-            View.Items.Clear();
+            if (View.Items != null)
+                View.Items.Clear();
+
         }
         internal void Refresh()
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            if (View.IsRTLoaded)
+            {
+                lvSettings.Visibility = Visibility.Visible;
+                tbNotLoaded.Visibility = Visibility.Hidden;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 var str = await Support.GetSettingsAsync();
                 var items = SettingItems.Deserialize(str);
                 View.Items = items.Items.ToList();
             }
             );
+            }
+            else
+            {
+                lvSettings.Visibility = Visibility.Hidden;
+                tbNotLoaded.Visibility = Visibility.Visible;
+
+            }
         }
         
     }

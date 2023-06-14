@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System.Windows;
 using XSharpModel;
 using XSharp.Debugger.Support;
+using Debugger.Support;
 
 namespace XSharp.Debugger.UI
 {
@@ -27,6 +28,7 @@ namespace XSharp.Debugger.UI
         internal static GlobalsWindow globalsWindow = null;
         internal static WorkareasWindow workareasWindow = null;
         internal static DkmProcess currentProcess = null;
+        internal static bool? IsRtLoaded = null;
 
 
         static Support()
@@ -60,6 +62,16 @@ namespace XSharp.Debugger.UI
             var result = await Support.ExecExpressionAsync("XSharp.Debugger.Support.RtLink.GetMemVars()");
             return StripResult(result);
         }
+
+        internal static async Task<bool> IsRTLoadedAsync()
+        {
+            if (IsRtLoaded.HasValue && ! IsProcessChanged())
+                return IsRtLoaded.Value;
+            var result = await Support.ExecExpressionAsync("XSharp.Debugger.Support.RtLink.IsRTLoaded()");
+            IsRtLoaded = StripResult(result).ToLower() == "true";
+            return IsRtLoaded.Value;
+        }
+
         internal static async Task<string> GetGlobalsAsync()
         {
             var result = await Support.ExecExpressionAsync("XSharp.Debugger.Support.RtLink.GetGlobals()");
@@ -76,13 +88,18 @@ namespace XSharp.Debugger.UI
             return StripResult(result);
         }
 
-
+        static bool IsProcessChanged()
+        {
+            var proc = DkmProcess.GetProcesses().FirstOrDefault();
+            return proc != currentProcess;
+        }
         static async Task<object> LoadSupportDLLAsync()
         {
             var proc = DkmProcess.GetProcesses().FirstOrDefault();
-            if (proc != currentProcess)
+            if (IsProcessChanged())
             {
                 currentProcess = proc;
+                IsRtLoaded = null;
                 var path = System.IO.Path.GetDirectoryName(typeof(Support).Assembly.Location);
                 var fileName = System.IO.Path.Combine(path, "XSharp.Debugger.Support.dll");
                 var loaded = await ExecExpressionAsync("System.Reflection.Assembly.LoadFile(\"" + fileName + "\")");
@@ -145,25 +162,24 @@ namespace XSharp.Debugger.UI
         }
         internal static void RefreshWindows()
         {
-            if (XDebuggerSettings.DebuggerMode == DebuggerMode.Break)
+
+            if (memvarsWindow != null && memvarsWindow.Control.IsVisible)
             {
-                if (memvarsWindow != null && memvarsWindow.Control.IsVisible)
-                {
-                    memvarsWindow.Refresh();
-                }
-                if (settingsWindow != null && settingsWindow.Control.IsVisible)
-                {
-                    settingsWindow.Refresh();
-                }
-                if (globalsWindow != null && globalsWindow.Control.IsVisible)
-                {
-                    globalsWindow.Refresh();
-                }
-                if (workareasWindow != null && workareasWindow.Control.IsVisible)
-                {
-                    workareasWindow.Refresh();
-                }
+                memvarsWindow.Refresh();
             }
+            if (settingsWindow != null && settingsWindow.Control.IsVisible)
+            {
+                settingsWindow.Refresh();
+            }
+            if (globalsWindow != null && globalsWindow.Control.IsVisible)
+            {
+                globalsWindow.Refresh();
+            }
+            if (workareasWindow != null && workareasWindow.Control.IsVisible)
+            {
+                workareasWindow.Refresh();
+            }
+
         }
         internal static void ClearWindows()
         {

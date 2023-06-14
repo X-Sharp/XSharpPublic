@@ -18,7 +18,7 @@ namespace XSharp.Debugger.UI
     /// </summary>
     public partial class GlobalsControl : UserControl
     {
-       
+
         public GlobalsControl()
         {
             InitializeComponent();
@@ -36,7 +36,7 @@ namespace XSharp.Debugger.UI
             int lastColumn = (lvGlobals.View as GridView).Columns.Count - 1;
             if (lvGlobals.ActualWidth == Double.NaN)
                 lvGlobals.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-            double remainingSpace = lvGlobals.ActualWidth*0.9;
+            double remainingSpace = lvGlobals.ActualWidth * 0.9;
             for (int i = 0; i < (lvGlobals.View as GridView).Columns.Count; i++)
             {
                 var column = (lvGlobals.View as GridView).Columns[i];
@@ -50,31 +50,42 @@ namespace XSharp.Debugger.UI
         }
         internal void Clear()
         {
-            View.Items.Clear();
+            if (View.Items != null)
+                View.Items.Clear();
         }
         internal void Refresh()
         {
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                var str = await Support.GetGlobalsAsync();
-                var items = GlobalItems.Deserialize(str);
-                View.Items = items.Items;
-                var assemblies = new List<String>();
-                assemblies.Add(GlobalsView.AllAssemblies);
-                foreach ( var item in items.Items)
+                if (View.IsRTLoaded)
                 {
-                    if (!assemblies.Contains(item.Assembly))
-                        assemblies.Add(item.Assembly);
+                    lvGlobals.Visibility = Visibility.Visible;
+                    tbNotLoaded.Visibility = Visibility.Hidden;
+                    var str = await Support.GetGlobalsAsync();
+                    var items = GlobalItems.Deserialize(str);
+                    View.Items = items.Items;
+                    var assemblies = new List<String>();
+                    assemblies.Add(GlobalsView.AllAssemblies);
+                    foreach (var item in items.Items)
+                    {
+                        if (!assemblies.Contains(item.Assembly))
+                            assemblies.Add(item.Assembly);
+                    }
+                    View.Assemblies = assemblies;
+                    View.Items = items.Items.ToList();
+                    if (View.SelectedAssembly == null ||
+                        !assemblies.Contains(View.SelectedAssembly))
+                        View.SelectedAssembly = assemblies.FirstOrDefault();
                 }
-                View.Assemblies = assemblies;
-                View.Items = items.Items.ToList();
-                if (View.SelectedAssembly == null ||
-                    ! assemblies.Contains(View.SelectedAssembly))
-                    View.SelectedAssembly = assemblies.FirstOrDefault();
+                else
+                {
+                    lvGlobals.Visibility = Visibility.Hidden ;
+                    tbNotLoaded.Visibility = Visibility.Visible;
+                }
             }
 
             );
         }
-       
+
     }
 }

@@ -61,6 +61,7 @@
     <Compile Include="Controls\GlobalsControl.xaml.cs">
       <DependentUpon>GlobalsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\BaseView.cs" />
     <Compile Include="Views\WorkareasView.cs" />
     <Compile Include="Views\MemvarsView.cs" />
     <Compile Include="Views\SettingsView.cs" />

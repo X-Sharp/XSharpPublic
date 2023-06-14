@@ -12,6 +12,8 @@ namespace XSharp.Project
         protected override void BeforeQueryStatus(EventArgs e)
         {
             Command.Enabled = XDebuggerSettings.DebuggerMode == DebuggerMode.Break;
+            
+
             base.BeforeQueryStatus(e);
         }
         protected override Task InitializeCompletedAsync()
@@ -22,7 +24,9 @@ namespace XSharp.Project
         }
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
-            await XSharp.Debugger.UI.WorkareasWindow.ShowAsync();
+           
+                await XSharp.Debugger.UI.WorkareasWindow.ShowAsync();
+            
         }
     }
 }

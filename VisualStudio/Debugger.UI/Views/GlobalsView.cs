@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace XSharp.Debugger.UI
 {
-    internal class GlobalsView : ObservableObject
+    internal class GlobalsView : BaseView
     {
         internal const string AllAssemblies = "All assemblies";
 

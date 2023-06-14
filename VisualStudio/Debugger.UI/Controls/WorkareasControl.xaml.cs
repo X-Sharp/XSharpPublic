@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Windows.Controls;
-
+using System.Windows;
 namespace XSharp.Debugger.UI
 {
     /// <summary>
@@ -23,12 +23,18 @@ namespace XSharp.Debugger.UI
         }
         internal void Clear()
         {
-            View.Items.Clear();
+            if (View.Items != null)
+                View.Items.Clear();
+
         }
         WorkareasView View => DataContext as WorkareasView;
         internal void Refresh()
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            if (View.IsRTLoaded)
+            {
+                lvAreas.Visibility = Visibility.Visible;
+                tbNotLoaded.Visibility = Visibility.Hidden;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 var str = await Support.GetWorkareasAsync();
                 var items = WorkareaItems.Deserialize(str);
@@ -48,6 +54,13 @@ namespace XSharp.Debugger.UI
             }
 
             );
+            }
+            else
+            {
+                lvAreas.Visibility = Visibility.Hidden;
+                tbNotLoaded.Visibility = Visibility.Visible;
+
+            }
         }
     }
 }

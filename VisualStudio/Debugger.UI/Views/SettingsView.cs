@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace XSharp.Debugger.UI
 {
-    internal class SettingsView : ObservableObject
+    internal class SettingsView : BaseView
     {
         const int BYNAME = 1;
         const int BYNUMBER = 2;

@@ -23,6 +23,7 @@
             
         </StackPanel>
         <Separator Grid.Row="1" />
+        <TextBox  Grid.Row="2" Visibility="Hidden" Name="tbNotLoaded" Text="The X# Runtime is NOT loaded"/>
         <ListView Grid.Row="2" Name="lvSettings" Width="Auto" ItemsSource="{Binding SortedItems}">
             <ListView.Resources>
                 <Style TargetType="{x:Type GridViewColumnHeader}">

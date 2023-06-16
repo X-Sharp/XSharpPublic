@@ -259,8 +259,12 @@ INTERNAL STATIC CLASS ArrayHelpers
         IF cb == NULL
             THROW Error.NullArgumentError( cFuncName, NAMEOF(cb),2)
         ENDIF
-        @@Default( REF iStart, 1)
-        @@Default( REF iCount, ALen(aArray))
+        IF iStart:IsNil
+            iStart := 1
+        ENDIF
+        if iCount:IsNil
+            iCount := ALen(aArray)
+        ENDIF
         IF ! iStart:IsNumeric
             THROW Error.ArgumentError( cFuncName, NAMEOF(iStart), 3 , <OBJECT>{iStart})
         ENDIF
@@ -863,7 +867,9 @@ FUNCTION AReplicate(xFill AS USUAL,nElements AS DWORD) AS ARRAY
 FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,cbOrder := NIL AS USUAL) AS ARRAY
     LOCAL nLen AS DWORD
     LOCAL oBlock as OBJECT
-    @@Default( REF nStart, 1 )
+    IF nStart:IsNil
+        nStart:= 1
+    ENDIF
 
     nLen := ALen(aTarget)
     IF nLen == 0 // Let it execute if nLen == 1, maybe the codeblock is important to be executed in this case for some (user) reason
@@ -871,7 +877,9 @@ FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,c
     END IF
 
     EnforceNumeric( REF nStart )
-    @@Default( REF nCount, nLen - nStart + 1 )
+    IF nCount:IsNil
+        nCount := nLen - nStart + 1
+    ENDIF
     EnforceNumeric( REF nCount )
 
     // Note: ASort() in VO accepts arguments out of bounds and translates them this way:

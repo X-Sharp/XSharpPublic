@@ -15,7 +15,7 @@ namespace XSharp.LanguageService
             var languagePreferences = new LANGPREFERENCES3[1];
             languagePreferences[0].guidLang = XSharpConstants.guidLanguageService;
             int result = VSConstants.S_FALSE;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 result = txtManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
@@ -34,7 +34,7 @@ namespace XSharp.LanguageService
             var languagePreferences = new LANGPREFERENCES3[1];
             languagePreferences[0].guidLang = XSharpConstants.guidLanguageService;
             int result = VSConstants.S_FALSE;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 result = txtManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
@@ -44,7 +44,7 @@ namespace XSharp.LanguageService
             languagePreferences[0].uTabSize = (uint)options.TabSize;
             languagePreferences[0].uIndentSize = (uint)options.IndentSize;
             languagePreferences[0].fInsertTabs = (uint)(options.TabsAsSpaces ? 0 : 1);
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 result = txtManager.SetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);

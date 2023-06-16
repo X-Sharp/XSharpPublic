@@ -130,7 +130,7 @@ namespace XSharp.LanguageService
                 strSearchCriteria = pobSrch[0].szName;
             //
             IVsSimpleObjectList2 result = null;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 switch (ListType)
@@ -239,7 +239,7 @@ namespace XSharp.LanguageService
         {
             var result = 0;
             uint counter = 0;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 result = ((IVsSimpleObjectList2)root).UpdateCounter(out counter);

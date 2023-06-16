@@ -96,7 +96,7 @@ namespace XSharp.LanguageService
                 return;
             }
             // Register to receive any event that append to the hierarchy
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 if (hierarchy != null)
@@ -214,7 +214,7 @@ namespace XSharp.LanguageService
 
         private bool InternalStopListening(bool throwOnError)
         {
-            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            return ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if ((null == hierarchy) || (0 == cookie))
@@ -255,7 +255,7 @@ namespace XSharp.LanguageService
             {
                 if (hierarchy == null)
                     return string.Empty;
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     hr = hierarchy.GetGuidProperty(itemId, (int)__VSHPROPID.VSHPROPID_TypeGuid, out typeGuid);
@@ -278,7 +278,7 @@ namespace XSharp.LanguageService
 
             // This item is a file; find if it is a PRG file.
             string canonicalName = null;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 hr = hierarchy.GetCanonicalName(itemId, out canonicalName);
@@ -311,7 +311,7 @@ namespace XSharp.LanguageService
                 bool canScanSubitems = true;
                 int hr = 0;
                 object propertyValue = null;
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     hr = hierarchy.GetProperty(currentItem, (int)__VSHPROPID.VSHPROPID_HasEnumerationSideEffects, out propertyValue);
@@ -325,7 +325,7 @@ namespace XSharp.LanguageService
                 if (canScanSubitems)
                 {
                     object child = null;
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    ThreadHelper.JoinableTaskFactory.Run(async () =>
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         hr = hierarchy.GetProperty(currentItem, (int)__VSHPROPID.VSHPROPID_FirstChild, out child);
@@ -339,7 +339,7 @@ namespace XSharp.LanguageService
 
                 // Move the current item to its first visible sibling.
                 object sibling = null;
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     if (hierarchy != null)

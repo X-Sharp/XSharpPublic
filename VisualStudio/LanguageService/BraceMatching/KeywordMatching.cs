@@ -209,10 +209,11 @@ namespace XSharp.LanguageService
 
             DateTime oStart;
             TimeSpan timeSpan;
-            if (XEditorSettings.DisableKeywordMatching)
+            if (XEditorSettings.DisableKeywordMatching || XDebuggerSettings.DebuggerIsRunning)
             {
                 yield break;
             }
+
             if (_document == null || _document.Blocks == null)
             {
                 yield break;

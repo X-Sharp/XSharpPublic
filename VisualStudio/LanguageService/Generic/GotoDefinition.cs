@@ -225,13 +225,17 @@ namespace XSharp.LanguageService
             mustCreate = !fi.Exists || fi.Length < 10;
             if (mustCreate)
             {
-                VS.StatusBar.ShowMessageAsync("Generating reference source for " + petype.FullName).FireAndForget();
-                VS.StatusBar.StartAnimationAsync(StatusAnimation.General).FireAndForget();
-                var aLines = XClassCreator.Create(petype, LookupXml);
-                File.WriteAllLines(temp, aLines, System.Text.Encoding.UTF8);
-                File.SetAttributes(temp, FileAttributes.ReadOnly);
-                VS.StatusBar.ClearAsync().FireAndForget();
-                VS.StatusBar.EndAnimationAsync(StatusAnimation.General).FireAndForget();
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
+                {
+                    await VS.StatusBar.ShowMessageAsync("Generating reference source for " + petype.FullName);
+                    await VS.StatusBar.StartAnimationAsync(StatusAnimation.General);
+                    var aLines = XClassCreator.Create(petype, LookupXml);
+                    File.WriteAllLines(temp, aLines, System.Text.Encoding.UTF8);
+                    File.SetAttributes(temp, FileAttributes.ReadOnly);
+                    await VS.StatusBar.ClearAsync();
+                    await VS.StatusBar.EndAnimationAsync(StatusAnimation.General);
+
+                });
             }
             var xFile = XSolution.AddOrphan(temp);
             return xFile;

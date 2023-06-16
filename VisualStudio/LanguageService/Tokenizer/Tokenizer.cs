@@ -46,7 +46,7 @@ namespace XSharp.LanguageService
         static void ClassifyBuffer(XSharpSearchLocation location)
         {
             var classifier = location.Snapshot.TextBuffer.GetClassifier();
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await classifier.ClassifyWhenNeededAsync();
             });

@@ -34,7 +34,7 @@ namespace XSharp.LanguageService
                     { '(', ')' },
                     { '[', ']' },
                 };
-                if (XEditorSettings.DisableBraceMatching)
+                if (XEditorSettings.DisableBraceMatching )
                 {
                     result.Clear();
                 }

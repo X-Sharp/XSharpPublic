@@ -625,7 +625,7 @@ namespace XSharp.LanguageService
 
         protected override void buildDescription(_VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 obDescription)
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -792,7 +792,7 @@ namespace XSharp.LanguageService
             {
                 if (string.IsNullOrEmpty(fileMoniker))
                 {
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 

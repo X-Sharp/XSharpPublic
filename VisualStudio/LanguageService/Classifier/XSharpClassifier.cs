@@ -128,7 +128,7 @@ namespace XSharp.LanguageService
             ClassifyBuffer();
             _first = false;
             // start the model builder to do build a code model and the regions asynchronously
-            LexAsync().FireAndForget();
+            var x = ThreadHelper.JoinableTaskFactory.RunAsync(LexAsync);
 
         }
 
@@ -174,7 +174,7 @@ namespace XSharp.LanguageService
         }
         public async Task ForceClassifyAsync()
         {
-            await LexAsync();
+            var _ = await LexAsync();
         }
         public async Task ClassifyWhenNeededAsync()
         {
@@ -183,19 +183,18 @@ namespace XSharp.LanguageService
             {
                 if (xDocument == null || xDocument.SnapShot.Version != _buffer.CurrentSnapshot.Version)
                 {
-                    await LexAsync();
+                    var _ = await LexAsync();
                 }
             }
         }
-        private async Task LexAsync()
+        private async Task<bool> LexAsync()
         {
             var success = false;
             //await TaskScheduler.Default;
             try
             {
                 IsLexing = true;
-                ClassifyBuffer();
-                success = true;
+                success = ClassifyBuffer();
             }
             catch (Exception ex)
             {
@@ -207,26 +206,25 @@ namespace XSharp.LanguageService
                 IsStarted = false;
                 if (success)
                 {
-                    await ParseAsync();
+                    success = await ParseAsync();
                 }
             }
+            return success;
         }
         public void Parse()
         {
             XDocument xDocument = GetDocument();
             if (xDocument != null)
             {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    await ParseAsync();
-                });
+                var _= ThreadHelper.JoinableTaskFactory.RunAsync(ParseAsync);
             }
         }
 
-        private void ClassifyBuffer()
+        private bool ClassifyBuffer()
         {
+            bool result = false;
             if (XEditorSettings.DisableSyntaxHighlighting)
-                return;
+                return result;
             var snapshot = _buffer.CurrentSnapshot;
             XDocument xDocument = GetDocument();
             if (xDocument == null || xDocument.SnapShot.Version != snapshot.Version)
@@ -253,7 +251,8 @@ namespace XSharp.LanguageService
             }
             BuildColorClassifications();
             Debug("Ending classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            return;
+            result = true;
+            return result;
         }
 
         private void TriggerRepaint(ITextSnapshot snapshot)
@@ -278,21 +277,21 @@ namespace XSharp.LanguageService
 
 #region Parser Methods
 
-        private async Task ParseAsync()
+        private async Task<bool> ParseAsync()
         {
             if (XSettings.DisableEntityParsing)
-                return;
+                return false;
             if (IsLexing)
-                return;
+                return false;
             await TaskScheduler.Current;
             var snapshot = _buffer.CurrentSnapshot;
             var xDocument = GetDocument();
             if (xDocument == null) // should not happen
-                return;
+                return false;
             if (xDocument.SnapShot != snapshot)
             {
                 XSettings.LogMessage($"XSharpClassifier.ParseAsync() aborted because snapshot is version {xDocument.SnapShot.Version} and buffer has version {snapshot.Version}");
-                return;
+                return false;
             }
             XSettings.LogMessage("-->> XSharpClassifier.ParseAsync()");
             // Note this runs in the background
@@ -313,6 +312,7 @@ namespace XSharp.LanguageService
                 Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             }
             XSettings.LogMessage("<<-- XSharpClassifier.ParseAsync()");
+            return true;
         }
 #endregion
 

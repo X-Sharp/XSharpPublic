@@ -272,7 +272,7 @@ namespace XSharp.LanguageService
         private void adjustWhiteSpace()
         {
 
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ()=>
             {
 
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -398,7 +398,7 @@ namespace XSharp.LanguageService
                 return;
             }
 
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var editSession = _buffer.CreateEdit();

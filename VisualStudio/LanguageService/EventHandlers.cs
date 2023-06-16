@@ -19,7 +19,7 @@ namespace XSharp.LanguageService
         static string solutionFile;
         public static void Start()
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
@@ -117,7 +117,7 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 var frames = await VS.Windows.GetAllDocumentWindowsAsync();
                 if (frames != null)

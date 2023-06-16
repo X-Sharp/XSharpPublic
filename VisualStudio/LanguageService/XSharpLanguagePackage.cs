@@ -283,7 +283,7 @@ namespace XSharp.LanguageService
                 }
                 if (_oleComponentManager != null)
                 {
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         _oleComponentManager.FRevokeComponent(m_componentID);
@@ -369,7 +369,8 @@ namespace XSharp.LanguageService
                 if (!lValue)
                 {
                     GetIntellisenseSettings(false);
-                    RefreshDocumentSettingsAsync().FireAndForget();
+                    var res = ThreadHelper.JoinableTaskFactory.RunAsync(RefreshAllDocumentWindowSettingsAsync);
+                    
                 }
             }
             return VSConstants.S_OK;
@@ -379,7 +380,7 @@ namespace XSharp.LanguageService
         /// Reload the source code editor settings for all open X# editor windows
         /// </summary>
         /// <returns></returns>
-        private async System.Threading.Tasks.Task RefreshDocumentSettingsAsync()
+        private async System.Threading.Tasks.Task RefreshAllDocumentWindowSettingsAsync()
         {
             var docs = await VS.Windows.GetAllDocumentWindowsAsync();
             foreach (var doc in docs)

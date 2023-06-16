@@ -257,7 +257,7 @@
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idDbgMemvarsWindow" priority="0x0200" type="Button">
-        <Icon guid="ImageCatalogGuid" id="LocalsWindow" />
+        <Icon guid="ImageCatalogGuid" id="Dynamic" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -266,7 +266,7 @@
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idDbgGlobalsWindow" priority="0x0300" type="Button">
-        <Icon guid="ImageCatalogGuid" id="LocalsWindow" />
+        <Icon guid="ImageCatalogGuid" id="GlobalVariable" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>

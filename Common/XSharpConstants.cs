@@ -109,7 +109,7 @@ namespace XSharp
         internal const string DevEnvDir = nameof(DevEnvDir);
         internal const string Dialect = nameof(Dialect);
         internal const string DialectCore = "Core";
-        internal const string DialectFoxPro = "FoxPro";
+        internal const string DialectFoxPro = "Visual FoxPro";
         internal const string DialectHarbour = "Harbour";
         internal const string DialectVO = "VO";
         internal const string DialectVulcan = "Vulcan.NET";

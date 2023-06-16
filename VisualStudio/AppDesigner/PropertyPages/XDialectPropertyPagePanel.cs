@@ -111,7 +111,7 @@ namespace XSharp.Project
             {
                 if (e.OldValue != e.NewValue)
                 {
-                    if (e.PropertyName.ToLower() == XSharpProjectFileConstants.Dialect.ToLower())
+                    if (string.Equals(e.PropertyName, XSharpProjectFileConstants.Dialect,StringComparison.OrdinalIgnoreCase))
                     {
                         if (e.NewValue.ToLower() == "foxpro")
                         {

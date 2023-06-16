@@ -29,7 +29,7 @@
                 </Style>
             </ListView.Resources>
             <ListView.View>
-                <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Memory Variables">
+                <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Workareas">
                     <GridViewColumn Width="50" Header="Selected" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>

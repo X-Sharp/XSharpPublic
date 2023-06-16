@@ -32,7 +32,7 @@
                 </Style>
             </ListView.Resources>
             <ListView.View>
-                <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Memory Variables">
+                <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Settings">
                     <GridViewColumn Width="125" Header="Name" DisplayMemberBinding="{Binding Name}" />
                     <GridViewColumn Width="125" Header="Key" DisplayMemberBinding="{Binding Key}" />
                     <GridViewColumn Width="Auto" Header="Value" DisplayMemberBinding="{Binding Value}" />

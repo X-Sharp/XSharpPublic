@@ -266,7 +266,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 		IF SELF:CurrentColumn != NULL .AND. TypeOf(System.Windows.Forms.TextBox):isAssignableFrom(e:Control:GetType())
 			e:Control:PreviewKeyDown += OnEditControlPreviewKeyDown
 			SELF:oVOEditControl := SingleLineEdit{e:Control}
-			SELF:oVOEditControl:RegisterEvents((IVOTextBox)e:Control)
+			SELF:oVOEditControl:RegisterEvents((VOTextBox)e:Control)
 			chilf := SELF:oVOEditControl:TextValue
 			SELF:oVOEditControl:FieldSpec := SELF:CurrentColumn:FieldSpec
 			SELF:oVOEditControl:TextValue := chilf
@@ -1535,7 +1535,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 
 		RETURN lRetCode
 
-	METHOD AsString
+	METHOD AsString as string strict
 		RETURN ResourceString{__WCSDBrowserObject}:Value
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Background/*" />
@@ -1592,7 +1592,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		IF ! SELF:__IsValid
 			RETURN SELF
 		ENDIF
-		IF !IsInstanceOfUsual(oBrush,#Brush)
+		IF !(oBrush IS Brush)
 			WCError{#ChangeBackground,#DataBrowser,__WCSTypeError,oBrush,1}:Throw()
 		ELSE
 			oNewBrush := oBrush
@@ -1659,7 +1659,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 
 		IF IsNumeric(oColor)
 			oNewColor := VOSDK.Color{oColor}
-		ELSEIF !IsInstanceOfUsual(oColor,#Color)
+		ELSEIF !(oColor IS Color)
 			WCError{#ChangeTextColor,#DataBrowser,__WCSTypeError,oColor,1}:Throw()
 		ELSE
 			oNewColor := oColor
@@ -1749,12 +1749,12 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		RETURN aColumn
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Copy/*" />
-	METHOD Copy() CLIPPER
+	METHOD Copy()   AS VOID STRICT
 		IF SELF:CellEdit != NULL_OBJECT
 			SELF:CellEdit:Copy()
 		ENDIF
 
-		RETURN SELF
+		RETURN
 
 /// <include file="Gui.xml" path="doc/DataBrowser.CurrentColumn/*" />
 	ACCESS CurrentColumn AS DataColumn
@@ -1765,12 +1765,12 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Cut/*" />
-	METHOD Cut()
+	METHOD Cut()   AS VOID STRICT
 		IF SELF:CellEdit != NULL_OBJECT
 			SELF:CellEdit:Cut()
 		ENDIF
 
-		RETURN SELF
+		RETURN
 
 	METHOD Disable() AS VOID STRICT
 		SUPER:Disable()
@@ -2003,7 +2003,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		LOCAL oBB AS BoundingBox
 		LOCAL oWin AS Window
 		LOCAL nHeight AS LONG
-		IF !IsInstanceOfUsual(oOwner,#Window)
+		IF ! (oOwner IS Window)
 			WCError{#Init,#DataBrowser,__WCSTypeError,oOwner,1}:Throw()
 		ENDIF
 		oWin := oOwner
@@ -2011,8 +2011,8 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		// Automatically generate id if none is supplied
 		DEFAULT xID TO  1000
 
-		IF (IsInstanceOfUsual(oOwner, #DataWindow))
-			oBB			:= ((DataWindow)oOwner):CanvasArea
+		IF oOwner IS DataWindow VAR oDW
+			oBB			:= oDW:CanvasArea
 			IF oWin:ToolBar != NULL_OBJECT
 				nHeight := oWin:ToolBar:Size:Height
 			ENDIF
@@ -2196,11 +2196,11 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		RETURN oParent
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Paste/*" />
-	METHOD Paste ( )
+	METHOD Paste ( )   AS VOID STRICT
 		IF SELF:CellEdit != NULL_OBJECT
 			SELF:CellEdit:Paste()
 		ENDIF
-		RETURN SELF
+		RETURN
 
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Pointer/*" />
@@ -2215,7 +2215,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Refresh/*" />
 	METHOD Refresh() AS VOID STRICT
-		IF oDataServer!=NULL_OBJECT .AND. IsInstanceOf(oDataServer,#DBServer)
+		IF oDataServer!=NULL_OBJECT 
 			oDataServer:GoTo(oDataServer:RecNo) //Forces refresh if DBF was empty
 		ENDIF
 		SELF:__RefreshBuffer()
@@ -2413,12 +2413,12 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Undo/*" />
-   METHOD Undo()
+   METHOD Undo() AS VOID
 		IF SELF:CellEdit != NULL_OBJECT
 			SELF:CellEdit:Undo()
 		ENDIF
 
-		RETURN SELF
+		RETURN
 
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Use/*" />
@@ -2454,8 +2454,8 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 /// <include file="Gui.xml" path="doc/DataBrowser.Validate/*" />
 	METHOD Validate() AS LOGIC STRICT
 
-		IF IsInstanceOf(SELF:Owner, #DataWindow)
-			RETURN ((DataWindow) SELF:Owner):__CheckRecordStatus()
+		IF SELF:Owner IS DataWindow VAR oDW
+			RETURN oDW:__CheckRecordStatus()
 		ENDIF
 		RETURN FALSE
 
@@ -2598,8 +2598,8 @@ CLASS DataColumn INHERIT VObject
 				oHL := oServer:Status
 				IF (oHL != NULL_OBJECT) .AND. (oParent != NULL_OBJECT)
 					oWin := (Window) oParent:Owner
-					IF IsInstanceOf(oWin,#AppWindow)
-						oWin:@@StatusMessage((ResourceString{__WCSError2}:Value)+oHL:Description,MESSAGEERROR)
+					IF oWin IS AppWindow VAR oAppWin
+						oAppWin:@@StatusMessage((ResourceString{__WCSError2}:Value)+oHL:Description,MESSAGEERROR)
 					ENDIF
 				ENDIF
 			ELSEIF !IsNil(cbGetSetBlock) .AND. IsCodeBlock(cbGetSetBlock)
@@ -2634,7 +2634,7 @@ CLASS DataColumn INHERIT VObject
 
 
 
-	  IF IsInstanceOf(oServer, #DataServer)
+	  IF oServer IS DataServer
 		 IF lBaseServer // if not subclassing
 			SELF:Value := oServer:FIELDGET(symDataField) //use fieldget
 		 ELSEIF symDataField != NULL_SYMBOL
@@ -3023,7 +3023,7 @@ CLASS DataColumn INHERIT VObject
 /// <include file="Gui.xml" path="doc/DataColumn.HyperLabel/*" />
 	ASSIGN HyperLabel(oNewHL AS USUAL)
 
-		IF IsInstanceOfUsual(oNewHL, #HyperLabel)
+		IF oNewHL IS HyperLabel
 			oHyperLabel := oNewHL
 			lExplicitHL := TRUE
 			SELF:Caption := oHyperLabel:Caption
@@ -3054,7 +3054,7 @@ CLASS DataColumn INHERIT VObject
 
 		IF IsNil(nWidth)
 			iSize := 16
-		ELSEIF IsInstanceOfUsual(nWidth, #FieldSpec)
+		ELSEIF nWidth IS FieldSpec
 			iSize := __GetFSDefaultLength(nWidth)
 			SELF:FieldSpec := nWidth
 		ELSEIF !IsLong(nWidth)
@@ -3065,7 +3065,7 @@ CLASS DataColumn INHERIT VObject
 
 		cTextValue := "N/A"
 
-		IF IsInstanceOfUsual(xColumnID, #HyperLabel)
+		IF xColumnID IS HyperLabel
 			SELF:HyperLabel := xColumnID
 		ELSEIF IsString(xColumnID)
 			SELF:HyperLabel := HyperLabel{String2Symbol(xColumnID),xColumnID}
@@ -3089,7 +3089,7 @@ CLASS DataColumn INHERIT VObject
 	METHOD LinkDF(oDataServer, nFieldData)
 		LOCAL tmpDF AS OBJECT
 		LOCAL symClassName AS SYMBOL
-		IF !IsInstanceOfUsual(oDataServer,#DataServer)
+		IF !(oDataServer IS DataServer)
 			WCError{#LinkDF,#DataColumn,__WCSTypeError,oDataServer,1}:Throw()
 		ENDIF
 
@@ -3109,7 +3109,7 @@ CLASS DataColumn INHERIT VObject
 
 		// Propogate data field if no explicit one
 		tmpDF:=oServer:DataField(iDataField)
-		IF IsInstanceOfUsual(tmpDF, #DataField)
+		IF tmpDF IS DataField
 			oDataField := tmpDF
 
 			IF !lExplicitFS

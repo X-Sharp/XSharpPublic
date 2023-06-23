@@ -14,13 +14,17 @@ CLASS DataListView INHERIT ListView
 
     PROPERTY ControlType AS ControlType GET ControlType.DataListView
 
-	METHOD OnControlCreated(oC AS IVOControl) AS VOID
+
+ /// <exclude />
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		VAR oGrid := (VODataListView) oC
 		oGrid:RetrieveVirtualItem	+= __RetrieveVirtualItems
 		oGrid:CacheVirtualItems	    += __CacheVirtualItems
 		oGrid:SearchForVirtualItem  += __SearchForVirtualItems
 		RETURN
 
+
+    /// <exclude />
 	PROTECTED METHOD __RetrieveVirtualItems(sender AS OBJECT, e AS RetrieveVirtualItemEventArgs) AS VOID
 		// e:Item
 		// e:ItemIndex
@@ -44,12 +48,15 @@ CLASS DataListView INHERIT ListView
 		e:Item := (VOListViewItem) oItem:__ListViewItem
 		RETURN
 
+    /// <exclude />
 	PROTECTED METHOD __CacheVirtualItems(sender AS OBJECT, e AS CacheVirtualItemsEventArgs ) AS VOID
 		// e:StartIndex
 		// e:EndIndex
 		RETURN
 
-	PROTECTED METHOD __SearchForVirtualItems(sender AS OBJECT, e AS SearchForVirtualItemEventArgs ) AS VOID
+    /// <exclude />
+    PROTECTED METHOD __SearchForVirtualItems(sender AS OBJECT, e AS SearchForVirtualItemEventArgs ) AS VOID
+        // Todo: Implement __SearchForVirtualItems
 		// Direction
 		// IncludeSubitemsInSearch
 		// Index
@@ -60,9 +67,10 @@ CLASS DataListView INHERIT ListView
 		// Text
 		RETURN
 
-	ACCESS __DataListView AS VODataListView
-		RETURN (VODataListView) oCtrl
+    /// <exclude />
+	PROPERTY __DataListView AS VODataListView GET (VODataListView) oCtrl
 
+    /// <exclude />
 	METHOD __AutoLayout() AS VOID STRICT
 		//PP-030828 Strong typing
 		LOCAL oDF AS DataField
@@ -90,6 +98,7 @@ CLASS DataListView INHERIT ListView
 		iColumns := __ListView:Columns:Count
 		RETURN
 
+    /// <exclude />
 	[Obsolete];
 	METHOD __AutoResize() AS VOID STRICT
 		// Handled inside DataForm Class
@@ -162,8 +171,8 @@ CLASS DataListView INHERIT ListView
 
 	//  RETURN
 
-	ACCESS __ColumnCount AS LONG
-		RETURN SELF:__ListView:Columns:Count
+    /// <exclude />
+	PROPERTY __ColumnCount AS LONG GET SELF:__ListView:Columns:Count
 
 	//METHOD __FillCacheItem(iIndex AS INT) AS VOID STRICT
 	//	LOCAL j, cCols AS DWORD
@@ -269,6 +278,7 @@ CLASS DataListView INHERIT ListView
 
 	//	RETURN
 
+    /// <exclude />
 	ACCESS __GetServerCount() AS LONG STRICT
 		//PP-030828 Strong typing
 		IF lUseOrder
@@ -276,6 +286,7 @@ CLASS DataListView INHERIT ListView
 		ENDIF
 		RETURN oDLVServer:RecCount
 
+    /// <exclude />
 	METHOD __GetServerPos() AS INT STRICT
 		//PP-030828 Strong typing
 		LOCAL iRet AS INT
@@ -304,12 +315,14 @@ CLASS DataListView INHERIT ListView
 	//	ENDIF
 	//	RETURN
 
+    /// <exclude />
 	METHOD __NotifyChanges(kNotify AS DWORD) AS USUAL STRICT
 
 		RETURN NIL
 
+    /// <exclude />
 	METHOD __RecordChange(lDoSelect := NIL AS USUAL) AS VOID STRICT
-		LOCAL oLvItem		AS IVOListViewItem
+		LOCAL oLvItem		AS VOListViewItem
 		LOCAL iItem AS INT
 		DEFAULT lDoSelect TO  TRUE
 
@@ -337,10 +350,12 @@ CLASS DataListView INHERIT ListView
 
 		RETURN
 
+    /// <exclude />
 	METHOD __RefreshField(uFieldName AS USUAL) AS VOID STRICT
 		SELF:__RefreshData()
 		RETURN
 
+    /// <exclude />
 	METHOD __SetServerPos(nOrderPos AS INT, lSuspendNotify := NIL AS USUAL) AS INT STRICT
 		LOCAL iRet AS INT
 
@@ -369,9 +384,11 @@ CLASS DataListView INHERIT ListView
 
 		RETURN iRet
 
+    /// <exclude />
 	METHOD __StatusOK() AS OBJECT STRICT
 		RETURN NULL_OBJECT
 
+    /// <exclude />
 	METHOD __Unlink(oDS := NIL AS USUAL) AS VOSDK.Control  STRICT
 		IF (oDLVServer != NULL_OBJECT)
 			oDLVServer:UnRegisterClient(SELF)
@@ -379,7 +396,7 @@ CLASS DataListView INHERIT ListView
 		ENDIF
 
 		RETURN SELF
-
+    /// <include file="Gui.xml" path="doc/DataListView.DeleteAll/*" />
 	METHOD DeleteAll() AS LOGIC
 
 		iCacheStart := -1
@@ -387,11 +404,13 @@ CLASS DataListView INHERIT ListView
 
 		RETURN SUPER:DeleteAll()
 
-	METHOD Destroy() AS USUAL 
+    /// <include file="Gui.xml" path="doc/DataListView.Destroy/*" />
+	METHOD Destroy() AS USUAL
 		SELF:__Unlink()
 		RETURN SUPER:Destroy()
 
-	METHOD FIELDGET(nFieldPos)
+    /// <include file="Gui.xml" path="doc/DataListView.FieldGet/*" />
+	METHOD FieldGet(nFieldPos AS LONG) AS USUAL
 
 
 		IF (oDLVServer != NULL_OBJECT)
@@ -399,6 +418,7 @@ CLASS DataListView INHERIT ListView
 		ENDIF
 		RETURN NIL
 
+    /// <include file="Gui.xml" path="doc/DataListView.ctor/*" />
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 		LOCAL lUsedAsBrowser AS LOGIC
 		LOCAL nStyle			AS LONGINT
@@ -430,6 +450,7 @@ CLASS DataListView INHERIT ListView
 
 		RETURN
 
+    /// <include file="Gui.xml" path="doc/DataListView.Notify/*" />
 	METHOD Notify(kNotification, uDescription)
 
 		IF lNoNotifies
@@ -485,9 +506,11 @@ CLASS DataListView INHERIT ListView
 
 		RETURN NIL
 
+    /// <include file="Gui.xml" path="doc/DataListView.Owner/*" />
 	ACCESS Owner as Object
 		RETURN oParent
 
+    /// <include file="Gui.xml" path="doc/DataListView.Refresh/*" />
 	METHOD Refresh() AS VOID STRICT
 		LOCAL dwItems AS LONG
 		dwItems := SELF:__GetServerCount
@@ -499,18 +522,20 @@ CLASS DataListView INHERIT ListView
 
 		RETURN
 
-	ACCESS Server as DataServer
+    /// <include file="Gui.xml" path="doc/DataListView.Server/*" />
+    PROPERTY Server as DataServer
+    GET
 		RETURN oDLVServer
+    END GET
+    SET
 
-	ASSIGN Server(oNewServer as DataServer)
 
-
-		IF (oDLVServer != oNewServer)
+		IF (oDLVServer != value)
 			IF (oDLVServer != NULL_OBJECT)
 				oDLVServer:UnRegisterClient(SELF)
 			ENDIF
 
-			oDLVServer := oNewServer
+			oDLVServer := value
 
 			IF (__ListView:Columns:Count == 0)
 				SELF:__AutoLayout()
@@ -522,13 +547,12 @@ CLASS DataListView INHERIT ListView
 			SELF:Refresh()
 		ENDIF
 
-		RETURN
+    end set
+    end property
+    /// <include file="Gui.xml" path="doc/DataListView.Use/*" />
 
-	METHOD Use(oNewServer)
-
-
+	METHOD Use(oNewServer As DataServer) AS LOGIC
 		SELF:Server := oNewServer
-
 		RETURN (oDLVServer != NULL_OBJECT)
 
 END CLASS

@@ -15,15 +15,15 @@ CLASS VOTreeNode INHERIT TreeNode
 		IF oItem:NameSym != NULL_SYMBOL
 			SELF:Name := oItem:NameSym:ToString()
 		ENDIF
-	
+
 	CONSTRUCTOR(oItem AS TreeViewItem)
 		SUPER()
 		SELF:LinkTo(oItem)
 
 	ACCESS NestingLevel AS LONG
 		RETURN 1 // SELF:Parents:Count+1
-		
-		
+
+
 	// Example tree
 	//  A
 	//    B
@@ -37,8 +37,8 @@ CLASS VOTreeNode INHERIT TreeNode
 	// Parents of D is A
 	// parents of B is A
 	// A & F have no parents
-	
-	
+
+
 END CLASS
 
 CLASS VOTreeView INHERIT System.Windows.Forms.TreeView IMPLEMENTS IVOControl
@@ -55,7 +55,7 @@ CLASS VOTreeView INHERIT System.Windows.Forms.TreeView IMPLEMENTS IVOControl
 		IF oProperties != NULL_OBJECT
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
 		ENDIF
-		
+
 
 	VIRTUAL PROTECTED METHOD OnAfterLabelEdit(e AS NodeLabelEditEventArgs) AS VOID
 		LOCAL oWin AS Window
@@ -96,7 +96,7 @@ CLASS VOTreeView INHERIT System.Windows.Forms.TreeView IMPLEMENTS IVOControl
 		oWin := SELF:Control:Owner
 		oWin:TreeViewItemExpanded(TreeViewExpandedEvent{SELF:TreeView, ((VOTreeNode) e:Node):Item, e:Action})
 		RETURN
-		
+
 	VIRTUAL PROTECTED METHOD OnBeforeCollapse(e AS TreeViewCancelEventArgs) AS VOID
 		LOCAL oWin AS Window
 		SUPER:OnBeforeCollapse(e)
@@ -118,7 +118,7 @@ CLASS VOTreeView INHERIT System.Windows.Forms.TreeView IMPLEMENTS IVOControl
 		oWin := SELF:Control:Owner
 		oWin:TreeViewSelectionChanged(TreeViewSelectionEvent{SELF:TreeView, ((VOTreeNode) e:Node):Item, e:Action, FALSE})
 		RETURN
-		
+
 	VIRTUAL PROTECTED METHOD OnBeforeSelect(e AS TreeViewCancelEventArgs) AS VOID
 		LOCAL oWin AS Window
 		LOCAL oItem AS TreeViewItem
@@ -128,15 +128,15 @@ CLASS VOTreeView INHERIT System.Windows.Forms.TreeView IMPLEMENTS IVOControl
 			oItem := ((VOTreeNode)e:Node):Item
 		ENDIF
 		oWin:TreeViewSelectionChanging(TreeViewSelectionEvent{SELF:TreeView, oItem, System.Windows.Forms.TreeViewAction.Unknown, TRUE})
-		RETURN		
-		
+		RETURN
+
 	VIRTUAL PROTECTED METHOD OnNodeMouseClick(e AS TreeNodeMouseClickEventArgs ) AS VOID
 		LOCAL oWin AS Window
 		SUPER:OnNodeMouseClick(e)
 		oWin := SELF:Control:Owner
 		oWin:TreeViewMouseButtonDown(TreeViewMouseEvent{SELF:TreeView, ((VOTreeNode) e:Node):Item, e})
-		RETURN	
-		
+		RETURN
+
 	VIRTUAL PROTECTED METHOD OnNodeMouseDoubleClick(e AS TreeNodeMouseClickEventArgs ) AS VOID
 		LOCAL oWin AS Window
 		SUPER:OnNodeMouseDoubleClick(e)

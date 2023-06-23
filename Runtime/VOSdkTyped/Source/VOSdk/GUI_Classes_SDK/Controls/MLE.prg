@@ -14,8 +14,8 @@ CLASS MultiLineEdit INHERIT Edit
 		ENDIF
 		RETURN cText
 
-	ACCESS __MultiLineEdit AS IVOMLETextBox
-		RETURN (IVOMLETextBox) oCtrl
+	ACCESS __MultiLineEdit AS VOMLETextBox
+		RETURN (VOMLETextBox) oCtrl
 
 /// <include file="Gui.xml" path="doc/MultiLineEdit.GetLine/*" />
 	METHOD GetLine(nLineNumber, nMaxLength)
@@ -52,7 +52,7 @@ CLASS MultiLineEdit INHERIT Edit
 /// <include file="Gui.xml" path="doc/MultiLineEdit.ctor/*" />
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 		SUPER( oOwner, xID, oPoint, oDimension, kStyle )
-		IF !IsInstanceOfUsual(xID,#ResourceID)
+		IF !(xID IS ResourceID)
 			SELF:SetStyle(ES_MultiLine)
 		ENDIF
 

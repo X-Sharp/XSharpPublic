@@ -11,9 +11,6 @@ CLASS PushButton INHERIT Button
 		ENDIF
 		RETURN
 
-	ACCESS __Button AS IVOButton
-		RETURN (IVOButton) oCtrl
-
 /// <include file="Gui.xml" path="doc/PushButton.Value/*" />
 	ACCESS Value()
 		RETURN FALSE

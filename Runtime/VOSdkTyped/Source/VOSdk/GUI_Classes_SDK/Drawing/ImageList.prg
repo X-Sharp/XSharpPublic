@@ -8,8 +8,8 @@ CLASS ImageList INHERIT VObject
 	PROTECT iDragYOffset AS INT
 	PROTECT oImageList AS System.Windows.Forms.ImageList
 
-	ACCESS __ImageList AS System.Windows.Forms.ImageList
-		RETURN oImageList
+	/// <exclude />
+	PROPERTY __ImageList AS System.Windows.Forms.ImageList GET oImageList
 
 /// <include file="Gui.xml" path="doc/ImageList.Add/*" />
 	METHOD Add(oImage AS OBJECT)  AS LONG
@@ -156,11 +156,9 @@ CLASS ImageList INHERIT VObject
 			ENDIF
 		ENDIF
 
-		IF IsInstanceOfUsual(oImage, #Bitmap) .or. IsInstanceOfUsual(oImage, #Icon)
+		IF oImage IS Bitmap .or. oImage IS Icon
 			SELF:Add(oImage)
 		ENDIF
-
-
 
 		RETURN
 

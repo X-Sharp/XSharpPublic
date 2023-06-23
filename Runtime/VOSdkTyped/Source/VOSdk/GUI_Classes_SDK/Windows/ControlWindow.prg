@@ -94,7 +94,7 @@ CLASS ControlWindow INHERIT Window
 		ENDIF
 
 /// <include file="Gui.xml" path="doc/ControlWindow.Override/*" />
-	METHOD Override()
+	METHOD Override() STRICT
 		RETURN NIL
 
 /// <include file="Gui.xml" path="doc/ControlWindow.SetFocus/*" />

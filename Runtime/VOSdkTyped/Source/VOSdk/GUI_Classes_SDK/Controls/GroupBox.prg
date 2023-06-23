@@ -1,16 +1,16 @@
 /// <include file="Gui.xml" path="doc/GroupBox/*" />
 [XSharp.Internal.TypesChanged];
 CLASS GroupBox INHERIT TextControl
-	/// <inheritdoc />
+	/// <exclude />
     PROPERTY ControlType AS ControlType GET ControlType.GroupBox
-	/// <inheritdoc />
+	/// <exclude />
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
-        VAR oGroup := (IVOGroupBox) oC
+        VAR oGroup := (VOGroupBox) oC
 		oGroup:SendToBack()
 		oGroup:VisibleChanged += OnVisibleChanged
 		oGroup:IsRadioGroup  := SELF IS RadioButtonGroup
 
-	/// <inheritdoc />
+	/// <exclude />
 	METHOD OnVisibleChanged(sender AS OBJECT, e AS EventArgs) AS VOID
         // Set timer to refresh all child controls after 1 second
 		IF oCtrl != NULL_OBJECT .AND. oCtrl:Visible
@@ -26,26 +26,20 @@ CLASS GroupBox INHERIT TextControl
 		ENDIF
 		RETURN NIL
 
-	ACCESS __GroupBox AS IVOGroupBox
-		RETURN (IVOGroupBox) oCtrl
+	PROPERTY __GroupBox AS VOGroupBox GET (VOGroupBox) oCtrl
 
 /// <include file="Gui.xml" path="doc/GroupBox.AsString/*" />
-	METHOD AsString ()
+	METHOD AsString () as string strict
 		RETURN "#"+Symbol2String(ClassName(SELF))+":"+SELF:Caption
 
 /// <include file="Gui.xml" path="doc/GroupBox.CurrentText/*" />
-	ACCESS CurrentText AS STRING
-		RETURN NULL_STRING
-
-/// <include file="Gui.xml" path="doc/GroupBox.CurrentText/*" />
-	ASSIGN CurrentText(cValue AS STRING)
-		RETURN
+	PROPERTY CurrentText AS STRING GET NULL_STRING SET
 
 /// <include file="Gui.xml" path="doc/GroupBox.ctor/*" />
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 		Default(@lDataAware, FALSE)
 
-		IF IsInstanceOfUsual(xID,#ResourceID)
+		IF xID IS ResourceID
 			SUPER(oOwner, xID, oPoint, oDimension, , , lDataAware)
 		ELSE
 			SUPER(oOwner, xID, oPoint, oDimension, "Button", _Or(BS_GroupBox, WS_TabStop,WS_EX_TRANSPARENT), lDataAware)

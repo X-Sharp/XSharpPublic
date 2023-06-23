@@ -50,68 +50,33 @@ CLASS IPAddress INHERIT TextControl
 		ENDIF
 
 		RETURN IntPtr.Zero
+     /// <exclude />
 
-/// <include file="Gui.xml" path="doc/IPAddress.Field1/*" />
-	ACCESS Field1  AS BYTE
+    PRIVATE METHOD __GetAddress(nBits as LONG) AS BYTE
 		LOCAL dwAddr AS DWORD
 		dwAddr := SELF:Address
-		RETURN (BYTE) _AND(dwAddr >> 24, 0X000000FF)
-
-
-/// <include file="Gui.xml" path="doc/IPAddress.Field1/*" />
-	ASSIGN Field1(iNewVal AS BYTE)
+        RETURN (BYTE) _AND(dwAddr >> nBits, 0X000000FF)
+    /// <exclude />
+    PRIVATE METHOD __SetAddress(nBits as LONG, nMask as DWORD, nByte as BYTE) AS VOID
 		LOCAL dwAddr AS DWORD
 		dwAddr := SELF:Address
-		dwAddr := _Or(_And(0X00FFFFFFU, dwAddr), (DWORD(_CAST, iNewVal) << 24))
+		dwAddr := _Or(_And(nMask, dwAddr), (DWORD(_CAST, nByte) << nBits))
 		SELF:Address := dwAddr
 		RETURN
 
-/// <include file="Gui.xml" path="doc/IPAddress.Field2/*" />
-	ACCESS Field2  AS BYTE
-		LOCAL dwAddr AS DWORD
-		dwAddr := SELF:Address
-		RETURN (BYTE) _And((dwAddr >> 16), 0X000000FF)
+    /// <include file="Gui.xml" path="doc/IPAddress.Field1/*" />
+	PROPERTY Field1  AS BYTE GET SELF:__GetAddress(24) SET SELF:__SetAddress(24, 0X00FFFFFFU, value)
 
+    /// <include file="Gui.xml" path="doc/IPAddress.Field2/*" />
+	PROPERTY Field2  AS BYTE GET SELF:__GetAddress(16) SET SELF:__SetAddress(16, 0XFF00FFFF, value)
 
-/// <include file="Gui.xml" path="doc/IPAddress.Field2/*" />
-	ASSIGN Field2(iNewVal AS BYTE)
-		LOCAL dwAddr AS DWORD
-		dwAddr := SELF:Address
-		dwAddr := _Or(_And(0XFF00FFFF, dwAddr), (DWORD(_CAST, iNewVal) << 16))
-		SELF:Address := dwAddr
+    /// <include file="Gui.xml" path="doc/IPAddress.Field3/*" />
+	PROPERTY Field3  AS BYTE GET SELF:__GetAddress(8) SET SELF:__SetAddress(8, 0XFFFF00FF, value)
 
-		RETURN
+    /// <include file="Gui.xml" path="doc/IPAddress.Field4/*" />
+	PROPERTY Field4  AS BYTE GET SELF:__GetAddress(0) SeT SELF:__SetAddress(0, 0XFFFFFF00, value)
 
-/// <include file="Gui.xml" path="doc/IPAddress.Field3/*" />
-	ACCESS Field3  AS BYTE
-		LOCAL dwAddr AS DWORD
-		dwAddr := SELF:Address
-		RETURN (BYTE) _And((dwAddr >> 8), 0X000000FF)
-
-
-/// <include file="Gui.xml" path="doc/IPAddress.Field3/*" />
-	ASSIGN Field3(iNewVal AS BYTE)
-		LOCAL dwAddr AS DWORD
-		dwAddr := SELF:Address
-		dwAddr := _Or(_And(0XFFFF00FF, dwAddr), (DWORD(_CAST, iNewVal) << 8))
-		SELF:Address := dwAddr
-		RETURN
-
-/// <include file="Gui.xml" path="doc/IPAddress.Field4/*" />
-	ACCESS Field4  AS BYTE
-		LOCAL dwAddr AS DWORD
-		dwAddr := SELF:Address
-		RETURN (BYTE) _And(dwAddr, 0X000000FF)
-
-/// <include file="Gui.xml" path="doc/IPAddress.Field4/*" />
-	ASSIGN Field4(iNewVal AS BYTE)
-		LOCAL dwAddr AS DWORD
-		dwAddr := SELF:Address
-		dwAddr := _Or(_And(0XFFFFFF00, dwAddr), (DWORD(_CAST, iNewVal)))
-		SELF:Address := dwAddr
-		RETURN
-
-/// <include file="Gui.xml" path="doc/IPAddress.SetRange/*" />
+    /// <include file="Gui.xml" path="doc/IPAddress.SetRange/*" />
     METHOD SetRange(iFieldIndex, iLower, iUpper)
 		LOCAL wRange AS LONG
 		LOCAL iField AS DWORD

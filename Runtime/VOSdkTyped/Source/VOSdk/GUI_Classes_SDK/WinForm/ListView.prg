@@ -8,7 +8,7 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 USING SWF := System.Windows.Forms
-CLASS VOListView INHERIT SWF.ListView IMPLEMENTS IVOListView
+CLASS VOListView INHERIT SWF.ListView  IMPLEMENTS IVoControl
 	PROPERTY ListView     AS VOSDK.ListView GET (VOSDK.ListView) oProperties:Control
 	#include "PropControl.vh"
 
@@ -40,16 +40,16 @@ CLASS VOListView INHERIT SWF.ListView IMPLEMENTS IVOListView
 	NEW PROPERTY Items AS IList GET SUPER:Items
     NEW PROPERTY SelectedItems AS IList GET SUPER:SelectedItems
     NEW PROPERTY SelectedIndices AS IList GET SUPER:SelectedIndices
-	
-	#region Event Handlers		
-	
+
+	#region Event Handlers
+
 	VIRTUAL PROTECTED METHOD OnAfterLabelEdit(e AS LabelEditEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnAfterLabelEdit(e)
 		oWindow := (Window) SELF:Control:Owner
 		oWindow:ListViewItemEdit(ListViewEditEvent{SELF:ListView, e, FALSE})
 		RETURN
-	
+
 	VIRTUAL PROTECTED METHOD OnBeforeLabelEdit(e AS LabelEditEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnBeforeLabelEdit(e)
@@ -64,7 +64,7 @@ CLASS VOListView INHERIT SWF.ListView IMPLEMENTS IVOListView
 		oWindow:ListViewColumnClick(ListViewColumnClickEvent{SELF:ListView, e})
 		RETURN
 
-	
+
 	VIRTUAL PROTECTED METHOD OnItemChecked(e AS ItemCheckedEventArgs ) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnItemChecked(e)
@@ -107,7 +107,7 @@ CLASS VOListView INHERIT SWF.ListView IMPLEMENTS IVOListView
 		oWindow := (Window) SELF:Control:Owner
 		oWindow:ListViewItemChanged(ListViewItemEvent{SELF:ListView, e})
 		RETURN
-	
+
 	VIRTUAL PROTECT METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnKeyDown(e)
@@ -115,30 +115,30 @@ CLASS VOListView INHERIT SWF.ListView IMPLEMENTS IVOListView
 		oWindow:ListViewKeyDown(ListViewKeyEvent{SELF:ListView, e})
 		RETURN
 
-	//VIRTUAL PROTECT METHOD WndProc(msg REF Message) AS VOID	
+	//VIRTUAL PROTECT METHOD WndProc(msg REF Message) AS VOID
 	//	IF oProperties == NULL_OBJECT
 	//		RETURN SUPER:WndProc(msg)
 	//	ELSEIF ! oProperties:WndProc(msg)
-	//		SUPER:WndProc(msg) 
+	//		SUPER:WndProc(msg)
 	//	ENDIF
 	//	RETURN
 
-	
-	#endregion		
+
+	#endregion
 
 END CLASS
 
 
-CLASS VODataListView INHERIT VOListView 
+CLASS VODataListView INHERIT VOListView
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner, dwStyle, dwExStyle)
 		SELF:VirtualMode := TRUE
-	
+
 END CLASS
 
 
-CLASS VOColumnHeader INHERIT System.Windows.Forms.ColumnHeader IMPLEMENTS IVOColumnHeader
+CLASS VOColumnHeader INHERIT System.Windows.Forms.ColumnHeader
 	PROPERTY Column AS VOSDK.ListViewColumn AUTO
 	PROPERTY Header AS System.Windows.Forms.ColumnHeader GET SELF
 	METHOD LinkTo(oColumn AS VOSDK.ListViewColumn) AS VOID STRICT
@@ -147,32 +147,32 @@ CLASS VOColumnHeader INHERIT System.Windows.Forms.ColumnHeader IMPLEMENTS IVOCol
 		IF oColumn:HyperLabel != NULL_OBJECT
 			SELF:Name := oColumn:HyperLabel:Name
 		ENDIF
-	
+
 	CONSTRUCTOR(oColumn AS VOSDK.ListViewColumn) STRICT
 		SUPER()
-		SELF:LinkTo(oColumn)	
+		SELF:LinkTo(oColumn)
 END CLASS
 
 
 
-CLASS VOListViewItem INHERIT System.Windows.Forms.ListViewItem IMPLEMENTS IVOListViewItem
-	PROPERTY Item AS VOSDK.ListViewItem AUTO 
+CLASS VOListViewItem INHERIT System.Windows.Forms.ListViewItem
+	PROPERTY Item AS VOSDK.ListViewItem AUTO
 	PROPERTY SWFItem AS OBJECT GET SELF
     NEW PROPERTY Group AS OBJECT GET SUPER:Group SET SUPER:Group := VALUE
 	NEW PROPERTY SubItems AS IList GET SUPER:SubItems
 	METHOD LinkTo(oItem AS VOSDK.ListViewItem) AS VOID STRICT
 		SELF:Item  := oItem
 		SELF:Tag   := oItem
-	
+
 	CONSTRUCTOR(oItem AS VOSDK.ListViewItem) STRICT
 		SUPER()
 		SELF:LinkTo(oItem)
-	
+
 END CLASS
 
 // Cannot create subclass from ListViewGroup because it is sealed
 
 //CLASS VOListViewGroup INHERIT System.Windows.Forms.ListViewGroup IMPLEMENTS IVOListViewGroup
 //    CONSTRUCTOR(cName)
-//        SUPER(cName) 
+//        SUPER(cName)
 //END CLASS

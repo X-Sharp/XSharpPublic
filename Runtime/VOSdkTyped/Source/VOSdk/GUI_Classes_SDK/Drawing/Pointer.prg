@@ -2,7 +2,8 @@
 
 
 CLASS Pointer INHERIT VObject
-	PROTECT oCursor AS System.Windows.Forms.Cursor
+    PROTECT oCursor AS System.Windows.Forms.Cursor
+    /// <exclude />
 	ACCESS __Cursor AS System.Windows.Forms.Cursor
 		RETURN oCursor
 

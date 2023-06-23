@@ -6,11 +6,11 @@ CLASS SysLink INHERIT TextControl
     /// <inheritdoc />
     PROPERTY ControlType AS ControlType GET ControlType.SysLink
 
-    PROPERTY __LinkLabel AS IVOLinkLabel GET (IVOLinkLabel) oCtrl
+    PROPERTY __LinkLabel AS VOLinkLabel GET (VOLinkLabel) oCtrl
 
     /// <inheritdoc />
     METHOD OnControlCreated(oC AS IVOControl) AS VOID
-      LOCAL oLL := (IVOLinkLabel) oC AS IVOLinkLabel
+      LOCAL oLL := (VOLinkLabel) oC AS VOLinkLabel
       oLL:LinkClicked += LinkClicked
 
 

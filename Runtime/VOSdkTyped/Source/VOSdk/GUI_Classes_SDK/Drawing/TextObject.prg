@@ -2,9 +2,6 @@
 
 USING VOSDK := XSharp.VO.SDK
 CLASS TextObject INHERIT DrawObject
-	PROTECT oFont  AS Font
-	PROTECT oColor AS Color
-	PROTECT cText  AS STRING
 
 
 	CONSTRUCTOR(oPoint AS Point, cText := NULL_STRING AS STRING, oFont := NULL_OBJECT AS Font, oColor := NULL_OBJECT AS Color)
@@ -12,19 +9,19 @@ CLASS TextObject INHERIT DrawObject
 	    LOCAL dwColor AS DWORD
 
 		IF cText != NULL_STRING
-			SELF:cText := cText
+			SELF:DisplayText := cText
 		ENDIF
 		IF oFont != NULL_OBJECT
-			SELF:oFont:=oFont
+			SELF:Font:=oFont
 		ELSE
-			SELF:oFont:=Font{FontSystem8}
+			SELF:Font:=Font{FontSystem8}
 		ENDIF
 
 		IF oColor != NULL_OBJECT
-			SELF:oColor := oColor
+			SELF:Color := oColor
 		ELSE
 			dwColor	:=	GuiWin32.GetSysColor(Color_WindowText)
-			SELF:oColor := Color{dwColor}
+			SELF:Color := Color{dwColor}
 		ENDIF
 
 		RETURN
@@ -34,33 +31,24 @@ CLASS TextObject INHERIT DrawObject
 		LOCAL oDim AS Dimension
 		IF (oWnd != NULL_OBJECT)
 			oOldFont := oWnd:Font
-			oWnd:Font := oFont
-			oDim := oWnd:SizeText(cText)
+			oWnd:Font := SELF:Font
+			oDim := oWnd:SizeText(SELF:DisplayText)
 			oWnd:Font := oOldFont
 		ENDIF
 
 		RETURN BoundingBox{SELF:Origin,oDim}
 
-	ACCESS Color AS Color
-		RETURN oColor
-
-	ASSIGN Color(oNewColor AS Color)
-		oColor := oNewColor
+	PROPERTY Color AS Color AUTO GET SET
 
 	METHOD Destroy() AS USUAL CLIPPER
-		oFont := NULL_OBJECT
-		oColor := NULL_OBJECT
-		cText := NULL_STRING
+		SELF:Font := NULL_OBJECT
+		SELF:Color := NULL_OBJECT
+		SELF:DisplayText := NULL_STRING
 		SUPER:Destroy()
 
 		RETURN NIL
 
-	ACCESS DisplayText AS STRING
-		RETURN cText
-
-	ASSIGN DisplayText(cNewText AS STRING)
-
-		cText := cNewText
+	PROPERTY DisplayText AS STRING AUTO GET SET
 	#ifdef DONOTINCLUDE
 
 	METHOD Draw()
@@ -96,11 +84,7 @@ CLASS TextObject INHERIT DrawObject
 		RETURN NIL
 	#endif
 
-	ACCESS Font AS VOSDK.Font
-		RETURN oFont
-
-	ASSIGN Font(oNewFont AS VOSDK.Font)
-		oFont:=oNewFont
+	PROPERTY Font AS VOSDK.Font AUTO GET SET
 
 
 

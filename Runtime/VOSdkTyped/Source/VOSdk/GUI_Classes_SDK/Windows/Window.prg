@@ -1812,19 +1812,19 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				ELSEIF control IS VOToolbar
 					// Skip
 					NOP
-				ELSEIF control IS IVOStatusBar
+				ELSEIF control IS VOStatusBar
 					// Skip
 					NOP
-				ELSEIF control IS IVOLabel
+				ELSEIF control IS VOLabel
 					// Skip
 					NOP
 				ELSEIF control IS IVOControl
 					VAR oControl := control ASTYPE IVOControlProperties
 					aRet:Add(oControl:Control)
 					// Get the children of the group boxes also in this list
-					IF oControl IS IVOGroupBox
+					IF oControl IS VOGroupBox
 						LOCAL aGroupChildren AS IList<IVOControl>
-						VAR oGroup :=  control ASTYPE IVOGroupBox
+						VAR oGroup :=  control ASTYPE VOGroupBox
 						aGroupChildren := oGroup:getAllChildren(NULL)
 						FOREACH oc AS IVOCOntrolProperties IN aGroupChildren
 							AAdd(aRet,oC:Control)
@@ -2051,14 +2051,14 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 /// <include file="Gui.xml" path="doc/Window.IsEnabled/*" />
-	METHOD IsEnabled()  AS LOGIC CLIPPER
+	METHOD IsEnabled()  AS LOGIC STRICT
 		IF oWnd != NULL_OBJECT
 			RETURN oWnd:Enabled
 		ENDIF
 		RETURN FALSE
 
 /// <include file="Gui.xml" path="doc/Window.IsIconic/*" />
-	METHOD IsIconic() AS LOGIC
+	METHOD IsIconic() AS LOGIC STRICT
 		IF oWnd != NULL_OBJECT
 			RETURN oWnd:WindowState == System.Windows.Forms.FormWindowState.Minimized
 		ENDIF
@@ -2066,14 +2066,14 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 /// <include file="Gui.xml" path="doc/Window.IsVisible/*" />
-	METHOD IsVisible()  AS LOGIC
+	METHOD IsVisible()  AS LOGIC STRICT
 		IF SELF:__IsValid
 			RETURN oWnd:Visible
 		ENDIF
 		RETURN FALSE
 
 /// <include file="Gui.xml" path="doc/Window.IsZoomed/*" />
-	METHOD IsZoomed()
+	METHOD IsZoomed() AS LOGIC STRICT
 		IF SELF:__IsValid
 			RETURN oWnd:WindowState == System.Windows.Forms.FormWindowState.Maximized
 		ENDIF

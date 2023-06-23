@@ -7,7 +7,7 @@ CLASS FixedBitmap INHERIT FixedImage
 		RETURN SELF:SetBitmap(Bitmap{uResID})
 
 /// <include file="Gui.xml" path="doc/FixedBitmap.AsString/*" />
-	METHOD AsString()
+	METHOD AsString() as string strict
 		RETURN "#FixedBitmap Object"
 
 /// <include file="Gui.xml" path="doc/FixedBitmap.ctor/*" />
@@ -23,6 +23,7 @@ CLASS FixedBitmap INHERIT FixedImage
 		ENDIF
 		RETURN
 
+    /// <inheritdoc />
 	ASSIGN HyperLabel(oHL AS HyperLabel)
 		SUPER:HyperLabel := oHL
 		IF SELF:__Label == NULL_OBJECT .or. SELF:__Label:Image == NULL_OBJECT

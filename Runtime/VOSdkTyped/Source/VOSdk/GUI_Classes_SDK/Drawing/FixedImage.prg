@@ -3,6 +3,7 @@
 PARTIAL ABSTRACT CLASS FixedImage INHERIT Control
 	PROTECT oImage AS OBJECT
 
+    /// <exclude />
     PROPERTY ControlType AS ControlType GET ControlType.FixedImage
 
 /// <include file="Gui.xml" path="doc/FixedImage.ctor/*" />
@@ -23,11 +24,14 @@ PARTIAL ABSTRACT CLASS FixedImage INHERIT Control
 		RETURN
 
 
-	ACCESS __Label AS IVOLabel
-		RETURN (IVOLabel) oCtrl
+    /// <exclude />
+	ACCESS __Label AS VOLabel
+		RETURN (VOLabel) oCtrl
 
+    /// <exclude />
 	ABSTRACT METHOD __SetImage(uResId AS USUAL) AS OBJECT STRICT
 
+    /// <exclude />
 	METHOD Destroy() AS USUAL
 
 		IF (oImage != NULL_OBJECT)

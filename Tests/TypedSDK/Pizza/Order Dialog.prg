@@ -83,44 +83,44 @@ CONSTRUCTOR(oParent,uExtra)
 	SELF:oDCToppingGroup:HyperLabel := HyperLabel{#ToppingGroup , "Select Toppings" , NULL_STRING , NULL_STRING}
 
 	SELF:oDCTomatoCB1 := CHECKBOX{SELF , ResourceID{ ORDERDIALOG_TOMATOCB1  , _GetInst() } }
+	SELF:oDCTomatoCB1:HyperLabel := HyperLabel{#TomatoCB1 , NULL_STRING , NULL_STRING , NULL_STRING}
 	SELF:oDCTomatoCB1:TooltipText := "Tomato"
 	SELF:oDCTomatoCB1:Image := TOMATO{}
-	SELF:oDCTomatoCB1:HyperLabel := HyperLabel{#TomatoCB1 , NULL_STRING , NULL_STRING , NULL_STRING}
 
 	SELF:oDCOnionCB1 := CHECKBOX{SELF , ResourceID{ ORDERDIALOG_ONIONCB1  , _GetInst() } }
+	SELF:oDCOnionCB1:HyperLabel := HyperLabel{#OnionCB1 , NULL_STRING , NULL_STRING , NULL_STRING}
 	SELF:oDCOnionCB1:TooltipText := "Onion"
 	SELF:oDCOnionCB1:Image := ONION{}
-	SELF:oDCOnionCB1:HyperLabel := HyperLabel{#OnionCB1 , NULL_STRING , NULL_STRING , NULL_STRING}
 
 	SELF:oDCPepperCB1 := CHECKBOX{SELF , ResourceID{ ORDERDIALOG_PEPPERCB1  , _GetInst() } }
+	SELF:oDCPepperCB1:HyperLabel := HyperLabel{#PepperCB1 , NULL_STRING , NULL_STRING , NULL_STRING}
 	SELF:oDCPepperCB1:TooltipText := "Pepper"
 	SELF:oDCPepperCB1:Image := PEPPER{}
-	SELF:oDCPepperCB1:HyperLabel := HyperLabel{#PepperCB1 , NULL_STRING , NULL_STRING , NULL_STRING}
 
 	SELF:oDCSalamiCB1 := CHECKBOX{SELF , ResourceID{ ORDERDIALOG_SALAMICB1  , _GetInst() } }
+	SELF:oDCSalamiCB1:HyperLabel := HyperLabel{#SalamiCB1 , NULL_STRING , NULL_STRING , NULL_STRING}
 	SELF:oDCSalamiCB1:TooltipText := "Salami"
 	SELF:oDCSalamiCB1:Image := SALAMI{}
-	SELF:oDCSalamiCB1:HyperLabel := HyperLabel{#SalamiCB1 , NULL_STRING , NULL_STRING , NULL_STRING}
 
 	SELF:oDCMushroomCB := CHECKBOX{SELF , ResourceID{ ORDERDIALOG_MUSHROOMCB  , _GetInst() } }
+	SELF:oDCMushroomCB:HyperLabel := HyperLabel{#MushroomCB , NULL_STRING , NULL_STRING , NULL_STRING}
 	SELF:oDCMushroomCB:TooltipText := "Mushroom"
 	SELF:oDCMushroomCB:Image := MUSHROOM{}
-	SELF:oDCMushroomCB:HyperLabel := HyperLabel{#MushroomCB , NULL_STRING , NULL_STRING , NULL_STRING}
 
 	SELF:oDCEggplantCB := CHECKBOX{SELF , ResourceID{ ORDERDIALOG_EGGPLANTCB  , _GetInst() } }
+	SELF:oDCEggplantCB:HyperLabel := HyperLabel{#EggplantCB , NULL_STRING , NULL_STRING , NULL_STRING}
 	SELF:oDCEggplantCB:TooltipText := "Eggplant"
 	SELF:oDCEggplantCB:Image := EGGPLANT{}
-	SELF:oDCEggplantCB:HyperLabel := HyperLabel{#EggplantCB , NULL_STRING , NULL_STRING , NULL_STRING}
 
 	SELF:oDCCheeseCB := CHECKBOX{SELF , ResourceID{ ORDERDIALOG_CHEESECB  , _GetInst() } }
+	SELF:oDCCheeseCB:HyperLabel := HyperLabel{#CheeseCB , NULL_STRING , NULL_STRING , NULL_STRING}
 	SELF:oDCCheeseCB:TooltipText := "Cheese"
 	SELF:oDCCheeseCB:Image := CHEESE{}
-	SELF:oDCCheeseCB:HyperLabel := HyperLabel{#CheeseCB , NULL_STRING , NULL_STRING , NULL_STRING}
 
 	SELF:oDCBroccoliCB := CHECKBOX{SELF , ResourceID{ ORDERDIALOG_BROCCOLICB  , _GetInst() } }
+	SELF:oDCBroccoliCB:HyperLabel := HyperLabel{#BroccoliCB , NULL_STRING , NULL_STRING , NULL_STRING}
 	SELF:oDCBroccoliCB:TooltipText := "Broccoli"
 	SELF:oDCBroccoliCB:Image := BROCOLI{}
-	SELF:oDCBroccoliCB:HyperLabel := HyperLabel{#BroccoliCB , NULL_STRING , NULL_STRING , NULL_STRING}
 
 	SELF:oDCCrustStatic := FIXEDTEXT{SELF , ResourceID{ ORDERDIALOG_CRUSTSTATIC  , _GetInst() } }
 	SELF:oDCCrustStatic:HyperLabel := HyperLabel{#CrustStatic , "Crust &Size" , NULL_STRING , NULL_STRING}
@@ -136,29 +136,29 @@ CONSTRUCTOR(oParent,uExtra)
 	SELF:oDCPhoneStatic:HyperLabel := HyperLabel{#PhoneStatic , "&Your Phone" , NULL_STRING , NULL_STRING}
 
 	SELF:oDCSingleLineEdit1 := SINGLELINEEDIT{SELF , ResourceID{ ORDERDIALOG_SINGLELINEEDIT1  , _GetInst() } }
-	SELF:oDCSingleLineEdit1:TextLimit := 3
 	SELF:oDCSingleLineEdit1:HyperLabel := HyperLabel{#SingleLineEdit1 , NULL_STRING , NULL_STRING , NULL_STRING}
+	SELF:oDCSingleLineEdit1:TextLimit := 3
 
 	SELF:oDCSingleLineEdit2 := SINGLELINEEDIT{SELF , ResourceID{ ORDERDIALOG_SINGLELINEEDIT2  , _GetInst() } }
-	SELF:oDCSingleLineEdit2:TextLimit := 4
 	SELF:oDCSingleLineEdit2:HyperLabel := HyperLabel{#SingleLineEdit2 , NULL_STRING , NULL_STRING , NULL_STRING}
+	SELF:oDCSingleLineEdit2:TextLimit := 4
 
 	SELF:oDCGroupBox1 := GROUPBOX{SELF , ResourceID{ ORDERDIALOG_GROUPBOX1  , _GetInst() } }
 	SELF:oDCGroupBox1:HyperLabel := HyperLabel{#GroupBox1 , "Your Selection" , NULL_STRING , NULL_STRING}
 
 	SELF:oCCOrderButton := PUSHBUTTON{SELF , ResourceID{ ORDERDIALOG_ORDERBUTTON  , _GetInst() } }
+	SELF:oCCOrderButton:HyperLabel := HyperLabel{#OrderButton , NULL_STRING , NULL_STRING , NULL_STRING}
 	SELF:oCCOrderButton:TooltipText := "Press to get a fresh made pizza delivered to your house."
 	SELF:oCCOrderButton:Image := PIZZA{}
-	SELF:oCCOrderButton:HyperLabel := HyperLabel{#OrderButton , NULL_STRING , NULL_STRING , NULL_STRING}
 
 	SELF:oCCCancelButton := PUSHBUTTON{SELF , ResourceID{ ORDERDIALOG_CANCELBUTTON  , _GetInst() } }
+	SELF:oCCCancelButton:HyperLabel := HyperLabel{#CancelButton , "Push" , NULL_STRING , NULL_STRING}
 	SELF:oCCCancelButton:TooltipText := "Press in case you already had enough pizzas."
 	SELF:oCCCancelButton:Image := NOPIZZA{}
-	SELF:oCCCancelButton:HyperLabel := HyperLabel{#CancelButton , "Push" , NULL_STRING , NULL_STRING}
 
 	SELF:oCCMarioButton := TWOBMPBUTTON{SELF , ResourceID{ ORDERDIALOG_MARIOBUTTON  , _GetInst() } }
-	SELF:oCCMarioButton:TooltipText := "Press to see Mario smile ..."
 	SELF:oCCMarioButton:HyperLabel := HyperLabel{#MarioButton , NULL_STRING , NULL_STRING , NULL_STRING}
+	SELF:oCCMarioButton:TooltipText := "Press to see Mario smile ..."
 
 	SELF:oDCSizeGroup1:FillUsing({ ;
 										{SELF:oCCSmallRB, "SmallRB"}, ;
@@ -168,8 +168,8 @@ CONSTRUCTOR(oParent,uExtra)
 										})
 
 	SELF:Caption := "Marios Pizza Blitz"
-	SELF:Icon := MARIOICON{}
 	SELF:HyperLabel := HyperLabel{#OrderDialog , "Marios Pizza Blitz" , NULL_STRING , NULL_STRING}
+	SELF:Icon := MARIOICON{}
 
 	SELF:PostInit(oParent,uExtra)
 

@@ -192,6 +192,7 @@
     <Compile Include="OptionsPages\IntellisenseOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OptionsPages\TabOptions.cs" />
     <Compile Include="OptionsPages\XSDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>

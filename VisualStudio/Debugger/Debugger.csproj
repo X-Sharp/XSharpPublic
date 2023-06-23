@@ -4,8 +4,9 @@
   <PropertyGroup>
     <!--Visual Studio will use the value of will use MinimumVisualStudioVersion to detect if a project needs to be updated.
     To allow the project to be loaded in multiple VS versions, conditionally check the project -->
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -79,7 +80,6 @@
     <Compile Include="InspectionSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility.cs" />
-    <Compile Include="VsVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <VsdConfigXmlFiles Include="ResultProvider\ResultProvider.vsdconfigxml" />
@@ -93,7 +93,6 @@
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
       <Version>15.0.503</Version>
-      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
       <Version>1.4.0</Version>
@@ -107,7 +106,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Reflection.Metadata">
-      <Version>7.0.1</Version>
+      <Version>7.0.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -116,10 +115,16 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="XSharp.CodeAnalysis">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.Evaluator">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.MonoCecil, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

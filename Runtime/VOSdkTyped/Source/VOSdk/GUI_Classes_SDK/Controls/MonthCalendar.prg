@@ -20,15 +20,15 @@ END CLASS
 /// <include file="Gui.xml" path="doc/MonthCalendar/*" />
 CLASS MonthCalendar INHERIT TextControl
 
-	ACCESS __Calendar AS IVOMonthCalendar
-		RETURN (IVOMonthCalendar) oCtrl
+	ACCESS __Calendar AS VOMonthCalendar
+		RETURN (VOMonthCalendar) oCtrl
     /// <inheritdoc />
     PROPERTY ControlType AS ControlType GET ControlType.MonthCalendar
 
 	METHOD __GetColor(dwColorID AS DWORD) AS Color STRICT
 		LOCAL cr AS LONG
 		cr := GuiWin32.SendMessage(oCtrl:Handle, MCM_GETCOLOR, dwColorID, 0L)
-		RETURN Color.FromColorRef((DWORD) cr)
+		RETURN (Color) cr
 
  /// <exclude />
 	METHOD __SetColor(oColor AS Color, dwColorID AS DWORD) AS Color STRICT

@@ -12,8 +12,7 @@ CLASS RadioButton INHERIT Button
 		GuiWin32.SetWindowLong(SELF:hWnd, GWL_EXSTYLE, dwExStyle)
 		RETURN
 
-	ACCESS __RadioButton AS IVORadioButton
-		RETURN (IVORadioButton ) oCtrl
+	PROPERTY __RadioButton AS VORadioButton GET (VORadioButton) oCtrl
 
 /// <include file="Gui.xml" path="doc/RadioButton.Destroy/*" />
 	METHOD Destroy() AS USUAL
@@ -35,24 +34,28 @@ CLASS RadioButton INHERIT Button
 		RETURN
 
 /// <include file="Gui.xml" path="doc/RadioButton.Pressed/*" />
-	ACCESS Pressed  AS LOGIC
+	PROPERTY Pressed  AS LOGIC
+	GET
 		IF SELF:ValidateControl()
 			RETURN __RadioButton:Checked
 		ELSE
 			RETURN lSavedPressed
 		ENDIF
-
-	ASSIGN Pressed(lPressed AS LOGIC)
+    END GET
+	SET
 
 		IF SELF:ValidateControl()
-			__RadioButton:Checked := lPressed
-			__RadioButton:TabStop := lPressed
-			SELF:Value := lPressed
+			__RadioButton:Checked := value
+			__RadioButton:TabStop := value
+			SELF:Value := value
 		ENDIF
 
 		RETURN
-
-	ACCESS TextValue AS STRING
+	END SET
+	END PROPERTY
+/// <include file="Gui.xml" path="doc/RadioButton.TextValue/*" />
+	PROPERTY TextValue AS STRING
+    GET
 		LOCAL lTicked AS LOGIC
 		LOCAL cTickValue AS STRING
 
@@ -64,18 +67,17 @@ CLASS RadioButton INHERIT Button
 		ENDIF
 
 		RETURN cTickValue
-
-/// <include file="Gui.xml" path="doc/RadioButton.TextValue/*" />
-	ASSIGN TextValue(cNewValue  AS STRING)
+    END GET
+	SET
 		LOCAL lOldTicked AS LOGIC
 		LOCAL lTicked AS LOGIC
 
 		lOldTicked := SELF:Pressed
 
 		IF SELF:oFieldSpec != NULL
-			lTicked := oFieldSpec:Val(cNewValue)
+			lTicked := oFieldSpec:Val(Value)
 		ELSE
-			lTicked:=Unformat(cNewValue,"","L")
+			lTicked:=Unformat(value,"","L")
 		ENDIF
 
 		IF (lTicked != lOldTicked)
@@ -84,10 +86,11 @@ CLASS RadioButton INHERIT Button
 		ENDIF
 
 		RETURN
+	END SET
+	END PROPERTY
 
 /// <include file="Gui.xml" path="doc/RadioButton.Value/*" />
-	ACCESS Value
-		RETURN SELF:Pressed
+	PROPERTY Value AS USUAL GET SELF:Pressed
 
 END CLASS
 

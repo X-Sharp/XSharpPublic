@@ -1,55 +1,60 @@
 
+/// <include file="Gui.xml" path="doc/Pen/*" />
 
 CLASS Pen INHERIT VObject
-	HIDDEN hPen AS System.Drawing.Pen
+    HIDDEN hPen AS System.Drawing.Pen
 
-METHOD Destroy() AS USUAL 
-	IF (hPen != NULL_OBJECT)
-		hPen:Dispose()
-		hPen := NULL_OBJECT
-	ENDIF
+    /// <inheritdoc />
 
-	RETURN SELF
+    METHOD Destroy() AS USUAL
+        IF (hPen != NULL_OBJECT)
+            hPen:Dispose()
+            hPen := NULL_OBJECT
+        ENDIF
 
-METHOD Handle  as System.Drawing.Pen STRICT
-	RETURN hPen
+        RETURN SELF
 
-CONSTRUCTOR(uColor, uLineStyle, uWidth) 
-	LOCAL liStyle AS LONGINT
-	LOCAL oColor as Color
-	LOCAL liWidth as LONGINT
+    /// <include file="Gui.xml" path="doc/Pen.Handle/*" />
+    METHOD Handle  as System.Drawing.Pen STRICT
+        RETURN hPen
 
-	SUPER()
-	IF !IsNil(uColor)
-		IF !IsInstanceOfUsual(uColor,#Color)
-			WCError{#Init,#Pen,__WCSTypeError,uColor,1}:Throw()
-		ENDIF
-		oColor := uColor
-	ELSE
-		oColor:=Color{0}
-		oColor:ColorRef := 0
-	ENDIF
+    /// <include file="Gui.xml" path="doc/Pen.ctor/*" />
+    CONSTRUCTOR(uColor, uLineStyle, uWidth)
+        LOCAL liStyle AS LONGINT
+        LOCAL oColor as Color
+        LOCAL liWidth as LONGINT
 
-	IF !IsNil(uLineStyle)
-		IF !IsLong(uLineStyle)
-			WCError{#Init,#Pen,__WCSTypeError,uLineStyle,2}:Throw()
-		ENDIF
-		liStyle:=uLineStyle
-	ENDIF
+        SUPER()
+        IF !IsNil(uColor)
+            IF !(uColor IS Color)
+                WCError{#Init,#Pen,__WCSTypeError,uColor,1}:Throw()
+            ENDIF
+            oColor := uColor
+        ELSE
+            oColor:=Color{0}
+            oColor:ColorRef := 0
+        ENDIF
 
-	IF !IsNil(uWidth)
-		IF !IsLong(uWidth)
-			WCError{#Init,#Pen,__WCSTypeError,uWidth,3}:Throw()
-		ENDIF
-		liWidth := uWidth
-	ELSE
-		liWidth:=1
-	ENDIF
-	hPen:=System.Drawing.Pen{oColor}
-	hPen:Width := liWidth
-	if liStyle != 0
-		hPen:DashStyle := (System.Drawing.Drawing2D.DashStyle) liStyle
-	ENDIF
-	RETURN 
+        IF !IsNil(uLineStyle)
+            IF !IsLong(uLineStyle)
+                WCError{#Init,#Pen,__WCSTypeError,uLineStyle,2}:Throw()
+            ENDIF
+            liStyle:=uLineStyle
+        ENDIF
+
+        IF !IsNil(uWidth)
+            IF !IsLong(uWidth)
+                WCError{#Init,#Pen,__WCSTypeError,uWidth,3}:Throw()
+            ENDIF
+            liWidth := uWidth
+        ELSE
+            liWidth:=1
+        ENDIF
+        hPen:=System.Drawing.Pen{oColor}
+        hPen:Width := liWidth
+        if liStyle != 0
+            hPen:DashStyle := (System.Drawing.Drawing2D.DashStyle) liStyle
+        ENDIF
+        RETURN
 END CLASS
 

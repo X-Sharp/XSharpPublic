@@ -4,7 +4,7 @@
 USING System.Collections.Generic
 /// <include file="Gui.xml" path="doc/ToolBar/*" />
 CLASS ToolBar INHERIT Control
-
+    // Todo Implement CoolBar Toolbar
 	PROTECT oBitmap 		AS Bitmap
 	PROTECT aExtraBitmaps	AS List<ToolBarExtraBitmap>
 	PROTECT nButtonStyle 	AS DWORD
@@ -21,16 +21,18 @@ CLASS ToolBar INHERIT Control
 	PROTECT aBackBitmaps[0]	AS ARRAY
 	EXPORT Divider 			AS LOGIC
 
-	ACCESS __HasUpdates AS LOGIC
-		RETURN aUpdates != NULL .and. aUpdates:Count > 0
+    /// <exclude />
+	PROPERTY __HasUpdates AS LOGIC GET aUpdates != NULL .and. aUpdates:Count > 0
 
  /// <exclude />
 	ACCESS __ButtonStyle AS DWORD STRICT
 		RETURN nButtonStyle
 
+    /// <exclude />
     PROPERTY ControlType  AS ControlType  GET ControlType.ToolBar
 
 	#region New Methods for Windows.Forms
+    /// <exclude />
 	METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		VAR oControl := (VOToolBar) oC
 		oControl:ShowToolTips := TRUE
@@ -39,6 +41,7 @@ CLASS ToolBar INHERIT Control
 		RETURN
 
 
+    /// <exclude />
 	VIRTUAL METHOD ButtonClick (Sender AS OBJECT, e AS System.Windows.Forms.ToolBarButtonClickEventArgs) AS VOID
 		LOCAL nID AS LONG
 		LOCAL oWin AS Window
@@ -53,6 +56,7 @@ CLASS ToolBar INHERIT Control
 		endif
 		RETURN
 
+    /// <exclude />
 	METHOD __CleanText(cText AS STRING) AS STRING
 		IF cText:IndexOf('\t') > 0
 			cText := Left(cText, (DWORD) cText:IndexOf('\t') )
@@ -62,6 +66,7 @@ CLASS ToolBar INHERIT Control
 		ENDIF
 		RETURN cText
 
+    /// <exclude />
 	METHOD __CreateButton(cCaption AS STRING, nID AS LONG) AS System.Windows.Forms.ToolBarButton
 		LOCAL oButton AS VOToolBarButton
 		LOCAL cText AS STRING
@@ -78,12 +83,14 @@ CLASS ToolBar INHERIT Control
 
 		RETURN oButton
 
+    /// <exclude />
 	ACCESS __ToolBar AS VOToolBar
 		if oCtrl == NULL_OBJECT
 			SELF:Create()
 		ENDIF
 		RETURN (VOToolBar) oCtrl
 
+    /// <exclude />
 	METHOD __GetButton(nID, symIDType, symTB) AS System.Windows.Forms.ToolBarButton
 		LOCAL oTB AS VOToolBar
 		Default(@symTB, #MAINTOOLBAR)
@@ -105,6 +112,7 @@ CLASS ToolBar INHERIT Control
 
 	#endregion
 
+    /// <exclude />
 	METHOD __CreateToolBar(symTB AS SYMBOL, oParent AS OBJECT, dwID AS DWORD, dwTBStyle AS DWORD) AS VOToolBar STRICT
 		//PP-040914 from S Ebert
 		//SE-050729
@@ -275,7 +283,9 @@ CLASS ToolBar INHERIT Control
 
 
 /// <include file="Gui.xml" path="doc/ToolBar.AddBand/*" />
-	METHOD AddBand(sBandName, oControl, iPos, iMinWidth, iMinHeight, sText, oForeColor, oBackColor, iImageIndex, oBackBitmap)
+    METHOD AddBand(sBandName, oControl, iPos, iMinWidth, iMinHeight, sText, oForeColor, oBackColor, iImageIndex, oBackBitmap)
+        // Todo: Toolbar.AddBand
+
 		//PP-040511 Update from S Ebert
 		//LOCAL rbBand 			IS _winREBARBANDINFO
 		//LOCAL lRet := FALSE 	AS LOGIC
@@ -356,6 +366,7 @@ CLASS ToolBar INHERIT Control
 
 /// <include file="Gui.xml" path="doc/ToolBar.AddSubToolBarBand/*" />
 	METHOD AddSubToolBarBand(symToolBar, iPos, iMinWidth, lFlat_dwStyle)
+        // Todo: Toolbar.AddSubToolBarBand
 		//PP-040505 Update from S Ebert
 		//RvdH 070206 Changed to use ToolBarUpdate class
 		//LOCAL hwndNewTB   AS PTR
@@ -445,9 +456,7 @@ CLASS ToolBar INHERIT Control
 
 /// <include file="Gui.xml" path="doc/ToolBar.AddTipText/*" />
 	METHOD AddTipText(nButtonID, nMenuItemID, cText)
-		//RvdH 070206 Changerd to use new ToolBarTipText objects
 		LOCAL oTipText AS ToolBarTipText
-
 
 		EnforceNumeric(REF nButtonID)
 		EnforceNumeric(REF nMenuItemID)
@@ -471,10 +480,6 @@ CLASS ToolBar INHERIT Control
 
 /// <include file="Gui.xml" path="doc/ToolBar.AppendItem/*" />
 	METHOD AppendItem(nButtonID, nMenuItemID, oBmp, nPosition, cTitle, nImgCount, bState, bStyle, symTB)
-		//PP-040505 Update from S Ebert
-		//SE-050929
-		//RvdH 070206 Changed to use new ToolBarExtraBitmap objects
-		//RvdH 070206 Changed to use ToolBarUpdate class
 		LOCAL oUpdate		 	AS ToolBarUpdate
 		LOCAL oExtraBitmap		AS ToolBarExtraBitmap
 		LOCAL oTB				AS VOToolBar
@@ -628,13 +633,7 @@ CLASS ToolBar INHERIT Control
 	//RETURN SendMessage(hwnd, RB_GETBANDCOUNT, 0, 0)
 
 /// <include file="Gui.xml" path="doc/ToolBar.BandImageList/*" />
-	ACCESS BandImageList as ImageList
-		RETURN oBandImageList
-
-/// <include file="Gui.xml" path="doc/ToolBar.BandImageList/*" />
-	ASSIGN BandImageList(oImageList as ImageList)
-		oBandImageList := oImageList
-		RETURN
+	PROPERTY BandImageList as ImageList GET oBandImageList SET oBandImageList := value
 
 /// <include file="Gui.xml" path="doc/ToolBar.Bitmap/*" />
 	ACCESS Bitmap AS Bitmap

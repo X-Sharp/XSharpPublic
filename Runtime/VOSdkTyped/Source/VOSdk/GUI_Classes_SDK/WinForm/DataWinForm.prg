@@ -57,7 +57,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 	PROTECT oSurfacePanel	AS VoSurfacePanel		// This is the place where the controls are drawn
 	PROTECT oFramePanel		AS IVOFramePanel			// This is a panel on which the Surface sits. When the window is too small this panel will show the scrollbars
 	PROTECT oToolBar		AS VOToolBar			
-	PROTECT oStatusBar		AS IVOStatusBar
+	PROTECT oStatusBar		AS VOStatusBar
 	PROTECT oResDlg			AS ResourceDialog
 	PROTECT lInBrowseView   AS LOGIC
 	PROTECT oDataBrowser	AS System.Windows.Forms.Control
@@ -95,7 +95,7 @@ CLASS VODataForm INHERIT VOChildAppForm
     PROPERTY DataWindow AS VOSDK.DataWindow GET (DataWindow) Window
 
 
-	PROPERTY StatusBar AS IVOStatusBar
+	PROPERTY StatusBar AS VOStatusBar
 		GET
 			RETURN oStatusBar
 		END GET
@@ -168,7 +168,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 #region Winforms Method overrides
 	OVERRIDE PROTECT METHOD OnShown(e AS EventArgs) AS VOID STRICT
 		FOREACH oC AS System.Windows.Forms.Control IN SELF:Surface:Controls
-			IF oC IS IVOButton VAR oVOB
+			IF oC IS VOButton VAR oVOB
 				IF oVOB:DefaultButton
 					SELF:AcceptButton := (IButtonControl) oVOB
 				ENDIF

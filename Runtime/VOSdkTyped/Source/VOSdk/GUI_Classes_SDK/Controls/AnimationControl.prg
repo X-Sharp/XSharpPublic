@@ -6,11 +6,12 @@ CLASS AnimationControl INHERIT Control
 	PROTECT oAVIFileSpec AS FileSpec
 	PROTECT resID AS ResourceID
 	PROTECT hInstance AS IntPtr
+    /// <exclude />
     PROPERTY ControlType AS ControlType GET ControlType.Label
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, oFileSpec, kStyle, hInst) 
-        
-		IF IsInstanceOfUsual(xID, #ResourceID)
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, oFileSpec, kStyle, hInst)
+
+		IF xID IS ResourceID
 			SUPER(oOwner, xID, oPoint, oDimension, , kStyle, FALSE)
 		ELSE
 			SUPER(oOwner, xID, oPoint, oDimension, ANIMATE_CLASS, kStyle, FALSE)
@@ -20,7 +21,7 @@ CLASS AnimationControl INHERIT Control
 			oFileSpec := FileSpec{oFileSpec}
 		ENDIF
 
-		IF IsInstanceOfUsual(oFileSpec, #FileSpec)
+		IF oFileSpec IS FileSpec
 			oAVIFileSpec := oFileSpec
 		ENDIF
 
@@ -31,7 +32,7 @@ CLASS AnimationControl INHERIT Control
 		RETURN
 	#ifdef DONOTINCLUDE
 
-	METHOD Create() 
+	METHOD Create()
 		LOCAL oDevPoint AS Point
 
 
@@ -55,11 +56,11 @@ CLASS AnimationControl INHERIT Control
 
 		RETURN hwnd
 	#endif
-	ACCESS FileSpec() 
+	ACCESS FileSpec()
 
 		RETURN oAVIFileSpec
 
-	ASSIGN FileSpec(oFileSpec) 
+	ASSIGN FileSpec(oFileSpec)
 
 		IF IsString(oFileSpec)
 			oAVIFileSpec := FileSpec{oFileSpec}
@@ -67,12 +68,12 @@ CLASS AnimationControl INHERIT Control
 			oAVIFileSpec := oFileSpec
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	
+
 	#ifdef DONOTINCLUDE
 
-	METHOD Open() 
+	METHOD Open()
 		LOCAL pszFileName	AS PSZ
 		LOCAL lReturnValue	AS LOGIC
 
@@ -85,7 +86,7 @@ CLASS AnimationControl INHERIT Control
 
 		RETURN lReturnValue
 
-	METHOD OpenResource(xID) 
+	METHOD OpenResource(xID)
 		LOCAL pszResID 		AS PSZ
 		LOCAL lReturnValue	AS LOGIC
 
@@ -100,7 +101,7 @@ CLASS AnimationControl INHERIT Control
 		RETURN lReturnValue
 
 
-	METHOD Play(nFrom, nTo, nRepeatCount) 
+	METHOD Play(nFrom, nTo, nRepeatCount)
 		LOCAL wFrom			AS WORD
 		LOCAL wTo			AS WORD
 		LOCAL dwRepeatCount	AS DWORD
@@ -116,10 +117,10 @@ CLASS AnimationControl INHERIT Control
 
 		RETURN Animate_Play(SELF:Handle(), wFrom, wTo, dwRepeatCount)
 
-	METHOD Seek(nFrame) 
+	METHOD Seek(nFrame)
 		RETURN Animate_Seek(SELF:Handle(), nFrame)
 
-	METHOD Stop() 
+	METHOD Stop()
 		RETURN Animate_Stop(SELF:Handle())
 	#endif
 END CLASS

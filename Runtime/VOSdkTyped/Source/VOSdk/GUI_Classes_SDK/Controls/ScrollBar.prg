@@ -13,9 +13,10 @@ END CLASS
 /// <include file="Gui.xml" path="doc/ScrollBar/*" />
 ABSTRACT CLASS ScrollBar INHERIT Control
 
-	ACCESS __ScrollBar as System.Windows.Forms.ScrollBar
-		RETURN (System.Windows.Forms.ScrollBar) oCtrl
+ /// <exclude />
+	PROPERTY __ScrollBar as System.Windows.Forms.ScrollBar GET (System.Windows.Forms.ScrollBar) oCtrl
 
+ /// <exclude />
 	[Obsolete];
 	METHOD __SetColors(_hDc AS IntPtr) AS IntPtr STRICT
 		RETURN IntPtr.Zero
@@ -50,7 +51,7 @@ ABSTRACT CLASS ScrollBar INHERIT Control
 
 
 		Default(@lDataAware, TRUE)
-		IF !IsInstanceOfUsual(xID,#ResourceID)
+		IF !(xID IS ResourceID)
 			SUPER(oOwner,xID,oPoint,oDimension,"ScrollBar",,lDataAware)
 		ELSE
 			SUPER(oOwner,xID,oPoint,oDimension,,,lDataAware)
@@ -61,14 +62,15 @@ ABSTRACT CLASS ScrollBar INHERIT Control
 	PROPERTY PageSize AS LONGINT GET __ScrollBar:LargeChange SET __ScrollBar:LargeChange := Value
 
 /// <include file="Gui.xml" path="doc/ScrollBar.Range/*" />
-	ACCESS Range as Range
-		RETURN Range{__ScrollBar:Minimum, __ScrollBar:Maximum}
-
-/// <include file="Gui.xml" path="doc/ScrollBar.Range/*" />
-	ASSIGN Range(oScrollRange as Range)
-		__ScrollBar:Minimum := oScrollRange:Min
-		__ScrollBar:Maximum := oScrollRange:Max
-		RETURN
+    PROPERTY Range as Range
+    GET
+        RETURN Range{__ScrollBar:Minimum, __ScrollBar:Maximum}
+    END GET
+    SET
+		__ScrollBar:Minimum := value:Min
+		__ScrollBar:Maximum := value:Max
+    END SET
+    END PROPERTY
 
 /// <include file="Gui.xml" path="doc/ScrollBar.SetInfo/*" />
 	METHOD SetInfo(oScrollRange, nThumbPosition, nPageSize, lDisableNoScroll)
@@ -84,35 +86,38 @@ ABSTRACT CLASS ScrollBar INHERIT Control
 
 
 /// <include file="Gui.xml" path="doc/ScrollBar.TextValue/*" />
-	ACCESS TextValue AS STRING
+    PROPERTY TextValue AS STRING
+    GET
 		RETURN AllTrim(AsString(SELF:ThumbPosition))
-
-	ASSIGN TextValue(cNewPos  AS STRING)
+    END GET
+    SET
 		LOCAL wOldValue AS LONGINT
 		wOldValue 			:= SELF:ThumbPosition
-		SELF:ThumbPosition 	:= Val(cNewPos)
+		SELF:ThumbPosition 	:= Val(value)
 		SELF:Modified 		:= TRUE
 		SELF:ValueChanged 	:= !wOldValue == SELF:ThumbPosition
 
-		RETURN
+    end set
+    end property
 /// <include file="Gui.xml" path="doc/ScrollBar.ThumbPosition/*" />
 	PROPERTY ThumbPosition AS INT GET __ScrollBar:Value SET __ScrollBar:Value := Value
 /// <include file="Gui.xml" path="doc/ScrollBar.UnitSize/*" />
 	PROPERTY UnitSize AS INT  GET __ScrollBar:SmallChange SET __ScrollBar:SmallChange :=Value
 
 /// <include file="Gui.xml" path="doc/ScrollBar.Value/*" />
-	ACCESS Value
+    PROPERTY Value AS USUAL
+    GET
 		RETURN SELF:ThumbPosition
-
-/// <include file="Gui.xml" path="doc/ScrollBar.Value/*" />
-	ASSIGN Value(nValue)
+    END GET
+    SET
 		LOCAL iOldValue AS INT
 
 		iOldValue := SELF:ThumbPosition
-		SELF:__Value := nValue
+		SELF:__Value := value
 		SELF:Modified := TRUE
 		SELF:ValueChanged := iOldValue != SELF:ThumbPosition
-		RETURN
+    END SET
+    END PROPERTY
 
 END CLASS
 

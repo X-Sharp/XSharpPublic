@@ -7,7 +7,7 @@ USING System.Collections.Specialized
 CLASS Clipboard INHERIT VObject
 
 /// <include file="Gui.xml" path="doc/Clipboard.Clear/*" />
-	METHOD Clear() AS VOID
+	METHOD Clear() AS VOID STRICT
 		System.Windows.Forms.Clipboard.Clear()
 		RETURN
 /// <include file="Gui.xml" path="doc/Clipboard.FileCount/*" />
@@ -48,7 +48,7 @@ CLASS Clipboard INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/Clipboard.ctor/*" />
-CONSTRUCTOR()
+CONSTRUCTOR()  STRICT
 
     SUPER()
 

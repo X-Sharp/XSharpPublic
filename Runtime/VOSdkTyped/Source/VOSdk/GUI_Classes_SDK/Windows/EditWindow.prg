@@ -8,23 +8,23 @@ CLASS EditWindow INHERIT ControlWindow
 		RETURN SELF:TextValue
 
 /// <include file="Gui.xml" path="doc/EditWindow.Clear/*" />
-	METHOD Clear()
+	METHOD Clear()   AS VOID STRICT
 		oMle:Clear()
-		RETURN SELF
+		RETURN
 
 /// <include file="Gui.xml" path="doc/EditWindow.Copy/*" />
-	METHOD Copy()
+	METHOD Copy()   AS VOID STRICT
 		IF oMle:__IsValid
 		oMle:Copy()
 		ENDIF
-		RETURN SELF
+		RETURN
 
 /// <include file="Gui.xml" path="doc/EditWindow.Cut/*" />
-	METHOD Cut()
+	METHOD Cut()   AS VOID STRICT
 		IF oMle:__IsValid
 			oMle:Cut()
 		ENDIF
-		RETURN SELF
+		RETURN
 
 /// <include file="Gui.xml" path="doc/EditWindow.Font/*" />
 	ASSIGN Font(oNewFont AS Font)
@@ -89,11 +89,11 @@ CLASS EditWindow INHERIT ControlWindow
 		RETURN SELF
 
 /// <include file="Gui.xml" path="doc/EditWindow.Paste/*" />
-	METHOD Paste(cNewString)
+	METHOD Paste(cNewString as string)   AS VOID STRICT
 		IF oMle:__IsValid
 			oMle:Paste(cNewString)
 		ENDIF
-		RETURN SELF
+		RETURN
 
 
 /// <include file="Gui.xml" path="doc/EditWindow.ScrollHorizontal/*" />
@@ -143,11 +143,11 @@ METHOD ScrollHorizontal(nChars)
 		ENDIF
 
 /// <include file="Gui.xml" path="doc/EditWindow.Undo/*" />
-	METHOD Undo()
+	METHOD Undo() AS VOID
 		IF oMle:__IsValid
-			RETURN oMle:Undo()
+			oMle:Undo()
 		ENDIF
-		RETURN SELF
+		RETURN
 
 /// <include file="Gui.xml" path="doc/EditWindow.Value/*" />
 	ACCESS Value

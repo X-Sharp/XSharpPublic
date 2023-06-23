@@ -1,6 +1,6 @@
 
 DEFINE DEFAULT_STRING_TEMPL_SIZE := 128
-
+/// <exclude />
 CLASS __FormattedString
 	PROTECT oEditOwner AS SingleLineEdit
 	PROTECT sPicture AS STRING
@@ -18,13 +18,13 @@ CLASS __FormattedString
 	PROPERTY wOverWrite AS OverwriteMode    AUTO
 	PROPERTY wScrMode AS ScrollMode         AUTO
 
-	METHOD AsString() AS STRING STRICT 
+	METHOD AsString() AS STRING STRICT
 		RETURN sValue
-		
+
 	ACCESS ReadOnly AS LOGIC
 		RETURN oEditOwner:__TextBox:ReadOnly .or. !oEditOwner:__TextBox:Enabled
 
-	METHOD Cut() AS LOGIC STRICT 
+	METHOD Cut() AS LOGIC STRICT
 		LOCAL iStart AS INT
 		LOCAL iEnd AS INT
 		LOCAL iLen AS INT
@@ -47,15 +47,15 @@ CLASS __FormattedString
 		SELF:DeleteSelection(iStart, iEnd)
 		RETURN TRUE
 
-	ACCESS DecimalPos AS INT STRICT 
+	ACCESS DecimalPos AS INT STRICT
 		RETURN INT(_CAST, At2(".", sTemplate))
 
-	METHOD DeleteChar(iPos AS INT, lInvert AS LOGIC, lUpdateOwner AS LOGIC) AS VOID STRICT 
+	METHOD DeleteChar(iPos AS INT, lInvert AS LOGIC, lUpdateOwner AS LOGIC) AS VOID STRICT
 		LOCAL iCurPos AS INT
 		LOCAL iNextPos AS INT
 		LOCAL sNextChar AS STRING
 		IF SELF:ReadOnly
-			RETURN 
+			RETURN
 		ENDIF
 
 		IF IsNil(iPos)
@@ -110,7 +110,7 @@ CLASS __FormattedString
 		ENDIF
 		RETURN
 
-	METHOD DeleteSelection(iStart AS INT, iEnd AS INT) AS VOID STRICT 
+	METHOD DeleteSelection(iStart AS INT, iEnd AS INT) AS VOID STRICT
 		LOCAL i AS INT
 		LOCAL lInvert AS LOGIC
 		LOCAL iDelPos AS INT
@@ -118,7 +118,7 @@ CLASS __FormattedString
 		LOCAL iSignPos AS INT
 		LOCAL lNumeric AS LOGIC
 		IF SELF:ReadOnly
-			RETURN 
+			RETURN
 		ENDIF
 
 		IF (iEnd <= iStart)
@@ -174,7 +174,7 @@ CLASS __FormattedString
 		iDelStart := iDelEnd := 0
 		RETURN
 
-	ACCESS EmptyValue AS STRING STRICT 
+	ACCESS EmptyValue AS STRING STRICT
 		LOCAL sEmpty AS STRING
 		LOCAL cCurTplChar AS STRING
 		LOCAL i AS DWORD
@@ -202,7 +202,7 @@ CLASS __FormattedString
 
 		RETURN sEmpty
 
-	CONSTRUCTOR(Owner, PicString, Type, OverWrite, DefTempl, ScrMode) 
+	CONSTRUCTOR(Owner, PicString, Type, OverWrite, DefTempl, ScrMode)
 
 		SELF:FuncFlags := strucPictureFuncFlags{}
 		DEFAULT(@Type, "C")
@@ -225,15 +225,15 @@ CLASS __FormattedString
 		sValue := SELF:EmptyValue
 
 		SELF:UpdateEditOwner()
-		RETURN 
+		RETURN
 
-	METHOD InsertChar(cInsChar AS STRING, iPos AS INT, lInvert AS LOGIC) AS VOID STRICT 
+	METHOD InsertChar(cInsChar AS STRING, iPos AS INT, lInvert AS LOGIC) AS VOID STRICT
 		LOCAL iCurPos AS INT
 		LOCAL iNextPos AS INT
 		LOCAL cSaveChar AS STRING
 		LOCAL cTempChar AS STRING
 		IF SELF:ReadOnly
-			RETURN 
+			RETURN
 		ENDIF
 
 		IF IsNil(iPos)
@@ -287,17 +287,17 @@ CLASS __FormattedString
 		RETURN
 
 
-	METHOD InvalidAction() AS VOID STRICT 
+	METHOD InvalidAction() AS VOID STRICT
 		GuiWin32.MessageBeep(0XFFFFFFFF)
 		RETURN
 
-	METHOD IsEditPos(iPos AS INT) AS LOGIC STRICT 
+	METHOD IsEditPos(iPos AS INT) AS LOGIC STRICT
 		RETURN IsEditTemplChar(CharPos(sTemplate, DWORD(iPos)))
 
-	ACCESS IsEmpty AS LOGIC STRICT 
+	ACCESS IsEmpty AS LOGIC STRICT
 		RETURN (sValue == SELF:EmptyValue)
 
-	METHOD IsValidChar(cChar AS STRING, iPos AS INT, lIgnoreBlank AS LOGIC) AS LOGIC STRICT 
+	METHOD IsValidChar(cChar AS STRING, iPos AS INT, lIgnoreBlank AS LOGIC) AS LOGIC STRICT
 		RETURN SELF:MatchesTemplChar(cChar, CharPos(sTemplate, DWORD(iPos)), lIgnoreBlank)
 
 	METHOD MatchesTemplChar( cTest AS STRING, _cTemplChar AS STRING, lIgnoreBlank AS LOGIC ) AS LOGIC
@@ -307,7 +307,7 @@ CLASS __FormattedString
 		IF ! IsEditTemplChar( _cTemplChar ) .AND. lIsNumeric
 			RETURN FALSE
 		ENDIF
-		
+
 		IF ! STRING.IsNullOrEmpty( _cTemplChar )
 			cTemplChar := _cTemplChar[0]
 		ENDIF
@@ -320,7 +320,7 @@ CLASS __FormattedString
 		IF cTest == " " .AND. lIgnoreBlank
 			RETURN TRUE
 		ENDIF
-		
+
 		DO CASE
 		CASE cTemplChar == 'A'
 			RETURN IsAlpha( cTest )
@@ -343,7 +343,7 @@ CLASS __FormattedString
 
 		RETURN FALSE
 
-	METHOD NextEditPos(iPos AS INT) AS INT STRICT 
+	METHOD NextEditPos(iPos AS INT) AS INT STRICT
 		LOCAL i AS INT
 
 		IF (iPos == -1)
@@ -361,14 +361,14 @@ CLASS __FormattedString
 
 		RETURN iPos
 
-	METHOD Paste() AS LOGIC STRICT 
+	METHOD Paste() AS LOGIC STRICT
 		LOCAL sPaste AS STRING
 		LOCAL i, iLen AS INT
 		LOCAL iStart, iEnd AS INT
 		IF SELF:ReadOnly
 			RETURN FALSE
 		ENDIF
-		
+
 		IF (!System.Windows.Forms.Clipboard.ContainsText())
 			RETURN FALSE
 		ENDIF
@@ -389,14 +389,14 @@ CLASS __FormattedString
 
 		RETURN TRUE
 
-	ACCESS Picture AS STRING STRICT 
+	ACCESS Picture AS STRING STRICT
 		RETURN sPicture
 
-	ASSIGN Picture(cNewPicture AS STRING)  STRICT 
+	ASSIGN Picture(cNewPicture AS STRING)  STRICT
 		LOCAL iSpacePos AS LONG
-		sPicture := cNewPicture 
+		sPicture := cNewPicture
 		// handle functions
-		IF (Left(sPicture, 1) == "@") 
+		IF (Left(sPicture, 1) == "@")
 			LOCAL i		  AS LONG
 			iSpacePos := sPicture:IndexOf(' ')
 			IF (iSpacePos == -1)
@@ -432,9 +432,9 @@ CLASS __FormattedString
 			iTemplLen := sTemplate:Length
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	METHOD PrevEditPos(iPos AS INT) AS INT STRICT 
+	METHOD PrevEditPos(iPos AS INT) AS INT STRICT
 		LOCAL i AS DWORD
 
 		IF (iPos == -1)
@@ -452,7 +452,7 @@ CLASS __FormattedString
 
 		RETURN 0L
 
-	METHOD ProcessChar(cChar AS STRING) AS LOGIC STRICT 
+	METHOD ProcessChar(cChar AS STRING) AS LOGIC STRICT
 		LOCAL iCurPos AS INT
 		LOCAL cTemplChar AS STRING
 		LOCAL lInvert AS LOGIC
@@ -490,7 +490,7 @@ CLASS __FormattedString
 
 		RETURN TRUE
 
-	METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT 
+	METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT
 		LOCAL lRet AS LOGIC
 		//LOCAL iCurPos AS INT
 		LOCAL uMsg AS DWORD
@@ -506,23 +506,23 @@ CLASS __FormattedString
 			dwKCode := oKeyEvt:KeyCode
 			DO CASE
 			CASE(dwKCode == KEYARROWLEFT)
-				
+
 				oEditOwner:__CurPos := SELF:PrevEditPos(-1)
 			CASE(dwKCode == KEYARROWRIGHT)
-				
+
 				oEditOwner:__CurPos := SELF:NextEditPos(-1)
 			CASE(dwKCode == KEYHOME)
-				
+
 				oEditOwner:__CurPos := SELF:NextEditPos(1)
 			CASE(dwKCode == KEYEND)
-				
+
 				IF lEndKey
 					oEditOwner:__CurPos := SELF:PrevEditPos(iTemplLen) + 1
 				ELSE
 					oEditOwner:__CurPos := SELF:PrevEditPos(INT(_CAST, SLen(Trim(sValue)))) + 1
 				ENDIF
 				lEndKey := !lEndKey
-				
+
 			CASE(dwKCode == KEYDELETE) .OR. (dwKCode == KEYBACKSPACE)
 				IF !SELF:ReadOnly
 					sOldValue := SClone(sValue)
@@ -561,10 +561,10 @@ CLASS __FormattedString
 
 		RETURN lRet
 
-	METHOD PutChar(cChar AS STRING, iPos AS INT) AS VOID STRICT 
+	METHOD PutChar(cChar AS STRING, iPos AS INT) AS VOID STRICT
 		// VO version modifies existing string, this is illegal in .NET
 		IF SELF:ReadOnly
-			RETURN 
+			RETURN
 		ENDIF
 		IF iPos <= sValue:Length .AND. ! STRING.IsNullOrEmpty( cChar )
 			LOCAL sb := System.Text.StringBuilder{ sValue } AS System.Text.StringBuilder
@@ -577,7 +577,7 @@ CLASS __FormattedString
 		ENDIF
 		RETURN
 
-	METHOD TestFirstChar(cChar) 
+	METHOD TestFirstChar(cChar)
 		LOCAL iCurPos    AS LONGINT
 		iCurPos    := oEditOwner:__CurPos
 		iCurPos := 1
@@ -587,22 +587,22 @@ CLASS __FormattedString
 		ENDIF
 		RETURN NIL
 
-	ACCESS Type AS STRING STRICT 
+	ACCESS Type AS STRING STRICT
 		RETURN cType
 
-	ASSIGN TYPE(cNewType AS STRING)  STRICT 
+	ASSIGN TYPE(cNewType AS STRING)  STRICT
 		(cType := cNewType)
 
-	METHOD Undo() AS LOGIC STRICT 
+	METHOD Undo() AS LOGIC STRICT
 		sValue := sOldValue
 		SELF:UpdateEditOwner()
 
 		RETURN TRUE
 
-	METHOD UpdateEditOwner() AS VOID STRICT 
+	METHOD UpdateEditOwner() AS VOID STRICT
 		LOCAL iSaveCurPos AS INT
 		IF SELF:ReadOnly
-			RETURN 
+			RETURN
 		ENDIF
 
 		iSaveCurPos := oEditOwner:__CurPos
@@ -615,7 +615,7 @@ CLASS __FormattedString
 		oEditOwner:__CurPos := iSaveCurPos
 		RETURN
 
-	ASSIGN UsualValue(uNewValue AS USUAL)  AS VOID STRICT 
+	ASSIGN UsualValue(uNewValue AS USUAL)  AS VOID STRICT
 
 		IF !IsNil(uNewValue)
 			cType := ValType(uNewValue)
@@ -633,7 +633,7 @@ CLASS __FormattedString
 
 		oEditOwner:__SetText(sValue)
 
-		RETURN 
+		RETURN
 	STATIC METHOD IsEditTemplChar(cTest AS STRING) AS LOGIC STRICT
 		RETURN LOGIC(_CAST, At2(cTest, "ANX9!YL#"))
 

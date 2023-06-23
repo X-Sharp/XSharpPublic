@@ -1,22 +1,21 @@
-
-
-
+/// <include file="Gui.xml" path="doc/PieObject/*" />
 CLASS PieObject INHERIT ShapeObject
 	PROTECT iAngle1 AS INT
 	PROTECT iAngle2 AS INT
 
-	CONSTRUCTOR(oPoint as Point, oDimension as Dimension, oPen as Pen, oBrush as Brush, iStartAngle as LONG, iEndAngle as LONG) 
+/// <include file="Gui.xml" path="doc/PieObject.ctor/*" />
+	CONSTRUCTOR(oPoint as Point, oDimension as Dimension, oPen as Pen, oBrush as Brush, iStartAngle as LONG, iEndAngle as LONG)
 		SUPER(oPoint, oDimension, oPen, oBrush)
 
 		iAngle1 := iStartAngle
 		iAngle2 := iEndAngle
 
-		RETURN 
+		RETURN
 
 
 	#ifdef DONOTINCLUDE
 
-	METHOD Draw() 
+	METHOD Draw()
 		LOCAL hDC AS PTR
 		LOCAL hLastRop AS PTR
 		LOCAL hOldPen AS PTR
@@ -33,7 +32,7 @@ CLASS PieObject INHERIT ShapeObject
 		LOCAL iPX, iPY AS INT
 		LOCAL iX1, iX2, iY1, iY2, iMX, iMY AS INT
 
-		
+
 		hDC := SELF:Handle()
 
 		oPen := SELF:Pen

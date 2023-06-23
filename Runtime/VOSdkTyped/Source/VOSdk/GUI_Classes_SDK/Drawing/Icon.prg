@@ -5,6 +5,7 @@
 CLASS Icon INHERIT VObject
 	PROTECT oIcon AS System.Drawing.Icon
 
+ /// <exclude />
 	ACCESS __Icon AS System.Drawing.Icon
 		RETURN oIcon
 
@@ -30,8 +31,11 @@ CLASS Icon INHERIT VObject
 		LOCAL oResourceID as ResourceID
 
 		SUPER()
-
-		IF IsNumeric(xResourceID)
+        IF xResourceID IS System.Drawing.Icon var oSDIcon
+            SELF:oIcon := oSDIcon
+        ELSEIF xResourceID IS System.Drawing.Bitmap var oBmp
+            SELF:oIcon := System.Drawing.Icon.FromHandle(oBmp:GetHicon())
+        ELSEIF IsNumeric(xResourceID)
 			// This is loading a standard icon
 			oIcon := __WCConvertIcon(xResourceID)
 		ELSEIF IsPtr(xResourceID)
@@ -77,18 +81,15 @@ CLASS Icon INHERIT VObject
 		RETURN
 
 /// <include file="Gui.xml" path="doc/Icon.Size/*" />
-	ACCESS Size
+	ACCESS Size as Dimension
 		RETURN (Dimension) oIcon:Size
-
-	METHOD FromFile(cFile AS STRING	) AS LOGIC
+    /// <include file="Gui.xml" path="doc/Icon.FromFile/*" />
+	STATIC METHOD FromFile(cFile AS STRING	) AS Icon
 		IF File(cFile)
-			IF ! oIcon == NULL_OBJECT
-				oIcon:Dispose()
-			ENDIF
-			oIcon := System.Drawing.Icon{cFile}
-			RETURN oIcon != NULL_OBJECT
+			VAR oIcon := System.Drawing.Icon{FPathName()}
+			RETURN Icon{oIcon}
 		ENDIF
-		RETURN FALSE
+		RETURN NULL
 
 END CLASS
 

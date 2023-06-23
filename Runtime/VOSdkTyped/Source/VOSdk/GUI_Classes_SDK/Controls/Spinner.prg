@@ -3,13 +3,18 @@
 // To make our code happy I have added the classes as subclasses from ScrollBar
 
 //Todo Implement Spinner
-CLASS Spinner INHERIT Control
-	PROTECT oClient as Control
-	PROPERTY Client AS Control GET oClient SET oClient := VALUE
-    ACCESS __UpDown AS System.Windows.Forms.NumericUpDown
-		RETURN (System.Windows.Forms.NumericUpDown) oCtrl
+ABSTRACT CLASS Spinner INHERIT Control
+    PROTECT oClient as Control
+
+    /// <include file="Gui.xml" path="doc/Spinner.Client/*" />
+    PROPERTY Client AS Control GET oClient SET oClient := VALUE
+    /// <exclude />
+    PROPERTY __UpDown AS System.Windows.Forms.NumericUpDown GET (System.Windows.Forms.NumericUpDown) oCtrl
+
+    /// <include file="Gui.xml" path="doc/Spinner.Position/*" />
 	PROPERTY Position AS INT GET Convert.ToInt32(__UpDown:Value) SET __UpDown:Value := VALUE
 
+    /// <include file="Gui.xml" path="doc/Spinner.Range/*" />
     PROPERTY Range AS Range
         GET
            RETURN Range{__UpDown:Minimum, __UpDown:Maximum}
@@ -19,23 +24,32 @@ CLASS Spinner INHERIT Control
             __UpDown:Maximum := VALUE:Max
         END SET
     END PROPERTY
+
+    /// <include file="Gui.xml" path="doc/Spinner.ThumbPosition/*" />
     PROPERTY ThumbPosition AS LONG GET Convert.ToInt32(__UpDown:Value) SET __UpDown:Value := VALUE
+
+    /// <include file="Gui.xml" path="doc/Spinner.UnitSize/*" />
     PROPERTY UnitSize AS LONG GET Convert.ToInt32(__UpDown:Increment) SET __UpDown:Increment := Value
 
-    CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware) CLIPPER
-	   SUPER(oOwner,xID,oPoint,oDimension,lDataAware)
+    /// <include file="Gui.xml" path="doc/Spinner.ctor/*" />
+    CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) CLIPPER
+	   SUPER(oOwner,xID,oPoint,oDimension,kStyle)
 END CLASS
 
 CLASS HorizontalSpinner INHERIT Spinner
+    /// <exclude />
     PROPERTY ControlType AS ControlType GET ControlType.HorizontalSpinner
-    CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware) CLIPPER
-	   SUPER(oOwner,xID,oPoint,oDimension,lDataAware)
+    /// <include file="Gui.xml" path="doc/HorizontalSpinner.ctor/*" />
+    CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) CLIPPER
+	   SUPER(oOwner,xID,oPoint,oDimension,kStyle)
 
 END CLASS
 
 CLASS VerticalSpinner INHERIT Spinner
+    /// <exclude />
     PROPERTY ControlType AS ControlType GET ControlType.VerticalSpinner
-    CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lDataAware) CLIPPER
-	   SUPER(oOwner,xID,oPoint,oDimension,lDataAware)
+    /// <include file="Gui.xml" path="doc/VerticalSpinner.ctor/*" />
+    CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) CLIPPER
+	   SUPER(oOwner,xID,oPoint,oDimension,kStyle)
 
 END CLASS

@@ -100,7 +100,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 	
 	STATIC METHOD GetFirstEditableChild(oParent AS System.Windows.Forms.Control)
 		FOREACH oC AS System.Windows.Forms.Control IN oParent:Controls
-			IF oC:CanSelect .AND. !  oc IS IVOButton 
+			IF oC:CanSelect .AND. !  oc IS VOButton 
 				RETURN oC
 			ENDIF
 			

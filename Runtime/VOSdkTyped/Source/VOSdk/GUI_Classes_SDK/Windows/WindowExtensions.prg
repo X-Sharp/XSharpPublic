@@ -4,14 +4,14 @@
 
 
 PARTIAL CLASS Window
-	METHOD GSG_CenterWindow( ) AS Window STRICT
+	METHOD CenterWindow( ) AS Window STRICT
 		SELF:Center()
 		RETURN SELF
 
-	METHOD InVisibleChildAction( xChild ) 
+	METHOD InVisibleChildAction( xChild )
 		IF !IsNil( SELF:Owner ) .AND. IsObject( SELF:Owner ) .AND. ;
 			IsMethod( SELF:Owner, #InvisibleChildAction )
-			RETURN Send(SELF:Owner,#InvisibleChildAction, xChild ) 
+			RETURN Send(SELF:Owner,#InvisibleChildAction, xChild )
 		ELSE
 			RETURN xChild
 		ENDIF
@@ -26,8 +26,8 @@ PARTIAL CLASS Window
 	PROTECT oOldCursor AS OBJECT
 	PROTECT oBusyCursor AS OBJECT
 	PROTECT lSetState   AS LOGIC
-	
-	METHOD SetBusyCursor( lSet, lNotify ) 
+
+	METHOD SetBusyCursor( lSet, lNotify )
 
 		DEFAULT( @lSet, FALSE )
 		DEFAULT( @lNotify, FALSE )
@@ -64,12 +64,10 @@ PARTIAL CLASS Window
 			ENDIF
 		ENDIF
 		RETURN lRetVal
-END CLASS		
+END CLASS
 
 
-
-
-FUNCTION YieldMessageLoop( oWin AS OBJECT )
+FUNCTION YieldMessageLoop( oWin AS OBJECT ) AS VOID
 	LOCAL msg  IS _WINMSG
 	LOCAL hWnd AS PTR
 
@@ -81,4 +79,4 @@ FUNCTION YieldMessageLoop( oWin AS OBJECT )
 			GuiWin32.DispatchMessage( @msg )
 		ENDDO
 	ENDIF
-	RETURN NIL
+	RETURN

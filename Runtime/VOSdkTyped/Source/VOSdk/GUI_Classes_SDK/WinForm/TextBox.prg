@@ -1,14 +1,14 @@
 // textBox.prg
-// This file contains subclasses Windows.Forms controls that are used in the 
+// This file contains subclasses Windows.Forms controls that are used in the
 // XSharp GUI Classes, in particular several TextBox subclasses
-// 
+//
 // Also some On..() methods have been implemented that call the event handlers on the VO Window
 // class that owns the control
 
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 
-CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOTextBox
+CLASS VOTextBox INHERIT System.Windows.Forms.TextBox   IMPLEMENTS IVoControl
 	PROPERTY oEdit		AS VOSDK.Edit GET (VOSDK.Edit) SELF:Control
 
 	#include "PropControl.vh"
@@ -17,7 +17,7 @@ CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOTextBox
 		SELF:AutoSize			:= FALSE
         SELF:oProperties:OnWndProc += OnWndProc
 		RETURN
-	
+
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER()
 			oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
@@ -32,11 +32,11 @@ CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOTextBox
 			SELF:TabStop			    := _AND(dwStyle, WS_TABSTOP) == WS_TABSTOP
 			SELF:UseSystemPasswordChar	:= _AND(dwStyle, ES_PASSWORD) == ES_PASSWORD
 			SELF:AcceptsReturn		    := _AND(dwStyle, ES_WANTRETURN) == ES_WANTRETURN
-			SELF:Multiline			    := _AND(dwStyle, ES_MULTILINE) == ES_MULTILINE 
-		ENDIF		
-		
-	VIRTUAL PROPERTY Text AS STRING GET SUPER:Text SET SUPER:Text := Value		
-	
+			SELF:Multiline			    := _AND(dwStyle, ES_MULTILINE) == ES_MULTILINE
+		ENDIF
+
+	VIRTUAL PROPERTY Text AS STRING GET SUPER:Text SET SUPER:Text := Value
+
 	#region Event Handlers
 	VIRTUAL PROTECT METHOD OnTextChanged(e AS EventArgs) AS VOID
 		LOCAL oWindow AS Window
@@ -50,7 +50,7 @@ CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOTextBox
 			ENDIF
 		ENDIF
 		RETURN
-	
+
 	VIRTUAL PROTECT METHOD OnLeave(e AS EventArgs) AS VOID
 		LOCAL oWindow AS Window
 		LOCAL oEvent AS EditFocusChangeEvent
@@ -63,7 +63,7 @@ CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOTextBox
 			ENDIF
 		ENDIF
 		RETURN
-	
+
 
 	VIRTUAL PROTECT METHOD OnEnter(e AS EventArgs) AS VOID
 		LOCAL oWindow AS Window
@@ -80,27 +80,27 @@ CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOTextBox
 		RETURN
 
 	PROTECT _lInPaint AS LOGIC
-	
+
 	METHOD OnWndProc(msg REF Message) AS VOID
 		IF msg:Msg == WM_PASTE .AND. SELF:oEdit != NULL_OBJECT
 			IF IsInstanceOf(oEdit, #SingleLineEdit)
 				LOCAL oSle AS SingleLineEdit
 				oSle := (SingleLineEdit) oEdit
 				IF oSle:__EditString != NULL_OBJECT
-					oSle:Paste()
+					oSle:Paste(NULL)
 				ENDIF
 			ENDIF
 		ENDIF
 		RETURN
-	#endregion	
+	#endregion
 
 END CLASS
 
-CLASS VOHotKeyTextBox INHERIT VOTextBox IMPLEMENTS IVOHotKeyTextBox
+CLASS VOHotKeyTextBox INHERIT VOTextBox
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner, dwStyle, dwExStyle)
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams 
+	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:ClassName := HOTKEY_CLASS
@@ -109,12 +109,12 @@ CLASS VOHotKeyTextBox INHERIT VOTextBox IMPLEMENTS IVOHotKeyTextBox
 	END PROPERTY
 END CLASS
 
-CLASS VOMLETextBox INHERIT VOTextBox IMPLEMENTS IVOMLETextBox
+CLASS VOMLETextBox INHERIT VOTextBox
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner,dwStyle,dwExStyle )
 		SELF:Multiline := TRUE
-	
-	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams 
+
+	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:style |= (LONG)WS_VSCROLL
@@ -132,11 +132,11 @@ END CLASS
 
 
 
-CLASS VOIPAddressTextBox INHERIT VOTextBox IMPLEMENTS IVOIPAddressTextBox
+CLASS VOIPAddressTextBox INHERIT VOTextBox
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner,dwStyle,dwExStyle )
-	
-	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams 
+
+	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:ClassName := "SysIPAddress32"
@@ -164,12 +164,12 @@ CLASS VORichTextBox INHERIT System.Windows.Forms.RichTextBox IMPLEMENTS IVOContr
 		IF SELF:oProperties != NULL_OBJECT
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
 		ENDIF
-	
+
 
 END CLASS
 
 
-CLASS VOSpinnerTextBox INHERIT System.Windows.Forms.NumericUpDown IMPLEMENTS IVOSpinnerTextBox
+CLASS VOSpinnerTextBox INHERIT System.Windows.Forms.NumericUpDown
 	PROPERTY oEdit		AS VOSDK.SpinnerEdit GET (VOSDK.SpinnerEdit) SELF:Control
 	#include "PropControl.vh"
 
@@ -209,7 +209,7 @@ CLASS VOSpinnerTextBox INHERIT System.Windows.Forms.NumericUpDown IMPLEMENTS IVO
 			ENDIF
 		ENDIF
 		RETURN
-	
+
 
 	VIRTUAL PROTECT METHOD OnLeave(e AS EventArgs) AS VOID
 		LOCAL oWindow AS Window
@@ -225,7 +225,7 @@ CLASS VOSpinnerTextBox INHERIT System.Windows.Forms.NumericUpDown IMPLEMENTS IVO
 		ENDIF
 		RETURN
 	PROPERTY Text AS STRING
-		GET 
+		GET
 			RETURN SUPER:Text
 		END GET
 		SET

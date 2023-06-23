@@ -5,8 +5,8 @@ CLASS ProgressBar INHERIT Control
     PROPERTY ControlType AS ControlType GET ControlType.ProgressBar
 
 
-	ACCESS __ProgressBar AS IVOProgressBar
-		RETURN (IVOProgressBar) oCtrl
+	ACCESS __ProgressBar AS VOProgressBar
+		RETURN (VOProgressBar) oCtrl
 
 	ASSIGN __Value(nValue AS USUAL)  STRICT
 		IF IsString(nValue)

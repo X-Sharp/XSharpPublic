@@ -9,7 +9,7 @@ USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 USING System.Collections
 
-CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
+CLASS VOListBox INHERIT System.Windows.Forms.ListBox
 
 #region fields
 	PROTECTED lBusy AS LOGIC
@@ -207,7 +207,7 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 
 END CLASS
 
-CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
+CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox
 	PROPERTY ComboBox AS VOSDK.ComboBox GET (VOSDK.ComboBox) SELF:Control
 	PROTECTED searchString := STRING.Empty AS STRING
 	PROTECTED lastKeyPressTime := DateTime.MinValue AS DateTime
@@ -219,7 +219,7 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 		SELF:DisplayMember	:= "DisplayValue"
 		SELF:ValueMember	:= "Value"
 		SELF:FlatStyle		:= FlatStyle.System
-		SELF:Margin			:= Padding{0,0,0,0}
+		SELF:Margin			:= Padding{0}
 		RETURN
 
     NEW PROPERTY AutoCompleteSource AS DWORD GET (DWORD) SUPER:AutoCompleteSource SET SUPER:AutoCompleteSource := (System.Windows.Forms.AutoCompleteSource) VALUE

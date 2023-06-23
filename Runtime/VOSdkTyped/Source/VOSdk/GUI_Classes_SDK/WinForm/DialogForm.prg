@@ -39,7 +39,7 @@ CLASS VODialogForm INHERIT VOForm
 
 	OVERRIDE PROTECT METHOD OnShown(e AS EventArgs) AS VOID STRICT
 		FOREACH oC AS System.Windows.Forms.Control IN SELF:Surface:Controls
-			IF oC IS IVOButton VAR button
+			IF oC IS VOButton VAR button
 				IF button:DefaultButton
 					SELF:AcceptButton := (IButtonControl) button
 				ENDIF

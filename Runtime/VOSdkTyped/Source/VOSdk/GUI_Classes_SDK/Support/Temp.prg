@@ -1,10 +1,12 @@
 
 
 USING System.Windows.Forms
+/// <exclude />
 FUNCTION __DBCSEnabled() AS LOGIC
 	//RETURN LOGIC(_CAST, GetSystemMetrics(SM_DBCSENABLED))
 	RETURN FALSE
 
+/// <exclude />
 FUNCTION __ShowLastError()
 	// Todo:
 	//LOCAL dwErr AS DWORD

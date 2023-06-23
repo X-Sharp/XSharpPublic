@@ -69,6 +69,9 @@ CLASS Dimension INHERIT Pair
 	OPERATOR IMPLICIT ( s AS System.Drawing.Size) AS Dimension
 		RETURN Dimension{s:Width, s:Height}
 
+	OPERATOR IMPLICIT ( p AS System.Windows.Forms.Padding) AS Dimension
+		RETURN Dimension{p:Left, p:Top}
+
 	OPERATOR IMPLICIT ( d AS Dimension ) AS System.Drawing.Size
 		//IF d == NULL_OBJECT
 		//	RETURN System.Drawing.Size.Empty

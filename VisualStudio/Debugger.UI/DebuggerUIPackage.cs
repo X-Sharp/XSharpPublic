@@ -15,7 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XSharpModel;
 using System.Runtime.InteropServices;
-
+using Task = System.Threading.Tasks.Task;
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -26,15 +26,21 @@ namespace XSharp.Debugger.UI
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
-    [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
-    [ProvideToolWindow(typeof(MemvarsWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
-    [ProvideToolWindowVisibility(typeof(MemvarsWindow.Pane), VSConstants.UICONTEXT.Debugging_string)]
-    [ProvideToolWindow(typeof(SettingsWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
-    [ProvideToolWindowVisibility(typeof(SettingsWindow.Pane), VSConstants.UICONTEXT.Debugging_string)]
-    [ProvideToolWindow(typeof(GlobalsWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
+    [ProvideToolWindow(typeof(MemvarsWindow.Pane), Window = EnvDTE.Constants.vsWindowKindOutput, Style =VsDockStyle.Tabbed)]
+    [ProvideToolWindow(typeof(SettingsWindow.Pane), Window = EnvDTE.Constants.vsWindowKindCallStack, Style = VsDockStyle.Tabbed)]
+    [ProvideToolWindow(typeof(GlobalsWindow.Pane), Window = EnvDTE.Constants.vsWindowKindWatch, Style = VsDockStyle.Tabbed)]
+    [ProvideToolWindow(typeof(WorkareasWindow.Pane),  Window = EnvDTE.Constants.vsWindowKindAutoLocals, Style = VsDockStyle.Tabbed)]
+#if DEV17
+    [ProvideToolWindowVisibility(typeof(GlobalsWindow.Pane), VSConstants.UICONTEXT.Debugging_string, bringToFront: false)]
+    [ProvideToolWindowVisibility(typeof(SettingsWindow.Pane), VSConstants.UICONTEXT.Debugging_string, bringToFront: false)]
+    [ProvideToolWindowVisibility(typeof(MemvarsWindow.Pane), VSConstants.UICONTEXT.Debugging_string, bringToFront: false)]
+    [ProvideToolWindowVisibility(typeof(WorkareasWindow.Pane), VSConstants.UICONTEXT.Debugging_string, bringToFront: false)]
+#else
     [ProvideToolWindowVisibility(typeof(GlobalsWindow.Pane), VSConstants.UICONTEXT.Debugging_string)]
-    [ProvideToolWindow(typeof(WorkareasWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
+    [ProvideToolWindowVisibility(typeof(SettingsWindow.Pane), VSConstants.UICONTEXT.Debugging_string)]
+    [ProvideToolWindowVisibility(typeof(MemvarsWindow.Pane), VSConstants.UICONTEXT.Debugging_string)]
     [ProvideToolWindowVisibility(typeof(WorkareasWindow.Pane), VSConstants.UICONTEXT.Debugging_string)]
+#endif
     [Guid(XSharpConstants.guidXSharpDebuggerUIPkgString)]
     public sealed class XSharpDebuggerUIPackage : ToolkitPackage,  IVsDebuggerEvents, IDisposable
     {

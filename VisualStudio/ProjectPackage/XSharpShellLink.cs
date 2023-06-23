@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using XSharpModel;
-
+using System.Reflection;
 namespace XSharp.Project
 {
     internal class XSharpShellLink : IXVsShellLink
@@ -100,25 +100,38 @@ namespace XSharp.Project
             ThreadHelper.ThrowIfNotOnUIThread();
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                
+                var activeDoc = await VS.Windows.GetCurrentWindowAsync();
                 var documents = await VS.Windows.GetAllDocumentWindowsAsync();
                 foreach (var doc in documents.ToArray())
                 {
                     var caption = doc.Caption;
-                    if (caption.IndexOf("[") >= 0 && caption.IndexOf("]") >= 0)
+                    if (caption.EndsWith("]"))
                     {
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        if (doc is IVsWindowFrame frame)
+                        string docName = "";
+                        var field = doc.GetType().GetField("_frame", BindingFlags.Instance | BindingFlags.NonPublic);
+                        if (field != null)
                         {
-                            frame.GetProperty((int)__VSFPROPID.VSFPROPID_pszMkDocument, out var docName);
-                            if (docName is string fileName)
+                            dynamic _frame = field.GetValue(doc);
+                            string capt = _frame.EditorCaption;
+                            if (!capt.EndsWith("]"))
+                                continue;
+                            docName = _frame.EffectiveDocumentMoniker;
+                        }
+#if !DEV17
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+#endif
+                        if (string.IsNullOrEmpty(docName) && doc is IVsWindowFrame frame)
+                        {
+                            frame.GetProperty((int)__VSFPROPID.VSFPROPID_pszMkDocument, out var objdocName);
+                            if (objdocName is string fileName)
                             {
-                                if (close)
-                                {
-                                    await doc.CloseFrameAsync(FrameCloseOption.NoSave);
-                                }
-                                files.Add(fileName);
+                                docName = fileName;
                             }
+                        }
+                        if (!string.IsNullOrEmpty(docName))
+                        {
+                            await doc.CloseFrameAsync(FrameCloseOption.NoSave);
+                            files.Add(docName);
                         }
                     }
                 }

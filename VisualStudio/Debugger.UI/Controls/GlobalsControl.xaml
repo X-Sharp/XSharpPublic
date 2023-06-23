@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
              mc:Ignorable="d"
-             toolkit:Themes.UseVsTheme="True"
+             toolkit:Themes.UseVsTheme="False"
              d:DesignHeight="300" d:DesignWidth="500"
              >
     <Grid>

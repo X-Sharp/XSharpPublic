@@ -152,6 +152,7 @@
     <Compile Include="OptionsPages\DebuggerOptions.cs" />
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
+    <Compile Include="OptionsPages\ProjectSystemOptions.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
     <Compile Include="Nodes\XSharpFileNodeProperties.cs" />
     <Compile Include="Nodes\XSharpNodeProperties.cs" />
@@ -198,6 +199,10 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
     <Content Include="$(OutDir)\XSharp.AppDesigner.pkgdef">
       <Link>XSharp.AppDesigner.pkgdef</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="$(OutDir)\XSharp.Debugger.UI.pkgdef">
+      <Link>XSharp.Debugger.UI.pkgdef</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="$(OutDir)\XSharp.LanguageService.pkgdef">
@@ -623,6 +628,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Debugger.Support\Debugger.Support.csproj">
+      <Project>{bbd309aa-a928-461e-b91c-7c12b1145a06}</Project>
+      <Name>Debugger.Support</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Debugger.UI\Debugger.UI.csproj">
+      <Project>{8070a9bf-b528-4b4d-a1ca-5af47c326e85}</Project>
+      <Name>Debugger.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LanguageService\LanguageService.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7395}</Project>
       <Name>LanguageService</Name>

@@ -207,6 +207,10 @@
       <Link>XSharp.AppDesigner2022.pkgdef</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="$(OutDir)\XSharp.Debugger.UI2022.pkgdef">
+      <Link>XSharp.Debugger.UI2022.pkgdef</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="$(OutDir)\XSharp.LanguageService2022.pkgdef">
       <Link>XSharp.LanguageService2022.pkgdef</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -641,7 +645,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Debugger.UI\Debugger.UI2022.csproj">
-      <Project>{960714E8-FF93-4A42-B9BA-610B0F2014DB}</Project>
+      <Project>{960714e8-ff93-4a42-b9ba-610b0f2014db}</Project>
       <Name>Debugger.UI2022</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>

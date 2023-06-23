@@ -219,7 +219,8 @@ end class
             local oBlock as codeblock
             oBlock := oDesc:GetPropertySetBlock(cName)
             if oBlock != null_codeblock
-                return EvalBlock(oBlock, oObject, uValue)
+                EvalBlock(oBlock, oObject, uValue)
+                return
             endif
         endif
         var oError := Error.VOError( EG_NOVAR, __entity__, nameof(cName), 2, <object>{oObject, cName, uValue} )

@@ -23,7 +23,16 @@ namespace XSharp.Debugger.UI
         {
             InitializeComponent();
             ResizeColumns();
-            lvGlobals.SizeChanged += lvGlobals_SizeChanged;
+            this.SizeChanged += lvGlobals_SizeChanged;
+            this.IsVisibleChanged += GlobalsControl_IsVisibleChanged;
+        }
+
+        private void GlobalsControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.Visibility == Visibility.Visible)
+            {
+                Refresh();
+            }
         }
 
         private void lvGlobals_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -55,6 +64,10 @@ namespace XSharp.Debugger.UI
         }
         internal void Refresh()
         {
+            if (this.Visibility != Visibility.Visible)
+            {
+                return;
+            }
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 if (View.IsRTLoaded)

@@ -13,7 +13,7 @@ using System.Windows;
 
 namespace XSharp.Debugger.UI
 {
-    public class MemvarsWindow : BaseToolWindow<MemvarsWindow>
+    public class MemvarsWindow : BaseToolWindow<MemvarsWindow>, IDebuggerToolWindow
     {
         public override string GetTitle(int toolWindowId) => "X# Public and Privates";
 
@@ -30,19 +30,11 @@ namespace XSharp.Debugger.UI
             return Control;
         }
 
-       
-
-        internal void Refresh()
-        {
-            Control.Refresh();
-        }
-        internal void Clear()
-        {
-            Control.Clear();
-        }
+        public void Refresh() => Control.Refresh();
+        public void Clear() => Control.Clear();
 
 
-        [Guid("7C2FC14E-4BBE-4B95-B0CB-B3B7E0658A23")]
+        [Guid(XSharpConstants.DebuggerPublicsPrivatesPane)]
         internal class Pane : ToolkitToolWindowPane
         {
             public Pane()
@@ -55,12 +47,6 @@ namespace XSharp.Debugger.UI
                 base.OnToolWindowCreated();
                 Support.RefreshWindows();
             }
-            protected override void OnCreate()
-            {
-                base.OnCreate();
-                Support.RefreshWindows();
-            }
-
         }
 
     }

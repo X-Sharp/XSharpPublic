@@ -20,7 +20,17 @@ namespace XSharp.Debugger.UI
         public WorkareasControl()
         {
             InitializeComponent();
+            this.IsVisibleChanged += WorkareasControl_IsVisibleChanged;
         }
+
+        private void WorkareasControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.Visibility == Visibility.Visible)
+            {
+                Refresh();
+            }
+        }
+
         internal void Clear()
         {
             if (View.Items != null)
@@ -30,6 +40,11 @@ namespace XSharp.Debugger.UI
         WorkareasView View => DataContext as WorkareasView;
         internal void Refresh()
         {
+            if (this.Visibility != Visibility.Visible)
+            {
+                return;
+            }
+
             if (View.IsRTLoaded)
             {
                 lvAreas.Visibility = Visibility.Visible;

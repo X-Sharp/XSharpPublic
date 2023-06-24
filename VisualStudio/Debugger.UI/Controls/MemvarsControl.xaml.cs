@@ -21,7 +21,16 @@ namespace XSharp.Debugger.UI
         {
             InitializeComponent();
             ResizeColumns();
-            lvMemVars.SizeChanged += LvMemVars_SizeChanged;
+            this.SizeChanged += LvMemVars_SizeChanged;
+            this.IsVisibleChanged += MemvarsControl_IsVisibleChanged;
+        }
+
+        private void MemvarsControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.Visibility == Visibility.Visible)
+            {
+                Refresh();
+            }
         }
 
         MemvarsView View => DataContext as MemvarsView;
@@ -57,6 +66,10 @@ namespace XSharp.Debugger.UI
 
         internal void Refresh()
         {
+            if (this.Visibility != Visibility.Visible)
+            {
+                return;
+            }
 
             if (View.IsRTLoaded)
             {

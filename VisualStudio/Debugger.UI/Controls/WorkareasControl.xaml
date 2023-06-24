@@ -16,7 +16,8 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,10,0">
             <TextBlock Text="Selected RDD:" VerticalAlignment="Center" Margin="5,5,10,5"/>
-            <ComboBox ItemsSource="{Binding RDDs}" SelectedItem="{Binding SelectedRDD}" Padding="5,0" Width="250" />
+            <ComboBox ItemsSource="{Binding RDDs}" SelectedItem="{Binding SelectedRDD}" Padding="5,0" Width="250" 
+                      VerticalAlignment="Center"/>
             <Separator Grid.Row="1" />
         </StackPanel>
         <Separator Grid.Row="1" />

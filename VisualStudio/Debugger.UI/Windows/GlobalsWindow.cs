@@ -14,7 +14,7 @@ using System.Windows;
 
 namespace XSharp.Debugger.UI
 {
-    public class GlobalsWindow : BaseToolWindow<GlobalsWindow>
+    public class GlobalsWindow : BaseToolWindow<GlobalsWindow>, IDebuggerToolWindow
     {
         public override string GetTitle(int toolWindowId) => "X# Globals";
 
@@ -31,18 +31,10 @@ namespace XSharp.Debugger.UI
             return Control;
         }
 
+        public void Refresh() => Control.Refresh();
+        public void Clear() => Control.Clear();
 
-        internal void Refresh()
-        {
-            Control.Refresh();
-        }
-        internal void Clear()
-        {
-            Control.Clear();
-        }
-
-
-        [Guid("53B7968B-251B-44E0-BDF5-A225BF0DBC77")]
+        [Guid(XSharpConstants.DebuggerGlobalsPane)]
         internal class Pane : ToolkitToolWindowPane
         {
             public Pane()
@@ -52,11 +44,6 @@ namespace XSharp.Debugger.UI
             public override void OnToolWindowCreated()
             {
                 base.OnToolWindowCreated();
-                Support.RefreshWindows();
-            }
-            protected override void OnCreate()
-            {
-                base.OnCreate();
                 Support.RefreshWindows();
             }
         }

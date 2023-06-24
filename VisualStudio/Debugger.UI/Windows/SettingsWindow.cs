@@ -13,13 +13,13 @@ using System.Windows;
 
 namespace XSharp.Debugger.UI
 {
-    public class SettingsWindow: BaseToolWindow<SettingsWindow>
+    public class SettingsWindow: BaseToolWindow<SettingsWindow>, IDebuggerToolWindow
     {
         public override string GetTitle(int toolWindowId) => "X# Settings";
 
         public override Type PaneType => typeof(Pane);
         public SettingsControl Control = null;
-
+        
 
         public override async Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
@@ -30,17 +30,11 @@ namespace XSharp.Debugger.UI
             return Control;
         }
 
-        internal void Refresh()
-        {
-            Control.Refresh();
-        }
-        internal void Clear()
-        {
-            Control.Clear();
-        }
+        public void Refresh() => Control.Refresh();
+        public void Clear() => Control.Clear();
 
 
-        [Guid("F7ED7826-137A-462D-8757-37A02BEF4DCF")]
+        [Guid(XSharpConstants.DebuggerSettingsPane)]
         internal class Pane : ToolkitToolWindowPane
         {
             public Pane()
@@ -52,12 +46,6 @@ namespace XSharp.Debugger.UI
                 base.OnToolWindowCreated();
                 Support.RefreshWindows();
             }
-            protected override void OnCreate()
-            {
-                base.OnCreate();
-                Support.RefreshWindows();
-            }
-
         }
 
     }

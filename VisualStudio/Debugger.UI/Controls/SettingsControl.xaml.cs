@@ -21,8 +21,18 @@ namespace XSharp.Debugger.UI
         {
             InitializeComponent();
             ResizeColumns();
-            lvSettings.SizeChanged += lvSettings_SizeChanged;
+            this.SizeChanged += lvSettings_SizeChanged;
+            this.IsVisibleChanged += LvSettings_IsVisibleChanged;
         }
+
+        private void LvSettings_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.Visibility == Visibility.Visible)
+            {
+                Refresh();
+            }
+        }
+
         SettingsView View => DataContext as SettingsView;
         private void lvSettings_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -54,6 +64,11 @@ namespace XSharp.Debugger.UI
         }
         internal void Refresh()
         {
+            if (this.Visibility != Visibility.Visible)
+            {
+                return;
+            }
+
             if (View.IsRTLoaded)
             {
                 lvSettings.Visibility = Visibility.Visible;

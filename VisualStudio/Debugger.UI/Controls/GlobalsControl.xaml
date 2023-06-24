@@ -23,6 +23,7 @@
         SelectedItem="{Binding SelectedAssembly}"
         Padding="5,0"
         Width="250"
+        VerticalAlignment="Center"
         />
         </StackPanel>
         <Separator Grid.Row="1" />

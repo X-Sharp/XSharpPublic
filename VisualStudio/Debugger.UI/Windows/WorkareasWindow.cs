@@ -13,13 +13,12 @@ using System.Windows;
 
 namespace XSharp.Debugger.UI
 {
-    public class WorkareasWindow: BaseToolWindow<WorkareasWindow>
+    public class WorkareasWindow: BaseToolWindow<WorkareasWindow>, IDebuggerToolWindow
     {
         public override string GetTitle(int toolWindowId) => "X# Workareas";
 
         public override Type PaneType => typeof(Pane);
         public WorkareasControl Control = null;
-
 
         public override async Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
@@ -30,18 +29,11 @@ namespace XSharp.Debugger.UI
             return Control;
         }
 
-
-        internal void Refresh()
-        {
-            Control.Refresh();
-        }
-        internal void Clear()
-        {
-            Control.Clear();
-        }
+        public void Refresh() => Control.Refresh();
+        public void Clear() => Control.Clear();
 
 
-        [Guid("B5B41BAB-62F9-48E0-80D8-947F2F14D1C5")]
+        [Guid(XSharpConstants.DebuggerWorkareasPane)]
         internal class Pane : ToolkitToolWindowPane
         {
             public Pane()
@@ -51,11 +43,6 @@ namespace XSharp.Debugger.UI
             public override void OnToolWindowCreated()
             {
                 base.OnToolWindowCreated();
-                Support.RefreshWindows();
-            }
-            protected override void OnCreate()
-            {
-                base.OnCreate();
                 Support.RefreshWindows();
             }
 

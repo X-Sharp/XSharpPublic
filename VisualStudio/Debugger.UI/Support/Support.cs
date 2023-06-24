@@ -12,6 +12,9 @@ using System.Windows;
 using XSharpModel;
 using XSharp.Debugger.Support;
 using Debugger.Support;
+using System.Windows.Documents;
+using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace XSharp.Debugger.UI
 {
@@ -23,12 +26,9 @@ namespace XSharp.Debugger.UI
             DkmEvaluationFlags.ForceRealFuncEval;
 
         internal static EnvDTE.Debugger debugger;
-        internal static MemvarsWindow memvarsWindow = null;
-        internal static SettingsWindow settingsWindow = null;
-        internal static GlobalsWindow globalsWindow = null;
-        internal static WorkareasWindow workareasWindow = null;
         internal static DkmProcess currentProcess = null;
         internal static bool? IsRtLoaded = null;
+        static IList<IDebuggerToolWindow> windows;
 
 
         static Support()
@@ -38,6 +38,7 @@ namespace XSharp.Debugger.UI
             var lang_id = Guid.Parse(Constants.XSharpLanguageString);
             language = DkmLanguage.Create(lang_name, new DkmCompilerId(vend_id, lang_id));
             debugger = XSharpDebuggerUIPackage.XInstance.Dte.Debugger;
+            windows = new List<IDebuggerToolWindow>();
         }
         internal static string StripResult(string str)
         {
@@ -140,54 +141,33 @@ namespace XSharp.Debugger.UI
             }
             return value;
         }
-
-        internal static void RegisterWindow(object oWindow)
+        internal static void RegisterWindow(IDebuggerToolWindow oWindow)
         {
-            switch (oWindow)
+            if (! windows.Contains(oWindow))
             {
-                case MemvarsWindow mw:
-                    memvarsWindow = mw;
-                    break;
-                case SettingsWindow sw:
-                    settingsWindow = sw;
-                    break;
-                case GlobalsWindow gw:
-                    globalsWindow = gw;
-                    break;
-                case WorkareasWindow ww:
-                    workareasWindow = ww;
-                    break;
-
+                windows.Add(oWindow);
             }
         }
         internal static void RefreshWindows()
         {
-
-            if (memvarsWindow != null && memvarsWindow.Control.IsVisible)
+            foreach (var window in windows)
             {
-                memvarsWindow.Refresh();
-            }
-            if (settingsWindow != null && settingsWindow.Control.IsVisible)
-            {
-                settingsWindow.Refresh();
-            }
-            if (globalsWindow != null && globalsWindow.Control.IsVisible)
-            {
-                globalsWindow.Refresh();
-            }
-            if (workareasWindow != null && workareasWindow.Control.IsVisible)
-            {
-                workareasWindow.Refresh();
+                window.Refresh();
             }
 
         }
         internal static void ClearWindows()
         {
-            memvarsWindow?.Clear();
-            settingsWindow?.Clear();
-            globalsWindow?.Clear();
-            workareasWindow?.Clear();
+            foreach (var window in windows)
+            {
+                window.Clear();
+            }
         }
         
+    }
+    internal interface IDebuggerToolWindow
+    {
+        void Refresh();
+        void Clear();
     }
 }

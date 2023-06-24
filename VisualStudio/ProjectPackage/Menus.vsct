@@ -254,6 +254,10 @@
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>View &amp;Workareas</ButtonText>
+          <CommandName>View &amp;Workareas</CommandName>
+          <ToolTipText>View Workareas</ToolTipText>
+          <CanonicalName>View Workareas</CanonicalName>
+          <LocCanonicalName>.XSharp.Debugger.ViewWorkareas</LocCanonicalName>
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idDbgMemvarsWindow" priority="0x0200" type="Button">
@@ -262,7 +266,11 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <ButtonText>View &amp;Dynamic Memory Variables</ButtonText>
+          <ButtonText>View &amp;Publics and Privates</ButtonText>
+          <CommandName>View &amp;Publics and Privates</CommandName>
+          <ToolTipText>View Publics and Privates</ToolTipText>
+          <CanonicalName>View Publics and Privates</CanonicalName>
+          <LocCanonicalName>.XSharp.Debugger.ViewPublicsAndPrivates</LocCanonicalName>
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idDbgGlobalsWindow" priority="0x0300" type="Button">
@@ -271,7 +279,11 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <ButtonText>View &amp;Global Memory Variables</ButtonText>
+          <ButtonText>View &amp;Globals </ButtonText>
+          <CommandName>View &amp;Globals</CommandName>
+          <ToolTipText>View Globals</ToolTipText>
+          <CanonicalName>View Globals</CanonicalName>
+          <LocCanonicalName>.XSharp.Debugger.ViewGlobals</LocCanonicalName>
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idDbgSettingsWindow" priority="0x0400" type="Button">
@@ -281,6 +293,10 @@
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>View &amp;Settings</ButtonText>
+          <CommandName>View &amp;Settings</CommandName>
+          <ToolTipText>View Settings</ToolTipText>
+          <CanonicalName>View Settings</CanonicalName>
+          <LocCanonicalName>.XSharp.Debugger.ViewSettings</LocCanonicalName>
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idConvertXSharpRuntime" priority="0x0400" type="Button">

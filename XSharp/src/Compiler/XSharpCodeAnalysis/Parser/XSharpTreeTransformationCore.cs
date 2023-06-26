@@ -6592,7 +6592,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     condStmts.Add(elseBlock.Get<StatementSyntax>());
                 }
             }
-            else
+            else if (last != null)
             {
                 var cond = last.Cond.Get<ExpressionSyntax>();
                 var stmts = new List<StatementSyntax>
@@ -6605,17 +6605,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 last.Put(stmt);
                 condStmts.Add(stmt);
             }
-            if (needLabel)
+            if (needLabel || last == null)
             {
                 var empty = GenerateEmptyStatement();
-                var labelStatement = _syntaxFactory.LabeledStatement(
-                    null,
-                    SyntaxFactory.MakeIdentifier(label),
-                    SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                    empty
-                    );
-                labelStatement.XGenerated = true;
-                condStmts.Add(labelStatement);
+                if (last != null)
+                {
+                    var labelStatement = _syntaxFactory.LabeledStatement(
+                        null,
+                        SyntaxFactory.MakeIdentifier(label),
+                        SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                        empty
+                        );
+                    labelStatement.XGenerated = true;
+                    condStmts.Add(labelStatement);
+                }
+                else
+                {
+                    condStmts.Add(empty);
+                }
             }
             context.PutList(condStmts.ToList());
             _pool.Free(condStmts);

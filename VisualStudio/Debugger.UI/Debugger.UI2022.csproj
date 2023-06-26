@@ -61,6 +61,7 @@
     <Compile Include="Controls\GlobalsControl.xaml.cs">
       <DependentUpon>GlobalsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Support\Interfaces.cs" />
     <Compile Include="Views\BaseView.cs" />
     <Compile Include="Views\WorkareasView.cs" />
     <Compile Include="Views\MemvarsView.cs" />
@@ -131,8 +132,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.503</Version>
+      <Version>17.0.505</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Readme.txt" />
   </ItemGroup>
   <PropertyGroup>
     <!--

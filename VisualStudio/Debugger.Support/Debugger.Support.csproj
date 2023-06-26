@@ -6,7 +6,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.Debugger.Support</RootNamespace>
     <AssemblyName>XSharp.Debugger.Support</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <ProjectGuid>{BBD309AA-A928-461E-B91C-7C12B1145A06}</ProjectGuid>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <TargetFrameworkProfile />

@@ -9,7 +9,7 @@ namespace XSharp.Debugger.Support
 {
     public static class RtLink
     {
-        public const string ErrorPrefix = "XSharp Debugger Error:";
+        public const string ErrorPrefix = "XSharp Debugger Error : ";
         const string RTNotLoaded = ErrorPrefix+" XSharp Runtime not Loaded";
         const string TypeNotFound = ErrorPrefix + "Type '{0}' not found";
         const string MethodNotFound = ErrorPrefix + "Method '{0}' not found";
@@ -229,7 +229,7 @@ namespace XSharp.Debugger.Support
                 var prop = stateType.FindProperty("Settings", BFPublicInstance, out error);
                 if (prop == null)
                     return error;
-                var propValue = prop.GetValue(state);
+                var propValue = prop.GetValue(state,null);
                 if (propValue == null)
                     return CouldNotReadSettings;
                 var result = new SettingItems();
@@ -265,18 +265,18 @@ namespace XSharp.Debugger.Support
                 var prop = FindProperty(stateType, "CurrentWorkarea", BFPublicStatic, out error);
                 if (prop == null)
                     return error;
-                var selectedArea = (uint)prop.GetValue(null);
+                var selectedArea = (uint)prop.GetValue(null, null);
                 prop = stateType.FindProperty( "DataSession", BFPublicStatic, out error);
                 if (prop == null)
                     return error;
-                var was = prop.GetValue(null);
+                var was = prop.GetValue(null, null);
                 if (was == null)
                     return CouldNotReadDataSession;
                 var type = was.GetType();
                 var propRDDs = type.FindProperty("OpenRDDs",BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy, out error);
                 if (propRDDs == null)
                     return error;
-                var rdds = propRDDs.GetValue(was);
+                var rdds = propRDDs.GetValue(was, null);
                 var result = new WorkareaItems();
                 foreach (var item in (IEnumerable)rdds)
                 {

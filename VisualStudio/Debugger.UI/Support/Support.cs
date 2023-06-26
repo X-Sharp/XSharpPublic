@@ -6,15 +6,9 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio.Debugger.Clr;
-using Microsoft.VisualStudio.Shell.Interop;
-using System.Windows;
 using XSharpModel;
 using XSharp.Debugger.Support;
-using Debugger.Support;
-using System.Windows.Documents;
 using System.Collections.Generic;
-using System.Windows.Controls;
 
 namespace XSharp.Debugger.UI
 {
@@ -53,6 +47,7 @@ namespace XSharp.Debugger.UI
                 }
                 else
                 {
+                    VS.StatusBar.ShowMessageAsync(str).FireAndForget();
                     str = "";
                 }
             }
@@ -165,9 +160,5 @@ namespace XSharp.Debugger.UI
         }
         
     }
-    internal interface IDebuggerToolWindow
-    {
-        void Refresh();
-        void Clear();
-    }
+    
 }

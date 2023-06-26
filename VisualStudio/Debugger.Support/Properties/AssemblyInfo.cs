@@ -7,11 +7,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-#if DEV17
-[assembly: AssemblyTitle("XSharp.Debugger.Support.17")]
-#else
 [assembly: AssemblyTitle("XSharp.Debugger.Support")]
-#endif
 [assembly: AssemblyDescription("")]
 [assembly: ComVisible(false)]
 

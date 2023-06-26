@@ -36,4 +36,10 @@ so we can be sure that the class definitions used inside the debuggee match the 
 inside the debugger.
 We did not choose to use Json or XML to serialize because that adds some (unneeded) overhead to the strings.
 
+Inside the Debugger.Support DLL we use reflection to find the various entry points in the runtime.
+Because some of the data types are a bit "complex" we have also used Dynamic in a few places, so we get
+"late binding" support delivered by Microsoft. Of course this is then case sensitive.
+This allows us to fairly easy walk a dictionary without having to worry about how to decode the items in the dictionary.
+
+
 If we want we can also read more info such as the dialect or some of the other settings.

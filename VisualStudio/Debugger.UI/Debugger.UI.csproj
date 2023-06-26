@@ -62,6 +62,7 @@
     <Compile Include="Controls\GlobalsControl.xaml.cs">
       <DependentUpon>GlobalsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Support\Interfaces.cs" />
     <Compile Include="Views\BaseView.cs" />
     <Compile Include="Views\WorkareasView.cs" />
     <Compile Include="Views\MemvarsView.cs" />
@@ -137,6 +138,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Engine">
       <Version>15.0.26606</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Readme.txt" />
   </ItemGroup>
   <PropertyGroup>
     <!--

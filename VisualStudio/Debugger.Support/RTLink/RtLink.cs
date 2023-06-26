@@ -229,11 +229,11 @@ namespace XSharp.Debugger.Support
                 var prop = stateType.FindProperty("Settings", BFPublicInstance, out error);
                 if (prop == null)
                     return error;
-                var propValue = prop.GetValue(state,null);
-                if (propValue == null)
+                var settings = prop.GetValue(state,null);
+                if (settings == null)
                     return CouldNotReadSettings;
                 var result = new SettingItems();
-                foreach (var item in (IEnumerable) propValue)
+                foreach (var item in (IEnumerable) settings)
                 {
                     // use dynamic here. The type is too complicated to resolve here.
                     dynamic kvp = item;

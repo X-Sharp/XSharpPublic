@@ -25,13 +25,7 @@ namespace XSharp.LanguageService
                 VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
                 VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
                 VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
-                VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
                 VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
-#if DEBUG
-                VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
-                VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
-                VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
-#endif
                 VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
                 var sol = await VS.Solutions.GetCurrentSolutionAsync();
                 if (sol is Solution)
@@ -47,37 +41,14 @@ namespace XSharp.LanguageService
             // Remove document from OrphanedFilesProject
             // So it can be opened in normal project afterwards
             // when possible
-            XSolution.WriteOutputMessage("DocumentEvents_Closed " + document ?? "(none)");
             var xfile = XSolution.FindFile(document);
             if (xfile != null && xfile.Project.Name == OrphanedFilesProject.OrphanName)
             {
+                XSolution.WriteOutputMessage("DocumentEvents_Closed file in MiscFiles project " + document ?? "(none)");
                 XSolution.OrphanedFilesProject.RemoveFile(document);
             }
         }
 
-
-#if DEBUG
-        private static void DocumentEvents_Opened(string document)
-        {
-            XSolution.WriteOutputMessage("DocumentEvents_Opened " + document ?? "(none)");
-        }
-
-        private static void SolutionEvents_OnBeforeOpenSolution(string obj)
-        {
-            XSolution.WriteOutputMessage("SolutionEvents_OnBeforeOpenSolution " + obj ?? "(none)");
-        }
-#endif
-
-        private static void SolutionEvents_OnBeforeOpenProject(string obj)
-        {
-            XSolution.WriteOutputMessage("SolutionEvents_OnBeforeOpenProject " + obj ?? "(none)");
-        }
-#if DEBUG
-        private static void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
-        {
-            XSolution.WriteOutputMessage("SolutionEvents_OnAfterOpenProject " + project.FullPath ?? "(none)");
-        }
-#endif
         private static void ShellEvents_ShutdownStarted()
         {
             XSolution.IsClosing = true;

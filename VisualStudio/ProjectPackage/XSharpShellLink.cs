@@ -45,6 +45,7 @@ namespace XSharp.Project
                 VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
                 VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
                 VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
+                VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
                 _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
                 _ = await VS.Commands.InterceptAsync(KnownCommands.File_Exit, CloseDesignerWindows);
                 VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
@@ -66,6 +67,7 @@ namespace XSharp.Project
 
         private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
         {
+            Logger.Information("SolutionEvents_OnAfterBackgroundSolutionLoadComplete");
             ThreadHelper.ThrowIfNotOnUIThread();
             RestoreDesignerWindows();
         }
@@ -79,7 +81,11 @@ namespace XSharp.Project
 
         private void DocumentEvents_Opened(string strDocument)
         {
-            Logger.Information("Opened " + strDocument);
+            Logger.Information("DocumentEvents_Opened " + strDocument);
+        }
+        private void DocumentEvents_Closed(string strDocument)
+        {
+            Logger.Information("DocumentEvents_Closed " + strDocument);
         }
 
 
@@ -198,7 +204,7 @@ namespace XSharp.Project
         private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
         {
             Logger.SingleLine();
-            Logger.Information("Closing project: " + project?.FullPath ?? "");
+            Logger.Information("Before Closing project: " + project?.FullPath ?? "");
             Logger.SingleLine();
 
         }
@@ -206,14 +212,14 @@ namespace XSharp.Project
         private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
         {
             Logger.SingleLine();
-            Logger.Information("Opened project: " + project?.FullPath ?? "");
+            Logger.Information("After Opening project: " + project?.FullPath ?? "");
             Logger.SingleLine();
         }
 
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
             Logger.SingleLine();
-            Logger.Information("Opening project: " + projectFileName ?? "");
+            Logger.Information("Before Opening project: " + projectFileName ?? "");
             Logger.SingleLine();
             checkProjectFile(projectFileName);
         }
@@ -334,6 +340,7 @@ namespace XSharp.Project
 
         private void BuildEvents_SolutionBuildCancelled()
         {
+            Logger.Information("BuildEvents_SolutionBuildCancelled");
             building = false;
             // Start or Resume the model walker
             XSharpModel.ModelWalker.Start();
@@ -341,6 +348,7 @@ namespace XSharp.Project
 
         private void BuildEvents_SolutionBuildDone(bool result)
         {
+            Logger.Information("BuildEvents_SolutionBuildDone: {result}");
             building = false;
             success = result;
             // Start or Resume the model walker
@@ -349,6 +357,7 @@ namespace XSharp.Project
 
         private void BuildEvents_SolutionBuildStarted(object sender, EventArgs e)
         {
+            Logger.Information("BuildEvents_SolutionBuildStarted");
             building = true;
             if (XSharpModel.ModelWalker.IsRunning)
             {
@@ -406,6 +415,8 @@ namespace XSharp.Project
         {
             try
             {
+                Logger.Information("OpenDocumentAsync: {file} {line} {column} {preview}");
+
                 DocumentView view;
                 if (preview)
                 {
@@ -462,7 +473,7 @@ namespace XSharp.Project
             });
         }
         /// <summary>
-        /// OPen a document with 0 based line/column numbers
+        /// Open a document with 0 based line/column numbers
         /// </summary>
         /// <param name="file"></param>
         /// <param name="line"></param>

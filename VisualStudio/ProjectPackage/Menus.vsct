@@ -6,7 +6,8 @@
   <Extern href="vsshlids.h"/>
   <Extern href="vsdebugguids.h"/>
   <Include href="KnownImageIds.vsct"/>
-  <Include href="VSGlobals.vsct"/>
+  <!-- The next line will only work if the Community.VisualStudio.VSCT package is added to the project-->
+  <Include href="VSGlobals.vsct"/> 
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
   <Commands package="guidProjectPackage">

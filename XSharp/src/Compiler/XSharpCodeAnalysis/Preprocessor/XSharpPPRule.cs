@@ -323,6 +323,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 break;
                             }
                         }
+                        if (m.IsRepeat)
+                        {
+                            foreach (var c in m.Children)
+                            {
+                                c.IsRepeat = true;
+                            }
+                        }
                     }
                 }
                 foreach (var r in _resulttokens)
@@ -335,6 +342,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 r.IsRepeat = true;
                                 break;
+                            }
+                        }
+                        if (r.IsRepeat)
+                        {
+                            foreach (var c in r.OptionalElements)
+                            {
+                                c.IsRepeat = true;
                             }
                         }
                     }
@@ -1498,7 +1512,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XSharpToken ruleToken = mToken.Token;
             int iEnd;
             bool found = false;
-            while (sourceToken.Type == XSharpLexer.WS)
+            while (sourceToken.Type == XSharpLexer.WS || sourceToken.Type == XSharpLexer.ML_COMMENT)
             {
                 iSource += 1;
                 if (iSource == tokens.Count)
@@ -1852,8 +1866,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        var block = Replace(resultToken.OptionalElements, tokens, matchInfo);
-                        result.AddRange(block);
+                        if (resultToken.IsRepeat)
+                        {
+                            // determine the # of repeats in the source
+                            var max = resultToken.RepeatCount(matchInfo);
+                            for (int i = 0; i < max; i++)
+                            {
+                                var block = Replace(resultToken.OptionalElements, tokens, matchInfo, i);
+                                result.AddRange(block);
+                            }
+                        }
+                        else
+                        {
+                            var block = Replace(resultToken.OptionalElements, tokens, matchInfo);
+                            result.AddRange(block);
+                        }
                     }
                 }
             }

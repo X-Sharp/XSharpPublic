@@ -183,7 +183,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             _key = key;
         }
-
+        internal int RepeatCount(PPMatchRange[] matchInfo)
+        {
+            int result = 0;
+            if (IsRepeat)
+            {
+                foreach (var element in OptionalElements)
+                {
+                    if (element.MatchMarker != null)
+                    {
+                        var elementIndex = element.MatchMarker.Index;
+                        var mi = matchInfo[elementIndex];
+                        if (mi.Children?.Count > 0)
+                        {
+                            result = Math.Max(result, mi.Children.Count);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
     }
 
 }

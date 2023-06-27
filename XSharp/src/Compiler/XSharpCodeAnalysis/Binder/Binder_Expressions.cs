@@ -452,8 +452,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 string propName = right.Identifier.ValueText;
                 if (leftType is { })
                 {
+                    // when a class inherits from Object then SUPER:Foo() should not generate a late bind call.
+                    // See https://github.com/X-Sharp/XSharpPublic/issues/1285
+                    bool isSuper = (boundLeft.Kind == BoundKind.BaseReference;
                     bool earlyBound = propName == ".ctor";
-                    bool isObject = leftType.IsObjectType();
+                    bool isObject = leftType.IsObjectType() && !isSuper;
                     bool isUsual = false;
                     bool isArray = false;
                     NamedTypeSymbol usualType = Compilation.UsualType();

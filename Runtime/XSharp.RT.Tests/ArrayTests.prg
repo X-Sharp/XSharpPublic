@@ -98,7 +98,11 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal( 4, (INT) u)
 			mainArray[5][2] := "anothertest"
 			u := mainArray[5][2]
-			Assert.Equal( "anothertest", (STRING) u)
+            Assert.Equal( "anothertest", (STRING) u)
+            AAdd(mainArray, 42, 2)
+            Assert.Equal((int) mainArray[1], 1)
+            Assert.Equal((int) mainArray[2],  42)
+            Assert.Equal((string) mainArray[3],  "2")
 		RETURN
 
  		[Trait("Category", "Array")];

@@ -64,14 +64,14 @@
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\XSharp.Harbour\XSharp.Harbour.xsproj">
+      <Name>XSharp.Harbour</Name>
+      <Project>{eaee04e4-d7f6-46ac-b65a-e1b416b8d635}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.Harbour\XSharp.Harbour.xsproj">
-      <Name>XSharp.Harbour</Name>
-      <Project>{3683ED3A-4129-490D-96AB-E99C5A2FD689}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

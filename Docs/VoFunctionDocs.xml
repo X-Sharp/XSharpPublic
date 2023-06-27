@@ -10,6 +10,8 @@
             The value assigned to the new element.<br/>
             If <paramref name="uNewElement" /> is another array, the new element in the target array will contain a reference to the array specified by <paramref name="uNewElement" />, rather than the array itself.
         </param>
+      <param name="nElement">
+          The position within the array of the element to which the new value is assigned. If <paramref name="nElement">nElement</paramref> is not specified, the value is assigned to the last element. </param>
         <returns>
             The value of <paramref name="uNewElement" />.
         </returns>
@@ -31,6 +33,7 @@
                 AAdd(aArray, 5)&#0009;&#0009;&#0009;// aArray is {5}
                 AAdd(aArray, 10)&#0009;&#0009;&#0009;// aArray is {5, 10}
                 AAdd(aArray, {12, 10})&#0009;&#0009;// aArray is {5, 10, {12, 10}}
+                AAdd(aArray, 1, 2 )&#0009;&#0009;// aArray is  5, 2, 10, {12, 10}}
             </code>
         </example>
         <seealso cref='O:XSharp.RT.Functions.AIns'>AIns</seealso>

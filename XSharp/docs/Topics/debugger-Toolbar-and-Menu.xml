@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2023-06-26T12:52:21.337+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Toolbar and Menu</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Toolbar and Menu</para>
+    </header>
+    <para styleclass="Normal">When the Visual Studio integration for XSharp is installed then you will have see new menu entry when debugging. This menu entry can be found in the Debug menu and is called &quot;XSharp&quot;.</para>
+    <para styleclass="Normal">From that menu you can open 4 different windows with XSharp specific information.</para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Globals-Window">Globals</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Publics-and-Privates-Window">Publics and Privates</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Workareas-window">Workareas</link></li>
+      <li styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Settings-Window">Settings</link></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">These windows are shown as pane windows in the lower half of the debugger.</para>
+    <para styleclass="Normal">The location of these windows are (initially) associated with existing Visual Studio windows in the following way</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="2">
+      <thead style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Window</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Associated with</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Globals</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Watch window</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Publics and Privates</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Output window</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Workareas</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Autos window</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Settings</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Callstack window</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">If you move these windows to another location then Visual Studio will remember that new location</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">There is also an X# Debugger toolbar with buttons for these windows</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="DebuggerToolbar.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

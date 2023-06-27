@@ -561,6 +561,21 @@
       </topicref>
       <topicref type="topic" id="449715737811801" build="ALL" modified="2023-04-24T14:39:56.399Z" icon="0" href="optPage-Debugger">
         <caption translate="true">Debugger</caption>
+        <topicref type="topic" id="451032662439310" build="ALL" modified="2023-06-26T11:37:46.236Z" icon="0" href="debugger-Toolbar-and-Menu">
+          <caption translate="true">Toolbar and Menu</caption>
+        </topicref>
+        <topicref type="topic" id="451033753149909" build="ALL" modified="2023-06-26T11:37:49.694Z" icon="0" href="debugger-Globals-Window">
+          <caption translate="true">Globals Window</caption>
+        </topicref>
+        <topicref type="topic" id="451035877700857" build="ALL" modified="2023-06-26T11:37:54.934Z" icon="0" href="debugger-Publics-and-Privates-Window">
+          <caption translate="true">Publics and Privates Window</caption>
+        </topicref>
+        <topicref type="topic" id="451033249695295" build="ALL" modified="2023-06-26T11:37:58.890Z" icon="0" href="debugger-Workareas-window">
+          <caption translate="true">Workareas window</caption>
+        </topicref>
+        <topicref type="topic" id="451032769460953" build="ALL" modified="2023-06-26T11:37:33.089Z" icon="0" href="debugger-Settings-Window">
+          <caption translate="true">Settings Window</caption>
+        </topicref>
       </topicref>
       <topicref type="topic" id="449718002903399" build="ALL" modified="2023-02-14T14:37:15.672Z" icon="0" href="Other-editors">
         <caption translate="true">Other editors</caption>

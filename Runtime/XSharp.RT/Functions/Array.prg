@@ -369,6 +369,21 @@ FUNCTION AAdd<T>(aTarget AS __ArrayBase<T>,uNewElement AS T) AS T
     aTarget:Add(uNewElement)
     RETURN uNewElement
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
+FUNCTION AAdd(aTarget AS ARRAY,uNewElement AS USUAL, nElement as DWORD) AS USUAL
+    ARRAYNOTNULL aTarget
+    RETURN AAdd<USUAL>(aTarget, uNewElement, nElement)
+
+
+    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
+    /// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION AAdd<T>(aTarget AS __ArrayBase<T>,uNewElement AS T, nElement as DWORD) AS T
+    ARRAYNOTNULL aTarget
+    aTarget:Resize((int) aTarget:Length+1)
+    aTarget:Insert((int) nElement, uNewElement)
+    RETURN uNewElement
+
+
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aclone/*" />
 FUNCTION AClone(aSource AS ARRAY) AS ARRAY
     IF aSource == NULL_ARRAY

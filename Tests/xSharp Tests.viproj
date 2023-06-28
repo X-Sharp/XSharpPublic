@@ -120098,7 +120098,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C888 - Internal Compiler Error with DO CASE statement missing CASE/OTHERWISE
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION R894 - SUPER is translated to SELF *************
 Application = R894 - SUPER is translated to SELF
 IDEVersion = 1.06
@@ -120213,7 +120213,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R894 - SUPER is translated to SELF
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R895 - Preprocessor Repeat marker with non repeated element *************
 Application = R895 - Preprocessor Repeat marker with non repeated element
 IDEVersion = 1.06
@@ -120453,7 +120453,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R896
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R897 - INIT / EXIT Procedures *************
 Application = R897 - INIT / EXIT Procedures
 IDEVersion = 1.06

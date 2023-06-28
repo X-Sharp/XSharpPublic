@@ -77,15 +77,22 @@ eos                 : EOS+
                     ;
 
 funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
-                        T=funcproctype Sig=signature
+                        T=(FUNCTION|PROCEDURE) Sig=signature
                         InitExit=(INIT1|INIT2|INIT3|EXIT)?
                         vodummyclauses
                         end=eos
                         StmtBlk=statementBlock
-                        (END T2=funcproctype EOS )?
-                      ;
-
-funcproctype          : Token=(FUNCTION|PROCEDURE)
+                        (END T2=(FUNCTION|PROCEDURE) EOS )?
+                      |
+                        // Clipper/XBase++ INIT PROC. InitExit is not optional
+                        // otherwise this may be ambigous with alternative 1
+                        // also there are no modifiers here
+                        (Attributes=attributes)? 
+                        InitExit=(INIT|EXIT) T=PROCEDURE
+                        Sig=signature
+                        end=eos
+                        StmtBlk=statementBlock 
+                        (END T2=PROCEDURE EOS )?
                       ;
 
 signature             : Id=identifier
@@ -120,7 +127,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                     //
 
 vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
-                      D=DLL T=funcproctype Id=identifier (ParamList=parameterList)? (AS Type=datatype)?
+                      D=DLL T=(FUNCTION|PROCEDURE) Id=identifier (ParamList=parameterList)? (AS Type=datatype)?
                       (CallingConvention=dllcallconv)? COLON
                       Dll=identifierString (DOT Extension=identifierString)?
                       (	Ordinal=REAL_CONST
@@ -769,10 +776,10 @@ foxmemvar          : (Amp=AMP)?  Id=varidentifierName
                     ;
 
 localfuncproc       :  (Modifiers=localfuncprocModifiers)?
-                        LOCAL T=funcproctype Sig=signature
+                        LOCAL T=(FUNCTION|PROCEDURE) Sig=signature
                         end=eos
                         StmtBlk=statementBlock
-                        END T2=funcproctype  EOS
+                        END T2=(FUNCTION|PROCEDURE)  EOS
                      ;
 
 localfuncprocModifiers : ( Tokens+=(UNSAFE | ASYNC) )+
@@ -1389,12 +1396,12 @@ foxclassmember      : Member=foxclassvars          #foxclsvars
 
 
 foxmethod           : (Attributes=attributes)? (Modifiers=memberModifiers)?
-                      T=funcproctype  Sig=signature
+                      T=(FUNCTION|PROCEDURE)  Sig=signature
                       (HelpString=HELPSTRING HelpText=expression)?
                       (ThisAccess=THISACCESS LPAREN MemberId=identifier RPAREN)?
                       end=eos
                       StmtBlk=statementBlock
-                      (END T2=funcproctype  EOS)?
+                      (END T2=(FUNCTION|PROCEDURE)  EOS)?
                     ;
 
 foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)?

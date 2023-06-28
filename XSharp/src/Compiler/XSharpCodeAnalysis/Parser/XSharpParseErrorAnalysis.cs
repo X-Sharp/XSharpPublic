@@ -148,11 +148,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitLocalfuncproc([NotNull] XSharpParser.LocalfuncprocContext context)
         {
-            if (context.T2 != null && context.T2.Token.Type != context.T.Token.Type)
+            if (context.T2 != null && context.T2.Type != context.T.Type)
             {
-                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
+                _parseErrors.Add(new ParseErrorData(context.T, ErrorCode.ERR_UnExpectedExpected, context.T2.Text, context.T.Text));
             }
-            if (context.T.Token.Type == XSharpParser.PROCEDURE)
+            if (context.T.Type == XSharpParser.PROCEDURE)
             {
                 if (context.Sig.Type != null && context.Sig.Type.Start.Type != XSharpLexer.VOID)
                 {
@@ -209,7 +209,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             break;
                         }
                     }
-                    if (hasClipper)
+                    if (hasClipper) 
                     {
                         _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_ExpressionBodyClipperCallingConvention));
                     }
@@ -225,8 +225,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FeatureNotAvailableInDialect, "Init/Exit procedure", _options.Dialect.ToString()));
                 }
-
-                if (context.T.Token.Type != XSharpParser.PROCEDURE)
+                if (context.T?.Type == XSharpParser.FUNCTION) 
                 {
                     _parseErrors.Add(new ParseErrorData(context.InitExit, ErrorCode.ERR_FunctionsCannotHaveInitExit));
                 }
@@ -239,9 +238,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-            if (context.T2 != null && context.T2.Token.Type != context.T.Token.Type)
+            if (context.T2 != null && context.T2.Type != context.T.Type)
             {
-                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
+                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Text, context.T.Text));
             }
 
         }
@@ -620,9 +619,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.ThisAccess, ErrorCode.WRN_FoxUnsupportedClause, "THISACCESS"));
             }
-            if (context.T2 != null && context.T2.Token.Type != context.T.Token.Type)
+            if (context.T2 != null && context.T2.Type != context.T.Type)
             {
-                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
+                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Text, context.T.Text));
             }
         }
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)

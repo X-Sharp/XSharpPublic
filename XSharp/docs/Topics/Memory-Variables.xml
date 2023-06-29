@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-06-29T22:29:26.775+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Memory Variables</title>
   <body>
     <header>
@@ -47,7 +47,7 @@
     <para styleclass="Body Text">The data type of a dynamically scoped variable changes according to the contents of the variable. For this reason they are often described as dynamic or polymorphic.</para>
     <para styleclass="Body Text">Dynamically scoped variables are provided mainly for Clipper/Xbase compatibility; however, they are very useful in certain circumstances. For instance, they let you develop rapid prototypes and have certain inheritance properties that you may find hard to resist.</para>
     <para styleclass="Body Text">You must be aware, however, that using them comes at a cost. Consider these points:</para>
-    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Because they are not resolved at compile time, these variables require overhead in the form of runtime code, making your application larger and slower than necessary.</li>
       <li styleclass="Body Text">No compile time checking for type compatibility is possible with these variables.</li>
       <li styleclass="Body Text">Using the inheritance properties of these variables defies one of the basic tenets of modular programming and may lead to maintenance and debugging problems down the line. Furthermore, this practice will make the transition to lexically scoped and typed variables more difficult.</li>
@@ -56,17 +56,17 @@
     <para styleclass="Body Text"><text style="font-style:italic;">Important! For the sake of illustration, some of the examples in this section use unorthodox programming practices. Using the inheritance properties of public and private variables instead of passing arguments and returning values is not recommended.</text></para>
     <para styleclass="Heading1">Private</para>
     <para styleclass="Body Text">Private is one of the two types of dynamically scoped variables, and there are several ways to create a private variable: </para>
-    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Body Text">List the variable name as part of a PRIVATE statement. If you do not make an assignment at this time, the variable takes on the NIL value and data type; otherwise, it takes on the data type of its assigned value. You can assign a new value (with a new datatype) to a variable at any time:</text><br/><tab /><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> X := 10, y</text><br/><text styleclass="Body Text">This creates x as a numeric variable and y as an untyped variable with the value NIL. You can later change the values and their types by assigning other values to them:</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; X := &quot;X# Is great&quot;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; Y := Today()</text></li>
     </list>
-    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">List the variable name as part of a PARAMETERS statement within a FUNCTION, PROCEDURE or METHOD definition. The variable takes on the data type of its associated argument when the routine is called, or NIL if the argument is omitted. You can assign a new value (and a new data type) to the variable at any time. </li>
     </list>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Assign a value to a non-existent variable name (for example, x := 10). The variable takes on the data type of its assigned value until you assign a new value to it. (x is numeric, but the assignment x := &quot;Ms. Jones&quot; changes it to a string.) This will only work if you have used the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-undeclared">-undeclared</link> &#160;as well as the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-memvar">-memvar </link> commandline options.</li>
     </list>
     <para styleclass="Body Text">Private variables have these properties: </para>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">You can access them within the creating routine and any routines called by the creator. In other words, private variables are automatically inherited by called routines without having to pass them as arguments. </li>
       <li styleclass="Body Text">You can hide them from a called routine by explicitly creating a private (using PRIVATE or PARAMETERS) or declaring a local (using LOCAL) variable with the same name in the called routine. </li>
       <li styleclass="Body Text">They are automatically released from memory when the creator returns to its calling routine, or you can release them explicitly using RELEASE, CLEAR ALL, or CLEAR MEMORY. </li>
@@ -79,11 +79,11 @@
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Volume() </text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">PARAMETERS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nLength, nWidth, nHeight </text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nVolume := nLength * nWidth * nHeight </text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nVolume </text></para>
     <para styleclass="Heading1">Public</para>
     <para styleclass="Body Text">The second category of undeclared variable is public. Public variables have application-wide lifetime and visibility, and you can define them in only one way: </para>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">List the variable name as part of a PUBLIC statement. If you do not make an assignment at this time, the variable takes on a value of FALSE (or NIL for array elements); otherwise, it takes on the data type of its assigned value. You can assign a new value (and a new data type) to the variable at any time. </li>
     </list>
     <para styleclass="Body Text">Public variables have these properties: </para>
-    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Once they are created, you can access them anywhere in the application. In other words, public variables are automatically inherited by all routines in the application without having to pass them as arguments or post them as return values. </li>
       <li styleclass="Body Text">You can hide them from a routine by explicitly creating a private (using PRIVATE or PARAMETERS) or declaring a local (using LOCAL) variable with the same name. </li>
       <li styleclass="Body Text">They are not released from memory until you explicitly release them using RELEASE, CLEAR ALL, or CLEAR MEMORY. </li>
@@ -99,9 +99,9 @@
     <para styleclass="Body Text">Please note that this kind of programming is NOT recommended. </para>
     <para styleclass="Heading1">Variable References</para>
     <para styleclass="Body Text">Once a public or private variable is created as demonstrated in the previous two sections, you obtain its value by referring to its name. You might display the value of a variable using a built-in command or function:</para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">? nVolume</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">QOut(nVolume)</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? nVolume</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">QOut(nVolume)</text></para>
     <para styleclass="Body Text">or use its value as part of an expression:</para>
-    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">Str(nVolume, 10, 2) + &quot; cubic feet&quot;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">Str(nVolume, 10, 2) + &quot; cubic feet&quot;</text></para>
     <para styleclass="Body Text">For dynamically scoped variables, you can use the _MEMVAR alias to qualify a variable reference. In some cases, you may have to do this in order to help the compiler resolve what might otherwise be an ambiguous reference (for example, if you have a field variable with the same name as a memory variable and want to use the memory variable in an expression).</para>
     <para styleclass="Body Text"><text style="font-weight:bold;">Note</text>: MEMVAR is an abbreviation for memory variable, a term that is synonymous with dynamically scoped variable. <br/>Assuming that the database file Measures has fields named nLength, nWidth, and</para>
     <para styleclass="Body Text">nHeight, this example calls Volume() using the field variable values:</para>

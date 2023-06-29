@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2023-05-19T12:47:49.741+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2023-06-29T11:44:59.849+02:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>PROCEDURE Statement</title>
   <keywords>
     <keyword>_INIT1</keyword>
@@ -10,6 +10,8 @@
     <keyword>Declaration statements</keyword>
     <keyword>Entity declaration</keyword>
     <keyword>EXIT</keyword>
+    <keyword>EXIT PROCEDURE</keyword>
+    <keyword>INIT PROCEDURE</keyword>
     <keyword>PROCEDURE</keyword>
     <keyword>PROCEDURE statement</keyword>
     <keyword>Statements</keyword>
@@ -35,6 +37,20 @@
     <para styleclass="Normal"><tab /><text style="font-weight:bold;">CRLF</text></para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]</para>
     <para styleclass="Normal"><tab />[ENDPROC | END PROCEDURE]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Alternative INIT / EXIT Procedures</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab />[Attributes] [INIT | EXIT] <text style="font-weight:bold;">PROCEDURE</text> &#160;&lt;<text styleclass="Italic">idProcedure</text>&gt; </para>
+    <para styleclass="Normal"><tab />[Typeparameters]</para>
+    <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF|OUT|IN &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
+    <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[TypeparameterConstraints]</para>
+    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">idConvention</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[=&gt; &lt;expression&gt;]</para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">CRLF</text></para>
+    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[ENDPROC | END PROCEDURE]</para>
+    <para styleclass="Normal"></para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="Heading1"><snippet src="__IncludeAttributes" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeFuncProcModifiers" inline="false"/></para>
@@ -52,6 +68,8 @@
       <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><tab /><text styleclass="Normal">No arguments are allowed</text></li>
     </list>
     <para styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="Heading1">Notes</para>
+    <para styleclass="Normal">Please not that INIT and EXIT procedures have an INTERNAL scope always. You cannot access these from outside of the assembly where they are defined, so prevent you from accidentally calling them. If you need to call them, then you may consider to store the actual code in a normal function or procedure and call that code from the INIT or EXIT procedure.</para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> First </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PASCAL</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">_INIT1</text></para>

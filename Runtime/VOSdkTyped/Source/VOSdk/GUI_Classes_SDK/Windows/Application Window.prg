@@ -22,19 +22,19 @@ CLASS AppWindow INHERIT Window
         RETURN
 
     /// <inheritdoc />
-    METHOD Activate(oEvent  AS Event) as void
+    METHOD Activate(oEvent  AS Event) as USUAL
         SUPER:Activate(oEvent)
         IF SELF:__Form:IsMdiChild
             VAR oShell  := SELF:__Form:ParentForm
             oSHell:Menu := SELF:__Form:Menu
         ENDIF
-        RETURN 
+        RETURN SELF
 
 
 
     /// <include file="Gui.xml" path="doc/AppWindow.Default/*" />
-    METHOD Default(oEvent AS Event) as void
-        RETURN 
+    METHOD Default(oEvent AS Event) as USUAL
+        RETURN SELF
 
 
     /// <include file="Gui.xml" path="doc/AppWindow.Destroy/*" />
@@ -110,9 +110,9 @@ CLASS AppWindow INHERIT Window
         RETURN SUPER:Dispatch(oEvt)
 
     /// <inheritdoc />
-    METHOD MenuSelect(oEvent AS MenuSelectEvent) AS VOID
+    METHOD MenuSelect(oEvent AS MenuSelectEvent) AS USUAL
         SELF:__StatusMessageFromEvent(oEvent, MESSAGEMENU)
-        RETURN
+        RETURN SELF
 
     /// <include file="Gui.xml" path="doc/AppWindow.EnableBorder/*" />
     METHOD EnableBorder(kBorderStyle)
@@ -205,12 +205,12 @@ CLASS AppWindow INHERIT Window
 
 
     /// <include file="Gui.xml" path="doc/AppWindow.EndWindow/*" />
-    METHOD EndWindow() AS VOID STRICT
-        SELF:EndWindow(FALSE)
+    METHOD EndWindow() AS USUAL STRICT
+        RETURN SELF:EndWindow(FALSE)
 
 
     /// <include file="Gui.xml" path="doc/AppWindow.EndWindow/*" />
-    METHOD EndWindow(lSendMsg AS LOGIC) AS VOID
+    METHOD EndWindow(lSendMsg AS LOGIC) AS USUAL
         IF SELF:__IsValid
             IF lSendMsg
                 oWnd:Close()
@@ -218,12 +218,12 @@ CLASS AppWindow INHERIT Window
                 GuiWin32.PostMessage(SELF:Handle(), WM_CLOSE, 0,0)
             ENDIF
         ENDIF
-        RETURN
+        RETURN SELF
 
     /// <include file="Gui.xml" path="doc/AppWindow.ErrorMessage/*" />
     METHOD ErrorMessage(uText AS STRING) AS VOID
         ErrorBox{SELF, uText}
-        RETURN 
+        RETURN
 
 
     /// <include file="Gui.xml" path="doc/AppWindow.ctor/*" />

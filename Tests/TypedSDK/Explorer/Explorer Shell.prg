@@ -2,7 +2,7 @@ class ExplorerShellWindow inherit ShellWindow
 	export aChildWindows as array
 	
 
-method Close(oCloseEvent) 
+method Close(oCloseEvent as Event) AS USUAL
 
 	self:Owner:Quit()
 	super:Close(oCloseEvent)

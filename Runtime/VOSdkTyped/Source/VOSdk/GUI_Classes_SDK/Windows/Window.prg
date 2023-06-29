@@ -890,23 +890,24 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
     PROPERTY __Parent AS OBJECT GET oParent
 
 
+    METHOD PreMenuCommand(oMenuCommandEvent AS MenuCommandEvent) AS LOGIC
+        RETURN FALSE
     /// <exclude />
-    METHOD __PreMenuCommand(oMenuCommandEvent AS MenuCommandEvent) AS VOID
+    METHOD __PreMenuCommand(oMenuCommandEvent AS MenuCommandEvent) AS USUAL
 
         IF SELF:PreMenuCommand( oMenuCommandEvent)
-            RETURN
+            RETURN SELF
         ENDIF
 
         IF ! SELF:__CommandFromEvent(oMenuCommandEvent)
-            SELF:MenuCommand(oMenuCommandEvent)
-            RETURN
+            RETURN SELF:MenuCommand(oMenuCommandEvent)
         ENDIF
-        RETURN
+    	RETURN SELF
 
 
         [Obsolete];
     METHOD __PrePreMenuCommand() AS VOID STRICT
-        RETURN
+    RETURN
 
 
     /// <exclude />
@@ -1097,7 +1098,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
             ENDIF
         ENDIF
 
-        RETURN
+    RETURN
 
     /// <exclude />
 
@@ -1116,12 +1117,12 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
         IF oTrayIcon == NULL_OBJECT
             oTrayIcon:= VOTrayIcon{SELF, dwID}
-        ENDIF
-        oTrayIcon:Text := sToolTip
+	    ENDIF
+        oIcon:Text := sToolTip
         IF oIcon != NULL_OBJECT
             oTrayIcon:Image := ((Icon) oIcon)
         ENDIF
-        oTrayIcon:Show()
+        oIcon:Show()
         RETURN 	SELF
 
     /// <include file="Gui.xml" path="doc/Window.Accelerator/*" />
@@ -1134,6 +1135,9 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         RETURN
 
 
+   /// <include file="Gui.xml" path="doc/Window.Activate/*" />
+    METHOD Activate(oEvent  AS Event) AS USUAL
+        RETURN SELF:Default(oEvent)
     /// <include file="Gui.xml" path="doc/Window.AddTrayIcon/*" />
     METHOD AddTrayIcon(oTrayIcon, dwID, sToolTip)
         //PP-030902
@@ -1141,7 +1145,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.Animate/*" />
-    METHOD Animate(nTime,nFlags)
+    METHOD Animate(nTime as DWORD,nFlags AS DWORD) AS LOGIC
 
         LOCAL dwTime,dwFlags AS DWORD
         // Determine Windows version
@@ -1149,6 +1153,19 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         dwFlags := nFlags
         GuiWin32.AnimateWindow(SELF:Handle(),dwTime,dwFlags)
         RETURN TRUE
+
+    /// <include file="Gui.xml" path="doc/Window.AnimationStart/*" />
+    METHOD AnimationStart(oControlEvent AS ControlEvent) AS USUAL
+        RETURN SELF:Default(oControlEvent)
+   /// <include file="Gui.xml" path="doc/Window.AnimationStop/*" />
+    METHOD AnimationStop(oControlEvent AS ControlEvent)AS USUAL
+        RETURN SELF:Default(oControlEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.AppCommand/*" />
+    METHOD AppCommand(oACEvent as AppCommandEvent) AS LOGIC
+        // FALSE means the message has not been processed, so it is passed on to windows so other default behaviour can occur
+        RETURN FALSE
+
 
     /// <include file="Gui.xml" path="doc/Window.Automated/*" />
     PROPERTY Automated AS LOGIC
@@ -1173,21 +1190,30 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.Background/*" />
-    ACCESS Background  AS Brush
+    PROPERTY Background  AS Brush
+	GET
         RETURN oBackground
+	END GET
+	SET
 
 
-    /// <include file="Gui.xml" path="doc/Window.Background/*" />
-    ASSIGN Background(oNewBackground AS Brush)
-        oBackground := oNewBackground
+        oBackground := value
         IF oBackGround != NULL_OBJECT .and. oBackground:Color != NULL_OBJECT
             SELF:__Surface:BackColor := 	oBackground:Color
         ELSE
             // Need to add a paint handler
         ENDIF
         RETURN
+	END SET
+	END PROPERTY
 
+    /// <include file="Gui.xml" path="doc/Window.ButtonClick/*" />
+    METHOD ButtonClick(oControlEvent AS ControlEvent) AS USUAL
+        RETURN SELF:Default(oControlEvent)
 
+    /// <include file="Gui.xml" path="doc/Window.ButtonDoubleClick/*" />
+    METHOD ButtonDoubleClick(oControlEvent AS ControlEvent) AS USUAL
+        RETURN SELF:Default(oControlEvent)
     /// <include file="Gui.xml" path="doc/Window.CanvasArea/*" />
     PROPERTY CanvasArea  AS BoundingBox GET __Form:ClientRectangle
 
@@ -1220,31 +1246,35 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.Close/*" />
-    METHOD Close(oEvent as Event) as void
+    METHOD Close(oEvent as Event) as USUAL
         IF SELF:__IsValid .and. ! SELF:IsClosing
             SELF:IsClosing := TRUE
             IF oWnd:IsAttached
                 oWnd:Close()
             ENDIF
         ENDIF
-        RETURN
+        RETURN NIL
+
+   /// <include file="Gui.xml" path="doc/Window.ComboBoxExEndEdit/*" />
+    METHOD ComboBoxExEndEdit(oComboBoxExEndEditEvent AS ComboBoxExEndEditEvent) AS USUAL
+        RETURN NIL
 
     /// <include file="Gui.xml" path="doc/Window.ComboBoxExNotify/*" />
-    METHOD ComboBoxExNotify(oControlNotifyEvent) AS VOID
+    METHOD ComboBoxExNotify(oControlNotifyEvent) AS USUAL
         //Todo ComboBoxExNotify
         //LOCAL oCNE AS ControlNotifyEvent
         //oCNE := oControlNotifyEvent
         //IF oCNE:NotifyCode = CBEN_ENDEDIT
         //	SELF:ComboBoxExEndEdit(ComboBoxExEndEditEvent{oCNE})
         //ENDIF
-        RETURN
+    RETURN NIL
 
     /// <include file="Gui.xml" path="doc/Window.ContextMenu/*" />
     PROPERTY ContextMenu AS Menu
     GET
         RETURN oContextMenu
     END GET
-  SET
+    SET
         oContextMenu := value
         IF SELF:__IsValid
             IF value == NULL_OBJECT
@@ -1262,8 +1292,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         ENDIF
         RETURN
 
+    /// <include file="Gui.xml" path="doc/Window.ControlFocusChange/*" />
+    METHOD ControlFocusChange(oControlFocusChangeEvent AS ControlFocusChangeEvent) AS USUAL
+        RETURN SELF:Default(oControlFocusChangeEvent)
+
+
     /// <include file="Gui.xml" path="doc/Window.ControlNotify/*" />
-    METHOD ControlNotify(oControlNotifyEvent) as void
+    METHOD ControlNotify(oControlNotifyEvent as ControlNotifyEvent) as USUAL
         // Handling Window
         /*LOCAL oTargetWnd AS Window
         LOCAL nCode AS DWORD
@@ -1444,10 +1479,10 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         IF (SELF:EventReturnValue == 0)
         RETURN SELF:Default(oEvt)
         ENDIF*/
-        RETURN
+    RETURN NIL
 
     /// <include file="Gui.xml" path="doc/Window.DateTimeSelectionChanged/*" />
-    METHOD DateTimeSelectionChanged(oDateTimeSelectionEvent as DateTimeSelectionEvent) as void
+    METHOD DateTimeSelectionChanged(oDateTimeSelectionEvent as DateTimeSelectionEvent) as USUAL
         //Sets the modified flag only, if the DTP-Control becomes changed.
         //In ComCtrl32 DLL below version 6, this eventhandler becomes called twice
         //if you change the date with the calender control.
@@ -1482,17 +1517,17 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         ENDIF
 
 
-        RETURN
 
+    RETURN 0l
 
     /// <include file="Gui.xml" path="doc/Window.DeActivate/*" />
-    METHOD DeActivate(oEvent AS Event)  AS VOID
+    METHOD DeActivate(oEvent AS Event)  AS USUAL
         SELF:DeactivateAllOLEObjects()
-        SELF:Default(oEvent)
+        RETURN SELF:Default(oEvent)
 
 
     /// <include file="Gui.xml" path="doc/Window.DeactivateAllOLEObjects/*" />
-    METHOD DeactivateAllOLEObjects(oExcept) as void
+    METHOD DeactivateAllOLEObjects(oExcept) as USUAL
 #ifdef USE_OLEOBJECTS
         //RvdH 041123 Added method at Window Level
         //				  Also removed lNeedUpdate
@@ -1514,27 +1549,27 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	ENDIF
         //NEXT
 #endif
-        RETURN
+        RETURN SELF
 
 
 
     /// <include file="Gui.xml" path="doc/Window.Default/*" />
-    METHOD Default(oEvent AS Event) as void
+    METHOD Default(oEvent AS Event) as USUAL
         SELF:EventReturnValue := 1L
-        RETURN
+    RETURN SELF
 
     /// <include file="Gui.xml" path="doc/Window.DeleteTrayIcon/*" />
-    METHOD DeleteTrayIcon(dwID)  AS VOID
+    METHOD DeleteTrayIcon(dwID)  AS USUAL
         DEFAULT(REF dwID, 0)
         IF oTrayIcon != NULL_OBJECT
             IF oTrayIcon:ID == dwID
                 oTrayIcon:Destroy()
             ENDIF
         ENDIF
-        RETURN
+        RETURN TRUE
 
     /// <include file="Gui.xml" path="doc/Window.Destroy/*" />
-    METHOD Destroy() AS USUAL
+    METHOD Destroy() AS USUAL CLIPPER
         IF lAutomated
             SELF:Automated := FALSE
         ENDIF
@@ -1593,7 +1628,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.Draw/*" />
-    METHOD Draw(oDrawObject)
+    METHOD Draw(oDrawObject) AS USUAL
         LOCAL cnt, i AS DWORD
         LOCAL oDraw as DrawObject
         LOCAL aDraw as Array
@@ -1626,14 +1661,24 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.DrawBackground/*" />
-    METHOD DrawBackground(hdc, oWindow)
+    METHOD DrawBackground(hdc, oWindow) AS USUAL
         RETURN FALSE
 
 
     /// <include file="Gui.xml" path="doc/Window.Drop/*" />
-    METHOD Drop(oDragEvent )
+    METHOD Drop(oDragEvent as DragEvent ) AS USUAL
         RETURN NIL
 
+    /// <include file="Gui.xml" path="doc/Window.EditChange/*" />
+    METHOD EditChange(oControlEvent AS ControlEvent) AS USUAL
+        RETURN SELF:Default(oControlEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.EditFocusChange/*" />
+    METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent) AS USUAL
+        RETURN SELF:Default(oEditFocusChangeEvent)
+    /// <include file="Gui.xml" path="doc/Window.EditScroll/*" />
+    METHOD EditScroll(oControlEvent AS ControlEvent) AS USUAL
+        RETURN SELF:Default(oControlEvent)
     /// <include file="Gui.xml" path="doc/Window.Enable/*" />
     METHOD Enable()  AS VOID
         IF SELF:__IsValid
@@ -1642,23 +1687,23 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         RETURN
 
     /// <include file="Gui.xml" path="doc/Window.EnableCloseBox/*" />
-    METHOD EnableCloseBox(uValue := TRUE AS LOGIC)
+    METHOD EnableCloseBox(uValue := TRUE AS LOGIC) AS VOID
         LOCAL hBox AS IntPtr
         IF SELF:__IsValid
             hBox := GuiWin32.GetSystemMenu(oWnd:Handle,FALSE)
         ENDIF
         IF hBox != IntPtr.Zero
             IF uValue
-                RETURN GuiWin32.EnableMenuItem(hBox,SC_CLOSE,MF_ENABLED)
+                GuiWin32.EnableMenuItem(hBox,SC_CLOSE,MF_ENABLED)
             ELSE
-                RETURN GuiWin32.EnableMenuItem(hBox,SC_CLOSE,_OR(MF_GRAYED,MF_BYCOMMAND))
+                GuiWin32.EnableMenuItem(hBox,SC_CLOSE,_OR(MF_GRAYED,MF_BYCOMMAND))
             ENDIF
         ENDIF
 
-        RETURN NIL
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Window.EnableDragDropClient/*" />
-    METHOD EnableDragDropClient(lEnable := TRUE AS LOGIC) AS VOID
+    METHOD EnableDragDropClient(lEnable := TRUE AS LOGIC)  AS USUAL
         IF SELF:__IsValid
             SELF:__Form:AllowDrop := lEnable
             IF lEnable
@@ -1670,12 +1715,12 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
                 ENDIF
             ENDIF
         ENDIF
-        RETURN
+        RETURN SELF
 
     /// <include file="Gui.xml" path="doc/Window.EnableDragDropServer/*" />
 
     [Obsolete];
-    METHOD EnableDragDropServer(lEnable := TRUE AS LOGIC)
+    METHOD EnableDragDropServer(lEnable := TRUE AS LOGIC) AS VOID
         //IF lEnable
         //	IF (oDragDropServer == NULL_OBJECT)
         //		oDragDropServer := DragDropServer{SELF}
@@ -1685,11 +1730,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	oDragDropServer := NULL_OBJECT
         //ENDIF
 
-        RETURN SELF
+        RETURN
 
 
     /// <include file="Gui.xml" path="doc/Window.EnableHelp/*" />
-    METHOD EnableHelp(lEnable AS LOGIC, oHelpDisplay AS HelpDisplay)
+    METHOD EnableHelp(lEnable AS LOGIC, oHelpDisplay AS HelpDisplay) AS VOID
 
         IF lHelpOn
             // Disable previous Help
@@ -1714,7 +1759,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
             oCurrentHelp := NULL_OBJECT
         ENDIF
 
-        RETURN SELF
+        RETURN
 
 
     /// <include file="Gui.xml" path="doc/Window.EnableHelpButton/*" />
@@ -1737,11 +1782,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.EnableThemeDialogTexture/*" />
-    METHOD EnableThemeDialogTexture(dwStyle)
+    METHOD EnableThemeDialogTexture(dwStyle AS DWORD) AS VOID
         // Todo EnableThemeDialogTexture
 
         //RETURN EnableThemeDialogTexture(SELF,dwStyle)
-        RETURN SELF
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Window.EnableToolTips/*" />
     METHOD EnableToolTips(lEnable := TRUE AS LOGIC) AS VOID
@@ -1755,33 +1800,40 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         RETURN
 
 
+    /// <include file="Gui.xml" path="doc/Window.Expose/*" />
+    METHOD Expose(oExposeEvent AS ExposeEvent) AS USUAL
+        RETURN SELF:Default(oExposeEvent)
 
+   /// <include file="Gui.xml" path="doc/Window.FocusChange/*" />
+    METHOD FocusChange(oFocusChangeEvent AS FocusChangeEvent) AS USUAL
+        RETURN SELF:Default(oFocusChangeEvent)
     /// <include file="Gui.xml" path="doc/Window.Font/*" />
-    ACCESS Font AS VOSDK.Font
+    PROPERTY Font AS VOSDK.Font
+	GET
         RETURN oFont
+	END GET
+	SET
 
-
-    /// <include file="Gui.xml" path="doc/Window.Font/*" />
-    ASSIGN Font(oNewFont AS VOSDK.Font)
-        oFont := oNewFont
+        oFont := value
         SELF:__SetFont()
-        RETURN
+	END SET
+	END PROPERTY
 
 
     /// <include file="Gui.xml" path="doc/Window.Foreground/*" />
-    ACCESS Foreground AS Brush
+    PROPERTY Foreground AS Brush
+	GET
         RETURN oForeground
-
-
-    /// <include file="Gui.xml" path="doc/Window.Foreground/*" />
-    ASSIGN Foreground(oNewForeground AS Brush)
-        oForeground := oNewForeground
+	END GET
+	SET
+        oForeground := value
         DCBrushInUse := FALSE
         DCBrushNeeded := TRUE
         // this forces the new object to be selected into the current DC and allows proper releasing of the old one
         SELF:__GetDC()
 
-        RETURN
+	END SET
+	END PROPERTY
 
 
     /// <include file="Gui.xml" path="doc/Window.GetAllChildren/*" />
@@ -1879,17 +1931,10 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         RETURN _AND(liStyle,kStyle) != 0
 
     /// <include file="Gui.xml" path="doc/Window.HelpDisplay/*" />
-    ACCESS HelpDisplay AS HelpDisplay
-        RETURN oCurrentHelp
-
-    /// <include file="Gui.xml" path="doc/Window.HelpDisplay/*" />
-    ASSIGN HelpDisplay(oHelpDisplay AS HelpDisplay)
-        SELF:EnableHelp(TRUE, oHelpDisplay)
-
-        RETURN
+    PROPERTY HelpDisplay AS HelpDisplay GET oCurrentHelp SET SELF:EnableHelp(TRUE, value)
 
     /// <include file="Gui.xml" path="doc/Window.HelpRequest/*" />
-    METHOD HelpRequest(oHelpRequestEvent)
+    METHOD HelpRequest(oHelpRequestEvent AS HelpRequestEvent) AS USUAL
         LOCAL dwType AS LONG
         LOCAL oHRE AS HelpRequestEvent
         LOCAL oP AS OBJECT
@@ -1943,7 +1988,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.HorizontalScroll/*" />
-    METHOD HorizontalScroll(oScrollEvent AS ScrollEvent)  AS VOID
+    METHOD HorizontalScroll(oScrollEvent AS ScrollEvent)  AS USUAL
         LOCAL oScrollBar AS ScrollBar
         LOCAL oEvt	:= oScrollEvent AS ScrollEvent
 
@@ -1952,71 +1997,69 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
             oScrollBar:ThumbPosition := oEvt:Position
         ENDIF
 
-        SELF:Default(oEvt)
+        RETURN SELF:Default(oEvt)
 
 
     /// <include file="Gui.xml" path="doc/Window.HorizontalSlide/*" />
-    METHOD HorizontalSlide(oSliderEvent AS SliderEvent)  AS VOID
+    METHOD HorizontalSlide(oSliderEvent AS SliderEvent)  AS USUAL
         LOCAL oSlider AS Slider
         oSlider := oSliderEvent:Slider
         IF (oSlider != NULL_OBJECT)
             oSlider:ThumbPosition := oSliderEvent:Position
         ENDIF
-        SELF:Default(oSliderEvent)
+        RETURN SELF:Default(oSliderEvent)
 
 
     /// <include file="Gui.xml" path="doc/Window.HorizontalSpin/*" />
-    METHOD HorizontalSpin(oSpinnerEvent AS SpinnerEvent)  AS VOID
+    METHOD HorizontalSpin(oSpinnerEvent AS SpinnerEvent)  AS USUAL
         LOCAL oSpinner AS Spinner
         oSpinner := oSpinnerEvent:Spinner
         IF (oSpinner != NULL_OBJECT)
             oSpinner:Position := oSpinnerEvent:Position
         ENDIF
 
-        SELF:Default(oSpinnerEvent)
+        RETURN SELF:Default(oSpinnerEvent)
 
 
     /// <include file="Gui.xml" path="doc/Window.HyperLabel/*" />
-    ACCESS HyperLabel AS HyperLabel
+    PROPERTY HyperLabel AS HyperLabel
+	GET
         RETURN oHyperLabel
-
-
-    /// <include file="Gui.xml" path="doc/Window.HyperLabel/*" />
-    ASSIGN HyperLabel(oHL AS HyperLabel)
-        IF IsInstanceOfUsual(oHL,#HyperLabel)
-            oHyperLabel := oHL
-            SELF:@@StatusMessage(oHL, MESSAGEPERMANENT)
-        ENDIF
-
-        RETURN
+	END GET
+	SET
+        oHyperLabel := value
+        SELF:@@StatusMessage(value, MESSAGEPERMANENT)
+	END SET
+	END PROPERTY
 
 
     /// <include file="Gui.xml" path="doc/Window.Icon/*" />
-    ACCESS Icon AS Icon
+    PROPERTY Icon AS Icon
+	GET
         RETURN oIcon
-
-
-    /// <include file="Gui.xml" path="doc/Window.Icon/*" />
-    ASSIGN Icon(oNewIcon AS Icon)
-        oIcon := oNewIcon
+	END GET
+	SET
+        oIcon := value
         IF SELF:__IsValid
             SELF:__Form:Icon := oIcon
         ENDIF
-        RETURN
+	END SET
+	END PROPERTY
 
 
     /// <include file="Gui.xml" path="doc/Window.IconSm/*" />
-    ACCESS IconSm AS Icon
+    PROPERTY IconSm AS Icon
+	GET
         RETURN oIconSmall
+	END GET
+	SET
 
-
-    /// <include file="Gui.xml" path="doc/Window.IconSm/*" />
-    ASSIGN IconSm(oNewIcon AS Icon)
-        oIconSmall := oNewIcon
+        oIconSmall := value
         IF SELF:__IsValid
             SELF:__Form:SmallIcon := oIconSmall
         ENDIF
-        RETURN
+	END SET
+	END PROPERTY
 
 
     /// <include file="Gui.xml" path="doc/Window.ctor/*" />
@@ -2078,8 +2121,15 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         ENDIF
         RETURN FALSE
 
+    /// <include file="Gui.xml" path="doc/Window.KeyDown/*" />
+    METHOD KeyDown(oKeyEvent AS KeyEvent) AS USUAL
+        RETURN SELF:Default(oKeyEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.KeyUp/*" />
+    METHOD KeyUp(oKeyEvent AS KeyEvent) AS USUAL
+        RETURN SELF:Default(oKeyEvent)
     /// <include file="Gui.xml" path="doc/Window.LineTo/*" />
-    METHOD LineTo(oPoint AS Point) AS VOID
+    METHOD LineTo(oPoint AS Point) AS USUAL
         //Todo
         //LOCAL dwLen, i AS DWORD
         //LOCAL oPT AS Point
@@ -2101,11 +2151,33 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	ENDIF
         //ENDIF
 
-        RETURN
+        RETURN oPoint
 
 
+    /// <include file="Gui.xml" path="doc/Window.ListBoxClick/*" />
+    METHOD ListBoxClick(oControlEvent AS ControlEvent) AS USUAL
+        RETURN SELF:Default(oControlEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.ListBoxSelect/*" />
+    METHOD ListBoxSelect(oControlEvent  AS ControlEvent) AS USUAL
+        RETURN SELF:Default(oControlEvent)
+   /// <include file="Gui.xml" path="doc/Window.ListViewColumnClick/*" />
+    METHOD ListViewColumnClick(oListViewColumnClickEvent AS ListViewColumnClickEvent) AS USUAL
+        RETURN SELF:Default(oListViewColumnClickEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.ListViewItemChanged/*" />
+    METHOD ListViewItemChanged(oListViewItemEvent AS ListViewItemEvent) AS USUAL
+        RETURN SELF:Default(oListViewItemEvent)
+
+   /// <include file="Gui.xml" path="doc/Window.ListViewItemChanging/*" />
+    METHOD ListViewItemChanging(oListViewItemEvent AS ListViewItemEvent) AS USUAL
+        RETURN SELF:Default(oListViewItemEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.ListViewItemDelete/*" />
+    METHOD ListViewItemDelete(oListViewDeleteEvent AS ListViewDeleteEvent)  AS USUAL
+        RETURN SELF:Default(oListViewDeleteEvent)
     /// <include file="Gui.xml" path="doc/Window.ListViewItemDrag/*" />
-    METHOD ListViewItemDrag(oListViewDragEvent)  AS VOID
+    METHOD ListViewItemDrag(oListViewDragEvent as ListViewDragEvent)  AS USUAL
         // Todo
         //LOCAL oControl AS ListView
         //LOCAL oPoint AS Point
@@ -2130,20 +2202,35 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	SetCapture(SELF:Handle())
         //ENDIF
 
-        SELF:Default(oListViewDragEvent)
+        RETURN SELF:Default(oListViewDragEvent)
 
+   /// <include file="Gui.xml" path="doc/Window.ListViewItemEdit/*" />
+    METHOD ListViewItemEdit(oListViewEditEvent AS ListViewEditEvent) AS USUAL
+         RETURN SELF:Default(oListViewEditEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.ListViewKeyDown/*" />
+    METHOD ListViewKeyDown(oListViewKeyEvent AS ListViewKeyEvent) AS USUAL
+         RETURN SELF:Default(oListViewKeyEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.ListViewMouseButtonDoubleClick/*" />
+    METHOD ListViewMouseButtonDoubleClick(oListViewMouseEvent AS ListViewMouseEvent) AS USUAL
+         RETURN SELF:Default(oListViewMouseEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.ListViewMouseButtonDown/*" />
+    METHOD ListViewMouseButtonDown(oListViewMouseEvent AS ListViewMouseEvent) AS USUAL
+         RETURN SELF:Default(oListViewMouseEvent)
     /// <include file="Gui.xml" path="doc/Window.Menu/*" />
-    ACCESS Menu AS Menu
+    PROPERTY Menu AS Menu
+	GET
         RETURN oMenu
-
-    /// <include file="Gui.xml" path="doc/Window.Menu/*" />
-    ASSIGN Menu(oNewMenu AS Menu)
-        oMenu := oNewMenu
+	END GET
+	SET
+        oMenu := value
         oMenu:__Owner := SELF
         IF SELF:__IsValid
             SELF:__Form:Menu := oMenu:__Menu
         ENDIF
-        FOREACH oItem AS VOMenuItem IN oNewMenu:__Menu:MenuItems
+        FOREACH oItem AS VOMenuItem IN value:__Menu:MenuItems
             oItem:MergeType := System.Windows.Forms.MenuMerge.Remove
         NEXT
 
@@ -2155,8 +2242,20 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
             SELF:ToolBar := oMenu:ToolBar
             oMenu:SetShortCuts(SELF:Accelerator)
         ENDIF
-        RETURN
+	END SET
+	END PROPERTY
 
+
+    /// <include file="Gui.xml" path="doc/Window.MenuCommand/*" />
+    METHOD MenuCommand(oMenuCommandEvent AS MenuCommandEvent) AS USUAL
+        RETURN SELF:Default(oMenuCommandEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.MenuInit/*" />
+    METHOD MenuInit(oMenuInitEvent AS MenuInitEvent) AS USUAL
+        RETURN SELF:Default(oMenuInitEvent)
+    /// <include file="Gui.xml" path="doc/Window.MenuSelect/*" />
+    METHOD MenuSelect(oMenuSelectEvent AS MenuSelectEvent) AS USUAL
+        RETURN SELF:Default(oMenuSelectEvent)
 
     /// <include file="Gui.xml" path="doc/Window.MinMaxInfo/*" />
     METHOD MinMaxInfo(oMinMaxInfoEvent AS MinMaxInfoEvent) AS VOID
@@ -2170,12 +2269,12 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
     PROPERTY MinSize AS Dimension GET oMinSize SET oMinSize := Value
 
     /// <include file="Gui.xml" path="doc/Window.ModifyTrayIcon/*" />
-    METHOD ModifyTrayIcon(oTrayIcon, dwID, sToolTip)
+    METHOD ModifyTrayIcon(oTrayIcon, dwID, sToolTip) AS USUAL
         //PP-030902
         RETURN SELF:__UpdateTrayIcon(NIM_MODIFY,oTrayIcon,dwID,sToolTip)
 
     /// <include file="Gui.xml" path="doc/Window.MonthCalSelectionChanged/*" />
-    METHOD MonthCalSelectionChanged(oMonthCalSelectionEvent as MonthCalSelectionEvent) AS VOID
+    METHOD MonthCalSelectionChanged(oMonthCalSelectionEvent as MonthCalSelectionEvent) AS USUAL
         // Todo
         //LOCAL oMonthCal AS MonthCalendar
         //Local oMonthCalSelectionEvent as MonthCalSelectionEvent
@@ -2190,13 +2289,20 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	((DataWindow) oMonthCal:Owner):__DoValidate(oMonthCal)
         //ENDIF
 
-        SELF:Default(oMonthCalSelectionEvent)
-        RETURN
+        RETURN SELF:Default(oMonthCalSelectionEvent)
 
 
+
+    /// <include file="Gui.xml" path="doc/Window.MouseButtonDoubleClick/*" />
+    METHOD MouseButtonDoubleClick(oMouseEvent AS MouseEvent) AS USUAL
+        RETURN SELF:Default(oMouseEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.MouseButtonDown/*" />
+    METHOD MouseButtonDown(oMouseEvent  AS MouseEvent) AS USUAL
+        RETURN SELF:Default(oMouseEvent)
 
     /// <include file="Gui.xml" path="doc/Window.MouseButtonUp/*" />
-    METHOD MouseButtonUp(oMouseEvent AS MouseEvent)  AS VOID
+    METHOD MouseButtonUp(oMouseEvent AS MouseEvent)  AS USUAL
         // Todo MouseButtonUp
 
         //IF lDragActive
@@ -2208,11 +2314,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //ENDIF
 
 
-        SELF:Default(oMouseEvent)
+        RETURN SELF:Default(oMouseEvent)
 
 
     /// <include file="Gui.xml" path="doc/Window.MouseDrag/*" />
-    METHOD MouseDrag(oMouseEvent AS MouseEvent)  AS VOID
+    METHOD MouseDrag(oMouseEvent AS MouseEvent)  AS USUAL
         // Todo MouseDrag
         //LOCAL oEvt := oMouseEvent AS MouseEvent
 
@@ -2220,8 +2326,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	oDragImageList:DragMove(oEvt:Position)
         //	//ImageList_DragMove(oMouseEvent:Position:Y, oMouseEvent:Position:Y)
         //ENDIF
-        SELF:Default(oMouseEvent)
-        RETURN
+        RETURN SELF:Default(oMouseEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.MouseButtonUp/*" />
+    METHOD MouseMove(oMouseEvent AS MouseEvent) AS USUAL
+        RETURN SELF:Default(oMouseEvent)
 
     /// <include file="Gui.xml" path="doc/Window.MouseTrapOff/*" />
     METHOD MouseTrapOff() AS VOID STRICT
@@ -2237,6 +2346,9 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         RETURN
 
 
+    /// <include file="Gui.xml" path="doc/Window.Move/*" />
+    METHOD Move(oMoveEvent AS MoveEvent)AS USUAL
+        RETURN SELF:Default(oMoveEvent)
     /// <include file="Gui.xml" path="doc/Window.MoveTo/*" />
     METHOD MoveTo(oPoint AS Point)  AS Point
         // Todo
@@ -2302,7 +2414,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.PaintBackground/*" />
-    METHOD PaintBackground(hDC)
+    METHOD PaintBackground(hDC) AS USUAL
         // Todo PaintBackground
         //LOCAL strRect IS _winRECT
         //LOCAL _hdc AS PTR
@@ -2339,16 +2451,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.PaintBoundingBox/*" />
-    METHOD PaintBoundingBox(oBoundingBox, kPaintMode)
+    METHOD PaintBoundingBox(oBoundingBox as BoundingBox, kPaintMode AS LONG) AS VOID
         //Todo PaintBoundingBox
         //LOCAL hBrush AS PTR
         //LOCAL r IS _WinRect
 
 
 
-        //IF !IsInstanceOfUsual(oBoundingBox, #BoundingBox)
-        //	WCError{#PaintBoundingBox,#Window,__WCSTypeError,oBoundingBox,1}:Throw()
-        //ENDIF
 
         //IF oForeground == NULL_OBJECT
         //	hBrush:= GetStockObject(BLACK_BRUSH)
@@ -2372,26 +2481,27 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	FillRect(hdc, @r, hBrush)
         //ENDCASE
 
-        RETURN NIL
+        RETURN
 
 
     /// <include file="Gui.xml" path="doc/Window.Pen/*" />
-    ACCESS Pen as Pen
+    PROPERTY Pen as Pen
+	GET
         RETURN oPen
-
-
-    /// <include file="Gui.xml" path="doc/Window.Pen/*" />
-    ASSIGN Pen(oPen AS Pen)
-        SELF:oPen := oPen
+	END GET
+	SET
+        SELF:oPen := value
         DCPenNeeded := TRUE
         DCPenInUse := FALSE
         // this forces the new object to be selected into the current DC and allows proper releasing of the old one
         SELF:__GetDC()
-        RETURN
+	END SET
+	END PROPERTY
 
 
     /// <include file="Gui.xml" path="doc/Window.Pointer/*" />
-    ACCESS Pointer AS Pointer
+    PROPERTY Pointer AS Pointer
+	GET
         IF SELF:__Form != NULL_OBJECT
             oPointer := SELF:__Form:Cursor
         ENDIF
@@ -2399,27 +2509,27 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
             oPointer := Pointer{}
         ENDIF
         RETURN oPointer
-
-    /// <include file="Gui.xml" path="doc/Window.Pointer/*" />
-    ASSIGN Pointer(oNewPointer AS Pointer)
-        oPointer := oNewPointer
+	END GET
+	SET
+        oPointer := value
         IF SELF:__IsValid
             SELF:__Form:Cursor := oPointer
         ENDIF
-        RETURN
+	END SET
+	END PROPERTY
 
     /// <include file="Gui.xml" path="doc/Window.PostInit/*" />
-    METHOD PostInit() CLIPPER
+    METHOD PostInit() AS USUAL CLIPPER
         RETURN SELF
 
     /// <include file="Gui.xml" path="doc/Window.PreInit/*" />
-    METHOD PreInit()  CLIPPER
+    METHOD PreInit() AS USUAL CLIPPER
         RETURN SELF
 
 
 
     /// <include file="Gui.xml" path="doc/Window.Print/*" />
-    METHOD Print(oDevice)
+    METHOD Print(oDevice := NULL_OBJECT as PrintingDevice) AS LOGIC
         LOCAL lRet AS LOGIC
         // Todo  Print
         //LOCAL hDIB AS PTR
@@ -2474,6 +2584,9 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.QueryClose/*" />
+    /// <include file="Gui.xml" path="doc/Window.QueryClose/*" />
+    METHOD QueryClose(oEvent AS Event) AS LOGIC
+        RETURN TRUE
     /// <include file="Gui.xml" path="doc/Window.RegisterTimer/*" />
     METHOD RegisterTimer(nInterval, lOneTime)
 
@@ -2524,12 +2637,24 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         RETURN
 
     /// <include file="Gui.xml" path="doc/Window.Resize/*" />
-    METHOD Resize(oResizeEvent as ResizeEvent)  AS VOID
-        SELF:@@Default(oResizeEvent)
+    METHOD Resize(oResizeEvent as ResizeEvent)  AS USUAL
+        VAR uRet := SELF:@@Default(oResizeEvent)
         SELF:__AlignControls()
 
+    	RETURN uRet
+   /// <include file="Gui.xml" path="doc/Window.RichEditProtected/*" />
+    METHOD RichEditProtected(oRichEditProtectEvent AS RichEditProtectEvent)  AS USUAL
+        RETURN SELF:Default(oRichEditProtectEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.RichEditSelectionChange/*" />
+    METHOD RichEditSelectionChange(oRichEditSelectionEvent AS RichEditSelectionEvent)  AS USUAL
+        RETURN SELF:Default(oRichEditSelectionEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.RichEditUndoLost/*" />
+    METHOD RichEditUndoLost(oControlNotifyEvent AS ControlNotifyEvent)  AS USUAL
+        RETURN SELF:Default(oControlNotifyEvent)
     /// <include file="Gui.xml" path="doc/Window.Scroll/*" />
-    METHOD Scroll(oDimension, oBoundingBox, lClip)
+    METHOD Scroll(oDimension, oBoundingBox, lClip) AS USUAL
         // Todo Scroll
         //LOCAL oBB AS BoundingBox
         //LOCAL strucRectScroll IS _WinRect
@@ -2591,7 +2716,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.SetBackgroundBrush/*" />
-    METHOD SetBackgroundBrush(dwNew)
+    METHOD SetBackgroundBrush(dwNew := COLOR_BTNSHADOW AS DWORD) AS USUAL
         // TOdo SetBackgroundBrush
         //Default(@dwNew,COLOR_3DSHADOW)
 
@@ -2600,19 +2725,18 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.SetExStyle/*" />
-    METHOD SetExStyle(dwSetStyle, lEnable)
+    METHOD SetExStyle(dwSetStyle as LONG, lEnable:= TRUE AS LOGIC) AS LONG
         LOCAL iWnd AS IVOForm
-        DEFAULT(@lEnable, TRUE)
 
         IF (oWnd != NULL_OBJECT)
             iWnd := (IVOForm) (OBJECT) oWnd
             dwExStyle := GuiWin32.GetWindowExStyle(oWnd:Handle)
 
             IF lEnable
-                dwExStyle := _OR(dwExStyle, LONG(_CAST, dwSetStyle))
+                dwExStyle := _OR(dwExStyle, dwSetStyle)
                 iWnd:Properties:ExStyle |= dwSetStyle
             ELSE
-                dwExStyle := _AND(dwExStyle, _NOT(LONG(_CAST, dwSetStyle)))
+                dwExStyle := _AND(dwExStyle, _NOT(dwSetStyle))
                 iWnd:Properties:NotExStyle |= dwSetStyle
             ENDIF
 
@@ -2631,24 +2755,18 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
     /// <include file="Gui.xml" path="doc/Window.SetHandle/*" />
-    METHOD SetHandle(hNewWnd AS VOForm)
+    METHOD SetHandle(hNewWnd AS VOForm) AS OBJECT
         oWnd := hNewWnd
         RETURN oWnd
 
 
     /// <include file="Gui.xml" path="doc/Window.SetStyle/*" />
-    METHOD SetStyle(dwSetStyle, lEnable)
-
-        DEFAULT(@lEnable, TRUE)
-
-
+    METHOD SetStyle(dwSetStyle as LONG, lEnable := TRUE AS LOGIC) AS LONG
         IF lEnable
-            dwStyle := _OR(dwStyle, LONG(_CAST, dwSetStyle))
-
+            dwStyle := _OR(dwStyle, dwSetStyle)
         ELSE
-            dwStyle := _AND(dwStyle, _NOT(LONG(_CAST, dwSetStyle)))
+            dwStyle := _AND(dwStyle, _NOT(dwSetStyle))
         ENDIF
-
         RETURN dwStyle
 
     METHOD __GetStartPosFromShowState(kSHowState AS LONG) AS System.Windows.Forms.FormStartPosition
@@ -2690,6 +2808,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
     METHOD OnMdiChildActivated(s AS OBJECT, e AS EventArgs) AS VOID
         SELF:Activate(@@Event{})
+
 
     METHOD Show() AS VOID STRICT
         SELF:Show(SHOWNORMAL)
@@ -2757,7 +2876,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         RETURN
     /// <include file="Gui.xml" path="doc/Window.ShowBalloonTrayTip/*" />
 
-    METHOD ShowBalloonTrayTip(oTrayIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo)
+    METHOD ShowBalloonTrayTip(oTrayIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo) AS USUAL
         DEFAULT(@dwID,1)
         DEFAULT(@sHeading,"")
         DEFAULT(@sToolTip,"")
@@ -2774,7 +2893,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         RETURN NIL
 
     /// <include file="Gui.xml" path="doc/Window.Size/*" />
-    ACCESS Size AS Dimension
+    PROPERTY Size AS Dimension
+	GET
         LOCAL oSize AS Dimension
         IF SELF:__IsValid
             oSize := oWnd:Size
@@ -2782,15 +2902,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
             oSize := Dimension{}
         ENDIF
         RETURN oSize
-
-
-    /// <include file="Gui.xml" path="doc/Window.Size/*" />
-    ASSIGN Size(oDimension AS Dimension)
+	END GET
+	SET
         IF SELF:__IsValid
-            oWnd:Size := oDimension
+            oWnd:Size := value
         ENDIF
-
-        RETURN
+	END SET
+	END PROPERTY
 
 
     /// <include file="Gui.xml" path="doc/Window.SizeText/*" />
@@ -2809,7 +2927,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         RETURN NIL
 
     /// <include file="Gui.xml" path="doc/Window.SysLinkSelect/*" />
-    METHOD SysLinkSelect(oSysLinkSelectEvent as SysLinkSelectEvent)  AS VOID
+    METHOD SysLinkSelect(oSysLinkSelectEvent as SysLinkSelectEvent)  AS USUAL
         // TOdo SysLinkSelect
         //LOCAL li IS _winLITEM
         //LOCAL i AS INT
@@ -2824,22 +2942,26 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	li:state := LIS_VISITED
         //	i:=SendMessage(oEvt:Control:Handle(), LM_SETITEM, 0, LONGINT(_CAST, @li))
         //ENDIF
-        SELF:Default(oSysLinkSelectEvent)
+        RETURN SELF:Default(oSysLinkSelectEvent)
 
+    /// <include file="Gui.xml" path="doc/Window.TabKeyDown/*" />
+    METHOD TabKeyDown(oControlNotifyEvent AS ControlNotifyEvent)  AS USUAL
+        RETURN SELF:Default(oControlNotifyEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.TabSelect/*" />
+    METHOD TabSelect(oControlNotifyEvent AS ControlNotifyEvent)  AS USUAL
+        RETURN SELF:Default(oControlNotifyEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.TabSelectionChanging/*" />
+    METHOD TabSelectionChanging(oControlNotifyEvent AS ControlNotifyEvent)  AS USUAL
+        RETURN SELF:Default(oControlNotifyEvent)
 
     /// <include file="Gui.xml" path="doc/Window.TextColor/*" />
-    ACCESS TextColor as Pen
-        RETURN oPen
-
-
-    /// <include file="Gui.xml" path="doc/Window.TextColor/*" />
-    ASSIGN TextColor(oNewPen as Pen)
-        SELF:Pen:= oNewPen
-        RETURN
+    PROPERTY TextColor as Pen GET oPen SET SELF:Pen:= Value
 
 
     /// <include file="Gui.xml" path="doc/Window.TextPrint/*" />
-    METHOD TextPrint(cText, oPoint)
+    METHOD TextPrint(cText AS STRING, oPoint AS Point) AS VOID
         // Todo TextPrint
         //LOCAL strucLogBrush IS _WinLogBrush
         //LOCAL iOldMode, iNewMode AS INT
@@ -2848,14 +2970,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 
-        //IF !IsString(cText)
-        //	WCError{#TextPrint,#Window,__WCSTypeError,cText,1}:Throw()
-        //ENDIF
-        //IF !IsInstanceOfUsual(oPoint,#Point)
-        //	WCError{#TextPrint,#Window,__WCSTypeError,oPoint,2}:Throw()
-        //ENDIF
-
-        //DCFontNeeded := TRUE
+          //DCFontNeeded := TRUE
         //DCPenNeeded := TRUE
 
         //IF (SELF:__GetDC() != NULL_PTR)
@@ -2877,40 +2992,45 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	ENDIF
         //ENDIF
 
-        RETURN SELF
+        RETURN
 
 
     /// <include file="Gui.xml" path="doc/Window.Timer/*" />
-    METHOD Timer()  CLIPPER
+    METHOD Timer() AS USUAL CLIPPER
         RETURN SELF
 
 
     /// <include file="Gui.xml" path="doc/Window.ToolBar/*" />
-    ACCESS ToolBar AS ToolBar
+    PROPERTY ToolBar AS ToolBar
+	GET
         RETURN oToolBar
+	END GET
+	SET
 
-
-    /// <include file="Gui.xml" path="doc/Window.ToolBar/*" />
-    ASSIGN ToolBar(oNewToolBar AS ToolBar)
-        IF oNewToolBar != NULL_OBJECT
-            IF (SELF:Menu != NULL_OBJECT) .AND. (SELF:Menu:ToolBar != oNewToolBar)
+		 IF value != NULL_OBJECT
+            IF (SELF:Menu != NULL_OBJECT) .AND. (SELF:Menu:ToolBar != value)
                 SELF:Menu:ToolBar := NULL_OBJECT
             ENDIF
 
-            IF (oToolBar != NULL_OBJECT) .AND. (oToolBar != oNewToolBar)
+            IF (oToolBar != NULL_OBJECT) .AND. (oToolBar != value)
                 oToolBar:Destroy()
             ENDIF
 
-            oToolBar := oNewToolBar
+            oToolBar := value
 
             IF oToolBar != NULL_OBJECT
                 oToolBar:__SetParent(SELF)
                 oToolBar:Show()
             ENDIF
         ENDIF
-        RETURN
+        END SET
+		END PROPERTY
 
 
+
+    /// <include file="Gui.xml" path="doc/Window.ToolBarHeightChanged/*" />
+    METHOD ToolBarHeightChanged(oControlNotifyEvent AS ControlNotifyEvent)  AS USUAL
+        RETURN SELF:Default(oControlNotifyEvent)
 
     /// <include file="Gui.xml" path="doc/Window.ToTop/*" />
     METHOD ToTop() AS VOID
@@ -2919,11 +3039,28 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         ENDIF
         RETURN
 
+    /// <include file="Gui.xml" path="doc/Window.TrayIconBalloonClicked/*" />
+    METHOD TrayIconBalloonClicked(dwID AS DWORD) AS USUAL
+        RETURN SELF
+
+    /// <include file="Gui.xml" path="doc/Window.TrayIconBalloonShown/*" />
+    METHOD TrayIconBalloonShown(dwID AS DWORD) AS USUAL
+        RETURN SELF
 
 
 
+    /// <include file="Gui.xml" path="doc/Window.TrayIconBalloonTimeOut/*" />
+    METHOD TrayIconBalloonTimeOut(dwID AS DWORD) AS USUAL
+        RETURN SELF
+
+    /// <include file="Gui.xml" path="doc/Window.TrayIconClicked/*" />
+    METHOD TrayIconClicked(dwID AS DWORD, lRightButton AS LOGIC, lDoubleClick AS LOGIC)  AS USUAL
+        RETURN SELF
+    /// <include file="Gui.xml" path="doc/Window.TreeViewItemDelete/*" />
+    METHOD TreeViewItemDelete(oTreeViewDeleteEvent AS TreeViewDeleteEvent)  AS USUAL
+         RETURN SELF:Default(oTreeViewDeleteEvent)
     /// <include file="Gui.xml" path="doc/Window.TreeViewItemDrag/*" />
-    METHOD TreeViewItemDrag(oTreeViewDragEvent AS TreeViewDragEvent) AS VOID
+    METHOD TreeViewItemDrag(oTreeViewDragEvent AS TreeViewDragEvent) AS USUAL
         //LOCAL oControl AS TreeView
         //LOCAL oPoint AS Point
         //LOCAL oEvt := oTreeViewDragEvent AS TreeViewDragEvent
@@ -2948,10 +3085,40 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         //	lDragActive := TRUE
         //	ShowCursor(FALSE)
         //	SetCapture(SELF:Handle())
+        RETURN SELF:Default(oTreeViewDragEvent)
+   /// <include file="Gui.xml" path="doc/Window.TreeViewItemEdit/*" />
+    METHOD TreeViewItemEdit(oTreeViewEditEvent AS TreeViewEditEvent) AS USUAL
+         RETURN SELF:Default(oTreeViewEditEvent)
+
+
+    /// <include file="Gui.xml" path="doc/Window.TreeViewItemExpanded/*" />
+    METHOD TreeViewItemExpanded(oTreeViewExpandedEvent AS TreeViewExpandedEvent) AS USUAL
+         RETURN SELF:Default(oTreeViewExpandedEvent)
+    /// <include file="Gui.xml" path="doc/Window.TreeViewItemExpanding/*" />
+    METHOD TreeViewItemExpanding(oTreeViewExpandingEvent AS TreeViewExpandingEvent) AS USUAL
+         RETURN SELF:Default(oTreeViewExpandingEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.TreeViewKeyDown/*" />
+    METHOD TreeViewKeyDown(oTreeViewKeyEvent AS TreeViewKeyEvent) AS USUAL
+         RETURN SELF:Default(oTreeViewKeyEvent)
+    /// <include file="Gui.xml" path="doc/Window.TreeViewMouseButtonDoubleClick/*" />
+    METHOD TreeViewMouseButtonDoubleClick(oTreeViewMouseEvent AS TreeViewMouseEvent) AS USUAL
+         RETURN SELF:Default(oTreeViewMouseEvent)
+
+    /// <include file="Gui.xml" path="doc/Window.TreeViewMouseButtonDown/*" />
+    METHOD TreeViewMouseButtonDown(oTreeViewMouseEvent AS TreeViewMouseEvent) AS USUAL
+         RETURN SELF:Default(oTreeViewMouseEvent)
         //ENDIF
 
-        SELF:Default(oTreeViewDragEvent)
 
+   /// <include file="Gui.xml" path="doc/Window.TreeViewSelectionChanged/*" />
+    METHOD TreeViewSelectionChanged(oTreeViewSelectionEvent AS TreeViewSelectionEvent) AS USUAL
+         RETURN SELF:Default(oTreeViewSelectionEvent)
+
+
+    /// <include file="Gui.xml" path="doc/Window.TreeViewSelectionChanging/*" />
+    METHOD TreeViewSelectionChanging(oTreeViewSelectionEvent AS TreeViewSelectionEvent) AS USUAL
+         RETURN SELF:Default(oTreeViewSelectionEvent)
     /// <include file="Gui.xml" path="doc/Window.Update/*" />
     METHOD Update()  AS VOID STRICT
         IF SELF:__IsValid
@@ -2961,28 +3128,27 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
         RETURN
 
     /// <include file="Gui.xml" path="doc/Window.VerticalScroll/*" />
-    METHOD VerticalScroll(oScrollEvent AS ScrollEvent) AS VOID
+    METHOD VerticalScroll(oScrollEvent AS ScrollEvent) AS USUAL
         LOCAL oScrollBar AS ScrollBar
-        LOCAL oEvt	:= oScrollEvent AS ScrollEvent
 
-        oScrollBar := oEvt:ScrollBar
+        oScrollBar := oScrollEvent:ScrollBar
         IF (oScrollBar != NULL_OBJECT)
-            oScrollBar:ThumbPosition:=oEvt:Position
+            oScrollBar:ThumbPosition:=oScrollEvent:Position
         ENDIF
 
-        SELF:Default(oEvt)
+        RETURN SELF:Default(oScrollEvent)
 
     /// <include file="Gui.xml" path="doc/Window.VerticalSlide/*" />
-    METHOD VerticalSlide(oSliderEvent AS SliderEvent) AS VOID
+    METHOD VerticalSlide(oSliderEvent AS SliderEvent) AS USUAL
         LOCAL oSlider AS Slider
         oSlider := oSliderEvent:Slider
         IF (oSlider != NULL_OBJECT)
             oSlider:ThumbPosition := oSliderEvent:Position
         ENDIF
-        SELF:Default(oSliderEvent)
+        RETURN SELF:Default(oSliderEvent)
 
     /// <include file="Gui.xml" path="doc/Window.VerticalSpin/*" />
-    METHOD VerticalSpin(oSpinnerEvent AS SpinnerEvent) AS VOID
+    METHOD VerticalSpin(oSpinnerEvent AS SpinnerEvent) AS USUAL
         LOCAL oSpinner AS Spinner
 
         oSpinner := oSpinnerEvent:Spinner
@@ -2990,7 +3156,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
             oSpinner:Position:=oSpinnerEvent:Position
         ENDIF
 
-        SELF:Default(oSpinnerEvent)
+        RETURN SELF:Default(oSpinnerEvent)
 
     /// <include file="Gui.xml" path="doc/Window.WindowArea/*" />
     PROPERTY WindowArea AS BoundingBox GET (BoundingBox) __Form:Bounds

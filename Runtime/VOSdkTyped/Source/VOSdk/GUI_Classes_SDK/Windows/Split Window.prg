@@ -146,9 +146,9 @@ CLASS SplitWindow INHERIT ChildAppWindow
     PROPERTY Layout AS Dimension GET oSplitView:Layout SET oSplitView:Layout := value
 
     /// <include file="Gui.xml" path="doc/SplitWindow.Resize/*" />
-    METHOD Resize(oResizeEvent as ResizeEvent) AS VOID
+    METHOD Resize(oResizeEvent as ResizeEvent) AS USUAL
         SUPER:Resize(oResizeEvent)
-        RETURN
+        RETURN SELF
 
     /// <include file="Gui.xml" path="doc/SplitWindow.RestoreUpdate/*" />
     METHOD RestoreUpdate AS VOID STRICT => oSplitView:RestoreUpdate()
@@ -188,9 +188,9 @@ CLASS SplitWindow INHERIT ChildAppWindow
         RETURN
 
     /// <include file="Gui.xml" path="doc/SplitWindow.ToolBarHeightChanged/*" />
-    METHOD ToolBarHeightChanged(oControlNotifyEvent AS ControlNotifyEvent) AS VOID
+    METHOD ToolBarHeightChanged(oControlNotifyEvent AS ControlNotifyEvent) AS USUAL
         SELF:__ResizeSplitView()
-        RETURN
+  	 RETURN SELF
 
     /// <include file="Gui.xml" path="doc/SplitWindow.VerticalAlign/*" />
     PROPERTY VerticalAlign AS LOGIC GET oSplitView:VerticalAlign

@@ -67,10 +67,10 @@ CLASS ChildAppWindow INHERIT AppWindow
         RETURN
 
     /// <inheritdoc />
-    METHOD Close(oEvent as event) as void
-        SUPER:Close(oEvent)
+    METHOD Close(oEvent as event) as USUAL
+        var res := SUPER:Close(oEvent)
         oShell:Menu := oShell:__ActualMenu
-        RETURN
+        RETURN res
 
 
 END CLASS

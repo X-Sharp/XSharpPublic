@@ -48,17 +48,18 @@ CLASS TopAppWindow INHERIT AppWindow
         RETURN SELF
 
     /// <include file="Gui.xml" path="doc/TopAppWindow.Resize/*" />
-    METHOD Resize(oResizeEvent as ResizeEvent) AS VOID
+    METHOD Resize(oResizeEvent as ResizeEvent) AS USUAL
         SUPER:Resize(oResizeEvent)
         SELF:__ResizeChild()
-        RETURN 
+        RETURN SELF
 
-    METHOD ToolBarHeightChanged(oEvent AS ControlNotifyEvent) AS VOID
+    METHOD ToolBarHeightChanged(oEvent AS ControlNotifyEvent) AS USUAL
         SELF:__ResizeChild()
-        RETURN
+        RETURN SELF
 END CLASS
 
 #region defines
 DEFINE __WCTopAppWindowClass := "TopAppWindow"
 #endregion
+
 

@@ -18,4 +18,17 @@ BEGIN NAMESPACE XSharp
         MEMBER dBase    := 6
         MEMBER Last     := 6
     END ENUM
+
+    STATIC CLASS DialectExtension
+        STATIC METHOD IsVoLike( SELF dialect as XSharpDialect) AS LOGIC
+            SWITCH dialect
+            CASE XSharpDialect.VO
+            CASE XSharpDialect.Vulcan
+                RETURN TRUE
+            OTHERWISE
+                RETURN FALSE
+            END SWITCH
+    END CLASS
 END NAMESPACE
+
+

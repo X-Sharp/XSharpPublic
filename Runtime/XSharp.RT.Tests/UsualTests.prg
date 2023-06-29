@@ -923,6 +923,7 @@ CLASS UsualTests
     [Fact, Trait("Category", "Usual")];
     METHOD UsualIsNilTest() AS VOID
         LOCAL u as USUAL
+        XSharp.RuntimeState.Dialect := XSharpDialect.VO
         u := NIL
         Assert.True(IsNil(u))
         u := Null_OBJECT

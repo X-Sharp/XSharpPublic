@@ -500,7 +500,7 @@ CLASS TabControl INHERIT TextControl
 	ASSIGN ImageList(oNewImageList AS ImageList)
 		IF SELF:ValidateControl()
 			oImageList := oNewImageList
-			__TabControl:ImageList := oImageList:__ImageList
+			__TabControl:ImageList := oImageList
 		ENDIF
 		RETURN
 

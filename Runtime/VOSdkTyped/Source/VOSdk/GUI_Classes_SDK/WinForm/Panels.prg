@@ -1,5 +1,5 @@
 // Panel.prg
-
+USING SWF := System.Windows.Forms
 USING System.Windows.Forms
 USING System.ComponentModel
 USING System.Diagnostics
@@ -8,7 +8,7 @@ USING System.Collections.Generic
 USING VOSDK := XSharp.VO.SDK
 
 [DebuggerDisplay("{Text}, {Size}")];
-CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
+CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 	PROPERTY Window AS VOSDK.Window AUTO
 	PROPERTY SuppressMovingControls AS LOGIC AUTO
 	PROPERTY ReturnAllKeys	AS LOGIC AUTO
@@ -21,12 +21,12 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 	PROTECT _aFramepanels   AS SortedList<INT,VOFramepanel>
 
    METHOD AddControl (oCtrl AS IVOControl) AS VOID
-        IF oCtrl IS System.Windows.Forms.Control VAR oC
+        IF oCtrl IS SWF.Control VAR oC
             SELF:Controls:Add( oC)
         ENDIF
 
    METHOD SetChildIndex(oCtrl AS IVOControl, nIndex AS LONG) AS VOID
-        IF oCtrl IS System.Windows.Forms.Control VAR oC
+        IF oCtrl IS SWF.Control VAR oC
             SELF:Controls:SetChildIndex(oC,nIndex)
         ENDIF
 
@@ -37,7 +37,7 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 			SELF:oToolTip  := NULL_OBJECT
 		ENDIF
 		oLastControl := NULL_OBJECT
-	
+
 	CONSTRUCTOR(oWindow AS Window) STRICT
 		SUPER()
 		SELF:Window := oWindow
@@ -57,24 +57,24 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 		SELF:DragEnter += Panel_DragEnter
 		SELF:DragDrop += Panel_DragDrop
 
-	METHOD Panel_DragEnter(Sender AS OBJECT, e AS DragEventArgs) AS VOID
-		IF (e:Data:GetDataPresent(DataFormats.FileDrop))
-			e:Effect := DragDropEffects.Copy
+	METHOD Panel_DragEnter(Sender AS OBJECT, e AS SWF.DragEventArgs) AS VOID
+		IF (e:Data:GetDataPresent(SWF.DataFormats.FileDrop))
+			e:Effect := SWF.DragDropEffects.Copy
 		ENDIF
 	RETURN
 
-	METHOD Panel_DragDrop(Sender AS OBJECT, e AS DragEventArgs) AS VOID
+	METHOD Panel_DragDrop(Sender AS OBJECT, e AS SWF.DragEventArgs) AS VOID
 	IF IsMethod(SELF:Window,"Drop")
 		LOCAL oDE AS DragEvent
 		oDE := DragEvent{e, SELF}
 		SELF:Window:Drop(oDE,FALSE)
 	ENDIF
 	RETURN
-	
+
 	METHOD Initialize() AS VOID STRICT
-		SELF:Cursor         := System.Windows.Forms.Cursors.Arrow
-		SELF:Margin         := Padding{0}
-		SELF:BorderStyle    := BorderStyle.None	
+		SELF:Cursor         := SWF.Cursors.Arrow
+		SELF:Margin         := SWF.Padding{0}
+		SELF:BorderStyle    := SWF.BorderStyle.None
 		SELF:SuppressMovingControls := TRUE
 		SELF:BackColor      := System.Drawing.Color.White
 
@@ -88,30 +88,30 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 		SELF:MouseMove  += OnMouseMove
 
 
-	PROTECTED METHOD IsInputKey(keyData AS Keys) AS LOGIC
+	PROTECTED METHOD IsInputKey(keyData AS SWF.Keys) AS LOGIC
 		IF SELF:ReturnAllKeys
 			RETURN TRUE
 		ENDIF
 		RETURN SUPER:IsInputKey(keyData)
-				
-	METHOD OnKeyDown(s AS OBJECT, e AS KeyEventArgs) AS VOID	
+
+	METHOD OnKeyDown(s AS OBJECT, e AS SWF.KeyEventArgs) AS VOID
 		IF SELF:Window != NULL_OBJECT
 			SELF:Window:KeyDown(KeyEvent{e})
 		ENDIF
-		RETURN		
-		
-	METHOD OnKeyUp(s AS OBJECT, e AS KeyEventArgs) AS VOID	
+		RETURN
+
+	METHOD OnKeyUp(s AS OBJECT, e AS SWF.KeyEventArgs) AS VOID
 		IF SELF:Window != NULL_OBJECT
 			SELF:Window:KeyUp(KeyEvent{e})
 		ENDIF
 		RETURN
 
-	METHOD AdjustMouseEventPosition(e AS MouseEventArgs) AS MouseEventArgs
+	METHOD AdjustMouseEventPosition(e AS SWF.MouseEventArgs) AS SWF.MouseEventArgs
 		LOCAL nDeltaX, nDeltaY AS LONG
-		LOCAL oParent AS System.Windows.Forms.Control
+		LOCAL oParent AS SWF.Control
 		oParent := SELF:Parent
 		DO WHILE oParent != NULL
-			IF oParent is System.Windows.Forms.Form
+			IF oParent is SWF.Form
 				// We are at the form level, so exit
 				EXIT
 			ENDIF
@@ -119,35 +119,35 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 			nDeltaY += oParent:Location:Y
 			oParent := oParent:Parent
 		ENDDO
-		RETURN MouseEventArgs{e:Button, e:clicks, e:X+nDeltaX, e:y+nDeltaY, e:delta}	
+		RETURN SWF.MouseEventArgs{e:Button, e:clicks, e:X+nDeltaX, e:y+nDeltaY, e:delta}
 
-	METHOD OnMouseDown(s AS OBJECT, e AS MouseEventArgs) AS VOID	
+	METHOD OnMouseDown(s AS OBJECT, e AS SWF.MouseEventArgs) AS VOID
 		IF SELF:Window != NULL_OBJECT
 			// Make sure the position is relative to the form
 			e := SELF:AdjustMouseEventPosition(e)
 			IF e:Clicks == 2
-				 
-				SELF:Window:MouseButtonDoubleClick(MouseEvent{(MouseEventArgs) e, System.Windows.Forms.Control.ModifierKeys})
+
+				SELF:Window:MouseButtonDoubleClick(MouseEvent{(SWF.MouseEventArgs) e, SWF.Control.ModifierKeys})
 			ELSE
-				SELF:Window:MouseButtonDown(MouseEvent{e, System.Windows.Forms.Control.ModifierKeys})
+				SELF:Window:MouseButtonDown(MouseEvent{e, SWF.Control.ModifierKeys})
 			ENDIF
 		ENDIF
 		RETURN
 
-	METHOD OnMouseUp(s AS OBJECT, e AS MouseEventArgs) AS VOID	
+	METHOD OnMouseUp(s AS OBJECT, e AS SWF.MouseEventArgs) AS VOID
 		IF SELF:Window != NULL_OBJECT
 			e := SELF:AdjustMouseEventPosition(e)
-			SELF:Window:MouseButtonUp(MouseEvent{e, System.Windows.Forms.Control.ModifierKeys})
+			SELF:Window:MouseButtonUp(MouseEvent{e, SWF.Control.ModifierKeys})
 		ENDIF
 		RETURN
 
 
-	METHOD OnMouseMove(s AS OBJECT, e AS MouseEventArgs) AS VOID	
+	METHOD OnMouseMove(s AS OBJECT, e AS SWF.MouseEventArgs) AS VOID
 		IF SELF:Window != NULL_OBJECT
 			LOCAL m AS MouseEvent
 			e := SELF:AdjustMouseEventPosition(e)
-			m := MouseEvent{e, System.Windows.Forms.Control.ModifierKeys}
-			IF e:Button == System.Windows.Forms.MouseButtons.None
+			m := MouseEvent{e, SWF.Control.ModifierKeys}
+			IF e:Button == SWF.MouseButtons.None
 				SELF:Window:MouseMove(m)
 			ELSE
 				SELF:Window:MouseDrag(m)
@@ -160,27 +160,27 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 
 
 	METHOD Prepare() AS VOID STRICT
-		LOCAL aControls AS System.Windows.Forms.Control[]
+		LOCAL aControls AS SWF.Control[]
         // Was in lSortgroups-Blöcken passiert steuert, dass die Reihenfolge der Gruppen in der Controls-Collection des Panels
         // nach der Position der unteren Kante der Gruppe sortiert ist
-		LOCAL lSortGroups := SELF:_aGroups == NULL AS LOGIC 
+		LOCAL lSortGroups := SELF:_aGroups == NULL AS LOGIC
 		LOCAL nKey AS INT
 		IF lSortGroups
 			SELF:_aGroups   := SortedList<INT,VOGroupBox>{}
 			SELF:_aRBGroups := SortedList<INT,VOGroupBox>{}
 		ENDIF
-		IF SELF:Controls:Count > 0 
+		IF SELF:Controls:Count > 0
 			SELF:SuspendLayout()
-			aControls := System.Windows.Forms.Control[]{SELF:Controls:Count}
+			aControls := SWF.Control[]{SELF:Controls:Count}
 			SELF:Controls:CopyTo(aControls,0)
-			FOREACH oC AS System.Windows.Forms.Control IN aControls
+			FOREACH oC AS SWF.Control IN aControls
 				IF oC IS VOGroupBox VAR oGroup
 					IF ! SELF:SuppressMovingControls
 						oGroup:FindChildren()
 					ENDIF
 					IF lSortGroups
                         // sort key is based on location
-						nKey := (oGroup:Location:Y + oGroup:Height)*10000 + oGroup:Location:X 
+						nKey := (oGroup:Location:Y + oGroup:Height)*10000 + oGroup:Location:X
 						DO WHILE SELF:_aGroups:ContainsKey(nKey)
 							nKey++
 						ENDDO
@@ -188,20 +188,20 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 					ENDIF
 				ELSEIF oc IS VOPanel VAR  opanel
 					opanel:Prepare()
-				ELSEIF oc is System.Windows.Forms.TabControl
-					LOCAL oTab AS System.Windows.Forms.TabControl
-					oTab := (System.Windows.Forms.TabControl) oC
-					FOREACH oPage AS TabPage IN oTab:TabPages
+				ELSEIF oc is SWF.TabControl
+					LOCAL oTab AS SWF.TabControl
+					oTab := (SWF.TabControl) oC
+					FOREACH VAR oPage IN oTab:TabPages
 						FOREACH IMPLIED oC2 IN oPage:Controls
 							IF oC2 IS VOPanel VAR panel
 								panel:Prepare()
-							ENDIF						
+							ENDIF
 						NEXT
 					NEXT
 				ELSEIF oc is VODataGridView
 					oC:Size := SELF:Size
 				ENDIF
-				oC:PerformLayout() 
+				oC:PerformLayout()
 			NEXT
 			IF lSortGroups // Controlreihenfolge der Gruppe anpassen
 				SELF:SortGroups()
@@ -215,7 +215,7 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 		SELF:_aGroups       := SortedList<INT,VOGroupBox>{}
 		SELF:_aRBGroups     := SortedList<INT,VOGroupBox>{}
 		SELF:_aFramepanels  := SortedList<INT,VOFramepanel>{}
-		FOREACH oC AS System.Windows.Forms.Control IN SELF:Controls
+		FOREACH oC AS SWF.Control IN SELF:Controls
 			IF oc IS VOGroupBox VAR oGroup
 				nKey := ((oGroup:Location:Y + oGroup:Height)*10000 + oGroup:Location:X)*(-1) // untere kante berechnen (oben>unten , links > rechts)
 				DO WHILE SELF:_aGroups:ContainsKey(nKey)
@@ -245,14 +245,14 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 			nKey--
 		NEXT
 		RETURN
-		
+
 	PROTECTED METHOD OnVisibleChanged(e AS EventArgs ) AS VOID
 		SUPER:OnVisibleChanged(e)
 		IF SELF:Visible
 			GuiWin32.SendMessage(SELF:Handle, WM_UPDATEUISTATE, MakeWParam(UIS_CLEAR,UISF_HIDEFOCUS) , 0) // always show focus rectangles, switching the ui mode flickers
 			SELF:_lNoUpdateUIState := TRUE
 			IF SELF:Parent != NULL_OBJECT
-				IF self:Parent is System.Windows.Forms.Form
+				IF self:Parent is SWF.Form
 					SELF:Prepare()
 				ENDIF
 			ENDIF
@@ -260,9 +260,9 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 			SELF:HideToolTip()
 			SELF:_lNoUpdateUIState := FALSE
 		ENDIF
-		RETURN		
+		RETURN
 
-	VIRTUAL PROTECT METHOD WndProc(msg REF Message) AS VOID
+	VIRTUAL PROTECT METHOD WndProc(msg REF SWF.Message) AS VOID
 		IF SELF:_lNoUpdateUIState .AND. (msg:Msg == WM_UPDATEUISTATE .OR. msg:Msg == WM_CHANGEUISTATE)
 			RETURN
 		ENDIF
@@ -274,14 +274,14 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 			SELF:oToolTip:Active := FALSE
 		ENDIF
 		RETURN
-	
-	METHOD RemoveToolTip(oC AS 	System.WIndows.Forms.Control) AS VOID STRICT
+
+	METHOD RemoveToolTip(oC AS 	SWF.Control) AS VOID STRICT
 		IF SELF:oToolTip != NULL_OBJECT
 			SELF:oToolTip:SetToolTip(oC, Null)
 		ENDIF
 		RETURN
-		
-	METHOD ShowToolTip(oC AS System.WIndows.Forms.Control, cMessage AS STRING) AS VOID STRICT
+
+	METHOD ShowToolTip(oC AS SWF.Control, cMessage AS STRING) AS VOID STRICT
 		IF !STRING.IsNullOrEmpty(cMessage)
 			IF oC != oLastControl
 				SELF:HideToolTip()
@@ -295,12 +295,12 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel IMPLEMENTS IVOPanel
 			SELF:HideToolTip()
 		ENDIF
 		RETURN
-		
+
 	METHOD EnableToolTips(lEnable AS LOGIC) AS VOID STRICT
-		lToolTipsEnabled := lEnable	
+		lToolTipsEnabled := lEnable
 		RETURN
 
-	METHOD IsParentOf(oC AS System.Windows.Forms.Control)
+	METHOD IsParentOf(oC AS SWF.Control)
 		IF oC == SELF
 			RETURN FALSE
 		ENDIF
@@ -317,24 +317,24 @@ END CLASS
 
 CLASS VOSurfacePanel INHERIT VOPanel
 	PROTECT lShown	AS LOGIC
-	
+
 	CONSTRUCTOR(oWindow AS Window) STRICT
 		SUPER(oWindow)
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner, dwStyle, dwExStyle)
-		RETURN 
+		RETURN
 
 	METHOD Initialize() AS VOID STRICT
 		SUPER:Initialize()
 		SELF:TabIndex	:= 0
 		SELF:lShown := FALSE
-		SELF:AutoSizeMode := AutoSizeMode.GrowAndShrink
+		SELF:AutoSizeMode := SWF.AutoSizeMode.GrowAndShrink
 		SELF:AutoSize     := TRUE
 #ifdef DEBUG
         SELF:BackColor := System.Drawing.Color.Bisque
         SELF:Text        := "SurfacePanel"
-#endif        
+#endif
 		RETURN
 
 	PROTECTED METHOD OnVisibleChanged(e AS EventArgs) AS VOID
@@ -359,7 +359,7 @@ CLASS VOFramePanel INHERIT VOPanel IMPLEMENTS IVOFramePanel
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner, dwStyle, dwExStyle)
-		RETURN 
+		RETURN
 
 	METHOD Initialize() AS VOID STRICT
 		SUPER:Initialize()
@@ -369,10 +369,10 @@ CLASS VOFramePanel INHERIT VOPanel IMPLEMENTS IVOFramePanel
 #ifdef DEBUG
         SELF:BackColor   := System.Drawing.Color.Beige
         SELF:Text        := "FramePanel"
-#endif        
-		RETURN 
+#endif
+		RETURN
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams 
+	VIRTUAL PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:Style := 0X56000000 // kommt in 0x56010000 -> WS_TABSTOP entfernt sonst gibts unschöne scrollbars
@@ -380,7 +380,7 @@ CLASS VOFramePanel INHERIT VOPanel IMPLEMENTS IVOFramePanel
 		END GET
 	END PROPERTY
 
-	PROPERTY DefinedSize AS System.Drawing.Size AUTO	
+	PROPERTY DefinedSize AS System.Drawing.Size AUTO
 	PROPERTY SurfacePanel AS VOSurfacePanel
 	GET
 		IF oSurfacePanel == NULL_OBJECT
@@ -409,7 +409,7 @@ CLASS VOFramePanel INHERIT VOPanel IMPLEMENTS IVOFramePanel
 		IF SELF:SurfacePanel != NULL_OBJECT .and. SELF:SurfacePanel:Visible
 			LOCAL oSize AS System.Drawing.Size
 			oSize := System.Drawing.Size{}
-			IF SELF:SurfacePanel:MinimumSize:Width > SELF:SurfacePanel:Width //SELF:HorizontalScroll:Visible .AND. 
+			IF SELF:SurfacePanel:MinimumSize:Width > SELF:SurfacePanel:Width //SELF:HorizontalScroll:Visible .AND.
 				oSize:Width := SELF:SurfacePanel:MinimumSize:Width
 			ELSE
 				oSize:Width := SELF:Width
@@ -426,13 +426,13 @@ CLASS VOFramePanel INHERIT VOPanel IMPLEMENTS IVOFramePanel
 		IF SELF:Parent != SELF:oDwForm .and. SELF:oDwForm != NULL_OBJECT .and. SELF:oDwForm:Window != NULL_OBJECT
 			// When we are on a subform then we must call the resize of the oDwform to make sure controls are aligned
 			SELF:oDwForm:Window:Resize(ResizeEvent{})
-		ENDIF		
-		RETURN 
-		
+		ENDIF
+		RETURN
+
 	PROTECTED METHOD OnVisibleChanged(e AS EventArgs) AS VOID
 		SUPER:OnVisibleChanged(e)
 		IF SELF:Visible
 			lShown := TRUE
-		ENDIF	
-		RETURN 
+		ENDIF
+		RETURN
 END CLASS

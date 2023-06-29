@@ -132,9 +132,9 @@ CLASS ToolBar INHERIT Control
 			//liTbStyle := LONGINT(_CAST, dwTBStyle)
 
 			//IF _AND(liTbStyle, TBSTYLE_TRANSPARENT) = 0
-			//	liTbStyle := GetWindowLong(hWndTB, GWL_STYLE)
+			//	liTbStyle := GetWindowStyle(hWndTB)
 			//	IF _AND(liTbStyle, TBSTYLE_TRANSPARENT) > 0
-			//		SetWindowLong(hWndTB, GWL_STYLE, _AND(liTbStyle, _NOT(TBSTYLE_TRANSPARENT)))
+			//		SetWindowStyle(hWndTB, _AND(liTbStyle, _NOT(TBSTYLE_TRANSPARENT)))
 			//	ENDIF
 			//ENDIF
 
@@ -245,7 +245,7 @@ CLASS ToolBar INHERIT Control
 		//PP-030828 Strong typing
 
 		//IF (hWnd != NULL_PTR)
-		//	IF _AND(GetWindowLong(hwnd, GWL_STYLE), CCS_TOP) == 1
+		//	IF _AND(GetWindowStyle(hwnd), CCS_TOP) == 1
 		//		RETURN TRUE
 		//	ENDIF
 		//ENDIF

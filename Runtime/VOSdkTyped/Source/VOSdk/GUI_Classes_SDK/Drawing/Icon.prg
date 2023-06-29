@@ -5,9 +5,11 @@
 CLASS Icon INHERIT VObject
 	PROTECT oIcon AS System.Drawing.Icon
 
- /// <exclude />
-	ACCESS __Icon AS System.Drawing.Icon
-		RETURN oIcon
+    OPERATOR IMPLICIT ( ico AS Icon) AS System.Drawing.Icon
+        RETURN ico:oIcon
+
+    OPERATOR IMPLICIT ( ico AS System.Drawing.Icon) AS Icon
+        RETURN Icon{ico}
 
 
 /// <include file="Gui.xml" path="doc/Icon.Destroy/*" />

@@ -128,7 +128,7 @@ CLASS StatusBar INHERIT Control
             ENDIF
 
             if oItem:Icon != null
-                oLabel:Image  := (System.Drawing.Image) (OBJECT) oItem:Icon:__Icon
+                oLabel:Image  := (System.Drawing.Image) (OBJECT) oItem:Icon
             ENDIF
             __StatusStrip:Items:Add(oLabel)
         NEXT // dwCount
@@ -570,7 +570,7 @@ CLASS StatusBar INHERIT Control
         sName := symItemName
         LOCAL IMPLIED Label := SELF:__GetLabel(sName)
         IF Label != NULL_OBJECT
-            Label:Image := oIcon:__Icon
+            Label:Image := oIcon
         ENDIF
         RETURN oIcon
 
@@ -754,7 +754,7 @@ CLASS StatusBarItem INHERIT VObject
     /// <include file="Gui.xml" path="doc/StatusBarItem.Icon/*" />
     ACCESS Icon AS Icon
         RETURN oSBIcon
-        
+
     /// <include file="Gui.xml" path="doc/StatusBarItem.ctor/*" />
     CONSTRUCTOR() STRICT
         SUPER()
@@ -789,7 +789,7 @@ END CLASS
 /// <include file="Gui.xml" path="doc/StatusBarKeyItem/*" />
 CLASS StatusBarKeyItem INHERIT StatusBarItem
     PROTECT cKeyText AS STRING
-    
+
         /// <include file="Gui.xml" path="doc/StatusBarKeyItem.ctor/*" />
     CONSTRUCTOR() STRICT
         SUPER()

@@ -66,7 +66,7 @@ RETURN
 		ELSEIF IsInstanceOfUsual(xType,#Bitmap)
 			LOCAL oBitMap AS BitMap
 			oBitMap := xType
-			System.Windows.Forms.Clipboard.SetImage( (System.Drawing.Image) oBitMap:__Image)
+			System.Windows.Forms.Clipboard.SetImage( (System.Drawing.Image) oBitMap)
 			lOk := TRUE
 		ELSE
 			WCError{#Insert,#Clipboard,__WCSTypeError,xType,1}:Throw()

@@ -2,7 +2,7 @@ USING System.Reflection
 /// <include file="Gui.xml" path="doc/Edit/*" />
 
 [XSharp.Internal.TypesChanged];
-CLASS Edit INHERIT TextControl
+CLASS Edit INHERIT TextControl 
 	PROTECT lNoNotify AS LOGIC
 	PROTECT lForceModFlag2True AS LOGIC
 

@@ -245,7 +245,7 @@ CLASS SplitView INHERIT Control
 				ELSE
 					// Use WindowsNT constants
 					dwNewColor := GuiWin32.GetSysColor(COLOR_BTNFACE)
-				ENDIF
+                ENDIF
 			ENDIF
 
 		CASE SPLTCOLOR_BARFRAME
@@ -262,10 +262,12 @@ CLASS SplitView INHERIT Control
 		END SWITCH
 
 		IF oBrush != NULL_OBJECT
-			dwNewColor := WC.GetBrushColor(oBrush)
+			dwNewColor := (Color) oBrush
 		ENDIF
 		//PCALL(gpfnSpltColorSet, SELF:Handle(), kWhere, INT(_CAST, dwNewColor))
-		//dwNewColor := dwNewColor
+        FOREACH var Split in _aSplits
+            Split:ForeColor := Color{dwNewColor}
+        NEXT
 
 		RETURN
 

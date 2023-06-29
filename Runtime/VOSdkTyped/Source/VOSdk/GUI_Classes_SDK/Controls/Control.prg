@@ -792,7 +792,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         LOCAL lBorder		AS LOGIC
         LOCAL nStyle		AS LONG
 
-        nStyle := GuiWin32.GetWindowLong(SELF:hWnd,GWL_EXSTYLE)
+        nStyle := GuiWin32.GetWindowExStyle(SELF:hWnd)
         IF _AND(nStyle,WS_EX_DLGMODALFRAME)>0
             lBorder := TRUE
         ELSEIF _AND(nStyle,WS_EX_WINDOWEDGE)>0
@@ -802,7 +802,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         ELSEIF _AND(nStyle,WS_EX_CLIENTEDGE)>0
             lBorder := TRUE
         ELSE
-            nStyle := GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)
+            nStyle := GuiWin32.GetWindowStyle(SELF:hWnd)
             IF _AND(nStyle,WS_BORDER)>0
                 lBorder := TRUE
             ENDIF
@@ -914,8 +914,8 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             //oCtrl := GetDlgItem(oFormSurface:Handle(), wId)
 
             //__WCRegisterControl(SELF) //register after we get the handle
-            //SetWindowLong(oCtrl, GWL_STYLE, _OR(GetWindowLong(oCtrl, GWL_STYLE), LONGINT(_CAST, dwStyle)))
-            //SetWindowLong(oCtrl, GWL_EXSTYLE, LONGINT(_CAST, _AND(GetWindowLong(oCtrl, GWL_EXSTYLE), _NOT(WS_EX_NOPARENTNOTIFY))))
+            //SetWindowStyle(oCtrl, _OR(GetWindowStyle(oCtrl), LONGINT(_CAST, dwStyle)))
+            //SetWindowExStyle(oCtrl, LONGINT(_CAST, _AND(GetWindowExStyle(oCtrl), _NOT(WS_EX_NOPARENTNOTIFY))))
 
             //__lpfnDefaultProc := PTR(_CAST, GetWindowLong(oCtrl, GWL_WNDPROC))
             //SetWindowLong(oCtrl, GWL_WNDPROC, LONGINT(_CAST, Get__WCControlProcPtr()))
@@ -1369,14 +1369,14 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ENDIF
         ELSE
             VAR iCtrl := (IVOControlProperties) oCtrl
-            liTemp := GuiWin32.GetWindowLong(hWnd, GWL_EXSTYLE)
+            liTemp := GuiWin32.GetWindowExStyle(hWnd)
             iCtrl:ControlProperties:SetExStyle(kExStyle, lEnable)
             IF lEnable
                 liTemp := _OR(kExStyle, liTemp)
             ELSE
                 liTemp := _AND(liTemp, _NOT(kExStyle))
             ENDIF
-            GuiWin32.SetWindowLong(hWnd, GWL_EXSTYLE, liTemp)
+            GuiWin32.SetWindowExStyle(hWnd, liTemp)
         ENDIF
 
         RETURN
@@ -1395,11 +1395,11 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
     /// <include file="Gui.xml" path="doc/Control.HasStyle/*" />
     METHOD HasStyle(kStyle AS LONG)
         LOCAL liStyle	AS LONG
-        liStyle := GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)
+        liStyle := GuiWin32.GetWindowStyle(SELF:hWnd)
         RETURN _AND(liStyle,kStyle) != 0
 
     /// <include file="Gui.xml" path="doc/Control.Style/*" />
-    PROPERTY Style AS LONG GET GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)
+    PROPERTY Style AS LONG GET GuiWin32.GetWindowStyle(SELF:hWnd)
 
     /// <include file="Gui.xml" path="doc/Control.SetStyle/*" />
     METHOD SetStyle(kStyle AS LONG, lEnable := TRUE AS LOGIC)
@@ -1413,7 +1413,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         ELSE
             LOCAL iCtrl AS IVOControlProperties
             iCtrl := (IVOControlProperties) (OBJECT) oCtrl
-            liTemp := GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)
+            liTemp := GuiWin32.GetWindowStyle(SELF:hWnd)
             iCtrl:ControlProperties:SetStyle(kStyle, lEnable)
             IF lEnable
                 liTemp := _OR(kStyle, liTemp)
@@ -1421,7 +1421,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
                 liTemp := _AND(liTemp, _NOT(kStyle))
             ENDIF
             dwStyle := liTemp // without this line it does not work for custom drawn labels
-            GuiWin32.SetWindowLong(hWnd, GWL_STYLE,  liTemp)
+            GuiWin32.SetWindowStyle(hWnd, liTemp)
         ENDIF
 
         RETURN SELF

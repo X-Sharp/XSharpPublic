@@ -730,7 +730,7 @@ CLASS ListView INHERIT TextControl
 
 
 /// <include file="Gui.xml" path="doc/ListView.LargeImageList/*" />
-	PROPERTY  LargeImageList  as ImageList GET ImageList{__ListView:LargeImageList} SET __ListView:LargeImageList := value:__ImageList
+	PROPERTY  LargeImageList  as ImageList GET ImageList{__ListView:LargeImageList} SET __ListView:LargeImageList := value
 
 /// <include file="Gui.xml" path="doc/ListView.RedrawRange/*" />
 	METHOD RedrawRange(oRange)
@@ -1050,7 +1050,7 @@ CLASS ListView INHERIT TextControl
 		RETURN SUPER:SetStyle(kStyle, lEnable)
 
 /// <include file="Gui.xml" path="doc/ListView.SmallImageList/*" />
-	PROPERTY SmallImageList  AS ImageList GET ImageList{__ListView:SmallImageList} SET __ListView:SmallImageList := value:__ImageList
+	PROPERTY SmallImageList  AS ImageList GET ImageList{__ListView:SmallImageList} SET __ListView:SmallImageList := value
 
 /// <include file="Gui.xml" path="doc/ListView.SortItems/*" />
 	METHOD SortItems()
@@ -1061,7 +1061,7 @@ CLASS ListView INHERIT TextControl
 		RETURN TRUE
 
 /// <include file="Gui.xml" path="doc/ListView.StateImageList/*" />
-	PROPERTY StateImageList AS ImageList GET ImageList{__ListView:StateImageList} SET __ListView:StateImageList := value:__ImageList
+	PROPERTY StateImageList AS ImageList GET ImageList{__ListView:StateImageList} SET __ListView:StateImageList := value
 
 	/// <inheritdoc />
 	METHOD RestoreUpdate() AS VOID STRICT

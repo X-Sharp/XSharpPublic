@@ -83,12 +83,9 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
             ENDIF
         ENDIF
     /// <exclude />
-    ACCESS __HasSurface AS LOGIC
-        RETURN TRUE
-
+    PROPERTY __HasSurface AS LOGIC GET TRUE
     /// <exclude />
-    ACCESS __Surface AS IVOControlContainer
-        RETURN oSurface
+    PROPERTY __Surface AS IVOControlContainer GET oSurface
     /// <exclude />
     METHOD __SetupDataControl(oDC AS Control) AS VOID
         IF oDC IS RadioButtonGroup
@@ -320,7 +317,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
         RETURN oParent
 
     /// <include file="Gui.xml" path="doc/DialogWindow.PostShowDialog/*" />
-    METHOD PostShowDialog()
+    METHOD PostShowDialog() CLIPPER
         RETURN NIL
 
     /// <include file="Gui.xml" path="doc/DialogWindow.Result/*" />

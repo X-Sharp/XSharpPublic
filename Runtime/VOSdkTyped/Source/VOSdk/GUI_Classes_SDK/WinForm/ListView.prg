@@ -3,17 +3,17 @@
 // This file contains a subclass of the Windows.Forms.ListView control
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
+USING SWF := System.Windows.Forms
 USING System.Collections
 USING System.Collections.Generic
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
-USING SWF := System.Windows.Forms
 CLASS VOListView INHERIT SWF.ListView  IMPLEMENTS IVoControl
 	PROPERTY ListView     AS VOSDK.ListView GET (VOSDK.ListView) oProperties:Control
-	#include "PropControl.vh"
+	#include "PropControl.xh"
 
 	METHOD Initialize() AS VOID STRICT
-		SELF:View := System.Windows.Forms.View.Details
+		SELF:View := SWF.View.Details
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
@@ -43,21 +43,21 @@ CLASS VOListView INHERIT SWF.ListView  IMPLEMENTS IVoControl
 
 	#region Event Handlers
 
-	VIRTUAL PROTECTED METHOD OnAfterLabelEdit(e AS LabelEditEventArgs) AS VOID
+	VIRTUAL PROTECTED METHOD OnAfterLabelEdit(e AS SWF.LabelEditEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnAfterLabelEdit(e)
 		oWindow := (Window) SELF:Control:Owner
 		oWindow:ListViewItemEdit(ListViewEditEvent{SELF:ListView, e, FALSE})
 		RETURN
 
-	VIRTUAL PROTECTED METHOD OnBeforeLabelEdit(e AS LabelEditEventArgs) AS VOID
+	VIRTUAL PROTECTED METHOD OnBeforeLabelEdit(e AS SWF.LabelEditEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnBeforeLabelEdit(e)
 		oWindow := (Window) SELF:Control:Owner
 		oWindow:ListViewItemEdit(ListViewEditEvent{SELF:ListView, e, TRUE})
 		RETURN
 
-	VIRTUAL PROTECTED METHOD OnColumnClick(e AS ColumnClickEventArgs ) AS VOID
+	VIRTUAL PROTECTED METHOD OnColumnClick(e AS SWF.ColumnClickEventArgs ) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnColumnClick(e)
 		oWindow := (Window) SELF:Control:Owner
@@ -65,14 +65,14 @@ CLASS VOListView INHERIT SWF.ListView  IMPLEMENTS IVoControl
 		RETURN
 
 
-	VIRTUAL PROTECTED METHOD OnItemChecked(e AS ItemCheckedEventArgs ) AS VOID
+	VIRTUAL PROTECTED METHOD OnItemChecked(e AS SWF.ItemCheckedEventArgs ) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnItemChecked(e)
 		oWindow := (Window) SELF:Control:Owner
 		oWindow:ListViewItemChanged(ListViewItemEvent{SELF:ListView, e})
 		RETURN
 
-	VIRTUAL PROTECTED METHOD OnItemDrag(e AS ItemDragEventArgs ) AS VOID
+	VIRTUAL PROTECTED METHOD OnItemDrag(e AS SWF.ItemDragEventArgs ) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnItemDrag(e)
 		oWindow := (Window) SELF:Control:Owner
@@ -80,21 +80,21 @@ CLASS VOListView INHERIT SWF.ListView  IMPLEMENTS IVoControl
 		RETURN
 
 
-	VIRTUAL PROTECTED METHOD OnItemSelectionChanged(e AS ListViewItemSelectionChangedEventArgs ) AS VOID
+	VIRTUAL PROTECTED METHOD OnItemSelectionChanged(e AS SWF.ListViewItemSelectionChangedEventArgs ) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnItemSelectionChanged(e)
 		oWindow := (Window) SELF:Control:Owner
 		oWindow:ListViewItemChanged(ListViewItemEvent{SELF:ListView, e})
 		RETURN
 
-	VIRTUAL PROTECTED METHOD OnMouseDown(e AS MouseEventArgs) AS VOID
+	VIRTUAL PROTECTED METHOD OnMouseDown(e AS SWF.MouseEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnMouseDown(e)
 		oWindow := (Window) SELF:Control:Owner
 		oWindow:ListViewMouseButtonDown(ListViewMouseEvent{SELF:ListView, e})
 		RETURN
 
-	VIRTUAL PROTECTED METHOD OnMouseDoubleClick(e AS MouseEventArgs) AS VOID
+	VIRTUAL PROTECTED METHOD OnMouseDoubleClick(e AS SWF.MouseEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnMouseDoubleClick(e)
 		oWindow := (Window) SELF:Control:Owner
@@ -108,7 +108,7 @@ CLASS VOListView INHERIT SWF.ListView  IMPLEMENTS IVoControl
 		oWindow:ListViewItemChanged(ListViewItemEvent{SELF:ListView, e})
 		RETURN
 
-	VIRTUAL PROTECT METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
+	VIRTUAL PROTECT METHOD OnKeyDown(e AS SWF.KeyEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnKeyDown(e)
 		oWindow := (Window) SELF:Control:Owner
@@ -138,9 +138,9 @@ CLASS VODataListView INHERIT VOListView
 END CLASS
 
 
-CLASS VOColumnHeader INHERIT System.Windows.Forms.ColumnHeader
+CLASS VOColumnHeader INHERIT SWF.ColumnHeader
 	PROPERTY Column AS VOSDK.ListViewColumn AUTO
-	PROPERTY Header AS System.Windows.Forms.ColumnHeader GET SELF
+	PROPERTY Header AS SWF.ColumnHeader GET SELF
 	METHOD LinkTo(oColumn AS VOSDK.ListViewColumn) AS VOID STRICT
 		SELF:Column := oColumn
 		SELF:Tag	:= oColumn
@@ -155,7 +155,7 @@ END CLASS
 
 
 
-CLASS VOListViewItem INHERIT System.Windows.Forms.ListViewItem
+CLASS VOListViewItem INHERIT SWF.ListViewItem
 	PROPERTY Item AS VOSDK.ListViewItem AUTO
 	PROPERTY SWFItem AS OBJECT GET SELF
     NEW PROPERTY Group AS OBJECT GET SUPER:Group SET SUPER:Group := VALUE
@@ -172,7 +172,7 @@ END CLASS
 
 // Cannot create subclass from ListViewGroup because it is sealed
 
-//CLASS VOListViewGroup INHERIT System.Windows.Forms.ListViewGroup IMPLEMENTS IVOListViewGroup
+//CLASS VOListViewGroup INHERIT SWF.ListViewGroup IMPLEMENTS IVOListViewGroup
 //    CONSTRUCTOR(cName)
 //        SUPER(cName)
 //END CLASS

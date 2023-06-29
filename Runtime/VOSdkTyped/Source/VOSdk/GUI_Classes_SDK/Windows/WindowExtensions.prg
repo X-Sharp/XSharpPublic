@@ -16,8 +16,7 @@ PARTIAL CLASS Window
 			RETURN xChild
 		ENDIF
 
-	ACCESS IsResizable() AS LOGIC
-		RETURN ( _AND( GuiWin32.GetWindowLong( SELF:Handle(), GWL_STYLE ), WS_THICKFRAME ) = WS_THICKFRAME )
+	PROPERTY IsResizable() AS LOGIC GET ( _AND( GuiWin32.GetWindowStyle( SELF:Handle()), WS_THICKFRAME ) = WS_THICKFRAME )
 
 	ACCESS Min_Visibility AS INT
 		//Für Subwindows ebenfalls interessant

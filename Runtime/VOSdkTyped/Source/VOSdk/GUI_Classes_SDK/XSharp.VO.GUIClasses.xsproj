@@ -132,6 +132,7 @@
     <Compile Include="ResourceReader\ResourceMenu.prg" />
     <Compile Include="Support\ClipBoard.prg" />
     <Compile Include="Support\EventContext.prg" />
+    <Compile Include="Support\Extensions.prg" />
     <Compile Include="Support\FormattedString.prg" />
     <Compile Include="Support\HelpDisplay.prg" />
     <Compile Include="Support\IPCTopic.prg" />
@@ -285,7 +286,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassMapping.xlsx" />
-    <None Include="WinForm\PropControl.vh" />
+    <None Include="WinForm\PropControl.xh" />
     <None Include="_readme.txt" />
   </ItemGroup>
   <ItemGroup>

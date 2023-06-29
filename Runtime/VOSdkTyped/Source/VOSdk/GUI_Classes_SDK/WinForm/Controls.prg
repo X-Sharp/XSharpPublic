@@ -6,15 +6,14 @@
 // class that owns the control
 
 USING System.Windows.Forms
+USING SWF := System.Windows.Forms
 USING System.Drawing
 USING System.Collections.Generic
 USING VOSDK := XSharp.VO.SDK
 
-CLASS VOButton INHERIT System.Windows.Forms.Button IMPLEMENTS IVoControl
+CLASS VOButton INHERIT SWF.Button IMPLEMENTS IVoControl
 
-	#include "PropControl.vh"
-
-
+	#include "PropControl.xh"
 #region Properties
     PROPERTY Button AS VOSDK.Button GET (VOSDK.Button) SELF:Control
 #endregion
@@ -54,8 +53,8 @@ CLASS VOButton INHERIT System.Windows.Forms.Button IMPLEMENTS IVoControl
 	END PROPERTY
 END CLASS
 
-CLASS VOCheckBox INHERIT System.Windows.Forms.CheckBox  IMPLEMENTS IVoControl
-	#include "PropControl.vh"
+CLASS VOCheckBox INHERIT SWF.CheckBox  IMPLEMENTS IVoControl
+	#include "PropControl.xh"
 
 	METHOD Initialize() AS VOID STRICT
 			SELF:UseCompatibleTextRendering := FALSE
@@ -84,7 +83,7 @@ CLASS VOCheckBox INHERIT System.Windows.Forms.CheckBox  IMPLEMENTS IVoControl
 			SELF:TextAlign := oProperties:TextAlignment
 		ENDIF
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams
+	VIRTUAL PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:style ~= (LONG)BS_MULTILINE
@@ -94,9 +93,9 @@ CLASS VOCheckBox INHERIT System.Windows.Forms.CheckBox  IMPLEMENTS IVoControl
 
 END CLASS
 
-CLASS VORadioButton INHERIT System.Windows.Forms.RadioButton  IMPLEMENTS IVoControl
+CLASS VORadioButton INHERIT SWF.RadioButton  IMPLEMENTS IVoControl
 
-	#include "PropControl.vh"
+	#include "PropControl.xh"
 	PROPERTY SuppressCheckedChanged AS LOGIC AUTO := FALSE
 
 	METHOD Initialize() AS VOID STRICT
@@ -130,18 +129,18 @@ CLASS VORadioButton INHERIT System.Windows.Forms.RadioButton  IMPLEMENTS IVoCont
 
 END CLASS
 
-CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox  IMPLEMENTS IVoControl
-	#include "PropControl.vh"
+CLASS VOGroupBox INHERIT SWF.GroupBox  IMPLEMENTS IVoControl
+	#include "PropControl.xh"
 	PROPERTY IsRadioGroup AS LOGIC AUTO
 	PROTECTED lFound AS LOGIC
 
     METHOD SetChildIndex(oCtrl AS IVOControl, nIndex AS LONG) AS VOID
-        IF oCtrl IS System.Windows.Forms.Control VAR oC
+        IF oCtrl IS SWF.Control VAR oC
             SELF:Controls:SetChildIndex(oC,nIndex)
         ENDIF
 
     METHOD AddControl(oCtrl AS IVOControl) AS VOID
-        IF oCtrl IS System.Windows.Forms.Control VAR oC
+        IF oCtrl IS SWF.Control VAR oC
             SELF:Controls:Add(oC)
         ENDIF
 
@@ -205,7 +204,7 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox  IMPLEMENTS IVoControl
 
 		IF !lMoved
 			IF SELF:Parent != NULL_OBJECT .and. SELF:Parent:Controls:Count > 0 .and. SELF:Text != NULL .AND. SELF:Text:Length > 0
-				FOREACH oC AS System.Windows.Forms.Control IN SELF:Parent:Controls
+				FOREACH oC AS SWF.Control IN SELF:Parent:Controls
 					IF oC != SELF .AND. oC:Parent == SELF:Parent
 						oLocParent := SELF:Location
 						oLocChild  := oC:Location
@@ -275,7 +274,7 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox  IMPLEMENTS IVoControl
 		IF aChildren =NULL
 			aChildren := System.Collections.Generic.List<IVOControl>{}
 		ENDIF
-		FOREACH oC AS System.Windows.Forms.Control IN SELF:Controls
+		FOREACH oC AS SWF.Control IN SELF:Controls
 			IF oC IS IVoControl VAR oVOC
 				aChildren:add(oVOC)
 			ENDIF
@@ -287,9 +286,9 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox  IMPLEMENTS IVoControl
 
 END CLASS
 
-CLASS VOLabel INHERIT System.Windows.Forms.Label  IMPLEMENTS IVoControl
+CLASS VOLabel INHERIT SWF.Label  IMPLEMENTS IVoControl
 
-	#include "PropControl.vh"
+	#include "PropControl.xh"
 	PROPERTY FixedText AS VOSDK.FixedText GET (VOSDK.FixedText) oProperties:Control
 
 	METHOD Initialize() AS VOID STRICT
@@ -340,8 +339,8 @@ CLASS VOOwnerDrawnLabel INHERIT VOLabel  IMPLEMENTS IVoControl
 
 END CLASS
 
-CLASS VOImageLabel INHERIT System.Windows.Forms.Label  IMPLEMENTS IVoControl
-	#include "PropControl.vh"
+CLASS VOImageLabel INHERIT SWF.Label  IMPLEMENTS IVoControl
+	#include "PropControl.xh"
 
 	METHOD Initialize() AS VOID STRICT
 		SELF:UseCompatibleTextRendering := FALSE
@@ -361,8 +360,8 @@ CLASS VOImageLabel INHERIT System.Windows.Forms.Label  IMPLEMENTS IVoControl
 
 END CLASS
 
-CLASS VOLinkLabel INHERIT System.Windows.Forms.LinkLabel  IMPLEMENTS IVoControl
-	#include "PropControl.vh"
+CLASS VOLinkLabel INHERIT SWF.LinkLabel  IMPLEMENTS IVoControl
+	#include "PropControl.xh"
 
 	METHOD Initialize() AS VOID STRICT
 		SELF:UseCompatibleTextRendering := FALSE
@@ -383,9 +382,9 @@ CLASS VOLinkLabel INHERIT System.Windows.Forms.LinkLabel  IMPLEMENTS IVoControl
 END CLASS
 
 
-CLASS VOProgressBar INHERIT System.Windows.Forms.ProgressBar  IMPLEMENTS IVoControl
+CLASS VOProgressBar INHERIT SWF.ProgressBar  IMPLEMENTS IVoControl
 
-	#include "PropControl.vh"
+	#include "PropControl.xh"
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
@@ -402,10 +401,10 @@ END CLASS
 
 
 
-CLASS VOHScrollBar INHERIT System.Windows.Forms.HScrollBar  IMPLEMENTS IVoControl
+CLASS VOHScrollBar INHERIT SWF.HScrollBar  IMPLEMENTS IVoControl
     PROPERTY ScrollBar AS ScrollBar GET (ScrollBar) SELF:Control
 
-	#include "PropControl.vh"
+	#include "PropControl.xh"
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
@@ -430,10 +429,10 @@ CLASS VOHScrollBar INHERIT System.Windows.Forms.HScrollBar  IMPLEMENTS IVoContro
 		RETURN
 END CLASS
 
-CLASS VOHSpinner INHERIT System.Windows.Forms.HScrollBar  IMPLEMENTS IVoControl
+CLASS VOHSpinner INHERIT SWF.HScrollBar  IMPLEMENTS IVoControl
     PROPERTY Spinner AS Spinner GET (Spinner) SELF:Control
 
-	#include "PropControl.vh"
+	#include "PropControl.xh"
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
@@ -459,8 +458,8 @@ CLASS VOHSpinner INHERIT System.Windows.Forms.HScrollBar  IMPLEMENTS IVoControl
 
 END CLASS
 
-CLASS VOVScrollBar INHERIT System.Windows.Forms.VScrollBar  IMPLEMENTS IVoControl
-	#include "PropControl.vh"
+CLASS VOVScrollBar INHERIT SWF.VScrollBar  IMPLEMENTS IVoControl
+	#include "PropControl.xh"
     PROPERTY ScrollBar AS ScrollBar GET (ScrollBar) SELF:Control
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
@@ -488,8 +487,8 @@ CLASS VOVScrollBar INHERIT System.Windows.Forms.VScrollBar  IMPLEMENTS IVoContro
 
 END CLASS
 
-CLASS VOVSpinner INHERIT System.Windows.Forms.NumericUpDown  IMPLEMENTS IVoControl
-	#include "PropControl.vh"
+CLASS VOVSpinner INHERIT SWF.NumericUpDown  IMPLEMENTS IVoControl
+	#include "PropControl.xh"
     PROPERTY Spinner AS Spinner GET (Spinner) SELF:Control
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
@@ -520,8 +519,8 @@ CLASS VOVSpinner INHERIT System.Windows.Forms.NumericUpDown  IMPLEMENTS IVoContr
 END CLASS
 
 
-CLASS VOSlider INHERIT System.Windows.Forms.TrackBar
-	#include "PropControl.vh"
+CLASS VOSlider INHERIT SWF.TrackBar
+	#include "PropControl.xh"
     PROPERTY Slider AS Slider GET (Slider) SELF:Control
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
@@ -553,12 +552,12 @@ CLASS VOSlider INHERIT System.Windows.Forms.TrackBar
 
 END CLASS
 
-CLASS VOStatusBar INHERIT System.Windows.Forms.StatusStrip  IMPLEMENTS IVOControl
-	PRIVATE oTm AS System.Windows.Forms.Timer
-	#include "PropControl.vh"
+CLASS VOStatusBar INHERIT SWF.StatusStrip  IMPLEMENTS IVOControl
+	PRIVATE oTm AS SWF.Timer
+	#include "PropControl.xh"
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
-		oTm := System.Windows.Forms.Timer{}
+		oTm := SWF.Timer{}
 		oTm:Tick += Timer_Tick
 		oTm:Interval := 1000
 		oTm:Enabled := TRUE
@@ -585,8 +584,8 @@ CLASS VOStatusBar INHERIT System.Windows.Forms.StatusStrip  IMPLEMENTS IVOContro
 
 END CLASS
 
-CLASS VODateTimePicker  INHERIT System.Windows.Forms.DateTimePicker
-	#include "PropControl.vh"
+CLASS VODateTimePicker  INHERIT SWF.DateTimePicker
+	#include "PropControl.xh"
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
@@ -617,8 +616,8 @@ CLASS VODateTimePicker  INHERIT System.Windows.Forms.DateTimePicker
 
 END CLASS
 
-CLASS VOMonthCalendar  INHERIT System.Windows.Forms.MonthCalendar
-	#include "PropControl.vh"
+CLASS VOMonthCalendar  INHERIT SWF.MonthCalendar
+	#include "PropControl.xh"
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
 		SUPER()
@@ -634,14 +633,14 @@ CLASS VOMonthCalendar  INHERIT System.Windows.Forms.MonthCalendar
 		ENDIF
 
 
-	PROTECTED METHOD OnDateChanged(e AS System.Windows.Forms.DateRangeEventArgs) AS VOID
+	PROTECTED METHOD OnDateChanged(e AS SWF.DateRangeEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnDateChanged(e)
 		oWindow := (Window) SELF:Control:Owner
 		oWindow:MonthCalSelectionChanged(MonthCalSelectionEvent{SELF:Control, FALSE})
 		RETURN
 
-	PROTECTED METHOD OnDateSelected(e AS System.Windows.Forms.DateRangeEventArgs) AS VOID
+	PROTECTED METHOD OnDateSelected(e AS SWF.DateRangeEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		SUPER:OnDateSelected(e)
 		oWindow := (Window) SELF:Control:Owner

@@ -5,16 +5,13 @@ CLASS ControlWindow INHERIT Window
 	PROTECT oCtrl AS Control
 	PROTECT oSurface AS VOSurfacePanel
 
-	ACCESS __Surface AS IVOControlContainer
-		RETURN oSurface
+    PROPERTY __Surface AS IVOControlContainer GET oSurface
 
 /// <include file="Gui.xml" path="doc/ControlWindow.Control/*" />
-	ACCESS Control AS Control
-		RETURN oCtrl
+	PROPERTY Control AS Control GET oCtrl
 
 /// <include file="Gui.xml" path="doc/ControlWindow.ControlID/*" />
-	ACCESS ControlID AS LONG
-		RETURN oCtrl:ControlID
+	PROPERTY ControlID AS LONG GET oCtrl:ControlID
 
 
 /// <include file="Gui.xml" path="doc/ControlWindow.Destroy/*" />
@@ -44,8 +41,7 @@ CLASS ControlWindow INHERIT Window
 		RETURN
 
 /// <include file="Gui.xml" path="doc/ControlWindow.HyperLabel/*" />
-	ACCESS HyperLabel AS HyperLabel
-		RETURN oCtrl:HyperLabel
+	PROPERTY HyperLabel AS HyperLabel GET oCtrl:HyperLabel
 
 /// <include file="Gui.xml" path="doc/ControlWindow.ctor/*" />
 	CONSTRUCTOR(oControl)
@@ -68,31 +64,34 @@ CLASS ControlWindow INHERIT Window
 		RETURN
 
 /// <include file="Gui.xml" path="doc/ControlWindow.Modified/*" />
-	ACCESS Modified AS LOGIC
+    PROPERTY Modified AS LOGIC
+    GET
 		IF oCtrl:__IsValid
 			RETURN oCtrl:Modified
 		ENDIF
-		RETURN FALSE
-
-/// <include file="Gui.xml" path="doc/ControlWindow.Modified/*" />
-	ASSIGN Modified(lChanged AS LOGIC)
+        RETURN FALSE
+    END GET
+    SET
 		IF oCtrl:__IsValid
-			oCtrl:Modified := lChanged
+			oCtrl:Modified := value
 		ENDIF
-
+    END SET
+    END PROPERTY
 /// <include file="Gui.xml" path="doc/ControlWindow.Origin/*" />
-	ACCESS Origin AS Point
+    PROPERTY Origin AS Point
+    GET
 		IF oCtrl:__IsValid
 			RETURN oCtrl:Origin
 		ENDIF
 		RETURN SUPER:Origin
-
-/// <include file="Gui.xml" path="doc/ControlWindow.Origin/*" />
-	ASSIGN Origin(oPoint AS Point)
+    END GET
+    SET
 		IF oCtrl:__IsValid
-			oCtrl:Origin := oPoint
-		ENDIF
-
+			oCtrl:Origin := value
+        ENDIF
+        SUPER:Origin := value
+    END SET
+    END PROPERTY
 /// <include file="Gui.xml" path="doc/ControlWindow.Override/*" />
 	METHOD Override() STRICT
 		RETURN NIL
@@ -109,15 +108,18 @@ CLASS ControlWindow INHERIT Window
 		RETURN
 
 /// <include file="Gui.xml" path="doc/ControlWindow.Size/*" />
-	ACCESS Size AS Dimension
+	PROPERTY Size AS Dimension
+	GET
 		IF oCtrl:__IsValid
 			RETURN oCtrl:Size
 		ENDIF
 		RETURN SUPER:Size
-
-/// <include file="Gui.xml" path="doc/ControlWindow.Size/*" />
-	ASSIGN Size(oDimension AS Dimension)
+    END GET
+    SET
 		IF oCtrl:__IsValid
-			oCtrl:Size := oDimension
-		ENDIF
+			oCtrl:Size := value
+        ENDIF
+        SUPER:Size := value
+    END SET
+    END PROPERTY
 END CLASS

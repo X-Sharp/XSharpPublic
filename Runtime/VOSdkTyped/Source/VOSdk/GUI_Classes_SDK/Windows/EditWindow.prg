@@ -2,7 +2,7 @@
 
 
 /// <include file="Gui.xml" path="doc/EditWindow/*" />
-CLASS EditWindow INHERIT ControlWindow
+CLASS EditWindow INHERIT ControlWindow 
 	PROTECT oMle as MultiLineEdit
 	METHOD AsString()
 		RETURN SELF:TextValue

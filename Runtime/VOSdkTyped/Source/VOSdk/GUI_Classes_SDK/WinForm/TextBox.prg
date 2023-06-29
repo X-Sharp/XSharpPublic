@@ -4,14 +4,14 @@
 //
 // Also some On..() methods have been implemented that call the event handlers on the VO Window
 // class that owns the control
-
+USING SWF := System.Windows.Forms
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 
-CLASS VOTextBox INHERIT System.Windows.Forms.TextBox   IMPLEMENTS IVoControl
+CLASS VOTextBox INHERIT SWF.TextBox   IMPLEMENTS IVoControl
 	PROPERTY oEdit		AS VOSDK.Edit GET (VOSDK.Edit) SELF:Control
 
-	#include "PropControl.vh"
+	#include "PropControl.xh"
 
 	METHOD Initialize() AS VOID STRICT
 		SELF:AutoSize			:= FALSE
@@ -81,7 +81,7 @@ CLASS VOTextBox INHERIT System.Windows.Forms.TextBox   IMPLEMENTS IVoControl
 
 	PROTECT _lInPaint AS LOGIC
 
-	METHOD OnWndProc(msg REF Message) AS VOID
+	METHOD OnWndProc(msg REF SWF.Message) AS VOID
 		IF msg:Msg == WM_PASTE .AND. SELF:oEdit != NULL_OBJECT
 			IF IsInstanceOf(oEdit, #SingleLineEdit)
 				LOCAL oSle AS SingleLineEdit
@@ -100,7 +100,7 @@ CLASS VOHotKeyTextBox INHERIT VOTextBox
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner, dwStyle, dwExStyle)
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams
+	VIRTUAL PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:ClassName := HOTKEY_CLASS
@@ -114,7 +114,7 @@ CLASS VOMLETextBox INHERIT VOTextBox
 		SUPER(Owner,dwStyle,dwExStyle )
 		SELF:Multiline := TRUE
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams
+	VIRTUAL PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:style |= (LONG)WS_VSCROLL
@@ -122,9 +122,9 @@ CLASS VOMLETextBox INHERIT VOTextBox
 		END GET
 	END PROPERTY
 
-	PROTECTED METHOD OnKeyDown (e AS System.Windows.Forms.KeyEventArgs) AS VOID STRICT
+	PROTECTED METHOD OnKeyDown (e AS SWF.KeyEventArgs) AS VOID STRICT
 		// Suppress Escape. Was in VO in MultiLineEdit:Dispatch()
-		IF e:KeyCode != System.Windows.Forms.Keys.Escape
+		IF e:KeyCode != SWF.Keys.Escape
 			SUPER:OnKeyDown(e)
 		ENDIF
 
@@ -136,7 +136,7 @@ CLASS VOIPAddressTextBox INHERIT VOTextBox
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner,dwStyle,dwExStyle )
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams
+	VIRTUAL PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:ClassName := "SysIPAddress32"
@@ -146,8 +146,8 @@ CLASS VOIPAddressTextBox INHERIT VOTextBox
 END CLASS
 
 
-CLASS VORichTextBox INHERIT System.Windows.Forms.RichTextBox IMPLEMENTS IVOControl, IVOControlInitialize
-	#include "PropControl.vh"
+CLASS VORichTextBox INHERIT SWF.RichTextBox IMPLEMENTS IVOControl, IVOControlInitialize
+	#include "PropControl.xh"
 
 	METHOD Initialize() AS VOID STRICT
 		SELF:AutoSize			:= FALSE
@@ -169,9 +169,9 @@ CLASS VORichTextBox INHERIT System.Windows.Forms.RichTextBox IMPLEMENTS IVOContr
 END CLASS
 
 
-CLASS VOSpinnerTextBox INHERIT System.Windows.Forms.NumericUpDown
+CLASS VOSpinnerTextBox INHERIT SWF.NumericUpDown
 	PROPERTY oEdit		AS VOSDK.SpinnerEdit GET (VOSDK.SpinnerEdit) SELF:Control
-	#include "PropControl.vh"
+	#include "PropControl.xh"
 
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}

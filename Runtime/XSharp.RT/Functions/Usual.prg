@@ -358,7 +358,9 @@ FUNCTION Len(uValue AS USUAL) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/default/*" />
 FUNCTION @@Default(uVar REF USUAL, uDefault AS USUAL) AS VOID
-    IF uVar:IsNil
+    IF uVar:IsObject .and. (OBJECT) uVar == NULL_OBJECT
+        // do nothing
+    ELSEIF uVar:IsNil
         uVar := uDefault
     ENDIF
     RETURN

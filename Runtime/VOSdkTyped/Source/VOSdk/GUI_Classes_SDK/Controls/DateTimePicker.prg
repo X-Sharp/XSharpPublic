@@ -155,7 +155,7 @@ METHOD PerformValidations() CLIPPER
 
     // DHer: 18/12/2008
     uOldValue := SELF:uValue
-    IF _AND(GuiWin32.GetWindowLong(SELF:Handle(),GWL_STYLE),DTS_TIMEFORMAT)>0
+    IF _AND(GuiWin32.GetWindowStyle(SELF:Handle()),DTS_TIMEFORMAT)>0
         SELF:uValue := SELF:SelectedTime
     ELSE
         SELF:uValue := SELF:SelectedDate
@@ -236,14 +236,14 @@ METHOD PerformValidations() CLIPPER
 
     /// <include file="Gui.xml" path="doc/DateTimePicker.TextValue/*" />
     ACCESS TextValue  AS STRING
-        IF (_AND(GuiWin32.GetWindowLong(SELF:Handle(), GWL_STYLE), DTS_TIMEFORMAT) > 0)
+        IF (_AND(GuiWin32.GetWindowStyle(SELF:Handle()), DTS_TIMEFORMAT) > 0)
             RETURN SELF:SelectedTime
         ENDIF
         RETURN AsString(SELF:SelectedDate)
 
     /// <include file="Gui.xml" path="doc/DateTimePicker.Value/*" />
     ACCESS Value as USUAL
-        IF _AND(GuiWin32.GetWindowLong(SELF:Handle(),GWL_STYLE),DTS_TIMEFORMAT)>0
+        IF _AND(GuiWin32.GetWindowStyle(SELF:Handle()),DTS_TIMEFORMAT)>0
             SELF:uValue := SELF:SelectedTime
         ELSE
             SELF:uValue := SELF:SelectedDate

@@ -147,10 +147,10 @@ CLASS FixedText INHERIT TextControl
 
         hHandle := SELF:Handle()
         IF oCtrl != NULL_OBJECT .and. ! oCtrl:IsDisposed
-            liStyle := GuiWin32.GetWindowLong(hHandle, GWL_STYLE)
+            liStyle := GuiWin32.GetWindowStyle(hHandle)
             liStyle := _AND(dwStyle, _NOT(0X00000003U))
             liStyle := _OR(dwStyle, liTempStyle)
-            GuiWin32.SetWindowLong(hHandle, GWL_STYLE, liStyle)
+            GuiWin32.SetWindowStyle(hHandle, liStyle)
         ENDIF
 
         RETURN dwStyle

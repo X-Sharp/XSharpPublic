@@ -74,23 +74,27 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	METHOD __CreateForm() AS VOForm STRICT
 		RETURN GuiFactory.Instance:CreateWindow(SELF)
 
-	ACCESS __Form AS VOForm STRICT
-		RETURN oWnd
+	PROPERTY __Form AS VOForm GET oWnd
 
-	ASSIGN TopMost(value AS LOGIC)
-		IF value
-			SELF:__Form:mdiParent := NULL
-		ENDIF
-		SELF:__Form:TopMost := Value
-	ACCESS TopMost AS LOGIC
-		RETURN SELF:__Form:TopMost
-	ACCESS __IsValid AS LOGIC STRICT
-		RETURN SELF:oWnd != NULL_OBJECT .and. ! SELF:oWnd:IsDisposed
+    PROPERTY TopMost AS LOGIC
+        GET
+            RETURN SELF:__Form:TopMost
+        END GET
+        SET
+		    IF value
+			    SELF:__Form:mdiParent := NULL
+		    ENDIF
+		    SELF:__Form:TopMost := Value
+        END SET
+    END PROPERTY
 
-	ACCESS __HasSurface AS LOGIC
-		RETURN SELF:__Surface != oWnd
 
-	ACCESS __Surface AS IVOControlContainer STRICT
+	PROPERTY __IsValid AS LOGIC GET SELF:oWnd != NULL_OBJECT .and. ! SELF:oWnd:IsDisposed
+
+	PROPERTY __HasSurface AS LOGIC GET SELF:__Surface != oWnd
+
+    PROPERTY __Surface AS IVOControlContainer
+    GET
 		IF SELF:__IsValid
 			LOCAL IMPLIED aList := oWnd:GetAllControls()
 			FOREACH oC AS OBJECT IN aList
@@ -100,7 +104,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			NEXT
 		ENDIF
 		RETURN oWnd
-
+    END GET
+    END PROPERTY
 	METHOD __SetupDataControl(oDC AS VOSDK.Control) AS VOID
 		RETURN
  /// <exclude />
@@ -552,12 +557,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
  /// <exclude />
-	ACCESS __Cursor AS VOSDK.Cursor STRICT
-		RETURN oCursor
-
- /// <exclude />
-	ASSIGN __Cursor(oNewCursor AS VOSDK.Cursor)  STRICT
-		oCursor:=oNewCursor
+	PROPERTY __Cursor AS VOSDK.Cursor GET oCursor SET oCursor := value
 
 	[Obsolete];
 	METHOD __DestroyChildren() AS VOID STRICT
@@ -887,9 +887,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
  /// <exclude />
-	ACCESS __Parent AS OBJECT STRICT
-		//PP-030828 Strong typing
-		RETURN oParent
+	PROPERTY __Parent AS OBJECT GET oParent
 
 
  /// <exclude />
@@ -1121,7 +1119,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ENDIF
 		oTrayIcon:Text := sToolTip
 		IF oIcon != NULL_OBJECT
-			oTrayIcon:Image := ((Icon) oIcon):__Icon
+			oTrayIcon:Image := ((Icon) oIcon)
 		ENDIF
 		oTrayIcon:Show()
 		RETURN 	SELF
@@ -1153,13 +1151,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN TRUE
 
 /// <include file="Gui.xml" path="doc/Window.Automated/*" />
-	ACCESS Automated AS LOGIC
+    PROPERTY Automated AS LOGIC
+    GET
 		RETURN lAutomated
-
-/// <include file="Gui.xml" path="doc/Window.Automated/*" />
-	ASSIGN Automated(lNewVal AS LOGIC)
-		IF lNewVal != SELF:lAutomated
-			SELF:lAutomated := lNewVal
+    END GET
+    SET
+		IF value != SELF:lAutomated
+			SELF:lAutomated := value
 			//#ifdef USE_OLEOBJECT
 			//	IF SELF:lAutomated
 			//		_VOOLERegisterAutomationObject(PTR(_CAST, SELF), NULL_PSZ, 1, FALSE)
@@ -1170,7 +1168,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			//	ENDIF
 			//#endif
 		ENDIF
-
+    END SET
+    END PROPERTY
 
 
 /// <include file="Gui.xml" path="doc/Window.Background/*" />
@@ -1190,8 +1189,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 /// <include file="Gui.xml" path="doc/Window.CanvasArea/*" />
-	ACCESS CanvasArea  AS BoundingBox
-		RETURN (BoundingBox) __Form:ClientRectangle
+	PROPERTY CanvasArea  AS BoundingBox GET __Form:ClientRectangle
 
 
 /// <include file="Gui.xml" path="doc/Window.CanvasErase/*" />
@@ -1846,14 +1844,14 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 /// <include file="Gui.xml" path="doc/Window.GetStyle/*" />
 	METHOD GetStyle() AS LONG
 		IF SELF:__IsValid
-			RETURN GuiWin32.GetWindowLong(oWnd:Handle, GWL_STYLE)
+			RETURN GuiWin32.GetWindowStyle(oWnd:Handle)
 		ENDIF
 		RETURN SELF:dwStyle
 
 /// <include file="Gui.xml" path="doc/Window.GetExStyle/*" />
 	METHOD GetExStyle AS LONG
 		IF SELF:__IsValid
-			RETURN GuiWin32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
+			RETURN GuiWin32.GetWindowExStyle(oWnd:Handle)
 		ENDIF
 		RETURN SELF:dwExStyle
 
@@ -2001,7 +1999,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	ASSIGN Icon(oNewIcon AS Icon)
 		oIcon := oNewIcon
 		IF SELF:__IsValid
-			SELF:__Form:Icon := oIcon:__Icon
+			SELF:__Form:Icon := oIcon
 		ENDIF
 		RETURN
 
@@ -2015,7 +2013,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	ASSIGN IconSm(oNewIcon AS Icon)
 		oIconSmall := oNewIcon
 		IF SELF:__IsValid
-			SELF:__Form:SmallIcon := oIconSmall:__Icon
+			SELF:__Form:SmallIcon := oIconSmall
 		ENDIF
 		RETURN
 
@@ -2613,7 +2611,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 		IF (oWnd != NULL_OBJECT)
 			iWnd := (IVOForm) (OBJECT) oWnd
-			dwExStyle := GuiWin32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
+			dwExStyle := GuiWin32.GetWindowExStyle(oWnd:Handle)
 
 			IF lEnable
 				dwExStyle := _OR(dwExStyle, LONG(_CAST, dwSetStyle))
@@ -2623,7 +2621,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				iWnd:Properties:NotExStyle |= dwSetStyle
 			ENDIF
 
-			GuiWin32.SetWindowLong(oWnd:Handle, GWL_EXSTYLE, dwSetStyle)
+			GuiWin32.SetWindowExStyle(oWnd:Handle, dwSetStyle)
 		ENDIF
 
 		RETURN dwExStyle

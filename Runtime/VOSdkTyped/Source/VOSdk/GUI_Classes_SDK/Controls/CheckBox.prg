@@ -18,7 +18,7 @@ CLASS CheckBox INHERIT Button
     /// <exclude />
     METHOD OnHandleCreated(o AS OBJECT, e AS EventArgs) AS VOID
         SUPER:OnHandleCreated(o, e)
-        GuiWin32.SetWindowLong(SELF:hWnd, GWL_STYLE, dwStyle)
+        GuiWin32.SetWindowStyle(SELF:hWnd, dwStyle)
         RETURN
 
 
@@ -38,7 +38,7 @@ CLASS CheckBox INHERIT Button
             LOCAL oBM AS Bitmap
             oImage := oNewImage
             oBM := (Bitmap) oNewImage
-            SELF:__CheckBox:Image := oBM:__Image
+            SELF:__CheckBox:Image := oBM
             SELF:__CheckBox:Text := ""
             SELF:__CheckBox:FlatStyle := System.Windows.Forms.FlatStyle.Flat
             RETURN TRUE

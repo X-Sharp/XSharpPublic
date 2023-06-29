@@ -564,7 +564,7 @@ CLASS TreeView INHERIT TextControl
 /// <include file="Gui.xml" path="doc/TreeView.ImageList/*" />
 	ASSIGN ImageList(oNewImageList AS ImageList)
 		IF SELF:ValidateControl()
-			__TreeView:ImageList := oNewImageList:__ImageList
+			__TreeView:ImageList := oNewImageList
 		ENDIF
 		RETURN
 
@@ -791,7 +791,7 @@ CLASS TreeView INHERIT TextControl
 /// <include file="Gui.xml" path="doc/TreeView.StateImageList/*" />
 	ASSIGN StateImageList(oNewImageList AS ImageList)
 		IF SELF:__IsValid
-		    __TreeView:StateImageList := oNewImageList:__ImageList
+		    __TreeView:StateImageList := oNewImageList
 		ENDIF
 		RETURN
 

@@ -32,7 +32,7 @@ USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 
 /// <include file="Gui.xml" path="doc/DataBrowser/*" />
-CLASS DataBrowser INHERIT VOSDK.Control
+CLASS DataBrowser INHERIT VOSDK.Control 
 	PROTECT iBufferGranularity AS INT
 	PROTECT iBufferMaximum AS INT
 	PROTECT iDeferPaintCount   AS INT
@@ -2215,7 +2215,7 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Refresh/*" />
 	METHOD Refresh() AS VOID STRICT
-		IF oDataServer!=NULL_OBJECT 
+		IF oDataServer!=NULL_OBJECT
 			oDataServer:GoTo(oDataServer:RecNo) //Forces refresh if DBF was empty
 		ENDIF
 		SELF:__RefreshBuffer()

@@ -249,12 +249,10 @@ CLASS Font INHERIT VObject
     CONSTRUCTOR(kFont, oDimension, sTypeFace)
         SUPER()
         oLogFont := Font.LOGFONT{}
-        IF ! IsNil(kFont)
-            IF kFont:GetType() == typeof(System.Drawing.Font)
-                oFont := kFont
-                SELF:__ToLogFont()
-                RETURN
-            ENDIF
+        IF kFont  is System.Drawing.Font VAR oFt
+            oFont := oFt
+            SELF:__ToLogFont()
+            RETURN
         ENDIF
         oLogFont:Weight := FontWeight.Normal
 
@@ -472,10 +470,9 @@ CLASS Font INHERIT VObject
     END PROPERTY
 
     PROPERTY Weight AS LONG GET oLogFont:Weight
-
     PROPERTY Width  AS LONG GET oLogFont:Width
 
-        [StructLayout(LayoutKind.Sequential, CharSet:=System.Runtime.InteropServices.CharSet.Auto)];
+    [StructLayout(LayoutKind.Sequential, CharSet:=System.Runtime.InteropServices.CharSet.Auto)];
     INTERNAL CLASS LOGFONT
         PUBLIC Height := 0         AS INT
         PUBLIC Width := 0          AS INT

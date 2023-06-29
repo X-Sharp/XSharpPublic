@@ -5,9 +5,10 @@ CLASS Bitmap INHERIT VObject
     PROTECT oImage AS System.Drawing.Image
 
 
-    /// <exclude />
-    ACCESS __Image AS System.Drawing.Image
-        RETURN oImage
+    OPERATOR IMPLICIT ( bm AS Bitmap) AS System.Drawing.Image
+        RETURN bm:oImage
+
+
 
     /// <exclude />
     ACCESS __Bitmap AS System.Drawing.Bitmap

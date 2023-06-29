@@ -45,7 +45,7 @@ CLASS Button INHERIT TextControl
             RETURN TRUE
         ELSEIF oNewImage IS Bitmap VAR oBM
             oImage := oNewImage
-            SELF:__Button:Image := oBM:__Image
+            SELF:__Button:Image := oBM
             SELF:__Button:FlatStyle := FlatStyle.Standard
             SELF:__Button:Text := ""
 

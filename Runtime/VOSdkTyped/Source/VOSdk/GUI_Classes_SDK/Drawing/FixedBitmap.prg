@@ -34,7 +34,7 @@ CLASS FixedBitmap INHERIT FixedImage
 /// <include file="Gui.xml" path="doc/FixedBitmap.SetBitmap/*" />
 	METHOD SetBitmap(oBitmap AS Bitmap)
 		LOCAL oImg AS System.Drawing.Image
-		oImg := oBitmap:__Image
+		oImg := oBitmap
 		SELF:SetStyle(SS_BITMAP)
 		IF SELF:oCtrl == NULL_OBJECT
 			SELF:Create()

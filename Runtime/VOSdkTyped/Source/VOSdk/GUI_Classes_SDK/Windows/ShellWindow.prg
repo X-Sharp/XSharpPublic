@@ -17,8 +17,7 @@ CLASS ShellWindow INHERIT AppWindow
         RETURN
 
     /// <exclude />
-    ACCESS __IsClientValid AS LOGIC STRICT
-        RETURN SELF:oWndClient != NULL_OBJECT .and. ! SELF:oWndClient:IsDisposed
+    PROPERTY __IsClientValid AS LOGIC GET SELF:oWndClient != NULL_OBJECT .and. ! SELF:oWndClient:IsDisposed
 
 
     /// <exclude />
@@ -105,7 +104,7 @@ CLASS ShellWindow INHERIT AppWindow
 
 
     /// <include file="Gui.xml" path="doc/ShellWindow.Arrange/*" />
-    METHOD Arrange(kArrangeStyle := ArrangeCascade AS LONG) 
+    METHOD Arrange(kArrangeStyle := ArrangeCascade AS LONG)
         IF SELF:__IsValid
             SWITCH kArrangeStyle
             CASE ARRANGEASICONS
@@ -320,15 +319,21 @@ CLASS ShellWindow INHERIT AppWindow
 
 
     /// <include file="Gui.xml" path="doc/ShellWindow.Menu/*" />
-    ASSIGN Menu(oNewMenu  AS VOSDK.Menu)
-        LOCAL nAuto as LONG
-        SUPER:Menu := oNewMenu
-        nAuto := oNewMenu:GetAutoUpdate()
-        IF nAuto >= 0 .and. nAuto < oNewMenu:__Menu:MenuItems:Count
-            oNewMenu:__Menu:MenuItems[nAuto]:MdiList := TRUE
-        ENDIF
-        SELF:oActualMenu := oNewMenu
-        RETURN
+    PROPERTY Menu AS VOSDK.Menu
+        GET
+            RETURN SUPER:Menu
+        END GET
+        SET
+            LOCAL nAuto as LONG
+            SUPER:Menu := value
+            nAuto := value:GetAutoUpdate()
+            IF nAuto >= 0 .and. nAuto < value:__Menu:MenuItems:Count
+                value:__Menu:MenuItems[nAuto]:MdiList := TRUE
+            ENDIF
+            SELF:oActualMenu := value
+        END SET
+    END PROPERTY
+
 
     /// <include file="Gui.xml" path="doc/ShellWindow.OnOleStatusMessage/*" />
     METHOD OnOleStatusMessage(cMsgString)
@@ -339,9 +344,8 @@ CLASS ShellWindow INHERIT AppWindow
 
 
     /// <include file="Gui.xml" path="doc/ShellWindow.ToolBar/*" />
-    ASSIGN ToolBar(oNewToolBar AS VOSDK.ToolBar)
-        oSavedTB := oNewToolBar
-        SUPER:ToolBar := oNewToolBar
+    PROPERTY ToolBar AS VOSDK.ToolBar GET SUPER:ToolBar SET SUPER:ToolBar := oSavedTB := value
+
 
 END CLASS
 
@@ -353,4 +357,6 @@ DEFINE TBL_SHELL := 1
 DEFINE TBL_SHELLBAND := 2
 DEFINE __WCShellWindowClass := "ShellWindow"
 #endregion
+
+
 

@@ -8,19 +8,17 @@ CLASS ImageList INHERIT VObject
 	PROTECT iDragYOffset AS INT
 	PROTECT oImageList AS System.Windows.Forms.ImageList
 
-	/// <exclude />
-	PROPERTY __ImageList AS System.Windows.Forms.ImageList GET oImageList
-
+    INTERNAL PROPERTY __ImageList AS System.Windows.Forms.ImageList GET oImageList
 /// <include file="Gui.xml" path="doc/ImageList.Add/*" />
 	METHOD Add(oImage AS OBJECT)  AS LONG
 		LOCAL nReturnValue AS INT
 
 		IF (oImageList != NULL_OBJECT)
-			IF IsInstanceOfUsual(oImage, #Bitmap)
-				oImageList:Images:Add( ((Bitmap) oImage):__Image)
+			IF oImage IS VO.SDK.Bitmap VAR oBM
+				oImageList:Images:Add( oBM)
 				nReturnValue :=  oImageList:Images:Count
-			ELSEIF IsInstanceOfUsual(oImage, #Icon)
-				oImageList:Images:Add(((Icon) oImage):__Icon)
+			ELSEIF oImage IS VO.SDK.Icon var oIcon
+				oImageList:Images:Add(oIcon)
 				nReturnValue :=  oImageList:Images:Count
 			ELSE
 				WCError{#Add, #ImageList, __WCSTypeError, oImage, 1}:Throw()
@@ -166,7 +164,7 @@ CLASS ImageList INHERIT VObject
 		RETURN ImageList{i}
 
 	OPERATOR IMPLICIT ( i AS ImageList ) AS System.Windows.Forms.ImageList
-		RETURN i:__ImageList
+		RETURN i:oImageList
 
 END CLASS
 

@@ -41,7 +41,7 @@ CLASS Brush INHERIT VObject
             LOCAL oBmp AS Bitmap
             IF IsNil(kHatchStyle)
                 oBmp := xColor
-                oBrush := System.Drawing.TextureBrush{ oBmp:__Image}
+                oBrush := System.Drawing.TextureBrush{ oBmp}
             ELSE
                 argTypeError := TRUE
             ENDIF

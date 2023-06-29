@@ -61,15 +61,12 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         SELF:oSurface := oDw:Surface
         SELF:oFrame	  := oDw:Frame
         RETURN oDw
-    /// <exclude />
-
-    ACCESS __DataForm AS VODataForm
-        RETURN (VODataForm) SELF:__Form
 
     /// <exclude />
+    PROPERTY __DataForm AS VODataForm GET (VODataForm) SELF:__Form
 
-    ACCESS __Frame AS IVOFramePanel
-        RETURN SELF:oFrame
+    /// <exclude />
+    PROPERTY __Frame AS IVOFramePanel GET SELF:oFrame
 
     /// <exclude />
 
@@ -85,8 +82,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         RETURN TRUE
 
     /// <exclude />
-    ACCESS __aRadioGroups AS ARRAY STRICT
-        RETURN aRadioGroups
+    PROPERTY __aRadioGroups AS ARRAY GET aRadioGroups
 
     /// <exclude />
     METHOD __AutoCreateBrowser() AS DataWindow STRICT
@@ -700,17 +696,14 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <exclude />
-    ACCESS __SubForm AS LOGIC STRICT
-        RETURN lSubForm
+    PROPERTY __SubForm AS LOGIC GET lSubForm
 
     /// <exclude />
 
-    ACCESS __HasSurface AS LOGIC
-        RETURN TRUE
+    PROPERTY __HasSurface AS LOGIC GET TRUE
     /// <exclude />
 
-    ACCESS __Surface AS IVOControlContainer
-        RETURN oSurface
+    PROPERTY __Surface AS IVOControlContainer GET oSurface
 
     /// <exclude />
     METHOD __Unlink() AS LOGIC STRICT
@@ -890,12 +883,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
     /// <include file="Gui.xml" path="doc/DataWindow.AllowServerClose/*" />
 
-    ACCESS AllowServerClose AS LOGIC
-        RETURN lAllowServerClose
-
-    /// <include file="Gui.xml" path="doc/DataWindow.AllowServerClose/*" />
-    ASSIGN AllowServerClose(lNewVal as LOGIC)
-        lAllowServerClose := lNewVal
+    PROPERTY AllowServerClose AS LOGIC GET lAllowServerClose SET lAllowServerClose := Value
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Append/*" />
@@ -918,62 +906,46 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.AutoScroll/*" />
-    ACCESS AutoScroll  AS LOGIC
-        RETURN lAutoScroll
-
-
-    /// <include file="Gui.xml" path="doc/DataWindow.AutoScroll/*" />
-    ASSIGN AutoScroll(lNewValue AS LOGIC)
-        lAutoScroll := lNewValue
+    PROPERTY AutoScroll  AS LOGIC GET lAutoScroll SET lAutoScroll := value
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Background/*" />
-    ACCESS Background AS Brush
-
-        //Only an optimization to avoid unneeded Window:PaintBackground() calls of
-        //the DataWindow object itself or the __FormFrame.
-        IF oSurface != NULL_OBJECT
-            RETURN Brush{(Color)oSurface:BackColor}
-        ENDIF
-
-        RETURN NULL_OBJECT
-
-
-    /// <include file="Gui.xml" path="doc/DataWindow.Background/*" />
-    ASSIGN Background(oBrush as Brush)
-
-        //Only an optimization to avoid unneeded Window:PaintBackground() calls of
-        //the DataWindow object itself or the __FormFrame.
-        IF oSurface != NULL_OBJECT
-            IF oBrush != NULL_OBJECT
-                oSurface:BackColor := oBrush:Color
+    PROPERTY Background AS Brush
+        GET
+            //Only an optimization to avoid unneeded Window:PaintBackground() calls of
+            //the DataWindow object itself or the __FormFrame.
+            IF oSurface != NULL_OBJECT
+                RETURN Brush{(Color)oSurface:BackColor}
             ENDIF
-        ENDIF
 
-        RETURN
-
+            RETURN NULL_OBJECT
+        END GET
+        SET
+            //Only an optimization to avoid unneeded Window:PaintBackground() calls of
+            //the DataWindow object itself or the __FormFrame.
+            IF oSurface != NULL_OBJECT .and. value != NULL_OBJECT
+                oSurface:BackColor := value
+            ENDIF
+        END SET
+    END PROPERTY
 
     /// <include file="Gui.xml" path="doc/DataWindow.Browser/*" />
-    ACCESS Browser AS DataBrowser
-        IF IsInstanceOf(oGBrowse, #DataBrowser)
-            RETURN oGBrowse
-        ENDIF
-        RETURN NULL_OBJECT
-
-    /// <include file="Gui.xml" path="doc/DataWindow.Browser/*" />
-
-    ASSIGN Browser(oDataBrowser AS DataBrowser)
-        oGBrowse := oDataBrowser
-        __DataForm:DataBrowser := oDataBrowser:__DataGridView
-        RETURN
-
-    /// <include file="Gui.xml" path="doc/DataWindow.BrowserClass/*" />
-    ACCESS BrowserClass  AS SYMBOL
-        RETURN symBrowserClass
+    PROPERTY Browser AS DataBrowser
+        get
+            IF oGBrowse is DataBrowser var oBrow
+                RETURN oBrow
+            ENDIF
+            RETURN NULL_OBJECT
+        end get
+        set
+            oGBrowse := value
+            __DataForm:DataBrowser := value:__DataGridView
+            RETURN
+        end set
+    end property
 
     /// <include file="Gui.xml" path="doc/DataWindow.BrowserClass/*" />
-    ASSIGN BrowserClass(symNewClass AS SYMBOL)
-        symBrowserClass := symNewClass
+    PROPERTY BrowserClass  AS SYMBOL GET symBrowserClass SET symBrowserClass := value
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.ButtonClick/*" />
@@ -1039,12 +1011,17 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Caption/*" />
-    ASSIGN Caption(sNewCaption AS STRING)
-        IF !lTopApp .AND. (lSubForm) // .or. !IsInstanceOf(oParent, #ShellWindow))
-            RETURN
-        ENDIF
-        SUPER:Caption := sNewCaption
-
+    PROPERTY Caption AS STRING
+        GET
+            RETURN SUPER:Caption
+        END GET
+        SET
+            IF !lTopApp .AND. (lSubForm)
+                RETURN
+            ENDIF
+            SUPER:Caption := value
+        END SET
+    END PROPERTY
 
     /// <include file="Gui.xml" path="doc/DataWindow.ChangeFont/*" />
     METHOD ChangeFont(oFont AS Font, lUpdate := FALSE AS LOGIC)
@@ -1118,15 +1095,8 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.ClipperKeys/*" />
-    ACCESS ClipperKeys
-        // todo: Implement ClipperKeys
-        RETURN FALSE
-
-
-    /// <include file="Gui.xml" path="doc/DataWindow.ClipperKeys/*" />
-    ASSIGN ClipperKeys(lNewValue)
-        // todo: Implement ClipperKeys
-        RETURN
+    // todo: Implement ClipperKeys
+    PROPERTY ClipperKeys AS LOGIC GET FALSE SET
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Close/*" />
@@ -1164,48 +1134,48 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.ConcurrencyControl/*" />
-    ACCESS ConcurrencyControl
-        IF IsNil(oAttachedServer)
-            RETURN SELF: nCCMode
-        ENDIF
+    PROPERTY ConcurrencyControl AS USUAL
+        GET
+            IF IsNil(oAttachedServer)
+                RETURN SELF: nCCMode
+            ENDIF
 
-        RETURN oAttachedServer:ConcurrencyControl
+            RETURN oAttachedServer:ConcurrencyControl
+        END GET
+        SET
+            LOCAL newMode AS INT
+            IF IsString(value)
+                value := String2Symbol(value)
+            ENDIF
 
+            IF IsSymbol(value)
+                DO CASE
+                CASE value == #ccNone
+                    newMode := ccNone
+                CASE value == #ccOptimistic
+                    newMode := ccOptimistic
+                CASE value == #ccStable
+                    newMode := ccStable
+                CASE value == #ccRepeatable
+                    newMode := ccRepeatable
+                CASE value == #ccFile
+                    newMode := ccFile
+                OTHERWISE
+                    WCError{#ConcurrencyControl,#DataWindow,__WCSTypeError,value,1}:Throw()
+                ENDCASE
+            ELSEIF IsNumeric(value)
+                newMode := value
+            ELSE
+                WCError{#ConcurrencyControl,#DataWindow,__WCSTypeError,value,1}:Throw()
+            ENDIF
 
-    /// <include file="Gui.xml" path="doc/DataWindow.ConcurrencyControl/*" />
-    ASSIGN ConcurrencyControl( nMode)
-        LOCAL newMode AS INT
-        IF IsString(nMode)
-            nMode := String2Symbol(nMode)
-        ENDIF
-
-        IF IsSymbol(nMode)
-            DO CASE
-            CASE nMode == #ccNone
-                newMode := ccNone
-            CASE nMode == #ccOptimistic
-                newMode := ccOptimistic
-            CASE nMode == #ccStable
-                newMode := ccStable
-            CASE nMode == #ccRepeatable
-                newMode := ccRepeatable
-            CASE nMode == #ccFile
-                newMode := ccFile
-            OTHERWISE
-                WCError{#ConcurrencyControl,#DataWindow,__WCSTypeError,nMode,1}:Throw()
-            ENDCASE
-        ELSEIF IsNumeric(nMode)
-            newMode := nMode
-        ELSE
-            WCError{#ConcurrencyControl,#DataWindow,__WCSTypeError,nMode,1}:Throw()
-        ENDIF
-
-        SELF:nCCMode := newMode
-        IF oAttachedServer!=NULL_OBJECT
-            oAttachedServer:ConcurrencyControl:=nCCMode
-        ENDIF
-        RETURN
-
+            SELF:nCCMode := newMode
+            IF oAttachedServer!=NULL_OBJECT
+                oAttachedServer:ConcurrencyControl:=nCCMode
+            ENDIF
+            RETURN
+        END SET
+    END PROPERTY
 
     /// <include file="Gui.xml" path="doc/DataWindow.ContextMenu/*" />
     ASSIGN ContextMenu(oNewMenu as Menu)
@@ -1243,9 +1213,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         RETURN
 
     /// <include file="Gui.xml" path="doc/DataWindow.Controls/*" />
-    ACCESS Controls AS ARRAY
-        // DHer: 18/12/2008
-        RETURN SELF:aControls
+    PROPERTY Controls AS ARRAY GET SELF:aControls
 
     /// <include file="Gui.xml" path="doc/DataWindow.ControlFocusChange/*" />
     METHOD ControlFocusChange(oControlFocusChangeEvent AS  ControlFocusChangeEvent) AS USUAL STRICT
@@ -1321,13 +1289,13 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
     /// <include file="Gui.xml" path="doc/DataWindow.Copy/*" />
     METHOD Copy()   AS VOID STRICT
         IF (sCurrentView == #FormView)
-            IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
-                    IsInstanceOf(oDCCurrentControl, #MultiLineEdit) .OR. ;
-                    IsInstanceOf(oDCCurrentControl, #EditWindow)
-                oDCCurrentControl:Copy()
-            ELSEIF IsInstanceOf(oDCCurrentControl, #ControlWindow)
-                IF oDCCurrentControl:Control != NULL_OBJECT .AND. IsMethod(oDCCurrentControl, #Copy)
-                    oDCCurrentControl:Control:Copy()
+            IF oDCCurrentControl IS Edit var oEdit
+                oEdit:Copy()
+            ELSEIF oDCCurrentControl IS EditWindow var oEditWindow
+                oEditWindow:Copy()
+            ELSEIF oDCCurrentControl IS ControlWindow var oCW
+                IF oCW:Control != NULL_OBJECT .and. IsMethod(oCW:Control, #Copy)
+                    SEnd(oCW:Control,#Copy)
                 ENDIF
             ENDIF
         ELSEIF (sCurrentView == #BrowseView)
@@ -1347,13 +1315,13 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
     /// <include file="Gui.xml" path="doc/DataWindow.Cut/*" />
     METHOD Cut()   AS VOID STRICT
         IF (sCurrentView == #FormView)
-            IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
-                    IsInstanceOf(oDCCurrentControl, #MultiLineEdit) .OR. ;
-                    IsInstanceOf(oDCCurrentControl, #EditWindow)
-                oDCCurrentControl:Cut()
-            ELSEIF IsInstanceOf(oDCCurrentControl, #ControlWindow)
-                IF oDCCurrentControl:Control != NULL_OBJECT .AND. IsMethod(oDCCurrentControl, #Cut)
-                    oDCCurrentControl:Control:Cut()
+            IF oDCCurrentControl IS Edit VAR oEdit
+                oEdit:Cut()
+            ELSEIF oDCCurrentControl IS EditWindow VAR oEditWindow
+                oEditWindow:Cut()
+            ELSEIF oDCCurrentControl IS ControlWindow VAR oCW
+                IF oCW:Control != NULL_OBJECT .and. IsMethod(oCW:Control, #Cut)
+                    Send(oCW:Control,#Cut)
                 ENDIF
             ENDIF
         ELSEIF (sCurrentView == #BrowseView)
@@ -1754,15 +1722,18 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         ENDIF
         RETURN
 
-    ACCESS HyperLabel AS HyperLabel
-        RETURN SUPER:HyperLabel
-
-    ASSIGN HyperLabel (oHL AS HyperLabel)
-        SUPER:HyperLabel := oHL
-        IF oHL != NULL_OBJECT
-            SELF:__Surface:Text := "Surface: "+oHL:Name
-            SELF:__Frame:Text	:= "Frame: "+oHL:Name
-        ENDIF
+    PROPERTY HyperLabel AS HyperLabel
+        GET
+            RETURN SUPER:HyperLabel
+        END GET
+        SET
+            SUPER:HyperLabel := value
+            IF value != NULL_OBJECT
+                SELF:__Surface:Text := "Surface: "+value:Name
+                SELF:__Frame:Text	:= "Frame: "+value:Name
+            ENDIF
+        END SET
+    END PROPERTY
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.HorizontalScroll/*" />
@@ -1883,24 +1854,25 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         RETURN SUPER:IsVisible()
 
     /// <include file="Gui.xml" path="doc/DataWindow.LastFocus/*" />
-    ACCESS LastFocus AS Control
-        IF sCurrentView == #BrowseView
-            RETURN oGBrowse
-        ENDIF
-        RETURN oLastFocus
-
-    /// <include file="Gui.xml" path="doc/DataWindow.LastFocus/*" />
-    ASSIGN LastFocus (oControl as Control)
-        IF ! IsInstanceOf(oControl, #DataBrowser)
-            IF lSubForm
-                IF IsAssign(oParent, #LastFocus)
-                    IVarPut(oParent, #LastFocus, oControl)
-                ENDIF
+    PROPERTY LastFocus AS Control
+        GET
+            IF sCurrentView == #BrowseView
+                RETURN oGBrowse
             ENDIF
-            oLastFocus := oControl
-        ENDIF
-        RETURN
-
+            RETURN oLastFocus
+        END GET
+        SET
+            IF ! (value IS DataBrowser)
+                IF lSubForm
+                    IF IsAssign(oParent, #LastFocus)
+                        IVarPut(oParent, #LastFocus, value)
+                    ENDIF
+                ENDIF
+                oLastFocus := value
+            ENDIF
+            RETURN
+        END SET
+    END PROPERTY
 
     /// <include file="Gui.xml" path="doc/DataWindow.LineTo/*" />
     METHOD LineTo(uPoint)
@@ -1935,13 +1907,18 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         RETURN SELF
 
     /// <include file="Gui.xml" path="doc/DataWindow.Menu/*" />
-    ASSIGN Menu(oNewMenu AS VOSDK.Menu)
-        SUPER:Menu := oNewMenu
-        IF oParent IS ShellWindow
-            // No need to resize. __DataForm handles this
-            //__DataForm:ResizeParent()
-        ENDIF
-        RETURN
+    PROPERTY Menu AS VOSDK.Menu
+        GET
+            RETURN SUPER:Menu
+        END GET
+        SET
+            SUPER:Menu := value
+            IF oParent IS ShellWindow
+                // No need to resize. __DataForm handles this
+                //__DataForm:ResizeParent()
+            ENDIF
+        end SET
+    END PROPERTY
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.MouseButtonDown/*" />
@@ -2121,21 +2098,21 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Origin/*" />
-    ACCESS Origin AS Point
-        IF SELF:lSubForm
-            RETURN SELF:__Frame:Location
-        ENDIF
-        RETURN SUPER:Origin
-
-
-    /// <include file="Gui.xml" path="doc/DataWindow.Origin/*" />
-    ASSIGN Origin(oPoint AS Point)
-        IF SELF:lSubForm
-            SELF:__Frame:Location := oPoint
-        ELSE
-            SUPER:Origin:=oPoint
-        ENDIF
-
+    PROPERTY Origin AS Point
+        GET
+            IF SELF:lSubForm
+                RETURN SELF:__Frame:Location
+            ENDIF
+            RETURN SUPER:Origin
+        END GET
+        SET
+            IF SELF:lSubForm
+                SELF:__Frame:Location := value
+            ELSE
+                SUPER:Origin:=value
+            ENDIF
+        END SET
+    END PROPERTY
     /// <include file="Gui.xml" path="doc/Window.OwnerAlignment/*" />
     ASSIGN OwnerAlignment(iNewVal AS USUAL)
         LOCAL lDone AS LOGIC
@@ -2148,11 +2125,14 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         RETURN
 
     /// <include file="Gui.xml" path="doc/DataWindow.OwnerServer/*" />
-    ACCESS OwnerServer
-        IF IsInstanceOf(SELF:Owner, #DataWindow)
-            RETURN SELF:Owner:Server
-        ENDIF
-        RETURN NIL
+    PROPERTY OwnerServer AS Object
+        GET
+            IF IsInstanceOf(SELF:Owner, #DataWindow)
+                RETURN SELF:Owner:Server
+            ENDIF
+            RETURN NIL
+        END GET
+    END PROPERTY
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.PaintBoundingBox/*" />
@@ -2167,18 +2147,18 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
     /// <include file="Gui.xml" path="doc/DataWindow.Paste/*" />
     METHOD Paste()   AS VOID STRICT
         IF sCurrentView == #FormView
-            IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
-                    IsInstanceOf(oDCCurrentControl, #MultiLineEdit) .OR. ;
-                    IsInstanceOf(oDCCurrentControl, #EditWindow)
-                oDCCurrentControl:Paste()
-            ELSEIF IsInstanceOf(oDCCurrentControl, #ControlWindow)
-                IF oDCCurrentControl:Control != NULL_OBJECT .AND. IsMethod(oDCCurrentControl, #Paste)
-                    oDCCurrentControl:Control:Paste()
-                ENDIF
+         IF oDCCurrentControl IS Edit VAR oEdit
+            oEdit:Paste(ClipBoard{}:RetrieveString())
+          ELSEIF oDCCurrentControl IS EditWindow VAR oEditWin
+            oEditWin:Paste(ClipBoard{}:RetrieveString())
+         ELSEIF oDCCurrentControl IS ControlWindow var oCW
+            IF oCW:Control != NULL_OBJECT .and. IsMethod(oCW:Control, #Paste)
+                Send(oCW:Control,#Paste, ClipBoard{}:RetrieveString())
+            ENDIF
             ENDIF
         ELSEIF sCurrentView == #BrowseView
             IF (oGBrowse != NULL_OBJECT) .AND. IsMethod(oGBrowse, #Paste)
-                Send(oGBrowse, #Paste)
+                Send(oGBrowse, #Paste,ClipBoard{}:RetrieveString())
             ENDIF
         ENDIF
 
@@ -2192,16 +2172,23 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Pen/*" />
-    ASSIGN Pen(oPen as Pen)
+    PROPERTY Pen as Pen
+        GET
+            RETURN SUPER:Pen
+        END GET
+        SET
 
-        SUPER:Pen := oPen
+        SUPER:Pen := value
         IF oSurface != NULL_OBJECT
         ENDIF
         RETURN
+        END SET
+        END PROPERTY
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Pointer/*" />
-    ACCESS Pointer  AS Pointer
+    PROPERTY Pointer  AS Pointer
+    GET
         IF (sCurrentView == #FormView) .OR. !IsAccess(oGBrowse, #pointer)
             IF (oSurface != NULL_OBJECT)
                 RETURN oSurface:Cursor
@@ -2211,18 +2198,17 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         ENDIF
 
         RETURN SUPER:Pointer
-
-
-    /// <include file="Gui.xml" path="doc/DataWindow.Pointer/*" />
-    ASSIGN Pointer(oPointer AS Pointer)
+    END GET
+    SET
         IF (oSurface != NULL_OBJECT)
-            oSurface:Cursor:=oPointer
+            oSurface:Cursor:=value
         ENDIF
         IF IsAssign(oGBrowse, #databrowser)
-            IVarPut(oGBrowse, #pointer, oPointer)
+            IVarPut(oGBrowse, #pointer, value)
         ENDIF
         RETURN
-
+    END SET
+    END PROPERTY
 
     /// <include file="Gui.xml" path="doc/DataWindow.PreValidate/*" />
     METHOD PreValidate()
@@ -2312,8 +2298,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Server/*" />
-    ACCESS Server as Object
-        RETURN oAttachedServer
+    PROPERTY Server as DataServer GET oAttachedServer
 
     /// <include file="Gui.xml" path="doc/DataWindow.SetAlignStartSize/*" />
     METHOD SetAlignStartSize(oSize AS Dimension)  AS VOID
@@ -2400,22 +2385,23 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         RETURN
 
     /// <include file="Gui.xml" path="doc/DataWindow.Size/*" />
-    ACCESS Size AS Dimension
+    PROPERTY Size AS Dimension
+    GET
         IF SELF:lSubForm
             RETURN SELF:__Frame:Size
         ENDIF
         RETURN SUPER:Size
-
-    /// <include file="Gui.xml" path="doc/DataWindow.Size/*" />
-    ASSIGN Size(oDimension AS Dimension)
+    END GET
+    SET
         IF SELF:lSubForm
-            SELF:__Frame:Size := oDimension
+            SELF:__Frame:Size := value
             SELF:__Frame:DefinedSize := SELF:__Frame:Size
             SELF:__DataForm:AdjustSizes()
         ELSE
-            SUPER:Size := oDimension
+            SUPER:Size := value
         ENDIF
-
+    END SET
+    END PROPERTY
     /// <include file="Gui.xml" path="doc/DataWindow.Skip/*" />
     METHOD Skip(uRelativePosition)
         LOCAL lRetCode := FALSE AS LOGIC
@@ -2453,30 +2439,30 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.StatusBar/*" />
-    ACCESS StatusBar AS StatusBar
-        //SE-070906
+    PROPERTY StatusBar AS StatusBar
+    GET
         IF dwDialogStyle > 0
             // Support of a StatusBar a DataDialog - Window
             RETURN oStatusBar
         ENDIF
         RETURN SUPER:StatusBar
-
-    /// <include file="Gui.xml" path="doc/DataWindow.StatusBar/*" />
-    ASSIGN StatusBar(oNewStatusBar AS StatusBar)
+    END GET
+    SET
         //SE-070906
         IF dwDialogStyle > 0
             // Support of a StatusBar a DataDialog - Window
-            oStatusBar := oNewStatusBar
+            oStatusBar := value
         ENDIF
-        SUPER:StatusBar := oNewStatusBar
-        IF oNewStatusBar != NULL_OBJECT
+        SUPER:StatusBar := value
+        IF value != NULL_OBJECT
             SELF:__DataForm:StatusBar := SELF:StatusBar:__StatusStrip
         ELSE
             SELF:__DataForm:StatusBar := NULL_OBJECT
         ENDIF
 
         RETURN
-
+    END SET
+    END PROPERTY
 
     /// <include file="Gui.xml" path="doc/DataWindow.StatusOK/*" />
     METHOD StatusOK() AS LOGIC
@@ -2535,17 +2521,22 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         RETURN SELF
 
     /// <include file="Gui.xml" path="doc/DataWindow.ToolBar/*" />
-    ASSIGN ToolBar(oNewToolBar AS ToolBar)
+    PROPERTY ToolBar AS ToolBar
+        GET
+            RETURN SUPER:ToolBar
+        END GET
+        SET
 
-        SUPER:ToolBar := oNewToolBar
-        IF oNewToolBar != NULL_OBJECT
-            SELF:__DataForm:ToolBar := oNewToolBar:__ToolBar
-            //ELSE
-            //	SELF:__DataForm:ToolBar := NULL_OBJECT
-        ENDIF
-        // No need to resize. __DataForm handles this
-        RETURN
-
+            SUPER:ToolBar := value
+            IF value != NULL_OBJECT
+                SELF:__DataForm:ToolBar := value:__ToolBar
+                //ELSE
+                //	SELF:__DataForm:ToolBar := NULL_OBJECT
+            ENDIF
+            // No need to resize. __DataForm handles this
+            RETURN
+        END SET
+        END PROPERTY
     /// <include file="Gui.xml" path="doc/DataWindow.Undo/*" />
     METHOD Undo() AS VOID
         IF (sCurrentView == #FormView)
@@ -2862,6 +2853,7 @@ FUNCTION __GetFSDefaultLength(uFS AS USUAL) AS INT
 
     ENDIF
     RETURN liRetVal
+
 
 
 

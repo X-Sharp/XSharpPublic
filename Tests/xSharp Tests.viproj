@@ -116559,7 +116559,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R877 - DoStmt with Amp
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C874 - Late bound problem resolving overloaded method *************
 Application = C874 - Late bound problem resolving overloaded method
 IDEVersion = 1.06
@@ -117587,7 +117587,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R883 - StackAlloc Array
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C877 - Problems with interpolated strings *************
 Application = C877 - Problems with interpolated strings
 IDEVersion = 1.06
@@ -119756,7 +119756,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C886 - VO incompatibility with assigning NIL to SYMBOL
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C887 - INSTANCE vs PROTECT and ACCESS *************
 Application = C887 - INSTANCE vs PROTECT and ACCESS
 IDEVersion = 1.06
@@ -119986,7 +119986,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R893 - Internal error with missing "AS TYPE" clause
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = B3CDE601-F52E-476A-9FD5-35CEE1E8C029
 ; ************** APPLICATION C888 - Internal Compiler Error with DO CASE statement missing CASE/OTHERWISE *************
 Application = C888 - Internal Compiler Error with DO CASE statement missing CASE/OTHERWISE
 IDEVersion = 1.06

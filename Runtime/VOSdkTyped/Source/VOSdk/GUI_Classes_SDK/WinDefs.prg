@@ -340,31 +340,31 @@ DEFINE WM_WCHelp := 0XBFFF
 #endregion
 
 #region DDE Defines
-DEFINE     XTYPF_NOBLOCK            := 0x0002
-DEFINE     XTYPF_NODATA             := 0x0004
-DEFINE     XTYPF_ACKREQ             := 0x0008
-DEFINE     XCLASS_MASK              := 0xFC00
-DEFINE     XCLASS_BOOL              := 0x1000
-DEFINE     XCLASS_DATA              := 0x2000
-DEFINE     XCLASS_FLAGS             := 0x4000
-DEFINE     XCLASS_NOTIFICATION      := 0x8000
-DEFINE     XTYP_ERROR              := 0x8002
-DEFINE     XTYP_ADVDATA            := 0x4010
-DEFINE     XTYP_ADVREQ             := 0x2022
-DEFINE     XTYP_ADVSTART           := 0x1030
-DEFINE     XTYP_ADVSTOP            := 0x8040
-DEFINE     XTYP_EXECUTE            := 0x4050
-DEFINE     XTYP_CONNECT            := 0x1062
-DEFINE     XTYP_CONNECT_CONFIRM    := 0x8072
-DEFINE     XTYP_XACT_COMPLETE      := 0x8080
-DEFINE     XTYP_POKE               := 0x4090
-DEFINE     XTYP_REGISTER           := 0x80A2
-DEFINE     XTYP_REQUEST            := 0x20B0
-DEFINE     XTYP_DISCONNECT         := 0x80c2
-DEFINE     XTYP_UNREGISTER         := 0x80d2
-DEFINE     XTYP_WILDCONNECT        := 0x20e2
-DEFINE     XTYP_MASK                := 0x00F0
-DEFINE     XTYP_SHIFT               := 4
+DEFINE XTYPF_NOBLOCK            := 0x0002
+DEFINE XTYPF_NODATA             := 0x0004
+DEFINE XTYPF_ACKREQ             := 0x0008
+DEFINE XCLASS_MASK              := 0xFC00
+DEFINE XCLASS_BOOL              := 0x1000
+DEFINE XCLASS_DATA              := 0x2000
+DEFINE XCLASS_FLAGS             := 0x4000
+DEFINE XCLASS_NOTIFICATION      := 0x8000
+DEFINE XTYP_ERROR              := 0x8002
+DEFINE XTYP_ADVDATA            := 0x4010
+DEFINE XTYP_ADVREQ             := 0x2022
+DEFINE XTYP_ADVSTART           := 0x1030
+DEFINE XTYP_ADVSTOP            := 0x8040
+DEFINE XTYP_EXECUTE            := 0x4050
+DEFINE XTYP_CONNECT            := 0x1062
+DEFINE XTYP_CONNECT_CONFIRM    := 0x8072
+DEFINE XTYP_XACT_COMPLETE      := 0x8080
+DEFINE XTYP_POKE               := 0x4090
+DEFINE XTYP_REGISTER           := 0x80A2
+DEFINE XTYP_REQUEST            := 0x20B0
+DEFINE XTYP_DISCONNECT         := 0x80c2
+DEFINE XTYP_UNREGISTER         := 0x80d2
+DEFINE XTYP_WILDCONNECT        := 0x20e2
+DEFINE XTYP_MASK                := 0x00F0
+DEFINE XTYP_SHIFT               := 4
 
 #endregion
 

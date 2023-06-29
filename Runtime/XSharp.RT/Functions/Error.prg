@@ -10,13 +10,11 @@ GLOBAL ShowErrorDialog_Handler AS ShowErrorDialog_Delegate
 PROCEDURE ErrorSys _INIT1
    ErrorBlock( {|oError| DefError(oError)} )
    SetErrorLog( TRUE )
-   SWITCH RuntimeState.Dialect
-   CASE XSharpDialect.VO
-   CASE XSharpDialect.Vulcan
+   IF XSharp.RuntimeState.Dialect:IsVoLike()
         SetErrorLogFile( "VOERROR.LOG" )
-   OTHERWISE
+   ELSE
         SetErrorLogFile( "ERROR.LOG" )
-   END SWITCH
+   ENDIF
    RETURN
 
 

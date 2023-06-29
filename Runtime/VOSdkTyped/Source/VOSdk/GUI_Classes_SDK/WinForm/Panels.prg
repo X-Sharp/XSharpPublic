@@ -372,7 +372,7 @@ CLASS VOFramePanel INHERIT VOPanel IMPLEMENTS IVOFramePanel
 #endif
 		RETURN
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS SWF.CreateParams
+	OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:Style := 0X56000000 // kommt in 0x56010000 -> WS_TABSTOP entfernt sonst gibts unschöne scrollbars

@@ -105,8 +105,8 @@ CLASS Button INHERIT TextControl
 
 
     /// <include file="Gui.xml" path="doc/Button.SetStyle/*" />
-    METHOD SetStyle(kStyle AS LONG, lEnable := TRUE AS LOGIC)
-        RETURN SUPER:SetStyle(kStyle, lEnable)
+    METHOD SetStyle(kStyle AS LONG, lEnable := TRUE AS LOGIC) AS VOID
+        SUPER:SetStyle(kStyle, lEnable)
 
 END CLASS
 

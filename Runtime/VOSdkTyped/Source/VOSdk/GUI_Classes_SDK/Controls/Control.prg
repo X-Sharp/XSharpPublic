@@ -55,14 +55,17 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
     ASSIGN Parent(oP AS IControlParent)
         SELF:oParent := oP
 
-    ASSIGN __ControlWindow (oWin AS ControlWindow)
-        oControlWindow := oWin
-        IF SELF:oParent == NULL_OBJECT
-            oParent := oWin
-        ENDIF
-
-    ACCESS __ControlWindow AS ControlWindow
+    PROPERTY __ControlWindow AS ControlWindow
+    GET
         RETURN oControlWindow
+    END GET
+    SET
+        oControlWindow := value
+        IF SELF:oParent == NULL_OBJECT
+            oParent := value
+        ENDIF
+    END SET
+    END PROPERTY
 
     METHOD OnHandleCreated(o AS OBJECT, e AS EventArgs) AS VOID
         IF oFormSurface != NULL_OBJECT
@@ -259,7 +262,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN IntPtr.Zero
 
     /// <exclude />
-    METHOD __Unlink(oDataServer := NIL AS USUAL) AS Control STRICT
+    METHOD __Unlink(oDataServer := NULL_OBJECT AS DataServer) AS Control STRICT
 
         IF SELF:Modified
             SELF:__Update()
@@ -268,24 +271,17 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ENDIF
         ENDIF
 
-        Default(@oDataServer,SELF:oServer)
+        IF oDataServer == NULL_OBJECT
+            oDataServer := SELF:oServer
+        ENDIF
 
         // Do actual unlinking
-        IF IsNil(oDataServer)
+        IF oDataServer == NULL_OBJECT .or. ;
+            (oDataServer == SELF:oServer)
             SELF:uGetSetOwner:= NIL
             SELF:cbGetSetBlock:= NULL_CODEBLOCK
             SELF:oDataField:= NULL_OBJECT
             SELF:oServer:= NULL_OBJECT
-        ELSE
-            IF !(oDataServer IS DataServer)
-                WCError{#__Unlink,#Control,__WCSTypeError,oDataServer,1}:Throw()
-            ENDIF
-            IF (oDataServer == SELF:oServer)
-                SELF:uGetSetOwner:= NIL
-                SELF:cbGetSetBlock:= NULL_CODEBLOCK
-                SELF:oDataField := NULL_OBJECT
-                SELF:oServer := NULL_OBJECT
-            ENDIF
         ENDIF
         RETURN SELF
 
@@ -347,9 +343,9 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 
     /// <include file="Gui.xml" path="doc/Control.Activate/*" />
-    METHOD Activate(oEvent  AS Event )
+    METHOD Activate(oEvent  AS Event ) AS VOID
         // Also empty in GUI Classes
-        RETURN NIL
+        RETURN
 
     METHOD AddChild(oC AS OBJECT) AS VOID STRICT
         IF SELF:__IsValid
@@ -371,17 +367,18 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN "#"+Symbol2String(ClassName(SELF))+":"+SELF:Caption
 
     /// <include file="Gui.xml" path="doc/Control.Background/*" />
-    ACCESS Background AS Brush
+    PROPERTY Background AS Brush
+    GET
         RETURN oControlBackground
-
-    /// <include file="Gui.xml" path="doc/Control.Background/*" />
-    ASSIGN Background(oNewBrush AS Brush)
-        oControlBackground := oNewBrush
-        IF SELF:__IsValid .and. oNewBrush != NULL_OBJECT
-            oCtrl:BackColor := oNewBrush:Color
+    end get
+    set
+        oControlBackground := value
+        IF SELF:__IsValid .and. value != NULL_OBJECT
+            oCtrl:BackColor := value:Color
         ENDIF
         RETURN
-
+    end set
+    end property
     METHOD BringToFront() AS VOID CLIPPER
         IF SELF:ValidateControl()
             oCtrl:BringToFront()
@@ -521,12 +518,12 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN
 
     /// <include file="Gui.xml" path="doc/Control.Default/*" />
-    METHOD Default(oEvent)
+    METHOD Default(oEvent AS Event) AS VOID
         //Todo Default
         // LOCAL oEvt := oEvent AS @@event
         // SELF:EventReturnValue := CallWindowProc(SELF:__lpfnDefaultProc, oCtrl, oEvt:umsg, oEvt:wParam, oEvt:lParam)
 
-        RETURN 1L
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Control.Destroy/*" />
     METHOD Destroy() AS USUAL
@@ -727,9 +724,9 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN SELF:EventReturnValue
 
 
-    METHOD Drop(oDragEvent)
+    METHOD Drop(oDragEvent as DragEvent) AS VOID
         // Also empty in GUI Classes
-        RETURN NIL
+        RETURN
 
 
     /// <include file="Gui.xml" path="doc/Control.Enable/*" />
@@ -743,18 +740,17 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 
     /// <include file="Gui.xml" path="doc/Control.Expose/*" />
-    METHOD Expose(oExposeEvent )
+    METHOD Expose(oExposeEvent as ExposeEvent) AS VOID
         // Also empty in GUI Classes
-        RETURN NIL
+        RETURN
 
 
-    ACCESS FieldSpec AS FieldSpec
+    PROPERTY FieldSpec AS FieldSpec
+    GET
         RETURN oFieldSpec
-
-
-    /// <include file="Gui.xml" path="doc/Control.FieldSpec/*" />
-    ASSIGN FieldSpec(oDSAssign AS FieldSpec)
-        oFieldSpec := oDSAssign
+    END GET
+    SET
+        oFieldSpec := value
         lExplicitFS := TRUE
 
         // We need to update the control if is visible and connected to the server
@@ -766,14 +762,15 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             ENDIF
         ENDIF
         RETURN
-
+    end set
+    end property
 
     /// <include file="Gui.xml" path="doc/Control.FocusChange/*" />
-    METHOD FocusChange(oFocusChangeEvent )
+    METHOD FocusChange(oFocusChangeEvent AS FocusChangeEvent ) AS VOID
         IF oParent != NULL_OBJECT
             oParent:ControlFocusChange(ControlFocusChangeEvent{oFocusChangeEvent, SELF})
         ENDIF
-        RETURN NIL
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Control.Handle/*" />
     METHOD Handle() AS IntPtr CLIPPER
@@ -818,29 +815,30 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 
     /// <include file="Gui.xml" path="doc/Control.HorizontalScroll/*" />
-    METHOD HorizontalScroll(oScrollEvent )
+    METHOD HorizontalScroll(oScrollEvent as ScrollEvent) AS VOID
         //Also empty in GUI Classes
-        RETURN NIL
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Control.HyperLabel/*" />
-    ACCESS HyperLabel AS HyperLabel
+    property HyperLabel AS HyperLabel
+    GET
         RETURN oHyperLabel
-
-    /// <include file="Gui.xml" path="doc/Control.HyperLabel/*" />
-    ASSIGN HyperLabel(oNewHL AS HyperLabel)
-        oHyperLabel := oNewHL
+    end get
+    set
+        oHyperLabel := value
         lExplicitHL := TRUE
-        IF oNewHL != NULL_OBJECT
-            SELF:Caption := oNewHL:Caption
+        IF value != NULL_OBJECT
+            SELF:Caption := value:Caption
             IF SELF:ValidateControl()
-                oCtrl:AccessibleDescription := oNewHL:Description
-                oCtrl:AccessibleName        := oNewHL:Name
+                oCtrl:AccessibleDescription := value:Description
+                oCtrl:AccessibleName        := value:Name
             ENDIF
             IF SELF:UseHLForToolTip
                 SELF:__AddTool(SELF)
             ENDIF
         ENDIF
-        RETURN
+    end set
+    end property
 
 
     /// <include file="Gui.xml" path="doc/Control.ctor/*" />
@@ -1034,17 +1032,17 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         RETURN SELF:__IsValid .and. oCtrl:Visible
 
     /// <include file="Gui.xml" path="doc/Control.KeyDown/*" />
-    METHOD KeyDown(oKeyEvent)
+    METHOD KeyDown(oKeyEvent as KeyEvent) AS VOID
         //Also empty in GUI Classes
-        RETURN NIL
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Control.KeyUp/*" />
-    METHOD KeyUp(oKeyEvent)
+    METHOD KeyUp(oKeyEvent as KeyEvent) AS VOID
         //Also empty in GUI Classes
-        RETURN NIL
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Control.LinkDF/*" />
-    METHOD LinkDF(oDS, siDF)
+    METHOD LinkDF(oDS AS DataServer, siDF as usual) as void
         LOCAL tmpDF AS OBJECT
         LOCAL symClassName AS SYMBOL
 
@@ -1052,11 +1050,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             siDF:=oDS:FieldPos(siDF)
         ENDIF
 
-        IF !(oDS IS DataServer)
-            WCError{#LinkDF,#Control,__WCSTypeError,oDS,1}:Throw()
-        ENDIF
-
-        IF (!IsNil(oServer) .AND. (oDS!=oServer))
+         IF (!IsNil(oServer) .AND. (oDS!=oServer))
             SELF:__Unlink()
         ENDIF
 
@@ -1095,57 +1089,50 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
         uGetSetOwner := NIL
         cbGetSetBlock := NULL_CODEBLOCK
 
-        RETURN SELF
+        RETURN 
 
 
     /// <include file="Gui.xml" path="doc/Control.MenuInit/*" />
-    METHOD MenuInit(oMenuInitEvent )
+    METHOD MenuInit(oMenuInitEvent as MenuInitEvent) AS VOID
         //Also empty in GUI Classes
-        RETURN NIL
-
-    /// <include file="Gui.xml" path="doc/Control.MenuSelect/*" />
-    METHOD MenuSelect(oMenuSelectEvent )
-        //Also empty in GUI Classes
-        RETURN NIL
-    /// <include file="Gui.xml" path="doc/Control.Modified/*" />
-    ACCESS Modified AS LOGIC
-        RETURN __lModified
-
-
-    /// <include file="Gui.xml" path="doc/Control.Modified/*" />
-    ASSIGN Modified(lChangedFlag  AS LOGIC)
-        __lModified := lChangedFlag
         RETURN
 
-    /// <include file="Gui.xml" path="doc/Control.MouseButtonDoubleClick/*" />
-    METHOD MouseButtonDoubleClick(oMouseEvent )
+    /// <include file="Gui.xml" path="doc/Control.MenuSelect/*" />
+    METHOD MenuSelect(oMenuSelectEvent as MenuSelectEvent) AS VOID
         //Also empty in GUI Classes
-        RETURN NIL
+        RETURN
+    /// <include file="Gui.xml" path="doc/Control.Modified/*" />
+    property Modified AS LOGIC GET __lModified SET __lModified := value
+
+    /// <include file="Gui.xml" path="doc/Control.MouseButtonDoubleClick/*" />
+    METHOD MouseButtonDoubleClick(oMouseEvent as MouseEvent ) AS VOID
+        //Also empty in GUI Classes
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Control.MouseButtonDown/*" />
-    METHOD MouseButtonDown(oMouseEvent)
+    METHOD MouseButtonDown(oMouseEvent  as MouseEvent) AS VOID
         //Also empty in GUI Classes
-        RETURN NIL
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Control.MouseButtonUp/*" />
-    METHOD MouseButtonUp(oMouseEvent )
+    METHOD MouseButtonUp(oMouseEvent  as MouseEvent) AS VOID
         //Also empty in GUI Classes
-        RETURN NIL
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Control.MouseDrag/*" />
-    METHOD MouseDrag(oMouseEvent )
+    METHOD MouseDrag(oMouseEvent as MouseEvent) as void
         //Also empty in GUI Classes
-        RETURN NIL
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Control.MouseMove/*" />
-    METHOD MouseMove(oMouseEvent )
+    METHOD MouseMove(oMouseEvent as MouseEvent) as void
         //Also empty in GUI Classes
-        RETURN NIL
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Control.Move/*" />
-    METHOD Move(oMoveEvent )
+    METHOD Move(oMoveEvent as MoveEvent) as void
         //Also empty in GUI Classes
-        RETURN NIL
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Control.Name/*" />
     ACCESS Name  AS STRING
@@ -1339,8 +1326,8 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 
     /// <include file="Gui.xml" path="doc/Control.Resize/*" />
-    METHOD Resize(oResizeEvent)
-        RETURN NIL
+    METHOD Resize(oResizeEvent as ResizeEvent) AS VOID
+        RETURN
 
     /// <include file="Gui.xml" path="doc/Control.RestoreUpdate/*" />
     METHOD RestoreUpdate() AS VOID STRICT
@@ -1402,7 +1389,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
     PROPERTY Style AS LONG GET GuiWin32.GetWindowStyle(SELF:hWnd)
 
     /// <include file="Gui.xml" path="doc/Control.SetStyle/*" />
-    METHOD SetStyle(kStyle AS LONG, lEnable := TRUE AS LOGIC)
+    METHOD SetStyle(kStyle AS LONG, lEnable := TRUE AS LOGIC) AS VOID
         LOCAL liTemp as LONG
         IF (oCtrl == NULL_OBJECT .or. ! oCtrl:IsHandleCreated)
             IF lEnable
@@ -1424,7 +1411,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
             GuiWin32.SetWindowStyle(hWnd, liTemp)
         ENDIF
 
-        RETURN SELF
+        RETURN
 
 
     /// <include file="Gui.xml" path="doc/Control.Show/*" />

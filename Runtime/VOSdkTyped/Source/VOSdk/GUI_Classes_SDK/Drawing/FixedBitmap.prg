@@ -3,7 +3,7 @@ CLASS FixedBitmap INHERIT FixedImage
 	PROTECT hInst AS IntPtr
 
  /// <exclude />
-	METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT
+	OVERRIDE METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT
 		RETURN SELF:SetBitmap(Bitmap{uResID})
 
 /// <include file="Gui.xml" path="doc/FixedBitmap.AsString/*" />

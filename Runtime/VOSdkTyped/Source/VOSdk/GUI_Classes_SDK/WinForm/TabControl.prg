@@ -35,7 +35,7 @@ CLASS VOTabControl INHERIT SWF.TabControl IMPLEMENTS IVOControl,IVOControlInitia
 	METHOD SetVisualStyle AS VOID STRICT
 		// Empty but required
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS SWF.CreateParams
+	OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL result := SUPER:CreateParams AS SWF.CreateParams
 			IF _AND(result:Style , (INT) 0X00800000) != 0

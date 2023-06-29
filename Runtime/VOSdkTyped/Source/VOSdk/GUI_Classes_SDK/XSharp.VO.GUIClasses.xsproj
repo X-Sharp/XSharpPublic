@@ -23,6 +23,7 @@
     <NoWin32Manifest>False</NoWin32Manifest>
     <Vo14>False</Vo14>
     <EnforceSelf>True</EnforceSelf>
+    <EnforceOverride>False</EnforceOverride>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>

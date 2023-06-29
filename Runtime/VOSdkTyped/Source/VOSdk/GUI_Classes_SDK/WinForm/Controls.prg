@@ -83,7 +83,7 @@ CLASS VOCheckBox INHERIT SWF.CheckBox  IMPLEMENTS IVoControl
 			SELF:TextAlign := oProperties:TextAlignment
 		ENDIF
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS SWF.CreateParams
+	OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:style ~= (LONG)BS_MULTILINE
@@ -158,7 +158,7 @@ CLASS VOGroupBox INHERIT SWF.GroupBox  IMPLEMENTS IVoControl
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 
-	VIRTUAL METHOD SetVisualStyle AS VOID STRICT
+    METHOD SetVisualStyle AS VOID STRICT
 		IF oProperties != NULL_OBJECT
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
 		ENDIF

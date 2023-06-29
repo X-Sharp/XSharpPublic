@@ -96,7 +96,7 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 
 		//ENDIF
 
-		RETURN NIL
+		RETURN
 
 	METHOD DeActivate(o  AS Event) AS VOID
 		SELF:DeActivateWinForm()

@@ -100,7 +100,7 @@ CLASS VOHotKeyTextBox INHERIT VOTextBox
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner, dwStyle, dwExStyle)
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS SWF.CreateParams
+	OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:ClassName := HOTKEY_CLASS
@@ -114,7 +114,7 @@ CLASS VOMLETextBox INHERIT VOTextBox
 		SUPER(Owner,dwStyle,dwExStyle )
 		SELF:Multiline := TRUE
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS SWF.CreateParams
+	OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:style |= (LONG)WS_VSCROLL
@@ -136,7 +136,7 @@ CLASS VOIPAddressTextBox INHERIT VOTextBox
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner,dwStyle,dwExStyle )
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS SWF.CreateParams
+	OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 			result:ClassName := "SysIPAddress32"

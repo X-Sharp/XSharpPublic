@@ -367,31 +367,6 @@ INTERNAL VOSTRUCT _winRECT
     MEMBER bottom AS LONGINT
 
 
-//INTERNAL VOSTRUCT _winWNDCLASS
-//	MEMBER style         AS DWORD
-//	MEMBER lpfnWndProc   AS PTR
-//	MEMBER cbClsExtra    AS INT
-//	MEMBER cbWndExtra    AS INT
-//	MEMBER hInstance     AS PTR
-//	MEMBER hIcon         AS PTR
-//	MEMBER hCursor       AS PTR
-//	MEMBER hbrBackground AS PTR
-//	MEMBER lpszMenuName  AS PSZ
-//	MEMBER lpszClassName AS PSZ
-//
-//INTERNAL VOSTRUCT _winCREATESTRUCT
-//	MEMBER lpCreateParams AS PTR
-//	MEMBER hInstance      AS PTR
-//	MEMBER hMenu          AS PTR
-//	MEMBER hwndParent     AS PTR
-//	MEMBER cy             AS INT
-//	MEMBER cx             AS INT
-//	MEMBER y              AS INT
-//	MEMBER x              AS INT
-//	MEMBER style          AS LONGINT
-//	MEMBER lpszName       AS PSZ
-//	MEMBER lpszClass      AS PSZ
-
 INTERNAL VOSTRUCT _winLOGBRUSH
     MEMBER lbStyle AS DWORD
     MEMBER lbColor AS DWORD

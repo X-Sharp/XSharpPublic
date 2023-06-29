@@ -102,16 +102,16 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
         RETURN
 
     /// <include file="Gui.xml" path="doc/DialogWindow.Activate/*" />
-    METHOD Activate(oEvent  AS Event)  as void
+    METHOD Activate(oEvent  AS Event)  as USUAL
         WC.AppSetDialogWindow(SELF:oSurface)
-        SUPER:Activate(oEvent)
+		RETURN SUPER:Activate(oEvent)
 
     /// <include file="Gui.xml" path="doc/DialogWindow.Active/*" />
     METHOD Active() AS LOGIC
         RETURN __Dialog:IsShown
 
     /// <include file="Gui.xml" path="doc/DialogWindow.ButtonClick/*" />
-    METHOD ButtonClick(oControlEvent AS ControlEvent)  as void
+    METHOD ButtonClick(oControlEvent AS ControlEvent)  as USUAL
         LOCAL oButton AS Control
         LOCAL dwI, dwCount AS DWORD
         LOCAL oRBG AS RadioButtonGroup
@@ -136,7 +136,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
             ENDIF
             oButton:__Update() // Update radio button group
         ENDIF
-        RETURN
+	RETURN 0
 
 
     /// <include file="Gui.xml" path="doc/DialogWindow.ChangeFont/*" />
@@ -149,23 +149,23 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
         // todo: Implement ClipperKeys
 
     /// <include file="Gui.xml" path="doc/DialogWindow.ControlFocusChange/*" />
-    METHOD ControlFocusChange(oControlFocusChangeEvent AS  ControlFocusChangeEvent) AS VOID STRICT
+    METHOD ControlFocusChange(oControlFocusChangeEvent AS  ControlFocusChangeEvent) AS USUAL STRICT
         LOCAL oCFCE := oControlFocusChangeEvent AS ControlFocusChangeEvent
         IF oCFCE:GotFocus
             SELF:LastFocus := oCFCE:Control
             WC.AppSetDialogWindow(oSurface)
         ENDIF
-        RETURN
+        RETURN SELF
 
     /// <include file="Gui.xml" path="doc/DialogWindow.DeActivate/*" />
-    METHOD DeActivate(oEvent  AS Event) AS VOID
-        SUPER:DeActivate(oEvent)
+    METHOD DeActivate(oEvent  AS Event) AS USUAL
+        RETURN SUPER:DeActivate(oEvent)
 
 
     /// <include file="Gui.xml" path="doc/DialogWindow.Default/*" />
-    METHOD Default(oEvent AS Event)  as void
+    METHOD Default(oEvent AS Event)  as USUAL
         SELF:EventReturnValue := 0
-        RETURN
+	RETURN SELF
 
 
     /// <include file="Gui.xml" path="doc/DialogWindow.Destroy/*" />
@@ -183,8 +183,8 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
         RETURN NIL
 
     /// <include file="Gui.xml" path="doc/DialogWindow.EditFocusChange/*" />
-    METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent) as void
-        SUPER:EditFocusChange(oEditFocusChangeEvent)
+    METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent) as USUAL
+        var uRetCode := SUPER:EditFocusChange(oEditFocusChangeEvent)
 
         IF !oEditFocusChangeEvent:GotFocus
             IF oEditFocusChangeEvent:Control != NULL_OBJECT
@@ -192,7 +192,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
             ENDIF
         ENDIF
 
-        RETURN
+        RETURN uRetCode
 
 
     /// <include file="Gui.xml" path="doc/DialogWindow.EndDialog/*" />
@@ -281,21 +281,21 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
     END PROPERTY
 
     /// <include file="Gui.xml" path="doc/DialogWindow.ListBoxClick/*" />
-    METHOD ListBoxClick(oControlEvent AS ControlEvent) AS VOID
+    METHOD ListBoxClick(oControlEvent AS ControlEvent) AS USUAL
         LOCAL oListBox := NULL_OBJECT AS ListBox
         oListBox := (ListBox) oControlEvent:Control
         oListBox:Modified := TRUE // assume its modified
         oListBox:__Update()
-        RETURN
+		RETURN SELF
 
     /// <include file="Gui.xml" path="doc/DialogWindow.ListBoxSelect/*" />
-    METHOD ListBoxSelect(oControlEvent AS ControlEvent) AS VOID
+    METHOD ListBoxSelect(oControlEvent AS ControlEvent) AS USUAL
         LOCAL oListBox := NULL_OBJECT AS ListBox
         oListBox := (ListBox) oControlEvent:Control
         oListBox:Modified := TRUE // assume its modified
         oListBox:__SetText(oListBox:CurrentItem)
         oListBox:__Update()
-        RETURN
+		RETURN SELF
 
     /// <include file="Gui.xml" path="doc/DialogWindow.Owner/*" />
     PROPERTY Owner AS OBJECT

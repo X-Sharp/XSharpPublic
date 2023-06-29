@@ -153,14 +153,14 @@ PROPERTY LabelRight AS Fixedtext AUTO GET PRIVATE SET
 PROPERTY ListView AS ListView AUTO GET PRIVATE SET
 
 /// <include file="Gui.xml" path="doc/ExplorerWindow.ListViewColumnClick/*" />
-METHOD ListViewColumnClick(oEvt AS ListViewColumnClickEvent) AS VOID
+METHOD ListViewColumnClick(oEvt AS ListViewColumnClickEvent) AS USUAL
 
 	IF SELF:ListView IS __ExplorerLV VAR oLV
 		oLV:symSortCol := oEvt:ListViewColumn:NameSym
 		SELF:ListView:SortItems()
 	ENDIF
 
-	SUPER:ListViewColumnClick(oEvt)
+	RETURN SUPER:ListViewColumnClick(oEvt)
 
 /// <include file="Gui.xml" path="doc/ExplorerWindow.TreeView/*" />
 PROPERTY TreeView AS TreeView AUTO GET PRIVATE SET

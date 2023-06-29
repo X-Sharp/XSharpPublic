@@ -874,12 +874,12 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         RETURN TRUE
 
     /// <include file="Gui.xml" path="doc/DataWindow.Activate/*" />
-    METHOD Activate (oEvent  AS Event) as void
+    METHOD Activate (oEvent  AS Event) as USUAL
         IF (oFrame != NULL_OBJECT)
             WC.AppSetDialogWindow(oFrame)
         ENDIF
 
-        SELF:Default(oEvent)
+        RETURN SELF:Default(oEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.AllowServerClose/*" />
 
@@ -949,7 +949,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.ButtonClick/*" />
-    METHOD ButtonClick(oControlEvent AS ControlEvent) as void
+    METHOD ButtonClick(oControlEvent AS ControlEvent) as USUAL
         LOCAL oButton AS Control
         LOCAL oWindow AS Window
         LOCAL dwI, dwCount AS DWORD
@@ -985,8 +985,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
             ((DataWindow) oWindow):__DoValidate(oButton)
             oButton:ValueChanged := !lUnchanged
         ENDIF
-        SUPER:ButtonClick(oControlEvent)
-        RETURN
+        RETURN SUPER:ButtonClick(oControlEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Cancel/*" />
@@ -1100,7 +1099,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Close/*" />
-    METHOD Close(oEvent as event)  as void
+    METHOD Close(oEvent as event)  as USUAL
         IF (oAttachedServer != NULL_OBJECT)
             IF lRecordDirty .AND. IsNil(oHLStatus )
                 IF IsMethod (oAttachedServer, #Commit) .AND. oAttachedServer:Commit()
@@ -1111,9 +1110,8 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         ENDIF
         // Workaround for TreeView Control Loosing focus bug
         //SetFocus(GuiWin32.GetParent(SELF:Handle()))
-        SUPER:Close(oEvent)
+        RETURN SUPER:Close(oEvent)
 
-        RETURN
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Commit/*" />
@@ -1216,7 +1214,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
     PROPERTY Controls AS ARRAY GET SELF:aControls
 
     /// <include file="Gui.xml" path="doc/DataWindow.ControlFocusChange/*" />
-    METHOD ControlFocusChange(oControlFocusChangeEvent AS  ControlFocusChangeEvent) AS void
+    METHOD ControlFocusChange(oControlFocusChangeEvent AS  ControlFocusChangeEvent) AS USUAL
         LOCAL oControl AS Control
         LOCAL cMessage AS STRING
         LOCAL dwI, dwCount AS DWORD
@@ -1283,7 +1281,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
             ENDIF
         ENDIF
 
-        RETURN 
+        RETURN SELF
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Copy/*" />
@@ -1334,20 +1332,20 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.DeActivate/*" />
-    METHOD DeActivate(oEvent AS Event) AS VOID
+    METHOD DeActivate(oEvent AS Event) AS USUAL
         //RvdH 030825 Call to DeactivateAllOLEObjects moved to Window
-        SUPER:DeActivate(oEvent)
+        RETURN SUPER:DeActivate(oEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.DeactivateAllOLEObjects/*" />
-    METHOD DeactivateAllOLEObjects(oExcept)  as void
+    METHOD DeactivateAllOLEObjects(oExcept)  as USUAL
         SUPER:DeactivateAllOLEObjects(oExcept)
         IF !lTopApp .AND. IsMethod(SELF:Owner, #__AdjustClient)
             SELF:Owner:__AdjustClient()
             //ELSE
             //	SELF:__AdjustSurface()
         ENDIF
-        RETURN 
+        RETURN SELF
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.DeferUse/*" />
@@ -1483,11 +1481,10 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         RETURN SELF
 
     /// <include file="Gui.xml" path="doc/DataWindow.EditChange/*" />
-    METHOD EditChange(oControlEvent AS ControlEvent) as void
+    METHOD EditChange(oControlEvent AS ControlEvent) as USUAL
         LOCAL oCurrentControl := NULL_OBJECT AS OBJECT
-        LOCAL oCE := oControlEvent AS ControlEvent
 
-        oCurrentControl := oCE:Control
+        oCurrentControl := oControlEvent:Control
         IF IsInstanceOfUsual(oCurrentControl, #ListBox) .OR. IsInstanceOfUsual(oCurrentControl, #IPAddress)
             oCurrentControl:Modified := TRUE // mark it as modified
         ENDIF
@@ -1495,22 +1492,19 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         IF (oDCCurrentControl == oCurrentControl)
             SELF:__StatusMessage("", MessageError)
         ENDIF
-        SUPER:EditChange(oControlEvent)
-        RETURN
+        RETURN SUPER:EditChange(oControlEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.EditFocusChange/*" />
-    METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent) as void
-        LOCAL oEFCE AS EditFocusChangeEvent
-        oEFCE := oEditFocusChangeEvent
-        SUPER:EditFocusChange(oEFCE)
+    METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent) as USUAL
+        var result := SUPER:EditFocusChange(oEditFocusChangeEvent)
 
-        IF !oEFCE:GotFocus
-            IF oEFCE:Control != NULL_OBJECT
-                oEFCE:Control:__Update()
+        IF !oEditFocusChangeEvent:GotFocus
+            IF oEditFocusChangeEvent:Control != NULL_OBJECT
+                oEditFocusChangeEvent:Control:__Update()
             ENDIF
         ENDIF
 
-        RETURN
+        RETURN result
 
     /// <include file="Gui.xml" path="doc/DataWindow.EnableConditionalControls/*" />
     METHOD EnableConditionalControls()
@@ -1551,12 +1545,8 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Expose/*" />
-    METHOD Expose(oExposeEvent AS ExposeEvent) as void
-
-
-        SUPER:Expose(oExposeEvent)
-
-        RETURN
+    METHOD Expose(oExposeEvent AS ExposeEvent) as USUAL
+        RETURN SUPER:Expose(oExposeEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.FIELDGET/*" />
@@ -1652,12 +1642,11 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.FocusChange/*" />
-    METHOD FocusChange(oFocusChangeEvent AS FocusChangeEvent) AS VOID
+    METHOD FocusChange(oFocusChangeEvent AS FocusChangeEvent) AS USUAL
         IF oFocusChangeEvent:GotFocus  .and. __DataForm != NULL_OBJECT
             __DataForm:SetFocusToForm()
         ENDIF
-        SUPER:FocusChange(oFocusChangeEvent)
-        RETURN
+        RETURN SUPER:FocusChange(oFocusChangeEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Foreground/*" />
@@ -1736,20 +1725,20 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.HorizontalScroll/*" />
-    METHOD HorizontalScroll(oScrollEvent AS ScrollEvent) AS VOID
+    METHOD HorizontalScroll(oScrollEvent AS ScrollEvent) AS USUAL
         SELF:__HandleScrolling(oScrollEvent)
-        SELF:Default(oScrollEvent)
+        RETURN SELF:Default(oScrollEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.HorizontalSlide/*" />
-    METHOD HorizontalSlide(oSlideEvent AS SliderEvent) AS VOID
+    METHOD HorizontalSlide(oSlideEvent AS SliderEvent) AS USUAL
         SELF:__HandleScrolling(oSlideEvent)
-        SELF:Default(oSlideEvent)
+        RETURN SELF:Default(oSlideEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.HorizontalSpin/*" />
-    METHOD HorizontalSpin(oSpinEvent AS SpinnerEvent) AS VOID
+    METHOD HorizontalSpin(oSpinEvent AS SpinnerEvent) AS USUAL
         SELF:__HandleScrolling(oSpinEvent)
-        SELF:Default(oSpinEvent)
+        RETURN SELF:Default(oSpinEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.ctor/*" />
     CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
@@ -1874,34 +1863,32 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
     END PROPERTY
 
     /// <include file="Gui.xml" path="doc/DataWindow.LineTo/*" />
-    METHOD LineTo(oPoint AS Point) AS VOID
+    METHOD LineTo(oPoint AS Point) AS USUAL
         //Todo	LineTo
 
         IF (oSurface != NULL_OBJECT)
             //oSurface:LineTo(uPoint)
         ENDIF
-        RETURN
+        RETURN oPoint
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.ListBoxClick/*" />
-    METHOD ListBoxClick(oControlEvent AS ControlEvent) AS VOID
+    METHOD ListBoxClick(oControlEvent AS ControlEvent) AS USUAL
         LOCAL oListBox AS ListBox
         oListBox := (ListBox) oControlEvent:Control
         oListBox:Modified := TRUE // assume its modified
         SELF:__DoValidate(oListBox)
-        SUPER:ListBoxClick(oControlEvent)
-        RETURN
+        RETURN SUPER:ListBoxClick(oControlEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.ListBoxSelect/*" />
-    METHOD ListBoxSelect(oControlEvent AS ControlEvent) AS VOID
+    METHOD ListBoxSelect(oControlEvent AS ControlEvent) AS USUAL
         LOCAL oListBox AS BaseListBox
         oListBox := (BaseListBox) oControlEvent:Control
         oListBox:Modified := TRUE // assume its modified
         oListBox:__SetText(oListBox:CurrentItem)
         SELF:__DoValidate(oListBox)
-        SUPER:ListBoxSelect(oControlEvent)
-        RETURN
+        RETURN SUPER:ListBoxSelect(oControlEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.Menu/*" />
     PROPERTY Menu AS VOSDK.Menu
@@ -1919,12 +1906,12 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.MouseButtonDown/*" />
-    METHOD MouseButtonDown(oMouseEvent AS MouseEvent) AS VOID
+    METHOD MouseButtonDown(oMouseEvent AS MouseEvent) AS USUAL
         //RvdH 030825 Method moved from Ole Classes
 
         SELF:DeactivateAllOLEObjects()
 
-        SUPER:MouseButtonDown(oMouseEvent)
+        RETURN SUPER:MouseButtonDown(oMouseEvent)
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.MoveTo/*" />
@@ -2133,12 +2120,12 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.PaintBoundingBox/*" />
-    METHOD PaintBoundingBox(oBB,kPM)
+    METHOD PaintBoundingBox(oBB as BoundingBox,kPM AS LONG) AS VOID
         //Todo	 PaintBoundingBox
         IF oSurface != NULL_OBJECT
             //oSurface:PaintBackground(oBB,kPM)
         ENDIF
-        RETURN SELF
+        RETURN
 
 
     /// <include file="Gui.xml" path="doc/DataWindow.Paste/*" />
@@ -2510,12 +2497,12 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
     PROPERTY Surface as VOPanel GET SELF:oSurface
 
     /// <include file="Gui.xml" path="doc/DataWindow.TextPrint/*" />
-    METHOD TextPrint(cText, oPoint)
+    METHOD TextPrint(cText AS STRING, oPoint AS Point) AS VOID
         // Todo	 TextPrint
         IF oSurface != NULL_OBJECT
             //oSurface:TextPrint(cText, oPoint)
         ENDIF
-        RETURN SELF
+        RETURN
 
     /// <include file="Gui.xml" path="doc/DataWindow.ToolBar/*" />
     PROPERTY ToolBar AS ToolBar
@@ -2620,19 +2607,19 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         RETURN TRUE
 
     /// <include file="Gui.xml" path="doc/DataWindow.VerticalScroll/*" />
-    METHOD VerticalScroll(oScrollEvent AS ScrollEvent)  AS VOID
+    METHOD VerticalScroll(oScrollEvent AS ScrollEvent)  AS USUAL
         SELF:__HandleScrolling(oScrollEvent)
-         SELF:Default(oScrollEvent)
+         RETURN SELF:Default(oScrollEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.VerticalSlide/*" />
-    METHOD VerticalSlide(oSlideEvent AS SliderEvent)  AS VOID
+    METHOD VerticalSlide(oSlideEvent AS SliderEvent)  AS USUAL
         SELF:__HandleScrolling(oSlideEvent)
-         SELF:Default(oSlideEvent)
+        RETURN  SELF:Default(oSlideEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.VerticalSpin/*" />
-    METHOD VerticalSpin(oSpinEvent AS SpinnerEvent)  AS VOID
+    METHOD VerticalSpin(oSpinEvent AS SpinnerEvent)  AS USUAL
         SELF:__HandleScrolling(oSpinEvent)
-         SELF:Default(oSpinEvent)
+        RETURN SELF:Default(oSpinEvent)
 
     /// <include file="Gui.xml" path="doc/DataWindow.ViewAs/*" />
     METHOD ViewAs(symViewType as symbol)

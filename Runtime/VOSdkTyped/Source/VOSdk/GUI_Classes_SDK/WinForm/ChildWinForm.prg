@@ -57,7 +57,7 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 		RETURN form
 
 
-	METHOD Resize(o  as ResizeEvent) AS VOID
+	METHOD Resize(o  as ResizeEvent) AS USUAL
 		SUPER:Resize(o)
 
 		IF SELF:IsVisible() .and. ! SELF:form == NULL
@@ -65,9 +65,9 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 			SELF:form:Height := SELF:CanvasArea:Height
 		ENDIF
 
-		RETURN
+		RETURN SELF
 
-	METHOD Close(o as Event)  as void
+	METHOD Close(o as Event)  as USUAL
 		LOCAL oApp AS VOWinFormApp
 		oApp := (VOWinFormApp)GetAppObject()
 		oApp:UnRegisterWinForm(form)
@@ -75,11 +75,12 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 		SELF:form:Close()
 		SUPER:Close(o)
 
-		RETURN
+		RETURN SELF
 
-	METHOD Activate(o  AS Event) as void
-		SUPER:Activate(o)
-		SELF:ActivateWinForm()
+	METHOD Activate(o  AS Event) as USUAL
+		VAR res := SUPER:Activate(o)
+        SELF:ActivateWinForm()
+        RETURN res
 
 
 	PROTECT METHOD ActivateWinForm() AS VOID STRICT
@@ -98,10 +99,9 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 
 		RETURN
 
-	METHOD DeActivate(o  AS Event) AS VOID
+	METHOD DeActivate(o  AS Event) AS USUAL
 		SELF:DeActivateWinForm()
-		SUPER:DeActivate(o)
-		RETURN
+		RETURN SUPER:DeActivate(o)
 
 	PROTECT METHOD DeActivateWinForm() AS VOID STRICT
 

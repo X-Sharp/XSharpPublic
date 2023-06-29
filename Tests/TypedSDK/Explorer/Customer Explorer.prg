@@ -99,7 +99,7 @@ method BuildTreeViewItems()
 	return nil
 
 
-METHOD Close(oCloseEvent)
+METHOD Close(oCloseEvent AS Event)  AS USUAL
 
 	// clean up the open data servers
 	IF oCustomerServer != NULL_OBJECT

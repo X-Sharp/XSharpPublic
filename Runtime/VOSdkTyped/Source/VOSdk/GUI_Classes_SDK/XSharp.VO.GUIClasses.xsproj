@@ -190,7 +190,6 @@
     <Compile Include="Windows\ModelessDialog.prg" />
     <Compile Include="Windows\StandardDialog.prg" />
     <Compile Include="Windows\TextBox.prg" />
-    <Compile Include="Windows\WindowEventHandlers.prg" />
     <Compile Include="Windows\Dispatch.prg" />
     <Compile Include="Windows\Explorer Window.prg" />
     <Compile Include="ResourceReader\ResourceDialog.prg" />

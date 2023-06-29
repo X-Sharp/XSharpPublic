@@ -64,11 +64,9 @@ CLASS VOPanel INHERIT SWF.Panel IMPLEMENTS IVOPanel
 	RETURN
 
 	METHOD Panel_DragDrop(Sender AS OBJECT, e AS SWF.DragEventArgs) AS VOID
-	IF IsMethod(SELF:Window,"Drop")
 		LOCAL oDE AS DragEvent
-		oDE := DragEvent{e, SELF}
-		SELF:Window:Drop(oDE,FALSE)
-	ENDIF
+	    oDE := DragEvent{e, SELF}
+	    SELF:Window:Drop(oDE)
 	RETURN
 
 	METHOD Initialize() AS VOID STRICT
@@ -331,7 +329,7 @@ CLASS VOSurfacePanel INHERIT VOPanel
 		SELF:lShown := FALSE
 		SELF:AutoSizeMode := SWF.AutoSizeMode.GrowAndShrink
 		SELF:AutoSize     := TRUE
-#ifdef DEBUG
+#ifdef XXDEBUG
         SELF:BackColor := System.Drawing.Color.Bisque
         SELF:Text        := "SurfacePanel"
 #endif
@@ -366,7 +364,7 @@ CLASS VOFramePanel INHERIT VOPanel IMPLEMENTS IVOFramePanel
 		SELF:TabIndex := 1
 		SELF:AutoScroll := TRUE						// Show scrollbars when surface is bigger than the backpanel
 		SELF:lShown := FALSE
-#ifdef DEBUG
+#ifdef XXDEBUG
         SELF:BackColor   := System.Drawing.Color.Beige
         SELF:Text        := "FramePanel"
 #endif

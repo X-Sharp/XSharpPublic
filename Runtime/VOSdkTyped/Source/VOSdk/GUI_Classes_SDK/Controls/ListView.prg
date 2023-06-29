@@ -1031,7 +1031,7 @@ CLASS ListView INHERIT TextControl
 		//UpdateWindow(SELF:handle())
 		RETURN FALSE
 
-	METHOD SetStyle(kStyle AS LONG, lEnable AS LOGIC) AS USUAL
+	METHOD SetStyle(kStyle AS LONG, lEnable AS LOGIC) AS VOID
 
 		SWITCH kStyle
 		CASE LVS_NOCOLUMNHEADER
@@ -1047,7 +1047,7 @@ CLASS ListView INHERIT TextControl
 				SELF:__ListView:Sorting := System.Windows.Forms.SortOrder.None
 			ENDIF
 		END SWITCH
-		RETURN SUPER:SetStyle(kStyle, lEnable)
+		SUPER:SetStyle(kStyle, lEnable)
 
 /// <include file="Gui.xml" path="doc/ListView.SmallImageList/*" />
 	PROPERTY SmallImageList  AS ImageList GET ImageList{__ListView:SmallImageList} SET __ListView:SmallImageList := value

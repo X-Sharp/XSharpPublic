@@ -107,7 +107,7 @@ CLASS VOListBox INHERIT SWF.ListBox
 
 #region Windows Forms Method and Property overrides
 
-    VIRTUAL PROTECTED PROPERTY CreateParams AS SWF.CreateParams
+    OVERRIDE PROTECTED PROPERTY CreateParams AS SWF.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 

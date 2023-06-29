@@ -3,7 +3,7 @@
 CLASS FixedIcon INHERIT FixedImage
 
  /// <exclude />
-	METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT
+	OVERRIDE METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT
 		RETURN SELF:SetIcon(Icon{uResID})
 
     /// <inheritdoc />

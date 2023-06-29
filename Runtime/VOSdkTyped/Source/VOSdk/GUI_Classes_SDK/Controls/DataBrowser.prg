@@ -32,7 +32,7 @@ USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 
 /// <include file="Gui.xml" path="doc/DataBrowser/*" />
-CLASS DataBrowser INHERIT VOSDK.Control 
+CLASS DataBrowser INHERIT VOSDK.Control
 	PROTECT iBufferGranularity AS INT
 	PROTECT iBufferMaximum AS INT
 	PROTECT iDeferPaintCount   AS INT
@@ -1776,8 +1776,8 @@ METHOD __DeltaRebuildBufferUp() AS VOID STRICT
 		SUPER:Disable()
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Default/*" />
-	METHOD Default(oEvent)
-		RETURN SELF
+	METHOD Default(oEvent AS Event) AS VOID
+		RETURN
 
 /// <include file="Gui.xml" path="doc/DataBrowser.Destroy/*" />
 	METHOD Destroy() AS USUAL

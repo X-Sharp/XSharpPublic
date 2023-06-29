@@ -141,7 +141,7 @@ INTERFACE IControlParent
     METHOD __AddTool(oControl AS Control) AS LOGIC STRICT
 	METHOD __ShowToolTip(oControl AS Control) AS VOID STRICT
 	METHOD __AddAlign(oControl AS IGuiObject, iType AS USUAL) AS LOGIC  STRICT
-	METHOD ControlFocusChange(oControlFocusChangeEvent AS  ControlFocusChangeEvent) AS USUAL STRICT
+	METHOD ControlFocusChange(oControlFocusChangeEvent AS  ControlFocusChangeEvent) AS VOID STRICT
 	METHOD __SetupDataControl(oDC AS Control) AS VOID
 	METHOD GetDlgItem(nID as LONG) as ResourceDialogItem
 END INTERFACE

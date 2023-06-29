@@ -172,7 +172,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 			IF oWindow:__Form == SELF
 				SELF:oProperties := NULL_OBJECT
 				IF ! oWindow:IsClosing
-					oWindow:Close()
+					oWindow:Close(Event{})
 				ENDIF
 				oWindow:Destroy()
 			ENDIF

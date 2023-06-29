@@ -4,14 +4,14 @@
 CLASS ChildWinForm INHERIT ChildAppWindow
 	PRIVATE form AS System.Windows.Forms.Form
 	PRIVATE currentControl AS System.Windows.Forms.Control
-	
-	CONSTRUCTOR(owner,managed) 
+
+	CONSTRUCTOR(owner,managed)
 		SUPER(owner,managed)
 
-	ASSIGN WinForm(newForm AS System.Windows.Forms.Form) 
+	ASSIGN WinForm(newForm AS System.Windows.Forms.Form)
 		form := newForm
 
-		// Set the Windows styles of the form so that it 
+		// Set the Windows styles of the form so that it
 		// can be used as a child of the VO window
 		WindowStyle.SetStyle(SELF:form:Handle,WS_CHILDWINDOW,TRUE)
 		WindowStyle.SetStyle(SELF:form:Handle,WS_CAPTION,FALSE)
@@ -50,73 +50,65 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 		LOCAL oApp AS VOWinFormApp
 		oApp := (VOWinFormApp)GetAppObject()
 		oApp:RegisterWinForm(form)
-		
+
 		RETURN
-		
+
 	ACCESS WinForm AS System.Windows.Forms.Form
 		RETURN form
-		
- 
-	METHOD Resize(o)
+
+
+	METHOD Resize(o  as ResizeEvent) AS VOID
 		SUPER:Resize(o)
-		
+
 		IF SELF:IsVisible() .and. ! SELF:form == NULL
 			SELF:form:Width := SELF:CanvasArea:Width
 			SELF:form:Height := SELF:CanvasArea:Height
 		ENDIF
-		
-		RETURN NIL
-		
-	METHOD Close(o)
+
+		RETURN
+
+	METHOD Close(o as Event)  as void
 		LOCAL oApp AS VOWinFormApp
 		oApp := (VOWinFormApp)GetAppObject()
 		oApp:UnRegisterWinForm(form)
 
 		SELF:form:Close()
 		SUPER:Close(o)
-		
-		RETURN NIL
-		
-	METHOD Activate(o  AS Event) 
-		LOCAL u AS USUAL
-		
-		u := SUPER:Activate(o)
-		
+
+		RETURN
+
+	METHOD Activate(o  AS Event) as void
+		SUPER:Activate(o)
 		SELF:ActivateWinForm()
 
-		RETURN u
-		
-	PROTECT METHOD ActivateWinForm() STRICT
+
+	PROTECT METHOD ActivateWinForm() AS VOID STRICT
 		//Todo ActivateWinForm
 		//PostMessage(SELF:form:Handle,WM_SETFOCUS,0,0)
 
 		//IF SELF:form:Controls:Count > 0
-			
+
 		//	IF currentControl == NULL
 		//		currentControl := SELF:form:Controls[SELF:form:Controls:Count-1]
 		//	ENDIF
 
 		//	SELF:form:ActiveControl := currentControl
-			
+
 		//ENDIF
 
 		RETURN NIL
 
-	METHOD DeActivate(o  AS Event)
-		LOCAL u AS USUAL
-
+	METHOD DeActivate(o  AS Event) AS VOID
 		SELF:DeActivateWinForm()
-				
-		u := SUPER:DeActivate(o)
-		
-		RETURN u
-		
-	PROTECT METHOD DeActivateWinForm() STRICT
+		SUPER:DeActivate(o)
+		RETURN
+
+	PROTECT METHOD DeActivateWinForm() AS VOID STRICT
 
 		IF SELF:form:Controls:Count > 0
 			currentControl := SELF:form:ActiveControl
 		ENDIF
 
-		RETURN NIL
+		RETURN
 
 END CLASS

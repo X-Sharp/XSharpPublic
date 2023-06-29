@@ -48,14 +48,14 @@ CLASS TopAppWindow INHERIT AppWindow
         RETURN SELF
 
     /// <include file="Gui.xml" path="doc/TopAppWindow.Resize/*" />
-    METHOD Resize(oResizeEvent)
+    METHOD Resize(oResizeEvent as ResizeEvent) AS VOID
         SUPER:Resize(oResizeEvent)
         SELF:__ResizeChild()
-        RETURN SELF
+        RETURN 
 
-    METHOD ToolBarHeightChanged(oEvent AS ControlNotifyEvent)
+    METHOD ToolBarHeightChanged(oEvent AS ControlNotifyEvent) AS VOID
         SELF:__ResizeChild()
-        RETURN SELF
+        RETURN
 END CLASS
 
 #region defines

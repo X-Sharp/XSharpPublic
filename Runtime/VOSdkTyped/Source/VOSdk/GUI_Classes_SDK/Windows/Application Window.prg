@@ -11,11 +11,8 @@ CLASS AppWindow INHERIT Window
     METHOD __CreateForm() AS VOForm STRICT
         RETURN GuiFactory.Instance:CreateAppWindow(SELF)
 
-
-        //PP-030828 Strong typing
     /// <exclude />
     METHOD __StatusMessageFromEvent(oEvent AS OBJECT, nType AS LONGINT) AS VOID STRICT
-        //PP-030828 Strong typing
         LOCAL oHL AS HyperLabel
 
         oHL := oEvent:HyperLabel
@@ -25,19 +22,19 @@ CLASS AppWindow INHERIT Window
         RETURN
 
     /// <inheritdoc />
-    METHOD Activate(oEvent  AS Event)
+    METHOD Activate(oEvent  AS Event) as void
         SUPER:Activate(oEvent)
         IF SELF:__Form:IsMdiChild
             VAR oShell  := SELF:__Form:ParentForm
             oSHell:Menu := SELF:__Form:Menu
         ENDIF
-        RETURN NIL
+        RETURN 
 
 
 
     /// <include file="Gui.xml" path="doc/AppWindow.Default/*" />
-    METHOD Default(oEvent AS Event)
-        RETURN SELF
+    METHOD Default(oEvent AS Event) as void
+        RETURN 
 
 
     /// <include file="Gui.xml" path="doc/AppWindow.Destroy/*" />
@@ -113,10 +110,9 @@ CLASS AppWindow INHERIT Window
         RETURN SUPER:Dispatch(oEvt)
 
     /// <inheritdoc />
-    METHOD MenuSelect(oEvent AS MenuSelectEvent)
+    METHOD MenuSelect(oEvent AS MenuSelectEvent) AS VOID
         SELF:__StatusMessageFromEvent(oEvent, MESSAGEMENU)
-        RETURN NIL
-
+        RETURN
 
     /// <include file="Gui.xml" path="doc/AppWindow.EnableBorder/*" />
     METHOD EnableBorder(kBorderStyle)
@@ -207,23 +203,27 @@ CLASS AppWindow INHERIT Window
         RETURN
 
 
+
     /// <include file="Gui.xml" path="doc/AppWindow.EndWindow/*" />
-    METHOD EndWindow(lSendMsg)
+    METHOD EndWindow() AS VOID STRICT
+        SELF:EndWindow(FALSE)
+
+
+    /// <include file="Gui.xml" path="doc/AppWindow.EndWindow/*" />
+    METHOD EndWindow(lSendMsg AS LOGIC) AS VOID
         IF SELF:__IsValid
-            IF IsLogic(lSendMsg) .AND. lSendMsg
+            IF lSendMsg
                 oWnd:Close()
             ELSE
                 GuiWin32.PostMessage(SELF:Handle(), WM_CLOSE, 0,0)
             ENDIF
         ENDIF
-        RETURN NIL
+        RETURN
 
     /// <include file="Gui.xml" path="doc/AppWindow.ErrorMessage/*" />
-    METHOD ErrorMessage(uText)
+    METHOD ErrorMessage(uText AS STRING) AS VOID
         ErrorBox{SELF, uText}
-        RETURN SELF
-
-
+        RETURN 
 
 
     /// <include file="Gui.xml" path="doc/AppWindow.ctor/*" />
@@ -263,12 +263,7 @@ CLASS AppWindow INHERIT Window
         RETURN NIL
 
     /// <include file="Gui.xml" path="doc/AppWindow.QuitOnClose/*" />
-    ACCESS QuitOnClose AS LOGIC
-        RETURN lQuitOnClose
-
-    /// <include file="Gui.xml" path="doc/AppWindow.QuitOnClose/*" />
-    ASSIGN QuitOnClose(lNewValue AS LOGIC)
-        lQuitOnClose := lNewValue
+    PROPERTY QuitOnClose AS LOGIC GET lQuitOnClose SET lQuitOnClose := Value
 
     /// <include file="Gui.xml" path="doc/AppWindow.ReportException/*" />
     METHOD ReportException(oRQ)
@@ -289,13 +284,7 @@ CLASS AppWindow INHERIT Window
         RETURN
 
     /// <include file="Gui.xml" path="doc/AppWindow.StatusBar/*" />
-    ACCESS StatusBar AS StatusBar
-        RETURN oStatusBar
-
-    /// <include file="Gui.xml" path="doc/AppWindow.StatusBar/*" />
-    ASSIGN StatusBar(oNewStatusBar AS StatusBar)
-        oStatusBar := oNewStatusBar
-        RETURN
+    PROPERTY StatusBar AS StatusBar GET oStatusBar SET oStatusBar := value
 
     /// <include file="Gui.xml" path="doc/AppWindow.StatusMessage/*" />
     METHOD StatusMessage(oHL, nType)
@@ -329,7 +318,7 @@ CLASS AppWindow INHERIT Window
         RETURN NIL
 
     PROPERTY HorizontalScrollBar AS WindowHorizontalScrollBar GET oHorzScroll
-    PROPERTY VerticalScrollBar as WindowVerticalScrollBar GET oVertScroll
+    PROPERTY VerticalScrollBar  as WindowVerticalScrollBar GET oVertScroll
 
 
     /// <include file="Gui.xml" path="doc/AppWindow.WarningMessage/*" />

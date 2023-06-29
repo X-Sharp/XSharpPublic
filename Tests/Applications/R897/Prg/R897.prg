@@ -19,7 +19,6 @@ exit procedure Output()
     ? "Output"
     xAssert(Alen(avalues) == 3)
     xAssert(avalues[3] == "Output")
-    wait
 return
 
 

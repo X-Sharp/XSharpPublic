@@ -120334,8 +120334,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = R895 - Preprocessor Repeat marker with non repeated element
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION R896 *************
-Application = R896
+; ************** APPLICATION R896 - Property to access super class properties and methods *************
+Application = R896 - Property to access super class properties and methods
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -120368,8 +120368,8 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R896 FileGroups]
-[R896 Files]
+[R896 - Property to access super class properties and methods FileGroups]
+[R896 - Property to access super class properties and methods Files]
 File = %AppPath%\Prg\R896.prg
 FileGUID = F7F45F5E-DFD6-4920-BFCB-231BF8947475
 FileType = Code
@@ -120378,16 +120378,16 @@ File = %AppPath%\Prg\R896.ppo
 FileGUID = A3DD2D1C-64A9-43A4-A38C-76BFE540D585
 FileType = Text
 CopyToBin = 0
-[R896 References]
+[R896 - Property to access super class properties and methods References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.XPP.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
-[R896 Resources]
-[R896 Native Resources]
-[R896 License files]
-[R896 General Options]
+[R896 - Property to access super class properties and methods Resources]
+[R896 - Property to access super class properties and methods Native Resources]
+[R896 - Property to access super class properties and methods License files]
+[R896 - Property to access super class properties and methods General Options]
 Switches=/ppo
 ZeroArrays=0
 CaseSensitive=0
@@ -120422,7 +120422,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[R896 Configurations]
+[R896 - Property to access super class properties and methods Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -120451,7 +120451,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R896
+ENDApplication = R896 - Property to access super class properties and methods
 
 ApplicationGroup = 4913BA1E-7338-4E92-9D0A-7C3EABF0B562
 ; ************** APPLICATION R897 - INIT / EXIT Procedures *************

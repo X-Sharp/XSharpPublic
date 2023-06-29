@@ -148,11 +148,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitLocalfuncproc([NotNull] XSharpParser.LocalfuncprocContext context)
         {
-            if (context.T2 != null && context.T2.Type != context.T.Type)
+            if (context.T2 != null && context.T2.Token.Type != context.T.Token.Type)
             {
-                _parseErrors.Add(new ParseErrorData(context.T, ErrorCode.ERR_UnExpectedExpected, context.T2.Text, context.T.Text));
+                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
             }
-            if (context.T.Type == XSharpParser.PROCEDURE)
+            if (context.T.Token.Type == XSharpParser.PROCEDURE)
             {
                 if (context.Sig.Type != null && context.Sig.Type.Start.Type != XSharpLexer.VOID)
                 {
@@ -209,7 +209,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             break;
                         }
                     }
-                    if (hasClipper) 
+                    if (hasClipper)
                     {
                         _parseErrors.Add(new ParseErrorData(context.ExpressionBody, ErrorCode.ERR_ExpressionBodyClipperCallingConvention));
                     }
@@ -225,7 +225,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FeatureNotAvailableInDialect, "Init/Exit procedure", _options.Dialect.ToString()));
                 }
-                if (context.T?.Type == XSharpParser.FUNCTION) 
+
+                if (context.T.Token.Type != XSharpParser.PROCEDURE)
                 {
                     _parseErrors.Add(new ParseErrorData(context.InitExit, ErrorCode.ERR_FunctionsCannotHaveInitExit));
                 }
@@ -238,9 +239,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-            if (context.T2 != null && context.T2.Type != context.T.Type)
+            if (context.T2 != null && context.T2.Token.Type != context.T.Token.Type)
             {
-                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Text, context.T.Text));
+                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
             }
 
         }
@@ -290,11 +291,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         //public override void ExitForeachStmt([NotNull] XSharpParser.ForeachStmtContext context)
         //{
-            //checkMissingKeyword(context.e, context, "NEXT");
+        //checkMissingKeyword(context.e, context, "NEXT");
         //}
         //public override void ExitIfStmt([NotNull] XSharpParser.IfStmtContext context)
         //{
-            //checkMissingKeyword(context.e, context, "END[IF]");
+        //checkMissingKeyword(context.e, context, "END[IF]");
         //}
         public override void ExitCaseStmt([NotNull] XSharpParser.CaseStmtContext context)
         {
@@ -354,7 +355,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-         public override void ExitLiteralValue([NotNull] XSharpParser.LiteralValueContext context)
+        public override void ExitLiteralValue([NotNull] XSharpParser.LiteralValueContext context)
         {
             if (context.Token.Type == XSharpLexer.INCOMPLETE_STRING_CONST)
             {
@@ -398,12 +399,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFielddecl(XSharpParser.FielddeclContext context)
         {
-           NotInCore(context, "FIELD statement");
+            NotInCore(context, "FIELD statement");
         }
         public override void EnterFoxfield([NotNull] XSharpParser.FoxfieldContext context)
         {
             string name = context.F.Name.GetText();
-            if (name.EndsWith("_COMATTRIB",System.StringComparison.OrdinalIgnoreCase))
+            if (name.EndsWith("_COMATTRIB", System.StringComparison.OrdinalIgnoreCase))
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxUnsupportedClause, "PEMName_COMATTRIB"));
             }
@@ -436,7 +437,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.OLEPUBLIC() != null)
             {
-                _parseErrors.Add(new ParseErrorData(context.OLEPUBLIC(), ErrorCode.WRN_FoxUnsupportedClause, "OLEPUBLIC" ));
+                _parseErrors.Add(new ParseErrorData(context.OLEPUBLIC(), ErrorCode.WRN_FoxUnsupportedClause, "OLEPUBLIC"));
             }
         }
 
@@ -533,12 +534,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.Address == null || context.Number == null)
                 {
-                    _parseErrors.Add(new ParseErrorData(context,ErrorCode.ERR_InvalidDLLEntryPoint, "Both the @ sign and the number must be specified"));
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_InvalidDLLEntryPoint, "Both the @ sign and the number must be specified"));
                 }
                 else if (context.Address.StartIndex > context.Entrypoint.stop.StopIndex + 1
                     || context.Number.StartIndex > context.Address.StopIndex + 1)
                 {
-                    _parseErrors.Add(new ParseErrorData(context,ErrorCode.ERR_InvalidDLLEntryPoint, "No spaces allowed in entrypoint name"));
+                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_InvalidDLLEntryPoint, "No spaces allowed in entrypoint name"));
                 }
             }
             if (context.CharSet != null)
@@ -619,9 +620,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context.ThisAccess, ErrorCode.WRN_FoxUnsupportedClause, "THISACCESS"));
             }
-            if (context.T2 != null && context.T2.Type != context.T.Type)
+            if (context.T2 != null && context.T2.Token.Type != context.T.Token.Type)
             {
-                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Text, context.T.Text));
+                _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_UnExpectedExpected, context.T2.Token.Text, context.T.Token.Text));
             }
         }
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
@@ -637,10 +638,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(new ParseErrorData(context.T2, ErrorCode.ERR_SyntaxError, t.Text));
 
             }
-           //if (isInInterface && hasbody)
-           // {
-           //     _parseErrors.Add(new ParseErrorData(context.Sig.Id, ErrorCode.ERR_InterfaceMemberHasBody));
-           // }
+            //if (isInInterface && hasbody)
+            // {
+            //     _parseErrors.Add(new ParseErrorData(context.Sig.Id, ErrorCode.ERR_InterfaceMemberHasBody));
+            // }
             //if (isInInterface && context.ClassId != null)
             //{
             //    _parseErrors.Add(new ParseErrorData(context.ClassId, ErrorCode.ERR_InterfacesCannotContainTypes));
@@ -658,11 +659,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (isExtern)
                 {
-                    _parseErrors.Add(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern,"Method"));
+                    _parseErrors.Add(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern, "Method"));
                 }
                 if (hasbody)
                 {
-                    _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_AbstractHasBody,"Method"));
+                    _parseErrors.Add(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_AbstractHasBody, "Method"));
                 }
             }
             else if (isExtern)

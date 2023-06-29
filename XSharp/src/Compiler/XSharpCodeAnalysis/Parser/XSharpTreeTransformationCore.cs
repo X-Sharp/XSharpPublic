@@ -4829,15 +4829,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Local Functions
         public override void EnterLocalfuncproc([NotNull] XP.LocalfuncprocContext context)
         {
-            if (context.T.Type == XP.PROCEDURE)
+            if (context.T.Token.Type == XP.PROCEDURE)
             {
                 context.Data.MustBeVoid = true;
             }
         }
+
         public override void ExitLocalfuncproc([NotNull] XP.LocalfuncprocContext context)
         {
-            context.SetSequencePoint(context.T, context.end.Stop);
-            var isprocedure = context.T.Type == XP.PROCEDURE;
+            context.SetSequencePoint(context.T.Token, context.end.Stop);
+            var isprocedure = context.T.Token.Type == XP.PROCEDURE;
             SyntaxListBuilder modifiers = _pool.Allocate();
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword));
             if (context.Modifiers != null)
@@ -5256,7 +5257,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Functions and Procedures
         public override void EnterFuncproc([NotNull] XP.FuncprocContext context)
         {
-            if (context.T.Type == XP.PROCEDURE)
+            if (context.T.Token.Type == XP.PROCEDURE)
             {
                 context.Data.MustBeVoid = _options.Dialect != XSharpDialect.FoxPro;
             }
@@ -5312,11 +5313,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.T != null && context.end != null)
             {
-                context.SetSequencePoint(context.T, context.end.Stop);
+                context.SetSequencePoint(context.T.Token, context.end.Stop);
             }
             // FUNCTION and PROCEDURE for FoxPro are implemented in the foxmethod Rule, so FUNCTION is never inside an interface
 
-            var isprocedure = context.T.Type == XP.PROCEDURE;
+            var isprocedure = context.T.Token.Type == XP.PROCEDURE;
             if (isprocedure)
             {
                 handleInitExit(context);
@@ -5607,7 +5608,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             entrypointExpr = GenerateLiteral(entrypoint);
 
-            var returnType = context.Type?.Get<TypeSyntax>() ?? (context.T.Type == XP.FUNCTION ? _getMissingType() : VoidType());
+            var returnType = context.Type?.Get<TypeSyntax>() ?? (context.T.Token.Type == XP.FUNCTION ? _getMissingType() : VoidType());
             returnType.XCanBeVoStruct = true;
 
             var parameters = getParameters(context.ParamList);

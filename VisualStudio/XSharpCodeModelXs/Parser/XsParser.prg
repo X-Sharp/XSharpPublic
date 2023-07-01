@@ -835,6 +835,14 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
             IF SELF:IsId(SELF:La2)
                 entityKind := Kind.Procedure
             ENDIF
+        CASE XSharpLexer.INIT
+        CASE XSharpLexer.EXIT
+            IF SELF:La2 == XSharpLexer.PROCEDURE .and. ;
+                SELF:IsId(SELF:La3)
+                entityKind := Kind.Procedure
+            ENDIF
+
+
         CASE XSharpLexer.GLOBAL
             IF SELF:IsId(SELF:La2)
                 entityKind := Kind.VOGlobal
@@ -1445,18 +1453,23 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         ;
         funcproctype        : Token=(FUNCTION | PROCEDURE)
         ;
+        // also
+        (INIT | EXIT) PROCEDURE ...
 
         */
         LOCAL kind AS Kind
+        VAR initexit := ""
         _modifiers:Add(SELF:Lt1)
+        IF SELF:Matches(XSharpLexer.INIT,XSharpLexer.EXIT)
+            initexit := SELF:ConsumeAndGetText()
+        ENDIF
         IF ! SELF:ParseFuncProcType (OUT kind)
             RETURN NULL
         ENDIF
         SELF:Consume()
         VAR sig := SELF:ParseSignature()
 
-        VAR initexit := ""
-        IF SELF:Matches(XSharpLexer.INIT1,XSharpLexer.INIT2,XSharpLexer.INIT3,XSharpLexer.EXIT)
+        IF initexit:Length == 0 .and. SELF:Matches(XSharpLexer.INIT1,XSharpLexer.INIT2,XSharpLexer.INIT3,XSharpLexer.EXIT)
             initexit := SELF:ConsumeAndGetText()
         ENDIF
         SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)

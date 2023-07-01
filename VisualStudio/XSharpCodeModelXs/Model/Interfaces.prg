@@ -105,6 +105,17 @@ BEGIN NAMESPACE XSharpModel
     END INTERFACE
 
 
+    INTERFACE ILogger
+        METHOD Information(sMsg as STRING) AS VOID
+        METHOD Debug(sMsg as STRING) AS VOID
+        METHOD Start() AS VOID Strict
+        METHOD Stop() AS VOID Strict
+        METHOD SingleLine() AS VOID STRICT
+        METHOD DoubleLine() AS VOID STRICT
+        METHOD Exception (e as Exception, sMsg as STRING) AS VOID
+
+        PROPERTY Active as LOGIC GET
+    END INTERFACE
 
 
 

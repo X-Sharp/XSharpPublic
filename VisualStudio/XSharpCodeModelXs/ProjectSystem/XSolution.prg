@@ -33,6 +33,7 @@ BEGIN NAMESPACE XSharpModel
     STATIC PROPERTY BuiltInFunctions AS STRING AUTO
     STATIC PROPERTY CommentTokens AS IList<XCommentToken> GET _commentTokens
     STATIC PROPERTY Projects AS IList<XProject> get _projects:Values:ToArray()
+    STATIC PROPERTY Logger as ILogger AUTO GET SET := DummyLogger{}
 
         // Methods
     STATIC CONSTRUCTOR
@@ -278,6 +279,38 @@ BEGIN NAMESPACE XSharpModel
     END PROPERTY
 
     END CLASS
+
+
+    CLASS DummyLogger IMPLEMENTS ILogger
+
+        #region Implement ILogger
+
+        PUBLIC METHOD Information(sMsg AS STRING) AS VOID
+            RETURN
+
+        PUBLIC METHOD Debug(sMsg AS STRING) AS VOID
+            RETURN
+
+        PUBLIC METHOD Start() AS VOID
+            RETURN
+
+        PUBLIC METHOD Stop() AS VOID
+            RETURN
+
+        PUBLIC PROPERTY Active AS LOGIC GET FALSE
+
+
+        PUBLIC METHOD SingleLine() AS VOID
+            RETURN 
+
+        PUBLIC METHOD DoubleLine() AS VOID
+            RETURN
+        METHOD Exception (e as Exception, sMsg as STRING) AS VOID
+            RETURN
+        #endregion
+    END CLASS
+
+
 
 
 END NAMESPACE

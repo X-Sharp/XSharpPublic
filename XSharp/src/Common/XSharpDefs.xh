@@ -111,6 +111,9 @@
 
 // Various DBF related commands
 #include "dbcmd.xh"
+#ifdef __MEMVAR__
+#include "memvar.xh"         
+#endif         
 // Include (optional) custom UDCs
 #include "CustomDefs.xh"
 #endif

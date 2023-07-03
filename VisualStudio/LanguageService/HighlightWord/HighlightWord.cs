@@ -93,7 +93,8 @@ namespace XSharp.LanguageService.Editors.HighlightWord
             if (_classifierService == null || 
                 XEditorSettings.DisableHighLightWord ||
                 XDebuggerSettings.DebuggerIsRunning ||
-                !IsIdentifierStartCharacter(text[0]) || 
+                !IsIdentifierStartCharacter(text[0]) ||
+                XSolution.IsClosing || 
                 XSharpSyntax.KeywordNames.ContainsKey(text))
                 return false;
 
@@ -110,15 +111,15 @@ namespace XSharp.LanguageService.Editors.HighlightWord
                     return false;
                 return true;
             });
-
-
         }
+
         public override IEnumerable<SnapshotSpan> FilterResults(IEnumerable<SnapshotSpan> results)
         {
-            if (_classifierService == null || XEditorSettings.DisableHighLightWord)
-                return results;
-
             var filtered = new List<SnapshotSpan>();
+            if (_classifierService == null || XEditorSettings.DisableHighLightWord || XSolution.IsClosing)
+            {
+                return filtered;
+            }
             foreach (var sspan in results)
             {
                 if (!isSpanInInactiveRegion(sspan))
@@ -130,6 +131,10 @@ namespace XSharp.LanguageService.Editors.HighlightWord
         }
         private bool isSpanInInactiveRegion(SnapshotSpan sspan)
         {
+            if (XSolution.IsClosing)
+            {
+                return false;
+            }
             IList<ClassificationSpan> classificationSpans = _classifierService.GetClassifier(sspan.Snapshot.TextBuffer)
                                                                        .GetClassificationSpans(sspan);
             foreach (ClassificationSpan span in classificationSpans)
@@ -140,6 +145,10 @@ namespace XSharp.LanguageService.Editors.HighlightWord
         }
         internal static bool IsInActiveSpan(ClassificationSpan span)
         {
+            if ( XSolution.IsClosing)
+            {
+                return false;
+            }
             if (span.ClassificationType.IsOfType(PredefinedClassificationTypeNames.Comment))
             {
                 return true;

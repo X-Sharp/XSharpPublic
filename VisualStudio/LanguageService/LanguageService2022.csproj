@@ -109,7 +109,8 @@
     <Compile Include="LineSeparators\LineSeparatorManager.cs" />
     <Compile Include="LineSeparators\LineSeparatorProvider.cs" />
     <Compile Include="LineSeparators\LineSeparatorTag.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\XSharpOutputPane.cs" />
     <Compile Include="Lookup\XSharpSearchLocation.cs" />
     <Compile Include="Lookup\XSharpLookup.cs" />
     <Compile Include="Generic\EditorCommandHandler.cs" />

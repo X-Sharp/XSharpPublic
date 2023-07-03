@@ -415,7 +415,6 @@
     <Compile Include="XSharpShellLink.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
-    <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
     <Compile Include="Menus.cs">
       <AutoGen>True</AutoGen>

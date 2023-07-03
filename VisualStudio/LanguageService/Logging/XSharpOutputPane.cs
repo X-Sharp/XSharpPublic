@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
-using Microsoft;
 using Community.VisualStudio.Toolkit;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
     class XSharpOutputPane
     {

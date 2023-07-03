@@ -22,6 +22,7 @@ namespace XSharp.Debugger.UI
         internal static EnvDTE.Debugger debugger;
         internal static DkmProcess currentProcess = null;
         internal static bool? IsRtLoaded = null;
+        internal static bool IsRunning = false;
         static IList<IDebuggerToolWindow> windows;
 
 
@@ -86,19 +87,45 @@ namespace XSharp.Debugger.UI
 
         static bool IsProcessChanged()
         {
-            var proc = DkmProcess.GetProcesses().FirstOrDefault();
-            return proc != currentProcess;
+            try
+            {
+                if (! IsRunning)
+                {
+                    currentProcess = null;
+                    return false;
+                }
+                var proc = DkmProcess.GetProcesses().FirstOrDefault();
+                if (proc != null)
+                {
+                    // curiosity
+                    var settings = proc.DebugLaunchSettings;
+                    var engsettings = proc.EngineSettings;
+                }
+                return proc != currentProcess;
+            }
+            catch (Exception e )
+            {
+                XSolution.Logger.Exception(e, "XSharp.Debugger.UI.Support.IsProcessChanged");
+            }
+            return true;
         }
         static async Task<object> LoadSupportDLLAsync()
         {
+            if (!IsRunning)
+                return null;
             var proc = DkmProcess.GetProcesses().FirstOrDefault();
             if (IsProcessChanged())
             {
                 currentProcess = proc;
-                IsRtLoaded = null;
-                var path = System.IO.Path.GetDirectoryName(typeof(Support).Assembly.Location);
-                var fileName = System.IO.Path.Combine(path, "XSharp.Debugger.Support.dll");
-                var loaded = await ExecExpressionAsync("System.Reflection.Assembly.LoadFile(\"" + fileName + "\")");
+                if (proc != null)
+                {
+                    XSolution.Logger.Information("Load Debugger Support DLL in process " + proc.Path);
+                    IsRtLoaded = null;
+                    var path = System.IO.Path.GetDirectoryName(typeof(Support).Assembly.Location);
+                    var fileName = System.IO.Path.Combine(path, "XSharp.Debugger.Support.dll");
+                    var loaded = await ExecExpressionAsync("System.Reflection.Assembly.LoadFile(\"" + fileName + "\")");
+                    XSolution.Logger.Information("Result of loading: " + loaded);
+                }
             }
             return proc;
         }
@@ -113,11 +140,14 @@ namespace XSharp.Debugger.UI
             var sf = debugger.CurrentStackFrame;
             if (sf == null)
             {
+                XSolution.Logger.Information("ExecExpressionAsync: No Stack frame");
                 return "";
             }
             var dkmsf = DkmStackFrame.ExtractFromDTEObject(sf);
             var thr = dkmsf.Thread;
             var proc = (DkmProcess) await LoadSupportDLLAsync();
+            if (proc == null)
+                return "";
             var expr = DkmLanguageExpression.Create(language, DkmEvaluationFlags.None, source, null);
             var wl = DkmWorkList.Create(null);
             var insp = DkmInspectionSession.Create(proc, null);

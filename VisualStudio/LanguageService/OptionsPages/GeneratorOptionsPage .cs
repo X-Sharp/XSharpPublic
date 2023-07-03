@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
+using XSharpModel;
 
 namespace XSharp.LanguageService.OptionsPages
 {
@@ -9,14 +9,29 @@ namespace XSharp.LanguageService.OptionsPages
     [Guid(XSharpConstants.GeneratorOptionsPageGuidString)]
     [SharedSettings("TextEditor.XSharp",false)]
     [ComVisible(true)]
-    class GeneratorOptionsPage : XSDialogPage<GeneratorOptionsControl>
+    class GeneratorOptionsPage : XSDialogPage<GeneratorOptionsControl, GeneratorOptions>
     {
-        [DefaultValue(true)]
+        // The base class exposes the AutomationObject that contains the values
+    }
+    public class GeneratorOptions : OptionsBase
+    {
+        #region Properties
         public bool ShowXmlComments { get; set; }
-        [DefaultValue(0)]
         public int PublicStyle { get; set; }
-        [DefaultValue(0)]
         public int PrivateStyle { get; set; }
-    
+        #endregion
+        public GeneratorOptions()
+        {
+            ShowXmlComments = true;
+            PublicStyle = 0;
+            PrivateStyle = 0;
+        }
+        public override void WriteToSettings()
+        {
+            XSettings.CodeGeneratorPrivateStyle = (PrivateStyle)PrivateStyle;
+            XSettings.CodeGeneratorPublicStyle = (PublicStyle)PublicStyle;
+            XSettings.CodeGeneratorShowXmlComments = ShowXmlComments;
+
+        }
     }
 }

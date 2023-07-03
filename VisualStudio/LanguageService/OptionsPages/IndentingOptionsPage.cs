@@ -7,13 +7,16 @@ using XSharpModel;
 namespace XSharp.LanguageService.OptionsPages
 {
 
-    [SharedSettings("TextEditor.XSharp",false)]
+    [SharedSettings("TextEditor.XSharp", false)]
     [Guid(XSharpConstants.IndentingOptionsPageGuidString)]
     [ComVisible(true)]
-    public class IndentingOptionsPage : XSDialogPage<IndentingOptionsControl>
+    public class IndentingOptionsPage : XSDialogPage<IndentingOptionsControl, IndentingOptions>
     {
-        [DefaultValue(false)]
-        public bool IndentInitialized { get; set; }
+        // The base class exposes the AutomationObject that contains the values
+    }
+    public class IndentingOptions : OptionsBase
+    {
+        #region Properties
         [DefaultValue(true)]
         public bool IndentEntityContent { get; set; }
         [DefaultValue(true)]
@@ -31,19 +34,29 @@ namespace XSharp.LanguageService.OptionsPages
         public bool IndentPreprocessorLines { get; set; }
         [DefaultValue(false)]
         public bool IndentNamespace { get; set; }
-
-        public void ValidateSettings()
+        #endregion
+        public IndentingOptions()
         {
-            if (!IndentInitialized)
-            {
-                IndentEntityContent = true; // class members
-                IndentFieldContent = true;  // class fields
-                IndentBlockContent = true;  // statements
-                IndentCaseContent = true;   // statement block inside case
-                IndentMultiLines = true;    // Multi line statements
-                IndentInitialized = true;
-                this.SaveSettingsToStorage();
-            }
+            IndentEntityContent = true; // class members
+            IndentFieldContent = true;  // class fields
+            IndentBlockContent = true;  // statements
+            IndentCaseContent = true;   // statement block inside case
+            IndentMultiLines = true;    // Multi line statements
+            IndentCaseLabel = false;
+            IndentPreprocessorLines = false;
+            IndentNamespace = false;
+        }
+        public override void WriteToSettings()
+        {
+            XEditorSettings.IndentTypeMembers = IndentEntityContent;
+            XEditorSettings.IndentTypeFields = IndentFieldContent;
+            XEditorSettings.IndentStatements = IndentBlockContent;
+            XEditorSettings.IndentCaseContent = IndentCaseContent;
+            XEditorSettings.IndentCaseLabel = IndentCaseLabel;
+            XEditorSettings.IndentContinuedLines = IndentMultiLines;
+            XEditorSettings.IndentPreprocessorLines = IndentPreprocessorLines;
+            XEditorSettings.IndentNamespace = IndentNamespace;
         }
     }
+
 }

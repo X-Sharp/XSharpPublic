@@ -11,6 +11,7 @@ namespace XSharp
     internal static class XSharpConstants
     {
         internal const string guidXSharpProjectPkgString = "e299fb7b-d273-4678-9acf-b37b4af04a12";
+        internal const string guidXSharpDebuggerUIPkgString = "39dae239-87b5-4b97-8e5e-9e6854f2499a";
         internal const string guidXSharpProjectFactoryString = "aa6c8d78-22ff-423a-9c7c-5f2393824e04";
         internal const string guidXSharpProjectFactoryStringCurly = "{"+ guidXSharpProjectFactoryString+"}";
         internal const string guidXSharpVOMenuEditor = "e4ae4582-98ae-40c8-9e48-6f3be61ebf79";
@@ -61,6 +62,10 @@ namespace XSharp
         internal const string DialectPropertiesPage = "2652FCA6-1C45-4D25-942D-4C5D5EDE9539";
         internal const string LanguagePropertiesPage = "0DFC7EF7-3F1A-4ACB-AFD8-DF56AEF9467A";
         internal const string BuildEventsPropertiesPage = "49306259-9119-466E-8780-486CFBE2597D";
+        internal const string DebuggerWorkareasPane = "B5B41BAB-62F9-48E0-80D8-947F2F14D1C5";
+        internal const string DebuggerSettingsPane = "F7ED7826-137A-462D-8757-37A02BEF4DCF";
+        internal const string DebuggerGlobalsPane = "53B7968B-251B-44E0-BDF5-A225BF0DBC77";
+        internal const string DebuggerPublicsPrivatesPane = "7C2FC14E-4BBE-4B95-B0CB-B3B7E0658A23";
 
     }
 
@@ -108,7 +113,7 @@ namespace XSharp
         internal const string DevEnvDir = nameof(DevEnvDir);
         internal const string Dialect = nameof(Dialect);
         internal const string DialectCore = "Core";
-        internal const string DialectFoxPro = "FoxPro";
+        internal const string DialectFoxPro = "Visual FoxPro";
         internal const string DialectHarbour = "Harbour";
         internal const string DialectVO = "VO";
         internal const string DialectVulcan = "Vulcan.NET";

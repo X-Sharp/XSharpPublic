@@ -257,25 +257,21 @@ BEGIN NAMESPACE XSharpModel
 
         METHOD GetMembers(elementName AS STRING) AS IList<IXMemberSymbol>
             VAR tempMembers := List<IXMemberSymbol>{}
-            IF elementName:StartsWith("@@")
-                elementName := elementName:Substring(2)
-            ENDIF
             SELF:Resolve()
             IF ! String.IsNullOrEmpty(elementName)
-                tempMembers:AddRange(SELF:_allmembers:Where ( {m => m.Name.StartsWith(elementName, StringComparison.OrdinalIgnoreCase) }))
+                elementName := elementName:GetTickedname()
+                tempMembers:AddRange(SELF:_allmembers:Where ( {m => m.TickedName.StartsWith(elementName, StringComparison.OrdinalIgnoreCase) }))
             ELSE
                 tempMembers:AddRange(SELF:_allmembers)
             ENDIF
             RETURN tempMembers
 
         METHOD GetMembers(elementName AS STRING, lExact AS LOGIC) AS IList<IXMemberSymbol>
-            IF elementName:StartsWith("@@")
-                elementName := elementName:Substring(2)
-            ENDIF
+            elementName := elementName:GetTickedname()
             IF lExact
                 SELF:Resolve()
                 var result := List<IXMemberSymbol>{}
-                result:AddRange(SELF:_allmembers:Where ( {m => m.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase) }))
+                result:AddRange(SELF:_allmembers:Where ( {m => m.TickedName.Equals(elementName, StringComparison.OrdinalIgnoreCase) }))
                 RETURN result
             ELSE
                 RETURN SELF:GetMembers(elementName)

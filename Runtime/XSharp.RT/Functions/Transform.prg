@@ -22,6 +22,7 @@ INTERNAL STATIC CLASS TransformHelpers
         MEMBER ParenRight  := 256
         MEMBER Upper       := 512
         MEMBER YesNo       := 1024
+        MEMBER Scroll      := 2048
     END ENUM
 
     STATIC METHOD SplitPict(cSayPicture AS STRING, cPic OUT STRING, cFunc OUT STRING) AS LOGIC
@@ -348,7 +349,7 @@ INTERNAL STATIC CLASS TransformHelpers
         LOCAL nDest  := __ARRAYBASE__ AS INT
         LOCAL nSrcLen := cValue:Length AS INT
         LOCAL nDestLen:= cTemplate:Length AS INT
-        LOCAL lBritish := nPictures:HasFlag(TransformPictures:British) AS LOGIC
+        LOCAL lBritish := nPictures:HasFlag(TransformPictures.British) AS LOGIC
         DO WHILE nSrc < nSrcLen .AND. nDest -__ARRAYBASE__ < nDestLen
             VAR templChar := cTemplate[nTempl++]
             VAR srcChar   := cValue[nSrc]
@@ -378,7 +379,7 @@ INTERNAL STATIC CLASS TransformHelpers
                     // Normal template literal. For numeric or @R pictures no change to the src pointer
                     // otherwise increase src pointer
                     result[nDest++] := templChar
-                    IF nPictures:HasFlag(TransformPictures:NonTemplate) .OR. cType == c'N'
+                    IF nPictures:HasFlag(TransformPictures.NonTemplate) .OR. cType == c'N'
                         NOP
                     ELSE
                         nSrc++
@@ -401,10 +402,10 @@ INTERNAL STATIC CLASS TransformHelpers
                     IF lBritish .AND. cType == c'N' .AND. srcChar == c'.'
                         result[nDest++] := c','
                         nSrc++
-                    ELSEIF nPictures:HasFlag(TransformPictures:Upper) .OR. templChar == c'!'
+                    ELSEIF nPictures:HasFlag(TransformPictures.Upper) .OR. templChar == c'!'
                         result[nDest++] := Char.ToUpper(srcChar)
                         nSrc++
-                    ELSEIF nPictures:HasFlag(TransformPictures:ZeroBlank) .AND. cType == c'N' .AND. srcChar == c'0'
+                    ELSEIF nPictures:HasFlag(TransformPictures.ZeroBlank) .AND. cType == c'N' .AND. srcChar == c'0'
                         LOCAL lHasDig := FALSE AS LOGIC
                         FOR VAR x := __ARRAYBASE__ TO nDest
                             IF Char.IsDigit(result[x])
@@ -418,7 +419,7 @@ INTERNAL STATIC CLASS TransformHelpers
                             result[nDest++] := c' '
                         ENDIF
                         nSrc++
-                    ELSEIF nPictures:HasFlag(TransformPictures:YesNo) .AND. cType == c'L'
+                    ELSEIF nPictures:HasFlag(TransformPictures.YesNo) .AND. cType == c'L'
                         result[nDest++] := TransformHelpers.GetLogicLiteral(srcChar == c'T', TRUE)
                         nSrc++
                     ELSE
@@ -442,18 +443,34 @@ INTERNAL STATIC CLASS TransformHelpers
 
         RETURN System.String{result}
 
+    STATIC METHOD AdjustLength(cResult AS STRING, nMaxLength AS INT) AS STRING
+    	IF nMaxLength > 0
+    		IF nMaxLength > cResult:Length
+    			nMaxLength := cResult:Length
+    		END IF
+    		cResult := cResult:Substring(0, nMaxLength)
+    	END IF
+
+    	RETURN cResult
+
     STATIC METHOD TransformS(cValue AS STRING, cPicture AS STRING) AS STRING
         LOCAL cTemplate AS STRING
-        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc )
+        LOCAL cResult AS STRING
+        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc, OUT VAR nMaxLength )
         IF String.IsNullOrEmpty(cTemplate)
             cTemplate := System.String{c'#', cValue:Length}
         ENDIF
-        RETURN TransformHelpers.MergeValueAndTemplate(c'C', cValue, cTemplate, nPicFunc)
+        cResult := TransformHelpers.MergeValueAndTemplate(c'C', cValue, cTemplate, nPicFunc)
+        IF nPicFunc:HasFlag(TransformPictures.Scroll)
+            cResult := TransformHelpers.AdjustLength(cResult, nMaxLength)
+        ENDIF
+        RETURN cResult
 
     STATIC METHOD TransformL( lValue AS LOGIC, cPicture AS STRING ) AS STRING
         LOCAL cTemplate AS STRING
+        LOCAL cResult AS STRING
 
-        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc )
+        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc, OUT VAR nMaxLength )
 
         IF cTemplate == ""  // for VO compatiblity, an empty picture string returns T or F
             IF nPicFunc:HasFlag(TransformPictures.YesNo)
@@ -462,7 +479,11 @@ INTERNAL STATIC CLASS TransformHelpers
                 cTemplate := "L"
             ENDIF
         ENDIF
-        RETURN TransformHelpers.MergeValueAndTemplate(c'L', IIF(lValue, "T", "F"), cTemplate, nPicFunc)
+        cResult := TransformHelpers.MergeValueAndTemplate(c'L', IIF(lValue, "T", "F"), cTemplate, nPicFunc)
+        IF nPicFunc:HasFlag(TransformPictures.Scroll)
+            cResult := TransformHelpers.AdjustLength(cResult, nMaxLength)
+        ENDIF
+        RETURN cResult
 
 
 
@@ -488,7 +509,8 @@ INTERNAL STATIC CLASS TransformHelpers
     STATIC METHOD TransformD( dValue AS DATE, cPicture AS STRING ) AS STRING
         LOCAL cValue   AS STRING
         LOCAL cTemplate AS STRING
-        cTemplate := TransformHelpers.ParseTemplate(cPicture, OUT VAR nPicFunc )
+        LOCAL cResult AS STRING
+        cTemplate := TransformHelpers.ParseTemplate(cPicture, OUT VAR nPicFunc, OUT VAR nMaxLength )
         IF nPicFunc:HasFlag(TransformPictures.British)
            cTemplate := IIF(SetCentury(), "DD/MM/YYYY", "DD/MM/YY")
         ELSEIF String.IsNullOrEmpty(cTemplate)
@@ -496,7 +518,11 @@ INTERNAL STATIC CLASS TransformHelpers
         ENDIF
         cTemplate := cTemplate:Replace("D","9"):Replace("M","9"):Replace("Y","9")
         cValue := DToC(dValue)
-        RETURN TransformHelpers.MergeValueAndTemplate(c'D', cValue, cTemplate, nPicFunc)
+        cResult := TransformHelpers.MergeValueAndTemplate(c'D', cValue, cTemplate, nPicFunc)
+        IF nPicFunc:HasFlag(TransformPictures.Scroll)
+            cResult := TransformHelpers.AdjustLength(cResult, nMaxLength)
+        ENDIF
+        RETURN cResult
 
         // check if the character is a valid literal character or a template character
     STATIC METHOD IsPictureLiteral(cType AS CHAR, cChar AS CHAR) AS LOGIC
@@ -553,7 +579,7 @@ INTERNAL STATIC CLASS TransformHelpers
         nWhole := nDecimal := 0
         lIsFloat := ! lIsInt
 
-        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc )
+        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc, OUT VAR nMaxLength )
         cOrigTemplate := cTemplate
 
         IF  nPicFunc:HasFlag( TransformPictures.Date )
@@ -685,12 +711,16 @@ INTERNAL STATIC CLASS TransformHelpers
             cReturn := cReturn:TrimStart():PadRight( nLen,c' ')
         ENDIF
 
+        IF nPicFunc:HasFlag(TransformPictures.Scroll)
+            cReturn := TransformHelpers.AdjustLength(cReturn, nMaxLength)
+        ENDIF
         RETURN cReturn
 
-    PRIVATE STATIC METHOD ParseTemplate( cPicture AS STRING, nPicFunc OUT TransformPictures ) AS STRING
+    PRIVATE STATIC METHOD ParseTemplate( cPicture AS STRING, nPicFunc OUT TransformPictures, nMaxLength OUT INT ) AS STRING
         LOCAL cTemplate AS STRING
         LOCAL done := FALSE AS LOGIC
         nPicFunc  := TransformPictures.None
+        nMaxLength := 0
 
         IF cPicture:Length > 1 .AND. cPicture[0] == c'@'
             VAR nIndex := cPicture:IndexOf(" ")
@@ -701,7 +731,19 @@ INTERNAL STATIC CLASS TransformHelpers
                 cTemplate := ""
                 cPicture  := cPicture:Substring(1)
             ENDIF
+
+            LOCAL lInMaxLength := FALSE AS LOGIC
+
             FOREACH cChar AS CHAR IN cPicture
+            	IF lInMaxLength
+                    IF cChar >= c'0' .AND. cChar <= c'9'
+                        nMaxLength := nMaxLength * 10
+                        nMaxLength += (cChar - (INT) c'0')
+            		ELSE
+            			lInMaxLength := FALSE
+            		END IF
+            	END IF
+
                 SWITCH cChar
                 CASE c'B' ; CASE c'b'
                      nPicFunc |= TransformPictures.Left
@@ -725,6 +767,11 @@ INTERNAL STATIC CLASS TransformHelpers
                     nPicFunc |= TransformPictures.Upper
                 CASE c'Y'; CASE c'y'
                     nPicFunc |= TransformPictures.YesNo
+                CASE c'S'; CASE c's'
+                    nPicFunc |= TransformPictures.Scroll
+                	IF nMaxLength == 0
+                		lInMaxLength := TRUE
+                	END IF
                 CASE c' '
                 CASE c'\t'
                     done := TRUE
@@ -739,6 +786,7 @@ INTERNAL STATIC CLASS TransformHelpers
         ELSE
             cTemplate := cPicture
         ENDIF
+
 
         RETURN cTemplate
 

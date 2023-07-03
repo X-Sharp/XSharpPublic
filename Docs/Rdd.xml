@@ -2533,8 +2533,8 @@
             Return and optionally change information about a data server.
         </summary>
         <param name="kInfoType">
-            Specifies the type of information. The constants are described in the Constants section below. Note, however, that not all constants are supported for all RDDs.
-            <br />Important! DBI_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters. Values less than DBI_USER are reserved for CA development.
+            Specifies the type of information.
+            <include file="RTComments.xml" path="Comments/RddInfoParam/*"  />
         </param>
         <param name="uInfo">
             If specified, this parameter is used to change the value of a setting. The data type (and whether <paramref name="uInfo" /> can be specified), depends on the <paramref name="kInfoType" /> constant and is documented in the Constants section below.
@@ -3419,87 +3419,20 @@
             Return and optionally change settings controlled directly by the RDD.
         </summary>
         <param name="kRDDInfoType">
-            Specifies the setting. The initial default of a setting depends on the RDD.
-            The constants are described in the Constants section below. Note, however, that not all constants are supported for all RDDs.
-            <br />Important! _SET_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kRDDInfoType" /> parameters. Values less than _SET_USER are reserved for CA development.
+            Specifies the setting.
+            <include file="RTComments.xml" path="Comments/RddInfoParam/*"  />
         </param>
         <param name="uRDDVal">
-            If specified, this parameter is used to change the value of a setting. The data type (and whether <paramref name="uNewSetting" /> can be specified), depends on the <paramref name="kRDDInfoType" /> constant and is documented in the Constants section below.
+            If specified, this parameter is used to change the value of a setting.
+            The data type (and whether <paramref name="uNewSetting" /> can be specified), depends on the <paramref name="kRDDInfoType" />
+            constant and is documented in the Constants section below.
         </param>
         <returns>
-            If <paramref name="uNewSetting" /> is not specified, DBServer:RDDInfo() returns the current setting. If <paramref name="uNewSetting" /> is specified, the previous setting is returned.
+            If <paramref name="uNewSetting" /> is not specified, DBServer:RDDInfo() returns the current setting.
+            If <paramref name="uNewSetting" /> is specified, the previous setting is returned.
         </returns>
         <remarks>
-            <list type="table">
-                <listheader>
-                    <term>Constant</term>
-                    <description>Description</description>
-                </listheader>
-                <item>
-                    <term>_SET_AUTOOPEN</term>
-                    <description>Returns and optionally changes the logical flag that determines whether the RDD will open production indexes automatically when a database file is opened. A TRUE setting indicates that the production index is opened automatically.</description>
-                </item>
-                <item>
-                    <term>_SET_AUTOORDER</term>
-                    <description>Returns and optionally changes the numeric setting that determines whether the production index will set a controlling order. A setting of 1 indicates that the first order in the production index will be the controlling order. A setting of 0 indicates that database files will be processed in natural order when the production index is initially opened.</description>
-                </item>
-                <item>
-                    <term>_SET_AUTOSHARE</term>
-                    <description>Returns and optionally changes the numeric setting that determines the automatic sharing mode.</description>
-                </item>
-                <item>
-                    <term></term>
-                    <description>A setting of 0 completely disables automatic sharing control. This is primarily useful when developing network applications in a stand-alone environment.</description>
-                </item>
-                <item>
-                    <term></term>
-                    <description>A setting of 1 causes the RDD to determine at runtime whether the application is running in a network environment. If not, the RDD automatically opens all files in exclusive mode. This allows you to write code that is network-aware, while still getting optimal performance when you application is running in single-user mode.</description>
-                </item>
-                <item>
-                    <term></term>
-                    <description>A setting of 2 opens all files in exclusive mode, regardless of the current environment. Using this mode, you can easily convert an application designed for a network environment to work as a single-user application. This is useful if you prefer to deliver separate stand-alone and LAN versions of the application.</description>
-                </item>
-                <item>
-                    <term>_SET_BLOB_CIRCULAR_ARRAY_REF</term>
-                    <description>Returns and optionally sets the logical flag indicating whether to check for circular array references when storing and retrieving arrays to and from BLOB fields. A FALSE setting indicates that the RDD will not check for circular references.</description>
-                </item>
-                <item>
-                    <term></term>
-                    <description>The algorithm for storing/retrieving arrays uses a recursive process which will call itself indefinitely if the array has a circular reference, quickly exhausting the program's stack. You can set DBServer:RDDInfo(_SET_BLOB_CIRCULAR_ARRAY_REF, TRUE) to cause the algorithm to check for and correctly process circular references. Note, however, that the checking takes extra time and is unnecessary unless there are circular references.</description>
-                </item>
-                <item>
-                    <term>_SET_DEFAULTRDD</term>
-                    <description>Returns the name of the default RDD, specified as a string.</description>
-                </item>
-                <item>
-                    <term>_SET_HPLOCKING</term>
-                    <description>Returns and optionally changes the logical flag that determines whether to use the High Performance (HP) locking schema for newly created index files. A FALSE setting indicates that the HP locking schema is not used.</description>
-                </item>
-                <item>
-                    <term>_SET_MEMOBLOCKSIZE</term>
-                    <description>Returns and optionally changes the numeric value specifying block size (in bytes) for memo files.</description>
-                </item>
-                <item>
-                    <term>_SET_MEMOEXT</term>
-                    <description>Returns and optionally changes the string value indicating the default memo file extension.</description>
-                </item>
-                <item>
-                    <term>_SET_NEWINDEXLOCK</term>
-                    <description>Returns and optionally changes the logical flag that determines the locking offset flag for newly created index files. A FALSE setting indicates a locking offset that is compatible with Xbase applications but more restrictive than the offset that will be used if this flag is set to TRUE.</description>
-                </item>
-                <item>
-                    <term>_SET_OPTIMIZE</term>
-                    <description>Returns and optionally changes the logical flag that determines whether optimization will be used when filtering records in the database files. A TRUE setting indicates that the RDD will use the available orders to make processing a filtered database as efficient as possible.</description>
-                </item>
-                <item>
-                    <term>_SET_STRICTREAD</term>
-                    <description>Returns and optionally changes the logical flag that determines whether the RDD will read records directly from disk when creating orders.</description>
-                </item>
-                <item>
-                    <term></term>
-                    <description>A FALSE setting indicates that the RDD will read records directly from disk when creating orders, which is the most efficient setting. However, if you are using a DBF RDD layer that encrypts the database file, this setting will give incorrect results because the RDD will see the encrypted value rather than the actual value of the records. In order to use the RDD with encryption packages, use DBServer:RDDInfo(_SET_STRICTREAD, TRUE). This setting lets the DBF RDD layer read the records when creating an order.</description>
-                </item>
-            </list>
+            <include file="RTComments.xml" path="Comments/RddInfoRemarks/*"  />
         </remarks>
     </DbServer.RddInfo>
     <DbServer.RddName>
@@ -3616,14 +3549,48 @@
         </summary>
         <param name="kRecInfoType">
             The information retrieved depends on the constant specified
-            Constant	Returned Value
-            DBRI_BUFFPTR	Pointer to current record buffer
-            DBRI_DELETED	Is record deleted?
-            DBRI_DELETED	Is record deleted?
-            DBRI_RECSIZE	Record length.
-            DBRI_LOCKED	Is record locked?
-            DBRI_RECNO	Record position (like the RecNo access).
-            <br />Important! DBRI_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters. Values less than DBRI_USER are reserved for CA development.
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Returned Value</description>
+                </listheader>
+
+                <item>
+                    <term>
+                        DBRI_BUFFPTR
+                    </term>
+                    <description>Pointer to current record buffer</description>
+                </item>
+                <item>
+                    <term>
+                        DBRI_DELETED
+                    </term>
+                    <description>Is record deleted?</description>
+                </item>
+                <item>
+                    <term>DBRI_DELETED</term>
+                    <description>Is record deleted?</description>
+                </item>
+                <item>
+                    <term>
+                        DBRI_RECSIZE
+                    </term>
+                    <description>
+                        Record length.
+                    </description>
+                </item>
+                <item>
+                    <term>DBRI_LOCKED</term>
+                    <description>
+                        Is record locked?
+                    </description>
+                </item>
+                <item>
+                    <term>DBRI_RECNO</term>
+                    <description>Record position (like the RecNo access).</description>
+                </item>
+            </list>
+            <br />Important! DBRI_USER is a constant that returns the minimum value that third-party RDD developers can use for defining new <paramref name="kInfoType" /> parameters. Values less than DBRI_USER are reserved for X# development.
         </param>
         <param name="nRecordNumber">Indicates the record for which information is to be retrieved; if 0 or omitted, refers to the current record.</param>
         <param name="uRecVal">This parameter is reserved for RDDs that allow you to change the information rather than just retrieve it. None of the supplied RDDs (as outlined in the 'RDD Specifics' appendix in the Programmer's Guide) support this argument. Either omit the argument or specify it as NIL.</param>
@@ -3823,9 +3790,9 @@
             In this example, DBServer:Seek() moves the pointer to the record in the database, EMPLOYEE, in which the value in the control field sleLastName matches a record in the database:
             <code language="X#">
                 IF Employee:Seek( UPPER( SELF:oDCsleLastName:Value ) )
-                Employee:ViewRecord()
+                   Employee:ViewRecord()
                 ELSE
-                QOut("Not found")
+                   QOut("Not found")
                 END
             </code>
         </example>

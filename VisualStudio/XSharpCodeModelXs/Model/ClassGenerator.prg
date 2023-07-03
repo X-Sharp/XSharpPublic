@@ -57,9 +57,9 @@ CLASS XClassCreator
 		END TRY
 
     PROTECTED METHOD GetDoc(sym as IXSymbol,nNest as long) AS VOID
-        IF oDocProvider != NULL .and. XSettings.CodeGeneratorShowXmlComments
+        IF SELF:oDocProvider != NULL .and. XSettings.CodeGeneratorShowXmlComments
             LOCAL cDoc as STRING
-            cDoc := oDocProvider(sym)
+            cDoc := SELF:oDocProvider(sym)
             IF ! String.IsNullOrWhiteSpace(cDoc)
                 var docLines := cDoc:Split(<char>{'\r','\n'},StringSplitOptions.RemoveEmptyEntries)
                 foreach var docLine in docLines
@@ -313,7 +313,7 @@ CLASS XClassCreator
 
 	PROTECTED METHOD AddDelegate(oType AS XPETypeSymbol , nNest AS INT, cParentName := "" AS STRING) AS VOID
 
-		AddAttributes(oType , SELF:aLines , nNest)
+		SELF:AddAttributes(oType , SELF:aLines , nNest)
         var cLine := oType:VisibilityKeyword+" "+oType:ModifiersKeyword+" "+ oType:KindKeyword + " "
         cLine += oType:Prototype
         SELF:AddLine(cLine, nNest)

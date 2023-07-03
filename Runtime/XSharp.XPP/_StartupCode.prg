@@ -1,15 +1,16 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
-PROCEDURE InitCollation INIT3
+procedure InitCollation init3
     SetCollation(XppCollations.System)
-    SetAnsi(TRUE)       // This also sets the Set.CharSet
-    RETURN
- 
+    SetAnsi(true)       // This also sets the Set.CharSet
+    return
 
-PROCEDURE InitDateCountry INIT3
-   SetDateCountry(DateCountry.System)
-    RETURN
+
+procedure InitDateCountry init3
+    SetDateCountry(DateCountry.System)
+    return
+

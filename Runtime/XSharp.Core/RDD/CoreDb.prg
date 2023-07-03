@@ -1501,7 +1501,7 @@ CLASS XSharp.CoreDb
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbRddInfo' >VoDbRddInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.RddInfo' >RddInfo overloads in VoDb</seealso>
-
+        /// <remarks><include file="RTComments.xml" path="Comments/RddInfoRemarks/*" /></remarks>
     STATIC METHOD RddInfo(nOrdinal AS DWORD,oValue REF OBJECT) AS LOGIC
         VAR oTemp := oValue
         VAR result := CoreDb.Do ({ =>

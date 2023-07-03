@@ -340,7 +340,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             if (token == null)
                 return false;
             // see xsharp.g4 binaryExpression
-            // tokens in same order 
+            // tokens in same order
             switch (token.Type)
             {
                 case XSharpLexer.EXP:
@@ -482,7 +482,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     || nextToken.IsPrefix() || nextToken.IsMemberSeparator();
             }
             // we allow .and. .not. and even .not. .not.
-            if (token.IsPrefix() || token.IsBinary())          
+            if (token.IsPrefix() || token.IsBinary())
                 return nextToken.IsPrimaryOrPrefix();
             if (nextToken.IsBinary() || nextToken.NeedsLeft() || nextToken.IsPostFix())
                 return token.IsPrimary() || token.IsClose();

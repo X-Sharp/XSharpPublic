@@ -8,25 +8,23 @@ namespace XSharp.LanguageService.OptionsPages
         public OtherOptionsControl()
         {
             InitializeComponent();
-            chkShowDividers.Tag = nameof(OtherOptionsPage.ShowDividers);
-            chkSingleLineDividers.Tag = nameof(OtherOptionsPage.ShowSingleLineDividers);
-            chkHighlightWord.Tag = nameof(OtherOptionsPage.EnableHighlightWord);
-            chkBraceMatching.Tag = nameof(OtherOptionsPage.EnableBraceMatching);
-            chkKeywordMatching.Tag = nameof(OtherOptionsPage.EnableKeywordmatching);
+            chkShowDividers.Tag = nameof(OtherOptions.ShowDividers);
+            chkSingleLineDividers.Tag = nameof(OtherOptions.ShowSingleLineDividers);
+            chkHighlightWord.Tag = nameof(OtherOptions.EnableHighlightWord);
+            chkBraceMatching.Tag = nameof(OtherOptions.EnableBraceMatching);
+            chkKeywordMatching.Tag = nameof(OtherOptions.EnableKeywordmatching);
 
-            chkLightBulbs.Tag = nameof(OtherOptionsPage.EnableLightBulbs);
-            chkQuickInfo.Tag = nameof(OtherOptionsPage.EnableQuickInfo);
-            chkParameters.Tag = nameof(OtherOptionsPage.EnableParameterInfo);
-            chkCompletion.Tag = nameof(OtherOptionsPage.EnableCodeCompletion);
-            chkRegions.Tag = nameof(OtherOptionsPage.EnableRegions);
-            chkAutoPairs.Tag = nameof(OtherOptionsPage.AutoPairs);
-            chkAutoOpen.Tag = nameof(OtherOptionsPage.AutoOpen);
+            chkLightBulbs.Tag = nameof(OtherOptions.EnableLightBulbs);
+            chkQuickInfo.Tag = nameof(OtherOptions.EnableQuickInfo);
+            chkParameters.Tag = nameof(OtherOptions.EnableParameterInfo);
+            chkCompletion.Tag = nameof(OtherOptions.EnableCodeCompletion);
+            chkRegions.Tag = nameof(OtherOptions.EnableRegions);
+            chkAutoPairs.Tag = nameof(OtherOptions.AutoPairs);
+            chkAutoOpen.Tag = nameof(OtherOptions.AutoOpen);
         }
-        internal OtherOptionsPage OurOptionsPage => (OtherOptionsPage) optionPage;
-
-        internal override void ReadValues()
+        internal override void ReadValues(object options)
         {
-            base.ReadValues();
+            base.ReadValues(options);
             chkSingleLineDividers.Enabled = chkShowDividers.Checked;
         }
 

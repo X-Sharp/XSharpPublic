@@ -212,6 +212,10 @@ namespace XSharp.LanguageService
             if (file != null)
             {
                 member = file.FindMemberAtRow(iLine);
+                if (member == null)
+                {
+                    return VSConstants.S_OK;
+                }
                 if (member.Kind.IsClassMember(file.Project.ParseOptions.Dialect))
                 {
                     if (!member.Modifiers.HasFlag(Modifiers.Static))
@@ -275,41 +279,40 @@ namespace XSharp.LanguageService
             foreach (var token in tokens)
             {
                 var type = token.Type;
-                if (type == XSharpLexer.ID)
+                switch (type)
                 {
-                    if (expression.Length == 0)
-                    {
-                        expression = token.Text;
-                        if (locals != null && locals.ContainsKey(expression))
+                    case XSharpLexer.ID:
+                        if (expression.Length == 0)
                         {
-                            expression = locals[expression].Name;
+                            expression = token.Text;
+                            if (locals != null && locals.ContainsKey(expression))
+                            {
+                                expression = locals[expression].Name;
+                            }
                         }
-                    }
-                    else
-                    {
-                        expression += token.Text;
-                    }
-                    if (! list.Contains(expression))
-                    {
+                        else
+                        {
+                            expression += token.Text;
+                        }
+                        if (!list.Contains(expression))
+                        {
 
-                        list.Add(expression);
-                    }
-                }
-                else if (type == XSharpLexer.COLON || type == XSharpLexer.DOT)
-                {
-                    expression += token.Text;
-                }
-                else if (type == XSharpLexer.SELF)
-                {
-                    expression += token.Text;
-                }
-                else if (type == XSharpLexer.SUPER)
-                {
-                    expression += token.Text;
-                }
-                else
-                {
-                    expression = "";
+                            list.Add(expression);
+                        }
+                        break;
+                    case XSharpLexer.COLON:
+                    case XSharpLexer.DOT:
+                    case XSharpLexer.SELF:
+                    case XSharpLexer.SUPER:
+                        expression += token.Text;
+                        break;
+                    default:
+                        if (XSharpLexer.IsLiteral(token.Type))
+                        {
+                            list.Add(token.Text);
+                        }
+                        expression = "";
+                        break;
                 }
             }
         }

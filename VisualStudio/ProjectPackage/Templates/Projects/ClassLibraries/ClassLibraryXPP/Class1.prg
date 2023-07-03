@@ -1,4 +1,9 @@
-﻿USING System
+﻿// $safeitemrootname$.prg
+// Created by    : $username$
+// Creation Date : $time$
+// Created for   : $registeredorganization$
+// WorkStation   : $machinename$
+USING System
 USING System.Collections.Generic
 $if$ ($targetframeworkversion$ >= 3.5)USING System.Linq
 $endif$USING System.Text
@@ -32,8 +37,8 @@ BEGIN NAMESPACE $safeprojectname$
 
     CLASS METHOD Class1:initClass()
         // This is the type constructor. it gets called only once
-        listOfObjects := List<Class1>{}     // You can use the "new" syntax with curly braces to create an objec
-        someObject    := Object():new()     // but also use Type():New() syntax.
+        ::listOfObjects := List<Class1>{}     // You can use the "new" syntax with curly braces to create an objec
+        ::someObject    := Object():new()     // but also use Type():New() syntax.
 
     METHOD Class1:init()
         ::var1 := "First String"
@@ -44,4 +49,5 @@ BEGIN NAMESPACE $safeprojectname$
     RETURN 42 + nValue
 
 
-END NAMESPACE
+END NAMESPACE // $safeprojectname$
+

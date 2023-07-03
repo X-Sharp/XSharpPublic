@@ -1,4 +1,10 @@
-﻿// Please read the comments in Readme.txt !
+﻿// $safeitemrootname$.prg
+// Created by    : $username$
+// Creation Date : $time$
+// Created for   : $registeredorganization$
+// WorkStation   : $machinename$
+
+// Please read the comments in Readme.txt !
 USING System
 USING System.Collections.Generic
 $if$ ($targetframeworkversion$ >= 3.5)USING System.Linq

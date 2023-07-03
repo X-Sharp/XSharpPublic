@@ -47,7 +47,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="XSharp.Core" />
     <Reference Include="XSharp.RT" />
-    <Reference Include="XSharp.VFP" />
+    <Reference Include="XSharp.XPP" />
     $endif$
   </ItemGroup>
   

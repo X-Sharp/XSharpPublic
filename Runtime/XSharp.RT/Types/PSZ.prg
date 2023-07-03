@@ -5,10 +5,13 @@
 //
 USING System.Collections.Generic
 USING System.Runtime.InteropServices
+USING System.Runtime.CompilerServices
 USING System.Runtime.Serialization
 USING System.Diagnostics
 USING System.Text
 USING System.Reflection
+#include "attributes.xh"
+
 BEGIN NAMESPACE XSharp
 
 /// <summary>Internal type that implements the XBase Compatible PSZ type.<br/>
@@ -20,8 +23,8 @@ BEGIN NAMESPACE XSharp
 STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
     PRIVATE _value AS BYTE PTR
     /// <exclude />
-    STATIC PROPERTY _NULL_PSZ AS __Psz GET (__Psz) IntPtr.Zero
-        PRIVATE STATIC _pszList AS List< IntPtr>
+    [NOSHOW] STATIC PROPERTY _NULL_PSZ AS __Psz GET __Psz{IntPtr.Zero}
+    [NOSHOW] PRIVATE STATIC _pszList AS List< IntPtr>
     INTERNAL STATIC METHOD RegisterPsz(pszToRegister AS PSZ) AS VOID
         IF _pszList == NULL
             _pszList := List<IntPtr>{}
@@ -46,6 +49,7 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
         _pszList := NULL
 
     /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+    [NODEBUG] [INLINE];
     CONSTRUCTOR (s AS STRING)
         // this constructor has a memory leak
         // there is no garbage collection for structures
@@ -55,6 +59,7 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
         RETURN
 
     /// <include file="RTComments.xml" path="Comments/Constructor/*" />
+    [NODEBUG] [INLINE];
     CONSTRUCTOR (p AS IntPtr)
         _value := p
 
@@ -74,7 +79,6 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
 
     /// <exclude />
     METHOD Equals( p AS PSZ ) AS LOGIC
-
         LOCAL ret := FALSE AS LOGIC
         IF _value == p:_value
             ret := TRUE
@@ -207,28 +211,34 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     // Note that this does not allocate a new string but it returns the offset in the original string
 #pragma options ("az", on)
+    [NODEBUG] [INLINE];
     OPERATOR +( lhs AS PSZ, rhs AS LONG ) AS PSZ
         RETURN PSZ{@lhs:_value[rhs] }
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
     // Note that this does not allocate a new string but it returns the offset in the original string
+    [NODEBUG] [INLINE];
     OPERATOR +( lhs AS PSZ, rhs AS DWORD ) AS PSZ
         RETURN PSZ{@lhs:_value[(LONG) rhs] }
 
 #pragma options ("az", DEFAULT)
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR +( lhs AS PSZ, rhs AS PSZ ) AS PSZ
         RETURN PSZ{ lhs:ToString() + rhs:ToString() }
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR +( lhs AS PSZ, rhs AS STRING ) AS PSZ
         RETURN PSZ{ lhs:ToString() + rhs }
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR +( lhs AS STRING, rhs AS PSZ ) AS STRING
         RETURN lhs + rhs:ToString()
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR -( lhs AS PSZ, rhs AS PSZ ) AS PSZ
         LOCAL l   := lhs:ToString() AS STRING
         LOCAL r   := rhs:ToString() AS STRING
@@ -236,37 +246,45 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
 
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR -( lhs AS PSZ, rhs AS STRING ) AS PSZ
         LOCAL l   := lhs:ToString() AS STRING
         RETURN PSZ{ String.Concat( l:TrimEnd(), rhs:TrimEnd() ):PadRight( l:Length + rhs:Length ) }
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR -( lhs AS STRING, rhs AS PSZ ) AS STRING
         LOCAL r   := rhs:ToString() AS STRING
         RETURN String.Concat( lhs:TrimEnd(), r:TrimEnd() ):PadRight( lhs:Length + r:Length )
 
         // Comparison Operators
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR ==( lhs AS PSZ, rhs AS PSZ ) AS LOGIC
         RETURN lhs:Equals( rhs )
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR !=( lhs AS PSZ, rhs AS PSZ ) AS LOGIC
         RETURN ! lhs:Equals( rhs )
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR <( lhs AS PSZ, rhs AS PSZ ) AS LOGIC
         RETURN lhs:LessThan( rhs )
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR <=( lhs AS PSZ, rhs AS PSZ ) AS LOGIC
         RETURN ! lhs:GreaterThan( rhs )
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR >( lhs AS PSZ, rhs AS PSZ ) AS LOGIC
         RETURN lhs:GreaterThan( rhs )
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR >=( lhs AS PSZ, rhs AS PSZ ) AS LOGIC
         RETURN ! lhs:LessThan( rhs )
 
@@ -274,31 +292,37 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
 
         // PTR -> PSZ
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS PTR ) AS PSZ
         RETURN PSZ{ (IntPtr) p }
 
         // BYTE PTR -> PSZ
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS BYTE PTR ) AS PSZ
         RETURN PSZ{ (IntPtr) p }
 
         // SByte PTR -> PSZ
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS SByte PTR ) AS PSZ
         RETURN PSZ{ (IntPtr) p }
 
         // IntPtr -> PSZ
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS IntPtr ) AS PSZ
         RETURN PSZ{ p }
 
         // INT -> PSZ
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( i AS INT ) AS PSZ
         RETURN PSZ{ IntPtr{ i } }
 
         // DWORD -> PSZ
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( d AS DWORD ) AS PSZ
         RETURN PSZ{ IntPtr{ (INT64) d} }
 
@@ -307,40 +331,52 @@ STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>, ISerializable
 
     // PSZ -> PTR
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS PSZ ) AS PTR
         RETURN p:_value
 
         // PSZ -> BYTE PTR
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS PSZ ) AS BYTE PTR
         RETURN p:_value
 
         // PSZ -> SByte PTR
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS PSZ ) AS SByte PTR
         RETURN (SByte PTR) p:_value
 
         // PSZ -> IntPtr
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS PSZ ) AS IntPtr
         RETURN p:_value
 
         // PSZ -> STRING
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS PSZ ) AS STRING
+        // Rolled back fix for #1234 because it causes side effects
+        //IF p:_value == NULL // NULL_PSZ
+        //    RETURN NULL
+        //ENDIF
         RETURN p:ToString()
 
         // PSZ -> INT
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS PSZ ) AS INT
         RETURN (INT) p:_value
 
         // PSZ -> INT64
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS PSZ ) AS INT64
         RETURN (INT64) p:_value
 
         // PSZ -> DWORD
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
+    [NODEBUG] [INLINE];
     OPERATOR IMPLICIT( p AS PSZ ) AS DWORD
         RETURN (DWORD) p:_value
 #endregion

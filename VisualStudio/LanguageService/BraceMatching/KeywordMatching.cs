@@ -209,11 +209,12 @@ namespace XSharp.LanguageService
 
             DateTime oStart;
             TimeSpan timeSpan;
-            if (XEditorSettings.DisableKeywordMatching)
+            if (XEditorSettings.DisableKeywordMatching || XDebuggerSettings.DebuggerIsRunning)
             {
                 yield break;
             }
-            if (_document.Blocks == null)
+
+            if (_document == null || _document.Blocks == null)
             {
                 yield break;
             }
@@ -253,7 +254,7 @@ namespace XSharp.LanguageService
                 if (foundSpans == null || foundSpans.Count == 0)
                 {
                     // when we are on a RETURN token then we match the return line with the current entity
-                    var lineTokens = _document.GetTokensInLine(currentLine);
+                    var lineTokens = _document.GetTokensInLineAndFollowing(currentLine);
                     foreach (var token in lineTokens)
                     {
                         if (token.Type == XSharpLexer.RETURN)

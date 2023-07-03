@@ -1,4 +1,4 @@
-﻿using Community.VisualStudio.Toolkit;
+﻿using XSharpModel;
 using Microsoft.VisualStudio.Shell;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -7,52 +7,37 @@ using System.Windows.Forms;
 namespace XSharp.LanguageService.OptionsPages
 {
     [ComVisible(true)]
-    public class XSDialogPage<T> : DialogPage where T: XSUserControl, new()
+    public class XSDialogPage<T, U> : DialogPage where T: XSUserControl, new() where U : OptionsBase, new()
     {
-        internal XSDialogPage() : base()
+        #region Properties
+        public override object AutomationObject => Options;
+        public U Options { get; private set; } = null;
+        #endregion
+        internal XSDialogPage() : base(ThreadHelper.JoinableTaskContext)
         {
-           
-        }
-        protected override void OnActivate(CancelEventArgs e)
-        {
-            base.OnActivate(e);
-            
+            Options = new U();
         }
 
-        protected override void OnApply(PageApplyEventArgs e)
-        {
-            base.OnApply(e);
-
-        }
         public override void LoadSettingsFromStorage()
         {
             base.LoadSettingsFromStorage();
             if (control != null)
             {
-                control.ReadValues();
+                control.ReadValues(Options);
             }
         }
         public override void SaveSettingsToStorage()
         {
-            initControl();
-            control.SaveValues();
+            CreateControl();
+            if (control != null)
+            {
+                control.SaveValues(Options);
+            }
             base.SaveSettingsToStorage();
-            XSharpLanguagePackage.Instance.optionWasChanged = true;
-        }
-        public override void ResetSettings()
-        {
-            base.ResetSettings();
-        }
-        protected override void SaveSetting(PropertyDescriptor property)
-        {
-            base.SaveSetting(property);
-        }
-        protected override void LoadSettingFromStorage(PropertyDescriptor prop)
-        {
-            base.LoadSettingFromStorage(prop);
+            Options.WriteToSettings();
         }
 
-        private void initControl()
+        private void CreateControl()
         {
             if (control == null)
             {
@@ -60,16 +45,35 @@ namespace XSharp.LanguageService.OptionsPages
                 {
                     optionPage = this
                 };
-                control.ReadValues();
+                control.ReadValues(Options);
             }
         }
 
         XSUserControl control = null;
+        /// <summary>
+        /// Set the properties of the page from the Options object
+        /// </summary>
+        /// <param name="options"></param>
+        internal void SetOptions(U options)
+        {
+            if (Options == null)
+            {
+                Options = options;
+            }
+            else
+            {
+                foreach (var prop in typeof(U).GetProperties())
+                {
+                    var value = prop.GetValue(options, null);
+                    prop.SetValue(Options, value, null);
+                }
+            }
+        }
         protected override IWin32Window Window
         {
             get
             {
-                initControl();
+                CreateControl();
                 return control;
             }
         }

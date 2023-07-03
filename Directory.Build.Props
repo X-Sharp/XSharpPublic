@@ -1,0 +1,14 @@
+<!-- 
+***********************************************************************************************
+Directory.Build.Props
+Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
+See License.txt in the project root for license information.
+***********************************************************************************************
+
+. -->
+<Project>
+  <PropertyGroup>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+  </PropertyGroup>
+</Project>
+

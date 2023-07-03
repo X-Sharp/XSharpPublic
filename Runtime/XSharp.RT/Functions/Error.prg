@@ -179,7 +179,7 @@ INTERNAL FUNCTION __OpenErrorLog() AS IntPtr PASCAL
 
 			IF !GetDefaultDir() ==""
 				cBuffer :="SetDefaultDir: " +GetDefaultDir()
-				SetDefaultDir(NULL_PSZ)
+				SetDefaultDir(NULL)
 			ELSE
 				cBuffer :="SetDefault: " +GetDefault()
 				SetDefault("")

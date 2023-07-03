@@ -216,6 +216,7 @@ namespace XSharp.LanguageService
                 switch (type)
                 {
                     case XFileType.SourceCode:
+                    case XFileType.PreprocessorOutput:
                     case XFileType.Header:
                         file = XSolution.AddOrphan(path);
                         break;

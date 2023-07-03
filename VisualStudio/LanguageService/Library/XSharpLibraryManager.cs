@@ -144,7 +144,7 @@ namespace XSharp.LanguageService
             // Remove this library from the object manager.
             if (0 != objectManagerCookie)
             {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -194,7 +194,7 @@ namespace XSharp.LanguageService
             //
             if (0 == objectManagerCookie)
             {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -652,7 +652,7 @@ namespace XSharp.LanguageService
                     var hierarchyId = prjNode.ownerHierarchy;
                     uint itemid = 0;
                     int hr = 0;
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    ThreadHelper.JoinableTaskFactory.Run(async () =>
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         hr = hierarchyId.ParseCanonicalName(xfile.FullPath, out itemid);
@@ -682,7 +682,7 @@ namespace XSharp.LanguageService
                         var xfile = xsProject.FindXFile(path);
                         uint itemid = 0;
                         int hr = 0;
-                        ThreadHelper.JoinableTaskFactory.Run(async delegate
+                        ThreadHelper.JoinableTaskFactory.Run(async ( )=>
                         {
                             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                             hr = hierarchyId.ParseCanonicalName(xfile.FullPath, out itemid);
@@ -721,7 +721,7 @@ namespace XSharp.LanguageService
         //{
 
         //    string fileName = "";
-        //    ThreadHelper.JoinableTaskFactory.Run(async delegate
+        //    ThreadHelper.JoinableTaskFactory.Run(async ( )=>
         //    {
         //        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -759,7 +759,7 @@ namespace XSharp.LanguageService
         /// <param name="args"></param>
         private void OnNewFile(object sender, HierarchyEventArgs args)
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -782,7 +782,7 @@ namespace XSharp.LanguageService
         /// <param name="args"></param>
         private void OnDeleteFile(object sender, HierarchyEventArgs args)
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 

@@ -201,13 +201,9 @@ namespace XSharp.Project
         }
         private void EnabledisableStandardDefs()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            btnStandardHeader.Enabled = !this.chkNoStandardDefs.Checked;
-            if (this.chkNoStandardDefs.Checked && ! string.IsNullOrEmpty(this.tbStandardDefs.Text))
-            {
-                ParentPropertyPage.SetProperty(XSharpProjectFileConstants.StandardDefs, "");
-                this.tbStandardDefs.Text = LanguagePropertyPagePanel.StdDefDescription;
-            }
+            //ThreadHelper.ThrowIfNotOnUIThread();
+            //btnStandardHeader.Enabled = this.chkNoStandardDefs.Checked;
+            //tbStandardDefs.Enabled = btnStandardHeader.Enabled;
         }
 
         private void chkIncludePaths_Click(object sender, EventArgs e)

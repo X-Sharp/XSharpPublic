@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharpModel
 
 
     STATIC CLASS SynchronizedExtensionMethods
-        STATIC METHOD AddRange<T>(SELF items as SynchronizedCollection<T> ,  newItems as IEnumerable<T> ) AS VOID
+        STATIC METHOD AddRange<T>(SELF items as ICollection<T> ,  newItems as IEnumerable<T> ) AS VOID
             if newItems != null
                 FOREACH VAR item in newItems
                     items:Add(item)
@@ -25,6 +25,19 @@ BEGIN NAMESPACE XSharpModel
     END CLASS
 
     STATIC CLASS ExtensionMethods
+
+        static method GetTickedname(SELF name as STRING) AS STRING
+             IF name:StartsWith("@@")
+                name := name:Substring(2)
+            ENDIF
+            var pos := name:IndexOf('<')
+            if pos > 0
+                var rest := name.Substring(pos)
+                name := name.Substring(0, pos )
+                var types := rest.Split(<char>{',','>','<'}, StringSplitOptions.RemoveEmptyEntries)
+                name += "`" + types.Length.ToString()
+            endif
+            return name
 
         STATIC METHOD AddRange<T>(SELF collection as HashSet<T>, newItems as IEnumerable<T>) as VOID
             if newItems != null
@@ -53,7 +66,14 @@ BEGIN NAMESPACE XSharpModel
                 RETURN dict:Item[key]
             ENDIF
         RETURN DEFAULT (TValue)
-
+        STATIC METHOD AddUnique<TKey>( SELF list AS IList<TKey>, key AS TKey) AS VOID
+            IF list != NULL .AND. key != NULL
+                IF ! list:Contains(key)
+                    list:Add(key)
+                    RETURN
+                ENDIF
+            ENDIF
+            RETURN
 
         STATIC METHOD DisplayName( SELF elementKind AS Kind) AS STRING
             SWITCH elementKind
@@ -238,6 +258,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.XTranslate
                 CASE Kind.Attribute
                 CASE Kind.Include
+                CASE Kind.Using
                     RETURN TRUE
             END SWITCH
         RETURN FALSE

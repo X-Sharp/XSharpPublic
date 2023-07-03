@@ -216,7 +216,7 @@ namespace XSharp.Project
                 if (pos > 0)
                 {
                     source = source.Substring(pos + token.Length);
-                    var words = source.Split(";\t \r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    var words = source.Split(new char[] { ';', '\t', ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                     if (words.Length > 0)
                     {
                         var parentclass = words[0].ToLower();

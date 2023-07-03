@@ -155,8 +155,8 @@ CLASS MonthCalSelectionEvent INHERIT ControlEvent
 PROTECT _lExplicit AS LOGIC
 
     [DebuggerStepThrough];
-        CONSTRUCTOR(loControl AS VOSDK.Control, lExplicit)
-        SUPER(loControl)
+    CONSTRUCTOR(loControl AS VOSDK.Control, lExplicit AS LOGIC)
+    SUPER(loControl)
     _lExplicit := lExplicit
     
     ACCESS Explicit AS LOGIC

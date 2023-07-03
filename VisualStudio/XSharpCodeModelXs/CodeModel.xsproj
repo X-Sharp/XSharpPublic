@@ -21,15 +21,19 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
+    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
+    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <EnforceSelf>True</EnforceSelf>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <DisabledWarnings>165,219,1030,9047,1701,1591</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <DefineConstants>DEBUG</DefineConstants>
-    <DocumentationFile>XSharpModel.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.CodeModel.Xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
@@ -92,12 +96,17 @@
     <Compile Include="Model\ClassGenerator.prg" />
     <Compile Include="Model\CommentTask.prg" />
     <Compile Include="Parser\XSharpTokenList.prg" />
+    <Compile Include="PE\XPEEventSymbol.prg" />
+    <Compile Include="PE\XPEFieldSymbol.prg" />
+    <Compile Include="PE\XPEMethodSymbol.prg" />
     <Compile Include="PE\XPEMemberSymbol.prg" />
     <Compile Include="PE\XPEParameterSymbol.prg" />
+    <Compile Include="PE\XPEPropertySymbol.prg" />
     <Compile Include="PE\XPESymbol.prg" />
     <Compile Include="PE\XPETypeSymbol.prg" />
     <Compile Include="ProjectSystem\XDictionary.prg" />
     <Compile Include="ProjectSystem\XInclude.prg" />
+    <Compile Include="Settings\OptionsBase.prg" />
     <Compile Include="Settings\Strings.prg" />
     <Compile Include="Settings\XDebuggerSettings.prg" />
     <Compile Include="Settings\XCustomEditorSettings.prg" />
@@ -117,6 +126,7 @@
     <Compile Include="Source\XSourceParameterSymbol.prg" />
     <Compile Include="Source\XSourceTypeSymbol.prg" />
     <Compile Include="Source\XSourceVariableSymbol.prg" />
+    <Compile Include="Support\KnownTypes.prg" />
     <Compile Include="Support\TextInterval.prg" />
     <Compile Include="Support\TextRange.prg" />
     <Compile Include="Support\TypeExtensions.prg" />

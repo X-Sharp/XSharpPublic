@@ -51,7 +51,7 @@ FUNCTION Empty<T>(uValue AS ICollection<T>) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
 /// <remarks>For Object values the 'emptyness' is determined by Comparing to NULL_OBJECT and comparign to DBNull.Value</remarks>
 FUNCTION Empty(oObject AS OBJECT) AS LOGIC
-    IF oObject == NULL_OBJECT .OR. Convert:IsDBNull(oObject)
+    IF oObject == NULL_OBJECT .OR. Convert.IsDBNull(oObject)
         RETURN TRUE
     ENDIF
 

@@ -12,17 +12,7 @@ USING System.Text
 USING System.Collections
 
 USING XSharp.Internal
-// use these UDCs to remove the attributes when needed during debugging
-#define USEATTRIB
-#ifdef USEATTRIB
-#XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
-#XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
-#XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
-#else
-#XTRANSLATE \[NOSHOW\] =>
-#XTRANSLATE \[INLINE\] =>
-#XTRANSLATE \[NODEBUG\] =>
-#endif
+#include "attributes.xh"
 BEGIN NAMESPACE XSharp
 /// <summary>Internal type that implements the XBase Compatible USUAL type.<br/>
 /// This type has many operators and implicit converters that normally are never directly called from user code.
@@ -42,34 +32,23 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 
 #region STATIC fields
     /// <exclude />
-    [NOSHOW];
-    PUBLIC STATIC _NIL AS __Usual
+    [NOSHOW] PUBLIC STATIC _NIL AS __Usual
 #endregion
 
 #region PRIVATE fields
-    [NOSHOW];
-    PRIVATE INITONLY _flags    	AS UsualFlags	// type, byref, width, decimals
-    [NOSHOW];
-    PRIVATE INITONLY _valueData	AS _UsualData		// for non GC data
-    [NOSHOW];
-    PRIVATE INITONLY _refData  	AS OBJECT			// for GC data
+    [NOSHOW] PRIVATE INITONLY _flags    	AS UsualFlags	// type, byref, width, decimals
+    [NOSHOW] PRIVATE INITONLY _valueData	AS _UsualData		// for non GC data
+    [NOSHOW] PRIVATE INITONLY _refData  	AS OBJECT			// for GC data
 #endregion
 
         #region constants
-    [NOSHOW];
-    PRIVATE CONST STR_NIL  := "NIL" AS STRING
-    [NOSHOW];
-    PRIVATE CONST STR_NULL := "Null" AS STRING
-    [NOSHOW];
-    PRIVATE CONST STR_NULL_STRING := "NULL_STRING" AS STRING
-    [NOSHOW];
-    PRIVATE CONST STR_NULL_PSZ := "NULL_PSZ" AS STRING
-    [NOSHOW];
-    PRIVATE CONST STR_NULL_ARRAY := "NULL_ARRAY" AS STRING
-    [NOSHOW];
-    PRIVATE CONST STR_NULL_CODEBLOCK := "NULL_CODEBLOCK" AS STRING
-    [NOSHOW];
-    PRIVATE CONST STR_USUAL := "USUAL" AS STRING
+    [NOSHOW] PRIVATE CONST STR_NIL  := "NIL" AS STRING
+    [NOSHOW] PRIVATE CONST STR_NULL := "Null" AS STRING
+    [NOSHOW] PRIVATE CONST STR_NULL_STRING := "NULL_STRING" AS STRING
+    [NOSHOW] PRIVATE CONST STR_NULL_PSZ := "NULL_PSZ" AS STRING
+    [NOSHOW] PRIVATE CONST STR_NULL_ARRAY := "NULL_ARRAY" AS STRING
+    [NOSHOW] PRIVATE CONST STR_NULL_CODEBLOCK := "NULL_CODEBLOCK" AS STRING
+    [NOSHOW] PRIVATE CONST STR_USUAL := "USUAL" AS STRING
 
 #endregion
 
@@ -379,51 +358,30 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
 #endregion
 
     #region properties
-    [NOSHOW];
-    PRIVATE STATIC PROPERTY _IsFoxPro AS LOGIC GET XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
-    [NOSHOW];
-    PRIVATE PROPERTY _isByRef		AS LOGIC	[NODEBUG] GET _flags:IsByRef
-    [NOSHOW];
-    INTERNAL PROPERTY _usualType	AS __UsualType [NODEBUG] GET _flags:UsualType
+    [NOSHOW] PRIVATE STATIC PROPERTY _IsFoxPro  AS LOGIC            [NODEBUG] [INLINE] GET XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
+    [NOSHOW] PRIVATE PROPERTY _isByRef		    AS LOGIC	        [NODEBUG] [INLINE] GET _flags:IsByRef
+    [NOSHOW] INTERNAL PROPERTY _usualType	    AS __UsualType      [NODEBUG] [INLINE] GET _flags:UsualType
     /// No checks for typeflag. These private properties should always be accessed after checking the correct type
-    [NOSHOW];
-    INTERNAL PROPERTY _arrayValue    AS ARRAY			[NODEBUG] GET (ARRAY) _refData
-    [NOSHOW];
-    INTERNAL PROPERTY _codeblockValue AS ICodeblock		[NODEBUG] GET (ICodeblock) _refData
-    [NOSHOW];
-    INTERNAL PROPERTY _currencyValue	AS CURRENCY	        [NODEBUG] GET __Currency{ (System.Decimal) _refData}
-    [NOSHOW];
-    INTERNAL PROPERTY _dateValue		AS DATE				[NODEBUG] GET _valueData:d
-    [NOSHOW];
-    INTERNAL PROPERTY _dateTimeValue AS DateTime			[NODEBUG] GET _valueData:dt
-    [NOSHOW];
-    INTERNAL PROPERTY _decimalValue	AS System.Decimal	[NODEBUG] GET (System.Decimal) _refData
-    [NOSHOW];
-    INTERNAL PROPERTY _floatValue    AS FLOAT			[NODEBUG] GET FLOAT{ _valueData:r8, _width, _decimals}
-    [NOSHOW];
-    INTERNAL PROPERTY _i64Value		AS INT64			[NODEBUG] GET _valueData:i64
-    [NOSHOW];
-    INTERNAL PROPERTY _intValue		AS INT				[NODEBUG] GET _valueData:i
-    [NOSHOW];
-    INTERNAL PROPERTY _logicValue	AS LOGIC			[NODEBUG] GET _valueData:l
-    [NOSHOW];
-    INTERNAL PROPERTY _ptrValue		AS IntPtr			[NODEBUG] GET _valueData:p
-    [NOSHOW];
-    INTERNAL PROPERTY _r8Value		AS REAL8			[NODEBUG] GET _valueData:r8
-    [NOSHOW];
-    INTERNAL PROPERTY _stringValue   AS STRING			[NODEBUG] GET (STRING) _refData
-    [NOSHOW];
-    INTERNAL PROPERTY _symValue		AS SYMBOL			[NODEBUG] GET _valueData:s
-    [NOSHOW];
-    INTERNAL PROPERTY _binaryValue	AS BINARY		    [NODEBUG] GET __Binary{ (BYTE[]) _refData}
+    [NOSHOW] INTERNAL PROPERTY _arrayValue      AS ARRAY			[NODEBUG] [INLINE] GET (ARRAY) _refData
+    [NOSHOW] INTERNAL PROPERTY _codeblockValue  AS ICodeblock		[NODEBUG] [INLINE] GET (ICodeblock) _refData
+    [NOSHOW] INTERNAL PROPERTY _currencyValue	AS CURRENCY	        [NODEBUG] [INLINE] GET __Currency{ (System.Decimal) _refData}
+    [NOSHOW] INTERNAL PROPERTY _dateValue		AS DATE				[NODEBUG] [INLINE] GET _valueData:d
+    [NOSHOW] INTERNAL PROPERTY _dateTimeValue   AS System.DateTime  [NODEBUG] [INLINE] GET _valueData:dt
+    [NOSHOW] INTERNAL PROPERTY _decimalValue	AS System.Decimal	[NODEBUG] [INLINE] GET (System.Decimal) _refData
+    [NOSHOW] INTERNAL PROPERTY _floatValue      AS FLOAT			[NODEBUG] [INLINE] GET FLOAT{ _valueData:r8, _width, _decimals}
+    [NOSHOW] INTERNAL PROPERTY _i64Value		AS INT64			[NODEBUG] [INLINE] GET _valueData:i64
+    [NOSHOW] INTERNAL PROPERTY _intValue		AS INT				[NODEBUG] [INLINE] GET _valueData:i
+    [NOSHOW] INTERNAL PROPERTY _logicValue	    AS LOGIC			[NODEBUG] [INLINE] GET _valueData:l
+    [NOSHOW] INTERNAL PROPERTY _ptrValue		AS IntPtr			[NODEBUG] [INLINE] GET _valueData:p
+    [NOSHOW] INTERNAL PROPERTY _r8Value		    AS REAL8			[NODEBUG] [INLINE] GET _valueData:r8
+    [NOSHOW] INTERNAL PROPERTY _stringValue     AS STRING			[NODEBUG] [INLINE] GET (STRING) _refData
+    [NOSHOW] INTERNAL PROPERTY _symValue		AS SYMBOL			[NODEBUG] [INLINE] GET _valueData:s
+    [NOSHOW] INTERNAL PROPERTY _binaryValue	    AS BINARY		    [NODEBUG] [INLINE] GET __Binary{ (BYTE[]) _refData}
 
         // properties for floats
-    [NOSHOW];
-    PRIVATE PROPERTY _width			AS SByte [NODEBUG] GET IIF(IsFloat, _flags:Width, 0)
-    [NOSHOW];
-    PRIVATE PROPERTY _decimals		AS SByte [NODEBUG] GET IIF(IsFloat, _flags:Decimals,0)
-    [NOSHOW];
-    PRIVATE PROPERTY _initialized   AS LOGIC
+    [NOSHOW] PRIVATE PROPERTY _width			AS SByte            [NODEBUG] [INLINE] GET IIF(IsFloat, _flags:Width, 0)
+    [NOSHOW] PRIVATE PROPERTY _decimals		    AS SByte            [NODEBUG] [INLINE] GET IIF(IsFloat, _flags:Decimals,0)
+    [NOSHOW] PRIVATE PROPERTY _initialized      AS LOGIC
         // we cannot simply read the initialized flag from _flags
         // because a FLOAT with 0 decimals will also set initialized to false
     [NODEBUG] ;
@@ -442,101 +400,52 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     END PROPERTY
     // Is .. ?
     /// <summary>This property returns TRUE when the USUAL is of type BINARY </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsNull	AS LOGIC [NODEBUG] GET _usualType == __UsualType.Null
+    [NOSHOW] PUBLIC PROPERTY IsNull	        AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Null
     /// <summary>This property returns TRUE when the USUAL is of type ARRAY </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsArray		AS LOGIC [NODEBUG] GET _usualType == __UsualType.Array
+    [NOSHOW] PUBLIC PROPERTY IsArray		AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Array
     /// <summary>This property returns TRUE when the USUAL is of type CODEBLOCK </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsBinary	AS LOGIC [NODEBUG] GET _usualType == __UsualType.Binary
+    [NOSHOW] PUBLIC PROPERTY IsBinary	    AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Binary
     /// <summary>This property returns TRUE when the USUAL is of type BINARY </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsCodeblock	AS LOGIC [NODEBUG] GET _usualType == __UsualType.Codeblock
+    [NOSHOW] PUBLIC PROPERTY IsCodeblock	AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Codeblock
     /// <summary>This property returns TRUE when the USUAL is of type CURRENCY </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsCurrency	AS LOGIC [NODEBUG] GET _usualType == __UsualType.Currency
+    [NOSHOW] PUBLIC PROPERTY IsCurrency	    AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Currency
     /// <summary>This property returns TRUE when the USUAL is of type DATE </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsDate		AS LOGIC [NODEBUG] GET _usualType == __UsualType.Date
+    [NOSHOW] PUBLIC PROPERTY IsDate		    AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Date
     /// <summary>This property returns TRUE when the USUAL is of type DateTime </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsDateTime	AS LOGIC [NODEBUG] GET _usualType == __UsualType.DateTime
+    [NOSHOW] PUBLIC PROPERTY IsDateTime	    AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.DateTime
     /// <summary>This property returns TRUE when the USUAL is of type Decimal </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsDecimal	AS LOGIC [NODEBUG] GET _usualType == __UsualType.Decimal
+    [NOSHOW] PUBLIC PROPERTY IsDecimal	    AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Decimal
     /// <summary>This property returns TRUE when the USUAL is of type FLOAT </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsFloat		AS LOGIC [NODEBUG] GET _usualType == __UsualType.Float
+    [NOSHOW] PUBLIC PROPERTY IsFloat		AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Float
     /// <summary>This property returns TRUE when the USUAL is of type Int64 </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsInt64		AS LOGIC [NODEBUG] GET _usualType == __UsualType.Int64
+    [NOSHOW] PUBLIC PROPERTY IsInt64		AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Int64
     /// <summary>This property returns TRUE when the USUAL is of type LOGIC </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsLogic		AS LOGIC [NODEBUG] GET _usualType == __UsualType.Logic
+    [NOSHOW] PUBLIC PROPERTY IsLogic		AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Logic
     /// <summary>This property returns TRUE when the USUAL is of type Long </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsLong		AS LOGIC [NODEBUG] GET _usualType == __UsualType.Long
+    [NOSHOW] PUBLIC PROPERTY IsLong		    AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Long
     /// <summary>This property returns TRUE when the USUAL is of type LONG or INT64 </summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsInteger	AS LOGIC [NODEBUG] GET _usualType == __UsualType.Long .OR. _usualType == __UsualType.Int64
+    [NOSHOW] PUBLIC PROPERTY IsInteger	    AS LOGIC [NODEBUG] [INLINE] GET IsLong .OR. IsInt64
     /// <summary>This property returns TRUE when the USUAL is of type FLOAT, Decimal or Currency</summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsFractional AS LOGIC
-    [NODEBUG] ;
-    GET
-        SWITCH _usualType
-        CASE __UsualType.Float
-        CASE __UsualType.Decimal
-        CASE __UsualType.Currency
-            RETURN TRUE
-        OTHERWISE
-            RETURN FALSE
-        END SWITCH
-    END GET
-    END PROPERTY
+    [NOSHOW] PUBLIC PROPERTY IsFractional   AS LOGIC [NODEBUG] [INLINE] GET IsFloat .OR. IsDecimal .OR. IsCurrency
     /// <summary>This property returns the __UsualType of the USUAL </summary>
-    PUBLIC PROPERTY Type		AS __UsualType [NODEBUG] GET _flags:UsualType
+    PUBLIC PROPERTY Type		            AS __UsualType [NODEBUG] [INLINE] GET _flags:UsualType
     /// <summary>This property returns TRUE when the USUAL is of type LONG, Int64, FLOAT or Decimal</summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsNumeric AS LOGIC
-    [NODEBUG] ;
-    GET
-        SWITCH _usualType
-        CASE __UsualType.Long
-        CASE __UsualType.Int64
-        CASE __UsualType.Float
-        CASE __UsualType.Decimal
-        CASE __UsualType.Currency
-            RETURN TRUE
-        OTHERWISE
-            RETURN FALSE
-        END SWITCH
-    END GET
-    END PROPERTY
-
+    [NOSHOW] PUBLIC PROPERTY IsNumeric      AS LOGIC [NODEBUG] [INLINE] GET IsInteger .OR. IsFractional
     /// <summary>This property returns TRUE when the USUAL is of type Object</summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsObject		AS LOGIC [NODEBUG] GET _usualType == __UsualType.Object
+    [NOSHOW] PUBLIC PROPERTY IsObject		AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Object
     /// <summary>This property returns TRUE when the USUAL is of type String</summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsPsz		   AS LOGIC [NODEBUG] GET _usualType == __UsualType.Psz
+    [NOSHOW] PUBLIC PROPERTY IsPsz		    AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Psz
     /// <summary>This property returns TRUE when the USUAL is of type Ptr (IntPtr)</summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsPtr			AS LOGIC [NODEBUG] GET _usualType == __UsualType.Ptr
+    [NOSHOW] PUBLIC PROPERTY IsPtr			AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Ptr
     /// <summary>This property returns TRUE when the USUAL is of type Symbol</summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsSymbol		AS LOGIC [NODEBUG] GET _usualType == __UsualType.Symbol
+    [NOSHOW] PUBLIC PROPERTY IsSymbol		AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.Symbol
     /// <summary>This property returns TRUE when the USUAL is of type String</summary>
-    [NOSHOW];
-    PUBLIC PROPERTY IsString		AS LOGIC [NODEBUG] GET _usualType == __UsualType.String
+    [NOSHOW] PUBLIC PROPERTY IsString		AS LOGIC [NODEBUG] [INLINE] GET _usualType == __UsualType.String
 
     /// <summary>This property returns TRUE when the USUAL is passed by reference (not implemented yet)</summary>
-    [NOSHOW];
-    PUBLIC   PROPERTY IsByRef		AS LOGIC [NODEBUG] GET _isByRef
+    [NOSHOW] PUBLIC PROPERTY IsByRef		AS LOGIC [NODEBUG] [INLINE] GET _isByRef
     /// <summary>This property returns TRUE when the USUAL is a reference type (Array, Decimal, Object, String)</summary>
-    [NOSHOW];
-    PRIVATE PROPERTY IsReferenceType AS LOGIC
+    [NOSHOW] PRIVATE PROPERTY IsReferenceType AS LOGIC
     [NODEBUG] ;
     GET
         SWITCH _usualType
@@ -554,8 +463,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     END GET
     END PROPERTY
     /// <summary>This property returns TRUE when the USUAL is Empty. </summary>
-    [NOSHOW];
-    INTERNAL PROPERTY IsEmpty AS LOGIC
+    [NOSHOW] INTERNAL PROPERTY IsEmpty AS LOGIC
     [NODEBUG] ;
     GET
         IF !SELF:_initialized
@@ -587,8 +495,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     END PROPERTY
 
     /// <summary>This property returns TRUE when the USUAL is NIL, or when the usual is a reference type and NULL or when the isual is a PTR type and IntPtr.Zero</summary>
-    [NOSHOW];
-    INTERNAL PROPERTY IsNil AS LOGIC
+    [NOSHOW] INTERNAL PROPERTY IsNil AS LOGIC
     [NODEBUG] ;
     GET
         RETURN SELF:_usualType == __UsualType.Void .OR. ;
@@ -600,8 +507,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
     END PROPERTY
 
     /// <summary>This property returns the System.Type that represents the value of the usual.</summary>
-    [NOSHOW];
-    PUBLIC PROPERTY SystemType AS System.Type
+    [NOSHOW] PUBLIC PROPERTY SystemType AS System.Type
     [NODEBUG] ;
     GET
         SWITCH _usualType
@@ -3083,7 +2989,7 @@ PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
                 THROW InvalidCastException{}
             END SWITCH
         ELSE
-            VAR o := __Usual:ToObject(SELF)
+            VAR o := __Usual.ToObject(SELF)
             IF conversionType:IsAssignableFrom(o:GetType())
                 RETURN o
             ELSEIF o IS IConvertible VAR ic

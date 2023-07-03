@@ -129,7 +129,7 @@ STRUCTURE TextRange
         RETURN ((line == SELF:_EndLine) .AND. (col <= SELF:_EndColumn))
 
     METHOD DebuggerDisplay() AS STRING
-        RETURN ToString()
+        RETURN SELF:ToString()
 
     OVERRIDE METHOD ToString() AS STRING
         RETURN i"{StartLine}.{StartColumn}-{EndLine}.{EndColumn}"

@@ -168,6 +168,8 @@
     <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
       <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptionsPages\TabOptions.cs" />
+    <Compile Include="OptionsPages\Options.cs" />
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -225,20 +227,21 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="XSharp.MonoCecil, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.MonoCecil">
-      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.492</Version>
+      <Version>17.0.505</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
-      <Version>0.13.0</Version>
+      <Version>0.14.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Text.UI.Wpf">
       <Version>17.4.255</Version>
@@ -248,9 +251,6 @@
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.ServiceModel.Primitives">
-      <Version>4.10.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -301,7 +301,7 @@
     <Content Include="Snippets\SnippetsIndex.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(SOlutionDir)\External\$(Configuration)\XSharp.MonoCecil.dll">
+    <Content Include="C:\XSharp\DevPublic\\External\Debug\XSharp.MonoCecil.dll">
       <Link>XSharp.MonoCecil.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

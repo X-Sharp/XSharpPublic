@@ -82,7 +82,7 @@ namespace XSharp.LanguageService
             {
                 if (_buffer == null || _classifier == null)
                     return false;
-                if (XSettings.DebuggerIsRunning)
+                if (XDebuggerSettings.DebuggerIsRunning)
                     return false;
                 if (_buffer.CurrentSnapshot.Length == 0)
                 {
@@ -131,10 +131,7 @@ namespace XSharp.LanguageService
                 editSession = _buffer.CreateEdit();
                 var document = _buffer.GetDocument();
                 document.NeedsKeywords = true;
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-              {
-                  await _classifier.ForceClassifyAsync();
-              });
+                var res = ThreadHelper.JoinableTaskFactory.RunAsync(_classifier.ForceClassifyAsync);
 
                 document.NeedsKeywords = false;
                 var formatter = new DocFormatter(document, settings);

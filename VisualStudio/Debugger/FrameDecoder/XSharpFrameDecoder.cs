@@ -20,6 +20,10 @@ namespace XSharpDebugger.FrameDecoder
     /// </summary>
     public sealed class XSharpFrameDecoder : IDkmLanguageFrameDecoder
     {
+        public XSharpFrameDecoder()
+        {
+            ;
+        }
         /// <summary>
         /// This method is called by the debug engine to get the text representation of a stack
         /// frame.
@@ -156,11 +160,11 @@ namespace XSharpDebugger.FrameDecoder
 
             nameBuilder.Append(')');
             var result = nameBuilder.ToString();
-            if (result.Contains(clArgs))
-                result = result.Replace(clArgs, "[ClipperArguments]");
-            return result;
+            return result.ReplaceEx(clArgs, clipperArgs, StringComparison.OrdinalIgnoreCase);
         }
-        const string clArgs = "Xs$Args AS USUAL[]";
+
+        const string clipperArgs = "[Arguments]";
+        const string clArgs = "Xs$Args";
         private static ImportedMethod TryGetCurrentMethod(DkmInspectionContext inspectionContext, DkmStackWalkFrame frame)
         {
             InspectionSession session = InspectionSession.GetInstance(inspectionContext.InspectionSession);

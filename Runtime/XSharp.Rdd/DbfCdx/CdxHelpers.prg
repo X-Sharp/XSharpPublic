@@ -168,6 +168,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endif
             SELF:_pages:Clear()
             RETURN
+
+        INTERNAL METHOD Clone() AS CdxPageStack
+            VAR dup := CdxPageStack{NULL}
+            FOREACH VAR p IN SELF:_pages
+                dup:Push(p:Page, p:Pos)
+            NEXT
+            RETURN dup
+
+        INTERNAL METHOD Restore(org AS CdxPageStack) AS VOID
+            _pages := org:_pages
+
     END CLASS
 
 

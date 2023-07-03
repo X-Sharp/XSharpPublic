@@ -8,12 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
-using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Utilities;
 using XSharpModel;
-using Microsoft.VisualStudio.Shell;
-using System.Windows.Media;
-using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
 using LanguageService.CodeAnalysis.XSharp;
@@ -30,7 +25,6 @@ namespace XSharp.LanguageService
 
         private XFile _file;
         private bool _showTabs;
-        private bool _keywordsInAll;
         private readonly ITagAggregator<IClassificationTag> _tagAggregator;
 
         private XSharpDialect _dialect;
@@ -74,7 +68,6 @@ namespace XSharp.LanguageService
                     throw new ObjectDisposedException("XSharpCompletionSource");
                 XSharpModel.ModelWalker.Suspend();
                 _showTabs = XEditorSettings.CompletionListTabs;
-                _keywordsInAll = XEditorSettings.KeywordsInAll;
                 var props = session.GetCompletionProperties();
                 var triggerPoint = props.Position;
                 var line = triggerPoint.GetContainingLine();
@@ -129,7 +122,7 @@ namespace XSharp.LanguageService
                 if (location == null)
                     return;
                 var tokenList = XSharpTokenTools.GetTokenList(location, out state, includeKeywords);
-                var lastToken = tokenList.LastOrDefault();
+                var lastToken = tokenList.LastOrDefault(t => t.StopIndex < location.Position);
                 if (lastToken != null) 
                 {
                     if (lastToken.Type != XSharpLexer.DOT && lastToken.Type != XSharpLexer.COLON)
@@ -151,27 +144,42 @@ namespace XSharp.LanguageService
 
                 var symbol = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General).FirstOrDefault();
                 var isInstance = true;
-                if (symbol is IXTypeSymbol)
+                var memberName = "";
+                if (symbol is XSourceUndeclaredVariableSymbol)
                 {
-                    isInstance = false;
+                    symbol = null;
                 }
-                else
+                else if (symbol != null)
                 {
-                    isInstance = true;
-                }
-                if (symbol != null)
-                {
+                    if (symbol is IXTypeSymbol xtype )
+                    {
+                        isInstance = false;
+                        type = xtype;
+                    }
+                    else if (symbol.Kind == Kind.Namespace)
+                    {
+                        isInstance = false;
+                        if (! state.HasFlag(CompletionState.Namespaces))
+                        { 
+                            state = CompletionState.Namespaces | CompletionState.Types;
+                        }
+                    }
+                    else 
+                    {
+                        isInstance = true;
+                        state = CompletionState.Members;
+                    }
 
                     switch (lastToken.Type)
                     {
                         case XSharpLexer.DOT:
                             if (symbol.Kind == Kind.Namespace )
                             {
-                                filterText = symbol.FullName + ".";
+                                filterText = symbol.FullName + "." + filterText;
                             }
                             else if (symbol is IXTypeSymbol)
                             {
-                                filterText = symbol.FullName + ".";
+                                filterText = symbol.FullName + "." + filterText;
                             }
                             break;
                         case XSharpLexer.COLON:
@@ -179,28 +187,21 @@ namespace XSharp.LanguageService
                         default:
                             break;
                     }
-
-                }
-                var memberName = "";
-                // Check for members, locals etc and convert the type of these to IXTypeSymbol
-                if (symbol != null)
-                {
-                    if (symbol is IXTypeSymbol xtype)
+                    if (symbol is IXMemberSymbol xmember)
                     {
-                        type = xtype;
-                    }
-                    else if (symbol is IXMemberSymbol xmember)
-                    {
-                        var typeName = xmember.TypeName;
-                        if (xmember is XSourceMemberSymbol sourcemem)
+                        if (xmember.Kind.HasParameters() && tokenList.Count( t => t.Type == XSharpLexer.LPAREN) > 0)
                         {
-                            type = sourcemem.File.FindType(typeName);
+                            var typeName = xmember.TypeName;
+                            if (xmember is XSourceMemberSymbol sourcemem)
+                            {
+                                type = sourcemem.File.FindType(typeName);
+                            }
+                            else
+                            {
+                                type = location.FindType(typeName);
+                            }
+                            memberName = xmember.Name;
                         }
-                        else
-                        {
-                            type = location.FindType(typeName);
-                        }
-                        memberName = xmember.Name;
                     }
                     else if (symbol is IXVariableSymbol xvar)
                     {
@@ -246,8 +247,8 @@ namespace XSharp.LanguageService
                     {
                         switch (type.FullName)
                         {
-                            case XSharpTypeNames.XSharpUsual:
-                            case XSharpTypeNames.VulcanUsual:
+                            case KnownTypes.XSharpUsual:
+                            case KnownTypes.VulcanUsual:
                                 type = null;
                                 break;
                         }
@@ -263,7 +264,7 @@ namespace XSharp.LanguageService
                     if (string.IsNullOrEmpty(filterText) && type ==null)
                     {
                         filterText = helpers.TokenListAsString(tokenList);
-                        if (filterText.Length > 0 && !filterText.EndsWith(".") && state != CompletionState.General)
+                        if (filterText.Length > 0 && !filterText.EndsWith(".") && symbol != null && state != CompletionState.General)
                             filterText += ".";
                     }
                     if (type == null && state.HasFlag(CompletionState.Namespaces))
@@ -335,7 +336,20 @@ namespace XSharp.LanguageService
                     }
                 }
                 //
-
+                if (filterText?.Length > 0 && !filterText.EndsWith("."))
+                {
+                    var pos = filterText.IndexOf(".");
+                    if (pos >= 0)
+                    {
+                        var st = start - filterText.Length + pos+1;
+                        applicableTo = triggerPoint.Snapshot.CreateTrackingSpan(new SnapshotSpan(st, triggerPoint), SpanTrackingMode.EdgeInclusive);
+                    }
+                    else
+                    {
+                        var st = start - filterText.Length;
+                        applicableTo = triggerPoint.Snapshot.CreateTrackingSpan(new SnapshotSpan(st, triggerPoint), SpanTrackingMode.EdgeInclusive);
+                    }
+                }
                 if (!dotSelector && !showInstanceMembers)
                 {
                     switch (tokenType)
@@ -371,7 +385,7 @@ namespace XSharp.LanguageService
                     }
                 }
                 props.Filter = filterText;
-                if ((kwdList.Count > 0) && _keywordsInAll /*&& XSettings.CompleteKeywords*/)
+                if ((kwdList.Count > 0) && XEditorSettings.KeywordsInAll)
                 {
                     foreach (var item in kwdList.Values)
                         compList.Add(item,true);
@@ -394,7 +408,7 @@ namespace XSharp.LanguageService
                     helpers.BuildTabs(compList, completionSets, applicableTo);
                 }
                 // Keywords are ALWAYS in a separate Tab anyway
-                if (kwdList.Count > 0)
+                if (kwdList.Count > 0 && !XEditorSettings.KeywordsInAll)
                 {
                     completionSets.Add(new CompletionSet("Keywords", "Keywords", applicableTo, kwdList.Values, Enumerable.Empty<Completion>()));
                 }

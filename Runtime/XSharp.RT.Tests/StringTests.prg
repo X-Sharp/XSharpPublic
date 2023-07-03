@@ -25,22 +25,22 @@ BEGIN NAMESPACE XSharp.RT.Tests
             cDesc   := Descend(cString)
             Assert.Equal(cString:Length, cDesc:Length)
             FOR VAR i := 1 TO SLen(cString)
-                Assert.Equal(Asc(Substr(cDesc,i,1)), 256 - Asc(Substr(cString,i,1)))
+                Assert.Equal(Asc(SubStr(cDesc,i,1)), 256 - Asc(SubStr(cString,i,1)))
             NEXT
             cString := "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG !@#$%^&*()"
             cDesc   := Descend(cString)
             Assert.Equal(cString:Length, cDesc:Length)
             FOR VAR i := 1 TO SLen(cString)
-                Assert.Equal(Asc(Substr(cDesc,i,1)), 256 - Asc(Substr(cString,i,1)))
+                Assert.Equal(Asc(SubStr(cDesc,i,1)), 256 - Asc(SubStr(cString,i,1)))
             NEXT
             cString := ""
             FOR VAR i := 128u TO 255u
-                cString += chr(i)
+                cString += Chr(i)
              NEXT
              cDesc   := Descend(cString)
              Assert.Equal(cString:Length, cDesc:Length)
              FOR VAR i := 1 TO SLen(cString)
-                 Assert.Equal(Asc(Substr(cDesc,i,1)), 256 - Asc(Substr(cString,i,1)))
+                 Assert.Equal(Asc(SubStr(cDesc,i,1)), 256 - Asc(SubStr(cString,i,1)))
              NEXT
             RETURN
 
@@ -99,7 +99,7 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal( "  1234.567"			, Str(1234.567) )
 			Assert.Equal( "  1234.5678"			, Str(1234.5678) )
 			Assert.Equal( "  1234.5679012345"	, Str(1234.5679012345) )
-			Assert.Equal( "123456.78901234568"	, Str(123456.78901234567) )
+			Assert.Equal( "123456.78901234567"	, Str(123456.78901234567) )
 			Assert.Equal( "999999" , Str(999999) )
 			Assert.Equal( "******" , Str(1000000) )
 
@@ -116,6 +116,13 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal( "  0,00" , Transform(0 , "999.99") )
 			Assert.Equal( "  0,0" , Transform(0 , "999.9") )
 			Assert.Equal( " 0,0" , Transform(0 , "99.9") )
+
+			Assert.Equal( "  123" , Transform(1234567890 , "@s5 999999999999") )
+			Assert.Equal( "12345" , Transform("1234567890" , "@S5") )
+			Assert.Equal( "1234567890" , Transform("1234567890" , "@S15") )
+			Assert.Equal( "1234567890" , Transform("1234567890" , "@S") )
+			Assert.Equal( "1234567890" , Transform("1234567890" , "@S0") )
+			Assert.Equal( "01/01" , Transform(ConDate(2000,1,1) , "@S5") )
 
 
 			SetFixed(TRUE)
@@ -532,31 +539,31 @@ BEGIN NAMESPACE XSharp.RT.Tests
 
   [Fact, Trait("Category", "Between")];
 	METHOD BetweenTest() AS VOID
-        local s1, s2, s3 as string
+        LOCAL s1, s2, s3 AS STRING
         s1 := "BBB"
         s2 := "AAA"
         s3 := "CCC"
         SetExact(TRUE)
-        RuntimeState.CompilerOptionVO13 := true
+        RuntimeState.CompilerOptionVO13 := TRUE
         Assert.True(Between(s1, s2, s3))
         Assert.True(Between(s2, s2, s3))
         Assert.True(Between(s3, s2, s3))
-        RuntimeState.CompilerOptionVO13 := false
+        RuntimeState.CompilerOptionVO13 := FALSE
         Assert.True(Between(s1, s2, s3))
         Assert.True(Between(s2, s2, s3))
         Assert.True(Between(s3, s2, s3))
-        RuntimeState.CompilerOptionVO13 := true
+        RuntimeState.CompilerOptionVO13 := TRUE
         Assert.False(Between(s2, s1, s3))
-        RuntimeState.CompilerOptionVO13 := false
+        RuntimeState.CompilerOptionVO13 := FALSE
         Assert.False(Between(s2, s1, s3))
 
         SetExact(FALSE)
         // AAA = A
         S1 := "AAA"
         s2 := "A"
-        RuntimeState.CompilerOptionVO13 := true
+        RuntimeState.CompilerOptionVO13 := TRUE
         Assert.True(Between(s1, s2, s3))
-        RuntimeState.CompilerOptionVO13 := false
+        RuntimeState.CompilerOptionVO13 := FALSE
         Assert.True(Between(s1, s2, s3))
 
 	END CLASS

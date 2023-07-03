@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text;
+using XSharpModel;
 
 namespace XSharpDebugger
 {
@@ -140,13 +141,13 @@ namespace XSharpDebugger
         {
             switch (FullName)
             {
-                case "System.Boolean":
+                case KnownTypes.SystemBoolean:
                     return XSharpType.Logic;
-                case "System.Int32":
+                case KnownTypes.SystemInt32:
                     return XSharpType.Integer;
-                case "System.String":
+                case KnownTypes.SystemString:
                     return XSharpType.String;
-                case "System.Void":
+                case KnownTypes.SystemVoid:
                     return XSharpType.Void;
                 default:
                     return XSharpType.Create(FullName);

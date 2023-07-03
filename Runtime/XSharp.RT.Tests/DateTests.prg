@@ -16,11 +16,16 @@ BEGIN NAMESPACE XSharp.RT.Tests
 	CLASS DateTests
 
 		[Fact, Trait("Category", "Date")];
-		METHOD CTODTest() AS VOID
+         METHOD CTODTest() AS VOID
+        LOCAL cFormat AS STRING
+        LOCAL nEpoch AS DWORD
+        nEpoch := SetEpoch()
+        cFormat := GetDateFormat()
 			SetEpoch(1900)
 			SetDateFormat("dd/mm/yyyy")
 			Assert.Equal(2016.01.01 ,CToD("01/01/2016"))
-			Assert.Equal(2016.02.13 ,CToD("13/02/2016"))
+            Assert.Equal(2016.02.13 ,CToD("13/02/2016"))
+            Assert.Equal(2016.02.13 ,CToD("   13/   02/   2016"))
 			Assert.Equal(0001.01.02 ,CToD("02/01/0001"))
 			Assert.Equal(1901.01.01 ,CToD("01/01/01"))
 			SetDateFormat("mm/dd/yyyy")
@@ -37,11 +42,12 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.Equal(2016.12.05 ,CToD(" 5 12 2016"))
 			Assert.Equal(2016.12.05 ,CToD("   5 12 2016"))
 			Assert.Equal(2016.12.05 ,CToD("   5 12 2016   "))
+			Assert.Equal(2016.12.05 ,CToD("5  12 2016") )
+			Assert.Equal(2016.12.05 ,CToD("5 12  2016") )
+			Assert.Equal(2016.12.05 ,CToD(e"\t5 12  2016") )
 			Assert.Equal(2016.01.01 ,CToD("   1 1 2016   "))
-			Assert.True(CToD(Chr(9) + "5 12 2016") == NULL_DATE)
-			Assert.True(CToD("5  12 2016") == NULL_DATE)
-			Assert.True(CToD("5 12  2016") == NULL_DATE)
-			SetDateFormat("mm/dd/yyyy")
+            SetDateFormat(cFormat)
+            SetEpoch(nEpoch)
 
 		RETURN
 

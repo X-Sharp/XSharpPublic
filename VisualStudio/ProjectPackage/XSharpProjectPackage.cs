@@ -4,21 +4,21 @@
 // See License.txt in the project root for license information.
 //
 
-using System;
-using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Project;
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-
-using XSharp.LanguageService;
-using XSharp.Project.WPF;
+using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using XSharp.Project.Options;
+using XSharp.Project.WPF;
 using XSharpModel;
-using Community.VisualStudio.Toolkit;
 using Task = System.Threading.Tasks.Task;
 /*
 Substitution strings
@@ -87,12 +87,12 @@ namespace XSharp.Project
         pageNameResourceID: 201,
         keywordListResourceId: 301,
         supportsAutomation: true,
-        Sort = 1 )]
+        Sort = 1)]
     [ProvideOptionPage(typeof(Options.DialogPageProvider.OtherEditor), "X# Custom Editors", "Other Editors",
         categoryResourceID: 200,
         pageNameResourceID: 202,
         keywordListResourceId: 302,
-        supportsAutomation:true, Sort = 2)]
+        supportsAutomation: true, Sort = 2)]
     [ProvideOptionPage(typeof(Options.DialogPageProvider.Debugger), "Debugger", "X# Debugger",
      categoryResourceID: 203,
      pageNameResourceID: 204,
@@ -111,7 +111,7 @@ namespace XSharp.Project
 
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
- 
+
     // Editors for VOBinaries
     [ProvideEditorExtension(typeof(VOFormEditorFactory), ".xsfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
     [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".xsmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
@@ -134,8 +134,7 @@ namespace XSharp.Project
     [ProvideToolWindowVisibility(typeof(RepositoryWindow.Pane), VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string)]
 #endif
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents,IVsDebuggerEvents, IDisposable
+    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents, IDisposable
     {
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
@@ -143,9 +142,10 @@ namespace XSharp.Project
         private ITaskList _taskList = null;
         //private XSharpProjectSelector _projectSelector = null;
         private uint shellCookie;
-
-        public static XSharpProjectPackage XInstance = null;
+        IVsShell shell = null;
  
+        public static XSharpProjectPackage XInstance = null;
+
 
         // =========================================================================================
         // Properties
@@ -162,7 +162,7 @@ namespace XSharp.Project
 
 
 
-#region Overridden Implementation
+        #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -171,12 +171,14 @@ namespace XSharp.Project
         {
             // Give the codemodel a way to talk to the VS Shell
             XSettings.ShellLink = new XSharpShellLink();
-
+            XSettings.Version = await VS.Shell.GetVsVersionAsync();
             this.RegisterToolWindows();
 
             instance = this;
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+ 
             // The project selector helps to choose between MPF and CPS projects
             //_projectSelector = new XSharpProjectSelector();
             //await _projectSelector.InitAsync(this);
@@ -199,16 +201,13 @@ namespace XSharp.Project
             _errorList = await VS.GetRequiredServiceAsync<SVsErrorList, IErrorList>();
             _taskList = await VS.GetRequiredServiceAsync<SVsTaskList, ITaskList>();
 
-            var shell = await VS.GetRequiredServiceAsync<SVsShell, IVsShell>();
+            shell = await VS.GetRequiredServiceAsync<SVsShell, IVsShell>();
             if (shell != null)
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
-
             await this.RegisterCommandsAsync();
-            await GetEditorOptionsAsync();
-            await XSharpDebugger.VsVersion.GetVersionAsync();
-
+            await GetOptionsAsync();
         }
 
 
@@ -242,52 +241,50 @@ namespace XSharp.Project
 
 
         #endregion
-
-
-        public async Task<bool> GetEditorOptionsAsync()
+        public async Task<bool> GetOptionsAsync()
         {
-            var doptions = await Options.DebuggerOptions.GetLiveInstanceAsync();
-            XDebuggerSettings.ArrayZero = doptions.ArrayZero;
-            XDebuggerSettings.AllowEditing = doptions.AllowEditing;
-            XDebuggerSettings.Dialect = (int) doptions.Dialect;
-            XDebuggerSettings.MemVars = doptions.MemVars;
-            XDebuggerSettings.UndeclaredMemvars = doptions.UndeclaredMemvars;
-            XDebuggerSettings.Vo4 = doptions.Vo4;
-            XDebuggerSettings.Vo6 = doptions.Vo6;
-            XDebuggerSettings.Vo7 = doptions.Vo7;
-            XDebuggerSettings.Vo10 = doptions.Vo10;
-            XDebuggerSettings.Vo12 = doptions.Vo12;
-            XDebuggerSettings.Vo13 = doptions.Vo13;
-            XDebuggerSettings.Vo14 = doptions.Vo14;
-            XDebuggerSettings.LateBinding = doptions.LateBinding;
-
-            var woptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
-            XCustomEditorSettings.ShowGrid = woptions.ShowGrid;
-            XCustomEditorSettings.GridX = woptions.GridX;
-            XCustomEditorSettings.GridY = woptions.GridY;
-            XCustomEditorSettings.PasteOffSetX = woptions.PasteOffSetX;
-            XCustomEditorSettings.PasteOffSetY = woptions.PasteOffSetY;
-            XCustomEditorSettings.PartialLasso = woptions.PartialLasso;
-            XCustomEditorSettings.SizeAdjustmentX = woptions.SizeAdjustmentX;
-            XCustomEditorSettings.SizeAdjustmentY = woptions.SizeAdjustmentY;
-
-            var options = await Options.OtherEditorOptions.GetLiveInstanceAsync();
-            XCustomEditorSettings.DbServerDefaultRDD = options.DbServerDefaultRDD;
-            XCustomEditorSettings.DbServerParentClass = options.DbServerParentClass;
-            XCustomEditorSettings.MenuParentClass = options.MenuParentClass;
-            XCustomEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
-            XCustomEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
-            XCustomEditorSettings.BackupFormFiles = options.BackupFormFiles;
-            XSettings.Disassembler = options.Disassembler;
-            XSettings.HideIncludes = options.HideIncludes;
+            var options = ProjectSystemOptions.Load();
+            if (options == null)
+            {
+                options = new ProjectSystemOptions();
+                options.DebuggerOptions = await Options.DebuggerOptions.GetLiveInstanceAsync();
+                options.WindowEditorOptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
+                options.OtherEditorOptions = await Options.OtherEditorOptions.GetLiveInstanceAsync();
+                options.Save();
+            }
+            else
+            {
+                // save values from disk to private registry 
+                await options.DebuggerOptions.SaveAsync();
+                await options.WindowEditorOptions.SaveAsync();
+                await options.OtherEditorOptions.SaveAsync();
+            }
+            options.WriteToSettings();
             StartLogging();
             return true;
         }
+        private void RemoveRegistryKey(string key)
+        {
+            try
+            {
+                using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration, true))
+                {
+                    if (root != null)
+                    {
+                        root.DeleteSubKey(key);
+                    }
+                }
+            }
+            catch
+            {
+            }
 
+
+        }
         private void StartLogging()
         {
-            int FileLogging = (int) Constants.GetSetting("Log2File", 0);
-            int DebugLogging = (int) Constants.GetSetting("Log2Debug", 0);
+            int FileLogging = (int)Constants.GetSetting("Log2File", 0);
+            int DebugLogging = (int)Constants.GetSetting("Log2Debug", 0);
 
 
             XSettings.EnableFileLogging = FileLogging != 0;
@@ -320,7 +317,7 @@ namespace XSharp.Project
         }
 
 
-#endregion
+        #endregion
         public int OnShellPropertyChange(int propid, object var)
         {
             // A modal dialog has been opened. Editor Options ?
@@ -331,20 +328,31 @@ namespace XSharp.Project
                 {
                     SetCommentTokens();
                     StartLogging();
-                    GetEditorOptionsAsync().FireAndForget();
+                    var options = new ProjectSystemOptions();
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        options.DebuggerOptions = await DebuggerOptions.GetLiveInstanceAsync();
+                        options.WindowEditorOptions = await WindowEditorOptions.GetLiveInstanceAsync();
+                        options.OtherEditorOptions = await OtherEditorOptions.GetLiveInstanceAsync();
+                    });
+                    options.Save();
                 }
             }
             return VSConstants.S_OK;
         }
 
-        public int OnModeChange(DBGMODE dbgmodeNew)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Dispose()
         {
             Logger.Stop();
+            if (shell != null)
+            {
+                JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    shell.UnadviseShellPropertyChanges(shellCookie);
+                    shellCookie = 0;
+                });
+            }
         }
     }
 

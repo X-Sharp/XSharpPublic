@@ -293,7 +293,7 @@ namespace XSharp.LanguageService
 
         protected virtual void buildDescription(_VSOBJDESCOPTIONS flags, IVsObjectBrowserDescription3 description)
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             description.ClearDescriptionText();
@@ -303,7 +303,7 @@ namespace XSharp.LanguageService
 
         protected IVsSimpleObjectList2 FilterView(LibraryNodeType filterType)
         {
-            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            return ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             LibraryNode filtered = null;
@@ -548,7 +548,7 @@ namespace XSharp.LanguageService
                 pclsidActive = commandId.Guid;
                 pnMenuId = commandId.ID;
                 IOleCommandTarget target = null;
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     target = children[(int)index] as IOleCommandTarget;
@@ -637,7 +637,7 @@ namespace XSharp.LanguageService
                     throw new ArgumentOutOfRangeException("index");
                 }
                 IVsNavInfoNode navinfo = null;
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     navinfo = children[(int)index] as IVsNavInfoNode;
@@ -712,7 +712,7 @@ namespace XSharp.LanguageService
             }
             pulIndex = NullIndex;
             string nodeName = null;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 ErrorHandler.ThrowOnFailure(pNavInfoNode.get_Name(out nodeName));

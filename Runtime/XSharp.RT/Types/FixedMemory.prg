@@ -91,15 +91,12 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
             RETURN pMemBlockStart:dwGroup
         ENDIF
         RETURN 0
+        
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
     PRIVATE STATIC METHOD _GetMemBlockStart (pMemory AS IntPtr) AS FixedMemBlockStart PTR
         LOCAL pMemBlockStart  AS FixedMemBlockStart PTR
         LOCAL i64 as Int64
-        IF Is32Bits
-            i64 := (pMemory:ToInt32() - SIZEOF(FixedMemBlockStart))
-        ELSE
-            i64 := (pMemory:ToInt64() - SIZEOF(FixedMemBlockStart))
-        ENDIF
+        i64 := IIF( Is32Bits, pMemory:ToInt32(), pMemory:ToInt64() ) - SIZEOF(FixedMemBlockStart)
         pMemBlockStart := (FixedMemBlockStart PTR) IntPtr{i64}:ToPointer()
         RETURN pMemBlockStart
 
@@ -107,12 +104,8 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
     PRIVATE STATIC METHOD _GetMemBlockEnd (pMemory AS IntPtr ) AS FixedMemBlockEnd PTR
         VAR pMemBlockStart := _GetMemBlockStart (pMemory)
         LOCAL i64 as Int64
-        IF Is32Bits
-            i64 := pMemory:ToInt32() + pMemBlockStart:dwSize
-        ELSE
-            i64 := pMemory:ToInt64() + pMemBlockStart:dwSize
-        ENDIF
-        RETURN ( FixedMemBlockEnd PTR) IntPtr{i64}:ToPointer()
+        i64 := IIF( Is32Bits, pMemory:ToInt32(), pMemory:ToInt64() )
+        RETURN ( FixedMemBlockEnd PTR) IntPtr{i64 + pMemBlockStart:dwSize}:ToPointer()
 
 
     STATIC METHOD Alloc(nGroup AS DWORD, nSize AS DWORD) AS IntPtr
@@ -165,20 +158,20 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
                 VAR nTotal			:= nSize + SIZEOF(FixedMemBlockStart) + SIZEOF(FixedMemBlockEnd)
                 Total -= nSize
                 oGroup := FindGroup(pMemBlockStart:dwGroup)
-                // Overwrite memory so it will not be valid anymore
-    Set(pMemBlockStart, 0xFF, (INT) nTotal)
-        IF oGroup != NULL_OBJECT
-            oGroup:Allocated -= nSize
-            Marshal.FreeHGlobal(pMemBlockStart)
-            result := FixedMemory.SUCCESS
-        ENDIF
-    ELSE
-        // TODO: Throw an exception or log the result when FixedMemory.Free fails
-    ENDIF
-    CATCH
-        result := FixedMemory.FAILURE
-    END TRY
-    RETURN result
+                // Overwrite memory including header and footer so it will not be valid anymore
+                FixedMemory.Set(pMemBlockStart, 0xFF, (INT) nTotal)
+                IF oGroup != NULL_OBJECT
+                    oGroup:Allocated -= nSize
+                    Marshal.FreeHGlobal(pMemBlockStart)
+                    result := FixedMemory.SUCCESS
+                ENDIF
+            ELSE
+                // TODO: Throw an exception or log the result when FixedMemory.Free fails
+            ENDIF
+        CATCH
+            result := FixedMemory.FAILURE
+        END TRY
+        RETURN result
 
     STATIC METHOD Validate(pMem AS IntPtr) AS LOGIC
         LOCAL lValid := FALSE	AS LOGIC
@@ -222,17 +215,30 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
                         LOCAL nOldSize AS DWORD
                         nOldSize := pMemBlockStart:dwSize
                         IF nOldSize == nNewSize
-                            pResult := pMem
-                        ELSEIF nOldSize > nNewSize
-                            // clear end of block
-                            LOCAL pClear AS IntPtr
-                            IF Is32Bits
-                                pClear := (IntPtr) pMem:ToInt32()+ nOldSize
-                            ELSE
-                                pClear := (IntPtr) pMem:ToInt64()+ nOldSize
+                            // Nothing to do.
+                            RETURN pMem
+                        ENDIF
+                        VAR nGroup := pMemBlockStart:dwGroup
+                        IF nOldSize > nNewSize
+                            // Adjust end of block marker and size in header
+                            // Adjust allocated sizes
+                            var oGroup := FindGroup(nGroup)
+                            IF oGroup != NULL_OBJECT
+                                oGroup:Allocated -= nOldSize
                             ENDIF
-                            Clear( pClear, (INT) (nOldSize - (INT) nNewSize))
+                            Total -= nOldSize
                             pResult := pMem
+                            // Block start was not changed
+                            pMemBlockStart:Initialize(nGroup, nNewSize )
+                            pMemBlockEnd := _GetMemBlockEnd(pResult)
+                            pMemBlockEnd:Initialize()
+                            IF oGroup != NULL_OBJECT
+                                oGroup:Allocated += nNewSize
+                            ENDIF
+                            IF MemTrace
+                                AllocatedBlocks[pResult] := nNewSize
+                            ENDIF
+                            Total += nNewSize
                         ELSE
                             // allocate new block
                             pResult := Alloc(pMemBlockStart:dwGroup, nNewSize)
@@ -251,7 +257,7 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
         END TRY
         RETURN pResult
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
     INTERNAL STATIC METHOD Clear(pMemory AS IntPtr, iCount AS INT) AS IntPtr
         // No pointer validation for speed. Should be done in wrapper function
         FixedMemory.Set(pMemory, 0, iCount)

@@ -394,8 +394,8 @@ BEGIN NAMESPACE XSharp.RDD
                 IF dValue:IsEmpty
                     str := Space(8)
                 ELSE
-                    VAR dt := DateTime{dValue:Year, dValue:Month, dValue:Day}
-                    str := dt:ToString( "yyyyMMdd" )
+                    VAR dt2 := DateTime{dValue:Year, dValue:Month, dValue:Day}
+                    str := dt2:ToString( "yyyyMMdd" )
                 ENDIF
                 SELF:_PutString(buffer, str)
                 RETURN TRUE

@@ -251,7 +251,7 @@ namespace XSharp.LanguageService
 
         private void Textbuffer_Changing(object sender, TextContentChangingEventArgs e)
         {
-            if (XSettings.DebuggerIsRunning && ! XDebuggerSettings.AllowEditing)  
+            if (XDebuggerSettings.DebuggerIsRunning && ! XDebuggerSettings.AllowEditing)  
             {
                 XSettings.ShowMessageBox("Cannot edit source code while debugging");
                 e.Cancel();
@@ -272,7 +272,7 @@ namespace XSharp.LanguageService
         private void adjustWhiteSpace()
         {
 
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ()=>
             {
 
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -398,7 +398,7 @@ namespace XSharp.LanguageService
                 return;
             }
 
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ( )=>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var editSession = _buffer.CreateEdit();

@@ -124,6 +124,8 @@ namespace XSharp.Debugger.UI
                 switch (dbgmodeNew)
                 {
                     case DBGMODE.DBGMODE_Design:
+                        Support.IsRunning = false;
+                        XSolution.Logger.Information("Debugger stopped");
                         XDebuggerSettings.DebuggingXSharpExe = false;
                         Support.ClearWindows();
                         break;
@@ -133,7 +135,11 @@ namespace XSharp.Debugger.UI
                     case DBGMODE.DBGMODE_Run:
                         // Just started? 
                         if (oldMode == DebuggerMode.Design)
+                        {
+                            XSolution.Logger.Information("Debugger started");
                             Support.RefreshWindows();
+                            Support.IsRunning = true;
+                        }
                         break;
                     case DBGMODE.DBGMODE_Enc:
                         break;

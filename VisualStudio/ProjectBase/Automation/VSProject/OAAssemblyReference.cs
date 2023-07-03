@@ -40,6 +40,16 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return BaseReferenceNode.ResolvedAssembly.Version.Build;
             }
         }
+        public override bool CopyLocal
+        {
+            get
+            {
+                var props = this.BaseReferenceNode.NodeProperties as ReferenceNodeProperties;
+                if (props != null)
+                    return props.CopyToLocal;
+                return false;
+            }
+        }
         public override string Culture
         {
             get

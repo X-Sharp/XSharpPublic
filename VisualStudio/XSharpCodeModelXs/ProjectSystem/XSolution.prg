@@ -47,10 +47,10 @@ BEGIN NAMESPACE XSharpModel
 
     STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
         IF XSettings.EnableLogging
-            XSettings.LogMessage(message)
+            XSolution.Logger:Information(message)
         ENDIF
     STATIC METHOD WriteException(ex AS Exception, msg as STRING) AS VOID
-        XSettings.LogException(ex, msg)
+        XSolution.Logger:Exception(ex, msg)
         RETURN
 
     STATIC PRIVATE METHOD _ClearFolder(directory as DirectoryInfo, lDeleteFiles as LOGIC) AS VOID
@@ -301,7 +301,7 @@ BEGIN NAMESPACE XSharpModel
 
 
         PUBLIC METHOD SingleLine() AS VOID
-            RETURN 
+            RETURN
 
         PUBLIC METHOD DoubleLine() AS VOID
             RETURN

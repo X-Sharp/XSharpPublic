@@ -58,11 +58,8 @@ BEGIN NAMESPACE XSharpModel
         METHOD SetStatusBarText(cText AS STRING) AS VOID
         METHOD SetStatusBarProgress(cMessage as STRING, nItem AS LONG, nTotal as LONG) AS VOID
         METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
-        METHOD LogMessage(message AS STRING) AS VOID
-        METHOD LogException(ex AS Exception, message as STRING) AS VOID
         METHOD ShowMessageBox(message AS STRING) AS INT
         PROPERTY IsVsBuilding AS LOGIC GET
-        PROPERTY LastBuildResult AS LOGIC GET
    END INTERFACE
 
 END NAMESPACE

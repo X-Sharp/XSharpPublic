@@ -260,7 +260,6 @@ namespace XSharp.Project
                 await options.OtherEditorOptions.SaveAsync();
             }
             options.WriteToSettings();
-            StartLogging();
             return true;
         }
         private void RemoveRegistryKey(string key)
@@ -281,20 +280,7 @@ namespace XSharp.Project
 
 
         }
-        private void StartLogging()
-        {
-            int FileLogging = (int)Constants.GetSetting("Log2File", 0);
-            int DebugLogging = (int)Constants.GetSetting("Log2Debug", 0);
-
-
-            XSettings.EnableFileLogging = FileLogging != 0;
-            XSettings.EnableDebugLogging = DebugLogging != 0;
-            if (XSettings.EnableFileLogging || XSettings.EnableDebugLogging)
-                Logger.Start();
-            else
-                Logger.Stop();
-
-        }
+        
         /// <summary>
         /// Read the comment tokens from the Tools/Options dialog and pass them to the CodeModel assembly
         /// </summary>
@@ -327,7 +313,6 @@ namespace XSharp.Project
                 if (!(bool)var)
                 {
                     SetCommentTokens();
-                    StartLogging();
                     var options = new ProjectSystemOptions();
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
@@ -343,7 +328,6 @@ namespace XSharp.Project
 
         public void Dispose()
         {
-            Logger.Stop();
             if (shell != null)
             {
                 JoinableTaskFactory.Run(async delegate

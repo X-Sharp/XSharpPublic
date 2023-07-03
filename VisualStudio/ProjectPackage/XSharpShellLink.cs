@@ -1,21 +1,14 @@
 ﻿using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using XSharpModel;
-using System.Reflection;
 namespace XSharp.Project
 {
     internal class XSharpShellLink : IXVsShellLink
     {
-
-        bool building;
-        bool success;
+        static ILogger Logger => XSolution.Logger;
 
         static bool hasEnvironmentvariable = false;
         static XSharpShellLink()
@@ -32,189 +25,16 @@ namespace XSharp.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
-                VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
-                VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
-                VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
+
                 VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
-                VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
-                VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
-                VS.Events.SolutionEvents.OnAfterRenameProject += SolutionEvents_OnAfterRenameProject;
-                VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += SolutionEvents_OnAfterBackgroundSolutionLoadComplete;
                 VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
                 VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
                 VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
-                VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
-                VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
-                _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
-                _ = await VS.Commands.InterceptAsync(KnownCommands.File_Exit, CloseDesignerWindows);
-                VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
-                var sol = await VS.Solutions.GetCurrentSolutionAsync();
-                if (sol is Solution)
-                {
-                    SolutionEvents_OnAfterOpenSolution(sol);
-                }
+
             });
 
         }
 
-        private CommandProgression CloseDesignerWindows()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            SaveDesignerWindows();
-            return CommandProgression.Continue;
-        }
-
-        private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
-        {
-            Logger.Information("SolutionEvents_OnAfterBackgroundSolutionLoadComplete");
-            ThreadHelper.ThrowIfNotOnUIThread();
-            RestoreDesignerWindows();
-        }
-
-        private void ShellEvents_ShutdownStarted()
-        {
-            Logger.SingleLine();
-            Logger.Information("Shutdown VS");
-            Logger.SingleLine();
-        }
-
-        private void DocumentEvents_Opened(string strDocument)
-        {
-            Logger.Information("DocumentEvents_Opened " + strDocument);
-        }
-        private void DocumentEvents_Closed(string strDocument)
-        {
-            Logger.Information("DocumentEvents_Closed " + strDocument);
-        }
-
-
-        private void SaveDesignerWindows()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            var files = GetAllDesignerWindows(false);
-            XDatabase.SaveOpenDesignerFiles(files);
-        }
-        private void CloseAllDesignerWindows()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            GetAllDesignerWindows(true);
-        }
-        private List<string> GetAllDesignerWindows(bool close = false)
-        {
-            var files = new List<string>();
-            ThreadHelper.ThrowIfNotOnUIThread();
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                var activeDoc = await VS.Windows.GetCurrentWindowAsync();
-                var documents = await VS.Windows.GetAllDocumentWindowsAsync();
-                foreach (var doc in documents.ToArray())
-                {
-                    var caption = doc.Caption;
-                    if (caption.EndsWith("]"))
-                    {
-                        string docName = "";
-                        var field = doc.GetType().GetField("_frame", BindingFlags.Instance | BindingFlags.NonPublic);
-                        if (field != null)
-                        {
-                            dynamic _frame = field.GetValue(doc);
-                            string capt = _frame.EditorCaption;
-                            if (!capt.EndsWith("]"))
-                                continue;
-                            docName = _frame.EffectiveDocumentMoniker;
-                        }
-#if !DEV17
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-#endif
-                        if (string.IsNullOrEmpty(docName) && doc is IVsWindowFrame frame)
-                        {
-                            frame.GetProperty((int)__VSFPROPID.VSFPROPID_pszMkDocument, out var objdocName);
-                            if (objdocName is string fileName)
-                            {
-                                docName = fileName;
-                            }
-                        }
-                        if (!string.IsNullOrEmpty(docName))
-                        {
-                            await doc.CloseFrameAsync(FrameCloseOption.NoSave);
-                            files.Add(docName);
-                        }
-                    }
-                }
-            });
-            return files;
-        }
-
-        private void RestoreDesignerWindows()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                Logger.SingleLine();
-                Logger.Information("Start restoring windows in [Design] mode");
-                Logger.SingleLine();
-                var files = XDatabase.GetOpenDesignerFiles();
-                if (files.Count > 0)
-                {
-                    CloseAllDesignerWindows();
-                }
-                var selection = await VS.Solutions.GetActiveItemsAsync();
-                if (files.Count > 0  )
-                {
-                    foreach (var file in files)
-                    {
-                        try
-                        {
-                            Logger.SingleLine();
-                            Logger.Information("Restoring " + file);
-                            Logger.SingleLine();
-                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                            VsShellUtilities.OpenDocument(ServiceProvider.GlobalProvider, file, VSConstants.LOGVIEWID_Designer, out _, out _, out _);
-
-                            Logger.SingleLine();
-                            Logger.Information("Restored " + file);
-                            Logger.SingleLine();
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.DoubleLine();
-                            Logger.Exception(e, "Restoring [Design] mode windows");
-                            Logger.DoubleLine();
-                        }
-                    }
-                    var sel = selection.Where(s => s.Type == SolutionItemType.PhysicalFile).FirstOrDefault();
-                    if (sel != null)
-                    {
-                        _ = await VS.Documents.OpenAsync(sel.FullPath);
-                    }
-                    Logger.SingleLine();
-                    Logger.Information("End restoring windows in [Design] mode");
-                    Logger.SingleLine();
-                }
-            });
-        }
-
-        private void SolutionEvents_OnAfterRenameProject(Community.VisualStudio.Toolkit.Project project)
-        {
-            Logger.SingleLine();
-            Logger.Information("Renamed project: " + project?.FullPath ?? "");
-            Logger.SingleLine();
-        }
-
-        private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project project)
-        {
-            Logger.SingleLine();
-            Logger.Information("Before Closing project: " + project?.FullPath ?? "");
-            Logger.SingleLine();
-
-        }
-
-        private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
-        {
-            Logger.SingleLine();
-            Logger.Information("After Opening project: " + project?.FullPath ?? "");
-            Logger.SingleLine();
-        }
 
         private void SolutionEvents_OnBeforeOpenProject(string projectFileName)
         {
@@ -296,75 +116,9 @@ namespace XSharp.Project
 
         }
 
-        string solutionName = "";
-        private void SolutionEvents_OnBeforeCloseSolution()
-        {
-            Logger.SingleLine();
-            Logger.Information("Closing solution: " + solutionName);
-            Logger.SingleLine();
-        }
 
-        private void SolutionEvents_OnAfterCloseSolution()
-        {
 
-            Logger.SingleLine();
-            Logger.Information("Closed solution: " + solutionName);
-            Logger.SingleLine();
-            solutionName = "";
-        }
 
-        private void SolutionEvents_OnAfterOpenSolution(Solution solution)
-        {
-            if (solution is Solution sol)
-            {
-                var file = sol.FullPath;
-                if (!string.IsNullOrEmpty(file))
-                {
-                    XSolution.Open(file);
-                }
-            }
-
-            Logger.SingleLine();
-            Logger.Information("Opened Solution: " + solution?.FullPath ?? "");
-            Logger.SingleLine();
-            solutionName = solution?.FullPath;
-        }
-
-        private void SolutionEvents_OnBeforeOpenSolution(string solutionFileName)
-        {
-            Logger.SingleLine();
-            Logger.Information("Opening Solution: " + solutionFileName ?? "");
-            Logger.SingleLine();
-            solutionName = solutionFileName;
-        }
-
-        private void BuildEvents_SolutionBuildCancelled()
-        {
-            Logger.Information("BuildEvents_SolutionBuildCancelled");
-            building = false;
-            // Start or Resume the model walker
-            XSharpModel.ModelWalker.Start();
-        }
-
-        private void BuildEvents_SolutionBuildDone(bool result)
-        {
-            Logger.Information("BuildEvents_SolutionBuildDone: {result}");
-            building = false;
-            success = result;
-            // Start or Resume the model walker
-            XSharpModel.ModelWalker.Start();
-        }
-
-        private void BuildEvents_SolutionBuildStarted(object sender, EventArgs e)
-        {
-            Logger.Information("BuildEvents_SolutionBuildStarted");
-            building = true;
-            if (XSharpModel.ModelWalker.IsRunning)
-            {
-                // Do not walk while building
-                XSharpModel.ModelWalker.Suspend();
-            }
-        }
 
         public void SetStatusBarAnimation(bool onOff, short id)
         {
@@ -389,18 +143,6 @@ namespace XSharp.Project
         {
             string title = string.Empty;
             return (int)VS.MessageBox.Show(title, message);
-        }
-
-        public void LogException(Exception ex, string msg)
-        {
-            Logger.Exception(ex, msg);
-            XSharpOutputPane.DisplayException(ex);
-        }
-
-        public void LogMessage(string message)
-        {
-            Logger.Information(message);
-            XSharpOutputPane.DisplayOutputMessage(message);
         }
 
         /// <summary>
@@ -485,8 +227,20 @@ namespace XSharp.Project
         }
 
         public bool IsVsBuilding => building;
-        public bool LastBuildResult => success;
+        private void BuildEvents_SolutionBuildCancelled()
+        {
+            building = false;
+        }
+        bool building;
 
+        private void BuildEvents_SolutionBuildDone(bool result)
+        {
+            building = false;
+        }
 
+        private void BuildEvents_SolutionBuildStarted(object sender, EventArgs e)
+        {
+            building = true;
+        }
     }
 }

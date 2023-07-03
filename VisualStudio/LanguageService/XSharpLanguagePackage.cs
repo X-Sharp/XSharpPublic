@@ -27,6 +27,10 @@ using XSharpModel;
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeModel")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeAnalysis")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.MonoCecil")]
+[assembly: ProvideCodeBase(AssemblyName = "Serilog")]
+[assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.Debug")]
+[assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.File")]
+
 namespace XSharp.LanguageService
 {
 
@@ -213,10 +217,13 @@ namespace XSharp.LanguageService
             options.WriteToRegistry();
             return;
         }
+        
 
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             instance = this;
+            Logger.InitializeLogger();
+            ModelScannerEvents.Start();
             await base.InitializeAsync(cancellationToken, progress);
             _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
             Assumes.Present(_txtManager);
@@ -275,6 +282,7 @@ namespace XSharp.LanguageService
         {
             try
             {
+                XSolution.Logger.Stop();
 
                 if (null != _libraryManager)
                 {
@@ -370,7 +378,8 @@ namespace XSharp.LanguageService
                 {
                     GetIntellisenseSettings(false);
                     var res = ThreadHelper.JoinableTaskFactory.RunAsync(RefreshAllDocumentWindowSettingsAsync);
-                    
+                    Logger.ActivateWhenNeeded();
+
                 }
             }
             return VSConstants.S_OK;

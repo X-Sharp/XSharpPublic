@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Serilog;
 using System.IO;
 using XSharpModel;
@@ -11,19 +8,46 @@ using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
 using System.Diagnostics;
 
-namespace XSharp.Project
+namespace XSharp.LanguageService
 {
-    internal static class Logger
+    internal class Logger : XSharpModel.ILogger
     {
-        static bool log2debugger = false;
-        static bool log2file = false;
-
+        bool log2debugger = false;
+        bool log2file = false;
+        static Logger instance;
         private static string singleline = new string('-', 80);
         private static string doubleline = new string('=', 80);
 
         static bool active = false;
-        internal static bool Active => active;
-        internal static void Start()
+        public bool Active => active;
+
+        internal static void InitializeLogger()
+        {
+            instance = new Logger();
+            XSolution.Logger = instance;
+        }
+        internal static void ActivateWhenNeeded()
+        {
+            bool wasActive = active;
+            int FileLogging = (int)Constants.GetSetting("Log2File", 0);
+            int DebugLogging = (int)Constants.GetSetting("Log2Debug", 0);
+
+
+            XSettings.EnableFileLogging = FileLogging != 0;
+            XSettings.EnableDebugLogging = DebugLogging != 0;
+            var newActive = XSettings.EnableFileLogging || XSettings.EnableDebugLogging;
+            if (newActive != wasActive)
+            {
+                if (newActive)
+                    instance.Start();
+                else
+                    instance.Stop();
+                active = newActive;
+            }
+            
+
+        }
+        public void Start()
         {
             if (!active ||
                 log2debugger != XSettings.EnableDebugLogging ||
@@ -50,8 +74,14 @@ namespace XSharp.Project
                     {
                         Directory.CreateDirectory(temp);
                     }
+                    int threadid = 0;
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        threadid = AppDomain.GetCurrentThreadId();
+                    });
 #pragma warning disable CS0618 // Type or member is obsolete
-                    int threadid = AppDomain.GetCurrentThreadId();
+                    
 #pragma warning restore CS0618 // Type or member is obsolete
                     string strId = threadid.ToString("X");
                     var log = Path.Combine(temp, "Project_" + strId + "_.log");
@@ -62,8 +92,7 @@ namespace XSharp.Project
                         retainedFileCountLimit: 5);
                     log2file = true;
                 }
-
-
+                Log.CloseAndFlush();
                 Log.Logger = config.CreateLogger();
 
                 Log.Information(doubleline);
@@ -83,7 +112,19 @@ namespace XSharp.Project
 
 
                 Log.Information(doubleline);
-                var sol = VS.Solutions.GetCurrentSolution();
+                Solution sol = null;
+                try
+                {
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        sol = await VS.Solutions.GetCurrentSolutionAsync();
+                    });
+                }
+                catch (Exception )
+                {
+                    sol = null;
+                }
                 if (sol != null )
                 {
                     Log.Information(singleline);
@@ -144,7 +185,7 @@ namespace XSharp.Project
             XSettings.EnableAll();
         }
 
-        static IList<SolutionItem> EnumChildren(SolutionItem item, SolutionItemType type)
+         IList<SolutionItem> EnumChildren(SolutionItem item, SolutionItemType type)
         {
             var items = new List<SolutionItem>();
             foreach (var child in item.Children)
@@ -168,7 +209,7 @@ namespace XSharp.Project
             return items;
         }
 
-        private static void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
 
             if (active)
@@ -188,7 +229,7 @@ namespace XSharp.Project
             }
         }
 
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             if (active)
             {
@@ -198,7 +239,7 @@ namespace XSharp.Project
         }
 
 
-        internal static void Stop()
+        public void Stop()
         {
             if (active)
             {
@@ -213,7 +254,7 @@ namespace XSharp.Project
             }
         }
 
-        internal static void Debug(string message)
+        public void Debug(string message)
         {
             if (active)
             {
@@ -221,7 +262,7 @@ namespace XSharp.Project
             }
 
         }
-        internal static void Information(string message)
+        public void Information(string message)
         {
             if (active)
             {
@@ -230,18 +271,18 @@ namespace XSharp.Project
         }
 
 
-        internal static void Exception(Exception e, string message)
+        public void Exception(Exception e, string message)
         {
             if (active)
             {
                 Log.Error(e, formatMessage(message));
             }
         }
-        internal static void SingleLine()
+        public void SingleLine()
         {
             Information(singleline);
         }
-        internal static void DoubleLine()
+        public void DoubleLine()
         {
             Information(doubleline);
         }

@@ -22,8 +22,5 @@ using Microsoft.VisualStudio.Shell;
 
 [assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
 [assembly: ProvideCodeBase(AssemblyName = "Microsoft.DiaSymReader")]
-[assembly: ProvideCodeBase(AssemblyName = "Serilog")]
-[assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.Debug")]
-[assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.File")]
 [assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite")]
 

@@ -260,6 +260,7 @@ namespace XSharp.LanguageService
             {
                 Log.Debug(formatMessage(message));
             }
+            XSharpOutputPane.DisplayOutputMessage(message);
 
         }
         public void Information(string message)
@@ -268,6 +269,7 @@ namespace XSharp.LanguageService
             {
                 Log.Information(formatMessage(message));
             }
+            XSharpOutputPane.DisplayOutputMessage(message);
         }
 
 
@@ -277,6 +279,7 @@ namespace XSharp.LanguageService
             {
                 Log.Error(e, formatMessage(message));
             }
+            XSharpOutputPane.DisplayException(e, message);
         }
         public void SingleLine()
         {

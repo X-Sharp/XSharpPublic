@@ -11,6 +11,8 @@ using Microsoft.Win32;
 using System.Reflection;
 using LanguageService.CodeAnalysis.XSharp;
 using XSharp.Parser;
+using XSharpModel;
+
 namespace XSharp.Project
 {
 
@@ -70,7 +72,7 @@ namespace XSharp.Project
             //List<String> args = new List<String>();
             //try
             //{
-            Logger.Debug("ProjectOptions: BuildCommandLine");
+            XSolution.Logger.Debug("ProjectOptions: BuildCommandLine");
             List<string> options = new List<string>();
             options.Add("dialect:" + _prjNode.GetProjectProperty(XSharpProjectFileConstants.Dialect));
             var asmNodes = new List<XSharpAssemblyReferenceNode>();

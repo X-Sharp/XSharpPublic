@@ -53,6 +53,8 @@ namespace XSharp.Project
 
         static IDictionary<string, string> dependencies;
         static IDictionary<string, string> _changedProjectFiles;
+        private ILogger Logger => XSolution.Logger;
+
         static XSharpProjectNode()
         {
             // first the extension to look for, second the extension that can be the parent
@@ -1328,13 +1330,13 @@ namespace XSharp.Project
         {
             if (String.Equals(target, "Clean", StringComparison.OrdinalIgnoreCase))
             {
-                if (logger != null)
+                if (buildLogger != null)
                 {
-                    logger.Clear();
+                    buildLogger.Clear();
 
                 }
             }
-            Logger.Debug("InvokeMsBuild (" + this.Url + ") : " + target);
+            Logger.Debug($"InvokeMsBuild Target: {target}, Project: {Url}");
             return base.InvokeMsBuild(target);
         }
 
@@ -2084,17 +2086,17 @@ namespace XSharp.Project
         TaskListManager _taskListManager = null;
 
 
-        XSharpIDEBuildLogger logger = null;
+        XSharpIDEBuildLogger buildLogger = null;
 
         protected override IDEBuildLogger CreateBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
         {
-            logger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
-            logger.ProjectNode = this;
-            logger.ErrorString = ErrorString;
-            logger.WarningString = WarningString;
+            buildLogger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
+            buildLogger.ProjectNode = this;
+            buildLogger.ErrorString = ErrorString;
+            buildLogger.WarningString = WarningString;
             CreateListManagers();
-            logger.ErrorListManager = _errorListManager;
-            return logger;
+            buildLogger.ErrorListManager = _errorListManager;
+            return buildLogger;
         }
 
         public override BuildResult Build(string target)
@@ -2257,9 +2259,9 @@ namespace XSharp.Project
             _closing = true;
             var res = base.Close();
 
-            if (logger != null)
+            if (buildLogger != null)
             {
-                logger.Clear();
+                buildLogger.Clear();
             }
             ErrorListManager.RemoveProject(this);
             if (_errorListManager != null)

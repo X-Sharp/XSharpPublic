@@ -79,7 +79,7 @@ namespace XSharp.Project
                         projectNode = (XSharpProjectNode)xproject.ProjectNode;
                     }
 
-                    Logger.Information($"Reading file data for {currentFile.FullPath} from database");
+                    XSolution.Logger.Information($"Reading file data for {currentFile.FullPath} from database");
                     XSharpFileNode fileNode;
                     fileNode = (XSharpFileNode) projectNode.FindChild(currentFile.FullPath);
                     var provider = new VSXSharpCodeDomProvider(fileNode);

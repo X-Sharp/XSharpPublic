@@ -61,15 +61,13 @@ BEGIN NAMESPACE XSharpModel
              RETURN
 
         PUBLIC STATIC METHOD LogMessage(message AS STRING) AS VOID
-            IF EnableLogging .and. ShellLink != NULL
-                ShellLink:LogMessage(message)
+            IF EnableLogging
+                XSolution.Logger:Information(message)
             ENDIF
             RETURN
 
         PUBLIC STATIC METHOD LogException(ex AS Exception, msg as STRING) AS VOID
-            IF ShellLink != NULL
-                ShellLink:LogException(ex, msg)
-            ENDIF
+            XSolution.Logger:Exception(ex, msg)
             RETURN
 
         PUBLIC STATIC METHOD ShowMessageBox(cMessage as STRING) AS INT

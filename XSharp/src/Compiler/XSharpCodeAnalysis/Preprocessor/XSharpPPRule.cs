@@ -42,6 +42,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal bool hasMultiKeys => _matchtokens.Length > 0 && _matchtokens[0].RuleTokenType == PPTokenType.MatchRestricted;
         private readonly CSharpParseOptions _options;
         internal PPUDCType Type { get { return _type; } }
+        internal bool isCommand => _type == PPUDCType.Command || _type == PPUDCType.XCommand;
+
         internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages, CSharpParseOptions options)
         {
             _options = options;
@@ -1680,7 +1682,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
             }
             // #command and #xcommand should match all tokens on the input line
-            if (iSource < tokens.Count && (this.Type == PPUDCType.Command || this.Type == PPUDCType.XCommand))
+            if (iSource < tokens.Count && this.isCommand)
             {
                 if (tokens[iSource].Type != XSharpLexer.EOS)
                     return false;
@@ -1726,10 +1728,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal IList<XSharpToken> Replace(IList<XSharpToken> tokens, PPMatchRange[] matchInfo)
         {
             Debug.Assert(matchInfo.Length == _tokenCount);
-            return Replace(_resulttokens, tokens, matchInfo);
+            return Replace(_resulttokens, tokens, matchInfo, 0, true);
 
         }
-        internal IList<XSharpToken> Replace(PPResultToken[] resulttokens, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, int offset = 0, bool isLast = true)
+        internal IList<XSharpToken> Replace(PPResultToken[] resulttokens, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, int offset, bool isTopLevel)
         {
             Debug.Assert(matchInfo.Length == _tokenCount);
             List<XSharpToken> result = new List<XSharpToken>();
@@ -1763,7 +1765,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             // we need to determine the tokens at the end of the tokens list that are not matched 
             // in the results and then copy these to the result as well
-            if (isLast)
+            if (isTopLevel)
             {
                 var source = tokens[0];
                 if (source.SourceSymbol != null)
@@ -1872,13 +1874,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var max = resultToken.RepeatCount(matchInfo);
                             for (int i = 0; i < max; i++)
                             {
-                                var block = Replace(resultToken.OptionalElements, tokens, matchInfo, i);
+                                var block = Replace(resultToken.OptionalElements, tokens, matchInfo, i, false);
                                 result.AddRange(block);
                             }
                         }
                         else
                         {
-                            var block = Replace(resultToken.OptionalElements, tokens, matchInfo);
+                            var block = Replace(resultToken.OptionalElements, tokens, matchInfo,0, false);
                             result.AddRange(block);
                         }
                     }

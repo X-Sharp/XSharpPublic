@@ -3371,6 +3371,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterClassvars([NotNull] XP.ClassvarsContext context)
         {
             XP.DatatypeContext t = null;
+            var isConst = context.Modifiers != null && context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.CONST);
             for (var i = context._Vars.Count - 1; i >= 0; i--)
             {
                 var locCtx = context._Vars[i];
@@ -3378,6 +3379,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     t = locCtx.DataType;
                 else if (t != null)
                     locCtx.DataType = t;
+                if (isConst && locCtx.Initializer == null)
+                {
+                    _parseErrors.Add(new ParseErrorData(locCtx, ErrorCode.ERR_ConstValueRequired));
+                }
             }
         }
         protected SyntaxList<AttributeListSyntax> MakeIsInstanceAttribute(SyntaxList<AttributeListSyntax> atts)

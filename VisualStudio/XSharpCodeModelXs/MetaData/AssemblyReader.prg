@@ -50,23 +50,23 @@ INTERNAL CLASS AssemblyReader
          NEXT
          FOREACH VAR att IN reader:CustomAttributes
             VAR type := att:AttributeType
-    			SWITCH type:ToString():ToLower()
-				CASE "vulcan.internal.vulcanclasslibraryattribute"
-            CASE "xsharp.internal.classlibraryattribute"
+    		SWITCH type:ToString()
+			CASE KnownTypes.VulcanClassLibrary
+            CASE KnownTypes.XSharpClassLibrary
                if att:ConstructorArguments:Count >= 2
                   var arg1 := att:ConstructorArguments[0]:Value:ToString()
                   var arg2 := att:ConstructorArguments[1]:Value:ToString()
 			      assembly:GlobalClassName := arg1
 				  IF ! String.IsNullOrEmpty(arg2)
-					  assembly:ImplicitNamespaces:Add(arg2)
+					  assembly:ImplicitNamespaces:AddUnique(arg2)
                   ENDIF
                   assembly:IsXSharp := TRUE
                ENDIF
-			CASE "vulcan.vulcanimplicitnamespaceattribute"
-			CASE "xsharp.implicitnamespaceattribute"
+			CASE KnownTypes.VulcanImplicitNS
+			CASE KnownTypes.XSharpImplicitNS
 			    IF att:ConstructorArguments:Count >= 1
                     VAR ns := att:ConstructorArguments[0]:Value:ToString()
-				    assembly:ImplicitNamespaces:Add(ns)
+				    assembly:ImplicitNamespaces:AddUnique(ns)
                     assembly:IsXSharp := TRUE
 			    ENDIF
    			END SWITCH
@@ -74,8 +74,8 @@ INTERNAL CLASS AssemblyReader
          foreach var md in _extensionMethods
             assembly:ExtensionMethods:Add( XPEMethodSymbol{md, assembly })
          next
-         assembly:Namespaces             := _nameSpaces
-         assembly:Loaded                 := TRUE
+         assembly:Namespaces    := _nameSpaces
+         assembly:Loaded        := TRUE
          if ! String.IsNullOrEmpty(assembly:GlobalClassName)
              var globaltype := assembly:Types[assembly:GlobalClassName]
              var members := globaltype:XMembers:Where ({ m => m:IsPublic })

@@ -92,7 +92,7 @@ namespace XSharp.LanguageService
             _lastLine = -1;
             _relatedFiles = new List<string>();
             _lastFileChanged = DateTime.MinValue;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async ()=>
             {
                 await RefreshDropDownAsync(needsUI: false);
             });
@@ -106,13 +106,13 @@ namespace XSharp.LanguageService
                 textView.GotAggregateFocus += TextView_GotAggregateFocus;
                 textView.LostAggregateFocus += TextView_LostAggregateFocus;
                 textView.Closed += TextView_Closed;
-                InitializeAsync(textViewAdapter).FireAndForget();
+                StartOnIdleAsync(textViewAdapter).FireAndForget();
 
 
             }
         }
         // This moves the caret to trigger initial drop down load
-        private Task InitializeAsync(IVsTextView textView)
+        private Task StartOnIdleAsync(IVsTextView textView)
         {
 #if DEV17
             return ThreadHelper.JoinableTaskFactory.StartOnIdle(() =>
@@ -131,9 +131,10 @@ namespace XSharp.LanguageService
             if (_textViews.Count > 0 && _activeView != null)
             {
                 textView.SendExplicitFocus();
+                var pos = _activeView.Caret.Position;
                 _activeView.Caret.MoveToNextCaretPosition();
                 _activeView.Caret.PositionChanged += Caret_PositionChanged;
-                _activeView.Caret.MoveToPreviousCaretPosition();
+                _activeView.Caret.MoveTo(pos.BufferPosition);
             }
         }
 
@@ -174,7 +175,7 @@ namespace XSharp.LanguageService
 
         private void _file_ContentsChanged()
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await RefreshDropDownAsync(needsUI: true);
                 LineChanged();
@@ -596,7 +597,7 @@ namespace XSharp.LanguageService
         private void refreshCombos()
         {
             // Make sure the UI is updated on the foreground thread
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 if (_dropDownBar != null)
@@ -832,7 +833,7 @@ namespace XSharp.LanguageService
             if (dropdownBar != null)
             {
                 _dropDownBar = dropdownBar;
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await RefreshDropDownAsync(needsUI: false);
                 });

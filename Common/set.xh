@@ -70,6 +70,9 @@
 #command SET SOFTSEEK <x:ON,OFF,&>      =>  Set(Set.SoftSeek, <(x)> )
 #command SET UNIQUE <x:ON,OFF,&>        =>  Set(Set.Unique, <(x)> )
 #command SET DELETED <x:ON,OFF,&>       =>  Set(Set.Deleted, <(x)> )
+#command SET REFRESH TO [<x>]           =>  Set(Set.Refresh, iif( <.x.>, (REAL8) (<!x!>), 5.0) ) )
+#command SET DIRTYREAD <x:ON,OFF,&>     =>  Set(Set.StrictRead, ! <(x)> )
+#command SET STRICTREAD <x:ON,OFF,&>    =>  Set(Set.StrictRead, <(x)> )
 
 ///////////////////////////////////////////////////////////////////////////
 //  Console SETs

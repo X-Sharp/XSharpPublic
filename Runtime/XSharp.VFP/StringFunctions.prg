@@ -50,7 +50,7 @@ FUNCTION ForceExt( cFileName AS STRING, cExtension AS STRING, tlOptAsVfp9 AS LOG
     *-- current take on matters is that the Dotnet-Version should be Default behaviour
     *-- as vfp9 version behaviour in edge cases could be seen as erroneous
     *-- work in progress and not tested, as existing code should only call 2-parameter overload should be safe
-    IF tlOptAsVfp9 == .f. 
+    IF tlOptAsVfp9 == .f.
         RETURN ForceExt( cFileName, cExtension)
     ENDIF
     cFileName := JustFName(cFileName)
@@ -90,7 +90,7 @@ FUNCTION JustDrive(cPath AS STRING) AS STRING
     VAR result := System.IO.Directory.GetDirectoryRoot(cPath)
     result := result:Replace(PathHelpers.PathChar,"")
     RETURN result
-    
+
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justext/*" />
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justcommon/*" />
@@ -98,8 +98,8 @@ FUNCTION JustExt(cPath AS STRING) AS STRING
     *-- Default for new parameter  lOptWithLeadingDot ist .f.
     *-- As returning all extensions with leading dot could lead to breaking changes
     RETURN JustExt(cPath, .f.)
-    
-    
+
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justdrive/*" />
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/justcommon/*" />
 FUNCTION JustExt(cPath AS STRING, lOptWithLeadingDot AS LOGIC) AS STRING
@@ -166,7 +166,7 @@ FUNCTION RightC( cExpression AS STRING, nCharacters AS DWORD) AS STRING
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/stuffc/*" />
 FUNCTION StuffC( cExpression, nStartReplacement, nCharactersReplaced, cReplacement) AS STRING CLIPPER
     RETURN Stuff(cExpression, nStartReplacement, nCharactersReplaced, cReplacement)
-    
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/substrc/*" />
 FUNCTION SubStrC(cExpression, nStartPosition , nCharactersReturned ) AS STRING CLIPPER
     RETURN SubStr(cExpression, nStartPosition, nCharactersReturned)
@@ -186,84 +186,84 @@ FUNCTION RAt(cSearchExpression AS STRING , cExpressionSearched AS STRING , dwOcc
     LOCAL i , iPosition  AS INT
     dwOccurred := 0
  	dwPosition := 0
-	IF ! String.IsNullOrEmpty(cExpressionSearched) .AND. ! String.IsNullOrEmpty(cSearchExpression) 		
-	
-		iPosition := cExpressionSearched:Length 
+	IF ! String.IsNullOrEmpty(cExpressionSearched) .AND. ! String.IsNullOrEmpty(cSearchExpression)
+
+		iPosition := cExpressionSearched:Length
 
 		FOR i := 1 UPTO dwOccurrence
-				
-     		IF ( iPosition := cExpressionSearched:LastIndexOf(cSearchExpression,iPosition,StringComparison.Ordinal) ) == -1 
-				EXIT 
-			ENDIF
 
-			dwOccurred++ 
-				
-
-			IF dwOccurred == dwOccurrence
-				// Assign the found position before leaving the loop. 
-				dwPosition := DWORD(iPosition + 1)
-				EXIT 
-			ENDIF
-					
-			//  Doing always a   
-			//    
-			//  iPosition--
-			//    
-			//	, like the c# sources do, is not correct. 
-			//  That's only necessary if the len of the search string 	
-			//  is 1.    
-
-			IF cSearchExpression:Length == 1 .AND. --iPosition < 0 
-				
-				// something like:  
-				//
-				// RAt("a","abracadabra", 12 )   
-				//
-				// ends up here. If you do not check the iPosition value 
-				// the next search loop would cause a exception.
-				//
-						 
+     		IF ( iPosition := cExpressionSearched:LastIndexOf(cSearchExpression,iPosition,StringComparison.Ordinal) ) == -1
 				EXIT
 			ENDIF
-		NEXT 
-	ENDIF 
-	RETURN dwPosition		
-							
-	
+
+			dwOccurred++
+
+
+			IF dwOccurred == dwOccurrence
+				// Assign the found position before leaving the loop.
+				dwPosition := (DWORD) (iPosition + 1)
+				EXIT
+			ENDIF
+
+			//  Doing always a
+			//
+			//  iPosition--
+			//
+			//	, like the c# sources do, is not correct.
+			//  That's only necessary if the len of the search string
+			//  is 1.
+
+			IF cSearchExpression:Length == 1 .AND. --iPosition < 0
+
+				// something like:
+				//
+				// RAt("a","abracadabra", 12 )
+				//
+				// ends up here. If you do not check the iPosition value
+				// the next search loop would cause a exception.
+				//
+
+				EXIT
+			ENDIF
+		NEXT
+	ENDIF
+	RETURN dwPosition
+
+
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/chrtranc/*" />
-FUNCTION ChrTranC( cSearchIn AS STRING , cSearchFor AS STRING, cReplaceWith  AS STRING ) AS STRING 
-	RETURN ChrTran( cSearchIn , cSearchFor , cReplaceWith )  
+FUNCTION ChrTranC( cSearchIn AS STRING , cSearchFor AS STRING, cReplaceWith  AS STRING ) AS STRING
+	RETURN ChrTran( cSearchIn , cSearchFor , cReplaceWith )
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/chrtran/*" />
-FUNCTION ChrTran( cSearchIn AS STRING , cSearchFor AS STRING, cReplaceWith  AS STRING ) AS STRING 
+FUNCTION ChrTran( cSearchIn AS STRING , cSearchFor AS STRING, cReplaceWith  AS STRING ) AS STRING
     LOCAL cRetVal ,cReplaceChar AS STRING
-    LOCAL i AS INT  
-	cRetVal := "" 
-   
-	IF  cSearchIn != NULL  .AND. cSearchFor != NULL .AND. cReplaceWith != NULL	   
+    LOCAL i AS INT
+	cRetVal := ""
 
-		cRetVal := cSearchIn 
-	
-			
+	IF  cSearchIn != NULL  .AND. cSearchFor != NULL .AND. cReplaceWith != NULL
+
+		cRetVal := cSearchIn
+
+
 		FOR i := 1 UPTO cSearchFor:Length
 
 			IF cReplaceWith:Length <= i-1
 				cReplaceChar := ""
 			ELSE
 				cReplaceChar := cReplaceWith[i-1]:ToString()
-			ENDIF 
-			
+			ENDIF
+
 		    cRetVal := cRetVal:Replace(cSearchFor[i-1]:ToString(), cReplaceChar )
 	//	    cRetVal := StrTran(cRetVal , cSearchFor[i-1]:ToString(), cReplaceChar , , SLen ( cRetVal ) )
 
-		NEXT           
+		NEXT
 
-	ENDIF						
-	
+	ENDIF
+
 	RETURN cRetVal
 
-	
+
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/at/*" />
@@ -274,16 +274,16 @@ FUNCTION At(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccurr
             DO WHILE dwOccurrence  > 0
                 IF ( position := (DWORD) ( cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.Ordinal) + 1 ) ) == 0
                     EXIT
-                ENDIF	
+                ENDIF
                 dwOccurrence -= 1
             ENDDO
 		END IF
 	ENDIF
 	RETURN position
-     
+
 /// <inheritdoc cref="At" />
 /// <remarks>This is an alias for the At() function. X# works with unicode and the difference
-/// between single byte and multi byte characters does not exist in Unicode</remarks> 
+/// between single byte and multi byte characters does not exist in Unicode</remarks>
 FUNCTION At_C(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccurrence := 1 AS DWORD) AS DWORD
 	RETURN At(cSearchExpression, cExpressionSearched, dwOccurrence)
 
@@ -296,7 +296,7 @@ FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccur
             DO WHILE dwOccurrence  > 0
                 IF ( position := (DWORD) ( cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.OrdinalIgnoreCase) + 1) ) == 0
                     EXIT
-                ENDIF	
+                ENDIF
                 dwOccurrence -= 1
             ENDDO
 		END IF
@@ -305,7 +305,7 @@ FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccur
 
 /// <inheritdoc cref="AtC" />
 /// <remarks>This is an alias for the AtC() function. X# works with unicode and the difference
-/// between single byte and multi byte characters does not exist in Unicode</remarks> 
+/// between single byte and multi byte characters does not exist in Unicode</remarks>
 
 FUNCTION AtCC(cSearchExpression AS STRING, cExpressionSearched AS STRING, dwOccurrence := 1 AS DWORD) AS DWORD
 	RETURN AtC(cSearchExpression, cExpressionSearched, dwOccurrence)
@@ -365,12 +365,12 @@ STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expressio
         Trimmed = .F.
 
         FOR parmNdx = 1 TO TrimChars:Length
- 
+
             compared = TrimChars[parmNdx]
 
             IF TrimLeft
                 LRTrimmed = 0
- 
+
                 DO WHILE String.Compare(Expression, LRTrimmed, compared, 0, compared:Length, comparison) = 0
                     LRTrimmed += compared:Length
                 END DO
@@ -393,7 +393,7 @@ STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expressio
             END IF
 
         NEXT
- 
+
     END DO
 
     RETURN Expression
@@ -403,5 +403,5 @@ END FUNCTION
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/transform/*" />
 FUNCTION Transform( uValue AS USUAL ) AS STRING
-    RETURN AsString(uValue)	
+    RETURN AsString(uValue)
 

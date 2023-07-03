@@ -10,16 +10,7 @@ USING System.Diagnostics
 USING System.Runtime.Serialization
 USING System.Runtime.CompilerServices
 
-#define USEATTRIB
-#ifdef USEATTRIB
-#XTRANSLATE \[NOSHOW\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
-#XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
-#XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
-#else
-#XTRANSLATE \[NOSHOW\] =>
-#XTRANSLATE \[INLINE\] =>
-#XTRANSLATE \[NODEBUG\] =>
-#endif
+#include "attributes.xh"
 BEGIN NAMESPACE XSharp
 /// <summary>Internal type that implements the XBase Compatible DATE type in UNIONs and VOSTRUCTs</summary>
 [DebuggerDisplay("WinDate({ToString(),nq})", Type := "DATE")];
@@ -56,32 +47,32 @@ PUBLIC STRUCT __WinDate IMPLEMENTS ISerializable
 
 #region Binary Operators
     /// <exclude />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     OPERATOR == (lhs AS __WinDate, rhs AS __WinDate) AS LOGIC
         RETURN lhs:_value == rhs:_value
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     OPERATOR != (lhs AS __WinDate, rhs AS __WinDate) AS LOGIC
         RETURN lhs:_value != rhs:_value
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     OPERATOR == (lhs AS __WinDate, rhs AS DATE) AS LOGIC
         RETURN lhs:@@Value == rhs
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     OPERATOR != (lhs AS __WinDate, rhs AS DATE) AS LOGIC
         RETURN lhs:@@Value != rhs
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     OPERATOR == (lhs AS DATE, rhs AS __WinDate) AS LOGIC
         RETURN lhs == rhs:@@Value
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     OPERATOR != (lhs AS DATE, rhs AS __WinDate) AS LOGIC
         RETURN lhs != rhs:@@Value
 
@@ -95,32 +86,32 @@ PUBLIC STRUCT __WinDate IMPLEMENTS ISerializable
 
 #region Implicit Converters
     /// <exclude />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR IMPLICIT(wd AS __WinDate) AS DATE
         RETURN wd:@@Value
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR IMPLICIT(u AS USUAL) AS __WinDate
         RETURN __WinDate{(DATE) u}
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR IMPLICIT(d AS DATE) AS __WinDate
         RETURN __WinDate{d}
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR IMPLICIT(wd AS __WinDate) AS USUAL
         RETURN wd:@@Value
 
 
     /// <exclude />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR IMPLICIT(wd AS __WinDate) AS LONG
         RETURN wd:@@JulianValue
 
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR IMPLICIT(wd AS __WinDate) AS DWORD
         RETURN (DWORD) (Date) wd
 
@@ -130,88 +121,87 @@ PUBLIC STRUCT __WinDate IMPLEMENTS ISerializable
 #region Binary Operators
         // These are all delegated to the equivalent methods inside the Date
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR ++(lhs AS __WinDate) AS __WinDate
         RETURN lhs:Value:Add(1)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR +(lhs AS __WinDate, days AS USUAL) AS __WinDate
         RETURN lhs:Value:Add(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR +(lhs AS __WinDate, days AS REAL8) AS __WinDate
         RETURN lhs:Value:Add(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR +(lhs AS __WinDate, days AS LONG) AS __WinDate
         RETURN lhs:Value:Add(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR +(lhs AS __WinDate, days AS INT64) AS __WinDate
         RETURN lhs:Value:Add(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR +(lhs AS __WinDate, ts AS System.TimeSpan) AS __WinDate
         RETURN lhs:Value:Add(ts)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR +(lhs AS __WinDate, days AS DWORD) AS __WinDate
         RETURN lhs:Value:Add(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR +(lhs AS __WinDate, days AS UINT64) AS __WinDate
         RETURN lhs:Value:Add(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR --(lhs AS __WinDate) AS __WinDate
         RETURN lhs:Value:Subtract(1)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR -(lhs AS __WinDate, rhs AS __WinDate) AS LONG
         RETURN lhs:Value:Subtract(rhs:Value)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR -(lhs AS __WinDate, days AS USUAL) AS USUAL
         RETURN lhs:Value:Subtract(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR -(lhs AS __WinDate, days AS REAL8) AS __WinDate
         RETURN lhs:Value:Subtract(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR -(lhs AS __WinDate, days AS LONG) AS __WinDate
         RETURN lhs:Value:Subtract(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR -(lhs AS __WinDate, days AS INT64) AS __WinDate
         RETURN lhs:Value:Subtract(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR -(lhs AS __WinDate, ts AS System.TimeSpan) AS __WinDate
         RETURN lhs:Value:Subtract(ts)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR -(lhs AS __WinDate, days AS DWORD) AS __WinDate
         RETURN lhs:Value:Subtract(days)
 
     /// <include file="RTComments.xml" path="Comments/Operator/*" />
-    [INLINE];
+    [NODEBUG]  [INLINE];
     STATIC OPERATOR -(lhs AS __WinDate, days AS UINT64) AS __WinDate
         RETURN lhs:Value:Subtract(days)
 #endregion

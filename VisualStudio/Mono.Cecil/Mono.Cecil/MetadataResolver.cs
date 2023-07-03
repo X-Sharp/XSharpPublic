@@ -264,6 +264,9 @@ namespace Mono.Cecil {
 				if (!AreSame (method.ReturnType, reference.ReturnType))
 					continue;
 
+				if (method.HasThis != reference.HasThis)
+					continue;
+
 				if (method.IsVarArg () != reference.IsVarArg ())
 					continue;
 
@@ -331,6 +334,35 @@ namespace Mono.Cecil {
 			if (a.IsArray)
 				return AreSame ((ArrayType) a, (ArrayType) b);
 
+			if (a.IsFunctionPointer)
+				return AreSame ((FunctionPointerType) a, (FunctionPointerType) b);
+
+			return true;
+		}
+
+		static bool AreSame (FunctionPointerType a, FunctionPointerType b)
+		{
+			if (a.HasThis != b.HasThis)
+				return false;
+			
+			if (a.CallingConvention != b.CallingConvention)
+				return false;
+
+			if (!AreSame (a.ReturnType, b.ReturnType))
+				return false;
+
+			if (a.ContainsGenericParameter != b.ContainsGenericParameter)
+				return false;
+
+			if (a.HasParameters != b.HasParameters)
+				return false;
+
+			if (!a.HasParameters)
+				return true;
+
+			if (!AreSame (a.Parameters, b.Parameters))
+				return false;
+			
 			return true;
 		}
 

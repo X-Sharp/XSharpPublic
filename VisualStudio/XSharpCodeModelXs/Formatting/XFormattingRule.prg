@@ -201,7 +201,9 @@ CLASS XFormattingRule
                 VAR startrules := _rulesByStart[kwstart]
                 IF startrules:Count > 1
                     FOREACH VAR startrule IN startrules
-                        IF !startrule:Stop:Equals(key) .AND. ! startrule:Flags:HasFlag(XFormattingFlags.Middle)
+                        IF !startrule:Stop:Equals(key) .AND. ;
+                            ! startrule:Flags:HasFlag(XFormattingFlags.Middle) .and. ;
+                            ! startrule:Flags:HasFlag(XFormattingFlags.Jump)
                             IF first
                                 _synonyms:Add(key, List<XKeyword>{})
                                 first := FALSE
@@ -524,7 +526,7 @@ CLASS RulesReader IMPLEMENTS VsParser.IErrorListener
 
     METHOD ProcessFlags(line AS IList<IToken>) AS VOID
         // Change the type of the line
-        SELF:Flags := GetFlags(line[1]:Text)
+        SELF:Flags := SELF:GetFlags(line[1]:Text)
         RETURN
 
     METHOD SplitPairs(line AS IList<IToken>, tStart AS IList<IToken>, tEnd AS IList<IToken>, tOptions AS IList<IToken>) AS LOGIC
@@ -562,8 +564,8 @@ CLASS RulesReader IMPLEMENTS VsParser.IErrorListener
         LOCAL kwStart AS XKeyword
         LOCAL kwEnd AS XKeyword
         LOCAL kwFlags AS XFormattingFlags
-        VAR hasQuestion := SplitPairs(line, tStart, tEnd, tOptions)
-        kwFlags := GetOptions(tOptions)
+        VAR hasQuestion := SELF:SplitPairs(line, tStart, tEnd, tOptions)
+        kwFlags := SELF:GetOptions(tOptions)
         IF hasQuestion
             VAR startindex := tStart:IndexOf(tStart:Find({t => t:Type ==XSharpLexer.QMARK}))
             VAR endindex   := tEnd:IndexOf(tEnd:Find({t => t:Type ==XSharpLexer.QMARK}))
@@ -575,23 +577,23 @@ CLASS RulesReader IMPLEMENTS VsParser.IErrorListener
                 Debug.Assert(startindex == 1 .OR. startindex == 2)
                 Debug.Assert(endindex == 1 .OR. endindex == 2)
                 // both index should be either 1 (A ? B) or 2 (A B ?)
-                kwStart := GetKeyword(tStart, startindex, FALSE)
-                kwEnd   := GetKeyword(tEnd, endindex, FALSE)
+                kwStart := SELF:GetKeyword(tStart, startindex, FALSE)
+                kwEnd   := SELF:GetKeyword(tEnd, endindex, FALSE)
                 rule := XFormattingRule{kwStart, kwEnd, kwFlags}
                 SELF:Rules:Add(rule)
 
-                kwStart := GetKeyword(tStart, startindex, FALSE)
-                kwEnd   := GetKeyword(tEnd, endindex, TRUE)
+                kwStart := SELF:GetKeyword(tStart, startindex, FALSE)
+                kwEnd   := SELF:GetKeyword(tEnd, endindex, TRUE)
                 rule := XFormattingRule{kwStart, kwEnd, kwFlags}
                 SELF:Rules:Add(rule)
 
-                kwStart := GetKeyword(tStart, startindex, TRUE)
-                kwEnd   := GetKeyword(tEnd, endindex, FALSE)
+                kwStart := SELF:GetKeyword(tStart, startindex, TRUE)
+                kwEnd   := SELF:GetKeyword(tEnd, endindex, FALSE)
                 rule := XFormattingRule{kwStart, kwEnd, kwFlags}
                 SELF:Rules:Add(rule)
 
-                kwStart := GetKeyword(tStart, startindex, TRUE)
-                kwEnd   := GetKeyword(tEnd, endindex, TRUE)
+                kwStart := SELF:GetKeyword(tStart, startindex, TRUE)
+                kwEnd   := SELF:GetKeyword(tEnd, endindex, TRUE)
                 rule := XFormattingRule{kwStart, kwEnd, kwFlags}
                 SELF:Rules:Add(rule)
 
@@ -599,30 +601,30 @@ CLASS RulesReader IMPLEMENTS VsParser.IErrorListener
                 Debug.Assert(tStart:Count == 3)
                 // index should be either 1 (A ? B) or 2 (A B ?)
                 Debug.Assert(startindex == 1 .OR. startindex == 2)
-                kwEnd   := GetKeyword(tEnd)
-                kwStart := GetKeyword(tStart, startindex, FALSE)
+                kwEnd   := SELF:GetKeyword(tEnd)
+                kwStart := SELF:GetKeyword(tStart, startindex, FALSE)
                 rule := XFormattingRule{kwStart, kwEnd, kwFlags}
                 SELF:Rules:Add(rule)
-                kwStart := GetKeyword(tStart, startindex, TRUE)
+                kwStart := SELF:GetKeyword(tStart, startindex, TRUE)
                 rule := XFormattingRule{kwStart, kwEnd, kwFlags}
                 SELF:Rules:Add(rule)
             CASE endindex > 0
                 Debug.Assert(tEnd:Count == 3)
                 // index should be either 1 (A ? B) or 2 (A B ?)
                 Debug.Assert(endindex == 1 .OR. endindex == 2)
-                kwStart   := GetKeyword(tStart)
-                kwEnd   := GetKeyword(tEnd, endindex, FALSE)
+                kwStart   := SELF:GetKeyword(tStart)
+                kwEnd   := SELF:GetKeyword(tEnd, endindex, FALSE)
                 rule := XFormattingRule{kwStart, kwEnd, kwFlags}
                 SELF:Rules:Add(rule)
-                kwEnd   := GetKeyword(tEnd, endindex, TRUE)
+                kwEnd   := SELF:GetKeyword(tEnd, endindex, TRUE)
                 rule := XFormattingRule{kwStart, kwEnd, kwFlags}
                 SELF:Rules:Add(rule)
             OTHERWISE
-                XSettings.ShowMessageBox("Error in line: "+TokensAsString(line))
+                XSettings.ShowMessageBox("Error in line: "+SELF:TokensAsString(line))
             END CASE
         ELSE
-            kwStart := GetKeyword(tStart)
-            kwEnd   := GetKeyword(tEnd)
+            kwStart := SELF:GetKeyword(tStart)
+            kwEnd   := SELF:GetKeyword(tEnd)
             rule := XFormattingRule{kwStart, kwEnd, kwFlags}
             SELF:Rules:Add(rule)
         ENDIF
@@ -632,10 +634,10 @@ CLASS RulesReader IMPLEMENTS VsParser.IErrorListener
             RETURN
         ENDIF
         IF line:Count >= 3 .AND. line[0]:Type == XSharpLexer.LBRKT .AND. line[2]:Type == XSharpLexer.RBRKT
-            ProcessFlags(line)
+            SELF:ProcessFlags(line)
             RETURN
         ENDIF
-        ProcessKeywordPairs(line)
+        SELF:ProcessKeywordPairs(line)
 
         RETURN
 
@@ -672,15 +674,15 @@ CLASS RulesReader IMPLEMENTS VsParser.IErrorListener
         Debug.Assert(tokens[qmark]:Type == XSharpLexer.QMARK)
         IF delete
             IF qmark == 1
-                kw := XKeyword{GetTokentype(tokens[2])}
+                kw := XKeyword{SELF:GetTokentype(tokens[2])}
             ELSE
-                kw := XKeyword{GetTokentype(tokens[0])}
+                kw := XKeyword{SELF:GetTokentype(tokens[0])}
             ENDIF
         ELSE
             IF qmark == 1
-                kw := XKeyword{GetTokentype(tokens[0]), GetTokentype(tokens[2])}
+                kw := XKeyword{SELF:GetTokentype(tokens[0]), SELF:GetTokentype(tokens[2])}
             ELSE
-                kw := XKeyword{GetTokentype(tokens[0]), GetTokentype(tokens[1])}
+                kw := XKeyword{SELF:GetTokentype(tokens[0]), SELF:GetTokentype(tokens[1])}
             ENDIF
         ENDIF
         RETURN kw
@@ -688,12 +690,12 @@ CLASS RulesReader IMPLEMENTS VsParser.IErrorListener
     PRIVATE METHOD GetKeyword(tokens AS IList<IToken>) AS XKeyword
         LOCAL kw AS XKeyword
         IF tokens:Count == 1
-            kw := XKeyword{GetTokentype(tokens[0])}
+            kw := XKeyword{SELF:GetTokentype(tokens[0])}
         ELSEIF tokens:Count == 2
-            kw := XKeyword{GetTokentype(tokens[0]),GetTokentype(tokens[1])}
+            kw := XKeyword{SELF:GetTokentype(tokens[0]),SELF:GetTokentype(tokens[1])}
         ELSE
-            kw := XKeyword{GetTokentype(tokens[0]),GetTokentype(tokens[1])}
-            XSettings.ShowMessageBox("Keyword has more than 2 tokens: "+TokensAsString(tokens))
+            kw := XKeyword{SELF:GetTokentype(tokens[0]),SELF:GetTokentype(tokens[1])}
+            XSettings.ShowMessageBox("Keyword has more than 2 tokens: "+SELF:TokensAsString(tokens))
         ENDIF
         RETURN kw
 
@@ -701,7 +703,7 @@ CLASS RulesReader IMPLEMENTS VsParser.IErrorListener
         LOCAL kwFlags AS XFormattingFlags
         kwFlags := SELF:Flags
         FOREACH VAR token IN tOptions
-            kwFlags |= GetFlags(token:Text)
+            kwFlags |= SELF:GetFlags(token:Text)
         NEXT
         RETURN kwFlags
 

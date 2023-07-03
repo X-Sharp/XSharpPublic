@@ -167,7 +167,7 @@ BEGIN NAMESPACE XSharpModel
         METHOD SetTypes(types AS IDictionary<STRING, XSourceTypeSymbol>, usings AS IList<STRING>, ;
             staticUsings AS IList<STRING>, aEntities AS IList<XSourceEntity>) AS VOID
             IF SELF:HasCode
-                WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
+                SELF:WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
                 LOCAL globalType 	  AS XSourceTypeSymbol
                 globalType := types:Values:Where( { x => XSourceTypeSymbol.IsGlobalType(x)} ).FirstOrDefault()
                 SELF:Clear()
@@ -178,7 +178,7 @@ BEGIN NAMESPACE XSharpModel
                 IF globalType != NULL
                     SELF:_globalType := globalType
                 ENDIF
-                WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
+                SELF:WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
             ENDIF
 
         METHOD FindType(typeName AS STRING, nameSpace := "" AS STRING) AS IXTypeSymbol
@@ -198,7 +198,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
         METHOD NofityClients as VOID
             IF ContentsChanged != NULL
-                ContentsChanged()
+                SELF:ContentsChanged()
             ENDIF
             RETURN
 
@@ -206,7 +206,7 @@ BEGIN NAMESPACE XSharpModel
             //
             IF SELF:HasCode
 
-                WriteOutputMessage("-->> ParseContents()")
+                SELF:WriteOutputMessage("-->> ParseContents()")
                 BEGIN USING VAR walker := SourceWalker{SELF}
                     TRY
                         if String.IsNullOrEmpty(cSource)
@@ -219,7 +219,7 @@ BEGIN NAMESPACE XSharpModel
                         XSolution.WriteException(exception,__FUNCTION__)
                     END TRY
                 END USING
-                WriteOutputMessage("<<-- ParseContents()")
+                SELF:WriteOutputMessage("<<-- ParseContents()")
             ENDIF
 
        METHOD WriteOutputMessage(message AS STRING) AS VOID
@@ -269,7 +269,7 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY IncludeFiles       AS IList<XInclude> GET _includeFiles
         PROPERTY Interactive        AS LOGIC AUTO
         PROPERTY IsHeader           AS LOGIC GET SELF:_type == XFileType.Header
-        PROPERTY IsSource           AS LOGIC GET SELF:_type == XFileType.SourceCode
+        PROPERTY IsSource           AS LOGIC GET SELF:_type == XFileType.SourceCode .or. SELF:_type == XFileType.PreprocessorOutput
         PROPERTY IsXaml             AS LOGIC GET SELF:_type == XFileType.XAML
         PROPERTY LastChanged        AS System.DateTime   AUTO GET INTERNAL SET
         PROPERTY Size               AS INT64              AUTO GET INTERNAL SET

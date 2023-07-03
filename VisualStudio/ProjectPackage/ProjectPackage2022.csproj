@@ -71,12 +71,14 @@
     <DeployExtension>False</DeployExtension>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="XSharp.MonoCecil">
-      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
-    </Reference>  
     <Reference Include="Microsoft.Windows.Design.Host">
       <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
     <Reference Include="XSharp.CodeAnalysis">
       <HintPath>..\..\External\Debug\XSharp.CodeAnalysis.dll</HintPath>
       <Aliases>codeanalysis</Aliases>
@@ -84,6 +86,10 @@
     <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL" />
     <Reference Include="XSharp.Evaluator">
       <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.MonoCecil, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -112,14 +118,14 @@
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
     <Compile Include="Commands\CommandRebuildIntellisense.cs" />
     <Compile Include="Commands\CommandEditProjectFile.cs" />
-    <Compile Include="Commands\CommandViewInDisassembler.cs" />
-    <Compile Include="Commands\CommandViewRepo.cs" />
-    <Compile Include="Commands\CommandViewWorkareas.cs" />
-    <Compile Include="Commands\CommandViewSettings.cs" />
-    <Compile Include="Commands\CommandViewMemVars.cs" />
     <Compile Include="Commands\CommandViewGlobals.cs" />
+    <Compile Include="Commands\CommandViewInDisassembler.cs" />
+    <Compile Include="Commands\CommandViewMemVars.cs" />
+    <Compile Include="Commands\CommandViewRepo.cs" />
     <Compile Include="Commands\CommandUDCTester.cs" />
     <Compile Include="Commands\CommandFoxXPorter.cs" />
+    <Compile Include="Commands\CommandViewSettings.cs" />
+    <Compile Include="Commands\CommandViewWorkareas.cs" />
     <Compile Include="Commands\CommandXsWebsite.cs" />
     <Compile Include="Commands\CommandXsHelp.cs" />
     <Compile Include="Commands\CommandXPorter.cs" />
@@ -152,6 +158,7 @@
     <Compile Include="OptionsPages\DebuggerOptions.cs" />
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
+    <Compile Include="OptionsPages\ProjectSystemOptions.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
     <Compile Include="Nodes\XSharpFileNodeProperties.cs" />
     <Compile Include="Nodes\XSharpNodeProperties.cs" />
@@ -198,6 +205,10 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
     <Content Include="$(OutDir)\XSharp.AppDesigner2022.pkgdef">
       <Link>XSharp.AppDesigner2022.pkgdef</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="$(OutDir)\XSharp.Debugger.UI2022.pkgdef">
+      <Link>XSharp.Debugger.UI2022.pkgdef</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="$(OutDir)\XSharp.LanguageService2022.pkgdef">
@@ -351,11 +362,27 @@
       <LastGenOutput>TextTemplate.cs</LastGenOutput>
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.vstemplate" />
-    <Content Include="$(SOlutionDir)\External\$(Configuration)\XSharp.MonoCecil.dll">
+    <Content Include="C:\XSharp\DevPublic\\External\Debug\XSharp.MonoCecil.dll">
       <Link>XSharp.MonoCecil.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\HarbourConsole.png" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\HabourConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\ConsoleHarbour\HarbourConsole.xsproj" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\Class1.prg" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\HarbourClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\HarbourClassLibrary.vstemplate" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryHarbour\HarbourClassLibrary.xsproj" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassXpp\ClassXpp.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassXpp\Class.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassXpp\ClassXpp.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassFox\Class.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\ClassFox\ClassFox.vstemplate" />
     <Content Include="XSharp.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -617,6 +644,18 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Debugger.Support\Debugger.Support.csproj">
+      <Project>{BBD309AA-A928-461E-B91C-7C12B1145A06}</Project>
+      <Name>Debugger.Support</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\Debugger.UI\Debugger.UI2022.csproj">
+      <Project>{960714e8-ff93-4a42-b9ba-610b0f2014db}</Project>
+      <Name>Debugger.UI2022</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\LanguageService\LanguageService2022.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7396}</Project>
       <Name>LanguageService2022</Name>
@@ -680,7 +719,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.492</Version>
+      <Version>17.0.505</Version>
     </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT">
       <Version>16.0.29.6</Version>

@@ -124,6 +124,12 @@ namespace XSharp.Project
             _cachedProjectProperties.Clear();
         }
 
+        public bool GetLogicProjectProperty(string propertyName)
+        {
+            var prop = GetProjectProperty(propertyName);
+            return prop != null && String.Compare(prop, "true",true) == 0;
+        }
+
         public override string GetProjectProperty(string propertyName)
         {
             if (_cachedProjectProperties.ContainsKey(propertyName))
@@ -145,7 +151,7 @@ namespace XSharp.Project
 
         private void XSharpProjectNode_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
-            if (string.Compare(e.PropertyName, "dialect", true) == 0)
+            if (string.Compare(e.PropertyName, XSharpProjectFileConstants.Dialect, true) == 0)
             {
                 var prop = e.NewValue;
                 if (!Enum.TryParse(prop, true, out _dialect))
@@ -1919,19 +1925,19 @@ namespace XSharp.Project
             {
                 case "object":
                 case "system.object":
-                    name = "System.Object";
+                    name = KnownTypes.SystemObject;
                     break;
                 case "void":
                 case "system.void":
-                    name = "System.Void";
+                    name = KnownTypes.SystemVoid;
                     break;
                 case "boolean":
                 case "system.boolean":
-                    name = "System.Boolean";
+                    name = KnownTypes.SystemBoolean;
                     break;
                 case "string":
                 case "system.string":
-                    name = "System.String";
+                    name = KnownTypes.SystemString;
                     break;
             }
             var model = this.ProjectModel;
@@ -2179,7 +2185,7 @@ namespace XSharp.Project
                 if (_dialectIsCached)
                     return _dialect;
 
-                var prop = GetProjectProperty("Dialect");
+                var prop = GetProjectProperty(XSharpProjectFileConstants.Dialect);
                 if (!Enum.TryParse(prop, true, out _dialect))
                 {
                     _dialect = VsParser.XSharpDialect.Core;
@@ -2365,7 +2371,7 @@ namespace XSharp.Project
             {
                 return VSConstants.S_OK;
             }
-            var str2 = System.Text.RegularExpressions.Regex.Replace(str, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var str2 = str.ReplaceEx( "anycpu", "AnyCPU", StringComparison.OrdinalIgnoreCase);
             if (str2 != str)
             {
                 ok = false;

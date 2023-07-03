@@ -32,7 +32,8 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             LOCAL strMessage AS STRING
             message := CHAR[]{ACE.ADS_MAX_ERROR_LEN}
             wBufLen := (WORD) message:Length
-            IF ACE.AdsGetLastError(OUT VAR lastError, message, REF wBufLen) == 0 .AND. lastError != 0 .AND. wBufLen > 0
+            LOCAL lastError AS DWORD
+            IF ACE.AdsGetLastError(OUT lastError, message, REF wBufLen) == 0 .AND. lastError != 0 .AND. wBufLen > 0
                 strMessage := STRING{message, 0, wBufLen}
             ELSE
                 strMessage := "Unknown Error"
@@ -488,6 +489,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                     SELF:_CheckError(ACE.AdsGetIndexFilename(indices[i], ACE.ADS_BASENAME, pathName, REF wLen),EG_OPEN)
                     IF String.Compare(cIndexName, STRING{pathName, 0, wLen}, TRUE) == 0
                         SELF:Index := indices[i]
+                        result := ACE.AE_SUCCESS
                         EXIT
                     ENDIF
                 NEXT

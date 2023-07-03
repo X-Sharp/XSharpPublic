@@ -99,7 +99,7 @@ BEGIN NAMESPACE XSharpModel
         STATIC METHOD GetTickedTypeName(typeName as STRING) AS STRING
            IF typeName:EndsWith(">") .AND.  typeName:Contains("<") .AND. typeName:Length > 2
 				IF typeName:Length <= (typeName:Replace(">", ""):Length + 1)
-					VAR elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
+					VAR elements := typeName:Split(<CHAR>{'<',',','>'}, System.StringSplitOptions.RemoveEmptyEntries)
 					VAR num := (elements:Length - 1)
 					typeName := elements[ 1] + "`" + num:ToString()
 				ELSE
@@ -113,12 +113,12 @@ BEGIN NAMESPACE XSharpModel
 						typeParams := typeParams:Substring(0, pos) + typeParams:Substring(pos2 + 1):Trim()
 						pos := typeParams:IndexOf("<")
 					ENDDO
-					VAR elements := typeParams:Split(",":ToCharArray())
+					VAR elements := typeParams:Split(<Char>{','})
 					typeName := baseName + "`" + elements:Length:ToString()
 				ENDIF
             ENDIF
-            IF typeName:EndsWith("[]")
-                RETURN "System.Array"
+            IF typeName:EndsWith("]") .and. typeName:Contains("[")
+                RETURN KnownTypes.SystemArray
             ENDIF
             RETURN typeName
 

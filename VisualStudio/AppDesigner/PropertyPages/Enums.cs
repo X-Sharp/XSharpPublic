@@ -120,6 +120,8 @@ namespace XSharp.Project
                         return Dialect.Harbour;
                     case "foxpro":
                     case "fox":
+                    case "vfp":
+                    case "visual foxpro":
                         return Dialect.FoxPro;
                     case "xpp":
                     case "xbase++":

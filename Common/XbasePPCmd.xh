@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// XPPCmd.xh
+// XBasePPCmd.xh
 //
 // XSharp Xbase++ Preprocessor Directives
 //
@@ -19,5 +19,9 @@
 
 #command REQUEST  <id1> [,<idn> ]   =>
 #command ANNOUNCE <id1> [,<idn> ]   =>
+
+// XBase++ Allows ENDSEQUENCE as alternative for END SEQUENCE
+// In the Xbase++ header file this is mapped to END, but we prefer to match it to END SEQUENCE
+#command ENDSEQUENCE                => END SEQUENCE
 
 #endif

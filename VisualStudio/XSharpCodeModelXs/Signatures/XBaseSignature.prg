@@ -67,7 +67,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD ToString() AS STRING
          LOCAL res AS STRING
          res := SELF:GetTypeParameterNames()
-         res += " "+GetTypeParameterContraints()
+         res += " "+SELF:GetTypeParameterContraints()
          RETURN res:Trim()
 
       METHOD ReadGenericParameters(genericParameters as Mono.Collections.Generic.Collection<Mono.Cecil.GenericParameter> ) AS VOID

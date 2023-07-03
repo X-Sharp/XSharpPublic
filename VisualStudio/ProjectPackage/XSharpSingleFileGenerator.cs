@@ -120,7 +120,7 @@ namespace XSharp.Project
                    }
                    catch (Exception e)
                    {
-                        if (Debugger.IsAttached)
+                        if (System.Diagnostics.Debugger.IsAttached)
                             Debug.WriteLine(e.Message);
                    }
                 }

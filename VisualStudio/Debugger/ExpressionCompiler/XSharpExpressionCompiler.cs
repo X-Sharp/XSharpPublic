@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 //#define XDEBUG
+using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator;
 using Microsoft.VisualStudio.Debugger.Clr;
@@ -34,7 +35,7 @@ namespace XSharpDebugger.ExpressionCompiler
     /// </summary>
     public sealed class XSharpExpressionCompiler : IDkmClrExpressionCompiler
     {
-        static void UpdateXSharpParseOptions(bool lAllowDot = false)
+        static void UpdateXSharpParseOptions()
         {
             var xoptions = XSyntaxHelpers.XSharpOptions;
             xoptions.SetDialect((XSharpDialect)XDebuggerSettings.Dialect);
@@ -48,8 +49,9 @@ namespace XSharpDebugger.ExpressionCompiler
             xoptions.SetOption(CompilerOption.Vo12, XDebuggerSettings.Vo12);
             xoptions.SetOption(CompilerOption.Vo13, XDebuggerSettings.Vo13);
             xoptions.SetOption(CompilerOption.Vo14, XDebuggerSettings.Vo14);
-            xoptions.SetOption(CompilerOption.LateBinding, XDebuggerSettings.LateBinding);
-            xoptions.SetOption(CompilerOption.AllowDotForInstanceMembers, lAllowDot);
+            xoptions.SetOption(CompilerOption.LateBinding, XDebuggerSettings.LateBinding && !XDebuggerSettings.NoLateBinding);
+            xoptions.SetOption(CompilerOption.AllowDotForInstanceMembers, true);
+            XSharpString.CaseSensitive = XDebuggerSettings.CaseSensitive;
             XSyntaxHelpers.XSharpOptions = xoptions;
         }
 
@@ -80,7 +82,7 @@ namespace XSharpDebugger.ExpressionCompiler
 #if XDEBUG
             XSolution.WriteOutputMessage("CompileExpression: " + expression.Text);
 #endif
-            if (!VsVersion.Vs15)
+            if (!XSettings.IsVs15)
             {
                 NewCompileExpression(expression, instructionAddress, inspectionContext, out error, out result);
             }
@@ -175,7 +177,7 @@ namespace XSharpDebugger.ExpressionCompiler
 #if XDEBUG
             XSolution.WriteOutputMessage("GetClrLocalVariableQuery ");
 #endif
-            if (!VsVersion.Vs15)
+            if (!XSettings.IsVs15)
             {
                 result = NewClrLocalVariableQuery(inspectionContext, instructionAddress, argumentsOnly);
             }
@@ -252,7 +254,7 @@ namespace XSharpDebugger.ExpressionCompiler
 #if XDEBUG
             XSolution.WriteOutputMessage("CompileAssignment: "+expression.Text);
 #endif
-            if (!VsVersion.Vs15)
+            if (!XSettings.IsVs15)
             {
                 NewCompileAssignment(expression, instructionAddress, lValue, out error, out result);
             }
@@ -266,7 +268,7 @@ namespace XSharpDebugger.ExpressionCompiler
         {
             try
             {
-                UpdateXSharpParseOptions(true);
+                UpdateXSharpParseOptions();
                 IDkmClrExpressionCompiler e = new LanguageService.CodeAnalysis.XSharp.ExpressionEvaluator.XSharpExpressionCompiler();
                 e.CompileAssignment(expression, instructionAddress, lValue, out error, out result);
             }

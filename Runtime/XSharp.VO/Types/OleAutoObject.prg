@@ -14,7 +14,7 @@ using System.Collections.Generic
 /// <summary>VO Compatible OLE Automation class</summary>
 [AllowLateBinding];
 [DebuggerDisplay( "Type= {__ComObject}", Type := "OleAutoObject" )];
-class XSharp.OleAutoObject implements IDynamicProperties
+CLASS XSharp.OleAutoObject IMPLEMENTS IDynamicProperties, ILateBound
 	protected oComObject as object
 	protected lOk        as logic
 	protected _liFuncs   as long
@@ -109,17 +109,16 @@ class XSharp.OleAutoObject implements IDynamicProperties
 
 	/// <exclude />
     // ? oObject:Property
-    virtual method NoIvarGet(cName as string ) as usual
-		local oRet as object
-        if self:GetOurFieldInfo(cName, out var result)
+    VIRTUAL METHOD NoIvarGet(cName AS STRING ) AS USUAL
+        IF SELF:GetOurFieldInfo(cName, OUT VAR result)
             return result
         endif
-		oRet := OleAutoObject.__OleIvarGet(oComObject,oType, cName, null)
+		VAR oRet := OleAutoObject.__OleIvarGet(oComObject,oType, cName, NULL)
 		return OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
 
 		// oObject:Property := Value
 	    /// <exclude />
-	virtual method NoIvarPut(cName as string, uValue as usual) as void
+	VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
         if self:SetOurFieldInfo(cName, uValue)
             return
         endif

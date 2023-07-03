@@ -9,6 +9,10 @@
     <RootNamespace>XSharpCodeDomProvider</RootNamespace>
     <AssemblyName>XSharp.CodeDomProvider</AssemblyName>
     <RuntimeIdentifier>win</RuntimeIdentifier>
+    <BinariesDir>$(SolutionDir)Binaries\</BinariesDir>
+    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

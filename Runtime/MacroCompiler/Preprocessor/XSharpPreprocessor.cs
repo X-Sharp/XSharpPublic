@@ -69,8 +69,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 }
                 foreach (var key in oldkeys)
                 {
-                    PPIncludeFile oldFile;
-                    cache.TryRemove(key, out oldFile);
+                    cache.TryRemove(key, out PPIncludeFile _);
                 }
             }
 
@@ -88,7 +87,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                             timeStamp = DateTime.MinValue;
                         if (file.LastWritten != timeStamp)
                         {
-                            cache.TryRemove(fileName, out file);
+                            cache.TryRemove(fileName, out _);
                             file = null;
                         }
                         else
@@ -103,16 +102,14 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             internal static PPIncludeFile Add(string fileName, IList<IToken> tokens, SourceText text, bool mustBeProcessed, ref bool newFile)
             {
-                PPIncludeFile file;
-                cache.TryGetValue(fileName, out file);
+                cache.TryGetValue(fileName, out PPIncludeFile file);
                 if (file == null)
                 {
                     newFile = true;
                     file = new PPIncludeFile(fileName, tokens, text, mustBeProcessed);
                     if (!cache.TryAdd(fileName, file))
                     {
-                        PPIncludeFile oldFile;
-                        if (cache.TryGetValue(fileName, out oldFile))
+                        if (cache.TryGetValue(fileName, out PPIncludeFile oldFile))
                         {
                             file = oldFile;
                             newFile = false;
@@ -227,6 +224,8 @@ namespace XSharp.MacroCompiler.Preprocessor
         readonly int _defsApplied = 0;
         readonly bool _preprocessorOutput = false;
         Stream _ppoStream;
+#else
+        const bool _preprocessorOutput = false;
 #endif
         internal Dictionary<string, string> IncludedFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
@@ -299,9 +298,6 @@ namespace XSharp.MacroCompiler.Preprocessor
                 default:
                     break;
             }
-            _macroDefines.Add("__MEMVAR__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST ) { SourceSymbol = token });
-            _macroDefines.Add("__UNDECLARED__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST ) { SourceSymbol = token });
-            _macroDefines.Add("__UNSAFE__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST ) { SourceSymbol = token });
             _macroDefines.Add("__ENTITY__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__ENTITY__\"") { SourceSymbol = token });  // Handled later in Transformation phase
             _macroDefines.Add("__FILE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"') { SourceSymbol = token });
             _macroDefines.Add("__FUNCTION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__FUNCTION__\"") { SourceSymbol = token }); // Handled later in Transformation phase
@@ -324,29 +320,13 @@ namespace XSharp.MacroCompiler.Preprocessor
             _macroDefines.Add("__SYSDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.SystemDir + '"', token));
             _macroDefines.Add("__WINDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.WindowsDir + '"', token));
             _macroDefines.Add("__WINDRIVE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.WindowsDir?.Substring(0, 2) + '"', token));
-
-            _macroDefines.Add("__VO1__", (token) => new XSharpToken(_options.vo1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO2__", (token) => new XSharpToken(_options.vo2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO3__", (token) => new XSharpToken(_options.vo3 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO4__", (token) => new XSharpToken(_options.vo4 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO5__", (token) => new XSharpToken(_options.vo5 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO6__", (token) => new XSharpToken(_options.vo6 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO7__", (token) => new XSharpToken(_options.vo7 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO8__", (token) => new XSharpToken(_options.vo8 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO9__", (token) => new XSharpToken(_options.vo9 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO10__", (token) => new XSharpToken(_options.vo10? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO11__", (token) => new XSharpToken(_options.vo11 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO12__", (token) => new XSharpToken(_options.vo12 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO13__", (token) => new XSharpToken(_options.vo13 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO14__", (token) => new XSharpToken(_options.vo14 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO15__", (token) => new XSharpToken(_options.vo15 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO16__", (token) => new XSharpToken(_options.vo16 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__VO17__", (token) => new XSharpToken(_options.vo17 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-
-            _macroDefines.Add("__XPP1__", (token) => new XSharpToken(_options.xpp1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            //_macroDefines.Add("__XPP2__", (token) => new XSharpToken(XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__FOX1__", (token) => new XSharpToken(_options.fox1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
-            _macroDefines.Add("__FOX2__", (token) => new XSharpToken(_options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST) { SourceSymbol = token });
+            var options = new string[] { "__VO1__", "__VO2__", "__VO3__", "__VO4__", "__VO5__", "__VO6__", "__VO7__", "__VO8__", "__VO9__", "__VO10__",
+                                        "__VO11__","__VO12__","__VO13__","__VO14__","__VO15__","__VO16__","__VO17__","__XPP1__", "__FOX1__","__FOX2__",
+                                        "__MEMVAR__","__UNDECLARED__", "__UNSAFE__"};
+            foreach (var option in options)
+            {
+                _macroDefines.Add(option, (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token.Text) { SourceSymbol = token }); 
+            }
 
             if (!_options.NoStdDef)
             {
@@ -619,7 +599,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 Consume();
                 if (line.Count > 0)
                 {
-                    line = ProcessLine(line, false);
+                    line = ProcessLine(line, _preprocessorOutput);
                     if (line != null && line.Count > 0)
                     {
                         result.AddRange(line);
@@ -814,7 +794,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 if (_files.Count > 0)
                 {
                     inputs = _files.Pop();
-                    var token = inputs.Lt();
+                    //var token = inputs.Lt();
                     //writeToPPO($"#line {token..Line} \"{token.Source.SourceName}\"" , true);
                 }
             }
@@ -1025,8 +1005,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 return;
             }
             var cmd = udc[0];
-            PPErrorMessages errorMsgs;
-            var rule = new PPRule(cmd, udc, out errorMsgs, _options);
+            var rule = new PPRule(cmd, udc, out PPErrorMessages errorMsgs, _options);
             if (rule.Type == PPUDCType.None)
             {
                 if (errorMsgs.Count > 0)
@@ -1109,7 +1088,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         private bool isObsoleteIncludeFile(string includeFileName, XSharpToken token)
         {
             string file = Path.GetFileName(includeFileName).ToLower();
-            bool obsolete = false;
+            bool obsolete;
             string assemblyName = "";
             bool sdkdefs = _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.SdkDefines);
             switch (file)
@@ -1620,8 +1599,8 @@ namespace XSharp.MacroCompiler.Preprocessor
             internal readonly XSharpToken Start;
             internal readonly XSharpToken List = null;
             internal XSharpToken Operator = null;
-            internal readonly XSharpToken LParen ;
-            internal readonly XSharpToken RParen ;
+            internal readonly XSharpToken LParen;
+            internal readonly XSharpToken RParen;
             internal readonly XSharpToken Ws;
             internal readonly XSharpToken Dot;
             internal IList<XSharpToken> textVarName = null;
@@ -1629,16 +1608,16 @@ namespace XSharp.MacroCompiler.Preprocessor
             internal IList<XSharpToken> textLineFunc = null;
             internal IList<XSharpToken> textLineEnd = null;
             internal IList<XSharpToken> textEndFunc = null;
-            internal TextProperties (XSharpToken token)
+            internal TextProperties(XSharpToken token)
             {
                 Start = token;
-                LParen = new XSharpToken(TokenType.LPAREN, "(");
-                RParen = new XSharpToken(TokenType.RPAREN, ")");
-                Ws = new XSharpToken(TokenType.WS, " ");
+                LParen = new XSharpToken(XSharpLexer.LPAREN, "(", token);
+                RParen = new XSharpToken(XSharpLexer.RPAREN, ")", token);
+                Ws = new XSharpToken(XSharpLexer.WS, " ", token);
                 Ws.Channel = Channel.Hidden;
-                Dot = new XSharpToken(TokenType.DOT, ".");
+                Dot = new XSharpToken(XSharpLexer.DOT, ".", token);
                 var name = XSharpSpecialNames.LocalPrefix + Start.Start.ToString();
-                List = new XSharpToken(TokenType.ID, name);
+                List = new XSharpToken(XSharpLexer.ID, name, Start);
             }
         }
 
@@ -1651,7 +1630,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 {
                     // UniqueName:Add( "    " )
                     // or
-                    // UniqueName:Add( LTrim( 
+                    // UniqueName:Add( LTrim(
                     result.AddRange(_textProps.textLineFunc);
                 }
                 var sb = new StringBuilder();
@@ -1666,10 +1645,10 @@ namespace XSharp.MacroCompiler.Preprocessor
 #endif
                 }
                 sb.Append("`");
-                result.Add(new XSharpToken(TokenType.STRING_CONST, sb.ToString()));
+                result.Add(new XSharpToken(XSharpLexer.STRING_CONST, sb.ToString()));
                 if (_textProps.textDelim?.Count > 0)
                 {
-                    result.Add(new XSharpToken(TokenType.PLUS, "+"));
+                    result.Add(new XSharpToken(XSharpLexer.PLUS, "+"));
                     result.AddRange(_textProps.textDelim);
                 }
                 if (_textProps.textLineEnd != null)
@@ -1677,7 +1656,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     // add one ) or ))
                     result.AddRange(_textProps.textLineEnd);
                 }
-                result.Add(new XSharpToken(TokenType.EOS, "\n"));
+                result.Add(new XSharpToken(XSharpLexer.EOS, "\n"));
 
             }
             if (write2PPO)
@@ -1722,7 +1701,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 if (current < original.Count - 1 && original[current].Type == XSharpLexer.COMMA)
                 {
                     current += 1;
-                    PPRule.matchExpression(PPUDCType.Command, current, original, null, _options.VOPreprocessorBehaviour, out lastUsed );
+                    PPRule.matchExpression(PPUDCType.Command, current, original, null, _options.VOPreprocessorBehaviour, out lastUsed);
                     _textProps.textDelim = original.GetRange(current, lastUsed);
                     current = lastUsed + 1;
                     if (current < original.Count - 1 && original[current].Type == XSharpLexer.COMMA)
@@ -1746,21 +1725,21 @@ namespace XSharp.MacroCompiler.Preprocessor
                 else
                 {
                     // var UniqueName := System.Collections.Generic.StringList{}
-                    result.Add(new XSharpToken(TokenType.VAR, "var"));
+                    result.Add(new XSharpToken(XSharpLexer.VAR, "var"));
                     result.Add(_textProps.List);
-                    result.Add(new XSharpToken(TokenType.ASSIGN_OP, ":="));
-                    result.Add(new XSharpToken(TokenType.ID, "System"));
+                    result.Add(new XSharpToken(XSharpLexer.ASSIGN_OP, ":="));
+                    result.Add(new XSharpToken(XSharpLexer.ID, "System"));
                     result.Add(_textProps.Dot);
-                    result.Add(new XSharpToken(TokenType.ID, "Text"));
+                    result.Add(new XSharpToken(XSharpLexer.ID, "Text"));
                     result.Add(_textProps.Dot);
-                    result.Add(new XSharpToken(TokenType.ID, "StringBuilder"));
-                    result.Add(new XSharpToken(TokenType.LCURLY, "{"));
-                    result.Add(new XSharpToken(TokenType.RCURLY, "}"));
+                    result.Add(new XSharpToken(XSharpLexer.ID, "StringBuilder"));
+                    result.Add(new XSharpToken(XSharpLexer.LCURLY, "{"));
+                    result.Add(new XSharpToken(XSharpLexer.RCURLY, "}"));
 
                     // UniqueName:Add( .....( 
                     temp.Add(_textProps.List);
-                    temp.Add(new XSharpToken(TokenType.COLON, ":"));
-                    temp.Add(new XSharpToken(TokenType.ID, "Append"));
+                    temp.Add(new XSharpToken(XSharpLexer.COLON, ":"));
+                    temp.Add(new XSharpToken(XSharpLexer.ID, "Append"));
                     temp.Add(_textProps.LParen);
                     if (_textProps.textLineFunc?.Count > 0)
                     {
@@ -1813,7 +1792,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         IList<XSharpToken> doEndTextDirective(IList<XSharpToken> original, bool write2PPO)
         {
             Debug.Assert(original.Count > 0 && original[0].Type == XSharpLexer.PP_ENDTEXT);
-            var anchor = original[0];
+            //var anchor = original[0];
             var result = new List<XSharpToken>();
             if (_textProps == null)
             {
@@ -1837,8 +1816,8 @@ namespace XSharp.MacroCompiler.Preprocessor
                 if (_textProps.textVarName != null)
                 {
                     result.Add(_textProps.List);
-                    result.Add(new XSharpToken(TokenType.COLON, ":"));
-                    result.Add(new XSharpToken(TokenType.ID, "ToString"));
+                    result.Add(new XSharpToken(XSharpLexer.COLON, ":"));
+                    result.Add(new XSharpToken(XSharpLexer.ID, "ToString"));
                     result.Add(_textProps.LParen);
                 }
                 if (_textProps.textVarName != null)
@@ -1849,7 +1828,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 {
                     result.Add(_textProps.RParen);
                 }
-                result.Add(new XSharpToken(TokenType.EOS, "\n"));
+                result.Add(new XSharpToken(XSharpLexer.EOS, "\n"));
                 if (write2PPO)
                 {
                     if (result.Count > 0)
@@ -1924,7 +1903,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                         }
                         else
                         {
-                            expandedTokens.Add(new XSharpToken(token) { Channel = Channel.Default});
+                            expandedTokens.Add(new XSharpToken(token) { Channel = Channel.Default });
                         }
                     }
                 }
@@ -2064,6 +2043,223 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             Error(originalTokens[0], ErrorCode.ERR_PragmaNotSupported);
         }
+#if DONOTINCLUDEINMACROCOMPILER
+            Debug.Assert(originalTokens.Count > 0);
+            var tokens = stripWs(originalTokens);
+            XSharpToken errortoken = originalTokens[0];
+            var pragmaText = "";
+            foreach (var token in originalTokens)
+            {
+                pragmaText += token.text;
+            }
+            if (tokens.Count <= 2)
+            {
+                Error(errortoken, ErrorCode.WRN_IllegalPragma, pragmaText);
+                return;
+            }
+            XSharpToken start = null;
+            XSharpToken i1 = null;          // options or warnings
+            XSharpToken i2 = null;
+            ErrorCode error = ErrorCode.Unknown;
+            Pragmastate state = Pragmastate.Default;
+            var numbers = new List<IToken>();
+            bool isWarning = false;
+            PragmaBase pragma = null;
+
+            start = tokens[0];
+            i1 = tokens[1]; // #help 0 is the pragma token
+            if (tokens.Count > 2)
+            {
+                i2 = tokens[2];
+                // 0       1        2  3  4  5   6
+                // #pragma warnings ( 123 , off  )
+                // #pragma warnings ( pop )
+                if (i2.Type == XSharpParser.LPAREN)
+                {
+                    if (tokens.Count >= 6 && tokens[4].Type == XSharpParser.COMMA && tokens[6].Type == XSharpParser.RPAREN)
+                    {
+                        i2 = tokens[5];
+                        numbers.Add(tokens[3]);
+                    }
+                    else if (tokens.Count >= 4 && tokens[4].Type == XSharpParser.RPAREN)
+                    {
+                        i2 = tokens[3];
+                    }
+                }
+                else
+                {
+                    // 0       1        2       3 4 5 6 7
+                    // #pragma warnings disable 1 , 2 , 3
+                    // #pragma warnings enable  1 , 2 , 3
+                    if (tokens.Count > 3)
+                    {
+                        for (int i = 3; i < tokens.Count; i++)
+                        {
+                            if (tokens[i].Type != XSharpParser.COMMA)
+                            {
+                                numbers.Add(tokens[i]);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        error = ErrorCode.WRN_IllegalPragma;
+                        errortoken = tokens[0];
+                    }
+                }
+                if (i1 == null)
+                {
+                    error = ErrorCode.WRN_IllegalPragma;
+                    errortoken = tokens[0];
+                }
+                if (error == ErrorCode.Unknown)
+                {
+
+                    switch (i1.Text.ToLower())
+                    {
+                        case "options":
+                            isWarning = false;
+                            break;
+                        case "warning":
+                        case "warnings":
+                            isWarning = true;
+                            break;
+                        default:
+                            error = ErrorCode.WRN_IllegalPragma;
+                            errortoken = i1;
+                            break;
+                    }
+                }
+                if (error == ErrorCode.Unknown)
+                {
+                    if (i2 != null)
+                    {
+                        switch (i2.Text.ToLower())
+                        {
+                            case "enable":
+                            case "true":
+                            case "on":
+                                state = Pragmastate.On;
+                                break;
+                            case "disable":
+                            case "false":
+                            case "off":
+                                state = Pragmastate.Off;
+                                break;
+
+                            case "restore":
+                            case "default":
+                            case "pop":
+                                state = Pragmastate.Default;
+                                break;
+                            default:
+                                error = ErrorCode.WRN_IllegalPPWarning;
+                                errortoken = i2;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        error = ErrorCode.WRN_IllegalPPWarning;
+                        errortoken = i1;
+                    }
+                }
+                if (error == ErrorCode.Unknown)
+                {
+                    if (isWarning)
+                    {
+                        pragma = new PragmaWarning(start, state, numbers, i1, i2);
+                    }
+                    else if (numbers.Count == 0)
+                    {
+                        // options pop
+                        if (i2.Text.ToLower() == "pop")
+                        {
+                            pragma = new PragmaOption(start, Pragmastate.Default, CompilerOption.All);
+                        }
+                        else
+                        {
+                            error = ErrorCode.WRN_IllegalPPWarning;
+                            errortoken = i2;
+                        }
+
+                    }
+                    else
+                    {
+                        var token = numbers[0];
+                        var opt = token.Text.ToLower();
+                        if (token.Type == XSharpParser.STRING_CONST && opt.StartsWith("\"") && opt.EndsWith("\"") && opt.Length > 2)
+                        {
+                            opt = opt.Substring(1, opt.Length - 2);
+                        }
+                        if (opt.Length > 0)
+                        {
+                            var compopt = CompilerOptionDecoder.Decode(opt);
+                            if (compopt.NeedsRuntime() && !_options.HasRuntime)
+                            {
+                                var errdata = new ParseErrorData(token,
+                                    ErrorCode.ERR_CompilerOptionNotSupportedForDialect, opt, compopt.Description(), _options.Dialect);
+                                _parseErrors.Add(errdata);
+                            }
+                            // options sorted in alphabetical order with the exception of the fox and xpp options
+                            switch (compopt)
+                            {
+                                case CompilerOption.AllowDotForInstanceMembers:
+                                case CompilerOption.AllowOldStyleAssignments:
+                                case CompilerOption.ArrayZero:
+                                case CompilerOption.EnforceOverride:
+                                case CompilerOption.EnforceSelf:
+                                case CompilerOption.InitLocals:
+                                case CompilerOption.LateBinding:
+                                case CompilerOption.MemVars:
+                                case CompilerOption.Overflow:
+                                case CompilerOption.UndeclaredMemVars:
+                                // case "vo1": // Init/axit
+                                case CompilerOption.Vo2:     // Initialize string variables with empty strings
+                                case CompilerOption.Vo3:     // All instance members virtual
+                                case CompilerOption.Vo4:     // Integer conversions
+                                case CompilerOption.Vo5:     // Implicit Clipper Calling convention
+                                case CompilerOption.Vo6:     // ResolveTypedFunctionPointersToPtr
+                                case CompilerOption.Vo7:     // Implicit Casts and Conversions
+                                                             // case "vo8": // Compatible preprocessor
+                                case CompilerOption.Vo9:     // Allow missing return statements or missing return values
+                                case CompilerOption.Vo10:     // Compatible IIF
+                                case CompilerOption.Vo11:    // Fractional -> Integral Conversions
+                                case CompilerOption.Vo12:    // Clipper Integer divisions
+                                case CompilerOption.Vo13:    // StringComparisons
+                                case CompilerOption.Vo14:    // Embed real constants as float
+                                case CompilerOption.Vo15:    // Untyped allowed
+                                case CompilerOption.Vo16:    // Add Clipper CC Missing constructors
+                                case CompilerOption.Vo17:    // Compatible Begin Sequence .. END Sequence
+                                    pragma = new PragmaOption(start, state, compopt);
+                                    break;
+                                //case "xpp1":    // classes inherit from XPP.Abstract
+                                //case "xpp2":    // strongly typed entry point
+                                // case "fox1": // Classes inherit from unknown
+                                case CompilerOption.Fox2:    // FoxPro array syntax
+                                    if (_options.Dialect != XSharpDialect.FoxPro)
+                                        goto default;
+                                    pragma = new PragmaOption(start, state, compopt);
+                                    break;
+                                default:
+                                    error = ErrorCode.WRN_IllegalPPOption;
+                                    errortoken = (XSharpToken) numbers[0];
+                                    break;
+                            }
+                        }
+                    }
+                }
+                // C# does not validate the error codes, so we will not do that either.
+                if (error != ErrorCode.Unknown)
+                {
+                    var errdata = new ParseErrorData(errortoken, error, pragmaText);
+                    _parseErrors.Add(errdata);
+                }
+            }
+            if (pragma != null)
+                Pragmas.Add(pragma);
+        }
+#endif
         private void doIncludeDirective(IList<XSharpToken> original)
         {
             var line = stripWs(original);
@@ -2245,8 +2441,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 for (int i = 0; i < line.Count; i++)
                 {
                     var token = line[i];
-                    IList<XSharpToken> deflist = null;
-                    if (isDefineAllowed(line, i) && token.Text != null && _symbolDefines.TryGetValue(token.Text, out deflist))
+                    if (isDefineAllowed(line, i) && token.Text != null && _symbolDefines.TryGetValue(token.Text, out IList<IToken> deflist))
                     {
                         if (tempResult == null)
                         {
@@ -2266,22 +2461,21 @@ namespace XSharp.MacroCompiler.Preprocessor
                                 tempResult.Add(t2);
                             }
                         }
-/*nvk                        else
-                        {
-                            // add a space so error messages look proper
-                            var t2 = new XSharpToken(XSharpLexer.WS, " <RemovedToken> ")
-                            {
-                                Channel = Channel.Hidden,
-                                SourceSymbol = token
-                            };
-                            tempResult.Add(t2);
-                        }*/
+                        /*nvk                        else
+                                                {
+                                                    // add a space so error messages look proper
+                                                    var t2 = new XSharpToken(XSharpLexer.WS, " <RemovedToken> ")
+                                                    {
+                                                        Channel = Channel.Hidden,
+                                                        SourceSymbol = token
+                                                    };
+                                                    tempResult.Add(t2);
+                                                }*/
                     }
                     else if (token.Type == XSharpLexer.MACRO)
                     {
                         // Macros that cannot be found are changed to ID
-                        Func<XSharpToken, XSharpToken> ft;
-                        if (_macroDefines.TryGetValue(token.Text, out ft))
+                        if (_macroDefines.TryGetValue(token.Text, out var ft))
                         {
                             var nt = ft(token);
                             if (nt != null)
@@ -2314,8 +2508,7 @@ namespace XSharp.MacroCompiler.Preprocessor
 
         private XSharpToken getMacroValue(XSharpToken token)
         {
-            Func<XSharpToken, XSharpToken> ft;
-            if (_macroDefines.TryGetValue(token.Text, out ft))
+            if (_macroDefines.TryGetValue(token.Text, out var ft))
             {
                 var nt = ft(token);
                 if (nt != null)
@@ -2334,8 +2527,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var usedRules = new PPUsedRules(this, MaxUDCDepth);
             while (temp.Count > 0)
             {
-                PPMatchRange[] matchInfo = null;
-                var rule = _transRules.FindMatchingRule(temp, out matchInfo);
+                var rule = _transRules.FindMatchingRule(temp, out var matchInfo);
                 if (rule != null)
                 {
                     temp = doReplace(temp, rule, matchInfo);
@@ -2398,8 +2590,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var usedRules = new PPUsedRules(this, MaxUDCDepth);
             while (true)
             {
-                PPMatchRange[] matchInfo = null;
-                var rule = _cmdRules.FindMatchingRule(result, out matchInfo);
+                var rule = _cmdRules.FindMatchingRule(result, out var matchInfo);
                 if (rule == null)
                 {
                     // nothing to do, so exit. Leave changed the way it is. This does not have to be the first iteration
@@ -2414,8 +2605,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 }
                 // the UDC may have introduced a new semi colon and created more than one sub statement
                 // so check to see and then process every statement
-                IList<XSharpToken> separators;
-                var cmds = splitCommands(result, out separators);
+                var cmds = splitCommands(result, out var separators);
                 Debug.Assert(cmds.Count == separators.Count + 1);
                 if (cmds.Count <= 1)
                 {

@@ -26,6 +26,8 @@ namespace XSharp.Project.WPF
         {
             if (propId == (int)__VSHPROPID2.VSHPROPID_AddItemTemplatesGuid)
                 return typeof(XSharpWPFProjectFactory).GUID;
+            if (propId == (int)__VSHPROPID.VSHPROPID_PreferredLanguageSID)
+                return new Guid(Constants.XSharpLanguageString);
 
             return base.GetGuidProperty(itemId, propId);
         }

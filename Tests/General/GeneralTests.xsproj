@@ -6,14 +6,13 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ConsoleApplication2</RootNamespace>
-    <AssemblyName>ConsoleApplication2</AssemblyName>
+    <AssemblyName>GeneralTests</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Name>GeneralTests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>VO</Dialect>
     <OutputName>ConsoleApplication2</OutputName>
-    <XSharpProjectversion>2.13.2.2</XSharpProjectversion>
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
@@ -48,10 +47,10 @@
     <NoStandardDefs>false</NoStandardDefs>
     <IncludePaths />
     <StandardDefs />
-    <MemVar>True</MemVar>
+    <MemVar>False</MemVar>
     <Undeclared>False</Undeclared>
     <InitLocals>false</InitLocals>
-    <AllowOldStyleAssignments>True</AllowOldStyleAssignments>
+    <AllowOldStyleAssignments>False</AllowOldStyleAssignments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -74,10 +73,10 @@
     <PPO>False</PPO>
     <Prefer32Bit>False</Prefer32Bit>
     <RegisterForComInterop>False</RegisterForComInterop>
-    <EnableUnmanagedDebugging>True</EnableUnmanagedDebugging>
+    <EnableUnmanagedDebugging>False</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -85,52 +84,14 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DebuggerCommandArguments>/args</DebuggerCommandArguments>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Windows.Forms</Name>
-      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.Core</Name>
-      <AssemblyName>XSharp.Core.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\Binaries\Debug\XSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.MacroCompiler, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.MacroCompiler</Name>
-      <AssemblyName>XSharp.MacroCompiler.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\Binaries\Debug\XSharp.MacroCompiler.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.Rdd, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.Rdd</Name>
-      <AssemblyName>XSharp.Rdd.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\Binaries\Debug\XSharp.Rdd.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.RT, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.RT</Name>
-      <AssemblyName>XSharp.RT.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\Binaries\Debug\XSharp.RT.dll</HintPath>
-    </Reference>
-    <Reference Include="XSharp.VO, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.VO</Name>
-      <AssemblyName>XSharp.VO.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\Binaries\Debug\XSharp.VO.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.prg">
@@ -142,6 +103,28 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Runtime\MacroCompiler\MacroCompiler.csproj">
+      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
+      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
+      <Name>XSharp.RDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

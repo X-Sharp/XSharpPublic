@@ -2,6 +2,9 @@
 using Microsoft.VisualStudio.Shell;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System;
+using XSharpModel;
+
 namespace Community.VisualStudio.Toolkit
 {
     internal static class CVTProjectExtensions
@@ -47,6 +50,8 @@ namespace XSharp.Project
                 info.FileName = process;
                 if (! string.IsNullOrEmpty(parameters))
                 {
+                    if (parameters.IndexOf(' ') > -1)
+                        parameters = "\""+parameters+"\"";
                     info.Arguments = parameters;
                 }
                 info.WorkingDirectory = System.IO.Path.GetDirectoryName(process);
@@ -56,7 +61,21 @@ namespace XSharp.Project
             {
                 await VS.MessageBox.ShowErrorAsync("Can't show process", "Cannot find file \"" + process + "\"");
             }
-            
+        }
+    }
+    internal class XSharpDebuggerBaseCommand<T> : BaseCommand<T>
+        where T : class, new()
+    {
+        protected override void BeforeQueryStatus(EventArgs e)
+        {
+            Command.Enabled = XDebuggerSettings.DebuggerMode == DebuggerMode.Break;
+            base.BeforeQueryStatus(e);
+        }
+        protected override Task InitializeCompletedAsync()
+        {
+            Command.Enabled = false;
+            Command.Supported = true;
+            return base.InitializeCompletedAsync();
         }
     }
 }

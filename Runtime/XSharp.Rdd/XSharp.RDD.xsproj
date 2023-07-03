@@ -14,7 +14,6 @@
     <INS>true</INS>
     <NamedArgs>true</NamedArgs>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectversion>2.9.2.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -157,6 +156,7 @@
     <Folder Include="DbfVfp" />
     <Folder Include="Other\" />
     <Folder Include="Properties\" />
+    <Folder Include="SqlRDD\" />
     <Folder Include="VfpCollations\" />
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +180,7 @@
     <None Include="DbfCdx\Pages\CdxDebug.xh" />
     <None Include="DbfCdx\Todo.txt" />
     <None Include="DbfNtx\NtxFormat.txt" />
+    <None Include="SqlRDD\SqlRddspecs.txt" />
     <None Include="VfpCollations\CZECH_1250_Collate.bin" />
     <None Include="VfpCollations\CZECH_1250_Combi.bin" />
     <None Include="VfpCollations\CZECH_852_Collate.bin" />

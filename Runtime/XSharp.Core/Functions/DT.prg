@@ -229,33 +229,29 @@ FUNCTION ConDateTime(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DateTime
    CATCH
         RETURN DateTime.MinValue
    END TRY
-
-STATIC FUNCTION _SplitDate(cDate AS STRING) AS STRING[]
-	LOCAL aNums := STRING[]{3} AS STRING[]
-	LOCAL cCurrent := "" AS STRING
-	LOCAL nCurrent := __ARRAYBASE__ AS INT
-	LOCAL lFirstCharFound := FALSE AS LOGIC
-	FOREACH cChar AS CHAR IN cDate
- 		IF cChar >= '0' .AND. cChar <= '9'
-			lFirstCharFound := TRUE
-			cCurrent += cChar:ToString()
-		ELSEIF cChar == ' ' .and. .not. lFirstCharFound
-			NOP
-		ELSE
-			lFirstCharFound := TRUE
-			aNums[nCurrent] := cCurrent
-			cCurrent := ""
+#pragma options ("az", on)
+STATIC FUNCTION _SplitDate(cDate AS STRING) AS INT[]
+	LOCAL aNums := INT[]{3} AS INT[]
+	LOCAL nCurrent := 0 AS INT
+    LOCAL lAfterDigit := FALSE AS LOGIC
+    FOREACH cChar AS CHAR IN cDate
+        IF cChar >= '0' .AND. cChar <= '9'
+            aNums[nCurrent] *= 10
+            aNums[nCurrent] += (cChar - c'0')
+            lAfterDigit := TRUE
+		ELSEIF lAfterDigit
+            // Next number group, so also space after numbers is separator
 			nCurrent++
-			IF nCurrent > 2 + __ARRAYBASE__
+			IF nCurrent > 2
 				EXIT
-			END IF
+            END IF
+            lAfterDigit := FALSE
+        ELSE
+            // second anbd more non digits are ignored
 		END IF
 	NEXT
-	IF nCurrent == 2 + __ARRAYBASE__
-		aNums[nCurrent] := cCurrent
-	END IF
 RETURN aNums
-
+#pragma options ("az", restore)
 
 /// <summary>
 /// Convert a Date string to DateTime.
@@ -266,7 +262,7 @@ RETURN aNums
 /// </returns>
 FUNCTION CToDt(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 	LOCAL dDate AS DateTime
-	LOCAL nDay, nMonth, nYear AS DWORD
+	LOCAL nDay, nMonth, nYear AS INT
 	LOCAL nDayPos, nMonthPos, nYearPos AS INT
 	dDate := DateTime.MinValue
 	IF String.IsNullOrEmpty(cDate) .OR. String.IsNullOrEmpty(cDateFormat) .OR. cDate == RuntimeState.GetValue<STRING>(Set.DateFormatEmpty)
@@ -308,15 +304,16 @@ FUNCTION CToDt(cDate AS STRING, cDateFormat AS STRING) AS DateTime
 		// we now know the seperators and the positions in the string
 		// LOCAL aNums := cDate:Split(cSep:ToCharArray()) AS STRING[]
 		// VO's CToD() "correctly" parses dates with any char used as separator
-		LOCAL aNums := _SplitDate(cDate) AS STRING[]
-		IF UInt32.TryParse(aNums[nDayPos], OUT nDay) .AND. ;
-    		UInt32.TryParse(aNums[nMonthPos], OUT nMonth) .AND. ;
-	    	UInt32.TryParse(aNums[nYearPos], OUT nYear)
-		    IF aNums[nYearPos]:Length < 4
+		LOCAL aNums := _SplitDate(cDate) AS INT[]
+        nDay := aNums[nDayPos]
+        nMonth := aNums[nMonthPos]
+        nYear := aNums[nYearPos]
+        IF nDay != 0 .AND. nMonth != 0 .AND. nYear != 0
+		    IF aNums[nYearPos] < 100 .and. cDate:Length != 10
 			    // Century missing ?
-			    dDate := ConDateTime(nYear, nMonth, nDay)
+			    dDate := ConDateTime((DWORD)nYear, (DWORD)nMonth, (DWORD)nDay)
 		    ELSE
-			    dDate := DateTime{(INT)nYear, (INT)nMonth, (INT)nDay}
+			    dDate := System.DateTime{nYear, nMonth, nDay}
             ENDIF
         ELSE
             dDate := DateTime.MinValue

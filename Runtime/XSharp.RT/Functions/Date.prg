@@ -155,3 +155,18 @@ FUNCTION Year(dDate AS DATE) AS DWORD
 	RETURN year
 
 
+
+/// <summary>
+/// Return the Day of Year
+/// </summary>
+/// <param name="dDate">Date for which to calculate the Date</param>
+/// <returns></returns>
+function DOY(dDate as date) as dword
+    local day := 0  as dword
+    local d1Jan as date
+	if ! dDate:IsEmpty
+        d1Jan := ConDate(Year(dDate),1,1)
+        day := dDate - d1Jan + 1
+	endif
+	return day
+

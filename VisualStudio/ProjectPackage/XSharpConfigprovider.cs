@@ -40,7 +40,7 @@ namespace XSharp.Project
         {
             if (name.IndexOf("|") >= 0)
             {
-                var elements = name.Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                var elements = name.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                 name = elements[0];
                 platName = elements[1];
             }
@@ -109,15 +109,38 @@ namespace XSharp.Project
 
         public int OnBeforeDebugLaunch(uint grfLaunch)
         {
+            XDebuggerSettings.DebuggerMode = DebuggerMode.Design;
             return VSConstants.S_OK;
         }
 
+        public void StoreDebuggerOptions()
+        {
+            var project = this.ProjectMgr as XSharpProjectNode;
+            if (project == null)
+                return;
+            XDebuggerSettings.Dialect = (int) project.Dialect;
+            XDebuggerSettings.ArrayZero = project.GetLogicProjectProperty(XSharpProjectFileConstants.AZ);
+            XDebuggerSettings.Vo4 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo4);
+            XDebuggerSettings.Vo6 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo6);
+            XDebuggerSettings.Vo7 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo7);
+            XDebuggerSettings.Vo10 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo10);
+            XDebuggerSettings.Vo12 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo12);
+            XDebuggerSettings.Vo13 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo13);
+            XDebuggerSettings.Vo14 = project.GetLogicProjectProperty(XSharpProjectFileConstants.Vo14);
+            XDebuggerSettings.MemVars = project.GetLogicProjectProperty(XSharpProjectFileConstants.MemVar);
+            XDebuggerSettings.UndeclaredMemvars = project.GetLogicProjectProperty(XSharpProjectFileConstants.Undeclared);
+            XDebuggerSettings.LateBinding = project.GetLogicProjectProperty(XSharpProjectFileConstants.LB);
+            XDebuggerSettings.CaseSensitive = project.GetLogicProjectProperty(XSharpProjectFileConstants.CS);
+            XDebuggerSettings.DebuggingXSharpExe = true;
+
+        }
         public override int DebugLaunch(uint grfLaunch)
         {
             CCITracing.TraceCall();
 
             try
             {
+                StoreDebuggerOptions();
                 if (grfLaunch == 0)
                     grfLaunch = (uint)__VSDBGLAUNCHFLAGS.DBGLAUNCH_Silent;
                 VsDebugTargetInfo info = new VsDebugTargetInfo();

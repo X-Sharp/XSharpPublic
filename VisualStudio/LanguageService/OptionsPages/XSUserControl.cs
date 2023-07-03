@@ -6,18 +6,18 @@ namespace XSharp.LanguageService.OptionsPages
 {
     public class XSUserControl : UserControl  
     {
-        public DialogPage optionPage;
+        internal DialogPage optionPage;
 
-        private void ReadControl(Control c)
+        private void ReadControl(Control c, object options)
         {
             var tag = c.Tag;
             if (tag is string strTag)
             {
 
-                var prop = optionPage.GetType().GetProperty(strTag);
+                var prop = options.GetType().GetProperty(strTag);
                 if (prop != null)
                 {
-                    var val = prop.GetValue(optionPage);
+                    var val = prop.GetValue(options);
                     if (c is CheckBox cb && val is bool bValue)
                     {
                         cb.Checked = bValue;
@@ -35,54 +35,53 @@ namespace XSharp.LanguageService.OptionsPages
             }
             foreach (Control control in c.Controls)
             {
-                ReadControl(control);
+                ReadControl(control, options);
             }
 
         }
-        internal virtual void ReadValues()
+        internal virtual void ReadValues(object options)
         {
             foreach (Control control in this.Controls)
             {
-                ReadControl(control);
+                ReadControl(control, options);
             }
         }
 
-        internal virtual void SaveValues()
+        internal virtual void SaveValues(object options)
         {
             foreach (Control control in this.Controls)
             {
-                SaveControl(control);
+                SaveControl(control, options);
             }
         }
-        private void SaveControl(Control c)
+        private void SaveControl(Control c, Object options)
         {
             var tag = c.Tag;
             if (tag is string strTag)
             {
-
-                var prop = optionPage.GetType().GetProperty(strTag);
+                var prop = options.GetType().GetProperty(strTag);
                 if (prop != null && prop.SetMethod != null)
                 {
                     if (c is CheckBox cb)
                     {
-                        prop.SetValue(optionPage, cb.Checked);
+                        prop.SetValue(options, cb.Checked);
                     }
                     if (c is NumericUpDown number)
                     {
-                        prop.SetValue(optionPage, (int)number.Value);
+                        prop.SetValue(options, (int)number.Value);
                     }
                     if (c is TextBox tb)
                     {
-                        var old = prop.GetValue(optionPage);
+                        var old = prop.GetValue(options);
                         switch (old)
                         {
-                            case int iValue:
-                                if (Int32.TryParse(tb.Text, out var iNew))
-                                    prop.SetValue(optionPage, iNew);
+                            case int _:
+                                if (int.TryParse(tb.Text, out var iNew))
+                                    prop.SetValue(options, iNew);
 
                                 break;
-                            case string strValue:
-                                prop.SetValue(optionPage, tb.Text);
+                            case string _:
+                                prop.SetValue(options, tb.Text);
                                 break;
                         }
                     }
@@ -91,7 +90,7 @@ namespace XSharp.LanguageService.OptionsPages
             }
             foreach (Control control in c.Controls)
             {
-                SaveControl(control);
+                SaveControl(control, options);
             }
         }
         

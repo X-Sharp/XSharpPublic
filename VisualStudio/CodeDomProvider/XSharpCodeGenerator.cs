@@ -56,32 +56,31 @@ namespace XSharp.CodeDom
         {
             SystemToXSharp = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             XSharpToSystem = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            SystemToXSharp.Add("System.Boolean", "LOGIC");
-            SystemToXSharp.Add("System.Byte", "BYTE");
-            SystemToXSharp.Add("System.Char", "CHAR");
-            SystemToXSharp.Add("System.Double", "REAL8");
-            SystemToXSharp.Add("System.Int16", "SHORT");
-            SystemToXSharp.Add("System.Int32", "INT");
-            SystemToXSharp.Add("System.Int64", "INT64");
-            SystemToXSharp.Add("System.Object", "OBJECT");
-            SystemToXSharp.Add("System.Single", "REAL4");
-            SystemToXSharp.Add("System.String", "STRING");
-            SystemToXSharp.Add("System.UInt16", "WORD");
-            SystemToXSharp.Add("System.UInt32", "DWORD");
-            SystemToXSharp.Add("System.UInt64", "UINT64");
-            SystemToXSharp.Add("System.Void", "VOID");
-            SystemToXSharp.Add("XSharp._CodeBlock", "CODEBLOCK");
-            SystemToXSharp.Add("XSharp.__Array", "ARRAY");
-            SystemToXSharp.Add("XSharp.__Binary", "BINARY");
-            SystemToXSharp.Add("XSharp.__Currency", "CURRENCY");
-            SystemToXSharp.Add("XSharp.__Date", "DATE");
-            SystemToXSharp.Add("XSharp.__Float", "FLOAT");
-            SystemToXSharp.Add("XSharp.__Psz", "PSZ");
-            SystemToXSharp.Add("XSharp.__Symbol", "SYMBOL");
-            SystemToXSharp.Add("XSharp.__Usual", "USUAL");
-            SystemToXSharp.Add("XSharp.__WinBool", "LOGIC");
-            SystemToXSharp.Add("XSharp.__WinDate", "DATE");
-
+            SystemToXSharp.Add(KnownTypes.SystemBoolean, "LOGIC");
+            SystemToXSharp.Add(KnownTypes.SystemByte, "BYTE");
+            SystemToXSharp.Add(KnownTypes.SystemChar, "CHAR");
+            SystemToXSharp.Add(KnownTypes.SystemDouble, "REAL8");
+            SystemToXSharp.Add(KnownTypes.SystemInt16, "SHORT");
+            SystemToXSharp.Add(KnownTypes.SystemInt32, "INT");
+            SystemToXSharp.Add(KnownTypes.SystemInt64, "INT64");
+            SystemToXSharp.Add(KnownTypes.SystemObject, "OBJECT");
+            SystemToXSharp.Add(KnownTypes.SystemSingle, "REAL4");
+            SystemToXSharp.Add(KnownTypes.SystemString, "STRING");
+            SystemToXSharp.Add(KnownTypes.SystemUInt16, "WORD");
+            SystemToXSharp.Add(KnownTypes.SystemUInt32, "DWORD");
+            SystemToXSharp.Add(KnownTypes.SystemUInt64, "UINT64");
+            SystemToXSharp.Add(KnownTypes.SystemVoid, "VOID");
+            SystemToXSharp.Add(KnownTypes.XSharpCodeblock, "CODEBLOCK");
+            SystemToXSharp.Add(KnownTypes.XSharpArray, "ARRAY");
+            SystemToXSharp.Add(KnownTypes.XSharpBinary, "BINARY");
+            SystemToXSharp.Add(KnownTypes.XSharpCurrency, "CURRENCY");
+            SystemToXSharp.Add(KnownTypes.XSharpDate, "DATE");
+            SystemToXSharp.Add(KnownTypes.XSharpFloat, "FLOAT");
+            SystemToXSharp.Add(KnownTypes.XSharpPSZ, "PSZ");
+            SystemToXSharp.Add(KnownTypes.XSharpSymbol, "SYMBOL");
+            SystemToXSharp.Add(KnownTypes.XSharpUsual, "USUAL");
+            SystemToXSharp.Add(KnownTypes.XSharpWinBool, "LOGIC");
+            SystemToXSharp.Add(KnownTypes.XSharpWinDate, "DATE");
             foreach (KeyValuePair<string, string> pair in SystemToXSharp)
             {
                 if (!XSharpToSystem.ContainsKey(pair.Value))
@@ -89,9 +88,9 @@ namespace XSharp.CodeDom
                     XSharpToSystem.Add(pair.Value, pair.Key);
                 }
             }
-            XSharpToSystem.Add("LONG", "System.Int32");
-            XSharpToSystem.Add("LONGINT", "System.Int32");
-            XSharpToSystem.Add("SHORTINT", "System.Int16");
+            XSharpToSystem.Add("LONG", KnownTypes.SystemInt32);
+            XSharpToSystem.Add("LONGINT", KnownTypes.SystemInt32);
+            XSharpToSystem.Add("SHORTINT", KnownTypes.SystemInt16);
 
             return;
         }

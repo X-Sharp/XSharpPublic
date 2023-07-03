@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+//#define DUMPSNIPPETS
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using LanguageService.SyntaxTree.Misc;
@@ -15,6 +16,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using XSharpModel;
+#if DUMPSNIPPETS
+using System.IO;
+#endif
 
 namespace XSharp.CodeDom
 {
@@ -46,7 +50,7 @@ namespace XSharp.CodeDom
             if (!File.Exists(SnippetsTxt))
                 File.WriteAllText(SnippetsTxt, "");
             string old = File.ReadAllText(SnippetsTxt);
-            old += "\n" + txt;
+            old += "\n" + old;
             File.WriteAllText(SnippetsTxt, old);
 #endif
             return new CodeSnippetExpression(context.SourceText());
@@ -397,11 +401,11 @@ namespace XSharp.CodeDom
             }
             else if (expression is XSharpParser.PrefixExpressionContext pref)
             {
-                if (pref.PLUS() != null)
+                if (pref.Op.Type == XSharpLexer.PLUS)
                 {
                     expr = BuildExpression(pref.Expr, true);
                 }
-                else if (pref.MINUS() != null)
+                else if (pref.Op.Type == XSharpLexer.MINUS)
                 {
                     expr = BuildExpression(pref.Expr, true);
                 }
@@ -802,17 +806,20 @@ namespace XSharp.CodeDom
 
         private bool findMemberInBaseTypes(string name, MemberTypes mtype)
         {
-            var baseTypes = this.CurrentType.BaseTypes;
-            if (baseTypes.Count == 0 && _typeInOtherFile != null)
-                baseTypes = _typeInOtherFile.BaseTypes;
-
-            foreach (XCodeTypeReference basetype in baseTypes)
+            if (this.CurrentType != null)
             {
-                string typeName = basetype.BaseType;
-                var baseType = findType(typeName);
-                if (baseType != null && hasClassMember(baseType, name, mtype))
+                var baseTypes = this.CurrentType.BaseTypes;
+                if (baseTypes.Count == 0 && _typeInOtherFile != null)
+                    baseTypes = _typeInOtherFile.BaseTypes;
+
+                foreach (XCodeTypeReference basetype in baseTypes)
                 {
-                    return true;
+                    string typeName = basetype.BaseType;
+                    var baseType = findType(typeName);
+                    if (baseType != null && hasClassMember(baseType, name, mtype))
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -1010,7 +1017,7 @@ namespace XSharp.CodeDom
             }
             else
             {
-                typeRef = new XCodeTypeReference("XSharp.__Array");
+                typeRef = new XCodeTypeReference(KnownTypes.XSharpArray);
             }
             ac = new CodeArrayCreateExpression(typeRef, elements.ToArray());
             return ac;
@@ -1704,7 +1711,7 @@ namespace XSharp.CodeDom
                 if (name.IndexOf("`") == -1)
                 {
                     var parts = typeName.Substring(index);
-                    var genargs = parts.Split(",".ToCharArray());
+                    var genargs = parts.Split(new char[]{ ','});
                     name = name + "`" + genargs.Length.ToString();
                 }
             }

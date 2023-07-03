@@ -445,18 +445,18 @@ FUNCTION DbSetScope(nScope AS LONG, uValue AS USUAL) AS LOGIC
         SWITCH nScope
         CASE SCOPE_TOP
             OrdScope(TOPSCOPE,uValue)
-            lResult := XSharp.RuntimeState:LastRddError == NULL
+            lResult := XSharp.RuntimeState.LastRddError == NULL
                
         CASE SCOPE_BOTTOM
             OrdScope(BOTTOMSCOPE, uValue)
-            lResult := XSharp.RuntimeState:LastRddError == NULL
+            lResult := XSharp.RuntimeState.LastRddError == NULL
                 
         CASE SCOPE_BOTH
         OTHERWISE
             OrdScope(TOPSCOPE,uValue)
-            lResult := XSharp.RuntimeState:LastRddError == NULL
+            lResult := XSharp.RuntimeState.LastRddError == NULL
             OrdScope(BOTTOMSCOPE, uValue)
-            lResult := lResult .AND. (XSharp.RuntimeState:LastRddError == NULL)
+            lResult := lResult .AND. (XSharp.RuntimeState.LastRddError == NULL)
         END SWITCH
     CATCH AS Exception
         lResult := FALSE
@@ -482,18 +482,18 @@ FUNCTION DbClearScope(uScope) AS LOGIC CLIPPER
         SWITCH (LONG) uScope
         CASE SCOPE_TOP
             OrdScope(TOPSCOPE,NIL)
-            lResult := XSharp.RuntimeState:LastRddError == NULL
+            lResult := XSharp.RuntimeState.LastRddError == NULL
                 
         CASE SCOPE_BOTTOM
             OrdScope(BOTTOMSCOPE, NIL)
-            lResult := XSharp.RuntimeState:LastRddError == NULL
+            lResult := XSharp.RuntimeState.LastRddError == NULL
 
         CASE SCOPE_BOTH        
         OTHERWISE   // SCOPE_BOTH is default in Xbase++
             OrdScope(TOPSCOPE,NIL)
-            lResult := XSharp.RuntimeState:LastRddError == NULL
+            lResult := XSharp.RuntimeState.LastRddError == NULL
             OrdScope(BOTTOMSCOPE, NIL)
-            lResult := lResult .AND. (XSharp.RuntimeState:LastRddError == NULL)
+            lResult := lResult .AND. (XSharp.RuntimeState.LastRddError == NULL)
         END SWITCH
     CATCH AS Exception
         lResult := FALSE

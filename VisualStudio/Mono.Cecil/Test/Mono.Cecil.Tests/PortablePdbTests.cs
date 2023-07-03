@@ -454,6 +454,23 @@ namespace Mono.Cecil.Tests {
 		}
 
 		[Test]
+		public void NullGenericInstConstant ()
+		{
+			TestModule ("NullConst.dll", module => {
+				var type = module.GetType ("NullConst.Program");
+				var method = type.GetMethod ("MakeConst");
+				var symbol = method.DebugInformation;
+
+				Assert.IsNotNull (symbol);
+				Assert.AreEqual (1, symbol.Scope.Constants.Count);
+
+				var a = symbol.Scope.Constants [0];
+				Assert.AreEqual ("thing", a.Name);
+				Assert.AreEqual (null, a.Value);
+			}, verify: false, symbolReaderProvider: typeof (PortablePdbReaderProvider), symbolWriterProvider: typeof (PortablePdbWriterProvider));
+		}
+
+		[Test]
 		public void InvalidConstantRecord ()
 		{
 			using (var module = GetResourceModule ("mylib.dll", new ReaderParameters { SymbolReaderProvider = new PortablePdbReaderProvider () })) {
@@ -911,7 +928,7 @@ class Program
 				Assert.AreEqual ("SHA256", algorithmName);
 				GetCodeViewPdbId (module, out byte [] pdbId);
 
-				GetEmbeddedPdb (debugHeader, out byte [] embeddedPdb);
+				GetEmbeddedPdb (module.Image, debugHeader, out byte [] embeddedPdb);
 				CalculatePdbChecksumAndId (embeddedPdb, out byte [] expectedChecksum, out byte [] expectedPdbId);
 
 				CollectionAssert.AreEqual (expectedChecksum, checksum);
@@ -1005,7 +1022,7 @@ class Program
 				Assert.AreEqual ("SHA256", algorithmName);
 				GetCodeViewPdbId (module, out byte [] pdbId);
 
-				GetEmbeddedPdb (debugHeader, out byte [] embeddedPdb);
+				GetEmbeddedPdb (module.Image, debugHeader, out byte [] embeddedPdb);
 				CalculatePdbChecksumAndId (embeddedPdb, out byte [] expectedChecksum, out byte [] expectedPdbId);
 
 				CollectionAssert.AreEqual (expectedChecksum, checksum);
@@ -1026,7 +1043,7 @@ class Program
 			byte [] pdbIdOne;
 			using (var module = ModuleDefinition.ReadModule (destination, new ReaderParameters { ReadSymbols = true })) {
 				var debugHeader = module.GetDebugHeader ();
-				GetEmbeddedPdb (debugHeader, out byte [] embeddedPdb);
+				GetEmbeddedPdb (module.Image, debugHeader, out byte [] embeddedPdb);
 				CalculatePdbChecksumAndId (embeddedPdb, out byte [] expectedChecksum, out pdbIdOne);
 			}
 
@@ -1037,17 +1054,19 @@ class Program
 			byte [] pdbIdTwo;
 			using (var module = ModuleDefinition.ReadModule (destination, new ReaderParameters { ReadSymbols = true })) {
 				var debugHeader = module.GetDebugHeader ();
-				GetEmbeddedPdb (debugHeader, out byte [] embeddedPdb);
+				GetEmbeddedPdb (module.Image, debugHeader, out byte [] embeddedPdb);
 				CalculatePdbChecksumAndId (embeddedPdb, out byte [] expectedChecksum, out pdbIdTwo);
 			}
 
 			CollectionAssert.AreEqual (pdbIdOne, pdbIdTwo);
 		}
 
-		private void GetEmbeddedPdb (ImageDebugHeader debugHeader, out byte [] embeddedPdb)
+		private void GetEmbeddedPdb (Image image, ImageDebugHeader debugHeader, out byte [] embeddedPdb)
 		{
 			var entry = Mixin.GetEmbeddedPortablePdbEntry (debugHeader);
 			Assert.IsNotNull (entry);
+
+			Assert.AreEqual (entry.Directory.PointerToRawData, image.ResolveVirtualAddress ((uint)entry.Directory.AddressOfRawData));
 
 			var compressed_stream = new MemoryStream (entry.Data);
 			var reader = new BinaryStreamReader (compressed_stream);

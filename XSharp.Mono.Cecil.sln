@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XSharp.MonoCecil", "VisualStudio\Mono.Cecil\XSharp.MonoCecil.csproj", "{FDE399F5-5CCA-4BBC-859C-E04764D9A888}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FDE399F5-5CCA-4BBC-859C-E04764D9A888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDE399F5-5CCA-4BBC-859C-E04764D9A888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDE399F5-5CCA-4BBC-859C-E04764D9A888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDE399F5-5CCA-4BBC-859C-E04764D9A888}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {97A7013A-E1DE-4D11-93C5-212D0A7E85C9}
+	EndGlobalSection
+EndGlobal

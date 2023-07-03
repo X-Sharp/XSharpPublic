@@ -493,7 +493,7 @@ STATIC CLASS XDatabase
       VAR result := TRUE
       IF IsDbOpen
           BEGIN LOCK oConn
-        TRY      
+        TRY
               USING VAR cmd := SQLiteCommand{"DELETE from OpenDesignerFiles", oConn}
               cmd:ExecuteNonQuery()
               cmd:CommandText := "Insert into OpenDesignerFiles(FullName) values ($name);"
@@ -505,7 +505,7 @@ STATIC CLASS XDatabase
           CATCH e AS Exception
                 XSettings.LogException(e, __FUNCTION__)
                 result := FALSE
-         END TRY       
+         END TRY
          END LOCK
       ENDIF
       Log(i"SaveOpenDesignerFiles returned {result}")
@@ -767,7 +767,7 @@ STATIC CLASS XDatabase
         IF ! IsDbOpen .or. oFile:TypeList == null
             RETURN
         ENDIF
-
+        Log(i"Look for extension methods in file {oFile.FullPath}")
         // update parameters for extension methods before we lock the database
         // This may also trigger another lock from another thread!
         VAR xtypes := oFile:TypeList:Values:Where({ t=> t.Kind != Kind.Namespace })
@@ -781,7 +781,7 @@ STATIC CLASS XDatabase
                 endif
             NEXT
         NEXT
-        Log(i"Update File contents for file {oFile.FullPath}")
+        Log(i"Start Updating File contents for file {oFile.FullPath} : # of Entities {oFile.EntityList.Count}")
         BEGIN LOCK oConn
             TRY
                 /*
@@ -790,8 +790,8 @@ STATIC CLASS XDatabase
                   FOREIGN KEY (idMember) REFERENCES Members (Id) ON DELETE CASCADE ON UPDATE CASCADE)
                  "
                 */
-                USING VAR oCmd2 := SQLiteCommand{"select 1", oConn}
-                oCmd2:CommandText := "insert into ExtensionMethods (IdMember, FullName) Values ($idmember,$fullname)"
+                USING VAR oCmdExtens := SQLiteCommand{"select 1", oConn}
+                oCmdExtens:CommandText := "insert into ExtensionMethods (IdMember, FullName) Values ($idmember,$fullname)"
                 USING VAR oCmd := SQLiteCommand{"DELETE FROM Members WHERE IdFile = "+oFile:Id:ToString(), oConn}
                 oCmd:ExecuteNonQuery()
 
@@ -904,11 +904,11 @@ STATIC CLASS XDatabase
                             VAR id := (INT64) oCmd:ExecuteScalar()
                             xmember:Id := id
                             if xmember:Signature:IsExtension .and. xmember:Parameters:Count > 0
-                                oCmd2:Parameters:Clear()
+                                oCmdExtens:Parameters:Clear()
                                 local parameter := (XSourceParameterSymbol) xmember:Parameters[0] as XSourceParameterSymbol
-                                oCmd2:Parameters:AddWithValue("$idmember", xmember:Id)
-                                oCmd2:Parameters:AddWithValue("$fullname", parameter:FullName)
-                                oCmd2:ExecuteNonQuery()
+                                oCmdExtens:Parameters:AddWithValue("$idmember", xmember:Id)
+                                oCmdExtens:Parameters:AddWithValue("$fullname", parameter:FullName)
+                                oCmdExtens:ExecuteNonQuery()
                             endif
                         CATCH e AS Exception
 
@@ -1015,6 +1015,8 @@ STATIC CLASS XDatabase
             END TRY
 
         END LOCK
+        Log(i"End Updating File contents for file {oFile.FullPath} : # of Entities {oFile.EntityList.Count}")
+
         RETURN
 
 

@@ -62,7 +62,19 @@ namespace XSharp.LanguageService
         {
             return LineState.Get(line, out var flags ) && flags.HasFlag(flag);
         }
-
+        internal bool LineAfterAttribute(int line)
+        {
+            while (line > 0)
+            {
+                line -= 1;
+                LineState.Get(line, out var flags);
+                if (flags.HasFlag(LineFlags.StartsWithAttribute))
+                    return true;
+                if (!flags.HasFlag(LineFlags.IsContinued))
+                    return false;
+            }
+            return false;
+        }
         internal void SetTokens(Dictionary<int, IList<IToken>> tokens)
         {
             lock (this)
@@ -120,14 +132,27 @@ namespace XSharp.LanguageService
         {
             return _buffer.CurrentSnapshot.GetLineFromLineNumber(lineNo);
         }
-
-        internal IList<IToken> GetTokensInLine(int lineNo)
+        /// <summary>
+        /// Returns token in the line, and when the line is continued also from the continued line
+        /// </summary>
+        /// <param name="lineNo">Starting Line Number</param>
+        /// <returns>Tokens from the line and the lines following it when the statement is spread over multiple lines</returns>
+        internal IList<IToken> GetTokensInLineAndFollowing(int lineNo)
         {
             var line = _buffer.CurrentSnapshot.GetLineFromLineNumber(lineNo);
-            return GetTokensInLine(line);
+            var result = GetTokensInSingleLine(line, true);
+            lineNo += 1;
+            while (HasLineState(lineNo, LineFlags.IsContinued))
+            {
+                line = _buffer.CurrentSnapshot.GetLineFromLineNumber(lineNo);
+                var temp = GetTokensInSingleLine(line, true);
+                result.AddRange(temp);
+                lineNo += 1;
+            }
+            return result;
         }
 
-        internal IList<IToken> GetTokensInLine(ITextSnapshotLine line, bool allowCached = true)
+        internal IList<IToken> GetTokensInSingleLine(ITextSnapshotLine line, bool allowCached)
         {
             List<IToken> tokens = new List<IToken>(); ;
             if (line.Length == 0)

@@ -8,13 +8,13 @@ namespace XSharp.LanguageService.OptionsPages
         {
             InitializeComponent();
             this.commitChars.Text = defaultCommitChars;
-            chkCompletionListtabs.Tag = nameof(IntellisenseOptionsPage.CompletionListTabs);
-            chkKeywordsInAll.Tag = nameof(IntellisenseOptionsPage.KeywordsInAll);
-            chkIncludeFields.Tag = nameof(IntellisenseOptionsPage.IncludeFieldsInNavigationBars);
-            chkSortNavBar.Tag = nameof(IntellisenseOptionsPage.SortNavigationBars);
-            chkShowMembersOfCurrentType.Tag = nameof(IntellisenseOptionsPage.ShowMembersOfCurrentTypeOnly);
-            commitChars.Tag = nameof(IntellisenseOptionsPage.CommitChars);
-            chkExcludeMembersFromOtherfiles.Tag = nameof(IntellisenseOptionsPage.ExcludeMembersFromOtherFiles);
+            chkCompletionListtabs.Tag = nameof(IntellisenseOptions.CompletionListTabs);
+            chkKeywordsInAll.Tag = nameof(IntellisenseOptions.KeywordsInAll);
+            chkIncludeFields.Tag = nameof(IntellisenseOptions.IncludeFieldsInNavigationBars);
+            chkSortNavBar.Tag = nameof(IntellisenseOptions.SortNavigationBars);
+            chkShowMembersOfCurrentType.Tag = nameof(IntellisenseOptions.ShowMembersOfCurrentTypeOnly);
+            commitChars.Tag = nameof(IntellisenseOptions.CommitChars);
+            chkExcludeMembersFromOtherfiles.Tag = nameof(IntellisenseOptions.ExcludeMembersFromOtherFiles);
 
             if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable(Constants.EnvironmentXSharpDev)))
             {

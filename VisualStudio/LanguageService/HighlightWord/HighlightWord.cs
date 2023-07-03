@@ -43,7 +43,6 @@ namespace XSharp.LanguageService.Editors.HighlightWord
             // identifier-start-character:
             //   letter-character
             //   _ (the underscore character U+005F)
-
             if (ch < 'a') // '\u0061'
             {
                 if (ch < 'A') // '\u0041'
@@ -91,17 +90,14 @@ namespace XSharp.LanguageService.Editors.HighlightWord
         public override FindOptions FindOptions => FindOptions.WholeWord;
         public override bool ShouldHighlight(string text)
         {
-            if (XEditorSettings.DisableHighLightWord)
-                return false;
-            if (XSharpSyntax.KeywordNames.ContainsKey(text))
+            if (_classifierService == null || 
+                XEditorSettings.DisableHighLightWord ||
+                XDebuggerSettings.DebuggerIsRunning ||
+                !IsIdentifierStartCharacter(text[0]) || 
+                XSharpSyntax.KeywordNames.ContainsKey(text))
                 return false;
 
-            if (!IsIdentifierStartCharacter(text[0]))
-                return false;
-
-            if (_classifierService == null)
-                return true;
-            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            return ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var view = await VS.Documents.GetActiveDocumentViewAsync();

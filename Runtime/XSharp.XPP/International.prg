@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -36,7 +36,7 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY CLIPPER
             aCollation := aTable
         ENDIF
     ELSE
-        liEnum := @@Set(Set.Collation) 
+        liEnum := @@Set(Set.Collation)
     ENDIF
     IF liEnum < XppCollations.Ascii .OR. liEnum > XppCollations.User
         liEnum := XppCollations.Ascii
@@ -84,33 +84,9 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY CLIPPER
         FOR VAR nI := 1 TO ALen(aCollation)
             aCollation[nI] := Asc(aCollation[nI])
         NEXT
-        
+
     ENDIF
     RETURN aCollation
 
-/// <summary>List of possible values for XBase++ collations</summary>
-/// <remarks>The System enumeration value is represented by 2 different sort orders, depending on the current Ansi or Charmode setting.</remarks>
-ENUM XppCollations
-    MEMBER Ascii          :=   -1
-    MEMBER System         :=   0    
-    MEMBER German         :=   1
-    MEMBER British        :=   2
-    MEMBER American       :=   2
-    MEMBER Finnish        :=   3
-    MEMBER French         :=   4
-    MEMBER Danish         :=   5
-    MEMBER Greek437       :=   6
-    MEMBER Greek851       :=   7
-    MEMBER Icelandic850   :=   8
-    MEMBER Icelandic861   :=   9
-    MEMBER Italian        :=  10
-    MEMBER Norwegian      :=  11
-    MEMBER Portuguese     :=  12
-    MEMBER Spanish        :=  13
-    MEMBER Swedish        :=  14
-    MEMBER Dutch          :=  15
-    MEMBER User           :=  16
-END ENUM    
 
-           
 

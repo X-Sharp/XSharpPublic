@@ -80,7 +80,6 @@
     <Compile Include="InspectionSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility.cs" />
-    <Compile Include="VsVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <VsdConfigXmlFiles Include="ResultProvider\ResultProvider2022.vsdconfigxml" />
@@ -90,7 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.492</Version>
+      <Version>17.0.505</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.DiaSymReader">
       <Version>1.4.0</Version>
@@ -107,7 +106,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Reflection.Metadata">
-      <Version>7.0.0</Version>
+      <Version>7.0.2</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
@@ -125,6 +124,10 @@
     <Reference Include="XSharp.Evaluator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Evaluator.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.MonoCecil, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\External\Debug\XSharp.MonoCecil.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

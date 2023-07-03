@@ -51,110 +51,127 @@ namespace XSharp.Project.WPF
 
         public override bool CreateMethod(EventDescription eventDescription, string methodName, string initialStatements)
         {
-            CodeMemberMethod method = new CodeMemberMethod();
-
-            method.Name = methodName;
-
-            foreach (EventParameter param in eventDescription.Parameters)
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                method.Parameters.Add(new CodeParameterDeclarationExpression(param.TypeName, param.Name));
-            }
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                CodeMemberMethod method = new CodeMemberMethod();
 
-            //Finally, add the new method to the class
-            ThreadHelper.ThrowIfNotOnUIThread();
+                method.Name = methodName;
 
-            CodeDomDocDataAdapter adapter = GetDocDataAdapterForXSharpFile();
+                foreach (EventParameter param in eventDescription.Parameters)
+                {
+                    method.Parameters.Add(new CodeParameterDeclarationExpression(param.TypeName, param.Name));
+                }
 
-            adapter.TypeDeclaration.Members.Add(method);
-            adapter.Generate();
+                //Finally, add the new method to the class
 
-            return true;
+                CodeDomDocDataAdapter adapter = GetDocDataAdapterForXSharpFile();
+
+                adapter.TypeDeclaration.Members.Add(method);
+                adapter.Generate();
+
+                return true;
+            });
         }
 
         public override string CreateUniqueMethodName(string objectName, EventDescription eventDescription)
         {
-            string originalMethodName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}", objectName, eventDescription.Name);
-            string methodName = originalMethodName;
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            List<CodeTypeMember> methods = GetHandlersFromActiveFile(string.Format(CultureInfo.InvariantCulture, "{0}_{1}", objectName, eventDescription.Name));
-
-            while (methods.Count > 0)
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                //Try to append a _# at the end until we find an unused method name
-                Match match = Regex.Match(methodName, @"_\d+$");
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                string originalMethodName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}", objectName, eventDescription.Name);
+                string methodName = originalMethodName;
 
-                if (!match.Success)
-                {
-                    methodName = originalMethodName + "_1";
-                }
-                else
-                {
-                    int nextValue = Int32.Parse(match.Value.Substring(1)) + 1;
-                    methodName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}", originalMethodName, nextValue);
-                }
+                List<CodeTypeMember> methods = GetHandlersFromActiveFile(string.Format(CultureInfo.InvariantCulture, "{0}_{1}", objectName, eventDescription.Name));
 
-                methods = GetHandlersFromActiveFile(methodName);
-            }
-            return methodName;
+                while (methods.Count > 0)
+                {
+                    //Try to append a _# at the end until we find an unused method name
+                    Match match = Regex.Match(methodName, @"_\d+$");
+
+                    if (!match.Success)
+                    {
+                        methodName = originalMethodName + "_1";
+                    }
+                    else
+                    {
+                        int nextValue = Int32.Parse(match.Value.Substring(1)) + 1;
+                        methodName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}", originalMethodName, nextValue);
+                    }
+
+                    methods = GetHandlersFromActiveFile(methodName);
+                }
+                return methodName;
+            });
         }
 
         public override IEnumerable<string> GetCompatibleMethods(EventDescription eventDescription)
         {
-            List<string> methodHandlers = new List<string>();
-            // How many parameters
-            List<String> pName = new List<string>();
-            ThreadHelper.ThrowIfNotOnUIThread();
+           return ThreadHelper.JoinableTaskFactory.Run(async delegate
+           {
+               await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+               List<string> methodHandlers = new List<string>();
+                // How many parameters
+                List<String> pName = new List<string>();
+               var result = new List<string>();
 
-            foreach (EventParameter eParam in eventDescription.Parameters)
-            {
-                pName.Add(RetrieveFullTypeName(eParam.TypeName));
-            }
-            // Return Type
-            String RetType = RetrieveFullTypeName(eventDescription.ReturnType);
-            //
-            CodeTypeDeclaration ctd = GetCodeDomForXSharpFile();
-            //
-            foreach (CodeTypeMember member in ctd.Members)
-            {
-                if (member is CodeMemberMethod)
-                {
-                    CodeMemberMethod method = (CodeMemberMethod)member;
-                    if ((method.Parameters.Count != pName.Count) || (method.ReturnType.BaseType != RetType))
-                        continue;
-                    bool allCompatible = true;
+               foreach (EventParameter eParam in eventDescription.Parameters)
+               {
+                   pName.Add(RetrieveFullTypeName(eParam.TypeName));
+               }
+                // Return Type
+                String RetType = RetrieveFullTypeName(eventDescription.ReturnType);
+                //
+                CodeTypeDeclaration ctd = GetCodeDomForXSharpFile();
+                //
+                foreach (CodeTypeMember member in ctd.Members)
+               {
+                   if (member is CodeMemberMethod)
+                   {
+                       CodeMemberMethod method = (CodeMemberMethod)member;
+                       if ((method.Parameters.Count != pName.Count) || (method.ReturnType.BaseType != RetType))
+                           continue;
+                       bool allCompatible = true;
 
-                    //compare each parameter
-                    for (int i = 0; i < pName.Count; i++)
-                    {
-                        if (pName[i] != method.Parameters[i].Type.BaseType)
-                        {
-                            allCompatible = false;
-                            break;
-                        }
-                    }
+                        //compare each parameter
+                        for (int i = 0; i < pName.Count; i++)
+                       {
+                           if (pName[i] != method.Parameters[i].Type.BaseType)
+                           {
+                               allCompatible = false;
+                               break;
+                           }
+                       }
 
-                    if (allCompatible)
-                        yield return method.Name;
-                }
-            }
+                       if (allCompatible)
+                       {
+                           result.Add(method.Name);
+    
+                   }
+                   }
+               }
+               return result;
+           });
         }
 
         private List<CodeTypeMember> GetHandlersFromActiveFile(string methodName)
         {
-            List<CodeTypeMember> methods = new List<CodeTypeMember>();
-
-            //We expect that prg files that contain the event wiring for XAML files contain a namespace
-            //and a class.
-            ThreadHelper.ThrowIfNotOnUIThread();
-            foreach (CodeTypeMember member in GetCodeDomForXSharpFile().Members)
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                //We just match on the element name here (e.g. button1_Click), not on parameters
-                if (member.Name == methodName)
-                    methods.Add(member);
-            }
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                List<CodeTypeMember> methods = new List<CodeTypeMember>();
 
-            return methods;
+                //We expect that prg files that contain the event wiring for XAML files contain a namespace
+                //and a class.
+                foreach (CodeTypeMember member in GetCodeDomForXSharpFile().Members)
+                {
+                    //We just match on the element name here (e.g. button1_Click), not on parameters
+                    if (member.Name == methodName)
+                        methods.Add(member);
+                }
+
+                return methods;
+            });
         }
 
         private string RetrieveFullTypeName(string typeName)
@@ -190,57 +207,63 @@ namespace XSharp.Project.WPF
 
         public override IEnumerable<string> GetMethodHandlers(EventDescription eventDescription, string objectName)
         {
-            List<string> methodHandlers = new List<string>();
-
-            ThreadHelper.ThrowIfNotOnUIThread();
-            foreach (CodeTypeMember member in GetCodeDomForXSharpFile().Members)
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                if (member is CodeConstructor)
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                List<string> methodHandlers = new List<string>();
+
+                foreach (CodeTypeMember member in GetCodeDomForXSharpFile().Members)
                 {
-                    CodeConstructor constructor = (CodeConstructor)member;
-
-                    foreach (CodeStatement statement in constructor.Statements)
+                    if (member is CodeConstructor)
                     {
-                        if (statement is CodeAttachEventStatement)
+                        CodeConstructor constructor = (CodeConstructor)member;
+
+                        foreach (CodeStatement statement in constructor.Statements)
                         {
-                            CodeAttachEventStatement codeAttach = (CodeAttachEventStatement)statement;
-
-                            if (codeAttach.Event.EventName != eventDescription.Name)
+                            if (statement is CodeAttachEventStatement)
                             {
-                                //This is a code attach, but not for the event that the designer is looking for.
-                                //Go to the next one.
-                                continue;
-                            }
+                                CodeAttachEventStatement codeAttach = (CodeAttachEventStatement)statement;
 
-                            if (codeAttach.Event.TargetObject is CodeMethodInvokeExpression)
-                            {
-                                CodeMethodInvokeExpression findLogNode = (CodeMethodInvokeExpression)codeAttach.Event.TargetObject;
-
-                                if (findLogNode.Parameters.Count >= 2 &&
-                                    findLogNode.Parameters[1] is CodePrimitiveExpression)
+                                if (codeAttach.Event.EventName != eventDescription.Name)
                                 {
-                                    string targetObjectName = ((CodePrimitiveExpression)findLogNode.Parameters[1]).Value.ToString().Trim('"');
+                                    //This is a code attach, but not for the event that the designer is looking for.
+                                    //Go to the next one.
+                                    continue;
+                                }
 
-                                    if (targetObjectName.Equals(objectName, StringComparison.Ordinal) &&
-                                        codeAttach.Listener is CodeDelegateCreateExpression)
+                                if (codeAttach.Event.TargetObject is CodeMethodInvokeExpression)
+                                {
+                                    CodeMethodInvokeExpression findLogNode = (CodeMethodInvokeExpression)codeAttach.Event.TargetObject;
+
+                                    if (findLogNode.Parameters.Count >= 2 &&
+                                        findLogNode.Parameters[1] is CodePrimitiveExpression)
                                     {
-                                        methodHandlers.Add(((CodeDelegateCreateExpression)codeAttach.Listener).MethodName);
+                                        string targetObjectName = ((CodePrimitiveExpression)findLogNode.Parameters[1]).Value.ToString().Trim('"');
+
+                                        if (targetObjectName.Equals(objectName, StringComparison.Ordinal) &&
+                                            codeAttach.Listener is CodeDelegateCreateExpression)
+                                        {
+                                            methodHandlers.Add(((CodeDelegateCreateExpression)codeAttach.Listener).MethodName);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            return methodHandlers;
+                return methodHandlers;
+            });
         }
 
         public override bool IsExistingMethodName(EventDescription eventDescription, string methodName)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            List<CodeTypeMember> elements = GetHandlersFromActiveFile(methodName);
-            return elements.Count != 0;
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                List<CodeTypeMember> elements = GetHandlersFromActiveFile(methodName);
+                return elements.Count != 0;
+            });
         }
 
         public override bool RemoveEventHandler(EventDescription eventDescription, string objectName, string methodName)
@@ -343,14 +366,17 @@ namespace XSharp.Project.WPF
         /// <returns>The CodeTypeDeclaration for the .prg file that corresponds to the active xaml file</returns>
         CodeTypeDeclaration GetCodeDomForXSharpFile()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            CodeDomDocDataAdapter cdda = GetDocDataAdapterForXSharpFile();
-            // That will call the Parse method in VSXSharpCodeDomProvider class
-            CodeTypeDeclaration ctd = cdda.TypeDeclaration;
-            //
-            CodeCompileUnit ccu = cdda.CompileUnit;
-            //
-            return ctd;
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                CodeDomDocDataAdapter cdda = GetDocDataAdapterForXSharpFile();
+                // That will call the Parse method in VSXSharpCodeDomProvider class
+                CodeTypeDeclaration ctd = cdda.TypeDeclaration;
+                //
+                CodeCompileUnit ccu = cdda.CompileUnit;
+                //
+                return ctd;
+            });
         }
 
 

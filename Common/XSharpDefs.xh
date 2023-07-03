@@ -89,6 +89,13 @@
 #xcommand ENDDEFINE <*any*> => ENDDEFINE
 #xcommand ENDCLASS <*any*> => ENDCLASS
 
+// Run commands
+// and some rules to fetch assignment to RUN variable
+// Comparisons are not needed, since the rule only matches text at the start of the line
+#command RUN <(cmd)>    => _RUN(<(cmd)>)
+#command RUN = <xpr>    => (run := <xpr>)
+#command RUN := <xpr>   => (run := <xpr>)
+
 #endif
 
 #ifdef __DIALECT_XBASEPP__

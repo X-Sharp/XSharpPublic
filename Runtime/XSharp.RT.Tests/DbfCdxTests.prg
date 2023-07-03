@@ -5415,7 +5415,6 @@ RETURN
 			// https://www.xsharp.eu/forum/public-product/3165-combobox-problem-with-values#23759
 
 			LOCAL cDbf AS STRING
-			LOCAL n AS INT
 
 			RddSetDefault ( "DBFCDX" )
 
@@ -5472,7 +5471,74 @@ RETURN
 		RETURN
 
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD SetRelation_RLock() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/1226
+		
+			LOCAL cChild,cServer AS STRING
+			LOCAL nRecNo AS DWORD
+			
+			RddSetDefault( "DBFCDX" )
+			
+			cServer := DbfTests.GetTempFileName()
+			DbfTests.CreateDatabase(cServer, {{ "Field1", "N", 8, 0 }, { "Field2", "C", 20, 0 }, { "FieldRecNo", "C", 20, 0 }} )
+			DbUseArea( TRUE,,cServer,,FALSE)
+			FOR LOCAL nI := 1 AS INT UPTO 10
+				DbAppend()
+				FieldPut( 1 , nI )
+				FieldPut( 2 , NTrim( nI ) )
+				FieldPut( 3 , NTrim( RecNo() ) )
+			NEXT
+			DbCloseArea()
+			
+			cChild := DbfTests.GetTempFileName()
+			DbfTests.CreateDatabase(cChild, {{ "Field1", "N", 8, 0 }, { "Field2", "C", 20, 0 }, { "FieldRecNo", "C", 20, 0 }} )
+			DbUseArea( TRUE,,cChild,,FALSE)
+			DbCreateOrder( "ORDER1",, "Field1")
+			FOR LOCAL nI := 1 AS INT UPTO 10
+				FOR LOCAL nJ := 1 AS INT UPTO 10
+					DbAppend()
+					FieldPut( 1 , nI )
+					FieldPut( 2 , NTrim( nI ) + " -> " + NTrim( nJ ))
+					FieldPut( 3 , NTrim( RecNo() ) )
+				NEXT
+			NEXT
+			DbCloseArea()
+			
+			DbUseArea(TRUE,,cServer,"AliasServer",TRUE)
+			DbUseArea(TRUE,,cChild,"AliasClient",TRUE)
+			
+			? AliasClient->DbSetOrder( "ORDER1" )
+			? "Start"
+			Assert.True( AliasServer->DbSetRelation( "AliasClient",  {|| AliasServer->Field1 }, "AliasServer->Field1" ) )
 
+			AliasServer->DbGoto( 5 )
+			AliasClient->DbSkip()
+			AliasClient->DbSkip()
+			AliasClient->DbSkip()
+			? "RecNo after Skip"
+			Assert.Equal(44U, AliasClient->RecNo())
+			? AliasClient->RecNo()
+			nRecno := AliasClient->RecNo()
+			Assert.Equal(44U, nRecno)
+
+			Assert.True( AliasServer->RLock() )
+			Assert.Equal(44U, AliasClient->RecNo())
+
+			AliasServer->FieldPut( 2, "55" )
+			AliasServer->DbCommit()
+			AliasServer->DbUnLock()
+
+			IF FALSE
+				? "RecNo after Commit, before Goto"
+				? AliasClient->RecNo()
+			ENDIF
+			AliasClient->DbGoto( nRecNo )
+			? "RecNo after Goto. Expected " + NTrim ( nRecNo )
+			Assert.Equal(44U, AliasClient->RecNo())
+			? AliasClient->RecNo()
+			DbCloseAll()
+		
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

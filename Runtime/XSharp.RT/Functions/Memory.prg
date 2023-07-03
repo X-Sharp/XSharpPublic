@@ -141,7 +141,7 @@ FUNCTION MemGrpEnum(dwGroup AS DWORD, pEnum AS MemWalker) AS LOGIC
 	LOCAL lOk AS LOGIC
 	lOk := TRUE
 	FOREACH VAR element IN FixedMemory.AllocatedBlocks
-		IF FixedMemory:GetGroup(element:Key) == dwGroup
+		IF FixedMemory.GetGroup(element:Key) == dwGroup
 			IF ! pEnum(element:Key, element:Value)
 				lOk := FALSE
 				EXIT

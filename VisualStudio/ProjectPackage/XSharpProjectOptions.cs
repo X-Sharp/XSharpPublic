@@ -72,7 +72,7 @@ namespace XSharp.Project
             //{
             Logger.Debug("ProjectOptions: BuildCommandLine");
             List<string> options = new List<string>();
-            options.Add("dialect:" + _prjNode.GetProjectProperty("Dialect"));
+            options.Add("dialect:" + _prjNode.GetProjectProperty(XSharpProjectFileConstants.Dialect));
             var asmNodes = new List<XSharpAssemblyReferenceNode>();
             _prjNode.FindNodesOfType(asmNodes);
             foreach (var asmNode in asmNodes)
@@ -105,7 +105,7 @@ namespace XSharp.Project
                 }
             }
             options.Add("d:" + defines);
-            var include = _prjNode.GetProjectProperty("IncludePaths");
+            var include = _prjNode.GetProjectProperty(XSharpProjectFileConstants.IncludePaths);
             if (!string.IsNullOrEmpty(include))
             {
                 include = include + ";" + _includedirs;
@@ -115,27 +115,51 @@ namespace XSharp.Project
                 include = _includedirs;
             }
             options.Add("i:" + include);
-            options.Add("ns:" + _prjNode.GetProjectProperty("RootNamespace"));
-            var flags = new string[] {"vo1", "vo2" , "vo3" , "vo4" , "vo5" , "vo6" , "vo7" , "vo8" , "vo9" ,
-                "vo10" , "vo11" , "vo12", "vo13", "vo14", "vo15","vo16",
-                "cs", "az","ins", "lb","memvar","namedargs","undeclared","unsafe","xpp1","xpp2","fox1",
-                "allowdot","enforceself","enforcevirtual"};
-            string value;
+            options.Add("ns:" + _prjNode.GetProjectProperty(XSharpProjectFileConstants.RootNamespace));
+            var flags = new string[] {XSharpProjectFileConstants.Vo1,
+                XSharpProjectFileConstants.Vo2,
+                XSharpProjectFileConstants.Vo3,
+                XSharpProjectFileConstants.Vo4,
+                XSharpProjectFileConstants.Vo5,
+                XSharpProjectFileConstants.Vo6,
+                XSharpProjectFileConstants.Vo7,
+                XSharpProjectFileConstants.Vo8,
+                XSharpProjectFileConstants.Vo9,
+                XSharpProjectFileConstants.Vo10,
+                XSharpProjectFileConstants.Vo11,
+                XSharpProjectFileConstants.Vo12,
+                XSharpProjectFileConstants.Vo13,
+                XSharpProjectFileConstants.Vo14,
+                XSharpProjectFileConstants.Vo15,
+                XSharpProjectFileConstants.Vo16,
+                XSharpProjectFileConstants.CS,
+                XSharpProjectFileConstants.AZ,
+                XSharpProjectFileConstants.INS,
+                XSharpProjectFileConstants.LB,
+                XSharpProjectFileConstants.MemVar,
+                XSharpProjectFileConstants.NamedArgs,
+                XSharpProjectFileConstants.Undeclared,
+                XSharpProjectFileConstants.Unsafe,
+                XSharpProjectFileConstants.Xpp1,
+                XSharpProjectFileConstants.Xpp2,
+                XSharpProjectFileConstants.Fox1,
+                XSharpProjectFileConstants.Allowdot,
+                XSharpProjectFileConstants.EnforceSelf,
+                XSharpProjectFileConstants.EnforceOverride,
+                };
             foreach (var flag in flags)
             {
-                value = _prjNode.GetProjectProperty(flag);
-                if (value != null && value.ToLower() == "true")
-                    options.Add(flag + "+");
+                if (_prjNode.GetLogicProjectProperty(flag))
+                    options.Add(flag.ToLower() + "+");
                 else
-                    options.Add(flag + "-");
+                    options.Add(flag.ToLower() + "-");
             }
-            value = _prjNode.GetProjectProperty("StandardDefs");
+            string value = _prjNode.GetProjectProperty(XSharpProjectFileConstants.StandardDefs);
             if (value != null && value.Trim().Length > 0)
             {
                 options.Add("stddefs:" + value);
             }
-            value = _prjNode.GetProjectProperty("NoStandardDefs");
-            if (value != null  && value.ToLower() == "true")
+            if (_prjNode.GetLogicProjectProperty(XSharpProjectFileConstants.NoStandardDefs))
             {
                 options.Add("nostddefs+");
             }
@@ -156,9 +180,7 @@ namespace XSharp.Project
 
             }
             _prjNode.ProjectModel.ResetParseOptions(ParseOptions);
-            var self = _prjNode.GetProjectProperty(XSharpProjectFileConstants.EnforceSelf);
-            
-            _prjNode.EnforceSelf = self?.ToLower() == "true";
+            _prjNode.EnforceSelf = _prjNode.GetLogicProjectProperty(XSharpProjectFileConstants.EnforceSelf);
         }
 
     }

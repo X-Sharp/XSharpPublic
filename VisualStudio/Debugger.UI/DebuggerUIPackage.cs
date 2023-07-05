@@ -13,9 +13,9 @@ using Microsoft.VisualStudio;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using XSharpModel;
 using System.Runtime.InteropServices;
 using Task = System.Threading.Tasks.Task;
+using XSharp.Settings;
 //
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
@@ -44,17 +44,17 @@ namespace XSharp.Debugger.UI
     [Guid(XSharpConstants.guidXSharpDebuggerUIPkgString)]
     public sealed class XSharpDebuggerUIPackage : ToolkitPackage,  IVsDebuggerEvents, IDisposable
     {
-        private static XSharpDebuggerUIPackage instance;
+        private static XSharpDebuggerUIPackage _instance;
         DTE2 m_dte;
         internal DTE2 Dte => m_dte;
 
        
-        public static XSharpDebuggerUIPackage Instance =>instance;
+        public static XSharpDebuggerUIPackage Instance => _instance;
 
 
         public XSharpDebuggerUIPackage() : base()
         {
-            instance = this;
+            _instance = this;
         }
 
 
@@ -111,6 +111,12 @@ namespace XSharp.Debugger.UI
         private IVsDebugger m_debugger = null;
         private uint m_Debuggercookie = 0;
 
+        /// <summary>
+        /// This method is called by the debugger when the mode changes and is reponsible for refreshing the pane windows
+        /// and for storing the current state in the Settings object.
+        /// </summary>
+        /// <param name="dbgmodeNew"></param>
+        /// <returns></returns>
         public int OnModeChange(DBGMODE dbgmodeNew)
         {
             var changed = XDebuggerSettings.DebuggerMode != (DebuggerMode)dbgmodeNew;
@@ -122,7 +128,7 @@ namespace XSharp.Debugger.UI
                 {
                     case DBGMODE.DBGMODE_Design:
                         Support.IsRunning = false;
-                        XSolution.Logger.Information("Debugger stopped");
+                        XSettings.Logger.Information("Debugger stopped");
                         XDebuggerSettings.DebuggingXSharpExe = false;
                         Support.ClearWindows();
                         break;
@@ -133,7 +139,7 @@ namespace XSharp.Debugger.UI
                         // Just started? 
                         if (oldMode == DebuggerMode.Design)
                         {
-                            XSolution.Logger.Information("Debugger started");
+                            XSettings.Logger.Information("Debugger started");
                             Support.RefreshWindows();
                             Support.IsRunning = true;
                         }

@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Community.VisualStudio.Toolkit;
-using XSharpModel;
+using XSharp.Settings;
 using XSharp.Debugger.Support;
 using System.Collections.Generic;
 
@@ -24,7 +24,7 @@ namespace XSharp.Debugger.UI
         internal static bool? IsRtLoaded = null;
         internal static bool IsRunning = false;
         static IList<IDebuggerToolWindow> windows;
-        static ILogger Logger => XSolution.Logger;
+        static ILogger Logger => XSettings.Logger;
 
         static Support()
         {

@@ -16,6 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using XSharpModel;
+using XSharp.Settings;
 #if DUMPSNIPPETS
 using System.IO;
 #endif

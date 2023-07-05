@@ -4,10 +4,19 @@
 // See License.txt in the project root for license information.
 //
 
+using System;
 using Type = Microsoft.VisualStudio.Debugger.Metadata.Type;
 
 namespace XSharpDebugger
 {
+    internal static class Logger
+    {
+        internal static void LogException(Exception e, string msg)
+        {
+            XSharp.Settings.XSettings.LogException(e, msg);
+        }
+    }
+
     internal static class Utility
     {
         /// <summary>

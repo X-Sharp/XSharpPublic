@@ -9,8 +9,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text;
-using XSharpModel;
-
+using XSharp.Settings;
 namespace XSharpDebugger
 {
     /// <summary>

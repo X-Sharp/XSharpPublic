@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using XSharp;
 using Meta = Microsoft.VisualStudio.Debugger.Metadata;
-using XSharpModel;
+using XSharp.Settings;
 namespace XSharpDebugger
 {
     internal enum KeywordCase
